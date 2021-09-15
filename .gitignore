@@ -29,3 +29,5 @@ yarn-error.log*
 
 automation/.nyc_output/
 .devcontainer
+
+dist
