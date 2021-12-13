@@ -28,9 +28,9 @@ jobs:
       # - name: Lint
       #   run: |
       #     npm run lint
-      - name: Test
-        run: |
-          npm test
+      # - name: Test
+      #   run: |
+      #     npm test
       - name: Push release to npm (public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
