@@ -1,7 +1,6 @@
 {
   "name": "@vegaprotocol/ui-toolkit",
   "version": "0.1.0",
-  "private": true,
   "exports": {
     ".": "./dist/modern.js",
     "./dist/": "./dist/"
