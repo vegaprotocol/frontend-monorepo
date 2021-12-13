@@ -24,7 +24,7 @@ jobs:
 
       - name: Install
         run: |
-          npm ci
+          yarn install --frozen-lockfile
       # - name: Lint
       #   run: |
       #     npm run lint
@@ -35,4 +35,4 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: |
-          npm publish --access public .
+          yarn publish --access public .
