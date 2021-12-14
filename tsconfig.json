@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": ["dom", "dom.iterable", "ES2020"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2020"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -16,8 +20,15 @@
     "jsx": "react-jsx",
     "declaration": true,
     "emitDeclarationOnly": true,
-    "declarationDir": "dist/types"
+    "declarationDir": "dist/types",
+    "noEmit": true
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/*.stories.tsx", "**/*.test.tsx"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.stories.tsx",
+    "**/*.test.tsx"
+  ]
 }

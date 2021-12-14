@@ -1,3 +1,4 @@
+import React from "react";
 import { EthereumChainId } from "../../utils/web3";
 
 const etherscanUrls: Record<EthereumChainId, string> = {
@@ -35,7 +36,9 @@ export const EtherscanLink = ({
 }: EtherscanLinkProps) => {
   let hash: string;
   let txLink: string | null;
-  const createLink = etherscanLinkCreator(chainId);
+  const createLink = React.useMemo(() => etherscanLinkCreator(chainId), [
+    chainId,
+  ]);
 
   if ("tx" in props) {
     hash = props.tx;
@@ -54,6 +57,7 @@ export const EtherscanLink = ({
 
   return (
     <a
+      data-testid="etherscan-link"
       href={txLink}
       target="_blank"
       rel="noreferrer"
