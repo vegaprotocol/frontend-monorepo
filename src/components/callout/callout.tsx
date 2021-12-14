@@ -6,9 +6,9 @@ export const Callout = ({
   intent,
   icon,
 }: {
-  children: React.ReactNode;
-  title?: string;
-  intent?: "success" | "error" | "warn";
+  children?: React.ReactNode;
+  title?: React.ReactElement | string;
+  intent?: "success" | "error" | "warn" | "action";
   icon?: React.ReactNode;
 }) => {
   const className = ["callout", intent ? `callout--${intent}` : ""].join(" ");

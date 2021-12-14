@@ -5,6 +5,7 @@
   padding: 14px;
   border: 1px solid $white;
   box-shadow: 3px 3px 0px $white;
+  margin: 12px 0;
 
   p {
     margin: 0 0 10px 0;
@@ -24,10 +25,16 @@
   }
 
   &--warn {
+    box-shadow: 5px 5px 0px $vega-orange3;
+  }
+
+  &--action {
     box-shadow: 5px 5px 0px $vega-yellow3;
   }
 
   &__content {
+    width: 100%;
+
     > :last-child {
       margin-bottom: 0;
     }

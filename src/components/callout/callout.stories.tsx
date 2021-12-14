@@ -29,3 +29,8 @@ export const Warning = Template.bind({});
 Warning.args = {
   intent: "warn",
 };
+
+export const Action = Template.bind({});
+Action.args = {
+  intent: "action",
+};
