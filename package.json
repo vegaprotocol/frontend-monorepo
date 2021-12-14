@@ -29,6 +29,7 @@
     "build": "rollup -c && yarn build:types",
     "build:types": "tsc",
     "test": "react-scripts test",
+    "test:coverage": "yarn test --coverage --watchAll=false ",
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public"
@@ -99,5 +100,23 @@
   "homepage": "https://github.com/vegaprotocol/ui-toolkit",
   "keywords": [
     "vega"
-  ]
+  ],
+  "jest": {
+    "collectCoverageFrom": [
+      "**/**/*.{ts,tsx}",
+      "!**/**/*.stories.tsx"
+    ],
+    "coverageReporters": [
+      "html",
+      "json"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  }
 }

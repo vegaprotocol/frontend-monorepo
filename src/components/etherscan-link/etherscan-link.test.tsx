@@ -41,3 +41,25 @@ test("It links to ropsten etherscan if network is ropsten", () => {
     "https://ropsten.etherscan.io/address/address"
   );
 });
+
+test("Doesn't render for address if chainid is null", () => {
+  render(<EtherscanLink chainId={null} address="address" />);
+  expect(screen.queryByTestId("etherscan-link")).not.toBeInTheDocument();
+});
+
+test("Doesn't render for tx if chainid is null", () => {
+  render(<EtherscanLink chainId={null} tx="tx" />);
+  expect(screen.queryByTestId("etherscan-link")).not.toBeInTheDocument();
+});
+
+test("Doesn't render for address if chainid is unknown", () => {
+  // @ts-ignore
+  render(<EtherscanLink chainId={"foo"} address="address" />);
+  expect(screen.queryByTestId("etherscan-link")).not.toBeInTheDocument();
+});
+
+test("Doesn't render for tx if chainid is unknown", () => {
+  // @ts-ignore
+  render(<EtherscanLink chainId={"foo"} tx="tx" />);
+  expect(screen.queryByTestId("etherscan-link")).not.toBeInTheDocument();
+});
