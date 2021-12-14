@@ -21,7 +21,7 @@ const intents = ["warn", "action", "error", "success"] as [
 ];
 
 intents.map((intent) =>
-  test("Applies class based on intent", () => {
+  test(`Applies class for ${intent}`, () => {
     render(<Callout intent={intent} />);
     expect(screen.getByTestId("callout")).toHaveClass(`callout--${intent}`);
   })
