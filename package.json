@@ -72,6 +72,7 @@
     "@storybook/node-logger": "^6.3.8",
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.3.8",
+    "babel-loader": "8.1.0",
     "postcss": "8.3.6",
     "rollup": "^2.56.3",
     "rollup-plugin-postcss": "^4.0.1",
