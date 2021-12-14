@@ -31,7 +31,7 @@ jobs:
           yarn build
       - name: Test
         run: |
-          yarn test
+          yarn test:coverage
       - name: Push release to npm (public)
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
