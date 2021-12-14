@@ -1,6 +1,7 @@
 {
   "name": "@vegaprotocol/ui-toolkit",
-  "version": "0.3.0",
+  "version": "0.4.0",
+  "description": "A React component library for Vega branded components",
   "exports": {
     ".": "./dist/modern.js",
     "./dist/": "./dist/"
@@ -79,5 +80,23 @@
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0",
     "react-dom": "^16.8.0 || ^17.0.0"
-  }
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.css",
+    "dist/**/*.d.ts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vegaprotocol/ui-toolkit.git"
+  },
+  "author": "Vega <hi@vega.xyz>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vegaprotocol/ui-toolkit/issues"
+  },
+  "homepage": "https://github.com/vegaprotocol/ui-toolkit",
+  "keywords": [
+    "vega"
+  ]
 }
