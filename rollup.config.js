@@ -6,7 +6,6 @@ import postcss from "rollup-plugin-postcss";
 import { terser } from "rollup-plugin-terser";
 
 import * as meta from "./package.json";
-console.log(meta);
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
@@ -60,7 +59,6 @@ const config = {
     {
       file: meta.main,
       format: "cjs",
-      globals,
       plugins: [
         getBabelOutputPlugin({
           presets: ["@babel/preset-env"],
