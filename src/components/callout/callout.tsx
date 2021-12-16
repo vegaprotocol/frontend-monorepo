@@ -1,4 +1,5 @@
 import "./callout.scss";
+import React from "react";
 
 export const Callout = ({
   children,
