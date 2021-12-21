@@ -70,8 +70,9 @@ const config = {
     nodeResolve({ extensions }),
     commonjs(),
     postcss({
+      modules: true,
       autoModules: true,
-      extract: path.resolve("dist/style.css"),
+      // extract: path.resolve("dist/style.css"),
     }),
     babel({
       extensions,
