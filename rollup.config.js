@@ -72,7 +72,6 @@ const config = {
     postcss({
       modules: true,
       autoModules: true,
-      // extract: path.resolve("dist/style.css"),
     }),
     babel({
       extensions,
