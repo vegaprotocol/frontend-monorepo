@@ -1,12 +1,12 @@
-import React from "react";
-import { EthereumChainId } from "../../utils/web3";
+import React from 'react';
+import { EthereumChainId } from '../../utils/web3';
 
 const etherscanUrls: Record<EthereumChainId, string> = {
-  "0x1": "https://etherscan.io",
-  "0x3": "https://ropsten.etherscan.io",
-  "0x4": "https://rinkeby.etherscan.io",
-  "0x5": "https://goerli.etherscan.io",
-  "0x2a": "https://kovan.etherscan.io",
+  '0x1': 'https://etherscan.io',
+  '0x3': 'https://ropsten.etherscan.io',
+  '0x4': 'https://rinkeby.etherscan.io',
+  '0x5': 'https://goerli.etherscan.io',
+  '0x2a': 'https://kovan.etherscan.io',
 };
 
 interface BaseEtherscanLinkProps {
@@ -36,11 +36,12 @@ export const EtherscanLink = ({
 }: EtherscanLinkProps) => {
   let hash: string;
   let txLink: string | null;
-  const createLink = React.useMemo(() => etherscanLinkCreator(chainId), [
-    chainId,
-  ]);
+  const createLink = React.useMemo(
+    () => etherscanLinkCreator(chainId),
+    [chainId]
+  );
 
-  if ("tx" in props) {
+  if ('tx' in props) {
     hash = props.tx;
     txLink = createLink ? createLink.tx(hash) : null;
   } else {
@@ -85,4 +86,4 @@ function etherscanLinkCreator(chainId: EthereumChainId | null) {
   };
 }
 
-EtherscanLink.displayName = "EtherScanLink";
+EtherscanLink.displayName = 'EtherScanLink';

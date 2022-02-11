@@ -1,5 +1,5 @@
-import "./callout.scss";
-import React from "react";
+import './callout.scss';
+import React from 'react';
 
 export const Callout = ({
   children,
@@ -9,10 +9,10 @@ export const Callout = ({
 }: {
   children?: React.ReactNode;
   title?: React.ReactElement | string;
-  intent?: "success" | "error" | "warn" | "action";
+  intent?: 'success' | 'error' | 'warn' | 'action';
   icon?: React.ReactNode;
 }) => {
-  const className = ["callout", intent ? `callout--${intent}` : ""].join(" ");
+  const className = ['callout', intent ? `callout--${intent}` : ''].join(' ');
   return (
     <div data-testid="callout" className={className}>
       {icon && <div className="callout__icon">{icon}</div>}

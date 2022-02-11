@@ -1,10 +1,10 @@
-import React from "react";
-import { ComponentStory, ComponentMeta } from "@storybook/react";
+import React from 'react';
+import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import { Callout } from ".";
+import { Callout } from '.';
 
 export default {
-  title: "Callout",
+  title: 'Callout',
   component: Callout,
 } as ComponentMeta<typeof Callout>;
 
@@ -17,20 +17,20 @@ Default.args = {};
 
 export const Success = Template.bind({});
 Success.args = {
-  intent: "success",
+  intent: 'success',
 };
 
 export const Error = Template.bind({});
 Error.args = {
-  intent: "error",
+  intent: 'error',
 };
 
 export const Warning = Template.bind({});
 Warning.args = {
-  intent: "warn",
+  intent: 'warn',
 };
 
 export const Action = Template.bind({});
 Action.args = {
-  intent: "action",
+  intent: 'action',
 };

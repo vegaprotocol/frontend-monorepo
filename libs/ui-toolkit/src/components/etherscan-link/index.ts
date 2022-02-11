@@ -1,1 +1,1 @@
-export { EtherscanLink } from "./etherscan-link";
+export { EtherscanLink } from './etherscan-link';

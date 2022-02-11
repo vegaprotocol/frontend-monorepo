@@ -1,6 +1,6 @@
-@import "./colors";
-@import "./fonts";
-@import "./reset";
+@import './colors';
+@import './fonts';
+@import './reset';
 
 html,
 body,
@@ -125,8 +125,8 @@ button {
 
 // FORM ELEMENTS
 select,
-input[type="text"],
-input[type="password"] {
+input[type='text'],
+input[type='password'] {
   width: 100%;
   padding: 12px;
   border-radius: 4px;
