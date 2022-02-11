@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "projects": {
+    "react-helpers": "libs/react-helpers",
+    "trading": "apps/trading",
+    "trading-e2e": "apps/trading-e2e",
+    "ui-toolkit": "libs/ui-toolkit"
+  }
+}

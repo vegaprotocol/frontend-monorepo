@@ -1,0 +1,28 @@
+{
+  "root": "apps/trading-e2e",
+  "sourceRoot": "apps/trading-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/trading-e2e/cypress.json",
+        "devServerTarget": "trading:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "trading:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/trading-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["trading"]
+}

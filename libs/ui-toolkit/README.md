@@ -1,5 +1,7 @@
-# UI Toolkit
+# ui-toolkit
 
-Shareable react components, hooks and functions for usage across Vega apps.
+This library was generated with [Nx](https://nx.dev).
 
-## WIP!
+## Running unit tests
+
+Run `nx test ui-toolkit` to execute the unit tests via [Jest](https://jestjs.io).
