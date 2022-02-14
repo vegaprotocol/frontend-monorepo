@@ -1,5 +1,5 @@
 {
-  "npmScope": "nx-monorepo",
+  "npmScope": "vegaprotocol",
   "affected": {
     "defaultBase": "master"
   },

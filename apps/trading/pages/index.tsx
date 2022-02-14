@@ -1,4 +1,6 @@
 import styles from './index.module.scss';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { ReactHelpers } from '@vegaprotocol/react-helpers';
 
 export function Index() {
   /*
@@ -15,6 +17,8 @@ export function Index() {
               <span> Hello there, </span>
               Welcome trading 👋
             </h1>
+            <EtherscanLink chainId={null} address="address" />
+            <ReactHelpers />
           </div>
 
           <div id="hero" className="rounded">

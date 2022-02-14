@@ -1,4 +1,4 @@
-import './callout.scss';
+// import './callout.scss';
 import React from 'react';
 
 export const Callout = ({

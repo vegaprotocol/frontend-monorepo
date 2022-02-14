@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import * as React from 'react';
 import { EtherscanLink } from '.';
 import { EthereumChainIds } from '../../utils/web3';
@@ -53,13 +54,13 @@ test("Doesn't render for tx if chainid is null", () => {
 });
 
 test("Doesn't render for address if chainid is unknown", () => {
-  // @ts-ignore
+  // @ts-ignore wrong chaindId passed
   render(<EtherscanLink chainId={'foo'} address="address" />);
   expect(screen.queryByTestId('etherscan-link')).not.toBeInTheDocument();
 });
 
 test("Doesn't render for tx if chainid is unknown", () => {
-  // @ts-ignore
+  // @ts-ignore wrong chaindId passed
   render(<EtherscanLink chainId={'foo'} tx="tx" />);
   expect(screen.queryByTestId('etherscan-link')).not.toBeInTheDocument();
 });
