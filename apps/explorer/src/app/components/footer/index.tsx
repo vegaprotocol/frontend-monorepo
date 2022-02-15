@@ -7,7 +7,7 @@ export const Footer = () => {
         <div>Reading Vega Fairground data from </div>
         <div>
           {/* Version/commit hash: {packageJson.version} / */}
-          {process.env['REACT_APP_COMMIT_REF'] || 'dev'}
+          {process.env['NX_COMMIT_REF'] || 'dev'}
         </div>
       </section>
     </footer>
