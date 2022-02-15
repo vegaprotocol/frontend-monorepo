@@ -1,0 +1,28 @@
+{
+  "root": "apps/explorer-e2e",
+  "sourceRoot": "apps/explorer-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/explorer-e2e/cypress.json",
+        "devServerTarget": "explorer:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "explorer:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/explorer-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["explorer"]
+}
