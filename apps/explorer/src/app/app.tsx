@@ -1,11 +1,32 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import styles from './app.module.scss';
+import './App.scss';
 
-import { Route, Link } from 'react-router-dom';
-import App2 from './src/App';
+import { ApolloProvider } from '@apollo/client';
 
-export function App() {
-  return <App2 />;
+import { createClient } from './lib/apollo-client';
+import { Nav } from './components/nav';
+import { Footer } from './components/footer';
+import { Header } from './components/header';
+import { Main } from './components/main';
+import React from 'react';
+import { DATA_SOURCES } from './config';
+import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
+
+function App() {
+  const [client] = React.useState(createClient(DATA_SOURCES.dataNodeUrl));
+  return (
+    <TendermintWebsocketProvider>
+      <ApolloProvider client={client}>
+        <div className="app">
+          <div className="template-sidebar">
+            <Nav />
+            <Header />
+            <Main />
+            <Footer />
+          </div>
+        </div>
+      </ApolloProvider>
+    </TendermintWebsocketProvider>
+  );
 }
 
 export default App;
