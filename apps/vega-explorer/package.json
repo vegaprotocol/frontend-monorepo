@@ -1,7 +1,6 @@
 {
   "name": "vega-explorer",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.8",
     "@testing-library/jest-dom": "^5.16.2",
@@ -22,11 +21,12 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "BUILD_PATH=../../dist/apps/vega-explorer craco build",
+    "test": "craco test",
     "eject": "react-scripts eject",
-    "generate": "env-cmd yarn apollo codegen:generate --target=typescript --globalTypesFile=src/__generated__/globalTypes.ts"
+    "generate": "env-cmd yarn apollo codegen:generate --target=typescript --globalTypesFile=src/__generated__/globalTypes.ts",
+    "serve": "npm start"
   },
   "eslintConfig": {
     "extends": [
