@@ -1,7 +1,6 @@
 export const DATA_SOURCES = {
-  chainExplorerUrl:
-    'https://explorer.vega.trading/.netlify/functions/chain-explorer-api',
-  tendermintUrl: 'https://lb.testnet.vega.xyz/tm',
-  tendermintWebsocketUrl: 'wss://lb.testnet.vega.xyz/tm/websocket',
-  dataNodeUrl: 'https://lb.testnet.vega.xyz/query',
+  chainExplorerUrl: process.env['NX_CHAIN_EXPLORER_URL'] as string,
+  tendermintUrl: process.env['NX_TENDERMINT_URL'] as string,
+  tendermintWebsocketUrl: process.env['NX_TENDERMINT_WEBSOCKET_URL'] as string,
+  dataNodeUrl: process.env['NX_VEGA_URL'] as string,
 };
