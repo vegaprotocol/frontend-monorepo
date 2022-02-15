@@ -1,6 +1,8 @@
 {
   "version": 2,
   "projects": {
+    "explorer": "apps/explorer",
+    "explorer-e2e": "apps/explorer-e2e",
     "react-helpers": "libs/react-helpers",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",
