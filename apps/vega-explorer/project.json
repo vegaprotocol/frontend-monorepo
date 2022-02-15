@@ -1,0 +1,6 @@
+{
+  "root": "apps/vega-explorer",
+  "sourceRoot": "apps/vega-explorer/src",
+  "projectType": "application",
+  "tags": []
+}
