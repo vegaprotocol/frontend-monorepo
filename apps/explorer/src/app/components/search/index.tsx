@@ -1,53 +1,90 @@
-import React from "react";
-import { useState } from "react";
+import { gql, useQuery } from '@apollo/client';
+import React from 'react';
+import { useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import debounce from 'lodash.debounce';
 
-const PARTY_ID_LENGTH = 64;
+const TX_LENGTH = 64;
 
 enum PossibleIdTypes {
-  Block = "Block",
-  Tx = "Tx",
-  Party = "Party",
-  Unknown = "Unknown",
+  Block = 'Block',
+  Tx = 'Tx',
+  Party = 'Party',
+  Market = 'Market',
+  Unknown = 'Unknown',
 }
 
-const useGuess = () => {
-  const [search, setSearch] = useState<string>("");
-  const [possibleTypes, setPossibleTypes] = useState<PossibleIdTypes[]>();
-
-  const getPossibleIds = React.useCallback((search: string) => {
-    if (!search.length) {
-      return [];
-    } else if (
-      search.startsWith("0x") &&
-      search.length === PARTY_ID_LENGTH + 2
-    ) {
-      return [PossibleIdTypes.Tx, PossibleIdTypes.Party];
-    } else if (!search.startsWith("0x") && search.length === PARTY_ID_LENGTH) {
-      return [PossibleIdTypes.Tx, PossibleIdTypes.Party];
-    } else if (!isNaN(Number(search))) {
-      return [PossibleIdTypes.Block];
+const GUESS_QUERY = gql`
+  query Guess($guess: ID!) {
+    party(id: $guess) {
+      id
     }
-    return [];
-  }, []);
+    market(id: $guess) {
+      id
+    }
+  }
+`;
+
+const usePossibleType = (search: string) => {
+  const [possibleType, setPossibleType] = useState<PossibleIdTypes>();
+  const { data, loading, error } = useQuery<any, any>(GUESS_QUERY, {
+    variables: {
+      guess: search,
+    },
+    skip: !search,
+  });
+
+  React.useEffect(() => {
+    if (!isNaN(Number(search))) {
+      setPossibleType(PossibleIdTypes.Block);
+    } else if (data?.party) {
+      setPossibleType(PossibleIdTypes.Party);
+    } else if (data?.market) {
+      setPossibleType(PossibleIdTypes.Market);
+    } else if (search.replace('0x', '').length === TX_LENGTH) {
+      setPossibleType(PossibleIdTypes.Tx);
+    } else {
+      setPossibleType(PossibleIdTypes.Unknown);
+    }
+  }, [data?.market, data?.party, search, setPossibleType]);
+
+  return {
+    loading,
+    error,
+    possibleType,
+  };
+};
+
+const useGuess = () => {
+  const [search, setSearch] = useState<string>('');
+  const [debouncedSearch, setDebouncedSearch] = useState<string>('');
+  const { loading, error, possibleType } = usePossibleType(debouncedSearch);
+  const debouncedSearchSet = React.useMemo(
+    () => debounce(setDebouncedSearch, 1000),
+    [setDebouncedSearch]
+  );
 
   const onChange = React.useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const search = event.target.value;
       setSearch(search);
-      setPossibleTypes(getPossibleIds(search));
+      debouncedSearchSet(search);
     },
-    [getPossibleIds]
+    [debouncedSearchSet]
   );
 
   return {
     onChange,
-    possibleTypes,
     search,
+    loading,
+    error,
+    possibleType,
   };
 };
 
 const Search = () => {
-  const { search, onChange, possibleTypes } = useGuess();
+  const { search, onChange } = useGuess();
   return (
     <section>
       <h1>Vega Block Explorer</h1>
@@ -59,8 +96,6 @@ const Search = () => {
           onChange={(e) => onChange(e)}
         ></input>
       </fieldset>
-      {/* TODO implement links */}
-      <div>{JSON.stringify(possibleTypes)}</div>
     </section>
   );
 };
