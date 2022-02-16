@@ -1,4 +1,4 @@
-// import './callout.scss';
+import styles from './callout.module.scss';
 import React from 'react';
 
 export const Callout = ({
@@ -12,12 +12,15 @@ export const Callout = ({
   intent?: 'success' | 'error' | 'warn' | 'action';
   icon?: React.ReactNode;
 }) => {
-  const className = ['callout', intent ? `callout--${intent}` : ''].join(' ');
+  const className = [
+    styles['callout'],
+    intent ? styles[`callout--${intent}`] : '',
+  ].join(' ');
   return (
     <div data-testid="callout" className={className}>
-      {icon && <div className="callout__icon">{icon}</div>}
-      <div className="callout__content">
-        {title && <h3 className="callout__title">{title}</h3>}
+      {icon && <div className={styles['callout__icon']}>{icon}</div>}
+      <div className={styles['callout__content']}>
+        {title && <h3 className={styles['callout__title']}>{title}</h3>}
         {children}
       </div>
     </div>
