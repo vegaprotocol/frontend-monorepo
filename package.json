@@ -6,7 +6,8 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "generate": "env-cmd yarn apollo codegen:generate --config=apps/explorer/apollo.config.js --target=typescript --globalTypesFile=src/__generated__/globalTypes.ts"
   },
   "engines": {
     "node": "16.14.0"
@@ -15,8 +16,10 @@
   "dependencies": {
     "@apollo/client": "^3.5.8",
     "@nrwl/next": "13.8.1",
+    "apollo": "^2.33.9",
     "core-js": "^3.6.5",
-    "graphql": "^16.3.0",
+    "env-cmd": "^10.1.0",
+    "graphql": "^15.7.2",
     "lodash.debounce": "^4.0.8",
     "next": "12.0.7",
     "react": "17.0.2",
@@ -77,5 +80,8 @@
   "lint-staged": {
     "*": "yarn nx format:write --uncommitted",
     "*.{ts,tsx,js,jsx}": "yarn eslint --fix"
+  },
+  "resolutions": {
+    "graphql": "15.8.0"
   }
 }
