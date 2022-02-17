@@ -6,8 +6,7 @@ export const Nav = () => {
     <nav>
       {routerConfig.map((r) => (
         <div key={r.name}>
-          {/* TODO stupid hack */}
-          <Link to={r.path.replace('/*', '')}>{r.name}</Link>
+          <Link to={r.path}>{r.name}</Link>
           <br />
         </div>
       ))}

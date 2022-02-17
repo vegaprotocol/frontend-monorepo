@@ -1,10 +1,9 @@
 import React from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import { RouteErrorBoundary } from '../components/router-error-boundary';
 
 import { SplashLoader } from '../components/splash-loader';
 import { SplashScreen } from '../components/splash-screen';
-import Home from './home';
 import routerConfig from './router-config';
 
 export interface RouteChildProps {
@@ -12,6 +11,8 @@ export interface RouteChildProps {
 }
 
 export const AppRouter = () => {
+  const routes = useRoutes(routerConfig);
+
   const splashLoading = (
     <SplashScreen>
       <SplashLoader />
@@ -20,15 +21,7 @@ export const AppRouter = () => {
 
   return (
     <RouteErrorBoundary>
-      <React.Suspense fallback={splashLoading}>
-        <Routes>
-          <>
-            {routerConfig.map(({ path, component: Component, name }) => (
-              <Route key={name} path={path} element={<Component />} />
-            ))}
-          </>
-        </Routes>
-      </React.Suspense>
+      <React.Suspense fallback={splashLoading}>{routes}</React.Suspense>
     </RouteErrorBoundary>
   );
 };
