@@ -7,7 +7,7 @@ import {
   ProposalState,
   ProposalRejectionReason,
   VoteValue,
-} from '../../../__generated__/globalTypes';
+} from './../../../../__generated__/globalTypes';
 
 // ====================================================
 // GraphQL query operation: ProposalsQuery
