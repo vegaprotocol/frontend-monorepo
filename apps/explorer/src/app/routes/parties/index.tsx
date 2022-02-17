@@ -1,15 +1,7 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Parties } from './home';
-import { Party } from './id';
+import { Outlet } from 'react-router-dom';
 
 const PartiesPage = () => {
-  return (
-    <Routes>
-      <Route index={true} element={<Parties />} />
-      <Route path={`/:party`} element={<Party />} />
-    </Routes>
-  );
+  return <Outlet />;
 };
 
 export default PartiesPage;

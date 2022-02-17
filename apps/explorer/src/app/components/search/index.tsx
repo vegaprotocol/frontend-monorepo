@@ -94,11 +94,7 @@ const Search = () => {
       <h1>Vega Block Explorer</h1>
       <fieldset>
         <label htmlFor="search">Search: </label>
-        <input
-          name="search"
-          value={search}
-          onChange={(e) => onChange(e)}
-        ></input>
+        <input name="search" value={search} onChange={(e) => onChange(e)} />
       </fieldset>
     </section>
   );
