@@ -8,7 +8,7 @@ import {
   MarketState,
   AccountType,
   AuctionTrigger,
-} from '../../../__generated__/globalTypes';
+} from './../../../../__generated__/globalTypes';
 
 // ====================================================
 // GraphQL query operation: MarketsQuery
