@@ -8,6 +8,9 @@
     "test": "nx test",
     "postinstall": "husky install"
   },
+  "engines": {
+    "node": "16.14.0"
+  },
   "private": true,
   "dependencies": {
     "@nrwl/next": "13.8.1",
