@@ -4,6 +4,7 @@ import { useState } from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import debounce from 'lodash.debounce';
+import { Guess, GuessVariables } from './__generated__/Guess';
 
 const TX_LENGTH = 64;
 
@@ -28,12 +29,15 @@ const GUESS_QUERY = gql`
 
 const usePossibleType = (search: string) => {
   const [possibleType, setPossibleType] = useState<PossibleIdTypes>();
-  const { data, loading, error } = useQuery<any, any>(GUESS_QUERY, {
-    variables: {
-      guess: search,
-    },
-    skip: !search,
-  });
+  const { data, loading, error } = useQuery<Guess, GuessVariables>(
+    GUESS_QUERY,
+    {
+      variables: {
+        guess: search,
+      },
+      skip: !search,
+    }
+  );
 
   React.useEffect(() => {
     if (!isNaN(Number(search))) {
