@@ -12,7 +12,10 @@ import { DATA_SOURCES } from './config';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 
 function App() {
-  const [client] = React.useState(createClient(DATA_SOURCES.dataNodeUrl));
+  const client = React.useMemo(
+    () => createClient(DATA_SOURCES.dataNodeUrl),
+    []
+  );
   return (
     <TendermintWebsocketProvider>
       <ApolloProvider client={client}>

@@ -1,15 +1,7 @@
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import { Txs } from './home';
-import { Tx } from './id';
+import { Outlet } from 'react-router-dom';
 
 const TxPage = () => {
-  return (
-    <Routes>
-      <Route index={true} element={<Txs />} />
-      <Route path={`/:txHash`} element={<Tx />} />
-    </Routes>
-  );
+  return <Outlet />;
 };
 
 export default TxPage;
