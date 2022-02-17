@@ -6,8 +6,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "postinstall": "husky install",
-    "generate": "env-cmd yarn apollo codegen:generate --config=apps/explorer/apollo.config.js --target=typescript --globalTypesFile=src/__generated__/globalTypes.ts"
+    "postinstall": "husky install"
   },
   "engines": {
     "node": "16.14.0"
