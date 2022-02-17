@@ -2,7 +2,6 @@ import styles from './index.module.scss';
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { ReactHelpers } from '@vegaprotocol/react-helpers';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 
 export function Index() {
   const router = useRouter();
@@ -10,16 +9,7 @@ export function Index() {
   return (
     <div className={styles.page}>
       <h1>Vega Trading</h1>
-      <nav>
-        {[
-          { name: 'Portfolio', path: '/portfolio' },
-          { name: 'Markets', path: '/markets' },
-        ].map((route) => (
-          <Link href={route.path} key={route.path}>
-            {route.name}
-          </Link>
-        ))}
-      </nav>
+      <hr />
       <h2>Test packages</h2>
       <ReactHelpers />
       <EtherscanLink
