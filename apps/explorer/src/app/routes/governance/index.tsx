@@ -1,5 +1,7 @@
-import { gql, useQuery } from "@apollo/client";
-import { ProposalsQuery } from "./__generated__/ProposalsQuery";
+import { gql, useQuery } from '@apollo/client';
+import React from 'react';
+import { SyntaxHighlighter } from '../../components/syntax-highlighter';
+import { ProposalsQuery } from './__generated__/ProposalsQuery';
 
 const PROPOSAL_QUERY = gql`
   query ProposalsQuery {
@@ -80,10 +82,18 @@ const PROPOSAL_QUERY = gql`
 
 const Governance = () => {
   const { data } = useQuery<ProposalsQuery>(PROPOSAL_QUERY);
+
+  if (!data || !data.proposals) return null;
   return (
     <section>
       <h1>Governance</h1>
-      <pre>{JSON.stringify(data, null, "  ")}</pre>
+      {data.proposals.map((p) => (
+        <React.Fragment key={p.id}>
+          {/* TODO get proposal name generator from console */}
+          <h2>{p.id}</h2>
+          <SyntaxHighlighter data={p} />
+        </React.Fragment>
+      ))}
     </section>
   );
 };
