@@ -2,6 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { MarketsQuery } from './__generated__/MarketsQuery';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
+import React from 'react';
 
 const MARKETS_QUERY = gql`
   query MarketsQuery {
@@ -146,6 +147,7 @@ const MARKETS_QUERY = gql`
 const vegaJsonTheme = {
   hljs: {
     fontSize: '1rem',
+    fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
     display: 'block',
     overflowX: 'auto',
     padding: '1em',
@@ -166,14 +168,19 @@ const vegaJsonTheme = {
 
 const Markets = () => {
   const { data } = useQuery<MarketsQuery>(MARKETS_QUERY);
+
+  if (!data || !data.markets) return null;
   return (
     <section>
       <h1>Markets</h1>
-      {data && (
-        <SyntaxHighlighter language="json" style={vegaJsonTheme}>
-          {JSON.stringify(data, null, '  ')}
-        </SyntaxHighlighter>
-      )}
+      {data.markets.map((m) => (
+        <React.Fragment key={m.id}>
+          <h2>{m.name}</h2>
+          <SyntaxHighlighter language="json" style={vegaJsonTheme}>
+            {JSON.stringify(m, null, '  ')}
+          </SyntaxHighlighter>
+        </React.Fragment>
+      ))}
     </section>
   );
 };
