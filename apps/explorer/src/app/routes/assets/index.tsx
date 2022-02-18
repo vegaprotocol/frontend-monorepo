@@ -1,5 +1,7 @@
-import { gql, useQuery } from "@apollo/client";
-import { AssetsQuery } from "./__generated__/AssetsQuery";
+import { gql, useQuery } from '@apollo/client';
+import React from 'react';
+import { SyntaxHighlighter } from '../../components/syntax-highlighter';
+import { AssetsQuery } from './__generated__/AssetsQuery';
 
 export const ASSETS_QUERY = gql`
   query AssetsQuery {
@@ -31,10 +33,18 @@ export const ASSETS_QUERY = gql`
 
 const Assets = () => {
   const { data } = useQuery<AssetsQuery>(ASSETS_QUERY);
+  if (!data || !data.assets) return null;
   return (
     <section>
       <h1>Assets</h1>
-      <pre>{JSON.stringify(data, null, "  ")}</pre>
+      {data?.assets.map((a) => (
+        <React.Fragment key={a.id}>
+          <h2>
+            {a.name} ({a.symbol})
+          </h2>
+          <SyntaxHighlighter data={a} />
+        </React.Fragment>
+      ))}
     </section>
   );
 };
