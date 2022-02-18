@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.5.8",
     "@nrwl/next": "13.8.1",
+    "@types/uuid": "^8.3.4",
     "apollo": "^2.33.9",
     "core-js": "^3.6.5",
     "env-cmd": "^10.1.0",
@@ -23,7 +24,7 @@
     "react-use-websocket": "^3.0.0",
     "regenerator-runtime": "0.13.7",
     "tslib": "^2.0.0",
-    "uuidv4": "^6.2.12"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.12.13",

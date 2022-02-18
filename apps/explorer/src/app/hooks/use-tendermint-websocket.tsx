@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTendermintWebsocketContext } from '../contexts/websocket/tendermint-websocket-context';
-import { uuid } from 'uuidv4';
+import { v4 as uuid } from 'uuid';
 
 export interface TendermintWebsocketQuery {
   query: string;
