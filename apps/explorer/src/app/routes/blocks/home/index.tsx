@@ -1,8 +1,8 @@
-import { DATA_SOURCES } from "../../../config";
-import useFetch from "../../../hooks/use-fetch";
-import { NewBlockMessage } from "../tendermint-new-block";
-import { TendermintBlockchainResponse } from "../tendermint-blockchain-response";
-import { useTendermintWebsocket } from "../../../hooks/use-tendermint-websocket";
+import { DATA_SOURCES } from '../../../config';
+import useFetch from '../../../hooks/use-fetch';
+import { NewBlockMessage } from '../tendermint-new-block';
+import { TendermintBlockchainResponse } from '../tendermint-blockchain-response';
+import { useTendermintWebsocket } from '../../../hooks/use-tendermint-websocket';
 
 const MAX_BLOCKS = 10;
 
@@ -27,12 +27,12 @@ const Blocks = () => {
       <br />
       <div>
         <br />
-        <pre>{JSON.stringify(data, null, "  ")}</pre>
+        <pre>{JSON.stringify(data, null, '  ')}</pre>
       </div>
       <h2>Blocks streamed in</h2>
       <div>
         <br />
-        <pre>{JSON.stringify(blocks, null, "  ")}</pre>
+        <pre>{JSON.stringify(blocks, null, '  ')}</pre>
       </div>
     </section>
   );

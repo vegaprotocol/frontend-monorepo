@@ -1,5 +1,5 @@
 import Assets from './assets';
-import Blocks from './blocks';
+import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
 import Markets from './markets';
@@ -11,7 +11,7 @@ import Validators from './validators';
 import Genesis from './genesis';
 import NetworkParameters from './network-parameters';
 import { Block } from './blocks/id';
-import { Blocks as BlocksHome } from './blocks/home';
+import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
 import { Txs as TxHome } from './txs/home';
 
@@ -53,15 +53,15 @@ const routerConfig = [
   {
     path: Routes.BLOCKS,
     name: 'Blocks',
-    element: <Blocks />,
+    element: <BlockPage />,
     children: [
+      {
+        index: true,
+        element: <Blocks />,
+      },
       {
         path: ':block',
         element: <Block />,
-      },
-      {
-        index: true,
-        element: <BlocksHome />,
       },
     ],
   },
