@@ -1,5 +1,6 @@
-import React from "react";
-import { useTendermintWebsocketContext } from "../contexts/websocket/tendermint-websocket-context";
+import React from 'react';
+import { useTendermintWebsocketContext } from '../contexts/websocket/tendermint-websocket-context';
+import { uuid } from 'uuidv4';
 
 export interface TendermintWebsocketQuery {
   query: string;
@@ -23,13 +24,12 @@ export const useTendermintWebsocket = function <T>(
   bufferSize?: number
 ) {
   const { sendMessage, lastMessage } = useTendermintWebsocketContext();
-  // @ts-ignore
-  const [id] = React.useState(crypto.randomUUID());
+  const [id] = React.useState(uuid());
   const [messages, setMessages] = React.useState<MessageEvent<T>[]>([]);
 
   const [subMsg] = React.useState({
-    jsonrpc: "2.0",
-    method: "subscribe",
+    jsonrpc: '2.0',
+    method: 'subscribe',
     id,
     params: {
       ...message,
@@ -37,7 +37,7 @@ export const useTendermintWebsocket = function <T>(
   });
   const [unsubMsg] = React.useState({
     ...subMsg,
-    method: "unsubscribe",
+    method: 'unsubscribe',
   });
 
   React.useEffect(() => {
