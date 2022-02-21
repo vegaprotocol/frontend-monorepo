@@ -12,25 +12,32 @@ const Template: ComponentStory<typeof Callout> = (args) => (
   <Callout {...args}>Content</Callout>
 );
 
-export const Default = Template.bind({});
-Default.args = {};
+export const Danger = Template.bind({});
+Danger.args = {
+  intent: 'danger',
+};
+
+export const Warning = Template.bind({});
+Warning.args = {
+  intent: 'warning',
+};
+
+export const Prompt = Template.bind({});
+Prompt.args = {
+  intent: 'prompt',
+};
+
+export const Progress = Template.bind({});
+Progress.args = {
+  intent: 'progress',
+};
 
 export const Success = Template.bind({});
 Success.args = {
   intent: 'success',
 };
 
-export const Error = Template.bind({});
-Error.args = {
-  intent: 'error',
-};
-
-export const Warning = Template.bind({});
-Warning.args = {
-  intent: 'warn',
-};
-
-export const Action = Template.bind({});
-Action.args = {
-  intent: 'action',
+export const Help = Template.bind({});
+Help.args = {
+  intent: 'help',
 };
