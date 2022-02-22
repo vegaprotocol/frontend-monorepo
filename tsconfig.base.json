@@ -19,7 +19,8 @@
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.js"
       ],
-      "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"]
+      "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
+      "@vegaprotocol/storage": ["libs/storage/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

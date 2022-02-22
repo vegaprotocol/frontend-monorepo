@@ -1,11 +1,7 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
 
 export function Index() {
-  /*
-   * Replace the elements below with your own.
-   *
-   * Note: The corresponding styles are in the ./index.scss file.
-   */
+  const vegaWallet = useVegaWallet();
   return (
     <div className="m-24 ">
       <Callout
@@ -21,6 +17,7 @@ export function Index() {
           </Button>
         </div>
       </Callout>
+      <pre>{JSON.stringify(vegaWallet, null, 2)}</pre>
     </div>
   );
 }

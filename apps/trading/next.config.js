@@ -11,6 +11,10 @@ const nextConfig = {
     svgr: false,
   },
   pageExtensions: ['page.tsx', 'page.jsx'],
+  experimental: {
+    // https://github.com/vercel/next.js/issues/32360
+    esmExternals: false,
+  },
 };
 
 module.exports = withNx(nextConfig);
