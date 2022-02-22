@@ -10,3 +10,4 @@ export { InputError } from './components/input-error';
 export { Select } from './components/select';
 export { TextArea } from './components/text-area';
 export { ThemeSwitcher } from './components/theme-switcher';
+export { Dialog } from './components/dialog';

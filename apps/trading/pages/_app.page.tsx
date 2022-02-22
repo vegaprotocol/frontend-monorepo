@@ -5,6 +5,7 @@ import { useCallback, useMemo } from 'react';
 import { Navbar } from '../components/navbar';
 import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet } from '@vegaprotocol/react-helpers';
 import './styles.css';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
@@ -38,6 +39,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
       <div className="h-full dark:bg-black dark:text-white-60 bg-white text-black-60">
         <div className="flex items-center border-b-[7px] border-vega-yellow">
           <Navbar />
+          <VegaWalletButton />
           <ThemeSwitcher onToggle={setTheme} className="ml-auto mr-8 -my-2" />
         </div>
         <main>
@@ -47,5 +49,24 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
     </ApolloProvider>
   );
 }
+
+const VegaWalletButton = () => {
+  const { setConnectDialog, disconnect, publicKeys } = useVegaWallet();
+  const isConnected = publicKeys !== null;
+
+  const handleClick = () => {
+    if (isConnected) {
+      disconnect();
+    } else {
+      setConnectDialog();
+    }
+  };
+
+  return (
+    <button onClick={handleClick}>
+      {isConnected ? 'Disconnect' : 'Connect Vega wallet'}
+    </button>
+  );
+};
 
 export default VegaTradingApp;
