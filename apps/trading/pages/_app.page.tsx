@@ -50,15 +50,19 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
   );
 }
 
-const VegaWalletButton = () => {
-  const { setConnectDialog, disconnect, publicKeys } = useVegaWallet();
+interface VegaWalletButtonProps {
+  setConnectDialog: (isOpen: boolean) => void;
+}
+
+const VegaWalletButton = ({ setConnectDialog }: VegaWalletButtonProps) => {
+  const { disconnect, publicKeys } = useVegaWallet();
   const isConnected = publicKeys !== null;
 
   const handleClick = () => {
     if (isConnected) {
       disconnect();
     } else {
-      setConnectDialog();
+      setConnectDialog(true);
     }
   };
 
