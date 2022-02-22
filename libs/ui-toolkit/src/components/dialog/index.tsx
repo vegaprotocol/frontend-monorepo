@@ -11,10 +11,25 @@ export function Dialog({ children, open, setOpen }: DialogProps) {
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => setOpen(x)}>
       <DialogPrimitives.Portal>
-        <DialogPrimitives.Overlay className="bg-gray/75 fixed inset-0" />
+        <DialogPrimitives.Overlay
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.3)',
+          }}
+        />
         <DialogPrimitives.Content
-          style={{ width: 300, top: 40, left: 'calc(50% - 150px)' }}
-          className="fixed inset-0"
+          style={{
+            position: 'fixed',
+            width: 300,
+            background: 'white',
+            top: 40,
+            left: 'calc(50% - 150px)',
+            padding: 20,
+          }}
         >
           {children}
         </DialogPrimitives.Content>

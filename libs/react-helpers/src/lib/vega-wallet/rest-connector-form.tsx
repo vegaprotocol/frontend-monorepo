@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
-import { useVegaWallet } from '.';
-import { Connectors } from './connect-dialog';
+import { RestConnector } from '.';
 
 interface FormFields {
   wallet: string;
@@ -8,23 +7,31 @@ interface FormFields {
 }
 
 interface RestConnectorFormProps {
+  connector: RestConnector;
   setDialogOpen: (isOpen: boolean) => void;
+  onAuthenticate: () => void;
 }
 
-export function RestConnectorForm({ setDialogOpen }: RestConnectorFormProps) {
-  const { connect } = useVegaWallet();
-  const { register, handleSubmit } = useForm<FormFields>();
+export function RestConnectorForm({
+  connector,
+  setDialogOpen,
+  onAuthenticate,
+}: RestConnectorFormProps) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormFields>();
 
   async function onSubmit(fields: FormFields) {
     try {
-      const success = await Connectors.rest.authenticate({
+      const success = await connector.authenticate({
         wallet: fields.wallet,
         passphrase: fields.passphrase,
       });
 
       if (success) {
-        connect(Connectors.rest);
-        setDialogOpen(false);
+        onAuthenticate();
       } else {
         throw new Error('Authentication failed');
       }
@@ -35,21 +42,21 @@ export function RestConnectorForm({ setDialogOpen }: RestConnectorFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="vega-wallet-form">
-      <div className="mb-5">
+      <div style={{ marginBottom: 10 }}>
         <input
-          {...register('wallet')}
+          {...register('wallet', { required: 'Required' })}
           type="text"
           placeholder="Wallet"
-          className="text-black"
         />
+        {errors.wallet?.message && <div>{errors.wallet.message}</div>}
       </div>
-      <div className="mb-5">
+      <div style={{ marginBottom: 10 }}>
         <input
-          {...register('passphrase')}
+          {...register('passphrase', { required: 'Required' })}
           type="text"
           placeholder="Passphrase"
-          className="text-black"
         />
+        {errors.passphrase?.message && <div>{errors.passphrase.message}</div>}
       </div>
       <button type="submit">Connect</button>
     </form>
