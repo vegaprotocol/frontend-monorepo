@@ -19,7 +19,12 @@ export function RestConnectorForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields>();
+  } = useForm<FormFields>({
+    defaultValues: {
+      wallet: 'test6',
+      passphrase: '123',
+    },
+  });
 
   async function onSubmit(fields: FormFields) {
     try {
