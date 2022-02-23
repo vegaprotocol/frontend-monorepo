@@ -12,6 +12,8 @@ const Template: ComponentStory<typeof Callout> = (args) => (
   <Callout {...args}>Content</Callout>
 );
 
+export const Default = Template.bind({});
+
 export const Danger = Template.bind({});
 Danger.args = {
   intent: 'danger',

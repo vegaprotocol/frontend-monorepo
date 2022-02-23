@@ -16,6 +16,9 @@
     "baseUrl": ".",
     "paths": {
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
+      "@vegaprotocol/tailwindcss-config": [
+        "libs/tailwindcss-config/src/index.js"
+      ],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"]
     }
   },
