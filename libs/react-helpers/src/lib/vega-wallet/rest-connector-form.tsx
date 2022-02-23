@@ -20,6 +20,7 @@ export function RestConnectorForm({
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>({
+    // TODO: Remove default values
     defaultValues: {
       wallet: 'test6',
       passphrase: '123',
