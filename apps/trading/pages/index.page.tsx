@@ -1,6 +1,11 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
+import { ReactHelpers, useVegaWallet } from '@vegaprotocol/react-helpers';
+import { useEffect } from 'react';
+import { rest } from '../lib/connectors';
+import { LocalStorage } from '@vegaprotocol/storage';
 
 export function Index() {
+  useEagerConnect();
   const { publicKey, publicKeys, selectPublicKey } = useVegaWallet();
   return (
     <div className="m-24 ">
@@ -39,3 +44,14 @@ export function Index() {
 }
 
 export default Index;
+
+function useEagerConnect() {
+  const { connect } = useVegaWallet();
+
+  useEffect(() => {
+    // Might be safer to store connector name and eager connect using that
+    if (LocalStorage.getItem('vega_wallet_token')) {
+      connect(rest);
+    }
+  }, [connect]);
+}
