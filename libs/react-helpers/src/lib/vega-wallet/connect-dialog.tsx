@@ -17,9 +17,13 @@ export function VegaConnectDialog({
   setDialogOpen,
 }: VegaConnectDialogProps) {
   const { connect } = useVegaWallet();
+
+  // Selected connector, we need to show the auth form if the rest connector (which is
+  // currently the only way to connect) is selected.
   const [selectedConnector, setSelectedConnector] =
     useState<VegaConnector | null>(null);
 
+  // Connects with the provided connector instance and closes the modal
   const connectAndClose = useCallback(
     (connector: VegaConnector) => {
       connect(connector);
@@ -28,6 +32,8 @@ export function VegaConnectDialog({
     [connect, setDialogOpen]
   );
 
+  // Effect to immediately connect if the selected connector is NOT a
+  // rest connector
   useEffect(() => {
     if (
       selectedConnector !== null &&

@@ -1,14 +1,16 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/react-helpers';
-import { useEffect } from 'react';
 import { rest } from '../lib/connectors';
+import { useVegaWallet, VegaKeyExtended } from '@vegaprotocol/react-helpers';
+import { useEffect, useMemo, useState } from 'react';
+import { Connectors, rest } from '../lib/connectors';
 import { LocalStorage } from '@vegaprotocol/storage';
 
 export function Index() {
   // Get keys from vega wallet immediately
   useEagerConnect();
 
-  const { publicKey, publicKeys, selectPublicKey } = useVegaWallet();
+  const { publicKeys } = useVegaWallet();
+  const { publicKey, onSelect } = useCurrentVegaKey();
 
   return (
     <div className="m-24 ">
@@ -31,7 +33,7 @@ export function Index() {
         <select
           name="change-key"
           value={publicKey?.pub}
-          onChange={(e) => selectPublicKey(e.target.value)}
+          onChange={(e) => onSelect(e.target.value)}
         >
           {publicKeys.map((pk) => (
             <option key={pk.pub} value={pk.pub}>
@@ -53,9 +55,53 @@ function useEagerConnect() {
   const { connect } = useVegaWallet();
 
   useEffect(() => {
-    // Might be safer to store connector name and eager connect using that
-    if (LocalStorage.getItem('vega_wallet_token')) {
-      connect(rest);
+    const cfg = LocalStorage.getItem('vega_wallet');
+    const cfgObj = JSON.parse(cfg);
+
+    // No stored config, user has never connected or manually cleared storage
+    if (!cfgObj || !cfgObj.connector) {
+      return;
     }
+
+    const connector = Connectors[cfgObj.connector];
+
+    // Developer hasn't provided this connector
+    if (!connector) {
+      throw new Error(`Connector ${cfgObj?.connector} not configured`);
+    }
+
+    connect(Connectors[cfgObj.connector]);
   }, [connect]);
+}
+
+function useCurrentVegaKey(): {
+  publicKey: VegaKeyExtended | null;
+  onSelect: (pk: string) => void;
+} {
+  const { publicKeys } = useVegaWallet();
+  const [pk, setPk] = useState<string | null>(() =>
+    LocalStorage.getItem('vega_selected_publickey')
+  );
+
+  const publicKey = useMemo(() => {
+    if (!publicKeys?.length) return null;
+
+    const found = publicKeys.find((x) => x.pub === pk);
+
+    if (found) {
+      return found;
+    }
+
+    return null;
+  }, [pk, publicKeys]);
+
+  // on public key change set to localStorage
+  useEffect(() => {
+    LocalStorage.setItem('vega_selected_publickey', pk);
+  }, [pk]);
+
+  return {
+    publicKey,
+    onSelect: setPk,
+  };
 }

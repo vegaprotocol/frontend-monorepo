@@ -7,9 +7,6 @@ export interface VegaKeyExtended extends VegaKey {
 }
 
 export interface VegaWalletContextShape {
-  /** The current select public key */
-  publicKey: VegaKeyExtended | null;
-
   /** Public keys stored in users wallet */
   publicKeys: VegaKeyExtended[] | null;
 
@@ -18,9 +15,6 @@ export interface VegaWalletContextShape {
 
   /** Disconnects from the connector and clears public key state */
   disconnect: () => Promise<void>;
-
-  /** Sets the current selected public key */
-  selectPublicKey: (publicKey: string) => void;
 
   /** Reference to the connector */
   connector: VegaConnector | null;
