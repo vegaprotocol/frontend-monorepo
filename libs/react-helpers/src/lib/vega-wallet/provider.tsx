@@ -26,7 +26,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       setPublicKeys(publicKeysWithName);
       setPublicKey(publicKeysWithName[0]);
     } catch (err) {
-      console.log('connect failed');
+      console.error(err);
     }
   }, []);
 
@@ -37,7 +37,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       setPublicKey(null);
       connector.current = null;
     } catch (err) {
-      console.log('disconnect failed', err);
+      console.error(err);
     }
   }, []);
 
