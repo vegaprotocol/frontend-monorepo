@@ -1,12 +1,15 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
-import { ReactHelpers, useVegaWallet } from '@vegaprotocol/react-helpers';
+import { useVegaWallet } from '@vegaprotocol/react-helpers';
 import { useEffect } from 'react';
 import { rest } from '../lib/connectors';
 import { LocalStorage } from '@vegaprotocol/storage';
 
 export function Index() {
+  // Get keys from vega wallet immediately
   useEagerConnect();
+
   const { publicKey, publicKeys, selectPublicKey } = useVegaWallet();
+
   return (
     <div className="m-24 ">
       <Callout
@@ -37,6 +40,7 @@ export function Index() {
           ))}
         </select>
       )}
+      <hr />
       <h2>Public keys</h2>
       <pre>{JSON.stringify(publicKeys, null, 2)}</pre>
     </div>
