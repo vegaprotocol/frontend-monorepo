@@ -20,27 +20,6 @@ export class RestConnector implements VegaConnector {
       authMethods: {
         bearer: `Bearer ${LocalStorage.getItem('vega_wallet_token')}`,
       },
-      promiseMiddleware: [
-        {
-          pre: async (requestContext) => {
-            const headers = requestContext.getHeaders();
-            if (
-              'Authorization' in headers &&
-              headers['Authorization'] === 'Bearer null'
-            ) {
-              console.log('first login: getting and setting auth header');
-              requestContext.setHeaderParam(
-                'Authorization',
-                `Bearer ${LocalStorage.getItem('vega_wallet_token')}`
-              );
-            }
-            return requestContext;
-          },
-          post: async (requestContext) => {
-            return requestContext;
-          },
-        },
-      ],
     });
     this.service = new DefaultApi(this.apiConfig);
   }
@@ -57,12 +36,28 @@ export class RestConnector implements VegaConnector {
   }
 
   async connect() {
-    const res = await this.service.keysGet();
+    const res = await this.service.keysGet(
+      // Needs token passed in in case its the users first session and there was no
+      // token stored
+      createConfiguration({
+        authMethods: {
+          bearer: `Bearer ${LocalStorage.getItem('vega_wallet_token')}`,
+        },
+      })
+    );
     return res.keys;
   }
 
   async disconnect() {
-    await this.service.authTokenDelete();
+    await this.service.authTokenDelete(
+      // Needs token passed in in case its the users first session and there was no
+      // token stored
+      createConfiguration({
+        authMethods: {
+          bearer: `Bearer ${LocalStorage.getItem('vega_wallet_token')}`,
+        },
+      })
+    );
     LocalStorage.removeItem('vega_wallet_token');
   }
 }

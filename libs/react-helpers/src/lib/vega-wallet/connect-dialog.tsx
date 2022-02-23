@@ -42,7 +42,6 @@ export function VegaConnectDialog({
       {selectedConnector instanceof RestConnector ? (
         <RestConnectorForm
           connector={selectedConnector}
-          setDialogOpen={setDialogOpen}
           onAuthenticate={() => {
             connectAndClose(selectedConnector);
           }}
@@ -57,19 +56,7 @@ export function VegaConnectDialog({
           }}
         >
           {Object.entries(connectors).map(([key, connector]) => (
-            <button
-              key={key}
-              onClick={() => {
-                setSelectedConnector(connector);
-                // if (key === 'rest') {
-                //   // show form so that we can get an authentication token before 'connecting'
-                //   setIsRestConnector(true);
-                // } else {
-                //   connect(connector);
-                //   setDialogOpen(false);
-                // }
-              }}
-            >
+            <button key={key} onClick={() => setSelectedConnector(connector)}>
               {key} provider
             </button>
           ))}
