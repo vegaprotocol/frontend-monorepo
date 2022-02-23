@@ -1,7 +1,7 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
 
 export function Index() {
-  const vegaWallet = useVegaWallet();
+  const { publicKey, publicKeys, selectPublicKey } = useVegaWallet();
   return (
     <div className="m-24 ">
       <Callout
@@ -17,7 +17,23 @@ export function Index() {
           </Button>
         </div>
       </Callout>
-      <pre>{JSON.stringify(vegaWallet, null, 2)}</pre>
+      <h1>Vega wallet</h1>
+      {publicKey && <p>Current: {publicKey.pub}</p>}
+      {publicKeys?.length && (
+        <select
+          name="change-key"
+          value={publicKey?.pub}
+          onChange={(e) => selectPublicKey(e.target.value)}
+        >
+          {publicKeys.map((pk) => (
+            <option key={pk.pub} value={pk.pub}>
+              {pk.name} ({pk.pub})
+            </option>
+          ))}
+        </select>
+      )}
+      <h2>Public keys</h2>
+      <pre>{JSON.stringify(publicKeys, null, 2)}</pre>
     </div>
   );
 }

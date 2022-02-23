@@ -8,13 +8,11 @@ interface FormFields {
 
 interface RestConnectorFormProps {
   connector: RestConnector;
-  setDialogOpen: (isOpen: boolean) => void;
   onAuthenticate: () => void;
 }
 
 export function RestConnectorForm({
   connector,
-  setDialogOpen,
   onAuthenticate,
 }: RestConnectorFormProps) {
   const {
@@ -41,7 +39,7 @@ export function RestConnectorForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="vega-wallet-form">
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div style={{ marginBottom: 10 }}>
         <input
           {...register('wallet', { required: 'Required' })}
