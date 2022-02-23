@@ -7,7 +7,7 @@ import {
 import { LocalStorage } from '@vegaprotocol/storage';
 
 export interface VegaConnector {
-  connect(): Promise<VegaKey[]>;
+  connect(): Promise<VegaKey[] | null>;
   disconnect(): Promise<void>;
 }
 
@@ -46,13 +46,26 @@ export class RestConnector implements VegaConnector {
   }
 
   async connect() {
-    const res = await this.service.keysGet();
-    return res.keys;
+    try {
+      const res = await this.service.keysGet();
+      return res.keys;
+    } catch (err) {
+      console.error(err);
+      // keysGet failed, its likely that the session has expired so remove the token from storage
+      LocalStorage.removeItem('vega_wallet_token');
+      return null;
+    }
   }
 
   async disconnect() {
-    await this.service.authTokenDelete();
-    LocalStorage.removeItem('vega_wallet_token');
+    try {
+      await this.service.authTokenDelete();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      // Always clear the tokens
+      LocalStorage.removeItem('vega_wallet_token');
+    }
   }
 }
 
