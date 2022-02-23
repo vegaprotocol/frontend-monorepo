@@ -1,7 +1,8 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+//import './styles.css';
+import 'tailwindcss/tailwind.css';
 import { Navbar } from '../components/navbar';
-import './styles.css';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
   return (
