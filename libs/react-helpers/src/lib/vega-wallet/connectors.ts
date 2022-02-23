@@ -27,6 +27,16 @@ export class RestConnector implements VegaConnector {
   async authenticate(params: { wallet: string; passphrase: string }) {
     try {
       const tokenRes = await this.service.authTokenPost(params);
+
+      // Renew DefaultApi now we have the token
+      this.service = new DefaultApi(
+        createConfiguration({
+          authMethods: {
+            bearer: `Bearer ${tokenRes.token}`,
+          },
+        })
+      );
+
       LocalStorage.setItem('vega_wallet_token', tokenRes.token);
       return true;
     } catch (err) {
@@ -36,28 +46,12 @@ export class RestConnector implements VegaConnector {
   }
 
   async connect() {
-    const res = await this.service.keysGet(
-      // Needs token passed in in case its the users first session and there was no
-      // token stored
-      createConfiguration({
-        authMethods: {
-          bearer: `Bearer ${LocalStorage.getItem('vega_wallet_token')}`,
-        },
-      })
-    );
+    const res = await this.service.keysGet();
     return res.keys;
   }
 
   async disconnect() {
-    await this.service.authTokenDelete(
-      // Needs token passed in in case its the users first session and there was no
-      // token stored
-      createConfiguration({
-        authMethods: {
-          bearer: `Bearer ${LocalStorage.getItem('vega_wallet_token')}`,
-        },
-      })
-    );
+    await this.service.authTokenDelete();
     LocalStorage.removeItem('vega_wallet_token');
   }
 }
