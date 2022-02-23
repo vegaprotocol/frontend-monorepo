@@ -1,0 +1,33 @@
+{
+  "root": "libs/tailwindcss-config",
+  "sourceRoot": "libs/tailwindcss-config/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/tailwindcss-config",
+        "main": "libs/tailwindcss-config/src/index.js",
+        "tsConfig": "libs/tailwindcss-config/tsconfig.lib.json",
+        "assets": ["libs/tailwindcss-config/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/tailwindcss-config/**/*.js"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/tailwindcss-config"],
+      "options": {
+        "jestConfig": "libs/tailwindcss-config/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
