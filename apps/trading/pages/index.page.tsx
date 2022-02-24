@@ -39,7 +39,6 @@ export function Index() {
           ))}
         </select>
       ) : null}
-      <hr />
       <h2>Public keys</h2>
       <pre>{JSON.stringify(keypairs, null, 2)}</pre>
     </div>

@@ -4,9 +4,12 @@ const Portfolio = () => {
   const { keypair } = useVegaWallet();
   return (
     <div>
-      <h1>
-        Portfolio for: {keypair.name} {keypair.pub}
-      </h1>
+      <h1>Portfolio</h1>
+      {keypair && (
+        <p>
+          Keypair: {keypair.name} {keypair.pub}
+        </p>
+      )}
     </div>
   );
 };

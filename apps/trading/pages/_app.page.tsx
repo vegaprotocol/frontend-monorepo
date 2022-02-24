@@ -13,6 +13,7 @@ import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import './styles.css';
 import { ApolloProvider } from '@apollo/client';
+import './styles.css';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
   const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
