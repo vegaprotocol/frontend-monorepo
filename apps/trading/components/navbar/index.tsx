@@ -1,9 +1,10 @@
-import styles from './navbar.module.scss';
 import { useRouter } from 'next/router';
+import classNames from 'classnames';
 
 export const Navbar = () => {
+  const navClasses = classNames('border-black border-b');
   return (
-    <nav className={styles.navbar}>
+    <nav className={navClasses}>
       {[
         { name: 'Portfolio', path: '/portfolio' },
         { name: 'Markets', path: '/markets' },
@@ -21,16 +22,18 @@ interface NavLinkProps {
 
 const NavLink = ({ name, path }: NavLinkProps) => {
   const router = useRouter();
-  const color = router.asPath === path ? 'blue' : 'inherit';
+  const className = classNames('inline-block', 'p-8', {
+    'text-vega-pink': router.asPath === path,
+  });
 
   return (
     <a
+      className={className}
       href={path}
       onClick={(e) => {
         e.preventDefault();
         router.push(path);
       }}
-      style={{ color }}
     >
       {name}
     </a>

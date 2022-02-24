@@ -10,7 +10,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
         <title>Welcome to trading!</title>
       </Head>
       <Navbar />
-      <main className="app">
+      <main className="px-8 py-12">
         <Component {...pageProps} />
       </main>
     </>
