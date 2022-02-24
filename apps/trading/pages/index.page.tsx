@@ -1,9 +1,7 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
-import { rest } from '../lib/connectors';
-import { useVegaWallet, VegaKeyExtended } from '@vegaprotocol/react-helpers';
+import { useVegaWallet } from '@vegaprotocol/react-helpers';
 import { useEffect, useMemo, useState } from 'react';
-import { Connectors, rest } from '../lib/connectors';
-import { LocalStorage } from '@vegaprotocol/storage';
+import { Connectors } from '../lib/connectors';
 
 export function Index() {
   const { keypair, keypairs, selectPublicKey } = useVegaWallet();
@@ -28,7 +26,7 @@ export function Index() {
       {keypairs?.length && (
         <select
           name="change-key"
-          defaultValue="none"
+          value={keypair ? keypair.pub : 'none'}
           onChange={(e) => selectPublicKey(e.target.value)}
         >
           <option value="none" disabled={true}>
@@ -40,7 +38,7 @@ export function Index() {
             </option>
           ))}
         </select>
-      )}
+      ) : null}
       <hr />
       <h2>Public keys</h2>
       <pre>{JSON.stringify(keypairs, null, 2)}</pre>

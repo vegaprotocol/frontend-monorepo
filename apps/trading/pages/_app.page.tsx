@@ -122,6 +122,8 @@ function useEagerConnect() {
       return;
     }
 
+    // Use the connector string in local storage to find the right connector to auto
+    // connect to
     const connector = Connectors[cfgObj.connector];
 
     // Developer hasn't provided this connector
