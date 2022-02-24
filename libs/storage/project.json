@@ -1,0 +1,43 @@
+{
+  "root": "libs/storage",
+  "sourceRoot": "libs/storage/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/storage",
+        "tsConfig": "libs/storage/tsconfig.lib.json",
+        "project": "libs/storage/package.json",
+        "entryFile": "libs/storage/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/storage/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/storage/**/*.{ts,js}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/storage"],
+      "options": {
+        "jestConfig": "libs/storage/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
