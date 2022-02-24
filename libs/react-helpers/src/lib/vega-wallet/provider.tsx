@@ -1,4 +1,12 @@
-import { ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { LocalStorage } from '@vegaprotocol/storage';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { VegaKeyExtended, VegaWalletContextShape } from '.';
 import { VegaConnector } from './connectors';
 import { VegaWalletContext } from './context';
@@ -8,7 +16,16 @@ interface VegaWalletProviderProps {
 }
 
 export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
-  const [publicKeys, setPublicKeys] = useState<VegaKeyExtended[] | null>(null);
+  // Current selected publicKey, default with value from local storage
+  const [publicKey, setPublicKey] = useState<string | null>(() => {
+    const pk = LocalStorage.getItem('vega_selected_publickey');
+    return pk ? pk : null;
+  });
+
+  // Keypair objects retrieved from the connector
+  const [keypairs, setKeypairs] = useState<VegaKeyExtended[] | null>(null);
+
+  // Reference to the current connector instance
   const connector = useRef<VegaConnector | null>(null);
 
   const connect = useCallback(async (c: VegaConnector) => {
@@ -28,7 +45,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
           name: nameMeta?.value ? nameMeta.value : 'None',
         };
       });
-      setPublicKeys(publicKeysWithName);
+      setKeypairs(publicKeysWithName);
     } catch (err) {
       console.error(err);
     }
@@ -37,21 +54,41 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   const disconnect = useCallback(async () => {
     try {
       await connector.current?.disconnect();
-      setPublicKeys(null);
+      setKeypairs(null);
       connector.current = null;
     } catch (err) {
       console.error(err);
     }
   }, []);
 
+  // Current selected keypair derived from publicKey state
+  const keypair = useMemo(() => {
+    const found = keypairs?.find((x) => x.pub === publicKey);
+
+    if (found) {
+      return found;
+    }
+
+    return null;
+  }, [publicKey, keypairs]);
+
+  // Whenever selected public key changes store it
+  useEffect(() => {
+    if (publicKey) {
+      LocalStorage.setItem('vega_selected_publickey', publicKey);
+    }
+  }, [publicKey]);
+
   const contextValue = useMemo<VegaWalletContextShape>(() => {
     return {
-      publicKeys,
+      keypair,
+      keypairs,
+      selectPublicKey: setPublicKey,
       connect,
       disconnect,
       connector: connector.current,
     };
-  }, [publicKeys, connect, disconnect, connector]);
+  }, [keypair, keypairs, setPublicKey, connect, disconnect, connector]);
 
   return (
     <VegaWalletContext.Provider value={contextValue}>
