@@ -1,0 +1,123 @@
+import {
+  Meta,
+  ColorPalette,
+  ColorItem,
+  Typeset,
+  Canvas,
+} from '@storybook/addon-docs/blocks';
+
+import { theme } from '@vegaprotocol/tailwindcss-config';
+
+<Meta title="Primitives/Typography" />
+
+# Typography
+
+## Headers
+
+### H1
+
+<span>
+  {theme.fontSize.h1[0]} / {theme.fontSize.h1[1].lineHeight}, letterSpacing:{' '}
+  {theme.fontSize.h1[1].letterSpacing}{' '}
+</span>
+<Canvas>
+  <div class="text-h1">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+### H2
+
+<span>
+  {theme.fontSize.h2[0]} / {theme.fontSize.h2[1].lineHeight}, letterSpacing:{' '}
+  {theme.fontSize.h2[1].letterSpacing}{' '}
+</span>
+<Canvas>
+  <div class="text-h2">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+### H3
+
+<span>
+  {theme.fontSize.h3[0]} / {theme.fontSize.h3[1].lineHeight}, letterSpacing:{' '}
+  {theme.fontSize.h3[1].letterSpacing}{' '}
+</span>
+<Canvas>
+  <div class="text-h3">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+### H4
+
+<span>
+  {theme.fontSize.h4[0]} / {theme.fontSize.h4[1].lineHeight}, letterSpacing:{' '}
+  {theme.fontSize.h4[1].letterSpacing}{' '}
+</span>
+<Canvas>
+  <div class="text-h4">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+### H5
+
+<span>
+  {theme.fontSize.h5[0]} / {theme.fontSize.h5[1].lineHeight}, letterSpacing:{' '}
+  {theme.fontSize.h5[1].letterSpacing}{' '}
+</span>
+<Canvas>
+  <div class="text-h5">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+## Body
+
+### Normal
+
+<span>
+  {theme.fontSize.body[0]} / {theme.fontSize.body[1]}
+</span>
+<Canvas>
+  <div class="text-body">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+### Large
+
+<span>
+  {theme.fontSize['body-large'][0]} / {theme.fontSize['body-large'][1]}
+</span>
+<Canvas>
+  <div class="text-body-large">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+## UI
+
+### Normal
+
+<span>
+  {theme.fontSize.body[0]} / {theme.fontSize.body[1]}
+</span>
+<Canvas>
+  <div class="text-ui">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
+
+### Small
+
+<span>
+  {theme.fontSize['ui-small'][0]} / {theme.fontSize['ui-small'][1]}
+</span>
+<Canvas>
+  <div class="text-ui-small">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  </div>
+</Canvas>
