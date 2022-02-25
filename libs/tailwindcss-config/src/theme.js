@@ -38,7 +38,6 @@ module.exports = {
     'light-gray-50': '#F5F8FA', //off-white - https://blueprintjs.com/docs/#core/colors
     'gray-50': '#BFCCD6', // muted - https://blueprintjs.com/docs/#core/colors
     coral: '#FF6057',
-    // below colors are not defined as atoms
     vega: {
       yellow: '#EDFF22',
       pink: '#FF2D5E',
@@ -51,10 +50,12 @@ module.exports = {
       progress: '#FFF',
       success: '#26FF8A',
       help: '#494949',
-      background: {
-        danger: '#9E0025', // for white text
-      },
-    } /*,
+    },
+    'intent-background': {
+      danger: '#9E0025', // for white text
+    },
+
+    /*,
     data: {
       red: {
         white: {
@@ -73,7 +74,7 @@ module.exports = {
           900: '#FF6057',
         },
       },
-    },*/,
+    },*/
   },
   spacing: {
     0: '0px',
@@ -86,7 +87,7 @@ module.exports = {
   },
   backgroundColor: ({ theme }) => ({
     transparent: 'transparent',
-    dark: theme('colors.dark'),
+    dark: theme('colors.neutral.753'),
     black: '#000',
     white: theme('colors.white'),
     danger: theme('colors.intent.background.danger'),
