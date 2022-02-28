@@ -51,7 +51,7 @@ export function RestConnectorForm({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-12">
         <input
-          className="w-full px-8 py-2 border-black border"
+          className="w-full px-12 py-4 border-black border"
           {...register('wallet', { required: 'Required' })}
           type="text"
           placeholder="Wallet"
@@ -64,7 +64,7 @@ export function RestConnectorForm({
       </div>
       <div className="mb-12">
         <input
-          className="w-full px-8 py-2 border-black border"
+          className="w-full px-12 py-4 border-black border"
           {...register('passphrase', { required: 'Required' })}
           type="password"
           placeholder="Passphrase"
@@ -76,7 +76,10 @@ export function RestConnectorForm({
         )}
       </div>
       {error && <div className="mb-12 text-intent-danger">{error.message}</div>}
-      <button type="submit" className="rounded-sm bg-pink text-white py-4 px-8">
+      <button
+        type="submit"
+        className="rounded-sm bg-pink text-white py-4 px-12"
+      >
         Connect
       </button>
     </form>
