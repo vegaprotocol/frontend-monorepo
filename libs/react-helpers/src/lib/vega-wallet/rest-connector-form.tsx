@@ -22,7 +22,7 @@ export function RestConnectorForm({
   } = useForm<FormFields>({
     // TODO: Remove default values
     defaultValues: {
-      wallet: 'test6',
+      wallet: 'test',
       passphrase: '123',
     },
   });
@@ -48,6 +48,7 @@ export function RestConnectorForm({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div style={{ marginBottom: 10 }}>
         <input
+          className="w-full px-8 py-2 border-black border"
           {...register('wallet', { required: 'Required' })}
           type="text"
           placeholder="Wallet"
@@ -56,6 +57,7 @@ export function RestConnectorForm({
       </div>
       <div style={{ marginBottom: 10 }}>
         <input
+          className="w-full px-8 py-2 border-black border"
           {...register('passphrase', { required: 'Required' })}
           type="text"
           placeholder="Passphrase"

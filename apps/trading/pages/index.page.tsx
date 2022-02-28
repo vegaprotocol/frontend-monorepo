@@ -26,6 +26,7 @@ export function Index() {
       {keypairs?.length && (
         <select
           name="change-key"
+          className="w-full px-8 py-2 border-black border"
           value={keypair ? keypair.pub : 'none'}
           onChange={(e) => selectPublicKey(e.target.value)}
         >
@@ -40,7 +41,9 @@ export function Index() {
         </select>
       ) : null}
       <h2>Public keys</h2>
-      <pre>{JSON.stringify(keypairs, null, 2)}</pre>
+      <pre className="p-12 text-sm bg-neutral-100">
+        {JSON.stringify(keypairs, null, 2)}
+      </pre>
     </div>
   );
 }

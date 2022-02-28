@@ -9,6 +9,7 @@ import { LocalStorage } from '@vegaprotocol/storage';
 export interface VegaConnector {
   /** Connect to wallet and return keys */
   connect(): Promise<VegaKey[] | null>;
+
   /** Disconnect from wallet */
   disconnect(): Promise<void>;
 }

@@ -12,7 +12,6 @@
         "tsConfig": "libs/storage/tsconfig.lib.json",
         "project": "libs/storage/package.json",
         "entryFile": "libs/storage/src/index.ts",
-        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
