@@ -53,14 +53,7 @@ export function VegaConnectDialog({
           }}
         />
       ) : (
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: 10,
-          }}
-        >
+        <div className="flex flex-col justify-center gap-4 items-start">
           {Object.entries(connectors).map(([key, connector]) => (
             <button key={key} onClick={() => setSelectedConnector(connector)}>
               {key} provider
