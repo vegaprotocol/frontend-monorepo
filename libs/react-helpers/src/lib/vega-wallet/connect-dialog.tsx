@@ -44,7 +44,11 @@ export function VegaConnectDialog({
   }, [selectedConnector, connectAndClose]);
 
   return (
-    <Dialog open={dialogOpen} setOpen={setDialogOpen}>
+    <Dialog
+      open={dialogOpen}
+      setOpen={setDialogOpen}
+      title="Connect to your Vega Wallet"
+    >
       {selectedConnector instanceof RestConnector ? (
         <RestConnectorForm
           connector={selectedConnector}
@@ -53,13 +57,20 @@ export function VegaConnectDialog({
           }}
         />
       ) : (
-        <div className="flex flex-col justify-center gap-4 items-start">
+        <ul className="flex flex-col justify-center gap-4 items-start">
           {Object.entries(connectors).map(([key, connector]) => (
-            <button key={key} onClick={() => setSelectedConnector(connector)}>
-              {key} provider
-            </button>
+            <li key={key} className="mb-12 last:mb-0">
+              <button
+                key={key}
+                onClick={() => setSelectedConnector(connector)}
+                className="capitalize hover:text-vega-pink"
+              >
+                {key} provider
+              </button>
+              <p className="text-neutral-500">{connector.description}</p>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </Dialog>
   );
