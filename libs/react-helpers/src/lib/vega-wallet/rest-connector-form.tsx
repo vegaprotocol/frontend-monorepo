@@ -22,7 +22,7 @@ export function RestConnectorForm({
   } = useForm<FormFields>({
     // TODO: Remove default values
     defaultValues: {
-      wallet: 'test',
+      wallet: 'matt',
       passphrase: '123',
     },
   });
@@ -64,7 +64,9 @@ export function RestConnectorForm({
         />
         {errors.passphrase?.message && <div>{errors.passphrase.message}</div>}
       </div>
-      <button type="submit">Connect</button>
+      <button type="submit" className="rounded-sm bg-pink text-white py-4 px-8">
+        Connect
+      </button>
     </form>
   );
 }

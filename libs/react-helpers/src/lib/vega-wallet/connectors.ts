@@ -7,6 +7,9 @@ import {
 import { LocalStorage } from '@vegaprotocol/storage';
 
 export interface VegaConnector {
+  /** Description of how to use this connector */
+  description: string;
+
   /** Connect to wallet and return keys */
   connect(): Promise<VegaKey[] | null>;
 
@@ -28,6 +31,7 @@ export class RestConnector implements VegaConnector {
   static storageKey = 'vega_wallet';
   apiConfig: Configuration;
   service: DefaultApi;
+  description = 'Connects using REST to the Vega wallet desktop app';
 
   constructor() {
     const cfg = this.getConfig();
@@ -118,6 +122,8 @@ export class RestConnector implements VegaConnector {
  * Dummy injected connector that we may use when browser wallet is implemented
  */
 export class InjectedConnector implements VegaConnector {
+  description = 'Connects using the Vega wallet browser extension';
+
   async connect() {
     return [
       {
