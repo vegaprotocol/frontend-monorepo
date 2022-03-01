@@ -1,8 +1,9 @@
+import classNames from 'classnames';
 import { inputClassNames, inputStyle } from '../input/input';
 
 /* eslint-disable-next-line */
 export interface TextAreaProps {
-  onChange?: React.FormEventHandler<HTMLTextAreaElement>;
+  onChange?: React.FormEventHandler<HTMLSelectElement>;
   hasError?: boolean;
   disabled?: boolean;
   className?: string;
@@ -10,7 +11,7 @@ export interface TextAreaProps {
   children?: React.ReactNode;
 }
 
-export function TextArea({
+export function Select({
   hasError,
   onChange,
   disabled,
@@ -18,15 +19,18 @@ export function TextArea({
   children,
 }: TextAreaProps) {
   return (
-    <textarea
+    <select
       onChange={onChange}
-      className={inputClassNames({ hasError, disabled, className })}
+      className={classNames(
+        inputClassNames({ hasError, disabled, className }),
+        'h-28'
+      )}
       disabled={disabled}
       style={inputStyle({ disabled })}
     >
       {children}
-    </textarea>
+    </select>
   );
 }
 
-export default TextArea;
+export default Select;
