@@ -27,6 +27,7 @@ const MarketPage = () => {
     MARKET_QUERY,
     {
       variables: { marketId: query.marketId as string },
+      skip: !query.marketId,
     }
   );
 
