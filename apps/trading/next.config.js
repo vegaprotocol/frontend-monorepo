@@ -10,6 +10,7 @@ const nextConfig = {
     // See: https://github.com/gregberge/svgr
     svgr: false,
   },
+  pageExtensions: ['page.tsx', 'page.jsx'],
 };
 
 module.exports = withNx(nextConfig);

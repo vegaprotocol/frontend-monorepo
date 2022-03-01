@@ -13,10 +13,12 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Welcome to trading!</title>
       </Head>
-      <Navbar />
-      <main className="px-8 py-12">
-        <Component {...pageProps} />
-      </main>
+      <div className="h-full grid grid-rows-[min-content,_1fr]">
+        <Navbar />
+        <main>
+          <Component {...pageProps} />
+        </main>
+      </div>
     </ApolloProvider>
   );
 }
