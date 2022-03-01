@@ -8,9 +8,8 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
-    black: '#000',
     white: '#FFF',
-
+    black: '#000',
     neutral: {
       // 250 - 23 = 227; (900-50) / 227 = 850 / 227 = 3.74449339207
       50: '#fafafa', // FA = 250
@@ -37,6 +36,7 @@ module.exports = {
 
     'light-gray-50': '#F5F8FA', //off-white - https://blueprintjs.com/docs/#core/colors
     'gray-50': '#BFCCD6', // muted - https://blueprintjs.com/docs/#core/colors
+    disabled: '#8598A6', // 'fill-disabled': 'rgba(133, 152, 166, 0.25)'
     coral: '#FF6057',
     vega: {
       yellow: '#EDFF22',
@@ -85,6 +85,7 @@ module.exports = {
     28: '1.75rem',
     44: '2.75rem',
   },
+  /*
   backgroundColor: ({ theme }) => ({
     transparent: 'transparent',
     dark: theme('colors.neutral.753'),
@@ -93,6 +94,7 @@ module.exports = {
     danger: theme('colors.intent.background.danger'),
     'neutral-200': theme('colors.neutral.200'),
   }),
+  */
   borderWidth: {
     DEFAULT: '1px',
     1: '1px',
@@ -132,12 +134,12 @@ module.exports = {
     ],
   },
   fontSize: {
-    h1: ['72px', { lineHeight: '92px', letterSpacing: '-1%' }],
-    h2: ['48px', { lineHeight: '64px', letterSpacing: '-1%' }],
-    h3: ['32px', { lineHeight: '40px', letterSpacing: '-1%' }],
+    h1: ['72px', { lineHeight: '92px', letterSpacing: '-0.01em' }],
+    h2: ['48px', { lineHeight: '64px', letterSpacing: '-0.01em' }],
+    h3: ['32px', { lineHeight: '40px', letterSpacing: '-0.01em' }],
 
-    h4: ['24px', { lineHeight: '36px', letterSpacing: '-1%' }],
-    h5: ['18px', { lineHeight: '28px', letterSpacing: '-1%' }],
+    h4: ['24px', { lineHeight: '36px', letterSpacing: '-0.01em' }],
+    h5: ['18px', { lineHeight: '28px', letterSpacing: '-0.01em' }],
 
     'body-large': ['16px', '24px'],
     body: ['14px', '20px'],
