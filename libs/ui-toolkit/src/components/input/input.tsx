@@ -1,14 +1,11 @@
+import { InputHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
 
-/* eslint-disable-next-line */
-export interface InputProps {
-  onChange?: React.FormEventHandler<HTMLInputElement>;
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hasError?: boolean;
   disabled?: boolean;
   className?: string;
-  value?: string | number;
 }
-
 export const inputClassNames = ({
   hasError,
   disabled,
@@ -42,34 +39,28 @@ export const inputClassNames = ({
     className
   );
 
-export const inputStyle = ({ disabled }: { disabled?: boolean }) => {
-  const style: React.CSSProperties = {};
-  if (disabled) {
-    style.backgroundImage =
-      'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAAXNSR0IArs4c6QAAACNJREFUGFdjtLS0/M8ABcePH2eEsRlJl4BpBdHIuuFmEi0BABqjEQVjx/LTAAAAAElFTkSuQmCC)';
-  }
-  return style;
-};
-
-export function Input({
-  hasError,
-  onChange,
+export const inputStyle = ({
+  style,
   disabled,
-  className,
-  value,
-}: InputProps) {
-  return (
-    <input
-      onChange={onChange}
-      className={classNames(
-        inputClassNames({ hasError, disabled, className }),
-        'h-28'
-      )}
-      value={value}
-      disabled={disabled}
-      style={inputStyle({ disabled })}
-    />
-  );
-}
+}: {
+  style?: React.CSSProperties;
+  disabled?: boolean;
+}) =>
+  disabled
+    ? {
+        ...style,
+        backgroundImage:
+          'url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAAAXNSR0IArs4c6QAAACNJREFUGFdjtLS0/M8ABcePH2eEsRlJl4BpBdHIuuFmEi0BABqjEQVjx/LTAAAAAElFTkSuQmCC)',
+      }
+    : style;
+
+export const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => (
+  <input
+    {...props}
+    ref={ref}
+    className={classNames(inputClassNames(props), 'h-28')}
+    style={inputStyle(props)}
+  />
+));
 
 export default Input;
