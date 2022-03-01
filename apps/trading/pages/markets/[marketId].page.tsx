@@ -40,13 +40,13 @@ const MarketPage = () => {
       {error ? (
         <div>Something went wrong: {error.message}</div>
       ) : (
-        <div className="h-full max-h-full grid gap-[1px] bg-black grid-cols-[1fr_400px_400px] grid-rows-[min-content_1fr_200px]">
-          <header className="bg-white col-span-4 p-8">
-            <h1>Market: {query.marketId}</h1>
+        <div className="h-full max-h-full grid gap-[1px] bg-[#ddd] grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]">
+          <header className="col-start-1 col-end-2 row-start-1 row-end-1 bg-white p-8">
+            <h1>Market: {data.market.name}</h1>
           </header>
-          <GridChild>TODO: Chart</GridChild>
-          <GridChild>TODO: Ticket</GridChild>
-          <GridChild>
+          <GridChild className="col-start-1 col-end-2">TODO: Chart</GridChild>
+          <GridChild className="row-start-1 row-end-3">TODO: Ticket</GridChild>
+          <GridChild className="row-start-1 row-end-3">
             <GridTabs group="trade">
               <GridTab name="trades">
                 <pre>{JSON.stringify(data, null, 2)}</pre>
@@ -54,7 +54,7 @@ const MarketPage = () => {
               <GridTab name="orderbook">Orderbook TODO:</GridTab>
             </GridTabs>
           </GridChild>
-          <GridChild className="col-span-4">
+          <GridChild className="col-span-3">
             <GridTabs group="portfolio">
               <GridTab name="orders">TODO: Orders</GridTab>
               <GridTab name="positions">TODO: Positions</GridTab>
@@ -100,12 +100,13 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       {/* the tabs */}
-      <div className="flex gap-[2px] bg-[#ededed]" role="tablist">
+      <div className="flex gap-[2px] bg-[#ddd]" role="tablist">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           const isActive = query[group] === child.props.name;
           const buttonClass = classNames('p-8', {
             'text-vega-pink': isActive,
+            'bg-white': isActive,
           });
           return (
             <button
