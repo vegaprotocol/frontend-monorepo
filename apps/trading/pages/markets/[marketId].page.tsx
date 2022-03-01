@@ -2,7 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { Children, isValidElement, ReactNode, useState } from 'react';
+import React, { Children, isValidElement, ReactNode } from 'react';
 import { Market, MarketVariables } from './__generated__/Market';
 
 // Top level page query
@@ -47,18 +47,18 @@ const MarketPage = () => {
           <GridChild>TODO: Chart</GridChild>
           <GridChild>TODO: Ticket</GridChild>
           <GridChild>
-            <GridTabs>
-              <GridTab name="Trades">
+            <GridTabs group="trade">
+              <GridTab name="trades">
                 <pre>{JSON.stringify(data, null, 2)}</pre>
               </GridTab>
-              <GridTab name="Orderbook">Orderbook TODO:</GridTab>
+              <GridTab name="orderbook">Orderbook TODO:</GridTab>
             </GridTabs>
           </GridChild>
           <GridChild className="col-span-4">
-            <GridTabs>
-              <GridTab name="Orders">TODO: Orders</GridTab>
-              <GridTab name="Positions">TODO: Positions</GridTab>
-              <GridTab name="Collateral">TODO: Collateral</GridTab>
+            <GridTabs group="portfolio">
+              <GridTab name="orders">TODO: Orders</GridTab>
+              <GridTab name="positions">TODO: Positions</GridTab>
+              <GridTab name="collateral">TODO: Collateral</GridTab>
             </GridTabs>
           </GridChild>
         </div>
@@ -91,10 +91,11 @@ const GridChild = ({ children, className }: GridChildProps) => {
 
 interface GridTabsProps {
   children: ReactNode;
+  group: string;
 }
 
-const GridTabs = ({ children }: GridTabsProps) => {
-  const [activeTab, setActiveTab] = useState<string>(children[0].props.name);
+const GridTabs = ({ children, group }: GridTabsProps) => {
+  const { query, asPath, replace } = useRouter();
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
@@ -103,12 +104,17 @@ const GridTabs = ({ children }: GridTabsProps) => {
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           const buttonClass = classNames('p-8', {
-            'text-vega-pink': child.props.name === activeTab,
+            'text-vega-pink': query[group] === child.props.name,
           });
           return (
             <button
-              onClick={() => setActiveTab(child.props.name)}
               className={buttonClass}
+              onClick={() => {
+                const [url, queryString] = asPath.split('?');
+                const searchParams = new URLSearchParams(queryString);
+                searchParams.set(group, child.props.name);
+                replace(`${url}?${searchParams.toString()}`);
+              }}
             >
               {child.props.name}
             </button>
@@ -118,7 +124,7 @@ const GridTabs = ({ children }: GridTabsProps) => {
       {/* the content */}
       <div>
         {Children.map(children, (child) => {
-          if (isValidElement(child) && child.props.name === activeTab) {
+          if (isValidElement(child) && query[group] === child.props.name) {
             return <div>{child.props.children}</div>;
           }
           return null;
