@@ -104,7 +104,7 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           const isActive = query[group] === child.props.name;
-          const buttonClass = classNames('p-8', {
+          const buttonClass = classNames('py-4 px-12', {
             'text-vega-pink': isActive,
             'bg-white': isActive,
           });
