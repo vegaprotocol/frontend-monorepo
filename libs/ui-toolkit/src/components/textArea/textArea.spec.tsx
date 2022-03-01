@@ -1,10 +1,10 @@
 import { render } from '@testing-library/react';
 
-import Button from './button';
+import TextArea from './textArea';
 
-describe('Button', () => {
+describe('TextArea', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Button>Label</Button>);
+    const { baseElement } = render(<TextArea />);
     expect(baseElement).toBeTruthy();
   });
 });
