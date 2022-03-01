@@ -12,14 +12,12 @@ const MARKETS_QUERY = gql`
 `;
 
 const Markets = () => {
-  const router = useRouter();
+  const { pathname } = useRouter();
   const { data, loading, error } = useQuery<Markets>(MARKETS_QUERY);
 
   if (loading || !data) {
     return <div>Loading...</div>;
   }
-
-  console.log(data);
 
   return (
     <div>
@@ -30,7 +28,7 @@ const Markets = () => {
         <ul>
           {data.markets.map((m) => (
             <li key={m.id}>
-              <Link href={`${router.pathname}/${m.id}`} passHref={true}>
+              <Link href={`${pathname}/${m.id}`} passHref={true}>
                 <a>View market: {m.id}</a>
               </Link>
             </li>
