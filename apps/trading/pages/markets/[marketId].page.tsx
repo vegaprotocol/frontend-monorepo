@@ -100,11 +100,12 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       {/* the tabs */}
-      <div className="flex gap-[2px] bg-[#ededed]">
+      <div className="flex gap-[2px] bg-[#ededed]" role="tablist">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
+          const isActive = query[group] === child.props.name;
           const buttonClass = classNames('p-8', {
-            'text-vega-pink': query[group] === child.props.name,
+            'text-vega-pink': isActive,
           });
           return (
             <button
@@ -115,6 +116,10 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
                 searchParams.set(group, child.props.name);
                 replace(`${url}?${searchParams.toString()}`);
               }}
+              role="tab"
+              aria-selected={isActive}
+              aria-controls={`tabpanel-${group}-${child.props.name}`}
+              id={`tab-${group}-${child.props.name}`}
             >
               {child.props.name}
             </button>
@@ -125,7 +130,15 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
           if (isValidElement(child) && query[group] === child.props.name) {
-            return <div>{child.props.children}</div>;
+            return (
+              <div
+                role="tabpanel"
+                id={`tabpanel-${group}-${child.props.name}`}
+                aria-labelledby={`tab-${group}-${child.props.name}`}
+              >
+                {child.props.children}
+              </div>
+            );
           }
           return null;
         })}
