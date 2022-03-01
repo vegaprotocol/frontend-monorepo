@@ -2,8 +2,8 @@ import { gql, useQuery } from '@apollo/client';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { Children, isValidElement, ReactNode } from 'react';
-import { Market, MarketVariables } from './__generated__/Market';
+import React, { Children, isValidElement, ReactNode, useEffect } from 'react';
+import { Market, MarketVariables, Market_market } from './__generated__/Market';
 
 // Top level page query
 const MARKET_QUERY = gql`
@@ -35,33 +35,16 @@ const MarketPage = () => {
     return <div>Loading...</div>;
   }
 
+  if (error) {
+    return <div>Something went wrong: {error.message}</div>;
+  }
+
   return (
     <>
-      {error ? (
-        <div>Something went wrong: {error.message}</div>
+      {typeof window !== 'undefined' && window.innerWidth > 1040 ? (
+        <TradeGrid market={data.market} />
       ) : (
-        <div className="h-full max-h-full grid gap-[1px] bg-[#ddd] grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]">
-          <header className="col-start-1 col-end-2 row-start-1 row-end-1 bg-white p-8">
-            <h1>Market: {data.market.name}</h1>
-          </header>
-          <GridChild className="col-start-1 col-end-2">TODO: Chart</GridChild>
-          <GridChild className="row-start-1 row-end-3">TODO: Ticket</GridChild>
-          <GridChild className="row-start-1 row-end-3">
-            <GridTabs group="trade">
-              <GridTab name="trades">
-                <pre>{JSON.stringify(data, null, 2)}</pre>
-              </GridTab>
-              <GridTab name="orderbook">Orderbook TODO:</GridTab>
-            </GridTabs>
-          </GridChild>
-          <GridChild className="col-span-3">
-            <GridTabs group="portfolio">
-              <GridTab name="orders">TODO: Orders</GridTab>
-              <GridTab name="positions">TODO: Positions</GridTab>
-              <GridTab name="collateral">TODO: Collateral</GridTab>
-            </GridTabs>
-          </GridChild>
-        </div>
+        <TradePanels market={data.market} />
       )}
     </>
   );
@@ -69,12 +52,55 @@ const MarketPage = () => {
 
 export default MarketPage;
 
-interface GridChildProps {
+interface TradeGridProps {
+  market: Market_market;
+}
+
+const TradeGrid = ({ market }: TradeGridProps) => {
+  return (
+    <div className="h-full max-h-full grid gap-[1px] bg-[#ddd] grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]">
+      <header className="col-start-1 col-end-2 row-start-1 row-end-1 bg-white p-8">
+        <h1>Market: {market.name}</h1>
+      </header>
+      <TradeGridChild className="col-start-1 col-end-2">
+        <Chart />
+      </TradeGridChild>
+      <TradeGridChild className="row-start-1 row-end-3">
+        <Ticket />
+      </TradeGridChild>
+      <TradeGridChild className="row-start-1 row-end-3">
+        <GridTabs group="trade">
+          <GridTab name="trades">
+            <pre>{JSON.stringify(market.trades, null, 2)}</pre>
+          </GridTab>
+          <GridTab name="orderbook">
+            <Orderbook />
+          </GridTab>
+        </GridTabs>
+      </TradeGridChild>
+      <TradeGridChild className="col-span-3">
+        <GridTabs group="portfolio">
+          <GridTab name="orders">
+            <Orders />
+          </GridTab>
+          <GridTab name="positions">
+            <Positions />
+          </GridTab>
+          <GridTab name="collateral">
+            <Collateral />
+          </GridTab>
+        </GridTabs>
+      </TradeGridChild>
+    </div>
+  );
+};
+
+interface TradeGridChildProps {
   children: ReactNode;
   className?: string;
 }
 
-const GridChild = ({ children, className }: GridChildProps) => {
+const TradeGridChild = ({ children, className }: TradeGridChildProps) => {
   const gridChildClasses = classNames('bg-white', className);
   return (
     <section className={gridChildClasses}>
@@ -104,7 +130,7 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           const isActive = query[group] === child.props.name;
-          const buttonClass = classNames('py-4 px-12', {
+          const buttonClass = classNames('py-4 px-12 capitalize', {
             'text-vega-pink': isActive,
             'bg-white': isActive,
           });
@@ -155,4 +181,68 @@ interface GridTabProps {
 
 const GridTab = ({ children }: GridTabProps) => {
   return <div>{children}</div>;
+};
+
+///// SMALL SCREENS ///////
+
+type View = keyof typeof Views;
+
+interface TradePanelsProps {
+  market: Market_market;
+}
+
+const TradePanels = ({ market }: TradePanelsProps) => {
+  const [view, setView] = React.useState<View>('chart');
+
+  const renderView = () => {
+    const Component = Views[view];
+
+    if (!Component) {
+      throw new Error(`No component for view: ${view}`);
+    }
+
+    return <Component />;
+  };
+
+  return (
+    <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
+      <header className="bg-white p-8">
+        <h1>Market: {market.name}</h1>
+      </header>
+      <div className="h-full">
+        <AutoSizer>
+          {({ width, height }) => (
+            <div style={{ width, height }}>{renderView()}</div>
+          )}
+        </AutoSizer>
+      </div>
+      <div className="flex flex-nowrap gap-2 border-t overflow-x-auto">
+        {Object.keys(Views).map((key: View) => (
+          <button
+            onClick={() => setView(key)}
+            className="p-12 capitalize"
+            key={key}
+          >
+            {key}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const Chart = () => <div>TODO: Chart</div>;
+const Ticket = () => <div>TODO: Ticket</div>;
+const Orderbook = () => <div>TODO: Orderbook</div>;
+const Orders = () => <div>TODO: Orders</div>;
+const Positions = () => <div>TODO: Positions</div>;
+const Collateral = () => <div>TODO: Collateral</div>;
+
+const Views = {
+  chart: Chart,
+  ticket: Ticket,
+  orderbook: Orderbook,
+  orders: Orders,
+  positions: Positions,
+  collateral: Collateral,
 };
