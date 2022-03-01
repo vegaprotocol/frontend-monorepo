@@ -2,7 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import { ReactNode } from 'react';
+import React, { Children, isValidElement, ReactNode, useState } from 'react';
 import { Market, MarketVariables } from './__generated__/Market';
 
 // Top level page query
@@ -40,18 +40,26 @@ const MarketPage = () => {
       {error ? (
         <div>Something went wrong: {error.message}</div>
       ) : (
-        <div className="h-full max-h-full grid gap-[1px] bg-black grid-cols-[300px_2fr_1fr_1fr] grid-rows-[min-content_1fr_200px]">
+        <div className="h-full max-h-full grid gap-[1px] bg-black grid-cols-[1fr_400px_400px] grid-rows-[min-content_1fr_200px]">
           <header className="bg-white col-span-4 p-8">
             <h1>Market: {query.marketId}</h1>
           </header>
-          <GridChild name="Ticket">Content</GridChild>
-          <GridChild name="Chart">Content</GridChild>
-          <GridChild name="Order book">Content</GridChild>
-          <GridChild name="Trades">
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+          <GridChild>TODO: Chart</GridChild>
+          <GridChild>TODO: Ticket</GridChild>
+          <GridChild>
+            <GridTabs>
+              <GridTab name="Trades">
+                <pre>{JSON.stringify(data, null, 2)}</pre>
+              </GridTab>
+              <GridTab name="Orderbook">Orderbook TODO:</GridTab>
+            </GridTabs>
           </GridChild>
-          <GridChild name="Portfolio" className="col-span-4">
-            Content
+          <GridChild className="col-span-4">
+            <GridTabs>
+              <GridTab name="Orders">TODO: Orders</GridTab>
+              <GridTab name="Positions">TODO: Positions</GridTab>
+              <GridTab name="Collateral">TODO: Collateral</GridTab>
+            </GridTabs>
           </GridChild>
         </div>
       )}
@@ -63,28 +71,68 @@ export default MarketPage;
 
 interface GridChildProps {
   children: ReactNode;
-  name?: string;
   className?: string;
 }
 
-const GridChild = ({ children, className, name }: GridChildProps) => {
+const GridChild = ({ children, className }: GridChildProps) => {
   const gridChildClasses = classNames('bg-white', className);
   return (
     <section className={gridChildClasses}>
-      <div className="h-full grid grid-rows-[min-content_1fr]">
-        <div className="p-8 border-b-1">
-          <h2>{name}</h2>
-        </div>
-        <div>
-          <AutoSizer>
-            {({ width, height }) => (
-              <div style={{ width, height }} className="overflow-auto">
-                {children}
-              </div>
-            )}
-          </AutoSizer>
-        </div>
-      </div>
+      <AutoSizer>
+        {({ width, height }) => (
+          <div style={{ width, height }} className="overflow-auto">
+            {children}
+          </div>
+        )}
+      </AutoSizer>
     </section>
   );
+};
+
+interface GridTabsProps {
+  children: ReactNode;
+}
+
+const GridTabs = ({ children }: GridTabsProps) => {
+  const [activeTab, setActiveTab] = useState<string>(children[0].props.name);
+
+  return (
+    <div className="h-full grid grid-rows-[min-content_1fr]">
+      {/* the tabs */}
+      <div className="flex gap-[2px] bg-[#ededed]">
+        {Children.map(children, (child) => {
+          if (!isValidElement(child)) return null;
+          const buttonClass = classNames('p-8', {
+            'text-vega-pink': child.props.name === activeTab,
+          });
+          return (
+            <button
+              onClick={() => setActiveTab(child.props.name)}
+              className={buttonClass}
+            >
+              {child.props.name}
+            </button>
+          );
+        })}
+      </div>
+      {/* the content */}
+      <div>
+        {Children.map(children, (child) => {
+          if (isValidElement(child) && child.props.name === activeTab) {
+            return <div>{child.props.children}</div>;
+          }
+          return null;
+        })}
+      </div>
+    </div>
+  );
+};
+
+interface GridTabProps {
+  children: ReactNode;
+  name: string;
+}
+
+const GridTab = ({ children }: GridTabProps) => {
+  return <div>{children}</div>;
 };
