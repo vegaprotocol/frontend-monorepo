@@ -151,6 +151,7 @@ module.exports = {
   extend: {
     boxShadow: {
       callout: '5px 5px 0 1px rgba(0, 0, 0, 0.05)',
+      focus: '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
     },
   },
 };
