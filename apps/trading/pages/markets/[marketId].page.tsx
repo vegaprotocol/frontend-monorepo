@@ -122,7 +122,7 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
         })}
       </div>
       {/* the content */}
-      <div>
+      <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
           if (isValidElement(child) && query[group] === child.props.name) {
             return <div>{child.props.children}</div>;
