@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import Icon from '../icon/icon';
 
 interface InputErrorProps {
   children?: React.ReactNode;
@@ -27,7 +28,16 @@ export const InputError = ({
     },
     className
   );
-  return <div className={effectiveClassName}>{children}</div>;
+  const iconClassName = classNames(['mx-8'], {
+    'fill-intent-danger': intent === 'danger',
+    'fill-intent-warning': intent === 'warning',
+  });
+  return (
+    <div className={effectiveClassName}>
+      <Icon name="warning-sign" className={iconClassName} />
+      {children}
+    </div>
+  );
 };
 
 export default InputError;
