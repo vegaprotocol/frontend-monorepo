@@ -15,6 +15,7 @@
   "dependencies": {
     "@apollo/client": "^3.5.8",
     "@nrwl/next": "13.8.1",
+    "@radix-ui/react-tabs": "^0.1.5",
     "@types/uuid": "^8.3.4",
     "apollo": "^2.33.9",
     "autoprefixer": "^10.4.2",
