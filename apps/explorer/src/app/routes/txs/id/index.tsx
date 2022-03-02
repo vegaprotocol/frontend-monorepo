@@ -4,23 +4,24 @@ import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 import { TendermintTransactionResponse } from '../tendermint-transaction-response.d';
-import { TxDetails, TxContent } from '../../../components/transaction';
+import { TxDetails, TxContent } from '../../../components/txs';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
-  const { data: transactionData } = useFetch<TendermintTransactionResponse>(
+  const {
+    state: { data: transactionData },
+  } = useFetch<TendermintTransactionResponse>(
     `${DATA_SOURCES.tendermintUrl}/tx?hash=${txHash}`
   );
-  const { data: decodedData } = useFetch<ChainExplorerTxResponse>(
-    DATA_SOURCES.chainExplorerUrl,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        tx_hash: txHash,
-        node_url: `${DATA_SOURCES.tendermintUrl}/`,
-      }),
-    }
-  );
+  const {
+    state: { data: decodedData },
+  } = useFetch<ChainExplorerTxResponse>(DATA_SOURCES.chainExplorerUrl, {
+    method: 'POST',
+    body: JSON.stringify({
+      tx_hash: txHash,
+      node_url: `${DATA_SOURCES.tendermintUrl}/`,
+    }),
+  });
 
   return (
     <section>

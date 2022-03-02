@@ -47,7 +47,9 @@ const PARTY_ASSETS_QUERY = gql`
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
-  const { data: partyData } = useFetch<TendermintSearchTransactionResponse>(
+  const {
+    state: { data: partyData },
+  } = useFetch<TendermintSearchTransactionResponse>(
     `${DATA_SOURCES.tendermintWebsocketUrl}/tx_search?query="tx.submitter=%27${party}%27"`
   );
 
@@ -56,7 +58,7 @@ const Party = () => {
     {
       // Don't cache data for this query, party information can move quite quickly
       fetchPolicy: 'network-only',
-      variables: { partyId: party!.replace('0x', '') },
+      variables: { partyId: party?.replace('0x', '') },
       skip: !party,
     }
   );

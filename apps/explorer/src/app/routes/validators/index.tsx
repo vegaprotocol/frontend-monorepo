@@ -1,9 +1,9 @@
-import { gql, useQuery } from "@apollo/client";
-import React from "react";
-import { DATA_SOURCES } from "../../config";
-import useFetch from "../../hooks/use-fetch";
-import { TendermintValidatorsResponse } from "./tendermint-validator-response";
-import { NodesQuery } from "./__generated__/NodesQuery";
+import { gql, useQuery } from '@apollo/client';
+import React from 'react';
+import { DATA_SOURCES } from '../../config';
+import useFetch from '../../hooks/use-fetch';
+import { TendermintValidatorsResponse } from './tendermint-validator-response';
+import { NodesQuery } from './__generated__/NodesQuery';
 
 const NODES_QUERY = gql`
   query NodesQuery {
@@ -34,7 +34,9 @@ const NODES_QUERY = gql`
 `;
 
 const Validators = () => {
-  const { data: validators } = useFetch<TendermintValidatorsResponse>(
+  const {
+    state: { data: validators },
+  } = useFetch<TendermintValidatorsResponse>(
     `${DATA_SOURCES.tendermintUrl}/validators`
   );
   const { data } = useQuery<NodesQuery>(NODES_QUERY);
@@ -43,9 +45,9 @@ const Validators = () => {
     <section>
       <h1>Validators</h1>
       <h2>Tendermint data</h2>
-      <pre>{JSON.stringify(validators, null, "  ")}</pre>
+      <pre>{JSON.stringify(validators, null, '  ')}</pre>
       <h2>Vega data</h2>
-      <pre>{JSON.stringify(data, null, "  ")}</pre>
+      <pre>{JSON.stringify(data, null, '  ')}</pre>
     </section>
   );
 };
