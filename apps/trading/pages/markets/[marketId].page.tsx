@@ -6,6 +6,7 @@ import React, {
   Children,
   isValidElement,
   ReactNode,
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -131,6 +132,25 @@ interface GridTabsProps {
 
 const GridTabs = ({ children, group }: GridTabsProps) => {
   const { query, asPath, replace } = useRouter();
+  const [activeTab, setActiveTab] = useState<string>(() => {
+    if (query[group]) {
+      return query[group];
+    }
+
+    // Default to first tab
+    return children[0].props.name;
+  });
+
+  // Using replace inside an effect causes a render loop. Seems like its not using useCallback
+  // eslint-disable-next-line
+  const safeReplace = useCallback((path: string) => replace(path), []);
+
+  useEffect(() => {
+    const [url, queryString] = asPath.split('?');
+    const searchParams = new URLSearchParams(queryString);
+    searchParams.set(group, activeTab as string);
+    safeReplace(`${url}?${searchParams.toString()}`);
+  }, [activeTab, group, asPath, safeReplace]);
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
@@ -138,7 +158,7 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
       <div className="flex gap-[2px] bg-neutral-200" role="tablist">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
-          const isActive = query[group] === child.props.name;
+          const isActive = activeTab === child.props.name;
           const buttonClass = classNames(
             'py-4',
             'px-12',
@@ -152,12 +172,7 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
           return (
             <button
               className={buttonClass}
-              onClick={() => {
-                const [url, queryString] = asPath.split('?');
-                const searchParams = new URLSearchParams(queryString);
-                searchParams.set(group, child.props.name);
-                replace(`${url}?${searchParams.toString()}`);
-              }}
+              onClick={() => setActiveTab(child.props.name)}
               role="tab"
               aria-selected={isActive}
               aria-controls={`tabpanel-${group}-${child.props.name}`}
@@ -171,7 +186,7 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
       {/* the content */}
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
-          if (isValidElement(child) && query[group] === child.props.name) {
+          if (isValidElement(child) && activeTab === child.props.name) {
             return (
               <div
                 role="tabpanel"
