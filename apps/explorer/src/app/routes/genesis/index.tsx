@@ -4,7 +4,9 @@ import useFetch from '../../hooks/use-fetch';
 import { TendermintGenesisResponse } from './tendermint-genesis-response';
 
 const Genesis = () => {
-  const { data: genesis } = useFetch<TendermintGenesisResponse>(
+  const {
+    state: { data: genesis },
+  } = useFetch<TendermintGenesisResponse>(
     `${DATA_SOURCES.tendermintUrl}/genesis`
   );
   if (!genesis?.result.genesis) return null;

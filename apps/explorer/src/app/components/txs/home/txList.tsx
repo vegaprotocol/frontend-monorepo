@@ -1,7 +1,13 @@
+import { TendermintUnconfirmedTransactionsResponse } from '../../../routes/txs/tendermint-unconfirmed-transactions-response.d';
+
 interface TxsProps {
-  data: string | undefined;
+  data: TendermintUnconfirmedTransactionsResponse | undefined;
 }
 
-export const Txs = ({ data }: TxsProps) => {
-  return <>Blah</>;
+export const TxList = ({ data }: TxsProps) => {
+  if (!data) {
+    return <div>Awaiting transactions</div>;
+  }
+
+  return <div>{JSON.stringify(data, null, '  ')}</div>;
 };

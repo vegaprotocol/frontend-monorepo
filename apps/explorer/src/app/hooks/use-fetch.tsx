@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 
 interface State<T> {
   data?: T;
@@ -7,9 +7,9 @@ interface State<T> {
 }
 
 enum ActionType {
-  LOADING = "LOADING",
-  ERROR = "ERROR",
-  FETCHED = "FETCHED",
+  LOADING = 'LOADING',
+  ERROR = 'ERROR',
+  FETCHED = 'FETCHED',
 }
 
 // discriminated union type
@@ -18,7 +18,10 @@ type Action<T> =
   | { type: ActionType.FETCHED; payload: T }
   | { type: ActionType.ERROR; error: Error };
 
-function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
+function useFetch<T = unknown>(
+  url?: string,
+  options?: RequestInit
+): { state: State<T>; refetch: () => void } {
   // Used to prevent state update if the component is unmounted
   const cancelRequest = useRef<boolean>(false);
 
@@ -41,9 +44,7 @@ function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
   };
 
   const [state, dispatch] = useReducer(fetchReducer, initialState);
-
-  useEffect(() => {
-    // Do nothing if the url is not given
+  const fetchCallback = useCallback(() => {
     if (!url) return;
 
     const fetchData = async () => {
@@ -56,8 +57,8 @@ function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
         }
 
         const data = (await response.json()) as T;
-        if ("error" in data) {
-          // @ts-ignore
+        if ('error' in data) {
+          // @ts-ignore - data.error
           throw new Error(data.error);
         }
         if (cancelRequest.current) return;
@@ -72,15 +73,23 @@ function useFetch<T = unknown>(url?: string, options?: RequestInit): State<T> {
 
     void fetchData();
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [url]);
+
+  useEffect(() => {
+    fetchCallback();
     // Use the cleanup function for avoiding a possibly...
     // ...state update after the component was unmounted
     return () => {
       cancelRequest.current = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+    // Do nothing if the url is not given
+  }, [fetchCallback]);
 
-  return state;
+  return {
+    state,
+    refetch: fetchCallback,
+  };
 }
 
 export default useFetch;

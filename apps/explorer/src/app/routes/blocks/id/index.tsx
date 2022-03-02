@@ -7,22 +7,24 @@ import { TendermintBlocksResponse } from '../tendermint-blocks-response';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
-  const { data: decodedBlockData } = useFetch<ChainExplorerTxResponse[]>(
-    DATA_SOURCES.chainExplorerUrl,
-    {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        block_height: parseInt(block!),
-        node_url: `${DATA_SOURCES.tendermintUrl}/`,
-      }),
-    }
-  );
+  const {
+    state: { data: decodedBlockData },
+  } = useFetch<ChainExplorerTxResponse[]>(DATA_SOURCES.chainExplorerUrl, {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      block_height: parseInt(block!),
+      node_url: `${DATA_SOURCES.tendermintUrl}/`,
+    }),
+  });
 
-  const { data: blockData } = useFetch<TendermintBlocksResponse>(
+  const {
+    state: { data: blockData },
+  } = useFetch<TendermintBlocksResponse>(
     `${DATA_SOURCES.tendermintUrl}/block?height=${block}`
   );
 
