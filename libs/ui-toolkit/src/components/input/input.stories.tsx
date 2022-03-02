@@ -1,6 +1,5 @@
 import { Story, Meta } from '@storybook/react';
 import { Input } from './input';
-
 export default {
   component: Input,
   title: 'Input',
@@ -20,3 +19,11 @@ export const Disabled = Template.bind({});
 Disabled.args = {
   disabled: true,
 };
+
+export const IconPrepend: Story = () => (
+  <Input value="I type words" prependIconName="search" />
+);
+
+export const IconAppend: Story = () => (
+  <Input value="I type words and even more words" appendIconName="search" />
+);

@@ -28,5 +28,3 @@ export function TextArea({
     </textarea>
   );
 }
-
-export default TextArea;
