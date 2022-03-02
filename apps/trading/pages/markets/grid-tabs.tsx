@@ -1,5 +1,7 @@
+import * as Tabs from '@radix-ui/react-tabs';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
+import { chdir } from 'process';
 import {
   Children,
   isValidElement,
@@ -39,39 +41,45 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
   }, [activeTab, group, asPath, safeReplace]);
 
   return (
-    <div className="h-full grid grid-rows-[min-content_1fr]">
+    <Tabs.Root
+      value={activeTab}
+      className="h-full grid grid-rows-[min-content_1fr]"
+      onValueChange={(value) => setActiveTab(value)}
+    >
       {/* the tabs */}
-      <div className="flex gap-[2px] bg-neutral-200" role="tablist">
+      <Tabs.List className="flex gap-[2px] bg-neutral-200" role="tablist">
         {Children.map(children, (child) => {
-          if (isValidElement(child)) {
-            return (
-              <GridTabControl
-                group={group}
-                name={child.props.name}
-                isActive={activeTab === child.props.name}
-                onClick={() => setActiveTab(child.props.name)}
-              />
-            );
-          }
-
-          return null;
+          if (!isValidElement(child)) return null;
+          const isActive = child.props.name === activeTab;
+          const triggerClass = classNames(
+            'py-4',
+            'px-12',
+            'border-t border-neutral-200',
+            'capitalize',
+            {
+              'text-vega-pink': isActive,
+              'bg-white': isActive,
+            }
+          );
+          return (
+            <Tabs.Trigger value={child.props.name} className={triggerClass}>
+              {child.props.name}
+            </Tabs.Trigger>
+          );
         })}
-      </div>
+      </Tabs.List>
       {/* the content */}
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
-          if (isValidElement(child) && activeTab === child.props.name) {
-            return (
-              <GridTabPanel group={group} name={child.props.name}>
-                {child.props.children}
-              </GridTabPanel>
-            );
-          }
-
-          return null;
+          if (!isValidElement(child)) return null;
+          return (
+            <Tabs.Content value={child.props.name}>
+              {child.props.children}
+            </Tabs.Content>
+          );
         })}
       </div>
-    </div>
+    </Tabs.Root>
   );
 };
 
@@ -82,59 +90,4 @@ interface GridTabProps {
 
 export const GridTab = ({ children }: GridTabProps) => {
   return <div>{children}</div>;
-};
-
-interface GridTabControlProps {
-  group: string;
-  name: string;
-  isActive: boolean;
-  onClick: () => void;
-}
-
-const GridTabControl = ({
-  group,
-  name,
-  isActive,
-  onClick,
-}: GridTabControlProps) => {
-  const buttonClass = classNames(
-    'py-4',
-    'px-12',
-    'border-t border-neutral-200',
-    'capitalize',
-    {
-      'text-vega-pink': isActive,
-      'bg-white': isActive,
-    }
-  );
-  return (
-    <button
-      className={buttonClass}
-      onClick={onClick}
-      role="tab"
-      aria-selected={isActive}
-      aria-controls={`tabpanel-${group}-${name}`}
-      id={`tab-${group}-${name}`}
-    >
-      {name}
-    </button>
-  );
-};
-
-interface GridTabPanelProps {
-  group: string;
-  name: string;
-  children: ReactNode;
-}
-
-const GridTabPanel = ({ group, name, children }: GridTabPanelProps) => {
-  return (
-    <div
-      role="tabpanel"
-      id={`tabpanel-${group}-${name}`}
-      aria-labelledby={`tab-${group}-${name}`}
-    >
-      {children}
-    </div>
-  );
 };
