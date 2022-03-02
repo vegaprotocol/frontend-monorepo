@@ -66,7 +66,7 @@ interface TradeGridProps {
 
 const TradeGrid = ({ market }: TradeGridProps) => {
   return (
-    <div className="h-full max-h-full grid gap-[1px] bg-[#ddd] grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]">
+    <div className="h-full max-h-full grid gap-[1px] bg-neutral-200 grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]">
       <header className="col-start-1 col-end-2 row-start-1 row-end-1 bg-white p-8">
         <h1>Market: {market.name}</h1>
       </header>
@@ -134,14 +134,20 @@ const GridTabs = ({ children, group }: GridTabsProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       {/* the tabs */}
-      <div className="flex gap-[2px] bg-[#ddd]" role="tablist">
+      <div className="flex gap-[2px] bg-neutral-200" role="tablist">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           const isActive = query[group] === child.props.name;
-          const buttonClass = classNames('py-4 px-12 capitalize', {
-            'text-vega-pink': isActive,
-            'bg-white': isActive,
-          });
+          const buttonClass = classNames(
+            'py-4',
+            'px-12',
+            'border-t border-neutral-200',
+            'capitalize',
+            {
+              'text-vega-pink': isActive,
+              'bg-white': isActive,
+            }
+          );
           return (
             <button
               className={buttonClass}
@@ -224,16 +230,28 @@ const TradePanels = ({ market }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap gap-2 border-t overflow-x-auto">
-        {Object.keys(Views).map((key: View) => (
-          <button
-            onClick={() => setView(key)}
-            className="p-12 capitalize"
-            key={key}
-          >
-            {key}
-          </button>
-        ))}
+      <div className="flex flex-nowrap gap-2 bg-neutral-200 border-neutral-200 border-t overflow-x-auto">
+        {Object.keys(Views).map((key: View) => {
+          const className = classNames(
+            'p-8',
+            'border-t',
+            'border-neutral-200',
+            'capitalize',
+            {
+              'text-vega-pink': view === key,
+              'bg-white': view === key,
+            }
+          );
+          return (
+            <button
+              onClick={() => setView(key)}
+              className={className}
+              key={key}
+            >
+              {key}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

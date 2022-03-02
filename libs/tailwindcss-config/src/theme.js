@@ -90,6 +90,7 @@ module.exports = {
     black: '#000',
     white: theme('colors.white'),
     danger: theme('colors.intent.background.danger'),
+    'neutral-200': theme('colors.neutral.200'),
   }),
   borderWidth: {
     DEFAULT: '1px',
