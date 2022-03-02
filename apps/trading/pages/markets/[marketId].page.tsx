@@ -2,7 +2,14 @@ import { gql, useQuery } from '@apollo/client';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import React, { Children, isValidElement, ReactNode, useEffect } from 'react';
+import React, {
+  Children,
+  isValidElement,
+  ReactNode,
+  useEffect,
+  useState,
+} from 'react';
+import debounce from 'lodash/debounce';
 import { Market, MarketVariables, Market_market } from './__generated__/Market';
 
 // Top level page query
@@ -23,6 +30,7 @@ const MARKET_QUERY = gql`
 
 const MarketPage = () => {
   const { query } = useRouter();
+  const { w } = useWindowSize();
   const { data, loading, error } = useQuery<Market, MarketVariables>(
     MARKET_QUERY,
     {
@@ -41,7 +49,7 @@ const MarketPage = () => {
 
   return (
     <>
-      {typeof window !== 'undefined' && window.innerWidth > 1040 ? (
+      {w > 1050 ? (
         <TradeGrid market={data.market} />
       ) : (
         <TradePanels market={data.market} />
@@ -245,4 +253,38 @@ const Views = {
   orders: Orders,
   positions: Positions,
   collateral: Collateral,
+};
+
+const useWindowSize = () => {
+  const [windowSize, setWindowSize] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return {
+        w: window.innerWidth,
+        h: window.innerHeight,
+      };
+    }
+
+    // Something sensible for server rendered page
+    return {
+      w: 1200,
+      h: 900,
+    };
+  });
+
+  useEffect(() => {
+    const handleResize = debounce((event) => {
+      setWindowSize({
+        w: event.target.innerWidth,
+        h: event.target.innerHeight,
+      });
+    }, 300);
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return windowSize;
 };
