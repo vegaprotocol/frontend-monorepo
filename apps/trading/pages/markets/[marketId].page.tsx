@@ -65,8 +65,14 @@ interface TradeGridProps {
 }
 
 const TradeGrid = ({ market }: TradeGridProps) => {
+  const wrapperClasses = classNames(
+    'h-full max-h-full',
+    'grid gap-[1px] grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]',
+    'bg-neutral-200',
+    'text-ui'
+  );
   return (
-    <div className="h-full max-h-full grid gap-[1px] bg-neutral-200 grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]">
+    <div className={wrapperClasses}>
       <header className="col-start-1 col-end-2 row-start-1 row-end-1 bg-white p-8">
         <h1>Market: {market.name}</h1>
       </header>
