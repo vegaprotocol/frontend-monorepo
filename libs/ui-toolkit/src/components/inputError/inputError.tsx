@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import Icon from '../icon/icon';
+import { Icon } from '../icon';
 
 interface InputErrorProps {
   children?: React.ReactNode;
@@ -39,5 +39,3 @@ export const InputError = ({
     </div>
   );
 };
-
-export default InputError;

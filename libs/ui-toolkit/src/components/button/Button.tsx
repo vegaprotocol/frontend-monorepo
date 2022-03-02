@@ -85,5 +85,3 @@ export function Button({
     </ButtonTag>
   );
 }
-
-export default Button;
