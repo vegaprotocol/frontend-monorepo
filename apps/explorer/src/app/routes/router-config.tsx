@@ -14,10 +14,12 @@ import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
 import { Txs as TxHome } from './txs/home';
+import { PendingTxs } from './pending';
 
 export const Routes = {
   HOME: '/',
   TX: 'txs',
+  PENDING: 'pending',
   BLOCKS: 'blocks',
   PARTIES: 'parties',
   VALIDATORS: 'validators',
@@ -47,6 +49,17 @@ const routerConfig = [
       {
         index: true,
         element: <TxHome />,
+      },
+    ],
+  },
+  {
+    path: Routes.PENDING,
+    name: 'Pending txs',
+    element: <Txs />,
+    children: [
+      {
+        index: true,
+        element: <PendingTxs />,
       },
     ],
   },
