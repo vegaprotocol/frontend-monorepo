@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
 export const Navbar = () => {
-  const navClasses = classNames('border-black border-b');
+  const navClasses = classNames('border-neutral-200 border-b');
   return (
     <nav className={navClasses}>
       {[
@@ -23,7 +23,8 @@ interface NavLinkProps {
 const NavLink = ({ name, path }: NavLinkProps) => {
   const router = useRouter();
   const className = classNames('inline-block', 'p-8', {
-    'text-vega-pink': router.asPath === path,
+    // Handle direct math and child page matches
+    'text-vega-pink': router.asPath === path || router.asPath.startsWith(path),
   });
 
   return (
