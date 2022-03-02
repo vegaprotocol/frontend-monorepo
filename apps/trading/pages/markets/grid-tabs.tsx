@@ -27,18 +27,16 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
     return children[0].props.name;
   });
 
-  // Using replace inside an effect causes a render loop. Seems like its not using useCallback
-  // eslint-disable-next-line
-  const safeReplace = useCallback((path: string) => replace(path), []);
-
   // Update the query string in the url when the active tab changes
   // uses group property as the query stirng key
   useEffect(() => {
     const [url, queryString] = asPath.split('?');
     const searchParams = new URLSearchParams(queryString);
     searchParams.set(group, activeTab as string);
-    safeReplace(`${url}?${searchParams.toString()}`);
-  }, [activeTab, group, asPath, safeReplace]);
+    replace(`${url}?${searchParams.toString()}`);
+    // replace and using asPath causes a render loop
+    // eslint-disable-next-line
+  }, [activeTab, group]);
 
   return (
     <Tabs.Root
