@@ -5,9 +5,9 @@ export const Orders = () => <div>TODO: Orders</div>;
 export const Positions = () => <div>TODO: Positions</div>;
 export const Collateral = () => <div>TODO: Collateral</div>;
 
-export type View = keyof typeof Views;
+export type TradingView = keyof typeof TradingViews;
 
-export const Views = {
+export const TradingViews = {
   chart: Chart,
   ticket: Ticket,
   orderbook: Orderbook,

@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
+import { TradingView, TradingViews } from '@vegaprotocol/react-helpers';
 import { Market_market } from './__generated__/Market';
-import { View, Views } from './trading-components';
 import { GridTab, GridTabs } from './grid-tabs';
 
 interface TradeGridProps {
@@ -22,10 +22,10 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <h1>Market: {market.name}</h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
-        <Views.chart />
+        <TradingViews.chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <Views.ticket />
+        <TradingViews.ticket />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
@@ -33,20 +33,20 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             <pre>{JSON.stringify(market.trades, null, 2)}</pre>
           </GridTab>
           <GridTab name="orderbook">
-            <Views.orderbook />
+            <TradingViews.orderbook />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
       <TradeGridChild className="col-span-3">
         <GridTabs group="portfolio">
           <GridTab name="orders">
-            <Views.orders />
+            <TradingViews.orders />
           </GridTab>
           <GridTab name="positions">
-            <Views.positions />
+            <TradingViews.positions />
           </GridTab>
           <GridTab name="collateral">
-            <Views.collateral />
+            <TradingViews.collateral />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
@@ -79,10 +79,10 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market }: TradePanelsProps) => {
-  const [view, setView] = useState<View>('chart');
+  const [view, setView] = useState<TradingView>('chart');
 
   const renderView = () => {
-    const Component = Views[view];
+    const Component = TradingViews[view];
 
     if (!Component) {
       throw new Error(`No component for view: ${view}`);
@@ -104,7 +104,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
         </AutoSizer>
       </div>
       <div className="flex flex-nowrap gap-2 bg-neutral-200 border-neutral-200 border-t overflow-x-auto">
-        {Object.keys(Views).map((key: View) => {
+        {Object.keys(TradingViews).map((key: TradingView) => {
           const className = classNames(
             'p-8',
             'border-t',
