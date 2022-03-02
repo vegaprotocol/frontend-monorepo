@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import debounce from 'lodash/debounce';
+import debounce from 'lodash.debounce';
 import { Market, MarketVariables } from './__generated__/Market';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
@@ -23,25 +23,30 @@ const MARKET_QUERY = gql`
 `;
 
 const MarketPage = () => {
-  const { query } = useRouter();
+  const {
+    query: { marketId },
+  } = useRouter();
   const { w } = useWindowSize();
 
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}
       options={{
-        variables: { marketId: query.marketId as string },
-        skip: !query.marketId,
+        // Not sure exactly why marketId is string | string[] but just the first item in the array if
+        // it is one
+        variables: {
+          marketId: Array.isArray(marketId) ? marketId[0] : marketId,
+        },
+        skip: !marketId,
       }}
     >
-      {(data) =>
+      {({ market }) =>
         w > 1050 ? (
-          <TradeGrid market={data.market} />
+          <TradeGrid market={market} />
         ) : (
-          <TradePanels market={data.market} />
+          <TradePanels market={market} />
         )
       }
-      {}
     </PageQueryContainer>
   );
 };
@@ -65,10 +70,10 @@ const useWindowSize = () => {
   });
 
   useEffect(() => {
-    const handleResize = debounce((event) => {
+    const handleResize = debounce(({ target }) => {
       setWindowSize({
-        w: event.target.innerWidth,
-        h: event.target.innerHeight,
+        w: target.innerWidth,
+        h: target.innerHeight,
       });
     }, 300);
 
