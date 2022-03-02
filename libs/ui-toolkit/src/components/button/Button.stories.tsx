@@ -37,3 +37,17 @@ Inline.args = {
   children: 'Inline',
   variant: 'inline',
 };
+
+export const IconPrepend = Template.bind({});
+IconPrepend.args = {
+  children: 'Icon prepend',
+  prependIconName: 'search',
+  variant: 'accent',
+};
+
+export const IconAppend = Template.bind({});
+IconAppend.args = {
+  children: 'Icon append',
+  appendIconName: 'search',
+  variant: 'accent',
+};

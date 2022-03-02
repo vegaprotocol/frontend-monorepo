@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { Icon, IconName } from '../icon';
 
 /* eslint-disable-next-line */
 export interface ButtonProps {
@@ -9,6 +10,8 @@ export interface ButtonProps {
   variant?: 'primary' | 'secondary' | 'accent' | 'inline';
   disabled?: boolean;
   className?: string;
+  prependIconName?: IconName;
+  appendIconName?: IconName;
 }
 
 export function Button({
@@ -18,6 +21,8 @@ export function Button({
   onClick,
   disabled,
   className,
+  prependIconName,
+  appendIconName,
 }: ButtonProps) {
   const ButtonTag: keyof JSX.IntrinsicElements = tag;
   const effectiveClassName = classNames(
@@ -75,13 +80,24 @@ export function Button({
     },
     className
   );
+  let icon;
+  const iconName = prependIconName || appendIconName;
+  if (iconName !== undefined) {
+    const iconClassName = classNames(['fill-current'], {
+      'mr-8': prependIconName,
+      'ml-8': appendIconName,
+    });
+    icon = <Icon name={iconName} className={iconClassName} size={16} />;
+  }
   return (
     <ButtonTag
       onClick={onClick}
       className={effectiveClassName}
       disabled={disabled}
     >
+      {prependIconName && icon}
       {children}
+      {appendIconName && icon}
     </ButtonTag>
   );
 }
