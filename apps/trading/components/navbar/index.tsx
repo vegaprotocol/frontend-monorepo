@@ -1,10 +1,20 @@
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
+import { Vega } from '../icons/vega';
+import Link from 'next/link';
 
 export const Navbar = () => {
-  const navClasses = classNames('border-neutral-200 border-b');
+  const navClasses = classNames(
+    'flex items-center',
+    'border-neutral-200 border-b'
+  );
   return (
     <nav className={navClasses}>
+      <Link href="/" passHref={true}>
+        <a className="px-8">
+          <Vega />
+        </a>
+      </Link>
       {[
         { name: 'Portfolio', path: '/portfolio' },
         { name: 'Markets', path: '/markets' },
