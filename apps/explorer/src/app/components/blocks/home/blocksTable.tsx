@@ -9,7 +9,7 @@ interface BlocksProps {
 
 export const BlocksTable = ({ data }: BlocksProps) => {
   if (!data?.result) {
-    return <>Awaiting block data</>;
+    return <>No block data</>;
   }
 
   return (
