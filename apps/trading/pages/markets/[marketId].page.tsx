@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
@@ -11,6 +11,7 @@ import React, {
 } from 'react';
 import debounce from 'lodash/debounce';
 import { Market, MarketVariables, Market_market } from './__generated__/Market';
+import { PageQueryContainer } from '../../components/page-query-container';
 
 // Top level page query
 const MARKET_QUERY = gql`
@@ -31,30 +32,24 @@ const MARKET_QUERY = gql`
 const MarketPage = () => {
   const { query } = useRouter();
   const { w } = useWindowSize();
-  const { data, loading, error } = useQuery<Market, MarketVariables>(
-    MARKET_QUERY,
-    {
-      variables: { marketId: query.marketId as string },
-      skip: !query.marketId,
-    }
-  );
-
-  if (loading || !data) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Something went wrong: {error.message}</div>;
-  }
 
   return (
-    <>
-      {w > 1050 ? (
-        <TradeGrid market={data.market} />
-      ) : (
-        <TradePanels market={data.market} />
-      )}
-    </>
+    <PageQueryContainer<Market, MarketVariables>
+      query={MARKET_QUERY}
+      options={{
+        variables: { marketId: query.marketId as string },
+        skip: !query.marketId,
+      }}
+    >
+      {(data) =>
+        w > 1050 ? (
+          <TradeGrid market={data.market} />
+        ) : (
+          <TradePanels market={data.market} />
+        )
+      }
+      {}
+    </PageQueryContainer>
   );
 };
 
