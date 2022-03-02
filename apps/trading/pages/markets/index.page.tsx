@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../components/page-query-container';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
