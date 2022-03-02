@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
 import { Market_market } from './__generated__/Market';
-import { Views } from './trading-components';
+import { View, Views } from './trading-components';
 import { GridTab, GridTabs } from './grid-tabs';
 
 interface TradeGridProps {
@@ -73,8 +73,6 @@ const TradeGridChild = ({ children, className }: TradeGridChildProps) => {
     </section>
   );
 };
-
-type View = keyof typeof Views;
 
 interface TradePanelsProps {
   market: Market_market;

@@ -44,7 +44,6 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      {/* the tabs */}
       <Tabs.List className="flex gap-[2px] bg-neutral-200" role="tablist">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
@@ -66,7 +65,6 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
           );
         })}
       </Tabs.List>
-      {/* the content */}
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
