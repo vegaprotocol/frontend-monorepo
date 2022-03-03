@@ -2,26 +2,12 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
-import { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 import { TendermintBlocksResponse } from '../tendermint-blocks-response';
+import { TxsPerBlock } from '../../../components/txs/txs-per-block';
+import { SecondsAgo } from '../../../components/seconds-ago';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
-  const {
-    state: { data: decodedBlockData },
-  } = useFetch<ChainExplorerTxResponse[]>(DATA_SOURCES.chainExplorerUrl, {
-    method: 'POST',
-    mode: 'cors',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      block_height: parseInt(block!),
-      node_url: `${DATA_SOURCES.tendermintUrl}/`,
-    }),
-  });
-
   const {
     state: { data: blockData },
   } = useFetch<TendermintBlocksResponse>(
@@ -30,11 +16,23 @@ const Block = () => {
 
   return (
     <section>
-      <h1>block</h1>
-      <h2>Tendermint Data</h2>
-      <pre>{JSON.stringify(blockData, null, '  ')}</pre>
-      <h2>Decoded data</h2>
-      <pre>{JSON.stringify(decodedBlockData, null, '  ')}</pre>
+      <h1>BLOCK {block}</h1>
+      <table>
+        <tbody>
+          <tr>
+            <td>Mined by</td>
+            <td>{blockData?.result.block.header?.proposer_address}</td>
+          </tr>
+          <tr>
+            <td>Time</td>
+            <td>
+              <SecondsAgo date={blockData?.result.block.header?.time} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <TxsPerBlock blockHeight={block} />
     </section>
   );
 };

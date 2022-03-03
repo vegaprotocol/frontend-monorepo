@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 interface SecondsAgoProps {
-  date: string;
+  date: string | undefined;
 }
 
 export const SecondsAgo = ({ date }: SecondsAgoProps) => {
