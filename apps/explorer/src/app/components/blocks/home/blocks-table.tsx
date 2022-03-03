@@ -1,3 +1,4 @@
+import React from 'react';
 import { TendermintBlockchainResponse } from '../../../routes/blocks/tendermint-blockchain-response';
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../../seconds-ago';
@@ -16,9 +17,9 @@ export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
 
   return (
     <Table>
-      {data.result?.block_metas?.map((block) => {
+      {data.result?.block_metas?.map((block, index) => {
         return (
-          <>
+          <React.Fragment key={index}>
             <tr>
               <td>
                 <Link to={`/blocks/${block.header?.height}`}>
@@ -44,7 +45,7 @@ export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
                 <TxsPerBlock blockHeight={block.header?.height} />
               </tr>
             )}
-          </>
+          </React.Fragment>
         );
       })}
     </Table>
