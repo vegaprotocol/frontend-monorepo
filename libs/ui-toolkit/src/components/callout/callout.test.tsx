@@ -35,7 +35,7 @@ intents.map((intent) =>
 test(`Applies class for progress`, () => {
   render(<Callout intent="progress" />);
   expect(screen.getByTestId('callout')).toHaveClass(
-    'shadow-intent-black',
-    'dark:shadow-intent-progress'
+    'shadow-black',
+    'dark:shadow-white'
   );
 });

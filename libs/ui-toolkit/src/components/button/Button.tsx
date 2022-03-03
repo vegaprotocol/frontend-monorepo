@@ -28,16 +28,15 @@ export function Button({
       'inline-flex',
       'items-center',
       'justify-center',
+      'bg-clip-padding',
       'box-border',
       'h-28',
       'border',
       'text-ui',
       'no-underline',
       'hover:underline',
-      'hover:border-white',
-      'active:border-white',
       'disabled:no-underline',
-      'disabled:bg-disabled/25',
+      'transition-all',
     ],
     {
       'pl-28': !(
@@ -47,30 +46,33 @@ export function Button({
         className?.match(/(^| )p(r|x)-\d+( |$)/) || variant === 'inline'
       ),
 
-      'bg-white': variant === 'primary',
-      'border-light-gray-50': variant === 'primary' || variant === 'secondary',
-      'text-black': variant === 'primary',
-      'hover:bg-white/70': variant === 'primary',
-      'active:bg-black': variant === 'primary' || variant === 'accent',
-      'active:text-white': variant === 'primary',
-      'disabled:text-gray-50': variant === 'primary' || variant === 'secondary',
-      'disabled:border-neutral-593': variant === 'primary',
+      'hover:border-black dark:hover:border-white': variant !== 'inline',
+      'active:border-black dark:active:border-white': true,
 
-      'bg-black': variant === 'secondary',
-      'text-light-gray-50': variant === 'secondary' || variant === 'inline',
-      'hover:bg-white/30': variant === 'secondary',
-      'hover:text-white': variant === 'secondary' || variant === 'accent',
-      'active:bg-white': variant === 'secondary',
-      'active:text-black': variant === 'secondary',
-      'disabled:text-disabled': variant === 'secondary' || variant === 'accent',
-      'disabled:border-disabled':
+      'bg-black dark:bg-white': variant === 'primary',
+      'border-black/60 dark:border-white/60':
+        variant === 'primary' || variant === 'secondary',
+      'text-white dark:text-black': variant === 'primary',
+      'hover:bg-black/70 dark:hover:bg-white/70': variant === 'primary',
+      'active:bg-white dark:active:bg-black':
+        variant === 'primary' || variant === 'accent',
+      'active:text-black dark:active:text-white':
+        variant === 'primary' || variant === 'accent',
+
+      'bg-white dark:bg-black': variant === 'secondary',
+      'text-black dark:text-white': variant === 'secondary',
+      'hover:bg-black/25 dark:hover:bg-white/25': variant === 'secondary',
+      'hover:text-black dark:hover:text-white':
         variant === 'secondary' || variant === 'accent',
+      'active:bg-black dark:active:bg-white': variant === 'secondary',
+      'active:text-white dark:active:text-black': variant === 'secondary',
 
       uppercase: variant === 'accent',
-      'bg-vega-yellow': variant === 'accent',
-      'border-transparent': variant === 'accent' || variant === 'inline',
-      'hover:bg-vega-yellow/30': variant === 'accent',
-      'active:text-light-gray-50': variant === 'accent',
+      'bg-vega-yellow dark:bg-vega-yellow': variant === 'accent',
+      'border-transparent dark:border-transparent':
+        variant === 'accent' || variant === 'inline',
+      'hover:bg-vega-yellow/30 dark:hover:bg-vega-yellow/30':
+        variant === 'accent',
 
       'pl-4': variant === 'inline',
       'pr-4': variant === 'inline',
@@ -79,7 +81,16 @@ export function Button({
       'hover:no-underline': variant === 'inline',
       'hover:border-transparent': variant === 'inline',
       'active:border-transparent': variant === 'inline',
-      'active:text-vega-yellow': variant === 'inline',
+      'active:text-vega-yellow dark:active:text-vega-yellow':
+        variant === 'inline',
+      'text-black/95 dark:text-white/95': variant === 'inline',
+      'hover:text-black hover:dark:text-white': variant === 'inline',
+
+      'disabled:bg-black/10 dark:disabled:bg-white/10': variant !== 'inline',
+      'disabled:text-black/60 dark:disabled:text-white/60':
+        variant !== 'inline',
+      'disabled:border-black/25 dark:disabled:border-white/25':
+        variant !== 'inline',
     },
     className
   );

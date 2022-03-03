@@ -10,33 +10,6 @@ module.exports = {
     current: 'currentColor',
     white: '#FFF',
     black: '#000',
-    neutral: {
-      // 250 - 23 = 227; (900-50) / 227 = 850 / 227 = 3.74449339207
-      50: '#fafafa', // FA = 250
-      100: '#ebebeb',
-      150: '#dcdcdc',
-      200: '#cdcdcd',
-      250: '#bebebe',
-      300: '#afafaf',
-      350: '#a1a1a1',
-      400: '#939393',
-      450: '#858585',
-      500: '#787878',
-      550: '#6a6a6a',
-      593: '#696969', // dark muted
-      600: '#5d5d5d',
-      650: '#515151',
-      700: '#444444',
-      753: '#3E3E3E', // dark -> 3F is muted
-      750: '#383838',
-      800: '#2d2d2d', // breakdown-background was 2C
-      850: '#222222',
-      900: '#171717', // 17 = 23
-    },
-
-    'light-gray-50': '#F5F8FA', //off-white - https://blueprintjs.com/docs/#core/colors
-    'gray-50': '#BFCCD6', // muted - https://blueprintjs.com/docs/#core/colors
-    disabled: '#8598A6', // 'fill-disabled': 'rgba(133, 152, 166, 0.25)'
     coral: '#FF6057',
     vega: {
       yellow: '#EDFF22',
@@ -47,14 +20,12 @@ module.exports = {
       danger: '#FF261A',
       warning: '#FF7A1A',
       prompt: '#EDFF22',
-      progress: '#FFF',
       success: '#26FF8A',
       help: '#494949',
     },
     'intent-background': {
       danger: '#9E0025', // for white text
     },
-
     /*,
     data: {
       red: {
@@ -155,7 +126,8 @@ module.exports = {
   extend: {
     boxShadow: {
       callout: '5px 5px 0 1px rgba(0, 0, 0, 0.05)',
-      focus: '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
+      focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
+      'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
     },
   },
 };
