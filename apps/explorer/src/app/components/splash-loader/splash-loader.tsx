@@ -1,4 +1,4 @@
-// import "./splash-loader.scss";
+import './splash-loader.scss';
 
 import React from 'react';
 

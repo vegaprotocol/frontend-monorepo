@@ -1,4 +1,4 @@
-// import "./splash-screen.scss";
+import './splash-screen.scss';
 
 import React from 'react';
 
