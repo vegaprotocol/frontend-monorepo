@@ -5,6 +5,7 @@ import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { SecondsAgo } from '../../../components/seconds-ago';
+import { Table } from '../../../components/table';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -17,21 +18,18 @@ const Block = () => {
   return (
     <section>
       <h1>BLOCK {block}</h1>
-      <table>
-        <tbody>
-          <tr>
-            <td>Mined by</td>
-            <td>{blockData?.result.block.header?.proposer_address}</td>
-          </tr>
-          <tr>
-            <td>Time</td>
-            <td>
-              <SecondsAgo date={blockData?.result.block.header?.time} />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
+      <Table>
+        <tr>
+          <td>Mined by</td>
+          <td>{blockData?.result.block.header?.proposer_address}</td>
+        </tr>
+        <tr>
+          <td>Time</td>
+          <td>
+            <SecondsAgo date={blockData?.result.block.header?.time} />
+          </td>
+        </tr>
+      </Table>
       <TxsPerBlock blockHeight={block} />
     </section>
   );
