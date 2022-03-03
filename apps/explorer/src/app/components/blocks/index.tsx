@@ -1,1 +1,1 @@
-export { BlocksTable } from './home/blocksTable';
+export { BlocksTable } from './home/blocks-table';
