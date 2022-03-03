@@ -1,7 +1,5 @@
 import classNames from 'classnames';
 import { Icon, IconName } from '../icon';
-
-/* eslint-disable-next-line */
 export interface ButtonProps {
   tag?: 'a' | 'button';
   children?: React.ReactNode;
@@ -29,10 +27,9 @@ export function Button({
     [
       'inline-flex',
       'items-center',
+      'justify-center',
       'box-border',
       'h-28',
-      'pl-28',
-      'pr-28',
       'border',
       'text-ui',
       'no-underline',
@@ -43,6 +40,13 @@ export function Button({
       'disabled:bg-disabled/25',
     ],
     {
+      'pl-28': !(
+        className?.match(/(^| )p(l|x)-\d+( |$)/) || variant === 'inline'
+      ),
+      'pr-28': !(
+        className?.match(/(^| )p(r|x)-\d+( |$)/) || variant === 'inline'
+      ),
+
       'bg-white': variant === 'primary',
       'border-light-gray-50': variant === 'primary' || variant === 'secondary',
       'text-black': variant === 'primary',
@@ -51,7 +55,6 @@ export function Button({
       'active:text-white': variant === 'primary',
       'disabled:text-gray-50': variant === 'primary' || variant === 'secondary',
       'disabled:border-neutral-593': variant === 'primary',
-      'disabled:gray-50': variant === 'primary',
 
       'bg-black': variant === 'secondary',
       'text-light-gray-50': variant === 'secondary' || variant === 'inline',

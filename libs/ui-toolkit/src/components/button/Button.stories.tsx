@@ -38,6 +38,62 @@ Inline.args = {
   variant: 'inline',
 };
 
+export const NavAccent: Story = (args) => (
+  <>
+    <div className="mb-8">
+      <Button variant="accent" className="px-4">
+        Background
+      </Button>
+    </div>
+    <div className="mb-8">
+      <Button
+        variant="accent"
+        className="pl-8 pr-4"
+        prependIconName="menu-open"
+      >
+        Background
+      </Button>
+    </div>
+    <div className="mb-8">
+      <Button
+        variant="accent"
+        className="pl-4 pr-8"
+        appendIconName="menu-closed"
+      >
+        Background
+      </Button>
+    </div>
+  </>
+);
+
+export const NavInline: Story = (args) => (
+  <>
+    <div className="mb-8">
+      <Button variant="inline" className="uppercase">
+        Background
+      </Button>
+    </div>
+    <div className="mb-8">
+      <Button
+        variant="inline"
+        className="uppercase"
+        prependIconName="menu-open"
+      >
+        Background
+      </Button>
+    </div>
+    <div className="mb-8">
+      <Button
+        variant="inline"
+        className="uppercase"
+        appendIconName="menu-closed"
+      >
+        Background
+      </Button>
+    </div>
+  </>
+);
+
 export const IconPrepend = Template.bind({});
 IconPrepend.args = {
   children: 'Icon prepend',
