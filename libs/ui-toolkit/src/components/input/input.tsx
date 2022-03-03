@@ -25,19 +25,19 @@ export const inputClassNames = ({
       'box-border',
       'h-28',
       'border',
-      'border-light-gray-50',
-      'bg-neutral-753',
-      'text-light-gray-50',
+      'bg-clip-padding',
+      'border-black/60 dark:border-white/60',
+      'bg-black/25 dark:bg-white/25',
+      'text-black/60 dark:text-white/60',
       'text-ui',
-      'focus-visible:shadow-focus',
+      'focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark',
       'focus-visible:outline-0',
+      'disabled:bg-black/10 disabled:dark:bg-white/10',
     ],
     {
       'pl-8': !className?.match(/(^| )p(l|x)-\d+( |$)/),
       'pr-8': !className?.match(/(^| )p(r|x)-\d+( |$)/),
       'border-vega-pink': hasError,
-      'text-disabled': disabled,
-      'bg-transparent': disabled,
     },
     className
   );
@@ -71,13 +71,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {...props}
         ref={ref}
         className={classNames(inputClassNames({ className, ...props }))}
-        style={inputStyle(props)}
+        style={{} /*inputStyle(props)*/}
       />
     );
     const iconName = prependIconName || appendIconName;
     if (iconName !== undefined) {
       const iconClassName = classNames(
-        ['fill-light-gray-50', 'absolute', 'z-10'],
+        ['fill-black/60 dark:fill-white/60', 'absolute', 'z-10'],
         {
           'left-8': prependIconName,
           'right-8': appendIconName,

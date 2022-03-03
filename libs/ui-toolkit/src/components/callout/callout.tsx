@@ -28,7 +28,7 @@ export function Callout({
       'shadow-intent-danger': intent === 'danger',
       'shadow-intent-warning': intent === 'warning',
       'shadow-intent-prompt': intent === 'prompt',
-      'shadow-intent-black dark:shadow-intent-progress': intent === 'progress',
+      'shadow-black dark:shadow-white': intent === 'progress',
       'shadow-intent-success': intent === 'success',
       'shadow-intent-help': intent === 'help',
       flex: !!iconName,
