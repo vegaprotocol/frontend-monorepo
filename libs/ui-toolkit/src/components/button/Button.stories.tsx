@@ -46,20 +46,12 @@ export const NavAccent: Story = (args) => (
       </Button>
     </div>
     <div className="mb-8">
-      <Button
-        variant="accent"
-        className="pl-8 pr-4"
-        prependIconName="menu-open"
-      >
+      <Button variant="accent" className="px-4" prependIconName="menu-open">
         Background
       </Button>
     </div>
     <div className="mb-8">
-      <Button
-        variant="accent"
-        className="pl-4 pr-8"
-        appendIconName="menu-closed"
-      >
+      <Button variant="accent" className="px-4" appendIconName="menu-closed">
         Background
       </Button>
     </div>
