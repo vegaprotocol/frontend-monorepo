@@ -16,7 +16,6 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       block_height: parseInt(blockHeight!),
       node_url: `${DATA_SOURCES.tendermintUrl}/`,
     }),
