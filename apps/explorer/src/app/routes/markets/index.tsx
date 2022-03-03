@@ -149,7 +149,7 @@ const Markets = () => {
 
   if (!data || !data.markets) return null;
   return (
-    <section>
+    <section className="px-8 py-12">
       <h1>Markets</h1>
       {data.markets.map((m) => (
         <React.Fragment key={m.id}>

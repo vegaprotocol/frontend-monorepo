@@ -1,10 +1,10 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { TxContent, TxDetails } from '../../../components/txs';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 import { TendermintTransactionResponse } from '../tendermint-transaction-response.d';
-import { TxDetails, TxContent } from '../../../components/txs';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
