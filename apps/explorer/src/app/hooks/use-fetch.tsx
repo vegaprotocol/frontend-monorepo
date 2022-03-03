@@ -73,6 +73,7 @@ function useFetch<T = unknown>(
 
     void fetchData();
 
+    // Do nothing if the url is not given
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
