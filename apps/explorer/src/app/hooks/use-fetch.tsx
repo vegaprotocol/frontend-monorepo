@@ -83,7 +83,6 @@ function useFetch<T = unknown>(
     return () => {
       cancelRequest.current = true;
     };
-    // Do nothing if the url is not given
   }, [fetchCallback]);
 
   return {
