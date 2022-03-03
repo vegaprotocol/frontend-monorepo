@@ -35,7 +35,9 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
       {txData.height ? (
         <tr>
           <td>Block</td>
-          <td>{txData.height}</td>
+          <td>
+            <Link to={`/blocks/${txData.height}`}>{txData.height}</Link>
+          </td>
         </tr>
       ) : null}
       <tr>
