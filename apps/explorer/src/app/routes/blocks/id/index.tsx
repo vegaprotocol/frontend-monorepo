@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlocksResponse } from '../tendermint-blocks-response';
@@ -15,18 +15,28 @@ const Block = () => {
     `${DATA_SOURCES.tendermintUrl}/block?height=${block}`
   );
 
+  const header = blockData?.result.block.header;
+
+  if (!header) {
+    return <>Could not get block data</>;
+  }
+
   return (
     <section>
       <h1>BLOCK {block}</h1>
       <Table>
         <tr>
           <td>Mined by</td>
-          <td>{blockData?.result.block.header?.proposer_address}</td>
+          <td>
+            <Link to={`/validators/${header.proposer_address}`}>
+              {header.proposer_address}
+            </Link>
+          </td>
         </tr>
         <tr>
           <td>Time</td>
           <td>
-            <SecondsAgo date={blockData?.result.block.header?.time} />
+            <SecondsAgo date={header.time} />
           </td>
         </tr>
       </Table>

@@ -30,20 +30,18 @@ export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
                   ? '1 transaction'
                   : `${block.num_txs} transactions`}
               </td>
-              {block.header?.proposer_address && (
-                <td>
-                  <Link to={`/validators/${block.header.proposer_address}`}>
-                    {block.header.proposer_address}
-                  </Link>
-                </td>
-              )}
+              <td>
+                <Link to={`/validators/${block.header?.proposer_address}`}>
+                  {block.header.proposer_address}
+                </Link>
+              </td>
               <td>
                 <SecondsAgo date={block.header?.time} />
               </td>
             </tr>
             {showTransactions && (
               <tr>
-                <TxsPerBlock blockHeight={block.header.height} />
+                <TxsPerBlock blockHeight={block.header?.height} />
               </tr>
             )}
           </>
