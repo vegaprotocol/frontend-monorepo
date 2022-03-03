@@ -1,6 +1,6 @@
-import { Codeblock } from '../../codeblock';
 import { ChainExplorerTxResponse } from '../../../routes/types/chain-explorer-response';
 import { Table } from '../../table';
+import { SyntaxHighlighter } from '../../syntax-highlighter';
 
 interface TxContentProps {
   data: ChainExplorerTxResponse | undefined;
@@ -11,14 +11,14 @@ export const TxContent = ({ data }: TxContentProps) => {
     return <>Awaiting decoded transaction data</>;
   }
 
-  const Command = JSON.parse(data.Command);
+  const { marketId, type, side, size } = JSON.parse(data.Command);
 
-  const displayCode = `{
-  "market": "${Command.marketId}",
-  "type": "${Command.type}",
-  "side": "${Command.side}",
-  "size": "${Command.size}",
-}`;
+  const displayCode = {
+    market: marketId,
+    type,
+    side,
+    size,
+  };
 
   return (
     <>
@@ -30,7 +30,7 @@ export const TxContent = ({ data }: TxContentProps) => {
       </Table>
 
       <h3>Decoded transaction content</h3>
-      <Codeblock code={displayCode} language={'javascript'} />
+      <SyntaxHighlighter data={displayCode} />
     </>
   );
 };
