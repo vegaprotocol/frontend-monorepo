@@ -3,7 +3,7 @@ import { ChainExplorerTxResponse } from '../../../routes/types/chain-explorer-re
 import { DATA_SOURCES } from '../../../config';
 
 interface TxsPerBlockProps {
-  blockHeight: string;
+  blockHeight: string | undefined;
 }
 
 export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
