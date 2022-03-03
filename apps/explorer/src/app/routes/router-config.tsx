@@ -19,7 +19,6 @@ import { PendingTxs } from './pending';
 export const Routes = {
   HOME: '/',
   TX: 'txs',
-  PENDING: 'pending',
   BLOCKS: 'blocks',
   PARTIES: 'parties',
   VALIDATORS: 'validators',
@@ -43,23 +42,16 @@ const routerConfig = [
     element: <Txs />,
     children: [
       {
+        path: 'pending',
+        element: <PendingTxs />,
+      },
+      {
         path: ':txHash',
         element: <Tx />,
       },
       {
         index: true,
         element: <TxHome />,
-      },
-    ],
-  },
-  {
-    path: Routes.PENDING,
-    name: 'Pending txs',
-    element: <Txs />,
-    children: [
-      {
-        index: true,
-        element: <PendingTxs />,
       },
     ],
   },
