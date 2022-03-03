@@ -8,8 +8,10 @@ test('It renders content within callout', () => {
 });
 
 test('It renders title and icon', () => {
-  render(<Callout icon={<div data-testid="icon" />} title="title" />);
-  expect(screen.getByTestId('icon')).toBeInTheDocument();
+  render(<Callout iconName="endorsed" title="title" />);
+  expect(
+    screen.getByTestId('callout').querySelector('svg')
+  ).toBeInTheDocument();
   expect(screen.getByText('title')).toBeInTheDocument();
 });
 
