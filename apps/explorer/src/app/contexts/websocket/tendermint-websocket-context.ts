@@ -1,5 +1,5 @@
-import React from "react";
-import { WebSocketHook } from "react-use-websocket/dist/lib/types";
+import React from 'react';
+import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 export type WebsocketContextShape = WebSocketHook;
 
@@ -9,7 +9,7 @@ export const TendermintWebsocketContext =
 export function useTendermintWebsocketContext() {
   const context = React.useContext(TendermintWebsocketContext);
   if (context === null) {
-    throw new Error("useWebsocket must be used within WebsocketContext");
+    throw new Error('useWebsocket must be used within WebsocketContext');
   }
   return context;
 }
