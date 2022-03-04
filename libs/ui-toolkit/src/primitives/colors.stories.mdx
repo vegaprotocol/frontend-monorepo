@@ -23,26 +23,17 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
   <ColorItem
     title="theme.color.white"
     subtitle="White"
-    colors={[theme.colors.white.DEFAULT]}
+    colors={[theme.colors.white]}
   />
   <ColorItem
     title="theme.color.black"
     subtitle="Black"
-    colors={[theme.colors.black.DEFAULT]}
+    colors={[theme.colors.black]}
   />
   <ColorItem
     title="theme.color.coral"
     subtitle="Coral"
     colors={[theme.colors.coral]}
-  />
-  <ColorItem
-    title="theme.color.neutral"
-    subtitle="Neutral"
-    colors={{
-      593: theme.colors.neutral[593],
-      753: theme.colors.neutral[753],
-      800: theme.colors.neutral[800],
-    }}
   />
 </ColorPalette>
 
@@ -78,7 +69,6 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
     title="theme.color.backgroundColor"
     subtitle="Intent backgroundColor"
     colors={{
-      dark: theme.colors.neutral[753],
       black: theme.colors.black.DEFAULT,
       white: theme.colors.white.DEFAULT,
       danger: theme.colors['intent-background'].danger,
