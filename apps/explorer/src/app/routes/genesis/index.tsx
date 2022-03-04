@@ -12,7 +12,7 @@ const Genesis = () => {
   if (!genesis?.result.genesis) return null;
   return (
     <section>
-      <h1>Genesis</h1>
+      <h1 data-testid="genesis-header">Genesis</h1>
       <SyntaxHighlighter data={genesis?.result.genesis} />
     </section>
   );

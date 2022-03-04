@@ -153,7 +153,7 @@ const Markets = () => {
       <h1>Markets</h1>
       {data.markets.map((m) => (
         <React.Fragment key={m.id}>
-          <h2>{m.name}</h2>
+          <h2 data-testid="markets-header">{m.name}</h2>
           <SyntaxHighlighter data={m} />
         </React.Fragment>
       ))}
