@@ -28,7 +28,7 @@ export function Button({
       'inline-flex',
       'items-center',
       'justify-center',
-      'bg-clip-padding',
+      // 'bg-clip-padding',
       'box-border',
       'h-28',
       'border',
@@ -71,18 +71,20 @@ export function Button({
       'bg-vega-yellow dark:bg-vega-yellow': variant === 'accent',
       'border-transparent dark:border-transparent':
         variant === 'accent' || variant === 'inline',
-      'hover:bg-vega-yellow/30 dark:hover:bg-vega-yellow/30':
+      'hover:bg-vega-yellow-dark dark:hover:bg-vega-yellow/30':
         variant === 'accent',
+      'hover:text-white dark:hover:text-white': variant === 'accent',
 
       'pl-4': variant === 'inline',
       'pr-4': variant === 'inline',
       'border-0': variant === 'inline',
       underline: variant === 'inline',
       'hover:no-underline': variant === 'inline',
-      'hover:border-transparent': variant === 'inline',
-      'active:border-transparent': variant === 'inline',
-      'active:text-vega-yellow dark:active:text-vega-yellow':
+      'hover:border-transparent dark:hover:border-transparent':
         variant === 'inline',
+      'active:border-transparent dark:active:border-transparent':
+        variant === 'inline',
+      'active:text-black dark:active:text-vega-yellow': variant === 'inline',
       'text-black/95 dark:text-white/95': variant === 'inline',
       'hover:text-black hover:dark:text-white': variant === 'inline',
 

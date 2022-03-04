@@ -37,7 +37,7 @@ export const inputClassNames = ({
     {
       'pl-8': !className?.match(/(^| )p(l|x)-\d+( |$)/),
       'pr-8': !className?.match(/(^| )p(r|x)-\d+( |$)/),
-      'border-vega-pink': hasError,
+      'border-vega-pink dark:border-vega-pink': hasError,
     },
     className
   );
