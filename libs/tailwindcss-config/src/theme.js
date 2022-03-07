@@ -49,26 +49,6 @@ module.exports = {
     'intent-background': {
       danger: '#9E0025', // for white text
     },
-    /*,
-    data: {
-      red: {
-        white: {
-          50: '#FFFFFF',
-          220: '#FF6057', // overlay FFF 80%
-          390: '#FF6057', // overlay FFF 60%
-          560: '#FF6057', // overlay FFF 40%
-          730: '#FF6057', // overlay FFF 20%
-          900: '#FF6057',
-        },
-        green: {
-          50: '#30F68B',
-          220: '#89DC50',
-          475: '#F2BD09',
-          730: '#FF8501',
-          900: '#FF6057',
-        },
-      },
-    },*/
   },
   spacing: {
     0: '0px',
@@ -105,19 +85,8 @@ module.exports = {
     85: '0.85',
     90: '0.9',
     95: '0.95',
-    99: '0.98',
     100: '1',
   },
-  /*
-  backgroundColor: ({ theme }) => ({
-    transparent: 'transparent',
-    dark: theme('colors.neutral.753'),
-    black: '#000',
-    white: theme('colors.white'),
-    danger: theme('colors.intent.background.danger'),
-    'neutral-200': theme('colors.neutral.200'),
-  }),
-  */
   borderWidth: {
     DEFAULT: '1px',
     1: '1px',
@@ -179,31 +148,3 @@ module.exports = {
     },
   },
 };
-
-/*
-trueGray: {
-  50: '#fafafa', 0.02, 0.98
-  100: '#f5f5f5', 0.04, 0.96
-  200: '#e5e5e5', 0.10, 0.9
-  300: '#d4d4d4', 0.17, 0.83
-  400: '#a3a3a3', 0.36, 0.64
-  500: '#737373', 0.55, 0.45
-  600: '#525252', 0.68, 0.32
-  700: '#404040', 0.75, 0.25
-  800: '#262626', 0.85, 0.15
-  900: '#171717', 0.9, 0.1
-}
-
-/*
-contrasts on #FFF
-rgba(0,0,0,0.768) or #595959 7:1
-rgba(0,0,0,0.7019) or #767676  4.5:1
-rgba(0,0,0,0.63) or #949494 3:1
-*/
-
-/*
-
-contrasts on #F2F2F2 (which is rgba(0,0,0,0.5))
-rgba(0,0,0,0.8636) or #595959 7:1
-
-*/
