@@ -21,7 +21,7 @@ export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
         return (
           <React.Fragment key={index}>
             <tr className="bg-neutral-850 border-b-4 border-b-black">
-              <td className="pl-4">
+              <td className="pl-4 py-2">
                 <Link
                   to={`/blocks/${block.header?.height}`}
                   className="text-vega-yellow"

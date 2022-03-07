@@ -23,24 +23,29 @@ const Block = () => {
 
   return (
     <section>
-      <h1>BLOCK {block}</h1>
+      <h1 className="route-header">BLOCK {block}</h1>
       <Table>
-        <tr>
-          <td>Mined by</td>
-          <td>
-            <Link to={`/validators/${header.proposer_address}`}>
+        <tr className="table-bordered-tr">
+          <td className="table-bordered-td">Mined by</td>
+          <td className="table-bordered-td">
+            <Link
+              className="text-vega-yellow"
+              to={`/validators/${header.proposer_address}`}
+            >
               {header.proposer_address}
             </Link>
           </td>
         </tr>
-        <tr>
-          <td>Time</td>
-          <td>
+        <tr className="table-bordered-tr">
+          <td className="table-bordered-td">Time</td>
+          <td className="table-bordered-td">
             <SecondsAgo date={header.time} />
           </td>
         </tr>
       </Table>
-      <TxsPerBlock blockHeight={block} />
+      {blockData?.result.block.data.txs.length > 0 && (
+        <TxsPerBlock blockHeight={block} />
+      )}
     </section>
   );
 };
