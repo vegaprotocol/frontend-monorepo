@@ -3,6 +3,7 @@ import { inputClassNames } from '../input/input';
 
 export interface TextAreaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+  hassError?: boolean;
   className?: string;
 }
 
