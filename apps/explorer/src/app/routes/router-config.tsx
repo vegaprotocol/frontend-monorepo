@@ -15,7 +15,7 @@ import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
 import { Txs as TxHome } from './txs/home';
 import { PendingTxs } from './pending';
-
+import flags from '../lib/flags';
 export const Routes = {
   HOME: '/',
   TX: 'txs',
@@ -28,6 +28,85 @@ export const Routes = {
   MARKETS: 'markets',
   NETWORK_PARAMETERS: 'network-parameters',
 };
+
+const partiesRoutes = flags.parties
+  ? [
+      {
+        path: Routes.PARTIES,
+        name: 'Parties',
+        element: <Party />,
+        children: [
+          {
+            index: true,
+            element: <Parties />,
+          },
+          {
+            path: ':party',
+            element: <PartySingle />,
+          },
+        ],
+      },
+    ]
+  : [];
+
+const assetsRoutes = flags.assets
+  ? [
+      {
+        path: Routes.ASSETS,
+        name: 'Assets',
+        element: <Assets />,
+      },
+    ]
+  : [];
+
+const genesisRoutes = flags.genesis
+  ? [
+      {
+        path: Routes.GENESIS,
+        name: 'Genesis',
+        element: <Genesis />,
+      },
+    ]
+  : [];
+
+const governanceRoutes = flags.governance
+  ? [
+      {
+        path: Routes.GOVERNANCE,
+        name: 'Governance',
+        element: <Governance />,
+      },
+    ]
+  : [];
+
+const marketsRoutes = flags.markets
+  ? [
+      {
+        path: Routes.MARKETS,
+        name: 'Markets',
+        element: <Markets />,
+      },
+    ]
+  : [];
+
+const networkParametersRoutes = flags.networkParameters
+  ? [
+      {
+        path: Routes.NETWORK_PARAMETERS,
+        name: 'NetworkParameters',
+        element: <NetworkParameters />,
+      },
+    ]
+  : [];
+const validators = flags.validators
+  ? [
+      {
+        path: Routes.VALIDATORS,
+        name: 'Validators',
+        element: <Validators />,
+      },
+    ]
+  : [];
 
 const routerConfig = [
   {
@@ -70,51 +149,13 @@ const routerConfig = [
       },
     ],
   },
-  {
-    path: Routes.PARTIES,
-    name: 'Parties',
-    element: <Party />,
-    children: [
-      {
-        index: true,
-        element: <Parties />,
-      },
-      {
-        path: ':party',
-        element: <PartySingle />,
-      },
-    ],
-  },
-  {
-    path: Routes.ASSETS,
-    name: 'Assets',
-    element: <Assets />,
-  },
-  {
-    path: Routes.GENESIS,
-    name: 'Genesis',
-    element: <Genesis />,
-  },
-  {
-    path: Routes.GOVERNANCE,
-    name: 'Governance',
-    element: <Governance />,
-  },
-  {
-    path: Routes.MARKETS,
-    name: 'Markets',
-    element: <Markets />,
-  },
-  {
-    path: Routes.NETWORK_PARAMETERS,
-    name: 'NetworkParameters',
-    element: <NetworkParameters />,
-  },
-  {
-    path: Routes.VALIDATORS,
-    name: 'Validators',
-    element: <Validators />,
-  },
+  ...partiesRoutes,
+  ...assetsRoutes,
+  ...genesisRoutes,
+  ...governanceRoutes,
+  ...marketsRoutes,
+  ...networkParametersRoutes,
+  ...validators,
 ];
 
 export default routerConfig;
