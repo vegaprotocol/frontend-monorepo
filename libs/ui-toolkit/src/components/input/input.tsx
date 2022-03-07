@@ -11,11 +11,9 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 export const inputClassNames = ({
   hasError,
-  disabled,
   className,
 }: {
   hasError?: boolean;
-  disabled?: boolean;
   className?: string;
 }) =>
   classNames(
@@ -23,7 +21,6 @@ export const inputClassNames = ({
       'inline-flex',
       'items-center',
       'box-border',
-      'h-28',
       'border',
       'bg-clip-padding',
       'border-black/60 dark:border-white/60',
@@ -71,7 +68,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {...props}
         ref={ref}
         className={classNames(inputClassNames({ className, ...props }))}
-        style={{} /*inputStyle(props)*/}
       />
     );
     const iconName = prependIconName || appendIconName;
