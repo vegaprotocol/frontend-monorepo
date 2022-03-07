@@ -1,9 +1,4 @@
-import {
-  AnchorHTMLAttributes,
-  ButtonHTMLAttributes,
-  InputHTMLAttributes,
-  forwardRef,
-} from 'react';
+import { AnchorHTMLAttributes, ButtonHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
 import { Icon, IconName } from '../icon';
 
@@ -53,10 +48,10 @@ const getClassName = (
       'active:border-black dark:active:border-white': true,
 
       'bg-black dark:bg-white': variant === 'primary',
-      'border-black/60 dark:border-white/60':
+      'border-black-60 dark:border-white-60':
         variant === 'primary' || variant === 'secondary',
       'text-white dark:text-black': variant === 'primary',
-      'hover:bg-black/80 dark:hover:bg-white/80': variant === 'primary',
+      'hover:bg-black-80 dark:hover:bg-white-80': variant === 'primary',
       'active:bg-white dark:active:bg-black':
         variant === 'primary' || variant === 'accent',
       'active:text-black dark:active:text-white':
@@ -64,7 +59,7 @@ const getClassName = (
 
       'bg-white dark:bg-black': variant === 'secondary',
       'text-black dark:text-white': variant === 'secondary',
-      'hover:bg-black/25 dark:hover:bg-white/25': variant === 'secondary',
+      'hover:bg-black-25 dark:hover:bg-white-25': variant === 'secondary',
       'hover:text-black dark:hover:text-white':
         variant === 'secondary' || variant === 'accent',
       'active:bg-black dark:active:bg-white': variant === 'secondary',
@@ -88,13 +83,13 @@ const getClassName = (
       'active:border-transparent dark:active:border-transparent':
         variant === 'inline',
       'active:text-black dark:active:text-vega-yellow': variant === 'inline',
-      'text-black/95 dark:text-white/95': variant === 'inline',
+      'text-black-95 dark:text-white-95': variant === 'inline',
       'hover:text-black hover:dark:text-white': variant === 'inline',
 
-      'disabled:bg-black/10 dark:disabled:bg-white/10': variant !== 'inline',
-      'disabled:text-black/60 dark:disabled:text-white/60':
+      'disabled:bg-black-10 dark:disabled:bg-white-10': variant !== 'inline',
+      'disabled:text-black-60 dark:disabled:text-white-60':
         variant !== 'inline',
-      'disabled:border-black/25 dark:disabled:border-white/25':
+      'disabled:border-black-25 dark:disabled:border-white-25':
         variant !== 'inline',
     },
     className

@@ -19,7 +19,7 @@ export const InputError = ({
       'box-border',
       'h-28',
       'border-l-4',
-      'text-black/95 dark:text-white/95',
+      'text-black-95 dark:text-white-95',
       'text-ui',
     ],
     {

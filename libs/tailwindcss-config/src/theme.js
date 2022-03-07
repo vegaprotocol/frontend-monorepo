@@ -8,8 +8,30 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
-    white: '#FFF',
-    black: '#000',
+    white: {
+      DEFAULT: '#FFF',
+      '02': 'rgba(255, 255, 255, 0.02)',
+      '05': 'rgba(255, 255, 255, 0.05)',
+      10: 'rgba(255, 255, 255, 0.10)',
+      25: 'rgba(255, 255, 255, 0.25)',
+      40: 'rgba(255, 255, 255, 0.40)',
+      60: 'rgba(255, 255, 255, 0.60)',
+      80: 'rgba(255, 255, 255, 0.80)',
+      95: 'rgba(255, 255, 255, 0.95)',
+      100: 'rgba(255, 255, 255, 1.00)',
+    },
+    black: {
+      DEFAULT: '#000',
+      '02': 'rgba(0, 0, 0, 0.02)',
+      '05': 'rgba(0, 0, 0, 0.05)',
+      10: 'rgba(0, 0, 0, 0.10)',
+      25: 'rgba(0, 0, 0, 0.25)',
+      40: 'rgba(0, 0, 0, 0.40)',
+      60: 'rgba(0, 0, 0, 0.60)',
+      80: 'rgba(0, 0, 0, 0.80)',
+      95: 'rgba(0, 0, 0, 0.95)',
+      100: 'rgba(0, 0, 0, 1)',
+    },
     coral: '#FF6057',
     vega: {
       yellow: '#EDFF22',
@@ -151,7 +173,7 @@ module.exports = {
 
   extend: {
     boxShadow: {
-      callout: '5px 5px 0 1px rgba(0, 0, 0, 0.05)',
+      callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
       focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
       'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
     },
