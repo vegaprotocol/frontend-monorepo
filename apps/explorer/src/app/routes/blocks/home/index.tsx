@@ -16,7 +16,9 @@ const Blocks = () => {
     <>
       <section>
         <h1>Blocks</h1>
-        <button onClick={() => refetch()}>Refresh to see latest blocks</button>
+        <button data-testid="refresh" onClick={() => refetch()}>
+          Refresh to see latest blocks
+        </button>
         <BlocksTable data={data} />
       </section>
 
