@@ -6,6 +6,6 @@ export { EthereumUtils };
 export { EtherscanLink } from './components/etherscan-link';
 export { Icon } from './components/icon';
 export { Input } from './components/input';
-export { InputError } from './components/inputError';
+export { InputError } from './components/input-error';
 export { Select } from './components/select';
 export { TextArea } from './components/text-area';

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { InputError } from './inputError';
+import { InputError } from './input-error';
 
 describe('InputError', () => {
   it('should render successfully', () => {
