@@ -1,34 +1,17 @@
+import { SelectHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
-import { inputClassNames, inputStyle } from '../input/input';
+import { inputClassNames } from '../input/input';
 
 /* eslint-disable-next-line */
-export interface TextAreaProps {
-  onChange?: React.FormEventHandler<HTMLSelectElement>;
+export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
-  disabled?: boolean;
   className?: string;
   value?: string | number;
   children?: React.ReactNode;
 }
 
-export function Select({
-  hasError,
-  onChange,
-  disabled,
-  className,
-  children,
-}: TextAreaProps) {
-  return (
-    <select
-      onChange={onChange}
-      className={classNames(
-        inputClassNames({ hasError, disabled, className }),
-        'h-28'
-      )}
-      disabled={disabled}
-      style={inputStyle({ disabled })}
-    >
-      {children}
-    </select>
-  );
-}
+export const Select = forwardRef<HTMLTextAreaElement, SelectProps>(
+  (props, ref) => (
+    <select {...props} className={classNames(inputClassNames(props), 'h-28')} />
+  )
+);

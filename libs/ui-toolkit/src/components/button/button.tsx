@@ -1,29 +1,32 @@
+import {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  InputHTMLAttributes,
+  forwardRef,
+} from 'react';
 import classNames from 'classnames';
 import { Icon, IconName } from '../icon';
-export interface ButtonProps {
-  tag?: 'a' | 'button';
+
+interface CommonProps {
   children?: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLButtonElement> &
-    React.MouseEventHandler<HTMLAnchorElement>;
   variant?: 'primary' | 'secondary' | 'accent' | 'inline';
-  disabled?: boolean;
   className?: string;
   prependIconName?: IconName;
   appendIconName?: IconName;
 }
+export interface ButtonProps
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    CommonProps {}
 
-export function Button({
-  tag = 'button',
-  variant = 'primary',
-  children,
-  onClick,
-  disabled,
-  className,
-  prependIconName,
-  appendIconName,
-}: ButtonProps) {
-  const ButtonTag: keyof JSX.IntrinsicElements = tag;
-  const effectiveClassName = classNames(
+export interface AnchorButtonProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement>,
+    CommonProps {}
+
+const getClassName = (
+  className: CommonProps['className'],
+  variant: CommonProps['variant']
+) =>
+  classNames(
     [
       'inline-flex',
       'items-center',
@@ -53,7 +56,7 @@ export function Button({
       'border-black/60 dark:border-white/60':
         variant === 'primary' || variant === 'secondary',
       'text-white dark:text-black': variant === 'primary',
-      'hover:bg-black/70 dark:hover:bg-white/70': variant === 'primary',
+      'hover:bg-black/80 dark:hover:bg-white/80': variant === 'primary',
       'active:bg-white dark:active:bg-black':
         variant === 'primary' || variant === 'accent',
       'active:text-black dark:active:text-white':
@@ -96,24 +99,66 @@ export function Button({
     },
     className
   );
-  let icon;
+
+const getContent = (
+  children: React.ReactNode,
+  prependIconName?: IconName,
+  appendIconName?: IconName
+) => {
   const iconName = prependIconName || appendIconName;
-  if (iconName !== undefined) {
-    const iconClassName = classNames(['fill-current'], {
-      'mr-8': prependIconName,
-      'ml-8': appendIconName,
-    });
-    icon = <Icon name={iconName} className={iconClassName} size={16} />;
+  if (iconName === undefined) {
+    return children;
   }
+  const iconClassName = classNames(['fill-current'], {
+    'mr-8': prependIconName,
+    'ml-8': appendIconName,
+  });
+  const icon = <Icon name={iconName} className={iconClassName} size={16} />;
   return (
-    <ButtonTag
-      onClick={onClick}
-      className={effectiveClassName}
-      disabled={disabled}
-    >
+    <>
       {prependIconName && icon}
       {children}
       {appendIconName && icon}
-    </ButtonTag>
+    </>
   );
-}
+};
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      variant = 'primary',
+      children,
+      className,
+      prependIconName,
+      appendIconName,
+      ...prosp
+    },
+    ref
+  ) => {
+    return (
+      <button ref={ref} className={getClassName(className, variant)} {...prosp}>
+        {getContent(children, prependIconName, appendIconName)}
+      </button>
+    );
+  }
+);
+
+export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
+  (
+    {
+      variant = 'primary',
+      children,
+      className,
+      prependIconName,
+      appendIconName,
+      ...prosp
+    },
+    ref
+  ) => {
+    return (
+      <a ref={ref} className={getClassName(className, variant)} {...prosp}>
+        {getContent(children, prependIconName, appendIconName)}
+      </a>
+    );
+  }
+);
