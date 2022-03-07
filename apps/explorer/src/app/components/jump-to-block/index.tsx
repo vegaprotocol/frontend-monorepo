@@ -20,8 +20,20 @@ export const JumpToBlock = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type={'tel'} name={'blockNumber'} placeholder={'Block number'} />
-      <input type={'submit'} value={'Go'} />
+      <label
+        htmlFor="block-input"
+        className="block uppercase text-h5 font-bold"
+      >
+        Jump to block
+      </label>
+      <input
+        id="block-input"
+        type={'tel'}
+        name={'blockNumber'}
+        placeholder={'Block number'}
+        className="form-input"
+      />
+      <input className="form-submit" type={'submit'} value={'Go'} />
     </form>
   );
 };

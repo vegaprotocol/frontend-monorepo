@@ -1,4 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
+
+.route-header {
+  @apply font-alpha text-h3 uppercase mt-12 mb-28;
+}
+
+/* Used for text, tel input */
+.form-input {
+  @apply bg-neutral-800 border-white border px-8 py-4 placeholder-neutral-300;
+}
+
+.form-submit {
+  @apply border-white border px-28 py-4;
+}
+
 @tailwind utilities;

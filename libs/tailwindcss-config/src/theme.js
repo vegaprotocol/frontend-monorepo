@@ -86,6 +86,7 @@ module.exports = {
   },
   backgroundColor: ({ theme }) => ({
     transparent: 'transparent',
+    neutral: theme('colors.neutral'),
     dark: theme('colors.dark'),
     black: '#000',
     white: theme('colors.white'),

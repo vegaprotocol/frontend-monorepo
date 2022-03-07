@@ -1,7 +1,7 @@
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlockchainResponse } from '../tendermint-blockchain-response';
-import { BlocksTable } from '../../../components/blocks';
+import { BlocksTable, BlocksRefetch } from '../../../components/blocks';
 import { JumpToBlock } from '../../../components/jump-to-block';
 
 const Blocks = () => {
@@ -15,8 +15,8 @@ const Blocks = () => {
   return (
     <>
       <section>
-        <h1>Blocks</h1>
-        <button onClick={() => refetch()}>Refresh to see latest blocks</button>
+        <h1 className="route-header">Blocks</h1>
+        <BlocksRefetch refetch={refetch} />
         <BlocksTable data={data} />
       </section>
 
