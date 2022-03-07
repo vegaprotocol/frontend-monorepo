@@ -2,7 +2,6 @@ import { SelectHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
 import { inputClassNames } from '../input/input';
 
-/* eslint-disable-next-line */
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
   className?: string;
@@ -10,8 +9,12 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   children?: React.ReactNode;
 }
 
-export const Select = forwardRef<HTMLTextAreaElement, SelectProps>(
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(
   (props, ref) => (
-    <select {...props} className={classNames(inputClassNames(props), 'h-28')} />
+    <select
+      ref={ref}
+      {...props}
+      className={classNames(inputClassNames(props), 'h-28')}
+    />
   )
 );
