@@ -20,23 +20,23 @@ export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
       {data.result?.block_metas?.map((block, index) => {
         return (
           <React.Fragment key={index}>
-            <tr>
-              <td>
+            <tr data-testid="block-row">
+              <td data-testid="block-height">
                 <Link to={`/blocks/${block.header?.height}`}>
                   {block.header?.height}
                 </Link>
               </td>
-              <td>
+              <td data-testid="num-txs">
                 {block.num_txs === '1'
                   ? '1 transaction'
                   : `${block.num_txs} transactions`}
               </td>
-              <td>
+              <td data-testid="validator-link">
                 <Link to={`/validators/${block.header?.proposer_address}`}>
                   {block.header.proposer_address}
                 </Link>
               </td>
-              <td>
+              <td data-testid="block-time">
                 <SecondsAgo date={block.header?.time} />
               </td>
             </tr>

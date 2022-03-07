@@ -1,5 +1,5 @@
 export default class BasePage {
-  transactionsUrl = '/tsx';
+  transactionsUrl = '/txs';
   blocksUrl = '/blocks';
   partiesUrl = '/parties';
   assetsUrl = '/assets';
