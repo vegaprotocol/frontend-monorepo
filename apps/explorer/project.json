@@ -75,7 +75,7 @@
         ]
       }
     },
-    "build:netlify": {
+    "build-netlify": {
       "builder": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
