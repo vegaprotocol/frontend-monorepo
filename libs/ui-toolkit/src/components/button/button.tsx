@@ -32,7 +32,6 @@ const getClassName = (
       'inline-flex',
       'items-center',
       'justify-center',
-      // 'bg-clip-padding',
       'box-border',
       'h-28',
       'border',
