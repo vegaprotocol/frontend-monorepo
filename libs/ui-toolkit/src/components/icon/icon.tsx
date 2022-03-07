@@ -24,11 +24,9 @@ export const Icon = ({ size = 16, name, className }: IconProps) => {
   const viewbox = size <= 16 ? '0 0 16 16' : '0 0 20 20';
   return (
     <svg className={effectiveClassName} viewBox={viewbox}>
-      <g>
-        {(size <= 16 ? IconSvgPaths16 : IconSvgPaths20)[name].map((d, key) => (
-          <path fillRule="evenodd" clipRule="evenodd" d={d} key={key} />
-        ))}
-      </g>
+      {(size <= 16 ? IconSvgPaths16 : IconSvgPaths20)[name].map((d, key) => (
+        <path fillRule="evenodd" clipRule="evenodd" d={d} key={key} />
+      ))}
     </svg>
   );
 };
