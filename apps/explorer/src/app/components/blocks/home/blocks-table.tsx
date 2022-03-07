@@ -12,7 +12,7 @@ interface BlocksProps {
 
 export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
   if (!data?.result) {
-    return <>No block data</>;
+    return <div className="mb-28">Awaiting block data</div>;
   }
 
   return (
@@ -20,23 +20,26 @@ export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
       {data.result?.block_metas?.map((block, index) => {
         return (
           <React.Fragment key={index}>
-            <tr data-testid="block-row">
-              <td data-testid="block-height">
-                <Link to={`/blocks/${block.header?.height}`}>
+            <tr className="bg-neutral-850 border-b-4 border-b-black">
+              <td className="pl-4">
+                <Link
+                  to={`/blocks/${block.header?.height}`}
+                  className="text-vega-yellow"
+                >
                   {block.header?.height}
                 </Link>
               </td>
-              <td data-testid="num-txs">
+              <td className="px-8 text-center">
                 {block.num_txs === '1'
                   ? '1 transaction'
                   : `${block.num_txs} transactions`}
               </td>
-              <td data-testid="validator-link">
+              <td className="px-8 text-center">
                 <Link to={`/validators/${block.header?.proposer_address}`}>
                   {block.header.proposer_address}
                 </Link>
               </td>
-              <td data-testid="block-time">
+              <td className="text-center pr-28 text-neutral-300">
                 <SecondsAgo date={block.header?.time} />
               </td>
             </tr>
