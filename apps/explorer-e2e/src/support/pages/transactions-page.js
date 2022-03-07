@@ -21,6 +21,8 @@ export default class TransactionsPage extends BasePage {
       .first()
       .invoke('text')
       .then((blockHeightTxt) => {
+        cy.wait(1000); // eslint-disable-line cypress/no-unnecessary-waiting
+        //Wait needed to allow blocks to change
         cy.getByTestId(this.refreshBtn).click();
 
         cy.getByTestId(this.blockHeight)
