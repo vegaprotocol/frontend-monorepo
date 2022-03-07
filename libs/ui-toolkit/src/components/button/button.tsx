@@ -126,12 +126,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       prependIconName,
       appendIconName,
-      ...prosp
+      ...props
     },
     ref
   ) => {
     return (
-      <button ref={ref} className={getClassName(className, variant)} {...prosp}>
+      <button ref={ref} className={getClassName(className, variant)} {...props}>
         {getContent(children, prependIconName, appendIconName)}
       </button>
     );
