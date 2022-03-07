@@ -20,8 +20,14 @@ export interface AnchorButtonProps
 const getClassName = (
   className: CommonProps['className'],
   variant: CommonProps['variant']
-) =>
-  classNames(
+) => {
+  const noPaddingLeftProvided = !(
+    className?.match(/(^| )p(l|x)-\d+( |$)/) || variant === 'inline'
+  );
+  const noPaddingRightProvided = !(
+    className?.match(/(^| )p(r|x)-\d+( |$)/) || variant === 'inline'
+  );
+  return classNames(
     [
       'inline-flex',
       'items-center',
@@ -37,12 +43,8 @@ const getClassName = (
       'transition-all',
     ],
     {
-      'pl-28': !(
-        className?.match(/(^| )p(l|x)-\d+( |$)/) || variant === 'inline'
-      ),
-      'pr-28': !(
-        className?.match(/(^| )p(r|x)-\d+( |$)/) || variant === 'inline'
-      ),
+      'pl-28': noPaddingLeftProvided,
+      'pr-28': noPaddingRightProvided,
 
       'hover:border-black dark:hover:border-white': variant !== 'inline',
       'active:border-black dark:active:border-white': true,
@@ -94,6 +96,7 @@ const getClassName = (
     },
     className
   );
+};
 
 const getContent = (
   children: React.ReactNode,
