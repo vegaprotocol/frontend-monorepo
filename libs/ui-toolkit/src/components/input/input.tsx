@@ -15,8 +15,10 @@ export const inputClassNames = ({
 }: {
   hasError?: boolean;
   className?: string;
-}) =>
-  classNames(
+}) => {
+  const noPaddingLeftProvided = !className?.match(/(^| )p(l|x)-\d+( |$)/);
+  const noPaddingRightProvided = !className?.match(/(^| )p(r|x)-\d+( |$)/);
+  return classNames(
     [
       'inline-flex',
       'items-center',
@@ -32,12 +34,13 @@ export const inputClassNames = ({
       'disabled:bg-black-10 disabled:dark:bg-white-10',
     ],
     {
-      'pl-8': !className?.match(/(^| )p(l|x)-\d+( |$)/),
-      'pr-8': !className?.match(/(^| )p(r|x)-\d+( |$)/),
+      'pl-8': noPaddingLeftProvided,
+      'pr-8': noPaddingRightProvided,
       'border-vega-pink dark:border-vega-pink': hasError,
     },
     className
   );
+};
 
 export const inputStyle = ({
   style,
