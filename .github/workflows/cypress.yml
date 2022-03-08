@@ -24,10 +24,10 @@ jobs:
         with:
           node-version: 16
       - name: Install root dependencies
-        run: npm install
+        run: yarn install
       - name: Start server
         run: |
-          nx serve explorer
+          yarn nx serve explorer
 
       - name: Cypress run
         uses: cypress-io/github-action@v2
