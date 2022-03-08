@@ -1,4 +1,8 @@
-import { useCallback, useState } from 'react';
+import { Button, Input } from '@vegaprotocol/ui-toolkit';
+import { useCallback, useEffect, useState } from 'react';
+import { ExpirySelector } from './expiry-selector';
+import { SideSelector } from './side-selector';
+import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 
 export enum OrderType {
@@ -6,40 +10,45 @@ export enum OrderType {
   Limit = 'TYPE_LIMIT',
 }
 
-type OrderSide = 'SIDE_BUY' | 'SIDE_SELL' | null;
+export enum OrderSide {
+  Buy = 'SIDE_BUY',
+  Sell = 'SIDE_SELL',
+}
 
-type OrderTimeInForce =
-  | 'TIME_IN_FORCE_GTC'
-  | 'TIME_IN_FORCE_GTT'
-  | 'TIME_IN_FORCE_IOC'
-  | 'TIME_IN_FORCE_FOK'
-  | 'TIME_IN_FORCE_GFN'
-  | 'TIME_IN_FORCE_GFA';
+export enum OrderTimeInForce {
+  GTC = 'TIME_IN_FORCE_GTC',
+  GTT = 'TIME_IN_FORCE_GTT',
+  IOC = 'TIME_IN_FORCE_IOC',
+  FOK = 'TIME_IN_FORCE_FOK',
+  GFN = 'TIME_IN_FORCE_GFN',
+  GFA = 'TIME_IN_FORCE_GFA',
+}
 
 export interface LimitOrder {
   price: string;
   size: string;
   type: OrderType.Limit;
   timeInForce: OrderTimeInForce;
-  side: OrderSide;
-  expiration?: string;
+  side: OrderSide | null;
+  expiration?: Date;
 }
 
 export interface MarketOrder {
   size: string;
   type: OrderType.Market;
   timeInForce: OrderTimeInForce;
-  side: OrderSide;
+  side: OrderSide | null;
 }
 
 export type Order = LimitOrder | MarketOrder;
 
 export const DealTicket = () => {
   const [order, setOrder] = useState<Order>({
-    type: OrderType.Market,
+    type: OrderType.Limit,
     side: null,
     size: '0',
-    timeInForce: 'TIME_IN_FORCE_IOC',
+    price: '0',
+    timeInForce: OrderTimeInForce.GTT,
   });
 
   const updateOrder = useCallback((orderUpdate: Partial<Order>) => {
@@ -71,9 +80,38 @@ interface DealTicketMarketProps {
 }
 
 const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
+  // If market ticket mounts with an invalid TIF update it to IOC
+  useEffect(() => {
+    if (
+      order.timeInForce !== OrderTimeInForce.FOK &&
+      order.timeInForce !== OrderTimeInForce.IOC
+    ) {
+      updateOrder({ timeInForce: OrderTimeInForce.IOC });
+    }
+  }, [order, updateOrder]);
+
   return (
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
+      <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
+      <div className="flex items-center gap-8 mb-12">
+        <div className="flex-1">
+          <Input
+            value={order.size}
+            onChange={(e) => updateOrder({ size: e.target.value })}
+            className="w-full"
+          />
+        </div>
+        <div className="flex-1">@ ~3,201 DAI</div>
+      </div>
+      <TimeInForceSelector
+        order={order}
+        onSelect={(timeInForce) => updateOrder({ timeInForce })}
+      />
+      <Button className="w-full" variant="primary">
+        Place order
+      </Button>
+
       <pre>{JSON.stringify(order, null, 2)}</pre>
     </>
   );
@@ -85,9 +123,51 @@ interface DealTicketLimitProps {
 }
 
 const DealTicketLimit = ({ order, updateOrder }: DealTicketLimitProps) => {
+  // If limit ticket mounts without a price set it to zero
+  useEffect(() => {
+    if (order.price === null || order.price === undefined) {
+      updateOrder({ price: '0' });
+    }
+  }, [order, updateOrder]);
+
   return (
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
+      <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
+      <div className="flex items-center gap-8 mb-12">
+        <div className="flex-1">
+          <Input
+            value={order.size}
+            onChange={(e) => updateOrder({ size: e.target.value })}
+            className="w-full"
+          />
+        </div>
+        <div>@</div>
+        <div className="flex-1">
+          <Input
+            value={order.price}
+            onChange={(e) => updateOrder({ price: e.target.value })}
+            className="w-full"
+          />
+        </div>
+      </div>
+      <TimeInForceSelector
+        order={order}
+        onSelect={(timeInForce) => updateOrder({ timeInForce })}
+      />
+      {order.timeInForce === OrderTimeInForce.GTT && (
+        <ExpirySelector
+          order={order}
+          onSelect={(date) => {
+            if (date) {
+              updateOrder({ expiration: date });
+            }
+          }}
+        />
+      )}
+      <Button className="w-full" variant="primary">
+        Place order
+      </Button>
       <pre>{JSON.stringify(order, null, 2)}</pre>
     </>
   );
