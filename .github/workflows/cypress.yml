@@ -27,7 +27,7 @@ jobs:
         run: yarn install
       - name: Start server
         run: |
-          yarn nx serve explorer
+          yarn nx serve explorer &
 
       - name: Cypress run
         uses: cypress-io/github-action@v2
