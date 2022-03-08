@@ -1,5 +1,6 @@
+import { DealTicket } from '../deal-ticket';
+
 export const Chart = () => <div>TODO: Chart</div>;
-export const Ticket = () => <div>TODO: Ticket</div>;
 export const Orderbook = () => <div>TODO: Orderbook</div>;
 export const Orders = () => <div>TODO: Orders</div>;
 export const Positions = () => <div>TODO: Positions</div>;
@@ -9,7 +10,7 @@ export type TradingView = keyof typeof TradingViews;
 
 export const TradingViews = {
   chart: Chart,
-  ticket: Ticket,
+  ticket: DealTicket,
   orderbook: Orderbook,
   orders: Orders,
   positions: Positions,
