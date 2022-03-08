@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 16
       - name: Install root dependencies
-        run: yarn install
+        run: npm install
       - name: Start server
         run: |
           nx serve explorer
