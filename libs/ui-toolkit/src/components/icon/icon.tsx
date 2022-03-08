@@ -4,8 +4,6 @@ import classNames from 'classnames';
 export type { IconName } from '@blueprintjs/icons';
 
 interface IconProps {
-  hasError?: boolean;
-  disabled?: boolean;
   name: IconName;
   className?: string;
   size?: 16 | 20 | 24 | 32 | 48 | 64;

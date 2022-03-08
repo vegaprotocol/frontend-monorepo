@@ -1,6 +1,10 @@
 import { InputHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
 import { Icon, IconName } from '../icon';
+import {
+  paddingLeftProvided,
+  paddingRightProvided,
+} from '../../utils/class-names';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   hasError?: boolean;
@@ -16,8 +20,6 @@ export const inputClassNames = ({
   hasError?: boolean;
   className?: string;
 }) => {
-  const noPaddingLeftProvided = !className?.match(/(^| )p(l|x)-\d+( |$)/);
-  const noPaddingRightProvided = !className?.match(/(^| )p(r|x)-\d+( |$)/);
   return classNames(
     [
       'inline-flex',
@@ -34,8 +36,8 @@ export const inputClassNames = ({
       'disabled:bg-black-10 disabled:dark:bg-white-10',
     ],
     {
-      'pl-8': noPaddingLeftProvided,
-      'pr-8': noPaddingRightProvided,
+      'pl-8': !paddingLeftProvided(className),
+      'pr-8': !paddingRightProvided(className),
       'border-vega-pink dark:border-vega-pink': hasError,
     },
     className
