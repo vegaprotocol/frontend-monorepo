@@ -5,7 +5,7 @@ import { RestConnectorForm } from './rest-connector-form';
 import { useEffect } from 'react';
 import { RestConnector, useVegaWallet } from '.';
 
-interface VegaConnectDialogProps {
+export interface VegaConnectDialogProps {
   connectors: { [name: string]: VegaConnector };
   dialogOpen: boolean;
   setDialogOpen: (isOpen: boolean) => void;
