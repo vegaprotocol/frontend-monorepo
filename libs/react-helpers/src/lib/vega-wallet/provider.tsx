@@ -10,6 +10,7 @@ import {
 import { VegaKeyExtended, VegaWalletContextShape } from '.';
 import { VegaConnector } from './connectors';
 import { VegaWalletContext } from './context';
+import { WALLET_KEY } from './storage-keys';
 
 interface VegaWalletProviderProps {
   children: ReactNode;
@@ -18,7 +19,7 @@ interface VegaWalletProviderProps {
 export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   // Current selected publicKey, default with value from local storage
   const [publicKey, setPublicKey] = useState<string | null>(() => {
-    const pk = LocalStorage.getItem('vega_selected_publickey');
+    const pk = LocalStorage.getItem(WALLET_KEY);
     return pk ? pk : null;
   });
 
@@ -34,8 +35,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       const res = await connector.current.connect();
 
       if (!res) {
-        console.log('connect failed', res);
-        return;
+        return null;
       }
 
       const publicKeysWithName = res.map((pk) => {
@@ -46,8 +46,10 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
         };
       });
       setKeypairs(publicKeysWithName);
+      return publicKeysWithName;
     } catch (err) {
       console.error(err);
+      return null;
     }
   }, []);
 
@@ -56,8 +58,10 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       await connector.current?.disconnect();
       setKeypairs(null);
       connector.current = null;
+      return true;
     } catch (err) {
       console.error(err);
+      return false;
     }
   }, []);
 
@@ -75,7 +79,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
   // Whenever selected public key changes store it
   useEffect(() => {
     if (publicKey) {
-      LocalStorage.setItem('vega_selected_publickey', publicKey);
+      LocalStorage.setItem(WALLET_KEY, publicKey);
     }
   }, [publicKey]);
 

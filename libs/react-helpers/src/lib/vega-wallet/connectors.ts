@@ -5,6 +5,7 @@ import {
   VegaKey,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/storage';
+import { WALLET_CONFIG } from './storage-keys';
 
 export interface VegaConnector {
   /** Description of how to use this connector */
@@ -28,7 +29,7 @@ interface RestConnectorConfig {
  * Connector for using the Vega Wallet Service rest api, requires authentication to get a session token
  */
 export class RestConnector implements VegaConnector {
-  static storageKey = 'vega_wallet';
+  configKey = WALLET_CONFIG;
   apiConfig: Configuration;
   service: DefaultApi;
   description = 'Connects using REST to the Vega wallet desktop app';
@@ -95,11 +96,11 @@ export class RestConnector implements VegaConnector {
   }
 
   private setConfig(cfg: RestConnectorConfig) {
-    LocalStorage.setItem(RestConnector.storageKey, JSON.stringify(cfg));
+    LocalStorage.setItem(this.configKey, JSON.stringify(cfg));
   }
 
   private getConfig(): RestConnectorConfig | null {
-    const cfg = LocalStorage.getItem(RestConnector.storageKey);
+    const cfg = LocalStorage.getItem(this.configKey);
     if (cfg) {
       try {
         const obj = JSON.parse(cfg);
@@ -113,7 +114,7 @@ export class RestConnector implements VegaConnector {
   }
 
   private clearConfig() {
-    LocalStorage.removeItem(RestConnector.storageKey);
+    LocalStorage.removeItem(this.configKey);
   }
 }
 

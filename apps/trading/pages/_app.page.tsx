@@ -5,6 +5,7 @@ import {
   useVegaWallet,
   VegaConnectDialog,
   VegaWalletProvider,
+  WALLET_CONFIG,
 } from '@vegaprotocol/react-helpers';
 import { Connectors } from '../lib/connectors';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -115,7 +116,7 @@ function useEagerConnect() {
   const { connect } = useVegaWallet();
 
   useEffect(() => {
-    const cfg = LocalStorage.getItem('vega_wallet');
+    const cfg = LocalStorage.getItem(WALLET_CONFIG);
     const cfgObj = JSON.parse(cfg);
 
     // No stored config, user has never connected or manually cleared storage
