@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx"],
+  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -17,6 +17,13 @@
                 "onlyDependOnLibsWithTags": ["*"]
               }
             ]
+          }
+        ],
+        "unicorn/filename-case": [
+          "error",
+          {
+            "case": "kebabCase",
+            "ignore": ["\\[[a-zA-Z]+\\]\\.page"]
           }
         ]
       }
