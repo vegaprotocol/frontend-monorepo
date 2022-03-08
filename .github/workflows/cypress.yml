@@ -32,6 +32,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
+          install: false
           wait-on: 'http://localhost:4200'
           working-directory: apps/explorer-e2e
           wait-on-timeout: 120
