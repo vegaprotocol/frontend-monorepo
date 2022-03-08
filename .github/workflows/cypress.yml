@@ -25,8 +25,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
-      - name: Install root dependencies
+      - name: Install root dependencies and run tests
         run: yarn install
-      - name: Build app and run tests
-      - run: npx nx affected:e2e --target=build --parallel=3
-      - run: npx nx affected:e2e --target=test --parallel=2 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+      - name: Build app
+        run: npx nx affected:e2e --target=build --parallel=3
+      - name: Run E2E tests
+        run: npx nx affected:e2e --target=test --parallel=2 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
