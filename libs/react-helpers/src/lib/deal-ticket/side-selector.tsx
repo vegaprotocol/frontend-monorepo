@@ -8,7 +8,7 @@ interface SideSelectorProps {
 
 export const SideSelector = ({ order, onSelect }: SideSelectorProps) => {
   return (
-    <div className="flex gap-8 mb-12">
+    <div className="flex gap-8 mb-20">
       {Object.entries(OrderSide).map(([key, value]) => {
         return (
           <Button

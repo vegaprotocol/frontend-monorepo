@@ -8,7 +8,7 @@ interface TypeSelectorProps {
 
 export const TypeSelector = ({ order, onSelect }: TypeSelectorProps) => {
   return (
-    <div className="flex gap-8 mb-12">
+    <div className="flex gap-8 mb-20">
       {Object.entries(OrderType).map(([key, value]) => {
         return (
           <Button

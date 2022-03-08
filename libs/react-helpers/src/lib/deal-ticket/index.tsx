@@ -94,7 +94,7 @@ const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
-      <div className="flex items-center gap-8 mb-12">
+      <div className="flex items-center gap-8 mb-20">
         <div className="flex-1">
           <Input
             value={order.size}
@@ -102,7 +102,8 @@ const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
             className="w-full"
           />
         </div>
-        <div className="flex-1">@ ~3,201 DAI</div>
+        <div>@</div>
+        <div className="flex-1">~3,201 DAI</div>
       </div>
       <TimeInForceSelector
         order={order}
@@ -111,7 +112,6 @@ const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
       <Button className="w-full" variant="primary">
         Place order
       </Button>
-
       <pre>{JSON.stringify(order, null, 2)}</pre>
     </>
   );
@@ -134,7 +134,7 @@ const DealTicketLimit = ({ order, updateOrder }: DealTicketLimitProps) => {
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
-      <div className="flex items-center gap-8 mb-12">
+      <div className="flex items-center gap-8 mb-20">
         <div className="flex-1">
           <Input
             value={order.size}
