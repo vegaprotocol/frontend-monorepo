@@ -44,10 +44,12 @@ const Validators = () => {
   return (
     <section>
       <h1>Validators</h1>
-      <h2>Tendermint data</h2>
-      <pre>{JSON.stringify(validators, null, '  ')}</pre>
-      <h2>Vega data</h2>
-      <pre>{JSON.stringify(data, null, '  ')}</pre>
+      <h2 data-testid="tendermint-header">Tendermint data</h2>
+      <pre data-testid="tendermint-data">
+        {JSON.stringify(validators, null, '  ')}
+      </pre>
+      <h2 data-testid="vega-header">Vega data</h2>
+      <pre data-testid="vega-data">{JSON.stringify(data, null, '  ')}</pre>
     </section>
   );
 };

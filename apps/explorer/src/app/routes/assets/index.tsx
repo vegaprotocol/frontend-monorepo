@@ -39,7 +39,7 @@ const Assets = () => {
       <h1>Assets</h1>
       {data?.assets.map((a) => (
         <React.Fragment key={a.id}>
-          <h2>
+          <h2 data-testid="asset-header">
             {a.name} ({a.symbol})
           </h2>
           <SyntaxHighlighter data={a} />

@@ -17,12 +17,12 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
     <Table>
       <tr>
         <td>Hash</td>
-        <td>{txData.hash}</td>
+        <td data-testid="hash">{txData.hash}</td>
       </tr>
       {pubKey ? (
         <tr>
           <td>Submitted by</td>
-          <td>
+          <td data-testid="submitted-by">
             <Link to={`/${Routes.PARTIES}/${pubKey}`}>{pubKey}</Link>
           </td>
         </tr>
@@ -35,14 +35,14 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
       {txData.height ? (
         <tr>
           <td>Block</td>
-          <td>
+          <td data-testid="block">
             <Link to={`/blocks/${txData.height}`}>{txData.height}</Link>
           </td>
         </tr>
       ) : null}
       <tr>
         <td>Encoded tnx</td>
-        <td>{txData.tx}</td>
+        <td data-testid="encoded-tnx">{txData.tx}</td>
       </tr>
     </Table>
   );
