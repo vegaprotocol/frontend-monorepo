@@ -1,12 +1,10 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import { chdir } from 'process';
 import {
   Children,
   isValidElement,
   ReactNode,
-  useCallback,
   useEffect,
   useState,
 } from 'react';

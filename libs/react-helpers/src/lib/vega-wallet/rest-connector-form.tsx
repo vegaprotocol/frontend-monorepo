@@ -1,3 +1,4 @@
+import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RestConnector } from '.';
@@ -50,38 +51,41 @@ export function RestConnectorForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-12">
-        <input
+        <Input
           className="w-full px-12 py-4 border-black border"
           {...register('wallet', { required: 'Required' })}
           type="text"
           placeholder="Wallet"
         />
         {errors.wallet?.message && (
-          <div className="mt-4 text-sm text-intent-danger">
+          <InputError
+            intent="danger"
+            className="mt-4 text-sm text-intent-danger"
+          >
             {errors.wallet.message}
-          </div>
+          </InputError>
         )}
       </div>
       <div className="mb-12">
-        <input
+        <Input
           className="w-full px-12 py-4 border-black border"
           {...register('passphrase', { required: 'Required' })}
           type="password"
           placeholder="Passphrase"
         />
         {errors.passphrase?.message && (
-          <div className="mt-4 text-sm text-intent-danger">
+          <InputError
+            intent="danger"
+            className="mt-4 text-sm text-intent-danger"
+          >
             {errors.passphrase.message}
-          </div>
+          </InputError>
         )}
       </div>
       {error && <div className="mb-12 text-intent-danger">{error.message}</div>}
-      <button
-        type="submit"
-        className="rounded-sm bg-pink text-white py-4 px-12"
-      >
+      <Button variant="primary" type="submit">
         Connect
-      </button>
+      </Button>
     </form>
   );
 }
