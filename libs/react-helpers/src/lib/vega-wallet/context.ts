@@ -14,10 +14,10 @@ export interface VegaWalletContextShape {
   keypairs: VegaKeyExtended[] | null;
 
   /** Calls connect on the supplied connector, storing the returned keys  */
-  connect: (connector: VegaConnector) => Promise<void>;
+  connect: (connector: VegaConnector) => Promise<VegaKey[] | null>;
 
   /** Disconnects from the connector and clears public key state */
-  disconnect: () => Promise<void>;
+  disconnect: () => Promise<boolean>;
 
   /** Sets the current selected public key */
   selectPublicKey: (publicKey: string) => void;
