@@ -32,7 +32,7 @@ export class RestConnector implements VegaConnector {
   configKey = WALLET_CONFIG;
   apiConfig: Configuration;
   service: DefaultApi;
-  description = 'Connects using REST to the Vega wallet desktop app';
+  description = 'Connects using REST to a running Vega wallet service';
 
   constructor() {
     const cfg = this.getConfig();
