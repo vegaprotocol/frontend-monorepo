@@ -18,36 +18,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
       - name: Use Node.js 16
         id: Node
-        uses: actions/setup-node@v2-beta
+        uses: actions/setup-node@v2
         with:
           node-version: 16
       - name: Install root dependencies
         run: yarn install
-      - name: Start server
-        run: |
-          yarn nx serve explorer &
-
-      - name: Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          install: false
-          wait-on: 'http://localhost:4200'
-          working-directory: apps/explorer-e2e
-          wait-on-timeout: 120
-          record: true
-        env:
-          # pass the Dashboard record key as an environment variable
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          # Recommended: pass the GitHub token lets this action correctly
-          # determine the unique run id necessary to re-run the checks
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # pass the project ID from the secrets through environment variable
-          CYPRESS_PROJECT_ID: ${{ secrets.PROJECT_ID }}
-
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: coverage
-          path: apps/explorer-e2e/coverage
+      - name: Build app and run tests
+      - run: npx nx affected:e2e --target=build --parallel=3
+      - run: npx nx affected:e2e --target=test --parallel=2 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
