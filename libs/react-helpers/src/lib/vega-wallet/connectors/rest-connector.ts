@@ -2,21 +2,10 @@ import {
   DefaultApi,
   createConfiguration,
   Configuration,
-  VegaKey,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/storage';
-import { WALLET_CONFIG } from './storage-keys';
-
-export interface VegaConnector {
-  /** Description of how to use this connector */
-  description: string;
-
-  /** Connect to wallet and return keys */
-  connect(): Promise<VegaKey[] | null>;
-
-  /** Disconnect from wallet */
-  disconnect(): Promise<void>;
-}
+import { WALLET_CONFIG } from '../storage-keys';
+import { VegaConnector } from '.';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...
@@ -115,28 +104,5 @@ export class RestConnector implements VegaConnector {
 
   private clearConfig() {
     LocalStorage.removeItem(this.configKey);
-  }
-}
-
-/**
- * Dummy injected connector that we may use when browser wallet is implemented
- */
-export class InjectedConnector implements VegaConnector {
-  description = 'Connects using the Vega wallet browser extension';
-
-  async connect() {
-    return [
-      {
-        index: 9,
-        pub: '0x123',
-        algorithm: { name: 'algo', version: 2 },
-        tainted: false,
-        meta: [],
-      },
-    ];
-  }
-
-  async disconnect() {
-    return;
   }
 }
