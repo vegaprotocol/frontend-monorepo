@@ -64,10 +64,9 @@ export class RestConnector implements VegaConnector {
       // Store the token, and other things for later
       this.setConfig({ connector: 'rest', token: res.token });
 
-      return true;
+      return { success: true, error: null };
     } catch (err) {
-      console.error(err);
-      return false;
+      return { success: false, error: err };
     }
   }
 

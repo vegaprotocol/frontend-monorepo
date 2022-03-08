@@ -14,7 +14,7 @@ export const InputError = ({
 }: InputErrorProps) => {
   const effectiveClassName = classNames(
     [
-      'inline-flex',
+      'flex',
       'items-center',
       'box-border',
       'h-28',

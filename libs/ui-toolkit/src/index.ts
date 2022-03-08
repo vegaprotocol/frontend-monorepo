@@ -4,6 +4,7 @@ export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
 export { EthereumUtils };
 export { EtherscanLink } from './components/etherscan-link';
+export { FormGroup } from './components/form-group';
 export { Icon } from './components/icon';
 export { Input } from './components/input';
 export { InputError } from './components/input-error';

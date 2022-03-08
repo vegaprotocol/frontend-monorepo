@@ -22,8 +22,7 @@ export const inputClassNames = ({
 }) => {
   return classNames(
     [
-      'inline-flex',
-      'items-center',
+      'flex items-center w-full',
       'box-border',
       'border',
       'bg-clip-padding',

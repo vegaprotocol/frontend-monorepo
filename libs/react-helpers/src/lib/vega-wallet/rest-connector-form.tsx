@@ -1,5 +1,5 @@
-import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
-import { useState } from 'react';
+import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { RestConnector } from '.';
 
@@ -17,7 +17,7 @@ export function RestConnectorForm({
   connector,
   onAuthenticate,
 }: RestConnectorFormProps) {
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState('');
 
   const {
     register,
@@ -27,62 +27,56 @@ export function RestConnectorForm({
 
   async function onSubmit(fields: FormFields) {
     try {
-      const success = await connector.authenticate({
+      setError('');
+      const res = await connector.authenticate({
         wallet: fields.wallet,
         passphrase: fields.passphrase,
       });
 
-      if (success) {
+      if (res.success) {
         onAuthenticate();
       } else {
-        throw new Error('Authentication failed');
+        throw res.error;
       }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err);
-      } else if (typeof err === 'string') {
-        setError(new Error(err));
+      if (err instanceof TypeError) {
+        setError('Wallet not running at http://localhost:1789');
+      } else if (err instanceof Error) {
+        setError('Authentication failed');
       } else {
-        setError(new Error('Something went wrong'));
+        setError('Something went wrong');
       }
     }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="mb-12">
+      <FormGroup label="Wallet" labelFor="wallet">
         <Input
-          className="w-full px-12 py-4 border-black border"
           {...register('wallet', { required: 'Required' })}
+          id="wallet"
           type="text"
-          placeholder="Wallet"
+          autoFocus={true}
         />
         {errors.wallet?.message && (
-          <InputError
-            intent="danger"
-            className="mt-4 text-sm text-intent-danger"
-          >
-            {errors.wallet.message}
-          </InputError>
+          <InputError intent="danger">{errors.wallet.message}</InputError>
         )}
-      </div>
-      <div className="mb-12">
+      </FormGroup>
+      <FormGroup label="Passphrase" labelFor="passphrase">
         <Input
-          className="w-full px-12 py-4 border-black border"
           {...register('passphrase', { required: 'Required' })}
+          id="passphrase"
           type="password"
-          placeholder="Passphrase"
         />
         {errors.passphrase?.message && (
-          <InputError
-            intent="danger"
-            className="mt-4 text-sm text-intent-danger"
-          >
-            {errors.passphrase.message}
-          </InputError>
+          <InputError intent="danger">{errors.passphrase.message}</InputError>
         )}
-      </div>
-      {error && <div className="mb-12 text-intent-danger">{error.message}</div>}
+      </FormGroup>
+      {error && (
+        <InputError intent="danger" className="mb-12">
+          {error}
+        </InputError>
+      )}
       <Button variant="primary" type="submit">
         Connect
       </Button>
