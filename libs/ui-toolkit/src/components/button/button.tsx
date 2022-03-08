@@ -1,6 +1,10 @@
 import { AnchorHTMLAttributes, ButtonHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
 import { Icon, IconName } from '../icon';
+import {
+  paddingLeftProvided,
+  paddingRightProvided,
+} from '../../utils/class-names';
 
 interface CommonProps {
   children?: React.ReactNode;
@@ -21,12 +25,6 @@ const getClassName = (
   className: CommonProps['className'],
   variant: CommonProps['variant']
 ) => {
-  const noPaddingLeftProvided = !(
-    className?.match(/(^| )p(l|x)-\d+( |$)/) || variant === 'inline'
-  );
-  const noPaddingRightProvided = !(
-    className?.match(/(^| )p(r|x)-\d+( |$)/) || variant === 'inline'
-  );
   return classNames(
     [
       'inline-flex',
@@ -42,8 +40,8 @@ const getClassName = (
       'transition-all',
     ],
     {
-      'pl-28': noPaddingLeftProvided,
-      'pr-28': noPaddingRightProvided,
+      'pl-28': !paddingLeftProvided(className) || variant === 'inline',
+      'pr-28': !paddingRightProvided(className) || variant === 'inline',
 
       'hover:border-black dark:hover:border-white': variant !== 'inline',
       'active:border-black dark:active:border-white': true,
