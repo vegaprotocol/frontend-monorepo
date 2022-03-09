@@ -1,65 +1,25 @@
 import { Button, Input } from '@vegaprotocol/ui-toolkit';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  LimitOrder,
+  MarketOrder,
+  Order,
+  OrderTimeInForce,
+  OrderType,
+  useOrderState,
+} from '../../hooks/use-order-state';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 
-export enum OrderType {
-  Market = 'TYPE_MARKET',
-  Limit = 'TYPE_LIMIT',
-}
-
-export enum OrderSide {
-  Buy = 'SIDE_BUY',
-  Sell = 'SIDE_SELL',
-}
-
-export enum OrderTimeInForce {
-  GTC = 'TIME_IN_FORCE_GTC',
-  GTT = 'TIME_IN_FORCE_GTT',
-  IOC = 'TIME_IN_FORCE_IOC',
-  FOK = 'TIME_IN_FORCE_FOK',
-  GFN = 'TIME_IN_FORCE_GFN',
-  GFA = 'TIME_IN_FORCE_GFA',
-}
-
-export interface LimitOrder {
-  price: string;
-  size: string;
-  type: OrderType.Limit;
-  timeInForce: OrderTimeInForce;
-  side: OrderSide | null;
-  expiration?: Date;
-}
-
-export interface MarketOrder {
-  size: string;
-  type: OrderType.Market;
-  timeInForce: OrderTimeInForce;
-  side: OrderSide | null;
-}
-
-export type Order = LimitOrder | MarketOrder;
-
 export const DealTicket = () => {
-  const [order, setOrder] = useState<Order>({
+  const [order, updateOrder] = useOrderState({
     type: OrderType.Limit,
     side: null,
     size: '0',
     price: '0',
     timeInForce: OrderTimeInForce.GTT,
   });
-
-  const updateOrder = useCallback((orderUpdate: Partial<Order>) => {
-    // @ts-ignore Get around TS complaining about potential presence of price property
-    setOrder((curr) => {
-      return {
-        ...curr,
-        ...orderUpdate,
-      };
-    });
-  }, []);
 
   let ticket = null;
 
@@ -80,16 +40,6 @@ interface DealTicketMarketProps {
 }
 
 const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
-  // If market ticket mounts with an invalid TIF update it to IOC
-  useEffect(() => {
-    if (
-      order.timeInForce !== OrderTimeInForce.FOK &&
-      order.timeInForce !== OrderTimeInForce.IOC
-    ) {
-      updateOrder({ timeInForce: OrderTimeInForce.IOC });
-    }
-  }, [order, updateOrder]);
-
   return (
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
@@ -123,13 +73,6 @@ interface DealTicketLimitProps {
 }
 
 const DealTicketLimit = ({ order, updateOrder }: DealTicketLimitProps) => {
-  // If limit ticket mounts without a price set it to zero
-  useEffect(() => {
-    if (order.price === null || order.price === undefined) {
-      updateOrder({ price: '0' });
-    }
-  }, [order, updateOrder]);
-
   return (
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />

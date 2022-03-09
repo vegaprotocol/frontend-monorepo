@@ -1,5 +1,9 @@
-import { Order, OrderTimeInForce, OrderType } from '.';
 import { Select } from '@vegaprotocol/ui-toolkit';
+import {
+  Order,
+  OrderTimeInForce,
+  OrderType,
+} from '../../hooks/use-order-state';
 
 interface TimeInForceSelectorProps {
   order: Order;

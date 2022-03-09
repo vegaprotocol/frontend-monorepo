@@ -1,21 +1,21 @@
-import { Order, OrderType } from '.';
 import { Button } from '@vegaprotocol/ui-toolkit';
+import { Order, OrderSide } from '../../hooks/use-order-state';
 
-interface TypeSelectorProps {
+interface SideSelectorProps {
   order: Order;
-  onSelect: (type: OrderType) => void;
+  onSelect: (side: OrderSide) => void;
 }
 
-export const TypeSelector = ({ order, onSelect }: TypeSelectorProps) => {
+export const SideSelector = ({ order, onSelect }: SideSelectorProps) => {
   return (
     <div className="flex gap-8 mb-20">
-      {Object.entries(OrderType).map(([key, value]) => {
+      {Object.entries(OrderSide).map(([key, value]) => {
         return (
           <Button
             onClick={() => onSelect(value)}
             className="flex-1"
             type="button"
-            variant={value === order.type ? 'accent' : undefined}
+            variant={value === order.side ? 'accent' : undefined}
             key={key}
           >
             {key}
