@@ -12,14 +12,21 @@ import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 
-export const DealTicket = () => {
-  const [order, updateOrder] = useOrderState({
-    type: OrderType.Limit,
-    side: null,
-    size: '0',
-    price: '0',
-    timeInForce: OrderTimeInForce.GTT,
-  });
+const DEFAULT_ORDER: Order = {
+  type: OrderType.Market,
+  side: null,
+  size: '0',
+  timeInForce: OrderTimeInForce.FOK,
+};
+
+interface DealTicketProps {
+  defaultOrder?: Order;
+}
+
+export const DealTicket = ({
+  defaultOrder = DEFAULT_ORDER,
+}: DealTicketProps) => {
+  const [order, updateOrder] = useOrderState(defaultOrder);
 
   let ticket = null;
 
@@ -50,6 +57,7 @@ const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
             value={order.size}
             onChange={(e) => updateOrder({ size: e.target.value })}
             className="w-full"
+            data-testid="order-size"
           />
         </div>
         <div>@</div>
@@ -83,6 +91,7 @@ const DealTicketLimit = ({ order, updateOrder }: DealTicketLimitProps) => {
             value={order.size}
             onChange={(e) => updateOrder({ size: e.target.value })}
             className="w-full"
+            data-testid="order-size"
           />
         </div>
         <div>@</div>
@@ -91,6 +100,7 @@ const DealTicketLimit = ({ order, updateOrder }: DealTicketLimitProps) => {
             value={order.price}
             onChange={(e) => updateOrder({ price: e.target.value })}
             className="w-full"
+            data-testid="order-price"
           />
         </div>
       </div>

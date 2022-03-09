@@ -10,12 +10,18 @@ export const TypeSelector = ({ order, onSelect }: TypeSelectorProps) => {
   return (
     <div className="flex gap-8 mb-20">
       {Object.entries(OrderType).map(([key, value]) => {
+        const isSelected = value === order.type;
         return (
           <Button
             onClick={() => onSelect(value)}
             className="flex-1"
             type="button"
-            variant={value === order.type ? 'accent' : undefined}
+            variant={isSelected ? 'accent' : undefined}
+            data-testid={
+              isSelected
+                ? `order-type-${value}-selected`
+                : `order-type-${value}`
+            }
             key={key}
           >
             {key}

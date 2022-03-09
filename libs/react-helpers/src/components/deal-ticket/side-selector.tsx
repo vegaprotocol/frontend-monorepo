@@ -10,12 +10,18 @@ export const SideSelector = ({ order, onSelect }: SideSelectorProps) => {
   return (
     <div className="flex gap-8 mb-20">
       {Object.entries(OrderSide).map(([key, value]) => {
+        const isSelected = value === order.side;
         return (
           <Button
             onClick={() => onSelect(value)}
             className="flex-1"
             type="button"
-            variant={value === order.side ? 'accent' : undefined}
+            variant={isSelected ? 'accent' : undefined}
+            data-testid={
+              isSelected
+                ? `order-side-${value}-selected`
+                : `order-side-${value}`
+            }
             key={key}
           >
             {key}

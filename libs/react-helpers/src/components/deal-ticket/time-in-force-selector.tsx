@@ -33,6 +33,7 @@ export const TimeInForceSelector = ({
         value={order.timeInForce}
         onChange={(e) => onSelect(e.target.value as OrderTimeInForce)}
         className="w-full"
+        data-testid="order-tif"
       >
         {options.map(([key, value]) => {
           return (
