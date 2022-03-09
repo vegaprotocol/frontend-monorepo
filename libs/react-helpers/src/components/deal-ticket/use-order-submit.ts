@@ -1,76 +1,18 @@
-import { gql, useApolloClient } from '@apollo/client';
 import { useCallback, useState } from 'react';
 import { Order } from '../../hooks/use-order-state';
 
-const ORDER_FRAMENT = gql`
-  fragment OrderFields on Order {
-    id
-    price
-    size
-    updatedAt
-    createdAt
-    timeInForce
-    side
-    status
-    party {
-      id
-    }
-    reference
-    remaining
-    type
-    market {
-      id
-      decimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-        }
-      }
-    }
-    liquidityProvision {
-      id
-    }
-    peggedOrder {
-      ... on PeggedOrder {
-        offset
-        reference
-      }
-    }
-    expiresAt
-    rejectionReason
-    pending @client
-    pendingAction @client
-    deterministicId @client
-  }
-`;
-
-const ORDERS_QUERY = gql`
-  ${ORDER_FRAMENT}
-  query order($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      orders(last: 500) {
-        ...OrderFields
-      }
-    }
-  }
-`;
-
+// TODO: Replace this with one provided by vega wallet
 const commandSync = (arg: any): Promise<any> =>
   new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve({
+      reject({
         txHash: Math.random().toString(),
         tx: { signature: { value: 'FOO' } },
       });
     }, 1500);
   });
-const sigToId = (sig: string) => 'foo';
 
 export const useOrderSubmit = (marketId: string) => {
-  const client = useApolloClient();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [txHash, setTxHash] = useState('');
@@ -100,9 +42,13 @@ export const useOrderSubmit = (marketId: string) => {
         });
 
         setTxHash(res.txHash);
-        const determinedId = sigToId(res.tx.signature.value).toUpperCase();
+        console.log(`Order tx sent to network: ${res.txHash}`);
 
-        // TODO: Write order to cache with determinedId
+        /*
+        TODO: 
+        - Create order id using signature, see sigToId function in TFE
+        - Write order optimistically to apollo cache 
+        */
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Something went wrong');
       } finally {

@@ -7,7 +7,6 @@ import {
   useOrderState,
 } from '../../hooks/use-order-state';
 import { ExpirySelector } from './expiry-selector';
-import { MarkPrice } from './mark-price';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
@@ -20,14 +19,30 @@ const DEFAULT_ORDER: Order = {
   timeInForce: OrderTimeInForce.FOK,
 };
 
+export interface Market {
+  id: string;
+  tradableInstrument: {
+    instrument: {
+      product: {
+        quoteName: string;
+      };
+    };
+  };
+  depth: {
+    lastTrade: {
+      price: string;
+    };
+  };
+}
+
 interface DealTicketProps {
-  marketId: string;
   defaultOrder?: Order;
+  market: Market;
 }
 
 export const DealTicket = ({
-  marketId,
   defaultOrder = DEFAULT_ORDER,
+  market,
 }: DealTicketProps) => {
   const [order, updateOrder] = useOrderState(defaultOrder);
   const { submit, error, loading, txHash } = useOrderSubmit('ABC123');
@@ -47,7 +62,7 @@ export const DealTicket = ({
         error={error}
         loading={loading}
         txHash={txHash}
-        marketId={marketId}
+        market={market}
       />
     );
   } else if (order.type === 'TYPE_LIMIT') {
@@ -77,7 +92,7 @@ interface DealTicketMarketProps {
   error: string;
   loading: boolean;
   txHash: string;
-  marketId: string;
+  market: Market;
 }
 
 const DealTicketMarket = ({
@@ -86,7 +101,7 @@ const DealTicketMarket = ({
   error,
   loading,
   txHash,
-  marketId,
+  market,
 }: DealTicketMarketProps) => {
   return (
     <>
@@ -102,8 +117,9 @@ const DealTicketMarket = ({
           />
         </div>
         <div>@</div>
-        <div className="flex-1">
-          <MarkPrice marketId={marketId} />
+        <div className="flex-1" data-testid="last-price">
+          ~{market.depth.lastTrade.price}{' '}
+          {market.tradableInstrument.instrument.product.quoteName}
         </div>
       </div>
       <TimeInForceSelector

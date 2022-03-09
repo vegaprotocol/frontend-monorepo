@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { DealTicket } from './';
+import { DealTicket, Market } from './';
 import {
   Order,
   OrderTimeInForce,
@@ -14,7 +14,23 @@ test('Deal ticket order', () => {
     timeInForce: OrderTimeInForce.FOK,
     side: null,
   };
-  render(<DealTicket defaultOrder={order} />);
+  const market: Market = {
+    id: 'market-id',
+    tradableInstrument: {
+      instrument: {
+        product: {
+          quoteName: 'quote-name',
+        },
+      },
+    },
+    depth: {
+      lastTrade: {
+        price: '100',
+      },
+    },
+  };
+
+  render(<DealTicket defaultOrder={order} market={market} />);
 
   // Assert defaults are used
   expect(
@@ -28,6 +44,11 @@ test('Deal ticket order', () => {
   ).not.toBeInTheDocument();
   expect(screen.getByTestId('order-size')).toHaveValue(order.size);
   expect(screen.getByTestId('order-tif')).toHaveValue(order.timeInForce);
+
+  // Assert last price is shown
+  expect(screen.getByTestId('last-price')).toHaveTextContent(
+    `~${market.depth.lastTrade.price} ${market.tradableInstrument.instrument.product.quoteName}`
+  );
 
   // Asssert changing values
   fireEvent.click(screen.getByTestId('order-side-SIDE_BUY'));

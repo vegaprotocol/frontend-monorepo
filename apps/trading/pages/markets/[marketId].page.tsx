@@ -12,11 +12,26 @@ const MARKET_QUERY = gql`
     market(id: $marketId) {
       id
       name
+      decimalPlaces
+      tradableInstrument {
+        instrument {
+          product {
+            ... on Future {
+              quoteName
+            }
+          }
+        }
+      }
       trades {
         id
         price
         size
         createdAt
+      }
+      depth {
+        lastTrade {
+          price
+        }
       }
     }
   }

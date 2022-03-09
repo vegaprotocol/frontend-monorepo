@@ -25,7 +25,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <TradingViews.chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.ticket marketId={market.id} />
+        <TradingViews.ticket market={market} />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
@@ -88,7 +88,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return <Component />;
+    return <Component market={market} />;
   };
 
   return (

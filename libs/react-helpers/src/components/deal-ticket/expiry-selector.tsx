@@ -2,10 +2,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import { Input } from '@vegaprotocol/ui-toolkit';
 import { useRef } from 'react';
-import { LimitOrder } from '../../hooks/use-order-state';
+import { Order } from '../../hooks/use-order-state';
 
 interface ExpirySelectorProps {
-  order: LimitOrder;
+  order: Order;
   onSelect: (expiration: Date | null) => void;
 }
 
