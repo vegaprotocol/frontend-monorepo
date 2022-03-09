@@ -2,8 +2,8 @@ import { InputHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
 import { Icon, IconName } from '../icon';
 import {
-  paddingLeftProvided,
-  paddingRightProvided,
+  includesLeftPadding,
+  includesRightPadding,
 } from '../../utils/class-names';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -36,8 +36,8 @@ export const inputClassNames = ({
       'disabled:bg-black-10 disabled:dark:bg-white-10',
     ],
     {
-      'pl-8': !paddingLeftProvided(className),
-      'pr-8': !paddingRightProvided(className),
+      'pl-8': !includesLeftPadding(className),
+      'pr-8': !includesRightPadding(className),
       'border-vega-pink dark:border-vega-pink': hasError,
     },
     className

@@ -2,8 +2,9 @@ import { AnchorHTMLAttributes, ButtonHTMLAttributes, forwardRef } from 'react';
 import classNames from 'classnames';
 import { Icon, IconName } from '../icon';
 import {
-  paddingLeftProvided,
-  paddingRightProvided,
+  includesLeftPadding,
+  includesRightPadding,
+  includesBorderWidth,
 } from '../../utils/class-names';
 
 interface CommonProps {
@@ -25,6 +26,9 @@ const getClassName = (
   className: CommonProps['className'],
   variant: CommonProps['variant']
 ) => {
+  const paddingLeftProvided = includesLeftPadding(className);
+  const paddingRightProvided = includesRightPadding(className);
+  const borderWidthProvided = includesBorderWidth(className);
   return classNames(
     [
       'inline-flex',
@@ -32,7 +36,6 @@ const getClassName = (
       'justify-center',
       'box-border',
       'h-28',
-      'border',
       'text-ui',
       'no-underline',
       'hover:underline',
@@ -40,8 +43,10 @@ const getClassName = (
       'transition-all',
     ],
     {
-      'pl-28': !paddingLeftProvided(className) || variant === 'inline',
-      'pr-28': !paddingRightProvided(className) || variant === 'inline',
+      'pl-28': !(paddingLeftProvided || variant === 'inline'),
+      'pr-28': !(paddingRightProvided || variant === 'inline'),
+
+      border: !borderWidthProvided,
 
       'hover:border-black dark:hover:border-white': variant !== 'inline',
       'active:border-black dark:active:border-white': true,
@@ -70,11 +75,12 @@ const getClassName = (
         variant === 'accent' || variant === 'inline',
       'hover:bg-vega-yellow-dark dark:hover:bg-vega-yellow/30':
         variant === 'accent',
+      'text-black dark:text-black': variant === 'accent',
       'hover:text-white dark:hover:text-white': variant === 'accent',
 
-      'pl-4': variant === 'inline',
-      'pr-4': variant === 'inline',
-      'border-0': variant === 'inline',
+      'pl-4': variant === 'inline' && !paddingLeftProvided,
+      'pr-4': variant === 'inline' && !paddingRightProvided,
+      'border-0': variant === 'inline' && !borderWidthProvided,
       underline: variant === 'inline',
       'hover:no-underline': variant === 'inline',
       'hover:border-transparent dark:hover:border-transparent':

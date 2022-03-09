@@ -1,6 +1,6 @@
 import * as EthereumUtils from './utils/web3';
 
-export { Button } from './components/button';
+export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
 export { EthereumUtils };
 export { EtherscanLink } from './components/etherscan-link';
