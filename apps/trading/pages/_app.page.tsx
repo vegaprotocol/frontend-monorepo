@@ -13,7 +13,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
       <Head>
         <title>Welcome to trading!</title>
       </Head>
-      <div className="h-full grid grid-rows-[min-content,_1fr]">
+      <div className="h-full grid grid-rows-[min-content,_1fr] dark:bg-black dark:text-white-60 bg-white text-black-60">
         <Navbar />
         <main>
           <Component {...pageProps} />
