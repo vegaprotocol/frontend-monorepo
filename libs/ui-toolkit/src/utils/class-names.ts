@@ -1,4 +1,8 @@
-export const paddingLeftProvided = (className?: string) =>
+export const includesLeftPadding = (className?: string) =>
   !!className?.match(/(^| )p(l|x)-\d+( |$)/);
-export const paddingRightProvided = (className?: string) =>
+
+export const includesRightPadding = (className?: string) =>
   !!className?.match(/(^| )p(r|x)-\d+( |$)/);
+
+export const includesBorderWidth = (className?: string) =>
+  !!className?.match(/(^| )border-\d+( |$)/);
