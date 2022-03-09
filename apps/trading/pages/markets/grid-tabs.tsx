@@ -44,26 +44,26 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <Tabs.List className="flex gap-[2px] bg-neutral-200" role="tablist">
+      <Tabs.List
+        className="flex flex-nowrap gap-4 overflow-x-auto my-4"
+        role="tablist"
+      >
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           const isActive = child.props.name === activeTab;
-          const triggerClass = classNames(
-            'py-4',
-            'px-12',
-            'border-t border-neutral-200',
-            'capitalize',
-            {
-              'text-vega-pink': isActive,
-              'bg-white': isActive,
-            }
-          );
+          const triggerClass = classNames('py-4', 'px-12', 'capitalize', {
+            'text-black dark:text-vega-yellow': isActive,
+            'bg-white dark:bg-black': isActive,
+            'text-black dark:text-white': !isActive,
+            'bg-black-10 dark:bg-white-10': !isActive,
+          });
           return (
             <Tabs.Trigger value={child.props.name} className={triggerClass}>
               {child.props.name}
             </Tabs.Trigger>
           );
         })}
+        <div className="bg-black-10 dark:bg-white-10 grow"></div>
       </Tabs.List>
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
