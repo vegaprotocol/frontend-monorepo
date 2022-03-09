@@ -19,23 +19,14 @@ export enum OrderTimeInForce {
   GFA = 'TIME_IN_FORCE_GFA',
 }
 
-export interface LimitOrder {
-  price: string;
+export interface Order {
   size: string;
-  type: OrderType.Limit;
+  type: OrderType;
   timeInForce: OrderTimeInForce;
   side: OrderSide | null;
+  price?: string;
   expiration?: Date;
 }
-
-export interface MarketOrder {
-  size: string;
-  type: OrderType.Market;
-  timeInForce: OrderTimeInForce;
-  side: OrderSide | null;
-}
-
-export type Order = LimitOrder | MarketOrder;
 
 export type UpdateOrder = (order: Partial<Order>) => void;
 
@@ -43,8 +34,6 @@ export const useOrderState = (defaultOrder: Order): [Order, UpdateOrder] => {
   const [order, setOrder] = useState<Order>(defaultOrder);
 
   const updateOrder = useCallback((orderUpdate: Partial<Order>) => {
-    // @ts-ignore We are checking if type is changing below so it should be safe to spread in
-    // all props if the type hasnt changed
     setOrder((curr) => {
       // Type is switching to market so return new market order object with correct defaults
       if (
@@ -76,6 +65,8 @@ export const useOrderState = (defaultOrder: Order): [Order, UpdateOrder] => {
           size: orderUpdate.size || curr.size,
           side: orderUpdate.side || curr.side,
           timeInForce,
+          price: undefined,
+          expiration: undefined,
         };
       }
 

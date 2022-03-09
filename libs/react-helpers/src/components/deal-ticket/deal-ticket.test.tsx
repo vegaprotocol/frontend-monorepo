@@ -2,13 +2,13 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { DealTicket } from './';
 import {
-  MarketOrder,
+  Order,
   OrderTimeInForce,
   OrderType,
 } from '../../hooks/use-order-state';
 
 test('Deal ticket order', () => {
-  const order: MarketOrder = {
+  const order: Order = {
     type: OrderType.Market,
     size: '100',
     timeInForce: OrderTimeInForce.FOK,
@@ -29,6 +29,7 @@ test('Deal ticket order', () => {
   expect(screen.getByTestId('order-size')).toHaveValue(order.size);
   expect(screen.getByTestId('order-tif')).toHaveValue(order.timeInForce);
 
+  // Asssert changing values
   fireEvent.click(screen.getByTestId('order-side-SIDE_BUY'));
   expect(
     screen.getByTestId('order-side-SIDE_BUY-selected')

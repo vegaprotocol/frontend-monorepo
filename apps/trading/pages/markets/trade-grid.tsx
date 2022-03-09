@@ -25,7 +25,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <TradingViews.chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.ticket />
+        <TradingViews.ticket marketId={market.id} />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">

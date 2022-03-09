@@ -1,16 +1,17 @@
-import { Button, Input } from '@vegaprotocol/ui-toolkit';
+import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { FormEvent } from 'react';
 import {
-  LimitOrder,
-  MarketOrder,
   Order,
   OrderTimeInForce,
   OrderType,
   useOrderState,
 } from '../../hooks/use-order-state';
 import { ExpirySelector } from './expiry-selector';
+import { MarkPrice } from './mark-price';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
+import { useOrderSubmit } from './use-order-submit';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,
@@ -20,33 +21,73 @@ const DEFAULT_ORDER: Order = {
 };
 
 interface DealTicketProps {
+  marketId: string;
   defaultOrder?: Order;
 }
 
 export const DealTicket = ({
+  marketId,
   defaultOrder = DEFAULT_ORDER,
 }: DealTicketProps) => {
   const [order, updateOrder] = useOrderState(defaultOrder);
+  const { submit, error, loading, txHash } = useOrderSubmit('ABC123');
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    submit(order);
+  };
 
   let ticket = null;
 
   if (order.type === 'TYPE_MARKET') {
-    ticket = <DealTicketMarket order={order} updateOrder={updateOrder} />;
+    ticket = (
+      <DealTicketMarket
+        order={order}
+        updateOrder={updateOrder}
+        error={error}
+        loading={loading}
+        txHash={txHash}
+        marketId={marketId}
+      />
+    );
   } else if (order.type === 'TYPE_LIMIT') {
-    ticket = <DealTicketLimit order={order} updateOrder={updateOrder} />;
+    ticket = (
+      <DealTicketLimit
+        order={order}
+        updateOrder={updateOrder}
+        error={error}
+        loading={loading}
+        txHash={txHash}
+      />
+    );
   } else {
     throw new Error('Invalid ticket type');
   }
 
-  return <form className="px-4 py-8">{ticket}</form>;
+  return (
+    <form onSubmit={handleSubmit} className="px-4 py-8">
+      {ticket}
+    </form>
+  );
 };
 
 interface DealTicketMarketProps {
-  order: MarketOrder;
+  order: Order;
   updateOrder: (order: Partial<Order>) => void;
+  error: string;
+  loading: boolean;
+  txHash: string;
+  marketId: string;
 }
 
-const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
+const DealTicketMarket = ({
+  order,
+  updateOrder,
+  error,
+  loading,
+  txHash,
+  marketId,
+}: DealTicketMarketProps) => {
   return (
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
@@ -61,26 +102,44 @@ const DealTicketMarket = ({ order, updateOrder }: DealTicketMarketProps) => {
           />
         </div>
         <div>@</div>
-        <div className="flex-1">~3,201 DAI</div>
+        <div className="flex-1">
+          <MarkPrice marketId={marketId} />
+        </div>
       </div>
       <TimeInForceSelector
         order={order}
         onSelect={(timeInForce) => updateOrder({ timeInForce })}
       />
-      <Button className="w-full" variant="primary">
-        Place order
+      <Button
+        className="w-full"
+        variant="primary"
+        type="submit"
+        disabled={loading}
+      >
+        {loading ? 'Awaiting confirmation...' : 'Place order'}
       </Button>
+      {error && <InputError className="my-12">{error}</InputError>}
+      {txHash && <p className="my-12">{txHash}</p>}
       <pre>{JSON.stringify(order, null, 2)}</pre>
     </>
   );
 };
 
 interface DealTicketLimitProps {
-  order: LimitOrder;
+  order: Order;
   updateOrder: (order: Partial<Order>) => void;
+  error: string;
+  loading: boolean;
+  txHash: string;
 }
 
-const DealTicketLimit = ({ order, updateOrder }: DealTicketLimitProps) => {
+const DealTicketLimit = ({
+  order,
+  updateOrder,
+  error,
+  loading,
+  txHash,
+}: DealTicketLimitProps) => {
   return (
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
@@ -118,9 +177,16 @@ const DealTicketLimit = ({ order, updateOrder }: DealTicketLimitProps) => {
           }}
         />
       )}
-      <Button className="w-full" variant="primary">
-        Place order
+      <Button
+        className="w-full"
+        variant="primary"
+        type="submit"
+        disabled={loading}
+      >
+        {loading ? 'Awaiting confirmation...' : 'Place order'}
       </Button>
+      {error && <InputError className="my-12">{error}</InputError>}
+      {txHash && <p className="my-12">{txHash}</p>}
       <pre>{JSON.stringify(order, null, 2)}</pre>
     </>
   );
