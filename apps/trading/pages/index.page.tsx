@@ -7,7 +7,7 @@ export function Index() {
   const { keypair, keypairs, selectPublicKey } = useVegaWallet();
 
   return (
-    <div className="m-24 ">
+    <div className="m-24">
       <Callout
         intent="help"
         title="This is what this thing does"
@@ -23,7 +23,7 @@ export function Index() {
       </Callout>
       <h1>Vega wallet</h1>
       {keypair && <p>Current: {keypair.pub}</p>}
-      {keypairs?.length && (
+      {keypairs?.length ? (
         <select
           name="change-key"
           className="w-full px-8 py-2 border-black border"
