@@ -74,6 +74,19 @@
           }
         ]
       }
+    },
+    "build-netlify": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "cp apps/explorer/netlify.toml netlify.toml"
+          },
+          {
+            "command": "nx build explorer"
+          }
+        ]
+      }
     }
   },
   "tags": []

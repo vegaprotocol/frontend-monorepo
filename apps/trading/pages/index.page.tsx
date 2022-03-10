@@ -1,6 +1,4 @@
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import { Callout } from '@vegaprotocol/ui-toolkit';
-import { ReactHelpers } from '@vegaprotocol/react-helpers';
+import { Callout, Button } from '@vegaprotocol/ui-toolkit';
 
 export function Index() {
   /*
@@ -9,12 +7,20 @@ export function Index() {
    * Note: The corresponding styles are in the ./index.scss file.
    */
   return (
-    <div>
-      <Callout title="Hello there" headingLevel={1}>
-        Welcome trading 👋
+    <div className="m-24 ">
+      <Callout
+        intent="help"
+        title="This is what this thing does"
+        iconName="endorsed"
+        headingLevel={1}
+      >
+        <div className="flex flex-col">
+          <div>With a longer explaination</div>
+          <Button className="block mt-8" variant="secondary">
+            Action
+          </Button>
+        </div>
       </Callout>
-      <EtherscanLink chainId={null} address="address" />
-      <ReactHelpers />
     </div>
   );
 }

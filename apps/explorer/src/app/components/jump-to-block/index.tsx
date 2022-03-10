@@ -28,12 +28,16 @@ export const JumpToBlock = () => {
       </label>
       <input
         id="block-input"
-        type='tel'
+        type="tel"
         name={'blockNumber'}
         placeholder={'Block number'}
-        className="form-input"
+        className="bg-white-25 border-white border px-8 py-4 placeholder-white-60"
       />
-      <input className="form-submit" type={'submit'} value={'Go'} />
+      <input
+        className="border-white border px-28 py-4 cursor-pointer"
+        type={'submit'}
+        value={'Go'}
+      />
     </form>
   );
 };

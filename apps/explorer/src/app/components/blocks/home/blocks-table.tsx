@@ -3,7 +3,7 @@ import { TendermintBlockchainResponse } from '../../../routes/blocks/tendermint-
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../../seconds-ago';
 import { TxsPerBlock } from '../../txs/txs-per-block';
-import { Table } from '../../table';
+import { Table, TableRow, TableCell } from '../../table';
 
 interface BlocksProps {
   data: TendermintBlockchainResponse | undefined;
@@ -20,33 +20,39 @@ export const BlocksTable = ({ data, showTransactions }: BlocksProps) => {
       {data.result?.block_metas?.map((block, index) => {
         return (
           <React.Fragment key={index}>
-            <tr className="bg-neutral-850 border-b-4 border-b-black">
-              <td className="pl-4 py-2">
+            <TableRow dataTestId="block-row" modifier="background">
+              <TableCell dataTestId="block-height" className="pl-4 py-2">
                 <Link
                   to={`/blocks/${block.header?.height}`}
                   className="text-vega-yellow"
                 >
                   {block.header?.height}
                 </Link>
-              </td>
-              <td className="px-8 text-center">
+              </TableCell>
+              <TableCell dataTestId="num-txs" className="px-8 text-center">
                 {block.num_txs === '1'
                   ? '1 transaction'
                   : `${block.num_txs} transactions`}
-              </td>
-              <td className="px-8 text-center">
+              </TableCell>
+              <TableCell
+                dataTestId="validator-link"
+                className="px-8 text-center"
+              >
                 <Link to={`/validators/${block.header?.proposer_address}`}>
                   {block.header.proposer_address}
                 </Link>
-              </td>
-              <td className="text-center pr-28 text-neutral-300">
+              </TableCell>
+              <TableCell
+                dataTestId="block-time"
+                className="text-center pr-28 text-neutral-300"
+              >
                 <SecondsAgo date={block.header?.time} />
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
             {showTransactions && (
-              <tr>
+              <TableRow>
                 <TxsPerBlock blockHeight={block.header?.height} />
-              </tr>
+              </TableRow>
             )}
           </React.Fragment>
         );

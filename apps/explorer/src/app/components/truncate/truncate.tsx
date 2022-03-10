@@ -5,7 +5,6 @@ const ELLIPSIS = '\u2026';
 interface TruncateInlineProps {
   text: string | null;
   className?: string;
-  style?: React.CSSProperties;
   children?: (truncatedText: string) => React.ReactElement;
   startChars?: number; // number chars to show before ellipsis
   endChars?: number; // number of chars to show after ellipsis
@@ -20,7 +19,6 @@ interface TruncateInlineProps {
 export function TruncateInline({
   text,
   className,
-  style,
   children,
   startChars,
   endChars,
@@ -32,7 +30,6 @@ export function TruncateInline({
 
   const wrapperProps = {
     title: text,
-    style,
     className,
   };
 

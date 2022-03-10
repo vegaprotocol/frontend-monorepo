@@ -1,7 +1,24 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
-import { ProposalsQuery } from './__generated__/ProposalsQuery';
+import {
+  ProposalsQuery,
+  ProposalsQuery_proposals_terms_change,
+} from './__generated__/ProposalsQuery';
+
+export function getProposalName(change: ProposalsQuery_proposals_terms_change) {
+  if (change.__typename === 'NewAsset') {
+    return `New asset: ${change.symbol}`;
+  } else if (change.__typename === 'NewMarket') {
+    return `New market: ${change.instrument.name}`;
+  } else if (change.__typename === 'UpdateMarket') {
+    return `Update market: ${change.marketId}`;
+  } else if (change.__typename === 'UpdateNetworkParameter') {
+    return `Update network: ${change.networkParameter.key}`;
+  }
+
+  return 'Unknown proposal';
+}
 
 const PROPOSAL_QUERY = gql`
   query ProposalsQuery {
@@ -90,7 +107,7 @@ const Governance = () => {
       {data.proposals.map((p) => (
         <React.Fragment key={p.id}>
           {/* TODO get proposal name generator from console */}
-          <h2>{p.id}</h2>
+          <h2>{getProposalName(p.terms.change)}</h2>
           <SyntaxHighlighter data={p} />
         </React.Fragment>
       ))}

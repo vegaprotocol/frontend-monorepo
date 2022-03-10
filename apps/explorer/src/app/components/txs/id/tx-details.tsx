@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Routes } from '../../../routes/router-config';
 import { Result } from '../../../routes/txs/tendermint-transaction-response.d';
-import { Table } from '../../table';
+import { Table, TableRow, TableCell } from '../../table';
 
 interface TxDetailsProps {
   txData: Result | undefined;
@@ -15,35 +15,35 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
 
   return (
     <Table>
-      <tr>
-        <td>Hash</td>
-        <td>{txData.hash}</td>
-      </tr>
+      <TableRow>
+        <TableCell>Hash</TableCell>
+        <TableCell dataTestId="hash">{txData.hash}</TableCell>
+      </TableRow>
       {pubKey ? (
-        <tr>
+        <TableRow>
           <td>Submitted by</td>
-          <td>
+          <td data-testid="submitted-by">
             <Link to={`/${Routes.PARTIES}/${pubKey}`}>{pubKey}</Link>
           </td>
-        </tr>
+        </TableRow>
       ) : (
-        <tr>
+        <TableRow>
           <td>Submitted by</td>
           <td>Awaiting decoded transaction data</td>
-        </tr>
+        </TableRow>
       )}
       {txData.height ? (
-        <tr>
+        <TableRow>
           <td>Block</td>
-          <td>
+          <td data-testid="block">
             <Link to={`/blocks/${txData.height}`}>{txData.height}</Link>
           </td>
-        </tr>
+        </TableRow>
       ) : null}
-      <tr>
+      <TableRow>
         <td>Encoded tnx</td>
-        <td>{txData.tx}</td>
-      </tr>
+        <td data-testid="encoded-tnx">{txData.tx}</td>
+      </TableRow>
     </Table>
   );
 };

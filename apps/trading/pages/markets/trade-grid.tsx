@@ -18,7 +18,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   );
   return (
     <div className={wrapperClasses}>
-      <header className="col-start-1 col-end-2 row-start-1 row-end-1 bg-white p-8">
+      <header className="col-start-1 col-end-2 row-start-1 row-end-1 p-8">
         <h1>Market: {market.name}</h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
@@ -93,7 +93,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <header className="bg-white p-8">
+      <header className="p-8">
         <h1>Market: {market.name}</h1>
       </header>
       <div className="h-full">
@@ -103,18 +103,15 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap gap-2 bg-neutral-200 border-neutral-200 border-t overflow-x-auto">
+      <div className="flex flex-nowrap gap-4 overflow-x-auto my-4">
         {Object.keys(TradingViews).map((key: TradingView) => {
-          const className = classNames(
-            'p-8',
-            'border-t',
-            'border-neutral-200',
-            'capitalize',
-            {
-              'text-vega-pink': view === key,
-              'bg-white': view === key,
-            }
-          );
+          const isActive = view === key;
+          const className = classNames('py-4', 'px-12', 'capitalize', {
+            'text-black dark:text-vega-yellow': isActive,
+            'bg-white dark:bg-black': isActive,
+            'text-black dark:text-white': !isActive,
+            'bg-black-10 dark:bg-white-10': !isActive,
+          });
           return (
             <button
               onClick={() => setView(key)}
@@ -125,6 +122,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
             </button>
           );
         })}
+        <div className="bg-black-10 dark:bg-white-10 grow"></div>
       </div>
     </div>
   );

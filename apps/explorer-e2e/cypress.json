@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost:4200",
+  "projectId": "et4snf",
   "fileServerFolder": ".",
   "fixturesFolder": false,
   "pluginsFile": "./src/plugins/index.js",

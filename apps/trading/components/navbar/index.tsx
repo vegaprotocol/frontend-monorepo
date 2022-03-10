@@ -1,21 +1,18 @@
 import { useRouter } from 'next/router';
-import classNames from 'classnames';
 import { Vega } from '../icons/vega';
 import Link from 'next/link';
+import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 
 export const Navbar = () => {
-  const navClasses = classNames(
-    'flex items-center',
-    'border-neutral-200 border-b'
-  );
   return (
-    <nav className={navClasses}>
+    <nav className="flex items-center">
       <Link href="/" passHref={true}>
-        <a className="px-8">
-          <Vega />
+        <a className="px-[26px]">
+          <Vega className="fill-black dark:fill-white" />
         </a>
       </Link>
       {[
+        { name: 'Trading', path: '/', exact: true },
         { name: 'Portfolio', path: '/portfolio' },
         { name: 'Markets', path: '/markets' },
       ].map((route) => (
@@ -28,18 +25,17 @@ export const Navbar = () => {
 interface NavLinkProps {
   name: string;
   path: string;
+  exact?: boolean;
 }
 
-const NavLink = ({ name, path }: NavLinkProps) => {
+const NavLink = ({ name, path, exact }: NavLinkProps) => {
   const router = useRouter();
-  const className = classNames('inline-block', 'p-8', {
-    // Handle direct math and child page matches
-    'text-vega-pink': router.asPath === path || router.asPath.startsWith(path),
-  });
-
+  const isActive =
+    router.asPath === path || (!exact && router.asPath.startsWith(path));
   return (
-    <a
-      className={className}
+    <AnchorButton
+      variant={isActive ? 'accent' : 'inline'}
+      className="px-16 h-[38px] text-h4 uppercase border-0"
       href={path}
       onClick={(e) => {
         e.preventDefault();
@@ -47,6 +43,6 @@ const NavLink = ({ name, path }: NavLinkProps) => {
       }}
     >
       {name}
-    </a>
+    </AnchorButton>
   );
 };

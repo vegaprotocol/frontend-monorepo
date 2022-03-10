@@ -1,0 +1,77 @@
+import {
+  Meta,
+  ColorPalette,
+  ColorItem,
+  Typeset,
+} from '@storybook/addon-docs/blocks';
+
+import { theme } from '@vegaprotocol/tailwindcss-config';
+
+<Meta title="Primitives/Colors" />
+
+# Primitives
+
+This project uses Tailwindcss so a lot of colour props are passed in as CSS classes that
+Tailwind applies styling to i.e. `text-blue-500` to use the primary blue. You can find the
+full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#default-color-palette).
+
+## Colours
+
+### Shared
+
+<ColorPalette>
+  <ColorItem
+    title="theme.color.white"
+    subtitle="White"
+    colors={theme.colors.white}
+  />
+  <ColorItem
+    title="theme.color.black"
+    subtitle="Black"
+    colors={theme.colors.black}
+  />
+  <ColorItem
+    title="theme.color.coral"
+    subtitle="Coral"
+    colors={[theme.colors.coral]}
+  />
+</ColorPalette>
+
+### Vega
+
+<ColorPalette>
+  <ColorItem
+    title="theme.color.vega"
+    subtitle="Vega colors"
+    colors={theme.colors.vega}
+  />
+</ColorPalette>
+
+### Intent
+
+<ColorPalette>
+  <ColorItem
+    title="theme.color.intent"
+    subtitle="Intent"
+    colors={theme.colors.intent}
+  />
+  <ColorItem
+    title="theme.color.intent-background"
+    subtitle="Intent background"
+    colors={theme.colors['intent-background']}
+  />
+</ColorPalette>
+
+### Background
+
+<ColorPalette>
+  <ColorItem
+    title="theme.color.backgroundColor"
+    subtitle="Intent backgroundColor"
+    colors={{
+      black: theme.colors.black.DEFAULT,
+      white: theme.colors.white.DEFAULT,
+      danger: theme.colors['intent-background'].danger,
+    }}
+  />
+</ColorPalette>
