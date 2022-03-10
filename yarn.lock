@@ -5589,6 +5589,11 @@ address@^1.0.1:
   resolved "https://registry.yarnpkg.com/address/-/address-1.1.2.tgz#bf1116c9c758c51b7a933d296b72c221ed9428b6"
   integrity sha512-aT6camzM4xEA54YVJYSqxz1kv4IHnQZRtThJJHhUMRExaU5spC7jX5ugSwTaTgJliIgs4VhZOk7htClvQ/LmRA==
 
+ag-grid-community@^27.0.1:
+  version "27.0.1"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-27.0.1.tgz#7ce5c000d321ba2c22447837e793b1d8366f4cdb"
+  integrity sha512-wV3CLLJWet0I7lmlVjVjACVWQ1WmGYflEyc2nKK3u5CDKa9ewQGYcwZW92i+E+9rmGH6R7oaL3DFKzNWD6C56w==
+
 ag-grid-react@^27.0.1:
   version "27.0.1"
   resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-27.0.1.tgz#138a2f256ee1f24377268adcf3d7c4751c9896db"
