@@ -1,10 +1,8 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/react-helpers';
-import { useEffect, useMemo, useState } from 'react';
-import { Connectors } from '../lib/connectors';
 
 export function Index() {
-  const { keypair, keypairs, selectPublicKey } = useVegaWallet();
+  const { keypair, keypairs, selectPublicKey, sendTx } = useVegaWallet();
 
   return (
     <div className="m-24">
@@ -40,10 +38,6 @@ export function Index() {
           ))}
         </select>
       ) : null}
-      <h2>Public keys</h2>
-      <pre className="p-12 text-sm bg-neutral-100">
-        {JSON.stringify(keypairs, null, 2)}
-      </pre>
     </div>
   );
 }

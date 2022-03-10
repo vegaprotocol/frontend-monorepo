@@ -57,8 +57,10 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
         <div className="h-full dark:bg-black dark:text-white-60 bg-white text-black-60">
           <div className="flex items-center border-b-[7px] border-vega-yellow">
             <Navbar />
-            <VegaWalletButton setConnectDialog={setConnectDialog} />
-            <ThemeSwitcher onToggle={setTheme} className="ml-auto mr-8 -my-2" />
+            <div className="flex items-center ml-auto mr-8">
+              <VegaWalletButton setConnectDialog={setConnectDialog} />
+              <ThemeSwitcher onToggle={setTheme} />
+            </div>
           </div>
           <main>
             <Component {...pageProps} />
@@ -92,7 +94,7 @@ const VegaWalletButton = ({ setConnectDialog }: VegaWalletButtonProps) => {
   };
 
   return (
-    <button onClick={handleClick} className="inline-block p-8">
+    <button onClick={handleClick} className="ml-auto inline-block p-8">
       {isConnected ? 'Disconnect' : 'Connect Vega wallet'}
     </button>
   );

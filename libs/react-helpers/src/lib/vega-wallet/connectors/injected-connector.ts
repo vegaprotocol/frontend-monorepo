@@ -21,4 +21,8 @@ export class InjectedConnector implements VegaConnector {
   async disconnect() {
     return;
   }
+
+  sendTx() {
+    return Promise.resolve(null);
+  }
 }

@@ -1,4 +1,8 @@
-import { VegaKey } from '@vegaprotocol/vegawallet-service-api-client';
+import {
+  VegaKey,
+  OrderSubmissionBody,
+  TransactionResponse,
+} from '@vegaprotocol/vegawallet-service-api-client';
 import { createContext } from 'react';
 import { VegaConnector } from './connectors';
 
@@ -24,6 +28,9 @@ export interface VegaWalletContextShape {
 
   /** Reference to the connector */
   connector: VegaConnector | null;
+
+  /** Send a transaction to the network, only order submissions for now */
+  sendTx: (body: OrderSubmissionBody) => Promise<TransactionResponse | null>;
 }
 
 export const VegaWalletContext = createContext<

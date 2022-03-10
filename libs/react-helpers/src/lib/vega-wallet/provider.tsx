@@ -11,6 +11,7 @@ import { VegaKeyExtended, VegaWalletContextShape } from '.';
 import { VegaConnector } from './connectors';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage-keys';
+import { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
 
 interface VegaWalletProviderProps {
   children: ReactNode;
@@ -65,6 +66,19 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     }
   }, []);
 
+  const sendTx = useCallback(async (body: OrderSubmissionBody) => {
+    if (!connector.current) {
+      return null;
+    }
+
+    try {
+      return connector.current.sendTx(body);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  }, []);
+
   // Current selected keypair derived from publicKey state
   const keypair = useMemo(() => {
     const found = keypairs?.find((x) => x.pub === publicKey);
@@ -91,8 +105,9 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       connect,
       disconnect,
       connector: connector.current,
+      sendTx,
     };
-  }, [keypair, keypairs, setPublicKey, connect, disconnect, connector]);
+  }, [keypair, keypairs, setPublicKey, connect, disconnect, connector, sendTx]);
 
   return (
     <VegaWalletContext.Provider value={contextValue}>

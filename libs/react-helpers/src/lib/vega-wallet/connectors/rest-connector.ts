@@ -2,6 +2,7 @@ import {
   DefaultApi,
   createConfiguration,
   Configuration,
+  OrderSubmissionBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/storage';
 import { WALLET_CONFIG } from '../storage-keys';
@@ -82,6 +83,10 @@ export class RestConnector implements VegaConnector {
       // connect so clear the config (and containing token) from storage
       this.clearConfig();
     }
+  }
+
+  async sendTx(body: OrderSubmissionBody) {
+    return await this.service.commandSyncPost(body);
   }
 
   private setConfig(cfg: RestConnectorConfig) {
