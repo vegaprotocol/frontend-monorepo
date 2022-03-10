@@ -28,7 +28,7 @@ export const JumpToBlock = () => {
       </label>
       <input
         id="block-input"
-        type={'tel'}
+        type='tel'
         name={'blockNumber'}
         placeholder={'Block number'}
         className="form-input"
