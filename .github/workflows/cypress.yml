@@ -9,7 +9,7 @@ on:
 
 jobs:
   master:
-    name: Run end-to-end tests
+    name: Run end-to-end tests - main
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' }}
     steps:
@@ -31,7 +31,7 @@ jobs:
       - name: Run Cypress tests
         run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
   pr:
-    name: Run end-to-end tests
+    name: Run end-to-end tests - PR
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
