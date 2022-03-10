@@ -50,7 +50,7 @@ export function RestConnectorForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
       <FormGroup label="Wallet" labelFor="wallet">
         <Input
           {...register('wallet', { required: 'Required' })}
@@ -59,7 +59,9 @@ export function RestConnectorForm({
           autoFocus={true}
         />
         {errors.wallet?.message && (
-          <InputError intent="danger">{errors.wallet.message}</InputError>
+          <InputError intent="danger" className="mt-4">
+            {errors.wallet.message}
+          </InputError>
         )}
       </FormGroup>
       <FormGroup label="Passphrase" labelFor="passphrase">
@@ -69,10 +71,16 @@ export function RestConnectorForm({
           type="password"
         />
         {errors.passphrase?.message && (
-          <InputError intent="danger">{errors.passphrase.message}</InputError>
+          <InputError intent="danger" className="mt-4">
+            {errors.passphrase.message}
+          </InputError>
         )}
       </FormGroup>
-      {error && <p className="text-intent-danger mb-12">{error}</p>}
+      {error && (
+        <p className="text-intent-danger mb-12" data-testid="form-error">
+          {error}
+        </p>
+      )}
       <Button variant="primary" type="submit">
         Connect
       </Button>
