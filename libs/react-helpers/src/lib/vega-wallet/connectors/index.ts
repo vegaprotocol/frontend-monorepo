@@ -1,4 +1,8 @@
-import { VegaKey } from '@vegaprotocol/vegawallet-service-api-client';
+import {
+  VegaKey,
+  TransactionResponse,
+  OrderSubmissionBody,
+} from '@vegaprotocol/vegawallet-service-api-client';
 export { RestConnector } from './rest-connector';
 
 export interface VegaConnector {
@@ -10,4 +14,7 @@ export interface VegaConnector {
 
   /** Disconnect from wallet */
   disconnect(): Promise<void>;
+
+  /** Send a TX to the network. Only support order submission for now */
+  sendTx: (body: OrderSubmissionBody) => Promise<TransactionResponse | null>;
 }
