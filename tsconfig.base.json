@@ -16,7 +16,7 @@
     "baseUrl": ".",
     "paths": {
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
-      "@vegaprotocol/storage": ["libs/storage/src/index.ts"],
+      "@vegaprotocol/storage": ["libs/storage/src/index.js"],
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.js"
       ],

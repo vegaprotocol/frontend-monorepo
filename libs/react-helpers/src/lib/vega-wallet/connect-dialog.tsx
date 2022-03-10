@@ -3,7 +3,8 @@ import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { VegaConnector } from './connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { useEffect } from 'react';
-import { RestConnector, useVegaWallet } from '.';
+import { RestConnector } from './connectors/rest-connector';
+import { useVegaWallet } from './hooks';
 
 export interface VegaConnectDialogProps {
   connectors: { [name: string]: VegaConnector };
@@ -57,17 +58,20 @@ export function VegaConnectDialog({
           }}
         />
       ) : (
-        <ul className="flex flex-col justify-center gap-4 items-start">
+        <ul
+          className="flex flex-col justify-center gap-4 items-start"
+          data-testid="connectors-list"
+        >
           {Object.entries(connectors).map(([key, connector]) => (
             <li key={key} className="mb-12 last:mb-0">
               <button
                 key={key}
                 onClick={() => setSelectedConnector(connector)}
-                className="capitalize hover:text-vega-pink"
+                className="capitalize hover:text-vega-pink dark:hover:text-vega-yellow"
               >
                 {key} provider
               </button>
-              <p className="text-neutral-500">{connector.description}</p>
+              <p>{connector.description}</p>
             </li>
           ))}
         </ul>
