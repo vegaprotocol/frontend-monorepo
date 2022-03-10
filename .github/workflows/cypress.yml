@@ -6,15 +6,34 @@ on:
       - master
       - develop
   pull_request:
-    branches:
-      - master
-      - develop
 
 jobs:
-  cypress-run:
+  master:
     name: Run end-to-end tests
     runs-on: ubuntu-latest
-
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: master
+      - name: Use Node.js 16
+        id: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install root dependencies
+        run: yarn install
+      - name: Run Cypress tests
+        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+  pr:
+    name: Run end-to-end tests
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
