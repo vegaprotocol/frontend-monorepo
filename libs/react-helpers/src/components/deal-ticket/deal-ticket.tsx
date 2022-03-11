@@ -157,6 +157,7 @@ const DealTicketMarket = ({
               value={order.size}
               onChange={(e) => updateOrder({ size: e.target.value })}
               className="w-full"
+              type="number"
               data-testid="order-size"
             />
           </FormGroup>
@@ -206,6 +207,7 @@ const DealTicketLimit = ({
               value={order.size}
               onChange={(e) => updateOrder({ size: e.target.value })}
               className="w-full"
+              type="number"
               data-testid="order-size"
             />
           </FormGroup>
@@ -220,6 +222,7 @@ const DealTicketLimit = ({
               value={order.price}
               onChange={(e) => updateOrder({ price: e.target.value })}
               className="w-full"
+              type="number"
               data-testid="order-price"
             />
           </FormGroup>
