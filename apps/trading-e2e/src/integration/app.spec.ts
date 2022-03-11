@@ -8,6 +8,6 @@ describe('trading', () => {
     cy.login('my-email@something.com', 'myPassword');
 
     // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome trading');
+    getGreeting().contains('Welcome to Vega Trading');
   });
 });

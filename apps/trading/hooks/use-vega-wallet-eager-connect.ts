@@ -1,6 +1,6 @@
-import { useVegaWallet, WALLET_CONFIG } from '@vegaprotocol/react-helpers';
+import { useVegaWallet, WALLET_CONFIG } from '@vegaprotocol/wallet';
 import { useEffect } from 'react';
-import { LocalStorage } from '@vegaprotocol/storage';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { Connectors } from '../lib/connectors';
 
 export function useEagerConnect() {

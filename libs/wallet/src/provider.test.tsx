@@ -1,11 +1,5 @@
 import '@testing-library/jest-dom';
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './hooks';
 import { VegaWalletProvider } from './provider';

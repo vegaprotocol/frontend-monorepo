@@ -4,7 +4,7 @@ import {
   Configuration,
   OrderSubmissionBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
-import { LocalStorage } from '@vegaprotocol/storage';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
 import { VegaConnector } from '.';
 

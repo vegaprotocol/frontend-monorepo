@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 
 import Index from '../pages/index.page';
-import { VegaWalletContext } from '@vegaprotocol/react-helpers';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
 
 describe('Index', () => {
   it('should render successfully', () => {
@@ -15,6 +15,7 @@ describe('Index', () => {
           disconnect: jest.fn(),
           selectPublicKey: jest.fn(),
           connector: null,
+          sendTx: jest.fn(),
         }}
       >
         <Index />

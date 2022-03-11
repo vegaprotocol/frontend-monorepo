@@ -1,4 +1,4 @@
-import { useVegaWallet } from '@vegaprotocol/react-helpers';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 const Portfolio = () => {
   const { keypair } = useVegaWallet();

@@ -1,4 +1,4 @@
-import { RestConnector } from '@vegaprotocol/react-helpers';
+import { RestConnector } from '@vegaprotocol/wallet';
 
 export const rest = new RestConnector();
 

@@ -1,4 +1,8 @@
-import { AgGridDynamic as AgGrid, Button, Callout } from '@vegaprotocol/ui-toolkit';
+import {
+  AgGridDynamic as AgGrid,
+  Button,
+  Callout,
+} from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 
 export function Index() {
@@ -12,9 +16,9 @@ export function Index() {
       <div className="mb-24">
         <Callout
           intent="help"
-          title="This is what this thing does"
+          title="Welcome to Vega Trading"
           iconName="endorsed"
-          headingLevel={1}        
+          headingLevel={1}
         >
           <div className="flex flex-col">
             <div>With a longer explaination</div>
@@ -28,7 +32,7 @@ export function Index() {
         <AgGridColumn field="make"></AgGridColumn>
         <AgGridColumn field="model"></AgGridColumn>
         <AgGridColumn field="price"></AgGridColumn>
-      </AgGrid>      
+      </AgGrid>
     </div>
   );
 }
