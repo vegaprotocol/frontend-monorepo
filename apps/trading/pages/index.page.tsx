@@ -1,9 +1,6 @@
 import { Callout, Button } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/react-helpers';
 
 export function Index() {
-  const { keypair, keypairs, selectPublicKey, sendTx } = useVegaWallet();
-
   return (
     <div className="m-24">
       <Callout
