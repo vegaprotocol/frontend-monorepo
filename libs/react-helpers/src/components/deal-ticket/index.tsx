@@ -12,7 +12,8 @@ import { OrderDialog } from './order-dialog';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import { Status, useOrderSubmit } from './use-order-submit';
+import { useOrderSubmit } from './use-order-submit';
+import { VegaTxStatus } from './use-vega-transaction';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,
@@ -53,9 +54,7 @@ export const DealTicket = ({
 }: DealTicketProps) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [order, updateOrder] = useOrderState(defaultOrder);
-  const { submit, status, error, loading, txHash, id } = useOrderSubmit(
-    market.id
-  );
+  const { submit, status, error, txHash, id } = useOrderSubmit(market.id);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -64,9 +63,9 @@ export const DealTicket = ({
 
   useEffect(() => {
     if (
-      status === Status.AwaitingConfirmation ||
-      status === Status.Pending ||
-      status === Status.Rejected
+      status === VegaTxStatus.AwaitingConfirmation ||
+      status === VegaTxStatus.Pending ||
+      status === VegaTxStatus.Rejected
     ) {
       setOrderDialogOpen(true);
     }
@@ -79,7 +78,10 @@ export const DealTicket = ({
       <DealTicketMarket
         order={order}
         updateOrder={updateOrder}
-        loading={loading}
+        loading={
+          status === VegaTxStatus.AwaitingConfirmation ||
+          status === VegaTxStatus.Pending
+        }
         market={market}
       />
     );
@@ -88,7 +90,10 @@ export const DealTicket = ({
       <DealTicketLimit
         order={order}
         updateOrder={updateOrder}
-        loading={loading}
+        loading={
+          status === VegaTxStatus.AwaitingConfirmation ||
+          status === VegaTxStatus.Pending
+        }
         market={market}
       />
     );

@@ -74,16 +74,12 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     }
   }, []);
 
-  const sendTx = useCallback(async (body: OrderSubmissionBody) => {
+  const sendTx = useCallback((body: OrderSubmissionBody) => {
     if (!connector.current) {
-      return null;
+      return Promise.resolve(null);
     }
 
-    try {
-      return connector.current.sendTx(body);
-    } catch (err) {
-      return null;
-    }
+    return connector.current.sendTx(body);
   }, []);
 
   // Current selected keypair derived from publicKey state

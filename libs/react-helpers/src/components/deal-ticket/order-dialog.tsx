@@ -1,7 +1,7 @@
 import { gql, useSubscription } from '@apollo/client';
 import { useState } from 'react';
 import { useVegaWallet } from '../vega-wallet';
-import { Status } from './use-order-submit';
+import { VegaTxStatus } from './use-vega-transaction';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -28,8 +28,8 @@ const ORDER_EVENT_SUB = gql`
 `;
 
 interface OrderDialogProps {
-  status: Status;
-  txHash: string;
+  status: VegaTxStatus;
+  txHash?: string;
   error: string;
   id: string;
 }
@@ -67,7 +67,7 @@ export const OrderDialog = ({
     },
   });
 
-  if (status === Status.AwaitingConfirmation) {
+  if (status === VegaTxStatus.AwaitingConfirmation) {
     return (
       <div>
         <h1 className="text-h4">Confirm the transaction in your Vega wallet</h1>
@@ -76,10 +76,10 @@ export const OrderDialog = ({
   }
 
   // Rejected by wallet
-  if (status === Status.Rejected) {
+  if (status === VegaTxStatus.Rejected) {
     return (
       <div>
-        <h1 className="text-h4">Order rejected</h1>
+        <h1 className="text-h4">Order rejected by wallet</h1>
         {error && <p>{error}</p>}
       </div>
     );

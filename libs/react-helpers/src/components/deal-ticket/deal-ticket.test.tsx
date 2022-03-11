@@ -20,6 +20,11 @@ test('Deal ticket order', () => {
       instrument: {
         product: {
           quoteName: 'quote-name',
+          settlementAsset: {
+            id: 'asset-id',
+            symbol: 'asset-symbol',
+            name: 'asset-name',
+          },
         },
       },
     },
@@ -47,7 +52,10 @@ test('Deal ticket order', () => {
 
   // Assert last price is shown
   expect(screen.getByTestId('last-price')).toHaveTextContent(
-    `~${market.depth.lastTrade.price} ${market.tradableInstrument.instrument.product.quoteName}`
+    // eslint-disable-next-line
+    `~${market.depth.lastTrade!.price} ${
+      market.tradableInstrument.instrument.product.quoteName
+    }`
   );
 
   // Asssert changing values

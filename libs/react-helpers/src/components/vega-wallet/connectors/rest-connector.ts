@@ -85,8 +85,8 @@ export class RestConnector implements VegaConnector {
     }
   }
 
-  async sendTx(body: OrderSubmissionBody) {
-    return await this.service.commandSyncPost(body);
+  sendTx(body: OrderSubmissionBody) {
+    return this.service.commandSyncPost(body);
   }
 
   private setConfig(cfg: RestConnectorConfig) {

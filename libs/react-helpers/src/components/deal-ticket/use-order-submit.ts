@@ -3,20 +3,11 @@ import { ethers } from 'ethers';
 import { SHA3 } from 'sha3';
 import { Order } from '../../hooks/use-order-state';
 import { useVegaWallet } from '../vega-wallet';
-
-export enum Status {
-  Default = 'Default',
-  AwaitingConfirmation = 'AwaitingConfirmation',
-  Rejected = 'Rejected',
-  Pending = 'Pending',
-}
+import { useVegaTransaction } from './use-vega-transaction';
 
 export const useOrderSubmit = (marketId: string) => {
-  const { keypair, sendTx } = useVegaWallet();
-  const [status, setStatus] = useState(Status.Default);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [txHash, setTxHash] = useState('');
+  const { keypair } = useVegaWallet();
+  const { send, status, tx, error } = useVegaTransaction();
   const [id, setId] = useState('');
 
   const submit = useCallback(
@@ -29,58 +20,37 @@ export const useOrderSubmit = (marketId: string) => {
         throw new Error('No side provided');
       }
 
-      try {
-        setStatus(Status.AwaitingConfirmation);
-        setLoading(true);
-        setError('');
-        setTxHash('');
+      const res = await send({
+        pubKey: keypair.pub,
+        propagate: true,
+        orderSubmission: {
+          reference: '',
+          marketId,
+          price: order.price,
+          size: order.size,
+          type: order.type,
+          side: order.side,
+          timeInForce: order.timeInForce,
+          expiresAt: order.expiration
+            ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
+              // just append 6 zeroes
+              order.expiration.getTime().toString() + '000000'
+            : undefined,
+        },
+      });
 
-        const res = await sendTx({
-          pubKey: keypair.pub,
-          propagate: true,
-          orderSubmission: {
-            reference: '',
-            marketId,
-            price: order.price,
-            size: order.size,
-            type: order.type,
-            side: order.side,
-            timeInForce: order.timeInForce,
-            expiresAt: order.expiration
-              ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
-                // just append 6 zeroes
-                order.expiration.getTime().toString() + '000000'
-              : undefined,
-          },
-        });
-
-        if (!res?.txHash) {
-          throw new Error('No txHash received');
-        }
-
-        if (!res.tx?.signature?.value) {
-          throw new Error('No signature received');
-        }
-
-        setTxHash(res.txHash);
-        setId(determineId(res.tx?.signature?.value).toUpperCase());
-        setStatus(Status.Pending);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Something went wrong');
-        setStatus(Status.Rejected);
-      } finally {
-        setLoading(false);
+      if (res?.tx?.signature?.value) {
+        setId(determineId(res.tx.signature.value).toUpperCase());
       }
     },
-    [marketId, keypair, sendTx]
+    [marketId, keypair, send]
   );
 
   return {
     submit,
     status,
     error,
-    loading,
-    txHash,
+    txHash: tx?.txHash,
     id,
   };
 };
