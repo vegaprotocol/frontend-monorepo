@@ -1,4 +1,4 @@
-import { Button, Input, InputError } from '@vegaprotocol/ui-toolkit';
+import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { FormEvent } from 'react';
 import {
   Order,
@@ -74,6 +74,7 @@ export const DealTicket = ({
         error={error}
         loading={loading}
         txHash={txHash}
+        market={market}
       />
     );
   } else {
@@ -108,17 +109,19 @@ const DealTicketMarket = ({
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
-      <div className="flex items-center gap-8 mb-20">
+      <div className="flex items-center gap-8">
         <div className="flex-1">
-          <Input
-            value={order.size}
-            onChange={(e) => updateOrder({ size: e.target.value })}
-            className="w-full"
-            data-testid="order-size"
-          />
+          <FormGroup label="Amount">
+            <Input
+              value={order.size}
+              onChange={(e) => updateOrder({ size: e.target.value })}
+              className="w-full"
+              data-testid="order-size"
+            />
+          </FormGroup>
         </div>
-        <div>@</div>
-        <div className="flex-1" data-testid="last-price">
+        <div className="pt-4">@</div>
+        <div className="flex-1 pt-4" data-testid="last-price">
           ~{market.depth.lastTrade.price}{' '}
           {market.tradableInstrument.instrument.product.quoteName}
         </div>
@@ -148,6 +151,7 @@ interface DealTicketLimitProps {
   error: string;
   loading: boolean;
   txHash: string;
+  market: Market;
 }
 
 const DealTicketLimit = ({
@@ -156,28 +160,36 @@ const DealTicketLimit = ({
   error,
   loading,
   txHash,
+  market,
 }: DealTicketLimitProps) => {
   return (
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
-      <div className="flex items-center gap-8 mb-20">
+      <div className="flex items-center gap-8">
         <div className="flex-1">
-          <Input
-            value={order.size}
-            onChange={(e) => updateOrder({ size: e.target.value })}
-            className="w-full"
-            data-testid="order-size"
-          />
+          <FormGroup label="Amount">
+            <Input
+              value={order.size}
+              onChange={(e) => updateOrder({ size: e.target.value })}
+              className="w-full"
+              data-testid="order-size"
+            />
+          </FormGroup>
         </div>
         <div>@</div>
         <div className="flex-1">
-          <Input
-            value={order.price}
-            onChange={(e) => updateOrder({ price: e.target.value })}
-            className="w-full"
-            data-testid="order-price"
-          />
+          <FormGroup
+            label={`Price (${market.tradableInstrument.instrument.product.quoteName})`}
+            labelAlign="right"
+          >
+            <Input
+              value={order.price}
+              onChange={(e) => updateOrder({ price: e.target.value })}
+              className="w-full"
+              data-testid="order-price"
+            />
+          </FormGroup>
         </div>
       </div>
       <TimeInForceSelector

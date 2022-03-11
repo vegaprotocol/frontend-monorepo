@@ -1,4 +1,4 @@
-import { Select } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
 import {
   Order,
   OrderTimeInForce,
@@ -28,7 +28,7 @@ export const TimeInForceSelector = ({
         });
 
   return (
-    <div className="flex gap-8 mb-12">
+    <FormGroup label="Time in force">
       <Select
         value={order.timeInForce}
         onChange={(e) => onSelect(e.target.value as OrderTimeInForce)}
@@ -43,6 +43,6 @@ export const TimeInForceSelector = ({
           );
         })}
       </Select>
-    </div>
+    </FormGroup>
   );
 };
