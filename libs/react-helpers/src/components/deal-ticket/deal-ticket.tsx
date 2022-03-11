@@ -38,6 +38,21 @@ export interface Market {
       };
     };
   };
+  tradingMode:
+    | 'BatchAuction'
+    | 'Continuous'
+    | 'MonitoringAuction'
+    | 'OpeningAuction';
+  state:
+    | 'Active'
+    | 'Cancelled'
+    | 'Closed'
+    | 'Pending'
+    | 'Proposed'
+    | 'Rejected'
+    | 'Settled'
+    | 'Suspended'
+    | 'TradingTerminated';
   depth: {
     lastTrade: {
       price: string;
@@ -130,6 +145,11 @@ const DealTicketMarket = ({
 }: DealTicketMarketProps) => {
   return (
     <>
+      {market.tradingMode === 'Continuous' && (
+        <div role="alert" className="bg-black-10 py-4 px-8 mb-20">
+          <p>Market is in {market.tradingMode} mode</p>
+        </div>
+      )}
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
       <div className="flex items-center gap-8">

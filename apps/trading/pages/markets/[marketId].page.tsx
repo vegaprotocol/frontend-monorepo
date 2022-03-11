@@ -60,6 +60,7 @@ const MarketPage = () => {
           marketId: Array.isArray(marketId) ? marketId[0] : marketId,
         },
         skip: !marketId,
+        fetchPolicy: 'cache-and-network',
       }}
     >
       {({ market }) =>
