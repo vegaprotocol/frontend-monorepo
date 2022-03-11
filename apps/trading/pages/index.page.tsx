@@ -16,7 +16,7 @@ export function Index() {
       <div className="mb-24">
         <Callout
           intent="help"
-          title="Welcome to Vega Trading"
+          title="Welcome to Vega Trading App"
           iconName="endorsed"
           headingLevel={1}
         >
