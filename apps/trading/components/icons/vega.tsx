@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 
 export function Vega({ className }: { className?: string }) {
-  const svgClasses = classNames(className, 'fill-current', 'w-[76px] h-[16px]');
+  const svgClasses = classNames(className, 'fill-current');
   return (
     <svg
       width="86"

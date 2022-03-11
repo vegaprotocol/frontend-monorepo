@@ -17,7 +17,13 @@ import { VegaWalletButton } from '../components/vega-wallet-connect-button';
 import { useThemeSwitcher } from '../hooks/use-theme-switcher';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
-  const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
+  const client = useMemo(
+    () =>
+      createClient(
+        process.env['NX_VEGA_URL'] || 'https://n03.stagnet2.vega.xyz'
+      ),
+    []
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const setTheme = useThemeSwitcher();
 
@@ -41,7 +47,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
             />
           </Head>
           <div className="h-full dark:bg-black dark:text-white-60 bg-white text-black-60">
-            <div className="flex items-center border-b-[7px] border-vega-yellow">
+            <div className="flex items-stretch border-b-[7px] border-vega-yellow">
               <Navbar />
               <div className="flex items-center ml-auto mr-8">
                 <VegaWalletButton setConnectDialog={setConnectDialog} />

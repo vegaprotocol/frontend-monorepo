@@ -19,25 +19,6 @@ export function Index() {
           </Button>
         </div>
       </Callout>
-      <h1>Vega wallet</h1>
-      {keypair && <p>Current: {keypair.pub}</p>}
-      {keypairs?.length ? (
-        <select
-          name="change-key"
-          className="w-full px-8 py-2 border-black border"
-          value={keypair ? keypair.pub : 'none'}
-          onChange={(e) => selectPublicKey(e.target.value)}
-        >
-          <option value="none" disabled={true}>
-            Please select
-          </option>
-          {keypairs.map((pk) => (
-            <option key={pk.pub} value={pk.pub}>
-              {pk.name} ({pk.pub})
-            </option>
-          ))}
-        </select>
-      ) : null}
     </div>
   );
 }

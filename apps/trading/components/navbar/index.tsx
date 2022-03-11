@@ -35,7 +35,7 @@ const NavLink = ({ name, path, exact }: NavLinkProps) => {
   return (
     <AnchorButton
       variant={isActive ? 'accent' : 'inline'}
-      className="px-16 h-[38px] text-h4 uppercase border-0"
+      className="px-16 py-6 h-[38px] text-h4 uppercase border-0 self-end"
       href={path}
       onClick={(e) => {
         e.preventDefault();
