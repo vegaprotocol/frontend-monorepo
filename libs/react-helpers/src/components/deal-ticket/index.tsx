@@ -13,10 +13,11 @@ import { TypeSelector } from './type-selector';
 import { useOrderSubmit } from './use-order-submit';
 
 const DEFAULT_ORDER: Order = {
-  type: OrderType.Market,
+  type: OrderType.Limit,
   side: null,
   size: '0',
-  timeInForce: OrderTimeInForce.FOK,
+  timeInForce: OrderTimeInForce.GTT,
+  price: '0',
 };
 
 export interface Market {

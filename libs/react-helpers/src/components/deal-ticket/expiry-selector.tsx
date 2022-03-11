@@ -1,8 +1,6 @@
-import 'react-datepicker/dist/react-datepicker.css';
-import DatePicker from 'react-datepicker';
 import { Input } from '@vegaprotocol/ui-toolkit';
-import { useRef } from 'react';
 import { Order } from '../../hooks/use-order-state';
+import { format } from 'date-fns';
 
 interface ExpirySelectorProps {
   order: Order;
@@ -10,16 +8,15 @@ interface ExpirySelectorProps {
 }
 
 export const ExpirySelector = ({ order, onSelect }: ExpirySelectorProps) => {
-  const inputRef = useRef(null);
+  const date = order.expiration ? new Date(order.expiration) : new Date();
+  const dateFormatted = format(date, "yyyy-MM-dd'T'HH:mm");
   return (
     <div className="mb-12">
-      <DatePicker
-        selected={order.expiration}
-        onChange={(date) => onSelect(date)}
-        showTimeInput={true}
-        minDate={new Date()}
-        dateFormat={'yyyy MM dd HH:mm'}
-        customInput={<Input ref={inputRef} className="w-full" />}
+      <Input
+        type="datetime-local"
+        value={dateFormatted}
+        onChange={(e) => onSelect(new Date(e.target.value))}
+        min={new Date().toISOString()}
       />
     </div>
   );
