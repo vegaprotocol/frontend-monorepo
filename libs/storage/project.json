@@ -9,6 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/storage",
+        "tsConfig": "libs/storage/tsconfig.lib.json",
         "project": "libs/storage/package.json",
         "entryFile": "libs/storage/src/index.js",
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
