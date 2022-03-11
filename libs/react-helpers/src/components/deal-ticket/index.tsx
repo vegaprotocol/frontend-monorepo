@@ -38,7 +38,7 @@ export interface Market {
   depth: {
     lastTrade: {
       price: string;
-    };
+    } | null;
   };
 }
 
@@ -138,8 +138,14 @@ const DealTicketMarket = ({
         </div>
         <div className="pt-4">@</div>
         <div className="flex-1 pt-4" data-testid="last-price">
-          ~{market.depth.lastTrade.price}{' '}
-          {market.tradableInstrument.instrument.product.quoteName}
+          {market.depth.lastTrade ? (
+            <>
+              ~{market.depth.lastTrade.price}{' '}
+              {market.tradableInstrument.instrument.product.quoteName}
+            </>
+          ) : (
+            '-'
+          )}
         </div>
       </div>
       <TimeInForceSelector
