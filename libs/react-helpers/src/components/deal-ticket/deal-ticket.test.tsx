@@ -1,11 +1,12 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { DealTicket, Market } from './';
+import { DealTicket, Market } from './deal-ticket';
 import {
   Order,
   OrderTimeInForce,
   OrderType,
 } from '../../hooks/use-order-state';
+import { VegaWalletContext } from '../vega-wallet';
 
 test('Deal ticket order', () => {
   const order: Order = {
@@ -35,7 +36,11 @@ test('Deal ticket order', () => {
     },
   };
 
-  render(<DealTicket defaultOrder={order} market={market} />);
+  render(
+    <VegaWalletContext.Provider value={{} as any}>
+      <DealTicket defaultOrder={order} market={market} />
+    </VegaWalletContext.Provider>
+  );
 
   // Assert defaults are used
   expect(
