@@ -43,7 +43,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
       onValueChange={(value) => setActiveTab(value)}
     >
       <Tabs.List
-        className="flex flex-nowrap gap-4 overflow-x-auto my-4"
+        className="flex flex-nowrap gap-4 overflow-x-auto"
         role="tablist"
       >
         {Children.map(children, (child) => {
