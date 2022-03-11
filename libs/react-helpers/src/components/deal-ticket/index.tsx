@@ -2,6 +2,7 @@ import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { FormEvent } from 'react';
 import {
   Order,
+  OrderSide,
   OrderTimeInForce,
   OrderType,
   useOrderState,
@@ -13,11 +14,10 @@ import { TypeSelector } from './type-selector';
 import { useOrderSubmit } from './use-order-submit';
 
 const DEFAULT_ORDER: Order = {
-  type: OrderType.Limit,
-  side: null,
-  size: '0',
-  timeInForce: OrderTimeInForce.GTT,
-  price: '0',
+  type: OrderType.Market,
+  side: OrderSide.Buy,
+  size: '1',
+  timeInForce: OrderTimeInForce.IOC,
 };
 
 export interface Market {
@@ -46,7 +46,7 @@ export const DealTicket = ({
   market,
 }: DealTicketProps) => {
   const [order, updateOrder] = useOrderState(defaultOrder);
-  const { submit, error, loading, txHash } = useOrderSubmit('ABC123');
+  const { submit, error, loading, txHash } = useOrderSubmit(market.id);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

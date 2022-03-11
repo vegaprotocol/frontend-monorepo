@@ -1,47 +1,52 @@
 import { useCallback, useState } from 'react';
 import { Order } from '../../hooks/use-order-state';
-
-// TODO: Replace this with one provided by vega wallet
-const commandSync = (arg: any): Promise<any> =>
-  new Promise((resolve, reject) => {
-    setTimeout(() => {
-      reject({
-        txHash: Math.random().toString(),
-        tx: { signature: { value: 'FOO' } },
-      });
-    }, 1500);
-  });
+import { useVegaWallet } from '../vega-wallet';
 
 export const useOrderSubmit = (marketId: string) => {
+  const { keypair, sendTx } = useVegaWallet();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [txHash, setTxHash] = useState('');
+  console.log(keypair);
 
   const submit = useCallback(
     async (order: Order) => {
+      if (!keypair) {
+        throw new Error('No keypair provided');
+      }
+
+      if (!order.side) {
+        throw new Error('No side provided');
+      }
+
       try {
         setLoading(true);
         setError('');
         setTxHash('');
-        const res = await commandSync({
-          pubKey: 'TODO_pubkey',
+        const res = await sendTx({
+          pubKey: keypair.pub,
+          propagate: true,
           orderSubmission: {
-            reference: 'TODO_reference',
+            reference: '',
             marketId,
             price: order.price,
             size: order.size,
             type: order.type,
             side: order.side,
             timeInForce: order.timeInForce,
-            // wallet expects nanoseconds but client uses just ms
-            // expiresAt: variables.expiration
-            //   ? msToNano(variables.expiration)
-            //   : undefined,
-            expiresAt: undefined, // TODO: convert to nanoseconds
+            expiresAt: order.expiration
+              ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
+                // just append 6 zeroes
+                order.expiration.getTime().toString() + '000000'
+              : undefined,
           },
         });
 
+        if (!res?.txHash) {
+          throw new Error('No txHash received');
+        }
         setTxHash(res.txHash);
+
         console.log(`Order tx sent to network: ${res.txHash}`);
 
         /*
@@ -55,7 +60,7 @@ export const useOrderSubmit = (marketId: string) => {
         setLoading(false);
       }
     },
-    [marketId]
+    [marketId, keypair, sendTx]
   );
 
   return {
