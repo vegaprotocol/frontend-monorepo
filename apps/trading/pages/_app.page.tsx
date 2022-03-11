@@ -2,23 +2,24 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Navbar } from '../components/navbar';
 import {
-  useVegaWallet,
   VegaConnectDialog,
   VegaWalletProvider,
-  WALLET_CONFIG,
 } from '@vegaprotocol/react-helpers';
 import { Connectors } from '../lib/connectors';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { LocalStorage } from '@vegaprotocol/storage';
+import { useCallback, useMemo, useState } from 'react';
 import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import './styles.css';
 import { ApolloProvider } from '@apollo/client';
 import './styles.css';
+import { AppLoader } from '../components/app-loader';
+import { VegaWalletButton } from '../components/vega-wallet-connect-button';
+import { useThemeSwitcher } from '../hooks/use-theme-switcher';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
   const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const setTheme = useThemeSwitcher();
 
   const setConnectDialog = useCallback((isOpen?: boolean) => {
     setDialogOpen((curr) => {
@@ -27,114 +28,39 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
     });
   }, []);
 
-  useCallback(() => {
-    if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-  const setTheme = () => {
-    localStorage.theme = document.documentElement.classList.toggle('dark')
-      ? 'dark'
-      : undefined;
-  };
   return (
     <ApolloProvider client={client}>
       <VegaWalletProvider>
-        <Head>
-          <title>Welcome to trading!</title>
-          <link
-            rel="icon"
-            href="https://vega.xyz/favicon-32x32.png"
-            type="image/png"
-          />
-        </Head>
-        <div className="h-full dark:bg-black dark:text-white-60 bg-white text-black-60">
-          <div className="flex items-center border-b-[7px] border-vega-yellow">
-            <Navbar />
-            <div className="flex items-center ml-auto mr-8">
-              <VegaWalletButton setConnectDialog={setConnectDialog} />
-              <ThemeSwitcher onToggle={setTheme} />
+        <AppLoader>
+          <Head>
+            <title>Welcome to trading!</title>
+            <link
+              rel="icon"
+              href="https://vega.xyz/favicon-32x32.png"
+              type="image/png"
+            />
+          </Head>
+          <div className="h-full dark:bg-black dark:text-white-60 bg-white text-black-60">
+            <div className="flex items-center border-b-[7px] border-vega-yellow">
+              <Navbar />
+              <div className="flex items-center ml-auto mr-8">
+                <VegaWalletButton setConnectDialog={setConnectDialog} />
+                <ThemeSwitcher onToggle={setTheme} />
+              </div>
             </div>
+            <main>
+              <Component {...pageProps} />
+            </main>
+            <VegaConnectDialog
+              connectors={Connectors}
+              dialogOpen={dialogOpen}
+              setDialogOpen={setDialogOpen}
+            />
           </div>
-          <main>
-            <Component {...pageProps} />
-          </main>
-          <VegaConnectDialog
-            connectors={Connectors}
-            dialogOpen={dialogOpen}
-            setDialogOpen={setDialogOpen}
-          />
-        </div>
-        <VegaWalletManager />
+        </AppLoader>
       </VegaWalletProvider>
     </ApolloProvider>
   );
 }
 
-interface VegaWalletButtonProps {
-  setConnectDialog: (isOpen: boolean) => void;
-}
-
-const VegaWalletButton = ({ setConnectDialog }: VegaWalletButtonProps) => {
-  const { disconnect, keypairs } = useVegaWallet();
-  const isConnected = keypairs !== null;
-
-  const handleClick = () => {
-    if (isConnected) {
-      disconnect();
-    } else {
-      setConnectDialog(true);
-    }
-  };
-
-  return (
-    <button onClick={handleClick} className="ml-auto inline-block p-8">
-      {isConnected ? 'Disconnect' : 'Connect Vega wallet'}
-    </button>
-  );
-};
-
 export default VegaTradingApp;
-
-/**
- * Wrapper to interact with the vega wallet out side of the provider itself.
- */
-function VegaWalletManager() {
-  // Get keys from vega wallet immediately
-  useEagerConnect();
-
-  // Do other global stuff with vega wallet here
-
-  return null;
-}
-
-function useEagerConnect() {
-  const { connect } = useVegaWallet();
-
-  useEffect(() => {
-    const cfg = LocalStorage.getItem(WALLET_CONFIG);
-    const cfgObj = JSON.parse(cfg);
-
-    // No stored config, user has never connected or manually cleared storage
-    if (!cfgObj || !cfgObj.connector) {
-      return;
-    }
-
-    // Use the connector string in local storage to find the right connector to auto
-    // connect to
-    const connector = Connectors[cfgObj.connector];
-
-    // Developer hasn't provided this connector
-    if (!connector) {
-      throw new Error(`Connector ${cfgObj?.connector} not configured`);
-    }
-
-    connect(Connectors[cfgObj.connector]);
-  }, [connect]);
-}
