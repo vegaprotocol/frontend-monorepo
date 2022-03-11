@@ -1,5 +1,5 @@
 import { gql, useSubscription } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useVegaWallet } from '../vega-wallet';
 import { VegaTxStatus } from './use-vega-transaction';
 
@@ -29,6 +29,7 @@ const ORDER_EVENT_SUB = gql`
 
 interface OrderDialogProps {
   status: VegaTxStatus;
+  setStatus: (status: VegaTxStatus) => void;
   txHash?: string;
   error: string;
   id: string;
@@ -36,6 +37,7 @@ interface OrderDialogProps {
 
 export const OrderDialog = ({
   status,
+  setStatus,
   txHash,
   error,
   id,
@@ -66,6 +68,12 @@ export const OrderDialog = ({
       setFoundOrder(matchingOrder.event);
     },
   });
+
+  useEffect(() => {
+    if (foundOrder) {
+      setStatus(VegaTxStatus.Default);
+    }
+  }, [foundOrder, setStatus]);
 
   if (status === VegaTxStatus.AwaitingConfirmation) {
     return (

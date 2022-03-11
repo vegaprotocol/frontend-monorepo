@@ -7,7 +7,7 @@ import { useVegaTransaction } from './use-vega-transaction';
 
 export const useOrderSubmit = (marketId: string) => {
   const { keypair } = useVegaWallet();
-  const { send, status, tx, error } = useVegaTransaction();
+  const { send, status, setStatus, tx, error } = useVegaTransaction();
   const [id, setId] = useState('');
 
   const submit = useCallback(
@@ -49,6 +49,7 @@ export const useOrderSubmit = (marketId: string) => {
   return {
     submit,
     status,
+    setStatus,
     error,
     txHash: tx?.txHash,
     id,

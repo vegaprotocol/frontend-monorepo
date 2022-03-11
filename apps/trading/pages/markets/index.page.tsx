@@ -9,6 +9,8 @@ const MARKETS_QUERY = gql`
     markets {
       id
       name
+      state
+      tradingMode
     }
   }
 `;
@@ -28,7 +30,9 @@ const Markets = () => {
                   href={`${pathname}/${m.id}?portfolio=orders&trade=orderbook`}
                   passHref={true}
                 >
-                  <a>View market: {m.name}</a>
+                  <a>
+                    View market: {m.name} ({m.tradingMode}) ({m.state})
+                  </a>
                 </Link>
               </li>
             ))}

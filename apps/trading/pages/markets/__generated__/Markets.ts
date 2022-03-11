@@ -3,12 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { MarketState, MarketTradingMode } from "./../../../__generated__/globalTypes";
+
 // ====================================================
 // GraphQL query operation: Markets
 // ====================================================
 
 export interface Markets_markets {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -17,6 +19,14 @@ export interface Markets_markets {
    * Market full name
    */
   name: string;
+  /**
+   * Current state of the market
+   */
+  state: MarketState;
+  /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
 }
 
 export interface Markets {

@@ -23,7 +23,6 @@ export const useVegaTransaction = () => {
     // eslint-disable-next-line
     err: any
   ) => {
-    console.log(JSON.stringify(err));
     setStatus(VegaTxStatus.Rejected);
 
     // Fetch failed
@@ -66,5 +65,5 @@ export const useVegaTransaction = () => {
     [sendTx]
   );
 
-  return { send, status, tx, error };
+  return { send, status, setStatus, tx, error };
 };

@@ -15,6 +15,7 @@ import { TypeSelector } from './type-selector';
 import { useOrderSubmit } from './use-order-submit';
 import { VegaTxStatus } from './use-vega-transaction';
 import { addDecimal } from './decimals';
+import { SubmitButton } from './submit-button';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,
@@ -71,7 +72,9 @@ export const DealTicket = ({
 }: DealTicketProps) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [order, updateOrder] = useOrderState(defaultOrder);
-  const { submit, status, error, txHash, id } = useOrderSubmit(market.id);
+  const { submit, status, setStatus, error, txHash, id } = useOrderSubmit(
+    market.id
+  );
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,10 +98,7 @@ export const DealTicket = ({
       <DealTicketMarket
         order={order}
         updateOrder={updateOrder}
-        loading={
-          status === VegaTxStatus.AwaitingConfirmation ||
-          status === VegaTxStatus.Pending
-        }
+        status={status}
         market={market}
       />
     );
@@ -107,10 +107,7 @@ export const DealTicket = ({
       <DealTicketLimit
         order={order}
         updateOrder={updateOrder}
-        loading={
-          status === VegaTxStatus.AwaitingConfirmation ||
-          status === VegaTxStatus.Pending
-        }
+        status={status}
         market={market}
       />
     );
@@ -124,7 +121,13 @@ export const DealTicket = ({
         {ticket}
       </form>
       <Dialog open={orderDialogOpen} setOpen={setOrderDialogOpen}>
-        <OrderDialog status={status} txHash={txHash} error={error} id={id} />
+        <OrderDialog
+          status={status}
+          setStatus={setStatus}
+          txHash={txHash}
+          error={error}
+          id={id}
+        />
       </Dialog>
     </>
   );
@@ -133,23 +136,18 @@ export const DealTicket = ({
 interface DealTicketMarketProps {
   order: Order;
   updateOrder: (order: Partial<Order>) => void;
-  loading: boolean;
+  status: VegaTxStatus;
   market: Market;
 }
 
 const DealTicketMarket = ({
   order,
   updateOrder,
-  loading,
+  status,
   market,
 }: DealTicketMarketProps) => {
   return (
     <>
-      {market.tradingMode === 'Continuous' && (
-        <div role="alert" className="bg-black-10 py-4 px-8 mb-20">
-          <p>Market is in {market.tradingMode} mode</p>
-        </div>
-      )}
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
       <div className="flex items-center gap-8">
@@ -179,14 +177,7 @@ const DealTicketMarket = ({
         order={order}
         onSelect={(timeInForce) => updateOrder({ timeInForce })}
       />
-      <Button
-        className="w-full"
-        variant="primary"
-        type="submit"
-        disabled={loading}
-      >
-        {loading ? 'Awaiting confirmation...' : 'Place order'}
-      </Button>
+      <SubmitButton status={status} market={market} order={order} />
     </>
   );
 };
@@ -194,14 +185,14 @@ const DealTicketMarket = ({
 interface DealTicketLimitProps {
   order: Order;
   updateOrder: (order: Partial<Order>) => void;
-  loading: boolean;
+  status: VegaTxStatus;
   market: Market;
 }
 
 const DealTicketLimit = ({
   order,
   updateOrder,
-  loading,
+  status,
   market,
 }: DealTicketLimitProps) => {
   return (
@@ -248,14 +239,7 @@ const DealTicketLimit = ({
           }}
         />
       )}
-      <Button
-        className="w-full"
-        variant="primary"
-        type="submit"
-        disabled={loading}
-      >
-        {loading ? 'Awaiting confirmation...' : 'Place order'}
-      </Button>
+      <SubmitButton status={status} market={market} order={order} />
     </>
   );
 };
