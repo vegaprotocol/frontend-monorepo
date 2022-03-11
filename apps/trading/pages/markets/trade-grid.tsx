@@ -18,8 +18,15 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   );
   return (
     <div className={wrapperClasses}>
-      <header className="col-start-1 col-end-2 row-start-1 row-end-1 p-8">
-        <h1>Market: {market.name}</h1>
+      <header className="flex justify-between col-start-1 col-end-2 row-start-1 row-end-1 p-8">
+        <h1>
+          Market: {market.name} -{' '}
+          {market.tradableInstrument.instrument.product.settlementAsset.symbol}
+        </h1>
+        <div className="flex gap-12">
+          <div>Status: {market.state}</div>
+          <div>Trading mode: {market.tradingMode}</div>
+        </div>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
         <TradingViews.chart />

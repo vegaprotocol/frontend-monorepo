@@ -82,7 +82,6 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     try {
       return connector.current.sendTx(body);
     } catch (err) {
-      console.error(err);
       return null;
     }
   }, []);

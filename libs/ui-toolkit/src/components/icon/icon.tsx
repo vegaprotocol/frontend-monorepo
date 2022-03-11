@@ -11,6 +11,7 @@ interface IconProps {
 
 export const Icon = ({ size = 16, name, className }: IconProps) => {
   const effectiveClassName = classNames(
+    'fill-current',
     {
       'w-20': size === 20,
       'h-20': size === 20,

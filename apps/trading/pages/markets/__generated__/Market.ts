@@ -3,9 +3,30 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import {
+  MarketState,
+  MarketTradingMode,
+} from './../../../__generated__/globalTypes';
+
 // ====================================================
 // GraphQL query operation: Market
 // ====================================================
+
+export interface Market_market_tradableInstrument_instrument_product_settlementAsset {
+  __typename: 'Asset';
+  /**
+   * The id of the asset
+   */
+  id: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
+}
 
 export interface Market_market_tradableInstrument_instrument_product {
   __typename: 'Future';
@@ -13,6 +34,10 @@ export interface Market_market_tradableInstrument_instrument_product {
    * String representing the quote (e.g. BTCUSD -> USD is quote)
    */
   quoteName: string;
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: Market_market_tradableInstrument_instrument_product_settlementAsset;
 }
 
 export interface Market_market_tradableInstrument_instrument {
@@ -95,6 +120,14 @@ export interface Market_market {
    */
   decimalPlaces: number;
   /**
+   * Current state of the market
+   */
+  state: MarketState;
+  /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
+  /**
    * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: Market_market_tradableInstrument;
@@ -103,7 +136,7 @@ export interface Market_market {
    */
   trades: Market_market_trades[] | null;
   /**
-   * Current depth on the orderbook for this market
+   * Current depth on the order book for this market
    */
   depth: Market_market_depth;
 }

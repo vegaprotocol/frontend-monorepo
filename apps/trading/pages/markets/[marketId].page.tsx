@@ -13,11 +13,18 @@ const MARKET_QUERY = gql`
       id
       name
       decimalPlaces
+      state
+      tradingMode
       tradableInstrument {
         instrument {
           product {
             ... on Future {
               quoteName
+              settlementAsset {
+                id
+                symbol
+                name
+              }
             }
           }
         }

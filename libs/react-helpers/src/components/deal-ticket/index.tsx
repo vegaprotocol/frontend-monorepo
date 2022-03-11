@@ -1,5 +1,5 @@
-import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
-import { FormEvent } from 'react';
+import { Button, FormGroup, Input, Dialog } from '@vegaprotocol/ui-toolkit';
+import { FormEvent, useEffect, useState } from 'react';
 import {
   Order,
   OrderSide,
@@ -8,10 +8,11 @@ import {
   useOrderState,
 } from '../../hooks/use-order-state';
 import { ExpirySelector } from './expiry-selector';
+import { OrderDialog } from './order-dialog';
 import { SideSelector } from './side-selector';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import { useOrderSubmit } from './use-order-submit';
+import { Status, useOrderSubmit } from './use-order-submit';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,
@@ -26,6 +27,11 @@ export interface Market {
     instrument: {
       product: {
         quoteName: string;
+        settlementAsset: {
+          id: string;
+          symbol: string;
+          name: string;
+        };
       };
     };
   };
@@ -36,7 +42,7 @@ export interface Market {
   };
 }
 
-interface DealTicketProps {
+export interface DealTicketProps {
   defaultOrder?: Order;
   market: Market;
 }
@@ -45,13 +51,26 @@ export const DealTicket = ({
   defaultOrder = DEFAULT_ORDER,
   market,
 }: DealTicketProps) => {
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [order, updateOrder] = useOrderState(defaultOrder);
-  const { submit, error, loading, txHash } = useOrderSubmit(market.id);
+  const { submit, status, error, loading, txHash, id } = useOrderSubmit(
+    market.id
+  );
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     submit(order);
   };
+
+  useEffect(() => {
+    if (
+      status === Status.AwaitingConfirmation ||
+      status === Status.Pending ||
+      status === Status.Rejected
+    ) {
+      setOrderDialogOpen(true);
+    }
+  }, [status]);
 
   let ticket = null;
 
@@ -60,9 +79,7 @@ export const DealTicket = ({
       <DealTicketMarket
         order={order}
         updateOrder={updateOrder}
-        error={error}
         loading={loading}
-        txHash={txHash}
         market={market}
       />
     );
@@ -71,9 +88,7 @@ export const DealTicket = ({
       <DealTicketLimit
         order={order}
         updateOrder={updateOrder}
-        error={error}
         loading={loading}
-        txHash={txHash}
         market={market}
       />
     );
@@ -82,27 +97,28 @@ export const DealTicket = ({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="px-4 py-8">
-      {ticket}
-    </form>
+    <>
+      <form onSubmit={handleSubmit} className="px-4 py-8">
+        {ticket}
+      </form>
+      <Dialog open={orderDialogOpen} setOpen={setOrderDialogOpen}>
+        <OrderDialog status={status} txHash={txHash} error={error} id={id} />
+      </Dialog>
+    </>
   );
 };
 
 interface DealTicketMarketProps {
   order: Order;
   updateOrder: (order: Partial<Order>) => void;
-  error: string;
   loading: boolean;
-  txHash: string;
   market: Market;
 }
 
 const DealTicketMarket = ({
   order,
   updateOrder,
-  error,
   loading,
-  txHash,
   market,
 }: DealTicketMarketProps) => {
   return (
@@ -138,9 +154,6 @@ const DealTicketMarket = ({
       >
         {loading ? 'Awaiting confirmation...' : 'Place order'}
       </Button>
-      {error && <InputError className="my-12">{error}</InputError>}
-      {txHash && <p className="my-12">{txHash}</p>}
-      <pre>{JSON.stringify(order, null, 2)}</pre>
     </>
   );
 };
@@ -148,18 +161,14 @@ const DealTicketMarket = ({
 interface DealTicketLimitProps {
   order: Order;
   updateOrder: (order: Partial<Order>) => void;
-  error: string;
   loading: boolean;
-  txHash: string;
   market: Market;
 }
 
 const DealTicketLimit = ({
   order,
   updateOrder,
-  error,
   loading,
-  txHash,
   market,
 }: DealTicketLimitProps) => {
   return (
@@ -214,9 +223,6 @@ const DealTicketLimit = ({
       >
         {loading ? 'Awaiting confirmation...' : 'Place order'}
       </Button>
-      {error && <InputError className="my-12">{error}</InputError>}
-      {txHash && <p className="my-12">{txHash}</p>}
-      <pre>{JSON.stringify(order, null, 2)}</pre>
     </>
   );
 };
