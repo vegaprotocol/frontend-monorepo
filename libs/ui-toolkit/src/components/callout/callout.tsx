@@ -1,10 +1,11 @@
 import classNames from 'classnames';
+import { Intent, getIntentShadow } from '../../utils/intent';
 import { Icon, IconName } from '../icon';
 
 export interface CalloutProps {
   children?: React.ReactNode;
   title?: React.ReactElement | string;
-  intent?: 'danger' | 'warning' | 'prompt' | 'progress' | 'success' | 'help';
+  intent?: Intent;
   iconName?: IconName;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
 }
@@ -17,22 +18,14 @@ export function Callout({
   headingLevel,
 }: CalloutProps) {
   const className = classNames(
-    'shadow-callout',
     'border',
     'border-black',
     'dark:border-white',
     'text-body-large',
     'dark:text-white',
     'p-8',
-    {
-      'shadow-intent-danger': intent === 'danger',
-      'shadow-intent-warning': intent === 'warning',
-      'shadow-intent-prompt': intent === 'prompt',
-      'shadow-black dark:shadow-white': intent === 'progress',
-      'shadow-intent-success': intent === 'success',
-      'shadow-intent-help': intent === 'help',
-      flex: !!iconName,
-    }
+    { flex: !!iconName },
+    getIntentShadow(intent)
   );
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
     ? `h${headingLevel}`

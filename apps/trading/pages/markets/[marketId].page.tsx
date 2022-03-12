@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce';
 import { Market, MarketVariables } from './__generated__/Market';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { Splash } from 'apps/trading/components/splash';
+import { Splash } from '../../components/splash';
 
 // Top level page query
 const MARKET_QUERY = gql`

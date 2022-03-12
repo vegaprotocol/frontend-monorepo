@@ -81,6 +81,14 @@ export const DealTicket = ({
     submit(order);
   };
 
+  const getDialogIntent = (status: VegaTxStatus) => {
+    if (status === VegaTxStatus.Rejected) {
+      return 'danger';
+    }
+
+    return 'progress';
+  };
+
   useEffect(() => {
     if (
       status === VegaTxStatus.AwaitingConfirmation ||
@@ -120,7 +128,11 @@ export const DealTicket = ({
       <form onSubmit={handleSubmit} className="px-4 py-8">
         {ticket}
       </form>
-      <Dialog open={orderDialogOpen} setOpen={setOrderDialogOpen}>
+      <Dialog
+        open={orderDialogOpen}
+        setOpen={setOrderDialogOpen}
+        intent={getDialogIntent(status)}
+      >
         <OrderDialog
           status={status}
           setStatus={setStatus}

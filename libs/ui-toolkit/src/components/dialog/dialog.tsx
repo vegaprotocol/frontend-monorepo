@@ -1,6 +1,7 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
+import { getIntentShadow, Intent } from '../../utils/intent';
 import { Icon } from '../icon';
 
 interface DialogProps {
@@ -8,13 +9,20 @@ interface DialogProps {
   open: boolean;
   setOpen: (isOpen: boolean) => void;
   title?: string;
+  intent?: Intent;
 }
 
-export function Dialog({ children, open, setOpen, title }: DialogProps) {
+export function Dialog({
+  children,
+  open,
+  setOpen,
+  title,
+  intent,
+}: DialogProps) {
   const contentClasses = classNames(
     'fixed w-[520px] top-[60px] p-28 left-[calc(50%-260px)]',
     'dark:bg-black dark:text-white-95 bg-white text-black-60',
-    'shadow-callout shadow-black dark:shadow-white'
+    getIntentShadow(intent)
   );
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => setOpen(x)}>
