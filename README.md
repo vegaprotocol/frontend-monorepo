@@ -1,21 +1,28 @@
 # Vega front-end monorepo
 
-The front-end monorepo provides a toolkit for building apps that interact with Vega, as well as the apps themselves. 
+The front-end monorepo provides a toolkit for building apps that interact with Vega, as well as the apps themselves.
 
 This repository is managed using [Nx](https://nx.dev).
 
 # 🔎 Applications in this repo
 
 ### [Block explorer](https://github.com/vegaprotocol/frontend-monorepo/tree/master/apps/explorer)
+
 The Vega block explorer provides an interface that allows users to search for and see transactions, blocks, parties, assets, markets and more on the Vega chain.
 
 ### [Trading UI](https://github.com/vegaprotocol/frontend-monorepo/tree/master/apps/trading)
+
 The trading interface built based on a component toolkit. It will provide a way for participants to interact with markets and provide resources for others to build additional open-source user interfaces.
 
 # 🧱 Libraries in this repo
 
 ### [UI toolkit](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/ui-toolkit)
+
 The UI toolkit contains a set of components used to build interfaces that can interact with the Vega protocol, and follow the design style of the project.
+
+### [Tailwind CSS config](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/tailwindcss-config)
+
+The Tailwind CSS config contains theme that align default config with Vega design system.
 
 # 💻 Develop
 
@@ -36,4 +43,5 @@ Similarly `nx e2e my-app` will execute the end-to-end tests with [Cypress](https
 Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more.
 
 # 📑 License
+
 [MIT](./LICENSE)
