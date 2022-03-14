@@ -30,7 +30,7 @@ const Block = () => {
   return (
     <section>
       <RouteTitle>BLOCK {block}</RouteTitle>
-      <Table>
+      <Table className="mb-28">
         <TableRow modifier="bordered">
           <TableHeader scope="row">Mined by</TableHeader>
           <TableCell modifier="bordered">

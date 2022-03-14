@@ -2,7 +2,8 @@ import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
 import { DATA_SOURCES } from '../../../config';
 import { RouteTitle } from '../../../components/route-title';
-import { BlocksTable, BlocksRefetch } from '../../../components/blocks';
+import { BlocksRefetch } from '../../../components/blocks';
+import { TxsData } from '../../../components/txs';
 import { JumpToBlock } from '../../../components/jump-to-block';
 
 const Txs = () => {
@@ -17,7 +18,7 @@ const Txs = () => {
     <section>
       <RouteTitle>Transactions</RouteTitle>
       <BlocksRefetch refetch={refetch} />
-      <BlocksTable data={data} showTransactions={true} />
+      <TxsData data={data} />
       <JumpToBlock />
     </section>
   );
