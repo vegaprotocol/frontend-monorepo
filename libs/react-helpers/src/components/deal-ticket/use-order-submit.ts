@@ -28,7 +28,7 @@ export const useOrderSubmit = (marketId: string) => {
           marketId,
           price: order.price,
           size: order.size,
-          type: order.type,
+          type: 'invalid', // order.type,
           side: order.side,
           timeInForce: order.timeInForce,
           expiresAt: order.expiration

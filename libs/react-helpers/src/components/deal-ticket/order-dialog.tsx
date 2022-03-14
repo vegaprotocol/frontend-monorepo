@@ -1,4 +1,5 @@
 import { gql, useSubscription } from '@apollo/client';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 import { useVegaWallet } from '../vega-wallet';
 import { VegaTxStatus } from './use-vega-transaction';
@@ -75,20 +76,19 @@ export const OrderDialog = ({
     }
   }, [foundOrder, setStatus]);
 
-  if (status === VegaTxStatus.AwaitingConfirmation) {
-    return (
-      <div>
-        <h1 className="text-h4">Confirm the transaction in your Vega wallet</h1>
-      </div>
-    );
-  }
+  // TODO: When wallets support confirming transactions return UI for 'awaiting confirmation' step
 
   // Rejected by wallet
   if (status === VegaTxStatus.Rejected) {
     return (
-      <div>
-        <h1 className="text-h4">Order rejected by wallet</h1>
-        {error && <p>{error}</p>}
+      <div className="flex gap-12">
+        <div className="pt-8">
+          <Icon name="warning-sign" />
+        </div>
+        <div className="flex-1">
+          <h1 className="text-h4">Order rejected by wallet</h1>
+          {error && <p>{error}</p>}
+        </div>
       </div>
     );
   }

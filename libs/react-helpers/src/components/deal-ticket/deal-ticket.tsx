@@ -1,4 +1,4 @@
-import { Button, FormGroup, Input, Dialog } from '@vegaprotocol/ui-toolkit';
+import { FormGroup, Input, Dialog } from '@vegaprotocol/ui-toolkit';
 import { FormEvent, useEffect, useState } from 'react';
 import {
   Order,
