@@ -1,2 +1,3 @@
-export { BlocksTable } from './home/blocks-table';
-export { BlocksRefetch } from './home/blocks-refetch';
+export { BlocksData } from './blocks-data';
+export { BlockData } from './block-data';
+export { BlocksRefetch } from './blocks-refetch';

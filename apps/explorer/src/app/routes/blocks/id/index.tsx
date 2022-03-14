@@ -23,11 +23,11 @@ const Block = () => {
 
   return (
     <section>
-      <h1 className="route-header">BLOCK {block}</h1>
-      <Table>
-        <tr className="table-bordered-tr">
-          <td className="table-bordered-td">Mined by</td>
-          <td className="table-bordered-td">
+      <RouteTitle>BLOCK {block}</RouteTitle>
+      <Table className="mb-28">
+        <TableRow modifier="bordered">
+          <TableHeader scope="row">Mined by</TableHeader>
+          <TableCell modifier="bordered">
             <Link
               className="text-vega-yellow"
               to={`/validators/${header.proposer_address}`}
