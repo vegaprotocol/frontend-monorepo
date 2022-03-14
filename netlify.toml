@@ -1,0 +1,2 @@
+[build]
+  ignore = "node ignore-netlify-build.js"
