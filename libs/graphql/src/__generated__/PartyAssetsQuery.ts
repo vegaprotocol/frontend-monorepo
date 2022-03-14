@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "./../../../../../__generated__/globalTypes";
+import { AccountType } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: PartyAssetsQuery
@@ -104,7 +104,7 @@ export interface PartyAssetsQuery_party {
   id: string;
   delegations: PartyAssetsQuery_party_delegations[] | null;
   /**
-   * The staking informations for this Party
+   * The staking information for this Party
    */
   stake: PartyAssetsQuery_party_stake;
   /**

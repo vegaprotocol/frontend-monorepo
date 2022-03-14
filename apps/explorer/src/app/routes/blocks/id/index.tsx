@@ -34,10 +34,7 @@ const Block = () => {
         <TableRow modifier="bordered">
           <TableHeader scope="row">Mined by</TableHeader>
           <TableCell modifier="bordered">
-            <Link
-              className="text-vega-yellow"
-              to={"/validators"}
-            >
+            <Link className="text-vega-yellow" to={'/validators'}>
               {header.proposer_address}
             </Link>
           </TableCell>

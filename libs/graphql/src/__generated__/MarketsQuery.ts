@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "./../../../../__generated__/globalTypes";
+import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: MarketsQuery
@@ -92,7 +92,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument {
    */
   metadata: MarketsQuery_markets_tradableInstrument_instrument_metadata;
   /**
-   * Uniquely identify an instrument accrods all instruments available on Vega (string)
+   * Uniquely identify an instrument across all instruments available on Vega (string)
    */
   id: string;
   /**
@@ -362,7 +362,7 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
    */
   equityLikeShare: string;
   /**
-   * the average entry valuation of the liqidity provider for the market
+   * the average entry valuation of the liquidity provider for the market
    */
   averageEntryValuation: string;
 }
@@ -370,7 +370,7 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
 export interface MarketsQuery_markets_data {
   __typename: "MarketData";
   /**
-   * the mark price (actually an unsgined int)
+   * the mark price (actually an unsigned int)
    */
   markPrice: string;
   /**
@@ -414,7 +414,7 @@ export interface MarketsQuery_markets_data {
    */
   staticMidPrice: string;
   /**
-   * RFC3339Nano time at which this market price was releavant
+   * RFC3339Nano time at which this market price was relevant
    */
   timestamp: string;
   /**
