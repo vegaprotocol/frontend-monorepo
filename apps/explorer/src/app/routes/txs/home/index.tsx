@@ -13,15 +13,12 @@ const Txs = () => {
   );
 
   return (
-    <>
-      <section>
-        <h1>Transactions</h1>
-        <BlocksRefetch refetch={refetch} />
-        <BlocksTable data={data} showTransactions={true} />
-      </section>
-
+    <section>
+      <RouteTitle>Transactions</RouteTitle>
+      <BlocksRefetch refetch={refetch} />
+      <BlocksTable data={data} showTransactions={true} />
       <JumpToBlock />
-    </>
+    </section>
   );
 };
 

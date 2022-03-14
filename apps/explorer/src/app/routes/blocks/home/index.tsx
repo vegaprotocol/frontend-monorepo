@@ -13,15 +13,12 @@ const Blocks = () => {
   );
 
   return (
-    <>
-      <section>
-        <h1 className="route-header">Blocks</h1>
-        <BlocksRefetch refetch={refetch} />
-        <BlocksTable data={data} />
-      </section>
-
+    <section>
+      <RouteTitle>Blocks</RouteTitle>
+      <BlocksRefetch refetch={refetch} />
+      <BlocksTable data={data} />
       <JumpToBlock />
-    </>
+    </section>
   );
 };
 
