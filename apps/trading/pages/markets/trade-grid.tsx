@@ -1,9 +1,26 @@
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
-import { TradingView, TradingViews } from '@vegaprotocol/react-helpers';
 import { Market_market } from './__generated__/Market';
 import { GridTab, GridTabs } from './grid-tabs';
+import { DealTicket } from '@vegaprotocol/deal-ticket';
+
+const Chart = () => <div>TODO: Chart</div>;
+const Orderbook = () => <div>TODO: Orderbook</div>;
+const Orders = () => <div>TODO: Orders</div>;
+const Positions = () => <div>TODO: Positions</div>;
+const Collateral = () => <div>TODO: Collateral</div>;
+
+type TradingView = keyof typeof TradingViews;
+
+const TradingViews = {
+  chart: Chart,
+  ticket: DealTicket,
+  orderbook: Orderbook,
+  orders: Orders,
+  positions: Positions,
+  collateral: Collateral,
+};
 
 interface TradeGridProps {
   market: Market_market;
@@ -25,7 +42,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <TradingViews.chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.ticket />
+        <DealTicket />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
