@@ -5,6 +5,7 @@ import debounce from 'lodash.debounce';
 import { Market, MarketVariables } from './__generated__/Market';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
+import { Splash } from '../../components/splash';
 
 // Top level page query
 const MARKET_QUERY = gql`
@@ -65,6 +66,10 @@ const MarketPage = () => {
       }}
     >
       {({ market }) => {
+        if (!market) {
+          return <Splash>Market not found</Splash>;
+        }
+
         return w > 1050 ? (
           <TradeGrid market={market} />
         ) : (
