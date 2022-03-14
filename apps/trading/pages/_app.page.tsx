@@ -10,11 +10,7 @@ import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { ApolloProvider } from '@apollo/client';
 import { AppLoader } from '../components/app-loader';
 import { VegaWalletButton } from '../components/vega-wallet-connect-button';
-import {
-  useThemeSwitcher,
-  getCurrentTheme,
-  toggleTheme,
-} from '../hooks/use-theme-switcher';
+import { useThemeSwitcher } from '../hooks/use-theme-switcher';
 
 import './styles.css';
 
@@ -27,9 +23,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
     []
   );
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>(getCurrentTheme());
-  useThemeSwitcher(theme);
-  const onThemeToggle = () => setTheme(toggleTheme());
+  const [theme, toggleTheme] = useThemeSwitcher();
 
   const setConnectDialog = useCallback((isOpen?: boolean) => {
     setDialogOpen((curr) => {
@@ -56,7 +50,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
                 <Navbar />
                 <div className="flex items-center ml-auto mr-8">
                   <VegaWalletButton setConnectDialog={setConnectDialog} />
-                  <ThemeSwitcher onToggle={onThemeToggle} className="-my-4" />
+                  <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
                 </div>
               </div>
               <main>

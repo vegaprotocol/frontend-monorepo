@@ -13,14 +13,7 @@ export function Dialog({ children, open, setOpen, title }: DialogProps) {
     <DialogPrimitives.Root open={open} onOpenChange={(x) => setOpen(x)}>
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay className="fixed inset-0 bg-black/40 dark:bg-white/15" />
-        <DialogPrimitives.Content
-          className="fixed w-[500px] p-28 dark:bg-black dark:text-white-60 bg-white text-black-60"
-          style={{
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        >
+        <DialogPrimitives.Content className="fixed w-[500px] p-28 dark:bg-black dark:text-white-60 bg-white text-black-60 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
           {title && <h1 className="text-h5 mb-12">{title}</h1>}
           {children}
         </DialogPrimitives.Content>
