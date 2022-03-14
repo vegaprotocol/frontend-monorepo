@@ -51,6 +51,7 @@ const MarketPage = () => {
   } = useRouter();
   const { w } = useWindowSize();
 
+  console.log('id', marketId);
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}
