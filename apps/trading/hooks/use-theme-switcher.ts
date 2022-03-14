@@ -1,23 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 
-export function useThemeSwitcher() {
+const darkTheme = 'dark';
+const lightTheme = 'light';
+type themeVariant = typeof darkTheme | typeof lightTheme;
+
+const darkThemeCssClass = darkTheme;
+
+const getCurrentTheme = () => {
+  const theme = LocalStorage.getItem('theme');
+  if (
+    theme === darkTheme ||
+    (!theme &&
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches)
+  ) {
+    return darkTheme;
+  }
+  return lightTheme;
+};
+
+const toggleTheme = () => {
+  const theme = document.documentElement.classList.contains(darkThemeCssClass)
+    ? lightTheme
+    : darkTheme;
+  LocalStorage.setItem('theme', theme);
+  return theme;
+};
+
+export function useThemeSwitcher(): [themeVariant, () => void] {
+  const [theme, setTheme] = useState<themeVariant>(getCurrentTheme());
   useEffect(() => {
-    if (
-      localStorage.theme === 'dark' ||
-      (!('theme' in localStorage) &&
-        window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      document.documentElement.classList.add('dark');
+    if (theme === darkTheme) {
+      document.documentElement.classList.add(darkThemeCssClass);
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove(darkThemeCssClass);
     }
-  }, []);
-
-  const setTheme = () => {
-    localStorage.theme = document.documentElement.classList.toggle('dark')
-      ? 'dark'
-      : undefined;
-  };
-
-  return setTheme;
+  }, [theme]);
+  return [theme, () => setTheme(toggleTheme)];
 }

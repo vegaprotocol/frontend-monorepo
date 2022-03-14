@@ -1,5 +1,6 @@
 import * as EthereumUtils from './utils/web3';
 
+export { AgGridLazy, AgGridDynamic } from './components/ag-grid';
 export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
 export { EthereumUtils };

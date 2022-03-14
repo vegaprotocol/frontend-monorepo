@@ -1,4 +1,4 @@
-import { LocalStorage } from '@vegaprotocol/storage';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import {
   ReactNode,
   useCallback,

@@ -20,6 +20,16 @@ Disabled.args = {
   disabled: true,
 };
 
+export const TypeDate = Template.bind({});
+TypeDate.args = {
+  type: 'date',
+};
+
+export const TypeDateTime = Template.bind({});
+TypeDateTime.args = {
+  type: 'datetime-local',
+};
+
 export const IconPrepend: Story = () => (
   <Input value="I type words" prependIconName="search" />
 );

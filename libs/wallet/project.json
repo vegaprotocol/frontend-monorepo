@@ -1,6 +1,6 @@
 {
-  "root": "libs/storage",
-  "sourceRoot": "libs/storage/src",
+  "root": "libs/wallet",
+  "sourceRoot": "libs/wallet/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,15 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/storage",
-        "tsConfig": "libs/storage/tsconfig.lib.json",
-        "project": "libs/storage/package.json",
-        "entryFile": "libs/storage/src/index.js",
+        "outputPath": "dist/libs/wallet",
+        "tsConfig": "libs/wallet/tsconfig.lib.json",
+        "project": "libs/wallet/package.json",
+        "entryFile": "libs/wallet/src/index.ts",
+        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/storage/README.md",
+            "glob": "libs/wallet/README.md",
             "input": ".",
             "output": "."
           }
@@ -27,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/storage/**/*.{ts,js}"]
+        "lintFilePatterns": ["libs/wallet/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/storage"],
+      "outputs": ["coverage/libs/wallet"],
       "options": {
-        "jestConfig": "libs/storage/jest.config.js",
+        "jestConfig": "libs/wallet/jest.config.js",
         "passWithNoTests": true
       }
     }

@@ -4,10 +4,10 @@
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",
     "react-helpers": "libs/react-helpers",
-    "storage": "libs/storage",
     "tailwindcss-config": "libs/tailwindcss-config",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",
-    "ui-toolkit": "libs/ui-toolkit"
+    "ui-toolkit": "libs/ui-toolkit",
+    "wallet": "libs/wallet"
   }
 }
