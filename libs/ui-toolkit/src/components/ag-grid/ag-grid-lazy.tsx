@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 
 const LazyAgGridStyled = React.lazy(() =>
-  import('./ag-grid-themed').then((module) => ({
+  import('./ag-grid-lazy-themed').then((module) => ({
     default: module.AgGridThemed,
   }))
 );
