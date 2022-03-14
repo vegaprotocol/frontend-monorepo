@@ -12,11 +12,33 @@ const MARKET_QUERY = gql`
     market(id: $marketId) {
       id
       name
+      decimalPlaces
+      state
+      tradingMode
+      tradableInstrument {
+        instrument {
+          product {
+            ... on Future {
+              quoteName
+              settlementAsset {
+                id
+                symbol
+                name
+              }
+            }
+          }
+        }
+      }
       trades {
         id
         price
         size
         createdAt
+      }
+      depth {
+        lastTrade {
+          price
+        }
       }
     }
   }
@@ -28,6 +50,7 @@ const MarketPage = () => {
   } = useRouter();
   const { w } = useWindowSize();
 
+  console.log('id', marketId);
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}
@@ -38,15 +61,16 @@ const MarketPage = () => {
           marketId: Array.isArray(marketId) ? marketId[0] : marketId,
         },
         skip: !marketId,
+        fetchPolicy: 'network-only',
       }}
     >
-      {({ market }) =>
-        w > 1050 ? (
+      {({ market }) => {
+        return w > 1050 ? (
           <TradeGrid market={market} />
         ) : (
           <TradePanels market={market} />
-        )
-      }
+        );
+      }}
     </PageQueryContainer>
   );
 };
