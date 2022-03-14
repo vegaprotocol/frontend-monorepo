@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../__generated__/globalTypes";
+import { ProposalState, ProposalRejectionReason, VoteValue } from "./globalTypes";
 
 // ====================================================
 // GraphQL query operation: ProposalsQuery
@@ -15,6 +15,10 @@ export interface ProposalsQuery_proposals_party {
    * Party identifier
    */
   id: string;
+}
+
+export interface ProposalsQuery_proposals_terms_change_NewFreeform {
+  __typename: "NewFreeform";
 }
 
 export interface ProposalsQuery_proposals_terms_change_NewMarket_instrument {
@@ -85,7 +89,7 @@ export interface ProposalsQuery_proposals_terms_change_UpdateNetworkParameter {
   networkParameter: ProposalsQuery_proposals_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export type ProposalsQuery_proposals_terms_change = ProposalsQuery_proposals_terms_change_NewMarket | ProposalsQuery_proposals_terms_change_UpdateMarket | ProposalsQuery_proposals_terms_change_NewAsset | ProposalsQuery_proposals_terms_change_UpdateNetworkParameter;
+export type ProposalsQuery_proposals_terms_change = ProposalsQuery_proposals_terms_change_NewFreeform | ProposalsQuery_proposals_terms_change_NewMarket | ProposalsQuery_proposals_terms_change_UpdateMarket | ProposalsQuery_proposals_terms_change_NewAsset | ProposalsQuery_proposals_terms_change_UpdateNetworkParameter;
 
 export interface ProposalsQuery_proposals_terms {
   __typename: "ProposalTerms";
@@ -120,7 +124,7 @@ export interface ProposalsQuery_proposals_votes_yes_votes_party {
    */
   id: string;
   /**
-   * The staking informations for this Party
+   * The staking information for this Party
    */
   stake: ProposalsQuery_proposals_votes_yes_votes_party_stake;
 }
@@ -172,7 +176,7 @@ export interface ProposalsQuery_proposals_votes_no_votes_party {
    */
   id: string;
   /**
-   * The staking informations for this Party
+   * The staking information for this Party
    */
   stake: ProposalsQuery_proposals_votes_no_votes_party_stake;
 }

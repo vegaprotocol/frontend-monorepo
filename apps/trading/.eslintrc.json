@@ -5,7 +5,7 @@
     "next",
     "next/core-web-vitals"
   ],
-  "ignorePatterns": ["!**/*", "__generated__"],
+  "ignorePatterns": ["!**/*"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],

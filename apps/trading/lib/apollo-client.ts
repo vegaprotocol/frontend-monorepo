@@ -23,12 +23,17 @@ export function createClient(base?: string) {
 
   const cache = new InMemoryCache({
     typePolicies: {
-      Query: {},
       Account: {
         keyFields: false,
         fields: {
           balanceFormatted: {},
         },
+      },
+      Instrument: {
+        keyFields: false,
+      },
+      MarketData: {
+        keyFields: ['market', ['id']],
       },
       Node: {
         keyFields: false,

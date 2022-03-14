@@ -1,40 +1,28 @@
-import { gql } from '@apollo/client';
 import { Markets } from '@vegaprotocol/graphql';
-import { PageQueryContainer } from '../../components/page-query-container';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-
-const MARKETS_QUERY = gql`
-  query Markets {
-    markets {
-      id
-    }
-  }
-`;
+import { MarketListTable } from '@vegaprotocol/market-list';
+import { useMarkets } from '../../hooks/use-markets';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 const Markets = () => {
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
+  const { markets, error, loading } = useMarkets();
+
+  if (error) {
+    return <Splash>Something went wrong: {error.message}</Splash>;
+  }
+
+  if (loading) {
+    return <Splash>Loading...</Splash>;
+  }
 
   return (
-    <PageQueryContainer<Markets> query={MARKETS_QUERY}>
-      {(data) => (
-        <>
-          <h1>Markets</h1>
-          <ul>
-            {data.markets.map((m) => (
-              <li key={m.id}>
-                <Link
-                  href={`${pathname}/${m.id}?portfolio=orders&trade=orderbook`}
-                  passHref={true}
-                >
-                  <a>View market: {m.id}</a>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </PageQueryContainer>
+    <MarketListTable
+      markets={markets}
+      onRowClicked={(id) =>
+        push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
+      }
+    />
   );
 };
 
