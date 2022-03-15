@@ -1,7 +1,12 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
+<<<<<<< HEAD
 import { OrderSide } from '@vegaprotocol/wallet';
 import { ButtonRadio } from './button-radio';
 import { Order } from './use-order-state';
+=======
+import { ButtonRadio } from './button-radio';
+import { Order, OrderSide } from './use-order-state';
+>>>>>>> 2dff3cd (add button radio component)
 
 interface SideSelectorProps {
   order: Order;
