@@ -32,7 +32,7 @@ interface OrderDialogProps {
   status: VegaTxStatus;
   setStatus: (status: VegaTxStatus) => void;
   txHash?: string;
-  error: object;
+  error: object | null;
   id: string;
 }
 

@@ -12,12 +12,8 @@ export const useOrderSubmit = (marketId: string) => {
 
   const submit = useCallback(
     async (order: Order) => {
-      if (!keypair) {
-        throw new Error('No keypair provided');
-      }
-
-      if (!order.side) {
-        throw new Error('No side provided');
+      if (!keypair || !order.side) {
+        return;
       }
 
       const res = await send({
