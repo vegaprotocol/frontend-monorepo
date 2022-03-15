@@ -21,7 +21,6 @@ export const ButtonRadio = ({
           <Button
             onClick={() => onSelect(option.value)}
             className="flex-1"
-            type="button"
             variant={isSelected ? 'accent' : undefined}
             data-testid={
               isSelected
