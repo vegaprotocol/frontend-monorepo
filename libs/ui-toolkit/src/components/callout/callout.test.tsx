@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { Callout } from '.';
+import { Intent } from '../../utils/intent';
 
 test('It renders content within callout', () => {
   render(<Callout>Content</Callout>);
@@ -15,25 +16,17 @@ test('It renders title and icon', () => {
   expect(screen.getByText('title')).toBeInTheDocument();
 });
 
-const intents = ['danger', 'warning', 'prompt', 'success', 'help'] as [
-  'danger',
-  'warning',
-  'prompt',
-  'success',
-  'help'
-];
+const intents = Object.values(Intent).filter((i) => i !== Intent.Progress);
 
-intents.map((intent) =>
-  test(`Applies class for ${intent}`, () => {
-    render(<Callout intent={intent} />);
-    expect(screen.getByTestId('callout')).toHaveClass(
-      `shadow-intent-${intent}`
-    );
-  })
-);
+test.each(intents)('Applies class for %s', (intent) => {
+  render(<Callout intent={intent} />);
+  expect(screen.getByTestId('callout')).toHaveClass(
+    `shadow-intent-${intent.toLowerCase()}`
+  );
+});
 
 test(`Applies class for progress`, () => {
-  render(<Callout intent="progress" />);
+  render(<Callout intent={Intent.Progress} />);
   expect(screen.getByTestId('callout')).toHaveClass(
     'shadow-black',
     'dark:shadow-white'

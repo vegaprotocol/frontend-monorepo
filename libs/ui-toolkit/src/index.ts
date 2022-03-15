@@ -1,5 +1,6 @@
 import * as EthereumUtils from './utils/web3';
 
+// Components
 export { AgGridLazy, AgGridDynamic } from './components/ag-grid';
 export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
@@ -14,4 +15,7 @@ export { Select } from './components/select';
 export { Splash } from './components/splash';
 export { TextArea } from './components/text-area';
 export { ThemeSwitcher } from './components/theme-switcher';
-export { Dialog } from './components/dialog';
+export { Dialog } from './components/dialog/dialog';
+
+// Utils
+export * from './utils/intent';

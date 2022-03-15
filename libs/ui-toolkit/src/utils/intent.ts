@@ -1,20 +1,21 @@
 import classNames from 'classnames';
 
-export type Intent =
-  | 'danger'
-  | 'warning'
-  | 'prompt'
-  | 'progress'
-  | 'success'
-  | 'help';
+export enum Intent {
+  Danger = 'danger',
+  Warning = 'warning',
+  Prompt = 'prompt',
+  Progress = 'progress',
+  Success = 'success',
+  Help = 'help',
+}
 
 export const getIntentShadow = (intent?: Intent) => {
   return classNames('shadow-callout', {
-    'shadow-intent-danger': intent === 'danger',
-    'shadow-intent-warning': intent === 'warning',
-    'shadow-intent-prompt': intent === 'prompt',
-    'shadow-black dark:shadow-white': intent === 'progress',
-    'shadow-intent-success': intent === 'success',
-    'shadow-intent-help': intent === 'help',
+    'shadow-intent-danger': intent === Intent.Danger,
+    'shadow-intent-warning': intent === Intent.Warning,
+    'shadow-intent-prompt': intent === Intent.Prompt,
+    'shadow-black dark:shadow-white': intent === Intent.Progress,
+    'shadow-intent-success': intent === Intent.Success,
+    'shadow-intent-help': intent === Intent.Help,
   });
 };

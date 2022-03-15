@@ -12,6 +12,7 @@ import { useOrderSubmit } from './use-order-submit';
 import { VegaTxStatus } from './use-vega-transaction';
 import { DealTicketMarket } from './deal-ticket-market';
 import { DealTicketLimit } from './deal-ticket-limit';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,
@@ -79,10 +80,10 @@ export const DealTicket = ({
 
   const getDialogIntent = (status: VegaTxStatus) => {
     if (status === VegaTxStatus.Rejected) {
-      return 'danger';
+      return Intent.Danger;
     }
 
-    return 'progress';
+    return Intent.Progress;
   };
 
   useEffect(() => {

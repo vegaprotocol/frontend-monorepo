@@ -3,6 +3,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import { Callout } from './callout';
 import { Button } from '../button';
+import { Intent } from '../../utils/intent';
 
 export default {
   title: 'Callout',
@@ -20,43 +21,43 @@ Default.args = {
 
 export const Danger = Template.bind({});
 Danger.args = {
-  intent: 'danger',
+  intent: Intent.Danger,
   children: 'Content',
 };
 
 export const Warning = Template.bind({});
 Warning.args = {
-  intent: 'warning',
+  intent: Intent.Warning,
   children: 'Content',
 };
 
 export const Prompt = Template.bind({});
 Prompt.args = {
-  intent: 'prompt',
+  intent: Intent.Prompt,
   children: 'Content',
 };
 
 export const Progress = Template.bind({});
 Progress.args = {
-  intent: 'progress',
+  intent: Intent.Progress,
   children: 'Content',
 };
 
 export const Success = Template.bind({});
 Success.args = {
-  intent: 'success',
+  intent: Intent.Success,
   children: 'Content',
 };
 
 export const Help = Template.bind({});
 Help.args = {
-  intent: 'help',
+  intent: Intent.Help,
   children: 'Content',
 };
 
 export const IconAndContent = Template.bind({});
 IconAndContent.args = {
-  intent: 'help',
+  intent: Intent.Help,
   title: 'This is what this thing does',
   iconName: 'endorsed',
   children: (

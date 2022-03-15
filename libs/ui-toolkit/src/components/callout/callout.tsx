@@ -1,10 +1,11 @@
 import classNames from 'classnames';
+import { getIntentShadow, Intent } from '../../utils/intent';
 import { Icon, IconName } from '../icon';
 
 export interface CalloutProps {
   children?: React.ReactNode;
   title?: React.ReactElement | string;
-  intent?: 'danger' | 'warning' | 'prompt' | 'progress' | 'success' | 'help';
+  intent?: Intent;
   iconName?: IconName;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
 }
@@ -12,25 +13,19 @@ export interface CalloutProps {
 export function Callout({
   children,
   title,
-  intent = 'help',
+  intent = Intent.Help,
   iconName,
   headingLevel,
 }: CalloutProps) {
   const className = classNames(
-    'shadow-callout',
     'border',
     'border-black',
     'dark:border-white',
     'text-body-large',
     'dark:text-white',
     'p-8',
+    getIntentShadow(intent),
     {
-      'shadow-intent-danger': intent === 'danger',
-      'shadow-intent-warning': intent === 'warning',
-      'shadow-intent-prompt': intent === 'prompt',
-      'shadow-black dark:shadow-white': intent === 'progress',
-      'shadow-intent-success': intent === 'success',
-      'shadow-intent-help': intent === 'help',
       flex: !!iconName,
     }
   );
