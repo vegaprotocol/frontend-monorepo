@@ -2,7 +2,7 @@ import React from 'react';
 import { StatusMessage } from '../status-message';
 
 interface RenderFetchedProps {
-  children: React.ReactNode;
+  children: React.ReactElement;
   error: Error | undefined;
   loading: boolean | undefined;
   className?: string;
@@ -22,6 +22,5 @@ export const RenderFetched = ({
     return <StatusMessage className={className}>Error: {error}</StatusMessage>;
   }
 
-  // eslint-disable-next-line react/jsx-no-useless-fragment
-  return <>{children}</>;
+  return children;
 };

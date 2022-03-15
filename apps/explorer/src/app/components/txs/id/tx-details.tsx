@@ -15,10 +15,10 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
 
   return (
     <Table>
-      <tr>
-        <td>Hash</td>
-        <td data-testid="hash">{txData.hash}</td>
-      </tr>
+      <TableRow>
+        <TableCell>Hash</TableCell>
+        <TableCell data-testid="hash">{txData.hash}</TableCell>
+      </TableRow>
       {pubKey ? (
         <tr>
           <td>Submitted by</td>
@@ -36,7 +36,9 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
         <tr>
           <td>Block</td>
           <td data-testid="block">
-            <Link to={`/blocks/${txData.height}`}>{txData.height}</Link>
+            <Link to={`/${Routes.BLOCKS}/${txData.height}`}>
+              {txData.height}
+            </Link>
           </td>
         </tr>
       ) : null}
