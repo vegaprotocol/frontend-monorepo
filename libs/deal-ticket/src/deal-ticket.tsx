@@ -1,18 +1,12 @@
-import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { FormEvent, useEffect, useState } from 'react';
-import {
-  Order,
-  OrderSide,
-  OrderTimeInForce,
-  OrderType,
-  useOrderState,
-} from './use-order-state';
+import { Order, useOrderState } from './use-order-state';
 import { OrderDialog } from './order-dialog';
 import { useOrderSubmit } from './use-order-submit';
 import { VegaTxStatus } from './use-vega-transaction';
 import { DealTicketMarket } from './deal-ticket-market';
 import { DealTicketLimit } from './deal-ticket-limit';
-import { Intent } from '@vegaprotocol/ui-toolkit';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,

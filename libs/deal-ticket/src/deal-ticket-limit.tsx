@@ -1,11 +1,12 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
+import { OrderTimeInForce } from '@vegaprotocol/wallet';
 import { Market } from './deal-ticket';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import { Order, OrderTimeInForce } from './use-order-state';
+import { Order } from './use-order-state';
 import { VegaTxStatus } from './use-vega-transaction';
 
 interface DealTicketLimitProps {

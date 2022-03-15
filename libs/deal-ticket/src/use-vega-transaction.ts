@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useVegaWallet, SendTxError } from '@vegaprotocol/wallet';
+import { useVegaWallet, SendTxError, Transaction } from '@vegaprotocol/wallet';
 import {
   OrderSubmissionBody,
   TransactionResponse,
@@ -24,7 +24,7 @@ export const useVegaTransaction = () => {
   }, []);
 
   const send = useCallback(
-    async (tx: OrderSubmissionBody) => {
+    async (tx: Transaction) => {
       setError(null);
       setTx(null);
       setStatus(VegaTxStatus.AwaitingConfirmation);

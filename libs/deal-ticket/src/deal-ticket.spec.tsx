@@ -1,9 +1,13 @@
 import '@testing-library/jest-dom';
+import {
+  VegaWalletContext,
+  OrderTimeInForce,
+  OrderType,
+} from '@vegaprotocol/wallet';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { DealTicket, Market } from './deal-ticket';
-import { Order, OrderTimeInForce, OrderType } from './use-order-state';
-import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { Order } from './use-order-state';
 
 const order: Order = {
   type: OrderType.Market,

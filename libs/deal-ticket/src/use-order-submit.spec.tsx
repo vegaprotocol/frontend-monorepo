@@ -1,17 +1,12 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
 import {
   VegaKeyExtended,
   VegaWalletContext,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
+import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { ReactNode } from 'react';
-import {
-  Order,
-  OrderSide,
-  OrderTimeInForce,
-  OrderType,
-} from './use-order-state';
+import { Order } from './use-order-state';
 import { useOrderSubmit } from './use-order-submit';
 import { VegaTxStatus } from './use-vega-transaction';
 

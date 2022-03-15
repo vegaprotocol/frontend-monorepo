@@ -1,6 +1,7 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import { OrderType } from '@vegaprotocol/wallet';
 import { ButtonRadio } from './button-radio';
-import { Order, OrderType } from './use-order-state';
+import { Order } from './use-order-state';
 
 interface TypeSelectorProps {
   order: Order;

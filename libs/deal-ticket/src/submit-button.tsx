@@ -1,6 +1,7 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
-import { Order, OrderTimeInForce, OrderType } from './use-order-state';
+import { Order } from './use-order-state';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Market } from './deal-ticket';
 import { VegaTxStatus } from './use-vega-transaction';

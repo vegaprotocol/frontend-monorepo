@@ -1,23 +1,5 @@
+import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { useState, useCallback } from 'react';
-
-export enum OrderType {
-  Market = 'TYPE_MARKET',
-  Limit = 'TYPE_LIMIT',
-}
-
-export enum OrderSide {
-  Buy = 'SIDE_BUY',
-  Sell = 'SIDE_SELL',
-}
-
-export enum OrderTimeInForce {
-  GTC = 'TIME_IN_FORCE_GTC',
-  GTT = 'TIME_IN_FORCE_GTT',
-  IOC = 'TIME_IN_FORCE_IOC',
-  FOK = 'TIME_IN_FORCE_FOK',
-  GFN = 'TIME_IN_FORCE_GFN',
-  GFA = 'TIME_IN_FORCE_GFA',
-}
 
 export interface Order {
   size: string;
