@@ -14,6 +14,7 @@ export const ExpirySelector = ({ order, onSelect }: ExpirySelectorProps) => {
   return (
     <FormGroup label="Expiry time/date" labelFor="expiration">
       <Input
+        data-testid="date-picker-field"
         id="expiration"
         name="expiration"
         type="datetime-local"

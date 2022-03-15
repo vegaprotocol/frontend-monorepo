@@ -9,6 +9,11 @@ When('I click on market for {string}', (marketText) => {
   marketsPage.clickOnTicketTab();
 });
 
+When('I click on first market', () => {
+  marketsPage.clickOnTopMarketRow();
+  marketsPage.clickOnTicketTab();
+});
+
 When('place a buy {string} market order', (orderType) => {
   dealTicketPage.placeMarketOrder(true, 100, orderType);
   dealTicketPage.clickPlaceOrder();

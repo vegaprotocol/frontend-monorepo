@@ -1,47 +1,52 @@
 Feature: Market orders
-
+  @manual
   Scenario Outline: Successfull market buy orders
     Given I am on the homepage
-    And I connect to Vega Wallet
+    # And I connect to Vega Wallet
     And I navigate to markets page
-    When I click on market for "BTCUSD"
+    # When I click on market for "BTCUSD"
+    When I click on first market
     And place a buy '<marketOrderType>' market order
     # Then order is successfull
+
     Examples:
       | marketOrderType |
       | FOK             |
       | IOC             |
 
+
   Scenario Outline: Successfull Limit buy orders
     Given I am on the homepage
-    And I connect to Vega Wallet
+    # And I connect to Vega Wallet
     And I navigate to markets page
-    When I click on market for "BTCUSD"
+    # When I click on market for "BTCUSD"
+    When I click on first market
     And place a buy '<limitOrderType>' limit order
 
     Examples:
       | limitOrderType |
-      | IOC            |
-      | FOK            |
+      # | IOC            |
+      # | FOK            |
       | GTT            |
-      | GFA            |
-      | GFN            |
+      # | GFA            |
+      # | GFN            |
 
   @manual
-  Scenario: Successfull market sell order
+  Scenario Outline: Successfull market sell order
     Given I am on the homepage
     And I connect to Vega Wallet
     And I navigate to markets page
     When I click on market for "BTCUSD"
     And place a sell '<marketOrderType>' market order
     # Then order is successfull
+
     Examples:
       | marketOrderType |
       | FOK             |
       | IOC             |
 
   @manual
-  Scenario: Successfull limit sell order
+  Scenario Outline: Successfull limit sell order
     Given I am on the homepage
     And I connect to Vega Wallet
     And I navigate to markets page

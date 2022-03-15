@@ -9,3 +9,7 @@ Given('I am on the homepage', () => {
 Given('I navigate to markets page', () => {
   marketsPage.navigateToMarkets();
 });
+
+Given('I navigate to portfolio page', () => {
+  marketsPage.navigateToPortfolio();
+});
