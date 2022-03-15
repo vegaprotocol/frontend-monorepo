@@ -28,7 +28,7 @@ export const useOrderSubmit = (marketId: string) => {
           marketId,
           price: order.price,
           size: order.size,
-          type: 'invalid', // order.type,
+          type: order.type,
           side: order.side,
           timeInForce: order.timeInForce,
           expiresAt: order.expiration
@@ -39,8 +39,8 @@ export const useOrderSubmit = (marketId: string) => {
         },
       });
 
-      if (res?.tx?.signature?.value) {
-        setId(determineId(res.tx.signature.value).toUpperCase());
+      if (res?.signature) {
+        setId(determineId(res.signature).toUpperCase());
       }
     },
     [marketId, keypair, send]
@@ -56,6 +56,10 @@ export const useOrderSubmit = (marketId: string) => {
   };
 };
 
+/**
+ * This function creates an ID in the same way that core does on the backend. This way we
+ * Can match up the newly created order with incoming orders via a subscription
+ */
 export const determineId = (sig: string) => {
   // Prepend 0x
   if (sig.slice(0, 2) !== '0x') {

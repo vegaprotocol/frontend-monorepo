@@ -32,7 +32,7 @@ interface OrderDialogProps {
   status: VegaTxStatus;
   setStatus: (status: VegaTxStatus) => void;
   txHash?: string;
-  error: string;
+  error: object;
   id: string;
 }
 
@@ -44,8 +44,11 @@ export const OrderDialog = ({
   id,
 }: OrderDialogProps) => {
   const { keypair } = useVegaWallet();
+  // TODO: Figure out generating types for lib packages that need to make queries
+  // eslint-disable-next-line
   const [foundOrder, setFoundOrder] = useState<any>(null);
 
+  // Start a subscription looking for the newly created order
   useSubscription(ORDER_EVENT_SUB, {
     variables: { partyId: keypair?.pub || '' },
     skip: !keypair?.pub,
@@ -54,6 +57,8 @@ export const OrderDialog = ({
         return;
       }
 
+      // No types available for the subscription result
+      // eslint-disable-next-line
       const matchingOrder = subscriptionData.data.busEvents.find((e: any) => {
         if (e.event.__typename !== 'Order') {
           return false;
@@ -81,13 +86,17 @@ export const OrderDialog = ({
   // Rejected by wallet
   if (status === VegaTxStatus.Rejected) {
     return (
-      <div className="flex gap-12">
+      <div className="flex gap-12 max-w-full">
         <div className="pt-8">
-          <Icon name="warning-sign" />
+          <Icon name="warning-sign" size={20} />
         </div>
         <div className="flex-1">
           <h1 className="text-h4">Order rejected by wallet</h1>
-          {error && <p>{error}</p>}
+          {error && (
+            <pre className="text-ui break-all whitespace-pre-wrap">
+              {JSON.stringify(error, null, 2)}
+            </pre>
+          )}
         </div>
       </div>
     );
@@ -106,20 +115,30 @@ export const OrderDialog = ({
   // Order on network but was rejected
   if (foundOrder.status === 'Rejected') {
     return (
-      <div>
-        <h1 className="text-h4">Order failed</h1>
-        <p>Reason: {foundOrder.rejectionReason}</p>
+      <div className="flex gap-12 max-w-full">
+        <div className="pt-8">
+          <Icon name="warning-sign" size={20} />
+        </div>
+        <div className="flex-1">
+          <h1 className="text-h4">Order failed</h1>
+          <p>Reason: {foundOrder.rejectionReason}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1 className="text-h4">Order placed</h1>
-      <p>Status: {foundOrder.status}</p>
-      <p>Market: {foundOrder.market.name}</p>
-      <p>Amount: {foundOrder.size}</p>
-      {foundOrder.type === 'Limit' && <p>Price: {foundOrder.price}</p>}
+    <div className="flex gap-12 max-w-full">
+      <div className="pt-8">
+        <Icon name="tick" size={20} />
+      </div>
+      <div className="flex-1">
+        <h1 className="text-h4">Order placed</h1>
+        <p>Status: {foundOrder.status}</p>
+        <p>Market: {foundOrder.market.name}</p>
+        <p>Amount: {foundOrder.size}</p>
+        {foundOrder.type === 'Limit' && <p>Price: {foundOrder.price}</p>}
+      </div>
     </div>
   );
 };

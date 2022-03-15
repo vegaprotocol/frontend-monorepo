@@ -16,51 +16,39 @@ export const useVegaTransaction = () => {
   const { sendTx } = useVegaWallet();
   const [status, setStatus] = useState(VegaTxStatus.Default);
   const [tx, setTx] = useState<TransactionResponse | null>(null);
-  const [error, setError] = useState('');
-
-  const handleError = (
-    // TODO: Figure out the best way to type this
-    // eslint-disable-next-line
-    err: any
-  ) => {
-    setStatus(VegaTxStatus.Rejected);
-
-    // Fetch failed
-    if (err instanceof TypeError) {
-      setError('Wallet not running');
-    }
-    // Bad request
-    else if (err?.code === 400) {
-      setError('Transaction invalid');
-    }
-    // Something unknown
-    else {
-      setError('Something went wrong');
-    }
-  };
+  const [error, setError] = useState<object | null>(null);
 
   const send = useCallback(
     async (tx: OrderSubmissionBody) => {
-      try {
-        setTx(null);
-        setStatus(VegaTxStatus.AwaitingConfirmation);
-        const res = await sendTx(tx);
+      setError(null);
+      setTx(null);
+      setStatus(VegaTxStatus.AwaitingConfirmation);
 
-        // Transaction accepted by wallet and boradcast to network
-        if (res?.tx && res.txHash) {
-          setTx(res);
-          setStatus(VegaTxStatus.Pending);
-          return res;
-        }
-        // Wallet rejected the transaction, probably invalid input
-        else {
-          handleError(res);
-          return null;
-        }
-      } catch (err) {
-        handleError(err);
+      const res = await sendTx(tx);
+
+      if (res === null) {
+        // No op, user not connected to wallet
         return null;
       }
+
+      // Can't combine the checks for error/errors as TS can't seem to infer properly
+      if ('error' in res) {
+        setError(res);
+        setStatus(VegaTxStatus.Rejected);
+        return null;
+      } else if ('errors' in res) {
+        setError(res);
+        setStatus(VegaTxStatus.Rejected);
+        return null;
+      } else if (res.tx && res.txHash) {
+        setTx(res);
+        setStatus(VegaTxStatus.Pending);
+        return {
+          signature: res.tx.signature?.value,
+        };
+      }
+
+      return null;
     },
     [sendTx]
   );
