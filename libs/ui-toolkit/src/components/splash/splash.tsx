@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { ReactNode } from 'react';
 
-interface SplashProps {
+export interface SplashProps {
   children: ReactNode;
 }
 

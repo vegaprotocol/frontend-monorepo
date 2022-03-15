@@ -11,6 +11,7 @@ export { Input } from './components/input';
 export { InputError } from './components/input-error';
 export { Loader } from './components/loader';
 export { Select } from './components/select';
+export { Splash } from './components/splash';
 export { TextArea } from './components/text-area';
 export { ThemeSwitcher } from './components/theme-switcher';
 export { Dialog } from './components/dialog';

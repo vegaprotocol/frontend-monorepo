@@ -1,7 +1,7 @@
 import { OperationVariables, QueryHookOptions, useQuery } from '@apollo/client';
 import { DocumentNode } from 'graphql';
 import { ReactNode } from 'react';
-import { Splash } from '../splash';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 interface PageQueryContainerProps<TData, TVariables> {
   query: DocumentNode;
