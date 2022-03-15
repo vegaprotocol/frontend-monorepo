@@ -20,14 +20,14 @@ export function Dialog({
   intent,
 }: DialogProps) {
   const contentClasses = classNames(
-    'fixed w-[520px] top-[60px] p-28 left-[calc(50%-260px)]',
-    'dark:bg-black dark:text-white-95 bg-white text-black-60',
+    'fixed w-[520px] p-28 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+    'dark:bg-black dark:text-white-60 bg-white text-black-60',
     getIntentShadow(intent)
   );
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => setOpen(x)}>
       <DialogPrimitives.Portal>
-        <DialogPrimitives.Overlay className="fixed inset-0 bg-black dark:bg-white opacity-40 dark:opacity-15" />
+        <DialogPrimitives.Overlay className="fixed inset-0 bg-black/50 dark:bg-white/15" />
         <DialogPrimitives.Content className={contentClasses}>
           <DialogPrimitives.Close className="p-12 absolute top-0 right-0">
             <Icon name="cross" />
