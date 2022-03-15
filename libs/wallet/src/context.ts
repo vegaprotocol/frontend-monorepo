@@ -14,14 +14,6 @@ export type SendTxError =
       errors: object;
     };
 
-export type SendTxError =
-  | {
-      error: string;
-    }
-  | {
-      errors: object;
-    };
-
 export interface VegaKeyExtended extends VegaKey {
   name: string;
 }

@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { ethers } from 'ethers';
 import { SHA3 } from 'sha3';
 import { Order } from './use-order-state';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { useVegaTransaction } from './use-vega-transaction';
 
 export const useOrderSubmit = (marketId: string) => {
@@ -20,9 +20,8 @@ export const useOrderSubmit = (marketId: string) => {
         pubKey: keypair.pub,
         propagate: true,
         orderSubmission: {
-          reference: '',
           marketId,
-          price: order.price,
+          price: order.type === OrderType.Market ? undefined : order.price,
           size: order.size,
           type: order.type,
           side: order.side,
