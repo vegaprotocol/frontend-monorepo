@@ -86,8 +86,10 @@ export const OrderDialog = ({
   // Rejected by wallet
   if (status === VegaTxStatus.Rejected) {
     return (
-      <OrderDialogWrapper icon={<Icon name="warning-sign" size={20} />}>
-        <h1 className="text-h4">Order rejected by wallet</h1>
+      <OrderDialogWrapper
+        title="Order rejected by wallet"
+        icon={<Icon name="warning-sign" size={20} />}
+      >
         {error && (
           <pre className="text-ui break-all whitespace-pre-wrap">
             {JSON.stringify(error, null, 2)}
@@ -100,8 +102,10 @@ export const OrderDialog = ({
   // Pending consensus
   if (!foundOrder) {
     return (
-      <OrderDialogWrapper icon={<Loader />}>
-        <h1 className="text-h4">Awaiting network confirmation</h1>
+      <OrderDialogWrapper
+        title="Awaiting network confirmation"
+        icon={<Loader />}
+      >
         {txHash && <p className="break-all">Tx hash: {txHash}</p>}
       </OrderDialogWrapper>
     );
@@ -110,16 +114,20 @@ export const OrderDialog = ({
   // Order on network but was rejected
   if (foundOrder.status === 'Rejected') {
     return (
-      <OrderDialogWrapper icon={<Icon name="warning-sign" size={20} />}>
-        <h1 className="text-h4">Order failed</h1>
+      <OrderDialogWrapper
+        title="Order failed"
+        icon={<Icon name="warning-sign" size={20} />}
+      >
         <p>Reason: {foundOrder.rejectionReason}</p>
       </OrderDialogWrapper>
     );
   }
 
   return (
-    <OrderDialogWrapper icon={<Icon name="tick" size={20} />}>
-      <h1 className="text-h4">Order placed</h1>
+    <OrderDialogWrapper
+      title="Order placed"
+      icon={<Icon name="tick" size={20} />}
+    >
       <p>Status: {foundOrder.status}</p>
       <p>Market: {foundOrder.market.name}</p>
       <p>Amount: {foundOrder.size}</p>
@@ -131,13 +139,21 @@ export const OrderDialog = ({
 interface OrderDialogWrapperProps {
   children: ReactNode;
   icon: ReactNode;
+  title: string;
 }
 
-const OrderDialogWrapper = ({ children, icon }: OrderDialogWrapperProps) => {
+const OrderDialogWrapper = ({
+  children,
+  icon,
+  title,
+}: OrderDialogWrapperProps) => {
   return (
     <div className="flex gap-12 max-w-full">
       <div className="pt-8 fill-current">{icon}</div>
-      <div className="flex-1">{children}</div>
+      <div className="flex-1">
+        <h1 className="text-h4">{title}</h1>
+        {children}
+      </div>
     </div>
   );
 };
