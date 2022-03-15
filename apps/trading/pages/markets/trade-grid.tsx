@@ -47,7 +47,9 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
           <GridTab name="trades">
-            <pre>{JSON.stringify(market.trades, null, 2)}</pre>
+            <pre data-testid="market-trades">
+              {JSON.stringify(market.trades, null, 2)}
+            </pre>
           </GridTab>
           <GridTab name="orderbook">
             <TradingViews.orderbook />

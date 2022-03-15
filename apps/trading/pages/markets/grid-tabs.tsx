@@ -56,7 +56,11 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
             'bg-black-10 dark:bg-white-10': !isActive,
           });
           return (
-            <Tabs.Trigger value={child.props.name} className={triggerClass}>
+            <Tabs.Trigger
+              data-testid={child.props.name}
+              value={child.props.name}
+              className={triggerClass}
+            >
               {child.props.name}
             </Tabs.Trigger>
           );
