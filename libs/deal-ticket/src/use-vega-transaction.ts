@@ -32,11 +32,10 @@ export const useVegaTransaction = () => {
       const res = await sendTx(tx);
 
       if (res === null) {
-        // No op, user not connected to wallet
+        setStatus(VegaTxStatus.Default);
         return null;
       }
 
-      // Can't combine the checks for error/errors as TS can't seem to infer properly
       if ('error' in res) {
         handleError(res);
         return null;
