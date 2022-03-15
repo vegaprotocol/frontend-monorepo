@@ -36,7 +36,7 @@ const Block = () => {
           <TableCell modifier="bordered">
             <Link
               className="text-vega-yellow"
-              to={`/validators/${header.proposer_address}`}
+              to={"/validators"}
             >
               {header.proposer_address}
             </Link>
