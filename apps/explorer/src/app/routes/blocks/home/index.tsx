@@ -2,7 +2,7 @@ import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlockchainResponse } from '../tendermint-blockchain-response';
 import { RouteTitle } from '../../../components/route-title';
-import { StatusMessage } from '../../../components/status-message';
+import { RenderFetched } from '../../../components/render-fetched';
 import { BlocksData, BlocksRefetch } from '../../../components/blocks';
 import { JumpToBlock } from '../../../components/jump-to-block';
 
@@ -17,14 +17,12 @@ const Blocks = () => {
   return (
     <section>
       <RouteTitle>Blocks</RouteTitle>
-      {loading && <StatusMessage>Loading...</StatusMessage>}
-      {error && <StatusMessage>Error: {error}</StatusMessage>}
-      {data && (
+      <RenderFetched error={error} loading={loading}>
         <>
           <BlocksRefetch refetch={refetch} />
           <BlocksData data={data} className="mb-28" />
         </>
-      )}
+      </RenderFetched>
       <JumpToBlock />
     </section>
   );

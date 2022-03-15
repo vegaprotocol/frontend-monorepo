@@ -8,9 +8,12 @@ interface TxsProps {
   className?: string;
 }
 
-export const TxsData = ({ data, className }: TxsProps) => {
+export const BlockTxsData = ({ data, className }: TxsProps) => {
   if (!data?.result) {
-    return <div className={className}>Awaiting block data</div>;
+    // Data for the block has already been fetched at this point, so no errors
+    // or loading to deal with. This is specifically the case
+    // where the data object is not undefined, but lacks a result.
+    return <div className={className}>No data</div>;
   }
 
   return (
@@ -21,7 +24,7 @@ export const TxsData = ({ data, className }: TxsProps) => {
       {data.result?.block_metas?.map((block, index) => {
         return (
           <li key={index} data-testid="block-row">
-            <BlockData block={block} />
+            <BlockData block={block} className="mb-12" />
             <TxsPerBlock blockHeight={block.header.height} />
           </li>
         );
