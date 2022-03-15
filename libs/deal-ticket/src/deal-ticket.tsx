@@ -92,7 +92,7 @@ export const DealTicket = ({
 
   let ticket = null;
 
-  if (order.type === 'TYPE_MARKET') {
+  if (order.type === OrderType.Market) {
     ticket = (
       <DealTicketMarket
         order={order}
@@ -101,7 +101,7 @@ export const DealTicket = ({
         market={market}
       />
     );
-  } else if (order.type === 'TYPE_LIMIT') {
+  } else if (order.type === OrderType.Limit) {
     ticket = (
       <DealTicketLimit
         order={order}
