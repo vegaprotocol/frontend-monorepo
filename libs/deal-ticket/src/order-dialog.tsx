@@ -1,8 +1,9 @@
 import { gql, useSubscription } from '@apollo/client';
 import { Icon } from '@vegaprotocol/ui-toolkit';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from './use-vega-transaction';
+import { IconName } from '@blueprintjs/icons';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -86,59 +87,58 @@ export const OrderDialog = ({
   // Rejected by wallet
   if (status === VegaTxStatus.Rejected) {
     return (
-      <div className="flex gap-12 max-w-full">
-        <div className="pt-8">
-          <Icon name="warning-sign" size={20} />
-        </div>
-        <div className="flex-1">
-          <h1 className="text-h4">Order rejected by wallet</h1>
-          {error && (
-            <pre className="text-ui break-all whitespace-pre-wrap">
-              {JSON.stringify(error, null, 2)}
-            </pre>
-          )}
-        </div>
-      </div>
+      <OrderDialogWrapper icon={<Icon name="warning-sign" size={20} />}>
+        <h1 className="text-h4">Order rejected by wallet</h1>
+        {error && (
+          <pre className="text-ui break-all whitespace-pre-wrap">
+            {JSON.stringify(error, null, 2)}
+          </pre>
+        )}
+      </OrderDialogWrapper>
     );
   }
 
   // Pending consensus
   if (!foundOrder) {
     return (
-      <div>
+      <OrderDialogWrapper icon={<Icon name="warning-sign" size={20} />}>
         <h1 className="text-h4">Awaiting network confirmation</h1>
         {txHash && <p className="break-all">Tx hash: {txHash}</p>}
-      </div>
+      </OrderDialogWrapper>
     );
   }
 
   // Order on network but was rejected
   if (foundOrder.status === 'Rejected') {
     return (
-      <div className="flex gap-12 max-w-full">
-        <div className="pt-8">
-          <Icon name="warning-sign" size={20} />
-        </div>
-        <div className="flex-1">
-          <h1 className="text-h4">Order failed</h1>
-          <p>Reason: {foundOrder.rejectionReason}</p>
-        </div>
-      </div>
+      <OrderDialogWrapper icon={<Icon name="warning-sign" size={20} />}>
+        <h1 className="text-h4">Order failed</h1>
+        <p>Reason: {foundOrder.rejectionReason}</p>
+      </OrderDialogWrapper>
     );
   }
 
   return (
+    <OrderDialogWrapper icon={<Icon name="tick" size={20} />}>
+      <h1 className="text-h4">Order placed</h1>
+      <p>Status: {foundOrder.status}</p>
+      <p>Market: {foundOrder.market.name}</p>
+      <p>Amount: {foundOrder.size}</p>
+      {foundOrder.type === 'Limit' && <p>Price: {foundOrder.price}</p>}
+    </OrderDialogWrapper>
+  );
+};
+
+interface OrderDialogWrapperProps {
+  children: ReactNode;
+  icon: ReactNode;
+}
+
+const OrderDialogWrapper = ({ children, icon }: OrderDialogWrapperProps) => {
+  return (
     <div className="flex gap-12 max-w-full">
-      <div className="pt-8">
-        <Icon name="tick" size={20} />
-      </div>
-      <div className="flex-1">
-        <h1 className="text-h4">Order placed</h1>
-        <p>Status: {foundOrder.status}</p>
-        <p>Market: {foundOrder.market.name}</p>
-        <p>Amount: {foundOrder.size}</p>
-        {foundOrder.type === 'Limit' && <p>Price: {foundOrder.price}</p>}
-      </div>
+      <div className="pt-8">{icon}</div>
+      <div className="flex-1">{children}</div>
     </div>
   );
 };
