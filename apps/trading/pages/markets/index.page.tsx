@@ -22,7 +22,7 @@ const Markets = () => {
           <h1>Markets</h1>
           <ul>
             {data.markets.map((m) => (
-              <li key={m.id}>
+              <li data-testid="market-row" key={m.id}>
                 <Link
                   href={`${pathname}/${m.id}?portfolio=orders&trade=orderbook`}
                   passHref={true}
