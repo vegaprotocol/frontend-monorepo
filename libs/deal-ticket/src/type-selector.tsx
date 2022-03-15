@@ -1,4 +1,5 @@
-import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
+import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import { ButtonRadio } from './button-radio';
 import { Order, OrderType } from './use-order-state';
 
 interface TypeSelectorProps {
@@ -9,27 +10,15 @@ interface TypeSelectorProps {
 export const TypeSelector = ({ order, onSelect }: TypeSelectorProps) => {
   return (
     <FormGroup label="Order type">
-      <div className="flex gap-8">
-        {Object.entries(OrderType).map(([key, value]) => {
-          const isSelected = value === order.type;
-          return (
-            <Button
-              onClick={() => onSelect(value)}
-              className="flex-1"
-              type="button"
-              variant={isSelected ? 'accent' : undefined}
-              data-testid={
-                isSelected
-                  ? `order-type-${value}-selected`
-                  : `order-type-${value}`
-              }
-              key={key}
-            >
-              {key}
-            </Button>
-          );
-        })}
-      </div>
+      <ButtonRadio
+        name="order-type"
+        options={Object.entries(OrderType).map(([text, value]) => ({
+          text,
+          value,
+        }))}
+        currentOption={order.type}
+        onSelect={(value) => onSelect(value as OrderType)}
+      />
     </FormGroup>
   );
 };
