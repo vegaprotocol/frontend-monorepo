@@ -5,42 +5,46 @@ import { Order, OrderTimeInForce, OrderType } from './use-order-state';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
-test('Deal ticket order', () => {
-  const order: Order = {
-    type: OrderType.Market,
-    size: '100',
-    timeInForce: OrderTimeInForce.FOK,
-    side: null,
-  };
-  const market: Market = {
-    id: 'market-id',
-    decimalPlaces: 2,
-    tradingMode: 'Continuous',
-    state: 'Active',
-    tradableInstrument: {
-      instrument: {
-        product: {
-          quoteName: 'quote-name',
-          settlementAsset: {
-            id: 'asset-id',
-            symbol: 'asset-symbol',
-            name: 'asset-name',
-          },
+const order: Order = {
+  type: OrderType.Market,
+  size: '100',
+  timeInForce: OrderTimeInForce.FOK,
+  side: null,
+};
+const market: Market = {
+  id: 'market-id',
+  decimalPlaces: 2,
+  tradingMode: 'Continuous',
+  state: 'Active',
+  tradableInstrument: {
+    instrument: {
+      product: {
+        quoteName: 'quote-name',
+        settlementAsset: {
+          id: 'asset-id',
+          symbol: 'asset-symbol',
+          name: 'asset-name',
         },
       },
     },
-    depth: {
-      lastTrade: {
-        price: '100',
-      },
+  },
+  depth: {
+    lastTrade: {
+      price: '100',
     },
-  };
+  },
+};
 
-  render(
+function generateJsx() {
+  return (
     <VegaWalletContext.Provider value={{} as any}>
       <DealTicket defaultOrder={order} market={market} />
     </VegaWalletContext.Provider>
   );
+}
+
+test('Deal ticket defaults', () => {
+  render(generateJsx());
 
   // Assert defaults are used
   expect(
@@ -62,6 +66,10 @@ test('Deal ticket order', () => {
       market.tradableInstrument.instrument.product.quoteName
     }`
   );
+});
+
+test('Can edit deal ticket', () => {
+  render(generateJsx());
 
   // Asssert changing values
   fireEvent.click(screen.getByTestId('order-side-SIDE_BUY'));
@@ -89,8 +97,25 @@ test('Deal ticket order', () => {
   expect(screen.getByTestId('order-tif').children).toHaveLength(
     Object.keys(OrderTimeInForce).length
   );
+});
 
-  // Switch to GTC
+test('Handles TIF select box dependent on order type', () => {
+  render(generateJsx());
+
+  // Check only IOC and
+  expect(
+    Array.from(screen.getByTestId('order-tif').children).map(
+      (o) => o.textContent
+    )
+  ).toEqual(['IOC', 'FOK']);
+
+  // Switch to limit order and check all TIF options shown
+  fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+  expect(screen.getByTestId('order-tif').children).toHaveLength(
+    Object.keys(OrderTimeInForce).length
+  );
+
+  // Change to GTC
   fireEvent.change(screen.getByTestId('order-tif'), {
     target: { value: OrderTimeInForce.GTC },
   });
@@ -99,4 +124,14 @@ test('Deal ticket order', () => {
   // Switch back to market order and TIF should now be IOC
   fireEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
   expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.IOC);
+
+  // Switch tif to FOK
+  fireEvent.change(screen.getByTestId('order-tif'), {
+    target: { value: OrderTimeInForce.FOK },
+  });
+  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.FOK);
+
+  // Change back to limit and check we are still on FOK
+  fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
+  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.FOK);
 });

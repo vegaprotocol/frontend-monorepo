@@ -50,7 +50,7 @@ const generateJSX = () => (
   </VegaWalletProvider>
 );
 
-test('Renders children', async () => {
+test('Can connect, disconnect and retrieve keypairs', async () => {
   const mockKeypairs = [{ pub: 'public key 1' }, { pub: 'public key 2' }];
   localStorage.setItem(WALLET_KEY, mockKeypairs[0].pub);
   jest
