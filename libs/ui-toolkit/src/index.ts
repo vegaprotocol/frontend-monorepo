@@ -9,6 +9,7 @@ export { FormGroup } from './components/form-group';
 export { Icon } from './components/icon';
 export { Input } from './components/input';
 export { InputError } from './components/input-error';
+export { Loader } from './components/loader';
 export { Select } from './components/select';
 export { TextArea } from './components/text-area';
 export { ThemeSwitcher } from './components/theme-switcher';

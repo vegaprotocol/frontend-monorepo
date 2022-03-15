@@ -1,9 +1,8 @@
 import { gql, useSubscription } from '@apollo/client';
-import { Icon } from '@vegaprotocol/ui-toolkit';
+import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import { ReactNode, useEffect, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from './use-vega-transaction';
-import { IconName } from '@blueprintjs/icons';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -101,7 +100,7 @@ export const OrderDialog = ({
   // Pending consensus
   if (!foundOrder) {
     return (
-      <OrderDialogWrapper icon={<Icon name="warning-sign" size={20} />}>
+      <OrderDialogWrapper icon={<Loader />}>
         <h1 className="text-h4">Awaiting network confirmation</h1>
         {txHash && <p className="break-all">Tx hash: {txHash}</p>}
       </OrderDialogWrapper>
@@ -137,7 +136,7 @@ interface OrderDialogWrapperProps {
 const OrderDialogWrapper = ({ children, icon }: OrderDialogWrapperProps) => {
   return (
     <div className="flex gap-12 max-w-full">
-      <div className="pt-8">{icon}</div>
+      <div className="pt-8 fill-current">{icon}</div>
       <div className="flex-1">{children}</div>
     </div>
   );
