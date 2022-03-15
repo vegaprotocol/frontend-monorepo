@@ -15,14 +15,12 @@ interface TableHeaderProps
 interface TableRowProps extends ThHTMLAttributes<HTMLTableRowElement> {
   children: React.ReactNode;
   className?: string;
-  dataTestId?: string;
   modifier?: 'bordered' | 'background';
 }
 
 interface TableCellProps extends ThHTMLAttributes<HTMLTableCellElement> {
   children: React.ReactNode;
   className?: string;
-  dataTestId?: string;
   modifier?: 'bordered' | 'background';
 }
 
@@ -55,7 +53,6 @@ export const TableHeader = ({
 export const TableRow = ({
   children,
   className,
-  dataTestId,
   modifier,
   ...props
 }: TableRowProps) => {
@@ -64,7 +61,7 @@ export const TableRow = ({
     'bg-white-25 border-b-4 border-b-black': modifier === 'background',
   });
   return (
-    <tr className={cellClasses} data-testid={dataTestId || null} {...props}>
+    <tr className={cellClasses} {...props}>
       {children}
     </tr>
   );
@@ -73,7 +70,6 @@ export const TableRow = ({
 export const TableCell = ({
   children,
   className,
-  dataTestId,
   modifier,
   ...props
 }: TableCellProps) => {
@@ -81,7 +77,7 @@ export const TableCell = ({
     'py-4': modifier === 'bordered',
   });
   return (
-    <td className={cellClasses} data-testid={dataTestId || null} {...props}>
+    <td className={cellClasses} {...props}>
       {children}
     </td>
   );

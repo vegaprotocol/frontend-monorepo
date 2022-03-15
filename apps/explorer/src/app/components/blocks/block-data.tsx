@@ -1,5 +1,6 @@
 import React from 'react';
 import { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
+import { Routes } from '../../routes/router-config';
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../seconds-ago';
 import { Table, TableRow, TableCell } from '../table';
@@ -15,21 +16,21 @@ export const BlockData = ({ block, className }: BlockProps) => {
       aria-label={`Data for block ${block.header?.height}`}
       className={className}
     >
-      <TableRow dataTestId="block-row" modifier="background">
+      <TableRow data-testid="block-row" modifier="background">
         <TableCell
-          dataTestId="block-height"
+          data-testid="block-height"
           className="pl-4 py-2"
           aria-label="Block height"
         >
           <Link
-            to={`/blocks/${block.header?.height}`}
+            to={`/${Routes.BLOCKS}/${block.header?.height}`}
             className="text-vega-yellow"
           >
             {block.header?.height}
           </Link>
         </TableCell>
         <TableCell
-          dataTestId="num-txs"
+          data-testid="num-txs"
           className="px-8 text-center"
           aria-label="Number of transactions"
         >
@@ -38,16 +39,16 @@ export const BlockData = ({ block, className }: BlockProps) => {
             : `${block.num_txs} transactions`}
         </TableCell>
         <TableCell
-          dataTestId="validator-link"
+          data-testid="validator-link"
           className="px-8 text-center"
           aria-label="Validator"
         >
-          <Link to={`/validators/${block.header?.proposer_address}`}>
+          <Link to={`/${Routes.VALIDATORS}`}>
             {block.header.proposer_address}
           </Link>
         </TableCell>
         <TableCell
-          dataTestId="block-time"
+          data-testid="block-time"
           className="text-center pr-28 text-neutral-300"
           aria-label="Block genesis"
         >

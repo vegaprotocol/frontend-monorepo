@@ -17,7 +17,7 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
     <Table>
       <TableRow>
         <TableCell>Hash</TableCell>
-        <TableCell dataTestId="hash">{txData.hash}</TableCell>
+        <TableCell data-testid="hash">{txData.hash}</TableCell>
       </TableRow>
       {pubKey ? (
         <TableRow>
@@ -36,7 +36,9 @@ export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
         <TableRow>
           <td>Block</td>
           <td data-testid="block">
-            <Link to={`/blocks/${txData.height}`}>{txData.height}</Link>
+            <Link to={`/${Routes.BLOCKS}/${txData.height}`}>
+              {txData.height}
+            </Link>
           </td>
         </TableRow>
       ) : null}

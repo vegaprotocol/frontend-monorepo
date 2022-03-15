@@ -1,5 +1,6 @@
 import useFetch from '../../../hooks/use-fetch';
 import { ChainExplorerTxResponse } from '../../../routes/types/chain-explorer-response';
+import { Routes } from '../../../routes/router-config';
 import { DATA_SOURCES } from '../../../config';
 import { Link } from 'react-router-dom';
 import { RenderFetched } from '../../render-fetched';
@@ -44,7 +45,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                 return (
                   <tr key={TxHash}>
                     <td>
-                      <Link to={`/txs/${TxHash}`}>
+                      <Link to={`/${Routes.TX}/${TxHash}`}>
                         <TruncateInline
                           text={TxHash}
                           startChars={truncateLength}
