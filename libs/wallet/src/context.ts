@@ -6,7 +6,7 @@ import {
 import { createContext } from 'react';
 import { VegaConnector } from './connectors';
 
-type SendTxError =
+export type SendTxError =
   | {
       error: string;
     }
