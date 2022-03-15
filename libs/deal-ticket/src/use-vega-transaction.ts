@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, SendTxError } from '@vegaprotocol/wallet';
 import {
   OrderSubmissionBody,
   TransactionResponse,
@@ -18,6 +18,11 @@ export const useVegaTransaction = () => {
   const [tx, setTx] = useState<TransactionResponse | null>(null);
   const [error, setError] = useState<object | null>(null);
 
+  const handleError = useCallback((err: SendTxError) => {
+    setError(err);
+    setStatus(VegaTxStatus.Rejected);
+  }, []);
+
   const send = useCallback(
     async (tx: OrderSubmissionBody) => {
       setError(null);
@@ -33,12 +38,10 @@ export const useVegaTransaction = () => {
 
       // Can't combine the checks for error/errors as TS can't seem to infer properly
       if ('error' in res) {
-        setError(res);
-        setStatus(VegaTxStatus.Rejected);
+        handleError(res);
         return null;
       } else if ('errors' in res) {
-        setError(res);
-        setStatus(VegaTxStatus.Rejected);
+        handleError(res);
         return null;
       } else if (res.tx && res.txHash) {
         setTx(res);
@@ -50,7 +53,7 @@ export const useVegaTransaction = () => {
 
       return null;
     },
-    [sendTx]
+    [sendTx, handleError]
   );
 
   return { send, status, setStatus, tx, error };

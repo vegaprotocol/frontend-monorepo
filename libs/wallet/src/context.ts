@@ -14,7 +14,7 @@ export type SendTxError =
       errors: object;
     };
 
-type SendTxError =
+export type SendTxError =
   | {
       error: string;
     }
