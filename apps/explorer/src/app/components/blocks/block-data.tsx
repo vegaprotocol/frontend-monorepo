@@ -6,11 +6,15 @@ import { Table, TableRow, TableCell } from '../table';
 
 interface BlockProps {
   block: BlockMeta;
+  className?: string;
 }
 
-export const BlockData = ({ block }: BlockProps) => {
+export const BlockData = ({ block, className }: BlockProps) => {
   return (
-    <Table aria-label={`Data for block ${block.header?.height}`}>
+    <Table
+      aria-label={`Data for block ${block.header?.height}`}
+      className={className}
+    >
       <TableRow dataTestId="block-row" modifier="background">
         <TableCell
           dataTestId="block-height"

@@ -7,6 +7,6 @@ interface StatusMessageProps {
 }
 
 export const StatusMessage = ({ children, className }: StatusMessageProps) => {
-  const classes = classnames('font-alpha', 'text-h4', 'mb-28', className);
+  const classes = classnames('font-alpha text-h4 mb-28', className);
   return <h3 className={classes}>{children}</h3>;
 };
