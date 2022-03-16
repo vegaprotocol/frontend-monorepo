@@ -6,6 +6,7 @@
     "explorer-e2e": "apps/explorer-e2e",
     "graphql": "libs/graphql",
     "market-list": "libs/market-list",
+    "order-list": "libs/order-list",
     "react-helpers": "libs/react-helpers",
     "tailwindcss-config": "libs/tailwindcss-config",
     "trading": "apps/trading",
