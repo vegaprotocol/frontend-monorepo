@@ -1,9 +1,4 @@
-import {
-  gql,
-  useApolloClient,
-  useQuery,
-  useSubscription,
-} from '@apollo/client';
+import { ApolloError, gql, useApolloClient, useQuery } from '@apollo/client';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Orders,
@@ -15,6 +10,7 @@ import { singletonHook } from 'react-singleton-hook';
 import uniqBy from 'lodash.uniqby';
 import orderBy from 'lodash.orderby';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { OrderFields } from './__generated__/OrderFields';
 
 const ORDER_FRAGMENT = gql`
   fragment OrderFields on Order {
@@ -60,16 +56,24 @@ const ORDERS_SUB = gql`
   }
 `;
 
+interface UseOrders {
+  orders: OrderFields[];
+  error: Error | null;
+  loading: boolean;
+}
+
 export const useOrdersImpl = () => {
-  const { keypair } = useVegaWallet();
-  const [orders, setOrders] = useState<Orders_party_orders[]>([]);
   const client = useApolloClient();
+  const { keypair } = useVegaWallet();
+  const [orders, setOrders] = useState<OrderFields[]>([]);
+  const [error, setError] = useState<Error | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const mergeOrders = useCallback((update: Orders_party_orders[]) => {
+  const mergeOrders = useCallback((update: OrderFields[]) => {
+    // A subscription payload can contain multiple updates for a single order so we need to first
+    // sort them by updatedAt (or createdAt if the order hasn't been updated) with the newest first,
+    // then use uniqBy, which selects the first occuring order for an id to ensure we only get the latest order
     setOrders((curr) => {
-      console.log('curr', curr);
-      console.log('update', update);
-
       const sorted = orderBy(
         [...curr, ...update],
         (o) => {
@@ -88,8 +92,10 @@ export const useOrdersImpl = () => {
     const fetchOrders = async () => {
       if (!keypair?.pub) return;
 
+      setLoading(true);
+
       try {
-        const res = await client.query<Orders, OrderSubVariables>({
+        const res = await client.query<Orders, OrdersVariables>({
           query: ORDERS_QUERY,
           variables: { partyId: keypair.pub },
         });
@@ -98,7 +104,9 @@ export const useOrdersImpl = () => {
 
         mergeOrders(res.data.party.orders);
       } catch (err) {
-        console.error(err);
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -115,23 +123,23 @@ export const useOrdersImpl = () => {
         variables: { partyId: keypair.pub },
       })
       .subscribe(({ data }) => {
-        console.log('new data', data);
         mergeOrders(data.orders);
       });
 
     return () => {
       if (sub) {
-        console.log('unsubscribing');
         sub.unsubscribe();
       }
     };
   }, [client, keypair, mergeOrders]);
 
-  return { orders };
+  return { orders, error, loading };
 };
 
 const initial = {
   orders: [],
+  error: null,
+  loading: false,
 };
 
-export const useOrders = singletonHook(initial, useOrdersImpl);
+export const useOrders = singletonHook<UseOrders>(initial, useOrdersImpl);

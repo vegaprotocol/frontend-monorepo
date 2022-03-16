@@ -1,11 +1,16 @@
 import { useOrders } from '../..//hooks/use-orders';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { OrderList } from '@vegaprotocol/order-list';
 
 export const OrderListContainer = () => {
-  const res = useOrders();
-  console.log(res);
+  const { orders, loading, error } = useOrders();
 
-  return <pre>{JSON.stringify(res, null, 2)}</pre>;
-  // return <OrderList initial={initial} incoming={incoming} />;
+  if (error) {
+    return <pre>{JSON.stringify(error, null, 2)}</pre>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return <OrderList orders={orders} />;
 };

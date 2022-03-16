@@ -1,7 +1,7 @@
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { GridApi, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Order {
   id: string;
@@ -24,11 +24,13 @@ interface Order {
 }
 
 interface OrderListProps {
-  initial: Order[];
-  incoming: Order[];
+  orders: Order[];
 }
 
-export const OrderList = ({ initial, incoming }: OrderListProps) => {
+export const OrderList = ({ orders }: OrderListProps) => {
+  // Store initial orders for initial table data set, further updates
+  // are handled by the effect below
+  const [initialOrders] = useState(orders);
   const gridApi = useRef<GridApi | null>(null);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export const OrderList = ({ initial, incoming }: OrderListProps) => {
     const add: Order[] = [];
 
     // split into updates and adds
-    incoming.forEach((o) => {
+    orders.forEach((o) => {
       if (!gridApi.current) return;
 
       const rowNode = gridApi.current.getRowNode(o.id);
@@ -55,11 +57,11 @@ export const OrderList = ({ initial, incoming }: OrderListProps) => {
       add,
       addIndex: 0,
     });
-  }, [incoming]);
+  }, [orders]);
 
   return (
     <AgGrid
-      rowData={initial}
+      rowData={initialOrders}
       defaultColDef={{ flex: 1 }}
       style={{ width: '100%', height: '100%' }}
       onGridReady={(params) => {
