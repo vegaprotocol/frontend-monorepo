@@ -57,7 +57,7 @@ export const TableRow = ({
   ...props
 }: TableRowProps) => {
   const cellClasses = classnames(className, {
-    'border-b border-white-40 py-2': modifier === 'bordered',
+    'border-b border-white-40': modifier === 'bordered',
     'bg-white-25 border-b-4 border-b-black': modifier === 'background',
   });
   return (
