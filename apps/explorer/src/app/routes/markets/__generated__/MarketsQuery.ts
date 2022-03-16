@@ -3,19 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {
-  MarketTradingMode,
-  MarketState,
-  AccountType,
-  AuctionTrigger,
-} from './../../../../__generated__/globalTypes';
+import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: MarketsQuery
 // ====================================================
 
 export interface MarketsQuery_markets_fees_factors {
-  __typename: 'FeeFactors';
+  __typename: "FeeFactors";
   /**
    * The factor applied to calculate MakerFees, a non-negative float
    */
@@ -31,7 +26,7 @@ export interface MarketsQuery_markets_fees_factors {
 }
 
 export interface MarketsQuery_markets_fees {
-  __typename: 'Fees';
+  __typename: "Fees";
   /**
    * The factors used to calculate the different fees
    */
@@ -39,7 +34,7 @@ export interface MarketsQuery_markets_fees {
 }
 
 export interface MarketsQuery_markets_tradableInstrument_instrument_metadata {
-  __typename: 'InstrumentMetadata';
+  __typename: "InstrumentMetadata";
   /**
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
    */
@@ -47,7 +42,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_metadata {
 }
 
 export interface MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset_globalRewardPoolAccount {
-  __typename: 'Account';
+  __typename: "Account";
   /**
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */
@@ -55,7 +50,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product_sett
 }
 
 export interface MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset {
-  __typename: 'Asset';
+  __typename: "Asset";
   /**
    * The id of the asset
    */
@@ -79,11 +74,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product_sett
 }
 
 export interface MarketsQuery_markets_tradableInstrument_instrument_product {
-  __typename: 'Future';
-  /**
-   * RFC3339Nano maturity date of the product
-   */
-  maturity: string;
+  __typename: "Future";
   /**
    * The name of the asset (string)
    */
@@ -91,7 +82,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product {
 }
 
 export interface MarketsQuery_markets_tradableInstrument_instrument {
-  __typename: 'Instrument';
+  __typename: "Instrument";
   /**
    * Full and fairly descriptive name for the instrument
    */
@@ -115,7 +106,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument {
 }
 
 export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel_params {
-  __typename: 'LogNormalModelParams';
+  __typename: "LogNormalModelParams";
   /**
    * r parameter
    */
@@ -131,7 +122,7 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRisk
 }
 
 export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel {
-  __typename: 'LogNormalRiskModel';
+  __typename: "LogNormalRiskModel";
   /**
    * Tau parameter of the risk model
    */
@@ -147,7 +138,7 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRisk
 }
 
 export interface MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel_params {
-  __typename: 'SimpleRiskModelParams';
+  __typename: "SimpleRiskModelParams";
   /**
    * Risk factor for long
    */
@@ -159,19 +150,17 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskMod
 }
 
 export interface MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel {
-  __typename: 'SimpleRiskModel';
+  __typename: "SimpleRiskModel";
   /**
    * Params for the simple risk model
    */
   params: MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel_params;
 }
 
-export type MarketsQuery_markets_tradableInstrument_riskModel =
-  | MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel
-  | MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel;
+export type MarketsQuery_markets_tradableInstrument_riskModel = MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel | MarketsQuery_markets_tradableInstrument_riskModel_SimpleRiskModel;
 
 export interface MarketsQuery_markets_tradableInstrument_marginCalculator_scalingFactors {
-  __typename: 'ScalingFactors';
+  __typename: "ScalingFactors";
   /**
    * the scaling factor that determines the margin level at which Vega has to search for more money
    */
@@ -187,7 +176,7 @@ export interface MarketsQuery_markets_tradableInstrument_marginCalculator_scalin
 }
 
 export interface MarketsQuery_markets_tradableInstrument_marginCalculator {
-  __typename: 'MarginCalculator';
+  __typename: "MarginCalculator";
   /**
    * The scaling factors that will be used for margin calculation
    */
@@ -195,7 +184,7 @@ export interface MarketsQuery_markets_tradableInstrument_marginCalculator {
 }
 
 export interface MarketsQuery_markets_tradableInstrument {
-  __typename: 'TradableInstrument';
+  __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
@@ -211,7 +200,7 @@ export interface MarketsQuery_markets_tradableInstrument {
 }
 
 export interface MarketsQuery_markets_openingAuction {
-  __typename: 'AuctionDuration';
+  __typename: "AuctionDuration";
   /**
    * Duration of the auction in seconds
    */
@@ -223,7 +212,7 @@ export interface MarketsQuery_markets_openingAuction {
 }
 
 export interface MarketsQuery_markets_priceMonitoringSettings_parameters_triggers {
-  __typename: 'PriceMonitoringTrigger';
+  __typename: "PriceMonitoringTrigger";
   /**
    * Price monitoring projection horizon τ in seconds (> 0).
    */
@@ -241,17 +230,15 @@ export interface MarketsQuery_markets_priceMonitoringSettings_parameters_trigger
 }
 
 export interface MarketsQuery_markets_priceMonitoringSettings_parameters {
-  __typename: 'PriceMonitoringParameters';
+  __typename: "PriceMonitoringParameters";
   /**
    * The list of triggers for this price monitoring
    */
-  triggers:
-    | MarketsQuery_markets_priceMonitoringSettings_parameters_triggers[]
-    | null;
+  triggers: MarketsQuery_markets_priceMonitoringSettings_parameters_triggers[] | null;
 }
 
 export interface MarketsQuery_markets_priceMonitoringSettings {
-  __typename: 'PriceMonitoringSettings';
+  __typename: "PriceMonitoringSettings";
   /**
    * Specified a set of PriceMonitoringParameters to be use for price monitoring purposes
    */
@@ -263,7 +250,7 @@ export interface MarketsQuery_markets_priceMonitoringSettings {
 }
 
 export interface MarketsQuery_markets_liquidityMonitoringParameters_targetStakeParameters {
-  __typename: 'TargetStakeParameters';
+  __typename: "TargetStakeParameters";
   /**
    * Specifies length of time window expressed in seconds for target stake calculation
    */
@@ -275,7 +262,7 @@ export interface MarketsQuery_markets_liquidityMonitoringParameters_targetStakeP
 }
 
 export interface MarketsQuery_markets_liquidityMonitoringParameters {
-  __typename: 'LiquidityMonitoringParameters';
+  __typename: "LiquidityMonitoringParameters";
   /**
    * Specifies the triggering ratio for entering liquidity auction
    */
@@ -287,7 +274,7 @@ export interface MarketsQuery_markets_liquidityMonitoringParameters {
 }
 
 export interface MarketsQuery_markets_proposal {
-  __typename: 'Proposal';
+  __typename: "Proposal";
   /**
    * Proposal ID that is filled by VEGA once proposal reaches the network
    */
@@ -295,7 +282,7 @@ export interface MarketsQuery_markets_proposal {
 }
 
 export interface MarketsQuery_markets_accounts_asset {
-  __typename: 'Asset';
+  __typename: "Asset";
   /**
    * The id of the asset
    */
@@ -307,7 +294,7 @@ export interface MarketsQuery_markets_accounts_asset {
 }
 
 export interface MarketsQuery_markets_accounts {
-  __typename: 'Account';
+  __typename: "Account";
   /**
    * Asset, the 'currency'
    */
@@ -323,7 +310,7 @@ export interface MarketsQuery_markets_accounts {
 }
 
 export interface MarketsQuery_markets_data_priceMonitoringBounds_trigger {
-  __typename: 'PriceMonitoringTrigger';
+  __typename: "PriceMonitoringTrigger";
   /**
    * Price monitoring auction extension duration in seconds should the price
    * breach it's theoretical level over the specified horizon at the specified
@@ -337,7 +324,7 @@ export interface MarketsQuery_markets_data_priceMonitoringBounds_trigger {
 }
 
 export interface MarketsQuery_markets_data_priceMonitoringBounds {
-  __typename: 'PriceMonitoringBounds';
+  __typename: "PriceMonitoringBounds";
   /**
    * Minimum price that isn't currently breaching the specified price monitoring trigger
    */
@@ -357,7 +344,7 @@ export interface MarketsQuery_markets_data_priceMonitoringBounds {
 }
 
 export interface MarketsQuery_markets_data_liquidityProviderFeeShare_party {
-  __typename: 'Party';
+  __typename: "Party";
   /**
    * Party identifier
    */
@@ -365,7 +352,7 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare_party {
 }
 
 export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
-  __typename: 'LiquidityProviderFeeShare';
+  __typename: "LiquidityProviderFeeShare";
   /**
    * The liquidity provider party id
    */
@@ -381,7 +368,7 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
 }
 
 export interface MarketsQuery_markets_data {
-  __typename: 'MarketData';
+  __typename: "MarketData";
   /**
    * the mark price (actually an unsgined int)
    */
@@ -469,9 +456,7 @@ export interface MarketsQuery_markets_data {
   /**
    * A list of valid price ranges per associated trigger
    */
-  priceMonitoringBounds:
-    | MarketsQuery_markets_data_priceMonitoringBounds[]
-    | null;
+  priceMonitoringBounds: MarketsQuery_markets_data_priceMonitoringBounds[] | null;
   /**
    * the market value proxy
    */
@@ -479,13 +464,11 @@ export interface MarketsQuery_markets_data {
   /**
    * the equity like share of liquidity fee for each liquidity provider
    */
-  liquidityProviderFeeShare:
-    | MarketsQuery_markets_data_liquidityProviderFeeShare[]
-    | null;
+  liquidityProviderFeeShare: MarketsQuery_markets_data_liquidityProviderFeeShare[] | null;
 }
 
 export interface MarketsQuery_markets {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -505,14 +488,14 @@ export interface MarketsQuery_markets {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )

@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from '../../../../../__generated__/globalTypes';
+import { AccountType } from "./../../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: PartyAssetsQuery
 // ====================================================
 
 export interface PartyAssetsQuery_party_delegations_node {
-  __typename: 'Node';
+  __typename: "Node";
   /**
    * The node url eg n01.vega.xyz
    */
@@ -19,7 +19,7 @@ export interface PartyAssetsQuery_party_delegations_node {
 }
 
 export interface PartyAssetsQuery_party_delegations {
-  __typename: 'Delegation';
+  __typename: "Delegation";
   /**
    * Amount delegated
    */
@@ -35,7 +35,7 @@ export interface PartyAssetsQuery_party_delegations {
 }
 
 export interface PartyAssetsQuery_party_stake {
-  __typename: 'PartyStake';
+  __typename: "PartyStake";
   /**
    * The stake currently available for the party
    */
@@ -43,23 +43,21 @@ export interface PartyAssetsQuery_party_stake {
 }
 
 export interface PartyAssetsQuery_party_accounts_asset_source_BuiltinAsset {
-  __typename: 'BuiltinAsset';
+  __typename: "BuiltinAsset";
 }
 
 export interface PartyAssetsQuery_party_accounts_asset_source_ERC20 {
-  __typename: 'ERC20';
+  __typename: "ERC20";
   /**
    * The address of the erc20 contract
    */
   contractAddress: string;
 }
 
-export type PartyAssetsQuery_party_accounts_asset_source =
-  | PartyAssetsQuery_party_accounts_asset_source_BuiltinAsset
-  | PartyAssetsQuery_party_accounts_asset_source_ERC20;
+export type PartyAssetsQuery_party_accounts_asset_source = PartyAssetsQuery_party_accounts_asset_source_BuiltinAsset | PartyAssetsQuery_party_accounts_asset_source_ERC20;
 
 export interface PartyAssetsQuery_party_accounts_asset {
-  __typename: 'Asset';
+  __typename: "Asset";
   /**
    * The full name of the asset (e.g: Great British Pound)
    */
@@ -83,7 +81,7 @@ export interface PartyAssetsQuery_party_accounts_asset {
 }
 
 export interface PartyAssetsQuery_party_accounts {
-  __typename: 'Account';
+  __typename: "Account";
   /**
    * Asset, the 'currency'
    */
@@ -99,7 +97,7 @@ export interface PartyAssetsQuery_party_accounts {
 }
 
 export interface PartyAssetsQuery_party {
-  __typename: 'Party';
+  __typename: "Party";
   /**
    * Party identifier
    */
@@ -123,5 +121,5 @@ export interface PartyAssetsQuery {
 }
 
 export interface PartyAssetsQueryVariables {
-  partyId: string | undefined;
+  partyId: string;
 }

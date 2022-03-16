@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface Market_market_trades {
-  __typename: 'Trade';
+  __typename: "Trade";
   /**
    * The hash of the trade data
    */
@@ -28,7 +28,7 @@ export interface Market_market_trades {
 }
 
 export interface Market_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */

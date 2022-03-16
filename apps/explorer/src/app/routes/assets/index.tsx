@@ -11,7 +11,6 @@ export const ASSETS_QUERY = gql`
       symbol
       totalSupply
       decimals
-      minLpStake
       source {
         ... on ERC20 {
           contractAddress
