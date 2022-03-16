@@ -1,10 +1,6 @@
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent } from 'react';
 import { Order, useOrderState } from './use-order-state';
-import { OrderDialog } from './order-dialog';
-import { useOrderSubmit } from './use-order-submit';
-import { VegaTxStatus } from './use-vega-transaction';
 import { DealTicketMarket } from './deal-ticket-market';
 import { DealTicketLimit } from './deal-ticket-limit';
 
@@ -15,6 +11,8 @@ const DEFAULT_ORDER: Order = {
   timeInForce: OrderTimeInForce.IOC,
 };
 
+// TODO: Consider using a generated type when we have a better solution for
+// sharing the types from GQL
 export interface Market {
   id: string;
   decimalPlaces: number;
@@ -52,43 +50,27 @@ export interface Market {
   };
 }
 
+export type TransactionStatus = 'default' | 'pending';
+
 export interface DealTicketProps {
-  defaultOrder?: Order;
   market: Market;
+  submit: (order: Order) => void;
+  transactionStatus: TransactionStatus;
+  defaultOrder?: Order;
 }
 
 export const DealTicket = ({
-  defaultOrder = DEFAULT_ORDER,
   market,
+  submit,
+  transactionStatus,
+  defaultOrder = DEFAULT_ORDER,
 }: DealTicketProps) => {
-  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const [order, updateOrder] = useOrderState(defaultOrder);
-  const { submit, status, setStatus, error, txHash, id } = useOrderSubmit(
-    market.id
-  );
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     submit(order);
   };
-
-  const getDialogIntent = (status: VegaTxStatus) => {
-    if (status === VegaTxStatus.Rejected) {
-      return Intent.Danger;
-    }
-
-    return Intent.Progress;
-  };
-
-  useEffect(() => {
-    if (
-      status === VegaTxStatus.AwaitingConfirmation ||
-      status === VegaTxStatus.Pending ||
-      status === VegaTxStatus.Rejected
-    ) {
-      setOrderDialogOpen(true);
-    }
-  }, [status]);
 
   let ticket = null;
 
@@ -97,7 +79,7 @@ export const DealTicket = ({
       <DealTicketMarket
         order={order}
         updateOrder={updateOrder}
-        status={status}
+        transactionStatus={transactionStatus}
         market={market}
       />
     );
@@ -106,7 +88,7 @@ export const DealTicket = ({
       <DealTicketLimit
         order={order}
         updateOrder={updateOrder}
-        status={status}
+        transactionStatus={transactionStatus}
         market={market}
       />
     );
@@ -115,23 +97,8 @@ export const DealTicket = ({
   }
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="px-4 py-8">
-        {ticket}
-      </form>
-      <Dialog
-        open={orderDialogOpen}
-        setOpen={setOrderDialogOpen}
-        intent={getDialogIntent(status)}
-      >
-        <OrderDialog
-          status={status}
-          setStatus={setStatus}
-          txHash={txHash}
-          error={error}
-          id={id}
-        />
-      </Dialog>
-    </>
+    <form onSubmit={handleSubmit} className="px-4 py-8">
+      {ticket}
+    </form>
   );
 };

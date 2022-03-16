@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react-hooks';
 import { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
 import {
+  OrderSubmission,
   VegaWalletContext,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
@@ -28,10 +29,11 @@ function setup(context?: Partial<VegaWalletContextShape>) {
 
 test('Has the correct default state', () => {
   const { result } = setup();
-  expect(result.current.status).toEqual(VegaTxStatus.Default);
-  expect(result.current.tx).toEqual(null);
-  expect(result.current.error).toEqual(null);
-  expect(typeof result.current.setStatus).toEqual('function');
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
+  expect(result.current.transaction.hash).toEqual(null);
+  expect(result.current.transaction.signature).toEqual(null);
+  expect(result.current.transaction.error).toEqual(null);
+  expect(typeof result.current.reset).toEqual('function');
   expect(typeof result.current.send).toEqual('function');
 });
 
@@ -39,9 +41,9 @@ test('If provider returns null status should be default', async () => {
   const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(null));
   const { result } = setup({ sendTx: mockSendTx });
   await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+    result.current.send({} as OrderSubmission);
   });
-  expect(result.current.status).toEqual(VegaTxStatus.Default);
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
 });
 
 test('Handles a single error', async () => {
@@ -51,10 +53,10 @@ test('Handles a single error', async () => {
     .mockReturnValue(Promise.resolve({ error: errorMessage }));
   const { result } = setup({ sendTx: mockSendTx });
   await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+    result.current.send({} as OrderSubmission);
   });
-  expect(result.current.status).toEqual(VegaTxStatus.Rejected);
-  expect(result.current.error).toEqual({ error: errorMessage });
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Rejected);
+  expect(result.current.transaction.error).toEqual({ error: errorMessage });
 });
 
 test('Handles multiple errors', async () => {
@@ -66,10 +68,10 @@ test('Handles multiple errors', async () => {
   const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(errorObj));
   const { result } = setup({ sendTx: mockSendTx });
   await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+    result.current.send({} as OrderSubmission);
   });
-  expect(result.current.status).toEqual(VegaTxStatus.Rejected);
-  expect(result.current.error).toEqual(errorObj);
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Rejected);
+  expect(result.current.transaction.error).toEqual(errorObj);
 });
 
 test('Returns the signature if successful', async () => {
@@ -87,9 +89,11 @@ test('Returns the signature if successful', async () => {
   const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(successObj));
   const { result } = setup({ sendTx: mockSendTx });
   await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+    result.current.send({} as OrderSubmission);
   });
-  expect(result.current.status).toEqual(VegaTxStatus.Pending);
-  expect(result.current.tx).toEqual(successObj);
-  expect(result.current.error).toEqual(null);
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Pending);
+  expect(result.current.transaction.hash).toEqual(successObj.txHash);
+  expect(result.current.transaction.signature).toEqual(
+    successObj.tx.signature.value
+  );
 });

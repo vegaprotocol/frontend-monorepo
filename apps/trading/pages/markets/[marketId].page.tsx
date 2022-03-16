@@ -69,7 +69,7 @@ const MarketPage = () => {
           return <Splash>Market not found</Splash>;
         }
 
-        return w > 1050 ? (
+        return w > 960 ? (
           <TradeGrid market={market} />
         ) : (
           <TradePanels market={market} />

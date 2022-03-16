@@ -3,7 +3,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
 import { Market_market } from './__generated__/Market';
 import { GridTab, GridTabs } from './grid-tabs';
-import { DealTicket } from '@vegaprotocol/deal-ticket';
+import { DealTicketContainer } from '../../components/deal-ticket-container';
 
 const Chart = () => <div>TODO: Chart</div>;
 const Orderbook = () => <div>TODO: Orderbook</div>;
@@ -15,7 +15,7 @@ type TradingView = keyof typeof TradingViews;
 
 const TradingViews = {
   chart: Chart,
-  ticket: DealTicket,
+  ticket: DealTicketContainer,
   orderbook: Orderbook,
   orders: Orders,
   positions: Positions,

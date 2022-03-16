@@ -1,4 +1,6 @@
+import { MockedProvider } from '@apollo/client/testing';
 import { act, renderHook } from '@testing-library/react-hooks';
+import { Order } from '@vegaprotocol/deal-ticket';
 import {
   VegaKeyExtended,
   VegaWalletContext,
@@ -6,7 +8,6 @@ import {
 } from '@vegaprotocol/wallet';
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { ReactNode } from 'react';
-import { Order } from './use-order-state';
 import { useOrderSubmit } from './use-order-submit';
 import { VegaTxStatus } from './use-vega-transaction';
 
@@ -25,9 +26,13 @@ function setup(
   marketId = 'market-id'
 ) {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <VegaWalletContext.Provider value={{ ...defaultWalletContext, ...context }}>
-      {children}
-    </VegaWalletContext.Provider>
+    <MockedProvider>
+      <VegaWalletContext.Provider
+        value={{ ...defaultWalletContext, ...context }}
+      >
+        {children}
+      </VegaWalletContext.Provider>
+    </MockedProvider>
   );
   return renderHook(() => useOrderSubmit(marketId), { wrapper });
 }
@@ -35,11 +40,10 @@ function setup(
 test('Has the correct default state', () => {
   const { result } = setup();
   expect(typeof result.current.submit).toEqual('function');
-  expect(typeof result.current.setStatus).toEqual('function');
-  expect(result.current.status).toEqual(VegaTxStatus.Default);
-  expect(result.current.txHash).toEqual(undefined);
-  expect(result.current.error).toEqual(null);
-  expect(result.current.id).toEqual('');
+  expect(typeof result.current.reset).toEqual('function');
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
+  expect(result.current.transaction.hash).toEqual(null);
+  expect(result.current.transaction.error).toEqual(null);
 });
 
 test('Should not sendTx if no keypair', async () => {

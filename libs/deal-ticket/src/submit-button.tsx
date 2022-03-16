@@ -3,16 +3,19 @@ import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
 import { Order } from './use-order-state';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { Market } from './deal-ticket';
-import { VegaTxStatus } from './use-vega-transaction';
+import { Market, TransactionStatus } from './deal-ticket';
 
 interface SubmitButtonProps {
-  status: VegaTxStatus;
+  transactionStatus: TransactionStatus;
   market: Market;
   order: Order;
 }
 
-export const SubmitButton = ({ market, status, order }: SubmitButtonProps) => {
+export const SubmitButton = ({
+  market,
+  transactionStatus,
+  order,
+}: SubmitButtonProps) => {
   const { keypair } = useVegaWallet();
 
   const invalidText = useMemo(() => {
@@ -53,18 +56,7 @@ export const SubmitButton = ({ market, status, order }: SubmitButtonProps) => {
     return '';
   }, [keypair, market, order]);
 
-  const disabled =
-    status === VegaTxStatus.AwaitingConfirmation ||
-    status === VegaTxStatus.Pending ||
-    Boolean(invalidText);
-
-  let text = 'Place order';
-
-  if (status === VegaTxStatus.AwaitingConfirmation) {
-    text = 'Awaiting confirmation...';
-  } else if (status === VegaTxStatus.Pending) {
-    text = 'Order pending';
-  }
+  const disabled = transactionStatus === 'pending' || Boolean(invalidText);
 
   return (
     <>
@@ -74,7 +66,7 @@ export const SubmitButton = ({ market, status, order }: SubmitButtonProps) => {
         type="submit"
         disabled={disabled}
       >
-        {text}
+        {transactionStatus === 'pending' ? 'Pending...' : 'Place order'}
       </Button>
       {invalidText && (
         <p className="text-intent-danger text-center my-4">{invalidText}</p>

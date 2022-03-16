@@ -47,7 +47,7 @@ export function VegaConnectDialog({
   return (
     <Dialog
       open={dialogOpen}
-      setOpen={setDialogOpen}
+      onChange={setDialogOpen}
       title="Connect to your Vega Wallet"
     >
       {selectedConnector instanceof RestConnector ? (
