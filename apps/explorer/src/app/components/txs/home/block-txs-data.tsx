@@ -23,7 +23,7 @@ export const BlockTxsData = ({ data, className }: TxsProps) => {
     >
       {data.result?.block_metas?.map((block, index) => {
         return (
-          <li key={index} data-testid="block-row">
+          <li key={index} data-testid="block-table">
             <BlockData block={block} className="mb-12" />
             <TxsPerBlock blockHeight={block.header.height} />
           </li>

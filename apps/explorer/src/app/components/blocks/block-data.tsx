@@ -16,7 +16,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
       aria-label={`Data for block ${block.header?.height}`}
       className={className}
     >
-      <TableRow data-testid="block-row" modifier="background">
+      <TableRow data-testid="block-list" modifier="background">
         <TableCell
           data-testid="block-height"
           className="pl-4 py-2"

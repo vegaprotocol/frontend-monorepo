@@ -13,6 +13,7 @@ When('I navigate to the blocks page', () => {
 
 Then('transactions page is correctly displayed', () => {
   transactionsPage.validateTransactionsPagedisplayed();
+  transactionsPage.verifyAllBlockRowsAreNotEmpty();
   transactionsPage.validateRefreshBtn();
 });
 

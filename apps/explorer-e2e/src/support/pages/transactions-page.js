@@ -1,7 +1,8 @@
 import BasePage from './base-page';
 
 export default class TransactionsPage extends BasePage {
-  blockRow = 'block-row';
+  blockTable = 'block-table';
+  tableRow = 'table-row';
   blockHeight = 'block-height';
   numberOfTransactions = 'num-txs';
   validatorLink = 'validator-link';
@@ -9,11 +10,17 @@ export default class TransactionsPage extends BasePage {
   refreshBtn = 'refresh';
 
   validateTransactionsPagedisplayed() {
-    cy.getByTestId(this.blockRow).should('have.length.above', 1);
+    cy.getByTestId(this.blockTable).should('have.length.above', 1);
     cy.getByTestId(this.blockHeight).first().should('not.be.empty');
     cy.getByTestId(this.numberOfTransactions).first().should('not.be.empty');
     cy.getByTestId(this.validatorLink).first().should('not.be.empty');
     cy.getByTestId(this.blockTime).first().should('not.be.empty');
+  }
+
+  verifyAllBlockRowsAreNotEmpty() {
+    cy.get(`[data-testid=${this.tableRow}] > td`).each(($cell) => {
+      cy.wrap($cell).should('not.be.empty');
+    });
   }
 
   validateRefreshBtn() {

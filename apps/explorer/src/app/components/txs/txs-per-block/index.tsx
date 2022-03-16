@@ -44,7 +44,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
             {decodedBlockData &&
               decodedBlockData.map(({ TxHash, PubKey, Type }) => {
                 return (
-                  <tr key={TxHash}>
+                  <tr data-testid="table-row" key={TxHash}>
                     <td>
                       <Link to={`/${Routes.TX}/${TxHash}`}>
                         <TruncateInline
