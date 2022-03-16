@@ -9,7 +9,7 @@ import {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from './__generated__/OrderEvent';
+} from '@vegaprotocol/types';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 const ORDER_EVENT_SUB = gql`

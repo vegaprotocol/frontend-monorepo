@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface Markets_markets {
-  __typename: "Market";
+  __typename: 'Market';
   /**
    * Market ID
    */

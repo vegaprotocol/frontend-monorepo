@@ -8,7 +8,7 @@ import {
   OrderType,
   OrderStatus,
   OrderRejectionReason,
-} from './../../__generated__/globalTypes';
+} from './globalTypes';
 
 // ====================================================
 // GraphQL subscription operation: OrderEvent

@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
+import { Market, MarketVariables } from '@vegaprotocol/types';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
-import { Market, MarketVariables } from './__generated__/Market';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 
 // Top level page query
 const MARKET_QUERY = gql`

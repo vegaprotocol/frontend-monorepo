@@ -3,10 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {
-  MarketState,
-  MarketTradingMode,
-} from './../../../__generated__/globalTypes';
+import { MarketState, MarketTradingMode } from './globalTypes';
 
 // ====================================================
 // GraphQL query operation: Market

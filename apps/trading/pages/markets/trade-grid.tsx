@@ -1,7 +1,7 @@
+import { Market_market } from '@vegaprotocol/types';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
-import { Market_market } from './__generated__/Market';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '../../components/deal-ticket-container';
 

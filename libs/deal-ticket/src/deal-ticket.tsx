@@ -1,4 +1,5 @@
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import { Market_market } from '@vegaprotocol/types';
 import { FormEvent } from 'react';
 import { Order, useOrderState } from './use-order-state';
 import { DealTicketMarket } from './deal-ticket-market';
@@ -13,47 +14,11 @@ const DEFAULT_ORDER: Order = {
 
 // TODO: Consider using a generated type when we have a better solution for
 // sharing the types from GQL
-export interface Market {
-  id: string;
-  decimalPlaces: number;
-  tradableInstrument: {
-    instrument: {
-      product: {
-        quoteName: string;
-        settlementAsset: {
-          id: string;
-          symbol: string;
-          name: string;
-        };
-      };
-    };
-  };
-  tradingMode:
-    | 'BatchAuction'
-    | 'Continuous'
-    | 'MonitoringAuction'
-    | 'OpeningAuction';
-  state:
-    | 'Active'
-    | 'Cancelled'
-    | 'Closed'
-    | 'Pending'
-    | 'Proposed'
-    | 'Rejected'
-    | 'Settled'
-    | 'Suspended'
-    | 'TradingTerminated';
-  depth: {
-    lastTrade: {
-      price: string;
-    } | null;
-  };
-}
 
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
-  market: Market;
+  market: Market_market;
   submit: (order: Order) => void;
   transactionStatus: TransactionStatus;
   defaultOrder?: Order;

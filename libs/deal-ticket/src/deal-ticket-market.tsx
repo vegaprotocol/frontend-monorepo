@@ -1,6 +1,7 @@
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import { Market, TransactionStatus } from './deal-ticket';
+import { Market_market } from '@vegaprotocol/types';
+import { TransactionStatus } from './deal-ticket';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';
 import { TimeInForceSelector } from './time-in-force-selector';
@@ -11,7 +12,7 @@ interface DealTicketMarketProps {
   order: Order;
   updateOrder: (order: Partial<Order>) => void;
   transactionStatus: TransactionStatus;
-  market: Market;
+  market: Market_market;
 }
 
 export const DealTicketMarket = ({

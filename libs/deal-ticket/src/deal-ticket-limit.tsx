@@ -1,6 +1,7 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce } from '@vegaprotocol/wallet';
-import { Market, TransactionStatus } from './deal-ticket';
+import { TransactionStatus } from './deal-ticket';
+import { Market_market } from '@vegaprotocol/types';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';
@@ -12,7 +13,7 @@ interface DealTicketLimitProps {
   order: Order;
   updateOrder: (order: Partial<Order>) => void;
   transactionStatus: TransactionStatus;
-  market: Market;
+  market: Market_market;
 }
 
 export const DealTicketLimit = ({

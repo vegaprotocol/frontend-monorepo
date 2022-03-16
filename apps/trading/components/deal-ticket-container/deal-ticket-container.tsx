@@ -1,10 +1,10 @@
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from '@vegaprotocol/deal-ticket';
+import { OrderStatus } from '@vegaprotocol/types';
 import { useOrderSubmit } from '../../hooks/use-order-submit';
 import { useEffect, useState } from 'react';
 import { VegaTxStatus } from '../../hooks/use-vega-transaction';
 import { OrderDialog } from './order-dialog';
-import { OrderStatus } from '../../__generated__/globalTypes';
 
 export const DealTicketContainer = ({ market }) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
