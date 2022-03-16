@@ -8,6 +8,8 @@ export default {
 
 const Template: Story = (args) => <Lozenge {...args}>lozenge</Lozenge>;
 
+export const Default = Template.bind({});
+
 export const WithDetails = Template.bind({});
 WithDetails.args = {
   details: 'details text',

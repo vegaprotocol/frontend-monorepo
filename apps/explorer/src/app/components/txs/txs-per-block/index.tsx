@@ -64,7 +64,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                       />
                     </td>
                     <td>
-                      <TxOrderType orderType={Type} />
+                      <TxOrderType className="mb-4" orderType={Type} />
                     </td>
                   </tr>
                 );

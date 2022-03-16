@@ -1,3 +1,5 @@
+import { Lozenge } from '@vegaprotocol/ui-toolkit';
+
 interface TxOrderTypeProps {
   orderType: string;
   className?: string;
@@ -34,6 +36,8 @@ const displayString: StringMap = {
 
 export const TxOrderType = ({ orderType, className }: TxOrderTypeProps) => {
   return (
-    <span className={className}>{displayString[orderType] || orderType}</span>
+    <Lozenge className={className}>
+      {displayString[orderType] || orderType}
+    </Lozenge>
   );
 };

@@ -19,7 +19,9 @@ export const RenderFetched = ({
   }
 
   if (error) {
-    return <StatusMessage className={className}>Error: {error}</StatusMessage>;
+    return (
+      <StatusMessage className={className}>Error retrieving data</StatusMessage>
+    );
   }
 
   return children;
