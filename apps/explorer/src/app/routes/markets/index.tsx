@@ -3,6 +3,7 @@ import { MarketsQuery } from '@vegaprotocol/graphql';
 
 import React from 'react';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
+import { RouteTitle } from '../../components/route-title';
 
 const MARKETS_QUERY = gql`
   query MarketsQuery {
@@ -149,7 +150,8 @@ const Markets = () => {
   if (!data || !data.markets) return null;
   return (
     <section className="px-8 py-12">
-      <h1>Markets</h1>
+      <RouteTitle data-testid="markets-header">Markets</RouteTitle>
+
       {data.markets.map((m) => (
         <React.Fragment key={m.id}>
           <h2 data-testid="markets-header">{m.name}</h2>

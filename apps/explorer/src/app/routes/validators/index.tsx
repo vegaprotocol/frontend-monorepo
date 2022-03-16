@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
+import { RouteTitle } from '../../components/route-title';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
 import { TendermintValidatorsResponse } from './tendermint-validator-response';
@@ -41,7 +42,7 @@ const Validators = () => {
 
   return (
     <section>
-      <h1>Validators</h1>
+      <RouteTitle data-testid="validators-header">Validators</RouteTitle>
       <h2 data-testid="tendermint-header">Tendermint data</h2>
       <pre data-testid="tendermint-data">
         {JSON.stringify(validators, null, '  ')}

@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
+import { RouteTitle } from '../../components/route-title';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import {
   ProposalsQuery,
@@ -103,7 +104,7 @@ const Governance = () => {
   if (!data || !data.proposals) return null;
   return (
     <section>
-      <h1>Governance</h1>
+      <RouteTitle data-testid="governance-header">Governance</RouteTitle>
       {data.proposals.map((p) => (
         <React.Fragment key={p.id}>
           {/* TODO get proposal name generator from console */}

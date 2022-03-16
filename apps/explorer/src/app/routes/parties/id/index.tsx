@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { RouteTitle } from '../../../components/route-title';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
@@ -65,7 +66,8 @@ const Party = () => {
 
   return (
     <section>
-      <h1>Party</h1>
+      <RouteTitle data-testid="parties-header">Party</RouteTitle>
+
       <h2>Tendermint Data</h2>
       <pre>{JSON.stringify(partyData, null, '  ')}</pre>
       <h2>Asset data</h2>
