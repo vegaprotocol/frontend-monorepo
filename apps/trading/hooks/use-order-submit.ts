@@ -9,7 +9,7 @@ import {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from '@vegaprotocol/types';
+} from '@vegaprotocol/graphql';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 const ORDER_EVENT_SUB = gql`

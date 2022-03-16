@@ -1,4 +1,4 @@
-import { Market_market } from '@vegaprotocol/types';
+import { Market_market } from '@vegaprotocol/graphql';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';

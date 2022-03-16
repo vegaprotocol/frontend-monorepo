@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { Market, MarketVariables } from '@vegaprotocol/types';
+import { Market, MarketVariables } from '@vegaprotocol/graphql';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';

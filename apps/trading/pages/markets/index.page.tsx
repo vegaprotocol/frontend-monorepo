@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { Markets } from '@vegaprotocol/types';
+import { Markets } from '@vegaprotocol/graphql';
 import { PageQueryContainer } from '../../components/page-query-container';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

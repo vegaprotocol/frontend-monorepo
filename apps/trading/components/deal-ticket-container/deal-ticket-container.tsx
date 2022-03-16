@@ -1,6 +1,6 @@
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { DealTicket } from '@vegaprotocol/deal-ticket';
-import { OrderStatus } from '@vegaprotocol/types';
+import { OrderStatus } from '@vegaprotocol/graphql';
 import { useOrderSubmit } from '../../hooks/use-order-submit';
 import { useEffect, useState } from 'react';
 import { VegaTxStatus } from '../../hooks/use-vega-transaction';

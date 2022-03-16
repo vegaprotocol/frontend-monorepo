@@ -4,7 +4,7 @@ import {
   TransactionState,
   VegaTxStatus,
 } from '../../hooks/use-vega-transaction';
-import { OrderEvent_busEvents_event_Order } from '@vegaprotocol/types';
+import { OrderEvent_busEvents_event_Order } from '@vegaprotocol/graphql';
 
 interface OrderDialogProps {
   transaction: TransactionState;

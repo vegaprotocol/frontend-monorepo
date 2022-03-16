@@ -1,7 +1,7 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce } from '@vegaprotocol/wallet';
 import { TransactionStatus } from './deal-ticket';
-import { Market_market } from '@vegaprotocol/types';
+import { Market_market } from '@vegaprotocol/graphql';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';

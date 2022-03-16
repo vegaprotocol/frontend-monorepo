@@ -1,6 +1,6 @@
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import { Market_market } from '@vegaprotocol/types';
+import { Market_market } from '@vegaprotocol/graphql';
 import { TransactionStatus } from './deal-ticket';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';

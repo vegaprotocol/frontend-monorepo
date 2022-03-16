@@ -1,0 +1,18 @@
+{
+  "root": "libs/graphql",
+  "sourceRoot": "libs/graphql/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/graphql",
+        "main": "libs/graphql/src/index.ts",
+        "tsConfig": "libs/graphql/tsconfig.lib.json",
+        "assets": ["libs/graphql/*.md"]
+      }
+    }
+  },
+  "tags": []
+}

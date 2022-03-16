@@ -1,5 +1,5 @@
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { Market_market } from '@vegaprotocol/types';
+import { Market_market } from '@vegaprotocol/graphql';
 import { FormEvent } from 'react';
 import { Order, useOrderState } from './use-order-state';
 import { DealTicketMarket } from './deal-ticket-market';

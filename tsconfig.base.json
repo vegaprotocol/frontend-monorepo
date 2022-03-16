@@ -16,11 +16,11 @@
     "baseUrl": ".",
     "paths": {
       "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
+      "@vegaprotocol/graphql": ["libs/graphql/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.js"
       ],
-      "@vegaprotocol/types": ["libs/types/src/index.ts"],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
       "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"]
     }
