@@ -20,7 +20,9 @@ export function Dialog({
   intent,
 }: DialogProps) {
   const contentClasses = classNames(
+    // Positions the modal in the center of screen
     'fixed w-[520px] px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+    // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
     // For some reason if I use getIntentShadow from utils/intent the styles arent applied
     'shadow-callout',
