@@ -8,9 +8,7 @@ import { OrderStatus } from '../../__generated__/globalTypes';
 
 export const DealTicketContainer = ({ market }) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
-  const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(
-    market.id
-  );
+  const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
 
   const getDialogIntent = (status: VegaTxStatus) => {
     if (finalizedOrder) {

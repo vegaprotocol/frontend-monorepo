@@ -10,6 +10,7 @@ import {
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
 } from './__generated__/OrderEvent';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -35,7 +36,12 @@ const ORDER_EVENT_SUB = gql`
   }
 `;
 
-export const useOrderSubmit = (marketId: string) => {
+interface UseOrderSubmitMarket {
+  id: string;
+  decimalPlaces: number;
+}
+
+export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [id, setId] = useState('');
@@ -91,8 +97,11 @@ export const useOrderSubmit = (marketId: string) => {
         pubKey: keypair.pub,
         propagate: true,
         orderSubmission: {
-          marketId,
-          price: order.type === OrderType.Market ? undefined : order.price,
+          marketId: market.id,
+          price:
+            order.type === OrderType.Market
+              ? undefined
+              : removeDecimal(order.price, market.decimalPlaces),
           size: order.size,
           type: order.type,
           side: order.side,
@@ -109,7 +118,7 @@ export const useOrderSubmit = (marketId: string) => {
         setId(determineId(res.signature).toUpperCase());
       }
     },
-    [marketId, keypair, send]
+    [market, keypair, send]
   );
 
   const reset = useCallback(() => {
