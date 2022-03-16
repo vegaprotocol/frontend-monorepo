@@ -3,8 +3,9 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { OrderList } from '@vegaprotocol/order-list';
 
 export const OrderListContainer = () => {
-  const { keypair } = useVegaWallet();
-  const { initial, incoming } = useOrders(keypair?.pub);
+  const res = useOrders();
+  console.log(res);
 
-  return <OrderList initial={initial} incoming={incoming} />;
+  return <pre>{JSON.stringify(res, null, 2)}</pre>;
+  // return <OrderList initial={initial} incoming={incoming} />;
 };

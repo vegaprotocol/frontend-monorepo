@@ -3,19 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {
-  OrderType,
-  Side,
-  OrderStatus,
-  OrderTimeInForce,
-} from './../../__generated__/globalTypes';
+import { OrderType, Side, OrderStatus, OrderTimeInForce } from "./../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: Orders
 // ====================================================
 
 export interface Orders_party_orders_market_tradableInstrument_instrument {
-  __typename: 'Instrument';
+  __typename: "Instrument";
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
@@ -23,7 +18,7 @@ export interface Orders_party_orders_market_tradableInstrument_instrument {
 }
 
 export interface Orders_party_orders_market_tradableInstrument {
-  __typename: 'TradableInstrument';
+  __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
@@ -31,7 +26,7 @@ export interface Orders_party_orders_market_tradableInstrument {
 }
 
 export interface Orders_party_orders_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -47,7 +42,7 @@ export interface Orders_party_orders_market {
 }
 
 export interface Orders_party_orders {
-  __typename: 'Order';
+  __typename: "Order";
   /**
    * Hash of the order data
    */
@@ -88,10 +83,14 @@ export interface Orders_party_orders {
    * RFC3339Nano formatted date and time for when the order was created (timestamp)
    */
   createdAt: string;
+  /**
+   * RFC3339Nano time the order was altered
+   */
+  updatedAt: string | null;
 }
 
 export interface Orders_party {
-  __typename: 'Party';
+  __typename: "Party";
   /**
    * Orders relating to a party
    */

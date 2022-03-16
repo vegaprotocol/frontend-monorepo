@@ -1,4 +1,13 @@
-import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  split,
+  from,
+  HttpLink,
+  InMemoryCache,
+} from '@apollo/client';
+import { createClient as createWSClient } from 'graphql-ws';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 
@@ -40,6 +49,28 @@ export function createClient(base?: string) {
     credentials: 'same-origin',
   });
 
+  const wsLink = process.browser
+    ? new GraphQLWsLink(
+        createWSClient({
+          url: urlWS.href,
+        })
+      )
+    : null;
+
+  const splitLink = process.browser
+    ? split(
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return (
+            definition.kind === 'OperationDefinition' &&
+            definition.operation === 'subscription'
+          );
+        },
+        wsLink,
+        httpLink
+      )
+    : httpLink;
+
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     console.log(graphQLErrors);
     console.log(networkError);
@@ -47,7 +78,7 @@ export function createClient(base?: string) {
 
   return new ApolloClient({
     connectToDevTools: process.env['NODE_ENV'] === 'development',
-    link: from([errorLink, retryLink, httpLink]),
+    link: from([errorLink, retryLink, splitLink]),
     cache,
   });
 }

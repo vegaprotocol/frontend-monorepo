@@ -1,5 +1,6 @@
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { SingletonHooksContainer } from 'react-singleton-hook';
 import { Navbar } from '../components/navbar';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
@@ -36,6 +37,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
     <ThemeContext.Provider value={theme}>
       <ApolloProvider client={client}>
         <VegaWalletProvider>
+          <SingletonHooksContainer />
           <AppLoader>
             <Head>
               <title>Welcome to trading!</title>
