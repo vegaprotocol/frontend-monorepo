@@ -6,7 +6,6 @@ import React, { useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 
 // Top level page query
 const MARKET_QUERY = gql`
