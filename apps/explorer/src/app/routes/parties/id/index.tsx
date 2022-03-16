@@ -58,7 +58,7 @@ const Party = () => {
     {
       // Don't cache data for this query, party information can move quite quickly
       fetchPolicy: 'network-only',
-      variables: { partyId: party?.replace('0x', '') },
+      variables: { partyId: party?.replace('0x', '') || '' },
       skip: !party,
     }
   );
