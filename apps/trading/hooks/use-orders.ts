@@ -36,10 +36,11 @@ const ORDER_FRAGMENT = gql`
   }
 `;
 
-const ORDERS_QUERY = gql`
+export const ORDERS_QUERY = gql`
   ${ORDER_FRAGMENT}
   query Orders($partyId: ID!) {
     party(id: $partyId) {
+      id
       orders {
         ...OrderFields
       }
@@ -47,7 +48,7 @@ const ORDERS_QUERY = gql`
   }
 `;
 
-const ORDERS_SUB = gql`
+export const ORDERS_SUB = gql`
   ${ORDER_FRAGMENT}
   subscription OrderSub($partyId: ID!) {
     orders(partyId: $partyId) {

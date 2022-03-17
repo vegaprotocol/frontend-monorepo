@@ -92,6 +92,10 @@ export interface Orders_party_orders {
 export interface Orders_party {
   __typename: 'Party';
   /**
+   * Party identifier
+   */
+  id: string;
+  /**
    * Orders relating to a party
    */
   orders: Orders_party_orders[] | null;
