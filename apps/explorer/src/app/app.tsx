@@ -4,7 +4,6 @@ import { ApolloProvider } from '@apollo/client';
 
 import { createClient } from './lib/apollo-client';
 import { Nav } from './components/nav';
-import { Footer } from './components/footer';
 import { Header } from './components/header';
 import { Main } from './components/main';
 import React from 'react';
@@ -24,7 +23,6 @@ function App() {
             <Nav />
             <Header />
             <Main />
-            <Footer />
           </div>
         </div>
       </ApolloProvider>
