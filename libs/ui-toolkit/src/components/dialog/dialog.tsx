@@ -1,7 +1,7 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 import { ReactNode } from 'react';
-import { Intent, getIntentShadow } from '../../utils/intent';
+import { getIntentShadow, Intent } from '../../utils/intent';
 import { Icon } from '../icon';
 
 interface DialogProps {
