@@ -23,7 +23,7 @@ const defaultWalletContext = {
 
 function setup(
   context?: Partial<VegaWalletContextShape>,
-  marketId = 'market-id'
+  market = { id: 'market-id', decimalPlaces: 2 }
 ) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider>
@@ -34,7 +34,7 @@ function setup(
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
-  return renderHook(() => useOrderSubmit(marketId), { wrapper });
+  return renderHook(() => useOrderSubmit(market), { wrapper });
 }
 
 test('Has the correct default state', () => {
@@ -105,4 +105,49 @@ test('Create an Id if a signature is returned', async () => {
     });
   });
   expect(result.current.id).toEqual(expectedId);
+});
+
+test('Should submit a correctly formatted order', async () => {
+  const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
+  const keypair = {
+    pub: '0x123',
+  } as VegaKeyExtended;
+  const market = {
+    id: 'market-id',
+    decimalPlaces: 2,
+  };
+  const { result } = setup(
+    {
+      sendTx: mockSendTx,
+      keypairs: [keypair],
+      keypair,
+    },
+    market
+  );
+
+  const order = {
+    type: OrderType.Limit,
+    size: '10',
+    timeInForce: OrderTimeInForce.GTT,
+    side: OrderSide.Buy,
+    price: '1234567.89',
+    expiration: new Date('2022-01-01'),
+  };
+  await act(async () => {
+    result.current.submit(order);
+  });
+
+  expect(mockSendTx).toHaveBeenCalledWith({
+    pubKey: keypair.pub,
+    propagate: true,
+    orderSubmission: {
+      type: OrderType.Limit,
+      marketId: market.id, // Market provided from hook arugment
+      size: '10',
+      side: OrderSide.Buy,
+      timeInForce: OrderTimeInForce.GTT,
+      price: '123456789', // Decimal removed
+      expiresAt: order.expiration.getTime() + '000000', // Nanoseconds appened
+    },
+  });
 });

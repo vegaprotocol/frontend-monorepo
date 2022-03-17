@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
 import {
   OrderSubmission,
   VegaWalletContext,
