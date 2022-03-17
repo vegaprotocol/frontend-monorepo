@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { NodeStatus } from './../../../../__generated__/globalTypes';
+import { NodeStatus } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: NodesQuery
 // ====================================================
 
 export interface NodesQuery_nodes_epochData {
-  __typename: 'EpochData';
+  __typename: "EpochData";
   /**
    * Total number of epochs since node was created
    */
@@ -26,7 +26,7 @@ export interface NodesQuery_nodes_epochData {
 }
 
 export interface NodesQuery_nodes {
-  __typename: 'Node';
+  __typename: "Node";
   /**
    * The node url eg n01.vega.xyz
    */
@@ -71,8 +71,6 @@ export interface NodesQuery_nodes {
   pendingStake: string;
   epochData: NodesQuery_nodes_epochData | null;
   status: NodeStatus;
-  score: string;
-  normalisedScore: string;
 }
 
 export interface NodesQuery {

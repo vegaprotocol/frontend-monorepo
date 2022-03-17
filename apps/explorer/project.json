@@ -40,6 +40,7 @@
     "serve": {
       "executor": "@nrwl/web:dev-server",
       "options": {
+        "port": 3000,
         "buildTarget": "explorer:build",
         "hmr": true
       },

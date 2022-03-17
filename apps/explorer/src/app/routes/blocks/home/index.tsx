@@ -1,29 +1,30 @@
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlockchainResponse } from '../tendermint-blockchain-response';
-import { BlocksTable } from '../../../components/blocks';
+import { RouteTitle } from '../../../components/route-title';
+import { RenderFetched } from '../../../components/render-fetched';
+import { BlocksData, BlocksRefetch } from '../../../components/blocks';
 import { JumpToBlock } from '../../../components/jump-to-block';
 
 const Blocks = () => {
   const {
-    state: { data },
+    state: { data, error, loading },
     refetch,
   } = useFetch<TendermintBlockchainResponse>(
     `${DATA_SOURCES.tendermintUrl}/blockchain`
   );
 
   return (
-    <>
-      <section>
-        <h1>Blocks</h1>
-        <button data-testid="refresh" onClick={() => refetch()}>
-          Refresh to see latest blocks
-        </button>
-        <BlocksTable data={data} />
-      </section>
-
+    <section>
+      <RouteTitle>Blocks</RouteTitle>
+      <RenderFetched error={error} loading={loading}>
+        <>
+          <BlocksRefetch refetch={refetch} />
+          <BlocksData data={data} className="mb-28" />
+        </>
+      </RenderFetched>
       <JumpToBlock />
-    </>
+    </section>
   );
 };
 

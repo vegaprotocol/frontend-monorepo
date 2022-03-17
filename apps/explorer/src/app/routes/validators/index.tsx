@@ -26,8 +26,6 @@ const NODES_QUERY = gql`
         online
       }
       status
-      score
-      normalisedScore
       name
     }
   }
