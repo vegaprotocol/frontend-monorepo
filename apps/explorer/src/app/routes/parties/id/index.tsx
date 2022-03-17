@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { RouteTitle } from '../../../components/route-title';
+import { SyntaxHighlighter } from '../../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
@@ -48,10 +49,13 @@ const PARTY_ASSETS_QUERY = gql`
 
 const Party = () => {
   const { party } = useParams<{ party: string }>();
+
   const {
     state: { data: partyData },
   } = useFetch<TendermintSearchTransactionResponse>(
-    `${DATA_SOURCES.tendermintWebsocketUrl}/tx_search?query="tx.submitter=%27${party}%27"`
+    `${
+      DATA_SOURCES.tendermintUrl
+    }/tx_search?query="tx.submitter=%27${party?.replace('0x', '')}%27"`
   );
 
   const { data } = useQuery<PartyAssetsQuery, PartyAssetsQueryVariables>(
@@ -67,11 +71,19 @@ const Party = () => {
   return (
     <section>
       <RouteTitle data-testid="parties-header">Party</RouteTitle>
+      {data ? (
+        <>
+          <h2>Asset data</h2>
+          <SyntaxHighlighter data={data} />
+        </>
+      ) : null}
 
-      <h2>Tendermint Data</h2>
-      <pre>{JSON.stringify(partyData, null, '  ')}</pre>
-      <h2>Asset data</h2>
-      <pre>{JSON.stringify(data, null, '  ')}</pre>
+      {partyData ? (
+        <>
+          <h2>Tendermint Data</h2>
+          <SyntaxHighlighter data={partyData} />
+        </>
+      ) : null}
     </section>
   );
 };
