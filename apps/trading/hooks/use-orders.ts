@@ -5,7 +5,6 @@ import {
   OrderSubVariables,
   Orders,
   OrdersVariables,
-  Orders_party_orders,
   OrderFields,
 } from '@vegaprotocol/graphql';
 import { singletonHook } from 'react-singleton-hook';
