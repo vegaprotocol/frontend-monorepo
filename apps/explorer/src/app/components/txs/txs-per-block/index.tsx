@@ -56,12 +56,14 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                       </Link>
                     </td>
                     <td>
-                      <TruncateInline
-                        text={PubKey}
-                        startChars={truncateLength}
-                        endChars={truncateLength}
-                        className="font-mono"
-                      />
+                      <Link to={`/${Routes.PARTIES}/${PubKey}`}>
+                        <TruncateInline
+                          text={PubKey}
+                          startChars={truncateLength}
+                          endChars={truncateLength}
+                          className="text-vega-yellow font-mono"
+                        />
+                      </Link>
                     </td>
                     <td>
                       <TxOrderType className="mb-4" orderType={Type} />
