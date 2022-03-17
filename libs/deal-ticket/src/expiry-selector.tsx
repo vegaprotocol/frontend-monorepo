@@ -1,7 +1,6 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { Order } from './use-order-state';
-import { format } from 'date-fns';
-import { INPUT_DATE_FORMAT } from '@vegaprotocol/react-helpers';
+import { formatForInput } from '@vegaprotocol/react-helpers';
 
 interface ExpirySelectorProps {
   order: Order;
@@ -10,7 +9,9 @@ interface ExpirySelectorProps {
 
 export const ExpirySelector = ({ order, onSelect }: ExpirySelectorProps) => {
   const date = order.expiration ? new Date(order.expiration) : new Date();
-  const dateFormatted = format(date, INPUT_DATE_FORMAT);
+  const dateFormatted = formatForInput(date);
+  const minDate = formatForInput(date);
+  console.log(dateFormatted, minDate);
   return (
     <FormGroup label="Expiry time/date" labelFor="expiration">
       <Input
@@ -19,7 +20,7 @@ export const ExpirySelector = ({ order, onSelect }: ExpirySelectorProps) => {
         type="datetime-local"
         value={dateFormatted}
         onChange={(e) => onSelect(new Date(e.target.value))}
-        min={new Date().toISOString()}
+        min={minDate}
       />
     </FormGroup>
   );
