@@ -4,6 +4,7 @@ import { MarketsQuery } from '@vegaprotocol/graphql';
 import React from 'react';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { RouteTitle } from '../../components/route-title';
+import { SubHeading } from '../../components/sub-heading';
 
 const MARKETS_QUERY = gql`
   query MarketsQuery {
@@ -155,7 +156,7 @@ const Markets = () => {
       {data
         ? data.markets.map((m) => (
             <React.Fragment key={m.id}>
-              <h2 data-testid="markets-header">{m.name}</h2>
+              <SubHeading data-testid="markets-header">{m.name}</SubHeading>
               <SyntaxHighlighter data={m} />
             </React.Fragment>
           ))

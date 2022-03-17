@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
+import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
@@ -46,13 +47,15 @@ const Validators = () => {
       <RouteTitle data-testid="validators-header">Validators</RouteTitle>
       {data ? (
         <>
-          <h2 data-testid="vega-header">Vega data</h2>
+          <SubHeading data-testid="vega-header">Vega data</SubHeading>
           <SyntaxHighlighter data-testid="vega-data" data={data} />
         </>
       ) : null}
       {validators ? (
         <>
-          <h2 data-testid="tendermint-header">Tendermint data</h2>
+          <SubHeading data-testid="tendermint-header">
+            Tendermint data
+          </SubHeading>
           <SyntaxHighlighter data-testid="tendermint-data" data={validators} />
         </>
       ) : null}

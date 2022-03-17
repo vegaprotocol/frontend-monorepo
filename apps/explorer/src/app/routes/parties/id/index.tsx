@@ -3,6 +3,7 @@ import { gql } from '@apollo/client';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { RouteTitle } from '../../../components/route-title';
+import { SubHeading } from '../../../components/sub-heading';
 import { SyntaxHighlighter } from '../../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
@@ -73,14 +74,14 @@ const Party = () => {
       <RouteTitle data-testid="parties-header">Party</RouteTitle>
       {data ? (
         <>
-          <h2>Asset data</h2>
+          <SubHeading>Asset data</SubHeading>
           <SyntaxHighlighter data={data} />
         </>
       ) : null}
 
       {partyData ? (
         <>
-          <h2>Tendermint Data</h2>
+          <SubHeading>Tendermint Data</SubHeading>
           <SyntaxHighlighter data={partyData} />
         </>
       ) : null}

@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
+import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { AssetsQuery } from '@vegaprotocol/graphql';
 
@@ -39,9 +40,9 @@ const Assets = () => {
       <RouteTitle data-testid="assets-header">Assets</RouteTitle>
       {data?.assets.map((a) => (
         <React.Fragment key={a.id}>
-          <h2 data-testid="asset-header">
+          <SubHeading data-testid="asset-header">
             {a.name} ({a.symbol})
-          </h2>
+          </SubHeading>
           <SyntaxHighlighter data={a} />
         </React.Fragment>
       ))}

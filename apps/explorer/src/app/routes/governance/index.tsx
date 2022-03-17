@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
+import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import {
   ProposalsQuery,
@@ -107,7 +108,7 @@ const Governance = () => {
       <RouteTitle data-testid="governance-header">Governance</RouteTitle>
       {data.proposals.map((p) => (
         <React.Fragment key={p.id}>
-          <h2>{getProposalName(p.terms.change)}</h2>
+          <SubHeading>{getProposalName(p.terms.change)}</SubHeading>
           <SyntaxHighlighter data={p} />
         </React.Fragment>
       ))}
