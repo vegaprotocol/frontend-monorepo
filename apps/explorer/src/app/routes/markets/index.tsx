@@ -149,7 +149,7 @@ const Markets = () => {
 
   if (!data || !data.markets) return null;
   return (
-    <section className="px-8 py-12">
+    <section>
       <RouteTitle data-testid="markets-header">Markets</RouteTitle>
 
       {data

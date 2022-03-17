@@ -1,4 +1,4 @@
-import { TendermintUnconfirmedTransactionsResponse } from '../../../routes/txs/tendermint-unconfirmed-transactions-response.d';
+import { TendermintUnconfirmedTransactionsResponse } from '../../routes/txs/tendermint-unconfirmed-transactions-response.d';
 
 interface TxsProps {
   data: TendermintUnconfirmedTransactionsResponse | undefined;
