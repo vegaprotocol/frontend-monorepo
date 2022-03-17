@@ -8,6 +8,11 @@ export default class TransactionsPage extends BasePage {
   validatorLink = 'validator-link';
   blockTime = 'block-time';
   refreshBtn = 'refresh';
+  txHash = 'hash';
+  txSubmittedBy = 'submitted-by';
+  txBlock = 'block';
+  txEncodedTnx = 'encoded-tnx';
+  txType = 'tx-type';
 
   validateTransactionsPagedisplayed() {
     cy.getByTestId(this.blockTable).should('have.length.above', 1);
@@ -40,5 +45,39 @@ export default class TransactionsPage extends BasePage {
           });
       });
     cy.getByTestId(this.blockTime).first();
+  }
+
+  validateTxDetailsAreDisplayed() {
+    cy.getByTestId(this.txHash).invoke('text').should('have.length', 64);
+    cy.getByTestId(this.txSubmittedBy)
+      .find('a')
+      .then(($address) => {
+        cy.wrap($address).should('have.attr', 'href');
+        cy.wrap($address).invoke('text').should('have.length', 66);
+      });
+    cy.getByTestId(this.txBlock).should('not.be.empty');
+    cy.getByTestId(this.txEncodedTnx).should('not.be.empty');
+    cy.getByTestId(this.txType)
+      .should('not.be.empty')
+      .invoke('text')
+      .then((txType) => {
+        if (txType == 'OrderSubmission') {
+          console.log(txType);
+          cy.get('.hljs-attr')
+            .should('have.length', 4)
+            .each(($propertyName) => {
+              cy.wrap($propertyName).should('not.be.empty');
+            });
+          cy.get('span[style*="color"]')
+            .should('have.length', 4)
+            .each(($propertyValue) => {
+              cy.wrap($propertyValue).should('not.be.empty');
+            });
+        }
+      });
+  }
+
+  clickOnTopTransaction() {
+    cy.getByTestId(this.tableRow).first().find('a').click();
   }
 }
