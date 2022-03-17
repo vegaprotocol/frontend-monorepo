@@ -1,9 +1,26 @@
+import { Market_market } from '@vegaprotocol/graphql';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
-import { TradingView, TradingViews } from '@vegaprotocol/react-helpers';
-import { Market_market } from './__generated__/Market';
 import { GridTab, GridTabs } from './grid-tabs';
+import { DealTicketContainer } from '../../components/deal-ticket-container';
+
+const Chart = () => <div>TODO: Chart</div>;
+const Orderbook = () => <div>TODO: Orderbook</div>;
+const Orders = () => <div>TODO: Orders</div>;
+const Positions = () => <div>TODO: Positions</div>;
+const Collateral = () => <div>TODO: Collateral</div>;
+
+type TradingView = keyof typeof TradingViews;
+
+const TradingViews = {
+  chart: Chart,
+  ticket: DealTicketContainer,
+  orderbook: Orderbook,
+  orders: Orders,
+  positions: Positions,
+  collateral: Collateral,
+};
 
 interface TradeGridProps {
   market: Market_market;
@@ -25,7 +42,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <TradingViews.chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.ticket />
+        <TradingViews.ticket market={market} />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
@@ -88,7 +105,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return <Component />;
+    return <Component market={market} />;
   };
 
   return (

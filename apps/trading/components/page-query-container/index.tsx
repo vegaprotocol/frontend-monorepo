@@ -1,7 +1,7 @@
 import { OperationVariables, QueryHookOptions, useQuery } from '@apollo/client';
-import classNames from 'classnames';
 import { DocumentNode } from 'graphql';
 import { ReactNode } from 'react';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 interface PageQueryContainerProps<TData, TVariables> {
   query: DocumentNode;
@@ -15,19 +15,13 @@ export const PageQueryContainer = <TData, TVariables = OperationVariables>({
   children,
 }: PageQueryContainerProps<TData, TVariables>) => {
   const { data, loading, error } = useQuery<TData, TVariables>(query, options);
-  const splashClasses = classNames(
-    'w-full h-full',
-    'flex items-center justify-center'
-  );
 
   if (loading || !data) {
-    return <div className={splashClasses}>Loading...</div>;
+    return <Splash>Loading...</Splash>;
   }
 
   if (error) {
-    return (
-      <div className={splashClasses}>Something went wrong: {error.message}</div>
-    );
+    return <Splash>Something went wrong: {error.message}</Splash>;
   }
 
   return <>{children(data)}</>;

@@ -18,12 +18,22 @@ export const decorators = [
       </div>
     ) : (
       <div className="text-body">
-        <div className="dark bg-black p-16">
+        <StoryWrapper className="dark bg-black">
           <Story />
-        </div>
-        <div className="p-16">
+        </StoryWrapper>
+        <StoryWrapper>
           <Story />
-        </div>
+        </StoryWrapper>
       </div>
     ),
 ];
+
+const StoryWrapper = ({ children, className }) => (
+  <div className={className}>
+    <div className="p-16">
+      <div className="dark:bg-black dark:text-white-60 bg-white text-black-60">
+        {children}
+      </div>
+    </div>
+  </div>
+);

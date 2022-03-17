@@ -128,6 +128,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       variant = 'primary',
+      type = 'button',
       children,
       className,
       prependIconName,
@@ -137,7 +138,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     return (
-      <button ref={ref} className={getClassName(className, variant)} {...props}>
+      <button
+        ref={ref}
+        className={getClassName(className, variant)}
+        type={type}
+        {...props}
+      >
         {getContent(children, prependIconName, appendIconName)}
       </button>
     );

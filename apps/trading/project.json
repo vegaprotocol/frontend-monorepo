@@ -54,7 +54,7 @@
       "options": {
         "commands": [
           {
-            "command": "npx apollo client:codegen --config=apps/trading/apollo.config.js --target=typescript --globalTypesFile=apps/trading/__generated__/globalTypes.ts"
+            "command": "npx apollo client:codegen libs/graphql/src/lib/ --config=apps/trading/apollo.config.js --target=typescript --globalTypesFile=libs/graphql/src/lib/globalTypes.ts --outputFlat"
           }
         ]
       }

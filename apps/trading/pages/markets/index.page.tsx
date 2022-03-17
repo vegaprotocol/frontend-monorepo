@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
+import { Markets } from '@vegaprotocol/graphql';
 import { PageQueryContainer } from '../../components/page-query-container';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Markets } from './__generated__/Markets';
 
 const MARKETS_QUERY = gql`
   query Markets {
