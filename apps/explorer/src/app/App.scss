@@ -51,6 +51,12 @@ body,
     grid-column-end: 3;
     grid-row-start: 1;
     grid-row-end: 2;
+    display: flex;
+    justify-content: space-between;
+
+    h1 {
+      font-family: $font-alpa-lyrae;
+    }
   }
 
   main {
