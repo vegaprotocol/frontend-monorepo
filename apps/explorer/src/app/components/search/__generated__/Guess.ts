@@ -8,7 +8,7 @@
 // ====================================================
 
 export interface Guess_party {
-  __typename: 'Party';
+  __typename: "Party";
   /**
    * Party identifier
    */
@@ -16,7 +16,7 @@ export interface Guess_party {
 }
 
 export interface Guess_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */

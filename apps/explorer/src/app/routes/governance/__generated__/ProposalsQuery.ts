@@ -3,18 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {
-  ProposalState,
-  ProposalRejectionReason,
-  VoteValue,
-} from './../../../../__generated__/globalTypes';
+import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: ProposalsQuery
 // ====================================================
 
 export interface ProposalsQuery_proposals_party {
-  __typename: 'Party';
+  __typename: "Party";
   /**
    * Party identifier
    */
@@ -22,7 +18,7 @@ export interface ProposalsQuery_proposals_party {
 }
 
 export interface ProposalsQuery_proposals_terms_change_NewMarket_instrument {
-  __typename: 'InstrumentConfiguration';
+  __typename: "InstrumentConfiguration";
   /**
    * Full and fairly descriptive name for the instrument
    */
@@ -30,7 +26,7 @@ export interface ProposalsQuery_proposals_terms_change_NewMarket_instrument {
 }
 
 export interface ProposalsQuery_proposals_terms_change_NewMarket {
-  __typename: 'NewMarket';
+  __typename: "NewMarket";
   /**
    * New market instrument configuration
    */
@@ -38,12 +34,12 @@ export interface ProposalsQuery_proposals_terms_change_NewMarket {
 }
 
 export interface ProposalsQuery_proposals_terms_change_UpdateMarket {
-  __typename: 'UpdateMarket';
+  __typename: "UpdateMarket";
   marketId: string;
 }
 
 export interface ProposalsQuery_proposals_terms_change_NewAsset_source_BuiltinAsset {
-  __typename: 'BuiltinAsset';
+  __typename: "BuiltinAsset";
   /**
    * Maximum amount that can be requested by a party through the built-in asset faucet at a time
    */
@@ -51,19 +47,17 @@ export interface ProposalsQuery_proposals_terms_change_NewAsset_source_BuiltinAs
 }
 
 export interface ProposalsQuery_proposals_terms_change_NewAsset_source_ERC20 {
-  __typename: 'ERC20';
+  __typename: "ERC20";
   /**
    * The address of the erc20 contract
    */
   contractAddress: string;
 }
 
-export type ProposalsQuery_proposals_terms_change_NewAsset_source =
-  | ProposalsQuery_proposals_terms_change_NewAsset_source_BuiltinAsset
-  | ProposalsQuery_proposals_terms_change_NewAsset_source_ERC20;
+export type ProposalsQuery_proposals_terms_change_NewAsset_source = ProposalsQuery_proposals_terms_change_NewAsset_source_BuiltinAsset | ProposalsQuery_proposals_terms_change_NewAsset_source_ERC20;
 
 export interface ProposalsQuery_proposals_terms_change_NewAsset {
-  __typename: 'NewAsset';
+  __typename: "NewAsset";
   /**
    * The symbol of the asset (e.g: GBP)
    */
@@ -75,7 +69,7 @@ export interface ProposalsQuery_proposals_terms_change_NewAsset {
 }
 
 export interface ProposalsQuery_proposals_terms_change_UpdateNetworkParameter_networkParameter {
-  __typename: 'NetworkParameter';
+  __typename: "NetworkParameter";
   /**
    * The name of the network parameter
    */
@@ -87,18 +81,14 @@ export interface ProposalsQuery_proposals_terms_change_UpdateNetworkParameter_ne
 }
 
 export interface ProposalsQuery_proposals_terms_change_UpdateNetworkParameter {
-  __typename: 'UpdateNetworkParameter';
+  __typename: "UpdateNetworkParameter";
   networkParameter: ProposalsQuery_proposals_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export type ProposalsQuery_proposals_terms_change =
-  | ProposalsQuery_proposals_terms_change_NewMarket
-  | ProposalsQuery_proposals_terms_change_UpdateMarket
-  | ProposalsQuery_proposals_terms_change_NewAsset
-  | ProposalsQuery_proposals_terms_change_UpdateNetworkParameter;
+export type ProposalsQuery_proposals_terms_change = ProposalsQuery_proposals_terms_change_NewMarket | ProposalsQuery_proposals_terms_change_UpdateMarket | ProposalsQuery_proposals_terms_change_NewAsset | ProposalsQuery_proposals_terms_change_UpdateNetworkParameter;
 
 export interface ProposalsQuery_proposals_terms {
-  __typename: 'ProposalTerms';
+  __typename: "ProposalTerms";
   /**
    * RFC3339Nano time and date when voting closes for this proposal.
    * Constrained by "minClose" and "maxClose" network parameters.
@@ -116,7 +106,7 @@ export interface ProposalsQuery_proposals_terms {
 }
 
 export interface ProposalsQuery_proposals_votes_yes_votes_party_stake {
-  __typename: 'PartyStake';
+  __typename: "PartyStake";
   /**
    * The stake currently available for the party
    */
@@ -124,7 +114,7 @@ export interface ProposalsQuery_proposals_votes_yes_votes_party_stake {
 }
 
 export interface ProposalsQuery_proposals_votes_yes_votes_party {
-  __typename: 'Party';
+  __typename: "Party";
   /**
    * Party identifier
    */
@@ -136,7 +126,7 @@ export interface ProposalsQuery_proposals_votes_yes_votes_party {
 }
 
 export interface ProposalsQuery_proposals_votes_yes_votes {
-  __typename: 'Vote';
+  __typename: "Vote";
   /**
    * The vote value cast
    */
@@ -152,7 +142,7 @@ export interface ProposalsQuery_proposals_votes_yes_votes {
 }
 
 export interface ProposalsQuery_proposals_votes_yes {
-  __typename: 'ProposalVoteSide';
+  __typename: "ProposalVoteSide";
   /**
    * Total tokens of governance token from the votes casted for this side
    */
@@ -168,7 +158,7 @@ export interface ProposalsQuery_proposals_votes_yes {
 }
 
 export interface ProposalsQuery_proposals_votes_no_votes_party_stake {
-  __typename: 'PartyStake';
+  __typename: "PartyStake";
   /**
    * The stake currently available for the party
    */
@@ -176,7 +166,7 @@ export interface ProposalsQuery_proposals_votes_no_votes_party_stake {
 }
 
 export interface ProposalsQuery_proposals_votes_no_votes_party {
-  __typename: 'Party';
+  __typename: "Party";
   /**
    * Party identifier
    */
@@ -188,7 +178,7 @@ export interface ProposalsQuery_proposals_votes_no_votes_party {
 }
 
 export interface ProposalsQuery_proposals_votes_no_votes {
-  __typename: 'Vote';
+  __typename: "Vote";
   /**
    * The vote value cast
    */
@@ -204,7 +194,7 @@ export interface ProposalsQuery_proposals_votes_no_votes {
 }
 
 export interface ProposalsQuery_proposals_votes_no {
-  __typename: 'ProposalVoteSide';
+  __typename: "ProposalVoteSide";
   /**
    * Total tokens of governance token from the votes casted for this side
    */
@@ -220,7 +210,7 @@ export interface ProposalsQuery_proposals_votes_no {
 }
 
 export interface ProposalsQuery_proposals_votes {
-  __typename: 'ProposalVotes';
+  __typename: "ProposalVotes";
   /**
    * Yes votes cast for this proposal
    */
@@ -232,7 +222,7 @@ export interface ProposalsQuery_proposals_votes {
 }
 
 export interface ProposalsQuery_proposals {
-  __typename: 'Proposal';
+  __typename: "Proposal";
   /**
    * Proposal ID that is filled by VEGA once proposal reaches the network
    */
