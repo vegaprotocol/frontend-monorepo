@@ -11,7 +11,6 @@ export const ExpirySelector = ({ order, onSelect }: ExpirySelectorProps) => {
   const date = order.expiration ? new Date(order.expiration) : new Date();
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
-  console.log(dateFormatted, minDate);
   return (
     <FormGroup label="Expiry time/date" labelFor="expiration">
       <Input
