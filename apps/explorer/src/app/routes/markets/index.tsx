@@ -152,12 +152,14 @@ const Markets = () => {
     <section className="px-8 py-12">
       <RouteTitle data-testid="markets-header">Markets</RouteTitle>
 
-      {data.markets.map((m) => (
-        <React.Fragment key={m.id}>
-          <h2 data-testid="markets-header">{m.name}</h2>
-          <SyntaxHighlighter data={m} />
-        </React.Fragment>
-      ))}
+      {data
+        ? data.markets.map((m) => (
+            <React.Fragment key={m.id}>
+              <h2 data-testid="markets-header">{m.name}</h2>
+              <SyntaxHighlighter data={m} />
+            </React.Fragment>
+          ))
+        : null}
     </section>
   );
 };

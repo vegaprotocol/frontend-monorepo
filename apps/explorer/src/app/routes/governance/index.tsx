@@ -107,7 +107,6 @@ const Governance = () => {
       <RouteTitle data-testid="governance-header">Governance</RouteTitle>
       {data.proposals.map((p) => (
         <React.Fragment key={p.id}>
-          {/* TODO get proposal name generator from console */}
           <h2>{getProposalName(p.terms.change)}</h2>
           <SyntaxHighlighter data={p} />
         </React.Fragment>
