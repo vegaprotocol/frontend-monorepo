@@ -1,11 +1,13 @@
 import { Orders_party_orders } from '@vegaprotocol/graphql';
 import {
+  formatNumber,
   getDateTimeFormat,
   useApplyGridTransaction,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { GridApi, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
+import { OrderTimeInForce } from '@vegaprotocol/graphql';
 import { useRef, useState } from 'react';
 
 interface OrderListProps {
@@ -30,39 +32,52 @@ export const OrderList = ({ orders }: OrderListProps) => {
       }}
       getRowNodeId={(data) => data.id}
     >
-      <AgGridColumn field="market.tradableInstrument.instrument.code" />
       <AgGridColumn
+        headerName="Market"
+        field="market.tradableInstrument.instrument.code"
+      />
+      <AgGridColumn
+        headerName="Amount"
         field="size"
-        valueFormatter={(params: ValueFormatterParams) => {
+        valueFormatter={({ value, data }: ValueFormatterParams) => {
           let prefix = '';
-          if (params.data.side === 'Buy') {
+          if (data.side === 'Buy') {
             prefix = '+';
-          } else if (params.data.side === 'Sell') {
+          } else if (data.side === 'Sell') {
             prefix = '-';
           }
-          return prefix + params.value;
+          return prefix + value;
         }}
       />
       <AgGridColumn field="type" />
       <AgGridColumn field="status" />
       <AgGridColumn
+        headerName="Filled"
         field="remaining"
-        valueFormatter={(params: ValueFormatterParams) => {
-          return `${Number(params.data.size) - Number(params.data.remaining)}/${
-            params.data.size
-          }`;
+        valueFormatter={({ data }: ValueFormatterParams) => {
+          return `${Number(data.size) - Number(data.remaining)}/${data.size}`;
         }}
       />
       <AgGridColumn
         field="price"
-        valueFormatter={(params: ValueFormatterParams) => {
-          if (params.data.type === 'Market') {
+        valueFormatter={({ value, data }: ValueFormatterParams) => {
+          if (data.type === 'Market') {
             return '-';
           }
-          return params.value;
+          return formatNumber(value, data.market.decimalPlaces);
         }}
       />
-      <AgGridColumn field="timeInForce" />
+      <AgGridColumn
+        field="timeInForce"
+        valueFormatter={({ value, data }: ValueFormatterParams) => {
+          if (value === OrderTimeInForce.GTT) {
+            const expiry = getDateTimeFormat().format(new Date(data.expiry));
+            return `${value} ${expiry}`;
+          }
+
+          return value;
+        }}
+      />
       <AgGridColumn
         field="createdAt"
         valueFormatter={({ value }: ValueFormatterParams) => {
