@@ -10,6 +10,7 @@ export { FormGroup } from './components/form-group';
 export { Icon } from './components/icon';
 export { Input } from './components/input';
 export { InputError } from './components/input-error';
+export { Lozenge } from './components/lozenge';
 export { Loader } from './components/loader';
 export { Select } from './components/select';
 export { Splash } from './components/splash';

@@ -6,7 +6,15 @@ interface StatusMessageProps {
   className?: string;
 }
 
-export const StatusMessage = ({ children, className }: StatusMessageProps) => {
+export const StatusMessage = ({
+  children,
+  className,
+  ...props
+}: StatusMessageProps) => {
   const classes = classnames('font-alpha text-h4 mb-28', className);
-  return <h3 className={classes}>{children}</h3>;
+  return (
+    <h3 className={classes} {...props}>
+      {children}
+    </h3>
+  );
 };

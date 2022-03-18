@@ -5,6 +5,7 @@ import { DATA_SOURCES } from '../../../config';
 import { Link } from 'react-router-dom';
 import { RenderFetched } from '../../render-fetched';
 import { TruncateInline } from '../../truncate/truncate';
+import { TxOrderType } from '../tx-order-type';
 
 interface TxsPerBlockProps {
   blockHeight: string | undefined;
@@ -62,7 +63,9 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                         className="font-mono"
                       />
                     </td>
-                    <td>{Type}</td>
+                    <td>
+                      <TxOrderType className="mb-4" orderType={Type} />
+                    </td>
                   </tr>
                 );
               })}

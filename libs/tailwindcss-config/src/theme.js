@@ -46,6 +46,7 @@ module.exports = {
       prompt: '#EDFF22',
       success: '#26FF8A',
       help: '#494949',
+      highlight: '#E5E5E5',
     },
     'intent-background': {
       danger: '#9E0025', // for white text
@@ -92,6 +93,14 @@ module.exports = {
     DEFAULT: '1px',
     1: '1px',
     4: '4px',
+  },
+  borderRadius: {
+    none: '0',
+    sm: '0.125rem',
+    DEFAULT: '0.225rem',
+    md: '0.3rem',
+    lg: '0.5rem',
+    full: '9999px',
   },
   fontFamily: {
     mono: defaultTheme.fontFamily.mono,
