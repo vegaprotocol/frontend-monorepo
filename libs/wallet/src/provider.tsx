@@ -56,7 +56,6 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
 
         return publicKeysWithName;
       } catch (err) {
-        console.error(err);
         return null;
       }
     },
