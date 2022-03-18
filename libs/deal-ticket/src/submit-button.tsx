@@ -1,4 +1,4 @@
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { Market_market } from '@vegaprotocol/graphql';
 import { useMemo } from 'react';
@@ -28,6 +28,7 @@ export const SubmitButton = ({
       return 'Selected public key has been tainted';
     }
 
+    // TODO: Change these to use enums from @vegaprotocol/graphql
     if (market.state !== 'Active') {
       if (market.state === 'Suspended') {
         return 'Market is currently suspended';
@@ -46,9 +47,11 @@ export const SubmitButton = ({
       }
 
       if (
-        order.timeInForce === OrderTimeInForce.FOK ||
-        order.timeInForce === OrderTimeInForce.IOC ||
-        order.timeInForce === OrderTimeInForce.GFN
+        [
+          OrderTimeInForce.FOK,
+          OrderTimeInForce.IOC,
+          OrderTimeInForce.GFN,
+        ].includes(order.timeInForce)
       ) {
         return 'Only GTT, GTC and GFA are permitted when market is in auction';
       }
@@ -62,17 +65,14 @@ export const SubmitButton = ({
   return (
     <>
       <Button
-        className="w-full"
+        className="w-full mb-8"
         variant="primary"
         type="submit"
         disabled={disabled}
-        data-testid="place-order"
       >
         {transactionStatus === 'pending' ? 'Pending...' : 'Place order'}
       </Button>
-      {invalidText && (
-        <p className="text-intent-danger text-center my-4">{invalidText}</p>
-      )}
+      {invalidText && <InputError className="mb-8">{invalidText}</InputError>}
     </>
   );
 };

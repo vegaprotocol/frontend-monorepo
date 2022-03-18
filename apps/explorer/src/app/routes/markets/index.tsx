@@ -26,7 +26,6 @@ const MARKETS_QUERY = gql`
           code
           product {
             ... on Future {
-              maturity
               settlementAsset {
                 id
                 name

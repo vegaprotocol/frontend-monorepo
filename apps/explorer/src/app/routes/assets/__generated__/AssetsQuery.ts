@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from './../../../../__generated__/globalTypes';
+import { AccountType } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: AssetsQuery
 // ====================================================
 
 export interface AssetsQuery_assets_source_ERC20 {
-  __typename: 'ERC20';
+  __typename: "ERC20";
   /**
    * The address of the erc20 contract
    */
@@ -18,19 +18,17 @@ export interface AssetsQuery_assets_source_ERC20 {
 }
 
 export interface AssetsQuery_assets_source_BuiltinAsset {
-  __typename: 'BuiltinAsset';
+  __typename: "BuiltinAsset";
   /**
    * Maximum amount that can be requested by a party through the built-in asset faucet at a time
    */
   maxFaucetAmountMint: string;
 }
 
-export type AssetsQuery_assets_source =
-  | AssetsQuery_assets_source_ERC20
-  | AssetsQuery_assets_source_BuiltinAsset;
+export type AssetsQuery_assets_source = AssetsQuery_assets_source_ERC20 | AssetsQuery_assets_source_BuiltinAsset;
 
 export interface AssetsQuery_assets_infrastructureFeeAccount_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -38,7 +36,7 @@ export interface AssetsQuery_assets_infrastructureFeeAccount_market {
 }
 
 export interface AssetsQuery_assets_infrastructureFeeAccount {
-  __typename: 'Account';
+  __typename: "Account";
   /**
    * Account type (General, Margin, etc)
    */
@@ -54,7 +52,7 @@ export interface AssetsQuery_assets_infrastructureFeeAccount {
 }
 
 export interface AssetsQuery_assets {
-  __typename: 'Asset';
+  __typename: "Asset";
   /**
    * The id of the asset
    */
@@ -75,10 +73,6 @@ export interface AssetsQuery_assets {
    * The precision of the asset
    */
   decimals: number;
-  /**
-   * The min stake to become an lp for any market using this asset for settlement
-   */
-  minLpStake: string;
   /**
    * The origin source of the asset (e.g: an erc20 asset)
    */
