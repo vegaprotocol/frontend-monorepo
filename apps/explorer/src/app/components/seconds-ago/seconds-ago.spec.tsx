@@ -26,7 +26,6 @@ describe('Seconds ago', () => {
     });
 
     jest.runOnlyPendingTimers();
-    done();
 
     render(<SecondsAgo data-testid="test-seconds-ago" date={dateInString} />);
 
