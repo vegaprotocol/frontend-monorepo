@@ -3,11 +3,11 @@ import { TruncateInline } from './truncate';
 
 describe('Truncate', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(
-      <TruncateInline text={'Texty McTextFace'} />
+    render(
+      <TruncateInline data-testid="truncate-test" text={'Texty McTextFace'} />
     );
 
-    expect(baseElement).toBeTruthy();
+    expect(screen.getByTestId('truncate-test')).toBeInTheDocument();
   });
 
   it('it truncates as expected', () => {

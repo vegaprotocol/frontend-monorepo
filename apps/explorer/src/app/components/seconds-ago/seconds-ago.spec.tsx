@@ -1,24 +1,37 @@
-import { render, screen } from '@testing-library/react';
-
+import { render, screen, act } from '@testing-library/react';
 import { SecondsAgo } from './index';
+
+beforeEach(() => {
+  jest.useFakeTimers();
+});
+
+afterEach(() => {
+  jest.useRealTimers();
+});
 
 describe('Seconds ago', () => {
   it('should render successfully', () => {
-    const dateInString = Date.now().toString();
-    const { baseElement } = render(<SecondsAgo date={dateInString} />);
-    expect(baseElement).toBeTruthy();
+    const dateInString = new Date().toString();
+    render(<SecondsAgo data-testid="test-seconds-ago" date={dateInString} />);
+
+    expect(screen.getByTestId('test-seconds-ago')).toBeInTheDocument();
   });
 
-  it('should show the correct amount of seconds ago', async () => {
-    const secondsToWait = 2;
+  it('should show the correct amount of seconds ago', (done) => {
+    const secondsToWait = 10;
     const dateInString = new Date().toString();
 
-    await new Promise((r) => setTimeout(r, secondsToWait * 1000));
+    act(() => {
+      jest.advanceTimersByTime(secondsToWait * 1000);
+    });
 
-    render(<SecondsAgo date={dateInString} />);
+    jest.runOnlyPendingTimers();
+    done();
 
-    expect(
-      screen.getByText(`${secondsToWait} seconds ago`)
-    ).toBeInTheDocument();
+    render(<SecondsAgo data-testid="test-seconds-ago" date={dateInString} />);
+
+    expect(screen.getByTestId('test-seconds-ago')).toHaveTextContent(
+      `${secondsToWait} seconds ago`
+    );
   });
 });

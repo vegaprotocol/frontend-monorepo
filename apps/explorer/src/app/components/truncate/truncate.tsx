@@ -22,6 +22,7 @@ export function TruncateInline({
   children,
   startChars,
   endChars,
+  ...props
 }: TruncateInlineProps) {
   if (text === null) {
     return <span data-testid="empty-truncation" />;
@@ -31,6 +32,7 @@ export function TruncateInline({
   const wrapperProps = {
     title: text,
     className,
+    ...props,
   };
 
   if (children !== undefined) {

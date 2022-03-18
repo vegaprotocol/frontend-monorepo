@@ -1,10 +1,11 @@
-import { render } from '@testing-library/react';
-
+import { render, screen } from '@testing-library/react';
 import { StatusMessage } from './index';
 
 describe('Status message', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<StatusMessage>test</StatusMessage>);
-    expect(baseElement).toBeTruthy();
+    render(
+      <StatusMessage data-testid="status-message-test">test</StatusMessage>
+    );
+    expect(screen.getByTestId('status-message-test')).toBeInTheDocument();
   });
 });
