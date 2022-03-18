@@ -102,11 +102,11 @@ const PROPOSAL_QUERY = gql`
 const Governance = () => {
   const { data } = useQuery<ProposalsQuery>(PROPOSAL_QUERY);
 
-  if (!data || !data.proposals) return null;
+  if (!data) return null;
   return (
     <section>
       <RouteTitle data-testid="governance-header">Governance</RouteTitle>
-      {data.proposals.map((p) => (
+      {data.proposals?.map((p) => (
         <React.Fragment key={p.id}>
           <SubHeading>{getProposalName(p.terms.change)}</SubHeading>
           <SyntaxHighlighter data={p} />
