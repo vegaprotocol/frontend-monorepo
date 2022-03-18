@@ -6,7 +6,7 @@ describe('MarketListTable', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
       <MockedProvider>
-        <MarketListTable width={100} height={100} />
+        <MarketListTable />
       </MockedProvider>
     );
     expect(baseElement).toBeTruthy();

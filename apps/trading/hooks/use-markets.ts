@@ -76,7 +76,6 @@ export const useMarkets = (): UseMarkets => {
             data: update,
           };
         }
-
         return m;
       });
     });

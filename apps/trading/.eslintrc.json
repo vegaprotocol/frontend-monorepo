@@ -19,7 +19,15 @@
     },
     {
       "files": ["*.js", "*.jsx"],
-      "rules": {}
+      "rules": {
+        "unicorn/filename-case": [
+          "error",
+          {
+            "case": "kebabCase",
+            "ignore": ["react-singleton-hook/**/*.js"]
+          }
+        ]
+      }
     }
   ],
   "env": {

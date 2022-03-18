@@ -22,4 +22,6 @@ const Markets = () => {
   );
 };
 
-export default Markets;
+const TwoMarkets = () => (<><div style={{height: '50%'}}><Markets /></div><div style={{height: '50%'}}><Markets /></div></>)
+
+export default TwoMarkets;
