@@ -27,9 +27,10 @@ export const Lozenge = ({
   variant,
   className,
   details,
+  ...props
 }: LozengeProps) => {
   return (
-    <span className={getWrapperClasses(className)}>
+    <span className={getWrapperClasses(className)} {...props}>
       <span className={getLozengeClasses(variant)}>{children}</span>
 
       {details && <span>{details}</span>}
