@@ -1,5 +1,8 @@
 import { Orders_party_orders } from '@vegaprotocol/graphql';
-import { useApplyGridTransaction } from '@vegaprotocol/react-helpers';
+import {
+  getDateTimeFormat,
+  useApplyGridTransaction,
+} from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { GridApi, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
@@ -19,7 +22,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
   return (
     <AgGrid
       rowData={initialOrders}
-      defaultColDef={{ flex: 1 }}
+      defaultColDef={{ flex: 1, resizable: true }}
       style={{ width: '100%', height: '100%' }}
       onGridReady={(params) => {
         gridApi.current = params.api;
@@ -58,7 +61,13 @@ export const OrderList = ({ orders }: OrderListProps) => {
           return params.value;
         }}
       />
-      <AgGridColumn field="createdAt" />
+      <AgGridColumn field="timeInForce" />
+      <AgGridColumn
+        field="createdAt"
+        valueFormatter={({ value }: ValueFormatterParams) => {
+          return getDateTimeFormat().format(new Date(value));
+        }}
+      />
     </AgGrid>
   );
 };
