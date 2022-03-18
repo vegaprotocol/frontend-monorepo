@@ -28,6 +28,7 @@ export const MarketListTable = ({
       overlayNoRowsTemplate="No markets"
       rowData={initialMarkets}
       getRowNodeId={(data) => data.id}
+      suppressCellFocus={true}
       defaultColDef={{
         flex: 1,
         resizable: true,
