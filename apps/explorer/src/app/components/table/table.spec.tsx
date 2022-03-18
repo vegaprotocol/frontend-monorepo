@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
 
 import { Table, TableRow, TableHeader, TableCell } from './index';
 
