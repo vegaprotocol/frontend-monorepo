@@ -17,7 +17,7 @@ describe('Seconds ago', () => {
     expect(screen.getByTestId('test-seconds-ago')).toBeInTheDocument();
   });
 
-  it('should show the correct amount of seconds ago', (done) => {
+  it('should show the correct amount of seconds ago', () => {
     const secondsToWait = 10;
     const dateInString = new Date().toString();
 
