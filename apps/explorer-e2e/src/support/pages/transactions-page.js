@@ -60,16 +60,15 @@ export default class TransactionsPage extends BasePage {
     cy.getByTestId(this.txType)
       .should('not.be.empty')
       .invoke('text')
-      .then((txType) => {
-        if (txType == 'OrderSubmission') {
-          console.log(txType);
+      .then((txTypeTxt) => {
+        if (txTypeTxt == 'Order Submission') {
           cy.get('.hljs-attr')
-            .should('have.length', 4)
+            .should('have.length.at.least', 8)
             .each(($propertyName) => {
               cy.wrap($propertyName).should('not.be.empty');
             });
           cy.get('span[style*="color"]')
-            .should('have.length', 4)
+            .should('have.length.at.least', 8)
             .each(($propertyValue) => {
               cy.wrap($propertyValue).should('not.be.empty');
             });
