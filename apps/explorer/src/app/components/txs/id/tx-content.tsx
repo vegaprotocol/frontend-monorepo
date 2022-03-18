@@ -28,12 +28,8 @@ export const TxContent = ({ data }: TxContentProps) => {
         </TableRow>
       </Table>
 
-      {data.Command && (
-        <>
-          <h3 className="font-mono mb-8">Decoded transaction content</h3>
-          <SyntaxHighlighter data={JSON.parse(data.Command)} />
-        </>
-      )}
+      <h3 className="font-mono mb-8">Decoded transaction content</h3>
+      <SyntaxHighlighter data={JSON.parse(data.Command)} />
     </>
   );
 };
