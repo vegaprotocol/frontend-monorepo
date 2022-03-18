@@ -18,11 +18,6 @@ export const SecondsAgo = ({ date, ...props }: SecondsAgoProps) => {
     return <>Date unknown</>;
   }
 
-  console.log(
-    `now: ${now}, before: ${new Date(
-      date
-    ).getTime()}, date getting passed in: ${date}`
-  );
 
   const timeAgoInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
 
