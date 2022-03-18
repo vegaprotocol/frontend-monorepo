@@ -20,7 +20,7 @@ export const MarketListTable = ({
 }: MarketListTableProps) => {
   const [initialMarkets] = useState(markets);
   const gridApi = useRef<GridApi | null>(null);
-  useApplyGridTransaction(markets, gridApi.current);
+  useApplyGridTransaction<Markets_markets>(markets, gridApi.current);
 
   return (
     <AgGrid

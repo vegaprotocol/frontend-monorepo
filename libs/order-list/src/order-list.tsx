@@ -1,30 +1,12 @@
+import { Orders_party_orders } from '@vegaprotocol/graphql';
+import { useApplyGridTransaction } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { GridApi, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
-import { useEffect, useRef, useState } from 'react';
-
-interface Order {
-  id: string;
-  market: {
-    id: string;
-    name: string;
-    tradableInstrument: {
-      instrument: {
-        code: string;
-      };
-    };
-  };
-  side: 'Buy' | 'Sell';
-  size: string;
-  type: 'Market' | 'Limit' | 'Network';
-  timeInForce: 'GTC' | 'GTT' | 'IOC' | 'FOK' | 'GFN' | 'GFA';
-  price: string;
-  remaining: string;
-  createdAt: string;
-}
+import { useRef, useState } from 'react';
 
 interface OrderListProps {
-  orders: Order[];
+  orders: Orders_party_orders[];
 }
 
 export const OrderList = ({ orders }: OrderListProps) => {
@@ -32,32 +14,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
   // are handled by the effect below
   const [initialOrders] = useState(orders);
   const gridApi = useRef<GridApi | null>(null);
-
-  useEffect(() => {
-    if (gridApi.current === null) return;
-
-    const update: Order[] = [];
-    const add: Order[] = [];
-
-    // split into updates and adds
-    orders.forEach((o) => {
-      if (!gridApi.current) return;
-
-      const rowNode = gridApi.current.getRowNode(o.id);
-
-      if (rowNode) {
-        update.push(o);
-      } else {
-        add.push(o);
-      }
-    });
-
-    gridApi.current.applyTransaction({
-      update,
-      add,
-      addIndex: 0,
-    });
-  }, [orders]);
+  useApplyGridTransaction<Orders_party_orders>(orders, gridApi.current);
 
   return (
     <AgGrid

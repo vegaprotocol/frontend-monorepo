@@ -6,7 +6,6 @@ import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/connectors';
 import { useCallback, useMemo, useState } from 'react';
-import { SingletonHooksContainer } from 'react-singleton-hook';
 import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { ApolloProvider } from '@apollo/client';

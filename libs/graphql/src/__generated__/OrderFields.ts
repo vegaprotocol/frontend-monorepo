@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { OrderType, Side, OrderStatus, OrderTimeInForce } from './globalTypes';
+import { OrderType, Side, OrderStatus, OrderTimeInForce } from "./globalTypes";
 
 // ====================================================
 // GraphQL fragment: OrderFields
 // ====================================================
 
 export interface OrderFields_market_tradableInstrument_instrument {
-  __typename: 'Instrument';
+  __typename: "Instrument";
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
@@ -18,7 +18,7 @@ export interface OrderFields_market_tradableInstrument_instrument {
 }
 
 export interface OrderFields_market_tradableInstrument {
-  __typename: 'TradableInstrument';
+  __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
@@ -26,7 +26,7 @@ export interface OrderFields_market_tradableInstrument {
 }
 
 export interface OrderFields_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -42,7 +42,7 @@ export interface OrderFields_market {
 }
 
 export interface OrderFields {
-  __typename: 'Order';
+  __typename: "Order";
   /**
    * Hash of the order data
    */
