@@ -5,6 +5,7 @@ import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/connectors';
 import { useCallback, useMemo, useState } from 'react';
+import { SingletonHooksContainer } from 'react-singleton-hook';
 import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { ApolloProvider } from '@apollo/client';
@@ -17,9 +18,7 @@ import './styles.css';
 function VegaTradingApp({ Component, pageProps }: AppProps) {
   const client = useMemo(
     () =>
-      createClient(
-        process.env['NX_VEGA_URL'] || 'https://n03.stagnet2.vega.xyz'
-      ),
+      createClient(process.env['NX_VEGA_URL'] || 'https://lb.testnet.vega.xyz'),
     []
   );
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -36,6 +35,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
     <ThemeContext.Provider value={theme}>
       <ApolloProvider client={client}>
         <VegaWalletProvider>
+          <SingletonHooksContainer />
           <AppLoader>
             <Head>
               <title>Welcome to trading!</title>

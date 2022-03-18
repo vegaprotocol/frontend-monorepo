@@ -2,6 +2,7 @@ import {
   AgGridDynamic as AgGrid,
   Button,
   Callout,
+  Intent,
 } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 
@@ -15,7 +16,7 @@ export function Index() {
     <div className="m-24">
       <div className="mb-24">
         <Callout
-          intent="help"
+          intent={Intent.Help}
           title="Welcome to Vega Trading App"
           iconName="endorsed"
           headingLevel={1}

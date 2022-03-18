@@ -150,11 +150,9 @@ module.exports = {
     'ui-small': ['10px', '16px'],
   },
 
-  extend: {
-    boxShadow: {
-      callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
-      focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
-      'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
-    },
+  boxShadow: {
+    callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
+    focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
+    'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
   },
 };

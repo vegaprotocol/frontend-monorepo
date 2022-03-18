@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
-import { AssetsQuery } from './__generated__/AssetsQuery';
+import { AssetsQuery } from '@vegaprotocol/graphql';
 
 export const ASSETS_QUERY = gql`
   query AssetsQuery {
@@ -11,7 +11,6 @@ export const ASSETS_QUERY = gql`
       symbol
       totalSupply
       decimals
-      minLpStake
       source {
         ... on ERC20 {
           contractAddress

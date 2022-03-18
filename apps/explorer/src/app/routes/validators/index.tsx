@@ -3,7 +3,7 @@ import React from 'react';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
 import { TendermintValidatorsResponse } from './tendermint-validator-response';
-import { NodesQuery } from './__generated__/NodesQuery';
+import { NodesQuery } from '@vegaprotocol/graphql';
 
 const NODES_QUERY = gql`
   query NodesQuery {
@@ -26,8 +26,6 @@ const NODES_QUERY = gql`
         online
       }
       status
-      score
-      normalisedScore
       name
     }
   }

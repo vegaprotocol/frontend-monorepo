@@ -1,0 +1,43 @@
+{
+  "root": "libs/market-list",
+  "sourceRoot": "libs/market-list/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/market-list",
+        "tsConfig": "libs/market-list/tsconfig.lib.json",
+        "project": "libs/market-list/package.json",
+        "entryFile": "libs/market-list/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/market-list/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/market-list/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/market-list"],
+      "options": {
+        "jestConfig": "libs/market-list/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

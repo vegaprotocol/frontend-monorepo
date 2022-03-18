@@ -8,7 +8,7 @@ import { TendermintSearchTransactionResponse } from '../tendermint-transaction-r
 import {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
-} from './__generated__/PartyAssetsQuery';
+} from '@vegaprotocol/graphql';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
@@ -58,7 +58,7 @@ const Party = () => {
     {
       // Don't cache data for this query, party information can move quite quickly
       fetchPolicy: 'network-only',
-      variables: { partyId: party?.replace('0x', '') },
+      variables: { partyId: party?.replace('0x', '') || '' },
       skip: !party,
     }
   );

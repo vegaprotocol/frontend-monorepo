@@ -86,7 +86,31 @@ export class RestConnector implements VegaConnector {
   }
 
   async sendTx(body: OrderSubmissionBody) {
-    return await this.service.commandSyncPost(body);
+    try {
+      const res = await this.service.commandSyncPost(body);
+      return res;
+    } catch (err) {
+      return this.handleSendTxError(err);
+    }
+  }
+
+  private handleSendTxError(err: unknown) {
+    if (typeof err === 'object' && err && 'body' in err) {
+      try {
+        // @ts-ignore Not sure why TS can't infer that 'body' does indeed exist on object
+        const parsedError = JSON.parse(err.body);
+        return parsedError;
+      } catch {
+        // Unexpected response
+        return {
+          error: 'Something went wrong',
+        };
+      }
+    } else {
+      return {
+        error: 'Something went wrong',
+      };
+    }
   }
 
   private setConfig(cfg: RestConnectorConfig) {
