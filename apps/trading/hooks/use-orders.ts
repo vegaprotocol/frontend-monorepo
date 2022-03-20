@@ -28,9 +28,11 @@ const ORDER_FRAGMENT = gql`
     side
     size
     status
+    rejectionReason
     price
     timeInForce
     remaining
+    expiresAt
     createdAt
     updatedAt
   }

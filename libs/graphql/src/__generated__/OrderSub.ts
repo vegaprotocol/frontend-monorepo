@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { OrderType, Side, OrderStatus, OrderTimeInForce } from "./globalTypes";
+import { OrderType, Side, OrderStatus, OrderRejectionReason, OrderTimeInForce } from "./globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: OrderSub
@@ -68,6 +68,10 @@ export interface OrderSub_orders {
    */
   status: OrderStatus;
   /**
+   * Reason for the order to be rejected
+   */
+  rejectionReason: OrderRejectionReason | null;
+  /**
    * The worst price the order will trade at (e.g. buy for price or less, sell for price or more) (uint64)
    */
   price: string;
@@ -79,6 +83,10 @@ export interface OrderSub_orders {
    * Number of contracts remaining of the total that have not yet been bought or sold (uint64)
    */
   remaining: string;
+  /**
+   * Expiration time of this order (ISO-8601 RFC3339+Nano formatted date)
+   */
+  expiresAt: string | null;
   /**
    * RFC3339Nano formatted date and time for when the order was created (timestamp)
    */

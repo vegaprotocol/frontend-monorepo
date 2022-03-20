@@ -6,6 +6,7 @@ import {
   OrderTimeInForce,
   OrderType,
   Side,
+  OrderRejectionReason,
 } from '@vegaprotocol/graphql';
 import { OrderList } from './order-list';
 
@@ -54,7 +55,7 @@ const limitOrder = {
   price: '12345',
   timeInForce: OrderTimeInForce.GTT,
   createdAt: new Date('2022-3-3').toISOString(),
-  expiry: new Date('2022-3-5').toISOString(),
+  expiresAt: new Date('2022-3-5').toISOString(),
 };
 
 test('Correct columns are rendered', async () => {
@@ -111,11 +112,26 @@ test('Correct formatting applied for GTT limit order', async () => {
     formatNumber(limitOrder.price, limitOrder.market.decimalPlaces)
   );
   expect(cells[6].textContent).toBe(
-    `${limitOrder.timeInForce} ${getDateTimeFormat().format(
-      new Date(limitOrder.expiry)
+    `${limitOrder.timeInForce}: ${getDateTimeFormat().format(
+      new Date(limitOrder.expiresAt)
     )}`
   );
   expect(cells[7]).toHaveTextContent(
     getDateTimeFormat().format(new Date(limitOrder.createdAt))
+  );
+});
+
+test('Correct formatting applied for a rejected order', async () => {
+  const rejectedOrder = {
+    ...marketOrder,
+    status: OrderStatus.Rejected,
+    rejectionReason: OrderRejectionReason.InsufficientAssetBalance,
+  };
+  await act(async () => {
+    render(<OrderList orders={[rejectedOrder]} />);
+  });
+  const cells = screen.getAllByRole('gridcell');
+  expect(cells[3]).toHaveTextContent(
+    `${rejectedOrder.status}: ${rejectedOrder.rejectionReason}`
   );
 });

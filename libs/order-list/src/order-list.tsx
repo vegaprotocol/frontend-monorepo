@@ -1,4 +1,8 @@
-import { Orders_party_orders } from '@vegaprotocol/graphql';
+import {
+  Orders_party_orders,
+  OrderTimeInForce,
+  OrderStatus,
+} from '@vegaprotocol/graphql';
 import {
   formatNumber,
   getDateTimeFormat,
@@ -7,7 +11,6 @@ import {
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { GridApi, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
-import { OrderTimeInForce } from '@vegaprotocol/graphql';
 import { useRef, useState } from 'react';
 
 interface OrderListProps {
@@ -50,7 +53,16 @@ export const OrderList = ({ orders }: OrderListProps) => {
         }}
       />
       <AgGridColumn field="type" />
-      <AgGridColumn field="status" />
+      <AgGridColumn
+        field="status"
+        valueFormatter={({ value, data }: ValueFormatterParams) => {
+          if (value === OrderStatus.Rejected) {
+            return `${value}: ${data.rejectionReason}`;
+          }
+
+          return value;
+        }}
+      />
       <AgGridColumn
         headerName="Filled"
         field="remaining"
@@ -70,9 +82,9 @@ export const OrderList = ({ orders }: OrderListProps) => {
       <AgGridColumn
         field="timeInForce"
         valueFormatter={({ value, data }: ValueFormatterParams) => {
-          if (value === OrderTimeInForce.GTT) {
-            const expiry = getDateTimeFormat().format(new Date(data.expiry));
-            return `${value} ${expiry}`;
+          if (value === OrderTimeInForce.GTT && data.expiresAt) {
+            const expiry = getDateTimeFormat().format(new Date(data.expiresAt));
+            return `${value}: ${expiry}`;
           }
 
           return value;
