@@ -36,7 +36,7 @@ const displayString: StringMap = {
 
 export const TxOrderType = ({ orderType, className }: TxOrderTypeProps) => {
   return (
-    <Lozenge className={className}>
+    <Lozenge data-testid="tx-type" className={className}>
       {displayString[orderType] || orderType}
     </Lozenge>
   );
