@@ -1,8 +1,8 @@
 import BasePage from './base-page';
 
 export default class TransactionsPage extends BasePage {
-  blockTable = 'block-table';
-  tableRow = 'table-row';
+  transactionsList = 'transactions-list';
+  transactionRow = 'transaction-row';
   blockHeight = 'block-height';
   numberOfTransactions = 'num-txs';
   validatorLink = 'validator-link';
@@ -15,7 +15,7 @@ export default class TransactionsPage extends BasePage {
   txType = 'tx-type';
 
   validateTransactionsPagedisplayed() {
-    cy.getByTestId(this.blockTable).should('have.length.above', 1);
+    cy.getByTestId(this.transactionsList).should('have.length.above', 1);
     cy.getByTestId(this.blockHeight).first().should('not.be.empty');
     cy.getByTestId(this.numberOfTransactions).first().should('not.be.empty');
     cy.getByTestId(this.validatorLink).first().should('not.be.empty');
@@ -23,7 +23,7 @@ export default class TransactionsPage extends BasePage {
   }
 
   verifyAllBlockRowsAreNotEmpty() {
-    cy.get(`[data-testid=${this.tableRow}] > td`).each(($cell) => {
+    cy.get(`[data-testid=${this.transactionRow}] > td`).each(($cell) => {
       cy.wrap($cell).should('not.be.empty');
     });
   }
@@ -77,6 +77,6 @@ export default class TransactionsPage extends BasePage {
   }
 
   clickOnTopTransaction() {
-    cy.getByTestId(this.tableRow).first().find('a').click();
+    cy.getByTestId(this.transactionRow).first().find('a').click();
   }
 }

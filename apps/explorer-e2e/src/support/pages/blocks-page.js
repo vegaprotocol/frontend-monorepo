@@ -1,8 +1,8 @@
 import BasePage from './base-page';
 
 export default class BlocksPage extends BasePage {
-  blocksList = 'block-list';
-  tableRow = 'table-row';
+  blockRow = 'block-row';
+  transactionsRow = 'transaction-row';
   blockHeight = 'block-height';
   numberOfTransactions = 'num-txs';
   validatorLink = 'validator-link';
@@ -11,7 +11,7 @@ export default class BlocksPage extends BasePage {
   minedByValidator = 'block-validator';
 
   validateBlocksPageDisplayed() {
-    cy.getByTestId(this.blocksList).should('have.length.above', 1);
+    cy.getByTestId(this.blockRow).should('have.length.above', 1);
     cy.getByTestId(this.blockHeight).first().should('not.be.empty');
     cy.getByTestId(this.numberOfTransactions).first().should('not.be.empty');
     cy.getByTestId(this.validatorLink).first().should('not.be.empty');
@@ -25,7 +25,7 @@ export default class BlocksPage extends BasePage {
   validateBlockValidatorPage() {
     cy.getByTestId(this.minedByValidator).should('not.be.empty');
     cy.getByTestId(this.blockTime).should('not.be.empty');
-    cy.get(`[data-testid=${this.tableRow}] > td`)
+    cy.get(`[data-testid=${this.transactionsRow}] > td`)
       .should('have.length.above', 0)
       .each(($cell) => {
         cy.wrap($cell).should('not.be.empty');
