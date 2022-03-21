@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { statsFields } from '../../config/statsFields';
+import { statsFields } from '../../config/stats-fields';
 import {
   Stats as IStats,
   StructuredStats as IStructuredStats,

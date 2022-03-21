@@ -118,7 +118,7 @@ export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
       title: 'Time',
       formatter: (time: Date) => new Date(time).toLocaleTimeString(),
       goodThreshold: (time: Date) => {
-        let diff = new Date().getTime() - new Date(time).getTime();
+        const diff = new Date().getTime() - new Date(time).getTime();
         return diff > 0 && diff < 5000;
       },
       description: 'The time on the blockchain',

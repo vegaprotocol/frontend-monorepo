@@ -43,6 +43,7 @@
     "serve": {
       "executor": "@nrwl/web:dev-server",
       "options": {
+        "port": 3010,
         "buildTarget": "stats-mainnet:build",
         "hmr": true
       },
