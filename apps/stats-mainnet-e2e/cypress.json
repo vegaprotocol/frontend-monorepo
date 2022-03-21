@@ -1,4 +1,5 @@
 {
+  "baseUrl": "http://localhost:3010",
   "fileServerFolder": ".",
   "fixturesFolder": "./src/fixtures",
   "integrationFolder": "./src/integration",
