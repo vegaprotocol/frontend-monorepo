@@ -14,7 +14,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.5.8",
-    "@apollo/react-testing": "^4.0.0",
     "@blueprintjs/icons": "^3.32.0",
     "@nrwl/next": "13.8.1",
     "@radix-ui/react-dialog": "^0.1.5",
@@ -56,6 +55,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@apollo/react-testing": "^4.0.0",
     "@babel/core": "7.12.13",
     "@babel/preset-typescript": "7.12.13",
     "@nrwl/cli": "13.8.1",
