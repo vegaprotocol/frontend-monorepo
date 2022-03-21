@@ -1,14 +1,14 @@
 import { useWeb3React } from '@web3-react/core';
-import { Web3Container } from '../../../components/web3-container';
+import { Web3Provider } from '../../../components/web3-provider';
 
 const Deposit = () => {
   return (
-    <Web3Container>
+    <Web3Provider>
       <div>
         <h1>Deposit</h1>
         <Info />
       </div>
-    </Web3Container>
+    </Web3Provider>
   );
 };
 
@@ -20,7 +20,7 @@ const Info = () => {
   return (
     <div>
       <p>{chainId}</p>
-      <p>{account ? account : 'No account'}</p>
+      <p>{account}</p>
     </div>
   );
 };
