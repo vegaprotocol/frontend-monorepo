@@ -1,4 +1,5 @@
-import { VegaLogo, LightModeToggle, DarkModeToggle } from '../images';
+import { VegaLogo } from '@vegaprotocol/ui-toolkit';
+import { LightModeToggle, DarkModeToggle } from '../images';
 import { VegaBackgroundVideo } from '../videos';
 import { DarkModeState } from '../../config/types';
 
