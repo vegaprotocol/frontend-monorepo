@@ -67,8 +67,8 @@ export const StatsManager = () => {
   }, []);
 
   return (
-    <div className="stats-grid w-full max-w-3xl mt-10 md:mt-16 self-start justify-self-center px-6">
-      <h3 className="font-ap uppercase text-3xl pb-4">
+    <div className="stats-grid w-full max-w-3xl mt-40 md:mt-64 self-start justify-self-center px-24">
+      <h3 className="font-alpha uppercase text-h3 pb-16">
         {(error && `/ ${error}`) || (data ? '/ Mainnet' : '/ Connecting...')}
       </h3>
 

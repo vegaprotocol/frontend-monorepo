@@ -9,8 +9,8 @@ function App() {
 
   return (
     <div
-      className={`w-screen min-h-screen grid pb-6 ${
-        darkMode ? 'bg-black text-neutral-200' : 'bg-white text-neutral-900'
+      className={`w-screen min-h-screen grid pb-24 ${
+        darkMode ? 'bg-black text-white-80' : 'bg-white text-black-95'
       }`}
     >
       <div className="layout-grid w-screen justify-self-center">

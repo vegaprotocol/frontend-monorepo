@@ -1,14 +1,9 @@
 @tailwind base;
 @tailwind components;
 
-/* Here add custom component styles as necessary */
 @font-face {
-  font-family: AlphaLyrae;
-  src: url(./AlphaLyrae-Medium.woff);
-}
-
-.font-ap {
-    font-family: AlphaLyrae, "Helvetica neue", "Helvetica", arial, sans-serif;
+  font-family: 'AlphaLyrae-Medium';
+  src: url('./AlphaLyrae-Medium.woff');
 }
 
 .layout-grid {
@@ -31,23 +26,6 @@
   .stats-grid h3 {
     grid-column: span 2;
   }
-}
-
-.threshold {
-    width: 10px;
-    height: 10px;
-}
-
-.bg-vega-green {
-  background-color: #26ff8a;
-}
-
-.bg-vega-red {
-  background-color: #ff261a;
-}
-
-.fill-vega-green {
-  fill: #26ff8a;
 }
 
 @tailwind utilities;

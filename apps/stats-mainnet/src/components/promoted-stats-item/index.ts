@@ -1,1 +1,1 @@
-export { PromotedStatsItem } from './promotedStatsItem';
+export { PromotedStatsItem } from './promoted-stats-item';

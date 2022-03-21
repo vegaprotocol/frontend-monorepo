@@ -25,7 +25,7 @@ export const Tooltip = ({ children, description }: TooltipProps) =>
             offset={10}
             className="fill-vega-green"
           />
-          <div className="px-3 py-2 bg-vega-green rounded-sm max-w-sm text-sm">
+          <div className="px-12 py-8 bg-vega-green rounded-sm max-w-sm">
             {description}
           </div>
         </Content>

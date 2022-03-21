@@ -1,1 +1,1 @@
-export { GoodThresholdIndicator } from './goodThresholdIndicator';
+export { GoodThresholdIndicator } from './good-threshold-indicator';

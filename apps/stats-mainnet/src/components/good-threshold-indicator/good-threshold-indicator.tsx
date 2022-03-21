@@ -11,9 +11,9 @@ export const GoodThresholdIndicator = ({
 }: GoodThresholdIndicatorProps) => {
   return (
     <div
-      className={`inline-block w-2 h-2 mb-[0.15rem] mr-2 rounded-xl ${
+      className={`inline-block w-8 h-8 mb-[0.15rem] mr-8 rounded ${
         (goodThreshold &&
-          (goodThreshold(value) ? 'bg-vega-green' : 'bg-vega-red')) ||
+          (goodThreshold(value) ? 'bg-intent-success' : 'bg-intent-danger')) ||
         'bg-current'
       }`}
     />

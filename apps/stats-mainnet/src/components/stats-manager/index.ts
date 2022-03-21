@@ -1,1 +1,1 @@
-export { StatsManager } from './statsManager';
+export { StatsManager } from './stats-manager';

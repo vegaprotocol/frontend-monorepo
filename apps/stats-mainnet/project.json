@@ -16,10 +16,10 @@
         "polyfills": "apps/stats-mainnet/src/polyfills.ts",
         "tsConfig": "apps/stats-mainnet/tsconfig.app.json",
         "assets": [
-          "apps/stats-mainnet/src/favicon.ico",
+          "apps/stats-mainnet/src/assets/favicon.ico",
           "apps/stats-mainnet/src/assets"
         ],
-        "styles": ["apps/stats-mainnet/src/styles/index.css"],
+        "styles": ["apps/stats-mainnet/src/styles/styles.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },
