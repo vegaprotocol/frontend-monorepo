@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Navbar } from '../components/navbar';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
-import { Connectors } from '../lib/connectors';
+import { Connectors } from '../lib/vega-connectors';
 import { useCallback, useMemo, useState } from 'react';
 import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
