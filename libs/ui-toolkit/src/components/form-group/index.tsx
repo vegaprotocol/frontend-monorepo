@@ -6,19 +6,19 @@ interface FormGroupProps {
   label?: string;
   labelFor?: string;
   labelAlign?: 'left' | 'right';
+  className?: string;
 }
 
-export const FormGroup = ({
   children,
   label,
   labelFor,
   labelAlign = 'left',
-}: FormGroupProps) => {
+  className,
   const labelClasses = classNames('block text-ui mb-4', {
     'text-right': labelAlign === 'right',
   });
   return (
-    <div className="mb-20">
+    <div className={classNames(className, 'mb-20')}>
       {label && (
         <label className={labelClasses} htmlFor={labelFor}>
           {label}
