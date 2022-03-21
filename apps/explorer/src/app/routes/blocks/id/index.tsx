@@ -4,7 +4,6 @@ import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
-import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { SecondsAgo } from '../../../components/seconds-ago';
 import {
   Table,
@@ -12,6 +11,7 @@ import {
   TableHeader,
   TableCell,
 } from '../../../components/table';
+import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();

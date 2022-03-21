@@ -20,7 +20,7 @@ export const FormGroup = ({
     'text-right': labelAlign === 'right',
   });
   return (
-    <div data-testid="form-group" className={classNames(className, 'mb-20')}>
+    <div data-testid="form-group" className={classNames('mb-20', className)}>
       {label && (
         <label className={labelClasses} htmlFor={labelFor}>
           {label}

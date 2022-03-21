@@ -46,7 +46,7 @@ const Search = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex-1 flex ml-16 justify-end"
     >
-      <FormGroup className="w-2/3" label="" labelFor="search">
+      <FormGroup className="w-2/3 mb-0">
         <Input
           {...register('search')}
           id="search"
