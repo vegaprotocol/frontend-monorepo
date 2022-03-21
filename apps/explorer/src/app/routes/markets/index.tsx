@@ -151,7 +151,7 @@ const Markets = () => {
   if (!data || !data.markets) return null;
   return (
     <section>
-      <RouteTitle data-testid="markets-header">Markets</RouteTitle>
+      <RouteTitle data-testid="markets-heading">Markets</RouteTitle>
 
       {data
         ? data.markets.map((m) => (
