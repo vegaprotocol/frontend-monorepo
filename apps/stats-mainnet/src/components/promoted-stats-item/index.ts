@@ -1,0 +1,1 @@
+export { PromotedStatsItem } from './promotedStatsItem';

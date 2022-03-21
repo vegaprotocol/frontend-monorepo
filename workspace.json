@@ -7,6 +7,8 @@
     "graphql": "libs/graphql",
     "market-list": "libs/market-list",
     "react-helpers": "libs/react-helpers",
+    "stats-mainnet": "apps/stats-mainnet",
+    "stats-mainnet-e2e": "apps/stats-mainnet-e2e",
     "tailwindcss-config": "libs/tailwindcss-config",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",

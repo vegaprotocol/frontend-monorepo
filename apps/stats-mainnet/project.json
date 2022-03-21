@@ -19,7 +19,7 @@
           "apps/stats-mainnet/src/favicon.ico",
           "apps/stats-mainnet/src/assets"
         ],
-        "styles": ["apps/stats-mainnet/src/styles.scss"],
+        "styles": ["apps/stats-mainnet/src/styles/index.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },

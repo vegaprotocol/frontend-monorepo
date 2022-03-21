@@ -1,0 +1,1 @@
+export { PromotedStats } from './promotedStats';

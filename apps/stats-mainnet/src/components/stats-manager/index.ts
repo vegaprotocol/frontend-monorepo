@@ -1,0 +1,1 @@
+export { StatsManager } from './statsManager';

@@ -1,0 +1,1 @@
+export { VegaBackgroundVideo } from './vegaBackgroundVideo';
