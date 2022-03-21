@@ -41,7 +41,9 @@ export const OrderDialog = ({
         icon={<Loader />}
       >
         {transaction.hash && (
-          <p className="break-all">Tx hash: {transaction.hash}</p>
+          <p data-testid="tx-hash" className="break-all">
+            Tx hash: {transaction.hash}
+          </p>
         )}
       </OrderDialogWrapper>
     );
@@ -54,7 +56,9 @@ export const OrderDialog = ({
         title="Order failed"
         icon={<Icon name="warning-sign" size={20} />}
       >
-        <p>Reason: {finalizedOrder.rejectionReason}</p>
+        <p data-testid="error-reason">
+          Reason: {finalizedOrder.rejectionReason}
+        </p>
       </OrderDialogWrapper>
     );
   }
@@ -86,8 +90,10 @@ const OrderDialogWrapper = ({
   return (
     <div className="flex gap-12 max-w-full">
       <div className="pt-8 fill-current">{icon}</div>
-      <div className="flex-1">
-        <h1 className="text-h4">{title}</h1>
+      <div data-testid="order-wrapper" className="flex-1">
+        <h1 data-testid="order-status-header" className="text-h4">
+          {title}
+        </h1>
         {children}
       </div>
     </div>

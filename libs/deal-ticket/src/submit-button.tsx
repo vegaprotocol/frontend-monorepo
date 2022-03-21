@@ -69,6 +69,7 @@ export const SubmitButton = ({
         variant="primary"
         type="submit"
         disabled={disabled}
+        data-testid="place-order"
       >
         {transactionStatus === 'pending' ? 'Pending...' : 'Place order'}
       </Button>

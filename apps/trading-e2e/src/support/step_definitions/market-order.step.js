@@ -6,12 +6,12 @@ const dealTicketPage = new DealTicketPage();
 
 When('I click on market for {string}', (marketText) => {
   marketsPage.clickOnMarket(marketText);
-  marketsPage.clickOnTicketTab();
+  // marketsPage.clickOnTicketTab();
 });
 
-When('I click on first market', () => {
-  marketsPage.clickOnTopMarketRow();
-  marketsPage.clickOnTicketTab();
+When('I click on active market', () => {
+  marketsPage.clickOnActiveMarket();
+  // marketsPage.clickOnTicketTab();
 });
 
 When('place a buy {string} market order', (orderType) => {
@@ -22,4 +22,9 @@ When('place a buy {string} market order', (orderType) => {
 When('place a buy {string} limit order', (limitOrderType) => {
   dealTicketPage.placeLimitOrder(true, 100, 32000, limitOrderType);
   dealTicketPage.clickPlaceOrder();
+});
+
+Then('order request is sent', () => {
+  dealTicketPage.verifyOrderRequestSent();
+  dealTicketPage.verifyOrderFailedInsufficientFunds();
 });

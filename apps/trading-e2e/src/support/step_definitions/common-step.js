@@ -13,3 +13,9 @@ Given('I navigate to markets page', () => {
 Given('I navigate to portfolio page', () => {
   marketsPage.navigateToPortfolio();
 });
+
+Given('I connect to Vega Wallet', () => {
+  marketsPage.navigateToConnectVegaWallet();
+  marketsPage.fillInWalletForm('joe', '123');
+  marketsPage.clickConnectVegaWallet();
+});

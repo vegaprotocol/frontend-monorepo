@@ -41,6 +41,7 @@ export const MarketListTable = ({
       <AgGridColumn
         headerName="Market"
         field="tradableInstrument.instrument.code"
+        data-testid="market-name"
       />
       <AgGridColumn
         headerName="Settlement asset"
