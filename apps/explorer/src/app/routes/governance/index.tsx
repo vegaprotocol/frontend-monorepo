@@ -4,7 +4,7 @@ import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import {
   ProposalsQuery,
   ProposalsQuery_proposals_terms_change,
-} from './__generated__/ProposalsQuery';
+} from '@vegaprotocol/graphql';
 
 export function getProposalName(change: ProposalsQuery_proposals_terms_change) {
   if (change.__typename === 'NewAsset') {

@@ -8,7 +8,7 @@ import { TendermintSearchTransactionResponse } from '../tendermint-transaction-r
 import {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
-} from './__generated__/PartyAssetsQuery';
+} from '@vegaprotocol/graphql';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {

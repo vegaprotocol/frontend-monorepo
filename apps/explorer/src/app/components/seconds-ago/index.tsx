@@ -4,7 +4,7 @@ interface SecondsAgoProps {
   date: string | undefined;
 }
 
-export const SecondsAgo = ({ date }: SecondsAgoProps) => {
+export const SecondsAgo = ({ date, ...props }: SecondsAgoProps) => {
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export const SecondsAgo = ({ date }: SecondsAgoProps) => {
   const timeAgoInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
 
   return (
-    <div>
+    <div {...props}>
       {timeAgoInSeconds === 1 ? '1 second' : `${timeAgoInSeconds} seconds`} ago
     </div>
   );

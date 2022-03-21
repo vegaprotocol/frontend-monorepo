@@ -1,20 +1,24 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { TxContent, TxDetails } from '../../../components/txs';
-import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
-import { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 import { TendermintTransactionResponse } from '../tendermint-transaction-response.d';
+import { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
+import { DATA_SOURCES } from '../../../config';
+import { TxContent, TxDetails } from '../../../components/txs';
+import { RouteTitle } from '../../../components/route-title';
+import { RenderFetched } from '../../../components/render-fetched';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
+
   const {
-    state: { data: transactionData },
+    state: { data: tTxData, loading: tTxLoading, error: tTxError },
   } = useFetch<TendermintTransactionResponse>(
     `${DATA_SOURCES.tendermintUrl}/tx?hash=${txHash}`
   );
+
   const {
-    state: { data: decodedData },
+    state: { data: ceTxData, loading: ceTxLoading, error: ceTxError },
   } = useFetch<ChainExplorerTxResponse>(DATA_SOURCES.chainExplorerUrl, {
     method: 'POST',
     body: JSON.stringify({
@@ -25,13 +29,20 @@ const Tx = () => {
 
   return (
     <section>
-      <h1>Transaction details</h1>
-      <TxDetails
-        txData={transactionData?.result}
-        pubKey={decodedData?.PubKey}
-      />
-      <h2>Transaction content</h2>
-      <TxContent data={decodedData} />
+      <RouteTitle>Transaction details</RouteTitle>
+
+      <RenderFetched error={tTxError} loading={tTxLoading}>
+        <TxDetails
+          className="mb-28"
+          txData={tTxData?.result}
+          pubKey={ceTxData?.PubKey}
+        />
+      </RenderFetched>
+
+      <h2 className="text-h4 uppercase mb-16">Transaction content</h2>
+      <RenderFetched error={ceTxError} loading={ceTxLoading}>
+        <TxContent data={ceTxData} />
+      </RenderFetched>
     </section>
   );
 };

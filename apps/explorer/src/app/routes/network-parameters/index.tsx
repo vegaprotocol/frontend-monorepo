@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { NetworkParametersQuery } from './__generated__/NetworkParametersQuery';
+import { NetworkParametersQuery } from '@vegaprotocol/graphql';
 
 export const NETWORK_PARAMETERS_QUERY = gql`
   query NetworkParametersQuery {

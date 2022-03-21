@@ -1,14 +1,21 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import routerConfig from '../../routes/router-config';
 
 export const Nav = () => {
   return (
     <nav>
       {routerConfig.map((r) => (
-        <div key={r.name}>
-          <Link to={r.path}>{r.name}</Link>
-          <br />
-        </div>
+        <NavLink
+          key={r.name}
+          to={r.path}
+          className={({ isActive }) =>
+            `text-h5 block mb-8 px-8 hover:bg-vega-yellow hover:text-black ${
+              isActive && 'bg-vega-yellow text-black'
+            }`
+          }
+        >
+          {r.name}
+        </NavLink>
       ))}
     </nav>
   );

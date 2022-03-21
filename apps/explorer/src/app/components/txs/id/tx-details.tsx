@@ -1,50 +1,63 @@
 import { Link } from 'react-router-dom';
 import { Routes } from '../../../routes/router-config';
 import { Result } from '../../../routes/txs/tendermint-transaction-response.d';
-import { Table, TableRow, TableCell } from '../../table';
+import { Table, TableRow, TableCell, TableHeader } from '../../table';
+import { TruncateInline } from '../../truncate/truncate';
 
 interface TxDetailsProps {
   txData: Result | undefined;
   pubKey: string | undefined;
+  className?: string;
 }
 
-export const TxDetails = ({ txData, pubKey }: TxDetailsProps) => {
+const truncateLength = 30;
+
+export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   if (!txData) {
     return <>Awaiting Tendermint transaction details</>;
   }
 
   return (
-    <Table>
-      <TableRow>
+    <Table className={className}>
+      <TableRow modifier="bordered">
         <TableCell>Hash</TableCell>
-        <TableCell data-testid="hash">{txData.hash}</TableCell>
+        <TableCell modifier="bordered" data-testid="hash">
+          {txData.hash}
+        </TableCell>
       </TableRow>
-      {pubKey ? (
-        <TableRow>
-          <td>Submitted by</td>
-          <td data-testid="submitted-by">
-            <Link to={`/${Routes.PARTIES}/${pubKey}`}>{pubKey}</Link>
-          </td>
-        </TableRow>
-      ) : (
-        <TableRow>
-          <td>Submitted by</td>
-          <td>Awaiting decoded transaction data</td>
-        </TableRow>
-      )}
-      {txData.height ? (
-        <TableRow>
-          <td>Block</td>
-          <td data-testid="block">
-            <Link to={`/${Routes.BLOCKS}/${txData.height}`}>
-              {txData.height}
-            </Link>
-          </td>
-        </TableRow>
-      ) : null}
-      <TableRow>
-        <td>Encoded tnx</td>
-        <td data-testid="encoded-tnx">{txData.tx}</td>
+      <TableRow modifier="bordered">
+        <TableHeader scope="row" className="w-[160px]">
+          Submitted by
+        </TableHeader>
+        <TableCell modifier="bordered" data-testid="submitted-by">
+          <Link
+            className="text-vega-yellow"
+            to={`/${Routes.PARTIES}/${pubKey}`}
+          >
+            {pubKey}
+          </Link>
+        </TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>Block</TableCell>
+        <TableCell modifier="bordered" data-testid="block">
+          <Link
+            className="text-vega-yellow"
+            to={`/${Routes.BLOCKS}/${txData.height}`}
+          >
+            {txData.height}
+          </Link>
+        </TableCell>
+      </TableRow>
+      <TableRow modifier="bordered">
+        <TableCell>Encoded tnx</TableCell>
+        <TableCell modifier="bordered" data-testid="encoded-tnx">
+          <TruncateInline
+            text={txData.tx}
+            startChars={truncateLength}
+            endChars={truncateLength}
+          />
+        </TableCell>
       </TableRow>
     </Table>
   );
