@@ -1,15 +1,16 @@
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
-import { APP_CHAIN_ID } from '../config/chain-id';
 
 interface Web3ContainerProps {
   children: JSX.Element;
+  appChainId: number;
   setDialogOpen: (isOpen: boolean) => void;
 }
 
 export const Web3Container = ({
   children,
+  appChainId,
   setDialogOpen,
 }: Web3ContainerProps) => {
   const { isActive, error, connector, chainId } = useWeb3React();
@@ -21,7 +22,9 @@ export const Web3Container = ({
   if (error) {
     return (
       <Splash>
-        <p>{error.message}</p>
+        <Web3SplashContent message={`Something went wrong: ${error.message}`}>
+          <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        </Web3SplashContent>
       </Splash>
     );
   }
@@ -29,21 +32,41 @@ export const Web3Container = ({
   if (!isActive) {
     return (
       <Splash>
-        <div className="text-center">
-          <p className="mb-12">Connect your Ethereum wallet</p>
+        <Web3SplashContent message="Connect your Ethereum wallet">
           <Button onClick={() => setDialogOpen(true)}>Connect</Button>
-        </div>
+        </Web3SplashContent>
       </Splash>
     );
   }
 
-  if (chainId !== APP_CHAIN_ID) {
+  if (chainId !== appChainId) {
     return (
       <Splash>
-        <p>This app only works on chain ID: {APP_CHAIN_ID}</p>
+        <Web3SplashContent
+          message={`This app only works on chain ID: ${appChainId}`}
+        >
+          <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        </Web3SplashContent>
       </Splash>
     );
   }
 
   return children;
+};
+
+interface Web3SplashContentProps {
+  message: string;
+  children: ReactNode;
+}
+
+export const Web3SplashContent = ({
+  message,
+  children,
+}: Web3SplashContentProps) => {
+  return (
+    <div className="text-center">
+      <p className="mb-12">{message}</p>
+      {children}
+    </div>
+  );
 };

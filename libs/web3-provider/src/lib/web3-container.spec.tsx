@@ -1,12 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Web3Container } from './web3-container';
 
-jest.mock('../config/chain-id', () => ({
-  APP_CHAIN_ID: 1,
-}));
-
 const props = {
   setDialogOpen: jest.fn(),
+  appChainId: 1,
 };
 
 const defaultWeb3State = {
@@ -54,7 +51,9 @@ test('Shows error message', () => {
   );
 
   expect(screen.queryByText('Child')).not.toBeInTheDocument();
-  expect(screen.getByText(errMsg)).toBeInTheDocument();
+  expect(
+    screen.getByText(`Something went wrong: ${errMsg}`)
+  ).toBeInTheDocument();
 });
 
 test('Handles being on the wrong chain', () => {

@@ -13,9 +13,14 @@ type Connector = MetaMask | WalletConnect;
 interface Web3ProviderProps {
   children: JSX.Element;
   connectors: Connectors;
+  appChainId: number;
 }
 
-export const Web3Provider = ({ children, connectors }: Web3ProviderProps) => {
+export const Web3Provider = ({
+  children,
+  connectors,
+  appChainId,
+}: Web3ProviderProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   return (
     <Web3ReactProvider
@@ -23,7 +28,9 @@ export const Web3Provider = ({ children, connectors }: Web3ProviderProps) => {
         return [connector, hooks];
       })}
     >
-      <Web3Container setDialogOpen={setDialogOpen}>{children}</Web3Container>
+      <Web3Container setDialogOpen={setDialogOpen} appChainId={appChainId}>
+        {children}
+      </Web3Container>
       <Dialog
         open={dialogOpen}
         onChange={setDialogOpen}
@@ -38,7 +45,7 @@ export const Web3Provider = ({ children, connectors }: Web3ProviderProps) => {
                   className="capitalize hover:text-vega-pink dark:hover:text-vega-yellow underline"
                   data-testid={`web3-connector-${connectorName}`}
                   onClick={async () => {
-                    await connector.activate();
+                    await connector.activate(appChainId);
                     setDialogOpen(false);
                   }}
                 >

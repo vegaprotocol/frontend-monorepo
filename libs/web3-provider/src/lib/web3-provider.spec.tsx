@@ -3,13 +3,21 @@ import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { Web3Provider } from './web3-provider';
 
-test('Shows connection options in a modal', async () => {
-  const connectors = {
-    foo: initializeConnector((actions) => new MetaMask(actions)),
-    bar: initializeConnector((actions) => new MetaMask(actions)),
-  };
+const connectors = {
+  foo: initializeConnector((actions) => new MetaMask(actions)),
+  bar: initializeConnector((actions) => new MetaMask(actions)),
+};
+
+const props = {
+  connectors,
+  appChainId: 1,
+};
+
+test('Can connect via connector options in a modal', async () => {
+  const spyOnConnect = jest.spyOn(connectors.foo[0], 'activate');
+
   render(
-    <Web3Provider connectors={connectors}>
+    <Web3Provider {...props}>
       <div>Child</div>
     </Web3Provider>
   );
@@ -28,4 +36,8 @@ test('Shows connection options in a modal', async () => {
   // foo/bar connector options displayed
   expect(screen.getByTestId('web3-connector-foo')).toBeInTheDocument();
   expect(screen.getByTestId('web3-connector-bar')).toBeInTheDocument();
+
+  // Assert connection is attempted with desired chain
+  fireEvent.click(screen.getByTestId('web3-connector-foo'));
+  expect(spyOnConnect).toHaveBeenCalledWith(props.appChainId);
 });
