@@ -5,9 +5,5 @@ interface PromotedStatsProps {
 }
 
 export const PromotedStats = ({ children }: PromotedStatsProps) => {
-  return (
-    <div className="grid sm:grid-cols-2 md:grid-cols-1 gap-4 mb-24">
-      {children}
-    </div>
-  );
+  return <div className="grid promoted-stats gap-4 mb-24">{children}</div>;
 };

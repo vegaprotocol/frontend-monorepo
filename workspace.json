@@ -5,6 +5,7 @@
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",
     "graphql": "libs/graphql",
+    "mainnet-stats-manager": "libs/mainnet-stats-manager",
     "market-list": "libs/market-list",
     "react-helpers": "libs/react-helpers",
     "stats-mainnet": "apps/stats-mainnet",

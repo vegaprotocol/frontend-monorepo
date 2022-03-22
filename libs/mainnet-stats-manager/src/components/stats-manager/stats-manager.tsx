@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import classnames from 'classnames';
 import { statsFields } from '../../config/stats-fields';
 import {
   Stats as IStats,
@@ -9,7 +10,11 @@ import { TableRow } from '../table-row';
 import { PromotedStats } from '../promoted-stats';
 import { PromotedStatsItem } from '../promoted-stats-item';
 
-export const StatsManager = () => {
+interface statsManagerProps {
+  className?: string;
+}
+
+export const StatsManager = ({ className }: statsManagerProps) => {
   const [data, setData] = useState<IStructuredStats | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
@@ -66,9 +71,14 @@ export const StatsManager = () => {
     };
   }, []);
 
+  const classes = classnames(
+    className,
+    'stats-grid w-full self-start justify-self-center px-24'
+  );
+
   return (
-    <div className="stats-grid w-full max-w-3xl mt-40 md:mt-64 self-start justify-self-center px-24">
-      <h3 className="font-alpha uppercase text-h3 pb-16">
+    <div className={classes}>
+      <h3 className="font-alpha uppercase text-h3 pb-16 col-span-full">
         {(error && `/ ${error}`) || (data ? '/ Mainnet' : '/ Connecting...')}
       </h3>
 

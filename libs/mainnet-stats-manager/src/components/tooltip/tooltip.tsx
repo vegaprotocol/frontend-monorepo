@@ -8,7 +8,7 @@ import {
 } from '@radix-ui/react-tooltip';
 
 interface TooltipProps {
-  children: React.ReactNode;
+  children: React.ReactElement;
   description?: string;
 }
 
@@ -25,12 +25,12 @@ export const Tooltip = ({ children, description }: TooltipProps) =>
             offset={10}
             className="fill-vega-green"
           />
-          <div className="px-12 py-8 bg-vega-green rounded-sm max-w-sm">
+          <div className="px-12 py-8 bg-vega-green text-black rounded-sm max-w-sm">
             {description}
           </div>
         </Content>
       </Root>
     </Provider>
   ) : (
-    <>{children}</>
+    children
   );
