@@ -9,7 +9,7 @@ import {
 
 interface CommonProps {
   children?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'accent' | 'inline';
+  variant?: 'primary' | 'secondary' | 'accent' | 'inline' | 'inline-link';
   className?: string;
   prependIconName?: IconName;
   appendIconName?: IconName;
@@ -37,18 +37,27 @@ const getClassName = (
       'box-border',
       'h-28',
       'text-ui',
-      'no-underline',
       'hover:underline',
       'disabled:no-underline',
       'transition-all',
     ],
     {
-      'pl-28': !(paddingLeftProvided || variant === 'inline'),
-      'pr-28': !(paddingRightProvided || variant === 'inline'),
+      'no-underline': variant !== 'inline-link',
+      'pl-28': !(
+        paddingLeftProvided ||
+        variant === 'inline' ||
+        variant === 'inline-link'
+      ),
+      'pr-28': !(
+        paddingRightProvided ||
+        variant === 'inline' ||
+        variant === 'inline-link'
+      ),
 
       border: !borderWidthProvided,
 
-      'hover:border-black dark:hover:border-white': variant !== 'inline',
+      'hover:border-black dark:hover:border-white':
+        variant !== 'inline' && variant !== 'inline-link',
       'active:border-black dark:active:border-white': true,
 
       'bg-black dark:bg-white': variant === 'primary',
@@ -72,7 +81,9 @@ const getClassName = (
       uppercase: variant === 'accent',
       'bg-vega-yellow dark:bg-vega-yellow': variant === 'accent',
       'border-transparent dark:border-transparent':
-        variant === 'accent' || variant === 'inline',
+        variant === 'accent' ||
+        variant === 'inline' ||
+        variant === 'inline-link',
       'hover:bg-vega-yellow-dark dark:hover:bg-vega-yellow/30':
         variant === 'accent',
       'text-black dark:text-black': variant === 'accent',
@@ -80,22 +91,28 @@ const getClassName = (
 
       'pl-4': variant === 'inline' && !paddingLeftProvided,
       'pr-4': variant === 'inline' && !paddingRightProvided,
-      'border-0': variant === 'inline' && !borderWidthProvided,
-      underline: variant === 'inline',
+      'border-0':
+        (variant === 'inline' || variant === 'inline-link') &&
+        !borderWidthProvided,
+      underline: variant === 'inline' || variant === 'inline-link',
       'hover:no-underline': variant === 'inline',
       'hover:border-transparent dark:hover:border-transparent':
-        variant === 'inline',
+        variant === 'inline' || variant === 'inline-link',
       'active:border-transparent dark:active:border-transparent':
-        variant === 'inline',
-      'active:text-black dark:active:text-vega-yellow': variant === 'inline',
-      'text-black-95 dark:text-white-95': variant === 'inline',
-      'hover:text-black hover:dark:text-white': variant === 'inline',
+        variant === 'inline' || variant === 'inline-link',
+      'active:text-black dark:active:text-vega-yellow':
+        variant === 'inline' || variant === 'inline-link',
+      'text-black-95 dark:text-white-95':
+        variant === 'inline' || variant === 'inline-link',
+      'hover:text-black hover:dark:text-white':
+        variant === 'inline' || variant === 'inline-link',
 
-      'disabled:bg-black-10 dark:disabled:bg-white-10': variant !== 'inline',
+      'disabled:bg-black-10 dark:disabled:bg-white-10':
+        variant !== 'inline' && variant !== 'inline-link',
       'disabled:text-black-60 dark:disabled:text-white-60':
-        variant !== 'inline',
+        variant !== 'inline' && variant !== 'inline-link',
       'disabled:border-black-25 dark:disabled:border-white-25':
-        variant !== 'inline',
+        variant !== 'inline' && variant !== 'inline-link',
     },
     className
   );
