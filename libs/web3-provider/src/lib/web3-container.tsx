@@ -15,7 +15,7 @@ export const Web3Container = ({
   const { isActive, error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
-    // connector?.connectEagerly();
+    connector?.connectEagerly();
   }, [connector]);
 
   if (error) {
