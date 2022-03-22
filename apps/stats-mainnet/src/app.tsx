@@ -15,7 +15,7 @@ function App() {
     >
       <div className="layout-grid w-screen justify-self-center">
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-        <StatsManager className="max-w-3xl" />
+        <StatsManager className="max-w-3xl px-24" />
       </div>
     </div>
   );

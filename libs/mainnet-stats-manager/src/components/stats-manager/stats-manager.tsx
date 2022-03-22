@@ -73,7 +73,7 @@ export const StatsManager = ({ className }: statsManagerProps) => {
 
   const classes = classnames(
     className,
-    'stats-grid w-full self-start justify-self-center px-24'
+    'stats-grid w-full self-start justify-self-center'
   );
 
   return (
