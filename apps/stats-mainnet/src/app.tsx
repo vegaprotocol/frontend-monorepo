@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Header } from './components/header';
-import { StatsManager } from './components/stats-manager';
+import { StatsManager } from '@vegaprotocol/mainnet-stats-manager';
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(
@@ -15,7 +15,7 @@ function App() {
     >
       <div className="layout-grid w-screen justify-self-center">
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-        <StatsManager />
+        <StatsManager className="max-w-3xl" />
       </div>
     </div>
   );

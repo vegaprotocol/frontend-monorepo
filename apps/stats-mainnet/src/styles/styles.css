@@ -22,9 +22,17 @@
     grid-column-gap: 1.25rem;
     align-items: flex-start;
   }
+}
 
-  .stats-grid h3 {
-    grid-column: span 2;
+@media (min-width: 640px) {
+  .promoted-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .promoted-stats {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 }
 

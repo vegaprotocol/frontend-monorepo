@@ -5,7 +5,7 @@ import { DarkModeState } from '../../config/types';
 
 export const Header = ({ darkMode, setDarkMode }: DarkModeState) => {
   return (
-    <header className="relative overflow-hidden py-8">
+    <header className="relative overflow-hidden py-8 mb-40 md:mb-64">
       <VegaBackgroundVideo />
 
       <div
