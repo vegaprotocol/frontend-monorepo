@@ -10,6 +10,14 @@ interface FormFields {
   search: string;
 }
 
+const isPrependedTransaction = (search: string) =>
+  search.startsWith('0x') && search.length === 2 + TX_LENGTH;
+
+const isTransaction = (search: string) =>
+  !search.startsWith('0x') && search.length === TX_LENGTH;
+
+const isBlock = (search: string) => !Number.isNaN(Number(search));
+
 export const Search = () => {
   const { register, handleSubmit } = useForm<FormFields>();
   const navigate = useNavigate();
@@ -21,19 +29,19 @@ export const Search = () => {
       const search = fields.search;
       if (!search) {
         setError(new Error('Search required'));
-      } else if (search.startsWith('0x') && search.length === 2 + TX_LENGTH) {
+      } else if (isPrependedTransaction(search)) {
         if (Number.isNaN(Number(search))) {
           setError(new Error('Transaction is not hexadecimal'));
         } else {
           navigate(`${Routes.TX}/${search}`);
         }
-      } else if (search.length === TX_LENGTH) {
+      } else if (isTransaction(search)) {
         if (Number.isNaN(Number(`0x${search}`))) {
           setError(new Error('Transaction is not hexadecimal'));
         } else {
           navigate(`${Routes.TX}/0x${search}`);
         }
-      } else if (!Number.isNaN(Number(search))) {
+      } else if (isBlock(search)) {
         navigate(`${Routes.BLOCKS}/${Number(search)}`);
       } else {
         setError(new Error("Something doesn't look right"));
