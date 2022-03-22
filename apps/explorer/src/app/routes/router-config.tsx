@@ -66,7 +66,7 @@ const genesisRoutes = flags.genesis
       {
         path: Routes.GENESIS,
         name: 'Genesis',
-        text: 'Genesis parameters',
+        text: 'Genesis Parameters',
         element: <Genesis />,
       },
     ]
@@ -99,7 +99,7 @@ const networkParametersRoutes = flags.networkParameters
       {
         path: Routes.NETWORK_PARAMETERS,
         name: 'NetworkParameters',
-        text: 'Network parameters',
+        text: 'Network Parameters',
         element: <NetworkParameters />,
       },
     ]
