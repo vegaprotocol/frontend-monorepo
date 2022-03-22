@@ -36,12 +36,12 @@ const getClassName = (
       'justify-center',
       'box-border',
       'h-28',
-      'text-ui',
       'hover:underline',
       'disabled:no-underline',
       'transition-all',
     ],
     {
+      'text-ui': variant !== 'inline-link',
       'no-underline': variant !== 'inline-link',
       'pl-28': !(
         paddingLeftProvided ||
