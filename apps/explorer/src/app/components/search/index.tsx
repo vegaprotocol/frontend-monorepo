@@ -91,7 +91,7 @@ const Search = () => {
   const { search, onChange } = useGuess();
   return (
     <section>
-      <h1 data-testid="explorer-header">Vega Block Explorer</h1>
+      <h1 data-testid="explorer-header">Vega Explorer</h1>
       <fieldset>
         <label htmlFor="search">Search: </label>
         <input
