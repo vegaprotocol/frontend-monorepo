@@ -1,7 +1,9 @@
+import { StatsManager } from '@vegaprotocol/mainnet-stats-manager';
+
 const Home = () => {
   return (
     <section>
-      <h1>Home page content</h1>
+      <StatsManager className="grid grid-cols-1 lg:grid-cols-2 lg:gap-16" />
     </section>
   );
 };
