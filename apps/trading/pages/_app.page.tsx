@@ -15,11 +15,7 @@ import { useThemeSwitcher } from '../hooks/use-theme-switcher';
 import './styles.css';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
-  const client = useMemo(
-    () =>
-      createClient(process.env['NX_VEGA_URL'] || 'https://lb.testnet.vega.xyz'),
-    []
-  );
+  const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [theme, toggleTheme] = useThemeSwitcher();
 
