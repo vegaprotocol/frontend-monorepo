@@ -1,4 +1,4 @@
-import { Button, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { Web3ReactProvider, Web3ReactHooks } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
@@ -24,13 +24,18 @@ export const Web3Provider = ({ children, connectors }: Web3ProviderProps) => {
       })}
     >
       <Web3Container setDialogOpen={setDialogOpen}>{children}</Web3Container>
-      <Dialog open={dialogOpen} onChange={setDialogOpen} intent={Intent.Prompt}>
+      <Dialog
+        open={dialogOpen}
+        onChange={setDialogOpen}
+        intent={Intent.Prompt}
+        title="Connect to your Ethereum wallet"
+      >
         <ul data-testid="web3-connector-list">
           {Object.entries(connectors).map(([connectorName, [connector]]) => {
             return (
-              <li key={connectorName} className="mb-4 last:mb-0">
-                <Button
-                  className="capitalize"
+              <li key={connectorName} className="mb-12 last:mb-0">
+                <button
+                  className="capitalize hover:text-vega-pink dark:hover:text-vega-yellow underline"
                   data-testid={`web3-connector-${connectorName}`}
                   onClick={async () => {
                     await connector.activate();
@@ -38,7 +43,7 @@ export const Web3Provider = ({ children, connectors }: Web3ProviderProps) => {
                   }}
                 >
                   {connectorName}
-                </Button>
+                </button>
               </li>
             );
           })}
