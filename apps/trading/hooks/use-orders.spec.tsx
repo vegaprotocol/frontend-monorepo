@@ -36,6 +36,7 @@ function generateOrder(order?: Partial<OrderFields>): OrderFields {
       __typename: 'Market',
       id: 'market-id',
       name: 'market-name',
+      decimalPlaces: 0,
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -48,11 +49,13 @@ function generateOrder(order?: Partial<OrderFields>): OrderFields {
     side: Side.Buy,
     size: '10',
     status: OrderStatus.Active,
+    rejectionReason: null,
     price: '',
     timeInForce: OrderTimeInForce.GTC,
     remaining: '10',
     createdAt: '2022-01-01T00:00:00',
-    updatedAt: '',
+    updatedAt: null,
+    expiresAt: null,
     ...order,
   };
 }
