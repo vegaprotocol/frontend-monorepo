@@ -1,17 +1,14 @@
 import { useOrders } from '../../hooks/use-orders';
 import { OrderList } from '@vegaprotocol/order-list';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer } from '../async-renderer';
+import { OrderFields } from '@vegaprotocol/graphql';
 
 export const OrderListContainer = () => {
   const { orders, loading, error } = useOrders();
 
-  if (error) {
-    return <Splash>Something went wrong: {error.message}</Splash>;
-  }
-
-  if (loading) {
-    return <Splash>Loading...</Splash>;
-  }
-
-  return <OrderList orders={orders} />;
+  return (
+    <AsyncRenderer<OrderFields[]> loading={loading} error={error} data={orders}>
+      {(data) => <OrderList orders={data} />}
+    </AsyncRenderer>
+  );
 };

@@ -81,19 +81,21 @@ test('Correct formatting applied for market order', async () => {
   await act(async () => {
     render(<OrderList orders={[marketOrder]} />);
   });
+
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[0]).toHaveTextContent(
-    marketOrder.market.tradableInstrument.instrument.code
-  );
-  expect(cells[1]).toHaveTextContent('+10');
-  expect(cells[2]).toHaveTextContent(marketOrder.type);
-  expect(cells[3]).toHaveTextContent(marketOrder.status);
-  expect(cells[4]).toHaveTextContent('5');
-  expect(cells[5]).toHaveTextContent('-');
-  expect(cells[6]).toHaveTextContent(marketOrder.timeInForce);
-  expect(cells[7]).toHaveTextContent(
-    getDateTimeFormat().format(new Date(marketOrder.createdAt))
-  );
+  const expectedValues = [
+    marketOrder.market.tradableInstrument.instrument.code,
+    '+10',
+    marketOrder.type,
+    marketOrder.status,
+    '5',
+    '-',
+    marketOrder.timeInForce,
+    getDateTimeFormat().format(new Date(marketOrder.createdAt)),
+  ];
+  cells.forEach((cell, i) => {
+    expect(cell).toHaveTextContent(expectedValues[i]);
+  });
 });
 
 test('Correct formatting applied for GTT limit order', async () => {
@@ -101,24 +103,21 @@ test('Correct formatting applied for GTT limit order', async () => {
     render(<OrderList orders={[limitOrder]} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  expect(cells[0]).toHaveTextContent(
-    limitOrder.market.tradableInstrument.instrument.code
-  );
-  expect(cells[1]).toHaveTextContent('-10');
-  expect(cells[2]).toHaveTextContent(limitOrder.type);
-  expect(cells[3]).toHaveTextContent(limitOrder.status);
-  expect(cells[4]).toHaveTextContent('5');
-  expect(cells[5]).toHaveTextContent(
-    formatNumber(limitOrder.price, limitOrder.market.decimalPlaces)
-  );
-  expect(cells[6].textContent).toBe(
+  const expectedValues = [
+    limitOrder.market.tradableInstrument.instrument.code,
+    '-10',
+    limitOrder.type,
+    limitOrder.status,
+    '5',
+    formatNumber(limitOrder.price, limitOrder.market.decimalPlaces),
     `${limitOrder.timeInForce}: ${getDateTimeFormat().format(
       new Date(limitOrder.expiresAt)
-    )}`
-  );
-  expect(cells[7]).toHaveTextContent(
-    getDateTimeFormat().format(new Date(limitOrder.createdAt))
-  );
+    )}`,
+    getDateTimeFormat().format(new Date(limitOrder.createdAt)),
+  ];
+  cells.forEach((cell, i) => {
+    expect(cell).toHaveTextContent(expectedValues[i]);
+  });
 });
 
 test('Correct formatting applied for a rejected order', async () => {

@@ -56,6 +56,12 @@ const MARKET_DATA_SUB = gql`
   }
 `;
 
+interface UseMarkets {
+  markets: Markets_markets[];
+  error: Error | null;
+  loading: boolean;
+}
+
 export const useMarketsImpl = () => {
   const client = useApolloClient();
   const [markets, setMarkets] = useState<Markets_markets[]>([]);
@@ -128,4 +134,4 @@ const initial = {
   loading: false,
 };
 
-export const useMarkets = singletonHook(initial, useMarketsImpl);
+export const useMarkets = singletonHook<UseMarkets>(initial, useMarketsImpl);

@@ -7,4 +7,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/apps/trading',
+  setupFilesAfterEnv: ['./setup-tests.ts'],
 };

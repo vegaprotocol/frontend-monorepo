@@ -1,4 +1,3 @@
-import '@testing-library/jest-dom';
 import { OrderListContainer } from './order-list-container';
 import * as useOrdersHook from '../../hooks/use-orders';
 import { render, screen } from '@testing-library/react';
