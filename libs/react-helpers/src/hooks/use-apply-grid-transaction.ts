@@ -1,6 +1,6 @@
 import { GridApi } from 'ag-grid-community';
 import { useEffect } from 'react';
-import isEqual from 'lodash.isequal';
+import isEqual from 'lodash/isEqual';
 
 export const useApplyGridTransaction = <T extends { id: string }>(
   data: T[],

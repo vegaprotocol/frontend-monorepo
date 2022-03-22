@@ -8,8 +8,8 @@ import {
   OrderFields,
 } from '@vegaprotocol/graphql';
 import { singletonHook } from 'react-singleton-hook';
-import uniqBy from 'lodash.uniqby';
-import orderBy from 'lodash.orderby';
+import uniqBy from 'lodash/uniqBy';
+import orderBy from 'lodash/orderBy';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 const ORDER_FRAGMENT = gql`

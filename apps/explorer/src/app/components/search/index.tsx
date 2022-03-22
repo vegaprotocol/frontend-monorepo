@@ -3,7 +3,7 @@ import React from 'react';
 import { useState } from 'react';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import { Guess, GuessVariables } from '@vegaprotocol/graphql';
 
 const TX_LENGTH = 64;
