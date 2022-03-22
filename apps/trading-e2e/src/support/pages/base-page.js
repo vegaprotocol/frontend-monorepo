@@ -21,8 +21,14 @@ export default class BasePage {
   }
 
   fillInWalletForm(walletName, walletPassphrase) {
-    cy.getByTestId(this.walletForm).find('#wallet').type(walletName);
-    cy.getByTestId(this.walletForm).find('#passphrase').type(walletPassphrase);
+    cy.getByTestId(this.walletForm)
+      .find('#wallet')
+      .click({ force: true })
+      .type(walletName);
+    cy.getByTestId(this.walletForm)
+      .find('#passphrase')
+      .click({ force: true })
+      .type(walletPassphrase);
   }
 
   clickConnectVegaWallet() {
@@ -41,17 +47,5 @@ export default class BasePage {
       .find('div > div')
       .should('contain.text', 'Required')
       .should('have.length', 2);
-  }
-
-  formatDate(date) {
-    const padZero = (num) => num.toString().padStart(2, '0');
-
-    const year = date.getFullYear();
-    const month = padZero(date.getMonth() + 1);
-    const day = padZero(date.getDate());
-    const hours = padZero(date.getHours());
-    const minutes = padZero(date.getMinutes());
-
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 }

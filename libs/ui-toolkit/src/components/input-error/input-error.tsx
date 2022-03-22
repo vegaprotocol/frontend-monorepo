@@ -33,7 +33,7 @@ export const InputError = ({
     'fill-intent-warning': intent === 'warning',
   });
   return (
-    <div className={effectiveClassName}>
+    <div data-testid="error-text" className={effectiveClassName}>
       <Icon name="warning-sign" className={iconClassName} />
       {children}
     </div>

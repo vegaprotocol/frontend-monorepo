@@ -20,8 +20,8 @@ export default class MarketPage extends BasePage {
     cy.getByTestId(this.completedTrades).should('not.be.empty');
   }
 
-  clickOnMarket(marketSymbol) {
-    cy.getByTestId(this.marketRow).contains(marketSymbol).click();
+  clickOnMarket(marketText) {
+    cy.contains(marketText).click();
   }
 
   clickOnActiveMarket() {
