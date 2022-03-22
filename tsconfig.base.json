@@ -27,7 +27,8 @@
         "libs/tailwindcss-config/src/index.js"
       ],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
-      "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"]
+      "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
+      "@vegaprotocol/web3-provider": ["libs/web3-provider/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

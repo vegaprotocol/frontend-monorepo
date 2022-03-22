@@ -18,3 +18,8 @@ export const walletconnect = initializeConnector<WalletConnect>(
     }),
   [1, 3]
 );
+
+export const connectors = {
+  metamask,
+  walletconnect,
+};

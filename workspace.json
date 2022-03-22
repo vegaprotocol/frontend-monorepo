@@ -15,6 +15,7 @@
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",
     "ui-toolkit": "libs/ui-toolkit",
-    "wallet": "libs/wallet"
+    "wallet": "libs/wallet",
+    "web3-provider": "libs/web3-provider"
   }
 }
