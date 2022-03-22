@@ -6,4 +6,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/web3-provider',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };
