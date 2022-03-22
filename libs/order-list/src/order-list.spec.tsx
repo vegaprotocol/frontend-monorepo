@@ -1,6 +1,6 @@
-import '@testing-library/jest-dom';
 import { act, render, screen } from '@testing-library/react';
 import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { Orders_party_orders } from '@vegaprotocol/graphql';
 import {
   OrderStatus,
   OrderTimeInForce,
@@ -17,12 +17,18 @@ test('No orders message shown', async () => {
   expect(screen.getByText('No orders')).toBeInTheDocument();
 });
 
-const marketOrder = {
+const marketOrder: Orders_party_orders = {
+  __typename: 'Order',
   id: 'order-id',
   market: {
+    __typename: 'Market',
+    id: 'market-id',
+    name: 'market-name',
     decimalPlaces: 2,
     tradableInstrument: {
+      __typename: 'TradableInstrument',
       instrument: {
+        __typename: 'Instrument',
         code: 'instrument-code',
       },
     },
@@ -35,14 +41,23 @@ const marketOrder = {
   price: '',
   timeInForce: OrderTimeInForce.IOC,
   createdAt: new Date().toISOString(),
+  updatedAt: null,
+  expiresAt: null,
+  rejectionReason: null,
 };
 
-const limitOrder = {
+const limitOrder: Orders_party_orders = {
+  __typename: 'Order',
   id: 'order-id',
   market: {
+    __typename: 'Market',
+    id: 'market-id',
+    name: 'market-name',
     decimalPlaces: 2,
     tradableInstrument: {
+      __typename: 'TradableInstrument',
       instrument: {
+        __typename: 'Instrument',
         code: 'instrument-code',
       },
     },
@@ -56,6 +71,8 @@ const limitOrder = {
   timeInForce: OrderTimeInForce.GTT,
   createdAt: new Date('2022-3-3').toISOString(),
   expiresAt: new Date('2022-3-5').toISOString(),
+  updatedAt: null,
+  rejectionReason: null,
 };
 
 test('Correct columns are rendered', async () => {
@@ -84,7 +101,7 @@ test('Correct formatting applied for market order', async () => {
 
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
-    marketOrder.market.tradableInstrument.instrument.code,
+    marketOrder.market?.tradableInstrument.instrument.code,
     '+10',
     marketOrder.type,
     marketOrder.status,
@@ -104,14 +121,14 @@ test('Correct formatting applied for GTT limit order', async () => {
   });
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
-    limitOrder.market.tradableInstrument.instrument.code,
+    limitOrder.market?.tradableInstrument.instrument.code,
     '-10',
     limitOrder.type,
     limitOrder.status,
     '5',
-    formatNumber(limitOrder.price, limitOrder.market.decimalPlaces),
+    formatNumber(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
     `${limitOrder.timeInForce}: ${getDateTimeFormat().format(
-      new Date(limitOrder.expiresAt)
+      new Date(limitOrder.expiresAt ?? '')
     )}`,
     getDateTimeFormat().format(new Date(limitOrder.createdAt)),
   ];
