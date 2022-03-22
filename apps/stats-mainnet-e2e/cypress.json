@@ -1,5 +1,6 @@
 {
   "baseUrl": "http://localhost:3010",
+  "projectId": "et4snf",
   "fileServerFolder": ".",
   "fixturesFolder": "./src/fixtures",
   "integrationFolder": "./src/integration",
