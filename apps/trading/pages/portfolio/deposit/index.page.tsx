@@ -4,7 +4,7 @@ import { connectors } from '../../../lib/web3-connectors';
 
 const Deposit = () => {
   return (
-    <Web3Provider connectors={connectors}>
+    <Web3Provider connectors={connectors} appChainId={3}>
       <div>
         <h1>Deposit</h1>
         <Info />
