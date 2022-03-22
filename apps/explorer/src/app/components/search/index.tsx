@@ -10,7 +10,7 @@ interface FormFields {
   search: string;
 }
 
-const Search = () => {
+export const Search = () => {
   const { register, handleSubmit } = useForm<FormFields>();
   const navigate = useNavigate();
   const [error, setError] = React.useState<Error | null>(null);
@@ -69,5 +69,3 @@ const Search = () => {
     </form>
   );
 };
-
-export default Search;
