@@ -1,4 +1,5 @@
 import { gql, useApolloClient } from '@apollo/client';
+import produce from 'immer';
 import {
   Markets,
   Markets_markets,
@@ -68,17 +69,14 @@ export const useMarkets = (): UseMarkets => {
   const [loading, setLoading] = useState(false);
 
   const mergeMarketData = useCallback((update: MarketDataSub_marketData) => {
-    setMarkets((curr) => {
-      return curr.map((m) => {
-        if (update.market.id === m.id) {
-          return {
-            ...m,
-            data: update,
-          };
+    setMarkets((curr) =>
+      produce(curr, (draft) => {
+        const index = draft.findIndex((m) => m.id === update.market.id);
+        if (index !== -1) {
+          draft[index].data = update;
         }
-        return m;
-      });
-    });
+      })
+    );
   }, []);
 
   // Make initial fetch
