@@ -56,7 +56,7 @@ const Party = () => {
   } = useFetch<TendermintSearchTransactionResponse>(
     `${
       DATA_SOURCES.tendermintUrl
-    }/tx_search?query="tx.submitter=%27${party?.replace('0x', '')}%27"`
+    }/tx_search?query="tx.submitter='${party?.replace('0x', '')}'"`
   );
 
   const { data } = useQuery<PartyAssetsQuery, PartyAssetsQueryVariables>(
