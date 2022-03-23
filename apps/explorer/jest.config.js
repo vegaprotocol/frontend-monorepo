@@ -7,5 +7,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/apps/explorer',
-  setupFilesAfterEnv: ['./src/app/setupTests.ts'],
+  setupFilesAfterEnv: ['./src/app/setup-tests.ts'],
 };

@@ -1,7 +1,7 @@
 import React from 'react';
-import { TendermintBlockchainResponse } from '../../../routes/blocks/tendermint-blockchain-response';
-import { BlockData } from '../../blocks';
-import { TxsPerBlock } from '../txs-per-block';
+import { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
+import { BlockData } from '../blocks';
+import { TxsPerBlock } from './txs-per-block';
 
 interface TxsProps {
   data: TendermintBlockchainResponse | undefined;

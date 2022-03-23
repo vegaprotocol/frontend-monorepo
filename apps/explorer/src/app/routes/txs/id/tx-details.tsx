@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from '../../../components/table';
+import { TruncateInline } from '../../../components/truncate/truncate';
 import { Routes } from '../../../routes/router-config';
 import { Result } from '../../../routes/txs/tendermint-transaction-response.d';
-import { Table, TableRow, TableCell, TableHeader } from '../../table';
-import { TruncateInline } from '../../truncate/truncate';
 
 interface TxDetailsProps {
   txData: Result | undefined;

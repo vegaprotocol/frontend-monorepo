@@ -6,4 +6,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/ui-toolkit',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

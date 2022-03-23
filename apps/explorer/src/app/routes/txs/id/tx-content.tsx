@@ -1,8 +1,13 @@
+import { StatusMessage } from '../../../components/status-message';
+import { SyntaxHighlighter } from '../../../components/syntax-highlighter';
+import {
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
+} from '../../../components/table';
+import { TxOrderType } from '../../../components/txs';
 import { ChainExplorerTxResponse } from '../../../routes/types/chain-explorer-response';
-import { SyntaxHighlighter } from '../../syntax-highlighter';
-import { Table, TableRow, TableHeader, TableCell } from '../../table';
-import { TxOrderType } from '../tx-order-type';
-import { StatusMessage } from '../../status-message';
 
 interface TxContentProps {
   data: ChainExplorerTxResponse | undefined;

@@ -1,27 +1,27 @@
 import classnames from 'classnames';
-import React, { HTMLAttributes } from 'react';
+import { HTMLAttributes } from 'react';
 
-interface RouteTitleProps extends HTMLAttributes<HTMLHeadingElement> {
+interface SubHeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
   className?: string;
 }
 
-export const RouteTitle = ({
+export const SubHeading = ({
   children,
   className,
   ...props
-}: RouteTitleProps) => {
+}: SubHeadingProps) => {
   const classes = classnames(
     'font-alpha',
-    'text-h3',
+    'text-h4',
     'uppercase',
     'mt-12',
-    'mb-28',
+    'mb-12',
     className
   );
   return (
-    <h1 className={classes} {...props}>
+    <h2 {...props} className={classes}>
       {children}
-    </h1>
+    </h2>
   );
 };
