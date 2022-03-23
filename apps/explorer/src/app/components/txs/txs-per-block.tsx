@@ -1,11 +1,11 @@
-import useFetch from '../../../hooks/use-fetch';
-import { ChainExplorerTxResponse } from '../../../routes/types/chain-explorer-response';
-import { Routes } from '../../../routes/router-config';
-import { DATA_SOURCES } from '../../../config';
+import useFetch from '../../hooks/use-fetch';
+import { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
+import { Routes } from '../../routes/router-config';
+import { DATA_SOURCES } from '../../config';
 import { Link } from 'react-router-dom';
-import { RenderFetched } from '../../render-fetched';
-import { TruncateInline } from '../../truncate/truncate';
-import { TxOrderType } from '../tx-order-type';
+import { RenderFetched } from '../render-fetched';
+import { TruncateInline } from '../truncate/truncate';
+import { TxOrderType } from './tx-order-type';
 
 interface TxsPerBlockProps {
   blockHeight: string | undefined;
@@ -31,20 +31,20 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
 
   return (
     <RenderFetched error={error} loading={loading} className="text-body-large">
-      <div className="overflow-x-auto whitespace-nowrap mb-28">
-        <table className="w-full">
-          <thead>
-            <tr className="font-mono">
-              <td>Transaction</td>
-              <td>From</td>
-              <td>Type</td>
-            </tr>
-          </thead>
-          <tbody>
-            {decodedBlockData &&
-              decodedBlockData.map(({ TxHash, PubKey, Type }) => {
+      {decodedBlockData && decodedBlockData.length ? (
+        <div className="overflow-x-auto whitespace-nowrap mb-28">
+          <table className="w-full">
+            <thead>
+              <tr className="font-mono">
+                <td>Transaction</td>
+                <td>From</td>
+                <td>Type</td>
+              </tr>
+            </thead>
+            <tbody>
+              {decodedBlockData.map(({ TxHash, PubKey, Type }) => {
                 return (
-                  <tr key={TxHash}>
+                  <tr key={TxHash} data-testid="transaction-row">
                     <td>
                       <Link to={`/${Routes.TX}/${TxHash}`}>
                         <TruncateInline
@@ -56,12 +56,14 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                       </Link>
                     </td>
                     <td>
-                      <TruncateInline
-                        text={PubKey}
-                        startChars={truncateLength}
-                        endChars={truncateLength}
-                        className="font-mono"
-                      />
+                      <Link to={`/${Routes.PARTIES}/${PubKey}`}>
+                        <TruncateInline
+                          text={PubKey}
+                          startChars={truncateLength}
+                          endChars={truncateLength}
+                          className="text-vega-yellow font-mono"
+                        />
+                      </Link>
                     </td>
                     <td>
                       <TxOrderType className="mb-4" orderType={Type} />
@@ -69,9 +71,14 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                   </tr>
                 );
               })}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="font-mono mb-28">
+          No transactions in block {blockHeight}
+        </div>
+      )}
     </RenderFetched>
   );
 };

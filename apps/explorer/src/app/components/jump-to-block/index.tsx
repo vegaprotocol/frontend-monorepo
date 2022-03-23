@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Routes } from '../../routes/router-config';
 
 export const JumpToBlock = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ export const JumpToBlock = () => {
     const blockNumber = target.blockNumber.value;
 
     if (blockNumber) {
-      navigate(`/blocks/${blockNumber}`);
+      navigate(`/${Routes.BLOCKS}/${blockNumber}`);
     }
   };
 
@@ -28,15 +29,15 @@ export const JumpToBlock = () => {
       </label>
       <input
         id="block-input"
-        type="tel"
-        name={'blockNumber'}
-        placeholder={'Block number'}
+        type="number"
+        name="blockNumber"
+        placeholder="Block number"
         className="bg-white-25 border-white border px-8 py-4 placeholder-white-60"
       />
       <input
         className="border-white border px-28 py-4 cursor-pointer"
-        type={'submit'}
-        value={'Go'}
+        type="submit"
+        value="Go"
       />
     </form>
   );

@@ -1,4 +1,3 @@
-export { TxDetails } from './id/tx-details';
-export { TxContent } from './id/tx-content';
-export { TxList } from './pending/tx-list';
-export { BlockTxsData } from './home/block-txs-data';
+export { TxList } from './tx-list';
+export { BlockTxsData } from './block-txs-data';
+export { TxOrderType } from './tx-order-type';

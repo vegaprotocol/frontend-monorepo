@@ -34,6 +34,7 @@ const partiesRoutes = flags.parties
       {
         path: Routes.PARTIES,
         name: 'Parties',
+        text: 'Parties',
         element: <Party />,
         children: [
           {
@@ -53,6 +54,7 @@ const assetsRoutes = flags.assets
   ? [
       {
         path: Routes.ASSETS,
+        text: 'Assets',
         name: 'Assets',
         element: <Assets />,
       },
@@ -64,6 +66,7 @@ const genesisRoutes = flags.genesis
       {
         path: Routes.GENESIS,
         name: 'Genesis',
+        text: 'Genesis Parameters',
         element: <Genesis />,
       },
     ]
@@ -74,6 +77,7 @@ const governanceRoutes = flags.governance
       {
         path: Routes.GOVERNANCE,
         name: 'Governance',
+        text: 'Proposals',
         element: <Governance />,
       },
     ]
@@ -84,6 +88,7 @@ const marketsRoutes = flags.markets
       {
         path: Routes.MARKETS,
         name: 'Markets',
+        text: 'Markets',
         element: <Markets />,
       },
     ]
@@ -94,6 +99,7 @@ const networkParametersRoutes = flags.networkParameters
       {
         path: Routes.NETWORK_PARAMETERS,
         name: 'NetworkParameters',
+        text: 'Network Parameters',
         element: <NetworkParameters />,
       },
     ]
@@ -103,6 +109,7 @@ const validators = flags.validators
       {
         path: Routes.VALIDATORS,
         name: 'Validators',
+        text: 'Validators',
         element: <Validators />,
       },
     ]
@@ -112,12 +119,14 @@ const routerConfig = [
   {
     path: Routes.HOME,
     name: 'Home',
+    text: 'Home',
     element: <Home />,
     index: true,
   },
   {
     path: Routes.TX,
     name: 'Txs',
+    text: 'Transactions',
     element: <Txs />,
     children: [
       {
@@ -137,6 +146,7 @@ const routerConfig = [
   {
     path: Routes.BLOCKS,
     name: 'Blocks',
+    text: 'Blocks',
     element: <BlockPage />,
     children: [
       {

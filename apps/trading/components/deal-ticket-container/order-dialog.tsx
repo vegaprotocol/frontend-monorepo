@@ -4,7 +4,11 @@ import {
   TransactionState,
   VegaTxStatus,
 } from '../../hooks/use-vega-transaction';
-import { OrderEvent_busEvents_event_Order } from '@vegaprotocol/graphql';
+import {
+  OrderEvent_busEvents_event_Order,
+  OrderStatus,
+} from '@vegaprotocol/graphql';
+import { formatNumber } from '@vegaprotocol/react-helpers';
 
 interface OrderDialogProps {
   transaction: TransactionState;
@@ -66,8 +70,17 @@ export const OrderDialog = ({
     >
       <p>Status: {finalizedOrder.status}</p>
       <p>Market: {finalizedOrder.market.name}</p>
+      <p>Type: {finalizedOrder.type}</p>
       <p>Amount: {finalizedOrder.size}</p>
-      {finalizedOrder.type === 'Limit' && <p>Price: {finalizedOrder.price}</p>}
+      {finalizedOrder.type === 'Limit' && (
+        <p>
+          Price:{' '}
+          {formatNumber(
+            finalizedOrder.price,
+            finalizedOrder.market.decimalPlaces
+          )}
+        </p>
+      )}
     </OrderDialogWrapper>
   );
 };

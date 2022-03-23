@@ -1,7 +1,7 @@
 import React from 'react';
-import { TendermintBlockchainResponse } from '../../../routes/blocks/tendermint-blockchain-response';
-import { BlockData } from '../../blocks';
-import { TxsPerBlock } from '../txs-per-block';
+import { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
+import { BlockData } from '../blocks';
+import { TxsPerBlock } from './txs-per-block';
 
 interface TxsProps {
   data: TendermintBlockchainResponse | undefined;
@@ -23,7 +23,7 @@ export const BlockTxsData = ({ data, className }: TxsProps) => {
     >
       {data.result?.block_metas?.map((block, index) => {
         return (
-          <li key={index} data-testid="block-row">
+          <li key={index} data-testid="transactions-list">
             <BlockData block={block} className="mb-12" />
             <TxsPerBlock blockHeight={block.header.height} />
           </li>

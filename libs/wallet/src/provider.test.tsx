@@ -1,9 +1,9 @@
 import '@testing-library/jest-dom';
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { VegaKey } from '@vegaprotocol/vegawallet-service-api-client';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './hooks';
 import { VegaWalletProvider } from './provider';
-import { WALLET_KEY } from './storage-keys';
 
 const restConnector = new RestConnector();
 
@@ -52,11 +52,9 @@ const generateJSX = () => (
 
 test('Can connect, disconnect and retrieve keypairs', async () => {
   const mockKeypairs = [{ pub: 'public key 1' }, { pub: 'public key 2' }];
-  localStorage.setItem(WALLET_KEY, mockKeypairs[0].pub);
   jest
     .spyOn(restConnector, 'connect')
-    // @ts-ignore just using pub to assert state logic
-    .mockImplementation(() => Promise.resolve(mockKeypairs));
+    .mockImplementation(() => Promise.resolve(mockKeypairs as VegaKey[]));
 
   jest
     .spyOn(restConnector, 'disconnect')

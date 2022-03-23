@@ -1,0 +1,67 @@
+name: Cypress tests
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+
+jobs:
+  master:
+    name: Test and lint - main
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: master
+      - name: Use Node.js 16
+        id: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install root dependencies
+        run: yarn install
+      - name: Check formatting
+        run: yarn nx format:check
+      - name: Check formatting
+        run: yarn eslint
+      - name: Check formatting
+        run: yarn nx affected:test
+      - name: Check formatting
+        run: yarn nx affected:build
+  pr:
+    name: Test and lint - PR
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: master
+      - name: Use Node.js 16
+        id: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+      - name: Install root dependencies
+        run: yarn install
+      - name: Check formatting
+        run: yarn nx format:check
+      - name: Check formatting
+        run: yarn eslint
+      - name: Check formatting
+        run: yarn nx affected:test
+      - name: Check formatting
+        run: yarn nx affected:build

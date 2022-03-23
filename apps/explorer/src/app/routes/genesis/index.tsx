@@ -1,3 +1,4 @@
+import { RouteTitle } from '../../components/route-title';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
@@ -12,7 +13,7 @@ const Genesis = () => {
   if (!genesis?.result.genesis) return null;
   return (
     <section>
-      <h1 data-testid="genesis-header">Genesis</h1>
+      <RouteTitle data-testid="genesis-header">Genesis</RouteTitle>
       <SyntaxHighlighter data={genesis?.result.genesis} />
     </section>
   );
