@@ -7,11 +7,11 @@ import { AsyncRenderer } from '../../components/async-renderer';
 import { MarketListTable, getRowNodeId } from '@vegaprotocol/market-list';
 import {
   Markets_markets,
-  Markets_markets_data
+  Markets_markets_data,
+  MarketsDataProviderCallbackArg,
+  marketsDataProvider,
 } from '@vegaprotocol/graphql';
 
-import { subscribe } from '../../data-providers/markets-data-provider';
-import type { CallbackArg } from '../../data-providers/markets-data-provider';
 import type { AgGridReact } from 'ag-grid-react';
 
 const Markets = () => {
@@ -24,45 +24,48 @@ const Markets = () => {
   const initialized = useRef<boolean>(false);
 
   useEffect(() => {
-    return subscribe(client, ({ data, error, loading, delta }: CallbackArg) => {
-      setError(error);
-      setLoading(loading);
-      if (!error && !loading) {
-        if (!initialized.current || !gridRef.current) {
-          initialized.current = true;
-          setMarkets(data);
-        } else {
-          const update: Markets_markets[] = [];
-          const add: Markets_markets[] = [];
+    return marketsDataProvider(
+      client,
+      ({ data, error, loading, delta }: MarketsDataProviderCallbackArg) => {
+        setError(error);
+        setLoading(loading);
+        if (!error && !loading) {
+          if (!initialized.current || !gridRef.current) {
+            initialized.current = true;
+            setMarkets(data);
+          } else {
+            const update: Markets_markets[] = [];
+            const add: Markets_markets[] = [];
 
-          // split into updates and adds
-          if (!gridRef.current) return;
-          const rowNode = gridRef.current.api.getRowNode(
-            getRowNodeId(delta.market)
-          );
-
-          if (rowNode) {
-            const updatedData = produce(
-              rowNode.data.data,
-              (draft: Markets_markets_data) => assign(draft, delta)
+            // split into updates and adds
+            if (!gridRef.current) return;
+            const rowNode = gridRef.current.api.getRowNode(
+              getRowNodeId(delta.market)
             );
-            if (updatedData !== rowNode.data.data) {
-              update.push({ ...rowNode.data, data: delta });
-            }
-          } /* else {
+
+            if (rowNode) {
+              const updatedData = produce(
+                rowNode.data.data,
+                (draft: Markets_markets_data) => assign(draft, delta)
+              );
+              if (updatedData !== rowNode.data.data) {
+                update.push({ ...rowNode.data, data: delta });
+              }
+            } /* else {
             add.push(d);
           }*/
-          // async transaction for optimal handling of high grequency updates
-          if (update.length || add.length) {
-            gridRef.current.api.applyTransactionAsync({
-              update,
-              add,
-              addIndex: 0,
-            });
+            // async transaction for optimal handling of high grequency updates
+            if (update.length || add.length) {
+              gridRef.current.api.applyTransactionAsync({
+                update,
+                add,
+                addIndex: 0,
+              });
+            }
           }
         }
       }
-    });
+    );
   }, [client, initialized]);
 
   return (

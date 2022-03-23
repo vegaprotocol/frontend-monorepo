@@ -14,3 +14,5 @@ export * from './__generated__/Orders';
 export * from './__generated__/OrderSub';
 export * from './__generated__/PartyAssetsQuery';
 export * from './__generated__/ProposalsQuery';
+
+export * from './data-providers';

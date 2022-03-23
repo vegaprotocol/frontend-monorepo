@@ -2,12 +2,12 @@ import { gql } from '@apollo/client';
 import { produce } from 'immer';
 import type { ApolloClient } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
+import { Markets, Markets_markets } from '../__generated__/Markets';
+
 import {
-  Markets,
-  Markets_markets,
   MarketDataSub,
   MarketDataSub_marketData,
-} from '@vegaprotocol/graphql';
+} from '../__generated__/MarketDataSub';
 
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketDataFields on MarketData {
@@ -57,27 +57,30 @@ const MARKET_DATA_SUB = gql`
   }
 `;
 
-export interface CallbackArg {
-  data?: Markets_markets[];
+export interface MarketsDataProviderCallbackArg {
+  data: Markets_markets[] | null;
   error?: Error;
   loading: boolean;
   delta?: MarketDataSub_marketData;
 }
 
-export interface Callback {
-  (arg: CallbackArg): void;
+export interface MarketsDataProviderCallback {
+  (arg: MarketsDataProviderCallbackArg): void;
 }
 
-const callbacks: Callback[] = [];
+const callbacks: MarketsDataProviderCallback[] = [];
 const updateQueue: MarketDataSub_marketData[] = [];
 
-let data: Markets_markets[] = undefined;
-let error: Error = undefined;
+let data: Markets_markets[] | null = null;
+let error: Error | undefined = undefined;
 let loading = false;
-let client: ApolloClient<object> = undefined;
-let subscription: Subscription = undefined;
+let client: ApolloClient<object> | undefined = undefined;
+let subscription: Subscription | undefined = undefined;
 
-const notify = (callback, delta?: MarketDataSub_marketData) => {
+const notify = (
+  callback: MarketsDataProviderCallback,
+  delta?: MarketDataSub_marketData
+) => {
   callback({
     data,
     error,
@@ -90,7 +93,13 @@ const notifyAll = (delta?: MarketDataSub_marketData) => {
   callbacks.forEach((callback) => notify(callback, delta));
 };
 
-const update = (draft: Markets_markets[], delta: MarketDataSub_marketData) => {
+const update = (
+  draft: Markets_markets[] | null,
+  delta: MarketDataSub_marketData
+) => {
+  if (!draft) {
+    return;
+  }
   const index = draft.findIndex((m) => m.id === delta.market.id);
   if (index !== -1) {
     draft[index].data = delta;
@@ -103,19 +112,29 @@ const initialize = async () => {
     return;
   }
   loading = true;
-  error = null;
+  error = undefined;
   notifyAll();
+  if (!client) {
+    return;
+  }
   subscription = client
     .subscribe<MarketDataSub>({
       query: MARKET_DATA_SUB,
     })
     .subscribe(({ data: delta }) => {
+      if (!delta) {
+        return;
+      }
       if (loading) {
         updateQueue.push(delta.marketData);
       } else {
-        data = produce(data, (draft) => {
+        const newData = produce(data, (draft) => {
           update(draft, delta.marketData);
         });
+        if (newData === data) {
+          return;
+        }
+        data = newData;
         notifyAll(delta.marketData);
       }
     });
@@ -124,15 +143,18 @@ const initialize = async () => {
       query: MARKETS_QUERY,
     });
     data = res.data.markets;
-    if (updateQueue) {
+    if (updateQueue && updateQueue.length > 0) {
       data = produce(data, (draft) => {
         while (updateQueue.length) {
-          update(draft, updateQueue.shift());
+          const delta = updateQueue.shift();
+          if (delta) {
+            update(draft, delta);
+          }
         }
       });
     }
   } catch (e) {
-    error = e;
+    error = e as Error;
     subscription.unsubscribe();
     subscription = undefined;
   } finally {
@@ -141,18 +163,23 @@ const initialize = async () => {
   }
 };
 
-const unsubscribe = (callback: Callback) => {
+const unsubscribe = (callback: MarketsDataProviderCallback) => {
   callbacks.splice(callbacks.indexOf(callback), 1);
   if (callbacks.length === 0) {
-    subscription.unsubscribe();
-    subscription = undefined;
-    data = undefined;
+    if (subscription) {
+      subscription.unsubscribe();
+      subscription = undefined;
+    }
+    data = null;
     error = undefined;
     loading = false;
   }
 };
 
-export const subscribe = (c: ApolloClient<object>, callback) => {
+export const marketsDataProvider = (
+  c: ApolloClient<object>,
+  callback: MarketsDataProviderCallback
+) => {
   if (!client) {
     client = c;
   }
