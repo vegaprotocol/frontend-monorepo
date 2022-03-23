@@ -46,6 +46,7 @@ function useFetch<T = unknown>(
   const [state, dispatch] = useReducer(fetchReducer, initialState);
   const fetchCallback = useCallback(() => {
     if (!url) return;
+    cancelRequest.current = false;
 
     const fetchData = async () => {
       dispatch({ type: ActionType.LOADING });
