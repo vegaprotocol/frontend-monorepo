@@ -12,9 +12,8 @@ import {
   TableCell,
 } from '../../../components/table';
 import { TxsPerBlock } from '../../../components/txs/txs-per-block';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Loader } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../router-config';
-import { SplashLoader } from '../../../components/splash-loader';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -27,7 +26,7 @@ const Block = () => {
   const header = blockData?.result.block.header;
 
   if (loading) {
-    return <SplashLoader />;
+    return <Loader />;
   }
 
   if (!header || error) {
