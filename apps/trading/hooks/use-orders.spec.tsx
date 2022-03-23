@@ -15,7 +15,7 @@ import {
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
 import { ReactNode } from 'react';
-import { ORDERS_QUERY, ORDERS_SUB, useOrdersImpl } from './use-orders';
+import { ORDERS_QUERY, ORDERS_SUB, useOrders } from './use-orders';
 
 const keypair = { pub: '0x123' } as VegaKeyExtended;
 const defaultWalletContext = {
@@ -73,7 +73,7 @@ function setup(
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
-  return renderHook(() => useOrdersImpl(), { wrapper });
+  return renderHook(() => useOrders(), { wrapper });
 }
 
 test('Fetches and subscribes to orders and merges appropriately', async () => {

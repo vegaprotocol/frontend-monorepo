@@ -12,7 +12,6 @@ jest.mock('@vegaprotocol/ui-toolkit', () => {
 
 describe('Index', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Index />);
-    expect(baseElement).toBeTruthy();
+    render(<Index />);
   });
 });

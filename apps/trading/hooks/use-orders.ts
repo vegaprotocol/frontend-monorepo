@@ -7,7 +7,6 @@ import {
   OrdersVariables,
   OrderFields,
 } from '@vegaprotocol/graphql';
-import { singletonHook } from 'react-singleton-hook';
 import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -66,7 +65,7 @@ interface UseOrders {
   loading: boolean;
 }
 
-export const useOrdersImpl = () => {
+export const useOrders = (): UseOrders => {
   const client = useApolloClient();
   const { keypair } = useVegaWallet();
   const [orders, setOrders] = useState<OrderFields[]>([]);
@@ -139,11 +138,3 @@ export const useOrdersImpl = () => {
 
   return { orders, error, loading };
 };
-
-const initial = {
-  orders: [],
-  error: null,
-  loading: false,
-};
-
-export const useOrders = singletonHook<UseOrders>(initial, useOrdersImpl);

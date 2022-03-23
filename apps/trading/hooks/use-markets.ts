@@ -1,5 +1,4 @@
 import { gql, useApolloClient } from '@apollo/client';
-import { singletonHook } from 'react-singleton-hook';
 import {
   Markets,
   Markets_markets,
@@ -62,7 +61,7 @@ interface UseMarkets {
   loading: boolean;
 }
 
-export const useMarketsImpl = () => {
+export const useMarkets = (): UseMarkets => {
   const client = useApolloClient();
   const [markets, setMarkets] = useState<Markets_markets[]>([]);
   const [error, setError] = useState<Error | null>(null);
@@ -127,11 +126,3 @@ export const useMarketsImpl = () => {
 
   return { markets, error, loading };
 };
-
-const initial = {
-  markets: [],
-  error: null,
-  loading: false,
-};
-
-export const useMarkets = singletonHook<UseMarkets>(initial, useMarketsImpl);

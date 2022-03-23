@@ -2,6 +2,7 @@ import {
   Orders_party_orders,
   OrderTimeInForce,
   OrderStatus,
+  Side,
 } from '@vegaprotocol/graphql';
 import {
   formatNumber,
@@ -43,12 +44,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
         headerName="Amount"
         field="size"
         valueFormatter={({ value, data }: ValueFormatterParams) => {
-          let prefix = '';
-          if (data.side === 'Buy') {
-            prefix = '+';
-          } else if (data.side === 'Sell') {
-            prefix = '-';
-          }
+          const prefix = data.side === Side.Buy ? '+' : '-';
           return prefix + value;
         }}
       />
