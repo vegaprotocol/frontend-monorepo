@@ -18,12 +18,12 @@ type Action<T> =
   | { type: ActionType.FETCHED; payload: T }
   | { type: ActionType.ERROR; error: Error };
 
-function useFetch<T = unknown>(
-  url?: string,
+function useFetch<T>(
+  url: string,
   options?: RequestInit
 ): { state: State<T>; refetch: () => void } {
   // Used to prevent state update if the component is unmounted
-  const cancelRequest = useRef<boolean>(false);
+  const cancelRequest = useRef<{ [key: string]: boolean }>({ [url]: false });
 
   const initialState: State<T> = {
     error: undefined,
@@ -46,7 +46,6 @@ function useFetch<T = unknown>(
   const [state, dispatch] = useReducer(fetchReducer, initialState);
   const fetchCallback = useCallback(() => {
     if (!url) return;
-    cancelRequest.current = false;
 
     const fetchData = async () => {
       dispatch({ type: ActionType.LOADING });
@@ -62,11 +61,11 @@ function useFetch<T = unknown>(
           // @ts-ignore - data.error
           throw new Error(data.error);
         }
-        if (cancelRequest.current) return;
+        if (cancelRequest.current[url]) return;
 
         dispatch({ type: ActionType.FETCHED, payload: data });
       } catch (error) {
-        if (cancelRequest.current) return;
+        if (cancelRequest.current[url]) return;
 
         dispatch({ type: ActionType.ERROR, error: error as Error });
       }
@@ -79,13 +78,15 @@ function useFetch<T = unknown>(
   }, [url]);
 
   useEffect(() => {
+    const cancel = cancelRequest.current;
+    cancel[url] = false;
     fetchCallback();
     // Use the cleanup function for avoiding a possibly...
     // ...state update after the component was unmounted
     return () => {
-      cancelRequest.current = true;
+      cancel[url] = true;
     };
-  }, [fetchCallback]);
+  }, [fetchCallback, url]);
 
   return {
     state,
