@@ -4,14 +4,10 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '../../components/deal-ticket-container';
-import { OrderListContainer } from '../..//components/order-list-container';
+import { OrderListContainer } from '../../components/order-list-container';
+import { ChartContainer } from '../../components/chart-container';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 
-const Chart = () => (
-  <Splash>
-    <p>Chart</p>
-  </Splash>
-);
 const Orderbook = () => (
   <Splash>
     <p>Orderbook</p>
@@ -36,7 +32,7 @@ const Trades = () => (
 type TradingView = keyof typeof TradingViews;
 
 const TradingViews = {
-  chart: Chart,
+  chart: ChartContainer,
   ticket: DealTicketContainer,
   orderbook: Orderbook,
   orders: OrderListContainer,
@@ -62,7 +58,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <h1>Market: {market.name}</h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
-        <TradingViews.chart />
+        <TradingViews.chart market={market} />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <TradingViews.ticket market={market} />

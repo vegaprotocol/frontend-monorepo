@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "chart": "libs/chart",
     "deal-ticket": "libs/deal-ticket",
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",

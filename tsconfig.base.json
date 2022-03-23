@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@vegaprotocol/chart": ["libs/chart/src/index.ts"],
       "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
       "@vegaprotocol/graphql": ["libs/graphql/src/index.ts"],
       "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
