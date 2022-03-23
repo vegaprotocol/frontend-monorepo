@@ -39,7 +39,11 @@ const Block = () => {
       <RouteTitle>BLOCK {block}</RouteTitle>
       <div className="grid grid-cols-2 gap-16">
         <Link to={`/${Routes.BLOCKS}/${Number(block) - 1}`}>
-          <Button className="w-full" variant="secondary">
+          <Button
+            className="w-full"
+            disabled={Number(block) === 1}
+            variant="secondary"
+          >
             Previous
           </Button>
         </Link>
