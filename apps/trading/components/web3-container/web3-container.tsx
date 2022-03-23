@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import { Connectors } from '../../lib/web3-connectors';
 import { PageQueryContainer } from '../page-query-container';
 
-interface EthereumConfig {
+export interface EthereumConfig {
   network_id: string;
   chain_id: string;
   confirmations: number;
