@@ -54,7 +54,7 @@ export default class BasePage {
   validateSearchDisplayed() {
     cy.getByTestId(this.blockExplorerHeader).should(
       'have.text',
-      'Vega Block Explorer'
+      'Vega Explorer'
     );
     cy.getByTestId(this.searchField).should('be.visible');
   }
