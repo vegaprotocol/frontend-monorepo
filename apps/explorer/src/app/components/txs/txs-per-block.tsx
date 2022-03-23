@@ -31,18 +31,18 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
 
   return (
     <RenderFetched error={error} loading={loading} className="text-body-large">
-      <div className="overflow-x-auto whitespace-nowrap mb-28">
-        <table className="w-full">
-          <thead>
-            <tr className="font-mono">
-              <td>Transaction</td>
-              <td>From</td>
-              <td>Type</td>
-            </tr>
-          </thead>
-          <tbody>
-            {decodedBlockData &&
-              decodedBlockData.map(({ TxHash, PubKey, Type }) => {
+      {decodedBlockData && decodedBlockData.length ? (
+        <div className="overflow-x-auto whitespace-nowrap mb-28">
+          <table className="w-full">
+            <thead>
+              <tr className="font-mono">
+                <td>Transaction</td>
+                <td>From</td>
+                <td>Type</td>
+              </tr>
+            </thead>
+            <tbody>
+              {decodedBlockData.map(({ TxHash, PubKey, Type }) => {
                 return (
                   <tr key={TxHash} data-testid="transaction-row">
                     <td>
@@ -71,9 +71,14 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                   </tr>
                 );
               })}
-          </tbody>
-        </table>
-      </div>
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="font-mono mb-28">
+          No transactions in block {blockHeight}
+        </div>
+      )}
     </RenderFetched>
   );
 };
