@@ -1,11 +1,10 @@
 module.exports = {
-  displayName: 'stats-mainnet',
+  displayName: 'order-list',
   preset: '../../jest.preset.js',
   transform: {
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/stats-mainnet',
+  coverageDirectory: '../../coverage/libs/order-list',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

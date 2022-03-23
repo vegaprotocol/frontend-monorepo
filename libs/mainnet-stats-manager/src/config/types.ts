@@ -18,12 +18,14 @@ export interface Stats {
   chainId: string;
 }
 
+// eslint-disable-next-line
 export type value = any;
 export type goodThreshold = (...args: value[]) => boolean;
 
 export interface StatFields {
   title: string;
   goodThreshold?: goodThreshold;
+  // eslint-disable-next-line
   formatter?: (arg0: value) => any;
   promoted?: boolean;
   value?: value;

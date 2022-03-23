@@ -68,7 +68,7 @@ export default class BasePage {
       });
 
       cy.get('.language-json')
-        .each(($asset, index, $list) => {
+        .each(($asset) => {
           expect($asset).to.not.be.empty;
         })
         .then(($list) => {
