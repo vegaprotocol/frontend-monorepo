@@ -12,23 +12,24 @@ interface MarketListTableProps {
   onRowClicked: (marketId: string) => void;
 }
 
+export const getRowNodeId = (data: { id: string }) => data.id;
+
 export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
   ({ markets, onRowClicked }, ref) => {
-    const [initialMarkets] = useState(markets);
-    const getRowNodeId = (data: Markets_markets) => data.id;
-
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate="No markets"
-        rowData={initialMarkets}
+        rowData={markets}
         getRowNodeId={getRowNodeId}
         ref={ref}
         defaultColDef={{
           flex: 1,
           resizable: true,
         }}
-        onRowClicked={({ data }) => onRowClicked(data.id)}
+        onRowClicked={({ data }: { data: Markets_markets }) =>
+          onRowClicked(data.id)
+        }
         components={{ PriceCell }}
       >
         <AgGridColumn

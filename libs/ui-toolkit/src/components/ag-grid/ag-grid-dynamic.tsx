@@ -10,7 +10,7 @@ import type {
 type Props = (AgGridReactProps | AgReactUiProps) & {
   style?: React.CSSProperties;
   className?: string;
-  ref?: React.Ref<AgGridReact>;
+  gridRef?: React.Ref<AgGridReact>;
 };
 
 // https://stackoverflow.com/questions/69433673/nextjs-reactdomserver-does-not-yet-support-suspense
@@ -23,6 +23,6 @@ const AgGridDynamicInternal = dynamic<Props>(
   }
 );
 
-export const AgGridDynamic = React.forwardRef<AgGridReact>((props, ref) => (
-  <AgGridDynamicInternal {...props} ref={ref} />
-));
+export const AgGridDynamic = React.forwardRef<AgGridReact, Props>(
+  (props, ref) => <AgGridDynamicInternal {...props} gridRef={ref} />
+);

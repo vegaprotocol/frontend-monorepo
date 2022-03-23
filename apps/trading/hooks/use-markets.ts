@@ -81,21 +81,26 @@ export const useMarkets = (updateCallback?: (data: MarketDataSub_marketData) => 
 
   // Make initial fetch
   useEffect(() => {
-    (async () => {
+    const fetchOrders = async () => {
       setLoading(true);
+
       try {
         const res = await client.query<Markets>({
           query: MARKETS_QUERY,
         });
+
         if (!res.data.markets?.length) return;
+
         setMarkets(res.data.markets);
       } catch (err) {
         setError(err);
       } finally {
         setLoading(false);
       }
-    })();
-  }, [client]);
+    };
+
+    fetchOrders();
+  }, [mergeMarketData, client]);
 
   // Start subscription
   useEffect(() => {
@@ -106,9 +111,6 @@ export const useMarkets = (updateCallback?: (data: MarketDataSub_marketData) => 
         query: MARKET_DATA_SUB,
       })
       .subscribe(({ data }) => {
-        if (updateCallback) {
-          updateCallback(data.marketData);
-        }
         mergeMarketData(data.marketData);
       });
 
@@ -117,7 +119,7 @@ export const useMarkets = (updateCallback?: (data: MarketDataSub_marketData) => 
         sub.unsubscribe();
       }
     };
-  }, [client, mergeMarketData, updateCallback]);
+  }, [client, mergeMarketData]);
 
   return { markets, error, loading };
 };

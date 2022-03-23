@@ -15,13 +15,16 @@ const AgGridDarkTheme = dynamic<{ children: React.ReactElement }>(
   { ssr: false }
 );
 
-export const AgGridThemed = React.forwardRef<
-  AgGridReact,
-  (AgGridReactProps | AgReactUiProps) & {
-    style?: React.CSSProperties;
-    className?: string;
-  }
->(({ style, className, ...props }, ref) => {
+export const AgGridThemed = ({
+  style,
+  className,
+  gridRef,
+  ...props
+}: (AgGridReactProps | AgReactUiProps) & {
+  style?: React.CSSProperties;
+  className?: string;
+  gridRef?: React.ForwardedRef<AgGridReact>;
+}) => {
   const theme = React.useContext(ThemeContext);
   return (
     <div
@@ -32,13 +35,13 @@ export const AgGridThemed = React.forwardRef<
     >
       {theme === 'dark' ? (
         <AgGridDarkTheme>
-          <AgGridReact {...props} ref={ref} />
+          <AgGridReact {...props} ref={gridRef} />
         </AgGridDarkTheme>
       ) : (
         <AgGridLightTheme>
-          <AgGridReact {...props} ref={ref} />
+          <AgGridReact {...props} ref={gridRef} />
         </AgGridLightTheme>
       )}
     </div>
   );
-});
+};
