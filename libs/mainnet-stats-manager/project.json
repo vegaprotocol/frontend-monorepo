@@ -1,0 +1,43 @@
+{
+  "root": "libs/mainnet-stats-manager",
+  "sourceRoot": "libs/mainnet-stats-manager/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/mainnet-stats-manager",
+        "tsConfig": "libs/mainnet-stats-manager/tsconfig.lib.json",
+        "project": "libs/mainnet-stats-manager/package.json",
+        "entryFile": "libs/mainnet-stats-manager/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/mainnet-stats-manager/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/mainnet-stats-manager/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/mainnet-stats-manager"],
+      "options": {
+        "jestConfig": "libs/mainnet-stats-manager/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

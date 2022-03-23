@@ -8,6 +8,11 @@ import { Intent } from '../../utils/intent';
 export default {
   title: 'Callout',
   component: Callout,
+  argTypes: {
+    title: {
+      type: 'string',
+    },
+  },
 } as ComponentMeta<typeof Callout>;
 
 const Template: ComponentStory<typeof Callout> = (args) => (

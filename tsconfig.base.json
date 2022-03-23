@@ -17,6 +17,9 @@
     "paths": {
       "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
       "@vegaprotocol/graphql": ["libs/graphql/src/index.ts"],
+      "@vegaprotocol/mainnet-stats-manager": [
+        "libs/mainnet-stats-manager/src/index.ts"
+      ],
       "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
       "@vegaprotocol/order-list": ["libs/order-list/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],

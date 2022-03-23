@@ -14,7 +14,7 @@ export const Nav = () => {
             }`
           }
         >
-          {r.name}
+          {r.text}
         </NavLink>
       ))}
     </nav>
