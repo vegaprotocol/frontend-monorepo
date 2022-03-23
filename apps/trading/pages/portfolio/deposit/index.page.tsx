@@ -1,14 +1,14 @@
 import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '../../../components/web3-provider';
+import { Web3Container } from '../../../components/web3-container';
 
 const Deposit = () => {
   return (
-    <Web3Provider>
+    <Web3Container>
       <div>
         <h1>Deposit</h1>
         <Info />
       </div>
-    </Web3Provider>
+    </Web3Container>
   );
 };
 
