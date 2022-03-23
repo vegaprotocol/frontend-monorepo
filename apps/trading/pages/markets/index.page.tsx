@@ -3,10 +3,11 @@ import { useRouter } from 'next/router';
 import { MarketListTable } from '@vegaprotocol/market-list';
 import { useMarkets } from '../../hooks/use-markets';
 import { AsyncRenderer } from '../../components/async-renderer';
+import { updateCallback } from '@vegaprotocol/react-helpers';
 
 const Markets = () => {
   const { pathname, push } = useRouter();
-  const { markets, error, loading } = useMarkets();
+  const { markets, error, loading } = useMarkets(updateCallback);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={markets}>
@@ -22,6 +23,15 @@ const Markets = () => {
   );
 };
 
-const TwoMarkets = () => (<><div style={{height: '50%'}}><Markets /></div><div style={{height: '50%'}}><Markets /></div></>)
+const TwoMarkets = () => (
+  <>
+    <div style={{ height: '50%' }}>
+      <Markets />
+    </div>
+    <div style={{ height: '50%' }}>
+      <Markets />
+    </div>
+  </>
+);
 
 export default TwoMarkets;

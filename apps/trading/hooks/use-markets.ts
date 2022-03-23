@@ -62,7 +62,7 @@ interface UseMarkets {
   loading: boolean;
 }
 
-export const useMarkets = (): UseMarkets => {
+export const useMarkets = (updateCallback?: (data: MarketDataSub_marketData) => void): UseMarkets => {
   const client = useApolloClient();
   const [markets, setMarkets] = useState<Markets_markets[]>([]);
   const [error, setError] = useState<Error | null>(null);
@@ -81,26 +81,21 @@ export const useMarkets = (): UseMarkets => {
 
   // Make initial fetch
   useEffect(() => {
-    const fetchOrders = async () => {
+    (async () => {
       setLoading(true);
-
       try {
         const res = await client.query<Markets>({
           query: MARKETS_QUERY,
         });
-
         if (!res.data.markets?.length) return;
-
         setMarkets(res.data.markets);
       } catch (err) {
         setError(err);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchOrders();
-  }, [mergeMarketData, client]);
+    })();
+  }, [client]);
 
   // Start subscription
   useEffect(() => {
@@ -111,6 +106,9 @@ export const useMarkets = (): UseMarkets => {
         query: MARKET_DATA_SUB,
       })
       .subscribe(({ data }) => {
+        if (updateCallback) {
+          updateCallback(data.marketData);
+        }
         mergeMarketData(data.marketData);
       });
 
@@ -119,7 +117,7 @@ export const useMarkets = (): UseMarkets => {
         sub.unsubscribe();
       }
     };
-  }, [client, mergeMarketData]);
+  }, [client, mergeMarketData, updateCallback]);
 
   return { markets, error, loading };
 };
