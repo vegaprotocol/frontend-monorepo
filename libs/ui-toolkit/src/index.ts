@@ -1,12 +1,9 @@
-import * as EthereumUtils from './utils/web3';
-
 // Components
 export { AgGridLazy, AgGridDynamic } from './components/ag-grid';
 export { AsyncRenderer } from './components/async-renderer';
 export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
 export { CopyWithTooltip } from './components/copy-with-tooltip';
-export { EthereumUtils };
 export { EtherscanLink } from './components/etherscan-link';
 export { FormGroup } from './components/form-group';
 export { Icon } from './components/icon';

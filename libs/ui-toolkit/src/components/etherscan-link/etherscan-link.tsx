@@ -1,16 +1,15 @@
+import classNames from 'classnames';
+import type { AnchorHTMLAttributes } from 'react';
 import React from 'react';
-import type { EthereumChainId } from '../../utils/web3';
 
-const etherscanUrls: Record<EthereumChainId, string> = {
-  '0x1': 'https://etherscan.io',
-  '0x3': 'https://ropsten.etherscan.io',
-  '0x4': 'https://rinkeby.etherscan.io',
-  '0x5': 'https://goerli.etherscan.io',
-  '0x2a': 'https://kovan.etherscan.io',
+const etherscanUrls: Record<number, string> = {
+  1: 'https://etherscan.io',
+  3: 'https://ropsten.etherscan.io',
 };
 
-interface BaseEtherscanLinkProps {
-  chainId: EthereumChainId | null;
+interface BaseEtherscanLinkProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  chainId: number;
   text?: string;
 }
 
@@ -32,6 +31,7 @@ type EtherscanLinkProps =
 export const EtherscanLink = ({
   chainId,
   text,
+  className,
   ...props
 }: EtherscanLinkProps) => {
   let hash: string;
@@ -40,13 +40,16 @@ export const EtherscanLink = ({
     () => etherscanLinkCreator(chainId),
     [chainId]
   );
+  const anchorClasses = classNames('underlin', className);
 
   if ('tx' in props) {
     hash = props.tx;
     txLink = createLink ? createLink.tx(hash) : null;
-  } else {
+  } else if ('address' in props) {
     hash = props.address;
     txLink = createLink ? createLink.address(hash) : null;
+  } else {
+    throw new Error('Must provider either "tx" or "address" prop');
   }
 
   const linkText = text ? text : hash;
@@ -62,16 +65,14 @@ export const EtherscanLink = ({
       href={txLink}
       target="_blank"
       rel="noreferrer"
-      className="etherscan-link"
+      className={anchorClasses}
     >
       {linkText}
     </a>
   );
 };
 
-function etherscanLinkCreator(chainId: EthereumChainId | null) {
-  if (!chainId) return null;
-
+function etherscanLinkCreator(chainId: number) {
   const url = etherscanUrls[chainId];
 
   return {

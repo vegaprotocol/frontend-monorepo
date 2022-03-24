@@ -80,7 +80,7 @@ export const DepositForm = ({
   }, [assetId, onSelectAsset]);
 
   return (
-    <form onSubmit={handleSubmit(onDeposit)}>
+    <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
       <FormGroup label="Asset">
         <Select {...register('asset', { required: 'Required' })}>
           <option value="" disabled>
@@ -116,7 +116,7 @@ export const DepositForm = ({
       </FormGroup>
       <FormGroup label="Amount" className="relative">
         <Input
-          type="text"
+          type="number"
           autoComplete="off"
           {...register('amount', { required: 'Required' })}
         />

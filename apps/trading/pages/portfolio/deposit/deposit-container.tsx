@@ -16,7 +16,7 @@ import {
   DepositEventVariables,
   DepositEvent_busEvents_event_Deposit,
 } from '@vegaprotocol/graphql';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { Dialog, EtherscanLink, Intent } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export enum TxState {
@@ -98,6 +98,7 @@ export const DepositManager = ({
     perform: performApprove,
     status: statusApprove,
     confirmations: confirmationsApprove,
+    txHash: txHashApprove,
   } = useEthereumTransaction(() =>
     tokenContract?.approve(
       ethereumConfig.collateral_bridge_contract.address,
@@ -109,6 +110,7 @@ export const DepositManager = ({
     perform: performDeposit,
     status: statusDeposit,
     confirmations: confirmationsDeposit,
+    txHash: txHashDeposit,
     finalizedDeposit,
   } = useDeposit(bridgeContract, ethereumConfig);
 
@@ -147,10 +149,12 @@ export const DepositManager = ({
       <ApproveDialog
         status={statusApprove}
         confirmations={confirmationsApprove}
+        txHash={txHashApprove}
       />
       <DepositDialog
         status={statusDeposit}
         finalizedDeposit={finalizedDeposit}
+        txHash={txHashDeposit}
         confirmations={confirmationsDeposit}
       />
     </>
@@ -227,13 +231,31 @@ export const useEthereumTransaction = (
 interface ApproveDialogProps {
   status: TxState;
   confirmations: number;
+  txHash: string;
 }
 
 export const ApproveDialog = ({
   status,
   confirmations,
+  txHash,
 }: ApproveDialogProps) => {
+  const { chainId } = useWeb3React();
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  const getDialogIntent = () => {
+    if (status === TxState.Requested) {
+      return Intent.Prompt;
+    }
+    if (status === TxState.Pending) {
+      return Intent.Progress;
+    }
+    if (status === TxState.Error) {
+      return Intent.Danger;
+    }
+    if (status === TxState.Complete) {
+      return Intent.Success;
+    }
+  };
 
   useEffect(() => {
     if (status !== TxState.Default) {
@@ -242,10 +264,17 @@ export const ApproveDialog = ({
   }, [status]);
 
   return (
-    <Dialog open={dialogOpen} onChange={setDialogOpen}>
+    <Dialog
+      open={dialogOpen}
+      onChange={setDialogOpen}
+      intent={getDialogIntent()}
+    >
       <div>
         <p>Transaction status: {status}</p>
         <p>Confirmations: {confirmations}</p>
+        <p>
+          <EtherscanLink tx={txHash} chainId={chainId} />
+        </p>
       </div>
     </Dialog>
   );
@@ -254,14 +283,17 @@ export const ApproveDialog = ({
 interface DepositDialogProps {
   status: TxState;
   confirmations: number;
+  txHash: string;
   finalizedDeposit: DepositEvent_busEvents_event_Deposit | null;
 }
 
 export const DepositDialog = ({
   status,
   confirmations,
+  txHash,
   finalizedDeposit,
 }: DepositDialogProps) => {
+  const { chainId } = useWeb3React();
   const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -281,9 +313,9 @@ export const DepositDialog = ({
       <div>
         <p>Transaction status: {status}</p>
         <p>Confirmations: {confirmations}</p>
-        {finalizedDeposit && (
-          <p className="break-all">Tx hash: {finalizedDeposit.txHash}</p>
-        )}
+        <p>
+          <EtherscanLink tx={txHash} chainId={chainId} />
+        </p>
       </div>
     </Dialog>
   );
@@ -349,6 +381,7 @@ const useDeposit = (
     perform,
     status,
     confirmations,
+    txHash,
     finalizedDeposit,
   };
 };
