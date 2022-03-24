@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
+import { DATA_SOURCES } from './config';
 import { Header } from './components/header';
 import { StatsManager } from '@vegaprotocol/network-stats';
+
+const envName = DATA_SOURCES.envName;
+const restEndpoint = DATA_SOURCES.restEndpoint;
+const statsEndpoint = `${restEndpoint}/statistics`;
+const nodesEndpoint = `${restEndpoint}/nodes-data`;
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(
@@ -15,7 +21,12 @@ function App() {
     >
       <div className="layout-grid w-screen justify-self-center">
         <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-        <StatsManager className="max-w-3xl px-24" />
+        <StatsManager
+          envName={envName}
+          statsEndpoint={statsEndpoint}
+          nodesEndpoint={nodesEndpoint}
+          className="max-w-3xl px-24"
+        />
       </div>
     </div>
   );
