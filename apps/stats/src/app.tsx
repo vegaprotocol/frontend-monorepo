@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Header } from './components/header';
-import { StatsManager } from '@vegaprotocol/mainnet-stats-manager';
+import { StatsManager } from '@vegaprotocol/network-stats';
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(

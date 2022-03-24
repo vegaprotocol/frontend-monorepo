@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import classnames from 'classnames';
 import { statsFields } from '../../config/stats-fields';
 import {
@@ -14,16 +14,81 @@ interface statsManagerProps {
   className?: string;
 }
 
+interface dataSourceProps {
+  title: string;
+  stats: string;
+  nodes: string;
+}
+
+const dataSources = {
+  mainnet: {
+    title: 'Mainnet',
+    stats: 'https://api.token.vega.xyz/statistics',
+    nodes: 'https://api.token.vega.xyz/nodes-data',
+  },
+  testnet: {
+    title: 'Testnet',
+    stats: 'https://lb.testnet.vega.xyz/statistics',
+    nodes: 'https://lb.testnet.vega.xyz/datanode/rest/nodes-data',
+  },
+  devnet: {
+    title: 'Devnet',
+    stats: 'https://n04.d.vega.xyz/datanode/rest/statistics',
+    nodes: 'https://n04.d.vega.xyz/datanode/rest/nodes-data',
+  },
+  stagnet1: {
+    title: 'Stagnet 1',
+    stats: 'https://n03.s.vega.xyz/datanode/rest/statistics',
+    nodes: 'https://n03.s.vega.xyz/datanode/rest/nodes-data',
+  },
+  stagnet2: {
+    title: 'Stagnet 2',
+    stats: 'https://n01.stagnet2.vega.xyz/datanode/rest/statistics',
+    nodes: 'https://n01.stagnet2.vega.xyz/datanode/rest/nodes-data',
+  },
+};
+
+const getDataSource = () => {
+  const dataNodeUrl = process.env['NX_VEGA_URL'];
+
+  if (dataNodeUrl) {
+    if (dataNodeUrl.includes('api')) {
+      return dataSources.mainnet;
+    }
+
+    if (dataNodeUrl.includes('testnet')) {
+      return dataSources.testnet;
+    }
+
+    if (dataNodeUrl.includes('n04.d')) {
+      return dataSources.devnet;
+    }
+
+    if (dataNodeUrl.includes('n03.s.vega')) {
+      return dataSources.stagnet1;
+    }
+
+    if (dataNodeUrl.includes('stagnet2')) {
+      return dataSources.stagnet2;
+    }
+  }
+
+  return dataSources.mainnet;
+};
+
 export const StatsManager = ({ className }: statsManagerProps) => {
+  const dataSource = useRef<dataSourceProps>(getDataSource());
   const [data, setData] = useState<IStructuredStats | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
+    getDataSource();
+
     async function getStats() {
       try {
         const [res1, res2] = await Promise.all([
-          fetch('https://api.token.vega.xyz/statistics'),
-          fetch('https://api.token.vega.xyz/nodes-data'),
+          fetch(dataSource.current.stats),
+          fetch(dataSource.current.nodes),
         ]);
         const [{ statistics }, { nodeData }] = await Promise.all([
           res1.json(),
@@ -79,7 +144,8 @@ export const StatsManager = ({ className }: statsManagerProps) => {
   return (
     <div className={classes}>
       <h3 className="font-alpha uppercase text-h3 pb-16 col-span-full">
-        {(error && `/ ${error}`) || (data ? '/ Mainnet' : '/ Connecting...')}
+        {(error && `/ ${error}`) ||
+          (data ? `/ ${dataSource.current.title}` : '/ Connecting...')}
       </h3>
 
       {data?.promoted ? (

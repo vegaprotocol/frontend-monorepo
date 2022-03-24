@@ -1,4 +1,4 @@
-import { StatsManager } from '@vegaprotocol/mainnet-stats-manager';
+import { StatsManager } from '@vegaprotocol/network-stats';
 
 const Home = () => {
   return (

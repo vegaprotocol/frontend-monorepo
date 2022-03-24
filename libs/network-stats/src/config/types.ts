@@ -18,6 +18,7 @@ export interface Stats {
   chainId: string;
 }
 
+// @ts-ignore investigate why series of 'ors' didn't work instead of this 'any'
 export type value = any;
 export type goodThreshold = (...args: value[]) => boolean;
 
