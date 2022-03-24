@@ -28,7 +28,6 @@ body,
 
 .template-sidebar {
   border-bottom: 1px solid $white;
-  border-top: 1px solid $white;
   display: grid;
   grid-template-rows: auto minmax(700px, 1fr);
   grid-template-columns: 300px minmax(auto, 1fr);
