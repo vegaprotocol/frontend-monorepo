@@ -12,9 +12,8 @@ export const Navbar = () => {
         </a>
       </Link>
       {[
-        { name: 'Trading', path: '/', exact: true },
+        { name: 'Trading', path: '/markets' },
         { name: 'Portfolio', path: '/portfolio' },
-        { name: 'Markets', path: '/markets' },
       ].map((route) => (
         <NavLink key={route.path} {...route} />
       ))}
@@ -35,7 +34,7 @@ const NavLink = ({ name, path, exact }: NavLinkProps) => {
   return (
     <AnchorButton
       variant={isActive ? 'accent' : 'inline'}
-      className="px-16 py-6 h-[38px] text-h4 uppercase border-0 self-end"
+      className="px-16 py-6 h-[38px] uppercase border-0 self-end xs:text-ui sm:text-body-large md:text-h5 lg:text-h4"
       href={path}
       onClick={(e) => {
         e.preventDefault();

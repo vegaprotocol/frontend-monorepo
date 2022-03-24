@@ -43,6 +43,7 @@ export const OrderList = ({ orders }: OrderListProps) => {
       <AgGridColumn
         headerName="Amount"
         field="size"
+        cellClass="font-mono"
         valueFormatter={({ value, data }: ValueFormatterParams) => {
           const prefix = data.side === Side.Buy ? '+' : '-';
           return prefix + value;
@@ -62,12 +63,14 @@ export const OrderList = ({ orders }: OrderListProps) => {
       <AgGridColumn
         headerName="Filled"
         field="remaining"
+        cellClass="font-mono"
         valueFormatter={({ data }: ValueFormatterParams) => {
           return `${Number(data.size) - Number(data.remaining)}/${data.size}`;
         }}
       />
       <AgGridColumn
         field="price"
+        cellClass="font-mono"
         valueFormatter={({ value, data }: ValueFormatterParams) => {
           if (data.type === 'Market') {
             return '-';
