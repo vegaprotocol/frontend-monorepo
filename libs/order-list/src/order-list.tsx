@@ -35,6 +35,8 @@ export const OrderList = ({ orders }: OrderListProps) => {
         gridApi.current = params.api;
       }}
       getRowNodeId={(data) => data.id}
+      rowHeight={20}
+      headerHeight={22}
     >
       <AgGridColumn
         headerName="Market"
