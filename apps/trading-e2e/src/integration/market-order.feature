@@ -1,5 +1,5 @@
 Feature: Market orders
-  @manual
+
   Scenario Outline: Successfull market buy orders
     Given I am on the homepage
     And I connect to Vega Wallet
@@ -23,18 +23,17 @@ Feature: Market orders
 
     Examples:
       | limitOrderType |
-      # | IOC            |
-      # | FOK            |
+      | IOC            |
+      | FOK            |
       | GTT            |
       # | GFA            |
-      # | GFN            |
+      | GFN            |
 
-  @manual
   Scenario Outline: Successfull market sell order
     Given I am on the homepage
     And I connect to Vega Wallet
     And I navigate to markets page
-    When I click on market for "BTCUSD"
+    When I click on active market
     And place a sell '<marketOrderType>' market order
     # Then order is successfull
 
@@ -43,30 +42,38 @@ Feature: Market orders
       | FOK             |
       | IOC             |
 
-  @manual
   Scenario Outline: Successfull limit sell order
     Given I am on the homepage
     And I connect to Vega Wallet
     And I navigate to markets page
-    When I click on market for "BTCUSD"
-    And place a buy '<limitOrderType>' limit order
+    When I click on active market
+    And place a sell '<limitOrderType>' limit order
 
     Examples:
       | limitOrderType |
       | IOC            |
       | FOK            |
       | GTT            |
-      | GFA            |
+      # | GFA            |
       | GFN            |
 
-  @manual
-  Scenario: Unsuccessfull buy/sell because lack of funds
+
+  Scenario: Unsuccessfull order because lack of funds
     Given I am on the homepage
-    And I am connected to a wallet with no assets
+    And I connect to Vega Wallet
+    # In the future change step to connect wallet with no funds
     And I navigate to markets page
-    When I click on market for "BTCUSD"
+    When I click on active market
     And place a buy 'FOK' market order
-    Then error message is displayed
+    Then error message for insufficient funds is displayed
+
+  Scenario: Unable to order because market is suspended
+    Given I am on the homepage
+    And I connect to Vega Wallet
+    And I navigate to markets page
+    When I click on suspended market
+    Then place order button is disabled
+    And market suspended error is shown
 
   @manual
   Scenario: Unsuccessfull buy/sell because wallet is not connected
