@@ -4,6 +4,6 @@ module.exports = {
       name: 'vega',
       url: process.env.NX_VEGA_URL,
     },
-    includes: ['../../{apps,lib}/**/*.{ts,tsx,js,jsx,graphql}'],
+    includes: ['../../{apps,libs}/**/*.{ts,tsx,js,jsx,graphql}'],
   },
 };
