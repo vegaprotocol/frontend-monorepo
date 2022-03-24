@@ -1,4 +1,5 @@
 import { Deposit_assets } from '@vegaprotocol/graphql';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,
@@ -9,9 +10,11 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 
 interface FormFields {
+  asset: string;
   from: string;
   to: string;
   amount: string;
@@ -22,6 +25,12 @@ interface DepositFormProps {
   selectedAsset?: Deposit_assets;
   onSelectAsset: (assetId: string) => void;
   available: BigNumber;
+  submitApprove: () => Promise<void>;
+  submitDeposit: (
+    contractAddress: string,
+    amount: string,
+    vegaKey: string
+  ) => Promise<void>;
 }
 
 export const DepositForm = ({
@@ -29,6 +38,8 @@ export const DepositForm = ({
   selectedAsset,
   onSelectAsset,
   available,
+  submitApprove,
+  submitDeposit,
 }: DepositFormProps) => {
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
@@ -36,20 +47,42 @@ export const DepositForm = ({
     register,
     handleSubmit,
     setValue,
+    setError,
+    control,
     formState: { errors },
-  } = useForm<FormFields>();
+  } = useForm<FormFields>({
+    defaultValues: {
+      asset: selectedAsset ? selectedAsset.id : '',
+      from: account,
+      to: keypair.pub,
+    },
+  });
 
-  const onSubmit = async (fields: FormFields) => {
-    console.log(fields);
+  const onDeposit = async (fields: FormFields) => {
+    if (selectedAsset.source.__typename !== 'ERC20') {
+      return;
+    }
+    submitDeposit(
+      selectedAsset.source.contractAddress,
+      removeDecimal(fields.amount, selectedAsset.decimals),
+      `0x${keypair.pub}`
+    );
   };
 
+  const onApprove = async (fields: FormFields) => {
+    submitApprove();
+  };
+
+  const assetId = useWatch({ name: 'asset', control });
+
+  useEffect(() => {
+    onSelectAsset(assetId);
+  }, [assetId, onSelectAsset]);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onDeposit)}>
       <FormGroup label="Asset">
-        <Select
-          value={selectedAsset?.id || ''}
-          onChange={(e) => onSelectAsset(e.target.value)}
-        >
+        <Select {...register('asset', { required: 'Required' })}>
           <option value="" disabled>
             Please select
           </option>
@@ -59,51 +92,35 @@ export const DepositForm = ({
             </option>
           ))}
         </Select>
+        {errors.asset?.message && (
+          <InputError intent="danger" className="mt-4">
+            {errors.asset.message}
+          </InputError>
+        )}
       </FormGroup>
       <FormGroup label="From (Ethereum address)">
         <Input {...register('from', { required: 'Required' })} />
-        <FormGroupSub>
-          {errors.from?.message && (
-            <InputError intent="danger" className="mt-4">
-              {errors.from.message}
-            </InputError>
-          )}
-          {account && (
-            <Button
-              variant="inline"
-              className="ml-auto"
-              onClick={() => setValue('from', account)}
-            >
-              Use connected
-            </Button>
-          )}
-        </FormGroupSub>
+        {errors.from?.message && (
+          <InputError intent="danger" className="mt-4">
+            {errors.from.message}
+          </InputError>
+        )}
       </FormGroup>
       <FormGroup label="To (Vega key)">
         <Input {...register('to', { required: 'Required' })} />
-        <FormGroupSub>
-          {errors.to?.message && (
-            <InputError intent="danger" className="mt-4">
-              {errors.to.message}
-            </InputError>
-          )}
-          {keypair?.pub && (
-            <Button
-              variant="inline"
-              className="ml-auto"
-              onClick={() => setValue('to', keypair.pub)}
-            >
-              Use connected
-            </Button>
-          )}
-        </FormGroupSub>
+        {errors.to?.message && (
+          <InputError intent="danger" className="mt-4">
+            {errors.to.message}
+          </InputError>
+        )}
       </FormGroup>
-      <FormGroup label="Amount">
+      <FormGroup label="Amount" className="relative">
         <Input
-          type="number"
+          type="text"
+          autoComplete="off"
           {...register('amount', { required: 'Required' })}
         />
-        <FormGroupSub>
+        <div className="flex gap-4">
           {errors.amount?.message && (
             <InputError intent="danger" className="mt-4">
               {errors.amount.message}
@@ -114,23 +131,26 @@ export const DepositForm = ({
               variant="inline"
               className="ml-auto"
               onClick={() => {
-                console.log(available && available.toNumber());
                 setValue(
                   'amount',
                   available ? available.toFixed(selectedAsset.decimals) : '0'
                 );
+                setError('amount', null);
               }}
             >
               Use maximum
             </Button>
           )}
-        </FormGroupSub>
+        </div>
       </FormGroup>
-      <Button type="submit">Deposit</Button>
+      <div className="flex gap-4">
+        <Button type="submit" className="flex-1">
+          Deposit
+        </Button>
+        <Button onClick={handleSubmit(onApprove)} className="flex-1">
+          Approve
+        </Button>
+      </div>
     </form>
   );
-};
-
-const FormGroupSub = ({ children }) => {
-  return <div className="flex justify-between">{children}</div>;
 };
