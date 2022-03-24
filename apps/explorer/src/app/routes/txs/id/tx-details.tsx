@@ -55,7 +55,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>Encoded tnx</TableCell>
+        <TableCell>Encoded txn</TableCell>
         <TableCell modifier="bordered" data-testid="encoded-tnx">
           <TruncateInline
             text={txData.tx}
