@@ -9,7 +9,9 @@ export default class BasePage {
   networkParametersUrl = '/network-parameters';
   validatorsUrl = '/validators';
   blockExplorerHeader = 'explorer-header';
-  searchField = 'search-input';
+  searchField = 'search';
+  searchButton = 'search-button';
+  searchError = 'search-error';
 
   navigateToTxs() {
     cy.get(`a[href='${this.transactionsUrl}']`).click();
@@ -48,7 +50,17 @@ export default class BasePage {
   }
 
   search(searchText) {
-    cy.getByTestId(this.searchField).type(searchText);
+    if (searchText) {
+      cy.getByTestId(this.searchField).type(searchText);
+    }
+  }
+
+  clickSearch() {
+    cy.getByTestId(this.searchButton).click();
+  }
+
+  validateUrl(expectedUrl) {
+    cy.url().should('include', expectedUrl);
   }
 
   validateSearchDisplayed() {
@@ -57,6 +69,10 @@ export default class BasePage {
       'Vega Explorer'
     );
     cy.getByTestId(this.searchField).should('be.visible');
+  }
+
+  validateSearchErrorDisplayed(errorMessage) {
+    cy.getByTestId(this.searchError).should('have.text', errorMessage);
   }
 
   validateBlockDataDisplayed(headerTestId) {
@@ -68,7 +84,7 @@ export default class BasePage {
       });
 
       cy.get('.language-json')
-        .each(($asset, index, $list) => {
+        .each(($asset) => {
           expect($asset).to.not.be.empty;
         })
         .then(($list) => {

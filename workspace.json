@@ -7,6 +7,7 @@
     "graphql": "libs/graphql",
     "market-list": "libs/market-list",
     "network-stats": "libs/network-stats",
+    "order-list": "libs/order-list",
     "react-helpers": "libs/react-helpers",
     "stats": "apps/stats",
     "stats-e2e": "apps/stats-e2e",

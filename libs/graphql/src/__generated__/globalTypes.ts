@@ -162,6 +162,18 @@ export enum OrderStatus {
   Stopped = "Stopped",
 }
 
+/**
+ * Valid order types, these determine what happens when an order is added to the book
+ */
+export enum OrderTimeInForce {
+  FOK = "FOK",
+  GFA = "GFA",
+  GFN = "GFN",
+  GTC = "GTC",
+  GTT = "GTT",
+  IOC = "IOC",
+}
+
 export enum OrderType {
   Limit = "Limit",
   Market = "Market",
@@ -222,6 +234,14 @@ export enum ProposalState {
   Passed = "Passed",
   Rejected = "Rejected",
   WaitingForNodeVote = "WaitingForNodeVote",
+}
+
+/**
+ * Whether the placer of an order is aiming to buy or sell on the market
+ */
+export enum Side {
+  Buy = "Buy",
+  Sell = "Sell",
 }
 
 export enum VoteValue {

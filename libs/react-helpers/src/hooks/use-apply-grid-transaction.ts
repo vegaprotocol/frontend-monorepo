@@ -1,5 +1,6 @@
 import { GridApi } from 'ag-grid-community';
 import { useEffect } from 'react';
+import isEqual from 'lodash/isEqual';
 
 export const useApplyGridTransaction = <T extends { id: string }>(
   data: T[],
@@ -18,7 +19,9 @@ export const useApplyGridTransaction = <T extends { id: string }>(
       const rowNode = gridApi.getRowNode(d.id);
 
       if (rowNode) {
-        update.push(d);
+        if (!isEqual(rowNode.data, d)) {
+          update.push(d);
+        }
       } else {
         add.push(d);
       }
