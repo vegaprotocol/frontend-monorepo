@@ -143,7 +143,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap gap-4 overflow-x-auto my-4 max-w-[100%]">
+      <div className="flex flex-nowrap gap-4 overflow-x-auto my-4 max-w-full">
         {Object.keys(TradingViews).map((key: TradingView) => {
           const isActive = view === key;
           const className = classNames('py-4', 'px-12', 'capitalize', {
