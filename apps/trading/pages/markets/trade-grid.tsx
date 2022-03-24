@@ -4,10 +4,10 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '../../components/deal-ticket-container';
+import { OrderListContainer } from '../..//components/order-list-container';
 
 const Chart = () => <div>TODO: Chart</div>;
 const Orderbook = () => <div>TODO: Orderbook</div>;
-const Orders = () => <div>TODO: Orders</div>;
 const Positions = () => <div>TODO: Positions</div>;
 const Collateral = () => <div>TODO: Collateral</div>;
 
@@ -17,7 +17,7 @@ const TradingViews = {
   chart: Chart,
   ticket: DealTicketContainer,
   orderbook: Orderbook,
-  orders: Orders,
+  orders: OrderListContainer,
   positions: Positions,
   collateral: Collateral,
 };

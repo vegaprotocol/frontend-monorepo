@@ -4,7 +4,6 @@ import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
-import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { SecondsAgo } from '../../../components/seconds-ago';
 import {
   Table,
@@ -12,6 +11,7 @@ import {
   TableHeader,
   TableCell,
 } from '../../../components/table';
+import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -34,7 +34,11 @@ const Block = () => {
         <TableRow modifier="bordered">
           <TableHeader scope="row">Mined by</TableHeader>
           <TableCell modifier="bordered">
-            <Link className="text-vega-yellow" to={'/validators'}>
+            <Link
+              data-testid="block-validator"
+              className="text-vega-yellow"
+              to={'/validators'}
+            >
               {header.proposer_address}
             </Link>
           </TableCell>
@@ -42,7 +46,7 @@ const Block = () => {
         <TableRow modifier="bordered">
           <TableHeader scope="row">Time</TableHeader>
           <TableCell modifier="bordered">
-            <SecondsAgo date={header.time} />
+            <SecondsAgo data-testid="block-time" date={header.time} />
           </TableCell>
         </TableRow>
       </Table>

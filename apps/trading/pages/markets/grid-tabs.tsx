@@ -71,7 +71,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           return (
-            <Tabs.Content value={child.props.name}>
+            <Tabs.Content value={child.props.name} className="h-full">
               {child.props.children}
             </Tabs.Content>
           );

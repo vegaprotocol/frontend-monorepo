@@ -1,5 +1,5 @@
-import once from 'lodash.once';
-import memoize from 'lodash.memoize';
+import once from 'lodash/once';
+import memoize from 'lodash/memoize';
 import { addDecimal } from '../decimals';
 
 const getUserLocale = () => 'default';

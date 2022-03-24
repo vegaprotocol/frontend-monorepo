@@ -1,12 +1,16 @@
 import classnames from 'classnames';
-import React from 'react';
+import React, { HTMLAttributes } from 'react';
 
-interface RouteTitleProps {
+interface RouteTitleProps extends HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;
   className?: string;
 }
 
-export const RouteTitle = ({ children, className }: RouteTitleProps) => {
+export const RouteTitle = ({
+  children,
+  className,
+  ...props
+}: RouteTitleProps) => {
   const classes = classnames(
     'font-alpha',
     'text-h3',
@@ -15,5 +19,9 @@ export const RouteTitle = ({ children, className }: RouteTitleProps) => {
     'mb-28',
     className
   );
-  return <h1 className={classes}>{children}</h1>;
+  return (
+    <h1 className={classes} {...props}>
+      {children}
+    </h1>
+  );
 };

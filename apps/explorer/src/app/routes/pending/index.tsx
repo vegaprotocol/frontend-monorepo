@@ -3,6 +3,7 @@ import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
 import { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermint-unconfirmed-transactions-response.d';
 import { TxList } from '../../components/txs';
+import { RouteTitle } from '../../components/route-title';
 
 const PendingTxs = () => {
   const {
@@ -13,7 +14,9 @@ const PendingTxs = () => {
 
   return (
     <section>
-      <h1>Unconfirmed transactions</h1>
+      <RouteTitle data-testid="unconfirmed-transactions-header">
+        Unconfirmed transactions
+      </RouteTitle>
       https://lb.testnet.vega.xyz/tm/unconfirmed_txs
       <br />
       <div>Number: {unconfirmedTransactions?.result?.n_txs || 0}</div>

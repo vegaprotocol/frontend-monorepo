@@ -19,7 +19,7 @@ export const BlocksData = ({ data, className }: BlocksProps) => {
     >
       {data.result?.block_metas?.map((block, index) => {
         return (
-          <li key={index} data-testid="block-row">
+          <li key={index}>
             <BlockData block={block} />
           </li>
         );
