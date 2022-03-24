@@ -281,7 +281,9 @@ export const DepositDialog = ({
       <div>
         <p>Transaction status: {status}</p>
         <p>Confirmations: {confirmations}</p>
-        {finalizedDeposit && <p>Tx hash: {finalizedDeposit.txHash}</p>}
+        {finalizedDeposit && (
+          <p className="break-all">Tx hash: {finalizedDeposit.txHash}</p>
+        )}
       </div>
     </Dialog>
   );
@@ -308,15 +310,12 @@ const useDeposit = (
   ethereumConfig: EthereumConfig
 ) => {
   const { keypair } = useVegaWallet();
-  const {
-    perform,
-    status,
-    confirmations,
-    txHash,
-    // @ts-ignore asdf asdf asdf
-  } = useEthereumTransaction((...args) => {
-    return bridgeContract?.deposit_asset(...args);
-  }, ethereumConfig.confirmations);
+  const { perform, status, confirmations, txHash } = useEthereumTransaction(
+    (...args) => {
+      return bridgeContract?.deposit_asset(...args);
+    },
+    ethereumConfig.confirmations
+  );
   const [finalizedDeposit, setFinalizedDeposit] =
     useState<DepositEvent_busEvents_event_Deposit>(null);
 
