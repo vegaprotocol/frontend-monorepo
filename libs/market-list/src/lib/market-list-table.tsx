@@ -29,8 +29,6 @@ export const MarketListTable = ({
       rowData={initialMarkets}
       getRowNodeId={(data) => data.id}
       suppressCellFocus={true}
-      rowHeight={20}
-      headerHeight={22}
       defaultColDef={{
         flex: 1,
         resizable: true,
