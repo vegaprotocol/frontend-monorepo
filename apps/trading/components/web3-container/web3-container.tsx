@@ -30,7 +30,7 @@ export interface EthereumConfig {
 }
 
 export const NETWORK_PARAMS_QUERY = gql`
-  query NetworkParametersQuery {
+  query NetworkParamsQuery {
     networkParameters {
       key
       value
