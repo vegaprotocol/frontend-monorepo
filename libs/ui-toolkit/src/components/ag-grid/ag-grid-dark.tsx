@@ -1,16 +1,16 @@
 import { ReactElement } from 'react';
+import { theme } from '@vegaprotocol/tailwindcss-config';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 
 const agGridDarkVariables = `
   .ag-theme-balham-dark {
-    --ag-background-color: black;
-    --ag-border-color: #494949;
-    --ag-header-height: 21px;
-    --ag-header-background-color: black;
-    --ag-odd-row-background-color: black;
-    --ag-row-border-color: black;
-    --ag-row-hover-color: #494949;
-    --ag-row-height: 21px;
+    --ag-background-color: ${theme.colors.black[100]};
+    --ag-border-color: ${theme.colors.white[25]};
+    --ag-header-background-color: ${theme.colors.black[100]};
+    --ag-odd-row-background-color: ${theme.colors.black[100]};
+    --ag-row-border-color:${theme.colors.black[100]};
+    --ag-row-hover-color: ${theme.colors.white[25]};
+    --ag-font-size: 12px;
   }
 
   .ag-theme-balham-dark .ag-root-wrapper {

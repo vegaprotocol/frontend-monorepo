@@ -1,15 +1,16 @@
 import { ReactElement } from 'react';
+import { theme } from '@vegaprotocol/tailwindcss-config';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 
 const agGridLightVariables = `
   .ag-theme-balham {
-    --ag-background-color: white;
-    --ag-border-color: #494949;
+    --ag-background-color: ${theme.colors.white[100]};
+    --ag-border-color: ${theme.colors.black['05']};
+    --ag-header-background-color: ${theme.colors.white[100]};
+    --ag-odd-row-background-color: ${theme.colors.white[100]};
+    --ag-row-border-color: ${theme.colors.white[100]};
+    --ag-row-hover-color: ${theme.colors.vega.yellow};  
     --ag-font-size: 12px;
-    --ag-header-background-color: white;
-    --ag-odd-row-background-color: white;
-    --ag-row-border-color: white;
-    --ag-row-hover-color: #edff22;  
   }
 
   .ag-theme-balham .ag-root-wrapper {
