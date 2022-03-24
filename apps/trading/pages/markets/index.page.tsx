@@ -51,10 +51,8 @@ const Markets = () => {
               if (updatedData !== rowNode.data.data) {
                 update.push({ ...rowNode.data, data: delta });
               }
-            } /* else {
-            add.push(d);
-          }*/
-            // async transaction for optimal handling of high grequency updates
+            }
+            // @TODO - else add new market
             if (update.length || add.length) {
               gridRef.current.api.applyTransactionAsync({
                 update,
