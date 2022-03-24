@@ -8,7 +8,6 @@ import { MarketListTable, getRowNodeId } from '@vegaprotocol/market-list';
 import {
   Markets_markets,
   Markets_markets_data,
-  MarketsDataProviderCallbackArg,
   marketsDataProvider,
 } from '@vegaprotocol/graphql';
 
@@ -24,47 +23,43 @@ const Markets = () => {
   const initialized = useRef<boolean>(false);
 
   useEffect(() => {
-    return marketsDataProvider(
-      client,
-      ({ data, error, loading, delta }: MarketsDataProviderCallbackArg) => {
-        setError(error);
-        setLoading(loading);
-        if (!error && !loading) {
-          if (!initialized.current || !gridRef.current) {
-            initialized.current = true;
-            setMarkets(data);
-          } else {
-            const update: Markets_markets[] = [];
-            const add: Markets_markets[] = [];
+    return marketsDataProvider(client, ({ data, error, loading, delta }) => {
+      setError(error);
+      setLoading(loading);
+      if (!error && !loading) {
+        if (!initialized.current || !gridRef.current) {
+          initialized.current = true;
+          setMarkets(data);
+        } else {
+          const update: Markets_markets[] = [];
+          const add: Markets_markets[] = [];
 
-            // split into updates and adds
-            if (!gridRef.current || !delta) return;
+          // split into updates and adds
+          if (!gridRef.current) return;
+          const rowNode = gridRef.current.api.getRowNode(
+            getRowNodeId(delta.market)
+          );
 
-            const rowNode = gridRef.current.api.getRowNode(
-              getRowNodeId(delta.market)
+          if (rowNode) {
+            const updatedData = produce(
+              rowNode.data.data,
+              (draft: Markets_markets_data) => merge(draft, delta)
             );
-
-            if (rowNode) {
-              const updatedData = produce(
-                rowNode.data.data,
-                (draft: Markets_markets_data) => merge(draft, delta)
-              );
-              if (updatedData !== rowNode.data.data) {
-                update.push({ ...rowNode.data, data: delta });
-              }
+            if (updatedData !== rowNode.data.data) {
+              update.push({ ...rowNode.data, data: delta });
             }
-            // @TODO - else add new market
-            if (update.length || add.length) {
-              gridRef.current.api.applyTransactionAsync({
-                update,
-                add,
-                addIndex: 0,
-              });
-            }
+          }
+          // @TODO - else add new market
+          if (update.length || add.length) {
+            gridRef.current.api.applyTransactionAsync({
+              update,
+              add,
+              addIndex: 0,
+            });
           }
         }
       }
-    );
+    });
   }, [client, initialized]);
 
   return (
@@ -72,7 +67,7 @@ const Markets = () => {
       {(data) => (
         <MarketListTable
           ref={gridRef}
-          markets={data}
+          data={data}
           onRowClicked={(id) =>
             push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
           }
