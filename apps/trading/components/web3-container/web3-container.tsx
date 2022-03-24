@@ -2,7 +2,7 @@ import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3Provider, Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import { ReactNode, useEffect, useState } from 'react';
-import { connectors } from '../../lib/web3-connectors';
+import { Connectors } from '../../lib/web3-connectors';
 
 interface Web3ContainerProps {
   children: ReactNode;
@@ -11,10 +11,10 @@ interface Web3ContainerProps {
 export const Web3Container = ({ children }: Web3ContainerProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   return (
-    <Web3Provider connectors={connectors}>
+    <Web3Provider connectors={Connectors}>
       <Web3Content setDialogOpen={setDialogOpen}>{children}</Web3Content>
       <Web3ConnectDialog
-        connectors={connectors}
+        connectors={Connectors}
         dialogOpen={dialogOpen}
         setDialogOpen={setDialogOpen}
         desiredChainId={Number(process.env['NX_ETHEREUM_CHAIN_ID'] || 3)}
