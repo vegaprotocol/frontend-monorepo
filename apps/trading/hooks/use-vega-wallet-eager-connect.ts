@@ -21,7 +21,10 @@ export function useEagerConnect() {
 
     // Developer hasn't provided this connector
     if (!connector) {
-      throw new Error(`Connector ${cfgObj?.connector} not configured`);
+      console.warn(
+        `Can't eager connect, connector: ${cfgObj.connector} not found`
+      );
+      return;
     }
 
     connect(Connectors[cfgObj.connector]);
