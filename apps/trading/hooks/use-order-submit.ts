@@ -29,6 +29,7 @@ const ORDER_EVENT_SUB = gql`
           price
           market {
             name
+            decimalPlaces
           }
         }
       }

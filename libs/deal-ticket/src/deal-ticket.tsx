@@ -12,9 +12,6 @@ const DEFAULT_ORDER: Order = {
   timeInForce: OrderTimeInForce.IOC,
 };
 
-// TODO: Consider using a generated type when we have a better solution for
-// sharing the types from GQL
-
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {

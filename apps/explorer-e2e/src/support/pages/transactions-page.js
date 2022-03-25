@@ -77,6 +77,6 @@ export default class TransactionsPage extends BasePage {
   }
 
   clickOnTopTransaction() {
-    cy.getByTestId(this.transactionRow).first().find('a').click();
+    cy.getByTestId(this.transactionRow).first().find('a').first().click();
   }
 }

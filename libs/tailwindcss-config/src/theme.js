@@ -2,7 +2,9 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   screens: {
-    sm: '500px',
+    xs: '500px',
+    sm: '640px',
+    md: '768px',
     lg: '960px',
   },
   colors: {
@@ -63,7 +65,9 @@ module.exports = {
     24: '1.5rem',
     28: '1.75rem',
     32: '2rem',
+    40: '2.5rem',
     44: '2.75rem',
+    64: '4rem',
   },
   opacity: {
     0: '0',

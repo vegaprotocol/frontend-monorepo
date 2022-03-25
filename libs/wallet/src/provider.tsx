@@ -67,6 +67,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       await connector.current?.disconnect();
       setKeypairs(null);
       connector.current = null;
+      LocalStorage.removeItem(WALLET_KEY);
       return true;
     } catch (err) {
       console.error(err);

@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+
+@font-face {
+  font-family: 'AlphaLyrae-Medium';
+  src: url('./AlphaLyrae-Medium.woff');
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(2, auto) 1fr;
+}
+
+.stats-grid {
+  display: grid;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 18rem 1fr;
+    grid-column-gap: 1.25rem;
+    align-items: flex-start;
+  }
+}
+
+@media (min-width: 640px) {
+  .promoted-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .promoted-stats {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+@tailwind utilities;

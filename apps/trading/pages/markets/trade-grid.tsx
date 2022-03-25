@@ -4,12 +4,34 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState, ReactNode } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '../../components/deal-ticket-container';
+import { OrderListContainer } from '../..//components/order-list-container';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
-const Chart = () => <div>TODO: Chart</div>;
-const Orderbook = () => <div>TODO: Orderbook</div>;
-const Orders = () => <div>TODO: Orders</div>;
-const Positions = () => <div>TODO: Positions</div>;
-const Collateral = () => <div>TODO: Collateral</div>;
+const Chart = () => (
+  <Splash>
+    <p>Chart</p>
+  </Splash>
+);
+const Orderbook = () => (
+  <Splash>
+    <p>Orderbook</p>
+  </Splash>
+);
+const Positions = () => (
+  <Splash>
+    <p>Positions</p>
+  </Splash>
+);
+const Collateral = () => (
+  <Splash>
+    <p>Collateral</p>
+  </Splash>
+);
+const Trades = () => (
+  <Splash>
+    <p>Trades</p>
+  </Splash>
+);
 
 type TradingView = keyof typeof TradingViews;
 
@@ -17,9 +39,10 @@ const TradingViews = {
   chart: Chart,
   ticket: DealTicketContainer,
   orderbook: Orderbook,
-  orders: Orders,
+  orders: OrderListContainer,
   positions: Positions,
   collateral: Collateral,
+  trades: Trades,
 };
 
 interface TradeGridProps {
@@ -47,7 +70,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
           <GridTab name="trades">
-            <pre>{JSON.stringify(market.trades, null, 2)}</pre>
+            <TradingViews.trades />
           </GridTab>
           <GridTab name="orderbook">
             <TradingViews.orderbook />
@@ -120,7 +143,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap gap-4 overflow-x-auto my-4">
+      <div className="flex flex-nowrap gap-4 overflow-x-auto my-4 max-w-full">
         {Object.keys(TradingViews).map((key: TradingView) => {
           const isActive = view === key;
           const className = classNames('py-4', 'px-12', 'capitalize', {

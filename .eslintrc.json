@@ -25,6 +25,13 @@
             "case": "kebabCase",
             "ignore": ["\\[[a-zA-Z]+\\]\\.page"]
           }
+        ],
+        "no-restricted-imports": [
+          "warn",
+          {
+            "name": "lodash",
+            "message": "Import the specific methods you need from lodash e.g. `import get from 'lodash/get'`. This helps with bundle sizing."
+          }
         ]
       }
     },

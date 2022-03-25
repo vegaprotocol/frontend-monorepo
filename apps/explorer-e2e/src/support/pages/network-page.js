@@ -7,7 +7,7 @@ export default class NetworkParametersPage extends BasePage {
   verifyNetworkParametersDisplayed() {
     cy.getByTestId(this.networkParametersHeader).should(
       'have.text',
-      'NetworkParameters'
+      'Network Parameters'
     );
     cy.getByTestId(this.parameters).should('not.be.empty');
   }

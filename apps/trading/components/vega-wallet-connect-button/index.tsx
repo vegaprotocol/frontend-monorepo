@@ -19,8 +19,11 @@ export const VegaWalletButton = ({
   };
 
   return (
-    <button onClick={handleClick} className="ml-auto inline-block">
-      {isConnected ? 'Disconnect' : 'Connect Vega wallet'}
+    <button
+      onClick={handleClick}
+      className="ml-auto inline-block text-ui sm:text-body-large"
+    >
+      {isConnected ? 'Disconnect Vega wallet' : 'Connect Vega wallet'}
     </button>
   );
 };

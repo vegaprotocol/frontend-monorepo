@@ -1,4 +1,4 @@
-import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
+import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 import NetworkPage from '../pages/network-page';
 const networkPage = new NetworkPage();
 
