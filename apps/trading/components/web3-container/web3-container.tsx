@@ -47,7 +47,7 @@ export const Web3Container = ({ children }: Web3ContainerProps) => {
   return (
     <PageQueryContainer<NetworkParametersQuery> query={NETWORK_PARAMS_QUERY}>
       {(data) => {
-        const ethereumConfigParam = data.networkParameters.find(
+        const ethereumConfigParam = data.networkParameters?.find(
           (np) => np.key === 'blockchains.ethereumConfig'
         );
 
@@ -106,7 +106,9 @@ export const Web3Content = ({
   const { isActive, error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
-    connector?.connectEagerly();
+    if (connector?.connectEagerly) {
+      connector.connectEagerly();
+    }
   }, [connector]);
 
   if (error) {

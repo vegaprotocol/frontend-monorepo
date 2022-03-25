@@ -35,6 +35,7 @@ interface DepositFormProps {
     min: BigNumber;
     max: BigNumber;
   };
+  allowance: BigNumber | null;
 }
 
 export const DepositForm = ({
@@ -45,6 +46,7 @@ export const DepositForm = ({
   submitApprove,
   submitDeposit,
   limits,
+  allowance,
 }: DepositFormProps) => {
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
@@ -52,7 +54,7 @@ export const DepositForm = ({
     register,
     handleSubmit,
     setValue,
-    setError,
+    clearErrors,
     control,
     formState: { errors },
   } = useForm<FormFields>({
@@ -60,11 +62,12 @@ export const DepositForm = ({
       asset: selectedAsset?.id,
       from: account,
       to: keypair?.pub,
+      amount: '0',
     },
   });
 
   const onDeposit = async (fields: FormFields) => {
-    if (selectedAsset.source.__typename !== 'ERC20') {
+    if (selectedAsset?.source.__typename !== 'ERC20' || !keypair) {
       return;
     }
     submitDeposit(
@@ -79,6 +82,7 @@ export const DepositForm = ({
   };
 
   const assetId = useWatch({ name: 'asset', control });
+  const amount = useWatch({ name: 'amount', control });
 
   useEffect(() => {
     onSelectAsset(assetId);
@@ -146,22 +150,68 @@ export const DepositForm = ({
             onClick={() => {
               const amount = BigNumber.minimum(available, limits.max);
               setValue('amount', amount.toFixed(selectedAsset.decimals));
-              setError('amount', null);
+              clearErrors('amount');
             }}
           >
             Use maximum
           </UseButton>
         )}
       </FormGroup>
-      <div className="flex gap-4">
-        <Button type="submit" className="flex-1">
-          Deposit
-        </Button>
-        <Button onClick={handleSubmit(onApprove)} className="flex-1">
-          Approve
-        </Button>
-      </div>
+      <FormButton
+        selectedAsset={selectedAsset}
+        amount={new BigNumber(amount || 0)}
+        allowance={allowance}
+        onApproveClick={handleSubmit(onApprove)}
+      />
     </form>
+  );
+};
+
+interface FormButtonProps {
+  selectedAsset?: DepositPage_assets;
+  amount: BigNumber;
+  allowance: BigNumber | null;
+  onApproveClick: () => void;
+}
+
+const FormButton = ({
+  selectedAsset,
+  amount,
+  allowance,
+  onApproveClick,
+}: FormButtonProps) => {
+  const approved =
+    allowance && allowance.isGreaterThan(0) && amount.isLessThan(allowance);
+  let button = null;
+  let message = '';
+
+  if (!selectedAsset) {
+    button = (
+      <Button type="submit" className="w-full">
+        Deposit
+      </Button>
+    );
+  } else if (approved) {
+    message = `Deposits of ${selectedAsset.symbol} have been approved`;
+    button = (
+      <Button type="submit" className="w-full">
+        Deposit
+      </Button>
+    );
+  } else {
+    message = `Deposits of ${selectedAsset.symbol} not approved`;
+    button = (
+      <Button onClick={onApproveClick} className="w-full">
+        Approve {selectedAsset.symbol}
+      </Button>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      {message && <p className="text-ui text-center mb-4">{message}</p>}
+      {button}
+    </div>
   );
 };
 
@@ -174,7 +224,7 @@ const UseButton = ({ children, onClick }: UseButtonProps) => {
   return (
     <button
       type="button"
-      className="ml-auto text-ui absolute top-0 right-0 text-vega-pink dark:text-vega-yellow"
+      className="ml-auto text-ui absolute top-0 right-0 underline"
       onClick={onClick}
     >
       {children}

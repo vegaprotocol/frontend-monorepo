@@ -13,6 +13,7 @@ import { TxState } from './use-ethereum-transaction';
 import sortBy from 'lodash/sortBy';
 import { useApprove } from './use-approve';
 import { useDepositLimits } from './use-deposit-limits';
+import { useAllowance } from './use-allowance';
 
 const activeClasses = 'text-black dark:text-white';
 
@@ -25,17 +26,21 @@ interface DepositManagerProps {
 export const DepositManager = ({
   ethereumConfig,
   data,
-  initialAssetId = null,
+  initialAssetId,
 }: DepositManagerProps) => {
-  const [assetId, setAssetId] = useState<string | null>(initialAssetId);
+  const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
 
   const asset = useMemo(() => {
-    const asset = data.assets.find((a) => a.id === assetId);
+    const asset = data.assets?.find((a) => a.id === assetId);
     return asset;
   }, [data, assetId]);
 
   const balanceOf = useBalanceOfERC20Token(asset);
   const limits = useDepositLimits(asset);
+  const allowance = useAllowance(
+    ethereumConfig.collateral_bridge_contract.address,
+    asset
+  );
 
   const {
     perform: performApprove,
@@ -64,6 +69,7 @@ export const DepositManager = ({
         submitApprove={performApprove}
         submitDeposit={performDeposit}
         limits={limits}
+        allowance={allowance}
       />
       <ApproveDialog
         status={statusApprove}
@@ -89,7 +95,7 @@ interface ApproveDialogProps {
   error: Error | null;
   confirmations: number;
   requiredConfirmations: number;
-  txHash: string;
+  txHash: string | null;
 }
 
 export const ApproveDialog = ({
@@ -169,7 +175,7 @@ interface DepositDialogProps {
   error: Error | null;
   confirmations: number;
   requiredConfirmations: number;
-  txHash: string;
+  txHash: string | null;
   finalizedDeposit: DepositEvent_busEvents_event_Deposit | null;
 }
 
@@ -257,7 +263,7 @@ const ConfirmRow = ({ status }: { status: TxState }) => {
 
 interface TxRowProps {
   status: TxState;
-  txHash: string;
+  txHash: string | null;
   confirmations: number;
   requiredConfirmations: number;
   highlightComplete?: boolean;
@@ -280,8 +286,8 @@ const TxRow = ({
           confirmations...
         </span>
         <EtherscanLink
-          tx={txHash}
-          chainId={chainId}
+          tx={txHash || ''}
+          chainId={chainId || 3}
           className="underline"
           text="View on Etherscan"
         />
@@ -298,8 +304,8 @@ const TxRow = ({
       >
         <span>Ethereum transaction complete</span>
         <EtherscanLink
-          tx={txHash}
-          chainId={chainId}
+          tx={txHash || ''}
+          chainId={chainId || 3}
           className="underline"
           text="View on Etherscan"
         />

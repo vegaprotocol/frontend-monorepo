@@ -3,11 +3,13 @@ import { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
-export const useTokenContract = (asset: DepositPage_assets) => {
+export const useTokenContract = (
+  asset?: DepositPage_assets
+): ERC20Token | null => {
   const { provider } = useWeb3React();
 
   const contract = useMemo(() => {
-    if (!asset || asset.source.__typename !== 'ERC20') {
+    if (!provider || !asset || asset.source.__typename !== 'ERC20') {
       return null;
     }
 
