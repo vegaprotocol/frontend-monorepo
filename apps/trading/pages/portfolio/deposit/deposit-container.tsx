@@ -5,10 +5,8 @@ import { gql, useSubscription } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
-import TOKEN_ABI from './token-abi.json';
 import BRIDGE_ABI from './bridge-abi.json';
 import BigNumber from 'bignumber.js';
-import { addDecimal } from '@vegaprotocol/react-helpers';
 import {
   Deposit,
   Deposit_assets,
@@ -18,6 +16,7 @@ import {
 } from '@vegaprotocol/graphql';
 import { Dialog, EtherscanLink, Intent } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { ERC20Token, VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 
 export enum TxState {
   Default = 'Default',
@@ -80,17 +79,23 @@ export const DepositManager = ({
 }: DepositManagerProps) => {
   const { provider } = useWeb3React();
   const [assetId, setAssetId] = useState<string | null>(initialAssetId);
-  const [tokenContract, setTokenContract] = useState<ethers.Contract | null>(
-    null
-  );
-  const [bridgeContract, setBridgeContract] = useState<ethers.Contract | null>(
-    null
-  );
 
   const asset = useMemo(() => {
     const asset = data.assets.find((a) => a.id === assetId);
     return asset;
   }, [data, assetId]);
+
+  const tokenContract = useMemo(() => {
+    if (!asset || asset.source.__typename !== 'ERC20') {
+      return null;
+    }
+
+    return new ERC20Token(
+      asset.source.contractAddress,
+      provider,
+      provider.getSigner()
+    );
+  }, [asset, provider]);
 
   const balanceOf = useBalanceOfERC20Token(tokenContract, asset);
 
@@ -100,10 +105,7 @@ export const DepositManager = ({
     confirmations: confirmationsApprove,
     txHash: txHashApprove,
   } = useEthereumTransaction(() =>
-    tokenContract?.approve(
-      ethereumConfig.collateral_bridge_contract.address,
-      Number.MAX_SAFE_INTEGER.toString()
-    )
+    tokenContract.approve(ethereumConfig.collateral_bridge_contract.address)
   );
 
   const {
@@ -112,29 +114,7 @@ export const DepositManager = ({
     confirmations: confirmationsDeposit,
     txHash: txHashDeposit,
     finalizedDeposit,
-  } = useDeposit(bridgeContract, ethereumConfig);
-
-  useEffect(() => {
-    if (asset && asset.source.__typename === 'ERC20' && provider) {
-      setTokenContract(
-        new ethers.Contract(
-          asset.source.contractAddress,
-          TOKEN_ABI,
-          provider.getSigner()
-        )
-      );
-    }
-  }, [asset, provider]);
-
-  useEffect(() => {
-    setBridgeContract(
-      new ethers.Contract(
-        ethereumConfig.collateral_bridge_contract.address,
-        BRIDGE_ABI,
-        provider.getSigner()
-      )
-    );
-  }, [ethereumConfig.collateral_bridge_contract, provider]);
+  } = useDeposit(ethereumConfig);
 
   return (
     <>
@@ -162,7 +142,7 @@ export const DepositManager = ({
 };
 
 const useBalanceOfERC20Token = (
-  contract: ethers.Contract | null,
+  contract: ERC20Token,
   asset?: Deposit_assets
 ) => {
   const { account } = useWeb3React();
@@ -175,7 +155,8 @@ const useBalanceOfERC20Token = (
       }
 
       const res = await contract.balanceOf(account);
-      setBalanceOf(new BigNumber(addDecimal(res.toString(), asset.decimals)));
+      console.log(res.toString());
+      setBalanceOf(res);
     };
 
     getBalance();
@@ -337,14 +318,21 @@ const DEPOSIT_EVENT_SUB = gql`
   }
 `;
 
-const useDeposit = (
-  bridgeContract: ethers.Contract | null,
-  ethereumConfig: EthereumConfig
-) => {
+const useDeposit = (ethereumConfig: EthereumConfig) => {
   const { keypair } = useVegaWallet();
+  const { provider } = useWeb3React();
+
+  const bridgeContract = useMemo(() => {
+    // @ts-ignore Networks as TESTNET
+    return new VegaErc20Bridge('TESTNET', provider, provider.getSigner());
+  }, [provider]);
+
+  console.log(bridgeContract);
+
   const { perform, status, confirmations, txHash } = useEthereumTransaction(
     (...args) => {
-      return bridgeContract?.deposit_asset(...args);
+      // @ts-ignore get around args typing
+      return bridgeContract.depositAsset(...args);
     },
     ethereumConfig.confirmations
   );
