@@ -17,7 +17,6 @@ When('I click on the top transaction', () => {
 
 Then('transactions page is correctly displayed', () => {
   transactionsPage.validateTransactionsPagedisplayed();
-  transactionsPage.verifyAllBlockRowsAreNotEmpty();
   transactionsPage.validateRefreshBtn();
 });
 

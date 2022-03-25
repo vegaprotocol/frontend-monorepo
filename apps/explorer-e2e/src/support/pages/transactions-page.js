@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import BasePage from './base-page';
 
 export default class TransactionsPage extends BasePage {
@@ -22,12 +23,6 @@ export default class TransactionsPage extends BasePage {
     cy.getByTestId(this.blockTime).first().should('not.be.empty');
   }
 
-  verifyAllBlockRowsAreNotEmpty() {
-    cy.get(`[data-testid=${this.transactionRow}] > td`).each(($cell) => {
-      cy.wrap($cell).should('not.be.empty');
-    });
-  }
-
   validateRefreshBtn() {
     cy.getByTestId(this.blockHeight)
       .first()
@@ -48,35 +43,51 @@ export default class TransactionsPage extends BasePage {
   }
 
   validateTxDetailsAreDisplayed() {
-    cy.getByTestId(this.txHash).invoke('text').should('have.length', 64);
-    cy.getByTestId(this.txSubmittedBy)
-      .find('a')
-      .then(($address) => {
-        cy.wrap($address).should('have.attr', 'href');
-        cy.wrap($address).invoke('text').should('have.length', 66);
-      });
-    cy.getByTestId(this.txBlock).should('not.be.empty');
-    cy.getByTestId(this.txEncodedTnx).should('not.be.empty');
-    cy.getByTestId(this.txType)
-      .should('not.be.empty')
-      .invoke('text')
-      .then((txTypeTxt) => {
-        if (txTypeTxt == 'Order Submission') {
-          cy.get('.hljs-attr')
-            .should('have.length.at.least', 8)
-            .each(($propertyName) => {
-              cy.wrap($propertyName).should('not.be.empty');
-            });
-          cy.get('span[style*="color"]')
-            .should('have.length.at.least', 8)
-            .each(($propertyValue) => {
-              cy.wrap($propertyValue).should('not.be.empty');
-            });
-        }
-      });
+    cy.wait(1000);
+    cy.get('body').then(($body) => {
+      if ($body.find(`[data-testid=${this.txHash}]`).length) {
+        cy.getByTestId(this.txHash).invoke('text').should('have.length', 64);
+        cy.getByTestId(this.txSubmittedBy)
+          .find('a')
+          .then(($address) => {
+            cy.wrap($address).should('have.attr', 'href');
+            cy.wrap($address).invoke('text').should('have.length', 66);
+          });
+        cy.getByTestId(this.txBlock).should('not.be.empty');
+        cy.getByTestId(this.txEncodedTnx).should('not.be.empty');
+        cy.getByTestId(this.txType)
+          .should('not.be.empty')
+          .invoke('text')
+          .then((txTypeTxt) => {
+            if (txTypeTxt == 'Order Submission') {
+              cy.get('.hljs-attr')
+                .should('have.length.at.least', 8)
+                .each(($propertyName) => {
+                  cy.wrap($propertyName).should('not.be.empty');
+                });
+              cy.get('span[style*="color"]')
+                .should('have.length.at.least', 8)
+                .each(($propertyValue) => {
+                  cy.wrap($propertyValue).should('not.be.empty');
+                });
+            }
+          });
+      } else {
+        cy.log('Not on transactions page');
+        cy.screenshot();
+      }
+    });
   }
 
   clickOnTopTransaction() {
-    cy.getByTestId(this.transactionRow).first().find('a').first().click();
+    cy.wait(1000);
+    cy.get('body').then(($body) => {
+      if ($body.find(`[data-testid=${this.transactionRow}]`).length) {
+        cy.getByTestId(this.transactionRow).first().find('a').first().click();
+      } else {
+        cy.log('Unable to find any transactions on page');
+        cy.screenshot();
+      }
+    });
   }
 }
