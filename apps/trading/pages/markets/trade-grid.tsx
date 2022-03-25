@@ -1,7 +1,7 @@
 import { Market_market } from '@vegaprotocol/graphql';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, ComponentType } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '../../components/deal-ticket-container';
 import { OrderListContainer } from '../..//components/order-list-container';
@@ -33,17 +33,27 @@ const Trades = () => (
   </Splash>
 );
 
-type TradingView = keyof typeof TradingViews;
+// enum TradingView {
+//   Chart = 'Chart',
+//   Ticket = 'Ticket',
+//   Orderbook = 'Orderbook',
+//   Orders = 'Orders',
+//   Positions = 'Positions',
+//   Collateral = 'Collateral',
+//   Trades = 'Trades',
+// }
 
 const TradingViews = {
-  chart: Chart,
-  ticket: DealTicketContainer,
-  orderbook: Orderbook,
-  orders: OrderListContainer,
-  positions: Positions,
-  collateral: Collateral,
-  trades: Trades,
+  Chart: Chart,
+  Ticket: DealTicketContainer,
+  Orderbook: Orderbook,
+  Orders: OrderListContainer,
+  Positions: Positions,
+  Collateral: Collateral,
+  Trades: Trades,
 };
+
+type TradingView = keyof typeof TradingViews;
 
 interface TradeGridProps {
   market: Market_market;
@@ -62,31 +72,31 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <h1>Market: {market.name}</h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
-        <TradingViews.chart />
+        <TradingViews.Chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.ticket market={market} />
+        <TradingViews.Ticket market={market} />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
           <GridTab name="trades">
-            <TradingViews.trades />
+            <TradingViews.Trades />
           </GridTab>
           <GridTab name="orderbook">
-            <TradingViews.orderbook />
+            <TradingViews.Orderbook />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
       <TradeGridChild className="col-span-3">
         <GridTabs group="portfolio">
           <GridTab name="orders">
-            <TradingViews.orders />
+            <TradingViews.Orders />
           </GridTab>
           <GridTab name="positions">
-            <TradingViews.positions />
+            <TradingViews.Positions />
           </GridTab>
           <GridTab name="collateral">
-            <TradingViews.collateral />
+            <TradingViews.Collateral />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
@@ -119,7 +129,7 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market }: TradePanelsProps) => {
-  const [view, setView] = useState<TradingView>('chart');
+  const [view, setView] = useState<TradingView>('Chart');
 
   const renderView = () => {
     const Component = TradingViews[view];
@@ -144,7 +154,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
         </AutoSizer>
       </div>
       <div className="flex flex-nowrap gap-4 overflow-x-auto my-4 max-w-full">
-        {Object.keys(TradingViews).map((key: TradingView) => {
+        {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
           const className = classNames('py-4', 'px-12', 'capitalize', {
             'text-black dark:text-vega-yellow': isActive,
@@ -154,7 +164,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           });
           return (
             <button
-              onClick={() => setView(key)}
+              onClick={() => setView(key as TradingView)}
               className={className}
               key={key}
             >
