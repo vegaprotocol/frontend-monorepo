@@ -1,9 +1,9 @@
-import { Deposit_assets } from '@vegaprotocol/graphql';
+import { DepositPage_assets } from '@vegaprotocol/graphql';
 import { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
-export const useTokenContract = (asset: Deposit_assets) => {
+export const useTokenContract = (asset: DepositPage_assets) => {
   const { provider } = useWeb3React();
 
   const contract = useMemo(() => {

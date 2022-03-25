@@ -53,10 +53,11 @@ export const useDeposit = (ethereumConfig: EthereumConfig) => {
           return false;
         }
 
-        console.log(e);
-
         if (
           e.event.txHash === txHash &&
+          // Note there is a bug in data node where the subscription is not emitted when the status
+          // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
+          // https://github.com/vegaprotocol/data-node/issues/460
           e.event.status === DepositStatus.Finalized
         ) {
           return true;

@@ -2,13 +2,13 @@ import { EthereumConfig } from '../../../components/web3-container/web3-containe
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import BigNumber from 'bignumber.js';
-import { Deposit } from '@vegaprotocol/graphql';
+import { DepositPage } from '@vegaprotocol/graphql';
 import { DepositManager } from './deposit-manager';
 
 BigNumber.config({ EXPONENTIAL_AT: 20000 });
 
-const DEPOSIT_QUERY = gql`
-  query Deposit {
+const DEPOSIT_PAGE_QUERY = gql`
+  query DepositPage {
     assets {
       id
       symbol
@@ -33,7 +33,7 @@ export const DepositContainer = ({
   assetId,
 }: DepositContainerProps) => {
   return (
-    <PageQueryContainer<Deposit> query={DEPOSIT_QUERY}>
+    <PageQueryContainer<DepositPage> query={DEPOSIT_PAGE_QUERY}>
       {(data) => (
         <DepositManager
           ethereumConfig={ethereumConfig}

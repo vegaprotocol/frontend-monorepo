@@ -1,9 +1,9 @@
-import { Deposit_assets } from '@vegaprotocol/graphql';
+import { DepositPage_assets } from '@vegaprotocol/graphql';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import { useBridgeContract } from './use-bridge-contract';
 
-export const useDepositLimits = (asset?: Deposit_assets) => {
+export const useDepositLimits = (asset?: DepositPage_assets) => {
   const contract = useBridgeContract();
   const [limits, setLimits] = useState({
     min: new BigNumber(0),

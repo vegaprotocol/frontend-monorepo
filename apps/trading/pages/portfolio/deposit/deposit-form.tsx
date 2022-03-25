@@ -1,4 +1,4 @@
-import { Deposit_assets } from '@vegaprotocol/graphql';
+import { DepositPage_assets } from '@vegaprotocol/graphql';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -21,8 +21,8 @@ interface FormFields {
 }
 
 interface DepositFormProps {
-  assets: Deposit_assets[];
-  selectedAsset?: Deposit_assets;
+  assets: DepositPage_assets[];
+  selectedAsset?: DepositPage_assets;
   onSelectAsset: (assetId: string) => void;
   available: BigNumber;
   submitApprove: () => Promise<void>;

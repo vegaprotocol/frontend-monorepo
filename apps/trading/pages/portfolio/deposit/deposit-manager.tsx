@@ -1,10 +1,10 @@
 import {
-  Deposit,
+  DepositPage,
   DepositEvent_busEvents_event_Deposit,
 } from '@vegaprotocol/graphql';
 import { Dialog, EtherscanLink, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { DepositForm } from './deposit-form';
 import { useBalanceOfERC20Token } from './use-balance-of-erc20-token';
@@ -14,9 +14,11 @@ import sortBy from 'lodash/sortBy';
 import { useApprove } from './use-approve';
 import { useDepositLimits } from './use-deposit-limits';
 
+const activeClasses = 'text-black dark:text-white';
+
 interface DepositManagerProps {
   ethereumConfig: EthereumConfig;
-  data: Deposit;
+  data: DepositPage;
   initialAssetId?: string;
 }
 
@@ -97,8 +99,8 @@ export const ApproveDialog = ({
   requiredConfirmations,
   txHash,
 }: ApproveDialogProps) => {
-  const { chainId } = useWeb3React();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const dialogDismissed = useRef(false);
 
   const getDialogIntent = () => {
     if (status === TxState.Requested) {
@@ -116,64 +118,31 @@ export const ApproveDialog = ({
   };
 
   useEffect(() => {
-    if (status !== TxState.Default) {
+    if (status !== TxState.Default && !dialogDismissed.current) {
       setDialogOpen(true);
     }
   }, [status]);
 
   const renderStatus = () => {
-    if (status === TxState.Requested) {
-      return (
-        <p className="text-black dark:text-white">
-          Confirm transaction in wallet...
-        </p>
-      );
-    }
-
-    if (status === TxState.Pending) {
-      return (
-        <>
-          <p>Confirmed in wallet</p>
-          <p className="text-black dark:text-white flex justify-between">
-            <span>
-              Awaiting Ethereum transaction {confirmations}/
-              {requiredConfirmations} confirmations...
-            </span>
-            <EtherscanLink
-              tx={txHash}
-              chainId={chainId}
-              className="underline"
-              text="View on Etherscan"
-            />
-          </p>
-        </>
-      );
-    }
-
     if (status === TxState.Error) {
       return (
-        <p className="text-black dark:text-white">
+        <p className={activeClasses}>
           Something went wrong: {error && error.message}
         </p>
       );
     }
 
-    if (status === TxState.Complete) {
-      return (
-        <>
-          <p>Confirmed in wallet</p>
-          <p className="text-black dark:text-white flex justify-between">
-            <span>Ethereum transaction complete</span>
-            <EtherscanLink
-              tx={txHash}
-              chainId={chainId}
-              className="underline"
-              text="View on Etherscan"
-            />
-          </p>
-        </>
-      );
-    }
+    return (
+      <>
+        <ConfirmRow status={status} />
+        <TxRow
+          status={status}
+          txHash={txHash}
+          confirmations={confirmations}
+          requiredConfirmations={requiredConfirmations}
+        />
+      </>
+    );
   };
 
   return (
@@ -182,7 +151,10 @@ export const ApproveDialog = ({
         status === TxState.Complete ? 'Approval complete' : 'Approval pending'
       }
       open={dialogOpen}
-      onChange={setDialogOpen}
+      onChange={(isOpen) => {
+        setDialogOpen(isOpen);
+        dialogDismissed.current = true;
+      }}
       intent={getDialogIntent()}
     >
       <div className="text-ui text-black-40 dark:text-white-40">
@@ -209,14 +181,15 @@ export const DepositDialog = ({
   txHash,
   finalizedDeposit,
 }: DepositDialogProps) => {
-  const { chainId } = useWeb3React();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const dialogDismissed = useRef(false);
 
   useEffect(() => {
-    if (status !== TxState.Default) {
+    if (status !== TxState.Default && !dialogDismissed.current) {
       setDialogOpen(true);
     }
   }, [status]);
+
   const getDialogIntent = () => {
     if (status === TxState.Requested) {
       return Intent.Prompt;
@@ -231,75 +204,29 @@ export const DepositDialog = ({
       return Intent.Success;
     }
   };
-  const renderEthereumStatus = () => {
-    if (status === TxState.Requested) {
-      return (
-        <p className="text-black dark:text-white">
-          Confirm transaction in wallet...
-        </p>
-      );
-    }
 
-    if (status === TxState.Pending) {
-      return (
-        <>
-          <p>Confirmed in wallet</p>
-          <p className="text-black dark:text-white flex justify-between">
-            <span>
-              Awaiting Ethereum transaction {confirmations}/
-              {requiredConfirmations} confirmations...
-            </span>
-            <EtherscanLink
-              tx={txHash}
-              chainId={chainId}
-              className="underline"
-              text="View on Etherscan"
-            />
-          </p>
-        </>
-      );
-    }
-
+  const renderStatus = () => {
     if (status === TxState.Error) {
       return (
-        <p className="text-black dark:text-white">
+        <p className={activeClasses}>
           Something went wrong: {error && error.message}
         </p>
       );
     }
 
-    if (status === TxState.Complete) {
-      return (
-        <>
-          <p>Confirmed in wallet</p>
-          <p className="flex justify-between">
-            <span>Ethereum transaction complete</span>
-            <EtherscanLink
-              tx={txHash}
-              chainId={chainId}
-              className="underline"
-              text="View on Etherscan"
-            />
-          </p>
-        </>
-      );
-    }
-  };
-
-  const renderVegaStatus = () => {
-    if (status !== TxState.Complete) {
-      return null;
-    }
-
-    if (!finalizedDeposit) {
-      return (
-        <p className="text-black dark:text-white">
-          Vega is confirming your deposit...
-        </p>
-      );
-    }
-
-    return <p className="text-black dark:text-white">Deposit confirmed</p>;
+    return (
+      <>
+        <ConfirmRow status={status} />
+        <TxRow
+          status={status}
+          txHash={txHash}
+          confirmations={confirmations}
+          requiredConfirmations={requiredConfirmations}
+          highlightComplete={false}
+        />
+        <VegaRow status={status} finalizedDeposit={finalizedDeposit} />
+      </>
+    );
   };
 
   return (
@@ -310,9 +237,96 @@ export const DepositDialog = ({
       intent={getDialogIntent()}
     >
       <div className="text-ui text-black-40 dark:text-white-40">
-        {renderEthereumStatus()}
-        {renderVegaStatus()}
+        {renderStatus()}
       </div>
     </Dialog>
   );
+};
+
+const ConfirmRow = ({ status }: { status: TxState }) => {
+  if (status === TxState.Requested) {
+    return (
+      <p className="text-black dark:text-white">
+        Confirm transaction in wallet
+      </p>
+    );
+  }
+
+  return <p>Confirmed in wallet</p>;
+};
+
+interface TxRowProps {
+  status: TxState;
+  txHash: string;
+  confirmations: number;
+  requiredConfirmations: number;
+  highlightComplete?: boolean;
+}
+
+const TxRow = ({
+  status,
+  txHash,
+  confirmations,
+  requiredConfirmations,
+  highlightComplete = true,
+}: TxRowProps) => {
+  const { chainId } = useWeb3React();
+
+  if (status === TxState.Pending) {
+    return (
+      <p className={`flex justify-between ${activeClasses}`}>
+        <span>
+          Awaiting Ethereum transaction {confirmations}/{requiredConfirmations}{' '}
+          confirmations...
+        </span>
+        <EtherscanLink
+          tx={txHash}
+          chainId={chainId}
+          className="underline"
+          text="View on Etherscan"
+        />
+      </p>
+    );
+  }
+
+  if (status === TxState.Complete) {
+    return (
+      <p
+        className={`flex justify-between ${
+          highlightComplete ? activeClasses : ''
+        }`}
+      >
+        <span>Ethereum transaction complete</span>
+        <EtherscanLink
+          tx={txHash}
+          chainId={chainId}
+          className="underline"
+          text="View on Etherscan"
+        />
+      </p>
+    );
+  }
+
+  return <p>Await Ethereum transaction</p>;
+};
+
+interface VegaRowProps {
+  status: TxState;
+  finalizedDeposit: DepositEvent_busEvents_event_Deposit | null;
+}
+
+const VegaRow = ({ status, finalizedDeposit }: VegaRowProps) => {
+  if (status !== TxState.Complete) {
+    return <p>Vega confirmation</p>;
+  }
+
+  if (!finalizedDeposit) {
+    return (
+      <p className="text-black dark:text-white">
+        Vega is confirming your deposit...
+      </p>
+    );
+  }
+
+  return <p className="text-black dark:text-white">Deposit confirmed</p>;
 };
