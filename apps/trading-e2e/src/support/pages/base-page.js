@@ -38,7 +38,7 @@ export default class BasePage {
   validateWalletNotRunningError() {
     cy.getByTestId(this.walletFormError).should(
       'have.text',
-      'Wallet not running at http://localhost:1789'
+      'Authentication failed'
     );
   }
 
