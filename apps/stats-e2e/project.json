@@ -1,0 +1,28 @@
+{
+  "root": "apps/stats-e2e",
+  "sourceRoot": "apps/stats-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/stats-e2e/cypress.json",
+        "devServerTarget": "stats:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "stats:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/stats-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["stats"]
+}
