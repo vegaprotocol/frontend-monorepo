@@ -6,3 +6,4 @@ export * from './lib/grid-cells';
 export * from './lib/storage';
 
 export * from './hooks/use-apply-grid-transaction';
+export * from './hooks/use-theme-switcher';
