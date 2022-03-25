@@ -16,10 +16,11 @@ export const VegaManageDialog = ({
     <Dialog title="Vega wallet" open={dialogOpen} onChange={setDialogOpen}>
       <div className="text-ui">
         {keypairs ? (
-          <ul className="mb-12">
+          <ul className="mb-12" data-testid="keypair-list">
             {keypairs.map((kp) => (
               <li key={kp.pub} className="mb-8 last:mb-0">
                 <button
+                  data-testid={kp.pub}
                   onClick={() => {
                     selectPublicKey(kp.pub);
                     setDialogOpen(false);
@@ -28,7 +29,7 @@ export const VegaManageDialog = ({
                   className="underline"
                   disabled={kp.pub === keypair?.pub}
                 >
-                  {kp.name} {`(${kp.pub === keypair?.pub ? 'Active' : ''})`}
+                  {kp.name} {kp.pub === keypair?.pub ? '(Active)' : ''}
                 </button>
                 <p className="text-black-40 dark:text-white-40">
                   {truncateByChars(kp.pub, 20, 10)}
@@ -39,6 +40,7 @@ export const VegaManageDialog = ({
         ) : null}
         <div>
           <Button
+            data-testid="disconnect"
             onClick={() => {
               disconnect();
               setDialogOpen(false);
