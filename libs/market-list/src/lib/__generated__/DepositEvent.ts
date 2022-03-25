@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType } from "./globalTypes";
+import { BusEventType, DepositStatus } from "./globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: DepositEvent
@@ -23,6 +23,10 @@ export interface DepositEvent_busEvents_event_Deposit {
    * Hash of the transaction on the foreign chain
    */
   txHash: string | null;
+  /**
+   * The current status of the deposit
+   */
+  status: DepositStatus;
 }
 
 export type DepositEvent_busEvents_event = DepositEvent_busEvents_event_TimeUpdate | DepositEvent_busEvents_event_Deposit;

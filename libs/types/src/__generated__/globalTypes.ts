@@ -68,6 +68,15 @@ export enum BusEventType {
 }
 
 /**
+ * The status of a deposit
+ */
+export enum DepositStatus {
+  Cancelled = "Cancelled",
+  Finalized = "Finalized",
+  Open = "Open",
+}
+
+/**
  * The current state of a market
  */
 export enum MarketState {

@@ -10,7 +10,7 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 interface FormFields {
@@ -31,6 +31,10 @@ interface DepositFormProps {
     amount: string,
     vegaKey: string
   ) => Promise<void>;
+  limits: {
+    min: BigNumber;
+    max: BigNumber;
+  };
 }
 
 export const DepositForm = ({
@@ -40,6 +44,7 @@ export const DepositForm = ({
   available,
   submitApprove,
   submitDeposit,
+  limits,
 }: DepositFormProps) => {
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
@@ -52,9 +57,9 @@ export const DepositForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      asset: selectedAsset ? selectedAsset.id : '',
+      asset: selectedAsset?.id || 'not-selected',
       from: account,
-      to: keypair.pub,
+      to: keypair?.pub,
     },
   });
 
@@ -79,11 +84,15 @@ export const DepositForm = ({
     onSelectAsset(assetId);
   }, [assetId, onSelectAsset]);
 
+  const minLimit = limits.min.toString();
+  const maxLimit = limits.max.toString();
+  const limitsInfo = limits ? `(Min: ${minLimit}, Max: ${maxLimit})` : '';
+
   return (
     <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
       <FormGroup label="Asset">
         <Select {...register('asset', { required: 'Required' })}>
-          <option value="" disabled>
+          <option value="not-selected" disabled>
             Please select
           </option>
           {assets.map((a) => (
@@ -114,7 +123,7 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label="Amount" className="relative">
+      <FormGroup label={`Amount ${limitsInfo}`} className="relative">
         <Input
           type="number"
           autoComplete="off"
@@ -131,10 +140,8 @@ export const DepositForm = ({
               variant="inline"
               className="ml-auto"
               onClick={() => {
-                setValue(
-                  'amount',
-                  available ? available.toFixed(selectedAsset.decimals) : '0'
-                );
+                const amount = BigNumber.minimum(available, limits.max);
+                setValue('amount', amount.toFixed(selectedAsset.decimals));
                 setError('amount', null);
               }}
             >
