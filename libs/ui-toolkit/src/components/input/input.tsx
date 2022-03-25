@@ -60,7 +60,7 @@ export const inputStyle = ({
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ prependIconName, appendIconName, className, ...props }, ref) => {
-    className = `${className} h-28`;
+    className = `h-28 ${className}`;
     if (prependIconName) {
       className += ' pl-28';
     }
