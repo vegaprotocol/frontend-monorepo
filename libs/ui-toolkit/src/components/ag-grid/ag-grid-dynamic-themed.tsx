@@ -26,6 +26,7 @@ export const AgGridThemed = ({
   gridRef?: React.ForwardedRef<AgGridReact>;
 }) => {
   const theme = React.useContext(ThemeContext);
+  const defaultProps = { rowHeight: 20, headerHeight: 22 };
   return (
     <div
       className={`${className ?? ''} ${
@@ -35,11 +36,11 @@ export const AgGridThemed = ({
     >
       {theme === 'dark' ? (
         <AgGridDarkTheme>
-          <AgGridReact {...props} ref={gridRef} />
+          <AgGridReact {...defaultProps} {...props} ref={gridRef} />
         </AgGridDarkTheme>
       ) : (
         <AgGridLightTheme>
-          <AgGridReact {...props} ref={gridRef} />
+          <AgGridReact {...defaultProps} {...props} ref={gridRef} />
         </AgGridLightTheme>
       )}
     </div>
