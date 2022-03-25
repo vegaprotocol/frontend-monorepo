@@ -6,12 +6,14 @@ export const metamask = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
 );
 
+const infuraId = process.env['NX_INFURA_ID '];
+
 export const walletconnect = initializeConnector<WalletConnect>(
   (actions) =>
     new WalletConnect(actions, {
       rpc: {
-        1: `https://mainnet.infura.io/v3/${process.env['NX_INFURA_ID']}`,
-        3: `https://ropsten.infura.io/v3/${process.env['NX_INFURA_ID']}`,
+        1: `https://mainnet.infura.io/v3/${infuraId}`,
+        3: `https://ropsten.infura.io/v3/${infuraId}`,
       },
     }),
   [1, 3]
