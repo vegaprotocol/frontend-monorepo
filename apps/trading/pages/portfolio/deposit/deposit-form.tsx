@@ -10,7 +10,7 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
-import { useEffect } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 interface FormFields {
@@ -57,7 +57,7 @@ export const DepositForm = ({
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      asset: selectedAsset?.id || 'not-selected',
+      asset: selectedAsset?.id,
       from: account,
       to: keypair?.pub,
     },
@@ -92,9 +92,7 @@ export const DepositForm = ({
     <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
       <FormGroup label="Asset">
         <Select {...register('asset', { required: 'Required' })}>
-          <option value="not-selected" disabled>
-            Please select
-          </option>
+          <option value="">Please select</option>
           {assets.map((a) => (
             <option key={a.id} value={a.id}>
               {a.name}
@@ -115,12 +113,21 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label="To (Vega key)">
+      <FormGroup label="To (Vega key)" className="relative">
         <Input {...register('to', { required: 'Required' })} />
         {errors.to?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.to.message}
           </InputError>
+        )}
+        {keypair?.pub && (
+          <UseButton
+            onClick={() => {
+              setValue('to', keypair.pub);
+            }}
+          >
+            Use connected
+          </UseButton>
         )}
       </FormGroup>
       <FormGroup label={`Amount ${limitsInfo}`} className="relative">
@@ -129,26 +136,22 @@ export const DepositForm = ({
           autoComplete="off"
           {...register('amount', { required: 'Required' })}
         />
-        <div className="flex gap-4">
-          {errors.amount?.message && (
-            <InputError intent="danger" className="mt-4">
-              {errors.amount.message}
-            </InputError>
-          )}
-          {account && selectedAsset && (
-            <Button
-              variant="inline"
-              className="ml-auto"
-              onClick={() => {
-                const amount = BigNumber.minimum(available, limits.max);
-                setValue('amount', amount.toFixed(selectedAsset.decimals));
-                setError('amount', null);
-              }}
-            >
-              Use maximum
-            </Button>
-          )}
-        </div>
+        {errors.amount?.message && (
+          <InputError intent="danger" className="mt-4">
+            {errors.amount.message}
+          </InputError>
+        )}
+        {account && selectedAsset && (
+          <UseButton
+            onClick={() => {
+              const amount = BigNumber.minimum(available, limits.max);
+              setValue('amount', amount.toFixed(selectedAsset.decimals));
+              setError('amount', null);
+            }}
+          >
+            Use maximum
+          </UseButton>
+        )}
       </FormGroup>
       <div className="flex gap-4">
         <Button type="submit" className="flex-1">
@@ -159,5 +162,22 @@ export const DepositForm = ({
         </Button>
       </div>
     </form>
+  );
+};
+
+interface UseButtonProps {
+  children: ReactNode;
+  onClick: () => void;
+}
+
+const UseButton = ({ children, onClick }: UseButtonProps) => {
+  return (
+    <button
+      type="button"
+      className="ml-auto text-ui absolute top-0 right-0 text-vega-pink dark:text-vega-yellow"
+      onClick={onClick}
+    >
+      {children}
+    </button>
   );
 };
