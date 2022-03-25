@@ -1,4 +1,4 @@
-const textToCheck = process.env['NX_VEGA_ENV'];
+const textToCheck = Cypress.env('VEGA_ENV');
 
 describe('stats', () => {
   beforeEach(() => cy.visit('/'));
