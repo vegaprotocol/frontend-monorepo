@@ -77,13 +77,7 @@ export const positionsDataProvider = makeDataProvider<
 >(
   POSITION_QUERY,
   POSITIONS_SUB,
-  (
-    draft: positions_party_positions[] | null,
-    delta: positionSubscribe_positions
-  ) => {
-    if (!draft) {
-      return;
-    }
+  (draft: positions_party_positions[], delta: positionSubscribe_positions) => {
     const index = draft.findIndex((m) => m.market.id === delta.market.id);
     if (index !== -1) {
       draft[index] = delta;

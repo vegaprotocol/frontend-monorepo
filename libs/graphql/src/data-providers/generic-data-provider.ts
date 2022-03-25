@@ -10,7 +10,7 @@ import type { Subscription } from 'zen-observable-ts';
 export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
   query: DocumentNode | TypedDocumentNode<QueryData, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
   subscriptionQuery: DocumentNode | TypedDocumentNode<SubscriptionData, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-  update: (draft: Draft<Data>[] | null, delta: Delta) => void,
+  update: (draft: Draft<Data>[], delta: Delta) => void,
   getData: (subscriptionData: QueryData) => Data[] | null,
   getDelta: (subscriptionData: SubscriptionData) => Delta
 ) {
@@ -61,7 +61,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
           return;
         }
         const delta = getDelta(subscriptionData);
-        if (loading) {
+        if (loading || !data) {
           updateQueue.push(delta);
         } else {
           const newData = produce(data, (draft) => {
@@ -77,7 +77,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
     try {
       const res = await client.query<QueryData>({ query });
       data = getData(res.data);
-      if (updateQueue && updateQueue.length > 0) {
+      if (data && updateQueue && updateQueue.length > 0) {
         data = produce(data, (draft) => {
           while (updateQueue.length) {
             const delta = updateQueue.shift();

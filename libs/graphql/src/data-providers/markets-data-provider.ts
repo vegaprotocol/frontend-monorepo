@@ -63,10 +63,7 @@ export const marketsDataProvider = makeDataProvider<
 >(
   MARKETS_QUERY,
   MARKET_DATA_SUB,
-  (draft: Markets_markets[] | null, delta: MarketDataSub_marketData) => {
-    if (!draft) {
-      return;
-    }
+  (draft: Markets_markets[], delta: MarketDataSub_marketData) => {
     const index = draft.findIndex((m) => m.id === delta.market.id);
     if (index !== -1) {
       draft[index].data = delta;

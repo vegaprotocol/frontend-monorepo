@@ -1,1 +1,1 @@
-export * from './lib/positions';
+export * from './lib/positions-table';
