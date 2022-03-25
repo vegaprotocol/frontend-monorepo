@@ -4,6 +4,7 @@ import { VegaKey } from '@vegaprotocol/vegawallet-service-api-client';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './hooks';
 import { VegaWalletProvider } from './provider';
+import { WALLET_KEY } from './storage-keys';
 
 const restConnector = new RestConnector();
 
@@ -93,4 +94,5 @@ test('Can connect, disconnect and retrieve keypairs', async () => {
   });
   expect(screen.getByTestId('current-keypair')).toBeEmptyDOMElement();
   expect(screen.queryByTestId('keypairs-list')).not.toBeInTheDocument();
+  expect(localStorage.getItem(WALLET_KEY)).toBe(null);
 });

@@ -1,0 +1,43 @@
+{
+  "root": "libs/network-stats",
+  "sourceRoot": "libs/network-stats/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/network-stats",
+        "tsConfig": "libs/network-stats/tsconfig.lib.json",
+        "project": "libs/network-stats/package.json",
+        "entryFile": "libs/network-stats/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/network-stats/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/network-stats/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/network-stats"],
+      "options": {
+        "jestConfig": "libs/network-stats/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

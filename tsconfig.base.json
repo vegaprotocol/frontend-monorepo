@@ -17,17 +17,16 @@
     "paths": {
       "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
       "@vegaprotocol/graphql": ["libs/graphql/src/index.ts"],
-      "@vegaprotocol/mainnet-stats-manager": [
-        "libs/mainnet-stats-manager/src/index.ts"
-      ],
       "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
+      "@vegaprotocol/network-stats": ["libs/network-stats/src/index.ts"],
       "@vegaprotocol/order-list": ["libs/order-list/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.js"
       ],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
-      "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"]
+      "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
+      "@vegaprotocol/web3": ["libs/web3/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

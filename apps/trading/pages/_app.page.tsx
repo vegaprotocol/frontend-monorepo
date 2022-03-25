@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Navbar } from '../components/navbar';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
-import { Connectors } from '../lib/connectors';
+import { Connectors } from '../lib/vega-connectors';
 import { useCallback, useMemo, useState } from 'react';
 import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
@@ -15,11 +15,7 @@ import { useThemeSwitcher } from '../hooks/use-theme-switcher';
 import './styles.css';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
-  const client = useMemo(
-    () =>
-      createClient(process.env['NX_VEGA_URL'] || 'https://lb.testnet.vega.xyz'),
-    []
-  );
+  const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [theme, toggleTheme] = useThemeSwitcher();
 
