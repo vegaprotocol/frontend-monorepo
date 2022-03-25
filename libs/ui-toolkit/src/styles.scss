@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
+
+@font-face {
+  font-family: 'AlphaLyrae-Medium';
+  src: url('./fonts/AlphaLyrae-Medium.woff');
+}
+
 @tailwind utilities;

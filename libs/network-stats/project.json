@@ -1,6 +1,6 @@
 {
-  "root": "libs/mainnet-stats-manager",
-  "sourceRoot": "libs/mainnet-stats-manager/src",
+  "root": "libs/network-stats",
+  "sourceRoot": "libs/network-stats/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/mainnet-stats-manager",
-        "tsConfig": "libs/mainnet-stats-manager/tsconfig.lib.json",
-        "project": "libs/mainnet-stats-manager/package.json",
-        "entryFile": "libs/mainnet-stats-manager/src/index.ts",
+        "outputPath": "dist/libs/network-stats",
+        "tsConfig": "libs/network-stats/tsconfig.lib.json",
+        "project": "libs/network-stats/package.json",
+        "entryFile": "libs/network-stats/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/mainnet-stats-manager/README.md",
+            "glob": "libs/network-stats/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/mainnet-stats-manager/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/network-stats/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/mainnet-stats-manager"],
+      "outputs": ["coverage/libs/network-stats"],
       "options": {
-        "jestConfig": "libs/mainnet-stats-manager/jest.config.js",
+        "jestConfig": "libs/network-stats/jest.config.js",
         "passWithNoTests": true
       }
     }

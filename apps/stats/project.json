@@ -1,6 +1,6 @@
 {
-  "root": "apps/stats-mainnet",
-  "sourceRoot": "apps/stats-mainnet/src",
+  "root": "apps/stats",
+  "sourceRoot": "apps/stats/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -9,17 +9,17 @@
       "defaultConfiguration": "production",
       "options": {
         "compiler": "babel",
-        "outputPath": "dist/apps/stats-mainnet",
-        "index": "apps/stats-mainnet/src/index.html",
+        "outputPath": "dist/apps/stats",
+        "index": "apps/stats/src/index.html",
         "baseHref": "/",
-        "main": "apps/stats-mainnet/src/main.tsx",
-        "polyfills": "apps/stats-mainnet/src/polyfills.ts",
-        "tsConfig": "apps/stats-mainnet/tsconfig.app.json",
+        "main": "apps/stats/src/main.tsx",
+        "polyfills": "apps/stats/src/polyfills.ts",
+        "tsConfig": "apps/stats/tsconfig.app.json",
         "assets": [
-          "apps/stats-mainnet/src/assets/favicon.ico",
-          "apps/stats-mainnet/src/assets"
+          "apps/stats/src/assets/favicon.ico",
+          "apps/stats/src/assets"
         ],
-        "styles": ["apps/stats-mainnet/src/styles/styles.css"],
+        "styles": ["apps/stats/src/styles/styles.css"],
         "scripts": [],
         "webpackConfig": "@nrwl/react/plugins/webpack"
       },
@@ -27,8 +27,8 @@
         "production": {
           "fileReplacements": [
             {
-              "replace": "apps/stats-mainnet/src/environments/environment.ts",
-              "with": "apps/stats-mainnet/src/environments/environment.prod.ts"
+              "replace": "apps/stats/src/environments/environment.ts",
+              "with": "apps/stats/src/environments/environment.prod.ts"
             }
           ],
           "optimization": true,
@@ -44,12 +44,12 @@
       "executor": "@nrwl/web:dev-server",
       "options": {
         "port": 3010,
-        "buildTarget": "stats-mainnet:build",
+        "buildTarget": "stats:build",
         "hmr": true
       },
       "configurations": {
         "production": {
-          "buildTarget": "stats-mainnet:build:production",
+          "buildTarget": "stats:build:production",
           "hmr": false
         }
       }
@@ -58,14 +58,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["apps/stats-mainnet/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["apps/stats/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/apps/stats-mainnet"],
+      "outputs": ["coverage/apps/stats"],
       "options": {
-        "jestConfig": "apps/stats-mainnet/jest.config.js",
+        "jestConfig": "apps/stats/jest.config.js",
         "passWithNoTests": true
       }
     }
