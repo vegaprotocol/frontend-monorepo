@@ -123,14 +123,18 @@ export const ApproveDialog = ({
 
   const renderStatus = () => {
     if (status === TxState.Requested) {
-      return <p>Confirm transaction in wallet...</p>;
+      return (
+        <p className="text-black dark:text-white">
+          Confirm transaction in wallet...
+        </p>
+      );
     }
 
     if (status === TxState.Pending) {
       return (
         <>
-          <p className="text-black-40">Confirmed in wallet</p>
-          <p className="flex justify-between">
+          <p>Confirmed in wallet</p>
+          <p className="text-black dark:text-white flex justify-between">
             <span>
               Awaiting Ethereum transaction {confirmations}/
               {requiredConfirmations} confirmations...
@@ -147,14 +151,18 @@ export const ApproveDialog = ({
     }
 
     if (status === TxState.Error) {
-      return <p>Something went wrong: {error && error.message}</p>;
+      return (
+        <p className="text-black dark:text-white">
+          Something went wrong: {error && error.message}
+        </p>
+      );
     }
 
     if (status === TxState.Complete) {
       return (
         <>
-          <p className="text-black-40">Confirmed in wallet</p>
-          <p className="text-black-40 flex justify-between">
+          <p>Confirmed in wallet</p>
+          <p className="text-black dark:text-white flex justify-between">
             <span>Ethereum transaction complete</span>
             <EtherscanLink
               tx={txHash}
@@ -177,7 +185,9 @@ export const ApproveDialog = ({
       onChange={setDialogOpen}
       intent={getDialogIntent()}
     >
-      <div className="text-ui">{renderStatus()}</div>
+      <div className="text-ui text-black-40 dark:text-white-40">
+        {renderStatus()}
+      </div>
     </Dialog>
   );
 };
@@ -223,14 +233,18 @@ export const DepositDialog = ({
   };
   const renderEthereumStatus = () => {
     if (status === TxState.Requested) {
-      return <p>Confirm transaction in wallet...</p>;
+      return (
+        <p className="text-black dark:text-white">
+          Confirm transaction in wallet...
+        </p>
+      );
     }
 
     if (status === TxState.Pending) {
       return (
         <>
-          <p className="text-black-40">Confirmed in wallet</p>
-          <p className="flex justify-between">
+          <p>Confirmed in wallet</p>
+          <p className="text-black dark:text-white flex justify-between">
             <span>
               Awaiting Ethereum transaction {confirmations}/
               {requiredConfirmations} confirmations...
@@ -247,14 +261,18 @@ export const DepositDialog = ({
     }
 
     if (status === TxState.Error) {
-      return <p>Something went wrong: {error && error.message}</p>;
+      return (
+        <p className="text-black dark:text-white">
+          Something went wrong: {error && error.message}
+        </p>
+      );
     }
 
     if (status === TxState.Complete) {
       return (
         <>
-          <p className="text-black-40">Confirmed in wallet</p>
-          <p className="text-black-40 flex justify-between">
+          <p>Confirmed in wallet</p>
+          <p className="flex justify-between">
             <span>Ethereum transaction complete</span>
             <EtherscanLink
               tx={txHash}
@@ -274,10 +292,14 @@ export const DepositDialog = ({
     }
 
     if (!finalizedDeposit) {
-      return <p>Vega is confirming your deposit...</p>;
+      return (
+        <p className="text-black dark:text-white">
+          Vega is confirming your deposit...
+        </p>
+      );
     }
 
-    return <p>Deposit confirmed</p>;
+    return <p className="text-black dark:text-white">Deposit confirmed</p>;
   };
 
   return (
@@ -287,7 +309,7 @@ export const DepositDialog = ({
       onChange={setDialogOpen}
       intent={getDialogIntent()}
     >
-      <div className="text-ui">
+      <div className="text-ui text-black-40 dark:text-white-40">
         {renderEthereumStatus()}
         {renderVegaStatus()}
       </div>
