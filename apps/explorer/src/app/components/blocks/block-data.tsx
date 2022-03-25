@@ -19,7 +19,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
       <TableRow data-testid="block-row" modifier="background">
         <TableCell
           data-testid="block-height"
-          className="pl-4 py-2"
+          className="pl-4 py-2 font-mono"
           aria-label="Block height"
         >
           <Link
@@ -40,7 +40,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         </TableCell>
         <TableCell
           data-testid="validator-link"
-          className="px-8 text-center"
+          className="px-8 text-center font-mono"
           aria-label="Validator"
         >
           <Link to={`/${Routes.VALIDATORS}`}>
@@ -49,7 +49,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         </TableCell>
         <TableCell
           data-testid="block-time"
-          className="text-center pr-28 text-neutral-300"
+          className="text-center pr-28 text-neutral-300 w-[170px]"
           aria-label="Block genesis"
         >
           <SecondsAgo date={block.header?.time} />
