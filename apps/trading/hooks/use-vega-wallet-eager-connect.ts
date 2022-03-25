@@ -1,7 +1,7 @@
 import { useVegaWallet, WALLET_CONFIG } from '@vegaprotocol/wallet';
 import { useEffect } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import { Connectors } from '../lib/connectors';
+import { Connectors } from '../lib/vega-connectors';
 
 export function useEagerConnect() {
   const { connect } = useVegaWallet();

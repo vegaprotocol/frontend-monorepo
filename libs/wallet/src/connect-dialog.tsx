@@ -67,11 +67,11 @@ export function VegaConnectDialog({
               <button
                 key={key}
                 onClick={() => setSelectedConnector(connector)}
-                className="capitalize hover:text-vega-pink dark:hover:text-vega-yellow"
+                className="capitalize hover:text-vega-pink dark:hover:text-vega-yellow underline"
               >
                 {key} provider
               </button>
-              <p>{connector.description}</p>
+              <p className="text-black-60">{connector.description}</p>
             </li>
           ))}
         </ul>
