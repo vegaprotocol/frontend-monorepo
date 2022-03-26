@@ -5,6 +5,7 @@ export { AgGridLazy, AgGridDynamic } from './components/ag-grid';
 export { AsyncRenderer } from './components/async-renderer';
 export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
+export { CopyWithTooltip } from './components/copy-with-tooltip';
 export { EthereumUtils };
 export { EtherscanLink } from './components/etherscan-link';
 export { FormGroup } from './components/form-group';
@@ -19,6 +20,7 @@ export { TextArea } from './components/text-area';
 export { ThemeSwitcher } from './components/theme-switcher';
 export { Dialog } from './components/dialog/dialog';
 export { VegaLogo } from './components/vega-logo';
+export { Tooltip } from './components/tooltip';
 
 // Utils
 export * from './utils/intent';

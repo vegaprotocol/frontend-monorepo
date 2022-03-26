@@ -10,15 +10,17 @@ import {
 interface TooltipProps {
   children: React.ReactElement;
   description?: string;
+  open?: boolean;
+  align?: 'start' | 'center' | 'end';
 }
 
 // Conditionally rendered tooltip if description content is provided.
-export const Tooltip = ({ children, description }: TooltipProps) =>
+export const Tooltip = ({ children, description, open, align }: TooltipProps) =>
   description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
-      <Root>
+      <Root open={open}>
         <Trigger asChild>{children}</Trigger>
-        <Content align={'start'} alignOffset={5}>
+        <Content align={align} alignOffset={5}>
           <Arrow
             width={10}
             height={5}
