@@ -73,7 +73,7 @@ export default class TransactionsPage extends BasePage {
             }
           });
       } else {
-        cy.log('Not on transactions page');
+        cy.slack('Unable to find any transactions on page');
         cy.screenshot();
       }
     });
@@ -85,7 +85,7 @@ export default class TransactionsPage extends BasePage {
       if ($body.find(`[data-testid=${this.transactionRow}]`).length) {
         cy.getByTestId(this.transactionRow).first().find('a').first().click();
       } else {
-        cy.log('Unable to find any transactions on page');
+        cy.slack('Unable to find any transactions on page');
         cy.screenshot();
       }
     });

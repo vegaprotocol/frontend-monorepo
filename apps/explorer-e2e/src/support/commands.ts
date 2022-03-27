@@ -14,6 +14,7 @@ declare namespace Cypress {
   interface Chainable<Subject> {
     login(email: string, password: string): void;
     getByTestId(selector: string): Chainable<JQuery<HTMLElement>>;
+    slack(message: string): void;
   }
 }
 //
@@ -34,4 +35,23 @@ Cypress.Commands.add('login', (email, password) => {
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 Cypress.Commands.add('getByTestId', (selector, ...args) => {
   return cy.get(`[data-testid=${selector}]`, ...args);
+});
+
+/**
+ * Posts a message to slack #ui-notify
+ */
+Cypress.Commands.add('slack', (message) => {
+  const text = `${message}: ${JSON.stringify(Cypress.spec)}`;
+
+  cy.log('NOTIFYING SLACK');
+
+  const webhook = Cypress.env('slackWebhook');
+
+  if (!webhook) {
+    return;
+  }
+
+  cy.request('POST', webhook, {
+    text,
+  });
 });

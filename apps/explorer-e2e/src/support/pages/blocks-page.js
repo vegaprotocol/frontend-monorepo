@@ -33,7 +33,7 @@ export default class BlocksPage extends BasePage {
           cy.wrap($cell).should('not.be.empty');
         });
       } else {
-        cy.log('Unable to find any transactions on page');
+        cy.slack('Unable to find any transactions on page');
         cy.screenshot();
       }
     });

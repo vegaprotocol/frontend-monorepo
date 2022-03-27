@@ -52,4 +52,4 @@ jobs:
       - name: Install root dependencies
         run: yarn install
       - name: Run Cypress tests
-        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
+        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }}
