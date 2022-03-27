@@ -4,32 +4,60 @@ import type {
   ApolloClient,
   DocumentNode,
   TypedDocumentNode,
+  OperationVariables,
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
+import isEqual from 'lodash/isEqual';
 
-export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
-  query: DocumentNode | TypedDocumentNode<QueryData, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-  subscriptionQuery: DocumentNode | TypedDocumentNode<SubscriptionData, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
-  update: (draft: Draft<Data>[], delta: Delta) => void,
-  getData: (subscriptionData: QueryData) => Data[] | null,
-  getDelta: (subscriptionData: SubscriptionData) => Delta
-) {
-  type C = (arg: {
+export interface UpdateCallback<Data, Delta> {
+  (arg: {
     data: Data[] | null;
     error?: Error;
     loading: boolean;
     delta?: Delta;
-  }) => void;
-  const callbacks: C[] = [];
+  }): void;
+}
+export interface Subscribe<Data, Delta> {
+  (
+    callback: UpdateCallback<Data, Delta>,
+    client: ApolloClient<object>,
+    variables?: OperationVariables
+  ): void;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
+
+interface Update<Data, Delta> {
+  (draft: Draft<Data>[], delta: Delta): void;
+}
+
+interface GetData<QueryData, Data> {
+  (subscriptionData: QueryData): Data[] | null;
+}
+
+interface GetDelta<SubscriptionData, Delta> {
+  (subscriptionData: SubscriptionData): Delta;
+}
+
+function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
+  query: Query<QueryData>,
+  subscriptionQuery: Query<SubscriptionData>,
+  update: Update<Data, Delta>,
+  getData: GetData<QueryData, Data>,
+  getDelta: GetDelta<SubscriptionData, Delta>
+): Subscribe<Data, Delta> {
+  const callbacks: UpdateCallback<Data, Delta>[] = [];
   const updateQueue: Delta[] = [];
 
+  let variables: OperationVariables | undefined = undefined;
   let data: Data[] | null = null;
   let error: Error | undefined = undefined;
   let loading = false;
   let client: ApolloClient<object> | undefined = undefined;
   let subscription: Subscription | undefined = undefined;
 
-  const notify = (callback: C, delta?: Delta) => {
+  const notify = (callback: UpdateCallback<Data, Delta>, delta?: Delta) => {
     callback({
       data,
       error,
@@ -55,6 +83,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
     subscription = client
       .subscribe<SubscriptionData>({
         query: subscriptionQuery,
+        variables,
       })
       .subscribe(({ data: subscriptionData }) => {
         if (!subscriptionData) {
@@ -75,7 +104,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
         }
       });
     try {
-      const res = await client.query<QueryData>({ query });
+      const res = await client.query<QueryData>({ query, variables });
       data = getData(res.data);
       if (data && updateQueue && updateQueue.length > 0) {
         data = produce(data, (draft) => {
@@ -97,7 +126,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
-  const unsubscribe = (callback: C) => {
+  const unsubscribe = (callback: UpdateCallback<Data, Delta>) => {
     callbacks.splice(callbacks.indexOf(callback), 1);
     if (callbacks.length === 0) {
       if (subscription) {
@@ -110,16 +139,53 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
-  return (c: ApolloClient<object>, callback: C) => {
-    if (!client) {
-      client = c;
-    }
+  return (callback, c, v) => {
     callbacks.push(callback);
     if (callbacks.length === 1) {
+      client = c;
+      variables = v;
       initialize();
     } else {
       notify(callback);
     }
     return () => unsubscribe(callback);
   };
+}
+
+const memoize = <Data, Delta>(
+  fn: (variables?: OperationVariables) => Subscribe<Data, Delta>
+) => {
+  const cache: {
+    subscribe: Subscribe<Data, Delta>;
+    variables?: OperationVariables;
+  }[] = [];
+  return (variables?: OperationVariables) => {
+    const cached = cache.find((c) => isEqual(c.variables, variables));
+    if (cached) {
+      return cached.subscribe;
+    }
+    const subscribe = fn(variables);
+    cache.push({ subscribe, variables });
+    return subscribe;
+  };
+};
+
+export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
+  query: Query<QueryData>,
+  subscriptionQuery: Query<SubscriptionData>,
+  update: Update<Data, Delta>,
+  getData: GetData<QueryData, Data>,
+  getDelta: GetDelta<SubscriptionData, Delta>
+): Subscribe<Data, Delta> {
+  const getInstance = memoize<Data, Delta>((variables) =>
+    makeDataProviderInternal(
+      query,
+      subscriptionQuery,
+      update,
+      getData,
+      getDelta
+    )
+  );
+  return (callback, client, variables) =>
+    getInstance(variables)(callback, client, variables);
 }

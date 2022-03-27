@@ -1,26 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
-import type { ApolloClient } from '@apollo/client';
+import type { OperationVariables } from '@apollo/client';
+import type { Subscribe } from '@vegaprotocol/graphql';
 
 export function useDataProvider<Data, Delta>(
-  dataProvider: (
-    client: ApolloClient<object>,
-    callback: (arg: {
-      data: Data[] | null;
-      error?: Error;
-      loading: boolean;
-      delta?: Delta;
-    }) => void
-  ) => () => void,
-  update: (delta: Delta) => boolean = () => false
+  dataProvider: Subscribe<Data, Delta>,
+  update: (delta: Delta) => boolean = () => false,
+  variables?: OperationVariables
 ) {
   const client = useApolloClient();
   const [data, setData] = useState<Data[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const initialized = useRef<boolean>(false);
-  useEffect(() => {
-    return dataProvider(client, ({ data, error, loading, delta }) => {
+  const callback = useCallback(
+    ({ data, error, loading, delta }) => {
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
@@ -29,7 +23,11 @@ export function useDataProvider<Data, Delta>(
           setData(data);
         }
       }
-    });
-  }, [client, initialized, dataProvider, update]);
+    },
+    [update]
+  );
+  useEffect(() => {
+    return dataProvider(callback, client, variables);
+  }, [client, initialized, dataProvider, callback, variables]);
   return { data, loading, error };
 }

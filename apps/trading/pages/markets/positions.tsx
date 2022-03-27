@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useMemo } from 'react';
 import { produce } from 'immer';
 import assign from 'assign-deep';
 import { useRouter } from 'next/router';
@@ -10,12 +10,15 @@ import {
   positionSubscribe_positions,
   positionsDataProvider,
 } from '@vegaprotocol/graphql';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 import type { AgGridReact } from 'ag-grid-react';
 
 export const Positions = () => {
   const { pathname, push } = useRouter();
   const gridRef = useRef<AgGridReact>();
+  const { keypair } = useVegaWallet();
+  const variables = useMemo(() => ({ partyId: keypair.pub }), [keypair]);
   const update = useCallback(
     (delta: positionSubscribe_positions) => {
       const update: positions_party_positions[] = [];
@@ -25,12 +28,14 @@ export const Positions = () => {
       }
       const rowNode = gridRef.current.api.getRowNode(getRowNodeId(delta));
       if (rowNode) {
-        const updatedData = produce(
+        const updatedData = produce<positions_party_positions>(
           rowNode.data,
-          (draft: positions_party_positions) => assign(draft, delta)
+          (draft: positions_party_positions) => {
+            assign(draft, delta);
+          }
         );
         if (updatedData !== rowNode.data) {
-          update.push(delta);
+          update.push(updatedData);
         }
       } else {
         add.push(delta);
@@ -49,7 +54,7 @@ export const Positions = () => {
   const { data, error, loading } = useDataProvider<
     positions_party_positions,
     positionSubscribe_positions
-  >(positionsDataProvider, update);
+  >(positionsDataProvider, update, variables);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       {(data) => (

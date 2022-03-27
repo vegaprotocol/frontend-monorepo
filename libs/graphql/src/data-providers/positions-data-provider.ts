@@ -69,24 +69,26 @@ export const POSITIONS_SUB = gql`
   }
 `;
 
+const update = (
+  draft: positions_party_positions[],
+  delta: positionSubscribe_positions
+) => {
+  const index = draft.findIndex((m) => m.market.id === delta.market.id);
+  if (index !== -1) {
+    draft[index] = delta;
+  } else {
+    draft.push(delta);
+  }
+};
+const getData = (responseData: positions): positions_party_positions[] | null =>
+  responseData.party ? responseData.party.positions : null;
+const getDelta = (
+  subscriptionData: positionSubscribe
+): positionSubscribe_positions => subscriptionData.positions;
+
 export const positionsDataProvider = makeDataProvider<
   positions,
   positions_party_positions,
   positionSubscribe,
   positionSubscribe_positions
->(
-  POSITION_QUERY,
-  POSITIONS_SUB,
-  (draft: positions_party_positions[], delta: positionSubscribe_positions) => {
-    const index = draft.findIndex((m) => m.market.id === delta.market.id);
-    if (index !== -1) {
-      draft[index] = delta;
-    } else {
-      draft.push(delta);
-    }
-  },
-  (responseData: positions): positions_party_positions[] | null =>
-    responseData.party ? responseData.party.positions : null,
-  (subscriptionData: positionSubscribe): positionSubscribe_positions =>
-    subscriptionData.positions
-);
+>(POSITION_QUERY, POSITIONS_SUB, update, getData, getDelta);
