@@ -2,6 +2,8 @@ import { ReactElement, useEffect, useState } from 'react';
 import { Tooltip } from '../tooltip';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
+export const TOOLTIP_TIMEOUT = 800;
+
 export interface CopyWithTooltipProps {
   children: ReactElement;
   text: string;
@@ -17,7 +19,7 @@ export function CopyWithTooltip({ children, text }: CopyWithTooltipProps) {
     if (copied) {
       timeout = setTimeout(() => {
         setCopied(false);
-      }, 800);
+      }, TOOLTIP_TIMEOUT);
     }
 
     return () => {

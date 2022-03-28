@@ -113,6 +113,7 @@
     "nx": "^13.8.3",
     "prettier": "^2.5.1",
     "react-test-renderer": "17.0.2",
+    "resize-observer-polyfill": "^1.5.1",
     "sass": "1.43.2",
     "storybook-addon-themes": "^6.1.0",
     "ts-jest": "27.0.5",
