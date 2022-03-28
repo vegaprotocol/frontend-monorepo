@@ -7,7 +7,7 @@ import {
   Arrow,
 } from '@radix-ui/react-tooltip';
 
-interface TooltipProps {
+export interface TooltipProps {
   children: React.ReactElement;
   description?: string;
   open?: boolean;
