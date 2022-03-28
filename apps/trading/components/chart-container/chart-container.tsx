@@ -4,6 +4,7 @@ import { Chart } from '@vegaprotocol/chart';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
 import { VegaDataSource } from './data-source';
+import { Interval } from 'pennant';
 
 interface ChartContainerProps {
   market: Market_market;
@@ -17,5 +18,5 @@ export const ChartContainer = ({ market }: ChartContainerProps) => {
     return new VegaDataSource(client, market.id, keypair.pub);
   }, [client, market.id, keypair.pub]);
 
-  return <Chart dataSource={dataSource} />;
+  return <Chart dataSource={dataSource} interval={Interval.I15M} />;
 };

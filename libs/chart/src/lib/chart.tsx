@@ -1,36 +1,31 @@
-import { Interval } from '@vegaprotocol/graphql';
 import dynamic from 'next/dynamic';
-import { forwardRef, useRef } from 'react';
-import { Chart as PennantChart } from 'pennant';
+import React, { forwardRef } from 'react';
+import { ChartProps } from 'pennant';
+import 'pennant/dist/style.css';
 
-// const AsyncChart = dynamic<{
-//   dataSource: any;
-//   interval: Interval;
-//   options: any;
-//   ref: any;
-//   onOptionsChanged: (options: any) => void;
-// }>(
-//   // @ts-ignore asdf asdf asdf
-//   import('pennant'),
-//   { ssr: false }
-// );
-
-export interface ChartProps {
-  dataSource: any;
+// TODO: Remove this once pennant can reference React
+if (typeof window !== 'undefined') {
+  window.React = React;
 }
 
-export const Chart = forwardRef(({ dataSource }: ChartProps, ref) => {
-  // @ts-ignore Prvent SSR of chart
-  if (!process.browser) {
+const AsyncChart = dynamic<ChartProps>(
+  () => import('pennant').then((res) => res.Chart),
+  { ssr: false }
+);
+
+export const Chart = forwardRef(({ dataSource, interval }: ChartProps, ref) => {
+  if (typeof window === 'undefined') {
     return null;
   }
 
   return (
-    <PennantChart
+    <AsyncChart
       dataSource={dataSource}
-      interval={Interval.I15M}
+      interval={interval}
       options={{ chartType: 'candle', overlays: [], studies: [] }}
       onOptionsChanged={(options) => console.log(options)}
+      // TODO: Use theme switcher hook to pass theme to chart
+      // theme="light"
     />
   );
 });
