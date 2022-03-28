@@ -23,9 +23,12 @@ export const VegaManageDialog = ({
                 'text-vega-pink dark:text-vega-yellow': kp.pub === keypair?.pub,
               });
               return (
-                <li key={kp.pub} className="mb-8 last:mb-0">
+                <li
+                  key={kp.pub}
+                  data-testid={`key-${kp.pub}`}
+                  className="mb-8 last:mb-0"
+                >
                   <button
-                    data-testid={kp.pub}
                     onClick={() => {
                       selectPublicKey(kp.pub);
                       setDialogOpen(false);
@@ -36,11 +39,14 @@ export const VegaManageDialog = ({
                   >
                     {kp.name} {kp.pub === keypair?.pub ? '(Active)' : ''}
                   </button>
-                  <p className="text-black-40 dark:text-white-40 font-mono">
+                  <div className="flex justify-between">
+                    <p className="text-black-40 dark:text-white-40 font-mono">
+                      {truncateByChars(kp.pub, 23, 23)}
+                    </p>
                     <CopyWithTooltip text={kp.pub}>
-                      <span>{truncateByChars(kp.pub, 27, 27)}</span>
+                      <button className="underline">Copy</button>
                     </CopyWithTooltip>
-                  </p>
+                  </div>
                 </li>
               );
             })}

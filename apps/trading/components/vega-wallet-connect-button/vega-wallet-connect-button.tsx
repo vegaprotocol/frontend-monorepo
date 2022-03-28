@@ -22,11 +22,16 @@ export const VegaWalletConnectButton = ({
   };
 
   return (
-    <button
-      onClick={handleClick}
-      className="ml-auto inline-block text-ui font-mono"
-    >
-      {isConnected ? truncateByChars(keypair.pub) : 'Connect Vega wallet'}
-    </button>
+    <span>
+      {isConnected && (
+        <span className="text-ui-small font-mono mr-2">Vega key:</span>
+      )}
+      <button
+        onClick={handleClick}
+        className="ml-auto inline-block text-ui-small font-mono hover:underline"
+      >
+        {isConnected ? truncateByChars(keypair.pub) : 'Connect Vega wallet'}
+      </button>
+    </span>
   );
 };

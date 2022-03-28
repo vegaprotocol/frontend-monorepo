@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import {
   VegaWalletContext,
   VegaWalletContextShape,
@@ -52,13 +52,17 @@ test('Shows list of available keys and can disconnect', () => {
   expect(list.children).toHaveLength(context.keypairs!.length);
 
   // Shows which key is active
-  expect(screen.getByTestId(keypair1.pub)).toHaveTextContent(
+  expect(screen.getByTestId(`key-${keypair1.pub}`)).toHaveTextContent(
     `${keypair1.name} (Active)`
   );
-  expect(screen.getByTestId(keypair2.pub)).toHaveTextContent(keypair2.name);
+  expect(screen.getByTestId(`key-${keypair2.pub}`)).toHaveTextContent(
+    keypair2.name
+  );
 
-  fireEvent.click(screen.getByTestId(keypair2.pub));
+  const keyListItem = within(screen.getByTestId(`key-${keypair2.pub}`));
+  fireEvent.click(keyListItem.getAllByRole('button')[0]);
   expect(context.selectPublicKey).toHaveBeenCalledWith(keypair2.pub);
+  expect(keyListItem.getByText('Copy')).toBeInTheDocument();
 
   // Disconnect
   fireEvent.click(screen.getByTestId('disconnect'));

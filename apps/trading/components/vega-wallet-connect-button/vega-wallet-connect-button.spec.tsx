@@ -40,6 +40,7 @@ test('Connected', () => {
     )
   );
 
+  expect(screen.getByText('Vega key:')).toBeInTheDocument();
   const button = screen.getByRole('button');
   expect(button).toHaveTextContent('123456\u2026123456');
   fireEvent.click(button);
