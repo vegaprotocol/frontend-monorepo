@@ -103,11 +103,13 @@ export const useOrders = (): UseOrders => {
           variables: { partyId: keypair.pub },
         });
 
-        if (!res.data.party?.orders.length) return;
+        if (!res.data.party?.orders?.length) return;
 
         mergeOrders(res.data.party.orders);
       } catch (err) {
-        setError(err);
+        setError(
+          err instanceof Error ? err : new Error('Something went wrong')
+        );
       } finally {
         setLoading(false);
       }
@@ -126,6 +128,9 @@ export const useOrders = (): UseOrders => {
         variables: { partyId: keypair.pub },
       })
       .subscribe(({ data }) => {
+        if (!data?.orders) {
+          return;
+        }
         mergeOrders(data.orders);
       });
 

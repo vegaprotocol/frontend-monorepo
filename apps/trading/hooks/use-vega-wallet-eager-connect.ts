@@ -8,9 +8,15 @@ export function useEagerConnect() {
 
   useEffect(() => {
     const cfg = LocalStorage.getItem(WALLET_CONFIG);
-    const cfgObj = JSON.parse(cfg);
+    let cfgObj: { connector: 'rest'; token: string } | null;
 
-    // No stored config, user has never connected or manually cleared storage
+    try {
+      cfgObj = cfg ? JSON.parse(cfg) : null;
+    } catch {
+      cfgObj = null;
+    }
+
+    // No stored config, or config was malformed
     if (!cfgObj || !cfgObj.connector) {
       return;
     }

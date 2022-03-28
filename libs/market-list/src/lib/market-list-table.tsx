@@ -5,10 +5,9 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { Markets_markets } from '@vegaprotocol/graphql';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import { useState } from 'react';
 
 interface MarketListTableProps {
-  markets: Markets_markets[];
+  markets: Markets_markets[] | null;
   onRowClicked: (marketId: string) => void;
 }
 
