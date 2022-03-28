@@ -8,7 +8,7 @@
   "supportFile": "./src/support/index.ts",
   "pluginsFile": false,
   "video": true,
-  "videosFolder": "../../dist/cypress/apps/stats-mainnet-e2e/videos",
-  "screenshotsFolder": "../../dist/cypress/apps/stats-mainnet-e2e/screenshots",
+  "videosFolder": "../../dist/cypress/apps/stats-e2e/videos",
+  "screenshotsFolder": "../../dist/cypress/apps/stats-e2e/screenshots",
   "chromeWebSecurity": false
 }

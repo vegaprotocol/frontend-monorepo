@@ -10,11 +10,19 @@ import { TableRow } from '../table-row';
 import { PromotedStats } from '../promoted-stats';
 import { PromotedStatsItem } from '../promoted-stats-item';
 
-interface statsManagerProps {
+interface StatsManagerProps {
+  envName: string;
+  statsEndpoint: string;
+  nodesEndpoint: string;
   className?: string;
 }
 
-export const StatsManager = ({ className }: statsManagerProps) => {
+export const StatsManager = ({
+  envName,
+  statsEndpoint,
+  nodesEndpoint,
+  className,
+}: StatsManagerProps) => {
   const [data, setData] = useState<IStructuredStats | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
@@ -22,8 +30,8 @@ export const StatsManager = ({ className }: statsManagerProps) => {
     async function getStats() {
       try {
         const [res1, res2] = await Promise.all([
-          fetch('https://api.token.vega.xyz/statistics'),
-          fetch('https://api.token.vega.xyz/nodes-data'),
+          fetch(statsEndpoint),
+          fetch(nodesEndpoint),
         ]);
         const [{ statistics }, { nodeData }] = await Promise.all([
           res1.json(),
@@ -69,7 +77,7 @@ export const StatsManager = ({ className }: statsManagerProps) => {
     return () => {
       clearInterval(interval);
     };
-  }, []);
+  }, [nodesEndpoint, statsEndpoint]);
 
   const classes = classnames(
     className,
@@ -79,7 +87,7 @@ export const StatsManager = ({ className }: statsManagerProps) => {
   return (
     <div className={classes}>
       <h3 className="font-alpha uppercase text-h3 pb-16 col-span-full">
-        {(error && `/ ${error}`) || (data ? '/ Mainnet' : '/ Connecting...')}
+        {(error && `/ ${error}`) || (data ? `/ ${envName}` : '/ Connecting...')}
       </h3>
 
       {data?.promoted ? (

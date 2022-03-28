@@ -38,7 +38,13 @@ Inline.args = {
   variant: 'inline',
 };
 
-export const NavAccent: Story = (args) => (
+export const InlineLink = Template.bind({});
+InlineLink.args = {
+  children: 'Inline link',
+  variant: 'inline-link',
+};
+
+export const NavAccent: Story = () => (
   <>
     <div className="mb-8">
       <Button variant="accent" className="px-4">
@@ -58,7 +64,7 @@ export const NavAccent: Story = (args) => (
   </>
 );
 
-export const NavInline: Story = (args) => (
+export const NavInline: Story = () => (
   <>
     <div className="mb-8">
       <Button variant="inline" className="uppercase">
