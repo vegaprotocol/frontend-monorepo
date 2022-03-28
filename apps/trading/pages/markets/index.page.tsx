@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { produce } from 'immer';
-import assign from 'assign-deep';
+import merge from 'lodash/merge';
 import { useApolloClient } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { AsyncRenderer } from '../../components/async-renderer';
@@ -16,11 +16,11 @@ import type { AgGridReact } from 'ag-grid-react';
 
 const Markets = () => {
   const { pathname, push } = useRouter();
-  const [markets, setMarkets] = useState<Markets_markets[]>(undefined);
+  const [markets, setMarkets] = useState<Markets_markets[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error>(undefined);
+  const [error, setError] = useState<Error>();
   const client = useApolloClient();
-  const gridRef = useRef<AgGridReact>();
+  const gridRef = useRef<AgGridReact | null>(null);
   const initialized = useRef<boolean>(false);
 
   useEffect(() => {
@@ -38,7 +38,8 @@ const Markets = () => {
             const add: Markets_markets[] = [];
 
             // split into updates and adds
-            if (!gridRef.current) return;
+            if (!gridRef.current || !delta) return;
+
             const rowNode = gridRef.current.api.getRowNode(
               getRowNodeId(delta.market)
             );
@@ -46,7 +47,7 @@ const Markets = () => {
             if (rowNode) {
               const updatedData = produce(
                 rowNode.data.data,
-                (draft: Markets_markets_data) => assign(draft, delta)
+                (draft: Markets_markets_data) => merge(draft, delta)
               );
               if (updatedData !== rowNode.data.data) {
                 update.push({ ...rowNode.data, data: delta });
