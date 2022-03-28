@@ -3,16 +3,18 @@ import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import { useBridgeContract } from './use-bridge-contract';
 
-export const useDepositLimits = (asset?: DepositPage_assets) => {
+interface Limits {
+  min: BigNumber;
+  max: BigNumber;
+}
+
+export const useDepositLimits = (asset?: DepositPage_assets): Limits | null => {
   const contract = useBridgeContract();
-  const [limits, setLimits] = useState({
-    min: new BigNumber(0),
-    max: new BigNumber(0),
-  });
+  const [limits, setLimits] = useState<Limits | null>(null);
 
   useEffect(() => {
     const run = async () => {
-      if (!asset || asset.source.__typename !== 'ERC20') {
+      if (!contract || !asset || asset.source.__typename !== 'ERC20') {
         return;
       }
 

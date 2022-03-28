@@ -34,17 +34,20 @@ export const useDeposit = (ethereumConfig: EthereumConfig) => {
 
   const { perform, status, error, confirmations, txHash } =
     useEthereumTransaction((...args) => {
+      if (!contract) {
+        return null;
+      }
       // @ts-ignore get around args typing
       return contract.depositAsset(...args);
     }, ethereumConfig.confirmations);
   const [finalizedDeposit, setFinalizedDeposit] =
-    useState<DepositEvent_busEvents_event_Deposit>(null);
+    useState<DepositEvent_busEvents_event_Deposit | null>(null);
 
   useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
     variables: { partyId: keypair?.pub || '' },
     skip: !keypair?.pub,
     onSubscriptionData: ({ subscriptionData }) => {
-      if (!subscriptionData.data.busEvents.length) {
+      if (!subscriptionData.data?.busEvents?.length) {
         return;
       }
 

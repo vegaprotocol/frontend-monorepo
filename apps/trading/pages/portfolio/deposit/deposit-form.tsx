@@ -12,6 +12,7 @@ import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import { ReactNode, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { DepositLimits } from './deposit-limits';
 
 interface FormFields {
   asset: string;
@@ -34,7 +35,7 @@ interface DepositFormProps {
   limits: {
     min: BigNumber;
     max: BigNumber;
-  };
+  } | null;
   allowance: BigNumber | null;
 }
 
@@ -88,12 +89,16 @@ export const DepositForm = ({
     onSelectAsset(assetId);
   }, [assetId, onSelectAsset]);
 
-  const minLimit = limits.min.toString();
-  const maxLimit = limits.max.toString();
-  const limitsInfo = limits ? `(Min: ${minLimit}, Max: ${maxLimit})` : '';
-
   return (
     <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
+      <FormGroup label="From (Ethereum address)">
+        <Input {...register('from', { required: 'Required' })} />
+        {errors.from?.message && (
+          <InputError intent="danger" className="mt-4">
+            {errors.from.message}
+          </InputError>
+        )}
+      </FormGroup>
       <FormGroup label="Asset">
         <Select {...register('asset', { required: 'Required' })}>
           <option value="">Please select</option>
@@ -106,14 +111,6 @@ export const DepositForm = ({
         {errors.asset?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.asset.message}
-          </InputError>
-        )}
-      </FormGroup>
-      <FormGroup label="From (Ethereum address)">
-        <Input {...register('from', { required: 'Required' })} />
-        {errors.from?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.from.message}
           </InputError>
         )}
       </FormGroup>
@@ -134,7 +131,12 @@ export const DepositForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <FormGroup label={`Amount ${limitsInfo}`} className="relative">
+      {selectedAsset && limits && (
+        <FormGroup>
+          <DepositLimits limits={limits} />
+        </FormGroup>
+      )}
+      <FormGroup label="Amount" className="relative">
         <Input
           type="number"
           autoComplete="off"
@@ -148,7 +150,10 @@ export const DepositForm = ({
         {account && selectedAsset && (
           <UseButton
             onClick={() => {
-              const amount = BigNumber.minimum(available, limits.max);
+              const amount = BigNumber.minimum(
+                available,
+                limits?.max || Infinity
+              );
               setValue('amount', amount.toFixed(selectedAsset.decimals));
               clearErrors('amount');
             }}

@@ -11,7 +11,7 @@ export enum TxState {
 
 export const useEthereumTransaction = (
   // eslint-disable-next-line
-  func: (...args: any) => Promise<ethers.ContractTransaction>,
+  func: (...args: any) => Promise<ethers.ContractTransaction> | null,
   requiredConfirmations = 1
 ) => {
   const [confirmations, setConfirmations] = useState(0);
@@ -26,7 +26,15 @@ export const useEthereumTransaction = (
       setStatus(TxState.Requested);
 
       try {
-        const tx: ethers.ContractTransaction = await func(...args);
+        const res = func(...args);
+
+        if (res === null) {
+          setStatus(TxState.Default);
+          return;
+        }
+
+        const tx = await res;
+
         let receipt: ethers.ContractReceipt | null = null;
 
         setTxHash(tx.hash);
@@ -44,9 +52,9 @@ export const useEthereumTransaction = (
         setStatus(TxState.Complete);
       } catch (err) {
         setStatus(TxState.Error);
-        console.log(err);
-        console.error(err);
-        setError(err);
+        setError(
+          err instanceof Error ? err : new Error('Something went wrong')
+        );
       }
     },
     [func, requiredConfirmations]

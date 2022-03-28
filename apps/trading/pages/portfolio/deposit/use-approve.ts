@@ -8,7 +8,12 @@ export const useApprove = (
 ) => {
   const contract = useTokenContract(asset);
   const { perform, status, error, confirmations, txHash } =
-    useEthereumTransaction(() => contract.approve(bridgeAddress));
+    useEthereumTransaction(() => {
+      if (!contract) {
+        return null;
+      }
+      return contract.approve(bridgeAddress);
+    });
 
   return {
     perform,
