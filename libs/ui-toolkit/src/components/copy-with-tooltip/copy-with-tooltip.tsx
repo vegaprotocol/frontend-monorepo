@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useState } from 'react';
 import { Tooltip } from '../tooltip';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
-interface CopyWithTooltipProps {
+export interface CopyWithTooltipProps {
   children: ReactElement;
   text: string;
 }

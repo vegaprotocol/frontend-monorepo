@@ -3,7 +3,7 @@ import { Tooltip, TooltipProps } from './tooltip';
 
 export default {
   component: Tooltip,
-  title: 'Toolp',
+  title: 'Tooltip',
 } as Meta;
 
 const Template: Story<TooltipProps> = (args) => <Tooltip {...args} />;
