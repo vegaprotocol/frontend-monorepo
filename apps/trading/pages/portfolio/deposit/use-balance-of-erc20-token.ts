@@ -2,7 +2,7 @@ import { DepositPage_assets } from '@vegaprotocol/graphql';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
-import { useTokenContract } from './use-token-contract';
+import { useTokenContract } from '../../../hooks/use-token-contract';
 
 export const useBalanceOfERC20Token = (asset?: DepositPage_assets) => {
   const { account } = useWeb3React();
@@ -12,6 +12,7 @@ export const useBalanceOfERC20Token = (asset?: DepositPage_assets) => {
   useEffect(() => {
     const getBalance = async () => {
       if (!contract || !account || !asset) {
+        setBalanceOf(new BigNumber(0));
         return;
       }
 

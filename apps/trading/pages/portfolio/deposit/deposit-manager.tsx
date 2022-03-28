@@ -9,7 +9,7 @@ import { EthereumConfig } from '../../../components/web3-container/web3-containe
 import { DepositForm } from './deposit-form';
 import { useBalanceOfERC20Token } from './use-balance-of-erc20-token';
 import { useDeposit } from './use-deposit';
-import { TxState } from './use-ethereum-transaction';
+import { TxState } from '../../../hooks/use-ethereum-transaction';
 import sortBy from 'lodash/sortBy';
 import { useApprove } from './use-approve';
 import { useDepositLimits } from './use-deposit-limits';
@@ -36,6 +36,7 @@ export const DepositManager = ({
   }, [data, assetId]);
 
   const balanceOf = useBalanceOfERC20Token(asset);
+  console.log(balanceOf.toString());
   const limits = useDepositLimits(asset);
   const allowance = useAllowance(
     ethereumConfig.collateral_bridge_contract.address,

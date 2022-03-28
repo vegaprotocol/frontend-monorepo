@@ -8,8 +8,8 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useState } from 'react';
 import { EthereumConfig } from '../../../components/web3-container/web3-container';
-import { useBridgeContract } from './use-bridge-contract';
-import { useEthereumTransaction } from './use-ethereum-transaction';
+import { useBridgeContract } from '../../../hooks/use-bridge-contract';
+import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
 
 const DEPOSIT_EVENT_SUB = gql`
   subscription DepositEvent($partyId: ID!) {

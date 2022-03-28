@@ -1,7 +1,7 @@
 import { DepositPage_assets } from '@vegaprotocol/graphql';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
-import { useBridgeContract } from './use-bridge-contract';
+import { useBridgeContract } from '../../../hooks/use-bridge-contract';
 
 interface Limits {
   min: BigNumber;

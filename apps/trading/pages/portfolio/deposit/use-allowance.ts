@@ -2,7 +2,7 @@ import { DepositPage_assets } from '@vegaprotocol/graphql';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
-import { useTokenContract } from './use-token-contract';
+import { useTokenContract } from '../../../hooks/use-token-contract';
 
 export const useAllowance = (
   bridgeAddress: string,
