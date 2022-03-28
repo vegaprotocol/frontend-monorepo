@@ -5,7 +5,7 @@ import type { Subscribe } from '@vegaprotocol/graphql';
 
 export function useDataProvider<Data, Delta>(
   dataProvider: Subscribe<Data, Delta>,
-  update: (delta: Delta) => boolean = () => false,
+  update?: (delta: Delta) => boolean,
   variables?: OperationVariables
 ) {
   const client = useApolloClient();
@@ -18,7 +18,7 @@ export function useDataProvider<Data, Delta>(
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
-        if (!initialized.current || !delta || !update(delta)) {
+        if (!initialized.current || !delta || !update || !update(delta)) {
           initialized.current = true;
           setData(data);
         }

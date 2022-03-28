@@ -22,7 +22,7 @@ export interface Subscribe<Data, Delta> {
     callback: UpdateCallback<Data, Delta>,
     client: ApolloClient<object>,
     variables?: OperationVariables
-  ): void;
+  ): () => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
