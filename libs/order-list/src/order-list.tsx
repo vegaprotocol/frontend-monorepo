@@ -1,9 +1,5 @@
-import {
-  Orders_party_orders,
-  OrderTimeInForce,
-  OrderStatus,
-  Side,
-} from '@vegaprotocol/graphql';
+import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/graphql';
+import { Orders_party_orders } from './__generated__/Orders';
 import {
   formatNumber,
   getDateTimeFormat,

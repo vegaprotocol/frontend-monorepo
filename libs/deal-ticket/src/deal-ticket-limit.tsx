@@ -1,19 +1,19 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce } from '@vegaprotocol/wallet';
 import { TransactionStatus } from './deal-ticket';
-import { Market_market } from '@vegaprotocol/graphql';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import { Order } from './use-order-state';
+import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
 interface DealTicketLimitProps {
   order: Order;
   updateOrder: (order: Partial<Order>) => void;
   transactionStatus: TransactionStatus;
-  market: Market_market;
+  market: DealTicketQuery_market;
 }
 
 export const DealTicketLimit = ({

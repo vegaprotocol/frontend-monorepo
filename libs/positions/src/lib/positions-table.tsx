@@ -10,10 +10,8 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import compact from 'lodash/compact';
-import {
-  Positions_party_positions,
-  MarketTradingMode,
-} from '@vegaprotocol/graphql';
+import { Positions_party_positions } from './__generated__/Positions';
+import { MarketTradingMode } from '@vegaprotocol/graphql';
 
 interface PositionsTableProps {
   data: Positions_party_positions[] | null;

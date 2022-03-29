@@ -11,7 +11,7 @@ import { TendermintSearchTransactionResponse } from '../tendermint-transaction-r
 import {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
-} from '@vegaprotocol/graphql';
+} from './__generated__/PartyAssetsQuery';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
