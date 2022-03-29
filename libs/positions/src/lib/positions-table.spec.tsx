@@ -1,6 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
-import { positions_party_positions } from '@vegaprotocol/graphql';
+import {
+  positions_party_positions,
+  MarketTradingMode,
+} from '@vegaprotocol/graphql';
 
 const singleRow: positions_party_positions = {
   realisedPNL: '5',
@@ -10,7 +13,12 @@ const singleRow: positions_party_positions = {
   market: {
     id: 'b7010da9dbe7fbab2b74d9d5642fc4a8a0ca93ef803d21fa60c2cacd0416bba0',
     name: 'UNIDAI Monthly (30 Jun 2022)',
-    data: { markPrice: '1138885', __typename: 'MarketData' },
+    data: {
+      markPrice: '1138885',
+      marketTradingMode: MarketTradingMode.Continuous,
+      __typename: 'MarketData',
+      market: { __typename: 'Market', id: '123' },
+    },
     decimalPlaces: 5,
     tradableInstrument: {
       instrument: {
@@ -48,9 +56,7 @@ const singleRow: positions_party_positions = {
   __typename: 'Position',
 };
 const singleRowData = [singleRow];
-const onRowClicked = (marketId: string) => {
-  console.log(marketId);
-};
+const onRowClicked = jest.fn;
 
 test('should render successfully', async () => {
   await act(async () => {

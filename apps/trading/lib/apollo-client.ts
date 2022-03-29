@@ -33,6 +33,9 @@ export function createClient(base?: string) {
       Instrument: {
         keyFields: false,
       },
+      MarketData: {
+        keyFields: ['market', ['id']],
+      },
       Node: {
         keyFields: false,
       },

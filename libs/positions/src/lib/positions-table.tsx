@@ -10,7 +10,10 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import compact from 'lodash/compact';
-import { positions_party_positions } from '@vegaprotocol/graphql';
+import {
+  positions_party_positions,
+  MarketTradingMode,
+} from '@vegaprotocol/graphql';
 
 interface PositionsTableProps {
   data: positions_party_positions[];
@@ -93,9 +96,18 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           field="market.data.markPrice"
           type="rightAligned"
           cellRenderer="PriceCell"
-          valueFormatter={({ value, data }: ValueFormatterParams) =>
-            addDecimal(value, data.market.decimalPlaces)
-          }
+          valueFormatter={({
+            value,
+            data,
+          }: PositionsTableValueFormatterParams) => {
+            if (
+              data.market.data?.marketTradingMode ===
+              MarketTradingMode.OpeningAuction
+            ) {
+              return '-';
+            }
+            return addDecimal(value, data.market.decimalPlaces);
+          }}
         />
         <AgGridColumn
           headerName="Realised PNL"

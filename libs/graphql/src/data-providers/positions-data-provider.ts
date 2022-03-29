@@ -21,6 +21,10 @@ const POSITIONS_FRAGMENT = gql`
       name
       data {
         markPrice
+        marketTradingMode
+        market {
+          id
+        }
       }
       decimalPlaces
       tradableInstrument {

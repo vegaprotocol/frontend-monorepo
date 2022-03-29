@@ -3,9 +3,19 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { MarketTradingMode } from "./globalTypes";
+
 // ====================================================
 // GraphQL fragment: PositionDetails
 // ====================================================
+
+export interface PositionDetails_market_data_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
 
 export interface PositionDetails_market_data {
   __typename: "MarketData";
@@ -13,6 +23,14 @@ export interface PositionDetails_market_data {
    * the mark price (actually an unsigned int)
    */
   markPrice: string;
+  /**
+   * what state the market is in (auction, continuous etc)
+   */
+  marketTradingMode: MarketTradingMode;
+  /**
+   * market id of the associated mark price
+   */
+  market: PositionDetails_market_data_market;
 }
 
 export interface PositionDetails_market_tradableInstrument_instrument_metadata {
