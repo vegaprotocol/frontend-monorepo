@@ -5,6 +5,7 @@ module.exports = (config, context) => {
     ? [
         new SentryPlugin({
           include: './dist/apps/explorer',
+          project: 'block-explorer',
         }),
       ]
     : [];
