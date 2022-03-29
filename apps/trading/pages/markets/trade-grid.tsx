@@ -6,6 +6,7 @@ import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '../../components/deal-ticket-container';
 import { OrderListContainer } from '../..//components/order-list-container';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Positions } from './positions';
 
 const Chart = () => (
   <Splash>
@@ -15,11 +16,6 @@ const Chart = () => (
 const Orderbook = () => (
   <Splash>
     <p>Orderbook</p>
-  </Splash>
-);
-const Positions = () => (
-  <Splash>
-    <p>Positions</p>
   </Splash>
 );
 const Collateral = () => (

@@ -7,6 +7,19 @@ const getUserLocale = () => 'default';
 export const splitAt = (index: number) => (x: string) =>
   [x.slice(0, index), x.slice(index)];
 
+/**
+ * Returns a number prefixed with either a '-' or a '+'. The open volume field
+ * already comes with a '-' if negative so we only need to actually prefix if
+ * its a positive value
+ */
+export function volumePrefix(value: string): string {
+  if (value === '0' || value.startsWith('-')) {
+    return value;
+  }
+
+  return '+' + value;
+}
+
 export const getTimeFormat = once(
   () =>
     new Intl.DateTimeFormat(getUserLocale(), {

@@ -7,19 +7,19 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 
 interface MarketListTableProps {
-  markets: Markets_markets[] | null;
+  data: Markets_markets[] | null;
   onRowClicked: (marketId: string) => void;
 }
 
 export const getRowNodeId = (data: { id: string }) => data.id;
 
 export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
-  ({ markets, onRowClicked }, ref) => {
+  ({ data, onRowClicked }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate="No markets"
-        rowData={markets}
+        rowData={data}
         getRowNodeId={getRowNodeId}
         ref={ref}
         defaultColDef={{
