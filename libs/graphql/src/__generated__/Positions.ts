@@ -6,10 +6,10 @@
 import { MarketTradingMode } from "./globalTypes";
 
 // ====================================================
-// GraphQL query operation: positions
+// GraphQL query operation: Positions
 // ====================================================
 
-export interface positions_party_positions_market_data_market {
+export interface Positions_party_positions_market_data_market {
   __typename: "Market";
   /**
    * Market ID
@@ -17,7 +17,7 @@ export interface positions_party_positions_market_data_market {
   id: string;
 }
 
-export interface positions_party_positions_market_data {
+export interface Positions_party_positions_market_data {
   __typename: "MarketData";
   /**
    * the mark price (actually an unsigned int)
@@ -30,10 +30,10 @@ export interface positions_party_positions_market_data {
   /**
    * market id of the associated mark price
    */
-  market: positions_party_positions_market_data_market;
+  market: Positions_party_positions_market_data_market;
 }
 
-export interface positions_party_positions_market_tradableInstrument_instrument_metadata {
+export interface Positions_party_positions_market_tradableInstrument_instrument_metadata {
   __typename: "InstrumentMetadata";
   /**
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
@@ -41,7 +41,7 @@ export interface positions_party_positions_market_tradableInstrument_instrument_
   tags: string[] | null;
 }
 
-export interface positions_party_positions_market_tradableInstrument_instrument_product_settlementAsset {
+export interface Positions_party_positions_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -61,19 +61,19 @@ export interface positions_party_positions_market_tradableInstrument_instrument_
   decimals: number;
 }
 
-export interface positions_party_positions_market_tradableInstrument_instrument_product {
+export interface Positions_party_positions_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * The name of the asset (string)
    */
-  settlementAsset: positions_party_positions_market_tradableInstrument_instrument_product_settlementAsset;
+  settlementAsset: Positions_party_positions_market_tradableInstrument_instrument_product_settlementAsset;
   /**
    * String representing the quote (e.g. BTCUSD -> USD is quote)
    */
   quoteName: string;
 }
 
-export interface positions_party_positions_market_tradableInstrument_instrument {
+export interface Positions_party_positions_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
@@ -86,7 +86,7 @@ export interface positions_party_positions_market_tradableInstrument_instrument 
   /**
    * Metadata for this instrument
    */
-  metadata: positions_party_positions_market_tradableInstrument_instrument_metadata;
+  metadata: Positions_party_positions_market_tradableInstrument_instrument_metadata;
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
@@ -94,18 +94,18 @@ export interface positions_party_positions_market_tradableInstrument_instrument 
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
-  product: positions_party_positions_market_tradableInstrument_instrument_product;
+  product: Positions_party_positions_market_tradableInstrument_instrument_product;
 }
 
-export interface positions_party_positions_market_tradableInstrument {
+export interface Positions_party_positions_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
-  instrument: positions_party_positions_market_tradableInstrument_instrument;
+  instrument: Positions_party_positions_market_tradableInstrument_instrument;
 }
 
-export interface positions_party_positions_market {
+export interface Positions_party_positions_market {
   __typename: "Market";
   /**
    * Market ID
@@ -118,7 +118,7 @@ export interface positions_party_positions_market {
   /**
    * marketData for the given market
    */
-  data: positions_party_positions_market_data | null;
+  data: Positions_party_positions_market_data | null;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
@@ -139,10 +139,10 @@ export interface positions_party_positions_market {
   /**
    * An instance of or reference to a tradable instrument.
    */
-  tradableInstrument: positions_party_positions_market_tradableInstrument;
+  tradableInstrument: Positions_party_positions_market_tradableInstrument;
 }
 
-export interface positions_party_positions {
+export interface Positions_party_positions {
   __typename: "Position";
   /**
    * Realised Profit and Loss (int64)
@@ -163,10 +163,10 @@ export interface positions_party_positions {
   /**
    * Market relating to this position
    */
-  market: positions_party_positions_market;
+  market: Positions_party_positions_market;
 }
 
-export interface positions_party {
+export interface Positions_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -175,16 +175,16 @@ export interface positions_party {
   /**
    * Trading positions relating to a party
    */
-  positions: positions_party_positions[] | null;
+  positions: Positions_party_positions[] | null;
 }
 
-export interface positions {
+export interface Positions {
   /**
    * An entity that is trading on the VEGA network
    */
-  party: positions_party | null;
+  party: Positions_party | null;
 }
 
-export interface positionsVariables {
+export interface PositionsVariables {
   partyId: string;
 }

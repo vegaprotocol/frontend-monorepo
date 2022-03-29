@@ -1,11 +1,11 @@
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import {
-  positions_party_positions,
+  Positions_party_positions,
   MarketTradingMode,
 } from '@vegaprotocol/graphql';
 
-const singleRow: positions_party_positions = {
+const singleRow: Positions_party_positions = {
   realisedPNL: '5',
   openVolume: '100',
   unrealisedPNL: '895000',

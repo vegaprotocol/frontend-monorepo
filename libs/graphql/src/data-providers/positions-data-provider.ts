@@ -1,14 +1,14 @@
 import { gql } from '@apollo/client';
 import {
-  positions,
-  positions_party_positions,
-} from '../__generated__/positions';
+  Positions,
+  Positions_party_positions,
+} from '../__generated__/Positions';
 import { makeDataProvider } from './generic-data-provider';
 
 import {
-  positionSubscribe,
-  positionSubscribe_positions,
-} from '../__generated__/positionSubscribe';
+  PositionSubscribe,
+  PositionSubscribe_positions,
+} from '../__generated__/PositionSubscribe';
 
 const POSITIONS_FRAGMENT = gql`
   fragment PositionDetails on Position {
@@ -54,7 +54,7 @@ const POSITIONS_FRAGMENT = gql`
 
 const POSITION_QUERY = gql`
   ${POSITIONS_FRAGMENT}
-  query positions($partyId: ID!) {
+  query Positions($partyId: ID!) {
     party(id: $partyId) {
       id
       positions {
@@ -66,7 +66,7 @@ const POSITION_QUERY = gql`
 
 export const POSITIONS_SUB = gql`
   ${POSITIONS_FRAGMENT}
-  subscription positionSubscribe($partyId: ID!) {
+  subscription PositionSubscribe($partyId: ID!) {
     positions(partyId: $partyId) {
       ...PositionDetails
     }
@@ -74,8 +74,8 @@ export const POSITIONS_SUB = gql`
 `;
 
 const update = (
-  draft: positions_party_positions[],
-  delta: positionSubscribe_positions
+  draft: Positions_party_positions[],
+  delta: PositionSubscribe_positions
 ) => {
   const index = draft.findIndex((m) => m.market.id === delta.market.id);
   if (index !== -1) {
@@ -84,15 +84,15 @@ const update = (
     draft.push(delta);
   }
 };
-const getData = (responseData: positions): positions_party_positions[] | null =>
+const getData = (responseData: Positions): Positions_party_positions[] | null =>
   responseData.party ? responseData.party.positions : null;
 const getDelta = (
-  subscriptionData: positionSubscribe
-): positionSubscribe_positions => subscriptionData.positions;
+  subscriptionData: PositionSubscribe
+): PositionSubscribe_positions => subscriptionData.positions;
 
 export const positionsDataProvider = makeDataProvider<
-  positions,
-  positions_party_positions,
-  positionSubscribe,
-  positionSubscribe_positions
+  Positions,
+  Positions_party_positions,
+  PositionSubscribe,
+  PositionSubscribe_positions
 >(POSITION_QUERY, POSITIONS_SUB, update, getData, getDelta);

@@ -6,10 +6,10 @@
 import { MarketTradingMode } from "./globalTypes";
 
 // ====================================================
-// GraphQL subscription operation: positionSubscribe
+// GraphQL subscription operation: PositionSubscribe
 // ====================================================
 
-export interface positionSubscribe_positions_market_data_market {
+export interface PositionSubscribe_positions_market_data_market {
   __typename: "Market";
   /**
    * Market ID
@@ -17,7 +17,7 @@ export interface positionSubscribe_positions_market_data_market {
   id: string;
 }
 
-export interface positionSubscribe_positions_market_data {
+export interface PositionSubscribe_positions_market_data {
   __typename: "MarketData";
   /**
    * the mark price (actually an unsigned int)
@@ -30,10 +30,10 @@ export interface positionSubscribe_positions_market_data {
   /**
    * market id of the associated mark price
    */
-  market: positionSubscribe_positions_market_data_market;
+  market: PositionSubscribe_positions_market_data_market;
 }
 
-export interface positionSubscribe_positions_market_tradableInstrument_instrument_metadata {
+export interface PositionSubscribe_positions_market_tradableInstrument_instrument_metadata {
   __typename: "InstrumentMetadata";
   /**
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
@@ -41,7 +41,7 @@ export interface positionSubscribe_positions_market_tradableInstrument_instrumen
   tags: string[] | null;
 }
 
-export interface positionSubscribe_positions_market_tradableInstrument_instrument_product_settlementAsset {
+export interface PositionSubscribe_positions_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -61,19 +61,19 @@ export interface positionSubscribe_positions_market_tradableInstrument_instrumen
   decimals: number;
 }
 
-export interface positionSubscribe_positions_market_tradableInstrument_instrument_product {
+export interface PositionSubscribe_positions_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * The name of the asset (string)
    */
-  settlementAsset: positionSubscribe_positions_market_tradableInstrument_instrument_product_settlementAsset;
+  settlementAsset: PositionSubscribe_positions_market_tradableInstrument_instrument_product_settlementAsset;
   /**
    * String representing the quote (e.g. BTCUSD -> USD is quote)
    */
   quoteName: string;
 }
 
-export interface positionSubscribe_positions_market_tradableInstrument_instrument {
+export interface PositionSubscribe_positions_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
@@ -86,7 +86,7 @@ export interface positionSubscribe_positions_market_tradableInstrument_instrumen
   /**
    * Metadata for this instrument
    */
-  metadata: positionSubscribe_positions_market_tradableInstrument_instrument_metadata;
+  metadata: PositionSubscribe_positions_market_tradableInstrument_instrument_metadata;
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
@@ -94,18 +94,18 @@ export interface positionSubscribe_positions_market_tradableInstrument_instrumen
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
-  product: positionSubscribe_positions_market_tradableInstrument_instrument_product;
+  product: PositionSubscribe_positions_market_tradableInstrument_instrument_product;
 }
 
-export interface positionSubscribe_positions_market_tradableInstrument {
+export interface PositionSubscribe_positions_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
-  instrument: positionSubscribe_positions_market_tradableInstrument_instrument;
+  instrument: PositionSubscribe_positions_market_tradableInstrument_instrument;
 }
 
-export interface positionSubscribe_positions_market {
+export interface PositionSubscribe_positions_market {
   __typename: "Market";
   /**
    * Market ID
@@ -118,7 +118,7 @@ export interface positionSubscribe_positions_market {
   /**
    * marketData for the given market
    */
-  data: positionSubscribe_positions_market_data | null;
+  data: PositionSubscribe_positions_market_data | null;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
@@ -139,10 +139,10 @@ export interface positionSubscribe_positions_market {
   /**
    * An instance of or reference to a tradable instrument.
    */
-  tradableInstrument: positionSubscribe_positions_market_tradableInstrument;
+  tradableInstrument: PositionSubscribe_positions_market_tradableInstrument;
 }
 
-export interface positionSubscribe_positions {
+export interface PositionSubscribe_positions {
   __typename: "Position";
   /**
    * Realised Profit and Loss (int64)
@@ -163,16 +163,16 @@ export interface positionSubscribe_positions {
   /**
    * Market relating to this position
    */
-  market: positionSubscribe_positions_market;
+  market: PositionSubscribe_positions_market;
 }
 
-export interface positionSubscribe {
+export interface PositionSubscribe {
   /**
    * Subscribe to the positions updates
    */
-  positions: positionSubscribe_positions;
+  positions: PositionSubscribe_positions;
 }
 
-export interface positionSubscribeVariables {
+export interface PositionSubscribeVariables {
   partyId: string;
 }

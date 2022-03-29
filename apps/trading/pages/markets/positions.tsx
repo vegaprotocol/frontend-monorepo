@@ -6,8 +6,8 @@ import { AsyncRenderer } from '../../components/async-renderer';
 import { PositionsTable, getRowNodeId } from '@vegaprotocol/positions';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import {
-  positions_party_positions,
-  positionSubscribe_positions,
+  Positions_party_positions,
+  PositionSubscribe_positions,
   positionsDataProvider,
 } from '@vegaprotocol/graphql';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -20,17 +20,17 @@ export const Positions = () => {
   const { keypair } = useVegaWallet();
   const variables = useMemo(() => ({ partyId: keypair.pub }), [keypair]);
   const update = useCallback(
-    (delta: positionSubscribe_positions) => {
-      const update: positions_party_positions[] = [];
-      const add: positions_party_positions[] = [];
+    (delta: PositionSubscribe_positions) => {
+      const update: Positions_party_positions[] = [];
+      const add: Positions_party_positions[] = [];
       if (!gridRef.current) {
         return false;
       }
       const rowNode = gridRef.current.api.getRowNode(getRowNodeId(delta));
       if (rowNode) {
-        const updatedData = produce<positions_party_positions>(
+        const updatedData = produce<Positions_party_positions>(
           rowNode.data,
-          (draft: positions_party_positions) => {
+          (draft: Positions_party_positions) => {
             merge(draft, delta);
           }
         );
@@ -52,8 +52,8 @@ export const Positions = () => {
     [gridRef]
   );
   const { data, error, loading } = useDataProvider<
-    positions_party_positions,
-    positionSubscribe_positions
+    Positions_party_positions,
+    PositionSubscribe_positions
   >(positionsDataProvider, update, variables);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
