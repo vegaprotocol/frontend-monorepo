@@ -15,7 +15,7 @@ if (dsn) {
     dsn,
     integrations: [new BrowserTracing()],
     tracesSampleRate: 1,
-    environment: process.env['NODE_ENV'],
+    environment: process.env['NX_VEGA_ENV'],
   });
 }
 
