@@ -5,7 +5,7 @@
     <link rel="icon" href="assets/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Health check for Vega's mainnet" />
+    <meta name="description" content="Health check for Vega" />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -21,19 +21,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>Vega Mainnet Stats</title>
-    <script>
-      // Set dark mode preference indicator here to avoid FOUC
-      if (
-        localStorage.theme === 'dark' ||
-        (!('theme' in localStorage) &&
-          window.matchMedia('(prefers-color-scheme: dark)').matches)
-      ) {
-        document.documentElement.classList.add('dark-mode-preferred');
-      } else {
-        document.documentElement.classList.remove('dark-mode-preferred');
-      }
-    </script>
+    <title>Vega Network Stats</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

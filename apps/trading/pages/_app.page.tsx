@@ -10,7 +10,7 @@ import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { ApolloProvider } from '@apollo/client';
 import { AppLoader } from '../components/app-loader';
 import { VegaWalletButton } from '../components/vega-wallet-connect-button';
-import { useThemeSwitcher } from '../hooks/use-theme-switcher';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 import './styles.css';
 
