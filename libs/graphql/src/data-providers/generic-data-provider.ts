@@ -3,6 +3,7 @@ import type { Draft } from 'immer';
 import type {
   ApolloClient,
   DocumentNode,
+  FetchPolicy,
   TypedDocumentNode,
   OperationVariables,
 } from '@apollo/client';
@@ -45,7 +46,8 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   subscriptionQuery: Query<SubscriptionData>,
   update: Update<Data, Delta>,
   getData: GetData<QueryData, Data>,
-  getDelta: GetDelta<SubscriptionData, Delta>
+  getDelta: GetDelta<SubscriptionData, Delta>,
+  fetchPolicy: FetchPolicy = 'no-cache'
 ): Subscribe<Data, Delta> {
   const callbacks: UpdateCallback<Data, Delta>[] = [];
   const updateQueue: Delta[] = [];
@@ -104,7 +106,11 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         }
       });
     try {
-      const res = await client.query<QueryData>({ query, variables });
+      const res = await client.query<QueryData>({
+        query,
+        variables,
+        fetchPolicy,
+      });
       data = getData(res.data);
       if (data && updateQueue && updateQueue.length > 0) {
         data = produce(data, (draft) => {
@@ -175,7 +181,8 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
   subscriptionQuery: Query<SubscriptionData>,
   update: Update<Data, Delta>,
   getData: GetData<QueryData, Data>,
-  getDelta: GetDelta<SubscriptionData, Delta>
+  getDelta: GetDelta<SubscriptionData, Delta>,
+  fetchPolicy: FetchPolicy = 'no-cache'
 ): Subscribe<Data, Delta> {
   const getInstance = memoize<Data, Delta>((variables) =>
     makeDataProviderInternal(
@@ -183,7 +190,8 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
       subscriptionQuery,
       update,
       getData,
-      getDelta
+      getDelta,
+      fetchPolicy
     )
   );
   return (callback, client, variables) =>
