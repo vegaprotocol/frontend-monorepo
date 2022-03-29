@@ -54,7 +54,7 @@ export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
     variables: { partyId: keypair?.pub || '' },
     skip: !id,
     onSubscriptionData: ({ subscriptionData }) => {
-      if (!subscriptionData.data.busEvents.length) {
+      if (!subscriptionData.data?.busEvents?.length) {
         return;
       }
 
@@ -100,9 +100,9 @@ export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
         orderSubmission: {
           marketId: market.id,
           price:
-            order.type === OrderType.Market
-              ? undefined
-              : removeDecimal(order.price, market.decimalPlaces),
+            order.type === OrderType.Limit && order.price
+              ? removeDecimal(order.price, market.decimalPlaces)
+              : undefined,
           size: order.size,
           type: order.type,
           side: order.side,

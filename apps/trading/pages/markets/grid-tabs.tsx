@@ -4,21 +4,24 @@ import { useRouter } from 'next/router';
 import {
   Children,
   isValidElement,
+  ReactElement,
   ReactNode,
   useEffect,
   useState,
 } from 'react';
 
 interface GridTabsProps {
-  children: ReactNode;
+  children: ReactElement<GridTabProps>[];
   group: string;
 }
 
 export const GridTabs = ({ children, group }: GridTabsProps) => {
   const { query, asPath, replace } = useRouter();
   const [activeTab, setActiveTab] = useState<string>(() => {
-    if (query[group]) {
-      return query[group];
+    const tab = query[group];
+
+    if (typeof tab === 'string') {
+      return tab;
     }
 
     // Default to first tab

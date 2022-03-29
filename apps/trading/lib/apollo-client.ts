@@ -1,5 +1,6 @@
 import {
   ApolloClient,
+  ApolloLink,
   split,
   from,
   HttpLink,
@@ -60,7 +61,7 @@ export function createClient(base?: string) {
           url: urlWS.href,
         })
       )
-    : null;
+    : new ApolloLink((operation, forward) => forward(operation));
 
   const splitLink = process.browser
     ? split(

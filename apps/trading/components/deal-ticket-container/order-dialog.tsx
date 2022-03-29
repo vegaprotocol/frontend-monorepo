@@ -70,10 +70,10 @@ export const OrderDialog = ({
       icon={<Icon name="tick" size={20} />}
     >
       <p>Status: {finalizedOrder.status}</p>
-      <p>Market: {finalizedOrder.market.name}</p>
+      {finalizedOrder.market && <p>Market: {finalizedOrder.market.name}</p>}
       <p>Type: {finalizedOrder.type}</p>
       <p>Amount: {finalizedOrder.size}</p>
-      {finalizedOrder.type === 'Limit' && (
+      {finalizedOrder.type === 'Limit' && finalizedOrder.market && (
         <p>
           Price:{' '}
           {formatNumber(
