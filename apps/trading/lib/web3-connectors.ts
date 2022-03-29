@@ -6,7 +6,7 @@ export const metamask = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
 );
 
-const infuraId = process.env['NX_INFURA_ID '];
+const infuraId = process.env['NX_INFURA_ID'];
 
 export const walletconnect = initializeConnector<WalletConnect>(
   (actions) =>

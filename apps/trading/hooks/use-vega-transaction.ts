@@ -60,7 +60,7 @@ export const useVegaTransaction = () => {
       } else if ('errors' in res) {
         handleError(res);
         return null;
-      } else if (res.tx && res.txHash) {
+      } else if (res.tx?.signature?.value && res.txHash) {
         setTransaction({
           status: VegaTxStatus.Pending,
           hash: res.txHash,

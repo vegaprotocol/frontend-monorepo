@@ -17,11 +17,7 @@ export const PageQueryContainer = <TData, TVariables = OperationVariables>({
   const { data, loading, error } = useQuery<TData, TVariables>(query, options);
 
   return (
-    <AsyncRenderer<TData>
-      loading={loading || Boolean(!data)}
-      error={error}
-      data={data}
-    >
+    <AsyncRenderer<TData> loading={loading} error={error} data={data}>
       {(data) => children(data)}
     </AsyncRenderer>
   );

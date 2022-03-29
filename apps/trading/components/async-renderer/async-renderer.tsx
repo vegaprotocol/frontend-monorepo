@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
-  error: Error | undefined;
-  data: T;
+  error: Error | undefined | null;
+  data: T | undefined;
   children: (data: T) => ReactNode;
 }
 
@@ -19,7 +19,7 @@ export function AsyncRenderer<T = any>({
     return <Splash>Something went wrong: {error.message}</Splash>;
   }
 
-  if (loading) {
+  if (loading || !data) {
     return <Splash>Loading...</Splash>;
   }
 

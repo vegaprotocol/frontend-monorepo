@@ -46,21 +46,29 @@ const MARKET_QUERY = gql`
 `;
 
 const MarketPage = () => {
-  const {
-    query: { marketId },
-  } = useRouter();
+  const { query } = useRouter();
   const { w } = useWindowSize();
+
+  // Default to first marketId query item if found
+  const marketId = Array.isArray(query.marketId)
+    ? query.marketId[0]
+    : query.marketId;
+
+  if (!marketId) {
+    return (
+      <Splash>
+        <p>Not found</p>
+      </Splash>
+    );
+  }
 
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}
       options={{
-        // Not sure exactly why marketId is string | string[] but just the first item in the array if
-        // it is one
         variables: {
-          marketId: Array.isArray(marketId) ? marketId[0] : marketId,
+          marketId,
         },
-        skip: !marketId,
         fetchPolicy: 'network-only',
       }}
     >
