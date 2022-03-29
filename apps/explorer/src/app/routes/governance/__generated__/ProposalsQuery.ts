@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../../../../libs/graphql/src/__generated__/globalTypes";
+import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: ProposalsQuery

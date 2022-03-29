@@ -8,7 +8,7 @@ import {
   Side,
   OrderType,
   OrderTimeInForce,
-} from '@vegaprotocol/graphql';
+} from '@vegaprotocol/types';
 import {
   VegaKeyExtended,
   VegaWalletContext,

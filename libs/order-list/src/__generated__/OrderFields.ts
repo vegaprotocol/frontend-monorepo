@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { OrderType, Side, OrderStatus, OrderRejectionReason, OrderTimeInForce } from "./../../../graphql/src/__generated__/globalTypes";
+import { OrderType, Side, OrderStatus, OrderRejectionReason, OrderTimeInForce } from "./../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL fragment: OrderFields

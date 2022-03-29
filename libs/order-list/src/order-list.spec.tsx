@@ -7,7 +7,7 @@ import {
   OrderType,
   Side,
   OrderRejectionReason,
-} from '@vegaprotocol/graphql';
+} from '@vegaprotocol/types';
 import { OrderList } from './order-list';
 
 test('No orders message shown', async () => {

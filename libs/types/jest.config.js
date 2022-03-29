@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: 'graphql',
+  displayName: 'types',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/graphql',
+  coverageDirectory: '../../coverage/libs/types',
 };

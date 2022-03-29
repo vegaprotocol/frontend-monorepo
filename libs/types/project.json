@@ -1,6 +1,6 @@
 {
-  "root": "libs/graphql",
-  "sourceRoot": "libs/graphql/src",
+  "root": "libs/types",
+  "sourceRoot": "libs/types/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/graphql",
-        "tsConfig": "libs/graphql/tsconfig.lib.json",
-        "project": "libs/graphql/package.json",
-        "entryFile": "libs/graphql/src/index.ts",
+        "outputPath": "dist/libs/types",
+        "tsConfig": "libs/types/tsconfig.lib.json",
+        "project": "libs/types/package.json",
+        "entryFile": "libs/types/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/graphql/README.md",
+            "glob": "libs/types/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/graphql/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/types/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/graphql"],
+      "outputs": ["coverage/libs/types"],
       "options": {
-        "jestConfig": "libs/graphql/jest.config.js",
+        "jestConfig": "libs/types/jest.config.js",
         "passWithNoTests": true
       }
     },
@@ -44,7 +44,7 @@
       "options": {
         "commands": [
           {
-            "command": "npx apollo client:codegen --config=libs/graphql/apollo.config.js --target=typescript --globalTypesFile=libs/graphql/src/__generated__/globalTypes.ts"
+            "command": "npx apollo client:codegen --config=libs/types/apollo.config.js --target=typescript --globalTypesFile=libs/types/src/__generated__/globalTypes.ts"
           }
         ]
       }

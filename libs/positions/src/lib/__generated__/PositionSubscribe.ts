@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode } from "./../../../../graphql/src/__generated__/globalTypes";
+import { MarketTradingMode } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: PositionSubscribe
