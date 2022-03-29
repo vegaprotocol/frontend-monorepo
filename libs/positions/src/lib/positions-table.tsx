@@ -10,10 +10,7 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import compact from 'lodash/compact';
-import {
-  positions_party_positions,
-  MarketTradingMode,
-} from '@vegaprotocol/graphql';
+import { positions_party_positions } from '@vegaprotocol/graphql';
 
 interface PositionsTableProps {
   data: positions_party_positions[];
@@ -44,6 +41,10 @@ const sortByName = (
   return 0;
 };
 
+interface PositionsTableValueFormatterParams extends ValueFormatterParams {
+  data: positions_party_positions;
+}
+
 export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
   ({ data, onRowClicked }, ref) => {
     const sortedData = useMemo(() => {
@@ -67,12 +68,12 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
       >
         <AgGridColumn
           headerName="Market"
-          field="tradableInstrument.instrument.code"
+          field="market.tradableInstrument.instrument.code"
         />
         <AgGridColumn
           headerName="Amount"
           field="openVolume"
-          valueFormatter={({ value, data }: ValueFormatterParams) =>
+          valueFormatter={({ value }: PositionsTableValueFormatterParams) =>
             volumePrefix(value)
           }
         />
@@ -80,7 +81,10 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           headerName="Average Entry Price"
           field="averageEntryPrice"
           cellRenderer="PriceCell"
-          valueFormatter={({ value, data }: ValueFormatterParams) =>
+          valueFormatter={({
+            value,
+            data,
+          }: PositionsTableValueFormatterParams) =>
             formatNumber(value, data.market.decimalPlaces)
           }
         />
@@ -89,15 +93,9 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           field="market.data.markPrice"
           type="rightAligned"
           cellRenderer="PriceCell"
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            if (
-              data.market.data.marketTradingMode ===
-              MarketTradingMode.OpeningAuction
-            ) {
-              return '-';
-            }
-            return addDecimal(value, data.market.decimalPlaces);
-          }}
+          valueFormatter={({ value, data }: ValueFormatterParams) =>
+            addDecimal(value, data.market.decimalPlaces)
+          }
         />
         <AgGridColumn
           headerName="Realised PNL"
@@ -109,12 +107,9 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
             'color-vega-red': ({ value }: { value: string }) =>
               Number(value) < 0,
           }}
-          valueFormatter={({ value }: ValueFormatterParams) => {
-            if (Number(value) > 0) {
-              return '+' + value;
-            }
-            return value;
-          }}
+          valueFormatter={({ value }: ValueFormatterParams) =>
+            volumePrefix(value)
+          }
           cellRenderer="PriceCell"
         />
       </AgGrid>

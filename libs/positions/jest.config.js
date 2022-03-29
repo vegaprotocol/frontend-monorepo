@@ -11,4 +11,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/positions',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };
