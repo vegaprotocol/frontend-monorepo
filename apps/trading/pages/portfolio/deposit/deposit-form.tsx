@@ -23,7 +23,7 @@ interface FormFields {
   amount: string;
 }
 
-interface DepositFormProps {
+export interface DepositFormProps {
   assets: DepositPage_assets[];
   selectedAsset?: DepositPage_assets;
   onSelectAsset: (assetId: string) => void;
@@ -65,7 +65,6 @@ export const DepositForm = ({
       asset: selectedAsset?.id,
       from: account,
       to: keypair?.pub,
-      amount: '0',
     },
   });
 
@@ -90,7 +89,7 @@ export const DepositForm = ({
 
   return (
     <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
-      <FormGroup label="From (Ethereum address)">
+      <FormGroup label="From (Ethereum address)" labelFor="ethereum-address">
         <Input
           {...register('from', {
             required: 'Required',
@@ -104,6 +103,7 @@ export const DepositForm = ({
               },
             },
           })}
+          id="ethereum-address"
         />
         {errors.from?.message && (
           <InputError intent="danger" className="mt-4">
@@ -111,8 +111,8 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label="Asset">
-        <Select {...register('asset', { required: 'Required' })}>
+      <FormGroup label="Asset" labelFor="asset">
+        <Select {...register('asset', { required: 'Required' })} id="asset">
           <option value="">Please select</option>
           {assets.map((a) => (
             <option key={a.id} value={a.id}>
@@ -126,20 +126,21 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label="To (Vega key)" className="relative">
+      <FormGroup label="To (Vega key)" labelFor="vega-key" className="relative">
         <Input
           {...register('to', {
             required: 'Required',
             validate: {
               validVegaAddress: (value) => {
                 if (value.length !== 64 || !/^[A-Za-z0-9]*$/i.test(value)) {
-                  return 'Invalid Vega address';
+                  return 'Invalid Vega key';
                 }
 
                 return true;
               },
             },
           })}
+          id="vega-key"
         />
         {errors.to?.message && (
           <InputError intent="danger" className="mt-4">
@@ -162,10 +163,11 @@ export const DepositForm = ({
           <DepositLimits limits={limits} />
         </FormGroup>
       )}
-      <FormGroup label="Amount" className="relative">
+      <FormGroup label="Amount" labelFor="amount" className="relative">
         <Input
           type="number"
           autoComplete="off"
+          id="amount"
           {...register('amount', {
             required: 'Required',
             validate: {
@@ -185,11 +187,21 @@ export const DepositForm = ({
 
                 return true;
               },
-              maxSafe: (value) => {
-                const max = limits ? limits.max : new BigNumber(Infinity);
+              maxSafe: (v) => {
+                const value = new BigNumber(v);
 
-                if (new BigNumber(value).isGreaterThan(max)) {
+                const maxLimit = limits ? limits.max : new BigNumber(Infinity);
+                if (value.isGreaterThan(maxLimit)) {
                   return 'Amount is above permitted maximum';
+                }
+
+                const maxApproved = allowance ? allowance : new BigNumber(0);
+                if (value.isGreaterThan(maxApproved)) {
+                  return 'Amount is above approved amount';
+                }
+
+                if (value.isGreaterThan(available)) {
+                  return 'Insufficient amount in Ethereum wallet';
                 }
 
                 return true;
@@ -221,7 +233,7 @@ export const DepositForm = ({
         selectedAsset={selectedAsset}
         amount={new BigNumber(amount || 0)}
         allowance={allowance}
-        onApproveClick={handleSubmit(submitApprove)}
+        onApproveClick={submitApprove}
       />
     </form>
   );
@@ -254,7 +266,7 @@ const FormButton = ({
   } else if (approved) {
     message = (
       <>
-        <Icon name="tick" /> Approved{' '}
+        <Icon name="tick" /> <span>Approved</span>
       </>
     );
     button = (
