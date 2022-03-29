@@ -7,23 +7,19 @@ import { Routes } from '../../router-config';
 export const JumpToParty = () => {
   const navigate = useNavigate();
 
-  const handleSubmit = React.useCallback(
-    () => (e: React.SyntheticEvent) => {
-      e.preventDefault();
+  const handleSubmit = (e: React.SyntheticEvent) => {
+    e.preventDefault();
 
-      const target = e.target as typeof e.target & {
-        partyId: { value: number };
-      };
+    const target = e.target as typeof e.target & {
+      partyId: { value: number };
+    };
 
-      const partyId = target.partyId.value;
+    const partyId = target.partyId.value;
 
-      if (partyId) {
-        navigate(`/${Routes.PARTIES}/${partyId}`);
-      }
-    },
-    [navigate]
-  );
-
+    if (partyId) {
+      navigate(`/${Routes.PARTIES}/${partyId}`);
+    }
+  };
   return (
     <form onSubmit={handleSubmit}>
       <label
