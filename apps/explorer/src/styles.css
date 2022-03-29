@@ -7,7 +7,7 @@
   src: url('./AlphaLyrae-Medium.woff');
 }
 
-/*No Tailwind class for this*/
+/* No Tailwind class for this */
 .contextual-alternates {
   font-feature-settings: 'calt';
 }
