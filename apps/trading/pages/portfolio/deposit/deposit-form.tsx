@@ -1,5 +1,5 @@
 import { DepositPage_assets } from '@vegaprotocol/graphql';
-import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,
@@ -138,7 +138,36 @@ export const DepositForm = ({
         <Input
           type="number"
           autoComplete="off"
-          {...register('amount', { required: 'Required' })}
+          {...register('amount', {
+            required: 'Required',
+            validate: {
+              minSafe: (value) => {
+                // Min viable amount given asset decimals EG for WEI 0.000000000000000001
+                const minViableAmount = selectedAsset
+                  ? new BigNumber(addDecimal('1', selectedAsset.decimals))
+                  : new BigNumber(0);
+
+                const min = limits
+                  ? BigNumber.maximum(minViableAmount, limits.min)
+                  : minViableAmount;
+
+                if (new BigNumber(value).isLessThan(min)) {
+                  return 'Amount is below permitted minimum';
+                }
+
+                return true;
+              },
+              maxSafe: (value) => {
+                const max = limits ? limits.max : new BigNumber(Infinity);
+
+                if (new BigNumber(value).isGreaterThan(max)) {
+                  return 'Amount is above permitted maximum';
+                }
+
+                return true;
+              },
+            },
+          })}
         />
         {errors.amount?.message && (
           <InputError intent="danger" className="mt-4">

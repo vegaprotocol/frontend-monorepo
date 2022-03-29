@@ -1,12 +1,16 @@
 import { DepositEvent_busEvents_event_Deposit } from '@vegaprotocol/graphql';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useRef, useState } from 'react';
-import { TxState } from '../../../hooks/use-ethereum-transaction';
+import {
+  TxState,
+  TxError,
+  isEthereumError,
+} from '../../../hooks/use-ethereum-transaction';
 import { ConfirmRow, TxRow, VegaRow } from './dialog-rows';
 
 interface DepositDialogProps {
   status: TxState;
-  error: Error | null;
+  error: TxError | null;
   confirmations: number;
   requiredConfirmations: number;
   txHash: string | null;
@@ -25,10 +29,21 @@ export const DepositDialog = ({
   const dialogDismissed = useRef(false);
 
   useEffect(() => {
+    // Close dialog if error is due to user rejecting the tx
+    if (
+      status === TxState.Error &&
+      isEthereumError(error) &&
+      error.code === 4001
+    ) {
+      setDialogOpen(false);
+      return;
+    }
+
     if (status !== TxState.Default && !dialogDismissed.current) {
       setDialogOpen(true);
+      return;
     }
-  }, [status]);
+  }, [status, error]);
 
   const getDialogIntent = () => {
     if (status === TxState.Requested) {
@@ -48,9 +63,7 @@ export const DepositDialog = ({
   const renderStatus = () => {
     if (status === TxState.Error) {
       return (
-        <p className="text-black dark:text-white">
-          Something went wrong: {error && error.message}
-        </p>
+        <p className="text-black dark:text-white">{error && error.message}</p>
       );
     }
 
@@ -69,9 +82,21 @@ export const DepositDialog = ({
     );
   };
 
+  const renderTitle = () => {
+    if (status === TxState.Error) {
+      return 'Deposit failed';
+    }
+
+    if (finalizedDeposit) {
+      return 'Deposit complete';
+    }
+
+    return 'Deposit pending';
+  };
+
   return (
     <Dialog
-      title={finalizedDeposit ? 'Deposit complete' : 'Deposit pending'}
+      title={renderTitle()}
       open={dialogOpen}
       onChange={setDialogOpen}
       intent={getDialogIntent()}

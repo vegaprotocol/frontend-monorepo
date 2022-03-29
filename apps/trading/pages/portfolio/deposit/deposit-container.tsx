@@ -1,11 +1,8 @@
 import { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import BigNumber from 'bignumber.js';
 import { DepositPage } from '@vegaprotocol/graphql';
 import { DepositManager } from './deposit-manager';
-
-BigNumber.config({ EXPONENTIAL_AT: 20000 });
 
 const DEPOSIT_PAGE_QUERY = gql`
   query DepositPage {

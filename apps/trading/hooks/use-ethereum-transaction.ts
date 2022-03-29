@@ -9,6 +9,8 @@ export enum TxState {
   Error = 'Error',
 }
 
+export type TxError = Error | EthereumError;
+
 export const useEthereumTransaction = <TArgs = void>(
   performTransaction: (
     args: TArgs
@@ -18,7 +20,7 @@ export const useEthereumTransaction = <TArgs = void>(
   const [confirmations, setConfirmations] = useState(0);
   const [status, setStatus] = useState(TxState.Default);
   const [txHash, setTxHash] = useState<string | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<TxError | null>(null);
 
   const perform = useCallback(
     async (args: TArgs) => {
@@ -52,10 +54,14 @@ export const useEthereumTransaction = <TArgs = void>(
 
         setStatus(TxState.Complete);
       } catch (err) {
+        if (err instanceof Error) {
+          setError(err);
+        } else if (isEthereumError(err)) {
+          setError(new EthereumError(err.message, err.code));
+        } else {
+          setError(new Error('Something went wrong'));
+        }
         setStatus(TxState.Error);
-        setError(
-          err instanceof Error ? err : new Error('Something went wrong')
-        );
       }
     },
     [performTransaction, requiredConfirmations]
@@ -63,3 +69,20 @@ export const useEthereumTransaction = <TArgs = void>(
 
   return { perform, status, error, confirmations, txHash };
 };
+
+export class EthereumError extends Error {
+  code: number;
+
+  constructor(message: string, code: number) {
+    super(message);
+    this.code = code;
+    this.name = 'EthereumError';
+  }
+}
+
+export function isEthereumError(err: unknown): err is EthereumError {
+  if (typeof err === 'object' && err !== null && 'code' in err) {
+    return true;
+  }
+  return false;
+}
