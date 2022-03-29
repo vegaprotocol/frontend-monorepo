@@ -1,7 +1,7 @@
 import { forwardRef, useMemo } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import {
-  PriceCell /*, MarginCell*/,
+  PriceCell,
   formatNumber,
   volumePrefix,
   addDecimal,

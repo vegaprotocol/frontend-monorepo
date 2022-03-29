@@ -1,6 +1,6 @@
 import { useRef, useCallback, useMemo } from 'react';
 import { produce } from 'immer';
-import assign from 'assign-deep';
+import merge from 'lodash/merge';
 import { useRouter } from 'next/router';
 import { AsyncRenderer } from '../../components/async-renderer';
 import { PositionsTable, getRowNodeId } from '@vegaprotocol/positions';
@@ -31,7 +31,7 @@ export const Positions = () => {
         const updatedData = produce<positions_party_positions>(
           rowNode.data,
           (draft: positions_party_positions) => {
-            assign(draft, delta);
+            merge(draft, delta);
           }
         );
         if (updatedData !== rowNode.data) {
