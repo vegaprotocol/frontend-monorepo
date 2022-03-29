@@ -9,7 +9,7 @@ export default class DealTicketPage extends BasePage {
   orderTypeDropDown = 'order-tif';
   datePickerField = 'date-picker-field';
   placeOrderBtn = 'place-order';
-  placeOrderErrorTxt = 'error-text';
+  placeOrderErrorTxt = 'input-input-error-text';
   orderDialog = 'order-wrapper';
   orderStatusHeader = 'order-status-header';
   orderTransactionHash = 'tx-hash';

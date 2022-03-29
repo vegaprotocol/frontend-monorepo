@@ -26,7 +26,7 @@ Feature: Market orders
       | IOC            |
       | FOK            |
       | GTT            |
-      # | GFA            |
+      # | GFA            | Requires market to be in auction
       | GFN            |
 
   Scenario Outline: Successfull market sell order
@@ -54,7 +54,7 @@ Feature: Market orders
       | IOC            |
       | FOK            |
       | GTT            |
-      # | GFA            |
+      # | GFA            | Requires market to be in auction
       | GFN            |
 
   Scenario: Unsuccessfull order because lack of funds

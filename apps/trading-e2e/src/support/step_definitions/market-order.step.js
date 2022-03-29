@@ -6,12 +6,10 @@ const dealTicketPage = new DealTicketPage();
 
 When('I click on market for {string}', (marketText) => {
   marketsPage.clickOnMarket(marketText);
-  // marketsPage.clickOnTicketTab();
 });
 
 When('I click on active market', () => {
   marketsPage.clickOnMarket('Active');
-  // marketsPage.clickOnTicketTab();
 });
 
 When('place a buy {string} market order', (orderType) => {
