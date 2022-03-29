@@ -7,7 +7,6 @@ const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {
     market(id: $marketId) {
       id
-      name
       decimalPlaces
       state
       tradingMode
@@ -16,20 +15,9 @@ const DEAL_TICKET_QUERY = gql`
           product {
             ... on Future {
               quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
             }
           }
         }
-      }
-      trades {
-        id
-        price
-        size
-        createdAt
       }
       depth {
         lastTrade {

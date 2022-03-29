@@ -13,34 +13,6 @@ const MARKET_QUERY = gql`
     market(id: $marketId) {
       id
       name
-      decimalPlaces
-      state
-      tradingMode
-      tradableInstrument {
-        instrument {
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-            }
-          }
-        }
-      }
-      trades {
-        id
-        price
-        size
-        createdAt
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
     }
   }
 `;

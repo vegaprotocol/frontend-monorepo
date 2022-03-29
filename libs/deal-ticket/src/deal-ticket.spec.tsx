@@ -6,8 +6,10 @@ import {
 } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { DealTicket, Market } from './deal-ticket';
+import { DealTicket } from './deal-ticket';
 import { Order } from './use-order-state';
+import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
 const order: Order = {
   type: OrderType.Market,
@@ -15,34 +17,42 @@ const order: Order = {
   timeInForce: OrderTimeInForce.FOK,
   side: null,
 };
-const market: Market = {
+const market: DealTicketQuery_market = {
+  __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
-  tradingMode: 'Continuous',
-  state: 'Active',
+  tradingMode: MarketTradingMode.Continuous,
+  state: MarketState.Active,
   tradableInstrument: {
+    __typename: 'TradableInstrument',
     instrument: {
+      __typename: 'Instrument',
       product: {
+        __typename: 'Future',
         quoteName: 'quote-name',
-        settlementAsset: {
-          id: 'asset-id',
-          symbol: 'asset-symbol',
-          name: 'asset-name',
-        },
       },
     },
   },
   depth: {
+    __typename: 'MarketDepth',
     lastTrade: {
+      __typename: 'Trade',
       price: '100',
     },
   },
 };
+const submit = jest.fn();
+const transactionStatus = 'default';
 
 function generateJsx() {
   return (
     <VegaWalletContext.Provider value={{} as any}>
-      <DealTicket defaultOrder={order} market={market} />
+      <DealTicket
+        defaultOrder={order}
+        market={market}
+        submit={submit}
+        transactionStatus={transactionStatus}
+      />
     </VegaWalletContext.Provider>
   );
 }

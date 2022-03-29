@@ -9,32 +9,12 @@ import { MarketState, MarketTradingMode } from "./../../../types/src/__generated
 // GraphQL query operation: DealTicketQuery
 // ====================================================
 
-export interface DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset {
-  __typename: "Asset";
-  /**
-   * The id of the asset
-   */
-  id: string;
-  /**
-   * The symbol of the asset (e.g: GBP)
-   */
-  symbol: string;
-  /**
-   * The full name of the asset (e.g: Great British Pound)
-   */
-  name: string;
-}
-
 export interface DealTicketQuery_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * String representing the quote (e.g. BTCUSD -> USD is quote)
    */
   quoteName: string;
-  /**
-   * The name of the asset (string)
-   */
-  settlementAsset: DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset;
 }
 
 export interface DealTicketQuery_market_tradableInstrument_instrument {
@@ -51,26 +31,6 @@ export interface DealTicketQuery_market_tradableInstrument {
    * An instance of or reference to a fully specified instrument.
    */
   instrument: DealTicketQuery_market_tradableInstrument_instrument;
-}
-
-export interface DealTicketQuery_market_trades {
-  __typename: "Trade";
-  /**
-   * The hash of the trade data
-   */
-  id: string;
-  /**
-   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
-   */
-  price: string;
-  /**
-   * The number of contracts trades, will always be <= the remaining size of both orders immediately before the trade (uint64)
-   */
-  size: string;
-  /**
-   * RFC3339Nano time for when the trade occurred
-   */
-  createdAt: string;
 }
 
 export interface DealTicketQuery_market_depth_lastTrade {
@@ -95,10 +55,6 @@ export interface DealTicketQuery_market {
    * Market ID
    */
   id: string;
-  /**
-   * Market full name
-   */
-  name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
@@ -128,10 +84,6 @@ export interface DealTicketQuery_market {
    * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: DealTicketQuery_market_tradableInstrument;
-  /**
-   * Trades on a market
-   */
-  trades: DealTicketQuery_market_trades[] | null;
   /**
    * Current depth on the order book for this market
    */
