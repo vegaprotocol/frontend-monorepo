@@ -7,14 +7,14 @@ import './styles.css';
 
 import App from './app/app';
 
-const dsn = process.env['NX_SENTRY_DSN'];
+const dsn = process.env['NX_EXPLORER_SENTRY_DSN'];
 
 /* istanbul ignore next */
 if (dsn) {
   Sentry.init({
     dsn,
     integrations: [new BrowserTracing()],
-    tracesSampleRate: 0.1,
+    tracesSampleRate: 1,
     environment: process.env['NODE_ENV'],
   });
 }
