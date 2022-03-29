@@ -34,6 +34,11 @@ When('place a sell {string} limit order', (limitOrderType) => {
   dealTicketPage.clickPlaceOrder();
 });
 
+When('place a buy {string} market order with amount of 0', (orderType) => {
+  dealTicketPage.placeMarketOrder(true, 0, orderType);
+  dealTicketPage.clickPlaceOrder();
+});
+
 When('I click on suspended market', () => {
   marketsPage.clickOnMarket('Suspended');
 });
@@ -50,6 +55,13 @@ Then('place order button is disabled', () => {
   dealTicketPage.verifyPlaceOrderBtnDisabled();
 });
 
-Then('market suspended error is shown', () => {
-  dealTicketPage.verySubmitBtnErrorText('Market is currently suspended');
+Then('{string} error is shown', (errorMsg) => {
+  dealTicketPage.verifySubmitBtnErrorText(errorMsg);
 });
+
+Then(
+  'Order rejected by wallet error shown containing text {string}',
+  (expectedError) => {
+    dealTicketPage.verifyOrderRejected(expectedError);
+  }
+);

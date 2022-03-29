@@ -48,11 +48,10 @@ export default class DealTicketPage extends BasePage {
       'have.text',
       'Awaiting network confirmation'
     );
-    // Will uncomment code once Tx hashes are generated
-    // cy.getByTestId(this.orderTransactionHash)
-    //   .invoke('text')
-    //   .should('contain', 'Tx hash: ')
-    //   .and('have.length.above', 64);
+    cy.getByTestId(this.orderTransactionHash)
+      .invoke('text')
+      .should('contain', 'Tx hash: ')
+      .and('have.length.above', 64);
   }
 
   verifyOrderFailedInsufficientFunds() {
@@ -70,8 +69,18 @@ export default class DealTicketPage extends BasePage {
     cy.getByTestId(this.placeOrderBtn).should('be.disabled');
   }
 
-  verySubmitBtnErrorText(expectedText) {
+  verifySubmitBtnErrorText(expectedText) {
     cy.getByTestId(this.placeOrderErrorTxt).should('have.text', expectedText);
+  }
+
+  verifyOrderRejected(errorMsg) {
+    cy.getByTestId(this.orderStatusHeader).should(
+      'have.text',
+      'Order rejected by wallet'
+    );
+    cy.getByTestId(this.orderDialog)
+      .find('pre')
+      .should('contain.text', errorMsg);
   }
 
   formatDate(date) {

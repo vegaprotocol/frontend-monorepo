@@ -35,7 +35,7 @@ Feature: Market orders
     And I navigate to markets page
     When I click on active market
     And place a sell '<marketOrderType>' market order
-    # Then order is successfull
+    Then order request is sent
 
     Examples:
       | marketOrderType |
@@ -57,11 +57,9 @@ Feature: Market orders
       # | GFA            |
       | GFN            |
 
-
   Scenario: Unsuccessfull order because lack of funds
     Given I am on the homepage
     And I connect to Vega Wallet
-    # In the future change step to connect wallet with no funds
     And I navigate to markets page
     When I click on active market
     And place a buy 'FOK' market order
@@ -73,27 +71,22 @@ Feature: Market orders
     And I navigate to markets page
     When I click on suspended market
     Then place order button is disabled
-    And market suspended error is shown
+    And "Market is currently suspended" error is shown
 
-  @manual
-  Scenario: Unsuccessfull buy/sell because wallet is not connected
+  Scenario: Unable to order because wallet is not connected
     Given I am on the homepage
-    And I disconnect from Vega Wallet
     And I navigate to markets page
-    When I click on market for "BTCUSD"
-    And place a buy 'IOC' limit order
+    When I click on active market
+    Then place order button is disabled
+    And "No public key selected" error is shown
 
-  @manual
-  Scenario: Unsuccessfull because non number entered in field
+  Scenario: Unsuccessfull because quantity is 0
     Given I am on the homepage
     And I connect to Vega Wallet
     And I navigate to markets page
-    When I click on market for "BTCUSD"
-    And I place a buy FOK limit order with non number in the size field
-    Then errror for invalid number is shown
-
-  @manual
-  Scenario: Unsuccessfull because quantity is 0/-1
+    When I click on active market
+    And place a buy 'FOK' market order with amount of 0
+    Then Order rejected by wallet error shown containing text "must be positive"
 
   @manual
   Scenario: GTT order failed because invalid date
