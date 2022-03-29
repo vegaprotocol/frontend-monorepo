@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage } from '../lib/storage';
 
 const darkTheme = 'dark';
 const lightTheme = 'light';
