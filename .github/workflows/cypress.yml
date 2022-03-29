@@ -49,8 +49,6 @@ jobs:
         run: ./vegawallet import -w test --recovery-phrase-file ./recovery -p ./passphrase
       - name: Import config
         run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
-      - name: List networks
-        run: ./vegawallet network list
       - name: Start service
         run: ./vegawallet service run --network fairground  &
 
