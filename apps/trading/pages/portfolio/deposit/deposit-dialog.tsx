@@ -1,5 +1,5 @@
 import { DepositEvent_busEvents_event_Deposit } from '@vegaprotocol/graphql';
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useRef, useState } from 'react';
 import {
   TxState,
@@ -7,6 +7,7 @@ import {
   isEthereumError,
 } from '../../../hooks/use-ethereum-transaction';
 import { ConfirmRow, TxRow, VegaRow } from './dialog-rows';
+import { DialogWrapper } from './dialog-wrapper';
 
 interface DepositDialogProps {
   status: TxState;
@@ -94,16 +95,33 @@ export const DepositDialog = ({
     return 'Deposit pending';
   };
 
+  const renderIcon = () => {
+    if (status === TxState.Error) {
+      return <Icon name="warning-sign" size={20} />;
+    }
+
+    if (status === TxState.Requested) {
+      return <Icon name="hand-up" size={20} />;
+    }
+
+    if (status === TxState.Pending) {
+      return <Loader />;
+    }
+
+    if (status === TxState.Complete) {
+      return <Icon name="tick" />;
+    }
+  };
+
   return (
     <Dialog
-      title={renderTitle()}
       open={dialogOpen}
       onChange={setDialogOpen}
       intent={getDialogIntent()}
     >
-      <div className="text-ui text-black-40 dark:text-white-40">
+      <DialogWrapper title={renderTitle()} icon={renderIcon()}>
         {renderStatus()}
-      </div>
+      </DialogWrapper>
     </Dialog>
   );
 };

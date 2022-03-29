@@ -20,13 +20,9 @@ const Deposit = () => {
   return (
     <Web3Container>
       {({ ethereumConfig }) => (
-        <div className="p-24">
-          <div className="max-w-[420px]">
-            <DepositContainer
-              ethereumConfig={ethereumConfig}
-              assetId={assetId}
-            />
-          </div>
+        <div className="max-w-[420px] p-24 mx-auto">
+          <h1 className="text-h3 mb-12">Deposit</h1>
+          <DepositContainer ethereumConfig={ethereumConfig} assetId={assetId} />
         </div>
       )}
     </Web3Container>

@@ -44,7 +44,7 @@ export const TxRow = ({
         <EtherscanLink
           tx={txHash || ''}
           chainId={chainId || 3}
-          className="underline"
+          className="underline text-vega-pink dark:text-vega-yellow"
           text="View on Etherscan"
         />
       </p>

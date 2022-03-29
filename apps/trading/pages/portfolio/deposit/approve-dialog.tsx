@@ -1,7 +1,8 @@
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useRef, useState } from 'react';
 import { TxState } from '../../../hooks/use-ethereum-transaction';
 import { ConfirmRow, TxRow } from './dialog-rows';
+import { DialogWrapper } from './dialog-wrapper';
 
 interface ApproveDialogProps {
   status: TxState;
@@ -64,11 +65,26 @@ export const ApproveDialog = ({
     );
   };
 
+  const renderIcon = () => {
+    if (status === TxState.Error) {
+      return <Icon name="warning-sign" size={20} />;
+    }
+
+    if (status === TxState.Requested) {
+      return <Icon name="hand-up" size={20} />;
+    }
+
+    if (status === TxState.Pending) {
+      return <Loader />;
+    }
+
+    if (status === TxState.Complete) {
+      return <Icon name="tick" />;
+    }
+  };
+
   return (
     <Dialog
-      title={
-        status === TxState.Complete ? 'Approval complete' : 'Approval pending'
-      }
       open={dialogOpen}
       onChange={(isOpen) => {
         setDialogOpen(isOpen);
@@ -76,9 +92,14 @@ export const ApproveDialog = ({
       }}
       intent={getDialogIntent()}
     >
-      <div className="text-ui text-black-40 dark:text-white-40">
+      <DialogWrapper
+        title={
+          status === TxState.Complete ? 'Approval complete' : 'Approval pending'
+        }
+        icon={renderIcon()}
+      >
         {renderStatus()}
-      </div>
+      </DialogWrapper>
     </Dialog>
   );
 };
