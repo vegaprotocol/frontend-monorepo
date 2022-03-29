@@ -7,7 +7,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 
 interface MarketListTableProps {
-  data: Markets_markets[];
+  data: Markets_markets[] | null;
   onRowClicked: (marketId: string) => void;
 }
 

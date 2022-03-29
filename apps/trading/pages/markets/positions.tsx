@@ -16,9 +16,9 @@ import type { AgGridReact } from 'ag-grid-react';
 
 export const Positions = () => {
   const { pathname, push } = useRouter();
-  const gridRef = useRef<AgGridReact>();
+  const gridRef = useRef<AgGridReact | null>(null);
   const { keypair } = useVegaWallet();
-  const variables = useMemo(() => ({ partyId: keypair.pub }), [keypair]);
+  const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair]);
   const update = useCallback(
     (delta: PositionSubscribe_positions) => {
       const update: Positions_party_positions[] = [];

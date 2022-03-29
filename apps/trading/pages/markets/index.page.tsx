@@ -15,7 +15,7 @@ import type { AgGridReact } from 'ag-grid-react';
 
 const Markets = () => {
   const { pathname, push } = useRouter();
-  const gridRef = useRef<AgGridReact>();
+  const gridRef = useRef<AgGridReact | null>(null);
   const update = useCallback(
     (delta: Markets_markets_data) => {
       const update: Markets_markets[] = [];

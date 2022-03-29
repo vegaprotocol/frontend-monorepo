@@ -16,7 +16,7 @@ import {
 } from '@vegaprotocol/graphql';
 
 interface PositionsTableProps {
-  data: Positions_party_positions[];
+  data: Positions_party_positions[] | null;
   onRowClicked: (marketId: string) => void;
 }
 
