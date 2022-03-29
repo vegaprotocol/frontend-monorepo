@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        vegawallet-version: -"0.13.2"
+        vegawallet-version:
+          - '0.13.2'
 
     if: ${{ github.event_name != 'pull_request' }}
 
@@ -59,7 +60,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        vegawallet-version: -"0.13.2"
+        vegawallet-version:
+          - '0.13.2'
     if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout
