@@ -73,6 +73,7 @@
     "@nrwl/tao": "13.8.1",
     "@nrwl/web": "13.8.1",
     "@nrwl/workspace": "13.8.1",
+    "@sentry/webpack-plugin": "^1.18.8",
     "@storybook/addon-a11y": "^6.4.19",
     "@storybook/addon-essentials": "~6.4.12",
     "@storybook/builder-webpack5": "~6.4.12",

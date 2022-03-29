@@ -19,6 +19,13 @@ function App() {
     <TendermintWebsocketProvider>
       <ApolloProvider client={client}>
         <div className="app">
+          <button
+            onClick={() => {
+              throw new Error('asdf');
+            }}
+          >
+            Throw error
+          </button>
           <div className="template-sidebar">
             <Nav />
             <Header />
