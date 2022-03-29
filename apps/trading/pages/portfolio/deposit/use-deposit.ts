@@ -7,7 +7,6 @@ import {
 } from '@vegaprotocol/graphql';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useState } from 'react';
-import { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { useBridgeContract } from '../../../hooks/use-bridge-contract';
 import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
 
@@ -28,18 +27,25 @@ const DEPOSIT_EVENT_SUB = gql`
   }
 `;
 
-export const useDeposit = (ethereumConfig: EthereumConfig) => {
-  const { keypair } = useVegaWallet();
+export const useDeposit = (confirmations: number) => {
   const contract = useBridgeContract();
+  const { keypair } = useVegaWallet();
 
-  const { perform, status, error, confirmations, txHash } =
-    useEthereumTransaction((...args) => {
-      if (!contract) {
-        return null;
-      }
-      // @ts-ignore get around args typing
-      return contract.depositAsset(...args);
-    }, ethereumConfig.confirmations);
+  const transaction = useEthereumTransaction<{
+    assetSource: string;
+    amount: string;
+    vegaPublicKey: string;
+  }>((args) => {
+    if (!contract) {
+      return null;
+    }
+    return contract.depositAsset(
+      args.assetSource,
+      args.amount,
+      args.vegaPublicKey
+    );
+  }, confirmations);
+
   const [finalizedDeposit, setFinalizedDeposit] =
     useState<DepositEvent_busEvents_event_Deposit | null>(null);
 
@@ -57,7 +63,7 @@ export const useDeposit = (ethereumConfig: EthereumConfig) => {
         }
 
         if (
-          e.event.txHash === txHash &&
+          e.event.txHash === transaction.txHash &&
           // Note there is a bug in data node where the subscription is not emitted when the status
           // changes from 'Open' to 'Finalized' as a result the deposit UI will hang in a pending state right now
           // https://github.com/vegaprotocol/data-node/issues/460
@@ -76,11 +82,7 @@ export const useDeposit = (ethereumConfig: EthereumConfig) => {
   });
 
   return {
-    perform,
-    status,
-    error,
-    confirmations,
-    txHash,
+    ...transaction,
     finalizedDeposit,
   };
 };

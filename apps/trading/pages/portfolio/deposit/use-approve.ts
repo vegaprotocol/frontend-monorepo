@@ -7,19 +7,12 @@ export const useApprove = (
   asset?: DepositPage_assets
 ) => {
   const contract = useTokenContract(asset);
-  const { perform, status, error, confirmations, txHash } =
-    useEthereumTransaction(() => {
-      if (!contract) {
-        return null;
-      }
-      return contract.approve(bridgeAddress);
-    });
+  const transaction = useEthereumTransaction(() => {
+    if (!contract) {
+      return null;
+    }
+    return contract.approve(bridgeAddress);
+  });
 
-  return {
-    perform,
-    status,
-    error,
-    confirmations,
-    txHash,
-  };
+  return transaction;
 };

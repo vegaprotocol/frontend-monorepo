@@ -3,6 +3,7 @@ import { removeDecimal } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,
+  Icon,
   Input,
   InputError,
   Select,
@@ -27,11 +28,11 @@ interface DepositFormProps {
   onSelectAsset: (assetId: string) => void;
   available: BigNumber;
   submitApprove: () => Promise<void>;
-  submitDeposit: (
-    contractAddress: string,
-    amount: string,
-    vegaKey: string
-  ) => Promise<void>;
+  submitDeposit: (args: {
+    assetSource: string;
+    amount: string;
+    vegaPublicKey: string;
+  }) => Promise<void>;
   limits: {
     min: BigNumber;
     max: BigNumber;
@@ -71,15 +72,12 @@ export const DepositForm = ({
     if (selectedAsset?.source.__typename !== 'ERC20' || !keypair) {
       return;
     }
-    submitDeposit(
-      selectedAsset.source.contractAddress,
-      removeDecimal(fields.amount, selectedAsset.decimals),
-      `0x${keypair.pub}`
-    );
-  };
 
-  const onApprove = async (fields: FormFields) => {
-    submitApprove();
+    submitDeposit({
+      assetSource: selectedAsset.source.contractAddress,
+      amount: removeDecimal(fields.amount, selectedAsset.decimals),
+      vegaPublicKey: `0x${keypair.pub}`,
+    });
   };
 
   const assetId = useWatch({ name: 'asset', control });
@@ -166,7 +164,7 @@ export const DepositForm = ({
         selectedAsset={selectedAsset}
         amount={new BigNumber(amount || 0)}
         allowance={allowance}
-        onApproveClick={handleSubmit(onApprove)}
+        onApproveClick={handleSubmit(submitApprove)}
       />
     </form>
   );
@@ -188,7 +186,7 @@ const FormButton = ({
   const approved =
     allowance && allowance.isGreaterThan(0) && amount.isLessThan(allowance);
   let button = null;
-  let message = '';
+  let message: ReactNode = '';
 
   if (!selectedAsset) {
     button = (
@@ -197,7 +195,11 @@ const FormButton = ({
       </Button>
     );
   } else if (approved) {
-    message = `Deposits of ${selectedAsset.symbol} have been approved`;
+    message = (
+      <>
+        <Icon name="tick" /> Approved{' '}
+      </>
+    );
     button = (
       <Button type="submit" className="w-full">
         Deposit

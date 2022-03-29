@@ -9,9 +9,10 @@ export enum TxState {
   Error = 'Error',
 }
 
-export const useEthereumTransaction = (
-  // eslint-disable-next-line
-  func: (...args: any) => Promise<ethers.ContractTransaction> | null,
+export const useEthereumTransaction = <TArgs = void>(
+  performTransaction: (
+    args: TArgs
+  ) => Promise<ethers.ContractTransaction> | null,
   requiredConfirmations = 1
 ) => {
   const [confirmations, setConfirmations] = useState(0);
@@ -20,13 +21,13 @@ export const useEthereumTransaction = (
   const [error, setError] = useState<Error | null>(null);
 
   const perform = useCallback(
-    // eslint-disable-next-line
-    async (...args: any) => {
+    async (args: TArgs) => {
       setConfirmations(0);
       setStatus(TxState.Requested);
+      setError(null);
 
       try {
-        const res = func(...args);
+        const res = performTransaction(args);
 
         if (res === null) {
           setStatus(TxState.Default);
@@ -57,7 +58,7 @@ export const useEthereumTransaction = (
         );
       }
     },
-    [func, requiredConfirmations]
+    [performTransaction, requiredConfirmations]
   );
 
   return { perform, status, error, confirmations, txHash };
