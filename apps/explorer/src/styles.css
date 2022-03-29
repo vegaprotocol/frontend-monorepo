@@ -1,4 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @tailwind base;
 @tailwind components;
+
+@font-face {
+  font-family: 'AlphaLyrae-Medium';
+  src: url('./AlphaLyrae-Medium.woff');
+}
+
+/*No Tailwind class for this*/
+.contextual-alternates {
+  font-feature-settings: 'calt';
+}
+
 @tailwind utilities;

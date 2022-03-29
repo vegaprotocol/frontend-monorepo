@@ -3,7 +3,7 @@ import routerConfig from '../../routes/router-config';
 
 export const Nav = () => {
   return (
-    <nav>
+    <nav className="border-r-1 p-20 col-start-1 col-end-1 row-start-2 row-end-3 overflow-hidden">
       {routerConfig.map((r) => (
         <NavLink
           key={r.name}
