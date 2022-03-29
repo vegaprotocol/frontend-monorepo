@@ -1,6 +1,6 @@
 import React from 'react';
 import { RouteTitle } from '../../../components/route-title';
-import { Input, Button } from '@vegaprotocol/ui-toolkit';
+import { JumpTo } from '../../../components/jump-to';
 
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../router-config';
@@ -26,25 +26,14 @@ export const JumpToParty = () => {
   );
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label
-        htmlFor="block-input"
-        className="block uppercase text-h5 font-bold mb-4"
-      >
-        Go to party
-      </label>
-      <div className="flex">
-        <Input
-          id="block-input"
-          name="partyId"
-          placeholder="Party id"
-          className="max-w-[200px]"
-        />
-        <Button variant="secondary" type="submit">
-          Go
-        </Button>
-      </div>
-    </form>
+    <JumpTo
+      label="Go to party"
+      placeholder="Party id"
+      inputId="party-input"
+      inputType="text"
+      inputName="partyId"
+      submitHandler={handleSubmit}
+    />
   );
 };
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../routes/router-config';
-import { Input, Button } from '@vegaprotocol/ui-toolkit';
+import { JumpTo } from '../jump-to';
 
 export const JumpToBlock = () => {
   const navigate = useNavigate();
@@ -21,25 +21,13 @@ export const JumpToBlock = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label
-        htmlFor="block-input"
-        className="block uppercase text-h5 font-bold mb-4"
-      >
-        Jump to block
-      </label>
-      <div className="flex">
-        <Input
-          id="block-input"
-          type="number"
-          name="blockNumber"
-          placeholder="Block number"
-          className="max-w-[200px]"
-        />
-        <Button variant="secondary" type="submit">
-          Go
-        </Button>
-      </div>
-    </form>
+    <JumpTo
+      label="Jump to block"
+      placeholder="Block number"
+      inputId="block-input"
+      inputType="number"
+      inputName="blockNumber"
+      submitHandler={handleSubmit}
+    />
   );
 };
