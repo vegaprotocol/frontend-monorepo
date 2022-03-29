@@ -104,11 +104,11 @@ export const DepositDialog = ({
       return <Icon name="hand-up" size={20} />;
     }
 
-    if (status === TxState.Pending) {
+    if (!finalizedDeposit) {
       return <Loader />;
     }
 
-    if (status === TxState.Complete) {
+    if (finalizedDeposit) {
       return <Icon name="tick" />;
     }
   };

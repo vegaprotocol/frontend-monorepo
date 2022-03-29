@@ -40,7 +40,7 @@ export const EtherscanLink = ({
     () => etherscanLinkCreator(chainId),
     [chainId]
   );
-  const anchorClasses = classNames('underlin', className);
+  const anchorClasses = classNames('underline', className);
 
   if ('tx' in props) {
     hash = props.tx;
