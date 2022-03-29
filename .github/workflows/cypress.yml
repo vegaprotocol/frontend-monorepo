@@ -28,6 +28,22 @@ jobs:
           node-version: 16
       - name: Install root dependencies
         run: yarn install
+      - name: Download and unzip latest wallet
+        run: curl -s https://api.github.com/repos/vegaprotocol/vegawallet/releases/latest | awk -F\" '/browser_download_url.*linux-amd64.zip/{print $(NF-1)}' | xargs wget && unzip vegawallet-linux-amd64.zip && rm vegawallet-linux-amd64.zip
+      - name: Initialize wallet
+        run: ./vegawallet init -f
+      - name: Create recovery phrase file
+        run: echo ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }} > recovery-phrase.txt
+      - name: Create recovery phrase file
+        run: echo "123" > passphrase.txt
+      - name: Import wallet
+        run: ./vegawallet import --wallet UI_Trading_Test --recovery-phrase-file recovery-phrase.txt --passphrase-file passphrase.txt
+      - name: Import config
+        run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+      - name: List networks
+        run: ./vegawallet network list
+      - name: Start service
+        run: ./vegawallet service run --network fairground  &
       - name: Run Cypress tests
         run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
   pr:
@@ -51,5 +67,21 @@ jobs:
           node-version: 16
       - name: Install root dependencies
         run: yarn install
+      - name: Download and unzip latest wallet
+        run: curl -s https://api.github.com/repos/vegaprotocol/vegawallet/releases/latest | awk -F\" '/browser_download_url.*linux-amd64.zip/{print $(NF-1)}' | xargs wget && unzip vegawallet-linux-amd64.zip && rm vegawallet-linux-amd64.zip
+      - name: Initialize wallet
+        run: ./vegawallet init -f
+      - name: Create recovery phrase file
+        run: echo ${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }} > recovery-phrase.txt
+      - name: Create recovery phrase file
+        run: echo "123" > passphrase.txt
+      - name: Import wallet
+        run: ./vegawallet import --wallet UI_Trading_Test --recovery-phrase-file recovery-phrase.txt --passphrase-file passphrase.txt
+      - name: Import config
+        run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+      - name: List networks
+        run: ./vegawallet network list
+      - name: Start service
+        run: ./vegawallet service run --network fairground  &
       - name: Run Cypress tests
         run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }}
