@@ -40,8 +40,6 @@ jobs:
         run: ./vegawallet import --wallet UI_Trading_Test --recovery-phrase-file recovery-phrase.txt --passphrase-file passphrase.txt
       - name: Import config
         run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
-      - name: List networks
-        run: ./vegawallet network list
       - name: Start service
         run: ./vegawallet service run --network fairground  &
       - name: Run Cypress tests
