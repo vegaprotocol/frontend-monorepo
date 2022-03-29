@@ -11,6 +11,7 @@ import {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
+import { ethers } from 'ethers';
 import { ReactNode, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
@@ -90,7 +91,20 @@ export const DepositForm = ({
   return (
     <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
       <FormGroup label="From (Ethereum address)">
-        <Input {...register('from', { required: 'Required' })} />
+        <Input
+          {...register('from', {
+            required: 'Required',
+            validate: {
+              validEthereumAddress: (value) => {
+                if (!ethers.utils.isAddress(value)) {
+                  return 'Invalid Ethereum address';
+                }
+
+                return true;
+              },
+            },
+          })}
+        />
         {errors.from?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.from.message}
@@ -113,7 +127,20 @@ export const DepositForm = ({
         )}
       </FormGroup>
       <FormGroup label="To (Vega key)" className="relative">
-        <Input {...register('to', { required: 'Required' })} />
+        <Input
+          {...register('to', {
+            required: 'Required',
+            validate: {
+              validVegaAddress: (value) => {
+                if (value.length !== 64 || !/^[A-Za-z0-9]*$/i.test(value)) {
+                  return 'Invalid Vega address';
+                }
+
+                return true;
+              },
+            },
+          })}
+        />
         {errors.to?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.to.message}
@@ -123,6 +150,7 @@ export const DepositForm = ({
           <UseButton
             onClick={() => {
               setValue('to', keypair.pub);
+              clearErrors('to');
             }}
           >
             Use connected
