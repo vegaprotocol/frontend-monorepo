@@ -17,7 +17,6 @@ import { Routes } from '../../router-config';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
-
   const {
     state: { data: blockData, loading, error },
   } = useFetch<TendermintBlocksResponse>(
@@ -65,7 +64,7 @@ const Block = () => {
           <TableCell modifier="bordered">
             <Link
               data-testid="block-validator"
-              className="text-vega-yellow"
+              className="text-vega-yellow font-mono"
               to={`/${Routes.VALIDATORS}`}
             >
               {header.proposer_address}
