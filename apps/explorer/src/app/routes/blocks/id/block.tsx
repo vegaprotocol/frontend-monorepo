@@ -15,6 +15,7 @@ import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../router-config';
 import { RenderFetched } from '../../../components/render-fetched';
+import { HighlightedLink } from '../../../components/highlighted-link';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -60,13 +61,11 @@ const Block = () => {
             <TableRow modifier="bordered">
               <TableHeader scope="row">Mined by</TableHeader>
               <TableCell modifier="bordered">
-                <Link
-                  data-testid="block-validator"
-                  className="font-mono font-bold underline dark:text-vega-yellow dark:font-normal dark:no-underline"
+                <HighlightedLink
                   to={`/${Routes.VALIDATORS}`}
-                >
-                  {header.proposer_address}
-                </Link>
+                  text={header.proposer_address}
+                  data-testid="block-validator"
+                />
               </TableCell>
             </TableRow>
             <TableRow modifier="bordered">

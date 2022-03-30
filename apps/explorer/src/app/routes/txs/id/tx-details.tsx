@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { Routes } from '../../router-config';
+import { Result } from '../tendermint-transaction-response.d';
 import {
   TableWithTbody,
   TableCell,
@@ -6,8 +7,7 @@ import {
   TableRow,
 } from '../../../components/table';
 import { TruncateInline } from '../../../components/truncate/truncate';
-import { Routes } from '../../router-config';
-import { Result } from '../tendermint-transaction-response.d';
+import { HighlightedLink } from '../../../components/highlighted-link';
 
 interface TxDetailsProps {
   txData: Result | undefined;
@@ -35,23 +35,16 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
           Submitted by
         </TableHeader>
         <TableCell modifier="bordered" data-testid="submitted-by">
-          <Link
-            className="text-vega-yellow"
-            to={`/${Routes.PARTIES}/${pubKey}`}
-          >
-            {pubKey}
-          </Link>
+          <HighlightedLink to={`/${Routes.PARTIES}/${pubKey}`} text={pubKey} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>Block</TableCell>
         <TableCell modifier="bordered" data-testid="block">
-          <Link
-            className="text-vega-yellow"
+          <HighlightedLink
             to={`/${Routes.BLOCKS}/${txData.height}`}
-          >
-            {txData.height}
-          </Link>
+            text={txData.height}
+          />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">

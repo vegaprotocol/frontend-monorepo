@@ -55,7 +55,7 @@ export const TableHeader = ({
   className,
   ...props
 }: TableHeaderProps) => {
-  const cellClasses = classnames(className, 'pl-4 dark:pl-0', {
+  const cellClasses = classnames(className, {
     'text-left font-normal': props?.scope === 'row',
   });
   return (
