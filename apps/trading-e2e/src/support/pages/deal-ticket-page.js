@@ -16,6 +16,10 @@ export default class DealTicketPage extends BasePage {
   orderErrorTxt = 'error-reason';
 
   placeMarketOrder(isBuy, orderSize, orderType) {
+    cy.get(`[data-testid=${this.placeOrderBtn}]`, { timeout: 5000 }).should(
+      'be.visible'
+    );
+
     if (isBuy == false) {
       cy.getByTestId(this.sellOrder).click();
     }
