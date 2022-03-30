@@ -54,7 +54,7 @@ jobs:
         run: ./vegawallet service run --network fairground  &
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --browser chrome
   pr:
     name: Run end-to-end tests - PR
     runs-on: ubuntu-latest
@@ -101,4 +101,4 @@ jobs:
         run: ./vegawallet service run --network fairground  &
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --browser chrome
