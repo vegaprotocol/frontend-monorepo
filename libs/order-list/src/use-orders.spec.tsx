@@ -9,24 +9,11 @@ import {
   OrderType,
   OrderTimeInForce,
 } from '@vegaprotocol/types';
-import {
-  VegaKeyExtended,
-  VegaWalletContext,
-  VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
+import {} from '@vegaprotocol/wallet';
 import { ReactNode } from 'react';
 import { ORDERS_QUERY, ORDERS_SUB, useOrders } from './use-orders';
 
-const keypair = { pub: '0x123' } as VegaKeyExtended;
-const defaultWalletContext = {
-  keypair,
-  keypairs: [keypair],
-  sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
-  connect: jest.fn(),
-  disconnect: jest.fn(),
-  selectPublicKey: jest.fn(),
-  connector: null,
-};
+const partyId = '0x123';
 
 function generateOrder(order?: Partial<OrderFields>): OrderFields {
   return {
@@ -60,20 +47,11 @@ function generateOrder(order?: Partial<OrderFields>): OrderFields {
   };
 }
 
-function setup(
-  context?: Partial<VegaWalletContextShape>,
-  mocks: MockedResponse[] = []
-) {
+function setup(mocks: MockedResponse[] = [], id: string | null) {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks}>
-      <VegaWalletContext.Provider
-        value={{ ...defaultWalletContext, ...context }}
-      >
-        {children}
-      </VegaWalletContext.Provider>
-    </MockedProvider>
+    <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useOrders(), { wrapper });
+  return renderHook(() => useOrders(id as string), { wrapper });
 }
 
 test('Fetches and subscribes to orders and merges appropriately', async () => {
@@ -81,13 +59,13 @@ test('Fetches and subscribes to orders and merges appropriately', async () => {
   const mockOrderQuery: MockedResponse<Orders> = {
     request: {
       query: ORDERS_QUERY,
-      variables: { partyId: keypair.pub },
+      variables: { partyId },
     },
     result: {
       data: {
         party: {
           __typename: 'Party',
-          id: keypair.pub,
+          id: partyId,
           orders: [order],
         },
       },
@@ -106,7 +84,7 @@ test('Fetches and subscribes to orders and merges appropriately', async () => {
   const mockOrderSub: MockedResponse<OrderSub> = {
     request: {
       query: ORDERS_SUB,
-      variables: { partyId: keypair.pub },
+      variables: { partyId },
     },
     result: {
       data: {
@@ -115,10 +93,10 @@ test('Fetches and subscribes to orders and merges appropriately', async () => {
     },
     delay: 100,
   };
-  const { result, waitForNextUpdate } = setup(defaultWalletContext, [
-    mockOrderQuery,
-    mockOrderSub,
-  ]);
+  const { result, waitForNextUpdate } = setup(
+    [mockOrderQuery, mockOrderSub],
+    partyId
+  );
   expect(result.current.loading).toBe(true);
   expect(result.current.error).toBe(null);
   await waitForNextUpdate();
@@ -133,13 +111,11 @@ test('Returns an error if fetch fails', async () => {
   const mockFailedOrderQuery: MockedResponse<Orders> = {
     request: {
       query: ORDERS_QUERY,
-      variables: { partyId: keypair.pub },
+      variables: { partyId },
     },
     error,
   };
-  const { result, waitForNextUpdate } = setup(defaultWalletContext, [
-    mockFailedOrderQuery,
-  ]);
+  const { result, waitForNextUpdate } = setup([mockFailedOrderQuery], partyId);
   expect(result.current.loading).toBe(true);
   expect(result.current.error).toBe(null);
   await waitForNextUpdate();
@@ -151,14 +127,11 @@ test('No queries are made if no pubkey provided', () => {
   const mockQuery: MockedResponse<Orders> = {
     request: {
       query: ORDERS_QUERY,
-      variables: { partyId: keypair.pub },
+      variables: { partyId },
     },
     newData: jest.fn(),
   };
-  const { result } = setup(
-    { ...defaultWalletContext, keypair: null, keypairs: [] },
-    [mockQuery]
-  );
+  const { result } = setup([mockQuery], null);
   expect(mockQuery.newData).not.toBeCalled();
   expect(result.current.loading).toBe(false);
   expect(result.current.error).toBe(null);

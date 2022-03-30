@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { OrderListContainer } from './order-list-container';
+import { OrderListManager } from './order-list-manager';
 import * as useOrdersHook from './use-orders';
 import { Orders_party_orders } from './__generated__/Orders';
 
@@ -13,7 +13,7 @@ test('Renders a loading state while awaiting orders', () => {
     loading: true,
     error: null,
   });
-  render(<OrderListContainer />);
+  render(<OrderListManager partyId="0x123" />);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 });
 
@@ -24,7 +24,7 @@ test('Renders an error state', () => {
     loading: false,
     error: new Error(errorMsg),
   });
-  render(<OrderListContainer />);
+  render(<OrderListManager partyId="0x123" />);
   expect(
     screen.getByText(`Something went wrong: ${errorMsg}`)
   ).toBeInTheDocument();
@@ -36,6 +36,6 @@ test('Renders the order list if orders provided', async () => {
     loading: false,
     error: null,
   });
-  render(<OrderListContainer />);
+  render(<OrderListManager partyId="0x123" />);
   expect(await screen.findByText('OrderList')).toBeInTheDocument();
 });

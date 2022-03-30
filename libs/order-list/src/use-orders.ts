@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { gql, useApolloClient } from '@apollo/client';
 import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Orders, OrdersVariables } from './__generated__/Orders';
 import { OrderSub, OrderSubVariables } from './__generated__/OrderSub';
 import { OrderFields } from './__generated__/OrderFields';
@@ -61,9 +60,8 @@ interface UseOrders {
   loading: boolean;
 }
 
-export const useOrders = (): UseOrders => {
+export const useOrders = (partyId: string): UseOrders => {
   const client = useApolloClient();
-  const { keypair } = useVegaWallet();
   const [orders, setOrders] = useState<OrderFields[]>([]);
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(false);
@@ -89,14 +87,14 @@ export const useOrders = (): UseOrders => {
   // Make initial fetch
   useEffect(() => {
     const fetchOrders = async () => {
-      if (!keypair?.pub) return;
+      if (!partyId) return;
 
       setLoading(true);
 
       try {
         const res = await client.query<Orders, OrdersVariables>({
           query: ORDERS_QUERY,
-          variables: { partyId: keypair.pub },
+          variables: { partyId },
         });
 
         if (!res.data.party?.orders?.length) return;
@@ -112,16 +110,16 @@ export const useOrders = (): UseOrders => {
     };
 
     fetchOrders();
-  }, [mergeOrders, keypair, client]);
+  }, [mergeOrders, partyId, client]);
 
   // Start subscription
   useEffect(() => {
-    if (!keypair?.pub) return;
+    if (!partyId) return;
 
     const sub = client
       .subscribe<OrderSub, OrderSubVariables>({
         query: ORDERS_SUB,
-        variables: { partyId: keypair.pub },
+        variables: { partyId },
       })
       .subscribe(({ data }) => {
         if (!data?.orders) {
@@ -135,7 +133,7 @@ export const useOrders = (): UseOrders => {
         sub.unsubscribe();
       }
     };
-  }, [client, keypair, mergeOrders]);
+  }, [client, partyId, mergeOrders]);
 
   return { orders, error, loading };
 };
