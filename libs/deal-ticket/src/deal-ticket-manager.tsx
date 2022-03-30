@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { OrderStatus } from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import { useOrderSubmit } from './use-order-submit';
 import { OrderDialog } from './order-dialog';
 import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { OrderStatus } from './__generated__/globalTypes';
 
 interface DealTicketManagerProps {
   market: DealTicketQuery_market;

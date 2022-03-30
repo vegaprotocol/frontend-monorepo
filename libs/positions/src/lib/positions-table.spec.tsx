@@ -1,7 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import { Positions_party_positions } from './__generated__/Positions';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { MarketTradingMode } from '../__generated__/globalTypes';
 
 const singleRow: Positions_party_positions = {
   realisedPNL: '5',

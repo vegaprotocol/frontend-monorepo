@@ -8,7 +8,7 @@ import {
   Side,
   OrderType,
   OrderTimeInForce,
-} from '@vegaprotocol/types';
+} from './__generated__/globalTypes';
 import {} from '@vegaprotocol/wallet';
 import { ReactNode } from 'react';
 import { ORDERS_QUERY, ORDERS_SUB, useOrders } from './use-orders';

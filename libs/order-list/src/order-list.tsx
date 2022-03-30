@@ -1,4 +1,8 @@
-import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
+import {
+  OrderTimeInForce,
+  OrderStatus,
+  Side,
+} from './__generated__/globalTypes';
 import { Orders_party_orders } from './__generated__/Orders';
 import {
   formatNumber,

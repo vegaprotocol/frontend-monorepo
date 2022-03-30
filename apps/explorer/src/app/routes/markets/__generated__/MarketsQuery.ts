@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
+import { MarketTradingMode, MarketState, AccountType, AuctionTrigger } from "./../../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: MarketsQuery

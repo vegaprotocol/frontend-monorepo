@@ -38,6 +38,16 @@
         "jestConfig": "libs/market-list/jest.config.js",
         "passWithNoTests": true
       }
+    },
+    "generate": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          {
+            "command": "npx apollo client:codegen --config=libs/market-list/apollo.config.js --target=typescript --globalTypesFile=libs/market-list/src/__generated__/globalTypes.ts"
+          }
+        ]
+      }
     }
   }
 }

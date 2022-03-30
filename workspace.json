@@ -14,7 +14,6 @@
     "tailwindcss-config": "libs/tailwindcss-config",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",
-    "types": "libs/types",
     "ui-toolkit": "libs/ui-toolkit",
     "wallet": "libs/wallet",
     "web3": "libs/web3"

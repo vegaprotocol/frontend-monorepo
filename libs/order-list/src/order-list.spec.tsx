@@ -7,7 +7,7 @@ import {
   OrderType,
   Side,
   OrderRejectionReason,
-} from '@vegaprotocol/types';
+} from './__generated__/globalTypes';
 import { OrderList } from './order-list';
 
 test('No orders message shown', async () => {

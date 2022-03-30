@@ -9,7 +9,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
 import { Order } from './use-order-state';
 import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from './__generated__/globalTypes';
 
 const order: Order = {
   type: OrderType.Market,

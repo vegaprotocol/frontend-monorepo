@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, OrderType, OrderStatus, OrderRejectionReason } from "./../../../types/src/__generated__/globalTypes";
+import { BusEventType, OrderType, OrderStatus, OrderRejectionReason } from "./globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: OrderEvent

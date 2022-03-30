@@ -5,7 +5,7 @@ import { Order } from './use-order-state';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { TransactionStatus } from './deal-ticket';
 import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from './__generated__/globalTypes';
 
 interface SubmitButtonProps {
   transactionStatus: TransactionStatus;

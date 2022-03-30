@@ -24,7 +24,6 @@
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.js"
       ],
-      "@vegaprotocol/types": ["libs/types/src/index.ts"],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
       "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],
       "@vegaprotocol/web3": ["libs/web3/src/index.ts"]
