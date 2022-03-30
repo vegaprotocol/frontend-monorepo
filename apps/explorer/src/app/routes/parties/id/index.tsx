@@ -7,11 +7,11 @@ import { SubHeading } from '../../../components/sub-heading';
 import { SyntaxHighlighter } from '../../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
-import { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
-import {
+import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
+import type {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
-} from '@vegaprotocol/graphql';
+} from './__generated__/PartyAssetsQuery';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {

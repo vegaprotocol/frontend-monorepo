@@ -1,4 +1,5 @@
-import { IconSvgPaths20, IconSvgPaths16, IconName } from '@blueprintjs/icons';
+import type { IconName } from '@blueprintjs/icons';
+import { IconSvgPaths20, IconSvgPaths16 } from '@blueprintjs/icons';
 import classNames from 'classnames';
 
 export type { IconName } from '@blueprintjs/icons';

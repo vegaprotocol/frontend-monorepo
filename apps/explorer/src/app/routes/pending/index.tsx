@@ -1,7 +1,7 @@
 import React from 'react';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
-import { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermint-unconfirmed-transactions-response.d';
+import type { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermint-unconfirmed-transactions-response.d';
 import { TxList } from '../../components/txs';
 import { RouteTitle } from '../../components/route-title';
 

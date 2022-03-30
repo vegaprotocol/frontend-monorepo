@@ -1,5 +1,5 @@
 import useFetch from '../../hooks/use-fetch';
-import { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
+import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
 import { Routes } from '../../routes/router-config';
 import { DATA_SOURCES } from '../../config';
 import { Link } from 'react-router-dom';

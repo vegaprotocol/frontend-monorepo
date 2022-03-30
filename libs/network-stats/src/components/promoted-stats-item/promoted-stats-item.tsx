@@ -1,5 +1,5 @@
 import { Tooltip } from '../tooltip';
-import { StatFields } from '../../config/types';
+import type { StatFields } from '../../config/types';
 import { defaultFieldFormatter } from '../table-row';
 import { GoodThresholdIndicator } from '../good-threshold-indicator';
 

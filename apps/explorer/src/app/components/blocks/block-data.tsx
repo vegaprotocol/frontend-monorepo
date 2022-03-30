@@ -1,5 +1,5 @@
 import React from 'react';
-import { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
+import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { Routes } from '../../routes/router-config';
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../seconds-ago';

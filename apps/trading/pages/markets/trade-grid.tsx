@@ -1,11 +1,13 @@
-import { Market_market } from '@vegaprotocol/graphql';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useState, ReactNode, ComponentType } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
-import { DealTicketContainer } from '../../components/deal-ticket-container';
-import { OrderListContainer } from '../..//components/order-list-container';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { OrderListContainer } from '@vegaprotocol/order-list';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import { PositionsContainer } from '@vegaprotocol/positions';
+import type { Market_market } from './__generated__/Market';
 
 const Chart = () => (
   <Splash>
@@ -15,11 +17,6 @@ const Chart = () => (
 const Orderbook = () => (
   <Splash>
     <p>Orderbook</p>
-  </Splash>
-);
-const Positions = () => (
-  <Splash>
-    <p>Positions</p>
   </Splash>
 );
 const Collateral = () => (
@@ -33,22 +30,12 @@ const Trades = () => (
   </Splash>
 );
 
-// enum TradingView {
-//   Chart = 'Chart',
-//   Ticket = 'Ticket',
-//   Orderbook = 'Orderbook',
-//   Orders = 'Orders',
-//   Positions = 'Positions',
-//   Collateral = 'Collateral',
-//   Trades = 'Trades',
-// }
-
 const TradingViews = {
   Chart: Chart,
   Ticket: DealTicketContainer,
   Orderbook: Orderbook,
   Orders: OrderListContainer,
-  Positions: Positions,
+  Positions: PositionsContainer,
   Collateral: Collateral,
   Trades: Trades,
 };
@@ -75,7 +62,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         <TradingViews.Chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.Ticket market={market} />
+        <TradingViews.Ticket marketId={market.id} />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
@@ -138,7 +125,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return <Component market={market} />;
+    return <Component marketId={market.id} />;
   };
 
   return (

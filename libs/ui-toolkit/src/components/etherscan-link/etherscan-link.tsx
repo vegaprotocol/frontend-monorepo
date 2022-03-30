@@ -1,5 +1,5 @@
 import React from 'react';
-import { EthereumChainId } from '../../utils/web3';
+import type { EthereumChainId } from '../../utils/web3';
 
 const etherscanUrls: Record<EthereumChainId, string> = {
   '0x1': 'https://etherscan.io',

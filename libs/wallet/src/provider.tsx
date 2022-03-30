@@ -1,17 +1,11 @@
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { VegaKeyExtended, VegaWalletContextShape } from '.';
-import { VegaConnector } from './connectors';
+import type { ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { VegaKeyExtended, VegaWalletContextShape } from '.';
+import type { VegaConnector } from './connectors';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage-keys';
-import { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
+import type { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
 
 interface VegaWalletProviderProps {
   children: ReactNode;

@@ -1,7 +1,7 @@
 import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { RestConnector } from '.';
+import type { RestConnector } from '.';
 
 interface FormFields {
   wallet: string;

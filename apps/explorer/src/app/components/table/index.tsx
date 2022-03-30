@@ -1,4 +1,5 @@
-import React, { ThHTMLAttributes } from 'react';
+import type { ThHTMLAttributes } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 
 interface TableProps extends ThHTMLAttributes<HTMLTableElement> {

@@ -1,13 +1,13 @@
 import { act, render, screen } from '@testing-library/react';
 import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { Orders_party_orders } from '@vegaprotocol/graphql';
+import type { Orders_party_orders } from './__generated__/Orders';
 import {
   OrderStatus,
   OrderTimeInForce,
   OrderType,
   Side,
   OrderRejectionReason,
-} from '@vegaprotocol/graphql';
+} from '@vegaprotocol/types';
 import { OrderList } from './order-list';
 
 test('No orders message shown', async () => {

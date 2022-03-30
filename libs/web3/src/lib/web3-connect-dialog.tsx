@@ -1,5 +1,5 @@
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { Connectors } from './types';
+import type { Connectors } from './types';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
