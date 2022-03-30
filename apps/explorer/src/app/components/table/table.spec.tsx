@@ -1,15 +1,15 @@
 import { render, screen } from '@testing-library/react';
 
-import { Table, TableRow, TableHeader, TableCell } from './index';
+import { TableWithTbody, TableRow, TableHeader, TableCell } from './index';
 
 describe('Renders all table components', () => {
   render(
-    <Table data-testid="test-table">
+    <TableWithTbody data-testid="test-table">
       <TableRow data-testid="test-tr">
         <TableHeader data-testid="test-th">Title</TableHeader>
         <TableCell data-testid="test-td">Content</TableCell>
       </TableRow>
-    </Table>
+    </TableWithTbody>
   );
 
   expect(screen.getByTestId('test-table')).toBeInTheDocument();
@@ -21,11 +21,11 @@ describe('Renders all table components', () => {
 describe('Table row', () => {
   it('should include classes based on custom "modifier" prop', () => {
     render(
-      <Table>
+      <TableWithTbody>
         <TableRow data-testid="modifier-test" modifier="bordered">
           <TableCell>With modifier</TableCell>
         </TableRow>
-      </Table>
+      </TableWithTbody>
     );
 
     expect(screen.getByTestId('modifier-test')).toHaveClass('border-b');
@@ -35,13 +35,13 @@ describe('Table row', () => {
 describe('Table header', () => {
   it('should accept props i.e. scope="row"', () => {
     render(
-      <Table>
+      <TableWithTbody>
         <TableRow>
           <TableHeader data-testid="props-test" scope="row">
             Test
           </TableHeader>
         </TableRow>
-      </Table>
+      </TableWithTbody>
     );
 
     expect(screen.getByTestId('props-test')).toHaveAttribute('scope');
@@ -49,13 +49,13 @@ describe('Table header', () => {
 
   it('should include custom class based on scope="row"', () => {
     render(
-      <Table>
+      <TableWithTbody>
         <TableRow>
           <TableHeader data-testid="scope-class-test" scope="row">
             With scope attribute
           </TableHeader>
         </TableRow>
-      </Table>
+      </TableWithTbody>
     );
 
     expect(screen.getByTestId('scope-class-test')).toHaveClass('text-left');
@@ -65,13 +65,13 @@ describe('Table header', () => {
 describe('Table cell', () => {
   it('should include class based on custom "modifier" prop', () => {
     render(
-      <Table>
+      <TableWithTbody>
         <TableRow>
           <TableCell data-testid="modifier-class-test" modifier="bordered">
             With modifier
           </TableCell>
         </TableRow>
-      </Table>
+      </TableWithTbody>
     );
 
     expect(screen.getByTestId('modifier-class-test')).toHaveClass('py-4');
