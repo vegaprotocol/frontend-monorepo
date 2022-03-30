@@ -11,7 +11,8 @@ export default class BasePage {
   }
 
   navigateToMarkets() {
-    cy.get(`a[href='${this.marketsUrl}']`).click();
+    cy.get(`a[href='${this.marketsUrl}']`).click({ force: true });
+    cy.url().should('include', '/markets');
   }
 
   navigateToConnectVegaWallet() {
