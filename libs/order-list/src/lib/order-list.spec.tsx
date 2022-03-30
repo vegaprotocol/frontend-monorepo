@@ -12,7 +12,7 @@ import { OrderList } from './order-list';
 
 test('No orders message shown', async () => {
   await act(async () => {
-    render(<OrderList orders={[]} />);
+    render(<OrderList data={[]} />);
   });
   expect(screen.getByText('No orders')).toBeInTheDocument();
 });
@@ -77,7 +77,7 @@ const limitOrder: Orders_party_orders = {
 
 test('Correct columns are rendered', async () => {
   await act(async () => {
-    render(<OrderList orders={[marketOrder]} />);
+    render(<OrderList data={[marketOrder]} />);
   });
 
   const headers = screen.getAllByRole('columnheader');
@@ -96,7 +96,7 @@ test('Correct columns are rendered', async () => {
 
 test('Correct formatting applied for market order', async () => {
   await act(async () => {
-    render(<OrderList orders={[marketOrder]} />);
+    render(<OrderList data={[marketOrder]} />);
   });
 
   const cells = screen.getAllByRole('gridcell');
@@ -117,7 +117,7 @@ test('Correct formatting applied for market order', async () => {
 
 test('Correct formatting applied for GTT limit order', async () => {
   await act(async () => {
-    render(<OrderList orders={[limitOrder]} />);
+    render(<OrderList data={[limitOrder]} />);
   });
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
@@ -144,7 +144,7 @@ test('Correct formatting applied for a rejected order', async () => {
     rejectionReason: OrderRejectionReason.InsufficientAssetBalance,
   };
   await act(async () => {
-    render(<OrderList orders={[rejectedOrder]} />);
+    render(<OrderList data={[rejectedOrder]} />);
   });
   const cells = screen.getAllByRole('gridcell');
   expect(cells[3]).toHaveTextContent(
