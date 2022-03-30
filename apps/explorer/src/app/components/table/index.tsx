@@ -40,7 +40,7 @@ export const TableHeader = ({
   className,
   ...props
 }: TableHeaderProps) => {
-  const cellClasses = classnames(className, {
+  const cellClasses = classnames(className, 'pl-4 dark:pl-0', {
     'text-left font-normal': props?.scope === 'row',
   });
   return (
@@ -57,8 +57,10 @@ export const TableRow = ({
   ...props
 }: TableRowProps) => {
   const cellClasses = classnames(className, {
-    'border-b border-white-40': modifier === 'bordered',
-    'bg-white-25 border-b-4 border-b-black': modifier === 'background',
+    'border-b bg-black-40 border-black-40 dark:border-white-40':
+      modifier === 'bordered',
+    'border-b-4 bg-black-40 border-b-white dark:bg-white-25 dark:border-b-black':
+      modifier === 'background',
   });
   return (
     <tr className={cellClasses} {...props}>

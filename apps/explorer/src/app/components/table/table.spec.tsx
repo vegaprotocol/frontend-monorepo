@@ -28,7 +28,7 @@ describe('Table row', () => {
       </Table>
     );
 
-    expect(screen.getByTestId('modifier-test')).toHaveClass('border-white-40');
+    expect(screen.getByTestId('modifier-test')).toHaveClass('border-b');
   });
 });
 
