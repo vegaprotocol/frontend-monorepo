@@ -83,6 +83,20 @@ export default class DealTicketPage extends BasePage {
       .should('contain.text', errorMsg);
   }
 
+  reloadPageIfPublicKeyErrorDisplayed() {
+    cy.get('body').then(($body) => {
+      if ($body.find(`[data-testid=${this.placeOrderErrorTxt}]`).length) {
+        cy.getByTestId(this.placeOrderErrorTxt)
+          .invoke('text')
+          .then(($errorText) => {
+            if ($errorText == 'No public key selected') {
+              cy.reload;
+            }
+          });
+      }
+    });
+  }
+
   formatDate(date) {
     const padZero = (num) => num.toString().padStart(2, '0');
 

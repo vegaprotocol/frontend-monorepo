@@ -33,7 +33,9 @@ export default class BasePage {
   }
 
   clickConnectVegaWallet() {
-    cy.getByTestId(this.walletForm).find('button[type=submit]').click();
+    cy.getByTestId(this.walletForm)
+      .find('button[type=submit]')
+      .click({ force: true });
   }
 
   validateWalletNotRunningError() {
