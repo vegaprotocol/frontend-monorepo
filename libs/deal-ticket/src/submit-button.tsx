@@ -1,14 +1,15 @@
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { Market_market } from '@vegaprotocol/graphql';
 import { useMemo } from 'react';
-import { Order } from './use-order-state';
+import type { Order } from './use-order-state';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { TransactionStatus } from './deal-ticket';
+import type { TransactionStatus } from './deal-ticket';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
 interface SubmitButtonProps {
   transactionStatus: TransactionStatus;
-  market: Market_market;
+  market: DealTicketQuery_market;
   order: Order;
 }
 
@@ -28,20 +29,22 @@ export const SubmitButton = ({
       return 'Selected public key has been tainted';
     }
 
-    // TODO: Change these to use enums from @vegaprotocol/graphql
-    if (market.state !== 'Active') {
-      if (market.state === 'Suspended') {
+    if (market.state !== MarketState.Active) {
+      if (market.state === MarketState.Suspended) {
         return 'Market is currently suspended';
       }
 
-      if (market.state === 'Proposed' || market.state === 'Pending') {
+      if (
+        market.state === MarketState.Proposed ||
+        market.state === MarketState.Pending
+      ) {
         return 'Market is not active yet';
       }
 
       return 'Market is no longer active';
     }
 
-    if (market.tradingMode !== 'Continuous') {
+    if (market.tradingMode !== MarketTradingMode.Continuous) {
       if (order.type === OrderType.Market) {
         return 'Only limit orders are permitted when market is in auction';
       }

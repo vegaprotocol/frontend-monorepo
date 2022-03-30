@@ -1,5 +1,5 @@
 import useFetch from '../../../hooks/use-fetch';
-import { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
+import type { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
 import { DATA_SOURCES } from '../../../config';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';

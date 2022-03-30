@@ -1,14 +1,8 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import {
-  Children,
-  isValidElement,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useState,
-} from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { Children, isValidElement, useEffect, useState } from 'react';
 
 interface GridTabsProps {
   children: ReactElement<GridTabProps>[];

@@ -1,6 +1,6 @@
 import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { Order } from './use-order-state';
+import type { Order } from './use-order-state';
 
 interface TimeInForceSelectorProps {
   order: Order;

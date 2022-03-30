@@ -1,4 +1,4 @@
-import { value, goodThreshold } from '../../config/types';
+import type { value, goodThreshold } from '../../config/types';
 
 interface GoodThresholdIndicatorProps {
   goodThreshold: goodThreshold | undefined;

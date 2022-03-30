@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import { PriceCell, formatNumber } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import { Markets_markets } from '@vegaprotocol/graphql';
+import type { Markets_markets } from './__generated__/Markets';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 

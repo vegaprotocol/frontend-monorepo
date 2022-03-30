@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import { HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
 
 interface SubHeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;

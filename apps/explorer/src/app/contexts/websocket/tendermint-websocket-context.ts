@@ -1,5 +1,5 @@
 import React from 'react';
-import { WebSocketHook } from 'react-use-websocket/dist/lib/types';
+import type { WebSocketHook } from 'react-use-websocket/dist/lib/types';
 
 export type WebsocketContextShape = WebSocketHook;
 

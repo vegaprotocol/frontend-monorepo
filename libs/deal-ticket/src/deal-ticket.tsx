@@ -1,9 +1,10 @@
+import type { FormEvent } from 'react';
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { Market_market } from '@vegaprotocol/graphql';
-import { FormEvent } from 'react';
-import { Order, useOrderState } from './use-order-state';
+import type { Order } from './use-order-state';
+import { useOrderState } from './use-order-state';
 import { DealTicketMarket } from './deal-ticket-market';
 import { DealTicketLimit } from './deal-ticket-limit';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,
@@ -15,7 +16,7 @@ const DEFAULT_ORDER: Order = {
 export type TransactionStatus = 'default' | 'pending';
 
 export interface DealTicketProps {
-  market: Market_market;
+  market: DealTicketQuery_market;
   submit: (order: Order) => void;
   transactionStatus: TransactionStatus;
   defaultOrder?: Order;

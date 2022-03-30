@@ -1,5 +1,5 @@
 import React from 'react';
-import { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
+import type { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from '../blocks';
 import { TxsPerBlock } from './txs-per-block';
 

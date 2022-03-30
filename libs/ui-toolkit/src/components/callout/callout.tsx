@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { getIntentShadow, Intent } from '../../utils/intent';
-import { Icon, IconName } from '../icon';
+import type { IconName } from '../icon';
+import { Icon } from '../icon';
 
 export interface CalloutProps {
   children?: React.ReactNode;

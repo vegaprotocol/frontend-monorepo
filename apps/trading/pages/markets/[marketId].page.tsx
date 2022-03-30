@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { Market, MarketVariables } from '@vegaprotocol/graphql';
+import type { Market, MarketVariables } from './__generated__/Market';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -13,34 +13,6 @@ const MARKET_QUERY = gql`
     market(id: $marketId) {
       id
       name
-      decimalPlaces
-      state
-      tradingMode
-      tradableInstrument {
-        instrument {
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-            }
-          }
-        }
-      }
-      trades {
-        id
-        price
-        size
-        createdAt
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
     }
   }
 `;

@@ -1,16 +1,12 @@
-import {
-  Orders_party_orders,
-  OrderTimeInForce,
-  OrderStatus,
-  Side,
-} from '@vegaprotocol/graphql';
+import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
+import type { Orders_party_orders } from './__generated__/Orders';
 import {
   formatNumber,
   getDateTimeFormat,
   useApplyGridTransaction,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import { GridApi, ValueFormatterParams } from 'ag-grid-community';
+import type { GridApi, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
 import { useRef, useState } from 'react';
 

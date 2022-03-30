@@ -1,4 +1,4 @@
-import { HTMLInputTypeAttribute, SyntheticEvent } from 'react';
+import type { HTMLInputTypeAttribute, SyntheticEvent } from 'react';
 import { Input, Button } from '@vegaprotocol/ui-toolkit';
 
 interface JumpToProps {

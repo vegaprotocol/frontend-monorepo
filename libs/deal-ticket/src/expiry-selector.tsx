@@ -1,5 +1,5 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import { Order } from './use-order-state';
+import type { Order } from './use-order-state';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 
 interface ExpirySelectorProps {

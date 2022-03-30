@@ -10,14 +10,11 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import compact from 'lodash/compact';
-import {
-  Positions_party_positions,
-  MarketTradingMode,
-} from '@vegaprotocol/graphql';
+import type { Positions_party_positions } from './__generated__/Positions';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 interface PositionsTableProps {
   data: Positions_party_positions[] | null;
-  onRowClicked: (marketId: string) => void;
 }
 
 export const getRowNodeId = (data: { market: { id: string } }) =>
@@ -49,7 +46,7 @@ interface PositionsTableValueFormatterParams extends ValueFormatterParams {
 }
 
 export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
-  ({ data, onRowClicked }, ref) => {
+  ({ data }, ref) => {
     const sortedData = useMemo(() => {
       return compact(data).sort(sortByName);
     }, [data]);
@@ -64,9 +61,6 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           flex: 1,
           resizable: true,
         }}
-        onRowClicked={({ data }: { data: Positions_party_positions }) =>
-          onRowClicked(getRowNodeId(data))
-        }
         components={{ PriceCell }}
       >
         <AgGridColumn
