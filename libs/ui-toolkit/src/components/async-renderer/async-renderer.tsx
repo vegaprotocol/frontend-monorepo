@@ -19,8 +19,12 @@ export function AsyncRenderer<T = any>({
     return <Splash>Something went wrong: {error.message}</Splash>;
   }
 
-  if (loading || !data) {
+  if (loading) {
     return <Splash>Loading...</Splash>;
+  }
+
+  if (!data) {
+    return <Splash>No data</Splash>;
   }
 
   return <>{children(data)}</>;

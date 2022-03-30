@@ -54,19 +54,16 @@ const singleRow: Positions_party_positions = {
   __typename: 'Position',
 };
 const singleRowData = [singleRow];
-const onRowClicked = jest.fn;
 
 test('should render successfully', async () => {
   await act(async () => {
-    const { baseElement } = render(
-      <PositionsTable data={[]} onRowClicked={onRowClicked} />
-    );
+    const { baseElement } = render(<PositionsTable data={[]} />);
     expect(baseElement).toBeTruthy();
   });
 });
 test('Render correct columns', async () => {
   await act(async () => {
-    render(<PositionsTable data={singleRowData} onRowClicked={onRowClicked} />);
+    render(<PositionsTable data={singleRowData} />);
   });
 
   const headers = screen.getAllByRole('columnheader');
@@ -82,7 +79,7 @@ test('Render correct columns', async () => {
 
 test('Correct formatting applied', async () => {
   await act(async () => {
-    render(<PositionsTable data={singleRowData} onRowClicked={onRowClicked} />);
+    render(<PositionsTable data={singleRowData} />);
   });
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
