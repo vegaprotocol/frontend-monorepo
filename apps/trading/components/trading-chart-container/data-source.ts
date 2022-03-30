@@ -1,5 +1,5 @@
 import { ApolloClient, gql } from '@apollo/client';
-import { Annotation, DataSource } from 'pennant';
+import type { Annotation, DataSource } from 'pennant';
 import {
   CandleFields,
   Candles,

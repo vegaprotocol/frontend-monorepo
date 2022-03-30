@@ -1371,11 +1371,6 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
-"@d3fc/d3fc-element@^6.1.2":
-  version "6.2.0"
-  resolved "https://registry.yarnpkg.com/@d3fc/d3fc-element/-/d3fc-element-6.2.0.tgz#bb491ddcdcdf820f352625aff3e2d4972ce5f27a"
-  integrity sha512-AvdZ3V4mVxF9dGYLiDCoqr3GhrFOUQEc1FcP20QEhQ3fJ3qYRwx7/uhL7G/L2xbe6k4delPgnLOvtoaDenhpZw==
-
 "@d3fc/d3fc-rebind@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@d3fc/d3fc-rebind/-/d3fc-rebind-6.0.1.tgz#b66e21d938893a92dd939e55e3147f24f46b652e"
@@ -6550,6 +6545,17 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+allotment@1.11.2-alpha.1:
+  version "1.11.2-alpha.1"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.11.2-alpha.1.tgz#c284d45d106facb6ade03183efd7b30b1b0b2bb6"
+  integrity sha512-3lBTVZCwCfsyVGUWG1rlDJgT6N+xQzdibThrWSVEqD/nxUesOLJuP3443QhEj2EZYJNhMJpZBTbV2R+ijXqXdQ==
+  dependencies:
+    classnames "^2.3.0"
+    eventemitter3 "^4.0.0"
+    lodash.clamp "^4.0.0"
+    lodash.debounce "^4.0.0"
+    use-resize-observer "^8.0.0"
+
 anser@1.4.9:
   version "1.4.9"
   resolved "https://registry.yarnpkg.com/anser/-/anser-1.4.9.tgz#1f85423a5dcf8da4631a341665ff675b96845760"
@@ -8503,7 +8509,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@*, classnames@^2.2, classnames@^2.2.6, classnames@^2.3.1:
+classnames@*, classnames@^2.2, classnames@^2.2.6, classnames@^2.3.0, classnames@^2.3.1:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.1.tgz#dfcfa3891e306ec1dad105d0e88f4417b8535e8e"
   integrity sha512-OlQdbZ7gLfGarSqxesMesDa5uz7KFbID8Kpq/SxIoNGDqY8lSYs0D+hhtBXhcdB3rcbXArFr7vlHheLk1voeNA==
@@ -14634,12 +14640,17 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
 
+lodash.clamp@^4.0.0:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/lodash.clamp/-/lodash.clamp-4.0.3.tgz#5c24bedeeeef0753560dc2b4cb4671f90a6ddfaa"
+  integrity sha1-XCS+3u7vB1NWDcK0y0Zx+Qpt36o=
+
 lodash.clonedeep@^4.5.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.clonedeep/-/lodash.clonedeep-4.5.0.tgz#e23f3f9c4f8fbdde872529c1071857a086e5ccef"
   integrity sha1-4j8/nE+Pvd6HJSnBBxhXoIblzO8=
 
-lodash.debounce@^4.0.8:
+lodash.debounce@^4.0.0, lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
   integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
@@ -16286,13 +16297,12 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
-pennant@^0.3.5:
-  version "0.3.5"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.3.5.tgz#0026b701c897743307d34f7c137fefa63f7f4521"
-  integrity sha512-g1LGiwxvKpRnhoVtR0/0ADjVAsLh2iZddLyCve4bktPJRdYIjbn309i0VDc4BFihhJGGoUoxTpgqY3jpOy2ZQA==
+pennant@0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.2.tgz#a79361a31448e3f4f03956d1a3a675c93b4b6b97"
+  integrity sha512-f4lOtHvjoax2dilMClz7w3xKM+ji0W7vBb+Kx0prWXulgqogoonwioTMamrp6S4hUVPejIVkD4+5tknFYDK+0w==
   dependencies:
     "@babel/runtime" "^7.13.10"
-    "@d3fc/d3fc-element" "^6.1.2"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
     "@types/classnames" "^2.2.11"
     "@types/d3-array" "^2.9.0"
@@ -16311,6 +16321,7 @@ pennant@^0.3.5:
     "@types/react" "^17.0.0"
     "@types/react-dom" "^17.0.0"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
+    allotment "1.11.2-alpha.1"
     classnames "^2.2.6"
     d3-array "2.3.3"
     d3-delaunay "^6.0.2"
