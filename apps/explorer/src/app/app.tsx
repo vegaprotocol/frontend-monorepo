@@ -21,8 +21,8 @@ function App() {
     <ThemeContext.Provider value={theme}>
       <TendermintWebsocketProvider>
         <ApolloProvider client={client}>
-          <div className="antialiased m-0 min-h-[100vh] max-w-[1300px] grid grid-rows-[1fr_min-content] bg-white dark:bg-black text-black dark:text-white border-white lg:border-l-1 lg:border-r-1">
-            <div className="grid grid-rows-[auto_minmax(700px,_1fr)] grid-cols-[300px_minmax(auto,_1fr)] border-b-1">
+          <div className="antialiased m-0 bg-white dark:bg-black text-black dark:text-white ">
+            <div className="min-h-[100vh] max-w-[1300px] grid grid-rows-[auto_minmax(700px,_1fr)] grid-cols-[300px_minmax(auto,_1fr)] border-b-1 border-black dark:border-white lg:border-l-1 lg:border-r-1 mx-auto">
               <Nav />
               <Header toggleTheme={toggleTheme} />
               <Main />
