@@ -11,7 +11,9 @@ export default class BasePage {
   }
 
   navigateToMarkets() {
-    cy.get(`a[href='${this.marketsUrl}']`).click({ force: true });
+    cy.get(`a[href='${this.marketsUrl}']`)
+      .should('be.visible')
+      .click({ force: true });
     cy.url().should('include', '/markets');
   }
 

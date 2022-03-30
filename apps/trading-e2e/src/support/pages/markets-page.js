@@ -25,7 +25,7 @@ export default class MarketPage extends BasePage {
   }
 
   clickOnActiveMarket() {
-    cy.contains('Active').click();
+    cy.contains('Active').click({ force: true });
   }
 
   clickOnTopMarketRow() {
