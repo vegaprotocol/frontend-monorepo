@@ -6,7 +6,7 @@ import { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
 import { SecondsAgo } from '../../../components/seconds-ago';
 import {
-  Table,
+  TableWithTbody,
   TableRow,
   TableHeader,
   TableCell,
@@ -56,13 +56,13 @@ const Block = () => {
               </Button>
             </Link>
           </div>
-          <Table className="mb-28">
+          <TableWithTbody className="mb-28">
             <TableRow modifier="bordered">
               <TableHeader scope="row">Mined by</TableHeader>
               <TableCell modifier="bordered">
                 <Link
                   data-testid="block-validator"
-                  className="text-vega-yellow font-mono"
+                  className="font-mono font-bold underline dark:text-vega-yellow dark:font-normal dark:no-underline"
                   to={`/${Routes.VALIDATORS}`}
                 >
                   {header.proposer_address}
@@ -75,7 +75,7 @@ const Block = () => {
                 <SecondsAgo data-testid="block-time" date={header.time} />
               </TableCell>
             </TableRow>
-          </Table>
+          </TableWithTbody>
           {blockData && blockData.result.block.data.txs.length > 0 ? (
             <TxsPerBlock blockHeight={block} />
           ) : null}

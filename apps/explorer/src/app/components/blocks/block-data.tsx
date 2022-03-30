@@ -3,7 +3,7 @@ import { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { Routes } from '../../routes/router-config';
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../seconds-ago';
-import { Table, TableRow, TableCell } from '../table';
+import { TableWithTbody, TableRow, TableCell } from '../table';
 
 interface BlockProps {
   block: BlockMeta;
@@ -12,7 +12,7 @@ interface BlockProps {
 
 export const BlockData = ({ block, className }: BlockProps) => {
   return (
-    <Table
+    <TableWithTbody
       aria-label={`Data for block ${block.header?.height}`}
       className={className}
     >
@@ -55,6 +55,6 @@ export const BlockData = ({ block, className }: BlockProps) => {
           <SecondsAgo date={block.header?.time} />
         </TableCell>
       </TableRow>
-    </Table>
+    </TableWithTbody>
   );
 };

@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import {
-  Table,
+  TableWithTbody,
   TableCell,
   TableHeader,
   TableRow,
 } from '../../../components/table';
 import { TruncateInline } from '../../../components/truncate/truncate';
-import { Routes } from '../../../routes/router-config';
-import { Result } from '../../../routes/txs/tendermint-transaction-response.d';
+import { Routes } from '../../router-config';
+import { Result } from '../tendermint-transaction-response.d';
 
 interface TxDetailsProps {
   txData: Result | undefined;
@@ -23,7 +23,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   }
 
   return (
-    <Table className={className}>
+    <TableWithTbody className={className}>
       <TableRow modifier="bordered">
         <TableCell>Hash</TableCell>
         <TableCell modifier="bordered" data-testid="hash">
@@ -64,6 +64,6 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
           />
         </TableCell>
       </TableRow>
-    </Table>
+    </TableWithTbody>
   );
 };
