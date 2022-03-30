@@ -1,4 +1,4 @@
-import { Stats as IStats, StatFields as IStatFields } from './types';
+import type { Stats as IStats, StatFields as IStatFields } from './types';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
 // contain the associated data and methods we need to render. A single query

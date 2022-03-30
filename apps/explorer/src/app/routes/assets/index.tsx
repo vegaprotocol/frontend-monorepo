@@ -3,7 +3,7 @@ import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
-import { AssetsQuery } from './__generated__/AssetsQuery';
+import type { AssetsQuery } from './__generated__/AssetsQuery';
 
 export const ASSETS_QUERY = gql`
   query AssetsQuery {

@@ -2,11 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { gql, useSubscription } from '@apollo/client';
 import { ethers } from 'ethers';
 import { SHA3 } from 'sha3';
-import { Order } from './use-order-state';
+import type { Order } from './use-order-state';
 import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
-import {
+import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,

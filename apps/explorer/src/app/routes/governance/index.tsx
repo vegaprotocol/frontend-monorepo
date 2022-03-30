@@ -3,7 +3,7 @@ import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
-import {
+import type {
   ProposalsQuery,
   ProposalsQuery_proposals_terms_change,
 } from './__generated__/ProposalsQuery';

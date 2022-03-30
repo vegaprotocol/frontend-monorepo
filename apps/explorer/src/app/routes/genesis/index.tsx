@@ -2,7 +2,7 @@ import { RouteTitle } from '../../components/route-title';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
-import { TendermintGenesisResponse } from './tendermint-genesis-response';
+import type { TendermintGenesisResponse } from './tendermint-genesis-response';
 
 const Genesis = () => {
   const {

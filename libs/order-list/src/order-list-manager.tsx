@@ -1,7 +1,7 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useOrders } from './use-orders';
 import { OrderList } from './order-list';
-import { OrderFields } from './__generated__/OrderFields';
+import type { OrderFields } from './__generated__/OrderFields';
 
 interface OrderListManagerProps {
   partyId: string;

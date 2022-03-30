@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { VegaConnector } from './connectors';
+import type { VegaConnector } from './connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { useEffect } from 'react';
 import { RestConnector } from './connectors/rest-connector';

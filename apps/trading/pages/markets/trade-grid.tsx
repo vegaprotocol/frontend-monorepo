@@ -1,12 +1,13 @@
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useState, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import { Market_market } from './__generated__/Market';
+import type { Market_market } from './__generated__/Market';
 
 const Chart = () => (
   <Splash>

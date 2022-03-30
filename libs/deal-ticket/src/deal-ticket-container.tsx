@@ -1,7 +1,7 @@
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { gql, useQuery } from '@apollo/client';
 import { DealTicketManager } from './deal-ticket-manager';
-import { DealTicketQuery } from './__generated__/DealTicketQuery';
+import type { DealTicketQuery } from './__generated__/DealTicketQuery';
 
 const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {

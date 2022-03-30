@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import type { Story, Meta } from '@storybook/react';
 import { ThemeSwitcher } from './theme-switcher';
 
 export default {

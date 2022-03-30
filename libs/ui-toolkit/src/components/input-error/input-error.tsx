@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
 import { Icon } from '../icon';
 
 interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {

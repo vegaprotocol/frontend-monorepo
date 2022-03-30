@@ -7,8 +7,8 @@ import {
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
-import { Order } from './use-order-state';
-import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { Order } from './use-order-state';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
 const order: Order = {

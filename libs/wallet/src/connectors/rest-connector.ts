@@ -1,12 +1,14 @@
-import {
-  DefaultApi,
-  createConfiguration,
+import type {
   Configuration,
   OrderSubmissionBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
+import {
+  DefaultApi,
+  createConfiguration,
+} from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
-import { VegaConnector } from '.';
+import type { VegaConnector } from '.';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...

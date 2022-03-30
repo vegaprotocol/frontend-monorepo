@@ -1,8 +1,9 @@
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
-import { ReactNode } from 'react';
-import { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
+import type { ReactNode } from 'react';
+import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import { formatNumber } from '@vegaprotocol/react-helpers';
-import { TransactionState, VegaTxStatus } from '@vegaprotocol/wallet';
+import type { TransactionState } from '@vegaprotocol/wallet';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
 
 interface OrderDialogProps {
   transaction: TransactionState;

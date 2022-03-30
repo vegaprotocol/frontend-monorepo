@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
-import { Markets, Markets_markets } from './__generated__/Markets';
+import type { Markets, Markets_markets } from './__generated__/Markets';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
-import {
+import type {
   MarketDataSub,
   MarketDataSub_marketData,
 } from './__generated__/MarketDataSub';

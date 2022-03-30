@@ -63,6 +63,7 @@ export interface Block {
   last_commit: LastCommit;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ResultBeginBlock {}
 
 export interface ResultEndBlock {
@@ -81,7 +82,7 @@ export interface Data {
 }
 
 export interface Events {
-  "tm.event": string[];
+  'tm.event': string[];
 }
 
 export interface Result {

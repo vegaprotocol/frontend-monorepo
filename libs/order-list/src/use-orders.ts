@@ -2,9 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { gql, useApolloClient } from '@apollo/client';
 import uniqBy from 'lodash/uniqBy';
 import orderBy from 'lodash/orderBy';
-import { Orders, OrdersVariables } from './__generated__/Orders';
-import { OrderSub, OrderSubVariables } from './__generated__/OrderSub';
-import { OrderFields } from './__generated__/OrderFields';
+import type { Orders, OrdersVariables } from './__generated__/Orders';
+import type { OrderSub, OrderSubVariables } from './__generated__/OrderSub';
+import type { OrderFields } from './__generated__/OrderFields';
 
 const ORDER_FRAGMENT = gql`
   fragment OrderFields on Order {

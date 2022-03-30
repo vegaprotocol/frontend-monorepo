@@ -6,7 +6,10 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable, getRowNodeId } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
-import { Markets_markets, Markets_markets_data } from './__generated__/Markets';
+import type {
+  Markets_markets,
+  Markets_markets_data,
+} from './__generated__/Markets';
 import { marketsDataProvider } from './markets-data-provider';
 
 export const MarketsContainer = () => {

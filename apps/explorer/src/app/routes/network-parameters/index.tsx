@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { RouteTitle } from '../../components/route-title';
-import { NetworkParametersQuery } from './__generated__/NetworkParametersQuery';
+import type { NetworkParametersQuery } from './__generated__/NetworkParametersQuery';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 
 export const NETWORK_PARAMETERS_QUERY = gql`

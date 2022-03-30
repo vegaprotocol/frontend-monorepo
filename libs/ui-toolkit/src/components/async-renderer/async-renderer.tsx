@@ -1,5 +1,5 @@
 import { Splash } from '../splash';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface AsyncRendererProps<T> {
   loading: boolean;

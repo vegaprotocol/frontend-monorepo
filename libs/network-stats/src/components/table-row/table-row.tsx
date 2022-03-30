@@ -1,5 +1,5 @@
 import { Tooltip } from '../tooltip';
-import { StatFields } from '../../config/types';
+import type { StatFields } from '../../config/types';
 import { GoodThresholdIndicator } from '../good-threshold-indicator';
 
 export const defaultFieldFormatter = (field: unknown) =>

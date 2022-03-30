@@ -1,12 +1,12 @@
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import { TransactionStatus } from './deal-ticket';
+import type { TransactionStatus } from './deal-ticket';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
-import { Order } from './use-order-state';
-import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { Order } from './use-order-state';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
 interface DealTicketMarketProps {
   order: Order;

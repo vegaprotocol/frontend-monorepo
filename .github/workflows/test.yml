@@ -31,11 +31,11 @@ jobs:
         run: yarn install
       - name: Check formatting
         run: yarn nx format:check
-      - name: Check formatting
-        run: yarn eslint
-      - name: Check formatting
+      - name: Lint affected
+        run: yarn nx affected:lint
+      - name: Test affected
         run: yarn nx affected:test
-      - name: Check formatting
+      - name: Build affected
         run: yarn nx affected:build
   pr:
     name: Test and lint - PR
@@ -59,9 +59,9 @@ jobs:
         run: yarn install
       - name: Check formatting
         run: yarn nx format:check
-      - name: Check formatting
-        run: yarn eslint
-      - name: Check formatting
+      - name: Lint affected
+        run: yarn nx affected:lint
+      - name: Test affected
         run: yarn nx affected:test
-      - name: Check formatting
+      - name: Build affected
         run: yarn nx affected:build

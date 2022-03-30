@@ -7,8 +7,8 @@ import { SubHeading } from '../../../components/sub-heading';
 import { SyntaxHighlighter } from '../../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
-import { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
-import {
+import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
+import type {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
 } from './__generated__/PartyAssetsQuery';

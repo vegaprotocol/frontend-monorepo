@@ -1,8 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import useFetch from '../../../hooks/use-fetch';
-import { TendermintTransactionResponse } from '../tendermint-transaction-response.d';
-import { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
+import type { TendermintTransactionResponse } from '../tendermint-transaction-response.d';
+import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 import { DATA_SOURCES } from '../../../config';
 import { RouteTitle } from '../../../components/route-title';
 import { RenderFetched } from '../../../components/render-fetched';

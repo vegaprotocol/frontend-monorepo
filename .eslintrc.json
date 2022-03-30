@@ -48,6 +48,13 @@
             "ts-check": false,
             "minimumDescriptionLength": 10
           }
+        ],
+        "@typescript-eslint/consistent-type-imports": [
+          "error",
+          {
+            "prefer": "type-imports",
+            "disallowTypeAnnotations": true
+          }
         ]
       }
     },

@@ -3,8 +3,8 @@ import { produce } from 'immer';
 import merge from 'lodash/merge';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import { PositionSubscribe_positions } from './__generated__/PositionSubscribe';
-import { Positions_party_positions } from './__generated__/Positions';
+import type { PositionSubscribe_positions } from './__generated__/PositionSubscribe';
+import type { Positions_party_positions } from './__generated__/Positions';
 
 import type { AgGridReact } from 'ag-grid-react';
 import PositionsTable, { getRowNodeId } from './positions-table';

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
 import * as useOrdersHook from './use-orders';
-import { Orders_party_orders } from './__generated__/Orders';
+import type { Orders_party_orders } from './__generated__/Orders';
 
 jest.mock('./order-list', () => ({
   OrderList: () => <div>OrderList</div>,

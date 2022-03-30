@@ -1,10 +1,10 @@
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { useMemo } from 'react';
-import { Order } from './use-order-state';
+import type { Order } from './use-order-state';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { TransactionStatus } from './deal-ticket';
-import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { TransactionStatus } from './deal-ticket';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
 interface SubmitButtonProps {

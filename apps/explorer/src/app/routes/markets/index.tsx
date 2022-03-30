@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { MarketsQuery } from './__generated__/MarketsQuery';
+import type { MarketsQuery } from './__generated__/MarketsQuery';
 
 import React from 'react';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';

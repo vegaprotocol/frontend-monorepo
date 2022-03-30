@@ -1,4 +1,4 @@
-import { VegaConnector } from '.';
+import type { VegaConnector } from '.';
 
 /**
  * Dummy injected connector that we may use when browser wallet is implemented

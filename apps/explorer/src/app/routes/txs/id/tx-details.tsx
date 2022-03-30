@@ -7,7 +7,7 @@ import {
 } from '../../../components/table';
 import { TruncateInline } from '../../../components/truncate/truncate';
 import { Routes } from '../../../routes/router-config';
-import { Result } from '../../../routes/txs/tendermint-transaction-response.d';
+import type { Result } from '../../../routes/txs/tendermint-transaction-response.d';
 
 interface TxDetailsProps {
   txData: Result | undefined;

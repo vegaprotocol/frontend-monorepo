@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
-import {
+import type {
   Positions,
   Positions_party_positions,
 } from './__generated__/Positions';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
-import {
+import type {
   PositionSubscribe,
   PositionSubscribe_positions,
 } from './__generated__/PositionSubscribe';

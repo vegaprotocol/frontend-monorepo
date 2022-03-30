@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { Orders_party_orders } from './__generated__/Orders';
+import type { Orders_party_orders } from './__generated__/Orders';
 import {
   OrderStatus,
   OrderTimeInForce,

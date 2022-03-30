@@ -1,9 +1,10 @@
-import { FormEvent } from 'react';
+import type { FormEvent } from 'react';
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { Order, useOrderState } from './use-order-state';
+import type { Order } from './use-order-state';
+import { useOrderState } from './use-order-state';
 import { DealTicketMarket } from './deal-ticket-market';
 import { DealTicketLimit } from './deal-ticket-limit';
-import { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
 const DEFAULT_ORDER: Order = {
   type: OrderType.Market,

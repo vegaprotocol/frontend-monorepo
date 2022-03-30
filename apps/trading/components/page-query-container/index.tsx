@@ -1,6 +1,7 @@
-import { OperationVariables, QueryHookOptions, useQuery } from '@apollo/client';
-import { DocumentNode } from 'graphql';
-import { ReactNode } from 'react';
+import type { OperationVariables, QueryHookOptions } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import type { DocumentNode } from 'graphql';
+import type { ReactNode } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 interface PageQueryContainerProps<TData, TVariables> {

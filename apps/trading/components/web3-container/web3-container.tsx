@@ -1,7 +1,8 @@
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3Provider, Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import { ReactNode, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { Connectors } from '../../lib/web3-connectors';
 
 interface Web3ContainerProps {

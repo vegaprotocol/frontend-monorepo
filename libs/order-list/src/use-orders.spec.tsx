@@ -1,8 +1,9 @@
-import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+import type { MockedResponse } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing';
 import { renderHook } from '@testing-library/react-hooks';
-import { OrderFields } from './__generated__/OrderFields';
-import { Orders } from './__generated__/Orders';
-import { OrderSub } from './__generated__/OrderSub';
+import type { OrderFields } from './__generated__/OrderFields';
+import type { Orders } from './__generated__/Orders';
+import type { OrderSub } from './__generated__/OrderSub';
 import {
   OrderStatus,
   Side,
@@ -10,7 +11,7 @@ import {
   OrderTimeInForce,
 } from '@vegaprotocol/types';
 import {} from '@vegaprotocol/wallet';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { ORDERS_QUERY, ORDERS_SUB, useOrders } from './use-orders';
 
 const partyId = '0x123';

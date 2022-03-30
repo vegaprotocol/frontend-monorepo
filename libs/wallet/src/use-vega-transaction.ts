@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
-import { Transaction } from './types';
+import type { Transaction } from './types';
 import { useVegaWallet } from './hooks';
-import { SendTxError } from './context';
+import type { SendTxError } from './context';
 
 export enum VegaTxStatus {
   Default = 'Default',

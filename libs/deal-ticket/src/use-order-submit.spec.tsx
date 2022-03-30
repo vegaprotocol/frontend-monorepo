@@ -1,14 +1,13 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, renderHook } from '@testing-library/react-hooks';
-import { Order } from './use-order-state';
-import {
+import type { Order } from './use-order-state';
+import type {
   VegaKeyExtended,
-  VegaTxStatus,
-  VegaWalletContext,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
+import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
 
 const defaultWalletContext = {
