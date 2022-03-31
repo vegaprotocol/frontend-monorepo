@@ -34,6 +34,7 @@ export interface TransactionData {
 }
 
 export interface Evidence {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   evidence: any[];
 }
 
@@ -67,6 +68,7 @@ export interface Block {
 export interface ResultBeginBlock {}
 
 export interface ResultEndBlock {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   validator_updates?: any;
 }
 
