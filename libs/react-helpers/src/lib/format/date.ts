@@ -1,11 +1,5 @@
 import once from 'lodash/once';
-import memoize from 'lodash/memoize';
-import { addDecimal } from '../decimals';
-
-const getUserLocale = () => 'default';
-
-export const splitAt = (index: number) => (x: string) =>
-  [x.slice(0, index), x.slice(index)];
+import { getUserLocale } from './utils';
 
 /**
  * Returns a number prefixed with either a '-' or a '+'. The open volume field
@@ -50,18 +44,20 @@ export const getDateTimeFormat = once(
     })
 );
 
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
-export const getNumberFormat = memoize(
-  (minimumFractionDigits: number) =>
-    new Intl.NumberFormat(getUserLocale(), { minimumFractionDigits })
-);
-
 export const getRelativeTimeFormat = once(
   () => new Intl.RelativeTimeFormat(getUserLocale())
 );
 
-export const formatNumber = (rawValue: string, decimalPlaces: number) => {
-  const x = addDecimal(rawValue, decimalPlaces);
+/** Returns date in a format suitable for input[type=date] elements */
+export const formatForInput = (date: Date) => {
+  const padZero = (num: number) => num.toString().padStart(2, '0');
 
-  return getNumberFormat(decimalPlaces).format(Number(x));
+  const year = date.getFullYear();
+  const month = padZero(date.getMonth() + 1);
+  const day = padZero(date.getDate());
+  const hours = padZero(date.getHours());
+  const minutes = padZero(date.getMinutes());
+  const secs = padZero(date.getSeconds());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${secs}`;
 };
