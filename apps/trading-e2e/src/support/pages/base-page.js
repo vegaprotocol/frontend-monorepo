@@ -4,7 +4,9 @@ export default class BasePage {
   connectVegaBtn = 'connect-vega-wallet';
   walletConnectors = 'connectors-list';
   walletForm = 'rest-connector-form';
+  walletInputError = 'input-wallet-error';
   walletFormError = 'form-error';
+  inputError = 'input-error-text';
 
   navigateToPortfolio() {
     cy.get(`a[href='${this.porfolioUrl}']`).click();
@@ -48,9 +50,7 @@ export default class BasePage {
   }
 
   validateWalletErrorFieldsDisplayed() {
-    cy.getByTestId(this.walletForm)
-      .find('div > div')
-      .should('contain.text', 'Required')
-      .should('have.length', 2);
+    cy.getByTestId(this.walletInputError).should('have.text', 'Required');
+    cy.getByTestId(this.inputError).should('have.text', 'Required');
   }
 }

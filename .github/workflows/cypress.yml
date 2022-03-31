@@ -48,8 +48,6 @@ jobs:
         run: ./vegawallet init -f
       - name: Import wallet
         run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
-      - name: List keys
-        run: ./vegawallet key list -w UI_Trading_Test -p ./passphrase
       - name: Import config
         run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
       - name: Start service
@@ -95,8 +93,6 @@ jobs:
         run: ./vegawallet init -f
       - name: Import wallet
         run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
-      - name: List keys
-        run: ./vegawallet key list -w UI_Trading_Test -p ./passphrase
       - name: Import config
         run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
       - name: Start service

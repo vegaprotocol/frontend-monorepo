@@ -9,7 +9,6 @@ export default class DealTicketPage extends BasePage {
   orderTypeDropDown = 'order-tif';
   datePickerField = 'date-picker-field';
   placeOrderBtn = 'place-order';
-  placeOrderErrorTxt = 'input-error-text';
   orderDialog = 'order-wrapper';
   orderStatusHeader = 'order-status-header';
   orderTransactionHash = 'tx-hash';
@@ -74,7 +73,7 @@ export default class DealTicketPage extends BasePage {
   }
 
   verifySubmitBtnErrorText(expectedText) {
-    cy.getByTestId(this.placeOrderErrorTxt).should('have.text', expectedText);
+    cy.getByTestId(this.inputError).should('have.text', expectedText);
   }
 
   verifyOrderRejected(errorMsg) {
@@ -89,8 +88,8 @@ export default class DealTicketPage extends BasePage {
 
   reloadPageIfPublicKeyErrorDisplayed() {
     cy.get('body').then(($body) => {
-      if ($body.find(`[data-testid=${this.placeOrderErrorTxt}]`).length) {
-        cy.getByTestId(this.placeOrderErrorTxt)
+      if ($body.find(`[data-testid=${this.inputError}]`).length) {
+        cy.getByTestId(this.inputError)
           .invoke('text')
           .then(($errorText) => {
             if ($errorText == 'No public key selected') {
