@@ -9,6 +9,13 @@ export enum Intent {
   Help = 'help',
 }
 
+export enum Variant {
+  Success = 'success',
+  Warning = 'warning',
+  Danger = 'danger',
+  Highlight = 'highlight',
+}
+
 export const getIntentShadow = (intent?: Intent) => {
   return classNames('shadow-callout', {
     'shadow-intent-danger': intent === Intent.Danger,
@@ -17,5 +24,15 @@ export const getIntentShadow = (intent?: Intent) => {
     'shadow-black dark:shadow-white': intent === Intent.Progress,
     'shadow-intent-success': intent === Intent.Success,
     'shadow-intent-help': intent === Intent.Help,
+  });
+};
+
+export const getVariantBackground = (variant?: Variant) => {
+  return classNames('shadow-callout', {
+    'bg-intent-success text-black': variant === Variant.Success,
+    'bg-intent-danger text-white': variant === Variant.Danger,
+    'bg-intent-warning text-black': variant === Variant.Warning,
+    'bg-intent-highlight text-black': variant === Variant.Highlight,
+    'bg-intent-help text-white': !variant,
   });
 };
