@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import type { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from './block-data';
@@ -9,7 +10,7 @@ interface BlocksProps {
 
 export const BlocksData = ({ data, className }: BlocksProps) => {
   if (!data?.result) {
-    return <div className={className}>Awaiting block data</div>;
+    return <div className={className}>{t('Awaiting block data')}</div>;
   }
 
   return (

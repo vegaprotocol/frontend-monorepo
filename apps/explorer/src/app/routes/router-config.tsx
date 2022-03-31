@@ -16,6 +16,7 @@ import { Tx } from './txs/id';
 import { Txs as TxHome } from './txs/home';
 import { PendingTxs } from './pending';
 import flags from '../lib/flags';
+import { t } from '@vegaprotocol/react-helpers';
 export const Routes = {
   HOME: '/',
   TX: 'txs',
@@ -34,7 +35,7 @@ const partiesRoutes = flags.parties
       {
         path: Routes.PARTIES,
         name: 'Parties',
-        text: 'Parties',
+        text: t('Parties'),
         element: <Party />,
         children: [
           {
@@ -54,7 +55,7 @@ const assetsRoutes = flags.assets
   ? [
       {
         path: Routes.ASSETS,
-        text: 'Assets',
+        text: t('Assets'),
         name: 'Assets',
         element: <Assets />,
       },
@@ -66,7 +67,7 @@ const genesisRoutes = flags.genesis
       {
         path: Routes.GENESIS,
         name: 'Genesis',
-        text: 'Genesis Parameters',
+        text: t('Genesis Parameters'),
         element: <Genesis />,
       },
     ]
@@ -77,7 +78,7 @@ const governanceRoutes = flags.governance
       {
         path: Routes.GOVERNANCE,
         name: 'Governance',
-        text: 'Proposals',
+        text: t('Proposals'),
         element: <Governance />,
       },
     ]
@@ -88,7 +89,7 @@ const marketsRoutes = flags.markets
       {
         path: Routes.MARKETS,
         name: 'Markets',
-        text: 'Markets',
+        text: t('Markets'),
         element: <Markets />,
       },
     ]
@@ -99,7 +100,7 @@ const networkParametersRoutes = flags.networkParameters
       {
         path: Routes.NETWORK_PARAMETERS,
         name: 'NetworkParameters',
-        text: 'Network Parameters',
+        text: t('Network Parameters'),
         element: <NetworkParameters />,
       },
     ]
@@ -109,7 +110,7 @@ const validators = flags.validators
       {
         path: Routes.VALIDATORS,
         name: 'Validators',
-        text: 'Validators',
+        text: t('Validators'),
         element: <Validators />,
       },
     ]
@@ -119,14 +120,14 @@ const routerConfig = [
   {
     path: Routes.HOME,
     name: 'Home',
-    text: 'Home',
+    text: t('Home'),
     element: <Home />,
     index: true,
   },
   {
     path: Routes.TX,
     name: 'Txs',
-    text: 'Transactions',
+    text: t('Transactions'),
     element: <Txs />,
     children: [
       {
@@ -146,7 +147,7 @@ const routerConfig = [
   {
     path: Routes.BLOCKS,
     name: 'Blocks',
-    text: 'Blocks',
+    text: t('Blocks'),
     element: <BlockPage />,
     children: [
       {

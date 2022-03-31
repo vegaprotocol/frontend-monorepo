@@ -19,7 +19,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
     }
 
     // Default to first tab
-    return children[0].props.name;
+    return children[0].props.id;
   });
 
   // Update the query string in the url when the active tab changes
@@ -45,7 +45,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
       >
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
-          const isActive = child.props.name === activeTab;
+          const isActive = child.props.id === activeTab;
           const triggerClass = classNames('py-4', 'px-12', 'capitalize', {
             'text-black dark:text-vega-yellow': isActive,
             'bg-white dark:bg-black': isActive,
@@ -53,7 +53,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
             'bg-black-10 dark:bg-white-10': !isActive,
           });
           return (
-            <Tabs.Trigger value={child.props.name} className={triggerClass}>
+            <Tabs.Trigger value={child.props.id} className={triggerClass}>
               {child.props.name}
             </Tabs.Trigger>
           );
@@ -64,7 +64,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           return (
-            <Tabs.Content value={child.props.name} className="h-full">
+            <Tabs.Content value={child.props.id} className="h-full">
               {child.props.children}
             </Tabs.Content>
           );
@@ -76,6 +76,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
 
 interface GridTabProps {
   children: ReactNode;
+  id: string;
   name: string;
 }
 

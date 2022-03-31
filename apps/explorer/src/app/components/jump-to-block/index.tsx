@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../routes/router-config';
@@ -22,8 +23,8 @@ export const JumpToBlock = () => {
 
   return (
     <JumpTo
-      label="Jump to block"
-      placeholder="Block number"
+      label={t('Jump to block')}
+      placeholder={t('Block number')}
       inputId="block-input"
       inputType="number"
       inputName="blockNumber"

@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { RouteTitle } from '../../../components/route-title';
@@ -71,17 +72,17 @@ const Party = () => {
 
   return (
     <section>
-      <RouteTitle data-testid="parties-header">Party</RouteTitle>
+      <RouteTitle data-testid="parties-header">{t('Party')}</RouteTitle>
       {data ? (
         <>
-          <SubHeading>Asset data</SubHeading>
+          <SubHeading>{t('Asset data')}</SubHeading>
           <SyntaxHighlighter data={data} />
         </>
       ) : null}
 
       {partyData ? (
         <>
-          <SubHeading>Tendermint Data</SubHeading>
+          <SubHeading>{t('Tendermint Data')}</SubHeading>
           <SyntaxHighlighter data={partyData} />
         </>
       ) : null}

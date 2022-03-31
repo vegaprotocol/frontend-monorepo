@@ -6,6 +6,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { TransactionStatus } from './deal-ticket';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface SubmitButtonProps {
   transactionStatus: TransactionStatus;
@@ -22,31 +23,31 @@ export const SubmitButton = ({
 
   const invalidText = useMemo(() => {
     if (!keypair) {
-      return 'No public key selected';
+      return t('No public key selected');
     }
 
     if (keypair.tainted) {
-      return 'Selected public key has been tainted';
+      return t('Selected public key has been tainted');
     }
 
     if (market.state !== MarketState.Active) {
       if (market.state === MarketState.Suspended) {
-        return 'Market is currently suspended';
+        return t('Market is currently suspended');
       }
 
       if (
         market.state === MarketState.Proposed ||
         market.state === MarketState.Pending
       ) {
-        return 'Market is not active yet';
+        return t('Market is not active yet');
       }
 
-      return 'Market is no longer active';
+      return t('Market is no longer active');
     }
 
     if (market.tradingMode !== MarketTradingMode.Continuous) {
       if (order.type === OrderType.Market) {
-        return 'Only limit orders are permitted when market is in auction';
+        return t('Only limit orders are permitted when market is in auction');
       }
 
       if (
@@ -56,7 +57,9 @@ export const SubmitButton = ({
           OrderTimeInForce.GFN,
         ].includes(order.timeInForce)
       ) {
-        return 'Only GTT, GTC and GFA are permitted when market is in auction';
+        return t(
+          'Only GTT, GTC and GFA are permitted when market is in auction'
+        );
       }
     }
 
@@ -73,7 +76,7 @@ export const SubmitButton = ({
         type="submit"
         disabled={disabled}
       >
-        {transactionStatus === 'pending' ? 'Pending...' : 'Place order'}
+        {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
       </Button>
       {invalidText && <InputError className="mb-8">{invalidText}</InputError>}
     </>

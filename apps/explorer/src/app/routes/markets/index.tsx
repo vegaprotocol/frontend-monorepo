@@ -5,6 +5,7 @@ import React from 'react';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
+import { t } from '@vegaprotocol/react-helpers';
 
 const MARKETS_QUERY = gql`
   query MarketsQuery {
@@ -151,7 +152,7 @@ const Markets = () => {
   if (!data || !data.markets) return null;
   return (
     <section>
-      <RouteTitle data-testid="markets-heading">Markets</RouteTitle>
+      <RouteTitle data-testid="markets-heading">{t('Markets')}</RouteTitle>
 
       {data
         ? data.markets.map((m) => (

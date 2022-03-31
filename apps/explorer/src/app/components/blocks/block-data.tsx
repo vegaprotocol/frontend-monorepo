@@ -4,6 +4,7 @@ import { Routes } from '../../routes/router-config';
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../seconds-ago';
 import { Table, TableRow, TableCell } from '../table';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface BlockProps {
   block: BlockMeta;
@@ -35,8 +36,8 @@ export const BlockData = ({ block, className }: BlockProps) => {
           aria-label="Number of transactions"
         >
           {block.num_txs === '1'
-            ? '1 transaction'
-            : `${block.num_txs} transactions`}
+            ? t('1 transaction')
+            : t(`${block.num_txs} transactions`)}
         </TableCell>
         <TableCell
           data-testid="validator-link"
