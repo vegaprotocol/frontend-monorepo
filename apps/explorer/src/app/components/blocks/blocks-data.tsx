@@ -15,7 +15,9 @@ export const BlocksData = ({ data, className }: BlocksProps) => {
 
   return (
     <ul
-      aria-label={`Showing ${data.result?.block_metas.length} most recently loaded blocks`}
+      aria-label={t(
+        `Showing ${data.result?.block_metas.length} most recently loaded blocks`
+      )}
       className={className}
     >
       {data.result?.block_metas?.map((block, index) => {

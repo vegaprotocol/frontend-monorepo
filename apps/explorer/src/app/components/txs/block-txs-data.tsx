@@ -19,7 +19,9 @@ export const BlockTxsData = ({ data, className }: TxsProps) => {
 
   return (
     <ul
-      aria-label={`Showing ${data.result?.block_metas.length} most recently loaded blocks and transactions`}
+      aria-label={t(
+        `Showing ${data.result?.block_metas.length} most recently loaded blocks and transactions`
+      )}
       className={className}
     >
       {data.result?.block_metas?.map((block, index) => {
