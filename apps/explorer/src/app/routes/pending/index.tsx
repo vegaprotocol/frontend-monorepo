@@ -1,9 +1,10 @@
 import React from 'react';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
-import { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermint-unconfirmed-transactions-response.d';
+import type { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermint-unconfirmed-transactions-response.d';
 import { TxList } from '../../components/txs';
 import { RouteTitle } from '../../components/route-title';
+import { t } from '@vegaprotocol/react-helpers';
 
 const PendingTxs = () => {
   const {
@@ -15,11 +16,11 @@ const PendingTxs = () => {
   return (
     <section>
       <RouteTitle data-testid="unconfirmed-transactions-header">
-        Unconfirmed transactions
+        {t('Unconfirmed transactions')}
       </RouteTitle>
       https://lb.testnet.vega.xyz/tm/unconfirmed_txs
       <br />
-      <div>Number: {unconfirmedTransactions?.result?.n_txs || 0}</div>
+      <div>{t(`Number: ${unconfirmedTransactions?.result?.n_txs || 0}`)}</div>
       <br />
       <div>
         <br />

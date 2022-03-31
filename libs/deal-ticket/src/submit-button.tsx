@@ -1,14 +1,16 @@
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import { Market_market } from '@vegaprotocol/graphql';
 import { useMemo } from 'react';
-import { Order } from './use-order-state';
+import type { Order } from './use-order-state';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { TransactionStatus } from './deal-ticket';
+import type { TransactionStatus } from './deal-ticket';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface SubmitButtonProps {
   transactionStatus: TransactionStatus;
-  market: Market_market;
+  market: DealTicketQuery_market;
   order: Order;
 }
 
@@ -21,29 +23,31 @@ export const SubmitButton = ({
 
   const invalidText = useMemo(() => {
     if (!keypair) {
-      return 'No public key selected';
+      return t('No public key selected');
     }
 
     if (keypair.tainted) {
-      return 'Selected public key has been tainted';
+      return t('Selected public key has been tainted');
     }
 
-    // TODO: Change these to use enums from @vegaprotocol/graphql
-    if (market.state !== 'Active') {
-      if (market.state === 'Suspended') {
-        return 'Market is currently suspended';
+    if (market.state !== MarketState.Active) {
+      if (market.state === MarketState.Suspended) {
+        return t('Market is currently suspended');
       }
 
-      if (market.state === 'Proposed' || market.state === 'Pending') {
-        return 'Market is not active yet';
+      if (
+        market.state === MarketState.Proposed ||
+        market.state === MarketState.Pending
+      ) {
+        return t('Market is not active yet');
       }
 
-      return 'Market is no longer active';
+      return t('Market is no longer active');
     }
 
-    if (market.tradingMode !== 'Continuous') {
+    if (market.tradingMode !== MarketTradingMode.Continuous) {
       if (order.type === OrderType.Market) {
-        return 'Only limit orders are permitted when market is in auction';
+        return t('Only limit orders are permitted when market is in auction');
       }
 
       if (
@@ -53,7 +57,9 @@ export const SubmitButton = ({
           OrderTimeInForce.GFN,
         ].includes(order.timeInForce)
       ) {
-        return 'Only GTT, GTC and GFA are permitted when market is in auction';
+        return t(
+          'Only GTT, GTC and GFA are permitted when market is in auction'
+        );
       }
     }
 
@@ -70,7 +76,7 @@ export const SubmitButton = ({
         type="submit"
         disabled={disabled}
       >
-        {transactionStatus === 'pending' ? 'Pending...' : 'Place order'}
+        {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
       </Button>
       {invalidText && <InputError className="mb-8">{invalidText}</InputError>}
     </>

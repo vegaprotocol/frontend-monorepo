@@ -1,5 +1,6 @@
-import { HTMLInputTypeAttribute, SyntheticEvent } from 'react';
+import type { HTMLInputTypeAttribute, SyntheticEvent } from 'react';
 import { Input, Button } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface JumpToProps {
   label: string;
@@ -35,7 +36,7 @@ export const JumpTo = ({
           className="max-w-[200px]"
         />
         <Button variant="secondary" type="submit">
-          Go
+          {t('Go')}
         </Button>
       </div>
     </form>

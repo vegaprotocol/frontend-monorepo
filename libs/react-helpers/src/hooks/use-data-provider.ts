@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import type { Subscribe } from '@vegaprotocol/graphql';
+import type { Subscribe } from '../lib/generic-data-provider';
 
 export function useDataProvider<Data, Delta>(
   dataProvider: Subscribe<Data, Delta>,

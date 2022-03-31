@@ -1,5 +1,5 @@
 import { Web3ReactProvider } from '@web3-react/core';
-import { Connectors } from './types';
+import type { Connectors } from './types';
 
 interface Web3ProviderProps {
   children: JSX.Element | JSX.Element[];

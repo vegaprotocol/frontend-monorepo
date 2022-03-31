@@ -1,9 +1,10 @@
 import React from 'react';
-import { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
+import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { Routes } from '../../routes/router-config';
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../seconds-ago';
 import { TableWithTbody, TableRow, TableCell } from '../table';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface BlockProps {
   block: BlockMeta;
@@ -20,7 +21,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         <TableCell
           data-testid="block-height"
           className="pl-4 py-2 font-mono"
-          aria-label="Block height"
+          aria-label={t('Block height')}
         >
           <Link
             to={`/${Routes.BLOCKS}/${block.header?.height}`}
@@ -32,16 +33,16 @@ export const BlockData = ({ block, className }: BlockProps) => {
         <TableCell
           data-testid="num-txs"
           className="px-8 text-center"
-          aria-label="Number of transactions"
+          aria-label={t('Number of transactions')}
         >
           {block.num_txs === '1'
-            ? '1 transaction'
-            : `${block.num_txs} transactions`}
+            ? t('1 transaction')
+            : t(`${block.num_txs} transactions`)}
         </TableCell>
         <TableCell
           data-testid="validator-link"
           className="px-8 text-center font-mono"
-          aria-label="Validator"
+          aria-label={t('Validator')}
         >
           <Link to={`/${Routes.VALIDATORS}`}>
             {block.header.proposer_address}
@@ -50,7 +51,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         <TableCell
           data-testid="block-time"
           className="text-center pr-28 text-neutral-300 w-[170px]"
-          aria-label="Block genesis"
+          aria-label={t('Block genesis')}
         >
           <SecondsAgo date={block.header?.time} />
         </TableCell>

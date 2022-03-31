@@ -1,4 +1,5 @@
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import { Search } from '../search';
 
 interface ThemeToggleProps {
@@ -12,7 +13,7 @@ export const Header = ({ toggleTheme }: ThemeToggleProps) => {
         className="text-h3 font-alpha uppercase calt"
         data-testid="explorer-header"
       >
-        Vega Explorer
+        {t('Vega Explorer')}
       </h1>
       <Search />
       <ThemeSwitcher onToggle={toggleTheme} />

@@ -1,50 +1,42 @@
-import { Market_market } from '@vegaprotocol/graphql';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useState, ReactNode, ComponentType } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
-import { DealTicketContainer } from '../../components/deal-ticket-container';
-import { OrderListContainer } from '../..//components/order-list-container';
+import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { OrderListContainer } from '@vegaprotocol/order-list';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { Positions } from './positions';
+import { PositionsContainer } from '@vegaprotocol/positions';
+import type { Market_market } from './__generated__/Market';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Chart = () => (
   <Splash>
-    <p>Chart</p>
+    <p>{t('Chart')}</p>
   </Splash>
 );
 const Orderbook = () => (
   <Splash>
-    <p>Orderbook</p>
+    <p>{t('Orderbook')}</p>
   </Splash>
 );
 const Collateral = () => (
   <Splash>
-    <p>Collateral</p>
+    <p>{t('Collateral')}</p>
   </Splash>
 );
 const Trades = () => (
   <Splash>
-    <p>Trades</p>
+    <p>{t('Trades')}</p>
   </Splash>
 );
-
-// enum TradingView {
-//   Chart = 'Chart',
-//   Ticket = 'Ticket',
-//   Orderbook = 'Orderbook',
-//   Orders = 'Orders',
-//   Positions = 'Positions',
-//   Collateral = 'Collateral',
-//   Trades = 'Trades',
-// }
 
 const TradingViews = {
   Chart: Chart,
   Ticket: DealTicketContainer,
   Orderbook: Orderbook,
   Orders: OrderListContainer,
-  Positions: Positions,
+  Positions: PositionsContainer,
   Collateral: Collateral,
   Trades: Trades,
 };
@@ -65,33 +57,35 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <header className="col-start-1 col-end-2 row-start-1 row-end-1 p-8">
-        <h1>Market: {market.name}</h1>
+        <h1>
+          {t('Market')}: {market.name}
+        </h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
         <TradingViews.Chart />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.Ticket market={market} />
+        <TradingViews.Ticket marketId={market.id} />
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
-          <GridTab name="trades">
+          <GridTab id="trades" name={t('Trades')}>
             <TradingViews.Trades />
           </GridTab>
-          <GridTab name="orderbook">
+          <GridTab id="orderbook" name={t('Orderbook')}>
             <TradingViews.Orderbook />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
       <TradeGridChild className="col-span-3">
         <GridTabs group="portfolio">
-          <GridTab name="orders">
+          <GridTab id="orders" name={t('Orders')}>
             <TradingViews.Orders />
           </GridTab>
-          <GridTab name="positions">
+          <GridTab id="positions" name={t('Positions')}>
             <TradingViews.Positions />
           </GridTab>
-          <GridTab name="collateral">
+          <GridTab id="collateral" name={t('Collateral')}>
             <TradingViews.Collateral />
           </GridTab>
         </GridTabs>
@@ -134,13 +128,15 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
       throw new Error(`No component for view: ${view}`);
     }
 
-    return <Component market={market} />;
+    return <Component marketId={market.id} />;
   };
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
       <header className="p-8">
-        <h1>Market: {market.name}</h1>
+        <h1>
+          {t('Market')}: {market.name}
+        </h1>
       </header>
       <div className="h-full">
         <AutoSizer>

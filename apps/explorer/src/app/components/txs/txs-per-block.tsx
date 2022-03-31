@@ -1,11 +1,12 @@
 import useFetch from '../../hooks/use-fetch';
-import { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
+import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
 import { Routes } from '../../routes/router-config';
 import { DATA_SOURCES } from '../../config';
 import { RenderFetched } from '../render-fetched';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { TxOrderType } from './tx-order-type';
 import { Table, TableRow, TableCell } from '../table';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface TxsPerBlockProps {
   blockHeight: string | undefined;
@@ -36,9 +37,9 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
           <Table>
             <thead>
               <TableRow modifier="bordered" className="font-mono">
-                <td>Transaction</td>
-                <td>From</td>
-                <td>Type</td>
+                <td>{t('Transaction')}</td>
+                <td>{t('From')}</td>
+                <td>{t('Type')}</td>
               </TableRow>
             </thead>
             <tbody>
@@ -76,7 +77,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
         </div>
       ) : (
         <div className="font-mono mb-28">
-          No transactions in block {blockHeight}
+          {t(`No transactions in block ${blockHeight}`)}
         </div>
       )}
     </RenderFetched>

@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { StatusMessage } from '../../../components/status-message';
 import { SyntaxHighlighter } from '../../../components/syntax-highlighter';
 import {
@@ -7,7 +8,7 @@ import {
   TableRow,
 } from '../../../components/table';
 import { TxOrderType } from '../../../components/txs';
-import { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
+import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 
 interface TxContentProps {
   data: ChainExplorerTxResponse | undefined;
@@ -16,7 +17,9 @@ interface TxContentProps {
 export const TxContent = ({ data }: TxContentProps) => {
   if (!data?.Command) {
     return (
-      <StatusMessage>Could not retrieve transaction content</StatusMessage>
+      <StatusMessage>
+        {t('Could not retrieve transaction content')}
+      </StatusMessage>
     );
   }
 
@@ -25,7 +28,7 @@ export const TxContent = ({ data }: TxContentProps) => {
       <TableWithTbody className="mb-12">
         <TableRow modifier="bordered">
           <TableHeader scope="row" className="w-[160px]">
-            Type
+            {t('Type')}
           </TableHeader>
           <TableCell modifier="bordered">
             <TxOrderType orderType={data.Type} />
@@ -33,7 +36,7 @@ export const TxContent = ({ data }: TxContentProps) => {
         </TableRow>
       </TableWithTbody>
 
-      <h3 className="font-mono mb-8">Decoded transaction content</h3>
+      <h3 className="font-mono mb-8">{t('Decoded transaction content')}</h3>
       <SyntaxHighlighter data={JSON.parse(data.Command)} />
     </>
   );

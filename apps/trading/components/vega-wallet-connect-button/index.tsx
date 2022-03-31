@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface VegaWalletButtonProps {
@@ -23,7 +24,7 @@ export const VegaWalletButton = ({
       onClick={handleClick}
       className="ml-auto inline-block text-ui sm:text-body-large"
     >
-      {isConnected ? 'Disconnect Vega wallet' : 'Connect Vega wallet'}
+      {isConnected ? t('Disconnect Vega wallet') : t('Connect Vega wallet')}
     </button>
   );
 };

@@ -1,7 +1,9 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3Provider, Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import { ReactNode, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { Connectors } from '../../lib/web3-connectors';
 
 interface Web3ContainerProps {
@@ -41,8 +43,10 @@ export const Web3Content = ({ children, setDialogOpen }: Web3ContentProps) => {
   if (error) {
     return (
       <SplashWrapper>
-        <p className="mb-12">Something went wrong: {error.message}</p>
-        <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        <p className="mb-12">{t(`Something went wrong: ${error.message}`)}</p>
+        <Button onClick={() => connector.deactivate()}>
+          {t('Disconnect')}
+        </Button>
       </SplashWrapper>
     );
   }
@@ -50,8 +54,8 @@ export const Web3Content = ({ children, setDialogOpen }: Web3ContentProps) => {
   if (!isActive) {
     return (
       <SplashWrapper>
-        <p className="mb-12">Connect your Ethereum wallet</p>
-        <Button onClick={() => setDialogOpen(true)}>Connect</Button>
+        <p className="mb-12">{t('Connect your Ethereum wallet')}</p>
+        <Button onClick={() => setDialogOpen(true)}>{t('Connect')}</Button>
       </SplashWrapper>
     );
   }
@@ -59,8 +63,12 @@ export const Web3Content = ({ children, setDialogOpen }: Web3ContentProps) => {
   if (chainId !== appChainId) {
     return (
       <SplashWrapper>
-        <p className="mb-12">This app only works on chain ID: {appChainId}</p>
-        <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        <p className="mb-12">
+          {t(`This app only works on chain ID: ${appChainId}`)}
+        </p>
+        <Button onClick={() => connector.deactivate()}>
+          {t('Disconnect')}
+        </Button>
       </SplashWrapper>
     );
   }

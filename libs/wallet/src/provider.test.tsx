@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { VegaKey } from '@vegaprotocol/vegawallet-service-api-client';
+import type { VegaKey } from '@vegaprotocol/vegawallet-service-api-client';
 import { RestConnector } from './connectors';
 import { useVegaWallet } from './hooks';
 import { VegaWalletProvider } from './provider';

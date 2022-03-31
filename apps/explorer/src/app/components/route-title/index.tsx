@@ -1,5 +1,6 @@
 import classnames from 'classnames';
-import React, { HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
+import React from 'react';
 
 interface RouteTitleProps extends HTMLAttributes<HTMLHeadingElement> {
   children: React.ReactNode;

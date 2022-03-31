@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
-import { TendermintBlocksResponse } from '../tendermint-blocks-response';
+import type { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
 import { SecondsAgo } from '../../../components/seconds-ago';
 import {
@@ -16,6 +16,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../router-config';
 import { RenderFetched } from '../../../components/render-fetched';
 import { HighlightedLink } from '../../../components/highlighted-link';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -27,12 +28,12 @@ const Block = () => {
 
   const header = blockData?.result.block.header;
   if (!header) {
-    return <p>Could not get block data</p>;
+    return <p>{t('Could not get block data')}</p>;
   }
 
   return (
     <section>
-      <RouteTitle data-testid="block-header">BLOCK {block}</RouteTitle>
+      <RouteTitle data-testid="block-header">{t(`BLOCK ${block}`)}</RouteTitle>
       <RenderFetched error={error} loading={loading}>
         <>
           <div className="grid grid-cols-2 gap-16">

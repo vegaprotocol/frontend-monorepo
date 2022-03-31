@@ -1,7 +1,7 @@
-import { AppProps } from 'next/app';
+import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Navbar } from '../components/navbar';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
+import { t, ThemeContext } from '@vegaprotocol/react-helpers';
 import { VegaConnectDialog, VegaWalletProvider } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/vega-connectors';
 import { useCallback, useMemo, useState } from 'react';
@@ -32,7 +32,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
         <VegaWalletProvider>
           <AppLoader>
             <Head>
-              <title>Welcome to trading!</title>
+              <title>{t('Welcome to Vega trading!')}</title>
               <link
                 rel="icon"
                 href="https://vega.xyz/favicon-32x32.png"

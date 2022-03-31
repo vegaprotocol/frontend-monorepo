@@ -4,6 +4,7 @@ import { JumpTo } from '../../../components/jump-to';
 
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../router-config';
+import { t } from '@vegaprotocol/react-helpers';
 
 export const JumpToParty = () => {
   const navigate = useNavigate();
@@ -23,8 +24,8 @@ export const JumpToParty = () => {
   };
   return (
     <JumpTo
-      label="Go to party"
-      placeholder="Party id"
+      label={t('Go to party')}
+      placeholder={t('Party id')}
       inputId="party-input"
       inputType="text"
       inputName="partyId"
@@ -36,7 +37,7 @@ export const JumpToParty = () => {
 const Parties = () => {
   return (
     <section>
-      <RouteTitle data-testid="parties-header">Parties</RouteTitle>
+      <RouteTitle data-testid="parties-header">{t('Parties')}</RouteTitle>
       <JumpToParty />
     </section>
   );

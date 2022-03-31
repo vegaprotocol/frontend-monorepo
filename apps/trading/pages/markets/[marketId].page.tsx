@@ -1,11 +1,12 @@
 import { gql } from '@apollo/client';
-import { Market, MarketVariables } from '@vegaprotocol/graphql';
+import type { Market, MarketVariables } from './__generated__/Market';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
+import { t } from '@vegaprotocol/react-helpers';
 
 // Top level page query
 const MARKET_QUERY = gql`
@@ -13,34 +14,6 @@ const MARKET_QUERY = gql`
     market(id: $marketId) {
       id
       name
-      decimalPlaces
-      state
-      tradingMode
-      tradableInstrument {
-        instrument {
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-            }
-          }
-        }
-      }
-      trades {
-        id
-        price
-        size
-        createdAt
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
     }
   }
 `;
@@ -57,7 +30,7 @@ const MarketPage = () => {
   if (!marketId) {
     return (
       <Splash>
-        <p>Not found</p>
+        <p>{t('Not found')}</p>
       </Splash>
     );
   }
@@ -74,7 +47,7 @@ const MarketPage = () => {
     >
       {({ market }) => {
         if (!market) {
-          return <Splash>Market not found</Splash>;
+          return <Splash>{t('Market not found')}</Splash>;
         }
 
         return w > 960 ? (

@@ -1,7 +1,9 @@
+import { t } from '@vegaprotocol/react-helpers';
+
 export const VegaLogo = () => {
   return (
     <svg
-      aria-label="Vega logo"
+      aria-label={t('Vega logo')}
       width="111"
       height="24"
       fill="none"

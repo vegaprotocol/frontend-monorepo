@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { FormGroup, Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -28,23 +29,23 @@ export const Search = () => {
 
       const search = fields.search;
       if (!search) {
-        setError(new Error('Search required'));
+        setError(new Error(t('Search required')));
       } else if (isPrependedTransaction(search)) {
         if (Number.isNaN(Number(search))) {
-          setError(new Error('Transaction is not hexadecimal'));
+          setError(new Error(t('Transaction is not hexadecimal')));
         } else {
           navigate(`${Routes.TX}/${search}`);
         }
       } else if (isTransaction(search)) {
         if (Number.isNaN(Number(`0x${search}`))) {
-          setError(new Error('Transaction is not hexadecimal'));
+          setError(new Error(t('Transaction is not hexadecimal')));
         } else {
           navigate(`${Routes.TX}/0x${search}`);
         }
       } else if (isBlock(search)) {
         navigate(`${Routes.BLOCKS}/${Number(search)}`);
       } else {
-        setError(new Error("Something doesn't look right"));
+        setError(new Error(t("Something doesn't look right")));
       }
     },
     [navigate]
@@ -62,7 +63,7 @@ export const Search = () => {
           hasError={Boolean(error?.message)}
           type="text"
           autoFocus={true}
-          placeholder="Enter block number or transaction hash"
+          placeholder={t('Enter block number or transaction hash')}
         />
         {error?.message && (
           <InputError
@@ -75,7 +76,7 @@ export const Search = () => {
         )}
       </FormGroup>
       <Button type="submit" variant="secondary" data-testid="search-button">
-        Search
+        {t('Search')}
       </Button>
     </form>
   );

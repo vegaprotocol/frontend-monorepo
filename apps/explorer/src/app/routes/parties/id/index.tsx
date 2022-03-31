@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { RouteTitle } from '../../../components/route-title';
@@ -7,11 +8,11 @@ import { SubHeading } from '../../../components/sub-heading';
 import { SyntaxHighlighter } from '../../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
-import { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
-import {
+import type { TendermintSearchTransactionResponse } from '../tendermint-transaction-response';
+import type {
   PartyAssetsQuery,
   PartyAssetsQueryVariables,
-} from '@vegaprotocol/graphql';
+} from './__generated__/PartyAssetsQuery';
 
 const PARTY_ASSETS_QUERY = gql`
   query PartyAssetsQuery($partyId: ID!) {
@@ -71,17 +72,17 @@ const Party = () => {
 
   return (
     <section>
-      <RouteTitle data-testid="parties-header">Party</RouteTitle>
+      <RouteTitle data-testid="parties-header">{t('Party')}</RouteTitle>
       {data ? (
         <>
-          <SubHeading>Asset data</SubHeading>
+          <SubHeading>{t('Asset data')}</SubHeading>
           <SyntaxHighlighter data={data} />
         </>
       ) : null}
 
       {partyData ? (
         <>
-          <SubHeading>Tendermint Data</SubHeading>
+          <SubHeading>{t('Tendermint Data')}</SubHeading>
           <SyntaxHighlighter data={partyData} />
         </>
       ) : null}

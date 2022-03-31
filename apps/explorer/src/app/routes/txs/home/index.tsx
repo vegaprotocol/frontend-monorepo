@@ -1,11 +1,12 @@
 import useFetch from '../../../hooks/use-fetch';
-import { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
+import type { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
 import { DATA_SOURCES } from '../../../config';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { RenderFetched } from '../../../components/render-fetched';
 import { BlockTxsData } from '../../../components/txs';
 import { JumpToBlock } from '../../../components/jump-to-block';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Txs = () => {
   const {
@@ -17,7 +18,7 @@ const Txs = () => {
 
   return (
     <section>
-      <RouteTitle>Transactions</RouteTitle>
+      <RouteTitle>{t('Transactions')}</RouteTitle>
       <RenderFetched error={error} loading={loading}>
         <>
           <BlocksRefetch refetch={refetch} />

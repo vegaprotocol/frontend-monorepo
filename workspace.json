@@ -4,7 +4,6 @@
     "deal-ticket": "libs/deal-ticket",
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",
-    "graphql": "libs/graphql",
     "market-list": "libs/market-list",
     "network-stats": "libs/network-stats",
     "order-list": "libs/order-list",
@@ -15,6 +14,7 @@
     "tailwindcss-config": "libs/tailwindcss-config",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",
+    "types": "libs/types",
     "ui-toolkit": "libs/ui-toolkit",
     "wallet": "libs/wallet",
     "web3": "libs/web3"
