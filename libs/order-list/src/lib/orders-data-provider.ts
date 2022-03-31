@@ -71,9 +71,14 @@ export const uniqOrders = (orders: OrderFields[]) => {
   return uniqBy(orders, 'id');
 };
 
-const update = (draft: OrderFields[], delta: OrderFields[]) => {
+export const prepareIncomingOrders = (delta: OrderFields[]) => {
   const sortedOrders = sortOrders(delta);
   const incoming = uniqOrders(sortedOrders);
+  return incoming;
+};
+
+const update = (draft: OrderFields[], delta: OrderFields[]) => {
+  const incoming = prepareIncomingOrders(delta);
 
   // Add or update incoming orders
   incoming.forEach((order) => {

@@ -2,7 +2,11 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { OrderList } from './order-list';
 import type { OrderFields } from './__generated__/OrderFields';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import { ordersDataProvider, sortOrders } from './orders-data-provider';
+import {
+  ordersDataProvider,
+  prepareIncomingOrders,
+  sortOrders,
+} from './orders-data-provider';
 import { useCallback, useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { OrderSub_orders } from './__generated__/OrderSub';
@@ -22,10 +26,12 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       return false;
     }
 
+    const incoming = prepareIncomingOrders(delta);
+
     const update: OrderFields[] = [];
     const add: OrderFields[] = [];
 
-    delta.forEach((d) => {
+    incoming.forEach((d) => {
       if (!gridRef.current) {
         return;
       }
