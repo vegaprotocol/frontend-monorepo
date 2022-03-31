@@ -87,7 +87,7 @@ test('Correct columns are rendered', async () => {
     'Amount',
     'Type',
     'Status',
-    'Filled',
+    'Remaining',
     'Price',
     'Time In Force',
     'Created At',

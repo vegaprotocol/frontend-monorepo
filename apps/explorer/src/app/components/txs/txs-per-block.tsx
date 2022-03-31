@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { RenderFetched } from '../render-fetched';
 import { TruncateInline } from '../truncate/truncate';
 import { TxOrderType } from './tx-order-type';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface TxsPerBlockProps {
   blockHeight: string | undefined;
@@ -36,9 +37,9 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
           <table className="w-full">
             <thead>
               <tr className="font-mono">
-                <td>Transaction</td>
-                <td>From</td>
-                <td>Type</td>
+                <td>{t('Transaction')}</td>
+                <td>{t('From')}</td>
+                <td>{t('Type')}</td>
               </tr>
             </thead>
             <tbody>
@@ -76,7 +77,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
         </div>
       ) : (
         <div className="font-mono mb-28">
-          No transactions in block {blockHeight}
+          {t(`No transactions in block ${blockHeight}`)}
         </div>
       )}
     </RenderFetched>

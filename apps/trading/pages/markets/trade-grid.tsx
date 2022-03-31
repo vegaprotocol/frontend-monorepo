@@ -8,25 +8,26 @@ import { OrderListContainer } from '@vegaprotocol/order-list';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import type { Market_market } from './__generated__/Market';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Chart = () => (
   <Splash>
-    <p>Chart</p>
+    <p>{t('Chart')}</p>
   </Splash>
 );
 const Orderbook = () => (
   <Splash>
-    <p>Orderbook</p>
+    <p>{t('Orderbook')}</p>
   </Splash>
 );
 const Collateral = () => (
   <Splash>
-    <p>Collateral</p>
+    <p>{t('Collateral')}</p>
   </Splash>
 );
 const Trades = () => (
   <Splash>
-    <p>Trades</p>
+    <p>{t('Trades')}</p>
   </Splash>
 );
 
@@ -56,7 +57,9 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <header className="col-start-1 col-end-2 row-start-1 row-end-1 p-8">
-        <h1>Market: {market.name}</h1>
+        <h1>
+          {t('Market')}: {market.name}
+        </h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
         <TradingViews.Chart />
@@ -66,23 +69,23 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
-          <GridTab name="trades">
+          <GridTab id="trades" name={t('Trades')}>
             <TradingViews.Trades />
           </GridTab>
-          <GridTab name="orderbook">
+          <GridTab id="orderbook" name={t('Orderbook')}>
             <TradingViews.Orderbook />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
       <TradeGridChild className="col-span-3">
         <GridTabs group="portfolio">
-          <GridTab name="orders">
+          <GridTab id="orders" name={t('Orders')}>
             <TradingViews.Orders />
           </GridTab>
-          <GridTab name="positions">
+          <GridTab id="positions" name={t('Positions')}>
             <TradingViews.Positions />
           </GridTab>
-          <GridTab name="collateral">
+          <GridTab id="collateral" name={t('Collateral')}>
             <TradingViews.Collateral />
           </GridTab>
         </GridTabs>
@@ -131,7 +134,9 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
       <header className="p-8">
-        <h1>Market: {market.name}</h1>
+        <h1>
+          {t('Market')}: {market.name}
+        </h1>
       </header>
       <div className="h-full">
         <AutoSizer>

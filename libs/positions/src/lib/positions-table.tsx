@@ -5,6 +5,7 @@ import {
   formatNumber,
   volumePrefix,
   addDecimal,
+  t,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -64,18 +65,18 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
         components={{ PriceCell }}
       >
         <AgGridColumn
-          headerName="Market"
+          headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
         />
         <AgGridColumn
-          headerName="Amount"
+          headerName={t('Amount')}
           field="openVolume"
           valueFormatter={({ value }: PositionsTableValueFormatterParams) =>
             volumePrefix(value)
           }
         />
         <AgGridColumn
-          headerName="Average Entry Price"
+          headerName={t('Average Entry Price')}
           field="averageEntryPrice"
           cellRenderer="PriceCell"
           valueFormatter={({
@@ -86,7 +87,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           }
         />
         <AgGridColumn
-          headerName="Mark Price"
+          headerName={t('Mark Price')}
           field="market.data.markPrice"
           type="rightAligned"
           cellRenderer="PriceCell"
@@ -104,7 +105,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           }}
         />
         <AgGridColumn
-          headerName="Realised PNL"
+          headerName={t('Realised PNL')}
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={{

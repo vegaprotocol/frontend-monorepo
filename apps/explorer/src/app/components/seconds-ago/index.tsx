@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { useEffect, useState } from 'react';
 
 interface SecondsAgoProps {
@@ -15,14 +16,18 @@ export const SecondsAgo = ({ date, ...props }: SecondsAgoProps) => {
   }, [setNow]);
 
   if (!date) {
-    return <>Date unknown</>;
+    return <>{t('Date unknown')}</>;
   }
 
   const timeAgoInSeconds = Math.floor((now - new Date(date).getTime()) / 1000);
 
   return (
     <div {...props}>
-      {timeAgoInSeconds === 1 ? '1 second' : `${timeAgoInSeconds} seconds`} ago
+      {t(
+        `${
+          timeAgoInSeconds === 1 ? '1 second' : `${timeAgoInSeconds} seconds`
+        } ago`
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import type { Orders_party_orders } from './__generated__/Orders';
 import {
   formatNumber,
   getDateTimeFormat,
+  t,
   useApplyGridTransaction,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
@@ -33,11 +34,11 @@ export const OrderList = ({ orders }: OrderListProps) => {
       getRowNodeId={(data) => data.id}
     >
       <AgGridColumn
-        headerName="Market"
+        headerName={t('Market')}
         field="market.tradableInstrument.instrument.code"
       />
       <AgGridColumn
-        headerName="Amount"
+        headerName={t('Amount')}
         field="size"
         cellClass="font-mono"
         valueFormatter={({ value, data }: ValueFormatterParams) => {
@@ -57,7 +58,6 @@ export const OrderList = ({ orders }: OrderListProps) => {
         }}
       />
       <AgGridColumn
-        headerName="Filled"
         field="remaining"
         cellClass="font-mono"
         valueFormatter={({ data }: ValueFormatterParams) => {

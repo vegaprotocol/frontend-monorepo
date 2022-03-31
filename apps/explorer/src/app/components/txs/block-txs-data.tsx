@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import type { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from '../blocks';
@@ -13,12 +14,14 @@ export const BlockTxsData = ({ data, className }: TxsProps) => {
     // Data for the block has already been fetched at this point, so no errors
     // or loading to deal with. This is specifically the case
     // where the data object is not undefined, but lacks a result.
-    return <div className={className}>No data</div>;
+    return <div className={className}>{t('No data')}</div>;
   }
 
   return (
     <ul
-      aria-label={`Showing ${data.result?.block_metas.length} most recently loaded blocks and transactions`}
+      aria-label={t(
+        `Showing ${data.result?.block_metas.length} most recently loaded blocks and transactions`
+      )}
       className={className}
     >
       {data.result?.block_metas?.map((block, index) => {

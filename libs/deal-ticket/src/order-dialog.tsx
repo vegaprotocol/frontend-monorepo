@@ -1,7 +1,7 @@
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
-import { formatNumber } from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import type { TransactionState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 
@@ -41,7 +41,7 @@ export const OrderDialog = ({
       >
         {transaction.hash && (
           <p data-testid="tx-hash" className="break-all">
-            Tx hash: {transaction.hash}
+            {t(`Tx hash: ${transaction.hash}`)}
           </p>
         )}
       </OrderDialogWrapper>
@@ -56,7 +56,7 @@ export const OrderDialog = ({
         icon={<Icon name="warning-sign" size={20} />}
       >
         <p data-testid="error-reason">
-          Reason: {finalizedOrder.rejectionReason}
+          {t(`Reason: ${finalizedOrder.rejectionReason}`)}
         </p>
       </OrderDialogWrapper>
     );
@@ -67,16 +67,19 @@ export const OrderDialog = ({
       title="Order placed"
       icon={<Icon name="tick" size={20} />}
     >
-      <p>Status: {finalizedOrder.status}</p>
-      {finalizedOrder.market && <p>Market: {finalizedOrder.market.name}</p>}
-      <p>Type: {finalizedOrder.type}</p>
-      <p>Amount: {finalizedOrder.size}</p>
+      <p>{t(`Status: ${finalizedOrder.status}`)}</p>
+      {finalizedOrder.market && (
+        <p>{t(`Market: {finalizedOrder.market.name}`)}</p>
+      )}
+      <p>{t(`Type: ${finalizedOrder.type}`)}</p>
+      <p>{t(`Amount: ${finalizedOrder.size}`)}</p>
       {finalizedOrder.type === 'Limit' && finalizedOrder.market && (
         <p>
-          Price:{' '}
-          {formatNumber(
-            finalizedOrder.price,
-            finalizedOrder.market.decimalPlaces
+          {t(
+            `Price: ${formatNumber(
+              finalizedOrder.price,
+              finalizedOrder.market.decimalPlaces
+            )}`
           )}
         </p>
       )}
