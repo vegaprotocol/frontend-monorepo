@@ -36,7 +36,7 @@ const Block = () => {
       <RouteTitle data-testid="block-header">{t(`BLOCK ${block}`)}</RouteTitle>
       <RenderFetched error={error} loading={loading}>
         <>
-          <div className="grid grid-cols-2 gap-16">
+          <div className="grid grid-cols-2 gap-16 mb-24">
             <Link
               data-testid="previous-block"
               to={`/${Routes.BLOCKS}/${Number(block) - 1}`}
