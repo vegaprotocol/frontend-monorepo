@@ -1,5 +1,6 @@
-import { Story, Meta } from '@storybook/react';
-import { CopyWithTooltip, CopyWithTooltipProps } from './copy-with-tooltip';
+import type { Story, Meta } from '@storybook/react';
+import type { CopyWithTooltipProps } from './copy-with-tooltip';
+import { CopyWithTooltip } from './copy-with-tooltip';
 
 export default {
   component: CopyWithTooltip,

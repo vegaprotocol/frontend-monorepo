@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useEffect, useState } from 'react';
 import { Tooltip } from '../tooltip';
 import CopyToClipboard from 'react-copy-to-clipboard';
 

@@ -1,7 +1,7 @@
 import { truncateByChars } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
-interface VegaWalletButtonProps {
+export interface VegaWalletConnectButtonProps {
   setConnectDialog: (isOpen: boolean) => void;
   setManageDialog: (isOpen: boolean) => void;
 }
@@ -9,7 +9,7 @@ interface VegaWalletButtonProps {
 export const VegaWalletConnectButton = ({
   setConnectDialog,
   setManageDialog,
-}: VegaWalletButtonProps) => {
+}: VegaWalletConnectButtonProps) => {
   const { keypair } = useVegaWallet();
   const isConnected = keypair !== null;
 

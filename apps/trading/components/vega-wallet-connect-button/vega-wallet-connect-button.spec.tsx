@@ -1,11 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import {
-  VegaWalletContext,
-  VegaWalletContextShape,
-} from '@vegaprotocol/wallet';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import type { VegaWalletConnectButtonProps } from './vega-wallet-connect-button';
 import { VegaWalletConnectButton } from './vega-wallet-connect-button';
 
-let props;
+let props: VegaWalletConnectButtonProps;
 
 beforeEach(() => {
   props = {
@@ -14,7 +13,10 @@ beforeEach(() => {
   };
 });
 
-const generateJsx = (context: VegaWalletContextShape, props) => {
+const generateJsx = (
+  context: VegaWalletContextShape,
+  props: VegaWalletConnectButtonProps
+) => {
   return (
     <VegaWalletContext.Provider value={context}>
       <VegaWalletConnectButton {...props} />
