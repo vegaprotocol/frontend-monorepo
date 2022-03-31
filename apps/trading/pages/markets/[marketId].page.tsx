@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
+import { t } from '@vegaprotocol/react-helpers';
 
 // Top level page query
 const MARKET_QUERY = gql`
@@ -29,7 +30,7 @@ const MarketPage = () => {
   if (!marketId) {
     return (
       <Splash>
-        <p>Not found</p>
+        <p>{t('Not found')}</p>
       </Splash>
     );
   }
@@ -46,7 +47,7 @@ const MarketPage = () => {
     >
       {({ market }) => {
         if (!market) {
-          return <Splash>Market not found</Splash>;
+          return <Splash>{t('Market not found')}</Splash>;
         }
 
         return w > 960 ? (

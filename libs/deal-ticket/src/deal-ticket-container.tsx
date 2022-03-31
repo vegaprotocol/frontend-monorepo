@@ -2,6 +2,7 @@ import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { gql, useQuery } from '@apollo/client';
 import { DealTicketManager } from './deal-ticket-manager';
 import type { DealTicketQuery } from './__generated__/DealTicketQuery';
+import { t } from '@vegaprotocol/react-helpers';
 
 const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {
@@ -43,7 +44,7 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
         if (!data.market) {
           return (
             <Splash>
-              <p>Could not load market</p>
+              <p>{t('Could not load market')}</p>
             </Splash>
           );
         }

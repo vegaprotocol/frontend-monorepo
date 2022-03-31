@@ -5,6 +5,7 @@ import { RouteTitle } from '../../../components/route-title';
 import { RenderFetched } from '../../../components/render-fetched';
 import { BlocksData, BlocksRefetch } from '../../../components/blocks';
 import { JumpToBlock } from '../../../components/jump-to-block';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Blocks = () => {
   const {
@@ -16,7 +17,7 @@ const Blocks = () => {
 
   return (
     <section>
-      <RouteTitle>Blocks</RouteTitle>
+      <RouteTitle>{t('Blocks')}</RouteTitle>
       <RenderFetched error={error} loading={loading}>
         <>
           <BlocksRefetch refetch={refetch} />

@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../config';
@@ -13,7 +14,7 @@ const Genesis = () => {
   if (!genesis?.result.genesis) return null;
   return (
     <section>
-      <RouteTitle data-testid="genesis-header">Genesis</RouteTitle>
+      <RouteTitle data-testid="genesis-header">{t('Genesis')}</RouteTitle>
       <SyntaxHighlighter data={genesis?.result.genesis} />
     </section>
   );

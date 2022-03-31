@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { Link } from 'react-router-dom';
 import {
   Table,
@@ -19,20 +20,20 @@ const truncateLength = 30;
 
 export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   if (!txData) {
-    return <>Awaiting Tendermint transaction details</>;
+    return <>{t('Awaiting Tendermint transaction details')}</>;
   }
 
   return (
     <Table className={className}>
       <TableRow modifier="bordered">
-        <TableCell>Hash</TableCell>
+        <TableCell>{t('Hash')}</TableCell>
         <TableCell modifier="bordered" data-testid="hash">
           {txData.hash}
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableHeader scope="row" className="w-[160px]">
-          Submitted by
+          {t('Submitted by')}
         </TableHeader>
         <TableCell modifier="bordered" data-testid="submitted-by">
           <Link
@@ -44,7 +45,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>Block</TableCell>
+        <TableCell>{t('Block')}</TableCell>
         <TableCell modifier="bordered" data-testid="block">
           <Link
             className="text-vega-yellow"
@@ -55,7 +56,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>Encoded txn</TableCell>
+        <TableCell>{t('Encoded txn')}</TableCell>
         <TableCell modifier="bordered" data-testid="encoded-tnx">
           <TruncateInline
             text={txData.tx}

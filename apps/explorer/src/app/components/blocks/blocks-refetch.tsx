@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { Button } from '@vegaprotocol/ui-toolkit';
 
 interface BlocksRefetchProps {
@@ -12,7 +13,7 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
       className="mb-28"
       data-testid="refresh"
     >
-      Refresh to see latest blocks
+      {t('Refresh to see latest blocks')}
     </Button>
   );
 };

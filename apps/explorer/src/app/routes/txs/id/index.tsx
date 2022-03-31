@@ -8,6 +8,7 @@ import { RouteTitle } from '../../../components/route-title';
 import { RenderFetched } from '../../../components/render-fetched';
 import { TxContent } from './tx-content';
 import { TxDetails } from './tx-details';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Tx = () => {
   const { txHash } = useParams<{ txHash: string }>();
@@ -30,7 +31,7 @@ const Tx = () => {
 
   return (
     <section>
-      <RouteTitle>Transaction details</RouteTitle>
+      <RouteTitle>{t('Transaction details')}</RouteTitle>
 
       <RenderFetched error={tTxError} loading={tTxLoading}>
         <TxDetails
@@ -40,7 +41,7 @@ const Tx = () => {
         />
       </RenderFetched>
 
-      <h2 className="text-h4 uppercase mb-16">Transaction content</h2>
+      <h2 className="text-h4 uppercase mb-16">{t('Transaction content')}</h2>
       <RenderFetched error={ceTxError} loading={ceTxLoading}>
         <TxContent data={ceTxData} />
       </RenderFetched>

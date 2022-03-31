@@ -15,6 +15,7 @@ import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../router-config';
 import { RenderFetched } from '../../../components/render-fetched';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -26,12 +27,12 @@ const Block = () => {
 
   const header = blockData?.result.block.header;
   if (!header) {
-    return <p>Could not get block data</p>;
+    return <p>{t('Could not get block data')}</p>;
   }
 
   return (
     <section>
-      <RouteTitle data-testid="block-header">BLOCK {block}</RouteTitle>
+      <RouteTitle data-testid="block-header">{t(`BLOCK ${block}`)}</RouteTitle>
       <RenderFetched error={error} loading={loading}>
         <>
           <div className="grid grid-cols-2 gap-16">

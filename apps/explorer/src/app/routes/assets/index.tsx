@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
@@ -37,7 +38,7 @@ const Assets = () => {
   if (!data || !data.assets) return null;
   return (
     <section>
-      <RouteTitle data-testid="assets-header">Assets</RouteTitle>
+      <RouteTitle data-testid="assets-header">{t('Assets')}</RouteTitle>
       {data?.assets.map((a) => (
         <React.Fragment key={a.id}>
           <SubHeading data-testid="asset-header">

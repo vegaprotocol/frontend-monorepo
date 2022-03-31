@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
@@ -10,16 +11,16 @@ import type {
 
 export function getProposalName(change: ProposalsQuery_proposals_terms_change) {
   if (change.__typename === 'NewAsset') {
-    return `New asset: ${change.symbol}`;
+    return t(`New asset: ${change.symbol}`);
   } else if (change.__typename === 'NewMarket') {
-    return `New market: ${change.instrument.name}`;
+    return t(`New market: ${change.instrument.name}`);
   } else if (change.__typename === 'UpdateMarket') {
-    return `Update market: ${change.marketId}`;
+    return t(`Update market: ${change.marketId}`);
   } else if (change.__typename === 'UpdateNetworkParameter') {
-    return `Update network: ${change.networkParameter.key}`;
+    return t(`Update network: ${change.networkParameter.key}`);
   }
 
-  return 'Unknown proposal';
+  return t('Unknown proposal');
 }
 
 const PROPOSAL_QUERY = gql`
@@ -105,7 +106,7 @@ const Governance = () => {
   if (!data) return null;
   return (
     <section>
-      <RouteTitle data-testid="governance-header">Governance</RouteTitle>
+      <RouteTitle data-testid="governance-header">{t('Governance')}</RouteTitle>
       {data.proposals?.map((p) => (
         <React.Fragment key={p.id}>
           <SubHeading>{getProposalName(p.terms.change)}</SubHeading>

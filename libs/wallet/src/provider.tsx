@@ -1,4 +1,4 @@
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { VegaKeyExtended, VegaWalletContextShape } from '.';
@@ -38,7 +38,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
           const nameMeta = pk.meta?.find((m) => m.key === 'name');
           return {
             ...pk,
-            name: nameMeta?.value ? nameMeta.value : 'None',
+            name: nameMeta?.value ? nameMeta.value : t('None'),
           };
         });
 
