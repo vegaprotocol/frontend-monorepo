@@ -6,7 +6,7 @@ export default {
   title: 'ThemeSwitcher',
 } as Meta;
 
-const Template: Story = (args) => (
+const Template: Story = () => (
   <ThemeSwitcher onToggle={() => document.body.classList.toggle('dark')} />
 );
 

@@ -15,7 +15,7 @@ export const TimeInForceSelector = ({
     order.type === OrderType.Limit
       ? Object.entries(OrderTimeInForce)
       : Object.entries(OrderTimeInForce).filter(
-          ([key, value]) =>
+          ([_, value]) =>
             value === OrderTimeInForce.FOK || value === OrderTimeInForce.IOC
         );
 

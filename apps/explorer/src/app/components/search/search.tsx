@@ -53,9 +53,9 @@ export const Search = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex ml-16 justify-end"
+      className="flex-1 flex ml-16 mr-12 justify-end"
     >
-      <FormGroup className="w-2/3 mb-0">
+      <FormGroup className="relative w-2/3 mb-0">
         <Input
           {...register('search')}
           id="search"
@@ -65,16 +65,14 @@ export const Search = () => {
           autoFocus={true}
           placeholder={t('Enter block number or transaction hash')}
         />
-        {error?.message ? (
+        {error?.message && (
           <InputError
             data-testid="search-error"
             intent="danger"
-            className="flex-1 w-full"
+            className="absolute top-[100%] flex-1 w-full"
           >
             {error.message}
           </InputError>
-        ) : (
-          <div className="h-28"></div>
         )}
       </FormGroup>
       <Button type="submit" variant="secondary" data-testid="search-button">

@@ -184,7 +184,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
   getDelta: GetDelta<SubscriptionData, Delta>,
   fetchPolicy: FetchPolicy = 'no-cache'
 ): Subscribe<Data, Delta> {
-  const getInstance = memoize<Data, Delta>((variables) =>
+  const getInstance = memoize<Data, Delta>(() =>
     makeDataProviderInternal(
       query,
       subscriptionQuery,

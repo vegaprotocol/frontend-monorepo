@@ -64,11 +64,7 @@ export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
           return false;
         }
 
-        if (e.event.id === id) {
-          return true;
-        }
-
-        return false;
+        return e.event.id === id;
       });
 
       if (
