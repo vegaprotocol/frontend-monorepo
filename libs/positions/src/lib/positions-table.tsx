@@ -20,16 +20,7 @@ interface PositionsTableProps {
 export const getRowNodeId = (data: { market: { id: string } }) =>
   data.market.id;
 
-const comparator = (
-  valueA: string,
-  valueB: string,
-  nodeA: { data: Positions_party_positions },
-  nodeB: { data: Positions_party_positions },
-  isInverted: boolean
-) => {
-  const a = nodeA.data.market.tradableInstrument.instrument.name;
-  const b = nodeB.data.market.tradableInstrument.instrument.name;
-
+const alphanumericComparator = (a: string, b: string, isInverted: boolean) => {
   if (a < b) {
     return isInverted ? 1 : -1;
   }
@@ -40,6 +31,24 @@ const comparator = (
 
   return 0;
 };
+
+const comparator = (
+  valueA: string,
+  valueB: string,
+  nodeA: { data: Positions_party_positions },
+  nodeB: { data: Positions_party_positions },
+  isInverted: boolean
+) =>
+  alphanumericComparator(
+    nodeA.data.market.tradableInstrument.instrument.name,
+    nodeB.data.market.tradableInstrument.instrument.name,
+    isInverted
+  ) ||
+  alphanumericComparator(
+    nodeA.data.market.id,
+    nodeB.data.market.id,
+    isInverted
+  );
 
 interface PositionsTableValueFormatterParams extends ValueFormatterParams {
   data: Positions_party_positions;
