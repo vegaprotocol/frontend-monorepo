@@ -1,6 +1,11 @@
-import { truncateByChars } from '@vegaprotocol/react-helpers';
-import { Button, Dialog, CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import { t, truncateByChars } from '@vegaprotocol/react-helpers';
+import {
+  Button,
+  Dialog,
+  CopyWithTooltip,
+  Intent,
+  Icon,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '.';
 
 export interface VegaManageDialogProps {
@@ -14,37 +19,52 @@ export const VegaManageDialog = ({
 }: VegaManageDialogProps) => {
   const { keypair, keypairs, selectPublicKey, disconnect } = useVegaWallet();
   return (
-    <Dialog title="Vega wallet" open={dialogOpen} onChange={setDialogOpen}>
+    <Dialog
+      title={t('SELECT A VEGA KEY')}
+      open={dialogOpen}
+      onChange={setDialogOpen}
+      intent={Intent.Prompt}
+    >
       <div className="text-ui">
         {keypairs ? (
           <ul className="mb-12" data-testid="keypair-list">
             {keypairs.map((kp) => {
-              const buttonClasses = classNames('underline', {
-                'text-vega-pink dark:text-vega-yellow': kp.pub === keypair?.pub,
-              });
               return (
                 <li
                   key={kp.pub}
                   data-testid={`key-${kp.pub}`}
-                  className="mb-8 last:mb-0"
+                  className="mb-24 last:mb-0"
                 >
-                  <button
-                    onClick={() => {
-                      selectPublicKey(kp.pub);
-                      setDialogOpen(false);
-                    }}
-                    type="button"
-                    className={buttonClasses}
-                    disabled={kp.pub === keypair?.pub}
-                  >
-                    {kp.name} {kp.pub === keypair?.pub ? '(Active)' : ''}
-                  </button>
-                  <div className="flex justify-between">
-                    <p className="text-black-40 dark:text-white-40 font-mono">
+                  <h2 className="mb-8 text-h5 capitalize">{kp.name}</h2>
+                  {kp.pub === keypair?.pub ? (
+                    <p
+                      className="uppercase mb-8 font-bold"
+                      data-testid="selected-key"
+                    >
+                      {t('Selected key')}
+                    </p>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        selectPublicKey(kp.pub);
+                        setDialogOpen(false);
+                      }}
+                      disabled={kp.pub === keypair?.pub}
+                      className="mb-8"
+                      data-testid="select-keypair-button"
+                    >
+                      {t('Select this key')}
+                    </Button>
+                  )}
+                  <div className="flex justify-between text-ui-small">
+                    <p className="font-mono">
                       {truncateByChars(kp.pub, 23, 23)}
                     </p>
                     <CopyWithTooltip text={kp.pub}>
-                      <button className="underline">Copy</button>
+                      <button className="underline">
+                        <Icon name="duplicate" className="mr-4" />
+                        {t('Copy')}
+                      </button>
                     </CopyWithTooltip>
                   </div>
                 </li>
@@ -52,15 +72,16 @@ export const VegaManageDialog = ({
             })}
           </ul>
         ) : null}
-        <div>
+        <div className="mt-24">
           <Button
             data-testid="disconnect"
+            variant="secondary"
             onClick={() => {
               disconnect();
               setDialogOpen(false);
             }}
           >
-            Disconnect
+            {t('Disconnect all keys')}
           </Button>
         </div>
       </div>

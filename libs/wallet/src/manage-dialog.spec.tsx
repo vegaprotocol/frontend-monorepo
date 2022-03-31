@@ -1,10 +1,8 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import {
-  VegaWalletContext,
-  VegaWalletContextShape,
-  VegaKeyExtended,
-} from './context';
-import { VegaManageDialog, VegaManageDialogProps } from './manage-dialog';
+import { VegaWalletContext } from './context';
+import type { VegaWalletContextShape, VegaKeyExtended } from './context';
+import type { VegaManageDialogProps } from './manage-dialog';
+import { VegaManageDialog } from './manage-dialog';
 
 let props: VegaManageDialogProps;
 let context: Partial<VegaWalletContextShape>;
@@ -51,18 +49,31 @@ test('Shows list of available keys and can disconnect', () => {
   // eslint-disable-next-line
   expect(list.children).toHaveLength(context.keypairs!.length);
 
-  // Shows which key is active
-  expect(screen.getByTestId(`key-${keypair1.pub}`)).toHaveTextContent(
-    `${keypair1.name} (Active)`
-  );
-  expect(screen.getByTestId(`key-${keypair2.pub}`)).toHaveTextContent(
-    keypair2.name
-  );
+  // eslint-disable-next-line
+  context.keypairs!.forEach((kp, i) => {
+    const keyListItem = within(screen.getByTestId(`key-${kp.pub}`));
+    expect(
+      keyListItem.getByText(kp.name, { selector: 'h2' })
+    ).toBeInTheDocument();
+    expect(keyListItem.getByText('Copy')).toBeInTheDocument();
 
-  const keyListItem = within(screen.getByTestId(`key-${keypair2.pub}`));
-  fireEvent.click(keyListItem.getAllByRole('button')[0]);
-  expect(context.selectPublicKey).toHaveBeenCalledWith(keypair2.pub);
-  expect(keyListItem.getByText('Copy')).toBeInTheDocument();
+    // Active
+    // eslint-disable-next-line
+    if (kp.pub === context.keypair!.pub) {
+      expect(keyListItem.getByTestId('selected-key')).toBeInTheDocument();
+      expect(
+        keyListItem.queryByTestId('select-keypair-button')
+      ).not.toBeInTheDocument();
+    }
+    // Inactive
+    else {
+      const selectButton = keyListItem.getByTestId('select-keypair-button');
+      expect(selectButton).toBeInTheDocument();
+      expect(keyListItem.queryByTestId('selected-key')).not.toBeInTheDocument();
+      fireEvent.click(selectButton);
+      expect(context.selectPublicKey).toHaveBeenCalledWith(kp.pub);
+    }
+  });
 
   // Disconnect
   fireEvent.click(screen.getByTestId('disconnect'));
