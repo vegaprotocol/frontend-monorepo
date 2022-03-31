@@ -25,7 +25,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         >
           <Link
             to={`/${Routes.BLOCKS}/${block.header?.height}`}
-            className="text-vega-yellow"
+            className="text-vega-pink dark:text-vega-yellow"
           >
             {block.header?.height}
           </Link>

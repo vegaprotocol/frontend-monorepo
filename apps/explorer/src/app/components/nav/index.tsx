@@ -9,8 +9,9 @@ export const Nav = () => {
           key={r.name}
           to={r.path}
           className={({ isActive }) =>
-            `text-h5 block mb-8 px-8 hover:bg-vega-yellow hover:text-black ${
-              isActive && 'bg-vega-yellow text-black'
+            `text-h5 block mb-8 px-8 hover:bg-vega-pink dark:hover:bg-vega-yellow hover:text-white dark:hover:text-black ${
+              isActive &&
+              'bg-vega-pink dark:bg-vega-yellow text-white dark:text-black'
             }`
           }
         >
