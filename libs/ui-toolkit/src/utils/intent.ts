@@ -28,7 +28,7 @@ export const getIntentShadow = (intent?: Intent) => {
 };
 
 export const getVariantBackground = (variant?: Variant) => {
-  return classNames('shadow-callout', {
+  return classNames({
     'bg-intent-success text-black': variant === Variant.Success,
     'bg-intent-danger text-white': variant === Variant.Danger,
     'bg-intent-warning text-black': variant === Variant.Warning,
