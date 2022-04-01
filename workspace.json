@@ -1,6 +1,7 @@
 {
   "version": 2,
   "projects": {
+    "accounts": "libs/accounts",
     "cypress": "libs/cypress",
     "deal-ticket": "libs/deal-ticket",
     "explorer": "apps/explorer",

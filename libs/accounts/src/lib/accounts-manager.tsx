@@ -3,32 +3,32 @@ import { produce } from 'immer';
 import merge from 'lodash/merge';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import type { PositionSubscribe_positions } from './__generated__/PositionSubscribe';
-import type { Positions_party_positions } from './__generated__/Positions';
+import type { AccountSubscribe_accounts } from './__generated__/AccountSubscribe';
+import type { Accounts_party_accounts } from './__generated__/Accounts';
 
 import type { AgGridReact } from 'ag-grid-react';
-import PositionsTable, { getRowNodeId } from './positions-table';
-import { positionsDataProvider } from './positions-data-provider';
+import AccountsTable from './accounts-table';
+import { accountsDataProvider, getId } from './accounts-data-provider';
 
-interface PositionsManagerProps {
+interface AccountsManagerProps {
   partyId: string;
 }
 
-export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
+export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
-    (delta: PositionSubscribe_positions) => {
-      const update: Positions_party_positions[] = [];
-      const add: Positions_party_positions[] = [];
+    (delta: AccountSubscribe_accounts) => {
+      const update: Accounts_party_accounts[] = [];
+      const add: Accounts_party_accounts[] = [];
       if (!gridRef.current) {
         return false;
       }
-      const rowNode = gridRef.current.api.getRowNode(getRowNodeId(delta));
+      const rowNode = gridRef.current.api.getRowNode(getId(delta));
       if (rowNode) {
-        const updatedData = produce<Positions_party_positions>(
+        const updatedData = produce<Accounts_party_accounts>(
           rowNode.data,
-          (draft: Positions_party_positions) => {
+          (draft: Accounts_party_accounts) => {
             merge(draft, delta);
           }
         );
@@ -50,12 +50,12 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
     [gridRef]
   );
   const { data, error, loading } = useDataProvider<
-    Positions_party_positions[],
-    PositionSubscribe_positions
-  >(positionsDataProvider, update, variables);
+    Accounts_party_accounts[],
+    AccountSubscribe_accounts
+  >(accountsDataProvider, update, variables);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {(data) => <PositionsTable ref={gridRef} data={data} />}
+      {(data) => <AccountsTable ref={gridRef} data={data} />}
     </AsyncRenderer>
   );
 };
