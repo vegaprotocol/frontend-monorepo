@@ -30,8 +30,14 @@ export const DepositManager = ({
     return asset;
   }, [data, assetId]);
 
+  const assetContractAddress = useMemo(() => {
+    return asset && asset.source.__typename === 'ERC20'
+      ? asset.source.contractAddress
+      : undefined;
+  }, [asset]);
+
   // Get users balance of the erc20 token selected
-  const balanceOf = useBalanceOfERC20Token(asset);
+  const balanceOf = useBalanceOfERC20Token(assetContractAddress);
 
   // Get temporary deposit limits
   const limits = useDepositLimits(asset);
@@ -39,7 +45,7 @@ export const DepositManager = ({
   // Get allowance (approved spending limit of brdige contract) for the selected asset
   const allowance = useAllowance(
     ethereumConfig.collateral_bridge_contract.address,
-    asset
+    assetContractAddress
   );
 
   const {

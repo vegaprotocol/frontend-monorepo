@@ -1,22 +1,16 @@
-import type { DepositPage_assets } from './__generated__/DepositPage';
 import { useWeb3React } from '@web3-react/core';
-import BigNumber from 'bignumber.js';
+import type BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import { useTokenContract } from '../../../hooks/use-token-contract';
 
-export const useBalanceOfERC20Token = (asset?: DepositPage_assets) => {
+export const useBalanceOfERC20Token = (contractAddress?: string) => {
   const { account } = useWeb3React();
-  const contract = useTokenContract(
-    asset && asset.source.__typename === 'ERC20'
-      ? asset.source.contractAddress
-      : undefined
-  );
-  const [balanceOf, setBalanceOf] = useState(new BigNumber(0));
+  const contract = useTokenContract(contractAddress);
+  const [balanceOf, setBalanceOf] = useState<BigNumber | null>(null);
 
   useEffect(() => {
     const getBalance = async () => {
-      if (!contract || !account || !asset) {
-        setBalanceOf(new BigNumber(0));
+      if (!contract || !account) {
         return;
       }
 
@@ -25,7 +19,7 @@ export const useBalanceOfERC20Token = (asset?: DepositPage_assets) => {
     };
 
     getBalance();
-  }, [contract, account, asset]);
+  }, [contract, account]);
 
   return balanceOf;
 };

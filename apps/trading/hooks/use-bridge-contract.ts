@@ -1,3 +1,4 @@
+import type { Networks } from '@vegaprotocol/smart-contracts-sdk';
 import { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import type { Dispatch, SetStateAction } from 'react';
@@ -23,8 +24,7 @@ export const useBridgeContract = () => {
       contract = null;
     } else {
       contract = new VegaErc20Bridge(
-        // @ts-ignore TODO get from env
-        'TESTNET',
+        process.env['NX_VEGA_ENV'] as Networks,
         provider,
         provider?.getSigner()
       );

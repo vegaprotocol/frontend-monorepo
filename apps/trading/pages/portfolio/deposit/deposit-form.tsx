@@ -28,7 +28,7 @@ export interface DepositFormProps {
   assets: DepositPage_assets[];
   selectedAsset?: DepositPage_assets;
   onSelectAsset: (assetId: string) => void;
-  available: BigNumber;
+  available: BigNumber | null;
   submitApprove: () => Promise<void>;
   submitDeposit: (args: {
     assetSource: string;
@@ -208,7 +208,7 @@ export const DepositForm = ({
                   return t('Amount is above approved amount');
                 }
 
-                if (value.isGreaterThan(available)) {
+                if (available && value.isGreaterThan(available)) {
                   return t('Insufficient amount in Ethereum wallet');
                 }
 
@@ -222,7 +222,7 @@ export const DepositForm = ({
             {errors.amount.message}
           </InputError>
         )}
-        {account && selectedAsset && (
+        {account && selectedAsset && available && (
           <UseButton
             onClick={() => {
               const amount = BigNumber.minimum(
