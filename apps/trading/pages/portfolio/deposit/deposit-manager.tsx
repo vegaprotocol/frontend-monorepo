@@ -1,6 +1,6 @@
 import type { DepositPage } from './__generated__/DepositPage';
 import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { DepositForm } from './deposit-form';
 import { useBalanceOfERC20Token } from './use-balance-of-erc20-token';
@@ -41,7 +41,7 @@ export const DepositManager = ({
   const bridgeContract = useBridgeContract();
 
   // Get users balance of the erc20 token selected
-  const balanceOf = useBalanceOfERC20Token(tokenContract);
+  const { balanceOf, refetch } = useBalanceOfERC20Token(tokenContract);
 
   // Get temporary deposit limits
   const limits = useDepositLimits(bridgeContract, asset);
@@ -52,14 +52,24 @@ export const DepositManager = ({
     ethereumConfig.collateral_bridge_contract.address
   );
 
+  // Set up approve transaction
   const approve = useApprove(
     tokenContract,
     ethereumConfig.collateral_bridge_contract.address
   );
 
+  // Set up deposit transaction
   const deposit = useDeposit(bridgeContract, ethereumConfig.confirmations);
 
+  // Set up faucet transaction
   const faucet = useFaucet(tokenContract);
+
+  // Update balance after confirmation event has been received
+  useEffect(() => {
+    if (deposit.confirmationEvent !== null) {
+      refetch();
+    }
+  }, [deposit.confirmationEvent, refetch]);
 
   return (
     <>
@@ -74,15 +84,12 @@ export const DepositManager = ({
         limits={limits}
         allowance={allowance}
       />
-      <TransactionDialog
-        {...approve}
-        name="approve"
-        requiredConfirmations={1}
-      />
-      <TransactionDialog {...faucet} name="faucet" requiredConfirmations={1} />
+      <TransactionDialog {...approve} name="approve" />
+      <TransactionDialog {...faucet} name="faucet" />
       <TransactionDialog<DepositEvent_busEvents_event_Deposit>
         {...deposit}
         name="deposit"
+        // Must wait for additional confirmations for Vega to pick up the Ethereum transaction
         requiredConfirmations={ethereumConfig.confirmations}
       />
     </>

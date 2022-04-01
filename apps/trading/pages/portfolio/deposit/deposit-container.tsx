@@ -25,6 +25,9 @@ interface DepositContainerProps {
   assetId?: string;
 }
 
+/**
+ *  Fetches data required for the Deposit page
+ */
 export const DepositContainer = ({
   ethereumConfig,
   assetId,

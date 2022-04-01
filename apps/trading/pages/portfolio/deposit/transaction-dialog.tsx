@@ -8,29 +8,31 @@ import {
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 import { DialogWrapper } from './dialog-wrapper';
 
-interface TransactionDialogProps<TEvent> {
+export interface TransactionDialogProps<TEvent = undefined> {
   name: string;
   status: TxState;
   error: Error | null;
   confirmations: number;
-  requiredConfirmations: number;
   txHash: string | null;
+  requiredConfirmations?: number;
+  // Undefined means this dialog isn't expecting an additional event for a complete state, null means
+  // it is but hasn't been received yet
   confirmationEvent?: TEvent | null;
 }
 
-export function TransactionDialog<TEvent>({
+export function TransactionDialog<TEvent = undefined>({
   name,
   status,
   error,
   confirmations,
-  requiredConfirmations,
   txHash,
+  requiredConfirmations = 1,
   confirmationEvent,
 }: TransactionDialogProps<TEvent>) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogDismissed = useRef(false);
 
-  const renderStatus = () => {
+  const renderContent = () => {
     if (status === TxState.Error) {
       return (
         <p className="text-black dark:text-white">{error && error.message}</p>
@@ -121,7 +123,7 @@ export function TransactionDialog<TEvent>({
       }}
       intent={intent}
     >
-      <DialogWrapper {...wrapperProps}>{renderStatus()}</DialogWrapper>
+      <DialogWrapper {...wrapperProps}>{renderContent()}</DialogWrapper>
     </Dialog>
   );
 }

@@ -5,6 +5,8 @@ import { DepositContainer } from './deposit-container';
 
 const Deposit = () => {
   const { query } = useRouter();
+
+  // AssetId can be specified in the query string to allow link to deposit a particular asset
   const assetId = useMemo(() => {
     if (query.assetId && Array.isArray(query.assetId)) {
       return undefined;

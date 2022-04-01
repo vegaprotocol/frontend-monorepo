@@ -1,4 +1,3 @@
-import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { TxState } from '../../../hooks/use-ethereum-transaction';
@@ -10,12 +9,12 @@ export const ConfirmRow = ({ status }: { status: TxState }) => {
   if (status === TxState.Requested) {
     return (
       <p className="text-black dark:text-white">
-        Confirm transaction in wallet
+        {t('Confirm transaction in wallet')}
       </p>
     );
   }
 
-  return <p>Confirmed in wallet</p>;
+  return <p>{t('Confirmed in wallet')}</p>;
 };
 
 interface TxRowProps {
@@ -46,7 +45,7 @@ export const TxRow = ({
         <EtherscanLink
           tx={txHash || ''}
           chainId={chainId || 3}
-          className="underline text-vega-pink dark:text-vega-yellow"
+          className="text-vega-pink dark:text-vega-yellow"
           text={t('View on Etherscan')}
         />
       </p>
@@ -64,7 +63,7 @@ export const TxRow = ({
         <EtherscanLink
           tx={txHash || ''}
           chainId={chainId || 3}
-          className="underline"
+          className="text-vega-pink dark:text-vega-yellow"
           text={t('View on Etherscan')}
         />
       </p>
