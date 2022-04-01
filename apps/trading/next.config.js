@@ -2,10 +2,12 @@
 const withNx = require('@nrwl/next/plugins/with-nx');
 const { withSentryConfig } = require('@sentry/nextjs');
 
+const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
+
 const sentryWebpackOptions = {
   org: 'vega-o3',
   project: 'trading',
-  authToken: process.env.SENTRY_AUTH_TOKEN,
+  authToken: SENTRY_AUTH_TOKEN,
 };
 
 /**
@@ -24,8 +26,6 @@ const nextConfig = {
   },
 };
 
-const sentryAuthToken = process.env.SENTRY_AUTH_TOKEN;
-
-module.exports = sentryAuthToken
+module.exports = SENTRY_AUTH_TOKEN
   ? withNx(withSentryConfig(nextConfig, sentryWebpackOptions))
   : withNx(nextConfig);
