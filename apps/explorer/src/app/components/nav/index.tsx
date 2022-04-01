@@ -10,8 +10,8 @@ export const Nav = ({ menuOpen }: NavProps) => {
     <nav className="relative">
       <div
         className={`${
-          menuOpen ? 'right-0' : 'right-[200vw]'
-        } transition-all absolute top-0 h-[100vh] w-full md:static md:border-r-1 bg-white dark:bg-black p-20`}
+          menuOpen ? 'right-0 h-[100vh]' : 'right-[200vw] h-full'
+        } transition-[right] absolute top-0 w-full md:static md:border-r-1 bg-white dark:bg-black p-20`}
       >
         {routerConfig.map((r) => (
           <NavLink
