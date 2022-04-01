@@ -11,7 +11,6 @@ export const useTokenContract = (
     if (!provider || !contractAddress) {
       return null;
     }
-
     return new ERC20Token(
       contractAddress,
       provider,

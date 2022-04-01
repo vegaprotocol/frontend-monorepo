@@ -1,15 +1,17 @@
 import type { DepositPage_assets } from './__generated__/DepositPage';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
-import { useBridgeContract } from '../../../hooks/use-bridge-contract';
+import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 
 interface Limits {
   min: BigNumber;
   max: BigNumber;
 }
 
-export const useDepositLimits = (asset?: DepositPage_assets): Limits | null => {
-  const contract = useBridgeContract();
+export const useDepositLimits = (
+  contract: VegaErc20Bridge | null,
+  asset?: DepositPage_assets
+): Limits | null => {
   const [limits, setLimits] = useState<Limits | null>(null);
 
   useEffect(() => {

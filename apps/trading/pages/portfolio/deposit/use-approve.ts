@@ -1,11 +1,10 @@
+import type { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
-import { useTokenContract } from '../../../hooks/use-token-contract';
 
 export const useApprove = (
-  bridgeAddress: string,
-  assetContractAddress?: string
+  contract: ERC20Token | null,
+  bridgeAddress: string
 ) => {
-  const contract = useTokenContract(assetContractAddress);
   const transaction = useEthereumTransaction(() => {
     if (!contract) {
       return null;

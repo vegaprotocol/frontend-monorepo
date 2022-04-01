@@ -1,11 +1,10 @@
+import type { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import type BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
-import { useTokenContract } from '../../../hooks/use-token-contract';
 
-export const useBalanceOfERC20Token = (contractAddress?: string) => {
+export const useBalanceOfERC20Token = (contract: ERC20Token | null) => {
   const { account } = useWeb3React();
-  const contract = useTokenContract(contractAddress);
   const [balanceOf, setBalanceOf] = useState<BigNumber | null>(null);
 
   useEffect(() => {

@@ -11,6 +11,8 @@ import { useDepositLimits } from './use-deposit-limits';
 import { useAllowance } from './use-allowance';
 import { TransactionDialog } from './transaction-dialog';
 import { useFaucet } from './use-faucet';
+import { useTokenContract } from '../../../hooks/use-token-contract';
+import { useBridgeContract } from '../../../hooks/use-bridge-contract';
 
 interface DepositManagerProps {
   ethereumConfig: EthereumConfig;
@@ -31,32 +33,33 @@ export const DepositManager = ({
     return asset;
   }, [data, assetId]);
 
-  const assetContractAddress = useMemo(() => {
-    return asset && asset.source.__typename === 'ERC20'
+  const tokenContract = useTokenContract(
+    asset && asset.source.__typename === 'ERC20'
       ? asset.source.contractAddress
-      : undefined;
-  }, [asset]);
+      : undefined
+  );
+  const bridgeContract = useBridgeContract();
 
   // Get users balance of the erc20 token selected
-  const balanceOf = useBalanceOfERC20Token(assetContractAddress);
+  const balanceOf = useBalanceOfERC20Token(tokenContract);
 
   // Get temporary deposit limits
-  const limits = useDepositLimits(asset);
+  const limits = useDepositLimits(bridgeContract, asset);
 
   // Get allowance (approved spending limit of brdige contract) for the selected asset
   const allowance = useAllowance(
-    ethereumConfig.collateral_bridge_contract.address,
-    assetContractAddress
+    tokenContract,
+    ethereumConfig.collateral_bridge_contract.address
   );
 
   const approve = useApprove(
-    ethereumConfig.collateral_bridge_contract.address,
-    assetContractAddress
+    tokenContract,
+    ethereumConfig.collateral_bridge_contract.address
   );
 
-  const deposit = useDeposit(ethereumConfig.confirmations);
+  const deposit = useDeposit(bridgeContract, ethereumConfig.confirmations);
 
-  const faucet = useFaucet(assetContractAddress);
+  const faucet = useFaucet(tokenContract);
 
   return (
     <>

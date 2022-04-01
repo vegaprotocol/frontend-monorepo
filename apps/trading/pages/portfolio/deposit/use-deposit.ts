@@ -7,8 +7,8 @@ import type {
 import { DepositStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useState } from 'react';
-import { useBridgeContract } from '../../../hooks/use-bridge-contract';
 import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
+import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 
 const DEPOSIT_EVENT_SUB = gql`
   subscription DepositEvent($partyId: ID!) {
@@ -27,8 +27,10 @@ const DEPOSIT_EVENT_SUB = gql`
   }
 `;
 
-export const useDeposit = (confirmations: number) => {
-  const contract = useBridgeContract();
+export const useDeposit = (
+  contract: VegaErc20Bridge | null,
+  confirmations: number
+) => {
   const { keypair } = useVegaWallet();
 
   const [confirmationEvent, setConfirmationEvent] =
