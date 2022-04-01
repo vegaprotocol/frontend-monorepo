@@ -1,7 +1,6 @@
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { EtherscanLink } from '../etherscan-link';
 import { useWeb3React } from '@web3-react/core';
-import { TxState } from '../../../hooks/use-ethereum-transaction';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, TxState } from '@vegaprotocol/react-helpers';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
 

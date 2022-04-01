@@ -1,4 +1,3 @@
-import type { DepositPage_assets } from './__generated__/DepositPage';
 import { addDecimal, removeDecimal, t } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -16,7 +15,8 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
-import { FAUCETABLE } from './config';
+import { FAUCETABLE } from '../config';
+import type { Asset } from './deposit-manager';
 
 interface FormFields {
   asset: string;
@@ -26,8 +26,8 @@ interface FormFields {
 }
 
 export interface DepositFormProps {
-  assets: DepositPage_assets[];
-  selectedAsset?: DepositPage_assets;
+  assets: Asset[];
+  selectedAsset?: Asset;
   onSelectAsset: (assetId: string) => void;
   available: BigNumber | null;
   submitApprove: () => Promise<void>;
@@ -73,8 +73,8 @@ export const DepositForm = ({
   });
 
   const onDeposit = async (fields: FormFields) => {
-    if (selectedAsset?.source.__typename !== 'ERC20') {
-      throw new Error('Invalid asset, only ERC20 tokens are permitted');
+    if (!selectedAsset) {
+      throw new Error('Asset not selected');
     }
 
     submitDeposit({
@@ -256,7 +256,7 @@ export const DepositForm = ({
 };
 
 interface FormButtonProps {
-  selectedAsset?: DepositPage_assets;
+  selectedAsset?: Asset;
   amount: BigNumber;
   allowance: BigNumber | null;
   onApproveClick: () => void;

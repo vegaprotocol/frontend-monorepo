@@ -6,7 +6,7 @@ import type {
 } from './__generated__/DepositEvent';
 import { DepositStatus } from '@vegaprotocol/types';
 import { useState } from 'react';
-import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
+import { useEthereumTransaction } from '@vegaprotocol/react-helpers';
 import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 
 const DEPOSIT_EVENT_SUB = gql`

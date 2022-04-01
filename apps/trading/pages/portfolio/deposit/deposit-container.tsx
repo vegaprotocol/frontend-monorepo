@@ -2,7 +2,9 @@ import type { EthereumConfig } from '../../../components/web3-container/web3-con
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import type { DepositPage } from './__generated__/DepositPage';
-import { DepositManager } from './deposit-manager';
+import { DepositManager } from '@vegaprotocol/deposits';
+import { t } from '@vegaprotocol/react-helpers';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 const DEPOSIT_PAGE_QUERY = gql`
   query DepositPage {
@@ -34,13 +36,25 @@ export const DepositContainer = ({
 }: DepositContainerProps) => {
   return (
     <PageQueryContainer<DepositPage> query={DEPOSIT_PAGE_QUERY}>
-      {(data) => (
-        <DepositManager
-          ethereumConfig={ethereumConfig}
-          data={data}
-          initialAssetId={assetId}
-        />
-      )}
+      {(data) => {
+        if (!data.assets?.length) {
+          return (
+            <Splash>
+              <p>{t('No assets on this network')}</p>
+            </Splash>
+          );
+        }
+
+        return (
+          <DepositManager
+            bridgeAddress={ethereumConfig.collateral_bridge_contract.address}
+            requiredConfirmations={ethereumConfig.confirmations}
+            // @ts-ignore TS not inferring on union type for contract address
+            assets={data.assets.filter((a) => a.source.__typename === 'ERC20')}
+            initialAssetId={assetId}
+          />
+        );
+      }}
     </PageQueryContainer>
   );
 };

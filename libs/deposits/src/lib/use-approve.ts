@@ -1,5 +1,5 @@
 import type { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
-import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
+import { useEthereumTransaction } from '@vegaprotocol/react-helpers';
 
 export const useApprove = (
   contract: ERC20Token | null,

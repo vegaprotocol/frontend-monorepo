@@ -1,7 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
-import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 import { EthereumError, TxState } from './use-ethereum-transaction';
 import type { ReactNode } from 'react';
 import { useEthereumTransaction } from './use-ethereum-transaction';
@@ -18,7 +17,11 @@ afterAll(() => {
 class MockContract {
   static txHash = 'tx-hash';
   confirmations = 0;
-  depositAsset(args: any): Promise<ethers.ContractTransaction> {
+  depositAsset(args: {
+    assetSource: string;
+    amount: string;
+    vegaPublicKey: string;
+  }): Promise<ethers.ContractTransaction> {
     return Promise.resolve({
       hash: MockContract.txHash,
       wait: () => {
@@ -40,7 +43,7 @@ class MockContract {
 const mockContract = new MockContract();
 const requiredConfirmations = 3;
 
-function setup(perform: any) {
+function setup(perform: () => void) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider>{children}</MockedProvider>
   );
@@ -103,7 +106,7 @@ test('Ethereum transaction flow', async () => {
 
 test('Error handling', async () => {
   const { result } = setup(() => {
-    throw { message: errorMsg, code: 500 };
+    throw new EthereumError(errorMsg, 500);
   });
 
   const errorMsg = 'test-error';

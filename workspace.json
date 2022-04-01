@@ -3,6 +3,7 @@
   "projects": {
     "cypress": "libs/cypress",
     "deal-ticket": "libs/deal-ticket",
+    "deposits": "libs/deposits",
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",
     "market-list": "libs/market-list",

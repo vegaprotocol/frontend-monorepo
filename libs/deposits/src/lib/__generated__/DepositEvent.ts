@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, DepositStatus } from "./../../../../../../libs/types/src/__generated__/globalTypes";
+import { BusEventType, DepositStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: DepositEvent

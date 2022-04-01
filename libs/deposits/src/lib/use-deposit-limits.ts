@@ -1,7 +1,7 @@
-import type { DepositPage_assets } from './__generated__/DepositPage';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
+import type { Asset } from './deposit-manager';
 
 interface Limits {
   min: BigNumber;
@@ -10,13 +10,13 @@ interface Limits {
 
 export const useDepositLimits = (
   contract: VegaErc20Bridge | null,
-  asset?: DepositPage_assets
+  asset?: Asset
 ): Limits | null => {
   const [limits, setLimits] = useState<Limits | null>(null);
 
   useEffect(() => {
     const run = async () => {
-      if (!contract || !asset || asset.source.__typename !== 'ERC20') {
+      if (!contract || !asset) {
         return;
       }
 

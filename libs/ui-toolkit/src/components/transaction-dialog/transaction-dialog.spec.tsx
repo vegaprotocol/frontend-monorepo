@@ -1,8 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import {
-  EthereumError,
-  TxState,
-} from '../../../hooks/use-ethereum-transaction';
+import { EthereumError, TxState } from '@vegaprotocol/react-helpers';
 import type { TransactionDialogProps } from './transaction-dialog';
 import { TransactionDialog } from './transaction-dialog';
 

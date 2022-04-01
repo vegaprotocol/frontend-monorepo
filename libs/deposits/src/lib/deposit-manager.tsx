@@ -1,7 +1,5 @@
-import type { DepositPage } from './__generated__/DepositPage';
 import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
 import { useEffect, useMemo, useState } from 'react';
-import type { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { DepositForm } from './deposit-form';
 import { useBalanceOfERC20Token } from './use-balance-of-erc20-token';
 import { useDeposit } from './use-deposit';
@@ -9,35 +7,45 @@ import sortBy from 'lodash/sortBy';
 import { useApprove } from './use-approve';
 import { useDepositLimits } from './use-deposit-limits';
 import { useAllowance } from './use-allowance';
-import { TransactionDialog } from './transaction-dialog';
+import { TransactionDialog } from '@vegaprotocol/ui-toolkit';
 import { useFaucet } from './use-faucet';
-import { useTokenContract } from '../../../hooks/use-token-contract';
-import { useBridgeContract } from '../../../hooks/use-bridge-contract';
+import {
+  useTokenContract,
+  useBridgeContract,
+} from '@vegaprotocol/react-helpers';
+
+export interface Asset {
+  id: string;
+  symbol: string;
+  name: string;
+  decimals: number;
+  source: {
+    contractAddress: string;
+  };
+}
 
 interface DepositManagerProps {
-  ethereumConfig: EthereumConfig;
-  data: DepositPage;
+  requiredConfirmations: number;
+  bridgeAddress: string;
+  assets: Asset[];
   initialAssetId?: string;
 }
 
 export const DepositManager = ({
-  ethereumConfig,
-  data,
+  requiredConfirmations,
+  bridgeAddress,
+  assets,
   initialAssetId,
 }: DepositManagerProps) => {
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
 
   // Find the asset object from the select box
   const asset = useMemo(() => {
-    const asset = data.assets?.find((a) => a.id === assetId);
+    const asset = assets?.find((a) => a.id === assetId);
     return asset;
-  }, [data, assetId]);
+  }, [assets, assetId]);
 
-  const tokenContract = useTokenContract(
-    asset && asset.source.__typename === 'ERC20'
-      ? asset.source.contractAddress
-      : undefined
-  );
+  const tokenContract = useTokenContract(asset?.source.contractAddress);
   const bridgeContract = useBridgeContract();
 
   // Get users balance of the erc20 token selected
@@ -47,19 +55,13 @@ export const DepositManager = ({
   const limits = useDepositLimits(bridgeContract, asset);
 
   // Get allowance (approved spending limit of brdige contract) for the selected asset
-  const allowance = useAllowance(
-    tokenContract,
-    ethereumConfig.collateral_bridge_contract.address
-  );
+  const allowance = useAllowance(tokenContract, bridgeAddress);
 
   // Set up approve transaction
-  const approve = useApprove(
-    tokenContract,
-    ethereumConfig.collateral_bridge_contract.address
-  );
+  const approve = useApprove(tokenContract, bridgeAddress);
 
   // Set up deposit transaction
-  const deposit = useDeposit(bridgeContract, ethereumConfig.confirmations);
+  const deposit = useDeposit(bridgeContract, requiredConfirmations);
 
   // Set up faucet transaction
   const faucet = useFaucet(tokenContract);
@@ -77,7 +79,7 @@ export const DepositManager = ({
         available={balanceOf}
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
-        assets={sortBy(data.assets, 'name')}
+        assets={sortBy(assets, 'name')}
         submitApprove={approve.perform}
         submitDeposit={deposit.perform}
         requestFaucet={faucet.perform}
@@ -90,7 +92,7 @@ export const DepositManager = ({
         {...deposit}
         name="deposit"
         // Must wait for additional confirmations for Vega to pick up the Ethereum transaction
-        requiredConfirmations={ethereumConfig.confirmations}
+        requiredConfirmations={requiredConfirmations}
       />
     </>
   );

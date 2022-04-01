@@ -1,10 +1,10 @@
 import { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
-import { FAUCETABLE } from '../pages/portfolio/deposit/config';
 
 export const useTokenContract = (
-  contractAddress?: string
+  contractAddress?: string,
+  faucetable = false
 ): ERC20Token | null => {
   const { provider } = useWeb3React();
   const contract = useMemo(() => {
@@ -15,9 +15,9 @@ export const useTokenContract = (
       contractAddress,
       provider,
       provider.getSigner(),
-      FAUCETABLE
+      faucetable
     );
-  }, [provider, contractAddress]);
+  }, [provider, contractAddress, faucetable]);
 
   return contract;
 };

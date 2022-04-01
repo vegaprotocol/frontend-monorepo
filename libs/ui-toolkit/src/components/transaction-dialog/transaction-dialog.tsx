@@ -1,12 +1,12 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useRef, useState } from 'react';
-import {
-  isEthereumError,
-  TxState,
-} from '../../../hooks/use-ethereum-transaction';
+import { isEthereumError, TxState } from '@vegaprotocol/react-helpers';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 import { DialogWrapper } from './dialog-wrapper';
+import { Loader } from '../loader';
+import { Intent } from '../../utils/intent';
+import { Dialog } from '../dialog';
+import { Icon } from '../icon';
 
 export interface TransactionDialogProps<TEvent = undefined> {
   name: string;
