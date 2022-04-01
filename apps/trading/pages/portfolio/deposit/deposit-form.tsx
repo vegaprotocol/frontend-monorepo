@@ -16,6 +16,7 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
+import { FAUCETABLE } from './config';
 
 interface FormFields {
   asset: string;
@@ -131,7 +132,7 @@ export const DepositForm = ({
             {errors.asset.message}
           </InputError>
         )}
-        {process.env['NX_VEGA_ENV'] !== 'MAINNET' && selectedAsset && (
+        {FAUCETABLE && selectedAsset && (
           <UseButton onClick={requestFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>

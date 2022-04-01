@@ -1,4 +1,5 @@
 import type { DepositPage } from './__generated__/DepositPage';
+import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
 import { useMemo, useState } from 'react';
 import type { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { DepositForm } from './deposit-form';
@@ -76,7 +77,7 @@ export const DepositManager = ({
         requiredConfirmations={1}
       />
       <TransactionDialog {...faucet} name="faucet" requiredConfirmations={1} />
-      <TransactionDialog
+      <TransactionDialog<DepositEvent_busEvents_event_Deposit>
         {...deposit}
         name="deposit"
         requiredConfirmations={ethereumConfig.confirmations}
