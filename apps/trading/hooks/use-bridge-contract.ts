@@ -1,38 +1,20 @@
 import type { Networks } from '@vegaprotocol/smart-contracts-sdk';
 import { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
-import type { Dispatch, SetStateAction } from 'react';
-import { useEffect, useState } from 'react';
-
-let contract: VegaErc20Bridge | null = null;
-let consumers: Array<Dispatch<SetStateAction<VegaErc20Bridge | null>>> = [];
+import { useMemo } from 'react';
 
 export const useBridgeContract = () => {
   const { provider } = useWeb3React();
-  const [, newConsumer] = useState<VegaErc20Bridge | null>(null);
 
-  useEffect(() => {
-    consumers.push(newConsumer);
-
-    return () => {
-      consumers = consumers.filter((c) => c !== newConsumer);
-    };
-  }, []);
-
-  useEffect(() => {
+  const contract = useMemo(() => {
     if (!provider) {
-      contract = null;
-    } else {
-      contract = new VegaErc20Bridge(
-        process.env['NX_VEGA_ENV'] as Networks,
-        provider,
-        provider?.getSigner()
-      );
+      return null;
     }
-
-    consumers.forEach((consumer) => {
-      consumer(contract);
-    });
+    return new VegaErc20Bridge(
+      process.env['NX_VEGA_ENV'] as Networks,
+      provider,
+      provider?.getSigner()
+    );
   }, [provider]);
 
   return contract;

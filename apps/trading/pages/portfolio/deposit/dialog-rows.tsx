@@ -74,12 +74,15 @@ export const TxRow = ({
   return <p>{t('Await Ethereum transaction')}</p>;
 };
 
-interface VegaRowProps {
+interface ConfirmationEventRowProps {
   status: TxState;
   confirmed: boolean;
 }
 
-export const VegaRow = ({ status, confirmed }: VegaRowProps) => {
+export const ConfirmationEventRow = ({
+  status,
+  confirmed,
+}: ConfirmationEventRowProps) => {
   if (status !== TxState.Complete) {
     return <p>{t('Vega confirmation')}</p>;
   }

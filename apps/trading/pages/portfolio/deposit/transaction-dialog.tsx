@@ -5,7 +5,7 @@ import {
   isEthereumError,
   TxState,
 } from '../../../hooks/use-ethereum-transaction';
-import { ConfirmRow, TxRow, VegaRow } from './dialog-rows';
+import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 import { DialogWrapper } from './dialog-wrapper';
 
 interface TransactionDialogProps<TEvent> {
@@ -30,24 +30,67 @@ export function TransactionDialog<TEvent>({
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogDismissed = useRef(false);
 
-  const getDialogIntent = () => {
-    if (status === TxState.Requested) {
-      return Intent.Prompt;
+  const renderStatus = () => {
+    if (status === TxState.Error) {
+      return (
+        <p className="text-black dark:text-white">{error && error.message}</p>
+      );
     }
 
+    return (
+      <>
+        <ConfirmRow status={status} />
+        <TxRow
+          status={status}
+          txHash={txHash}
+          confirmations={confirmations}
+          requiredConfirmations={requiredConfirmations}
+          highlightComplete={false}
+        />
+        {confirmationEvent !== undefined && (
+          <ConfirmationEventRow
+            status={status}
+            confirmed={Boolean(confirmationEvent)}
+          />
+        )}
+      </>
+    );
+  };
+
+  const getWrapperProps = () => {
+    let title = t(`${name} pending`);
+    let icon = <Loader />;
+    let intent = Intent.Progress;
+
     if (status === TxState.Error) {
-      return Intent.Danger;
+      title = t(`${name} failed`);
+      icon = <Icon name="warning-sign" size={20} />;
+      intent = Intent.Danger;
+    }
+
+    if (status === TxState.Requested) {
+      title = t('Confirm transaction');
+      icon = <Icon name="hand-up" size={20} />;
+      intent = Intent.Prompt;
     }
 
     if (confirmationEvent !== undefined) {
       if (confirmationEvent !== null) {
-        return Intent.Success;
+        title = t(`${name} complete`);
+        icon = <Icon name="tick" />;
+        intent = Intent.Success;
       }
     } else if (status === TxState.Complete) {
-      return Intent.Success;
+      title = t(`${name} complete`);
+      icon = <Icon name="tick" />;
+      intent = Intent.Success;
     }
 
-    return Intent.Progress;
+    return {
+      title,
+      icon,
+      intent,
+    };
   };
 
   useEffect(() => {
@@ -67,69 +110,7 @@ export function TransactionDialog<TEvent>({
     }
   }, [status, error]);
 
-  const renderStatus = () => {
-    if (status === TxState.Error) {
-      return (
-        <p className="text-black dark:text-white">{error && error.message}</p>
-      );
-    }
-
-    return (
-      <>
-        <ConfirmRow status={status} />
-        <TxRow
-          status={status}
-          txHash={txHash}
-          confirmations={confirmations}
-          requiredConfirmations={requiredConfirmations}
-          highlightComplete={false}
-        />
-        {confirmationEvent !== undefined && (
-          <VegaRow status={status} confirmed={Boolean(confirmationEvent)} />
-        )}
-      </>
-    );
-  };
-
-  const renderIcon = () => {
-    if (status === TxState.Error) {
-      return <Icon name="warning-sign" size={20} />;
-    }
-
-    if (status === TxState.Requested) {
-      return <Icon name="hand-up" size={20} />;
-    }
-
-    if (confirmationEvent !== undefined) {
-      if (confirmationEvent !== null) {
-        return <Icon name="tick" />;
-      }
-    } else if (status === TxState.Complete) {
-      return <Icon name="tick" />;
-    }
-
-    return <Loader />;
-  };
-
-  const renderTitle = () => {
-    if (status === TxState.Requested) {
-      return t('Confirm transaction');
-    }
-
-    if (status === TxState.Error) {
-      return t(`${name} failed`);
-    }
-
-    if (confirmationEvent !== undefined) {
-      if (confirmationEvent !== null) {
-        return t(`${name} complete`);
-      }
-    } else if (status === TxState.Complete) {
-      return t(`${name} complete`);
-    }
-
-    return t(`${name} pending`);
-  };
+  const { intent, ...wrapperProps } = getWrapperProps();
 
   return (
     <Dialog
@@ -138,11 +119,9 @@ export function TransactionDialog<TEvent>({
         setDialogOpen(isOpen);
         dialogDismissed.current = true;
       }}
-      intent={getDialogIntent()}
+      intent={intent}
     >
-      <DialogWrapper title={renderTitle()} icon={renderIcon()}>
-        {renderStatus()}
-      </DialogWrapper>
+      <DialogWrapper {...wrapperProps}>{renderStatus()}</DialogWrapper>
     </Dialog>
   );
 }
