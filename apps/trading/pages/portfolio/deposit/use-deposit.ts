@@ -5,7 +5,6 @@ import type {
   DepositEvent_busEvents_event_Deposit,
 } from './__generated__/DepositEvent';
 import { DepositStatus } from '@vegaprotocol/types';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useState } from 'react';
 import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
 import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
@@ -31,10 +30,11 @@ export const useDeposit = (
   contract: VegaErc20Bridge | null,
   confirmations: number
 ) => {
-  const { keypair } = useVegaWallet();
-
   const [confirmationEvent, setConfirmationEvent] =
     useState<DepositEvent_busEvents_event_Deposit | null>(null);
+  // Store public key from contract arguments for use in the subscription,
+  // NOTE: it may be different from the users connected key
+  const [partyId, setPartyId] = useState<string | null>(null);
 
   const transaction = useEthereumTransaction<{
     assetSource: string;
@@ -44,7 +44,11 @@ export const useDeposit = (
     if (!contract) {
       return null;
     }
+    // New deposit started clear old confirmation event and start
+    // tracking deposits for the new public key
     setConfirmationEvent(null);
+    setPartyId(args.vegaPublicKey);
+
     return contract.depositAsset(
       args.assetSource,
       args.amount,
@@ -53,8 +57,8 @@ export const useDeposit = (
   }, confirmations);
 
   useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
-    variables: { partyId: keypair?.pub || '' },
-    skip: !keypair?.pub,
+    variables: { partyId: partyId || '' },
+    skip: !partyId,
     onSubscriptionData: ({ subscriptionData }) => {
       if (!subscriptionData.data?.busEvents?.length) {
         return;
