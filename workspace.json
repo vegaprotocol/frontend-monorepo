@@ -9,6 +9,7 @@
     "order-list": "libs/order-list",
     "positions": "libs/positions",
     "react-helpers": "libs/react-helpers",
+    "static": "apps/static",
     "stats": "apps/stats",
     "stats-e2e": "apps/stats-e2e",
     "tailwindcss-config": "libs/tailwindcss-config",
