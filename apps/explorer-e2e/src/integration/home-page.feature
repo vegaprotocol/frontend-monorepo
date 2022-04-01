@@ -1,6 +1,10 @@
 Feature: Home page
 
-  Scenario Outline: Successful search for specific id by <IdType>
+  Scenario: Stats page displayed correctly
+    Given I am on the homepage
+    Then the stats for "testnet" is correctly displayed
+
+  Scenario Outline: Succesfful search for specific id by <IdType>
     Given I am on the homepage
     When I search for '<Id>'
     Then I am redirected to page containing id '<Id>'

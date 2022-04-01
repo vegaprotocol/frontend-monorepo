@@ -86,7 +86,10 @@ export const StatsManager = ({
 
   return (
     <div className={classes}>
-      <h3 className="font-alpha uppercase text-h3 pb-16 col-span-full">
+      <h3
+        data-testid="stats-environment"
+        className="font-alpha uppercase text-h3 pb-16 col-span-full"
+      >
         {(error && `/ ${error}`) || (data ? `/ ${envName}` : '/ Connecting...')}
       </h3>
 
