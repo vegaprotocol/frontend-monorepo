@@ -9,10 +9,12 @@ export enum Intent {
   Help = 'help',
 }
 
-export enum Variant {
-  Success = 'success',
-  Warning = 'warning',
+export enum TailwindIntents {
   Danger = 'danger',
+  Warning = 'warning',
+  Prompt = 'prompt',
+  Success = 'success',
+  Help = 'help',
   Highlight = 'highlight',
 }
 
@@ -27,12 +29,13 @@ export const getIntentShadow = (intent?: Intent) => {
   });
 };
 
-export const getVariantBackground = (variant?: Variant) => {
+export const getVariantBackground = (variant?: TailwindIntents) => {
   return classNames({
-    'bg-intent-success text-black': variant === Variant.Success,
-    'bg-intent-danger text-white': variant === Variant.Danger,
-    'bg-intent-warning text-black': variant === Variant.Warning,
-    'bg-intent-highlight text-black': variant === Variant.Highlight,
-    'bg-intent-help text-white': !variant,
+    'bg-intent-danger text-white': variant === TailwindIntents.Danger,
+    'bg-intent-warning text-black': variant === TailwindIntents.Warning,
+    'bg-intent-prompt text-black': variant === TailwindIntents.Prompt,
+    'bg-intent-success text-black': variant === TailwindIntents.Success,
+    'bg-intent-help text-white': variant === TailwindIntents.Help,
+    'bg-intent-highlight text-black': variant === TailwindIntents.Highlight,
   });
 };

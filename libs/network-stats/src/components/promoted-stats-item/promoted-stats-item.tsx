@@ -1,7 +1,7 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { StatFields } from '../../config/types';
 import { defaultFieldFormatter } from '../table-row';
-import { Card, Indicator, Variant } from '@vegaprotocol/ui-toolkit';
+import { Card, Indicator, TailwindIntents } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 
 export const PromotedStatsItem = ({
@@ -15,9 +15,9 @@ export const PromotedStatsItem = ({
     () =>
       goodThreshold
         ? goodThreshold(value)
-          ? Variant.Success
-          : Variant.Danger
-        : Variant.Highlight,
+          ? TailwindIntents.Success
+          : TailwindIntents.Danger
+        : TailwindIntents.Highlight,
     [goodThreshold, value]
   );
   return (
