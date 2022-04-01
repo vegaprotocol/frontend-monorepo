@@ -1,7 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { DepositPage_assets } from '@vegaprotocol/graphql';
+import type { DepositPage_assets } from './__generated__/DepositPage';
 import BigNumber from 'bignumber.js';
-import { DepositForm, DepositFormProps } from './deposit-form';
+import type { DepositFormProps } from './deposit-form';
+import { DepositForm } from './deposit-form';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 
@@ -34,6 +35,7 @@ beforeEach(() => {
     available: new BigNumber(5),
     submitApprove: jest.fn(),
     submitDeposit: jest.fn(),
+    requestFaucet: jest.fn(),
     limits: {
       min: new BigNumber(0),
       max: new BigNumber(20),
