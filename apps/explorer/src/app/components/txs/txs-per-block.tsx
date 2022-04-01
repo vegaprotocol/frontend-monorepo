@@ -50,7 +50,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                     key={TxHash}
                     data-testid="transaction-row"
                   >
-                    <TableCell modifier="bordered">
+                    <TableCell modifier="bordered" className="pr-12">
                       <TruncatedLink
                         to={`/${Routes.TX}/${TxHash}`}
                         text={TxHash}
@@ -58,7 +58,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
                         endChars={truncateLength}
                       />
                     </TableCell>
-                    <TableCell modifier="bordered">
+                    <TableCell modifier="bordered" className="pr-12">
                       <TruncatedLink
                         to={`/${Routes.PARTIES}/${PubKey}`}
                         text={PubKey}

@@ -53,9 +53,9 @@ export const Search = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex ml-16 mr-12 justify-end"
+      className="flex-1 flex self-center md:ml-16 md:mr-12 md:justify-end"
     >
-      <FormGroup className="relative w-2/3 mb-0">
+      <FormGroup className="relative w-full md:w-2/3 mb-0">
         <Input
           {...register('search')}
           id="search"
