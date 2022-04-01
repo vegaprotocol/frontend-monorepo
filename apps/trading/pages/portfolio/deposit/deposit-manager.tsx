@@ -1,11 +1,6 @@
-import {
-  DepositPage,
-  DepositEvent_busEvents_event_Deposit,
-} from '@vegaprotocol/graphql';
-import { Dialog, EtherscanLink, Intent } from '@vegaprotocol/ui-toolkit';
-import { useWeb3React } from '@web3-react/core';
+import type { DepositPage } from './__generated__/DepositPage';
 import { useMemo, useState } from 'react';
-import { EthereumConfig } from '../../../components/web3-container/web3-container';
+import type { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { DepositForm } from './deposit-form';
 import { useBalanceOfERC20Token } from './use-balance-of-erc20-token';
 import { useDeposit } from './use-deposit';

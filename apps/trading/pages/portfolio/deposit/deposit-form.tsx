@@ -1,5 +1,5 @@
-import { DepositPage_assets } from '@vegaprotocol/graphql';
-import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
+import type { DepositPage_assets } from './__generated__/DepositPage';
+import { addDecimal, removeDecimal, t } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,
@@ -12,7 +12,8 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
-import { ReactNode, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 
@@ -89,14 +90,17 @@ export const DepositForm = ({
 
   return (
     <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
-      <FormGroup label="From (Ethereum address)" labelFor="ethereum-address">
+      <FormGroup
+        label={t('From (Ethereum address)')}
+        labelFor="ethereum-address"
+      >
         <Input
           {...register('from', {
-            required: 'Required',
+            required: t('Required'),
             validate: {
               validEthereumAddress: (value) => {
                 if (!ethers.utils.isAddress(value)) {
-                  return 'Invalid Ethereum address';
+                  return t('Invalid Ethereum address');
                 }
 
                 return true;
@@ -111,9 +115,9 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label="Asset" labelFor="asset">
-        <Select {...register('asset', { required: 'Required' })} id="asset">
-          <option value="">Please select</option>
+      <FormGroup label={t('Asset')} labelFor="asset">
+        <Select {...register('asset', { required: t('Required') })} id="asset">
+          <option value="">{t('Please select')}</option>
           {assets.map((a) => (
             <option key={a.id} value={a.id}>
               {a.name}
@@ -126,14 +130,18 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label="To (Vega key)" labelFor="vega-key" className="relative">
+      <FormGroup
+        label={t('To (Vega key)')}
+        labelFor="vega-key"
+        className="relative"
+      >
         <Input
           {...register('to', {
-            required: 'Required',
+            required: t('Required'),
             validate: {
               validVegaAddress: (value) => {
                 if (value.length !== 64 || !/^[A-Za-z0-9]*$/i.test(value)) {
-                  return 'Invalid Vega key';
+                  return t('Invalid Vega key');
                 }
 
                 return true;
@@ -154,7 +162,7 @@ export const DepositForm = ({
               clearErrors('to');
             }}
           >
-            Use connected
+            {t('Use connected')}
           </UseButton>
         )}
       </FormGroup>
@@ -163,13 +171,13 @@ export const DepositForm = ({
           <DepositLimits limits={limits} />
         </FormGroup>
       )}
-      <FormGroup label="Amount" labelFor="amount" className="relative">
+      <FormGroup label={t('Amount')} labelFor="amount" className="relative">
         <Input
           type="number"
           autoComplete="off"
           id="amount"
           {...register('amount', {
-            required: 'Required',
+            required: t('Required'),
             validate: {
               minSafe: (value) => {
                 // Min viable amount given asset decimals EG for WEI 0.000000000000000001
@@ -182,7 +190,7 @@ export const DepositForm = ({
                   : minViableAmount;
 
                 if (new BigNumber(value).isLessThan(min)) {
-                  return 'Amount is below permitted minimum';
+                  return t('Amount is below permitted minimum');
                 }
 
                 return true;
@@ -192,16 +200,16 @@ export const DepositForm = ({
 
                 const maxLimit = limits ? limits.max : new BigNumber(Infinity);
                 if (value.isGreaterThan(maxLimit)) {
-                  return 'Amount is above permitted maximum';
+                  return t('Amount is above permitted maximum');
                 }
 
                 const maxApproved = allowance ? allowance : new BigNumber(0);
                 if (value.isGreaterThan(maxApproved)) {
-                  return 'Amount is above approved amount';
+                  return t('Amount is above approved amount');
                 }
 
                 if (value.isGreaterThan(available)) {
-                  return 'Insufficient amount in Ethereum wallet';
+                  return t('Insufficient amount in Ethereum wallet');
                 }
 
                 return true;
@@ -225,7 +233,7 @@ export const DepositForm = ({
               clearErrors('amount');
             }}
           >
-            Use maximum
+            {t('Use maximum')}
           </UseButton>
         )}
       </FormGroup>
@@ -260,25 +268,25 @@ const FormButton = ({
   if (!selectedAsset) {
     button = (
       <Button type="submit" className="w-full">
-        Deposit
+        {t('Deposit')}
       </Button>
     );
   } else if (approved) {
     message = (
       <>
-        <Icon name="tick" /> <span>Approved</span>
+        <Icon name="tick" /> <span>{t('Approved')}</span>
       </>
     );
     button = (
       <Button type="submit" className="w-full">
-        Deposit
+        {t('Deposit')}
       </Button>
     );
   } else {
-    message = `Deposits of ${selectedAsset.symbol} not approved`;
+    message = t(`Deposits of ${selectedAsset.symbol} not approved`);
     button = (
       <Button onClick={onApproveClick} className="w-full">
-        Approve {selectedAsset.symbol}
+        {t(`Approve ${selectedAsset.symbol}`)}
       </Button>
     );
   }

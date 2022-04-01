@@ -1,9 +1,9 @@
-import { DepositEvent_busEvents_event_Deposit } from '@vegaprotocol/graphql';
+import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useRef, useState } from 'react';
+import type { TxError } from '../../../hooks/use-ethereum-transaction';
 import {
   TxState,
-  TxError,
   isEthereumError,
 } from '../../../hooks/use-ethereum-transaction';
 import { ConfirmRow, TxRow, VegaRow } from './dialog-rows';

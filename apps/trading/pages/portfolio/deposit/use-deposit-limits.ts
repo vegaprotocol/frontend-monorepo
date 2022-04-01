@@ -1,4 +1,4 @@
-import { DepositPage_assets } from '@vegaprotocol/graphql';
+import type { DepositPage_assets } from './__generated__/DepositPage';
 import BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 import { useBridgeContract } from '../../../hooks/use-bridge-contract';

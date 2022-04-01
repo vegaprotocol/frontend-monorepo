@@ -1,4 +1,4 @@
-import { DepositPage_assets } from '@vegaprotocol/graphql';
+import type { DepositPage_assets } from './__generated__/DepositPage';
 import { useEthereumTransaction } from '../../../hooks/use-ethereum-transaction';
 import { useTokenContract } from '../../../hooks/use-token-contract';
 

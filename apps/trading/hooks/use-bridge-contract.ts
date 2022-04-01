@@ -1,6 +1,7 @@
 import { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 
 let contract: VegaErc20Bridge | null = null;
 let consumers: Array<Dispatch<SetStateAction<VegaErc20Bridge | null>>> = [];

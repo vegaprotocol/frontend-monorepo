@@ -1,4 +1,4 @@
-import { DepositEvent_busEvents_event_Deposit } from '@vegaprotocol/graphql';
+import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { TxState } from '../../../hooks/use-ethereum-transaction';

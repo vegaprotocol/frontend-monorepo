@@ -1,7 +1,7 @@
-import { EthereumConfig } from '../../../components/web3-container/web3-container';
+import type { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import { DepositPage } from '@vegaprotocol/graphql';
+import type { DepositPage } from './__generated__/DepositPage';
 import { DepositManager } from './deposit-manager';
 
 const DEPOSIT_PAGE_QUERY = gql`

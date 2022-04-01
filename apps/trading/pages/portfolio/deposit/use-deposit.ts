@@ -1,10 +1,10 @@
 import { gql, useSubscription } from '@apollo/client';
-import {
+import type {
   DepositEvent,
   DepositEventVariables,
   DepositEvent_busEvents_event_Deposit,
-  DepositStatus,
-} from '@vegaprotocol/graphql';
+} from './__generated__/DepositEvent';
+import { DepositStatus } from '@vegaprotocol/types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useState } from 'react';
 import { useBridgeContract } from '../../../hooks/use-bridge-contract';

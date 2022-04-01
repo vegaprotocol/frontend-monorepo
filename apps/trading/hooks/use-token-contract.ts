@@ -1,7 +1,8 @@
-import { DepositPage_assets } from '@vegaprotocol/graphql';
+import type { DepositPage_assets } from '../pages/portfolio/deposit/__generated__/DepositPage';
 import { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
-import { useEffect, useState, Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
 
 let contract: ERC20Token | null = null;
 let consumers: Array<Dispatch<SetStateAction<ERC20Token | null>>> = [];
