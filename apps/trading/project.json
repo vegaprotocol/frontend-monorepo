@@ -12,7 +12,10 @@
         "outputPath": "dist/apps/trading"
       },
       "configurations": {
-        "production": {}
+        "production": {
+          "optimization": true,
+          "sourceMap": true
+        }
       }
     },
     "serve": {
