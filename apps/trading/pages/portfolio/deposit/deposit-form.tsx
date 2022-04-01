@@ -72,14 +72,14 @@ export const DepositForm = ({
   });
 
   const onDeposit = async (fields: FormFields) => {
-    if (selectedAsset?.source.__typename !== 'ERC20' || !keypair) {
-      return;
+    if (selectedAsset?.source.__typename !== 'ERC20') {
+      throw new Error('Invalid asset, only ERC20 tokens are permitted');
     }
 
     submitDeposit({
       assetSource: selectedAsset.source.contractAddress,
       amount: removeDecimal(fields.amount, selectedAsset.decimals),
-      vegaPublicKey: `0x${keypair.pub}`,
+      vegaPublicKey: `0x${fields.to}`,
     });
   };
 
