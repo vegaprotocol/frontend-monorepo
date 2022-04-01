@@ -1,4 +1,3 @@
-/* eslint-disable cypress/no-unnecessary-waiting */
 import BasePage from './base-page';
 
 export default class TransactionsPage extends BasePage {
@@ -43,7 +42,8 @@ export default class TransactionsPage extends BasePage {
   }
 
   validateTxDetailsAreDisplayed() {
-    cy.wait(1000);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000); // Wait for transactions to load if there are any
     cy.get('body').then(($body) => {
       if ($body.find(`[data-testid=${this.txHash}]`).length) {
         cy.getByTestId(this.txHash).invoke('text').should('have.length', 64);
@@ -80,7 +80,8 @@ export default class TransactionsPage extends BasePage {
   }
 
   clickOnTopTransaction() {
-    cy.wait(1000);
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000); // Wait for transactions to load if there are any
     cy.get('body').then(($body) => {
       if ($body.find(`[data-testid=${this.transactionRow}]`).length) {
         cy.getByTestId(this.transactionRow).first().find('a').first().click();
