@@ -1,4 +1,3 @@
-import type { DepositPage_assets } from '../pages/portfolio/deposit/__generated__/DepositPage';
 import { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import type { Dispatch, SetStateAction } from 'react';
@@ -8,7 +7,7 @@ let contract: ERC20Token | null = null;
 let consumers: Array<Dispatch<SetStateAction<ERC20Token | null>>> = [];
 
 export const useTokenContract = (
-  asset?: DepositPage_assets
+  contractAddress?: string
 ): ERC20Token | null => {
   const { provider } = useWeb3React();
   const [, newConsumer] = useState<ERC20Token | null>(null);
@@ -22,11 +21,11 @@ export const useTokenContract = (
   }, []);
 
   useEffect(() => {
-    if (!provider || !asset || asset.source.__typename !== 'ERC20') {
+    if (!provider || !contractAddress) {
       contract = null;
     } else {
       contract = new ERC20Token(
-        asset.source.contractAddress,
+        contractAddress,
         provider,
         provider?.getSigner()
       );
@@ -35,7 +34,7 @@ export const useTokenContract = (
     consumers.forEach((consumer) => {
       consumer(contract);
     });
-  }, [provider, asset]);
+  }, [provider, contractAddress]);
 
   return contract;
 };

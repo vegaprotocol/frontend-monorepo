@@ -6,7 +6,11 @@ export const useApprove = (
   bridgeAddress: string,
   asset?: DepositPage_assets
 ) => {
-  const contract = useTokenContract(asset);
+  const contract = useTokenContract(
+    asset && asset.source.__typename === 'ERC20'
+      ? asset.source.contractAddress
+      : undefined
+  );
   const transaction = useEthereumTransaction(() => {
     if (!contract) {
       return null;

@@ -9,7 +9,11 @@ export const useAllowance = (
   asset?: DepositPage_assets
 ) => {
   const { account } = useWeb3React();
-  const contract = useTokenContract(asset);
+  const contract = useTokenContract(
+    asset && asset.source.__typename === 'ERC20'
+      ? asset.source.contractAddress
+      : undefined
+  );
   const [allowance, setAllowance] = useState<BigNumber | null>(null);
 
   useEffect(() => {
