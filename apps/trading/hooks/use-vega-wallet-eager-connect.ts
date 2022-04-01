@@ -2,6 +2,7 @@ import { useVegaWallet, WALLET_CONFIG } from '@vegaprotocol/wallet';
 import { useEffect } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { Connectors } from '../lib/vega-connectors';
+import { captureException } from '@sentry/nextjs';
 
 export function useEagerConnect() {
   const { connect } = useVegaWallet();
@@ -27,8 +28,10 @@ export function useEagerConnect() {
 
     // Developer hasn't provided this connector
     if (!connector) {
-      console.warn(
-        `Can't eager connect, connector: ${cfgObj.connector} not found`
+      captureException(
+        new Error(
+          `Can't eager connect, connector: ${cfgObj.connector} not found`
+        )
       );
       return;
     }
