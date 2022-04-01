@@ -32,7 +32,7 @@ jobs:
       - name: Check formatting
         run: yarn nx format:check
       - name: Lint affected
-        run: yarn nx affected:lint
+        run: yarn nx affected:lint --max-warnings=0
       - name: Test affected
         run: yarn nx affected:test
       - name: Build affected
@@ -60,7 +60,7 @@ jobs:
       - name: Check formatting
         run: yarn nx format:check
       - name: Lint affected
-        run: yarn nx affected:lint
+        run: yarn nx affected:lint --max-warnings=0
       - name: Test affected
         run: yarn nx affected:test
       - name: Build affected
