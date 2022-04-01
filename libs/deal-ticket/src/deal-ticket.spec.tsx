@@ -46,7 +46,7 @@ const transactionStatus = 'default';
 
 function generateJsx() {
   return (
-    <VegaWalletContext.Provider value={{} as any}>
+    <VegaWalletContext.Provider value={{} as never}>
       <DealTicket
         defaultOrder={order}
         market={market}

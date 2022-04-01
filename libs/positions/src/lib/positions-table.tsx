@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from 'react';
+import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import {
   PriceCell,

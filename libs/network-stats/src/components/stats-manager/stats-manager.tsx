@@ -9,7 +9,6 @@ import { Table } from '../table';
 import { TableRow } from '../table-row';
 import { PromotedStats } from '../promoted-stats';
 import { PromotedStatsItem } from '../promoted-stats-item';
-import { Card } from '@vegaprotocol/ui-toolkit';
 
 interface StatsManagerProps {
   envName: string;
