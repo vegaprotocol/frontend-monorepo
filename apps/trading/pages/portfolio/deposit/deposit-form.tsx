@@ -35,6 +35,7 @@ export interface DepositFormProps {
     amount: string;
     vegaPublicKey: string;
   }) => Promise<void>;
+  requestFaucet: () => Promise<void>;
   limits: {
     min: BigNumber;
     max: BigNumber;
@@ -49,6 +50,7 @@ export const DepositForm = ({
   available,
   submitApprove,
   submitDeposit,
+  requestFaucet,
   limits,
   allowance,
 }: DepositFormProps) => {
@@ -115,7 +117,7 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label={t('Asset')} labelFor="asset">
+      <FormGroup label={t('Asset')} labelFor="asset" className="relative">
         <Select {...register('asset', { required: t('Required') })} id="asset">
           <option value="">{t('Please select')}</option>
           {assets.map((a) => (
@@ -128,6 +130,11 @@ export const DepositForm = ({
           <InputError intent="danger" className="mt-4">
             {errors.asset.message}
           </InputError>
+        )}
+        {process.env['NX_VEGA_ENV'] !== 'MAINNET' && selectedAsset && (
+          <UseButton onClick={requestFaucet}>
+            {t(`Get ${selectedAsset.symbol}`)}
+          </UseButton>
         )}
       </FormGroup>
       <FormGroup

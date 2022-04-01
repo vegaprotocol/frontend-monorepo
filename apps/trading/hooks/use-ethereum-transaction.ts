@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import type { ethers } from 'ethers';
 import { useCallback, useState } from 'react';
 
 export enum TxState {

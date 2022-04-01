@@ -31,7 +31,7 @@ export const useDeposit = (confirmations: number) => {
   const contract = useBridgeContract();
   const { keypair } = useVegaWallet();
 
-  const [finalizedDeposit, setFinalizedDeposit] =
+  const [confirmationEvent, setConfirmationEvent] =
     useState<DepositEvent_busEvents_event_Deposit | null>(null);
 
   const transaction = useEthereumTransaction<{
@@ -42,7 +42,7 @@ export const useDeposit = (confirmations: number) => {
     if (!contract) {
       return null;
     }
-    setFinalizedDeposit(null);
+    setConfirmationEvent(null);
     return contract.depositAsset(
       args.assetSource,
       args.amount,
@@ -77,13 +77,13 @@ export const useDeposit = (confirmations: number) => {
       });
 
       if (matchingDeposit && matchingDeposit.event.__typename === 'Deposit') {
-        setFinalizedDeposit(matchingDeposit.event);
+        setConfirmationEvent(matchingDeposit.event);
       }
     },
   });
 
   return {
     ...transaction,
-    finalizedDeposit,
+    confirmationEvent,
   };
 };

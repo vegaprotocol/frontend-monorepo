@@ -2,6 +2,7 @@ import type { DepositEvent_busEvents_event_Deposit } from './__generated__/Depos
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { TxState } from '../../../hooks/use-ethereum-transaction';
+import { t } from '@vegaprotocol/react-helpers';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
 
@@ -38,14 +39,15 @@ export const TxRow = ({
     return (
       <p className={`flex justify-between ${ACTIVE_CLASSES}`}>
         <span>
-          Awaiting Ethereum transaction {confirmations}/{requiredConfirmations}{' '}
-          confirmations...
+          {t(
+            `Awaiting Ethereum transaction ${confirmations}/${requiredConfirmations} confirmations...`
+          )}
         </span>
         <EtherscanLink
           tx={txHash || ''}
           chainId={chainId || 3}
           className="underline text-vega-pink dark:text-vega-yellow"
-          text="View on Etherscan"
+          text={t('View on Etherscan')}
         />
       </p>
     );
@@ -58,37 +60,39 @@ export const TxRow = ({
           highlightComplete ? ACTIVE_CLASSES : ''
         }`}
       >
-        <span>Ethereum transaction complete</span>
+        <span>{t('Ethereum transaction complete')}</span>
         <EtherscanLink
           tx={txHash || ''}
           chainId={chainId || 3}
           className="underline"
-          text="View on Etherscan"
+          text={t('View on Etherscan')}
         />
       </p>
     );
   }
 
-  return <p>Await Ethereum transaction</p>;
+  return <p>{t('Await Ethereum transaction')}</p>;
 };
 
 interface VegaRowProps {
   status: TxState;
-  finalizedDeposit: DepositEvent_busEvents_event_Deposit | null;
+  confirmed: boolean;
 }
 
-export const VegaRow = ({ status, finalizedDeposit }: VegaRowProps) => {
+export const VegaRow = ({ status, confirmed }: VegaRowProps) => {
   if (status !== TxState.Complete) {
-    return <p>Vega confirmation</p>;
+    return <p>{t('Vega confirmation')}</p>;
   }
 
-  if (!finalizedDeposit) {
+  if (!confirmed) {
     return (
       <p className="text-black dark:text-white">
-        Vega is confirming your deposit...
+        {t('Vega is confirming your transaction...')}
       </p>
     );
   }
 
-  return <p className="text-black dark:text-white">Deposit confirmed</p>;
+  return (
+    <p className="text-black dark:text-white">{t('Transaction confirmed')}</p>
+  );
 };

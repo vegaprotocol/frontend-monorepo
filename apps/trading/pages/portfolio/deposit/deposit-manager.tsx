@@ -8,8 +8,8 @@ import sortBy from 'lodash/sortBy';
 import { useApprove } from './use-approve';
 import { useDepositLimits } from './use-deposit-limits';
 import { useAllowance } from './use-allowance';
-import { ApproveDialog } from './approve-dialog';
-import { DepositDialog } from './deposit-dialog';
+import { TransactionDialog } from './transaction-dialog';
+import { useFaucet } from './use-faucet';
 
 interface DepositManagerProps {
   ethereumConfig: EthereumConfig;
@@ -48,22 +48,14 @@ export const DepositManager = ({
     assetContractAddress
   );
 
-  const {
-    perform: performApprove,
-    status: statusApprove,
-    confirmations: confirmationsApprove,
-    txHash: txHashApprove,
-    error: errorApprove,
-  } = useApprove(ethereumConfig.collateral_bridge_contract.address, asset);
+  const approve = useApprove(
+    ethereumConfig.collateral_bridge_contract.address,
+    assetContractAddress
+  );
 
-  const {
-    perform: performDeposit,
-    status: statusDeposit,
-    confirmations: confirmationsDeposit,
-    txHash: txHashDeposit,
-    finalizedDeposit,
-    error: errorDeposit,
-  } = useDeposit(ethereumConfig.confirmations);
+  const deposit = useDeposit(ethereumConfig.confirmations);
+
+  const faucet = useFaucet(assetContractAddress);
 
   return (
     <>
@@ -72,25 +64,22 @@ export const DepositManager = ({
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(data.assets, 'name')}
-        submitApprove={performApprove}
-        submitDeposit={performDeposit}
+        submitApprove={approve.perform}
+        submitDeposit={deposit.perform}
+        requestFaucet={faucet.perform}
         limits={limits}
         allowance={allowance}
       />
-      <ApproveDialog
-        status={statusApprove}
-        confirmations={confirmationsApprove}
+      <TransactionDialog
+        {...approve}
+        name="approve"
         requiredConfirmations={1}
-        txHash={txHashApprove}
-        error={errorApprove}
       />
-      <DepositDialog
-        status={statusDeposit}
-        finalizedDeposit={finalizedDeposit}
-        txHash={txHashDeposit}
-        confirmations={confirmationsDeposit}
+      <TransactionDialog {...faucet} name="faucet" requiredConfirmations={1} />
+      <TransactionDialog
+        {...deposit}
+        name="deposit"
         requiredConfirmations={ethereumConfig.confirmations}
-        error={errorDeposit}
       />
     </>
   );
