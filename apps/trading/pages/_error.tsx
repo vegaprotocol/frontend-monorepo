@@ -7,7 +7,10 @@ interface ErrorPageProps {
   hasGetInitialPropsRun: boolean;
   err: Error;
 }
-
+/**
+ * This error component is taken from the Sentry's next js setup docs.
+ * https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
+ */
 const ErrorPage = ({
   statusCode,
   hasGetInitialPropsRun,
