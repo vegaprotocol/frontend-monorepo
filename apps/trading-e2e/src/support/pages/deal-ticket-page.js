@@ -58,7 +58,7 @@ export default class DealTicketPage extends BasePage {
   }
 
   verifyOrderFailedInsufficientFunds() {
-    cy.getByTestId(this.orderErrorTxt).should(
+    cy.get(`[data-testid=${this.orderErrorTxt}]`, { timeout: 8000 }).should(
       'have.text',
       'Reason: InsufficientAssetBalance'
     );
