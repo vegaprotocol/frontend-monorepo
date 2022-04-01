@@ -1,15 +1,15 @@
-import { t } from '@vegaprotocol/react-helpers';
-import { Link } from 'react-router-dom';
+import { Routes } from '../../router-config';
+import type { Result } from '../tendermint-transaction-response.d';
 import {
-  Table,
+  TableWithTbody,
   TableCell,
   TableHeader,
   TableRow,
 } from '../../../components/table';
 import { TruncateInline } from '../../../components/truncate/truncate';
-import { Routes } from '../../../routes/router-config';
-import type { Result } from '../../../routes/txs/tendermint-transaction-response.d';
+import { t } from '@vegaprotocol/react-helpers';
 
+import { HighlightedLink } from '../../../components/highlighted-link';
 interface TxDetailsProps {
   txData: Result | undefined;
   pubKey: string | undefined;
@@ -24,7 +24,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   }
 
   return (
-    <Table className={className}>
+    <TableWithTbody className={className}>
       <TableRow modifier="bordered">
         <TableCell>{t('Hash')}</TableCell>
         <TableCell modifier="bordered" data-testid="hash">
@@ -36,23 +36,16 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
           {t('Submitted by')}
         </TableHeader>
         <TableCell modifier="bordered" data-testid="submitted-by">
-          <Link
-            className="text-vega-yellow"
-            to={`/${Routes.PARTIES}/${pubKey}`}
-          >
-            {pubKey}
-          </Link>
+          <HighlightedLink to={`/${Routes.PARTIES}/${pubKey}`} text={pubKey} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Block')}</TableCell>
         <TableCell modifier="bordered" data-testid="block">
-          <Link
-            className="text-vega-yellow"
+          <HighlightedLink
             to={`/${Routes.BLOCKS}/${txData.height}`}
-          >
-            {txData.height}
-          </Link>
+            text={txData.height}
+          />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
@@ -65,6 +58,6 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
           />
         </TableCell>
       </TableRow>
-    </Table>
+    </TableWithTbody>
   );
 };

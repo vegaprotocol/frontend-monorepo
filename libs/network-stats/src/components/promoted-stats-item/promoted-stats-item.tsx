@@ -1,4 +1,4 @@
-import { Tooltip } from '../tooltip';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { StatFields } from '../../config/types';
 import { defaultFieldFormatter } from '../table-row';
 import { GoodThresholdIndicator } from '../good-threshold-indicator';
@@ -11,7 +11,7 @@ export const PromotedStatsItem = ({
   description,
 }: StatFields) => {
   return (
-    <Tooltip description={description}>
+    <Tooltip description={description} align="start">
       <div className="px-24 py-16 pr-64 border items-center">
         <div className="uppercase text-[0.9375rem]">
           <GoodThresholdIndicator goodThreshold={goodThreshold} value={value} />

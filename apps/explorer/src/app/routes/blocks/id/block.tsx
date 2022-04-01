@@ -6,7 +6,7 @@ import type { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
 import { SecondsAgo } from '../../../components/seconds-ago';
 import {
-  Table,
+  TableWithTbody,
   TableRow,
   TableHeader,
   TableCell,
@@ -15,6 +15,7 @@ import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../router-config';
 import { RenderFetched } from '../../../components/render-fetched';
+import { HighlightedLink } from '../../../components/highlighted-link';
 import { t } from '@vegaprotocol/react-helpers';
 
 const Block = () => {
@@ -35,7 +36,7 @@ const Block = () => {
       <RouteTitle data-testid="block-header">{t(`BLOCK ${block}`)}</RouteTitle>
       <RenderFetched error={error} loading={loading}>
         <>
-          <div className="grid grid-cols-2 gap-16">
+          <div className="grid grid-cols-2 gap-16 mb-24">
             <Link
               data-testid="previous-block"
               to={`/${Routes.BLOCKS}/${Number(block) - 1}`}
@@ -57,17 +58,15 @@ const Block = () => {
               </Button>
             </Link>
           </div>
-          <Table className="mb-28">
+          <TableWithTbody className="mb-28">
             <TableRow modifier="bordered">
               <TableHeader scope="row">Mined by</TableHeader>
               <TableCell modifier="bordered">
-                <Link
-                  data-testid="block-validator"
-                  className="text-vega-yellow font-mono"
+                <HighlightedLink
                   to={`/${Routes.VALIDATORS}`}
-                >
-                  {header.proposer_address}
-                </Link>
+                  text={header.proposer_address}
+                  data-testid="block-validator"
+                />
               </TableCell>
             </TableRow>
             <TableRow modifier="bordered">
@@ -76,7 +75,7 @@ const Block = () => {
                 <SecondsAgo data-testid="block-time" date={header.time} />
               </TableCell>
             </TableRow>
-          </Table>
+          </TableWithTbody>
           {blockData && blockData.result.block.data.txs.length > 0 ? (
             <TxsPerBlock blockHeight={block} />
           ) : null}

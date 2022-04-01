@@ -1,4 +1,4 @@
-import { Tooltip } from '../tooltip';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { StatFields } from '../../config/types';
 import { GoodThresholdIndicator } from '../good-threshold-indicator';
 
@@ -13,7 +13,7 @@ export const TableRow = ({
   description,
 }: StatFields) => {
   return (
-    <Tooltip description={description}>
+    <Tooltip description={description} align="start">
       <tr className="border">
         <td className="py-4 px-8">{title}</td>
         <td className="py-4 px-8 text-right">

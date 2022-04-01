@@ -3,7 +3,7 @@ import { Dialog } from '@vegaprotocol/ui-toolkit';
 import type { VegaConnector } from './connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { useEffect } from 'react';
-import { RestConnector } from './connectors/rest-connector';
+import { RestConnector } from './connectors';
 import { useVegaWallet } from './hooks';
 import { t } from '@vegaprotocol/react-helpers';
 
@@ -39,7 +39,7 @@ export function VegaConnectDialog({
   useEffect(() => {
     if (
       selectedConnector !== null &&
-      selectedConnector instanceof RestConnector === false
+      !(selectedConnector instanceof RestConnector)
     ) {
       connectAndClose(selectedConnector);
     }

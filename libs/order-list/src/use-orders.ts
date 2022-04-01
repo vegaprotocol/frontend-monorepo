@@ -79,8 +79,7 @@ export const useOrders = (partyId: string): UseOrders => {
         },
         'desc'
       );
-      const uniq = uniqBy(sorted, 'id');
-      return uniq;
+      return uniqBy(sorted, 'id');
     });
   }, []);
 

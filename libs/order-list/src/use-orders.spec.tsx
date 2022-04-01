@@ -10,7 +10,6 @@ import {
   OrderType,
   OrderTimeInForce,
 } from '@vegaprotocol/types';
-import {} from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { ORDERS_QUERY, ORDERS_SUB, useOrders } from './use-orders';
 

@@ -30,6 +30,21 @@ export const Table = ({ children, className, ...props }: TableProps) => {
   return (
     <div className={classes}>
       <table className="w-full" {...props}>
+        {children}
+      </table>
+    </div>
+  );
+};
+
+export const TableWithTbody = ({
+  children,
+  className,
+  ...props
+}: TableProps) => {
+  const classes = classnames(className, 'overflow-x-auto whitespace-nowrap');
+  return (
+    <div className={classes}>
+      <table className="w-full" {...props}>
         <tbody>{children}</tbody>
       </table>
     </div>
@@ -58,8 +73,9 @@ export const TableRow = ({
   ...props
 }: TableRowProps) => {
   const cellClasses = classnames(className, {
-    'border-b border-white-40': modifier === 'bordered',
-    'bg-white-25 border-b-4 border-b-black': modifier === 'background',
+    'border-b border-black-40 dark:border-white-40': modifier === 'bordered',
+    'border-b-4 bg-black-40 border-b-white dark:bg-white-25 dark:border-b-black':
+      modifier === 'background',
   });
   return (
     <tr className={cellClasses} {...props}>

@@ -10,7 +10,6 @@ import {
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import compact from 'lodash/compact';
 import type { Positions_party_positions } from './__generated__/Positions';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
@@ -21,26 +20,35 @@ interface PositionsTableProps {
 export const getRowNodeId = (data: { market: { id: string } }) =>
   data.market.id;
 
-const sortByName = (
-  a: Positions_party_positions,
-  b: Positions_party_positions
-) => {
-  if (
-    a.market.tradableInstrument.instrument.name <
-    b.market.tradableInstrument.instrument.name
-  ) {
-    return -1;
+const alphanumericComparator = (a: string, b: string, isInverted: boolean) => {
+  if (a < b) {
+    return isInverted ? 1 : -1;
   }
 
-  if (
-    a.market.tradableInstrument.instrument.name >
-    b.market.tradableInstrument.instrument.name
-  ) {
-    return 1;
+  if (a > b) {
+    return isInverted ? -1 : 1;
   }
 
   return 0;
 };
+
+const comparator = (
+  valueA: string,
+  valueB: string,
+  nodeA: { data: Positions_party_positions },
+  nodeB: { data: Positions_party_positions },
+  isInverted: boolean
+) =>
+  alphanumericComparator(
+    nodeA.data.market.tradableInstrument.instrument.name,
+    nodeB.data.market.tradableInstrument.instrument.name,
+    isInverted
+  ) ||
+  alphanumericComparator(
+    nodeA.data.market.id,
+    nodeB.data.market.id,
+    isInverted
+  );
 
 interface PositionsTableValueFormatterParams extends ValueFormatterParams {
   data: Positions_party_positions;
@@ -48,25 +56,34 @@ interface PositionsTableValueFormatterParams extends ValueFormatterParams {
 
 export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
   ({ data }, ref) => {
-    const sortedData = useMemo(() => {
-      return compact(data).sort(sortByName);
-    }, [data]);
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate="No positions"
-        rowData={sortedData}
+        rowData={data}
         getRowNodeId={getRowNodeId}
         ref={ref}
         defaultColDef={{
           flex: 1,
           resizable: true,
         }}
+        onGridReady={(event) => {
+          event.columnApi.applyColumnState({
+            state: [
+              {
+                colId: 'market.tradableInstrument.instrument.code',
+                sort: 'asc',
+              },
+            ],
+          });
+        }}
         components={{ PriceCell }}
       >
         <AgGridColumn
           headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
+          comparator={comparator}
+          sortable
         />
         <AgGridColumn
           headerName={t('Amount')}
