@@ -1,29 +1,27 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import type { DepositPage_assets } from './__generated__/DepositPage';
 import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
 import { DepositForm } from './deposit-form';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
+import type { Asset } from './deposit-manager';
 
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@web3-react/core');
 
-function generateAsset(): DepositPage_assets {
+function generateAsset(): Asset {
   return {
-    __typename: 'Asset',
     id: 'asset-id',
     symbol: 'asset-symbol',
     name: 'asset-name',
     decimals: 2,
     source: {
-      __typename: 'ERC20',
       contractAddress: 'contract-address',
     },
   };
 }
 
-let asset: DepositPage_assets;
+let asset: Asset;
 let props: DepositFormProps;
 
 beforeEach(() => {
