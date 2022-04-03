@@ -26,6 +26,7 @@
     "types": "libs/types",
     "ui-toolkit": "libs/ui-toolkit",
     "wallet": "libs/wallet",
-    "web3": "libs/web3"
+    "web3": "libs/web3",
+    "withdraws": "libs/withdraws"
   }
 }

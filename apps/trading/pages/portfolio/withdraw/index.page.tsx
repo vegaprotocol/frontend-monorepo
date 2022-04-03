@@ -1,29 +1,13 @@
-import { useRouter } from 'next/router';
-import { useMemo } from 'react';
+import { WithdrawsContainer } from './withdraws-container';
 import { Web3Container } from '../../../components/web3-container';
 
 const Withdraw = () => {
-  const { query } = useRouter();
-
-  // AssetId can be specified in the query string to allow link to deposit a particular asset
-  const assetId = useMemo(() => {
-    if (query.assetId && Array.isArray(query.assetId)) {
-      return undefined;
-    }
-
-    if (Array.isArray(query.assetId)) {
-      return undefined;
-    }
-
-    return query.assetId;
-  }, [query]);
-
   return (
     <Web3Container>
       {({ ethereumConfig }) => (
         <div className="max-w-[420px] p-24 mx-auto">
           <h1 className="text-h3 mb-12">Withdraw</h1>
-          <div>Content</div>
+          <WithdrawsContainer ethereumConfig={ethereumConfig} />
         </div>
       )}
     </Web3Container>

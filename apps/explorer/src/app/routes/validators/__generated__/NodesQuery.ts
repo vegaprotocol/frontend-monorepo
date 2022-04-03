@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { NodeStatus } from "@vegaprotocol/types";
+import { NodeStatus } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: NodesQuery

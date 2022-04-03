@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
+import { AccountType } from "./../../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: AssetsQuery

@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { MarketTradingMode } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: PositionSubscribe
 // ====================================================
 
 export interface PositionSubscribe_positions_market_data_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -18,7 +18,7 @@ export interface PositionSubscribe_positions_market_data_market {
 }
 
 export interface PositionSubscribe_positions_market_data {
-  __typename: 'MarketData';
+  __typename: "MarketData";
   /**
    * the mark price (actually an unsigned int)
    */
@@ -34,7 +34,7 @@ export interface PositionSubscribe_positions_market_data {
 }
 
 export interface PositionSubscribe_positions_market_tradableInstrument_instrument_metadata {
-  __typename: 'InstrumentMetadata';
+  __typename: "InstrumentMetadata";
   /**
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
    */
@@ -42,7 +42,7 @@ export interface PositionSubscribe_positions_market_tradableInstrument_instrumen
 }
 
 export interface PositionSubscribe_positions_market_tradableInstrument_instrument_product_settlementAsset {
-  __typename: 'Asset';
+  __typename: "Asset";
   /**
    * The id of the asset
    */
@@ -62,7 +62,7 @@ export interface PositionSubscribe_positions_market_tradableInstrument_instrumen
 }
 
 export interface PositionSubscribe_positions_market_tradableInstrument_instrument_product {
-  __typename: 'Future';
+  __typename: "Future";
   /**
    * The name of the asset (string)
    */
@@ -74,7 +74,7 @@ export interface PositionSubscribe_positions_market_tradableInstrument_instrumen
 }
 
 export interface PositionSubscribe_positions_market_tradableInstrument_instrument {
-  __typename: 'Instrument';
+  __typename: "Instrument";
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
    */
@@ -98,7 +98,7 @@ export interface PositionSubscribe_positions_market_tradableInstrument_instrumen
 }
 
 export interface PositionSubscribe_positions_market_tradableInstrument {
-  __typename: 'TradableInstrument';
+  __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
@@ -106,7 +106,7 @@ export interface PositionSubscribe_positions_market_tradableInstrument {
 }
 
 export interface PositionSubscribe_positions_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -122,14 +122,14 @@ export interface PositionSubscribe_positions_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -143,7 +143,7 @@ export interface PositionSubscribe_positions_market {
 }
 
 export interface PositionSubscribe_positions {
-  __typename: 'Position';
+  __typename: "Position";
   /**
    * Realised Profit and Loss (int64)
    */
