@@ -1,13 +1,20 @@
 {
+  "baseUrl": "http://localhost:4200",
   "fileServerFolder": ".",
-  "fixturesFolder": "./src/fixtures",
+  "fixturesFolder": false,
+  "pluginsFile": "./src/plugins/index.js",
+  "testFiles": "*.{ts,feature,features}",
+  "ignoreTestFiles": "**/*.js",
   "integrationFolder": "./src/integration",
   "modifyObstructiveCode": false,
   "supportFile": "./src/support/index.ts",
-  "pluginsFile": false,
   "video": true,
   "videosFolder": "../../dist/cypress/apps/trading-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/trading-e2e/screenshots",
   "chromeWebSecurity": false,
-  "projectId": "et4snf"
+  "projectId": "et4snf",
+  "env": {
+    "tsConfig": "tsconfig.json",
+    "TAGS": "not @todo and not @ignore and not @manual"
+  }
 }

@@ -156,6 +156,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           });
           return (
             <button
+              data-testid={key}
               onClick={() => setView(key as TradingView)}
               className={className}
               key={key}

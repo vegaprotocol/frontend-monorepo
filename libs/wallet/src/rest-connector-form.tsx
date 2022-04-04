@@ -60,7 +60,11 @@ export function RestConnectorForm({
           autoFocus={true}
         />
         {errors.wallet?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError
+            data-testid="input-wallet-error"
+            intent="danger"
+            className="mt-4"
+          >
             {errors.wallet.message}
           </InputError>
         )}
