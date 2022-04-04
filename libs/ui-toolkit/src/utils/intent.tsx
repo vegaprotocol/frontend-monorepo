@@ -30,12 +30,12 @@ export const getIntentShadow = (intent?: Intent) => {
 };
 
 export const getVariantBackground = (variant?: TailwindIntents) => {
-  return classNames({
+  return {
     'bg-intent-danger text-white': variant === TailwindIntents.Danger,
     'bg-intent-warning text-black': variant === TailwindIntents.Warning,
     'bg-intent-prompt text-black': variant === TailwindIntents.Prompt,
     'bg-intent-success text-black': variant === TailwindIntents.Success,
     'bg-intent-help text-white': variant === TailwindIntents.Help,
     'bg-intent-highlight text-black': variant === TailwindIntents.Highlight,
-  });
+  };
 };

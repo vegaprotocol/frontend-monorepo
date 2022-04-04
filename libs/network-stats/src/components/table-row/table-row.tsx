@@ -19,7 +19,7 @@ export const TableRow = ({
         ? goodThreshold(value)
           ? TailwindIntents.Success
           : TailwindIntents.Danger
-        : TailwindIntents.Help,
+        : TailwindIntents.Highlight,
     [goodThreshold, value]
   );
   return (
@@ -30,7 +30,7 @@ export const TableRow = ({
           {formatter ? formatter(value) : defaultFieldFormatter(value)}
         </td>
         <td className="py-4 px-8">
-          <Indicator variant={TailwindIntents.Success} />
+          <Indicator variant={variant} />
         </td>
       </tr>
     </Tooltip>
