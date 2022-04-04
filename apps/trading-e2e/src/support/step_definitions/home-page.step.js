@@ -1,4 +1,4 @@
-import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
+import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 import MarketsPage from '../pages/markets-page';
 const marketsPage = new MarketsPage();
 
