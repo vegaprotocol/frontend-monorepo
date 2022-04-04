@@ -1,6 +1,7 @@
 import { Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { StatFields } from '../../config/types';
-import { GoodThresholdIndicator } from '../good-threshold-indicator';
+import { useMemo } from 'react';
+import { Indicator, TailwindIntents } from '@vegaprotocol/ui-toolkit';
 
 export const defaultFieldFormatter = (field: unknown) =>
   field === undefined ? 'no data' : field;
@@ -12,6 +13,15 @@ export const TableRow = ({
   value,
   description,
 }: StatFields) => {
+  const variant = useMemo(
+    () =>
+      goodThreshold
+        ? goodThreshold(value)
+          ? TailwindIntents.Success
+          : TailwindIntents.Danger
+        : TailwindIntents.Highlight,
+    [goodThreshold, value]
+  );
   return (
     <Tooltip description={description} align="start">
       <tr className="border">
@@ -20,7 +30,7 @@ export const TableRow = ({
           {formatter ? formatter(value) : defaultFieldFormatter(value)}
         </td>
         <td className="py-4 px-8">
-          <GoodThresholdIndicator goodThreshold={goodThreshold} value={value} />
+          <Indicator variant={variant} />
         </td>
       </tr>
     </Tooltip>
