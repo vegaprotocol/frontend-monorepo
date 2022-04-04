@@ -37,7 +37,7 @@ export const OrderDialog = ({
     return (
       <OrderDialogWrapper
         title="Awaiting network confirmation"
-        icon={<Loader />}
+        icon={<Loader size="small" />}
       >
         {transaction.hash && (
           <p data-testid="tx-hash" className="break-all">

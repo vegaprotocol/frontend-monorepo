@@ -1,17 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
-import * as useOrdersHook from './use-orders';
+import * as useDataProviderHook from '@vegaprotocol/react-helpers';
 import type { Orders_party_orders } from './__generated__/Orders';
+import * as orderListMock from './order-list';
+import { forwardRef } from 'react';
 
-jest.mock('./order-list', () => ({
-  OrderList: () => <div>OrderList</div>,
-}));
+jest.mock('./order-list');
 
 test('Renders a loading state while awaiting orders', () => {
-  jest.spyOn(useOrdersHook, 'useOrders').mockReturnValue({
-    orders: [],
+  jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
+    data: [],
     loading: true,
-    error: null,
+    error: undefined,
   });
   render(<OrderListManager partyId="0x123" />);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -19,8 +19,8 @@ test('Renders a loading state while awaiting orders', () => {
 
 test('Renders an error state', () => {
   const errorMsg = 'Oops! An Error';
-  jest.spyOn(useOrdersHook, 'useOrders').mockReturnValue({
-    orders: [],
+  jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
+    data: [],
     loading: false,
     error: new Error(errorMsg),
   });
@@ -31,10 +31,13 @@ test('Renders an error state', () => {
 });
 
 test('Renders the order list if orders provided', async () => {
-  jest.spyOn(useOrdersHook, 'useOrders').mockReturnValue({
-    orders: [{ id: '1' } as Orders_party_orders],
+  // @ts-ignore Orderlist is read only but we need to override with the forwardref to
+  // avoid warnings about padding refs
+  orderListMock.OrderList = forwardRef(() => <div>OrderList</div>);
+  jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
+    data: [{ id: '1' } as Orders_party_orders],
     loading: false,
-    error: null,
+    error: undefined,
   });
   render(<OrderListManager partyId="0x123" />);
   expect(await screen.findByText('OrderList')).toBeInTheDocument();
