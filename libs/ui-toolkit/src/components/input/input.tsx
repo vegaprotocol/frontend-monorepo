@@ -61,7 +61,7 @@ export const inputStyle = ({
     : style;
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ prependIconName, appendIconName, className, ...props }, ref) => {
+  ({ prependIconName, appendIconName, className, hasError, ...props }, ref) => {
     className = `h-28 ${className}`;
     if (prependIconName) {
       className += ' pl-28';
@@ -73,7 +73,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         {...props}
         ref={ref}
-        className={classNames(inputClassNames({ className, ...props }))}
+        className={classNames(inputClassNames({ className, hasError }))}
       />
     );
     const iconName = prependIconName || appendIconName;
