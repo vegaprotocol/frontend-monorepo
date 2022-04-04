@@ -42,6 +42,7 @@ export default class TransactionsPage extends BasePage {
   }
 
   validateTxDetailsAreDisplayed() {
+    // TODO fail test when there are no txs once running with Capsule
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000); // Wait for transactions to load if there are any
     cy.get('body').then(($body) => {
@@ -80,6 +81,7 @@ export default class TransactionsPage extends BasePage {
   }
 
   clickOnTopTransaction() {
+    // TODO fail test when there are no txs once running with Capsule
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000); // Wait for transactions to load if there are any
     cy.get('body').then(($body) => {
