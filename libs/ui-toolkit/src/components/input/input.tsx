@@ -24,9 +24,10 @@ export const inputClassNames = ({
 }) => {
   return classNames(
     [
+      'appearance-none',
       'flex items-center w-full',
       'box-border',
-      'border',
+      'border rounded-none',
       'bg-clip-padding',
       'border-black-60 dark:border-white-60',
       'bg-black-25 dark:bg-white-25',
