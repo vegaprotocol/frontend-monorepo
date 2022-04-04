@@ -19,6 +19,7 @@ const ACCOUNTS_FRAGMENT = gql`
       name
     }
     asset {
+      id
       symbol
       decimals
     }

@@ -14,7 +14,8 @@ const singleRow: Accounts_party_accounts = {
   },
   asset: {
     __typename: 'Asset',
-    symbol: 'BTC',
+    id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+    symbol: 'tBTC',
     decimals: 5,
   },
 };
@@ -33,12 +34,9 @@ test('Render correct columns', async () => {
 
   const headers = screen.getAllByRole('columnheader');
   expect(headers).toHaveLength(4);
-  expect(headers.map((h) => h.textContent?.trim())).toEqual([
-    'Asset',
-    'Type',
-    'Balance',
-    'Market',
-  ]);
+  expect(
+    headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
+  ).toEqual(['Asset', 'Type', 'Market', 'Balance']);
 });
 
 test('Correct formatting applied', async () => {
@@ -47,10 +45,10 @@ test('Correct formatting applied', async () => {
   });
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
-    'BTC',
+    'tBTC',
     singleRow.type,
-    '1,256.00000',
     'BTCUSD Monthly (30 Jun 2022)',
+    '1,256.00000',
   ];
   cells.forEach((cell, i) => {
     expect(cell).toHaveTextContent(expectedValues[i]);

@@ -24,6 +24,10 @@ export interface AccountSubscribe_accounts_market {
 export interface AccountSubscribe_accounts_asset {
   __typename: "Asset";
   /**
+   * The id of the asset
+   */
+  id: string;
+  /**
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;

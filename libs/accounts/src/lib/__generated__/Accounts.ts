@@ -24,6 +24,10 @@ export interface Accounts_party_accounts_market {
 export interface Accounts_party_accounts_asset {
   __typename: "Asset";
   /**
+   * The id of the asset
+   */
+  id: string;
+  /**
    * The symbol of the asset (e.g: GBP)
    */
   symbol: string;
