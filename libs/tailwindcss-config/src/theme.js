@@ -124,7 +124,7 @@ module.exports = {
       '"Noto Color Emoji"',
     ],
     alpha: [
-      'AlphaLyrae-Medium',
+      'AlphaLyrae',
       '"Helvetica Neue"',
       '-apple-system',
       'BlinkMacSystemFont',

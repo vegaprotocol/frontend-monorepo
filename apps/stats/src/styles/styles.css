@@ -1,11 +1,6 @@
 @tailwind base;
 @tailwind components;
 
-@font-face {
-  font-family: 'AlphaLyrae-Medium';
-  src: url('./AlphaLyrae-Medium.woff');
-}
-
 .layout-grid {
   display: grid;
   grid-template-columns: 1fr;

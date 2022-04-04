@@ -45,6 +45,16 @@
           "buildTarget": "static:build:production"
         }
       }
+    },
+
+    "build-netlify": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "cp apps/static/netlify.toml netlify.toml",
+          "nx build static"
+        ]
+      }
     }
   }
 }
