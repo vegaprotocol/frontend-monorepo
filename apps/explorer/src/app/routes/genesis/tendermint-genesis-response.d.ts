@@ -13,6 +13,7 @@ export interface ValidatorAddresses {
   pub_key_types: string[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Version {}
 
 export interface ConsensusParams {

@@ -151,7 +151,7 @@ module.exports = {
     body: ['14px', '20px'],
 
     ui: ['14px', '20px'],
-    'ui-small': ['10px', '16px'],
+    'ui-small': ['12px', '16px'],
   },
 
   boxShadow: {

@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 
 interface RouteErrorBoundaryProps {
@@ -23,7 +24,7 @@ export class RouteErrorBoundary extends React.Component<
 
   override render() {
     if (this.state.hasError) {
-      return <h1>Something went wrong</h1>;
+      return <h1>{t('Something went wrong')}</h1>;
     }
 
     return this.props.children;

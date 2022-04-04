@@ -1,17 +1,6 @@
-import {
-  AgGridDynamic as AgGrid,
-  Button,
-  Callout,
-  Intent,
-} from '@vegaprotocol/ui-toolkit';
-import { AgGridColumn } from 'ag-grid-react';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 
 export function Index() {
-  const rowData = [
-    { make: 'Toyota', model: 'Celica', price: 35000 },
-    { make: 'Ford', model: 'Mondeo', price: 32000 },
-    { make: 'Porsche', model: 'Boxter', price: 72000 },
-  ];
   return (
     <div className="m-24">
       <div className="mb-24">
@@ -29,11 +18,6 @@ export function Index() {
           </div>
         </Callout>
       </div>
-      <AgGrid rowData={rowData} style={{ height: 400, width: 600 }}>
-        <AgGridColumn field="make"></AgGridColumn>
-        <AgGridColumn field="model"></AgGridColumn>
-        <AgGridColumn field="price"></AgGridColumn>
-      </AgGrid>
     </div>
   );
 }

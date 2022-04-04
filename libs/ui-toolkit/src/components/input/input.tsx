@@ -1,6 +1,8 @@
-import { InputHTMLAttributes, forwardRef } from 'react';
+import type { InputHTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { Icon, IconName } from '../icon';
+import type { IconName } from '../icon';
+import { Icon } from '../icon';
 import {
   includesLeftPadding,
   includesRightPadding,
@@ -59,8 +61,8 @@ export const inputStyle = ({
     : style;
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ prependIconName, appendIconName, className, ...props }, ref) => {
-    className = `${className} h-28`;
+  ({ prependIconName, appendIconName, className, hasError, ...props }, ref) => {
+    className = `h-28 ${className}`;
     if (prependIconName) {
       className += ' pl-28';
     }
@@ -71,7 +73,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         {...props}
         ref={ref}
-        className={classNames(inputClassNames({ className, ...props }))}
+        className={classNames(inputClassNames({ className, hasError }))}
       />
     );
     const iconName = prependIconName || appendIconName;

@@ -1,5 +1,5 @@
 import { useEagerConnect } from '../../hooks/use-vega-wallet-eager-connect';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface AppLoaderProps {
   children: ReactNode;

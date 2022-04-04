@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import 'ag-grid-community/dist/styles/ag-theme-balham-dark.css';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import { EtherscanLink } from '.';
 import { EthereumChainIds, EthereumChainNames } from '../../utils/web3';

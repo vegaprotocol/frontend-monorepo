@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface FormGroupProps {
   children: ReactNode;
@@ -20,7 +20,10 @@ export const FormGroup = ({
     'text-right': labelAlign === 'right',
   });
   return (
-    <div data-testid="form-group" className={classNames(className, 'mb-20')}>
+    <div
+      data-testid="form-group"
+      className={className?.includes('mb') ? className : `${className} mb-20`}
+    >
       {label && (
         <label className={labelClasses} htmlFor={labelFor}>
           {label}

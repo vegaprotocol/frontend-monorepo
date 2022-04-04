@@ -1,7 +1,8 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { RestConnector } from '.';
+import type { RestConnector } from '.';
 
 interface FormFields {
   wallet: string;
@@ -40,33 +41,37 @@ export function RestConnectorForm({
       }
     } catch (err) {
       if (err instanceof TypeError) {
-        setError('Wallet not running at http://localhost:1789');
+        setError(t('Wallet not running at http://localhost:1789'));
       } else if (err instanceof Error) {
-        setError('Authentication failed');
+        setError(t('Authentication failed'));
       } else {
-        setError('Something went wrong');
+        setError(t('Something went wrong'));
       }
     }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
-      <FormGroup label="Wallet" labelFor="wallet">
+      <FormGroup label={t('Wallet')} labelFor="wallet">
         <Input
-          {...register('wallet', { required: 'Required' })}
+          {...register('wallet', { required: t('Required') })}
           id="wallet"
           type="text"
           autoFocus={true}
         />
         {errors.wallet?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError
+            data-testid="input-wallet-error"
+            intent="danger"
+            className="mt-4"
+          >
             {errors.wallet.message}
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label="Passphrase" labelFor="passphrase">
+      <FormGroup label={t('Passphrase')} labelFor="passphrase">
         <Input
-          {...register('passphrase', { required: 'Required' })}
+          {...register('passphrase', { required: t('Required') })}
           id="passphrase"
           type="password"
         />
@@ -82,7 +87,7 @@ export function RestConnectorForm({
         </p>
       )}
       <Button variant="primary" type="submit">
-        Connect
+        {t('Connect')}
       </Button>
     </form>
   );

@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { HTMLAttributes } from 'react';
+import type { HTMLAttributes } from 'react';
 import { Icon } from '../icon';
 
 interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
@@ -35,7 +35,11 @@ export const InputError = ({
     'fill-intent-warning': intent === 'warning',
   });
   return (
-    <div className={effectiveClassName} {...props}>
+    <div
+      data-testid="input-error-text"
+      className={effectiveClassName}
+      {...props}
+    >
       <Icon name="warning-sign" className={iconClassName} />
       {children}
     </div>

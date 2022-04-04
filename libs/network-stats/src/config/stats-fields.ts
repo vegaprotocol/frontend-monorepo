@@ -1,4 +1,5 @@
-import { Stats as IStats, StatFields as IStatFields } from './types';
+import { t } from '@vegaprotocol/react-helpers';
+import type { Stats as IStats, StatFields as IStatFields } from './types';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
 // contain the associated data and methods we need to render. A single query
@@ -6,7 +7,7 @@ import { Stats as IStats, StatFields as IStatFields } from './types';
 export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
   status: [
     {
-      title: 'Status',
+      title: t('Status'),
       formatter: (status: string) => {
         if (!status) {
           return;
@@ -22,123 +23,126 @@ export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
       goodThreshold: (status: string) =>
         status === 'CONNECTED' || status === 'CHAIN_STATUS_CONNECTED',
       promoted: true,
-      description:
-        'Status is either connected, replaying, unspecified or disconnected',
+      description: t(
+        'Status is either connected, replaying, unspecified or disconnected'
+      ),
     },
   ],
   blockHeight: [
     {
-      title: 'Height',
+      title: t('Height'),
       goodThreshold: (height: number) => height >= 60,
       promoted: true,
-      description: 'Block height',
+      description: t('Block height'),
     },
   ],
   totalNodes: [
     {
-      title: 'Total nodes',
-      description: 'The total number of nodes registered on the network',
+      title: t('Total nodes'),
+      description: t('The total number of nodes registered on the network'),
     },
   ],
   validatingNodes: [
     {
-      title: 'Validating nodes',
+      title: t('Validating nodes'),
       promoted: true,
-      description: 'Nodes participating in consensus',
+      description: t('Nodes participating in consensus'),
     },
   ],
   inactiveNodes: [
     {
-      title: 'Inactive nodes',
+      title: t('Inactive nodes'),
       goodThreshold: (totalInactive: number) => totalInactive < 1,
-      description: 'Nodes that are registered but not validating',
+      description: t('Nodes that are registered but not validating'),
     },
   ],
   stakedTotal: [
     {
-      title: 'Total staked',
+      title: t('Total staked'),
       formatter: (total: string) =>
         total.length > 18 &&
         parseInt(total.substring(0, total.length - 18)).toLocaleString('en-US'),
-      description: 'Sum of VEGA associated with a Vega key',
+      description: t('Sum of VEGA associated with a Vega key'),
     },
   ],
   backlogLength: [
     {
-      title: 'Backlog',
+      title: t('Backlog'),
       goodThreshold: (length: number, blockDuration: number) => {
         return (
           length < 1000 || (length >= 1000 && blockDuration / 1000000000 <= 1)
         );
       },
-      description: 'Number of transactions waiting to be processed',
+      description: t('Number of transactions waiting to be processed'),
     },
   ],
   tradesPerSecond: [
     {
-      title: 'Trades / second',
+      title: t('Trades / second'),
       goodThreshold: (trades: number) => trades >= 2,
-      description: 'Number of trades processed in the last second',
+      description: t('Number of trades processed in the last second'),
     },
   ],
   averageOrdersPerBlock: [
     {
-      title: 'Orders / block',
+      title: t('Orders / block'),
       goodThreshold: (orders: number) => orders >= 2,
-      description:
-        'Number of new orders processed in the last block. All pegged orders and liquidity provisions count as a single order',
+      description: t(
+        'Number of new orders processed in the last block. All pegged orders and liquidity provisions count as a single order'
+      ),
     },
   ],
   ordersPerSecond: [
     {
-      title: 'Orders / second',
+      title: t('Orders / second'),
       goodThreshold: (orders: number) => orders >= 2,
-      description:
-        'Number of orders processed in the last second. All pegged orders and liquidity provisions count as a single order',
+      description: t(
+        'Number of orders processed in the last second. All pegged orders and liquidity provisions count as a single order'
+      ),
     },
   ],
   txPerBlock: [
     {
-      title: 'Transactions / block',
+      title: t('Transactions / block'),
       goodThreshold: (tx: number) => tx > 2,
-      description: 'Number of transactions processed in the last block',
+      description: t('Number of transactions processed in the last block'),
     },
   ],
   blockDuration: [
     {
-      title: 'Block time',
+      title: t('Block time'),
       formatter: (duration: number) => (duration / 1000000000).toFixed(3),
       goodThreshold: (blockDuration: number) =>
         blockDuration > 0 && blockDuration <= 2000000000,
-      description: 'Seconds between the two most recent blocks',
+      description: t('Seconds between the two most recent blocks'),
     },
   ],
   vegaTime: [
     {
-      title: 'Time',
+      title: t('Time'),
       formatter: (time: Date) => new Date(time).toLocaleTimeString(),
       goodThreshold: (time: Date) => {
         const diff = new Date().getTime() - new Date(time).getTime();
         return diff > 0 && diff < 5000;
       },
-      description: 'The time on the blockchain',
+      description: t('The time on the blockchain'),
     },
   ],
   appVersion: [
     {
-      title: 'App',
-      description: 'Vega node software version on this node',
+      title: t('App'),
+      description: t('Vega node software version on this node'),
     },
   ],
   chainVersion: [
     {
-      title: 'Tendermint',
-      description: 'Tendermint software version on this node',
+      title: t('Tendermint'),
+      description: t('Tendermint software version on this node'),
     },
   ],
   uptime: [
     {
-      title: 'Uptime',
+      title: t('Uptime'),
       formatter: (t: string) => {
         if (!t) {
           return;
@@ -152,23 +156,23 @@ export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
         return `${days}d ${hours}h ${mins}m ${secs}s`;
       },
       promoted: true,
-      description: 'Time since genesis',
+      description: t('Time since genesis'),
     },
     {
-      title: 'Up since',
+      title: t('Up since'),
       formatter: (t: string) => {
         if (!t) {
           return;
         }
         return `${new Date(t).toLocaleString().replace(',', ' ')}`;
       },
-      description: 'Genesis',
+      description: t('Genesis'),
     },
   ],
   chainId: [
     {
-      title: 'Chain ID',
-      description: 'Identifier',
+      title: t('Chain ID'),
+      description: t('Identifier'),
     },
   ],
 };

@@ -1,5 +1,6 @@
-import { Story, ComponentMeta } from '@storybook/react';
-import { Splash, SplashProps } from './splash';
+import type { Story, ComponentMeta } from '@storybook/react';
+import type { SplashProps } from './splash';
+import { Splash } from './splash';
 
 export default {
   component: Splash,

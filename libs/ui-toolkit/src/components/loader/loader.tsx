@@ -12,18 +12,20 @@ export const Loader = () => {
   }, []);
 
   return (
-    <span className="flex flex-wrap w-[15px] h-[15px]">
-      {new Array(9).fill(null).map((_, i) => {
-        return (
-          <span
-            key={i}
-            className="block w-[5px] h-[5px] bg-black dark:bg-white"
-            style={{
-              opacity: Math.random() > 0.5 ? 1 : 0,
-            }}
-          />
-        );
-      })}
-    </span>
+    <div className="flex flex-col items-center" data-testid="splash-loader">
+      <div className="w-64 h-64 flex flex-wrap">
+        {new Array(16).fill(null).map((_, i) => {
+          return (
+            <div
+              className="w-16 h-16 dark:bg-white bg-black"
+              key={i}
+              style={{
+                opacity: Math.random() > 0.75 ? 1 : 0,
+              }}
+            />
+          );
+        })}
+      </div>
+    </div>
   );
 };

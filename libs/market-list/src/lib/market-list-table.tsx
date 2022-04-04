@@ -1,26 +1,25 @@
 import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
-import { PriceCell, formatNumber } from '@vegaprotocol/react-helpers';
+import { PriceCell, formatNumber, t } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import { Markets_markets } from '@vegaprotocol/graphql';
+import type { Markets_markets } from './__generated__/Markets';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import { useState } from 'react';
 
 interface MarketListTableProps {
-  markets: Markets_markets[];
+  data: Markets_markets[] | null;
   onRowClicked: (marketId: string) => void;
 }
 
 export const getRowNodeId = (data: { id: string }) => data.id;
 
 export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
-  ({ markets, onRowClicked }, ref) => {
+  ({ data, onRowClicked }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate="No markets"
-        rowData={markets}
+        overlayNoRowsTemplate={t('No markets')}
+        rowData={data}
         getRowNodeId={getRowNodeId}
         ref={ref}
         defaultColDef={{
@@ -33,22 +32,22 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
         components={{ PriceCell }}
       >
         <AgGridColumn
-          headerName="Market"
+          headerName={t('Market')}
           field="tradableInstrument.instrument.code"
         />
         <AgGridColumn
-          headerName="Settlement asset"
+          headerName={t('Settlement asset')}
           field="tradableInstrument.instrument.product.settlementAsset.symbol"
         />
         <AgGridColumn
-          headerName="State"
+          headerName={t('State')}
           field="data"
           valueFormatter={({ value }: ValueFormatterParams) =>
             `${value.market.state} (${value.market.tradingMode})`
           }
         />
         <AgGridColumn
-          headerName="Best bid"
+          headerName={t('Best bid')}
           field="data.bestBidPrice"
           type="rightAligned"
           cellRenderer="PriceCell"
@@ -57,7 +56,7 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
           }
         />
         <AgGridColumn
-          headerName="Best offer"
+          headerName={t('Best offer')}
           field="data.bestOfferPrice"
           type="rightAligned"
           valueFormatter={({ value, data }: ValueFormatterParams) =>
@@ -66,7 +65,7 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
           cellRenderer="PriceCell"
         />
         <AgGridColumn
-          headerName="Mark price"
+          headerName={t('Mark price')}
           field="data.markPrice"
           type="rightAligned"
           cellRenderer="PriceCell"
@@ -74,7 +73,7 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
             formatNumber(value, data.decimalPlaces)
           }
         />
-        <AgGridColumn headerName="Description" field="name" />
+        <AgGridColumn headerName={t('Description')} field="name" />
       </AgGrid>
     );
   }

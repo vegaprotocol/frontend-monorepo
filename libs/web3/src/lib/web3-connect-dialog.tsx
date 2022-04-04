@@ -1,5 +1,6 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { Connectors } from './types';
+import type { Connectors } from './types';
 
 interface Web3ConnectDialogProps {
   dialogOpen: boolean;
@@ -19,7 +20,7 @@ export const Web3ConnectDialog = ({
       open={dialogOpen}
       onChange={setDialogOpen}
       intent={Intent.Prompt}
-      title="Connect to your Ethereum wallet"
+      title={t('Connect to your Ethereum wallet')}
     >
       <ul data-testid="web3-connector-list">
         {Object.entries(connectors).map(([connectorName, [connector]]) => {

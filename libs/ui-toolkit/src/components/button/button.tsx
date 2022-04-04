@@ -1,6 +1,8 @@
-import { AnchorHTMLAttributes, ButtonHTMLAttributes, forwardRef } from 'react';
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { Icon, IconName } from '../icon';
+import type { IconName } from '../icon';
+import { Icon } from '../icon';
 import {
   includesLeftPadding,
   includesRightPadding,

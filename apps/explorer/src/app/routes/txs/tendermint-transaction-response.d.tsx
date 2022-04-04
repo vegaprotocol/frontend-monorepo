@@ -11,6 +11,7 @@ export interface Event {
 
 export interface TxResult {
   code: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data?: any;
   log: string;
   info: string;

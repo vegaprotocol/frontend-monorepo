@@ -1,4 +1,5 @@
-import { IconSvgPaths20, IconSvgPaths16, IconName } from '@blueprintjs/icons';
+import type { IconName } from '@blueprintjs/icons';
+import { IconSvgPaths20, IconSvgPaths16 } from '@blueprintjs/icons';
 import classNames from 'classnames';
 
 export type { IconName } from '@blueprintjs/icons';
@@ -11,6 +12,8 @@ interface IconProps {
 
 export const Icon = ({ size = 16, name, className }: IconProps) => {
   const effectiveClassName = classNames(
+    'inline-block',
+    'fill-current',
     {
       'w-20': size === 20,
       'h-20': size === 20,

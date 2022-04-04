@@ -1,5 +1,5 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import { Order } from './use-order-state';
+import type { Order } from './use-order-state';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 
 interface ExpirySelectorProps {
@@ -14,6 +14,7 @@ export const ExpirySelector = ({ order, onSelect }: ExpirySelectorProps) => {
   return (
     <FormGroup label="Expiry time/date" labelFor="expiration">
       <Input
+        data-testid="date-picker-field"
         id="expiration"
         name="expiration"
         type="datetime-local"

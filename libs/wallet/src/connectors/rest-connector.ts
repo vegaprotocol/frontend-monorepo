@@ -1,12 +1,14 @@
-import {
-  DefaultApi,
-  createConfiguration,
+import type {
   Configuration,
   OrderSubmissionBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
+import {
+  createConfiguration,
+  DefaultApi,
+} from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
-import { VegaConnector } from '.';
+import type { VegaConnector } from '.';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...
@@ -87,8 +89,7 @@ export class RestConnector implements VegaConnector {
 
   async sendTx(body: OrderSubmissionBody) {
     try {
-      const res = await this.service.commandSyncPost(body);
-      return res;
+      return await this.service.commandSyncPost(body);
     } catch (err) {
       return this.handleSendTxError(err);
     }
@@ -98,8 +99,7 @@ export class RestConnector implements VegaConnector {
     if (typeof err === 'object' && err && 'body' in err) {
       try {
         // @ts-ignore Not sure why TS can't infer that 'body' does indeed exist on object
-        const parsedError = JSON.parse(err.body);
-        return parsedError;
+        return JSON.parse(err.body);
       } catch {
         // Unexpected response
         return {
@@ -121,8 +121,7 @@ export class RestConnector implements VegaConnector {
     const cfg = LocalStorage.getItem(this.configKey);
     if (cfg) {
       try {
-        const obj = JSON.parse(cfg);
-        return obj;
+        return JSON.parse(cfg);
       } catch {
         return null;
       }

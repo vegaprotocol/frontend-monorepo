@@ -1,7 +1,8 @@
-import { OperationVariables, QueryHookOptions, useQuery } from '@apollo/client';
-import { DocumentNode } from 'graphql';
-import { ReactNode } from 'react';
-import { AsyncRenderer } from '../async-renderer';
+import type { OperationVariables, QueryHookOptions } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import type { DocumentNode } from 'graphql';
+import type { ReactNode } from 'react';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 
 interface PageQueryContainerProps<TData, TVariables> {
   query: DocumentNode;
@@ -17,11 +18,7 @@ export const PageQueryContainer = <TData, TVariables = OperationVariables>({
   const { data, loading, error } = useQuery<TData, TVariables>(query, options);
 
   return (
-    <AsyncRenderer<TData>
-      loading={loading || Boolean(!data)}
-      error={error}
-      data={data}
-    >
+    <AsyncRenderer<TData> loading={loading} error={error} data={data}>
       {(data) => children(data)}
     </AsyncRenderer>
   );
