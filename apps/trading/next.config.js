@@ -7,7 +7,7 @@ const SENTRY_AUTH_TOKEN = process.env.SENTRY_AUTH_TOKEN;
 const sentryWebpackOptions = {
   org: 'vega-o3',
   project: 'trading',
-  authToken: SENTRY_AUTH_TOKEN,
+  token: SENTRY_AUTH_TOKEN,
 };
 
 /**
