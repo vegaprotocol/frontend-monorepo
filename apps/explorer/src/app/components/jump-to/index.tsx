@@ -29,13 +29,14 @@ export const JumpTo = ({
       </label>
       <div className="flex">
         <Input
+          data-testid={inputId}
           id={inputId}
           type={inputType}
           name={inputName}
           placeholder={placeholder}
           className="max-w-[200px]"
         />
-        <Button variant="secondary" type="submit">
+        <Button data-testid="go-submit" variant="secondary" type="submit">
           {t('Go')}
         </Button>
       </div>
