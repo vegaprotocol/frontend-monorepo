@@ -19,14 +19,15 @@ export enum TailwindIntents {
 }
 
 export const getIntentShadow = (intent?: Intent) => {
-  return classNames('shadow-callout', {
+  return {
+    'shadow-callout': true,
     'shadow-intent-danger': intent === Intent.Danger,
     'shadow-intent-warning': intent === Intent.Warning,
     'shadow-intent-prompt': intent === Intent.Prompt,
     'shadow-black dark:shadow-white': intent === Intent.Progress,
     'shadow-intent-success': intent === Intent.Success,
     'shadow-intent-help': intent === Intent.Help,
-  });
+  };
 };
 
 export const getVariantBackground = (variant?: TailwindIntents) => {

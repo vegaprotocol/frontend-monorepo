@@ -80,9 +80,9 @@ export class EthereumError extends Error {
   }
 }
 
-export function isEthereumError(err: unknown): err is EthereumError {
+export const isEthereumError = (err: unknown): err is EthereumError => {
   if (typeof err === 'object' && err !== null && 'code' in err) {
     return true;
   }
   return false;
-}
+};
