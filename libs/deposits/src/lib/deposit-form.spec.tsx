@@ -11,11 +11,13 @@ jest.mock('@web3-react/core');
 
 function generateAsset(): Asset {
   return {
+    __typename: 'Asset',
     id: 'asset-id',
     symbol: 'asset-symbol',
     name: 'asset-name',
     decimals: 2,
     source: {
+      __typename: 'ERC20',
       contractAddress: 'contract-address',
     },
   };
