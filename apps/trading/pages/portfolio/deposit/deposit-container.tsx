@@ -1,7 +1,11 @@
 import type { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import type { DepositPage } from './__generated__/DepositPage';
+import type {
+  DepositPage,
+  DepositPage_assets,
+} from './__generated__/DepositPage';
+import type { Asset } from '@vegaprotocol/deposits';
 import { DepositManager } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
@@ -49,12 +53,18 @@ export const DepositContainer = ({
           <DepositManager
             bridgeAddress={ethereumConfig.collateral_bridge_contract.address}
             requiredConfirmations={ethereumConfig.confirmations}
-            // @ts-ignore TS not inferring on union type for contract address
-            assets={data.assets.filter((a) => a.source.__typename === 'ERC20')}
+            assets={data.assets.filter(isERC20Asset)}
             initialAssetId={assetId}
           />
         );
       }}
     </PageQueryContainer>
   );
+};
+
+const isERC20Asset = (asset: DepositPage_assets): asset is Asset => {
+  if (asset.source.__typename === 'ERC20') {
+    return true;
+  }
+  return false;
 };

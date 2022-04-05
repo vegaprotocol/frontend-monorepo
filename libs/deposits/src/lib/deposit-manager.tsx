@@ -15,11 +15,13 @@ import {
 } from '@vegaprotocol/react-helpers';
 
 export interface Asset {
+  __typename: 'Asset';
   id: string;
   symbol: string;
   name: string;
   decimals: number;
   source: {
+    __typename: 'ERC20';
     contractAddress: string;
   };
 }
