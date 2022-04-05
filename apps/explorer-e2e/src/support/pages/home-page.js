@@ -4,8 +4,12 @@ export default class HomePage extends BasePage {
   statsTitle = 'stats-title';
   statsValue = 'stats-value';
 
-  verifyStatsEnvironment(expectedEnv) {
-    cy.getByTestId(this.statsEnvironmentTitle).should('have.text', expectedEnv);
+  verifyStatsEnvironment() {
+    const deployedEnv = Cypress.env('environment').toUpperCase();
+    cy.getByTestId(this.statsEnvironmentTitle).should(
+      'have.text',
+      `/ ${deployedEnv}`
+    );
   }
 
   verifyStatsTitlesDisplayed() {

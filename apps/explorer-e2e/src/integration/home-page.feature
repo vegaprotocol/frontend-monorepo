@@ -2,7 +2,7 @@ Feature: Home page
 
   Scenario: Stats page displayed correctly
     Given I am on the homepage
-    Then the stats for "testnet" is correctly displayed
+    Then the stats for deployed environment are correctly displayed
 
   Scenario Outline: Succesfful search for specific id by <IdType>
     Given I am on the homepage

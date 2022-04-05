@@ -2,10 +2,8 @@ import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
 import HomePage from '../pages/home-page';
 const homePage = new HomePage();
 
-Then('the stats for {string} is correctly displayed', (expectedEnvironment) => {
-  const environmentString = expectedEnvironment.toUpperCase();
-
-  homePage.verifyStatsEnvironment(`/ ${environmentString}`);
+Then('the stats for deployed environment are correctly displayed', () => {
+  homePage.verifyStatsEnvironment();
   homePage.verifyStatsTitlesDisplayed();
   homePage.verifyStatsValuesdisplayed();
   homePage.verifyStatsBlockHeightUpdating();
