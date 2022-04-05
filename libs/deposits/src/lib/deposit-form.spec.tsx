@@ -99,8 +99,7 @@ test('Form validation', async () => {
   rerender(
     <DepositForm
       {...props}
-      // @ts-ignore foo bar baz
-      limits={{ ...props.limits, max: new BigNumber(100) }}
+      limits={{ min: new BigNumber(0), max: new BigNumber(100) }}
     />
   );
 
@@ -122,8 +121,7 @@ test('Form validation', async () => {
   rerender(
     <DepositForm
       {...props}
-      // @ts-ignore foo bar baz
-      limits={{ ...props.limits, min: new BigNumber(10) }}
+      limits={{ max: new BigNumber(20), min: new BigNumber(10) }}
     />
   );
   const amountLessThanLimit = '5';
