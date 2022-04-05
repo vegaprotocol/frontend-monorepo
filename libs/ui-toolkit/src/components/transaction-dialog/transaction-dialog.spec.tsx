@@ -88,7 +88,7 @@ test('Dialog states', () => {
 
 test('Success state waits for confirmation event if provided', () => {
   const { rerender } = render(
-    generateJsx({ status: TxState.Complete, confirmationEvent: null })
+    generateJsx({ status: TxState.Complete, confirmed: false })
   );
   expect(screen.getByText(`${props.name} pending`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
@@ -98,7 +98,7 @@ test('Success state waits for confirmation event if provided', () => {
   ).toBeInTheDocument();
 
   // @ts-ignore enforce truthy on confirmation event
-  rerender(generateJsx({ confirmationEvent: {}, status: TxState.Complete }));
+  rerender(generateJsx({ confirmed: true, status: TxState.Complete }));
   expect(
     screen.queryByText('Vega is confirming your transaction...')
   ).not.toBeInTheDocument();

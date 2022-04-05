@@ -1,6 +1,9 @@
-import { t } from '@vegaprotocol/react-helpers';
 import { useEffect, useRef, useState } from 'react';
-import { isEthereumError, TxState } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  TxState,
+  isExpectedEthereumError,
+} from '@vegaprotocol/react-helpers';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 import { DialogWrapper } from './dialog-wrapper';
 import { Loader } from '../loader';
@@ -8,27 +11,27 @@ import { Intent } from '../../utils/intent';
 import { Dialog } from '../dialog';
 import { Icon } from '../icon';
 
-export interface TransactionDialogProps<TEvent = undefined> {
+export interface TransactionDialogProps {
   name: string;
   status: TxState;
   error: Error | null;
   confirmations: number;
   txHash: string | null;
   requiredConfirmations?: number;
-  // Undefined means this dialog isn't expecting an additional event for a complete state, null means
-  // it is but hasn't been received yet
-  confirmationEvent?: TEvent | null;
+  // Undefined means this dialog isn't expecting an additional event for a complete state, a boolean
+  // value means it is but hasn't been received yet
+  confirmed?: boolean;
 }
 
-export function TransactionDialog<TEvent = undefined>({
+export const TransactionDialog = ({
   name,
   status,
   error,
   confirmations,
   txHash,
   requiredConfirmations = 1,
-  confirmationEvent,
-}: TransactionDialogProps<TEvent>) {
+  confirmed,
+}: TransactionDialogProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogDismissed = useRef(false);
 
@@ -49,11 +52,8 @@ export function TransactionDialog<TEvent = undefined>({
           requiredConfirmations={requiredConfirmations}
           highlightComplete={false}
         />
-        {confirmationEvent !== undefined && (
-          <ConfirmationEventRow
-            status={status}
-            confirmed={Boolean(confirmationEvent)}
-          />
+        {confirmed !== undefined && (
+          <ConfirmationEventRow status={status} confirmed={confirmed} />
         )}
       </>
     );
@@ -76,8 +76,8 @@ export function TransactionDialog<TEvent = undefined>({
       intent = Intent.Prompt;
     }
 
-    if (confirmationEvent !== undefined) {
-      if (confirmationEvent !== null) {
+    if (confirmed !== undefined) {
+      if (confirmed === true) {
         title = t(`${name} complete`);
         icon = <Icon name="tick" />;
         intent = Intent.Success;
@@ -97,11 +97,7 @@ export function TransactionDialog<TEvent = undefined>({
 
   useEffect(() => {
     // Close dialog if error is due to user rejecting the tx
-    if (
-      status === TxState.Error &&
-      isEthereumError(error) &&
-      error.code === 4001
-    ) {
+    if (status === TxState.Error && isExpectedEthereumError(error)) {
       setDialogOpen(false);
       return;
     }
@@ -126,4 +122,4 @@ export function TransactionDialog<TEvent = undefined>({
       <DialogWrapper {...wrapperProps}>{renderContent()}</DialogWrapper>
     </Dialog>
   );
-}
+};

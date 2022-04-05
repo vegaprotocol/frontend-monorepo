@@ -1,5 +1,6 @@
 import type { ethers } from 'ethers';
 import { useCallback, useState } from 'react';
+import { EthereumError, isEthereumError } from '../lib/ethereum-error';
 
 export enum TxState {
   Default = 'Default',
@@ -68,21 +69,4 @@ export const useEthereumTransaction = <TArgs = void>(
   );
 
   return { perform, status, error, confirmations, txHash };
-};
-
-export class EthereumError extends Error {
-  code: number;
-
-  constructor(message: string, code: number) {
-    super(message);
-    this.code = code;
-    this.name = 'EthereumError';
-  }
-}
-
-export const isEthereumError = (err: unknown): err is EthereumError => {
-  if (typeof err === 'object' && err !== null && 'code' in err) {
-    return true;
-  }
-  return false;
 };

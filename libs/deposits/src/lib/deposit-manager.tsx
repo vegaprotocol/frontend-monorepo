@@ -93,7 +93,7 @@ export const DepositManager = ({
       />
       <TransactionDialog {...approve} name="approve" />
       <TransactionDialog {...faucet} name="faucet" />
-      <TransactionDialog<DepositEvent_busEvents_event_Deposit>
+      <TransactionDialog
         {...deposit}
         name="deposit"
         // Must wait for additional confirmations for Vega to pick up the Ethereum transaction

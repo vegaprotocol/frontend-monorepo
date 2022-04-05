@@ -1,10 +1,11 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor } from '@testing-library/react';
 import { act, renderHook } from '@testing-library/react-hooks';
-import { EthereumError, TxState } from './use-ethereum-transaction';
+import { TxState } from './use-ethereum-transaction';
 import type { ReactNode } from 'react';
 import { useEthereumTransaction } from './use-ethereum-transaction';
 import type { ethers } from 'ethers';
+import { EthereumError } from '../lib/ethereum-error';
 
 beforeAll(() => {
   jest.useFakeTimers();
