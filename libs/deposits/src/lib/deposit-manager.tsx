@@ -1,4 +1,3 @@
-import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
 import { useEffect, useMemo, useState } from 'react';
 import { DepositForm } from './deposit-form';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
