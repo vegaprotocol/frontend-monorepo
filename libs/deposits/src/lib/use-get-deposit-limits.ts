@@ -1,7 +1,8 @@
-import BigNumber from 'bignumber.js';
-import { useEffect, useState } from 'react';
+import type BigNumber from 'bignumber.js';
+import { useCallback } from 'react';
 import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 import type { Asset } from './deposit-manager';
+import { useEthereumReadContract } from '@vegaprotocol/react-helpers';
 
 interface Limits {
   min: BigNumber;
@@ -12,33 +13,25 @@ export const useGetDepositLimits = (
   contract: VegaErc20Bridge | null,
   asset?: Asset
 ): Limits | null => {
-  const [limits, setLimits] = useState<Limits | null>(null);
+  const getLimits = useCallback(async () => {
+    if (!contract || !asset) {
+      return;
+    }
 
-  useEffect(() => {
-    const run = async () => {
-      if (!contract || !asset) {
-        return;
-      }
-
-      const [min, max] = await Promise.all([
-        contract.getDepositMinimum(
-          asset.source.contractAddress,
-          asset.decimals
-        ),
-        contract.getDepositMaximum(
-          asset.source.contractAddress,
-          asset.decimals
-        ),
-      ]);
-
-      setLimits({
-        min,
-        max: max.isZero() ? new BigNumber(Infinity) : max,
-      });
-    };
-
-    run();
+    return Promise.all([
+      contract.getDepositMinimum(asset.source.contractAddress, asset.decimals),
+      contract.getDepositMaximum(asset.source.contractAddress, asset.decimals),
+    ]);
   }, [asset, contract]);
 
-  return limits;
+  const {
+    state: { data },
+  } = useEthereumReadContract<[BigNumber, BigNumber] | undefined>(getLimits);
+
+  if (!data) return null;
+
+  return {
+    min: data[0],
+    max: data[1],
+  };
 };

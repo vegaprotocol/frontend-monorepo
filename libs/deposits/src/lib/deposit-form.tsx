@@ -29,7 +29,7 @@ export interface DepositFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
   onSelectAsset: (assetId: string) => void;
-  available: BigNumber | null;
+  available: BigNumber | undefined;
   submitApprove: () => Promise<void>;
   submitDeposit: (args: {
     assetSource: string;
@@ -41,7 +41,7 @@ export interface DepositFormProps {
     min: BigNumber;
     max: BigNumber;
   } | null;
-  allowance: BigNumber | null;
+  allowance: BigNumber | undefined;
 }
 
 export const DepositForm = ({
@@ -258,7 +258,7 @@ export const DepositForm = ({
 interface FormButtonProps {
   selectedAsset?: Asset;
   amount: BigNumber;
-  allowance: BigNumber | null;
+  allowance: BigNumber | undefined;
   onApproveClick: () => void;
 }
 

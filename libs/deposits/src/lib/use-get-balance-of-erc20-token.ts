@@ -1,24 +1,20 @@
+import { useEthereumReadContract } from '@vegaprotocol/react-helpers';
 import type { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
-import type BigNumber from 'bignumber.js';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 export const useGetBalanceOfERC20Token = (contract: ERC20Token | null) => {
   const { account } = useWeb3React();
-  const [balanceOf, setBalanceOf] = useState<BigNumber | null>(null);
 
-  const getBalance = useCallback(async () => {
+  const getBalance = useCallback(() => {
     if (!contract || !account) {
       return;
     }
 
-    const res = await contract.balanceOf(account);
-    setBalanceOf(res);
+    return contract.balanceOf(account);
   }, [contract, account]);
 
-  useEffect(() => {
-    getBalance();
-  }, [getBalance]);
+  const { state, refetch } = useEthereumReadContract(getBalance);
 
-  return { balanceOf, refetch: getBalance };
+  return { balanceOf: state.data, refetch };
 };
