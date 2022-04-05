@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import type BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useState } from 'react';
 
-export const useBalanceOfERC20Token = (contract: ERC20Token | null) => {
+export const useGetBalanceOfERC20Token = (contract: ERC20Token | null) => {
   const { account } = useWeb3React();
   const [balanceOf, setBalanceOf] = useState<BigNumber | null>(null);
 

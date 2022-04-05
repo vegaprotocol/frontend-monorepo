@@ -26,7 +26,7 @@ const DEPOSIT_EVENT_SUB = gql`
   }
 `;
 
-export const useDeposit = (
+export const useSubmitDeposit = (
   contract: VegaErc20Bridge | null,
   confirmations: number
 ) => {

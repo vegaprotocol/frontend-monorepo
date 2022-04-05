@@ -8,7 +8,7 @@ interface Limits {
   max: BigNumber;
 }
 
-export const useDepositLimits = (
+export const useGetDepositLimits = (
   contract: VegaErc20Bridge | null,
   asset?: Asset
 ): Limits | null => {

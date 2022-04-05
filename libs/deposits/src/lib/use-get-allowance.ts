@@ -3,7 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import type BigNumber from 'bignumber.js';
 import { useEffect, useState } from 'react';
 
-export const useAllowance = (
+export const useGetAllowance = (
   contract: ERC20Token | null,
   bridgeAddress: string
 ) => {

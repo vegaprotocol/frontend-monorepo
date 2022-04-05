@@ -1,14 +1,14 @@
 import type { DepositEvent_busEvents_event_Deposit } from './__generated__/DepositEvent';
 import { useEffect, useMemo, useState } from 'react';
 import { DepositForm } from './deposit-form';
-import { useBalanceOfERC20Token } from './use-balance-of-erc20-token';
-import { useDeposit } from './use-deposit';
+import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
+import { useSubmitDeposit } from './use-submit-deposit';
 import sortBy from 'lodash/sortBy';
-import { useApprove } from './use-approve';
-import { useDepositLimits } from './use-deposit-limits';
-import { useAllowance } from './use-allowance';
+import { useSubmitApproval } from './use-submit-approval';
+import { useGetDepositLimits } from './use-get-deposit-limits';
+import { useGetAllowance } from './use-get-allowance';
 import { TransactionDialog } from '@vegaprotocol/ui-toolkit';
-import { useFaucet } from './use-faucet';
+import { useSubmitFaucet } from './use-submit-faucet';
 import {
   useTokenContract,
   useBridgeContract,
@@ -54,22 +54,22 @@ export const DepositManager = ({
   const bridgeContract = useBridgeContract();
 
   // Get users balance of the erc20 token selected
-  const { balanceOf, refetch } = useBalanceOfERC20Token(tokenContract);
+  const { balanceOf, refetch } = useGetBalanceOfERC20Token(tokenContract);
 
   // Get temporary deposit limits
-  const limits = useDepositLimits(bridgeContract, asset);
+  const limits = useGetDepositLimits(bridgeContract, asset);
 
   // Get allowance (approved spending limit of brdige contract) for the selected asset
-  const allowance = useAllowance(tokenContract, bridgeAddress);
+  const allowance = useGetAllowance(tokenContract, bridgeAddress);
 
   // Set up approve transaction
-  const approve = useApprove(tokenContract, bridgeAddress);
+  const approve = useSubmitApproval(tokenContract, bridgeAddress);
 
   // Set up deposit transaction
-  const deposit = useDeposit(bridgeContract, requiredConfirmations);
+  const deposit = useSubmitDeposit(bridgeContract, requiredConfirmations);
 
   // Set up faucet transaction
-  const faucet = useFaucet(tokenContract);
+  const faucet = useSubmitFaucet(tokenContract);
 
   // Update balance after confirmation event has been received
   useEffect(() => {
