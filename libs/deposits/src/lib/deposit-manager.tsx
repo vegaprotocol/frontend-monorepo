@@ -45,7 +45,10 @@ export const DepositManager = ({
     return asset;
   }, [assets, assetId]);
 
-  const tokenContract = useTokenContract(asset?.source.contractAddress);
+  const tokenContract = useTokenContract(
+    asset?.source.contractAddress,
+    process.env['NX_VEGA_ENV'] !== 'MAINNET'
+  );
   const bridgeContract = useBridgeContract();
 
   // Get users balance of the erc20 token selected
