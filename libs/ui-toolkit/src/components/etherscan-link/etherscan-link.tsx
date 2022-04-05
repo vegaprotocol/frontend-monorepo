@@ -2,14 +2,10 @@ import classNames from 'classnames';
 import type { AnchorHTMLAttributes } from 'react';
 import React from 'react';
 
-const etherscanUrls: Record<number, string> = {
-  1: 'https://etherscan.io',
-  3: 'https://ropsten.etherscan.io',
-};
+const ETHERSCAN_URL = process.env['NX_ETHERSCAN_URL'] as string;
 
 interface BaseEtherscanLinkProps
   extends AnchorHTMLAttributes<HTMLAnchorElement> {
-  chainId: number;
   text?: string;
 }
 
@@ -29,25 +25,20 @@ type EtherscanLinkProps =
  * Form an HTML link tag pointing to an appropriate Etherscan page
  */
 export const EtherscanLink = ({
-  chainId,
   text,
   className,
   ...props
 }: EtherscanLinkProps) => {
   let hash: string;
   let txLink: string | null;
-  const createLink = React.useMemo(
-    () => etherscanLinkCreator(chainId),
-    [chainId]
-  );
   const anchorClasses = classNames('underline', className);
 
   if ('tx' in props) {
     hash = props.tx;
-    txLink = createLink ? createLink.tx(hash) : null;
+    txLink = `${ETHERSCAN_URL}/tx/${hash}`;
   } else if ('address' in props) {
     hash = props.address;
-    txLink = createLink ? createLink.address(hash) : null;
+    txLink = `${ETHERSCAN_URL}/address/${hash}`;
   } else {
     throw new Error('Must provider either "tx" or "address" prop');
   }
@@ -71,20 +62,5 @@ export const EtherscanLink = ({
     </a>
   );
 };
-
-function etherscanLinkCreator(chainId: number) {
-  const url = etherscanUrls[chainId];
-
-  return {
-    tx: (tx: string) => {
-      if (!url) return null;
-      return `${url}/tx/${tx}`;
-    },
-    address: (address: string) => {
-      if (!url) return null;
-      return `${url}/address/${address}`;
-    },
-  };
-}
 
 EtherscanLink.displayName = 'EtherScanLink';

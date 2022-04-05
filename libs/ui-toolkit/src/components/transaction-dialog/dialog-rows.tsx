@@ -1,5 +1,4 @@
 import { EtherscanLink } from '../etherscan-link';
-import { useWeb3React } from '@web3-react/core';
 import { t, TxState } from '@vegaprotocol/react-helpers';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
@@ -31,8 +30,6 @@ export const TxRow = ({
   requiredConfirmations,
   highlightComplete = true,
 }: TxRowProps) => {
-  const { chainId } = useWeb3React();
-
   if (status === TxState.Pending) {
     return (
       <p className={`flex justify-between ${ACTIVE_CLASSES}`}>
@@ -43,7 +40,6 @@ export const TxRow = ({
         </span>
         <EtherscanLink
           tx={txHash || ''}
-          chainId={chainId || 3}
           className="text-vega-pink dark:text-vega-yellow"
           text={t('View on Etherscan')}
         />
@@ -61,7 +57,6 @@ export const TxRow = ({
         <span>{t('Ethereum transaction complete')}</span>
         <EtherscanLink
           tx={txHash || ''}
-          chainId={chainId || 3}
           className="text-vega-pink dark:text-vega-yellow"
           text={t('View on Etherscan')}
         />
