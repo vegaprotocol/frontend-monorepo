@@ -6,7 +6,7 @@ Feature: Market orders
     When I click on active market
     And I connect to Vega Wallet
     And place a buy '<marketOrderType>' market order
-    # Then order request is sent
+    Then order request is sent
 
     Examples:
       | marketOrderType |
@@ -19,7 +19,7 @@ Feature: Market orders
     When I click on active market
     And I connect to Vega Wallet
     And place a buy '<limitOrderType>' limit order
-    # Then order request is sent
+    Then order request is sent
 
     Examples:
       | limitOrderType |
@@ -35,7 +35,7 @@ Feature: Market orders
     When I click on active market
     And I connect to Vega Wallet
     And place a sell '<marketOrderType>' market order
-    # Then order request is sent
+    Then order request is sent
 
     Examples:
       | marketOrderType |

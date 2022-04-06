@@ -44,7 +44,9 @@ When('I click on suspended market', () => {
 });
 
 Then('order request is sent', () => {
-  dealTicketPage.verifyOrderRequestSent();
+  if (Cypress.env('bypassPlacingOrders' != true)) {
+    dealTicketPage.verifyOrderRequestSent();
+  }
 });
 
 Then('error message for insufficient funds is displayed', () => {
