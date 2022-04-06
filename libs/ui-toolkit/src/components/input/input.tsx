@@ -70,6 +70,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     if (appendIconName) {
       className += ' pr-28';
     }
+
     const input = (
       <input
         {...props}

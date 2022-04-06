@@ -39,6 +39,7 @@ export const InputError = ({
       data-testid="input-error-text"
       className={effectiveClassName}
       {...props}
+      role="alert"
     >
       <Icon name="warning-sign" className={iconClassName} />
       {children}

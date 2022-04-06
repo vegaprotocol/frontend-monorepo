@@ -20,7 +20,7 @@ export const Loader = ({ size = 'large' }: LoaderProps) => {
   const items = size === 'small' ? 9 : 16;
 
   return (
-    <div className="flex flex-col items-center" data-testid="splash-loader">
+    <div className="flex flex-col items-center" data-testid="loader">
       <div className={`${wrapperClasses} flex flex-wrap`}>
         {new Array(items).fill(null).map((_, i) => {
           return (

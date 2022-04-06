@@ -1,5 +1,8 @@
-import { fireEvent, render, screen, act } from '@testing-library/react';
-import { Web3Container } from './web3-container';
+import { fireEvent, render, screen } from '@testing-library/react';
+import type { MockedResponse } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing';
+import { NETWORK_PARAMS_QUERY, Web3Container } from './web3-container';
+import type { NetworkParametersQuery } from '@vegaprotocol/graphql';
 
 const defaultHookValue = {
   isActive: false,
@@ -9,6 +12,32 @@ const defaultHookValue = {
 };
 let mockHookValue;
 
+const mockEthereumConfig = {
+  network_id: '3',
+  chain_id: '3',
+  confirmations: 3,
+  collateral_bridge_contract: {
+    address: 'bridge address',
+  },
+};
+
+const networkParamsQueryMock: MockedResponse<NetworkParametersQuery> = {
+  request: {
+    query: NETWORK_PARAMS_QUERY,
+  },
+  result: {
+    data: {
+      networkParameters: [
+        {
+          __typename: 'NetworkParameter',
+          key: 'blockchains.ethereumConfig',
+          value: JSON.stringify(mockEthereumConfig),
+        },
+      ],
+    },
+  },
+};
+
 jest.mock('@web3-react/core', () => {
   const original = jest.requireActual('@web3-react/core');
   return {
@@ -17,19 +46,33 @@ jest.mock('@web3-react/core', () => {
   };
 });
 
+function setup(mock = networkParamsQueryMock) {
+  return render(
+    <MockedProvider mocks={[mock]}>
+      <Web3Container>
+        {({ ethereumConfig }) => (
+          <div>
+            <div>Child</div>
+            <div>{ethereumConfig.collateral_bridge_contract.address}</div>
+          </div>
+        )}
+      </Web3Container>
+    </MockedProvider>
+  );
+}
+
 test('Prompt to connect opens dialog', async () => {
   mockHookValue = defaultHookValue;
-  await act(async () => {
-    render(
-      <Web3Container>
-        <div>Child</div>
-      </Web3Container>
-    );
-  });
+  setup();
+
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(
+    await screen.findByText('Connect your Ethereum wallet')
+  ).toBeInTheDocument();
 
   expect(screen.queryByText('Child')).not.toBeInTheDocument();
   expect(screen.queryByTestId('web3-connector-list')).not.toBeInTheDocument();
-  expect(screen.getByText('Connect your Ethereum wallet')).toBeInTheDocument();
+
   fireEvent.click(screen.getByText('Connect'));
   expect(screen.getByTestId('web3-connector-list')).toBeInTheDocument();
 });
@@ -37,33 +80,84 @@ test('Prompt to connect opens dialog', async () => {
 test('Error message is shown', async () => {
   const message = 'Opps! An error';
   mockHookValue = { ...defaultHookValue, error: new Error(message) };
-  await act(async () => {
-    render(
-      <Web3Container>
-        <div>Child</div>
-      </Web3Container>
-    );
-  });
+  setup();
 
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(await screen.findByText(`Something went wrong: ${message}`));
   expect(screen.queryByText('Child')).not.toBeInTheDocument();
-  expect(screen.getByText(`Something went wrong: ${message}`));
 });
 
-test('Chain id matches app configuration', async () => {
+test('Checks that chain ID matches app ID', async () => {
   const expectedChainId = 4;
   mockHookValue = {
     ...defaultHookValue,
     isActive: true,
     chainId: expectedChainId,
   };
-  await act(async () => {
-    render(
-      <Web3Container>
-        <div>Child</div>
-      </Web3Container>
-    );
-  });
+  setup();
 
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(await screen.findByText(`This app only works on chain ID: 3`));
   expect(screen.queryByText('Child')).not.toBeInTheDocument();
-  expect(screen.getByText(`This app only works on chain ID: 3`));
+});
+
+test('Passes ethereum config to children', async () => {
+  mockHookValue = {
+    ...defaultHookValue,
+    isActive: true,
+  };
+  setup();
+
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(
+    await screen.findByText(
+      mockEthereumConfig.collateral_bridge_contract.address
+    )
+  ).toBeInTheDocument();
+});
+
+test('Shows no config found message if the network parameter doesnt exist', async () => {
+  const mock: MockedResponse<NetworkParametersQuery> = {
+    request: {
+      query: NETWORK_PARAMS_QUERY,
+    },
+    result: {
+      data: {
+        networkParameters: [
+          {
+            __typename: 'NetworkParameter',
+            key: 'nope',
+            value: 'foo',
+          },
+        ],
+      },
+    },
+  };
+  setup(mock);
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(
+    await screen.findByText('No ethereum config found')
+  ).toBeInTheDocument();
+});
+
+test('Shows message if ethereum config could not be parsed', async () => {
+  const mock: MockedResponse<NetworkParametersQuery> = {
+    request: {
+      query: NETWORK_PARAMS_QUERY,
+    },
+    result: {
+      data: {
+        networkParameters: [
+          {
+            __typename: 'NetworkParameter',
+            key: 'blockchains.ethereumConfig',
+            value: '"something invalid }',
+          },
+        ],
+      },
+    },
+  };
+  setup(mock);
+  expect(screen.getByText('Loading...')).toBeInTheDocument();
+  expect(await screen.findByText('Could not parse config')).toBeInTheDocument();
 });

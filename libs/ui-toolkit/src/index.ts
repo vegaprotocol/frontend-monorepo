@@ -1,12 +1,9 @@
-import * as EthereumUtils from './utils/web3';
-
 // Components
 export { AgGridLazy, AgGridDynamic } from './components/ag-grid';
 export { AsyncRenderer } from './components/async-renderer';
 export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
 export { CopyWithTooltip } from './components/copy-with-tooltip';
-export { EthereumUtils };
 export { EtherscanLink } from './components/etherscan-link';
 export { FormGroup } from './components/form-group';
 export { Icon } from './components/icon';
@@ -23,6 +20,7 @@ export { VegaLogo } from './components/vega-logo';
 export { Tooltip } from './components/tooltip';
 export { Indicator } from './components/indicator';
 export { Card } from './components/card';
+export { TransactionDialog } from './components/transaction-dialog';
 
 // Utils
 export * from './utils/intent';
