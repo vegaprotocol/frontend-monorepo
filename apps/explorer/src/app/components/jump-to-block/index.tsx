@@ -1,6 +1,8 @@
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Routes } from '../../routes/router-config';
+import { JumpTo } from '../jump-to';
 
 export const JumpToBlock = () => {
   const navigate = useNavigate();
@@ -20,25 +22,13 @@ export const JumpToBlock = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label
-        htmlFor="block-input"
-        className="block uppercase text-h5 font-bold"
-      >
-        Jump to block
-      </label>
-      <input
-        id="block-input"
-        type="number"
-        name="blockNumber"
-        placeholder="Block number"
-        className="bg-white-25 border-white border px-8 py-4 placeholder-white-60"
-      />
-      <input
-        className="border-white border px-28 py-4 cursor-pointer"
-        type="submit"
-        value="Go"
-      />
-    </form>
+    <JumpTo
+      label={t('Jump to block')}
+      placeholder={t('Block number')}
+      inputId="block-input"
+      inputType="number"
+      inputName="blockNumber"
+      submitHandler={handleSubmit}
+    />
   );
 };

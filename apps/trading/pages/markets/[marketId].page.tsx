@@ -1,11 +1,12 @@
 import { gql } from '@apollo/client';
-import { Market, MarketVariables } from '@vegaprotocol/graphql';
+import type { Market, MarketVariables } from './__generated__/Market';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
+import { t } from '@vegaprotocol/react-helpers';
 
 // Top level page query
 const MARKET_QUERY = gql`
@@ -13,60 +14,40 @@ const MARKET_QUERY = gql`
     market(id: $marketId) {
       id
       name
-      decimalPlaces
-      state
-      tradingMode
-      tradableInstrument {
-        instrument {
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-            }
-          }
-        }
-      }
-      trades {
-        id
-        price
-        size
-        createdAt
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
     }
   }
 `;
 
 const MarketPage = () => {
-  const {
-    query: { marketId },
-  } = useRouter();
+  const { query } = useRouter();
   const { w } = useWindowSize();
+
+  // Default to first marketId query item if found
+  const marketId = Array.isArray(query.marketId)
+    ? query.marketId[0]
+    : query.marketId;
+
+  if (!marketId) {
+    return (
+      <Splash>
+        <p>{t('Not found')}</p>
+      </Splash>
+    );
+  }
 
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}
       options={{
-        // Not sure exactly why marketId is string | string[] but just the first item in the array if
-        // it is one
         variables: {
-          marketId: Array.isArray(marketId) ? marketId[0] : marketId,
+          marketId,
         },
-        skip: !marketId,
         fetchPolicy: 'network-only',
       }}
     >
       {({ market }) => {
         if (!market) {
-          return <Splash>Market not found</Splash>;
+          return <Splash>{t('Market not found')}</Splash>;
         }
 
         return w > 960 ? (

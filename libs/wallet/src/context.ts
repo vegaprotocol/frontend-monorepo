@@ -1,10 +1,10 @@
-import {
+import type {
   VegaKey,
   TransactionResponse,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { createContext } from 'react';
-import { VegaConnector } from './connectors';
-import { Transaction } from './types';
+import type { VegaConnector } from './connectors';
+import type { Transaction } from './types';
 
 export type SendTxError =
   | {

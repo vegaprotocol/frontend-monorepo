@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import classnames from 'classnames';
 import { statsFields } from '../../config/stats-fields';
-import {
+import type {
   Stats as IStats,
   StructuredStats as IStructuredStats,
 } from '../../config/types';

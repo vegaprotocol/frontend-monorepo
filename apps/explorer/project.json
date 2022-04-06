@@ -15,10 +15,10 @@
         "main": "apps/explorer/src/main.tsx",
         "polyfills": "apps/explorer/src/polyfills.ts",
         "tsConfig": "apps/explorer/tsconfig.app.json",
-        "assets": ["apps/explorer/src/favicon.ico", "apps/explorer/src/assets"],
+        "assets": ["apps/explorer/src/assets"],
         "styles": ["apps/explorer/src/styles.css"],
         "scripts": [],
-        "webpackConfig": "@nrwl/react/plugins/webpack"
+        "webpackConfig": "apps/explorer/webpack.config.js"
       },
       "configurations": {
         "production": {
@@ -30,7 +30,7 @@
           ],
           "optimization": true,
           "outputHashing": "all",
-          "sourceMap": false,
+          "sourceMap": true,
           "namedChunks": false,
           "extractLicenses": true,
           "vendorChunk": false
@@ -70,12 +70,8 @@
       "builder": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
-          {
-            "command": "cp apps/explorer/netlify.toml netlify.toml"
-          },
-          {
-            "command": "nx build explorer"
-          }
+          "cp apps/explorer/netlify.toml netlify.toml",
+          "nx build explorer"
         ]
       }
     }

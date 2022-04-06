@@ -1,14 +1,15 @@
-import { Link } from 'react-router-dom';
+import { Routes } from '../../router-config';
+import type { Result } from '../tendermint-transaction-response.d';
 import {
-  Table,
+  TableWithTbody,
   TableCell,
   TableHeader,
   TableRow,
 } from '../../../components/table';
 import { TruncateInline } from '../../../components/truncate/truncate';
-import { Routes } from '../../../routes/router-config';
-import { Result } from '../../../routes/txs/tendermint-transaction-response.d';
+import { t } from '@vegaprotocol/react-helpers';
 
+import { HighlightedLink } from '../../../components/highlighted-link';
 interface TxDetailsProps {
   txData: Result | undefined;
   pubKey: string | undefined;
@@ -19,43 +20,36 @@ const truncateLength = 30;
 
 export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   if (!txData) {
-    return <>Awaiting Tendermint transaction details</>;
+    return <>{t('Awaiting Tendermint transaction details')}</>;
   }
 
   return (
-    <Table className={className}>
+    <TableWithTbody className={className}>
       <TableRow modifier="bordered">
-        <TableCell>Hash</TableCell>
+        <TableCell>{t('Hash')}</TableCell>
         <TableCell modifier="bordered" data-testid="hash">
           {txData.hash}
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
         <TableHeader scope="row" className="w-[160px]">
-          Submitted by
+          {t('Submitted by')}
         </TableHeader>
         <TableCell modifier="bordered" data-testid="submitted-by">
-          <Link
-            className="text-vega-yellow"
-            to={`/${Routes.PARTIES}/${pubKey}`}
-          >
-            {pubKey}
-          </Link>
+          <HighlightedLink to={`/${Routes.PARTIES}/${pubKey}`} text={pubKey} />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>Block</TableCell>
+        <TableCell>{t('Block')}</TableCell>
         <TableCell modifier="bordered" data-testid="block">
-          <Link
-            className="text-vega-yellow"
+          <HighlightedLink
             to={`/${Routes.BLOCKS}/${txData.height}`}
-          >
-            {txData.height}
-          </Link>
+            text={txData.height}
+          />
         </TableCell>
       </TableRow>
       <TableRow modifier="bordered">
-        <TableCell>Encoded txn</TableCell>
+        <TableCell>{t('Encoded txn')}</TableCell>
         <TableCell modifier="bordered" data-testid="encoded-tnx">
           <TruncateInline
             text={txData.tx}
@@ -64,6 +58,6 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
           />
         </TableCell>
       </TableRow>
-    </Table>
+    </TableWithTbody>
   );
 };

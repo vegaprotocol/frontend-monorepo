@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval } from '@vegaprotocol/graphql';
+import { Interval } from '@vegaprotocol/types';
 
 // ====================================================
 // GraphQL subscription operation: CandlesSub

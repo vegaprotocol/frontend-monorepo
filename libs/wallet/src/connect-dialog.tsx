@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import { VegaConnector } from './connectors';
+import type { VegaConnector } from './connectors';
 import { RestConnectorForm } from './rest-connector-form';
 import { useEffect } from 'react';
-import { RestConnector } from './connectors/rest-connector';
+import { RestConnector } from './connectors';
 import { useVegaWallet } from './hooks';
+import { t } from '@vegaprotocol/react-helpers';
 
 export interface VegaConnectDialogProps {
   connectors: { [name: string]: VegaConnector };
@@ -38,7 +39,7 @@ export function VegaConnectDialog({
   useEffect(() => {
     if (
       selectedConnector !== null &&
-      selectedConnector instanceof RestConnector === false
+      !(selectedConnector instanceof RestConnector)
     ) {
       connectAndClose(selectedConnector);
     }
@@ -69,7 +70,7 @@ export function VegaConnectDialog({
                 onClick={() => setSelectedConnector(connector)}
                 className="capitalize hover:text-vega-pink dark:hover:text-vega-yellow underline"
               >
-                {key} provider
+                {t(`${key} provider`)}
               </button>
               <p className="text-black-60">{connector.description}</p>
             </li>

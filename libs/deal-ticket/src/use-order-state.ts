@@ -1,4 +1,5 @@
-import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import type { OrderSide } from '@vegaprotocol/wallet';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { useState, useCallback } from 'react';
 
 export interface Order {

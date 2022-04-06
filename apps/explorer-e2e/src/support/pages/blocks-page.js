@@ -25,10 +25,17 @@ export default class BlocksPage extends BasePage {
   validateBlockValidatorPage() {
     cy.getByTestId(this.minedByValidator).should('not.be.empty');
     cy.getByTestId(this.blockTime).should('not.be.empty');
-    cy.get(`[data-testid=${this.transactionsRow}] > td`)
-      .should('have.length.above', 0)
-      .each(($cell) => {
-        cy.wrap($cell).should('not.be.empty');
-      });
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000); // Wait for transactions to load if there are any
+    cy.get('body').then(($body) => {
+      if ($body.find(`[data-testid=${this.transactionsRow}] > td`).length) {
+        cy.get(`[data-testid=${this.transactionsRow}] > td`).each(($cell) => {
+          cy.wrap($cell).should('not.be.empty');
+        });
+      } else {
+        cy.slack('Unable to find any transactions on page');
+        cy.screenshot();
+      }
+    });
   }
 }

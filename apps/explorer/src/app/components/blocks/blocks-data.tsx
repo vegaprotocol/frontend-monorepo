@@ -1,5 +1,6 @@
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
-import { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
+import type { TendermintBlockchainResponse } from '../../routes/blocks/tendermint-blockchain-response';
 import { BlockData } from './block-data';
 
 interface BlocksProps {
@@ -9,12 +10,14 @@ interface BlocksProps {
 
 export const BlocksData = ({ data, className }: BlocksProps) => {
   if (!data?.result) {
-    return <div className={className}>Awaiting block data</div>;
+    return <div className={className}>{t('Awaiting block data')}</div>;
   }
 
   return (
     <ul
-      aria-label={`Showing ${data.result?.block_metas.length} most recently loaded blocks`}
+      aria-label={t(
+        `Showing ${data.result?.block_metas.length} most recently loaded blocks`
+      )}
       className={className}
     >
       {data.result?.block_metas?.map((block, index) => {

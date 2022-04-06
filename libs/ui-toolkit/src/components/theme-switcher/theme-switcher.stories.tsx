@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import type { Story, Meta } from '@storybook/react';
 import { ThemeSwitcher } from './theme-switcher';
 
 export default {
@@ -6,7 +6,7 @@ export default {
   title: 'ThemeSwitcher',
 } as Meta;
 
-const Template: Story = (args) => (
+const Template: Story = () => (
   <ThemeSwitcher onToggle={() => document.body.classList.toggle('dark')} />
 );
 

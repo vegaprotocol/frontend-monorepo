@@ -13,14 +13,14 @@ const Deposit = () => {
 };
 
 const Info = () => {
-  const { isActive, chainId, accounts } = useWeb3React();
+  const { isActive, chainId, account } = useWeb3React();
   if (!isActive) {
     return <div>Not active</div>;
   }
   return (
     <div>
       <p>{chainId}</p>
-      <p>{accounts[0]}</p>
+      <p>{account ? account : 'No account'}</p>
     </div>
   );
 };
