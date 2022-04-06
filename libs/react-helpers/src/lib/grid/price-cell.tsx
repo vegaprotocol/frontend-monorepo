@@ -1,5 +1,3 @@
-import { FlashCell } from './flash-cell';
-
 export interface IPriceCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
@@ -11,7 +9,7 @@ export const PriceCell = ({ value, valueFormatted }: IPriceCellProps) => {
   }
   return (
     <span className="font-mono" data-testid="price">
-      <FlashCell value={Number(value)}>{valueFormatted}</FlashCell>
+      {valueFormatted}
     </span>
   );
 };
