@@ -60,39 +60,47 @@ export const TransactionDialog = ({
   };
 
   const getWrapperProps = () => {
-    let title = t(`${name} pending`);
-    let icon = <Loader />;
-    let intent = Intent.Progress;
-
-    if (status === TxState.Error) {
-      title = t(`${name} failed`);
-      icon = <Icon name="warning-sign" size={20} />;
-      intent = Intent.Danger;
-    }
-
-    if (status === TxState.Requested) {
-      title = t('Confirm transaction');
-      icon = <Icon name="hand-up" size={20} />;
-      intent = Intent.Prompt;
-    }
-
-    if (confirmed !== undefined) {
-      if (confirmed === true) {
-        title = t(`${name} complete`);
-        icon = <Icon name="tick" />;
-        intent = Intent.Success;
-      }
-    } else if (status === TxState.Complete) {
-      title = t(`${name} complete`);
-      icon = <Icon name="tick" />;
-      intent = Intent.Success;
-    }
-
-    return {
-      title,
-      icon,
-      intent,
+    const propsMap = {
+      [TxState.Error]: {
+        title: t(`${name} failed`),
+        icon: <Icon name="warning-sign" size={20} />,
+        intent: Intent.Danger,
+      },
+      [TxState.Requested]: {
+        title: t('Confirm transaction'),
+        icon: <Icon name="hand-up" size={20} />,
+        intent: Intent.Prompt,
+      },
+      [TxState.Pending]: {
+        title: t(`${name} pending`),
+        icon: <Loader />,
+        intent: Intent.Progress,
+      },
+      [TxState.Complete]: {
+        title: t(`${name} complete`),
+        icon: <Icon name="tick" />,
+        intent: Intent.Success,
+      },
     };
+
+    // Dialog not showing
+    if (status === TxState.Default) {
+      return { intent: undefined, title: '', icon: null };
+    }
+
+    // Confirmation event bool is required so
+    if (confirmed !== undefined) {
+      // Vega has confirmed Tx
+      if (confirmed === true) {
+        return propsMap[TxState.Complete];
+      }
+      // Tx is complete but still awaiting for Vega to confirm
+      else if (status === TxState.Complete) {
+        return propsMap[TxState.Pending];
+      }
+    }
+
+    return propsMap[status];
   };
 
   useEffect(() => {

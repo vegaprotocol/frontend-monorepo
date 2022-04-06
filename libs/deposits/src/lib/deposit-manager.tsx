@@ -65,17 +65,20 @@ export const DepositManager = ({
   const approve = useSubmitApproval(tokenContract, bridgeAddress);
 
   // Set up deposit transaction
-  const deposit = useSubmitDeposit(bridgeContract, requiredConfirmations);
+  const { confirmationEvent, ...deposit } = useSubmitDeposit(
+    bridgeContract,
+    requiredConfirmations
+  );
 
   // Set up faucet transaction
   const faucet = useSubmitFaucet(tokenContract);
 
   // Update balance after confirmation event has been received
   useEffect(() => {
-    if (deposit.confirmationEvent !== null) {
+    if (confirmationEvent !== null) {
       refetch();
     }
-  }, [deposit.confirmationEvent, refetch]);
+  }, [confirmationEvent, refetch]);
 
   return (
     <>
@@ -95,6 +98,7 @@ export const DepositManager = ({
       <TransactionDialog
         {...deposit}
         name="deposit"
+        confirmed={Boolean(confirmationEvent)}
         // Must wait for additional confirmations for Vega to pick up the Ethereum transaction
         requiredConfirmations={requiredConfirmations}
       />
