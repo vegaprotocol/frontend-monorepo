@@ -8,7 +8,12 @@ export default class BlocksPage extends BasePage {
   validatorLink = 'validator-link';
   blockTime = 'block-time';
   refreshBtn = 'refresh';
+  blockHeader = 'block-header';
   minedByValidator = 'block-validator';
+  previousBlockBtn = 'previous-block';
+  nextBlockBtn = 'next-block';
+  jumpToBlockInput = 'block-input';
+  jumpToBlockSubmit = 'go-submit';
 
   validateBlocksPageDisplayed() {
     cy.getByTestId(this.blockRow).should('have.length.above', 1);
@@ -37,5 +42,56 @@ export default class BlocksPage extends BasePage {
         cy.screenshot();
       }
     });
+  }
+
+  navigateToPreviousBlock() {
+    cy.getByTestId(this.blockHeader)
+      .invoke('text')
+      .then(($blockHeaderTxt) => {
+        const blockHeight = parseInt($blockHeaderTxt.replace('BLOCK ', ''));
+        this.clickPreviousBlock();
+        cy.getByTestId(this.blockHeader)
+          .invoke('text')
+          .then(($newBlockHeaderTxt) => {
+            const newBlockHeight = parseInt(
+              $newBlockHeaderTxt.replace('BLOCK ', '')
+            );
+            expect(newBlockHeight).to.be.lessThan(blockHeight);
+          });
+      });
+  }
+
+  navigateToNextBlock() {
+    cy.getByTestId(this.blockHeader)
+      .invoke('text')
+      .then(($blockHeaderTxt) => {
+        const blockHeight = parseInt($blockHeaderTxt.replace('BLOCK ', ''));
+        this.clickNextBlock();
+        cy.getByTestId(this.blockHeader)
+          .invoke('text')
+          .then(($newBlockHeaderTxt) => {
+            const newBlockHeight = parseInt(
+              $newBlockHeaderTxt.replace('BLOCK ', '')
+            );
+            expect(newBlockHeight).to.be.greaterThan(blockHeight);
+          });
+      });
+  }
+
+  clickPreviousBlock() {
+    cy.getByTestId(this.previousBlockBtn).click();
+  }
+
+  clickNextBlock() {
+    cy.getByTestId(this.nextBlockBtn).click();
+  }
+
+  jumpToBlock(blockNumber) {
+    cy.getByTestId(this.jumpToBlockInput).type(blockNumber);
+    cy.getByTestId(this.jumpToBlockSubmit).click();
+  }
+
+  verifyPreviousBtnDisabled() {
+    cy.getByTestId(this.previousBlockBtn).find('button').should('be.disabled');
   }
 }

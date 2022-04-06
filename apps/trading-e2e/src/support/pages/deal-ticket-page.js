@@ -65,7 +65,9 @@ export default class DealTicketPage extends BasePage {
   }
 
   clickPlaceOrder() {
-    cy.getByTestId(this.placeOrderBtn).click();
+    if (Cypress.env('bypassPlacingOrders' != true)) {
+      cy.getByTestId(this.placeOrderBtn).click();
+    }
   }
 
   verifyPlaceOrderBtnDisabled() {
