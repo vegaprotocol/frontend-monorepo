@@ -40,7 +40,7 @@
         "data": {
           "market": {
             "id": "34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed",
-            "state": "Settled",
+            "state": "Suspended",
             "tradingMode": "Continuous",
             "__typename": "Market"
           },

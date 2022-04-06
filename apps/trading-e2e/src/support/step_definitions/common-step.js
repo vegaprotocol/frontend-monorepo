@@ -1,26 +1,31 @@
 import { Given, When } from 'cypress-cucumber-preprocessor/steps';
 import MarketsPage from '../pages/markets-page';
 import DealTicketPage from '../pages/deal-ticket-page';
-import Markets from '../../fixtures/markets.json';
 
 const marketsPage = new MarketsPage();
 const dealTicketPage = new DealTicketPage();
+
+// Utility to match GraphQL mutation based on the operation name
+export const hasOperationName = (req, operationName) => {
+  const { body } = req;
+  return (
+    // eslint-disable-next-line no-prototype-builtins
+    body.hasOwnProperty('operationName') && body.operationName === operationName
+  );
+};
 
 Given('I am on the homepage', () => {
   cy.visit('/');
 });
 
 Given('I navigate to markets page', () => {
-  cy.intercept(
-    {
-      hostname: 'lb.testnet.vega.xyz',
-      path: '/query',
-      method: 'POST',
-    },
-    {
-      body: Markets,
+  cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
+    if (hasOperationName(req, 'Markets')) {
+      req.reply({
+        fixture: 'markets.json',
+      });
     }
-  );
+  });
   marketsPage.navigateToMarkets();
 });
 

@@ -1,7 +1,35 @@
 import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 
 import DealTicketPage from '../pages/deal-ticket-page';
+import { hasOperationName } from './common-step';
+import DealTicketFixture from '../../fixtures/deal-ticket-query.json';
+
+const marketsPage = new MarketsPage();
 const dealTicketPage = new DealTicketPage();
+
+When('I click on market for {string}', (marketText) => {
+  marketsPage.clickOnMarket(marketText);
+});
+
+When('I click on active market', () => {
+  cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
+    if (hasOperationName(req, 'Market')) {
+      req.reply({
+        fixture: 'market.json',
+      });
+    }
+    if (hasOperationName(req, 'DealTicketQuery')) {
+      req.reply({
+        fixture: 'deal-ticket-query.json',
+      });
+    }
+  });
+  if (Cypress.env('bypassPlacingOrders' != true)) {
+    marketsPage.clickOnMarket('Active');
+  } else {
+    marketsPage.clickOnTopMarketRow();
+  }
+});
 
 When('place a buy {string} market order', (orderType) => {
   dealTicketPage.placeMarketOrder(true, 100, orderType);
@@ -26,6 +54,24 @@ When('place a sell {string} limit order', (limitOrderType) => {
 When('place a buy {string} market order with amount of 0', (orderType) => {
   dealTicketPage.placeMarketOrder(true, 0, orderType);
   dealTicketPage.clickPlaceOrder();
+});
+
+When('I click on suspended market', () => {
+  cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
+    if (hasOperationName(req, 'Market')) {
+      req.reply({
+        fixture: 'market.json',
+      });
+    }
+    if (hasOperationName(req, 'DealTicketQuery')) {
+      const body = DealTicketFixture;
+      body.data.market.state = 'Suspended';
+      req.reply({
+        body,
+      });
+    }
+  });
+  marketsPage.clickOnMarket('Suspended');
 });
 
 Then('order request is sent', () => {

@@ -1,0 +1,29 @@
+{
+  "data": {
+    "market": {
+      "id": "10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35",
+      "name": "BTCUSD Monthly (30 Jun 2022)",
+      "decimalPlaces": 2,
+      "state": "Active",
+      "tradingMode": "Continuous",
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "quoteName": "BTC",
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "depth": {
+        "__typename": "MarketDepth",
+        "lastTrade": {
+          "__typename": "Trade",
+          "price": "100"
+        }
+      },
+      "__typename": "Market"
+    }
+  }
+}
