@@ -29,7 +29,7 @@ export default class MarketPage extends BasePage {
   }
 
   clickOnTopMarketRow() {
-    cy.getByTestId(this.marketRow).first().click();
+    cy.get('[col-id="data"]').eq(1).click();
   }
 
   clickOnOrdersTab() {

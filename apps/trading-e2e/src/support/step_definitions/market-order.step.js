@@ -8,6 +8,10 @@ When('I click on market for {string}', (marketText) => {
   marketsPage.clickOnMarket(marketText);
 });
 
+When('I click on first market', () => {
+  marketsPage.clickOnTopMarketRow();
+});
+
 When('I click on active market', () => {
   marketsPage.clickOnMarket('Active');
 });

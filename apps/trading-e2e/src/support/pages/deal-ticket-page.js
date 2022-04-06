@@ -65,7 +65,8 @@ export default class DealTicketPage extends BasePage {
   }
 
   clickPlaceOrder() {
-    cy.getByTestId(this.placeOrderBtn).click();
+    // TODO Uncomment when able to run test on stable environment
+    // cy.getByTestId(this.placeOrderBtn).click();
   }
 
   verifyPlaceOrderBtnDisabled() {
