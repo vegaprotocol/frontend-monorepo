@@ -3,8 +3,7 @@ Feature: Market orders
   Scenario Outline: Successfull market buy orders
     Given I am on the homepage
     And I navigate to markets page
-    # When I click on active market
-    When I click on first market
+    When I click on active market
     And I connect to Vega Wallet
     And place a buy '<marketOrderType>' market order
     # Then order request is sent
@@ -17,8 +16,7 @@ Feature: Market orders
   Scenario Outline: Successfull Limit buy orders
     Given I am on the homepage
     And I navigate to markets page
-    # When I click on active market
-    When I click on first market
+    When I click on active market
     And I connect to Vega Wallet
     And place a buy '<limitOrderType>' limit order
     # Then order request is sent
@@ -34,8 +32,7 @@ Feature: Market orders
   Scenario Outline: Successfull market sell order
     Given I am on the homepage
     And I navigate to markets page
-    # When I click on active market
-    When I click on first market
+    When I click on active market
     And I connect to Vega Wallet
     And place a sell '<marketOrderType>' market order
     # Then order request is sent
@@ -48,8 +45,7 @@ Feature: Market orders
   Scenario Outline: Successfull limit sell order
     Given I am on the homepage
     And I navigate to markets page
-    # When I click on active market
-    When I click on first market
+    When I click on active market
     And I connect to Vega Wallet
     And place a sell '<limitOrderType>' limit order
 
@@ -65,11 +61,11 @@ Feature: Market orders
   Scenario: Unsuccessfull order because lack of funds
     Given I am on the homepage
     And I navigate to markets page
-    # When I click on active market
-    When I click on first market
+    When I click on active market
     And I connect to Vega Wallet
     And place a buy 'FOK' market order
     Then error message for insufficient funds is displayed
+
   @ignore
   Scenario: Unable to order because market is suspended
     Given I am on the homepage
@@ -82,16 +78,15 @@ Feature: Market orders
   Scenario: Unable to order because wallet is not connected
     Given I am on the homepage
     And I navigate to markets page
-    # When I click on active market
-    When I click on first market
+    When I click on active market
     Then place order button is disabled
     And "No public key selected" error is shown
+
   @ignore
   Scenario: Unsuccessfull because quantity is 0
     Given I am on the homepage
     And I navigate to markets page
-    # When I click on active market
-    When I click on first market
+    When I click on active market
     And I connect to Vega Wallet
     And place a buy 'FOK' market order with amount of 0
     Then Order rejected by wallet error shown containing text "must be positive"
