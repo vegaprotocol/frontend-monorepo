@@ -50,7 +50,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
     [gridRef]
   );
   const { data, error, loading } = useDataProvider<
-    Positions_party_positions,
+    Positions_party_positions[],
     PositionSubscribe_positions
   >(positionsDataProvider, update, variables);
   return (

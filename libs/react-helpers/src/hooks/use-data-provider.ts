@@ -9,7 +9,7 @@ export function useDataProvider<Data, Delta>(
   variables?: OperationVariables
 ) {
   const client = useApolloClient();
-  const [data, setData] = useState<Data[] | null>(null);
+  const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const initialized = useRef<boolean>(false);
