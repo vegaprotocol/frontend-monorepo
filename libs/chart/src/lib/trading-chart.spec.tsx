@@ -7,7 +7,7 @@ describe('TradingChart', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
       <MockedProvider>
-        <VegaWalletContext.Provider value={{} as any}>
+        <VegaWalletContext.Provider value={{} as never}>
           <TradingChartContainer marketId={'market-id'} />
         </VegaWalletContext.Provider>
       </MockedProvider>
