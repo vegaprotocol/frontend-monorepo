@@ -1,8 +1,8 @@
-import { DepthChartContainer } from '../depth-chart-container';
-import { Market_market } from '@vegaprotocol/graphql';
-import { TradingChartContainer } from '../trading-chart-container';
-import { useState } from 'react';
 import { ButtonRadio } from './button-radio';
+import { DepthChartContainer } from '@vegaprotocol/depth-chart';
+import { Market_market } from '@vegaprotocol/graphql';
+import { TradingChartContainer } from '@vegaprotocol/chart';
+import { useState } from 'react';
 
 interface ChartContainerProps {
   market: Market_market;
@@ -24,7 +24,7 @@ export const ChartContainer = ({ market }: ChartContainerProps) => {
           setChartType(value as 'depth' | 'trading');
         }}
       />
-      <div style={{ flex: '1 1 0' }}>
+      <div className="flex-1">
         {chartType === 'trading' ? (
           <TradingChartContainer marketId={market.id} />
         ) : (

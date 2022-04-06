@@ -1,16 +1,17 @@
-import { ApolloClient, gql } from '@apollo/client';
-import type { Annotation, DataSource } from 'pennant';
-import {
-  CandleFields,
-  Candles,
+import type { ApolloClient } from '@apollo/client';
+import { gql } from '@apollo/client';
+import type { Annotation, Candle, DataSource } from 'pennant';
+import { Interval } from 'pennant';
+
+import { addDecimal } from '@vegaprotocol/react-helpers';
+import type { Chart, ChartVariables } from './__generated__/Chart';
+import type { Candles, CandlesVariables } from './__generated__/Candles';
+import type { CandleFields } from './__generated__/CandleFields';
+import type {
   CandlesSub,
   CandlesSubVariables,
-  CandlesVariables,
-  Chart,
-  ChartVariables,
-  Interval,
-} from '@vegaprotocol/graphql';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+} from './__generated__/CandlesSub';
+import type { Subscription } from 'zen-observable-ts';
 
 export const CANDLE_FRAGMENT = gql`
   fragment CandleFields on Candle {
@@ -84,15 +85,15 @@ const defaultConfig = {
  * A data access object that provides access to the Vega GraphQL API.
  */
 export class VegaDataSource implements DataSource {
-  client: ApolloClient<any>;
+  client: ApolloClient<object>;
   marketId: string;
-  partyId: string;
+  partyId: null | string;
   _decimalPlaces = 0;
 
-  candlesSub: any; // kZenObservable.Subscription | null = null;
-  marketDataSub: any; // ZenObservable.Subscription | null = null;
-  positionsSub: any; // ZenObservable.Subscription | null = null;
-  ordersSub: any; // ZenObservable.Subscription | null = null;
+  candlesSub: Subscription | null = null;
+  marketDataSub: Subscription | null = null;
+  positionsSub: Subscription | null = null;
+  ordersSub: Subscription | null = null;
   orderAnnotations: Annotation[] = [];
   positionAnnotations: Annotation[] = [];
 
@@ -109,11 +110,15 @@ export class VegaDataSource implements DataSource {
    * @param client - An ApolloClient instance.
    * @param marketId - Market identifier.
    * @param partyId - Party identifier.
-   * @param onOrderClosed - Callback called when the user initiates closing an order
    */
-  constructor(client: ApolloClient<any>, marketId: string, partyId: string) {
+  constructor(
+    client: ApolloClient<object>,
+    marketId: string,
+    partyId: null | string = null
+  ) {
     this.client = client;
     this.marketId = marketId;
+    this.partyId = partyId;
   }
 
   /**
@@ -143,7 +148,7 @@ export class VegaDataSource implements DataSource {
             Interval.I1M,
           ],
           priceMonitoringBounds:
-            data.market.data.priceMonitoringBounds?.map((bounds: any) => ({
+            data.market.data.priceMonitoringBounds?.map((bounds) => ({
               maxValidPrice: Number(
                 addDecimal(bounds.maxValidPrice, this._decimalPlaces)
               ),
@@ -197,16 +202,21 @@ export class VegaDataSource implements DataSource {
   /**
    * Used by the charting library to create a subscription to streaming data.
    */
-  subscribeData(interval: Interval, onSubscriptionData: (data: any) => void) {
+  subscribeData(
+    interval: Interval,
+    onSubscriptionData: (data: Candle) => void
+  ) {
     const res = this.client.subscribe<CandlesSub, CandlesSubVariables>({
       query: CANDLES_SUB,
       variables: { marketId: this.marketId, interval },
     });
 
     this.candlesSub = res.subscribe(({ data }) => {
-      const candle = parseCandle(data.candles, this.decimalPlaces);
+      if (data) {
+        const candle = parseCandle(data.candles, this.decimalPlaces);
 
-      onSubscriptionData(candle);
+        onSubscriptionData(candle);
+      }
     });
   }
 
@@ -235,7 +245,7 @@ export class VegaDataSource implements DataSource {
   }
 }
 
-function parseCandle(candle: CandleFields, decimalPlaces: number) {
+function parseCandle(candle: CandleFields, decimalPlaces: number): Candle {
   return {
     date: new Date(candle.datetime),
     high: Number(addDecimal(candle.high, decimalPlaces)),

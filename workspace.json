@@ -3,6 +3,7 @@
   "projects": {
     "chart": "libs/chart",
     "deal-ticket": "libs/deal-ticket",
+    "depth-chart": "libs/depth-chart",
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",
     "graphql": "libs/graphql",
