@@ -12,6 +12,7 @@
     "market-list": "libs/market-list",
     "network-stats": "libs/network-stats",
     "order-list": "libs/order-list",
+    "orderbook": "libs/orderbook",
     "positions": "libs/positions",
     "react-helpers": "libs/react-helpers",
     "static": "apps/static",

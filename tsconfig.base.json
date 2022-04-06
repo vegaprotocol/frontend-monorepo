@@ -24,6 +24,7 @@
       "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
       "@vegaprotocol/network-stats": ["libs/network-stats/src/index.ts"],
       "@vegaprotocol/order-list": ["libs/order-list/src/index.ts"],
+      "@vegaprotocol/orderbook": ["libs/orderbook/src/index.ts"],
       "@vegaprotocol/positions": ["libs/positions/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
