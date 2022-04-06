@@ -57,6 +57,7 @@ Feature: Market orders
       # | GFA            | Requires market to be in auction
       | GFN            |
 
+  @ignore
   Scenario: Unsuccessfull order because lack of funds
     Given I am on the homepage
     And I navigate to markets page
@@ -65,6 +66,7 @@ Feature: Market orders
     And place a buy 'FOK' market order
     Then error message for insufficient funds is displayed
 
+  @ignore
   Scenario: Unable to order because market is suspended
     Given I am on the homepage
     And I navigate to markets page
@@ -80,6 +82,7 @@ Feature: Market orders
     Then place order button is disabled
     And "No public key selected" error is shown
 
+  @ignore
   Scenario: Unsuccessfull because quantity is 0
     Given I am on the homepage
     And I navigate to markets page
