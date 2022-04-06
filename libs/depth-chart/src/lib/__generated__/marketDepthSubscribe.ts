@@ -7,14 +7,6 @@
 // GraphQL subscription operation: marketDepthSubscribe
 // ====================================================
 
-export interface marketDepthSubscribe_marketDepth_lastTrade {
-  __typename: "Trade";
-  /**
-   * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
-   */
-  price: string;
-}
-
 export interface marketDepthSubscribe_marketDepth_sell {
   __typename: "PriceLevel";
   /**
@@ -49,10 +41,6 @@ export interface marketDepthSubscribe_marketDepth_buy {
 
 export interface marketDepthSubscribe_marketDepth {
   __typename: "MarketDepth";
-  /**
-   * Last trade for the given market (if available)
-   */
-  lastTrade: marketDepthSubscribe_marketDepth_lastTrade | null;
   /**
    * Sell side price levels (if available)
    */

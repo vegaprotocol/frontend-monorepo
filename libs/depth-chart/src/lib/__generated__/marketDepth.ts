@@ -7,28 +7,12 @@
 // GraphQL query operation: marketDepth
 // ====================================================
 
-export interface marketDepth_market_tradableInstrument_instrument {
-  __typename: "Instrument";
+export interface marketDepth_market_data {
+  __typename: "MarketData";
   /**
-   * Uniquely identify an instrument accrods all instruments available on Vega (string)
+   * the arithmetic average of the best bid price and best offer price.
    */
-  id: string;
-  /**
-   * Full and fairly descriptive name for the instrument
-   */
-  name: string;
-  /**
-   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
-   */
-  code: string;
-}
-
-export interface marketDepth_market_tradableInstrument {
-  __typename: "TradableInstrument";
-  /**
-   * An instance of or reference to a fully specified instrument.
-   */
-  instrument: marketDepth_market_tradableInstrument_instrument;
+  midPrice: string;
 }
 
 export interface marketDepth_market_depth_lastTrade {
@@ -100,14 +84,14 @@ export interface marketDepth_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   * 
+   *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   * 
+   *
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -115,9 +99,9 @@ export interface marketDepth_market {
    */
   decimalPlaces: number;
   /**
-   * An instance of or reference to a tradable instrument.
+   * marketData for the given market
    */
-  tradableInstrument: marketDepth_market_tradableInstrument;
+  data: marketDepth_market_data | null;
   /**
    * Current depth on the orderbook for this market
    */
@@ -133,5 +117,4 @@ export interface marketDepth {
 
 export interface marketDepthVariables {
   marketId: string;
-  maxDepth?: number | null;
 }

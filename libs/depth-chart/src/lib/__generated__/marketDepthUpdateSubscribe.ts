@@ -7,12 +7,24 @@
 // GraphQL subscription operation: marketDepthUpdateSubscribe
 // ====================================================
 
+export interface marketDepthUpdateSubscribe_marketDepthUpdate_market_data {
+  __typename: "MarketData";
+  /**
+   * the arithmetic average of the best bid price and best offer price.
+   */
+  midPrice: string;
+}
+
 export interface marketDepthUpdateSubscribe_marketDepthUpdate_market {
   __typename: "Market";
   /**
    * Market ID
    */
   id: string;
+  /**
+   * marketData for the given market
+   */
+  data: marketDepthUpdateSubscribe_marketDepthUpdate_market_data | null;
 }
 
 export interface marketDepthUpdateSubscribe_marketDepthUpdate_sell {

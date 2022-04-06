@@ -1,18 +1,14 @@
 import { gql } from '@apollo/client';
 
 export const marketDepthQuery = gql`
-  query marketDepth($marketId: ID!, $maxDepth: Int) {
+  query marketDepth($marketId: ID!) {
     market(id: $marketId) {
       id
       decimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-        }
+      data {
+        midPrice
       }
-      depth(maxDepth: $maxDepth) {
+      depth {
         lastTrade {
           price
         }
@@ -32,32 +28,14 @@ export const marketDepthQuery = gql`
   }
 `;
 
-export const marketDepthSubscription = gql`
-  subscription marketDepthSubscribe($marketId: ID!) {
-    marketDepth(marketId: $marketId) {
-      lastTrade {
-        price
-      }
-      sell {
-        price
-        volume
-        numberOfOrders
-      }
-      buy {
-        price
-        volume
-        numberOfOrders
-      }
-      sequenceNumber
-    }
-  }
-`;
-
 export const marketDepthUpdateSubscription = gql`
   subscription marketDepthUpdateSubscribe($marketId: ID!) {
     marketDepthUpdate(marketId: $marketId) {
       market {
         id
+        data {
+          midPrice
+        }
       }
       sell {
         price
@@ -70,19 +48,6 @@ export const marketDepthUpdateSubscription = gql`
         numberOfOrders
       }
       sequenceNumber
-    }
-  }
-`;
-
-export const lastPriceQuery = gql`
-  query lastPrice($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      depth {
-        lastTrade {
-          price
-        }
-      }
     }
   }
 `;

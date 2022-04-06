@@ -19,9 +19,8 @@ import type {
 
 export function updateDepthUpdate(
   prev: marketDepth,
-  subscriptionData: { data: marketDepthUpdateSubscribe },
-  maxDepth: number | null = null
-) {
+  subscriptionData: { data: marketDepthUpdateSubscribe }
+): marketDepth {
   if (!subscriptionData.data.marketDepthUpdate || !prev.market) {
     return prev;
   }
@@ -30,6 +29,14 @@ export function updateDepthUpdate(
     ...prev,
     market: {
       ...prev.market,
+      ...(prev.market.data && {
+        data: {
+          ...prev.market.data,
+          midPrice:
+            subscriptionData.data.marketDepthUpdate.market.data?.midPrice ??
+            prev.market.data.midPrice,
+        },
+      }),
       depth: {
         ...prev.market.depth,
         ...merge(prev.market.depth, subscriptionData.data.marketDepthUpdate),
@@ -38,9 +45,9 @@ export function updateDepthUpdate(
   };
 }
 
-type Depth = Pick<marketDepth_market_depth, 'buy' | 'sell'>;
+type MarketDepth = Pick<marketDepth_market_depth, 'buy' | 'sell'>;
 
-function merge(snapshot: Depth, update: Depth): Depth {
+function merge(snapshot: MarketDepth, update: MarketDepth): MarketDepth {
   let buy = snapshot.buy ? [...snapshot.buy] : null;
   let sell = snapshot.sell ? [...snapshot.sell] : null;
 
@@ -100,10 +107,7 @@ export interface QueryResult<TData> {
   error?: ApolloError;
 }
 
-export function useDepthUpdate(
-  { marketId, maxDepth }: marketDepthVariables,
-  wait = 0
-) {
+export function useDepthUpdate({ marketId }: marketDepthVariables, wait = 0) {
   const queryResultRef = React.useRef<QueryResult<marketDepth>>({
     data: undefined,
     loading: true,
@@ -135,8 +139,8 @@ export function useDepthUpdate(
         marketDepthVariables
       >({
         query: marketDepthQuery,
-        variables: { marketId, maxDepth },
-        fetchPolicy: 'network-only',
+        variables: { marketId },
+        fetchPolicy: 'no-cache',
       });
 
       if (data.market?.depth.sequenceNumber) {
@@ -150,7 +154,7 @@ export function useDepthUpdate(
     };
 
     fetchData();
-  }, [client, handleUpdate, marketId, maxDepth, stallCount]);
+  }, [client, handleUpdate, marketId, stallCount]);
 
   React.useEffect(() => {
     if (!marketId) return;
@@ -161,7 +165,7 @@ export function useDepthUpdate(
     >({
       query: marketDepthUpdateSubscription,
       variables: { marketId },
-      fetchPolicy: 'network-only',
+      fetchPolicy: 'no-cache',
       errorPolicy: 'none',
     });
 
@@ -203,11 +207,7 @@ export function useDepthUpdate(
 
       sequenceNumber.current = nextSequenceNumber;
 
-      const depth = updateDepthUpdate(
-        prev,
-        { data: subscriptionData.data },
-        typeof maxDepth !== 'number' ? undefined : maxDepth
-      );
+      const depth = updateDepthUpdate(prev, { data: subscriptionData.data });
 
       queryResultRef.current.data = depth;
       handleUpdate({ data: depth, loading: false });
@@ -216,7 +216,7 @@ export function useDepthUpdate(
     return () => {
       subscription && subscription.unsubscribe();
     };
-  }, [client, handleUpdate, marketId, maxDepth]);
+  }, [client, handleUpdate, marketId]);
 
   return queryResult;
 }

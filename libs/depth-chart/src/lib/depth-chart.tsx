@@ -31,32 +31,35 @@ export const DepthChartContainer = ({ marketId }: DepthChartContainerProps) => {
     return <Splash>Loading...</Splash>;
   }
 
-  if (!data?.market) {
+  if (!data || !data.market) {
     return <Splash>No Data</Splash>;
   }
 
   const market = data.market;
+  const decimalPlaces = data.market.decimalPlaces;
   const depthData: DepthChartProps['data'] = { buy: [], sell: [] };
 
   if (market.depth) {
     if (market.depth.buy) {
       depthData.buy = market?.depth.buy?.map((priceLevel: PriceLevel) => ({
-        price: Number(
-          addDecimal(priceLevel.price, data?.market?.decimalPlaces ?? 0)
-        ),
+        price: Number(addDecimal(priceLevel.price, decimalPlaces)),
         volume: Number(priceLevel.volume),
       }));
     }
 
     if (market.depth.sell) {
       depthData.sell = market?.depth.sell?.map((priceLevel: PriceLevel) => ({
-        price: Number(
-          addDecimal(priceLevel.price, data?.market?.decimalPlaces ?? 0)
-        ),
+        price: Number(addDecimal(priceLevel.price, decimalPlaces)),
         volume: Number(priceLevel.volume),
       }));
     }
   }
 
-  return <DepthChart data={depthData} theme={theme} />;
+  let midPrice: number | undefined = undefined;
+
+  if (market.data?.midPrice) {
+    midPrice = Number(addDecimal(market.data.midPrice, decimalPlaces));
+  }
+
+  return <DepthChart data={depthData} midPrice={midPrice} theme={theme} />;
 };
