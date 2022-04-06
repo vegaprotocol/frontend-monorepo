@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/depth-chart"],
       "options": {
-        "jestConfig": "libs/chart/jest.config.js",
+        "jestConfig": "libs/depth-chart/jest.config.js",
         "passWithNoTests": true
       }
     }
