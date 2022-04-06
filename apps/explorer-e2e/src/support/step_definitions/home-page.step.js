@@ -1,4 +1,5 @@
-import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
+import { Then } from 'cypress-cucumber-preprocessor/steps';
+
 import HomePage from '../pages/home-page';
 const homePage = new HomePage();
 
