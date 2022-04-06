@@ -8,6 +8,18 @@ const marketsPage = new MarketsPage();
 const dealTicketPage = new DealTicketPage();
 
 When('I click on market for {string}', (marketText) => {
+  cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
+    if (hasOperationName(req, 'Market')) {
+      req.reply({
+        fixture: 'market.json',
+      });
+    }
+    if (hasOperationName(req, 'DealTicketQuery')) {
+      req.reply({
+        fixture: 'deal-ticket-query.json',
+      });
+    }
+  });
   marketsPage.clickOnMarket(marketText);
 });
 
@@ -32,21 +44,73 @@ When('I click on active market', () => {
 });
 
 When('place a buy {string} market order', (orderType) => {
+  cy.intercept('POST', 'http://localhost:1789/api/v1/command/sync', (req) => {
+    req.reply({
+      body: {
+        txHash: 'tx-hash',
+        tx: {
+          signature: {
+            value:
+              'fea7b4e286009f2df867f583f9a2fc2352aeccfdb0b235421a0a10d2428235430a34dd7aafdc9ddacca20e329683652682932d655d378bcce3ef7b516cb2b60f',
+          },
+        },
+      },
+    });
+  });
   dealTicketPage.placeMarketOrder(true, 100, orderType);
   dealTicketPage.clickPlaceOrder();
 });
 
 When('place a sell {string} market order', (orderType) => {
+  cy.intercept('POST', 'http://localhost:1789/api/v1/command/sync', (req) => {
+    req.reply({
+      body: {
+        txHash: 'tx-hash',
+        tx: {
+          signature: {
+            value:
+              'fea7b4e286009f2df867f583f9a2fc2352aeccfdb0b235421a0a10d2428235430a34dd7aafdc9ddacca20e329683652682932d655d378bcce3ef7b516cb2b60f',
+          },
+        },
+      },
+    });
+  });
   dealTicketPage.placeMarketOrder(false, 100, orderType);
   dealTicketPage.clickPlaceOrder();
 });
 
 When('place a buy {string} limit order', (limitOrderType) => {
+  cy.intercept('POST', 'http://localhost:1789/api/v1/command/sync', (req) => {
+    req.reply({
+      body: {
+        txHash: 'tx-hash',
+        tx: {
+          signature: {
+            value:
+              'fea7b4e286009f2df867f583f9a2fc2352aeccfdb0b235421a0a10d2428235430a34dd7aafdc9ddacca20e329683652682932d655d378bcce3ef7b516cb2b60f',
+          },
+        },
+      },
+    });
+  });
   dealTicketPage.placeLimitOrder(true, 100, 2000, limitOrderType);
   dealTicketPage.clickPlaceOrder();
 });
 
 When('place a sell {string} limit order', (limitOrderType) => {
+  cy.intercept('POST', 'http://localhost:1789/api/v1/command/sync', (req) => {
+    req.reply({
+      body: {
+        txHash: 'tx-hash',
+        tx: {
+          signature: {
+            value:
+              'fea7b4e286009f2df867f583f9a2fc2352aeccfdb0b235421a0a10d2428235430a34dd7aafdc9ddacca20e329683652682932d655d378bcce3ef7b516cb2b60f',
+          },
+        },
+      },
+    });
+  });
   dealTicketPage.placeLimitOrder(false, 100, 2000, limitOrderType);
   dealTicketPage.clickPlaceOrder();
 });
