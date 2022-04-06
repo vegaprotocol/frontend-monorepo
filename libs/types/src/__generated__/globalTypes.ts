@@ -68,9 +68,18 @@ export enum BusEventType {
 }
 
 /**
+ * The status of a deposit
+ */
+export enum DepositStatus {
+  Cancelled = "Cancelled",
+  Finalized = "Finalized",
+  Open = "Open",
+}
+
+/**
  * The interval for trade candles when subscribing via VEGA graphql, default is I15M
  */
-export enum Interval {
+ export enum Interval {
   I15M = "I15M",
   I1D = "I1D",
   I1H = "I1H",

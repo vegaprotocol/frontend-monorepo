@@ -14,6 +14,8 @@ export const Icon = ({ size = 16, name, className }: IconProps) => {
   const effectiveClassName = classNames(
     'inline-block',
     'fill-current',
+    'align-text-bottom',
+    'fill-current',
     {
       'w-20': size === 20,
       'h-20': size === 20,

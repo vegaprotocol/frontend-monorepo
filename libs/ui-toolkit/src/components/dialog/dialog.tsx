@@ -32,7 +32,10 @@ export function Dialog({
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay className="fixed inset-0 bg-black/50 dark:bg-white/15" />
         <DialogPrimitives.Content className={contentClasses}>
-          <DialogPrimitives.Close className="p-12 absolute top-0 right-0">
+          <DialogPrimitives.Close
+            className="p-12 absolute top-0 right-0"
+            data-testid="dialog-close"
+          >
             <Icon name="cross" />
           </DialogPrimitives.Close>
           {title && <h1 className="text-h5 mb-12">{title}</h1>}

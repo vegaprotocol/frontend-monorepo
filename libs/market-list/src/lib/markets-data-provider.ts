@@ -69,7 +69,7 @@ const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>
 
 export const marketsDataProvider = makeDataProvider<
   Markets,
-  Markets_markets,
+  Markets_markets[],
   MarketDataSub,
   MarketDataSub_marketData
 >(MARKETS_QUERY, MARKET_DATA_SUB, update, getData, getDelta);

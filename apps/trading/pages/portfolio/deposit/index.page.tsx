@@ -1,27 +1,33 @@
-import { useWeb3React } from '@web3-react/core';
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 import { Web3Container } from '../../../components/web3-container';
+import { DepositContainer } from './deposit-container';
 
 const Deposit = () => {
+  const { query } = useRouter();
+
+  // AssetId can be specified in the query string to allow link to deposit a particular asset
+  const assetId = useMemo(() => {
+    if (query.assetId && Array.isArray(query.assetId)) {
+      return undefined;
+    }
+
+    if (Array.isArray(query.assetId)) {
+      return undefined;
+    }
+
+    return query.assetId;
+  }, [query]);
+
   return (
     <Web3Container>
-      <div>
-        <h1>Deposit</h1>
-        <Info />
-      </div>
+      {({ ethereumConfig }) => (
+        <div className="max-w-[420px] p-24 mx-auto">
+          <h1 className="text-h3 mb-12">Deposit</h1>
+          <DepositContainer ethereumConfig={ethereumConfig} assetId={assetId} />
+        </div>
+      )}
     </Web3Container>
-  );
-};
-
-const Info = () => {
-  const { isActive, chainId, account } = useWeb3React();
-  if (!isActive) {
-    return <div>Not active</div>;
-  }
-  return (
-    <div>
-      <p>{chainId}</p>
-      <p>{account ? account : 'No account'}</p>
-    </div>
   );
 };
 

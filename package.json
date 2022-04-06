@@ -24,6 +24,7 @@
     "@sentry/tracing": "^6.19.2",
     "@types/lodash": "^4.14.180",
     "@types/uuid": "^8.3.4",
+    "@vegaprotocol/smart-contracts-sdk": "^1.6.0",
     "@vegaprotocol/vegawallet-service-api-client": "^0.4.6",
     "@walletconnect/ethereum-provider": "^1.7.5",
     "@web3-react/core": "8.0.20-beta.0",

@@ -47,7 +47,7 @@ export const MarketsContainer = () => {
     [gridRef]
   );
   const { data, error, loading } = useDataProvider<
-    Markets_markets,
+    Markets_markets[],
     Markets_markets_data
   >(marketsDataProvider, update);
 

@@ -24,7 +24,7 @@ function setup(items: Items, rowNodes: Items) {
       return undefined;
     },
   };
-  // eslint-disable-next-line
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderHook(() => useApplyGridTransaction(items, gridApiMock as any));
   return gridApiMock;
 }

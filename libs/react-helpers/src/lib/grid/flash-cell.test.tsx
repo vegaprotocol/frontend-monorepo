@@ -10,7 +10,7 @@ describe('findFirstDiffPos', () => {
 
   it('Returns -1 if a string is undefined (just in case)', () => {
     const a = 'test';
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const b = undefined as any as string;
 
     expect(findFirstDiffPos(a, b)).toEqual(-1);
