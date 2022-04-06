@@ -1,5 +1,3 @@
-import classNames from 'classnames';
-
 export enum Intent {
   Danger = 'danger',
   Warning = 'warning',
