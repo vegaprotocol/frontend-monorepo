@@ -21,7 +21,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
     (delta: PositionSubscribe_positions) => {
       const update: Positions_party_positions[] = [];
       const add: Positions_party_positions[] = [];
-      if (!gridRef.current) {
+      if (!gridRef.current?.api) {
         return false;
       }
       const rowNode = gridRef.current.api.getRowNode(getRowNodeId(delta));
