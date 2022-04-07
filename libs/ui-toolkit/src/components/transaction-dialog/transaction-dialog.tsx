@@ -73,7 +73,7 @@ export const TransactionDialog = ({
       },
       [TxState.Pending]: {
         title: t(`${name} pending`),
-        icon: <Loader />,
+        icon: <Loader size="small" />,
         intent: Intent.Progress,
       },
       [TxState.Complete]: {
