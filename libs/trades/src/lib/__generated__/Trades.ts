@@ -3,8 +3,6 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Side } from "./../../../../types/src/__generated__/globalTypes";
-
 // ====================================================
 // GraphQL query operation: Trades
 // ====================================================
@@ -53,10 +51,6 @@ export interface Trades_market_trades {
    */
   createdAt: string;
   /**
-   * The aggressor indicates whether this trade was related to a BUY or SELL
-   */
-  aggressor: Side;
-  /**
    * The market the trade occurred on
    */
   market: Trades_market_trades_market;
@@ -83,4 +77,5 @@ export interface Trades {
 
 export interface TradesVariables {
   marketId: string;
+  maxTrades: number;
 }

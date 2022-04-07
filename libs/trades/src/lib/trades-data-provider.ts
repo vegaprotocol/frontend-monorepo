@@ -13,7 +13,6 @@ const TRADES_FRAGMENT = gql`
     price
     size
     createdAt
-    aggressor
     market {
       id
       decimalPlaces
@@ -23,10 +22,10 @@ const TRADES_FRAGMENT = gql`
 
 export const TRADES_QUERY = gql`
   ${TRADES_FRAGMENT}
-  query Trades($marketId: ID!) {
+  query Trades($marketId: ID!, $maxTrades: Int!) {
     market(id: $marketId) {
       id
-      trades(last: ${MAX_TRADES}) {
+      trades(last: $maxTrades) {
         ...TradeFields
       }
     }

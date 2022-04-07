@@ -10,6 +10,7 @@ import {
 } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import type { TradeFields } from './__generated__/TradeFields';
+import type { TradesVariables } from './__generated__/Trades';
 
 interface TradesContainerProps {
   marketId: string;
@@ -17,7 +18,10 @@ interface TradesContainerProps {
 
 export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const variables = useMemo(() => ({ marketId }), [marketId]);
+  const variables = useMemo<TradesVariables>(
+    () => ({ marketId, maxTrades: MAX_TRADES }),
+    [marketId]
+  );
   const update = useCallback((delta: TradeFields[]) => {
     if (!gridRef.current?.api) {
       return false;
@@ -45,17 +49,9 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     variables
   );
 
-  // Sort intial trades
-  const trades = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-    return sortTrades(data);
-  }, [data]);
-
   return (
-    <AsyncRenderer loading={loading} error={error} data={trades}>
-      {(data) => <TradesTable ref={gridRef} data={trades} />}
+    <AsyncRenderer loading={loading} error={error} data={data}>
+      {(data) => <TradesTable ref={gridRef} data={data} />}
     </AsyncRenderer>
   );
 };

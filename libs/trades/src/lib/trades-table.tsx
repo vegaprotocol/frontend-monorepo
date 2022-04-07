@@ -1,6 +1,6 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import { forwardRef } from 'react';
+import { forwardRef, useMemo } from 'react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { TradeFields } from './__generated__/TradeFields';
 import {
@@ -10,6 +10,10 @@ import {
 } from '@vegaprotocol/react-helpers';
 import type { CellClassParams, ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
+import { sortTrades } from './trades-data-provider';
+
+export const UP_CLASS = 'text-vega-green';
+export const DOWN_CLASS = 'text-vega-pink';
 
 const changeCellClass =
   (dataKey: string) =>
@@ -23,9 +27,9 @@ const changeCellClass =
       const valueNum = new BigNumber(value);
 
       if (valueNum.isGreaterThan(prevValue)) {
-        colorClass = 'text-vega-green';
+        colorClass = UP_CLASS;
       } else if (valueNum.isLessThan(prevValue)) {
-        colorClass = 'text-vega-pink';
+        colorClass = DOWN_CLASS;
       }
     }
 
@@ -38,11 +42,19 @@ interface TradesTableProps {
 
 export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
   ({ data }, ref) => {
+    // Sort intial trades
+    const trades = useMemo(() => {
+      if (!data) {
+        return null;
+      }
+      return sortTrades(data);
+    }, [data]);
+
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No trades')}
-        rowData={data}
+        rowData={trades}
         getRowNodeId={(data) => data.id}
         ref={ref}
         defaultColDef={{
