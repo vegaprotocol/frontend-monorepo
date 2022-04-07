@@ -2,10 +2,14 @@ const execSync = require('child_process').execSync;
 const getAffected = `CI=true npx nx@13.8.3 print-affected --yes`;
 const cwd = execSync('pwd').toString();
 const ls = execSync('ls').toString();
+const nxr = `CI=true npx nx@13.8.3 report`;
 
 const currentProject = process.env.NX_PROJECT_NAME;
-console.log(ls);
 console.log(`Checking affected for: ${currentProject} in ${cwd}`);
+console.group();
+
+console.log(ls);
+console.log(nxr);
 
 const output = execSync(getAffected).toString();
 
@@ -19,6 +23,7 @@ const isThisProjectChanged = changedProjects.some(
 )
   ? 0
   : 1;
+console.groupEnd();
 
 console.log(`Did this project change? ${isThisProjectChanged}`);
 
