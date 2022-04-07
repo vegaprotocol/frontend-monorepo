@@ -1,0 +1,46 @@
+@import "../../../styles/colors";
+
+.vesting-table {
+  &__indicator-square {
+    height: 12px;
+    width: 12px;
+    display: inline-block;
+    margin-right: 6px;
+
+    &--staked {
+      background-color: $vega-yellow4;
+    }
+
+    &--locked {
+      background-color: $vega-pink;
+    }
+
+    &--unlocked {
+      background-color: $vega-green;
+    }
+  }
+
+  &__progress-bar {
+    display: flex;
+
+    &--locked {
+      background-color: $vega-pink;
+      height: 16px;
+    }
+
+    &--vested {
+      background-color: $vega-green;
+      height: 16px;
+    }
+
+    &--staked {
+      background-color: $vega-yellow4;
+      height: 4px;
+    }
+
+    &--small {
+      height: 4px;
+      margin-top: 4px;
+    }
+  }
+}

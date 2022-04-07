@@ -1,0 +1,44 @@
+@import "../../styles/colors";
+@import "../../styles/fonts";
+@import "../../styles/fonts";
+
+.vega-wallet {
+  &__connect {
+    appearance: none;
+    padding: 0;
+    background-color: transparent;
+    text-decoration: underline;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
+  &__curr-key {
+    font-family: $font-mono;
+    padding: 0 8px;
+  }
+
+  &__key-list {
+    list-style: none;
+    margin: 10px 0 5px 0;
+    padding: 0;
+
+    > li {
+      text-align: right;
+      font-family: $font-mono;
+      cursor: pointer;
+      text-decoration: underline;
+      color: $text-color-deemphasise;
+      font-size: 14px;
+
+      &:hover {
+        color: $white;
+      }
+    }
+  }
+
+  &__version {
+    flex: 1;
+  }
+}

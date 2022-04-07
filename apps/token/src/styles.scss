@@ -1,0 +1,204 @@
+@import "~normalize.css";
+@import "~@blueprintjs/core/lib/css/blueprint.css";
+@import "~@blueprintjs/icons/lib/css/blueprint-icons.css";
+@import "~@blueprintjs/select/lib/css/blueprint-select.css";
+
+@import "./styles/colors";
+@import "./styles/fonts";
+@import "./styles/reset";
+@import "./styles/web3modal";
+
+$bg-color-default: rgba(133, 152, 166, 0.25);
+$color-default: #bfccd6;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  background-color: $black;
+  color: $text-color;
+  font-family: $font-main;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+
+  @media (min-width: 960px) {
+    font-size: 16px;
+  }
+}
+
+// TODO replace with blueprint themeing
+// TYPOGRAPHY
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  margin-top: 1em;
+  margin-bottom: 15px;
+  color: $white;
+}
+
+p {
+  word-break: break-word;
+  line-height: 1.4;
+  margin: 0 0 15px 0;
+}
+
+a,
+.link {
+  text-decoration: underline;
+  color: $white;
+
+  &:hover {
+    color: $vega-yellow3;
+  }
+}
+
+.text-muted {
+  color: $text-color-deemphasise;
+}
+
+.text-green {
+  color: $vega-green3;
+}
+
+.text-red {
+  color: $vega-red3;
+}
+
+// TODO replace with blueprint themeing
+// BUTTONS
+button {
+  color: $black;
+  background-color: $white;
+  border: 0;
+  padding: 12px 32px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $light-gray3;
+  }
+
+  &:disabled,
+  &.disabled {
+    opacity: 1;
+    background: $bg-color-default;
+    color: $color-default;
+    border: 1px solid $text-color-emphasise;
+    cursor: not-allowed;
+
+    &:hover {
+      background: $bg-color-default;
+      color: $color-default;
+    }
+  }
+
+  &.fill {
+    width: 100%;
+  }
+
+  &.button-secondary {
+    border: 1px solid $white;
+    border-radius: 0;
+    background: transparent;
+    color: $white;
+    width: 100%;
+
+    &:hover {
+      background: $dark-gray4;
+    }
+
+    &:active {
+      background: $white;
+      color: $black;
+    }
+
+    &--light {
+      border: 1px solid $black;
+      color: $black;
+
+      &:hover {
+        background: $light-gray4;
+      }
+
+      &:active {
+        background: $white;
+        color: $black;
+      }
+    }
+
+    &--inverted {
+      background-color: $white;
+      color: $black;
+      border: 1px solid $black;
+    }
+  }
+
+  &.button-link {
+    display: inline;
+    appearance: none;
+    padding: 0;
+    text-decoration: underline;
+    background-color: transparent;
+    color: $white;
+    outline: none;
+
+    &:hover {
+      color: $vega-yellow4 !important;
+      text-decoration: none;
+    }
+
+    &--dark {
+      color: $black !important;
+
+      &:hover {
+        color: $black !important;
+      }
+    }
+
+    .invert & {
+      color: $black;
+
+      &:hover {
+        color: $black !important;
+      }
+    }
+  }
+}
+
+// TODO replace with blueprint themeing
+select,
+input[type="text"],
+input[type="number"],
+input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 0px;
+  border: 1px solid $white;
+}
+
+.bp3-dark .bp3-html-select select,
+.bp3-dark .bp3-select select {
+  border-radius: 0;
+  border: 1px solid $white;
+  background-color: $dark-gray4;
+}
+
+.bp3-dark a,
+.bp3-dark a:hover {
+  color: $white;
+}
+
+.bp3-dark .bp3-input {
+  background-color: $dark-gray4;
+}

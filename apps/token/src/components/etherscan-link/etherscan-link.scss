@@ -1,0 +1,21 @@
+@import "../../styles/colors";
+@import "../../styles/fonts";
+
+.etherscan-link {
+  &__copy-to-clipboard {
+    border: 1px solid $white;
+    border-radius: 0;
+    background: $black;
+    color: $white;
+    width: 100%;
+
+    &:hover {
+      background: $dark-gray4;
+    }
+
+    &:active {
+      background: $white;
+      color: $black;
+    }
+  }
+}

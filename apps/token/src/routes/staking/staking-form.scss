@@ -1,0 +1,21 @@
+.staking-form {
+  &__container {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  &__input {
+    display: flex;
+    flex: 1
+  }
+
+  &__vega-label {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  &__submit-button {
+    width: 100%;
+  }
+}

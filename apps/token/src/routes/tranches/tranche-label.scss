@@ -1,0 +1,13 @@
+@import "../../styles/colors";
+
+.tranche-label {
+  margin-right: 5px;
+  color: $white;
+  display: inline-block;
+  text-transform: uppercase;
+  background-color: $black;
+  border-style: solid;
+  margin-left: 5px;
+  padding: 3px;
+  border-width: 2px;
+}

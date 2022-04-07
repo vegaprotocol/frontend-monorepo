@@ -1,0 +1,57 @@
+@import "../../styles/colors";
+
+.transaction-button {
+  margin-bottom: 20px;
+
+  &__footer {
+    margin: 5px 0 0 0;
+  }
+
+  &__txhash,
+  &__message {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  &__txhash {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__message {
+    padding: 5px 0 5px 7px;
+    border-left: 3px solid $vega-orange3;
+
+    .icon {
+      color: $vega-orange3;
+      position: relative;
+      top: 2px;
+      margin-right: 5px;
+    }
+  }
+
+  // Complete and Error states. Button is replaced with basic text
+  &__text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 12px 32px;
+    line-height: 1.15;
+    border: 1px solid transparent; // to make height the same as a button
+  }
+
+  &--complete {
+    .icon {
+      color: $vega-green3;
+    }
+  }
+
+  &--error {
+    .icon {
+      color: $vega-red3;
+    }
+  }
+}
