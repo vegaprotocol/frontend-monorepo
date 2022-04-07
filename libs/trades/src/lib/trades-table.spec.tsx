@@ -55,13 +55,20 @@ test('Columns are formatted', async () => {
 
   const cells = screen.getAllByRole('gridcell');
 
+  const priceCells = cells.filter(
+    (cell) => cell.getAttribute('col-id') === 'price'
+  );
+  const sizeCells = cells.filter(
+    (cell) => cell.getAttribute('col-id') === 'size'
+  );
+
   // For first trade price should have green class and size should have red class
   // row 1
-  expect(cells[0]).toHaveClass(UP_CLASS);
-  expect(cells[1]).toHaveClass(DOWN_CLASS);
-  // row 2 (skip created at cell)
-  expect(cells[3]).not.toHaveClass(UP_CLASS);
-  expect(cells[3]).not.toHaveClass(DOWN_CLASS);
-  expect(cells[4]).not.toHaveClass(UP_CLASS);
-  expect(cells[4]).not.toHaveClass(DOWN_CLASS);
+  expect(priceCells[0]).toHaveClass(UP_CLASS);
+  expect(priceCells[1]).not.toHaveClass(DOWN_CLASS);
+  expect(priceCells[1]).not.toHaveClass(UP_CLASS);
+
+  expect(sizeCells[0]).toHaveClass(DOWN_CLASS);
+  expect(sizeCells[1]).not.toHaveClass(DOWN_CLASS);
+  expect(sizeCells[1]).not.toHaveClass(UP_CLASS);
 });
