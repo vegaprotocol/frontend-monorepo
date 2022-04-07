@@ -3,6 +3,7 @@ import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type { TradeFields } from './__generated__/TradeFields';
 import type { Trades } from './__generated__/Trades';
 import type { TradesSub } from './__generated__/TradesSub';
+import orderBy from 'lodash/orderBy';
 
 const TRADES_FRAGMENT = gql`
   fragment TradeFields on Trade {
@@ -11,6 +12,10 @@ const TRADES_FRAGMENT = gql`
     size
     createdAt
     aggressor
+    market {
+      id
+      decimalPlaces
+    }
   }
 `;
 
@@ -19,26 +24,6 @@ export const TRADES_QUERY = gql`
   query Trades($marketId: ID!) {
     market(id: $marketId) {
       id
-      name
-      decimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-                decimals
-              }
-            }
-          }
-        }
-      }
       trades(last: 50) {
         ...TradeFields
       }
@@ -55,8 +40,19 @@ export const TRADES_SUB = gql`
   }
 `;
 
+export const prepareIncomingTrades = (trades: TradeFields[]) => {
+  return orderBy(
+    trades,
+    (t) => {
+      return new Date(t.createdAt).getTime();
+    },
+    'desc'
+  );
+};
+
 const update = (draft: TradeFields[], delta: TradeFields[]) => {
-  console.log(draft, delta);
+  const incoming = prepareIncomingTrades(delta);
+  draft.unshift(...incoming);
 };
 
 const getData = (responseData: Trades): TradeFields[] | null =>

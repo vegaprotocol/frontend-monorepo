@@ -86,6 +86,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       .subscribe<SubscriptionData>({
         query: subscriptionQuery,
         variables,
+        fetchPolicy: 'no-cache',
       })
       .subscribe(({ data: subscriptionData }) => {
         if (!subscriptionData) {
