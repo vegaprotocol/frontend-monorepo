@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
-export const marketDepthQuery = gql`
-  query marketDepth($marketId: ID!) {
+export const MARKET_DEPTH_QUERY = gql`
+  query MarketDepth($marketId: ID!) {
     market(id: $marketId) {
       id
       decimalPlaces
@@ -28,8 +28,8 @@ export const marketDepthQuery = gql`
   }
 `;
 
-export const marketDepthUpdateSubscription = gql`
-  subscription marketDepthUpdateSubscribe($marketId: ID!) {
+export const MARKET_DEPTH_UPDATE_SUB = gql`
+  subscription MarketDepthUpdateSubscribe($marketId: ID!) {
     marketDepthUpdate(marketId: $marketId) {
       market {
         id
