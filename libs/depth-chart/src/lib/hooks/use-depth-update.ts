@@ -1,11 +1,11 @@
 import type { ApolloError } from '@apollo/client';
 import { useApolloClient } from '@apollo/client';
 import throttle from 'lodash/throttle';
-import * as React from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { updateDepthUpdate } from '../helpers';
 import {
-  marketDepthQuery,
-  marketDepthUpdateSubscription,
+  MARKET_DEPTH_QUERY,
+  MARKET_DEPTH_UPDATE_SUB,
 } from '../queries/market-depth';
 import type {
   marketDepth,
@@ -23,37 +23,35 @@ export interface QueryResult<TData> {
 }
 
 export function useDepthUpdate({ marketId }: marketDepthVariables, wait = 0) {
-  const queryResultRef = React.useRef<QueryResult<marketDepth>>({
+  const queryResultRef = useRef<QueryResult<marketDepth>>({
     data: undefined,
     loading: true,
     error: undefined,
   });
 
-  const [queryResult, setQueryResult] = React.useState<
-    QueryResult<marketDepth>
-  >({
+  const [queryResult, setQueryResult] = useState<QueryResult<marketDepth>>({
     data: undefined,
     loading: true,
     error: undefined,
   });
 
-  const sequenceNumber = React.useRef<null | number>(null);
-  const [stallCount, setStallCount] = React.useState(0);
+  const sequenceNumber = useRef<null | number>(null);
+  const [stallCount, setStallCount] = useState(0);
 
   const client = useApolloClient();
 
-  const handleUpdate = React.useMemo(
+  const handleUpdate = useMemo(
     () => throttle(setQueryResult, wait, { leading: true }),
     [wait]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const { data, loading, error } = await client.query<
         marketDepth,
         marketDepthVariables
       >({
-        query: marketDepthQuery,
+        query: MARKET_DEPTH_QUERY,
         variables: { marketId },
         fetchPolicy: 'no-cache',
       });
@@ -71,14 +69,14 @@ export function useDepthUpdate({ marketId }: marketDepthVariables, wait = 0) {
     fetchData();
   }, [client, handleUpdate, marketId, stallCount]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!marketId) return;
 
     const result = client.subscribe<
       marketDepthUpdateSubscribe,
       marketDepthUpdateSubscribeVariables
     >({
-      query: marketDepthUpdateSubscription,
+      query: MARKET_DEPTH_UPDATE_SUB,
       variables: { marketId },
       fetchPolicy: 'no-cache',
       errorPolicy: 'none',
