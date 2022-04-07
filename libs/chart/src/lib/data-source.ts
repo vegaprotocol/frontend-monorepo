@@ -1,6 +1,6 @@
 import type { ApolloClient } from '@apollo/client';
 import { gql } from '@apollo/client';
-import type { Annotation, Candle, DataSource } from 'pennant';
+import type { Candle, DataSource } from 'pennant';
 import { Interval } from 'pennant';
 
 import { addDecimal } from '@vegaprotocol/react-helpers';
@@ -91,11 +91,6 @@ export class VegaDataSource implements DataSource {
   _decimalPlaces = 0;
 
   candlesSub: Subscription | null = null;
-  marketDataSub: Subscription | null = null;
-  positionsSub: Subscription | null = null;
-  ordersSub: Subscription | null = null;
-  orderAnnotations: Annotation[] = [];
-  positionAnnotations: Annotation[] = [];
 
   /**
    * Indicates the number of decimal places that an integer must be shifted by in order to get a correct
@@ -225,23 +220,6 @@ export class VegaDataSource implements DataSource {
    */
   unsubscribeData() {
     this.candlesSub && this.candlesSub.unsubscribe();
-  }
-
-  /**
-   * Used by the charting library to create a subscription to streaming annotation data.
-   */
-  subscribeAnnotations(
-    onSubscriptionAnnotation: (annotations: Annotation[]) => void
-  ) {
-    console.log('subscribeAnnotations');
-  }
-
-  /**
-   * Used by the charting library to clean-up a subscription to streaming annotation data.
-   */
-  unsubscribeAnnotations() {
-    this.ordersSub && this.ordersSub.unsubscribe();
-    this.positionsSub && this.positionsSub.unsubscribe();
   }
 }
 
