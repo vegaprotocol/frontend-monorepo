@@ -18,6 +18,7 @@
     "stats": "apps/stats",
     "stats-e2e": "apps/stats-e2e",
     "tailwindcss-config": "libs/tailwindcss-config",
+    "trades": "libs/trades",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",
     "types": "libs/types",

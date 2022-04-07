@@ -6,24 +6,16 @@ import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { ChartContainer } from '../../components/chart-container';
+import { TradesContainer } from '@vegaprotocol/trades';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import type { Market_market } from './__generated__/Market';
 import { t } from '@vegaprotocol/react-helpers';
+import { AccountsContainer } from '@vegaprotocol/accounts';
 
 const Orderbook = () => (
   <Splash>
     <p>{t('Orderbook')}</p>
-  </Splash>
-);
-const Collateral = () => (
-  <Splash>
-    <p>{t('Collateral')}</p>
-  </Splash>
-);
-const Trades = () => (
-  <Splash>
-    <p>{t('Trades')}</p>
   </Splash>
 );
 
@@ -33,8 +25,8 @@ const TradingViews = {
   Orderbook: Orderbook,
   Orders: OrderListContainer,
   Positions: PositionsContainer,
-  Collateral: Collateral,
-  Trades: Trades,
+  Accounts: AccountsContainer,
+  Trades: TradesContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -46,7 +38,7 @@ interface TradeGridProps {
 export const TradeGrid = ({ market }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
-    'grid gap-[1px] grid-cols-[1fr_325px_325px] grid-rows-[min-content_1fr_200px]',
+    'grid gap-[1px] grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
     'bg-black-10 dark:bg-white-10',
     'text-ui'
   );
@@ -66,7 +58,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       <TradeGridChild className="row-start-1 row-end-3">
         <GridTabs group="trade">
           <GridTab id="trades" name={t('Trades')}>
-            <TradingViews.Trades />
+            <TradingViews.Trades marketId={market.id} />
           </GridTab>
           <GridTab id="orderbook" name={t('Orderbook')}>
             <TradingViews.Orderbook />
@@ -81,8 +73,8 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           <GridTab id="positions" name={t('Positions')}>
             <TradingViews.Positions />
           </GridTab>
-          <GridTab id="collateral" name={t('Collateral')}>
-            <TradingViews.Collateral />
+          <GridTab id="accounts" name={t('Accounts')}>
+            <TradingViews.Accounts />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
