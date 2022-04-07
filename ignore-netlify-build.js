@@ -1,10 +1,14 @@
 const execSync = require('child_process').execSync;
-const getAffected = `CI=true npx nx@13.8.3 print-affected --yes`;
+const getAffected = `CI=true`;
 const cwd = execSync('pwd').toString();
 const ls = execSync('ls').toString();
-const nxr = `CI=true npx nx@13.8.3 report`;
 
 const currentProject = process.env.NX_PROJECT_NAME;
+const lastBuild = process.env.CACHED_COMMIT_REF;
+const latestCommit = 'HEAD';
+
+const nxr = `CI=true npx nx@13.8.3 report --base=${lastBuild} --head=${latestCommit}`;
+
 console.log(`Checking affected for: ${currentProject} in ${cwd}`);
 console.group();
 
