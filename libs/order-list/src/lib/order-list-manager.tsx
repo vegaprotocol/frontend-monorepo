@@ -32,7 +32,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     const add: OrderFields[] = [];
 
     incoming.forEach((d) => {
-      if (!gridRef.current) {
+      if (!gridRef.current?.api) {
         return;
       }
 

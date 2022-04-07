@@ -19,7 +19,7 @@ export const MarketsContainer = () => {
     (delta: Markets_markets_data) => {
       const update: Markets_markets[] = [];
       const add: Markets_markets[] = [];
-      if (!gridRef.current) {
+      if (!gridRef.current?.api) {
         return false;
       }
       const rowNode = gridRef.current.api.getRowNode(
