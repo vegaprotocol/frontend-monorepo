@@ -12,6 +12,7 @@ export default class BasePage {
   searchField = 'search';
   searchButton = 'search-button';
   searchError = 'search-error';
+  openMenuBtn = 'open-menu';
 
   navigateToTxs() {
     cy.get(`a[href='${this.transactionsUrl}']`).click();
@@ -57,6 +58,10 @@ export default class BasePage {
 
   clickSearch() {
     cy.getByTestId(this.searchButton).click();
+  }
+
+  clickOnToggle() {
+    cy.getByTestId(this.openMenuBtn).click({ force: true });
   }
 
   validateUrl(expectedUrl) {

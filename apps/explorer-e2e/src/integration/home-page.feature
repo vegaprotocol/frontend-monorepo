@@ -1,6 +1,6 @@
 Feature: Home page
 
-  Scenario Outline: Succesfful search for specific id by <IdType>
+  Scenario Outline: Successful search for specific id by <IdType>
     Given I am on the homepage
     When I search for '<Id>'
     Then I am redirected to page containing id '<Id>'
