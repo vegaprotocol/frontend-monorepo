@@ -1,6 +1,6 @@
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { GridApi, RowNode } from 'ag-grid-community';
+import type { GridApi } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';
 import {

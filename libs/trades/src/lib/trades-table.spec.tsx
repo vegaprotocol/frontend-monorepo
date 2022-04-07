@@ -1,4 +1,4 @@
-import { act, render, screen, within } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { DOWN_CLASS, TradesTable, UP_CLASS } from './trades-table';
 import type { TradeFields } from './__generated__/TradeFields';
