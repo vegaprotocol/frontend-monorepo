@@ -4,14 +4,14 @@ import {
   EthereumChainIds,
   RewardsAddresses,
   RewardsPoolAddresses,
-} from "@vegaprotocol/smart-contracts-sdk";
+} from '@vegaprotocol/smart-contracts-sdk';
 
-import { Networks } from "./vega";
+import { Networks } from './vega';
 
-const appChainId = process.env.REACT_APP_CHAIN as EthereumChainId;
-const infuraId = process.env.REACT_APP_INFURA_ID;
+const appChainId = process.env['NX_ETHEREUM_CHAIN_ID'] as EthereumChainId;
+const infuraId = process.env['NX_INFURA_ID'];
 
-export const APP_ENV = process.env.REACT_APP_ENV as Networks;
+export const APP_ENV = process.env['NX_VEGA_ENV'] as Networks;
 
 const Addresses = {
   [EthereumChainIds.Mainnet]: EnvironmentConfig.MAINNET,

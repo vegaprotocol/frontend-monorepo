@@ -1,17 +1,19 @@
-import * as Sentry from "@sentry/react";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Redirect } from "react-router";
+import * as Sentry from '@sentry/react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Navigate } from 'react-router';
 
-import { TransactionCallout } from "../../../components/transaction-callout";
-import { useContracts } from "../../../contexts/contracts/contracts-context";
-import {
+import { TransactionCallout } from '../../../components/transaction-callout';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
+import type {
   TransactionAction,
-  TransactionActionType,
   TransactionState,
+} from '../../../hooks/transaction-reducer';
+import {
+  TransactionActionType,
   TxState,
-} from "../../../hooks/transaction-reducer";
-import { Routes } from "../../router-config";
+} from '../../../hooks/transaction-reducer';
+import { Routes } from '../../router-config';
 
 export interface ICountry {
   name: string;
@@ -57,7 +59,7 @@ export const ClaimForm = ({
   }, [claim, countryCode, onSubmit]);
 
   if (countryCheck === CountryCheck.Blocked) {
-    return <Redirect to={Routes.NOT_PERMITTED} />;
+    return <Navigate to={Routes.NOT_PERMITTED} />;
   }
 
   if (txState.txState !== TxState.Default) {
@@ -72,8 +74,8 @@ export const ClaimForm = ({
   return (
     <button type="submit" onClick={handleOnClick} className="fill">
       {countryCheck === CountryCheck.Pending
-        ? t("verifyingCountryPrompt")
-        : t("Continue")}
+        ? t('verifyingCountryPrompt')
+        : t('Continue')}
     </button>
   );
 };

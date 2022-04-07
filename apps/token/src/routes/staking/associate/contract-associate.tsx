@@ -1,16 +1,16 @@
-import "./contract-associate.scss";
+import './contract-associate.scss';
 
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { TokenInput } from "../../../components/token-input";
+import { TokenInput } from '../../../components/token-input';
 import {
   useAppState,
   VegaKeyExtended,
-} from "../../../contexts/app-state/app-state-context";
-import { BigNumber } from "../../../lib/bignumber";
-import { AssociateInfo } from "./associate-info";
+} from '../../../contexts/app-state/app-state-context';
+import { BigNumber } from '../../../lib/bignumber';
+import { AssociateInfo } from './associate-info';
 
 export const ContractAssociate = ({
   perform,
@@ -33,17 +33,17 @@ export const ContractAssociate = ({
   }, [balanceFormatted, lien]);
 
   let pageContent = null;
-  if (new BigNumber(balanceFormatted).isEqualTo("0")) {
+  if (new BigNumber(balanceFormatted).isEqualTo('0')) {
     pageContent = (
       <div className="contract-associate__error">
-        {t("You have no VEGA tokens currently vesting.")}
+        {t('You have no VEGA tokens currently vesting.')}
       </div>
     );
-  } else if (new BigNumber(balanceFormatted).minus(lien).isEqualTo("0")) {
+  } else if (new BigNumber(balanceFormatted).minus(lien).isEqualTo('0')) {
     pageContent = (
       <div className="contract-associate__error">
         {t(
-          "All VEGA tokens vesting in the connected wallet have already been associated."
+          'All VEGA tokens vesting in the connected wallet have already been associated.'
         )}
       </div>
     );
@@ -52,17 +52,17 @@ export const ContractAssociate = ({
       <>
         <Callout>
           {t(
-            "You can associate tokens while they are held in the vesting contract, when they unlock you will need to dissociate them before they can be redeemed."
+            'You can associate tokens while they are held in the vesting contract, when they unlock you will need to dissociate them before they can be redeemed.'
           )}
         </Callout>
         <AssociateInfo pubKey={vegaKey ? vegaKey.pub : null} />
         <TokenInput
-          submitText={t("Associate VEGA Tokens with key")}
+          submitText={t('Associate VEGA Tokens with key')}
           perform={perform}
           maximum={maximum}
           amount={amount}
           setAmount={setAmount}
-          currency={t("VEGA Tokens")}
+          currency={t('VEGA Tokens')}
         />
       </>
     );

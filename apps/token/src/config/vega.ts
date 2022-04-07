@@ -1,10 +1,10 @@
 export enum Networks {
-  CUSTOM = "CUSTOM",
-  TESTNET = "TESTNET",
-  STAGNET = "STAGNET",
-  STAGNET2 = "STAGNET2",
-  DEVNET = "DEVNET",
-  MAINNET = "MAINNET",
+  CUSTOM = 'CUSTOM',
+  TESTNET = 'TESTNET',
+  STAGNET = 'STAGNET',
+  STAGNET2 = 'STAGNET2',
+  DEVNET = 'DEVNET',
+  MAINNET = 'MAINNET',
 }
 
 interface VegaNode {
@@ -24,10 +24,11 @@ export type NetworkConfig = {
   [N in Networks]: string[];
 };
 
-const splitFilter = (a: string) => a.split(",").filter((a) => a.length > 0);
+const splitFilter = (a: string) => a.split(',').filter((a) => a.length > 0);
 const getCustomNodesFromOptionalEnvironmentVariables = () => {
-  const validatorUrls = process.env.CUSTOM_URLS || "";
-  const validatorUrlsWithGraphQL = process.env.CUSTOM_URLS_WITH_GRAPHQL || "";
+  const validatorUrls = process.env['CUSTOM_URLS'] || '';
+  const validatorUrlsWithGraphQL =
+    process.env['CUSTOM_URLS_WITH_GRAPHQL'] || '';
 
   const validatorUrlsList: string[] = splitFilter(validatorUrls);
   const validatorUrlsWithGraphQLList: string[] = splitFilter(
@@ -52,25 +53,25 @@ export const VegaNetworks: VegaNets = {
   [Networks.DEVNET]: {
     nodes: [
       {
-        url: "https://n01.d.vega.xyz",
+        url: 'https://n01.d.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n02.d.vega.xyz",
+        url: 'https://n02.d.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n03.d.vega.xyz",
+        url: 'https://n03.d.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n04.d.vega.xyz",
+        url: 'https://n04.d.vega.xyz',
         api: {
           GraphQL: true,
         },
@@ -80,31 +81,31 @@ export const VegaNetworks: VegaNets = {
   [Networks.STAGNET]: {
     nodes: [
       {
-        url: "https://n01.s.vega.xyz",
+        url: 'https://n01.s.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n02.s.vega.xyz",
+        url: 'https://n02.s.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n03.s.vega.xyz",
+        url: 'https://n03.s.vega.xyz',
         api: {
           GraphQL: true,
         },
       },
       {
-        url: "https://n04.s.vega.xyz",
+        url: 'https://n04.s.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n05.s.vega.xyz",
+        url: 'https://n05.s.vega.xyz',
         api: {
           GraphQL: false,
         },
@@ -114,7 +115,7 @@ export const VegaNetworks: VegaNets = {
   [Networks.STAGNET2]: {
     nodes: [
       {
-        url: "https://n03.stagnet2.vega.xyz",
+        url: 'https://n03.stagnet2.vega.xyz',
         api: {
           GraphQL: true,
         },
@@ -124,61 +125,61 @@ export const VegaNetworks: VegaNets = {
   [Networks.TESTNET]: {
     nodes: [
       {
-        url: "https://lb.testnet.vega.xyz",
+        url: 'https://lb.testnet.vega.xyz',
         api: {
           GraphQL: true,
         },
       },
       {
-        url: "https://n01.testnet.vega.xyz",
+        url: 'https://n01.testnet.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n02.testnet.vega.xyz",
+        url: 'https://n02.testnet.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n03.testnet.vega.xyz",
+        url: 'https://n03.testnet.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n04.testnet.vega.xyz",
+        url: 'https://n04.testnet.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n05.testnet.vega.xyz",
+        url: 'https://n05.testnet.vega.xyz',
         api: {
           GraphQL: false,
         },
       },
       {
-        url: "https://n06.testnet.vega.xyz",
+        url: 'https://n06.testnet.vega.xyz',
         api: {
           GraphQL: true,
         },
       },
       {
-        url: "https://n07.testnet.vega.xyz",
+        url: 'https://n07.testnet.vega.xyz',
         api: {
           GraphQL: true,
         },
       },
       {
-        url: "https://n08.testnet.vega.xyz",
+        url: 'https://n08.testnet.vega.xyz',
         api: {
           GraphQL: true,
         },
       },
       {
-        url: "https://n09.testnet.vega.xyz",
+        url: 'https://n09.testnet.vega.xyz',
         api: {
           GraphQL: true,
         },
@@ -207,5 +208,5 @@ export const GraphQLNodes = Object.keys(VegaNetworks).reduce(
 ) as NetworkConfig;
 
 export const EnvironmentNodes = GraphQLNodes[
-  process.env.REACT_APP_ENV as Networks
+  process.env['NX_VEGA_ENV'] as Networks
 ] as string[];

@@ -1,20 +1,20 @@
-import "./nav.scss";
+import './nav.scss';
 
-import { Drawer } from "@blueprintjs/core";
-import debounce from "lodash/debounce";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link, NavLink } from "react-router-dom";
+import { Drawer } from '@blueprintjs/core';
+import debounce from 'lodash/debounce';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link, NavLink } from 'react-router-dom';
 
-import { Flags } from "../../config";
+import { Flags } from '../../config';
 import {
   AppStateActionType,
   useAppState,
-} from "../../contexts/app-state/app-state-context";
-import vegaWhite from "../../images/vega_white.png";
-import { Routes } from "../../routes/router-config";
-import { EthWallet } from "../eth-wallet";
-import { VegaWallet } from "../vega-wallet";
+} from '../../contexts/app-state/app-state-context';
+import vegaWhite from '../../images/vega_white.png';
+import { Routes } from '../../routes/router-config';
+import { EthWallet } from '../eth-wallet';
+import { VegaWallet } from '../vega-wallet';
 
 export const Nav = () => {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
@@ -26,17 +26,17 @@ export const Nav = () => {
       setWindowWidth(window.innerWidth);
     }, 300);
 
-    window.addEventListener("resize", handleResizeDebounced);
+    window.addEventListener('resize', handleResizeDebounced);
 
     return () => {
-      window.removeEventListener("resize", handleResizeDebounced);
+      window.removeEventListener('resize', handleResizeDebounced);
     };
   }, []);
 
   return (
     <div
-      className={`nav nav-${isDesktop ? "large" : "small"} ${
-        inverted ? "nav--inverted" : ""
+      className={`nav nav-${isDesktop ? 'large' : 'small'} ${
+        inverted ? 'nav--inverted' : ''
       }`}
     >
       {isDesktop && <NavHeader fairground={inverted} />}
@@ -126,7 +126,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
           <img alt="Vega" src={vegaWhite} className="nav__logo" />
         )}
       </Link>
-      <h1>{fairground ? t("fairgroundTitle") : t("title")}</h1>
+      <h1>{fairground ? t('fairgroundTitle') : t('title')}</h1>
     </div>
   );
 };
@@ -144,7 +144,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
           })
         }
         className={`nav__drawer-button ${
-          inverted ? "nav__drawer-button--inverted" : ""
+          inverted ? 'nav__drawer-button--inverted' : ''
         }`}
       >
         <span />
@@ -160,7 +160,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
           })
         }
         size="80%"
-        style={{ maxWidth: 420, border: "1px solid white" }}
+        style={{ maxWidth: 420, border: '1px solid white' }}
       >
         <div className="nav__drawer">
           <div>
@@ -193,30 +193,30 @@ const NavLinks = ({
   };
   return (
     <nav
-      className={`nav-links nav-links--${isDesktop ? "row" : "column"}
-      ${inverted ? "nav-links--inverted" : ""}`}
+      className={`nav-links nav-links--${isDesktop ? 'row' : 'column'}
+      ${inverted ? 'nav-links--inverted' : ''}`}
     >
-      <NavLink {...linkProps} exact={true} to={Routes.HOME}>
-        {t("Home")}
+      <NavLink {...linkProps} to={Routes.HOME}>
+        {t('Home')}
       </NavLink>
       <NavLink {...linkProps} to={Routes.VESTING}>
-        {t("Vesting")}
+        {t('Vesting')}
       </NavLink>
       <NavLink {...linkProps} to={Routes.STAKING}>
-        {t("Staking")}
+        {t('Staking')}
       </NavLink>
       <NavLink {...linkProps} to={Routes.REWARDS}>
-        {t("Rewards")}
+        {t('Rewards')}
       </NavLink>
       <NavLink {...linkProps} to={Routes.WITHDRAW}>
-        {t("Withdraw")}
+        {t('Withdraw')}
       </NavLink>
       <NavLink {...linkProps} to={Routes.GOVERNANCE}>
-        {t("Governance")}
+        {t('Governance')}
       </NavLink>
       {Flags.DEX_STAKING_DISABLED ? null : (
         <NavLink {...linkProps} to={Routes.LIQUIDITY}>
-          {t("liquidityNav")}
+          {t('liquidityNav')}
         </NavLink>
       )}
     </nav>

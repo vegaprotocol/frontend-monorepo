@@ -1,9 +1,9 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from "../etherscan-link";
-import { Loader } from "../loader";
+import { EtherscanLink } from '../etherscan-link';
+import { Loader } from '../loader';
 
 export const TransactionPending = ({
   hash,
@@ -28,16 +28,16 @@ export const TransactionPending = ({
     return 0;
   }, [confirmations, requiredConfirmations]);
   const title = React.useMemo(() => {
-    const defaultTitle = heading || t("Transaction in progress");
+    const defaultTitle = heading || t('Transaction in progress');
     if (remainingConfirmations > 0) {
-      return `${defaultTitle}. ${t("blockCountdown", {
+      return `${defaultTitle}. ${t('blockCountdown', {
         amount: remainingConfirmations,
       })}`;
     }
     return defaultTitle;
   }, [heading, remainingConfirmations, t]);
   return (
-    <Callout icon={<Loader />} title={title}>
+    <Callout iconName="refresh" title={title}>
       {body && <p data-testid="transaction-pending-body">{body}</p>}
       <p>
         <EtherscanLink tx={hash} />

@@ -1,33 +1,33 @@
-import { VoteValue } from "../../__generated__/globalTypes";
-import { VegaKey } from "../../contexts/app-state/app-state-context";
-import { VOTE_VALUE_MAP } from "../../routes/governance/components/vote-details";
-import { LocalStorage } from "../storage";
-import { GenericErrorResponse } from "./vega-wallet-types";
+import type { VoteValue } from '../../__generated__/globalTypes';
+import type { VegaKey } from '../../contexts/app-state/app-state-context';
+import type { VOTE_VALUE_MAP } from '../../routes/governance/components/vote-details';
+import { LocalStorage } from '../storage';
+import type { GenericErrorResponse } from './vega-wallet-types';
 
 export const MINIMUM_WALLET_VERSION =
-  process.env.REACT_APP_SUPPORTED_WALLET_VERSION;
+  process.env['NX_SUPPORTED_WALLET_VERSION'];
 
-export const DEFAULT_WALLET_URL = "http://localhost:1789";
-export const HOSTED_WALLET_URL = "https://wallet.testnet.vega.xyz";
-const TOKEN_STORAGE_KEY = "vega_wallet_token";
-const WALLET_URL_KEY = "vega_wallet_url";
-const KEY_STORAGE_KEY = "vega_wallet_key";
+export const DEFAULT_WALLET_URL = 'http://localhost:1789';
+export const HOSTED_WALLET_URL = 'https://wallet.testnet.vega.xyz';
+const TOKEN_STORAGE_KEY = 'vega_wallet_token';
+const WALLET_URL_KEY = 'vega_wallet_url';
+const KEY_STORAGE_KEY = 'vega_wallet_key';
 
 const Endpoints = {
-  STATUS: "status",
-  TOKEN: "auth/token",
-  KEYS: "keys",
-  COMMAND: "command/sync",
-  VERSION: "version",
+  STATUS: 'status',
+  TOKEN: 'auth/token',
+  KEYS: 'keys',
+  COMMAND: 'command/sync',
+  VERSION: 'version',
 };
 
 export const Errors = {
-  NO_TOKEN: "No token",
-  SERVICE_UNAVAILABLE: "Wallet service unavailable",
-  SESSION_EXPIRED: "Session expired",
-  INVALID_CREDENTIALS: "Invalid credentials",
-  COMMAND_FAILED: "Command failed",
-  INVALID_URL: "Invalid wallet URL",
+  NO_TOKEN: 'No token',
+  SERVICE_UNAVAILABLE: 'Wallet service unavailable',
+  SESSION_EXPIRED: 'Session expired',
+  INVALID_CREDENTIALS: 'Invalid credentials',
+  COMMAND_FAILED: 'Command failed',
+  INVALID_URL: 'Invalid wallet URL',
 };
 
 export interface DelegateSubmissionInput {
@@ -43,7 +43,7 @@ export interface UndelegateSubmissionInput {
   undelegateSubmission: {
     nodeId: string;
     amount: string;
-    method: "METHOD_NOW" | "METHOD_AT_END_OF_EPOCH";
+    method: 'METHOD_NOW' | 'METHOD_AT_END_OF_EPOCH';
   };
 }
 
@@ -107,8 +107,8 @@ export class VegaWalletService implements IVegaWalletService {
   constructor() {
     this.version = 1;
     this.url = LocalStorage.getItem(WALLET_URL_KEY) || DEFAULT_WALLET_URL;
-    this.token = LocalStorage.getItem(TOKEN_STORAGE_KEY) || "";
-    this.key = LocalStorage.getItem(KEY_STORAGE_KEY) || "";
+    this.token = LocalStorage.getItem(TOKEN_STORAGE_KEY) || '';
+    this.key = LocalStorage.getItem(KEY_STORAGE_KEY) || '';
   }
 
   async getToken(params: {
@@ -126,12 +126,12 @@ export class VegaWalletService implements IVegaWalletService {
 
     try {
       const res = await fetch(`${this.getUrl()}/${Endpoints.TOKEN}`, {
-        method: "post",
+        method: 'post',
         body: JSON.stringify(params),
       });
       const json = await res.json();
 
-      if (json.hasOwnProperty("token")) {
+      if (json.hasOwnProperty('token')) {
         this.setToken(json.token);
         return [undefined, json.token];
       } else {
@@ -149,7 +149,7 @@ export class VegaWalletService implements IVegaWalletService {
 
     try {
       const res = await fetch(`${this.getUrl()}/${Endpoints.TOKEN}`, {
-        method: "delete",
+        method: 'delete',
         headers: { authorization: `Bearer ${this.token}` },
       });
       const json = await res.json();
@@ -200,7 +200,7 @@ export class VegaWalletService implements IVegaWalletService {
 
     try {
       const res = await fetch(`${this.getUrl()}/${Endpoints.COMMAND}`, {
-        method: "post",
+        method: 'post',
         body: JSON.stringify({
           ...body,
           propagate: true,
@@ -216,7 +216,7 @@ export class VegaWalletService implements IVegaWalletService {
 
       const json = await res.json();
 
-      if ("errors" in json) {
+      if ('errors' in json) {
         return [Errors.COMMAND_FAILED, undefined];
       } else {
         return [undefined, json];
@@ -232,7 +232,7 @@ export class VegaWalletService implements IVegaWalletService {
   }
 
   private clearKey() {
-    this.key = "";
+    this.key = '';
     LocalStorage.removeItem(KEY_STORAGE_KEY);
   }
 
@@ -242,7 +242,7 @@ export class VegaWalletService implements IVegaWalletService {
   }
 
   private clearToken() {
-    this.token = "";
+    this.token = '';
     LocalStorage.removeItem(TOKEN_STORAGE_KEY);
   }
 
@@ -293,7 +293,7 @@ export class VegaWalletService implements IVegaWalletService {
 export function hasErrorProperty(obj: unknown): obj is GenericErrorResponse {
   if (
     (obj as GenericErrorResponse).error !== undefined &&
-    typeof (obj as GenericErrorResponse).error === "string"
+    typeof (obj as GenericErrorResponse).error === 'string'
   ) {
     return true;
   }

@@ -1,12 +1,12 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { useTranslation } from "react-i18next";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useTranslation } from 'react-i18next';
 
-import { Tick } from "../../../components/icons";
-import {
+import { Tick } from '../../../components/icons';
+import type {
   TransactionAction,
   TransactionState,
-} from "../../../hooks/transaction-reducer";
-import { ClaimForm } from "../claim-form";
+} from '../../../hooks/transaction-reducer';
+import { ClaimForm } from '../claim-form';
 
 interface ClaimStep2 {
   countryCode: string;
@@ -27,12 +27,12 @@ export const ClaimStep1 = ({
   return (
     <div data-testid="claim-step-1">
       {completed ? (
-        <Callout intent="success" title={t("Complete")} icon={<Tick />}>
+        <Callout intent={Intent.Success} title={t('Complete')} iconName="tick">
           <p>You have already committed your claim</p>
         </Callout>
       ) : (
         <>
-          <p>{t("commitBody")}</p>
+          <p>{t('commitBody')}</p>
           <ClaimForm
             countryCode={countryCode}
             txState={txState}

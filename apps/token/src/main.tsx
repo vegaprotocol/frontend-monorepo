@@ -1,19 +1,17 @@
-import "./index.scss";
-import "@vegaprotocol/ui-toolkit/dist/style.css";
+import './styles.scss';
 
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
-import React from "react";
-import ReactDOM from "react-dom";
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-import packageJson from "../package.json";
-import App from "./app";
-import reportWebVitals from "./reportWebVitals";
+import App from './app';
+import reportWebVitals from './reportWebVitals';
 
-const dsn = process.env.REACT_APP_SENTRY_DSN || false;
-const environment = process.env.REACT_APP_ENV || "local";
-const commit = process.env.COMMIT_REF || "local";
-const branch = process.env.BRANCH || "unknown";
+const dsn = process.env['NX_SENTRY_DSN'] || false;
+const environment = process.env['NX_VEGA_ENV'] || 'local';
+const commit = process.env['NX_COMMIT_REF'] || 'local';
+const branch = process.env['NX_BRANCH'] || 'unknown';
 
 /* istanbul ignore next */
 if (dsn) {
@@ -21,29 +19,29 @@ if (dsn) {
     dsn,
     integrations: [new Integrations.BrowserTracing()],
     tracesSampleRate: 0.1,
-    enabled: environment !== "local",
+    enabled: environment !== 'local',
     environment,
-    release: packageJson.version,
+    release: process.env['NX_VERSION'], // TODO: probably not the right version number
     beforeSend(event) {
-      if (event.request?.url?.includes("/claim?")) {
+      if (event.request?.url?.includes('/claim?')) {
         return {
           ...event,
-          request: { ...event.request, url: event.request?.url.split("?")[0] },
+          request: { ...event.request, url: event.request?.url.split('?')[0] },
         };
       }
       return event;
     },
   });
 
-  Sentry.setTag("branch", branch);
-  Sentry.setTag("commit", commit);
+  Sentry.setTag('branch', branch);
+  Sentry.setTag('commit', commit);
 }
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById('root')
 );
 
 // If you want to start measuring performance in your app, pass a function

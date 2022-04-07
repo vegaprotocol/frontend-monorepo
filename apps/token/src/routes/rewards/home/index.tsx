@@ -1,27 +1,27 @@
-import "./index.scss";
+import './index.scss';
 
-import { useQuery } from "@apollo/client";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { formatDistance } from "date-fns";
+import { useQuery } from '@apollo/client';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { formatDistance } from 'date-fns';
 // @ts-ignore
-import Duration from "duration-js";
-import gql from "graphql-tag";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import Duration from 'duration-js';
+import gql from 'graphql-tag';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { EpochCountdown } from "../../../components/epoch-countdown";
-import { Heading } from "../../../components/heading";
-import { SplashLoader } from "../../../components/splash-loader";
-import { SplashScreen } from "../../../components/splash-screen";
-import { NetworkParams } from "../../../config";
+import { EpochCountdown } from '../../../components/epoch-countdown';
+import { Heading } from '../../../components/heading';
+import { SplashLoader } from '../../../components/splash-loader';
+import { SplashScreen } from '../../../components/splash-screen';
+import { NetworkParams } from '../../../config';
 import {
   AppStateActionType,
   useAppState,
-} from "../../../contexts/app-state/app-state-context";
-import { useNetworkParam } from "../../../hooks/use-network-param";
-import { useVegaUser } from "../../../hooks/use-vega-user";
-import { Rewards } from "./__generated__/Rewards";
-import { RewardInfo } from "./reward-info";
+} from '../../../contexts/app-state/app-state-context';
+import { useNetworkParam } from '../../../hooks/use-network-param';
+import { useVegaUser } from '../../../hooks/use-vega-user';
+import type { Rewards } from './__generated__/Rewards';
+import { RewardInfo } from './reward-info';
 
 export const REWARDS_QUERY = gql`
   query Rewards($partyId: ID!) {
@@ -94,7 +94,7 @@ export const RewardsIndex = () => {
   if (error || rewardAssetError) {
     return (
       <section>
-        <p>{t("Something went wrong")}</p>
+        <p>{t('Something went wrong')}</p>
         {error && <pre>{error.message}</pre>}
         {rewardAssetError && <pre>{rewardAssetError.message}</pre>}
       </section>
@@ -111,17 +111,17 @@ export const RewardsIndex = () => {
 
   return (
     <section className="rewards">
-      <Heading title={t("pageTitleRewards")} />
-      <p>{t("rewardsPara1")}</p>
-      <p>{t("rewardsPara2")}</p>
+      <Heading title={t('pageTitleRewards')} />
+      <p>{t('rewardsPara1')}</p>
+      <p>{t('rewardsPara2')}</p>
       {payoutDuration ? (
         <Callout
-          title={t("rewardsCallout", {
+          title={t('rewardsCallout', {
             duration: formatDistance(new Date(0), payoutDuration),
           })}
-          intent="warn"
+          intent={Intent.Warning}
         >
-          <p>{t("rewardsPara3")}</p>
+          <p>{t('rewardsPara3')}</p>
         </Callout>
       ) : null}
       {!loading &&
@@ -153,7 +153,7 @@ export const RewardsIndex = () => {
               })
             }
           >
-            {t("connectVegaWallet")}
+            {t('connectVegaWallet')}
           </button>
         )}
       </section>

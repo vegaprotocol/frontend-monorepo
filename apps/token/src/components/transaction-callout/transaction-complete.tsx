@@ -1,8 +1,8 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { useTranslation } from "react-i18next";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from "../etherscan-link";
-import { Tick } from "../icons";
+import { EtherscanLink } from '../etherscan-link';
+import { Tick } from '../icons';
 
 export const TransactionComplete = ({
   hash,
@@ -17,7 +17,11 @@ export const TransactionComplete = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <Callout icon={<Tick />} intent="success" title={heading || t("Complete")}>
+    <Callout
+      iconName="tick"
+      intent={Intent.Success}
+      title={heading || t('Complete')}
+    >
       {body && <p data-testid="transaction-complete-body">{body}</p>}
       <p>
         <EtherscanLink tx={hash} />

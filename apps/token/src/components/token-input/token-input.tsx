@@ -1,21 +1,28 @@
-import "./token-input.scss";
-
-import { FormGroup, InputGroup, Intent, Tag } from "@blueprintjs/core";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import './token-input.scss';
 
 import {
-  TransactionAction,
-  TransactionActionType,
-  TransactionState,
-  TxState,
-} from "../../hooks/transaction-reducer";
-import { BigNumber } from "../../lib/bignumber";
-import { Tick } from "../icons";
-import { TransactionCallout } from "../transaction-callout";
+  FormGroup,
+  InputGroup,
+  Tag,
+  Intent as BlueprintIntent,
+} from '@blueprintjs/core';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-const inputName = "amount";
+import type {
+  TransactionAction,
+  TransactionState,
+} from '../../hooks/transaction-reducer';
+import {
+  TransactionActionType,
+  TxState,
+} from '../../hooks/transaction-reducer';
+import { BigNumber } from '../../lib/bignumber';
+import { Tick } from '../icons';
+import { TransactionCallout } from '../transaction-callout';
+
+const inputName = 'amount';
 
 export const AmountInput = ({
   amount,
@@ -38,7 +45,7 @@ export const AmountInput = ({
         id={inputName}
         onChange={(e) => setAmount(e.target.value)}
         value={amount}
-        intent={Intent.NONE}
+        intent={BlueprintIntent.NONE}
         rightElement={<Tag minimal={true}>{currency}</Tag>}
         autoComplete="off"
         type="number"
@@ -53,7 +60,7 @@ export const AmountInput = ({
           data-testid="token-amount-use-maximum"
           className="button-link token-input__use-maximum "
         >
-          {t("Use maximum")}
+          {t('Use maximum')}
         </button>
       )}
     </div>
@@ -71,8 +78,8 @@ export const TokenInput = ({
   allowance,
   approve,
   requireApproval = false,
-  maximum = new BigNumber("0"),
-  minimum = new BigNumber("0"),
+  maximum = new BigNumber('0'),
+  minimum = new BigNumber('0'),
   approveTxState,
   approveTxDispatch,
 }: {
@@ -99,7 +106,7 @@ export const TokenInput = ({
       !approveTxDispatch)
   ) {
     throw new Error(
-      "If requires approval is true allowance, approve, approveTxState and approveDispatch props are required!"
+      'If requires approval is true allowance, approve, approveTxState and approveDispatch props are required!'
     );
   }
   const isApproved = !new BigNumber(allowance!).isEqualTo(0);
@@ -111,14 +118,14 @@ export const TokenInput = ({
       return (
         !isApproved ||
         !amount ||
-        new BigNumber(amount).isLessThanOrEqualTo("0") ||
+        new BigNumber(amount).isLessThanOrEqualTo('0') ||
         new BigNumber(amount).isGreaterThan(maximum)
       );
     }
 
     return (
       !amount ||
-      new BigNumber(amount).isLessThanOrEqualTo("0") ||
+      new BigNumber(amount).isLessThanOrEqualTo('0') ||
       new BigNumber(amount).isGreaterThan(maximum) ||
       new BigNumber(amount).isLessThan(minimum)
     );
@@ -154,10 +161,10 @@ export const TokenInput = ({
   } else if (requireApproval) {
     approveContent = (
       <Callout
-        icon={<Tick />}
-        intent="success"
+        iconName="tick"
+        intent={Intent.Success}
         title={`${currency} are approved for staking`}
-      ></Callout>
+      />
     );
   }
   return (

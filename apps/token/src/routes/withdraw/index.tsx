@@ -1,35 +1,35 @@
-import { gql, useQuery } from "@apollo/client";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { gql, useQuery } from '@apollo/client';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { AccountType } from "../../__generated__/globalTypes";
-import { EthWalletContainer } from "../../components/eth-wallet-container";
-import { Heading } from "../../components/heading";
-import { SplashLoader } from "../../components/splash-loader";
-import { SplashScreen } from "../../components/splash-screen";
-import { VegaWalletContainer } from "../../components/vega-wallet-container";
-import { VegaKeyExtended } from "../../contexts/app-state/app-state-context";
-import { Routes } from "../router-config";
+import { AccountType } from '../../__generated__/globalTypes';
+import { EthWalletContainer } from '../../components/eth-wallet-container';
+import { Heading } from '../../components/heading';
+import { SplashLoader } from '../../components/splash-loader';
+import { SplashScreen } from '../../components/splash-screen';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
+import { Routes } from '../router-config';
 import {
   WithdrawPage,
   WithdrawPageVariables,
-} from "./__generated__/WithdrawPage";
-import { WithdrawForm } from "./withdraw-form";
+} from './__generated__/WithdrawPage';
+import { WithdrawForm } from './withdraw-form';
 
 const Withdraw = () => {
   const { t } = useTranslation();
 
   return (
     <>
-      <Heading title={t("withdrawPageHeading")} />
-      <p>{t("withdrawPageText")}</p>
+      <Heading title={t('withdrawPageHeading')} />
+      <p>{t('withdrawPageText')}</p>
       <VegaWalletContainer>
         {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
       </VegaWalletContainer>
-      <Callout title={t("withdrawPageInfoCalloutTitle")}>
-        <p>{t("withdrawPageInfoCalloutText")}</p>
+      <Callout title={t('withdrawPageInfoCalloutTitle')}>
+        <p>{t('withdrawPageInfoCalloutText')}</p>
       </Callout>
     </>
   );
@@ -107,7 +107,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
   if (error) {
     return (
       <section>
-        <p>{t("Something went wrong")}</p>
+        <p>{t('Something went wrong')}</p>
         {error && <pre>{error.message}</pre>}
       </section>
     );
@@ -124,11 +124,14 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
   return (
     <>
       {hasPendingWithdrawals && (
-        <Callout title={t("pendingWithdrawalsCalloutTitle")} intent="action">
-          <p>{t("pendingWithdrawalsCalloutText")}</p>
+        <Callout
+          title={t('pendingWithdrawalsCalloutTitle')}
+          intent={Intent.Prompt}
+        >
+          <p>{t('pendingWithdrawalsCalloutText')}</p>
           <p>
             <Link to={Routes.WITHDRAWALS}>
-              {t("pendingWithdrawalsCalloutButton")}
+              {t('pendingWithdrawalsCalloutButton')}
             </Link>
           </p>
         </Callout>

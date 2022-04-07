@@ -1,6 +1,6 @@
-import { Tranche } from "@vegaprotocol/smart-contracts-sdk";
+import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
 
-import { BigNumber } from "../bignumber";
+import { BigNumber } from '../bignumber';
 
 export function generateTranche(id: number): Tranche {
   return {

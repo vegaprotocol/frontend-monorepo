@@ -1,26 +1,26 @@
-import "./tranche.scss";
+import './tranche.scss';
 
-import { Tranche as TrancheType } from "@vegaprotocol/smart-contracts-sdk";
-import { useWeb3React } from "@web3-react/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
-import { Redirect } from "react-router-dom";
+import type { Tranche as TrancheType } from '@vegaprotocol/smart-contracts-sdk';
+import { useWeb3React } from '@web3-react/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
+import { Navigate } from 'react-router-dom';
 
-import { EtherscanLink } from "../../components/etherscan-link";
-import { ADDRESSES, EthereumChainId } from "../../config";
-import { BigNumber } from "../../lib/bignumber";
-import { formatNumber } from "../../lib/format-number";
-import { TrancheItem } from "../redemption/tranche-item";
-import { Routes } from "../router-config";
-import { TrancheLabel } from "./tranche-label";
+import { EtherscanLink } from '../../components/etherscan-link';
+import { ADDRESSES, EthereumChainId } from '../../config';
+import { BigNumber } from '../../lib/bignumber';
+import { formatNumber } from '../../lib/format-number';
+import { TrancheItem } from '../redemption/tranche-item';
+import { Routes } from '../router-config';
+import { TrancheLabel } from './tranche-label';
 
 export const Tranche = ({ tranches }: { tranches: TrancheType[] }) => {
   const { t } = useTranslation();
   const { trancheId } = useParams<{ trancheId: string }>();
   const { chainId } = useWeb3React();
   const tranche = tranches.find(
-    (tranche) => tranche.tranche_id === parseInt(trancheId)
+    (tranche) => tranche.tranche_id === parseInt(trancheId!)
   );
 
   const lockedData = React.useMemo(() => {
@@ -33,7 +33,7 @@ export const Tranche = ({ tranches }: { tranches: TrancheType[] }) => {
   }, [tranche]);
 
   if (!tranche) {
-    return <Redirect to={Routes.NOT_FOUND} />;
+    return <Navigate to={Routes.NOT_FOUND} />;
   }
 
   return (
@@ -52,10 +52,10 @@ export const Tranche = ({ tranches }: { tranches: TrancheType[] }) => {
         }
       />
       <div className="tranche__redeemed" data-test-id="redeemed-tranche-tokens">
-        <span>{t("alreadyRedeemed")}</span>
+        <span>{t('alreadyRedeemed')}</span>
         <span>{formatNumber(tranche.total_removed)}</span>
       </div>
-      <h2>{t("Holders")}</h2>
+      <h2>{t('Holders')}</h2>
       {tranche.users.length ? (
         <ul className="tranche__user-list">
           {tranche.users.map((user, i) => {
@@ -65,8 +65,8 @@ export const Tranche = ({ tranches }: { tranches: TrancheType[] }) => {
               <li className="tranche__user-list--item" key={i}>
                 <EtherscanLink address={user.address} text={user.address} />
                 <div className="tranche__progress-contents">
-                  <span>{t("Locked")}</span>
-                  <span>{t("Unlocked")}</span>
+                  <span>{t('Locked')}</span>
+                  <span>{t('Unlocked')}</span>
                 </div>
                 <div className="tranche__progress-contents">
                   <span>{formatNumber(locked)}</span>
@@ -77,7 +77,7 @@ export const Tranche = ({ tranches }: { tranches: TrancheType[] }) => {
           })}
         </ul>
       ) : (
-        <p>{t("No users")}</p>
+        <p>{t('No users')}</p>
       )}
     </>
   );

@@ -1,21 +1,21 @@
-import "./transactions-modal.scss";
+import './transactions-modal.scss';
 
-import { Overlay } from "@blueprintjs/core";
-import { TxData } from "@vegaprotocol/smart-contracts-sdk";
-import { EtherscanLink } from "@vegaprotocol/ui-toolkit";
-import { useWeb3React } from "@web3-react/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Overlay } from '@blueprintjs/core';
+import { TxData } from '@vegaprotocol/smart-contracts-sdk';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { useWeb3React } from '@web3-react/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   AppStateActionType,
   useAppState,
-} from "../../contexts/app-state/app-state-context";
-import { useContracts } from "../../contexts/contracts/contracts-context";
-import { truncateMiddle } from "../../lib/truncate-middle";
-import { Tick } from "../icons";
-import { Loader } from "../loader";
-import { Modal } from "../modal";
+} from '../../contexts/app-state/app-state-context';
+import { useContracts } from '../../contexts/contracts/contracts-context';
+import { truncateMiddle } from '../../lib/truncate-middle';
+import { Tick } from '../icons';
+import { Loader } from '../loader';
+import { Modal } from '../modal';
 
 export const TransactionModal = () => {
   const { t } = useTranslation();
@@ -33,13 +33,13 @@ export const TransactionModal = () => {
   );
 
   const renderStatus = (txObj: TxData) => {
-    const className = "transactions-modal__status";
+    const className = 'transactions-modal__status';
 
     if (!txObj.receipt) {
       return (
         <span className={className}>
           <Loader invert={true} />
-          <span>{t("pending")}</span>
+          <span>{t('pending')}</span>
         </span>
       );
     }
@@ -48,7 +48,7 @@ export const TransactionModal = () => {
       return (
         <span className={className}>
           <Tick />
-          <span>{t("confirmed")}</span>
+          <span>{t('confirmed')}</span>
         </span>
       );
     }
@@ -57,7 +57,7 @@ export const TransactionModal = () => {
       <span className={className}>
         <Loader invert={true} />
         <span>
-          {t("confirmationsRemaining", {
+          {t('confirmationsRemaining', {
             confirmations: txObj.receipt.confirmations,
             required: txObj.requiredConfirmations,
           })}
@@ -74,13 +74,13 @@ export const TransactionModal = () => {
       transitionDuration={0}
     >
       <div className="modal transactions-modal">
-        <Modal title={t("ethTransactionModalTitle")}>
+        <Modal title={t('ethTransactionModalTitle')}>
           {transactions.length ? (
             <table className="transactions-modal__table">
               <thead>
                 <tr>
-                  <th>{t("transaction")}</th>
-                  <th>{t("status")}</th>
+                  <th>{t('transaction')}</th>
+                  <th>{t('status')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -91,7 +91,6 @@ export const TransactionModal = () => {
                         <EtherscanLink
                           tx={t.tx.hash}
                           text={truncateMiddle(t.tx.hash)}
-                          chainId={`0x${chainId}` as any}
                         />
                       </td>
                       <td>{renderStatus(t)}</td>
@@ -101,7 +100,7 @@ export const TransactionModal = () => {
               </tbody>
             </table>
           ) : (
-            <p>{t("noTransactions")}</p>
+            <p>{t('noTransactions')}</p>
           )}
         </Modal>
       </div>

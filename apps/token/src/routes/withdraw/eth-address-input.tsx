@@ -1,9 +1,13 @@
-import { FormGroup, InputGroup, Intent } from "@blueprintjs/core";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import {
+  FormGroup,
+  InputGroup,
+  Intent as BlueprintIntent,
+} from '@blueprintjs/core';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Ethereum } from "../../components/icons";
+import { Ethereum } from '../../components/icons';
 
 interface EthAddressSelectorProps {
   address: string;
@@ -28,7 +32,7 @@ export const EthAddressInput = ({
   }, [connectedAddress, onChange, useConnectedWallet]);
 
   return (
-    <FormGroup label={t("To")} labelFor="ethAddressInput">
+    <FormGroup label={t('To')} labelFor="ethAddressInput">
       <InputGroup
         data-testid="token-amount-input"
         className="token-input__input"
@@ -36,7 +40,7 @@ export const EthAddressInput = ({
         onChange={(e) => onChange(e.target.value)}
         value={address}
         disabled={useConnectedWallet}
-        intent={Intent.NONE}
+        intent={BlueprintIntent.NONE}
         leftElement={<Ethereum />}
         autoComplete="off"
         type="text"
@@ -47,10 +51,12 @@ export const EthAddressInput = ({
         onClick={() => setUseConnectedWallet(!useConnectedWallet)}
         className="button-link fill"
       >
-        {useConnectedWallet ? t("enterAddress") : t("useConnectedWallet")}
+        {useConnectedWallet ? t('enterAddress') : t('useConnectedWallet')}
       </button>
 
-      {isValid ? null : <Callout intent="warn">{t("invalidAddress")}</Callout>}
+      {isValid ? null : (
+        <Callout intent={Intent.Warning}>{t('invalidAddress')}</Callout>
+      )}
     </FormGroup>
   );
 };

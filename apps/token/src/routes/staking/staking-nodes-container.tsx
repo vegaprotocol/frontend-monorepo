@@ -1,12 +1,12 @@
-import { gql, useQuery } from "@apollo/client";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { gql, useQuery } from '@apollo/client';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { SplashLoader } from "../../components/splash-loader";
-import { SplashScreen } from "../../components/splash-screen";
-import { useVegaUser } from "../../hooks/use-vega-user";
-import { Staking as StakingQueryResult } from "./__generated__/Staking";
+import { SplashLoader } from '../../components/splash-loader';
+import { SplashScreen } from '../../components/splash-screen';
+import { useVegaUser } from '../../hooks/use-vega-user';
+import { Staking as StakingQueryResult } from './__generated__/Staking';
 
 export const STAKING_QUERY = gql`
   query Staking($partyId: ID!) {
@@ -66,7 +66,7 @@ export const STAKING_QUERY = gql`
   }
 `;
 
-const RPC_ERROR = "rpc error: code = NotFound desc = NotFound error";
+const RPC_ERROR = 'rpc error: code = NotFound desc = NotFound error';
 
 export const StakingNodesContainer = ({
   children,
@@ -78,7 +78,7 @@ export const StakingNodesContainer = ({
   const { data, loading, error, refetch } = useQuery<StakingQueryResult>(
     STAKING_QUERY,
     {
-      variables: { partyId: currVegaKey?.pub || "" },
+      variables: { partyId: currVegaKey?.pub || '' },
       skip: !currVegaKey?.pub,
     }
   );
@@ -102,10 +102,10 @@ export const StakingNodesContainer = ({
 
   if (error) {
     return (
-      <Callout intent="error" title={t("Something went wrong")}>
+      <Callout intent={Intent.Danger} title={t('Something went wrong')}>
         <pre>
           {error.message.includes(RPC_ERROR)
-            ? t("resourceNotFound")
+            ? t('resourceNotFound')
             : error.message}
         </pre>
       </Callout>

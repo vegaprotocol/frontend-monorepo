@@ -1,15 +1,13 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { useTranslation } from "react-i18next";
-
-import { HandUp } from "../icons";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useTranslation } from 'react-i18next';
 
 export const TransactionRequested = () => {
   const { t } = useTranslation();
   return (
     <Callout
-      icon={<HandUp />}
-      intent="action"
-      title={t("Awaiting action in Ethereum wallet (e.g. metamask)")}
-    ></Callout>
+      iconName="hand-up"
+      intent={Intent.Prompt}
+      title={t('Awaiting action in Ethereum wallet (e.g. metamask)')}
+    />
   );
 };

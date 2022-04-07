@@ -1,24 +1,24 @@
-import React from "react";
-import { Trans, useTranslation } from "react-i18next";
-import { Link, useParams } from "react-router-dom";
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link, useParams } from 'react-router-dom';
 
-import { TransactionCallout } from "../../../components/transaction-callout";
-import { Colors } from "../../../config";
-import { ADDRESSES } from "../../../config";
-import { useAppState } from "../../../contexts/app-state/app-state-context";
-import { useContracts } from "../../../contexts/contracts/contracts-context";
+import { TransactionCallout } from '../../../components/transaction-callout';
+import { Colors } from '../../../config';
+import { ADDRESSES } from '../../../config';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
 import {
   TransactionActionType,
   TxState,
-} from "../../../hooks/transaction-reducer";
-import { useGetUserTrancheBalances } from "../../../hooks/use-get-user-tranche-balances";
-import { useRefreshBalances } from "../../../hooks/use-refresh-balances";
-import { useTransaction } from "../../../hooks/use-transaction";
-import { BigNumber } from "../../../lib/bignumber";
-import { formatNumber } from "../../../lib/format-number";
-import { Routes } from "../../router-config";
-import { RedemptionState } from "../redemption-reducer";
-import { TrancheTable } from "../tranche-table";
+} from '../../../hooks/transaction-reducer';
+import { useGetUserTrancheBalances } from '../../../hooks/use-get-user-tranche-balances';
+import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
+import { useTransaction } from '../../../hooks/use-transaction';
+import { BigNumber } from '../../../lib/bignumber';
+import { formatNumber } from '../../../lib/format-number';
+import { Routes } from '../../router-config';
+import { RedemptionState } from '../redemption-reducer';
+import { TrancheTable } from '../tranche-table';
 
 export const RedeemFromTranche = ({
   state,
@@ -48,7 +48,7 @@ export const RedeemFromTranche = ({
   } = useTransaction(() => vesting.withdrawFromTranche(numberId));
   const redeemedAmount = React.useMemo(() => {
     return (
-      trancheBalances.find(({ id: bId }) => bId.toString() === id.toString())
+      trancheBalances.find(({ id: bId }) => bId.toString() === id?.toString())
         ?.vested || new BigNumber(0)
     );
     // Do not update this value as it is updated once the tranches are refetched on success and we want the old value
@@ -65,7 +65,7 @@ export const RedeemFromTranche = ({
 
   const trancheBalance = React.useMemo(() => {
     return trancheBalances.find(
-      ({ id: bId }) => bId.toString() === id.toString()
+      ({ id: bId }) => bId.toString() === id?.toString()
     );
   }, [id, trancheBalances]);
 
@@ -78,7 +78,7 @@ export const RedeemFromTranche = ({
       <section data-testid="redemption-page">
         <div data-testid="redemption-no-balance">
           {t(
-            "You do not have any vesting VEGA tokens. Switch to another Ethereum key to check what can be redeemed."
+            'You do not have any vesting VEGA tokens. Switch to another Ethereum key to check what can be redeemed.'
           )}
         </div>
       </section>
@@ -91,14 +91,14 @@ export const RedeemFromTranche = ({
         <TransactionCallout
           completeHeading={
             <strong style={{ color: Colors.WHITE }}>
-              {t("Tokens from this Tranche have been redeemed")}
+              {t('Tokens from this Tranche have been redeemed')}
             </strong>
           }
           completeFooter={
             <>
               <p>
                 {t(
-                  "You have redeemed {{redeemedAmount}} VEGA tokens from this tranche. They are now free to transfer from your Ethereum wallet.",
+                  'You have redeemed {{redeemedAmount}} VEGA tokens from this tranche. They are now free to transfer from your Ethereum wallet.',
                   {
                     redeemedAmount: formatNumber(redeemedAmount),
                   }
@@ -106,7 +106,7 @@ export const RedeemFromTranche = ({
               </p>
               <p>
                 {t(
-                  "The VEGA token address is {{address}}, make sure you add this to your wallet to see your tokens",
+                  'The VEGA token address is {{address}}, make sure you add this to your wallet to see your tokens',
                   {
                     address: ADDRESSES.vegaTokenAddress,
                   }

@@ -1,10 +1,8 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
-
-import { Tick } from "../../components/icons";
-import { Routes } from "../router-config";
-import { Actions, RemoveType, StakeAction } from "./staking-form";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { Routes } from '../router-config';
+import { Actions, RemoveType, StakeAction } from './staking-form';
 
 interface StakeSuccessProps {
   action: StakeAction;
@@ -22,20 +20,20 @@ export const StakeSuccess = ({
   const { t } = useTranslation();
   const isAdd = action === Actions.Add;
   const title = isAdd
-    ? t("stakeAddSuccessTitle", { amount })
-    : t("stakeRemoveSuccessTitle", { amount, node: nodeName });
+    ? t('stakeAddSuccessTitle', { amount })
+    : t('stakeRemoveSuccessTitle', { amount, node: nodeName });
   const message = isAdd
-    ? t("stakeAddSuccessMessage")
+    ? t('stakeAddSuccessMessage')
     : removeType === RemoveType.EndOfEpoch
-    ? t("stakeRemoveSuccessMessage")
-    : t("stakeRemoveNowSuccessMessage");
+    ? t('stakeRemoveSuccessMessage')
+    : t('stakeRemoveNowSuccessMessage');
 
   return (
-    <Callout icon={<Tick />} intent="success" title={title}>
+    <Callout iconName="tick" intent={Intent.Success} title={title}>
       <div>
         <p>{message}</p>
         <p>
-          <Link to={Routes.STAKING}>{t("backToStaking")}</Link>
+          <Link to={Routes.STAKING}>{t('backToStaking')}</Link>
         </p>
       </div>
     </Callout>

@@ -1,8 +1,8 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { useTranslation } from "react-i18next";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from "../etherscan-link";
-import { Error } from "../icons";
+import { EtherscanLink } from '../etherscan-link';
+import { Error } from '../icons';
 
 export interface TransactionErrorProps {
   error: Error | null;
@@ -18,14 +18,14 @@ export const TransactionError = ({
   const { t } = useTranslation();
 
   return (
-    <Callout icon={<Error />} intent="error">
-      <p>{error ? error.message : t("Something went wrong")}</p>
+    <Callout iconName="error" intent={Intent.Danger}>
+      <p>{error ? error.message : t('Something went wrong')}</p>
       {hash ? (
         <p>
           <EtherscanLink tx={hash} />
         </p>
       ) : null}
-      <button onClick={() => onActionClick()}>{t("Try again")}</button>
+      <button onClick={() => onActionClick()}>{t('Try again')}</button>
     </Callout>
   );
 };

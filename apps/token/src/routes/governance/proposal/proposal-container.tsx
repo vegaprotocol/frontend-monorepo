@@ -1,19 +1,19 @@
-import { gql, useQuery } from "@apollo/client";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { gql, useQuery } from '@apollo/client';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
-import { SplashLoader } from "../../../components/splash-loader";
-import { SplashScreen } from "../../../components/splash-screen";
-import useFetch from "../../../hooks/use-fetch";
-import { getDataNodeUrl } from "../../../lib/get-data-node-url";
-import { Proposal } from "../components/proposal";
-import { PROPOSALS_FRAGMENT } from "../proposal-fragment";
-import {
+import { SplashLoader } from '../../../components/splash-loader';
+import { SplashScreen } from '../../../components/splash-screen';
+import useFetch from '../../../hooks/use-fetch';
+import { getDataNodeUrl } from '../../../lib/get-data-node-url';
+import { Proposal } from '../components/proposal';
+import { PROPOSALS_FRAGMENT } from '../proposal-fragment';
+import type {
   Proposal as ProposalQueryResult,
   ProposalVariables,
-} from "./__generated__/Proposal";
+} from './__generated__/Proposal';
 
 /**
  * TODO: how do we do this properly to ensure that it is kept up to date?
@@ -54,14 +54,15 @@ export const ProposalContainer = () => {
     ProposalQueryResult,
     ProposalVariables
   >(PROPOSAL_QUERY, {
-    fetchPolicy: "no-cache",
-    variables: { proposalId: params.proposalId },
+    fetchPolicy: 'no-cache',
+    variables: { proposalId: params.proposalId || '' },
+    skip: !params.proposalId,
     pollInterval: 5000,
   });
 
   if (error || restError) {
     return (
-      <Callout intent="error" title={t("Something went wrong")}>
+      <Callout intent={Intent.Danger} title={t('Something went wrong')}>
         <pre>{error?.message || restError?.message}</pre>
       </Callout>
     );

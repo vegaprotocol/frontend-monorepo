@@ -1,28 +1,28 @@
-import * as Sentry from "@sentry/react";
-import { useWeb3React } from "@web3-react/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Redirect } from "react-router";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import * as Sentry from '@sentry/react';
+import { useWeb3React } from '@web3-react/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Navigate } from 'react-router';
+import { Route, Routes, useMatch } from 'react-router-dom';
 
-import { Heading } from "../../components/heading";
-import { SplashLoader } from "../../components/splash-loader";
-import { SplashScreen } from "../../components/splash-screen";
-import { Flags, REWARDS_ADDRESSES } from "../../config";
-import { useDocumentTitle } from "../../hooks/use-document-title";
-import { RouteChildProps } from "..";
-import { LiquidityDeposit } from "./deposit";
-import { useGetLiquidityBalances } from "./hooks";
-import { LiquidityContainer } from "./liquidity-container";
-import { initialLiquidityState, liquidityReducer } from "./liquidity-reducer";
-import { LiquidityWithdraw } from "./withdraw";
+import { Heading } from '../../components/heading';
+import { SplashLoader } from '../../components/splash-loader';
+import { SplashScreen } from '../../components/splash-screen';
+import { Flags, REWARDS_ADDRESSES } from '../../config';
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import type { RouteChildProps } from '..';
+import { LiquidityDeposit } from './deposit';
+import { useGetLiquidityBalances } from './hooks';
+import { LiquidityContainer } from './liquidity-container';
+import { initialLiquidityState, liquidityReducer } from './liquidity-reducer';
+import { LiquidityWithdraw } from './withdraw';
 
 const RedemptionIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const match = useRouteMatch();
-  const withdraw = useRouteMatch(`${match.path}/:address/withdraw`);
-  const deposit = useRouteMatch(`${match.path}/:address/deposit`);
+  const path = '/liquidity';
+  const withdraw = useMatch(`${path}/:address/withdraw`);
+  const deposit = useMatch(`${path}/:address/deposit`);
   const [state, dispatch] = React.useReducer(
     liquidityReducer,
     initialLiquidityState
@@ -31,13 +31,13 @@ const RedemptionIndex = ({ name }: RouteChildProps) => {
   const [loading, setLoading] = React.useState(true);
   const { getBalances, lpStakingUSDC, lpStakingEth } = useGetLiquidityBalances(
     dispatch,
-    account || ""
+    account || ''
   );
   const loadAllBalances = React.useCallback(async () => {
     try {
       await Promise.all([
-        getBalances(lpStakingUSDC, REWARDS_ADDRESSES["SushiSwap VEGA/USDC"]),
-        getBalances(lpStakingEth, REWARDS_ADDRESSES["SushiSwap VEGA/ETH"]),
+        getBalances(lpStakingUSDC, REWARDS_ADDRESSES['SushiSwap VEGA/USDC']),
+        getBalances(lpStakingEth, REWARDS_ADDRESSES['SushiSwap VEGA/ETH']),
       ]);
     } catch (e) {
       Sentry.captureException(e);
@@ -62,11 +62,11 @@ const RedemptionIndex = ({ name }: RouteChildProps) => {
 
   const title = React.useMemo(() => {
     if (withdraw) {
-      return t("pageTitleWithdrawLp");
+      return t('pageTitleWithdrawLp');
     } else if (deposit) {
-      return t("pageTitleDepositLp");
+      return t('pageTitleDepositLp');
     }
-    return t("pageTitleLiquidity");
+    return t('pageTitleLiquidity');
   }, [withdraw, deposit, t]);
   if (loading) {
     return (
@@ -79,22 +79,22 @@ const RedemptionIndex = ({ name }: RouteChildProps) => {
     <>
       <Heading title={title} />
       {Flags.DEX_STAKING_DISABLED ? (
-        <p>{t("liquidityComingSoon")}&nbsp;🚧👷‍♂️👷‍♀️🚧</p>
+        <p>{t('liquidityComingSoon')}&nbsp;🚧👷‍♂️👷‍♀️🚧</p>
       ) : (
-        <Switch>
-          <Route exact path={`${match.path}`}>
+        <Routes>
+          <Route path={`${path}`}>
             <LiquidityContainer state={state} />
           </Route>
-          <Route path={`${match.path}/:address/deposit`}>
+          <Route path={`${path}/:address/deposit`}>
             <LiquidityDeposit state={state} dispatch={dispatch} />
           </Route>
-          <Route path={`${match.path}/:address/withdraw`}>
+          <Route path={`${path}/:address/withdraw`}>
             <LiquidityWithdraw state={state} dispatch={dispatch} />
           </Route>
-          <Route path={`${match.path}/:address/`}>
-            <Redirect to={match.path} />
+          <Route path={`${path}/:address/`}>
+            <Navigate to={path} />
           </Route>
-        </Switch>
+        </Routes>
       )}
     </>
   );

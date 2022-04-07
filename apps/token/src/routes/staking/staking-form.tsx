@@ -1,31 +1,31 @@
-import "./staking-form.scss";
+import './staking-form.scss';
 
-import { gql, useApolloClient } from "@apollo/client";
-import { FormGroup, Radio, RadioGroup } from "@blueprintjs/core";
-import * as Sentry from "@sentry/react";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router-dom";
+import { gql, useApolloClient } from '@apollo/client';
+import { FormGroup, Radio, RadioGroup } from '@blueprintjs/core';
+import * as Sentry from '@sentry/react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
-import { TokenInput } from "../../components/token-input";
-import { Colors, NetworkParams } from "../../config";
-import { useAppState } from "../../contexts/app-state/app-state-context";
-import { useNetworkParam } from "../../hooks/use-network-param";
-import { useSearchParams } from "../../hooks/use-search-params";
-import { BigNumber } from "../../lib/bignumber";
-import { addDecimal, removeDecimal } from "../../lib/decimals";
-import {
+import { TokenInput } from '../../components/token-input';
+import { Colors, NetworkParams } from '../../config';
+import { useAppState } from '../../contexts/app-state/app-state-context';
+import { useNetworkParam } from '../../hooks/use-network-param';
+import { useSearchParams } from '../../hooks/use-search-params';
+import { BigNumber } from '../../lib/bignumber';
+import { addDecimal, removeDecimal } from '../../lib/decimals';
+import type {
   DelegateSubmissionInput,
   UndelegateSubmissionInput,
-  vegaWalletService,
-} from "../../lib/vega-wallet/vega-wallet-service";
-import {
+} from '../../lib/vega-wallet/vega-wallet-service';
+import { vegaWalletService } from '../../lib/vega-wallet/vega-wallet-service';
+import type {
   PartyDelegations,
   PartyDelegationsVariables,
-} from "./__generated__/PartyDelegations";
-import { StakeFailure } from "./stake-failure";
-import { StakePending } from "./stake-pending";
-import { StakeSuccess } from "./stake-success";
+} from './__generated__/PartyDelegations';
+import { StakeFailure } from './stake-failure';
+import { StakePending } from './stake-pending';
+import { StakeSuccess } from './stake-success';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -54,8 +54,8 @@ enum FormState {
 }
 
 export enum Actions {
-  Add = "Add",
-  Remove = "Remove",
+  Add = 'Add',
+  Remove = 'Remove',
 }
 export type StakeAction = Actions | undefined;
 export enum RemoveType {
@@ -79,25 +79,25 @@ export const StakingForm = ({
   availableStakeToRemove,
 }: StakingFormProps) => {
   const params = useSearchParams();
-  const history = useHistory();
+  const navigate = useNavigate();
   const client = useApolloClient();
   const { appState } = useAppState();
   const [formState, setFormState] = React.useState(FormState.Default);
   const { t } = useTranslation();
   const [action, setAction] = React.useState<StakeAction>(params.action);
-  const [amount, setAmount] = React.useState("");
+  const [amount, setAmount] = React.useState('');
   const [removeType, setRemoveType] = React.useState<RemoveType>(
     RemoveType.EndOfEpoch
   );
   // Clear the amount when the staking method changes
   React.useEffect(() => {
-    setAmount("");
+    setAmount('');
   }, [action, setAmount]);
   const { data } = useNetworkParam([
     NetworkParams.VALIDATOR_DELEGATION_MIN_AMOUNT,
   ]);
   const minTokensWithDecimals = React.useMemo(() => {
-    const minTokens = new BigNumber(data && data.length === 1 ? data[0] : "");
+    const minTokens = new BigNumber(data && data.length === 1 ? data[0] : '');
     return addDecimal(minTokens, appState.decimals);
   }, [appState.decimals, data]);
 
@@ -109,6 +109,8 @@ export const StakingForm = ({
     if (action === Actions.Remove) {
       return availableStakeToRemove;
     }
+
+    return new BigNumber(0);
   }, [action, availableStakeToAdd, availableStakeToRemove]);
 
   async function onSubmit() {
@@ -127,8 +129,8 @@ export const StakingForm = ({
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
         method:
           removeType === RemoveType.Now
-            ? "METHOD_NOW"
-            : "METHOD_AT_END_OF_EPOCH",
+            ? 'METHOD_NOW'
+            : 'METHOD_AT_END_OF_EPOCH',
       },
     };
     try {
@@ -157,7 +159,7 @@ export const StakingForm = ({
           .query<PartyDelegations, PartyDelegationsVariables>({
             query: PARTY_DELEGATIONS_QUERY,
             variables: { partyId: pubkey },
-            fetchPolicy: "network-only",
+            fetchPolicy: 'network-only',
           })
           .then((res) => {
             const delegation = res.data.party?.delegations?.find((d) => {
@@ -200,25 +202,24 @@ export const StakingForm = ({
   ) {
     if (appState.lien.isGreaterThan(0)) {
       return (
-        <span style={{ color: Colors.RED }}>{t("stakeNodeWrongVegaKey")}</span>
+        <span style={{ color: Colors.RED }}>{t('stakeNodeWrongVegaKey')}</span>
       );
     } else {
-      return <span style={{ color: Colors.RED }}>{t("stakeNodeNone")}</span>;
+      return <span style={{ color: Colors.RED }}>{t('stakeNodeNone')}</span>;
     }
   }
 
   return (
     <>
-      <h2>{t("Manage your stake")}</h2>
+      <h2>{t('Manage your stake')}</h2>
       <FormGroup>
         <RadioGroup
           onChange={(e) => {
-            // @ts-ignore
+            // @ts-ignore value does exist on target
             const value = e.target.value;
             setAction(value);
-            history.replace({
-              pathname: history.location.pathname,
-              search: `?action=${value}`,
+            navigate(`?action=${value}`, {
+              replace: true,
             });
           }}
           selectedValue={action}
@@ -242,68 +243,68 @@ export const StakingForm = ({
         <>
           {action === Actions.Add ? (
             <>
-              <h2>{t("How much to Add in next epoch?")}</h2>
+              <h2>{t('How much to Add in next epoch?')}</h2>
               <p>
-                {t("minimumNomination", {
+                {t('minimumNomination', {
                   minTokens: minTokensWithDecimals,
                 })}
               </p>
               <TokenInput
-                submitText={`Add ${amount ? amount : ""} ${t("vegaTokens")}`}
+                submitText={`Add ${amount ? amount : ''} ${t('vegaTokens')}`}
                 perform={onSubmit}
                 amount={amount}
                 setAmount={setAmount}
                 maximum={maxDelegation}
                 minimum={new BigNumber(minTokensWithDecimals)}
-                currency={t("VEGA Tokens")}
+                currency={t('VEGA Tokens')}
               />
             </>
           ) : (
             <>
-              <h2>{t("How much to Remove?")}</h2>
+              <h2>{t('How much to Remove?')}</h2>
               {removeType === RemoveType.Now ? (
                 <p>
                   {t(
-                    "Removing stake mid epoch will forsake any staking rewards from that epoch"
+                    'Removing stake mid epoch will forsake any staking rewards from that epoch'
                   )}
                 </p>
               ) : null}
               <TokenInput
-                submitText={t("undelegateSubmitButton", {
-                  amount: t("Remove {{amount}} VEGA tokens", { amount }),
+                submitText={t('undelegateSubmitButton', {
+                  amount: t('Remove {{amount}} VEGA tokens', { amount }),
                   when:
                     removeType === RemoveType.Now
-                      ? t("as soon as possible")
-                      : t("at the end of epoch"),
+                      ? t('as soon as possible')
+                      : t('at the end of epoch'),
                 })}
                 perform={onSubmit}
                 amount={amount}
                 setAmount={setAmount}
                 maximum={maxDelegation}
-                currency={t("VEGA Tokens")}
+                currency={t('VEGA Tokens')}
               />
               {removeType === RemoveType.Now ? (
                 <>
-                  <p>{t("Want to remove your stake before the epoch ends?")}</p>
+                  <p>{t('Want to remove your stake before the epoch ends?')}</p>
                   <button
                     type="button"
                     onClick={() => setRemoveType(RemoveType.EndOfEpoch)}
                     className="button-link"
                   >
-                    {t("Switch to form for removal at end of epoch")}
+                    {t('Switch to form for removal at end of epoch')}
                   </button>
                 </>
               ) : (
                 <>
                   <p>
-                    {t("Want to remove your stake at the end of the epoch?")}
+                    {t('Want to remove your stake at the end of the epoch?')}
                   </p>
                   <button
                     type="button"
                     onClick={() => setRemoveType(RemoveType.Now)}
                     className="button-link"
                   >
-                    {t("Switch to form for immediate removal")}
+                    {t('Switch to form for immediate removal')}
                   </button>
                 </>
               )}

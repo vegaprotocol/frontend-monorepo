@@ -1,25 +1,25 @@
-import "./withdraw-form.scss";
+import './withdraw-form.scss';
 
-import { FormGroup, HTMLSelect } from "@blueprintjs/core";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { ethers } from "ethers";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
+import { FormGroup, HTMLSelect } from '@blueprintjs/core';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { ethers } from 'ethers';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
-import { Loader } from "../../components/loader";
-import { StatefulButton } from "../../components/stateful-button";
-import { AmountInput } from "../../components/token-input";
-import { VegaKeyExtended } from "../../contexts/app-state/app-state-context";
+import { Loader } from '../../components/loader';
+import { StatefulButton } from '../../components/stateful-button';
+import { AmountInput } from '../../components/token-input';
+import type { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
 import {
   Status as WithdrawStatus,
   useCreateWithdrawal,
-} from "../../hooks/use-create-withdrawal";
-import { BigNumber } from "../../lib/bignumber";
-import { removeDecimal } from "../../lib/decimals";
-import { Routes } from "../router-config";
-import { WithdrawPage_party_accounts } from "./__generated__/WithdrawPage";
-import { EthAddressInput } from "./eth-address-input";
+} from '../../hooks/use-create-withdrawal';
+import { BigNumber } from '../../lib/bignumber';
+import { removeDecimal } from '../../lib/decimals';
+import { Routes } from '../router-config';
+import type { WithdrawPage_party_accounts } from './__generated__/WithdrawPage';
+import { EthAddressInput } from './eth-address-input';
 
 interface WithdrawFormProps {
   accounts: WithdrawPage_party_accounts[];
@@ -33,8 +33,8 @@ export const WithdrawForm = ({
   connectedAddress,
 }: WithdrawFormProps) => {
   const { t } = useTranslation();
-  const history = useHistory();
-  const [amountStr, setAmount] = React.useState("");
+  const navigate = useNavigate();
+  const [amountStr, setAmount] = React.useState('');
   const [account, setAccount] = React.useState(accounts[0]);
   const [status, submit] = useCreateWithdrawal(currVegaKey.pub);
   const [destinationAddress, setDestinationAddress] =
@@ -71,9 +71,9 @@ export const WithdrawForm = ({
   // creation is complete
   React.useEffect(() => {
     if (status === WithdrawStatus.Success) {
-      history.push(Routes.WITHDRAWALS);
+      navigate(Routes.WITHDRAWALS);
     }
-  }, [status, history]);
+  }, [status, navigate]);
 
   return (
     <form
@@ -89,7 +89,7 @@ export const WithdrawForm = ({
         );
       }}
     >
-      <FormGroup label={t("withdrawFormAssetLabel")} labelFor="asset">
+      <FormGroup label={t('withdrawFormAssetLabel')} labelFor="asset">
         {accounts.length ? (
           <HTMLSelect
             name="asset"
@@ -102,18 +102,21 @@ export const WithdrawForm = ({
               const account = accounts.find(
                 (a) => a.asset.id === e.currentTarget.value
               );
-              if (!account) throw new Error("No account");
+              if (!account) throw new Error('No account');
               setAccount(account);
             }}
             fill={true}
           />
         ) : (
-          <p className="text-muted">{t("withdrawFormNoAsset")}</p>
+          <p className="text-muted">{t('withdrawFormNoAsset')}</p>
         )}
       </FormGroup>
-      <Callout title={t("withdrawPreparedWarningHeading")} intent="warn">
-        <p>{t("withdrawPreparedWarningText1")}</p>
-        <p>{t("withdrawPreparedWarningText2")}</p>
+      <Callout
+        title={t('withdrawPreparedWarningHeading')}
+        intent={Intent.Warning}
+      >
+        <p>{t('withdrawPreparedWarningText1')}</p>
+        <p>{t('withdrawPreparedWarningText2')}</p>
       </Callout>
       <EthAddressInput
         onChange={setDestinationAddress}
@@ -121,12 +124,12 @@ export const WithdrawForm = ({
         connectedAddress={connectedAddress}
         isValid={addressValid}
       />
-      <FormGroup label={t("withdrawFormAmountLabel")} labelFor="amount">
+      <FormGroup label={t('withdrawFormAmountLabel')} labelFor="amount">
         <AmountInput
           amount={amountStr}
           setAmount={setAmount}
           maximum={maximum}
-          currency={"VEGA"}
+          currency={'VEGA'}
         />
       </FormGroup>
       <StatefulButton
@@ -136,10 +139,10 @@ export const WithdrawForm = ({
         {status === WithdrawStatus.Pending ? (
           <>
             <Loader />
-            <span>{t("withdrawFormSubmitButtonPending")}</span>
+            <span>{t('withdrawFormSubmitButtonPending')}</span>
           </>
         ) : (
-          t("withdrawFormSubmitButtonIdle", {
+          t('withdrawFormSubmitButtonIdle', {
             amount: amountStr,
             symbol: account?.asset.symbol,
           })

@@ -1,19 +1,18 @@
-import "./redemption-information.scss";
+import './redemption-information.scss';
 
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { Trans, useTranslation } from "react-i18next";
-import { Link, useHistory } from "react-router-dom";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { AddLockedTokenAddress } from "../../../components/add-locked-token";
-import { HandUp } from "../../../components/icons";
-import { useAppState } from "../../../contexts/app-state/app-state-context";
-import { formatNumber } from "../../../lib/format-number";
-import { truncateMiddle } from "../../../lib/truncate-middle";
-import { Routes } from "../../router-config";
-import { RedemptionState } from "../redemption-reducer";
-import { Tranche0Table, TrancheTable } from "../tranche-table";
-import { VestingTable } from "./vesting-table";
+import { AddLockedTokenAddress } from '../../../components/add-locked-token';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { formatNumber } from '../../../lib/format-number';
+import { truncateMiddle } from '../../../lib/truncate-middle';
+import { Routes } from '../../router-config';
+import type { RedemptionState } from '../redemption-reducer';
+import { Tranche0Table, TrancheTable } from '../tranche-table';
+import { VestingTable } from './vesting-table';
 
 export const RedemptionInformation = ({
   state,
@@ -22,7 +21,7 @@ export const RedemptionInformation = ({
   state: RedemptionState;
   address: string;
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const {
     appState: {
@@ -51,6 +50,7 @@ export const RedemptionInformation = ({
     if (zeroTranche && zeroTranche.locked.isGreaterThan(0)) {
       return zeroTranche;
     }
+    return null;
   }, [trancheBalances]);
 
   if (!filteredTranches.length) {
@@ -78,7 +78,7 @@ export const RedemptionInformation = ({
       </Callout>
       <p data-testid="redemption-description">
         {t(
-          "{{address}} has {{balance}} VEGA tokens in {{tranches}} tranches of the vesting contract.",
+          '{{address}} has {{balance}} VEGA tokens in {{tranches}} tranches of the vesting contract.',
           {
             address: truncateMiddle(address),
             balance: formatNumber(balanceFormatted),
@@ -91,7 +91,7 @@ export const RedemptionInformation = ({
         locked={totalLockedBalance}
         vested={totalVestedBalance}
       />
-      {filteredTranches.length ? <h2>{t("Tranche breakdown")}</h2> : null}
+      {filteredTranches.length ? <h2>{t('Tranche breakdown')}</h2> : null}
       {zeroTranche && (
         <Tranche0Table
           trancheId={0}
@@ -119,16 +119,16 @@ export const RedemptionInformation = ({
           }
           totalVested={totalVestedBalance}
           totalLocked={totalLockedBalance}
-          onClick={() => history.push(`/vesting/${tr.tranche_id}`)}
+          onClick={() => navigate(`/vesting/${tr.tranche_id}`)}
         />
       ))}
       <Callout
-        title={t("Stake your Locked VEGA tokens!")}
-        icon={<HandUp />}
-        intent="action"
+        title={t('Stake your Locked VEGA tokens!')}
+        iconName="hand-up"
+        intent={Intent.Prompt}
       >
-        <p>{t("Find out more about Staking.")}</p>
-        <Link to="/staking">{t("Stake VEGA tokens")}</Link>
+        <p>{t('Find out more about Staking.')}</p>
+        <Link to="/staking">{t('Stake VEGA tokens')}</Link>
       </Callout>
     </section>
   );

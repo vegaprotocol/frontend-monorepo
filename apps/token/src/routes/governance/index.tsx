@@ -1,23 +1,22 @@
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Routes } from 'react-router-dom';
 
-import { useDocumentTitle } from "../../hooks/use-document-title";
-import { RouteChildProps } from "..";
-import { ProposalContainer } from "./proposal";
-import { ProposalsContainer } from "./proposals";
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import type { RouteChildProps } from '..';
+import { ProposalContainer } from './proposal';
+import { ProposalsContainer } from './proposals';
 
 const GovernanceRouter = ({ name }: RouteChildProps) => {
-  const match = useRouteMatch();
   useDocumentTitle(name);
 
   return (
-    <Switch>
-      <Route path={match.path} exact>
-        <ProposalsContainer />
-      </Route>
-      <Route path={`${match.path}/:proposalId`}>
+    <Routes>
+      <Route path=":proposalId">
         <ProposalContainer />
       </Route>
-    </Switch>
+      <Route path="/">
+        <ProposalsContainer />
+      </Route>
+    </Routes>
   );
 };
 

@@ -1,17 +1,17 @@
-import "./node-list.scss";
+import './node-list.scss';
 
-import { gql, useQuery } from "@apollo/client";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link, useRouteMatch } from "react-router-dom";
+import { gql, useQuery } from '@apollo/client';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { EpochCountdown } from "../../components/epoch-countdown";
-import { BigNumber } from "../../lib/bignumber";
-import { formatNumber } from "../../lib/format-number";
-import { truncateMiddle } from "../../lib/truncate-middle";
-import { Nodes } from "./__generated__/Nodes";
-import { Staking_epoch, Staking_party } from "./__generated__/Staking";
+import { EpochCountdown } from '../../components/epoch-countdown';
+import { BigNumber } from '../../lib/bignumber';
+import { formatNumber } from '../../lib/format-number';
+import { truncateMiddle } from '../../lib/truncate-middle';
+import type { Nodes } from './__generated__/Nodes';
+import type { Staking_epoch, Staking_party } from './__generated__/Staking';
 
 export const NODES_QUERY = gql`
   query Nodes {
@@ -66,9 +66,9 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
       const stakedOnNode = new BigNumber(node.stakedTotalFormatted);
       const stakedTotalPercentage =
         stakedTotal.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-          ? "-"
+          ? '-'
           : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
-            "%";
+            '%';
 
       const userStake = party?.delegations?.length
         ? party?.delegations
@@ -82,8 +82,8 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
 
       const userStakePercentage =
         userStake.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-          ? "-"
-          : userStake.dividedBy(stakedOnNode).times(100).dp(2).toString() + "%";
+          ? '-'
+          : userStake.dividedBy(stakedOnNode).times(100).dp(2).toString() + '%';
 
       return {
         id: node.id,
@@ -103,7 +103,7 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
 
   if (error) {
     return (
-      <Callout intent="error" title={t("Something went wrong")}>
+      <Callout intent={Intent.Danger} title={t('Something went wrong')}>
         <pre>{error.message}</pre>
       </Callout>
     );
@@ -112,7 +112,7 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
   if (loading) {
     return (
       <div>
-        <p>{t("Loading")}</p>
+        <p>{t('Loading')}</p>
       </div>
     );
   }
@@ -154,21 +154,20 @@ export const NodeListItem = ({
   userStakePercentage,
 }: NodeListItemProps) => {
   const { t } = useTranslation();
-  const match = useRouteMatch();
 
   return (
     <li data-testid="node-list-item">
-      <Link to={`${match.path}/${id}`}>
+      <Link to={id}>
         {name ? (
           <span className="node-list__item-name">{name}</span>
         ) : (
           <>
             <span className="node-list__item-name">
-              {t("validatorTitleFallback")}
+              {t('validatorTitleFallback')}
             </span>
             <span
               className="node-list__item-id text-muted"
-              title={`${t("id")}: ${id}`}
+              title={`${t('id')}: ${id}`}
             >
               {truncateMiddle(id)}
             </span>
@@ -178,12 +177,12 @@ export const NodeListItem = ({
       <table>
         <tbody>
           <tr>
-            <th>{t("Total stake")}</th>
+            <th>{t('Total stake')}</th>
             <td>{formatNumber(stakedOnNode, 2)}</td>
             <td>{stakedTotalPercentage}</td>
           </tr>
           <tr>
-            <th>{t("Your stake")}</th>
+            <th>{t('Your stake')}</th>
             <td>{formatNumber(userStake, 2)}</td>
             <td>{userStakePercentage}</td>
           </tr>

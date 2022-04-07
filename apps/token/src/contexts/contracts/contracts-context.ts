@@ -1,15 +1,15 @@
-import {
+import type {
   TxData,
   VegaClaim,
   VegaErc20Bridge,
   VegaStaking,
-  VegaToken,
+  ERC20Token,
   VegaVesting,
-} from "@vegaprotocol/smart-contracts-sdk";
-import React from "react";
+} from '@vegaprotocol/smart-contracts-sdk';
+import React from 'react';
 
 export interface ContractsContextShape {
-  token: VegaToken;
+  token: ERC20Token;
   staking: VegaStaking;
   vesting: VegaVesting;
   claim: VegaClaim;
@@ -24,7 +24,7 @@ export const ContractsContext = React.createContext<
 export function useContracts() {
   const context = React.useContext(ContractsContext);
   if (context === undefined) {
-    throw new Error("useContracts must be used within ContractsProvider");
+    throw new Error('useContracts must be used within ContractsProvider');
   }
   return context;
 }

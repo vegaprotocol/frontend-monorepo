@@ -1,11 +1,11 @@
-import { ethers } from "ethers";
+import { ethers } from 'ethers';
 
 export enum TxState {
-  Default = "Default",
-  Requested = "Requested",
-  Pending = "Pending",
-  Complete = "Complete",
-  Error = "Error",
+  Default = 'Default',
+  Requested = 'Requested',
+  Pending = 'Pending',
+  Complete = 'Complete',
+  Error = 'Error',
 }
 
 export interface TransactionState {
@@ -38,7 +38,7 @@ const substituteErrorMessage = (
   errMessage: string,
   errorSubstitutions: { [errMessage: string]: string }
 ): Error => {
-  let newErrorMessage = errorSubstitutions.unknown;
+  let newErrorMessage = errorSubstitutions['unknown'];
 
   Object.keys(errorSubstitutions).forEach((errorSubstitutionKey) => {
     if (errMessage.includes(errorSubstitutionKey)) {

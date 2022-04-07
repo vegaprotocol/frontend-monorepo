@@ -1,21 +1,21 @@
-import "./staking-node.scss";
+import './staking-node.scss';
 
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 
-import { EpochCountdown } from "../../components/epoch-countdown";
-import { Colors } from "../../config";
-import { VegaKeyExtended } from "../../contexts/app-state/app-state-context";
-import { BigNumber } from "../../lib/bignumber";
-import { Staking as StakingQueryResult } from "./__generated__/Staking";
-import { ConnectToVega } from "./connect-to-vega";
+import { EpochCountdown } from '../../components/epoch-countdown';
+import { Colors } from '../../config';
+import { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
+import { BigNumber } from '../../lib/bignumber';
+import { Staking as StakingQueryResult } from './__generated__/Staking';
+import { ConnectToVega } from './connect-to-vega';
 // import { PendingStake } from "./pending-stake";
-import { StakingForm } from "./staking-form";
-import { StakingNodesContainer } from "./staking-nodes-container";
-import { StakingWalletsContainer } from "./staking-wallets-container";
-import { ValidatorTable } from "./validator-table";
-import { YourStake } from "./your-stake";
+import { StakingForm } from './staking-form';
+import { StakingNodesContainer } from './staking-nodes-container';
+import { StakingWalletsContainer } from './staking-wallets-container';
+import { ValidatorTable } from './validator-table';
+import { YourStake } from './your-stake';
 
 export const StakingNodeContainer = () => {
   return (
@@ -96,7 +96,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
   if (!nodeInfo) {
     return (
       <span style={{ color: Colors.RED }}>
-        {t("stakingNodeNotFound", { node })}
+        {t('stakingNodeNotFound', { node })}
       </span>
     );
   }
@@ -105,15 +105,15 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
     <>
       <h2
         data-test-id="validator-node-title"
-        style={{ wordBreak: "break-word", marginTop: 0 }}
+        style={{ wordBreak: 'break-word', marginTop: 0 }}
       >
         {nodeInfo.name
-          ? t("validatorTitle", { nodeName: nodeInfo.name })
-          : t("validatorTitle", { nodeName: t("validatorTitleFallback") })}
+          ? t('validatorTitle', { nodeName: nodeInfo.name })
+          : t('validatorTitle', { nodeName: t('validatorTitleFallback') })}
       </h2>
       <ValidatorTable
         node={nodeInfo}
-        stakedTotal={data?.nodeData?.stakedTotalFormatted || "0"}
+        stakedTotal={data?.nodeData?.stakedTotalFormatted || '0'}
         stakeThisEpoch={stakeThisEpoch}
       />
       {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
@@ -137,7 +137,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
       )} */}
       <StakingForm
         pubkey={vegaKey.pub}
-        nodeId={node}
+        nodeId={node!}
         nodeName={nodeInfo.name}
         availableStakeToAdd={unstaked}
         availableStakeToRemove={stakeNextEpoch}

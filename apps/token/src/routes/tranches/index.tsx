@@ -1,19 +1,18 @@
-import { useTranslation } from "react-i18next";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { useTranslation } from 'react-i18next';
+import { Route, Routes } from 'react-router-dom';
 
-import { Heading } from "../../components/heading";
-import { SplashLoader } from "../../components/splash-loader";
-import { SplashScreen } from "../../components/splash-screen";
-import { useDocumentTitle } from "../../hooks/use-document-title";
-import { useTranches } from "../../hooks/use-tranches";
-import { RouteChildProps } from "..";
-import { Tranche } from "./tranche";
-import { Tranches } from "./tranches";
+import { Heading } from '../../components/heading';
+import { SplashLoader } from '../../components/splash-loader';
+import { SplashScreen } from '../../components/splash-screen';
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import { useTranches } from '../../hooks/use-tranches';
+import type { RouteChildProps } from '..';
+import { Tranche } from './tranche';
+import { Tranches } from './tranches';
 
 const TrancheRouter = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const match = useRouteMatch();
   const { tranches } = useTranches();
 
   if (!tranches) {
@@ -26,15 +25,15 @@ const TrancheRouter = ({ name }: RouteChildProps) => {
 
   return (
     <>
-      <Heading title={t("pageTitleTranches")} />
-      <Switch>
-        <Route path={match.path} exact>
-          <Tranches tranches={tranches} />
-        </Route>
-        <Route path={`${match.path}/:trancheId`}>
+      <Heading title={t('pageTitleTranches')} />
+      <Routes>
+        <Route path=":trancheId">
           <Tranche tranches={tranches} />
         </Route>
-      </Switch>
+        <Route path="/">
+          <Tranches tranches={tranches} />
+        </Route>
+      </Routes>
     </>
   );
 };

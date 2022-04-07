@@ -1,16 +1,16 @@
-import { gql, useQuery } from "@apollo/client";
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import compact from "lodash/compact";
-import flow from "lodash/flow";
-import orderBy from "lodash/orderBy";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { gql, useQuery } from '@apollo/client';
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import compact from 'lodash/compact';
+import flow from 'lodash/flow';
+import orderBy from 'lodash/orderBy';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { SplashLoader } from "../../../components/splash-loader";
-import { SplashScreen } from "../../../components/splash-screen";
-import { ProposalsList } from "../components/proposals-list";
-import { PROPOSALS_FRAGMENT } from "../proposal-fragment";
-import { Proposals } from "./__generated__/Proposals";
+import { SplashLoader } from '../../../components/splash-loader';
+import { SplashScreen } from '../../../components/splash-screen';
+import { ProposalsList } from '../components/proposals-list';
+import { PROPOSALS_FRAGMENT } from '../proposal-fragment';
+import type { Proposals } from './__generated__/Proposals';
 
 export const PROPOSALS_QUERY = gql`
   ${PROPOSALS_FRAGMENT}
@@ -42,14 +42,14 @@ export const ProposalsContainer = () => {
             (p) => new Date(p.terms.closingDatetime).getTime(),
             (p) => p.id,
           ],
-          ["desc", "desc", "desc"]
+          ['desc', 'desc', 'desc']
         ),
     ])(data.proposals);
   }, [data]);
 
   if (error) {
     return (
-      <Callout intent="error" title={t("Something went wrong")}>
+      <Callout intent={Intent.Danger} title={t('Something went wrong')}>
         <pre>{error.message}</pre>
       </Callout>
     );

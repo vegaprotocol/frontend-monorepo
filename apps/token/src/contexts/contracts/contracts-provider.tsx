@@ -1,19 +1,20 @@
-import { TxData } from "@vegaprotocol/smart-contracts-sdk";
+import type { TxData } from '@vegaprotocol/smart-contracts-sdk';
 import {
   VegaClaim,
   VegaErc20Bridge,
   VegaStaking,
-  VegaToken,
+  ERC20Token,
   VegaVesting,
-} from "@vegaprotocol/smart-contracts-sdk";
-import { useWeb3React } from "@web3-react/core";
-import uniqBy from "lodash/uniqBy";
-import React from "react";
+} from '@vegaprotocol/smart-contracts-sdk';
+import { useWeb3React } from '@web3-react/core';
+import uniqBy from 'lodash/uniqBy';
+import React from 'react';
 
-import { SplashLoader } from "../../components/splash-loader";
-import { SplashScreen } from "../../components/splash-screen";
-import { APP_ENV } from "../../config";
-import { ContractsContext, ContractsContextShape } from "./contracts-context";
+import { SplashLoader } from '../../components/splash-loader';
+import { SplashScreen } from '../../components/splash-screen';
+import { APP_ENV } from '../../config';
+import type { ContractsContextShape } from './contracts-context';
+import { ContractsContext } from './contracts-context';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
@@ -23,7 +24,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const [txs, setTxs] = React.useState<TxData[]>([]);
   const [contracts, setContracts] = React.useState<Pick<
     ContractsContextShape,
-    "token" | "staking" | "vesting" | "claim" | "erc20Bridge"
+    'token' | 'staking' | 'vesting' | 'claim' | 'erc20Bridge'
   > | null>(null);
 
   // Create instances of contract classes. If we have an account use a signer for the
@@ -32,13 +33,13 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   React.useEffect(() => {
     let signer = null;
 
-    if (account && library && typeof library.getSigner === "function") {
+    if (account && library && typeof library.getSigner === 'function') {
       signer = library.getSigner();
     }
 
     if (library) {
       setContracts({
-        token: new VegaToken(APP_ENV, library, signer),
+        token: new ERC20Token(APP_ENV, library, signer),
         staking: new VegaStaking(APP_ENV, library, signer),
         vesting: new VegaVesting(APP_ENV, library, signer),
         claim: new VegaClaim(APP_ENV, library, signer),
@@ -51,7 +52,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
     if (!contracts) return;
 
     const mergeTxs = (existing: TxData[], incoming: TxData[]) => {
-      return uniqBy([...incoming, ...existing], "tx.hash");
+      return uniqBy([...incoming, ...existing], 'tx.hash');
     };
 
     contracts.staking.listen((txs) => {

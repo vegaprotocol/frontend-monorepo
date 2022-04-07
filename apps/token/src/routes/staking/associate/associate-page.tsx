@@ -1,21 +1,21 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   StakingMethod,
   StakingMethodRadio,
-} from "../../../components/staking-method-radio";
+} from '../../../components/staking-method-radio';
 import {
   useAppState,
   VegaKeyExtended,
-} from "../../../contexts/app-state/app-state-context";
-import { TxState } from "../../../hooks/transaction-reducer";
-import { useSearchParams } from "../../../hooks/use-search-params";
-import { AssociateTransaction } from "./associate-transaction";
-import { ContractAssociate } from "./contract-associate";
-import { useAddStake, usePollForStakeLinking } from "./hooks";
-import { WalletAssociate } from "./wallet-associate";
+} from '../../../contexts/app-state/app-state-context';
+import { TxState } from '../../../hooks/transaction-reducer';
+import { useSearchParams } from '../../../hooks/use-search-params';
+import { AssociateTransaction } from './associate-transaction';
+import { ContractAssociate } from './contract-associate';
+import { useAddStake, usePollForStakeLinking } from './hooks';
+import { WalletAssociate } from './wallet-associate';
 
 export const AssociatePage = ({
   address,
@@ -28,15 +28,15 @@ export const AssociatePage = ({
 }) => {
   const { t } = useTranslation();
   const params = useSearchParams();
-  const [amount, setAmount] = React.useState<string>("");
+  const [amount, setAmount] = React.useState<string>('');
 
   const [selectedStakingMethod, setSelectedStakingMethod] = React.useState<
-    StakingMethod | ""
-  >("");
+    StakingMethod | ''
+  >('');
 
   // Clear the amount when the staking method changes
   React.useEffect(() => {
-    setAmount("");
+    setAmount('');
   }, [selectedStakingMethod]);
 
   const {
@@ -71,7 +71,7 @@ export const AssociatePage = ({
     } else if (!zeroVega && zeroVesting) {
       setSelectedStakingMethod(StakingMethod.Wallet);
     } else {
-      setSelectedStakingMethod(params.method as StakingMethod | "");
+      setSelectedStakingMethod(params.method as StakingMethod | '');
     }
   }, [params.method, zeroVega, zeroVesting]);
   if (txState.txState !== TxState.Default) {
@@ -90,21 +90,21 @@ export const AssociatePage = ({
   return (
     <section data-testid="associate">
       <Callout>
-        <p data-testid="associate-information1">{t("associateInfo1")}</p>
-        <p data-testid="associate-information2">{t("associateInfo2")}</p>
+        <p data-testid="associate-information1">{t('associateInfo1')}</p>
+        <p data-testid="associate-information2">{t('associateInfo2')}</p>
       </Callout>
       {zeroVesting && zeroVega ? (
-        <Callout intent="error">
-          <p>{t("associateNoVega")}</p>
+        <Callout intent={Intent.Danger}>
+          <p>{t('associateNoVega')}</p>
         </Callout>
       ) : (
         <>
           {!zeroVesting ? (
             <>
               <h2 data-testid="associate-subheader">
-                {t("Where would you like to stake from?")}
+                {t('Where would you like to stake from?')}
               </h2>
-              <p>{t("associationChoice")}</p>
+              <p>{t('associationChoice')}</p>
               <StakingMethodRadio
                 setSelectedStakingMethod={setSelectedStakingMethod}
                 selectedStakingMethod={selectedStakingMethod}

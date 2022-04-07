@@ -1,51 +1,50 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Route, Routes } from 'react-router-dom';
 
-import { Heading } from "../../components/heading";
-import { useDocumentTitle } from "../../hooks/use-document-title";
-import { RouteChildProps } from "..";
-import { AssociateContainer } from "./associate/associate-page-container";
-import { DisassociateContainer } from "./disassociate/disassociate-page-container";
-import { Staking } from "./staking";
-import { StakingNodeContainer } from "./staking-node";
-import { StakingNodesContainer } from "./staking-nodes-container";
+import { Heading } from '../../components/heading';
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import type { RouteChildProps } from '..';
+import { AssociateContainer } from './associate/associate-page-container';
+import { DisassociateContainer } from './disassociate/disassociate-page-container';
+import { Staking } from './staking';
+import { StakingNodeContainer } from './staking-node';
+import { StakingNodesContainer } from './staking-nodes-container';
 
 const StakingRouter = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const match = useRouteMatch();
-  const associate = useRouteMatch(`${match.path}/associate`);
-  const disassociate = useRouteMatch(`${match.path}/disassociate`);
+  const associate = 'associate';
+  const disassociate = 'disassociate';
 
   const title = React.useMemo(() => {
     if (associate) {
-      return t("pageTitleAssociate");
+      return t('pageTitleAssociate');
     } else if (disassociate) {
-      return t("pageTitleDisassociate");
+      return t('pageTitleDisassociate');
     }
-    return t("pageTitleStaking");
+    return t('pageTitleStaking');
   }, [associate, disassociate, t]);
 
   return (
     <>
       <Heading title={title} />
-      <Switch>
-        <Route path={`${match.path}/associate`}>
+      <Routes>
+        <Route path="associate">
           <AssociateContainer />
         </Route>
-        <Route path={`${match.path}/disassociate`}>
+        <Route path="disassociate">
           <DisassociateContainer />
         </Route>
-        <Route path={`${match.path}/:node`}>
+        <Route path=":node">
           <StakingNodeContainer />
         </Route>
-        <Route path={match.path} exact>
+        <Route path="/">
           <StakingNodesContainer>
             {({ data }) => <Staking data={data} />}
           </StakingNodesContainer>
         </Route>
-      </Switch>
+      </Routes>
     </>
   );
 };

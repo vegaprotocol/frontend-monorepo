@@ -1,12 +1,11 @@
-import { Callout } from "@vegaprotocol/ui-toolkit";
-import { Trans, useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { EtherscanLink } from "../../components/etherscan-link";
-import { Tick } from "../../components/icons";
-import { BigNumber } from "../../lib/bignumber";
-import { formatNumber } from "../../lib/format-number";
-import { Routes } from "../router-config";
+import { EtherscanLink } from '../../components/etherscan-link';
+import type { BigNumber } from '../../lib/bignumber';
+import { formatNumber } from '../../lib/format-number';
+import { Routes } from '../router-config';
 
 export const Complete = ({
   address,
@@ -23,7 +22,7 @@ export const Complete = ({
 
   return (
     <>
-      <Callout intent="success" title="Claim complete" icon={<Tick />}>
+      <Callout intent={Intent.Success} title="Claim complete" iconName="tick">
         <p>
           <Trans
             i18nKey="claimCompleteMessage"
@@ -35,19 +34,19 @@ export const Complete = ({
         </p>
         {commitTxHash && (
           <p style={{ margin: 0 }}>
-            {t("Link transaction")}:{" "}
+            {t('Link transaction')}:{' '}
             <EtherscanLink tx={commitTxHash} text={commitTxHash} />
           </p>
         )}
         {claimTxHash && (
           <p>
-            {t("Claim transaction")}:{" "}
+            {t('Claim transaction')}:{' '}
             <EtherscanLink tx={claimTxHash} text={claimTxHash} />
           </p>
         )}
         <Link to={Routes.VESTING}>
           <button className="fill">
-            {t("Check your vesting VEGA tokens")}
+            {t('Check your vesting VEGA tokens')}
           </button>
         </Link>
       </Callout>

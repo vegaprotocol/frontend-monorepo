@@ -1,33 +1,33 @@
-import "./withdraw.scss";
+import './withdraw.scss';
 
-import * as Sentry from "@sentry/react";
-import { useWeb3React } from "@web3-react/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
+import * as Sentry from '@sentry/react';
+import { useWeb3React } from '@web3-react/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
-import { EthConnectPrompt } from "../../../components/eth-connect-prompt";
+import { EthConnectPrompt } from '../../../components/eth-connect-prompt';
 import {
   KeyValueTable,
   KeyValueTableRow,
-} from "../../../components/key-value-table";
-import { TransactionCallout } from "../../../components/transaction-callout";
-import { REWARDS_ADDRESSES } from "../../../config";
+} from '../../../components/key-value-table';
+import { TransactionCallout } from '../../../components/transaction-callout';
+import { REWARDS_ADDRESSES } from '../../../config';
 import {
   TransactionActionType,
   TxState,
-} from "../../../hooks/transaction-reducer";
-import { useTransaction } from "../../../hooks/use-transaction";
-import { useVegaLPStaking } from "../../../hooks/use-vega-lp-staking";
-import { formatNumber } from "../../../lib/format-number";
-import { Routes } from "../../router-config";
-import { useGetLiquidityBalances } from "../hooks";
-import {
+} from '../../../hooks/transaction-reducer';
+import { useTransaction } from '../../../hooks/use-transaction';
+import { useVegaLPStaking } from '../../../hooks/use-vega-lp-staking';
+import { formatNumber } from '../../../lib/format-number';
+import { Routes } from '../../router-config';
+import { useGetLiquidityBalances } from '../hooks';
+import type {
   LiquidityAction,
   LiquidityState,
   LpContractData,
-} from "../liquidity-reducer";
+} from '../liquidity-reducer';
 
 export const LiquidityWithdrawPage = ({
   contractData,
@@ -49,14 +49,14 @@ export const LiquidityWithdrawPage = ({
 
   const { getBalances, lpStakingEth, lpStakingUSDC } = useGetLiquidityBalances(
     dispatch,
-    account || ""
+    account || ''
   );
   React.useEffect(() => {
     const run = async () => {
       try {
         await Promise.all([
-          getBalances(lpStakingUSDC, REWARDS_ADDRESSES["SushiSwap VEGA/USDC"]),
-          getBalances(lpStakingEth, REWARDS_ADDRESSES["SushiSwap VEGA/ETH"]),
+          getBalances(lpStakingUSDC, REWARDS_ADDRESSES['SushiSwap VEGA/USDC']),
+          getBalances(lpStakingEth, REWARDS_ADDRESSES['SushiSwap VEGA/ETH']),
         ]);
       } catch (e) {
         Sentry.captureException(e);
@@ -86,10 +86,10 @@ export const LiquidityWithdrawPage = ({
       <>
         <TransactionCallout
           state={txUnstakeState}
-          completeHeading={t("withdrawAllLpSuccessCalloutTitle")}
+          completeHeading={t('withdrawAllLpSuccessCalloutTitle')}
           completeFooter={
             <Link to={Routes.LIQUIDITY}>
-              <button className="fill">{t("lpTxSuccessButton")}</button>
+              <button className="fill">{t('lpTxSuccessButton')}</button>
             </Link>
           }
           reset={() =>
@@ -99,7 +99,7 @@ export const LiquidityWithdrawPage = ({
       </>
     );
   } else if (!hasLpTokens && !hasRewardsTokens) {
-    return <section>{t("withdrawLpNoneDeposited")}</section>;
+    return <section>{t('withdrawLpNoneDeposited')}</section>;
   }
 
   return (
@@ -110,17 +110,17 @@ export const LiquidityWithdrawPage = ({
         <section>
           <KeyValueTable className="dex-tokens-withdraw__table">
             <KeyValueTableRow>
-              <th>{t("liquidityTokenWithdrawBalance")}</th>
+              <th>{t('liquidityTokenWithdrawBalance')}</th>
               <td>
                 {contractData.connectedWalletData?.totalStaked
                   ? formatNumber(contractData.connectedWalletData.totalStaked)
                   : 0}
                 &nbsp;
-                {t("SLP")}
+                {t('SLP')}
               </td>
             </KeyValueTableRow>
             <KeyValueTableRow>
-              <th>{t("liquidityTokenWithdrawRewards")}</th>
+              <th>{t('liquidityTokenWithdrawRewards')}</th>
               <td>
                 {contractData.connectedWalletData?.accumulatedRewards
                   ? formatNumber(
@@ -128,7 +128,7 @@ export const LiquidityWithdrawPage = ({
                     )
                   : 0}
                 &nbsp;
-                {t("VEGA")}
+                {t('VEGA')}
               </td>
             </KeyValueTableRow>
           </KeyValueTable>
@@ -138,7 +138,7 @@ export const LiquidityWithdrawPage = ({
               className="fill"
               onClick={txUnstakePerform}
             >
-              {t("withdrawLpWithdrawAllButton")}
+              {t('withdrawLpWithdrawAllButton')}
             </button>
           </p>
         </section>
@@ -158,26 +158,26 @@ export const LiquidityWithdraw = ({
   const { address } = useParams<{ address: string }>();
 
   const isValidAddress = React.useMemo(
-    () => Object.values(REWARDS_ADDRESSES).includes(address),
+    () => Object.values(REWARDS_ADDRESSES).includes(address!),
     [address]
   );
 
   const values = React.useMemo(
-    () => state.contractData[address],
+    () => state.contractData[address!],
     [address, state.contractData]
   );
 
   if (!isValidAddress) {
-    return <section>{t("lpTokensInvalidToken", { address })}</section>;
+    return <section>{t('lpTokensInvalidToken', { address })}</section>;
   }
 
   if (!values) {
-    return <p>{t("Loading")}...</p>;
+    return <p>{t('Loading')}...</p>;
   }
 
   return (
     <LiquidityWithdrawPage
-      lpTokenAddress={address}
+      lpTokenAddress={address!}
       contractData={values}
       dispatch={dispatch}
     />
