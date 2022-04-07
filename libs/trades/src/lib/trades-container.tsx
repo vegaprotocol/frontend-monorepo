@@ -1,9 +1,11 @@
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import type { GridApi, RowNode } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';
 import {
-  prepareIncomingTrades,
+  MAX_TRADES,
+  sortTrades,
   tradesDataProvider,
 } from './trades-data-provider';
 import { TradesTable } from './trades-table';
@@ -17,18 +19,23 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const update = useCallback((delta: TradeFields[]) => {
-    if (!gridRef.current) {
+    if (!gridRef.current?.api) {
       return false;
     }
 
-    const incoming = prepareIncomingTrades(delta);
+    const incoming = sortTrades(delta);
+    const currentRows = getAllRows(gridRef.current.api);
+    // Create array of trades whose index is now greater than the max so we
+    // can remove them from the grid
+    const outgoing = [...incoming, ...currentRows].filter(
+      (r, i) => i > MAX_TRADES - 1
+    );
 
-    if (incoming.length) {
-      gridRef.current.api.applyTransactionAsync({
-        add: incoming,
-        addIndex: 0,
-      });
-    }
+    gridRef.current.api.applyTransactionAsync({
+      add: incoming,
+      remove: outgoing,
+      addIndex: 0,
+    });
 
     return true;
   }, []);
@@ -38,11 +45,12 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     variables
   );
 
+  // Sort intial trades
   const trades = useMemo(() => {
     if (!data) {
       return null;
     }
-    return prepareIncomingTrades(data);
+    return sortTrades(data);
   }, [data]);
 
   return (
@@ -50,4 +58,12 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
       {(data) => <TradesTable ref={gridRef} data={trades} />}
     </AsyncRenderer>
   );
+};
+
+const getAllRows = (api: GridApi) => {
+  const rows: TradeFields[] = [];
+  api.forEachNode((node) => {
+    rows.push(node.data);
+  });
+  return rows;
 };

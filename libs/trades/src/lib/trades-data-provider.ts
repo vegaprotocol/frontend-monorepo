@@ -5,6 +5,8 @@ import type { Trades } from './__generated__/Trades';
 import type { TradesSub } from './__generated__/TradesSub';
 import orderBy from 'lodash/orderBy';
 
+export const MAX_TRADES = 50;
+
 const TRADES_FRAGMENT = gql`
   fragment TradeFields on Trade {
     id
@@ -24,7 +26,7 @@ export const TRADES_QUERY = gql`
   query Trades($marketId: ID!) {
     market(id: $marketId) {
       id
-      trades(last: 50) {
+      trades(last: ${MAX_TRADES}) {
         ...TradeFields
       }
     }
@@ -40,7 +42,7 @@ export const TRADES_SUB = gql`
   }
 `;
 
-export const prepareIncomingTrades = (trades: TradeFields[]) => {
+export const sortTrades = (trades: TradeFields[]) => {
   return orderBy(
     trades,
     (t) => {
@@ -51,8 +53,15 @@ export const prepareIncomingTrades = (trades: TradeFields[]) => {
 };
 
 const update = (draft: TradeFields[], delta: TradeFields[]) => {
-  const incoming = prepareIncomingTrades(delta);
+  const incoming = sortTrades(delta);
+
+  // Add new trades to the top
   draft.unshift(...incoming);
+
+  // Remove old trades from the bottom
+  if (draft.length > MAX_TRADES) {
+    draft.splice(MAX_TRADES, draft.length - MAX_TRADES);
+  }
 };
 
 const getData = (responseData: Trades): TradeFields[] | null =>
