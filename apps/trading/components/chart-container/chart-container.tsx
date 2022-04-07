@@ -3,12 +3,14 @@ import { DepthChartContainer } from '@vegaprotocol/depth-chart';
 import { TradingChartContainer } from '@vegaprotocol/chart';
 import { useState } from 'react';
 
+type ChartType = 'depth' | 'trading';
+
 interface ChartContainerProps {
   marketId: string;
 }
 
 export const ChartContainer = ({ marketId }: ChartContainerProps) => {
-  const [chartType, setChartType] = useState<'depth' | 'trading'>('depth');
+  const [chartType, setChartType] = useState<ChartType>('trading');
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -20,9 +22,10 @@ export const ChartContainer = ({ marketId }: ChartContainerProps) => {
         ]}
         currentOption={chartType}
         onSelect={(value) => {
-          setChartType(value as 'depth' | 'trading');
+          setChartType(value);
         }}
       />
+
       <div className="flex-1">
         {chartType === 'trading' ? (
           <TradingChartContainer marketId={marketId} />

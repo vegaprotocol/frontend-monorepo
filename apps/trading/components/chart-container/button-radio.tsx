@@ -1,18 +1,18 @@
 import { Button } from '@vegaprotocol/ui-toolkit';
 
-interface ButtonRadioProps {
+interface ButtonRadioProps<T> {
   name: string;
-  options: Array<{ value: string; text: string }>;
-  currentOption: string | null;
-  onSelect: (option: string) => void;
+  options: Array<{ value: T; text: string }>;
+  currentOption: T | null;
+  onSelect: (option: T) => void;
 }
 
-export const ButtonRadio = ({
+export const ButtonRadio = <T extends string>({
   name,
   options,
   currentOption,
   onSelect,
-}: ButtonRadioProps) => {
+}: ButtonRadioProps<T>) => {
   return (
     <div className="flex gap-8">
       {options.map((option) => {
