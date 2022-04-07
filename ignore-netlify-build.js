@@ -1,8 +1,7 @@
 const execSync = require('child_process').execSync;
-const getAffected = `npx nx@13.8.3 print-affected`;
+const getAffected = `CI=true npx nx@13.8.3 print-affected --yes`;
 const cwd = execSync('pwd').toString();
 const ls = execSync('ls').toString();
-
 
 const currentProject = process.env.NX_PROJECT_NAME;
 console.log(`Checking affected for: ${currentProject} in ${cwd}`);
