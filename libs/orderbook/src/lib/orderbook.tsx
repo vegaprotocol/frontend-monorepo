@@ -14,8 +14,10 @@ import type { AgGridReact } from 'ag-grid-react';
 export interface OrderbookData {
   price: number;
   bidVol?: number;
+  bidVolByLevel?: Record<number, number>, 
   relativeBidVol?: number;
   askVol?: number;
+  askVolByLevel?: Record<number, number>,
   relativeAskVol?: number;
   cummulativeVol: {
     bid?: number;
@@ -33,7 +35,7 @@ interface OrderbookProps {
   decimalPlaces: number;
 }
 
-export const getRowNodeId = (data: OrderbookData) => data.price;
+export const getRowNodeId = (data: OrderbookData) => data.price.toString();
 
 export const Orderbook = forwardRef<AgGridReact, OrderbookProps>(
   ({ data, decimalPlaces }, ref) => {
@@ -66,6 +68,8 @@ export const Orderbook = forwardRef<AgGridReact, OrderbookProps>(
           valueFormatter={({ value }: OrderbookValueFormatterParams) =>
             formatNumber(value, decimalPlaces)
           }
+          sortable
+          sortingOrder={['desc']}
         />
         <AgGridColumn
           headerName={t('Ask Vol')}
