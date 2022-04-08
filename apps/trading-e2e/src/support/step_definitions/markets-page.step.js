@@ -23,12 +23,10 @@ Then('the market table is displayed', () => {
   marketsPage.validateMarketTableDisplayed();
 =======
 import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
+import { hasOperationName } from '..';
 import MarketsPage from '../pages/markets-page';
-import TradingPage from '../pages/trading-page';
-import { hasOperationName } from './trading-page.step';
 
 const marketsPage = new MarketsPage();
-const tradingPage = new TradingPage();
 
 const mockMarkets = () => {
   cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {

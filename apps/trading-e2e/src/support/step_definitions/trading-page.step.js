@@ -1,13 +1,5 @@
 import { Given } from 'cypress-cucumber-preprocessor/steps';
-
-// Utility to match GraphQL mutation based on the operation name
-export const hasOperationName = (req, operationName) => {
-  const { body } = req;
-  return (
-    // eslint-disable-next-line no-prototype-builtins
-    body.hasOwnProperty('operationName') && body.operationName === operationName
-  );
-};
+import { hasOperationName } from '..';
 
 const mockMarket = (state) => {
   cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
