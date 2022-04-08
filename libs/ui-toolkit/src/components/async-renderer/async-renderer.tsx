@@ -1,11 +1,11 @@
 import { Splash } from '../splash';
-import type { ReactNode } from 'react';
+import type { ReactElement } from 'react';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
   error: Error | undefined | null;
   data: T | undefined;
-  children: (data: T) => ReactNode;
+  children?: ReactElement;
 }
 
 export function AsyncRenderer<T = object>({
@@ -22,9 +22,9 @@ export function AsyncRenderer<T = object>({
     return <Splash>Loading...</Splash>;
   }
 
-  if (!data) {
+  if (!data || !children) {
     return <Splash>No data</Splash>;
   }
 
-  return <>{children(data)}</>;
+  return children;
 }

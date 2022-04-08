@@ -40,16 +40,13 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
 
   return (
     <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
-      {(data) => {
-        if (!data.market) {
-          return (
-            <Splash>
-              <p>{t('Could not load market')}</p>
-            </Splash>
-          );
-        }
-        return <DealTicketManager market={data.market} />;
-      }}
+      {data.market ? (
+        <DealTicketManager market={data.market} />
+      ) : (
+        <Splash>
+          <p>{t('Could not load market')}</p>
+        </Splash>
+      )}
     </AsyncRenderer>
   );
 };

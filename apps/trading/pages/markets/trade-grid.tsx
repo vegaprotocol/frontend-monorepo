@@ -7,22 +7,16 @@ import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { ChartContainer } from '../../components/chart-container';
 import { TradesContainer } from '@vegaprotocol/trades';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 import { PositionsContainer } from '@vegaprotocol/positions';
+import { OrderbookContainer } from '@vegaprotocol/orderbook';
 import type { Market_market } from './__generated__/Market';
 import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 
-const Orderbook = () => (
-  <Splash>
-    <p>{t('Orderbook')}</p>
-  </Splash>
-);
-
 const TradingViews = {
   Chart: ChartContainer,
   Ticket: DealTicketContainer,
-  Orderbook: Orderbook,
+  Orderbook: OrderbookContainer,
   Orders: OrderListContainer,
   Positions: PositionsContainer,
   Accounts: AccountsContainer,
@@ -61,7 +55,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             <TradingViews.Trades marketId={market.id} />
           </GridTab>
           <GridTab id="orderbook" name={t('Orderbook')}>
-            <TradingViews.Orderbook />
+            <TradingViews.Orderbook marketId={market.id} />
           </GridTab>
         </GridTabs>
       </TradeGridChild>

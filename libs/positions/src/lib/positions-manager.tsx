@@ -55,7 +55,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   >(positionsDataProvider, update, variables);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {(data) => <PositionsTable ref={gridRef} data={data} />}
+      <PositionsTable ref={gridRef} data={data} />
     </AsyncRenderer>
   );
 };

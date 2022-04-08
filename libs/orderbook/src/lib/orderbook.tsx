@@ -4,8 +4,7 @@ import {
   PriceCell,
   VolCell,
   CummulativeVolCell,
-  formatNumber,
-  addDecimal,
+  formatNumber,  
   t,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
@@ -13,14 +12,16 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 
 export interface OrderbookData {
-  bidVol: string;
-  relativeBidVol: string;
-  askVol: string;
-  relativeAskVol: string;
-  price: string;
+  price: number;
+  bidVol?: number;
+  relativeBidVol?: number;
+  askVol?: number;
+  relativeAskVol?: number;
   cummulativeVol: {
-    bid: number;
-    ask: number;
+    bid?: number;
+    relativeBid?: number,
+    ask?: number;
+    relativeAsk?: number,
   };
 }
 interface OrderbookValueFormatterParams extends ValueFormatterParams {
