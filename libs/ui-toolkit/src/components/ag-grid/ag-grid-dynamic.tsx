@@ -24,5 +24,6 @@ const AgGridDynamicInternal = dynamic<Props>(
 );
 
 export const AgGridDynamic = React.forwardRef<AgGridReact, Props>(
+  // @ts-ignore TODO: fix me
   (props, ref) => <AgGridDynamicInternal {...props} gridRef={ref} />
 );

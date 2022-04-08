@@ -35,10 +35,12 @@ export const AgGridThemed = ({
       style={style}
     >
       {theme === 'dark' ? (
+        // @ts-ignore TODO: fix me
         <AgGridDarkTheme>
           <AgGridReact {...defaultProps} {...props} ref={gridRef} />
         </AgGridDarkTheme>
       ) : (
+        // @ts-ignore TODO: fix me
         <AgGridLightTheme>
           <AgGridReact {...defaultProps} {...props} ref={gridRef} />
         </AgGridLightTheme>
