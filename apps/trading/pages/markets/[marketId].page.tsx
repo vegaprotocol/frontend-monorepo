@@ -46,7 +46,6 @@ const MarketPage = () => {
       }}
     >
       {({ market }) => {
-        console.log(market);
         if (!market) {
           return <Splash>{t('Market not found')}</Splash>;
         }
@@ -60,6 +59,10 @@ const MarketPage = () => {
     </PageQueryContainer>
   );
 };
+
+MarketPage.getInitialProps = () => ({
+  page: 'market',
+});
 
 export default MarketPage;
 

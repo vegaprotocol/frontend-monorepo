@@ -22,4 +22,8 @@ export function Index() {
   );
 }
 
+Index.getInitialProps = () => ({
+  page: 'home',
+});
+
 export default Index;

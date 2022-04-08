@@ -1,8 +1,8 @@
 {
   "data": {
     "market": {
-      "id": "test-market-active",
-      "name": "ACTIVE MARKET",
+      "id": "test-market-suspended",
+      "name": "SUSPENDED MARKET",
       "__typename": "Market"
     }
   }

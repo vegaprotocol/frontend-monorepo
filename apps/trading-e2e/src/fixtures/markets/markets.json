@@ -2,8 +2,8 @@
   "data": {
     "markets": [
       {
-        "id": "10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35",
-        "name": "BTCUSD Monthly (30 Jun 2022)",
+        "id": "test-market-active",
+        "name": "ACTIVE MARKET",
         "decimalPlaces": 5,
         "data": {
           "market": {
@@ -34,8 +34,8 @@
         "__typename": "Market"
       },
       {
-        "id": "34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed",
-        "name": "SOLUSD (Mar 2022)",
+        "id": "test-market-suspended",
+        "name": "SUSPENDED MARKET",
         "decimalPlaces": 2,
         "data": {
           "market": {

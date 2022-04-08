@@ -57,11 +57,8 @@ Feature: Deal ticket
     And place a buy 'FOK' market order
     Then error message for insufficient funds is displayed
 
-  @ignore
   Scenario: Unable to order because market is suspended
-    Given I am on the homepage
-    And I navigate to markets page
-    When I click on suspended market
+    Given I am on the trading page for a suspended market 
     And I connect to Vega Wallet
     Then place order button is disabled
     And "Market is currently suspended" error is shown

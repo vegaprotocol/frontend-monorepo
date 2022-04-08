@@ -8,6 +8,15 @@ export default class MarketPage extends BasePage {
   marketRowPrices = 'flash-cell';
   marketRowDescription = 'name';
 
+  validateMarketsAreDisplayed() {
+    cy.fixture('markets/markets.json').then((f) => {
+      cy.get('.ag-root-wrapper').should('be.visible');
+      f.data.markets.forEach((m) => {
+        cy.contains(m.name);
+      });
+    });
+  }
+
   validateMarketTableDisplayed() {
     const expectedMarketHeaders = [
       'Market',
@@ -49,15 +58,7 @@ export default class MarketPage extends BasePage {
     );
   }
 
-  clickOnMarket(marketText) {
-    cy.contains(marketText).click();
-  }
-
-  clickOnActiveMarket() {
-    cy.contains('Active', { timeout: 8000 }).click({ force: true });
-  }
-
-  clickOnTopMarketRow() {
-    cy.get('[col-id="data"]').eq(1).click();
+  clickOnMarket(text) {
+    cy.contains(text).click();
   }
 }
