@@ -1,5 +1,5 @@
 import { Then, When } from 'cypress-cucumber-preprocessor/steps';
-import MarketsPage from '../pages/markets-page';
+import MarketsPage from '../pages/trading-page';
 import DealTicket from '../trading-windows/deal-ticket';
 
 const marketsPage = new MarketsPage();

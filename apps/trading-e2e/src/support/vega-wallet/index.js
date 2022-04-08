@@ -6,7 +6,7 @@ export default class VegaWallet {
   walletFormError = 'form-error';
   inputError = 'input-error-text';
 
-  navigateToConnectVegaWallet() {
+  openVegaWalletConnectDialog() {
     cy.getByTestId(this.connectVegaBtn).click();
     cy.contains('Connects using REST to a running Vega wallet service');
     cy.getByTestId(this.walletConnectors).find('button').click();

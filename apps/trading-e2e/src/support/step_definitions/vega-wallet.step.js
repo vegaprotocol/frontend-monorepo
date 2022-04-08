@@ -19,6 +19,7 @@ beforeEach(() => {
         },
         From: {
           PubKey:
+            // TODO: Use same pubkey as the test wallet
             'f8885edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f',
         },
         version: 2,

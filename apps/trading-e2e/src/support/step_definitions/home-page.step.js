@@ -4,13 +4,13 @@ import VegaWallet from '../vega-wallet';
 const vegaWallet = new VegaWallet();
 
 When('I try to connect Vega wallet with incorrect details', () => {
-  vegaWallet.navigateToConnectVegaWallet();
+  vegaWallet.openVegaWalletConnectDialog();
   vegaWallet.fillInWalletForm('name', 'wrong passphrase');
   vegaWallet.clickConnectVegaWallet();
 });
 
 When('I try to connect Vega wallet with blank fields', () => {
-  vegaWallet.navigateToConnectVegaWallet();
+  vegaWallet.openVegaWalletConnectDialog();
   vegaWallet.clickConnectVegaWallet();
 });
 

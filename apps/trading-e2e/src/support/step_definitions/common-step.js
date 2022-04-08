@@ -1,5 +1,5 @@
-import { Given, When } from 'cypress-cucumber-preprocessor/steps';
-import MarketsPage from '../pages/markets-page';
+import { Given } from 'cypress-cucumber-preprocessor/steps';
+import MarketsPage from '../pages/trading-page';
 
 const marketsPage = new MarketsPage();
 
