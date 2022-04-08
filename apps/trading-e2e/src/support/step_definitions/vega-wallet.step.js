@@ -34,10 +34,8 @@ beforeEach(() => {
 When('I connect to Vega Wallet', () => {
   vegaWallet.navigateToConnectVegaWallet();
   vegaWallet.fillInWalletForm(
-    'test',
-    '123'
-    // 'UI_Trading_Test',
-    // Cypress.env('tradingWalletPassphrase')
+    'UI_Trading_Test',
+    Cypress.env('tradingWalletPassphrase')
   );
   vegaWallet.clickConnectVegaWallet();
 });
