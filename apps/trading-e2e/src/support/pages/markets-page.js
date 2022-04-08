@@ -43,8 +43,8 @@ export default class MarketPage extends BasePage {
       cy.wrap($marketName).should('not.be.empty');
     });
 
-    cy.get(`[col-id='${this.marketRowSymbolColumn}']`).each(($marketName) => {
-      cy.wrap($marketName).should('not.be.empty');
+    cy.get(`[col-id='${this.marketRowSymbolColumn}']`).each(($marketSymbol) => {
+      cy.wrap($marketSymbol).should('not.be.empty');
     });
 
     cy.getByTestId(this.marketRowPrices).each(($price) => {
