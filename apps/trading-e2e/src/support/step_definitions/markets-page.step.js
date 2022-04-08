@@ -42,7 +42,7 @@ beforeEach(() => {
   mockMarkets();
 });
 
-Then('I can navigate to the markets page', () => {
+Then('I navigate to markets page', () => {
   marketsPage.navigateToMarkets();
 });
 

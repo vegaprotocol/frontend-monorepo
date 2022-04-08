@@ -3,6 +3,6 @@ import PortfolioPage from '../pages/portfolio-page';
 
 const portfolioPage = new PortfolioPage();
 
-Then('I can navigate to the portfolio page', () => {
+Then('I navigate to portfolio page', () => {
   portfolioPage.navigateToPortfolio();
 });

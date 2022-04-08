@@ -7,6 +7,10 @@ Feature: Home page
     Given I am on the homepage
     And I navigate to portfolio page
 
+  Scenario: Visit Markets page
+    Given I am on the homepage
+    And I navigate to markets page
+
   Scenario: Unable to connect Vega wallet with incorrect credentials
     Given I am on the homepage
     When I try to connect Vega wallet with incorrect details
