@@ -1,0 +1,19 @@
+{
+  "data": {
+    "market": {
+      "decimalPlaces": 5,
+      "data": {
+        "priceMonitoringBounds": [
+          {
+            "minValidPrice": "16256291",
+            "maxValidPrice": "18296869",
+            "referencePrice": "17247489",
+            "__typename": "PriceMonitoringBounds"
+          }
+        ],
+        "__typename": "MarketData"
+      },
+      "__typename": "Market"
+    }
+  }
+}

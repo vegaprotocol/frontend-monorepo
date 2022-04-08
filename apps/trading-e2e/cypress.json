@@ -14,7 +14,7 @@
   "chromeWebSecurity": false,
   "projectId": "et4snf",
   "env": {
-    "bypassPlacingOrders": true,
+    "bypassPlacingOrders": false,
     "tsConfig": "tsconfig.json",
     "TAGS": "not @todo and not @ignore and not @manual"
   }

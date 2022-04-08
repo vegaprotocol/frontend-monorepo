@@ -1,8 +1,8 @@
 {
   "data": {
     "market": {
-      "id": "10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35",
-      "name": "BTCUSD Monthly (30 Jun 2022)",
+      "id": "test-market-active",
+      "name": "TEST MARKET",
       "decimalPlaces": 2,
       "state": "Active",
       "tradingMode": "Continuous",
