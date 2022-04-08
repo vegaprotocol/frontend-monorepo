@@ -17,10 +17,6 @@ export default class MarketPage extends BasePage {
   completedTrades = 'market-trades';
   orderBookTab = 'orderbook';
 
-  validateMarketsAreDisplayed() {
-    cy.getByTestId(this.marketRow).should('have.length.above', 0);
-  }
-
   validateMarketTableDisplayed() {
     const expectedMarketHeaders = [
       'Market',
