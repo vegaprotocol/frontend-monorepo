@@ -1,7 +1,7 @@
 Feature: Markets page
   Scenario: Navigation
     Given I am on the homepage
-    Then I can navigate to the markets page
+    Then I navigate to markets page
   
   Scenario: Select active market
     Given I am on the markets page
