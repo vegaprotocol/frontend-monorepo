@@ -3,8 +3,6 @@
 /**
  * Runs the fleek deploy process based on nx:affected, but only for sites
  * that have a .fleek.json file
- *
- * @author Edd
  */
 
 // Fleek CLI requires this variable to be set
