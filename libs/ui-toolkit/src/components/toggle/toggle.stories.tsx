@@ -11,22 +11,25 @@ export const Controlled: ComponentStory<typeof Toggle> = () => {
   const [checked, setChecked] = useState('test-1');
 
   return (
-    <Toggle
-      name="controlled"
-      toggles={[
-        {
-          label: 'Option 1',
-          value: 'test-1',
-        },
-        {
-          label: 'Option 2',
-          value: 'test-2',
-        },
-      ]}
-      checkedValue={checked}
-      onChange={(e) => setChecked(e.target.value)}
-      className="max-w-[400px]"
-    />
+    // Wrapping in a form to scope the effect of the radios (stops light and dark theme versions colliding)
+    <form>
+      <Toggle
+        name="controlled"
+        toggles={[
+          {
+            label: 'Option 1',
+            value: 'test-1',
+          },
+          {
+            label: 'Option 2',
+            value: 'test-2',
+          },
+        ]}
+        checkedValue={checked}
+        onChange={(e) => setChecked(e.target.value)}
+        className="max-w-[400px]"
+      />
+    </form>
   );
 };
 
