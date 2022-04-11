@@ -21,7 +21,7 @@ export default class MarketPage extends BasePage {
   }
 
   clickOnMarket(marketText) {
-    cy.contains(marketText).click();
+    cy.contains(marketText, { timeout: 8000 }).click({ force: true });
   }
 
   clickOnActiveMarket() {
@@ -29,7 +29,7 @@ export default class MarketPage extends BasePage {
   }
 
   clickOnTopMarketRow() {
-    cy.get('[col-id="data"]').eq(1).click();
+    cy.get('[col-id="data"]', { timeout: 8000 }).eq(1).click({ force: true });
   }
 
   clickOnOrdersTab() {
