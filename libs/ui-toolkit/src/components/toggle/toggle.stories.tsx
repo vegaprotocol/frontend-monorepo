@@ -7,41 +7,35 @@ export default {
   title: 'Toggle',
 } as Meta;
 
-// @ts-ignore args provided after
-const UncontrolledTemplate: Story = (args) => <Toggle {...args} />;
-
-const ControlledTemplate: Story = (args) => {
+export const Controlled: Story = () => {
   const [checked, setChecked] = useState('test-1');
 
   return (
-    // @ts-ignore args provided after
     <Toggle
+      name="controlled"
+      toggles={[
+        {
+          label: 'Option 1',
+          value: 'test-1',
+        },
+        {
+          label: 'Option 2',
+          value: 'test-2',
+        },
+      ]}
       checkedValue={checked}
       onChange={(e) => setChecked(e.target.value)}
-      {...args}
+      className="max-w-[400px]"
     />
   );
 };
 
+// @ts-ignore args provided after
+const UncontrolledTemplate: Story = (args) => <Toggle {...args} />;
+
 export const Uncontrolled = UncontrolledTemplate.bind({});
 Uncontrolled.args = {
   name: 'uncontrolled',
-  toggles: [
-    {
-      label: 'Option 1',
-      value: 'test-1',
-    },
-    {
-      label: 'Option 2',
-      value: 'test-2',
-    },
-  ],
-  className: 'max-w-[400px]',
-};
-
-export const Controlled = ControlledTemplate.bind({});
-Controlled.args = {
-  name: 'controlled',
   toggles: [
     {
       label: 'Option 1',
