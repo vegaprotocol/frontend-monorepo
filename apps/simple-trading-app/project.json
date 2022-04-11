@@ -1,0 +1,73 @@
+{
+  "root": "apps/simple-trading-app",
+  "sourceRoot": "apps/simple-trading-app/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/simple-trading-app",
+        "index": "apps/simple-trading-app/src/index.html",
+        "baseHref": "/",
+        "main": "apps/simple-trading-app/src/main.tsx",
+        "polyfills": "apps/simple-trading-app/src/polyfills.ts",
+        "tsConfig": "apps/simple-trading-app/tsconfig.app.json",
+        "assets": [
+          "apps/simple-trading-app/src/favicon.ico",
+          "apps/simple-trading-app/src/assets"
+        ],
+        "styles": ["apps/simple-trading-app/src/styles.scss"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/simple-trading-app/src/environments/environment.ts",
+              "with": "apps/simple-trading-app/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "options": {
+        "buildTarget": "simple-trading-app:build",
+        "hmr": true
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "simple-trading-app:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/simple-trading-app/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/simple-trading-app"],
+      "options": {
+        "jestConfig": "apps/simple-trading-app/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
