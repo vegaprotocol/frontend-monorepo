@@ -13,7 +13,6 @@ jobs:
   master:
     name: Publish NX Affected
     runs-on: ubuntu-latest
-    if: ${{ github.event_name != 'pull_request' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
