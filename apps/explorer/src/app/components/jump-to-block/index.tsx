@@ -1,7 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Routes } from '../../routes/router-config';
+import { Routes } from '../../routes/route-names';
 import { JumpTo } from '../jump-to';
 
 export const JumpToBlock = () => {

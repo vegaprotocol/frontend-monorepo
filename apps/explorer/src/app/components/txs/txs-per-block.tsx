@@ -1,6 +1,6 @@
 import useFetch from '../../hooks/use-fetch';
 import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
-import { Routes } from '../../routes/router-config';
+import { Routes } from '../../routes/route-names';
 import { DATA_SOURCES } from '../../config';
 import { RenderFetched } from '../render-fetched';
 import { TruncatedLink } from '../truncate/truncated-link';

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Search } from './search';
 import { MemoryRouter } from 'react-router-dom';
-import { Routes } from '../../routes/router-config';
+import { Routes } from '../../routes/route-names';
 
 const mockedNavigate = jest.fn();
 

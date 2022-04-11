@@ -1,7 +1,7 @@
 import { Block } from './block';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { Routes as RouteNames } from '../../router-config';
+import { Routes as RouteNames } from '../../route-names';
 
 const blockId = 1085890;
 

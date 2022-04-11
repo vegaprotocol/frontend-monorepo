@@ -17,18 +17,7 @@ import { Txs as TxHome } from './txs/home';
 import { PendingTxs } from './pending';
 import flags from '../lib/flags';
 import { t } from '@vegaprotocol/react-helpers';
-export const Routes = {
-  HOME: '/',
-  TX: 'txs',
-  BLOCKS: 'blocks',
-  PARTIES: 'parties',
-  VALIDATORS: 'validators',
-  ASSETS: 'assets',
-  GENESIS: 'genesis',
-  GOVERNANCE: 'governance',
-  MARKETS: 'markets',
-  NETWORK_PARAMETERS: 'network-parameters',
-};
+import { Routes } from './route-names';
 
 const partiesRoutes = flags.parties
   ? [
