@@ -46,8 +46,9 @@ interface Web3ContainerProps {
 export const Web3Container = ({ children }: Web3ContainerProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   return (
-    <PageQueryContainer<NetworkParamsQuery> query={NETWORK_PARAMS_QUERY}>
-      {(data) => {
+    <PageQueryContainer<NetworkParamsQuery>
+      query={NETWORK_PARAMS_QUERY}
+      render={(data) => {
         const ethereumConfigParam = data.networkParameters?.find(
           (np) => np.key === 'blockchains.ethereumConfig'
         );
@@ -89,7 +90,7 @@ export const Web3Container = ({ children }: Web3ContainerProps) => {
           </Web3Provider>
         );
       }}
-    </PageQueryContainer>
+    />
   );
 };
 

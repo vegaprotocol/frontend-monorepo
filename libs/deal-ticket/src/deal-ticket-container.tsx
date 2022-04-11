@@ -40,7 +40,7 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
 
   return (
     <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
-      {data.market ? (
+      {data && data.market ? (
         <DealTicketManager market={data.market} />
       ) : (
         <Splash>

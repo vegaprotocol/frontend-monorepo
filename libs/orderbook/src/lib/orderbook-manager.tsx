@@ -22,7 +22,8 @@ interface OrderbookManagerProps {
   resolution: number;
 }
 
-const getGroupPrice = (price:number, resolution:number) => Math.round(price * resolution) / resolution
+const getGroupPrice = (price: number, resolution: number) =>
+  Math.round(price * resolution) / resolution;
 
 const compact = (
   sell:
@@ -73,8 +74,13 @@ const compact = (
             bidVol: (a.bidVol ?? 0) + (c.bidVol ?? 0),
             askVol: (a.askVol ?? 0) + (c.askVol ?? 0),
             cummulativeVol: {
-              bid: Math.max((a.cummulativeVol.bid ?? 0), (c.cummulativeVol.bid ?? 0)),
-              ask: Math.max((a.cummulativeVol.ask ?? 0) + (c.cummulativeVol.ask ?? 0)),
+              bid: Math.max(
+                a.cummulativeVol.bid ?? 0,
+                c.cummulativeVol.bid ?? 0
+              ),
+              ask: Math.max(
+                (a.cummulativeVol.ask ?? 0) + (c.cummulativeVol.ask ?? 0)
+              ),
             },
           }),
           { price: Number(price), cummulativeVol: {} }
@@ -87,8 +93,8 @@ const compact = (
 };
 
 const maxVolumes = (orderbookData: OrderbookData[]) => {
-  let bidVol = 0
-  let askVol = 0
+  let bidVol = 0;
+  let askVol = 0;
   let cummulativeVol = 0;
   orderbookData.forEach((data) => {
     bidVol = Math.max(bidVol, data.bidVol ?? 0);
@@ -101,12 +107,12 @@ const maxVolumes = (orderbookData: OrderbookData[]) => {
   return {
     bidVol,
     askVol,
-    cummulativeVol
-  }
-}
+    cummulativeVol,
+  };
+};
 
 const updateRelativeData = (data: OrderbookData[]) => {
-  const { bidVol, askVol, cummulativeVol } = maxVolumes(data)
+  const { bidVol, askVol, cummulativeVol } = maxVolumes(data);
   data.forEach((data) => {
     data.relativeAskVol = (data.askVol ?? 0) / askVol;
     data.relativeBidVol = (data.bidVol ?? 0) / bidVol;
@@ -115,22 +121,7 @@ const updateRelativeData = (data: OrderbookData[]) => {
     data.cummulativeVol.relativeBid =
       (data.cummulativeVol.bid ?? 0) / cummulativeVol;
   });
-}
-
-
-
-const reducer = (state: OrderbookData[] | null, action: { type: 'init', data: OrderbookData[] | null } | { type: 'update', delta: MarketDepthSubscription_marketDepthUpdate }) {
-  switch (action.type) {
-    case 'init':
-      return action.data;
-    case 'update':
-      return produce(state, (draft) => {
-        action.delta
-      });
-    default:
-      throw new Error();
-  }
-}
+};
 
 export const OrderbookManager = ({
   marketId,
@@ -139,7 +130,9 @@ export const OrderbookManager = ({
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ marketId }), [marketId]);
 
-  const [orderbookData, setOrderbookData] = useState<OrderbookData[]|null>(null);
+  const [orderbookData, setOrderbookData] = useState<OrderbookData[] | null>(
+    null
+  );
 
   // Apply updates to the table
   const update = useCallback(
@@ -147,66 +140,80 @@ export const OrderbookManager = ({
       if (!gridRef.current || !orderbookData) {
         return false;
       }
-      setOrderbookData(produce(orderbookData, (draft) => {
-        if (!draft) {
-          return
-        }
-        delta.buy?.forEach(buy => {
-          const price = Number(buy.price);
-          const volume = Number(buy.volume);
-          const groupPrice = getGroupPrice(price, resolution);
-          let index = draft.findIndex(data => data.price === groupPrice)
-          if (index !== -1 && draft[index]) {
-            draft[index].askVol = (draft[index].askVol ?? 0) - (draft[index].askVolByLevel?.[price] || 0) + volume ;
-            draft[index].askVolByLevel = Object.assign(draft[index].askVolByLevel ?? {}, { [price]: volume });
-          } else {            
-            const newData:OrderbookData = {
-              price,
-              askVol: volume,
-              askVolByLevel: { [price]: volume },
-              cummulativeVol: {}
-            }
-            index = draft.findIndex((data) => data.price > price);
-            if (index !== -1) {
-              draft.splice(index, 0, newData);
+      setOrderbookData(
+        produce(orderbookData, (draft) => {
+          if (!draft) {
+            return;
+          }
+          delta.buy?.forEach((buy) => {
+            const price = Number(buy.price);
+            const volume = Number(buy.volume);
+            const groupPrice = getGroupPrice(price, resolution);
+            let index = draft.findIndex((data) => data.price === groupPrice);
+            if (index !== -1 && draft[index]) {
+              draft[index].askVol =
+                (draft[index].askVol ?? 0) -
+                (draft[index].askVolByLevel?.[price] || 0) +
+                volume;
+              draft[index].askVolByLevel = Object.assign(
+                draft[index].askVolByLevel ?? {},
+                { [price]: volume }
+              );
             } else {
-              draft.push(newData);
+              const newData: OrderbookData = {
+                price,
+                askVol: volume,
+                askVolByLevel: { [price]: volume },
+                cummulativeVol: {},
+              };
+              index = draft.findIndex((data) => data.price > price);
+              if (index !== -1) {
+                draft.splice(index, 0, newData);
+              } else {
+                draft.push(newData);
+              }
             }
-          }
-        })
-        delta.sell?.forEach(sell => {
-          const price = Number(sell.price);
-          const volume = Number(sell.volume);
-          const groupPrice = getGroupPrice(price, resolution);
-          let index = draft.findIndex(data => data.price === groupPrice)
-          if (index !== -1 && draft[index]) {
-            draft[index].bidVol = (draft[index].bidVol ?? 0) - (draft[index].bidVolByLevel?.[price] || 0) + volume ;
-            draft[index].bidVolByLevel = Object.assign(draft[index].bidVolByLevel ?? {}, { [price]: volume });
-          } else {            
-            const newData:OrderbookData = {
-              price,
-              bidVol: volume,
-              bidVolByLevel: { [price]: volume },
-              cummulativeVol: {}
-            }
-            index = draft.findIndex((data) => data.price > price);
-            if (index !== -1) {
-              draft.splice(index, 0, newData);
+          });
+          delta.sell?.forEach((sell) => {
+            const price = Number(sell.price);
+            const volume = Number(sell.volume);
+            const groupPrice = getGroupPrice(price, resolution);
+            let index = draft.findIndex((data) => data.price === groupPrice);
+            if (index !== -1 && draft[index]) {
+              draft[index].bidVol =
+                (draft[index].bidVol ?? 0) -
+                (draft[index].bidVolByLevel?.[price] || 0) +
+                volume;
+              draft[index].bidVolByLevel = Object.assign(
+                draft[index].bidVolByLevel ?? {},
+                { [price]: volume }
+              );
             } else {
-              draft.push(newData);
+              const newData: OrderbookData = {
+                price,
+                bidVol: volume,
+                bidVolByLevel: { [price]: volume },
+                cummulativeVol: {},
+              };
+              index = draft.findIndex((data) => data.price > price);
+              if (index !== -1) {
+                draft.splice(index, 0, newData);
+              } else {
+                draft.push(newData);
+              }
+            }
+          });
+          let index = 0;
+          while (index < draft.length) {
+            if (!draft[index].askVol && !draft[index].bidVol) {
+              draft.splice(index, 1);
+            } else {
+              index += 1;
             }
           }
+          updateRelativeData(draft);
         })
-        let index = 0
-        while (index < draft.length) {
-          if (!draft[index].askVol && !draft[index].bidVol) {
-            draft.splice(index, 1);
-          } else {
-            index += 1;
-          }
-        }
-        updateRelativeData(draft);
-      }))
+      );
       return true;
     },
     []
@@ -229,13 +236,13 @@ export const OrderbookManager = ({
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {data ? (
+      {data && (
         <Orderbook
           ref={gridRef}
           data={orderbookData}
           decimalPlaces={data.decimalPlaces}
         />
-      ) : undefined}
+      )}
     </AsyncRenderer>
   );
 };
