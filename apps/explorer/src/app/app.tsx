@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router';
+import { useLocation } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
