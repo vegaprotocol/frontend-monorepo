@@ -1,11 +1,55 @@
 #!/usr/bin/env node
 
 /**
- * Runs the fleek deploy process based on nx:affected, but only for sites
- * that have a .fleek.json file
+ * Run on Github by commits to master, this script:
+ * 1. Gets all projects with a fleek configuration file
+ *   2. Gets the last commit for the relevant site id
+ *   3. Runs nx:affected for that commit ID and checks if the site has changed
+ *     4. Calls deploy if it has
+ *
+ * This would probably be best as an NX task, but the circular nature of getting
+ * the fleek ID for the project, then checking if it was affected didn't fit within the
+ * build-only-affected cycle, and as each fleek deploy will have been triggered by
+ * a different commit, it seemed best to do this outwith nx. Feel free to re-implement
+ * this if the assumptions are wrong.
+ *
+ * It has also been written to skip external dependencies.
  */
-const { existsSync } = require('fs');
+const { existsSync, readdirSync, lstatSync, readFileSync } = require('fs');
 const { execSync } = require('child_process');
+
+/**
+ * Parses the last commit hash out of the Fleek API response
+ * @param {String} siteId
+ * @returns string Last commit that triggered a build
+ */
+function getFleekLastBuildCommit(siteId) {
+  const curl = `curl 'https://api.fleek.co/graphql' --silent -X POST -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Authorization: ${process.env['FLEEK_API_KEY']}' --data-raw '{"query":"{getSiteById(siteId: \\"${siteId}\\"){publishedDeploy{repository{commit}}}}","variables":null}'`;
+  const fleekRes = execSync(curl);
+
+  const res = JSON.parse(fleekRes.toString());
+  let commit = res.data.getSiteById.publishedDeploy.repository.commit;
+
+  return commit;
+}
+
+function triggerDeploy(siteId) {
+  const curl = `curl 'https://api.fleek.co/graphql' --silent -X POST -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Authorization: ${process.env['FLEEK_API_KEY']}' --data-raw '{"query":"mutation {triggerDeploy(commit: \\"HEAD\\", siteId: \\"${siteId}\\"){status}}","variables":null}'`;
+  const fleekRes = execSync(curl);
+
+  const res = JSON.parse(fleekRes.toString());
+
+  // Will have thrown if it failed
+  return true;
+}
+
+// The folder containing NX projects
+const projectPath = './apps/';
+// The Fleek project file, the existence indicates a deployed app
+const fleekFile = '.fleek.json';
+// Some simple stats for the end
+let fleekProjects = 0;
+let deployedProjects = 0;
 
 // Fleek CLI requires this variable to be set
 if (!process.env['FLEEK_API_KEY']) {
@@ -13,61 +57,84 @@ if (!process.env['FLEEK_API_KEY']) {
   process.exit(1);
 }
 
-// The folder containing NX projects
-const projectPath = './apps/';
-// The Fleek project file, the existence indicates a deployed app
-const fleekFile = '.fleek.json';
-// Command to run in each app that needs to be deployed
-const deployCommand = 'npx @fleekhq/fleek-cli@0.1.8 site:deploy';
-
-// Await piped input
-process.stdin.resume();
-process.stdin.setEncoding('utf8');
-
-// This hangs for input, and process.exit ensures it only triggers one
-process.stdin.on('data', function (affectedProjectsString) {
-  // If there is no input, nothing is affected. Bail early.
-  if (affectedProjectsString.trim().length === 0) {
-    console.log('Success: No projects affected');
-    process.exit(0);
-  }
-
-  // Handle multiple projects or a single project being affected
-  let affectedProjects =
-    affectedProjectsString.indexOf(',') !== -1
-      ? affectedProjectsString.split(',')
-      : [affectedProjectsString.trim()];
-
-  let affectedProjectsCount = 0;
-
-  affectedProjects.forEach((p) => {
-    const cleanedProjectName = p.trim();
-
-    // Path (from cwd) for the project, used for execSync if it's a fleek project
-    const project = `${projectPath}${cleanedProjectName}/`;
-
-    // Specific file to check for the existence of
-    const fleekFilePath = `${project}${fleekFile}`;
-
-    if (existsSync(fleekFilePath)) {
-      affectedProjectsCount++;
-
-      console.group(`${cleanedProjectName} requires deployment`);
-
-      // This will throw if it fails to trigger
-      execSync(deployCommand, { cwd: project });
-
-      console.groupEnd();
+readdirSync(projectPath).forEach((proj) => {
+  try {
+    const project = `${projectPath}${proj}`;
+    if (!lstatSync(project).isDirectory()) {
+      // It's not a project folder, skip it
+      return;
     }
-  });
 
-  // If we made it here, either we didn't have any projects to deploy...
-  if (affectedProjectsCount === 0) {
-    console.log('Success: No Fleek projects affected');
-  } else {
-    // ... or all the projects deployed successfully...
-    console.log(`Success: ${affectedProjectsCount} deployments triggered`);
+    const config = `${project}/${fleekFile}`;
+    if (!existsSync(config)) {
+      // No fleek file, skip it
+      return;
+    }
+
+    fleekProjects++;
+
+    console.group(proj);
+
+    // The UID for the site according to the config
+    let siteId;
+
+    try {
+      const fleekConfig = JSON.parse(readFileSync(config));
+      siteId = fleekConfig.site.id;
+
+      console.log(`Fleek site ID: ${siteId}`);
+    } catch (e) {
+      console.error(`Failed to read Fleek site id for ${proj}`);
+      return;
+    }
+
+    // The last commit that triggered a build
+    let baseCommit;
+
+    try {
+      baseCommit = getFleekLastBuildCommit(siteId);
+
+      console.log(`Last deploy: ${baseCommit}`);
+    } catch (e) {
+      console.error(`Failed to fetch last deploy for ${proj}`);
+      return;
+    }
+
+    // Now run nx affected
+    let isAffected;
+
+    try {
+      const affectedSinceCommit = execSync(
+        `yarn nx print-affected --base=${baseCommit} --head=master --select=projects`
+      );
+      isAffected = affectedSinceCommit.toString().indexOf(proj) !== -1;
+    } catch (e) {
+      console.error(`Failed to run nx:affected for ${baseCommit}:master`);
+      return;
+    }
+
+    if (isAffected) {
+      console.log(`Triggering deploy for: ${siteId}`);
+      deployedProjects++;
+
+      try {
+        triggerDeploy(siteId);
+      } catch (e) {
+        console.error(`Failed to trigger deploy for ${proj}`);
+        process.exit(1);
+      }
+    } else {
+      console.log(`Has not changed since last build, skipping...`);
+    }
+
+    console.groupEnd();
+  } catch (e) {
+    console.log(e);
+    process.exit(1);
   }
-  // ... so either way it's considered success
-  process.exit(0);
 });
+
+console.log(`Fleek projects: ${fleekProjects}`);
+console.log(`Deploys triggered: ${deployedProjects}`);
+
+process.exit(0);
