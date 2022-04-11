@@ -4,15 +4,14 @@
  * Runs the fleek deploy process based on nx:affected, but only for sites
  * that have a .fleek.json file
  */
+const { existsSync } = require('fs');
+const { execSync } = require('child_process');
 
 // Fleek CLI requires this variable to be set
 if (!process.env['FLEEK_API_KEY']) {
   console.error('Error: FLEEK_API_KEY must be set');
   process.exit(1);
 }
-
-const { existsSync } = require('fs');
-const { execSync } = require('child_process');
 
 // The folder containing NX projects
 const projectPath = './apps/';
