@@ -1,55 +1,7 @@
 import merge from 'lodash/merge';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-
-interface Markets_markets_data_market {
-  __typename: 'Market';
-  id: string;
-  state: MarketState;
-  tradingMode: MarketTradingMode;
-}
-
-interface Markets_markets_data {
-  __typename: 'MarketData';
-  market: Markets_markets_data_market;
-  bestBidPrice: string;
-  bestOfferPrice: string;
-  markPrice: string;
-}
-
-interface Markets_markets_tradableInstrument_instrument_product_settlementAsset {
-  __typename: 'Asset';
-  symbol: string;
-}
-
-interface Markets_markets_tradableInstrument_instrument_product {
-  __typename: 'Future';
-  settlementAsset: Markets_markets_tradableInstrument_instrument_product_settlementAsset;
-}
-
-interface Markets_markets_tradableInstrument_instrument {
-  __typename: 'Instrument';
-  code: string;
-  product: Markets_markets_tradableInstrument_instrument_product;
-}
-
-interface Markets_markets_tradableInstrument {
-  __typename: 'TradableInstrument';
-  instrument: Markets_markets_tradableInstrument_instrument;
-}
-
-interface Markets_markets {
-  __typename: 'Market';
-  id: string;
-  name: string;
-  decimalPlaces: number;
-  data: Markets_markets_data | null;
-  tradableInstrument: Markets_markets_tradableInstrument;
-}
-
-interface Markets {
-  markets: Markets_markets[] | null;
-}
+import type { Markets, Markets_markets } from '../lib/__generated__/Markets';
 
 export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
   const markets: Markets_markets[] = [

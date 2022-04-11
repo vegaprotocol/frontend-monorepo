@@ -1,12 +1,9 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-
-// TODO: Figure out how to get types
-// eslint-disable-next-line
-type Trades = any;
+import type { Trades, Trades_market_trades } from '../lib/__generated__/Trades';
 
 export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
-  const trades = [
+  const trades: Trades_market_trades[] = [
     {
       id: 'FFFFBC80005C517A10ACF481F7E6893769471098E696D0CC407F18134044CB16',
       price: '17116898',

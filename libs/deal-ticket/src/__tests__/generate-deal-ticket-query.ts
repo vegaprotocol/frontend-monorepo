@@ -1,10 +1,7 @@
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-
-// TODO: Figure out how to get types
-// eslint-disable-next-line
-type DealTicketQuery = any;
+import type { DealTicketQuery } from '../__generated__/DealTicketQuery';
 
 export const generateDealTicketQuery = (
   override?: PartialDeep<DealTicketQuery>

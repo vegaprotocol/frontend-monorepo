@@ -1,17 +1,25 @@
 import { Given } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import { MarketState } from '@vegaprotocol/types';
-import { generateDealTicketQuery } from '../queries/deal-ticket-query';
-import { generateTrades } from '../queries/trades';
-import { generateChart } from '../queries/chart';
-import { generateCandles } from '../queries/candles';
-import { generateMarket } from '../queries/market';
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+import { generateTrades } from '../../../../../libs/trades/src/__tests__/generate-trades';
+import { generateChart } from '../../../../../libs/chart/src/__tests__/generate-chart';
+import { generateCandles } from '../../../../../libs/chart/src/__tests__/generate-candles';
+import { generateDealTicketQuery } from '../../../../../libs/deal-ticket/src/__tests__/generate-deal-ticket-query';
+import { generateMarket } from '../../../../trading/pages/markets/__tests__/generate-market';
+/* eslint-enable @nrwl/nx/enforce-module-boundaries */
 
 const mockMarket = (state: MarketState) => {
   cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
     if (hasOperationName(req, 'Market')) {
       req.reply({
-        body: { data: generateMarket() },
+        body: {
+          data: generateMarket({
+            market: {
+              name: `${state.toUpperCase()} MARKET`,
+            },
+          }),
+        },
       });
     }
 
@@ -46,7 +54,7 @@ Given('I am on the trading page for an active market', () => {
 
   cy.visit('/markets/market-id');
   cy.wait('@Market');
-  cy.contains(`Market: MARKET NAME`);
+  cy.contains('Market: ACTIVE MARKET');
 });
 
 Given('I am on the trading page for a suspended market', () => {
@@ -54,5 +62,5 @@ Given('I am on the trading page for a suspended market', () => {
 
   cy.visit('/markets/market-id');
   cy.wait('@Market');
-  cy.contains('Market: MARKET NAME');
+  cy.contains('Market: SUSPENDED MARKET');
 });

@@ -25,7 +25,8 @@ Then('the market table is displayed', () => {
 import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import MarketsPage from '../pages/markets-page';
-import { generateMarkets } from '../queries/markets';
+// eslint-disable-next-line
+import { generateMarkets } from '../../../../../libs/market-list/src/__tests__/generate-markets';
 
 const marketsPage = new MarketsPage();
 
@@ -33,7 +34,7 @@ const mockMarkets = () => {
   cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
     if (hasOperationName(req, 'Markets')) {
       req.reply({
-        body: generateMarkets(),
+        body: { data: generateMarkets() },
       });
     }
   }).as('Markets');
@@ -53,6 +54,7 @@ Given('I am on the markets page', () => {
 });
 
 Then('I can view markets', () => {
+  cy.wait('@Markets');
   marketsPage.validateMarketsAreDisplayed();
 });
 
