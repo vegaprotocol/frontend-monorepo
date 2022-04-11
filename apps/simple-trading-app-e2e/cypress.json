@@ -1,5 +1,8 @@
 {
+  "baseUrl": "http://localhost:4200",
   "fileServerFolder": ".",
+  "testFiles": "*.{ts,feature,features}",
+  "ignoreTestFiles": "**/*.js",
   "fixturesFolder": "./src/fixtures",
   "integrationFolder": "./src/integration",
   "modifyObstructiveCode": false,
@@ -8,5 +11,6 @@
   "video": true,
   "videosFolder": "../../dist/cypress/apps/simple-trading-app-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/simple-trading-app-e2e/screenshots",
-  "chromeWebSecurity": false
+  "chromeWebSecurity": false,
+  "projectId": "et4snf"
 }
