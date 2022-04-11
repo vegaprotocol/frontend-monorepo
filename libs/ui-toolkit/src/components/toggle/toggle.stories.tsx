@@ -1,13 +1,13 @@
-import type { Story, Meta } from '@storybook/react';
+import type { ComponentStory, ComponentMeta } from '@storybook/react';
 import { Toggle } from './toggle';
 import { useState } from 'react';
 
 export default {
   component: Toggle,
   title: 'Toggle',
-} as Meta;
+} as ComponentMeta<typeof Toggle>;
 
-export const Controlled: Story = () => {
+export const Controlled: ComponentStory<typeof Toggle> = () => {
   const [checked, setChecked] = useState('test-1');
 
   return (
@@ -30,8 +30,9 @@ export const Controlled: Story = () => {
   );
 };
 
-// @ts-ignore args provided after
-const UncontrolledTemplate: Story = (args) => <Toggle {...args} />;
+const UncontrolledTemplate: ComponentStory<typeof Toggle> = (args) => (
+  <Toggle {...args} />
+);
 
 export const Uncontrolled = UncontrolledTemplate.bind({});
 Uncontrolled.args = {

@@ -12,7 +12,7 @@ type TogglesArr = [
   ...moreToggles: ToggleProps[]
 ];
 
-interface ToggleInputProps {
+export interface ToggleInputProps {
   name: string;
   toggles: TogglesArr;
   className?: string;
