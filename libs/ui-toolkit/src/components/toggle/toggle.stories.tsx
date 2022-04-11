@@ -11,7 +11,6 @@ export const Controlled: ComponentStory<typeof Toggle> = () => {
   const [checked, setChecked] = useState('test-1');
 
   return (
-    // Wrapping in a form to scope the effect of the radios (stops light and dark theme versions colliding)
     <form>
       <Toggle
         name="controlled"
