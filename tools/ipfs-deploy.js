@@ -33,6 +33,11 @@ function getFleekLastBuildCommit(siteId) {
   return commit;
 }
 
+/**
+ * Triggers a Fleek build of the latest code via GraphQL
+ * @param {String} siteId
+ * @returns
+ */
 function triggerDeploy(siteId) {
   const curl = `curl 'https://api.fleek.co/graphql' --silent -X POST -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Authorization: ${process.env['FLEEK_API_KEY']}' --data-raw '{"query":"mutation {triggerDeploy(commit: \\"HEAD\\", siteId: \\"${siteId}\\"){status}}","variables":null}'`;
   const fleekRes = execSync(curl);

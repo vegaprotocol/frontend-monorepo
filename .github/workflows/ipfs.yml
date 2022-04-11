@@ -25,4 +25,4 @@ jobs:
         with:
           node-version: 16.14.0
       - name: Run deploy for affected sites
-        run: yarn nx print-affected --base=origin/master~1 --head=origin/master --select=projects | ./tools/ipfs-deploy.js
+        run: ./tools/ipfs-deploy.js
