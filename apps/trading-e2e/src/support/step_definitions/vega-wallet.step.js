@@ -23,8 +23,7 @@ beforeEach(() => {
           version: 1,
         },
         From: {
-          PubKey:
-            '47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278',
+          PubKey: Cypress.env('vegaPublicKey'),
         },
         version: 2,
         pow: {
