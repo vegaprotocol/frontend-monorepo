@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ThemeSwitcher, Icon } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Search } from '../search';
-import { Routes } from '../../routes/router-config';
+import { Routes } from '../../routes/route-names';
 
 interface ThemeToggleProps {
   toggleTheme: () => void;

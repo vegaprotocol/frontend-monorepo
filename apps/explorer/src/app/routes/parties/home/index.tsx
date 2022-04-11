@@ -3,7 +3,7 @@ import { RouteTitle } from '../../../components/route-title';
 import { JumpTo } from '../../../components/jump-to';
 
 import { useNavigate } from 'react-router-dom';
-import { Routes } from '../../router-config';
+import { Routes } from '../../route-names';
 import { t } from '@vegaprotocol/react-helpers';
 
 export const JumpToParty = () => {

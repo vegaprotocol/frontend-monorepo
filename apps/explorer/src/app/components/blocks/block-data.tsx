@@ -1,6 +1,6 @@
 import React from 'react';
 import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
-import { Routes } from '../../routes/router-config';
+import { Routes } from '../../routes/route-names';
 import { Link } from 'react-router-dom';
 import { SecondsAgo } from '../seconds-ago';
 import { TableWithTbody, TableRow, TableCell } from '../table';

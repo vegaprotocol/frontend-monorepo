@@ -3,7 +3,7 @@ import { FormGroup, Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Routes } from '../../routes/router-config';
+import { Routes } from '../../routes/route-names';
 
 const TX_LENGTH = 64;
 

@@ -1,4 +1,4 @@
-import { Routes } from '../../router-config';
+import { Routes } from '../../route-names';
 import type { Result } from '../tendermint-transaction-response.d';
 import {
   TableWithTbody,

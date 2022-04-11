@@ -13,7 +13,7 @@ import {
 } from '../../../components/table';
 import { TxsPerBlock } from '../../../components/txs/txs-per-block';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { Routes } from '../../router-config';
+import { Routes } from '../../route-names';
 import { RenderFetched } from '../../../components/render-fetched';
 import { HighlightedLink } from '../../../components/highlighted-link';
 import { t } from '@vegaprotocol/react-helpers';
