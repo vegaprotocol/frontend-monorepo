@@ -11,7 +11,7 @@ When('I click on market for {string}', (marketText) => {
 When('I click on active market', () => {
   if (Cypress.env('bypassPlacingOrders' != true)) {
     marketsPage.clickOnMarket('Active');
-  } else marketsPage.clickOnTopMarketRow();
+  } else marketsPage.clickOnMarket('BTCUSD');
 });
 
 When('place a buy {string} market order', (orderType) => {
