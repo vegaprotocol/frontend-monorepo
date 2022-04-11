@@ -4,6 +4,11 @@ import VegaWallet from '../vega-wallet';
 const vegaWallet = new VegaWallet();
 
 beforeEach(() => {
+  // The two important values here are the signature.value and the From.Pubkey.
+  // From.PubKey is the first public key in the UI_Trading_Test wallet. We assert that the returned pubkey matches
+  // what is used to sign the transaction
+  // The tx.signature.value isn't currently used in any tests but the value returned is used to create IDs objects such
+  // as orders, if its invalid an erro will be thrown
   cy.intercept('POST', 'http://localhost:1789/api/v1/command/sync', {
     body: {
       txHash: 'test-tx-hash',
@@ -19,8 +24,7 @@ beforeEach(() => {
         },
         From: {
           PubKey:
-            // TODO: Use same pubkey as the test wallet
-            'f8885edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f',
+            '47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278',
         },
         version: 2,
         pow: {
