@@ -3,27 +3,27 @@ import DealTicket from '../trading-windows/deal-ticket';
 
 const dealTicket = new DealTicket();
 
-When('place a buy {string} market order', (orderType) => {
+When('I place a buy {string} market order', (orderType) => {
   dealTicket.placeMarketOrder(true, 100, orderType);
   dealTicket.clickPlaceOrder();
 });
 
-When('place a sell {string} market order', (orderType) => {
+When('I place a sell {string} market order', (orderType) => {
   dealTicket.placeMarketOrder(false, 100, orderType);
   dealTicket.clickPlaceOrder();
 });
 
-When('place a buy {string} limit order', (limitOrderType) => {
+When('I place a buy {string} limit order', (limitOrderType) => {
   dealTicket.placeLimitOrder(true, 100, 2000, limitOrderType);
   dealTicket.clickPlaceOrder();
 });
 
-When('place a sell {string} limit order', (limitOrderType) => {
+When('I place a sell {string} limit order', (limitOrderType) => {
   dealTicket.placeLimitOrder(false, 100, 2000, limitOrderType);
   dealTicket.clickPlaceOrder();
 });
 
-When('place a buy {string} market order with amount of 0', (orderType) => {
+When('I place a buy {string} market order with amount of 0', (orderType) => {
   dealTicket.placeMarketOrder(true, 0, orderType);
   dealTicket.clickPlaceOrder();
 });
