@@ -11,7 +11,7 @@ import { generateDealTicketQuery } from '../../../../../libs/deal-ticket/src/__t
 import { generateMarket } from '../../../../trading/pages/markets/__tests__';
 /* eslint-enable @nrwl/nx/enforce-module-boundaries */
 
-const mockMarket = (state: MarketState) => {
+const mockMarket = (state) => {
   cy.mockGQL('Market', (req) => {
     if (hasOperationName(req, 'Market')) {
       req.reply({
