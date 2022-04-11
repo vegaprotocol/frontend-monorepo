@@ -1,9 +1,0 @@
-{
-  "data": {
-    "market": {
-      "id": "test-market-active",
-      "name": "ACTIVE MARKET",
-      "__typename": "Market"
-    }
-  }
-}

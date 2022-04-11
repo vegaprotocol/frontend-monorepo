@@ -25,6 +25,7 @@ Then('the market table is displayed', () => {
 import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import MarketsPage from '../pages/markets-page';
+import { generateMarkets } from '../queries/markets';
 
 const marketsPage = new MarketsPage();
 
@@ -32,7 +33,7 @@ const mockMarkets = () => {
   cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', (req) => {
     if (hasOperationName(req, 'Markets')) {
       req.reply({
-        fixture: 'markets/markets.json',
+        body: generateMarkets(),
       });
     }
   }).as('Markets');

@@ -9,12 +9,7 @@ export default class MarketPage extends BasePage {
   marketRowDescription = 'name';
 
   validateMarketsAreDisplayed() {
-    cy.fixture('markets/markets.json').then((f) => {
-      cy.get('.ag-root-wrapper').should('be.visible');
-      f.data.markets.forEach((m) => {
-        cy.contains(m.name);
-      });
-    });
+    cy.get('.ag-root-wrapper').should('be.visible');
   }
 
   validateMarketTableDisplayed() {

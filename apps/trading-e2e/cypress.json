@@ -1,7 +1,7 @@
 {
   "baseUrl": "http://localhost:4200",
   "fileServerFolder": ".",
-  "fixturesFolder": "./src/fixtures",
+  "fixturesFolder": false,
   "pluginsFile": "./src/plugins/index.js",
   "testFiles": "*.{ts,feature,features}",
   "ignoreTestFiles": "**/*.js",
