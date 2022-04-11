@@ -1,28 +1,4 @@
-<<<<<<< HEAD
-import { When, Then } from 'cypress-cucumber-preprocessor/steps';
-import MarketsPage from '../pages/markets-page';
-const marketsPage = new MarketsPage();
-
-When('I click on market for {string}', (marketText) => {
-  marketsPage.clickOnMarket(marketText);
-});
-
-When('I click on active market', () => {
-  if (Cypress.env('bypassPlacingOrders' != true)) {
-    marketsPage.clickOnMarket('Active');
-  } else {
-    marketsPage.clickOnTopMarketRow();
-  }
-});
-
-When('I click on suspended market', () => {
-  marketsPage.clickOnMarket('Suspended');
-});
-
-Then('the market table is displayed', () => {
-  marketsPage.validateMarketTableDisplayed();
-=======
-import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
+import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import MarketsPage from '../pages/markets-page';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
@@ -58,11 +34,14 @@ Then('I can view markets', () => {
   marketsPage.validateMarketsAreDisplayed();
 });
 
+And('the market table is displayed', () => {
+  marketsPage.validateMarketTableDisplayed();
+});
+
 When('I click on an active market', () => {
   marketsPage.clickOnMarket('Active');
 });
 
 When('I click on a suspended market', () => {
   marketsPage.clickOnMarket('Suspended');
->>>>>>> bb936507 (add portfolio page feature, add market page scenarios)
 });
