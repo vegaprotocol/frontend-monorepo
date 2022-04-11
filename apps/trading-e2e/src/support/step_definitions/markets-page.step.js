@@ -9,7 +9,9 @@ When('I click on market for {string}', (marketText) => {
 When('I click on active market', () => {
   if (Cypress.env('bypassPlacingOrders' != true)) {
     marketsPage.clickOnMarket('Active');
-  } else marketsPage.clickOnTopMarketRow();
+  } else {
+    marketsPage.clickOnTopMarketRow();
+  }
 });
 
 When('I click on suspended market', () => {
