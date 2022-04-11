@@ -63,7 +63,8 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   );
   const { data, error, loading } = useDataProvider<
     Accounts_party_accounts[],
-    AccountSubscribe_accounts
+    AccountSubscribe_accounts,
+    never
   >(accountsDataProvider, update, variables);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>

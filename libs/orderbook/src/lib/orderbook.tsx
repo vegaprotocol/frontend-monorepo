@@ -10,22 +10,7 @@ import {
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-
-export interface OrderbookData {
-  price: number;
-  bidVol?: number;
-  bidVolByLevel?: Record<number, number>;
-  relativeBidVol?: number;
-  askVol?: number;
-  askVolByLevel?: Record<number, number>;
-  relativeAskVol?: number;
-  cummulativeVol: {
-    bid?: number;
-    relativeBid?: number;
-    ask?: number;
-    relativeAsk?: number;
-  };
-}
+import type { OrderbookData } from './orderbook-data';
 interface OrderbookValueFormatterParams extends ValueFormatterParams {
   data: OrderbookData;
 }
