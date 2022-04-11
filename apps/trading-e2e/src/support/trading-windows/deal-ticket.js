@@ -63,10 +63,8 @@ export default class DealTicket {
   }
 
   clickPlaceOrder() {
-    // if (Cypress.env('bypassPlacingOrders' != true)) {
     cy.getByTestId(this.placeOrderBtn).click();
     cy.contains('Awaiting network confirmation');
-    // }
   }
 
   verifyPlaceOrderBtnDisabled() {

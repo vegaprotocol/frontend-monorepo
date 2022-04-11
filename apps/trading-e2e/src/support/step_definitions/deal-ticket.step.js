@@ -29,9 +29,7 @@ When('I place a buy {string} market order with amount of 0', (orderType) => {
 });
 
 Then('order request is sent', () => {
-  // if (Cypress.env('bypassPlacingOrders' != true)) {
   dealTicket.verifyOrderRequestSent();
-  // }
 });
 
 Then('error message for insufficient funds is displayed', () => {
