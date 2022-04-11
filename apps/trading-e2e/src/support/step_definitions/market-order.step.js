@@ -1,18 +1,7 @@
 import { Then, When } from 'cypress-cucumber-preprocessor/steps';
-import MarketsPage from '../pages/markets-page';
+
 import DealTicketPage from '../pages/deal-ticket-page';
-const marketsPage = new MarketsPage();
 const dealTicketPage = new DealTicketPage();
-
-When('I click on market for {string}', (marketText) => {
-  marketsPage.clickOnMarket(marketText);
-});
-
-When('I click on active market', () => {
-  if (Cypress.env('bypassPlacingOrders' != true)) {
-    marketsPage.clickOnMarket('Active');
-  } else marketsPage.clickOnTopMarketRow();
-});
 
 When('place a buy {string} market order', (orderType) => {
   dealTicketPage.placeMarketOrder(true, 100, orderType);
@@ -37,10 +26,6 @@ When('place a sell {string} limit order', (limitOrderType) => {
 When('place a buy {string} market order with amount of 0', (orderType) => {
   dealTicketPage.placeMarketOrder(true, 0, orderType);
   dealTicketPage.clickPlaceOrder();
-});
-
-When('I click on suspended market', () => {
-  marketsPage.clickOnMarket('Suspended');
 });
 
 Then('order request is sent', () => {
