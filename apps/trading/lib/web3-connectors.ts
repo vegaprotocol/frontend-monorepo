@@ -6,17 +6,21 @@ export const metamask = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
 );
 
-const infuraId = process.env['NX_INFURA_ID'];
+const CHAIN_ID = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
+const PROVIDER_URL = process.env['NX_ETHEREUM_PROVIDER_URL'] as string;
+
+if (isNaN(CHAIN_ID)) {
+  throw new Error('Invalid Ethereum chain ID for environment');
+}
 
 export const walletconnect = initializeConnector<WalletConnect>(
   (actions) =>
     new WalletConnect(actions, {
       rpc: {
-        1: `https://mainnet.infura.io/v3/${infuraId}`,
-        3: `https://ropsten.infura.io/v3/${infuraId}`,
+        [CHAIN_ID]: PROVIDER_URL,
       },
     }),
-  [1, 3]
+  [CHAIN_ID]
 );
 
 export const Connectors = {

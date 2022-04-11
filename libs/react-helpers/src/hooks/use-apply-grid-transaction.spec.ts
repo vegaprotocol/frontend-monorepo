@@ -1,6 +1,5 @@
 import { useApplyGridTransaction } from './use-apply-grid-transaction';
 import { renderHook } from '@testing-library/react-hooks';
-import { GridApi } from 'ag-grid-community';
 
 type Items = Array<{ id: string; value: number }>;
 
@@ -25,6 +24,7 @@ function setup(items: Items, rowNodes: Items) {
       return undefined;
     },
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderHook(() => useApplyGridTransaction(items, gridApiMock as any));
   return gridApiMock;
 }

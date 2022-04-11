@@ -1,2 +1,2 @@
-[build]
-  ignore = "node ignore-netlify-build.js"
+[functions]
+  included_files = ["!node_modules/@sentry/cli/sentry-cli"]

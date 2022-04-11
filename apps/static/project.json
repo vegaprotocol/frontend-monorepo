@@ -1,0 +1,60 @@
+{
+  "projectType": "application",
+  "root": "apps/static",
+  "sourceRoot": "apps/static/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/static",
+        "compiler": "babel",
+        "index": "apps/static/src/index.html",
+        "generateIndexHtml": false,
+        "baseHref": "/",
+        "main": "apps/static/src/main.ts",
+        "tsConfig": "apps/static/tsconfig.app.json",
+        "assets": ["apps/static/src/favicon.ico", "apps/static/src/assets"],
+        "styles": [
+          {
+            "input": "apps/static/src/fonts.scss",
+            "bundleName": "fonts"
+          }
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "optimization": false,
+          "outputHashing": "none",
+          "sourceMap": false,
+          "namedChunks": false,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "options": {
+        "buildTarget": "static:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "static:build:production"
+        }
+      }
+    },
+
+    "build-netlify": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "cp apps/static/netlify.toml netlify.toml",
+          "nx build static"
+        ]
+      }
+    }
+  }
+}

@@ -34,6 +34,7 @@ export interface Data {
 }
 
 export interface Evidence {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   evidence: any[];
 }
 

@@ -8,8 +8,7 @@ interface AsyncRendererProps<T> {
   children: (data: T) => ReactNode;
 }
 
-// eslint-disable-next-line
-export function AsyncRenderer<T = any>({
+export function AsyncRenderer<T = object>({
   loading,
   error,
   data,

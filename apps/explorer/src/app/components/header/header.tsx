@@ -1,20 +1,34 @@
-import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import type { Dispatch, SetStateAction } from 'react';
+import { Link } from 'react-router-dom';
+import { ThemeSwitcher, Icon } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Search } from '../search';
+import { Routes } from '../../routes/router-config';
 
 interface ThemeToggleProps {
   toggleTheme: () => void;
+  menuOpen: boolean;
+  setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Header = ({ toggleTheme }: ThemeToggleProps) => {
+export const Header = ({
+  toggleTheme,
+  menuOpen,
+  setMenuOpen,
+}: ThemeToggleProps) => {
   return (
-    <header className="flex items-center px-16 py-16 border-b-1 col-start-1 col-end-3 row-start-1 row-end-2">
-      <h1
-        className="text-h3 font-alpha uppercase calt"
-        data-testid="explorer-header"
-      >
-        {t('Vega Explorer')}
-      </h1>
+    <header className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-b-1">
+      <Link to={Routes.HOME}>
+        <h1
+          className="text-h3 font-alpha uppercase calt"
+          data-testid="explorer-header"
+        >
+          {t('Vega Explorer')}
+        </h1>
+      </Link>
+      <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+        <Icon name={menuOpen ? 'cross' : 'menu'} size={20} />
+      </button>
       <Search />
       <ThemeSwitcher onToggle={toggleTheme} />
     </header>

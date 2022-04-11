@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
+import { getVariantBackground } from '../../utils/intent';
+import type { TailwindIntents } from '../../utils/intent';
 
 interface LozengeProps {
   children: ReactNode;
-  variant?: 'success' | 'warning' | 'danger' | 'highlight';
+  variant?: TailwindIntents;
   className?: string;
   details?: string;
 }
@@ -13,13 +15,10 @@ const getWrapperClasses = (className: LozengeProps['className']) => {
 };
 
 const getLozengeClasses = (variant: LozengeProps['variant']) => {
-  return classNames(['rounded-md', 'font-mono', 'leading-none', 'p-4'], {
-    'bg-intent-success text-black': variant === 'success',
-    'bg-intent-danger text-white': variant === 'danger',
-    'bg-intent-warning text-black': variant === 'warning',
-    'bg-intent-highlight text-black': variant === 'highlight',
-    'bg-intent-help text-white': !variant,
-  });
+  return classNames(
+    ['rounded-md', 'font-mono', 'leading-none', 'p-4'],
+    getVariantBackground(variant)
+  );
 };
 
 export const Lozenge = ({

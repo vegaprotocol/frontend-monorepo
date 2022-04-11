@@ -12,7 +12,7 @@ import isEqual from 'lodash/isEqual';
 
 export interface UpdateCallback<Data, Delta> {
   (arg: {
-    data: Data[] | null;
+    data: Data | null;
     error?: Error;
     loading: boolean;
     delta?: Delta;
@@ -30,11 +30,11 @@ export interface Subscribe<Data, Delta> {
 type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
 interface Update<Data, Delta> {
-  (draft: Draft<Data>[], delta: Delta): void;
+  (draft: Draft<Data>, delta: Delta): void;
 }
 
 interface GetData<QueryData, Data> {
-  (subscriptionData: QueryData): Data[] | null;
+  (subscriptionData: QueryData): Data | null;
 }
 
 interface GetDelta<SubscriptionData, Delta> {
@@ -53,7 +53,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   const updateQueue: Delta[] = [];
 
   let variables: OperationVariables | undefined = undefined;
-  let data: Data[] | null = null;
+  let data: Data | null = null;
   let error: Error | undefined = undefined;
   let loading = false;
   let client: ApolloClient<object> | undefined = undefined;
@@ -86,6 +86,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       .subscribe<SubscriptionData>({
         query: subscriptionQuery,
         variables,
+        fetchPolicy,
       })
       .subscribe(({ data: subscriptionData }) => {
         if (!subscriptionData) {

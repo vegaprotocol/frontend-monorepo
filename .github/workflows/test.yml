@@ -26,13 +26,13 @@ jobs:
         id: Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 16.14.0
       - name: Install root dependencies
         run: yarn install
       - name: Check formatting
         run: yarn nx format:check
       - name: Lint affected
-        run: yarn nx affected:lint
+        run: yarn nx affected:lint --max-warnings=0
       - name: Test affected
         run: yarn nx affected:test
       - name: Build affected
@@ -54,13 +54,13 @@ jobs:
         id: Node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 16.14.0
       - name: Install root dependencies
         run: yarn install
       - name: Check formatting
         run: yarn nx format:check
       - name: Lint affected
-        run: yarn nx affected:lint
+        run: yarn nx affected:lint --max-warnings=0
       - name: Test affected
         run: yarn nx affected:test
       - name: Build affected

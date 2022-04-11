@@ -1,0 +1,43 @@
+{
+  "root": "libs/trades",
+  "sourceRoot": "libs/trades/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/trades",
+        "tsConfig": "libs/trades/tsconfig.lib.json",
+        "project": "libs/trades/package.json",
+        "entryFile": "libs/trades/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/trades/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/trades/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/trades"],
+      "options": {
+        "jestConfig": "libs/trades/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

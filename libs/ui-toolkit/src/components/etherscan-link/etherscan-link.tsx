@@ -1,16 +1,11 @@
+import classNames from 'classnames';
+import type { AnchorHTMLAttributes } from 'react';
 import React from 'react';
-import type { EthereumChainId } from '../../utils/web3';
 
-const etherscanUrls: Record<EthereumChainId, string> = {
-  '0x1': 'https://etherscan.io',
-  '0x3': 'https://ropsten.etherscan.io',
-  '0x4': 'https://rinkeby.etherscan.io',
-  '0x5': 'https://goerli.etherscan.io',
-  '0x2a': 'https://kovan.etherscan.io',
-};
+const ETHERSCAN_URL = process.env['NX_ETHERSCAN_URL'] as string;
 
-interface BaseEtherscanLinkProps {
-  chainId: EthereumChainId | null;
+interface BaseEtherscanLinkProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement> {
   text?: string;
 }
 
@@ -30,23 +25,22 @@ type EtherscanLinkProps =
  * Form an HTML link tag pointing to an appropriate Etherscan page
  */
 export const EtherscanLink = ({
-  chainId,
   text,
+  className,
   ...props
 }: EtherscanLinkProps) => {
   let hash: string;
   let txLink: string | null;
-  const createLink = React.useMemo(
-    () => etherscanLinkCreator(chainId),
-    [chainId]
-  );
+  const anchorClasses = classNames('underline', className);
 
   if ('tx' in props) {
     hash = props.tx;
-    txLink = createLink ? createLink.tx(hash) : null;
-  } else {
+    txLink = `${ETHERSCAN_URL}/tx/${hash}`;
+  } else if ('address' in props) {
     hash = props.address;
-    txLink = createLink ? createLink.address(hash) : null;
+    txLink = `${ETHERSCAN_URL}/address/${hash}`;
+  } else {
+    throw new Error('Must provider either "tx" or "address" prop');
   }
 
   const linkText = text ? text : hash;
@@ -62,28 +56,11 @@ export const EtherscanLink = ({
       href={txLink}
       target="_blank"
       rel="noreferrer"
-      className="etherscan-link"
+      className={anchorClasses}
     >
       {linkText}
     </a>
   );
 };
-
-function etherscanLinkCreator(chainId: EthereumChainId | null) {
-  if (!chainId) return null;
-
-  const url = etherscanUrls[chainId];
-
-  return {
-    tx: (tx: string) => {
-      if (!url) return null;
-      return `${url}/tx/${tx}`;
-    },
-    address: (address: string) => {
-      if (!url) return null;
-      return `${url}/address/${address}`;
-    },
-  };
-}
 
 EtherscanLink.displayName = 'EtherScanLink';

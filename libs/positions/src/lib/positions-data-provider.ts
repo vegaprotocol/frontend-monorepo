@@ -92,7 +92,7 @@ const getDelta = (
 
 export const positionsDataProvider = makeDataProvider<
   Positions,
-  Positions_party_positions,
+  Positions_party_positions[],
   PositionSubscribe,
   PositionSubscribe_positions
 >(POSITION_QUERY, POSITIONS_SUB, update, getData, getDelta);

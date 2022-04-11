@@ -1,64 +1,35 @@
 import { render, screen } from '@testing-library/react';
 import { EtherscanLink } from '.';
-import { EthereumChainIds } from '../../utils/web3';
 
 test('It renders a link with the text', () => {
-  render(
-    <EtherscanLink text="foo" chainId={EthereumChainIds.Mainnet} tx="tx" />
-  );
+  render(<EtherscanLink text="foo" tx="tx" />);
   expect(screen.getByText('foo')).toBeInTheDocument();
 });
 
 test('It renders a link with the tx hash if no text is provided', () => {
-  render(<EtherscanLink chainId={EthereumChainIds.Mainnet} tx="tx" />);
+  render(<EtherscanLink tx="tx" />);
   expect(screen.getByText('tx')).toBeInTheDocument();
 });
 
 test('It renders a link with the address if no text is provided', () => {
-  render(
-    <EtherscanLink chainId={EthereumChainIds.Mainnet} address="address" />
-  );
+  render(<EtherscanLink address="address" />);
   expect(screen.getByText('address')).toBeInTheDocument();
 });
 
-test('It links to etherscan if network is mainnet', () => {
-  render(
-    <EtherscanLink chainId={EthereumChainIds.Mainnet} address="address" />
-  );
+test('It links to etherscan address', () => {
+  const hash = 'hash';
+  render(<EtherscanLink address={hash} />);
   expect(screen.getByTestId('etherscan-link')).toHaveAttribute(
     'href',
-    'https://etherscan.io/address/address'
+    `${process.env['NX_ETHERSCAN_URL']}/address/${hash}`
   );
 });
 
-test('It links to ropsten etherscan if network is ropsten', () => {
-  render(
-    <EtherscanLink chainId={EthereumChainIds.Ropsten} address="address" />
-  );
+test('It links to etherscan transaction', () => {
+  const hash = 'hash';
+  render(<EtherscanLink tx={hash} />);
   expect(screen.getByTestId('etherscan-link')).toHaveAttribute(
     'href',
-    'https://ropsten.etherscan.io/address/address'
+    `${process.env['NX_ETHERSCAN_URL']}/tx/${hash}`
   );
-});
-
-test("Doesn't render for address if chainid is null", () => {
-  render(<EtherscanLink chainId={null} address="address" />);
-  expect(screen.queryByTestId('etherscan-link')).not.toBeInTheDocument();
-});
-
-test("Doesn't render for tx if chainid is null", () => {
-  render(<EtherscanLink chainId={null} tx="tx" />);
-  expect(screen.queryByTestId('etherscan-link')).not.toBeInTheDocument();
-});
-
-test("Doesn't render for address if chainid is unknown", () => {
-  // @ts-ignore wrong chaindId passed
-  render(<EtherscanLink chainId={'foo'} address="address" />);
-  expect(screen.queryByTestId('etherscan-link')).not.toBeInTheDocument();
-});
-
-test("Doesn't render for tx if chainid is unknown", () => {
-  // @ts-ignore wrong chaindId passed
-  render(<EtherscanLink chainId={'foo'} tx="tx" />);
-  expect(screen.queryByTestId('etherscan-link')).not.toBeInTheDocument();
 });

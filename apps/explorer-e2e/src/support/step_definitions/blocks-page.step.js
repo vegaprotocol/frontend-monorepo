@@ -7,8 +7,12 @@ When('I navigate to the blocks page', () => {
   blocksPage.navigateToBlocks();
 });
 
-When('I click on first block', () => {
+When('I click on top block', () => {
   blocksPage.clickOnTopBlockHeight();
+});
+
+When('jump to first block', () => {
+  blocksPage.jumpToBlock('1');
 });
 
 Then('blocks page is correctly displayed', () => {
@@ -17,4 +21,16 @@ Then('blocks page is correctly displayed', () => {
 
 Then('validator block page is correctly displayed', () => {
   blocksPage.validateBlockValidatorPage();
+});
+
+Then('I am on the previous block when I click previous', () => {
+  blocksPage.navigateToPreviousBlock();
+});
+
+Then('previous button is disabled', () => {
+  blocksPage.verifyPreviousBtnDisabled();
+});
+
+Then('I am on the second block when I click next', () => {
+  blocksPage.navigateToNextBlock();
 });

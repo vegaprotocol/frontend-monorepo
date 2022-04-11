@@ -46,6 +46,7 @@ const transactionStatus = 'default';
 
 function generateJsx() {
   return (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <VegaWalletContext.Provider value={{} as any}>
       <DealTicket
         defaultOrder={order}
