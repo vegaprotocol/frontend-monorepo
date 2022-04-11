@@ -32,7 +32,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
 
   return (
     <RenderFetched error={error} loading={loading} className="text-body-large">
-      {decodedBlockData && decodedBlockData.length ? (
+      {decodedBlockData && decodedBlockData.length > 0 ? (
         <div className="overflow-x-auto whitespace-nowrap mb-28">
           <Table>
             <thead>
@@ -76,7 +76,7 @@ export const TxsPerBlock = ({ blockHeight }: TxsPerBlockProps) => {
           </Table>
         </div>
       ) : (
-        <div className="font-mono mb-28">
+        <div className="sr-only">
           {t(`No transactions in block ${blockHeight}`)}
         </div>
       )}
