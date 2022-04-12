@@ -22,7 +22,8 @@ Feature: Deposits to vega wallet
       | Amount        | 50       |
     And I click to the deposit the funds
     And I approve the ethereum transaction
-    Then I can see the deposit is unsuccessful
+  # The following step is valid and are commented out as currently it cannot be automated
+  # Then I can see the deposit is unsuccessful
 
   @todo
   Scenario: Cannot deposit if approved amount is lower than deposit amount
@@ -36,9 +37,8 @@ Feature: Deposits to vega wallet
       | Amount        | 50       |
     And I click to the deposit the funds
     And I approve the ethereum transaction
-    Then I can see the deposit is unsuccessful
-    When I set "2" tokens to be approved
-    And i try to deposit "5" vega
+  # The following step is valid and are commented out as currently it cannot be automated
+  # Then I can see the deposit is unsuccessful
 
   @todo
   Scenario: Can succesfully deposit (approved amount is greater than deposit)
@@ -52,8 +52,9 @@ Feature: Deposits to vega wallet
       | Amount        | 50       |
     And I click to the deposit the funds
     And I approve the ethereum transaction
-    Then I can see the deposit is Successfull
-    And Balance is updated to reflect deposit amount
+  # The following steps are valid and are commented out as currently they cannot be automated
+  # Then I can see the deposit is Successfull
+  # And Balance is updated to reflect deposit amount
 
   @todo
   Scenario: Validation errors where no fields are filled in
@@ -61,7 +62,7 @@ Feature: Deposits to vega wallet
     Then I can see validation errors present
 
   @todo
-  Scenario: Deposit maximum amount you have in the wallet for a given asset
+  Scenario: Use the 'Use Maximum' button to populate amount input with the balance in the connected wallet
     And I can see the deposit form is displayed
     And I select "" asset from the dropdown list
     When I enter the following details
@@ -72,7 +73,7 @@ Feature: Deposits to vega wallet
     Then I can see the field is updated with the maximum amount of the asset from my wallet
 
   @todo
-  Scenario: Transaction fails if attempting to deposit more than available in wallet
+  Scenario: User is warned if the the amount to deposit is greater than what is available in the connected wallet"
     And I can see the deposit form is displayed
     And I select "" asset from the dropdown list
     When I enter the following details
@@ -92,8 +93,9 @@ Feature: Deposits to vega wallet
       | Amount        | 50                         |
     And I click to the deposit the funds
     And I approve the ethereum transaction
-    Then I can see the deposit is Successfull
-    And Balance is updated to reflect deposit amount
+  # The following steps are valid and are commented out as currently they cannot be automated
+  # Then I can see the deposit is Successfull
+  # And Balance is updated to reflect deposit amount
 
   @todo
   Scenario: Deposit when vega wallet is not connected
@@ -106,5 +108,6 @@ Feature: Deposits to vega wallet
       | Amount        | 50       |
     And I click to the deposit the funds
     And I approve the ethereum transaction
-    Then I can see the deposit is unsuccessful
+# The following step is valid and are commented out as currently it cannot be automated
+# Then I can see the deposit is unsuccessful
 
