@@ -40,6 +40,7 @@ export const Orderbook = forwardRef<AgGridReact, OrderbookProps>(
         <AgGridColumn
           headerName={t('Bid Vol')}
           field="bidVol"
+          type="rightAligned"
           cellRenderer="VolCell"
           valueFormatter={({ value, data }: OrderbookValueFormatterParams) => ({
             vol: value,
@@ -49,7 +50,9 @@ export const Orderbook = forwardRef<AgGridReact, OrderbookProps>(
         />
         <AgGridColumn
           headerName={t('Price')}
+          field="price"
           cellRenderer="PriceCell"
+          type="rightAligned"
           valueFormatter={({ value }: OrderbookValueFormatterParams) =>
             formatNumber(value, decimalPlaces)
           }
@@ -60,6 +63,7 @@ export const Orderbook = forwardRef<AgGridReact, OrderbookProps>(
           headerName={t('Ask Vol')}
           field="askVol"
           cellRenderer="VolCell"
+          type="rightAligned"
           valueFormatter={({ value, data }: OrderbookValueFormatterParams) => ({
             vol: value,
             relativeVol: data.relativeAskVol,
@@ -68,6 +72,7 @@ export const Orderbook = forwardRef<AgGridReact, OrderbookProps>(
         />
         <AgGridColumn
           headerName={t('Cumulative Vol')}
+          type="rightAligned"
           field="cummulativeVol"
           cellRenderer="CummulativeVolCell"
         />

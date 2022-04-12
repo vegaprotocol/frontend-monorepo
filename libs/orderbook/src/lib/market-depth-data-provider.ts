@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import { getMockedData } from './market-depth-mock';
 import type {
   MarketDepth,
   MarketDepth_market,
@@ -110,7 +111,8 @@ const update = (
   }
 };
 
-const getData = (responseData: MarketDepth) => responseData.market;
+const getData = (responseData: MarketDepth) =>
+  getMockedData(responseData.market?.id) || responseData.market;
 const getDelta = (subscriptionData: MarketDepthSubscription) =>
   subscriptionData.marketDepthUpdate;
 

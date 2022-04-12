@@ -10,6 +10,13 @@ import type {
   MarketDepthSubscription_marketDepthUpdate_buy,
 } from './__generated__/MarketDepthSubscription';
 
+export interface CummulativeVol {
+  bid?: number;
+  relativeBid?: number;
+  ask?: number;
+  relativeAsk?: number;
+}
+
 export interface OrderbookData {
   price: number;
   bidVol?: number;
@@ -18,16 +25,43 @@ export interface OrderbookData {
   askVol?: number;
   askVolByLevel?: Record<number, number>;
   relativeAskVol?: number;
-  cummulativeVol: {
-    bid?: number;
-    relativeBid?: number;
-    ask?: number;
-    relativeAsk?: number;
-  };
+  cummulativeVol: CummulativeVol;
 }
 
 export const getGroupPrice = (price: number, resolution: number) =>
-  Math.round(price * resolution) / resolution;
+  Math.round(price / resolution) * resolution;
+
+const maxVolumes = (orderbookData: OrderbookData[]) => {
+  let bidVol = 0;
+  let askVol = 0;
+  let cummulativeVol = 0;
+  orderbookData.forEach((data) => {
+    bidVol = Math.max(bidVol, data.bidVol ?? 0);
+    askVol = Math.max(askVol, data.askVol ?? 0);
+  });
+  cummulativeVol = Math.max(
+    orderbookData[0]?.cummulativeVol.ask ?? 0,
+    orderbookData[orderbookData.length - 1]?.cummulativeVol.bid ?? 0
+  );
+  return {
+    bidVol,
+    askVol,
+    cummulativeVol,
+  };
+};
+
+const updateRelativeData = (data: OrderbookData[]) => {
+  const { bidVol, askVol, cummulativeVol } = maxVolumes(data);
+  console.log({ bidVol, askVol, cummulativeVol });
+  data.forEach((data) => {
+    data.relativeAskVol = (data.askVol ?? 0) / askVol;
+    data.relativeBidVol = (data.bidVol ?? 0) / bidVol;
+    data.cummulativeVol.relativeAsk =
+      (data.cummulativeVol.ask ?? 0) / cummulativeVol;
+    data.cummulativeVol.relativeBid =
+      (data.cummulativeVol.bid ?? 0) / cummulativeVol;
+  });
+};
 
 export const compact = (
   sell:
@@ -46,7 +80,7 @@ export const compact = (
 ) => {
   let cummulativeVol = 0;
   const askOrderbookData = (sell ?? [])
-    .reverse()
+    .sort((a, b) => Number(a.price) - Number(b.price))
     .map<OrderbookData>((sell) => ({
       price: Number(sell.price),
       askVol: Number(sell.volume),
@@ -56,13 +90,15 @@ export const compact = (
     }))
     .reverse();
   cummulativeVol = 0;
-  const bidOrderbookData = (buy ?? []).map<OrderbookData>((buy) => ({
-    price: Number(buy.price),
-    bidVol: Number(buy.volume),
-    cummulativeVol: {
-      bid: (cummulativeVol += Number(buy.volume)),
-    },
-  }));
+  const bidOrderbookData = (buy ?? [])
+    .sort((a, b) => Number(b.price) - Number(a.price))
+    .map<OrderbookData>((buy) => ({
+      price: Number(buy.price),
+      bidVol: Number(buy.volume),
+      cummulativeVol: {
+        bid: (cummulativeVol += Number(buy.volume)),
+      },
+    }));
 
   const groupedByLevel = groupBy<OrderbookData>(
     [...askOrderbookData, ...bidOrderbookData],
@@ -83,7 +119,8 @@ export const compact = (
                 c.cummulativeVol.bid ?? 0
               ),
               ask: Math.max(
-                (a.cummulativeVol.ask ?? 0) + (c.cummulativeVol.ask ?? 0)
+                a.cummulativeVol.ask ?? 0,
+                c.cummulativeVol.ask ?? 0
               ),
             },
           }),
@@ -92,7 +129,7 @@ export const compact = (
       ),
     []
   );
-  // orderBookData.sort((a, b) => b.price - a.price);
+  orderbookData.sort((a, b) => b.price - a.price);
   updateRelativeData(orderbookData);
   return orderbookData;
 };
@@ -171,34 +208,3 @@ export const updateCompactedData = (
     }
     updateRelativeData(draft);
   });
-
-const maxVolumes = (orderbookData: OrderbookData[]) => {
-  let bidVol = 0;
-  let askVol = 0;
-  let cummulativeVol = 0;
-  orderbookData.forEach((data) => {
-    bidVol = Math.max(bidVol, data.bidVol ?? 0);
-    askVol = Math.max(askVol, data.askVol ?? 0);
-  });
-  cummulativeVol = Math.max(
-    orderbookData[0]?.cummulativeVol.ask ?? 0,
-    orderbookData[orderbookData.length - 1]?.cummulativeVol.bid ?? 0
-  );
-  return {
-    bidVol,
-    askVol,
-    cummulativeVol,
-  };
-};
-
-export const updateRelativeData = (data: OrderbookData[]) => {
-  const { bidVol, askVol, cummulativeVol } = maxVolumes(data);
-  data.forEach((data) => {
-    data.relativeAskVol = (data.askVol ?? 0) / askVol;
-    data.relativeBidVol = (data.bidVol ?? 0) / bidVol;
-    data.cummulativeVol.relativeAsk =
-      (data.cummulativeVol.ask ?? 0) / cummulativeVol;
-    data.cummulativeVol.relativeBid =
-      (data.cummulativeVol.bid ?? 0) / cummulativeVol;
-  });
-};

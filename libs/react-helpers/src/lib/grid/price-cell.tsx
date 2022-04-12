@@ -8,7 +8,7 @@ export const PriceCell = ({ value, valueFormatted }: IPriceCellProps) => {
     return <span data-testid="price">-</span>;
   }
   return (
-    <span className="font-mono" data-testid="price">
+    <span className="font-mono relative" data-testid="price">
       {valueFormatted}
     </span>
   );

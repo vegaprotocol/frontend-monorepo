@@ -6,40 +6,51 @@ const INTERSECT_COLOR = 'darkgray';
 
 export interface ICummulativeVolCellProps extends ICellRendererParams {
   value: {
-    bid?: number;
-    ask?: number;
+    relativeAsk?: number;
+    relativeBid?: number;
   };
 }
 
 export const CummulativeVolCell = ({ value }: ICummulativeVolCellProps) => {
-  if ((!value && value !== 0) || isNaN(Number(value))) {
-    return <span data-testid="cummulative-vol">-</span>;
-  }
-  const bid = value.bid ? (
+  const bid = value.relativeBid ? (
     <div
       className="h-full absolute top-0 right-0"
       style={{
-        width: `${value.bid * 100}%`,
+        width: `${value.relativeBid * 100}%`,
         backgroundColor:
-          value.ask && value.ask > value.bid ? INTERSECT_COLOR : BID_COLOR,
+          value.relativeAsk && value.relativeAsk > value.relativeBid
+            ? INTERSECT_COLOR
+            : BID_COLOR,
       }}
     ></div>
   ) : null;
-  const ask = value.ask ? (
+  const ask = value.relativeAsk ? (
     <div
       className="h-full absolute top-0 left-0"
       style={{
-        width: `${value.ask * 100}%`,
+        width: `${value.relativeAsk * 100}%`,
         backgroundColor:
-          value.bid && value.bid > value.ask ? INTERSECT_COLOR : ASK_COLOR,
+          value.relativeBid && value.relativeBid > value.relativeAsk
+            ? INTERSECT_COLOR
+            : ASK_COLOR,
       }}
     ></div>
   ) : null;
   return (
-    <div className="relative" data-testid="vol">
-      {value.bid && value.ask && value.bid > value.ask
-        ? `${ask}${bid}`
-        : `${bid}${ask}`}
+    <div className="h-full relative" data-testid="vol">
+      {value.relativeBid &&
+      value.relativeAsk &&
+      value.relativeBid > value.relativeAsk ? (
+        <>
+          {ask}
+          {bid}
+        </>
+      ) : (
+        <>
+          {bid}
+          {ask}
+        </>
+      )}
     </div>
   );
 };
