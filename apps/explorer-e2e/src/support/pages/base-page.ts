@@ -81,7 +81,7 @@ export default class BasePage {
   }
 
   validateBlockDataDisplayed(headerTestId: string) {
-    cy.getByTestId(headerTestId).then(($assetHeaders: JQuery<HTMLElement>) => {
+    cy.getByTestId(headerTestId).then(($assetHeaders) => {
       const headersAmount = Number($assetHeaders.length);
 
       cy.wrap($assetHeaders).each(($header) => {
