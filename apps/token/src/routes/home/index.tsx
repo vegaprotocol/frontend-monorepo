@@ -14,6 +14,7 @@ import type { RouteChildProps } from '..';
 import { Routes } from '../router-config';
 import type { NodeData } from './__generated__/NodeData';
 import { TokenDetails } from './token-details';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const TOTAL_STAKED_QUERY = gql`
   query NodeData {
@@ -61,12 +62,12 @@ const Home = ({ name }: RouteChildProps) => {
         )}
       </p>
       <Link to={Routes.VESTING}>
-        <button
+        <Button
           data-test-id="check-vesting-page-btn"
           className="fill button-secondary"
         >
           {t('Check to see if you can redeem unlocked VEGA tokens')}
-        </button>
+        </Button>
       </Link>
       <h2>{t('USE YOUR VEGA TOKENS')}</h2>
       <p>
@@ -104,9 +105,9 @@ const Home = ({ name }: RouteChildProps) => {
             )}
           </p>
           <Link to={Routes.STAKING}>
-            <button className="button-secondary">
+            <Button className="button-secondary">
               {t('Nominate a validator')}
-            </button>
+            </Button>
           </Link>
         </div>
         <div style={{ flex: 1 }}>
@@ -118,9 +119,9 @@ const Home = ({ name }: RouteChildProps) => {
           </p>
           <p>
             <Link to={Routes.GOVERNANCE}>
-              <button className="button-secondary">
+              <Button className="button-secondary">
                 {t('View Governance proposals')}
-              </button>
+              </Button>
             </Link>
           </p>
         </div>

@@ -1,14 +1,15 @@
-import "./eth-wallet-container.scss";
+import './eth-wallet-container.scss';
 
-import { useWeb3React } from "@web3-react/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { useWeb3React } from '@web3-react/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   AppStateActionType,
   useAppState,
-} from "../../contexts/app-state/app-state-context";
-import { Ethereum } from "../icons";
+} from '../../contexts/app-state/app-state-context';
+import { Ethereum } from '../icons';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 interface EthWalletContainerProps {
   children: (address: string) => React.ReactElement;
@@ -21,9 +22,8 @@ export const EthWalletContainer = ({ children }: EthWalletContainerProps) => {
 
   if (!account) {
     return (
-      <button
+      <Button
         className="eth-wallet-container fill"
-        type="button"
         data-testid="connect-to-eth-btn"
         onClick={() =>
           appDispatch({
@@ -32,9 +32,9 @@ export const EthWalletContainer = ({ children }: EthWalletContainerProps) => {
           })
         }
       >
-        <div>{t("connectEthWallet")}</div>
+        <div>{t('connectEthWallet')}</div>
         <Ethereum />
-      </button>
+      </Button>
     );
   }
 

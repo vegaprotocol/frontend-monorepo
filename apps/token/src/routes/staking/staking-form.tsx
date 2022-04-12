@@ -26,6 +26,7 @@ import type {
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -289,26 +290,24 @@ export const StakingForm = ({
               {removeType === RemoveType.Now ? (
                 <>
                   <p>{t('Want to remove your stake before the epoch ends?')}</p>
-                  <button
-                    type="button"
+                  <Button
                     onClick={() => setRemoveType(RemoveType.EndOfEpoch)}
-                    className="button-link"
+                    variant="inline-link"
                   >
                     {t('Switch to form for removal at end of epoch')}
-                  </button>
+                  </Button>
                 </>
               ) : (
                 <>
                   <p>
                     {t('Want to remove your stake at the end of the epoch?')}
                   </p>
-                  <button
-                    type="button"
+                  <Button
                     onClick={() => setRemoveType(RemoveType.Now)}
-                    className="button-link"
+                    variant="inline-link"
                   >
                     {t('Switch to form for immediate removal')}
-                  </button>
+                  </Button>
                 </>
               )}
             </>

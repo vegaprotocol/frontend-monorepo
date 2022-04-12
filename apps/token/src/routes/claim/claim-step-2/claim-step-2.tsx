@@ -1,15 +1,18 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Button } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { TransactionCallout } from "../../../components/transaction-callout";
-import {
+import { TransactionCallout } from '../../../components/transaction-callout';
+import type {
   TransactionAction,
-  TransactionActionType,
   TransactionState,
+} from '../../../hooks/transaction-reducer';
+import {
+  TransactionActionType,
   TxState,
-} from "../../../hooks/transaction-reducer";
-import { BigNumber } from "../../../lib/bignumber";
-import { formatNumber } from "../../../lib/format-number";
+} from '../../../hooks/transaction-reducer';
+import type { BigNumber } from '../../../lib/bignumber';
+import { formatNumber } from '../../../lib/format-number';
 
 export const ClaimStep2 = ({
   amount,
@@ -37,9 +40,9 @@ export const ClaimStep2 = ({
 
   return (
     <div data-testid="claim-step-2">
-      <button type="submit" onClick={onSubmit} className="fill">
-        {t("Claim {amount} Vega", { amount: formatNumber(amount) })}
-      </button>
+      <Button type="submit" onClick={onSubmit} className="fill">
+        {t('Claim {amount} Vega', { amount: formatNumber(amount) })}
+      </Button>
     </div>
   );
 };

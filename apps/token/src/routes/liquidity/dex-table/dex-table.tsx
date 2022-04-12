@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Button, EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import {
   KeyValueTable,
   KeyValueTableRow,
@@ -160,9 +160,9 @@ const ConnectedRows = ({ lpContractAddress, state }: ConnectedRowsProps) => {
           {hasDeposited && (
             <div style={{ marginTop: 3 }}>
               <Link to={`${Routes.LIQUIDITY}/${lpContractAddress}/withdraw`}>
-                <button className="button-secondary">
+                <Button className="button-secondary">
                   {t('withdrawFromRewardPoolButton')}
-                </button>
+                </Button>
               </Link>
             </div>
           )}

@@ -27,6 +27,7 @@ import {
   WalletCardRow,
 } from '../wallet-card';
 import { Connectors } from '../../lib/web3-connectors';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -165,14 +166,14 @@ const ConnectedKey = () => {
       )}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/associate`}>
-          <button className="button-secondary button-secondary--light">
+          <Button className="button-secondary button-secondary--light">
             {t('associate')}
-          </button>
+          </Button>
         </Link>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/disassociate`}>
-          <button className="button-secondary button-secondary--light">
+          <Button className="button-secondary button-secondary--light">
             {t('disassociate')}
-          </button>
+          </Button>
         </Link>
       </WalletCardActions>
     </>
@@ -194,7 +195,7 @@ export const EthWallet = () => {
             <div>{truncateMiddle(account)}</div>
             {pendingTxs && (
               <div>
-                <button
+                <Button
                   className="eth-wallet__pending-tx-button"
                   data-testid="pending-transactions-btn"
                   onClick={() =>
@@ -203,11 +204,10 @@ export const EthWallet = () => {
                       isOpen: true,
                     })
                   }
-                  type="button"
                 >
                   <Loader />
                   {t('pendingTransactions')}
-                </button>
+                </Button>
               </div>
             )}
           </div>
@@ -217,8 +217,7 @@ export const EthWallet = () => {
         {account ? (
           <ConnectedKey />
         ) : (
-          <button
-            type="button"
+          <Button
             className="fill button-secondary--inverted"
             onClick={() =>
               appDispatch({
@@ -229,17 +228,16 @@ export const EthWallet = () => {
             data-test-id="connect-to-eth-wallet-button"
           >
             {t('connectEthWalletToAssociate')}
-          </button>
+          </Button>
         )}
         {account && (
           <WalletCardActions>
-            <button
-              className="button-link button-link--dark"
+            <Button
+              variant="inline-link"
               onClick={() => connector.deactivate()}
-              type="button"
             >
               {t('disconnect')}
-            </button>
+            </Button>
           </WalletCardActions>
         )}
       </WalletCardContent>

@@ -1,17 +1,18 @@
-import "./tranche-table.scss";
+import './tranche-table.scss';
 
-import React from "react";
-import { Trans, useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import {
   KeyValueTable,
   KeyValueTableRow,
-} from "../../components/key-value-table";
-import { BigNumber } from "../../lib/bignumber";
-import { formatNumber } from "../../lib/format-number";
-import { Routes } from "../router-config";
-import { TrancheItem } from "./tranche-item";
+} from '../../components/key-value-table';
+import { BigNumber } from '../../lib/bignumber';
+import { formatNumber } from '../../lib/format-number';
+import { Routes } from '../router-config';
+import { TrancheItem } from './tranche-item';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export interface TrancheTableProps {
   tranche: {
@@ -42,19 +43,19 @@ export const Tranche0Table = ({
         <KeyValueTableRow data-testid="tranche-table-total">
           <th>
             <span className="tranche-table__label">
-              {t("Tranche")} {trancheId}
+              {t('Tranche')} {trancheId}
             </span>
           </th>
           <td>{formatNumber(total)}</td>
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="tranche-table-locked">
-          <th>{t("Locked")}</th>
+          <th>{t('Locked')}</th>
           <td>{formatNumber(total)}</td>
         </KeyValueTableRow>
       </KeyValueTable>
       <div className="tranche-table__footer" data-testid="tranche-table-footer">
         {t(
-          "All the tokens in this tranche are locked and must be assigned to a tranche before they can be redeemed."
+          'All the tokens in this tranche are locked and must be assigned to a tranche before they can be redeemed.'
         )}
       </div>
     </>
@@ -85,7 +86,7 @@ export const TrancheTable = ({
     message = (
       <div>
         {t(
-          "All the tokens in this tranche are locked and can not be redeemed yet."
+          'All the tokens in this tranche are locked and can not be redeemed yet.'
         )}
       </div>
     );
@@ -106,11 +107,11 @@ export const TrancheTable = ({
     );
   } else if (!trancheFullyLocked && redeemable) {
     message = (
-      <button onClick={onClick} disabled={disabled}>
-        {t("Redeem unlocked VEGA from tranche {{id}}", {
+      <Button onClick={onClick} disabled={disabled}>
+        {t('Redeem unlocked VEGA from tranche {{id}}', {
           id: tranche.tranche_id,
         })}
-      </button>
+      </Button>
     );
   }
   return (

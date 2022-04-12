@@ -1,7 +1,7 @@
 import './index.scss';
 
 import { useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { formatDistance } from 'date-fns';
 // @ts-ignore TODO: check if duration-js has a @types definition
 import Duration from 'duration-js';
@@ -146,7 +146,7 @@ export const RewardsIndex = () => {
             rewardAssetId={rewardAssetData[0]}
           />
         ) : (
-          <button
+          <Button
             className="fill"
             onClick={() =>
               appDispatch({
@@ -156,7 +156,7 @@ export const RewardsIndex = () => {
             }
           >
             {t('connectVegaWallet')}
-          </button>
+          </Button>
         )}
       </section>
     </section>

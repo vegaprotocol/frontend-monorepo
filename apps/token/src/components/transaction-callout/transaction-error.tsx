@@ -1,4 +1,4 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
@@ -25,7 +25,7 @@ export const TransactionError = ({
           <EtherscanLink tx={hash} />
         </p>
       ) : null}
-      <button onClick={() => onActionClick()}>{t('Try again')}</button>
+      <Button onClick={() => onActionClick()}>{t('Try again')}</Button>
     </Callout>
   );
 };

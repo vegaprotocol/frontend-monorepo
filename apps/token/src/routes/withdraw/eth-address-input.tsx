@@ -3,7 +3,7 @@ import {
   InputGroup,
   Intent as BlueprintIntent,
 } from '@blueprintjs/core';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -46,14 +46,14 @@ export const EthAddressInput = ({
         type="text"
         required={true}
       />
-      <button
-        type="button"
-        onClick={() => setUseConnectedWallet(!useConnectedWallet)}
-        className="button-link fill"
-      >
-        {useConnectedWallet ? t('enterAddress') : t('useConnectedWallet')}
-      </button>
-
+      <div className="flex justify-center">
+        <Button
+          variant="inline-link"
+          onClick={() => setUseConnectedWallet(!useConnectedWallet)}
+        >
+          {useConnectedWallet ? t('enterAddress') : t('useConnectedWallet')}
+        </Button>
+      </div>
       {isValid ? null : (
         <Callout intent={Intent.Warning}>{t('invalidAddress')}</Callout>
       )}

@@ -1,10 +1,11 @@
-import "./stateful-button.scss";
+import './stateful-button.scss';
 
-import { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes } from 'react';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const StatefulButton = (
   props: ButtonHTMLAttributes<HTMLButtonElement>
 ) => {
-  const classProp = props.className || "";
-  return <button {...props} className={`stateful-button fill ${classProp}`} />;
+  const classProp = props.className || '';
+  return <Button {...props} className={`stateful-button fill ${classProp}`} />;
 };

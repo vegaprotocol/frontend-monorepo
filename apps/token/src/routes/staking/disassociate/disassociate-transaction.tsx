@@ -1,3 +1,4 @@
+import { Button } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -39,7 +40,7 @@ export const DisassociateTransaction = ({
       }
       completeFooter={
         <Link to={Routes.STAKING}>
-          <button className="fill">{t('backToStaking')}</button>
+          <Button className="fill">{t('backToStaking')}</Button>
         </Link>
       }
       pendingHeading={t('Dissociating Tokens')}

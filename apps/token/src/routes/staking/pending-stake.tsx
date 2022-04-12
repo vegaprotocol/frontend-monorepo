@@ -1,7 +1,7 @@
 import './pending-stake.scss';
 
 import * as Sentry from '@sentry/react';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,10 +9,8 @@ import { Loader } from '../../components/loader';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../lib/bignumber';
 import { removeDecimal } from '../../lib/decimals';
-import {
-  UndelegateSubmissionInput,
-  vegaWalletService,
-} from '../../lib/vega-wallet/vega-wallet-service';
+import type { UndelegateSubmissionInput } from '../../lib/vega-wallet/vega-wallet-service';
+import { vegaWalletService } from '../../lib/vega-wallet/vega-wallet-service';
 
 interface PendingStakeProps {
   pendingAmount: BigNumber;
@@ -83,13 +81,12 @@ export const PendingStake = ({
     <div className="your-stake__container">
       <h2>{t('pendingNomination')}</h2>
       <p>{t('pendingNominationNextEpoch', { pendingAmount })}</p>
-      <button
-        type="button"
+      <Button
         className="button-secondary button-secondary--dark"
         onClick={() => removeStakeNow()}
       >
         {t('cancelPendingEpochNomination')}
-      </button>
+      </Button>
     </div>
   );
 };

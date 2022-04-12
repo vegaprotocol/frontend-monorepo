@@ -1,4 +1,9 @@
-import { Callout, Intent, EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import {
+  Callout,
+  Intent,
+  EtherscanLink,
+  Button,
+} from '@vegaprotocol/ui-toolkit';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -43,7 +48,7 @@ export const Complete = ({
         </p>
       )}
       <Link to={Routes.VESTING}>
-        <button className="fill">{t('Check your vesting VEGA tokens')}</button>
+        <Button className="fill">{t('Check your vesting VEGA tokens')}</Button>
       </Link>
     </Callout>
   );

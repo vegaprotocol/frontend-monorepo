@@ -6,7 +6,7 @@ import {
   Tag,
   Intent as BlueprintIntent,
 } from '@blueprintjs/core';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -54,14 +54,14 @@ export const AmountInput = ({
         step="any"
       />
       {maximum && (
-        <button
-          type="button"
+        <Button
+          variant="inline-link"
           onClick={() => setAmount(maximum.toString())}
           data-testid="token-amount-use-maximum"
-          className="button-link token-input__use-maximum "
+          className="token-input__use-maximum "
         >
           {t('Use maximum')}
-        </button>
+        </Button>
       )}
     </div>
   );
@@ -149,13 +149,13 @@ export const TokenInput = ({
       );
     } else {
       approveContent = (
-        <button
+        <Button
           data-testid="token-input-approve-button"
           className="fill token-input__submit"
           onClick={approve}
         >
           {approveText}
-        </button>
+        </Button>
       );
     }
   } else if (requireApproval) {
@@ -176,14 +176,14 @@ export const TokenInput = ({
         currency={currency}
       />
       {approveContent}
-      <button
+      <Button
         data-testid="token-input-submit-button"
         className="fill token-input__submit"
         disabled={isDisabled}
         onClick={perform}
       >
         {submitText}
-      </button>
+      </Button>
     </FormGroup>
   );
 };

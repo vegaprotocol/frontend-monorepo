@@ -26,6 +26,7 @@ import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
@@ -63,7 +64,7 @@ const VegaWalletNotConnected = () => {
 
   return (
     <>
-      <button
+      <Button
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
@@ -72,10 +73,9 @@ const VegaWalletNotConnected = () => {
         }
         className="fill button-secondary"
         data-testid="connect-vega"
-        type="button"
       >
         {t('connectVegaWalletToUseAssociated')}
-      </button>
+      </Button>
       <DownloadWalletPrompt />
     </>
   );
@@ -127,18 +127,17 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
 
   const footer = (
     <WalletCardActions>
-      <button
-        className="button-link"
+      <Button
+        variant="inline-link"
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
             isOpen: true,
           })
         }
-        type="button"
       >
         Manage
-      </button>
+      </Button>
     </WalletCardActions>
   );
 
@@ -183,10 +182,10 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
       ))}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={Routes.GOVERNANCE}>
-          <button className="button-secondary">{t('governance')}</button>
+          <Button className="button-secondary">{t('governance')}</Button>
         </Link>
         <Link style={{ flex: 1 }} to={Routes.STAKING}>
-          <button className="button-secondary">{t('staking')}</button>
+          <Button className="button-secondary">{t('staking')}</Button>
         </Link>
       </WalletCardActions>
       <VegaWalletAssetList accounts={accounts} />

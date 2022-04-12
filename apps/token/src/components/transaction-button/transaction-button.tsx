@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { TransactionState } from '../../hooks/transaction-reducer';
 import { TxState } from '../../hooks/transaction-reducer';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Button, EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { Error, HandUp, Tick } from '../icons';
 import { Loader } from '../loader';
 import { StatefulButton } from '../stateful-button';
@@ -86,9 +86,9 @@ export const TransactionButton = ({
         <p className={textClassName}>
           <Error />
           <span>{t('txButtonFailure')}</span>
-          <button onClick={reset} type="button" className="button-link">
+          <Button onClick={reset} variant="inline-link">
             {t('Try again')}
-          </button>
+          </Button>
         </p>
         <TransactionButtonFooter txHash={txHash} />
       </div>

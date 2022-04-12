@@ -1,3 +1,4 @@
+import { Button } from '@vegaprotocol/ui-toolkit';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
@@ -20,7 +21,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   if (!keypair) {
     return (
       <p>
-        <button
+        <Button
           className="fill"
           onClick={() =>
             appDispatch({
@@ -30,7 +31,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
           }
         >
           {t('connectVegaWallet')}
-        </button>
+        </Button>
       </p>
     );
   }

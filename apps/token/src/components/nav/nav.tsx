@@ -15,6 +15,7 @@ import vegaWhite from '../../images/vega_white.png';
 import { Routes } from '../../routes/router-config';
 import { EthWallet } from '../eth-wallet';
 import { VegaWallet } from '../vega-wallet';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const Nav = () => {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
@@ -135,8 +136,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   const { appState, appDispatch } = useAppState();
   return (
     <>
-      <button
-        type="button"
+      <Button
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_DRAWER,
@@ -150,7 +150,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
         <span />
         <span />
         <span />
-      </button>
+      </Button>
       <Drawer
         isOpen={appState.drawerOpen}
         onClose={() =>

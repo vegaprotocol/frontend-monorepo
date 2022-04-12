@@ -35,7 +35,7 @@ function App() {
                 <AppStateProvider>
                   <AppLoader>
                     <BalanceManager>
-                      <div className="app">
+                      <div className="app dark">
                         <AppBanner />
                         <TemplateSidebar sidebar={sideBar}>
                           <AppRouter />

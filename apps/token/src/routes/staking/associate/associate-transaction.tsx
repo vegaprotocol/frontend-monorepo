@@ -1,4 +1,4 @@
-import { Callout, EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -86,9 +86,9 @@ export const AssociateTransaction = ({
       )}
       completeFooter={
         <Link to={Routes.STAKING}>
-          <button className="fill">
+          <Button className="fill">
             {t('Nominate Stake to Validator Node')}
-          </button>
+          </Button>
         </Link>
       }
       pendingHeading={t('Associating Tokens')}

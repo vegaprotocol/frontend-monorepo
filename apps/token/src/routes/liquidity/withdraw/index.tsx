@@ -28,6 +28,7 @@ import type {
   LiquidityState,
   LpContractData,
 } from '../liquidity-reducer';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const LiquidityWithdrawPage = ({
   contractData,
@@ -93,7 +94,7 @@ export const LiquidityWithdrawPage = ({
         completeHeading={t('withdrawAllLpSuccessCalloutTitle')}
         completeFooter={
           <Link to={Routes.LIQUIDITY}>
-            <button className="fill">{t('lpTxSuccessButton')}</button>
+            <Button className="fill">{t('lpTxSuccessButton')}</Button>
           </Link>
         }
         reset={() =>
@@ -136,13 +137,13 @@ export const LiquidityWithdrawPage = ({
             </KeyValueTableRow>
           </KeyValueTable>
           <p className="dex-tokens-withdraw__submit">
-            <button
+            <Button
               disabled={!hasLpTokens}
               className="fill"
               onClick={txUnstakePerform}
             >
               {t('withdrawLpWithdrawAllButton')}
-            </button>
+            </Button>
           </p>
         </section>
       )}

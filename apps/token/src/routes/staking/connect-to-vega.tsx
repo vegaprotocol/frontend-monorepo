@@ -1,16 +1,17 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Button } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   AppStateActionType,
   useAppState,
-} from "../../contexts/app-state/app-state-context";
+} from '../../contexts/app-state/app-state-context';
 
 export const ConnectToVega = () => {
   const { appDispatch } = useAppState();
   const { t } = useTranslation();
   return (
-    <button
+    <Button
       onClick={() =>
         appDispatch({
           type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
@@ -20,7 +21,7 @@ export const ConnectToVega = () => {
       className="fill"
       data-test-id="connect-to-vega-wallet-btn"
     >
-      {t("connectVegaWallet")}
-    </button>
+      {t('connectVegaWallet')}
+    </Button>
   );
 };

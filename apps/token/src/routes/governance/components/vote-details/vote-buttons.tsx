@@ -21,6 +21,7 @@ import type {
 } from './__generated__/VoteButtons';
 import { VoteState } from './use-user-vote';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -87,9 +88,8 @@ export const VoteButtons = ({
     if (!keypair) {
       return (
         <>
-          <button
-            type="button"
-            className="button-link"
+          <Button
+            variant="inline-link"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
@@ -99,7 +99,7 @@ export const VoteButtons = ({
             style={{ textDecoration: 'underline', cursor: 'pointer' }}
           >
             {t('connectVegaWallet')}
-          </button>{' '}
+          </Button>{' '}
           {t('toVote')}
         </>
       );
@@ -146,14 +146,15 @@ export const VoteButtons = ({
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
         {proposalState === ProposalState.Open ? (
-          <button
-            className="button-link text-yellow"
+          <Button
+            variant="inline-link"
+            className="text-yellow"
             onClick={() => {
               setChangeVote(true);
             }}
           >
             {t('changeVote')}
-          </button>
+          </Button>
         ) : null}
       </p>
     );
@@ -166,20 +167,18 @@ export const VoteButtons = ({
   return (
     <div className="vote-buttons">
       <div className="vote-buttons__button-container">
-        <button
-          type="button"
+        <Button
           onClick={() => submitVote(VoteValue.Yes)}
           className="vote-buttons__button"
         >
           {t('voteFor')}
-        </button>
-        <button
-          type="button"
+        </Button>
+        <Button
           onClick={() => submitVote(VoteValue.No)}
           className="vote-buttons__button"
         >
           {t('voteAgainst')}
-        </button>
+        </Button>
       </div>
     </div>
   );

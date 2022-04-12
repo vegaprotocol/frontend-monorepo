@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router';
@@ -72,10 +73,10 @@ export const ClaimForm = ({
   }
 
   return (
-    <button type="submit" onClick={handleOnClick} className="fill">
+    <Button type="submit" onClick={handleOnClick} className="fill">
       {countryCheck === CountryCheck.Pending
         ? t('verifyingCountryPrompt')
         : t('Continue')}
-    </button>
+    </Button>
   );
 };

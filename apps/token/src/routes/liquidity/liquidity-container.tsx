@@ -1,6 +1,6 @@
 import './liquidity-container.scss';
 
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useOutletContext } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
@@ -33,9 +33,9 @@ export const LiquidityContainer = () => {
       </ul>
       <p>
         <a href={Links.SUSHI_ONSEN_MENU}>
-          <button className="fill button-secondary">
+          <Button className="fill button-secondary">
             {t('liquidityOnsenButtonText')}
-          </button>
+          </Button>
         </a>
       </p>
 

@@ -1,3 +1,4 @@
+import { Button } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactNode } from 'react';
@@ -51,7 +52,7 @@ export const Web3Content = ({
     return (
       <SplashScreen>
         <p>Something went wrong: {error.message}</p>
-        <button onClick={() => connector.deactivate()}>Disconnect</button>
+        <Button onClick={() => connector.deactivate()}>Disconnect</Button>
       </SplashScreen>
     );
   }
@@ -60,7 +61,7 @@ export const Web3Content = ({
     return (
       <SplashScreen>
         <p>Connect your Ethereum wallet</p>
-        <button onClick={() => setDialogOpen(true)}>Connect</button>
+        <Button onClick={() => setDialogOpen(true)}>Connect</Button>
       </SplashScreen>
     );
   }
@@ -69,7 +70,7 @@ export const Web3Content = ({
     return (
       <SplashScreen>
         <p className="mb-12">This app only works on chain ID: {appChainId}</p>
-        <button onClick={() => connector.deactivate()}>Disconnect</button>
+        <Button onClick={() => connector.deactivate()}>Disconnect</Button>
       </SplashScreen>
     );
   }

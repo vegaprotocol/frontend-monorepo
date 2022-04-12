@@ -1,6 +1,7 @@
-import { useTranslation } from "react-i18next";
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { useTranslation } from 'react-i18next';
 
-import { useAddAssetToWallet } from "../../hooks/use-add-asset-to-wallet";
+import { useAddAssetToWallet } from '../../hooks/use-add-asset-to-wallet';
 
 export const AddTokenButtonLink = ({
   address,
@@ -24,9 +25,9 @@ export const AddTokenButtonLink = ({
     return null;
   }
   return (
-    <button className="add-token-button button-link" onClick={add}>
-      {t("addTokenToWallet")}
-    </button>
+    <Button variant="inline-link" className="add-token-button" onClick={add}>
+      {t('addTokenToWallet')}
+    </Button>
   );
 };
 
@@ -36,7 +37,7 @@ export const AddTokenButton = ({
   decimals,
   image,
   size = 32,
-  className = "",
+  className = '',
 }: {
   address: string;
   symbol: string;
@@ -55,13 +56,13 @@ export const AddTokenButton = ({
     return null;
   }
   return (
-    <button className="add-token-button button-link" onClick={add}>
+    <Button variant="inline-link" className="add-token-button" onClick={add}>
       <img
         className={className}
         style={{ width: size, height: size }}
         alt="token-logo"
         src={image}
       />
-    </button>
+    </Button>
   );
 };

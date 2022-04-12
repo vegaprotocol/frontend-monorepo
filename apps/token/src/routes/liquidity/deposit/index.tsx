@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Dispatch } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -116,7 +116,7 @@ export const LiquidityDepositPage = ({
         completeBody={t('depositLpSuccessCalloutBody')}
         completeFooter={
           <Link to={Routes.LIQUIDITY}>
-            <button className="fill">{t('lpTxSuccessButton')}</button>
+            <Button className="fill">{t('lpTxSuccessButton')}</Button>
           </Link>
         }
         reset={() => txStakeDispatch({ type: TransactionActionType.TX_RESET })}
