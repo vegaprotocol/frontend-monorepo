@@ -17,11 +17,17 @@ export function removeDecimal(value: string, decimals: number): string {
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
 export const getNumberFormat = memoize(
   (minimumFractionDigits: number) =>
-    new Intl.NumberFormat(getUserLocale(), { minimumFractionDigits })
+    new Intl.NumberFormat(getUserLocale(), {
+      minimumFractionDigits,
+    })
 );
 
-export const formatNumber = (rawValue: string, decimalPlaces: number) => {
+export const formatNumber = (
+  rawValue: string,
+  decimalPlaces: number,
+  formatDecimals: number = decimalPlaces
+) => {
   const x = addDecimal(rawValue, decimalPlaces);
 
-  return getNumberFormat(decimalPlaces).format(Number(x));
+  return getNumberFormat(formatDecimals).format(Number(x));
 };
