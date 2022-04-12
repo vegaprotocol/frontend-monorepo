@@ -6,5 +6,6 @@ export * from './lib/generic-data-provider';
 export * from './lib/i18n';
 export * from './lib/ethereum-error';
 export * from './lib/validate';
+export * from './lib/remove-0x';
 
 export * from './hooks';
