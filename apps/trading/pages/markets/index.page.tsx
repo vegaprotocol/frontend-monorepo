@@ -4,4 +4,8 @@ const Markets = () => {
   return <MarketsContainer />;
 };
 
+Markets.getInitialProps = () => ({
+  page: 'markets',
+});
+
 export default Markets;

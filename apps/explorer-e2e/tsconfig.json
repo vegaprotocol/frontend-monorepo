@@ -3,8 +3,16 @@
   "compilerOptions": {
     "sourceMap": false,
     "outDir": "../../dist/out-tsc",
+    "types": ["cypress", "node"],
     "allowJs": true,
-    "types": ["cypress", "node"]
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*.ts", "src/**/*.js"]
 }

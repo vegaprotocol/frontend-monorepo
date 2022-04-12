@@ -1,5 +1,4 @@
-import BasePage from './base-page';
-export default class DealTicketPage extends BasePage {
+export default class DealTicket {
   marketOrderType = 'order-type-TYPE_MARKET';
   limitOrderType = 'order-type-TYPE_LIMIT';
   buyOrder = 'order-side-SIDE_BUY';
@@ -53,8 +52,7 @@ export default class DealTicketPage extends BasePage {
     );
     cy.getByTestId(this.orderTransactionHash)
       .invoke('text')
-      .should('contain', 'Tx hash: ')
-      .and('have.length.above', 64);
+      .should('contain', 'Tx hash: test-tx-hash');
   }
 
   verifyOrderFailedInsufficientFunds() {
@@ -65,9 +63,8 @@ export default class DealTicketPage extends BasePage {
   }
 
   clickPlaceOrder() {
-    if (Cypress.env('bypassPlacingOrders' != true)) {
-      cy.getByTestId(this.placeOrderBtn).click();
-    }
+    cy.getByTestId(this.placeOrderBtn).click();
+    cy.contains('Awaiting network confirmation');
   }
 
   verifyPlaceOrderBtnDisabled() {
@@ -75,7 +72,10 @@ export default class DealTicketPage extends BasePage {
   }
 
   verifySubmitBtnErrorText(expectedText) {
-    cy.getByTestId(this.inputError).should('have.text', expectedText);
+    cy.getByTestId('dealticket-error-message').should(
+      'have.text',
+      expectedText
+    );
   }
 
   verifyOrderRejected(errorMsg) {

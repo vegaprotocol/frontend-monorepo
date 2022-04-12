@@ -7,15 +7,10 @@ export default class MarketPage extends BasePage {
     'tradableInstrument.instrument.product.settlementAsset.symbol';
   marketRowPrices = 'flash-cell';
   marketRowDescription = 'name';
-  chartTab = 'chart';
-  ticketTab = 'ticket';
-  orderbookTab = 'orderbook';
-  ordersTab = 'orders';
-  positionsTab = 'positions';
-  collateralTab = 'collateral';
-  tradesTab = 'trades';
-  completedTrades = 'market-trades';
-  orderBookTab = 'orderbook';
+
+  validateMarketsAreDisplayed() {
+    cy.get('.ag-root-wrapper').should('be.visible');
+  }
 
   validateMarketTableDisplayed() {
     const expectedMarketHeaders = [
@@ -58,39 +53,7 @@ export default class MarketPage extends BasePage {
     );
   }
 
-  validateCompletedTradesDisplayed() {
-    cy.getByTestId(this.completedTrades).should('not.be.empty');
-  }
-
-  clickOnMarket(marketText) {
-    cy.contains(marketText).click();
-  }
-
-  clickOnActiveMarket() {
-    cy.contains('Active', { timeout: 8000 }).click({ force: true });
-  }
-
-  clickOnTopMarketRow() {
-    cy.get('[col-id="data"]').eq(1).click();
-  }
-
-  clickOnOrdersTab() {
-    cy.getByTestId(this.ordersTab).click();
-  }
-
-  clickOnTicketTab() {
-    cy.getByTestId(this.ticketTab).click();
-  }
-
-  clickOnCollateralTab() {
-    cy.getByTestId(this.collateralTab).click();
-  }
-
-  clickOnTradesTab() {
-    cy.getByTestId(this.tradesTab).click();
-  }
-
-  clickOrderBookTab() {
-    cy.getByTestId(this.orderBookTab).click();
+  clickOnMarket(text) {
+    cy.contains(text).click();
   }
 }
