@@ -1,7 +1,7 @@
-import { Tranche } from "@vegaprotocol/smart-contracts-sdk";
-import React from "react";
+import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import React from 'react';
 
-import { BigNumber } from "../../lib/bignumber";
+import type { BigNumber } from '../../lib/bignumber';
 
 export enum VegaWalletStatus {
   /** Detecting if Vega wallet service is running */
@@ -17,11 +17,6 @@ export interface VegaKey {
   algo: string;
   tainted: boolean;
   meta: Array<{ key: string; value: string }> | null;
-}
-
-export interface VegaKeyExtended extends VegaKey {
-  alias: string;
-  pubShort: string;
 }
 
 export interface UserTrancheBalance {
@@ -72,17 +67,11 @@ export interface AppState {
   /** Whether or not the connect to VEGA wallet overlay is open */
   vegaWalletOverlay: boolean;
 
+  /** Whether or not the manage VEGA wallet overlay is open */
+  vegaWalletManageOverlay: boolean;
+
   /** Whether or not the connect to Ethereum wallet overlay is open */
   ethConnectOverlay: boolean;
-
-  /** Whether or not a Vega wallet service is running, can be Pending, Ready or None */
-  vegaWalletStatus: VegaWalletStatus;
-
-  /** Array of Vega key objects provided by the Vega wallet service */
-  vegaKeys: VegaKeyExtended[] | null;
-
-  /** Current selected Vega key */
-  currVegaKey: VegaKeyExtended | null;
 
   /** Amount of tokens associated with the current Vega key from wallet*/
   walletAssociatedBalance: BigNumber | null;
@@ -115,15 +104,12 @@ export interface AppState {
 
 export enum AppStateActionType {
   UPDATE_ACCOUNT_BALANCES,
-  VEGA_WALLET_INIT,
-  VEGA_WALLET_SET_KEY,
-  VEGA_WALLET_DOWN,
-  VEGA_WALLET_DISCONNECT,
   SET_TOKEN,
   SET_ALLOWANCE,
   REFRESH_BALANCES,
   SET_TRANCHE_DATA,
   SET_VEGA_WALLET_OVERLAY,
+  SET_VEGA_WALLET_MANAGE_OVERLAY,
   SET_ETH_WALLET_OVERLAY,
   SET_DRAWER,
   SET_TRANCHE_ERROR,
@@ -141,17 +127,6 @@ export type AppStateAction =
       lien: BigNumber;
       allowance: BigNumber;
     }
-  | {
-      type: AppStateActionType.VEGA_WALLET_INIT;
-      keys: VegaKey[] | null | undefined;
-      key: string | undefined;
-    }
-  | {
-      type: AppStateActionType.VEGA_WALLET_SET_KEY;
-      key: VegaKeyExtended;
-    }
-  | { type: AppStateActionType.VEGA_WALLET_DOWN }
-  | { type: AppStateActionType.VEGA_WALLET_DISCONNECT }
   | {
       type: AppStateActionType.SET_TOKEN;
       decimals: number;
@@ -182,6 +157,10 @@ export type AppStateAction =
     }
   | {
       type: AppStateActionType.SET_VEGA_WALLET_OVERLAY;
+      isOpen: boolean;
+    }
+  | {
+      type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY;
       isOpen: boolean;
     }
   | {
@@ -225,7 +204,7 @@ export const AppStateContext = React.createContext<
 export function useAppState() {
   const context = React.useContext(AppStateContext);
   if (context === undefined) {
-    throw new Error("useAppState must be used within AppStateProvider");
+    throw new Error('useAppState must be used within AppStateProvider');
   }
   return context;
 }

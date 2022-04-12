@@ -17,6 +17,7 @@ import { formatNumber } from '../../lib/format-number';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
 import { NodeList } from './node-list';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();
@@ -60,19 +61,17 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
 export const StakingStepConnectWallets = () => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
-  const {
-    appState: { currVegaKey },
-    appDispatch,
-  } = useAppState();
+  const { keypair } = useVegaWallet();
+  const { appDispatch } = useAppState();
 
-  if (currVegaKey && account) {
+  if (keypair && account) {
     return (
       <Callout intent={Intent.Success} iconName="tick" title={'Connected'}>
         <p>
           {t('Connected Ethereum address')}&nbsp;
           <EtherscanLink address={account} text={account} />
         </p>
-        <p>{t('stakingVegaWalletConnected', { key: currVegaKey.pub })}</p>
+        <p>{t('stakingVegaWalletConnected', { key: keypair.pub })}</p>
       </Callout>
     );
   }
@@ -113,11 +112,11 @@ export const StakingStepConnectWallets = () => {
           </button>
         </p>
       )}
-      {currVegaKey ? (
+      {keypair ? (
         <Callout
           iconName="tick"
           intent={Intent.Success}
-          title={`Vega wallet connected: ${currVegaKey.pubShort}`}
+          title={`Vega wallet connected: ${keypair.pub}`}
         />
       ) : (
         <ConnectToVega />
@@ -133,9 +132,7 @@ export const StakingStepAssociate = ({
 }) => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
-  const {
-    appState: { currVegaKey },
-  } = useAppState();
+  const { keypair } = useVegaWallet();
 
   if (!account) {
     return (
@@ -145,7 +142,7 @@ export const StakingStepAssociate = ({
         title={t('stakingAssociateConnectEth')}
       />
     );
-  } else if (!currVegaKey) {
+  } else if (!keypair) {
     return (
       <Callout
         intent={Intent.Danger}

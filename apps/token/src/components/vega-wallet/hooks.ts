@@ -1,22 +1,23 @@
-import { gql, useApolloClient } from "@apollo/client";
-import * as Sentry from "@sentry/react";
-import { keyBy, uniq } from "lodash";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { gql, useApolloClient } from '@apollo/client';
+import * as Sentry from '@sentry/react';
+import keyBy from 'lodash/keyBy';
+import uniq from 'lodash/uniq';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { AccountType } from "../../__generated__/globalTypes";
-import { ADDRESSES } from "../../config";
-import { useVegaUser } from "../../hooks/use-vega-user";
-import noIcon from "../../images/token-no-icon.png";
-import vegaBlack from "../../images/vega_black.png";
-import { BigNumber } from "../../lib/bignumber";
-import { addDecimal } from "../../lib/decimals";
-import { WalletCardAssetProps } from "../wallet-card";
-import {
+import { AccountType } from '../../__generated__/globalTypes';
+import { ADDRESSES } from '../../config';
+import noIcon from '../../images/token-no-icon.png';
+import vegaBlack from '../../images/vega_black.png';
+import { BigNumber } from '../../lib/bignumber';
+import { addDecimal } from '../../lib/decimals';
+import type { WalletCardAssetProps } from '../wallet-card';
+import type {
   Delegations,
   Delegations_party_delegations,
   DelegationsVariables,
-} from "./__generated__/Delegations";
+} from './__generated__/Delegations';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -60,7 +61,7 @@ const DELEGATIONS_QUERY = gql`
 
 export const usePollForDelegations = () => {
   const { t } = useTranslation();
-  const { currVegaKey } = useVegaUser();
+  const { keypair } = useVegaWallet();
   const client = useApolloClient();
   const [delegations, setDelegations] = React.useState<
     Delegations_party_delegations[]
@@ -79,17 +80,18 @@ export const usePollForDelegations = () => {
     React.useState<BigNumber>(new BigNumber(0));
 
   React.useEffect(() => {
+    // eslint-disable-next-line
     let interval: any;
     let mounted = true;
 
-    if (currVegaKey?.pub) {
+    if (keypair?.pub) {
       // start polling for delegation
       interval = setInterval(() => {
         client
           .query<Delegations, DelegationsVariables>({
             query: DELEGATIONS_QUERY,
-            variables: { partyId: currVegaKey.pub },
-            fetchPolicy: "network-only",
+            variables: { partyId: keypair.pub },
+            fetchPolicy: 'network-only',
           })
           .then((res) => {
             if (!mounted) return;
@@ -114,14 +116,14 @@ export const usePollForDelegations = () => {
                 .filter((a) => a.type === AccountType.General)
                 .map((a) => {
                   const isVega =
-                    a.asset.source.__typename === "ERC20" &&
+                    a.asset.source.__typename === 'ERC20' &&
                     a.asset.source.contractAddress ===
                       ADDRESSES.vegaTokenAddress;
 
                   return {
                     isVega,
                     name: a.asset.name,
-                    subheading: isVega ? t("collateral") : a.asset.symbol,
+                    subheading: isVega ? t('collateral') : a.asset.symbol,
                     symbol: a.asset.symbol,
                     decimals: a.asset.decimals,
                     balance: new BigNumber(
@@ -130,7 +132,7 @@ export const usePollForDelegations = () => {
                     image: isVega ? vegaBlack : noIcon,
                     border: isVega,
                     address:
-                      a.asset.source.__typename === "ERC20"
+                      a.asset.source.__typename === 'ERC20'
                         ? a.asset.source.contractAddress
                         : undefined,
                   };
@@ -157,13 +159,13 @@ export const usePollForDelegations = () => {
               res.data.party?.delegations?.filter((d) => {
                 return d.epoch === Number(res.data.epoch.id) + 1;
               }) || [],
-              "node.id"
+              'node.id'
             );
             const delegatedThisEpoch = keyBy(
               res.data.party?.delegations?.filter((d) => {
                 return d.epoch === Number(res.data.epoch.id);
               }) || [],
-              "node.id"
+              'node.id'
             );
             const nodesDelegated = uniq([
               ...Object.keys(delegatedNextEpoch),
@@ -225,7 +227,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, currVegaKey?.pub, t]);
+  }, [client, keypair?.pub, t]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };

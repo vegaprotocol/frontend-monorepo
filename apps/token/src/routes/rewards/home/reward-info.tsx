@@ -1,22 +1,22 @@
-import "./reward-info.scss";
+import './reward-info.scss';
 
-import * as Sentry from "@sentry/react";
-import { format } from "date-fns";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import * as Sentry from '@sentry/react';
+import { format } from 'date-fns';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   KeyValueTable,
   KeyValueTableRow,
-} from "../../../components/key-value-table";
-import { VegaKeyExtended } from "../../../contexts/app-state/app-state-context";
-import { BigNumber } from "../../../lib/bignumber";
-import { DATE_FORMAT_DETAILED } from "../../../lib/date-formats";
-import {
+} from '../../../components/key-value-table';
+import { BigNumber } from '../../../lib/bignumber';
+import { DATE_FORMAT_DETAILED } from '../../../lib/date-formats';
+import type {
   Rewards,
   Rewards_party_delegations,
   Rewards_party_rewardDetails_rewards,
-} from "./__generated__/Rewards";
+} from './__generated__/Rewards';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 
 interface RewardInfoProps {
   data: Rewards | undefined;
@@ -26,7 +26,7 @@ interface RewardInfoProps {
 
 // Note: For now the only reward type is Staking. We'll need this from the API
 // at a later date
-const DEFAULT_REWARD_TYPE = "Staking";
+const DEFAULT_REWARD_TYPE = 'Staking';
 
 export const RewardInfo = ({
   data,
@@ -48,7 +48,7 @@ export const RewardInfo = ({
     if (!vegaTokenRewards) {
       const rewardAssets = data.party.rewardDetails
         .map((r) => r?.asset.symbol)
-        .join(", ");
+        .join(', ');
       Sentry.captureMessage(
         `Could not find VEGA token rewards ${rewardAssets}`
       );
@@ -69,7 +69,7 @@ export const RewardInfo = ({
 
   return (
     <div className="reward-info">
-      <h3 className="reward-info__sub-heading">{t("Connected Vega key")}</h3>
+      <h3 className="reward-info__sub-heading">{t('Connected Vega key')}</h3>
       <p>{currVegaKey.pub}</p>
       {vegaTokenRewards.length ? (
         vegaTokenRewards.map((reward, i) => {
@@ -83,7 +83,7 @@ export const RewardInfo = ({
           );
         })
       ) : (
-        <p>{t("noRewards")}</p>
+        <p>{t('noRewards')}</p>
       )}
     </div>
   );
@@ -99,7 +99,7 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
 
   // Get your stake for epoch in which you have rewards
   const stakeForEpoch = React.useMemo(() => {
-    if (!delegations.length) return "0";
+    if (!delegations.length) return '0';
 
     const delegationsForEpoch = delegations
       .filter((d) => d.epoch.toString() === reward.epoch.id)
@@ -118,29 +118,29 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
   return (
     <div>
       <h3>
-        {t("Epoch")} {reward.epoch.id}
+        {t('Epoch')} {reward.epoch.id}
       </h3>
       <KeyValueTable>
         <KeyValueTableRow>
-          <th>{t("rewardType")}</th>
+          <th>{t('rewardType')}</th>
           <td>{DEFAULT_REWARD_TYPE}</td>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t("yourStake")}</th>
+          <th>{t('yourStake')}</th>
           <td>{stakeForEpoch.toString()}</td>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t("reward")}</th>
+          <th>{t('reward')}</th>
           <td>
-            {reward.amountFormatted} {t("VEGA")}
+            {reward.amountFormatted} {t('VEGA')}
           </td>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t("shareOfReward")}</th>
+          <th>{t('shareOfReward')}</th>
           <td>{new BigNumber(reward.percentageOfTotal).dp(2).toString()}%</td>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t("received")}</th>
+          <th>{t('received')}</th>
           <td>{format(new Date(reward.receivedAt), DATE_FORMAT_DETAILED)}</td>
         </KeyValueTableRow>
       </KeyValueTable>

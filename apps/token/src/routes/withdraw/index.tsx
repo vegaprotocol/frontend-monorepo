@@ -10,7 +10,7 @@ import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { SplashScreen } from '../../components/splash-screen';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import type { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { Routes } from '../router-config';
 import type {
   WithdrawPage,
@@ -88,7 +88,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
     WithdrawPage,
     WithdrawPageVariables
   >(WITHDRAW_PAGE_QUERY, {
-    variables: { partyId: currVegaKey?.pub! },
+    variables: { partyId: currVegaKey?.pub },
   });
 
   const accounts = React.useMemo(() => {

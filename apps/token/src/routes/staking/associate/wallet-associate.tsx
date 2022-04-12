@@ -1,20 +1,20 @@
-import "./wallet-associate.scss";
+import './wallet-associate.scss';
 
-import React from "react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { TokenInput } from "../../../components/token-input";
-import { ADDRESSES } from "../../../config";
+import { TokenInput } from '../../../components/token-input';
+import { ADDRESSES } from '../../../config';
 import {
   AppStateActionType,
   useAppState,
-  VegaKeyExtended,
-} from "../../../contexts/app-state/app-state-context";
-import { useContracts } from "../../../contexts/contracts/contracts-context";
-import { TxState } from "../../../hooks/transaction-reducer";
-import { useTransaction } from "../../../hooks/use-transaction";
-import { BigNumber } from "../../../lib/bignumber";
-import { AssociateInfo } from "./associate-info";
+} from '../../../contexts/app-state/app-state-context';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
+import { TxState } from '../../../hooks/transaction-reducer';
+import { useTransaction } from '../../../hooks/use-transaction';
+import { BigNumber } from '../../../lib/bignumber';
+import { AssociateInfo } from './associate-info';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 
 export const WalletAssociate = ({
   perform,
@@ -63,24 +63,26 @@ export const WalletAssociate = ({
   let pageContent = null;
 
   if (
-    walletBalance.isEqualTo("0") &&
-    new BigNumber(walletAssociatedBalance!).isEqualTo("0")
+    walletBalance.isEqualTo('0') &&
+    // eslint-disable-next-line
+    new BigNumber(walletAssociatedBalance!).isEqualTo('0')
   ) {
     pageContent = (
       <div className="wallet-associate__error">
         {t(
-          "You have no VEGA tokens in your connected wallet. You will need to buy some VEGA tokens from an exchange in order to stake using this method."
+          'You have no VEGA tokens in your connected wallet. You will need to buy some VEGA tokens from an exchange in order to stake using this method.'
         )}
       </div>
     );
   } else if (
-    walletBalance.isEqualTo("0") &&
-    !new BigNumber(walletAssociatedBalance!).isEqualTo("0")
+    walletBalance.isEqualTo('0') &&
+    // eslint-disable-next-line
+    !new BigNumber(walletAssociatedBalance!).isEqualTo('0')
   ) {
     pageContent = (
       <div className="wallet-associate__error">
         {t(
-          "All VEGA tokens in the connected wallet is already associated with a Vega wallet/key"
+          'All VEGA tokens in the connected wallet is already associated with a Vega wallet/key'
         )}
       </div>
     );
@@ -89,8 +91,8 @@ export const WalletAssociate = ({
       <>
         <AssociateInfo pubKey={vegaKey.pub} />
         <TokenInput
-          approveText={t("Approve VEGA tokens for staking on Vega")}
-          submitText={t("Associate VEGA Tokens with key")}
+          approveText={t('Approve VEGA tokens for staking on Vega')}
+          submitText={t('Associate VEGA Tokens with key')}
           requireApproval={true}
           allowance={allowance}
           approve={approve}
@@ -100,7 +102,7 @@ export const WalletAssociate = ({
           maximum={walletBalance}
           approveTxState={approveState}
           approveTxDispatch={approveDispatch}
-          currency={t("VEGA Tokens")}
+          currency={t('VEGA Tokens')}
         />
       </>
     );

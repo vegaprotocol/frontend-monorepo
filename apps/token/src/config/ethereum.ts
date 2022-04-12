@@ -31,8 +31,8 @@ export const InfuraUrls = {
 export const ADDRESSES = Addresses[appChainId];
 
 /** Contract addresses for liquidity rewards for different markets */
-export const REWARDS_ADDRESSES = RewardsAddresses[appChainId];
-export const REWARDS_POOL_ADDRESSES = RewardsPoolAddresses[appChainId];
+export const REWARDS_ADDRESSES = RewardsAddresses[`0x${appChainId}`];
+export const REWARDS_POOL_ADDRESSES = RewardsPoolAddresses[`0x${appChainId}`];
 
 /** Infura endpoints */
 export const INFURA_URL = InfuraUrls[appChainId];

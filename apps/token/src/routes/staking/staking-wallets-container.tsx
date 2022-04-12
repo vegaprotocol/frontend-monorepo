@@ -1,10 +1,10 @@
-import { useWeb3React } from "@web3-react/core";
-import { useTranslation } from "react-i18next";
+import { useWeb3React } from '@web3-react/core';
+import { useTranslation } from 'react-i18next';
 
-import { EthConnectPrompt } from "../../components/eth-connect-prompt";
-import { VegaKeyExtended } from "../../contexts/app-state/app-state-context";
-import { useVegaUser } from "../../hooks/use-vega-user";
-import { ConnectToVega } from "./connect-to-vega";
+import { EthConnectPrompt } from '../../components/eth-connect-prompt';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import { ConnectToVega } from './connect-to-vega';
 
 export const StakingWalletsContainer = ({
   needsEthereum,
@@ -20,28 +20,28 @@ export const StakingWalletsContainer = ({
 }) => {
   const { t } = useTranslation();
   const { account } = useWeb3React();
-  const { currVegaKey } = useVegaUser();
+  const { keypair } = useVegaWallet();
 
   if (!account && needsEthereum) {
     return (
       <EthConnectPrompt>
-        <p>{t("associateInfo1")}</p>
-        <p>{t("associateInfo2")}</p>
+        <p>{t('associateInfo1')}</p>
+        <p>{t('associateInfo2')}</p>
       </EthConnectPrompt>
     );
   }
 
-  if (!currVegaKey && needsVega) {
+  if (!keypair && needsVega) {
     return (
       <>
         <EthConnectPrompt>
-          <p>{t("associateInfo1")}</p>
-          <p>{t("associateInfo2")}</p>
+          <p>{t('associateInfo1')}</p>
+          <p>{t('associateInfo2')}</p>
         </EthConnectPrompt>
         <ConnectToVega />
       </>
     );
   }
 
-  return children({ address: account || "", currVegaKey });
+  return children({ address: account || '', currVegaKey: keypair });
 };

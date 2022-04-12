@@ -1,14 +1,8 @@
-import React from "react";
+import React from 'react';
 
-import { BigNumber } from "../../lib/bignumber";
-import { truncateMiddle } from "../../lib/truncate-middle";
-import {
-  AppState,
-  AppStateAction,
-  AppStateActionType,
-  AppStateContext,
-  VegaWalletStatus,
-} from "./app-state-context";
+import { BigNumber } from '../../lib/bignumber';
+import { AppStateActionType, AppStateContext } from './app-state-context';
+import type { AppState, AppStateAction } from './app-state-context';
 
 interface AppStateProviderProps {
   children: React.ReactNode;
@@ -25,10 +19,8 @@ const initialAppState: AppState = {
   allowance: new BigNumber(0),
   tranches: null,
   vegaWalletOverlay: false,
+  vegaWalletManageOverlay: false,
   ethConnectOverlay: false,
-  vegaWalletStatus: VegaWalletStatus.Pending,
-  vegaKeys: null,
-  currVegaKey: null,
   walletAssociatedBalance: null,
   vestingAssociatedBalance: null,
   trancheBalances: [],
@@ -41,7 +33,7 @@ const initialAppState: AppState = {
     stakingAssociations: {},
   },
   transactionOverlay: false,
-  bannerMessage: "",
+  bannerMessage: '',
 };
 
 function appStateReducer(state: AppState, action: AppStateAction): AppState {
@@ -64,47 +56,6 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
         lien: action.lien,
         walletAssociatedBalance: action.walletAssociatedBalance,
         vestingAssociatedBalance: action.vestingAssociatedBalance,
-      };
-    }
-    case AppStateActionType.VEGA_WALLET_INIT: {
-      if (!action.keys) {
-        return { ...state, vegaWalletStatus: VegaWalletStatus.Ready };
-      }
-
-      const vegaKeys = action.keys.map((k) => {
-        const alias = k.meta?.find((m) => m.key === "name");
-        return {
-          ...k,
-          alias: alias?.value || "No alias",
-          pubShort: truncateMiddle(k.pub),
-        };
-      });
-      const selectedKey =
-        vegaKeys.find((a) => a.pub === action.key) || vegaKeys[0];
-      return {
-        ...state,
-        vegaKeys,
-        currVegaKey: selectedKey ? selectedKey : null,
-        vegaWalletStatus: VegaWalletStatus.Ready,
-      };
-    }
-    case AppStateActionType.VEGA_WALLET_SET_KEY: {
-      return {
-        ...state,
-        currVegaKey: action.key,
-      };
-    }
-    case AppStateActionType.VEGA_WALLET_DOWN: {
-      return {
-        ...state,
-        vegaWalletStatus: VegaWalletStatus.None,
-      };
-    }
-    case AppStateActionType.VEGA_WALLET_DISCONNECT: {
-      return {
-        ...state,
-        currVegaKey: null,
-        vegaKeys: null,
       };
     }
     case AppStateActionType.SET_TOKEN: {
@@ -145,6 +96,14 @@ function appStateReducer(state: AppState, action: AppStateAction): AppState {
       return {
         ...state,
         vegaWalletOverlay: action.isOpen,
+        drawerOpen: action.isOpen ? false : state.drawerOpen,
+      };
+    }
+    case AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY: {
+      return {
+        ...state,
+        vegaWalletManageOverlay: action.isOpen,
+        vegaWalletOverlay: action.isOpen ? false : state.vegaWalletOverlay,
         drawerOpen: action.isOpen ? false : state.drawerOpen,
       };
     }

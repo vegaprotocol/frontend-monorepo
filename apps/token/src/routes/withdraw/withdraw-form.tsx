@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router';
 import { Loader } from '../../components/loader';
 import { StatefulButton } from '../../components/stateful-button';
 import { AmountInput } from '../../components/token-input';
-import type { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import {
   Status as WithdrawStatus,
   useCreateWithdrawal,

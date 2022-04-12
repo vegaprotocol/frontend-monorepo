@@ -60,7 +60,9 @@ export const AppRouter = () => {
             ({ path, component: Component, name, children }) => (
               <Route key={name} path={path} element={<Component name={name} />}>
                 {children && children.length
-                  ? children.map((child) => <Route {...child} />)
+                  ? children.map((child) => (
+                      <Route key={child.path} {...child} />
+                    ))
                   : null}
               </Route>
             )

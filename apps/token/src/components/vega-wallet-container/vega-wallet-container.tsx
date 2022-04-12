@@ -1,12 +1,12 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   AppStateActionType,
   useAppState,
-  VegaKeyExtended,
-} from "../../contexts/app-state/app-state-context";
-import { useVegaUser } from "../../hooks/use-vega-user";
+} from '../../contexts/app-state/app-state-context';
 
 interface VegaWalletContainerProps {
   children: (key: VegaKeyExtended) => React.ReactElement;
@@ -14,10 +14,10 @@ interface VegaWalletContainerProps {
 
 export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
   const { t } = useTranslation();
-  const { currVegaKey } = useVegaUser();
+  const { keypair } = useVegaWallet();
   const { appDispatch } = useAppState();
 
-  if (!currVegaKey) {
+  if (!keypair) {
     return (
       <p>
         <button
@@ -29,11 +29,11 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
             })
           }
         >
-          {t("connectVegaWallet")}
+          {t('connectVegaWallet')}
         </button>
       </p>
     );
   }
 
-  return children(currVegaKey);
+  return children(keypair);
 };

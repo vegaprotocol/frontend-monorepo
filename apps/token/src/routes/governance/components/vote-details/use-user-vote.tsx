@@ -1,13 +1,11 @@
-import { captureException, captureMessage } from "@sentry/minimal";
-import * as React from "react";
+import { captureException, captureMessage } from '@sentry/minimal';
+import * as React from 'react';
 
-import { VoteValue } from "../../../../__generated__/globalTypes";
-import { useAppState } from "../../../../contexts/app-state/app-state-context";
-import {
-  vegaWalletService,
-  VoteSubmissionInput,
-} from "../../../../lib/vega-wallet/vega-wallet-service";
-import { VOTE_VALUE_MAP } from "./vote-types";
+import { VoteValue } from '../../../../__generated__/globalTypes';
+import type { VoteSubmissionInput } from '../../../../lib/vega-wallet/vega-wallet-service';
+import { vegaWalletService } from '../../../../lib/vega-wallet/vega-wallet-service';
+import { VOTE_VALUE_MAP } from './vote-types';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export type Vote = {
   value: VoteValue;
@@ -18,11 +16,11 @@ export type Vote = {
 export type Votes = Array<Vote | null>;
 
 export enum VoteState {
-  NotCast = "NotCast",
-  Yes = "Yes",
-  No = "No",
-  Pending = "Pending",
-  Failed = "Failed",
+  NotCast = 'NotCast',
+  Yes = 'Yes',
+  No = 'No',
+  Pending = 'Pending',
+  Failed = 'Failed',
 }
 
 export function getUserVote(pubkey: string, yesVotes?: Votes, noVotes?: Votes) {
@@ -46,12 +44,9 @@ export function useUserVote(
   yesVotes: Votes | null,
   noVotes: Votes | null
 ) {
+  const { keypair } = useVegaWallet();
   const yes = React.useMemo(() => yesVotes || [], [yesVotes]);
   const no = React.useMemo(() => noVotes || [], [noVotes]);
-
-  const {
-    appState: { currVegaKey },
-  } = useAppState();
 
   const [voteState, setVoteState] = React.useState<VoteState | null>(
     VoteState.NotCast
@@ -59,11 +54,11 @@ export function useUserVote(
 
   // Find the users vote everytime yes or no votes change
   const userVote = React.useMemo(() => {
-    if (currVegaKey) {
-      return getUserVote(currVegaKey.pub, yes, no);
+    if (keypair) {
+      return getUserVote(keypair.pub, yes, no);
     }
     return null;
-  }, [currVegaKey, yes, no]);
+  }, [keypair, yes, no]);
 
   // If user vote changes update the vote state
   React.useEffect(() => {
@@ -79,12 +74,13 @@ export function useUserVote(
   // Start a starts a timeout of 30s to set a failed message if
   // the vote is not seen by the time the callback is invoked
   React.useEffect(() => {
+    // eslint-disable-next-line
     let timeout: any;
 
     if (voteState === VoteState.Pending) {
       setTimeout(() => {
         setVoteState(VoteState.Failed);
-        captureMessage("Vote not seen after 30s");
+        captureMessage('Vote not seen after 30s');
       }, 1000 * 30);
     } else {
       clearTimeout(timeout);
@@ -97,13 +93,13 @@ export function useUserVote(
    * Casts a vote using the users connected wallet
    */
   async function castVote(value: VoteValue) {
-    if (!proposalId || !currVegaKey) return;
+    if (!proposalId || !keypair) return;
 
     setVoteState(VoteState.Pending);
 
     try {
       const variables: VoteSubmissionInput = {
-        pubKey: currVegaKey.pub,
+        pubKey: keypair.pub,
         voteSubmission: {
           value: VOTE_VALUE_MAP[value],
           proposalId,

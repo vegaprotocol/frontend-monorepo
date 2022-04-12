@@ -18,7 +18,7 @@ import { SplashLoader } from '../../components/splash-loader';
 import { SplashScreen } from '../../components/splash-screen';
 import { TransactionButton } from '../../components/transaction-button';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import type { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { TxState } from '../../hooks/transaction-reducer';
 import { usePollERC20Approval } from '../../hooks/use-ercPoll20Approval';

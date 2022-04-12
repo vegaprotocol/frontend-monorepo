@@ -1,4 +1,5 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -6,10 +7,7 @@ import {
   StakingMethod,
   StakingMethodRadio,
 } from '../../../components/staking-method-radio';
-import {
-  useAppState,
-  VegaKeyExtended,
-} from '../../../contexts/app-state/app-state-context';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { TxState } from '../../../hooks/transaction-reducer';
 import { useSearchParams } from '../../../hooks/use-search-params';
 import { AssociateTransaction } from './associate-transaction';
@@ -97,22 +95,18 @@ export const AssociatePage = ({
         <Callout intent={Intent.Danger}>
           <p>{t('associateNoVega')}</p>
         </Callout>
-      ) : (
+      ) : !zeroVesting ? (
         <>
-          {!zeroVesting ? (
-            <>
-              <h2 data-testid="associate-subheader">
-                {t('Where would you like to stake from?')}
-              </h2>
-              <p>{t('associationChoice')}</p>
-              <StakingMethodRadio
-                setSelectedStakingMethod={setSelectedStakingMethod}
-                selectedStakingMethod={selectedStakingMethod}
-              />
-            </>
-          ) : null}
+          <h2 data-testid="associate-subheader">
+            {t('Where would you like to stake from?')}
+          </h2>
+          <p>{t('associationChoice')}</p>
+          <StakingMethodRadio
+            setSelectedStakingMethod={setSelectedStakingMethod}
+            selectedStakingMethod={selectedStakingMethod}
+          />
         </>
-      )}
+      ) : null}
       {selectedStakingMethod &&
         (selectedStakingMethod === StakingMethod.Contract ? (
           <ContractAssociate

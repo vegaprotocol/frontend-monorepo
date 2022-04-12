@@ -1,16 +1,14 @@
 import './contract-associate.scss';
 
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TokenInput } from '../../../components/token-input';
-import {
-  useAppState,
-  VegaKeyExtended,
-} from '../../../contexts/app-state/app-state-context';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 
 export const ContractAssociate = ({
   perform,
@@ -29,7 +27,7 @@ export const ContractAssociate = ({
   } = useAppState();
 
   const maximum = React.useMemo(() => {
-    return new BigNumber(balanceFormatted).minus(lien!);
+    return new BigNumber(balanceFormatted).minus(lien);
   }, [balanceFormatted, lien]);
 
   let pageContent = null;

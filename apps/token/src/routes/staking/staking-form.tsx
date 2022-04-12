@@ -113,6 +113,7 @@ export const StakingForm = ({
     return new BigNumber(0);
   }, [action, availableStakeToAdd, availableStakeToRemove]);
 
+  // TODO: TFE import use useVegaTransaction hook from wallet lib
   async function onSubmit() {
     setFormState(FormState.Pending);
     const delegateInput: DelegateSubmissionInput = {
@@ -150,6 +151,7 @@ export const StakingForm = ({
   }
 
   React.useEffect(() => {
+    // eslint-disable-next-line
     let interval: any;
 
     if (formState === FormState.Pending) {
@@ -240,6 +242,7 @@ export const StakingForm = ({
         </RadioGroup>
       </FormGroup>
       {action !== undefined && (
+        // eslint-disable-next-line
         <>
           {action === Actions.Add ? (
             <>

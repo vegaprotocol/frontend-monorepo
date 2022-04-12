@@ -1,11 +1,11 @@
 import { gql, useQuery } from '@apollo/client';
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../components/splash-loader';
 import { SplashScreen } from '../../components/splash-screen';
-import { useVegaUser } from '../../hooks/use-vega-user';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 
 export const STAKING_QUERY = gql`
@@ -74,12 +74,12 @@ export const StakingNodesContainer = ({
   children: ({ data }: { data?: StakingQueryResult }) => React.ReactElement;
 }) => {
   const { t } = useTranslation();
-  const { currVegaKey } = useVegaUser();
+  const { keypair } = useVegaWallet();
   const { data, loading, error, refetch } = useQuery<StakingQueryResult>(
     STAKING_QUERY,
     {
-      variables: { partyId: currVegaKey?.pub || '' },
-      skip: !currVegaKey?.pub,
+      variables: { partyId: keypair?.pub || '' },
+      skip: !keypair?.pub,
     }
   );
 

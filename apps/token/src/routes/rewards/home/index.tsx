@@ -3,7 +3,7 @@ import './index.scss';
 import { useQuery } from '@apollo/client';
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { formatDistance } from 'date-fns';
-// @ts-ignore
+// @ts-ignore TODO: check if duration-js has a @types definition
 import Duration from 'duration-js';
 import gql from 'graphql-tag';
 import React from 'react';
@@ -19,9 +19,9 @@ import {
   useAppState,
 } from '../../../contexts/app-state/app-state-context';
 import { useNetworkParam } from '../../../hooks/use-network-param';
-import { useVegaUser } from '../../../hooks/use-vega-user';
 import type { Rewards } from './__generated__/Rewards';
 import { RewardInfo } from './reward-info';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const REWARDS_QUERY = gql`
   query Rewards($partyId: ID!) {
@@ -69,11 +69,11 @@ export const REWARDS_QUERY = gql`
 
 export const RewardsIndex = () => {
   const { t } = useTranslation();
-  const { currVegaKey, vegaKeys } = useVegaUser();
+  const { keypair, keypairs } = useVegaWallet();
   const { appDispatch } = useAppState();
   const { data, loading, error } = useQuery<Rewards>(REWARDS_QUERY, {
-    variables: { partyId: currVegaKey?.pub },
-    skip: !currVegaKey?.pub,
+    variables: { partyId: keypair?.pub },
+    skip: !keypair?.pub,
   });
   const {
     data: rewardAssetData,
@@ -131,15 +131,17 @@ export const RewardsIndex = () => {
         data.epoch.timestamps.expiry && (
           <EpochCountdown
             containerClass="staking-node__epoch"
+            // eslint-disable-next-line
             id={data!.epoch.id}
             startDate={new Date(data.epoch.timestamps.start)}
+            // eslint-disable-next-line
             endDate={new Date(data.epoch.timestamps.expiry!)}
           />
         )}
       <section>
-        {currVegaKey && vegaKeys?.length ? (
+        {keypair && keypairs?.length ? (
           <RewardInfo
-            currVegaKey={currVegaKey}
+            currVegaKey={keypair}
             data={data}
             rewardAssetId={rewardAssetData[0]}
           />

@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../components/epoch-countdown';
 import { Colors } from '../../config';
-import type { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
+import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
@@ -47,7 +47,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
   }, [node, data]);
 
   const currentEpoch = React.useMemo(() => {
-    return data?.epoch.id!;
+    return data?.epoch.id;
   }, [data?.epoch.id]);
 
   const stakeThisEpoch = React.useMemo(() => {
@@ -137,6 +137,8 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
       )} */}
       <StakingForm
         pubkey={vegaKey.pub}
+        // TFE import
+        // eslint-disable-next-line
         nodeId={node!}
         nodeName={nodeInfo.name}
         availableStakeToAdd={unstaked}

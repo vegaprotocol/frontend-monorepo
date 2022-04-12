@@ -1,26 +1,26 @@
-import "./vote-buttons.scss";
+import './vote-buttons.scss';
 
-import { gql, useQuery } from "@apollo/client";
-import { format } from "date-fns";
-import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { gql, useQuery } from '@apollo/client';
+import { format } from 'date-fns';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   ProposalState,
   VoteValue,
-} from "../../../../__generated__/globalTypes";
+} from '../../../../__generated__/globalTypes';
 import {
   AppStateActionType,
   useAppState,
-} from "../../../../contexts/app-state/app-state-context";
-import { useVegaUser } from "../../../../hooks/use-vega-user";
-import { BigNumber } from "../../../../lib/bignumber";
-import { DATE_FORMAT_LONG } from "../../../../lib/date-formats";
-import {
+} from '../../../../contexts/app-state/app-state-context';
+import { BigNumber } from '../../../../lib/bignumber';
+import { DATE_FORMAT_LONG } from '../../../../lib/date-formats';
+import type {
   VoteButtons as VoteButtonsQueryResult,
   VoteButtonsVariables,
-} from "./__generated__/VoteButtons";
-import { VoteState } from "./use-user-vote";
+} from './__generated__/VoteButtons';
+import { VoteState } from './use-user-vote';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -42,13 +42,13 @@ const VOTE_BUTTONS_QUERY = gql`
 `;
 
 export const VoteButtonsContainer = (props: VoteButtonsContainerProps) => {
-  const { currVegaKey } = useVegaUser();
+  const { keypair } = useVegaWallet();
   const { data, loading } = useQuery<
     VoteButtonsQueryResult,
     VoteButtonsVariables
   >(VOTE_BUTTONS_QUERY, {
-    variables: { partyId: currVegaKey?.pub || "" },
-    skip: !currVegaKey?.pub,
+    variables: { partyId: keypair?.pub || '' },
+    skip: !keypair?.pub,
   });
 
   if (loading) return null;
@@ -76,16 +76,15 @@ export const VoteButtons = ({
 }: VoteButtonsProps) => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
-  const { currVegaKey } = useVegaUser();
+  const { keypair } = useVegaWallet();
   const [changeVote, setChangeVote] = React.useState(false);
 
   const cantVoteUI = React.useMemo(() => {
     if (proposalState !== ProposalState.Open) {
-      return t("youDidNotVote");
+      return t('youDidNotVote');
     }
 
-    if (!currVegaKey) {
-      // TODO: i18n
+    if (!keypair) {
       return (
         <>
           <button
@@ -97,21 +96,21 @@ export const VoteButtons = ({
                 isOpen: true,
               })
             }
-            style={{ textDecoration: "underline", cursor: "pointer" }}
+            style={{ textDecoration: 'underline', cursor: 'pointer' }}
           >
-            {t("connectVegaWallet")}
-          </button>{" "}
-          {t("toVote")}
+            {t('connectVegaWallet')}
+          </button>{' '}
+          {t('toVote')}
         </>
       );
     }
 
     if (currentStakeAvailable.isLessThanOrEqualTo(0)) {
-      return t("noGovernanceTokens");
+      return t('noGovernanceTokens');
     }
 
     return false;
-  }, [t, currVegaKey, currentStakeAvailable, proposalState, appDispatch]);
+  }, [t, keypair, currentStakeAvailable, proposalState, appDispatch]);
 
   function submitVote(vote: VoteValue) {
     setChangeVote(false);
@@ -129,7 +128,7 @@ export const VoteButtons = ({
   }
 
   if (voteState === VoteState.Pending) {
-    return <p>{t("votePending")}...</p>;
+    return <p>{t('votePending')}...</p>;
   }
 
   // If voted show current vote info`
@@ -137,12 +136,12 @@ export const VoteButtons = ({
     !changeVote &&
     (voteState === VoteState.Yes || voteState === VoteState.No)
   ) {
-    const className = voteState === VoteState.Yes ? "text-green" : "text-red";
+    const className = voteState === VoteState.Yes ? 'text-green' : 'text-red';
     return (
       <p>
-        <span>{t("youVoted")}</span>{" "}
+        <span>{t('youVoted')}</span>{' '}
         <span className={className}>{t(`voteState_${voteState}`)}</span>
-        {". "}
+        {'. '}
         {voteDatetime ? (
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
@@ -153,7 +152,7 @@ export const VoteButtons = ({
               setChangeVote(true);
             }}
           >
-            {t("changeVote")}
+            {t('changeVote')}
           </button>
         ) : null}
       </p>
@@ -161,7 +160,7 @@ export const VoteButtons = ({
   }
 
   if (!changeVote && voteState === VoteState.Failed) {
-    return <p>{t("voteError")}</p>;
+    return <p>{t('voteError')}</p>;
   }
 
   return (
@@ -172,14 +171,14 @@ export const VoteButtons = ({
           onClick={() => submitVote(VoteValue.Yes)}
           className="vote-buttons__button"
         >
-          {t("voteFor")}
+          {t('voteFor')}
         </button>
         <button
           type="button"
           onClick={() => submitVote(VoteValue.No)}
           className="vote-buttons__button"
         >
-          {t("voteAgainst")}
+          {t('voteAgainst')}
         </button>
       </div>
     </div>
