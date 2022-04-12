@@ -8,8 +8,7 @@ import orderBy from 'lodash/orderBy';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '../../components/etherscan-link';
-import { CopyToClipboardType } from '../../components/etherscan-link/etherscan-link';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../components/heading';
 import {
   KeyValueTable,
@@ -220,7 +219,6 @@ export const Withdrawal = ({
               text={truncateMiddle(
                 withdrawal.details?.receiverAddress as string
               )}
-              copyToClipboard={CopyToClipboardType.LINK}
             />
           </td>
         </KeyValueTableRow>

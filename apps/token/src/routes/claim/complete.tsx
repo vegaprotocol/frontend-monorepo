@@ -1,8 +1,7 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { EtherscanLink } from '../../components/etherscan-link';
 import type { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { Routes } from '../router-config';
@@ -21,35 +20,31 @@ export const Complete = ({
   const { t } = useTranslation();
 
   return (
-    <>
-      <Callout intent={Intent.Success} title="Claim complete" iconName="tick">
-        <p>
-          <Trans
-            i18nKey="claimCompleteMessage"
-            values={{
-              address,
-              balance: formatNumber(balanceFormatted),
-            }}
-          />
+    <Callout intent={Intent.Success} title="Claim complete" iconName="tick">
+      <p>
+        <Trans
+          i18nKey="claimCompleteMessage"
+          values={{
+            address,
+            balance: formatNumber(balanceFormatted),
+          }}
+        />
+      </p>
+      {commitTxHash && (
+        <p style={{ margin: 0 }}>
+          {t('Link transaction')}:{' '}
+          <EtherscanLink tx={commitTxHash} text={commitTxHash} />
         </p>
-        {commitTxHash && (
-          <p style={{ margin: 0 }}>
-            {t('Link transaction')}:{' '}
-            <EtherscanLink tx={commitTxHash} text={commitTxHash} />
-          </p>
-        )}
-        {claimTxHash && (
-          <p>
-            {t('Claim transaction')}:{' '}
-            <EtherscanLink tx={claimTxHash} text={claimTxHash} />
-          </p>
-        )}
-        <Link to={Routes.VESTING}>
-          <button className="fill">
-            {t('Check your vesting VEGA tokens')}
-          </button>
-        </Link>
-      </Callout>
-    </>
+      )}
+      {claimTxHash && (
+        <p>
+          {t('Claim transaction')}:{' '}
+          <EtherscanLink tx={claimTxHash} text={claimTxHash} />
+        </p>
+      )}
+      <Link to={Routes.VESTING}>
+        <button className="fill">{t('Check your vesting VEGA tokens')}</button>
+      </Link>
+    </Callout>
   );
 };

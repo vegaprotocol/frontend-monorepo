@@ -52,16 +52,13 @@ export const AppRouter = () => {
   );
 
   return (
+    // @ts-ignore TFE import
     <BoundaryWithTranslation>
       <React.Suspense fallback={splashLoading}>
         <Routes>
-          {routerConfig.map(
-            ({ path, component: Component, exact = false, name }) => (
-              <Route key={name} path={path}>
-                <Component name={name} />
-              </Route>
-            )
-          )}
+          {routerConfig.map(({ path, component: Component, name }) => (
+            <Route key={name} path={path} element={<Component name={name} />} />
+          ))}
         </Routes>
       </React.Suspense>
     </BoundaryWithTranslation>

@@ -1,24 +1,23 @@
-import "./eth-wallet.scss";
+import './eth-wallet.scss';
 
-import { useWeb3React } from "@web3-react/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { useWeb3React } from '@web3-react/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { Colors } from "../../config";
+import { Colors } from '../../config';
 import {
   AppStateActionType,
   useAppState,
-} from "../../contexts/app-state/app-state-context";
-import { usePendingTransactions } from "../../hooks/use-pending-transactions";
-import { useWeb3Connect } from "../../hooks/use-web3";
-import vegaVesting from "../../images/vega_vesting.png";
-import vegaWhite from "../../images/vega_white.png";
-import { BigNumber } from "../../lib/bignumber";
-import { truncateMiddle } from "../../lib/truncate-middle";
-import { Routes } from "../../routes/router-config";
-import { Loader } from "../loader";
-import { LockedProgress } from "../locked-progress";
+} from '../../contexts/app-state/app-state-context';
+import { usePendingTransactions } from '../../hooks/use-pending-transactions';
+import vegaVesting from '../../images/vega_vesting.png';
+import vegaWhite from '../../images/vega_white.png';
+import { BigNumber } from '../../lib/bignumber';
+import { truncateMiddle } from '../../lib/truncate-middle';
+import { Routes } from '../../routes/router-config';
+import { Loader } from '../loader';
+import { LockedProgress } from '../locked-progress';
 import {
   WalletCard,
   WalletCardActions,
@@ -26,10 +25,11 @@ import {
   WalletCardContent,
   WalletCardHeader,
   WalletCardRow,
-} from "../wallet-card";
+} from '../wallet-card';
+import { Connectors } from '../../lib/web3-connectors';
 
 const removeLeadingAddressSymbol = (key: string) => {
-  if (key && key.length > 2 && key.slice(0, 2) === "0x") {
+  if (key && key.length > 2 && key.slice(0, 2) === '0x') {
     return truncateMiddle(key.substring(2));
   }
   return truncateMiddle(key);
@@ -67,15 +67,15 @@ const AssociatedAmounts = ({
         locked={associationAmounts.associated}
         unlocked={associationAmounts.notAssociated}
         total={associationAmounts.total}
-        leftLabel={t("associated")}
-        rightLabel={t("notAssociated")}
+        leftLabel={t('associated')}
+        rightLabel={t('notAssociated')}
         leftColor={Colors.WHITE}
         rightColor={Colors.BLACK}
         light={true}
       />
       {vestingAssociationByVegaKey.length ? (
         <>
-          <hr style={{ borderStyle: "dashed", color: Colors.TEXT }} />
+          <hr style={{ borderStyle: 'dashed', color: Colors.TEXT }} />
           <WalletCardRow label="Associated with Vega keys" bold={true} />
           {vestingAssociationByVegaKey.map(([key, amount]) => {
             return (
@@ -135,8 +135,8 @@ const ConnectedKey = () => {
             locked={totalLockedBalance}
             unlocked={totalVestedBalance}
             total={totalVestedBalance.plus(totalLockedBalance)}
-            leftLabel={t("Locked")}
-            rightLabel={t("Unlocked")}
+            leftLabel={t('Locked')}
+            rightLabel={t('Unlocked')}
             light={true}
           />
         </>
@@ -166,12 +166,12 @@ const ConnectedKey = () => {
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/associate`}>
           <button className="button-secondary button-secondary--light">
-            {t("associate")}
+            {t('associate')}
           </button>
         </Link>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/disassociate`}>
           <button className="button-secondary button-secondary--light">
-            {t("disassociate")}
+            {t('disassociate')}
           </button>
         </Link>
       </WalletCardActions>
@@ -182,14 +182,13 @@ const ConnectedKey = () => {
 export const EthWallet = () => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
-  const { account } = useWeb3React();
-  const { disconnect } = useWeb3Connect();
+  const { account, connector } = useWeb3React();
   const pendingTxs = usePendingTransactions();
 
   return (
     <WalletCard>
       <WalletCardHeader>
-        <h1>{t("ethereumKey")}</h1>
+        <h1>{t('ethereumKey')}</h1>
         {account && (
           <div className="eth-wallet__curr-key">
             <div>{truncateMiddle(account)}</div>
@@ -207,7 +206,7 @@ export const EthWallet = () => {
                   type="button"
                 >
                   <Loader />
-                  {t("pendingTransactions")}
+                  {t('pendingTransactions')}
                 </button>
               </div>
             )}
@@ -229,17 +228,17 @@ export const EthWallet = () => {
             }
             data-test-id="connect-to-eth-wallet-button"
           >
-            {t("connectEthWalletToAssociate")}
+            {t('connectEthWalletToAssociate')}
           </button>
         )}
         {account && (
           <WalletCardActions>
             <button
               className="button-link button-link--dark"
-              onClick={disconnect}
+              onClick={() => connector.deactivate()}
               type="button"
             >
-              {t("disconnect")}
+              {t('disconnect')}
             </button>
           </WalletCardActions>
         )}

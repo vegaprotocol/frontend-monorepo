@@ -1,16 +1,9 @@
-import {
-  EthereumChainId,
-  EthereumChainNames,
-} from '@vegaprotocol/smart-contracts-sdk';
+import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import { useTranslation } from 'react-i18next';
-
-import {
-  useEagerConnect,
-  useWeb3Connect,
-  useWeb3Listeners,
-} from '../../hooks/use-web3';
-import { SplashLoader } from '../splash-loader';
+import type { ReactNode } from 'react';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { Connectors } from '../../lib/web3-connectors';
 import { SplashScreen } from '../splash-screen';
 
 interface Web3ConnectorProps {
@@ -18,48 +11,69 @@ interface Web3ConnectorProps {
 }
 
 export function Web3Connector({ children }: Web3ConnectorProps) {
-  useWeb3Listeners();
-  const { t } = useTranslation();
-  const { chainId } = useWeb3React();
-  const { disconnect } = useWeb3Connect();
-  const tried = useEagerConnect();
-
-  const chainStr = `0x${chainId}`;
-  // Chain ID retrieved from provider isn't the same as what the app is
-  // configured to work with. Prevent further actions with splash screen
-  if (chainStr !== process.env['NX_ETHEREUM_CHAIN_ID'] && chainId) {
-    const currentChain = EthereumChainNames[chainStr as EthereumChainId];
-    const desiredChain =
-      EthereumChainNames[
-        process.env['NX_ETHEREUM_CHAIN_ID'] as EthereumChainId
-      ];
-    return (
-      <SplashScreen>
-        <div>
-          <p>
-            {/* If we can find a friendly name for chain use it else fall back to generic message */}
-            {currentChain
-              ? t('wrongNetwork', { chain: currentChain })
-              : t('wrongNetworkUnknownChain', { chain: desiredChain })}
-            {t('Desired network', {
-              chain: desiredChain,
-            })}
-          </p>
-          <button onClick={disconnect} type="button">
-            {t('disconnect')}
-          </button>
-        </div>
-      </SplashScreen>
-    );
-  }
-
-  if (!tried) {
-    return (
-      <SplashScreen>
-        <SplashLoader></SplashLoader>
-      </SplashScreen>
-    );
-  }
-
-  return children;
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const appChainId = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
+  // TODO: TFE import
+  return (
+    <>
+      <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>
+        {children}
+      </Web3Content>
+      <Web3ConnectDialog
+        connectors={Connectors}
+        dialogOpen={dialogOpen}
+        setDialogOpen={setDialogOpen}
+        desiredChainId={appChainId}
+      />
+    </>
+  );
 }
+
+interface Web3ContentProps {
+  children: ReactNode;
+  appChainId: number;
+  setDialogOpen: (isOpen: boolean) => void;
+}
+
+export const Web3Content = ({
+  children,
+  appChainId,
+  setDialogOpen,
+}: Web3ContentProps) => {
+  const { isActive, error, connector, chainId } = useWeb3React();
+
+  useEffect(() => {
+    if (connector?.connectEagerly) {
+      connector.connectEagerly();
+    }
+  }, [connector]);
+
+  if (error) {
+    return (
+      <SplashScreen>
+        <p>Something went wrong: {error.message}</p>
+        <button onClick={() => connector.deactivate()}>Disconnect</button>
+      </SplashScreen>
+    );
+  }
+
+  if (!isActive) {
+    return (
+      <SplashScreen>
+        <p>Connect your Ethereum wallet</p>
+        <button onClick={() => setDialogOpen(true)}>Connect</button>
+      </SplashScreen>
+    );
+  }
+
+  if (chainId !== appChainId) {
+    return (
+      <SplashScreen>
+        <p className="mb-12">This app only works on chain ID: {appChainId}</p>
+        <button onClick={() => connector.deactivate()}>Disconnect</button>
+      </SplashScreen>
+    );
+  }
+
+  return <>{children}</>;
+};

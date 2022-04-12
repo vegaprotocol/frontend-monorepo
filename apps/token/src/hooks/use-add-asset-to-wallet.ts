@@ -1,9 +1,9 @@
-import * as Sentry from "@sentry/react";
-import { useWeb3React } from "@web3-react/core";
-import { InjectedConnector } from "@web3-react/injected-connector";
-import React from "react";
+import * as Sentry from '@sentry/react';
+import { useWeb3React } from '@web3-react/core';
+import { InjectedConnector } from '@web3-react/injected-connector';
+import React from 'react';
 
-import { APP_ENV, Networks } from "../config";
+import { APP_ENV, Networks } from '../config';
 
 export const useAddAssetSupported = () => {
   const { connector } = useWeb3React();
@@ -23,23 +23,26 @@ export const useAddAssetToWallet = (
   decimals: number,
   image: string
 ) => {
-  const { connector } = useWeb3React();
+  const { provider } = useWeb3React();
   const addSupported = useAddAssetSupported();
   const add = React.useCallback(async () => {
+    if (!provider) {
+      return;
+    }
     try {
-      const provider = await connector?.getProvider();
+      // @ts-ignore TFE import
       provider.request({
-        method: "wallet_watchAsset",
+        method: 'wallet_watchAsset',
         params: {
-          type: "ERC20",
+          type: 'ERC20',
           options: {
             address,
             symbol: `${symbol}${
               // Add the environment if not mainnet
               APP_ENV === Networks.MAINNET
-                ? ""
+                ? ''
                 : // Remove NET as VEGA(TESTNET) is too long
-                  ` ${APP_ENV.replace("NET", "")}`
+                  ` ${APP_ENV.replace('NET', '')}`
             }`,
             decimals,
             image,
@@ -49,7 +52,7 @@ export const useAddAssetToWallet = (
     } catch (error) {
       Sentry.captureException(error);
     }
-  }, [address, decimals, image, connector, symbol]);
+  }, [address, decimals, image, provider, symbol]);
 
   return React.useMemo(() => {
     return {

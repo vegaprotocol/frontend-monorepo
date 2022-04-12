@@ -1,13 +1,14 @@
-import "./transaction-button.scss";
+import './transaction-button.scss';
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
-import { TransactionState, TxState } from "../../hooks/transaction-reducer";
-import { truncateMiddle } from "../../lib/truncate-middle";
-import { EtherscanLink } from "../etherscan-link";
-import { Error, HandUp, Tick } from "../icons";
-import { Loader } from "../loader";
-import { StatefulButton } from "../stateful-button";
+import type { TransactionState } from '../../hooks/transaction-reducer';
+import { TxState } from '../../hooks/transaction-reducer';
+import { truncateMiddle } from '../../lib/truncate-middle';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Error, HandUp, Tick } from '../icons';
+import { Loader } from '../loader';
+import { StatefulButton } from '../stateful-button';
 
 interface TransactionButtonProps {
   text: string;
@@ -31,7 +32,7 @@ export const TransactionButton = ({
 }: TransactionButtonProps) => {
   const { t } = useTranslation();
   const { txState, txData } = transactionState;
-  const root = "transaction-button";
+  const root = 'transaction-button';
   const wrapperClassName = `${root} transaction-button--${txState.toLowerCase()}`;
   const buttonClassName = `${root}__button fill`;
   const textClassName = `${root}__text`;
@@ -44,7 +45,7 @@ export const TransactionButton = ({
       <div className={className}>
         <p className={textClassName}>
           <Tick />
-          <span>{t("txButtonComplete")}</span>
+          <span>{t('txButtonComplete')}</span>
         </p>
         <TransactionButtonFooter txHash={txHash} />
       </div>
@@ -57,10 +58,10 @@ export const TransactionButton = ({
       <div className={wrapperClassName}>
         <StatefulButton className={buttonClassName} disabled={true}>
           <HandUp />
-          <span>{t("txButtonActionRequired")}</span>
+          <span>{t('txButtonActionRequired')}</span>
         </StatefulButton>
         <TransactionButtonFooter
-          message={t("transactionHashPrompt")}
+          message={t('transactionHashPrompt')}
           txHash={txHash}
         />
       </div>
@@ -72,7 +73,7 @@ export const TransactionButton = ({
       <div className={wrapperClassName}>
         <StatefulButton className={buttonClassName} disabled={true}>
           <Loader />
-          <span>{t("txButtonAwaiting")}</span>
+          <span>{t('txButtonAwaiting')}</span>
         </StatefulButton>
         <TransactionButtonFooter txHash={txHash} />
       </div>
@@ -84,9 +85,9 @@ export const TransactionButton = ({
       <div className={wrapperClassName}>
         <p className={textClassName}>
           <Error />
-          <span>{t("txButtonFailure")}</span>
+          <span>{t('txButtonFailure')}</span>
           <button onClick={reset} type="button" className="button-link">
-            {t("Try again")}
+            {t('Try again')}
           </button>
         </p>
         <TransactionButtonFooter txHash={txHash} />
@@ -135,7 +136,7 @@ export const TransactionButtonFooter = ({
     return (
       <div className="transaction-button__footer">
         <p className="transaction-button__txhash">
-          <span>{t("transaction")}</span>
+          <span>{t('transaction')}</span>
           <EtherscanLink text={truncateMiddle(txHash)} tx={txHash} />
         </p>
       </div>

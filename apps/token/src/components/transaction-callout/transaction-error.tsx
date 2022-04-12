@@ -1,8 +1,8 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '../etherscan-link';
-import { Error } from '../icons';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import type { Error } from '../icons';
 
 export interface TransactionErrorProps {
   error: Error | null;

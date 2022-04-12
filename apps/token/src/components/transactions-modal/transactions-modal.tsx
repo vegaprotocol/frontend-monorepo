@@ -1,9 +1,8 @@
 import './transactions-modal.scss';
 
 import { Overlay } from '@blueprintjs/core';
-import { TxData } from '@vegaprotocol/smart-contracts-sdk';
+import type { TxData } from '@vegaprotocol/smart-contracts-sdk';
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +18,6 @@ import { Modal } from '../modal';
 
 export const TransactionModal = () => {
   const { t } = useTranslation();
-  const { chainId } = useWeb3React();
   const { transactions } = useContracts();
   const { appState, appDispatch } = useAppState();
 

@@ -1,20 +1,14 @@
-import {
-  ApolloClient,
-  FieldFunctionOptions,
-  from,
-  HttpLink,
-  InMemoryCache,
-  Reference,
-} from "@apollo/client";
-import { onError } from "@apollo/client/link/error";
-import { RetryLink } from "@apollo/client/link/retry";
-import sortBy from "lodash/sortBy";
-import uniqBy from "lodash/uniqBy";
+import type { FieldFunctionOptions, Reference } from '@apollo/client';
+import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
-import { BigNumber } from "./bignumber";
-import { addDecimal } from "./decimals";
-import { deterministicShuffle } from "./deterministic-shuffle";
-import { getDataNodeUrl } from "./get-data-node-url";
+import { BigNumber } from './bignumber';
+import { addDecimal } from './decimals';
+import { deterministicShuffle } from './deterministic-shuffle';
+import { getDataNodeUrl } from './get-data-node-url';
 
 // Create seed in memory. Validator list order will remain the same
 // until the page is refreshed.
@@ -32,7 +26,7 @@ export function createClient() {
     [`${fieldName}Formatted`]: {
       read(_: string, options: FieldFunctionOptions) {
         const amount = options.readField(fieldName) as string;
-        return amount ? formatUintToNumber(amount) : "0";
+        return amount ? formatUintToNumber(amount) : '0';
       },
     },
   });
@@ -47,9 +41,9 @@ export function createClient() {
             // will be randomised.
             merge: (existing = [], incoming) => {
               // uniqBy will take the first of any matches
-              const uniq = uniqBy([...incoming, ...existing], "id");
+              const uniq = uniqBy([...incoming, ...existing], 'id');
               // sort result so that the input is consistent
-              const sorted = sortBy(uniq, "id");
+              const sorted = sortBy(uniq, 'id');
               // randomise based on seed string
               const random = deterministicShuffle(
                 VALIDATOR_RANDOMISER_SEED,
@@ -65,17 +59,17 @@ export function createClient() {
         fields: {
           balanceFormatted: {
             read(_: string, options: FieldFunctionOptions) {
-              const balance = options.readField("balance");
-              const asset = options.readField("asset");
+              const balance = options.readField('balance');
+              const asset = options.readField('asset');
               const decimals = options.readField(
-                "decimals",
+                'decimals',
                 asset as Reference
               );
-              if (typeof balance !== "string") return "0";
-              if (typeof decimals !== "number") return "0";
+              if (typeof balance !== 'string') return '0';
+              if (typeof decimals !== 'number') return '0';
               return balance && decimals
                 ? formatUintToNumber(balance, decimals)
-                : "0";
+                : '0';
             },
           },
         },
@@ -87,28 +81,28 @@ export function createClient() {
           return incoming;
         },
         fields: {
-          ...createReadField("amount"),
+          ...createReadField('amount'),
         },
       },
       Reward: {
         keyFields: false,
         fields: {
-          ...createReadField("amount"),
+          ...createReadField('amount'),
         },
       },
       RewardPerAssetDetail: {
         keyFields: false,
         fields: {
-          ...createReadField("totalAmount"),
+          ...createReadField('totalAmount'),
         },
       },
       Node: {
         keyFields: false,
         fields: {
-          ...createReadField("pendingStake"),
-          ...createReadField("stakedByOperator"),
-          ...createReadField("stakedByDelegates"),
-          ...createReadField("stakedTotal"),
+          ...createReadField('pendingStake'),
+          ...createReadField('stakedByOperator'),
+          ...createReadField('stakedByDelegates'),
+          ...createReadField('stakedTotal'),
         },
       },
       NodeData: {
@@ -116,7 +110,7 @@ export function createClient() {
           return { ...existing, ...incoming };
         },
         fields: {
-          ...createReadField("stakedTotal"),
+          ...createReadField('stakedTotal'),
         },
       },
       Party: {
@@ -155,7 +149,7 @@ export function createClient() {
 
   const httpLink = new HttpLink({
     uri: graphql,
-    credentials: "same-origin",
+    credentials: 'same-origin',
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -166,7 +160,7 @@ export function createClient() {
   });
 
   return new ApolloClient({
-    connectToDevTools: process.env.NODE_ENV === "development",
+    connectToDevTools: process.env['NODE_ENV'] === 'development',
     link: from([errorLink, retryLink, httpLink]),
     cache,
   });

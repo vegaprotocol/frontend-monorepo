@@ -20,7 +20,7 @@ import { ContractsContext } from './contracts-context';
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
-  const { library, account } = useWeb3React();
+  const { provider, account } = useWeb3React();
   const [txs, setTxs] = React.useState<TxData[]>([]);
   const [contracts, setContracts] = React.useState<Pick<
     ContractsContextShape,
@@ -31,22 +31,31 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   // contracts so that we can sign transactions, otherwise use the provider for just
   // reading data
   React.useEffect(() => {
-    let signer = null;
+    // TODO: TFE import allow optional signer using fallback provider if not connected
+    // let signer = null;
 
-    if (account && library && typeof library.getSigner === 'function') {
-      signer = library.getSigner();
-    }
+    // if (account && provider && typeof provider.getSigner === 'function') {
+    //   signer = provider.getSigner();
+    // }
 
-    if (library) {
+    if (provider) {
       setContracts({
-        token: new ERC20Token(APP_ENV, library, signer),
-        staking: new VegaStaking(APP_ENV, library, signer),
-        vesting: new VegaVesting(APP_ENV, library, signer),
-        claim: new VegaClaim(APP_ENV, library, signer),
-        erc20Bridge: new VegaErc20Bridge(APP_ENV, library, signer),
+        token: new ERC20Token(
+          '0xDc335304979D378255015c33AbFf09B60c31EBAb',
+          provider,
+          provider.getSigner()
+        ),
+        staking: new VegaStaking(APP_ENV, provider, provider.getSigner()),
+        vesting: new VegaVesting(APP_ENV, provider, provider.getSigner()),
+        claim: new VegaClaim(APP_ENV, provider, provider.getSigner()),
+        erc20Bridge: new VegaErc20Bridge(
+          APP_ENV,
+          provider,
+          provider.getSigner()
+        ),
       });
     }
-  }, [library, account]);
+  }, [provider, account]);
 
   React.useEffect(() => {
     if (!contracts) return;

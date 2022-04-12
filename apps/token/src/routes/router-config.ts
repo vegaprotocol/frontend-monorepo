@@ -92,7 +92,6 @@ const routerConfig = [
     name: 'Home',
     // Not lazy as loaded when a user first hits the site
     component: Home,
-    exact: true,
   },
   {
     path: Routes.TRANCHES,

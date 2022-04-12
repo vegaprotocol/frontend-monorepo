@@ -6,8 +6,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { BulletHeader } from '../../components/bullet-header';
-import { EtherscanLink } from '../../components/etherscan-link';
-import { CopyToClipboardType } from '../../components/etherscan-link/etherscan-link';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../config';
 import {
   AppStateActionType,
@@ -71,11 +70,7 @@ export const StakingStepConnectWallets = () => {
       <Callout intent={Intent.Success} iconName="tick" title={'Connected'}>
         <p>
           {t('Connected Ethereum address')}&nbsp;
-          <EtherscanLink
-            address={account}
-            text={account}
-            copyToClipboard={CopyToClipboardType.LINK}
-          />
+          <EtherscanLink address={account} text={account} />
         </p>
         <p>{t('stakingVegaWalletConnected', { key: currVegaKey.pub })}</p>
       </Callout>

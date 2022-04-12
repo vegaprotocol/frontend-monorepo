@@ -1,7 +1,7 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '../etherscan-link';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { Tick } from '../icons';
 
 export const TransactionComplete = ({

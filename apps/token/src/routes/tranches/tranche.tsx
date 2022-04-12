@@ -7,8 +7,9 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
-import { EtherscanLink } from '../../components/etherscan-link';
-import { ADDRESSES, EthereumChainId } from '../../config';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import type { EthereumChainId } from '../../config';
+import { ADDRESSES } from '../../config';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';

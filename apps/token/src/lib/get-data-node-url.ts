@@ -1,7 +1,7 @@
 export function getDataNodeUrl() {
   const base = process.env['NX_VEGA_URL'];
   if (!base) {
-    throw new Error('Environment variable REACT_APP_VEGA_URL must be set');
+    throw new Error('Environment variable NX_VEGA_URL must be set');
   }
   const gqlPath = 'query';
   const urlHTTP = new URL(gqlPath, base);

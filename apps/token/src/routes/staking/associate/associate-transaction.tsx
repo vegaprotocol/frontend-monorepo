@@ -1,9 +1,8 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { EtherscanLink } from '../../../components/etherscan-link';
 import { TransactionCallout } from '../../../components/transaction-callout';
 import type {
   TransactionAction,
