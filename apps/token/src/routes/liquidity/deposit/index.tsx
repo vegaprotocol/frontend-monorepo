@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { Dispatch } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
@@ -42,12 +43,20 @@ export const LiquidityDepositPage = ({
     state: txApprovalState,
     dispatch: txApprovalDispatch,
     perform: txApprovalPerform,
-  } = useTransaction(() => lpStaking.approve(lpTokenAddress));
+    // @ts-ignore TFE import
+  } = useTransaction(() => {
+    if (!lpStaking) return;
+    return lpStaking.approve(lpTokenAddress);
+  });
   const {
     state: txStakeState,
     dispatch: txStakeDispatch,
     perform: txStakePerform,
-  } = useTransaction(() => lpStaking.stake(amount));
+    // @ts-ignore TFE import
+  } = useTransaction(() => {
+    if (!lpStaking) return;
+    return lpStaking.stake(amount);
+  });
   const { account } = useWeb3React();
   const { getBalances, lpStakingEth, lpStakingUSDC } = useGetLiquidityBalances(
     dispatch,
@@ -55,6 +64,7 @@ export const LiquidityDepositPage = ({
   );
   useEffect(() => {
     const run = async () => {
+      if (!lpStakingUSDC || !lpStakingEth) return;
       try {
         await Promise.all([
           getBalances(lpStakingUSDC, REWARDS_ADDRESSES['SushiSwap VEGA/USDC']),
@@ -81,6 +91,7 @@ export const LiquidityDepositPage = ({
     [allowance, values.connectedWalletData?.availableLPTokens]
   );
   const fetchAllowance = useCallback(async () => {
+    if (!lpStaking) return;
     try {
       const allowance = await lpStaking.allowance(account || '');
       setAllowance(allowance);
@@ -170,13 +181,11 @@ export const LiquidityDepositPage = ({
   return <section>{pageContent}</section>;
 };
 
-export const LiquidityDeposit = ({
-  state,
-  dispatch,
-}: {
-  state: LiquidityState;
-  dispatch: Dispatch<LiquidityAction>;
-}) => {
+export const LiquidityDeposit = () => {
+  const { state, dispatch } = useOutletContext<{
+    state: LiquidityState;
+    dispatch: Dispatch<LiquidityAction>;
+  }>();
   const { t } = useTranslation();
   const { address } = useParams<{ address: string }>();
 

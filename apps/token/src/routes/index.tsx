@@ -56,9 +56,15 @@ export const AppRouter = () => {
     <BoundaryWithTranslation>
       <React.Suspense fallback={splashLoading}>
         <Routes>
-          {routerConfig.map(({ path, component: Component, name }) => (
-            <Route key={name} path={path} element={<Component name={name} />} />
-          ))}
+          {routerConfig.map(
+            ({ path, component: Component, name, children }) => (
+              <Route key={name} path={path} element={<Component name={name} />}>
+                {children && children.length
+                  ? children.map((child) => <Route {...child} />)
+                  : null}
+              </Route>
+            )
+          )}
         </Routes>
       </React.Suspense>
     </BoundaryWithTranslation>

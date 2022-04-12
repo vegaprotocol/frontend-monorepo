@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { SplashLoader } from '../../components/splash-loader';
 import { SplashScreen } from '../../components/splash-screen';
 import { useVegaUser } from '../../hooks/use-vega-user';
-import { Staking as StakingQueryResult } from './__generated__/Staking';
+import type { Staking as StakingQueryResult } from './__generated__/Staking';
 
 export const STAKING_QUERY = gql`
   query Staking($partyId: ID!) {

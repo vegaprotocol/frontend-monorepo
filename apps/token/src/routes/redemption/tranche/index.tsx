@@ -1,6 +1,6 @@
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useOutletContext } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
 import { Colors } from '../../../config';
@@ -17,16 +17,14 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { Routes } from '../../router-config';
-import { RedemptionState } from '../redemption-reducer';
+import type { RedemptionState } from '../redemption-reducer';
 import { TrancheTable } from '../tranche-table';
 
-export const RedeemFromTranche = ({
-  state,
-  address,
-}: {
-  state: RedemptionState;
-  address: string;
-}) => {
+export const RedeemFromTranche = () => {
+  const { state, address } = useOutletContext<{
+    state: RedemptionState;
+    address: string;
+  }>();
   const { vesting } = useContracts();
   const { t } = useTranslation();
   const {

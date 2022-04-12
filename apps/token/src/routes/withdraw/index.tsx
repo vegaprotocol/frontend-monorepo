@@ -10,9 +10,9 @@ import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { SplashScreen } from '../../components/splash-screen';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
+import type { VegaKeyExtended } from '../../contexts/app-state/app-state-context';
 import { Routes } from '../router-config';
-import {
+import type {
   WithdrawPage,
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';

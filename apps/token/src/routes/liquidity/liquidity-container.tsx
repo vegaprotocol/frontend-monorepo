@@ -1,6 +1,7 @@
 import './liquidity-container.scss';
 
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { useOutletContext } from 'react-router-dom';
 import { useWeb3React } from '@web3-react/core';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +10,8 @@ import { Links, REWARDS_ADDRESSES } from '../../config';
 import { DexTokensSection } from './dex-table';
 import type { LiquidityState } from './liquidity-reducer';
 
-export const LiquidityContainer = ({ state }: { state: LiquidityState }) => {
+export const LiquidityContainer = () => {
+  const { state } = useOutletContext<{ state: LiquidityState }>();
   const { t } = useTranslation();
   const { account } = useWeb3React();
   return (

@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useParams, useOutletContext } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { EthConnectPrompt } from '../../../components/eth-connect-prompt';
@@ -45,7 +45,11 @@ export const LiquidityWithdrawPage = ({
     state: txUnstakeState,
     dispatch: txUnstakeDispatch,
     perform: txUnstakePerform,
-  } = useTransaction(() => lpStaking.unstake());
+    // @ts-ignore TFE import
+  } = useTransaction(() => {
+    if (!lpStaking) return;
+    return lpStaking.unstake();
+  });
 
   const { getBalances, lpStakingEth, lpStakingUSDC } = useGetLiquidityBalances(
     dispatch,
@@ -53,6 +57,7 @@ export const LiquidityWithdrawPage = ({
   );
   React.useEffect(() => {
     const run = async () => {
+      if (!lpStakingUSDC || !lpStakingEth) return;
       try {
         await Promise.all([
           getBalances(lpStakingUSDC, REWARDS_ADDRESSES['SushiSwap VEGA/USDC']),
@@ -83,20 +88,18 @@ export const LiquidityWithdrawPage = ({
 
   if (txUnstakeState.txState !== TxState.Default) {
     return (
-      <>
-        <TransactionCallout
-          state={txUnstakeState}
-          completeHeading={t('withdrawAllLpSuccessCalloutTitle')}
-          completeFooter={
-            <Link to={Routes.LIQUIDITY}>
-              <button className="fill">{t('lpTxSuccessButton')}</button>
-            </Link>
-          }
-          reset={() =>
-            txUnstakeDispatch({ type: TransactionActionType.TX_RESET })
-          }
-        />
-      </>
+      <TransactionCallout
+        state={txUnstakeState}
+        completeHeading={t('withdrawAllLpSuccessCalloutTitle')}
+        completeFooter={
+          <Link to={Routes.LIQUIDITY}>
+            <button className="fill">{t('lpTxSuccessButton')}</button>
+          </Link>
+        }
+        reset={() =>
+          txUnstakeDispatch({ type: TransactionActionType.TX_RESET })
+        }
+      />
     );
   } else if (!hasLpTokens && !hasRewardsTokens) {
     return <section>{t('withdrawLpNoneDeposited')}</section>;
@@ -147,13 +150,11 @@ export const LiquidityWithdrawPage = ({
   );
 };
 
-export const LiquidityWithdraw = ({
-  state,
-  dispatch,
-}: {
-  state: LiquidityState;
-  dispatch: React.Dispatch<LiquidityAction>;
-}) => {
+export const LiquidityWithdraw = () => {
+  const { state, dispatch } = useOutletContext<{
+    state: LiquidityState;
+    dispatch: React.Dispatch<LiquidityAction>;
+  }>();
   const { t } = useTranslation();
   const { address } = useParams<{ address: string }>();
 

@@ -2,7 +2,8 @@ import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Routes } from '../router-config';
-import { Actions, RemoveType, StakeAction } from './staking-form';
+import type { StakeAction } from './staking-form';
+import { Actions, RemoveType } from './staking-form';
 
 interface StakeSuccessProps {
   action: StakeAction;

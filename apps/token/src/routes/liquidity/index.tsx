@@ -2,8 +2,7 @@ import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Navigate } from 'react-router';
-import { Route, Routes, useMatch } from 'react-router-dom';
+import { useMatch, Outlet } from 'react-router-dom';
 
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
@@ -11,11 +10,8 @@ import { SplashScreen } from '../../components/splash-screen';
 import { Flags, REWARDS_ADDRESSES } from '../../config';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
-import { LiquidityDeposit } from './deposit';
 import { useGetLiquidityBalances } from './hooks';
-import { LiquidityContainer } from './liquidity-container';
 import { initialLiquidityState, liquidityReducer } from './liquidity-reducer';
-import { LiquidityWithdraw } from './withdraw';
 
 const RedemptionIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
@@ -34,6 +30,7 @@ const RedemptionIndex = ({ name }: RouteChildProps) => {
     account || ''
   );
   const loadAllBalances = React.useCallback(async () => {
+    if (!lpStakingUSDC || !lpStakingEth) return;
     try {
       await Promise.all([
         getBalances(lpStakingUSDC, REWARDS_ADDRESSES['SushiSwap VEGA/USDC']),
@@ -81,20 +78,7 @@ const RedemptionIndex = ({ name }: RouteChildProps) => {
       {Flags.DEX_STAKING_DISABLED ? (
         <p>{t('liquidityComingSoon')}&nbsp;🚧👷‍♂️👷‍♀️🚧</p>
       ) : (
-        <Routes>
-          <Route path={`${path}`}>
-            <LiquidityContainer state={state} />
-          </Route>
-          <Route path={`${path}/:address/deposit`}>
-            <LiquidityDeposit state={state} dispatch={dispatch} />
-          </Route>
-          <Route path={`${path}/:address/withdraw`}>
-            <LiquidityWithdraw state={state} dispatch={dispatch} />
-          </Route>
-          <Route path={`${path}/:address/`}>
-            <Navigate to={path} />
-          </Route>
-        </Routes>
+        <Outlet context={{ state, dispatch }} />
       )}
     </>
   );

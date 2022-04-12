@@ -1,8 +1,23 @@
 import React from 'react';
+import { Navigate } from 'react-router-dom';
+import { ProposalContainer } from './governance/proposal';
+import { ProposalsContainer } from './governance/proposals';
 
 import Home from './home';
+import { LiquidityDeposit } from './liquidity/deposit';
+import { LiquidityContainer } from './liquidity/liquidity-container';
+import { LiquidityWithdraw } from './liquidity/withdraw';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
+import { RedemptionInformation } from './redemption/home/redemption-information';
+import { RedeemFromTranche } from './redemption/tranche';
+import { AssociateContainer } from './staking/associate/associate-page-container';
+import { DisassociateContainer } from './staking/disassociate/disassociate-page-container';
+import { Staking } from './staking/staking';
+import { StakingNodeContainer } from './staking/staking-node';
+import { StakingNodesContainer } from './staking/staking-nodes-container';
+import { Tranche } from './tranches/tranche';
+import { Tranches } from './tranches/tranches';
 
 export const Routes = {
   HOME: '/',
@@ -97,6 +112,10 @@ const routerConfig = [
     path: Routes.TRANCHES,
     name: 'Tranches',
     component: LazyTranches,
+    children: [
+      { index: true, element: <Tranches /> },
+      { path: ':trancheId', element: <Tranche /> },
+    ],
   },
   {
     path: Routes.CLAIM,
@@ -107,6 +126,19 @@ const routerConfig = [
     path: Routes.STAKING,
     name: 'Staking',
     component: LazyStaking,
+    children: [
+      { path: 'associate', element: <AssociateContainer /> },
+      { path: 'disassociate', element: <DisassociateContainer /> },
+      { path: ':node', element: <StakingNodeContainer /> },
+      {
+        index: true,
+        element: (
+          <StakingNodesContainer>
+            {({ data }) => <Staking data={data} />}
+          </StakingNodesContainer>
+        ),
+      },
+    ],
   },
   {
     path: Routes.REWARDS,
@@ -127,16 +159,36 @@ const routerConfig = [
     path: Routes.VESTING,
     name: 'Vesting',
     component: LazyRedemption,
+    children: [
+      {
+        index: true,
+        element: <RedemptionInformation />,
+      },
+      {
+        path: ':id',
+        element: <RedeemFromTranche />,
+      },
+    ],
   },
   {
     path: Routes.LIQUIDITY,
     name: 'DEX Liquidity',
     component: LazyLiquidity,
+    children: [
+      { index: true, element: <LiquidityContainer /> },
+      { path: ':address/deposit', element: <LiquidityDeposit /> },
+      { path: ':address/withdraw', element: <LiquidityWithdraw /> },
+      { path: ':address', element: <Navigate to="/" /> },
+    ],
   },
   {
     path: Routes.GOVERNANCE,
     name: 'Governance',
     component: LazyGovernance,
+    children: [
+      { path: ':proposalId', element: <ProposalContainer /> },
+      { index: true, element: <ProposalsContainer /> },
+    ],
   },
   {
     path: Routes.NOT_PERMITTED,

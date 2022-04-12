@@ -1,16 +1,16 @@
-import { useWeb3React } from "@web3-react/core";
-import { useTranslation } from "react-i18next";
+import { useWeb3React } from '@web3-react/core';
+import { useTranslation } from 'react-i18next';
 
-import { EthConnectPrompt } from "../../components/eth-connect-prompt";
-import { Heading } from "../../components/heading";
-import { SplashLoader } from "../../components/splash-loader";
-import { SplashScreen } from "../../components/splash-screen";
-import { useDocumentTitle } from "../../hooks/use-document-title";
-import { useTranches } from "../../hooks/use-tranches";
-import { RouteChildProps } from "..";
-import Claim from "./claim";
-import { ClaimRestricted } from "./claim-restricted";
-import { isRestricted } from "./lib/is-restricted";
+import { EthConnectPrompt } from '../../components/eth-connect-prompt';
+import { Heading } from '../../components/heading';
+import { SplashLoader } from '../../components/splash-loader';
+import { SplashScreen } from '../../components/splash-screen';
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import { useTranches } from '../../hooks/use-tranches';
+import type { RouteChildProps } from '..';
+import Claim from './claim';
+import { ClaimRestricted } from './claim-restricted';
+import { isRestricted } from './lib/is-restricted';
 
 const ClaimIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
@@ -48,7 +48,7 @@ const ClaimIndex = ({ name }: RouteChildProps) => {
 
   return (
     <>
-      <Heading title={t("pageTitleClaim")} />
+      <Heading title={t('pageTitleClaim')} />
       {content}
     </>
   );

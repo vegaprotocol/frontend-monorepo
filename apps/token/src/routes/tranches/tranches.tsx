@@ -1,5 +1,6 @@
 import './tranches.scss';
 
+import { useOutletContext } from 'react-router-dom';
 import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -16,7 +17,8 @@ const trancheMinimum = 10;
 const shouldShowTranche = (t: Tranche) =>
   !t.total_added.isLessThanOrEqualTo(trancheMinimum);
 
-export const Tranches = ({ tranches }: { tranches: Tranche[] }) => {
+export const Tranches = () => {
+  const tranches = useOutletContext<Tranche[]>();
   const [showAll, setShowAll] = React.useState<boolean>(false);
   const { t } = useTranslation();
   const { chainId } = useWeb3React();

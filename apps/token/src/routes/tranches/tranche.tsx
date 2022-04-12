@@ -1,12 +1,13 @@
 import './tranche.scss';
 
-import type { Tranche as TrancheType } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
+import { useOutletContext } from 'react-router-dom';
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import type { EthereumChainId } from '../../config';
 import { ADDRESSES } from '../../config';
@@ -16,7 +17,8 @@ import { TrancheItem } from '../redemption/tranche-item';
 import { Routes } from '../router-config';
 import { TrancheLabel } from './tranche-label';
 
-export const Tranche = ({ tranches }: { tranches: TrancheType[] }) => {
+export const Tranche = () => {
+  const tranches = useOutletContext<ITranche[]>();
   const { t } = useTranslation();
   const { trancheId } = useParams<{ trancheId: string }>();
   const { chainId } = useWeb3React();

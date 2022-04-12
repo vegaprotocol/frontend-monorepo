@@ -1,15 +1,15 @@
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { StakingMethod } from "../../../components/staking-method-radio";
-import { TransactionCallout } from "../../../components/transaction-callout";
-import {
+import { StakingMethod } from '../../../components/staking-method-radio';
+import { TransactionCallout } from '../../../components/transaction-callout';
+import type {
   TransactionAction,
-  TransactionActionType,
   TransactionState,
-} from "../../../hooks/transaction-reducer";
-import { Routes } from "../../router-config";
+} from '../../../hooks/transaction-reducer';
+import { TransactionActionType } from '../../../hooks/transaction-reducer';
+import { Routes } from '../../router-config';
 
 export const DisassociateTransaction = ({
   amount,
@@ -27,24 +27,24 @@ export const DisassociateTransaction = ({
   const { t } = useTranslation();
   return (
     <TransactionCallout
-      completeHeading={t("Done")}
+      completeHeading={t('Done')}
       completeBody={
         stakingMethod === StakingMethod.Contract
-          ? t("{{amount}} VEGA tokens have been returned to Vesting contract", {
+          ? t('{{amount}} VEGA tokens have been returned to Vesting contract', {
               amount,
             })
-          : t("{{amount}} VEGA tokens have been returned to Ethereum wallet", {
+          : t('{{amount}} VEGA tokens have been returned to Ethereum wallet', {
               amount,
             })
       }
       completeFooter={
         <Link to={Routes.STAKING}>
-          <button className="fill">{t("backToStaking")}</button>
+          <button className="fill">{t('backToStaking')}</button>
         </Link>
       }
-      pendingHeading={t("Dissociating Tokens")}
+      pendingHeading={t('Dissociating Tokens')}
       pendingBody={t(
-        "Dissociating  {{amount}} VEGA tokens from Vega key {{vegaKey}}",
+        'Dissociating  {{amount}} VEGA tokens from Vega key {{vegaKey}}',
         { amount, vegaKey }
       )}
       state={state}

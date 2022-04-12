@@ -2,7 +2,7 @@ import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Route, Routes } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
@@ -93,16 +93,7 @@ const RedemptionRouter = () => {
     );
   }
 
-  return (
-    <Routes>
-      <Route path=":id">
-        <RedeemFromTranche state={state} address={account} />
-      </Route>
-      <Route path="/">
-        <RedemptionInformation state={state} address={account} />
-      </Route>
-    </Routes>
-  );
+  return <Outlet context={{ state, account }} />;
 };
 
 export default RedemptionRouter;

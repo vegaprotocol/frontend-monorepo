@@ -13,7 +13,6 @@ interface Web3ConnectorProps {
 export function Web3Connector({ children }: Web3ConnectorProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const appChainId = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
-  // TODO: TFE import
   return (
     <>
       <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>

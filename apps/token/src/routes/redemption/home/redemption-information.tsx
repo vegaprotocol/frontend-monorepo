@@ -3,7 +3,7 @@ import './redemption-information.scss';
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 
 import { AddLockedTokenAddress } from '../../../components/add-locked-token';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
@@ -14,13 +14,11 @@ import type { RedemptionState } from '../redemption-reducer';
 import { Tranche0Table, TrancheTable } from '../tranche-table';
 import { VestingTable } from './vesting-table';
 
-export const RedemptionInformation = ({
-  state,
-  address,
-}: {
-  state: RedemptionState;
-  address: string;
-}) => {
+export const RedemptionInformation = () => {
+  const { state, address } = useOutletContext<{
+    state: RedemptionState;
+    address: string;
+  }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const {

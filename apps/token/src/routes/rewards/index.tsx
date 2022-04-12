@@ -1,6 +1,6 @@
-import { useDocumentTitle } from "../../hooks/use-document-title";
-import { RouteChildProps } from "..";
-import { RewardsIndex } from "./home";
+import { useDocumentTitle } from '../../hooks/use-document-title';
+import type { RouteChildProps } from '..';
+import { RewardsIndex } from './home';
 
 const Rewards = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);

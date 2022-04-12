@@ -15,6 +15,7 @@ export const useGetLiquidityBalances = (
   dispatch: React.Dispatch<LiquidityAction>,
   ethAddress: string
 ) => {
+  // TODO: TFE import REWARDS_ADDRESSES not defined
   const lpStakingEth = useVegaLPStaking({
     address: REWARDS_ADDRESSES['SushiSwap VEGA/ETH'],
   });
