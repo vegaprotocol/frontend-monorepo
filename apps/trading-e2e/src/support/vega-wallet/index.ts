@@ -2,6 +2,7 @@ export default class VegaWallet {
   connectVegaBtn = 'connect-vega-wallet';
   walletConnectors = 'connectors-list';
   walletForm = 'rest-connector-form';
+  selectPublicKeyBtn = 'select-keypair-button';
   walletInputError = 'input-wallet-error';
   walletFormError = 'form-error';
   inputError = 'input-error-text';
