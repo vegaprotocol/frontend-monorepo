@@ -12,9 +12,6 @@ import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 const DEPOSIT_EVENT_SUB = gql`
   subscription DepositEvent($partyId: ID!) {
     busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
-      eventId
-      block
-      type
       event {
         ... on Deposit {
           id
@@ -57,7 +54,7 @@ export const useSubmitDeposit = (
   }, confirmations);
 
   useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
-    variables: { partyId: partyId || '' },
+    variables: { partyId: partyId ? partyId.substring(2, partyId.length) : '' },
     skip: !partyId,
     onSubscriptionData: ({ subscriptionData }) => {
       if (!subscriptionData.data?.busEvents?.length) {
