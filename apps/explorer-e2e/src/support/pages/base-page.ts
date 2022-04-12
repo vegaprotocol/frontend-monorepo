@@ -50,7 +50,7 @@ export default class BasePage {
     cy.get(`a[href='${this.validatorsUrl}']`).click();
   }
 
-  search(searchText) {
+  search(searchText: string) {
     if (searchText) {
       cy.getByTestId(this.searchField).type(searchText);
     }
@@ -64,7 +64,7 @@ export default class BasePage {
     cy.getByTestId(this.openMobileMenuBtn).click({ force: true });
   }
 
-  validateUrl(expectedUrl) {
+  validateUrl(expectedUrl: string) {
     cy.url().should('include', expectedUrl);
   }
 
@@ -76,13 +76,13 @@ export default class BasePage {
     cy.getByTestId(this.searchField).should('be.visible');
   }
 
-  validateSearchErrorDisplayed(errorMessage) {
+  validateSearchErrorDisplayed(errorMessage: string) {
     cy.getByTestId(this.searchError).should('have.text', errorMessage);
   }
 
-  validateBlockDataDisplayed(headerTestId) {
-    cy.getByTestId(headerTestId).then(($assetHeaders) => {
-      const headersAmount = parseInt($assetHeaders.length);
+  validateBlockDataDisplayed(headerTestId: string) {
+    cy.getByTestId(headerTestId).then(($assetHeaders: JQuery<HTMLElement>) => {
+      const headersAmount = Number($assetHeaders.length);
 
       cy.wrap($assetHeaders).each(($header) => {
         expect($header).to.not.be.empty;
