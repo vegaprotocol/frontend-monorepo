@@ -1,14 +1,15 @@
-import "./vega-wallet-not-running.scss";
+import './vega-wallet-not-running.scss';
 
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
-import { FormGroup } from "../form-group";
+import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 
 interface VegaWalletNotRunningProps {
   url: string;
   setUrl: (url: string) => void;
 }
 
+// TODO TFE import do we need this?
 export const VegaWalletNotRunning = ({
   url,
   setUrl,
@@ -19,10 +20,10 @@ export const VegaWalletNotRunning = ({
     <div className="vega-wallet-not-running__container">
       <div className="vega-wallet-not-running__input">
         <FormGroup
-          label={t("walletServiceLabel")}
+          label={t('walletServiceLabel')}
           labelFor="wallet-service-url"
         >
-          <input
+          <Input
             name="wallet-service-url"
             id="wallet-service-url"
             type="text"
@@ -35,8 +36,8 @@ export const VegaWalletNotRunning = ({
       <div className="vega-wallet-not-running__text-container">
         <div className="vega-wallet-not-running__exclamation">!</div>
         <div className="vega-wallet-not-running__text">
-          <p>{t("noWalletDetected")}</p>
-          <p>{t("noWalletHelpText")}</p>
+          <p>{t('noWalletDetected')}</p>
+          <p>{t('noWalletHelpText')}</p>
         </div>
       </div>
     </div>

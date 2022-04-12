@@ -1,19 +1,15 @@
-import { IClaimTokenParams } from "@vegaprotocol/smart-contracts-sdk";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts-sdk';
+import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { BulletHeader } from "../../../components/bullet-header";
-import { CountrySelector } from "../../../components/country-selector";
-import { FormGroup } from "../../../components/form-group";
-import { TxState } from "../../../hooks/transaction-reducer";
-import { ClaimForm } from "../claim-form";
-import {
-  ClaimAction,
-  ClaimActionType,
-  ClaimState,
-  ClaimStatus,
-} from "../claim-reducer";
-import { useClaim } from "../hooks";
+import { BulletHeader } from '../../../components/bullet-header';
+import { CountrySelector } from '../../../components/country-selector';
+import { TxState } from '../../../hooks/transaction-reducer';
+import { ClaimForm } from '../claim-form';
+import type { ClaimAction, ClaimState } from '../claim-reducer';
+import { ClaimActionType, ClaimStatus } from '../claim-reducer';
+import { useClaim } from '../hooks';
 
 interface TargetedClaimProps {
   address: string;
@@ -57,10 +53,10 @@ export const TargetedClaim = ({
   return (
     <div style={{ maxWidth: 480 }} data-testid="targeted-claim">
       <BulletHeader tag="h2">
-        {t("Step")} 1. {t("Select country")}
+        {t('Step')} 1. {t('Select country')}
       </BulletHeader>
       <FormGroup
-        label={t("Select your country or region of current residence")}
+        label={t('Select your country or region of current residence')}
         labelFor="country-selector"
       >
         <CountrySelector
@@ -71,7 +67,7 @@ export const TargetedClaim = ({
         />
       </FormGroup>
       <BulletHeader tag="h2">
-        {t("Step")} 2. {t("Claim tokens")}
+        {t('Step')} 2. {t('Claim tokens')}
       </BulletHeader>
       {state.claimData?.country! ? (
         <ClaimForm
@@ -81,7 +77,7 @@ export const TargetedClaim = ({
           onSubmit={claimTargeted}
         />
       ) : (
-        <p className="text-muted">{t("selectCountryPrompt")}</p>
+        <p className="text-muted">{t('selectCountryPrompt')}</p>
       )}
     </div>
   );

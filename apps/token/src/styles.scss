@@ -80,24 +80,6 @@ a,
   color: $vega-red3;
 }
 
-// TODO replace with blueprint themeing
-select,
-input[type='text'],
-input[type='number'],
-input[type='password'] {
-  width: 100%;
-  padding: 12px;
-  border-radius: 0px;
-  border: 1px solid $white;
-}
-
-.bp3-dark .bp3-html-select select,
-.bp3-dark .bp3-select select {
-  border-radius: 0;
-  border: 1px solid $white;
-  background-color: $dark-gray4;
-}
-
 .bp3-dark a,
 .bp3-dark a:hover {
   color: $white;

@@ -1,7 +1,7 @@
 import './staking-form.scss';
 
 import { gql, useApolloClient } from '@apollo/client';
-import { FormGroup, Radio, RadioGroup } from '@blueprintjs/core';
+import { Radio, RadioGroup } from '@blueprintjs/core';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +26,7 @@ import type {
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {

@@ -1,22 +1,18 @@
-import { IClaimTokenParams } from "@vegaprotocol/smart-contracts-sdk";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts-sdk';
+import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { BulletHeader } from "../../../components/bullet-header";
-import { CountrySelector } from "../../../components/country-selector";
-import { FormGroup } from "../../../components/form-group";
-import { useContracts } from "../../../contexts/contracts/contracts-context";
-import { TxState } from "../../../hooks/transaction-reducer";
-import { useTransaction } from "../../../hooks/use-transaction";
-import {
-  ClaimAction,
-  ClaimActionType,
-  ClaimState,
-  ClaimStatus,
-} from "../claim-reducer";
-import { ClaimStep1 } from "../claim-step-1";
-import { ClaimStep2 } from "../claim-step-2";
-import { useClaim } from "../hooks";
+import { BulletHeader } from '../../../components/bullet-header';
+import { CountrySelector } from '../../../components/country-selector';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
+import { TxState } from '../../../hooks/transaction-reducer';
+import { useTransaction } from '../../../hooks/use-transaction';
+import type { ClaimAction, ClaimState } from '../claim-reducer';
+import { ClaimActionType, ClaimStatus } from '../claim-reducer';
+import { ClaimStep1 } from '../claim-step-1';
+import { ClaimStep2 } from '../claim-step-2';
+import { useClaim } from '../hooks';
 
 interface UntargetedClaimProps {
   address: string;
@@ -77,10 +73,10 @@ export const UntargetedClaim = ({
   return (
     <div style={{ maxWidth: 480 }}>
       <BulletHeader tag="h2">
-        {t("Step")} 1. {t("Select country")}
+        {t('Step')} 1. {t('Select country')}
       </BulletHeader>
       <FormGroup
-        label={t("Select your country or region of current residence")}
+        label={t('Select your country or region of current residence')}
         labelFor="country-selector"
       >
         <CountrySelector
@@ -91,7 +87,7 @@ export const UntargetedClaim = ({
         />
       </FormGroup>
       <BulletHeader tag="h2">
-        {t("Step")} 2. {t("commitTitle")}
+        {t('Step')} 2. {t('commitTitle')}
       </BulletHeader>
       {state.claimData?.country ? (
         <ClaimStep1
@@ -102,10 +98,10 @@ export const UntargetedClaim = ({
           onSubmit={commitClaim}
         />
       ) : (
-        <p className="text-muted">{t("selectCountryPrompt")}</p>
+        <p className="text-muted">{t('selectCountryPrompt')}</p>
       )}
       <BulletHeader tag="h2">
-        {t("Step")} 3. {t("Claim tokens")}
+        {t('Step')} 3. {t('Claim tokens')}
       </BulletHeader>
       {committed || commitState.txState === TxState.Complete ? (
         <ClaimStep2
@@ -115,7 +111,7 @@ export const UntargetedClaim = ({
           onSubmit={commitReveal}
         />
       ) : (
-        <p className="text-muted">{t("claimNotReady")}</p>
+        <p className="text-muted">{t('claimNotReady')}</p>
       )}
     </div>
   );

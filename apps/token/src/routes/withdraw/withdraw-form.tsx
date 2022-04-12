@@ -1,7 +1,6 @@
 import './withdraw-form.scss';
 
-import { FormGroup, HTMLSelect } from '@blueprintjs/core';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, FormGroup, Intent, Select } from '@vegaprotocol/ui-toolkit';
 import { ethers } from 'ethers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -91,13 +90,9 @@ export const WithdrawForm = ({
     >
       <FormGroup label={t('withdrawFormAssetLabel')} labelFor="asset">
         {accounts.length ? (
-          <HTMLSelect
+          <Select
             name="asset"
             id="asset"
-            options={accounts.map((a) => ({
-              label: `${a.asset.symbol} (${a.balanceFormatted})`,
-              value: a.asset.id,
-            }))}
             onChange={(e) => {
               const account = accounts.find(
                 (a) => a.asset.id === e.currentTarget.value
@@ -105,8 +100,13 @@ export const WithdrawForm = ({
               if (!account) throw new Error('No account');
               setAccount(account);
             }}
-            fill={true}
-          />
+          >
+            {accounts.map((a) => (
+              <option value={a.asset.id}>
+                {a.asset.symbol} ({a.balanceFormatted})
+              </option>
+            ))}
+          </Select>
         ) : (
           <p className="text-muted">{t('withdrawFormNoAsset')}</p>
         )}

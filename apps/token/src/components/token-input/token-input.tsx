@@ -1,12 +1,12 @@
 import './token-input.scss';
 
 import {
+  Button,
+  Callout,
+  Input,
+  Intent,
   FormGroup,
-  InputGroup,
-  Tag,
-  Intent as BlueprintIntent,
-} from '@blueprintjs/core';
-import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
+} from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -38,15 +38,15 @@ export const AmountInput = ({
   const { t } = useTranslation();
   return (
     <div className="token-input__container">
-      <InputGroup
+      <Input
         data-testid="token-amount-input"
         className="token-input__input"
         name={inputName}
         id={inputName}
         onChange={(e) => setAmount(e.target.value)}
         value={amount}
-        intent={BlueprintIntent.NONE}
-        rightElement={<Tag minimal={true}>{currency}</Tag>}
+        // TODO: TFE import
+        // rightElement={<Tag minimal={true}>{currency}</Tag>}
         autoComplete="off"
         type="number"
         max={maximum.toString()}

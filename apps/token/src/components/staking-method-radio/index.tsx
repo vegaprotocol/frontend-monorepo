@@ -1,10 +1,10 @@
-import { Radio, RadioGroup } from "@blueprintjs/core";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { Radio, RadioGroup } from '@blueprintjs/core';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export enum StakingMethod {
-  Contract = "Contract",
-  Wallet = "Wallet",
+  Contract = 'Contract',
+  Wallet = 'Wallet',
 }
 
 export const StakingMethodRadio = ({
@@ -26,12 +26,12 @@ export const StakingMethodRadio = ({
     >
       <Radio
         data-testid="associate-radio-contract"
-        label={t("Vesting contract")}
+        label={t('Vesting contract')}
         value={StakingMethod.Contract}
       />
       <Radio
         data-testid="associate-radio-wallet"
-        label={t("Wallet")}
+        label={t('Wallet')}
         value={StakingMethod.Wallet}
       />
     </RadioGroup>

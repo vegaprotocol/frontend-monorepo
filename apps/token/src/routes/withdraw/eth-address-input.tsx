@@ -1,9 +1,10 @@
 import {
+  Button,
+  Callout,
   FormGroup,
-  InputGroup,
-  Intent as BlueprintIntent,
-} from '@blueprintjs/core';
-import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
+  Intent,
+  Input,
+} from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -33,15 +34,15 @@ export const EthAddressInput = ({
 
   return (
     <FormGroup label={t('To')} labelFor="ethAddressInput">
-      <InputGroup
+      <Input
         data-testid="token-amount-input"
         className="token-input__input"
         name="ethAddressInput"
         onChange={(e) => onChange(e.target.value)}
         value={address}
         disabled={useConnectedWallet}
-        intent={BlueprintIntent.NONE}
-        leftElement={<Ethereum />}
+        // TODO: TFE import
+        // leftElement={<Ethereum />}
         autoComplete="off"
         type="text"
         required={true}
