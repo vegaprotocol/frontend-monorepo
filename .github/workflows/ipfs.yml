@@ -25,4 +25,6 @@ jobs:
         with:
           node-version: 16.14.0
       - name: Run deploy for affected sites
+        env:
+          FLEEK_API_KEY: ${{ secrets.FLEEK_API_KEY }}
         run: ./tools/ipfs-deploy.js
