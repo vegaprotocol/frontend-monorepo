@@ -95,6 +95,8 @@ jobs:
         run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
       - name: Import config
         run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+      - name: Create new public key
+        run: ./vegawallet generate key -w UI_Trading_Test -p ./passphrase
       - name: Start service
         run: ./vegawallet service run --network fairground  &
 

@@ -1,4 +1,4 @@
-import { When } from 'cypress-cucumber-preprocessor/steps';
+import { When, Then } from 'cypress-cucumber-preprocessor/steps';
 import VegaWallet from '../vega-wallet';
 
 const vegaWallet = new VegaWallet();
@@ -27,4 +27,17 @@ When('I connect to Vega Wallet', () => {
     Cypress.env('tradingWalletPassphrase')
   );
   vegaWallet.clickConnectVegaWallet();
+});
+
+When('I open wallet dialog', () => {
+  vegaWallet.validatePublicKeyDisplayed('47836c…c7d278'); // Default Test wallet pub key
+  vegaWallet.clickOnWalletConnectDialog();
+});
+
+When('select a different public key', () => {
+  vegaWallet.selectPublicKey();
+});
+
+Then('public key is switched', () => {
+  vegaWallet.validatePublicKeyDisplayed('1a18cd…0cf2e4'); // Second public key for test wallet
 });
