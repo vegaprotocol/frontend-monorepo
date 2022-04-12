@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -6,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 
 import { SplashError } from './components/splash-error';
 import { SplashLoader } from './components/splash-loader';
-import { SplashScreen } from './components/splash-screen';
 import { Flags } from './config';
 import {
   AppStateActionType,
@@ -139,17 +139,17 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
 
   if (Flags.NETWORK_DOWN) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashError />
-      </SplashScreen>
+      </Splash>
     );
   }
 
   if (!loaded) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

@@ -6,12 +6,12 @@ import {
   ERC20Token,
   VegaVesting,
 } from '@vegaprotocol/smart-contracts-sdk';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import uniqBy from 'lodash/uniqBy';
 import React from 'react';
 
 import { SplashLoader } from '../../components/splash-loader';
-import { SplashScreen } from '../../components/splash-screen';
 import { APP_ENV } from '../../config';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
@@ -79,9 +79,9 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
 
   if (!contracts) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

@@ -1,4 +1,4 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
 import { SplashLoader } from '../../components/splash-loader';
-import { SplashScreen } from '../../components/splash-screen';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useTranches } from '../../hooks/use-tranches';
@@ -64,9 +63,9 @@ const RedemptionRouter = () => {
 
   if (!tranches) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

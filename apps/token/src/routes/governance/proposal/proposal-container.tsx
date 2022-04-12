@@ -1,11 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { SplashLoader } from '../../../components/splash-loader';
-import { SplashScreen } from '../../../components/splash-screen';
 import useFetch from '../../../hooks/use-fetch';
 import { getDataNodeUrl } from '../../../lib/get-data-node-url';
 import { Proposal } from '../components/proposal';
@@ -70,9 +69,9 @@ export const ProposalContainer = () => {
 
   if (loading || !data || restLoading || !restData) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

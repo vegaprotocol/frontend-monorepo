@@ -6,12 +6,12 @@ import { useMatch, Outlet } from 'react-router-dom';
 
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
-import { SplashScreen } from '../../components/splash-screen';
 import { Flags, REWARDS_ADDRESSES } from '../../config';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import { useGetLiquidityBalances } from './hooks';
 import { initialLiquidityState, liquidityReducer } from './liquidity-reducer';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 const RedemptionIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
@@ -67,9 +67,9 @@ const RedemptionIndex = ({ name }: RouteChildProps) => {
   }, [withdraw, deposit, t]);
   if (loading) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
   return (

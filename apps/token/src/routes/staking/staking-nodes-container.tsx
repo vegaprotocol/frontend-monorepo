@@ -1,11 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../components/splash-loader';
-import { SplashScreen } from '../../components/splash-screen';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 
 export const STAKING_QUERY = gql`
@@ -114,9 +113,9 @@ export const StakingNodesContainer = ({
 
   if (loading) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

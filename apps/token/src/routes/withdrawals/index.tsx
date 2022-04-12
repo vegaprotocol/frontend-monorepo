@@ -1,7 +1,7 @@
 import './withdrawals.scss';
 
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { format } from 'date-fns';
 import orderBy from 'lodash/orderBy';
@@ -15,7 +15,6 @@ import {
   KeyValueTableRow,
 } from '../../components/key-value-table';
 import { SplashLoader } from '../../components/splash-loader';
-import { SplashScreen } from '../../components/splash-screen';
 import { TransactionButton } from '../../components/transaction-button';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
@@ -127,9 +126,9 @@ const WithdrawPendingContainer = ({
 
   if (loading || !data) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

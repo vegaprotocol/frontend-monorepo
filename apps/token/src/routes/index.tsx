@@ -1,11 +1,11 @@
 import * as Sentry from '@sentry/react';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import type { WithTranslation } from 'react-i18next';
 import { withTranslation } from 'react-i18next';
 import { Route, Routes } from 'react-router-dom';
 
 import { SplashLoader } from '../components/splash-loader';
-import { SplashScreen } from '../components/splash-screen';
 import routerConfig from './router-config';
 
 export interface RouteChildProps {
@@ -46,9 +46,9 @@ const BoundaryWithTranslation = withTranslation()(RouteErrorBoundary);
 
 export const AppRouter = () => {
   const splashLoading = (
-    <SplashScreen>
+    <Splash>
       <SplashLoader />
-    </SplashScreen>
+    </Splash>
   );
 
   return (

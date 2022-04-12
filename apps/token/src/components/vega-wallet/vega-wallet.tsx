@@ -49,7 +49,9 @@ export const VegaWallet = () => {
             </span>
           </div>
           {keypair && (
-            <span className="vega-wallet__curr-key">{keypair.pub}</span>
+            <span className="vega-wallet__curr-key">
+              {truncateMiddle(keypair.pub)}
+            </span>
           )}
         </WalletCardHeader>
         <WalletCardContent>{child}</WalletCardContent>
@@ -182,10 +184,10 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
       ))}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={Routes.GOVERNANCE}>
-          <Button className="button-secondary">{t('governance')}</Button>
+          <Button className="w-full">{t('governance')}</Button>
         </Link>
         <Link style={{ flex: 1 }} to={Routes.STAKING}>
-          <Button className="button-secondary">{t('staking')}</Button>
+          <Button className="w-full">{t('staking')}</Button>
         </Link>
       </WalletCardActions>
       <VegaWalletAssetList accounts={accounts} />

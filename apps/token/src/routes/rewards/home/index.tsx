@@ -1,7 +1,7 @@
 import './index.scss';
 
 import { useQuery } from '@apollo/client';
-import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { formatDistance } from 'date-fns';
 // @ts-ignore TODO: check if duration-js has a @types definition
 import Duration from 'duration-js';
@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import { EpochCountdown } from '../../../components/epoch-countdown';
 import { Heading } from '../../../components/heading';
 import { SplashLoader } from '../../../components/splash-loader';
-import { SplashScreen } from '../../../components/splash-screen';
 import { NetworkParams } from '../../../config';
 import {
   AppStateActionType,
@@ -103,9 +102,9 @@ export const RewardsIndex = () => {
 
   if (loading || rewardAssetLoading || !rewardAssetData?.length) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

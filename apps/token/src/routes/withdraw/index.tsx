@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,6 @@ import { AccountType } from '../../__generated__/globalTypes';
 import { EthWalletContainer } from '../../components/eth-wallet-container';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
-import { SplashScreen } from '../../components/splash-screen';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { Routes } from '../router-config';
@@ -115,9 +114,9 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
 
   if (loading || !data) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

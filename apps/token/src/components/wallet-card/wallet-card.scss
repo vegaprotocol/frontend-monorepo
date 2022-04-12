@@ -1,5 +1,5 @@
-@import "../../styles/colors";
-@import "../../styles/fonts";
+@import '../../styles/colors';
+@import '../../styles/fonts';
 
 .wallet-card {
   background-color: $white;
@@ -91,13 +91,6 @@
     &--bold {
       font-weight: bold;
     }
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 5px;
-    padding: 5px 0;
   }
 
   &__asset {

@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
@@ -7,7 +7,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../../components/splash-loader';
-import { SplashScreen } from '../../../components/splash-screen';
 import { ProposalsList } from '../components/proposals-list';
 import { PROPOSALS_FRAGMENT } from '../proposal-fragment';
 import type { Proposals } from './__generated__/Proposals';
@@ -57,9 +56,9 @@ export const ProposalsContainer = () => {
 
   if (loading) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

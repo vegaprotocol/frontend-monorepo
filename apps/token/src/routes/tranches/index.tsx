@@ -3,10 +3,10 @@ import { Outlet } from 'react-router-dom';
 
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
-import { SplashScreen } from '../../components/splash-screen';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { useTranches } from '../../hooks/use-tranches';
 import type { RouteChildProps } from '..';
+import { Splash } from '@vegaprotocol/ui-toolkit';
 
 const TrancheRouter = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
@@ -15,9 +15,9 @@ const TrancheRouter = ({ name }: RouteChildProps) => {
 
   if (!tranches) {
     return (
-      <SplashScreen>
+      <Splash>
         <SplashLoader />
-      </SplashScreen>
+      </Splash>
     );
   }
 

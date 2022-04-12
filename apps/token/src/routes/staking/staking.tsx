@@ -176,7 +176,7 @@ export const StakingStepAssociate = ({
   return (
     <>
       <p>{t('stakingStep2Text')}</p>
-      <Link to="/associate">
+      <Link to="/staking/associate">
         <Button data-testid="associate-tokens-btn" className="fill">
           {t('associateButton')}
         </Button>

@@ -166,12 +166,12 @@ const ConnectedKey = () => {
       )}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/associate`}>
-          <Button className="button-secondary button-secondary--light">
+          <Button variant="secondary" className="w-full">
             {t('associate')}
           </Button>
         </Link>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/disassociate`}>
-          <Button className="button-secondary button-secondary--light">
+          <Button variant="secondary" className="w-full">
             {t('disassociate')}
           </Button>
         </Link>
@@ -234,6 +234,7 @@ export const EthWallet = () => {
           <WalletCardActions>
             <Button
               variant="inline-link"
+              className="text-black dark:text-black"
               onClick={() => connector.deactivate()}
             >
               {t('disconnect')}

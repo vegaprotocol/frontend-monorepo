@@ -1,11 +1,11 @@
-import "./wallet-card.scss";
+import './wallet-card.scss';
 
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-import { useAnimateValue } from "../../hooks/use-animate-value";
-import { BigNumber } from "../../lib/bignumber";
-import { formatNumber } from "../../lib/format-number";
+import { useAnimateValue } from '../../hooks/use-animate-value';
+import { BigNumber } from '../../lib/bignumber';
+import { formatNumber } from '../../lib/format-number';
 
 const useNumberParts = (
   value: BigNumber | null | undefined,
@@ -13,7 +13,7 @@ const useNumberParts = (
 ) => {
   return React.useMemo(() => {
     if (!value) {
-      return ["0", "0".repeat(decimals)];
+      return ['0', '0'.repeat(decimals)];
     }
     // @ts-ignore
     const separator = BigNumber.config().FORMAT.decimalSeparator as string;
@@ -30,7 +30,7 @@ interface WalletCardProps {
 }
 
 export const WalletCard = ({ dark, children }: WalletCardProps) => (
-  <div className={`wallet-card ${dark ? "wallet-card--inverted" : ""}`}>
+  <div className={`wallet-card ${dark ? 'wallet-card--inverted' : ''}`}>
     {children}
   </div>
 );
@@ -44,7 +44,7 @@ export const WalletCardHeader = ({ children, dark }: WalletCardHeaderProps) => {
   return (
     <div
       className={`wallet-card__header ${
-        dark ? "wallet-card__header--inverted" : ""
+        dark ? 'wallet-card__header--inverted' : ''
       }`}
     >
       {children}
@@ -81,16 +81,12 @@ export const WalletCardRow = ({
 
   return (
     <div
-      className={`wallet-card__row ${dark ? "wallet-card__row--dark" : ""} ${
-        bold ? "wallet-card__row--bold" : ""
+      className={`wallet-card__row ${dark ? 'wallet-card__row--dark' : ''} ${
+        bold ? 'wallet-card__row--bold' : ''
       }`}
       ref={ref}
     >
-      {link ? (
-        <Link to={link}>{label}</Link>
-      ) : (
-        <span>{label}</span>
-      )}
+      {link ? <Link to={link}>{label}</Link> : <span>{label}</span>}
       {value && (
         <span>
           <span className="wallet-card__price--integer">{integers}.</span>
@@ -106,7 +102,7 @@ export const WalletCardActions = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return <div className="wallet-card__actions">{children}</div>;
+  return <div className="flex justify-end gap-2 py-2">{children}</div>;
 };
 
 export interface WalletCardAssetProps {
@@ -134,13 +130,13 @@ export const WalletCardAsset = ({
 
   return (
     <div
-      className={`wallet-card__asset ${dark ? "wallet-card__asset--dark" : ""}`}
+      className={`wallet-card__asset ${dark ? 'wallet-card__asset--dark' : ''}`}
     >
       <img
         alt="Vega"
         src={image}
         className={`wallet-card__asset-image ${
-          border ? "wallet-card__asset-image--border" : ""
+          border ? 'wallet-card__asset-image--border' : ''
         }`}
       />
       <div className="wallet-card__asset-header">
