@@ -42,7 +42,7 @@ function triggerDeploy(siteId) {
   const curl = `curl 'https://api.fleek.co/graphql' --silent -X POST -H 'Accept: */*' -H 'Accept-Encoding: gzip, deflate, br' -H 'Content-Type: application/json' -H 'Authorization: ${process.env['FLEEK_API_KEY']}' --data-raw '{"query":"mutation {triggerDeploy(commit: \\"HEAD\\", siteId: \\"${siteId}\\"){status}}","variables":null}'`;
   const fleekRes = execSync(curl);
 
-  const res = JSON.parse(fleekRes.toString());
+  JSON.parse(fleekRes.toString());
 
   // Will have thrown if it failed
   return true;
@@ -64,13 +64,7 @@ if (!process.env['FLEEK_API_KEY']) {
 
 readdirSync(projectPath).forEach((proj) => {
   try {
-    const project = `${projectPath}${proj}`;
-    if (!lstatSync(project).isDirectory()) {
-      // It's not a project folder, skip it
-      return;
-    }
-
-    const config = `${project}/${fleekFile}`;
+    const config = `${projectPath}${proj}/${fleekFile}`;
     if (!existsSync(config)) {
       // No fleek file, skip it
       return;
@@ -112,7 +106,14 @@ readdirSync(projectPath).forEach((proj) => {
       const affectedSinceCommit = execSync(
         `yarn nx print-affected --base=${baseCommit} --head=master --select=projects`
       );
-      isAffected = affectedSinceCommit.toString().indexOf(proj) !== -1;
+
+      // Detect if this project name is in output, taking care not to match names that are
+      // included in other projects - `trading`, `trading-e2e` is a current example
+      isAffected = affectedSinceCommit
+        .toString()
+        .split(',')
+        .map((v) => v.trim())
+        .includes(proj);
     } catch (e) {
       console.error(`Failed to run nx:affected for ${baseCommit}:master`);
       return;
