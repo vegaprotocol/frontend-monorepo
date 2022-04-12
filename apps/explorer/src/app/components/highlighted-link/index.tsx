@@ -11,11 +11,7 @@ export const HighlightedLink = ({
   ...props
 }: HighlightedLinkProps) => {
   return (
-    <Link
-      className="font-bold underline dark:text-vega-yellow dark:font-normal dark:no-underline"
-      to={to}
-      {...props}
-    >
+    <Link className="font-bold underline" to={to} {...props}>
       {text}
     </Link>
   );
