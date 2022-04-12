@@ -12,6 +12,7 @@ export const Controlled: ComponentStory<typeof Toggle> = () => {
 
   return (
     <form>
+      <div className="mb-12">Current checked state: {checked}</div>
       <Toggle
         name="controlled"
         toggles={[
