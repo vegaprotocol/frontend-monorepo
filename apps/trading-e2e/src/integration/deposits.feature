@@ -9,7 +9,7 @@ Feature: Deposits to vega wallet
     And the connect button is displayed
 
   @todo
-  Scenario Outline: user cannot deposit if approval amount is 0 (approval amount is 0)
+  Scenario: Cannot deposit if approved amount is 0 (approval amount is 0)
     And I connect my ethereum wallet
     And I connect my vega wallet
     When I set "0" tokens to be approved
@@ -25,7 +25,7 @@ Feature: Deposits to vega wallet
     Then I can see the deposit is unsuccessful
 
   @todo
-  Scenario: user cannot deposit if approval amount is lower than deposit ()
+  Scenario: Cannot deposit if approved amount is lower than deposit amount
     When I set "2" tokens to be approved
     And I approve the asset tokens
     And I can see the deposit form is displayed
@@ -41,7 +41,7 @@ Feature: Deposits to vega wallet
     And i try to deposit "5" vega
 
   @todo
-  Scenario: User can succesfully deposit (approval amount is greater than deposit)
+  Scenario: Can succesfully deposit (approved amount is greater than deposit)
     When I set "200000000" tokens to be approved
     And I approve the asset tokens
     And I can see the deposit form is displayed
@@ -56,7 +56,7 @@ Feature: Deposits to vega wallet
     And Balance is updated to reflect deposit amount
 
   @todo
-  Scenario: validation errors where no fields are filled in
+  Scenario: Validation errors where no fields are filled in
     When I submit a deposit form with empty fields
     Then I can see validation errors present
 
@@ -72,7 +72,7 @@ Feature: Deposits to vega wallet
     Then I can see the field is updated with the maximum amount of the asset from my wallet
 
   @todo
-  Scenario: transaction fails if attempting to deposit more than available in wallet
+  Scenario: Transaction fails if attempting to deposit more than available in wallet
     And I can see the deposit form is displayed
     And I select "" asset from the dropdown list
     When I enter the following details
@@ -83,7 +83,7 @@ Feature: Deposits to vega wallet
     Then an error message is shown stating not enough tokens in wallet to deposit
 
   @todo
-  Scenario: deposit to a vega wallet key which is not your own
+  Scenario: Deposit to a vega wallet key which is not your own
     And I can see the deposit form is displayed
     And I select "" asset from the dropdown list
     When I enter the following details
@@ -96,7 +96,7 @@ Feature: Deposits to vega wallet
     And Balance is updated to reflect deposit amount
 
   @todo
-  Scenario: deposit when wallet is not connected
+  Scenario: Deposit when vega wallet is not connected
     And I disconnect my vega wallet
     And I can see the deposit form is displayed
     And I select "" asset from the dropdown list
