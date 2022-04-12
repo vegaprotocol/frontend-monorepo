@@ -55,7 +55,7 @@ Given('I am on the trading page for an active market', () => {
   mockMarket(MarketState.Active);
 
   cy.visit('/markets/market-id');
-  cy.wait('@Market');
+  cy.wait('@Market', { timeout: 3000 });
   cy.contains('Market: ACTIVE MARKET');
 });
 
@@ -63,6 +63,6 @@ Given('I am on the trading page for a suspended market', () => {
   mockMarket(MarketState.Suspended);
 
   cy.visit('/markets/market-id');
-  cy.wait('@Market');
+  cy.wait('@Market', { timeout: 3000 });
   cy.contains('Market: SUSPENDED MARKET');
 });
