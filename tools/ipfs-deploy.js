@@ -15,7 +15,7 @@
  *
  * It has also been written to skip external dependencies.
  */
-const { existsSync, readdirSync, lstatSync, readFileSync } = require('fs');
+const { existsSync, readdirSync, readFileSync } = require('fs');
 const { execSync } = require('child_process');
 
 /**
