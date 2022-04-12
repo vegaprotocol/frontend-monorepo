@@ -2,11 +2,13 @@ import merge from 'lodash/merge';
 import type { TransactionResponse } from '@vegaprotocol/vegawallet-service-api-client';
 import type { PartialDeep } from 'type-fest';
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Chainable<Subject> {
-    mockVegaCommandSync(txHash: string, signature: string): void;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Chainable<Subject> {
+      mockVegaCommandSync(override: PartialDeep<TransactionResponse>): void;
+    }
   }
 }
 

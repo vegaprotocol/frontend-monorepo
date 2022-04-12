@@ -8,12 +8,13 @@ export default class DealTicket {
   orderTypeDropDown = 'order-tif';
   datePickerField = 'date-picker-field';
   placeOrderBtn = 'place-order';
+  placeOrderFormError = 'dealticket-error-message';
   orderDialog = 'order-wrapper';
   orderStatusHeader = 'order-status-header';
   orderTransactionHash = 'tx-hash';
   orderErrorTxt = 'error-reason';
 
-  placeMarketOrder(isBuy, orderSize, orderType) {
+  placeMarketOrder(isBuy: boolean, orderSize: string, orderType: string) {
     cy.get(`[data-testid=${this.placeOrderBtn}]`, { timeout: 8000 }).should(
       'be.visible'
     );
@@ -26,7 +27,12 @@ export default class DealTicket {
     cy.getByTestId(this.orderTypeDropDown).select(orderType);
   }
 
-  placeLimitOrder(isBuy, orderSize, orderPrice, orderType) {
+  placeLimitOrder(
+    isBuy: boolean,
+    orderSize: string,
+    orderPrice: string,
+    orderType: string
+  ) {
     cy.getByTestId(this.limitOrderType).click();
 
     if (isBuy == false) {
@@ -71,14 +77,14 @@ export default class DealTicket {
     cy.getByTestId(this.placeOrderBtn).should('be.disabled');
   }
 
-  verifySubmitBtnErrorText(expectedText) {
+  verifySubmitBtnErrorText(expectedText: string) {
     cy.getByTestId('dealticket-error-message').should(
       'have.text',
       expectedText
     );
   }
 
-  verifyOrderRejected(errorMsg) {
+  verifyOrderRejected(errorMsg: string) {
     cy.getByTestId(this.orderStatusHeader).should(
       'have.text',
       'Order rejected by wallet'
@@ -90,8 +96,8 @@ export default class DealTicket {
 
   reloadPageIfPublicKeyErrorDisplayed() {
     cy.get('body').then(($body) => {
-      if ($body.find(`[data-testid=${this.inputError}]`).length) {
-        cy.getByTestId(this.inputError)
+      if ($body.find(`[data-testid=${this.placeOrderFormError}]`).length) {
+        cy.getByTestId(this.placeOrderFormError)
           .invoke('text')
           .then(($errorText) => {
             if ($errorText == 'No public key selected') {
@@ -102,8 +108,8 @@ export default class DealTicket {
     });
   }
 
-  formatDate(date) {
-    const padZero = (num) => num.toString().padStart(2, '0');
+  formatDate(date: Date) {
+    const padZero = (num: number) => num.toString().padStart(2, '0');
 
     const year = date.getFullYear();
     const month = padZero(date.getMonth() + 1);

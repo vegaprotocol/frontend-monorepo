@@ -53,7 +53,7 @@ export default class MarketPage extends BasePage {
     );
   }
 
-  clickOnMarket(text) {
+  clickOnMarket(text: string) {
     cy.contains(text).click();
   }
 }
