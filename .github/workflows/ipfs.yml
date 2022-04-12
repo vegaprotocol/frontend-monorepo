@@ -1,0 +1,28 @@
+---
+name: Deploy affected projects to IPFS
+
+'on':
+  # Triggers the workflow on push to main branch
+  push:
+    branches: [master]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch: null
+
+jobs:
+  master:
+    name: Publish NX Affected
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - name: Use Node.js 16
+        id: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.0
+      - name: Run deploy for affected sites
+        run: ./tools/ipfs-deploy.js
