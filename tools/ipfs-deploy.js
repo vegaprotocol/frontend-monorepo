@@ -104,7 +104,7 @@ readdirSync(projectPath).forEach((proj) => {
 
     try {
       const affectedSinceCommit = execSync(
-        `yarn nx print-affected --base=${baseCommit} --head=master --select=projects`
+        `yarn nx print-affected --base=${baseCommit} --head=HEAD --select=projects`
       );
 
       // Detect if this project name is in output, taking care not to match names that are
