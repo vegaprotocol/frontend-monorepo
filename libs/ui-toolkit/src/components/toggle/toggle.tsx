@@ -7,18 +7,14 @@ interface ToggleProps {
   value: string;
 }
 
-type TogglesArr = [
-  toggle1: ToggleProps,
-  toggle2: ToggleProps,
-  ...moreToggles: ToggleProps[]
-];
+export type TogglesArr = [ToggleProps, ToggleProps, ...ToggleProps[]];
 
 export interface ToggleInputProps {
   name: string;
   toggles: TogglesArr;
   className?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
-  checkedValue?: string;
+  checkedValue?: string | undefined | null;
 }
 
 export const Toggle = ({
@@ -48,6 +44,7 @@ export const Toggle = ({
   return (
     <fieldset className={fieldsetClasses} {...props}>
       {toggles.map(({ label, value }, key) => {
+        const isSelected = value === checkedValue;
         return (
           <label key={key} className={labelClasses}>
             <input
@@ -60,7 +57,14 @@ export const Toggle = ({
               }
               className={radioClasses}
             />
-            <span className={buttonClasses}>{label}</span>
+            <span
+              className={buttonClasses}
+              data-testid={
+                isSelected ? `${name}-${value}-selected` : `${name}-${value}`
+              }
+            >
+              {label}
+            </span>
           </label>
         );
       })}

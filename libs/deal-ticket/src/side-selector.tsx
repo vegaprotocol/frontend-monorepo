@@ -1,6 +1,7 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { OrderSide } from '@vegaprotocol/wallet';
-import { ButtonRadio } from './button-radio';
+import type { TogglesArr } from '@vegaprotocol/ui-toolkit';
+import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { Order } from './use-order-state';
 
 interface SideSelectorProps {
@@ -9,16 +10,18 @@ interface SideSelectorProps {
 }
 
 export const SideSelector = ({ order, onSelect }: SideSelectorProps) => {
+  const toggles = Object.entries(OrderSide).map(([label, value]) => ({
+    label,
+    value,
+  }));
+
   return (
     <FormGroup label="Direction">
-      <ButtonRadio
+      <Toggle
         name="order-side"
-        options={Object.entries(OrderSide).map(([text, value]) => ({
-          text,
-          value,
-        }))}
-        currentOption={order.side}
-        onSelect={(value) => onSelect(value as OrderSide)}
+        toggles={toggles as TogglesArr}
+        checkedValue={order.side}
+        onChange={(e) => onSelect(e.target.value as OrderSide)}
       />
     </FormGroup>
   );
