@@ -7,6 +7,7 @@ import {
   includesLeftPadding,
   includesRightPadding,
   includesBorderWidth,
+  includesHeight,
 } from '../../utils/class-names';
 
 interface CommonProps {
@@ -28,11 +29,12 @@ const getClasses = (
   variant: CommonProps['variant'],
   paddingLeftProvided: boolean,
   paddingRightProvided: boolean,
-  borderWidthProvided: boolean
+  borderWidthProvided: boolean,
+  heightProvided: boolean
 ) => {
   // Add classes into variables if there are multiple classes shared in multiple button styles
   const sharedClasses =
-    'inline-flex items-center justify-center box-border h-28 transition-all disabled:no-underline';
+    'inline-flex items-center justify-center box-border transition-all disabled:no-underline';
   const underlineOnHover = 'no-underline hover:underline';
   const commonHoverAndActiveBorder =
     'hover:border-black dark:hover:border-white active:border-black dark:active:border-white';
@@ -56,6 +58,7 @@ const getClasses = (
   const standardButtonBorderWidth = `${
     borderWidthProvided ? borderWidthProvided : 'border'
   }`;
+  const buttonHeight = `${heightProvided ? heightProvided : 'h-28'}`;
 
   const primaryClasses = [
     sharedClasses,
@@ -65,6 +68,7 @@ const getClasses = (
     standardButtonPaddingLeft,
     standardButtonPaddingRight,
     standardButtonBorderWidth,
+    buttonHeight,
     'bg-black dark:bg-white hover:bg-black-80 dark:hover:bg-white-80 active:bg-white dark:active:bg-black',
     'text-ui text-white dark:text-black active:text-black dark:active:text-white',
   ];
@@ -77,6 +81,7 @@ const getClasses = (
     standardButtonPaddingLeft,
     standardButtonPaddingRight,
     standardButtonBorderWidth,
+    buttonHeight,
     'bg-white dark:bg-black hover:bg-black-25 dark:hover:bg-white-25 active:bg-black dark:active:bg-white',
     'text-ui text-black dark:text-white active:text-white dark:active:text-black',
     'border-black-60 dark:border-white-60 hover:border-black',
@@ -90,6 +95,7 @@ const getClasses = (
     standardButtonPaddingLeft,
     standardButtonPaddingRight,
     standardButtonBorderWidth,
+    buttonHeight,
     'bg-vega-yellow dark:bg-vega-yellow hover:bg-vega-yellow-dark dark:hover:bg-vega-yellow/30 active:bg-white dark:active:bg-black',
     'text-ui uppercase text-black dark:text-black hover:text-white dark:hover:text-white active:text-black dark:active:text-white',
     'border-transparent dark:border-transparent',
@@ -99,6 +105,7 @@ const getClasses = (
     sharedClasses,
     inlineButtonPaddingLeft,
     inlineButtonPaddingRight,
+    buttonHeight,
     inlineTextColour,
     'border-none',
     'text-ui',
@@ -108,6 +115,7 @@ const getClasses = (
     sharedClasses,
     inlineButtonPaddingLeft,
     inlineButtonPaddingRight,
+    buttonHeight,
     inlineTextColour,
     'underline hover:underline',
     'border-none',
@@ -136,13 +144,15 @@ const classes = (
   const paddingLeftProvided = includesLeftPadding(className);
   const paddingRightProvided = includesRightPadding(className);
   const borderWidthProvided = includesBorderWidth(className);
+  const heightProvided = includesHeight(className);
 
   return classNames(
     getClasses(
       variant,
       paddingLeftProvided,
       paddingRightProvided,
-      borderWidthProvided
+      borderWidthProvided,
+      heightProvided
     ),
     className
   );

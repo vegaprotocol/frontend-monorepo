@@ -63,8 +63,9 @@ const Home = ({ name }: RouteChildProps) => {
       </p>
       <Link to={Routes.VESTING}>
         <Button
+          variant="secondary"
           data-test-id="check-vesting-page-btn"
-          className="fill button-secondary"
+          className="fill py-12 h-auto w-full"
         >
           {t('Check to see if you can redeem unlocked VEGA tokens')}
         </Button>
@@ -105,7 +106,7 @@ const Home = ({ name }: RouteChildProps) => {
             )}
           </p>
           <Link to={Routes.STAKING}>
-            <Button className="button-secondary">
+            <Button variant="secondary" className="py-12 h-auto w-full">
               {t('Nominate a validator')}
             </Button>
           </Link>
@@ -119,7 +120,7 @@ const Home = ({ name }: RouteChildProps) => {
           </p>
           <p>
             <Link to={Routes.GOVERNANCE}>
-              <Button className="button-secondary">
+              <Button variant="secondary" className="py-12 h-auto w-full">
                 {t('View Governance proposals')}
               </Button>
             </Link>

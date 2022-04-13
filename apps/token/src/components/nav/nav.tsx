@@ -127,7 +127,9 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
           <img alt="Vega" src={vegaWhite} className="nav__logo" />
         )}
       </Link>
-      <h1>{fairground ? t('fairgroundTitle') : t('title')}</h1>
+      <h1 className="text-[28px]">
+        {fairground ? t('fairgroundTitle') : t('title')}
+      </h1>
     </div>
   );
 };
@@ -136,7 +138,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   const { appState, appDispatch } = useAppState();
   return (
     <>
-      <Button
+      <button
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_DRAWER,
@@ -150,7 +152,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
         <span />
         <span />
         <span />
-      </Button>
+      </button>
       <Drawer
         isOpen={appState.drawerOpen}
         onClose={() =>
