@@ -1,13 +1,12 @@
-import { getGreeting } from '../support/app.po';
+const fairgroundSet = Cypress.env('FAIRGROUND');
 
 describe('token', () => {
   beforeEach(() => cy.visit('/'));
 
-  it('should display welcome message', () => {
-    // Custom command example, see `../support/commands.ts` file
-    cy.login('my-email@something.com', 'myPassword');
-
-    // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome token');
+  it('should always have an header title based on environment', () => {
+    cy.get('.nav h1').should(
+      'have.text',
+      `${fairgroundSet ? 'Fairground token' : '$VEGA TOKEN'}`
+    );
   });
 });
