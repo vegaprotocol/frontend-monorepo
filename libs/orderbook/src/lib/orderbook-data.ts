@@ -31,7 +31,7 @@ export interface OrderbookData {
 export const getGroupPrice = (price: number, resolution: number) =>
   Math.round(price / resolution) * resolution;
 
-const maxVolumes = (orderbookData: OrderbookData[]) => {
+export const maxVolumes = (orderbookData: OrderbookData[]) => {
   let bidVol = 0;
   let askVol = 0;
   let cummulativeVol = 0;
@@ -50,9 +50,8 @@ const maxVolumes = (orderbookData: OrderbookData[]) => {
   };
 };
 
-const updateRelativeData = (data: OrderbookData[]) => {
+export const updateRelativeData = (data: OrderbookData[]) => {
   const { bidVol, askVol, cummulativeVol } = maxVolumes(data);
-  console.log({ bidVol, askVol, cummulativeVol });
   data.forEach((data) => {
     data.relativeAskVol = (data.askVol ?? 0) / askVol;
     data.relativeBidVol = (data.bidVol ?? 0) / bidVol;
@@ -111,8 +110,14 @@ export const compact = (
         groupedByLevel[price].reduce<OrderbookData>(
           (a, c) => ({
             ...a,
-            bidVol: (a.bidVol ?? 0) + (c.bidVol ?? 0),
             askVol: (a.askVol ?? 0) + (c.askVol ?? 0),
+            askVolByLevel: Object.assign(a.askVolByLevel, {
+              [c.price]: c.askVol ?? 0,
+            }),
+            bidVol: (a.bidVol ?? 0) + (c.bidVol ?? 0),
+            bidVolByLevel: Object.assign(a.bidVolByLevel, {
+              [c.price]: c.bidVol ?? 0,
+            }),
             cummulativeVol: {
               bid: Math.max(
                 a.cummulativeVol.bid ?? 0,
@@ -124,7 +129,12 @@ export const compact = (
               ),
             },
           }),
-          { price: Number(price), cummulativeVol: {} }
+          {
+            price: Number(price),
+            cummulativeVol: {},
+            askVolByLevel: {},
+            bidVolByLevel: {},
+          }
         )
       ),
     []
