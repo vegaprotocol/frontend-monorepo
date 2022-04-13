@@ -1,5 +1,3 @@
-import './proposals-list.scss';
-
 import { format, isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -26,14 +24,12 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   }
 
   const renderRow = (proposal: Proposals_proposals) => {
+    if (!proposal || !proposal.id) return null;
+
     return (
-      <li key={proposal.id}>
-        <Link to={`${proposal.id}`}>
-          <header className="proposals-list__item-header">
-            <p className="proposals-list__item-change">
-              {getProposalName(proposal.terms.change)}
-            </p>
-          </header>
+      <li className="last:mb-0 mb-24" key={proposal.id}>
+        <Link to={proposal.id} className="underline">
+          <header>{getProposalName(proposal.terms.change)}</header>
         </Link>
         <KeyValueTable muted={true}>
           <KeyValueTableRow>
@@ -49,10 +45,10 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
                 : t('closedOn')}
             </th>
             <td data-testid="governance-proposal-closingDate">
-              {format(
+              {/* {format(
                 new Date(proposal.terms.closingDatetime),
                 DATE_FORMAT_DETAILED
-              )}
+              )} */}
             </td>
           </KeyValueTableRow>
           <KeyValueTableRow>
@@ -62,10 +58,10 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
                 : t('enactedOn')}
             </th>
             <td data-testid="governance-proposal-enactmentDate">
-              {format(
+              {/* {format(
                 new Date(proposal.terms.enactmentDatetime),
                 DATE_FORMAT_DETAILED
-              )}
+              )} */}
             </td>
           </KeyValueTableRow>
         </KeyValueTable>
@@ -80,9 +76,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
       <p>{t('vegaTokenHoldersCanVote')}</p>
       <p>{t('requiredMajorityDescription')}</p>
       <h2>{t('proposals')}</h2>
-      <ul className="proposals-list">
-        {proposals.map((row) => renderRow(row))}
-      </ul>
+      <ul>{proposals.map((row) => renderRow(row))}</ul>
     </>
   );
 };
