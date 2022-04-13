@@ -1,6 +1,7 @@
 import type {
   Configuration,
   OrderSubmissionBody,
+  WithdrawSubmissionBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import {
   createConfiguration,
@@ -87,7 +88,7 @@ export class RestConnector implements VegaConnector {
     }
   }
 
-  async sendTx(body: OrderSubmissionBody) {
+  async sendTx(body: OrderSubmissionBody | WithdrawSubmissionBody) {
     try {
       return await this.service.commandSyncPost(body);
     } catch (err) {

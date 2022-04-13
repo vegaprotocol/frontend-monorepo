@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { removeDecimal, t } from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,
@@ -7,10 +7,12 @@ import {
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import type { WithdrawalFields } from './use-create-withdraw';
 
 interface Asset {
   id: string;
@@ -33,13 +35,16 @@ export interface CreateWithdrawFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
   onSelectAsset: (assetId: string) => void;
+  submitWithdrawalCreate: (withdrawal: WithdrawalFields) => Promise<void>;
 }
 
 export const CreateWithdrawForm = ({
   assets,
   selectedAsset,
   onSelectAsset,
+  submitWithdrawalCreate,
 }: CreateWithdrawFormProps) => {
+  const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
   const {
     register,
@@ -54,12 +59,16 @@ export const CreateWithdrawForm = ({
       from: keypair?.pub,
     },
   });
-
   const onCreateWithdraw = async (fields: FormFields) => {
     if (!selectedAsset) {
       throw new Error('Asset not selected');
     }
-    console.log(fields);
+
+    submitWithdrawalCreate({
+      asset: selectedAsset.id,
+      amount: removeDecimal(fields.amount, selectedAsset.decimals),
+      receiverAddress: fields.to,
+    });
   };
 
   const assetId = useWatch({ name: 'asset', control });
@@ -121,7 +130,11 @@ export const CreateWithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <FormGroup label={t('To (Ethereum address)')} labelFor="ethereum-address">
+      <FormGroup
+        label={t('To (Ethereum address)')}
+        labelFor="ethereum-address"
+        className="relative"
+      >
         <Input
           {...register('to', {
             required: t('Required'),
@@ -141,6 +154,16 @@ export const CreateWithdrawForm = ({
           <InputError intent="danger" className="mt-4">
             {errors.to.message}
           </InputError>
+        )}
+        {account && (
+          <UseButton
+            onClick={() => {
+              setValue('to', account);
+              clearErrors('to');
+            }}
+          >
+            {t('Use connected')}
+          </UseButton>
         )}
       </FormGroup>
 

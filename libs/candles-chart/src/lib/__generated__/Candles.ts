@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval } from "@vegaprotocol/types";
+import { Interval } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: Candles
 // ====================================================
 
 export interface Candles_market_tradableInstrument_instrument {
-  __typename: 'Instrument';
+  __typename: "Instrument";
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
    */
@@ -26,7 +26,7 @@ export interface Candles_market_tradableInstrument_instrument {
 }
 
 export interface Candles_market_tradableInstrument {
-  __typename: 'TradableInstrument';
+  __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
@@ -34,7 +34,7 @@ export interface Candles_market_tradableInstrument {
 }
 
 export interface Candles_market_candles {
-  __typename: 'Candle';
+  __typename: "Candle";
   /**
    * RFC3339Nano formatted date and time for the candle
    */
@@ -62,7 +62,7 @@ export interface Candles_market_candles {
 }
 
 export interface Candles_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -70,14 +70,14 @@ export interface Candles_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )

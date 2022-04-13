@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { Transaction } from './types';
+import type { TransactionSubmission } from './types';
 import { useVegaWallet } from './hooks';
 import type { SendTxError } from './context';
 
@@ -41,7 +41,7 @@ export const useVegaTransaction = () => {
   );
 
   const send = useCallback(
-    async (tx: Transaction) => {
+    async (tx: TransactionSubmission) => {
       setTransaction({
         error: null,
         hash: null,

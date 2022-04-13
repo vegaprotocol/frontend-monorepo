@@ -8,3 +8,4 @@ export * from './lib/i18n';
 export * from './lib/remove-0x';
 export * from './lib/storage';
 export * from './lib/validate';
+export * from './lib/determine-id';

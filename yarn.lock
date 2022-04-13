@@ -5716,14 +5716,9 @@
     ethers "^5.5.2"
     lodash "^4.17.21"
 
-"@vegaprotocol/vegawallet-service-api-client@^0.4.6":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.8.tgz#a76d63aacd4be83dfe601c4a33052fe9ed8f0cb7"
-  integrity sha512-5YxQ+Tk2rHJ+vvW0aqYj++V5fVfRSUNZATapRZxi/DYELx3Go19lKn5V5hL5lvVDX0PlbD4QtUXT/R30Yr34Dw==
-  dependencies:
-    es6-promise "^4.2.4"
-    url-parse "^1.4.3"
-    whatwg-fetch "^3.0.0"
+"@vegaprotocol/vegawallet-service-api-client@link:../vegawallet-service-api-client":
+  version "0.0.0"
+  uid ""
 
 "@walletconnect/browser-utils@^1.7.7":
   version "1.7.7"

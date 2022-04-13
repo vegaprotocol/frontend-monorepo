@@ -1,3 +1,4 @@
+import { Web3Container } from '../../../../components/web3-container';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { CreateWithdrawPageContainer } from './create-withdraw-page-container';
@@ -19,10 +20,14 @@ const Create = () => {
   }, [query]);
 
   return (
-    <div className="max-w-[420px] p-24 mx-auto">
-      <h1 className="text-h3 mb-12">Create Withdraw</h1>
-      <CreateWithdrawPageContainer assetId={assetId} />
-    </div>
+    <Web3Container>
+      {({ ethereumConfig }) => (
+        <div className="max-w-[420px] p-24 mx-auto">
+          <h1 className="text-h3 mb-12">Create Withdraw</h1>
+          <CreateWithdrawPageContainer assetId={assetId} />
+        </div>
+      )}
+    </Web3Container>
   );
 };
 
