@@ -35,7 +35,8 @@ export const OrderbookManager = ({
       }
       updatedDataRef.current = updateCompactedData(
         updatedDataRef.current,
-        delta,
+        delta.sell,
+        delta.buy,
         resolutionRef.current
       );
       setOrderbookData(updatedDataRef.current);

@@ -5,7 +5,6 @@ import type {
   MarketDepth_market_depth_buy,
 } from './__generated__/MarketDepth';
 import type {
-  MarketDepthSubscription_marketDepthUpdate,
   MarketDepthSubscription_marketDepthUpdate_sell,
   MarketDepthSubscription_marketDepthUpdate_buy,
 } from './__generated__/MarketDepthSubscription';
@@ -28,10 +27,10 @@ export interface OrderbookData {
   cummulativeVol: CummulativeVol;
 }
 
-export const getGroupPrice = (price: number, resolution: number) =>
+const getGroupPrice = (price: number, resolution: number) =>
   Math.round(price / resolution) * resolution;
 
-export const maxVolumes = (orderbookData: OrderbookData[]) => {
+const maxVolumes = (orderbookData: OrderbookData[]) => {
   let bidVol = 0;
   let askVol = 0;
   let cummulativeVol = 0;
@@ -50,7 +49,7 @@ export const maxVolumes = (orderbookData: OrderbookData[]) => {
   };
 };
 
-export const updateRelativeData = (data: OrderbookData[]) => {
+const updateRelativeData = (data: OrderbookData[]) => {
   const { bidVol, askVol, cummulativeVol } = maxVolumes(data);
   data.forEach((data) => {
     data.relativeAskVol = (data.askVol ?? 0) / askVol;
@@ -146,11 +145,12 @@ export const compact = (
 
 export const updateCompactedData = (
   orderbookData: OrderbookData[],
-  delta: MarketDepthSubscription_marketDepthUpdate,
+  sell: MarketDepthSubscription_marketDepthUpdate_sell[] | null,
+  buy: MarketDepthSubscription_marketDepthUpdate_buy[] | null,
   resolution: number
 ) =>
   produce(orderbookData, (draft) => {
-    delta.buy?.forEach((buy) => {
+    sell?.forEach((buy) => {
       const price = Number(buy.price);
       const volume = Number(buy.volume);
       const groupPrice = getGroupPrice(price, resolution);
@@ -171,7 +171,7 @@ export const updateCompactedData = (
           askVolByLevel: { [price]: volume },
           cummulativeVol: {},
         };
-        index = draft.findIndex((data) => data.price > price);
+        index = draft.findIndex((data) => data.price < price);
         if (index !== -1) {
           draft.splice(index, 0, newData);
         } else {
@@ -179,7 +179,7 @@ export const updateCompactedData = (
         }
       }
     });
-    delta.sell?.forEach((sell) => {
+    buy?.forEach((sell) => {
       const price = Number(sell.price);
       const volume = Number(sell.volume);
       const groupPrice = getGroupPrice(price, resolution);
@@ -200,7 +200,7 @@ export const updateCompactedData = (
           bidVolByLevel: { [price]: volume },
           cummulativeVol: {},
         };
-        index = draft.findIndex((data) => data.price > price);
+        index = draft.findIndex((data) => data.price < price);
         if (index !== -1) {
           draft.splice(index, 0, newData);
         } else {
