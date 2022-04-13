@@ -40,6 +40,7 @@
     "serve": {
       "executor": "@nrwl/web:dev-server",
       "options": {
+        "port": 4210,
         "buildTarget": "token:build",
         "hmr": true
       },
