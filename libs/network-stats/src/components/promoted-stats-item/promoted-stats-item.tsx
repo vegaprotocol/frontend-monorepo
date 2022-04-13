@@ -10,6 +10,7 @@ export const PromotedStatsItem = ({
   goodThreshold,
   value,
   description,
+  ...props
 }: StatFields) => {
   const variant = useMemo(
     () =>
@@ -25,9 +26,9 @@ export const PromotedStatsItem = ({
       <Card>
         <div className="uppercase text-[0.9375rem]">
           <Indicator variant={variant} />
-          <span>{title}</span>
+          <span data-testid="stats-title">{title}</span>
         </div>
-        <div className="mt-4 text-h4 leading-none">
+        <div data-testid="stats-value" className="mt-4 text-h4 leading-none">
           {formatter ? formatter(value) : defaultFieldFormatter(value)}
         </div>
       </Card>

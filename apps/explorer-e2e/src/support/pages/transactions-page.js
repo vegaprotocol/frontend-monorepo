@@ -23,22 +23,9 @@ export default class TransactionsPage extends BasePage {
   }
 
   validateRefreshBtn() {
-    cy.getByTestId(this.blockHeight)
-      .first()
-      .invoke('text')
-      .then((blockHeightTxt) => {
-        cy.wait(3000); // eslint-disable-line cypress/no-unnecessary-waiting
-        //Wait needed to allow blocks to change
-        cy.getByTestId(this.refreshBtn).click();
-
-        cy.getByTestId(this.blockHeight)
-          .first()
-          .invoke('text')
-          .should((newBlockHeightText) => {
-            expect(blockHeightTxt).not.to.eq(newBlockHeightText);
-          });
-      });
-    cy.getByTestId(this.blockTime).first();
+    cy.intercept('GET', '**/blockchain').as('get-blockchain');
+    cy.getByTestId(this.refreshBtn).click();
+    cy.wait('@get-blockchain').its('response.statusCode').should('eq', 200);
   }
 
   validateTxDetailsAreDisplayed() {
