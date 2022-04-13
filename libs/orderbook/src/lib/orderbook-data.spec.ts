@@ -1,5 +1,6 @@
-import { compact } from './orderbook-data';
+import { compact, updateLevels } from './orderbook-data';
 import type { MarketDepth_market_depth_sell } from './__generated__/MarketDepth';
+import type { MarketDepthSubscription_marketDepthUpdate_sell } from './__generated__/MarketDepthSubscription';
 
 describe('compact', () => {
   const numberOfRows = 100;
@@ -70,5 +71,62 @@ describe('compact', () => {
     expect(orderbookData[orderbookData.length - 1].relativeBidVol).toEqual(
       6 / 885
     );
+  });
+});
+
+describe('updateLevels', () => {
+  const levels: MarketDepth_market_depth_sell[] = new Array(10)
+    .fill(null)
+    .map((n, i) => ({
+      __typename: 'PriceLevel',
+      volume: ((i + 1) * 10).toString(),
+      price: ((i + 1) * 10).toString(),
+      numberOfOrders: ((i + 1) * 10).toString(),
+    }));
+  it('updates, removes and adds new items', () => {
+    const removeFirstRow: MarketDepthSubscription_marketDepthUpdate_sell = {
+      __typename: 'PriceLevel',
+      price: '10',
+      volume: '0',
+      numberOfOrders: '0',
+    };
+    updateLevels(levels, [removeFirstRow]);
+    expect(levels[0].price).toEqual('20');
+    updateLevels(levels, [removeFirstRow]);
+    expect(levels[0].price).toEqual('20');
+    expect(updateLevels(null, [removeFirstRow])).toEqual(null);
+    const addFirstRow: MarketDepthSubscription_marketDepthUpdate_sell = {
+      __typename: 'PriceLevel',
+      price: '10',
+      volume: '10',
+      numberOfOrders: '10',
+    };
+    updateLevels(levels, [addFirstRow]);
+    expect(levels[0].price).toEqual('10');
+    const addBeforeLastRow: MarketDepthSubscription_marketDepthUpdate_sell = {
+      __typename: 'PriceLevel',
+      price: '95',
+      volume: '95',
+      numberOfOrders: '95',
+    };
+    updateLevels(levels, [addBeforeLastRow]);
+    expect(levels[levels.length - 2].price).toEqual('95');
+    const addAtTheEnd: MarketDepthSubscription_marketDepthUpdate_sell = {
+      __typename: 'PriceLevel',
+      price: '115',
+      volume: '115',
+      numberOfOrders: '115',
+    };
+    updateLevels(levels, [addAtTheEnd]);
+    expect(levels[levels.length - 1].price).toEqual('115');
+    const updateLastRow: MarketDepthSubscription_marketDepthUpdate_sell = {
+      __typename: 'PriceLevel',
+      price: '115',
+      volume: '116',
+      numberOfOrders: '115',
+    };
+    updateLevels(levels, [updateLastRow]);
+    expect(levels[levels.length - 1]).toEqual(updateLastRow);
+    expect(updateLevels(null, [updateLastRow])).toEqual([updateLastRow]);
   });
 });

@@ -218,3 +218,38 @@ export const updateCompactedData = (
     }
     updateRelativeData(draft);
   });
+
+export const updateLevels = (
+  levels:
+    | (MarketDepth_market_depth_buy | MarketDepth_market_depth_sell)[]
+    | null,
+  updates: (
+    | MarketDepthSubscription_marketDepthUpdate_buy
+    | MarketDepthSubscription_marketDepthUpdate_sell
+  )[]
+) => {
+  updates.forEach((update) => {
+    if (levels) {
+      let index = levels.findIndex((level) => level.price === update.price);
+      if (index !== -1) {
+        if (update.volume === '0') {
+          levels.splice(index, 1);
+        } else {
+          Object.assign(levels[index], update);
+        }
+      } else if (update.volume !== '0') {
+        index = levels.findIndex(
+          (level) => Number(level.price) > Number(update.price)
+        );
+        if (index !== -1) {
+          levels.splice(index, 0, update);
+        } else {
+          levels.push(update);
+        }
+      }
+    } else if (update.volume !== '0') {
+      levels = [update];
+    }
+  });
+  return levels;
+};
