@@ -28,7 +28,7 @@ const Withdraw = () => {
         {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
       </VegaWalletContainer>
       <Callout title={t('withdrawPageInfoCalloutTitle')}>
-        <p>{t('withdrawPageInfoCalloutText')}</p>
+        <p className="mb-0">{t('withdrawPageInfoCalloutText')}</p>
       </Callout>
     </>
   );
@@ -128,7 +128,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           intent={Intent.Prompt}
         >
           <p>{t('pendingWithdrawalsCalloutText')}</p>
-          <p>
+          <p className="mb-0">
             <Link to={Routes.WITHDRAWALS}>
               {t('pendingWithdrawalsCalloutButton')}
             </Link>

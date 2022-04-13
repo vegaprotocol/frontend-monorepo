@@ -11,13 +11,11 @@ import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useTranches } from '../../hooks/use-tranches';
 import { Routes as RoutesConfig } from '../router-config';
-import { RedemptionInformation } from './home/redemption-information';
 import {
   initialRedemptionState,
   RedemptionActionType,
   redemptionReducer,
 } from './redemption-reducer';
-import { RedeemFromTranche } from './tranche';
 
 const RedemptionRouter = () => {
   const { t } = useTranslation();

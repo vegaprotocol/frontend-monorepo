@@ -19,6 +19,7 @@ import {
   TxState,
 } from '../../hooks/transaction-reducer';
 import { BigNumber } from '../../lib/bignumber';
+// TODO: TFE Import
 import { Tick } from '../icons';
 import { TransactionCallout } from '../transaction-callout';
 
@@ -58,7 +59,7 @@ export const AmountInput = ({
           variant="inline-link"
           onClick={() => setAmount(maximum.toString())}
           data-testid="token-amount-use-maximum"
-          className="token-input__use-maximum "
+          className="text-ui token-input__use-maximum"
         >
           {t('Use maximum')}
         </Button>
@@ -167,15 +168,18 @@ export const TokenInput = ({
       />
     );
   }
+
   return (
-    <FormGroup label="" labelFor={inputName}>
-      <AmountInput
-        amount={amount}
-        setAmount={setAmount}
-        maximum={maximum}
-        currency={currency}
-      />
-      {approveContent}
+    <>
+      <FormGroup label="" labelFor={inputName}>
+        <AmountInput
+          amount={amount}
+          setAmount={setAmount}
+          maximum={maximum}
+          currency={currency}
+        />
+      </FormGroup>
+      {approveContent ? <div className="mb-12">{approveContent}</div> : null}
       <Button
         data-testid="token-input-submit-button"
         className="fill token-input__submit"
@@ -184,6 +188,6 @@ export const TokenInput = ({
       >
         {submitText}
       </Button>
-    </FormGroup>
+    </>
   );
 };

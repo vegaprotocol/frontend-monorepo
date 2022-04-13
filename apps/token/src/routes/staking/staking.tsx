@@ -29,9 +29,11 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
         <p>{t('stakingDescription2')}</p>
         <p>{t('stakingDescription3')}</p>
         <p>{t('stakingDescription4')}</p>
-        <a href={Links.STAKING_GUIDE} target="_blank" rel="noreferrer">
-          {t('readMoreStaking')}
-        </a>
+        <p>
+          <a href={Links.STAKING_GUIDE} target="_blank" rel="noreferrer">
+            {t('readMoreStaking')}
+          </a>
+        </p>
       </section>
 
       <section>
@@ -90,11 +92,13 @@ export const StakingStepConnectWallets = () => {
         />
       </p>
       {account ? (
-        <Callout
-          iconName="tick"
-          intent={Intent.Success}
-          title={`Ethereum wallet connected: ${account}`}
-        />
+        <div className="mb-24">
+          <Callout
+            iconName="tick"
+            intent={Intent.Success}
+            title={`Ethereum wallet connected: ${account}`}
+          />
+        </div>
       ) : (
         <p>
           <Button
@@ -112,11 +116,13 @@ export const StakingStepConnectWallets = () => {
         </p>
       )}
       {keypair ? (
-        <Callout
-          iconName="tick"
-          intent={Intent.Success}
-          title={`Vega wallet connected: ${keypair.pub}`}
-        />
+        <div className="mb-24">
+          <Callout
+            iconName="tick"
+            intent={Intent.Success}
+            title={`Vega wallet connected: ${keypair.pub}`}
+          />
+        </div>
       ) : (
         <ConnectToVega />
       )}

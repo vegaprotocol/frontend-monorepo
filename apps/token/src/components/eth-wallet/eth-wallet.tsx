@@ -16,7 +16,6 @@ import vegaWhite from '../../images/vega_white.png';
 import { BigNumber } from '../../lib/bignumber';
 import { truncateMiddle } from '../../lib/truncate-middle';
 import { Routes } from '../../routes/router-config';
-import { Loader } from '../loader';
 import { LockedProgress } from '../locked-progress';
 import {
   WalletCard,
@@ -27,7 +26,7 @@ import {
   WalletCardRow,
 } from '../wallet-card';
 import { Connectors } from '../../lib/web3-connectors';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Loader } from '@vegaprotocol/ui-toolkit';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -205,7 +204,7 @@ export const EthWallet = () => {
                     })
                   }
                 >
-                  <Loader />
+                  <Loader size="small" />
                   {t('pendingTransactions')}
                 </Button>
               </div>

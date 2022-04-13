@@ -95,11 +95,12 @@
 
   &__asset {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     margin-bottom: 16px;
     margin-top: 8px;
 
     &-image {
+      display: inline-block;
       height: 30px;
       border-radius: 50%;
       border: 1px solid $black;

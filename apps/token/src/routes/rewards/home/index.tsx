@@ -120,7 +120,7 @@ export const RewardsIndex = () => {
           })}
           intent={Intent.Warning}
         >
-          <p>{t('rewardsPara3')}</p>
+          <p className="mb-0">{t('rewardsPara3')}</p>
         </Callout>
       ) : null}
       {!loading &&

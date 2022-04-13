@@ -1,4 +1,4 @@
-@import "../../styles/colors";
+@import '../../styles/colors';
 
 .epoch-countdown {
   h3 {
@@ -38,6 +38,7 @@
     text-align: center;
 
     img {
+      display: inline-block;
       width: 5px;
       transform: rotate(180deg);
     }

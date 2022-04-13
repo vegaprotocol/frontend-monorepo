@@ -1,4 +1,9 @@
-import { Button, Callout, EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Callout,
+  EtherscanLink,
+  Intent,
+} from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -58,7 +63,7 @@ export const AssociateTransaction = ({
 
   if (derivedTxState === TxState.Pending) {
     return (
-      <Callout iconName="refresh" title={title}>
+      <Callout intent={Intent.Progress} title={title}>
         <p data-testid="transaction-pending-body">
           {t('Associating {{amount}} VEGA tokens with Vega key {{vegaKey}}', {
             amount,

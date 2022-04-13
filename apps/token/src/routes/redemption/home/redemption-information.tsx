@@ -62,9 +62,7 @@ export const RedemptionInformation = () => {
             }}
           />
         </p>
-        <Callout>
-          <AddLockedTokenAddress />
-        </Callout>
+        <AddLockedTokenAddress />
       </section>
     );
   }

@@ -1,12 +1,12 @@
-import "./epoch-countdown.scss";
+import './epoch-countdown.scss';
 
-import { Intent, ProgressBar } from "@blueprintjs/core";
-import { format, formatDistanceStrict } from "date-fns";
-import * as React from "react";
-import { useTranslation } from "react-i18next";
+import { Intent, ProgressBar } from '@blueprintjs/core';
+import { format, formatDistanceStrict } from 'date-fns';
+import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import arrow from "../../images/back.png";
-import { DATE_FORMAT_DETAILED } from "../../lib/date-formats";
+import arrow from '../../images/back.png';
+import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
 
 export interface EpochCountdownProps {
   id: string;
@@ -67,12 +67,12 @@ export function EpochCountdown({
     >
       <div className="epoch-countdown__title">
         <h3>
-          {t("Epoch")} {id}
+          {t('Epoch')} {id}
         </h3>
         <p>
           {endsIn
-            ? t("Next epoch in {{endText}}", { endText: endsIn })
-            : t("Awaiting next epoch")}
+            ? t('Next epoch in {{endText}}', { endText: endsIn })
+            : t('Awaiting next epoch')}
         </p>
       </div>
       <ProgressBar

@@ -50,6 +50,7 @@ export const EthAddressInput = ({
       <div className="flex justify-center">
         <Button
           variant="inline-link"
+          className="text-ui"
           onClick={() => setUseConnectedWallet(!useConnectedWallet)}
         >
           {useConnectedWallet ? t('enterAddress') : t('useConnectedWallet')}
