@@ -42,8 +42,11 @@ export default class VegaWallet {
     cy.getByTestId(this.inputError).should('have.text', 'Required');
   }
 
-  validatePublicKeyDisplayed(expectedKey) {
-    cy.getByTestId(this.connectVegaBtn).should('have.text', expectedKey);
+  validatePublicKeyDisplayed(expectedTruncatedKey) {
+    cy.getByTestId(this.connectVegaBtn).should(
+      'have.text',
+      expectedTruncatedKey
+    );
   }
 
   selectPublicKey() {
