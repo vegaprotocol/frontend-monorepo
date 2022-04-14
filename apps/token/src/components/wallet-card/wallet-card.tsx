@@ -141,8 +141,8 @@ export const WalletCardAsset = ({
       />
       <div className="wallet-card__asset-header">
         <div className="wallet-card__asset-heading">
-          <h1>{name}</h1>
-          <h2>{subheading || symbol}</h2>
+          <h1 className="text-h5">{name}</h1>
+          <h2 className="text-h5">{subheading || symbol}</h2>
         </div>
         <div className="wallet-card__asset-balance">
           <span className="wallet-card__price--integer">{integers}.</span>
