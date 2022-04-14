@@ -59,8 +59,10 @@ export const Web3Content = ({
   if (!isActive) {
     return (
       <Splash>
-        <p>Connect your Ethereum wallet</p>
-        <Button onClick={() => setDialogOpen(true)}>Connect</Button>
+        <div className="flex items-center gap-12">
+          <p className="m-0">Connect your Ethereum wallet</p>
+          <Button onClick={() => setDialogOpen(true)}>Connect</Button>
+        </div>
       </Splash>
     );
   }
