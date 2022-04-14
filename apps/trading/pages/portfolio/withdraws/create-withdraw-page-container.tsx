@@ -6,30 +6,15 @@ import { CreateWithdrawManager } from '@vegaprotocol/withdraws';
 import Link from 'next/link';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import type {
-  WithdrawPage,
-  WithdrawPageVariables,
-} from './__generated__/WithdrawPage';
+  CreateWithdrawPage,
+  CreateWithdrawPageVariables,
+} from './__generated__/CreateWithdrawPage';
 
-const WITHDRAW_PAGE_QUERY = gql`
-  query WithdrawPage($partyId: ID!) {
+const CREATE_WITHDRAW_PAGE_QUERY = gql`
+  query CreateWithdrawPage($partyId: ID!) {
     party(id: $partyId) {
       withdrawals {
         id
-        status
-        amount
-        asset {
-          id
-          symbol
-          decimals
-        }
-        createdTimestamp
-        withdrawnTimestamp
-        txHash
-        details {
-          ... on Erc20WithdrawalDetails {
-            receiverAddress
-          }
-        }
       }
     }
     assets {
@@ -46,20 +31,20 @@ const WITHDRAW_PAGE_QUERY = gql`
   }
 `;
 
-interface WithdrawPageContainerProps {
+interface CreateWithdrawPageContainerProps {
   assetId?: string;
 }
 
 /**
  *  Fetches data required for the Deposit page
  */
-export const WithdrawPageContainer = ({
+export const CreateWithdrawPageContainer = ({
   assetId,
-}: WithdrawPageContainerProps) => {
+}: CreateWithdrawPageContainerProps) => {
   const { keypair } = useVegaWallet();
   return (
-    <PageQueryContainer<WithdrawPage, WithdrawPageVariables>
-      query={WITHDRAW_PAGE_QUERY}
+    <PageQueryContainer<CreateWithdrawPage, CreateWithdrawPageVariables>
+      query={CREATE_WITHDRAW_PAGE_QUERY}
       options={{
         variables: { partyId: keypair?.pub || '' },
         skip: !keypair?.pub,
@@ -79,7 +64,7 @@ export const WithdrawPageContainer = ({
             {data.party?.withdrawals?.length && (
               <p className="mb-12">
                 You have pending withdrawals.{' '}
-                <Link href="/portfolio/withdraw/pending">
+                <Link href="/portfolio/withdraws">
                   <a className="underline">Click here to complete</a>
                 </Link>
               </p>

@@ -12,7 +12,15 @@ const Portfolio = () => {
         </AnchorButton>
       </div>
       <div className="flex gap-4">
-        <AnchorButton href="/portfolio/withdraw">{t('Withdraw')}</AnchorButton>
+        <AnchorButton href="/portfolio/withdraws">
+          {t('View Withdrawals')}
+        </AnchorButton>
+        <AnchorButton href="/portfolio/withdraws/create">
+          {t('Create Withdrawal')}
+        </AnchorButton>
+        <AnchorButton href="/portfolio/withdraws/create?assetId=8b52d4a3a4b0ffe733cddbc2b67be273816cfeb6ca4c8b339bac03ffba08e4e4">
+          {t('Withdraw tEURO')}
+        </AnchorButton>
       </div>
     </div>
   );

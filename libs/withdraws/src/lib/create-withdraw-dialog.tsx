@@ -3,11 +3,11 @@ import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import type { TransactionState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
-import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
+import type { Erc20ApprovalPoll_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalPoll';
 
 interface CreateWithdrawDialogProps {
   transaction: TransactionState;
-  finalizedApproval: Erc20Approval_erc20WithdrawalApproval | null;
+  finalizedApproval: Erc20ApprovalPoll_erc20WithdrawalApproval | null;
 }
 
 export const CreateWithdrawDialog = ({

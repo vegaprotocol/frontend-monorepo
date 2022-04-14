@@ -6,10 +6,10 @@
 import { WithdrawalStatus } from "./../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
-// GraphQL query operation: WithdrawPage
+// GraphQL query operation: WithdrawsPage
 // ====================================================
 
-export interface WithdrawPage_party_withdrawals_asset {
+export interface WithdrawsPage_party_withdrawals_asset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -25,7 +25,7 @@ export interface WithdrawPage_party_withdrawals_asset {
   decimals: number;
 }
 
-export interface WithdrawPage_party_withdrawals_details {
+export interface WithdrawsPage_party_withdrawals_details {
   __typename: "Erc20WithdrawalDetails";
   /**
    * The ethereum address of the receiver of the asset funds
@@ -33,7 +33,7 @@ export interface WithdrawPage_party_withdrawals_details {
   receiverAddress: string;
 }
 
-export interface WithdrawPage_party_withdrawals {
+export interface WithdrawsPage_party_withdrawals {
   __typename: "Withdrawal";
   /**
    * The Vega internal id of the withdrawal
@@ -50,7 +50,7 @@ export interface WithdrawPage_party_withdrawals {
   /**
    * The asset to be withdrawn
    */
-  asset: WithdrawPage_party_withdrawals_asset;
+  asset: WithdrawsPage_party_withdrawals_asset;
   /**
    * RFC3339Nano time at which the withdrawal was created
    */
@@ -66,66 +66,24 @@ export interface WithdrawPage_party_withdrawals {
   /**
    * Foreign chain specific details about the withdrawal
    */
-  details: WithdrawPage_party_withdrawals_details | null;
+  details: WithdrawsPage_party_withdrawals_details | null;
 }
 
-export interface WithdrawPage_party {
+export interface WithdrawsPage_party {
   __typename: "Party";
   /**
    * The list of all withdrawals initiated by the party
    */
-  withdrawals: WithdrawPage_party_withdrawals[] | null;
+  withdrawals: WithdrawsPage_party_withdrawals[] | null;
 }
 
-export interface WithdrawPage_assets_source_BuiltinAsset {
-  __typename: "BuiltinAsset";
-}
-
-export interface WithdrawPage_assets_source_ERC20 {
-  __typename: "ERC20";
-  /**
-   * The address of the erc20 contract
-   */
-  contractAddress: string;
-}
-
-export type WithdrawPage_assets_source = WithdrawPage_assets_source_BuiltinAsset | WithdrawPage_assets_source_ERC20;
-
-export interface WithdrawPage_assets {
-  __typename: "Asset";
-  /**
-   * The id of the asset
-   */
-  id: string;
-  /**
-   * The symbol of the asset (e.g: GBP)
-   */
-  symbol: string;
-  /**
-   * The full name of the asset (e.g: Great British Pound)
-   */
-  name: string;
-  /**
-   * The precision of the asset
-   */
-  decimals: number;
-  /**
-   * The origin source of the asset (e.g: an erc20 asset)
-   */
-  source: WithdrawPage_assets_source;
-}
-
-export interface WithdrawPage {
+export interface WithdrawsPage {
   /**
    * An entity that is trading on the VEGA network
    */
-  party: WithdrawPage_party | null;
-  /**
-   * The list of all assets in use in the vega network
-   */
-  assets: WithdrawPage_assets[] | null;
+  party: WithdrawsPage_party | null;
 }
 
-export interface WithdrawPageVariables {
+export interface WithdrawsPageVariables {
   partyId: string;
 }

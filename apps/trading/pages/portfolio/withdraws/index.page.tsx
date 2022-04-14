@@ -4,12 +4,12 @@ import { PageQueryContainer } from '../../../components/page-query-container';
 import { Web3Container } from '../../../components/web3-container';
 import { WithdrawalsList } from './withdrawals-list';
 import type {
-  PendingWithdrawPage,
-  PendingWithdrawPageVariables,
-} from './__generated__/PendingWithdrawPage';
+  WithdrawsPage,
+  WithdrawsPageVariables,
+} from './__generated__/WithdrawsPage';
 
-const PENDING_WITHDRAW_PAGE_QUERY = gql`
-  query PendingWithdrawPage($partyId: ID!) {
+const WITHDRAWS_PAGE_QUERY = gql`
+  query WithdrawsPage($partyId: ID!) {
     party(id: $partyId) {
       withdrawals {
         id
@@ -32,23 +32,28 @@ const PENDING_WITHDRAW_PAGE_QUERY = gql`
     }
   }
 `;
-const PendingWithdraws = () => {
+
+const Withdraws = () => {
   const { keypair } = useVegaWallet();
+
   return (
     <Web3Container>
       {() => (
-        <PageQueryContainer<PendingWithdrawPage, PendingWithdrawPageVariables>
-          query={PENDING_WITHDRAW_PAGE_QUERY}
+        <PageQueryContainer<WithdrawsPage, WithdrawsPageVariables>
+          query={WITHDRAWS_PAGE_QUERY}
           options={{
             variables: { partyId: keypair?.pub || '' },
             skip: !keypair?.pub,
           }}
         >
-          {(data) => {
+          {(data, { refetch }) => {
             return (
               <div className="p-24">
                 <h1 className="text-h3 mb-12">Pending Withdrawals</h1>
-                <WithdrawalsList withdrawals={data.party?.withdrawals || []} />
+                <WithdrawalsList
+                  withdrawals={data.party?.withdrawals || []}
+                  refetchWithdrawals={refetch}
+                />
               </div>
             );
           }}
@@ -58,4 +63,4 @@ const PendingWithdraws = () => {
   );
 };
 
-export default PendingWithdraws;
+export default Withdraws;
