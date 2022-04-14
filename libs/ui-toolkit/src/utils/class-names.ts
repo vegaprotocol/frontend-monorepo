@@ -8,4 +8,4 @@ export const includesBorderWidth = (className?: string) =>
   !!className?.match(/(^| )border-\d+( |$)/);
 
 export const includesHeight = (className?: string) =>
-  !!className?.match(/(^| )h-\d+( |$)/);
+  !!className?.match(/(^| )h-(\d+|auto)( |$)/);
