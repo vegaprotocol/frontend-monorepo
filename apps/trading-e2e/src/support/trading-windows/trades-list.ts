@@ -12,7 +12,7 @@ export default class TradesList {
     });
 
     const dateTimeRegex =
-      /(\d{2})\/(\d{2})\/(\d{4}), (\d{2}):(\d{2}):(\d{2})/gm;
+      /(\d{1,2})\/(\d{1,2})\/(\d{4}), (\d{1,2}):(\d{1,2}):(\d{1,2})/gm;
     cy.get(`[col-id=${this.colIdCreatedAt}]`).each(($tradeDateTime, index) => {
       if (index != 0) {
         //ignore header
