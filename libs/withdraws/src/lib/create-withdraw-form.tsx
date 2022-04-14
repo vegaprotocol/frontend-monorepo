@@ -6,7 +6,6 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import { ethers } from 'ethers';
 import type { ReactNode } from 'react';
@@ -26,7 +25,6 @@ interface Asset {
 
 interface FormFields {
   asset: string;
-  from: string;
   to: string;
   amount: string;
 }
@@ -45,7 +43,6 @@ export const CreateWithdrawForm = ({
   submitWithdrawalCreate,
 }: CreateWithdrawFormProps) => {
   const { account } = useWeb3React();
-  const { keypair } = useVegaWallet();
   const {
     register,
     handleSubmit,
@@ -56,7 +53,6 @@ export const CreateWithdrawForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: selectedAsset?.id,
-      from: keypair?.pub,
     },
   });
   const onCreateWithdraw = async (fields: FormFields) => {
@@ -92,42 +88,6 @@ export const CreateWithdrawForm = ({
           <InputError intent="danger" className="mt-4">
             {errors.asset.message}
           </InputError>
-        )}
-      </FormGroup>
-      <FormGroup
-        label={t('From (Vega key)')}
-        labelFor="vega-key"
-        className="relative"
-      >
-        <Input
-          {...register('from', {
-            required: t('Required'),
-            validate: {
-              validVegaAddress: (value) => {
-                if (value.length !== 64 || !/^[A-Za-z0-9]*$/i.test(value)) {
-                  return t('Invalid Vega key');
-                }
-
-                return true;
-              },
-            },
-          })}
-          id="vega-key"
-        />
-        {errors.from?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.from.message}
-          </InputError>
-        )}
-        {keypair?.pub && (
-          <UseButton
-            onClick={() => {
-              setValue('from', keypair.pub);
-              clearErrors('from');
-            }}
-          >
-            {t('Use connected')}
-          </UseButton>
         )}
       </FormGroup>
       <FormGroup
