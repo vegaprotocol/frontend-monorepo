@@ -43,8 +43,8 @@ export const VegaWallet = () => {
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
           <div>
-            <h1>{t('vegaWallet')}</h1>
-            <span style={{ marginLeft: 8, marginRight: 8 }}>
+            <h1 className="text-h3">{t('vegaWallet')}</h1>
+            <span className="mx-8 text-h5">
               {keypair && `(${keypair.name})`}
             </span>
           </div>
@@ -73,7 +73,8 @@ const VegaWalletNotConnected = () => {
             isOpen: true,
           })
         }
-        className="fill button-secondary"
+        className="fill w-full py-12 h-auto"
+        variant="secondary"
         data-testid="connect-vega"
       >
         {t('connectVegaWalletToUseAssociated')}
