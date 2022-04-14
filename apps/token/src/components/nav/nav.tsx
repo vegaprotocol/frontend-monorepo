@@ -127,7 +127,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
           <img alt="Vega" src={vegaWhite} className="nav__logo" />
         )}
       </Link>
-      <h1 className="text-[28px]">
+      <h1 className="text-h3">
         {fairground ? t('fairgroundTitle') : t('title')}
       </h1>
     </div>
