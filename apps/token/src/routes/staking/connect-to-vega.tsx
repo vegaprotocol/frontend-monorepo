@@ -18,7 +18,7 @@ export const ConnectToVega = () => {
           isOpen: true,
         })
       }
-      className="fill"
+      className="w-full py-12 h-auto text-h5"
       data-test-id="connect-to-vega-wallet-btn"
     >
       {t('connectVegaWallet')}
