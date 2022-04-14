@@ -1,11 +1,11 @@
-import { gql, useApolloClient } from "@apollo/client";
-import React from "react";
+import React from 'react';
+import { gql, useApolloClient } from '@apollo/client';
 
-import {
+import type {
   Erc20Approval,
   Erc20Approval_erc20WithdrawalApproval,
   Erc20ApprovalVariables,
-} from "./__generated__/Erc20Approval";
+} from './__generated__/Erc20Approval';
 
 const ERC20_APPROVAL_QUERY = gql`
   query Erc20Approval($withdrawalId: ID!) {

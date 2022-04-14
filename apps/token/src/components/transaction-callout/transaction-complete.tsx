@@ -1,8 +1,7 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import { Tick } from '../icons';
+import type { ReactElement } from 'react';
 
 export const TransactionComplete = ({
   hash,
@@ -11,9 +10,9 @@ export const TransactionComplete = ({
   body,
 }: {
   hash: string;
-  heading?: React.ReactElement | string;
-  footer?: React.ReactElement | string;
-  body?: React.ReactElement | string;
+  heading?: ReactElement | string;
+  footer?: ReactElement | string;
+  body?: ReactElement | string;
 }) => {
   const { t } = useTranslation();
   return (

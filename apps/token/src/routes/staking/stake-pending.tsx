@@ -1,8 +1,7 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Callout } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-
-import { Loader } from '../../components/loader';
-import { Actions, StakeAction } from './staking-form';
+import { Actions } from './staking-form';
+import type { StakeAction } from './staking-form';
 
 interface StakePendingProps {
   action: StakeAction;

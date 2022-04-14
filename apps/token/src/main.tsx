@@ -6,7 +6,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import App from './app';
-import reportWebVitals from './reportWebVitals';
+import reportWebVitals from './report-web-vitals';
 
 const dsn = process.env['NX_SENTRY_DSN'] || false;
 const environment = process.env['NX_VEGA_ENV'] || 'local';

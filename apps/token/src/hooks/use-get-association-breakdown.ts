@@ -1,11 +1,14 @@
-import * as Sentry from "@sentry/react";
-import { VegaStaking, VegaVesting } from "@vegaprotocol/smart-contracts-sdk";
-import React from "react";
+import React from 'react';
+import * as Sentry from '@sentry/react';
+import type {
+  VegaStaking,
+  VegaVesting,
+} from '@vegaprotocol/smart-contracts-sdk';
 
 import {
   AppStateActionType,
   useAppState,
-} from "../contexts/app-state/app-state-context";
+} from '../contexts/app-state/app-state-context';
 
 export function useGetAssociationBreakdown(
   ethAddress: string,

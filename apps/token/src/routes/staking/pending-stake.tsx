@@ -1,16 +1,14 @@
 import './pending-stake.scss';
 
+import React from 'react';
 import * as Sentry from '@sentry/react';
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
-
-import { Loader } from '../../components/loader';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../lib/bignumber';
 import { removeDecimal } from '../../lib/decimals';
-import type { UndelegateSubmissionInput } from '../../lib/vega-wallet/vega-wallet-service';
 import { vegaWalletService } from '../../lib/vega-wallet/vega-wallet-service';
+import type { UndelegateSubmissionInput } from '../../lib/vega-wallet/vega-wallet-service';
 
 interface PendingStakeProps {
   pendingAmount: BigNumber;

@@ -20,7 +20,6 @@ import {
 } from '../../hooks/transaction-reducer';
 import { BigNumber } from '../../lib/bignumber';
 // TODO: TFE Import
-import { Tick } from '../icons';
 import { TransactionCallout } from '../transaction-callout';
 
 const inputName = 'amount';

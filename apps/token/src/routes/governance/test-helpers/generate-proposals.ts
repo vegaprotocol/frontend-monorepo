@@ -1,31 +1,31 @@
-import * as faker from "faker";
-import merge from "lodash/merge";
+import * as faker from 'faker';
+import merge from 'lodash/merge';
 
-import { ProposalState, VoteValue } from "../../../__generated__/globalTypes";
-import { DeepPartial } from "../../../lib/type-helpers";
-import {
+import { ProposalState, VoteValue } from '../../../__generated__/globalTypes';
+import type { DeepPartial } from '../../../lib/type-helpers';
+import type {
   ProposalFields,
   ProposalFields_votes_no,
   ProposalFields_votes_yes,
-} from "../__generated__/ProposalFields";
+} from '../__generated__/ProposalFields';
 
 export function generateProposal(
   override: DeepPartial<ProposalFields> = {}
 ): ProposalFields {
   const defaultProposal: ProposalFields = {
-    __typename: "Proposal",
+    __typename: 'Proposal',
     id: faker.datatype.uuid(),
-    reference: "ref" + faker.datatype.uuid(),
+    reference: 'ref' + faker.datatype.uuid(),
     state: ProposalState.Open,
     datetime: faker.date.past().toISOString(),
     rejectionReason: null,
     errorDetails: null,
     party: {
-      __typename: "Party",
+      __typename: 'Party',
       id: faker.datatype.uuid(),
     },
     terms: {
-      __typename: "ProposalTerms",
+      __typename: 'ProposalTerms',
       closingDatetime:
         !override.state || // defaults to Open
         override.state === ProposalState.Open ||
@@ -42,13 +42,13 @@ export function generateProposal(
         networkParameter: {
           key: faker.lorem.words(),
           value: faker.datatype.number({ min: 0, max: 100 }).toString(),
-          __typename: "NetworkParameter",
+          __typename: 'NetworkParameter',
         },
-        __typename: "UpdateNetworkParameter",
+        __typename: 'UpdateNetworkParameter',
       },
     },
     votes: {
-      __typename: "ProposalVotes",
+      __typename: 'ProposalVotes',
       yes: generateYesVotes(),
       no: generateNoVotes(),
     },
@@ -64,18 +64,18 @@ export const generateYesVotes = (
   numberOfVotes = 5
 ): ProposalFields_votes_yes => {
   return {
-    __typename: "ProposalVoteSide",
+    __typename: 'ProposalVoteSide',
     totalNumber: faker.datatype.number({ min: 0, max: 100 }).toString(),
     totalTokens: faker.datatype.number({ min: 1, max: 10000 }).toString(),
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
-        __typename: "Vote",
+        __typename: 'Vote',
         value: VoteValue.Yes,
         party: {
           id: faker.datatype.uuid(),
-          __typename: "Party",
+          __typename: 'Party',
           stake: {
-            __typename: "PartyStake",
+            __typename: 'PartyStake',
             currentStakeAvailable: faker.datatype
               .number({
                 min: 1,
@@ -92,18 +92,18 @@ export const generateYesVotes = (
 
 export const generateNoVotes = (numberOfVotes = 5): ProposalFields_votes_no => {
   return {
-    __typename: "ProposalVoteSide",
+    __typename: 'ProposalVoteSide',
     totalNumber: faker.datatype.number({ min: 0, max: 100 }).toString(),
     totalTokens: faker.datatype.number({ min: 1, max: 10000 }).toString(),
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
-        __typename: "Vote",
+        __typename: 'Vote',
         value: VoteValue.No,
         party: {
           id: faker.datatype.uuid(),
-          __typename: "Party",
+          __typename: 'Party',
           stake: {
-            __typename: "PartyStake",
+            __typename: 'PartyStake',
             currentStakeAvailable: faker.datatype
               .number({
                 min: 1,

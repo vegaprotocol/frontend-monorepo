@@ -1,8 +1,7 @@
-import React from "react";
-
-import { Colors } from "../config";
-import { BigNumber } from "../lib/bignumber";
-import { usePrevious } from "./use-previous";
+import React from 'react';
+import { Colors } from '../config';
+import { usePrevious } from './use-previous';
+import type { BigNumber } from '../lib/bignumber';
 
 const FLASH_DURATION = 1200; // Duration of flash animation in milliseconds
 

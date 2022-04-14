@@ -1,64 +1,64 @@
-import { getProposalName } from "./proposal";
+import { getProposalName } from './proposal';
 
-it("New market", () => {
+it('New market', () => {
   const name = getProposalName({
-    __typename: "NewMarket",
+    __typename: 'NewMarket',
     decimalPlaces: 1,
     instrument: {
-      __typename: "InstrumentConfiguration",
-      name: "Some market",
+      __typename: 'InstrumentConfiguration',
+      name: 'Some market',
     },
     metadata: [],
   });
-  expect(name).toEqual("New Market: Some market");
+  expect(name).toEqual('New Market: Some market');
 });
 
-it("New asset", () => {
+it('New asset', () => {
   const name = getProposalName({
-    __typename: "NewAsset",
-    symbol: "FAKE",
+    __typename: 'NewAsset',
+    symbol: 'FAKE',
     source: {
-      __typename: "ERC20",
-      contractAddress: "0x0",
+      __typename: 'ERC20',
+      contractAddress: '0x0',
     },
   });
-  expect(name).toEqual("New Asset: FAKE");
+  expect(name).toEqual('New Asset: FAKE');
 });
 
-it("Update market", () => {
+it('Update market', () => {
   const name = getProposalName({
-    __typename: "UpdateMarket",
-    marketId: "MarketId",
+    __typename: 'UpdateMarket',
+    marketId: 'MarketId',
   });
-  expect(name).toEqual("Update Market: MarketId");
+  expect(name).toEqual('Update Market: MarketId');
 });
 
-it("Update network", () => {
+it('Update network', () => {
   const name = getProposalName({
-    __typename: "UpdateNetworkParameter",
+    __typename: 'UpdateNetworkParameter',
     networkParameter: {
-      __typename: "NetworkParameter",
-      key: "key",
-      value: "value",
+      __typename: 'NetworkParameter',
+      key: 'key',
+      value: 'value',
     },
   });
-  expect(name).toEqual("Update Network: key");
+  expect(name).toEqual('Update Network: key');
 });
 
-it("Freeform network", () => {
+it('Freeform network', () => {
   const name = getProposalName({
-    __typename: "NewFreeform",
-    hash: "0x0",
-    url: "Earl",
-    description: "Something else",
+    __typename: 'NewFreeform',
+    hash: '0x0',
+    url: 'Earl',
+    description: 'Something else',
   });
-  expect(name).toEqual("Freeform: 0x0");
+  expect(name).toEqual('Freeform: 0x0');
 });
 
 it("Renders unknown proposal if it's a different proposal type", () => {
   const name = getProposalName({
-    // @ts-ignore
-    __typename: "Foo",
+    // @ts-ignore unknown proposal
+    __typename: 'Foo',
   });
-  expect(name).toEqual("Unknown Proposal");
+  expect(name).toEqual('Unknown Proposal');
 });

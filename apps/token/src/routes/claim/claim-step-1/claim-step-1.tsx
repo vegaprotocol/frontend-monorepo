@@ -1,7 +1,6 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { Tick } from '../../../components/icons';
 import type {
   TransactionAction,
   TransactionState,

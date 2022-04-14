@@ -1,18 +1,18 @@
-import * as Sentry from "@sentry/react";
-import { ethers } from "ethers";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import * as Sentry from '@sentry/react';
+import { useTranslation } from 'react-i18next';
+import type { ethers } from 'ethers';
 
-import { isUnexpectedError, isUserRejection } from "../lib/web3-utils";
+import { isUnexpectedError, isUserRejection } from '../lib/web3-utils';
 import {
   initialState,
   TransactionActionType,
   transactionReducer,
-} from "./transaction-reducer";
+} from './transaction-reducer';
 
 export const useTransaction = (
   performTransaction: () => Promise<ethers.ContractTransaction>,
-  requiredConfirmations: number = 1
+  requiredConfirmations = 1
 ) => {
   const { t } = useTranslation();
   const [state, dispatch] = React.useReducer(transactionReducer, {
@@ -33,10 +33,10 @@ export const useTransaction = (
         Sentry.captureException(err);
       }
 
-      const defaultMessage = t("Something went wrong");
+      const defaultMessage = t('Something went wrong');
       const errorSubstitutions = {
         unknown: defaultMessage,
-        "Transaction has been reverted by the EVM": defaultMessage,
+        'Transaction has been reverted by the EVM': defaultMessage,
       };
       dispatch({
         type: TransactionActionType.TX_ERROR,
@@ -53,9 +53,9 @@ export const useTransaction = (
     });
 
     Sentry.addBreadcrumb({
-      type: "Transaction",
+      type: 'Transaction',
       level: Sentry.Severity.Log,
-      message: "Transaction requested",
+      message: 'Transaction requested',
       timestamp: Date.now(),
     });
 
@@ -67,9 +67,9 @@ export const useTransaction = (
         txHash: tx.hash,
       });
       Sentry.addBreadcrumb({
-        type: "Transaction",
+        type: 'Transaction',
         level: Sentry.Severity.Log,
-        message: "Transaction submitted",
+        message: 'Transaction submitted',
         data: {
           hash: tx.hash,
           from: tx.from,
@@ -90,7 +90,7 @@ export const useTransaction = (
       }
 
       if (!receipt) {
-        throw new Error("No receipt after confirmations are met");
+        throw new Error('No receipt after confirmations are met');
       }
 
       dispatch({
@@ -99,9 +99,9 @@ export const useTransaction = (
         confirmations: receipt.confirmations,
       });
       Sentry.addBreadcrumb({
-        type: "Transaction",
+        type: 'Transaction',
         level: Sentry.Severity.Log,
-        message: "Transaction complete",
+        message: 'Transaction complete',
         data: {
           blockNumber: receipt.blockNumber,
           confirmations: receipt.confirmations,

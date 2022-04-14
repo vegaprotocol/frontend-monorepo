@@ -1,6 +1,6 @@
-import "./vote-progress.scss";
+import './vote-progress.scss';
 
-import { BigNumber } from "../../../../lib/bignumber";
+import type { BigNumber } from '../../../../lib/bignumber';
 
 export const VoteProgress = ({
   progress,

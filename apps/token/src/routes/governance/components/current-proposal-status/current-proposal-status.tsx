@@ -1,11 +1,11 @@
-import "./current-proposal-status.scss";
+import './current-proposal-status.scss';
 
-import { formatDistanceToNow } from "date-fns";
-import { useTranslation } from "react-i18next";
+import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
-import { ProposalState } from "../../../../__generated__/globalTypes";
-import { useVoteInformation } from "../../hooks";
-import { Proposals_proposals } from "../../proposals/__generated__/Proposals";
+import { ProposalState } from '../../../../__generated__/globalTypes';
+import { useVoteInformation } from '../../hooks';
+import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 export const CurrentProposalStatus = ({
   proposal,
@@ -29,16 +29,16 @@ export const CurrentProposalStatus = ({
 
   if (proposal.state === ProposalState.Open && willPass) {
     return (
-      <span className="current-proposal-status__pass">{t("shouldPass")}</span>
+      <span className="current-proposal-status__pass">{t('shouldPass')}</span>
     );
   }
 
   if (!participationMet) {
     return (
       <>
-        <span>{t("voteFailedReason")}</span>
+        <span>{t('voteFailedReason')}</span>
         <span className="current-proposal-status__fail">
-          {t("participationNotMet")}
+          {t('participationNotMet')}
         </span>
         <span>&nbsp;{daysClosedAgo}.</span>
       </>
@@ -48,9 +48,9 @@ export const CurrentProposalStatus = ({
   if (!majorityMet) {
     return (
       <>
-        <span>{t("voteFailedReason")}</span>
+        <span>{t('voteFailedReason')}</span>
         <span className="current-proposal-status__fail">
-          {t("majorityNotMet")}
+          {t('majorityNotMet')}
         </span>
         <span>&nbsp;{daysClosedAgo}.</span>
       </>
@@ -64,7 +64,7 @@ export const CurrentProposalStatus = ({
   ) {
     return (
       <>
-        <span>{t("voteFailedReason")}</span>
+        <span>{t('voteFailedReason')}</span>
         <span className="current-proposal-status__fail">{proposal.state}</span>
         <span>&nbsp;{daysClosedAgo}.</span>
       </>
@@ -76,7 +76,7 @@ export const CurrentProposalStatus = ({
   ) {
     return (
       <>
-        <span>{t("votePassed")}</span>
+        <span>{t('votePassed')}</span>
         <span className="current-proposal-status__pass">
           &nbsp;{proposal.state}
         </span>
@@ -93,7 +93,7 @@ export const CurrentProposalStatus = ({
 
   if (proposal.state === ProposalState.WaitingForNodeVote) {
     return (
-      <span>{t("subjectToFurtherActions", { daysAgo: daysClosedAgo })}</span>
+      <span>{t('subjectToFurtherActions', { daysAgo: daysClosedAgo })}</span>
     );
   }
 

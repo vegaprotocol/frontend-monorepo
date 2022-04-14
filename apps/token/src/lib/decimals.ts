@@ -1,4 +1,4 @@
-import { BigNumber } from "../lib/bignumber";
+import type { BigNumber } from '../lib/bignumber';
 
 export function addDecimal(value: BigNumber, decimals: number): string {
   return value

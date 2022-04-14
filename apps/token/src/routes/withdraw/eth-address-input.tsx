@@ -8,8 +8,6 @@ import {
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Ethereum } from '../../components/icons';
-
 interface EthAddressSelectorProps {
   address: string;
   connectedAddress: string;

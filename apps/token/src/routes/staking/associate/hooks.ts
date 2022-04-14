@@ -1,26 +1,26 @@
-import { gql, useApolloClient } from "@apollo/client";
-import * as Sentry from "@sentry/react";
-import BigNumber from "bignumber.js";
-import React from "react";
+import { gql, useApolloClient } from '@apollo/client';
+import * as Sentry from '@sentry/react';
+import BigNumber from 'bignumber.js';
+import React from 'react';
 
-import { StakeLinkingStatus } from "../../../__generated__/globalTypes";
-import { StakingMethod } from "../../../components/staking-method-radio";
-import { useContracts } from "../../../contexts/contracts/contracts-context";
-import { TxState } from "../../../hooks/transaction-reducer";
-import { useGetAssociationBreakdown } from "../../../hooks/use-get-association-breakdown";
-import { useRefreshBalances } from "../../../hooks/use-refresh-balances";
-import { useTransaction } from "../../../hooks/use-transaction";
-import {
+import { StakeLinkingStatus } from '../../../__generated__/globalTypes';
+import { StakingMethod } from '../../../components/staking-method-radio';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
+import { TxState } from '../../../hooks/transaction-reducer';
+import { useGetAssociationBreakdown } from '../../../hooks/use-get-association-breakdown';
+import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
+import { useTransaction } from '../../../hooks/use-transaction';
+import type {
   PartyStakeLinkings,
   PartyStakeLinkings_party_stake_linkings,
   PartyStakeLinkingsVariables,
-} from "./__generated__/PartyStakeLinkings";
+} from './__generated__/PartyStakeLinkings';
 
 export const useAddStake = (
   address: string,
   amount: string,
   vegaKey: string,
-  stakingMethod: StakingMethod | "",
+  stakingMethod: StakingMethod | '',
   confirmations: number
 ) => {
   const { staking, vesting } = useContracts();
@@ -88,9 +88,7 @@ export const usePollForStakeLinking = (
 
   // Query for linkings under current connected party (vega key)
   React.useEffect(() => {
-    let interval: any;
-
-    interval = setInterval(() => {
+    const interval: any = setInterval(() => {
       if (!txHash || !partyId) return;
 
       client
@@ -99,7 +97,7 @@ export const usePollForStakeLinking = (
           variables: { partyId },
           // 'network-only' doesn't work here. Pretty wierd. no-cache just means its network only plus
           // the result is not stored in the cache
-          fetchPolicy: "no-cache",
+          fetchPolicy: 'no-cache',
         })
         .then((res) => {
           const linkings = res.data?.party?.stake.linkings;

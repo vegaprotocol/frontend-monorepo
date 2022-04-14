@@ -25,7 +25,6 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { Connectors } from '../../lib/web3-connectors';
 import { Button, Loader } from '@vegaprotocol/ui-toolkit';
 
 const removeLeadingAddressSymbol = (key: string) => {

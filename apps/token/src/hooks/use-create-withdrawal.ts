@@ -1,16 +1,14 @@
-import { gql,useApolloClient } from "@apollo/client";
-import * as Sentry from "@sentry/react";
-import React from "react";
+import React from 'react';
+import * as Sentry from '@sentry/react';
+import { gql, useApolloClient } from '@apollo/client';
+import { sigToId } from '../lib/sig-to-id';
+import { vegaWalletService } from '../lib/vega-wallet/vega-wallet-service';
 
-import { sigToId } from "../lib/sig-to-id";
-import {
-  vegaWalletService,
-  WithdrawSubmissionInput,
-} from "../lib/vega-wallet/vega-wallet-service";
-import {
+import type { WithdrawSubmissionInput } from '../lib/vega-wallet/vega-wallet-service';
+import type {
   WithdrawalPoll,
   WithdrawalPollVariables,
-} from "./__generated__/WithdrawalPoll";
+} from './__generated__/WithdrawalPoll';
 
 export enum Status {
   Idle,
@@ -56,7 +54,7 @@ export function useCreateWithdrawal(pubKey: string): [Status, Submit] {
   const mountedRef = React.useRef(true);
   const client = useApolloClient();
   const [status, setStatus] = React.useState(Status.Idle);
-  const [id, setId] = React.useState("");
+  const [id, setId] = React.useState('');
 
   const safeSetStatus = (status: Status) => {
     if (mountedRef.current) {
@@ -110,7 +108,7 @@ export function useCreateWithdrawal(pubKey: string): [Status, Submit] {
             WithdrawalPoll,
             WithdrawalPollVariables
           >({
-            fetchPolicy: "network-only",
+            fetchPolicy: 'network-only',
             query: WITHDRAWAL_QUERY,
             variables: { partyId: pubKey },
           });

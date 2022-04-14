@@ -19,7 +19,7 @@ export const StakingMethodRadio = ({
     <RadioGroup
       inline={true}
       onChange={(e) => {
-        // @ts-ignore
+        // @ts-ignore can't recognise .value
         setSelectedStakingMethod(e.target.value);
       }}
       selectedValue={selectedStakingMethod}

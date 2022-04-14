@@ -1,10 +1,10 @@
-import "./locked-progress.scss";
+import './locked-progress.scss';
 
-import React from "react";
+import React from 'react';
 
-import { Colors } from "../../config";
-import { BigNumber } from "../../lib/bignumber";
-import { formatNumber } from "../../lib/format-number";
+import { Colors } from '../../config';
+import { formatNumber } from '../../lib/format-number';
+import type { BigNumber } from '../../lib/bignumber';
 
 export interface LockedProgressProps {
   total: BigNumber;
@@ -39,7 +39,7 @@ export const LockedProgress = ({
     <div className="tranche-item__progress">
       <div
         className={`tranche-item__progress-bar ${
-          light ? "tranche-item__progress-bar--light" : ""
+          light ? 'tranche-item__progress-bar--light' : ''
         }`}
       >
         <div
@@ -63,7 +63,7 @@ export const LockedProgress = ({
       </div>
       <div
         className={`tranche-item__progress-contents ${
-          light ? "tranche-item__progress-contents--light" : ""
+          light ? 'tranche-item__progress-contents--light' : ''
         }`}
       >
         <span>
@@ -87,7 +87,7 @@ export const LockedProgress = ({
       </div>
       <div
         className={`tranche-item__progress-contents ${
-          light ? "tranche-item__progress-contents--light" : ""
+          light ? 'tranche-item__progress-contents--light' : ''
         }`}
       >
         <span>{formatNumber(locked, 2)}</span>

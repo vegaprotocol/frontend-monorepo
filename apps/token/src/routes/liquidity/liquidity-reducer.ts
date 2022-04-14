@@ -1,7 +1,6 @@
-import { EpochDetails } from "@vegaprotocol/smart-contracts-sdk";
-import { merge } from "lodash";
-
-import { BigNumber } from "../../lib/bignumber";
+import merge from 'lodash/merge';
+import type { EpochDetails } from '@vegaprotocol/smart-contracts-sdk';
+import type { BigNumber } from '../../lib/bignumber';
 
 export interface LpContractData {
   rewardPerEpoch: BigNumber;

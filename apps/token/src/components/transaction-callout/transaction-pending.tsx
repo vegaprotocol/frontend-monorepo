@@ -1,9 +1,7 @@
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
+import { Callout } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import { Loader } from '../loader';
 
 export const TransactionPending = ({
   hash,

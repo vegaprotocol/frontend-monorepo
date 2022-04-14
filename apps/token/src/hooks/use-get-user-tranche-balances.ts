@@ -1,12 +1,12 @@
-import * as Sentry from "@sentry/react";
-import { VegaVesting } from "@vegaprotocol/smart-contracts-sdk";
-import React from "react";
+import React from 'react';
+import * as Sentry from '@sentry/react';
+import type { VegaVesting } from '@vegaprotocol/smart-contracts-sdk';
 
 import {
   AppStateActionType,
   useAppState,
-} from "../contexts/app-state/app-state-context";
-import { BigNumber } from "../lib/bignumber";
+} from '../contexts/app-state/app-state-context';
+import { BigNumber } from '../lib/bignumber';
 
 export const useGetUserTrancheBalances = (
   address: string,

@@ -1,59 +1,61 @@
-import { MockedProvider, MockedResponse } from "@apollo/client/testing";
-import { addDays } from "date-fns";
-import * as faker from "faker";
-import React from "react";
+import React from 'react';
+import type { MockedResponse } from '@apollo/client/testing';
+import { MockedProvider } from '@apollo/client/testing';
+import { addDays } from 'date-fns';
+import * as faker from 'faker';
+
+import { NETWORK_PARAMS_QUERY } from '../../../hooks/use-network-param';
+import { PROPOSAL_QUERY } from '../../../routes/governance/proposal';
+import { PROPOSALS_QUERY } from '../../../routes/governance/proposals';
+import { REWARDS_QUERY } from '../../../routes/rewards/home';
+import { NODES_QUERY } from '../../../routes/staking/node-list';
+import { PARTY_DELEGATIONS_QUERY } from '../../../routes/staking/staking-form';
+import { STAKING_QUERY } from '../../../routes/staking/staking-nodes-container';
 
 import {
   NodeStatus,
   ProposalState,
   VoteValue,
-} from "../../../__generated__/globalTypes";
-import { NetworkParams } from "../../../hooks/__generated__/NetworkParams";
-import { NETWORK_PARAMS_QUERY } from "../../../hooks/use-network-param";
-import { PROPOSAL_QUERY } from "../../../routes/governance/proposal";
-import { Proposal } from "../../../routes/governance/proposal/__generated__/Proposal";
-import { PROPOSALS_QUERY } from "../../../routes/governance/proposals";
-import { Proposals } from "../../../routes/governance/proposals/__generated__/Proposals";
+} from '../../../__generated__/globalTypes';
+import type { NetworkParams } from '../../../hooks/__generated__/NetworkParams';
+import type { Proposal } from '../../../routes/governance/proposal/__generated__/Proposal';
+import type { Proposals } from '../../../routes/governance/proposals/__generated__/Proposals';
 import {
   generateNoVotes,
   generateProposal,
   generateYesVotes,
-} from "../../../routes/governance/test-helpers/generate-proposals";
-import { REWARDS_QUERY } from "../../../routes/rewards/home";
-import { Rewards } from "../../../routes/rewards/home/__generated__/Rewards";
-import { Nodes } from "../../../routes/staking/__generated__/Nodes";
-import { PartyDelegations } from "../../../routes/staking/__generated__/PartyDelegations";
-import {
+} from '../../../routes/governance/test-helpers/generate-proposals';
+import type { Rewards } from '../../../routes/rewards/home/__generated__/Rewards';
+import type { Nodes } from '../../../routes/staking/__generated__/Nodes';
+import type { PartyDelegations } from '../../../routes/staking/__generated__/PartyDelegations';
+import type {
   Staking,
   Staking_nodeData,
   Staking_nodes,
-} from "../../../routes/staking/__generated__/Staking";
-import { NODES_QUERY } from "../../../routes/staking/node-list";
-import { PARTY_DELEGATIONS_QUERY } from "../../../routes/staking/staking-form";
-import { STAKING_QUERY } from "../../../routes/staking/staking-nodes-container";
+} from '../../../routes/staking/__generated__/Staking';
 
-const PARTY_ID = "pub";
-const REWARD_ASSET_ID = "reward-asset-id";
+const PARTY_ID = 'pub';
+const REWARD_ASSET_ID = 'reward-asset-id';
 
 const nodes: Staking_nodes[] = [
   {
-    __typename: "Node",
-    name: "node-1-name",
-    id: "node-id-1",
-    pubkey: "pubkey",
-    infoUrl: "",
-    location: "",
-    ethereumAdddress: "",
-    stakedByOperator: "100",
-    stakedByDelegates: "100",
-    stakedTotal: "200",
-    pendingStake: "100",
-    stakedByOperatorFormatted: "100",
-    stakedByDelegatesFormatted: "100",
-    stakedTotalFormatted: "200",
-    pendingStakeFormatted: "100",
+    __typename: 'Node',
+    name: 'node-1-name',
+    id: 'node-id-1',
+    pubkey: 'pubkey',
+    infoUrl: '',
+    location: '',
+    ethereumAdddress: '',
+    stakedByOperator: '100',
+    stakedByDelegates: '100',
+    stakedTotal: '200',
+    pendingStake: '100',
+    stakedByOperatorFormatted: '100',
+    stakedByDelegatesFormatted: '100',
+    stakedTotalFormatted: '200',
+    pendingStakeFormatted: '100',
     epochData: {
-      __typename: "EpochData",
+      __typename: 'EpochData',
       total: 6,
       offline: 1,
       online: 5,
@@ -61,23 +63,23 @@ const nodes: Staking_nodes[] = [
     status: NodeStatus.NonValidator,
   },
   {
-    __typename: "Node",
-    name: "node-2-name",
-    id: "node-id-2",
-    pubkey: "pubkey",
-    infoUrl: "",
-    location: "",
-    ethereumAdddress: "",
-    stakedByOperator: "100",
-    stakedByDelegates: "100",
-    stakedTotal: "200",
-    pendingStake: "100",
-    stakedByOperatorFormatted: "100",
-    stakedByDelegatesFormatted: "100",
-    stakedTotalFormatted: "200",
-    pendingStakeFormatted: "100",
+    __typename: 'Node',
+    name: 'node-2-name',
+    id: 'node-id-2',
+    pubkey: 'pubkey',
+    infoUrl: '',
+    location: '',
+    ethereumAdddress: '',
+    stakedByOperator: '100',
+    stakedByDelegates: '100',
+    stakedTotal: '200',
+    pendingStake: '100',
+    stakedByOperatorFormatted: '100',
+    stakedByDelegatesFormatted: '100',
+    stakedTotalFormatted: '200',
+    pendingStakeFormatted: '100',
     epochData: {
-      __typename: "EpochData",
+      __typename: 'EpochData',
       total: 6,
       offline: 1,
       online: 5,
@@ -87,9 +89,9 @@ const nodes: Staking_nodes[] = [
 ];
 
 const nodeData: Staking_nodeData = {
-  __typename: "NodeData",
-  stakedTotal: "500",
-  stakedTotalFormatted: "500",
+  __typename: 'NodeData',
+  stakedTotal: '500',
+  stakedTotalFormatted: '500',
   totalNodes: 5,
   inactiveNodes: 3,
   validatingNodes: 1,
@@ -104,28 +106,28 @@ const MOCK_STAKING_QUERY: MockedResponse<Staking> = {
   result: {
     data: {
       epoch: {
-        __typename: "Epoch",
-        id: "1",
+        __typename: 'Epoch',
+        id: '1',
         timestamps: {
-          __typename: "EpochTimestamps",
+          __typename: 'EpochTimestamps',
           start: new Date().toISOString(),
           end: addDays(new Date(), 1).toISOString(),
           expiry: addDays(new Date(), 1).toISOString(),
         },
       },
       party: {
-        __typename: "Party",
+        __typename: 'Party',
         stake: {
-          __typename: "PartyStake",
-          currentStakeAvailable: "0.00000000000001",
-          currentStakeAvailableFormatted: "0.00000000000001",
+          __typename: 'PartyStake',
+          currentStakeAvailable: '0.00000000000001',
+          currentStakeAvailableFormatted: '0.00000000000001',
         },
         id: PARTY_ID,
         delegations: [
           {
-            __typename: "Delegation",
-            amount: "100",
-            amountFormatted: "100",
+            __typename: 'Delegation',
+            amount: '100',
+            amountFormatted: '100',
             node: nodes[0],
             epoch: 1,
           },
@@ -145,21 +147,21 @@ const MOCK_PARTY_DELEGATIONS: MockedResponse<PartyDelegations> = {
   result: {
     data: {
       epoch: {
-        __typename: "Epoch",
-        id: "1",
+        __typename: 'Epoch',
+        id: '1',
       },
       party: {
-        __typename: "Party",
+        __typename: 'Party',
         id: PARTY_ID,
         delegations: [
           {
-            __typename: "Delegation",
-            amount: "100",
-            amountFormatted: "100",
+            __typename: 'Delegation',
+            amount: '100',
+            amountFormatted: '100',
             epoch: 1,
             node: {
-              __typename: "Node",
-              id: "node-id-1",
+              __typename: 'Node',
+              id: 'node-id-1',
             },
           },
         ],
@@ -169,9 +171,9 @@ const MOCK_PARTY_DELEGATIONS: MockedResponse<PartyDelegations> = {
 };
 
 const proposalNotVoted = generateProposal({
-  terms: { change: { networkParameter: { key: "not.voted" } } },
+  terms: { change: { networkParameter: { key: 'not.voted' } } },
   state: ProposalState.Open,
-  party: { id: "123" },
+  party: { id: '123' },
   votes: {
     yes: { votes: null },
     no: { votes: null },
@@ -179,22 +181,22 @@ const proposalNotVoted = generateProposal({
 });
 
 const proposalNoTokens = generateProposal({
-  terms: { change: { networkParameter: { key: "no.tokens" } } },
+  terms: { change: { networkParameter: { key: 'no.tokens' } } },
 });
 
 const proposalVotedAgainst = generateProposal({
-  terms: { change: { networkParameter: { key: "voted.against" } } },
-  party: { id: "123" },
+  terms: { change: { networkParameter: { key: 'voted.against' } } },
+  party: { id: '123' },
   votes: {
     no: {
       votes: [
         {
           value: VoteValue.No,
           party: {
-            id: "0680ffba6c2e0239ebaa2b941ee79675dd1f447ddcae37720f8f377101f46527",
+            id: '0680ffba6c2e0239ebaa2b941ee79675dd1f447ddcae37720f8f377101f46527',
             stake: {
-              __typename: "PartyStake",
-              currentStakeAvailable: "123",
+              __typename: 'PartyStake',
+              currentStakeAvailable: '123',
             },
           },
           datetime: faker.date.past().toISOString(),
@@ -205,30 +207,30 @@ const proposalVotedAgainst = generateProposal({
 });
 
 const proposalDidNotVote = generateProposal({
-  terms: { change: { networkParameter: { key: "voted.closed.did.not.vote" } } },
+  terms: { change: { networkParameter: { key: 'voted.closed.did.not.vote' } } },
   state: ProposalState.Enacted,
-  party: { id: "123" },
+  party: { id: '123' },
 });
 
 const propsoalVoteClosedVotedFor = generateProposal({
-  terms: { change: { networkParameter: { key: "voted.closed.voted.for" } } },
+  terms: { change: { networkParameter: { key: 'voted.closed.voted.for' } } },
   state: ProposalState.Enacted,
-  party: { id: "123" },
+  party: { id: '123' },
   votes: {
     yes: {
       votes: [
         {
           value: VoteValue.Yes,
           party: {
-            __typename: "Party",
-            id: "0680ffba6c2e0239ebaa2b941ee79675dd1f447ddcae37720f8f377101f46527",
+            __typename: 'Party',
+            id: '0680ffba6c2e0239ebaa2b941ee79675dd1f447ddcae37720f8f377101f46527',
             stake: {
-              __typename: "PartyStake",
-              currentStakeAvailable: "12345678",
+              __typename: 'PartyStake',
+              currentStakeAvailable: '12345678',
             },
           },
           datetime: faker.date.past().toISOString(),
-          __typename: "Vote",
+          __typename: 'Vote',
         },
       ],
     },
@@ -238,7 +240,7 @@ const propsoalVoteClosedVotedFor = generateProposal({
 const proposalDeclined = generateProposal({
   state: ProposalState.Rejected,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: generateYesVotes(50),
     no: generateNoVotes(100),
   },
@@ -247,7 +249,7 @@ const proposalDeclined = generateProposal({
 const proposalPassed = generateProposal({
   state: ProposalState.Passed,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: generateYesVotes(250),
     no: generateNoVotes(100),
   },
@@ -260,7 +262,7 @@ const proposalRejected = generateProposal({
 const proposalRejectedNoVotes = generateProposal({
   state: ProposalState.Rejected,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: generateYesVotes(50),
     no: generateNoVotes(100),
   },
@@ -273,12 +275,12 @@ const proposalWaitingForNodeVote = generateProposal({
 const proposalYesVotesOnly = generateProposal({
   state: ProposalState.Open,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: generateYesVotes(100),
     no: {
-      totalTokens: "0",
-      totalNumber: "0",
-      __typename: "ProposalVoteSide",
+      totalTokens: '0',
+      totalNumber: '0',
+      __typename: 'ProposalVoteSide',
       votes: null,
     },
   },
@@ -287,11 +289,11 @@ const proposalYesVotesOnly = generateProposal({
 const proposalNoVotesOnly = generateProposal({
   state: ProposalState.Open,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: {
-      totalTokens: "0",
-      totalNumber: "0",
-      __typename: "ProposalVoteSide",
+      totalTokens: '0',
+      totalNumber: '0',
+      __typename: 'ProposalVoteSide',
       votes: null,
     },
     no: generateNoVotes(100),
@@ -301,7 +303,7 @@ const proposalNoVotesOnly = generateProposal({
 const proposaSameYesNoVotes = generateProposal({
   state: ProposalState.Open,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: generateYesVotes(100),
     no: generateNoVotes(100),
   },
@@ -310,7 +312,7 @@ const proposaSameYesNoVotes = generateProposal({
 const proposaYesVotesWillWin = generateProposal({
   state: ProposalState.Open,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: generateYesVotes(100),
     no: generateNoVotes(50),
   },
@@ -319,7 +321,7 @@ const proposaYesVotesWillWin = generateProposal({
 const proposaNoVotesWillWin = generateProposal({
   state: ProposalState.Open,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: generateYesVotes(50),
     no: generateNoVotes(100),
   },
@@ -328,17 +330,17 @@ const proposaNoVotesWillWin = generateProposal({
 const proposaNotEnoughVotes = generateProposal({
   state: ProposalState.Declined,
   votes: {
-    __typename: "ProposalVotes",
+    __typename: 'ProposalVotes',
     yes: {
-      totalTokens: "0",
-      totalNumber: "0",
-      __typename: "ProposalVoteSide",
+      totalTokens: '0',
+      totalNumber: '0',
+      __typename: 'ProposalVoteSide',
       votes: null,
     },
     no: {
-      totalTokens: "0",
-      totalNumber: "0",
-      __typename: "ProposalVoteSide",
+      totalTokens: '0',
+      totalNumber: '0',
+      __typename: 'ProposalVoteSide',
       votes: null,
     },
   },
@@ -409,94 +411,94 @@ const MOCK_REWARDS: MockedResponse<Rewards> = {
     variables: {
       partyId:
         // TODO: Figure out a better way to sync up vega key with party id for mocking
-        "3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d",
+        '3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d',
     },
   },
   result: {
     data: {
       party: {
-        __typename: "Party",
+        __typename: 'Party',
         // TODO: Figure out a better way to sync up vega key with party id for mocking
-        id: "3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d",
+        id: '3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d',
         rewardDetails: [
           {
-            __typename: "RewardPerAssetDetail",
+            __typename: 'RewardPerAssetDetail',
             asset: {
-              __typename: "Asset",
+              __typename: 'Asset',
               id: REWARD_ASSET_ID,
-              symbol: "asset-symbol",
+              symbol: 'asset-symbol',
             },
             rewards: [
               {
-                __typename: "Reward",
+                __typename: 'Reward',
                 asset: {
-                  __typename: "Asset",
+                  __typename: 'Asset',
                   id: REWARD_ASSET_ID,
                 },
                 party: {
-                  __typename: "Party",
-                  id: "3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d",
+                  __typename: 'Party',
+                  id: '3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d',
                 },
-                epoch: { __typename: "Epoch", id: "1" },
-                amount: "100",
-                amountFormatted: "100.00",
-                percentageOfTotal: "50",
-                receivedAt: "2020-01-01T00:00:00",
+                epoch: { __typename: 'Epoch', id: '1' },
+                amount: '100',
+                amountFormatted: '100.00',
+                percentageOfTotal: '50',
+                receivedAt: '2020-01-01T00:00:00',
               },
               {
-                __typename: "Reward",
+                __typename: 'Reward',
                 asset: {
-                  __typename: "Asset",
+                  __typename: 'Asset',
                   id: REWARD_ASSET_ID,
                 },
                 party: {
-                  __typename: "Party",
-                  id: "3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d",
+                  __typename: 'Party',
+                  id: '3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d',
                 },
-                epoch: { __typename: "Epoch", id: "3" },
-                amount: "110",
-                amountFormatted: "110.00",
-                percentageOfTotal: "50",
-                receivedAt: "2020-01-01T00:00:00",
+                epoch: { __typename: 'Epoch', id: '3' },
+                amount: '110',
+                amountFormatted: '110.00',
+                percentageOfTotal: '50',
+                receivedAt: '2020-01-01T00:00:00',
               },
               {
-                __typename: "Reward",
+                __typename: 'Reward',
                 asset: {
-                  __typename: "Asset",
+                  __typename: 'Asset',
                   id: REWARD_ASSET_ID,
                 },
                 party: {
-                  __typename: "Party",
-                  id: "3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d",
+                  __typename: 'Party',
+                  id: '3d019f95a79e8aa82f2f9915bafac816100d40297cb432970772878f6e3ee92d',
                 },
-                epoch: { __typename: "Epoch", id: "2" },
-                amount: "120",
-                amountFormatted: "120.00",
-                percentageOfTotal: "50",
-                receivedAt: "2020-01-01T00:00:00",
+                epoch: { __typename: 'Epoch', id: '2' },
+                amount: '120',
+                amountFormatted: '120.00',
+                percentageOfTotal: '50',
+                receivedAt: '2020-01-01T00:00:00',
               },
             ],
-            totalAmount: "130",
-            totalAmountFormatted: "130.00",
+            totalAmount: '130',
+            totalAmountFormatted: '130.00',
           },
         ],
         delegations: [
           {
-            __typename: "Delegation",
-            amount: "100",
-            amountFormatted: "100.00",
+            __typename: 'Delegation',
+            amount: '100',
+            amountFormatted: '100.00',
             epoch: 1,
           },
         ],
       },
       epoch: {
-        __typename: "Epoch",
-        id: "1",
+        __typename: 'Epoch',
+        id: '1',
         timestamps: {
-          __typename: "EpochTimestamps",
-          start: "2020-01-01T00:00:00",
-          end: "2020-01-01T00:00:00",
-          expiry: "2020-01-01T00:00:00",
+          __typename: 'EpochTimestamps',
+          start: '2020-01-01T00:00:00',
+          end: '2020-01-01T00:00:00',
+          expiry: '2020-01-01T00:00:00',
         },
       },
     },
@@ -511,9 +513,9 @@ const MOCK_NETWORK_PARAMS: MockedResponse<NetworkParams> = {
     data: {
       networkParameters: [
         {
-          __typename: "NetworkParameter",
-          key: "reward.asset",
-          value: "reward-asset-id",
+          __typename: 'NetworkParameter',
+          key: 'reward.asset',
+          value: 'reward-asset-id',
         },
       ],
     },

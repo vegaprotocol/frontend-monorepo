@@ -15,7 +15,6 @@ import vegaWhite from '../../images/vega_white.png';
 import { Routes } from '../../routes/router-config';
 import { EthWallet } from '../eth-wallet';
 import { VegaWallet } from '../vega-wallet';
-import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const Nav = () => {
   const [windowWidth, setWindowWidth] = React.useState(window.innerWidth);

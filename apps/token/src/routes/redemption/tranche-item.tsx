@@ -1,14 +1,14 @@
-import "./tranche-item.scss";
+import './tranche-item.scss';
 
-import { format } from "date-fns";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { format } from 'date-fns';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
-import { LockedProgress } from "../../components/locked-progress";
-import { BigNumber } from "../../lib/bignumber";
-import { DATE_FORMAT_LONG } from "../../lib/date-formats";
-import { formatNumber } from "../../lib/format-number";
+import { LockedProgress } from '../../components/locked-progress';
+import { DATE_FORMAT_LONG } from '../../lib/date-formats';
+import { formatNumber } from '../../lib/format-number';
+import type { BigNumber } from '../../lib/bignumber';
 
 export interface TrancheItemProps {
   tranche: {
@@ -41,12 +41,12 @@ export const TrancheItem = ({
         {link ? (
           <Link to={link}>
             <span className="tranche-item__label">
-              {t("Tranche")} {tranche.tranche_id}
+              {t('Tranche')} {tranche.tranche_id}
             </span>
           </Link>
         ) : (
           <span className="tranche-item__label">
-            {t("Tranche")} {tranche.tranche_id}
+            {t('Tranche')} {tranche.tranche_id}
           </span>
         )}
         {secondaryHeader}
@@ -55,11 +55,11 @@ export const TrancheItem = ({
       <table>
         <tbody>
           <tr>
-            <td>{t("Starts unlocking")}</td>
+            <td>{t('Starts unlocking')}</td>
             <td>{format(tranche.tranche_start, DATE_FORMAT_LONG)}</td>
           </tr>
           <tr>
-            <td>{t("Fully unlocked")}</td>
+            <td>{t('Fully unlocked')}</td>
             <td>{format(tranche.tranche_end, DATE_FORMAT_LONG)}</td>
           </tr>
         </tbody>
@@ -68,8 +68,8 @@ export const TrancheItem = ({
         locked={locked}
         unlocked={unlocked}
         total={total}
-        leftLabel={t("Locked")}
-        rightLabel={t("Unlocked")}
+        leftLabel={t('Locked')}
+        rightLabel={t('Unlocked')}
       />
 
       <div className="tranche-item__footer" data-testid="tranche-item-footer">

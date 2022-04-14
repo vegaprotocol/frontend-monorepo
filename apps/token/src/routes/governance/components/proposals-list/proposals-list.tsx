@@ -1,4 +1,4 @@
-import { format, isFuture } from 'date-fns';
+import { isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -7,7 +7,6 @@ import {
   KeyValueTable,
   KeyValueTableRow,
 } from '../../../../components/key-value-table';
-import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { getProposalName } from '../../../../lib/type-policies/proposal';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { CurrentProposalState } from '../current-proposal-state';

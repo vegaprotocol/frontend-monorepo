@@ -1,9 +1,8 @@
-import { useTranslation } from "react-i18next";
-
-import { Colors } from "../../config";
-import { getAbbreviatedNumber } from "../../lib/abbreviate-number";
-import { BigNumber } from "../../lib/bignumber";
-import { ProgressBar } from "./progress-bar";
+import { useTranslation } from 'react-i18next';
+import { Colors } from '../../config';
+import { getAbbreviatedNumber } from '../../lib/abbreviate-number';
+import { ProgressBar } from './progress-bar';
+import type { BigNumber } from '../../lib/bignumber';
 
 interface TrancheProgressProps {
   locked: BigNumber;
@@ -26,7 +25,7 @@ export const TrancheProgress = ({
   return (
     <div className="tranches__progress">
       <div className="tranches__progress-item">
-        <span className="tranches__progress-title">{t("Locked")}</span>
+        <span className="tranches__progress-title">{t('Locked')}</span>
         <ProgressBar
           width={220}
           color={Colors.PINK}
@@ -37,14 +36,14 @@ export const TrancheProgress = ({
         </span>
       </div>
       <div className="tranches__progress-item">
-        <span className="tranches__progress-title">{t("Redeemed")}</span>
+        <span className="tranches__progress-title">{t('Redeemed')}</span>
         <ProgressBar
           width={220}
           color={Colors.GREEN}
           percentage={removedPercentage}
         />
         <span className="tranches__progress-numbers">
-          ({getAbbreviatedNumber(totalRemoved)} {t("of")}{" "}
+          ({getAbbreviatedNumber(totalRemoved)} {t('of')}{' '}
           {getAbbreviatedNumber(totalAdded)})
         </span>
       </div>

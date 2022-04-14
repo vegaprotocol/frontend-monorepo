@@ -1,35 +1,32 @@
-import "./claim-flow.scss";
+import './claim-flow.scss';
 
-import * as Sentry from "@sentry/react";
-import { Tranche, UNSPENT_CODE } from "@vegaprotocol/smart-contracts-sdk";
-import { format } from "date-fns";
-import React from "react";
-import { Trans, useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import * as Sentry from '@sentry/react';
+import { UNSPENT_CODE } from '@vegaprotocol/smart-contracts-sdk';
+import { format } from 'date-fns';
+import React from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
 
 import {
   KeyValueTable,
   KeyValueTableRow,
-} from "../../components/key-value-table";
-import { useContracts } from "../../contexts/contracts/contracts-context";
-import { DATE_FORMAT_LONG } from "../../lib/date-formats";
-import { formatNumber } from "../../lib/format-number";
-import { truncateMiddle } from "../../lib/truncate-middle";
-import { ClaimInfo } from "./claim-info";
-import {
-  ClaimAction,
-  ClaimActionType,
-  ClaimState,
-  ClaimStatus,
-} from "./claim-reducer";
-import { CodeUsed } from "./code-used";
-import { Complete } from "./complete";
-import { Expired } from "./expired";
-import { TargetAddressMismatch } from "./target-address-mismatch";
-import { TargetedClaim } from "./targeted-claim";
-import { TrancheNotFound } from "./tranche-not-found";
-import { UntargetedClaim } from "./untargeted-claim";
-import { Verifying } from "./verifying";
+} from '../../components/key-value-table';
+import { useContracts } from '../../contexts/contracts/contracts-context';
+import { DATE_FORMAT_LONG } from '../../lib/date-formats';
+import { formatNumber } from '../../lib/format-number';
+import { truncateMiddle } from '../../lib/truncate-middle';
+import { ClaimInfo } from './claim-info';
+import { ClaimActionType, ClaimStatus } from './claim-reducer';
+import { CodeUsed } from './code-used';
+import { Complete } from './complete';
+import { Expired } from './expired';
+import { TargetAddressMismatch } from './target-address-mismatch';
+import { TargetedClaim } from './targeted-claim';
+import { TrancheNotFound } from './tranche-not-found';
+import { UntargetedClaim } from './untargeted-claim';
+import { Verifying } from './verifying';
+import type { ClaimAction, ClaimState } from './claim-reducer';
 
 interface ClaimFlowProps {
   state: ClaimState;
@@ -132,18 +129,18 @@ export const ClaimFlow = ({
                 values={{
                   user: state.claimData?.claim.target
                     ? truncateMiddle(state.claimData?.claim.target)
-                    : t("the holder"),
+                    : t('the holder'),
                   code: shortCode,
                   amount: state.claimData?.claim.amount,
-                  linkText: `${t("Tranche")} ${currentTranche.tranche_id}`,
+                  linkText: `${t('Tranche')} ${currentTranche.tranche_id}`,
                   expiry: state.claimData?.claim.expiry
-                    ? t("claimExpiry", {
+                    ? t('claimExpiry', {
                         date: format(
                           state.claimData?.claim.expiry * 1000,
                           DATE_FORMAT_LONG
                         ),
                       })
-                    : t("claimNoExpiry"),
+                    : t('claimNoExpiry'),
                 }}
                 components={{
                   bold: <strong />,
@@ -158,30 +155,32 @@ export const ClaimFlow = ({
           <div>
             <KeyValueTable>
               <KeyValueTableRow>
-                <th>{t("Connected Ethereum address")}</th>
+                <th>{t('Connected Ethereum address')}</th>
                 <td>{truncateMiddle(address)}</td>
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t("Amount of VEGA")}</th>
+                <th>{t('Amount of VEGA')}</th>
                 <td>{formatNumber(state.claimData?.claim.amount!)}</td>
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t("Claim expires")}</th>
+                <th>{t('Claim expires')}</th>
                 <td>
                   {state.claimData?.claim.expiry
                     ? format(
                         state.claimData?.claim.expiry * 1000,
                         DATE_FORMAT_LONG
                       )
-                    : "No expiry"}
+                    : 'No expiry'}
                 </td>
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t("Starts unlocking")}</th>
-                <td>{format(currentTranche.tranche_start, DATE_FORMAT_LONG)}</td>
+                <th>{t('Starts unlocking')}</th>
+                <td>
+                  {format(currentTranche.tranche_start, DATE_FORMAT_LONG)}
+                </td>
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t("Fully unlocked")}</th>
+                <th>{t('Fully unlocked')}</th>
                 <td>{format(currentTranche.tranche_end, DATE_FORMAT_LONG)}</td>
               </KeyValueTableRow>
             </KeyValueTable>

@@ -1,13 +1,13 @@
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import type { ReactNode } from 'react';
+import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Connectors } from '../../lib/web3-connectors';
 
 interface Web3ConnectorProps {
-  children: React.ReactElement;
+  children: ReactElement;
 }
 
 export function Web3Connector({ children }: Web3ConnectorProps) {
@@ -29,7 +29,7 @@ export function Web3Connector({ children }: Web3ConnectorProps) {
 }
 
 interface Web3ContentProps {
-  children: ReactNode;
+  children: ReactElement;
   appChainId: number;
   setDialogOpen: (isOpen: boolean) => void;
 }
@@ -76,5 +76,5 @@ export const Web3Content = ({
     );
   }
 
-  return <>{children}</>;
+  return children;
 };

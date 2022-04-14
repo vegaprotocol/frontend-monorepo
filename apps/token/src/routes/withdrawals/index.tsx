@@ -20,7 +20,7 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { TxState } from '../../hooks/transaction-reducer';
-import { usePollERC20Approval } from '../../hooks/use-ercPoll20Approval';
+import { usePollERC20Approval } from '../../hooks/use-erc-poll20-approval';
 import { useRefreshBalances } from '../../hooks/use-refresh-balances';
 import { useTransaction } from '../../hooks/use-transaction';
 import { BigNumber } from '../../lib/bignumber';

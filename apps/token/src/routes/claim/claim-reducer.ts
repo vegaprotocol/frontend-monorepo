@@ -1,7 +1,6 @@
-import { IClaimTokenParams } from "@vegaprotocol/smart-contracts-sdk";
-
-import { BigNumber } from "../../lib/bignumber";
-import { addDecimal } from "../../lib/decimals";
+import { BigNumber } from '../../lib/bignumber';
+import { addDecimal } from '../../lib/decimals';
+import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts-sdk';
 
 export enum ClaimStatus {
   Ready,
@@ -105,7 +104,7 @@ export function claimReducer(
       ) {
         return {
           ...state,
-          error: new Error("Invalid code"),
+          error: new Error('Invalid code'),
         };
       } else {
         const denomination = new BigNumber(action.data.amount);

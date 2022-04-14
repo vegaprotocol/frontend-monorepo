@@ -15,7 +15,7 @@ const useNumberParts = (
     if (!value) {
       return ['0', '0'.repeat(decimals)];
     }
-    // @ts-ignore
+    // @ts-ignore confident not undefined
     const separator = BigNumber.config().FORMAT.decimalSeparator as string;
     const [integers, decimalsPlaces] = formatNumber(value, 18)
       .toString()

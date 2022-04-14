@@ -1,8 +1,8 @@
-import { Tranche } from "@vegaprotocol/smart-contracts-sdk";
-import { format } from "date-fns";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
+import { format } from 'date-fns';
+import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
 
-import { DATE_FORMAT_LONG } from "../../lib/date-formats";
+import { DATE_FORMAT_LONG } from '../../lib/date-formats';
 
 interface ClaimInfoProps {
   tranche: Tranche;
@@ -29,7 +29,7 @@ export const ClaimInfo = ({ tranche }: ClaimInfoProps) => {
     <>
       {noneRedeemable && (
         <p>
-          {t("none redeemable", {
+          {t('none redeemable', {
             unlockDate,
             trancheEndDate,
           })}
@@ -37,7 +37,7 @@ export const ClaimInfo = ({ tranche }: ClaimInfoProps) => {
       )}
       {partiallyRedeemable && (
         <p>
-          {t("partially redeemable", {
+          {t('partially redeemable', {
             unlockDate,
             trancheEndDate,
           })}
@@ -45,7 +45,7 @@ export const ClaimInfo = ({ tranche }: ClaimInfoProps) => {
       )}
       {fullyRedeemable && (
         <p>
-          {t("fully redeemable", {
+          {t('fully redeemable', {
             unlockDate,
             trancheEndDate,
           })}
