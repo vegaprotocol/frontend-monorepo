@@ -86,7 +86,7 @@ export default class BlocksPage extends BasePage {
     cy.getByTestId(this.nextBlockBtn).click();
   }
 
-  jumpToBlock(blockNumber) {
+  jumpToBlock(blockNumber: string) {
     cy.getByTestId(this.jumpToBlockInput).type(blockNumber);
     cy.getByTestId(this.jumpToBlockSubmit).click();
   }

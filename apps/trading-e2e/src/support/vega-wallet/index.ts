@@ -12,7 +12,7 @@ export default class VegaWallet {
     cy.getByTestId(this.walletConnectors).find('button').click();
   }
 
-  fillInWalletForm(walletName, walletPassphrase) {
+  fillInWalletForm(walletName: string, walletPassphrase: string) {
     cy.getByTestId(this.walletForm)
       .find('#wallet')
       .click({ force: true })
