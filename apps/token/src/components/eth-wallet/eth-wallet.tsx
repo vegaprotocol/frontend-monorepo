@@ -231,13 +231,12 @@ export const EthWallet = () => {
         )}
         {account && (
           <WalletCardActions>
-            <Button
-              variant="inline-link"
-              className="text-black dark:text-black"
+            <button
+              className="mt-4 underline"
               onClick={() => connector.deactivate()}
             >
               {t('disconnect')}
-            </Button>
+            </button>
           </WalletCardActions>
         )}
       </WalletCardContent>
