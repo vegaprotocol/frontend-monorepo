@@ -165,12 +165,12 @@ const ConnectedKey = () => {
       )}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/associate`}>
-          <Button variant="secondary" className="w-full">
+          <Button variant="primary" className="h-auto py-12 w-full">
             {t('associate')}
           </Button>
         </Link>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/disassociate`}>
-          <Button variant="secondary" className="w-full">
+          <Button variant="primary" className="h-auto py-12 w-full">
             {t('disassociate')}
           </Button>
         </Link>
@@ -188,7 +188,7 @@ export const EthWallet = () => {
   return (
     <WalletCard>
       <WalletCardHeader>
-        <h1>{t('ethereumKey')}</h1>
+        <h1 className="text-h3">{t('ethereumKey')}</h1>
         {account && (
           <div className="eth-wallet__curr-key">
             <div>{truncateMiddle(account)}</div>
