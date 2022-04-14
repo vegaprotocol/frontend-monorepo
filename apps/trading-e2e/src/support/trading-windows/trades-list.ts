@@ -16,7 +16,6 @@ export default class TradesList {
     cy.get(`[col-id=${this.colIdCreatedAt}]`).each(($tradeDateTime, index) => {
       if (index != 0) {
         //ignore header
-        cy.log(index);
         cy.wrap($tradeDateTime).invoke('text').should('match', dateTimeRegex);
       }
     });
