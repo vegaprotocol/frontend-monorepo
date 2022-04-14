@@ -41,7 +41,7 @@ const Home = ({ name }: RouteChildProps) => {
         totalSupply={appState.totalSupply}
         totalStaked={totalStaked}
       />
-      <h2>{t('Token Vesting')}</h2>
+      <h2 className="text-h4">{t('Token Vesting')}</h2>
 
       <p>
         {t(
@@ -70,7 +70,7 @@ const Home = ({ name }: RouteChildProps) => {
           {t('Check to see if you can redeem unlocked VEGA tokens')}
         </Button>
       </Link>
-      <h2>{t('USE YOUR VEGA TOKENS')}</h2>
+      <h2 className="text-h4">{t('USE YOUR VEGA TOKENS')}</h2>
       <p>
         {t(
           'To use your tokens on the Vega network they need to be associated with a Vega wallet/key.'
@@ -99,7 +99,7 @@ const Home = ({ name }: RouteChildProps) => {
       </p>
       <div style={{ display: 'flex', gap: 36 }}>
         <div style={{ flex: 1 }}>
-          <h2>{t('Staking')}</h2>
+          <h2 className="text-h4">{t('Staking')}</h2>
           <p>
             {t(
               'VEGA token holders can nominate a validator node and receive staking rewards.'
@@ -112,7 +112,7 @@ const Home = ({ name }: RouteChildProps) => {
           </Link>
         </div>
         <div style={{ flex: 1 }}>
-          <h2>{t('Governance')}</h2>
+          <h2 className="text-h4">{t('Governance')}</h2>
           <p>
             {t(
               'VEGA token holders can vote on proposed changes to the network and create proposals.'
