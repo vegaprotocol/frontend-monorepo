@@ -48,8 +48,7 @@ export const MarketsContainer = () => {
   );
   const { data, error, loading } = useDataProvider<
     Markets_markets[],
-    Markets_markets_data,
-    never
+    Markets_markets_data
   >(marketsDataProvider, update);
 
   return (

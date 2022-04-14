@@ -10,18 +10,18 @@ import type {
 } from './__generated__/MarketDepthSubscription';
 
 export interface CummulativeVol {
-  bid?: number;
+  bid: number;
   relativeBid?: number;
-  ask?: number;
+  ask: number;
   relativeAsk?: number;
 }
 
 export interface OrderbookData {
   price: number;
-  bidVol?: number;
+  bidVol: number;
   bidVolByLevel?: Record<number, number>;
   relativeBidVol?: number;
-  askVol?: number;
+  askVol: number;
   askVolByLevel?: Record<number, number>;
   relativeAskVol?: number;
   cummulativeVol: CummulativeVol;
@@ -35,12 +35,12 @@ const maxVolumes = (orderbookData: OrderbookData[]) => {
   let askVol = 0;
   let cummulativeVol = 0;
   orderbookData.forEach((data) => {
-    bidVol = Math.max(bidVol, data.bidVol ?? 0);
-    askVol = Math.max(askVol, data.askVol ?? 0);
+    bidVol = Math.max(bidVol, data.bidVol);
+    askVol = Math.max(askVol, data.askVol);
   });
   cummulativeVol = Math.max(
-    orderbookData[0]?.cummulativeVol.ask ?? 0,
-    orderbookData[orderbookData.length - 1]?.cummulativeVol.bid ?? 0
+    orderbookData[0]?.cummulativeVol.ask,
+    orderbookData[orderbookData.length - 1]?.cummulativeVol.bid
   );
   return {
     bidVol,
@@ -52,12 +52,10 @@ const maxVolumes = (orderbookData: OrderbookData[]) => {
 const updateRelativeData = (data: OrderbookData[]) => {
   const { bidVol, askVol, cummulativeVol } = maxVolumes(data);
   data.forEach((data) => {
-    data.relativeAskVol = (data.askVol ?? 0) / askVol;
-    data.relativeBidVol = (data.bidVol ?? 0) / bidVol;
-    data.cummulativeVol.relativeAsk =
-      (data.cummulativeVol.ask ?? 0) / cummulativeVol;
-    data.cummulativeVol.relativeBid =
-      (data.cummulativeVol.bid ?? 0) / cummulativeVol;
+    data.relativeAskVol = data.askVol / askVol;
+    data.relativeBidVol = data.bidVol / bidVol;
+    data.cummulativeVol.relativeAsk = data.cummulativeVol.ask / cummulativeVol;
+    data.cummulativeVol.relativeBid = data.cummulativeVol.bid / cummulativeVol;
   });
 };
 
@@ -77,23 +75,27 @@ export const compact = (
   resolution: number
 ) => {
   let cummulativeVol = 0;
-  const askOrderbookData = (sell ?? [])
+  const askOrderbookData = [...(sell ?? [])]
     .sort((a, b) => Number(a.price) - Number(b.price))
     .map<OrderbookData>((sell) => ({
       price: Number(sell.price),
       askVol: Number(sell.volume),
+      bidVol: 0,
       cummulativeVol: {
         ask: (cummulativeVol += Number(sell.volume)),
+        bid: 0,
       },
     }))
     .reverse();
   cummulativeVol = 0;
-  const bidOrderbookData = (buy ?? [])
+  const bidOrderbookData = [...(buy ?? [])]
     .sort((a, b) => Number(b.price) - Number(a.price))
     .map<OrderbookData>((buy) => ({
       price: Number(buy.price),
+      askVol: 0,
       bidVol: Number(buy.volume),
       cummulativeVol: {
+        ask: 0,
         bid: (cummulativeVol += Number(buy.volume)),
       },
     }));
@@ -109,7 +111,7 @@ export const compact = (
         groupedByLevel[price].reduce<OrderbookData>(
           (a, c) => ({
             ...a,
-            askVol: (a.askVol ?? 0) + (c.askVol ?? 0),
+            askVol: a.askVol + c.askVol,
             askVolByLevel: Object.assign(a.askVolByLevel, {
               [c.price]: c.askVol ?? 0,
             }),
@@ -118,19 +120,18 @@ export const compact = (
               [c.price]: c.bidVol ?? 0,
             }),
             cummulativeVol: {
-              bid: Math.max(
-                a.cummulativeVol.bid ?? 0,
-                c.cummulativeVol.bid ?? 0
-              ),
-              ask: Math.max(
-                a.cummulativeVol.ask ?? 0,
-                c.cummulativeVol.ask ?? 0
-              ),
+              bid: Math.max(a.cummulativeVol.bid, c.cummulativeVol.bid),
+              ask: Math.max(a.cummulativeVol.ask, c.cummulativeVol.ask),
             },
           }),
           {
             price: Number(price),
-            cummulativeVol: {},
+            askVol: 0,
+            bidVol: 0,
+            cummulativeVol: {
+              ask: 0,
+              bid: 0,
+            },
             askVolByLevel: {},
             bidVolByLevel: {},
           }
@@ -150,14 +151,16 @@ export const updateCompactedData = (
   resolution: number
 ) =>
   produce(orderbookData, (draft) => {
+    let sellModifiedIndex = -1;
     sell?.forEach((buy) => {
       const price = Number(buy.price);
       const volume = Number(buy.volume);
       const groupPrice = getGroupPrice(price, resolution);
       let index = draft.findIndex((data) => data.price === groupPrice);
       if (index !== -1 && draft[index]) {
+        sellModifiedIndex = Math.max(sellModifiedIndex, index);
         draft[index].askVol =
-          (draft[index].askVol ?? 0) -
+          draft[index].askVol -
           (draft[index].askVolByLevel?.[price] || 0) +
           volume;
         draft[index].askVolByLevel = Object.assign(
@@ -166,25 +169,33 @@ export const updateCompactedData = (
         );
       } else {
         const newData: OrderbookData = {
-          price,
+          price: groupPrice,
           askVol: volume,
+          bidVol: 0,
           askVolByLevel: { [price]: volume },
-          cummulativeVol: {},
+          cummulativeVol: {
+            ask: volume,
+            bid: 0,
+          },
         };
-        index = draft.findIndex((data) => data.price < price);
+        index = draft.findIndex((data) => data.price < groupPrice);
         if (index !== -1) {
           draft.splice(index, 0, newData);
+          sellModifiedIndex = Math.max(sellModifiedIndex, index);
         } else {
           draft.push(newData);
+          sellModifiedIndex = draft.length - 1;
         }
       }
     });
+    let buyModifiedIndex = draft.length;
     buy?.forEach((sell) => {
       const price = Number(sell.price);
       const volume = Number(sell.volume);
       const groupPrice = getGroupPrice(price, resolution);
       let index = draft.findIndex((data) => data.price === groupPrice);
       if (index !== -1 && draft[index]) {
+        buyModifiedIndex = Math.min(buyModifiedIndex, index);
         draft[index].bidVol =
           (draft[index].bidVol ?? 0) -
           (draft[index].bidVolByLevel?.[price] || 0) +
@@ -195,19 +206,40 @@ export const updateCompactedData = (
         );
       } else {
         const newData: OrderbookData = {
-          price,
+          price: groupPrice,
+          askVol: 0,
           bidVol: volume,
           bidVolByLevel: { [price]: volume },
-          cummulativeVol: {},
+          cummulativeVol: {
+            ask: 0,
+            bid: volume,
+          },
         };
-        index = draft.findIndex((data) => data.price < price);
+        index = draft.findIndex((data) => data.price < groupPrice);
         if (index !== -1) {
           draft.splice(index, 0, newData);
+          buyModifiedIndex = Math.max(buyModifiedIndex, index);
         } else {
           draft.push(newData);
+          buyModifiedIndex = draft.length - 1;
         }
       }
     });
+    sellModifiedIndex = Math.max(sellModifiedIndex, buyModifiedIndex);
+    buyModifiedIndex = Math.min(sellModifiedIndex, buyModifiedIndex);
+    if (sellModifiedIndex !== -1) {
+      let cummulativeVol =
+        draft[sellModifiedIndex + 1]?.cummulativeVol.ask ?? 0;
+      for (let i = sellModifiedIndex; i >= 0; i--) {
+        draft[i].cummulativeVol.ask = cummulativeVol += draft[i].askVol ?? 0;
+      }
+    }
+    if (buyModifiedIndex !== draft.length) {
+      let cummulativeVol = draft[buyModifiedIndex - 1]?.cummulativeVol.bid ?? 0;
+      for (let i = buyModifiedIndex, l = draft.length; i < l; i++) {
+        draft[i].cummulativeVol.bid = cummulativeVol += draft[i].bidVol ?? 0;
+      }
+    }
     let index = 0;
     while (index < draft.length) {
       if (!draft[index].askVol && !draft[index].bidVol) {

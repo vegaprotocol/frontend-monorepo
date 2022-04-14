@@ -216,8 +216,10 @@ describe('updateCompactedData', () => {
     );
     expect(updatedData[0].askVol).toEqual(20);
     expect(updatedData[0].askVolByLevel?.[120]).toEqual(10);
+    expect(updatedData[0].cummulativeVol.ask).toEqual(60);
     expect(updatedData[2].bidVol).toEqual(20);
     expect(updatedData[2].bidVolByLevel?.[80]).toEqual(10);
+    expect(updatedData[2].cummulativeVol.ask).toEqual(60);
   });
 
   it('remove row', () => {
@@ -245,13 +247,13 @@ describe('updateCompactedData', () => {
   it('add new row at the end', () => {
     const sell: MarketDepthSubscription_marketDepthUpdate_sell = {
       __typename: 'PriceLevel',
-      price: '130',
+      price: '131',
       volume: '5',
       numberOfOrders: '5',
     };
     const buy: MarketDepthSubscription_marketDepthUpdate_buy = {
       __typename: 'PriceLevel',
-      price: '60',
+      price: '59',
       volume: '5',
       numberOfOrders: '5',
     };
@@ -263,19 +265,21 @@ describe('updateCompactedData', () => {
     );
     expect(updatedData.length).toEqual(5);
     expect(updatedData[0].price).toEqual(130);
+    expect(updatedData[0].cummulativeVol.ask).toEqual(55);
     expect(updatedData[4].price).toEqual(60);
+    expect(updatedData[4].cummulativeVol.bid).toEqual(55);
   });
 
-  it('add new row at the end', () => {
+  it('add new row in the middle', () => {
     const sell: MarketDepthSubscription_marketDepthUpdate_sell = {
       __typename: 'PriceLevel',
-      price: '110',
+      price: '111',
       volume: '5',
       numberOfOrders: '5',
     };
     const buy: MarketDepthSubscription_marketDepthUpdate_buy = {
       __typename: 'PriceLevel',
-      price: '90',
+      price: '91',
       volume: '5',
       numberOfOrders: '5',
     };
@@ -287,6 +291,10 @@ describe('updateCompactedData', () => {
     );
     expect(updatedData.length).toEqual(5);
     expect(updatedData[1].price).toEqual(110);
+    expect(updatedData[1].cummulativeVol.ask).toEqual(45);
+    expect(updatedData[0].cummulativeVol.ask).toEqual(55);
     expect(updatedData[3].price).toEqual(90);
+    expect(updatedData[3].cummulativeVol.bid).toEqual(45);
+    expect(updatedData[4].cummulativeVol.bid).toEqual(55);
   });
 });

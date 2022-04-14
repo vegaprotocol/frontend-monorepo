@@ -20,26 +20,30 @@ export const OrderbookManager = ({
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const resolutionRef = useRef(resolution);
+  const lastUpdateRef = useRef(new Date().getTime());
   const [orderbookData, setOrderbookData] = useState<OrderbookData[] | null>(
     null
   );
+  const dataRef = useRef<OrderbookData[] | null>(null);
 
   // Apply updates to the table
   const update = useCallback(
-    (
-      delta: MarketDepthSubscription_marketDepthUpdate,
-      updatedDataRef?: { current: OrderbookData[] | null }
-    ) => {
-      if (!gridRef.current || !updatedDataRef || !updatedDataRef.current) {
+    (delta: MarketDepthSubscription_marketDepthUpdate) => {
+      if (!gridRef.current || !dataRef.current) {
         return false;
       }
-      updatedDataRef.current = updateCompactedData(
-        updatedDataRef.current,
+      dataRef.current = updateCompactedData(
+        dataRef.current,
         delta.sell,
         delta.buy,
         resolutionRef.current
       );
-      setOrderbookData(updatedDataRef.current);
+      const now = new Date().getTime();
+      console.log('update', now);
+      if (now - lastUpdateRef.current > 1000) {
+        setOrderbookData(dataRef.current);
+        lastUpdateRef.current = now;
+      }
       return true;
     },
     []
@@ -53,9 +57,12 @@ export const OrderbookManager = ({
 
   useEffect(() => {
     if (!data) {
-      return setOrderbookData(null);
+      dataRef.current = null;
+      setOrderbookData(dataRef.current);
+      return;
     }
-    setOrderbookData(compact(data.depth.sell, data.depth.buy, resolution));
+    dataRef.current = compact(data.depth.sell, data.depth.buy, resolution);
+    setOrderbookData(dataRef.current);
   }, [data, resolution]);
 
   useEffect(() => {

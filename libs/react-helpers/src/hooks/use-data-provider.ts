@@ -3,11 +3,9 @@ import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
 import type { Subscribe } from '../lib/generic-data-provider';
 
-export function useDataProvider<Data, Delta, UpdatedData>(
+export function useDataProvider<Data, Delta>(
   dataProvider: Subscribe<Data, Delta>,
-  update?:
-    | ((delta: Delta) => boolean)
-    | ((delta: Delta, data: { current: UpdatedData | null }) => boolean),
+  update?: (delta: Delta) => boolean,
   variables?: OperationVariables
 ) {
   const client = useApolloClient();
@@ -15,20 +13,13 @@ export function useDataProvider<Data, Delta, UpdatedData>(
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const initialized = useRef<boolean>(false);
-  const updatedData = useRef<UpdatedData | null>(null);
   const callback = useCallback(
     ({ data, error, loading, delta }) => {
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
-        if (
-          !initialized.current ||
-          !delta ||
-          !update ||
-          !update(delta, updatedData)
-        ) {
+        if (!initialized.current || !delta || !update || !update(delta)) {
           initialized.current = true;
-          updatedData.current = data;
           setData(data);
         }
       }

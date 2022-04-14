@@ -51,8 +51,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   );
   const { data, error, loading } = useDataProvider<
     Positions_party_positions[],
-    PositionSubscribe_positions,
-    never
+    PositionSubscribe_positions
   >(positionsDataProvider, update, variables);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>

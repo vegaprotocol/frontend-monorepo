@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import { getMockedData } from './market-depth-mock';
+// import { getMockedData } from './market-depth-mock';
 import { updateLevels } from './orderbook-data';
 import type {
   MarketDepth,
@@ -18,6 +18,9 @@ const MARKET_DEPTH_QUERY = gql`
       decimalPlaces
       data {
         midPrice
+        market {
+          id
+        }
       }
       depth {
         lastTrade {
@@ -46,6 +49,9 @@ export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
         id
         data {
           midPrice
+          market {
+            id
+          }
         }
       }
       sell {
@@ -75,8 +81,7 @@ const update = (
   }
 };
 
-const getData = (responseData: MarketDepth) =>
-  getMockedData(responseData.market?.id) || responseData.market;
+const getData = (responseData: MarketDepth) => responseData.market;
 const getDelta = (subscriptionData: MarketDepthSubscription) =>
   subscriptionData.marketDepthUpdate;
 
