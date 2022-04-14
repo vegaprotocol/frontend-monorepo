@@ -118,6 +118,7 @@ export const RewardsIndex = () => {
           title={t('rewardsCallout', {
             duration: formatDistance(new Date(0), payoutDuration),
           })}
+          headingLevel={3}
           intent={Intent.Warning}
         >
           <p className="mb-0">{t('rewardsPara3')}</p>
@@ -146,7 +147,7 @@ export const RewardsIndex = () => {
           />
         ) : (
           <Button
-            className="fill"
+            className="mt-12 w-full py-12 h-auto text-h5"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
