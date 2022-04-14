@@ -219,7 +219,7 @@ describe('updateCompactedData', () => {
     expect(updatedData[0].cummulativeVol.ask).toEqual(60);
     expect(updatedData[2].bidVol).toEqual(20);
     expect(updatedData[2].bidVolByLevel?.[80]).toEqual(10);
-    expect(updatedData[2].cummulativeVol.ask).toEqual(60);
+    expect(updatedData[2].cummulativeVol.bid).toEqual(60);
   });
 
   it('remove row', () => {

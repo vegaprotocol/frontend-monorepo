@@ -181,6 +181,8 @@ export const updateCompactedData = (
         index = draft.findIndex((data) => data.price < groupPrice);
         if (index !== -1) {
           draft.splice(index, 0, newData);
+          newData.cummulativeVol.bid =
+            draft[index - 1]?.cummulativeVol.bid ?? 0;
           sellModifiedIndex = Math.max(sellModifiedIndex, index);
         } else {
           draft.push(newData);
@@ -218,26 +220,25 @@ export const updateCompactedData = (
         index = draft.findIndex((data) => data.price < groupPrice);
         if (index !== -1) {
           draft.splice(index, 0, newData);
-          buyModifiedIndex = Math.max(buyModifiedIndex, index);
+          newData.cummulativeVol.ask =
+            draft[index + 1]?.cummulativeVol.ask ?? 0;
+          buyModifiedIndex = Math.min(buyModifiedIndex, index);
         } else {
           draft.push(newData);
           buyModifiedIndex = draft.length - 1;
         }
       }
     });
-    sellModifiedIndex = Math.max(sellModifiedIndex, buyModifiedIndex);
-    buyModifiedIndex = Math.min(sellModifiedIndex, buyModifiedIndex);
     if (sellModifiedIndex !== -1) {
-      let cummulativeVol =
-        draft[sellModifiedIndex + 1]?.cummulativeVol.ask ?? 0;
+      let cummulativeVol = draft[sellModifiedIndex + 1]?.cummulativeVol.ask;
       for (let i = sellModifiedIndex; i >= 0; i--) {
-        draft[i].cummulativeVol.ask = cummulativeVol += draft[i].askVol ?? 0;
+        draft[i].cummulativeVol.ask = cummulativeVol += draft[i].askVol;
       }
     }
     if (buyModifiedIndex !== draft.length) {
-      let cummulativeVol = draft[buyModifiedIndex - 1]?.cummulativeVol.bid ?? 0;
+      let cummulativeVol = draft[buyModifiedIndex - 1]?.cummulativeVol.bid;
       for (let i = buyModifiedIndex, l = draft.length; i < l; i++) {
-        draft[i].cummulativeVol.bid = cummulativeVol += draft[i].bidVol ?? 0;
+        draft[i].cummulativeVol.bid = cummulativeVol += draft[i].bidVol;
       }
     }
     let index = 0;
