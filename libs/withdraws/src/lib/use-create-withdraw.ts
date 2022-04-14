@@ -11,8 +11,12 @@ import type {
 const ERC20_WITHDRAWAL_QUERY = gql`
   query Erc20ApprovalPoll($withdrawalId: ID!) {
     erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
-      signatures
+      assetSource
       amount
+      nonce
+      signatures
+      targetAddress
+      expiry
     }
   }
 `;

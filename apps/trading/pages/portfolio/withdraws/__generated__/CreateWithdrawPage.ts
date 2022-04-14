@@ -13,6 +13,10 @@ export interface CreateWithdrawPage_party_withdrawals {
    * The Vega internal id of the withdrawal
    */
   id: string;
+  /**
+   * Hash of the transaction on the foreign chain
+   */
+  txHash: string | null;
 }
 
 export interface CreateWithdrawPage_party {

@@ -15,6 +15,7 @@ const CREATE_WITHDRAW_PAGE_QUERY = gql`
     party(id: $partyId) {
       withdrawals {
         id
+        txHash
       }
     }
     assets {
@@ -59,9 +60,13 @@ export const CreateWithdrawPageContainer = ({
           );
         }
 
+        const pendingWithdrawals = data.party?.withdrawals?.filter(
+          (w) => w.txHash
+        );
+
         return (
           <>
-            {data.party?.withdrawals?.length && (
+            {pendingWithdrawals?.length && (
               <p className="mb-12">
                 You have pending withdrawals.{' '}
                 <Link href="/portfolio/withdraws">

@@ -33,7 +33,7 @@ export interface CreateWithdrawFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
   onSelectAsset: (assetId: string) => void;
-  submitWithdrawalCreate: (withdrawal: WithdrawalFields) => Promise<void>;
+  submitWithdrawalCreate: (withdrawal: WithdrawalFields) => void;
 }
 
 export const CreateWithdrawForm = ({
@@ -53,6 +53,7 @@ export const CreateWithdrawForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: selectedAsset?.id,
+      to: account,
     },
   });
   const onCreateWithdraw = async (fields: FormFields) => {

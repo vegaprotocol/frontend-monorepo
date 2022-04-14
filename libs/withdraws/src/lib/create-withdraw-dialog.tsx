@@ -1,18 +1,21 @@
-import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
+import { Button, Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import type { TransactionState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { Erc20ApprovalPoll_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalPoll';
+import type { WithdrawTransactionArgs } from './use-complete-withdraw';
 
 interface CreateWithdrawDialogProps {
   transaction: TransactionState;
   finalizedApproval: Erc20ApprovalPoll_erc20WithdrawalApproval | null;
+  completeWithdrawal: (args: WithdrawTransactionArgs) => void;
 }
 
 export const CreateWithdrawDialog = ({
   transaction,
   finalizedApproval,
+  completeWithdrawal,
 }: CreateWithdrawDialogProps) => {
   // TODO: When wallets support confirming transactions return UI for 'awaiting confirmation' step
 
@@ -54,6 +57,9 @@ export const CreateWithdrawDialog = ({
       icon={<Icon name="tick" size={20} />}
     >
       <p>{t(`Amount: ${finalizedApproval.amount}`)}</p>
+      <Button onClick={() => completeWithdrawal(finalizedApproval)}>
+        Complete withdrawal
+      </Button>
     </CreateWithdrawDialogWrapper>
   );
 };

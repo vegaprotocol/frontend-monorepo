@@ -10,14 +10,30 @@
 export interface Erc20ApprovalPoll_erc20WithdrawalApproval {
   __typename: "Erc20WithdrawalApproval";
   /**
+   * The source asset in the ethereum network
+   */
+  assetSource: string;
+  /**
+   * The amount to be withdrawn
+   */
+  amount: string;
+  /**
+   * The nonce to be used in the request
+   */
+  nonce: string;
+  /**
    * Signature aggregate from the nodes, in the following format:
    * 0x + sig1 + sig2 + ... + sigN
    */
   signatures: string;
   /**
-   * The amount to be withdrawn
+   * The target address which will receive the funds
    */
-  amount: string;
+  targetAddress: string;
+  /**
+   * Timestamp in seconds for expiry of the approval
+   */
+  expiry: string;
 }
 
 export interface Erc20ApprovalPoll {

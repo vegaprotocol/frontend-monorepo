@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { CreateWithdrawForm } from './create-withdraw-form';
 import { useCreateWithdraw } from './use-create-withdraw';
-import { CreateWithdrawDialog } from './create-withdraw-dialog';
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { useCompleteWithdraw } from './use-complete-withdraw';
+import { WithdrawDialog } from './withdraw-dialog';
 
 export interface Asset {
   id: string;
@@ -25,9 +24,14 @@ export const CreateWithdrawManager = ({
   assets,
   initialAssetId,
 }: CreateWithdrawManagerProps) => {
+  const ethereumTxRequested = useRef(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const { submit, approval, transaction, reset } = useCreateWithdraw();
+  const {
+    submit,
+    approval,
+    transaction: vegaTransaction,
+  } = useCreateWithdraw();
+  const transaction = useCompleteWithdraw();
 
   // Find the asset object from the select box
   const asset = useMemo(() => {
@@ -35,23 +39,21 @@ export const CreateWithdrawManager = ({
     return asset;
   }, [assets, assetId]);
 
+  const handleSubmit = useCallback(
+    (args) => {
+      ethereumTxRequested.current = false;
+      submit(args);
+    },
+    [submit]
+  );
+
   useEffect(() => {
-    if (transaction.status !== VegaTxStatus.Default) {
-      setDialogOpen(true);
+    if (approval && !ethereumTxRequested.current) {
+      transaction.perform(approval);
+      ethereumTxRequested.current = true;
     }
-  }, [transaction.status]);
-
-  const getDialogIntent = (status: VegaTxStatus) => {
-    if (approval) {
-      return Intent.Success;
-    }
-
-    if (status === VegaTxStatus.Rejected) {
-      return Intent.Danger;
-    }
-
-    return Intent.Progress;
-  };
+    // eslint-disable-next-line
+  }, [approval]);
 
   return (
     <>
@@ -59,25 +61,13 @@ export const CreateWithdrawManager = ({
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}
-        submitWithdrawalCreate={submit}
+        submitWithdrawalCreate={handleSubmit}
       />
-      <Dialog
-        open={dialogOpen}
-        onChange={(isOpen) => {
-          setDialogOpen(isOpen);
-
-          // If closing reset
-          if (!isOpen) {
-            reset();
-          }
-        }}
-        intent={getDialogIntent(transaction.status)}
-      >
-        <CreateWithdrawDialog
-          transaction={transaction}
-          finalizedApproval={approval}
-        />
-      </Dialog>
+      <WithdrawDialog
+        vegaTx={vegaTransaction}
+        ethTx={transaction}
+        approval={approval}
+      />
     </>
   );
 };
