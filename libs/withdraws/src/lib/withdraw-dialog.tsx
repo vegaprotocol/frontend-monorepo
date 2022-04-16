@@ -32,21 +32,20 @@ export const WithdrawDialog = ({
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogDismissed = useRef(false);
 
-  const getWrapperProps = () => {
-    // eslint-disable-next-line
-    let props: any = {
+  const getProps = () => {
+    let intent = Intent.Help;
+    let props: DialogWrapperProps = {
       title: '',
-      intent: undefined,
       icon: null,
       children: null,
     };
+
     if (vegaTx.status === VegaTxStatus.Rejected) {
       props = {
         title: t('Vega transaction failed'),
-        intent: Intent.Danger,
         icon: <Icon name="warning-sign" size={20} />,
         children: (
-          <Step active={true}>
+          <Step>
             {vegaTx.error && (
               <pre className="text-ui break-all whitespace-pre-wrap">
                 {JSON.stringify(vegaTx.error, null, 2)}
@@ -55,54 +54,52 @@ export const WithdrawDialog = ({
           </Step>
         ),
       };
+      intent = Intent.Danger;
     }
 
     if (vegaTx.status === VegaTxStatus.AwaitingConfirmation) {
       props = {
         title: t('Confirm Vega transaction'),
-        intent: Intent.Prompt,
         icon: <Icon name="hand-up" size={20} />,
-        children: <Step active={true}>Confirm in Vega wallet</Step>,
+        children: <Step>Confirm in Vega wallet</Step>,
       };
+      intent = Intent.Prompt;
     }
 
     if (vegaTx.status === VegaTxStatus.Pending || !approval) {
       props = {
         title: t('Withdrawal transaction pending'),
-        intent: Intent.Progress,
         icon: <Loader size="small" />,
-        children: <Step active={true}>Awaiting transaction</Step>,
+        children: <Step>Awaiting transaction</Step>,
       };
+      intent = Intent.Progress;
     }
 
     if (ethTx.status === TxState.Error) {
       props = {
         title: t('Ethereum transaction failed'),
-        intent: Intent.Danger,
         icon: <Icon name="warning-sign" />,
         children: (
-          <Step active={true}>
+          <Step>
             {ethTx.error ? ethTx.error.message : t('Something went wrong')}
           </Step>
         ),
       };
+      intent = Intent.Danger;
     }
 
     if (ethTx.status === TxState.Requested) {
       props = {
         title: t('Confirm Ethereum transaction'),
-        intent: Intent.Prompt,
         icon: <Icon name="hand-up" />,
-        children: (
-          <Step active={true}>{t('Confirm transaction in wallet')}</Step>
-        ),
+        children: <Step>{t('Confirm transaction in wallet')}</Step>,
       };
+      intent = Intent.Prompt;
     }
 
     if (ethTx.status === TxState.Pending) {
       props = {
         title: t('Ethereum transaction pending'),
-        intent: Intent.Progress,
         icon: <Loader size="small" />,
         children: (
           <Step>
@@ -119,18 +116,28 @@ export const WithdrawDialog = ({
           </Step>
         ),
       };
+      intent = Intent.Progress;
     }
 
     if (ethTx.status === TxState.Complete) {
       props = {
         title: 'Withdrawal complete',
-        intent: Intent.Success,
         icon: <Icon name="tick" />,
-        children: <Step active={true}>{t('Withdrawal complete')}</Step>,
+        children: (
+          <Step>
+            <span>{t('Ethereum transaction complete')}</span>
+            <EtherscanLink
+              tx={ethTx.txHash || ''}
+              className="text-vega-pink dark:text-vega-yellow"
+              text={t('View on Etherscan')}
+            />
+          </Step>
+        ),
       };
+      intent = Intent.Success;
     }
 
-    return props;
+    return { props, intent };
   };
 
   // Control dialog open state
@@ -151,12 +158,11 @@ export const WithdrawDialog = ({
     }
   }, [vegaTx, ethTx]);
 
-  const { intent, title, ...wrapperProps } = getWrapperProps();
+  const { intent, props } = getProps();
 
   return (
     <Dialog
       open={dialogOpen}
-      title={title}
       intent={intent}
       onChange={(isOpen) => {
         setDialogOpen(isOpen);
@@ -165,7 +171,7 @@ export const WithdrawDialog = ({
         }
       }}
     >
-      <DialogWrapper {...wrapperProps} />
+      <DialogWrapper {...props} />
     </Dialog>
   );
 };
@@ -196,12 +202,8 @@ export const DialogWrapper = ({
 
 interface StepProps {
   children: ReactNode;
-  active?: boolean;
 }
 
-const Step = ({ children, active = false }: StepProps) => {
-  const className = active
-    ? 'text-black dark:text-white'
-    : 'text-black-40 dark:text-white-40';
-  return <p className={className}>{children}</p>;
+const Step = ({ children }: StepProps) => {
+  return <p className="flex justify-between">{children}</p>;
 };
