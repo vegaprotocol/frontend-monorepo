@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import {
   formatNumber,
   getDateTimeFormat,
@@ -13,12 +12,7 @@ import {
   EtherscanLink,
   TransactionDialog,
 } from '@vegaprotocol/ui-toolkit';
-import type { WithdrawTransactionArgs } from '@vegaprotocol/withdraws';
 import { useCompleteWithdraw } from '@vegaprotocol/withdraws';
-import type {
-  Erc20Approval,
-  Erc20ApprovalVariables,
-} from './__generated__/Erc20Approval';
 import orderBy from 'lodash/orderBy';
 import { useEffect, useMemo } from 'react';
 import type { WithdrawsPage_party_withdrawals } from './__generated__/WithdrawsPage';
@@ -32,7 +26,7 @@ export const WithdrawalsList = ({
   withdrawals,
   refetchWithdrawals,
 }: WithdrawalsListProps) => {
-  const { transaction, perform } = useCompleteWithdraw();
+  const { transaction, submit } = useCompleteWithdraw();
 
   const sortedWithdrawals = useMemo(() => {
     return orderBy(
@@ -70,7 +64,7 @@ export const WithdrawalsList = ({
         </thead>
         <tbody>
           {sortedWithdrawals.map((w) => {
-            return <WithdrawRow key={w.id} withdraw={w} onComplete={perform} />;
+            return <WithdrawRow key={w.id} withdraw={w} onComplete={submit} />;
           })}
         </tbody>
       </table>
@@ -84,40 +78,16 @@ export const WithdrawalsList = ({
   );
 };
 
-const ERC20_APPROVAL_QUERY = gql`
-  query Erc20Approval($withdrawalId: ID!) {
-    erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
-      assetSource
-      amount
-      nonce
-      signatures
-      targetAddress
-      expiry
-    }
-  }
-`;
-
 interface WithdrawRowProps {
   withdraw: WithdrawsPage_party_withdrawals;
-  onComplete: (args: WithdrawTransactionArgs) => void;
+  onComplete: (withdrawalId: string) => Promise<void>;
 }
 
 const WithdrawRow = ({ withdraw, onComplete }: WithdrawRowProps) => {
-  const { data, error, loading } = useQuery<
-    Erc20Approval,
-    Erc20ApprovalVariables
-  >(ERC20_APPROVAL_QUERY, {
-    variables: { withdrawalId: withdraw.id },
-  });
-
   const isComplete =
     withdraw.status === WithdrawalStatus.Finalized && withdraw.txHash;
 
   const renderStatus = () => {
-    if (error) {
-      return t('Invalid');
-    }
-
     if (withdraw.status === WithdrawalStatus.Finalized) {
       if (withdraw.txHash) {
         return (
@@ -155,13 +125,8 @@ const WithdrawRow = ({ withdraw, onComplete }: WithdrawRowProps) => {
           <Button
             variant="inline-link"
             onClick={() => {
-              if (!data?.erc20WithdrawalApproval) {
-                throw new Error('No approval');
-              }
-
-              onComplete(data.erc20WithdrawalApproval);
+              onComplete(withdraw.id);
             }}
-            disabled={loading}
           >
             Complete
           </Button>

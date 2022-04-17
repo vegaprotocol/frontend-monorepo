@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import sortBy from 'lodash/sortBy';
-import { CreateWithdrawForm } from './create-withdraw-form';
-import { useCreateWithdraw } from './use-create-withdraw';
-import { useCompleteWithdraw } from './use-complete-withdraw';
+import { WithdrawForm } from './withdraw-form';
+import { useWithdraw } from './use-withdraw';
 import { WithdrawDialog } from './withdraw-dialog';
 import {
   isExpectedEthereumError,
@@ -31,8 +30,9 @@ export const CreateWithdrawManager = ({
   const dialogDismissed = useRef(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
-  const withdrawal = useCreateWithdraw();
-  const complete = useCompleteWithdraw();
+  const { ethTx, vegaTx, approval, submit, reset } = useWithdraw(
+    dialogDismissed.current
+  );
 
   // Find the asset object from the select box
   const asset = useMemo(() => {
@@ -42,43 +42,36 @@ export const CreateWithdrawManager = ({
 
   const handleSubmit = useCallback(
     (args) => {
+      reset();
       setDialogOpen(true);
-      withdrawal.reset();
-      withdrawal.submit(args);
+      submit(args);
       dialogDismissed.current = false;
     },
-    [withdrawal]
+    [submit, reset]
   );
-
-  useEffect(() => {
-    if (withdrawal.approval && !dialogDismissed.current) {
-      complete.perform(withdrawal.approval);
-    }
-    // eslint-disable-next-line
-  }, [withdrawal.approval]);
 
   // Close dialog if error is due to user rejecting the tx
   useEffect(() => {
     if (
-      complete.transaction.status === EthTxStatus.Error &&
-      isExpectedEthereumError(complete.transaction.error)
+      ethTx.status === EthTxStatus.Error &&
+      isExpectedEthereumError(ethTx.error)
     ) {
       setDialogOpen(false);
     }
-  }, [complete.transaction]);
+  }, [ethTx.status, ethTx.error]);
 
   return (
     <>
-      <CreateWithdrawForm
+      <WithdrawForm
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}
         submitWithdrawalCreate={handleSubmit}
       />
       <WithdrawDialog
-        vegaTx={withdrawal.transaction}
-        ethTx={complete.transaction}
-        approval={withdrawal.approval}
+        vegaTx={vegaTx}
+        ethTx={ethTx}
+        approval={approval}
         dialogOpen={dialogOpen}
         onDialogChange={(isOpen) => {
           setDialogOpen(isOpen);

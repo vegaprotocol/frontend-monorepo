@@ -11,7 +11,7 @@ import { ethers } from 'ethers';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import type { WithdrawalFields } from './use-create-withdraw';
+import type { WithdrawalFields } from './use-withdraw';
 
 interface Asset {
   id: string;
@@ -36,7 +36,7 @@ export interface CreateWithdrawFormProps {
   submitWithdrawalCreate: (withdrawal: WithdrawalFields) => void;
 }
 
-export const CreateWithdrawForm = ({
+export const WithdrawForm = ({
   assets,
   selectedAsset,
   onSelectAsset,

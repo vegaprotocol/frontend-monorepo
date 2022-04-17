@@ -52,16 +52,13 @@ export const WithdrawDialog = ({
       intent = Intent.Danger;
     }
 
-    if (vegaTx.status === VegaTxStatus.Requested) {
-      props = {
-        title: t('Confirm Vega transaction'),
-        icon: <Icon name="hand-up" size={20} />,
-        children: <Step>Confirm in Vega wallet</Step>,
-      };
-      intent = Intent.Prompt;
-    }
+    // TODO: Add separate UI for when VegaTxStatus is Requested
+    // UI should direct user to their wallet to confirm tx.
+    const isPending =
+      vegaTx.status === VegaTxStatus.Pending ||
+      vegaTx.status === VegaTxStatus.Requested;
 
-    if (vegaTx.status === VegaTxStatus.Pending || !approval) {
+    if (isPending || !approval) {
       props = {
         title: t('Withdrawal transaction pending'),
         icon: <Loader size="small" />,

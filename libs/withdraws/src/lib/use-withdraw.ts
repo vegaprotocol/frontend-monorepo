@@ -1,7 +1,12 @@
 import { gql, useQuery } from '@apollo/client';
-import { determineId } from '@vegaprotocol/react-helpers';
+import {
+  determineId,
+  useBridgeContract,
+  useEthereumTransaction,
+} from '@vegaprotocol/react-helpers';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useState } from 'react';
+import type { WithdrawTransactionArgs } from './use-complete-withdraw';
 import type {
   Erc20ApprovalPoll,
   Erc20ApprovalPollVariables,
@@ -27,12 +32,29 @@ export interface WithdrawalFields {
   receiverAddress: string;
 }
 
-export const useCreateWithdraw = () => {
-  const { keypair } = useVegaWallet();
-  const { send, transaction, reset } = useVegaTransaction();
+export const useWithdraw = (cancelled: boolean) => {
   const [id, setId] = useState<string | null>(null);
   const [approval, setApproval] =
     useState<Erc20ApprovalPoll_erc20WithdrawalApproval | null>(null);
+
+  const contract = useBridgeContract();
+  const { keypair } = useVegaWallet();
+  const {
+    transaction: vegaTx,
+    send,
+    reset: resetVegaTx,
+  } = useVegaTransaction();
+
+  const {
+    transaction: ethTx,
+    perform,
+    reset: resetEthTx,
+  } = useEthereumTransaction<WithdrawTransactionArgs>((args) => {
+    if (!contract) {
+      return null;
+    }
+    return contract.withdraw(args);
+  });
 
   const { data, stopPolling } = useQuery<
     Erc20ApprovalPoll,
@@ -42,13 +64,6 @@ export const useCreateWithdraw = () => {
     skip: !id,
     pollInterval: 1000,
   });
-
-  useEffect(() => {
-    if (data?.erc20WithdrawalApproval) {
-      stopPolling();
-      setApproval(data.erc20WithdrawalApproval);
-    }
-  }, [data, stopPolling]);
 
   const submit = useCallback(
     async (withdrawal: WithdrawalFields) => {
@@ -77,10 +92,30 @@ export const useCreateWithdraw = () => {
     [keypair, send]
   );
 
+  useEffect(() => {
+    if (data?.erc20WithdrawalApproval) {
+      stopPolling();
+      setApproval(data.erc20WithdrawalApproval);
+    }
+  }, [data, stopPolling]);
+
+  useEffect(() => {
+    if (approval && !cancelled) {
+      perform(approval);
+    }
+    // eslint-disable-next-line
+  }, [approval]);
+
+  const reset = useCallback(() => {
+    resetVegaTx();
+    resetEthTx();
+  }, [resetVegaTx, resetEthTx]);
+
   return {
     submit,
-    approval,
-    transaction,
     reset,
+    approval,
+    vegaTx,
+    ethTx,
   };
 };
