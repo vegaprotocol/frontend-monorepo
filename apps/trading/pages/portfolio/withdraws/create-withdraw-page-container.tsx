@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { CreateWithdrawManager } from '@vegaprotocol/withdraws';
+import { WithdrawManager } from '@vegaprotocol/withdraws';
 import Link from 'next/link';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import type {
@@ -16,6 +16,14 @@ const CREATE_WITHDRAW_PAGE_QUERY = gql`
       withdrawals {
         id
         txHash
+      }
+      accounts {
+        type
+        balance
+        asset {
+          id
+          symbol
+        }
       }
     }
     assets {
@@ -74,11 +82,12 @@ export const CreateWithdrawPageContainer = ({
                 </Link>
               </p>
             )}
-            <CreateWithdrawManager
+            <WithdrawManager
               // @ts-ignore TS not inferring on union type for contract address
               assets={data.assets.filter(
                 (a) => a.source.__typename === 'ERC20'
               )}
+              accounts={data.party?.accounts || []}
               initialAssetId={assetId}
             />
           </>

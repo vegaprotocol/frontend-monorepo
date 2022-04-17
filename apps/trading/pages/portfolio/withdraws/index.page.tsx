@@ -49,7 +49,7 @@ const Withdraws = () => {
           {(data, { refetch }) => {
             return (
               <div className="p-24">
-                <h1 className="text-h3 mb-12">Pending Withdrawals</h1>
+                <h1 className="text-h3 mb-12">Withdrawals</h1>
                 <WithdrawalsList
                   withdrawals={data.party?.withdrawals || []}
                   refetchWithdrawals={refetch}

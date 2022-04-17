@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { AccountType } from "./../../../../../../libs/types/src/__generated__/globalTypes";
+
 // ====================================================
 // GraphQL query operation: CreateWithdrawPage
 // ====================================================
@@ -19,12 +21,44 @@ export interface CreateWithdrawPage_party_withdrawals {
   txHash: string | null;
 }
 
+export interface CreateWithdrawPage_party_accounts_asset {
+  __typename: "Asset";
+  /**
+   * The id of the asset
+   */
+  id: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+}
+
+export interface CreateWithdrawPage_party_accounts {
+  __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
+  /**
+   * Balance as string - current account balance (approx. as balances can be updated several times per second)
+   */
+  balance: string;
+  /**
+   * Asset, the 'currency'
+   */
+  asset: CreateWithdrawPage_party_accounts_asset;
+}
+
 export interface CreateWithdrawPage_party {
   __typename: "Party";
   /**
    * The list of all withdrawals initiated by the party
    */
   withdrawals: CreateWithdrawPage_party_withdrawals[] | null;
+  /**
+   * Collateral accounts relating to a party
+   */
+  accounts: CreateWithdrawPage_party_accounts[] | null;
 }
 
 export interface CreateWithdrawPage_assets_source_BuiltinAsset {

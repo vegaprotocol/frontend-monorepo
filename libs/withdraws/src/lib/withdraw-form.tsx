@@ -7,21 +7,13 @@ import {
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
+import type BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
-
-interface Asset {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  source: {
-    contractAddress: string;
-  };
-}
+import type { Asset } from './withdraw-manager';
 
 interface FormFields {
   asset: string;
@@ -32,6 +24,7 @@ interface FormFields {
 export interface CreateWithdrawFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
+  max: BigNumber;
   onSelectAsset: (assetId: string) => void;
   submitWithdrawalCreate: (withdrawal: WithdrawalFields) => void;
 }
@@ -39,6 +32,7 @@ export interface CreateWithdrawFormProps {
 export const WithdrawForm = ({
   assets,
   selectedAsset,
+  max,
   onSelectAsset,
   submitWithdrawalCreate,
 }: CreateWithdrawFormProps) => {
@@ -141,6 +135,16 @@ export const WithdrawForm = ({
           <InputError intent="danger" className="mt-4">
             {errors.amount.message}
           </InputError>
+        )}
+        {account && selectedAsset && (
+          <UseButton
+            onClick={() => {
+              setValue('amount', max.toFixed(selectedAsset.decimals));
+              clearErrors('amount');
+            }}
+          >
+            {t('Use maximum')}
+          </UseButton>
         )}
       </FormGroup>
       <Button type="submit">Submit</Button>

@@ -6,7 +6,10 @@ import { WithdrawDialog } from './withdraw-dialog';
 import {
   isExpectedEthereumError,
   EthTxStatus,
+  addDecimal,
 } from '@vegaprotocol/react-helpers';
+import { AccountType } from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
 
 export interface Asset {
   id: string;
@@ -18,15 +21,26 @@ export interface Asset {
   };
 }
 
-interface CreateWithdrawManagerProps {
+export interface Account {
+  type: AccountType;
+  balance: string;
+  asset: {
+    id: string;
+    symbol: string;
+  };
+}
+
+interface WithdrawManagerProps {
   assets: Asset[];
+  accounts: Account[];
   initialAssetId?: string;
 }
 
-export const CreateWithdrawManager = ({
+export const WithdrawManager = ({
   assets,
+  accounts,
   initialAssetId,
-}: CreateWithdrawManagerProps) => {
+}: WithdrawManagerProps) => {
   const dialogDismissed = useRef(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
@@ -36,9 +50,24 @@ export const CreateWithdrawManager = ({
 
   // Find the asset object from the select box
   const asset = useMemo(() => {
-    const asset = assets?.find((a) => a.id === assetId);
-    return asset;
+    return assets?.find((a) => a.id === assetId);
   }, [assets, assetId]);
+
+  const max = useMemo(() => {
+    if (!asset) {
+      return new BigNumber(0);
+    }
+
+    const account = accounts.find(
+      (a) => a.type === AccountType.General && a.asset.id === asset.id
+    );
+
+    if (!account) {
+      return new BigNumber(0);
+    }
+
+    return new BigNumber(addDecimal(account.balance, asset.decimals));
+  }, [asset, accounts]);
 
   const handleSubmit = useCallback(
     (args) => {
@@ -66,6 +95,7 @@ export const CreateWithdrawManager = ({
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}
+        max={max}
         submitWithdrawalCreate={handleSubmit}
       />
       <WithdrawDialog
