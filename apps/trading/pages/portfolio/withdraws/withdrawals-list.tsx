@@ -1,5 +1,4 @@
 import {
-  formatNumber,
   getDateTimeFormat,
   t,
   truncateByChars,
@@ -7,12 +6,13 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import {
-  AnchorButton,
-  Button,
   EtherscanLink,
   TransactionDialog,
+  AgGridDynamic as AgGrid,
 } from '@vegaprotocol/ui-toolkit';
 import { useCompleteWithdraw } from '@vegaprotocol/withdraws';
+import type { ValueFormatterParams } from 'ag-grid-community';
+import { AgGridColumn } from 'ag-grid-react';
 import orderBy from 'lodash/orderBy';
 import { useEffect, useMemo } from 'react';
 import type { WithdrawsPage_party_withdrawals } from './__generated__/WithdrawsPage';
@@ -52,86 +52,70 @@ export const WithdrawalsList = ({
 
   return (
     <>
-      <table className="w-full mb-24">
-        <thead>
-          <tr>
-            <th className="text-left">Amount</th>
-            <th className="text-left">Recepient</th>
-            <th className="text-left">Status</th>
-            <th className="text-left">Created at</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          {sortedWithdrawals.map((w) => {
-            return <WithdrawRow key={w.id} withdraw={w} onComplete={submit} />;
-          })}
-        </tbody>
-      </table>
-      <div className="flex justify-end">
-        <AnchorButton href="/portfolio/withdraws/create">
-          Create new withdrawal
-        </AnchorButton>
-      </div>
+      <AgGrid
+        rowData={sortedWithdrawals}
+        overlayNoRowsTemplate={t('No withdrawals')}
+        defaultColDef={{ flex: 1, resizable: true }}
+        style={{ width: '100%', height: '100%' }}
+        components={{ StatusCell, RecipientCell }}
+      >
+        <AgGridColumn headerName="Amount" field="amount" />
+        <AgGridColumn
+          headerName="Recipient"
+          field="details.receiverAddress"
+          cellRenderer="RecipientCell"
+          valueFormatter={({ value }: ValueFormatterParams) => {
+            return truncateByChars(value);
+          }}
+        />
+        <AgGridColumn
+          headerName="Created at"
+          field="createdTimestamp"
+          valueFormatter={({ value }: ValueFormatterParams) => {
+            return getDateTimeFormat().format(new Date(value));
+          }}
+        />
+        <AgGridColumn
+          headerName="Status"
+          field="status"
+          cellRenderer="StatusCell"
+          cellRendererParams={{ complete: submit }}
+        />
+      </AgGrid>
       <TransactionDialog name="withdraw" {...transaction} />
     </>
   );
 };
 
-interface WithdrawRowProps {
-  withdraw: WithdrawsPage_party_withdrawals;
-  onComplete: (withdrawalId: string) => Promise<void>;
+interface StatusCellProps extends ValueFormatterParams {
+  complete: (withdrawalId: string) => void;
 }
 
-const WithdrawRow = ({ withdraw, onComplete }: WithdrawRowProps) => {
-  const isComplete =
-    withdraw.status === WithdrawalStatus.Finalized && withdraw.txHash;
-
-  const renderStatus = () => {
-    if (withdraw.status === WithdrawalStatus.Finalized) {
-      if (withdraw.txHash) {
-        return (
-          <>
-            {t('Complete')}{' '}
-            <EtherscanLink tx={withdraw.txHash} text={t('View on Etherscan')} />
-          </>
-        );
-      } else {
-        return t('Ready');
-      }
-    }
-
-    return withdraw.status;
-  };
-
-  return (
-    <tr key={withdraw.id}>
-      <td>
-        {formatNumber(withdraw.amount, withdraw.asset.decimals)}{' '}
-        {withdraw.asset.symbol}
-      </td>
-      <td>
-        {withdraw.details?.__typename === 'Erc20WithdrawalDetails' ? (
-          <EtherscanLink
-            address={withdraw.details?.receiverAddress}
-            text={truncateByChars(withdraw.details.receiverAddress)}
-          />
-        ) : null}
-      </td>
-      <td>{renderStatus()}</td>
-      <td>{getDateTimeFormat().format(new Date(withdraw.createdTimestamp))}</td>
-      <td className="text-right">
-        {!isComplete && (
-          <Button
-            variant="inline-link"
-            onClick={() => {
-              onComplete(withdraw.id);
-            }}
-          >
+const StatusCell = ({ value, data, complete }: StatusCellProps) => {
+  if (value === WithdrawalStatus.Finalized) {
+    if (data.txHash) {
+      return (
+        <div className="flex justify-between">
+          {t('Complete')}
+          <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex justify-between">
+          {t('Ready')}
+          <button className="underline" onClick={() => complete(data.id)}>
             Complete
-          </Button>
-        )}
-      </td>
-    </tr>
-  );
+          </button>
+        </div>
+      );
+    }
+  }
+
+  return value;
+};
+
+// @ts-ignore valueFormatted not defined
+const RecipientCell = ({ value, valueFormatted }: ValueFormatterParams) => {
+  return <EtherscanLink address={value} text={valueFormatted} />;
 };

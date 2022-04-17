@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import { Web3Container } from '../../../components/web3-container';
@@ -48,8 +49,13 @@ const Withdraws = () => {
         >
           {(data, { refetch }) => {
             return (
-              <div className="p-24">
-                <h1 className="text-h3 mb-12">Withdrawals</h1>
+              <div className="h-full grid grid grid-rows-[min-content,1fr]">
+                <header className="flex justify-between p-24">
+                  <h1 className="text-h3">Withdrawals</h1>
+                  <AnchorButton href="/portfolio/withdraws/create">
+                    Start withdrawal
+                  </AnchorButton>
+                </header>
                 <WithdrawalsList
                   withdrawals={data.party?.withdrawals || []}
                   refetchWithdrawals={refetch}
