@@ -27,7 +27,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
 test('Has the correct default state', () => {
   const { result } = setup();
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
-  expect(result.current.transaction.hash).toEqual(null);
+  expect(result.current.transaction.txHash).toEqual(null);
   expect(result.current.transaction.signature).toEqual(null);
   expect(result.current.transaction.error).toEqual(null);
   expect(typeof result.current.reset).toEqual('function');
@@ -52,7 +52,7 @@ test('Handles a single error', async () => {
   await act(async () => {
     result.current.send({} as OrderSubmission);
   });
-  expect(result.current.transaction.status).toEqual(VegaTxStatus.Rejected);
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
   expect(result.current.transaction.error).toEqual({ error: errorMessage });
 });
 
@@ -67,7 +67,7 @@ test('Handles multiple errors', async () => {
   await act(async () => {
     result.current.send({} as OrderSubmission);
   });
-  expect(result.current.transaction.status).toEqual(VegaTxStatus.Rejected);
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
   expect(result.current.transaction.error).toEqual(errorObj);
 });
 
@@ -89,7 +89,7 @@ test('Returns the signature if successful', async () => {
     result.current.send({} as OrderSubmission);
   });
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Pending);
-  expect(result.current.transaction.hash).toEqual(successObj.txHash);
+  expect(result.current.transaction.txHash).toEqual(successObj.txHash);
   expect(result.current.transaction.signature).toEqual(
     successObj.tx.signature.value
   );

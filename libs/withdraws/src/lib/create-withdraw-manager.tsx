@@ -4,6 +4,10 @@ import { CreateWithdrawForm } from './create-withdraw-form';
 import { useCreateWithdraw } from './use-create-withdraw';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import { WithdrawDialog } from './withdraw-dialog';
+import {
+  isExpectedEthereumError,
+  EthTxStatus,
+} from '@vegaprotocol/react-helpers';
 
 export interface Asset {
   id: string;
@@ -24,14 +28,11 @@ export const CreateWithdrawManager = ({
   assets,
   initialAssetId,
 }: CreateWithdrawManagerProps) => {
-  const ethereumTxRequested = useRef(false);
+  const dialogDismissed = useRef(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
-  const {
-    submit,
-    approval,
-    transaction: vegaTransaction,
-  } = useCreateWithdraw();
-  const transaction = useCompleteWithdraw();
+  const withdrawal = useCreateWithdraw();
+  const complete = useCompleteWithdraw();
 
   // Find the asset object from the select box
   const asset = useMemo(() => {
@@ -41,19 +42,30 @@ export const CreateWithdrawManager = ({
 
   const handleSubmit = useCallback(
     (args) => {
-      ethereumTxRequested.current = false;
-      submit(args);
+      setDialogOpen(true);
+      withdrawal.reset();
+      withdrawal.submit(args);
+      dialogDismissed.current = false;
     },
-    [submit]
+    [withdrawal]
   );
 
   useEffect(() => {
-    if (approval && !ethereumTxRequested.current) {
-      transaction.perform(approval);
-      ethereumTxRequested.current = true;
+    if (withdrawal.approval && !dialogDismissed.current) {
+      complete.perform(withdrawal.approval);
     }
     // eslint-disable-next-line
-  }, [approval]);
+  }, [withdrawal.approval]);
+
+  // Close dialog if error is due to user rejecting the tx
+  useEffect(() => {
+    if (
+      complete.transaction.status === EthTxStatus.Error &&
+      isExpectedEthereumError(complete.transaction.error)
+    ) {
+      setDialogOpen(false);
+    }
+  }, [complete.transaction]);
 
   return (
     <>
@@ -64,9 +76,17 @@ export const CreateWithdrawManager = ({
         submitWithdrawalCreate={handleSubmit}
       />
       <WithdrawDialog
-        vegaTx={vegaTransaction}
-        ethTx={transaction}
-        approval={approval}
+        vegaTx={withdrawal.transaction}
+        ethTx={complete.transaction}
+        approval={withdrawal.approval}
+        dialogOpen={dialogOpen}
+        onDialogChange={(isOpen) => {
+          setDialogOpen(isOpen);
+
+          if (!isOpen) {
+            dialogDismissed.current = true;
+          }
+        }}
       />
     </>
   );

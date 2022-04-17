@@ -5,33 +5,28 @@ import {
   Intent,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
-import type { TransactionState } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
-import type { useCompleteWithdraw } from './use-complete-withdraw';
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
-import { useRef, useState } from 'react';
 import type { Erc20ApprovalPoll_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalPoll';
-import {
-  isExpectedEthereumError,
-  t,
-  TxState,
-} from '@vegaprotocol/react-helpers';
+import type { EthTxState } from '@vegaprotocol/react-helpers';
+import { t, EthTxStatus } from '@vegaprotocol/react-helpers';
 
 interface WithdrawDialogProps {
-  vegaTx: TransactionState;
-  ethTx: ReturnType<typeof useCompleteWithdraw>;
+  vegaTx: VegaTxState;
+  ethTx: EthTxState;
   approval: Erc20ApprovalPoll_erc20WithdrawalApproval | null;
+  dialogOpen: boolean;
+  onDialogChange: (isOpen: boolean) => void;
 }
 
 export const WithdrawDialog = ({
   vegaTx,
   ethTx,
   approval,
+  dialogOpen,
+  onDialogChange,
 }: WithdrawDialogProps) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const dialogDismissed = useRef(false);
-
   const getProps = () => {
     let intent = Intent.Help;
     let props: DialogWrapperProps = {
@@ -40,7 +35,7 @@ export const WithdrawDialog = ({
       children: null,
     };
 
-    if (vegaTx.status === VegaTxStatus.Rejected) {
+    if (vegaTx.status === VegaTxStatus.Error) {
       props = {
         title: t('Vega transaction failed'),
         icon: <Icon name="warning-sign" size={20} />,
@@ -57,7 +52,7 @@ export const WithdrawDialog = ({
       intent = Intent.Danger;
     }
 
-    if (vegaTx.status === VegaTxStatus.AwaitingConfirmation) {
+    if (vegaTx.status === VegaTxStatus.Requested) {
       props = {
         title: t('Confirm Vega transaction'),
         icon: <Icon name="hand-up" size={20} />,
@@ -75,7 +70,7 @@ export const WithdrawDialog = ({
       intent = Intent.Progress;
     }
 
-    if (ethTx.status === TxState.Error) {
+    if (ethTx.status === EthTxStatus.Error) {
       props = {
         title: t('Ethereum transaction failed'),
         icon: <Icon name="warning-sign" />,
@@ -88,7 +83,7 @@ export const WithdrawDialog = ({
       intent = Intent.Danger;
     }
 
-    if (ethTx.status === TxState.Requested) {
+    if (ethTx.status === EthTxStatus.Requested) {
       props = {
         title: t('Confirm Ethereum transaction'),
         icon: <Icon name="hand-up" />,
@@ -97,7 +92,7 @@ export const WithdrawDialog = ({
       intent = Intent.Prompt;
     }
 
-    if (ethTx.status === TxState.Pending) {
+    if (ethTx.status === EthTxStatus.Pending) {
       props = {
         title: t('Ethereum transaction pending'),
         icon: <Loader size="small" />,
@@ -119,7 +114,7 @@ export const WithdrawDialog = ({
       intent = Intent.Progress;
     }
 
-    if (ethTx.status === TxState.Complete) {
+    if (ethTx.status === EthTxStatus.Complete) {
       props = {
         title: 'Withdrawal complete',
         icon: <Icon name="tick" />,
@@ -140,37 +135,10 @@ export const WithdrawDialog = ({
     return { props, intent };
   };
 
-  // Control dialog open state
-  useEffect(() => {
-    // Close dialog if error is due to user rejecting the tx
-    if (
-      ethTx.status === TxState.Error &&
-      isExpectedEthereumError(ethTx.error)
-    ) {
-      setDialogOpen(false);
-      return;
-    }
-
-    // Open when the vega tx is started
-    if (vegaTx.status !== VegaTxStatus.Default && !dialogDismissed.current) {
-      setDialogOpen(true);
-      return;
-    }
-  }, [vegaTx, ethTx]);
-
   const { intent, props } = getProps();
 
   return (
-    <Dialog
-      open={dialogOpen}
-      intent={intent}
-      onChange={(isOpen) => {
-        setDialogOpen(isOpen);
-        if (!isOpen) {
-          dialogDismissed.current = true;
-        }
-      }}
-    >
+    <Dialog open={dialogOpen} intent={intent} onChange={onDialogChange}>
       <DialogWrapper {...props} />
     </Dialog>
   );

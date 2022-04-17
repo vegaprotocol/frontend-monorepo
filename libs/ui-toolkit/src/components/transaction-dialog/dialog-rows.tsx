@@ -1,10 +1,10 @@
 import { EtherscanLink } from '../etherscan-link';
-import { t, TxState } from '@vegaprotocol/react-helpers';
+import { t, EthTxStatus } from '@vegaprotocol/react-helpers';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
 
-export const ConfirmRow = ({ status }: { status: TxState }) => {
-  if (status === TxState.Requested) {
+export const ConfirmRow = ({ status }: { status: EthTxStatus }) => {
+  if (status === EthTxStatus.Requested) {
     return (
       <p className="text-black dark:text-white">
         {t('Confirm transaction in wallet')}
@@ -16,7 +16,7 @@ export const ConfirmRow = ({ status }: { status: TxState }) => {
 };
 
 interface TxRowProps {
-  status: TxState;
+  status: EthTxStatus;
   txHash: string | null;
   confirmations: number;
   requiredConfirmations: number;
@@ -30,7 +30,7 @@ export const TxRow = ({
   requiredConfirmations,
   highlightComplete = true,
 }: TxRowProps) => {
-  if (status === TxState.Pending) {
+  if (status === EthTxStatus.Pending) {
     return (
       <p className={`flex justify-between ${ACTIVE_CLASSES}`}>
         <span>
@@ -47,7 +47,7 @@ export const TxRow = ({
     );
   }
 
-  if (status === TxState.Complete) {
+  if (status === EthTxStatus.Complete) {
     return (
       <p
         className={`flex justify-between ${
@@ -68,7 +68,7 @@ export const TxRow = ({
 };
 
 interface ConfirmationEventRowProps {
-  status: TxState;
+  status: EthTxStatus;
   confirmed: boolean;
 }
 
@@ -76,7 +76,7 @@ export const ConfirmationEventRow = ({
   status,
   confirmed,
 }: ConfirmationEventRowProps) => {
-  if (status !== TxState.Complete) {
+  if (status !== EthTxStatus.Complete) {
     return <p>{t('Vega confirmation')}</p>;
   }
 

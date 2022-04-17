@@ -4,7 +4,7 @@ import {
   getDateTimeFormat,
   t,
   truncateByChars,
-  TxState,
+  EthTxStatus,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import {
@@ -32,7 +32,7 @@ export const WithdrawalsList = ({
   withdrawals,
   refetchWithdrawals,
 }: WithdrawalsListProps) => {
-  const transaction = useCompleteWithdraw();
+  const { transaction, perform } = useCompleteWithdraw();
 
   const sortedWithdrawals = useMemo(() => {
     return orderBy(
@@ -47,7 +47,7 @@ export const WithdrawalsList = ({
   // TODO: Get this working, sometimes the table doesnt update because we have to
   // deal with the delay whilst Vega picks up on the completed Ethereum transaction
   useEffect(() => {
-    if (transaction.status === TxState.Complete) {
+    if (transaction.status === EthTxStatus.Complete) {
       refetchWithdrawals();
     }
   }, [transaction.status, refetchWithdrawals]);
@@ -70,13 +70,7 @@ export const WithdrawalsList = ({
         </thead>
         <tbody>
           {sortedWithdrawals.map((w) => {
-            return (
-              <WithdrawRow
-                key={w.id}
-                withdraw={w}
-                onComplete={transaction.perform}
-              />
-            );
+            return <WithdrawRow key={w.id} withdraw={w} onComplete={perform} />;
           })}
         </tbody>
       </table>

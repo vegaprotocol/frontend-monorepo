@@ -33,7 +33,7 @@ export const useSubmitDeposit = (
   // NOTE: it may be different from the users connected key
   const [partyId, setPartyId] = useState<string | null>(null);
 
-  const transaction = useEthereumTransaction<{
+  const { transaction, perform } = useEthereumTransaction<{
     assetSource: string;
     amount: string;
     vegaPublicKey: string;
@@ -87,6 +87,7 @@ export const useSubmitDeposit = (
 
   return {
     ...transaction,
+    perform,
     confirmationEvent,
   };
 };

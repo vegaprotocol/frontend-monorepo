@@ -11,7 +11,7 @@ import { useSubmitFaucet } from './use-submit-faucet';
 import {
   useTokenContract,
   useBridgeContract,
-  TxState,
+  EthTxStatus,
 } from '@vegaprotocol/react-helpers';
 
 export interface Asset {
@@ -76,10 +76,13 @@ export const DepositManager = ({
 
   // Update balance after confirmation event has been received
   useEffect(() => {
-    if (faucet.status === TxState.Complete || confirmationEvent !== null) {
+    if (
+      faucet.transaction.status === EthTxStatus.Complete ||
+      confirmationEvent !== null
+    ) {
       refetch();
     }
-  }, [confirmationEvent, refetch, faucet.status]);
+  }, [confirmationEvent, refetch, faucet.transaction.status]);
 
   return (
     <>
@@ -94,8 +97,8 @@ export const DepositManager = ({
         limits={limits}
         allowance={allowance}
       />
-      <TransactionDialog {...approve} name="approve" />
-      <TransactionDialog {...faucet} name="faucet" />
+      <TransactionDialog {...approve.transaction} name="approve" />
+      <TransactionDialog {...faucet.transaction} name="faucet" />
       <TransactionDialog
         {...deposit}
         name="deposit"

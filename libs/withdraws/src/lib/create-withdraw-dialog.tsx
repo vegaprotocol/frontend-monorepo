@@ -1,13 +1,13 @@
 import { Button, Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import type { TransactionState } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { Erc20ApprovalPoll_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalPoll';
 import type { WithdrawTransactionArgs } from './use-complete-withdraw';
 
 interface CreateWithdrawDialogProps {
-  transaction: TransactionState;
+  transaction: VegaTxState;
   finalizedApproval: Erc20ApprovalPoll_erc20WithdrawalApproval | null;
   completeWithdrawal: (args: WithdrawTransactionArgs) => void;
 }
@@ -20,7 +20,7 @@ export const CreateWithdrawDialog = ({
   // TODO: When wallets support confirming transactions return UI for 'awaiting confirmation' step
 
   // Rejected by wallet
-  if (transaction.status === VegaTxStatus.Rejected) {
+  if (transaction.status === VegaTxStatus.Error) {
     return (
       <CreateWithdrawDialogWrapper
         title="Withdrawal rejected by wallet"
@@ -42,9 +42,9 @@ export const CreateWithdrawDialog = ({
         title="Awaiting network confirmation"
         icon={<Loader size="small" />}
       >
-        {transaction.hash && (
+        {transaction.txHash && (
           <p data-testid="tx-hash" className="break-all">
-            {t(`Tx hash: ${transaction.hash}`)}
+            {t(`Tx hash: ${transaction.txHash}`)}
           </p>
         )}
       </CreateWithdrawDialogWrapper>
