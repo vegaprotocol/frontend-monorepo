@@ -3,6 +3,7 @@ import {
   t,
   truncateByChars,
   EthTxStatus,
+  formatNumber,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import {
@@ -59,7 +60,13 @@ export const WithdrawalsList = ({
         style={{ width: '100%', height: '100%' }}
         components={{ StatusCell, RecipientCell }}
       >
-        <AgGridColumn headerName="Amount" field="amount" />
+        <AgGridColumn
+          headerName="Amount"
+          field="amount"
+          valueFormatter={({ value, data }: ValueFormatterParams) => {
+            return formatNumber(value, data.asset.decimals);
+          }}
+        />
         <AgGridColumn
           headerName="Recipient"
           field="details.receiverAddress"
