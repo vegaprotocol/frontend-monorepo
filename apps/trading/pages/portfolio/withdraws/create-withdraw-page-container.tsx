@@ -13,6 +13,7 @@ import type {
 const CREATE_WITHDRAW_PAGE_QUERY = gql`
   query CreateWithdrawPage($partyId: ID!) {
     party(id: $partyId) {
+      id
       withdrawals {
         id
         txHash

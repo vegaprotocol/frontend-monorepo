@@ -12,6 +12,7 @@ import type {
 const WITHDRAWS_PAGE_QUERY = gql`
   query WithdrawsPage($partyId: ID!) {
     party(id: $partyId) {
+      id
       withdrawals {
         id
         status
