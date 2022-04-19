@@ -1,4 +1,5 @@
 import { useApolloClient } from '@apollo/client';
+import { captureException } from '@sentry/nextjs';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useCallback } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';
@@ -40,7 +41,7 @@ export const useCompleteWithdraw = () => {
 
         perform(res.data.erc20WithdrawalApproval);
       } catch (err) {
-        console.log(err);
+        captureException(err);
       }
     },
     [client, perform]
