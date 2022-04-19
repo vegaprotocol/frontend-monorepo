@@ -31,9 +31,21 @@ export const Orderbook = forwardRef<AgGridReact, OrderbookProps>(
         rowData={data}
         getRowNodeId={getRowNodeId}
         ref={ref}
+        isExternalFilterPresent={() => true}
+        doesExternalFilterPass={({ data } : { data: OrderbookData } ) => !!(data.askVol || data.bidVol)}
         defaultColDef={{
           flex: 1,
           resizable: true,
+        }}
+        onGridReady={(event) => {
+          /*event.columnApi.applyColumnState({
+            state: [
+              {
+                colId: 'price',
+                sort: 'desc',
+              },
+            ],
+          });*/
         }}
         components={{ PriceCell, VolCell, CummulativeVolCell }}
       >

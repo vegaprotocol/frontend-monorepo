@@ -33,15 +33,40 @@ export const OrderbookManager = ({
         return false;
       }
       dataRef.current = updateCompactedData(
-        dataRef.current,
+        dataRef.current, 
         delta.sell,
         delta.buy,
         resolutionRef.current
       );
       const now = new Date().getTime();
-      console.log('update', now);
       if (now - lastUpdateRef.current > 1000) {
-        setOrderbookData(dataRef.current);
+        const update: OrderbookData[] = [];
+        const remove: OrderbookData[] = [];
+        gridRef.current.api.forEachNode(({ data }: { data: OrderbookData}) => {
+          if (!dataRef.current?.some((d) => d.price === data.price )) {
+            remove.push(data);
+          }
+        })
+        if (remove.length > 0) {
+          gridRef.current.api.applyTransactionAsync({
+            remove
+          })
+        }
+        dataRef.current.forEach((data, i) => {
+          if (gridRef.current?.api.getRowNode(data.price.toString())) {
+            update.push(data)
+          } else {
+            gridRef.current?.api.applyTransactionAsync({
+              add: [data],
+              addIndex: i
+            });
+          }
+        })
+        
+        gridRef.current?.api.applyTransactionAsync({
+          update
+        })
+        //setOrderbookData(dataRef.current);
         lastUpdateRef.current = now;
       }
       return true;
