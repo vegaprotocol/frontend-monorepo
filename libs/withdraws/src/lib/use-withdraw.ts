@@ -1,9 +1,6 @@
 import { useQuery } from '@apollo/client';
-import {
-  determineId,
-  useBridgeContract,
-  useEthereumTransaction,
-} from '@vegaprotocol/react-helpers';
+import { determineId } from '@vegaprotocol/react-helpers';
+import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useState } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';

@@ -1,8 +1,5 @@
 import { useApolloClient } from '@apollo/client';
-import {
-  useBridgeContract,
-  useEthereumTransaction,
-} from '@vegaprotocol/react-helpers';
+import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useCallback } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';
 import type {

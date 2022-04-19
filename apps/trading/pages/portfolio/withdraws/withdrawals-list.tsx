@@ -2,15 +2,14 @@ import {
   getDateTimeFormat,
   t,
   truncateByChars,
-  EthTxStatus,
   formatNumber,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import {
   EtherscanLink,
-  TransactionDialog,
   AgGridDynamic as AgGrid,
 } from '@vegaprotocol/ui-toolkit';
+import { EthTxStatus, TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from '@vegaprotocol/withdraws';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';

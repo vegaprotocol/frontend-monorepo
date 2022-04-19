@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { EthereumError, EthTxStatus } from '@vegaprotocol/react-helpers';
+import { EthereumError } from '../ethereum-error';
+import { EthTxStatus } from '../use-ethereum-transaction';
 import type { TransactionDialogProps } from './transaction-dialog';
 import { TransactionDialog } from './transaction-dialog';
 

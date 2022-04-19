@@ -1,6 +1,6 @@
 import type { ethers } from 'ethers';
 import { useCallback, useState } from 'react';
-import { EthereumError, isEthereumError } from '../lib/ethereum-error';
+import { EthereumError, isEthereumError } from './ethereum-error';
 
 export enum EthTxStatus {
   Default = 'Default',

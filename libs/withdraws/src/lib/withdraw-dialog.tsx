@@ -8,8 +8,9 @@ import {
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
-import type { EthTxState } from '@vegaprotocol/react-helpers';
-import { t, EthTxStatus } from '@vegaprotocol/react-helpers';
+import type { EthTxState } from '@vegaprotocol/web3';
+import { EthTxStatus } from '@vegaprotocol/web3';
+import { t } from '@vegaprotocol/react-helpers';
 import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
 
 interface WithdrawDialogProps {

@@ -13,7 +13,7 @@ import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
-import type { Asset } from './withdraw-manager';
+import type { Asset } from './types';
 
 interface FormFields {
   asset: string;

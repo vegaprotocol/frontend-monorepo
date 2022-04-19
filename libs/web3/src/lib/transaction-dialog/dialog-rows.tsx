@@ -1,5 +1,6 @@
-import { EtherscanLink } from '../etherscan-link';
-import { t, EthTxStatus } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { EthTxStatus } from '../use-ethereum-transaction';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
 

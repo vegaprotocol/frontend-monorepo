@@ -3,32 +3,11 @@ import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
 import { useWithdraw } from './use-withdraw';
 import { WithdrawDialog } from './withdraw-dialog';
-import {
-  isExpectedEthereumError,
-  EthTxStatus,
-  addDecimal,
-} from '@vegaprotocol/react-helpers';
+import { isExpectedEthereumError, EthTxStatus } from '@vegaprotocol/web3';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-
-export interface Asset {
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  source: {
-    contractAddress: string;
-  };
-}
-
-export interface Account {
-  type: AccountType;
-  balance: string;
-  asset: {
-    id: string;
-    symbol: string;
-  };
-}
+import type { Account, Asset } from './types';
 
 interface WithdrawManagerProps {
   assets: Asset[];

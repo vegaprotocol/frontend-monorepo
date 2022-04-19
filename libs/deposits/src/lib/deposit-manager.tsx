@@ -6,13 +6,9 @@ import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useGetDepositLimits } from './use-get-deposit-limits';
 import { useGetAllowance } from './use-get-allowance';
-import { TransactionDialog } from '@vegaprotocol/ui-toolkit';
 import { useSubmitFaucet } from './use-submit-faucet';
-import {
-  useTokenContract,
-  useBridgeContract,
-  EthTxStatus,
-} from '@vegaprotocol/react-helpers';
+import { EthTxStatus, TransactionDialog } from '@vegaprotocol/web3';
+import { useTokenContract, useBridgeContract } from '@vegaprotocol/web3';
 
 export interface Asset {
   __typename: 'Asset';
