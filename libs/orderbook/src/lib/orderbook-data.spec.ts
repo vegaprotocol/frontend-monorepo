@@ -63,17 +63,19 @@ describe('compact', () => {
 
   it('updates relative data', () => {
     const orderbookData = compact(sell, buy, 10);
-    expect(orderbookData[0].cummulativeVol.relativeAsk).toEqual(1);
-    expect(orderbookData[0].cummulativeVol.relativeBid).toEqual(0);
-    expect(orderbookData[0].relativeAskVol).toEqual(15 / 905);
-    expect(orderbookData[0].relativeBidVol).toEqual(0);
-    expect(orderbookData[10].cummulativeVol.relativeAsk).toEqual(390 / 4950);
-    expect(orderbookData[10].cummulativeVol.relativeBid).toEqual(579 / 4950);
-    expect(orderbookData[10].relativeAskVol).toEqual(390 / 905);
-    expect(orderbookData[10].relativeBidVol).toEqual(579 / 885);
-    expect(orderbookData[orderbookData.length - 1].relativeAskVol).toEqual(0);
+    expect(orderbookData[0].cummulativeVol.relativeAsk).toEqual('100%');
+    expect(orderbookData[0].cummulativeVol.relativeBid).toEqual('0%');
+    expect(orderbookData[0].relativeAskVol).toEqual('2%');
+    expect(orderbookData[0].relativeBidVol).toEqual('0%');
+    expect(orderbookData[10].cummulativeVol.relativeAsk).toEqual('8%');
+    expect(orderbookData[10].cummulativeVol.relativeBid).toEqual('12%');
+    expect(orderbookData[10].relativeAskVol).toEqual('44%');
+    expect(orderbookData[10].relativeBidVol).toEqual('66%');
+    expect(orderbookData[orderbookData.length - 1].relativeAskVol).toEqual(
+      '0%'
+    );
     expect(orderbookData[orderbookData.length - 1].relativeBidVol).toEqual(
-      6 / 885
+      '1%'
     );
   });
 });
@@ -141,9 +143,9 @@ describe('updateCompactedData', () => {
       price: 120,
       cummulativeVol: {
         ask: 50,
-        relativeAsk: 1,
+        relativeAsk: '100%',
         bid: 0,
-        relativeBid: 0,
+        relativeBid: '0%',
       },
       askVolByLevel: {
         '121': 10,
@@ -151,16 +153,16 @@ describe('updateCompactedData', () => {
       bidVolByLevel: {},
       askVol: 10,
       bidVol: 0,
-      relativeAskVol: 0.25,
-      relativeBidVol: 0,
+      relativeAskVol: '25%',
+      relativeBidVol: '0%',
     },
     {
       price: 100,
       cummulativeVol: {
         ask: 40,
-        relativeAsk: 0.8,
+        relativeAsk: '80%',
         bid: 40,
-        relativeBid: 0.8,
+        relativeBid: '80%',
       },
       askVolByLevel: {
         '101': 10,
@@ -172,16 +174,16 @@ describe('updateCompactedData', () => {
       },
       askVol: 40,
       bidVol: 40,
-      relativeAskVol: 1,
-      relativeBidVol: 1,
+      relativeAskVol: '100%',
+      relativeBidVol: '100%',
     },
     {
       price: 80,
       cummulativeVol: {
         ask: 0,
-        relativeAsk: 0,
+        relativeAsk: '0%',
         bid: 50,
-        relativeBid: 1,
+        relativeBid: '100%',
       },
       askVolByLevel: {},
       bidVolByLevel: {
@@ -189,8 +191,8 @@ describe('updateCompactedData', () => {
       },
       askVol: 0,
       bidVol: 10,
-      relativeAskVol: 0,
-      relativeBidVol: 0.25,
+      relativeAskVol: '0%',
+      relativeBidVol: '25%',
     },
   ];
   const resolution = 10;

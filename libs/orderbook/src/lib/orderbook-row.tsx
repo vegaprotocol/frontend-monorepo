@@ -1,49 +1,56 @@
+import React from 'react';
 import {
   PriceCell,
   Vol,
   CummulativeVol,
   formatNumber,
 } from '@vegaprotocol/react-helpers';
-import type { OrderbookData } from './orderbook-data';
 
 interface OrderbookRowProps {
-  data: OrderbookData;
+  bidVol: number;
+  relativeBidVol?: string;
+  price: number;
+  askVol: number;
+  relativeAskVol?: string;
+  cummulativeRelativeAskVol?: string;
+  cummulativeRelativeBidVol?: string;
   decimalPlaces: number;
 }
 
-const toPercentString = (value?: number) => `${Math.ceil((value ?? 0) * 100)}%`;
-
-export const OrderbookRow = ({ data, decimalPlaces }: OrderbookRowProps) => {
-  return (
-    <>
-      <div>
-        <Vol
-          value={data.bidVol}
-          relativeValue={toPercentString(data.relativeBidVol)}
-          type="bid"
-        />
-      </div>
-      <div>
-        <PriceCell
-          value={data.price}
-          valueFormatted={formatNumber(data.price, decimalPlaces)}
-        />
-      </div>
-      <div>
-        <Vol
-          value={data.askVol}
-          relativeValue={toPercentString(data.relativeAskVol)}
-          type="ask"
-        />
-      </div>
-      <div>
-        <CummulativeVol
-          relativeAsk={toPercentString(data.cummulativeVol.relativeAsk)}
-          relativeBid={toPercentString(data.cummulativeVol.relativeBid)}
-        />
-      </div>
-    </>
-  );
-};
+export const OrderbookRow = React.memo(
+  ({
+    bidVol,
+    relativeBidVol,
+    price,
+    askVol,
+    relativeAskVol,
+    decimalPlaces,
+    cummulativeRelativeAskVol,
+    cummulativeRelativeBidVol,
+  }: OrderbookRowProps) => {
+    return (
+      <>
+        <div>
+          <Vol value={bidVol} relativeValue={relativeBidVol} type="bid" />
+        </div>
+        <div>
+          <PriceCell
+            value={price}
+            valueFormatted={formatNumber(price, decimalPlaces)}
+          />
+        </div>
+        <div>
+          <Vol value={askVol} relativeValue={relativeAskVol} type="ask" />
+        </div>
+        <div>
+          <CummulativeVol
+            relativeAsk={cummulativeRelativeAskVol}
+            relativeBid={cummulativeRelativeBidVol}
+          />
+        </div>
+      </>
+    );
+  }
+);
 
 export default OrderbookRow;

@@ -15,9 +15,15 @@ export const Orderbook = ({ data, decimalPlaces }: OrderbookProps) => (
     <div>{t('Cumulative Vol')}</div>
     {data?.map((data) => (
       <OrderbookRow
-        data={data}
-        decimalPlaces={decimalPlaces}
         key={data.price}
+        price={data.price}
+        decimalPlaces={decimalPlaces}
+        bidVol={data.bidVol}
+        relativeBidVol={data.relativeBidVol}
+        cummulativeRelativeBidVol={data.cummulativeVol.relativeBid}
+        askVol={data.askVol}
+        relativeAskVol={data.relativeAskVol}
+        cummulativeRelativeAskVol={data.cummulativeVol.relativeAsk}
       />
     ))}
   </div>
