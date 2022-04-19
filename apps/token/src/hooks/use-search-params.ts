@@ -9,6 +9,6 @@ export function useSearchParams() {
     return Object.entries(params).reduce((obj, [key, value]) => {
       obj[key] = value;
       return obj;
-    }, {} as any);
+    }, {} as { [key: string]: string });
   }, [location]);
 }
