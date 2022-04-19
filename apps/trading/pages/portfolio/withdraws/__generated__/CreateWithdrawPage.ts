@@ -52,6 +52,10 @@ export interface CreateWithdrawPage_party_accounts {
 export interface CreateWithdrawPage_party {
   __typename: "Party";
   /**
+   * Party identifier
+   */
+  id: string;
+  /**
    * The list of all withdrawals initiated by the party
    */
   withdrawals: CreateWithdrawPage_party_withdrawals[] | null;

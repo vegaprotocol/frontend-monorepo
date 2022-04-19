@@ -3,14 +3,17 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
+import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
 import Link from 'next/link';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import type {
   CreateWithdrawPage,
   CreateWithdrawPageVariables,
 } from './__generated__/CreateWithdrawPage';
+import { isERC20Asset } from '../../../lib/assets';
 
 const CREATE_WITHDRAW_PAGE_QUERY = gql`
+  ${ASSET_FRAGMENT}
   query CreateWithdrawPage($partyId: ID!) {
     party(id: $partyId) {
       id
@@ -28,15 +31,7 @@ const CREATE_WITHDRAW_PAGE_QUERY = gql`
       }
     }
     assets {
-      id
-      symbol
-      name
-      decimals
-      source {
-        ... on ERC20 {
-          contractAddress
-        }
-      }
+      ...AssetFields
     }
   }
 `;
@@ -91,10 +86,7 @@ export const CreateWithdrawPageContainer = ({
               </p>
             )}
             <WithdrawManager
-              // @ts-ignore TS not inferring on union type for contract address
-              assets={data.assets.filter(
-                (a) => a.source.__typename === 'ERC20'
-              )}
+              assets={data.assets.filter(isERC20Asset)}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
             />
