@@ -1,5 +1,4 @@
 import { When, Then } from 'cypress-cucumber-preprocessor/steps';
-import { truncateByChars } from '@vegaprotocol/react-helpers';
 import VegaWallet from '../vega-wallet';
 
 const vegaWallet = new VegaWallet();
@@ -31,8 +30,7 @@ When('I connect to Vega Wallet', () => {
 });
 
 When('I open wallet dialog', () => {
-  const truncatedPubKey = truncateByChars(Cypress.env('vegaPublicKey')); // Default Test wallet pub key
-  vegaWallet.validatePublicKeyDisplayed(truncatedPubKey);
+  vegaWallet.validatePublicKeyDisplayed(Cypress.env('truncatedVegaPubKey')); // Default Test wallet pub key
   vegaWallet.clickOnWalletConnectDialog();
 });
 
@@ -41,6 +39,5 @@ When('select a different public key', () => {
 });
 
 Then('public key is switched', () => {
-  const truncatedPubKey = truncateByChars(Cypress.env('vegaPublicKey2')); // Second public key for test wallet
-  vegaWallet.validatePublicKeyDisplayed(truncatedPubKey);
+  vegaWallet.validatePublicKeyDisplayed(Cypress.env('truncatedVegaPubKey2')); // Second public key for test wallet
 });
