@@ -52,7 +52,7 @@ export const AppRouter = () => {
   );
 
   return (
-    // @ts-ignore TFE import
+    // @ts-ignore withTranslation HOC types not working
     <BoundaryWithTranslation>
       <React.Suspense fallback={splashLoading}>
         <Routes>
