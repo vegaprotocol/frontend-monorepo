@@ -21,7 +21,7 @@ if (dsn) {
     tracesSampleRate: 0.1,
     enabled: environment !== 'local',
     environment,
-    release: process.env['NX_VERSION'], // TODO: probably not the right version number
+    release: commit,
     beforeSend(event) {
       if (event.request?.url?.includes('/claim?')) {
         return {
