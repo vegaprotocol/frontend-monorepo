@@ -45,7 +45,6 @@ export const getDateTimeFormat = once(
 );
 
 export const getRelativeTimeFormat = once(
-  //@ts-ignore TODO check this
   () => new Intl.RelativeTimeFormat(getUserLocale())
 );
 
