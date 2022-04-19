@@ -8,14 +8,14 @@ import {
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
-import type { Erc20ApprovalPoll_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalPoll';
 import type { EthTxState } from '@vegaprotocol/react-helpers';
 import { t, EthTxStatus } from '@vegaprotocol/react-helpers';
+import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
 
 interface WithdrawDialogProps {
   vegaTx: VegaTxState;
   ethTx: EthTxState;
-  approval: Erc20ApprovalPoll_erc20WithdrawalApproval | null;
+  approval: Erc20Approval_erc20WithdrawalApproval | null;
   dialogOpen: boolean;
   onDialogChange: (isOpen: boolean) => void;
 }

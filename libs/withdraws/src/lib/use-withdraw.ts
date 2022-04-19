@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
   determineId,
   useBridgeContract,
@@ -6,25 +6,13 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useState } from 'react';
+import { ERC20_APPROVAL_QUERY } from './queries';
 import type { WithdrawTransactionArgs } from './use-complete-withdraw';
 import type {
-  Erc20ApprovalPoll,
-  Erc20ApprovalPollVariables,
-  Erc20ApprovalPoll_erc20WithdrawalApproval,
-} from './__generated__/Erc20ApprovalPoll';
-
-const ERC20_WITHDRAWAL_QUERY = gql`
-  query Erc20ApprovalPoll($withdrawalId: ID!) {
-    erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
-      assetSource
-      amount
-      nonce
-      signatures
-      targetAddress
-      expiry
-    }
-  }
-`;
+  Erc20Approval,
+  Erc20ApprovalVariables,
+  Erc20Approval_erc20WithdrawalApproval,
+} from './__generated__/Erc20Approval';
 
 export interface WithdrawalFields {
   amount: string;
@@ -35,7 +23,7 @@ export interface WithdrawalFields {
 export const useWithdraw = (cancelled: boolean) => {
   const [id, setId] = useState<string | null>(null);
   const [approval, setApproval] =
-    useState<Erc20ApprovalPoll_erc20WithdrawalApproval | null>(null);
+    useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
 
   const contract = useBridgeContract();
   const { keypair } = useVegaWallet();
@@ -56,14 +44,14 @@ export const useWithdraw = (cancelled: boolean) => {
     return contract.withdraw(args);
   });
 
-  const { data, stopPolling } = useQuery<
-    Erc20ApprovalPoll,
-    Erc20ApprovalPollVariables
-  >(ERC20_WITHDRAWAL_QUERY, {
-    variables: { withdrawalId: id || '' },
-    skip: !id,
-    pollInterval: 1000,
-  });
+  const { data, stopPolling } = useQuery<Erc20Approval, Erc20ApprovalVariables>(
+    ERC20_APPROVAL_QUERY,
+    {
+      variables: { withdrawalId: id || '' },
+      skip: !id,
+      pollInterval: 1000,
+    }
+  );
 
   const submit = useCallback(
     async (withdrawal: WithdrawalFields) => {

@@ -1,26 +1,14 @@
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import {
   useBridgeContract,
   useEthereumTransaction,
 } from '@vegaprotocol/react-helpers';
 import { useCallback } from 'react';
+import { ERC20_APPROVAL_QUERY } from './queries';
 import type {
   Erc20Approval,
   Erc20ApprovalVariables,
 } from './__generated__/Erc20Approval';
-
-const ERC20_APPROVAL_QUERY = gql`
-  query Erc20Approval($withdrawalId: ID!) {
-    erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
-      assetSource
-      amount
-      nonce
-      signatures
-      targetAddress
-      expiry
-    }
-  }
-`;
 
 export interface WithdrawTransactionArgs {
   assetSource: string;
