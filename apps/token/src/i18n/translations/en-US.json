@@ -1,7 +1,0 @@
-{
-  "Wallet service unavailable": "Could not connect to wallet service. Please check that the wallet service is running or try another browser (some browsers block access to localhost via http)",
-  "toEnactOn": "Proposed enactment",
-  "Check to see if you can redeem unlocked VEGA tokens": "Redeem unlocked $VEGA tokens",
-  "rewardsPara1": "Vega has a treasury that pays out various rewards for various types of activity. At the moment it is paying out rewards for staking the network.",
-  "stakingStep3": "Step 3. Select the validator you'd like to nominate"
-}
