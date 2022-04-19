@@ -9,7 +9,6 @@ import { AppBanner } from './components/app-banner';
 import { AppFooter } from './components/app-footer';
 import { BalanceManager } from './components/balance-manager';
 import { EthWallet } from './components/eth-wallet';
-// TODO: hot module replacement import { GraphQlProvider } from "./components/GRAPHQL_PROVIDER/graphql-provider";
 import { GraphQlProvider } from './components/graphql-provider';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
 import { TransactionModal } from './components/transactions-modal';
