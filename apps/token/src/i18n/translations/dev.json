@@ -135,8 +135,6 @@
   "Checking Vega wallet status": "Checking Vega Wallet status",
   "hostedSwitchLabel": "Use hosted wallet",
   "walletServiceLabel": "Wallet service URL",
-  "noWalletDetected": "No wallet detected on wallet service url",
-  "noWalletHelpText": "It is possible that your browser is preventing access via http or the wallet service may not be running",
   "walletLabel": "Wallet name",
   "passphraseLabel": "Passphrase",
   "vegaWalletConnect": "Connect",
