@@ -137,9 +137,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
       )} */}
       <StakingForm
         pubkey={vegaKey.pub}
-        // TFE import
-        // eslint-disable-next-line
-        nodeId={node!}
+        nodeId={nodeInfo.id}
         nodeName={nodeInfo.name}
         availableStakeToAdd={unstaked}
         availableStakeToRemove={stakeNextEpoch}
