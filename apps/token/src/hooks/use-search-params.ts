@@ -5,10 +5,6 @@ export function useSearchParams() {
   const location = useLocation();
 
   return React.useMemo(() => {
-    const params = new URLSearchParams(location.search);
-    return Object.entries(params).reduce((obj, [key, value]) => {
-      obj[key] = value;
-      return obj;
-    }, {} as { [key: string]: string });
+    return new URLSearchParams(location.search) as any;
   }, [location]);
 }
