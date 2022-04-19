@@ -1,4 +1,5 @@
-import { isFuture } from 'date-fns';
+import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
+import { format, isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
@@ -44,10 +45,10 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
                 : t('closedOn')}
             </th>
             <td data-testid="governance-proposal-closingDate">
-              {/* {format(
+              {format(
                 new Date(proposal.terms.closingDatetime),
                 DATE_FORMAT_DETAILED
-              )} */}
+              )}
             </td>
           </KeyValueTableRow>
           <KeyValueTableRow>
@@ -57,10 +58,10 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
                 : t('enactedOn')}
             </th>
             <td data-testid="governance-proposal-enactmentDate">
-              {/* {format(
+              {format(
                 new Date(proposal.terms.enactmentDatetime),
                 DATE_FORMAT_DETAILED
-              )} */}
+              )}
             </td>
           </KeyValueTableRow>
         </KeyValueTable>
