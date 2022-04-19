@@ -196,8 +196,7 @@ export const VegaNetworks: VegaNets = {
 
 export const GraphQLNodes = Object.keys(VegaNetworks).reduce(
   (obj: Record<string, string[]>, network) => {
-    // @ts-ignore
-    const rawNodes: VegaNode[] = VegaNetworks[network].nodes;
+    const rawNodes: VegaNode[] = VegaNetworks[network as Networks].nodes;
     const nodesWithGraphQL = rawNodes
       .filter((n) => n.api.GraphQL)
       .map((n) => n.url);
@@ -205,7 +204,7 @@ export const GraphQLNodes = Object.keys(VegaNetworks).reduce(
     return obj;
   },
   {}
-) as NetworkConfig;
+);
 
 export const EnvironmentNodes = GraphQLNodes[
   process.env['NX_VEGA_ENV'] as Networks
