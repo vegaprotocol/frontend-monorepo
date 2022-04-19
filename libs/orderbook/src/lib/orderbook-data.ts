@@ -163,7 +163,7 @@ export const updateCompactedData = (
       const volume = Number(buy.volume);
       const groupPrice = getGroupPrice(price, resolution);
       let index = draft.findIndex((data) => data.price === groupPrice);
-      if (index !== -1 && draft[index]) {
+      if (index !== -1) {
         sellModifiedIndex = Math.max(sellModifiedIndex, index);
         draft[index].askVol =
           draft[index].askVol -
@@ -202,7 +202,7 @@ export const updateCompactedData = (
       const volume = Number(sell.volume);
       const groupPrice = getGroupPrice(price, resolution);
       let index = draft.findIndex((data) => data.price === groupPrice);
-      if (index !== -1 && draft[index]) {
+      if (index !== -1) {
         buyModifiedIndex = Math.min(buyModifiedIndex, index);
         draft[index].bidVol =
           (draft[index].bidVol ?? 0) -
@@ -236,15 +236,19 @@ export const updateCompactedData = (
       }
     });
     if (sellModifiedIndex !== -1) {
-      let cummulativeVol = draft[sellModifiedIndex + 1]?.cummulativeVol.ask;
-      for (let i = sellModifiedIndex; i >= 0; i--) {
-        draft[i].cummulativeVol.ask = cummulativeVol += draft[i].askVol;
+      for (let i = Math.min(sellModifiedIndex, draft.length - 2); i >= 0; i--) {
+        draft[i].cummulativeVol.ask =
+          draft[i + 1].cummulativeVol.ask + draft[i].askVol;
       }
     }
     if (buyModifiedIndex !== draft.length) {
-      let cummulativeVol = draft[buyModifiedIndex - 1]?.cummulativeVol.bid;
-      for (let i = buyModifiedIndex, l = draft.length; i < l; i++) {
-        draft[i].cummulativeVol.bid = cummulativeVol += draft[i].bidVol;
+      for (
+        let i = Math.max(buyModifiedIndex, 1), l = draft.length;
+        i < l;
+        i++
+      ) {
+        draft[i].cummulativeVol.bid =
+          draft[i - 1].cummulativeVol.bid + draft[i].bidVol;
       }
     }
     let index = 0;
