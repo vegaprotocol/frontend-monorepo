@@ -8,12 +8,14 @@ import {
 
 import type { Networks } from './vega';
 
-const appChainId = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
+type VegaContracts = typeof EnvironmentConfig[Networks];
+
+const appChainId = Number(process.env['NX_ETHEREUM_CHAIN_ID'] || 3);
 const infuraId = process.env['NX_INFURA_ID'];
 
 export const APP_ENV = process.env['NX_VEGA_ENV'] as Networks;
 
-const Addresses = {
+const Addresses: Record<number, VegaContracts> = {
   1: EnvironmentConfig.MAINNET,
   3: EnvironmentConfig[APP_ENV],
 };
@@ -27,7 +29,6 @@ export const InfuraUrls = {
 };
 
 /** Contract addresses for the different contracts in the VEGA ecosystem */
-// @ts-ignore TFE import
 export const ADDRESSES = Addresses[appChainId];
 
 /** Contract addresses for liquidity rewards for different markets */
