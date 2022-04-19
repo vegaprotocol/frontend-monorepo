@@ -102,16 +102,16 @@ const StatusCell = ({ value, data, complete }: StatusCellProps) => {
     if (data.txHash) {
       return (
         <div className="flex justify-between">
-          {t('Complete')}
+          {t('Finalized')}
           <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
         </div>
       );
     } else {
       return (
         <div className="flex justify-between">
-          {t('Ready')}
+          {t('Open')}
           <button className="underline" onClick={() => complete(data.id)}>
-            Complete
+            {t('Complete')}
           </button>
         </div>
       );
