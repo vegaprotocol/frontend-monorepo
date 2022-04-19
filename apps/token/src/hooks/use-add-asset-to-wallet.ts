@@ -12,7 +12,7 @@ export const useAddAssetSupported = () => {
     return (
       connector &&
       connector instanceof InjectedConnector &&
-      window.ethereum.isMetaMask
+      window.ethereum?.isMetaMask
     );
   }, [connector]);
 };
