@@ -3,7 +3,7 @@ import './index.scss';
 import { useQuery } from '@apollo/client';
 import { Button, Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { formatDistance } from 'date-fns';
-// @ts-ignore TODO: check if duration-js has a @types definition
+// @ts-ignore No types availabel for duration-js
 import Duration from 'duration-js';
 import gql from 'graphql-tag';
 import React from 'react';
