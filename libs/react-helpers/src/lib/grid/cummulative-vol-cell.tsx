@@ -4,33 +4,40 @@ import { BID_COLOR, ASK_COLOR } from './vol-cell';
 
 const INTERSECT_COLOR = 'darkgray';
 
-export interface ICummulativeVolCellProps extends ICellRendererParams {
-  value: {
-    relativeAsk?: number;
-    relativeBid?: number;
-  };
+export interface CummulativeVolProps {
+  relativeAsk?: string;
+  relativeBid?: string;
 }
 
-export const CummulativeVolCell = ({ value }: ICummulativeVolCellProps) => {
-  const bid = value.relativeBid ? (
+export interface ICummulativeVolCellProps extends ICellRendererParams {
+  value: CummulativeVolProps;
+}
+
+export const CummulativeVol = ({
+  relativeAsk,
+  relativeBid,
+}: CummulativeVolProps) => {
+  const relativeAskNumber = relativeAsk ? parseInt(relativeAsk) : 0;
+  const relativeBidNumber = relativeBid ? parseInt(relativeBid) : 0;
+  const bid = relativeBidNumber ? (
     <div
       className="h-full absolute top-0 right-0"
       style={{
-        width: `${value.relativeBid * 100}%`,
+        width: relativeBid,
         backgroundColor:
-          value.relativeAsk && value.relativeAsk > value.relativeBid
+          relativeAsk && relativeAskNumber > relativeBidNumber
             ? INTERSECT_COLOR
             : BID_COLOR,
       }}
     ></div>
   ) : null;
-  const ask = value.relativeAsk ? (
+  const ask = relativeAsk ? (
     <div
       className="h-full absolute top-0 left-0"
       style={{
-        width: `${value.relativeAsk * 100}%`,
+        width: relativeAsk,
         backgroundColor:
-          value.relativeBid && value.relativeBid > value.relativeAsk
+          relativeBid && relativeBidNumber > relativeAskNumber
             ? INTERSECT_COLOR
             : ASK_COLOR,
       }}
@@ -38,9 +45,9 @@ export const CummulativeVolCell = ({ value }: ICummulativeVolCellProps) => {
   ) : null;
   return (
     <div className="h-full relative" data-testid="vol">
-      {value.relativeBid &&
-      value.relativeAsk &&
-      value.relativeBid > value.relativeAsk ? (
+      {relativeBidNumber &&
+      relativeAskNumber &&
+      relativeBidNumber > relativeAskNumber ? (
         <>
           {ask}
           {bid}
@@ -54,5 +61,9 @@ export const CummulativeVolCell = ({ value }: ICummulativeVolCellProps) => {
     </div>
   );
 };
+
+export const CummulativeVolCell = ({ value }: ICummulativeVolCellProps) => (
+  <CummulativeVol {...value} />
+);
 
 CummulativeVolCell.displayName = 'CummulativeVolCell';
