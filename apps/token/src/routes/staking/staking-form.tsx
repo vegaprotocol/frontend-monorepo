@@ -114,7 +114,6 @@ export const StakingForm = ({
     return new BigNumber(0);
   }, [action, availableStakeToAdd, availableStakeToRemove]);
 
-  // TODO: TFE import use useVegaTransaction hook from wallet lib
   async function onSubmit() {
     setFormState(FormState.Pending);
     const delegateInput: DelegateSubmissionInput = {
