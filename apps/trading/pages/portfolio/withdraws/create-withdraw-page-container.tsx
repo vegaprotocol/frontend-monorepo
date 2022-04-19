@@ -54,7 +54,7 @@ export const CreateWithdrawPageContainer = ({
   const { keypair } = useVegaWallet();
 
   if (!keypair) {
-    return <p>Please connect your Vega wallet</p>;
+    return <p>{t('Please connect your Vega wallet')}</p>;
   }
 
   return (
@@ -82,9 +82,11 @@ export const CreateWithdrawPageContainer = ({
           <>
             {pendingWithdrawals?.length && (
               <p className="mb-12">
-                You have pending withdrawals.{' '}
+                {t('You have incomplete withdrawals.')}{' '}
                 <Link href="/portfolio/withdraws">
-                  <a className="underline">Click here to complete</a>
+                  <a className="underline">
+                    {t('Click here to finish withdrawal')}
+                  </a>
                 </Link>
               </p>
             )}

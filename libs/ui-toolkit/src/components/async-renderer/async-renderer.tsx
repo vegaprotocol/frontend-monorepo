@@ -1,5 +1,6 @@
 import { Splash } from '../splash';
 import type { ReactElement, ReactNode } from 'react';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
@@ -17,15 +18,15 @@ export function AsyncRenderer<T = object>({
   render,
 }: AsyncRendererProps<T>) {
   if (error) {
-    return <Splash>Something went wrong: {error.message}</Splash>;
+    return <Splash>{t(`Something went wrong: ${error.message}`)}</Splash>;
   }
 
   if (loading) {
-    return <Splash>Loading...</Splash>;
+    return <Splash>{t('Loading...')}</Splash>;
   }
 
   if (!data) {
-    return <Splash>No data</Splash>;
+    return <Splash>{t('No data')}</Splash>;
   }
   // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{render ? render(data) : children}</>;

@@ -2,6 +2,7 @@ import { Web3Container } from '../../../components/web3-container';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { CreateWithdrawPageContainer } from './create-withdraw-page-container';
+import { t } from '@vegaprotocol/react-helpers';
 
 const CreateWithdraw = () => {
   const { query } = useRouter();
@@ -23,7 +24,7 @@ const CreateWithdraw = () => {
     <Web3Container>
       {() => (
         <div className="max-w-[420px] p-24 mx-auto">
-          <h1 className="text-h3 mb-12">Withdraw</h1>
+          <h1 className="text-h3 mb-12">{t('Withdraw')}</h1>
           <CreateWithdrawPageContainer assetId={assetId} />
         </div>
       )}

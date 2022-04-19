@@ -32,9 +32,7 @@ export const WithdrawalsList = ({
   const sortedWithdrawals = useMemo(() => {
     return orderBy(
       withdrawals,
-      (w) => {
-        return new Date(w.createdTimestamp).getTime();
-      },
+      (w) => new Date(w.createdTimestamp).getTime(),
       'desc'
     );
   }, [withdrawals]);
@@ -48,7 +46,7 @@ export const WithdrawalsList = ({
   }, [transaction.status, refetchWithdrawals]);
 
   if (!sortedWithdrawals.length) {
-    return <p>No pending withdrawals</p>;
+    return <p>{t('No withdrawals')}</p>;
   }
 
   return (
@@ -59,6 +57,7 @@ export const WithdrawalsList = ({
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         components={{ StatusCell, RecipientCell }}
+        suppressCellFocus={true}
       >
         <AgGridColumn
           headerName="Amount"

@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
+import { AnchorButton, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import { Web3Container } from '../../../components/web3-container';
@@ -38,6 +39,10 @@ const WITHDRAWS_PAGE_QUERY = gql`
 const Withdraws = () => {
   const { keypair } = useVegaWallet();
 
+  if (!keypair) {
+    return <Splash>{t('Please connect Vega wallet')}</Splash>;
+  }
+
   return (
     <Web3Container>
       {() => (
@@ -52,9 +57,9 @@ const Withdraws = () => {
             return (
               <div className="h-full grid grid grid-rows-[min-content,1fr]">
                 <header className="flex justify-between p-24">
-                  <h1 className="text-h3">Withdrawals</h1>
+                  <h1 className="text-h3">{t('Withdrawals')}</h1>
                   <AnchorButton href="/portfolio/withdraws/create">
-                    Start withdrawal
+                    {t('Start withdrawal')}
                   </AnchorButton>
                 </header>
                 <WithdrawalsList
