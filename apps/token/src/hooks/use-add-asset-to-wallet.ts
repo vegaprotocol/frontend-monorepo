@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
-import { InjectedConnector } from '@web3-react/injected-connector';
+import { MetaMask } from '@web3-react/metamask';
 import React from 'react';
 
 import { APP_ENV, Networks } from '../config';
@@ -9,11 +9,7 @@ export const useAddAssetSupported = () => {
   const { connector } = useWeb3React();
 
   return React.useMemo(() => {
-    return (
-      connector &&
-      connector instanceof InjectedConnector &&
-      window.ethereum.isMetaMask
-    );
+    return connector && connector instanceof MetaMask;
   }, [connector]);
 };
 
@@ -26,14 +22,14 @@ export const useAddAssetToWallet = (
   const { provider } = useWeb3React();
   const addSupported = useAddAssetSupported();
   const add = React.useCallback(async () => {
-    if (!provider) {
+    if (!provider?.provider.request) {
       return;
     }
     try {
-      // @ts-ignore TFE import
-      provider.request({
+      provider.provider.request({
         method: 'wallet_watchAsset',
         params: {
+          // @ts-ignore string type not accepted, but this is working
           type: 'ERC20',
           options: {
             address,
