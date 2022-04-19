@@ -64,8 +64,7 @@ export const WalletAssociate = ({
 
   if (
     walletBalance.isEqualTo('0') &&
-    // eslint-disable-next-line
-    new BigNumber(walletAssociatedBalance!).isEqualTo('0')
+    new BigNumber(walletAssociatedBalance || 0).isEqualTo('0')
   ) {
     pageContent = (
       <div className="wallet-associate__error">
@@ -76,8 +75,7 @@ export const WalletAssociate = ({
     );
   } else if (
     walletBalance.isEqualTo('0') &&
-    // eslint-disable-next-line
-    !new BigNumber(walletAssociatedBalance!).isEqualTo('0')
+    !new BigNumber(walletAssociatedBalance || 0).isEqualTo('0')
   ) {
     pageContent = (
       <div className="wallet-associate__error">
