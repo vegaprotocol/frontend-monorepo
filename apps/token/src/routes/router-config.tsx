@@ -1,12 +1,8 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { ProposalContainer } from './governance/proposal';
 import { ProposalsContainer } from './governance/proposals';
 
 import Home from './home';
-import { LiquidityDeposit } from './liquidity/deposit';
-import { LiquidityContainer } from './liquidity/liquidity-container';
-import { LiquidityWithdraw } from './liquidity/withdraw';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
 import { RedemptionInformation } from './redemption/home/redemption-information';
@@ -29,7 +25,6 @@ export const Routes = {
   WITHDRAWALS: '/withdrawals',
   GOVERNANCE: '/governance',
   VESTING: '/vesting',
-  LIQUIDITY: '/liquidity',
   NOT_PERMITTED: '/not-permitted',
   NOT_FOUND: '/not-found',
   CONTRACTS: '/contracts',
@@ -59,12 +54,6 @@ const LazyStaking = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-staking", webpackPrefetch: true */ './staking'
-    )
-);
-const LazyLiquidity = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-liquidity", webpackPrefetch: true */ './liquidity'
     )
 );
 const LazyGovernance = React.lazy(
@@ -168,17 +157,6 @@ const routerConfig = [
         path: ':id',
         element: <RedeemFromTranche />,
       },
-    ],
-  },
-  {
-    path: Routes.LIQUIDITY,
-    name: 'DEX Liquidity',
-    component: LazyLiquidity,
-    children: [
-      { index: true, element: <LiquidityContainer /> },
-      { path: ':address/deposit', element: <LiquidityDeposit /> },
-      { path: ':address/withdraw', element: <LiquidityWithdraw /> },
-      { path: ':address', element: <Navigate to="/" /> },
     ],
   },
   {

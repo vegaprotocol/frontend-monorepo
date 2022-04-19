@@ -215,11 +215,6 @@ const NavLinks = ({
       <NavLink {...linkProps} to={Routes.GOVERNANCE}>
         {t('Governance')}
       </NavLink>
-      {Flags.DEX_STAKING_DISABLED ? null : (
-        <NavLink {...linkProps} to={Routes.LIQUIDITY}>
-          {t('liquidityNav')}
-        </NavLink>
-      )}
     </nav>
   );
 };
