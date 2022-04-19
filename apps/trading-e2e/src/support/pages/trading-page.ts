@@ -1,15 +1,15 @@
 import BasePage from './base-page';
 
 export default class TradingPage extends BasePage {
-  chartTab = 'chart';
-  ticketTab = 'ticket';
-  orderbookTab = 'orderbook';
-  ordersTab = 'orders';
-  positionsTab = 'positions';
-  collateralTab = 'collateral';
-  tradesTab = 'trades';
-  completedTrades = 'market-trades';
-  orderBookTab = 'orderbook';
+  chartTab = 'Chart';
+  ticketTab = 'Ticket';
+  orderbookTab = 'Orderbook';
+  ordersTab = 'Orders';
+  positionsTab = 'Positions';
+  collateralTab = 'Collateral';
+  tradesTab = 'Trades';
+  completedTrades = 'Market-trades';
+  orderBookTab = 'Prderbook';
 
   clickOnOrdersTab() {
     cy.getByTestId(this.ordersTab).click();

@@ -8,10 +8,10 @@ Feature: Markets page
 
   Scenario: Select active market
     Given I am on the markets page
-    When I click on an active market
-    Then I am on the trading page for an active market
+    When I click on "Active" market
+    Then trading page for "active" market is displayed
 
   Scenario: Select suspended market
     Given I am on the markets page
-    When I click on a suspended market
-    Then I am on the trading page for a suspended market
+    When I click on "Suspended" market
+    Then trading page for "suspended" market is displayed

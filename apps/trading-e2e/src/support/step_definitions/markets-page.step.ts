@@ -38,10 +38,6 @@ And('the market table is displayed', () => {
   marketsPage.validateMarketTableDisplayed();
 });
 
-When('I click on an active market', () => {
-  marketsPage.clickOnMarket('Active');
-});
-
-When('I click on a suspended market', () => {
-  marketsPage.clickOnMarket('Suspended');
+When('I click on {string} market', (Expectedmarket) => {
+  marketsPage.clickOnMarket(Expectedmarket);
 });
