@@ -18,7 +18,7 @@ export interface WithdrawalFields {
 }
 
 export const useWithdraw = (cancelled: boolean) => {
-  const [id, setId] = useState<string | null>(null);
+  const [withdrawalId, setWithdrawalId] = useState<string | null>(null);
   const [approval, setApproval] =
     useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
 
@@ -44,8 +44,8 @@ export const useWithdraw = (cancelled: boolean) => {
   const { data, stopPolling } = useQuery<Erc20Approval, Erc20ApprovalVariables>(
     ERC20_APPROVAL_QUERY,
     {
-      variables: { withdrawalId: id || '' },
-      skip: !id,
+      variables: { withdrawalId: withdrawalId || '' },
+      skip: !withdrawalId,
       pollInterval: 1000,
     }
   );
@@ -71,7 +71,7 @@ export const useWithdraw = (cancelled: boolean) => {
       });
 
       if (res?.signature) {
-        setId(determineId(res.signature));
+        setWithdrawalId(determineId(res.signature));
       }
     },
     [keypair, send]
@@ -100,6 +100,7 @@ export const useWithdraw = (cancelled: boolean) => {
     submit,
     reset,
     approval,
+    withdrawalId,
     vegaTx,
     ethTx,
   };
