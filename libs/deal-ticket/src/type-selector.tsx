@@ -1,6 +1,6 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { OrderType } from '@vegaprotocol/wallet';
-import { ButtonRadio } from './button-radio';
+import { Toggle } from '@vegaprotocol/ui-toolkit';
 import type { Order } from './use-order-state';
 
 interface TypeSelectorProps {
@@ -9,16 +9,18 @@ interface TypeSelectorProps {
 }
 
 export const TypeSelector = ({ order, onSelect }: TypeSelectorProps) => {
+  const toggles = Object.entries(OrderType).map(([label, value]) => ({
+    label,
+    value,
+  }));
+
   return (
     <FormGroup label="Order type">
-      <ButtonRadio
+      <Toggle
         name="order-type"
-        options={Object.entries(OrderType).map(([text, value]) => ({
-          text,
-          value,
-        }))}
-        currentOption={order.type}
-        onSelect={(value) => onSelect(value as OrderType)}
+        toggles={toggles}
+        checkedValue={order.type}
+        onChange={(e) => onSelect(e.target.value as OrderType)}
       />
     </FormGroup>
   );
