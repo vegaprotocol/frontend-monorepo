@@ -1,4 +1,4 @@
-name: Cypress tests
+name: Capsule tests
 
 on: pull_request
 
