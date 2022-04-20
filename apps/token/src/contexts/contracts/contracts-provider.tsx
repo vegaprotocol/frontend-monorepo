@@ -12,15 +12,16 @@ import uniqBy from 'lodash/uniqBy';
 import React from 'react';
 
 import { SplashLoader } from '../../components/splash-loader';
-import { APP_ENV } from '../../config';
+import { ADDRESSES, APP_ENV } from '../../config';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
+import { defaultProvider } from '../../lib/web3-connectors';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
-  const { provider, account } = useWeb3React();
+  const { provider: activeProvider, account } = useWeb3React();
   const [txs, setTxs] = React.useState<TxData[]>([]);
   const [contracts, setContracts] = React.useState<Pick<
     ContractsContextShape,
@@ -31,31 +32,41 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   // contracts so that we can sign transactions, otherwise use the provider for just
   // reading data
   React.useEffect(() => {
-    // TODO: TFE import allow optional signer using fallback provider if not connected
-    // let signer = null;
+    let signer = null;
 
-    // if (account && provider && typeof provider.getSigner === 'function') {
-    //   signer = provider.getSigner();
-    // }
+    const provider = activeProvider ? activeProvider : defaultProvider;
+
+    if (
+      account &&
+      activeProvider &&
+      typeof activeProvider.getSigner === 'function'
+    ) {
+      signer = provider.getSigner();
+    }
 
     if (provider) {
       setContracts({
         token: new ERC20Token(
-          '0xDc335304979D378255015c33AbFf09B60c31EBAb',
+          ADDRESSES.vegaTokenAddress,
+          // @ts-ignore Cant accept Infura provider
           provider,
-          provider.getSigner()
+          signer
         ),
-        staking: new VegaStaking(APP_ENV, provider, provider.getSigner()),
-        vesting: new VegaVesting(APP_ENV, provider, provider.getSigner()),
-        claim: new VegaClaim(APP_ENV, provider, provider.getSigner()),
+        // @ts-ignore Cant accept Infura provider
+        staking: new VegaStaking(APP_ENV, provider, signer),
+        // @ts-ignore Cant accept Infura provider
+        vesting: new VegaVesting(APP_ENV, provider, signer),
+        // @ts-ignore Cant accept Infura provider
+        claim: new VegaClaim(APP_ENV, provider, signer),
         erc20Bridge: new VegaErc20Bridge(
           APP_ENV,
+          // @ts-ignore Cant accept Infura provider
           provider,
-          provider.getSigner()
+          signer
         ),
       });
     }
-  }, [provider, account]);
+  }, [activeProvider, account]);
 
   React.useEffect(() => {
     if (!contracts) return;

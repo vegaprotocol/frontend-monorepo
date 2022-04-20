@@ -1,3 +1,4 @@
+import { ethers } from 'ethers';
 import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
@@ -21,6 +22,11 @@ export const walletconnect = initializeConnector<WalletConnect>(
       },
     }),
   [CHAIN_ID]
+);
+
+export const defaultProvider = new ethers.providers.InfuraProvider(
+  3,
+  '4f846e79e13f44d1b51bbd7ed9edefb8'
 );
 
 export const Connectors = {
