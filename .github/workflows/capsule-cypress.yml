@@ -1,0 +1,59 @@
+name: Cypress tests
+
+on: pull_request
+
+jobs:
+  pr:
+    name: Run capsule tests - PR
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      - name: Checkout capsule
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/vega
+          ref: master
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+      # - name: Checkout capsule
+      #   uses: actions/checkout@v2
+      #   with:
+      #     ref: ${{ github.event.pull_request.head.ref }}
+      #     fetch-depth: 0
+      # - name: Checkout
+      #   uses: actions/checkout@v2
+      #   with:
+      #     ref: ${{ github.event.pull_request.head.ref }}
+      #     fetch-depth: 0
+      # - name: Derive appropriate SHAs for base and head for `nx affected` commands
+      #   uses: nrwl/nx-set-shas@v2
+      #   with:
+      #     main-branch-name: master
+      # - name: Use Node.js 16
+      #   id: Node
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: 16.14.0
+      # - name: Install root dependencies
+      #   run: yarn install
+      # - name: Download and unzip wallet
+      #   run: curl -L https://github.com/vegaprotocol/vegawallet/releases/download/v${{ matrix.vegawallet-version }}/vegawallet-linux-amd64.zip -O
+      # - name: Unzip wallet
+      #   run: unzip ./vegawallet-linux-amd64.zip
+      # - name: Create passphrase
+      #   run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
+      # - name: Create recovery
+      #   run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
+
+      # - name: Initialize wallet
+      #   run: ./vegawallet init -f
+      # - name: Import wallet
+      #   run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
+      # - name: Import config
+      #   run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+      # - name: Create public key 2
+      #   run: ./vegawallet key generate -w UI_Trading_Test -p ./passphrase
+      # - name: Start service
+      #   run: ./vegawallet service run --network fairground  &
+
+      # - name: Run Cypress tests
+      #   run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }} --browser chrome
