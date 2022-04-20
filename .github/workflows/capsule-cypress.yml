@@ -86,6 +86,9 @@ jobs:
         run: go build -o vegacapsule ./main.go
         working-directory: capsule
 
+      - name: Set path
+        run: |
+          "$PATH:$GOROOT/bin" >> $GITHUB_PATH
       - name: check path
         run: vegacapsule --help
 
