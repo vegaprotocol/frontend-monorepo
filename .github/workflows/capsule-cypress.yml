@@ -8,6 +8,24 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
+      #######
+      ## Setup langs
+      #######
+      # - name: Set up Node 16
+      #   uses: actions/setup-node@v2
+      #   id: npm
+      #   with:
+      #     node-version: 16
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        id: go
+        with:
+          go-version: 1.17
+
+      #######
+      ## Checkout all the things
+      #######
+
       # Checkout repos required to build vega capsule
       - name: Checkout vega
         uses: actions/checkout@v2
@@ -57,6 +75,29 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
+
+      #######
+      ## Build binaries
+      #######
+      - name: Go install
+        run: go instal .
+
+      - name: Build capsule
+        run: go build -o vegacapsule ./main.go
+        working-directory: './capsule'
+
+      - name: Build vega
+        run: go build -o vega ./cmd/vega/
+        working-directory: './vega'
+
+      - name: Build data-node
+        run: go build -o data-node ./cmd/data-node/
+        working-directory: './data-node'
+
+      - name: Build vegawallet
+        run: go build -o data-node ../main.go
+        working-directory: './data-node'
+
       # - name: Checkout
       #   uses: actions/checkout@v2
       #   with:
