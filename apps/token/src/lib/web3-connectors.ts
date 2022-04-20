@@ -24,9 +24,9 @@ export const walletconnect = initializeConnector<WalletConnect>(
   [CHAIN_ID]
 );
 
-export const defaultProvider = new ethers.providers.InfuraProvider(
-  3,
-  '4f846e79e13f44d1b51bbd7ed9edefb8'
+export const defaultProvider = new ethers.providers.JsonRpcProvider(
+  PROVIDER_URL,
+  CHAIN_ID
 );
 
 export const Connectors = {

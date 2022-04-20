@@ -48,19 +48,19 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       setContracts({
         token: new ERC20Token(
           ADDRESSES.vegaTokenAddress,
-          // @ts-ignore Cant accept Infura provider
+          // @ts-ignore Cant accept JsonRpcProvider provider
           provider,
           signer
         ),
-        // @ts-ignore Cant accept Infura provider
+        // @ts-ignore Cant accept JsonRpcProvider provider
         staking: new VegaStaking(APP_ENV, provider, signer),
-        // @ts-ignore Cant accept Infura provider
+        // @ts-ignore Cant accept JsonRpcProvider provider
         vesting: new VegaVesting(APP_ENV, provider, signer),
-        // @ts-ignore Cant accept Infura provider
+        // @ts-ignore Cant accept JsonRpcProvider provider
         claim: new VegaClaim(APP_ENV, provider, signer),
         erc20Bridge: new VegaErc20Bridge(
           APP_ENV,
-          // @ts-ignore Cant accept Infura provider
+          // @ts-ignore Cant accept JsonRpcProvider provider
           provider,
           signer
         ),
