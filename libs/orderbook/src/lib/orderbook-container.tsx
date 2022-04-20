@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { OrderbookManager } from './orderbook-manager';
-import { Button, Icon } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
   const [resolution, setResolution] = useState<number>(100);
@@ -22,7 +22,7 @@ export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
           appendIconName="plus"
           className="flex-1"
         >
-          Zoom in{' '}
+          Zoom in
         </Button>
       </div>
       <OrderbookManager resolution={resolution} marketId={marketId} />

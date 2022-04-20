@@ -5,17 +5,17 @@ import { BID_COLOR, ASK_COLOR } from './vol-cell';
 
 const INTERSECT_COLOR = 'darkgray';
 
-export interface CummulativeVolProps {
+export interface CumulativeVolProps {
   relativeAsk?: string;
   relativeBid?: string;
 }
 
-export interface ICummulativeVolCellProps extends ICellRendererParams {
-  value: CummulativeVolProps;
+export interface ICumulativeVolCellProps extends ICellRendererParams {
+  value: CumulativeVolProps;
 }
 
-export const CummulativeVol = React.memo(
-  ({ relativeAsk, relativeBid }: CummulativeVolProps) => {
+export const CumulativeVol = React.memo(
+  ({ relativeAsk, relativeBid }: CumulativeVolProps) => {
     const relativeAskNumber = relativeAsk ? parseInt(relativeAsk) : 0;
     const relativeBidNumber = relativeBid ? parseInt(relativeBid) : 0;
     const bid = relativeBidNumber ? (
@@ -62,10 +62,10 @@ export const CummulativeVol = React.memo(
   }
 );
 
-CummulativeVol.displayName = 'CummulativeVol';
+CumulativeVol.displayName = 'CumulativeVol';
 
-export const CummulativeVolCell = ({ value }: ICummulativeVolCellProps) => (
-  <CummulativeVol {...value} />
+export const CumulativeVolCell = ({ value }: ICumulativeVolCellProps) => (
+  <CumulativeVol {...value} />
 );
 
-CummulativeVolCell.displayName = 'CummulativeVolCell';
+CumulativeVolCell.displayName = 'CumulativeVolCell';

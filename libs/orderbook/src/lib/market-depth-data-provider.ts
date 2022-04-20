@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-// import { getMockedData } from './market-depth-mock';
 import { updateLevels } from './orderbook-data';
 import type {
   MarketDepth,

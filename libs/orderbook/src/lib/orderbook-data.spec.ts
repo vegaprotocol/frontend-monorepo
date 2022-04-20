@@ -30,16 +30,16 @@ describe('compact', () => {
     expect(compact(sell, buy, 5).length).toEqual(41);
     expect(compact(sell, buy, 10).length).toEqual(21);
   });
-  it('counts cummulative vol', () => {
+  it('counts cumulative vol', () => {
     const orderbookData = compact(sell, buy, 10);
-    expect(orderbookData[0].cummulativeVol.ask).toEqual(4950);
-    expect(orderbookData[0].cummulativeVol.bid).toEqual(0);
-    expect(orderbookData[10].cummulativeVol.ask).toEqual(390);
-    expect(orderbookData[10].cummulativeVol.bid).toEqual(579);
-    expect(orderbookData[orderbookData.length - 1].cummulativeVol.bid).toEqual(
+    expect(orderbookData[0].cumulativeVol.ask).toEqual(4950);
+    expect(orderbookData[0].cumulativeVol.bid).toEqual(0);
+    expect(orderbookData[10].cumulativeVol.ask).toEqual(390);
+    expect(orderbookData[10].cumulativeVol.bid).toEqual(579);
+    expect(orderbookData[orderbookData.length - 1].cumulativeVol.bid).toEqual(
       4950
     );
-    expect(orderbookData[orderbookData.length - 1].cummulativeVol.ask).toEqual(
+    expect(orderbookData[orderbookData.length - 1].cumulativeVol.ask).toEqual(
       0
     );
   });
@@ -63,12 +63,12 @@ describe('compact', () => {
 
   it('updates relative data', () => {
     const orderbookData = compact(sell, buy, 10);
-    expect(orderbookData[0].cummulativeVol.relativeAsk).toEqual('100%');
-    expect(orderbookData[0].cummulativeVol.relativeBid).toEqual('0%');
+    expect(orderbookData[0].cumulativeVol.relativeAsk).toEqual('100%');
+    expect(orderbookData[0].cumulativeVol.relativeBid).toEqual('0%');
     expect(orderbookData[0].relativeAskVol).toEqual('2%');
     expect(orderbookData[0].relativeBidVol).toEqual('0%');
-    expect(orderbookData[10].cummulativeVol.relativeAsk).toEqual('8%');
-    expect(orderbookData[10].cummulativeVol.relativeBid).toEqual('12%');
+    expect(orderbookData[10].cumulativeVol.relativeAsk).toEqual('8%');
+    expect(orderbookData[10].cumulativeVol.relativeBid).toEqual('12%');
     expect(orderbookData[10].relativeAskVol).toEqual('44%');
     expect(orderbookData[10].relativeBidVol).toEqual('66%');
     expect(orderbookData[orderbookData.length - 1].relativeAskVol).toEqual(
@@ -141,7 +141,7 @@ describe('updateCompactedData', () => {
   const orderbookData: OrderbookData[] = [
     {
       price: 120,
-      cummulativeVol: {
+      cumulativeVol: {
         ask: 50,
         relativeAsk: '100%',
         bid: 0,
@@ -158,7 +158,7 @@ describe('updateCompactedData', () => {
     },
     {
       price: 100,
-      cummulativeVol: {
+      cumulativeVol: {
         ask: 40,
         relativeAsk: '80%',
         bid: 40,
@@ -179,7 +179,7 @@ describe('updateCompactedData', () => {
     },
     {
       price: 80,
-      cummulativeVol: {
+      cumulativeVol: {
         ask: 0,
         relativeAsk: '0%',
         bid: 50,
@@ -218,10 +218,10 @@ describe('updateCompactedData', () => {
     );
     expect(updatedData[0].askVol).toEqual(20);
     expect(updatedData[0].askVolByLevel?.[120]).toEqual(10);
-    expect(updatedData[0].cummulativeVol.ask).toEqual(60);
+    expect(updatedData[0].cumulativeVol.ask).toEqual(60);
     expect(updatedData[2].bidVol).toEqual(20);
     expect(updatedData[2].bidVolByLevel?.[80]).toEqual(10);
-    expect(updatedData[2].cummulativeVol.bid).toEqual(60);
+    expect(updatedData[2].cumulativeVol.bid).toEqual(60);
   });
 
   it('remove row', () => {
@@ -267,9 +267,9 @@ describe('updateCompactedData', () => {
     );
     expect(updatedData.length).toEqual(5);
     expect(updatedData[0].price).toEqual(130);
-    expect(updatedData[0].cummulativeVol.ask).toEqual(55);
+    expect(updatedData[0].cumulativeVol.ask).toEqual(55);
     expect(updatedData[4].price).toEqual(60);
-    expect(updatedData[4].cummulativeVol.bid).toEqual(55);
+    expect(updatedData[4].cumulativeVol.bid).toEqual(55);
   });
 
   it('add new row in the middle', () => {
@@ -293,10 +293,10 @@ describe('updateCompactedData', () => {
     );
     expect(updatedData.length).toEqual(5);
     expect(updatedData[1].price).toEqual(110);
-    expect(updatedData[1].cummulativeVol.ask).toEqual(45);
-    expect(updatedData[0].cummulativeVol.ask).toEqual(55);
+    expect(updatedData[1].cumulativeVol.ask).toEqual(45);
+    expect(updatedData[0].cumulativeVol.ask).toEqual(55);
     expect(updatedData[3].price).toEqual(90);
-    expect(updatedData[3].cummulativeVol.bid).toEqual(45);
-    expect(updatedData[4].cummulativeVol.bid).toEqual(55);
+    expect(updatedData[3].cumulativeVol.bid).toEqual(45);
+    expect(updatedData[4].cumulativeVol.bid).toEqual(55);
   });
 });
