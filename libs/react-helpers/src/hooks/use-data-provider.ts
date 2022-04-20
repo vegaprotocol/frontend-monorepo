@@ -13,10 +13,16 @@ export function useDataProvider<Data, Delta>(
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const flushRef = useRef<(() => void) | undefined>(undefined);
+  const restartRef = useRef<(() => void) | undefined>(undefined);
   const initialized = useRef<boolean>(false);
   const flush = useCallback(() => {
     if (flushRef.current) {
       flushRef.current();
+    }
+  }, []);
+  const restart = useCallback(() => {
+    if (restartRef.current) {
+      restartRef.current();
     }
   }, []);
   const callback = useCallback(
@@ -33,9 +39,14 @@ export function useDataProvider<Data, Delta>(
     [update]
   );
   useEffect(() => {
-    const { unsubscribe, flush } = dataProvider(callback, client, variables);
+    const { unsubscribe, flush, restart } = dataProvider(
+      callback,
+      client,
+      variables
+    );
     flushRef.current = flush;
+    restartRef.current = restart;
     return unsubscribe;
   }, [client, initialized, dataProvider, callback, variables]);
-  return { data, loading, error, flush };
+  return { data, loading, error, flush, restart };
 }
