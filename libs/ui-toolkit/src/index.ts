@@ -4,6 +4,7 @@ export { AsyncRenderer } from './components/async-renderer';
 export { Button, AnchorButton } from './components/button';
 export { Callout } from './components/callout';
 export { CopyWithTooltip } from './components/copy-with-tooltip';
+export * from './components/dropdown-menu';
 export { EtherscanLink } from './components/etherscan-link';
 export { FormGroup } from './components/form-group';
 export { Icon } from './components/icon';

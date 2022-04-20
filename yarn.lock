@@ -3339,6 +3339,20 @@
     "@radix-ui/react-use-callback-ref" "0.1.0"
     "@radix-ui/react-use-escape-keydown" "0.1.0"
 
+"@radix-ui/react-dropdown-menu@^0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-dropdown-menu/-/react-dropdown-menu-0.1.6.tgz#3203229788cd57e552c9f19dcc7008e2b545919c"
+  integrity sha512-RZhtzjWwJ4ZBN7D8ek4Zn+ilHzYuYta9yIxFnbC0pfqMnSi67IQNONo1tuuNqtFh9SRHacPKc65zo+kBBlxtdg==
+  dependencies:
+    "@babel/runtime" "^7.13.10"
+    "@radix-ui/primitive" "0.1.0"
+    "@radix-ui/react-compose-refs" "0.1.0"
+    "@radix-ui/react-context" "0.1.1"
+    "@radix-ui/react-id" "0.1.5"
+    "@radix-ui/react-menu" "0.1.6"
+    "@radix-ui/react-primitive" "0.1.4"
+    "@radix-ui/react-use-controllable-state" "0.1.0"
+
 "@radix-ui/react-focus-guards@0.1.0":
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-focus-guards/-/react-focus-guards-0.1.0.tgz#ba3b6f902cba7826569f8edc21ff8223dece7def"
@@ -3363,6 +3377,30 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@radix-ui/react-use-layout-effect" "0.1.0"
+
+"@radix-ui/react-menu@0.1.6":
+  version "0.1.6"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-menu/-/react-menu-0.1.6.tgz#7f9521a10f6a9cd819b33b33d5ed9538d79b2e75"
+  integrity sha512-ho3+bhpr3oAFkOBJ8VkUb1BcGoiZBB3OmcWPqa6i5RTUKrzNX/d6rauochu2xDlWjiRtpVuiAcsTVOeIC4FbYQ==
+  dependencies:
+    "@babel/runtime" "^7.13.10"
+    "@radix-ui/primitive" "0.1.0"
+    "@radix-ui/react-collection" "0.1.4"
+    "@radix-ui/react-compose-refs" "0.1.0"
+    "@radix-ui/react-context" "0.1.1"
+    "@radix-ui/react-dismissable-layer" "0.1.5"
+    "@radix-ui/react-focus-guards" "0.1.0"
+    "@radix-ui/react-focus-scope" "0.1.4"
+    "@radix-ui/react-id" "0.1.5"
+    "@radix-ui/react-popper" "0.1.4"
+    "@radix-ui/react-portal" "0.1.4"
+    "@radix-ui/react-presence" "0.1.2"
+    "@radix-ui/react-primitive" "0.1.4"
+    "@radix-ui/react-roving-focus" "0.1.5"
+    "@radix-ui/react-use-callback-ref" "0.1.0"
+    "@radix-ui/react-use-direction" "0.1.0"
+    aria-hidden "^1.1.1"
+    react-remove-scroll "^2.4.0"
 
 "@radix-ui/react-popper@0.1.4":
   version "0.1.4"
@@ -3484,6 +3522,13 @@
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@radix-ui/react-use-callback-ref" "0.1.0"
+
+"@radix-ui/react-use-direction@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-use-direction/-/react-use-direction-0.1.0.tgz#97ac1d52e497c974389e7988f809238ed72e7df7"
+  integrity sha512-NajpY/An9TCPSfOVkgWIdXJV+VuWl67PxB6kOKYmtNAFHvObzIoh8o0n9sAuwSAyFCZVq211FEf9gvVDRhOyiA==
+  dependencies:
+    "@babel/runtime" "^7.13.10"
 
 "@radix-ui/react-use-escape-keydown@0.1.0":
   version "0.1.0"
@@ -6729,15 +6774,16 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.11.2-alpha.1:
-  version "1.11.2-alpha.1"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.11.2-alpha.1.tgz#c284d45d106facb6ade03183efd7b30b1b0b2bb6"
-  integrity sha512-3lBTVZCwCfsyVGUWG1rlDJgT6N+xQzdibThrWSVEqD/nxUesOLJuP3443QhEj2EZYJNhMJpZBTbV2R+ijXqXdQ==
+allotment@1.12.1:
+  version "1.12.1"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.12.1.tgz#1efa19967f3b955fb3db18d938925619f4e0f313"
+  integrity sha512-jEQ1hB0f+dMgEmzLWRcGjwek5w3PTWI1seYqgedyNQefX+u0xdoOsB6UKV6dTEcrAue5nx7wO87GTch3IaUqgw==
   dependencies:
     classnames "^2.3.0"
     eventemitter3 "^4.0.0"
     lodash.clamp "^4.0.0"
     lodash.debounce "^4.0.0"
+    lodash.isequal "^4.5.0"
     use-resize-observer "^8.0.0"
 
 alpha-lyrae@vegaprotocol/alpha-lyrae:
@@ -14878,6 +14924,11 @@ lodash.identity@3.0.0:
   resolved "https://registry.yarnpkg.com/lodash.identity/-/lodash.identity-3.0.0.tgz#ad7bc6a4e647d79c972e1b80feef7af156267876"
   integrity sha1-rXvGpOZH15yXLhuA/u968VYmeHY=
 
+lodash.isequal@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-4.5.0.tgz#415c4478f2bcc30120c22ce10ed3226f7d3e18e0"
+  integrity sha1-QVxEePK8wwEgwizhDtMib30+GOA=
+
 lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
@@ -16522,10 +16573,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
-pennant@0.4.5:
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.5.tgz#8adf173f4f24d3de336ea51d277306c2ffdf859c"
-  integrity sha512-lZUKbHIb30kwHDxvVwu5BN4QTAImieIQrH/Olf5ONBneunyepwEd/fgQi2vXBXW9NawiLuc8v+OLbGW65DZRtw==
+pennant@0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.6.tgz#df1009b715611938ce0296c0af04dd3f2fed684d"
+  integrity sha512-SQsJZiljhM6moK+UNpaSy/RwXl2O2gahrVen6/fanmbp4ciVtguWKkAsHcfExO0C0I0moGigX30iMASA3edZkQ==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
@@ -16546,7 +16597,7 @@ pennant@0.4.5:
     "@types/react" "^17.0.0"
     "@types/react-dom" "^17.0.0"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.11.2-alpha.1"
+    allotment "1.12.1"
     classnames "^2.2.6"
     d3-array "2.3.3"
     d3-delaunay "^6.0.2"
