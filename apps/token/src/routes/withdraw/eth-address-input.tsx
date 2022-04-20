@@ -39,8 +39,7 @@ export const EthAddressInput = ({
         onChange={(e) => onChange(e.target.value)}
         value={address}
         disabled={useConnectedWallet}
-        // TODO: TFE import
-        // leftElement={<Ethereum />}
+        // leftElement={<Ethereum />} TODO: render Ethereum icon in input when https://github.com/vegaprotocol/frontend-monorepo/issues/273
         autoComplete="off"
         type="text"
         required={true}
