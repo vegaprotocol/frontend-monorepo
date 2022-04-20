@@ -44,10 +44,6 @@ export const WithdrawalsList = ({
     }
   }, [transaction.status, refetchWithdrawals]);
 
-  if (!sortedWithdrawals.length) {
-    return <p>{t('No withdrawals')}</p>;
-  }
-
   return (
     <>
       <AgGrid
