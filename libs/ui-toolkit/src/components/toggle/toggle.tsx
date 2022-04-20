@@ -7,11 +7,9 @@ interface ToggleProps {
   value: string;
 }
 
-export type TogglesArr = [ToggleProps, ToggleProps, ...ToggleProps[]];
-
 export interface ToggleInputProps {
   name: string;
-  toggles: TogglesArr;
+  toggles: ToggleProps[];
   className?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   checkedValue?: string | undefined | null;

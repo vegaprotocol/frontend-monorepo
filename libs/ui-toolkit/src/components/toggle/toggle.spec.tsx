@@ -46,6 +46,21 @@ describe('Toggle', () => {
     expect(screen.getByText('Option 3')).toBeInTheDocument();
   });
 
+  it('allow less than 2 inputs', () => {
+    render(
+      <Toggle
+        name="test"
+        toggles={[
+          {
+            label: 'Option 1',
+            value: 'test-1',
+          },
+        ]}
+      />
+    );
+    expect(screen.getByText('Option 1')).toBeInTheDocument();
+  });
+
   it('uncontrolled toggle initially has no checked item', () => {
     render(
       <Toggle

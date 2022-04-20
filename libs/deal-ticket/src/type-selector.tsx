@@ -1,7 +1,6 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { OrderType } from '@vegaprotocol/wallet';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
-import type { TogglesArr } from '@vegaprotocol/ui-toolkit';
 import type { Order } from './use-order-state';
 
 interface TypeSelectorProps {
@@ -19,7 +18,7 @@ export const TypeSelector = ({ order, onSelect }: TypeSelectorProps) => {
     <FormGroup label="Order type">
       <Toggle
         name="order-type"
-        toggles={toggles as TogglesArr}
+        toggles={toggles}
         checkedValue={order.type}
         onChange={(e) => onSelect(e.target.value as OrderType)}
       />

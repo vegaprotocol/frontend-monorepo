@@ -25,6 +25,3 @@ export { TransactionDialog } from './components/transaction-dialog';
 
 // Utils
 export * from './utils/intent';
-
-// Types
-export type { TogglesArr } from './components/toggle';
