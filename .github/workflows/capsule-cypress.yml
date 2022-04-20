@@ -79,8 +79,8 @@ jobs:
       #######
       ## Build binaries
       #######
-      - name: Go install
-        run: go install ./...
+      # - name: Go install
+      #   run: go install ./...
 
       - name: Build capsule
         run: go build -o vegacapsule ./main.go
