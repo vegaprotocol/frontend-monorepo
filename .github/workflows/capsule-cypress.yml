@@ -34,9 +34,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vegatools
-          ref: master
+          ref: main
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './main'
+          path: './vegatools'
       - name: Checkout vega wallet
         uses: actions/checkout@v2
         with:
