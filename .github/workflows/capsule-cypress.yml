@@ -14,16 +14,16 @@ jobs:
       #######
       ## Setup langs
       #######
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        id: go
+        with:
+          go-version: 1.18
       - name: Set up Node 16
         uses: actions/setup-node@v2
         id: npm
         with:
           node-version: 16
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        id: go
-        with:
-          go-version: 1.18
 
       #######
       ## Checkout all the things
