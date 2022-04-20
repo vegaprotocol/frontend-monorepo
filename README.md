@@ -26,6 +26,11 @@ The Tailwind CSS config contains theme that align default config with Vega desig
 
 # 💻 Develop
 
+### Set up
+
+Check you have the correct version of Node. You can [install NVM to switch between node versions](https://github.com/nvm-sh/nvm#installing-and-updating). Then `NVM install`.
+Before you build you will need to `yarn install` in the root directory.
+
 ### Build
 
 Run `nx build my-app` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
