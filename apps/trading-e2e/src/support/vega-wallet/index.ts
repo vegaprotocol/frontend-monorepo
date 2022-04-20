@@ -2,17 +2,18 @@ export default class VegaWallet {
   connectVegaBtn = 'connect-vega-wallet';
   walletConnectors = 'connectors-list';
   walletForm = 'rest-connector-form';
+  selectPublicKeyBtn = 'select-keypair-button';
   walletInputError = 'input-wallet-error';
   walletFormError = 'form-error';
   inputError = 'input-error-text';
 
   openVegaWalletConnectDialog() {
-    cy.getByTestId(this.connectVegaBtn).click();
+    this.clickOnWalletConnectDialog();
     cy.contains('Connects using REST to a running Vega wallet service');
     cy.getByTestId(this.walletConnectors).find('button').click();
   }
 
-  fillInWalletForm(walletName, walletPassphrase) {
+  fillInWalletForm(walletName: string, walletPassphrase: string) {
     cy.getByTestId(this.walletForm)
       .find('#wallet')
       .click({ force: true })
@@ -39,5 +40,20 @@ export default class VegaWallet {
   validateWalletErrorFieldsDisplayed() {
     cy.getByTestId(this.walletInputError).should('have.text', 'Required');
     cy.getByTestId(this.inputError).should('have.text', 'Required');
+  }
+
+  validatePublicKeyDisplayed(expectedTruncatedKey: string) {
+    cy.getByTestId(this.connectVegaBtn).should(
+      'have.text',
+      expectedTruncatedKey
+    );
+  }
+
+  selectPublicKey() {
+    cy.getByTestId(this.selectPublicKeyBtn).click();
+  }
+
+  clickOnWalletConnectDialog() {
+    cy.getByTestId(this.connectVegaBtn).click();
   }
 }

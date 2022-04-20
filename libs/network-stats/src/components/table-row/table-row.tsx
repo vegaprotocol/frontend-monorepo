@@ -12,6 +12,7 @@ export const TableRow = ({
   goodThreshold,
   value,
   description,
+  ...props
 }: StatFields) => {
   const variant = useMemo(
     () =>
@@ -25,8 +26,10 @@ export const TableRow = ({
   return (
     <Tooltip description={description} align="start">
       <tr className="border">
-        <td className="py-4 px-8">{title}</td>
-        <td className="py-4 px-8 text-right">
+        <td data-testid="stats-title" className="py-4 px-8">
+          {title}
+        </td>
+        <td data-testid="stats-value" className="py-4 px-8 text-right">
           {formatter ? formatter(value) : defaultFieldFormatter(value)}
         </td>
         <td className="py-4 px-8">

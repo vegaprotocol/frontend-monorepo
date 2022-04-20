@@ -15,6 +15,9 @@
   "projectId": "et4snf",
   "env": {
     "vegaPublicKey": "47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278",
+    "vegaPublicKey2": "1a18cdcaaa4f44a57b35a4e9b77e0701c17a476f2b407620f8c17371740cf2e4",
+    "truncatedVegaPubKey": "47836c…c7d278",
+    "truncatedVegaPubKey2": "1a18cd…0cf2e4",
     "tsConfig": "tsconfig.json",
     "TAGS": "not @todo and not @ignore and not @manual"
   }
