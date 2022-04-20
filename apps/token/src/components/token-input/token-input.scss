@@ -1,4 +1,4 @@
-@import "../../styles/colors";
+@import '../../styles/colors';
 
 .token-input {
   &__container {
@@ -11,7 +11,7 @@
     }
 
     /* Firefox */
-    input[type="number"] {
+    input[type='number'] {
       -moz-appearance: textfield;
     }
   }
@@ -27,10 +27,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-
-  &__submit {
-    margin-top: 10px;
   }
 
   &__callout-container {

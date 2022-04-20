@@ -19,7 +19,6 @@ import {
   TxState,
 } from '../../hooks/transaction-reducer';
 import { BigNumber } from '../../lib/bignumber';
-// TODO: TFE Import
 import { TransactionCallout } from '../transaction-callout';
 
 const inputName = 'amount';
@@ -108,9 +107,9 @@ export const TokenInput = ({
       'If requires approval is true allowance, approve, approveTxState and approveDispatch props are required!'
     );
   }
-  const isApproved = !new BigNumber(allowance || 0).isEqualTo(0);
+  const isApproved = !new BigNumber(allowance!).isEqualTo(0);
   const showApproveButton =
-    !isApproved || new BigNumber(amount).isGreaterThan(allowance || 0);
+    !isApproved || new BigNumber(amount).isGreaterThan(allowance!);
 
   const isDisabled = React.useMemo<boolean>(() => {
     if (requireApproval) {
@@ -150,7 +149,7 @@ export const TokenInput = ({
       approveContent = (
         <Button
           data-testid="token-input-approve-button"
-          className="fill token-input__submit"
+          className="token-input__submit w-full"
           onClick={approve}
         >
           {approveText}
@@ -180,7 +179,7 @@ export const TokenInput = ({
       {approveContent ? <div className="mb-12">{approveContent}</div> : null}
       <Button
         data-testid="token-input-submit-button"
-        className="fill token-input__submit"
+        className="w-full"
         disabled={isDisabled}
         onClick={perform}
       >

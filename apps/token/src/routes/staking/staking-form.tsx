@@ -250,7 +250,7 @@ export const StakingForm = ({
               <p>
                 {t('minimumNomination', {
                   minTokens: minTokensWithDecimals,
-                })}
+                })}{' '}
               </p>
               <TokenInput
                 submitText={`Add ${amount ? amount : ''} ${t('vegaTokens')}`}
