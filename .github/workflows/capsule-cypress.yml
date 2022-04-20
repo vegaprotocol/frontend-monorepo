@@ -107,7 +107,7 @@ jobs:
         working-directory: data-node
 
       - name: Build vegawallet
-        run: go build -o vegawallet ../main.go
+        run: go build -o vegawallet ./main.go
         working-directory: vegawallet
 
       ######
