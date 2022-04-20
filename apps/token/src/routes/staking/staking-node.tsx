@@ -10,7 +10,6 @@ import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
-// import { PendingStake } from "./pending-stake";
 import { StakingForm } from './staking-form';
 import { StakingNodesContainer } from './staking-nodes-container';
 import { StakingWalletsContainer } from './staking-wallets-container';
@@ -72,10 +71,6 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
     return BigNumber.sum.apply(null, [new BigNumber(0), ...amountsNextEpoch]);
   }, [currentEpoch, data?.party?.delegations, node, stakeThisEpoch]);
 
-  // const pendingStakeNextEpoch = React.useMemo(() => {
-  //   return stakeNextEpoch.minus(stakeThisEpoch);
-  // }, [stakeThisEpoch, stakeNextEpoch]);
-
   const currentDelegationAmount = React.useMemo(() => {
     if (!data?.party?.delegations) return new BigNumber(0);
     const amounts = data.party.delegations
@@ -128,13 +123,6 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
         stakeNextEpoch={stakeNextEpoch}
         stakeThisEpoch={stakeThisEpoch}
       />
-      {/* {pendingStakeNextEpoch.isZero() ? null : (
-        <PendingStake
-          nodeId={node}
-          pubkey={vegaKey.pub}
-          pendingAmount={pendingStakeNextEpoch}
-        />
-      )} */}
       <StakingForm
         pubkey={vegaKey.pub}
         nodeId={nodeInfo.id}
