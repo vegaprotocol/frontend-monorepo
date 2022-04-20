@@ -7,15 +7,18 @@ jobs:
     name: Run capsule tests - PR
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
+    env:
+      GO111MODULE: 'on'
+      GOPROXY: ${{ secrets.GO_PROXY }}
     steps:
       #######
       ## Setup langs
       #######
-      # - name: Set up Node 16
-      #   uses: actions/setup-node@v2
-      #   id: npm
-      #   with:
-      #     node-version: 16
+      - name: Set up Node 16
+        uses: actions/setup-node@v2
+        id: npm
+        with:
+          node-version: 16
       - name: Set up Go
         uses: actions/setup-go@v2
         id: go
@@ -70,18 +73,15 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './capsule'
       # Checkout front ends
-      # - name: Checkout frontend mono repo
-      #   uses: actions/checkout@v2
-      #   with:
-      #     ref: ${{ github.event.pull_request.head.ref }}
-      #     fetch-depth: 0
+      - name: Checkout frontend mono repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
 
       #######
       ## Build binaries
       #######
-      # - name: Go install
-      #   run: go install ./...
-
       - name: Build capsule
         run: go build -o vegacapsule ./main.go
         working-directory: './capsule'
@@ -98,36 +98,32 @@ jobs:
         run: go build -o data-node ../main.go
         working-directory: './data-node'
 
+      ######
+      ## Start capsule
+      ######
+      - name: Login to docker
+        run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
+      # TODO PATH is **probably** wrong
+      - name: check path
+        run: vegacapsule --help
+      - name: Start nomad
+        run: vegacapsule nomad &
+      # May need to wait for the above to fully start...
+      - name: Bootstrap network
+        run: vegacapsule network bootstrap --config-path=config.hcl
+
+      ######
+      ## Run some tests
+      ######
+
+      - name: Install root dependencies
+        run: yarn install
+      ## TODO only running explorer right now
+      - name: Run Cypress tests
+        run: yarn nx run explorer-e2e:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }} --browser chrome
+
       # - name: Derive appropriate SHAs for base and head for `nx affected` commands
       #   uses: nrwl/nx-set-shas@v2
       #   with:
       #     main-branch-name: master
       # - name: Use Node.js 16
-      #   id: Node
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: 16.14.0
-      # - name: Install root dependencies
-      #   run: yarn install
-      # - name: Download and unzip wallet
-      #   run: curl -L https://github.com/vegaprotocol/vegawallet/releases/download/v${{ matrix.vegawallet-version }}/vegawallet-linux-amd64.zip -O
-      # - name: Unzip wallet
-      #   run: unzip ./vegawallet-linux-amd64.zip
-      # - name: Create passphrase
-      #   run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
-      # - name: Create recovery
-      #   run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
-
-      # - name: Initialize wallet
-      #   run: ./vegawallet init -f
-      # - name: Import wallet
-      #   run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
-      # - name: Import config
-      #   run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
-      # - name: Create public key 2
-      #   run: ./vegawallet key generate -w UI_Trading_Test -p ./passphrase
-      # - name: Start service
-      #   run: ./vegawallet service run --network fairground  &
-
-      # - name: Run Cypress tests
-      #   run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }} --browser chrome
