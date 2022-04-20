@@ -16,6 +16,7 @@ export { Select } from './components/select';
 export { Splash } from './components/splash';
 export { TextArea } from './components/text-area';
 export { ThemeSwitcher } from './components/theme-switcher';
+export { Toggle } from './components/toggle';
 export { Dialog } from './components/dialog/dialog';
 export { VegaLogo } from './components/vega-logo';
 export { Tooltip } from './components/tooltip';

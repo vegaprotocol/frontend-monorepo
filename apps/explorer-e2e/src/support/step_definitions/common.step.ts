@@ -2,6 +2,12 @@ import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import BasePage from '../pages/base-page';
 const basePage = new BasePage();
 
+Given('I am on mobile and open the toggle menu', () => {
+  cy.viewport('iphone-x');
+  cy.visit('/');
+  basePage.clickOnToggle();
+});
+
 Given('I am on the homepage', () => {
   cy.visit('/');
 });

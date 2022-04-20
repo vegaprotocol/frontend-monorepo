@@ -5,6 +5,11 @@ Feature: Blocks Page
     When I navigate to the blocks page
     Then blocks page is correctly displayed
 
+  Scenario: Navigate to blocks page using mobile
+    Given I am on mobile and open the toggle menu
+    When I navigate to the blocks page
+    Then blocks page is correctly displayed
+
   Scenario: Navigate to block validator page
     Given I am on the homepage
     When I navigate to the blocks page

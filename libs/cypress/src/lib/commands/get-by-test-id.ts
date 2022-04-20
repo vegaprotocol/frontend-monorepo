@@ -1,11 +1,13 @@
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Chainable<Subject> {
-    getByTestId(selector: string): Chainable<JQuery<HTMLElement>>;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Chainable<Subject> {
+      getByTestId(selector: string): Chainable<JQuery<HTMLElement>>;
+    }
   }
 }
-
+// eslint-disable-next-line @typescript-eslint/no-namespace
 export function addGetTestIdcommand() {
   // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
   Cypress.Commands.add('getByTestId', (selector, ...args) => {

@@ -31,7 +31,7 @@ export const inputClassNames = ({
       'bg-clip-padding',
       'border-black-60 dark:border-white-60',
       'bg-black-25 dark:bg-white-25',
-      'text-black-60 dark:text-white-60',
+      'text-black placeholder:text-black-60 dark:text-white dark:placeholder:text-white-60',
       'text-ui',
       'focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark',
       'focus-visible:outline-0',

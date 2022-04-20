@@ -60,6 +60,10 @@ const MarketPage = () => {
   );
 };
 
+MarketPage.getInitialProps = () => ({
+  page: 'market',
+});
+
 export default MarketPage;
 
 const useWindowSize = () => {

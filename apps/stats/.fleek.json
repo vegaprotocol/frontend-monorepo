@@ -1,0 +1,15 @@
+{
+  "site": {
+    "id": "2365cbf8-20f8-4d3a-8014-19e813eab683",
+    "team": "886f256a-fd19-40d5-9551-bcd71a7c8100",
+    "platform": "ipfs",
+    "source": "github",
+    "name": "vega-status"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "dist/apps/stats/",
+    "command": "yarn && yarn nx run stats:build",
+    "rootDir": ""
+  }
+}

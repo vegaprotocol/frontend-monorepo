@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, DepositStatus } from "./../../../../types/src/__generated__/globalTypes";
+import { DepositStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
 // GraphQL subscription operation: DepositEvent
@@ -33,18 +33,6 @@ export type DepositEvent_busEvents_event = DepositEvent_busEvents_event_TimeUpda
 
 export interface DepositEvent_busEvents {
   __typename: "BusEvent";
-  /**
-   * the id for this event
-   */
-  eventId: string;
-  /**
-   * the block hash
-   */
-  block: string;
-  /**
-   * the type of event we're dealing with
-   */
-  type: BusEventType;
   /**
    * the payload - the wrapped event
    */

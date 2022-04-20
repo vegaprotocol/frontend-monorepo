@@ -1,5 +1,4 @@
-import BasePage from './base-page';
-export default class DealTicketPage extends BasePage {
+export default class DealTicket {
   marketOrderType = 'order-type-TYPE_MARKET';
   limitOrderType = 'order-type-TYPE_LIMIT';
   buyOrder = 'order-side-SIDE_BUY';
@@ -9,12 +8,13 @@ export default class DealTicketPage extends BasePage {
   orderTypeDropDown = 'order-tif';
   datePickerField = 'date-picker-field';
   placeOrderBtn = 'place-order';
+  placeOrderFormError = 'dealticket-error-message';
   orderDialog = 'order-wrapper';
   orderStatusHeader = 'order-status-header';
   orderTransactionHash = 'tx-hash';
   orderErrorTxt = 'error-reason';
 
-  placeMarketOrder(isBuy, orderSize, orderType) {
+  placeMarketOrder(isBuy: boolean, orderSize: string, orderType: string) {
     cy.get(`[data-testid=${this.placeOrderBtn}]`, { timeout: 8000 }).should(
       'be.visible'
     );
@@ -27,7 +27,12 @@ export default class DealTicketPage extends BasePage {
     cy.getByTestId(this.orderTypeDropDown).select(orderType);
   }
 
-  placeLimitOrder(isBuy, orderSize, orderPrice, orderType) {
+  placeLimitOrder(
+    isBuy: boolean,
+    orderSize: string,
+    orderPrice: string,
+    orderType: string
+  ) {
     cy.getByTestId(this.limitOrderType).click();
 
     if (isBuy == false) {
@@ -53,8 +58,7 @@ export default class DealTicketPage extends BasePage {
     );
     cy.getByTestId(this.orderTransactionHash)
       .invoke('text')
-      .should('contain', 'Tx hash: ')
-      .and('have.length.above', 64);
+      .should('contain', 'Tx hash: test-tx-hash');
   }
 
   verifyOrderFailedInsufficientFunds() {
@@ -65,20 +69,22 @@ export default class DealTicketPage extends BasePage {
   }
 
   clickPlaceOrder() {
-    if (Cypress.env('bypassPlacingOrders' != true)) {
-      cy.getByTestId(this.placeOrderBtn).click();
-    }
+    cy.getByTestId(this.placeOrderBtn).click();
+    cy.contains('Awaiting network confirmation');
   }
 
   verifyPlaceOrderBtnDisabled() {
     cy.getByTestId(this.placeOrderBtn).should('be.disabled');
   }
 
-  verifySubmitBtnErrorText(expectedText) {
-    cy.getByTestId(this.inputError).should('have.text', expectedText);
+  verifySubmitBtnErrorText(expectedText: string) {
+    cy.getByTestId('dealticket-error-message').should(
+      'have.text',
+      expectedText
+    );
   }
 
-  verifyOrderRejected(errorMsg) {
+  verifyOrderRejected(errorMsg: string) {
     cy.getByTestId(this.orderStatusHeader).should(
       'have.text',
       'Order rejected by wallet'
@@ -90,8 +96,8 @@ export default class DealTicketPage extends BasePage {
 
   reloadPageIfPublicKeyErrorDisplayed() {
     cy.get('body').then(($body) => {
-      if ($body.find(`[data-testid=${this.inputError}]`).length) {
-        cy.getByTestId(this.inputError)
+      if ($body.find(`[data-testid=${this.placeOrderFormError}]`).length) {
+        cy.getByTestId(this.placeOrderFormError)
           .invoke('text')
           .then(($errorText) => {
             if ($errorText == 'No public key selected') {
@@ -102,8 +108,8 @@ export default class DealTicketPage extends BasePage {
     });
   }
 
-  formatDate(date) {
-    const padZero = (num) => num.toString().padStart(2, '0');
+  formatDate(date: Date) {
+    const padZero = (num: number) => num.toString().padStart(2, '0');
 
     const year = date.getFullYear();
     const month = padZero(date.getMonth() + 1);
