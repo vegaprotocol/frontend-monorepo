@@ -2,8 +2,6 @@ import type { EthereumChainId } from '@vegaprotocol/smart-contracts-sdk';
 import {
   EnvironmentConfig,
   EthereumChainIds,
-  RewardsAddresses,
-  RewardsPoolAddresses,
 } from '@vegaprotocol/smart-contracts-sdk';
 
 import type { Networks } from './vega';
@@ -11,7 +9,6 @@ import type { Networks } from './vega';
 type VegaContracts = typeof EnvironmentConfig[Networks];
 
 const appChainId = Number(process.env['NX_ETHEREUM_CHAIN_ID'] || 3);
-const infuraId = process.env['NX_INFURA_ID'];
 
 export const APP_ENV = process.env['NX_VEGA_ENV'] as Networks;
 
@@ -23,20 +20,8 @@ const Addresses: Record<number, VegaContracts> = {
 export type { EthereumChainId };
 export { EthereumChainIds };
 
-export const InfuraUrls = {
-  [EthereumChainIds.Mainnet]: `https://mainnet.infura.io/v3/${infuraId}`,
-  [EthereumChainIds.Ropsten]: `https://ropsten.infura.io/v3/${infuraId}`,
-};
-
 /** Contract addresses for the different contracts in the VEGA ecosystem */
 export const ADDRESSES = Addresses[appChainId];
-
-/** Contract addresses for liquidity rewards for different markets */
-export const REWARDS_ADDRESSES = RewardsAddresses[`0x${appChainId}`];
-export const REWARDS_POOL_ADDRESSES = RewardsPoolAddresses[`0x${appChainId}`];
-
-/** Infura endpoints */
-export const INFURA_URL = InfuraUrls[appChainId];
 
 /**
  * The Chain ID the environment is configured for.
