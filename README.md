@@ -42,6 +42,17 @@ Similarly `nx e2e my-app` will execute the end-to-end tests with [Cypress](https
 
 Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more.
 
+# Vegacapsule
+
+## Explorer
+
+Follow the following steps to start using a local network with the Vega Explorer:
+
+1. Prepare vegacapsule. Follow the [Vegacapsule instructions](https://github.com/vegaprotocol/vegacapsule#quick-start)
+1. Build the explorer frontend application
+1. Start the explorer frontend application with the `.env.vegacapsule` env file
+1. Go to [http://localhost:3000](http://localhost:3000) in your browser
+
 # 📑 License
 
 [MIT](./LICENSE)
