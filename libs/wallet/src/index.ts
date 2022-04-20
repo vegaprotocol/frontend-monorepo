@@ -6,4 +6,5 @@ export * from './connectors';
 export * from './storage-keys';
 export * from './types';
 export * from './use-vega-transaction';
+export * from './use-eager-connect';
 export * from './manage-dialog';
