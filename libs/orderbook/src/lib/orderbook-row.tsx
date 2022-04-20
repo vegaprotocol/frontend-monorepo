@@ -53,4 +53,6 @@ export const OrderbookRow = React.memo(
   }
 );
 
+OrderbookRow.displayName = 'OrderbookRow';
+
 export default OrderbookRow;

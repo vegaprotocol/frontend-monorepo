@@ -9,10 +9,10 @@ interface OrderbookProps {
 
 export const Orderbook = ({ data, decimalPlaces }: OrderbookProps) => (
   <div className="grid grid-cols-4 gap-4 text-right text-ui-small">
-    <div>{t('Bid Vol')}</div>
-    <div>{t('Price')}</div>
-    <div>{t('Ask Vol')}</div>
-    <div>{t('Cumulative Vol')}</div>
+    <div className="text-left">{t('Bid Vol')}</div>
+    <div className="text-left">{t('Price')}</div>
+    <div className="text-left">{t('Ask Vol')}</div>
+    <div className="text-left">{t('Cumulative Vol')}</div>
     {data?.map((data) => (
       <OrderbookRow
         key={data.price}

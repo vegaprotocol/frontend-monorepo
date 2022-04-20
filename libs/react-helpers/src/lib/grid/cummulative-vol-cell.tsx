@@ -62,6 +62,8 @@ export const CummulativeVol = React.memo(
   }
 );
 
+CummulativeVol.displayName = 'CummulativeVol';
+
 export const CummulativeVolCell = ({ value }: ICummulativeVolCellProps) => (
   <CummulativeVol {...value} />
 );

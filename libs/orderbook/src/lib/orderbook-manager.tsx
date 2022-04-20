@@ -46,7 +46,7 @@ export const OrderbookManager = ({
     []
   );
 
-  const { data, error, loading } = useDataProvider(
+  const { data, error, loading, flush } = useDataProvider(
     marketDepthDataProvider,
     update,
     variables
@@ -58,13 +58,18 @@ export const OrderbookManager = ({
       setOrderbookData(dataRef.current);
       return;
     }
-    dataRef.current = compact(data.depth.sell, data.depth.buy, resolution);
+    dataRef.current = compact(
+      data.depth.sell,
+      data.depth.buy,
+      resolution
+    );
     setOrderbookData(dataRef.current);
   }, [data, resolution]);
 
   useEffect(() => {
     resolutionRef.current = resolution;
-  }, [resolution]);
+    flush();
+  }, [resolution, flush]);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>

@@ -33,6 +33,8 @@ export const Vol = React.memo(({ value, relativeValue, type }: VolProps) => {
   );
 });
 
+Vol.displayName = 'Vol';
+
 export const VolCell = ({ value, valueFormatted }: IVolCellProps) => (
   <Vol value={value} {...valueFormatted} />
 );

@@ -12,7 +12,13 @@ export function useDataProvider<Data, Delta>(
   const [data, setData] = useState<Data | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | undefined>(undefined);
+  const flushRef = useRef<(() => void) | undefined>(undefined);
   const initialized = useRef<boolean>(false);
+  const flush = useCallback(() => {
+    if (flushRef.current) {
+      flushRef.current();
+    }
+  }, []);
   const callback = useCallback(
     ({ data, error, loading, delta }) => {
       setError(error);
@@ -27,7 +33,9 @@ export function useDataProvider<Data, Delta>(
     [update]
   );
   useEffect(() => {
-    return dataProvider(callback, client, variables);
+    const { unsubscribe, flush } = dataProvider(callback, client, variables);
+    flushRef.current = flush;
+    return unsubscribe;
   }, [client, initialized, dataProvider, callback, variables]);
-  return { data, loading, error };
+  return { data, loading, error, flush };
 }

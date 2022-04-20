@@ -23,7 +23,11 @@ export interface Subscribe<Data, Delta> {
     callback: UpdateCallback<Data, Delta>,
     client: ApolloClient<object>,
     variables?: OperationVariables
-  ): () => void;
+  ): {
+    unsubscribe: () => void;
+    restart: () => void;
+    flush: () => void;
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,17 +137,27 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
+  const reset = () => {
+    if (subscription) {
+      subscription.unsubscribe();
+      subscription = undefined;
+    }
+    data = null;
+    error = undefined;
+    loading = false;
+  };
+
   const unsubscribe = (callback: UpdateCallback<Data, Delta>) => {
     callbacks.splice(callbacks.indexOf(callback), 1);
     if (callbacks.length === 0) {
-      if (subscription) {
-        subscription.unsubscribe();
-        subscription = undefined;
-      }
-      data = null;
-      error = undefined;
-      loading = false;
+      reset();
     }
+  };
+
+  const restart = () => {
+    reset();
+    initialize();
+    notifyAll();
   };
 
   return (callback, c, v) => {
@@ -155,7 +169,11 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     } else {
       notify(callback);
     }
-    return () => unsubscribe(callback);
+    return {
+      unsubscribe: () => unsubscribe(callback),
+      restart,
+      flush: () => notify(callback),
+    };
   };
 }
 
