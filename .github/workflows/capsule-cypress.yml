@@ -84,19 +84,19 @@ jobs:
       #######
       - name: Build capsule
         run: go build -o vegacapsule ./main.go
-        working-directory: './capsule'
+        working-directory: capsule
 
       - name: Build vega
         run: go build -o vega ./cmd/vega/
-        working-directory: './vega'
+        working-directory: vega
 
       - name: Build data-node
         run: go build -o data-node ./cmd/data-node/
-        working-directory: './data-node'
+        working-directory: data-node
 
       - name: Build vegawallet
         run: go build -o data-node ../main.go
-        working-directory: './data-node'
+        working-directory: data-node
 
       ######
       ## Start capsule
