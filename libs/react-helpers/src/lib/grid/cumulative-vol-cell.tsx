@@ -6,8 +6,8 @@ import { BID_COLOR, ASK_COLOR } from './vol-cell';
 const INTERSECT_COLOR = 'darkgray';
 
 export interface CumulativeVolProps {
-  relativeAsk?: string;
-  relativeBid?: string;
+  relativeAsk?: number;
+  relativeBid?: number;
 }
 
 export interface ICumulativeVolCellProps extends ICellRendererParams {
@@ -16,15 +16,13 @@ export interface ICumulativeVolCellProps extends ICellRendererParams {
 
 export const CumulativeVol = React.memo(
   ({ relativeAsk, relativeBid }: CumulativeVolProps) => {
-    const relativeAskNumber = relativeAsk ? parseInt(relativeAsk) : 0;
-    const relativeBidNumber = relativeBid ? parseInt(relativeBid) : 0;
-    const bid = relativeBidNumber ? (
+    const bid = relativeBid ? (
       <div
         className="h-full absolute top-0 right-0"
         style={{
-          width: relativeBid,
+          width: `${relativeBid}%`,
           backgroundColor:
-            relativeAsk && relativeAskNumber > relativeBidNumber
+            relativeAsk && relativeAsk > relativeBid
               ? INTERSECT_COLOR
               : BID_COLOR,
         }}
@@ -34,9 +32,9 @@ export const CumulativeVol = React.memo(
       <div
         className="h-full absolute top-0 left-0"
         style={{
-          width: relativeAsk,
+          width: `${relativeAsk}%`,
           backgroundColor:
-            relativeBid && relativeBidNumber > relativeAskNumber
+            relativeBid && relativeBid > relativeAsk
               ? INTERSECT_COLOR
               : ASK_COLOR,
         }}
@@ -44,9 +42,7 @@ export const CumulativeVol = React.memo(
     ) : null;
     return (
       <div className="h-full relative" data-testid="vol">
-        {relativeBidNumber &&
-        relativeAskNumber &&
-        relativeBidNumber > relativeAskNumber ? (
+        {relativeBid && relativeAsk && relativeBid > relativeAsk ? (
           <>
             {ask}
             {bid}

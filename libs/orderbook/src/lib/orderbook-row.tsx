@@ -8,12 +8,12 @@ import {
 
 interface OrderbookRowProps {
   bidVol: number;
-  relativeBidVol?: string;
+  relativeBidVol?: number;
   price: number;
   askVol: number;
-  relativeAskVol?: string;
-  cumulativeRelativeAskVol?: string;
-  cumulativeRelativeBidVol?: string;
+  relativeAskVol?: number;
+  cumulativeRelativeAskVol?: number;
+  cumulativeRelativeBidVol?: number;
   decimalPlaces: number;
 }
 

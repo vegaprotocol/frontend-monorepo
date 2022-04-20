@@ -11,19 +11,19 @@ import type {
 
 export interface CumulativeVol {
   bid: number;
-  relativeBid?: string;
+  relativeBid?: number;
   ask: number;
-  relativeAsk?: string;
+  relativeAsk?: number;
 }
 
 export interface OrderbookData {
   price: number;
   bidVol: number;
   bidVolByLevel?: Record<number, number>;
-  relativeBidVol?: string;
+  relativeBidVol?: number;
   askVol: number;
   askVolByLevel?: Record<number, number>;
-  relativeAskVol?: string;
+  relativeAskVol?: number;
   cumulativeVol: CumulativeVol;
 }
 
@@ -49,17 +49,17 @@ const maxVolumes = (orderbookData: OrderbookData[]) => {
   };
 };
 
-const toPercentString = (value?: number) => `${Math.ceil((value ?? 0) * 100)}%`;
+const toPercentValue = (value?: number) => Math.ceil((value ?? 0) * 100);
 
 const updateRelativeData = (data: OrderbookData[]) => {
   const { bidVol, askVol, cumulativeVol } = maxVolumes(data);
   data.forEach((data) => {
-    data.relativeAskVol = toPercentString(data.askVol / askVol);
-    data.relativeBidVol = toPercentString(data.bidVol / bidVol);
-    data.cumulativeVol.relativeAsk = toPercentString(
+    data.relativeAskVol = toPercentValue(data.askVol / askVol);
+    data.relativeBidVol = toPercentValue(data.bidVol / bidVol);
+    data.cumulativeVol.relativeAsk = toPercentValue(
       data.cumulativeVol.ask / cumulativeVol
     );
-    data.cumulativeVol.relativeBid = toPercentString(
+    data.cumulativeVol.relativeBid = toPercentValue(
       data.cumulativeVol.bid / cumulativeVol
     );
   });

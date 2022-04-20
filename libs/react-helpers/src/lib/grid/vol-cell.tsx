@@ -4,7 +4,7 @@ import { PriceCell } from './price-cell';
 
 export interface VolProps {
   value: number | bigint | null | undefined;
-  relativeValue?: string;
+  relativeValue?: number;
   type: 'bid' | 'ask';
 }
 export interface IVolCellProps extends ICellRendererParams {
@@ -24,7 +24,7 @@ export const Vol = React.memo(({ value, relativeValue, type }: VolProps) => {
       <div
         className="h-full absolute top-0 left-0"
         style={{
-          width: relativeValue ?? '0%',
+          width: relativeValue ? `${relativeValue}%` : '0%',
           backgroundColor: type === 'bid' ? BID_COLOR : ASK_COLOR,
         }}
       ></div>

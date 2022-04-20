@@ -58,11 +58,7 @@ export const OrderbookManager = ({
       setOrderbookData(dataRef.current);
       return;
     }
-    dataRef.current = compact(
-      data.depth.sell,
-      data.depth.buy,
-      resolution
-    );
+    dataRef.current = compact(data.depth.sell, data.depth.buy, resolution);
     setOrderbookData(dataRef.current);
   }, [data, resolution]);
 
