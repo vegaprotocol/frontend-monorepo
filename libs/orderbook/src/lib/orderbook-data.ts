@@ -146,6 +146,20 @@ export const compact = (
     []
   );
   orderbookData.sort((a, b) => b.price - a.price);
+  if (orderbookData.length > 1) {
+    for (let i = 1, c = orderbookData.length; i < c; i++) {
+      if (!orderbookData[i].cumulativeVol.bid) {
+        orderbookData[i].cumulativeVol.bid =
+          orderbookData[i - 1].cumulativeVol.bid;
+      }
+    }
+    for (let i = orderbookData.length - 2; i >= 0; i--) {
+      if (!orderbookData[i].cumulativeVol.ask) {
+        orderbookData[i].cumulativeVol.ask =
+          orderbookData[i + 1].cumulativeVol.ask;
+      }
+    }
+  }
   updateRelativeData(orderbookData);
   return orderbookData;
 };
