@@ -92,13 +92,13 @@ jobs:
         run: go install
         working-directory: vega
 
-      - name: Build data-node
-        run: go install
-        working-directory: data-node
-
       - name: Build vegawallet
         run: go install
         working-directory: vegawallet
+
+      - name: Build data-node
+        run: go install
+        working-directory: data-node
 
       ######
       ## Start capsule
