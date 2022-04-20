@@ -8,6 +8,8 @@ export default {
 
 const data = {
   name: 'Level one',
+  undefinedProp: undefined,
+  nullProp: null,
   level: 1,
   nestedData: {
     name: 'Level two',
