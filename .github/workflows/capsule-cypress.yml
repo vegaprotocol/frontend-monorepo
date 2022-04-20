@@ -82,7 +82,7 @@ jobs:
       ## Build binaries
       #######
       - name: Build capsule
-        run: go install -o vegacapsule ./main.go
+        run: go build -o vegacapsule ./main.go
         working-directory: capsule
 
       - name: LS
