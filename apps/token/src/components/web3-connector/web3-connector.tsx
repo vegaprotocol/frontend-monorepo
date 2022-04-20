@@ -2,8 +2,11 @@ import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import { useCallback, useEffect } from 'react';
+import {
+  AppStateActionType,
+  useAppState,
+} from '../../contexts/app-state/app-state-context';
 import { Connectors } from '../../lib/web3-connectors';
 
 interface Web3ConnectorProps {
@@ -11,7 +14,13 @@ interface Web3ConnectorProps {
 }
 
 export function Web3Connector({ children }: Web3ConnectorProps) {
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const { appState, appDispatch } = useAppState();
+  const setDialogOpen = useCallback(
+    (isOpen: boolean) => {
+      appDispatch({ type: AppStateActionType.SET_ETH_WALLET_OVERLAY, isOpen });
+    },
+    [appDispatch]
+  );
   const appChainId = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
   return (
     <>
@@ -20,7 +29,7 @@ export function Web3Connector({ children }: Web3ConnectorProps) {
       </Web3Content>
       <Web3ConnectDialog
         connectors={Connectors}
-        dialogOpen={dialogOpen}
+        dialogOpen={appState.ethConnectOverlay}
         setDialogOpen={setDialogOpen}
         desiredChainId={appChainId}
       />

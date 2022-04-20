@@ -27,11 +27,11 @@ function App() {
   return (
     <GraphQlProvider>
       <Router>
-        <Web3Provider connectors={Connectors}>
-          <Web3Connector>
-            <VegaWalletProvider>
-              <ContractsProvider>
-                <AppStateProvider>
+        <AppStateProvider>
+          <Web3Provider connectors={Connectors}>
+            <Web3Connector>
+              <VegaWalletProvider>
+                <ContractsProvider>
                   <AppLoader>
                     <BalanceManager>
                       <div className="app dark">
@@ -45,11 +45,11 @@ function App() {
                       <TransactionModal />
                     </BalanceManager>
                   </AppLoader>
-                </AppStateProvider>
-              </ContractsProvider>
-            </VegaWalletProvider>
-          </Web3Connector>
-        </Web3Provider>
+                </ContractsProvider>
+              </VegaWalletProvider>
+            </Web3Connector>
+          </Web3Provider>
+        </AppStateProvider>
       </Router>
     </GraphQlProvider>
   );
