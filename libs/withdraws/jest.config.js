@@ -6,4 +6,5 @@ module.exports = {
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/libs/withdraws',
+  setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

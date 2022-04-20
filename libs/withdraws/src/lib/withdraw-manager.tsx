@@ -24,6 +24,7 @@ export const WithdrawManager = ({
   const dialogDismissed = useRef(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
+
   const { account: ethereumAccount } = useWeb3React();
   const { ethTx, vegaTx, approval, submit, reset } = useWithdraw(
     dialogDismissed.current
@@ -49,6 +50,12 @@ export const WithdrawManager = ({
 
     return new BigNumber(addDecimal(account.balance, asset.decimals));
   }, [asset, accounts]);
+
+  const min = useMemo(() => {
+    return asset
+      ? new BigNumber(addDecimal('1', asset.decimals))
+      : new BigNumber(0);
+  }, [asset]);
 
   const handleSubmit = useCallback(
     (args) => {
@@ -78,7 +85,8 @@ export const WithdrawManager = ({
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}
         max={max}
-        submitWithdrawalCreate={handleSubmit}
+        min={min}
+        submitWithdraw={handleSubmit}
       />
       <WithdrawDialog
         vegaTx={vegaTx}

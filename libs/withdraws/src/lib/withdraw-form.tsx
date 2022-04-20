@@ -1,4 +1,11 @@
-import { removeDecimal, t } from '@vegaprotocol/react-helpers';
+import {
+  ethereumAddress,
+  maxSafe,
+  minSafe,
+  t,
+  removeDecimal,
+  required,
+} from '@vegaprotocol/react-helpers';
 import {
   Button,
   FormGroup,
@@ -7,7 +14,6 @@ import {
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
-import { ethers } from 'ethers';
 import type { ReactNode } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -21,21 +27,23 @@ interface FormFields {
 }
 
 export interface WithdrawFormProps {
-  ethereumAccount: string | undefined;
   assets: Asset[];
-  selectedAsset?: Asset;
   max: BigNumber;
+  min: BigNumber;
+  selectedAsset?: Asset;
+  ethereumAccount?: string;
   onSelectAsset: (assetId: string) => void;
-  submitWithdrawalCreate: (withdrawal: WithdrawalFields) => void;
+  submitWithdraw: (withdrawal: WithdrawalFields) => void;
 }
 
 export const WithdrawForm = ({
-  ethereumAccount,
   assets,
-  selectedAsset,
   max,
+  min,
+  selectedAsset,
+  ethereumAccount,
   onSelectAsset,
-  submitWithdrawalCreate,
+  submitWithdraw,
 }: WithdrawFormProps) => {
   const {
     register,
@@ -55,7 +63,7 @@ export const WithdrawForm = ({
       throw new Error('Asset not selected');
     }
 
-    submitWithdrawalCreate({
+    submitWithdraw({
       asset: selectedAsset.id,
       amount: removeDecimal(fields.amount, selectedAsset.decimals),
       receiverAddress: fields.to,
@@ -69,9 +77,13 @@ export const WithdrawForm = ({
   }, [assetId, onSelectAsset]);
 
   return (
-    <form onSubmit={handleSubmit(onCreateWithdraw)} noValidate={true}>
+    <form
+      onSubmit={handleSubmit(onCreateWithdraw)}
+      noValidate={true}
+      data-testid="withdraw-form"
+    >
       <FormGroup label={t('Asset')} labelFor="asset" className="relative">
-        <Select {...register('asset', { required: t('Required') })} id="asset">
+        <Select {...register('asset', { validate: { required } })} id="asset">
           <option value="">{t('Please select')}</option>
           {assets.map((a) => (
             <option key={a.id} value={a.id}>
@@ -85,24 +97,14 @@ export const WithdrawForm = ({
           </InputError>
         )}
       </FormGroup>
+
       <FormGroup
         label={t('To (Ethereum address)')}
         labelFor="ethereum-address"
         className="relative"
       >
         <Input
-          {...register('to', {
-            required: t('Required'),
-            validate: {
-              validEthereumAddress: (value) => {
-                if (!ethers.utils.isAddress(value)) {
-                  return t('Invalid Ethereum address');
-                }
-
-                return true;
-              },
-            },
-          })}
+          {...register('to', { validate: { required, ethereumAddress } })}
           id="ethereum-address"
         />
         {errors.to?.message && (
@@ -128,7 +130,11 @@ export const WithdrawForm = ({
           autoComplete="off"
           id="amount"
           {...register('amount', {
-            required: t('Required'),
+            validate: {
+              required,
+              maxSafe: (value) => maxSafe(max)(value),
+              minSafe: (value) => minSafe(min)(value),
+            },
           })}
         />
         {errors.amount?.message && (
@@ -136,7 +142,7 @@ export const WithdrawForm = ({
             {errors.amount.message}
           </InputError>
         )}
-        {ethereumAccount && selectedAsset && (
+        {selectedAsset && (
           <UseButton
             onClick={() => {
               setValue('amount', max.toFixed(selectedAsset.decimals));

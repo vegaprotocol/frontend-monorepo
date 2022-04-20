@@ -118,7 +118,8 @@ test('Form validation', async () => {
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountLessThanMinViable },
   });
-  expect(await screen.findByText('Amount is below permitted minimum'));
+
+  expect(await screen.findByText('Value is below minimum'));
 
   rerender(
     <DepositForm
@@ -130,7 +131,7 @@ test('Form validation', async () => {
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountLessThanLimit },
   });
-  expect(await screen.findByText('Amount is below permitted minimum'));
+  expect(await screen.findByText('Value is below minimum'));
 });
 
 test('Approval', () => {
