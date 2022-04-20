@@ -88,6 +88,7 @@ jobs:
 
       - name: check path
         run: ./vegacapsule --help
+        working-directory: capsule
 
       - name: Build vega
         run: go build -o vega ./cmd/vega/
