@@ -101,6 +101,10 @@ jobs:
         working-directory: vegawallet
 
       - name: Build data-node
+        run: pwd
+        working-directory: data-node
+
+      - name: Build data-node
         run: go install
         working-directory: data-node
 
