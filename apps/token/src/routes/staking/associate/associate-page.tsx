@@ -87,13 +87,17 @@ export const AssociatePage = ({
 
   return (
     <section data-testid="associate">
-      <Callout>
-        <p data-testid="associate-information1">{t('associateInfo1')}</p>
-        <p data-testid="associate-information2">{t('associateInfo2')}</p>
-      </Callout>
+      <div className="mb-24">
+        <Callout>
+          <p data-testid="associate-information1">{t('associateInfo1')}</p>
+          <p className="mb-0" data-testid="associate-information2">
+            {t('associateInfo2')}
+          </p>
+        </Callout>
+      </div>
       {zeroVesting && zeroVega ? (
         <Callout intent={Intent.Danger}>
-          <p>{t('associateNoVega')}</p>
+          <p className="mb-0">{t('associateNoVega')}</p>
         </Callout>
       ) : !zeroVesting ? (
         <>
