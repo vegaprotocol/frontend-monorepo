@@ -176,7 +176,7 @@ export const TokenInput = ({
           currency={currency}
         />
       </FormGroup>
-      {approveContent ? <div className="mb-12">{approveContent}</div> : null}
+      {approveContent ? <div className="mb-24">{approveContent}</div> : null}
       <Button
         data-testid="token-input-submit-button"
         className="w-full"
