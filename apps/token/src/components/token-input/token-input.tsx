@@ -28,10 +28,11 @@ export const AmountInput = ({
   amount,
   setAmount,
   maximum,
+  // TODO: render currency in input when https://github.com/vegaprotocol/frontend-monorepo/issues/273
   currency,
 }: {
   amount: string;
-  setAmount: React.Dispatch<any>;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
   maximum: BigNumber;
   currency: string;
 }) => {
@@ -45,8 +46,6 @@ export const AmountInput = ({
         id={inputName}
         onChange={(e) => setAmount(e.target.value)}
         value={amount}
-        // TODO: TFE import
-        // rightElement={<Tag minimal={true}>{currency}</Tag>}
         autoComplete="off"
         type="number"
         max={maximum.toString()}
@@ -84,7 +83,7 @@ export const TokenInput = ({
   approveTxDispatch,
 }: {
   amount: string;
-  setAmount: React.Dispatch<any>;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
   perform: () => void;
   submitText: string;
   currency: string;
@@ -109,9 +108,9 @@ export const TokenInput = ({
       'If requires approval is true allowance, approve, approveTxState and approveDispatch props are required!'
     );
   }
-  const isApproved = !new BigNumber(allowance!).isEqualTo(0);
+  const isApproved = !new BigNumber(allowance || 0).isEqualTo(0);
   const showApproveButton =
-    !isApproved || new BigNumber(amount).isGreaterThan(allowance!);
+    !isApproved || new BigNumber(amount).isGreaterThan(allowance || 0);
 
   const isDisabled = React.useMemo<boolean>(() => {
     if (requireApproval) {

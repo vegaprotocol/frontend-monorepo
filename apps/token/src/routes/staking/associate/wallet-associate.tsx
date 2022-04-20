@@ -25,7 +25,7 @@ export const WalletAssociate = ({
 }: {
   perform: () => void;
   amount: string;
-  setAmount: React.Dispatch<string>;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
   vegaKey: VegaKeyExtended;
   address: string;
 }) => {

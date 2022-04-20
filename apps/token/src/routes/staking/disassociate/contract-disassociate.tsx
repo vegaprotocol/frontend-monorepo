@@ -11,7 +11,7 @@ export const ContractDisassociate = ({
 }: {
   perform: () => void;
   amount: string;
-  setAmount: React.Dispatch<string>;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const {
     appState: { lien },

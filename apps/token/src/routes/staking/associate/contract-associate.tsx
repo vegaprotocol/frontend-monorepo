@@ -18,7 +18,7 @@ export const ContractAssociate = ({
 }: {
   perform: () => void;
   amount: string;
-  setAmount: React.Dispatch<string>;
+  setAmount: React.Dispatch<React.SetStateAction<string>>;
   vegaKey: VegaKeyExtended | null;
 }) => {
   const { t } = useTranslation();
