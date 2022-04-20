@@ -91,8 +91,12 @@ jobs:
         run: go install ./main.go
         working-directory: capsule
 
-      - name: LS
-        run: ls
+      - name: which
+        run: which go
+        working-directory: capsule
+
+      - name: echo
+        run: echo $PATH
         working-directory: capsule
 
       - name: check path
