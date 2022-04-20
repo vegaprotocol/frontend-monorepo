@@ -50,8 +50,10 @@ export const Web3Content = ({
   if (error) {
     return (
       <Splash>
-        <p>Something went wrong: {error.message}</p>
-        <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        <div className="flex flex-col items-center gap-12">
+          <p>Something went wrong: {error.message}</p>
+          <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        </div>
       </Splash>
     );
   }
@@ -59,7 +61,7 @@ export const Web3Content = ({
   if (!isActive) {
     return (
       <Splash>
-        <div className="flex items-center gap-12">
+        <div className="flex flex-col items-center gap-12">
           <p className="m-0">Connect your Ethereum wallet</p>
           <Button onClick={() => setDialogOpen(true)}>Connect</Button>
         </div>
@@ -70,8 +72,11 @@ export const Web3Content = ({
   if (chainId !== appChainId) {
     return (
       <Splash>
-        <p className="mb-12">This app only works on chain ID: {appChainId}</p>
-        <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        <div className="flex flex-col items-center gap-12">
+          <p className="m-0">Connect your Ethereum wallet</p>
+          <p className="mb-12">This app only works on chain ID: {appChainId}</p>
+          <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        </div>
       </Splash>
     );
   }
