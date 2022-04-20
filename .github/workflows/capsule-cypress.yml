@@ -94,25 +94,24 @@ jobs:
         run: go build -o vega ./cmd/vega/
         working-directory: vega
 
-      # - name: Build data-node
-      #   run: go build -o data-node ./cmd/data-node/
-      #   working-directory: data-node
+      - name: Build data-node
+        run: go build -o data-node ./cmd/data-node/
+        working-directory: data-node
 
       - name: Build vegawallet
-        run: go build -o data-node ../main.go
-        working-directory: data-node
+        run: go build -o vegawallet ../main.go
+        working-directory: vegawallet
 
       ######
       ## Start capsule
       ######
       - name: Login to docker
         run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
-      # TODO PATH is **probably** wrong
       - name: Start nomad
-        run: vegacapsule nomad &
+        run: ./vegacapsule nomad &
       # May need to wait for the above to fully start...
       - name: Bootstrap network
-        run: vegacapsule network bootstrap --config-path=config.hcl
+        run: ./vegacapsule network bootstrap --config-path=config.hcl
 
       ######
       ## Run some tests
