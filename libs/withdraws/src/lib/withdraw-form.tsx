@@ -6,7 +6,6 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
-import { useWeb3React } from '@web3-react/core';
 import type BigNumber from 'bignumber.js';
 import { ethers } from 'ethers';
 import type { ReactNode } from 'react';
@@ -21,7 +20,8 @@ interface FormFields {
   amount: string;
 }
 
-export interface CreateWithdrawFormProps {
+export interface WithdrawFormProps {
+  ethereumAccount: string | undefined;
   assets: Asset[];
   selectedAsset?: Asset;
   max: BigNumber;
@@ -30,13 +30,13 @@ export interface CreateWithdrawFormProps {
 }
 
 export const WithdrawForm = ({
+  ethereumAccount,
   assets,
   selectedAsset,
   max,
   onSelectAsset,
   submitWithdrawalCreate,
-}: CreateWithdrawFormProps) => {
-  const { account } = useWeb3React();
+}: WithdrawFormProps) => {
   const {
     register,
     handleSubmit,
@@ -47,7 +47,7 @@ export const WithdrawForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: selectedAsset?.id,
-      to: account,
+      to: ethereumAccount,
     },
   });
   const onCreateWithdraw = async (fields: FormFields) => {
@@ -110,10 +110,10 @@ export const WithdrawForm = ({
             {errors.to.message}
           </InputError>
         )}
-        {account && (
+        {ethereumAccount && (
           <UseButton
             onClick={() => {
-              setValue('to', account);
+              setValue('to', ethereumAccount);
               clearErrors('to');
             }}
           >
@@ -136,7 +136,7 @@ export const WithdrawForm = ({
             {errors.amount.message}
           </InputError>
         )}
-        {account && selectedAsset && (
+        {ethereumAccount && selectedAsset && (
           <UseButton
             onClick={() => {
               setValue('amount', max.toFixed(selectedAsset.decimals));
