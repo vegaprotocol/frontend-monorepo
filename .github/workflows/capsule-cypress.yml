@@ -24,12 +24,6 @@ jobs:
         id: npm
         with:
           node-version: 16
-      - name: Static analysis and testing
-        run: |
-          export GOPATH=$HOME/go
-          export GOBIN=$(go env GOPATH)/bin
-          export PATH=$PATH:$GOPATH
-          export PATH=$PATH:$GOBIN
 
       #######
       ## Checkout all the things
@@ -91,27 +85,19 @@ jobs:
         run: go install
         working-directory: capsule
 
-      - name: which
-        run: which go
-        working-directory: capsule
-
-      - name: echo
-        run: echo $PATH
-        working-directory: capsule
-
       - name: check path
         run: vegacapsule --help
 
       - name: Build vega
-        run: go build -o vega ./cmd/vega/
+        run: go install
         working-directory: vega
 
       - name: Build data-node
-        run: go build -o data-node ./cmd/data-node/
+        run: go install
         working-directory: data-node
 
       - name: Build vegawallet
-        run: go build -o vegawallet ./main.go
+        run: go install
         working-directory: vegawallet
 
       ######
