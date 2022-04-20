@@ -1,0 +1,85 @@
+@import "../../styles/colors";
+@import "../../styles/fonts";
+
+$ns: "key-value-table";
+
+.#{$ns}__header,
+.#{$ns}__footer {
+  margin: 10px 0 5px;
+}
+
+.#{$ns}__header {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 7px;
+}
+
+.#{$ns}__row {
+  @media (max-width: 640px) {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.#{$ns} {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 10px;
+  word-break: break-all;
+
+  tr {
+    border-bottom: 1px solid $white;
+
+    &:first-child {
+      border-top: 1px solid $white;
+    }
+  }
+
+  th {
+    word-break: break-word;
+    text-align: left;
+    font-weight: 500;
+    color: $white;
+    text-transform: uppercase;
+  }
+
+  th,
+  td {
+    vertical-align: top;
+    padding: 5px;
+  }
+
+  td {
+    color: $text-color;
+    text-align: right;
+  }
+
+  .bp3-tag {
+    margin: 0 5px 5px 0;
+  }
+
+  &.#{$ns}--numerical {
+    td {
+      font-family: $font-mono;
+
+      & button {
+        font-family: $font-main;
+      }
+    }
+  }
+
+  &.#{$ns}--muted {
+    tr {
+      border-color: $gray1;
+
+      &:first-child {
+        border-top: none;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}

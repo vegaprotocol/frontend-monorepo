@@ -1,0 +1,12 @@
+.app-footer {
+  padding: 20px;
+  font-size: 14px;
+
+  > p {
+    margin-bottom: 7px;
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+}

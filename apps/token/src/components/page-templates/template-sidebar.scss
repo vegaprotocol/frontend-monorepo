@@ -1,0 +1,53 @@
+@import "../../styles/colors";
+
+.template-sidebar {
+  border-bottom: 1px solid $white;
+
+  @media (min-width: 960px) {
+    display: grid;
+    grid-template-rows: auto minmax(600px, 1fr);
+    grid-template-columns: 1fr 450px;
+  }
+
+  main {
+    padding: 20px;
+  }
+
+  aside {
+    padding: 20px;
+    background-image: url("../../images/banner.png");
+    background-size: 100% auto;
+  }
+
+  aside {
+    border-left: 1px solid white;
+  }
+
+  header {
+    grid-column: 1 / 3;
+    grid-row: 1 / 1;
+  }
+
+  main {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+  }
+
+  aside {
+    display: none;
+
+    @media (min-width: 960px) {
+      display: block;
+      grid-column: 2 / 3;
+      grid-row: 1 / 3;
+    }
+
+    section {
+      margin-bottom: 20px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

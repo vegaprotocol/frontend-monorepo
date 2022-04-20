@@ -1,4 +1,5 @@
-import { useEagerConnect } from '../../hooks/use-vega-wallet-eager-connect';
+import { useEagerConnect } from '@vegaprotocol/wallet';
+import { Connectors } from '../../lib/vega-connectors';
 import type { ReactNode } from 'react';
 
 interface AppLoaderProps {
@@ -11,7 +12,7 @@ interface AppLoaderProps {
  */
 export function AppLoader({ children }: AppLoaderProps) {
   // Get keys from vega wallet immediately
-  useEagerConnect();
+  useEagerConnect(Connectors);
 
   return <>{children}</>;
 }

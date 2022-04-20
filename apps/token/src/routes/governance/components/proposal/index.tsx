@@ -1,0 +1,1 @@
+export { Proposal } from "./proposal";

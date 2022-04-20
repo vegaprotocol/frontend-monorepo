@@ -1,0 +1,59 @@
+@import "../../styles/colors";
+@import "../../styles/fonts";
+
+.tranche-item {
+  &__progress {
+    border-left: $white;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-right: $white;
+    border-right-style: solid;
+    border-right-width: 1px;
+
+    &-contents {
+      display: flex;
+      justify-content: space-between;
+      gap: 0 5px;
+      font-family: $font-mono;
+      padding: 2px 5px 2px 5px;
+      color: $text-color-deemphasise;
+
+      &-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 1px solid $black;
+
+        &--left {
+          margin-right: 8px;
+        }
+
+        &--right {
+          margin-left: 8px;
+        }
+      }
+
+      &--light {
+        gap: 0;
+        padding: 2px 0;
+        color: $black;
+      }
+    }
+  }
+
+  &__progress-bar {
+    display: flex;
+
+    &--light {
+      border: 1px solid $black;
+    }
+
+    &--locked {
+      height: 16px;
+    }
+
+    &--unlocked {
+      height: 16px;
+    }
+  }
+}

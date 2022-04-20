@@ -1,19 +1,24 @@
-import * as React from 'react';
+import type { ReactNode, FunctionComponent } from 'react';
+import { useContext } from 'react';
 import dynamic from 'next/dynamic';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 import { AgGridReact } from 'ag-grid-react';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 
-const AgGridLightTheme = dynamic<{ children: React.ReactElement }>(
+interface GridProps {
+  children: ReactNode;
+}
+
+const AgGridLightTheme = dynamic<GridProps>(
   () => import('./ag-grid-light').then((mod) => mod.AgGrid),
   { ssr: false }
-);
+) as FunctionComponent<GridProps>;
 
-const AgGridDarkTheme = dynamic<{ children: React.ReactElement }>(
+const AgGridDarkTheme = dynamic(
   () => import('./ag-grid-dark').then((mod) => mod.AgGrid),
   { ssr: false }
-);
+) as FunctionComponent<GridProps>;
 
 export const AgGridThemed = ({
   style,
@@ -25,7 +30,7 @@ export const AgGridThemed = ({
   className?: string;
   gridRef?: React.ForwardedRef<AgGridReact>;
 }) => {
-  const theme = React.useContext(ThemeContext);
+  const theme = useContext(ThemeContext);
   const defaultProps = { rowHeight: 20, headerHeight: 22 };
   return (
     <div

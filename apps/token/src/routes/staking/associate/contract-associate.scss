@@ -1,0 +1,7 @@
+@import "../../../styles/colors";
+
+.contract-associate {
+  &__error {
+    color: $vega-red3;
+  }
+}
