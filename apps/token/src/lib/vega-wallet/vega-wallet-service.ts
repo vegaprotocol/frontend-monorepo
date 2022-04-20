@@ -1,7 +1,7 @@
 import type { VoteValue } from '../../__generated__/globalTypes';
 import type { VegaKey } from '../../contexts/app-state/app-state-context';
 import type { VOTE_VALUE_MAP } from '../../routes/governance/components/vote-details';
-import { LocalStorage } from '../storage';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import type { GenericErrorResponse } from './vega-wallet-types';
 
 export const MINIMUM_WALLET_VERSION =
@@ -131,7 +131,7 @@ export class VegaWalletService implements IVegaWalletService {
       });
       const json = await res.json();
 
-      if (json.hasOwnProperty('token')) {
+      if ('token' in json) {
         this.setToken(json.token);
         return [undefined, json.token];
       } else {

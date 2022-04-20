@@ -67,28 +67,16 @@ export const Web3Content = ({
     );
   }
 
-  // if (!isActive) {
-  //   return (
-  //     <Splash>
-  //       <div className="flex flex-col items-center gap-12">
-  //         <p className="m-0">Connect your Ethereum wallet</p>
-  //         <Button onClick={() => setDialogOpen(true)}>Connect</Button>
-  //       </div>
-  //     </Splash>
-  //   );
-  // }
-
-  // if (chainId !== appChainId) {
-  //   return (
-  //     <Splash>
-  //       <div className="flex flex-col items-center gap-12">
-  //         <p className="m-0">Connect your Ethereum wallet</p>
-  //         <p className="mb-12">This app only works on chain ID: {appChainId}</p>
-  //         <Button onClick={() => connector.deactivate()}>Disconnect</Button>
-  //       </div>
-  //     </Splash>
-  //   );
-  // }
+  if (chainId !== undefined && chainId !== appChainId) {
+    return (
+      <Splash>
+        <div className="flex flex-col items-center gap-12">
+          <p className="mb-12">This app only works on chain ID: {appChainId}</p>
+          <Button onClick={() => connector.deactivate()}>Disconnect</Button>
+        </div>
+      </Splash>
+    );
+  }
 
   return children;
 };
