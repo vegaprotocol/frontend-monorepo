@@ -8,17 +8,47 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
     steps:
-      - name: Checkout capsule
+      - name: Checkout vega
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vega
           ref: master
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-      # - name: Checkout capsule
-      #   uses: actions/checkout@v2
-      #   with:
-      #     ref: ${{ github.event.pull_request.head.ref }}
-      #     fetch-depth: 0
+      - name: Checkout capsule
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/vegacapsule
+          ref: master
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+      - name: Checkout data node
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/data-node
+          ref: master
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+      - name: Checkout protos
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/protos
+          ref: master
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+      - name: Checkout vegatools
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/vegatools
+          ref: master
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+      - name: Checkout vega wallet
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/vegawallet
+          ref: master
+
+      - name: Checkout frontend mono repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
       # - name: Checkout
       #   uses: actions/checkout@v2
       #   with:
