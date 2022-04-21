@@ -1,4 +1,5 @@
 import Highlighter from 'react-syntax-highlighter';
+import './syntax-highlighter.scss';
 
 export const SyntaxHighlighter = ({ data }: { data: unknown }) => {
   return (
