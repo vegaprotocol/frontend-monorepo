@@ -110,9 +110,6 @@ jobs:
         run: vegacapsule network bootstrap --config-path=config.hcl
         working-directory: capsule
 
-      - name: Check tendermint node
-        run: curl localhost:26607/blockchain
-
       # - name: Wait for ETH
       #   run: vegacapsule ethereum wait
 
