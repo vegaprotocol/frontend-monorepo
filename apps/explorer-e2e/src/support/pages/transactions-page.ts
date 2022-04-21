@@ -53,7 +53,7 @@ export default class TransactionsPage extends BasePage {
                 .each(($propertyName) => {
                   cy.wrap($propertyName).should('not.be.empty');
                 });
-              cy.get('span[style*="color"]')
+              cy.get('.hljs-string')
                 .should('have.length.at.least', 8)
                 .each(($propertyValue) => {
                   cy.wrap($propertyValue).should('not.be.empty');
