@@ -13,7 +13,7 @@ import { EthTxStatus } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
 
-interface WithdrawDialogProps {
+export interface WithdrawDialogProps {
   vegaTx: VegaTxState;
   ethTx: EthTxState;
   approval: Erc20Approval_erc20WithdrawalApproval | null;
