@@ -1,10 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import merge from 'lodash/merge';
 import BigNumber from 'bignumber.js';
 import { WithdrawForm } from './withdraw-form';
 import type { WithdrawFormProps } from './withdraw-form';
-import type { Asset } from './types';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { generateAsset } from './test-helpers';
 
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 let props: WithdrawFormProps;
@@ -12,7 +10,11 @@ let props: WithdrawFormProps;
 beforeEach(() => {
   const assets = [
     generateAsset(),
-    generateAsset({ id: 'asset-id-2', symbol: 'asset-symbol-2' }),
+    generateAsset({
+      id: 'asset-id-2',
+      symbol: 'asset-symbol-2',
+      name: 'asset-name-2',
+    }),
   ];
   props = {
     assets,
@@ -25,20 +27,14 @@ beforeEach(() => {
   };
 });
 
-const submit = () => {
-  fireEvent.submit(screen.getByTestId('withdraw-form'));
-};
-
 const generateJsx = (props: WithdrawFormProps) => <WithdrawForm {...props} />;
 
 test('Validation', async () => {
   const { rerender } = render(generateJsx(props));
 
-  await act(async () => {
-    submit();
-  });
+  fireEvent.submit(screen.getByTestId('withdraw-form'));
 
-  expect(screen.getAllByRole('alert')).toHaveLength(3);
+  expect(await screen.findAllByRole('alert')).toHaveLength(3);
   expect(screen.getAllByText('Required')).toHaveLength(3);
 
   // Selected asset state lives in state so rerender with it now selected
@@ -56,11 +52,11 @@ test('Validation', async () => {
     target: { value: '101' },
   });
 
-  await act(async () => {
-    submit();
-  });
+  fireEvent.submit(screen.getByTestId('withdraw-form'));
 
-  expect(screen.getByText('Invalid Ethereum address')).toBeInTheDocument();
+  expect(
+    await screen.findByText('Invalid Ethereum address')
+  ).toBeInTheDocument();
   expect(screen.getByText('Value is above maximum')).toBeInTheDocument();
 
   fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
@@ -71,18 +67,16 @@ test('Validation', async () => {
     target: { value: '0.000000000001' },
   });
 
-  await act(async () => {
-    submit();
-  });
+  fireEvent.submit(screen.getByTestId('withdraw-form'));
 
-  expect(screen.getByText('Value is below minimum')).toBeInTheDocument();
+  expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
 
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: '40' },
   });
 
   await act(async () => {
-    submit();
+    fireEvent.submit(screen.getByTestId('withdraw-form'));
   });
 
   expect(props.submitWithdraw).toHaveBeenCalledWith({
@@ -112,18 +106,3 @@ test('Use connected Ethereum account', () => {
     ethereumAddress
   );
 });
-
-const generateAsset = (override?: Partial<Asset>) => {
-  return merge(
-    {
-      id: 'asset-id',
-      symbol: 'asset-symbol',
-      name: 'asset-name',
-      decimals: 5,
-      source: {
-        contractAddress: 'contract-address',
-      },
-    },
-    override
-  );
-};

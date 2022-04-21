@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
+import type { WithdrawalFields } from './use-withdraw';
 import { useWithdraw } from './use-withdraw';
 import { WithdrawDialog } from './withdraw-dialog';
 import { isExpectedEthereumError, EthTxStatus } from '@vegaprotocol/web3';
@@ -10,7 +11,7 @@ import BigNumber from 'bignumber.js';
 import type { Account, Asset } from './types';
 import { useWeb3React } from '@web3-react/core';
 
-interface WithdrawManagerProps {
+export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
   initialAssetId?: string;
@@ -48,7 +49,8 @@ export const WithdrawManager = ({
       return new BigNumber(0);
     }
 
-    return new BigNumber(addDecimal(account.balance, asset.decimals));
+    const v = new BigNumber(addDecimal(account.balance, asset.decimals));
+    return v;
   }, [asset, accounts]);
 
   const min = useMemo(() => {
@@ -58,7 +60,7 @@ export const WithdrawManager = ({
   }, [asset]);
 
   const handleSubmit = useCallback(
-    (args) => {
+    (args: WithdrawalFields) => {
       reset();
       setDialogOpen(true);
       submit(args);

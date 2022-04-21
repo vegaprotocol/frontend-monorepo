@@ -20,7 +20,7 @@ export interface EthTxState {
   confirmations: number;
 }
 
-const initialState = {
+export const initialState = {
   status: EthTxStatus.Default,
   error: null,
   txHash: null,

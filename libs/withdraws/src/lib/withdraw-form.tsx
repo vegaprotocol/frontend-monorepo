@@ -83,10 +83,10 @@ export const WithdrawForm = ({
             <Select
               {...field}
               onChange={(e) => {
-                clearErrors('asset');
                 onSelectAsset(e.target.value);
+                field.onChange(e.target.value);
               }}
-              value={selectedAsset?.id}
+              value={selectedAsset?.id || ''}
               id="asset"
             >
               <option value="">{t('Please select')}</option>

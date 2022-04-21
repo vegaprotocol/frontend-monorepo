@@ -19,7 +19,7 @@ export interface VegaTxState {
   signature: string | null;
 }
 
-const initialState = {
+export const initialState = {
   status: VegaTxStatus.Default,
   error: null,
   txHash: null,
