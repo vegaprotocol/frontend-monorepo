@@ -15,8 +15,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
-import { useEffect } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
 import type { Asset } from './types';
 
@@ -58,11 +57,10 @@ export const WithdrawForm = ({
       to: ethereumAccount,
     },
   });
-  const onCreateWithdraw = async (fields: FormFields) => {
+  const onSubmit = async (fields: FormFields) => {
     if (!selectedAsset) {
       throw new Error('Asset not selected');
     }
-
     submitWithdraw({
       asset: selectedAsset.id,
       amount: removeDecimal(fields.amount, selectedAsset.decimals),
@@ -70,27 +68,37 @@ export const WithdrawForm = ({
     });
   };
 
-  const assetId = useWatch({ name: 'asset', control });
-
-  useEffect(() => {
-    onSelectAsset(assetId);
-  }, [assetId, onSelectAsset]);
-
   return (
     <form
-      onSubmit={handleSubmit(onCreateWithdraw)}
+      onSubmit={handleSubmit(onSubmit)}
       noValidate={true}
       data-testid="withdraw-form"
     >
       <FormGroup label={t('Asset')} labelFor="asset" className="relative">
-        <Select {...register('asset', { validate: { required } })} id="asset">
-          <option value="">{t('Please select')}</option>
-          {assets.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
-        </Select>
+        <Controller
+          control={control}
+          name="asset"
+          rules={{ validate: { required } }}
+          render={({ field }) => (
+            <Select
+              {...field}
+              onChange={(e) => {
+                clearErrors('asset');
+                onSelectAsset(e.target.value);
+              }}
+              value={selectedAsset?.id}
+              id="asset"
+            >
+              <option value="">{t('Please select')}</option>
+              {assets.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </Select>
+          )}
+        />
+
         {errors.asset?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.asset.message}
