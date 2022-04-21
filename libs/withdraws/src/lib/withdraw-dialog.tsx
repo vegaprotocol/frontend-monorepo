@@ -28,113 +28,7 @@ export const WithdrawDialog = ({
   dialogOpen,
   onDialogChange,
 }: WithdrawDialogProps) => {
-  const getProps = () => {
-    let intent = Intent.Help;
-    let props: DialogWrapperProps = {
-      title: '',
-      icon: null,
-      children: null,
-    };
-
-    if (vegaTx.status === VegaTxStatus.Error) {
-      props = {
-        title: t('Vega transaction failed'),
-        icon: <Icon name="warning-sign" size={20} />,
-        children: (
-          <Step>
-            {vegaTx.error && (
-              <pre className="text-ui break-all whitespace-pre-wrap">
-                {JSON.stringify(vegaTx.error, null, 2)}
-              </pre>
-            )}
-          </Step>
-        ),
-      };
-      intent = Intent.Danger;
-    }
-
-    // TODO: Add separate UI for when VegaTxStatus is Requested
-    // UI should direct user to their wallet to confirm tx.
-    const isPending =
-      vegaTx.status === VegaTxStatus.Pending ||
-      vegaTx.status === VegaTxStatus.Requested;
-
-    if (isPending || !approval) {
-      props = {
-        title: t('Withdrawal transaction pending'),
-        icon: <Loader size="small" />,
-        children: <Step>Awaiting transaction</Step>,
-      };
-      intent = Intent.Progress;
-    }
-
-    if (ethTx.status === EthTxStatus.Error) {
-      props = {
-        title: t('Ethereum transaction failed'),
-        icon: <Icon name="warning-sign" />,
-        children: (
-          <Step>
-            {ethTx.error ? ethTx.error.message : t('Something went wrong')}
-          </Step>
-        ),
-      };
-      intent = Intent.Danger;
-    }
-
-    if (ethTx.status === EthTxStatus.Requested) {
-      props = {
-        title: t('Confirm Ethereum transaction'),
-        icon: <Icon name="hand-up" />,
-        children: <Step>{t('Confirm transaction in wallet')}</Step>,
-      };
-      intent = Intent.Prompt;
-    }
-
-    if (ethTx.status === EthTxStatus.Pending) {
-      props = {
-        title: t('Ethereum transaction pending'),
-        icon: <Loader size="small" />,
-        children: (
-          <Step>
-            <span>
-              {t(
-                `Awaiting Ethereum transaction ${ethTx.confirmations}/1 confirmations...`
-              )}
-            </span>
-            <EtherscanLink
-              tx={ethTx.txHash || ''}
-              className="text-vega-pink dark:text-vega-yellow"
-              text={t('View on Etherscan')}
-            />
-          </Step>
-        ),
-      };
-      intent = Intent.Progress;
-    }
-
-    if (ethTx.status === EthTxStatus.Complete) {
-      props = {
-        title: 'Withdrawal complete',
-        icon: <Icon name="tick" />,
-        children: (
-          <Step>
-            <span>{t('Ethereum transaction complete')}</span>
-            <EtherscanLink
-              tx={ethTx.txHash || ''}
-              className="text-vega-pink dark:text-vega-yellow"
-              text={t('View on Etherscan')}
-            />
-          </Step>
-        ),
-      };
-      intent = Intent.Success;
-    }
-
-    return { props, intent };
-  };
-
-  const { intent, props } = getProps();
-
+  const { intent, ...props } = getProps(approval, vegaTx, ethTx);
   return (
     <Dialog open={dialogOpen} intent={intent} onChange={onDialogChange}>
       <DialogWrapper {...props} />
@@ -172,4 +66,113 @@ interface StepProps {
 
 const Step = ({ children }: StepProps) => {
   return <p className="flex justify-between">{children}</p>;
+};
+
+interface DialogProps {
+  title: string;
+  icon: ReactNode;
+  children: ReactNode;
+  intent?: Intent;
+}
+
+const getProps = (
+  approval: Erc20Approval_erc20WithdrawalApproval | null,
+  vegaTx: VegaTxState,
+  ethTx: EthTxState
+) => {
+  const vegaTxPropsMap: Record<VegaTxStatus, DialogProps> = {
+    [VegaTxStatus.Default]: {
+      title: '',
+      icon: null,
+      intent: undefined,
+      children: null,
+    },
+    [VegaTxStatus.Error]: {
+      title: t('Withdrawal transaction failed'),
+      icon: <Icon name="warning-sign" size={20} />,
+      intent: Intent.Danger,
+      children: (
+        <Step>
+          {vegaTx.error && (
+            <pre className="text-ui break-all whitespace-pre-wrap">
+              {JSON.stringify(vegaTx.error, null, 2)}
+            </pre>
+          )}
+        </Step>
+      ),
+    },
+    [VegaTxStatus.Requested]: {
+      title: t('Confirm withdrawal'),
+      icon: <Icon name="hand-up" size={20} />,
+      intent: Intent.Prompt,
+      children: <Step>Confirm withdrawal in Vega wallet</Step>,
+    },
+    [VegaTxStatus.Pending]: {
+      title: t('Withdrawal transaction pending'),
+      icon: <Loader size="small" />,
+      intent: Intent.Progress,
+      children: <Step>Awaiting transaction</Step>,
+    },
+  };
+
+  const ethTxPropsMap: Record<EthTxStatus, DialogProps> = {
+    [EthTxStatus.Default]: {
+      title: '',
+      icon: null,
+      intent: undefined,
+      children: null,
+    },
+    [EthTxStatus.Error]: {
+      title: t('Ethereum transaction failed'),
+      icon: <Icon name="warning-sign" size={20} />,
+      intent: Intent.Danger,
+      children: (
+        <Step>
+          {ethTx.error ? ethTx.error.message : t('Something went wrong')}
+        </Step>
+      ),
+    },
+    [EthTxStatus.Requested]: {
+      title: t('Confirm transaction'),
+      icon: <Icon name="hand-up" size={20} />,
+      intent: Intent.Prompt,
+      children: <Step>{t('Confirm transaction in wallet')}</Step>,
+    },
+    [EthTxStatus.Pending]: {
+      title: t('Ethereum transaction pending'),
+      icon: <Loader size="small" />,
+      intent: Intent.Progress,
+      children: (
+        <Step>
+          <span>
+            {t(
+              `Awaiting Ethereum transaction ${ethTx.confirmations}/1 confirmations...`
+            )}
+          </span>
+          <EtherscanLink
+            tx={ethTx.txHash || ''}
+            className="text-vega-pink dark:text-vega-yellow"
+            text={t('View on Etherscan')}
+          />
+        </Step>
+      ),
+    },
+    [EthTxStatus.Complete]: {
+      title: t('Withdrawal complete'),
+      icon: <Icon name="tick" />,
+      intent: Intent.Success,
+      children: (
+        <Step>
+          <span>{t('Ethereum transaction complete')}</span>
+          <EtherscanLink
+            tx={ethTx.txHash || ''}
+            className="text-vega-pink dark:text-vega-yellow"
+            text={t('View on Etherscan')}
+          />
+        </Step>
+      ),
+    },
+  };
+
+  return approval ? ethTxPropsMap[ethTx.status] : vegaTxPropsMap[vegaTx.status];
 };
