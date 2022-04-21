@@ -110,8 +110,8 @@ jobs:
         run: vegacapsule network bootstrap --config-path=config.hcl
         working-directory: capsule
 
-      - name: Wait for ETH
-        run: vegacapsule ethereum wait
+      # - name: Wait for ETH
+      #   run: vegacapsule ethereum wait
 
       ######
       ## Run some tests

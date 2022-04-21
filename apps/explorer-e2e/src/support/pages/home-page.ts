@@ -28,7 +28,7 @@ export default class HomePage extends BasePage {
       'Transactions / block',
       'Block time',
       'Time',
-      'App',
+      // 'App',
       'Tendermint',
       'Up since',
       'Chain ID',
