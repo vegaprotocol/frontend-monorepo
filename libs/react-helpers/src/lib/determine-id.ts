@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import { SHA3 } from 'sha3';
+import { remove0x } from './remove-0x';
 
 /**
  * This function creates an ID in the same way that core does on the backend. This way we
@@ -18,5 +19,5 @@ export const determineId = (sig: string) => {
   const id = ethers.utils.hexlify(hash.digest());
 
   // Remove 0x as core doesn't keep them in the API
-  return id.substring(2);
+  return remove0x(id);
 };
