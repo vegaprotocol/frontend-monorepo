@@ -85,27 +85,13 @@ jobs:
         run: go install
         working-directory: capsule
 
-      # - name: check path
-      #   run: vegacapsule --help
-
       - name: Build vega
         run: go install ./cmd/vega/
         working-directory: vega
 
-      # - name: check path
-      #   run: vega --help
-
       - name: Build vegawallet
         run: go install
         working-directory: vegawallet
-
-      # - name: Build vegawallet
-      #   run: pwd
-      #   working-directory: vegawallet
-
-      # - name: Build data-node
-      #   run: pwd
-      #   working-directory: data-node
 
       - name: Build data-node
         run: go install ./cmd/data-node/
@@ -124,6 +110,9 @@ jobs:
         run: vegacapsule network bootstrap --config-path=config.hcl
         working-directory: capsule
 
+      - name: Wait for ETH
+        run: vegacapsule ethereum wait
+
       ######
       ## Run some tests
       ######
@@ -140,9 +129,3 @@ jobs:
       ## TODO only running explorer right now
       - name: Run Cypress tests
         run: yarn nx run explorer-e2e:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }} --browser chrome
-
-      # - name: Derive appropriate SHAs for base and head for `nx affected` commands
-      #   uses: nrwl/nx-set-shas@v2
-      #   with:
-      #     main-branch-name: master
-      # - name: Use Node.js 16
