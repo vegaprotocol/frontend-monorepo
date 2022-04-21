@@ -75,7 +75,7 @@ export const CreateWithdrawPageContainer = ({
 
         return (
           <>
-            {pendingWithdrawals?.length && (
+            {pendingWithdrawals?.length ? (
               <p className="mb-12">
                 {t('You have incomplete withdrawals.')}{' '}
                 <Link href="/portfolio/withdraws">
@@ -84,7 +84,7 @@ export const CreateWithdrawPageContainer = ({
                   </a>
                 </Link>
               </p>
-            )}
+            ) : null}
             <WithdrawManager
               assets={data.assets.filter(isERC20Asset)}
               accounts={data.party?.accounts || []}
