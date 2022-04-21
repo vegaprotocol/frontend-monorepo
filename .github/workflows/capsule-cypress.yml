@@ -114,11 +114,11 @@ jobs:
       - name: Login to docker
         run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
       - name: Start nomad
-        run: ./capsule/vegacapsule nomad &
+        run: vegacapsule nomad &
 
       # May need to wait for the above to fully start...
       - name: Bootstrap network
-        run: ./vegacapsule network bootstrap --config-path=config.hcl
+        run: vegacapsule network bootstrap --config-path=config.hcl
         working-directory: capsule
 
       ######
