@@ -1,3 +1,4 @@
+import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
@@ -18,13 +19,12 @@ export const OrderbookManager = ({
 }: OrderbookManagerProps) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const resolutionRef = useRef(resolution);
-  const lastUpdateRef = useRef(new Date().getTime());
   const [orderbookData, setOrderbookData] = useState<OrderbookData[] | null>(
     null
   );
   const dataRef = useRef<OrderbookData[] | null>(null);
+  const setOrderbookDataThrottled = useRef(throttle(setOrderbookData, 1000));
 
-  // Apply updates to the table
   const update = useCallback(
     (delta: MarketDepthSubscription_marketDepthUpdate) => {
       if (!dataRef.current) {
@@ -36,11 +36,7 @@ export const OrderbookManager = ({
         delta.buy,
         resolutionRef.current
       );
-      const now = new Date().getTime();
-      if (now - lastUpdateRef.current > 1000) {
-        setOrderbookData(dataRef.current);
-        lastUpdateRef.current = now;
-      }
+      setOrderbookDataThrottled.current(dataRef.current);
       return true;
     },
     []
@@ -69,9 +65,10 @@ export const OrderbookManager = ({
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {data && (
-        <Orderbook data={orderbookData} decimalPlaces={data.decimalPlaces} />
-      )}
+      <Orderbook
+        data={orderbookData}
+        decimalPlaces={data?.decimalPlaces ?? 0}
+      />
     </AsyncRenderer>
   );
 };

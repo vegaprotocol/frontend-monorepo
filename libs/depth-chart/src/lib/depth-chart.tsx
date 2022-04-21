@@ -1,5 +1,6 @@
 import { DepthChart } from 'pennant';
 import { produce } from 'immer';
+import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import {
   useDataProvider,
@@ -73,16 +74,15 @@ const updateLevels = (
 const formatMidPrice = (midPrice: string, decimalPlaces: number) =>
   Number(addDecimal(midPrice, decimalPlaces));
 
+type DepthData = Pick<DepthChartProps, 'data' | 'midPrice'>;
+
 export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const theme = useContext(ThemeContext);
   const variables = useMemo(() => ({ marketId }), [marketId]);
-  const lastUpdateRef = useRef(new Date().getTime());
-  const [depthData, setDepthData] = useState<DepthChartProps['data'] | null>(
-    null
-  );
-  const [midPrice, setMidPrice] = useState<number | undefined>(undefined);
+  const [depthData, setDepthData] = useState<DepthData | null>(null);
   const decimalPlacesRef = useRef<number>(0);
-  const dataRef = useRef<DepthChartProps['data'] | null>(null);
+  const dataRef = useRef<DepthData | null>(null);
+  const setDepthDataThrottledRef = useRef(throttle(setDepthData, 1000));
 
   // Apply updates to the table
   const update = useCallback(
@@ -92,33 +92,27 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       }
       dataRef.current = produce(dataRef.current, (draft) => {
         if (delta.buy) {
-          draft.buy = updateLevels(
-            draft.buy,
+          draft.data.buy = updateLevels(
+            draft.data.buy,
             delta.buy,
             decimalPlacesRef.current
           );
         }
         if (delta.sell) {
-          draft.sell = updateLevels(
-            draft.sell,
+          draft.data.sell = updateLevels(
+            draft.data.sell,
             delta.sell,
             decimalPlacesRef.current
           );
         }
+        draft.midPrice = delta.market.data?.midPrice
+          ? formatMidPrice(
+              delta.market.data?.midPrice,
+              decimalPlacesRef.current
+            )
+          : undefined;
       });
-      const now = new Date().getTime();
-      if (now - lastUpdateRef.current > 1000) {
-        setDepthData(dataRef.current);
-        setMidPrice(
-          delta.market.data?.midPrice
-            ? formatMidPrice(
-                delta.market.data?.midPrice,
-                decimalPlacesRef.current
-              )
-            : undefined
-        );
-        lastUpdateRef.current = now;
-      }
+      setDepthDataThrottledRef.current(dataRef.current);
       return true;
     },
     []
@@ -137,29 +131,27 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       return;
     }
     dataRef.current = {
-      buy:
-        data.depth.buy?.map((priceLevel) =>
-          formatLevel(priceLevel, data.decimalPlaces)
-        ) ?? [],
-      sell:
-        data.depth.sell?.map((priceLevel) =>
-          formatLevel(priceLevel, data.decimalPlaces)
-        ) ?? [],
+      midPrice: data.data?.midPrice
+        ? formatMidPrice(data.data?.midPrice, data.decimalPlaces)
+        : undefined,
+      data: {
+        buy:
+          data.depth.buy?.map((priceLevel) =>
+            formatLevel(priceLevel, data.decimalPlaces)
+          ) ?? [],
+        sell:
+          data.depth.sell?.map((priceLevel) =>
+            formatLevel(priceLevel, data.decimalPlaces)
+          ) ?? [],
+      },
     };
     setDepthData(dataRef.current);
-    setMidPrice(
-      data.data?.midPrice
-        ? formatMidPrice(data.data?.midPrice, data.decimalPlaces)
-        : undefined
-    );
     decimalPlacesRef.current = data.decimalPlaces;
   }, [data]);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {depthData && (
-        <DepthChart data={depthData} midPrice={midPrice} theme={theme} />
-      )}
+      {depthData && <DepthChart {...depthData} theme={theme} />}
     </AsyncRenderer>
   );
 };
