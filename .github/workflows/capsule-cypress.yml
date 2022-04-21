@@ -85,15 +85,15 @@ jobs:
         run: go install
         working-directory: capsule
 
-      - name: check path
-        run: vegacapsule --help
+      # - name: check path
+      #   run: vegacapsule --help
 
       - name: Build vega
         run: go install ./cmd/vega/
         working-directory: vega
 
-      - name: check path
-        run: vega --help
+      # - name: check path
+      #   run: vega --help
 
       - name: Build vegawallet
         run: go install
