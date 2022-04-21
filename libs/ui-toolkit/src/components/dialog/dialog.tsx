@@ -38,7 +38,11 @@ export function Dialog({
           >
             <Icon name="cross" />
           </DialogPrimitives.Close>
-          {title && <h1 className="text-h5 mb-12">{title}</h1>}
+          {title && (
+            <h1 className="text-h5 text-black-95 dark:text-white-95 mt-0 mb-20">
+              {title}
+            </h1>
+          )}
           {children}
         </DialogPrimitives.Content>
       </DialogPrimitives.Portal>

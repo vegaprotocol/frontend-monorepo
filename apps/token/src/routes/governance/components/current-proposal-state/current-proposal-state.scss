@@ -1,0 +1,15 @@
+@import "../../../../styles/colors";
+
+.current-proposal-state {
+  &__pass {
+    color: $vega-green3;
+  }
+
+  &__fail {
+    color: $vega-red3;
+  }
+
+  &__open {
+    color: $white;
+  }
+}

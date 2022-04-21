@@ -1,0 +1,23 @@
+@import "../../../../styles/colors";
+
+.vote-progress {
+  &__indicator {
+    background-color: $white;
+    height: 16px;
+    position: relative;
+    top: 10px;
+    width: 1px;
+    z-index: 1;
+  }
+
+  &__container {
+    background-color: $vega-red3 !important;
+    border-radius: 0 !important;
+    height: 5px;
+  }
+
+  &__bar {
+    background-color: $vega-green3 !important;
+    border-radius: 0 !important;
+  }
+}

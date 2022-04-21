@@ -24,7 +24,7 @@ export function Callout({
     'dark:border-white',
     'text-body-large',
     'dark:text-white',
-    'p-8',
+    'p-16',
     getIntentShadow(intent),
     {
       flex: !!iconName,
@@ -38,7 +38,7 @@ export function Callout({
   );
   const body = (
     <>
-      {title && <TitleTag className="text-h5">{title}</TitleTag>}
+      {title && <TitleTag className="text-h5 mt-0 mb-8">{title}</TitleTag>}
       {children}
     </>
   );
