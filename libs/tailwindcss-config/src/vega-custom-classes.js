@@ -6,7 +6,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.calt': {
       fontFeatureSettings: "'calt'",
     },
-    '.vega-hl': {
+    ':not(.dark) .hljs': {
       fontSize: '1rem',
       fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
       display: 'block',
@@ -16,17 +16,17 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       color: theme.colors.intent.help,
       border: '1px solid #696969',
     },
-    '.dark .vega-hl': {
+    '.dark .hljs': {
       background: '#2C2C2C',
       color: theme.colors.vega.green,
     },
-    '.vega-hl .hljs-literal': {
+    ':not(.dark) .hljs-literal': {
       color: theme.colors.vega.pink,
     },
-    '.vega-hl .hljs-number': {
+    ':not(.dark) .hljs-number': {
       color: theme.colors.intent.warning,
     },
-    '.vega-hl .hljs-string': {
+    ':not(.dark) .hljs-string': {
       color: theme.colors.blue,
     },
   });
