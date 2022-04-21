@@ -34,7 +34,7 @@ export interface Subscribe<Data, Delta> {
 type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
 interface Update<Data, Delta> {
-  (draft: Draft<Data>, delta: Delta): void;
+  (draft: Draft<Data>, delta: Delta, restart: () => void): void;
 }
 
 interface GetData<QueryData, Data> {
@@ -76,6 +76,45 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     callbacks.forEach((callback) => notify(callback, delta));
   };
 
+  const initalFetch = async () => {
+    if (!client) {
+      return;
+    }
+    try {
+      const res = await client.query<QueryData>({
+        query,
+        variables,
+        fetchPolicy,
+      });
+      data = getData(res.data);
+      if (data && updateQueue && updateQueue.length > 0) {
+        data = produce(data, (draft) => {
+          while (updateQueue.length) {
+            const delta = updateQueue.shift();
+            if (delta) {
+              update(draft, delta, restart);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      error = e as Error;
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+      subscription = undefined;
+    } finally {
+      loading = false;
+      notifyAll();
+    }
+  };
+
+  const restart = () => {
+    loading = true;
+    error = undefined;
+    initalFetch();
+  };
+
   const initialize = async () => {
     if (subscription) {
       return;
@@ -101,7 +140,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           updateQueue.push(delta);
         } else {
           const newData = produce(data, (draft) => {
-            update(draft, delta);
+            update(draft, delta, restart);
           });
           if (newData === data) {
             return;
@@ -110,31 +149,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           notifyAll(delta);
         }
       });
-    try {
-      const res = await client.query<QueryData>({
-        query,
-        variables,
-        fetchPolicy,
-      });
-      data = getData(res.data);
-      if (data && updateQueue && updateQueue.length > 0) {
-        data = produce(data, (draft) => {
-          while (updateQueue.length) {
-            const delta = updateQueue.shift();
-            if (delta) {
-              update(draft, delta);
-            }
-          }
-        });
-      }
-    } catch (e) {
-      error = e as Error;
-      subscription.unsubscribe();
-      subscription = undefined;
-    } finally {
-      loading = false;
-      notifyAll();
-    }
+    await initalFetch();
   };
 
   const reset = () => {
@@ -145,6 +160,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     data = null;
     error = undefined;
     loading = false;
+    notifyAll();
   };
 
   const unsubscribe = (callback: UpdateCallback<Data, Delta>) => {
@@ -152,12 +168,6 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     if (callbacks.length === 0) {
       reset();
     }
-  };
-
-  const restart = () => {
-    reset();
-    initialize();
-    notifyAll();
   };
 
   return (callback, c, v) => {

@@ -3,7 +3,7 @@ import { OrderbookManager } from './orderbook-manager';
 import { Button } from '@vegaprotocol/ui-toolkit';
 
 export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
-  const [resolution, setResolution] = useState<number>(100);
+  const [resolution, setResolution] = useState<number>(1);
 
   return (
     <>

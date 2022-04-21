@@ -68,10 +68,25 @@ export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
   }
 `;
 
+const sequenceNumbers: Record<string, number> = {};
+
 const update = (
   draft: MarketDepth_market,
-  delta: MarketDepthSubscription_marketDepthUpdate
+  delta: MarketDepthSubscription_marketDepthUpdate,
+  restart: () => void
 ) => {
+  if (delta.market.id !== draft.id) {
+    return;
+  }
+  const sequenceNumber = Number(delta.sequenceNumber);
+  if (sequenceNumber <= sequenceNumbers[delta.market.id]) {
+    return;
+  }
+  if (sequenceNumber - 1 !== sequenceNumbers[delta.market.id]) {
+    restart();
+    return;
+  }
+  sequenceNumbers[delta.market.id] = sequenceNumber;
   if (delta.buy) {
     draft.depth.buy = updateLevels(draft.depth.buy, delta.buy);
   }
@@ -80,7 +95,14 @@ const update = (
   }
 };
 
-const getData = (responseData: MarketDepth) => responseData.market;
+const getData = (responseData: MarketDepth) => {
+  if (responseData.market?.id) {
+    sequenceNumbers[responseData.market.id] = Number(
+      responseData.market.depth.sequenceNumber
+    );
+  }
+  return responseData.market;
+};
 const getDelta = (subscriptionData: MarketDepthSubscription) =>
   subscriptionData.marketDepthUpdate;
 
