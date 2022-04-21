@@ -89,8 +89,11 @@ jobs:
         run: vegacapsule --help
 
       - name: Build vega
-        run: go install
+        run: go install ./cmd/vega/
         working-directory: vega
+
+      - name: check path
+        run: vega --help
 
       - name: Build vegawallet
         run: go install
@@ -104,9 +107,9 @@ jobs:
       #   run: pwd
       #   working-directory: data-node
 
-      # - name: Build data-node
-      #   run: go install
-      #   working-directory: data-node
+      - name: Build data-node
+        run: go install ./cmd/data-node/
+        working-directory: data-node
 
       ######
       ## Start capsule
