@@ -6,10 +6,14 @@
 import { WithdrawalStatus } from "./../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
-// GraphQL query operation: WithdrawalsPageQuery
+// GraphQL subscription operation: WithdrawalEvent
 // ====================================================
 
-export interface WithdrawalsPageQuery_party_withdrawals_asset {
+export interface WithdrawalEvent_busEvents_event_TimeUpdate {
+  __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Order" | "Trade" | "Account" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "OracleSpec" | "LiquidityProvision";
+}
+
+export interface WithdrawalEvent_busEvents_event_Withdrawal_asset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -25,7 +29,7 @@ export interface WithdrawalsPageQuery_party_withdrawals_asset {
   decimals: number;
 }
 
-export interface WithdrawalsPageQuery_party_withdrawals_details {
+export interface WithdrawalEvent_busEvents_event_Withdrawal_details {
   __typename: "Erc20WithdrawalDetails";
   /**
    * The ethereum address of the receiver of the asset funds
@@ -33,7 +37,7 @@ export interface WithdrawalsPageQuery_party_withdrawals_details {
   receiverAddress: string;
 }
 
-export interface WithdrawalsPageQuery_party_withdrawals {
+export interface WithdrawalEvent_busEvents_event_Withdrawal {
   __typename: "Withdrawal";
   /**
    * The Vega internal id of the withdrawal
@@ -50,7 +54,7 @@ export interface WithdrawalsPageQuery_party_withdrawals {
   /**
    * The asset to be withdrawn
    */
-  asset: WithdrawalsPageQuery_party_withdrawals_asset;
+  asset: WithdrawalEvent_busEvents_event_Withdrawal_asset;
   /**
    * RFC3339Nano time at which the withdrawal was created
    */
@@ -66,32 +70,30 @@ export interface WithdrawalsPageQuery_party_withdrawals {
   /**
    * Foreign chain specific details about the withdrawal
    */
-  details: WithdrawalsPageQuery_party_withdrawals_details | null;
+  details: WithdrawalEvent_busEvents_event_Withdrawal_details | null;
   /**
    * Whether or the not the withdrawal is being processed on Ethereum
    */
   pendingOnForeignChain: boolean;
 }
 
-export interface WithdrawalsPageQuery_party {
-  __typename: "Party";
+export type WithdrawalEvent_busEvents_event = WithdrawalEvent_busEvents_event_TimeUpdate | WithdrawalEvent_busEvents_event_Withdrawal;
+
+export interface WithdrawalEvent_busEvents {
+  __typename: "BusEvent";
   /**
-   * Party identifier
+   * the payload - the wrapped event
    */
-  id: string;
-  /**
-   * The list of all withdrawals initiated by the party
-   */
-  withdrawals: WithdrawalsPageQuery_party_withdrawals[] | null;
+  event: WithdrawalEvent_busEvents_event;
 }
 
-export interface WithdrawalsPageQuery {
+export interface WithdrawalEvent {
   /**
-   * An entity that is trading on the VEGA network
+   * Subscribe to event data from the event bus
    */
-  party: WithdrawalsPageQuery_party | null;
+  busEvents: WithdrawalEvent_busEvents[] | null;
 }
 
-export interface WithdrawalsPageQueryVariables {
+export interface WithdrawalEventVariables {
   partyId: string;
 }

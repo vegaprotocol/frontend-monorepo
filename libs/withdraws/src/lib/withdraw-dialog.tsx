@@ -80,12 +80,6 @@ const getProps = (
   vegaTx: VegaTxState,
   ethTx: EthTxState
 ) => {
-  const pendingVegaTxProps = {
-    title: t('Withdrawal transaction pending'),
-    icon: <Loader size="small" />,
-    intent: Intent.Progress,
-    children: <Step>Awaiting transaction</Step>,
-  };
   const vegaTxPropsMap: Record<VegaTxStatus, DialogProps> = {
     [VegaTxStatus.Default]: {
       title: '',
@@ -107,14 +101,18 @@ const getProps = (
         </Step>
       ),
     },
-    // [VegaTxStatus.Requested]: {
-    //   title: t('Confirm withdrawal'),
-    //   icon: <Icon name="hand-up" size={20} />,
-    //   intent: Intent.Prompt,
-    //   children: <Step>Confirm withdrawal in Vega wallet</Step>,
-    // },
-    [VegaTxStatus.Requested]: pendingVegaTxProps,
-    [VegaTxStatus.Pending]: pendingVegaTxProps,
+    [VegaTxStatus.Requested]: {
+      title: t('Confirm withdrawal'),
+      icon: <Icon name="hand-up" size={20} />,
+      intent: Intent.Prompt,
+      children: <Step>Confirm withdrawal in Vega wallet</Step>,
+    },
+    [VegaTxStatus.Pending]: {
+      title: t('Withdrawal transaction pending'),
+      icon: <Loader size="small" />,
+      intent: Intent.Progress,
+      children: <Step>Awaiting transaction</Step>,
+    },
   };
 
   const ethTxPropsMap: Record<EthTxStatus, DialogProps> = {

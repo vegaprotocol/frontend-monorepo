@@ -1,12 +1,20 @@
-import { useApolloClient } from '@apollo/client';
+import { gql, useApolloClient } from '@apollo/client';
 import { captureException } from '@sentry/nextjs';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';
 import type {
   Erc20Approval,
   Erc20ApprovalVariables,
 } from './__generated__/Erc20Approval';
+import type { PendingWithdrawal } from './__generated__/PendingWithdrawal';
+
+export const PENDING_WITHDRAWAL_FRAGMMENT = gql`
+  fragment PendingWithdrawal on Withdrawal {
+    pendingOnForeignChain
+    txHash
+  }
+`;
 
 export interface WithdrawTransactionArgs {
   assetSource: string;
@@ -17,8 +25,9 @@ export interface WithdrawTransactionArgs {
 }
 
 export const useCompleteWithdraw = () => {
-  const client = useApolloClient();
+  const { query, cache } = useApolloClient();
   const contract = useBridgeContract();
+  const [id, setId] = useState('');
   const { transaction, perform } =
     useEthereumTransaction<WithdrawTransactionArgs>((args) => {
       if (!contract) {
@@ -29,8 +38,9 @@ export const useCompleteWithdraw = () => {
 
   const submit = useCallback(
     async (withdrawalId: string) => {
+      setId(withdrawalId);
       try {
-        const res = await client.query<Erc20Approval, Erc20ApprovalVariables>({
+        const res = await query<Erc20Approval, Erc20ApprovalVariables>({
           query: ERC20_APPROVAL_QUERY,
           variables: { withdrawalId },
         });
@@ -44,8 +54,23 @@ export const useCompleteWithdraw = () => {
         captureException(err);
       }
     },
-    [client, perform]
+    [query, perform]
   );
+
+  useEffect(() => {
+    console.log(id, transaction.txHash);
+    if (id && transaction.txHash) {
+      cache.writeFragment<PendingWithdrawal>({
+        id: `Withdrawal:${id}`,
+        fragment: PENDING_WITHDRAWAL_FRAGMMENT,
+        data: {
+          __typename: 'Withdrawal',
+          pendingOnForeignChain: true,
+          txHash: transaction.txHash,
+        },
+      });
+    }
+  }, [cache, transaction.txHash, id]);
 
   return { transaction, submit };
 };

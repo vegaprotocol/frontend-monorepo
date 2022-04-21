@@ -47,10 +47,11 @@ test('Should perform the Ethereum transaction with the fetched approval', async 
     },
   };
   const mockPerform = jest.fn();
-  jest
-    .spyOn(web3, 'useEthereumTransaction')
+  jest.spyOn(web3, 'useEthereumTransaction').mockReturnValue({
     // @ts-ignore allow null transaction as its not used in hook logic
-    .mockReturnValue({ transaction: null, perform: mockPerform });
+    transaction: { txHash: 'tx-hash' },
+    perform: mockPerform,
+  });
   const { result } = setup([mockERC20Approval]);
   result.current.submit(withdrawalId);
   await waitFor(() => {
@@ -73,10 +74,11 @@ test('Captures an error if the erc20Withdrawal is not found', async () => {
   };
   const mockPerform = jest.fn();
   const spyOnCaptureException = jest.spyOn(sentry, 'captureException');
-  jest
-    .spyOn(web3, 'useEthereumTransaction')
+  jest.spyOn(web3, 'useEthereumTransaction').mockReturnValue({
     // @ts-ignore allow null transaction as its not used in hook logic
-    .mockReturnValue({ transaction: null, perform: mockPerform });
+    transaction: { txHash: 'tx-hash' },
+    perform: mockPerform,
+  });
   const { result } = setup([mockERC20Approval]);
   result.current.submit(withdrawalId);
   await waitFor(() => {
@@ -96,10 +98,11 @@ test('Captures an error if erc20 approval query fails', async () => {
   };
   const mockPerform = jest.fn();
   const spyOnCaptureException = jest.spyOn(sentry, 'captureException');
-  jest
-    .spyOn(web3, 'useEthereumTransaction')
+  jest.spyOn(web3, 'useEthereumTransaction').mockReturnValue({
     // @ts-ignore allow null transaction as its not used in hook logic
-    .mockReturnValue({ transaction: null, perform: mockPerform });
+    transaction: { txHash: 'tx-hash' },
+    perform: mockPerform,
+  });
   const { result } = setup([mockERC20Approval]);
   result.current.submit(withdrawalId);
   await waitFor(() => {

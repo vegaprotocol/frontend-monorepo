@@ -9,9 +9,12 @@ import {
   EtherscanLink,
   AgGridDynamic as AgGrid,
 } from '@vegaprotocol/ui-toolkit';
-import { EthTxStatus, TransactionDialog } from '@vegaprotocol/web3';
+import { TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from '@vegaprotocol/withdraws';
-import type { ValueFormatterParams } from 'ag-grid-community';
+import type {
+  ICellRendererParams,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
 import orderBy from 'lodash/orderBy';
 import { useEffect, useMemo } from 'react';
@@ -19,12 +22,12 @@ import type { WithdrawalsPageQuery_party_withdrawals } from './__generated__/Wit
 
 interface WithdrawalsListProps {
   withdrawals: WithdrawalsPageQuery_party_withdrawals[];
-  refetchWithdrawals: () => void;
+  subscribe: () => void;
 }
 
 export const WithdrawalsList = ({
   withdrawals,
-  refetchWithdrawals,
+  subscribe,
 }: WithdrawalsListProps) => {
   const { transaction, submit } = useCompleteWithdraw();
 
@@ -36,13 +39,9 @@ export const WithdrawalsList = ({
     );
   }, [withdrawals]);
 
-  // TODO: Get this working, sometimes the table doesnt update because we have to
-  // deal with the delay whilst Vega picks up on the completed Ethereum transaction
   useEffect(() => {
-    if (transaction.status === EthTxStatus.Complete) {
-      refetchWithdrawals();
-    }
-  }, [transaction.status, refetchWithdrawals]);
+    subscribe();
+  }, [subscribe]);
 
   return (
     <>
@@ -54,6 +53,7 @@ export const WithdrawalsList = ({
         components={{ StatusCell, RecipientCell }}
         suppressCellFocus={true}
       >
+        <AgGridColumn headerName="Asset" field="asset.symbol" />
         <AgGridColumn
           headerName="Amount"
           field="amount"
@@ -88,35 +88,45 @@ export const WithdrawalsList = ({
   );
 };
 
-interface StatusCellProps extends ValueFormatterParams {
+interface StatusCellProps extends ICellRendererParams {
   complete: (withdrawalId: string) => void;
 }
 
 const StatusCell = ({ value, data, complete }: StatusCellProps) => {
-  if (value === WithdrawalStatus.Finalized) {
-    if (data.txHash) {
-      return (
-        <div className="flex justify-between">
-          {t('Finalized')}
+  if (data.pendingOnForeignChain) {
+    return (
+      <div className="flex justify-between gap-8">
+        {t('Pending')}
+        {data.txHash && (
           <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
-        </div>
-      );
-    } else {
-      return (
-        <div className="flex justify-between">
-          {t('Open')}
-          <button className="underline" onClick={() => complete(data.id)}>
-            {t('Complete')}
-          </button>
-        </div>
-      );
-    }
+        )}
+      </div>
+    );
+  }
+
+  if (value === WithdrawalStatus.Finalized) {
+    return (
+      <div className="flex justify-between gap-8">
+        {data.txHash ? (
+          <>
+            {t('Finalized')}
+            <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
+          </>
+        ) : (
+          <>
+            {t('Open')}
+            <button className="underline" onClick={() => complete(data.id)}>
+              {t('Complete')}
+            </button>
+          </>
+        )}
+      </div>
+    );
   }
 
   return value;
 };
 
-// @ts-ignore valueFormatted not defined
-const RecipientCell = ({ value, valueFormatted }: ValueFormatterParams) => {
+const RecipientCell = ({ value, valueFormatted }: ICellRendererParams) => {
   return <EtherscanLink address={value} text={valueFormatted} />;
 };
