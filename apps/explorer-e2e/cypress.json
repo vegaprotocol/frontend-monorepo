@@ -13,6 +13,7 @@
   "videosFolder": "../../dist/cypress/apps/explorer-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/explorer-e2e/screenshots",
   "chromeWebSecurity": false,
+  "defaultCommandTimeout": 10000,
   "env": {
     "environment": "local",
     "tsConfig": "tsconfig.json",
