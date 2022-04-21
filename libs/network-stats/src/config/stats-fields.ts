@@ -60,7 +60,7 @@ export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
     {
       title: t('Total staked'),
       formatter: (total: string) => {
-        return formatNumber(total, 2);
+        return formatNumber(total, 18, 2);
       },
       description: t('Sum of VEGA associated with a Vega key'),
     },
