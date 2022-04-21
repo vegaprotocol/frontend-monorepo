@@ -15,10 +15,10 @@ import type { ValueFormatterParams } from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
 import orderBy from 'lodash/orderBy';
 import { useEffect, useMemo } from 'react';
-import type { WithdrawsPage_party_withdrawals } from './__generated__/WithdrawsPage';
+import type { WithdrawalsPageQuery_party_withdrawals } from './__generated__/WithdrawalsPageQuery';
 
 interface WithdrawalsListProps {
-  withdrawals: WithdrawsPage_party_withdrawals[];
+  withdrawals: WithdrawalsPageQuery_party_withdrawals[];
   refetchWithdrawals: () => void;
 }
 

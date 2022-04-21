@@ -265,6 +265,15 @@ export enum Side {
   Sell = "Sell",
 }
 
+/**
+ * The status of the stake linking
+ */
+export enum StakeLinkingStatus {
+  Accepted = "Accepted",
+  Pending = "Pending",
+  Rejected = "Rejected",
+}
+
 export enum VoteValue {
   No = "No",
   Yes = "Yes",

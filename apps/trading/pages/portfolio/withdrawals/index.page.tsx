@@ -6,12 +6,12 @@ import { PageQueryContainer } from '../../../components/page-query-container';
 import { Web3Container } from '../../../components/web3-container';
 import { WithdrawalsList } from './withdrawals-list';
 import type {
-  WithdrawsPage,
-  WithdrawsPageVariables,
-} from './__generated__/WithdrawsPage';
+  WithdrawalsPageQuery,
+  WithdrawalsPageQueryVariables,
+} from './__generated__/WithdrawalsPageQuery';
 
-const WITHDRAWS_PAGE_QUERY = gql`
-  query WithdrawsPage($partyId: ID!) {
+const WITHDRAWALS_PAGE_QUERY = gql`
+  query WithdrawalsPageQuery($partyId: ID!) {
     party(id: $partyId) {
       id
       withdrawals {
@@ -46,8 +46,8 @@ const Withdraws = () => {
   return (
     <Web3Container>
       {() => (
-        <PageQueryContainer<WithdrawsPage, WithdrawsPageVariables>
-          query={WITHDRAWS_PAGE_QUERY}
+        <PageQueryContainer<WithdrawalsPageQuery, WithdrawalsPageQueryVariables>
+          query={WITHDRAWALS_PAGE_QUERY}
           options={{
             variables: { partyId: keypair?.pub || '' },
             skip: !keypair?.pub,
@@ -58,7 +58,7 @@ const Withdraws = () => {
               <div className="h-full grid grid grid-rows-[min-content,1fr]">
                 <header className="flex justify-between p-24">
                   <h1 className="text-h3">{t('Withdrawals')}</h1>
-                  <AnchorButton href="/portfolio/withdraws/create">
+                  <AnchorButton href="/portfolio/withdraw">
                     {t('Start withdrawal')}
                   </AnchorButton>
                 </header>

@@ -6,10 +6,10 @@
 import { WithdrawalStatus } from "./../../../../../../libs/types/src/__generated__/globalTypes";
 
 // ====================================================
-// GraphQL query operation: WithdrawsPage
+// GraphQL query operation: WithdrawalsPageQuery
 // ====================================================
 
-export interface WithdrawsPage_party_withdrawals_asset {
+export interface WithdrawalsPageQuery_party_withdrawals_asset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -25,7 +25,7 @@ export interface WithdrawsPage_party_withdrawals_asset {
   decimals: number;
 }
 
-export interface WithdrawsPage_party_withdrawals_details {
+export interface WithdrawalsPageQuery_party_withdrawals_details {
   __typename: "Erc20WithdrawalDetails";
   /**
    * The ethereum address of the receiver of the asset funds
@@ -33,7 +33,7 @@ export interface WithdrawsPage_party_withdrawals_details {
   receiverAddress: string;
 }
 
-export interface WithdrawsPage_party_withdrawals {
+export interface WithdrawalsPageQuery_party_withdrawals {
   __typename: "Withdrawal";
   /**
    * The Vega internal id of the withdrawal
@@ -50,7 +50,7 @@ export interface WithdrawsPage_party_withdrawals {
   /**
    * The asset to be withdrawn
    */
-  asset: WithdrawsPage_party_withdrawals_asset;
+  asset: WithdrawalsPageQuery_party_withdrawals_asset;
   /**
    * RFC3339Nano time at which the withdrawal was created
    */
@@ -66,10 +66,10 @@ export interface WithdrawsPage_party_withdrawals {
   /**
    * Foreign chain specific details about the withdrawal
    */
-  details: WithdrawsPage_party_withdrawals_details | null;
+  details: WithdrawalsPageQuery_party_withdrawals_details | null;
 }
 
-export interface WithdrawsPage_party {
+export interface WithdrawalsPageQuery_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -78,16 +78,16 @@ export interface WithdrawsPage_party {
   /**
    * The list of all withdrawals initiated by the party
    */
-  withdrawals: WithdrawsPage_party_withdrawals[] | null;
+  withdrawals: WithdrawalsPageQuery_party_withdrawals[] | null;
 }
 
-export interface WithdrawsPage {
+export interface WithdrawalsPageQuery {
   /**
    * An entity that is trading on the VEGA network
    */
-  party: WithdrawsPage_party | null;
+  party: WithdrawalsPageQuery_party | null;
 }
 
-export interface WithdrawsPageVariables {
+export interface WithdrawalsPageQueryVariables {
   partyId: string;
 }

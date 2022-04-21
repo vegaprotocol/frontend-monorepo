@@ -1,7 +1,7 @@
 import { Web3Container } from '../../../components/web3-container';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
-import { CreateWithdrawPageContainer } from './create-withdraw-page-container';
+import { CreateWithdrawPageContainer } from './withdraw-page-container';
 import { t } from '@vegaprotocol/react-helpers';
 
 const CreateWithdraw = () => {

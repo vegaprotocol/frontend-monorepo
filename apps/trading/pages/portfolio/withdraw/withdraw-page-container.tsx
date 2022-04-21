@@ -6,15 +6,15 @@ import { WithdrawManager } from '@vegaprotocol/withdraws';
 import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
 import Link from 'next/link';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import type {
-  CreateWithdrawPage,
-  CreateWithdrawPageVariables,
-} from './__generated__/CreateWithdrawPage';
 import { isERC20Asset } from '../../../lib/assets';
+import type {
+  WithdrawPageQuery,
+  WithdrawPageQueryVariables,
+} from './__generated__/WithdrawPageQuery';
 
 const CREATE_WITHDRAW_PAGE_QUERY = gql`
   ${ASSET_FRAGMENT}
-  query CreateWithdrawPage($partyId: ID!) {
+  query WithdrawPageQuery($partyId: ID!) {
     party(id: $partyId) {
       id
       withdrawals {
@@ -53,7 +53,7 @@ export const CreateWithdrawPageContainer = ({
   }
 
   return (
-    <PageQueryContainer<CreateWithdrawPage, CreateWithdrawPageVariables>
+    <PageQueryContainer<WithdrawPageQuery, WithdrawPageQueryVariables>
       query={CREATE_WITHDRAW_PAGE_QUERY}
       options={{
         variables: { partyId: keypair?.pub || '' },
@@ -78,7 +78,7 @@ export const CreateWithdrawPageContainer = ({
             {pendingWithdrawals?.length ? (
               <p className="mb-12">
                 {t('You have incomplete withdrawals.')}{' '}
-                <Link href="/portfolio/withdraws">
+                <Link href="/portfolio/withdrawals">
                   <a className="underline">
                     {t('Click here to finish withdrawal')}
                   </a>
