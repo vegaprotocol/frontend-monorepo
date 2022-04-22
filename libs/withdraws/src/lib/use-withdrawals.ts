@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
+import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import uniqBy from 'lodash/uniqBy';
 import { useEffect } from 'react';
@@ -35,7 +36,7 @@ const WITHDRAWAL_FRAGMENT = gql`
   }
 `;
 
-const WITHDRAWALS_QUERY = gql`
+export const WITHDRAWALS_QUERY = gql`
   ${WITHDRAWAL_FRAGMENT}
   query Withdrawals($partyId: ID!) {
     party(id: $partyId) {
@@ -73,54 +74,63 @@ export const useWithdrawals = () => {
   useEffect(() => {
     if (!keypair?.pub) return;
 
-    subscribeToMore<WithdrawalEvent, WithdrawalEventVariables>({
+    const unsub = subscribeToMore<WithdrawalEvent, WithdrawalEventVariables>({
       document: WITHDRAWAL_BUS_EVENT_SUB,
       variables: { partyId: keypair.pub },
-      updateQuery: (prev, { subscriptionData }) => {
-        if (!subscriptionData.data.busEvents?.length) {
-          return prev;
-        }
-
-        const curr = prev.party?.withdrawals || [];
-        const incoming = subscriptionData.data.busEvents
-          .map((e) => {
-            return {
-              ...e.event,
-              pendingOnForeignChain: false,
-            };
-          })
-          .filter(
-            isWithdrawalEvent
-            // Need this type cast here, TS can't infer that we've filtered any event types
-            // that arent Withdrawals
-          ) as WithdrawalEvent_busEvents_event_Withdrawal[];
-
-        const withdrawals = uniqBy([...incoming, ...curr], 'id');
-
-        // Write new party to cache if not present
-        if (!prev.party) {
-          return {
-            ...prev,
-            party: {
-              __typename: 'Party',
-              id: keypair.pub,
-              withdrawals,
-            },
-          };
-        }
-
-        return {
-          ...prev,
-          party: {
-            ...prev.party,
-            withdrawals,
-          },
-        };
-      },
+      updateQuery,
     });
+
+    return () => {
+      unsub();
+    };
   }, [keypair?.pub, subscribeToMore]);
 
   return queryResult;
+};
+
+export const updateQuery: UpdateQueryFn<
+  Withdrawals,
+  WithdrawalEventVariables,
+  WithdrawalEvent
+> = (prev, { subscriptionData }) => {
+  if (!subscriptionData.data.busEvents?.length) {
+    return prev;
+  }
+
+  const curr = prev.party?.withdrawals || [];
+  const incoming = subscriptionData.data.busEvents
+    .map((e) => {
+      return {
+        ...e.event,
+        pendingOnForeignChain: false,
+      };
+    })
+    .filter(
+      isWithdrawalEvent
+      // Need this type cast here, TS can't infer that we've filtered any event types
+      // that arent Withdrawals
+    ) as WithdrawalEvent_busEvents_event_Withdrawal[];
+
+  const withdrawals = uniqBy([...incoming, ...curr], 'id');
+
+  // Write new party to cache if not present
+  if (!prev.party) {
+    return {
+      ...prev,
+      party: {
+        __typename: 'Party',
+        withdrawals,
+      },
+    } as Withdrawals;
+  }
+
+  return {
+    ...prev,
+    party: {
+      ...prev.party,
+      withdrawals,
+    },
+  };
 };
 
 const isWithdrawalEvent = (

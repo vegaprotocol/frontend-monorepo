@@ -2,8 +2,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
-import merge from 'lodash/merge';
-import type { PartialDeep } from 'type-fest';
+import { generateWithdrawal } from './test-helpers';
 import type {
   StatusCellProps,
   WithdrawalsTableProps,
@@ -15,10 +14,6 @@ import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals'
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ provider: undefined }),
 }));
-
-const props = {
-  withdrawals: [generateWithdrawal()],
-};
 
 const generateJsx = (props: WithdrawalsTableProps) => (
   <MockedProvider>
@@ -77,7 +72,6 @@ describe('StatusCell', () => {
     props.data.txHash = null;
     render(<StatusCell {...props} />);
 
-    screen.debug();
     expect(screen.getByText('Open'));
     fireEvent.click(screen.getByText('Complete', { selector: 'button' }));
     expect(mockComplete).toHaveBeenCalled();
@@ -118,31 +112,3 @@ describe('StatusCell', () => {
     expect(screen.getByText('Rejected'));
   });
 });
-
-function generateWithdrawal(
-  override?: PartialDeep<Withdrawals_party_withdrawals>
-): Withdrawals_party_withdrawals {
-  return merge(
-    {
-      __typename: 'Withdrawal',
-      id: 'withdrawal-id',
-      status: WithdrawalStatus.Open,
-      amount: '100',
-      asset: {
-        __typename: 'Asset',
-        id: 'asset-id',
-        symbol: 'asset-symbol',
-        decimals: 2,
-      },
-      createdTimestamp: '2022-04-20T00:00:00',
-      withdrawnTimestamp: null,
-      txHash: null,
-      details: {
-        __typename: 'Erc20WithdrawalDetails',
-        receiverAddress: '123456___123456',
-      },
-      pendingOnForeignChain: false,
-    },
-    override
-  );
-}
