@@ -49,7 +49,7 @@
     "i18next-browser-languagedetector": "^6.1.2",
     "immer": "^9.0.12",
     "lodash": "^4.17.21",
-    "next": "12.1.2",
+    "next": "^12.0.7",
     "nx": "^13.8.3",
     "pennant": "0.4.5",
     "postcss": "^8.4.6",
