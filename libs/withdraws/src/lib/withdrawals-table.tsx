@@ -18,7 +18,7 @@ import { TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
 
-interface WithdrawalsTableProps {
+export interface WithdrawalsTableProps {
   withdrawals: Withdrawals_party_withdrawals[];
 }
 
@@ -70,11 +70,11 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   );
 };
 
-interface StatusCellProps extends ICellRendererParams {
+export interface StatusCellProps extends ICellRendererParams {
   complete: (withdrawalId: string) => void;
 }
 
-const StatusCell = ({ value, data, complete }: StatusCellProps) => {
+export const StatusCell = ({ value, data, complete }: StatusCellProps) => {
   if (data.pendingOnForeignChain) {
     return (
       <div className="flex justify-between gap-8">
