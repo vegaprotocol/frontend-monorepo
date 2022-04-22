@@ -12,7 +12,7 @@ import type {
   WithdrawPageQueryVariables,
 } from './__generated__/WithdrawPageQuery';
 
-const CREATE_WITHDRAW_PAGE_QUERY = gql`
+const WITHDRAW_PAGE_QUERY = gql`
   ${ASSET_FRAGMENT}
   query WithdrawPageQuery($partyId: ID!) {
     party(id: $partyId) {
@@ -36,16 +36,16 @@ const CREATE_WITHDRAW_PAGE_QUERY = gql`
   }
 `;
 
-interface CreateWithdrawPageContainerProps {
+interface WithdrawPageContainerProps {
   assetId?: string;
 }
 
 /**
  *  Fetches data required for the Deposit page
  */
-export const CreateWithdrawPageContainer = ({
+export const WithdrawPageContainer = ({
   assetId,
-}: CreateWithdrawPageContainerProps) => {
+}: WithdrawPageContainerProps) => {
   const { keypair } = useVegaWallet();
 
   if (!keypair) {
@@ -54,7 +54,7 @@ export const CreateWithdrawPageContainer = ({
 
   return (
     <PageQueryContainer<WithdrawPageQuery, WithdrawPageQueryVariables>
-      query={CREATE_WITHDRAW_PAGE_QUERY}
+      query={WITHDRAW_PAGE_QUERY}
       options={{
         variables: { partyId: keypair?.pub || '' },
         skip: !keypair?.pub,
@@ -69,13 +69,13 @@ export const CreateWithdrawPageContainer = ({
           );
         }
 
-        const pendingWithdrawals = data.party?.withdrawals?.filter(
+        const hasIncompleteWithdrawals = data.party?.withdrawals?.some(
           (w) => w.txHash
         );
 
         return (
           <>
-            {pendingWithdrawals?.length ? (
+            {hasIncompleteWithdrawals ? (
               <p className="mb-12">
                 {t('You have incomplete withdrawals.')}{' '}
                 <Link href="/portfolio/withdrawals">

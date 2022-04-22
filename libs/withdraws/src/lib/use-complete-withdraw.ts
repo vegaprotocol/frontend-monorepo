@@ -58,7 +58,6 @@ export const useCompleteWithdraw = () => {
   );
 
   useEffect(() => {
-    console.log(id, transaction.txHash);
     if (id && transaction.txHash) {
       cache.writeFragment<PendingWithdrawal>({
         id: `Withdrawal:${id}`,

@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { WithdrawalStatus } from "./../../../../../../libs/types/src/__generated__/globalTypes";
+import { WithdrawalStatus } from "./../../../../types/src/__generated__/globalTypes";
 
 // ====================================================
-// GraphQL fragment: WithdrawalFields
+// GraphQL query operation: Withdrawals
 // ====================================================
 
-export interface WithdrawalFields_asset {
+export interface Withdrawals_party_withdrawals_asset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -25,7 +25,7 @@ export interface WithdrawalFields_asset {
   decimals: number;
 }
 
-export interface WithdrawalFields_details {
+export interface Withdrawals_party_withdrawals_details {
   __typename: "Erc20WithdrawalDetails";
   /**
    * The ethereum address of the receiver of the asset funds
@@ -33,7 +33,7 @@ export interface WithdrawalFields_details {
   receiverAddress: string;
 }
 
-export interface WithdrawalFields {
+export interface Withdrawals_party_withdrawals {
   __typename: "Withdrawal";
   /**
    * The Vega internal id of the withdrawal
@@ -50,7 +50,7 @@ export interface WithdrawalFields {
   /**
    * The asset to be withdrawn
    */
-  asset: WithdrawalFields_asset;
+  asset: Withdrawals_party_withdrawals_asset;
   /**
    * RFC3339Nano time at which the withdrawal was created
    */
@@ -66,9 +66,32 @@ export interface WithdrawalFields {
   /**
    * Foreign chain specific details about the withdrawal
    */
-  details: WithdrawalFields_details | null;
+  details: Withdrawals_party_withdrawals_details | null;
   /**
    * Whether or the not the withdrawal is being processed on Ethereum
    */
   pendingOnForeignChain: boolean;
+}
+
+export interface Withdrawals_party {
+  __typename: "Party";
+  /**
+   * Party identifier
+   */
+  id: string;
+  /**
+   * The list of all withdrawals initiated by the party
+   */
+  withdrawals: Withdrawals_party_withdrawals[] | null;
+}
+
+export interface Withdrawals {
+  /**
+   * An entity that is trading on the VEGA network
+   */
+  party: Withdrawals_party | null;
+}
+
+export interface WithdrawalsVariables {
+  partyId: string;
 }

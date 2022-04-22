@@ -1,3 +1,8 @@
+import type {
+  ICellRendererParams,
+  ValueFormatterParams,
+} from 'ag-grid-community';
+import { AgGridColumn } from 'ag-grid-react';
 import {
   getDateTimeFormat,
   t,
@@ -10,43 +15,20 @@ import {
   AgGridDynamic as AgGrid,
 } from '@vegaprotocol/ui-toolkit';
 import { TransactionDialog } from '@vegaprotocol/web3';
-import { useCompleteWithdraw } from '@vegaprotocol/withdraws';
-import type {
-  ICellRendererParams,
-  ValueFormatterParams,
-} from 'ag-grid-community';
-import { AgGridColumn } from 'ag-grid-react';
-import orderBy from 'lodash/orderBy';
-import { useEffect, useMemo } from 'react';
-import type { WithdrawalsPageQuery_party_withdrawals } from './__generated__/WithdrawalsPageQuery';
+import { useCompleteWithdraw } from './use-complete-withdraw';
+import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
 
-interface WithdrawalsListProps {
-  withdrawals: WithdrawalsPageQuery_party_withdrawals[];
-  subscribe: () => void;
+interface WithdrawalsTableProps {
+  withdrawals: Withdrawals_party_withdrawals[];
 }
 
-export const WithdrawalsList = ({
-  withdrawals,
-  subscribe,
-}: WithdrawalsListProps) => {
+export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { transaction, submit } = useCompleteWithdraw();
-
-  const sortedWithdrawals = useMemo(() => {
-    return orderBy(
-      withdrawals,
-      (w) => new Date(w.createdTimestamp).getTime(),
-      'desc'
-    );
-  }, [withdrawals]);
-
-  useEffect(() => {
-    subscribe();
-  }, [subscribe]);
 
   return (
     <>
       <AgGrid
-        rowData={sortedWithdrawals}
+        rowData={withdrawals}
         overlayNoRowsTemplate={t('No withdrawals')}
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
