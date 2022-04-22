@@ -35,7 +35,7 @@ export const ClaimForm = ({
   onSubmit,
 }: {
   txState: TransactionState;
-  countryCode: string;
+  countryCode: string | undefined;
   txDispatch: React.Dispatch<TransactionAction>;
   onSubmit: () => void;
 }) => {
@@ -46,6 +46,9 @@ export const ClaimForm = ({
   const handleOnClick = React.useCallback(async () => {
     setCountryCheck(CountryCheck.Pending);
     try {
+      if (!countryCode) {
+        throw new Error('No country code provided');
+      }
       const blocked = await claim.isCountryBlocked(countryCode);
       if (!blocked) {
         setCountryCheck(CountryCheck.Allowed);

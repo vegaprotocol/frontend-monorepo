@@ -48,7 +48,7 @@ export const Web3Content = ({
   appChainId,
   setDialogOpen,
 }: Web3ContentProps) => {
-  const { isActive, error, connector, chainId } = useWeb3React();
+  const { error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
     if (connector?.connectEagerly) {

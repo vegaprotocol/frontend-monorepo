@@ -46,6 +46,7 @@ export const ClaimFlow = ({
     (tranche) => tranche.tranche_id === state.claimData?.claim.tranche
   );
   const { claim } = useContracts();
+  // eslint-disable-next-line
   const code = state.claimData?.signature.s!;
   const shortCode = truncateMiddle(code);
 
@@ -54,10 +55,13 @@ export const ClaimFlow = ({
     const run = async () => {
       dispatch({ type: ClaimActionType.SET_LOADING, loading: true });
       try {
+        if (!state.claimData) {
+          throw new Error('No claim data');
+        }
         const [committed, expired, used] = await Promise.all([
           claim.isCommitted({ s: code }),
-          claim.isExpired(state.claimData?.claim.expiry!),
-          claim.isUsed(code!),
+          claim.isExpired(state.claimData.claim.expiry),
+          claim.isUsed(code),
         ]);
 
         dispatch({
@@ -77,7 +81,7 @@ export const ClaimFlow = ({
       }
     };
     run();
-  }, [address, claim, code, dispatch, state.claimData?.claim.expiry]);
+  }, [address, claim, code, dispatch, state.claimData]);
 
   if (!currentTranche) {
     return <TrancheNotFound />;
@@ -95,11 +99,11 @@ export const ClaimFlow = ({
     return <Expired code={shortCode} />;
   }
 
-  if (state.claimStatus === ClaimStatus.Finished) {
+  if (state.claimStatus === ClaimStatus.Finished && state.claimData) {
     return (
       <Complete
         address={address}
-        balanceFormatted={state.claimData?.claim.amount!}
+        balanceFormatted={state.claimData.claim.amount}
         commitTxHash={state.commitTxHash}
         claimTxHash={state.claimTxHash}
       />
@@ -160,7 +164,11 @@ export const ClaimFlow = ({
               </KeyValueTableRow>
               <KeyValueTableRow>
                 <th>{t('Amount of VEGA')}</th>
-                <td>{formatNumber(state.claimData?.claim.amount!)}</td>
+                <td>
+                  {state.claimData
+                    ? formatNumber(state.claimData.claim.amount)
+                    : 'None'}
+                </td>
               </KeyValueTableRow>
               <KeyValueTableRow>
                 <th>{t('Claim expires')}</th>

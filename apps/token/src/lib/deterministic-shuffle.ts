@@ -1,5 +1,5 @@
 // creates a random number generator function.
-function createRandomGenerator(seed: any) {
+function createRandomGenerator(seed: number) {
   const a = 5486230734; // some big numbers
   const b = 6908969830;
   const m = 9853205067;

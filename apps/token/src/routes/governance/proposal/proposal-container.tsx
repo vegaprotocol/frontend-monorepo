@@ -20,6 +20,7 @@ import type {
 export interface RestProposalResponse {
   data: {
     proposal: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       terms: any;
     };
   };

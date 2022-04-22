@@ -1,6 +1,6 @@
-import { format, startOfMonth } from "date-fns";
-import React from "react";
-import { useTranslation } from "react-i18next";
+import { format, startOfMonth } from 'date-fns';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Area,
   AreaChart,
@@ -11,13 +11,13 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
+} from 'recharts';
 
-import { Colors } from "../../config";
-import { DATE_FORMAT_LONG } from "../../lib/date-formats";
-import data from "./data.json";
+import { Colors } from '../../config';
+import { DATE_FORMAT_LONG } from '../../lib/date-formats';
+import data from './data.json';
 
-const ORDER = ["community", "publicSale", "earlyInvestors", "team"];
+const ORDER = ['community', 'publicSale', 'earlyInvestors', 'team'];
 
 export const VestingChart = () => {
   const { t } = useTranslation();
@@ -31,10 +31,10 @@ export const VestingChart = () => {
         <AreaChart data={data}>
           <defs>
             {[
-              ["pink", Colors.PINK],
-              ["green", Colors.VEGA_GREEN],
-              ["orange", Colors.VEGA_ORANGE],
-              ["yellow", Colors.VEGA_YELLOW],
+              ['pink', Colors.PINK],
+              ['green', Colors.VEGA_GREEN],
+              ['orange', Colors.VEGA_ORANGE],
+              ['yellow', Colors.VEGA_YELLOW],
             ].map(([key, color]) => (
               <linearGradient id={key} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.85} />
@@ -45,18 +45,19 @@ export const VestingChart = () => {
           <Tooltip
             contentStyle={{ backgroundColor: Colors.BLACK }}
             separator=":"
-            formatter={(value: any) => {
+            formatter={(value: number) => {
               return (
                 <div
                   style={{
-                    display: "flex",
-                    textAlign: "right",
+                    display: 'flex',
+                    textAlign: 'right',
                   }}
                 >
                   {Intl.NumberFormat().format(value)}
                 </div>
               );
             }}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             itemSorter={(label: any) => {
               return ORDER.indexOf(label.dataKey) + 1;
             }}
@@ -64,7 +65,7 @@ export const VestingChart = () => {
           <YAxis type="number" width={100}>
             <Label
               angle={270}
-              value={t("VEGA").toString()}
+              value={t('VEGA').toString()}
               position="left"
               offset={-5}
               fill={Colors.WHITE}
@@ -72,7 +73,7 @@ export const VestingChart = () => {
           </YAxis>
           <XAxis dataKey="date">
             <Label
-              value={t("date").toString()}
+              value={t('date').toString()}
               position="bottom"
               offset={5}
               fill={Colors.WHITE}
@@ -83,7 +84,7 @@ export const VestingChart = () => {
             stroke={Colors.WHITE}
             strokeWidth={2}
             label={{
-              position: "right",
+              position: 'right',
               value: currentDate,
               fill: Colors.WHITE,
             }}
@@ -98,7 +99,7 @@ export const VestingChart = () => {
             strokeWidth={2}
             fillOpacity={0.85}
             stackId="1"
-            name={t("Team")}
+            name={t('Team')}
           />
           <Area
             dot={false}
@@ -110,7 +111,7 @@ export const VestingChart = () => {
             strokeWidth={2}
             fillOpacity={0.85}
             stackId="1"
-            name={t("Early Investors")}
+            name={t('Early Investors')}
           />
           <Area
             dot={false}
@@ -122,7 +123,7 @@ export const VestingChart = () => {
             strokeWidth={2}
             stackId="1"
             fillOpacity={0.85}
-            name={t("Public Sale")}
+            name={t('Public Sale')}
           />
           <Area
             dot={false}
@@ -134,9 +135,9 @@ export const VestingChart = () => {
             strokeWidth={2}
             fillOpacity={0.85}
             stackId="1"
-            name={t("Community")}
+            name={t('Community')}
           />
-          <Legend wrapperStyle={{ position: "relative" }} />
+          <Legend wrapperStyle={{ position: 'relative' }} />
         </AreaChart>
       </ResponsiveContainer>
     </div>

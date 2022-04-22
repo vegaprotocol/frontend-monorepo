@@ -71,7 +71,7 @@ export const AssociateTransaction = ({
           })}
         </p>
         <p>
-          <EtherscanLink tx={state.txData.hash!} />
+          <EtherscanLink tx={state.txData.hash || ''} />
         </p>
         <p data-testid="transaction-pending-footer">
           {t('pendingAssociationText', {

@@ -19,7 +19,7 @@ it('Renders all data for table', () => {
   const proposal = generateProposal();
   render(<ProposalChangeTable proposal={proposal} />);
   expect(screen.getByText('ID')).toBeInTheDocument();
-  expect(screen.getByText(proposal.id!)).toBeInTheDocument();
+  expect(screen.getByText(proposal.id as string)).toBeInTheDocument();
 
   expect(screen.getByText('State')).toBeInTheDocument();
   expect(screen.getByText('Open')).toBeInTheDocument();
@@ -39,7 +39,7 @@ it('Renders all data for table', () => {
   ).toBeInTheDocument();
 
   expect(screen.getByText('Proposed by')).toBeInTheDocument();
-  expect(screen.getByText(proposal.party.id!)).toBeInTheDocument();
+  expect(screen.getByText(proposal.party.id)).toBeInTheDocument();
 
   expect(screen.getByText('Proposed on')).toBeInTheDocument();
   expect(
