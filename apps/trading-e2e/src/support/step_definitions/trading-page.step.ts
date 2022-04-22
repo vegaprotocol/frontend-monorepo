@@ -27,6 +27,12 @@ const mockMarket = (state: MarketState) => {
       });
     }
 
+    if (hasOperationName(req, 'Positions')) {
+      req.reply({
+        body: { data: generatePositions() },
+      });
+    }
+
     if (hasOperationName(req, 'DealTicketQuery')) {
       req.reply({
         body: { data: generateDealTicketQuery({ market: { state } }) },
