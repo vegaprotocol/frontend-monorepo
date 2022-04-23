@@ -34,15 +34,17 @@ function App() {
                 <ContractsProvider>
                   <AppLoader>
                     <BalanceManager>
-                      <div className="app dark">
-                        <AppBanner />
-                        <TemplateSidebar sidebar={sideBar}>
-                          <AppRouter />
-                        </TemplateSidebar>
-                        <AppFooter />
-                      </div>
-                      <VegaWalletDialogs />
-                      <TransactionModal />
+                      <>
+                        <div className="app dark">
+                          <AppBanner />
+                          <TemplateSidebar sidebar={sideBar}>
+                            <AppRouter />
+                          </TemplateSidebar>
+                          <AppFooter />
+                        </div>
+                        <VegaWalletDialogs />
+                        <TransactionModal />
+                      </>
                     </BalanceManager>
                   </AppLoader>
                 </ContractsProvider>

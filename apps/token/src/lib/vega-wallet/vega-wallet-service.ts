@@ -88,7 +88,6 @@ export interface CommandSyncResponse {
 export interface IVegaWalletService {
   url: string;
   token: string;
-  statusPoll: any;
   getToken(params: {
     wallet: string;
     passphrase: string;
@@ -101,7 +100,6 @@ export class VegaWalletService implements IVegaWalletService {
   version: number;
   url: string;
   token: string;
-  statusPoll: any;
   key: string;
 
   constructor() {
@@ -260,7 +258,8 @@ export class VegaWalletService implements IVegaWalletService {
     return `${this.url}/api/v${this.version}`;
   }
 
-  private handleServiceUnavailable(returnVal?: any): [string, any] {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private handleServiceUnavailable(returnVal?: boolean): [string, any] {
     this.clearWalletUrl();
     return [Errors.SERVICE_UNAVAILABLE, returnVal];
   }

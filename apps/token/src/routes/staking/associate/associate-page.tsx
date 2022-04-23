@@ -28,9 +28,8 @@ export const AssociatePage = ({
   const params = useSearchParams();
   const [amount, setAmount] = React.useState<string>('');
 
-  const [selectedStakingMethod, setSelectedStakingMethod] = React.useState<
-    StakingMethod | ''
-  >('');
+  const [selectedStakingMethod, setSelectedStakingMethod] =
+    React.useState<StakingMethod | null>(params.method || null);
 
   // Clear the amount when the staking method changes
   React.useEffect(() => {
@@ -69,7 +68,7 @@ export const AssociatePage = ({
     } else if (!zeroVega && zeroVesting) {
       setSelectedStakingMethod(StakingMethod.Wallet);
     } else {
-      setSelectedStakingMethod(params.method as StakingMethod | '');
+      setSelectedStakingMethod(params.method);
     }
   }, [params.method, zeroVega, zeroVesting]);
   if (txState.txState !== TxState.Default) {

@@ -91,7 +91,7 @@ export function claimReducer(
   action: ClaimAction
 ): ClaimState {
   switch (action.type) {
-    case ClaimActionType.SET_DATA_FROM_URL:
+    case ClaimActionType.SET_DATA_FROM_URL: {
       // We need all of these otherwise the code is invalid
       if (
         // Do not need target as keys can be for the holder only
@@ -126,7 +126,8 @@ export function claimReducer(
           },
         };
       }
-    case ClaimActionType.SET_INITIAL_CLAIM_STATUS:
+    }
+    case ClaimActionType.SET_INITIAL_CLAIM_STATUS: {
       let status = ClaimStatus.Ready;
       if (action.used) {
         status = ClaimStatus.Used;
@@ -140,12 +141,14 @@ export function claimReducer(
         ...state,
         claimStatus: status,
       };
-    case ClaimActionType.SET_CLAIM_STATUS:
+    }
+    case ClaimActionType.SET_CLAIM_STATUS: {
       return {
         ...state,
         claimStatus: action.status,
       };
-    case ClaimActionType.SET_COUNTRY:
+    }
+    case ClaimActionType.SET_COUNTRY: {
       return state.claimData
         ? {
             ...state,
@@ -155,25 +158,30 @@ export function claimReducer(
             },
           }
         : state;
-    case ClaimActionType.SET_LOADING:
+    }
+    case ClaimActionType.SET_LOADING: {
       return {
         ...state,
         loading: action.loading,
       };
-    case ClaimActionType.SET_COMMIT_TX_HASH:
+    }
+    case ClaimActionType.SET_COMMIT_TX_HASH: {
       return {
         ...state,
         commitTxHash: action.commitTxHash,
       };
-    case ClaimActionType.SET_CLAIM_TX_HASH:
+    }
+    case ClaimActionType.SET_CLAIM_TX_HASH: {
       return {
         ...state,
         claimTxHash: action.claimTxHash,
       };
-    case ClaimActionType.ERROR:
+    }
+    case ClaimActionType.ERROR: {
       return {
         ...state,
         error: action.error,
       };
+    }
   }
 }

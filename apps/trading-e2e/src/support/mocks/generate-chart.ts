@@ -3,7 +3,7 @@ import type { PartialDeep } from 'type-fest';
 import type {
   Chart,
   Chart_market_data_priceMonitoringBounds,
-} from '../lib/__generated__/Chart';
+} from '@vegaprotocol/chart';
 
 export const generateChart = (override?: PartialDeep<Chart>): Chart => {
   const priceMonitoringBound: Chart_market_data_priceMonitoringBounds = {

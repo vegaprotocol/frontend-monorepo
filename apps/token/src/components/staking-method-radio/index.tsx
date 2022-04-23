@@ -11,8 +11,10 @@ export const StakingMethodRadio = ({
   setSelectedStakingMethod,
   selectedStakingMethod,
 }: {
-  selectedStakingMethod: string;
-  setSelectedStakingMethod: React.Dispatch<any>;
+  selectedStakingMethod: StakingMethod | null;
+  setSelectedStakingMethod: React.Dispatch<
+    React.SetStateAction<StakingMethod | null>
+  >;
 }) => {
   const { t } = useTranslation();
   return (
@@ -22,7 +24,7 @@ export const StakingMethodRadio = ({
         // @ts-ignore can't recognise .value
         setSelectedStakingMethod(e.target.value);
       }}
-      selectedValue={selectedStakingMethod}
+      selectedValue={selectedStakingMethod || undefined}
     >
       <Radio
         data-testid="associate-radio-contract"

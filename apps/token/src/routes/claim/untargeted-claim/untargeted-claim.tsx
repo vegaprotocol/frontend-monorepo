@@ -1,5 +1,6 @@
 import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts-sdk';
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import { BigNumber } from '../../../lib/bignumber';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -80,7 +81,7 @@ export const UntargetedClaim = ({
         labelFor="country-selector"
       >
         <CountrySelector
-          code={state.claimData?.country!}
+          code={state.claimData?.country}
           onSelectCountry={(countryCode) =>
             dispatch({ type: ClaimActionType.SET_COUNTRY, countryCode })
           }
@@ -107,7 +108,7 @@ export const UntargetedClaim = ({
         <ClaimStep2
           txState={revealState}
           txDispatch={revealDispatch}
-          amount={state.claimData?.claim.amount!}
+          amount={state.claimData?.claim.amount || new BigNumber(0)}
           onSubmit={commitReveal}
         />
       ) : (

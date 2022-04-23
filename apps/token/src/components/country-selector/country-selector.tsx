@@ -27,7 +27,7 @@ export const filterCountry: ItemPredicate<ICountry> = (
 
 export interface CountrySelectorProps {
   onSelectCountry: (countryCode: string) => void;
-  code: string | null;
+  code: string | null | undefined;
 }
 
 export const CountrySelector = ({

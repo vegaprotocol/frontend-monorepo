@@ -1,7 +1,7 @@
 import merge from 'lodash/merge';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
-import type { Markets, Markets_markets } from '../lib/__generated__/Markets';
+import type { Markets, Markets_markets } from '@vegaprotocol/market-list';
 
 export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
   const markets: Markets_markets[] = [

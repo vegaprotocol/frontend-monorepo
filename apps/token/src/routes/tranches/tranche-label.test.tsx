@@ -1,9 +1,10 @@
-import { render } from "@testing-library/react";
+import { render } from '@testing-library/react';
 
-import { ADDRESSES, EthereumChainIds } from "../../config";
-import { TrancheLabel } from "./tranche-label";
+import { ADDRESSES, EthereumChainIds } from '../../config';
+import type { TrancheLabelProps } from './tranche-label';
+import { TrancheLabel } from './tranche-label';
 
-let props: any;
+let props: TrancheLabelProps;
 
 beforeEach(() => {
   props = {
@@ -13,7 +14,7 @@ beforeEach(() => {
   };
 });
 
-it("Renders null for right contract address, wrong network", () => {
+it('Renders null for right contract address, wrong network', () => {
   const WRONG_CHAIN = EthereumChainIds.Goerli;
   const { container } = render(
     <TrancheLabel {...props} chainId={WRONG_CHAIN} />
@@ -22,8 +23,8 @@ it("Renders null for right contract address, wrong network", () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-it("Renders null for right network, wrong contract address", () => {
-  const WRONG_ADDRESS = "0x0";
+it('Renders null for right network, wrong contract address', () => {
+  const WRONG_ADDRESS = '0x0';
 
   const { container } = render(
     <TrancheLabel {...props} contract={WRONG_ADDRESS} />
@@ -32,7 +33,7 @@ it("Renders null for right network, wrong contract address", () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-it("Renders null for right network, right contract address, tranche without a name", () => {
+it('Renders null for right network, right contract address, tranche without a name', () => {
   const UNNAMED_TRANCHE = 0;
 
   const { container } = render(
@@ -42,7 +43,7 @@ it("Renders null for right network, right contract address, tranche without a na
   expect(container).toBeEmptyDOMElement();
 });
 
-it("Renders named for right network, right contract address, tranche with a name", () => {
+it('Renders named for right network, right contract address, tranche with a name', () => {
   const { container } = render(<TrancheLabel {...props} />);
-  expect(container).toHaveTextContent("Coinlist Option 1Community Whitelist");
+  expect(container).toHaveTextContent('Coinlist Option 1Community Whitelist');
 });

@@ -1,7 +1,7 @@
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type { DealTicketQuery } from '../__generated__/DealTicketQuery';
+import type { DealTicketQuery } from '@vegaprotocol/deal-ticket';
 
 export const generateDealTicketQuery = (
   override?: PartialDeep<DealTicketQuery>

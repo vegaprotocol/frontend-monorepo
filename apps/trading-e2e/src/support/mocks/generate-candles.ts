@@ -1,9 +1,6 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type {
-  Candles,
-  Candles_market_candles,
-} from '../lib/__generated__/Candles';
+import type { Candles, Candles_market_candles } from '@vegaprotocol/chart';
 
 export const generateCandles = (override?: PartialDeep<Candles>): Candles => {
   const candles: Candles_market_candles[] = [
