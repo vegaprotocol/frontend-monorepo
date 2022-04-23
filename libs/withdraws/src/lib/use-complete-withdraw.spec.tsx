@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
@@ -53,9 +53,12 @@ test('Should perform the Ethereum transaction with the fetched approval', async 
     perform: mockPerform,
   });
   const { result } = setup([mockERC20Approval]);
-  result.current.submit(withdrawalId);
+  act(() => {
+    result.current.submit(withdrawalId);
+  });
   await waitFor(() => {
     expect(mockPerform).toHaveBeenCalledWith(erc20WithdrawalApproval);
+    expect(result.current.withdrawalId).toBe(withdrawalId);
   });
 });
 
@@ -80,10 +83,13 @@ test('Captures an error if the erc20Withdrawal is not found', async () => {
     perform: mockPerform,
   });
   const { result } = setup([mockERC20Approval]);
-  result.current.submit(withdrawalId);
+  act(() => {
+    result.current.submit(withdrawalId);
+  });
   await waitFor(() => {
     expect(mockPerform).not.toHaveBeenCalled();
     expect(spyOnCaptureException).toHaveBeenCalled();
+    expect(result.current.withdrawalId).toBe(withdrawalId);
   });
 });
 
@@ -104,9 +110,12 @@ test('Captures an error if erc20 approval query fails', async () => {
     perform: mockPerform,
   });
   const { result } = setup([mockERC20Approval]);
-  result.current.submit(withdrawalId);
+  act(() => {
+    result.current.submit(withdrawalId);
+  });
   await waitFor(() => {
     expect(mockPerform).not.toHaveBeenCalled();
     expect(spyOnCaptureException).toHaveBeenCalled();
+    expect(result.current.withdrawalId).toBe(withdrawalId);
   });
 });

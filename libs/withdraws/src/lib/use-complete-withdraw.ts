@@ -71,5 +71,5 @@ export const useCompleteWithdraw = () => {
     }
   }, [cache, transaction.txHash, id]);
 
-  return { transaction, submit };
+  return { transaction, submit, withdrawalId: id };
 };

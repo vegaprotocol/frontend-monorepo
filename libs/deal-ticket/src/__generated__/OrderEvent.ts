@@ -3,18 +3,47 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, OrderType, OrderStatus, OrderRejectionReason } from "./../../../types/src/__generated__/globalTypes";
+import {
+  BusEventType,
+  OrderType,
+  OrderStatus,
+  OrderRejectionReason,
+} from '@vegaprotocol/types';
 
 // ====================================================
 // GraphQL subscription operation: OrderEvent
 // ====================================================
 
 export interface OrderEvent_busEvents_event_TimeUpdate {
-  __typename: "TimeUpdate" | "MarketEvent" | "TransferResponses" | "PositionResolution" | "Trade" | "Account" | "Party" | "MarginLevels" | "Proposal" | "Vote" | "MarketData" | "NodeSignature" | "LossSocialization" | "SettlePosition" | "Market" | "Asset" | "MarketTick" | "SettleDistressed" | "AuctionEvent" | "RiskFactor" | "Deposit" | "Withdrawal" | "OracleSpec" | "LiquidityProvision";
+  __typename:
+    | 'TimeUpdate'
+    | 'MarketEvent'
+    | 'TransferResponses'
+    | 'PositionResolution'
+    | 'Trade'
+    | 'Account'
+    | 'Party'
+    | 'MarginLevels'
+    | 'Proposal'
+    | 'Vote'
+    | 'MarketData'
+    | 'NodeSignature'
+    | 'LossSocialization'
+    | 'SettlePosition'
+    | 'Market'
+    | 'Asset'
+    | 'MarketTick'
+    | 'SettleDistressed'
+    | 'AuctionEvent'
+    | 'RiskFactor'
+    | 'Deposit'
+    | 'Withdrawal'
+    | 'OracleSpec'
+    | 'LiquidityProvision';
 }
 
 export interface OrderEvent_busEvents_event_Order_market {
-  __typename: "Market";
+  __typename: 'Market';
   /**
    * Market full name
    */
@@ -22,14 +51,14 @@ export interface OrderEvent_busEvents_event_Order_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   * 
+   *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   * 
+   *
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -39,7 +68,7 @@ export interface OrderEvent_busEvents_event_Order_market {
 }
 
 export interface OrderEvent_busEvents_event_Order {
-  __typename: "Order";
+  __typename: 'Order';
   /**
    * Type the order type (defaults to PARTY)
    */
@@ -74,10 +103,12 @@ export interface OrderEvent_busEvents_event_Order {
   market: OrderEvent_busEvents_event_Order_market | null;
 }
 
-export type OrderEvent_busEvents_event = OrderEvent_busEvents_event_TimeUpdate | OrderEvent_busEvents_event_Order;
+export type OrderEvent_busEvents_event =
+  | OrderEvent_busEvents_event_TimeUpdate
+  | OrderEvent_busEvents_event_Order;
 
 export interface OrderEvent_busEvents {
-  __typename: "BusEvent";
+  __typename: 'BusEvent';
   /**
    * the id for this event
    */

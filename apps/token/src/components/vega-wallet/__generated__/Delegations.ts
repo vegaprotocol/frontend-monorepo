@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "./../../../../../../libs/types/src/__generated__/globalTypes";
+import { AccountType } from "./../../../__generated__/globalTypes";
 
 // ====================================================
 // GraphQL query operation: Delegations

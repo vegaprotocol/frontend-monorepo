@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
 import { WithdrawManager } from './withdraw-manager';
