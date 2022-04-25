@@ -5,12 +5,12 @@ import { getUserLocale } from './utils';
 export function addDecimal(
   value: string,
   decimals: number,
-  decimalPrecision?: number
+  decimalPrecision = decimals
 ): string {
   if (!decimals) return value;
   return new BigNumber(value || 0)
     .dividedBy(Math.pow(10, decimals))
-    .toFixed(decimalPrecision || decimals);
+    .toFixed(decimalPrecision);
 }
 
 export function removeDecimal(value: string, decimals: number): string {
