@@ -11,7 +11,7 @@ import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Accounts_party_accounts } from './__generated__/Accounts';
-import { getId as getRowNodeId } from './accounts-data-provider';
+import { getId } from './accounts-data-provider';
 
 interface AccountsTableProps {
   data: Accounts_party_accounts[] | null;
@@ -90,7 +90,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No accounts')}
         rowData={data}
-        getRowNodeId={getRowNodeId}
+        getRowId={({ data }) => getId(data)}
         ref={ref}
         defaultColDef={{
           flex: 1,

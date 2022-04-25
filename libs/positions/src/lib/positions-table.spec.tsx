@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import PositionsTable from './positions-table';
 import type { Positions_party_positions } from './__generated__/Positions';
 import { MarketTradingMode } from '@vegaprotocol/types';
@@ -61,38 +61,44 @@ test('should render successfully', async () => {
     expect(baseElement).toBeTruthy();
   });
 });
+
 test('Render correct columns', async () => {
   await act(async () => {
     render(<PositionsTable data={singleRowData} />);
+    await waitFor(async () => {
+      const headers = await screen.getAllByRole('columnheader');
+      expect(headers).toHaveLength(5);
+      expect(
+        headers.map((h) =>
+          h.querySelector('[ref="eText"]')?.textContent?.trim()
+        )
+      ).toEqual([
+        'Market',
+        'Amount',
+        'Average Entry Price',
+        'Mark Price',
+        'Realised PNL',
+      ]);
+    });
   });
-
-  const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(5);
-  expect(
-    headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-  ).toEqual([
-    'Market',
-    'Amount',
-    'Average Entry Price',
-    'Mark Price',
-    'Realised PNL',
-  ]);
 });
 
 test('Correct formatting applied', async () => {
   await act(async () => {
     render(<PositionsTable data={singleRowData} />);
+    await waitFor(async () => {
+      const cells = screen.getAllByRole('gridcell');
+      const expectedValues = [
+        singleRow.market.tradableInstrument.instrument.code,
+        '+100',
+        '11.29935',
+        '11.38885',
+        '+5',
+      ];
+      cells.forEach((cell, i) => {
+        expect(cell).toHaveTextContent(expectedValues[i]);
+      });
+      expect(cells[cells.length - 1]).toHaveClass('color-vega-green');
+    });
   });
-  const cells = screen.getAllByRole('gridcell');
-  const expectedValues = [
-    singleRow.market.tradableInstrument.instrument.code,
-    '+100',
-    '11.29935',
-    '11.38885',
-    '+5',
-  ];
-  cells.forEach((cell, i) => {
-    expect(cell).toHaveTextContent(expectedValues[i]);
-  });
-  expect(cells[cells.length - 1]).toHaveClass('color-vega-green');
 });
