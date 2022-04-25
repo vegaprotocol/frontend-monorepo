@@ -266,9 +266,9 @@ describe('updateCompactedData', () => {
       resolution
     );
     expect(updatedData.length).toEqual(5);
-    expect(updatedData[0].price).toEqual(130);
+    expect(updatedData[0].price).toEqual('130');
     expect(updatedData[0].cumulativeVol.ask).toEqual(55);
-    expect(updatedData[4].price).toEqual(60);
+    expect(updatedData[4].price).toEqual('60');
     expect(updatedData[4].cumulativeVol.bid).toEqual(55);
   });
 
@@ -292,10 +292,10 @@ describe('updateCompactedData', () => {
       resolution
     );
     expect(updatedData.length).toEqual(5);
-    expect(updatedData[1].price).toEqual(110);
+    expect(updatedData[1].price).toEqual('110');
     expect(updatedData[1].cumulativeVol.ask).toEqual(45);
     expect(updatedData[0].cumulativeVol.ask).toEqual(55);
-    expect(updatedData[3].price).toEqual(90);
+    expect(updatedData[3].price).toEqual('90');
     expect(updatedData[3].cumulativeVol.bid).toEqual(45);
     expect(updatedData[4].cumulativeVol.bid).toEqual(55);
   });

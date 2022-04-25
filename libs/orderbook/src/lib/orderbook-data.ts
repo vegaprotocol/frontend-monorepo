@@ -199,7 +199,7 @@ const partiallyUpdateCompactedData = (
     draft[index][volByLevelKey][price] = volume;
   } else {
     const newData: OrderbookData = createData(groupPrice, volume, dataType);
-    index = draft.findIndex((data) => data.price < groupPrice);
+    index = draft.findIndex((data) => BigInt(data.price) < BigInt(groupPrice));
     if (index !== -1) {
       draft.splice(index, 0, newData);
       newData.cumulativeVol[oppositeVolKey] =
