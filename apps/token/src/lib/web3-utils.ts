@@ -17,7 +17,7 @@ const IgnoreCodes = {
  * and thus not capture in Sentry
  */
 export const isUnexpectedError = (error: Error | TxError) => {
-  if ("code" in error && Object.values(IgnoreCodes).includes(error.code)) {
+  if ('code' in error && Object.values(IgnoreCodes).includes(error.code)) {
     return false;
   }
   return true;
@@ -28,7 +28,7 @@ export const isUnexpectedError = (error: Error | TxError) => {
  * a transaction confirmation prompt
  */
 export const isUserRejection = (error: Error | TxError) => {
-  if ("code" in error && error.code === IgnoreCodes.USER_REJECTED) {
+  if ('code' in error && error.code === IgnoreCodes.USER_REJECTED) {
     return true;
   }
   return false;
@@ -39,7 +39,7 @@ export const isUserRejection = (error: Error | TxError) => {
  * a transaction confirmation prompt
  */
 export const isAlreadyProcessing = (error: Error | TxError) => {
-  if ("code" in error && error.code === IgnoreCodes.ALREADY_PROCESSING) {
+  if ('code' in error && error.code === IgnoreCodes.ALREADY_PROCESSING) {
     return true;
   }
   return false;

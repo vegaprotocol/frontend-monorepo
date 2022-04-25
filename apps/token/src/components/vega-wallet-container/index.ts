@@ -1,1 +1,1 @@
-export * from "./vega-wallet-container";
+export * from './vega-wallet-container';

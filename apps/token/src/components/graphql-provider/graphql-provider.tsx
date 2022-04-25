@@ -1,7 +1,7 @@
-import { ApolloProvider } from "@apollo/client";
-import React from "react";
+import { ApolloProvider } from '@apollo/client';
+import React from 'react';
 
-import { client } from "../../lib/apollo-client";
+import { client } from '../../lib/apollo-client';
 
 export const GraphQlProvider = ({
   children,

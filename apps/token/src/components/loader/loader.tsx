@@ -1,6 +1,6 @@
-import "./loader.scss";
+import './loader.scss';
 
-import React from "react";
+import React from 'react';
 
 interface LoaderProps {
   invert?: boolean;
@@ -8,7 +8,7 @@ interface LoaderProps {
 
 export const Loader = ({ invert = false }: LoaderProps) => {
   const [, forceRender] = React.useState(false);
-  const className = ["loader", invert ? "loader--dark" : ""].join(" ");
+  const className = ['loader', invert ? 'loader--dark' : ''].join(' ');
 
   React.useEffect(() => {
     const interval = setInterval(() => {

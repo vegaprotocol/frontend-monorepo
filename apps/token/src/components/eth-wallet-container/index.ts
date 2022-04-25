@@ -1,1 +1,1 @@
-export * from "./eth-wallet-container";
+export * from './eth-wallet-container';

@@ -1,1 +1,1 @@
-export { ProposalVotesTable } from "./proposal-votes-table";
+export { ProposalVotesTable } from './proposal-votes-table';

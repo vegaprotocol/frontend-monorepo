@@ -1,1 +1,1 @@
-export { useVoteInformation } from "./use-vote-information";
+export { useVoteInformation } from './use-vote-information';

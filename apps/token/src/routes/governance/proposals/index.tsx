@@ -1,1 +1,1 @@
-export { ProposalsContainer, PROPOSALS_QUERY } from "./proposals-container";
+export { ProposalsContainer, PROPOSALS_QUERY } from './proposals-container';

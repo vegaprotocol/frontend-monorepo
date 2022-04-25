@@ -1,1 +1,1 @@
-export * from "./splash-loader";
+export * from './splash-loader';

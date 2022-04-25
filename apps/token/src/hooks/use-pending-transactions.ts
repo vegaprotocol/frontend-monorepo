@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import { useContracts } from "../contexts/contracts/contracts-context";
+import { useContracts } from '../contexts/contracts/contracts-context';
 
 export const usePendingTransactions = () => {
   const { transactions } = useContracts();

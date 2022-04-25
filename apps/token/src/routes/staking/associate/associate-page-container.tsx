@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import { useEthereumConfig } from "../../../hooks/use-ethereum-config";
-import { StakingWalletsContainer } from "../staking-wallets-container";
-import { AssociatePage } from "./associate-page";
-import { AssociatePageNoVega } from "./associate-page-no-vega";
+import { useEthereumConfig } from '../../../hooks/use-ethereum-config';
+import { StakingWalletsContainer } from '../staking-wallets-container';
+import { AssociatePage } from './associate-page';
+import { AssociatePageNoVega } from './associate-page-no-vega';
 
 export const NetworkParamsContainer = ({
   children,

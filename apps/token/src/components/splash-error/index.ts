@@ -1,1 +1,1 @@
-export * from "./splash-error";
+export * from './splash-error';

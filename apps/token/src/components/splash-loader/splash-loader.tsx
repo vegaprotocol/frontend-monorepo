@@ -1,8 +1,8 @@
-import "./splash-loader.scss";
+import './splash-loader.scss';
 
-import React from "react";
+import React from 'react';
 
-export const SplashLoader = ({ text = "Loading" }: { text?: string }) => {
+export const SplashLoader = ({ text = 'Loading' }: { text?: string }) => {
   const [, forceRender] = React.useState(false);
   React.useEffect(() => {
     const interval = setInterval(() => {

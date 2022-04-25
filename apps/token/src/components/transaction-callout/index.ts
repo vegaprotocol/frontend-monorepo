@@ -1,1 +1,1 @@
-export { TransactionCallout } from "./transaction-callout";
+export { TransactionCallout } from './transaction-callout';

@@ -1,1 +1,1 @@
-export { TokenDetails } from "./token-details"
+export { TokenDetails } from './token-details';

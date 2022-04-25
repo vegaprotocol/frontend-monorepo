@@ -1,6 +1,6 @@
-import "./modal.scss";
+import './modal.scss';
 
-import React from "react";
+import React from 'react';
 
 interface ModalProps {
   children: React.ReactNode;

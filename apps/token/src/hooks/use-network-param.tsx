@@ -1,7 +1,7 @@
-import { useQuery } from "@apollo/client";
-import { gql } from "@apollo/client";
+import { useQuery } from '@apollo/client';
+import { gql } from '@apollo/client';
 
-import type { NetworkParams } from "./__generated__/NetworkParams";
+import type { NetworkParams } from './__generated__/NetworkParams';
 
 export const NETWORK_PARAMS_QUERY = gql`
   query NetworkParams {

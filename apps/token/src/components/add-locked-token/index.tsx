@@ -1,1 +1,1 @@
-export { AddLockedTokenAddress } from "./add-locked-token";
+export { AddLockedTokenAddress } from './add-locked-token';
