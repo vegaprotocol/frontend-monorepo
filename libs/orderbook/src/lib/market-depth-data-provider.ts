@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import { updateLevels } from './orderbook-data';
+import type { Update } from '@vegaprotocol/react-helpers';
 import type {
   MarketDepth,
   MarketDepth_market,
@@ -70,11 +71,10 @@ export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
 
 const sequenceNumbers: Record<string, number> = {};
 
-const update = (
-  draft: MarketDepth_market,
-  delta: MarketDepthSubscription_marketDepthUpdate,
-  restart: () => void
-) => {
+const update: Update<
+  MarketDepth_market,
+  MarketDepthSubscription_marketDepthUpdate
+> = (draft, delta, restart) => {
   if (delta.market.id !== draft.id) {
     return;
   }
@@ -83,15 +83,16 @@ const update = (
     return;
   }
   if (sequenceNumber - 1 !== sequenceNumbers[delta.market.id]) {
-    restart();
+    sequenceNumbers[delta.market.id] = 0;
+    restart(true);
     return;
   }
   sequenceNumbers[delta.market.id] = sequenceNumber;
   if (delta.buy) {
-    draft.depth.buy = updateLevels(draft.depth.buy, delta.buy);
+    draft.depth.buy = updateLevels(draft.depth.buy ?? [], delta.buy);
   }
   if (delta.sell) {
-    draft.depth.sell = updateLevels(draft.depth.sell, delta.sell);
+    draft.depth.sell = updateLevels(draft.depth.sell ?? [], delta.sell);
   }
 };
 

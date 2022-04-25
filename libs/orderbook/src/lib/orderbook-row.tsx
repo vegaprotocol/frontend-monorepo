@@ -7,47 +7,39 @@ import {
 } from '@vegaprotocol/react-helpers';
 
 interface OrderbookRowProps {
-  bidVol: number;
+  bid: number;
   relativeBidVol?: number;
-  price: number;
-  askVol: number;
+  price: string;
+  ask: number;
   relativeAskVol?: number;
-  cumulativeRelativeAskVol?: number;
-  cumulativeRelativeBidVol?: number;
+  cumulativeRelativeAsk?: number;
+  cumulativeRelativeBid?: number;
   decimalPlaces: number;
 }
 
 export const OrderbookRow = React.memo(
   ({
-    bidVol,
+    bid,
     relativeBidVol,
     price,
-    askVol,
+    ask,
     relativeAskVol,
     decimalPlaces,
-    cumulativeRelativeAskVol,
-    cumulativeRelativeBidVol,
+    cumulativeRelativeAsk,
+    cumulativeRelativeBid,
   }: OrderbookRowProps) => {
     return (
       <>
-        <div>
-          <Vol value={bidVol} relativeValue={relativeBidVol} type="bid" />
-        </div>
-        <div>
-          <PriceCell
-            value={price}
-            valueFormatted={formatNumber(price, decimalPlaces)}
-          />
-        </div>
-        <div>
-          <Vol value={askVol} relativeValue={relativeAskVol} type="ask" />
-        </div>
-        <div>
-          <CumulativeVol
-            relativeAsk={cumulativeRelativeAskVol}
-            relativeBid={cumulativeRelativeBidVol}
-          />
-        </div>
+        <Vol value={bid} relativeValue={relativeBidVol} type="bid" />
+        <PriceCell
+          value={BigInt(price)}
+          valueFormatted={formatNumber(price, decimalPlaces)}
+        />
+        <Vol value={ask} relativeValue={relativeAskVol} type="ask" />
+        <CumulativeVol
+          relativeAsk={cumulativeRelativeAsk}
+          relativeBid={cumulativeRelativeBid}
+        />
       </>
     );
   }

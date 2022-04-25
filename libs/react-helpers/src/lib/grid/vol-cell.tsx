@@ -17,7 +17,7 @@ export const ASK_COLOR = 'maroon';
 
 export const Vol = React.memo(({ value, relativeValue, type }: VolProps) => {
   if ((!value && value !== 0) || isNaN(Number(value))) {
-    return <span data-testid="vol">-</span>;
+    return <div data-testid="vol">-</div>;
   }
   return (
     <div className="relative" data-testid="vol">

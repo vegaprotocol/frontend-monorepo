@@ -6,7 +6,10 @@ export interface IPriceCellProps {
 
 export const PriceCell = React.memo(
   ({ value, valueFormatted }: IPriceCellProps) => {
-    if ((!value && value !== 0) || isNaN(Number(value))) {
+    if (
+      (!value && value !== 0) ||
+      (typeof value === 'number' && isNaN(Number(value)))
+    ) {
       return <span data-testid="price">-</span>;
     }
     return (

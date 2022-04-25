@@ -21,12 +21,12 @@ export const Orderbook = ({ data, decimalPlaces }: OrderbookProps) => (
           key={data.price}
           price={data.price}
           decimalPlaces={decimalPlaces}
-          bidVol={data.bidVol}
+          bid={data.bid}
           relativeBidVol={data.relativeBidVol}
-          cumulativeRelativeBidVol={data.cumulativeVol.relativeBid}
-          askVol={data.askVol}
+          cumulativeRelativeBid={data.cumulativeVol.relativeBid}
+          ask={data.ask}
           relativeAskVol={data.relativeAskVol}
-          cumulativeRelativeAskVol={data.cumulativeVol.relativeAsk}
+          cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
         />
       ))}
     </div>

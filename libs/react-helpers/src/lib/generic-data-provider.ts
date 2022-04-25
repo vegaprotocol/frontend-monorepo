@@ -25,7 +25,7 @@ export interface Subscribe<Data, Delta> {
     variables?: OperationVariables
   ): {
     unsubscribe: () => void;
-    restart: () => void;
+    restart: (force?: boolean) => void;
     flush: () => void;
   };
 }
@@ -33,8 +33,8 @@ export interface Subscribe<Data, Delta> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
-interface Update<Data, Delta> {
-  (draft: Draft<Data>, delta: Delta, restart: () => void): void;
+export interface Update<Data, Delta> {
+  (draft: Draft<Data>, delta: Delta, restart: (force?: boolean) => void): void;
 }
 
 interface GetData<QueryData, Data> {
@@ -45,6 +45,14 @@ interface GetDelta<SubscriptionData, Delta> {
   (subscriptionData: SubscriptionData): Delta;
 }
 
+/**
+ * @param subscriptionQuery query that will beused for subscription
+ * @param update function that will be execued on each onNext, it should update data base on delta, it can restart data provider
+ * @param getData transforms received query data to format that will be stored in data provider
+ * @param getDelta transforms delta data to format that will be stored in data provider
+ * @param fetchPolicy
+ * @returns subscribe function
+ */
 function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   query: Query<QueryData>,
   subscriptionQuery: Query<SubscriptionData>,
@@ -53,7 +61,9 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   getDelta: GetDelta<SubscriptionData, Delta>,
   fetchPolicy: FetchPolicy = 'no-cache'
 ): Subscribe<Data, Delta> {
+  // list of callbacks passed through subscribe call
   const callbacks: UpdateCallback<Data, Delta>[] = [];
+  // subscription is started before inital query, all deltas that will arrive before inital query response are put on queue
   const updateQueue: Delta[] = [];
 
   let variables: OperationVariables | undefined = undefined;
@@ -63,6 +73,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   let client: ApolloClient<object> | undefined = undefined;
   let subscription: Subscription | undefined = undefined;
 
+  // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (callback: UpdateCallback<Data, Delta>, delta?: Delta) => {
     callback({
       data,
@@ -72,6 +83,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     });
   };
 
+  // notify all callbacks
   const notifyAll = (delta?: Delta) => {
     callbacks.forEach((callback) => notify(callback, delta));
   };
@@ -87,6 +99,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         fetchPolicy,
       });
       data = getData(res.data);
+      // if there was some updates received from subscription during initial query loading apply them on just reveived data
       if (data && updateQueue && updateQueue.length > 0) {
         data = produce(data, (draft) => {
           while (updateQueue.length) {
@@ -98,6 +111,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         });
       }
     } catch (e) {
+      // if error will occur data provider stops subscription
       error = e as Error;
       if (subscription) {
         subscription.unsubscribe();
@@ -109,14 +123,24 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
-  const restart = () => {
-    loading = true;
-    error = undefined;
-    initalFetch();
+  // restart function is passed to update and as a returned by subscribe function
+  const restart = (hard = false) => {
+    if (loading) {
+      return;
+    }
+    // hard reset on demand or when there is no apollo subscription yet
+    if (hard || !subscription) {
+      reset();
+      initialize();
+    } else {
+      loading = true;
+      error = undefined;
+      initalFetch();
+    }
   };
 
   const initialize = async () => {
-    if (subscription) {
+    if (subscription || loading) {
       return;
     }
     loading = true;
@@ -131,24 +155,27 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         variables,
         fetchPolicy,
       })
-      .subscribe(({ data: subscriptionData }) => {
-        if (!subscriptionData) {
-          return;
-        }
-        const delta = getDelta(subscriptionData);
-        if (loading || !data) {
-          updateQueue.push(delta);
-        } else {
-          const newData = produce(data, (draft) => {
-            update(draft, delta, restart);
-          });
-          if (newData === data) {
+      .subscribe(
+        ({ data: subscriptionData }) => {
+          if (!subscriptionData) {
             return;
           }
-          data = newData;
-          notifyAll(delta);
-        }
-      });
+          const delta = getDelta(subscriptionData);
+          if (loading || !data) {
+            updateQueue.push(delta);
+          } else {
+            const newData = produce(data, (draft) => {
+              update(draft, delta, restart);
+            });
+            if (newData === data) {
+              return;
+            }
+            data = newData;
+            notifyAll(delta);
+          }
+        },
+        () => restart()
+      );
     await initalFetch();
   };
 
@@ -163,6 +190,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     notifyAll();
   };
 
+  // remove callback from list, and unsubscribe if there is no more callbacks registered
   const unsubscribe = (callback: UpdateCallback<Data, Delta>) => {
     callbacks.splice(callbacks.indexOf(callback), 1);
     if (callbacks.length === 0) {
@@ -170,6 +198,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
+  //
   return (callback, c, v) => {
     callbacks.push(callback);
     if (callbacks.length === 1) {
@@ -187,6 +216,12 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   };
 }
 
+/**
+ * Memoizes data provider instances using query variables as cache key
+ *
+ * @param fn
+ * @returns subscibe function
+ */
 const memoize = <Data, Delta>(
   fn: (variables?: OperationVariables) => Subscribe<Data, Delta>
 ) => {
@@ -205,6 +240,30 @@ const memoize = <Data, Delta>(
   };
 };
 
+/**
+ * @param query Query<QueryData>
+ * @param subscriptionQuery Query<SubscriptionData> query that will beused for subscription
+ * @param update Update<Data, Delta> function that will be execued on each onNext, it should update data base on delta, it can restart data provider
+ * @param getData transforms received query data to format that will be stored in data provider
+ * @param getDelta transforms delta data to format that will be stored in data provider
+ * @param fetchPolicy
+ * @returns Subscribe<Data, Delta> subscribe function
+ * @example
+ * const marketMidPriceProvider = makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
+ *   gql`query MarketMidPrice($marketId: ID!) { market(id: $marketId) { data { midPrice } } }`,
+ *   gql`subscription MarketMidPriceSubscription($marketId: ID!) { marketDepthUpdate(marketId: $marketId) { market { data { midPrice } } } }`,
+ *   (draft: Draft<Data>, delta: Delta, restart: (force?: boolean) => void) => { draft.midPrice = delta.midPrice }
+ *   (data:QueryData) => data.market.data.midPrice
+ *   (delta:SubscriptionData) => delta.marketData.market
+ *  )
+ *
+ * const { unsubscribe, flush, restart } = marketMidPriceProvider(
+ *   ({ data, error, loading, delta }) => { ... },
+ *   apolloClient,
+ *   { id: '1fd726454fa1220038acbf6ff9ac701d8b8bf3f2d77c93a4998544471dc58747' }
+ * )
+ *
+ */
 export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
   query: Query<QueryData>,
   subscriptionQuery: Query<SubscriptionData>,

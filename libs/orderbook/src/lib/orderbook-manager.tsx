@@ -5,7 +5,7 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthDataProvider } from './market-depth-data-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/MarketDepthSubscription';
-import { compact, updateCompactedData } from './orderbook-data';
+import { compactData, updateCompactedData } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
 
 interface OrderbookManagerProps {
@@ -54,7 +54,7 @@ export const OrderbookManager = ({
       setOrderbookData(dataRef.current);
       return;
     }
-    dataRef.current = compact(data.depth.sell, data.depth.buy, resolution);
+    dataRef.current = compactData(data.depth.sell, data.depth.buy, resolution);
     setOrderbookData(dataRef.current);
   }, [data, resolution]);
 

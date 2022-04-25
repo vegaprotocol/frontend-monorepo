@@ -1,4 +1,8 @@
-import { compact, updateLevels, updateCompactedData } from './orderbook-data';
+import {
+  compactData,
+  updateLevels,
+  updateCompactedData,
+} from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
 import type { MarketDepth_market_depth_sell } from './__generated__/MarketDepth';
 import type {
@@ -6,7 +10,7 @@ import type {
   MarketDepthSubscription_marketDepthUpdate_buy,
 } from './__generated__/MarketDepthSubscription';
 
-describe('compact', () => {
+describe('compactData', () => {
   const numberOfRows = 100;
   const middle = 1000;
   const sell: MarketDepth_market_depth_sell[] = new Array(numberOfRows)
@@ -26,12 +30,12 @@ describe('compact', () => {
       numberOfOrders: (numberOfRows - i).toString(),
     }));
   it('groups data by price and resolution', () => {
-    expect(compact(sell, buy, 1).length).toEqual(200);
-    expect(compact(sell, buy, 5).length).toEqual(41);
-    expect(compact(sell, buy, 10).length).toEqual(21);
+    expect(compactData(sell, buy, 1).length).toEqual(200);
+    expect(compactData(sell, buy, 5).length).toEqual(41);
+    expect(compactData(sell, buy, 10).length).toEqual(21);
   });
   it('counts cumulative vol', () => {
-    const orderbookData = compact(sell, buy, 10);
+    const orderbookData = compactData(sell, buy, 10);
     expect(orderbookData[0].cumulativeVol.ask).toEqual(4950);
     expect(orderbookData[0].cumulativeVol.bid).toEqual(0);
     expect(orderbookData[10].cumulativeVol.ask).toEqual(390);
@@ -44,25 +48,25 @@ describe('compact', () => {
     );
   });
   it('stores volume by level', () => {
-    const orderbookData = compact(sell, buy, 10);
-    expect(orderbookData[0].askVolByLevel).toEqual({
-      1095: 5,
-      1096: 4,
-      1097: 3,
-      1098: 2,
-      1099: 1,
-      1100: 0,
+    const orderbookData = compactData(sell, buy, 10);
+    expect(orderbookData[0].askByLevel).toEqual({
+      '1095': 5,
+      '1096': 4,
+      '1097': 3,
+      '1098': 2,
+      '1099': 1,
+      '1100': 0,
     });
-    expect(orderbookData[orderbookData.length - 1].bidVolByLevel).toEqual({
-      901: 0,
-      902: 1,
-      903: 2,
-      904: 3,
+    expect(orderbookData[orderbookData.length - 1].bidByLevel).toEqual({
+      '901': 0,
+      '902': 1,
+      '903': 2,
+      '904': 3,
     });
   });
 
   it('updates relative data', () => {
-    const orderbookData = compact(sell, buy, 10);
+    const orderbookData = compactData(sell, buy, 10);
     expect(orderbookData[0].cumulativeVol.relativeAsk).toEqual(100);
     expect(orderbookData[0].cumulativeVol.relativeBid).toEqual(0);
     expect(orderbookData[0].relativeAskVol).toEqual(2);
@@ -96,7 +100,7 @@ describe('updateLevels', () => {
     expect(levels[0].price).toEqual('20');
     updateLevels(levels, [removeFirstRow]);
     expect(levels[0].price).toEqual('20');
-    expect(updateLevels(null, [removeFirstRow])).toEqual(null);
+    expect(updateLevels([], [removeFirstRow])).toEqual([]);
     const addFirstRow: MarketDepthSubscription_marketDepthUpdate_sell = {
       __typename: 'PriceLevel',
       price: '10',
@@ -129,64 +133,64 @@ describe('updateLevels', () => {
     };
     updateLevels(levels, [updateLastRow]);
     expect(levels[levels.length - 1]).toEqual(updateLastRow);
-    expect(updateLevels(null, [updateLastRow])).toEqual([updateLastRow]);
+    expect(updateLevels([], [updateLastRow])).toEqual([updateLastRow]);
   });
 });
 
 describe('updateCompactedData', () => {
   const orderbookData: OrderbookData[] = [
     {
-      price: 120,
+      price: '120',
       cumulativeVol: {
         ask: 50,
         relativeAsk: 100,
         bid: 0,
         relativeBid: 0,
       },
-      askVolByLevel: {
+      askByLevel: {
         '121': 10,
       },
-      bidVolByLevel: {},
-      askVol: 10,
-      bidVol: 0,
+      bidByLevel: {},
+      ask: 10,
+      bid: 0,
       relativeAskVol: 25,
       relativeBidVol: 0,
     },
     {
-      price: 100,
+      price: '100',
       cumulativeVol: {
         ask: 40,
         relativeAsk: 80,
         bid: 40,
         relativeBid: 80,
       },
-      askVolByLevel: {
+      askByLevel: {
         '101': 10,
         '102': 30,
       },
-      bidVolByLevel: {
+      bidByLevel: {
         '99': 10,
         '98': 30,
       },
-      askVol: 40,
-      bidVol: 40,
+      ask: 40,
+      bid: 40,
       relativeAskVol: 100,
       relativeBidVol: 100,
     },
     {
-      price: 80,
+      price: '80',
       cumulativeVol: {
         ask: 0,
         relativeAsk: 0,
         bid: 50,
         relativeBid: 100,
       },
-      askVolByLevel: {},
-      bidVolByLevel: {
+      askByLevel: {},
+      bidByLevel: {
         '79': 10,
       },
-      askVol: 0,
-      bidVol: 10,
+      ask: 0,
+      bid: 10,
       relativeAskVol: 0,
       relativeBidVol: 25,
     },
@@ -212,11 +216,11 @@ describe('updateCompactedData', () => {
       [buy],
       resolution
     );
-    expect(updatedData[0].askVol).toEqual(20);
-    expect(updatedData[0].askVolByLevel?.[120]).toEqual(10);
+    expect(updatedData[0].ask).toEqual(20);
+    expect(updatedData[0].askByLevel?.[120]).toEqual(10);
     expect(updatedData[0].cumulativeVol.ask).toEqual(60);
-    expect(updatedData[2].bidVol).toEqual(20);
-    expect(updatedData[2].bidVolByLevel?.[80]).toEqual(10);
+    expect(updatedData[2].bid).toEqual(20);
+    expect(updatedData[2].bidByLevel?.[80]).toEqual(10);
     expect(updatedData[2].cumulativeVol.bid).toEqual(60);
   });
 
