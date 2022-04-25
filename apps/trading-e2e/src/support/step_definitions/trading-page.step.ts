@@ -1,4 +1,4 @@
-import { Given, Then } from 'cypress-cucumber-preprocessor/steps';
+import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import { MarketState } from '@vegaprotocol/types';
 import TradesList from '../trading-windows/trades-list';
@@ -8,6 +8,7 @@ import { generateCandles } from '../mocks/generate-candles';
 import { generateTrades } from '../mocks/generate-trades';
 import { generateDealTicketQuery } from '../mocks/generate-deal-ticket-query';
 import { generateMarket } from '../mocks/generate-market';
+import { generateOrders } from '../mocks/generate-orders';
 import { generatePositions } from '../mocks/generate-positions';
 
 const tradesList = new TradesList();
@@ -25,6 +26,12 @@ const mockMarket = (state: MarketState) => {
             },
           }),
         },
+      });
+    }
+
+    if (hasOperationName(req, 'Orders')) {
+      req.reply({
+        body: { data: generateOrders() },
       });
     }
 
@@ -76,6 +83,10 @@ Given('I am on the trading page for a suspended market', () => {
   cy.contains('Market: SUSPENDED MARKET');
 });
 
+When('I click on orders tab', () => {
+  tradingPage.clickOnOrdersTab();
+});
+
 Then('trading page for {string} market is displayed', (marketType) => {
   switch (marketType) {
     case 'active':
@@ -91,4 +102,8 @@ Then('trading page for {string} market is displayed', (marketType) => {
   }
   tradingPage.clickOnTradesTab();
   tradesList.verifyTradesListDisplayed();
+});
+
+Then('placed orders are displayed', () => {
+  cy.log('Then');
 });
