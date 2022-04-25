@@ -8,6 +8,7 @@ import { generateCandles } from '../mocks/generate-candles';
 import { generateTrades } from '../mocks/generate-trades';
 import { generateDealTicketQuery } from '../mocks/generate-deal-ticket-query';
 import { generateMarket } from '../mocks/generate-market';
+import { generatePositions } from '../mocks/generate-positions';
 
 const tradesList = new TradesList();
 const tradingPage = new TradingPage();

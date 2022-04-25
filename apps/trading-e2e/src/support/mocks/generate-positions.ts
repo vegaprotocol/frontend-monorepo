@@ -3,7 +3,7 @@ import type { PartialDeep } from 'type-fest';
 import type {
   Positions,
   Positions_party_positions,
-} from '../lib/__generated__/Positions';
+} from '@vegaprotocol/positions';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 export const generatePositions = (
