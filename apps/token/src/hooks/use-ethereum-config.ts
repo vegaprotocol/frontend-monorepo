@@ -1,8 +1,8 @@
-import * as Sentry from "@sentry/react";
-import React from "react";
+import * as Sentry from '@sentry/react';
+import React from 'react';
 
-import { NetworkParams } from "../config";
-import { useNetworkParam } from "./use-network-param";
+import { NetworkParams } from '../config';
+import { useNetworkParam } from './use-network-param';
 
 export const useEthereumConfig = () => {
   const { data: ethereumConfigJSON, loading } = useNetworkParam([
@@ -22,7 +22,7 @@ export const useEthereumConfig = () => {
       const config = JSON.parse(configJson);
       return config;
     } catch {
-      Sentry.captureMessage("Ethereum config JSON is invalid");
+      Sentry.captureMessage('Ethereum config JSON is invalid');
       return null;
     }
   }, [ethereumConfigJSON, loading]);

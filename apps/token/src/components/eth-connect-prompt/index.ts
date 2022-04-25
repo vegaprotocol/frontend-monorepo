@@ -1,1 +1,1 @@
-export * from "./eth-connect-promp";
+export * from './eth-connect-promp';

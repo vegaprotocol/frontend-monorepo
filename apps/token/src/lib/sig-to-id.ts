@@ -1,10 +1,10 @@
-import { ethers } from "ethers";
-import { SHA3 } from "sha3";
+import { ethers } from 'ethers';
+import { SHA3 } from 'sha3';
 
 export const sigToId = (sig: string) => {
   // Prepend 0x
-  if (sig.slice(0, 2) !== "0x") {
-    sig = "0x" + sig;
+  if (sig.slice(0, 2) !== '0x') {
+    sig = '0x' + sig;
   }
 
   // Create the ID

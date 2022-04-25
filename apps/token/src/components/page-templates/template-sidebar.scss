@@ -1,4 +1,4 @@
-@import "../../styles/colors";
+@import '../../styles/colors';
 
 .template-sidebar {
   border-bottom: 1px solid $white;
@@ -15,7 +15,7 @@
 
   aside {
     padding: 20px;
-    background-image: url("../../images/banner.png");
+    background-image: url('../../images/banner.png');
     background-size: 100% auto;
   }
 

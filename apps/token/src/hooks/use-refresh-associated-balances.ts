@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
 import {
   AppStateActionType,
   useAppState,
-} from "../contexts/app-state/app-state-context";
-import { useContracts } from "../contexts/contracts/contracts-context";
+} from '../contexts/app-state/app-state-context';
+import { useContracts } from '../contexts/contracts/contracts-context';
 
 export function useRefreshAssociatedBalances() {
   const { appDispatch } = useAppState();

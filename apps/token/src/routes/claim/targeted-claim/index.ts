@@ -1,1 +1,1 @@
-export { TargetedClaim } from "./targeted-claim";
+export { TargetedClaim } from './targeted-claim';

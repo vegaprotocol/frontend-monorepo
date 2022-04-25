@@ -1,1 +1,1 @@
-export * from "./epoch-countdown";
+export * from './epoch-countdown';

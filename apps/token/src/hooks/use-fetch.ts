@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 
 interface State<T> {
   data?: T;
@@ -7,9 +7,9 @@ interface State<T> {
 }
 
 enum ActionType {
-  LOADING = "LOADING",
-  ERROR = "ERROR",
-  FETCHED = "FETCHED",
+  LOADING = 'LOADING',
+  ERROR = 'ERROR',
+  FETCHED = 'FETCHED',
 }
 
 // discriminated union type
@@ -57,7 +57,7 @@ function useFetch<T = unknown>(
         }
 
         const data = (await response.json()) as T;
-        if ("error" in data) {
+        if ('error' in data) {
           // @ts-ignore - data.error
           throw new Error(data.error);
         }

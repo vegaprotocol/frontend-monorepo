@@ -1,7 +1,7 @@
-import "./app-banner.scss";
+import './app-banner.scss';
 
-import { useAppState } from "../../contexts/app-state/app-state-context";
-import { Error } from "../icons";
+import { useAppState } from '../../contexts/app-state/app-state-context';
+import { Error } from '../icons';
 
 export const AppBanner = () => {
   const {

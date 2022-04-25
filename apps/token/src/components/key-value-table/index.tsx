@@ -1,1 +1,1 @@
-export { KeyValueTable, KeyValueTableRow } from './key-value-table'
+export { KeyValueTable, KeyValueTableRow } from './key-value-table';

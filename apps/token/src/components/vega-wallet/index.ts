@@ -1,1 +1,1 @@
-export * from "./vega-wallet";
+export * from './vega-wallet';

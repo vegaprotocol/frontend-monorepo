@@ -1,14 +1,14 @@
-import "./vesting-table.scss";
+import './vesting-table.scss';
 
-import React from "react";
-import { useTranslation } from "react-i18next";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import {
   KeyValueTable,
   KeyValueTableRow,
-} from "../../../components/key-value-table";
-import { BigNumber } from "../../../lib/bignumber";
-import { formatNumber } from "../../../lib/format-number";
+} from '../../../components/key-value-table';
+import { BigNumber } from '../../../lib/bignumber';
+import { formatNumber } from '../../../lib/format-number';
 
 export interface VestingTableProps {
   vested: BigNumber;
@@ -36,33 +36,33 @@ export const VestingTable = ({
   }, [total, associated]);
   return (
     <section data-testid="vesting-table" className="vesting-table">
-      <h2>{t("Across all tranches")}</h2>
+      <h2>{t('Across all tranches')}</h2>
       <KeyValueTable numerical={true}>
         <KeyValueTableRow
           data-testid="vesting-table-total"
           className="vesting-table__top-solid-border"
         >
-          <th>{t("Vesting VEGA")}</th>
+          <th>{t('Vesting VEGA')}</th>
           <td>{formatNumber(total)}</td>
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-locked">
           <th>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--locked"></div>
-            {t("Locked")}
+            {t('Locked')}
           </th>
           <td>{formatNumber(locked)}</td>
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-unlocked">
           <th>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></div>
-            {t("Unlocked")}
+            {t('Unlocked')}
           </th>
           <td>{formatNumber(vested)}</td>
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-staked">
           <th>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--staked"></div>
-            {t("Associated")}
+            {t('Associated')}
           </th>
           <td>{formatNumber(associated)}</td>
         </KeyValueTableRow>

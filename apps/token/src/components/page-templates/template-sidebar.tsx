@@ -1,8 +1,8 @@
-import "./template-sidebar.scss";
+import './template-sidebar.scss';
 
-import React from "react";
+import React from 'react';
 
-import { Nav } from "../nav";
+import { Nav } from '../nav';
 
 export interface TemplateSidebarProps {
   children: React.ReactNode;

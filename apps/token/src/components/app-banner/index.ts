@@ -1,1 +1,1 @@
-export * from "./app-banner";
+export * from './app-banner';

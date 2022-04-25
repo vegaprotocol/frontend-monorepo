@@ -1,1 +1,1 @@
-export { LockedProgress } from "./locked-progress";
+export { LockedProgress } from './locked-progress';

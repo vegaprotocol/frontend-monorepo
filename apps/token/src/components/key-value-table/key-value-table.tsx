@@ -1,6 +1,6 @@
-import "./key-value-table.scss";
+import './key-value-table.scss';
 
-import * as React from "react";
+import * as React from 'react';
 
 export interface KeyValueTableProps
   extends React.HTMLAttributes<HTMLTableElement> {
@@ -24,10 +24,10 @@ export const KeyValueTable = ({
       <table
         data-testid="key-value-table"
         {...rest}
-        className={`key-value-table ${className ? className : ""} ${
-          numerical ? "key-value-table--numerical" : ""
+        className={`key-value-table ${className ? className : ''} ${
+          numerical ? 'key-value-table--numerical' : ''
         }
-        ${muted ? "key-value-table--muted" : ""}`}
+        ${muted ? 'key-value-table--muted' : ''}`}
       >
         <tbody>{children}</tbody>
       </table>
@@ -49,7 +49,7 @@ export const KeyValueTableRow = ({
   return (
     <tr
       {...rest}
-      className={`key-value-table__row ${className ? className : ""}`}
+      className={`key-value-table__row ${className ? className : ''}`}
     >
       {children[0]}
       {children[1]}

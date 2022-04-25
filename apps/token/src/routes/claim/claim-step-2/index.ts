@@ -1,1 +1,1 @@
-export { ClaimStep2 } from "./claim-step-2";
+export { ClaimStep2 } from './claim-step-2';
