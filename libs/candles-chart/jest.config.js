@@ -1,10 +1,10 @@
 module.exports = {
-  displayName: 'chart',
+  displayName: 'candles-chart',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/chart',
+  coverageDirectory: '../../coverage/libs/candles-chart',
   setupFiles: ['jest-canvas-mock'],
 };

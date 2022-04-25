@@ -5,13 +5,14 @@ import { useState } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
-import { ChartContainer } from '../../components/chart-container';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import type { Market_market } from './__generated__/Market';
 import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
+import { DepthChartContainer } from '@vegaprotocol/depth-chart';
+import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 
 const Orderbook = () => (
   <Splash>
@@ -20,7 +21,8 @@ const Orderbook = () => (
 );
 
 const TradingViews = {
-  Chart: ChartContainer,
+  Candles: CandlesChartContainer,
+  Depth: DepthChartContainer,
   Ticket: DealTicketContainer,
   Orderbook: Orderbook,
   Orders: OrderListContainer,
@@ -50,7 +52,14 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
-        <TradingViews.Chart marketId={market.id} />
+        <GridTabs group="chart">
+          <GridTab id="candles" name={t('Candles')}>
+            <TradingViews.Candles marketId={market.id} />
+          </GridTab>
+          <GridTab id="depth" name={t('Depth')}>
+            <TradingViews.Depth marketId={market.id} />
+          </GridTab>
+        </GridTabs>
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <TradingViews.Ticket marketId={market.id} />
@@ -107,7 +116,7 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market }: TradePanelsProps) => {
-  const [view, setView] = useState<TradingView>('Chart');
+  const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
     const Component = TradingViews[view];
