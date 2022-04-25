@@ -7,7 +7,7 @@ import type { PositionSubscribe_positions } from './__generated__/PositionSubscr
 import type { Positions_party_positions } from './__generated__/Positions';
 
 import type { AgGridReact } from 'ag-grid-react';
-import PositionsTable, { getRowNodeId } from './positions-table';
+import PositionsTable, { getRowId } from './positions-table';
 import { positionsDataProvider } from './positions-data-provider';
 
 interface PositionsManagerProps {
@@ -24,7 +24,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
       if (!gridRef.current?.api) {
         return false;
       }
-      const rowNode = gridRef.current.api.getRowNode(getRowNodeId(delta));
+      const rowNode = gridRef.current.api.getRowNode(getRowId({ data: delta }));
       if (rowNode) {
         const updatedData = produce<Positions_party_positions>(
           rowNode.data,
