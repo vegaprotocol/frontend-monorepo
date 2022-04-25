@@ -38,7 +38,7 @@ export const TransactionCallout = ({
       <TransactionPending
         confirmations={state.txData.confirmations}
         requiredConfirmations={state.requiredConfirmations}
-        hash={state.txData.hash!}
+        hash={state.txData.hash || ''}
         heading={pendingHeading}
         body={pendingBody}
         footer={pendingFooter}
@@ -49,7 +49,7 @@ export const TransactionCallout = ({
   } else if (state.txState === TxState.Complete) {
     return (
       <TransactionComplete
-        hash={state.txData.hash!}
+        hash={state.txData.hash || ''}
         heading={completeHeading}
         body={completeBody}
         footer={completeFooter}

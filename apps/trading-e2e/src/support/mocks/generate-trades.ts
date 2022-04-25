@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type { Trades, Trades_market_trades } from '../lib/__generated__/Trades';
+import type { Trades, Trades_market_trades } from '@vegaprotocol/trades';
 
 export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
   const trades: Trades_market_trades[] = [

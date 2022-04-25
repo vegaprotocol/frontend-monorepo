@@ -30,6 +30,6 @@ test('It sums some longer tranches correctly', () => {
 test('Handles null tranche array', () => {
   const tranches = null;
 
-  const result = sumCirculatingTokens(tranches as any as Tranche[]);
+  const result = sumCirculatingTokens(tranches as unknown as Tranche[]);
   expect(result.toString()).toEqual('0');
 });

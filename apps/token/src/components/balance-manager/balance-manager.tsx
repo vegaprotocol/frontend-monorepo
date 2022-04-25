@@ -1,28 +1,32 @@
-import * as Sentry from "@sentry/react";
-import { useWeb3React } from "@web3-react/core";
-import React from "react";
+import * as Sentry from '@sentry/react';
+import { useWeb3React } from '@web3-react/core';
+import React from 'react';
 
-import { ADDRESSES } from "../../config";
+import { ADDRESSES } from '../../config';
 import {
   AppStateActionType,
   useAppState,
-} from "../../contexts/app-state/app-state-context";
-import { useContracts } from "../../contexts/contracts/contracts-context";
-import { useGetAssociationBreakdown } from "../../hooks/use-get-association-breakdown";
-import { useGetUserTrancheBalances } from "../../hooks/use-get-user-tranche-balances";
-import { BigNumber } from "../../lib/bignumber";
+} from '../../contexts/app-state/app-state-context';
+import { useContracts } from '../../contexts/contracts/contracts-context';
+import { useGetAssociationBreakdown } from '../../hooks/use-get-association-breakdown';
+import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
+import { BigNumber } from '../../lib/bignumber';
 
-export const BalanceManager = ({ children }: any) => {
+interface BalanceManagerProps {
+  children: React.ReactElement;
+}
+
+export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const contracts = useContracts();
   const { account } = useWeb3React();
   const { appDispatch } = useAppState();
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
-    account || "",
+    account || '',
     contracts?.vesting
   );
   const getAssociationBreakdown = useGetAssociationBreakdown(
-    account || "",
+    account || '',
     contracts?.staking,
     contracts?.vesting
   );

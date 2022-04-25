@@ -7,6 +7,7 @@ export const useClaim = (claimData: IClaimTokenParams, address: string) => {
     ...claimData,
     ...claimData.signature,
     ...claimData.claim,
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     country: claimData.country!,
     account: address,
   };

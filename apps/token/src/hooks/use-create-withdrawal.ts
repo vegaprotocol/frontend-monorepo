@@ -100,7 +100,7 @@ export function useCreateWithdrawal(pubKey: string): [Status, Submit] {
   );
 
   React.useEffect(() => {
-    let interval: any = null;
+    let interval: ReturnType<typeof setInterval>;
     if (status === Status.Pending) {
       interval = setInterval(async () => {
         try {

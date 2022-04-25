@@ -1,18 +1,18 @@
-import BigNumber from "bignumber.js";
-import React from "react";
+import BigNumber from 'bignumber.js';
+import React from 'react';
 
-import { StakingMethod } from "../../../components/staking-method-radio";
-import { useContracts } from "../../../contexts/contracts/contracts-context";
-import { TxState } from "../../../hooks/transaction-reducer";
-import { useGetAssociationBreakdown } from "../../../hooks/use-get-association-breakdown";
-import { useRefreshBalances } from "../../../hooks/use-refresh-balances";
-import { useTransaction } from "../../../hooks/use-transaction";
+import { StakingMethod } from '../../../components/staking-method-radio';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
+import { TxState } from '../../../hooks/transaction-reducer';
+import { useGetAssociationBreakdown } from '../../../hooks/use-get-association-breakdown';
+import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
+import { useTransaction } from '../../../hooks/use-transaction';
 
 export const useRemoveStake = (
   address: string,
   amount: string,
   vegaKey: string,
-  stakingMethod: StakingMethod | ""
+  stakingMethod: StakingMethod | null
 ) => {
   const { staking, vesting } = useContracts();
   // Cannot use call on these as they check wallet balance

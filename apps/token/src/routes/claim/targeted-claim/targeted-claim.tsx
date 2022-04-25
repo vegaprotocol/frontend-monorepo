@@ -60,7 +60,7 @@ export const TargetedClaim = ({
         labelFor="country-selector"
       >
         <CountrySelector
-          code={state.claimData?.country!}
+          code={state.claimData?.country}
           onSelectCountry={(countryCode) =>
             dispatch({ type: ClaimActionType.SET_COUNTRY, countryCode })
           }
@@ -69,9 +69,9 @@ export const TargetedClaim = ({
       <BulletHeader tag="h2">
         {t('Step')} 2. {t('Claim tokens')}
       </BulletHeader>
-      {state.claimData?.country! ? (
+      {state.claimData?.country ? (
         <ClaimForm
-          countryCode={state.claimData?.country!}
+          countryCode={state.claimData?.country}
           txState={txState}
           txDispatch={txDispatch}
           onSubmit={claimTargeted}

@@ -77,7 +77,7 @@ export function createClient() {
       Delegation: {
         keyFields: false,
         // Only get full updates
-        merge(_, incoming: any[]) {
+        merge(_, incoming) {
           return incoming;
         },
         fields: {

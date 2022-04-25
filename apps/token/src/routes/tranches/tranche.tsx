@@ -23,7 +23,7 @@ export const Tranche = () => {
   const { trancheId } = useParams<{ trancheId: string }>();
   const { chainId } = useWeb3React();
   const tranche = tranches.find(
-    (tranche) => tranche.tranche_id === parseInt(trancheId!)
+    (tranche) => trancheId && parseInt(trancheId) === tranche.tranche_id
   );
 
   const lockedData = React.useMemo(() => {

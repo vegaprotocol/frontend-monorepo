@@ -2,7 +2,7 @@ import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import MarketsPage from '../pages/markets-page';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
-import { generateMarkets } from '../../../../../libs/market-list/src/__tests__/generate-markets';
+import { generateMarkets } from '../mocks/generate-markets';
 
 const marketsPage = new MarketsPage();
 

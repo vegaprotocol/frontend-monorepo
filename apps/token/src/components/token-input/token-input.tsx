@@ -107,8 +107,10 @@ export const TokenInput = ({
       'If requires approval is true allowance, approve, approveTxState and approveDispatch props are required!'
     );
   }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const isApproved = !new BigNumber(allowance!).isEqualTo(0);
   const showApproveButton =
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     !isApproved || new BigNumber(amount).isGreaterThan(allowance!);
 
   const isDisabled = React.useMemo<boolean>(() => {

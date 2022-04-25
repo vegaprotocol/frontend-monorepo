@@ -2,15 +2,16 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { NETWORK_PARAMS_QUERY, Web3Container } from './web3-container';
-import type { NetworkParametersQuery } from '@vegaprotocol/graphql';
+import type { NetworkParamsQuery } from './__generated__/NetworkParamsQuery';
+import type { useWeb3React } from '@web3-react/core';
 
 const defaultHookValue = {
   isActive: false,
   error: undefined,
   connector: null,
   chainId: 3,
-};
-let mockHookValue;
+} as unknown as ReturnType<typeof useWeb3React>;
+let mockHookValue: ReturnType<typeof useWeb3React>;
 
 const mockEthereumConfig = {
   network_id: '3',
@@ -21,7 +22,7 @@ const mockEthereumConfig = {
   },
 };
 
-const networkParamsQueryMock: MockedResponse<NetworkParametersQuery> = {
+const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   request: {
     query: NETWORK_PARAMS_QUERY,
   },
@@ -117,7 +118,7 @@ test('Passes ethereum config to children', async () => {
 });
 
 test('Shows no config found message if the network parameter doesnt exist', async () => {
-  const mock: MockedResponse<NetworkParametersQuery> = {
+  const mock: MockedResponse<NetworkParamsQuery> = {
     request: {
       query: NETWORK_PARAMS_QUERY,
     },
@@ -141,7 +142,7 @@ test('Shows no config found message if the network parameter doesnt exist', asyn
 });
 
 test('Shows message if ethereum config could not be parsed', async () => {
-  const mock: MockedResponse<NetworkParametersQuery> = {
+  const mock: MockedResponse<NetworkParamsQuery> = {
     request: {
       query: NETWORK_PARAMS_QUERY,
     },

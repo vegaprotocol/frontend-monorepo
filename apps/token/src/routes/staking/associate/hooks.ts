@@ -20,7 +20,7 @@ export const useAddStake = (
   address: string,
   amount: string,
   vegaKey: string,
-  stakingMethod: StakingMethod | '',
+  stakingMethod: StakingMethod | null,
   confirmations: number
 ) => {
   const { staking, vesting } = useContracts();
@@ -88,7 +88,7 @@ export const usePollForStakeLinking = (
 
   // Query for linkings under current connected party (vega key)
   React.useEffect(() => {
-    const interval: any = setInterval(() => {
+    const interval = setInterval(() => {
       if (!txHash || !partyId) return;
 
       client

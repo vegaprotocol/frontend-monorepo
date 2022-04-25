@@ -92,6 +92,7 @@ export const RedemptionInformation = () => {
         <Tranche0Table
           trancheId={0}
           total={
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             trancheBalances.find(
               ({ id }) => id.toString() === zeroTranche.id.toString()
             )!.locked
@@ -104,11 +105,13 @@ export const RedemptionInformation = () => {
           tranche={tr}
           lien={lien}
           locked={
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             trancheBalances.find(
               ({ id }) => id.toString() === tr.tranche_id.toString()
             )!.locked
           }
           vested={
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             trancheBalances.find(
               ({ id }) => id.toString() === tr.tranche_id.toString()
             )!.vested

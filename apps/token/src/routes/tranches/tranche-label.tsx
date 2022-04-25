@@ -11,6 +11,12 @@ const TRANCHE_LABELS: Record<number, string[]> = {
   '16': ['Coinlist Option 2', 'Coinlist wallets'],
 };
 
+export interface TrancheLabelProps {
+  chainId: EthereumChainId | null;
+  contract: string;
+  id: number;
+}
+
 /**
  * Some tranches have names that will be useful to
  * users trying to identify where their tokens are.
@@ -21,15 +27,7 @@ const TRANCHE_LABELS: Record<number, string[]> = {
  * @param chainId The ID of the chain this contract is on
  * @param id The tranche ID on this contract
  */
-export const TrancheLabel = ({
-  contract,
-  chainId,
-  id,
-}: {
-  chainId: EthereumChainId | null;
-  contract: string;
-  id: number;
-}) => {
+export const TrancheLabel = ({ contract, chainId, id }: TrancheLabelProps) => {
   // Only mainnet tranches on the known vesting contract have useful name
   if (
     chainId &&
