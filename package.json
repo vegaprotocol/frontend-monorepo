@@ -51,7 +51,7 @@
     "lodash": "^4.17.21",
     "next": "^12.0.7",
     "nx": "^13.8.3",
-    "pennant": "0.4.5",
+    "pennant": "0.4.7",
     "postcss": "^8.4.6",
     "react": "17.0.2",
     "react-copy-to-clipboard": "^5.0.4",
