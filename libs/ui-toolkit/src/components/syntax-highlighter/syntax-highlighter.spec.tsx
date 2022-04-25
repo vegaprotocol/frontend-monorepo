@@ -9,6 +9,6 @@ describe('Syntax highlighter', () => {
     };
 
     render(<SyntaxHighlighter data={testData} />);
-    expect(screen.getByText('test of highlighter')).toBeInTheDocument();
+    expect(screen.getByText('"test of highlighter"')).toBeInTheDocument();
   });
 });

@@ -1,1 +1,1 @@
-export * from "./token-input";
+export * from './token-input';

@@ -1,16 +1,16 @@
-import React from "react";
+import React from 'react';
 
 import {
   AppStateActionType,
   useAppState,
-} from "../contexts/app-state/app-state-context";
-import { useContracts } from "../contexts/contracts/contracts-context";
+} from '../contexts/app-state/app-state-context';
+import { useContracts } from '../contexts/contracts/contracts-context';
 
 export function useRefreshAssociatedBalances() {
   const { appDispatch } = useAppState();
   const { staking, vesting } = useContracts();
 
-  const refresh = React.useCallback(
+  return React.useCallback(
     async (ethAddress: string, vegaKey: string) => {
       const [walletAssociatedBalance, vestingAssociatedBalance] =
         await Promise.all([
@@ -26,6 +26,4 @@ export function useRefreshAssociatedBalances() {
     },
     [staking, vesting, appDispatch]
   );
-
-  return refresh;
 }

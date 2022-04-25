@@ -1,1 +1,1 @@
-export { CurrentProposalStatus } from "./current-proposal-status";
+export { CurrentProposalStatus } from './current-proposal-status';

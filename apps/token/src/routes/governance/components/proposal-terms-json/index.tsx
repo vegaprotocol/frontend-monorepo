@@ -1,1 +1,1 @@
-export { ProposalTermsJson } from "./proposal-terms-json";
+export { ProposalTermsJson } from './proposal-terms-json';

@@ -1,1 +1,1 @@
-export * from "./web3-connector";
+export * from './web3-connector';

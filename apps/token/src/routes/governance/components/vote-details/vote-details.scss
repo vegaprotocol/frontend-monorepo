@@ -1,4 +1,4 @@
-@import "../../../../styles/colors";
+@import '../../../../styles/colors';
 
 .vote-details {
   &__vote-buttons {
@@ -75,6 +75,6 @@
   }
 
   &__set_to {
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
 }

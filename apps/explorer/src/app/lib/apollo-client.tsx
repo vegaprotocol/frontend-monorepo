@@ -1,16 +1,16 @@
-import { ApolloClient, from, HttpLink, InMemoryCache } from "@apollo/client";
-import { onError } from "@apollo/client/link/error";
-import { RetryLink } from "@apollo/client/link/retry";
+import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { RetryLink } from '@apollo/client/link/retry';
 
 export function createClient(base?: string) {
   if (!base) {
-    throw new Error("Base must be passed into createClient!");
+    throw new Error('Base must be passed into createClient!');
   }
-  const gqlPath = "query";
+  const gqlPath = 'query';
   const urlHTTP = new URL(gqlPath, base);
   const urlWS = new URL(gqlPath, base);
   // Replace http with ws, preserving if its a secure connection eg. https => wss
-  urlWS.protocol = urlWS.protocol.replace("http", "ws");
+  urlWS.protocol = urlWS.protocol.replace('http', 'ws');
 
   const cache = new InMemoryCache({
     typePolicies: {
@@ -37,7 +37,7 @@ export function createClient(base?: string) {
 
   const httpLink = new HttpLink({
     uri: urlHTTP.href,
-    credentials: "same-origin",
+    credentials: 'same-origin',
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -46,7 +46,7 @@ export function createClient(base?: string) {
   });
 
   return new ApolloClient({
-    connectToDevTools: process.env["NODE_ENV"] === "development",
+    connectToDevTools: process.env['NODE_ENV'] === 'development',
     link: from([errorLink, retryLink, httpLink]),
     cache,
   });

@@ -1,7 +1,7 @@
-@import "../../styles/colors";
-@import "../../styles/fonts";
+@import '../../styles/colors';
+@import '../../styles/fonts';
 
-$ns: "key-value-table";
+$ns: 'key-value-table';
 
 .#{$ns}__header,
 .#{$ns}__footer {

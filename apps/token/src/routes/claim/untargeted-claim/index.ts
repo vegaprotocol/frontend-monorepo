@@ -1,1 +1,1 @@
-export { UntargetedClaim } from "./untargeted-claim";
+export { UntargetedClaim } from './untargeted-claim';

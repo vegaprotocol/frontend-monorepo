@@ -1,6 +1,6 @@
-import { Trans, useTranslation } from "react-i18next";
+import { Trans, useTranslation } from 'react-i18next';
 
-import { Colors } from "../../config/colors";
+import { Colors } from '../../config';
 
 interface TargetAddressMismatchProps {
   connectedAddress: string;
@@ -15,7 +15,7 @@ export const TargetAddressMismatch = ({
   return (
     <>
       <p>
-        {t("connectedAddress", {
+        {t('connectedAddress', {
           address: connectedAddress,
         })}
       </p>

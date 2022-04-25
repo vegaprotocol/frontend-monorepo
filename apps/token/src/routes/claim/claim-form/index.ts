@@ -1,1 +1,1 @@
-export * from "./claim-form";
+export * from './claim-form';
