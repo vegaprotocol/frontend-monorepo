@@ -7,7 +7,7 @@ import {
   addDecimal,
   ThemeContext,
 } from '@vegaprotocol/react-helpers';
-import { marketDepthDataProvider } from '@vegaprotocol/orderbook';
+import { marketDepthDataProvider } from './market-depth-data-provider';
 import {
   useCallback,
   useEffect,
@@ -17,12 +17,14 @@ import {
   useContext,
 } from 'react';
 import type {
-  MarketDepth_market_depth_buy,
-  MarketDepth_market_depth_sell,
   MarketDepthSubscription_marketDepthUpdate_buy,
   MarketDepthSubscription_marketDepthUpdate_sell,
   MarketDepthSubscription_marketDepthUpdate,
-} from '@vegaprotocol/orderbook';
+} from './__generated__/MarketDepthSubscription';
+import type {
+  MarketDepth_market_depth_buy,
+  MarketDepth_market_depth_sell,
+} from './__generated__/MarketDepth';
 import type { DepthChartProps } from 'pennant';
 
 interface DepthChartManagerProps {

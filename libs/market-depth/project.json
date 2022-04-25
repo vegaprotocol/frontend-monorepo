@@ -1,6 +1,6 @@
 {
-  "root": "libs/depth-chart",
-  "sourceRoot": "libs/depth-chart/src",
+  "root": "libs/market-depth",
+  "sourceRoot": "libs/market-depth/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/depth-chart",
-        "tsConfig": "libs/depth-chart/tsconfig.lib.json",
-        "project": "libs/depth-chart/package.json",
-        "entryFile": "libs/depth-chart/src/index.ts",
+        "outputPath": "dist/libs/market-depth",
+        "tsConfig": "libs/market-depth/tsconfig.lib.json",
+        "project": "libs/market-depth/package.json",
+        "entryFile": "libs/market-depth/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/depth-chart/README.md",
+            "glob": "libs/market-depth/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/depth-chart/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/market-depth/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/depth-chart"],
+      "outputs": ["coverage/libs/market-depth"],
       "options": {
-        "jestConfig": "libs/depth-chart/jest.config.js",
+        "jestConfig": "libs/market-depth/jest.config.js",
         "passWithNoTests": true
       }
     }

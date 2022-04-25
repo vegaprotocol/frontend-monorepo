@@ -1,5 +1,5 @@
 import { ButtonRadio } from './button-radio';
-import { DepthChartContainer } from '@vegaprotocol/depth-chart';
+import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { TradingChartContainer } from '@vegaprotocol/chart';
 import { useState } from 'react';
 

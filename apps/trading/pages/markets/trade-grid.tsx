@@ -8,7 +8,7 @@ import { OrderListContainer } from '@vegaprotocol/order-list';
 import { ChartContainer } from '../../components/chart-container';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import { OrderbookContainer } from '@vegaprotocol/orderbook';
+import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import type { Market_market } from './__generated__/Market';
 import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
