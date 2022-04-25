@@ -1,0 +1,10 @@
+.nav-links {
+	display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+
+  a {
+    color: white;
+  }
+}
+

@@ -26,6 +26,7 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
           flex: 1,
           resizable: true,
         }}
+        suppressCellFocus={true}
         onRowClicked={({ data }: { data: Markets_markets }) =>
           onRowClicked(data.id)
         }

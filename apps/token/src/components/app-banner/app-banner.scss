@@ -1,0 +1,19 @@
+@import "../../styles/colors";
+
+.app-banner {
+  background: $white;
+  padding: 10px;
+  color: $text-color-inverse;
+
+  p {
+    margin: 0;
+  }
+
+  &__icon {
+    position: relative;
+    top: 1px;
+    color: $vega-red3;
+    font-size: 14px;
+    margin-right: 5px;
+  }
+}

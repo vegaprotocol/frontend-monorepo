@@ -61,6 +61,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
                 </div>
               </div>
               <main data-testid={pageProps.page}>
+                {/* @ts-ignore conflict between @types/react and nextjs internal types */}
                 <Component {...pageProps} />
               </main>
               <VegaConnectDialog

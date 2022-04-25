@@ -1,0 +1,25 @@
+@import "../../styles/colors";
+@import "../../styles/fonts";
+
+.eth-wallet {
+  &__pending-tx-button {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+    padding: 5px;
+    background: $black;
+    color: $white;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+
+    &:hover {
+      background: $black;
+    }
+  }
+
+  &__curr-key {
+    font-family: $font-mono;
+    padding: 0 8px;
+    text-align: right;
+  }
+}
