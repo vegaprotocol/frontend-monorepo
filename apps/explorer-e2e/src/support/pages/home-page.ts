@@ -49,7 +49,7 @@ export default class HomePage extends BasePage {
         cy.wrap($value).should('not.be.empty');
         if (index == 6) {
           // Total staked value
-          const totalStakedRegex = /^[0-9]*(\.[0-9]{0,2})?$/;
+          const totalStakedRegex = /^[0-9]+(\.[0-9]{0,2})?$/;
           cy.wrap($value).invoke('text').should('match', totalStakedRegex); // Check that value is number with 2dp
         }
       })
