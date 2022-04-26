@@ -1,8 +1,6 @@
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import { MarketState } from '@vegaprotocol/types';
-import TradesList from '../trading-windows/trades-list';
-import TradingPage from '../pages/trading-page';
 import { generateChart } from '../mocks/generate-chart';
 import { generateCandles } from '../mocks/generate-candles';
 import { generateTrades } from '../mocks/generate-trades';
@@ -10,10 +8,13 @@ import { generateDealTicketQuery } from '../mocks/generate-deal-ticket-query';
 import { generateMarket } from '../mocks/generate-market';
 import { generateOrders } from '../mocks/generate-orders';
 import { generatePositions } from '../mocks/generate-positions';
+import TradesList from '../trading-windows/trades-list';
+import TradingPage from '../pages/trading-page';
+import OrderList from '../trading-windows/orders-list';
 
 const tradesList = new TradesList();
 const tradingPage = new TradingPage();
-/* eslint-enable @nrwl/nx/enforce-module-boundaries */
+const ordersList = new OrderList();
 
 const mockMarket = (state: MarketState) => {
   cy.mockGQL('Market', (req) => {
@@ -105,5 +106,5 @@ Then('trading page for {string} market is displayed', (marketType) => {
 });
 
 Then('placed orders are displayed', () => {
-  cy.log('Then');
+  ordersList.verifyOrdersDisplayed();
 });
