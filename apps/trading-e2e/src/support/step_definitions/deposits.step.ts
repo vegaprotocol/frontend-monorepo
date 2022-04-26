@@ -1,4 +1,4 @@
-import { When, Then } from 'cypress-cucumber-preprocessor/steps';
+import { Then } from 'cypress-cucumber-preprocessor/steps';
 import DepositsPage from '../pages/deposits-page';
 import EthWalletsPage from '../pages/ethwallet-page';
 
