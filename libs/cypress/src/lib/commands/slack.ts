@@ -15,7 +15,7 @@ export function addSlackCommand() {
 
     cy.log('NOTIFYING SLACK');
 
-    const webhook = Cypress.env('slackWebhook');
+    const webhook = Cypress.env('SLACK_WEBHOOK');
 
     if (!webhook) {
       return;

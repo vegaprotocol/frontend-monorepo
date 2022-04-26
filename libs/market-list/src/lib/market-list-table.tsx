@@ -2,7 +2,10 @@ import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import { PriceFlashCell, formatNumber, t } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import type { Markets_markets } from './__generated__/Markets';
+import type {
+  Markets_markets,
+  Markets_markets_data_market,
+} from './__generated__/Markets';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 
@@ -11,7 +14,11 @@ interface MarketListTableProps {
   onRowClicked: (marketId: string) => void;
 }
 
-export const getRowNodeId = (data: { id: string }) => data.id;
+export const getRowId = ({
+  data,
+}: {
+  data: Markets_markets | Markets_markets_data_market;
+}) => data.id;
 
 export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
   ({ data, onRowClicked }, ref) => {
@@ -20,12 +27,13 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No markets')}
         rowData={data}
-        getRowNodeId={getRowNodeId}
+        getRowId={getRowId}
         ref={ref}
         defaultColDef={{
           flex: 1,
           resizable: true,
         }}
+        suppressCellFocus={true}
         onRowClicked={({ data }: { data: Markets_markets }) =>
           onRowClicked(data.id)
         }

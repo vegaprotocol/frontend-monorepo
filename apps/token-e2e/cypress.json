@@ -1,0 +1,14 @@
+{
+  "baseUrl": "http://localhost:4210",
+  "projectId": "et4snf",
+  "fileServerFolder": ".",
+  "fixturesFolder": "./src/fixtures",
+  "integrationFolder": "./src/integration",
+  "modifyObstructiveCode": false,
+  "supportFile": "./src/support/index.ts",
+  "pluginsFile": false,
+  "video": true,
+  "videosFolder": "../../dist/cypress/apps/token-e2e/videos",
+  "screenshotsFolder": "../../dist/cypress/apps/token-e2e/screenshots",
+  "chromeWebSecurity": false
+}

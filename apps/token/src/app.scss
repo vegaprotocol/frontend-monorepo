@@ -1,0 +1,14 @@
+@import './styles/colors';
+
+.app {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-rows: min-content 1fr min-content;
+  min-height: 100%;
+
+  @media (min-width: 960px) {
+    border-left: 1px solid $white;
+    border-right: 1px solid $white;
+  }
+}

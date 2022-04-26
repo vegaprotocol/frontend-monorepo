@@ -55,7 +55,7 @@ export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No trades')}
         rowData={trades}
-        getRowNodeId={(data) => data.id}
+        getRowId={({ data }) => data.id}
         ref={ref}
         defaultColDef={{
           flex: 1,

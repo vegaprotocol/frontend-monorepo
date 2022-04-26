@@ -2,7 +2,7 @@
   "version": 2,
   "projects": {
     "accounts": "libs/accounts",
-    "chart": "libs/chart",
+    "candles-chart": "libs/candles-chart",
     "cypress": "libs/cypress",
     "deal-ticket": "libs/deal-ticket",
     "deposits": "libs/deposits",
@@ -18,6 +18,8 @@
     "stats": "apps/stats",
     "stats-e2e": "apps/stats-e2e",
     "tailwindcss-config": "libs/tailwindcss-config",
+    "token": "apps/token",
+    "token-e2e": "apps/token-e2e",
     "trades": "libs/trades",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",

@@ -1,16 +1,13 @@
 import { Given, Then } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import { MarketState } from '@vegaprotocol/types';
-/* eslint-disable @nrwl/nx/enforce-module-boundaries */
-import { generateTrades } from '../../../../../libs/trades/src/__tests__';
-import {
-  generateChart,
-  generateCandles,
-} from '../../../../../libs/chart/src/__tests__';
-import { generateDealTicketQuery } from '../../../../../libs/deal-ticket/src/__tests__';
-import { generateMarket } from '../../../../trading/pages/markets/__tests__';
 import TradesList from '../trading-windows/trades-list';
 import TradingPage from '../pages/trading-page';
+import { generateChart } from '../mocks/generate-chart';
+import { generateCandles } from '../mocks/generate-candles';
+import { generateTrades } from '../mocks/generate-trades';
+import { generateDealTicketQuery } from '../mocks/generate-deal-ticket-query';
+import { generateMarket } from '../mocks/generate-market';
 
 const tradesList = new TradesList();
 const tradingPage = new TradingPage();

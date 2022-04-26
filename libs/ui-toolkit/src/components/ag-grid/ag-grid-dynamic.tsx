@@ -21,7 +21,7 @@ const AgGridDynamicInternal = dynamic<Props>(
     // https://nextjs.org/docs/messages/invalid-dynamic-suspense
     // suspense: true
   }
-);
+) as React.FunctionComponent<Props>;
 
 export const AgGridDynamic = React.forwardRef<AgGridReact, Props>(
   (props, ref) => <AgGridDynamicInternal {...props} gridRef={ref} />

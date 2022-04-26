@@ -17,7 +17,7 @@ interface PositionsTableProps {
   data: Positions_party_positions[] | null;
 }
 
-export const getRowNodeId = (data: { market: { id: string } }) =>
+export const getRowId = ({ data }: { data: Positions_party_positions }) =>
   data.market.id;
 
 const alphanumericComparator = (a: string, b: string, isInverted: boolean) => {
@@ -61,7 +61,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate="No positions"
         rowData={data}
-        getRowNodeId={getRowNodeId}
+        getRowId={getRowId}
         ref={ref}
         defaultColDef={{
           flex: 1,

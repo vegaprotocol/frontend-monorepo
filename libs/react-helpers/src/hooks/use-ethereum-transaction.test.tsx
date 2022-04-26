@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor } from '@testing-library/react';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks/dom';
 import { TxState } from './use-ethereum-transaction';
 import type { ReactNode } from 'react';
 import { useEthereumTransaction } from './use-ethereum-transaction';
