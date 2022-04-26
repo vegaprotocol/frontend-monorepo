@@ -6,4 +6,8 @@ export default class DepositsPage extends BasePage {
     cy.get(`a[href='/portfolio/deposit']`).click();
     cy.url().should('include', '/portfolio/deposit');
   }
+
+  verifyFormDisplayed() {
+    cy.getByTestId('deposit-form').should('be.visible');
+  }
 }

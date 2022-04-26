@@ -1,11 +1,11 @@
-import BasePage from './base-page';
-
-export default class EthWalletPage extends BasePage {
+export class EthereumWallet {
   connectWalletBtnId = 'connect-eth-wallet-btn';
   connectWalletMsgId = 'connect-eth-wallet-msg';
 
-  clickConnectEthBtn() {
+  connect() {
     cy.getByTestId(this.connectWalletBtnId).should('be.enabled').click();
+    cy.getByTestId('web3-connector-list').should('be.visible');
+    cy.getByTestId('web3-connector-metamask').click();
   }
 
   verifyEthConnectBtnIsDisplayed() {

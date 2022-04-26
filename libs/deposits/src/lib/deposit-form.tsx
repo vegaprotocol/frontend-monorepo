@@ -131,7 +131,11 @@ export const DepositForm = ({
   }, [assetId, onSelectAsset]);
 
   return (
-    <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
+    <form
+      onSubmit={handleSubmit(onDeposit)}
+      noValidate={true}
+      data-testid="deposit-form"
+    >
       <FormGroup
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"

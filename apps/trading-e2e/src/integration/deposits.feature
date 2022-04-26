@@ -3,9 +3,10 @@ Feature: Deposits to vega wallet
   Background:
     Given I navigate to deposits page
 
-  Scenario: Eth wallet connect message displayed if no ethereum wallet connected
+  Scenario: Connecting Ethereum wallet
     Then I can see the eth not connected message "Connect your Ethereum wallet"
     And the connect button is displayed
+    When I connect my Ethereum wallet
 
   @todo
   Scenario: Cannot deposit if approved amount is 0 (approval amount is 0)
