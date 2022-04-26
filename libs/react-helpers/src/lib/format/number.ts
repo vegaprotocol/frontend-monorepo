@@ -3,11 +3,11 @@ import memoize from 'lodash/memoize';
 import { getUserLocale } from './utils';
 
 export function addDecimal(
-  value: string,
+  value: string | number,
   decimals: number,
   decimalPrecision = decimals
 ): string {
-  if (!decimals) return value;
+  if (!decimals) return value.toString();
   return new BigNumber(value || 0)
     .dividedBy(Math.pow(10, decimals))
     .toFixed(decimalPrecision);
@@ -28,7 +28,7 @@ export const getNumberFormat = memoize(
 );
 
 export const formatNumber = (
-  rawValue: string,
+  rawValue: string | number,
   decimalPlaces: number,
   formatDecimals: number = decimalPlaces
 ) => {

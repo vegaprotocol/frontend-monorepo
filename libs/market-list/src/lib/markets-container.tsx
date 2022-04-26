@@ -53,15 +53,13 @@ export const MarketsContainer = () => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {(data) => (
-        <MarketListTable
-          ref={gridRef}
-          data={data}
-          onRowClicked={(id) =>
-            push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
-          }
-        />
-      )}
+      <MarketListTable
+        ref={gridRef}
+        data={data}
+        onRowClicked={(id) =>
+          push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
+        }
+      />
     </AsyncRenderer>
   );
 };

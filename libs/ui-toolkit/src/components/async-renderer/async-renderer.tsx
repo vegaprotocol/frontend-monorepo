@@ -1,11 +1,12 @@
 import { Splash } from '../splash';
-import type { ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 interface AsyncRendererProps<T> {
   loading: boolean;
   error: Error | undefined | null;
   data: T | undefined;
-  children: (data: T) => ReactNode;
+  children?: ReactElement | null;
+  render?: (data: T) => ReactNode;
 }
 
 export function AsyncRenderer<T = object>({
@@ -13,6 +14,7 @@ export function AsyncRenderer<T = object>({
   error,
   data,
   children,
+  render,
 }: AsyncRendererProps<T>) {
   if (error) {
     return <Splash>Something went wrong: {error.message}</Splash>;
@@ -25,6 +27,6 @@ export function AsyncRenderer<T = object>({
   if (!data) {
     return <Splash>No data</Splash>;
   }
-
-  return <>{children(data)}</>;
+  // eslint-disable-next-line react/jsx-no-useless-fragment
+  return <>{render ? render(data) : children}</>;
 }

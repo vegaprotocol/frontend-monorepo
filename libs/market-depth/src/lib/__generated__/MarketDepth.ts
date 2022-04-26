@@ -4,18 +4,30 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: marketDepth
+// GraphQL query operation: MarketDepth
 // ====================================================
 
-export interface marketDepth_market_data {
+export interface MarketDepth_market_data_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface MarketDepth_market_data {
   __typename: "MarketData";
   /**
    * the arithmetic average of the best bid price and best offer price.
    */
   midPrice: string;
+  /**
+   * market id of the associated mark price
+   */
+  market: MarketDepth_market_data_market;
 }
 
-export interface marketDepth_market_depth_lastTrade {
+export interface MarketDepth_market_depth_lastTrade {
   __typename: "Trade";
   /**
    * The price of the trade (probably initially the passive order price, other determination algorithms are possible though) (uint64)
@@ -23,7 +35,7 @@ export interface marketDepth_market_depth_lastTrade {
   price: string;
 }
 
-export interface marketDepth_market_depth_sell {
+export interface MarketDepth_market_depth_sell {
   __typename: "PriceLevel";
   /**
    * The price of all the orders at this level (uint64)
@@ -39,7 +51,7 @@ export interface marketDepth_market_depth_sell {
   numberOfOrders: string;
 }
 
-export interface marketDepth_market_depth_buy {
+export interface MarketDepth_market_depth_buy {
   __typename: "PriceLevel";
   /**
    * The price of all the orders at this level (uint64)
@@ -55,27 +67,27 @@ export interface marketDepth_market_depth_buy {
   numberOfOrders: string;
 }
 
-export interface marketDepth_market_depth {
+export interface MarketDepth_market_depth {
   __typename: "MarketDepth";
   /**
    * Last trade for the given market (if available)
    */
-  lastTrade: marketDepth_market_depth_lastTrade | null;
+  lastTrade: MarketDepth_market_depth_lastTrade | null;
   /**
    * Sell side price levels (if available)
    */
-  sell: marketDepth_market_depth_sell[] | null;
+  sell: MarketDepth_market_depth_sell[] | null;
   /**
    * Buy side price levels (if available)
    */
-  buy: marketDepth_market_depth_buy[] | null;
+  buy: MarketDepth_market_depth_buy[] | null;
   /**
    * Sequence number for the current snapshot of the market depth
    */
   sequenceNumber: string;
 }
 
-export interface marketDepth_market {
+export interface MarketDepth_market {
   __typename: "Market";
   /**
    * Market ID
@@ -84,14 +96,14 @@ export interface marketDepth_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -101,20 +113,20 @@ export interface marketDepth_market {
   /**
    * marketData for the given market
    */
-  data: marketDepth_market_data | null;
+  data: MarketDepth_market_data | null;
   /**
-   * Current depth on the orderbook for this market
+   * Current depth on the order book for this market
    */
-  depth: marketDepth_market_depth;
+  depth: MarketDepth_market_depth;
 }
 
-export interface marketDepth {
+export interface MarketDepth {
   /**
    * An instrument that is trading on the VEGA network
    */
-  market: marketDepth_market | null;
+  market: MarketDepth_market | null;
 }
 
-export interface marketDepthVariables {
+export interface MarketDepthVariables {
   marketId: string;
 }
