@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DATA_SOURCES } from '../../../config';
 import useFetch from '../../../hooks/use-fetch';
 import type {
@@ -18,22 +18,34 @@ const Blocks = () => {
     false
   );
   const [error, setError] = useState<Error | undefined>(undefined);
-  const [blocksData, setBlocksData] = useState<BlockMeta[]>();
+  const [blocksData, setBlocksData] = useState<BlockMeta[]>([]);
   const [nextBlockHeightToLoad, setNextBlockHeightToLoad] = useState<
     number | undefined
   >(undefined);
+  const {
+    state: { data, error: tmError, loading },
+  } = useFetch<TendermintBlockchainResponse>(
+    // Inclusive not exclusive subtract 1 somewhere
+    `${DATA_SOURCES.tendermintUrl}/blockchain${
+      nextBlockHeightToLoad
+        ? `?maxHeight=${Number(nextBlockHeightToLoad) - 1}&minHeight=${Math.max(
+            Number(nextBlockHeightToLoad) - 21,
+            0
+          )}`
+        : ''
+    }`
+  );
+  // Hacky bollocks -- apply a container
+  useEffect(() => {
+    if (!blocksData.length) {
+      setBlocksData(data?.result.block_metas || []);
+    }
+  }, [blocksData.length, data]);
 
-  const loadBlocks = () => {
-    const {
-      state: { data, error, loading },
-    } = useFetch<TendermintBlockchainResponse>(
-      `${DATA_SOURCES.tendermintUrl}/blockchain${
-        nextBlockHeightToLoad ? `?maxHeight=${nextBlockHeightToLoad}` : ''
-      }`
-    );
-
+  const loadBlocks = (...args: any[]) => {
     setAreBlocksLoading(loading);
     setError(error);
+    console.log(args);
 
     if (data) {
       const blockMetas = data.result.block_metas;
@@ -46,14 +58,6 @@ const Blocks = () => {
       setHasMoreBlocks(lastBlockLoaded > 0);
     }
   };
-
-  // const {
-  //   state: { data, error, loading },
-  //   refetch,
-  //   // eslint-disable-next-line react-hooks/rules-of-hooks
-  // } = useFetch<TendermintBlockchainResponse>(
-  //   `${DATA_SOURCES.tendermintUrl}/blockchain`
-  // );
 
   return (
     <section>

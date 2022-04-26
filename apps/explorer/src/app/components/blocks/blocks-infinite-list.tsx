@@ -36,6 +36,8 @@ export const BlocksInfiniteList = ({
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   const loadMoreItems = areBlocksLoading ? () => {} : loadMoreBlocks;
 
+  // TODO !!!! NOTICE - not sure if this is needed?
+
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) =>
     !hasMoreBlocks || index < items.length;
@@ -43,12 +45,13 @@ export const BlocksInfiniteList = ({
   // Render an item or a loading indicator.
   const Item = ({ index, style }: ItemProps) => {
     let content;
+    console.log(hasMoreBlocks, index, items.length);
     if (!isItemLoaded(index)) {
       content = t('Loading...');
     } else if (error) {
       content = t(`Error: ${error}`);
     } else {
-      content = items[index].block_size;
+      content = items[index].header.height;
     }
 
     return <div style={style}>{content}</div>;
@@ -60,6 +63,7 @@ export const BlocksInfiniteList = ({
       itemCount={itemCount}
       loadMoreItems={loadMoreItems}
     >
+      {/* @ts-ignore -    foo bar */}
       {({ onItemsRendered, ref }) => (
         <List
           className="List"
