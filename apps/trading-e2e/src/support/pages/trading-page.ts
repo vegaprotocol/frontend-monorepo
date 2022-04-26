@@ -15,6 +15,10 @@ export default class TradingPage extends BasePage {
     cy.getByTestId(this.ordersTab).click();
   }
 
+  clickOnPositionsTab() {
+    cy.getByTestId(this.positionsTab).click();
+  }
+
   clickOnTicketTab() {
     cy.getByTestId(this.ticketTab).click();
   }
