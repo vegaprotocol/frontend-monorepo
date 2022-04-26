@@ -269,7 +269,7 @@ const FormButton = ({
 
   if (!selectedAsset) {
     button = (
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" data-testid="deposit-submit">
         {t('Deposit')}
       </Button>
     );
@@ -280,14 +280,18 @@ const FormButton = ({
       </>
     );
     button = (
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" data-testid="deposit-submit">
         {t('Deposit')}
       </Button>
     );
   } else {
     message = t(`Deposits of ${selectedAsset.symbol} not approved`);
     button = (
-      <Button onClick={onApproveClick} className="w-full">
+      <Button
+        onClick={onApproveClick}
+        className="w-full"
+        data-testid="deposit-approve-submit"
+      >
         {t(`Approve ${selectedAsset.symbol}`)}
       </Button>
     );

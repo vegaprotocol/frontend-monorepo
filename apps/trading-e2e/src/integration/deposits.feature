@@ -7,11 +7,11 @@ Feature: Deposits to vega wallet
     Then I can see the eth not connected message "Connect your Ethereum wallet"
     And the connect button is displayed
     When I connect my Ethereum wallet
+    Then I can see the deposit form
 
   @todo
   Scenario: Cannot deposit if approved amount is 0 (approval amount is 0)
     And I connect my ethereum wallet
-    And I connect my vega wallet
     When I set "0" tokens to be approved
     And I approve the asset tokens
     And I can see the deposit form is displayed
@@ -56,9 +56,9 @@ Feature: Deposits to vega wallet
   # Then I can see the deposit is Successfull
   # And Balance is updated to reflect deposit amount
 
-  @todo
-  Scenario: Validation errors where no fields are filled in
-    When I submit a deposit form with empty fields
+  Scenario: Validation errors
+    Given I connect my Ethereum wallet
+    When I submit a deposit with empty fields
     Then I can see validation errors present
 
   @todo

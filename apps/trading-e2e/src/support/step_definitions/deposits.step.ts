@@ -5,7 +5,7 @@ import DepositsPage from '../pages/deposits-page';
 const depositsPage = new DepositsPage();
 const ethWallet = new EthereumWallet();
 
-before(() => {
+beforeEach(() => {
   cy.mockWeb3Provider();
 });
 
@@ -27,4 +27,12 @@ When('I connect my Ethereum wallet', () => {
 
 Then('I can see the deposit form', () => {
   depositsPage.verifyFormDisplayed();
+});
+
+When('I submit a deposit with empty fields', () => {
+  cy.getByTestId('deposit-submit').click();
+});
+
+Then('I can see validation errors present', () => {
+  cy.getByTestId('input-error-text').should('have.length', 3);
 });
