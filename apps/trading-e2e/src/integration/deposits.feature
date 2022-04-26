@@ -60,6 +60,12 @@ Feature: Deposits to vega wallet
     Given I connect my Ethereum wallet
     When I submit a deposit with empty fields
     Then I can see validation errors present
+    And I submit with an invalid public key
+    Then Invalid Vega key is shown
+    And I submit with an amount less than the minimum viable amount
+    Then Amount to small message shown
+    And I submit with a valid amount
+    Then Insufficent funds message shown
 
   @todo
   Scenario: Use the 'Use Maximum' button to populate amount input with the balance in the connected wallet
