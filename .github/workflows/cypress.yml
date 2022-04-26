@@ -50,11 +50,16 @@ jobs:
         run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
       - name: Import config
         run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+      - name: Create public key 2
+        run: ./vegawallet key generate -w UI_Trading_Test -p ./passphrase
       - name: Start service
         run: ./vegawallet service run --network fairground  &
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }} --browser chrome
+        env:
+          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
+        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
   pr:
     name: Run end-to-end tests - PR
     runs-on: ubuntu-latest
@@ -95,8 +100,13 @@ jobs:
         run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
       - name: Import config
         run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+      - name: Create public key 2
+        run: ./vegawallet key generate -w UI_Trading_Test -p ./passphrase
       - name: Start service
         run: ./vegawallet service run --network fairground  &
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }} --browser chrome
+        env:
+          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
+        run: npx nx affected:e2e --parallel=5 --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome

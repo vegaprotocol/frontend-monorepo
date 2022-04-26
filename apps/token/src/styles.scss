@@ -1,0 +1,86 @@
+@import '~@blueprintjs/core/lib/css/blueprint.css';
+@import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
+
+@import './styles/colors';
+@import './styles/fonts';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+$bg-color-default: rgba(133, 152, 166, 0.25);
+$color-default: #bfccd6;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  background-color: $black;
+  color: $text-color;
+  font-family: $font-main;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 14px;
+
+  @media (min-width: 960px) {
+    font-size: 16px;
+  }
+}
+
+// TODO replace with blueprint themeing
+// TYPOGRAPHY
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 500;
+  margin-top: 1em;
+  margin-bottom: 15px;
+  color: $white;
+}
+
+p {
+  word-break: break-word;
+  line-height: 1.4;
+  margin: 0 0 15px 0;
+}
+
+a,
+.link {
+  text-decoration: underline;
+  color: $white;
+
+  &:hover {
+    color: $vega-yellow3;
+  }
+}
+
+.text-muted {
+  color: $text-color-deemphasise;
+}
+
+.text-green {
+  color: $vega-green3;
+}
+
+.text-red {
+  color: $vega-red3;
+}
+
+.bp3-dark a,
+.bp3-dark a:hover {
+  color: $white;
+}
+
+.bp3-dark .bp3-input {
+  background-color: $dark-gray4;
+}

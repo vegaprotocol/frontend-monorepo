@@ -5,24 +5,20 @@ import { useState } from 'react';
 import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
-import { ChartContainer } from '../../components/chart-container';
 import { TradesContainer } from '@vegaprotocol/trades';
-import { Splash } from '@vegaprotocol/ui-toolkit';
 import { PositionsContainer } from '@vegaprotocol/positions';
+import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import type { Market_market } from './__generated__/Market';
 import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-
-const Orderbook = () => (
-  <Splash>
-    <p>{t('Orderbook')}</p>
-  </Splash>
-);
+import { DepthChartContainer } from '@vegaprotocol/market-depth';
+import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 
 const TradingViews = {
-  Chart: ChartContainer,
+  Candles: CandlesChartContainer,
+  Depth: DepthChartContainer,
   Ticket: DealTicketContainer,
-  Orderbook: Orderbook,
+  Orderbook: OrderbookContainer,
   Orders: OrderListContainer,
   Positions: PositionsContainer,
   Accounts: AccountsContainer,
@@ -50,7 +46,14 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </h1>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
-        <TradingViews.Chart marketId={market.id} />
+        <GridTabs group="chart">
+          <GridTab id="candles" name={t('Candles')}>
+            <TradingViews.Candles marketId={market.id} />
+          </GridTab>
+          <GridTab id="depth" name={t('Depth')}>
+            <TradingViews.Depth marketId={market.id} />
+          </GridTab>
+        </GridTabs>
       </TradeGridChild>
       <TradeGridChild className="row-start-1 row-end-3">
         <TradingViews.Ticket marketId={market.id} />
@@ -61,7 +64,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             <TradingViews.Trades marketId={market.id} />
           </GridTab>
           <GridTab id="orderbook" name={t('Orderbook')}>
-            <TradingViews.Orderbook />
+            <TradingViews.Orderbook marketId={market.id} />
           </GridTab>
         </GridTabs>
       </TradeGridChild>
@@ -107,7 +110,7 @@ interface TradePanelsProps {
 }
 
 export const TradePanels = ({ market }: TradePanelsProps) => {
-  const [view, setView] = useState<TradingView>('Chart');
+  const [view, setView] = useState<TradingView>('Candles');
 
   const renderView = () => {
     const Component = TradingViews[view];

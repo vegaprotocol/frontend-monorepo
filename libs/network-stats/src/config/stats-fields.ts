@@ -1,4 +1,4 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import type { Stats as IStats, StatFields as IStatFields } from './types';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
@@ -59,9 +59,9 @@ export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
   stakedTotal: [
     {
       title: t('Total staked'),
-      formatter: (total: string) =>
-        total.length > 18 &&
-        parseInt(total.substring(0, total.length - 18)).toLocaleString('en-US'),
+      formatter: (total: string) => {
+        return formatNumber(total, 18, 2);
+      },
       description: t('Sum of VEGA associated with a Vega key'),
     },
   ],

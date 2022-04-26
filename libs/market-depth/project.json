@@ -1,0 +1,43 @@
+{
+  "root": "libs/market-depth",
+  "sourceRoot": "libs/market-depth/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/market-depth",
+        "tsConfig": "libs/market-depth/tsconfig.lib.json",
+        "project": "libs/market-depth/package.json",
+        "entryFile": "libs/market-depth/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/market-depth/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/market-depth/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/market-depth"],
+      "options": {
+        "jestConfig": "libs/market-depth/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

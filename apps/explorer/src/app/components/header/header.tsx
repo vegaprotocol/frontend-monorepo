@@ -26,7 +26,11 @@ export const Header = ({
           {t('Vega Explorer')}
         </h1>
       </Link>
-      <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+      <button
+        data-testid="open-menu"
+        className="md:hidden"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
         <Icon name={menuOpen ? 'cross' : 'menu'} size={20} />
       </button>
       <Search />

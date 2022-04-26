@@ -1,0 +1,48 @@
+@import '../../styles/colors';
+@import '../../styles/fonts';
+
+.tranche-item {
+  margin-bottom: 48px;
+
+  &__header {
+    border-bottom: white;
+    border-width: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 5px;
+    display: flex;
+    :last-child {
+      font-family: $font-mono;
+      text-align: right;
+      flex: 1;
+    }
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td {
+    color: $text-color-deemphasise;
+  }
+
+  td:first-child {
+    color: $white;
+  }
+
+  td:last-child {
+    text-align: right;
+  }
+
+  &__label {
+    display: inline-block;
+    text-transform: uppercase;
+    background-color: $white;
+    color: $black;
+    padding: 5px;
+    font-family: $font-mono;
+  }
+
+  &__footer {
+    text-align: right;
+  }
+}

@@ -31,4 +31,8 @@ const Deposit = () => {
   );
 };
 
+Deposit.getInitialProps = () => ({
+  page: 'deposit',
+});
+
 export default Deposit;

@@ -39,8 +39,9 @@ export const DepositContainer = ({
   assetId,
 }: DepositContainerProps) => {
   return (
-    <PageQueryContainer<DepositPage> query={DEPOSIT_PAGE_QUERY}>
-      {(data) => {
+    <PageQueryContainer<DepositPage>
+      query={DEPOSIT_PAGE_QUERY}
+      render={(data) => {
         if (!data.assets?.length) {
           return (
             <Splash>
@@ -58,7 +59,7 @@ export const DepositContainer = ({
           />
         );
       }}
-    </PageQueryContainer>
+    />
   );
 };
 

@@ -112,7 +112,7 @@ export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
       });
 
       if (res?.signature) {
-        setId(determineId(res.signature).toUpperCase());
+        setId(determineId(res.signature));
       }
     },
     [market, keypair, send]

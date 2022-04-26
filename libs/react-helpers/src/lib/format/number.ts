@@ -2,11 +2,15 @@ import { BigNumber } from 'bignumber.js';
 import memoize from 'lodash/memoize';
 import { getUserLocale } from './utils';
 
-export function addDecimal(value: string, decimals: number): string {
-  if (!decimals) return value;
+export function addDecimal(
+  value: string | number,
+  decimals: number,
+  decimalPrecision = decimals
+): string {
+  if (!decimals) return value.toString();
   return new BigNumber(value || 0)
     .dividedBy(Math.pow(10, decimals))
-    .toFixed(decimals);
+    .toFixed(decimalPrecision);
 }
 
 export function removeDecimal(value: string, decimals: number): string {
@@ -16,12 +20,19 @@ export function removeDecimal(value: string, decimals: number): string {
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
 export const getNumberFormat = memoize(
-  (minimumFractionDigits: number) =>
-    new Intl.NumberFormat(getUserLocale(), { minimumFractionDigits })
+  (digits: number) =>
+    new Intl.NumberFormat(getUserLocale(), {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits,
+    })
 );
 
-export const formatNumber = (rawValue: string, decimalPlaces: number) => {
+export const formatNumber = (
+  rawValue: string | number,
+  decimalPlaces: number,
+  formatDecimals: number = decimalPlaces
+) => {
   const x = addDecimal(rawValue, decimalPlaces);
 
-  return getNumberFormat(decimalPlaces).format(Number(x));
+  return getNumberFormat(formatDecimals).format(Number(x));
 };

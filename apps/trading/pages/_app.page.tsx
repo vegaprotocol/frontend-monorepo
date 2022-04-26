@@ -60,7 +60,8 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
                   <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
                 </div>
               </div>
-              <main>
+              <main data-testid={pageProps.page}>
+                {/* @ts-ignore conflict between @types/react and nextjs internal types */}
                 <Component {...pageProps} />
               </main>
               <VegaConnectDialog

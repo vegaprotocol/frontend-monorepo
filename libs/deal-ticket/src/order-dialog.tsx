@@ -69,7 +69,7 @@ export const OrderDialog = ({
     >
       <p>{t(`Status: ${finalizedOrder.status}`)}</p>
       {finalizedOrder.market && (
-        <p>{t(`Market: {finalizedOrder.market.name}`)}</p>
+        <p>{t(`Market: ${finalizedOrder.market.name}`)}</p>
       )}
       <p>{t(`Type: ${finalizedOrder.type}`)}</p>
       <p>{t(`Amount: ${finalizedOrder.size}`)}</p>

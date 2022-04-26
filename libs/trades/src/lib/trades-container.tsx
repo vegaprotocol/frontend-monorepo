@@ -50,9 +50,12 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
   );
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      {(data) => <TradesTable ref={gridRef} data={data} />}
-    </AsyncRenderer>
+    <AsyncRenderer
+      loading={loading}
+      error={error}
+      data={data}
+      render={(data) => <TradesTable ref={gridRef} data={data} />}
+    />
   );
 };
 

@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactNode } from 'react';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 
@@ -27,7 +27,7 @@ const agGridLightVariables = `
   }
 `;
 
-export const AgGrid = (props: { children: ReactElement }) => (
+export const AgGrid = (props: { children: ReactNode }) => (
   <>
     <style>{agGridLightVariables}</style>
     {props.children}

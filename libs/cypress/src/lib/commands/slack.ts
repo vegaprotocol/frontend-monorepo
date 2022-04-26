@@ -1,8 +1,10 @@
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  interface Chainable<Subject> {
-    slack(message: string): void;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    interface Chainable<Subject> {
+      slack(message: string): void;
+    }
   }
 }
 
@@ -13,7 +15,7 @@ export function addSlackCommand() {
 
     cy.log('NOTIFYING SLACK');
 
-    const webhook = Cypress.env('slackWebhook');
+    const webhook = Cypress.env('SLACK_WEBHOOK');
 
     if (!webhook) {
       return;

@@ -79,7 +79,11 @@ export const SubmitButton = ({
       >
         {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
       </Button>
-      {invalidText && <InputError className="mb-8">{invalidText}</InputError>}
+      {invalidText && (
+        <InputError className="mb-8" data-testid="dealticket-error-message">
+          {invalidText}
+        </InputError>
+      )}
     </>
   );
 };
