@@ -3,9 +3,8 @@ Feature: Deposits to vega wallet
   Background:
     Given I navigate to deposits page
 
-  @todo
   Scenario: Eth wallet connect message displayed if no ethereum wallet connected
-    Then I can see a message stating no wallet is connected
+    Then I can see the eth not connected message "Connect your Ethereum wallet"
     And the connect button is displayed
 
   @todo
