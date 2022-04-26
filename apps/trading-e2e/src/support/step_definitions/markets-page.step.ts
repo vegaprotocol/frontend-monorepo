@@ -5,10 +5,12 @@ import { generateMarkets } from '../mocks/generate-markets';
 import MarketsPage from '../pages/markets-page';
 import TradingPage from '../pages/trading-page';
 import PositionsList from '../trading-windows/positions-list';
+import AccountsList from '../trading-windows/accounts-list';
 
 const marketsPage = new MarketsPage();
 const tradingPage = new TradingPage();
 const positionsList = new PositionsList();
+const accountList = new AccountsList();
 
 const mockMarkets = () => {
   cy.mockGQL('Markets', (req) => {
@@ -52,4 +54,22 @@ When('I click on positions tab', () => {
 
 Then('positions are displayed', () => {
   positionsList.verifyPositionsDisplayed();
+});
+
+When('I click on accounts tab', () => {
+  tradingPage.clickOnAccountsTab();
+});
+
+Then('accounts are displayed', () => {
+  accountList.verifyAccountsDisplayed();
+});
+
+Then('I can see account for tEURO', () => {
+  accountList.verifySingleAccountDisplayed(
+    'General-tEURO-null',
+    'tEURO',
+    'General',
+    '—',
+    '1,000.00000'
+  );
 });

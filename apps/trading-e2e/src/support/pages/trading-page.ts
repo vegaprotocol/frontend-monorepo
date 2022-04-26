@@ -6,6 +6,7 @@ export default class TradingPage extends BasePage {
   orderbookTab = 'Orderbook';
   ordersTab = 'Orders';
   positionsTab = 'Positions';
+  accountsTab = 'Accounts';
   collateralTab = 'Collateral';
   tradesTab = 'Trades';
   completedTrades = 'Market-trades';
@@ -13,6 +14,10 @@ export default class TradingPage extends BasePage {
 
   clickOnOrdersTab() {
     cy.getByTestId(this.ordersTab).click();
+  }
+
+  clickOnAccountsTab() {
+    cy.getByTestId(this.accountsTab).click();
   }
 
   clickOnPositionsTab() {
