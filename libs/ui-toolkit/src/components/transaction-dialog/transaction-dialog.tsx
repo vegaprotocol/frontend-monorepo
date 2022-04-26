@@ -38,7 +38,9 @@ export const TransactionDialog = ({
   const renderContent = () => {
     if (status === TxState.Error) {
       return (
-        <p className="text-black dark:text-white">{error && error.message}</p>
+        <p className="break-all text-black dark:text-white">
+          {error && error.message}
+        </p>
       );
     }
 
