@@ -11,7 +11,7 @@ Feature: Deposits to vega wallet
 
   @todo
   Scenario: Cannot deposit if approved amount is 0 (approval amount is 0)
-    And I connect my ethereum wallet
+    And I connect my Ethereum wallet
     When I set "0" tokens to be approved
     And I approve the asset tokens
     And I can see the deposit form is displayed
