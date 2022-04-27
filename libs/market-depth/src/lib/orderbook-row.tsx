@@ -9,10 +9,10 @@ import {
 
 interface OrderbookRowProps {
   bid: number;
-  relativeBidVol?: number;
+  relativeBid?: number;
   price: string;
   ask: number;
-  relativeAskVol?: number;
+  relativeAsk?: number;
   cumulativeRelativeAsk?: number;
   cumulativeRelativeBid?: number;
   decimalPlaces: number;
@@ -21,22 +21,22 @@ interface OrderbookRowProps {
 export const OrderbookRow = React.memo(
   ({
     bid,
-    relativeBidVol,
+    relativeBid,
     price,
     ask,
-    relativeAskVol,
+    relativeAsk,
     decimalPlaces,
     cumulativeRelativeAsk,
     cumulativeRelativeBid,
   }: OrderbookRowProps) => {
     return (
       <>
-        <Vol value={bid} relativeValue={relativeBidVol} type={VolumeType.bid} />
+        <Vol value={bid} relativeValue={relativeBid} type={VolumeType.bid} />
         <PriceCell
           value={BigInt(price)}
           valueFormatted={formatNumber(price, decimalPlaces)}
         />
-        <Vol value={ask} relativeValue={relativeAskVol} type={VolumeType.ask} />
+        <Vol value={ask} relativeValue={relativeAsk} type={VolumeType.ask} />
         <CumulativeVol
           relativeAsk={cumulativeRelativeAsk}
           relativeBid={cumulativeRelativeBid}

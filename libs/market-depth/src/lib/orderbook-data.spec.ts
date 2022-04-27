@@ -69,14 +69,14 @@ describe('compactData', () => {
     const orderbookData = compactData(sell, buy, 10);
     expect(orderbookData[0].cumulativeVol.relativeAsk).toEqual(100);
     expect(orderbookData[0].cumulativeVol.relativeBid).toEqual(0);
-    expect(orderbookData[0].relativeAskVol).toEqual(2);
-    expect(orderbookData[0].relativeBidVol).toEqual(0);
+    expect(orderbookData[0].relativeAsk).toEqual(2);
+    expect(orderbookData[0].relativeBid).toEqual(0);
     expect(orderbookData[10].cumulativeVol.relativeAsk).toEqual(8);
     expect(orderbookData[10].cumulativeVol.relativeBid).toEqual(12);
-    expect(orderbookData[10].relativeAskVol).toEqual(44);
-    expect(orderbookData[10].relativeBidVol).toEqual(66);
-    expect(orderbookData[orderbookData.length - 1].relativeAskVol).toEqual(0);
-    expect(orderbookData[orderbookData.length - 1].relativeBidVol).toEqual(1);
+    expect(orderbookData[10].relativeAsk).toEqual(44);
+    expect(orderbookData[10].relativeBid).toEqual(64);
+    expect(orderbookData[orderbookData.length - 1].relativeAsk).toEqual(0);
+    expect(orderbookData[orderbookData.length - 1].relativeBid).toEqual(1);
   });
 });
 
@@ -153,8 +153,8 @@ describe('updateCompactedData', () => {
       bidByLevel: {},
       ask: 10,
       bid: 0,
-      relativeAskVol: 25,
-      relativeBidVol: 0,
+      relativeAsk: 25,
+      relativeBid: 0,
     },
     {
       price: '100',
@@ -174,8 +174,8 @@ describe('updateCompactedData', () => {
       },
       ask: 40,
       bid: 40,
-      relativeAskVol: 100,
-      relativeBidVol: 100,
+      relativeAsk: 100,
+      relativeBid: 100,
     },
     {
       price: '80',
@@ -191,8 +191,8 @@ describe('updateCompactedData', () => {
       },
       ask: 0,
       bid: 10,
-      relativeAskVol: 0,
-      relativeBidVol: 25,
+      relativeAsk: 0,
+      relativeBid: 25,
     },
   ];
   const resolution = 10;
