@@ -36,16 +36,16 @@ Then('I can see the deposit form', () => {
 });
 
 When('I submit a deposit with empty fields', () => {
+  depositsPage.updateForm();
   depositsPage.submitForm();
 });
 
 Then('I can see validation errors present', () => {
-  depositsPage.submitForm();
   depositsPage.verifyFieldsAreRequired();
 });
 
-And('I submit with an invalid public key', () => {
-  depositsPage.submitForm({
+And('I enter an invalid public key', () => {
+  depositsPage.updateForm({
     asset: tBTC,
     to: invalidPublicKey,
     amount: '1',
@@ -56,8 +56,8 @@ Then('Invalid Vega key is shown', () => {
   depositsPage.verifyInvalidPublicKey();
 });
 
-And('I submit with an amount less than the minimum viable amount', () => {
-  depositsPage.submitForm({
+And('I enter an amount less than the minimum viable amount', () => {
+  depositsPage.updateForm({
     asset: tBTC,
     to: invalidPublicKey,
     amount: '0.00000000000001',
@@ -68,10 +68,10 @@ Then('Amount to small message shown', () => {
   depositsPage.verifyAmountTooSmall();
 });
 
-And('I submit with a valid amount', () => {
-  depositsPage.submitForm({ amount: '1' });
+And('I enter a valid amount', () => {
+  depositsPage.updateForm({ amount: '1' });
 });
 
-Then('Insufficent funds message shown', () => {
-  depositsPage.verifyInsufficientFunds();
+Then('Not approved message shown', () => {
+  depositsPage.verifyNotApproved();
 });

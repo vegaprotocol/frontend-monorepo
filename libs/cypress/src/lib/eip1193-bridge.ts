@@ -3,8 +3,6 @@ import { JsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
 import { ethers } from 'ethers';
 
-const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
-
 // Address of the above key
 export class CustomizedBridge extends Eip1193Bridge {
   chainId = 3;
@@ -107,15 +105,17 @@ export class CustomizedBridge extends Eip1193Bridge {
   }
 }
 
-const TEST_PRIVATE_KEY =
-  '0xe580410d7c37d26c6ad1a837bbae46bc27f9066a466fb3a66e770523b4666d19';
-export const TEST_ADDRESS_NEVER_USE = new Wallet(TEST_PRIVATE_KEY).address;
+const MNEMONIC =
+  'first length secret attitude green cloth aspect lucky false seat soap seat';
+
+const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 const getProvider = () =>
   new JsonRpcProvider(Cypress.env('ETHEREUM_PROVIDER_URL'), 3);
 
 export const createBridge = () => {
   const provider = getProvider();
-  const signer = new Wallet(TEST_PRIVATE_KEY, provider);
+  const privateKey = Wallet.fromMnemonic(MNEMONIC, getAccount(1)).privateKey;
+  const signer = new Wallet(privateKey, provider);
   return new CustomizedBridge(signer, provider);
 };

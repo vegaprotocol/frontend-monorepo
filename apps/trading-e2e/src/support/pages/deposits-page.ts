@@ -16,7 +16,7 @@ export default class DepositsPage extends BasePage {
     cy.getByTestId('deposit-form').should('be.visible');
   }
 
-  submitForm(args?: { asset?: string; to?: string; amount?: string }) {
+  updateForm(args?: { asset?: string; to?: string; amount?: string }) {
     if (args?.asset) {
       cy.get('select[name="asset"]').select(args.asset);
     }
@@ -26,6 +26,9 @@ export default class DepositsPage extends BasePage {
     if (args?.amount) {
       cy.get('input[name="amount"]').clear().type(args.amount);
     }
+  }
+
+  submitForm() {
     cy.getByTestId('deposit-submit').click();
   }
 
@@ -44,7 +47,8 @@ export default class DepositsPage extends BasePage {
     cy.get(this.amountError).contains('Amount is below permitted minimum');
   }
 
-  verifyInsufficientFunds() {
-    cy.get(this.amountError).contains('Insufficient amount in Ethereum wallet');
+  verifyNotApproved() {
+    cy.get(this.amountError).contains('Amount is above approved amount');
+    cy.contains('Deposits of tBTC not approved');
   }
 }
