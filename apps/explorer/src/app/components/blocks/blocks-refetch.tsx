@@ -15,7 +15,7 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
   });
 
   useEffect(() => {
-    setBlocksToLoad(blocksToLoad + 1);
+    setBlocksToLoad((prev) => prev + 1);
   }, [messages]);
 
   const refresh = () => {
