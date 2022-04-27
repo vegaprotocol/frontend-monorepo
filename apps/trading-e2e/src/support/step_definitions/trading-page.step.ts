@@ -97,10 +97,6 @@ Given('I am on the trading page for a suspended market', () => {
   cy.contains('Market: SUSPENDED MARKET');
 });
 
-When('I click on orders tab', () => {
-  tradingPage.clickOnOrdersTab();
-});
-
 Then('trading page for {string} market is displayed', (marketType) => {
   switch (marketType) {
     case 'active':
@@ -116,6 +112,10 @@ Then('trading page for {string} market is displayed', (marketType) => {
   }
   tradingPage.clickOnTradesTab();
   tradesList.verifyTradesListDisplayed();
+});
+
+When('I click on orders tab', () => {
+  tradingPage.clickOnOrdersTab();
 });
 
 Then('placed orders are displayed', () => {
