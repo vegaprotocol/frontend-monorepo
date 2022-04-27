@@ -5,10 +5,7 @@ import { format } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../../lib/date-formats';
 import type {

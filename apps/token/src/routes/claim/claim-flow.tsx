@@ -8,10 +8,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { DATE_FORMAT_LONG } from '../../lib/date-formats';
 import { formatNumber } from '../../lib/format-number';

@@ -3,10 +3,7 @@ import './vesting-table.scss';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 
@@ -37,29 +34,30 @@ export const VestingTable = ({
   return (
     <section data-testid="vesting-table" className="vesting-table">
       <h2>{t('Across all tranches')}</h2>
-      <KeyValueTable numerical={true}>
+      <KeyValueTable>
         <KeyValueTableRow
+          numerical={true}
           data-testid="vesting-table-total"
           className="vesting-table__top-solid-border"
         >
           <th>{t('Vesting VEGA')}</th>
           <td>{formatNumber(total)}</td>
         </KeyValueTableRow>
-        <KeyValueTableRow data-testid="vesting-table-locked">
+        <KeyValueTableRow numerical={true} data-testid="vesting-table-locked">
           <th>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--locked"></div>
             {t('Locked')}
           </th>
           <td>{formatNumber(locked)}</td>
         </KeyValueTableRow>
-        <KeyValueTableRow data-testid="vesting-table-unlocked">
+        <KeyValueTableRow numerical={true} data-testid="vesting-table-unlocked">
           <th>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></div>
             {t('Unlocked')}
           </th>
           <td>{formatNumber(vested)}</td>
         </KeyValueTableRow>
-        <KeyValueTableRow data-testid="vesting-table-staked">
+        <KeyValueTableRow numerical={true} data-testid="vesting-table-staked">
           <th>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--staked"></div>
             {t('Associated')}

@@ -10,10 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../components/heading';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { SplashLoader } from '../../components/splash-loader';
 import { TransactionButton } from '../../components/transaction-button';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';

@@ -22,6 +22,7 @@ export { Tooltip } from './components/tooltip';
 export { Indicator } from './components/indicator';
 export { Card } from './components/card';
 export { TransactionDialog } from './components/transaction-dialog';
+export { KeyValueTable, KeyValueTableRow } from './components/key-value-table';
 
 // Utils
 export * from './utils/intent';

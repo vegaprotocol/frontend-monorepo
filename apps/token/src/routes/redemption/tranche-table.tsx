@@ -4,10 +4,7 @@ import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { Routes } from '../router-config';
@@ -39,8 +36,8 @@ export const Tranche0Table = ({
   const { t } = useTranslation();
   return (
     <>
-      <KeyValueTable numerical={true}>
-        <KeyValueTableRow data-testid="tranche-table-total">
+      <KeyValueTable>
+        <KeyValueTableRow numerical={true} data-testid="tranche-table-total">
           <th>
             <span className="tranche-table__label">
               {t('Tranche')} {trancheId}
@@ -48,7 +45,7 @@ export const Tranche0Table = ({
           </th>
           <td>{formatNumber(total)}</td>
         </KeyValueTableRow>
-        <KeyValueTableRow data-testid="tranche-table-locked">
+        <KeyValueTableRow numerical={true} data-testid="tranche-table-locked">
           <th>{t('Locked')}</th>
           <td>{formatNumber(total)}</td>
         </KeyValueTableRow>

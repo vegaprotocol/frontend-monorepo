@@ -1,33 +1,26 @@
-import './key-value-table.scss';
-
 import * as React from 'react';
 
 export interface KeyValueTableProps
   extends React.HTMLAttributes<HTMLTableElement> {
   title?: string;
-  numerical?: boolean; // makes all values monospace
   children: React.ReactNode;
-  muted?: boolean;
 }
 
 export const KeyValueTable = ({
   title,
-  numerical,
   children,
-  muted,
   className,
   ...rest
 }: KeyValueTableProps) => {
   return (
     <React.Fragment>
-      {title && <h3 className="key-value-table__header">{title}</h3>}
+      {title && <h3 className="mt-2.5 mb-1.25">{title}</h3>}
       <table
         data-testid="key-value-table"
         {...rest}
-        className={`key-value-table ${className ? className : ''} ${
-          numerical ? 'key-value-table--numerical' : ''
-        }
-        ${muted ? 'key-value-table--muted' : ''}`}
+        className={`w-full border-collapse mb-2.5 [border-spacing:0] break-all ${
+          className ? className : ''
+        }`}
       >
         <tbody>{children}</tbody>
       </table>
@@ -39,20 +32,36 @@ export interface KeyValueTableRowProps
   extends React.HTMLAttributes<HTMLTableRowElement> {
   children: [React.ReactNode, React.ReactNode];
   className?: string;
+  numerical?: boolean; // makes all values monospace
+  muted?: boolean;
 }
 
 export const KeyValueTableRow = ({
   children,
   className,
+  muted,
+  numerical,
   ...rest
 }: KeyValueTableRowProps) => {
   return (
     <tr
       {...rest}
-      className={`key-value-table__row ${className ? className : ''}`}
+      className={`flex flex-col sm:table-row border-b first:border-t border-white ${
+        className ? className : ''
+      } ${muted ? 'border-grey/1 first:border-t-0 last:border-b-0' : ''} `}
     >
-      {children[0]}
-      {children[1]}
+      <th
+        className={`break-word text-left font-medium text-white uppercase align-top p-1`}
+      >
+        {children[0]}
+      </th>
+      <td
+        className={`align-top p-1 text-right text-grey ${
+          numerical ? 'font-mono' : ''
+        }`}
+      >
+        {children[1]}
+      </td>
     </tr>
   );
 };

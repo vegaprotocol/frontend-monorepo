@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Heading } from '../../../../components/heading';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { getProposalName } from '../../../../lib/type-policies/proposal';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { CurrentProposalState } from '../current-proposal-state';
@@ -31,14 +28,14 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         <Link to={proposal.id} className="underline">
           <header>{getProposalName(proposal.terms.change)}</header>
         </Link>
-        <KeyValueTable muted={true}>
-          <KeyValueTableRow>
+        <KeyValueTable>
+          <KeyValueTableRow muted={true}>
             <th>{t('state')}</th>
             <td data-testid="governance-proposal-state">
               <CurrentProposalState proposal={proposal} />
             </td>
           </KeyValueTableRow>
-          <KeyValueTableRow>
+          <KeyValueTableRow muted={true}>
             <th>
               {isFuture(new Date(proposal.terms.closingDatetime))
                 ? t('closesOn')
@@ -51,7 +48,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
               )}
             </td>
           </KeyValueTableRow>
-          <KeyValueTableRow>
+          <KeyValueTableRow muted={true}>
             <th>
               {isFuture(new Date(proposal.terms.enactmentDatetime))
                 ? t('proposedEnactment')

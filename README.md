@@ -19,6 +19,7 @@ The trading interface built based on a component toolkit. It will provide a way 
 ### [UI toolkit](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/ui-toolkit)
 
 The UI toolkit contains a set of components used to build interfaces that can interact with the Vega protocol, and follow the design style of the project.
+It contains a storybook that can be served with `yarn nx run ui-toolkit:storybook`.
 
 ### [Tailwind CSS config](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/tailwindcss-config)
 
@@ -30,7 +31,7 @@ The Tailwind CSS config contains theme that align default config with Vega desig
 
 Check you have the correct version of Node. You can [install NVM to switch between node versions](https://github.com/nvm-sh/nvm#installing-and-updating). Then `NVM install`.
 Before you build you will need to `yarn install` in the root directory.
-The repository includes a number of template .env files for different networks. Copy from these to the .env file before `serve` to lauch app with different network.
+The repository includes a number of template .env files for different networks. Copy from these to the .env file before `serve` to launch app with different network. You can serve any application with `yarn nx run <name-of-app>:serve`.
 
 ### Build
 
@@ -58,6 +59,13 @@ Follow the following steps to start using a local network with the Vega Explorer
 1. Build the explorer frontend application
 1. Start the explorer frontend application with the `.env.vegacapsule` env file
 1. Go to [http://localhost:3000](http://localhost:3000) in your browser
+
+If you simply want to run Explorer locally, without using a local network:
+
+```bash
+cd apps/explorer && cp .env.testnet .env.local
+yarn nx run explorer:serve
+```
 
 # 📑 License
 
