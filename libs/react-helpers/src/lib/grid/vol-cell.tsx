@@ -2,10 +2,14 @@ import React from 'react';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { PriceCell } from './price-cell';
 
+export enum VolumeType {
+  bid,
+  ask,
+}
 export interface VolProps {
   value: number | bigint | null | undefined;
   relativeValue?: number;
-  type: 'bid' | 'ask';
+  type: VolumeType;
 }
 export interface IVolCellProps extends ICellRendererParams {
   value: number | bigint | null | undefined;
@@ -25,7 +29,7 @@ export const Vol = React.memo(({ value, relativeValue, type }: VolProps) => {
         className="h-full absolute top-0 left-0"
         style={{
           width: relativeValue ? `${relativeValue}%` : '0%',
-          backgroundColor: type === 'bid' ? BID_COLOR : ASK_COLOR,
+          backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
         }}
       ></div>
       <PriceCell value={value} valueFormatted={value.toString()} />

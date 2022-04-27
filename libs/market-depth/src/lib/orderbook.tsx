@@ -9,7 +9,7 @@ interface OrderbookProps {
 
 export const Orderbook = ({ data, decimalPlaces }: OrderbookProps) => (
   <>
-    <div className="grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2">
+    <div className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10">
       <div>{t('Bid Vol')}</div>
       <div>{t('Price')}</div>
       <div>{t('Ask Vol')}</div>

@@ -4,6 +4,7 @@ import {
   Vol,
   CumulativeVol,
   formatNumber,
+  VolumeType,
 } from '@vegaprotocol/react-helpers';
 
 interface OrderbookRowProps {
@@ -30,12 +31,12 @@ export const OrderbookRow = React.memo(
   }: OrderbookRowProps) => {
     return (
       <>
-        <Vol value={bid} relativeValue={relativeBidVol} type="bid" />
+        <Vol value={bid} relativeValue={relativeBidVol} type={VolumeType.bid} />
         <PriceCell
           value={BigInt(price)}
           valueFormatted={formatNumber(price, decimalPlaces)}
         />
-        <Vol value={ask} relativeValue={relativeAskVol} type="ask" />
+        <Vol value={ask} relativeValue={relativeAskVol} type={VolumeType.ask} />
         <CumulativeVol
           relativeAsk={cumulativeRelativeAsk}
           relativeBid={cumulativeRelativeBid}

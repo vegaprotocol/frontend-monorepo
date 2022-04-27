@@ -198,7 +198,6 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
-  //
   return (callback, c, v) => {
     callbacks.push(callback);
     if (callbacks.length === 1) {

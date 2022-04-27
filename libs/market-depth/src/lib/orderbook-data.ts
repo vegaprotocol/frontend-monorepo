@@ -1,5 +1,6 @@
 import produce from 'immer';
 import groupBy from 'lodash/groupBy';
+import { VolumeType } from '@vegaprotocol/react-helpers';
 import type {
   MarketDepth_market_depth_sell,
   MarketDepth_market_depth_buy,
@@ -27,14 +28,14 @@ export interface OrderbookData {
   cumulativeVol: CumulativeVol;
 }
 
-const getGroupPrice = (price: string, resolution: number) => {
+const getPriceLevel = (price: string, resolution: number) => {
   const p = BigInt(price);
   const r = BigInt(resolution);
-  let groupPrice = (p / r) * r;
-  if (p - groupPrice >= resolution / 2) {
-    groupPrice += BigInt(resolution);
+  let priceLevel = (p / r) * r;
+  if (p - priceLevel >= resolution / 2) {
+    priceLevel += BigInt(resolution);
   }
-  return groupPrice.toString();
+  return priceLevel.toString();
 };
 
 const getMaxVolumes = (orderbookData: OrderbookData[]) => ({
@@ -69,21 +70,21 @@ const updateRelativeData = (data: OrderbookData[]) => {
 const createData = (
   price: string,
   volume = 0,
-  dataType?: 'sell' | 'buy'
+  dataType?: VolumeType
 ): OrderbookData => ({
   price,
-  ask: dataType === 'sell' ? volume : 0,
-  bid: dataType === 'buy' ? volume : 0,
+  ask: dataType === VolumeType.ask ? volume : 0,
+  bid: dataType === VolumeType.bid ? volume : 0,
   cumulativeVol: {
-    ask: dataType === 'sell' ? volume : 0,
-    bid: dataType === 'buy' ? volume : 0,
+    ask: dataType === VolumeType.ask ? volume : 0,
+    bid: dataType === VolumeType.bid ? volume : 0,
   },
-  askByLevel: dataType === 'sell' ? { [price]: volume } : {},
-  bidByLevel: dataType === 'buy' ? { [price]: volume } : {},
+  askByLevel: dataType === VolumeType.ask ? { [price]: volume } : {},
+  bidByLevel: dataType === VolumeType.bid ? { [price]: volume } : {},
 });
 
 const mapRawData =
-  (dataType: 'sell' | 'buy') =>
+  (dataType: VolumeType.ask | VolumeType.bid) =>
   (
     data:
       | MarketDepth_market_depth_sell
@@ -113,17 +114,17 @@ export const compactData = (
 ) => {
   // map raw sell data to OrderbookData
   const askOrderbookData = [...(sell ?? [])].map<OrderbookData>(
-    mapRawData('sell')
+    mapRawData(VolumeType.ask)
   );
   // map raw buy data to OrderbookData
   const bidOrderbookData = [...(buy ?? [])].map<OrderbookData>(
-    mapRawData('buy')
+    mapRawData(VolumeType.bid)
   );
 
   // group by price level
   const groupedByLevel = groupBy<OrderbookData>(
     [...askOrderbookData, ...bidOrderbookData],
-    (row) => getGroupPrice(row.price, resolution)
+    (row) => getPriceLevel(row.price, resolution)
   );
 
   // create single OrderbookData from grouped OrderbookData[], sum volumes and atore volume by level
@@ -176,7 +177,7 @@ export const compactData = (
  * @returns max (sell) or min (buy) modified index in draft data, mutates draft
  */
 const partiallyUpdateCompactedData = (
-  dataType: 'sell' | 'buy',
+  dataType: VolumeType,
   draft: OrderbookData[],
   delta:
     | MarketDepthSubscription_marketDepthUpdate_sell
@@ -186,26 +187,28 @@ const partiallyUpdateCompactedData = (
 ) => {
   const { price } = delta;
   const volume = Number(delta.volume);
-  const groupPrice = getGroupPrice(price, resolution);
-  const volKey = dataType === 'sell' ? 'ask' : 'bid';
-  const oppositeVolKey = dataType === 'sell' ? 'bid' : 'ask';
-  const volByLevelKey = dataType === 'sell' ? 'askByLevel' : 'bidByLevel';
-  const resolveModifiedIndex = dataType === 'sell' ? Math.max : Math.min;
-  let index = draft.findIndex((data) => data.price === groupPrice);
+  const priceLevel = getPriceLevel(price, resolution);
+  const volKey = dataType === VolumeType.ask ? 'ask' : 'bid';
+  const oppositeVolKey = dataType === VolumeType.ask ? 'bid' : 'ask';
+  const volByLevelKey =
+    dataType === VolumeType.ask ? 'askByLevel' : 'bidByLevel';
+  const resolveModifiedIndex =
+    dataType === VolumeType.ask ? Math.max : Math.min;
+  let index = draft.findIndex((data) => data.price === priceLevel);
   if (index !== -1) {
     modifiedIndex = resolveModifiedIndex(modifiedIndex, index);
     draft[index][volKey] =
       draft[index][volKey] - (draft[index][volByLevelKey][price] || 0) + volume;
     draft[index][volByLevelKey][price] = volume;
   } else {
-    const newData: OrderbookData = createData(groupPrice, volume, dataType);
-    index = draft.findIndex((data) => BigInt(data.price) < BigInt(groupPrice));
+    const newData: OrderbookData = createData(priceLevel, volume, dataType);
+    index = draft.findIndex((data) => BigInt(data.price) < BigInt(priceLevel));
     if (index !== -1) {
       draft.splice(index, 0, newData);
       newData.cumulativeVol[oppositeVolKey] =
-        draft[index + (groupPrice === 'sell' ? -1 : 1)].cumulativeVol[
+        draft[index + (dataType === VolumeType.ask ? -1 : 1)]?.cumulativeVol[
           oppositeVolKey
-        ];
+        ] ?? 0;
       modifiedIndex = resolveModifiedIndex(modifiedIndex, index);
     } else {
       draft.push(newData);
@@ -234,7 +237,7 @@ export const updateCompactedData = (
     let sellModifiedIndex = -1;
     sell?.forEach((buy) => {
       sellModifiedIndex = partiallyUpdateCompactedData(
-        'sell',
+        VolumeType.ask,
         draft,
         buy,
         resolution,
@@ -244,7 +247,7 @@ export const updateCompactedData = (
     let buyModifiedIndex = draft.length;
     buy?.forEach((sell) => {
       buyModifiedIndex = partiallyUpdateCompactedData(
-        'buy',
+        VolumeType.bid,
         draft,
         sell,
         resolution,

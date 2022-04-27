@@ -39,10 +39,13 @@ export const getMockedData = (id?: string): MarketDepth_market => ({
   __typename: 'Market',
   id: id || '',
   decimalPlaces: 2,
-  // "positionDecimalPlaces": 0,
   data: {
     __typename: 'MarketData',
     midPrice: '0',
+    market: {
+      __typename: 'Market',
+      id: id || '',
+    },
   },
   depth: {
     __typename: 'MarketDepth',
