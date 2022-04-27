@@ -67,12 +67,12 @@ export const BlocksInfiniteList = ({
       {({ onItemsRendered, ref }) => (
         <List
           className="List"
-          height={150}
+          height={500}
           itemCount={itemCount}
           itemSize={20}
           onItemsRendered={onItemsRendered}
           ref={ref}
-          width={300}
+          width={'100%'}
         >
           {Item}
         </List>

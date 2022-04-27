@@ -18,7 +18,7 @@ type Action<T> =
   | { type: ActionType.FETCHED; payload: T }
   | { type: ActionType.ERROR; error: Error };
 
-function useFetch<T>(
+export const useFetch = <T>(
   url: string,
   options?: RequestInit,
   initialFetch = true
@@ -27,7 +27,7 @@ function useFetch<T>(
   refetch: (
     params?: Record<string, string | number | null | undefined> | undefined
   ) => Promise<T | undefined>;
-} {
+} => {
   // Used to prevent state update if the component is unmounted
   const cancelRequest = useRef<boolean>(false);
 
@@ -58,7 +58,16 @@ function useFetch<T>(
         dispatch({ type: ActionType.LOADING });
         let data;
         try {
-          const response = await fetch(url, options);
+          const assembledUrl = new URL(url);
+          if (params) {
+            for (const [key, value] of Object.entries(params)) {
+              if (value) {
+                assembledUrl.searchParams.set(key, value.toString());
+              }
+            }
+          }
+
+          const response = await fetch(assembledUrl.toString(), options);
           if (!response.ok) {
             throw new Error(response.statusText);
           }
@@ -107,6 +116,4 @@ function useFetch<T>(
     state,
     refetch: fetchCallback,
   };
-}
-
-export default useFetch;
+};

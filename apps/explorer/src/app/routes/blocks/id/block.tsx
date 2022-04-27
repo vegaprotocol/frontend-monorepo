@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { DATA_SOURCES } from '../../../config';
-import useFetch from '../../../hooks/use-fetch';
 import type { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
 import { SecondsAgo } from '../../../components/seconds-ago';
@@ -16,7 +15,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../route-names';
 import { RenderFetched } from '../../../components/render-fetched';
 import { HighlightedLink } from '../../../components/highlighted-link';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/react-helpers';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();

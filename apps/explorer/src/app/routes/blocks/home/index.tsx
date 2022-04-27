@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DATA_SOURCES } from '../../../config';
-import useFetch from '../../../hooks/use-fetch';
 import type {
   BlockMeta,
   TendermintBlockchainResponse,
@@ -10,7 +9,7 @@ import { RenderFetched } from '../../../components/render-fetched';
 import { BlocksData, BlocksRefetch } from '../../../components/blocks';
 import { BlocksInfiniteList } from '../../../components/blocks/blocks-infinite-list';
 import { JumpToBlock } from '../../../components/jump-to-block';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/react-helpers';
 
 const Blocks = () => {
   const [hasMoreBlocks, setHasMoreBlocks] = useState(true);
@@ -23,27 +22,22 @@ const Blocks = () => {
     number | undefined
   >(undefined);
   const {
-    state: { data, error: tmError, loading },
+    state: { error: tmError, loading },
     refetch,
   } = useFetch<TendermintBlockchainResponse>(
-    // Inclusive not exclusive subtract 1 somewhere
-    `${DATA_SOURCES.tendermintUrl}/blockchain${
-      nextBlockHeightToLoad
-        ? `?maxHeight=${Number(nextBlockHeightToLoad) - 1}&minHeight=${Math.max(
-            Number(nextBlockHeightToLoad) - 21,
-            0
-          )}`
-        : ''
-    }`,
+    `${DATA_SOURCES.tendermintUrl}/blockchain`,
     undefined,
     false
   );
-  console.log(data);
 
-  const loadBlocks = async (...args: any[]) => {
+  const loadBlocks = async () => {
     setAreBlocksLoading(loading);
-    setError(error);
-    const data = await refetch();
+    setError(tmError);
+
+    const data = await refetch({
+      maxHeight: Number(nextBlockHeightToLoad),
+      minHeight: Math.max(Number(nextBlockHeightToLoad) - 21, 0),
+    });
 
     if (data) {
       const blockMetas = data.result.block_metas;
@@ -52,7 +46,7 @@ const Blocks = () => {
       );
 
       setBlocksData([...blocksData, ...blockMetas]);
-      setNextBlockHeightToLoad(lastBlockLoaded);
+      setNextBlockHeightToLoad(lastBlockLoaded - 1);
       setHasMoreBlocks(lastBlockLoaded > 0);
     }
   };

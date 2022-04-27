@@ -1,8 +1,7 @@
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import { SyntaxHighlighter } from '../../components/syntax-highlighter';
 import { DATA_SOURCES } from '../../config';
-import useFetch from '../../hooks/use-fetch';
 import type { TendermintGenesisResponse } from './tendermint-genesis-response';
 
 const Genesis = () => {
