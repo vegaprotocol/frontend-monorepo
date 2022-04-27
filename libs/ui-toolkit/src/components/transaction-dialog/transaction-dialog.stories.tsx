@@ -42,7 +42,7 @@ Error.args = {
   error: {
     name: 'Error',
     message:
-      'cannot estimate gas; transaction may fail or may require manual gas limit [See: https://links.ethers.org/v5-errors] {"code": 3,"data":"0x08c379000000000000000000000000000000000000000000000000000000000" }',
+      'Some very long error message with text that should wrap, here is some error data: {"chain":3,"data":"0x08c379000000000000000000000000000000000000000000000000000000000"}',
   },
   confirmations: 0,
   txHash: null,
