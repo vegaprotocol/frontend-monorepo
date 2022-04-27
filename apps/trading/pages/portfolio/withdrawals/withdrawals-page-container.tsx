@@ -6,8 +6,11 @@ export const WithdrawalsPageContainer = () => {
   const { data, loading, error } = useWithdrawals();
 
   return (
-    <AsyncRenderer data={data} loading={loading} error={error}>
-      {(data) => {
+    <AsyncRenderer
+      data={data}
+      loading={loading}
+      error={error}
+      render={(data) => {
         const withdrawals = orderBy(
           data.party?.withdrawals || [],
           (w) => new Date(w.createdTimestamp).getTime(),
@@ -15,6 +18,6 @@ export const WithdrawalsPageContainer = () => {
         );
         return <WithdrawalsTable withdrawals={withdrawals} />;
       }}
-    </AsyncRenderer>
+    />
   );
 };

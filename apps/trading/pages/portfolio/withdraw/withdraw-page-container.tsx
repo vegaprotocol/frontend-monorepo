@@ -59,8 +59,7 @@ export const WithdrawPageContainer = ({
         variables: { partyId: keypair?.pub || '' },
         skip: !keypair?.pub,
       }}
-    >
-      {(data) => {
+      render={(data) => {
         if (!data.assets?.length) {
           return (
             <Splash>
@@ -93,6 +92,6 @@ export const WithdrawPageContainer = ({
           </>
         );
       }}
-    </PageQueryContainer>
+    />
   );
 };
