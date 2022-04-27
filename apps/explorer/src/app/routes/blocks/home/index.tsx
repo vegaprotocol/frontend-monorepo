@@ -5,11 +5,13 @@ import type {
   TendermintBlockchainResponse,
 } from '../tendermint-blockchain-response';
 import { RouteTitle } from '../../../components/route-title';
-import { RenderFetched } from '../../../components/render-fetched';
-import { BlocksData, BlocksRefetch } from '../../../components/blocks';
+import { BlocksRefetch } from '../../../components/blocks';
 import { BlocksInfiniteList } from '../../../components/blocks/blocks-infinite-list';
 import { JumpToBlock } from '../../../components/jump-to-block';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
+
+// This constant should only be changed if Tendermint API changes the max blocks returned
+const TM_BLOCKS_PER_REQUEST = 20;
 
 const Blocks = () => {
   const [hasMoreBlocks, setHasMoreBlocks] = useState(true);
@@ -21,6 +23,8 @@ const Blocks = () => {
   const [nextBlockHeightToLoad, setNextBlockHeightToLoad] = useState<
     number | undefined
   >(undefined);
+  const [lastBlockHeightLoaded, setLastBlockHeightLoaded] = useState<number>();
+
   const {
     state: { error: tmError, loading },
     refetch,
@@ -34,39 +38,47 @@ const Blocks = () => {
     setAreBlocksLoading(loading);
     setError(tmError);
 
+    const maxHeight = Math.max(
+      Number(nextBlockHeightToLoad),
+      TM_BLOCKS_PER_REQUEST
+    );
+
+    const minHeight =
+      Number(nextBlockHeightToLoad) - TM_BLOCKS_PER_REQUEST > 1
+        ? Number(nextBlockHeightToLoad) - TM_BLOCKS_PER_REQUEST
+        : undefined;
+
     const data = await refetch({
-      maxHeight: Number(nextBlockHeightToLoad),
-      minHeight: Math.max(Number(nextBlockHeightToLoad) - 21, 0),
+      maxHeight,
+      minHeight,
     });
 
     if (data) {
       const blockMetas = data.result.block_metas;
-      const lastBlockLoaded = parseInt(
-        blockMetas[blockMetas.length - 1].header.height
+      setLastBlockHeightLoaded(
+        parseInt(blockMetas[blockMetas.length - 1].header.height)
       );
 
+      if (lastBlockHeightLoaded) {
+        setNextBlockHeightToLoad(lastBlockHeightLoaded - 1);
+        setHasMoreBlocks(lastBlockHeightLoaded > 1);
+      }
+
       setBlocksData([...blocksData, ...blockMetas]);
-      setNextBlockHeightToLoad(lastBlockLoaded - 1);
-      setHasMoreBlocks(lastBlockLoaded > 0);
     }
   };
 
   return (
     <section>
       <RouteTitle>{t('Blocks')}</RouteTitle>
-      {/*<RenderFetched error={error} loading={loading}>*/}
-      {/*  <>*/}
-      {/*    <BlocksRefetch refetch={refetch} />*/}
-      {/*    <BlocksData data={data} className="mb-28" />*/}
-      {/*  </>*/}
-      {/*</RenderFetched>*/}
-
+      <BlocksRefetch refetch={refetch} />
       <BlocksInfiniteList
         hasMoreBlocks={hasMoreBlocks}
         areBlocksLoading={areBlocksLoading}
-        items={blocksData}
+        blocks={blocksData}
         loadMoreBlocks={loadBlocks}
         error={error}
+        className="pb-16"
       />
       <JumpToBlock />
     </section>
