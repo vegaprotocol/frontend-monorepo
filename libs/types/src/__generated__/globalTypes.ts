@@ -79,7 +79,7 @@ export enum DepositStatus {
 /**
  * The interval for trade candles when subscribing via VEGA graphql, default is I15M
  */
- export enum Interval {
+export enum Interval {
   I15M = "I15M",
   I1D = "I1D",
   I1H = "I1H",
@@ -265,9 +265,27 @@ export enum Side {
   Sell = "Sell",
 }
 
+/**
+ * The status of the stake linking
+ */
+export enum StakeLinkingStatus {
+  Accepted = "Accepted",
+  Pending = "Pending",
+  Rejected = "Rejected",
+}
+
 export enum VoteValue {
   No = "No",
   Yes = "Yes",
+}
+
+/**
+ * The status of a withdrawal
+ */
+export enum WithdrawalStatus {
+  Finalized = "Finalized",
+  Open = "Open",
+  Rejected = "Rejected",
 }
 
 //==============================================================

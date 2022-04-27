@@ -1,19 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import {
-  t,
-  TxState,
-  isExpectedEthereumError,
-} from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
+import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
+import { isExpectedEthereumError } from '../ethereum-error';
+import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 import { DialogWrapper } from './dialog-wrapper';
-import { Loader } from '../loader';
-import { Intent } from '../../utils/intent';
-import { Dialog } from '../dialog';
-import { Icon } from '../icon';
 
 export interface TransactionDialogProps {
   name: string;
-  status: TxState;
+  status: EthTxStatus;
   error: Error | null;
   confirmations: number;
   txHash: string | null;
@@ -36,7 +31,7 @@ export const TransactionDialog = ({
   const dialogDismissed = useRef(false);
 
   const renderContent = () => {
-    if (status === TxState.Error) {
+    if (status === EthTxStatus.Error) {
       return (
         <p className="break-all text-black dark:text-white">
           {error && error.message}
@@ -63,22 +58,22 @@ export const TransactionDialog = ({
 
   const getWrapperProps = () => {
     const propsMap = {
-      [TxState.Error]: {
+      [EthTxStatus.Error]: {
         title: t(`${name} failed`),
         icon: <Icon name="warning-sign" size={20} />,
         intent: Intent.Danger,
       },
-      [TxState.Requested]: {
+      [EthTxStatus.Requested]: {
         title: t('Confirm transaction'),
         icon: <Icon name="hand-up" size={20} />,
         intent: Intent.Prompt,
       },
-      [TxState.Pending]: {
+      [EthTxStatus.Pending]: {
         title: t(`${name} pending`),
         icon: <Loader size="small" />,
         intent: Intent.Progress,
       },
-      [TxState.Complete]: {
+      [EthTxStatus.Complete]: {
         title: t(`${name} complete`),
         icon: <Icon name="tick" />,
         intent: Intent.Success,
@@ -86,7 +81,7 @@ export const TransactionDialog = ({
     };
 
     // Dialog not showing
-    if (status === TxState.Default) {
+    if (status === EthTxStatus.Default) {
       return { intent: undefined, title: '', icon: null };
     }
 
@@ -94,11 +89,11 @@ export const TransactionDialog = ({
     if (confirmed !== undefined) {
       // Vega has confirmed Tx
       if (confirmed === true) {
-        return propsMap[TxState.Complete];
+        return propsMap[EthTxStatus.Complete];
       }
       // Tx is complete but still awaiting for Vega to confirm
-      else if (status === TxState.Complete) {
-        return propsMap[TxState.Pending];
+      else if (status === EthTxStatus.Complete) {
+        return propsMap[EthTxStatus.Pending];
       }
     }
 
@@ -107,12 +102,12 @@ export const TransactionDialog = ({
 
   useEffect(() => {
     // Close dialog if error is due to user rejecting the tx
-    if (status === TxState.Error && isExpectedEthereumError(error)) {
+    if (status === EthTxStatus.Error && isExpectedEthereumError(error)) {
       setDialogOpen(false);
       return;
     }
 
-    if (status !== TxState.Default && !dialogDismissed.current) {
+    if (status !== EthTxStatus.Default && !dialogDismissed.current) {
       setDialogOpen(true);
       return;
     }

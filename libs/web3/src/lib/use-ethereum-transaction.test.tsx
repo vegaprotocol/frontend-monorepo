@@ -1,7 +1,7 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { waitFor } from '@testing-library/react';
 import { renderHook, act } from '@testing-library/react-hooks/dom';
-import { TxState } from './use-ethereum-transaction';
+import { EthTxStatus } from './use-ethereum-transaction';
 import type { ReactNode } from 'react';
 import { useEthereumTransaction } from './use-ethereum-transaction';
 import type { ethers } from 'ethers';
@@ -31,6 +31,7 @@ class MockContract {
           setTimeout(
             () =>
               resolve({
+                from: 'foo',
                 confirmations: this.confirmations,
               } as ethers.ContractReceipt),
             100
@@ -65,44 +66,52 @@ test('Ethereum transaction flow', async () => {
   });
 
   expect(result.current).toEqual({
-    status: TxState.Default,
-    txHash: null,
-    error: null,
-    confirmations: 0,
+    transaction: {
+      status: EthTxStatus.Default,
+      txHash: null,
+      error: null,
+      confirmations: 0,
+      receipt: null,
+    },
     perform: expect.any(Function),
+    reset: expect.any(Function),
   });
 
   act(() => {
     result.current.perform();
   });
 
-  expect(result.current.status).toEqual(TxState.Requested);
-  expect(result.current.confirmations).toBe(0);
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Requested);
+  expect(result.current.transaction.confirmations).toBe(0);
 
   await waitFor(() => {
-    expect(result.current.status).toEqual(TxState.Pending);
-    expect(result.current.txHash).toEqual(MockContract.txHash);
+    expect(result.current.transaction.status).toEqual(EthTxStatus.Pending);
+    expect(result.current.transaction.txHash).toEqual(MockContract.txHash);
   });
 
   await act(async () => {
     jest.advanceTimersByTime(100);
   });
-  expect(result.current.confirmations).toBe(1);
-  expect(result.current.status).toEqual(TxState.Pending);
+  expect(result.current.transaction.confirmations).toBe(1);
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Pending);
 
   await act(async () => {
     jest.advanceTimersByTime(100);
   });
-  expect(result.current.confirmations).toBe(2);
-  expect(result.current.status).toEqual(TxState.Pending);
+  expect(result.current.transaction.confirmations).toBe(2);
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Pending);
 
   await act(async () => {
     jest.advanceTimersByTime(100);
   });
-  expect(result.current.confirmations).toBe(3);
+  expect(result.current.transaction.confirmations).toBe(3);
 
   // Now complete as required confirmations have been surpassed
-  expect(result.current.status).toEqual(TxState.Complete);
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Complete);
+  expect(result.current.transaction.receipt).toEqual({
+    from: 'foo',
+    confirmations: result.current.transaction.confirmations,
+  });
 });
 
 test('Error handling', async () => {
@@ -116,7 +125,7 @@ test('Error handling', async () => {
     result.current.perform();
   });
 
-  expect(result.current.status).toEqual(TxState.Error);
-  expect(result.current.error instanceof EthereumError).toBe(true);
-  expect(result.current.error?.message).toBe(errorMsg);
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Error);
+  expect(result.current.transaction.error instanceof EthereumError).toBe(true);
+  expect(result.current.transaction.error?.message).toBe(errorMsg);
 });
