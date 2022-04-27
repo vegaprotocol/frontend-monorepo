@@ -9,6 +9,7 @@ export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
     <>
       <div className="flex gap-8">
         <Button
+          data-testid="order-book-zoom-out"
           variant="secondary"
           onClick={() => setResolution(resolution * 10)}
           appendIconName="minus"
@@ -17,6 +18,7 @@ export const OrderbookContainer = ({ marketId }: { marketId: string }) => {
           Zoom out
         </Button>
         <Button
+          data-testid="order-book-zoom-in"
           variant="secondary"
           onClick={() => setResolution(Math.max(resolution / 10, 1))}
           appendIconName="plus"

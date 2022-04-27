@@ -9,6 +9,7 @@ import { generateTrades } from '../mocks/generate-trades';
 import { generateDealTicketQuery } from '../mocks/generate-deal-ticket-query';
 import { generateMarket } from '../mocks/generate-market';
 import { generatePositions } from '../mocks/generate-positions';
+import { generateOrderBook } from '../mocks/generate-order-book';
 
 const tradesList = new TradesList();
 const tradingPage = new TradingPage();
@@ -49,6 +50,12 @@ const mockMarket = (state: MarketState) => {
     if (hasOperationName(req, 'Chart')) {
       req.reply({
         body: { data: generateChart() },
+      });
+    }
+
+    if (hasOperationName(req, 'MarketDepth')) {
+      req.reply({
+        body: { data: generateOrderBook() },
       });
     }
 
