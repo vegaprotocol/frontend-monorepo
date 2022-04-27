@@ -9,7 +9,7 @@ export const generateAccounts = (
   const defaultAccounts: Accounts = {
     party: {
       __typename: 'Party',
-      id: 'party-id',
+      id: Cypress.env('vegaPublicKey'),
       accounts: [
         {
           __typename: 'Account',

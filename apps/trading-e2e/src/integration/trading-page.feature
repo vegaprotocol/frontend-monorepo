@@ -1,5 +1,5 @@
-Feature: Deal ticket
-  Scenario Outline: Successfull market buy orders
+Feature: Trading page
+  Scenario Outline: Deal ticket: Successfull market buy orders
     Given I am on the trading page for an active market
     And I connect to Vega Wallet
     When I place a buy '<marketOrderType>' market order
@@ -10,7 +10,7 @@ Feature: Deal ticket
       | FOK             |
       | IOC             |
 
-  Scenario Outline: Successfull Limit buy orders
+  Scenario Outline: Deal ticket: Successfull Limit buy orders
     Given I am on the trading page for an active market
     And I connect to Vega Wallet
     When I place a buy '<limitOrderType>' limit order
@@ -24,7 +24,7 @@ Feature: Deal ticket
       # | GFA            | Requires market to be in auction
       | GFN            |
 
-  Scenario Outline: Successfull market sell order
+  Scenario Outline: Deal ticket: Successfull market sell order
     Given I am on the trading page for an active market
     And I connect to Vega Wallet
     When I place a sell '<marketOrderType>' market order
@@ -35,7 +35,7 @@ Feature: Deal ticket
       | FOK             |
       | IOC             |
 
-  Scenario Outline: Successfull limit sell order
+  Scenario Outline: Deal ticket: Successfull limit sell order
     Given I am on the trading page for an active market
     And I connect to Vega Wallet
     When I place a sell '<limitOrderType>' limit order
@@ -50,7 +50,7 @@ Feature: Deal ticket
       | GFN            |
 
   @ignore
-  Scenario: Unsuccessfull order because lack of funds
+  Scenario: Deal ticket: Unsuccessfull order because lack of funds
     Given I am on the homepage
     And I navigate to markets page
     When I click on active market
@@ -58,29 +58,42 @@ Feature: Deal ticket
     And place a buy 'FOK' market order
     Then error message for insufficient funds is displayed
 
-  Scenario: Unable to order because market is suspended
+  Scenario: Deal ticket: Unable to order because market is suspended
     Given I am on the trading page for a suspended market
     And I connect to Vega Wallet
     Then place order button is disabled
     And "Market is currently suspended" error is shown
 
-  Scenario: Unable to order because wallet is not connected
+  Scenario: Deal ticket: Unable to order because wallet is not connected
     Given I am on the trading page for an active market
     Then place order button is disabled
     And "No public key selected" error is shown
 
   @ignore
-  Scenario: Unsuccessfull because quantity is 0
+  Scenario: Deal ticket: Unsuccessfull because quantity is 0
     Given I am on the trading page for an active market
     And I connect to Vega Wallet
     And place a buy 'FOK' market order with amount of 0
     Then Order rejected by wallet error shown containing text "must be positive"
 
   @manual
-  Scenario: GTT order failed because invalid date
+  Scenario: Deal ticket: GTT order failed because invalid date
 
   @manual
-  Scenario: GTT order failed because date in the past
+  Scenario: Deal ticket: GTT order failed because date in the past
 
   @manual
-  Scenario: GTT order failed because date over allowed period
+  Scenario: Deal ticket: GTT order failed because date over allowed period
+
+  Scenario: Positions: Displayed when connected to wallet
+    Given I am on the trading page for an active market
+    And I connect to Vega Wallet
+    When I click on positions tab
+    Then positions are displayed
+
+  Scenario: Accounts: Displayed when connected to wallet
+    Given I am on the trading page for an active market
+    And I connect to Vega Wallet
+    When I click on accounts tab
+    Then accounts are displayed
+    And I can see account for tEURO
