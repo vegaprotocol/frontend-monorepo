@@ -30,36 +30,34 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         </Link>
         <KeyValueTable>
           <KeyValueTableRow muted={true}>
-            <th>{t('state')}</th>
-            <td data-testid="governance-proposal-state">
+            {t('state')}
+            <span data-testid="governance-proposal-state">
               <CurrentProposalState proposal={proposal} />
-            </td>
+            </span>
           </KeyValueTableRow>
           <KeyValueTableRow muted={true}>
-            <th>
-              {isFuture(new Date(proposal.terms.closingDatetime))
-                ? t('closesOn')
-                : t('closedOn')}
-            </th>
-            <td data-testid="governance-proposal-closingDate">
+            {isFuture(new Date(proposal.terms.closingDatetime))
+              ? t('closesOn')
+              : t('closedOn')}
+
+            <span data-testid="governance-proposal-closingDate">
               {format(
                 new Date(proposal.terms.closingDatetime),
                 DATE_FORMAT_DETAILED
               )}
-            </td>
+            </span>
           </KeyValueTableRow>
           <KeyValueTableRow muted={true}>
-            <th>
-              {isFuture(new Date(proposal.terms.enactmentDatetime))
-                ? t('proposedEnactment')
-                : t('enactedOn')}
-            </th>
-            <td data-testid="governance-proposal-enactmentDate">
+            {isFuture(new Date(proposal.terms.enactmentDatetime))
+              ? t('proposedEnactment')
+              : t('enactedOn')}
+
+            <span data-testid="governance-proposal-enactmentDatetime">
               {format(
                 new Date(proposal.terms.enactmentDatetime),
                 DATE_FORMAT_DETAILED
               )}
-            </td>
+            </span>
           </KeyValueTableRow>
         </KeyValueTable>
       </li>

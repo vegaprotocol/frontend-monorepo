@@ -48,7 +48,11 @@ export const KeyValueTableRow = ({
       {...rest}
       className={`flex flex-col sm:table-row border-b first:border-t border-white ${
         className ? className : ''
-      } ${muted ? 'border-grey/1 first:border-t-0 last:border-b-0' : ''} `}
+      } ${
+        muted
+          ? 'border-grey/1 first:[border-top:none] last:[border-bottom:none]'
+          : ''
+      } `}
     >
       <th
         className={`break-word text-left font-medium text-white uppercase align-top p-1`}
