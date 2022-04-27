@@ -10,13 +10,10 @@ import type { OrderbookData } from './orderbook-data';
 
 interface OrderbookManagerProps {
   marketId: string;
-  resolution: number;
 }
 
-export const OrderbookManager = ({
-  marketId,
-  resolution,
-}: OrderbookManagerProps) => {
+export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
+  const [resolution, setResolution] = useState(1);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const resolutionRef = useRef(resolution);
   const [orderbookData, setOrderbookData] = useState<OrderbookData[] | null>(
@@ -68,6 +65,8 @@ export const OrderbookManager = ({
       <Orderbook
         data={orderbookData}
         decimalPlaces={data?.decimalPlaces ?? 0}
+        resolution={resolution}
+        onResolutionChange={(resolution: number) => setResolution(resolution)}
       />
     </AsyncRenderer>
   );
