@@ -97,3 +97,9 @@ Feature: Trading page
     When I click on accounts tab
     Then accounts are displayed
     And I can see account for tEURO
+ 
+  Scenario: Orders: Placed orders displayed
+    Given I am on the trading page for an active market
+    And I connect to Vega Wallet
+    When I click on orders tab
+    Then placed orders are displayed
