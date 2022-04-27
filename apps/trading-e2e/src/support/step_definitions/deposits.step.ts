@@ -8,8 +8,6 @@ const ethWallet = new EthereumWallet();
 const tBTC = '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c';
 const invalidPublicKey =
   'zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f';
-const validPublicKey =
-  'f8885edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f';
 
 beforeEach(() => {
   cy.mockWeb3Provider();
