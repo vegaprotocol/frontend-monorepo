@@ -111,11 +111,14 @@ const MNEMONIC =
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 const getProvider = () =>
-  new JsonRpcProvider(Cypress.env('ETHEREUM_PROVIDER_URL'), 3);
+  new JsonRpcProvider(
+    Cypress.env('ETHEREUM_PROVIDER_URL'),
+    Cypress.env('ETHEREUM_CHAIN_ID')
+  );
 
 export const createBridge = () => {
   const provider = getProvider();
-  const privateKey = Wallet.fromMnemonic(MNEMONIC, getAccount(1)).privateKey;
+  const privateKey = Wallet.fromMnemonic(MNEMONIC, getAccount(0)).privateKey;
   const signer = new Wallet(privateKey, provider);
   return new CustomizedBridge(signer, provider);
 };
