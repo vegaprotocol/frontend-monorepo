@@ -217,14 +217,14 @@ describe('updateCompactedData', () => {
       resolution
     );
     expect(updatedData[0].ask).toEqual(20);
-    expect(updatedData[0].askByLevel?.[120]).toEqual(10);
+    expect(updatedData[0].askByLevel?.['120']).toEqual(10);
     expect(updatedData[0].cumulativeVol.ask).toEqual(60);
-    expect(updatedData[2].bid).toEqual(20);
-    expect(updatedData[2].bidByLevel?.[80]).toEqual(10);
-    expect(updatedData[2].cumulativeVol.bid).toEqual(60);
+    expect(updatedData[4].bid).toEqual(20);
+    expect(updatedData[4].bidByLevel?.['80']).toEqual(10);
+    expect(updatedData[4].cumulativeVol.bid).toEqual(60);
   });
 
-  it('remove row', () => {
+  it('update with zero value volume', () => {
     const sell: MarketDepthSubscription_marketDepthUpdate_sell = {
       __typename: 'PriceLevel',
       price: '121',
@@ -243,7 +243,7 @@ describe('updateCompactedData', () => {
       [buy],
       resolution
     );
-    expect(updatedData.length).toEqual(1);
+    expect(updatedData.length).toEqual(5);
   });
 
   it('add new row at the end', () => {
@@ -265,11 +265,11 @@ describe('updateCompactedData', () => {
       [buy],
       resolution
     );
-    expect(updatedData.length).toEqual(5);
+    expect(updatedData.length).toEqual(8);
     expect(updatedData[0].price).toEqual('130');
     expect(updatedData[0].cumulativeVol.ask).toEqual(55);
-    expect(updatedData[4].price).toEqual('60');
-    expect(updatedData[4].cumulativeVol.bid).toEqual(55);
+    expect(updatedData[7].price).toEqual('60');
+    expect(updatedData[7].cumulativeVol.bid).toEqual(55);
   });
 
   it('add new row in the middle', () => {
