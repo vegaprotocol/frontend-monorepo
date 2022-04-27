@@ -2,7 +2,7 @@ import type BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
 import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
 import type { Asset } from './deposit-manager';
-import { useEthereumReadContract } from '@vegaprotocol/react-helpers';
+import { useEthereumReadContract } from '@vegaprotocol/web3';
 
 interface Limits {
   min: BigNumber;

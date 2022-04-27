@@ -1,3 +1,8 @@
+import type {
+  OrderSubmissionBody,
+  WithdrawSubmissionBody,
+} from '@vegaprotocol/vegawallet-service-api-client';
+
 export enum OrderType {
   Market = 'TYPE_MARKET',
   Limit = 'TYPE_LIMIT',
@@ -17,20 +22,7 @@ export enum OrderTimeInForce {
   GFA = 'TIME_IN_FORCE_GFA',
 }
 
-export interface OrderSubmission {
-  pubKey: string;
-  propagate: boolean;
-  orderSubmission: {
-    marketId: string;
-    size: string;
-    type: OrderType;
-    side: OrderSide;
-    timeInForce: OrderTimeInForce;
-    price?: string;
-    expiresAt?: string;
-    reference?: string;
-  };
-}
-
 // Will make Transaction a union type as other transactions are added
-export type Transaction = OrderSubmission;
+export type TransactionSubmission =
+  | OrderSubmissionBody
+  | WithdrawSubmissionBody;

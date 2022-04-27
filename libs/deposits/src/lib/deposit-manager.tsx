@@ -6,13 +6,9 @@ import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useGetDepositLimits } from './use-get-deposit-limits';
 import { useGetAllowance } from './use-get-allowance';
-import { TransactionDialog } from '@vegaprotocol/ui-toolkit';
 import { useSubmitFaucet } from './use-submit-faucet';
-import {
-  useTokenContract,
-  useBridgeContract,
-  TxState,
-} from '@vegaprotocol/react-helpers';
+import { EthTxStatus, TransactionDialog } from '@vegaprotocol/web3';
+import { useTokenContract, useBridgeContract } from '@vegaprotocol/web3';
 
 export interface Asset {
   __typename: 'Asset';
@@ -76,10 +72,13 @@ export const DepositManager = ({
 
   // Update balance after confirmation event has been received
   useEffect(() => {
-    if (faucet.status === TxState.Complete || confirmationEvent !== null) {
+    if (
+      faucet.transaction.status === EthTxStatus.Complete ||
+      confirmationEvent !== null
+    ) {
       refetch();
     }
-  }, [confirmationEvent, refetch, faucet.status]);
+  }, [confirmationEvent, refetch, faucet.transaction.status]);
 
   return (
     <>
@@ -94,8 +93,8 @@ export const DepositManager = ({
         limits={limits}
         allowance={allowance}
       />
-      <TransactionDialog {...approve} name="approve" />
-      <TransactionDialog {...faucet} name="faucet" />
+      <TransactionDialog {...approve.transaction} name="approve" />
+      <TransactionDialog {...faucet.transaction} name="faucet" />
       <TransactionDialog
         {...deposit}
         name="deposit"

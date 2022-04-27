@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { EthereumError, TxState } from '@vegaprotocol/react-helpers';
+import { EthereumError } from '../ethereum-error';
+import { EthTxStatus } from '../use-ethereum-transaction';
 import type { TransactionDialogProps } from './transaction-dialog';
 import { TransactionDialog } from './transaction-dialog';
 
@@ -14,7 +15,7 @@ let props: TransactionDialogProps;
 beforeEach(() => {
   props = {
     name: 'test',
-    status: TxState.Default,
+    status: EthTxStatus.Default,
     txHash: null,
     error: null,
     confirmations: 1,
@@ -31,14 +32,14 @@ test('Opens when tx starts and closes if the user rejects the tx', () => {
   // Dialog closed by default
   expect(container).toBeEmptyDOMElement();
 
-  rerender(generateJsx({ status: TxState.Pending }));
+  rerender(generateJsx({ status: EthTxStatus.Pending }));
 
   expect(screen.getByRole('dialog')).toBeInTheDocument();
 
   // User rejecting the tx closes the dialog
   rerender(
     generateJsx({
-      status: TxState.Error,
+      status: EthTxStatus.Error,
       error: new EthereumError('User rejected', 4001),
     })
   );
@@ -48,26 +49,26 @@ test('Opens when tx starts and closes if the user rejects the tx', () => {
 
 test('Doesn\t repoen if user dismissed the dialog', () => {
   const { container, rerender } = render(
-    generateJsx({ status: TxState.Pending })
+    generateJsx({ status: EthTxStatus.Pending })
   );
 
   fireEvent.click(screen.getByTestId('dialog-close'));
 
   expect(container).toBeEmptyDOMElement();
 
-  rerender(generateJsx({ status: TxState.Complete }));
+  rerender(generateJsx({ status: EthTxStatus.Complete }));
 
   // Should still be closed even though tx updated
   expect(container).toBeEmptyDOMElement();
 });
 
 test('Dialog states', () => {
-  const { rerender } = render(generateJsx({ status: TxState.Requested }));
+  const { rerender } = render(generateJsx({ status: EthTxStatus.Requested }));
   expect(screen.getByText('Confirm transaction')).toBeInTheDocument();
   expect(screen.getByText('Confirm transaction in wallet')).toBeInTheDocument();
   expect(screen.getByText('Await Ethereum transaction')).toBeInTheDocument();
 
-  rerender(generateJsx({ status: TxState.Pending, confirmations: 0 }));
+  rerender(generateJsx({ status: EthTxStatus.Pending, confirmations: 0 }));
   expect(screen.getByText(`${props.name} pending`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(
@@ -75,20 +76,22 @@ test('Dialog states', () => {
   ).toBeInTheDocument();
   expect(screen.getByTestId('etherscan-link')).toBeInTheDocument();
 
-  rerender(generateJsx({ status: TxState.Complete, confirmations: 1 }));
+  rerender(generateJsx({ status: EthTxStatus.Complete, confirmations: 1 }));
   expect(screen.getByText(`${props.name} complete`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(screen.getByText('Ethereum transaction complete')).toBeInTheDocument();
 
   const errorMsg = 'Something went wrong';
-  rerender(generateJsx({ status: TxState.Error, error: new Error(errorMsg) }));
+  rerender(
+    generateJsx({ status: EthTxStatus.Error, error: new Error(errorMsg) })
+  );
   expect(screen.getByText(`${props.name} failed`)).toBeInTheDocument();
   expect(screen.getByText(errorMsg)).toBeInTheDocument();
 });
 
 test('Success state waits for confirmation event if provided', () => {
   const { rerender } = render(
-    generateJsx({ status: TxState.Complete, confirmed: false })
+    generateJsx({ status: EthTxStatus.Complete, confirmed: false })
   );
   expect(screen.getByText(`${props.name} pending`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
@@ -98,7 +101,7 @@ test('Success state waits for confirmation event if provided', () => {
   ).toBeInTheDocument();
 
   // @ts-ignore enforce truthy on confirmation event
-  rerender(generateJsx({ confirmed: true, status: TxState.Complete }));
+  rerender(generateJsx({ confirmed: true, status: EthTxStatus.Complete }));
   expect(
     screen.queryByText('Vega is confirming your transaction...')
   ).not.toBeInTheDocument();
