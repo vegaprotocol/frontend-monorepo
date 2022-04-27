@@ -67,3 +67,10 @@ Feature: Withdrawals
     Then I can see the withdrawal button state has changed to pending
     When The transaction is complete
     Then My balance has been updated
+
+  @manual
+  Scenario: Withdrawals after chain reset
+    Given I am on the withdrawals page
+    And I previously had withdrawals
+    And There has been a chain reset
+    Then There should be no incomplete withdrawals

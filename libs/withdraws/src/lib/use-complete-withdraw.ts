@@ -11,7 +11,7 @@ import type { PendingWithdrawal } from './__generated__/PendingWithdrawal';
 
 export const PENDING_WITHDRAWAL_FRAGMMENT = gql`
   fragment PendingWithdrawal on Withdrawal {
-    pendingOnForeignChain
+    pendingOnForeignChain @client
     txHash
   }
 `;

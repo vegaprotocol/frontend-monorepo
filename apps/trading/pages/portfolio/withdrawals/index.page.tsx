@@ -12,8 +12,8 @@ const Withdrawals = () => {
   }
 
   return (
-    <Web3Container>
-      {() => (
+    <Web3Container
+      render={() => (
         <div className="h-full grid grid grid-rows-[min-content,1fr]">
           <header className="flex justify-between p-24">
             <h1 className="text-h3">{t('Withdrawals')}</h1>
@@ -24,7 +24,7 @@ const Withdrawals = () => {
           <WithdrawalsPageContainer />
         </div>
       )}
-    </Web3Container>
+    />
   );
 };
 
