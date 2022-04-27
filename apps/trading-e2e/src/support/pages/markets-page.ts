@@ -31,7 +31,7 @@ export default class MarketPage extends BasePage {
         );
       })
       .then(($list) => {
-        cy.wrap($list).should('have.length', 7);
+        cy.wrap($list).should('have.length', 2);
       });
 
     cy.get(`[col-id='${this.marketRowNameColumn}']`).each(($marketName) => {
