@@ -76,14 +76,10 @@ function useFetch<T>(
 
           dispatch({ type: ActionType.ERROR, error: error as Error });
         }
-        // TODO why can we not use state?
         return data;
       };
 
-      // @ts-ignore - 1234567890
-      const data = await fetchData();
-      console.log(data);
-      return data;
+      return fetchData();
     },
     // Do nothing if the url is not given
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,7 +91,7 @@ function useFetch<T>(
     if (initialFetch) {
       fetchCallback();
     }
-  }, [fetchCallback, url]);
+  }, [fetchCallback, initialFetch, url]);
 
   useEffect(() => {
     // Use the cleanup function for avoiding a possibly...
