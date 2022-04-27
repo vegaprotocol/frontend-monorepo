@@ -45,7 +45,7 @@ export const BlocksInfiniteList = ({
   // Render an item or a loading indicator.
   const Item = ({ index, style }: ItemProps) => {
     let content;
-    console.log(hasMoreBlocks, index, items.length);
+    // console.log(hasMoreBlocks, index, items.length);
     if (!isItemLoaded(index)) {
       content = t('Loading...');
     } else if (error) {

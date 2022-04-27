@@ -20,10 +20,16 @@ type Action<T> =
 
 function useFetch<T>(
   url: string,
-  options?: RequestInit
-): { state: State<T>; refetch: () => void } {
+  options?: RequestInit,
+  initialFetch = true
+): {
+  state: State<T>;
+  refetch: (
+    params?: Record<string, string | number | null | undefined> | undefined
+  ) => Promise<T | undefined>;
+} {
   // Used to prevent state update if the component is unmounted
-  const cancelRequest = useRef<{ [key: string]: boolean }>({ [url]: false });
+  const cancelRequest = useRef<boolean>(false);
 
   const initialState: State<T> = {
     error: undefined,
@@ -44,49 +50,62 @@ function useFetch<T>(
   };
 
   const [state, dispatch] = useReducer(fetchReducer, initialState);
-  const fetchCallback = useCallback(() => {
-    if (!url) return;
+  const fetchCallback = useCallback(
+    async (params?: Record<string, string | null | undefined | number>) => {
+      if (!url) return;
 
-    const fetchData = async () => {
-      dispatch({ type: ActionType.LOADING });
+      const fetchData = async () => {
+        dispatch({ type: ActionType.LOADING });
+        let data;
+        try {
+          const response = await fetch(url, options);
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
 
-      try {
-        const response = await fetch(url, options);
-        if (!response.ok) {
-          throw new Error(response.statusText);
+          data = (await response.json()) as T;
+          if (data && 'error' in data) {
+            // @ts-ignore - data.error
+            throw new Error(data.error);
+          }
+          if (cancelRequest.current) return;
+
+          dispatch({ type: ActionType.FETCHED, payload: data });
+        } catch (error) {
+          if (cancelRequest.current) return;
+
+          dispatch({ type: ActionType.ERROR, error: error as Error });
         }
+        // TODO why can we not use state?
+        return data;
+      };
 
-        const data = (await response.json()) as T;
-        if (data && 'error' in data) {
-          // @ts-ignore - data.error
-          throw new Error(data.error);
-        }
-        if (cancelRequest.current[url]) return;
-
-        dispatch({ type: ActionType.FETCHED, payload: data });
-      } catch (error) {
-        if (cancelRequest.current[url]) return;
-
-        dispatch({ type: ActionType.ERROR, error: error as Error });
-      }
-    };
-
-    void fetchData();
-
+      // @ts-ignore - 1234567890
+      const data = await fetchData();
+      console.log(data);
+      return data;
+    },
     // Do nothing if the url is not given
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
+    [url]
+  );
 
   useEffect(() => {
-    const cancel = cancelRequest.current;
-    cancel[url] = false;
-    fetchCallback();
+    cancelRequest.current = false;
+    if (initialFetch) {
+      fetchCallback();
+    }
+  }, [fetchCallback, url]);
+
+  useEffect(() => {
     // Use the cleanup function for avoiding a possibly...
     // ...state update after the component was unmounted
     return () => {
-      cancel[url] = true;
+      console.log('unmount');
+      cancelRequest.current = true;
     };
-  }, [fetchCallback, url]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     state,

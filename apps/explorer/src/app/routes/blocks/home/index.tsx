@@ -24,6 +24,7 @@ const Blocks = () => {
   >(undefined);
   const {
     state: { data, error: tmError, loading },
+    refetch,
   } = useFetch<TendermintBlockchainResponse>(
     // Inclusive not exclusive subtract 1 somewhere
     `${DATA_SOURCES.tendermintUrl}/blockchain${
@@ -33,19 +34,16 @@ const Blocks = () => {
             0
           )}`
         : ''
-    }`
+    }`,
+    undefined,
+    false
   );
-  // Hacky bollocks -- apply a container
-  useEffect(() => {
-    if (!blocksData.length) {
-      setBlocksData(data?.result.block_metas || []);
-    }
-  }, [blocksData.length, data]);
+  console.log(data);
 
-  const loadBlocks = (...args: any[]) => {
+  const loadBlocks = async (...args: any[]) => {
     setAreBlocksLoading(loading);
     setError(error);
-    console.log(args);
+    const data = await refetch();
 
     if (data) {
       const blockMetas = data.result.block_metas;
