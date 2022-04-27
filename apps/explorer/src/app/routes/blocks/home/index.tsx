@@ -36,7 +36,6 @@ const Blocks = () => {
 
   const loadBlocks = async () => {
     setAreBlocksLoading(loading);
-    setError(tmError);
 
     const maxHeight = Math.max(
       Number(nextBlockHeightToLoad),
@@ -66,12 +65,23 @@ const Blocks = () => {
 
       setBlocksData([...blocksData, ...blockMetas]);
     }
+
+    if (tmError) {
+      setError(tmError);
+    }
+  };
+
+  const refreshBlocks = async () => {
+    setBlocksData([]);
+    setNextBlockHeightToLoad(undefined);
+    setLastBlockHeightLoaded(undefined);
+    loadBlocks();
   };
 
   return (
     <section>
       <RouteTitle>{t('Blocks')}</RouteTitle>
-      <BlocksRefetch refetch={refetch} />
+      <BlocksRefetch refetch={refreshBlocks} />
       <BlocksInfiniteList
         hasMoreBlocks={hasMoreBlocks}
         areBlocksLoading={areBlocksLoading}
