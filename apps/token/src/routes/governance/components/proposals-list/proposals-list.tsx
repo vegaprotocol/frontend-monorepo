@@ -52,7 +52,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
               ? t('proposedEnactment')
               : t('enactedOn')}
 
-            <span data-testid="governance-proposal-enactmentDatetime">
+            <span data-testid="governance-proposal-enactmentDate">
               {format(
                 new Date(proposal.terms.enactmentDatetime),
                 DATE_FORMAT_DETAILED

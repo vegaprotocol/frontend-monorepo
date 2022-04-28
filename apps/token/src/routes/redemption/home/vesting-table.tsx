@@ -44,7 +44,7 @@ export const VestingTable = ({
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-locked">
           <span>
-            <div className="vesting-table__indicator-square vesting-table__indicator-square--locked"></div>
+            <span className="vesting-table__indicator-square vesting-table__indicator-square--locked"></span>
             {t('Locked')}
           </span>
           {formatNumber(locked)}
