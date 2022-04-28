@@ -28,7 +28,7 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
       <span>{blocksToLoad} new blocks -</span>
 
       <Button
-        onClick={() => refresh()}
+        onClick={refresh}
         variant="inline-link"
         className="mb-28"
         data-testid="refresh"
