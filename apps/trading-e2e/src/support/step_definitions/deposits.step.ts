@@ -62,7 +62,7 @@ And('I enter an amount less than the minimum viable amount', () => {
   });
 });
 
-Then('Amount to small message shown', () => {
+Then('Amount too small message shown', () => {
   depositsPage.verifyAmountTooSmall();
 });
 

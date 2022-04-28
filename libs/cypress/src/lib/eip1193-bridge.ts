@@ -105,16 +105,20 @@ export class CustomizedBridge extends Eip1193Bridge {
   }
 }
 
-const MNEMONIC = process.env['CYPESS_ETH_WALLET_MNEMONIC'];
-
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 const getProvider = () =>
-  new JsonRpcProvider(Cypress.env('ethereumProviderUrl'), 3);
+  new JsonRpcProvider(
+    Cypress.env('ethereumProviderUrl'),
+    Cypress.env('ethereumChainId')
+  );
 
 export const createBridge = () => {
   const provider = getProvider();
-  const privateKey = Wallet.fromMnemonic(MNEMONIC, getAccount(1)).privateKey;
+  const privateKey = Wallet.fromMnemonic(
+    Cypress.env('CYPESS_ETH_WALLET_MNEMONIC'),
+    getAccount(0)
+  ).privateKey;
   const signer = new Wallet(privateKey, provider);
   return new CustomizedBridge(signer, provider);
 };
