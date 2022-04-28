@@ -1,11 +1,9 @@
 import { Fragment } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { MarketTradingMode } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookData } from './orderbook-data';
-
-interface OrderbookProps {
-  data: OrderbookData[] | null;
-  midPrice?: string;
+interface OrderbookProps extends OrderbookData {
   decimalPlaces: number;
   resolution: number;
   onResolutionChange: (resolution: number) => void;
@@ -14,8 +12,12 @@ interface OrderbookProps {
 const horizontalLine = () => <div className="col-span-full border-b-1"></div>;
 
 export const Orderbook = ({
-  data,
-  midPrice,
+  rows,
+  bestStaticBidPrice,
+  bestStaticOfferPrice,
+  marketTradingMode,
+  indicativeVolume,
+  indicativePrice,
   decimalPlaces,
   resolution,
   onResolutionChange,
@@ -28,24 +30,32 @@ export const Orderbook = ({
       <div>{t('Cumulative Vol')}</div>
     </div>
     <div className="grid grid-cols-4 gap-4 text-right text-ui-small">
-      {data?.map((data) => (
-        <Fragment key={data.price}>
-          {data.price === midPrice ? horizontalLine() : null}
-          <OrderbookRow
-            price={(BigInt(data.price) / BigInt(resolution)).toString()}
-            decimalPlaces={decimalPlaces - Math.log10(resolution)}
-            bid={data.bid}
-            relativeBid={data.relativeBid}
-            cumulativeBid={data.cumulativeVol.bid}
-            cumulativeRelativeBid={data.cumulativeVol.relativeBid}
-            ask={data.ask}
-            relativeAsk={data.relativeAsk}
-            cumulativeAsk={data.cumulativeVol.ask}
-            cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
-          />
-          {data.price === midPrice ? horizontalLine() : null}
-        </Fragment>
-      ))}
+      {rows?.map((data) => {
+        return (
+          <Fragment key={data.price}>
+            {bestStaticBidPrice === data.price ? horizontalLine() : null}
+            <OrderbookRow
+              price={(BigInt(data.price) / BigInt(resolution)).toString()}
+              decimalPlaces={decimalPlaces - Math.log10(resolution)}
+              bid={data.bid}
+              relativeBid={data.relativeBid}
+              cumulativeBid={data.cumulativeVol.bid}
+              cumulativeRelativeBid={data.cumulativeVol.relativeBid}
+              ask={data.ask}
+              relativeAsk={data.relativeAsk}
+              cumulativeAsk={data.cumulativeVol.ask}
+              cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
+              indicativeVolume={
+                marketTradingMode !== MarketTradingMode.Continuous &&
+                indicativePrice === data.price
+                  ? indicativeVolume
+                  : undefined
+              }
+            />
+            {bestStaticOfferPrice === data.price ? horizontalLine() : null}
+          </Fragment>
+        );
+      })}
     </div>
     <div className="sticky bottom-0 grid grid-cols-4 gap-4 border-t-1 text-ui-small mt-2 pb-2 bg-white dark:bg-black z-10">
       <div className="text-ui-small col-start-2">

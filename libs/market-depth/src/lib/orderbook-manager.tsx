@@ -6,8 +6,8 @@ import { marketDepthDataProvider } from './market-depth-data-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/MarketDepthSubscription';
 import {
-  compactData,
-  updateCompactedData,
+  compactRows,
+  updateCompactedRows,
   getPriceLevel,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
@@ -21,30 +21,43 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   const [resolution, setResolution] = useState(1);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const resolutionRef = useRef(resolution);
-  const [orderbookData, setOrderbookData] = useState<{
-    data: OrderbookData[] | null;
-    midPrice?: string;
-  }>({ data: null });
-  const dataRef = useRef<{ data: OrderbookData[] | null; midPrice?: string }>({
-    data: null,
+  const [orderbookData, setOrderbookData] = useState<OrderbookData>({
+    rows: null,
   });
+  const dataRef = useRef<OrderbookData>({ rows: null });
   const setOrderbookDataThrottled = useRef(throttle(setOrderbookData, 1000));
 
   const update = useCallback(
     (delta: MarketDepthSubscription_marketDepthUpdate) => {
-      if (!dataRef.current.data) {
+      if (!dataRef.current.rows) {
         return false;
       }
       dataRef.current = produce(dataRef.current, (draft) => {
-        draft.data = updateCompactedData(
-          draft.data ?? [],
+        Object.assign(draft, delta.market.data);
+        draft.rows = updateCompactedRows(
+          draft.rows ?? [],
           delta.sell,
           delta.buy,
           resolutionRef.current
         );
-        draft.midPrice =
-          delta.market.data?.midPrice &&
-          getPriceLevel(delta.market.data?.midPrice, resolutionRef.current);
+        draft.staticMidPrice =
+          delta.market.data?.staticMidPrice &&
+          getPriceLevel(
+            delta.market.data?.staticMidPrice,
+            resolutionRef.current
+          );
+        draft.bestStaticBidPrice =
+          delta.market.data?.bestStaticBidPrice &&
+          getPriceLevel(
+            delta.market.data?.bestStaticBidPrice,
+            resolutionRef.current
+          );
+        draft.bestStaticOfferPrice =
+          delta.market.data?.bestStaticOfferPrice &&
+          getPriceLevel(
+            delta.market.data?.bestStaticOfferPrice,
+            resolutionRef.current
+          );
       });
       setOrderbookDataThrottled.current(dataRef.current);
       return true;
@@ -61,14 +74,22 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
 
   useEffect(() => {
     if (!data) {
-      dataRef.current = { data: null };
+      dataRef.current = { rows: null };
       setOrderbookData(dataRef.current);
       return;
     }
     dataRef.current = {
-      data: compactData(data.depth.sell, data.depth.buy, resolution),
-      midPrice:
-        data.data?.midPrice && getPriceLevel(data.data?.midPrice, resolution),
+      ...data.data,
+      rows: compactRows(data.depth.sell, data.depth.buy, resolution),
+      staticMidPrice:
+        data.data?.staticMidPrice &&
+        getPriceLevel(data.data?.staticMidPrice, resolution),
+      bestStaticBidPrice:
+        data.data?.bestStaticBidPrice &&
+        getPriceLevel(data.data?.bestStaticBidPrice, resolution),
+      bestStaticOfferPrice:
+        data.data?.bestStaticOfferPrice &&
+        getPriceLevel(data.data?.bestStaticOfferPrice, resolution),
     };
     setOrderbookData(dataRef.current);
   }, [data, resolution]);

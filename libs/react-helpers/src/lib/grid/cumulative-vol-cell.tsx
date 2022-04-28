@@ -8,6 +8,7 @@ export interface CumulativeVolProps {
   bid?: number;
   relativeAsk?: number;
   relativeBid?: number;
+  indicativeVolume?: string;
 }
 
 export interface ICumulativeVolCellProps extends ICellRendererParams {
@@ -15,7 +16,13 @@ export interface ICumulativeVolCellProps extends ICellRendererParams {
 }
 
 export const CumulativeVol = React.memo(
-  ({ relativeAsk, relativeBid, ask, bid }: CumulativeVolProps) => {
+  ({
+    relativeAsk,
+    relativeBid,
+    ask,
+    bid,
+    indicativeVolume,
+  }: CumulativeVolProps) => {
     const askBar = relativeAsk ? (
       <div
         className="absolute left-0 top-0"
@@ -38,15 +45,21 @@ export const CumulativeVol = React.memo(
       ></div>
     ) : null;
 
+    const volume = indicativeVolume ? (
+      <span className="relative">({indicativeVolume})</span>
+    ) : (
+      <span className="relative">
+        {ask ? ask : null}
+        {ask && bid ? '/' : null}
+        {bid ? bid : null}
+      </span>
+    );
+
     return (
       <div className="h-full relative" data-testid="vol">
         {askBar}
         {bidBar}
-        <span className="relative">
-          {ask ? ask : null}
-          {ask && bid ? '/' : null}
-          {bid ? bid : null}
-        </span>
+        {volume}
       </div>
     );
   }

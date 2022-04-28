@@ -15,6 +15,7 @@ interface OrderbookRowProps {
   cumulativeRelativeAsk?: number;
   cumulativeRelativeBid?: number;
   decimalPlaces: number;
+  indicativeVolume?: string;
   price: string;
   relativeAsk?: number;
   relativeBid?: number;
@@ -29,6 +30,7 @@ export const OrderbookRow = React.memo(
     cumulativeRelativeAsk,
     cumulativeRelativeBid,
     decimalPlaces,
+    indicativeVolume,
     price,
     relativeAsk,
     relativeBid,
@@ -46,6 +48,7 @@ export const OrderbookRow = React.memo(
           ask={cumulativeAsk}
           relativeAsk={cumulativeRelativeAsk}
           relativeBid={cumulativeRelativeBid}
+          indicativeVolume={indicativeVolume}
         />
       </>
     );

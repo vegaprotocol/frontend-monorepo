@@ -6,7 +6,7 @@ describe('Orderbook', () => {
   it('should render successfully', () => {
     const { baseElement } = render(
       <Orderbook
-        data={null}
+        rows={null}
         decimalPlaces={4}
         resolution={1}
         onResolutionChange={() => {

@@ -1,16 +1,16 @@
 import {
-  compactData,
+  compactRows,
   updateLevels,
-  updateCompactedData,
+  updateCompactedRows,
 } from './orderbook-data';
-import type { OrderbookData } from './orderbook-data';
+import type { OrderbookRow } from './orderbook-data';
 import type { MarketDepth_market_depth_sell } from './__generated__/MarketDepth';
 import type {
   MarketDepthSubscription_marketDepthUpdate_sell,
   MarketDepthSubscription_marketDepthUpdate_buy,
 } from './__generated__/MarketDepthSubscription';
 
-describe('compactData', () => {
+describe('compactRows', () => {
   const numberOfRows = 100;
   const middle = 1000;
   const sell: MarketDepth_market_depth_sell[] = new Array(numberOfRows)
@@ -30,26 +30,26 @@ describe('compactData', () => {
       numberOfOrders: (numberOfRows - i).toString(),
     }));
   it('groups data by price and resolution', () => {
-    expect(compactData(sell, buy, 1).length).toEqual(200);
-    expect(compactData(sell, buy, 5).length).toEqual(41);
-    expect(compactData(sell, buy, 10).length).toEqual(21);
+    expect(compactRows(sell, buy, 1).length).toEqual(200);
+    expect(compactRows(sell, buy, 5).length).toEqual(41);
+    expect(compactRows(sell, buy, 10).length).toEqual(21);
   });
   it('counts cumulative vol', () => {
-    const orderbookData = compactData(sell, buy, 10);
-    expect(orderbookData[0].cumulativeVol.ask).toEqual(4950);
-    expect(orderbookData[0].cumulativeVol.bid).toEqual(0);
-    expect(orderbookData[10].cumulativeVol.ask).toEqual(390);
-    expect(orderbookData[10].cumulativeVol.bid).toEqual(579);
-    expect(orderbookData[orderbookData.length - 1].cumulativeVol.bid).toEqual(
+    const orderbookRows = compactRows(sell, buy, 10);
+    expect(orderbookRows[0].cumulativeVol.ask).toEqual(4950);
+    expect(orderbookRows[0].cumulativeVol.bid).toEqual(0);
+    expect(orderbookRows[10].cumulativeVol.ask).toEqual(390);
+    expect(orderbookRows[10].cumulativeVol.bid).toEqual(579);
+    expect(orderbookRows[orderbookRows.length - 1].cumulativeVol.bid).toEqual(
       4950
     );
-    expect(orderbookData[orderbookData.length - 1].cumulativeVol.ask).toEqual(
+    expect(orderbookRows[orderbookRows.length - 1].cumulativeVol.ask).toEqual(
       0
     );
   });
   it('stores volume by level', () => {
-    const orderbookData = compactData(sell, buy, 10);
-    expect(orderbookData[0].askByLevel).toEqual({
+    const orderbookRows = compactRows(sell, buy, 10);
+    expect(orderbookRows[0].askByLevel).toEqual({
       '1095': 5,
       '1096': 4,
       '1097': 3,
@@ -57,7 +57,7 @@ describe('compactData', () => {
       '1099': 1,
       '1100': 0,
     });
-    expect(orderbookData[orderbookData.length - 1].bidByLevel).toEqual({
+    expect(orderbookRows[orderbookRows.length - 1].bidByLevel).toEqual({
       '901': 0,
       '902': 1,
       '903': 2,
@@ -66,17 +66,17 @@ describe('compactData', () => {
   });
 
   it('updates relative data', () => {
-    const orderbookData = compactData(sell, buy, 10);
-    expect(orderbookData[0].cumulativeVol.relativeAsk).toEqual(100);
-    expect(orderbookData[0].cumulativeVol.relativeBid).toEqual(0);
-    expect(orderbookData[0].relativeAsk).toEqual(2);
-    expect(orderbookData[0].relativeBid).toEqual(0);
-    expect(orderbookData[10].cumulativeVol.relativeAsk).toEqual(8);
-    expect(orderbookData[10].cumulativeVol.relativeBid).toEqual(12);
-    expect(orderbookData[10].relativeAsk).toEqual(44);
-    expect(orderbookData[10].relativeBid).toEqual(64);
-    expect(orderbookData[orderbookData.length - 1].relativeAsk).toEqual(0);
-    expect(orderbookData[orderbookData.length - 1].relativeBid).toEqual(1);
+    const orderbookRows = compactRows(sell, buy, 10);
+    expect(orderbookRows[0].cumulativeVol.relativeAsk).toEqual(100);
+    expect(orderbookRows[0].cumulativeVol.relativeBid).toEqual(0);
+    expect(orderbookRows[0].relativeAsk).toEqual(2);
+    expect(orderbookRows[0].relativeBid).toEqual(0);
+    expect(orderbookRows[10].cumulativeVol.relativeAsk).toEqual(8);
+    expect(orderbookRows[10].cumulativeVol.relativeBid).toEqual(12);
+    expect(orderbookRows[10].relativeAsk).toEqual(44);
+    expect(orderbookRows[10].relativeBid).toEqual(64);
+    expect(orderbookRows[orderbookRows.length - 1].relativeAsk).toEqual(0);
+    expect(orderbookRows[orderbookRows.length - 1].relativeBid).toEqual(1);
   });
 });
 
@@ -137,8 +137,8 @@ describe('updateLevels', () => {
   });
 });
 
-describe('updateCompactedData', () => {
-  const orderbookData: OrderbookData[] = [
+describe('updateCompactedRows', () => {
+  const orderbookRows: OrderbookRow[] = [
     {
       price: '120',
       cumulativeVol: {
@@ -210,18 +210,18 @@ describe('updateCompactedData', () => {
       volume: '10',
       numberOfOrders: '10',
     };
-    const updatedData = updateCompactedData(
-      orderbookData,
+    const updatedRows = updateCompactedRows(
+      orderbookRows,
       [sell],
       [buy],
       resolution
     );
-    expect(updatedData[0].ask).toEqual(20);
-    expect(updatedData[0].askByLevel?.['120']).toEqual(10);
-    expect(updatedData[0].cumulativeVol.ask).toEqual(60);
-    expect(updatedData[4].bid).toEqual(20);
-    expect(updatedData[4].bidByLevel?.['80']).toEqual(10);
-    expect(updatedData[4].cumulativeVol.bid).toEqual(60);
+    expect(updatedRows[0].ask).toEqual(20);
+    expect(updatedRows[0].askByLevel?.['120']).toEqual(10);
+    expect(updatedRows[0].cumulativeVol.ask).toEqual(60);
+    expect(updatedRows[4].bid).toEqual(20);
+    expect(updatedRows[4].bidByLevel?.['80']).toEqual(10);
+    expect(updatedRows[4].cumulativeVol.bid).toEqual(60);
   });
 
   it('update with zero value volume', () => {
@@ -237,13 +237,13 @@ describe('updateCompactedData', () => {
       volume: '0',
       numberOfOrders: '0',
     };
-    const updatedData = updateCompactedData(
-      orderbookData,
+    const updatedRows = updateCompactedRows(
+      orderbookRows,
       [sell],
       [buy],
       resolution
     );
-    expect(updatedData.length).toEqual(5);
+    expect(updatedRows.length).toEqual(5);
   });
 
   it('add new row at the end', () => {
@@ -259,17 +259,17 @@ describe('updateCompactedData', () => {
       volume: '5',
       numberOfOrders: '5',
     };
-    const updatedData = updateCompactedData(
-      orderbookData,
+    const updatedRows = updateCompactedRows(
+      orderbookRows,
       [sell],
       [buy],
       resolution
     );
-    expect(updatedData.length).toEqual(8);
-    expect(updatedData[0].price).toEqual('130');
-    expect(updatedData[0].cumulativeVol.ask).toEqual(55);
-    expect(updatedData[7].price).toEqual('60');
-    expect(updatedData[7].cumulativeVol.bid).toEqual(55);
+    expect(updatedRows.length).toEqual(8);
+    expect(updatedRows[0].price).toEqual('130');
+    expect(updatedRows[0].cumulativeVol.ask).toEqual(55);
+    expect(updatedRows[7].price).toEqual('60');
+    expect(updatedRows[7].cumulativeVol.bid).toEqual(55);
   });
 
   it('add new row in the middle', () => {
@@ -285,18 +285,18 @@ describe('updateCompactedData', () => {
       volume: '5',
       numberOfOrders: '5',
     };
-    const updatedData = updateCompactedData(
-      orderbookData,
+    const updatedRows = updateCompactedRows(
+      orderbookRows,
       [sell],
       [buy],
       resolution
     );
-    expect(updatedData.length).toEqual(5);
-    expect(updatedData[1].price).toEqual('110');
-    expect(updatedData[1].cumulativeVol.ask).toEqual(45);
-    expect(updatedData[0].cumulativeVol.ask).toEqual(55);
-    expect(updatedData[3].price).toEqual('90');
-    expect(updatedData[3].cumulativeVol.bid).toEqual(45);
-    expect(updatedData[4].cumulativeVol.bid).toEqual(55);
+    expect(updatedRows.length).toEqual(5);
+    expect(updatedRows[1].price).toEqual('110');
+    expect(updatedRows[1].cumulativeVol.ask).toEqual(45);
+    expect(updatedRows[0].cumulativeVol.ask).toEqual(55);
+    expect(updatedRows[3].price).toEqual('90');
+    expect(updatedRows[3].cumulativeVol.bid).toEqual(45);
+    expect(updatedRows[4].cumulativeVol.bid).toEqual(55);
   });
 });
