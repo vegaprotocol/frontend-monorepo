@@ -8,26 +8,30 @@ import {
 } from '@vegaprotocol/react-helpers';
 
 interface OrderbookRowProps {
-  bid: number;
-  relativeBid?: number;
-  price: string;
   ask: number;
-  relativeAsk?: number;
+  bid: number;
+  cumulativeAsk?: number;
+  cumulativeBid?: number;
   cumulativeRelativeAsk?: number;
   cumulativeRelativeBid?: number;
   decimalPlaces: number;
+  price: string;
+  relativeAsk?: number;
+  relativeBid?: number;
 }
 
 export const OrderbookRow = React.memo(
   ({
-    bid,
-    relativeBid,
-    price,
     ask,
-    relativeAsk,
-    decimalPlaces,
+    bid,
+    cumulativeAsk,
+    cumulativeBid,
     cumulativeRelativeAsk,
     cumulativeRelativeBid,
+    decimalPlaces,
+    price,
+    relativeAsk,
+    relativeBid,
   }: OrderbookRowProps) => {
     return (
       <>
@@ -38,6 +42,8 @@ export const OrderbookRow = React.memo(
         />
         <Vol value={ask} relativeValue={relativeAsk} type={VolumeType.ask} />
         <CumulativeVol
+          bid={cumulativeBid}
+          ask={cumulativeAsk}
           relativeAsk={cumulativeRelativeAsk}
           relativeBid={cumulativeRelativeBid}
         />

@@ -36,9 +36,11 @@ export const Orderbook = ({
             decimalPlaces={decimalPlaces - Math.log10(resolution)}
             bid={data.bid}
             relativeBid={data.relativeBid}
+            cumulativeBid={data.cumulativeVol.bid}
             cumulativeRelativeBid={data.cumulativeVol.relativeBid}
             ask={data.ask}
             relativeAsk={data.relativeAsk}
+            cumulativeAsk={data.cumulativeVol.ask}
             cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
           />
           {data.price === midPrice ? horizontalLine() : null}
