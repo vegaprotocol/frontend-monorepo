@@ -51,14 +51,14 @@ export const VestingTable = ({
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-unlocked">
           <span>
-            <div className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></div>
+            <span className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></span>
             {t('Unlocked')}
           </span>
           {formatNumber(vested)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-staked">
           <span>
-            <div className="vesting-table__indicator-square vesting-table__indicator-square--staked"></div>
+            <span className="vesting-table__indicator-square vesting-table__indicator-square--staked"></span>
             {t('Associated')}
           </span>
           {formatNumber(associated)}
