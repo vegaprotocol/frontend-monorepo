@@ -111,7 +111,7 @@ module.exports = {
     full: '9999px',
   },
   fontFamily: {
-    mono: defaultTheme.fontFamily.mono,
+    mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono],
     serif: defaultTheme.fontFamily.serif,
     sans: [
       '"Helvetica Neue"',
