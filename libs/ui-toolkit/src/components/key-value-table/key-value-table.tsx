@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import * as React from 'react';
 
 export interface KeyValueTableProps
@@ -61,29 +62,22 @@ export const KeyValueTableRow = ({
   numerical,
   ...rest
 }: KeyValueTableRowProps) => {
+  const trClassName = classNames(
+    'flex flex-col sm:table-row border-b first:border-t border-white',
+    {
+      'border-grey/1 first:[border-top:none] last:[border-bottom:none]': muted,
+    },
+    className
+  );
+  const thClassName = `break-word text-left font-medium text-white uppercase align-top p-1`;
+  const tdClassName = classNames('align-top p-1 text-right text-grey', {
+    'font-mono': numerical,
+  });
+
   return (
-    <tr
-      {...rest}
-      className={`flex flex-col sm:table-row border-b first:border-t border-white ${
-        className ? className : ''
-      } ${
-        muted
-          ? 'border-grey/1 first:[border-top:none] last:[border-bottom:none]'
-          : ''
-      } `}
-    >
-      <th
-        className={`break-word text-left font-medium text-white uppercase align-top p-1`}
-      >
-        {children[0]}
-      </th>
-      <td
-        className={`align-top p-1 text-right text-grey ${
-          numerical ? 'font-mono' : ''
-        }`}
-      >
-        {children[1]}
-      </td>
+    <tr {...rest} className={trClassName}>
+      <th className={thClassName}>{children[0]}</th>
+      <td className={tdClassName}>{children[1]}</td>
     </tr>
   );
 };

@@ -1,7 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { formatNumber } from '../../../../lib/format-number';
+import {
+  formatNumber,
+  formatNumberPercentage,
+} from '../../../../lib/format-number';
 import { useVoteInformation } from '../../hooks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
@@ -37,59 +40,59 @@ export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
     >
       <KeyValueTableRow>
         {t('willPass')}
-        <span>{willPass ? '👍' : '👎'}</span>
+        {willPass ? '👍' : '👎'}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('majorityMet')}
-        <span>{majorityMet ? '👍' : '👎'}</span>
+        {majorityMet ? '👍' : '👎'}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('participationMet')}
-        <span>{participationMet ? '👍' : '👎'}</span>
+        {participationMet ? '👍' : '👎'}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('tokenForProposal')}
-        <span>{formatNumber(yesTokens, 2)}</span>
+        {formatNumber(yesTokens, 2)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('tokensAgainstProposal')}
-        <span>{formatNumber(noTokens, 2)}</span>
+        {formatNumber(noTokens, 2)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('participationRequired')}
-        <span>{formatNumber(requiredParticipation)}%</span>
+        {formatNumberPercentage(requiredParticipation)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('majorityRequired')}
-        <span>{formatNumber(requiredMajorityPercentage)}%</span>
+        {formatNumberPercentage(requiredMajorityPercentage)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('numberOfVotingParties')}
-        <span>{formatNumber(totalVotes, 0)}</span>
+        {formatNumber(totalVotes, 0)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('totalTokensVotes')}
-        <span>{formatNumber(totalTokensVoted, 2)}</span>
+        {formatNumber(totalTokensVoted, 2)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('totalTokenVotedPercentage')}
-        <span>{formatNumber(totalTokensPercentage, 2)}%</span>
+        {formatNumberPercentage(totalTokensPercentage, 2)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('numberOfForVotes')}
-        <span>{formatNumber(yesVotes, 0)}</span>
+        {formatNumber(yesVotes, 0)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('numberOfAgainstVotes')}
-        <span>{formatNumber(noVotes, 0)}</span>
+        {formatNumber(noVotes, 0)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('yesPercentage')}
-        <span>{formatNumber(yesPercentage, 2)}%</span>
+        {formatNumberPercentage(yesPercentage, 2)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('noPercentage')}
-        <span>{formatNumber(noPercentage, 2)}%</span>
+        {formatNumberPercentage(noPercentage, 2)}
       </KeyValueTableRow>
     </KeyValueTable>
   );
