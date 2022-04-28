@@ -108,7 +108,6 @@ export const useFetch = <T>(
     return () => {
       cancelRequest.current = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
