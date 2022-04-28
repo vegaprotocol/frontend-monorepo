@@ -116,7 +116,7 @@ const getProvider = () =>
 export const createBridge = () => {
   const provider = getProvider();
   const privateKey = Wallet.fromMnemonic(
-    Cypress.env('CYPESS_ETH_WALLET_MNEMONIC'),
+    Cypress.env('ETH_WALLET_MNEMONIC'),
     getAccount(0)
   ).privateKey;
   const signer = new Wallet(privateKey, provider);
