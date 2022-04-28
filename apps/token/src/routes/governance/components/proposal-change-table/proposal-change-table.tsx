@@ -23,21 +23,18 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('state')}
-
         <CurrentProposalState proposal={proposal} />
       </KeyValueTableRow>
       <KeyValueTableRow>
         {isFuture(new Date(terms.closingDatetime))
           ? t('closesOn')
           : t('closedOn')}
-
         {format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {isFuture(new Date(terms.enactmentDatetime))
           ? t('proposedEnactment')
           : t('enactedOn')}
-
         {format(new Date(terms.enactmentDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       <KeyValueTableRow>
