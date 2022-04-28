@@ -36,18 +36,17 @@ export const Tranche0Table = ({
   const { t } = useTranslation();
   return (
     <>
-      <KeyValueTable>
-        <KeyValueTableRow numerical={true} data-testid="tranche-table-total">
-          <th>
-            <span className="tranche-table__label">
-              {t('Tranche')} {trancheId}
-            </span>
-          </th>
-          <td>{formatNumber(total)}</td>
+      <KeyValueTable numerical={true}>
+        <KeyValueTableRow data-testid="tranche-table-total">
+          <span className="tranche-table__label">
+            {t('Tranche')} {trancheId}
+          </span>
+
+          <span>{formatNumber(total)}</span>
         </KeyValueTableRow>
-        <KeyValueTableRow numerical={true} data-testid="tranche-table-locked">
-          <th>{t('Locked')}</th>
-          <td>{formatNumber(total)}</td>
+        <KeyValueTableRow data-testid="tranche-table-locked">
+          {t('Locked')}
+          <span>{formatNumber(total)}</span>
         </KeyValueTableRow>
       </KeyValueTable>
       <div className="tranche-table__footer" data-testid="tranche-table-footer">

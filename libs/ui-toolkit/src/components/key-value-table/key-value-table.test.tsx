@@ -37,8 +37,8 @@ it('Renders the correct elements', () => {
 
 it('Applies numeric class if prop is passed', () => {
   render(
-    <KeyValueTable {...props}>
-      <KeyValueTableRow numerical={true}>
+    <KeyValueTable {...props} numerical={true}>
+      <KeyValueTableRow>
         <span>My label</span>
         <span>My value</span>
       </KeyValueTableRow>
@@ -52,8 +52,8 @@ it('Applies numeric class if prop is passed', () => {
 
 it('Applies muted class if prop is passed', () => {
   render(
-    <KeyValueTable {...props}>
-      <KeyValueTableRow muted={true}>
+    <KeyValueTable {...props} muted={true}>
+      <KeyValueTableRow>
         <span>My label</span>
         <span>My value</span>
       </KeyValueTableRow>

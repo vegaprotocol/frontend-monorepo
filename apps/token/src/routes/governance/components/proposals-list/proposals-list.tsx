@@ -28,14 +28,14 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         <Link to={proposal.id} className="underline">
           <header>{getProposalName(proposal.terms.change)}</header>
         </Link>
-        <KeyValueTable>
-          <KeyValueTableRow muted={true}>
+        <KeyValueTable muted={true}>
+          <KeyValueTableRow>
             {t('state')}
             <span data-testid="governance-proposal-state">
               <CurrentProposalState proposal={proposal} />
             </span>
           </KeyValueTableRow>
-          <KeyValueTableRow muted={true}>
+          <KeyValueTableRow>
             {isFuture(new Date(proposal.terms.closingDatetime))
               ? t('closesOn')
               : t('closedOn')}
@@ -47,7 +47,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
               )}
             </span>
           </KeyValueTableRow>
-          <KeyValueTableRow muted={true}>
+          <KeyValueTableRow>
             {isFuture(new Date(proposal.terms.enactmentDatetime))
               ? t('proposedEnactment')
               : t('enactedOn')}

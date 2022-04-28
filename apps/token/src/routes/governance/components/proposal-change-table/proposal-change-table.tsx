@@ -16,60 +16,53 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
   const terms = proposal.terms;
 
   return (
-    <KeyValueTable data-testid="proposal-change-table">
-      <KeyValueTableRow muted={true}>
-        <th>{t('id')}</th>
-        <td>{proposal.id}</td>
+    <KeyValueTable data-testid="proposal-change-table" muted={true}>
+      <KeyValueTableRow>
+        {t('id')}
+        {proposal.id}
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true}>
-        <th>{t('state')}</th>
-        <td>
-          <CurrentProposalState proposal={proposal} />
-        </td>
+      <KeyValueTableRow>
+        {t('state')}
+
+        <CurrentProposalState proposal={proposal} />
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true}>
-        <th>
-          {isFuture(new Date(terms.closingDatetime))
-            ? t('closesOn')
-            : t('closedOn')}
-        </th>
-        <td>{format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}</td>
+      <KeyValueTableRow>
+        {isFuture(new Date(terms.closingDatetime))
+          ? t('closesOn')
+          : t('closedOn')}
+
+        {format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true}>
-        <th>
-          {isFuture(new Date(terms.enactmentDatetime))
-            ? t('proposedEnactment')
-            : t('enactedOn')}
-        </th>
-        <td>
-          {format(new Date(terms.enactmentDatetime), DATE_FORMAT_DETAILED)}
-        </td>
+      <KeyValueTableRow>
+        {isFuture(new Date(terms.enactmentDatetime))
+          ? t('proposedEnactment')
+          : t('enactedOn')}
+
+        {format(new Date(terms.enactmentDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true}>
-        <th>{t('proposedBy')}</th>
-        <td>
-          <span style={{ wordBreak: 'break-word' }}>{proposal.party.id}</span>
-        </td>
+      <KeyValueTableRow>
+        {t('proposedBy')}
+        <span style={{ wordBreak: 'break-word' }}>{proposal.party.id}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true}>
-        <th>{t('proposedOn')}</th>
-        <td>{format(new Date(proposal.datetime), DATE_FORMAT_DETAILED)}</td>
+      <KeyValueTableRow>
+        {t('proposedOn')}
+        {format(new Date(proposal.datetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       {proposal.rejectionReason ? (
-        <KeyValueTableRow muted={true}>
-          <th>{t('rejectionReason')}</th>
-          <td>{proposal.rejectionReason}</td>
+        <KeyValueTableRow>
+          {t('rejectionReason')}
+          {proposal.rejectionReason}
         </KeyValueTableRow>
       ) : null}
       {proposal.errorDetails ? (
-        <KeyValueTableRow muted={true}>
-          <th>{t('errorDetails')}</th>
-          <td>{proposal.errorDetails}</td>
+        <KeyValueTableRow>
+          {t('errorDetails')}
+          {proposal.errorDetails}
         </KeyValueTableRow>
       ) : null}
-      <KeyValueTableRow muted={true}>
-        <th>{t('type')}</th>
-        <td>{proposal.terms.change.__typename}</td>
+      <KeyValueTableRow>
+        {t('type')}
+        {proposal.terms.change.__typename}
       </KeyValueTableRow>
     </KeyValueTable>
   );

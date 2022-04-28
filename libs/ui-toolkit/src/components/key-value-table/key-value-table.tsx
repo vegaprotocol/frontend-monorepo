@@ -4,12 +4,16 @@ export interface KeyValueTableProps
   extends React.HTMLAttributes<HTMLTableElement> {
   title?: string;
   children: React.ReactNode;
+  muted?: boolean;
+  numerical?: boolean;
 }
 
 export const KeyValueTable = ({
   title,
   children,
   className,
+  muted,
+  numerical,
   ...rest
 }: KeyValueTableProps) => {
   return (
@@ -22,7 +26,21 @@ export const KeyValueTable = ({
           className ? className : ''
         }`}
       >
-        <tbody>{children}</tbody>
+        <tbody>
+          {children &&
+            React.Children.map(
+              children,
+              (child) =>
+                child &&
+                React.cloneElement(
+                  child as React.ReactElement<KeyValueTableRowProps>,
+                  {
+                    muted,
+                    numerical,
+                  }
+                )
+            )}
+        </tbody>
       </table>
     </React.Fragment>
   );

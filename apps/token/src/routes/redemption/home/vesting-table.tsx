@@ -34,35 +34,34 @@ export const VestingTable = ({
   return (
     <section data-testid="vesting-table" className="vesting-table">
       <h2>{t('Across all tranches')}</h2>
-      <KeyValueTable>
+      <KeyValueTable numerical={true}>
         <KeyValueTableRow
-          numerical={true}
           data-testid="vesting-table-total"
           className="vesting-table__top-solid-border"
         >
-          <th>{t('Vesting VEGA')}</th>
-          <td>{formatNumber(total)}</td>
+          <span>{t('Vesting VEGA')}</span>
+          {formatNumber(total)}
         </KeyValueTableRow>
-        <KeyValueTableRow numerical={true} data-testid="vesting-table-locked">
-          <th>
+        <KeyValueTableRow data-testid="vesting-table-locked">
+          <span>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--locked"></div>
             {t('Locked')}
-          </th>
-          <td>{formatNumber(locked)}</td>
+          </span>
+          {formatNumber(locked)}
         </KeyValueTableRow>
-        <KeyValueTableRow numerical={true} data-testid="vesting-table-unlocked">
-          <th>
+        <KeyValueTableRow data-testid="vesting-table-unlocked">
+          <span>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></div>
             {t('Unlocked')}
-          </th>
-          <td>{formatNumber(vested)}</td>
+          </span>
+          {formatNumber(vested)}
         </KeyValueTableRow>
-        <KeyValueTableRow numerical={true} data-testid="vesting-table-staked">
-          <th>
+        <KeyValueTableRow data-testid="vesting-table-staked">
+          <span>
             <div className="vesting-table__indicator-square vesting-table__indicator-square--staked"></div>
             {t('Associated')}
-          </th>
-          <td>{formatNumber(associated)}</td>
+          </span>
+          {formatNumber(associated)}
         </KeyValueTableRow>
       </KeyValueTable>
       <div className="vesting-table__progress-bar">

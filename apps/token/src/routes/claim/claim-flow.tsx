@@ -156,37 +156,34 @@ export const ClaimFlow = ({
           <div>
             <KeyValueTable>
               <KeyValueTableRow>
-                <th>{t('Connected Ethereum address')}</th>
-                <td>{truncateMiddle(address)}</td>
+                {t('Connected Ethereum address')}
+                {truncateMiddle(address)}
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t('Amount of VEGA')}</th>
-                <td>
-                  {state.claimData
-                    ? formatNumber(state.claimData.claim.amount)
-                    : 'None'}
-                </td>
+                {t('Amount of VEGA')}
+
+                {state.claimData
+                  ? formatNumber(state.claimData.claim.amount)
+                  : 'None'}
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t('Claim expires')}</th>
-                <td>
-                  {state.claimData?.claim.expiry
-                    ? format(
-                        state.claimData?.claim.expiry * 1000,
-                        DATE_FORMAT_LONG
-                      )
-                    : 'No expiry'}
-                </td>
+                {t('Claim expires')}
+
+                {state.claimData?.claim.expiry
+                  ? format(
+                      state.claimData?.claim.expiry * 1000,
+                      DATE_FORMAT_LONG
+                    )
+                  : 'No expiry'}
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t('Starts unlocking')}</th>
-                <td>
-                  {format(currentTranche.tranche_start, DATE_FORMAT_LONG)}
-                </td>
+                {t('Starts unlocking')}
+
+                {format(currentTranche.tranche_start, DATE_FORMAT_LONG)}
               </KeyValueTableRow>
               <KeyValueTableRow>
-                <th>{t('Fully unlocked')}</th>
-                <td>{format(currentTranche.tranche_end, DATE_FORMAT_LONG)}</td>
+                {t('Fully unlocked')}
+                {format(currentTranche.tranche_end, DATE_FORMAT_LONG)}
               </KeyValueTableRow>
             </KeyValueTable>
           </div>

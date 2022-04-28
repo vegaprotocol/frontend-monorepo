@@ -32,62 +32,64 @@ export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
     <KeyValueTable
       title={t('voteBreakdown')}
       data-testid="proposal-votes-table"
+      muted={true}
+      numerical={true}
     >
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('willPass')}</th>
-        <td>{willPass ? '👍' : '👎'}</td>
+      <KeyValueTableRow>
+        {t('willPass')}
+        <span>{willPass ? '👍' : '👎'}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('majorityMet')}</th>
-        <td>{majorityMet ? '👍' : '👎'}</td>
+      <KeyValueTableRow>
+        {t('majorityMet')}
+        <span>{majorityMet ? '👍' : '👎'}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('participationMet')}</th>
-        <td>{participationMet ? '👍' : '👎'}</td>
+      <KeyValueTableRow>
+        {t('participationMet')}
+        <span>{participationMet ? '👍' : '👎'}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('tokenForProposal')}</th>
-        <td>{formatNumber(yesTokens, 2)}</td>
+      <KeyValueTableRow>
+        {t('tokenForProposal')}
+        <span>{formatNumber(yesTokens, 2)}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('tokensAgainstProposal')}</th>
-        <td>{formatNumber(noTokens, 2)}</td>
+      <KeyValueTableRow>
+        {t('tokensAgainstProposal')}
+        <span>{formatNumber(noTokens, 2)}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('participationRequired')}</th>
-        <td>{formatNumber(requiredParticipation)}%</td>
+      <KeyValueTableRow>
+        {t('participationRequired')}
+        <span>{formatNumber(requiredParticipation)}%</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('majorityRequired')}</th>
-        <td>{formatNumber(requiredMajorityPercentage)}%</td>
+      <KeyValueTableRow>
+        {t('majorityRequired')}
+        <span>{formatNumber(requiredMajorityPercentage)}%</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('numberOfVotingParties')}</th>
-        <td>{formatNumber(totalVotes, 0)}</td>
+      <KeyValueTableRow>
+        {t('numberOfVotingParties')}
+        <span>{formatNumber(totalVotes, 0)}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('totalTokensVotes')}</th>
-        <td>{formatNumber(totalTokensVoted, 2)}</td>
+      <KeyValueTableRow>
+        {t('totalTokensVotes')}
+        <span>{formatNumber(totalTokensVoted, 2)}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('totalTokenVotedPercentage')}</th>
-        <td>{formatNumber(totalTokensPercentage, 2)}%</td>
+      <KeyValueTableRow>
+        {t('totalTokenVotedPercentage')}
+        <span>{formatNumber(totalTokensPercentage, 2)}%</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('numberOfForVotes')}</th>
-        <td>{formatNumber(yesVotes, 0)}</td>
+      <KeyValueTableRow>
+        {t('numberOfForVotes')}
+        <span>{formatNumber(yesVotes, 0)}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('numberOfAgainstVotes')}</th>
-        <td>{formatNumber(noVotes, 0)}</td>
+      <KeyValueTableRow>
+        {t('numberOfAgainstVotes')}
+        <span>{formatNumber(noVotes, 0)}</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('yesPercentage')}</th>
-        <td>{formatNumber(yesPercentage, 2)}%</td>
+      <KeyValueTableRow>
+        {t('yesPercentage')}
+        <span>{formatNumber(yesPercentage, 2)}%</span>
       </KeyValueTableRow>
-      <KeyValueTableRow muted={true} numerical={true}>
-        <th>{t('noPercentage')}</th>
-        <td>{formatNumber(noPercentage, 2)}%</td>
+      <KeyValueTableRow>
+        {t('noPercentage')}
+        <span>{formatNumber(noPercentage, 2)}%</span>
       </KeyValueTableRow>
     </KeyValueTable>
   );
