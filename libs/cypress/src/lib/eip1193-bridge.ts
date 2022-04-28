@@ -105,13 +105,12 @@ export class CustomizedBridge extends Eip1193Bridge {
   }
 }
 
-const MNEMONIC =
-  'first length secret attitude green cloth aspect lucky false seat soap seat';
+const MNEMONIC = process.env['CYPESS_ETH_WALLET_MNEMONIC'];
 
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 const getProvider = () =>
-  new JsonRpcProvider(Cypress.env('ETHEREUM_PROVIDER_URL'), 3);
+  new JsonRpcProvider(Cypress.env('ethereumProviderUrl'), 3);
 
 export const createBridge = () => {
   const provider = getProvider();

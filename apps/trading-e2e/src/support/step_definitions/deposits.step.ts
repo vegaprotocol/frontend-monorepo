@@ -5,7 +5,7 @@ import DepositsPage from '../pages/deposits-page';
 const depositsPage = new DepositsPage();
 const ethWallet = new EthereumWallet();
 
-const tBTC = '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c';
+const tBTC = Cypress.env('tBTC_contract');
 const invalidPublicKey =
   'zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f';
 
