@@ -6,11 +6,13 @@ import MarketsPage from '../pages/markets-page';
 import TradingPage from '../pages/trading-page';
 import PositionsList from '../trading-windows/positions-list';
 import AccountsList from '../trading-windows/accounts-list';
+import OrderBookList from '../trading-windows/orderbook-list';
 
 const marketsPage = new MarketsPage();
 const tradingPage = new TradingPage();
 const positionsList = new PositionsList();
 const accountList = new AccountsList();
+const orderBookList = new OrderBookList();
 
 const mockMarkets = () => {
   cy.mockGQL('Markets', (req) => {
@@ -72,4 +74,17 @@ Then('I can see account for tEURO', () => {
     '—',
     '1,000.00000'
   );
+});
+
+When('I click on order book tab', () => {
+  tradingPage.clickOrderBookTab();
+});
+
+Then('orderbook can be reduced and expanded', () => {
+  orderBookList.verifyMockedOrderBookDisplayed(33);
+  orderBookList.clickZoomOut();
+  orderBookList.verifyMockedOrderBookDisplayed(6);
+  orderBookList.clickZoomIn();
+  orderBookList.verifyMockedOrderBookDisplayed(33);
+  orderBookList.verifyCumulativeVolume(false, 123, '65%');
 });

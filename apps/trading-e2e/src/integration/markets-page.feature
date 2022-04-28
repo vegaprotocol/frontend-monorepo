@@ -28,3 +28,8 @@ Feature: Markets page
     And I connect to Vega Wallet
     When I click on positions tab
     Then positions are displayed
+
+  Scenario: Orderbook displayed
+    Given I am on the trading page for an active market
+    When I click on order book tab
+    Then orderbook can be reduced and expanded
