@@ -26,8 +26,6 @@ const Template: Story = (args) => (
 export const Muted = Template.bind({});
 Muted.args = {
   title: 'Muted table',
-  label: 'muted key-value-table',
-  labelFor: 'muted key-value-table',
   muted: true,
   numerical: false,
 };
@@ -35,8 +33,6 @@ Muted.args = {
 export const Numerical = Template.bind({});
 Numerical.args = {
   title: 'Numerical table',
-  label: 'numerical key-value-table',
-  labelFor: 'numerical key-value-table',
   muted: false,
   numerical: true,
 };
@@ -44,8 +40,6 @@ Numerical.args = {
 export const Normal = Template.bind({});
 Normal.args = {
   title: 'Normal table',
-  label: 'normal key-value-table',
-  labelFor: 'normal key-value-table',
   muted: false,
   numerical: false,
 };
