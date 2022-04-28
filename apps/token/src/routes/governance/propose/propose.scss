@@ -1,0 +1,15 @@
+@import '../../../styles/colors';
+
+/* TODO remove! */
+.propose {
+  & textarea {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 0px;
+    border: 1px solid $white;
+    background-color: $dark-gray4;
+    color: $white;
+  }
+}

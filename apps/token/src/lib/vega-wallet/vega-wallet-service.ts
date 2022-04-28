@@ -1,3 +1,4 @@
+// TODO replace with generic wallet service client
 import type { VoteValue } from '../../__generated__/globalTypes';
 import type { VegaKey } from '../../contexts/app-state/app-state-context';
 import type { VOTE_VALUE_MAP } from '../../routes/governance/components/vote-details';
@@ -68,12 +69,90 @@ export interface WithdrawSubmissionInput {
   };
 }
 
+// note this type is never really checked against because we allow
+// proposals to be submitted with a single textarea containing json
+export interface NewMarketTerms {
+  changes: {
+    instrument: {
+      name: string;
+      code: string;
+      future: {
+        maturity: string;
+        quoteName: string;
+        settlementAsset: string;
+        oracleSpec: {
+          pubKeys: string[];
+          filters: Array<{
+            key: { name: string; type: string };
+            conditions: Array<{ operator: string; value: string }>;
+          }>;
+        };
+        oracleSpecBinding: {
+          settlementPriceProperty: string;
+        };
+      };
+    };
+    decimalPlaces: number;
+    logNormal: {
+      riskAversionParameter: number;
+      tau: number;
+      params: {
+        mu: number;
+        r: number;
+        sigma: number;
+      };
+    };
+    metadata: string[];
+    priceMonitoringParameters: {
+      triggers: Array<{
+        horizon: number;
+        probability: number;
+        auctionExtension: number;
+      }>;
+    };
+    continuous: {
+      tickSize: string;
+    };
+  };
+  liquidityCommitment: {
+    commitmentAmount: number;
+    fee: string;
+    sells: Array<{
+      reference: any;
+      proportion: number;
+      offset: number;
+    }>;
+  };
+}
+
+export interface UpdateNetworkParameterTerms {
+  changes: {
+    key: string;
+    value: string;
+  };
+}
+
+export interface ProposalTerms {
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+  newMarket?: NewMarketTerms;
+  updateNetworkParameter?: UpdateNetworkParameterTerms;
+}
+
+export interface ProposalSubmissionInput {
+  pubKey: string;
+  proposalSubmission: {
+    terms: ProposalTerms;
+  };
+}
+
 export type CommandSyncInput =
   | DelegateSubmissionInput
   | UndelegateSubmissionInput
   | VoteSubmissionInput
-  | WithdrawSubmissionInput;
-
+  | WithdrawSubmissionInput
+  // TODO other proposal types
+  | ProposalSubmissionInput;
 export interface CommandSyncResponse {
   inputData: string;
   pubKey: string;

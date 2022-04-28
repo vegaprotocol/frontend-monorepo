@@ -1,6 +1,7 @@
 import React from 'react';
 import { ProposalContainer } from './governance/proposal';
 import { ProposalsContainer } from './governance/proposals';
+import { ProposeContainer } from './governance/propose';
 
 import Home from './home';
 import NotFound from './not-found';
@@ -164,8 +165,9 @@ const routerConfig = [
     name: 'Governance',
     component: LazyGovernance,
     children: [
-      { path: ':proposalId', element: <ProposalContainer /> },
       { index: true, element: <ProposalsContainer /> },
+      { path: 'propose', element: <ProposeContainer /> },
+      { path: ':proposalId', element: <ProposalContainer /> },
     ],
   },
   {
