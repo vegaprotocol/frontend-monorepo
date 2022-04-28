@@ -1,15 +1,21 @@
+import { Fragment } from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { OrderbookRow } from './orderbook-row';
 import type { OrderbookData } from './orderbook-data';
 
 interface OrderbookProps {
   data: OrderbookData[] | null;
+  midPrice?: string;
   decimalPlaces: number;
   resolution: number;
   onResolutionChange: (resolution: number) => void;
 }
+
+const horizontalLine = () => <div className="col-span-full border-b-1"></div>;
+
 export const Orderbook = ({
   data,
+  midPrice,
   decimalPlaces,
   resolution,
   onResolutionChange,
@@ -23,17 +29,20 @@ export const Orderbook = ({
     </div>
     <div className="grid grid-cols-4 gap-4 text-right text-ui-small">
       {data?.map((data) => (
-        <OrderbookRow
-          key={data.price}
-          price={(BigInt(data.price) / BigInt(resolution)).toString()}
-          decimalPlaces={decimalPlaces - Math.log10(resolution)}
-          bid={data.bid}
-          relativeBid={data.relativeBid}
-          cumulativeRelativeBid={data.cumulativeVol.relativeBid}
-          ask={data.ask}
-          relativeAsk={data.relativeAsk}
-          cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
-        />
+        <Fragment key={data.price}>
+          {data.price === midPrice ? horizontalLine() : null}
+          <OrderbookRow
+            price={(BigInt(data.price) / BigInt(resolution)).toString()}
+            decimalPlaces={decimalPlaces - Math.log10(resolution)}
+            bid={data.bid}
+            relativeBid={data.relativeBid}
+            cumulativeRelativeBid={data.cumulativeVol.relativeBid}
+            ask={data.ask}
+            relativeAsk={data.relativeAsk}
+            cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
+          />
+          {data.price === midPrice ? horizontalLine() : null}
+        </Fragment>
       ))}
     </div>
     <div className="sticky bottom-0 grid grid-cols-4 gap-4 border-t-1 text-ui-small mt-2 pb-2 bg-white dark:bg-black z-10">

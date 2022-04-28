@@ -28,7 +28,7 @@ export interface OrderbookData {
   cumulativeVol: CumulativeVol;
 }
 
-const getPriceLevel = (price: string, resolution: number) => {
+export const getPriceLevel = (price: string, resolution: number) => {
   const p = BigInt(price);
   const r = BigInt(resolution);
   let priceLevel = (p / r) * r;
