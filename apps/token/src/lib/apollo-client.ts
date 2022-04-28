@@ -2,8 +2,10 @@ import type { FieldFunctionOptions, Reference } from '@apollo/client';
 import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { WebSocketLink } from '@apollo/client/link/ws';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
+import * as Sentry from '@sentry/react';
 
 import { BigNumber } from './bignumber';
 import { addDecimal } from './decimals';
@@ -18,6 +20,9 @@ const VALIDATOR_RANDOMISER_SEED = (
 
 export function createClient() {
   const { graphql } = getDataNodeUrl();
+  const urlWS = new URL(graphql);
+  // Replace http with ws, preserving if its a secure connection eg. https => wss
+  urlWS.protocol = urlWS.protocol.replace('http', 'ws');
 
   const formatUintToNumber = (amount: string, decimals = 18) =>
     addDecimal(new BigNumber(amount), decimals).toString();
@@ -152,6 +157,23 @@ export function createClient() {
     credentials: 'same-origin',
   });
 
+  const wsLink = new WebSocketLink({
+    uri: urlWS.href,
+    options: {
+      reconnectionAttempts: 5,
+      reconnect: true,
+      lazy: true,
+      inactivityTimeout: 20,
+      connectionCallback: (errors: Error[]) => {
+        if (errors && errors.length) {
+          errors.forEach((err) => {
+            Sentry.captureException(err);
+          });
+        }
+      },
+    },
+  });
+
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     // eslint-disable-next-line no-console
     console.log(graphQLErrors);
@@ -161,7 +183,7 @@ export function createClient() {
 
   return new ApolloClient({
     connectToDevTools: process.env['NODE_ENV'] === 'development',
-    link: from([errorLink, retryLink, httpLink]),
+    link: from([errorLink, retryLink, httpLink, wsLink]),
     cache,
   });
 }
