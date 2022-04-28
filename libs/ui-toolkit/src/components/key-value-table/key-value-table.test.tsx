@@ -46,7 +46,7 @@ it('Applies numeric class if prop is passed', () => {
   );
 
   expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'w-full border-collapse mb-2.5 [border-spacing:0] break-all'
+    'w-full border-collapse mb-8 [border-spacing:0] break-all'
   );
 });
 
@@ -61,6 +61,6 @@ it('Applies muted class if prop is passed', () => {
   );
 
   expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'w-full border-collapse mb-2.5 [border-spacing:0] break-all'
+    'w-full border-collapse mb-8 [border-spacing:0] break-all'
   );
 });
