@@ -106,7 +106,6 @@ export const useFetch = <T>(
     // Use the cleanup function for avoiding a possibly...
     // ...state update after the component was unmounted
     return () => {
-      console.log('unmount');
       cancelRequest.current = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
