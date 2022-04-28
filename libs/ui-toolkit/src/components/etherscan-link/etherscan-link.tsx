@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import type { AnchorHTMLAttributes } from 'react';
-import React from 'react';
 
 const ETHERSCAN_URL = process.env['NX_ETHERSCAN_URL'] as string;
 

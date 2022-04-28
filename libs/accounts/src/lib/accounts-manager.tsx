@@ -67,7 +67,7 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   >(accountsDataProvider, update, variables);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {(data) => <AccountsTable ref={gridRef} data={data} />}
+      <AccountsTable ref={gridRef} data={data} />
     </AsyncRenderer>
   );
 };

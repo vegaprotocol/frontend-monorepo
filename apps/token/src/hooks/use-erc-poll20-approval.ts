@@ -2,13 +2,13 @@ import React from 'react';
 import { gql, useApolloClient } from '@apollo/client';
 
 import type {
-  Erc20Approval,
-  Erc20Approval_erc20WithdrawalApproval,
-  Erc20ApprovalVariables,
-} from './__generated__/Erc20Approval';
+  Erc20ApprovalPoll,
+  Erc20ApprovalPoll_erc20WithdrawalApproval,
+  Erc20ApprovalPollVariables,
+} from './__generated__/Erc20ApprovalPoll';
 
 const ERC20_APPROVAL_QUERY = gql`
-  query Erc20Approval($withdrawalId: ID!) {
+  query Erc20ApprovalPoll($withdrawalId: ID!) {
     erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
       assetSource
       amount
@@ -24,10 +24,10 @@ export const usePollERC20Approval = (withdrawalId: string) => {
   const mountedRef = React.useRef(true);
   const client = useApolloClient();
   const [erc20Approval, setErc20Approval] =
-    React.useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
+    React.useState<Erc20ApprovalPoll_erc20WithdrawalApproval | null>(null);
 
   const safeSetErc20Approval = (
-    approval: Erc20Approval_erc20WithdrawalApproval
+    approval: Erc20ApprovalPoll_erc20WithdrawalApproval
   ) => {
     if (mountedRef.current) {
       setErc20Approval(approval);
@@ -37,7 +37,10 @@ export const usePollERC20Approval = (withdrawalId: string) => {
   React.useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const res = await client.query<Erc20Approval, Erc20ApprovalVariables>({
+        const res = await client.query<
+          Erc20ApprovalPoll,
+          Erc20ApprovalPollVariables
+        >({
           query: ERC20_APPROVAL_QUERY,
           variables: { withdrawalId },
         });

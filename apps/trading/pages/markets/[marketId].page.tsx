@@ -44,8 +44,7 @@ const MarketPage = () => {
         },
         fetchPolicy: 'network-only',
       }}
-    >
-      {({ market }) => {
+      render={({ market }) => {
         if (!market) {
           return <Splash>{t('Market not found')}</Splash>;
         }
@@ -56,7 +55,7 @@ const MarketPage = () => {
           <TradePanels market={market} />
         );
       }}
-    </PageQueryContainer>
+    />
   );
 };
 

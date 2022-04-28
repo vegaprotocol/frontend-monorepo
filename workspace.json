@@ -6,9 +6,9 @@
     "cypress": "libs/cypress",
     "deal-ticket": "libs/deal-ticket",
     "deposits": "libs/deposits",
-    "depth-chart": "libs/depth-chart",
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",
+    "market-depth": "libs/market-depth",
     "market-list": "libs/market-list",
     "network-stats": "libs/network-stats",
     "order-list": "libs/order-list",
@@ -26,6 +26,7 @@
     "types": "libs/types",
     "ui-toolkit": "libs/ui-toolkit",
     "wallet": "libs/wallet",
-    "web3": "libs/web3"
+    "web3": "libs/web3",
+    "withdraws": "libs/withdraws"
   }
 }

@@ -1,27 +1,18 @@
 import type { EthereumConfig } from '../../../components/web3-container/web3-container';
 import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import type {
-  DepositPage,
-  DepositPage_assets,
-} from './__generated__/DepositPage';
-import type { Asset } from '@vegaprotocol/deposits';
+import type { DepositPage } from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
+import { isERC20Asset } from '../../../lib/assets';
 
 const DEPOSIT_PAGE_QUERY = gql`
+  ${ASSET_FRAGMENT}
   query DepositPage {
     assets {
-      id
-      symbol
-      name
-      decimals
-      source {
-        ... on ERC20 {
-          contractAddress
-        }
-      }
+      ...AssetFields
     }
   }
 `;
@@ -39,8 +30,9 @@ export const DepositContainer = ({
   assetId,
 }: DepositContainerProps) => {
   return (
-    <PageQueryContainer<DepositPage> query={DEPOSIT_PAGE_QUERY}>
-      {(data) => {
+    <PageQueryContainer<DepositPage>
+      query={DEPOSIT_PAGE_QUERY}
+      render={(data) => {
         if (!data.assets?.length) {
           return (
             <Splash>
@@ -58,13 +50,6 @@ export const DepositContainer = ({
           />
         );
       }}
-    </PageQueryContainer>
+    />
   );
-};
-
-const isERC20Asset = (asset: DepositPage_assets): asset is Asset => {
-  if (asset.source.__typename === 'ERC20') {
-    return true;
-  }
-  return false;
 };
