@@ -44,10 +44,10 @@ export const BlocksInfiniteList = ({
 
   const Item = ({ index, style }: ItemProps) => {
     let content;
-    if (!isItemLoaded(index)) {
-      content = t('Loading...');
-    } else if (error) {
+    if (error) {
       content = t(`Error: ${error}`);
+    } else if (!isItemLoaded(index)) {
+      content = t('Loading...');
     } else {
       content = <BlockData block={blocks[index]} />;
     }
@@ -65,9 +65,9 @@ export const BlocksInfiniteList = ({
         {({ onItemsRendered, ref }) => (
           <List
             className="List"
-            height={656}
+            height={585}
             itemCount={itemCount}
-            itemSize={32}
+            itemSize={30}
             onItemsRendered={onItemsRendered}
             ref={ref}
             width={'100%'}

@@ -13,20 +13,34 @@ import { t, useFetch } from '@vegaprotocol/react-helpers';
 // This constant should only be changed if Tendermint API changes the max blocks returned
 const TM_BLOCKS_PER_REQUEST = 20;
 
+interface BlocksStateProps {
+  areBlocksLoading: boolean | undefined;
+  blocksError: Error | undefined;
+  blocksData: BlockMeta[];
+  hasMoreBlocks: boolean;
+  nextBlockHeightToLoad: number | undefined;
+}
+
 const Blocks = () => {
-  const [hasMoreBlocks, setHasMoreBlocks] = useState(true);
-  const [areBlocksLoading, setAreBlocksLoading] = useState<boolean | undefined>(
-    false
-  );
-  const [error, setError] = useState<Error | undefined>(undefined);
-  const [blocksData, setBlocksData] = useState<BlockMeta[]>([]);
-  const [nextBlockHeightToLoad, setNextBlockHeightToLoad] = useState<
-    number | undefined
-  >(undefined);
-  const [lastBlockHeightLoaded, setLastBlockHeightLoaded] = useState<number>();
+  const [
+    {
+      areBlocksLoading,
+      blocksError,
+      blocksData,
+      hasMoreBlocks,
+      nextBlockHeightToLoad,
+    },
+    setBlocksState,
+  ] = useState<BlocksStateProps>({
+    areBlocksLoading: false,
+    blocksError: undefined,
+    blocksData: [],
+    hasMoreBlocks: true,
+    nextBlockHeightToLoad: undefined,
+  });
 
   const {
-    state: { error: tmError, loading },
+    state: { error, loading },
     refetch,
   } = useFetch<TendermintBlockchainResponse>(
     `${DATA_SOURCES.tendermintUrl}/blockchain`,
@@ -35,7 +49,10 @@ const Blocks = () => {
   );
 
   const loadBlocks = async () => {
-    setAreBlocksLoading(loading);
+    setBlocksState((prev) => ({
+      ...prev,
+      areBlocksLoading: loading,
+    }));
 
     const maxHeight = Math.max(
       Number(nextBlockHeightToLoad),
@@ -44,7 +61,7 @@ const Blocks = () => {
 
     const minHeight =
       Number(nextBlockHeightToLoad) - TM_BLOCKS_PER_REQUEST > 1
-        ? Number(nextBlockHeightToLoad) - TM_BLOCKS_PER_REQUEST
+        ? Number(nextBlockHeightToLoad) - TM_BLOCKS_PER_REQUEST - 1
         : undefined;
 
     const data = await refetch({
@@ -54,28 +71,36 @@ const Blocks = () => {
 
     if (data) {
       const blockMetas = data.result.block_metas;
-      setLastBlockHeightLoaded(
-        parseInt(blockMetas[blockMetas.length - 1].header.height)
-      );
+      const lastBlockHeightLoaded =
+        blockMetas && blockMetas.length > 0
+          ? parseInt(blockMetas[blockMetas.length - 1].header.height)
+          : undefined;
 
-      if (lastBlockHeightLoaded) {
-        setNextBlockHeightToLoad(lastBlockHeightLoaded - 1);
-        setHasMoreBlocks(lastBlockHeightLoaded > 1);
-      }
-
-      setBlocksData([...blocksData, ...blockMetas]);
+      setBlocksState((prev) => ({
+        ...prev,
+        nextBlockHeightToLoad: lastBlockHeightLoaded
+          ? lastBlockHeightLoaded - 1
+          : undefined,
+        hasMoreBlocks: !!lastBlockHeightLoaded && lastBlockHeightLoaded > 1,
+        blocksData: [...prev.blocksData, ...blockMetas],
+      }));
     }
 
-    if (tmError) {
-      setError(tmError);
+    if (error) {
+      setBlocksState((prev) => ({
+        ...prev,
+        blocksError: error,
+      }));
     }
   };
 
   const refreshBlocks = async () => {
-    setBlocksData([]);
-    setNextBlockHeightToLoad(undefined);
-    setLastBlockHeightLoaded(undefined);
-    loadBlocks();
+    setBlocksState((prev) => ({
+      ...prev,
+      nextBlockHeightToLoad: undefined,
+      hasMoreBlocks: true,
+      blocksData: [],
+    }));
   };
 
   return (
@@ -87,8 +112,8 @@ const Blocks = () => {
         areBlocksLoading={areBlocksLoading}
         blocks={blocksData}
         loadMoreBlocks={loadBlocks}
-        error={error}
-        className="pb-16"
+        error={blocksError}
+        className="mb-28"
       />
       <JumpToBlock />
     </section>
