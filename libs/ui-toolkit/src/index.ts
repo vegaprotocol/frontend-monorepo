@@ -21,6 +21,7 @@ export { VegaLogo } from './components/vega-logo';
 export { Tooltip } from './components/tooltip';
 export { Indicator } from './components/indicator';
 export { Card } from './components/card';
+export { SyntaxHighlighter } from './components/syntax-highlighter';
 
 // Utils
 export * from './utils/intent';

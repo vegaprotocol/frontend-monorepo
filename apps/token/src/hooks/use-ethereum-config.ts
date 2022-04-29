@@ -19,8 +19,7 @@ export const useEthereumConfig = () => {
     }
     try {
       const [configJson] = ethereumConfigJSON;
-      const config = JSON.parse(configJson);
-      return config;
+      return JSON.parse(configJson);
     } catch {
       Sentry.captureMessage('Ethereum config JSON is invalid');
       return null;

@@ -10,7 +10,7 @@ export function useRefreshAssociatedBalances() {
   const { appDispatch } = useAppState();
   const { staking, vesting } = useContracts();
 
-  const refresh = React.useCallback(
+  return React.useCallback(
     async (ethAddress: string, vegaKey: string) => {
       const [walletAssociatedBalance, vestingAssociatedBalance] =
         await Promise.all([
@@ -26,6 +26,4 @@ export function useRefreshAssociatedBalances() {
     },
     [staking, vesting, appDispatch]
   );
-
-  return refresh;
 }
