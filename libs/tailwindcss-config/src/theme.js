@@ -22,10 +22,6 @@ module.exports = {
       95: 'rgba(255, 255, 255, 0.95)',
       100: 'rgba(255, 255, 255, 1.00)',
     },
-    grey: {
-      DEFAULT: '#C7C7C7',
-      1: '#6E6E6E',
-    },
     black: {
       DEFAULT: '#000',
       '02': 'rgba(0, 0, 0, 0.02)',
