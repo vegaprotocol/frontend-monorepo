@@ -28,6 +28,7 @@ Muted.args = {
   title: 'Muted table',
   muted: true,
   numerical: false,
+  headingLevel: 5, // h5
 };
 
 export const Numerical = Template.bind({});
@@ -35,10 +36,12 @@ Numerical.args = {
   title: 'Numerical table',
   muted: false,
   numerical: true,
+  headingLevel: 5, // h5
 };
 
 export const Normal = Template.bind({});
 Normal.args = {
+  headingLevel: 5, // h5
   title: 'Normal table',
   muted: false,
   numerical: false,

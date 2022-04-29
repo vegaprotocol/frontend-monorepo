@@ -1,9 +1,12 @@
 import { render, screen } from '@testing-library/react';
 
+import type { KeyValueTableProps } from './key-value-table';
 import { KeyValueTable, KeyValueTableRow } from './key-value-table';
 
-const props = {
+const props: KeyValueTableProps = {
   title: 'Title',
+  headingLevel: 3,
+  children: undefined,
 };
 
 it('Renders the correct elements', () => {
@@ -20,12 +23,12 @@ it('Renders the correct elements', () => {
     </KeyValueTable>
   );
 
-  expect(screen.getByText(props.title)).toBeInTheDocument();
+  expect(screen.getByText(props.title || '')).toBeInTheDocument();
 
   expect(screen.getByTestId('key-value-table')).toBeInTheDocument();
-  expect(container.getElementsByTagName('tr')).toHaveLength(2);
+  expect(container.getElementsByTagName('dl')).toHaveLength(2);
 
-  const rows = container.getElementsByTagName('tr');
+  const rows = container.getElementsByTagName('dl');
   // Row 1
   expect(rows[0].firstChild).toHaveTextContent('My label');
   expect(rows[0].children[1]).toHaveTextContent('My value');

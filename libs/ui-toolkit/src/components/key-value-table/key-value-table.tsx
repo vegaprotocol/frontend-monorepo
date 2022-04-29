@@ -5,6 +5,7 @@ export interface KeyValueTableProps
   extends React.HTMLAttributes<HTMLTableElement> {
   title?: string;
   children: React.ReactNode;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   muted?: boolean;
   numerical?: boolean;
 }
@@ -15,19 +16,27 @@ export const KeyValueTable = ({
   className,
   muted,
   numerical,
+  headingLevel,
   ...rest
 }: KeyValueTableProps) => {
+  const TitleTag: keyof JSX.IntrinsicElements = headingLevel
+    ? `h${headingLevel}`
+    : 'div';
   return (
     <React.Fragment>
-      {title && <h3 className="mt-8 mb-4">{title}</h3>}
-      <table
+      {title && (
+        <TitleTag className={`text-h${headingLevel} mt-8 mb-4`}>
+          {title}
+        </TitleTag>
+      )}
+      <div
         data-testid="key-value-table"
         {...rest}
         className={`w-full border-collapse mb-8 [border-spacing:0] break-all ${
           className ? className : ''
         }`}
       >
-        <tbody>
+        <div>
           {children &&
             React.Children.map(
               children,
@@ -41,8 +50,8 @@ export const KeyValueTable = ({
                   }
                 )
             )}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </React.Fragment>
   );
 };
@@ -60,18 +69,17 @@ export const KeyValueTableRow = ({
   className,
   muted,
   numerical,
-  ...rest
 }: KeyValueTableRowProps) => {
-  const trClassName = classNames(
-    'flex flex-col sm:table-row border-b first:border-t border-black dark:border-white ',
+  const dlClassName = classNames(
+    'flex flex-col sm:table-row border-b first:border-t border-black dark:border-white',
     {
       'border-black/60 dark:border-white/60 first:[border-top:none] last:[border-bottom:none]':
         muted,
     },
     className
   );
-  const thClassName = `break-word text-left font-medium uppercase align-top p-4`;
-  const tdClassName = classNames(
+  const dtClassName = `break-word text-left font-medium uppercase align-top p-4`;
+  const ddClassName = classNames(
     'align-top p-4 text-right text-black/60 dark:text-white/60',
     {
       'font-mono': numerical,
@@ -79,9 +87,9 @@ export const KeyValueTableRow = ({
   );
 
   return (
-    <tr {...rest} className={trClassName}>
-      <th className={thClassName}>{children[0]}</th>
-      <td className={tdClassName}>{children[1]}</td>
-    </tr>
+    <dl className={dlClassName}>
+      <dt className={dtClassName}>{children[0]}</dt>
+      <dd className={ddClassName}>{children[1]}</dd>
+    </dl>
   );
 };
