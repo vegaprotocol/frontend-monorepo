@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "./../../../../types/src/__generated__/globalTypes";
+import { AccountType } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL subscription operation: AccountSubscribe
