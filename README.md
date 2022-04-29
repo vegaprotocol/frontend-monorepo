@@ -84,9 +84,9 @@ Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more
 Follow the following steps to start using a local network with the Vega Explorer:
 
 1. Prepare vegacapsule. Follow the [Vegacapsule instructions](https://github.com/vegaprotocol/vegacapsule#quick-start)
-1. Build the explorer frontend application
-1. Start the explorer frontend application with the `.env.vegacapsule` env file
-1. Go to [http://localhost:3000](http://localhost:3000) in your browser
+2. Build the explorer frontend application
+3. Start the explorer frontend application with the `.env.vegacapsule` env file
+4. Go to [http://localhost:3000](http://localhost:3000) in your browser
 
 If you simply want to run Explorer locally, without using a local network:
 
