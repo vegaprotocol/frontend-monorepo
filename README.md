@@ -41,7 +41,9 @@ Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The 
 
 ### Running tests
 
-Run `yarn nx run <my-app>-e2e:e2e --watch` to execute the unit tests with [Jest](https://jestjs.io) in watch mode. Use `nx affected:test` to execute just unit tests affected by a change.
+Run `yarn nx run <my-app>-e2e:e2e` to execute the e2e tests with [cypress](https://docs.cypress.io/).  You can use the `--watch` flag to open the cypress tests UI in watch mode, see [cypress executor](https://nx.dev/packages/cypress/executors/cypress) for all CLI flags.
+
+Run `nx test my-app` to execute the unit tests with [Jest](https://jestjs.io), or `nx affected:test` to execute just unit tests affected by a change. You can also use `--watch` with these test to run jest in watch mode, see [Jest executor](https://nx.dev/packages/jest/executors/jest) for all CLI flags.
 
 Similarly `nx e2e my-app` will execute the end-to-end tests with [Cypress](https://www.cypress.io)., and `nx affected:e2e` will execute just the end-to-end tests affected by a change.
 
