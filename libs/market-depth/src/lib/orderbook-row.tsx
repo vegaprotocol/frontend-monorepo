@@ -37,13 +37,25 @@ export const OrderbookRow = React.memo(
   }: OrderbookRowProps) => {
     return (
       <>
-        <Vol value={bid} relativeValue={relativeBid} type={VolumeType.bid} />
+        <Vol
+          testId={`bid-vol-${price}`}
+          value={bid}
+          relativeValue={relativeBid}
+          type={VolumeType.bid}
+        />
         <PriceCell
+          testId={`price-${price}`}
           value={BigInt(price)}
           valueFormatted={formatNumber(price, decimalPlaces)}
         />
-        <Vol value={ask} relativeValue={relativeAsk} type={VolumeType.ask} />
+        <Vol
+          testId={`ask-vol-${price}`}
+          value={ask}
+          relativeValue={relativeAsk}
+          type={VolumeType.ask}
+        />
         <CumulativeVol
+          testId={`cumulative-vol-${price}`}
           bid={cumulativeBid}
           ask={cumulativeAsk}
           relativeAsk={cumulativeRelativeAsk}
