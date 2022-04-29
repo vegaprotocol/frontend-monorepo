@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { RouteTitle } from '../../components/route-title';
 import type { NetworkParametersQuery } from './__generated__/NetworkParametersQuery';
-import { SyntaxHighlighter } from "@vegaprotocol/ui-toolkit";
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 
 export const NETWORK_PARAMETERS_QUERY = gql`

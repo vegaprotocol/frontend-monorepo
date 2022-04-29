@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { StatusMessage } from '../../../components/status-message';
-import { SyntaxHighlighter } from "@vegaprotocol/ui-toolkit";
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import {
   TableWithTbody,
   TableCell,

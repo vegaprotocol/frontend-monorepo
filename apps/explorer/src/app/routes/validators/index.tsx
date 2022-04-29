@@ -3,7 +3,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
-import { SyntaxHighlighter } from "@vegaprotocol/ui-toolkit";
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
 import type { TendermintValidatorsResponse } from './tendermint-validator-response';
