@@ -3,11 +3,13 @@ import type { ICellRendererParams } from 'ag-grid-community';
 
 import { BID_COLOR, ASK_COLOR } from './vol-cell';
 
-const INTERSECT_COLOR = 'darkgray';
-
 export interface CumulativeVolProps {
+  ask?: number;
+  bid?: number;
   relativeAsk?: number;
   relativeBid?: number;
+  indicativeVolume?: string;
+  testId?: string;
 }
 
 export interface ICumulativeVolCellProps extends ICellRendererParams {
@@ -15,44 +17,56 @@ export interface ICumulativeVolCellProps extends ICellRendererParams {
 }
 
 export const CumulativeVol = React.memo(
-  ({ relativeAsk, relativeBid }: CumulativeVolProps) => {
-    const bid = relativeBid ? (
+  ({
+    relativeAsk,
+    relativeBid,
+    ask,
+    bid,
+    indicativeVolume,
+    testId,
+  }: CumulativeVolProps) => {
+    const askBar = relativeAsk ? (
       <div
-        className="h-full absolute top-0 right-0"
+        data-test-id="ask-bar"
+        className="absolute left-0 top-0"
         style={{
-          width: `${relativeBid}%`,
-          backgroundColor:
-            relativeAsk && relativeAsk > relativeBid
-              ? INTERSECT_COLOR
-              : BID_COLOR,
-        }}
-      ></div>
-    ) : null;
-    const ask = relativeAsk ? (
-      <div
-        className="h-full absolute top-0 left-0"
-        style={{
+          height: relativeBid && relativeAsk ? '50%' : '100%',
           width: `${relativeAsk}%`,
-          backgroundColor:
-            relativeBid && relativeBid > relativeAsk
-              ? INTERSECT_COLOR
-              : ASK_COLOR,
+          backgroundColor: ASK_COLOR,
         }}
       ></div>
     ) : null;
+    const bidBar = relativeBid ? (
+      <div
+        data-test-id="bid-bar"
+        className="absolute top-0 left-0"
+        style={{
+          height: relativeBid && relativeAsk ? '50%' : '100%',
+          top: relativeBid && relativeAsk ? '50%' : '0',
+          width: `${relativeBid}%`,
+          backgroundColor: BID_COLOR,
+        }}
+      ></div>
+    ) : null;
+
+    const volume = indicativeVolume ? (
+      <span className="relative">({indicativeVolume})</span>
+    ) : (
+      <span className="relative">
+        {ask ? ask : null}
+        {ask && bid ? '/' : null}
+        {bid ? bid : null}
+      </span>
+    );
+
     return (
-      <div className="h-full relative" data-testid="vol">
-        {relativeBid && relativeAsk && relativeBid > relativeAsk ? (
-          <>
-            {ask}
-            {bid}
-          </>
-        ) : (
-          <>
-            {bid}
-            {ask}
-          </>
-        )}
+      <div
+        className="h-full relative"
+        data-testid={testId || 'cummulative-vol'}
+      >
+        {askBar}
+        {bidBar}
+        {volume}
       </div>
     );
   }

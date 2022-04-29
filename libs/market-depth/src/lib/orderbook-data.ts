@@ -1,8 +1,10 @@
 import produce from 'immer';
 import groupBy from 'lodash/groupBy';
+import { VolumeType } from '@vegaprotocol/react-helpers';
 import type {
   MarketDepth_market_depth_sell,
   MarketDepth_market_depth_buy,
+  MarketDepth_market_data,
 } from './__generated__/MarketDepth';
 import type {
   MarketDepthSubscription_marketDepthUpdate_sell,
@@ -16,28 +18,32 @@ export interface CumulativeVol {
   relativeAsk?: number;
 }
 
-export interface OrderbookData {
+export interface OrderbookRow {
   price: string;
   bid: number;
   bidByLevel: Record<string, number>;
-  relativeBidVol?: number;
+  relativeBid?: number;
   ask: number;
   askByLevel: Record<string, number>;
-  relativeAskVol?: number;
+  relativeAsk?: number;
   cumulativeVol: CumulativeVol;
 }
 
-const getGroupPrice = (price: string, resolution: number) => {
+export type OrderbookData = Partial<
+  Omit<MarketDepth_market_data, '__typename' | 'market'>
+> & { rows: OrderbookRow[] | null };
+
+export const getPriceLevel = (price: string, resolution: number) => {
   const p = BigInt(price);
   const r = BigInt(resolution);
-  let groupPrice = (p / r) * r;
-  if (p - groupPrice >= resolution / 2) {
-    groupPrice += BigInt(resolution);
+  let priceLevel = (p / r) * r;
+  if (p - priceLevel >= resolution / 2) {
+    priceLevel += BigInt(resolution);
   }
-  return groupPrice.toString();
+  return priceLevel.toString();
 };
 
-const getMaxVolumes = (orderbookData: OrderbookData[]) => ({
+const getMaxVolumes = (orderbookData: OrderbookRow[]) => ({
   bid: Math.max(...orderbookData.map((data) => data.bid)),
   ask: Math.max(...orderbookData.map((data) => data.ask)),
   cumulativeVol: Math.max(
@@ -50,13 +56,14 @@ const getMaxVolumes = (orderbookData: OrderbookData[]) => ({
 const toPercentValue = (value?: number) => Math.ceil((value ?? 0) * 100);
 
 /**
- * @summary Updates relativeAskVol, relativeBidVol, cumulativeVol.relativeAsk, cumulativeVol.relativeBid
+ * @summary Updates relativeAsk, relativeBid, cumulativeVol.relativeAsk, cumulativeVol.relativeBid
  */
-const updateRelativeData = (data: OrderbookData[]) => {
+const updateRelativeData = (data: OrderbookRow[]) => {
   const { bid, ask, cumulativeVol } = getMaxVolumes(data);
+  const maxBidAsk = Math.max(bid, ask);
   data.forEach((data) => {
-    data.relativeAskVol = toPercentValue(data.ask / ask);
-    data.relativeBidVol = toPercentValue(data.bid / bid);
+    data.relativeAsk = toPercentValue(data.ask / maxBidAsk);
+    data.relativeBid = toPercentValue(data.bid / maxBidAsk);
     data.cumulativeVol.relativeAsk = toPercentValue(
       data.cumulativeVol.ask / cumulativeVol
     );
@@ -66,37 +73,58 @@ const updateRelativeData = (data: OrderbookData[]) => {
   });
 };
 
-const createData = (
+const createRow = (
   price: string,
   volume = 0,
-  dataType?: 'sell' | 'buy'
-): OrderbookData => ({
+  dataType?: VolumeType
+): OrderbookRow => ({
   price,
-  ask: dataType === 'sell' ? volume : 0,
-  bid: dataType === 'buy' ? volume : 0,
+  ask: dataType === VolumeType.ask ? volume : 0,
+  bid: dataType === VolumeType.bid ? volume : 0,
   cumulativeVol: {
-    ask: dataType === 'sell' ? volume : 0,
-    bid: dataType === 'buy' ? volume : 0,
+    ask: dataType === VolumeType.ask ? volume : 0,
+    bid: dataType === VolumeType.bid ? volume : 0,
   },
-  askByLevel: dataType === 'sell' ? { [price]: volume } : {},
-  bidByLevel: dataType === 'buy' ? { [price]: volume } : {},
+  askByLevel: dataType === VolumeType.ask ? { [price]: volume } : {},
+  bidByLevel: dataType === VolumeType.bid ? { [price]: volume } : {},
 });
 
 const mapRawData =
-  (dataType: 'sell' | 'buy') =>
+  (dataType: VolumeType.ask | VolumeType.bid) =>
   (
     data:
       | MarketDepth_market_depth_sell
       | MarketDepthSubscription_marketDepthUpdate_sell
       | MarketDepth_market_depth_buy
       | MarketDepthSubscription_marketDepthUpdate_buy
-  ): OrderbookData =>
-    createData(data.price, Number(data.volume), dataType);
+  ): OrderbookRow =>
+    createRow(data.price, Number(data.volume), dataType);
+
+const fillGaps = (orderbookData: OrderbookRow[], resolution: number) => {
+  if (orderbookData.length < 2) {
+    return;
+  }
+  let index = 0;
+  while (index < orderbookData.length - 1) {
+    if (
+      BigInt(orderbookData[index].price) -
+        BigInt(orderbookData[index + 1].price) !==
+      BigInt(resolution)
+    ) {
+      const data = createRow(
+        (BigInt(orderbookData[index].price) - BigInt(resolution)).toString()
+      );
+      data.cumulativeVol = { ...orderbookData[index].cumulativeVol };
+      orderbookData.splice(index + 1, 0, data);
+    }
+    index += 1;
+  }
+};
 
 /**
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
  */
-export const compactData = (
+export const compactRows = (
   sell:
     | (
         | MarketDepth_market_depth_sell
@@ -112,25 +140,25 @@ export const compactData = (
   resolution: number
 ) => {
   // map raw sell data to OrderbookData
-  const askOrderbookData = [...(sell ?? [])].map<OrderbookData>(
-    mapRawData('sell')
+  const askOrderbookData = [...(sell ?? [])].map<OrderbookRow>(
+    mapRawData(VolumeType.ask)
   );
   // map raw buy data to OrderbookData
-  const bidOrderbookData = [...(buy ?? [])].map<OrderbookData>(
-    mapRawData('buy')
+  const bidOrderbookData = [...(buy ?? [])].map<OrderbookRow>(
+    mapRawData(VolumeType.bid)
   );
 
   // group by price level
-  const groupedByLevel = groupBy<OrderbookData>(
+  const groupedByLevel = groupBy<OrderbookRow>(
     [...askOrderbookData, ...bidOrderbookData],
-    (row) => getGroupPrice(row.price, resolution)
+    (row) => getPriceLevel(row.price, resolution)
   );
 
   // create single OrderbookData from grouped OrderbookData[], sum volumes and atore volume by level
-  const orderbookData = Object.keys(groupedByLevel).reduce<OrderbookData[]>(
+  const orderbookData = Object.keys(groupedByLevel).reduce<OrderbookRow[]>(
     (rows, price) =>
       rows.concat(
-        groupedByLevel[price].reduce<OrderbookData>(
+        groupedByLevel[price].reduce<OrderbookRow>(
           (a, c) => ({
             ...a,
             ask: a.ask + c.ask,
@@ -138,7 +166,7 @@ export const compactData = (
             bid: (a.bid ?? 0) + (c.bid ?? 0),
             bidByLevel: Object.assign(a.bidByLevel, c.bidByLevel),
           }),
-          createData(price)
+          createRow(price)
         )
       ),
     []
@@ -161,6 +189,8 @@ export const compactData = (
       }
     }
   }
+  // fill gaps between price levels
+  fillGaps(orderbookData, resolution);
   // count relative volumes
   updateRelativeData(orderbookData);
   return orderbookData;
@@ -176,8 +206,8 @@ export const compactData = (
  * @returns max (sell) or min (buy) modified index in draft data, mutates draft
  */
 const partiallyUpdateCompactedData = (
-  dataType: 'sell' | 'buy',
-  draft: OrderbookData[],
+  dataType: VolumeType,
+  draft: OrderbookRow[],
   delta:
     | MarketDepthSubscription_marketDepthUpdate_sell
     | MarketDepthSubscription_marketDepthUpdate_buy,
@@ -186,26 +216,28 @@ const partiallyUpdateCompactedData = (
 ) => {
   const { price } = delta;
   const volume = Number(delta.volume);
-  const groupPrice = getGroupPrice(price, resolution);
-  const volKey = dataType === 'sell' ? 'ask' : 'bid';
-  const oppositeVolKey = dataType === 'sell' ? 'bid' : 'ask';
-  const volByLevelKey = dataType === 'sell' ? 'askByLevel' : 'bidByLevel';
-  const resolveModifiedIndex = dataType === 'sell' ? Math.max : Math.min;
-  let index = draft.findIndex((data) => data.price === groupPrice);
+  const priceLevel = getPriceLevel(price, resolution);
+  const volKey = dataType === VolumeType.ask ? 'ask' : 'bid';
+  const oppositeVolKey = dataType === VolumeType.ask ? 'bid' : 'ask';
+  const volByLevelKey =
+    dataType === VolumeType.ask ? 'askByLevel' : 'bidByLevel';
+  const resolveModifiedIndex =
+    dataType === VolumeType.ask ? Math.max : Math.min;
+  let index = draft.findIndex((data) => data.price === priceLevel);
   if (index !== -1) {
     modifiedIndex = resolveModifiedIndex(modifiedIndex, index);
     draft[index][volKey] =
       draft[index][volKey] - (draft[index][volByLevelKey][price] || 0) + volume;
     draft[index][volByLevelKey][price] = volume;
   } else {
-    const newData: OrderbookData = createData(groupPrice, volume, dataType);
-    index = draft.findIndex((data) => BigInt(data.price) < BigInt(groupPrice));
+    const newData: OrderbookRow = createRow(priceLevel, volume, dataType);
+    index = draft.findIndex((data) => BigInt(data.price) < BigInt(priceLevel));
     if (index !== -1) {
       draft.splice(index, 0, newData);
       newData.cumulativeVol[oppositeVolKey] =
-        draft[index + (groupPrice === 'sell' ? -1 : 1)].cumulativeVol[
+        draft[index + (dataType === VolumeType.ask ? -1 : 1)]?.cumulativeVol[
           oppositeVolKey
-        ];
+        ] ?? 0;
       modifiedIndex = resolveModifiedIndex(modifiedIndex, index);
     } else {
       draft.push(newData);
@@ -218,23 +250,23 @@ const partiallyUpdateCompactedData = (
 /**
  * Updates OrderbookData[] with new data received from subscription - mutates input
  *
- * @param orderbookData
+ * @param rows
  * @param sell
  * @param buy
  * @param resolution
  * @returns void
  */
-export const updateCompactedData = (
-  orderbookData: OrderbookData[],
+export const updateCompactedRows = (
+  rows: OrderbookRow[],
   sell: MarketDepthSubscription_marketDepthUpdate_sell[] | null,
   buy: MarketDepthSubscription_marketDepthUpdate_buy[] | null,
   resolution: number
 ) =>
-  produce(orderbookData, (draft) => {
+  produce(rows, (draft) => {
     let sellModifiedIndex = -1;
     sell?.forEach((buy) => {
       sellModifiedIndex = partiallyUpdateCompactedData(
-        'sell',
+        VolumeType.ask,
         draft,
         buy,
         resolution,
@@ -244,7 +276,7 @@ export const updateCompactedData = (
     let buyModifiedIndex = draft.length;
     buy?.forEach((sell) => {
       buyModifiedIndex = partiallyUpdateCompactedData(
-        'buy',
+        VolumeType.bid,
         draft,
         sell,
         resolution,
@@ -270,15 +302,8 @@ export const updateCompactedData = (
           draft[i - 1].cumulativeVol.bid + draft[i].bid;
       }
     }
-    let index = 0;
-    // remove levels that do not have any volume
-    while (index < draft.length) {
-      if (!draft[index].ask && !draft[index].bid) {
-        draft.splice(index, 1);
-      } else {
-        index += 1;
-      }
-    }
+    // fill gaps between price levels
+    fillGaps(draft, resolution);
     // count relative volumes
     updateRelativeData(draft);
   });
