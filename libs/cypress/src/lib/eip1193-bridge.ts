@@ -5,6 +5,8 @@ import { ethers } from 'ethers';
 
 // Address of the above key
 export class CustomizedBridge extends Eip1193Bridge {
+  chainId = Cypress.env('ethereumChainId');
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async sendAsync(...args: any) {
     console.debug('sendAsync called', ...args);
@@ -93,7 +95,7 @@ export class CustomizedBridge extends Eip1193Bridge {
         return result;
       }
     } catch (error) {
-      console.error(error);
+      console.log(error);
       if (isCallbackForm) {
         callback(error, null);
       } else {
