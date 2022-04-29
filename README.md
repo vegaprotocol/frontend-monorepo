@@ -6,24 +6,44 @@ This repository is managed using [Nx](https://nx.dev).
 
 # 🔎 Applications in this repo
 
-### [Block explorer](https://github.com/vegaprotocol/frontend-monorepo/tree/master/apps/explorer)
+### [Block explorer](./apps/explorer)
 
 The Vega block explorer provides an interface that allows users to search for and see transactions, blocks, parties, assets, markets and more on the Vega chain.
 
-### [Trading UI](https://github.com/vegaprotocol/frontend-monorepo/tree/master/apps/trading)
+### [Trading UI](./apps/trading)
 
 The trading interface built based on a component toolkit. It will provide a way for participants to interact with markets and provide resources for others to build additional open-source user interfaces.
 
+### [Token](./apps/token)
+
+The utlity dApp for interacting with the Vega token and using its' utility. This includes; delegation, nomination, governance and redemption of tokens.
+
+### [Stats](./apps/stats)
+
+An application for the status of the Vega network. Showing block height and other network activity.
+
+### [Static](./apps/static)
+
+Hosting for static content being shared across apps, for example fonts.
+
 # 🧱 Libraries in this repo
 
-### [UI toolkit](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/ui-toolkit)
+### [UI toolkit](./libs/ui-toolkit)
 
 The UI toolkit contains a set of components used to build interfaces that can interact with the Vega protocol, and follow the design style of the project.
 It contains a storybook that can be served with `yarn nx run ui-toolkit:storybook`.
 
-### [Tailwind CSS config](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/tailwindcss-config)
+### [Tailwind CSS config](./libs/tailwindcss-config)
 
 The Tailwind CSS config contains theme that align default config with Vega design system.
+
+### [Cypress](./libs/cypress)
+
+For shared Cypress logic, commands and steps.
+
+### [Web3](./libs/web3)
+
+A ulitity library for connecting to the Ethereum network and interacting with Vega Web3 contracts.
 
 # 💻 Develop
 
