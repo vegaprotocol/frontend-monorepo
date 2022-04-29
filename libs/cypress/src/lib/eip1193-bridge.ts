@@ -95,7 +95,7 @@ export class CustomizedBridge extends Eip1193Bridge {
         return result;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (isCallbackForm) {
         callback(error, null);
       } else {
