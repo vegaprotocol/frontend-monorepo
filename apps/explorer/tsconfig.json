@@ -11,9 +11,7 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "lib": [
-      "es5", "es6", "dom", "dom.iterable"
-    ],
+    "lib": ["es5", "es6", "dom", "dom.iterable"]
   },
   "files": [],
   "include": [],
