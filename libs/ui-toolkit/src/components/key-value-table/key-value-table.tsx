@@ -71,16 +71,16 @@ export const KeyValueTableRow = ({
   numerical,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
-    'flex flex-col sm:table-row border-b first:border-t border-black dark:border-white',
+    'flex flex-wrap justify-between items-center border-b first:border-t border-black dark:border-white',
     {
       'border-black/60 dark:border-white/60 first:[border-top:none] last:[border-bottom:none]':
         muted,
     },
     className
   );
-  const dtClassName = `break-word text-left font-medium uppercase align-top p-4`;
+  const dtClassName = `break-normal font-medium uppercase align-top p-4`;
   const ddClassName = classNames(
-    'align-top p-4 text-right text-black/60 dark:text-white/60',
+    'align-top p-4 text-black/60 dark:text-white/60 break-normal',
     {
       'font-mono': numerical,
     }
