@@ -2,7 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import type { MarketsQuery } from './__generated__/MarketsQuery';
 
 import React from 'react';
-import { SyntaxHighlighter } from '../../components/syntax-highlighter';
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { t } from '@vegaprotocol/react-helpers';

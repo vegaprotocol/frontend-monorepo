@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
-import { SyntaxHighlighter } from '../../components/syntax-highlighter';
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
 import useFetch from '../../hooks/use-fetch';
 import type { TendermintGenesisResponse } from './tendermint-genesis-response';

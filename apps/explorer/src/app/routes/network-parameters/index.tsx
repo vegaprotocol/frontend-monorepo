@@ -1,22 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
-import type {
-  NetworkParametersQuery,
-  NetworkParametersQuery_networkParameters,
-} from './__generated__/NetworkParametersQuery';
-
-export const renderRow = (row: NetworkParametersQuery_networkParameters) => {
-  return (
-    <KeyValueTable>
-      <KeyValueTableRow>
-        {row.key}
-        {row.value}
-      </KeyValueTableRow>
-    </KeyValueTable>
-  );
-};
+import type { NetworkParametersQuery } from './__generated__/NetworkParametersQuery';
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 
 export const NETWORK_PARAMETERS_QUERY = gql`
   query NetworkParametersQuery {
@@ -34,9 +20,7 @@ const NetworkParameters = () => {
       <RouteTitle data-testid="network-param-header">
         {t('Network Parameters')}
       </RouteTitle>
-      {data
-        ? (data.networkParameters || []).map((row) => renderRow(row))
-        : null}
+      {data ? <SyntaxHighlighter data={data} /> : null}
     </section>
   );
 };
