@@ -5,8 +5,6 @@ import { ethers } from 'ethers';
 
 // Address of the above key
 export class CustomizedBridge extends Eip1193Bridge {
-  chainId = 3;
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async sendAsync(...args: any) {
     console.debug('sendAsync called', ...args);
