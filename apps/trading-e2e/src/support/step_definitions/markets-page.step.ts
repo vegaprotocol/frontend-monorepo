@@ -2,10 +2,8 @@ import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import { generateMarkets } from '../mocks/generate-markets';
 import MarketsPage from '../pages/markets-page';
-import OrderBookList from '../trading-windows/orderbook-list';
 
 const marketsPage = new MarketsPage();
-const orderBookList = new OrderBookList();
 
 const mockMarkets = () => {
   cy.mockGQL('Markets', (req) => {
@@ -41,17 +39,4 @@ And('the market table is displayed', () => {
 
 When('I click on {string} market', (Expectedmarket) => {
   marketsPage.clickOnMarket(Expectedmarket);
-});
-
-When('I click on order book tab', () => {
-  tradingPage.clickOrderBookTab();
-});
-
-Then('orderbook can be reduced and expanded', () => {
-  orderBookList.verifyMockedOrderBookDisplayed(33);
-  orderBookList.clickZoomOut();
-  orderBookList.verifyMockedOrderBookDisplayed(6);
-  orderBookList.verifyMockedOrderBookDisplayed(33);
-  orderBookList.clickZoomIn();
-  orderBookList.verifyCumulativeVolume(false, 123, '65%');
 });

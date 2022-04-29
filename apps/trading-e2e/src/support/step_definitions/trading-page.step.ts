@@ -15,12 +15,14 @@ import AccountsList from '../trading-windows/accounts-list';
 import TradesList from '../trading-windows/trades-list';
 import TradingPage from '../pages/trading-page';
 import OrdersList from '../trading-windows/orders-list';
+import OrderBookList from '../trading-windows/orderbook-list';
 
 const tradesList = new TradesList();
 const tradingPage = new TradingPage();
 const positionsList = new PositionsList();
 const accountList = new AccountsList();
 const ordersList = new OrdersList();
+const orderBookList = new OrderBookList();
 
 const mockMarket = (state: MarketState) => {
   cy.mockGQL('Market', (req) => {
@@ -153,4 +155,17 @@ When('I click on positions tab', () => {
 
 Then('positions are displayed', () => {
   positionsList.verifyPositionsDisplayed();
+});
+
+When('I click on order book tab', () => {
+  tradingPage.clickOrderBookTab();
+});
+
+Then('orderbook can be reduced and expanded', () => {
+  orderBookList.verifyMockedOrderBookDisplayed(33);
+  orderBookList.clickZoomOut();
+  orderBookList.verifyMockedOrderBookDisplayed(6);
+  orderBookList.verifyMockedOrderBookDisplayed(33);
+  orderBookList.clickZoomIn();
+  orderBookList.verifyCumulativeVolume(false, 123, '65%');
 });
