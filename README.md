@@ -19,6 +19,7 @@ The trading interface built based on a component toolkit. It will provide a way 
 ### [UI toolkit](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/ui-toolkit)
 
 The UI toolkit contains a set of components used to build interfaces that can interact with the Vega protocol, and follow the design style of the project.
+It contains a storybook that can be served with `yarn nx run ui-toolkit:storybook`.
 
 ### [Tailwind CSS config](https://github.com/vegaprotocol/frontend-monorepo/tree/master/libs/tailwindcss-config)
 
@@ -30,7 +31,7 @@ The Tailwind CSS config contains theme that align default config with Vega desig
 
 Check you have the correct version of Node. You can [install NVM to switch between node versions](https://github.com/nvm-sh/nvm#installing-and-updating). Then `NVM install`.
 Before you build you will need to `yarn install` in the root directory.
-The repository includes a number of template .env files for different networks. Copy from these to the .env file before `serve` to lauch app with different network.
+The repository includes a number of template .env files for different networks. Copy from these to the .env file before `serve` to launch app with different network. You can serve any application with `yarn nx run <name-of-app>:serve`.
 
 ### Build
 
@@ -40,7 +41,9 @@ Run `nx serve my-app` for a dev server. Navigate to http://localhost:4200/. The 
 
 ### Running tests
 
-Run `nx test my-app` to execute the unit tests with [Jest](https://jestjs.io), or `nx affected:test` to execute just unit tests affected by a change.
+Run `yarn nx run <my-app>-e2e:e2e` to execute the e2e tests with [cypress](https://docs.cypress.io/).  You can use the `--watch` flag to open the cypress tests UI in watch mode, see [cypress executor](https://nx.dev/packages/cypress/executors/cypress) for all CLI flags.
+
+Run `nx test my-app` to execute the unit tests with [Jest](https://jestjs.io), or `nx affected:test` to execute just unit tests affected by a change. You can also use `--watch` with these test to run jest in watch mode, see [Jest executor](https://nx.dev/packages/jest/executors/jest) for all CLI flags.
 
 Similarly `nx e2e my-app` will execute the end-to-end tests with [Cypress](https://www.cypress.io)., and `nx affected:e2e` will execute just the end-to-end tests affected by a change.
 
@@ -58,6 +61,13 @@ Follow the following steps to start using a local network with the Vega Explorer
 1. Build the explorer frontend application
 1. Start the explorer frontend application with the `.env.vegacapsule` env file
 1. Go to [http://localhost:3000](http://localhost:3000) in your browser
+
+If you simply want to run Explorer locally, without using a local network:
+
+```bash
+cd apps/explorer && cp .env.testnet .env.local
+yarn nx run explorer:serve
+```
 
 # 📑 License
 
