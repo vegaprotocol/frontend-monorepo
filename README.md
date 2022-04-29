@@ -18,6 +18,10 @@ The trading interface built based on a component toolkit. It will provide a way 
 
 The utlity dApp for interacting with the Vega token and using its' utility. This includes; delegation, nomination, governance and redemption of tokens.
 
+### [Explorer](./apps/explorer)
+
+The block explorer for the Vega network, showing details of raw chain states and the state of markets on the Vega network.
+
 ### [Stats](./apps/stats)
 
 An application for the status of the Vega network. Showing block height and other network activity.
@@ -44,6 +48,10 @@ For shared Cypress logic, commands and steps.
 ### [Web3](./libs/web3)
 
 A ulitity library for connecting to the Ethereum network and interacting with Vega Web3 contracts.
+
+### [React Helpers](./libs/react-helpers)
+
+Generic react helpers that can be used across multilpe applications, along with other utilties.
 
 # 💻 Develop
 
