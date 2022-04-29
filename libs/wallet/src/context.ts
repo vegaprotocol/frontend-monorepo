@@ -4,7 +4,7 @@ import type {
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { createContext } from 'react';
 import type { VegaConnector } from './connectors';
-import type { Transaction } from './types';
+import type { TransactionSubmission } from './types';
 
 export type SendTxError =
   | {
@@ -39,7 +39,7 @@ export interface VegaWalletContextShape {
 
   /** Send a transaction to the network, only order submissions for now */
   sendTx: (
-    tx: Transaction
+    tx: TransactionSubmission
   ) => Promise<TransactionResponse | SendTxError> | null;
 }
 

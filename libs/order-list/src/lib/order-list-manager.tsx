@@ -73,7 +73,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={orders}>
-      {(data) => <OrderList ref={gridRef} data={data} />}
+      <OrderList ref={gridRef} data={data} />
     </AsyncRenderer>
   );
 };

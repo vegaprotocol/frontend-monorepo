@@ -50,14 +50,14 @@ jest.mock('@web3-react/core', () => {
 function setup(mock = networkParamsQueryMock) {
   return render(
     <MockedProvider mocks={[mock]}>
-      <Web3Container>
-        {({ ethereumConfig }) => (
+      <Web3Container
+        render={({ ethereumConfig }) => (
           <div>
             <div>Child</div>
             <div>{ethereumConfig.collateral_bridge_contract.address}</div>
           </div>
         )}
-      </Web3Container>
+      />
     </MockedProvider>
   );
 }

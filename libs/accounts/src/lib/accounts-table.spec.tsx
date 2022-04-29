@@ -1,5 +1,5 @@
 import AccountsTable from './accounts-table';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import type { Accounts_party_accounts } from './__generated__/Accounts';
 import { AccountType } from '@vegaprotocol/types';
 
@@ -27,30 +27,36 @@ test('should render successfully', async () => {
     expect(baseElement).toBeTruthy();
   });
 });
+
 test('Render correct columns', async () => {
   await act(async () => {
     render(<AccountsTable data={singleRowData} />);
+    await waitFor(async () => {
+      const headers = await screen.getAllByRole('columnheader');
+      expect(headers).toHaveLength(4);
+      expect(
+        headers.map((h) =>
+          h.querySelector('[ref="eText"]')?.textContent?.trim()
+        )
+      ).toEqual(['Asset', 'Type', 'Market', 'Balance']);
+    });
   });
-
-  const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(4);
-  expect(
-    headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
-  ).toEqual(['Asset', 'Type', 'Market', 'Balance']);
 });
 
 test('Correct formatting applied', async () => {
   await act(async () => {
     render(<AccountsTable data={singleRowData} />);
-  });
-  const cells = screen.getAllByRole('gridcell');
-  const expectedValues = [
-    'tBTC',
-    singleRow.type,
-    'BTCUSD Monthly (30 Jun 2022)',
-    '1,256.00000',
-  ];
-  cells.forEach((cell, i) => {
-    expect(cell).toHaveTextContent(expectedValues[i]);
+    await waitFor(async () => {
+      const cells = await screen.getAllByRole('gridcell');
+      const expectedValues = [
+        'tBTC',
+        singleRow.type,
+        'BTCUSD Monthly (30 Jun 2022)',
+        '1,256.00000',
+      ];
+      cells.forEach((cell, i) => {
+        expect(cell).toHaveTextContent(expectedValues[i]);
+      });
+    });
   });
 });
