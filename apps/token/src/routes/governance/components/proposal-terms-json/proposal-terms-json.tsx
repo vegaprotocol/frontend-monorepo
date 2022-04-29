@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { SyntaxHighlighter } from '../../../../components/syntax-highlighter';
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import type { RestProposalResponse } from '../../proposal/proposal-container';
 
 export const ProposalTermsJson = ({

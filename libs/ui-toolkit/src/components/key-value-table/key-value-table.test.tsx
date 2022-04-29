@@ -1,31 +1,34 @@
 import { render, screen } from '@testing-library/react';
 
+import type { KeyValueTableProps } from './key-value-table';
 import { KeyValueTable, KeyValueTableRow } from './key-value-table';
 
-const props = {
+const props: KeyValueTableProps = {
   title: 'Title',
+  headingLevel: 3,
+  children: undefined,
 };
 
 it('Renders the correct elements', () => {
   const { container } = render(
     <KeyValueTable {...props}>
       <KeyValueTableRow>
-        <td>My label</td>
-        <td>My value</td>
+        <span>My label</span>
+        <span>My value</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <td>My label 2</td>
-        <td>My value 2</td>
+        <span>My label 2</span>
+        <span>My value 2</span>
       </KeyValueTableRow>
     </KeyValueTable>
   );
 
-  expect(screen.getByText(props.title)).toBeInTheDocument();
+  expect(screen.getByText(props.title || '')).toBeInTheDocument();
 
-  expect(container.querySelector('.key-value-table')).toBeInTheDocument();
-  expect(container.querySelectorAll('.key-value-table__row')).toHaveLength(2);
+  expect(screen.getByTestId('key-value-table')).toBeInTheDocument();
+  expect(container.getElementsByTagName('dl')).toHaveLength(2);
 
-  const rows = container.querySelectorAll('.key-value-table__row');
+  const rows = container.getElementsByTagName('dl');
   // Row 1
   expect(rows[0].firstChild).toHaveTextContent('My label');
   expect(rows[0].children[1]).toHaveTextContent('My value');
@@ -37,30 +40,30 @@ it('Renders the correct elements', () => {
 
 it('Applies numeric class if prop is passed', () => {
   render(
-    <KeyValueTable numerical={true} {...props}>
+    <KeyValueTable {...props} numerical={true}>
       <KeyValueTableRow>
-        <td>My label</td>
-        <td>My value</td>
+        <span>My label</span>
+        <span>My value</span>
       </KeyValueTableRow>
     </KeyValueTable>
   );
 
   expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'key-value-table--numerical'
+    'w-full border-collapse mb-8 [border-spacing:0] break-all'
   );
 });
 
 it('Applies muted class if prop is passed', () => {
   render(
-    <KeyValueTable muted={true} {...props}>
+    <KeyValueTable {...props} muted={true}>
       <KeyValueTableRow>
-        <td>My label</td>
-        <td>My value</td>
+        <span>My label</span>
+        <span>My value</span>
       </KeyValueTableRow>
     </KeyValueTable>
   );
 
   expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'key-value-table--muted'
+    'w-full border-collapse mb-8 [border-spacing:0] break-all'
   );
 });

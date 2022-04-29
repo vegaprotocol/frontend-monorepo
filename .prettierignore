@@ -3,3 +3,4 @@
 /dist
 /coverage
 __generated__
+*.md

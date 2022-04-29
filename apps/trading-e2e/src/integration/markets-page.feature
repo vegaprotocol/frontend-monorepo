@@ -16,19 +16,6 @@ Feature: Markets page
     When I click on "Suspended" market
     Then trading page for "suspended" market is displayed
 
-  Scenario: Accounts displayed when connected to wallet
-    Given I am on the trading page for an active market
-    And I connect to Vega Wallet
-    When I click on accounts tab
-    Then accounts are displayed
-    And I can see account for tEURO
-
-  Scenario: Positions displayed
-    Given I am on the trading page for an active market
-    And I connect to Vega Wallet
-    When I click on positions tab
-    Then positions are displayed
-
   Scenario: Orderbook displayed
     Given I am on the trading page for an active market
     When I click on order book tab

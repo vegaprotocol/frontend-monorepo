@@ -7,8 +7,10 @@ export interface ERC20Asset extends AssetFields {
   };
 }
 
+type UnknownAsset = Pick<AssetFields, '__typename' | 'source'>;
+
 // Type guard to ensure an asset is an ERC20 token
-export const isERC20Asset = (asset: AssetFields): asset is ERC20Asset => {
+export const isERC20Asset = (asset: UnknownAsset): asset is ERC20Asset => {
   if (asset.source.__typename === 'ERC20') {
     return true;
   }
