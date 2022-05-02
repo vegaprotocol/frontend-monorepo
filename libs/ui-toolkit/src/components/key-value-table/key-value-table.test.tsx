@@ -12,7 +12,7 @@ const props: KeyValueTableProps = {
 it('Renders the correct elements', () => {
   const { container } = render(
     <KeyValueTable {...props}>
-      <KeyValueTableRow>
+      <KeyValueTableRow inline={true}>
         <span>My label</span>
         <span>My value</span>
       </KeyValueTableRow>
@@ -38,10 +38,10 @@ it('Renders the correct elements', () => {
   expect(rows[1].children[1]).toHaveTextContent('My value 2');
 });
 
-it('Applies numeric class if prop is passed', () => {
+it('Applies numeric class if prop is passed row not inline', () => {
   render(
     <KeyValueTable {...props} numerical={true}>
-      <KeyValueTableRow>
+      <KeyValueTableRow inline={false}>
         <span>My label</span>
         <span>My value</span>
       </KeyValueTableRow>
@@ -51,12 +51,35 @@ it('Applies numeric class if prop is passed', () => {
   expect(screen.getByTestId('key-value-table')).toHaveClass(
     'w-full border-collapse mb-8 [border-spacing:0] break-all'
   );
+
+  expect(screen.getByTestId('key-value-table-row')).toHaveClass(
+    ' flex gap-1 flex-wrap justify-between border-b first:border-t border-black dark:border-white flex-col items-start'
+  );
+});
+
+it('Applies numeric class if prop is passed row inline', () => {
+  render(
+    <KeyValueTable {...props} numerical={true}>
+      <KeyValueTableRow inline={true}>
+        <span>My label</span>
+        <span>My value</span>
+      </KeyValueTableRow>
+    </KeyValueTable>
+  );
+
+  expect(screen.getByTestId('key-value-table')).toHaveClass(
+    'w-full border-collapse mb-8 [border-spacing:0] break-all'
+  );
+
+  expect(screen.getByTestId('key-value-table-row')).toHaveClass(
+    'flex gap-1 flex-wrap justify-between border-b first:border-t border-black dark:border-white flex-row items-center'
+  );
 });
 
 it('Applies muted class if prop is passed', () => {
   render(
     <KeyValueTable {...props} muted={true}>
-      <KeyValueTableRow>
+      <KeyValueTableRow inline={false}>
         <span>My label</span>
         <span>My value</span>
       </KeyValueTableRow>

@@ -70,7 +70,7 @@ export const KeyValueTableRow = ({
   className,
   muted,
   numerical,
-  inline,
+  inline = true,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
     'flex gap-1 flex-wrap justify-between border-b first:border-t border-black dark:border-white',
@@ -91,7 +91,7 @@ export const KeyValueTableRow = ({
   );
 
   return (
-    <dl className={dlClassName}>
+    <dl className={dlClassName} data-testid="key-value-table-row">
       <dt className={dtClassName}>{children[0]}</dt>
       <dd className={ddClassName}>{children[1]}</dd>
     </dl>

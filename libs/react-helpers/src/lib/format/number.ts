@@ -36,3 +36,6 @@ export const formatNumber = (
 
   return getNumberFormat(formatDecimals).format(Number(x));
 };
+
+// export const formatNumberWithDecimals = (num: number, decimalPlaces: number) =>
+//   Math.ceil(num * Math.pow(10, decimalPlaces)) / Math.pow(10, decimalPlaces);
