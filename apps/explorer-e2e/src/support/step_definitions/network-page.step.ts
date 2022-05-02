@@ -9,3 +9,7 @@ When('I navigate to network parameters page', () => {
 Then('network parameters page is correctly displayed', () => {
   networkPage.verifyNetworkParametersDisplayed();
 });
+
+Then('each value is non-empty', () => {
+  networkPage.eachValueIsNonEmpty();
+});

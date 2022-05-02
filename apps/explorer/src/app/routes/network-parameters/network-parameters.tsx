@@ -58,7 +58,7 @@ export const NetworkParametersTable = ({
     <RouteTitle data-testid="network-param-header">
       {t('Network Parameters')}
     </RouteTitle>
-    <KeyValueTable>
+    <KeyValueTable data-testid="parameters">
       {(data?.networkParameters || []).map((row) => renderRow(row))}
     </KeyValueTable>
   </section>
