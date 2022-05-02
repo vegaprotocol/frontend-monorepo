@@ -12,11 +12,12 @@ import type {
 } from './__generated__/NetworkParametersQuery';
 
 export const renderRow = (row: NetworkParametersQuery_networkParameters) => {
+  const isSyntaxRow =
+    isJsonString(row.value) && Object.keys(JSON.parse(row.value)).length > 0;
   return (
-    <KeyValueTableRow key={row.key}>
+    <KeyValueTableRow key={row.key} inline={!isSyntaxRow}>
       {row.key}
-      {isJsonString(row.value) &&
-      Object.keys(JSON.parse(row.value)).length > 0 ? (
+      {isSyntaxRow ? (
         <SyntaxHighlighter data={JSON.parse(row.value)} />
       ) : isNaN(Number(row.value)) ? (
         row.value
