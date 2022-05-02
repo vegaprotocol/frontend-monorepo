@@ -1,9 +1,10 @@
 import { ethers } from 'ethers';
+import type { Web3ReactHooks } from '@web3-react/core';
 import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
 
-export const metamask = initializeConnector<MetaMask>(
+export const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
 );
 
@@ -14,22 +15,23 @@ if (isNaN(CHAIN_ID)) {
   throw new Error('Invalid Ethereum chain ID for environment');
 }
 
-export const walletconnect = initializeConnector<WalletConnect>(
-  (actions) =>
-    new WalletConnect(actions, {
-      rpc: {
-        [CHAIN_ID]: PROVIDER_URL,
-      },
-    }),
-  [CHAIN_ID]
-);
+export const [walletconnect, walletconnectHooks] =
+  initializeConnector<WalletConnect>(
+    (actions) =>
+      new WalletConnect(actions, {
+        rpc: {
+          [CHAIN_ID]: PROVIDER_URL,
+        },
+      }),
+    [CHAIN_ID]
+  );
 
 export const defaultProvider = new ethers.providers.JsonRpcProvider(
   PROVIDER_URL,
   CHAIN_ID
 );
 
-export const Connectors = {
-  metamask,
-  walletconnect,
-};
+export const Connectors: [MetaMask | WalletConnect, Web3ReactHooks][] = [
+  [metamask, metamaskHooks],
+  [walletconnect, walletconnectHooks],
+];
