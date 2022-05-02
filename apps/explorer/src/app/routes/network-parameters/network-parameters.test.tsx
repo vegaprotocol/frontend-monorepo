@@ -23,7 +23,7 @@ describe('NetworkParametersTable', () => {
       'Network Parameters'
     );
     const rows = container.getElementsByTagName('dl');
-    // Row 1
+
     expect(rows[0].firstChild).toHaveTextContent(
       'market.liquidityProvision.minLpStakeQuantumMultiple'
     );
@@ -34,6 +34,6 @@ describe('NetworkParametersTable', () => {
       'market.fee.factors.infrastructureFee'
     );
     expect(rows[0].children[1]).toHaveTextContent('1');
-    expect(rows[1].children[1]).toHaveTextContent('0.0000'); //  this was supposed to be 0.0005 but it was truncated to 0.000
+    expect(rows[1].children[1]).toHaveTextContent('0.0000');
   });
 });
