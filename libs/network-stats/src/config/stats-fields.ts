@@ -1,4 +1,4 @@
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { Stats as IStats, StatFields as IStatFields } from './types';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
@@ -60,7 +60,7 @@ export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
     {
       title: t('Total staked'),
       formatter: (total: string) => {
-        return formatNumber(total, 18, 2);
+        return addDecimalsFormatNumber(total, 18, 2);
       },
       description: t('Sum of VEGA associated with a Vega key'),
     },

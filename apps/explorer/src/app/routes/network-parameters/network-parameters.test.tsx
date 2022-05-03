@@ -34,6 +34,6 @@ describe('NetworkParametersTable', () => {
       'market.fee.factors.infrastructureFee'
     );
     expect(rows[0].children[1]).toHaveTextContent('1');
-    expect(rows[1].children[1]).toHaveTextContent('0.0000');
+    expect(rows[1].children[1]).toHaveTextContent('0.0005');
   });
 });

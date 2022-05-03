@@ -12,8 +12,7 @@ import type {
 } from './__generated__/NetworkParametersQuery';
 
 export const renderRow = (row: NetworkParametersQuery_networkParameters) => {
-  const isSyntaxRow =
-    isJsonString(row.value) && Object.keys(JSON.parse(row.value)).length > 0;
+  const isSyntaxRow = isJsonObject(row.value);
   return (
     <KeyValueTableRow key={row.key} inline={!isSyntaxRow}>
       {row.key}
@@ -28,13 +27,12 @@ export const renderRow = (row: NetworkParametersQuery_networkParameters) => {
   );
 };
 
-export const isJsonString = (str: string) => {
+export const isJsonObject = (str: string) => {
   try {
-    JSON.parse(str);
+    return JSON.parse(str) && Object.keys(JSON.parse(str)).length > 0;
   } catch (e) {
     return false;
   }
-  return true;
 };
 
 export const NETWORK_PARAMETERS_QUERY = gql`
@@ -67,5 +65,5 @@ export const NetworkParametersTable = ({
 export const NetworkParameters = () => {
   const { data } = useQuery<NetworkParametersQuery>(NETWORK_PARAMETERS_QUERY);
   if (!data || !data.networkParameters) return null;
-  return <NetworkParametersTable data={data}></NetworkParametersTable>;
+  return <NetworkParametersTable data={data} />;
 };

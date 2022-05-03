@@ -1,7 +1,7 @@
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 
@@ -76,7 +76,7 @@ export const OrderDialog = ({
       {finalizedOrder.type === 'Limit' && finalizedOrder.market && (
         <p>
           {t(
-            `Price: ${formatNumber(
+            `Price: ${addDecimalsFormatNumber(
               finalizedOrder.price,
               finalizedOrder.market.decimalPlaces
             )}`
