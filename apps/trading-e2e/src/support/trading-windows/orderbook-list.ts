@@ -31,7 +31,7 @@ export default class OrderBookList {
     cy.getByTestId(this.cumulativeVolTestId(price)).should('not.be.empty');
   }
 
-  verifyOrderBookFigures(
+  verifyOrderBookRow(
     price: string,
     expectedBidVol: string,
     expectedPrice: string,
