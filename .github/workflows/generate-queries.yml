@@ -26,5 +26,5 @@ jobs:
         run: node ./scripts/get-queries.js
       - uses: actions/upload-artifact@v2
         with:
-          name: coverage
+          name: queries
           path: ./queries.graphql
