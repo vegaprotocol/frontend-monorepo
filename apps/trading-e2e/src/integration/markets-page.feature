@@ -15,8 +15,3 @@ Feature: Markets page
     Given I am on the markets page
     When I click on "Suspended" market
     Then trading page for "suspended" market is displayed
-
-  Scenario: Orderbook displayed
-    Given I am on the trading page for an active market
-    When I click on order book tab
-    Then orderbook can be reduced and expanded

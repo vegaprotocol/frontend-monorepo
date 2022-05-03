@@ -161,11 +161,62 @@ When('I click on order book tab', () => {
   tradingPage.clickOrderBookTab();
 });
 
+Then('orderbook is displayed with expected orders', () => {
+  orderBookList.verifyOrderBookFigures('826342', '0', '8.26342', '264', '1488');
+  orderBookList.verifyOrderBookFigures(
+    '826336',
+    '1475',
+    '8.26336',
+    '0',
+    '1475'
+  );
+  orderBookList.verifyDisplayedVolume(
+    '826342',
+    false,
+    '18%',
+    orderBookList.testingVolume.AskVolume
+  );
+  orderBookList.verifyDisplayedVolume(
+    '826331',
+    true,
+    '100%',
+    orderBookList.testingVolume.CumulativeVolume
+  );
+  //mid level price
+  orderBookList.verifyOrderBookFigures('826337', '0', '8.26337', '0', '303');
+  orderBookList.verifyDisplayedVolume(
+    '826337',
+    false,
+    '10%',
+    orderBookList.testingVolume.CumulativeVolume
+  );
+});
+
 Then('orderbook can be reduced and expanded', () => {
-  orderBookList.verifyMockedOrderBookDisplayed(33);
-  orderBookList.clickZoomOut();
-  orderBookList.verifyMockedOrderBookDisplayed(6);
-  orderBookList.verifyMockedOrderBookDisplayed(33);
-  orderBookList.clickZoomIn();
-  orderBookList.verifyCumulativeVolume(false, 123, '65%');
+  orderBookList.changePrecision('10');
+  orderBookList.verifyOrderBookFigures(
+    '82634',
+    '1668',
+    '8.2634',
+    '1488',
+    '1488/1668'
+  );
+  orderBookList.verifyCumulativeAskBarPercentage('45%');
+  orderBookList.verifyCumulativeBidBarPercentage('50%');
+  orderBookList.changePrecision('100');
+  orderBookList.verifyOrderBookFigures('8263', '3348', '8.263', '1488', '');
+  orderBookList.verifyDisplayedVolume(
+    '8263',
+    true,
+    '100%',
+    orderBookList.testingVolume.BidVolume
+  );
+  orderBookList.verifyDisplayedVolume(
+    '8263',
+    false,
+    '45%',
+    orderBookList.testingVolume.AskVolume
+  );
+  orderBookList.changePrecision('1');
+  orderBookList.verifyOrderBookFigures('826342', '0', '8.26342', '264', '1488');
 });

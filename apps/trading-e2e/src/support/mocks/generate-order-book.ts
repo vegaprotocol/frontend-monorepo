@@ -4,6 +4,7 @@ import type {
   MarketDepth,
   MarketDepth_market,
 } from '@vegaprotocol/market-depth';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 export const generateOrderBook = (
   override?: PartialDeep<MarketDepth>
@@ -12,7 +13,12 @@ export const generateOrderBook = (
     id: 'b2426f67b085ba8fb429f1b529d49372b2d096c6fb6f509f76c5863abb6d969e',
     decimalPlaces: 5,
     data: {
-      midPrice: '826337',
+      staticMidPrice: '826337',
+      marketTradingMode: MarketTradingMode.Continuous,
+      indicativeVolume: '0',
+      indicativePrice: '0',
+      bestStaticBidPrice: '826336',
+      bestStaticOfferPrice: '826338',
       market: {
         id: 'b2426f67b085ba8fb429f1b529d49372b2d096c6fb6f509f76c5863abb6d969e',
         __typename: 'Market',
