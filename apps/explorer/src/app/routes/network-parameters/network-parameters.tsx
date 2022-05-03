@@ -5,7 +5,11 @@ import {
   KeyValueTableRow,
   SyntaxHighlighter,
 } from '@vegaprotocol/ui-toolkit';
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  formatNumber,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../components/route-title';
 import type {
   NetworkParametersQuery,
@@ -13,17 +17,46 @@ import type {
 } from './__generated__/NetworkParametersQuery';
 import orderBy from 'lodash/orderBy';
 
-export const renderRow = (row: NetworkParametersQuery_networkParameters) => {
-  const isSyntaxRow = isJsonObject(row.value);
+const BIG_NUMBER_PARAMS = [
+  'spam.protection.delegation.min.tokens',
+  'validators.delegation.minAmount',
+  'reward.staking.delegation.minimumValidatorStake',
+  'reward.staking.delegation.maxPayoutPerParticipant',
+  'reward.staking.delegation.maxPayoutPerEpoch',
+  'spam.protection.voting.min.tokens',
+  'governance.proposal.freeform.minProposerBalance',
+  'governance.proposal.updateNetParam.minVoterBalance',
+  'governance.proposal.updateMarket.minVoterBalance',
+  'governance.proposal.asset.minVoterBalance',
+  'governance.proposal.updateNetParam.minProposerBalance',
+  'governance.proposal.freeform.minVoterBalance',
+  'reward.staking.delegation.maxPayoutPerParticipant',
+  'spam.protection.proposal.min.tokens',
+  'governance.proposal.updateMarket.minProposerBalance',
+  'spam.protection.voting.min.tokens',
+  'reward.staking.delegation.minimumValidatorStake',
+  'reward.staking.delegation.maxPayoutPerEpoch',
+  'validators.delegation.minAmount',
+  'governance.proposal.freeform.minProposerBalance',
+  'governance.proposal.asset.minProposerBalance',
+];
+
+export const renderRow = ({
+  key,
+  value,
+}: NetworkParametersQuery_networkParameters) => {
+  const isSyntaxRow = isJsonObject(value);
   return (
-    <KeyValueTableRow key={row.key} inline={!isSyntaxRow}>
-      {row.key}
+    <KeyValueTableRow key={key} inline={!isSyntaxRow}>
+      {key}
       {isSyntaxRow ? (
-        <SyntaxHighlighter data={JSON.parse(row.value)} />
-      ) : isNaN(Number(row.value)) ? (
-        row.value
+        <SyntaxHighlighter data={JSON.parse(value)} />
+      ) : isNaN(Number(value)) ? (
+        value
+      ) : BIG_NUMBER_PARAMS.includes(key) ? (
+        addDecimalsFormatNumber(Number(value), 4)
       ) : (
-        formatNumber(Number(row.value), 4)
+        formatNumber(Number(value), 4)
       )}
     </KeyValueTableRow>
   );
