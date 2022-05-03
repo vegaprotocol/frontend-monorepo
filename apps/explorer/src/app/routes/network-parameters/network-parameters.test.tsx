@@ -23,10 +23,6 @@ describe('NetworkParametersTable', () => {
       'Network Parameters'
     );
     const rows = container.getElementsByTagName('dl');
-
-    expect(rows[0].firstChild).toHaveTextContent(
-      'market.liquidityProvision.minLpStakeQuantumMultiple'
-    );
     expect(rows[0].children[0]).toHaveTextContent(
       'market.liquidityProvision.minLpStakeQuantumMultiple'
     );
