@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import {
+  AsyncRenderer,
   KeyValueTable,
   KeyValueTableRow,
   SyntaxHighlighter,
@@ -10,6 +11,7 @@ import type {
   NetworkParametersQuery,
   NetworkParametersQuery_networkParameters,
 } from './__generated__/NetworkParametersQuery';
+import orderBy from 'lodash/orderBy';
 
 export const renderRow = (row: NetworkParametersQuery_networkParameters) => {
   const isSyntaxRow = isJsonObject(row.value);
@@ -63,7 +65,24 @@ export const NetworkParametersTable = ({
 );
 
 export const NetworkParameters = () => {
-  const { data } = useQuery<NetworkParametersQuery>(NETWORK_PARAMETERS_QUERY);
-  if (!data || !data.networkParameters) return null;
-  return <NetworkParametersTable data={data} />;
+  const { data, loading, error } = useQuery<NetworkParametersQuery>(
+    NETWORK_PARAMETERS_QUERY
+  );
+  return (
+    <AsyncRenderer
+      data={data}
+      loading={loading}
+      error={error}
+      render={(data) => {
+        const ascParams = orderBy(
+          data.networkParameters || [],
+          (param) => param.key,
+          'asc'
+        );
+        return (
+          <NetworkParametersTable data={{ networkParameters: ascParams }} />
+        );
+      }}
+    />
+  );
 };
