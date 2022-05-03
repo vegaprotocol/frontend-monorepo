@@ -1,0 +1,659 @@
+# File: apps/token/src/components/vega-wallet/hooks.ts
+# Query:
+
+query Delegations($partyId: ID!) {
+  epoch {
+    id
+  }
+  party(id: $partyId) {
+    id
+    delegations {
+      amountFormatted @client
+      amount
+      node {
+        id
+        name
+      }
+      epoch
+    }
+    stake {
+      currentStakeAvailable
+      currentStakeAvailableFormatted @client
+    }
+    accounts {
+      asset {
+        name
+        id
+        decimals
+        symbol
+        source {
+          __typename
+          ... on ERC20 {
+            contractAddress
+          }
+        }
+      }
+      type
+      balance
+    }
+  }
+}
+
+# File: apps/token/src/hooks/use-create-withdrawal.ts
+# Query:
+
+query WithdrawalPoll($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    withdrawals {
+      id
+      amount
+      status
+      asset {
+        id
+        symbol
+        decimals
+      }
+      createdTimestamp
+      withdrawnTimestamp
+      txHash
+      details {
+        ... on Erc20WithdrawalDetails {
+          receiverAddress
+        }
+      }
+    }
+  }
+}
+
+# File: apps/token/src/hooks/use-erc-poll20-approval.ts
+# Query:
+
+query Erc20ApprovalPoll($withdrawalId: ID!) {
+  erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
+    assetSource
+    amount
+    nonce
+    signatures
+    targetAddress
+    expiry
+  }
+}
+
+# File: apps/token/src/routes/governance/proposal-fragment.ts
+# Query:
+
+fragment ProposalFields on Proposal {
+  id
+  reference
+  state
+  datetime
+  rejectionReason
+  errorDetails
+  party {
+    id
+  }
+  terms {
+    closingDatetime
+    enactmentDatetime
+    change {
+      ... on NewMarket {
+        decimalPlaces
+        metadata
+        instrument {
+          name
+        }
+      }
+      ... on UpdateMarket {
+        marketId
+      }
+      ... on NewAsset {
+        __typename
+        symbol
+        source {
+          ... on BuiltinAsset {
+            maxFaucetAmountMint
+          }
+          ... on ERC20 {
+            contractAddress
+          }
+        }
+      }
+      ... on UpdateNetworkParameter {
+        networkParameter {
+          key
+          value
+        }
+      }
+      ... on NewFreeform {
+        url
+        description
+        hash
+      }
+    }
+  }
+  votes {
+    yes {
+      totalTokens
+      totalNumber
+      votes {
+        value
+        party {
+          id
+          stake {
+            currentStakeAvailable
+          }
+        }
+        datetime
+      }
+    }
+    no {
+      totalTokens
+      totalNumber
+      votes {
+        value
+        party {
+          id
+          stake {
+            currentStakeAvailable
+          }
+        }
+        datetime
+      }
+    }
+  }
+}
+
+# File: apps/token/src/routes/staking/associate/hooks.ts
+# Query:
+
+query PartyStakeLinkings($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    stake {
+      linkings {
+        id
+        txHash
+        status
+      }
+    }
+  }
+}
+
+# File: apps/trading/lib/query-fragments.ts
+# Query:
+
+fragment AssetFields on Asset {
+  id
+  symbol
+  name
+  decimals
+  source {
+    ... on ERC20 {
+      contractAddress
+    }
+  }
+}
+
+# File: libs/accounts/src/lib/accounts-data-provider.ts
+# Query:
+
+fragment AccountFields on Account {
+  type
+  balance
+  market {
+    id
+    name
+  }
+  asset {
+    id
+    symbol
+    decimals
+  }
+}
+
+# File: libs/accounts/src/lib/accounts-data-provider.ts
+# Query:
+
+query Accounts($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    accounts {
+      ...AccountFields
+    }
+  }
+}
+
+# File: libs/accounts/src/lib/accounts-data-provider.ts
+# Query:
+
+subscription AccountSubscribe($partyId: ID!) {
+  accounts(partyId: $partyId) {
+    ...AccountFields
+  }
+}
+
+# File: libs/candles-chart/src/lib/data-source.ts
+# Query:
+
+fragment CandleFields on Candle {
+  datetime
+  high
+  low
+  open
+  close
+  volume
+}
+
+# File: libs/candles-chart/src/lib/data-source.ts
+# Query:
+
+query Candles($marketId: ID!, $interval: Interval!, $since: String!) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    tradableInstrument {
+      instrument {
+        id
+        name
+        code
+      }
+    }
+    candles(interval: $interval, since: $since) {
+      ...CandleFields
+    }
+  }
+}
+
+# File: libs/candles-chart/src/lib/data-source.ts
+# Query:
+
+subscription CandlesSub($marketId: ID!, $interval: Interval!) {
+  candles(marketId: $marketId, interval: $interval) {
+    ...CandleFields
+  }
+}
+
+# File: libs/candles-chart/src/lib/data-source.ts
+# Query:
+
+query Chart($marketId: ID!) {
+  market(id: $marketId) {
+    decimalPlaces
+    data {
+      priceMonitoringBounds {
+        minValidPrice
+        maxValidPrice
+        referencePrice
+      }
+    }
+  }
+}
+
+# File: libs/deal-ticket/src/use-order-submit.ts
+# Query:
+
+subscription OrderEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
+    eventId
+    block
+    type
+    event {
+      ... on Order {
+        type
+        id
+        status
+        rejectionReason
+        createdAt
+        size
+        price
+        market {
+          name
+          decimalPlaces
+        }
+      }
+    }
+  }
+}
+
+# File: libs/deposits/src/lib/use-submit-deposit.ts
+# Query:
+
+subscription DepositEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Deposit]) {
+    event {
+      ... on Deposit {
+        id
+        txHash
+        status
+      }
+    }
+  }
+}
+
+# File: libs/market-depth/src/lib/market-depth-data-provider.ts
+# Query:
+
+query MarketDepth($marketId: ID!) {
+  market(id: $marketId) {
+    id
+    decimalPlaces
+    data {
+      midPrice
+      market {
+        id
+      }
+    }
+    depth {
+      lastTrade {
+        price
+      }
+      sell {
+        price
+        volume
+        numberOfOrders
+      }
+      buy {
+        price
+        volume
+        numberOfOrders
+      }
+      sequenceNumber
+    }
+  }
+}
+
+# File: libs/market-depth/src/lib/market-depth-data-provider.ts
+# Query:
+
+subscription MarketDepthSubscription($marketId: ID!) {
+  marketDepthUpdate(marketId: $marketId) {
+    market {
+      id
+      data {
+        midPrice
+        market {
+          id
+        }
+      }
+    }
+    sell {
+      price
+      volume
+      numberOfOrders
+    }
+    buy {
+      price
+      volume
+      numberOfOrders
+    }
+    sequenceNumber
+  }
+}
+
+# File: libs/market-list/src/lib/markets-data-provider.ts
+# Query:
+
+fragment MarketDataFields on MarketData {
+  market {
+    id
+    state
+    tradingMode
+  }
+  bestBidPrice
+  bestOfferPrice
+  markPrice
+}
+
+# File: libs/market-list/src/lib/markets-data-provider.ts
+# Query:
+
+query Markets {
+  markets {
+    id
+    name
+    decimalPlaces
+    data {
+      ...MarketDataFields
+    }
+    tradableInstrument {
+      instrument {
+        code
+        product {
+          ... on Future {
+            settlementAsset {
+              symbol
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# File: libs/market-list/src/lib/markets-data-provider.ts
+# Query:
+
+subscription MarketDataSub {
+  marketData {
+    ...MarketDataFields
+  }
+}
+
+# File: libs/order-list/src/lib/orders-data-provider.ts
+# Query:
+
+fragment OrderFields on Order {
+  id
+  market {
+    id
+    name
+    decimalPlaces
+    tradableInstrument {
+      instrument {
+        code
+      }
+    }
+  }
+  type
+  side
+  size
+  status
+  rejectionReason
+  price
+  timeInForce
+  remaining
+  expiresAt
+  createdAt
+  updatedAt
+}
+
+# File: libs/order-list/src/lib/orders-data-provider.ts
+# Query:
+
+query Orders($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    orders {
+      ...OrderFields
+    }
+  }
+}
+
+# File: libs/order-list/src/lib/orders-data-provider.ts
+# Query:
+
+subscription OrderSub($partyId: ID!) {
+  orders(partyId: $partyId) {
+    ...OrderFields
+  }
+}
+
+# File: libs/positions/src/lib/positions-data-provider.ts
+# Query:
+
+fragment PositionDetails on Position {
+  realisedPNL
+  openVolume
+  unrealisedPNL
+  averageEntryPrice
+  market {
+    id
+    name
+    data {
+      markPrice
+      marketTradingMode
+      market {
+        id
+      }
+    }
+    decimalPlaces
+    tradableInstrument {
+      instrument {
+        id
+        name
+        metadata {
+          tags
+        }
+        code
+        product {
+          ... on Future {
+            settlementAsset {
+              id
+              symbol
+              name
+              decimals
+            }
+            quoteName
+          }
+        }
+      }
+    }
+  }
+}
+
+# File: libs/positions/src/lib/positions-data-provider.ts
+# Query:
+
+query Positions($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    positions {
+      ...PositionDetails
+    }
+  }
+}
+
+# File: libs/positions/src/lib/positions-data-provider.ts
+# Query:
+
+subscription PositionSubscribe($partyId: ID!) {
+  positions(partyId: $partyId) {
+    ...PositionDetails
+  }
+}
+
+# File: libs/trades/src/lib/trades-data-provider.ts
+# Query:
+
+fragment TradeFields on Trade {
+  id
+  price
+  size
+  createdAt
+  market {
+    id
+    decimalPlaces
+  }
+}
+
+# File: libs/trades/src/lib/trades-data-provider.ts
+# Query:
+
+query Trades($marketId: ID!, $maxTrades: Int!) {
+  market(id: $marketId) {
+    id
+    trades(last: $maxTrades) {
+      ...TradeFields
+    }
+  }
+}
+
+# File: libs/trades/src/lib/trades-data-provider.ts
+# Query:
+
+subscription TradesSub($marketId: ID!) {
+  trades(marketId: $marketId) {
+    ...TradeFields
+  }
+}
+
+# File: libs/withdraws/src/lib/queries.ts
+# Query:
+
+query Erc20Approval($withdrawalId: ID!) {
+  erc20WithdrawalApproval(withdrawalId: $withdrawalId) {
+    assetSource
+    amount
+    nonce
+    signatures
+    targetAddress
+    expiry
+  }
+}
+
+# File: libs/withdraws/src/lib/use-complete-withdraw.ts
+# Query:
+
+fragment PendingWithdrawal on Withdrawal {
+  pendingOnForeignChain @client
+  txHash
+}
+
+# File: libs/withdraws/src/lib/use-withdrawals.ts
+# Query:
+
+fragment WithdrawalFields on Withdrawal {
+  id
+  status
+  amount
+  asset {
+    id
+    symbol
+    decimals
+  }
+  createdTimestamp
+  withdrawnTimestamp
+  txHash
+  details {
+    ... on Erc20WithdrawalDetails {
+      receiverAddress
+    }
+  }
+  pendingOnForeignChain @client
+}
+
+# File: libs/withdraws/src/lib/use-withdrawals.ts
+# Query:
+
+query Withdrawals($partyId: ID!) {
+  party(id: $partyId) {
+    id
+    withdrawals {
+      ...WithdrawalFields
+    }
+  }
+}
+
+# File: libs/withdraws/src/lib/use-withdrawals.ts
+# Query:
+
+subscription WithdrawalEvent($partyId: ID!) {
+  busEvents(partyId: $partyId, batchSize: 0, types: [Withdrawal]) {
+    event {
+      ... on Withdrawal {
+        ...WithdrawalFields
+      }
+    }
+  }
+}

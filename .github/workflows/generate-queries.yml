@@ -1,0 +1,30 @@
+name: Generate queries
+
+on:
+  push:
+    branches:
+      - ci/generate-queries
+
+jobs:
+  master:
+    name: Generate Queries
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 16
+        id: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.0
+      - name: Install root dependencies
+        run: yarn install
+      - name: Generate queries
+        run: node ./scripts/get-queries.js
+      - uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: ./queries.graphql
