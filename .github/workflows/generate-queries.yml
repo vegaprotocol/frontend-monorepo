@@ -3,7 +3,7 @@ name: Generate queries
 on:
   push:
     branches:
-      - ci/generate-queries
+      - master
 
 jobs:
   master:
