@@ -49,26 +49,20 @@ export const NETWORK_PARAMETERS_QUERY = gql`
 export interface NetworkParametersTableProps
   extends React.HTMLAttributes<HTMLTableElement> {
   data?: NetworkParametersQuery;
+  error?: Error;
+  loading: boolean;
 }
 
 export const NetworkParametersTable = ({
   data,
+  error,
+  loading,
 }: NetworkParametersTableProps) => (
   <section>
     <RouteTitle data-testid="network-param-header">
       {t('Network Parameters')}
     </RouteTitle>
-    <KeyValueTable data-testid="parameters">
-      {(data?.networkParameters || []).map((row) => renderRow(row))}
-    </KeyValueTable>
-  </section>
-);
 
-export const NetworkParameters = () => {
-  const { data, loading, error } = useQuery<NetworkParametersQuery>(
-    NETWORK_PARAMETERS_QUERY
-  );
-  return (
     <AsyncRenderer
       data={data}
       loading={loading}
@@ -80,9 +74,18 @@ export const NetworkParameters = () => {
           'asc'
         );
         return (
-          <NetworkParametersTable data={{ networkParameters: ascParams }} />
+          <KeyValueTable data-testid="parameters">
+            {(ascParams || []).map((row) => renderRow(row))}
+          </KeyValueTable>
         );
       }}
     />
+  </section>
+);
+
+export const NetworkParameters = () => {
+  const { data, loading, error } = useQuery<NetworkParametersQuery>(
+    NETWORK_PARAMETERS_QUERY
   );
+  return <NetworkParametersTable data={data} error={error} loading={loading} />;
 };
