@@ -18,6 +18,7 @@ import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
 import { NodeList } from './node-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { truncateMiddle } from '../../lib/truncate-middle';
 
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();
@@ -73,7 +74,11 @@ export const StakingStepConnectWallets = () => {
           {t('Connected Ethereum address')}&nbsp;
           <EtherscanLink address={account} text={account} />
         </p>
-        <p>{t('stakingVegaWalletConnected', { key: keypair.pub })}</p>
+        <p>
+          {t('stakingVegaWalletConnected', {
+            key: truncateMiddle(keypair.pub),
+          })}
+        </p>
       </Callout>
     );
   }
@@ -108,7 +113,7 @@ export const StakingStepConnectWallets = () => {
                 isOpen: true,
               })
             }
-            className="fill"
+            className="py-12 h-auto w-full"
             data-testid="connect-to-eth-btn"
           >
             {t('connectEthWallet')}
@@ -120,7 +125,7 @@ export const StakingStepConnectWallets = () => {
           <Callout
             iconName="tick"
             intent={Intent.Success}
-            title={`Vega wallet connected: ${keypair.pub}`}
+            title={`Vega wallet connected: ${truncateMiddle(keypair.pub)}`}
           />
         </div>
       ) : (
