@@ -22,3 +22,29 @@ export const Colors = {
   VEGA_GREEN: '#26ff8a',
   VEGA_YELLOW: '#daff0d',
 };
+
+export function colorByChange(a: number, b: number) {
+  let color = Colors.WHITE;
+
+  if (a < b) {
+    color = Colors.GREEN;
+  }
+
+  if (a > b) {
+    color = Colors.RED;
+  }
+
+  return color;
+}
+
+export function colorByMarketMovement(bullish: boolean | null) {
+  if (bullish === true) {
+    return Colors.GREEN;
+  }
+
+  if (bullish === false) {
+    return Colors.RED;
+  }
+
+  return Colors.WHITE;
+}

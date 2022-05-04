@@ -5,7 +5,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Colors } from '../../config';
 import {
   AppStateActionType,
   useAppState,
@@ -25,7 +24,7 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { Button, Loader } from '@vegaprotocol/ui-toolkit';
+import { Button, Colors, Loader } from '@vegaprotocol/ui-toolkit';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {

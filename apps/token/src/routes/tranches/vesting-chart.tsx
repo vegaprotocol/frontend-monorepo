@@ -1,3 +1,4 @@
+import { Colors } from '@vegaprotocol/ui-toolkit';
 import { format, startOfMonth } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +14,6 @@ import {
   YAxis,
 } from 'recharts';
 
-import { Colors } from '../../config';
 import { DATE_FORMAT_LONG } from '../../lib/date-formats';
 import data from './data.json';
 

@@ -1,6 +1,7 @@
+import { Colors } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { Colors, Links } from '../../config';
+import { Links } from '../../config';
 
 export const DownloadWalletPrompt = () => {
   const { t } = useTranslation();

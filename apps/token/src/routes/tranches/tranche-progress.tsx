@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Colors } from '../../config';
 import { getAbbreviatedNumber } from '../../lib/abbreviate-number';
 import { ProgressBar } from './progress-bar';
 import type { BigNumber } from '../../lib/bignumber';
+import { Colors } from '@vegaprotocol/ui-toolkit';
 
 interface TrancheProgressProps {
   locked: BigNumber;

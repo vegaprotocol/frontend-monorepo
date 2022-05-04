@@ -1,7 +1,7 @@
 import React from 'react';
-import { Colors } from '../config';
 import { usePrevious } from './use-previous';
 import type { BigNumber } from '../lib/bignumber';
+import { Colors } from '@vegaprotocol/ui-toolkit';
 
 const FLASH_DURATION = 1200; // Duration of flash animation in milliseconds
 

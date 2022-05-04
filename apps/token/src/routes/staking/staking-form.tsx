@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { TokenInput } from '../../components/token-input';
-import { Colors, NetworkParams } from '../../config';
+import { NetworkParams } from '../../config';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useNetworkParam } from '../../hooks/use-network-param';
 import { useSearchParams } from '../../hooks/use-search-params';
@@ -26,7 +26,7 @@ import type {
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
-import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
+import { Button, Colors, FormGroup } from '@vegaprotocol/ui-toolkit';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {

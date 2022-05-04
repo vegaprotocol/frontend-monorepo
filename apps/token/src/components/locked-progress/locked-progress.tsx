@@ -2,9 +2,9 @@ import './locked-progress.scss';
 
 import React from 'react';
 
-import { Colors } from '../../config';
 import { formatNumber } from '../../lib/format-number';
 import type { BigNumber } from '../../lib/bignumber';
+import { Colors } from '@vegaprotocol/ui-toolkit';
 
 export interface LockedProgressProps {
   total: BigNumber;

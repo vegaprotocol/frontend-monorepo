@@ -1,6 +1,6 @@
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Colors } from '../../config';
+import { Colors } from '@vegaprotocol/ui-toolkit';
 
 interface TargetAddressMismatchProps {
   connectedAddress: string;
