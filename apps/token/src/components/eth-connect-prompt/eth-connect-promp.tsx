@@ -23,7 +23,7 @@ export const EthConnectPrompt = ({ children }: EthConnectPrompProps) => {
             isOpen: true,
           })
         }
-        className="fill"
+        className="py-12 h-auto w-full"
         data-testid="connect-to-eth-btn"
       >
         {t('connectEthWallet')}

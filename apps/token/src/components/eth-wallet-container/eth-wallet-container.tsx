@@ -23,7 +23,7 @@ export const EthWalletContainer = ({ children }: EthWalletContainerProps) => {
   if (!account) {
     return (
       <Button
-        className="eth-wallet-container fill"
+        className="eth-wallet-container py-12 h-auto w-full mb-12"
         data-testid="connect-to-eth-btn"
         onClick={() =>
           appDispatch({
