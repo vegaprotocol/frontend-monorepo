@@ -11,4 +11,12 @@ export default class NetworkParametersPage extends BasePage {
     );
     cy.getByTestId(this.parameters).should('not.be.empty');
   }
+
+  eachValueIsNonEmpty() {
+    cy.getByTestId(this.parameters).then(($parameters) => {
+      $parameters.each((_index, element) => {
+        cy.wrap(element).should('not.be.empty');
+      });
+    });
+  }
 }

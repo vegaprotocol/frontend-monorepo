@@ -3,7 +3,7 @@ import {
   PriceCell,
   Vol,
   CumulativeVol,
-  formatNumber,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 
 interface OrderbookRowProps {
@@ -33,7 +33,7 @@ export const OrderbookRow = React.memo(
         <Vol value={bid} relativeValue={relativeBidVol} type="bid" />
         <PriceCell
           value={BigInt(price)}
-          valueFormatted={formatNumber(price, decimalPlaces)}
+          valueFormatted={addDecimalsFormatNumber(price, decimalPlaces)}
         />
         <Vol value={ask} relativeValue={relativeAskVol} type="ask" />
         <CumulativeVol

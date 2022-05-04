@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import {
   PriceFlashCell,
-  formatNumber,
+  addDecimalsFormatNumber,
   volumePrefix,
   addDecimal,
   t,
@@ -100,7 +100,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
             value,
             data,
           }: PositionsTableValueFormatterParams) =>
-            formatNumber(value, data.market.decimalPlaces)
+            addDecimalsFormatNumber(value, data.market.decimalPlaces)
           }
         />
         <AgGridColumn
