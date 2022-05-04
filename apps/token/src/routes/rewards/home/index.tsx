@@ -130,7 +130,6 @@ export const RewardsIndex = () => {
         data.epoch.timestamps.start &&
         data.epoch.timestamps.expiry && (
           <EpochCountdown
-            containerClass="staking-node__epoch"
             // eslint-disable-next-line
             id={data!.epoch.id}
             startDate={new Date(data.epoch.timestamps.start)}

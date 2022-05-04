@@ -12,14 +12,12 @@ export interface EpochCountdownProps {
   id: string;
   startDate: Date;
   endDate: Date;
-  containerClass?: string;
 }
 
 export function EpochCountdown({
   id,
   startDate,
   endDate,
-  containerClass,
 }: EpochCountdownProps) {
   const { t } = useTranslation();
   const [now, setNow] = React.useState(Date.now());
@@ -61,10 +59,7 @@ export function EpochCountdown({
   }, [endDate]);
 
   return (
-    <div
-      data-testid="epoch-countdown"
-      className={`${containerClass} epoch-countdown`}
-    >
+    <div data-testid="epoch-countdown" className="pt-20 epoch-countdown">
       <div className="epoch-countdown__title">
         <h3>
           {t('Epoch')} {id}
