@@ -96,19 +96,15 @@ export function useUserVote(
     setVoteState(VoteState.Pending);
 
     try {
-      const variables: any = {
+      const variables = {
         pubKey: keypair.pub,
+        propagate: true,
         voteSubmission: {
           value: VOTE_VALUE_MAP[value],
           proposalId,
         },
       };
-      const [err] = await vegaWalletService.commandSync(variables);
-
-      if (err) {
-        setVoteState(VoteState.Failed);
-        captureException(err);
-      }
+      await sendTx(variables);
 
       // Now await vote via poll in parent component
     } catch (err) {

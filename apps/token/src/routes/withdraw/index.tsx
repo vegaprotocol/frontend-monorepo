@@ -14,8 +14,9 @@ import { Routes } from '../router-config';
 import type {
   WithdrawPage,
   WithdrawPageVariables,
+  WithdrawPage_party_accounts_asset,
 } from './__generated__/WithdrawPage';
-import { WithdrawForm } from './withdraw-form';
+import { WithdrawManager } from '@vegaprotocol/withdraws';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ const WITHDRAW_PAGE_QUERY = gql`
   query WithdrawPage($partyId: ID!) {
     party(id: $partyId) {
       id
+
       accounts {
         balance
         balanceFormatted @client
@@ -71,6 +73,17 @@ const WITHDRAW_PAGE_QUERY = gql`
           ... on Erc20WithdrawalDetails {
             receiverAddress
           }
+        }
+      }
+    }
+    assets {
+      id
+      symbol
+      name
+      decimals
+      source {
+        ... on ERC20 {
+          contractAddress
         }
       }
     }
@@ -137,10 +150,9 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
       )}
       <EthWalletContainer>
         {(connectedAddress) => (
-          <WithdrawForm
+          <WithdrawManager
+            assets={data.assets?.filter(isERC20Asset) || []}
             accounts={accounts}
-            currVegaKey={currVegaKey}
-            connectedAddress={connectedAddress}
           />
         )}
       </EthWalletContainer>
@@ -149,3 +161,24 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
 };
 
 export default Withdraw;
+
+// TODO: This is duplicated in trading/lib/asset we should make this sharable
+export interface ERC20Asset extends WithdrawPage_party_accounts_asset {
+  source: {
+    __typename: 'ERC20';
+    contractAddress: string;
+  };
+}
+
+type UnknownAsset = Pick<
+  WithdrawPage_party_accounts_asset,
+  '__typename' | 'source'
+>;
+
+// Type guard to ensure an asset is an ERC20 token
+export const isERC20Asset = (asset: UnknownAsset): asset is ERC20Asset => {
+  if (asset.source.__typename === 'ERC20') {
+    return true;
+  }
+  return false;
+};

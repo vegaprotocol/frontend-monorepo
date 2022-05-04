@@ -13,11 +13,6 @@ import { useSearchParams } from '../../hooks/use-search-params';
 import { BigNumber } from '../../lib/bignumber';
 import { addDecimal, removeDecimal } from '../../lib/decimals';
 import type {
-  DelegateSubmissionInput,
-  UndelegateSubmissionInput,
-} from '../../lib/vega-wallet/vega-wallet-service';
-import { vegaWalletService } from '../../lib/vega-wallet/vega-wallet-service';
-import type {
   PartyDelegations,
   PartyDelegationsVariables,
 } from './__generated__/PartyDelegations';
@@ -25,6 +20,11 @@ import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
 import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
+import type {
+  DelegateSubmissionBody,
+  UndelegateSubmissionBody,
+} from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -81,6 +81,7 @@ export const StakingForm = ({
   const navigate = useNavigate();
   const client = useApolloClient();
   const { appState } = useAppState();
+  const { sendTx } = useVegaWallet();
   const [formState, setFormState] = React.useState(FormState.Default);
   const { t } = useTranslation();
   const [action, setAction] = React.useState<StakeAction>(params.action);
@@ -114,15 +115,17 @@ export const StakingForm = ({
 
   async function onSubmit() {
     setFormState(FormState.Pending);
-    const delegateInput: DelegateSubmissionInput = {
+    const delegateInput: DelegateSubmissionBody = {
       pubKey: pubkey,
+      propagate: true,
       delegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
       },
     };
-    const undelegateInput: UndelegateSubmissionInput = {
+    const undelegateInput: UndelegateSubmissionBody = {
       pubKey: pubkey,
+      propagate: true,
       undelegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
@@ -134,12 +137,7 @@ export const StakingForm = ({
     };
     try {
       const command = action === Actions.Add ? delegateInput : undelegateInput;
-      const [err] = await vegaWalletService.commandSync(command);
-
-      if (err) {
-        setFormState(FormState.Failure);
-        Sentry.captureException(err);
-      }
+      await sendTx(command);
 
       // await success via poll
     } catch (err) {

@@ -10,6 +10,7 @@ import {
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
 import type { VegaConnector } from '.';
+import type { TransactionSubmission } from '../types';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...
@@ -88,8 +89,9 @@ export class RestConnector implements VegaConnector {
     }
   }
 
-  async sendTx(body: OrderSubmissionBody | WithdrawSubmissionBody) {
+  async sendTx(body: TransactionSubmission) {
     try {
+      // @ts-ignore TODO: regen service and publish update api-client repo
       return await this.service.commandSyncPost(body);
     } catch (err) {
       return this.handleSendTxError(err);

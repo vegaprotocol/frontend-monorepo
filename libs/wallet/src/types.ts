@@ -22,7 +22,41 @@ export enum OrderTimeInForce {
   GFA = 'TIME_IN_FORCE_GFA',
 }
 
+// TODO: add to vegawallet-service-api-client
+export interface VoteSubmissionBody {
+  pubKey: string;
+  propagate: boolean;
+  voteSubmission: {
+    value: 'VALUE_YES' | 'VALUE_NO';
+    proposalId: string;
+  };
+}
+
+// TODO: add to vegawallet-service-api-client
+export interface UndelegateSubmissionBody {
+  pubKey: string;
+  propagate: boolean;
+  undelegateSubmission: {
+    nodeId: string;
+    amount: string;
+    method: 'METHOD_NOW' | 'METHOD_AT_END_OF_EPOCH';
+  };
+}
+
+// TODO: add to vegawallet-service-api-client
+export interface DelegateSubmissionBody {
+  pubKey: string;
+  propagate: boolean;
+  delegateSubmission: {
+    nodeId: string;
+    amount: string;
+  };
+}
+
 // Will make Transaction a union type as other transactions are added
 export type TransactionSubmission =
   | OrderSubmissionBody
-  | WithdrawSubmissionBody;
+  | WithdrawSubmissionBody
+  | VoteSubmissionBody
+  | DelegateSubmissionBody
+  | UndelegateSubmissionBody;
