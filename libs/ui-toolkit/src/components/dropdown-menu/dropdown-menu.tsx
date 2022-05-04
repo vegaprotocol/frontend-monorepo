@@ -15,7 +15,7 @@ const itemStyles = classNames([
   'whitespace-nowrap',
   'h-[25px]',
   'py-0',
-  'pr-1',
+  'pr-8',
   'color-black',
   'rounded-sm',
 ]);
@@ -28,7 +28,7 @@ const itemClass = classNames(itemStyles, [
   'focus:outline-none',
 ]);
 
-function getCheckboxItemClasses(inset: boolean) {
+function getItemClasses(inset: boolean) {
   return classNames(itemClass, inset ? 'pl-28' : 'pl-4', 'relative');
 }
 
@@ -77,7 +77,7 @@ export const DropdownMenuItem = forwardRef<
   <DropdownMenuPrimitive.Item
     {...itemProps}
     ref={forwardedRef}
-    className={classNames(getCheckboxItemClasses(inset), className)}
+    className={classNames(getItemClasses(inset), className)}
   />
 ));
 
@@ -93,7 +93,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(getCheckboxItemClasses(inset), className)}
+    className={classNames(getItemClasses(inset), className)}
   />
 ));
 
@@ -109,12 +109,12 @@ export const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     {...radioItemprops}
     ref={forwardedRef}
-    className={classNames(getCheckboxItemClasses(inset), className)}
+    className={classNames(getItemClasses(inset), className)}
   />
 ));
 
 /**
- * \Renders when the parent {@link DropdownMenuCheckboxItem} or {@link DropdownMenuRadioItem} is checked.
+ * Renders when the parent {@link DropdownMenuCheckboxItem} or {@link DropdownMenuRadioItem} is checked.
  * You can style this element directly, or you can use it as a wrapper to put an icon into, or both.
  */
 export const DropdownMenuItemIndicator = forwardRef<
