@@ -82,7 +82,7 @@ export const KeyValueTableRow = ({
     },
     className
   );
-  const dtClassName = `break-words font-medium uppercase align-top p-4`;
+  const dtClassName = `break-words font-medium uppercase align-top p-4 capitalize`;
   const ddClassName = classNames(
     'align-top p-4 text-black/60 dark:text-white/60 break-words',
     {

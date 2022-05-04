@@ -18,13 +18,11 @@ describe('NetworkParametersTable', () => {
         },
       ],
     };
-    const { container } = render(
-      <NetworkParametersTable data={data} loading={false} />
-    );
+    render(<NetworkParametersTable data={data} loading={false} />);
     expect(screen.getByTestId('network-param-header')).toHaveTextContent(
       'Network Parameters'
     );
-    const rows = container.getElementsByTagName('dl');
+    const rows = screen.getAllByTestId('key-value-table-row');
     expect(rows[0].children[0]).toHaveTextContent(
       'market.fee.factors.infrastructureFee'
     );
@@ -50,13 +48,11 @@ describe('NetworkParametersTable', () => {
         },
       ],
     };
-    const { container } = render(
-      <NetworkParametersTable data={data} loading={false} />
-    );
+    render(<NetworkParametersTable data={data} loading={false} />);
     expect(screen.getByTestId('network-param-header')).toHaveTextContent(
       'Network Parameters'
     );
-    const rows = container.getElementsByTagName('dl');
+    const rows = screen.getAllByTestId('key-value-table-row');
     expect(rows[0].children[0]).toHaveTextContent(
       'market.fee.factors.infrastructureFee'
     );
@@ -68,13 +64,10 @@ describe('NetworkParametersTable', () => {
   });
 
   it('does not render rows when is loading', () => {
-    const { container } = render(
-      <NetworkParametersTable data={undefined} loading={true} />
-    );
+    render(<NetworkParametersTable data={undefined} loading={true} />);
     expect(screen.getByTestId('network-param-header')).toHaveTextContent(
       'Network Parameters'
     );
-    const rows = container.getElementsByTagName('dl');
-    expect(rows.length).toBe(0);
+    expect(screen.queryByTestId('key-value-table-row')).not.toBeInTheDocument();
   });
 });
