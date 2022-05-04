@@ -17,29 +17,7 @@ import type {
 } from './__generated__/NetworkParametersQuery';
 import orderBy from 'lodash/orderBy';
 
-const BIG_NUMBER_PARAMS = [
-  'spam.protection.delegation.min.tokens',
-  'validators.delegation.minAmount',
-  'reward.staking.delegation.minimumValidatorStake',
-  'reward.staking.delegation.maxPayoutPerParticipant',
-  'reward.staking.delegation.maxPayoutPerEpoch',
-  'spam.protection.voting.min.tokens',
-  'governance.proposal.freeform.minProposerBalance',
-  'governance.proposal.updateNetParam.minVoterBalance',
-  'governance.proposal.updateMarket.minVoterBalance',
-  'governance.proposal.asset.minVoterBalance',
-  'governance.proposal.updateNetParam.minProposerBalance',
-  'governance.proposal.freeform.minVoterBalance',
-  'reward.staking.delegation.maxPayoutPerParticipant',
-  'spam.protection.proposal.min.tokens',
-  'governance.proposal.updateMarket.minProposerBalance',
-  'spam.protection.voting.min.tokens',
-  'reward.staking.delegation.minimumValidatorStake',
-  'reward.staking.delegation.maxPayoutPerEpoch',
-  'validators.delegation.minAmount',
-  'governance.proposal.freeform.minProposerBalance',
-  'governance.proposal.asset.minProposerBalance',
-];
+const BIG_NUMBER_PARAMS = ['spam.protection.delegation.min.tokens', 'validators.delegation.minAmount', 'reward.staking.delegation.minimumValidatorStake', 'reward.staking.delegation.maxPayoutPerParticipant', 'reward.staking.delegation.maxPayoutPerEpoch', 'spam.protection.voting.min.tokens', 'governance.proposal.freeform.minProposerBalance', 'governance.proposal.updateNetParam.minVoterBalance', 'governance.proposal.updateMarket.minVoterBalance', 'governance.proposal.asset.minVoterBalance', 'governance.proposal.updateNetParam.minProposerBalance', 'governance.proposal.freeform.minVoterBalance', 'spam.protection.proposal.min.tokens', 'governance.proposal.updateMarket.minProposerBalance', 'governance.proposal.asset.minProposerBalance']
 
 export const renderRow = ({
   key,
