@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import type { ColumnApi, ValueFormatterParams } from 'ag-grid-community';
 import {
   PriceCell,
-  formatNumber,
+  addDecimalsFormatNumber,
   t,
   addSummaryRows,
 } from '@vegaprotocol/react-helpers';
@@ -136,7 +136,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
             value,
             data,
           }: AccountsTableValueFormatterParams) =>
-            formatNumber(value, data.asset.decimals)
+            addDecimalsFormatNumber(value, data.asset.decimals)
           }
         />
       </AgGrid>

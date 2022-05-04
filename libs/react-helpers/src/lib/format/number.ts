@@ -27,12 +27,16 @@ export const getNumberFormat = memoize(
     })
 );
 
-export const formatNumber = (
+export const formatNumber = (rawValue: string | number, formatDecimals = 0) => {
+  return getNumberFormat(formatDecimals).format(Number(rawValue));
+};
+
+export const addDecimalsFormatNumber = (
   rawValue: string | number,
   decimalPlaces: number,
   formatDecimals: number = decimalPlaces
 ) => {
   const x = addDecimal(rawValue, decimalPlaces);
 
-  return getNumberFormat(formatDecimals).format(Number(x));
+  return formatNumber(x, formatDecimals);
 };
