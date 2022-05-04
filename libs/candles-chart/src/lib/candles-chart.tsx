@@ -1,13 +1,14 @@
 import 'pennant/dist/style.css';
 
 import {
-  Chart as TradingChart,
+  Chart,
   ChartType,
-  chartTypeLabels,
   Interval,
   Overlay,
-  overlayLabels,
   Study,
+  chartTypeLabels,
+  intervalLabels,
+  overlayLabels,
   studyLabels,
 } from 'pennant';
 import { VegaDataSource } from './data-source';
@@ -28,7 +29,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
-import classNames from 'classnames';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -59,27 +59,37 @@ export const CandlesChartContainer = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex flex-row flex-wrap gap-8">
-        <div>
-          {Object.values(Interval).map((timeInterval) => (
-            <Button
-              variant="inline"
-              onClick={() => {
-                setInterval(timeInterval);
+      <div className="px-8 flex flex-row flex-wrap gap-8">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild={true}>
+            <Button appendIconName="caret-down" variant="secondary">
+              Interval
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuRadioGroup
+              value={interval}
+              onValueChange={(value) => {
+                setInterval(value as Interval);
               }}
             >
-              <span
-                className={classNames({
-                  'font-bold': timeInterval === interval,
-                })}
-              >
-                {timeInterval}
-              </span>
-            </Button>
-          ))}
-        </div>
+              {Object.values(Interval).map((timeInterval) => (
+                <DropdownMenuRadioItem
+                  key={timeInterval}
+                  inset
+                  value={timeInterval}
+                >
+                  <DropdownMenuItemIndicator>
+                    <Icon name="tick" />
+                  </DropdownMenuItemIndicator>
+                  {intervalLabels[timeInterval]}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild={true}>
             <Button appendIconName="caret-down" variant="secondary">
               <Icon name={chartTypeIcon.get(chartType) as IconName} />
             </Button>
@@ -103,7 +113,7 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild={true}>
             <Button appendIconName="caret-down" variant="secondary">
               Overlays
             </Button>
@@ -114,9 +124,8 @@ export const CandlesChartContainer = ({
                 key={overlay}
                 checked={overlays.includes(overlay)}
                 inset
-                onCheckedChange={(checked) => {
+                onCheckedChange={() => {
                   const newOverlays = [...overlays];
-
                   const index = overlays.findIndex((item) => item === overlay);
 
                   index !== -1
@@ -135,7 +144,7 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger asChild={true}>
             <Button appendIconName="caret-down" variant="secondary">
               Studies
             </Button>
@@ -146,9 +155,8 @@ export const CandlesChartContainer = ({
                 key={study}
                 inset
                 checked={studies.includes(study)}
-                onCheckedChange={(checked) => {
+                onCheckedChange={() => {
                   const newStudies = [...studies];
-
                   const index = studies.findIndex((item) => item === study);
 
                   index !== -1
@@ -168,7 +176,7 @@ export const CandlesChartContainer = ({
         </DropdownMenu>
       </div>
       <div className="flex-1">
-        <TradingChart
+        <Chart
           dataSource={dataSource}
           options={{
             chartType: chartType,
