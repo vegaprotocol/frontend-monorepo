@@ -29,6 +29,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import type { IconName } from '@blueprintjs/icons';
 import { IconNames } from '@blueprintjs/icons';
+import { t } from '@vegaprotocol/react-helpers';
 
 const chartTypeIcon = new Map<ChartType, IconName>([
   [ChartType.AREA, IconNames.TIMELINE_AREA_CHART],
@@ -63,7 +64,7 @@ export const CandlesChartContainer = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild={true}>
             <Button appendIconName="caret-down" variant="secondary">
-              Interval
+              {t('Interval')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -115,7 +116,7 @@ export const CandlesChartContainer = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild={true}>
             <Button appendIconName="caret-down" variant="secondary">
-              Overlays
+              {t('Overlays')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -146,7 +147,7 @@ export const CandlesChartContainer = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild={true}>
             <Button appendIconName="caret-down" variant="secondary">
-              Studies
+              {t('Studies')}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
