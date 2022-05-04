@@ -1,5 +1,3 @@
-import './withdraw-form.scss';
-
 import { Callout, FormGroup, Intent, Select } from '@vegaprotocol/ui-toolkit';
 import { ethers } from 'ethers';
 import React from 'react';
@@ -76,7 +74,7 @@ export const WithdrawForm = ({
 
   return (
     <form
-      className="withdraw-form"
+      className="my-40"
       onSubmit={(e) => {
         e.preventDefault();
         if (!valid || !addressValid) return;
@@ -137,6 +135,7 @@ export const WithdrawForm = ({
       <StatefulButton
         type="submit"
         disabled={!addressValid || !valid || status === WithdrawStatus.Pending}
+        className="py-12 w-full h-auto"
       >
         {status === WithdrawStatus.Pending ? (
           <>
