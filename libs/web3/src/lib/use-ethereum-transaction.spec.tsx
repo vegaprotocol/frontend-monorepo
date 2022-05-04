@@ -5,7 +5,7 @@ import { EthTxStatus } from './use-ethereum-transaction';
 import type { ReactNode } from 'react';
 import { useEthereumTransaction } from './use-ethereum-transaction';
 import type { ethers } from 'ethers';
-import { EthereumError } from '../lib/ethereum-error';
+import { EthereumError } from './ethereum-error';
 
 beforeAll(() => {
   jest.useFakeTimers();
