@@ -41,7 +41,7 @@ test('Has the correct default state', () => {
   expect(typeof result.current.submit).toEqual('function');
   expect(typeof result.current.reset).toEqual('function');
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
-  expect(result.current.transaction.hash).toEqual(null);
+  expect(result.current.transaction.txHash).toEqual(null);
   expect(result.current.transaction.error).toEqual(null);
 });
 
@@ -74,7 +74,7 @@ test('Create an Id if a signature is returned', async () => {
   const signature =
     '597a7706491e6523c091bab1e4d655b62c45a224e80f6cd92ac366aa5dd9a070cc7dd3c6919cb07b81334b876c662dd43bdbe5e827c8baa17a089feb654fab0b';
   const expectedId =
-    '2FE09B0E2E6ED35F8883802629C7D609D3CC2FC9CE3CEC0B7824A0D581BD3747';
+    '2fe09b0e2e6ed35f8883802629c7d609d3cc2fc9ce3cec0b7824a0d581bd3747';
   const successObj = {
     tx: {
       inputData: 'input-data',

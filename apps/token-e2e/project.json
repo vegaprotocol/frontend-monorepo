@@ -1,0 +1,28 @@
+{
+  "root": "apps/token-e2e",
+  "sourceRoot": "apps/token-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/token-e2e/cypress.json",
+        "devServerTarget": "token:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "token:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/token-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["token"]
+}

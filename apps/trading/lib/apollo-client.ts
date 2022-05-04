@@ -39,6 +39,13 @@ export function createClient(base?: string) {
       Node: {
         keyFields: false,
       },
+      Withdrawal: {
+        fields: {
+          pendingOnForeignChain: {
+            read: (isPending = false) => isPending,
+          },
+        },
+      },
     },
   });
 

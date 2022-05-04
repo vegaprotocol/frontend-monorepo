@@ -1,5 +1,5 @@
 import type { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
-import { useEthereumTransaction } from '@vegaprotocol/react-helpers';
+import { useEthereumTransaction } from '@vegaprotocol/web3';
 
 export const useSubmitFaucet = (contract: ERC20Token | null) => {
   const transaction = useEthereumTransaction(() => {

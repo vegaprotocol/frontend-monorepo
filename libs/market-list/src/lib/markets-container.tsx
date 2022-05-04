@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import merge from 'lodash/merge';
 import { useRouter } from 'next/router';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { MarketListTable, getRowNodeId } from './market-list-table';
+import { MarketListTable, getRowId } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
 import type {
@@ -23,7 +23,7 @@ export const MarketsContainer = () => {
         return false;
       }
       const rowNode = gridRef.current.api.getRowNode(
-        getRowNodeId(delta.market)
+        getRowId({ data: delta.market })
       );
       if (rowNode) {
         const updatedData = produce<Markets_markets_data>(
@@ -53,15 +53,13 @@ export const MarketsContainer = () => {
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {(data) => (
-        <MarketListTable
-          ref={gridRef}
-          data={data}
-          onRowClicked={(id) =>
-            push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
-          }
-        />
-      )}
+      <MarketListTable
+        ref={gridRef}
+        data={data}
+        onRowClicked={(id) =>
+          push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
+        }
+      />
     </AsyncRenderer>
   );
 };

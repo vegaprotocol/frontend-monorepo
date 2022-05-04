@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import {
-  PriceCell,
+  PriceFlashCell,
   formatNumber,
   volumePrefix,
   addDecimal,
@@ -17,7 +17,7 @@ interface PositionsTableProps {
   data: Positions_party_positions[] | null;
 }
 
-export const getRowNodeId = (data: { market: { id: string } }) =>
+export const getRowId = ({ data }: { data: Positions_party_positions }) =>
   data.market.id;
 
 const alphanumericComparator = (a: string, b: string, isInverted: boolean) => {
@@ -61,7 +61,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate="No positions"
         rowData={data}
-        getRowNodeId={getRowNodeId}
+        getRowId={getRowId}
         ref={ref}
         defaultColDef={{
           flex: 1,
@@ -77,7 +77,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
             ],
           });
         }}
-        components={{ PriceCell }}
+        components={{ PriceFlashCell }}
       >
         <AgGridColumn
           headerName={t('Market')}
@@ -95,7 +95,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
         <AgGridColumn
           headerName={t('Average Entry Price')}
           field="averageEntryPrice"
-          cellRenderer="PriceCell"
+          cellRenderer="PriceFlashCell"
           valueFormatter={({
             value,
             data,
@@ -107,7 +107,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           headerName={t('Mark Price')}
           field="market.data.markPrice"
           type="rightAligned"
-          cellRenderer="PriceCell"
+          cellRenderer="PriceFlashCell"
           valueFormatter={({
             value,
             data,
@@ -134,7 +134,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           valueFormatter={({ value }: ValueFormatterParams) =>
             volumePrefix(value)
           }
-          cellRenderer="PriceCell"
+          cellRenderer="PriceFlashCell"
         />
       </AgGrid>
     );

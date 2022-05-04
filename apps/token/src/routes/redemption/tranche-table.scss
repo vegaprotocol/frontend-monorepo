@@ -1,0 +1,19 @@
+@import '../../styles/colors';
+
+.tranche-table {
+  &__label {
+    display: inline-block;
+    text-transform: uppercase;
+    background-color: $white;
+    color: $black;
+    padding: 3px;
+  }
+
+  &__footer {
+    text-align: right;
+  }
+  &__header {
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+  }
+}

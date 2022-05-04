@@ -25,14 +25,14 @@ export const vegaPublicKey = (value: string) => {
 
 export const minSafe = (min: BigNumber) => (value: string) => {
   if (new BigNumber(value).isLessThan(min)) {
-    return t('Amount is below permitted minimum');
+    return t('Value is below minimum');
   }
   return true;
 };
 
 export const maxSafe = (max: BigNumber) => (value: string) => {
   if (new BigNumber(value).isGreaterThan(max)) {
-    return t('Amount is above permitted maximum');
+    return t('Value is above maximum');
   }
   return true;
 };

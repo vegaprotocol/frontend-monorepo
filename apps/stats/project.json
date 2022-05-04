@@ -11,6 +11,7 @@
         "compiler": "babel",
         "outputPath": "dist/apps/stats",
         "index": "apps/stats/src/index.html",
+        "baseHref": "/",
         "main": "apps/stats/src/main.tsx",
         "polyfills": "apps/stats/src/polyfills.ts",
         "tsConfig": "apps/stats/tsconfig.app.json",
@@ -27,7 +28,6 @@
               "with": "apps/stats/src/environments/environment.prod.ts"
             }
           ],
-          "subresourceIntegrity": true,
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,

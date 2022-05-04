@@ -1,0 +1,101 @@
+@import '../../styles/colors';
+
+.tranches {
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  &__list-item {
+    border-bottom: 1px solid $white;
+    padding: 20px 0;
+  }
+
+  &__list-item-container {
+    color: $gray3;
+
+    @media (min-width: 960px) {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+  }
+
+  &__button-link {
+    color: $vega-yellow3;
+    background-color: transparent !important;
+  }
+
+  &__item-title {
+    margin-bottom: 10px;
+    display: flex;
+
+    @media (min-width: 960px) {
+      margin-bottom: 0;
+    }
+  }
+
+  &__link {
+    display: inline-block;
+    color: $white;
+    text-decoration: none;
+    margin-right: 15px;
+
+    > span {
+      background-color: $white;
+      color: $black;
+      padding: 2px 4px;
+      margin-right: 10px;
+    }
+
+    > strong {
+      margin-left: 8px;
+    }
+
+    &:hover {
+      color: $vega-yellow3;
+
+      > span {
+        background-color: $vega-yellow3;
+      }
+    }
+  }
+
+  &__progress {
+    display: flex;
+    gap: 5px;
+    flex-flow: column nowrap;
+
+    @media (min-width: 960px) {
+      align-items: flex-end;
+    }
+  }
+
+  &__progress-item {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  &__progress-numbers {
+    min-width: 85px;
+    text-align: right;
+  }
+
+  &__progress-title {
+    min-width: 70px;
+    text-transform: uppercase;
+  }
+
+  &__message {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  &__secondary-header {
+    margin: 0;
+  }
+}
