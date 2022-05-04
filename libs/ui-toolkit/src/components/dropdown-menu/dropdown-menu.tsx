@@ -17,7 +17,6 @@ const itemStyles = classNames([
   'py-0',
   'pr-8',
   'color-black',
-  'rounded-sm',
 ]);
 
 const itemClass = classNames(itemStyles, [
