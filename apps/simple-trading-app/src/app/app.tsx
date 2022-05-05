@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+// import { useLocation } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
@@ -11,7 +11,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import { DealTicketContainer } from './components/deal-ticket/deal-ticket-container';
 import { VegaWalletConnectButton } from './components/vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Connectors } from './lib/vega-connectors';
@@ -20,16 +20,16 @@ import { AppLoader } from './components/app-loader';
 
 function App() {
   const [theme, toggleTheme] = useThemeSwitcher();
-  const [menuOpen, setMenuOpen] = useState(false);
+  // const [menuOpen, setMenuOpen] = useState(false);
   const [vegaWallet, setVegaWallet] = useState({
     connect: false,
     manage: false,
   });
-  const location = useLocation();
-
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [location]);
+  // const location = useLocation();
+  //
+  // useEffect(() => {
+  //   setMenuOpen(false);
+  // }, [location]);
 
   const client = useMemo(() => createClient(DATA_SOURCES.dataNodeUrl), []);
 
@@ -57,7 +57,7 @@ function App() {
                   <div className="md:w-4/5 lg:w-3/5 xl:w-1/3 mx-auto">
                     <DealTicketContainer
                       marketId={
-                        '0c3c1490db767f926d24fb674b4235a9aa339614915a4ab96cbfc0e1ad83c0ff'
+                        '688b54235308c20412f62adad13ffc169b2372126b6e6d0bb34c6f9597b5ccad'
                       }
                     />
                   </div>
