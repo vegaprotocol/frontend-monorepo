@@ -24,6 +24,7 @@ import type {
 } from './__generated__/WithdrawalsPage';
 import { useCompleteWithdraw } from '@vegaprotocol/withdraws';
 import { TransactionDialog } from '@vegaprotocol/web3';
+import { WithdrawalStatus } from '../../__generated__/globalTypes';
 
 const Withdrawals = () => {
   const { t } = useTranslation();
@@ -214,6 +215,27 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
             )}
           </span>
         </KeyValueTableRow>
+        <KeyValueTableRow>
+          {t('Ethereum transaction')}
+          <span>
+            {withdrawal.txHash ? (
+              <EtherscanLink
+                tx={withdrawal.txHash}
+                text={truncateMiddle(withdrawal.txHash)}
+              />
+            ) : (
+              '-'
+            )}
+          </span>
+        </KeyValueTableRow>
+        <KeyValueTableRow>
+          {t('status')}
+          {withdrawal.txHash
+            ? t('Complete')
+            : withdrawal.status === WithdrawalStatus.Finalized
+            ? 'Incomplete'
+            : withdrawal.status}
+        </KeyValueTableRow>
         {/* <KeyValueTableRow>
           {t('Signature')}
           <span title={erc20Approval?.signatures}>
@@ -223,27 +245,16 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
           </span>
         </KeyValueTableRow> */}
       </KeyValueTable>
-      <div>
-        {withdrawal.txHash ? (
-          <>
-            {t('Finalized')}
-            <EtherscanLink
-              tx={withdrawal.txHash}
-              text={t('View on Etherscan (opens in a new tab)')}
-            />
-          </>
-        ) : (
-          <>
-            {t('Open')}
-            <button
-              className="underline"
-              onClick={() => complete(withdrawal.id)}
-            >
-              {t('Complete')}
-            </button>
-          </>
+      <p>
+        {withdrawal.txHash ? null : (
+          <button
+            className="underline text-white hover:text-vega-yellow"
+            onClick={() => complete(withdrawal.id)}
+          >
+            {t('Finish withdrawal')}
+          </button>
         )}
-      </div>
+      </p>
       {/* <TransactionButton
         text={
           !erc20Approval

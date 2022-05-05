@@ -138,17 +138,19 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
   return (
     <>
       {hasPendingWithdrawals && (
-        <Callout
-          title={t('pendingWithdrawalsCalloutTitle')}
-          intent={Intent.Prompt}
-        >
-          <p>{t('pendingWithdrawalsCalloutText')}</p>
-          <p className="mb-0">
-            <Link to={Routes.WITHDRAWALS}>
-              {t('pendingWithdrawalsCalloutButton')}
-            </Link>
-          </p>
-        </Callout>
+        <div className="mb-24">
+          <Callout
+            title={t('pendingWithdrawalsCalloutTitle')}
+            intent={Intent.Prompt}
+          >
+            <p>{t('pendingWithdrawalsCalloutText')}</p>
+            <p className="mb-0">
+              <Link to={Routes.WITHDRAWALS}>
+                {t('pendingWithdrawalsCalloutButton')}
+              </Link>
+            </p>
+          </Callout>
+        </div>
       )}
       <WithdrawManager
         assets={data.assets?.filter(isERC20Asset) || []}
