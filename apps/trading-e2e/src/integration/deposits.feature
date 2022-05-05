@@ -65,7 +65,8 @@ Feature: Deposits to vega wallet
     And I enter an amount less than the minimum viable amount
     Then Amount too small message shown
     And I enter a valid amount
-    Then Not approved message shown
+  # This next step is being skipped due to account having approved status
+  # Then Not approved message shown
 
   @todo
   Scenario: Use the 'Use Maximum' button to populate amount input with the balance in the connected wallet
