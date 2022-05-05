@@ -20,11 +20,11 @@ import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
 import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   DelegateSubmissionBody,
   UndelegateSubmissionBody,
-} from '@vegaprotocol/wallet';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+} from '@vegaprotocol/vegawallet-service-api-client';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {

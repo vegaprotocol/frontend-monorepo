@@ -25,9 +25,11 @@ const Withdraw = () => {
     <>
       <Heading title={t('withdrawPageHeading')} />
       <p>{t('withdrawPageText')}</p>
-      <VegaWalletContainer>
-        {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
-      </VegaWalletContainer>
+      <div className="mb-24">
+        <VegaWalletContainer>
+          {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
+        </VegaWalletContainer>
+      </div>
       <Callout title={t('withdrawPageInfoCalloutTitle')}>
         <p className="mb-0">{t('withdrawPageInfoCalloutText')}</p>
       </Callout>
@@ -148,14 +150,10 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           </p>
         </Callout>
       )}
-      <EthWalletContainer>
-        {() => (
-          <WithdrawManager
-            assets={data.assets?.filter(isERC20Asset) || []}
-            accounts={accounts}
-          />
-        )}
-      </EthWalletContainer>
+      <WithdrawManager
+        assets={data.assets?.filter(isERC20Asset) || []}
+        accounts={accounts}
+      />
     </>
   );
 };
