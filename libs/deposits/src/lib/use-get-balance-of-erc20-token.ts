@@ -5,6 +5,7 @@ import { useCallback } from 'react';
 
 export const useGetBalanceOfERC20Token = (contract: ERC20Token | null) => {
   const { account } = useWeb3React();
+  console.log(account);
 
   const getBalance = useCallback(() => {
     if (!contract || !account) {

@@ -149,7 +149,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
         </Callout>
       )}
       <EthWalletContainer>
-        {(connectedAddress) => (
+        {() => (
           <WithdrawManager
             assets={data.assets?.filter(isERC20Asset) || []}
             accounts={accounts}
