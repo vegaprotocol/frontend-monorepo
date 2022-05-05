@@ -13,5 +13,4 @@ const Template: Story = (args) => (
 export const Normal = Template.bind({});
 Normal.args = {
   data: [1, 2, 3, 2, 1, 4, 5, 6, 4, 3],
-  points: [3, 4, 5],
 };

@@ -62,7 +62,8 @@ export const SparklineView = ({
 
   // Get the color of the marketData line
   const [firstVal, lastVal] = [data[0], data[data.length - 1]];
-  const strokeColor = colorByChange(firstVal, lastVal);
+  const strokeColor =
+    data.length >= 24 ? colorByChange(firstVal, lastVal) : Colors.GRAY;
 
   // Create paths
   const preMarketCreationPath = lineSeries(preMarketData);
@@ -81,7 +82,7 @@ export const SparklineView = ({
         <path
           className="[vector-effect:non-scaling-stroke]"
           d={preMarketCreationPath}
-          stroke={Colors.GRAY}
+          stroke={strokeColor}
           strokeWidth={2}
           fill="transparent"
         />
