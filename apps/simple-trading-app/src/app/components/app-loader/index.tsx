@@ -13,5 +13,6 @@ export function AppLoader({ children }: AppLoaderProps) {
   // Get keys from vega wallet immediately
   useEagerConnect();
 
+  // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>;
 }
