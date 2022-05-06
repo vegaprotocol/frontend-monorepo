@@ -2,18 +2,13 @@ import { render, screen } from '@testing-library/react';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
 import { Sparkline } from './sparkline';
+export const Colors = theme.colors;
 
 const props = {
   data: [
     1, 2, 3, 4, 5, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 6, 7, 8, 9,
     10, 11, 12,
   ],
-};
-
-const Colors = {
-  RED: theme.colors.red,
-  GREEN: theme.colors.green,
-  GRAY: theme.colors.gray,
 };
 
 it('Renders an svg with a single path', () => {
@@ -41,7 +36,7 @@ it('Renders a red line if the last value is less than the first', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.RED);
+  expect(path).toHaveAttribute('stroke', Colors.bearish);
 });
 
 it('Renders a green line if the last value is greater than the first', () => {
@@ -50,7 +45,7 @@ it('Renders a green line if the last value is greater than the first', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.GREEN);
+  expect(path).toHaveAttribute('stroke', Colors.bullish);
 });
 
 it('Renders a white line if the first and last values are equal', () => {
@@ -59,7 +54,7 @@ it('Renders a white line if the first and last values are equal', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.GRAY);
+  expect(path).toHaveAttribute('stroke', Colors.gray.DEFAULT);
 });
 
 it('Renders a gray line if there are not 24 values', () => {
@@ -70,5 +65,5 @@ it('Renders a gray line if there are not 24 values', () => {
   render(<Sparkline {...props} />);
   const paths = screen.queryAllByTestId('sparkline-path');
   expect(paths).toHaveLength(2);
-  expect(paths[0]).toHaveAttribute('stroke', Colors.GRAY);
+  expect(paths[0]).toHaveAttribute('stroke', Colors.gray.DEFAULT);
 });

@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { getAbbreviatedNumber } from '../../lib/abbreviate-number';
 import { ProgressBar } from './progress-bar';
 import type { BigNumber } from '../../lib/bignumber';
-import { Colors } from '@vegaprotocol/ui-toolkit';
+import { theme } from '@vegaprotocol/tailwindcss-config';
+const Colors = theme.colors;
 
 interface TrancheProgressProps {
   locked: BigNumber;
@@ -28,7 +29,7 @@ export const TrancheProgress = ({
         <span className="tranches__progress-title">{t('Locked')}</span>
         <ProgressBar
           width={220}
-          color={Colors.PINK}
+          color={Colors.pink}
           percentage={lockedPercentage}
         />
         <span className="tranches__progress-numbers">
@@ -39,7 +40,7 @@ export const TrancheProgress = ({
         <span className="tranches__progress-title">{t('Redeemed')}</span>
         <ProgressBar
           width={220}
-          color={Colors.GREEN}
+          color={Colors.green.DEFAULT}
           percentage={removedPercentage}
         />
         <span className="tranches__progress-numbers">

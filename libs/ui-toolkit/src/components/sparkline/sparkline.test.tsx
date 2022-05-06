@@ -1,7 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import { Colors } from '../../config/colors';
 
 import { Sparkline } from './sparkline';
+
+import { theme } from '@vegaprotocol/tailwindcss-config';
+const Colors = theme.colors;
 
 const props = {
   data: [
@@ -35,7 +37,7 @@ it('Renders a red line if the last value is less than the first', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.RED);
+  expect(path).toHaveAttribute('stroke', Colors.bearish);
 });
 
 it('Renders a green line if the last value is greater than the first', () => {
@@ -44,7 +46,7 @@ it('Renders a green line if the last value is greater than the first', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.GREEN);
+  expect(path).toHaveAttribute('stroke', Colors.bullish);
 });
 
 it('Renders a white line if the first and last values are equal', () => {
@@ -53,7 +55,7 @@ it('Renders a white line if the first and last values are equal', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.WHITE);
+  expect(path).toHaveAttribute('stroke', Colors.gray.DEFAULT);
 });
 
 it('Renders a gray line if there are not 24 values', () => {
@@ -64,5 +66,5 @@ it('Renders a gray line if there are not 24 values', () => {
   render(<Sparkline {...props} />);
   const paths = screen.queryAllByTestId('sparkline-path');
   expect(paths).toHaveLength(2);
-  expect(paths[0]).toHaveAttribute('stroke', Colors.GRAY);
+  expect(paths[0]).toHaveAttribute('stroke', Colors.gray.DEFAULT);
 });

@@ -18,7 +18,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: '#2C2C2C',
-      color: theme.colors.vega.green,
+      color: theme.colors.vega.green.DEFAULT,
     },
     '.syntax-highlighter-wrapper .hljs-literal': {
       color: theme.colors.vega.pink,

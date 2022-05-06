@@ -4,7 +4,9 @@ import React from 'react';
 
 import { formatNumber } from '../../lib/format-number';
 import type { BigNumber } from '../../lib/bignumber';
-import { Colors } from '@vegaprotocol/ui-toolkit';
+import { theme } from '@vegaprotocol/tailwindcss-config';
+
+const Colors = theme.colors;
 
 export interface LockedProgressProps {
   total: BigNumber;
@@ -23,8 +25,8 @@ export const LockedProgress = ({
   unlocked,
   leftLabel,
   rightLabel,
-  leftColor = Colors.PINK,
-  rightColor = Colors.GREEN,
+  leftColor = Colors.pink,
+  rightColor = Colors.green.DEFAULT,
   light = false,
 }: LockedProgressProps) => {
   const lockedPercentage = React.useMemo(() => {

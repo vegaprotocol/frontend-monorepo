@@ -1,7 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Colors } from '@vegaprotocol/ui-toolkit';
-
 interface TargetAddressMismatchProps {
   connectedAddress: string;
   expectedAddress: string;
@@ -27,7 +25,7 @@ export const TargetAddressMismatch = ({
           }}
           components={{
             bold: <strong />,
-            red: <span style={{ color: Colors.RED }} />,
+            red: <span className={'text-red'} />,
           }}
         />
       </p>

@@ -1,7 +1,8 @@
 import React from 'react';
 import { usePrevious } from './use-previous';
 import type { BigNumber } from '../lib/bignumber';
-import { Colors } from '@vegaprotocol/ui-toolkit';
+import { theme } from '@vegaprotocol/tailwindcss-config';
+const Colors = theme.colors;
 
 const FLASH_DURATION = 1200; // Duration of flash animation in milliseconds
 
@@ -28,9 +29,16 @@ export function useAnimateValue(
   ) {
     elRef.current?.animate(
       [
-        { backgroundColor: Colors.VEGA_RED, color: Colors.WHITE },
-        { backgroundColor: Colors.VEGA_RED, color: Colors.WHITE, offset: 0.8 },
-        { backgroundColor: Colors.GRAY_LIGHT, color: Colors.WHITE },
+        { backgroundColor: Colors.red.vega, color: Colors.white.DEFAULT },
+        {
+          backgroundColor: Colors.red.vega,
+          color: Colors.white.DEFAULT,
+          offset: 0.8,
+        },
+        {
+          backgroundColor: Colors.gray.light,
+          color: Colors.white.DEFAULT,
+        },
       ],
       FLASH_DURATION
     );
@@ -43,13 +51,19 @@ export function useAnimateValue(
   ) {
     elRef.current?.animate(
       [
-        { backgroundColor: Colors.VEGA_GREEN, color: Colors.WHITE },
         {
-          backgroundColor: Colors.VEGA_GREEN,
-          color: Colors.WHITE,
+          backgroundColor: Colors.green.vega,
+          color: Colors.white.DEFAULT,
+        },
+        {
+          backgroundColor: Colors.green.vega,
+          color: Colors.white.DEFAULT,
           offset: 0.8,
         },
-        { backgroundColor: Colors.GRAY_LIGHT, color: Colors.WHITE },
+        {
+          backgroundColor: Colors.gray.light,
+          color: Colors.white.DEFAULT,
+        },
       ],
       FLASH_DURATION
     );

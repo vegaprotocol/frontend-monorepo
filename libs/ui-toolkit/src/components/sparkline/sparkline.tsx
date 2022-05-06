@@ -2,8 +2,18 @@ import { extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { line } from 'd3-shape';
 import isEqual from 'lodash/isEqual';
-import * as React from 'react';
-import { colorByChange, Colors } from '../../config';
+import { theme } from '@vegaprotocol/tailwindcss-config';
+import React from 'react';
+
+const Colors = theme.colors;
+
+function colorByChange(a: number, b: number) {
+  return a === b
+    ? Colors.gray.DEFAULT
+    : a < b
+    ? Colors.bullish
+    : Colors.bearish;
+}
 
 export interface SparklineProps {
   data: number[];
@@ -63,7 +73,7 @@ export const SparklineView = ({
   // Get the color of the marketData line
   const [firstVal, lastVal] = [data[0], data[data.length - 1]];
   const strokeColor =
-    data.length >= 24 ? colorByChange(firstVal, lastVal) : Colors.GRAY;
+    data.length >= 24 ? colorByChange(firstVal, lastVal) : Colors.gray.DEFAULT;
 
   // Create paths
   const preMarketCreationPath = lineSeries(preMarketData);
@@ -115,12 +125,7 @@ export const Sparkline = React.memo(
     ) {
       return false;
     }
-
-    if (!isEqual(prevProps.data, nextProps.data)) {
-      return false;
-    }
-
-    return true;
+    return isEqual(prevProps.data, nextProps.data);
   }
 );
 

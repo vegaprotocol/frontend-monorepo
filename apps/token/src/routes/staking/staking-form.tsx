@@ -26,7 +26,7 @@ import type {
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
-import { Button, Colors, FormGroup } from '@vegaprotocol/ui-toolkit';
+import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -203,11 +203,9 @@ export const StakingForm = ({
     availableStakeToRemove.isEqualTo(0)
   ) {
     if (appState.lien.isGreaterThan(0)) {
-      return (
-        <span style={{ color: Colors.RED }}>{t('stakeNodeWrongVegaKey')}</span>
-      );
+      return <span className={'text-red'}>{t('stakeNodeWrongVegaKey')}</span>;
     } else {
-      return <span style={{ color: Colors.RED }}>{t('stakeNodeNone')}</span>;
+      return <span className={'text-red'}>{t('stakeNodeNone')}</span>;
     }
   }
 
