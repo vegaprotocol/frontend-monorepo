@@ -56,6 +56,13 @@
             "prefer": "type-imports",
             "disallowTypeAnnotations": true
           }
+        ],
+        "jsx-a11y/no-redundant-roles": [
+          "error",
+          {
+            "ul": ["list"],
+            "ol": ["list"]
+          }
         ]
       }
     },
