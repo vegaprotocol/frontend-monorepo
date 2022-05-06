@@ -41,7 +41,7 @@ test('Has the correct default state', () => {
   expect(typeof result.current.submit).toEqual('function');
   expect(typeof result.current.reset).toEqual('function');
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
-  expect(result.current.transaction.hash).toEqual(null);
+  expect(result.current.transaction.txHash).toEqual(null);
   expect(result.current.transaction.error).toEqual(null);
 });
 

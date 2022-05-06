@@ -9,7 +9,6 @@ import { Party as PartySingle } from './parties/id';
 import Txs from './txs';
 import Validators from './validators';
 import Genesis from './genesis';
-import NetworkParameters from './network-parameters';
 import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
@@ -18,6 +17,7 @@ import { PendingTxs } from './pending';
 import flags from '../lib/flags';
 import { t } from '@vegaprotocol/react-helpers';
 import { Routes } from './route-names';
+import { NetworkParameters } from './network-parameters';
 
 const partiesRoutes = flags.parties
   ? [

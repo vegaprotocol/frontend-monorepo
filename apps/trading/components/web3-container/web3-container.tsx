@@ -40,10 +40,10 @@ export const NETWORK_PARAMS_QUERY = gql`
 `;
 
 interface Web3ContainerProps {
-  children: (params: { ethereumConfig: EthereumConfig }) => ReactNode;
+  render: (params: { ethereumConfig: EthereumConfig }) => ReactNode;
 }
 
-export const Web3Container = ({ children }: Web3ContainerProps) => {
+export const Web3Container = ({ render }: Web3ContainerProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   return (
     <PageQueryContainer<NetworkParamsQuery>
@@ -79,7 +79,7 @@ export const Web3Container = ({ children }: Web3ContainerProps) => {
               appChainId={Number(ethereumConfig.chain_id)}
               setDialogOpen={setDialogOpen}
             >
-              {children({ ethereumConfig })}
+              {render({ ethereumConfig })}
             </Web3Content>
             <Web3ConnectDialog
               connectors={Connectors}

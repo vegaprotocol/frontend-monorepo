@@ -32,7 +32,7 @@ export const DealTicketManager = ({ market }: DealTicketManagerProps) => {
       return Intent.Danger;
     }
 
-    if (status === VegaTxStatus.Rejected) {
+    if (status === VegaTxStatus.Error) {
       return Intent.Danger;
     }
 
@@ -51,7 +51,7 @@ export const DealTicketManager = ({ market }: DealTicketManagerProps) => {
         market={market}
         submit={submit}
         transactionStatus={
-          transaction.status === VegaTxStatus.AwaitingConfirmation ||
+          transaction.status === VegaTxStatus.Requested ||
           transaction.status === VegaTxStatus.Pending
             ? 'pending'
             : 'default'

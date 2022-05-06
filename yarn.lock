@@ -5725,10 +5725,10 @@
     ethers "^5.5.2"
     lodash "^4.17.21"
 
-"@vegaprotocol/vegawallet-service-api-client@^0.4.6":
-  version "0.4.8"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.8.tgz#a76d63aacd4be83dfe601c4a33052fe9ed8f0cb7"
-  integrity sha512-5YxQ+Tk2rHJ+vvW0aqYj++V5fVfRSUNZATapRZxi/DYELx3Go19lKn5V5hL5lvVDX0PlbD4QtUXT/R30Yr34Dw==
+"@vegaprotocol/vegawallet-service-api-client@^0.4.9":
+  version "0.4.9"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.9.tgz#9c2566407e9c86248f2c170b1f495afdcb347d87"
+  integrity sha512-zqppuVu3VrsHpdcNBvu6G+qMMt0CBXi5wHBb/0ryiXdXD9dmQci5Qz8zoGx5syOupFMdUDNstmGOaFWbBOuvbg==
   dependencies:
     es6-promise "^4.2.4"
     url-parse "^1.4.3"

@@ -1,12 +1,13 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Web3ConnectDialog } from './web3-connect-dialog';
+import type { Web3ReactHooks } from '@web3-react/core';
 import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
+import type { Connector } from '@web3-react/types';
 
-const connectors = {
-  foo: initializeConnector((actions) => new MetaMask(actions)),
-  bar: initializeConnector((actions) => new MetaMask(actions)),
-};
+const [foo, fooHooks] = initializeConnector((actions) => new MetaMask(actions));
+
+const connectors: [Connector, Web3ReactHooks][] = [[foo, fooHooks]];
 
 const props = {
   dialogOpen: false,
@@ -27,7 +28,7 @@ test('Dialog can be open or closed', () => {
 
 test('Renders connection options', async () => {
   const spyOnConnect = jest
-    .spyOn(connectors.foo[0], 'activate')
+    .spyOn(foo, 'activate')
     .mockReturnValue(Promise.resolve());
 
   render(<Web3ConnectDialog {...props} dialogOpen={true} />);
@@ -35,12 +36,10 @@ test('Renders connection options', async () => {
   expect(connectorList).toBeInTheDocument();
   expect(connectorList.children).toHaveLength(Object.keys(connectors).length);
 
-  // foo/bar connector options displayed
-  expect(screen.getByTestId('web3-connector-foo')).toBeInTheDocument();
-  expect(screen.getByTestId('web3-connector-bar')).toBeInTheDocument();
+  expect(screen.getByTestId('web3-connector-MetaMask')).toBeInTheDocument();
 
   // Assert connection is attempted with desired chain
-  fireEvent.click(screen.getByTestId('web3-connector-foo'));
+  fireEvent.click(screen.getByTestId('web3-connector-MetaMask'));
   expect(spyOnConnect).toHaveBeenCalledWith(props.desiredChainId);
   await waitFor(() => {
     expect(props.setDialogOpen).toHaveBeenCalledWith(false);

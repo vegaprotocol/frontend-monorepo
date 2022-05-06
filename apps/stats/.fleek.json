@@ -9,7 +9,7 @@
   "build": {
     "baseDir": "",
     "publicDir": "dist/apps/stats/",
-    "command": "yarn && yarn nx run stats:build",
+    "command": "yarn && yarn nx run build:stats static",
     "rootDir": ""
   }
 }

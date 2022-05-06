@@ -1,32 +1,36 @@
 import { useCallback, useState } from 'react';
-import type { Transaction } from './types';
+import type { TransactionSubmission } from './types';
 import { useVegaWallet } from './hooks';
 import type { SendTxError } from './context';
 
 export enum VegaTxStatus {
   Default = 'Default',
-  AwaitingConfirmation = 'AwaitingConfirmation',
-  Rejected = 'Rejected',
+  Requested = 'Requested',
   Pending = 'Pending',
+  Error = 'Error',
+  // Note no complete state as we have to use api calls/subs to check if
+  // our transaction was completed
 }
 
-export interface TransactionState {
+export interface VegaTxState {
   status: VegaTxStatus;
   error: object | null;
-  hash: string | null;
+  txHash: string | null;
   signature: string | null;
 }
 
+export const initialState = {
+  status: VegaTxStatus.Default,
+  error: null,
+  txHash: null,
+  signature: null,
+};
+
 export const useVegaTransaction = () => {
   const { sendTx } = useVegaWallet();
-  const [transaction, _setTransaction] = useState<TransactionState>({
-    status: VegaTxStatus.Default,
-    error: null,
-    hash: null,
-    signature: null,
-  });
+  const [transaction, _setTransaction] = useState<VegaTxState>(initialState);
 
-  const setTransaction = useCallback((update: Partial<TransactionState>) => {
+  const setTransaction = useCallback((update: Partial<VegaTxState>) => {
     _setTransaction((curr) => ({
       ...curr,
       ...update,
@@ -35,18 +39,18 @@ export const useVegaTransaction = () => {
 
   const handleError = useCallback(
     (error: SendTxError) => {
-      setTransaction({ error, status: VegaTxStatus.Rejected });
+      setTransaction({ error, status: VegaTxStatus.Error });
     },
     [setTransaction]
   );
 
   const send = useCallback(
-    async (tx: Transaction) => {
+    async (tx: TransactionSubmission) => {
       setTransaction({
         error: null,
-        hash: null,
+        txHash: null,
         signature: null,
-        status: VegaTxStatus.AwaitingConfirmation,
+        status: VegaTxStatus.Requested,
       });
 
       const res = await sendTx(tx);
@@ -65,7 +69,7 @@ export const useVegaTransaction = () => {
       } else if (res.tx?.signature?.value && res.txHash) {
         setTransaction({
           status: VegaTxStatus.Pending,
-          hash: res.txHash,
+          txHash: res.txHash,
           signature: res.tx.signature.value,
         });
         return {
@@ -79,12 +83,7 @@ export const useVegaTransaction = () => {
   );
 
   const reset = useCallback(() => {
-    setTransaction({
-      error: null,
-      hash: null,
-      signature: null,
-      status: VegaTxStatus.Default,
-    });
+    setTransaction(initialState);
   }, [setTransaction]);
 
   return { send, transaction, reset };
