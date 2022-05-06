@@ -54,7 +54,7 @@ const NodeListTr = ({ children }: { children: React.ReactNode }) => (
 );
 
 const NodeListTh = ({ children }: { children: React.ReactNode }) => (
-  <th className="flex-1 break-words py-1 pr-4 pl-0 text-grey-medium font-normal">
+  <th className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal">
     {children}
   </th>
 );

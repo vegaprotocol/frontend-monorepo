@@ -34,10 +34,6 @@ module.exports = {
       95: 'rgba(0, 0, 0, 0.95)',
       100: 'rgba(0, 0, 0, 1)',
     },
-    grey: {
-      light: 'hsl(0, 0%, 78%)', // Token default text colour
-      medium: 'hsl(206, 15%, 60%)', // Token deemphasis text colour
-    },
     blue: '#1DA2FB',
     coral: '#FF6057',
     vega: {
