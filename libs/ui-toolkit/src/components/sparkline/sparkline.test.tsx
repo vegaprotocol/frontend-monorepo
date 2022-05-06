@@ -1,5 +1,4 @@
-import { render } from '@testing-library/react';
-import * as React from 'react';
+import { render, screen } from '@testing-library/react';
 import { Colors } from '../../config/colors';
 
 import { Sparkline } from './sparkline';
@@ -12,9 +11,10 @@ const props = {
 };
 
 it('Renders an svg with a single path', () => {
-  const { container } = render(<Sparkline {...props} />);
-  expect(container.querySelector('svg')).toBeInTheDocument();
-  const path = container.querySelector('path');
+  render(<Sparkline {...props} />);
+  expect(screen.getByTestId('sparkline-svg')).toBeInTheDocument();
+  const paths = screen.getAllByTestId('sparkline-path');
+  const path = paths[0];
   expect(path).toBeInTheDocument();
   expect(path).toHaveAttribute('d', expect.any(String));
   expect(path).toHaveAttribute('stroke', expect.any(String));
@@ -23,8 +23,8 @@ it('Renders an svg with a single path', () => {
 });
 
 it('Requires a data prop but width and height are optional', () => {
-  const { container } = render(<Sparkline {...props} />);
-  const svg = container.querySelector('svg');
+  render(<Sparkline {...props} />);
+  const svg = screen.getByTestId('sparkline-svg');
   expect(svg).toHaveAttribute('width', '60');
   expect(svg).toHaveAttribute('height', '15');
 });
@@ -32,24 +32,27 @@ it('Requires a data prop but width and height are optional', () => {
 it('Renders a red line if the last value is less than the first', () => {
   props.data[0] = 10;
   props.data[props.data.length - 1] = 5;
-  const { container } = render(<Sparkline {...props} />);
-  const path = container.querySelector('path');
+  render(<Sparkline {...props} />);
+  const paths = screen.getAllByTestId('sparkline-path');
+  const path = paths[0];
   expect(path).toHaveAttribute('stroke', Colors.RED);
 });
 
 it('Renders a green line if the last value is greater than the first', () => {
   props.data[0] = 5;
   props.data[props.data.length - 1] = 10;
-  const { container } = render(<Sparkline {...props} />);
-  const path = container.querySelector('path');
+  render(<Sparkline {...props} />);
+  const paths = screen.getAllByTestId('sparkline-path');
+  const path = paths[0];
   expect(path).toHaveAttribute('stroke', Colors.GREEN);
 });
 
 it('Renders a white line if the first and last values are equal', () => {
   props.data[0] = 5;
   props.data[props.data.length - 1] = 5;
-  const { container } = render(<Sparkline {...props} />);
-  const path = container.querySelector('path');
+  render(<Sparkline {...props} />);
+  const paths = screen.getAllByTestId('sparkline-path');
+  const path = paths[0];
   expect(path).toHaveAttribute('stroke', Colors.WHITE);
 });
 
@@ -58,8 +61,8 @@ it('Renders a gray line if there are not 24 values', () => {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
     22, 23,
   ];
-  const { container } = render(<Sparkline {...props} />);
-  const paths = container.querySelectorAll('path');
+  render(<Sparkline {...props} />);
+  const paths = screen.queryAllByTestId('sparkline-path');
   expect(paths).toHaveLength(2);
   expect(paths[0]).toHaveAttribute('stroke', Colors.GRAY);
 });

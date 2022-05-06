@@ -71,6 +71,7 @@ export const SparklineView = ({
 
   return (
     <svg
+      data-testid="sparkline-svg"
       className="pt-px pr-0 w-full overflow-visible"
       width={width}
       height={height}
@@ -80,6 +81,7 @@ export const SparklineView = ({
     >
       {preMarketCreationPath && (
         <path
+          data-testid="sparkline-path"
           className="[vector-effect:non-scaling-stroke]"
           d={preMarketCreationPath}
           stroke={strokeColor}
@@ -89,6 +91,7 @@ export const SparklineView = ({
       )}
       {mainPath && (
         <path
+          data-testid="sparkline-path"
           d={mainPath}
           stroke={strokeColor}
           strokeWidth={1}
