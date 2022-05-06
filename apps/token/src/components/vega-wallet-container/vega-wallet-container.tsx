@@ -22,7 +22,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
     return (
       <p>
         <Button
-          className="w-full py-12 h-auto text-h5"
+          className="text-h5"
           onClick={() =>
             appDispatch({
               type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,

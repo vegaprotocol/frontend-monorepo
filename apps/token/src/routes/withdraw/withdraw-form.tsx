@@ -135,7 +135,6 @@ export const WithdrawForm = ({
       <StatefulButton
         type="submit"
         disabled={!addressValid || !valid || status === WithdrawStatus.Pending}
-        className="py-12 w-full h-auto"
       >
         {status === WithdrawStatus.Pending ? (
           <>

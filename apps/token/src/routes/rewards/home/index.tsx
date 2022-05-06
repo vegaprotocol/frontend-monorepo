@@ -146,7 +146,7 @@ export const RewardsIndex = () => {
           />
         ) : (
           <Button
-            className="mt-12 w-full py-12 h-auto text-h5"
+            className="mt-12"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,

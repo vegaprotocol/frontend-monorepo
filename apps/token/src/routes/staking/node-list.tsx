@@ -144,7 +144,7 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
           endDate={new Date(epoch.timestamps.expiry)}
         />
       )}
-      <ul className="list-none mt-24 mr-0 mb-0 ml-0 p-0">
+      <ul role="list" className="list-none mt-24">
         {nodes.map((n, i) => {
           return <NodeListItem key={i} {...n} />;
         })}

@@ -113,7 +113,6 @@ export const StakingStepConnectWallets = () => {
                 isOpen: true,
               })
             }
-            className="py-12 h-auto w-full"
             data-testid="connect-to-eth-btn"
           >
             {t('connectEthWallet')}
