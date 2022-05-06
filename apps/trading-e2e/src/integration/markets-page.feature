@@ -8,10 +8,10 @@ Feature: Markets page
 
   Scenario: Select active market
     Given I am on the markets page
-    When I click on "Active" market
+    When I click on "Active" mocked market
     Then trading page for "active" market is displayed
 
   Scenario: Select suspended market
     Given I am on the markets page
-    When I click on "Suspended" market
+    When I click on "Suspended" mocked market
     Then trading page for "suspended" market is displayed
