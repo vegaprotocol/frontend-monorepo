@@ -5,7 +5,7 @@ export class EthereumWallet {
   connect() {
     cy.getByTestId(this.connectWalletBtnId).should('be.enabled').click();
     cy.getByTestId('web3-connector-list').should('be.visible');
-    cy.getByTestId('web3-connector-metamask').click();
+    cy.getByTestId('web3-connector-MetaMask').click();
   }
 
   verifyEthConnectBtnIsDisplayed() {
