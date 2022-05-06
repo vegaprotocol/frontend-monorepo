@@ -8,6 +8,12 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 // TODO replace with blueprint themeing
 // TYPOGRAPHY
 h1,
