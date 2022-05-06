@@ -73,7 +73,7 @@ export const Tranche = () => {
       </div>
       <h2>{t('Holders')}</h2>
       {tranche.users.length ? (
-        <ul className="list-none p-0">
+        <ul role="list" className="list-none">
           {tranche.users.map((user, i) => {
             const unlocked = user.remaining_tokens.times(lockedData?.unlocked);
             const locked = user.remaining_tokens.times(lockedData?.locked);

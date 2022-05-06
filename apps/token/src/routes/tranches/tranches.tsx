@@ -30,7 +30,7 @@ export const Tranches = () => {
       <VestingChart />
       <p>{t('chartBelow')}</p>
       {tranches?.length ? (
-        <ul className="list-none m-0 p-0">
+        <ul role="list" className="list-none">
           {(showAll ? tranches : filteredTranches).map((tranche) => {
             return (
               <React.Fragment key={tranche.tranche_id}>
