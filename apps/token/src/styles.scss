@@ -17,8 +17,6 @@ h4,
 h5,
 h6 {
   font-weight: 500;
-  margin-top: 1em;
-  margin-bottom: 15px;
   color: $white;
 }
 
@@ -57,4 +55,20 @@ a,
 
 .bp3-dark .bp3-input {
   background-color: $dark-gray4;
+}
+
+.epoch-countdown {
+  .bp3-progress-bar {
+    border: 1px solid $white;
+    border-radius: 0;
+    height: 21px;
+
+    .bp3-progress-meter {
+      border-radius: 0;
+
+      .bp3-dark & {
+        background-color: $white;
+      }
+    }
+  }
 }

@@ -1,5 +1,3 @@
-import './epoch-countdown.scss';
-
 import { Intent, ProgressBar } from '@blueprintjs/core';
 import { format, formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
@@ -59,12 +57,12 @@ export function EpochCountdown({
   }, [endDate]);
 
   return (
-    <div data-testid="epoch-countdown" className="pt-20 epoch-countdown">
-      <div className="epoch-countdown__title">
-        <h3>
+    <div data-testid="epoch-countdown" className="epoch-countdown pt-20">
+      <div className="flex items-end">
+        <h3 className="flex-1 font-normal mb-4">
           {t('Epoch')} {id}
         </h3>
-        <p>
+        <p className="text-ui-small mb-4">
           {endsIn
             ? t('Next epoch in {{endText}}', { endText: endsIn })
             : t('Awaiting next epoch')}
@@ -76,10 +74,14 @@ export function EpochCountdown({
         stripes={false}
         intent={Intent.NONE}
       />
-      <div className="epoch-countdown__time-range">
+      <div className="flex mt-4 text-ui-small">
         <p>{format(startDate, DATE_FORMAT_DETAILED)}</p>
-        <div className="epoch-countdown__arrow">
-          <img alt="arrow" src={arrow} />
+        <div className="flex-1 text-center">
+          <img
+            className="inline-block w-[5px] rotate-180"
+            alt="arrow"
+            src={arrow}
+          />
         </div>
         <p>{format(endDate, DATE_FORMAT_DETAILED)}</p>
       </div>
