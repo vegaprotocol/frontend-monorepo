@@ -159,3 +159,8 @@ When('I click on positions tab', () => {
 Then('positions are displayed', () => {
   positionsList.verifyPositionsDisplayed();
 });
+
+Then('candle chart is displayed as expected', () => {
+  // @ts-ignore ignoring to see if snapshot works
+  cy.get('.plot-area-interaction').toMatchSnapshot();
+});

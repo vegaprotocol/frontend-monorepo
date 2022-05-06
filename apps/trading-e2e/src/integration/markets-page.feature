@@ -15,3 +15,7 @@ Feature: Markets page
     Given I am on the markets page
     When I click on "Suspended" mocked market
     Then trading page for "suspended" market is displayed
+
+  Scenario: Charts are displayed
+    Given I am on the trading page for an active market
+    Then candle chart is displayed as expected
