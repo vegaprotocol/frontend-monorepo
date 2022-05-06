@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn"],
+  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn", "jsx-a11y"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -33,6 +33,13 @@
             "message": "Import the specific methods you need from lodash e.g. `import get from 'lodash/get'`. This helps with bundle sizing."
           }
         ],
+        "jsx-a11y/no-redundant-roles": [
+          "error",
+          {
+            "ul": ["list"],
+            "ol": ["list"]
+          }
+        ],
         "curly": "warn"
       }
     },
@@ -55,13 +62,6 @@
           {
             "prefer": "type-imports",
             "disallowTypeAnnotations": true
-          }
-        ],
-        "jsx-a11y/no-redundant-roles": [
-          "error",
-          {
-            "ul": ["list"],
-            "ol": ["list"]
           }
         ]
       }
