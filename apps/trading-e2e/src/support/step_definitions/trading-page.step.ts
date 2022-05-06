@@ -14,9 +14,11 @@ import AccountsList from '../trading-windows/accounts-list';
 import TradesList from '../trading-windows/trades-list';
 import TradingPage from '../pages/trading-page';
 import OrdersList from '../trading-windows/orders-list';
+import MarketPage from '../pages/markets-page';
 
 const tradesList = new TradesList();
 const tradingPage = new TradingPage();
+const marketPage = new MarketPage();
 const positionsList = new PositionsList();
 const accountList = new AccountsList();
 const ordersList = new OrdersList();
@@ -97,15 +99,25 @@ Given('I am on the trading page for a suspended market', () => {
   cy.contains('Market: SUSPENDED MARKET');
 });
 
+When('I click on {string} mocked market', (marketType) => {
+  switch (marketType) {
+    case 'Active':
+      mockMarket(MarketState.Active);
+      break;
+    case 'Suspended':
+      mockMarket(MarketState.Suspended);
+      break;
+  }
+  marketPage.clickOnMarket(marketType);
+});
+
 Then('trading page for {string} market is displayed', (marketType) => {
   switch (marketType) {
     case 'active':
-      mockMarket(MarketState.Active);
       cy.wait('@Market');
       cy.contains('Market: ACTIVE MARKET');
       break;
     case 'suspended':
-      mockMarket(MarketState.Suspended);
       cy.wait('@Market');
       cy.contains('Market: SUSPENDED MARKET');
       break;

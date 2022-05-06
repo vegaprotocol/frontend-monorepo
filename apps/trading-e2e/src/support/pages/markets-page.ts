@@ -7,6 +7,7 @@ export default class MarketPage extends BasePage {
     'tradableInstrument.instrument.product.settlementAsset.symbol';
   marketRowPrices = 'flash-cell';
   marketRowDescription = 'name';
+  marketStateColId = 'data';
 
   validateMarketsAreDisplayed() {
     cy.get('.ag-root-wrapper').should('be.visible');
@@ -54,6 +55,8 @@ export default class MarketPage extends BasePage {
   }
 
   clickOnMarket(text: string) {
-    cy.contains(text).click();
+    cy.get(`[col-id=${this.marketStateColId}]`)
+      .contains(text)
+      .click({ force: true });
   }
 }
