@@ -14,8 +14,16 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
     query: "tm.event = 'NewBlock'",
   });
 
+  console.log(
+    `blocks refetch ws message received: ${messages[messages.length - 1]}`
+  );
+
   useEffect(() => {
-    setBlocksToLoad((prev) => prev + 1);
+    console.log(`messages now of length: ${messages.length}`);
+
+    if (messages.length > 0) {
+      setBlocksToLoad((prev) => prev + 1);
+    }
   }, [messages]);
 
   const refresh = () => {
