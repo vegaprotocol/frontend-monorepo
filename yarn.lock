@@ -6011,10 +6011,10 @@
     ethers "^5.5.2"
     lodash "^4.17.21"
 
-"@vegaprotocol/vegawallet-service-api-client@^0.4.10":
-  version "0.4.10"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.10.tgz#896a59b484148973c7def4690fc41afc1d7b8f4e"
-  integrity sha512-4D+s5e11zmyN73QSSQ9Eq5Fpr/VrA2ImNGtobGbHbCudSCVok8mOUJGMBK2vwKrXtAyo6bot1MFtlCIkOOmdng==
+"@vegaprotocol/vegawallet-service-api-client@^0.4.11":
+  version "0.4.11"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.11.tgz#41a623afc9957dcf8b5425f74280ba7861e92b74"
+  integrity sha512-yiodc3YFWG+RGG+wjpTjYmNAECP/Nv244mVu8IGVtj8LZo02KC/LpNCgmMhGaK4ZcqVtxHv9t7OUCSEWZhSgOg==
   dependencies:
     es6-promise "^4.2.4"
     url-parse "^1.4.3"

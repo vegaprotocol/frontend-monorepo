@@ -91,7 +91,6 @@ export class RestConnector implements VegaConnector {
 
   async sendTx(body: TransactionSubmission) {
     try {
-      // @ts-ignore TODO: regen service and publish update api-client repo
       return await this.service.commandSyncPost(body);
     } catch (err) {
       return this.handleSendTxError(err);
