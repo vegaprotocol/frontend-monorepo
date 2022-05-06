@@ -10,7 +10,7 @@ export interface SparklineProps {
   width?: number;
   height?: number;
   points?: number;
-  style?: React.CSSProperties;
+  className?: string;
 }
 
 export const SparklineView = ({
@@ -18,7 +18,7 @@ export const SparklineView = ({
   width = 60,
   height = 15,
   points = 25,
-  style,
+  className,
 }: SparklineProps) => {
   // How many points are missing. If market is 12 hours old the 25 - 12
   const preMarketLength = points - data.length;
@@ -72,12 +72,11 @@ export const SparklineView = ({
   return (
     <svg
       data-testid="sparkline-svg"
-      className="pt-px pr-0 w-full overflow-visible"
+      className={`pt-px pr-0 w-full overflow-visible ${className}`}
       width={width}
       height={height}
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
-      style={style}
     >
       {preMarketCreationPath && (
         <path
@@ -109,7 +108,7 @@ export const Sparkline = React.memo(
   SparklineView,
   function (prevProps, nextProps) {
     // Warning! The return value here is the opposite of shouldComponentUpdate.
-    // Return true if you DONT want a re-render
+    // Return true if you DON NOT want a re-render
     if (
       prevProps.width !== nextProps.width ||
       prevProps.height !== nextProps.height
