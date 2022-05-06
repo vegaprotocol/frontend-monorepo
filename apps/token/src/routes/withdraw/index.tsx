@@ -150,33 +150,9 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           </Callout>
         </div>
       )}
-      <WithdrawManager
-        assets={data.assets?.filter(isERC20Asset) || []}
-        accounts={accounts}
-      />
+      <WithdrawManager assets={data.assets || []} accounts={accounts} />
     </>
   );
 };
 
 export default Withdraw;
-
-// TODO: This is duplicated in trading/lib/asset we should make this sharable
-export interface ERC20Asset extends WithdrawPage_party_accounts_asset {
-  source: {
-    __typename: 'ERC20';
-    contractAddress: string;
-  };
-}
-
-type UnknownAsset = Pick<
-  WithdrawPage_party_accounts_asset,
-  '__typename' | 'source'
->;
-
-// Type guard to ensure an asset is an ERC20 token
-export const isERC20Asset = (asset: UnknownAsset): asset is ERC20Asset => {
-  if (asset.source.__typename === 'ERC20') {
-    return true;
-  }
-  return false;
-};
