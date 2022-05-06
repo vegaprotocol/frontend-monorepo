@@ -31,8 +31,8 @@ Equal.args = {
   className: 'w-[113px]',
 };
 
-export const Higher = Template.bind({});
-Higher.args = {
+export const Increase = Template.bind({});
+Increase.args = {
   data: [
     1, 2, 3, 4, 5, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 6, 7, 8, 9,
     10, 11, 12,
@@ -43,8 +43,8 @@ Higher.args = {
   className: 'w-[113px]',
 };
 
-export const Lower = Template.bind({});
-Lower.args = {
+export const Decrease = Template.bind({});
+Decrease.args = {
   data: [
     12, 2, 3, 4, 5, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 6, 7, 8, 9,
     10, 11, 1,
