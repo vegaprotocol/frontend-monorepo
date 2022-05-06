@@ -5,7 +5,7 @@ const webpack = require('webpack');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
-
+import { addMatchImageSnapshotPlugin } from '@pkerschbaum/cypress-image-snapshot/lib/plugin';
 /**
  * @type {Cypress.PluginConfig}
  */
@@ -72,4 +72,5 @@ module.exports = (on, config) => {
       },
     })
   );
+  addMatchImageSnapshotPlugin(on, config);
 };

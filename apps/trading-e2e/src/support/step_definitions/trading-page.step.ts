@@ -161,6 +161,5 @@ Then('positions are displayed', () => {
 });
 
 Then('candle chart is displayed as expected', () => {
-  // @ts-ignore ignoring to see if snapshot works
-  cy.get('.plot-area-interaction').toMatchSnapshot();
+  cy.get('.plot-area-interaction').matchImageSnapshot('candle-chart');
 });
