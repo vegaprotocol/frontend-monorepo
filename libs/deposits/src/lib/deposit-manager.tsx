@@ -43,7 +43,6 @@ export const DepositManager = ({
     return asset;
   }, [assets, assetId]);
 
-  console.log(asset);
   const tokenContract = useTokenContract(
     asset?.source.contractAddress,
     process.env['NX_VEGA_ENV'] !== 'MAINNET'

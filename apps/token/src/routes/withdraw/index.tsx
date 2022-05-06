@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { AccountType } from '../../__generated__/globalTypes';
-import { EthWalletContainer } from '../../components/eth-wallet-container';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
@@ -41,7 +40,6 @@ const WITHDRAW_PAGE_QUERY = gql`
   query WithdrawPage($partyId: ID!) {
     party(id: $partyId) {
       id
-
       accounts {
         balance
         balanceFormatted @client

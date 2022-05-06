@@ -1,8 +1,4 @@
-import type {
-  Configuration,
-  OrderSubmissionBody,
-  WithdrawSubmissionBody,
-} from '@vegaprotocol/vegawallet-service-api-client';
+import type { Configuration } from '@vegaprotocol/vegawallet-service-api-client';
 import {
   createConfiguration,
   DefaultApi,

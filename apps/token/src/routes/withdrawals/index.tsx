@@ -1,6 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
 import { Splash } from '@vegaprotocol/ui-toolkit';
-import { useWeb3React } from '@web3-react/core';
 import { format } from 'date-fns';
 import orderBy from 'lodash/orderBy';
 import React from 'react';
@@ -12,7 +11,6 @@ import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { useRefreshBalances } from '../../hooks/use-refresh-balances';
 import { BigNumber } from '../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
 import { addDecimal } from '../../lib/decimals';
@@ -78,9 +76,7 @@ const WithdrawPendingContainer = ({
   currVegaKey,
 }: WithdrawPendingContainerProps) => {
   const { t } = useTranslation();
-  // const { account } = useWeb3React();
   const { transaction, submit } = useCompleteWithdraw();
-  // const refreshBalances = useRefreshBalances(account || '');
   const { data, loading, error } = useQuery<
     WithdrawalsPage,
     WithdrawalsPageVariables
@@ -127,12 +123,7 @@ const WithdrawPendingContainer = ({
       <ul role="list">
         {withdrawals.map((w) => (
           <li key={w.id}>
-            <Withdrawal
-              withdrawal={w}
-              // refetchWithdrawals={refetch}
-              // refetchBalances={refreshBalances}
-              complete={submit}
-            />
+            <Withdrawal withdrawal={w} complete={submit} />
           </li>
         ))}
       </ul>
@@ -148,35 +139,6 @@ interface WithdrawalProps {
 
 export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
   const { t } = useTranslation();
-  // const erc20Approval = usePollERC20Approval(withdrawal.id);
-  // const { erc20Bridge } = useContracts();
-  // const { state, perform, reset } = useTransaction(() => {
-  //   if (!erc20Approval) {
-  //     throw new Error('Withdraw needs approval object');
-  //   }
-  //   if (!withdrawal.details?.receiverAddress) {
-  //     throw new Error('Missing receiver address');
-  //   }
-
-  //   return erc20Bridge.withdraw({
-  //     assetSource: erc20Approval.assetSource,
-  //     amount: erc20Approval.amount,
-  //     nonce: erc20Approval.nonce,
-  //     signatures: erc20Approval.signatures,
-  //     // TODO: switch when targetAddress is populated and deployed to mainnet data.erc20WithdrawalApproval.targetAddress,
-  //     targetAddress: withdrawal.details.receiverAddress,
-  //   });
-  // });
-
-  // React.useEffect(() => {
-  //   // Once complete we need to refetch the withdrawals so that pending withdrawal
-  //   // is updated to have a txHash indicating it is complete. Updating your account balance
-  //   // is already handled by the query in the VegaWallet that polls
-  //   if (state.txState === TxState.Complete) {
-  //     refetchWithdrawals();
-  //     refetchBalances();
-  //   }
-  // }, [state, refetchWithdrawals, refetchBalances]);
 
   return (
     <div>
@@ -236,14 +198,6 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
             ? 'Incomplete'
             : withdrawal.status}
         </KeyValueTableRow>
-        {/* <KeyValueTableRow>
-          {t('Signature')}
-          <span title={erc20Approval?.signatures}>
-            {!erc20Approval?.signatures
-              ? t('Loading')
-              : truncateMiddle(erc20Approval.signatures)}
-          </span>
-        </KeyValueTableRow> */}
       </KeyValueTable>
       <p>
         {withdrawal.txHash ? null : (
@@ -255,19 +209,6 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
           </button>
         )}
       </p>
-      {/* <TransactionButton
-        text={
-          !erc20Approval
-            ? t('withdrawalsPreparingButton')
-            : t('withdrawalsCompleteButton')
-        }
-        transactionState={state}
-        forceTxState={withdrawal.txHash ? TxState.Complete : undefined}
-        forceTxHash={withdrawal.txHash}
-        disabled={!erc20Approval}
-        start={perform}
-        reset={reset}
-      /> */}
     </div>
   );
 };
