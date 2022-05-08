@@ -13,7 +13,6 @@ import { Routes } from '../router-config';
 import type {
   WithdrawPage,
   WithdrawPageVariables,
-  WithdrawPage_party_accounts_asset,
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
 

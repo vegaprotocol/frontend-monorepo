@@ -1,4 +1,3 @@
-import { gql, useQuery } from '@apollo/client';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { format } from 'date-fns';
 import orderBy from 'lodash/orderBy';
@@ -15,12 +14,8 @@ import { BigNumber } from '../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
 import { addDecimal } from '../../lib/decimals';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import type {
-  WithdrawalsPage,
-  WithdrawalsPage_party_withdrawals,
-  WithdrawalsPageVariables,
-} from './__generated__/WithdrawalsPage';
-import { useCompleteWithdraw } from '@vegaprotocol/withdraws';
+import type { Withdrawals_party_withdrawals } from '@vegaprotocol/withdraws';
+import { useCompleteWithdraw, useWithdrawals } from '@vegaprotocol/withdraws';
 import { TransactionDialog } from '@vegaprotocol/web3';
 import { WithdrawalStatus } from '../../__generated__/globalTypes';
 
@@ -43,46 +38,12 @@ interface WithdrawPendingContainerProps {
   currVegaKey: VegaKeyExtended;
 }
 
-const WITHDRAWALS_PAGE_QUERY = gql`
-  query WithdrawalsPage($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      withdrawals {
-        id
-        amount
-        asset {
-          id
-          symbol
-          decimals
-        }
-        party {
-          id
-        }
-        status
-        createdTimestamp
-        withdrawnTimestamp
-        txHash
-        details {
-          ... on Erc20WithdrawalDetails {
-            receiverAddress
-          }
-        }
-      }
-    }
-  }
-`;
-
 const WithdrawPendingContainer = ({
   currVegaKey,
 }: WithdrawPendingContainerProps) => {
   const { t } = useTranslation();
   const { transaction, submit } = useCompleteWithdraw();
-  const { data, loading, error } = useQuery<
-    WithdrawalsPage,
-    WithdrawalsPageVariables
-  >(WITHDRAWALS_PAGE_QUERY, {
-    variables: { partyId: currVegaKey.pub },
-  });
+  const { data, loading, error } = useWithdrawals();
 
   const withdrawals = React.useMemo(() => {
     if (!data?.party?.withdrawals?.length) return [];
@@ -133,12 +94,43 @@ const WithdrawPendingContainer = ({
 };
 
 interface WithdrawalProps {
-  withdrawal: WithdrawalsPage_party_withdrawals;
+  withdrawal: Withdrawals_party_withdrawals;
   complete: (withdrawalId: string) => void;
 }
 
 export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
   const { t } = useTranslation();
+
+  const renderStatus = ({
+    id,
+    status,
+    txHash,
+    pendingOnForeignChain,
+  }: Withdrawals_party_withdrawals) => {
+    if (pendingOnForeignChain) {
+      return t('Pending');
+    }
+
+    if (status === WithdrawalStatus.Finalized) {
+      if (txHash) {
+        return t('Complete');
+      } else {
+        return (
+          <>
+            {t('Incomplete')}{' '}
+            <button
+              className="text-white underline"
+              onClick={() => complete(id)}
+            >
+              {t('withdrawalsCompleteButton')}
+            </button>
+          </>
+        );
+      }
+    }
+
+    return status;
+  };
 
   return (
     <div>
@@ -152,10 +144,6 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
             )}{' '}
             {withdrawal.asset.symbol}
           </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {t('from')}
-          <span>{truncateMiddle(withdrawal.party.id)}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
           {t('toEthereum')}
@@ -178,7 +166,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
           </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          {t('Ethereum transaction')}
+          {t('withdrawalTransaction', { foreignChain: 'Ethereum' })}
           <span>
             {withdrawal.txHash ? (
               <EtherscanLink
@@ -192,23 +180,9 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
         </KeyValueTableRow>
         <KeyValueTableRow>
           {t('status')}
-          {withdrawal.txHash
-            ? t('Complete')
-            : withdrawal.status === WithdrawalStatus.Finalized
-            ? 'Incomplete'
-            : withdrawal.status}
+          {renderStatus(withdrawal)}
         </KeyValueTableRow>
       </KeyValueTable>
-      <p>
-        {withdrawal.txHash ? null : (
-          <button
-            className="underline text-white hover:text-vega-yellow"
-            onClick={() => complete(withdrawal.id)}
-          >
-            {t('Finish withdrawal')}
-          </button>
-        )}
-      </p>
     </div>
   );
 };

@@ -147,6 +147,7 @@ const IconLine = ({ inverted }: { inverted: boolean }) => (
 
 const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   const { appState, appDispatch } = useAppState();
+
   return (
     <>
       <button
