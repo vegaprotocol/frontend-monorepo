@@ -164,14 +164,10 @@ const ConnectedKey = () => {
       )}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/associate`}>
-          <Button variant="primary" className="h-auto py-12 w-full">
-            {t('associate')}
-          </Button>
+          <Button variant="primary">{t('associate')}</Button>
         </Link>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/disassociate`}>
-          <Button variant="primary" className="h-auto py-12 w-full">
-            {t('disassociate')}
-          </Button>
+          <Button variant="primary">{t('disassociate')}</Button>
         </Link>
       </WalletCardActions>
     </>

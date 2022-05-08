@@ -1,5 +1,3 @@
-import './tranche-label.scss';
-
 import { ADDRESSES, EthereumChainIds } from '../../config';
 import type { EthereumChainId } from '../../config';
 
@@ -39,7 +37,10 @@ export const TrancheLabel = ({ contract, chainId, id }: TrancheLabelProps) => {
       return (
         <>
           {TRANCHE_LABELS[id].map((t, i) => (
-            <strong className="tranche-label" key={`tranche-${id}-${i}`}>
+            <strong
+              className="inline-block mx-4 p-4 border-2 border-solid bg-black text-white uppercase"
+              key={`tranche-${id}-${i}`}
+            >
               {t}
             </strong>
           ))}
