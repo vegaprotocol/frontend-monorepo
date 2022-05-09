@@ -1,5 +1,6 @@
-import { useEagerConnect } from '../../hooks/use-vega-wallet-eager-connect';
+import { useEagerConnect } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
+import { Connectors } from '../../lib/vega-connectors';
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -11,7 +12,7 @@ interface AppLoaderProps {
  */
 export function AppLoader({ children }: AppLoaderProps) {
   // Get keys from vega wallet immediately
-  useEagerConnect();
+  useEagerConnect(Connectors);
 
   // eslint-disable-next-line react/jsx-no-useless-fragment
   return <>{children}</>;
