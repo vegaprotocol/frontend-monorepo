@@ -28,7 +28,7 @@ const BlocksRefetchInWebsocketProvider = ({
 
 describe('Blocks refetch', () => {
   const mocket = new WS(mocketLocation, { jsonProtocol: true });
-  const client = new WebSocket(mocketLocation);
+  new WebSocket(mocketLocation);
 
   it('should render inner components', async () => {
     render(<BlocksRefetchInWebsocketProvider callback={() => null} />);

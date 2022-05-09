@@ -45,7 +45,7 @@ export const BlocksInfiniteList = ({
   const Item = ({ index, style }: ItemProps) => {
     let content;
     if (error) {
-      content = t(`Error: ${error}`);
+      content = t(`${error}`);
     } else if (!isItemLoaded(index)) {
       content = t('Loading...');
     } else {
@@ -56,7 +56,7 @@ export const BlocksInfiniteList = ({
   };
 
   return (
-    <div className={className}>
+    <div className={className} data-testid="infinite-scroll-wrapper">
       <InfiniteLoader
         isItemLoaded={isItemLoaded}
         itemCount={itemCount}
