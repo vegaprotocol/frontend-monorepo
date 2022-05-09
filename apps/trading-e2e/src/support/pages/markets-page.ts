@@ -56,7 +56,10 @@ export default class MarketPage extends BasePage {
 
   clickOnMarket(text: string) {
     cy.get(`[col-id=${this.marketStateColId}]`).should('be.visible');
-    cy.get(`[col-id=${this.marketStateColId}]`).contains(text).click().click(); // double click needed to click element in CI
-    cy.url().should('contain', 'portfolio=orders&trade=orderbook');
+    cy.get(`[col-id=${this.marketStateColId}]`).contains(text).click();
+    cy.url({ timeout: 8000 }).should(
+      'contain',
+      'portfolio=orders&trade=orderbook'
+    );
   }
 }
