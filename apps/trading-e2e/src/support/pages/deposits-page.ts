@@ -40,15 +40,19 @@ export default class DepositsPage extends BasePage {
   }
 
   verifyInvalidPublicKey() {
-    cy.get(this.toError).contains('Invalid Vega key');
+    cy.get(this.toError).contains('Invalid Vega key').should('be.visible');
   }
 
   verifyAmountTooSmall() {
-    cy.get(this.amountError).contains('Amount is below permitted minimum');
+    cy.get(this.amountError)
+      .contains('Value is below minimum')
+      .should('be.visible');
   }
 
   verifyNotApproved() {
-    cy.get(this.amountError).contains('Amount is above approved amount');
-    cy.contains('Deposits of tBTC not approved');
+    cy.get(this.amountError)
+      .contains('Amount is above approved amount')
+      .should('be.visible');
+    cy.contains('Deposits of tBTC not approved').should('be.visible');
   }
 }
