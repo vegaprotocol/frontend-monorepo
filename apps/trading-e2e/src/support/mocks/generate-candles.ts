@@ -63,7 +63,7 @@ export const generateCandles = (override?: PartialDeep<Candles>): Candles => {
     },
     {
       datetime: '2022-04-06T10:45:00Z',
-      high: '18474562',
+      high: '17474562',
       low: '17123352',
       open: '17424552',
       close: '17323352',

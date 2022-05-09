@@ -38,8 +38,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Cypress local snapshots
-**/integration/__cy_image_snapshots__
-
 .local.env
 .env.local
