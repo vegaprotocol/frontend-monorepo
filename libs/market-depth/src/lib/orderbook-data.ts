@@ -100,27 +100,6 @@ const mapRawData =
   ): OrderbookRow =>
     createRow(data.price, Number(data.volume), dataType);
 
-const fillGaps = (orderbookData: OrderbookRow[], resolution: number) => {
-  if (orderbookData.length < 2) {
-    return;
-  }
-  let index = 0;
-  while (index < orderbookData.length - 1) {
-    if (
-      BigInt(orderbookData[index].price) -
-        BigInt(orderbookData[index + 1].price) !==
-      BigInt(resolution)
-    ) {
-      const data = createRow(
-        (BigInt(orderbookData[index].price) - BigInt(resolution)).toString()
-      );
-      data.cumulativeVol = { ...orderbookData[index].cumulativeVol };
-      orderbookData.splice(index + 1, 0, data);
-    }
-    index += 1;
-  }
-};
-
 /**
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
  */
@@ -189,8 +168,6 @@ export const compactRows = (
       }
     }
   }
-  // fill gaps between price levels
-  fillGaps(orderbookData, resolution);
   // count relative volumes
   updateRelativeData(orderbookData);
   return orderbookData;
@@ -302,8 +279,15 @@ export const updateCompactedRows = (
           draft[i - 1].cumulativeVol.bid + draft[i].bid;
       }
     }
-    // fill gaps between price levels
-    fillGaps(draft, resolution);
+    let index = 0;
+    // remove levels that do not have any volume
+    while (index < draft.length) {
+      if (!draft[index].ask && !draft[index].bid) {
+        draft.splice(index, 1);
+      } else {
+        index += 1;
+      }
+    }
     // count relative volumes
     updateRelativeData(draft);
   });
