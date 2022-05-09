@@ -5,7 +5,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Colors } from '../../config';
 import {
   AppStateActionType,
   useAppState,
@@ -26,6 +25,9 @@ import {
   WalletCardRow,
 } from '../wallet-card';
 import { Button, Loader } from '@vegaprotocol/ui-toolkit';
+import { theme } from '@vegaprotocol/tailwindcss-config';
+
+const Colors = theme.colors;
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -68,13 +70,13 @@ const AssociatedAmounts = ({
         total={associationAmounts.total}
         leftLabel={t('associated')}
         rightLabel={t('notAssociated')}
-        leftColor={Colors.WHITE}
-        rightColor={Colors.BLACK}
+        leftColor={Colors.white.DEFAULT}
+        rightColor={Colors.black.DEFAULT}
         light={true}
       />
       {vestingAssociationByVegaKey.length ? (
         <>
-          <hr style={{ borderStyle: 'dashed', color: Colors.TEXT }} />
+          <hr style={{ borderStyle: 'dashed', color: Colors.text }} />
           <WalletCardRow label="Associated with Vega keys" bold={true} />
           {vestingAssociationByVegaKey.map(([key, amount]) => {
             return (

@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { TokenInput } from '../../components/token-input';
-import { Colors, NetworkParams } from '../../config';
+import { NetworkParams } from '../../config';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useNetworkParam } from '../../hooks/use-network-param';
 import { useSearchParams } from '../../hooks/use-search-params';
@@ -203,11 +203,9 @@ export const StakingForm = ({
     availableStakeToRemove.isEqualTo(0)
   ) {
     if (appState.lien.isGreaterThan(0)) {
-      return (
-        <span style={{ color: Colors.RED }}>{t('stakeNodeWrongVegaKey')}</span>
-      );
+      return <span className={'text-red'}>{t('stakeNodeWrongVegaKey')}</span>;
     } else {
-      return <span style={{ color: Colors.RED }}>{t('stakeNodeNone')}</span>;
+      return <span className={'text-red'}>{t('stakeNodeNone')}</span>;
     }
   }
 
