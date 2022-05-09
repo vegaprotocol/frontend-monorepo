@@ -68,7 +68,7 @@
     },
     {
       "files": ["*.spec.ts", "*.spec.tsx"],
-      "extends": ["plugin:@nrwl/nx/typescript"],
+      "extends": ["plugin:@nrwl/nx/typescript", "plugin:jest/recommended"],
       "rules": {
         "jest/consistent-test-it": ["error", { "fn": "it" }]
       }
