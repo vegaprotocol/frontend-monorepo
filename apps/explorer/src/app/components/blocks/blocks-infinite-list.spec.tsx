@@ -1,5 +1,5 @@
 import { BlocksInfiniteList } from './blocks-infinite-list';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
 const generateBlocks = (number: number) => {
@@ -99,7 +99,7 @@ describe('Blocks infinite list', () => {
     ).toHaveLength(10);
   });
 
-  it('executes callback for more items when required', () => {
+  it('tries to load more items when required to initially fill the list', () => {
     // For example, if initially rendering 15, the bottom of the list is
     // in view of the viewport, and the callback should be executed
     const blocks = generateBlocks(15);
@@ -120,7 +120,7 @@ describe('Blocks infinite list', () => {
     expect(callback.mock.calls.length).toEqual(1);
   });
 
-  it('does not execute callback for more items if there are no more', () => {
+  it('does not try to load more items if there are no more', () => {
     const blocks = generateBlocks(3);
     const callback = jest.fn();
 
@@ -137,5 +137,30 @@ describe('Blocks infinite list', () => {
     );
 
     expect(callback.mock.calls.length).toEqual(0);
+  });
+
+  it('loads more items is called when scrolled', () => {
+    const blocks = generateBlocks(20);
+    const callback = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <BlocksInfiniteList
+          blocks={blocks}
+          areBlocksLoading={false}
+          hasMoreBlocks={true}
+          loadMoreBlocks={callback}
+          error={undefined}
+        />
+      </MemoryRouter>
+    );
+
+    act(() => {
+      fireEvent.scroll(screen.getByTestId('infinite-scroll-wrapper'), {
+        target: { scrollY: 600 },
+      });
+    });
+
+    expect(callback.mock.calls.length).toEqual(1);
   });
 });
