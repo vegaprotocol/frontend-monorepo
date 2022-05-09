@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { FormEvent } from 'react';
 import Box from '@mui/material/Box';
-import Stepper from '../stepper';
+import { Stepper } from '../stepper';
 import type { Order, DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import {
   ExpirySelector,
@@ -11,15 +11,16 @@ import {
   TypeSelector,
   useOrderState,
   useOrderSubmit,
+  DealTicketLimitForm,
+  DealTicketMarketForm,
 } from '@vegaprotocol/deal-ticket';
-import { DealTicketMarket } from './deal-ticket-market';
-import { DealTicketLimit } from './deal-ticket-limit';
 import {
   OrderSide,
   OrderTimeInForce,
   OrderType,
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
@@ -46,18 +47,25 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
   if (order.type === OrderType.Market) {
     ticket = (
-      <DealTicketMarket
-        order={order}
-        updateOrder={updateOrder}
-        market={market}
+      <DealTicketMarketForm
+        size={order.size}
+        onSizeChange={(size) => updateOrder({ size })}
+        price={
+          market.depth.lastTrade
+            ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+            : undefined
+        }
+        quoteName={market.tradableInstrument.instrument.product.quoteName}
       />
     );
   } else if (order.type === OrderType.Limit) {
     ticket = (
-      <DealTicketLimit
-        order={order}
-        updateOrder={updateOrder}
-        market={market}
+      <DealTicketLimitForm
+        price={order.price}
+        size={order.size}
+        quoteName={market.tradableInstrument.instrument.product.quoteName}
+        onSizeChange={(size) => updateOrder({ size })}
+        onPriceChange={(price) => updateOrder({ price })}
       />
     );
   } else {

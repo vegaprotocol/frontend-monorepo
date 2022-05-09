@@ -4,6 +4,8 @@ export * from './time-in-force-selector';
 export * from './submit-button';
 export * from './side-selector';
 export * from './deal-ticket';
+export * from './deal-ticket-limit-form';
+export * from './deal-ticket-market-form';
 export * from './deal-ticket-manager';
 export * from './order-dialog';
 export * from './use-order-state';

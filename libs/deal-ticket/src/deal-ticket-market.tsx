@@ -1,12 +1,12 @@
-import { addDecimal } from '@vegaprotocol/react-helpers';
-import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import type { TransactionStatus } from './deal-ticket';
 import { SideSelector } from './side-selector';
+import { DealTicketMarketForm } from './deal-ticket-market-form';
 import { SubmitButton } from './submit-button';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { Order } from './use-order-state';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
 interface DealTicketMarketProps {
   order: Order;
@@ -25,30 +25,16 @@ export const DealTicketMarket = ({
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
-      <div className="flex items-center gap-8">
-        <div className="flex-1">
-          <FormGroup label="Amount">
-            <Input
-              value={order.size}
-              onChange={(e) => updateOrder({ size: e.target.value })}
-              className="w-full"
-              type="number"
-              data-testid="order-size"
-            />
-          </FormGroup>
-        </div>
-        <div className="pt-4">@</div>
-        <div className="flex-1 pt-4" data-testid="last-price">
-          {market.depth.lastTrade ? (
-            <>
-              ~{addDecimal(market.depth.lastTrade.price, market.decimalPlaces)}{' '}
-              {market.tradableInstrument.instrument.product.quoteName}
-            </>
-          ) : (
-            '-'
-          )}
-        </div>
-      </div>
+      <DealTicketMarketForm
+        size={order.size}
+        onSizeChange={(size) => updateOrder({ size })}
+        price={
+          market.depth.lastTrade
+            ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+            : undefined
+        }
+        quoteName={market.tradableInstrument.instrument.product.quoteName}
+      />
       <TimeInForceSelector
         order={order}
         onSelect={(timeInForce) => updateOrder({ timeInForce })}
