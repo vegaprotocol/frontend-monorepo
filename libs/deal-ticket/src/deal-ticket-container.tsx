@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { gql, useQuery } from '@apollo/client';
 import { DealTicketManager } from './deal-ticket-manager';

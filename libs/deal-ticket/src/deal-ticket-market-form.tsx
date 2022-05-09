@@ -1,4 +1,3 @@
-import { addDecimal } from '@vegaprotocol/react-helpers';
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 
 export interface DealTicketMarketFormProps {
