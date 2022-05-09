@@ -1,23 +1,62 @@
+import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { getIntentShadow, Intent } from '../../utils/intent';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 
-export interface CalloutProps {
+interface CalloutRootProps {
   children?: React.ReactNode;
   title?: React.ReactElement | string;
   intent?: Intent;
-  iconName?: IconName;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
-export function Callout({
-  children,
-  title,
-  intent = Intent.Help,
-  iconName,
-  headingLevel,
-}: CalloutProps) {
+interface CalloutWithoutIcon extends CalloutRootProps {
+  iconName?: never;
+  icon?: never;
+}
+
+interface CalloutPropsWithIconName extends CalloutRootProps {
+  children?: React.ReactNode;
+  title?: React.ReactElement | string;
+  intent?: Intent;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  iconName: IconName;
+  icon?: never;
+}
+
+interface CalloutPropsWithIcon extends CalloutRootProps {
+  children?: React.ReactNode;
+  title?: React.ReactElement | string;
+  intent?: Intent;
+  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  iconName?: never;
+  icon: ReactNode;
+}
+
+type CalloutProps =
+  | CalloutWithoutIcon
+  | CalloutPropsWithIconName
+  | CalloutPropsWithIcon;
+
+const getIconElement = (props: CalloutProps) => {
+  if (props.iconName) {
+    return (
+      <Icon
+        name={props.iconName}
+        className="fill-current ml-8 mr-16 mt-8"
+        size={20}
+      />
+    );
+  }
+  return props.icon;
+};
+
+export function Callout(props: CalloutProps) {
+  const { children, title, intent = Intent.Help, headingLevel } = props;
+
+  const icon = getIconElement(props);
+
   const className = classNames(
     'border',
     'border-black',
@@ -27,15 +66,12 @@ export function Callout({
     'p-16',
     getIntentShadow(intent),
     {
-      flex: !!iconName,
+      flex: !!icon,
     }
   );
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
     ? `h${headingLevel}`
     : 'div';
-  const icon = iconName && (
-    <Icon name={iconName} className="fill-current ml-8 mr-16 mt-8" size={20} />
-  );
   const body = (
     <>
       {title && <TitleTag className="text-h5 mt-0 mb-8">{title}</TitleTag>}
