@@ -1,20 +1,23 @@
 import { gql } from '@apollo/client';
-import type {
-  MarketDataSub,
-  MarketDataSub_marketData,
-  Markets,
-  Markets_markets,
-} from '@vegaprotocol/market-list';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import type {
+  SimpleMarkets,
+  SimpleMarkets_markets,
+} from './__generated__/SimpleMarkets';
+import type {
+  SimpleMarketDataSub,
+  SimpleMarketDataSub_marketData,
+} from './__generated__/SimpleMarketDataSub';
 
 const MARKET_DATA_FRAGMENT = gql`
-  fragment MarketDataFields on MarketData {
+  fragment SimpleMarketDataFields on MarketData {
     market {
       id
       state
       tradingMode
       state
     }
+    auctionEnd
     bestBidPrice
     bestOfferPrice
     markPrice
@@ -23,13 +26,13 @@ const MARKET_DATA_FRAGMENT = gql`
 
 const MARKETS_QUERY = gql`
   ${MARKET_DATA_FRAGMENT}
-  query Markets {
+  query SimpleMarkets($CandleInterval: Interval!, $CandleSince: String!) {
     markets {
       id
       name
       decimalPlaces
       data {
-        ...MarketDataFields
+        ...SimpleMarketDataFields
       }
       tradableInstrument {
         instrument {
@@ -43,31 +46,35 @@ const MARKETS_QUERY = gql`
           }
         }
       }
+      candles(interval: $CandleInterval, since: $CandleSince) {
+        open
+        close
+      }
     }
   }
 `;
 
 const MARKET_DATA_SUB = gql`
   ${MARKET_DATA_FRAGMENT}
-  subscription MarketDataSub {
+  subscription SimpleMarketDataSub {
     marketData {
-      ...MarketDataFields
+      ...SimpleMarketDataFields
     }
   }
 `;
 
 const update = () => true;
 
-const getData = (responseData: Markets) => responseData.markets;
-const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>
-  subscriptionData.marketData;
+const getData = (responseData: SimpleMarkets) => responseData.markets;
+const getDelta = (
+  subscriptionData: SimpleMarketDataSub
+): SimpleMarketDataSub_marketData => subscriptionData.marketData;
 
-// export const dataProvider = marketsDataProvider<any,
 export const dataProvider = makeDataProvider<
-  Markets,
-  Markets_markets[],
-  MarketDataSub,
-  MarketDataSub_marketData
+  SimpleMarkets,
+  SimpleMarkets_markets[],
+  SimpleMarketDataSub,
+  SimpleMarketDataSub_marketData
 >(MARKETS_QUERY, MARKET_DATA_SUB, update, getData, getDelta);
 
 export default dataProvider;

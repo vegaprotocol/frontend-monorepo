@@ -6,7 +6,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { DealTicketSteps } from './deal-ticket-steps';
 
 const DEAL_TICKET_QUERY = gql`
-  query DealTicketQuery($marketId: ID!) {
+  query SimpleDealTicketQuery($marketId: ID!) {
     market(id: $marketId) {
       id
       decimalPlaces

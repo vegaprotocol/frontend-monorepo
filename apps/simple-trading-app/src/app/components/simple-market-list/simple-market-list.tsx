@@ -1,29 +1,42 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import {
-  AsyncRenderer,
-  Lozenge,
-  TailwindIntents,
-} from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
+import { AsyncRenderer, Lozenge } from '@vegaprotocol/ui-toolkit';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import {
+  Grid,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+} from '@mui/material';
 import DataProvider from './data-provider';
-import { Grid } from '@mui/material';
+import { MARKET_STATUS } from './constants';
 
 const SimpleMarketList = () => {
-  const { data, error, loading } = useDataProvider(DataProvider);
+  const variables = useMemo(
+    () => ({
+      CandleInterval: 'I1H',
+      CandleSince: new Date(Date.now() - 24 * 60 * 60 * 1000).toJSON(),
+    }),
+    []
+  );
+  const { data, error, loading } = useDataProvider(
+    DataProvider,
+    undefined,
+    variables
+  );
+  const onClick = useCallback((marketId) => {
+    // trigger navigation soon
+    console.log('trigger market', marketId);
+  }, []);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <List
         subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            Marked list
-          </ListSubheader>
+          <ListSubheader component="div">{t('Marked list')}</ListSubheader>
         }
       >
         {data?.map((market) => (
@@ -32,7 +45,11 @@ const SimpleMarketList = () => {
             secondaryAction={
               <ListItemButton>
                 <ListItemIcon>
-                  <Button variant="inline" prependIconName="chevron-right" />
+                  <Button
+                    onClick={() => onClick(market.id)}
+                    variant="inline"
+                    prependIconName="chevron-right"
+                  />
                 </ListItemIcon>
               </ListItemButton>
             }
@@ -40,35 +57,46 @@ const SimpleMarketList = () => {
             <ListItemText
               primary={
                 <Grid container spacing={2}>
-                  <Grid item xs={8}>
-                    <span>{market.name}</span>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <span>expires: ??</span>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <span>xs=4</span>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <span>
-                      settled in{' '}
-                      {
+                  <Grid
+                    item
+                    container
+                    xs={6}
+                    direction="column"
+                    justifyContent="space-evenly"
+                    spacing={0.5}
+                  >
+                    <Grid item>{market.name}</Grid>
+                    <Grid item>
+                      {market.data?.auctionEnd
+                        ? `${t('expires')} ${market.data?.auctionEnd}`
+                        : t('not started yet')}
+                    </Grid>
+                    <Grid item>
+                      {`${t('settled in')} ${
                         market.tradableInstrument.instrument.product
                           .settlementAsset.symbol
-                      }
-                    </span>
+                      }`}
+                    </Grid>
                   </Grid>
-                  <Grid item xs={8}>
-                    <span>xs=8</span>
+                  <Grid
+                    item
+                    container
+                    xs={4}
+                    direction="column"
+                    justifyContent="space-evenly"
+                    alignItems="center"
+                    spacing={1}
+                  >
+                    <Grid item>change: ???</Grid>
+                    <Grid item>
+                      <Lozenge
+                        variant={MARKET_STATUS[market.data?.market.state || '']}
+                      >
+                        {market.data?.market.state}
+                      </Lozenge>
+                    </Grid>
                   </Grid>
                 </Grid>
-              }
-            />
-            <ListItemText
-              primary={
-                <Lozenge variant={TailwindIntents.Success}>
-                  {market.data?.market.state}
-                </Lozenge>
               }
             />
           </ListItem>
