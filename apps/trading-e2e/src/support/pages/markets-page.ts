@@ -55,7 +55,11 @@ export default class MarketPage extends BasePage {
   }
 
   clickOnMarket(text: string) {
-    cy.contains(text).should('be.visible').click({ force: true });
+    cy.get(`[col-id=${this.marketStateColId}]`).should('not.be.empty');
+    cy.get(`[col-id=${this.marketStateColId}]`)
+      .contains(text)
+      .should('be.visible')
+      .click({ force: true });
     cy.url().should('contain', 'portfolio=orders&trade=orderbook');
   }
 }
