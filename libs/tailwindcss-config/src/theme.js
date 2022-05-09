@@ -25,7 +25,7 @@ module.exports = {
     green: {
       DEFAULT: '#26FF8A',
       transparent: 'rgba(38, 255, 138, 0.3)',
-      dark: '#246340', // Same as GREEN_TRANSPARENT given a background of #1f1f1f
+      dark: '#246340',
       vega: '#00F780',
     },
     text: '#C7C7C7',
