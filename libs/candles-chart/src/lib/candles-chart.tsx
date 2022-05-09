@@ -23,6 +23,11 @@ export const CandlesChartContainer = ({
   }, [client, marketId, keypair]);
 
   return (
-    <Chart dataSource={dataSource} interval={Interval.I15M} theme={theme} />
+    <Chart
+      data-testid="candle-chart"
+      dataSource={dataSource}
+      interval={Interval.I15M}
+      theme={theme}
+    />
   );
 };

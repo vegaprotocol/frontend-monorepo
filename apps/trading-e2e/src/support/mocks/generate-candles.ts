@@ -34,6 +34,42 @@ export const generateCandles = (override?: PartialDeep<Candles>): Candles => {
       volume: '60259',
       __typename: 'Candle',
     },
+    {
+      datetime: '2022-04-06T10:00:00Z',
+      high: '17424532',
+      low: '17337710',
+      open: '17376455',
+      close: '17424532',
+      volume: '63259',
+      __typename: 'Candle',
+    },
+    {
+      datetime: '2022-04-06T10:15:00Z',
+      high: '17424552',
+      low: '17337730',
+      open: '17424532',
+      close: '17424550',
+      volume: '63100',
+      __typename: 'Candle',
+    },
+    {
+      datetime: '2022-04-06T10:30:00Z',
+      high: '17524582',
+      low: '17337530',
+      open: '17424550',
+      close: '17424552',
+      volume: '63500',
+      __typename: 'Candle',
+    },
+    {
+      datetime: '2022-04-06T10:45:00Z',
+      high: '17474562',
+      low: '17123352',
+      open: '17424552',
+      close: '17323352',
+      volume: '63500',
+      __typename: 'Candle',
+    },
   ];
   const defaultResult = {
     market: {
