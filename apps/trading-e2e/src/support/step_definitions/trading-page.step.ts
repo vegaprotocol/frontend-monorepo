@@ -161,5 +161,6 @@ Then('positions are displayed', () => {
 });
 
 Then('candle chart is displayed as expected', () => {
-  cy.get('.plot-area-interaction').matchImageSnapshot('candle-chart');
+  tradingPage.switchToDarkMode();
+  tradingPage.validateCandleChartDisplayed();
 });

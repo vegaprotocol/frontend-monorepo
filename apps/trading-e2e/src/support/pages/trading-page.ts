@@ -11,6 +11,7 @@ export default class TradingPage extends BasePage {
   tradesTab = 'Trades';
   completedTrades = 'Market-trades';
   orderBookTab = 'Prderbook';
+  candleChartClassName = '.plot-area-interaction';
 
   clickOnOrdersTab() {
     cy.getByTestId(this.ordersTab).click();
@@ -38,5 +39,9 @@ export default class TradingPage extends BasePage {
 
   clickOrderBookTab() {
     cy.getByTestId(this.orderBookTab).click();
+  }
+
+  validateCandleChartDisplayed() {
+    cy.get(this.candleChartClassName).matchImageSnapshot('candle-chart');
   }
 }

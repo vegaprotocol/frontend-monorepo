@@ -5,7 +5,12 @@ export const ThemeSwitcher = ({
   onToggle: () => void;
   className?: string;
 }) => (
-  <button type="button" onClick={() => onToggle()} className={className}>
+  <button
+    data-testid="theme-switcher"
+    type="button"
+    onClick={() => onToggle()}
+    className={className}
+  >
     <span className="dark:hidden text-black">
       <svg viewBox="0 0 45 45" className="w-32 h-32">
         <g>
