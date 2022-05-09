@@ -1,5 +1,4 @@
 import './i18n';
-import './app.scss';
 
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -35,7 +34,7 @@ function App() {
                   <AppLoader>
                     <BalanceManager>
                       <>
-                        <div className="app dark">
+                        <div className="app dark max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
                           <AppBanner />
                           <TemplateSidebar sidebar={sideBar}>
                             <AppRouter />

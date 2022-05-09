@@ -4,7 +4,7 @@ import { forwardRef, useMemo } from 'react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { TradeFields } from './__generated__/TradeFields';
 import {
-  formatNumber,
+  addDecimalsFormatNumber,
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
@@ -67,7 +67,7 @@ export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
           field="price"
           cellClass={changeCellClass('price')}
           valueFormatter={({ value, data }: ValueFormatterParams) => {
-            return formatNumber(value, data.market.decimalPlaces);
+            return addDecimalsFormatNumber(value, data.market.decimalPlaces);
           }}
         />
         <AgGridColumn

@@ -1,5 +1,3 @@
-import './staking-node.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -113,7 +111,6 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
       />
       {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
         <EpochCountdown
-          containerClass="staking-node__epoch"
           id={data.epoch.id}
           startDate={new Date(data?.epoch.timestamps.start)}
           endDate={new Date(data?.epoch.timestamps.expiry)}

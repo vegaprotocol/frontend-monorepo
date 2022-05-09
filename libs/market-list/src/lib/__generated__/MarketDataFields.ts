@@ -3,14 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL fragment: MarketDataFields
 // ====================================================
 
 export interface MarketDataFields_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -26,7 +26,7 @@ export interface MarketDataFields_market {
 }
 
 export interface MarketDataFields {
-  __typename: 'MarketData';
+  __typename: "MarketData";
   /**
    * market id of the associated mark price
    */

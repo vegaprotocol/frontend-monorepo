@@ -62,6 +62,7 @@ export interface KeyValueTableRowProps
   className?: string;
   numerical?: boolean; // makes all values monospace
   muted?: boolean;
+  inline?: boolean;
 }
 
 export const KeyValueTableRow = ({
@@ -69,25 +70,28 @@ export const KeyValueTableRow = ({
   className,
   muted,
   numerical,
+  inline = true,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
-    'flex flex-wrap justify-between items-center border-b first:border-t border-black dark:border-white',
+    'flex gap-1 flex-wrap justify-between border-b first:border-t border-black dark:border-white',
+    { 'flex-col items-start': !inline },
+    { 'flex-row items-center': inline },
     {
       'border-black/60 dark:border-white/60 first:[border-top:none] last:[border-bottom:none]':
         muted,
     },
     className
   );
-  const dtClassName = `break-normal font-medium uppercase align-top p-4`;
+  const dtClassName = `break-words font-medium uppercase align-top p-4 capitalize`;
   const ddClassName = classNames(
-    'align-top p-4 text-black/60 dark:text-white/60 break-normal',
+    'align-top p-4 text-black/60 dark:text-white/60 break-words',
     {
       'font-mono': numerical,
     }
   );
 
   return (
-    <dl className={dlClassName}>
+    <dl className={dlClassName} data-testid="key-value-table-row">
       <dt className={dtClassName}>{children[0]}</dt>
       <dd className={ddClassName}>{children[1]}</dd>
     </dl>

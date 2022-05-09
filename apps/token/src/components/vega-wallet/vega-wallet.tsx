@@ -73,7 +73,6 @@ const VegaWalletNotConnected = () => {
             isOpen: true,
           })
         }
-        className="fill w-full py-12 h-auto"
         variant="secondary"
         data-testid="connect-vega"
       >
