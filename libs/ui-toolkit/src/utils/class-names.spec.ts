@@ -1,6 +1,6 @@
 import { includesLeftPadding, includesRightPadding } from './class-names';
 
-test('includesLeftPadding detects class name which affects left padding', () => {
+it('includesLeftPadding detects class name which affects left padding', () => {
   expect(includesLeftPadding()).toEqual(false);
   expect(includesLeftPadding('')).toEqual(false);
   expect(includesLeftPadding('pl-8')).toEqual(true);
@@ -19,7 +19,7 @@ test('includesLeftPadding detects class name which affects left padding', () => 
   expect(includesLeftPadding('apx-16')).toEqual(false);
 });
 
-test('includesRightPadding detects class name which affects right padding', () => {
+it('includesRightPadding detects class name which affects right padding', () => {
   expect(includesRightPadding()).toEqual(false);
   expect(includesRightPadding('')).toEqual(false);
   expect(includesRightPadding('pr-8')).toEqual(true);

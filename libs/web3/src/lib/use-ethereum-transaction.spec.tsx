@@ -56,7 +56,7 @@ function setup(perform: () => void) {
   );
 }
 
-test('Ethereum transaction flow', async () => {
+it('Ethereum transaction flow', async () => {
   const { result } = setup(() => {
     return mockContract.depositAsset({
       assetSource: 'asset-source',
@@ -114,7 +114,7 @@ test('Ethereum transaction flow', async () => {
   });
 });
 
-test('Error handling', async () => {
+it('Error handling', async () => {
   const { result } = setup(() => {
     throw new EthereumError(errorMsg, 500);
   });

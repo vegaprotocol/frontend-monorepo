@@ -57,7 +57,7 @@ function generateJsx() {
   );
 }
 
-test('Deal ticket defaults', () => {
+it('Deal ticket defaults', () => {
   render(generateJsx());
 
   // Assert defaults are used
@@ -82,7 +82,7 @@ test('Deal ticket defaults', () => {
   );
 });
 
-test('Can edit deal ticket', () => {
+it('Can edit deal ticket', () => {
   render(generateJsx());
 
   // Asssert changing values
@@ -113,7 +113,7 @@ test('Can edit deal ticket', () => {
   );
 });
 
-test('Handles TIF select box dependent on order type', () => {
+it('Handles TIF select box dependent on order type', () => {
   render(generateJsx());
 
   // Check only IOC and

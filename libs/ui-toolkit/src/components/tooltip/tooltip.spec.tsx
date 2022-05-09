@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Tooltip } from './tooltip';
 
-test('Renders a tooltip', async () => {
+it('Renders a tooltip', async () => {
   const props = {
     description: 'description',
     children: <button>Tooltip</button>,
@@ -13,7 +13,7 @@ test('Renders a tooltip', async () => {
   expect(await screen.findByRole('tooltip')).toBeInTheDocument();
 });
 
-test('Doesnt render a tooltip if no description provided', () => {
+it('Doesnt render a tooltip if no description provided', () => {
   const props = {
     description: undefined,
     children: <button>Tooltip</button>,

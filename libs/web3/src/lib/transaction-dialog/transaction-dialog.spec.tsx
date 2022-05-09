@@ -26,7 +26,7 @@ const generateJsx = (moreProps?: Partial<TransactionDialogProps>) => {
   return <TransactionDialog {...props} {...moreProps} />;
 };
 
-test('Opens when tx starts and closes if the user rejects the tx', () => {
+it('Opens when tx starts and closes if the user rejects the tx', () => {
   const { container, rerender } = render(generateJsx());
 
   // Dialog closed by default
@@ -47,7 +47,7 @@ test('Opens when tx starts and closes if the user rejects the tx', () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-test('Doesn\t repoen if user dismissed the dialog', () => {
+it('Doesn\t repoen if user dismissed the dialog', () => {
   const { container, rerender } = render(
     generateJsx({ status: EthTxStatus.Pending })
   );
@@ -62,7 +62,7 @@ test('Doesn\t repoen if user dismissed the dialog', () => {
   expect(container).toBeEmptyDOMElement();
 });
 
-test('Dialog states', () => {
+it('Dialog states', () => {
   const { rerender } = render(generateJsx({ status: EthTxStatus.Requested }));
   expect(screen.getByText('Confirm transaction')).toBeInTheDocument();
   expect(screen.getByText('Confirm transaction in wallet')).toBeInTheDocument();
@@ -89,7 +89,7 @@ test('Dialog states', () => {
   expect(screen.getByText(errorMsg)).toBeInTheDocument();
 });
 
-test('Success state waits for confirmation event if provided', () => {
+it('Success state waits for confirmation event if provided', () => {
   const { rerender } = render(
     generateJsx({ status: EthTxStatus.Complete, confirmed: false })
   );

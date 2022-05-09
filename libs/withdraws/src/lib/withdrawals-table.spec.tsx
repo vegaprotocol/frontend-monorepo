@@ -21,7 +21,7 @@ const generateJsx = (props: WithdrawalsTableProps) => (
   </MockedProvider>
 );
 
-test('Renders the correct columns', async () => {
+it('Renders the correct columns', async () => {
   const withdrawal = generateWithdrawal();
   await act(async () => {
     render(generateJsx({ withdrawals: [withdrawal] }));
@@ -66,49 +66,49 @@ describe('StatusCell', () => {
     };
   });
 
-  test('Open', () => {
+  it('Open', () => {
     props.value = WithdrawalStatus.Finalized;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = null;
     render(<StatusCell {...props} />);
 
-    expect(screen.getByText('Open'));
+    expect(screen.getByText('Open')).toBeInTheDocument();
     fireEvent.click(screen.getByText('Complete', { selector: 'button' }));
     expect(mockComplete).toHaveBeenCalled();
   });
 
-  test('Pending', () => {
+  it('Pending', () => {
     props.value = WithdrawalStatus.Finalized;
     props.data.pendingOnForeignChain = true;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
 
-    expect(screen.getByText('Pending'));
+    expect(screen.getByText('Pending')).toBeInTheDocument();
     expect(screen.getByText('View on Etherscan')).toHaveAttribute(
       'href',
       expect.stringContaining(props.data.txHash)
     );
   });
 
-  test('Finalized', () => {
+  it('Finalized', () => {
     props.value = WithdrawalStatus.Finalized;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
 
-    expect(screen.getByText('Finalized'));
+    expect(screen.getByText('Finalized')).toBeInTheDocument();
     expect(screen.getByText('View on Etherscan')).toHaveAttribute(
       'href',
       expect.stringContaining(props.data.txHash)
     );
   });
 
-  test('Fallback', () => {
+  it('Fallback', () => {
     props.value = WithdrawalStatus.Rejected;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
 
-    expect(screen.getByText('Rejected'));
+    expect(screen.getByText('Rejected')).toBeInTheDocument();
   });
 });

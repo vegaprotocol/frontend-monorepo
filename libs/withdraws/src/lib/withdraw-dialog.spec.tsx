@@ -35,7 +35,7 @@ const generateJsx = (override?: PartialDeep<WithdrawDialogProps>) => {
   return <WithdrawDialog {...props} />;
 };
 
-test('Dialog transaction states', () => {
+it('Dialog transaction states', () => {
   const { rerender } = render(
     generateJsx({
       vegaTx: {
