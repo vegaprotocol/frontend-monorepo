@@ -30,13 +30,6 @@ module.exports = {
     },
     text: '#C7C7C7',
     deemphasise: '#8A9BA8',
-    gray: {
-      DEFAULT: '#494949',
-      dark_1: '#292929',
-      dark_2: '#333',
-      light: '#ccc',
-      light_1: '#6e6e6e',
-    },
     white: {
       DEFAULT: '#FFF',
       '02': 'rgba(255, 255, 255, 0.02)',

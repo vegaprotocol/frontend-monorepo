@@ -2,17 +2,14 @@ import { extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { line } from 'd3-shape';
 import isEqual from 'lodash/isEqual';
-import { theme } from '@vegaprotocol/tailwindcss-config';
 import React from 'react';
-
-const Colors = theme.colors;
 
 function colorByChange(a: number, b: number) {
   return a === b
-    ? Colors.gray.DEFAULT
+    ? 'stroke-black/40 dark:stroke-white/40'
     : a < b
-    ? Colors.bullish
-    : Colors.bearish;
+    ? 'stroke-bullish'
+    : 'stroke-bearish';
 }
 
 export interface SparklineProps {
@@ -72,8 +69,10 @@ export const SparklineView = ({
 
   // Get the color of the marketData line
   const [firstVal, lastVal] = [data[0], data[data.length - 1]];
-  const strokeColor =
-    data.length >= 24 ? colorByChange(firstVal, lastVal) : Colors.gray.DEFAULT;
+  const strokeClassName =
+    data.length >= 24
+      ? colorByChange(firstVal, lastVal)
+      : 'stroke-black/40 dark:stroke-white/40';
 
   // Create paths
   const preMarketCreationPath = lineSeries(preMarketData);
@@ -91,9 +90,9 @@ export const SparklineView = ({
       {preMarketCreationPath && (
         <path
           data-testid="sparkline-path"
-          className="[vector-effect:non-scaling-stroke]"
+          className={`[vector-effect:non-scaling-stroke] ${strokeClassName}`}
           d={preMarketCreationPath}
-          stroke={strokeColor}
+          stroke="strokeCurrent"
           strokeWidth={2}
           fill="transparent"
         />
@@ -102,7 +101,8 @@ export const SparklineView = ({
         <path
           data-testid="sparkline-path"
           d={mainPath}
-          stroke={strokeColor}
+          className={strokeClassName}
+          stroke="strokeCurrent"
           strokeWidth={1}
           fill="transparent"
         />

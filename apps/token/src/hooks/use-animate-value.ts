@@ -1,8 +1,9 @@
 import React from 'react';
 import { usePrevious } from './use-previous';
 import type { BigNumber } from '../lib/bignumber';
-import { theme } from '@vegaprotocol/tailwindcss-config';
-const Colors = theme.colors;
+import { theme as tailwindcss } from '@vegaprotocol/tailwindcss-config';
+import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+const Colors = tailwindcss.colors;
 
 const FLASH_DURATION = 1200; // Duration of flash animation in milliseconds
 
@@ -12,6 +13,7 @@ export function useAnimateValue(
 ) {
   const shouldAnimate = React.useRef(false);
   const previous = usePrevious(value);
+  const [theme] = useThemeSwitcher();
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
@@ -36,7 +38,8 @@ export function useAnimateValue(
           offset: 0.8,
         },
         {
-          backgroundColor: Colors.gray.light,
+          backgroundColor:
+            theme === 'dark' ? Colors.white[60] : Colors.black[60],
           color: Colors.white.DEFAULT,
         },
       ],
@@ -61,7 +64,8 @@ export function useAnimateValue(
           offset: 0.8,
         },
         {
-          backgroundColor: Colors.gray.light,
+          backgroundColor:
+            theme === 'dark' ? Colors.white[60] : Colors.black[60],
           color: Colors.white.DEFAULT,
         },
       ],

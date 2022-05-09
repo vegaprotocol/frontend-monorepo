@@ -36,7 +36,7 @@ it('Renders a red line if the last value is less than the first', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.bearish);
+  expect(path).toHaveClass('stroke-bearish');
 });
 
 it('Renders a green line if the last value is greater than the first', () => {
@@ -45,7 +45,7 @@ it('Renders a green line if the last value is greater than the first', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.bullish);
+  expect(path).toHaveClass('stroke-bullish');
 });
 
 it('Renders a white line if the first and last values are equal', () => {
@@ -54,7 +54,9 @@ it('Renders a white line if the first and last values are equal', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveAttribute('stroke', Colors.gray.DEFAULT);
+  expect(path).toHaveClass(
+    '[vector-effect:non-scaling-stroke] stroke-black/40 dark:stroke-white/40'
+  );
 });
 
 it('Renders a gray line if there are not 24 values', () => {
@@ -65,5 +67,7 @@ it('Renders a gray line if there are not 24 values', () => {
   render(<Sparkline {...props} />);
   const paths = screen.queryAllByTestId('sparkline-path');
   expect(paths).toHaveLength(2);
-  expect(paths[0]).toHaveAttribute('stroke', Colors.gray.DEFAULT);
+  expect(paths[0]).toHaveClass(
+    '[vector-effect:non-scaling-stroke] stroke-black/40 dark:stroke-white/40'
+  );
 });
