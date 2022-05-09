@@ -108,8 +108,11 @@ export const Web3Content = ({
   const { isActive, error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
-    if ('Cypress' in window) return;
-    if (connector?.connectEagerly) {
+    if (
+      connector?.connectEagerly &&
+      // Dont eager connect if this is a cypress test run
+      'Cypress' in window
+    ) {
       connector.connectEagerly();
     }
   }, [connector]);
