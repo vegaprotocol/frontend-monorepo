@@ -14,7 +14,7 @@ export function addMockWeb3ProviderCommand() {
   Cypress.Commands.add('mockWeb3Provider', () => {
     cy.log('Mocking web3');
     cy.on('window:before:load', (win) => {
-      // @ts-ignore asdf asdf ad
+      // @ts-ignore ethereum object is injected so won't exist on window object
       win.ethereum = createBridge();
     });
   });
