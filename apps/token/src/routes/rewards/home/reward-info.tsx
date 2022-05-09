@@ -1,5 +1,3 @@
-import './reward-info.scss';
-
 import * as Sentry from '@sentry/react';
 import { format } from 'date-fns';
 import React from 'react';
@@ -65,8 +63,8 @@ export const RewardInfo = ({
   }, [data, rewardAssetId]);
 
   return (
-    <div className="reward-info">
-      <h3 className="reward-info__sub-heading">{t('Connected Vega key')}</h3>
+    <div className="mt-24">
+      <h3>{t('Connected Vega key')}</h3>
       <p>{currVegaKey.pub}</p>
       {vegaTokenRewards.length ? (
         vegaTokenRewards.map((reward, i) => {

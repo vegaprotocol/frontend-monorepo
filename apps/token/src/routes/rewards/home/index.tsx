@@ -1,5 +1,3 @@
-import './index.scss';
-
 import { useQuery } from '@apollo/client';
 import { Button, Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { formatDistance } from 'date-fns';

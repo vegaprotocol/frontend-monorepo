@@ -1,5 +1,3 @@
-import './contract-associate.scss';
-
 import { Callout } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,13 +31,13 @@ export const ContractAssociate = ({
   let pageContent = null;
   if (new BigNumber(balanceFormatted).isEqualTo('0')) {
     pageContent = (
-      <div className="contract-associate__error">
+      <div className="text-intent-danger">
         {t('You have no VEGA tokens currently vesting.')}
       </div>
     );
   } else if (new BigNumber(balanceFormatted).minus(lien).isEqualTo('0')) {
     pageContent = (
-      <div className="contract-associate__error">
+      <div className="text-intent-danger">
         {t(
           'All VEGA tokens vesting in the connected wallet have already been associated.'
         )}

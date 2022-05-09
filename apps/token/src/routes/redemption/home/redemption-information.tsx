@@ -1,5 +1,3 @@
-import './redemption-information.scss';
-
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -54,7 +52,7 @@ export const RedemptionInformation = () => {
   if (!filteredTranches.length) {
     return (
       <section data-testid="redemption-page">
-        <p data-testid="redemption-no-balance">
+        <p className="mb-12" data-testid="redemption-no-balance">
           <Trans
             i18nKey="noVestingTokens"
             components={{
@@ -68,11 +66,11 @@ export const RedemptionInformation = () => {
   }
 
   return (
-    <section className="redemption-information" data-testid="redemption-page">
+    <section data-testid="redemption-page">
       <Callout>
         <AddLockedTokenAddress />
       </Callout>
-      <p data-testid="redemption-description">
+      <p className="mb-12" data-testid="redemption-description">
         {t(
           '{{address}} has {{balance}} VEGA tokens in {{tranches}} tranches of the vesting contract.',
           {

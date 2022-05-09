@@ -1,5 +1,3 @@
-import './eth-wallet.scss';
-
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -191,12 +189,12 @@ export const EthWallet = () => {
       <WalletCardHeader>
         <h1 className="text-h3">{t('ethereumKey')}</h1>
         {account && (
-          <div className="eth-wallet__curr-key">
+          <div className="font-mono px-4 text-right">
             <div>{truncateMiddle(account)}</div>
             {pendingTxs && (
               <div>
                 <Button
-                  className="eth-wallet__pending-tx-button"
+                  className="flex gap-2 justify-between p-4, bg-black text-white flex-nowrap whitespace-nowrap"
                   data-testid="pending-transactions-btn"
                   onClick={() =>
                     appDispatch({
