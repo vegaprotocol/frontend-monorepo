@@ -1,12 +1,8 @@
 package main
 
 import (
-	// "bytes"
-	//  "compress/gzip"
-
 	"encoding/hex"
 	"encoding/json"
-	_ "encoding/json"
 	"errors"
 	_ "fmt"
 	_ "net/http"
@@ -132,7 +128,10 @@ func unpack(tx []byte) (interface{}, error) {
 type request struct {
 	NodeURL     string  `json:"node_url"`
 	BlockHeight *uint64 `json:"block_height"`
-	TxHash      *string `json:"tx_hash"`
+	TxHash      *string  `json:"tx_hash"`
+	TransactionHeight *uint64 `json:"transaction_height"`
+	PageNumber *uint64 `json:"page_number"`
+	PageSize *uint64 `json:"page_size"`
 }
 
 func handler(ev events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
@@ -169,10 +168,21 @@ func handler(ev events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse,
 		return nil, errors.New("node_url is required")
 	}
 
-	if req.BlockHeight == nil && req.TxHash == nil {
-		return nil, errors.New("one of block_height or tx_hash is required")
-	} else if req.BlockHeight != nil && req.TxHash != nil {
-		return nil, errors.New("only one of block_height or tx_hash is required")
+	hashNil := req.TxHash != nil 
+	blockNil := req.BlockHeight != nil
+	transactionHeightNil := req.TransactionHeight != nil
+
+	numberOfParamsPassed := 0
+	for _, v := range [3]bool{hashNil, blockNil, transactionHeightNil} {
+		if (v) {
+			numberOfParamsPassed++
+		}
+	}
+
+	if req.BlockHeight == nil && req.TxHash == nil && req.TransactionHeight == nil {
+		return nil, errors.New("one of block_height, tx_hash or transaction height is required")
+	} else if numberOfParamsPassed != 1 {
+		return nil, errors.New("exactly one of block_height, tx_hash or transaction height is required")
 	}
 
 	var out interface{}
@@ -185,6 +195,25 @@ func handler(ev events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse,
 
 	if req.TxHash != nil {
 		out, err = getTx(req.NodeURL, *req.TxHash)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if req.TransactionHeight != nil {
+		pageSize := uint64(20)
+		
+		if req.PageSize != nil {
+			pageSize = *req.PageSize
+		}
+
+		pageNumber := uint64(1)
+		
+		if req.PageNumber != nil {
+			pageNumber = *req.PageNumber
+		}
+
+		out, err = getTxsFromSearch(req.NodeURL, *req.TransactionHeight, pageSize, pageNumber)
 		if err != nil {
 			return nil, err
 		}
@@ -206,15 +235,6 @@ func handler(ev events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse,
 		Headers:           headers,
 		MultiValueHeaders: multiValHeaders,
 	}, nil
-}
-
-func hasGzipEncoding(m map[string]string) bool {
-	for k, v := range m {
-		if strings.EqualFold(k, "Accept-Encoding") && strings.EqualFold(v, "gzip") {
-			return true
-		}
-	}
-	return false
 }
 
 func main() {
