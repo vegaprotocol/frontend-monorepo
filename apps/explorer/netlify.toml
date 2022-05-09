@@ -1,11 +1,12 @@
+[functions]
+  included_files = ["!node_modules/@sentry/cli/sentry-cli"]
 [build]
+  command = "make build"
+  functions = "functions"
+[dev]
   command = "make build"
   functions = "functions"
 [build.environment]
   # Change this path with the path to your repository
   GO_IMPORT_PATH = "github.com/jeremyletang/chain-explorer-api"
   GO111MODULE = "on"
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
