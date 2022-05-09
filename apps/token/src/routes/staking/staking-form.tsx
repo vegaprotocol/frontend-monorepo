@@ -1,5 +1,3 @@
-import './staking-form.scss';
-
 import { gql, useApolloClient } from '@apollo/client';
 import { Radio, RadioGroup } from '@blueprintjs/core';
 import * as Sentry from '@sentry/react';
