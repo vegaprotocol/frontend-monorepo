@@ -1,5 +1,3 @@
-import './staking.scss';
-
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { Trans, useTranslation } from 'react-i18next';
@@ -169,13 +167,13 @@ export const StakingStepAssociate = ({
       >
         <p>
           <Link to="/staking/associate">
-            <Button data-testid="associate-more-tokens-btn" className="fill">
+            <Button data-testid="associate-more-tokens-btn">
               {t('stakingAssociateMoreButton')}
             </Button>
           </Link>
         </p>
         <Link to="/staking/disassociate">
-          <Button data-testid="disassociate-tokens-btn" className="fill">
+          <Button data-testid="disassociate-tokens-btn">
             {t('stakingDisassociateButton')}
           </Button>
         </Link>
@@ -187,7 +185,7 @@ export const StakingStepAssociate = ({
     <>
       <p>{t('stakingStep2Text')}</p>
       <Link to="/staking/associate">
-        <Button data-testid="associate-tokens-btn" className="fill">
+        <Button data-testid="associate-tokens-btn">
           {t('associateButton')}
         </Button>
       </Link>
