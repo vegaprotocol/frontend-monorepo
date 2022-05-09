@@ -106,7 +106,7 @@ export const WithdrawForm = ({
             ))}
           </Select>
         ) : (
-          <p className="text-muted">{t('withdrawFormNoAsset')}</p>
+          <p className="text-white-60">{t('withdrawFormNoAsset')}</p>
         )}
       </FormGroup>
       <div className="mb-24">

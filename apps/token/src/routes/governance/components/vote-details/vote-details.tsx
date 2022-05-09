@@ -77,12 +77,12 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
             <td>{noPercentage.toFixed(defaultDecimals)}%</td>
           </tr>
           <tr>
-            <td className="text-muted">
+            <td className="text-white-60">
               {' '}
               {formatNumber(yesTokens, defaultDecimals)}
             </td>
             <td></td>
-            <td className="text-muted">
+            <td className="text-white-60">
               {formatNumber(noTokens, defaultDecimals)}
             </td>
           </tr>
@@ -100,7 +100,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         )}{' '}
         {formatNumber(totalTokensVoted, defaultDecimals)}{' '}
         {formatNumber(totalTokensPercentage, defaultDecimals)}%
-        <span className="vote-details__required-participation text-muted">
+        <span className="vote-details__required-participation text-white-60">
           ({formatNumber(requiredParticipation, defaultDecimals)}%{' '}
           {t('governanceRequired')})
         </span>

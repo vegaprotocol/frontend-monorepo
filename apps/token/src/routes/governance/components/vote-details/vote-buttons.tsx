@@ -136,7 +136,10 @@ export const VoteButtons = ({
     !changeVote &&
     (voteState === VoteState.Yes || voteState === VoteState.No)
   ) {
-    const className = voteState === VoteState.Yes ? 'text-green' : 'text-red';
+    const className =
+      voteState === VoteState.Yes
+        ? 'text-intent-success'
+        : 'text-intent-danger';
     return (
       <p>
         <span>{t('youVoted')}</span>{' '}

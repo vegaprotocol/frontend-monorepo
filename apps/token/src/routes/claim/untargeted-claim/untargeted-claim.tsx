@@ -99,7 +99,7 @@ export const UntargetedClaim = ({
           onSubmit={commitClaim}
         />
       ) : (
-        <p className="text-muted">{t('selectCountryPrompt')}</p>
+        <p className="text-white-60">{t('selectCountryPrompt')}</p>
       )}
       <BulletHeader tag="h2">
         {t('Step')} 3. {t('Claim tokens')}
@@ -112,7 +112,7 @@ export const UntargetedClaim = ({
           onSubmit={commitReveal}
         />
       ) : (
-        <p className="text-muted">{t('claimNotReady')}</p>
+        <p className="text-white-60">{t('claimNotReady')}</p>
       )}
     </div>
   );

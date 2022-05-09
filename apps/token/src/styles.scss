@@ -2,23 +2,10 @@
 @import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
 
 @import './styles/colors';
-@import './styles/fonts';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.text-muted {
-  color: $text-color-deemphasise;
-}
-
-.text-green {
-  color: $vega-green3;
-}
-
-.text-red {
-  color: $vega-red3;
-}
 
 .bp3-dark a,
 .bp3-dark a:hover {

@@ -12,7 +12,7 @@ export const AppBanner = () => {
   return (
     <div className="bg-white p-8 text-black" role="alert">
       <p>
-        <span className="inline-block relative top-[1px] text-red text-ui mr-[5px]">
+        <span className="inline-block relative top-[1px] text-intent-danger text-ui mr-[5px]">
           <Error />
         </span>
         {bannerMessage}
