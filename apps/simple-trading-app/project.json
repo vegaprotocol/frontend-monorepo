@@ -44,7 +44,8 @@
       "executor": "@nrwl/web:dev-server",
       "options": {
         "buildTarget": "simple-trading-app:build",
-        "hmr": true
+        "hmr": true,
+        "port": 4001
       },
       "configurations": {
         "production": {
