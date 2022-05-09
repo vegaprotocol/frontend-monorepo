@@ -45,12 +45,12 @@ const Home = ({ name }: RouteChildProps) => {
       </HomeSection>
       <HomeSection>
         <h2 className="text-h4">{t('Token Vesting')}</h2>
-        <p>
+        <p className="mb-8">
           {t(
             'The vesting contract holds VEGA tokens until they have become unlocked.'
           )}
         </p>
-        <p>
+        <p className="mb-8">
           <Trans
             i18nKey="Tokens are held in different <trancheLink>Tranches</trancheLink>. Each tranche has its own schedule for how the tokens are unlocked."
             components={{
@@ -58,7 +58,7 @@ const Home = ({ name }: RouteChildProps) => {
             }}
           />
         </p>
-        <p>
+        <p className="mb-8">
           {t(
             'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
           )}
@@ -71,12 +71,12 @@ const Home = ({ name }: RouteChildProps) => {
       </HomeSection>
       <HomeSection>
         <h2 className="text-h4">{t('USE YOUR VEGA TOKENS')}</h2>
-        <p>
+        <p className="mb-8">
           {t(
             'To use your tokens on the Vega network they need to be associated with a Vega wallet/key.'
           )}
         </p>
-        <p>
+        <p className="mb-8">
           {t(
             'This can happen both while held in the vesting contract as well as when redeemed.'
           )}
@@ -101,20 +101,22 @@ const Home = ({ name }: RouteChildProps) => {
         <div style={{ flex: 1 }}>
           <HomeSection>
             <h2 className="text-h4">{t('Staking')}</h2>
-            <p>
+            <p className="mb-8">
               {t(
                 'VEGA token holders can nominate a validator node and receive staking rewards.'
               )}
             </p>
-            <Link to={Routes.STAKING}>
-              <Button variant="secondary">{t('Nominate a validator')}</Button>
-            </Link>
+            <p>
+              <Link to={Routes.STAKING}>
+                <Button variant="secondary">{t('Nominate a validator')}</Button>
+              </Link>
+            </p>
           </HomeSection>
         </div>
         <div style={{ flex: 1 }}>
           <HomeSection>
             <h2 className="text-h4">{t('Governance')}</h2>
-            <p>
+            <p className="mb-8">
               {t(
                 'VEGA token holders can vote on proposed changes to the network and create proposals.'
               )}

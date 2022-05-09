@@ -23,13 +23,18 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
 
   return (
     <>
-      <section>
-        <p>{t('stakingDescription1')}</p>
-        <p>{t('stakingDescription2')}</p>
-        <p>{t('stakingDescription3')}</p>
-        <p>{t('stakingDescription4')}</p>
-        <p>
-          <a href={Links.STAKING_GUIDE} target="_blank" rel="noreferrer">
+      <section className="mb-24">
+        <p className="mb-12">{t('stakingDescription1')}</p>
+        <p className="mb-12">{t('stakingDescription2')}</p>
+        <p className="mb-12">{t('stakingDescription3')}</p>
+        <p className="mb-12">{t('stakingDescription4')}</p>
+        <p className="mb-12">
+          <a
+            className="underline"
+            href={Links.STAKING_GUIDE}
+            target="_blank"
+            rel="noreferrer"
+          >
             {t('readMoreStaking')}
           </a>
         </p>

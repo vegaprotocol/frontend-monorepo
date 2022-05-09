@@ -109,31 +109,35 @@ export const RewardsIndex = () => {
   return (
     <section className="rewards">
       <Heading title={t('pageTitleRewards')} />
-      <p>{t('rewardsPara1')}</p>
-      <p>{t('rewardsPara2')}</p>
+      <p className="mb-8">{t('rewardsPara1')}</p>
+      <p className="mb-8">{t('rewardsPara2')}</p>
       {payoutDuration ? (
-        <Callout
-          title={t('rewardsCallout', {
-            duration: formatDistance(new Date(0), payoutDuration),
-          })}
-          headingLevel={3}
-          intent={Intent.Warning}
-        >
-          <p className="mb-0">{t('rewardsPara3')}</p>
-        </Callout>
+        <div className="my-24">
+          <Callout
+            title={t('rewardsCallout', {
+              duration: formatDistance(new Date(0), payoutDuration),
+            })}
+            headingLevel={3}
+            intent={Intent.Warning}
+          >
+            <p className="mb-0">{t('rewardsPara3')}</p>
+          </Callout>
+        </div>
       ) : null}
       {!loading &&
         data &&
         !error &&
         data.epoch.timestamps.start &&
         data.epoch.timestamps.expiry && (
-          <EpochCountdown
-            // eslint-disable-next-line
-            id={data!.epoch.id}
-            startDate={new Date(data.epoch.timestamps.start)}
-            // eslint-disable-next-line
-            endDate={new Date(data.epoch.timestamps.expiry!)}
-          />
+          <section className="mb-24">
+            <EpochCountdown
+              // eslint-disable-next-line
+              id={data!.epoch.id}
+              startDate={new Date(data.epoch.timestamps.start)}
+              // eslint-disable-next-line
+              endDate={new Date(data.epoch.timestamps.expiry!)}
+            />
+          </section>
         )}
       <section>
         {keypair && keypairs?.length ? (

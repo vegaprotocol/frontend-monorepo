@@ -8,22 +8,6 @@
 @tailwind components;
 @tailwind utilities;
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-a,
-.link {
-  text-decoration: underline;
-  color: $white;
-
-  &:hover {
-    color: $vega-yellow3;
-  }
-}
-
 .text-muted {
   color: $text-color-deemphasise;
 }

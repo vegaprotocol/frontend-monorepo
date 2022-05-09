@@ -57,7 +57,7 @@ export function EpochCountdown({
   }, [endDate]);
 
   return (
-    <div data-testid="epoch-countdown" className="epoch-countdown pt-20">
+    <div data-testid="epoch-countdown" className="epoch-countdown">
       <div className="flex items-end">
         <h3 className="flex-1 font-normal mb-4">
           {t('Epoch')} {id}

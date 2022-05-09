@@ -209,7 +209,7 @@ export const StakingForm = ({
 
   return (
     <>
-      <h2>{t('Manage your stake')}</h2>
+      <h2 className="text-h4 mb-8">{t('Manage your stake')}</h2>
       <FormGroup>
         <RadioGroup
           onChange={(e) => {
@@ -242,7 +242,9 @@ export const StakingForm = ({
         <>
           {action === Actions.Add ? (
             <>
-              <h2>{t('How much to Add in next epoch?')}</h2>
+              <h2 className="text-h4 mb-8">
+                {t('How much to Add in next epoch?')}
+              </h2>
               <p>
                 {t('minimumNomination', {
                   minTokens: minTokensWithDecimals,
