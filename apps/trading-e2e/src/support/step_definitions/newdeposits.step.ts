@@ -1,9 +1,7 @@
-import { And, Then, When } from 'cypress-cucumber-preprocessor/steps';
-import { EthereumWallet } from '../ethereum-wallet';
+import { Then } from 'cypress-cucumber-preprocessor/steps';
 import DepositsPage from '../pages/deposits-page';
 
 const depositsPage = new DepositsPage();
-const ethWallet = new EthereumWallet();
 
 const tBTC = Cypress.env('tBtcContract');
 const invalidPublicKey =
