@@ -73,6 +73,7 @@
     "@apollo/react-testing": "^4.0.0",
     "@babel/core": "7.12.13",
     "@babel/preset-typescript": "7.12.13",
+    "@ethersproject/experimental": "^5.6.0",
     "@nrwl/cli": "13.10.3",
     "@nrwl/cypress": "13.10.3",
     "@nrwl/eslint-plugin-nx": "13.10.3",
