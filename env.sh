@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # Recreate config file
-rm -rf ./env-config.js
-touch ./env-config.js
+mkdir assets
+rm -rf ./assets/env-config.js
+touch ./assets/env-config.js
 
 # Add assignment
-echo "window._env_ = {" >> ./env-config.js
+echo "window._env_ = {" >> ./assets/env-config.js
 
 # Read each line in .env file
 # Each line represents key=value pairs
@@ -24,8 +25,8 @@ do
 
   # Append configuration property to JS file if non-empty
   if [ ! -z "$varname" ]; then
-    echo "  $varname: \"$value\"," >> ./env-config.js
+    echo "  $varname: \"$value\"," >> ./assets/env-config.js
   fi
 done < .env
 
-echo "}" >> ./env-config.js
+echo "}" >> ./assets/env-config.js
