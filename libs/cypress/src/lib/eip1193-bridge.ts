@@ -113,6 +113,12 @@ const getProvider = () =>
     Cypress.env('ethereumChainId')
   );
 
+const getRandomKey = () => {
+  const createRandomWallet = Wallet.createRandom();
+  const randomPrivateKey = createRandomWallet.mnemonic.phrase;
+  return Wallet.fromMnemonic(randomPrivateKey, getAccount(0)).privateKey;
+};
+
 export const createBridge = () => {
   const provider = getProvider();
   const privateKey = Wallet.fromMnemonic(
@@ -120,5 +126,11 @@ export const createBridge = () => {
     getAccount(0)
   ).privateKey;
   const signer = new Wallet(privateKey, provider);
+  return new CustomizedBridge(signer, provider);
+};
+
+export const createBridgeWithNewWallet = () => {
+  const provider = getProvider();
+  const signer = new Wallet(getRandomKey(), provider);
   return new CustomizedBridge(signer, provider);
 };

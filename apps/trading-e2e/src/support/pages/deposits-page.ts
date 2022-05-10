@@ -50,9 +50,6 @@ export default class DepositsPage extends BasePage {
   }
 
   verifyNotApproved() {
-    cy.get(this.amountError)
-      .contains('Amount is above approved amount')
-      .should('be.visible');
-    cy.contains('Deposits of tBTC not approved').should('be.visible');
+    cy.get('p').contains('Deposits of tBTC not approved').should('be.visible');
   }
 }
