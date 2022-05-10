@@ -3,6 +3,8 @@ Feature: Deposits to vega wallet
   Background:
     Given I navigate to deposits page
 
+  # wallet is already connected before tests start and doesn't prompt the disconnected state
+  @ignore
   Scenario: Connecting Ethereum wallet
     Then I can see the eth not connected message "Connect your Ethereum wallet"
     And the connect button is displayed
@@ -57,7 +59,8 @@ Feature: Deposits to vega wallet
   # And Balance is updated to reflect deposit amount
 
   Scenario: Validation errors
-    Given I connect my Ethereum wallet
+    # wallet is connected on before hook so this step may no longer be required
+    # Given I connect my Ethereum wallet
     When I submit a deposit with empty fields
     Then I can see validation errors present
     And I enter an invalid public key
