@@ -1,5 +1,3 @@
-import './validator-table.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,6 +6,10 @@ import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import type { Staking_nodes } from './__generated__/Staking';
+
+const ValidatorTableCell = ({ children }: { children: React.ReactNode }) => (
+  <span className="break-words">{children}</span>
+);
 
 export interface ValidatorTableProps {
   node: Staking_nodes;
@@ -35,11 +37,11 @@ export const ValidatorTable = ({
     <KeyValueTable data-testid="validator-table">
       <KeyValueTableRow>
         <span>{t('id')}:</span>
-        <span className="validator-table__cell">{node.id}</span>
+        <ValidatorTableCell>{node.id}</ValidatorTableCell>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
-        <span className="validator-table__cell">{node.pubkey}</span>
+        <ValidatorTableCell>{node.pubkey}</ValidatorTableCell>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('ABOUT THIS VALIDATOR')}</span>

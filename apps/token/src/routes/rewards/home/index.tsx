@@ -130,7 +130,6 @@ export const RewardsIndex = () => {
         data.epoch.timestamps.start &&
         data.epoch.timestamps.expiry && (
           <EpochCountdown
-            containerClass="staking-node__epoch"
             // eslint-disable-next-line
             id={data!.epoch.id}
             startDate={new Date(data.epoch.timestamps.start)}
@@ -147,7 +146,7 @@ export const RewardsIndex = () => {
           />
         ) : (
           <Button
-            className="mt-12 w-full py-12 h-auto text-h5"
+            className="mt-12"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
