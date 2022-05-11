@@ -1,5 +1,3 @@
-import './vega-wallet.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -49,7 +47,7 @@ export const VegaWallet = () => {
             </span>
           </div>
           {keypair && (
-            <span className="vega-wallet__curr-key">
+            <span className="font-mono px-8">
               {truncateMiddle(keypair.pub)}
             </span>
           )}
