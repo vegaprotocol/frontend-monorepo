@@ -1,5 +1,3 @@
-import './vote-buttons.scss';
-
 import { gql, useQuery } from '@apollo/client';
 import { format } from 'date-fns';
 import * as React from 'react';
@@ -168,21 +166,19 @@ export const VoteButtons = ({
   }
 
   return (
-    <div className="vote-buttons">
-      <div className="vote-buttons__button-container">
-        <Button
-          onClick={() => submitVote(VoteValue.Yes)}
-          className="vote-buttons__button"
-        >
-          {t('voteFor')}
-        </Button>
-        <Button
-          onClick={() => submitVote(VoteValue.No)}
-          className="vote-buttons__button"
-        >
-          {t('voteAgainst')}
-        </Button>
-      </div>
+    <div className="flex">
+      <Button
+        onClick={() => submitVote(VoteValue.Yes)}
+        className="w-[calc(50%_-_7px)] mt-4 mr-12"
+      >
+        {t('voteFor')}
+      </Button>
+      <Button
+        onClick={() => submitVote(VoteValue.No)}
+        className="w-[calc(50%_-_7px)] mt-4"
+      >
+        {t('voteAgainst')}
+      </Button>
     </div>
   );
 };
