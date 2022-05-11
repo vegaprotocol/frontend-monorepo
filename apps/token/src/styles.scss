@@ -1,15 +1,13 @@
 @import '~@blueprintjs/core/lib/css/blueprint.css';
 @import '~@blueprintjs/icons/lib/css/blueprint-icons.css';
 
-@import './styles/colors';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 a,
 a:hover {
-  color: $white;
+  color: white;
 }
 
 .modal a, .modal a:hover {
@@ -17,12 +15,12 @@ a:hover {
 }
 
 .bp3-dark .bp3-input {
-  background-color: $dark-gray4;
+  background-color: #3f3f3f;
 }
 
 .epoch-countdown {
   .bp3-progress-bar {
-    border: 1px solid $white;
+    border: 1px solid white;
     border-radius: 0;
     height: 21px;
 
@@ -30,7 +28,7 @@ a:hover {
       border-radius: 0;
 
       .bp3-dark & {
-        background-color: $white;
+        background-color: white;
       }
     }
   }
