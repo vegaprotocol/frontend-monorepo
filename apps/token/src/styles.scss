@@ -12,6 +12,10 @@ a:hover {
   color: $white;
 }
 
+.modal a, .modal a:hover {
+  color: black;
+}
+
 .bp3-dark .bp3-input {
   background-color: $dark-gray4;
 }

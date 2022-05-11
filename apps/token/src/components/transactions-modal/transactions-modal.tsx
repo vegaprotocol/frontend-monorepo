@@ -83,37 +83,35 @@ export const TransactionModal = () => {
       onClose={close}
       transitionDuration={0}
     >
-      <div className="modal">
-        <Modal title={t('ethTransactionModalTitle')}>
-          {transactions.length ? (
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <TransactionModalTh>{t('transaction')}</TransactionModalTh>
-                  <TransactionModalTh>{t('status')}</TransactionModalTh>
-                </tr>
-              </thead>
-              <tbody>
-                {transactions.map((t) => {
-                  return (
-                    <tr key={t.tx.hash}>
-                      <TransactionModalTd>
-                        <EtherscanLink
-                          tx={t.tx.hash}
-                          text={truncateMiddle(t.tx.hash)}
-                        />
-                      </TransactionModalTd>
-                      <TransactionModalTd>{renderStatus(t)}</TransactionModalTd>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          ) : (
-            <p>{t('noTransactions')}</p>
-          )}
-        </Modal>
-      </div>
+      <Modal title={t('ethTransactionModalTitle')}>
+        {transactions.length ? (
+          <table className="w-full">
+            <thead>
+              <tr>
+                <TransactionModalTh>{t('transaction')}</TransactionModalTh>
+                <TransactionModalTh>{t('status')}</TransactionModalTh>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((t) => {
+                return (
+                  <tr key={t.tx.hash}>
+                    <TransactionModalTd>
+                      <EtherscanLink
+                        tx={t.tx.hash}
+                        text={truncateMiddle(t.tx.hash)}
+                      />
+                    </TransactionModalTd>
+                    <TransactionModalTd>{renderStatus(t)}</TransactionModalTd>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        ) : (
+          <p>{t('noTransactions')}</p>
+        )}
+      </Modal>
     </Overlay>
   );
 };
