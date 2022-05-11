@@ -187,7 +187,7 @@ export const EthWallet = () => {
   return (
     <WalletCard>
       <WalletCardHeader>
-        <h1 className="text-h3">{t('ethereumKey')}</h1>
+        <h1 className="text-h3 px-8 uppercase">{t('ethereumKey')}</h1>
         {account && (
           <div className="font-mono px-4 text-right">
             <div>{truncateMiddle(account)}</div>
