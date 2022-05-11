@@ -26,6 +26,7 @@ interface VoteButtonsContainerProps {
   castVote: (vote: VoteValue) => void;
   voteDatetime: Date | null;
   proposalState: ProposalState;
+  className?: string;
 }
 
 const VOTE_BUTTONS_QUERY = gql`

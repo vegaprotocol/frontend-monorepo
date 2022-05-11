@@ -1,5 +1,3 @@
-import './vote-details.scss';
-
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -46,35 +44,41 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
 
   return (
     <section>
-      <h3 className="proposal__sub-title">{t('votes')}</h3>
-      <p className="proposal__set_to">
+      <h3>{t('votes')}</h3>
+      <p className="mb-0">
         <span>
           <CurrentProposalStatus proposal={proposal} />
         </span>
         .&nbsp;
         {proposal.state === ProposalState.Open ? daysLeft : null}
       </p>
-      <table className="vote-details__table">
+      <table className="w-full font-normal">
         <thead>
           <tr>
-            <th>{t('for')}</th>
+            <th className="text-vega-green w-[18%] text-left">{t('for')}</th>
             <th>
               <VoteProgress
                 threshold={requiredMajorityPercentage}
                 progress={yesPercentage}
               />
             </th>
-            <th>{t('against')}</th>
+            <th className="text-intent-danger w-[18%] text-right">
+              {t('against')}
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>{yesPercentage.toFixed(defaultDecimals)}%</td>
-            <td className="vote-details__summary">
+            <td className="text-left">
+              {yesPercentage.toFixed(defaultDecimals)}%
+            </td>
+            <td className="text-center text-white">
               {t('majorityRequired')}{' '}
               {requiredMajorityPercentage.toFixed(defaultDecimals)}%
             </td>
-            <td>{noPercentage.toFixed(defaultDecimals)}%</td>
+            <td className="text-right">
+              {noPercentage.toFixed(defaultDecimals)}%
+            </td>
           </tr>
           <tr>
             <td className="text-white-60">
@@ -92,15 +96,13 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         {t('participation')}
         {': '}
         {participationMet ? (
-          <span className="vote-details__participation-met">{t('met')}</span>
+          <span className="text-vega-green mx-4">{t('met')}</span>
         ) : (
-          <span className="vote-details__participation-not-met">
-            {t('notMet')}
-          </span>
+          <span className="text-intent-danger mx-4">{t('notMet')}</span>
         )}{' '}
         {formatNumber(totalTokensVoted, defaultDecimals)}{' '}
         {formatNumber(totalTokensPercentage, defaultDecimals)}%
-        <span className="vote-details__required-participation text-white-60">
+        <span className="ml-4 text-white-60">
           ({formatNumber(requiredParticipation, defaultDecimals)}%{' '}
           {t('governanceRequired')})
         </span>
@@ -113,6 +115,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
             castVote={castVote}
             voteDatetime={voteDatetime}
             proposalState={proposal.state}
+            className="flex"
           />
         </>
       ) : (
