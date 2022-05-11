@@ -1,5 +1,3 @@
-import './home.scss';
-
 import { gql, useQuery } from '@apollo/client';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
