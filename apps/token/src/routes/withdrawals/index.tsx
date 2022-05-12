@@ -10,10 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../components/heading';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { SplashLoader } from '../../components/splash-loader';
 import { TransactionButton } from '../../components/transaction-button';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
@@ -197,46 +194,46 @@ export const Withdrawal = ({
     <div>
       <KeyValueTable>
         <KeyValueTableRow>
-          <th>{t('Withdraw')}</th>
-          <td>
+          {t('Withdraw')}
+          <span>
             {addDecimal(
               new BigNumber(withdrawal.amount),
               withdrawal.asset.decimals
             )}{' '}
             {withdrawal.asset.symbol}
-          </td>
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('from')}</th>
-          <td>{truncateMiddle(withdrawal.party.id)}</td>
+          {t('from')}
+          <span>{truncateMiddle(withdrawal.party.id)}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('toEthereum')}</th>
-          <td>
+          {t('toEthereum')}
+          <span>
             <EtherscanLink
               address={withdrawal.details?.receiverAddress as string}
               text={truncateMiddle(
                 withdrawal.details?.receiverAddress as string
               )}
             />
-          </td>
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('created')}</th>
-          <td>
+          {t('created')}
+          <span>
             {format(
               new Date(withdrawal.createdTimestamp),
               DATE_FORMAT_DETAILED
             )}
-          </td>
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('Signature')}</th>
-          <td title={erc20Approval?.signatures}>
+          {t('Signature')}
+          <span title={erc20Approval?.signatures}>
             {!erc20Approval?.signatures
               ? t('Loading')
               : truncateMiddle(erc20Approval.signatures)}
-          </td>
+          </span>
         </KeyValueTableRow>
       </KeyValueTable>
       <TransactionButton

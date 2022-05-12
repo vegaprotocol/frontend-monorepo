@@ -3,10 +3,7 @@ import './vesting-table.scss';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 
@@ -42,29 +39,29 @@ export const VestingTable = ({
           data-testid="vesting-table-total"
           className="vesting-table__top-solid-border"
         >
-          <th>{t('Vesting VEGA')}</th>
-          <td>{formatNumber(total)}</td>
+          <span>{t('Vesting VEGA')}</span>
+          {formatNumber(total)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-locked">
-          <th>
-            <div className="vesting-table__indicator-square vesting-table__indicator-square--locked"></div>
+          <span>
+            <span className="vesting-table__indicator-square vesting-table__indicator-square--locked"></span>
             {t('Locked')}
-          </th>
-          <td>{formatNumber(locked)}</td>
+          </span>
+          {formatNumber(locked)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-unlocked">
-          <th>
-            <div className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></div>
+          <span>
+            <span className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></span>
             {t('Unlocked')}
-          </th>
-          <td>{formatNumber(vested)}</td>
+          </span>
+          {formatNumber(vested)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-staked">
-          <th>
-            <div className="vesting-table__indicator-square vesting-table__indicator-square--staked"></div>
+          <span>
+            <span className="vesting-table__indicator-square vesting-table__indicator-square--staked"></span>
             {t('Associated')}
-          </th>
-          <td>{formatNumber(associated)}</td>
+          </span>
+          {formatNumber(associated)}
         </KeyValueTableRow>
       </KeyValueTable>
       <div className="vesting-table__progress-bar">

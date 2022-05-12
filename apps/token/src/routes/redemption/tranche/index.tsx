@@ -3,7 +3,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
-import { Colors } from '../../../config';
 import { ADDRESSES } from '../../../config';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
@@ -88,7 +87,7 @@ export const RedeemFromTranche = () => {
       {txState.txState !== TxState.Default ? (
         <TransactionCallout
           completeHeading={
-            <strong style={{ color: Colors.WHITE }}>
+            <strong className={'text-white'}>
               {t('Tokens from this Tranche have been redeemed')}
             </strong>
           }

@@ -1,11 +1,8 @@
-import './staking-node.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../components/epoch-countdown';
-import { Colors } from '../../config';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
@@ -90,9 +87,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
 
   if (!nodeInfo) {
     return (
-      <span style={{ color: Colors.RED }}>
-        {t('stakingNodeNotFound', { node })}
-      </span>
+      <span className={'text-red'}>{t('stakingNodeNotFound', { node })}</span>
     );
   }
 
@@ -113,7 +108,6 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
       />
       {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
         <EpochCountdown
-          containerClass="staking-node__epoch"
           id={data.epoch.id}
           startDate={new Date(data?.epoch.timestamps.start)}
           endDate={new Date(data?.epoch.timestamps.expiry)}

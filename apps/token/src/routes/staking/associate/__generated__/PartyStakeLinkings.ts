@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { StakeLinkingStatus } from "./../../../../__generated__/globalTypes";
+import { StakeLinkingStatus } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: PartyStakeLinkings

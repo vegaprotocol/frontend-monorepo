@@ -1,10 +1,7 @@
 import { format, isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { CurrentProposalState } from '../current-proposal-state';
@@ -19,60 +16,50 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
   const terms = proposal.terms;
 
   return (
-    <KeyValueTable muted={true} data-testid="proposal-change-table">
+    <KeyValueTable data-testid="proposal-change-table" muted={true}>
       <KeyValueTableRow>
-        <th>{t('id')}</th>
-        <td>{proposal.id}</td>
+        {t('id')}
+        {proposal.id}
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('state')}</th>
-        <td>
-          <CurrentProposalState proposal={proposal} />
-        </td>
+        {t('state')}
+        <CurrentProposalState proposal={proposal} />
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>
-          {isFuture(new Date(terms.closingDatetime))
-            ? t('closesOn')
-            : t('closedOn')}
-        </th>
-        <td>{format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}</td>
+        {isFuture(new Date(terms.closingDatetime))
+          ? t('closesOn')
+          : t('closedOn')}
+        {format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>
-          {isFuture(new Date(terms.enactmentDatetime))
-            ? t('proposedEnactment')
-            : t('enactedOn')}
-        </th>
-        <td>
-          {format(new Date(terms.enactmentDatetime), DATE_FORMAT_DETAILED)}
-        </td>
+        {isFuture(new Date(terms.enactmentDatetime))
+          ? t('proposedEnactment')
+          : t('enactedOn')}
+        {format(new Date(terms.enactmentDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('proposedBy')}</th>
-        <td>
-          <span style={{ wordBreak: 'break-word' }}>{proposal.party.id}</span>
-        </td>
+        {t('proposedBy')}
+        <span style={{ wordBreak: 'break-word' }}>{proposal.party.id}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('proposedOn')}</th>
-        <td>{format(new Date(proposal.datetime), DATE_FORMAT_DETAILED)}</td>
+        {t('proposedOn')}
+        {format(new Date(proposal.datetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       {proposal.rejectionReason ? (
         <KeyValueTableRow>
-          <th>{t('rejectionReason')}</th>
-          <td>{proposal.rejectionReason}</td>
+          {t('rejectionReason')}
+          {proposal.rejectionReason}
         </KeyValueTableRow>
       ) : null}
       {proposal.errorDetails ? (
         <KeyValueTableRow>
-          <th>{t('errorDetails')}</th>
-          <td>{proposal.errorDetails}</td>
+          {t('errorDetails')}
+          {proposal.errorDetails}
         </KeyValueTableRow>
       ) : null}
       <KeyValueTableRow>
-        <th>{t('type')}</th>
-        <td>{proposal.terms.change.__typename}</td>
+        {t('type')}
+        {proposal.terms.change.__typename}
       </KeyValueTableRow>
     </KeyValueTable>
   );

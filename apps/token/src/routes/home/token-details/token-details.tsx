@@ -3,10 +3,7 @@ import './token-details.scss';
 import { useTranslation } from 'react-i18next';
 
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { ADDRESSES } from '../../../config';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';
@@ -26,36 +23,34 @@ export const TokenDetails = ({
   return (
     <KeyValueTable className={'token-details'}>
       <KeyValueTableRow>
-        <th>{t('Token address')}</th>
-        <td data-testid="token-address">
-          <EtherscanLink
-            address={ADDRESSES.vegaTokenAddress}
-            text={ADDRESSES.vegaTokenAddress}
-            className="font-mono"
-          />
-        </td>
+        {t('Token address')}
+        <EtherscanLink
+          data-testid="token-address"
+          address={ADDRESSES.vegaTokenAddress}
+          text={ADDRESSES.vegaTokenAddress}
+          className="font-mono"
+        />
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('Vesting contract')}</th>
-        <td data-testid="token-contract">
-          <EtherscanLink
-            address={ADDRESSES.vestingAddress}
-            text={ADDRESSES.vestingAddress}
-            className="font-mono"
-          />
-        </td>
+        {t('Vesting contract')}
+        <EtherscanLink
+          data-testid="token-contract"
+          address={ADDRESSES.vestingAddress}
+          text={ADDRESSES.vestingAddress}
+          className="font-mono"
+        />
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('Total supply')}</th>
-        <td data-testid="total-supply">{formatNumber(totalSupply, 2)}</td>
+        {t('Total supply')}
+        <span data-testid="total-supply">{formatNumber(totalSupply, 2)}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('Circulating supply')}</th>
+        {t('Circulating supply')}
         <TokenDetailsCirculating tranches={tranches} />
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('Staked on Vega validator')}</th>
-        <td data-testid="staked">{formatNumber(totalStaked, 2)}</td>
+        {t('Staked on Vega validator')}
+        <span data-testid="staked">{formatNumber(totalStaked, 2)}</span>
       </KeyValueTableRow>
     </KeyValueTable>
   );

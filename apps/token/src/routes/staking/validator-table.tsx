@@ -1,16 +1,15 @@
-import './validator-table.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import type { Staking_nodes } from './__generated__/Staking';
+
+const ValidatorTableCell = ({ children }: { children: React.ReactNode }) => (
+  <span className="break-words">{children}</span>
+);
 
 export interface ValidatorTableProps {
   node: Staking_nodes;
@@ -37,59 +36,59 @@ export const ValidatorTable = ({
   return (
     <KeyValueTable data-testid="validator-table">
       <KeyValueTableRow>
-        <th>{t('id')}:</th>
-        <td className="validator-table__cell">{node.id}</td>
+        <span>{t('id')}:</span>
+        <ValidatorTableCell>{node.id}</ValidatorTableCell>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('VEGA ADDRESS / PUBLIC KEY')}</th>
-        <td className="validator-table__cell">{node.pubkey}</td>
+        <span>{t('VEGA ADDRESS / PUBLIC KEY')}</span>
+        <ValidatorTableCell>{node.pubkey}</ValidatorTableCell>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('ABOUT THIS VALIDATOR')}</th>
-        <td>
+        <span>{t('ABOUT THIS VALIDATOR')}</span>
+        <span>
           <a href={node.infoUrl}>{node.infoUrl}</a>
-        </td>
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('IP ADDRESS')}</th>
-        <td>{node.location}</td>
+        <span>{t('IP ADDRESS')}</span>
+        <span>{node.location}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('ETHEREUM ADDRESS')}</th>
-        <td>
+        <span>{t('ETHEREUM ADDRESS')}</span>
+        <span>
           <EtherscanLink
             text={node.ethereumAdddress}
             address={node.ethereumAdddress}
           />
-        </td>
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('TOTAL STAKE')}</th>
-        <td>{node.stakedTotalFormatted}</td>
+        <span>{t('TOTAL STAKE')}</span>
+        <span>{node.stakedTotalFormatted}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('PENDING STAKE')}</th>
-        <td>{node.pendingStakeFormatted}</td>
+        <span>{t('PENDING STAKE')}</span>
+        <span>{node.pendingStakeFormatted}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('STAKED BY OPERATOR')}</th>
-        <td>{node.stakedByOperatorFormatted}</td>
+        <span>{t('STAKED BY OPERATOR')}</span>
+        <span>{node.stakedByOperatorFormatted}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('STAKED BY DELEGATES')}</th>
-        <td>{node.stakedByDelegatesFormatted}</td>
+        <span>{t('STAKED BY DELEGATES')}</span>
+        <span>{node.stakedByDelegatesFormatted}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('STAKE SHARE')}</th>
-        <td>{stakePercentage}</td>
+        <span>{t('STAKE SHARE')}</span>
+        <span>{stakePercentage}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('OWN STAKE (THIS EPOCH)')}</th>
-        <td>{formatNumber(stakeThisEpoch)}</td>
+        <span>{t('OWN STAKE (THIS EPOCH)')}</span>
+        <span>{formatNumber(stakeThisEpoch)}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <th>{t('NOMINATED (THIS EPOCH)')}</th>
-        <td>{node.stakedByDelegatesFormatted}</td>
+        <span>{t('NOMINATED (THIS EPOCH)')}</span>
+        <span>{node.stakedByDelegatesFormatted}</span>
       </KeyValueTableRow>
     </KeyValueTable>
   );

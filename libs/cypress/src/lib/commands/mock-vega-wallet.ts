@@ -14,7 +14,6 @@ declare global {
 
 export function addMockVegaWalletCommands() {
   Cypress.Commands.add(
-    // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
     'mockVegaCommandSync',
     (override?: PartialDeep<TransactionResponse>) => {
       const defaultTransactionResponse = {

@@ -10,6 +10,26 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
+    bullish: '#26FF8A',
+    bearish: '#ED1515',
+    vega: {
+      yellow: '#EDFF22',
+      pink: '#FF2D5E',
+      green: '#00F780',
+    },
+    red: {
+      DEFAULT: '#ED1515',
+      transparent: 'rgba(255, 38, 65, 0.3)',
+      vega: '#FF261A',
+    },
+    green: {
+      DEFAULT: '#26FF8A',
+      transparent: 'rgba(38, 255, 138, 0.3)',
+      dark: '#246340',
+      vega: '#00F780',
+    },
+    text: '#C7C7C7',
+    deemphasise: '#8A9BA8',
     white: {
       DEFAULT: '#FFF',
       '02': 'rgba(255, 255, 255, 0.02)',
@@ -36,12 +56,12 @@ module.exports = {
     },
     blue: '#1DA2FB',
     coral: '#FF6057',
-    vega: {
-      yellow: '#EDFF22',
-      pink: '#FF2D5E',
-      green: '#00F780',
+    pink: '#FF2D5E',
+    orange: '#D9822B',
+    yellow: {
+      DEFAULT: '#EDFF22',
+      dark: '#474B0A', // yellow 0.3 opacity on black
     },
-    'vega-yellow-dark': '#474B0A', // yellow 0.3 opacity on black
     intent: {
       danger: '#FF261A',
       warning: '#FF7A1A',
@@ -107,7 +127,7 @@ module.exports = {
     full: '9999px',
   },
   fontFamily: {
-    mono: defaultTheme.fontFamily.mono,
+    mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono],
     serif: defaultTheme.fontFamily.serif,
     sans: [
       '"Helvetica Neue"',
