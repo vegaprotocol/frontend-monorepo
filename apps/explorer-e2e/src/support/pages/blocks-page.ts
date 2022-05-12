@@ -24,8 +24,6 @@ export default class BlocksPage extends BasePage {
   }
 
   clickOnTopBlockHeight() {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // Wait for blocks to load if there are any
     cy.getByTestId(this.blockHeight).first().click();
   }
 
