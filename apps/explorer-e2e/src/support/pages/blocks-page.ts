@@ -16,6 +16,8 @@ export default class BlocksPage extends BasePage {
   jumpToBlockSubmit = 'go-submit';
 
   validateBlocksPageDisplayed() {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000); // Wait for blocks to load if there are any
     cy.getByTestId(this.blockRow).should('have.length.above', 1);
     cy.getByTestId(this.blockHeight).first().should('not.be.empty');
     cy.getByTestId(this.numberOfTransactions).first().should('not.be.empty');
@@ -24,6 +26,8 @@ export default class BlocksPage extends BasePage {
   }
 
   clickOnTopBlockHeight() {
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000); // Wait for blocks to load if there are any
     cy.getByTestId(this.blockHeight).first().click();
   }
 
