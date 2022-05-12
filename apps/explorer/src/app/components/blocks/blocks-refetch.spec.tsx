@@ -107,7 +107,7 @@ describe('Blocks refetch', () => {
     mocket.close();
   });
 
-  it('will not show new blocks if websocket is incorrectly updated', async () => {
+  it('will not show new blocks if websocket has wrong ID', async () => {
     const mocketLocation = 'wss:localhost:3005';
     const mocket = new WS(mocketLocation, { jsonProtocol: true });
     new WebSocket(mocketLocation);
@@ -122,15 +122,6 @@ describe('Blocks refetch', () => {
 
     // Ensuring we send an ID equal to the one the client subscribed with.
     await waitFor(() => expect(mocket.messages.length).toEqual(1));
-    // @ts-ignore id on messages
-    const id = mocket.messages[0].id;
-
-    const newBlockMessageBadResult = {
-      id,
-      result: {
-        query: "tm.event = 'blahblahblah'",
-      },
-    };
 
     const newBlockMessageBadId = {
       id: 'blahblahblah',
@@ -138,12 +129,6 @@ describe('Blocks refetch', () => {
         query: "tm.event = 'NewBlock'",
       },
     };
-
-    expect(screen.getByTestId('new-blocks')).toHaveTextContent('0 new blocks');
-
-    act(() => {
-      mocket.send(newBlockMessageBadResult);
-    });
 
     expect(screen.getByTestId('new-blocks')).toHaveTextContent('0 new blocks');
 
