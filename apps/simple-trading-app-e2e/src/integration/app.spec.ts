@@ -1,4 +1,4 @@
-describe('stats', () => {
+describe('simple trading app', () => {
   beforeEach(() => cy.visit('/'));
 
   it('render', () => {
