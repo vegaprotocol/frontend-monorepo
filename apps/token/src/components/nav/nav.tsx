@@ -129,6 +129,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
         className={`text-[28px] lg:text-h3 pl-8 ${
           fairground ? 'text-black' : 'text-white'
         }`}
+        data-testid="header-title"
       >
         {fairground ? t('fairgroundTitle') : t('title')}
       </h1>

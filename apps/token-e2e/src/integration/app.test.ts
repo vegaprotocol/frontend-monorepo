@@ -4,7 +4,7 @@ describe('token', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should always have a header title based on environment', () => {
-    cy.get('.nav h1').should(
+    cy.get('[data-testid="header-title"]').should(
       'have.text',
       `${fairgroundSet ? 'Fairground token' : '$VEGA TOKEN'}`
     );
