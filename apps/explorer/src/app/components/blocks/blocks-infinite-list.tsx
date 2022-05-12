@@ -19,6 +19,9 @@ interface ItemProps {
   style: React.CSSProperties;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const NOOP = () => {};
+
 export const BlocksInfiniteList = ({
   hasMoreBlocks,
   areBlocksLoading,
@@ -36,7 +39,7 @@ export const BlocksInfiniteList = ({
 
   // Pass an empty callback to InfiniteLoader in case it asks us to load more than once.
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const loadMoreItems = areBlocksLoading ? () => {} : loadMoreBlocks;
+  const loadMoreItems = areBlocksLoading ? NOOP : loadMoreBlocks;
 
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) =>
