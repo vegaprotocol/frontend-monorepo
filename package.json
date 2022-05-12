@@ -13,6 +13,9 @@
   },
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@mui/material": "^5.6.2",
     "@apollo/client": "^3.5.8",
     "@blueprintjs/core": "^3.47.0",
     "@blueprintjs/icons": "^3.32.0",
