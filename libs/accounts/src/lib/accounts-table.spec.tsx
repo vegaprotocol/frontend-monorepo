@@ -21,14 +21,14 @@ const singleRow: Accounts_party_accounts = {
 };
 const singleRowData = [singleRow];
 
-test('should render successfully', async () => {
+it('should render successfully', async () => {
   await act(async () => {
     const { baseElement } = render(<AccountsTable data={[]} />);
     expect(baseElement).toBeTruthy();
   });
 });
 
-test('Render correct columns', async () => {
+it('Render correct columns', async () => {
   await act(async () => {
     render(<AccountsTable data={singleRowData} />);
     await waitFor(async () => {
@@ -43,7 +43,7 @@ test('Render correct columns', async () => {
   });
 });
 
-test('Correct formatting applied', async () => {
+it('Correct formatting applied', async () => {
   await act(async () => {
     render(<AccountsTable data={singleRowData} />);
     await waitFor(async () => {

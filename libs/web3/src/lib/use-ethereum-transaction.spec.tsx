@@ -5,7 +5,7 @@ import { EthTxStatus } from './use-ethereum-transaction';
 import type { ReactNode } from 'react';
 import { useEthereumTransaction } from './use-ethereum-transaction';
 import type { ethers } from 'ethers';
-import { EthereumError } from '../lib/ethereum-error';
+import { EthereumError } from './ethereum-error';
 
 beforeAll(() => {
   jest.useFakeTimers();
@@ -56,7 +56,7 @@ function setup(perform: () => void) {
   );
 }
 
-test('Ethereum transaction flow', async () => {
+it('Ethereum transaction flow', async () => {
   const { result } = setup(() => {
     return mockContract.depositAsset({
       assetSource: 'asset-source',
@@ -114,7 +114,7 @@ test('Ethereum transaction flow', async () => {
   });
 });
 
-test('Error handling', async () => {
+it('Error handling', async () => {
   const { result } = setup(() => {
     throw new EthereumError(errorMsg, 500);
   });

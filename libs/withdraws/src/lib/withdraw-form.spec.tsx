@@ -29,7 +29,7 @@ beforeEach(() => {
 
 const generateJsx = (props: WithdrawFormProps) => <WithdrawForm {...props} />;
 
-test('Validation', async () => {
+it('Validation', async () => {
   const { rerender } = render(generateJsx(props));
 
   fireEvent.submit(screen.getByTestId('withdraw-form'));
@@ -86,7 +86,7 @@ test('Validation', async () => {
   });
 });
 
-test('Use max button', () => {
+it('Use max button', () => {
   const asset = props.assets[0];
   render(generateJsx({ ...props, selectedAsset: asset }));
 
@@ -97,7 +97,7 @@ test('Use max button', () => {
   );
 });
 
-test('Use connected Ethereum account', () => {
+it('Use connected Ethereum account', () => {
   render(generateJsx({ ...props, ethereumAccount: ethereumAddress }));
 
   fireEvent.click(screen.getByText('Use connected'));

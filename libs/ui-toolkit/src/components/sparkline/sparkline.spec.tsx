@@ -1,8 +1,6 @@
 import { render, screen } from '@testing-library/react';
-import { theme } from '@vegaprotocol/tailwindcss-config';
 
 import { Sparkline } from './sparkline';
-export const Colors = theme.colors;
 
 const props = {
   data: [

@@ -62,7 +62,7 @@ function setup(mock = networkParamsQueryMock) {
   );
 }
 
-test('Prompt to connect opens dialog', async () => {
+it('Prompt to connect opens dialog', async () => {
   mockHookValue = defaultHookValue;
   setup();
 
@@ -78,17 +78,19 @@ test('Prompt to connect opens dialog', async () => {
   expect(screen.getByTestId('web3-connector-list')).toBeInTheDocument();
 });
 
-test('Error message is shown', async () => {
+it('Error message is shown', async () => {
   const message = 'Opps! An error';
   mockHookValue = { ...defaultHookValue, error: new Error(message) };
   setup();
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(await screen.findByText(`Something went wrong: ${message}`));
+  expect(
+    await screen.findByText(`Something went wrong: ${message}`)
+  ).toBeInTheDocument();
   expect(screen.queryByText('Child')).not.toBeInTheDocument();
 });
 
-test('Checks that chain ID matches app ID', async () => {
+it('Checks that chain ID matches app ID', async () => {
   const expectedChainId = 4;
   mockHookValue = {
     ...defaultHookValue,
@@ -98,11 +100,13 @@ test('Checks that chain ID matches app ID', async () => {
   setup();
 
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(await screen.findByText(`This app only works on chain ID: 3`));
+  expect(
+    await screen.findByText(`This app only works on chain ID: 3`)
+  ).toBeInTheDocument();
   expect(screen.queryByText('Child')).not.toBeInTheDocument();
 });
 
-test('Passes ethereum config to children', async () => {
+it('Passes ethereum config to children', async () => {
   mockHookValue = {
     ...defaultHookValue,
     isActive: true,
@@ -117,7 +121,7 @@ test('Passes ethereum config to children', async () => {
   ).toBeInTheDocument();
 });
 
-test('Shows no config found message if the network parameter doesnt exist', async () => {
+it('Shows no config found message if the network parameter doesnt exist', async () => {
   const mock: MockedResponse<NetworkParamsQuery> = {
     request: {
       query: NETWORK_PARAMS_QUERY,
@@ -141,7 +145,7 @@ test('Shows no config found message if the network parameter doesnt exist', asyn
   ).toBeInTheDocument();
 });
 
-test('Shows message if ethereum config could not be parsed', async () => {
+it('Shows message if ethereum config could not be parsed', async () => {
   const mock: MockedResponse<NetworkParamsQuery> = {
     request: {
       query: NETWORK_PARAMS_QUERY,

@@ -50,7 +50,7 @@ const generateJSX = () => (
   </VegaWalletProvider>
 );
 
-test('Can connect, disconnect and retrieve keypairs', async () => {
+it('Can connect, disconnect and retrieve keypairs', async () => {
   const mockKeypairs = [{ pub: 'public key 1' }, { pub: 'public key 2' }];
   jest
     .spyOn(restConnector, 'connect')

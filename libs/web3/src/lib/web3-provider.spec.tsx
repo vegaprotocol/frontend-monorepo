@@ -8,7 +8,7 @@ const [foo, fooHooks] = initializeConnector((actions) => new MetaMask(actions));
 
 const connectors: [MetaMask, Web3ReactHooks][] = [[foo, fooHooks]];
 
-test('Renders children', async () => {
+it('Renders children', async () => {
   await act(async () => {
     render(
       <Web3Provider connectors={connectors}>

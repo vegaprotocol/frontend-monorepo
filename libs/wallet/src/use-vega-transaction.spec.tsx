@@ -24,7 +24,7 @@ function setup(context?: Partial<VegaWalletContextShape>) {
   return renderHook(() => useVegaTransaction(), { wrapper });
 }
 
-test('Has the correct default state', () => {
+it('Has the correct default state', () => {
   const { result } = setup();
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
   expect(result.current.transaction.txHash).toEqual(null);
@@ -34,7 +34,7 @@ test('Has the correct default state', () => {
   expect(typeof result.current.send).toEqual('function');
 });
 
-test('If provider returns null status should be default', async () => {
+it('If provider returns null status should be default', async () => {
   const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(null));
   const { result } = setup({ sendTx: mockSendTx });
   await act(async () => {
@@ -43,7 +43,7 @@ test('If provider returns null status should be default', async () => {
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
 });
 
-test('Handles a single error', async () => {
+it('Handles a single error', async () => {
   const errorMessage = 'Oops error!';
   const mockSendTx = jest
     .fn()
@@ -56,7 +56,7 @@ test('Handles a single error', async () => {
   expect(result.current.transaction.error).toEqual({ error: errorMessage });
 });
 
-test('Handles multiple errors', async () => {
+it('Handles multiple errors', async () => {
   const errorObj = {
     errors: {
       something: 'Went wrong!',
@@ -71,7 +71,7 @@ test('Handles multiple errors', async () => {
   expect(result.current.transaction.error).toEqual(errorObj);
 });
 
-test('Returns the signature if successful', async () => {
+it('Returns the signature if successful', async () => {
   const successObj = {
     tx: {
       inputData: 'input-data',

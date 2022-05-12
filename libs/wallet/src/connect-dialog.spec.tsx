@@ -46,7 +46,7 @@ function generateJSX(
   );
 }
 
-test('Renders list of connectors', () => {
+it('Renders list of connectors', () => {
   const { container, rerender } = render(generateJSX());
   expect(container).toBeEmptyDOMElement();
   rerender(generateJSX({ dialogOpen: true }));
@@ -69,7 +69,7 @@ const fillInForm = () => {
   return { wallet: walletValue, passphrase: passphraseValue };
 };
 
-test('Successful connection using rest auth form', async () => {
+it('Successful connection using rest auth form', async () => {
   const spy = jest
     .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
     .mockImplementation(() => Promise.resolve({ success: true, error: null }));
@@ -97,7 +97,7 @@ test('Successful connection using rest auth form', async () => {
   expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
 });
 
-test('Unsuccessful connection using rest auth form', async () => {
+it('Unsuccessful connection using rest auth form', async () => {
   // Error from service
   let spy = jest
     .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
