@@ -10,12 +10,12 @@ import {
 import { TendermintWebsocketContext } from '../../contexts/websocket/tendermint-websocket-context';
 import { BlocksRefetch } from './blocks-refetch';
 
-const mocketLocation = 'wss:localhost:3002';
-
 const BlocksRefetchInWebsocketProvider = ({
   callback,
+  mocketLocation,
 }: {
   callback: () => null;
+  mocketLocation: string;
 }) => {
   const contextShape = useWebSocket(mocketLocation);
 
@@ -27,19 +27,35 @@ const BlocksRefetchInWebsocketProvider = ({
 };
 
 describe('Blocks refetch', () => {
-  const mocket = new WS(mocketLocation, { jsonProtocol: true });
-  new WebSocket(mocketLocation);
-
   it('should render inner components', async () => {
-    render(<BlocksRefetchInWebsocketProvider callback={() => null} />);
+    const mocketLocation = 'wss:localhost:3002';
+    const mocket = new WS(mocketLocation, { jsonProtocol: true });
+    new WebSocket(mocketLocation);
+
+    render(
+      <BlocksRefetchInWebsocketProvider
+        callback={() => null}
+        mocketLocation={mocketLocation}
+      />
+    );
     await mocket.connected;
     expect(screen.getByTestId('new-blocks')).toHaveTextContent('new blocks');
     expect(screen.getByTestId('refresh')).toBeInTheDocument();
+    mocket.close();
   });
 
   it('should initiate callback when the button is clicked', async () => {
+    const mocketLocation = 'wss:localhost:3003';
+    const mocket = new WS(mocketLocation, { jsonProtocol: true });
+    new WebSocket(mocketLocation);
+
     const callback = jest.fn();
-    render(<BlocksRefetchInWebsocketProvider callback={callback} />);
+    render(
+      <BlocksRefetchInWebsocketProvider
+        callback={callback}
+        mocketLocation={mocketLocation}
+      />
+    );
     await mocket.connected;
     const button = screen.getByTestId('refresh');
 
@@ -48,10 +64,19 @@ describe('Blocks refetch', () => {
     });
 
     expect(callback.mock.calls.length).toEqual(1);
+    mocket.close();
   });
 
   it('should show new blocks as websocket is correctly updated', async () => {
-    render(<BlocksRefetchInWebsocketProvider callback={() => null} />);
+    const mocketLocation = 'wss:localhost:3004';
+    const mocket = new WS(mocketLocation, { jsonProtocol: true });
+    new WebSocket(mocketLocation);
+    render(
+      <BlocksRefetchInWebsocketProvider
+        callback={() => null}
+        mocketLocation={mocketLocation}
+      />
+    );
     await mocket.connected;
 
     // Ensuring we send an ID equal to the one the client subscribed with.
@@ -79,10 +104,20 @@ describe('Blocks refetch', () => {
     });
 
     expect(screen.getByTestId('new-blocks')).toHaveTextContent('2 new blocks');
+    mocket.close();
   });
 
   it('will not show new blocks if websocket is incorrectly updated', async () => {
-    render(<BlocksRefetchInWebsocketProvider callback={() => null} />);
+    const mocketLocation = 'wss:localhost:3005';
+    const mocket = new WS(mocketLocation, { jsonProtocol: true });
+    new WebSocket(mocketLocation);
+
+    render(
+      <BlocksRefetchInWebsocketProvider
+        callback={() => null}
+        mocketLocation={mocketLocation}
+      />
+    );
     await mocket.connected;
 
     // Ensuring we send an ID equal to the one the client subscribed with.
@@ -117,5 +152,6 @@ describe('Blocks refetch', () => {
     });
 
     expect(screen.getByTestId('new-blocks')).toHaveTextContent('0 new blocks');
+    mocket.close();
   });
 });
