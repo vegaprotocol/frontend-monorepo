@@ -18,7 +18,6 @@ export default class BlocksPage extends BasePage {
   private waitForBlocksResponse() {
     const base = Cypress.env('VEGA_TENDERMINT_URL');
     const url = new URL('/tm/blockchain*', base).toString();
-    console.log(url);
     cy.intercept(url).as('blockChain');
     cy.wait('@blockChain');
   }
