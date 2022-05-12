@@ -120,13 +120,16 @@ const renderComponent = () => {
   );
 };
 
+jest.mock('@vegaprotocol/react-helpers', () => ({
+  t: (a: string) => a,
+  useFetch: () => ({
+    state: { data: createBlockResponse() },
+    loading: false,
+    error: null,
+  }),
+}));
+
 beforeEach(() => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve(createBlockResponse()),
-    })
-  ) as jest.Mock;
   jest.useFakeTimers().setSystemTime(1648123348642);
 });
 
@@ -137,12 +140,6 @@ afterEach(() => {
 
 describe('Block', () => {
   it('should render title, proposer address and time mined', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(createBlockResponse()),
-      })
-    ) as jest.Mock;
     render(renderComponent());
     await waitFor(() => screen.getByTestId('block-header'));
 
