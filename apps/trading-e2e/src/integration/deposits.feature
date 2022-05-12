@@ -58,18 +58,50 @@ Feature: Deposits to vega wallet
   # Then I can see the deposit is Successfull
   # And Balance is updated to reflect deposit amount
 
-  Scenario: Validation errors
-    # wallet is connected on before hook so this step may no longer be required
-    # Given I connect my Ethereum wallet
-    When I submit a deposit with empty fields
-    Then I can see validation errors present
-    And I enter an invalid public key
+  Scenario: Empty form Validation errors
+    When I enter the following deposit details in deposit form
+      | asset  |  |
+      | to     |  |
+      | amount |  |
+    And I submit the form
+    Then I can see empty form validation errors present
+
+  Scenario: Invalid deposit Public Key Validation error
+    When I enter the following deposit details in deposit form
+      | asset  | tBTC TEST                                                        |
+      | to     | zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f |
+      | amount | 1                                                                |
+    And I submit the form
     Then Invalid Vega key is shown
-    And I enter an amount less than the minimum viable amount
+
+  Scenario: Deposit Amount too small validation
+    When I enter the following deposit details in deposit form
+      | asset  | tBTC TEST                                                        |
+      | to     | zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f |
+      | amount | 0.00000000000000000000000000000000001                            |
+    And I submit the form
     Then Amount too small message shown
-    And I enter a valid amount
+
+  Scenario: Deposit Amount greater than approved amount validation
+    When I enter the following deposit details in deposit form
+      | asset  | tBTC TEST                                                        |
+      | to     | zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f |
+      | amount | 788888888888888                                                  |
+    And I submit the form
+    And Insufficient amount message shown
+  # Then Amount too small message shown
+  # And I enter a valid amount
+  # And I submit the form
   # This next step is being skipped due to account having approved status
   # Then Not approved message shown
+
+  Scenario: Successful deposit
+    When I enter the following deposit details in deposit form
+      | asset  | tBTC TEST                                                        |
+      | to     | 99d423f2839cada5f75fbc60f50c8a63343de7a132bf81b282858fbba5d82714 |
+      | amount | 1                                                                |
+    And I submit the form
+    And I can see the 'deposit pending' modal is shown
 
   @todo
   Scenario: Use the 'Use Maximum' button to populate amount input with the balance in the connected wallet

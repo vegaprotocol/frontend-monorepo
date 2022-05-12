@@ -38,10 +38,21 @@ When('I submit a deposit with empty fields', () => {
   depositsPage.submitForm();
 });
 
-Then('I can see validation errors present', () => {
+Then('I can see empty form validation errors present', () => {
   depositsPage.verifyFieldsAreRequired();
 });
 
+Then('I enter the following deposit details in deposit form', (table) => {
+  depositsPage.updateForm({
+    asset: table.rowsHash().asset,
+    to: table.rowsHash().to,
+    amount: table.rowsHash().amount,
+  });
+});
+
+And('I submit the form', () => {
+  depositsPage.submitForm();
+});
 And('I enter an invalid public key', () => {
   depositsPage.updateForm({
     asset: tBTC,
@@ -72,4 +83,12 @@ And('I enter a valid amount', () => {
 
 Then('Not approved message shown', () => {
   depositsPage.verifyNotApproved();
+});
+
+And('I can see the {string} modal is shown', (text) => {
+  depositsPage.checkModalContains(text);
+});
+
+And('Insufficient amount message shown', () => {
+  depositsPage.veryInsufficientAmountAmountMessage();
 });
