@@ -1,6 +1,7 @@
 import { ApolloClient, from, HttpLink, InMemoryCache } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
+import { ENV } from '../config/env';
 
 export function createClient(base?: string) {
   if (!base) {
@@ -46,7 +47,7 @@ export function createClient(base?: string) {
   });
 
   return new ApolloClient({
-    connectToDevTools: process.env['NODE_ENV'] === 'development',
+    connectToDevTools: ENV.nodeEnv === 'development',
     link: from([errorLink, retryLink, httpLink]),
     cache,
   });

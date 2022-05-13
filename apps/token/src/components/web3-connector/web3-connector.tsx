@@ -3,6 +3,7 @@ import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
 import { useCallback, useEffect } from 'react';
+import { ENV } from '../../config/env';
 import {
   AppStateActionType,
   useAppState,
@@ -21,7 +22,7 @@ export function Web3Connector({ children }: Web3ConnectorProps) {
     },
     [appDispatch]
   );
-  const appChainId = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
+  const appChainId = Number(ENV.chainId);
   return (
     <>
       <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>

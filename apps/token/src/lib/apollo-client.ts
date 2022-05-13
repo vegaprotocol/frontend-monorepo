@@ -4,6 +4,7 @@ import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
+import { ENV } from '../config/env';
 
 import { BigNumber } from './bignumber';
 import { addDecimal } from './decimals';
@@ -167,7 +168,7 @@ export function createClient() {
   });
 
   return new ApolloClient({
-    connectToDevTools: process.env['NODE_ENV'] === 'development',
+    connectToDevTools: ENV.nodeEnv === 'development',
     link: from([errorLink, retryLink, httpLink]),
     cache,
   });
