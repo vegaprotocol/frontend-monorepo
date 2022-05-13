@@ -1,5 +1,3 @@
-import './wallet-card.scss';
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -30,7 +28,11 @@ interface WalletCardProps {
 }
 
 export const WalletCard = ({ dark, children }: WalletCardProps) => (
-  <div className={`wallet-card ${dark ? 'wallet-card--inverted' : ''}`}>
+  <div
+    className={`text-ui border border-white ${
+      dark ? 'bg-black text-white' : 'bg-white text-black'
+    }`}
+  >
     {children}
   </div>
 );
@@ -40,15 +42,9 @@ interface WalletCardHeaderProps {
   dark?: boolean;
 }
 
-export const WalletCardHeader = ({ children, dark }: WalletCardHeaderProps) => {
+export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
   return (
-    <div
-      className={`wallet-card__header ${
-        dark ? 'wallet-card__header--inverted' : ''
-      }`}
-    >
-      {children}
-    </div>
+    <div className="flex justify-between items-center py-8">{children}</div>
   );
 };
 
@@ -57,7 +53,7 @@ interface WalletCardContentProps {
 }
 
 export const WalletCardContent = ({ children }: WalletCardContentProps) => {
-  return <div className="wallet-card__content">{children}</div>;
+  return <div className="my-4 mx-8">{children}</div>;
 };
 
 export const WalletCardRow = ({
@@ -81,16 +77,28 @@ export const WalletCardRow = ({
 
   return (
     <div
-      className={`wallet-card__row ${dark ? 'wallet-card__row--dark' : ''} ${
-        bold ? 'wallet-card__row--bold' : ''
-      }`}
+      className={`flex justify-between gap-y-0 gap-x-4 text-ui my-4 p-2 ${
+        dark ? 'text-white-60' : 'text-black'
+      } ${bold && 'font-bold'}`}
       ref={ref}
     >
-      {link ? <Link to={link}>{label}</Link> : <span>{label}</span>}
+      {link ? (
+        <Link to={link} className="max-w-[200px]">
+          {label}
+        </Link>
+      ) : (
+        <span className={`max-w-[200px] ${dark ? 'text-white' : 'text-black'}`}>
+          {label}
+        </span>
+      )}
       {value && (
-        <span>
-          <span className="wallet-card__price--integer">{integers}.</span>
-          <span className="wallet-card__price--decimal">{decimalsPlaces}</span>
+        <span className="font-mono flex-1 text-right">
+          <span className={dark ? 'text-white' : 'text-black'}>
+            {integers}.
+          </span>
+          <span className={dark ? 'text-white-60' : 'text-black-60'}>
+            {decimalsPlaces}
+          </span>
         </span>
       )}
     </div>
@@ -129,24 +137,36 @@ export const WalletCardAsset = ({
   const [integers, decimalsPlaces] = useNumberParts(balance, decimals);
 
   return (
-    <div
-      className={`wallet-card__asset ${dark ? 'wallet-card__asset--dark' : ''}`}
-    >
+    <div className="flex flex-nowrap mt-8 mb-16">
       <img
         alt="Vega"
         src={image}
-        className={`wallet-card__asset-image ${
-          border ? 'wallet-card__asset-image--border' : ''
+        className={`inline-block h-[30px] rounded-[50%] border ${
+          border ? 'border-white' : 'border-black'
         }`}
       />
-      <div className="wallet-card__asset-header">
-        <div className="wallet-card__asset-heading">
-          <h1 className="text-h5">{name}</h1>
-          <h2 className="text-h5">{subheading || symbol}</h2>
+      <div>
+        <div className="flex font-medium">
+          <h1
+            className={`text-h5 px-8 uppercase ${
+              dark ? 'text-white' : 'text-black'
+            }`}
+          >
+            {name}
+          </h1>
+          <h2
+            className={`text-h5 uppercase ${
+              dark ? 'text-white-60' : 'text-black-60'
+            }`}
+          >
+            {subheading || symbol}
+          </h2>
         </div>
-        <div className="wallet-card__asset-balance">
-          <span className="wallet-card__price--integer">{integers}.</span>
-          <span className="wallet-card__price--decimal">{decimalsPlaces}</span>
+        <div className="px-8 text-h5 basis-full">
+          <span>{integers}.</span>
+          <span className={dark ? 'text-white-60' : 'text-black-60'}>
+            {decimalsPlaces}
+          </span>
         </div>
       </div>
     </div>

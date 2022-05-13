@@ -2,7 +2,7 @@ export function Ethereum() {
   return (
     <svg
       data-testid="icon-ethereum"
-      className="icon icon-ethereum"
+      className="fill-current w-[1em]"
       viewBox="0 0 50 50"
     >
       <path d="M25.3999 0.160156L40.1999 24.6102L25.4499 18.3102L25.3999 0.160156Z" />

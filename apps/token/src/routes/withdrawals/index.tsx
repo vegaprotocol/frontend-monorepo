@@ -1,5 +1,3 @@
-import './withdrawals.scss';
-
 import { gql, useQuery } from '@apollo/client';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
@@ -134,9 +132,9 @@ const WithdrawPendingContainer = ({
   }
 
   return (
-    <ul className="withdrawals-list">
+    <ul role="list">
       {withdrawals.map((w) => (
-        <li key={w.id}>
+        <li key={w.id} className="mb-28">
           <Withdrawal
             withdrawal={w}
             refetchWithdrawals={refetch}

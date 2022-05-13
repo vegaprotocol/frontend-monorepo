@@ -1,5 +1,3 @@
-import './locked-progress.scss';
-
 import React from 'react';
 
 import { formatNumber } from '../../lib/format-number';
@@ -7,6 +5,55 @@ import type { BigNumber } from '../../lib/bignumber';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
 const Colors = theme.colors;
+
+const ProgressContents = ({
+  light,
+  children,
+}: {
+  light: boolean;
+  children: React.ReactNode;
+}) => (
+  <div
+    className={`flex justify-between py-2 font-mono ${
+      light ? 'gap-0 px-0 text-black' : 'gap-y-0 gap-x-4 px-4 text-black-60'
+    }`}
+  >
+    {children}
+  </div>
+);
+
+const ProgressIndicator = ({
+  bgColor,
+  side,
+}: {
+  bgColor: string;
+  side: 'left' | 'right';
+}) => (
+  <span
+    style={{
+      backgroundColor: bgColor,
+    }}
+    className={`inline-block w-12 h-12 border border-black ${
+      side === 'left' ? 'mr-8' : 'ml-8'
+    }`}
+  />
+);
+
+const ProgressBar = ({
+  percentage,
+  bgColor,
+}: {
+  percentage: BigNumber;
+  bgColor: string;
+}) => (
+  <div
+    className="h-16"
+    style={{
+      flex: isNaN(percentage.toNumber()) ? 0 : percentage.toNumber(),
+      backgroundColor: bgColor,
+    }}
+  />
+);
 
 export interface LockedProgressProps {
   total: BigNumber;
@@ -38,63 +85,26 @@ export const LockedProgress = ({
   }, [total, unlocked]);
 
   return (
-    <div className="tranche-item__progress">
-      <div
-        className={`tranche-item__progress-bar ${
-          light ? 'tranche-item__progress-bar--light' : ''
-        }`}
-      >
-        <div
-          className="tranche-item__progress-bar--locked"
-          style={{
-            flex: isNaN(lockedPercentage.toNumber())
-              ? 0
-              : lockedPercentage.toNumber(),
-            backgroundColor: leftColor,
-          }}
-        ></div>
-        <div
-          className="tranche-item__progress-bar--unlocked"
-          style={{
-            flex: isNaN(unlockedPercentage.toNumber())
-              ? 0
-              : unlockedPercentage.toNumber(),
-            backgroundColor: rightColor,
-          }}
-        ></div>
+    <div className="border-x border-x-white">
+      <div className={`flex ${light && 'border border-black'}`}>
+        <ProgressBar percentage={lockedPercentage} bgColor={leftColor} />
+        <ProgressBar percentage={unlockedPercentage} bgColor={rightColor} />
       </div>
-      <div
-        className={`tranche-item__progress-contents ${
-          light ? 'tranche-item__progress-contents--light' : ''
-        }`}
-      >
+      <ProgressContents light={light}>
         <span>
-          <div
-            className="tranche-item__progress-contents-indicator tranche-item__progress-contents-indicator--left"
-            style={{
-              backgroundColor: leftColor,
-            }}
-          ></div>
+          <ProgressIndicator bgColor={leftColor} side={'left'} />
           {leftLabel}
         </span>
         <span>
           {rightLabel}
-          <div
-            className="tranche-item__progress-contents-indicator tranche-item__progress-contents-indicator--right"
-            style={{
-              backgroundColor: rightColor,
-            }}
-          ></div>
+          <ProgressIndicator bgColor={rightColor} side={'right'} />
         </span>
-      </div>
-      <div
-        className={`tranche-item__progress-contents ${
-          light ? 'tranche-item__progress-contents--light' : ''
-        }`}
-      >
+      </ProgressContents>
+
+      <ProgressContents light={light}>
         <span>{formatNumber(locked, 2)}</span>
         <span>{formatNumber(unlocked, 2)}</span>
-      </div>
+      </ProgressContents>
     </div>
   );
 };
