@@ -18,7 +18,7 @@ export default class BlocksPage extends BasePage {
   private waitForBlocksResponse() {
     cy.wait('@blockChain');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(100);
+    cy.wait(1000);
   }
 
   validateBlocksPageDisplayed() {
