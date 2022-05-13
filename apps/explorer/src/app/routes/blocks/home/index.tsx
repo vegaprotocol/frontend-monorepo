@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { DATA_SOURCES } from '../../../config';
 import type {
   BlockMeta,
@@ -48,7 +48,7 @@ const Blocks = () => {
     false
   );
 
-  const loadBlocks = async () => {
+  const loadBlocks = useCallback(async () => {
     setBlocksState((prev) => ({
       ...prev,
       areBlocksLoading: loading,
@@ -92,16 +92,16 @@ const Blocks = () => {
         blocksError: error,
       }));
     }
-  };
+  }, [error, loading, nextBlockHeightToLoad, refetch]);
 
-  const refreshBlocks = async () => {
+  const refreshBlocks = useCallback(async () => {
     setBlocksState((prev) => ({
       ...prev,
       nextBlockHeightToLoad: undefined,
       hasMoreBlocks: true,
       blocksData: [],
     }));
-  };
+  }, [setBlocksState]);
 
   return (
     <section>

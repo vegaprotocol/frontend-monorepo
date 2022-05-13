@@ -15,7 +15,14 @@ export default class BlocksPage extends BasePage {
   jumpToBlockInput = 'block-input';
   jumpToBlockSubmit = 'go-submit';
 
+  private waitForBlocksResponse() {
+    cy.wait('@blockChain');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(100);
+  }
+
   validateBlocksPageDisplayed() {
+    this.waitForBlocksResponse();
     cy.getByTestId(this.blockRow).should('have.length.above', 1);
     cy.getByTestId(this.blockHeight).first().should('not.be.empty');
     cy.getByTestId(this.numberOfTransactions).first().should('not.be.empty');
@@ -24,6 +31,7 @@ export default class BlocksPage extends BasePage {
   }
 
   clickOnTopBlockHeight() {
+    this.waitForBlocksResponse();
     cy.getByTestId(this.blockHeight).first().click();
   }
 
