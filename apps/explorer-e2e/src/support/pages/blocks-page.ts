@@ -15,15 +15,7 @@ export default class BlocksPage extends BasePage {
   jumpToBlockInput = 'block-input';
   jumpToBlockSubmit = 'go-submit';
 
-  private waitForBlocksResponse() {
-    const base = Cypress.env('VEGA_TENDERMINT_URL');
-    const url = new URL('/tm/blockchain*', base).toString();
-    cy.intercept(url).as('blockChain');
-    cy.wait('@blockChain');
-  }
-
   validateBlocksPageDisplayed() {
-    this.waitForBlocksResponse();
     cy.getByTestId(this.blockRow).should('have.length.above', 1);
     cy.getByTestId(this.blockHeight).first().should('not.be.empty');
     cy.getByTestId(this.numberOfTransactions).first().should('not.be.empty');
@@ -32,7 +24,6 @@ export default class BlocksPage extends BasePage {
   }
 
   clickOnTopBlockHeight() {
-    this.waitForBlocksResponse();
     cy.getByTestId(this.blockHeight).first().click();
   }
 
