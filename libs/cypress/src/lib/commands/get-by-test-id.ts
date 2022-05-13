@@ -3,7 +3,10 @@ declare global {
   namespace Cypress {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Chainable<Subject> {
-      getByTestId(selector: string): Chainable<JQuery<HTMLElement>>;
+      getByTestId(
+        selector: string,
+        options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+      ): Chainable<JQuery<HTMLElement>>;
     }
   }
 }

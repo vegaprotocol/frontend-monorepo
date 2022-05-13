@@ -1,4 +1,3 @@
-import useFetch from '../../hooks/use-fetch';
 import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
 import { Routes } from '../../routes/route-names';
 import { DATA_SOURCES } from '../../config';
@@ -6,7 +5,7 @@ import { RenderFetched } from '../render-fetched';
 import { TruncatedLink } from '../truncate/truncated-link';
 import { TxOrderType } from './tx-order-type';
 import { Table, TableRow, TableCell } from '../table';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/react-helpers';
 
 interface TxsPerBlockProps {
   blockHeight: string | undefined;
