@@ -1,5 +1,3 @@
-import './vote-progress.scss';
-
 import type { BigNumber } from '../../../../lib/bignumber';
 
 export const VoteProgress = ({
@@ -13,17 +11,17 @@ export const VoteProgress = ({
     <>
       <div
         data-testid="vote-progress-indicator"
-        className="vote-progress__indicator"
+        className="relative top-[10px] w-[1px] h-16 bg-white z-[1]"
         style={{ left: `${threshold}%` }}
-      ></div>
-      <div className="bp3-progress-bar bp3-no-stripes vote-progress__container">
+      />
+      <div className="bp3-progress-bar bp3-no-stripes bg-intent-danger rounded-none h-5">
         <div
-          className="bp3-progress-meter vote-progress__bar"
+          className="bp3-progress-meter bg-vega-green rounded-none"
           data-testid="vote-progress-bar"
           style={{
             width: `${progress}%`,
           }}
-        ></div>
+        />
       </div>
     </>
   );

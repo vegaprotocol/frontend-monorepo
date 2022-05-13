@@ -1,3 +1,4 @@
+/* eslint-disable jest/no-conditional-expect */
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { VegaWalletContext } from './context';
 import type { VegaWalletContextShape, VegaKeyExtended } from './context';
@@ -41,7 +42,7 @@ const generateJsx = (
   );
 };
 
-test('Shows list of available keys and can disconnect', () => {
+it('Shows list of available keys and can disconnect', () => {
   render(generateJsx(context as VegaWalletContextShape, props));
 
   const list = screen.getByTestId('keypair-list');

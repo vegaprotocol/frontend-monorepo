@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-
-import { Colors, Links } from '../../config';
+import { Links } from '../../config';
 
 export const DownloadWalletPrompt = () => {
   const { t } = useTranslation();
@@ -9,7 +8,7 @@ export const DownloadWalletPrompt = () => {
       <h3>{t('getWallet')}</h3>
       <p style={{ margin: 0 }}>
         <a
-          style={{ color: Colors.DEEMPHASISE }}
+          className={'text-deemphasise'}
           href={Links.WALLET_GUIDE}
           target="_blank"
           rel="noreferrer"
@@ -19,7 +18,7 @@ export const DownloadWalletPrompt = () => {
       </p>
       <p style={{ margin: 0 }}>
         <a
-          style={{ color: Colors.DEEMPHASISE }}
+          className={'text-deemphasise'}
           href={Links.WALLET_RELEASES}
           target="_blank"
           rel="noreferrer"

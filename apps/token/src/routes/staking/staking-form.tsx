@@ -1,5 +1,3 @@
-import './staking-form.scss';
-
 import { gql, useApolloClient } from '@apollo/client';
 import { Radio, RadioGroup } from '@blueprintjs/core';
 import * as Sentry from '@sentry/react';
@@ -8,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { TokenInput } from '../../components/token-input';
-import { Colors, NetworkParams } from '../../config';
+import { NetworkParams } from '../../config';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useNetworkParam } from '../../hooks/use-network-param';
 import { useSearchParams } from '../../hooks/use-search-params';
@@ -203,17 +201,15 @@ export const StakingForm = ({
     availableStakeToRemove.isEqualTo(0)
   ) {
     if (appState.lien.isGreaterThan(0)) {
-      return (
-        <span style={{ color: Colors.RED }}>{t('stakeNodeWrongVegaKey')}</span>
-      );
+      return <span className={'text-red'}>{t('stakeNodeWrongVegaKey')}</span>;
     } else {
-      return <span style={{ color: Colors.RED }}>{t('stakeNodeNone')}</span>;
+      return <span className={'text-red'}>{t('stakeNodeNone')}</span>;
     }
   }
 
   return (
     <>
-      <h2>{t('Manage your stake')}</h2>
+      <h2 className="text-h4 mb-8">{t('Manage your stake')}</h2>
       <FormGroup>
         <RadioGroup
           onChange={(e) => {
@@ -246,7 +242,9 @@ export const StakingForm = ({
         <>
           {action === Actions.Add ? (
             <>
-              <h2>{t('How much to Add in next epoch?')}</h2>
+              <h2 className="text-h4 mb-8">
+                {t('How much to Add in next epoch?')}
+              </h2>
               <p>
                 {t('minimumNomination', {
                   minTokens: minTokensWithDecimals,

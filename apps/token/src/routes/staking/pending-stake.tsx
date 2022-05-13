@@ -1,5 +1,3 @@
-import './pending-stake.scss';
-
 import React from 'react';
 import * as Sentry from '@sentry/react';
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
@@ -76,7 +74,7 @@ export const PendingStake = ({
   }
 
   return (
-    <div className="your-stake__container">
+    <div className="py-4">
       <h2>{t('pendingNomination')}</h2>
       <p>{t('pendingNominationNextEpoch', { pendingAmount })}</p>
       <Button

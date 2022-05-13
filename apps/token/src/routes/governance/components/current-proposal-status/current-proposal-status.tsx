@@ -1,11 +1,18 @@
-import './current-proposal-status.scss';
-
+import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import { ProposalState } from '../../../../__generated__/globalTypes';
 import { useVoteInformation } from '../../hooks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+
+const StatusPass = ({ children }: { children: React.ReactNode }) => (
+  <span className="text-vega-green">{children}</span>
+);
+
+const StatusFail = ({ children }: { children: React.ReactNode }) => (
+  <span className="text-intent-danger">{children}</span>
+);
 
 export const CurrentProposalStatus = ({
   proposal,
@@ -28,9 +35,7 @@ export const CurrentProposalStatus = ({
   );
 
   if (proposal.state === ProposalState.Open && willPass) {
-    return (
-      <span className="current-proposal-status__pass">{t('shouldPass')}</span>
-    );
+    return <StatusPass>{t('shouldPass')}</StatusPass>;
   }
 
   if (!participationMet) {
@@ -49,9 +54,7 @@ export const CurrentProposalStatus = ({
     return (
       <>
         <span>{t('voteFailedReason')}</span>
-        <span className="current-proposal-status__fail">
-          {t('majorityNotMet')}
-        </span>
+        <StatusFail>{t('majorityNotMet')}</StatusFail>
         <span>&nbsp;{daysClosedAgo}.</span>
       </>
     );
@@ -65,7 +68,7 @@ export const CurrentProposalStatus = ({
     return (
       <>
         <span>{t('voteFailedReason')}</span>
-        <span className="current-proposal-status__fail">{proposal.state}</span>
+        <StatusFail>{proposal.state}</StatusFail>
         <span>&nbsp;{daysClosedAgo}.</span>
       </>
     );
@@ -77,9 +80,7 @@ export const CurrentProposalStatus = ({
     return (
       <>
         <span>{t('votePassed')}</span>
-        <span className="current-proposal-status__pass">
-          &nbsp;{proposal.state}
-        </span>
+        <StatusPass>&nbsp;{proposal.state}</StatusPass>
         <span>
           &nbsp;
           {proposal.state === ProposalState.Enacted

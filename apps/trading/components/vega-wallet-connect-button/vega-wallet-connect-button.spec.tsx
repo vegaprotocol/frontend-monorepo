@@ -24,7 +24,7 @@ const generateJsx = (
   );
 };
 
-test('Not connected', () => {
+it('Not connected', () => {
   render(generateJsx({ keypair: null } as VegaWalletContextShape, props));
 
   const button = screen.getByRole('button');
@@ -34,7 +34,7 @@ test('Not connected', () => {
   expect(props.setManageDialog).not.toHaveBeenCalled();
 });
 
-test('Connected', () => {
+it('Connected', () => {
   render(
     generateJsx(
       { keypair: { pub: '123456__123456' } } as VegaWalletContextShape,

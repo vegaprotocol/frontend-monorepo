@@ -13,9 +13,11 @@ import {
   YAxis,
 } from 'recharts';
 
-import { Colors } from '../../config';
 import { DATE_FORMAT_LONG } from '../../lib/date-formats';
 import data from './data.json';
+
+import { theme } from '@vegaprotocol/tailwindcss-config';
+const Colors = theme.colors;
 
 const ORDER = ['community', 'publicSale', 'earlyInvestors', 'team'];
 
@@ -31,10 +33,10 @@ export const VestingChart = () => {
         <AreaChart data={data}>
           <defs>
             {[
-              ['pink', Colors.PINK],
-              ['green', Colors.VEGA_GREEN],
-              ['orange', Colors.VEGA_ORANGE],
-              ['yellow', Colors.VEGA_YELLOW],
+              ['pink', Colors.pink],
+              ['green', Colors.green.vega],
+              ['orange', Colors.orange],
+              ['yellow', Colors.yellow.DEFAULT],
             ].map(([key, color]) => (
               <linearGradient id={key} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.85} />
@@ -43,7 +45,7 @@ export const VestingChart = () => {
             ))}
           </defs>
           <Tooltip
-            contentStyle={{ backgroundColor: Colors.BLACK }}
+            contentStyle={{ backgroundColor: Colors.black.DEFAULT }}
             separator=":"
             formatter={(value: number) => {
               return (
@@ -68,7 +70,7 @@ export const VestingChart = () => {
               value={t('VEGA').toString()}
               position="left"
               offset={-5}
-              fill={Colors.WHITE}
+              fill={Colors.white.DEFAULT}
             />
           </YAxis>
           <XAxis dataKey="date">
@@ -76,24 +78,24 @@ export const VestingChart = () => {
               value={t('date').toString()}
               position="bottom"
               offset={5}
-              fill={Colors.WHITE}
+              fill={Colors.white.DEFAULT}
             />
           </XAxis>
           <ReferenceLine
             x={currentDate}
-            stroke={Colors.WHITE}
+            stroke={Colors.white.DEFAULT}
             strokeWidth={2}
             label={{
               position: 'right',
               value: currentDate,
-              fill: Colors.WHITE,
+              fill: Colors.white.DEFAULT,
             }}
           />
           <Area
             dot={false}
             type="linear"
             dataKey="team"
-            stroke={Colors.PINK}
+            stroke={Colors.pink}
             fill="url(#pink)"
             yAxisId={0}
             strokeWidth={2}
@@ -105,7 +107,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="earlyInvestors"
-            stroke={Colors.VEGA_GREEN}
+            stroke={Colors.green.vega}
             fill="url(#green)"
             yAxisId={0}
             strokeWidth={2}
@@ -117,7 +119,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="publicSale"
-            stroke={Colors.VEGA_YELLOW}
+            stroke={Colors.yellow.DEFAULT}
             fill="url(#yellow)"
             yAxisId={0}
             strokeWidth={2}
@@ -129,7 +131,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="community"
-            stroke={Colors.VEGA_ORANGE}
+            stroke={Colors.orange}
             fill="url(#orange)"
             yAxisId={0}
             strokeWidth={2}

@@ -1,5 +1,3 @@
-import './eth-wallet-container.scss';
-
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +21,6 @@ export const EthWalletContainer = ({ children }: EthWalletContainerProps) => {
   if (!account) {
     return (
       <Button
-        className="eth-wallet-container"
         data-testid="connect-to-eth-btn"
         onClick={() =>
           appDispatch({

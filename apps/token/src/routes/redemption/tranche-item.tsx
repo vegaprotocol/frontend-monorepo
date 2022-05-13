@@ -1,5 +1,3 @@
-import './tranche-item.scss';
-
 import { format } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,33 +32,41 @@ export const TrancheItem = ({
   link,
 }: TrancheItemProps) => {
   const { t } = useTranslation();
+  const labelClasses =
+    'inline-block uppercase bg-white text-black py-4 px-8 font-mono';
 
   return (
-    <section data-testid="tranche-item" className="tranche-item">
-      <div className="tranche-item__header">
+    <section data-testid="tranche-item" className="mb-40">
+      <div className="flex border-b">
         {link ? (
           <Link to={link}>
-            <span className="tranche-item__label">
+            <span className={labelClasses}>
               {t('Tranche')} {tranche.tranche_id}
             </span>
           </Link>
         ) : (
-          <span className="tranche-item__label">
+          <span className={labelClasses}>
             {t('Tranche')} {tranche.tranche_id}
           </span>
         )}
         {secondaryHeader}
-        <span>{formatNumber(total, 2)}</span>
+        <span className="font-mono text-right flex-1">
+          {formatNumber(total, 2)}
+        </span>
       </div>
-      <table>
+      <table className="w-full">
         <tbody>
           <tr>
             <td>{t('Starts unlocking')}</td>
-            <td>{format(tranche.tranche_start, DATE_FORMAT_LONG)}</td>
+            <td className="text-white-60 text-right">
+              {format(tranche.tranche_start, DATE_FORMAT_LONG)}
+            </td>
           </tr>
           <tr>
             <td>{t('Fully unlocked')}</td>
-            <td>{format(tranche.tranche_end, DATE_FORMAT_LONG)}</td>
+            <td className="text-white-60 text-right">
+              {format(tranche.tranche_end, DATE_FORMAT_LONG)}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -72,7 +78,7 @@ export const TrancheItem = ({
         rightLabel={t('Unlocked')}
       />
 
-      <div className="tranche-item__footer" data-testid="tranche-item-footer">
+      <div className="text-right" data-testid="tranche-item-footer">
         {message}
       </div>
     </section>

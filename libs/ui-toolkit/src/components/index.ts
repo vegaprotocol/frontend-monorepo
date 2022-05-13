@@ -23,3 +23,4 @@ export * from './toggle';
 export * from './tooltip';
 export * from './vega-logo';
 export * from './syntax-highlighter';
+export * from './sparkline';

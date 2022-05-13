@@ -1,4 +1,3 @@
-import useFetch from '../../../hooks/use-fetch';
 import type { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
 import { DATA_SOURCES } from '../../../config';
 import { RouteTitle } from '../../../components/route-title';
@@ -6,7 +5,7 @@ import { BlocksRefetch } from '../../../components/blocks';
 import { RenderFetched } from '../../../components/render-fetched';
 import { BlockTxsData } from '../../../components/txs';
 import { JumpToBlock } from '../../../components/jump-to-block';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/react-helpers';
 
 const Txs = () => {
   const {
