@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
 import type { ReactElement } from 'react';
+import { ENV } from '../../config/env';
 
 export const TransactionComplete = ({
   hash,

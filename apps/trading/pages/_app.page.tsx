@@ -17,9 +17,10 @@ import { AppLoader } from '../components/app-loader';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
 import './styles.css';
 import { useGlobalStore } from '../stores';
+import { ENV } from '../lib/config/env';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
-  const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
+  const client = useMemo(() => createClient(ENV.vegaUrl), []);
   const store = useGlobalStore();
   const [theme, toggleTheme] = useThemeSwitcher();
 

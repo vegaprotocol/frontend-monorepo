@@ -8,6 +8,7 @@ import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { Error, HandUp, Tick } from '../icons';
 import { Loader } from '../loader';
 import { StatefulButton } from '../stateful-button';
+import { ENV } from '../../config/env';
 
 interface TransactionButtonProps {
   text: string;

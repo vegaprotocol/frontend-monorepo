@@ -10,6 +10,7 @@ import type {
   WithdrawPageQuery,
   WithdrawPageQueryVariables,
 } from './__generated__/WithdrawPageQuery';
+import { ENV } from '../../../lib/config/env';
 
 const WITHDRAW_PAGE_QUERY = gql`
   ${ASSET_FRAGMENT}
@@ -83,6 +84,7 @@ export const WithdrawPageContainer = ({
               assets={data.assets}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
+              etherscanUrl={ENV.etherscanUrl}
             />
           </>
         );

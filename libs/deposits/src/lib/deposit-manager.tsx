@@ -109,8 +109,16 @@ export const DepositManager = ({
         allowance={allowance}
         isFaucetable={isFaucetable}
       />
-      <TransactionDialog {...approve.transaction} name="approve" />
-      <TransactionDialog {...faucet.transaction} name="faucet" />
+      <TransactionDialog
+        {...approve.transaction}
+        name="approve"
+        etherscanUrl={etherscanUrl}
+      />
+      <TransactionDialog
+        {...faucet.transaction}
+        name="faucet"
+        etherscanUrl={etherscanUrl}
+      />
       <TransactionDialog
         {...deposit}
         name="deposit"

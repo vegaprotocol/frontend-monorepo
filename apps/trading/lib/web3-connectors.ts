@@ -2,13 +2,14 @@ import type { Web3ReactHooks } from '@web3-react/core';
 import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
+import { ENV } from './config/env';
 
 const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
 );
 
-const CHAIN_ID = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
-const PROVIDER_URL = process.env['NX_ETHEREUM_PROVIDER_URL'] as string;
+const CHAIN_ID = Number(ENV.chainId);
+const PROVIDER_URL = ENV.providerUrl as string;
 
 if (isNaN(CHAIN_ID)) {
   throw new Error('Invalid Ethereum chain ID for environment');

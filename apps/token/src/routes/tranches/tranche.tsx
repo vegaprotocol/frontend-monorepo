@@ -13,6 +13,7 @@ import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
 import { Routes } from '../router-config';
 import { TrancheLabel } from './tranche-label';
+import { ENV } from '../../config/env';
 
 const TrancheProgressContents = ({
   children,

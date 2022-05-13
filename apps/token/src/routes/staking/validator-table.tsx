@@ -7,6 +7,7 @@ import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import type { Staking_nodes } from './__generated__/Staking';
+import { ENV } from '../../config/env';
 
 const ValidatorTableCell = ({ children }: { children: React.ReactNode }) => (
   <span className="break-words">{children}</span>

@@ -18,6 +18,7 @@ import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals'
 
 export interface WithdrawalsTableProps {
   withdrawals: Withdrawals_party_withdrawals[];
+  etherscanUrl: string;
 }
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
@@ -50,6 +51,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           valueFormatter={({ value }: ValueFormatterParams) => {
             return truncateByChars(value);
           }}
+          cellRendererParams={{ etherscanUrl }}
         />
         <AgGridColumn
           headerName="Created at"
@@ -65,7 +67,11 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           cellRendererParams={{ complete: submit, ethUrl: ETHERSCAN_URL }}
         />
       </AgGrid>
-      <TransactionDialog name="withdraw" {...transaction} />
+      <TransactionDialog
+        name="withdraw"
+        {...transaction}
+        etherscanUrl={etherscanUrl}
+      />
     </>
   );
 };
@@ -73,6 +79,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
 export interface StatusCellProps extends ICellRendererParams {
   ethUrl: string;
   complete: (withdrawalId: string) => void;
+  etherscanUrl: string;
 }
 
 export const StatusCell = ({

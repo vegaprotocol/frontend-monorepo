@@ -8,6 +8,7 @@ import { DialogWrapper } from './dialog-wrapper';
 
 export interface TransactionDialogProps {
   name: string;
+  etherscanUrl: string;
   status: EthTxStatus;
   error: Error | null;
   confirmations: number;
@@ -26,6 +27,7 @@ export const TransactionDialog = ({
   txHash,
   requiredConfirmations = 1,
   confirmed,
+  etherscanUrl,
 }: TransactionDialogProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const dialogDismissed = useRef(false);
@@ -48,6 +50,7 @@ export const TransactionDialog = ({
           confirmations={confirmations}
           requiredConfirmations={requiredConfirmations}
           highlightComplete={false}
+          etherscanUrl={etherscanUrl}
         />
         {confirmed !== undefined && (
           <ConfirmationEventRow status={status} confirmed={confirmed} />
