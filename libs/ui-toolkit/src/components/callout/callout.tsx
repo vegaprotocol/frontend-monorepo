@@ -18,20 +18,12 @@ interface CalloutWithoutIcon extends CalloutRootProps {
 }
 
 interface CalloutPropsWithIconName extends CalloutRootProps {
-  children?: React.ReactNode;
-  title?: React.ReactElement | string;
-  intent?: Intent;
-  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   iconName: IconName;
   iconDescription?: string;
   icon?: never;
 }
 
 interface CalloutPropsWithIcon extends CalloutRootProps {
-  children?: React.ReactNode;
-  title?: React.ReactElement | string;
-  intent?: Intent;
-  headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   iconName?: never;
   iconDescription?: never;
   icon: ReactNode;
