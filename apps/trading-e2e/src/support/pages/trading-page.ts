@@ -12,7 +12,6 @@ export default class TradingPage extends BasePage {
   completedTrades = 'Market-trades';
   candleChartClassName = '.plot-area-interaction';
   chartWindow = 'chart-window';
-  chartCanvas = 'split-view-view';
 
   clickOnOrdersTab() {
     cy.getByTestId(this.ordersTab).click();
@@ -43,7 +42,8 @@ export default class TradingPage extends BasePage {
   }
 
   validateCandleChartDisplayed() {
-    cy.getByTestId(this.chartCanvas).should('be.visible');
+    cy.get(this.candleChartClassName).should('be.visible');
+    cy.get('[col-id=price]').should('be.visible');
     cy.getByTestId(this.chartWindow).matchImageSnapshot('candle-chart');
   }
 }
