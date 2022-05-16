@@ -933,7 +933,7 @@ const getBatched = async (filter, contract, provider, startblock) => {
         );
         break;
       } catch {
-        console.log('retry', attempts);
+        console.log('retry batch', index);
         ++attempts;
         if (attempts >= MAX_ATTEMPTS) {
           throw new Error('Could not get in 4 attempts');
@@ -945,7 +945,7 @@ const getBatched = async (filter, contract, provider, startblock) => {
     console.log(
       `Processed blocks ${index * batchSize} to ${
         (index + 1) * batchSize - 1
-      } as part of batch ${batchSize}`
+      } as part of batch ${index}`
     );
   }
   return res;
