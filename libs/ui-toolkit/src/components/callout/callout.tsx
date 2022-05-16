@@ -13,6 +13,7 @@ interface CalloutRootProps {
 
 interface CalloutWithoutIcon extends CalloutRootProps {
   iconName?: never;
+  iconDescription?: never;
   icon?: never;
 }
 
@@ -22,6 +23,7 @@ interface CalloutPropsWithIconName extends CalloutRootProps {
   intent?: Intent;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   iconName: IconName;
+  iconDescription?: string;
   icon?: never;
 }
 
@@ -31,6 +33,7 @@ interface CalloutPropsWithIcon extends CalloutRootProps {
   intent?: Intent;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   iconName?: never;
+  iconDescription?: never;
   icon: ReactNode;
 }
 
@@ -39,17 +42,23 @@ type CalloutProps =
   | CalloutPropsWithIconName
   | CalloutPropsWithIcon;
 
-const getIconElement = (props: Pick<CalloutProps, 'icon' | 'iconName'>) => {
-  if (props.iconName) {
+const getIconElement = ({
+  icon,
+  iconName,
+  iconDescription,
+}: Pick<CalloutProps, 'icon' | 'iconName' | 'iconDescription'>) => {
+  if (iconName) {
     return (
       <Icon
-        name={props.iconName}
+        name={iconName}
         className="fill-current ml-8 mr-16 mt-8"
         size={20}
+        aria-label={iconDescription}
+        aria-hidden={!iconDescription}
       />
     );
   }
-  return props.icon;
+  return icon;
 };
 
 export function Callout({
@@ -57,10 +66,11 @@ export function Callout({
   title,
   icon,
   iconName,
+  iconDescription,
   intent = Intent.Help,
   headingLevel,
 }: CalloutProps) {
-  const iconElement = getIconElement({ icon, iconName });
+  const iconElement = getIconElement({ icon, iconName, iconDescription });
 
   const className = classNames(
     'border',
