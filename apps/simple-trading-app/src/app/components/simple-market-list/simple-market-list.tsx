@@ -10,8 +10,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
 } from '@mui/material';
+import SimpleMarketPercentChange from './simple-market-percent-change';
 import DataProvider from './data-provider';
 import { MARKET_STATUS } from './constants';
 
@@ -34,11 +34,7 @@ const SimpleMarketList = () => {
   }, []);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <List
-        subheader={
-          <ListSubheader component="div">{t('Marked list')}</ListSubheader>
-        }
-      >
+      <List>
         {data?.map((market) => (
           <ListItem
             key={market.id}
@@ -87,7 +83,9 @@ const SimpleMarketList = () => {
                     alignItems="center"
                     spacing={1}
                   >
-                    <Grid item>change: ???</Grid>
+                    <Grid item>
+                      <SimpleMarketPercentChange candles={market.candles} />
+                    </Grid>
                     <Grid item>
                       <Lozenge
                         variant={MARKET_STATUS[market.data?.market.state || '']}

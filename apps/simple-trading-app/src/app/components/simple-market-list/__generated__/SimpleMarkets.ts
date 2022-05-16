@@ -3,18 +3,14 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import {
-  Interval,
-  MarketState,
-  MarketTradingMode,
-} from './../../../../../../../libs/types/src/__generated__/globalTypes';
+import { Interval, MarketState, MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: SimpleMarkets
 // ====================================================
 
 export interface SimpleMarkets_markets_data_market {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -30,7 +26,7 @@ export interface SimpleMarkets_markets_data_market {
 }
 
 export interface SimpleMarkets_markets_data {
-  __typename: 'MarketData';
+  __typename: "MarketData";
   /**
    * market id of the associated mark price
    */
@@ -54,7 +50,7 @@ export interface SimpleMarkets_markets_data {
 }
 
 export interface SimpleMarkets_markets_tradableInstrument_instrument_product_settlementAsset {
-  __typename: 'Asset';
+  __typename: "Asset";
   /**
    * The symbol of the asset (e.g: GBP)
    */
@@ -62,7 +58,7 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument_product_set
 }
 
 export interface SimpleMarkets_markets_tradableInstrument_instrument_product {
-  __typename: 'Future';
+  __typename: "Future";
   /**
    * The name of the asset (string)
    */
@@ -70,7 +66,7 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument_product {
 }
 
 export interface SimpleMarkets_markets_tradableInstrument_instrument {
-  __typename: 'Instrument';
+  __typename: "Instrument";
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
@@ -82,7 +78,7 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument {
 }
 
 export interface SimpleMarkets_markets_tradableInstrument {
-  __typename: 'TradableInstrument';
+  __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
@@ -90,7 +86,7 @@ export interface SimpleMarkets_markets_tradableInstrument {
 }
 
 export interface SimpleMarkets_markets_candles {
-  __typename: 'Candle';
+  __typename: "Candle";
   /**
    * Open price (uint64)
    */
@@ -102,7 +98,7 @@ export interface SimpleMarkets_markets_candles {
 }
 
 export interface SimpleMarkets_markets {
-  __typename: 'Market';
+  __typename: "Market";
   /**
    * Market ID
    */
@@ -114,14 +110,14 @@ export interface SimpleMarkets_markets {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
