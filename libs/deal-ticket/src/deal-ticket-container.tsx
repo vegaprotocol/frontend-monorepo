@@ -1,7 +1,10 @@
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { gql, useQuery } from '@apollo/client';
 import { DealTicketManager } from './deal-ticket-manager';
-import type { DealTicketQuery } from './__generated__/DealTicketQuery';
+import type {
+  DealTicketQuery,
+  DealTicketQuery_market,
+} from './__generated__/DealTicketQuery';
 import { t } from '@vegaprotocol/react-helpers';
 
 const DEAL_TICKET_QUERY = gql`
@@ -29,11 +32,19 @@ const DEAL_TICKET_QUERY = gql`
   }
 `;
 
-interface DealTicketContainerProps {
+type childrenProps = {
+  market: DealTicketQuery_market;
+};
+
+export interface DealTicketContainerProps {
   marketId: string;
+  children?(props: childrenProps): JSX.Element;
 }
 
-export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
+export const DealTicketContainer = ({
+  marketId,
+  children,
+}: DealTicketContainerProps) => {
   const { data, loading, error } = useQuery(DEAL_TICKET_QUERY, {
     variables: { marketId },
   });
@@ -41,7 +52,11 @@ export const DealTicketContainer = ({ marketId }: DealTicketContainerProps) => {
   return (
     <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <DealTicketManager market={data.market} />
+        children ? (
+          children(data)
+        ) : (
+          <DealTicketManager market={data.market} />
+        )
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>

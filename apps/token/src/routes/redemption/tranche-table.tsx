@@ -1,5 +1,3 @@
-import './tranche-table.scss';
-
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -38,7 +36,7 @@ export const Tranche0Table = ({
     <>
       <KeyValueTable numerical={true}>
         <KeyValueTableRow data-testid="tranche-table-total">
-          <span className="tranche-table__label">
+          <span className="inline-block p-4 bg-white text-black uppercase">
             {t('Tranche')} {trancheId}
           </span>
 
@@ -49,7 +47,7 @@ export const Tranche0Table = ({
           <span>{formatNumber(total)}</span>
         </KeyValueTableRow>
       </KeyValueTable>
-      <div className="tranche-table__footer" data-testid="tranche-table-footer">
+      <div className="text-right" data-testid="tranche-table-footer">
         {t(
           'All the tokens in this tranche are locked and must be assigned to a tranche before they can be redeemed.'
         )}

@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import { EpochCountdown } from '../../components/epoch-countdown';
-import { Colors } from '../../config';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
@@ -88,9 +87,7 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
 
   if (!nodeInfo) {
     return (
-      <span style={{ color: Colors.RED }}>
-        {t('stakingNodeNotFound', { node })}
-      </span>
+      <span className={'text-red'}>{t('stakingNodeNotFound', { node })}</span>
     );
   }
 
@@ -98,35 +95,43 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
     <>
       <h2
         data-test-id="validator-node-title"
-        style={{ wordBreak: 'break-word', marginTop: 0 }}
+        className="text-h4 break-word mb-8"
       >
         {nodeInfo.name
           ? t('validatorTitle', { nodeName: nodeInfo.name })
           : t('validatorTitle', { nodeName: t('validatorTitleFallback') })}
       </h2>
-      <ValidatorTable
-        node={nodeInfo}
-        stakedTotal={data?.nodeData?.stakedTotalFormatted || '0'}
-        stakeThisEpoch={stakeThisEpoch}
-      />
-      {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
-        <EpochCountdown
-          id={data.epoch.id}
-          startDate={new Date(data?.epoch.timestamps.start)}
-          endDate={new Date(data?.epoch.timestamps.expiry)}
+      <section className="mb-24">
+        <ValidatorTable
+          node={nodeInfo}
+          stakedTotal={data?.nodeData?.stakedTotalFormatted || '0'}
+          stakeThisEpoch={stakeThisEpoch}
         />
+      </section>
+      {data?.epoch.timestamps.start && data?.epoch.timestamps.expiry && (
+        <section className="mb-24">
+          <EpochCountdown
+            id={data.epoch.id}
+            startDate={new Date(data?.epoch.timestamps.start)}
+            endDate={new Date(data?.epoch.timestamps.expiry)}
+          />
+        </section>
       )}
-      <YourStake
-        stakeNextEpoch={stakeNextEpoch}
-        stakeThisEpoch={stakeThisEpoch}
-      />
-      <StakingForm
-        pubkey={vegaKey.pub}
-        nodeId={nodeInfo.id}
-        nodeName={nodeInfo.name}
-        availableStakeToAdd={unstaked}
-        availableStakeToRemove={stakeNextEpoch}
-      />
+      <section className="mb-24">
+        <YourStake
+          stakeNextEpoch={stakeNextEpoch}
+          stakeThisEpoch={stakeThisEpoch}
+        />
+      </section>
+      <section>
+        <StakingForm
+          pubkey={vegaKey.pub}
+          nodeId={nodeInfo.id}
+          nodeName={nodeInfo.name}
+          availableStakeToAdd={unstaked}
+          availableStakeToRemove={stakeNextEpoch}
+        />
+      </section>
     </>
   );
 };

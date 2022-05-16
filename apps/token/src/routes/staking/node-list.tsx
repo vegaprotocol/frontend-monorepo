@@ -183,7 +183,10 @@ export const NodeListItem = ({
         ) : (
           <>
             <NodeListItemName>{t('validatorTitleFallback')}</NodeListItemName>
-            <span className="uppercase text-muted" title={`${t('id')}: ${id}`}>
+            <span
+              className="uppercase text-white-60"
+              title={`${t('id')}: ${id}`}
+            >
               {truncateMiddle(id)}
             </span>
           </>

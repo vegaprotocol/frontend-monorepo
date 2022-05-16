@@ -1,10 +1,9 @@
 import React from 'react';
 import { DATA_SOURCES } from '../../config';
-import useFetch from '../../hooks/use-fetch';
 import type { TendermintUnconfirmedTransactionsResponse } from '../txs/tendermint-unconfirmed-transactions-response.d';
 import { TxList } from '../../components/txs';
 import { RouteTitle } from '../../components/route-title';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/react-helpers';
 
 const PendingTxs = () => {
   const {

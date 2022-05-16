@@ -29,7 +29,7 @@ function setup(items: Items, rowNodes: Items) {
   return gridApiMock;
 }
 
-test('Adds items', () => {
+it('Adds items', () => {
   const gridApiMock = setup(items, []);
   expect(gridApiMock.applyTransaction).toHaveBeenCalledWith({
     update: [],
@@ -38,7 +38,7 @@ test('Adds items', () => {
   });
 });
 
-test('Doesnt update rows without changes', () => {
+it('Doesnt update rows without changes', () => {
   const rowNodes: Array<{ id: string; value: number }> = [...items];
   const gridApiMock = setup(items, rowNodes);
   expect(gridApiMock.applyTransaction).toHaveBeenCalledWith({
@@ -48,7 +48,7 @@ test('Doesnt update rows without changes', () => {
   });
 });
 
-test('Update rows with changes', () => {
+it('Update rows with changes', () => {
   const rowNodes = [...items];
   const updatedItems = [
     { id: '1', value: 10 },
@@ -62,7 +62,7 @@ test('Update rows with changes', () => {
   });
 });
 
-test('Updates and adds at the same time', () => {
+it('Updates and adds at the same time', () => {
   const newItem = { id: '3', value: 3 };
   const updatedItem = { id: '2', value: 20 };
   const gridApiMock = setup([newItem, updatedItem], [...items]);

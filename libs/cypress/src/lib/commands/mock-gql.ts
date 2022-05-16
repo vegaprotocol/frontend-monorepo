@@ -11,13 +11,9 @@ declare global {
 }
 
 export function addMockGQLCommand() {
-  Cypress.Commands.add(
-    // @ts-ignore - ignoring Cypress type error which gets resolved when Cypress uses the command
-    'mockGQL',
-    (alias: string, handler: RouteHandler) => {
-      cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', handler).as(
-        alias
-      );
-    }
-  );
+  Cypress.Commands.add('mockGQL', (alias: string, handler: RouteHandler) => {
+    cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', handler).as(
+      alias
+    );
+  });
 }

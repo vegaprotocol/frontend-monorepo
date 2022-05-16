@@ -1,5 +1,3 @@
-import './splash-loader.scss';
-
 import React from 'react';
 
 export const SplashLoader = ({ text = 'Loading' }: { text?: string }) => {
@@ -13,12 +11,13 @@ export const SplashLoader = ({ text = 'Loading' }: { text?: string }) => {
   }, []);
 
   return (
-    <div className="loading" data-testid="splash-loader">
-      <div className="loading__animation">
+    <div className="flex flex-col items-center" data-testid="splash-loader">
+      <div className="flex flex-wrap w-[50px] h-[50px] mb-20">
         {new Array(25).fill(null).map((_, i) => {
           return (
             <div
               key={i}
+              className="w-[10px] h-[10px] bg-white opacity-0"
               style={{
                 opacity: Math.random() > 0.75 ? 1 : 0,
               }}

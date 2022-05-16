@@ -3,19 +3,21 @@ import { render, screen } from '@testing-library/react';
 import { TableWithTbody, TableRow, TableHeader, TableCell } from './index';
 
 describe('Renders all table components', () => {
-  render(
-    <TableWithTbody data-testid="test-table">
-      <TableRow data-testid="test-tr">
-        <TableHeader data-testid="test-th">Title</TableHeader>
-        <TableCell data-testid="test-td">Content</TableCell>
-      </TableRow>
-    </TableWithTbody>
-  );
+  it('Renders table components', () => {
+    render(
+      <TableWithTbody data-testid="test-table">
+        <TableRow data-testid="test-tr">
+          <TableHeader data-testid="test-th">Title</TableHeader>
+          <TableCell data-testid="test-td">Content</TableCell>
+        </TableRow>
+      </TableWithTbody>
+    );
 
-  expect(screen.getByTestId('test-table')).toBeInTheDocument();
-  expect(screen.getByTestId('test-tr')).toBeInTheDocument();
-  expect(screen.getByTestId('test-th')).toHaveTextContent('Title');
-  expect(screen.getByTestId('test-td')).toHaveTextContent('Content');
+    expect(screen.getByTestId('test-table')).toBeInTheDocument();
+    expect(screen.getByTestId('test-tr')).toBeInTheDocument();
+    expect(screen.getByTestId('test-th')).toHaveTextContent('Title');
+    expect(screen.getByTestId('test-td')).toHaveTextContent('Content');
+  });
 });
 
 describe('Table row', () => {

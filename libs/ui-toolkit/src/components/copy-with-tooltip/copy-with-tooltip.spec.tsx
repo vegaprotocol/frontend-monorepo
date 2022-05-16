@@ -14,7 +14,7 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-test('CopyWithTooltip', async () => {
+it('CopyWithTooltip', async () => {
   const copyText = 'Text to be copied';
   render(
     <CopyWithTooltip text={copyText}>
