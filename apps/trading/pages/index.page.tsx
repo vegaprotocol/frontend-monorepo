@@ -11,7 +11,7 @@ export function Index() {
           headingLevel={1}
         >
           <div className="flex flex-col">
-            <div>With a longer explaination</div>
+            <div>With a longer explanation</div>
             <Button className="block mt-8" variant="secondary">
               Action
             </Button>

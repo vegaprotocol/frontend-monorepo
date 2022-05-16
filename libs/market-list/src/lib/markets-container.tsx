@@ -11,6 +11,7 @@ import type {
   Markets_markets_data,
 } from './__generated__/Markets';
 import { marketsDataProvider } from './markets-data-provider';
+import { LandingDialog } from './landing-dialog';
 
 export const MarketsContainer = () => {
   const { pathname, push } = useRouter();
@@ -52,14 +53,17 @@ export const MarketsContainer = () => {
   >(marketsDataProvider, update);
 
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      <MarketListTable
-        ref={gridRef}
-        data={data}
-        onRowClicked={(id) =>
-          push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
-        }
-      />
-    </AsyncRenderer>
+    <>
+      <LandingDialog />
+      <AsyncRenderer loading={loading} error={error} data={data}>
+        <MarketListTable
+          ref={gridRef}
+          data={data}
+          onRowClicked={(id) =>
+            push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
+          }
+        />
+      </AsyncRenderer>
+    </>
   );
 };
