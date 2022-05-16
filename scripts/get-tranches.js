@@ -5,6 +5,39 @@ const fs = require('fs');
 
 const MAX_ATTEMPTS = 5;
 
+const CONFIG = [
+  {
+    env: 'mainnet',
+    contract: '0x23d1bfe8fa50a167816fbd79d7932577c06011f4',
+    provider: 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    startBlock: 12834524,
+  },
+  {
+    env: 'testnet',
+    contract: '0xe2deBB240b43EDfEBc9c38B67c0894B9A92Bf07c',
+    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    startBlock: 11340808,
+  },
+  {
+    env: 'stagnet1',
+    contract: '0xfCe6eB272D3d4146A96bC28de71212b327F575fa',
+    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    startBlock: 11259488,
+  },
+  {
+    env: 'stagnet2',
+    contract: '0x9F10cBeEf03A564Fb914c2010c0Cd55E9BB11406',
+    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    startBlock: 11790009,
+  },
+  {
+    env: 'devnet',
+    contract: '0xd1216AAb948f5FC706Df73df6d71c64CcaA8550a',
+    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    startBlock: 11790003,
+  },
+];
+
 const vestingAbi = [
   {
     inputs: [
@@ -723,39 +756,6 @@ const vestingAbi = [
   },
 ];
 
-const CONFIG = [
-  {
-    env: 'mainnet',
-    contract: '0x23d1bfe8fa50a167816fbd79d7932577c06011f4',
-    provider: 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
-    startBlock: 12834524,
-  },
-  {
-    env: 'testnet',
-    contract: '0xe2deBB240b43EDfEBc9c38B67c0894B9A92Bf07c',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
-    startBlock: 11340808,
-  },
-  {
-    env: 'stagnet1',
-    contract: '0xfCe6eB272D3d4146A96bC28de71212b327F575fa',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
-    startBlock: 11259488,
-  },
-  {
-    env: 'stagnet2',
-    contract: '0x9F10cBeEf03A564Fb914c2010c0Cd55E9BB11406',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
-    startBlock: 11790009,
-  },
-  {
-    env: 'devnet',
-    contract: '0xd1216AAb948f5FC706Df73df6d71c64CcaA8550a',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
-    startBlock: 11790003,
-  },
-];
-
 function addDecimal(value, decimals) {
   return value.dividedBy(Math.pow(10, decimals)).decimalPlaces(decimals);
 }
@@ -915,11 +915,15 @@ const getBatched = async (filter, contract, provider, startblock) => {
   const currentBlockNumber = await provider.getBlockNumber();
   const batches = Math.ceil(currentBlockNumber / batchSize);
   const startIndex = Math.floor(startblock / batchSize);
-  console.log(currentBlockNumber, batches, startIndex);
+
+  console.log(
+    `Processing batches of size ${batches} starting at batch ${startIndex}`
+  );
   let res = [];
   for (let index = startIndex; index < batches; index++) {
     let events = [];
     let attempts = 1;
+    // Sometimes the queries fail for timeout even on small batch sizes. Some basic retry logic.
     while (attempts < MAX_ATTEMPTS) {
       try {
         events = await contract.queryFilter(
@@ -937,11 +941,11 @@ const getBatched = async (filter, contract, provider, startblock) => {
       }
     }
     res = [...events, ...res];
+
     console.log(
-      index * batchSize,
-      (index + 1) * batchSize - 1,
-      index,
-      res.length
+      `Processed blocks ${index * batchSize} to ${
+        (index + 1) * batchSize - 1
+      } as part of batch ${batchSize}`
     );
   }
   return res;

@@ -1,9 +1,8 @@
 name: Generate tranches
 
 on:
-  push:
-    branches:
-      - ci/generate-tranches
+  schedule:
+    - cron: '0 8 * * *'
 
 jobs:
   master:
