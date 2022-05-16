@@ -59,7 +59,7 @@ export const CandlesChartContainer = ({
   }, [client, marketId, keypair]);
 
   return (
-    <div className="h-full flex flex-col">
+    <div data-testid="chart-window" className="h-full flex flex-col">
       <div className="px-8 flex flex-row flex-wrap gap-8">
         <DropdownMenu>
           <DropdownMenuTrigger asChild={true}>

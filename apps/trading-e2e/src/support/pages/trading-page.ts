@@ -10,8 +10,9 @@ export default class TradingPage extends BasePage {
   collateralTab = 'Collateral';
   tradesTab = 'Trades';
   completedTrades = 'Market-trades';
-  orderBookTab = 'Prderbook';
   candleChartClassName = '.plot-area-interaction';
+  chartWindow = 'chart-window';
+  chartCanvas = 'split-view-view';
 
   clickOnOrdersTab() {
     cy.getByTestId(this.ordersTab).click();
@@ -38,10 +39,11 @@ export default class TradingPage extends BasePage {
   }
 
   clickOrderBookTab() {
-    cy.getByTestId(this.orderBookTab).click();
+    cy.getByTestId(this.orderbookTab).click();
   }
 
   validateCandleChartDisplayed() {
-    cy.get(this.candleChartClassName).matchImageSnapshot('candle-chart');
+    cy.getByTestId(this.chartCanvas).should('be.visible');
+    cy.getByTestId(this.chartWindow).matchImageSnapshot('candle-chart');
   }
 }

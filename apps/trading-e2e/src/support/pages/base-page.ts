@@ -16,13 +16,14 @@ export default class BasePage {
   }
 
   switchToDarkMode() {
-    cy.get('html').then(($html) => {
-      if ($html.find('.dark').length) {
-        cy.log('Switching to dark mode');
-        cy.getByTestId(this.switchThemeBtn).click();
-      } else {
-        cy.log('App already in dark mode');
-      }
-    });
+    cy.getByTestId(this.switchThemeBtn).click(); // Switch theme needed to store theme in local storage
+    const theme = window.localStorage.getItem('theme');
+
+    if (theme == 'dark') {
+      cy.log('App already in dark mode');
+    } else {
+      cy.log('Switching to dark mode');
+      cy.getByTestId(this.switchThemeBtn).click();
+    }
   }
 }
