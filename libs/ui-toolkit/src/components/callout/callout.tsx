@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { getIntentShadow, Intent } from '../../utils/intent';
+import { Loader } from '../loader';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 
@@ -9,6 +10,7 @@ interface CalloutRootProps {
   title?: React.ReactElement | string;
   intent?: Intent;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
+  isLoading?: boolean;
 }
 
 interface CalloutWithoutIcon extends CalloutRootProps {
@@ -38,19 +40,31 @@ const getIconElement = ({
   icon,
   iconName,
   iconDescription,
-}: Pick<CalloutProps, 'icon' | 'iconName' | 'iconDescription'>) => {
+  isLoading,
+}: Pick<
+  CalloutProps,
+  'icon' | 'iconName' | 'iconDescription' | 'isLoading'
+>) => {
+  const wrapperClassName = 'ml-8 mr-16 mt-8';
   if (iconName) {
     return (
       <Icon
         name={iconName}
-        className="fill-current ml-8 mr-16 mt-8"
+        className={classNames(wrapperClassName, 'fill-current')}
         size={20}
         aria-label={iconDescription}
         aria-hidden={!iconDescription}
       />
     );
   }
-  return icon;
+  if (isLoading) {
+    return (
+      <div className={wrapperClassName}>
+        <Loader size="small" />
+      </div>
+    );
+  }
+  return <div className={wrapperClassName}>{icon}</div>;
 };
 
 export function Callout({
@@ -59,10 +73,16 @@ export function Callout({
   icon,
   iconName,
   iconDescription,
+  isLoading,
   intent = Intent.Help,
   headingLevel,
 }: CalloutProps) {
-  const iconElement = getIconElement({ icon, iconName, iconDescription });
+  const iconElement = getIconElement({
+    icon,
+    iconName,
+    iconDescription,
+    isLoading,
+  });
 
   const className = classNames(
     'border',
@@ -73,7 +93,7 @@ export function Callout({
     'p-16',
     getIntentShadow(intent),
     {
-      flex: !!iconElement,
+      flex: iconElement,
     }
   );
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel

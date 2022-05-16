@@ -89,3 +89,18 @@ CustomIconAndContent.args = {
     </div>
   ),
 };
+
+export const Loading = Template.bind({});
+Loading.args = {
+  intent: Intent.Help,
+  title: 'This is what this thing does',
+  isLoading: true,
+  children: (
+    <div className="flex flex-col">
+      <div>With a longer explaination</div>
+      <Button className="block mt-8" variant="secondary">
+        Action
+      </Button>
+    </div>
+  ),
+};
