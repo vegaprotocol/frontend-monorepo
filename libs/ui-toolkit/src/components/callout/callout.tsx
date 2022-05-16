@@ -46,6 +46,13 @@ const getIconElement = ({
   'icon' | 'iconName' | 'iconDescription' | 'isLoading'
 >) => {
   const wrapperClassName = 'ml-8 mr-16 mt-8';
+  if (isLoading) {
+    return (
+      <div className={wrapperClassName}>
+        <Loader size="small" />
+      </div>
+    );
+  }
   if (iconName) {
     return (
       <Icon
@@ -55,13 +62,6 @@ const getIconElement = ({
         aria-label={iconDescription}
         aria-hidden={!iconDescription}
       />
-    );
-  }
-  if (isLoading) {
-    return (
-      <div className={wrapperClassName}>
-        <Loader size="small" />
-      </div>
     );
   }
   return <div className={wrapperClassName}>{icon}</div>;
