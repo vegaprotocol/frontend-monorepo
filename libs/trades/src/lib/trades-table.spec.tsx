@@ -16,7 +16,7 @@ const trade: TradeFields = {
   },
 };
 
-test('Correct columns are rendered', async () => {
+it('Correct columns are rendered', async () => {
   await act(async () => {
     render(<TradesTable data={[trade]} />);
   });
@@ -26,7 +26,7 @@ test('Correct columns are rendered', async () => {
   expect(headers.map((h) => h.textContent?.trim())).toEqual(expectedHeaders);
 });
 
-test('Columns are formatted', async () => {
+it('Number and data columns are formatted', async () => {
   await act(async () => {
     render(<TradesTable data={[trade]} />);
   });
@@ -42,7 +42,7 @@ test('Columns are formatted', async () => {
   });
 });
 
-test('Columns are formatted', async () => {
+it('Price and size columns are formatted', async () => {
   const trade2 = {
     ...trade,
     id: 'trade-id-2',

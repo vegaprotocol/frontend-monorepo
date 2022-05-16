@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import useFetch from '../../../hooks/use-fetch';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import type { TendermintTransactionResponse } from '../tendermint-transaction-response.d';
 import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 import { DATA_SOURCES } from '../../../config';

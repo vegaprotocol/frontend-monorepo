@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { OrderStatus } from '@vegaprotocol/types';
@@ -7,11 +8,15 @@ import { useOrderSubmit } from './use-order-submit';
 import { OrderDialog } from './order-dialog';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
-interface DealTicketManagerProps {
+export interface DealTicketManagerProps {
   market: DealTicketQuery_market;
+  children?: ReactNode | ReactNode[];
 }
 
-export const DealTicketManager = ({ market }: DealTicketManagerProps) => {
+export const DealTicketManager = ({
+  market,
+  children,
+}: DealTicketManagerProps) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
 
@@ -47,16 +52,18 @@ export const DealTicketManager = ({ market }: DealTicketManagerProps) => {
 
   return (
     <>
-      <DealTicket
-        market={market}
-        submit={submit}
-        transactionStatus={
-          transaction.status === VegaTxStatus.Requested ||
-          transaction.status === VegaTxStatus.Pending
-            ? 'pending'
-            : 'default'
-        }
-      />
+      {children || (
+        <DealTicket
+          market={market}
+          submit={submit}
+          transactionStatus={
+            transaction.status === VegaTxStatus.Requested ||
+            transaction.status === VegaTxStatus.Pending
+              ? 'pending'
+              : 'default'
+          }
+        />
+      )}
       <Dialog
         open={orderDialogOpen}
         onChange={(isOpen) => {

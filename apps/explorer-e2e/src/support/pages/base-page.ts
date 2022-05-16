@@ -19,6 +19,9 @@ export default class BasePage {
   }
 
   navigateToBlocks() {
+    const base = Cypress.env('VEGA_TENDERMINT_URL');
+    const url = new URL('/tm/blockchain*', base).toString();
+    cy.intercept(url).as('blockChain');
     cy.get(`a[href='${this.blocksUrl}']`).click();
   }
 

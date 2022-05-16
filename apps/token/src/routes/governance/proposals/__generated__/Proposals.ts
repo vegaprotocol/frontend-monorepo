@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../__generated__/globalTypes";
+import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Proposals

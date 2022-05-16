@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { DepositStatus } from "./../../../../types/src/__generated__/globalTypes";
+import { DepositStatus } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL subscription operation: DepositEvent

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { DATA_SOURCES } from '../../../config';
-import useFetch from '../../../hooks/use-fetch';
 import type { TendermintBlocksResponse } from '../tendermint-blocks-response';
 import { RouteTitle } from '../../../components/route-title';
 import { SecondsAgo } from '../../../components/seconds-ago';
@@ -16,7 +15,7 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { Routes } from '../../route-names';
 import { RenderFetched } from '../../../components/render-fetched';
 import { HighlightedLink } from '../../../components/highlighted-link';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useFetch } from '@vegaprotocol/react-helpers';
 
 const Block = () => {
   const { block } = useParams<{ block: string }>();
@@ -25,11 +24,6 @@ const Block = () => {
   } = useFetch<TendermintBlocksResponse>(
     `${DATA_SOURCES.tendermintUrl}/block?height=${block}`
   );
-
-  const header = blockData?.result.block.header;
-  if (!header) {
-    return <p>{t('Could not get block data')}</p>;
-  }
 
   return (
     <section>
@@ -42,6 +36,7 @@ const Block = () => {
               to={`/${Routes.BLOCKS}/${Number(block) - 1}`}
             >
               <Button
+                data-testid="previous-block-button"
                 className="w-full"
                 disabled={Number(block) === 1}
                 variant="secondary"
@@ -64,7 +59,7 @@ const Block = () => {
               <TableCell modifier="bordered">
                 <HighlightedLink
                   to={`/${Routes.VALIDATORS}`}
-                  text={header.proposer_address}
+                  text={blockData?.result.block.header.proposer_address}
                   data-testid="block-validator"
                 />
               </TableCell>
@@ -72,7 +67,10 @@ const Block = () => {
             <TableRow modifier="bordered">
               <TableHeader scope="row">Time</TableHeader>
               <TableCell modifier="bordered">
-                <SecondsAgo data-testid="block-time" date={header.time} />
+                <SecondsAgo
+                  data-testid="block-time"
+                  date={blockData?.result.block.header.time}
+                />
               </TableCell>
             </TableRow>
           </TableWithTbody>

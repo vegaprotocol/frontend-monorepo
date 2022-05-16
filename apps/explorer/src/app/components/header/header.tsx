@@ -20,7 +20,7 @@ export const Header = ({
     <header className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-b-1">
       <Link to={Routes.HOME}>
         <h1
-          className="text-h3 font-alpha uppercase calt"
+          className="text-h3 font-alpha uppercase calt mb-2"
           data-testid="explorer-header"
         >
           {t('Vega Explorer')}

@@ -47,7 +47,7 @@ const generateJsx = (props: WithdrawManagerProps) => (
   <WithdrawManager {...props} />
 );
 
-test('Valid form submission opens transaction dialog', async () => {
+it('Valid form submission opens transaction dialog', async () => {
   render(generateJsx(props));
   submitValid();
   expect(await screen.findByRole('dialog')).toBeInTheDocument();
@@ -59,7 +59,7 @@ test('Valid form submission opens transaction dialog', async () => {
   });
 });
 
-test('Expected Ethereum error closes the dialog', async () => {
+it('Expected Ethereum error closes the dialog', async () => {
   const { rerender } = render(generateJsx(props));
   submitValid();
   expect(await screen.findByRole('dialog')).toBeInTheDocument();
@@ -75,7 +75,7 @@ test('Expected Ethereum error closes the dialog', async () => {
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 
-test('Correct min max values provided to form', async () => {
+it('Correct min max values provided to form', async () => {
   render(generateJsx(props));
 
   // Set other fields to be valid
@@ -103,11 +103,11 @@ test('Correct min max values provided to form', async () => {
     target: { value: '2' },
   });
   fireEvent.submit(screen.getByTestId('withdraw-form'));
-  expect(await screen.findByText('Value is above maximum'));
+  expect(await screen.findByText('Value is above maximum')).toBeInTheDocument();
   expect(mockSubmit).not.toBeCalled();
 });
 
-test('Initial asset id can preselect asset', async () => {
+it('Initial asset id can preselect asset', async () => {
   const asset = props.assets[0];
   render(generateJsx({ ...props, initialAssetId: asset.id }));
   expect(screen.getByLabelText('Asset')).toHaveValue(asset.id);

@@ -1,7 +1,6 @@
 import type { ApolloClient } from '@apollo/client';
 import { gql } from '@apollo/client';
 import type { Candle, DataSource } from 'pennant';
-import { Interval } from 'pennant';
 
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type { Chart, ChartVariables } from './__generated__/Chart';
@@ -12,6 +11,7 @@ import type {
   CandlesSubVariables,
 } from './__generated__/CandlesSub';
 import type { Subscription } from 'zen-observable-ts';
+import { Interval } from '@vegaprotocol/types';
 
 export const CANDLE_FRAGMENT = gql`
   fragment CandleFields on Candle {

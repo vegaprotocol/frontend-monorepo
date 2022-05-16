@@ -1,5 +1,3 @@
-import './disassociate-page.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -60,7 +58,7 @@ export const DisassociatePage = ({
         )}
       </p>
       <p>
-        <span className="disassociate-page__error">{t('Warning')}:</span>{' '}
+        <span className="text-vega-red">{t('Warning')}:</span>{' '}
         {t(
           'Any Tokens that have been nominated to a node will sacrifice any Rewards they are due for the current epoch. If you do not wish to sacrifices fees you should remove stake from a node at the end of an epoch before disassocation.'
         )}

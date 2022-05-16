@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn", "jsx-a11y"],
+  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn", "jsx-a11y", "jest"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -64,6 +64,13 @@
             "disallowTypeAnnotations": true
           }
         ]
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.spec.tsx"],
+      "extends": ["plugin:@nrwl/nx/typescript", "plugin:jest/recommended"],
+      "rules": {
+        "jest/consistent-test-it": ["error", { "fn": "it" }]
       }
     },
     {
