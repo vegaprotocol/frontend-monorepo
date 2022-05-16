@@ -1,5 +1,3 @@
-import './vesting-table.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -12,6 +10,10 @@ export interface VestingTableProps {
   locked: BigNumber;
   associated: BigNumber;
 }
+
+const VestingTableIndicatorSquare = ({ colour }: { colour: string }) => (
+  <span className={`bg-${colour} inline-block h-12 w-12 mr-4`} />
+);
 
 export const VestingTable = ({
   vested,
@@ -32,59 +34,56 @@ export const VestingTable = ({
     return associated.div(total).times(100);
   }, [total, associated]);
   return (
-    <section data-testid="vesting-table" className="vesting-table">
+    <section data-testid="vesting-table">
       <h2>{t('Across all tranches')}</h2>
       <KeyValueTable numerical={true}>
-        <KeyValueTableRow
-          data-testid="vesting-table-total"
-          className="vesting-table__top-solid-border"
-        >
+        <KeyValueTableRow data-testid="vesting-table-total">
           <span>{t('Vesting VEGA')}</span>
           {formatNumber(total)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-locked">
           <span>
-            <span className="vesting-table__indicator-square vesting-table__indicator-square--locked"></span>
+            <VestingTableIndicatorSquare colour="vega-pink" />
             {t('Locked')}
           </span>
           {formatNumber(locked)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-unlocked">
           <span>
-            <span className="vesting-table__indicator-square vesting-table__indicator-square--unlocked"></span>
+            <VestingTableIndicatorSquare colour="vega-green" />
             {t('Unlocked')}
           </span>
           {formatNumber(vested)}
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="vesting-table-staked">
           <span>
-            <span className="vesting-table__indicator-square vesting-table__indicator-square--staked"></span>
+            <VestingTableIndicatorSquare colour="vega-yellow" />
             {t('Associated')}
           </span>
           {formatNumber(associated)}
         </KeyValueTableRow>
       </KeyValueTable>
-      <div className="vesting-table__progress-bar">
+      <div className="flex">
         <div
-          className="vesting-table__progress-bar--locked"
+          className="bg-vega-pink h-16"
           style={{ flex: lockedPercentage.toNumber() }}
-        ></div>
+        />
         <div
-          className="vesting-table__progress-bar--vested"
+          className="bg-vega-green h-16"
           style={{ flex: vestedPercentage.toNumber() }}
-        ></div>
+        />
       </div>
-      <div className="vesting-table__progress-bar vesting-table__progress-bar--small">
+      <div className="flex h-4 mt-4">
         <div
-          className="vesting-table__progress-bar--staked"
+          className="bg-vega-yellow h-4"
           style={{ flex: stakedPercentage.toNumber() }}
-        ></div>
+        />
         <div
-          className="vesting-table__progress-bar"
+          className="flex"
           style={{
             flex: new BigNumber(100).minus(stakedPercentage).toNumber(),
           }}
-        ></div>
+        />
       </div>
     </section>
   );

@@ -10,7 +10,7 @@ import {
 } from '@vegaprotocol/types';
 import { OrderList } from './order-list';
 
-test('No orders message shown', async () => {
+it('No orders message shown', async () => {
   await act(async () => {
     render(<OrderList data={[]} />);
   });
@@ -75,7 +75,7 @@ const limitOrder: Orders_party_orders = {
   rejectionReason: null,
 };
 
-test('Correct columns are rendered', async () => {
+it('Correct columns are rendered', async () => {
   await act(async () => {
     render(<OrderList data={[marketOrder]} />);
   });
@@ -94,7 +94,7 @@ test('Correct columns are rendered', async () => {
   ]);
 });
 
-test('Correct formatting applied for market order', async () => {
+it('Correct formatting applied for market order', async () => {
   await act(async () => {
     render(<OrderList data={[marketOrder]} />);
   });
@@ -115,7 +115,7 @@ test('Correct formatting applied for market order', async () => {
   });
 });
 
-test('Correct formatting applied for GTT limit order', async () => {
+it('Correct formatting applied for GTT limit order', async () => {
   await act(async () => {
     render(<OrderList data={[limitOrder]} />);
   });
@@ -137,7 +137,7 @@ test('Correct formatting applied for GTT limit order', async () => {
   });
 });
 
-test('Correct formatting applied for a rejected order', async () => {
+it('Correct formatting applied for a rejected order', async () => {
   const rejectedOrder = {
     ...marketOrder,
     status: OrderStatus.Rejected,

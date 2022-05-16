@@ -102,7 +102,7 @@ beforeEach(() => {
   };
 });
 
-test('Creates withdrawal and immediately submits Ethereum transaction', async () => {
+it('Creates withdrawal and immediately submits Ethereum transaction', async () => {
   const { result } = setup([mockERC20Approval]);
 
   await act(async () => {
@@ -146,7 +146,7 @@ test('Creates withdrawal and immediately submits Ethereum transaction', async ()
   );
 });
 
-test('Doesnt perform Ethereum tx if cancelled', async () => {
+it('Doesnt perform Ethereum tx if cancelled', async () => {
   const { result } = setup([mockERC20Approval], true);
 
   await act(async () => {
@@ -167,7 +167,7 @@ test('Doesnt perform Ethereum tx if cancelled', async () => {
   expect(mockPerform).not.toHaveBeenCalled();
 });
 
-test('Reset will reset both transactions', async () => {
+it('Reset will reset both transactions', async () => {
   const { result } = setup([mockERC20Approval]);
 
   await act(async () => {

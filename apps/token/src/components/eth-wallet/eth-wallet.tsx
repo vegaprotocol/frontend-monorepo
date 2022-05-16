@@ -1,5 +1,3 @@
-import './eth-wallet.scss';
-
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -166,10 +164,14 @@ const ConnectedKey = () => {
       )}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/associate`}>
-          <Button variant="primary">{t('associate')}</Button>
+          <Button variant="primary" className="w-full">
+            {t('associate')}
+          </Button>
         </Link>
         <Link style={{ flex: 1 }} to={`${Routes.STAKING}/disassociate`}>
-          <Button variant="primary">{t('disassociate')}</Button>
+          <Button variant="primary" className="w-full">
+            {t('disassociate')}
+          </Button>
         </Link>
       </WalletCardActions>
     </>
@@ -185,14 +187,14 @@ export const EthWallet = () => {
   return (
     <WalletCard>
       <WalletCardHeader>
-        <h1 className="text-h3">{t('ethereumKey')}</h1>
+        <h1 className="text-h3 px-8 uppercase">{t('ethereumKey')}</h1>
         {account && (
-          <div className="eth-wallet__curr-key">
+          <div className="font-mono px-4 text-right">
             <div>{truncateMiddle(account)}</div>
             {pendingTxs && (
               <div>
                 <Button
-                  className="eth-wallet__pending-tx-button"
+                  className="flex gap-2 justify-between p-4, bg-black text-white flex-nowrap whitespace-nowrap"
                   data-testid="pending-transactions-btn"
                   onClick={() =>
                     appDispatch({

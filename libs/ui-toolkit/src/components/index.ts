@@ -5,6 +5,7 @@ export * from './callout';
 export * from './card';
 export * from './copy-with-tooltip';
 export * from './dialog';
+export * from './dropdown-menu';
 export * from './etherscan-link';
 export * from './form-group';
 export * from './icon';

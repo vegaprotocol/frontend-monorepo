@@ -1,5 +1,3 @@
-import './claim-flow.scss';
-
 import * as Sentry from '@sentry/react';
 import { UNSPENT_CODE } from '@vegaprotocol/smart-contracts-sdk';
 import { format } from 'date-fns';
@@ -122,7 +120,7 @@ export const ClaimFlow = ({
   return (
     <>
       <section>
-        <div className="claim-flow__grid">
+        <div className="lg:grid lg:gap-24 lg:grid-cols-[1fr_1fr] lg:grid-rows-[min-content_min-content]">
           <div>
             <p>
               <Trans

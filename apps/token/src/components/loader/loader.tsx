@@ -1,5 +1,3 @@
-import './loader.scss';
-
 import React from 'react';
 
 interface LoaderProps {
@@ -8,7 +6,6 @@ interface LoaderProps {
 
 export const Loader = ({ invert = false }: LoaderProps) => {
   const [, forceRender] = React.useState(false);
-  const className = ['loader', invert ? 'loader--dark' : ''].join(' ');
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -19,7 +16,7 @@ export const Loader = ({ invert = false }: LoaderProps) => {
   }, []);
 
   return (
-    <span className={className}>
+    <span className="flex flex-row flex-wrap w-[15px] h-[15px]">
       {new Array(9).fill(null).map((_, i) => {
         return (
           <span
@@ -27,6 +24,9 @@ export const Loader = ({ invert = false }: LoaderProps) => {
             style={{
               opacity: Math.random() > 0.5 ? 1 : 0,
             }}
+            className={`block w-5 h-5 opacity-0 ${
+              invert ? 'bg-black' : 'bg-white'
+            }`}
           />
         );
       })}

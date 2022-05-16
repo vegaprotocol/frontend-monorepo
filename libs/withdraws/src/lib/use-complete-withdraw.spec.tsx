@@ -24,7 +24,7 @@ function setup(mocks?: MockedResponse[]) {
   return renderHook(() => useCompleteWithdraw(), { wrapper });
 }
 
-test('Should perform the Ethereum transaction with the fetched approval', async () => {
+it('Should perform the Ethereum transaction with the fetched approval', async () => {
   const withdrawalId = 'withdrawal-id';
   const erc20WithdrawalApproval: Erc20Approval_erc20WithdrawalApproval = {
     __typename: 'Erc20WithdrawalApproval',
@@ -62,7 +62,7 @@ test('Should perform the Ethereum transaction with the fetched approval', async 
   });
 });
 
-test('Captures an error if the erc20Withdrawal is not found', async () => {
+it('Captures an error if the erc20Withdrawal is not found', async () => {
   const withdrawalId = 'withdrawal-id';
   const mockERC20Approval: MockedResponse<Erc20Approval> = {
     request: {
@@ -93,7 +93,7 @@ test('Captures an error if the erc20Withdrawal is not found', async () => {
   });
 });
 
-test('Captures an error if erc20 approval query fails', async () => {
+it('Captures an error if erc20 approval query fails', async () => {
   const withdrawalId = 'withdrawal-id';
   const mockERC20Approval: MockedResponse<Erc20Approval> = {
     request: {

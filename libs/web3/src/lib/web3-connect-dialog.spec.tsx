@@ -16,7 +16,7 @@ const props = {
   desiredChainId: 3,
 };
 
-test('Dialog can be open or closed', () => {
+it('Dialog can be open or closed', () => {
   const { container, rerender } = render(<Web3ConnectDialog {...props} />);
   expect(container).toBeEmptyDOMElement();
   rerender(<Web3ConnectDialog {...props} dialogOpen={true} />);
@@ -26,7 +26,7 @@ test('Dialog can be open or closed', () => {
   ).toBeInTheDocument();
 });
 
-test('Renders connection options', async () => {
+it('Renders connection options', async () => {
   const spyOnConnect = jest
     .spyOn(foo, 'activate')
     .mockReturnValue(Promise.resolve());
