@@ -79,7 +79,11 @@ export const CustomIconAndContent = Template.bind({});
 CustomIconAndContent.args = {
   intent: Intent.Help,
   title: 'This is what this thing does',
-  icon: <span>✔️</span>,
+  icon: (
+    <span role="img" aria-label="tick">
+      ✔️
+    </span>
+  ),
   children: (
     <div className="flex flex-col">
       <div>With a longer explaination</div>
