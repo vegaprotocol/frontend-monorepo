@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes } from 'react';
+import type { InputHTMLAttributes, ReactNode } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
 import type { IconName } from '../icon';
@@ -8,13 +8,58 @@ import {
   includesRightPadding,
 } from '../../utils/class-names';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+type InputRootProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;
   disabled?: boolean;
   className?: string;
-  prependIconName?: IconName;
-  appendIconName?: IconName;
-}
+};
+
+type NoPrepend = {
+  prependIconName?: never;
+  prependIconDescription?: string;
+  prependElement?: never;
+};
+
+type NoAppend = {
+  appendIconName?: never;
+  appendIconDescription?: string;
+  appendElement?: never;
+};
+
+type InputPrepend = NoAppend &
+  (
+    | NoPrepend
+    | {
+        prependIconName: IconName;
+        prependIconDescription?: string;
+        prependElement?: never;
+      }
+    | {
+        prependIconName?: never;
+        prependIconDescription?: never;
+        prependElement: ReactNode;
+      }
+  );
+
+type InputAppend = NoPrepend &
+  (
+    | NoAppend
+    | {
+        appendIconName: IconName;
+        appendIconDescription?: string;
+        appendElement?: never;
+      }
+    | {
+        appendIconName?: never;
+        appendIconDescription?: never;
+        appendElement: ReactNode;
+      }
+  );
+
+type AffixProps = InputPrepend | InputAppend;
+
+type InputProps = InputRootProps & AffixProps;
+
 export const inputClassNames = ({
   hasError,
   className,
@@ -61,13 +106,70 @@ export const inputStyle = ({
       }
     : style;
 
+const getAffixElement = ({
+  prependElement,
+  prependIconName,
+  prependIconDescription,
+  appendElement,
+  appendIconName,
+  appendIconDescription,
+}: Pick<InputProps, keyof AffixProps>) => {
+  const position = prependIconName || prependElement ? 'pre' : 'post';
+
+  const className = classNames(
+    ['fill-black-60 dark:fill-white-60', 'absolute', 'z-10'],
+    {
+      'left-8': position === 'pre',
+      'right-8': position === 'post',
+    }
+  );
+
+  const element = prependElement || appendElement;
+  const iconName = prependIconName || appendIconName;
+  const iconDescription = prependIconDescription || appendIconDescription;
+
+  if (element) {
+    return <div className={className}>{element}</div>;
+  }
+
+  if (iconName) {
+    return (
+      <Icon
+        name={iconName}
+        className={className}
+        size={16}
+        aria-label={iconDescription}
+        aria-hidden={!iconDescription}
+      />
+    );
+  }
+
+  return null;
+};
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ prependIconName, appendIconName, className, hasError, ...props }, ref) => {
+  (
+    {
+      prependIconName,
+      prependIconDescription,
+      appendIconName,
+      appendIconDescription,
+      prependElement,
+      appendElement,
+      className,
+      hasError,
+      ...props
+    },
+    ref
+  ) => {
     className = `h-28 ${className}`;
-    if (prependIconName) {
+    const hasPrepended = !!(prependIconName || prependElement);
+    const hasAppended = !!(appendIconName || appendElement);
+
+    if (hasPrepended) {
       className += ' pl-28';
     }
-    if (appendIconName) {
+    if (hasAppended) {
       className += ' pr-28';
     }
 
@@ -78,24 +180,26 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         className={classNames(inputClassNames({ className, hasError }))}
       />
     );
-    const iconName = prependIconName || appendIconName;
-    if (iconName !== undefined) {
-      const iconClassName = classNames(
-        ['fill-black-60 dark:fill-white-60', 'absolute', 'z-10'],
-        {
-          'left-8': prependIconName,
-          'right-8': appendIconName,
-        }
-      );
-      const icon = <Icon name={iconName} className={iconClassName} size={16} />;
+
+    const element = getAffixElement({
+      prependIconName,
+      prependIconDescription,
+      appendIconName,
+      appendIconDescription,
+      prependElement,
+      appendElement,
+    });
+
+    if (element) {
       return (
         <div className="inline-flex items-center relative">
-          {prependIconName && icon}
+          {hasPrepended && element}
           {input}
-          {appendIconName && icon}
+          {hasAppended && element}
         </div>
       );
     }
+
     return input;
   }
 );
