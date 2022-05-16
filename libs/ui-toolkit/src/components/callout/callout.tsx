@@ -39,7 +39,7 @@ type CalloutProps =
   | CalloutPropsWithIconName
   | CalloutPropsWithIcon;
 
-const getIconElement = (props: CalloutProps) => {
+const getIconElement = (props: Pick<CalloutProps, 'icon' | 'iconName'>) => {
   if (props.iconName) {
     return (
       <Icon
@@ -52,10 +52,15 @@ const getIconElement = (props: CalloutProps) => {
   return props.icon;
 };
 
-export function Callout(props: CalloutProps) {
-  const { children, title, intent = Intent.Help, headingLevel } = props;
-
-  const icon = getIconElement(props);
+export function Callout({
+  children,
+  title,
+  icon,
+  iconName,
+  intent = Intent.Help,
+  headingLevel,
+}: CalloutProps) {
+  const iconElement = getIconElement({ icon, iconName });
 
   const className = classNames(
     'border',
@@ -66,7 +71,7 @@ export function Callout(props: CalloutProps) {
     'p-16',
     getIntentShadow(intent),
     {
-      flex: !!icon,
+      flex: !!iconElement,
     }
   );
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
@@ -80,8 +85,8 @@ export function Callout(props: CalloutProps) {
   );
   return (
     <div data-testid="callout" className={className}>
-      {icon}
-      {icon ? <div className="grow">{body}</div> : body}
+      {iconElement}
+      {iconElement ? <div className="grow">{body}</div> : body}
     </div>
   );
 }
