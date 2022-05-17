@@ -12,7 +12,7 @@
   "videosFolder": "../../dist/cypress/apps/trading-e2e/videos",
   "screenshotsFolder": "../../dist/cypress/apps/trading-e2e/screenshots",
   "chromeWebSecurity": false,
-  "projectId": "et4snf",
+  "projectId": "2gcsov",
 
   "env": {
     "ethereumProviderUrl": "https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8",
