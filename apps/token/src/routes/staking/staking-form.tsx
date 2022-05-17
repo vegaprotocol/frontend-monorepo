@@ -18,12 +18,7 @@ import type {
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
-import {
-  Button,
-  FormGroup,
-  RadioGroup,
-  RadioItem,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, FormGroup, RadioGroup, Radio } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   DelegateSubmissionBody,
@@ -223,13 +218,13 @@ export const StakingForm = ({
           }}
           value={action}
         >
-          <RadioItem
+          <Radio
             disabled={availableStakeToAdd.isEqualTo(0)}
             value={Actions.Add}
             label="Add"
             id="add-stake-radio"
           />
-          <RadioItem
+          <Radio
             disabled={availableStakeToRemove.isEqualTo(0)}
             value={Actions.Remove}
             label="Remove"

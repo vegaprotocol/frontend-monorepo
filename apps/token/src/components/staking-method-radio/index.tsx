@@ -1,4 +1,4 @@
-import { RadioGroup, RadioItem } from '@vegaprotocol/ui-toolkit';
+import { RadioGroup, Radio } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,12 +24,12 @@ export const StakingMethodRadio = ({
       }}
       value={selectedStakingMethod || undefined}
     >
-      <RadioItem
+      <Radio
         id="associate-radio-contract"
         label={t('Vesting contract')}
         value={StakingMethod.Contract}
       />
-      <RadioItem
+      <Radio
         id="associate-radio-wallet"
         label={t('Wallet')}
         value={StakingMethod.Wallet}

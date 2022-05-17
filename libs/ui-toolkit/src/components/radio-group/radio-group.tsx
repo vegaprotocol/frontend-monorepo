@@ -20,14 +20,14 @@ export const RadioGroup = ({ children, onChange }: RadioGroupProps) => {
   );
 };
 
-interface RadioItemProps {
+interface RadioProps {
   id: string;
   value: string;
   label: string;
   disabled?: boolean;
 }
 
-export const RadioItem = ({ id, value, label, disabled }: RadioItemProps) => {
+export const Radio = ({ id, value, label, disabled }: RadioProps) => {
   const wrapperClasses = classNames('flex flex-row gap-12 items-center', {
     'opacity-50': disabled,
   });
