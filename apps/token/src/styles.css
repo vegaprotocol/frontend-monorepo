@@ -4,31 +4,3 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-a,
-a:hover {
-  color: white;
-}
-
-.modal a,
-.modal a:hover {
-  color: black;
-}
-
-.bp3-dark .bp3-input {
-  background-color: #3f3f3f;
-}
-
-.epoch-countdown .bp3-progress-bar {
-  border: 1px solid white;
-  border-radius: 0;
-  height: 21px;
-}
-
-.epoch-countdown .bp3-progress-bar .bp3-progress-meter {
-  border-radius: 0;
-}
-
-.bp3-dark .epoch-countdown .bp3-progress-bar .bp3-progress-meter {
-  background-color: white;
-}
