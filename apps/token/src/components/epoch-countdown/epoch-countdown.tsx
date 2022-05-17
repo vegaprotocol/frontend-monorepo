@@ -1,10 +1,10 @@
-import { Intent, ProgressBar } from '@blueprintjs/core';
 import { format, formatDistanceStrict } from 'date-fns';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import arrow from '../../images/back.png';
 import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
+import { ProgressBar } from '../progress-bar';
 
 export interface EpochCountdownProps {
   id: string;
@@ -68,12 +68,7 @@ export function EpochCountdown({
             : t('Awaiting next epoch')}
         </p>
       </div>
-      <ProgressBar
-        animate={false}
-        value={progress}
-        stripes={false}
-        intent={Intent.NONE}
-      />
+      <ProgressBar value={progress} />
       <div className="flex mt-4 text-ui-small">
         <p>{format(startDate, DATE_FORMAT_DETAILED)}</p>
         <div className="flex-1 text-center">
