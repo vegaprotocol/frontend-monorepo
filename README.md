@@ -67,6 +67,16 @@ Run `nx build my-app` to build the project. The build artifacts will be stored i
 
 Run `nx serve my-app` for a dev server. Navigate to the port specified in `app/<project-name>/project.json`. The app will automatically reload if you change any of the source files.
 
+### Using Apollo GraphQL and Generate Types
+
+You will need to set up once the environment variable from `apollo.config.js`.
+Then you can run the following command to generate the types.
+
+```bash
+export  NX_VEGA_URL=https://lb.testnet.vega.xyz/query
+yarn nx run types:generate
+```
+
 ### Running tests
 
 Run `yarn nx run <my-app>-e2e:e2e` to execute the e2e tests with [cypress](https://docs.cypress.io/), or `nx affected:e2e` will execute just the end-to-end tests affected by a change. You can use the `--watch` flag to open the cypress tests UI in watch mode, see [cypress executor](https://nx.dev/packages/cypress/executors/cypress) for all CLI flags.

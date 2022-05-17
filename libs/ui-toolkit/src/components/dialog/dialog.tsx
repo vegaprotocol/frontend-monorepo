@@ -11,6 +11,7 @@ interface DialogProps {
   onChange: (isOpen: boolean) => void;
   title?: string;
   intent?: Intent;
+  titleClassNames?: string;
 }
 
 export function Dialog({
@@ -19,6 +20,7 @@ export function Dialog({
   onChange,
   title,
   intent,
+  titleClassNames,
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
@@ -39,7 +41,9 @@ export function Dialog({
             <Icon name="cross" />
           </DialogPrimitives.Close>
           {title && (
-            <h1 className="text-h5 text-black-95 dark:text-white-95 mt-0 mb-20">
+            <h1
+              className={`text-h5 text-black-95 dark:text-white-95 mt-0 mb-20 ${titleClassNames}`}
+            >
               {title}
             </h1>
           )}
