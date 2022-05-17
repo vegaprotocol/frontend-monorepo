@@ -126,7 +126,7 @@ module.exports = {
     DEFAULT: '0.225rem',
     md: '0.3rem',
     lg: '0.5rem',
-    full: '9999px',
+    full: '100%',
   },
   fontFamily: {
     mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono],
