@@ -5,8 +5,6 @@ import DepositsPage from '../pages/deposits-page';
 const depositsPage = new DepositsPage();
 const ethWallet = new EthereumWallet();
 
-const tBTC = Cypress.env('tBtcContract');
-
 beforeEach(() => {
   cy.mockWeb3Provider();
 });
