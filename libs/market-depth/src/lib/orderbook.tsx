@@ -77,58 +77,98 @@ export const Orderbook = ({
   onResolutionChange,
 }: OrderbookProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  // scroll offset for which rendered rows are selected
   const [scrollOffset, setScrollOffset] = useState(0);
-  const [viewportHeight, setViewportHeight] = useState(1000);
+  const [hasData, setHasData] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
+  // const [midPrice, setMidPrice] = useState('');
+  // const resolutionRef = useRef(resolution);
+  // 17px of row height plus 4px gap
   const rowHeight = 21;
+  // buffer size in rows
   const bufferSize = 30;
+  // margin size in px, when reached scrollOffset will be updated
   const marginSize = bufferSize * 0.9 * rowHeight;
   const numberOfRows = useMemo(
     () => getNumberOfRows(rows, resolution),
     [rows, resolution]
   );
+  function scrollToMidPrice(price: string) {
+    if (scrollRef.current && rows) {
+      const priceCenterScrollOffset = Math.max(
+        0,
+        Math.min(
+          // distance in rows between midPrice and pric from first row * row Height
+          (Number(
+            (BigInt(rows?.[0].price) - BigInt(price)) / BigInt(resolution)
+          ) +
+            1) *
+            rowHeight -
+            // minus half height of viewport
+            Math.ceil(viewportHeight / 2),
+          +(
+            // plus current scroll row shift
+            (scrollRef.current.scrollTop % rowHeight)
+          ),
+          numberOfRows * rowHeight - viewportHeight // max scroll top
+        )
+      );
+      scrollRef.current.scrollTop = priceCenterScrollOffset;
+    }
+  }
   useEffect(() => {
-    //scrollToMiddle
-    if (!bestStaticOfferPrice || !bestStaticBidPrice || !rows || !rows.length) {
+    if (
+      bestStaticOfferPrice &&
+      bestStaticBidPrice &&
+      rows &&
+      rows.length &&
+      !hasData
+    ) {
+      setHasData(true);
+    }
+  }, [bestStaticOfferPrice, bestStaticBidPrice, rows, hasData]);
+
+  // scroll to midPrice on resolution change
+  useEffect(() => {
+    if (
+      !bestStaticOfferPrice ||
+      !bestStaticBidPrice ||
+      !rows ||
+      !rows.length ||
+      !hasData
+    ) {
       return;
     }
-    const midPrice = getPriceLevel(
-      BigInt(bestStaticOfferPrice) +
-        (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) / BigInt(2),
-      resolution
-    );
-    const midPriceCenterScrollOffset = Math.max(
-      0,
-      Math.min(
-        Number(
-          (BigInt(rows?.[0].price) - BigInt(midPrice)) / BigInt(resolution)
-        ) *
-          rowHeight -
-          bufferSize,
-        numberOfRows * rowHeight - viewportHeight
+    scrollToMidPrice(
+      getPriceLevel(
+        BigInt(bestStaticOfferPrice) +
+          (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) /
+            BigInt(2),
+        resolution
       )
     );
-    setScrollOffset(midPriceCenterScrollOffset);
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = midPriceCenterScrollOffset;
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resolution]);
+  }, [resolution, hasData]);
+
   useEffect(() => {
-    if (scrollRef.current) {
-      setViewportHeight(scrollRef.current.clientHeight);
+    function handleResize() {
+      if (scrollRef.current) {
+        setViewportHeight(scrollRef.current.clientHeight);
+      }
     }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
   const renderedRows = useMemo(() => {
     let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
     const prependingBufferSize = Math.min(bufferSize, offset);
-    // console.log('op', offset, prependingBufferSize);
     offset -= prependingBufferSize;
     const viewportSize = Math.round(viewportHeight / rowHeight);
     const limit = Math.min(
       prependingBufferSize + viewportSize + bufferSize,
       numberOfRows - offset
     );
-    // console.log('getRowsToRender', viewportSize, offset, limit);
     return {
       offset,
       limit,
@@ -136,14 +176,7 @@ export const Orderbook = ({
     };
   }, [rows, scrollOffset, resolution, viewportHeight, numberOfRows]);
   const onScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    // const containerHeight = event.currentTarget.clientHeight;
-    // const scrollHeight = event.currentTarget.scrollHeight;
-    console.log(
-      'onScroll',
-      Math.abs(scrollOffset - event.currentTarget.scrollTop)
-    );
     if (Math.abs(scrollOffset - event.currentTarget.scrollTop) > marginSize) {
-      console.log('setScrollOffset');
       setScrollOffset(event.currentTarget.scrollTop);
     }
   };
