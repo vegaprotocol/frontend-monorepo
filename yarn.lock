@@ -6749,10 +6749,10 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.12.1:
-  version "1.12.1"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.12.1.tgz#1efa19967f3b955fb3db18d938925619f4e0f313"
-  integrity sha512-jEQ1hB0f+dMgEmzLWRcGjwek5w3PTWI1seYqgedyNQefX+u0xdoOsB6UKV6dTEcrAue5nx7wO87GTch3IaUqgw==
+allotment@1.13.0:
+  version "1.13.0"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.13.0.tgz#db9da270004c0ba9ccd5ca6c217ae745c217a959"
+  integrity sha512-Pxzph+GB8FLZUl2XLoNLrd3PKcL9IbUlrcrW4IY6KMP/c+6nYJPHaCnTiYjYLdzhs6dMA+C9RVfsUTytjBpwcg==
   dependencies:
     classnames "^2.3.0"
     eventemitter3 "^4.0.0"
@@ -16679,10 +16679,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
-pennant@0.4.9:
-  version "0.4.9"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.9.tgz#2466d6d41deff85558a0f065b81c178046d39bca"
-  integrity sha512-WPPrBfS5ND59KHJVz8PXmZ480wnkpoAKAG7HGA56/vKilUritbQetFoVlzh1SgohaFnRwQVywCPQ8ohsHyzutQ==
+pennant@0.4.10:
+  version "0.4.10"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.10.tgz#a2c90d27b4f3772c9ba5e23a5503abc0243863ae"
+  integrity sha512-5uTrZZsqTW8d8McFH8A1DtFJR+fukr4XozKjrj0m/02PdQRvZQnrs04HjUWf5asUYwMNjR81KRBiSQLBC2YD5g==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
@@ -16703,7 +16703,7 @@ pennant@0.4.9:
     "@types/react" "^17.0.0"
     "@types/react-dom" "^17.0.0"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.12.1"
+    allotment "1.13.0"
     classnames "^2.2.6"
     d3-array "2.3.3"
     d3-delaunay "^6.0.2"
