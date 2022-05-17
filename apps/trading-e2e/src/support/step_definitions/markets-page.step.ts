@@ -6,6 +6,7 @@ import MarketsPage from '../pages/markets-page';
 const marketsPage = new MarketsPage();
 
 const mockMarkets = () => {
+  cy.log('Mocking markets query');
   cy.mockGQL('Markets', (req) => {
     if (hasOperationName(req, 'Markets')) {
       req.reply({
