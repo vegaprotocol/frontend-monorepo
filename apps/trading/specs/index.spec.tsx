@@ -1,6 +1,7 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import Index from '../pages/index.page';
+import { MockedProvider } from '@apollo/react-testing';
 
 jest.mock('@vegaprotocol/ui-toolkit', () => {
   const original = jest.requireActual('@vegaprotocol/ui-toolkit');
@@ -10,9 +11,26 @@ jest.mock('@vegaprotocol/ui-toolkit', () => {
   };
 });
 
+jest.mock('next/router', () => ({
+  useRouter() {
+    return {
+      route: '/',
+      pathname: '',
+      query: '',
+      asPath: '',
+    };
+  },
+}));
+
 describe('Index', () => {
-  it('should render successfully', () => {
-    render(<Index />);
-    expect(true).toBeTruthy();
+  it('should render successfully', async () => {
+    await act(async () => {
+      const { baseElement } = render(
+        <MockedProvider>
+          <Index />
+        </MockedProvider>
+      );
+      expect(baseElement).toBeTruthy();
+    });
   });
 });

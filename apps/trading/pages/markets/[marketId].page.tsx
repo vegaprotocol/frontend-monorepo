@@ -18,14 +18,15 @@ const MARKET_QUERY = gql`
   }
 `;
 
-const MarketPage = () => {
+const MarketPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
   const { w } = useWindowSize();
 
   // Default to first marketId query item if found
-  const marketId = Array.isArray(query.marketId)
+  const firstMarketId = Array.isArray(query.marketId)
     ? query.marketId[0]
     : query.marketId;
+  const marketId = id || firstMarketId;
 
   if (!marketId) {
     return (

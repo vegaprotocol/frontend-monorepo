@@ -1,24 +1,17 @@
-import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { LandingDialog } from '@vegaprotocol/market-list';
+import MarketPage from './markets/[marketId].page';
 
 export function Index() {
+  // The default market selected in the platform behind the overlay
+  // should be the oldest market that is currently trading in continuous mode( ie, not in auction).
+
+  const marketId =
+    '868b8865bae80bd663d6c6c78fb26b40b7047ee8daaf68d539e8f587faed4934';
   return (
-    <div className="m-24">
-      <div className="mb-24">
-        <Callout
-          intent={Intent.Help}
-          title="Welcome to Vega Trading App"
-          iconName="endorsed"
-          headingLevel={1}
-        >
-          <div className="flex flex-col">
-            <div>With a longer explanation</div>
-            <Button className="block mt-8" variant="secondary">
-              Action
-            </Button>
-          </div>
-        </Callout>
-      </div>
-    </div>
+    <>
+      <LandingDialog />
+      <MarketPage id={marketId} />
+    </>
   );
 }
 
