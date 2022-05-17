@@ -103,7 +103,7 @@ export const SparklineView = ({
           d={mainPath}
           className={strokeClassName}
           stroke="strokeCurrent"
-          strokeWidth={1}
+          strokeWidth={2}
           fill="transparent"
         />
       )}

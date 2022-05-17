@@ -4,12 +4,21 @@ import type {
   MarketList_markets_candles,
 } from '../__generated__/MarketList';
 
-export const priceChange = (m: MarketList_markets) =>
-  m.candles &&
-  m.candles.length > 0 &&
-  m.candles[m.candles.length - 1]?.open &&
-  m.candles[m.candles.length - 1]?.close &&
-  Number(m.candles[0]?.close) - Number(m.candles[m.candles.length - 1]?.open);
+export const priceChange = (m: MarketList_markets) => {
+  if (
+    m.candles &&
+    m.candles.length > 0 &&
+    m.candles[m.candles.length - 1]?.open &&
+    m.candles[m.candles.length - 1]?.close
+  ) {
+    const yesterdayLastPrice = Number(m.candles[0]?.close);
+    const recentLastPrice = Number(m.candles[m.candles.length - 1]?.close);
+    const increase = recentLastPrice - yesterdayLastPrice;
+
+    return (increase / yesterdayLastPrice) * 100;
+  }
+  return 0;
+};
 
 export const candles = (m: MarketList_markets) =>
   m.candles?.map((c: MarketList_markets_candles | null) => ({
@@ -37,9 +46,16 @@ export const lastPrice = (m: MarketList_markets) =>
   price(m.data?.markPrice, m.decimalPlaces);
 
 export const mapDataToMarketList = (data: MarketList) =>
-  data?.markets?.map((m) => ({
-    market: marketCode(m),
-    lastPrice: lastPrice(m),
-    candles: candles(m),
-    change: priceChange(m),
-  }));
+  data?.markets
+    ?.map((m) => ({
+      id: m.id,
+      marketName: marketCode(m),
+      lastPrice: lastPrice(m),
+      candles: candles(m),
+      change: priceChange(m),
+      open: m.marketTimestamps.open ? new Date(m.marketTimestamps.open) : null,
+      close: m.marketTimestamps.close
+        ? new Date(m.marketTimestamps.close)
+        : null,
+    }))
+    .sort((a, b) => (b.open?.getTime() || 0) - (a.open?.getTime() || 0));

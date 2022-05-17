@@ -35,6 +35,10 @@ export interface MarketList_markets_marketTimestamps {
    * Time when the market is open and ready to accept trades
    */
   open: string | null;
+  /**
+   * Time when the market is closed
+   */
+  close: string | null;
 }
 
 export interface MarketList_markets_candles {
