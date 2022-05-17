@@ -6,6 +6,7 @@ import MarketsPage from '../pages/markets-page';
 const marketsPage = new MarketsPage();
 
 const mockMarkets = () => {
+  cy.log('Mocking markets query');
   cy.mockGQL('Markets', (req) => {
     if (hasOperationName(req, 'Markets')) {
       req.reply({
@@ -15,21 +16,19 @@ const mockMarkets = () => {
   });
 };
 
-beforeEach(() => {
-  mockMarkets();
-});
-
 Then('I navigate to markets page', () => {
+  mockMarkets();
   marketsPage.navigateToMarkets();
+  cy.wait('@Markets');
 });
 
 Given('I am on the markets page', () => {
+  mockMarkets();
   cy.visit('/markets');
   cy.wait('@Markets');
 });
 
 Then('I can view markets', () => {
-  cy.wait('@Markets');
   marketsPage.validateMarketsAreDisplayed();
 });
 

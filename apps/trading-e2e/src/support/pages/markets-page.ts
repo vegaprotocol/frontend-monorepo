@@ -10,6 +10,9 @@ export default class MarketPage extends BasePage {
   marketStateColId = 'data';
 
   validateMarketsAreDisplayed() {
+    // We need this to ensure that ag-grid is fully rendered before asserting
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(1000);
     cy.get('.ag-root-wrapper').should('be.visible');
   }
 
@@ -23,10 +26,6 @@ export default class MarketPage extends BasePage {
       'Mark price',
       'Description',
     ];
-
-    // We need this to ensure that ag-grid is fully rendered before asserting
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(100);
 
     cy.get(this.marketRowHeaderClassname)
       .each(($marketHeader, index) => {
