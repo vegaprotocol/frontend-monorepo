@@ -42,8 +42,9 @@ export default class TradingPage extends BasePage {
   }
 
   validateCandleChartDisplayed() {
-    cy.get(this.candleChartClassName).should('be.visible');
-    cy.get('[col-id=price]').should('be.visible');
+    cy.intercept('/_next/static/**').as('uiComponents');
+    cy.get('[col-id=price]').should('be.visible'); // orderbook orders last to load on page
+    cy.wait('@uiComponents');
     cy.getByTestId(this.chartWindow).matchImageSnapshot('candle-chart');
   }
 }
