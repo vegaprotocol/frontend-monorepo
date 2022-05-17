@@ -3,7 +3,7 @@ import {
   updateLevels,
   updateCompactedRows,
 } from './orderbook-data';
-import type { OrderbookRow } from './orderbook-data';
+import type { OrderbookRowData } from './orderbook-data';
 import type { MarketDepth_market_depth_sell } from './__generated__/MarketDepth';
 import type {
   MarketDepthSubscription_marketDepthUpdate_sell,
@@ -138,7 +138,7 @@ describe('updateLevels', () => {
 });
 
 describe('updateCompactedRows', () => {
-  const orderbookRows: OrderbookRow[] = [
+  const orderbookRows: OrderbookRowData[] = [
     {
       price: '120',
       cumulativeVol: {

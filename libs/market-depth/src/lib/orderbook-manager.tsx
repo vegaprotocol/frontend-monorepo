@@ -1,4 +1,5 @@
 import throttle from 'lodash/throttle';
+import produce from 'immer';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
@@ -11,7 +12,6 @@ import {
   getPriceLevel,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
-import produce from 'immer';
 
 interface OrderbookManagerProps {
   marketId: string;
