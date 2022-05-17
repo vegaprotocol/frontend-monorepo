@@ -6,7 +6,6 @@ import { WithdrawManager } from '@vegaprotocol/withdraws';
 import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
 import Link from 'next/link';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import { isERC20Asset } from '../../../lib/assets';
 import type {
   WithdrawPageQuery,
   WithdrawPageQueryVariables,
@@ -85,7 +84,7 @@ export const WithdrawPageContainer = ({
               </p>
             ) : null}
             <WithdrawManager
-              assets={data.assets.filter(isERC20Asset)}
+              assets={data.assets}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
             />

@@ -14,7 +14,7 @@ export const useGetDepositLimits = (
   asset?: Asset
 ): Limits | null => {
   const getLimits = useCallback(async () => {
-    if (!contract || !asset) {
+    if (!contract || !asset || asset.source.__typename !== 'ERC20') {
       return;
     }
 

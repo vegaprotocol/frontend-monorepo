@@ -58,10 +58,12 @@ export const AssociatePage = ({
     () => totalVestedBalance.plus(totalLockedBalance).isEqualTo(0),
     [totalLockedBalance, totalVestedBalance]
   );
+
   const zeroVega = React.useMemo(
     () => walletBalance.isEqualTo(0),
     [walletBalance]
   );
+
   React.useEffect(() => {
     if (zeroVega && !zeroVesting) {
       setSelectedStakingMethod(StakingMethod.Contract);
