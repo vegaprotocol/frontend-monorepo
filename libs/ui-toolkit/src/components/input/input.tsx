@@ -162,22 +162,20 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    className = `h-28 ${className}`;
     const hasPrepended = !!(prependIconName || prependElement);
     const hasAppended = !!(appendIconName || appendElement);
 
-    if (hasPrepended) {
-      className += ' pl-28';
-    }
-    if (hasAppended) {
-      className += ' pr-28';
-    }
+    const inputClassName = classNames('h-28', className, {
+      'pl-28': hasPrepended ?? hasAppended,
+    });
 
     const input = (
       <input
         {...props}
         ref={ref}
-        className={classNames(inputClassNames({ className, hasError }))}
+        className={classNames(
+          inputClassNames({ className: inputClassName, hasError })
+        )}
       />
     );
 
