@@ -13,10 +13,13 @@
   "screenshotsFolder": "../../dist/cypress/apps/trading-e2e/screenshots",
   "chromeWebSecurity": false,
   "projectId": "et4snf",
+  "defaultCommandTimeout": 10000,
 
   "env": {
     "ethereumProviderUrl": "https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8",
     "ethereumChainId": 3,
+    "validDepositToAddress": "99d423f2839cada5f75fbc60f50c8a63343de7a132bf81b282858fbba5d82714",
+    "invalidDepositToAddress": "zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f",
     "vegaPublicKey": "47836c253520d2661bf5bed6339c0de08fd02cf5d4db0efee3b4373f20c7d278",
     "vegaPublicKey2": "1a18cdcaaa4f44a57b35a4e9b77e0701c17a476f2b407620f8c17371740cf2e4",
     "truncatedVegaPubKey": "47836c…c7d278",

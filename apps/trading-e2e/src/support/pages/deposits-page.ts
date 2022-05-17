@@ -54,7 +54,7 @@ export default class DepositsPage extends BasePage {
       .should('be.visible');
   }
 
-  veryInsufficientAmountAmountMessage() {
+  verifyInsufficientAmountMessage() {
     cy.getByTestId('input-error-text')
       .contains('Insufficient amount in Ethereum wallet')
       .should('be.visible');
