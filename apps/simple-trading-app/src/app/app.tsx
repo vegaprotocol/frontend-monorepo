@@ -32,8 +32,8 @@ function App() {
       <ApolloProvider client={client}>
         <VegaWalletProvider>
           <AppLoader>
-            <div className="h-full max-h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content_1fr_min-content] grid-cols-[375px_1fr]">
-              <div className="flex items-stretch border-b-[7px] border-vega-yellow col-span-3">
+            <div className="h-full max-h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid md:grid-rows-[min-content_1fr_min-content] lg:grid-cols-[375px_1fr] md:grid-cols-[200px_1fr] sm:grid-rows-[min-content_min-content_1fr_min-content]">
+              <div className="flex items-stretch border-b-[7px] border-vega-yellow md:col-span-3">
                 <div className="flex items-center gap-4 ml-auto mr-8">
                   <VegaWalletConnectButton
                     setConnectDialog={(open) =>
@@ -47,7 +47,7 @@ function App() {
                 </div>
               </div>
 
-              <aside className="col-start-1 col-end-1 row-start-2 row-end-2">
+              <aside className="md:col-start-1 md:col-end-1 md:row-start-2 md:row-end-2">
                 <ul>
                   <li>{t('Markets')}</li>
                   <li>{t('Trade')}</li>
@@ -55,7 +55,7 @@ function App() {
                   <li>{t('Markets')}</li>
                 </ul>
               </aside>
-              <div className="col-start-2 col-end-2 row-start-2 row-end-2 overflow-auto">
+              <div className="md:col-start-2 md:col-end-2 md:row-start-2 md:row-end-2 overflow-auto">
                 <SimpleMarketList />
                 {/*<DealTicketContainer
                     marketId={
@@ -64,7 +64,7 @@ function App() {
                   />*/}
               </div>
 
-              <footer className="col-span-3">®</footer>
+              <footer className="md:col-span-3">®</footer>
               <VegaConnectDialog
                 connectors={Connectors}
                 dialogOpen={vegaWallet.connect}

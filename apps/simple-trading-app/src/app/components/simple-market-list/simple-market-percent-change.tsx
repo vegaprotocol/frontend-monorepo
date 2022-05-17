@@ -1,9 +1,10 @@
 import React from 'react';
+import { theme } from '@vegaprotocol/tailwindcss-config';
 import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
 
-type Props = {
+interface Props {
   candles: (SimpleMarkets_markets_candles | null)[] | null;
-};
+}
 
 const SimpleMarketPercentChange = ({ candles }: Props) => {
   const change = ((candles) => {
@@ -21,7 +22,16 @@ const SimpleMarketPercentChange = ({ candles }: Props) => {
     }
     return ' - ';
   })(candles);
-  return <p>{change}</p>;
+  const color = ((change) => {
+    if (parseFloat(change) > 0) {
+      return theme.colors.vega.green;
+    }
+    if (parseFloat(change) < 0) {
+      return theme.colors.vega.pink;
+    }
+    return theme.colors.intent.highlight;
+  })(change);
+  return <p style={{ color: color }}>{change}</p>;
 };
 
 export default SimpleMarketPercentChange;

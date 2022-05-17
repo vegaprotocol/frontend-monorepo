@@ -63,7 +63,16 @@ const MARKET_DATA_SUB = gql`
   }
 `;
 
-const update = () => true;
+const update = (
+  draft: SimpleMarkets_markets[],
+  delta: SimpleMarketDataSub_marketData
+) => {
+  const index = draft.findIndex((m) => m.id === delta.market.id);
+  if (index !== -1) {
+    draft[index].data = delta;
+  }
+  // @TODO - else push new market to draft
+};
 
 const getData = (responseData: SimpleMarkets) => responseData.markets;
 const getDelta = (

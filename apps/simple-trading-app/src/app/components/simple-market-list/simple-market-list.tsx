@@ -1,19 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Lozenge } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Lozenge, Splash } from '@vegaprotocol/ui-toolkit';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import {
-  Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { format } from 'date-fns';
 import SimpleMarketPercentChange from './simple-market-percent-change';
 import DataProvider from './data-provider';
-import { MARKET_STATUS } from './constants';
+import { DATE_FORMAT, MARKET_STATUS } from './constants';
 
 const SimpleMarketList = () => {
   const variables = useMemo(
@@ -25,81 +18,64 @@ const SimpleMarketList = () => {
   );
   const { data, error, loading } = useDataProvider(
     DataProvider,
-    undefined,
+    undefined, // @TODO - if we need a live update in the future
     variables
   );
   const onClick = useCallback((marketId) => {
-    // trigger navigation soon
+    // @TODO - let's try to have navigation first
     console.log('trigger market', marketId);
   }, []);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <List>
-        {data?.map((market) => (
-          <ListItem
-            key={market.id}
-            secondaryAction={
-              <ListItemButton>
-                <ListItemIcon>
-                  <Button
-                    onClick={() => onClick(market.id)}
-                    variant="inline"
-                    prependIconName="chevron-right"
-                  />
-                </ListItemIcon>
-              </ListItemButton>
-            }
-          >
-            <ListItemText
-              primary={
-                <Grid container spacing={2}>
-                  <Grid
-                    item
-                    container
-                    xs={6}
-                    direction="column"
-                    justifyContent="space-evenly"
-                    spacing={0.5}
-                  >
-                    <Grid item>{market.name}</Grid>
-                    <Grid item>
-                      {market.data?.auctionEnd
-                        ? `${t('expires')} ${market.data?.auctionEnd}`
-                        : t('not started yet')}
-                    </Grid>
-                    <Grid item>
-                      {`${t('settled in')} ${
-                        market.tradableInstrument.instrument.product
-                          .settlementAsset.symbol
-                      }`}
-                    </Grid>
-                  </Grid>
-                  <Grid
-                    item
-                    container
-                    xs={4}
-                    direction="column"
-                    justifyContent="space-evenly"
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <Grid item>
-                      <SimpleMarketPercentChange candles={market.candles} />
-                    </Grid>
-                    <Grid item>
-                      <Lozenge
-                        variant={MARKET_STATUS[market.data?.market.state || '']}
-                      >
-                        {market.data?.market.state}
-                      </Lozenge>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              }
-            />
-          </ListItem>
-        ))}
-      </List>
+      {data && data.length > 0 ? (
+        <ul className="list-none relative pt-8 pb-8">
+          {data?.map((market) => (
+            <li
+              className="w-full relative flex justify-start items-center no-underline box-border text-left pt-8 pb-8 pl-16 pr-16 mb-10"
+              key={market.id}
+            >
+              <div className="w-full grid sm:grid-cols-2">
+                <div className="w-full grid sm:grid-rows-3">
+                  <div className="font-extrabold">{market.name}</div>
+                  <div>
+                    {market.data?.auctionEnd
+                      ? `${t('expires')} ${format(
+                          new Date(market.data.auctionEnd),
+                          DATE_FORMAT
+                        )}`
+                      : t('not active')}
+                  </div>
+                  <div>{`${t('settled in')} ${
+                    market.tradableInstrument.instrument.product.settlementAsset
+                      .symbol
+                  }`}</div>
+                </div>
+                <div className="w-full grid sm:grid-rows-2">
+                  <div>
+                    <SimpleMarketPercentChange candles={market.candles} />
+                  </div>
+                  <div>
+                    <Lozenge
+                      variant={MARKET_STATUS[market.data?.market.state || '']}
+                    >
+                      {market.data?.market.state}
+                    </Lozenge>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute right-16 top-1/2 -translate-y-1/2">
+                <Button
+                  onClick={() => onClick(market.id)}
+                  variant="inline"
+                  prependIconName="chevron-right"
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <Splash>{t('No data to display')}</Splash>
+      )}
     </AsyncRenderer>
   );
 };
