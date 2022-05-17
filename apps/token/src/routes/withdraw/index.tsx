@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { AccountType } from '../../__generated__/globalTypes';
-import { EthWalletContainer } from '../../components/eth-wallet-container';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
@@ -15,7 +14,7 @@ import type {
   WithdrawPage,
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';
-import { WithdrawForm } from './withdraw-form';
+import { WithdrawManager } from '@vegaprotocol/withdraws';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -24,9 +23,11 @@ const Withdraw = () => {
     <>
       <Heading title={t('withdrawPageHeading')} />
       <p>{t('withdrawPageText')}</p>
-      <VegaWalletContainer>
-        {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
-      </VegaWalletContainer>
+      <div className="mb-24">
+        <VegaWalletContainer>
+          {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
+        </VegaWalletContainer>
+      </div>
       <Callout title={t('withdrawPageInfoCalloutTitle')}>
         <p className="mb-0">{t('withdrawPageInfoCalloutText')}</p>
       </Callout>
@@ -71,6 +72,17 @@ const WITHDRAW_PAGE_QUERY = gql`
           ... on Erc20WithdrawalDetails {
             receiverAddress
           }
+        }
+      }
+    }
+    assets {
+      id
+      symbol
+      name
+      decimals
+      source {
+        ... on ERC20 {
+          contractAddress
         }
       }
     }
@@ -123,27 +135,21 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
   return (
     <>
       {hasPendingWithdrawals && (
-        <Callout
-          title={t('pendingWithdrawalsCalloutTitle')}
-          intent={Intent.Prompt}
-        >
-          <p>{t('pendingWithdrawalsCalloutText')}</p>
-          <p className="mb-0">
-            <Link to={Routes.WITHDRAWALS}>
-              {t('pendingWithdrawalsCalloutButton')}
-            </Link>
-          </p>
-        </Callout>
+        <div className="mb-24">
+          <Callout
+            title={t('pendingWithdrawalsCalloutTitle')}
+            intent={Intent.Prompt}
+          >
+            <p>{t('pendingWithdrawalsCalloutText')}</p>
+            <p className="mb-0">
+              <Link to={Routes.WITHDRAWALS}>
+                {t('pendingWithdrawalsCalloutButton')}
+              </Link>
+            </p>
+          </Callout>
+        </div>
       )}
-      <EthWalletContainer>
-        {(connectedAddress) => (
-          <WithdrawForm
-            accounts={accounts}
-            currVegaKey={currVegaKey}
-            connectedAddress={connectedAddress}
-          />
-        )}
-      </EthWalletContainer>
+      <WithdrawManager assets={data.assets || []} accounts={accounts} />
     </>
   );
 };

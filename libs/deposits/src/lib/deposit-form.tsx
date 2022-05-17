@@ -82,8 +82,8 @@ export const DepositForm = ({
   });
 
   const onDeposit = async (fields: FormFields) => {
-    if (!selectedAsset) {
-      throw new Error('Asset not selected');
+    if (!selectedAsset || selectedAsset.source.__typename !== 'ERC20') {
+      throw new Error('Invalid asset');
     }
 
     submitDeposit({
@@ -153,11 +153,13 @@ export const DepositForm = ({
       <FormGroup label={t('Asset')} labelFor="asset" className="relative">
         <Select {...register('asset', { validate: { required } })} id="asset">
           <option value="">{t('Please select')}</option>
-          {assets.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
+          {assets
+            .filter((a) => a.source.__typename === 'ERC20')
+            .map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
         </Select>
         {errors.asset?.message && (
           <InputError intent="danger" className="mt-4" forInput="asset">

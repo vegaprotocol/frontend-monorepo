@@ -5,10 +5,7 @@ import type { VegaKeyExtended, VegaWalletContextShape } from '.';
 import type { VegaConnector } from './connectors';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage-keys';
-import type {
-  OrderSubmissionBody,
-  WithdrawSubmissionBody,
-} from '@vegaprotocol/vegawallet-service-api-client';
+import type { TransactionSubmission } from './types';
 
 interface VegaWalletProviderProps {
   children: ReactNode;
@@ -72,16 +69,13 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     }
   }, []);
 
-  const sendTx = useCallback(
-    (body: OrderSubmissionBody | WithdrawSubmissionBody) => {
-      if (!connector.current) {
-        return null;
-      }
+  const sendTx = useCallback((body: TransactionSubmission) => {
+    if (!connector.current) {
+      return null;
+    }
 
-      return connector.current.sendTx(body);
-    },
-    []
-  );
+    return connector.current.sendTx(body);
+  }, []);
 
   // Current selected keypair derived from publicKey state
   const keypair = useMemo(() => {
