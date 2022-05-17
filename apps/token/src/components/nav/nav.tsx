@@ -1,7 +1,9 @@
-import { Drawer } from '@blueprintjs/core';
+import './nav.css';
+
 import classNames from 'classnames';
 import debounce from 'lodash/debounce';
 import React from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -147,6 +149,14 @@ const IconLine = ({ inverted }: { inverted: boolean }) => (
 
 const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   const { appState, appDispatch } = useAppState();
+
+  const drawerContentClasses = classNames(
+    'drawer-content', // needed for css animation
+    // Positions the modal in the center of screen
+    'fixed w-[80vw] max-w-[420px] top-0 right-0',
+    'flex flex-col flex-nowrap justify-between h-full bg-banner overflow-y-scroll border-l border-white',
+    'bg-black text-white-95'
+  );
   return (
     <>
       <button
@@ -163,29 +173,30 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
         <IconLine inverted={inverted} />
       </button>
 
-      <Drawer
-        isOpen={appState.drawerOpen}
-        onClose={() =>
+      <Dialog.Root
+        open={appState.drawerOpen}
+        onOpenChange={(isOpen) =>
           appDispatch({
             type: AppStateActionType.SET_DRAWER,
-            isOpen: false,
+            isOpen,
           })
         }
-        size="80%"
-        className="border border-white max-w-[420px]"
       >
-        <div className="flex flex-col flex-nowrap justify-between h-full bg-banner overflow-y-scroll">
-          <div>
-            <DrawerSection>
-              <EthWallet />
-            </DrawerSection>
-            <DrawerSection>
-              <VegaWallet />
-            </DrawerSection>
-          </div>
-          <NavLinks isDesktop={false} />
-        </div>
-      </Drawer>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-white/15" />
+          <Dialog.Content className={drawerContentClasses}>
+            <div>
+              <DrawerSection>
+                <EthWallet />
+              </DrawerSection>
+              <DrawerSection>
+                <VegaWallet />
+              </DrawerSection>
+            </div>
+            <NavLinks isDesktop={false} />
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </>
   );
 };
