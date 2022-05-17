@@ -1,4 +1,5 @@
 import { Drawer } from '@blueprintjs/core';
+import classNames from 'classnames';
 import debounce from 'lodash/debounce';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -129,7 +130,6 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
         className={`text-[28px] lg:text-h3 pl-8 ${
           fairground ? 'text-black' : 'text-white'
         }`}
-        data-testid="header-title"
       >
         {fairground ? t('fairgroundTitle') : t('title')}
       </h1>
@@ -147,7 +147,6 @@ const IconLine = ({ inverted }: { inverted: boolean }) => (
 
 const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   const { appState, appDispatch } = useAppState();
-
   return (
     <>
       <button
@@ -206,35 +205,35 @@ const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => {
     { route: Routes.WITHDRAW, text: t('Withdraw') },
     { route: Routes.GOVERNANCE, text: t('Governance') },
   ];
+  const navClasses = classNames('flex', {
+    'flex-row gap-8 mt-8 uppercase': isDesktop,
+    'flex-col': !isDesktop,
+  });
+
   return (
-    <nav
-      className={`flex uppercase
-      ${isDesktop ? 'flex-row mt-8' : 'flex-col'}`}
-    >
-      {routes.map(({ route, text }) => (
-        <NavLink
-          {...linkProps}
-          to={route}
-          className={({ isActive }) =>
-            `no-underline hover:no-underline
-            ${
-              isDesktop
-                ? `py-4 px-16 ${
-                    isActive
-                      ? 'bg-black text-white'
-                      : 'bg-transparent text-black hover:text-white'
-                  }`
-                : `border-t border-white p-20 ${
-                    isActive
-                      ? 'bg-vega-yellow text-black hover:text-black'
-                      : 'bg-black text-white hover:text-vega-yellow'
-                  }`
-            }`
-          }
-        >
-          {text}
-        </NavLink>
-      ))}
+    <nav className={navClasses}>
+      {routes.map(({ route, text }) => {
+        return (
+          <NavLink
+            {...linkProps}
+            to={route}
+            className={({ isActive }) => {
+              const linkClasses = classNames(
+                'no-underline hover:no-underline',
+                {
+                  'bg-vega-yellow text-black hover:text-black': isActive,
+                  'bg-black text-white': !isActive,
+                  'py-2 px-12': isDesktop,
+                  'border-t border-white p-20': !isDesktop,
+                }
+              );
+              return linkClasses;
+            }}
+          >
+            {text}
+          </NavLink>
+        );
+      })}
     </nav>
   );
 };
