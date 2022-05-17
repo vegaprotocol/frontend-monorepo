@@ -1,5 +1,4 @@
 import { gql, useApolloClient } from '@apollo/client';
-import { Radio, RadioGroup } from '@blueprintjs/core';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +18,12 @@ import type {
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
-import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  FormGroup,
+  RadioGroup,
+  RadioItem,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   DelegateSubmissionBody,
@@ -210,28 +214,26 @@ export const StakingForm = ({
       <h2 className="text-h4 mb-8">{t('Manage your stake')}</h2>
       <FormGroup>
         <RadioGroup
-          onChange={(e) => {
+          onChange={(value) => {
             // @ts-ignore value does exist on target
-            const value = e.target.value;
             setAction(value);
             navigate(`?action=${value}`, {
               replace: true,
             });
           }}
-          selectedValue={action}
-          inline={true}
+          value={action}
         >
-          <Radio
+          <RadioItem
             disabled={availableStakeToAdd.isEqualTo(0)}
             value={Actions.Add}
             label="Add"
-            data-testid="add-stake-radio"
+            id="add-stake-radio"
           />
-          <Radio
+          <RadioItem
             disabled={availableStakeToRemove.isEqualTo(0)}
             value={Actions.Remove}
             label="Remove"
-            data-testid="remove-stake-radio"
+            id="remove-stake-radio"
           />
         </RadioGroup>
       </FormGroup>

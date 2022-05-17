@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from '@blueprintjs/core';
+import { RadioGroup, RadioItem } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,20 +19,18 @@ export const StakingMethodRadio = ({
   const { t } = useTranslation();
   return (
     <RadioGroup
-      inline={true}
-      onChange={(e) => {
-        // @ts-ignore can't recognise .value
-        setSelectedStakingMethod(e.target.value);
+      onChange={(value) => {
+        setSelectedStakingMethod(value as StakingMethod);
       }}
-      selectedValue={selectedStakingMethod || undefined}
+      value={selectedStakingMethod || undefined}
     >
-      <Radio
-        data-testid="associate-radio-contract"
+      <RadioItem
+        id="associate-radio-contract"
         label={t('Vesting contract')}
         value={StakingMethod.Contract}
       />
-      <Radio
-        data-testid="associate-radio-wallet"
+      <RadioItem
+        id="associate-radio-wallet"
         label={t('Wallet')}
         value={StakingMethod.Wallet}
       />

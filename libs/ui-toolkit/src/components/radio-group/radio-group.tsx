@@ -29,7 +29,7 @@ interface RadioItemProps {
 
 export const RadioItem = ({ id, value, label, disabled }: RadioItemProps) => {
   const wrapperClasses = classNames('flex flex-row gap-12 items-center', {
-    'opacity-75': disabled,
+    'opacity-50': disabled,
   });
   const itemClasses = classNames(
     'flex justify-center items-center',
