@@ -217,6 +217,7 @@ const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => {
           <NavLink
             {...linkProps}
             to={route}
+            key={route}
             className={({ isActive }) => {
               const linkClasses = classNames(
                 'no-underline hover:no-underline',
