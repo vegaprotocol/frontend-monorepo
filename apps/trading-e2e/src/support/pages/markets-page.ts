@@ -24,6 +24,10 @@ export default class MarketPage extends BasePage {
       'Description',
     ];
 
+    // We need this to ensure that ag-grid is fully rendered before asserting
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(100);
+
     cy.get(this.marketRowHeaderClassname)
       .each(($marketHeader, index) => {
         cy.wrap($marketHeader).should(
