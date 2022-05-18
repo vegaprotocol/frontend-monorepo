@@ -14,13 +14,8 @@ const MARKET_DATA_FRAGMENT = gql`
     market {
       id
       state
-      tradingMode
-      state
     }
     auctionEnd
-    bestBidPrice
-    bestOfferPrice
-    markPrice
   }
 `;
 
@@ -30,13 +25,11 @@ const MARKETS_QUERY = gql`
     markets {
       id
       name
-      decimalPlaces
       data {
         ...SimpleMarketDataFields
       }
       tradableInstrument {
         instrument {
-          code
           product {
             ... on Future {
               settlementAsset {
