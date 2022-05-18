@@ -4,7 +4,9 @@ export default class BasePage {
   marketsUrl = '/markets';
 
   closeDialog() {
-    cy.getByTestId(this.closeDialogBtn).click();
+    cy.getByTestId(this.closeDialogBtn, { timeout: 8000 }).click({
+      force: true,
+    });
   }
 
   navigateToPortfolio() {
