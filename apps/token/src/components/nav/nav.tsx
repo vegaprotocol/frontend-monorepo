@@ -129,6 +129,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
         )}
       </Link>
       <h1
+        data-testid="header-title"
         className={`text-[28px] lg:text-h3 pl-8 ${
           fairground ? 'text-black' : 'text-white'
         }`}
