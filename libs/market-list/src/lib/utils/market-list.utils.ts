@@ -58,4 +58,10 @@ export const mapDataToMarketList = (data: MarketList) =>
         ? new Date(m.marketTimestamps.close)
         : null,
     }))
-    .sort((a, b) => (b.open?.getTime() || 0) - (a.open?.getTime() || 0));
+    .sort((a, b) => {
+      const diff = (b.open?.getTime() || 0) - (a.open?.getTime() || 0);
+      if (diff !== 0) {
+        return diff;
+      }
+      return b.id === a.id ? 0 : b.id > a.id ? 1 : -1;
+    });

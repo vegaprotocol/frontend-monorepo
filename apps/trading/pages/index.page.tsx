@@ -22,14 +22,18 @@ const marketList = (data: MarketsLanding) =>
     ?.filter((a) => a.marketTimestamps.open)
     ?.filter((a) => a.tradingMode === MarketTradingMode.Continuous)
     .sort((a, b) => {
-      return (
+      const diff =
         ((b.marketTimestamps.open &&
           new Date(b.marketTimestamps.open).getTime()) ||
           0) -
         ((a.marketTimestamps.open &&
           new Date(a.marketTimestamps.open).getTime()) ||
-          0)
-      );
+          0);
+
+      if (diff !== 0) {
+        return diff;
+      }
+      return b.id === a.id ? 0 : b.id > a.id ? 1 : -1;
     }) || [];
 
 export function Index() {
