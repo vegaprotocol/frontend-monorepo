@@ -14,8 +14,6 @@ interface TxsProps {
 }
 
 interface TxsStateProps {
-  areTxsLoading: boolean | undefined;
-  txsError: Error | undefined;
   txsData: ChainExplorerTxResponse[];
   hasMoreTxs: boolean;
   nextPage: number;
@@ -23,22 +21,18 @@ interface TxsStateProps {
 
 const Txs = ({ latestBlockHeight }: TxsProps) => {
   console.log('rendered');
-  const [
-    { areTxsLoading, txsError, txsData, hasMoreTxs, nextPage },
-    setTxsState,
-  ] = useState<TxsStateProps>({
-    areTxsLoading: false,
-    txsError: undefined,
-    txsData: [],
-    hasMoreTxs: true,
-    nextPage: 1,
-  });
+  const [{ txsData, hasMoreTxs, nextPage }, setTxsState] =
+    useState<TxsStateProps>({
+      txsData: [],
+      hasMoreTxs: true,
+      nextPage: 1,
+    });
 
   const reusedBodyParams = useMemo(
     () => ({
       node_url: `${DATA_SOURCES.tendermintUrl}`,
       transaction_height: parseInt(latestBlockHeight),
-      page_size: 50,
+      page_size: 20,
     }),
     [latestBlockHeight]
   );
@@ -61,7 +55,6 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
     console.log(`loading, next page: ${nextPage}`);
     setTxsState((prev) => ({
       ...prev,
-      areTxsLoading: loading,
     }));
 
     const data = await refetch(undefined, {
@@ -70,9 +63,7 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
     });
 
     if (data) {
-      console.log(
-        `finished loading, next page: ${nextPage}, txs items length of ${txsData.length}`
-      );
+      console.log(`finished loading, next page: ${nextPage}`);
       // @ts-ignore asdfasdfasdf
       const giveMeNumbers = data.map((x, index) => ({
         ...x,
@@ -82,7 +73,6 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
       setTxsState((prev) => ({
         ...prev,
         nextPage: prev.nextPage + 1,
-        areTxsLoading: false,
         hasMoreTxs: true,
         txsData: [
           ...prev.txsData,
@@ -90,31 +80,22 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
         ],
       }));
 
-      console.log(
-        `finished setting state, next page: ${nextPage}, txs items length of ${txsData.length}`
-      );
+      console.log(`finished setting state, next page: ${nextPage}`);
     }
-
-    if (error) {
-      setTxsState((prev) => ({
-        ...prev,
-        txsError: error,
-      }));
-    }
-  }, [error, loading, nextPage, refetch, reusedBodyParams]);
+  }, [nextPage, refetch, reusedBodyParams]);
 
   return (
     <section>
       <RouteTitle>{t('Transactions')}</RouteTitle>
-      <RenderFetched error={error} loading={loading}>
+      <RenderFetched error={error} loading={false}>
         <>
           <BlocksRefetch refetch={refetch} />
           <TxsInfiniteList
             hasMoreTxs={hasMoreTxs}
-            areTxsLoading={areTxsLoading}
+            areTxsLoading={loading}
             txs={txsData}
             loadMoreTxs={loadTxs}
-            error={txsError}
+            error={error}
           />
         </>
       </RenderFetched>
