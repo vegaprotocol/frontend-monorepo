@@ -38,7 +38,7 @@ export const VestingChart = () => {
               ['orange', Colors.orange],
               ['yellow', Colors.yellow.DEFAULT],
             ].map(([key, color]) => (
-              <linearGradient id={key} x1="0" y1="0" x2="0" y2="1">
+              <linearGradient key={key} id={key} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.85} />
                 <stop offset="100%" stopColor={color} stopOpacity={0} />
               </linearGradient>
