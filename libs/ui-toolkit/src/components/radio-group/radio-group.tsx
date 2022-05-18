@@ -25,16 +25,23 @@ interface RadioProps {
   value: string;
   label: string;
   disabled?: boolean;
+  hasError?: boolean;
 }
 
-export const Radio = ({ id, value, label, disabled }: RadioProps) => {
-  const wrapperClasses = classNames('flex flex-row gap-12 items-center', {
+export const Radio = ({ id, value, label, disabled, hasError }: RadioProps) => {
+  const wrapperClasses = classNames('flex flex-row gap-8 items-center', {
     'opacity-50': disabled,
   });
   const itemClasses = classNames(
     'flex justify-center items-center',
-    'w-24 h-24 rounded-full border',
-    'border-black dark:border-white'
+    'w-[17px] h-[17px] rounded-full border',
+    'focus:outline-0 focus-visible:outline-0',
+    'focus:shadow-radio focus:shadow-vega-pink dark:focus:shadow-vega-yellow',
+    'border-black dark:border-white',
+    {
+      'border-black dark:border-white': !hasError,
+      'border-intent-danger dark:border-intent-danger': hasError,
+    }
   );
   return (
     <div className={wrapperClasses}>
@@ -45,7 +52,7 @@ export const Radio = ({ id, value, label, disabled }: RadioProps) => {
         data-testid={id}
         disabled={disabled}
       >
-        <RadioGroupPrimitive.Indicator className="w-12 h-12 bg-black dark:bg-white rounded-full" />
+        <RadioGroupPrimitive.Indicator className="w-[7px] h-[7px] bg-vega-pink dark:bg-vega-yellow rounded-full" />
       </RadioGroupPrimitive.Item>
       <label htmlFor={id} className={disabled ? '' : 'cursor-pointer'}>
         {label}
