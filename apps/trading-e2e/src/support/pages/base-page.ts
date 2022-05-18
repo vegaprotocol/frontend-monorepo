@@ -1,6 +1,11 @@
 export default class BasePage {
+  closeDialogBtn = 'dialog-close';
   porfolioUrl = '/portfolio';
   marketsUrl = '/markets';
+
+  closeDialog() {
+    cy.getByTestId(this.closeDialogBtn).click();
+  }
 
   navigateToPortfolio() {
     cy.get(`a[href='${this.porfolioUrl}']`).should('be.visible').click();
