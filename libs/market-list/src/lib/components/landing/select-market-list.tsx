@@ -1,5 +1,3 @@
-// Sparkline for the Market
-
 import { Arrow, Sparkline } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import { mapDataToMarketList } from '../../utils';
