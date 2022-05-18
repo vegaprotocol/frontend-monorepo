@@ -38,12 +38,12 @@ export const marketCode = (m: MarketList_markets) =>
   m.tradableInstrument.instrument?.code;
 
 export const lastPrice = (m: MarketList_markets) =>
-  (m.candles &&
-    price(
-      m.candles && m.candles[m.candles?.length - 1]?.close,
-      m.decimalPlaces
-    )) ||
-  price(m.data?.markPrice, m.decimalPlaces);
+  m.candles
+    ? price(
+        m.candles && m.candles[m.candles?.length - 1]?.close,
+        m.decimalPlaces
+      )
+    : 'N/A';
 
 export const mapDataToMarketList = (data: MarketList) =>
   data?.markets

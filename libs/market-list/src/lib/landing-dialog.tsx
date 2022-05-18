@@ -74,8 +74,8 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
     value === 0
       ? 'text-black dark:text-white'
       : value > 0
-      ? `text-vega-green`
-      : `text-vega-red`;
+      ? `text-green`
+      : `text-red`;
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
 
@@ -95,7 +95,9 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
         <tbody>
           {data &&
             mapDataToMarketList(data)
-              ?.filter((m) => m.candles && m.lastPrice && m.lastPrice !== 'N/A')
+              ?.filter(
+                (m) => (m.candles && m.lastPrice) || m.lastPrice !== 'N/A'
+              )
               .slice(0, 12)
               ?.map((market) => (
                 <tr
@@ -112,12 +114,12 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                     {market?.marketName}
                   </td>
                   <td className={tdClassNames}>
-                    {market?.lastPrice.toLocaleString()}
+                    {market?.lastPrice?.toLocaleString()}
                   </td>
                   <td
                     className={`${tdClassNames} ${priceChangeClassNames(
                       market?.change
-                    )} flex items-center gap-4`}
+                    )} flex items-center gap-4 justify-end`}
                   >
                     {<Arrow value={market?.change} />}
                     <span className="flex items-center gap-6">
