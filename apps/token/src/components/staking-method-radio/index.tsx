@@ -18,22 +18,24 @@ export const StakingMethodRadio = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <RadioGroup
-      onChange={(value) => {
-        setSelectedStakingMethod(value as StakingMethod);
-      }}
-      value={selectedStakingMethod || undefined}
-    >
-      <Radio
-        id="associate-radio-contract"
-        label={t('Vesting contract')}
-        value={StakingMethod.Contract}
-      />
-      <Radio
-        id="associate-radio-wallet"
-        label={t('Wallet')}
-        value={StakingMethod.Wallet}
-      />
-    </RadioGroup>
+    <div className="mb-12">
+      <RadioGroup
+        onChange={(value) => {
+          setSelectedStakingMethod(value as StakingMethod);
+        }}
+        value={selectedStakingMethod || undefined}
+      >
+        <Radio
+          id="associate-radio-contract"
+          label={t('Vesting contract')}
+          value={StakingMethod.Contract}
+        />
+        <Radio
+          id="associate-radio-wallet"
+          label={t('Wallet')}
+          value={StakingMethod.Wallet}
+        />
+      </RadioGroup>
+    </div>
   );
 };
