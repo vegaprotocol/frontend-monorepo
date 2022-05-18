@@ -20,7 +20,6 @@ interface TxsStateProps {
 }
 
 const Txs = ({ latestBlockHeight }: TxsProps) => {
-  console.log('rendered');
   const [{ txsData, hasMoreTxs, nextPage }, setTxsState] =
     useState<TxsStateProps>({
       txsData: [],
@@ -89,7 +88,14 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
       <RouteTitle>{t('Transactions')}</RouteTitle>
       <RenderFetched error={error} loading={false}>
         <>
-          <BlocksRefetch refetch={refetch} />
+          <BlocksRefetch
+            refetch={() =>
+              refetch(undefined, {
+                ...reusedBodyParams,
+                page_number: 1,
+              })
+            }
+          />
           <TxsInfiniteList
             hasMoreTxs={hasMoreTxs}
             areTxsLoading={loading}
