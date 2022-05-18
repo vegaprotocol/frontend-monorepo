@@ -36,10 +36,11 @@ export const Radio = ({ id, value, label, disabled, hasError }: RadioProps) => {
     'flex justify-center items-center',
     'w-[17px] h-[17px] rounded-full border',
     'focus:outline-0 focus-visible:outline-0',
-    'focus:shadow-radio focus:shadow-vega-pink dark:focus:shadow-vega-yellow',
-    'border-black dark:border-white',
+    'focus-visible:shadow-radio focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
+    'border-black-60 dark:border-white-60',
+    'dark:bg-white-25',
     {
-      'border-black dark:border-white': !hasError,
+      'border-black-60 dark:border-white-60': !hasError,
       'border-intent-danger dark:border-intent-danger': hasError,
     }
   );
