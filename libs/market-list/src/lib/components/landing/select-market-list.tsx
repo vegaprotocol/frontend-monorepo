@@ -24,8 +24,6 @@ export const MarketSparkline = ({ candles }: MarketSparklineProps) => {
   );
 };
 
-// Select Market List
-
 export interface SelectMarketListProps {
   data: MarketList | undefined;
 }
