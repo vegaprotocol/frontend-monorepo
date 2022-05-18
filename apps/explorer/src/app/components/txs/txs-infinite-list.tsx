@@ -55,8 +55,7 @@ export const TxsInfiniteList = ({
     } else if (!isItemLoaded(index)) {
       content = t('Loading...');
     } else {
-      // @ts-ignore asdfasdfasdf
-      const { TxHash, PubKey, Type, number } = txs[index];
+      const { TxHash, PubKey, Type } = txs[index];
       content = (
         <TableWithTbody>
           <TableRow
@@ -64,7 +63,6 @@ export const TxsInfiniteList = ({
             key={TxHash}
             data-testid="transaction-row"
           >
-            <TableCell>{number}</TableCell>
             <TableCell modifier="bordered" className="pr-12">
               <TruncatedLink
                 to={`/${Routes.TX}/${TxHash}`}
