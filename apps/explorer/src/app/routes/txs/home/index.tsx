@@ -1,5 +1,5 @@
 import { DATA_SOURCES } from '../../../config';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
@@ -22,6 +22,7 @@ interface TxsStateProps {
 }
 
 const Txs = ({ latestBlockHeight }: TxsProps) => {
+  console.log('rendered');
   const [
     { areTxsLoading, txsError, txsData, hasMoreTxs, nextPage },
     setTxsState,
@@ -33,11 +34,14 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
     nextPage: 1,
   });
 
-  const reusedBodyParams = {
-    node_url: `${DATA_SOURCES.tendermintUrl}`,
-    transaction_height: parseInt(latestBlockHeight),
-    page_size: 50,
-  };
+  const reusedBodyParams = useMemo(
+    () => ({
+      node_url: `${DATA_SOURCES.tendermintUrl}`,
+      transaction_height: parseInt(latestBlockHeight),
+      page_size: 50,
+    }),
+    [latestBlockHeight]
+  );
 
   const {
     state: { error, loading },
@@ -60,7 +64,7 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
       areTxsLoading: loading,
     }));
 
-    const data = await refetch({
+    const data = await refetch(undefined, {
       ...reusedBodyParams,
       page_number: nextPage,
     });
