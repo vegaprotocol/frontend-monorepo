@@ -6,12 +6,12 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridColumn } from 'ag-grid-react';
+import type { AgGridReact } from 'ag-grid-react';
 import type {
   Markets_markets,
   Markets_markets_data_market,
-} from './__generated__/Markets';
-import { AgGridColumn } from 'ag-grid-react';
-import type { AgGridReact } from 'ag-grid-react';
+} from '../__generated__/Markets';
 
 interface MarketListTableProps {
   data: Markets_markets[] | null;

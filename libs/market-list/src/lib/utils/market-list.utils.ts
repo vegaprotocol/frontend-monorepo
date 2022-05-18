@@ -2,7 +2,7 @@ import type {
   MarketList,
   MarketList_markets,
   MarketList_markets_candles,
-} from '../__generated__/MarketList';
+} from '../components/__generated__/MarketList';
 
 export const priceChange = (m: MarketList_markets) => {
   if (
