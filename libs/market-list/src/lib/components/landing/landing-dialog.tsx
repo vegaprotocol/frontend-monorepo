@@ -29,8 +29,6 @@ const MARKET_LIST_QUERY = gql`
   }
 `;
 
-// Landing Dialog
-
 export const LandingDialog = () => {
   const [open, setOpen] = useState(true);
   const setClose = () => setOpen(false);
