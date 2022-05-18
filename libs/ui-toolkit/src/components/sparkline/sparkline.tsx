@@ -8,8 +8,8 @@ function colorByChange(a: number, b: number) {
   return a === b
     ? 'stroke-black/40 dark:stroke-white/40'
     : a < b
-    ? 'stroke-bullish'
-    : 'stroke-bearish';
+    ? 'stroke-green-dark dark:stroke-green'
+    : 'stroke-red-dark dark:stroke-red';
 }
 
 export interface SparklineProps {
@@ -18,6 +18,7 @@ export interface SparklineProps {
   height?: number;
   points?: number;
   className?: string;
+  muted?: boolean;
 }
 
 export const SparklineView = ({
@@ -25,6 +26,7 @@ export const SparklineView = ({
   width = 60,
   height = 15,
   points = 25,
+  muted = false,
   className,
 }: SparklineProps) => {
   // How many points are missing. If market is 12 hours old the 25 - 12
@@ -69,10 +71,11 @@ export const SparklineView = ({
 
   // Get the color of the marketData line
   const [firstVal, lastVal] = [data[0], data[data.length - 1]];
-  const strokeClassName =
-    data.length >= 24
+  const strokeClassName = muted
+    ? data.length >= 24
       ? colorByChange(firstVal, lastVal)
-      : 'stroke-black/40 dark:stroke-white/40';
+      : 'stroke-black/40 dark:stroke-white/40'
+    : colorByChange(firstVal, lastVal);
 
   // Create paths
   const preMarketCreationPath = lineSeries(preMarketData);

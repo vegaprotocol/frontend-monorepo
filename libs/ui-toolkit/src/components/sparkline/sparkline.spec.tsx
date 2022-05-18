@@ -7,6 +7,7 @@ const props = {
     1, 2, 3, 4, 5, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 6, 7, 8, 9,
     10, 11, 12,
   ],
+  muted: true,
 };
 
 it('Renders an svg with a single path', () => {
@@ -34,16 +35,21 @@ it('Renders a red line if the last value is less than the first', () => {
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveClass('stroke-bearish');
+  expect(path).toHaveClass(
+    '[vector-effect:non-scaling-stroke] stroke-red-dark dark:stroke-red'
+  );
 });
 
 it('Renders a green line if the last value is greater than the first', () => {
   props.data[0] = 5;
   props.data[props.data.length - 1] = 10;
+  props.muted = true;
   render(<Sparkline {...props} />);
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
-  expect(path).toHaveClass('stroke-bullish');
+  expect(path).toHaveClass(
+    '[vector-effect:non-scaling-stroke] stroke-green-dark dark:stroke-green'
+  );
 });
 
 it('Renders a white line if the first and last values are equal', () => {

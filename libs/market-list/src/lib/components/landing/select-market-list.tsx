@@ -74,7 +74,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                 }) => (
                   <tr
                     key={id}
-                    className="hover:bg-black/20 dark:hover:bg-white/20"
+                    className="hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer"
                     onClick={(e) => {
                       e.preventDefault();
                       push(
