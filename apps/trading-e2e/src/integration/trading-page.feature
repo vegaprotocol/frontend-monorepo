@@ -100,3 +100,28 @@ Feature: Trading page
     When I click on order book tab
     Then orderbook is displayed with expected orders
     And orderbook can be reduced and expanded
+
+    @todo
+    Scenario: Orderbook paginated with over 100 orders
+    Given I am on the trading page for an active market
+    When I click on order book tab
+    And a large amount is orders are received
+    Then a certain amount of orders are displayed
+
+    @todo
+    Scenario: Orderbook uses non-static prices for market in auction
+    Given I am on the trading page for a market in auction
+    When I click on order book tab
+    Then order book is rendered using non-static offers
+
+    @todo
+    Scenario: Orderbook updated when large order is made
+    Given I am on the trading page for an active market
+    When I place a large order
+    Then I should see my order have an effect on the order book
+
+    @todo
+    Scenario: Able to place order by clicking on order from orderbook
+    Given I am on the trading page for an active market
+    When I place a large order
+    Then I should see my order have an effect on the order book
