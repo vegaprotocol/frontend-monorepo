@@ -17,10 +17,12 @@ const MARKETS_QUERY = gql`
   }
 `;
 
-const marketList = (data: MarketsLanding) =>
-  data?.markets
-    ?.filter((a) => a.marketTimestamps.open)
-    ?.filter((a) => a.tradingMode === MarketTradingMode.Continuous)
+const marketList = ({ markets }: MarketsLanding) =>
+  markets
+    ?.filter(
+      ({ marketTimestamps, tradingMode }) =>
+        marketTimestamps.open && tradingMode === MarketTradingMode.Continuous
+    )
     .sort((a, b) => {
       const diff =
         ((b.marketTimestamps.open &&

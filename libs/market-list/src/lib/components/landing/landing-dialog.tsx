@@ -48,9 +48,9 @@ export const LandingDialog = () => {
           intent={Intent.Prompt}
           open={open}
           onChange={setClose}
-          titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0"
+          titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
         >
-          {<SelectMarketList data={data} />}
+          <SelectMarketList data={data} />
         </Dialog>
       }
     </AsyncRenderer>

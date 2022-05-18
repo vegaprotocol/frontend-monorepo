@@ -23,10 +23,8 @@ const MarketPage = ({ id }: { id?: string }) => {
   const { w } = useWindowSize();
 
   // Default to first marketId query item if found
-  const firstMarketId = Array.isArray(query.marketId)
-    ? query.marketId[0]
-    : query.marketId;
-  const marketId = id || firstMarketId;
+  const marketId =
+    id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
 
   if (!marketId) {
     return (

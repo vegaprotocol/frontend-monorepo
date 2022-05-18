@@ -17,8 +17,8 @@ export const MarketSparkline = ({ candles }: MarketSparklineProps) => {
       height={20}
       data={
         candles
-          ?.filter((m) => !isNaN(Number(m.close)))
-          ?.map((m) => Number(m.close)) || []
+          ?.filter(({ close }) => !isNaN(Number(close)))
+          ?.map(({ close }) => Number(close)) || []
       }
     />
   );
@@ -30,15 +30,15 @@ export interface SelectMarketListProps {
 
 export const SelectMarketList = ({ data }: SelectMarketListProps) => {
   const thClassNames = (direction: 'left' | 'right') =>
-    `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 capitalize mb-0 text-dark/80 dark:text-white/80`;
+    `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark/80 dark:text-white/80`;
   const tdClassNames =
     'px-8 font-sans leading-9 capitalize text-ui-small text-right';
   const priceChangeClassNames = (value: number) =>
     value === 0
       ? 'text-black dark:text-white'
       : value > 0
-      ? `text-green`
-      : `text-red`;
+      ? `text-green-dark dark:text-green-vega `
+      : `text-red-dark dark:text-red-vega`;
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
 
@@ -50,7 +50,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
         <thead className="sticky top-0 z-10 dark:bg-black bg-white">
           <tr>
             <th className={thClassNames('left')}>Market</th>
-            <th className={thClassNames('right')}>Last Price</th>
+            <th className={thClassNames('right')}>Last price</th>
             <th className={thClassNames('right')}>Change (24h)</th>
             <th className={thClassNames('right')}></th>
           </tr>
@@ -59,47 +59,57 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
           {data &&
             mapDataToMarketList(data)
               ?.filter(
-                (m) => (m.candles && m.lastPrice) || m.lastPrice !== 'N/A'
+                ({ candles, lastPrice }) =>
+                  (candles && lastPrice) || lastPrice !== 'N/A'
               )
               .slice(0, 12)
-              ?.map((market) => (
-                <tr
-                  key={market.id}
-                  className="hover:bg-black/20 dark:hover:bg-white/20"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    push(
-                      `/markets/${market.id}?portfolio=orders&trade=orderbook&chart=candles`
-                    );
-                  }}
-                >
-                  <td className={boldUnderlineClassNames}>
-                    {market?.marketName}
-                  </td>
-                  <td className={tdClassNames}>
-                    {market?.lastPrice?.toLocaleString()}
-                  </td>
-                  <td
-                    className={`${tdClassNames} ${priceChangeClassNames(
-                      market?.change
-                    )} flex items-center gap-4 justify-end`}
+              ?.map(
+                ({
+                  id,
+                  marketName,
+                  change,
+                  lastPrice,
+                  candles,
+                  changePercentage,
+                }) => (
+                  <tr
+                    key={id}
+                    className="hover:bg-black/20 dark:hover:bg-white/20"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      push(
+                        `/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`
+                      );
+                    }}
                   >
-                    {<Arrow value={market?.change} />}
-                    <span className="flex items-center gap-6">
-                      <span>{market?.change.toFixed(2).toLocaleString()}%</span>
-                      <span>({market?.change.toLocaleString()})</span>
-                    </span>
-                  </td>
-                  <td className="px-8">
-                    {<MarketSparkline candles={market?.candles} />}
-                  </td>
-                </tr>
-              ))}
+                    <td className={boldUnderlineClassNames}>{marketName}</td>
+                    <td className={tdClassNames}>
+                      {lastPrice?.toLocaleString()}
+                    </td>
+                    <td
+                      className={`${tdClassNames} ${priceChangeClassNames(
+                        change
+                      )} flex items-center gap-4 justify-end`}
+                    >
+                      {<Arrow value={change} />}
+                      <span className="flex items-center gap-6">
+                        <span>
+                          {changePercentage.toFixed(2).toLocaleString()}%
+                        </span>
+                        <span>({change.toLocaleString()})</span>
+                      </span>
+                    </td>
+                    <td className="px-8">
+                      {<MarketSparkline candles={candles} />}
+                    </td>
+                  </tr>
+                )
+              )}
         </tbody>
       </table>
 
       <a
-        className={`${boldUnderlineClassNames}`}
+        className={`${boldUnderlineClassNames} text-ui-small`}
         href={pathname}
         onClick={(e) => {
           e.preventDefault();

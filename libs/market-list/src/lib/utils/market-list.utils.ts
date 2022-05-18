@@ -4,15 +4,10 @@ import type {
   MarketList_markets_candles,
 } from '../components/__generated__/MarketList';
 
-export const priceChange = (m: MarketList_markets) => {
-  if (
-    m.candles &&
-    m.candles.length > 0 &&
-    m.candles[m.candles.length - 1]?.open &&
-    m.candles[m.candles.length - 1]?.close
-  ) {
-    const yesterdayLastPrice = Number(m.candles[0]?.close);
-    const recentLastPrice = Number(m.candles[m.candles.length - 1]?.close);
+export const priceChangePercentage = ({ candles }: MarketList_markets) => {
+  if (candles && candles.length > 0) {
+    const yesterdayLastPrice = Number(candles[0]?.close);
+    const recentLastPrice = Number(candles[candles.length - 1]?.close);
     const increase = recentLastPrice - yesterdayLastPrice;
 
     return (increase / yesterdayLastPrice) * 100;
@@ -20,10 +15,25 @@ export const priceChange = (m: MarketList_markets) => {
   return 0;
 };
 
-export const candles = (m: MarketList_markets) =>
-  m.candles?.map((c: MarketList_markets_candles | null) => ({
-    open: price(c?.open, m.decimalPlaces),
-    close: price(c?.close, m.decimalPlaces),
+export const priceChange = ({ candles, decimalPlaces }: MarketList_markets) => {
+  if (candles && candles.length > 0) {
+    const yesterdayLastPrice = price(candles[0]?.close, decimalPlaces);
+    const recentLastPrice = price(
+      candles[candles.length - 1]?.close,
+      decimalPlaces
+    );
+    if (recentLastPrice !== 'N/A' && yesterdayLastPrice !== 'N/A') {
+      return recentLastPrice - yesterdayLastPrice;
+    }
+    return 0;
+  }
+  return 0;
+};
+
+export const candles = ({ candles, decimalPlaces }: MarketList_markets) =>
+  candles?.map((c: MarketList_markets_candles | null) => ({
+    open: price(c?.open, decimalPlaces),
+    close: price(c?.close, decimalPlaces),
   }));
 
 export const price = (
@@ -34,24 +44,22 @@ export const price = (
     ? 'N/A'
     : Number(value) / Math.pow(10, decimalPlaces);
 
-export const marketCode = (m: MarketList_markets) =>
-  m.tradableInstrument.instrument?.code;
+export const marketCode = ({ tradableInstrument }: MarketList_markets) =>
+  tradableInstrument.instrument?.code;
 
-export const lastPrice = (m: MarketList_markets) =>
-  m.candles
-    ? price(
-        m.candles && m.candles[m.candles?.length - 1]?.close,
-        m.decimalPlaces
-      )
+export const lastPrice = ({ candles, decimalPlaces }: MarketList_markets) =>
+  candles && candles.length > 0
+    ? price(candles && candles[candles?.length - 1]?.close, decimalPlaces)
     : 'N/A';
 
-export const mapDataToMarketList = (data: MarketList) =>
-  data?.markets
+export const mapDataToMarketList = ({ markets }: MarketList) =>
+  markets
     ?.map((m) => ({
       id: m.id,
       marketName: marketCode(m),
       lastPrice: lastPrice(m),
       candles: candles(m),
+      changePercentage: priceChangePercentage(m),
       change: priceChange(m),
       open: m.marketTimestamps.open ? new Date(m.marketTimestamps.open) : null,
       close: m.marketTimestamps.close

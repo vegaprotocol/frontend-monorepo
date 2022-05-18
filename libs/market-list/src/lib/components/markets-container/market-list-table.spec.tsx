@@ -10,9 +10,7 @@ describe('MarketListTable', () => {
         <MockedProvider>
           <MarketListTable
             data={[]}
-            onRowClicked={jest.fn((marketId: string) => {
-              //do nothing
-            })}
+            onRowClicked={jest.fn((marketId: string) => null)}
           />
         </MockedProvider>
       );
