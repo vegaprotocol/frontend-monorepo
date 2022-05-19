@@ -2,11 +2,8 @@ import React from 'react';
 import { FixedSizeList as List } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import { t } from '@vegaprotocol/react-helpers';
+import { TxsInfiniteListItem } from './txs-infinite-list-item';
 import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
-import { TableWithTbody, TableCell, TableRow } from '../table';
-import { TruncatedLink } from '../truncate/truncated-link';
-import { Routes } from '../../routes/route-names';
-import { TxOrderType } from './tx-order-type';
 
 interface TxsInfiniteListProps {
   hasMoreTxs: boolean;
@@ -24,7 +21,6 @@ interface ItemProps {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const NOOP = () => {};
-const truncateLength = 14;
 
 export const TxsInfiniteList = ({
   hasMoreTxs,
@@ -55,35 +51,16 @@ export const TxsInfiniteList = ({
     } else if (!isItemLoaded(index)) {
       content = t('Loading...');
     } else {
-      const { TxHash, PubKey, Type } = txs[index];
+      const { TxHash, PubKey, Type, Command, Sig, Nonce } = txs[index];
       content = (
-        <TableWithTbody>
-          <TableRow
-            modifier="bordered"
-            key={TxHash}
-            data-testid="transaction-row"
-          >
-            <TableCell modifier="bordered" className="pr-12">
-              <TruncatedLink
-                to={`/${Routes.TX}/${TxHash}`}
-                text={TxHash}
-                startChars={truncateLength}
-                endChars={truncateLength}
-              />
-            </TableCell>
-            <TableCell modifier="bordered" className="pr-12">
-              <TruncatedLink
-                to={`/${Routes.PARTIES}/${PubKey}`}
-                text={PubKey}
-                startChars={truncateLength}
-                endChars={truncateLength}
-              />
-            </TableCell>
-            <TableCell modifier="bordered">
-              <TxOrderType orderType={Type} />
-            </TableCell>
-          </TableRow>
-        </TableWithTbody>
+        <TxsInfiniteListItem
+          Type={Type}
+          Command={Command}
+          Sig={Sig}
+          PubKey={PubKey}
+          Nonce={Nonce}
+          TxHash={TxHash}
+        />
       );
     }
 
@@ -92,6 +69,11 @@ export const TxsInfiniteList = ({
 
   return (
     <div className={className} data-testid="infinite-scroll-wrapper">
+      <div className="grid grid-cols-3 gap-12 w-full mb-8">
+        <div className="text-h5 font-bold text-center">Txn hash</div>
+        <div className="text-h5 font-bold text-center">Party</div>
+        <div className="text-h5 font-bold text-center">Type</div>
+      </div>
       <InfiniteLoader
         isItemLoaded={isItemLoaded}
         itemCount={itemCount}
@@ -100,9 +82,9 @@ export const TxsInfiniteList = ({
         {({ onItemsRendered, ref }) => (
           <List
             className="List"
-            height={585}
+            height={595}
             itemCount={itemCount}
-            itemSize={33}
+            itemSize={41}
             onItemsRendered={onItemsRendered}
             ref={ref}
             width={'100%'}

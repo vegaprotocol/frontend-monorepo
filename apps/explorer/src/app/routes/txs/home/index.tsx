@@ -4,7 +4,7 @@ import { t, useFetch } from '@vegaprotocol/react-helpers';
 import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { JumpToBlock } from '../../../components/jump-to-block';
-import { TxsInfiniteList } from '../../../components/txs/txs-infinite-list';
+import { TxsInfiniteList } from '../../../components/txs';
 import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
 
 interface TxsProps {
@@ -30,7 +30,7 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
     () => ({
       node_url: `${DATA_SOURCES.tendermintUrl}`,
       transaction_height: parseInt(latestBlockHeight),
-      page_size: 20,
+      page_size: 30,
     }),
     [latestBlockHeight]
   );
@@ -86,6 +86,7 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
         txs={txsData}
         loadMoreTxs={loadTxs}
         error={error}
+        className="mb-28"
       />
       <JumpToBlock />
     </section>
