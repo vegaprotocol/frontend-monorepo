@@ -95,7 +95,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                       {<Arrow value={change} />}
                       <span className="flex items-center gap-6">
                         <span>
-                          {changePercentage.toFixed(2).toLocaleString()}%
+                          {changePercentage.toFixed(2).toLocaleString()}%&nbsp;
                         </span>
                         <span>({change.toFixed(3).toLocaleString()})</span>
                       </span>
