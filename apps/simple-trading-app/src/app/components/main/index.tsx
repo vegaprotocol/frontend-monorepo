@@ -1,14 +1,13 @@
 import React from 'react';
 import { useRoutes, NavLink } from 'react-router-dom';
+import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import {
-  Loader,
-  Splash,
   NavigationDrawer,
   DrawerWrapper,
   DrawerContainer,
   DrawerToggle,
   DRAWER_TOGGLE_VARIANTS,
-} from '@vegaprotocol/ui-toolkit';
+} from '../drawer';
 import { routerConfig } from '../../routes/router-config';
 
 export interface RouteChildProps {

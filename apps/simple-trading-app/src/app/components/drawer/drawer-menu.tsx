@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { ReactElement } from 'react';
-import { Button } from '../';
-import type { ButtonProps } from '../';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import type { ButtonProps } from '@vegaprotocol/ui-toolkit';
 
 type MenuItem = {
   label: string;

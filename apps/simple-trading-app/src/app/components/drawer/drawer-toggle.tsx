@@ -1,8 +1,8 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { Button, Icon } from '../';
+import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
-import type { IconName } from '../';
+import type { IconName } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
 
 export const enum DRAWER_TOGGLE_VARIANTS {
@@ -23,7 +23,7 @@ export const DrawerToggle = ({
 }: Props) => {
   const [iconName, setIconName] = useState(IconNames.MENU);
   const classes = classNames('md:hidden', {
-    [`${className}`]: className,
+    [className as string]: className,
   });
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export const DrawerToggle = ({
     } else {
       setIconName(IconNames.CROSS);
     }
-  }, []);
+  }, [variant]);
 
   return (
     <Button variant="inline" className={classes} onClick={onToggle}>

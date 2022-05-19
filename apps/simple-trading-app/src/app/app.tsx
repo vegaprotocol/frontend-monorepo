@@ -10,15 +10,12 @@ import {
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
 import { VegaWalletConnectButton } from './components/vega-wallet-connect-button';
-import {
-  DrawerToggle,
-  ThemeSwitcher,
-  DRAWER_TOGGLE_VARIANTS,
-} from '@vegaprotocol/ui-toolkit';
+import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Connectors } from './lib/vega-connectors';
 import '../styles.scss';
 import { AppLoader } from './components/app-loader';
 import { Main } from './components/main';
+import { DrawerToggle, DRAWER_TOGGLE_VARIANTS } from './components/drawer';
 import { useLocation } from 'react-router-dom';
 
 function App() {
