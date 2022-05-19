@@ -90,7 +90,11 @@ const WithdrawPendingContainer = ({
           </li>
         ))}
       </ul>
-      <TransactionDialog name="withdraw" {...transaction} />
+      <TransactionDialog
+        name="withdraw"
+        {...transaction}
+        etherscanUrl={ENV.etherscanUrl}
+      />
     </>
   );
 };

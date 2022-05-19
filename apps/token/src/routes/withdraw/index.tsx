@@ -15,6 +15,7 @@ import type {
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
+import { ENV } from '../../config/env';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -149,7 +150,11 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           </Callout>
         </div>
       )}
-      <WithdrawManager assets={data.assets || []} accounts={accounts} />
+      <WithdrawManager
+        assets={data.assets || []}
+        accounts={accounts}
+        etherscanUrl={ENV.etherscanUrl}
+      />
     </>
   );
 };
