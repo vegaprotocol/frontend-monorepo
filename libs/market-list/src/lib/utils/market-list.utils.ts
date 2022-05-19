@@ -1,21 +1,24 @@
+import BigNumber from 'bignumber.js';
 import type {
   MarketList,
   MarketList_markets,
   MarketList_markets_candles,
 } from '../components/__generated__/MarketList';
 
-export const priceChangePercentage = ({ candles }: MarketList_markets) => {
-  if (candles && candles.length > 0) {
-    const yesterdayLastPrice = Number(candles[0]?.close);
-    const recentLastPrice = Number(candles[candles.length - 1]?.close);
-    const increase = recentLastPrice - yesterdayLastPrice;
-
-    return (increase / yesterdayLastPrice) * 100;
+export const priceChangePercentage = (m: MarketList_markets): BigNumber => {
+  const change = priceChange(m);
+  const { candles } = m;
+  if (change && candles && candles.length > 0) {
+    const yesterdayLastPrice = price(candles[0]?.close, m.decimalPlaces);
+    return change.dividedBy(yesterdayLastPrice).multipliedBy(100);
   }
-  return 0;
+  return new BigNumber(0);
 };
 
-export const priceChange = ({ candles, decimalPlaces }: MarketList_markets) => {
+export const priceChange = ({
+  candles,
+  decimalPlaces,
+}: MarketList_markets): BigNumber => {
   if (candles && candles.length > 0) {
     const yesterdayLastPrice = price(candles[0]?.close, decimalPlaces);
     const recentLastPrice = price(
@@ -23,11 +26,11 @@ export const priceChange = ({ candles, decimalPlaces }: MarketList_markets) => {
       decimalPlaces
     );
     if (recentLastPrice !== 'N/A' && yesterdayLastPrice !== 'N/A') {
-      return recentLastPrice - yesterdayLastPrice;
+      return recentLastPrice.minus(yesterdayLastPrice);
     }
-    return 0;
+    return new BigNumber(0);
   }
-  return 0;
+  return new BigNumber(0);
 };
 
 export const candles = ({ candles, decimalPlaces }: MarketList_markets) =>
@@ -39,10 +42,10 @@ export const candles = ({ candles, decimalPlaces }: MarketList_markets) =>
 export const price = (
   value: number | string | null | undefined,
   decimalPlaces: number
-) =>
+): BigNumber | 'N/A' =>
   value === undefined || value === null
     ? 'N/A'
-    : Number(value) / Math.pow(10, decimalPlaces);
+    : new BigNumber(value).dividedBy(Math.pow(10, decimalPlaces));
 
 export const marketCode = ({ tradableInstrument }: MarketList_markets) =>
   tradableInstrument.instrument?.code;
@@ -60,8 +63,8 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
         marketName: marketCode(m),
         lastPrice: lastPrice(m),
         candles: candles(m),
-        changePercentage: priceChangePercentage(m),
-        change: priceChange(m),
+        changePercentage: priceChangePercentage(m).toNumber(),
+        change: priceChange(m).toNumber(),
         open: m.marketTimestamps.open
           ? new Date(m.marketTimestamps.open)
           : null,

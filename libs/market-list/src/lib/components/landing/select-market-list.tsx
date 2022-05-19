@@ -1,11 +1,12 @@
 import { Arrow, Sparkline } from '@vegaprotocol/ui-toolkit';
+import type { BigNumber } from 'bignumber.js';
 import { mapDataToMarketList } from '../../utils';
 import type { MarketList } from '../__generated__/MarketList';
 
 export interface MarketSparklineProps {
   candles?: {
-    close: string | undefined | number;
-    open: string | undefined | number;
+    close: string | undefined | number | BigNumber;
+    open: string | undefined | number | BigNumber;
   }[];
 }
 

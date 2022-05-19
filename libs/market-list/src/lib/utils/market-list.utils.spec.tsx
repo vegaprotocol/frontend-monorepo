@@ -1,10 +1,10 @@
+import BigNumber from 'bignumber.js';
 import type { MarketList } from '../components/__generated__/MarketList';
 import { mapDataToMarketList } from './market-list.utils';
 
 describe('mapDataToMarketList', () => {
   it('should map queried data to market list format', () => {
     const result = mapDataToMarketList(mockData.data as unknown as MarketList);
-    const oldToNewMarketList = mockMarketList.reverse();
     expect(result).toEqual(oldToNewMarketList);
   });
 });
@@ -437,7 +437,7 @@ const mockMarketList = [
       { open: 684.82664, close: 672.12656 },
       { open: 670.46739, close: 672.61057 },
     ],
-    changePercentage: -5.374851858611429,
+    changePercentage: -5.3748518586114296,
     change: -38.205299999999966,
     open: new Date('2022-05-18T13:00:37.823Z'),
     close: null,
@@ -475,3 +475,13 @@ const mockMarketList = [
     close: null,
   },
 ];
+
+const oldToNewMarketList = mockMarketList.reverse().map((market) => ({
+  ...market,
+  candles: market.candles.map((c) => ({
+    open: new BigNumber(c.open),
+    close: new BigNumber(c.close),
+  })),
+  change: Number(market.change.toFixed(5)),
+  lastPrice: new BigNumber(market.lastPrice),
+}));
