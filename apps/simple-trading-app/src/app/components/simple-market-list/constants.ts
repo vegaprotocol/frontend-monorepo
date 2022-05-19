@@ -13,5 +13,3 @@ export const MARKET_STATUS: Record<MarketState | '', TailwindIntents> = {
   [MarketState.TradingTerminated]: TailwindIntents.Danger,
   '': TailwindIntents.Highlight,
 };
-
-export const DATE_FORMAT = 'dd MMMM yyyy HH:mm';

@@ -6,7 +6,8 @@ import { Button } from '@vegaprotocol/ui-toolkit';
 import { format } from 'date-fns';
 import SimpleMarketPercentChange from './simple-market-percent-change';
 import DataProvider from './data-provider';
-import { DATE_FORMAT, MARKET_STATUS } from './constants';
+import { DATE_FORMAT } from '../../constants';
+import { MARKET_STATUS } from './constants';
 
 const SimpleMarketList = () => {
   const variables = useMemo(
