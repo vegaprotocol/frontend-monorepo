@@ -57,31 +57,31 @@
     "serve-devnet": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/simple-trading-app/.env.devnet nx run simple-trading-app:serve"
+        "command": "env-cmd -f ./apps/simple-trading-app/.env.devnet nx run simple-trading-app:serve"
       }
     },
     "serve-testnet": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/simple-trading-app/.env.testnet nx run simple-trading-app:serve"
+        "command": "env-cmd -f ./apps/simple-trading-app/.env.testnet nx run simple-trading-app:serve"
       }
     },
     "serve-stagnet1": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/simple-trading-app/.env.stagnet1 nx run simple-trading-app:serve"
+        "command": "env-cmd -f ./apps/simple-trading-app/.env.stagnet1 nx run simple-trading-app:serve"
       }
     },
     "serve-stanget2": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/simple-trading-app/.env.stanget2 nx run simple-trading-app:serve"
+        "command": "env-cmd -f ./apps/simple-trading-app/.env.stanget2 nx run simple-trading-app:serve"
       }
     },
     "serve-mainnet": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/simple-trading-app/.env.mainnet nx run simple-trading-app:serve"
+        "command": "env-cmd -f ./apps/simple-trading-app/.env.mainnet nx run simple-trading-app:serve"
       }
     },
     "lint": {

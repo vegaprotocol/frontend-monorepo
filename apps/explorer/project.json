@@ -54,37 +54,37 @@
     "serve-devnet": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/explorer/.env.devnet nx run explorer:serve"
+        "command": "env-cmd -f ./apps/explorer/.env.devnet nx run explorer:serve"
       }
     },
     "serve-testnet": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/explorer/.env.testnet nx run explorer:serve"
+        "command": "env-cmd -f ./apps/explorer/.env.testnet nx run explorer:serve"
       }
     },
     "serve-capsule": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/explorer/.env.capsule nx run explorer:serve"
+        "command": "env-cmd -f ./apps/explorer/.env.capsule nx run explorer:serve"
       }
     },
     "serve-stagnet1": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/explorer/.env.stagnet1 nx run explorer:serve"
+        "command": "env-cmd -f ./apps/explorer/.env.stagnet1 nx run explorer:serve"
       }
     },
     "serve-stanget2": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/explorer/.env.stanget2 nx run explorer:serve"
+        "command": "env-cmd -f ./apps/explorer/.env.stanget2 nx run explorer:serve"
       }
     },
     "serve-mainnet": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "env.cmd -f ./apps/explorer/.env.mainnet nx run explorer:serve"
+        "command": "env-cmd -f ./apps/explorer/.env.mainnet nx run explorer:serve"
       }
     },
     "lint": {
