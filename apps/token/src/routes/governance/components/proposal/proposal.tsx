@@ -19,7 +19,7 @@ export const Proposal = ({ proposal, terms }: ProposalProps) => {
 
   return (
     <>
-      <Heading title={getProposalName(proposal.terms.change)} />
+      <Heading title={getProposalName(proposal)} />
       <ProposalChangeTable proposal={proposal} />
       <VoteDetails proposal={proposal} />
       <ProposalVotesTable proposal={proposal} />
