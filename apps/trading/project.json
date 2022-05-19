@@ -31,6 +31,36 @@
         }
       }
     },
+    "serve-devnet": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/trading/.env.devnet nx run trading:serve"
+      }
+    },
+    "serve-testnet": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/trading/.env.testnet nx run trading:serve"
+      }
+    },
+    "serve-stagnet1": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/trading/.env.stagnet1 nx run trading:serve"
+      }
+    },
+    "serve-stanget2": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/trading/.env.stanget2 nx run trading:serve"
+      }
+    },
+    "serve-mainnet": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/trading/.env.mainnet nx run trading:serve"
+      }
+    },
     "export": {
       "executor": "@nrwl/next:export",
       "options": {

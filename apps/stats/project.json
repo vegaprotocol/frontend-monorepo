@@ -50,6 +50,36 @@
         }
       }
     },
+    "serve-devnet": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/stats/.env.devnet nx run stats:serve"
+      }
+    },
+    "serve-testnet": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/stats/.env.testnet nx run stats:serve"
+      }
+    },
+    "serve-stagnet1": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/stats/.env.stagnet1 nx run stats:serve"
+      }
+    },
+    "serve-stanget2": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/stats/.env.stanget2 nx run stats:serve"
+      }
+    },
+    "serve-mainnet": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "env.cmd -f ./apps/stats/.env.mainnet nx run stats:serve"
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],

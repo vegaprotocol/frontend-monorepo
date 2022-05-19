@@ -19,10 +19,16 @@ yarn nx serve explorer
 Example configurations are provided here:
 
 - [Mainnet](./.env.mainnet)
-- [Testnet](./.env.testnet)
+- [Devnet](./.env.devnet)
 - [Testnet](./.env.testnet)
 - [Stagnet1](./.env.stagnet1)
 - [Stagnet2](./.env.stagnet2)
+
+For convenience, you can boot the app injecting one of the configurations above by running:
+
+```bash
+yarn nx run explorer:serve-{env} # e.g. serve-stagnet1
+```
 
 There are a few different configuration options offered for this app:
 
