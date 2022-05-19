@@ -10,7 +10,9 @@ interface OrderbookProps extends OrderbookData {
   onResolutionChange: (resolution: number) => void;
 }
 
-const horizontalLine = () => <div className="col-span-full border-b-1"></div>;
+const horizontalLine = () => (
+  <div className="col-span-full border-b-1 absolute"></div>
+);
 
 const getNumberOfRows = (
   rows: OrderbookRowData[] | null,
@@ -79,6 +81,7 @@ export const Orderbook = ({
   const scrollRef = useRef<HTMLDivElement>(null);
   // scroll offset for which rendered rows are selected
   const [scrollOffset, setScrollOffset] = useState(0);
+  const priceInCenter = useRef('');
   const [hasData, setHasData] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   // const [midPrice, setMidPrice] = useState('');
@@ -95,25 +98,25 @@ export const Orderbook = ({
   );
   function scrollToMidPrice(price: string) {
     if (scrollRef.current && rows) {
+      let scrollTop =
+        // distance in rows between midPrice and price from first row * row Height
+        (Number(
+          (BigInt(rows?.[0].price) - BigInt(price)) / BigInt(resolution)
+        ) +
+          1) * // add one row for sticky header
+        rowHeight;
+      // minus half height of viewport plus half of row
+      scrollTop -= Math.ceil((viewportHeight - rowHeight) / 2);
+      // adjust to current rows position
+      scrollTop += (scrollRef.current.scrollTop % 21) - (scrollTop % 21);
       const priceCenterScrollOffset = Math.max(
         0,
         Math.min(
-          // distance in rows between midPrice and pric from first row * row Height
-          (Number(
-            (BigInt(rows?.[0].price) - BigInt(price)) / BigInt(resolution)
-          ) +
-            1) *
-            rowHeight -
-            // minus half height of viewport
-            Math.ceil(viewportHeight / 2),
-          +(
-            // plus current scroll row shift
-            (scrollRef.current.scrollTop % rowHeight)
-          ),
-          numberOfRows * rowHeight - viewportHeight // max scroll top
+          scrollTop
         )
       );
       scrollRef.current.scrollTop = priceCenterScrollOffset;
+      priceInCenter.current = price;
     }
   }
   useEffect(() => {
@@ -179,6 +182,27 @@ export const Orderbook = ({
     if (Math.abs(scrollOffset - event.currentTarget.scrollTop) > marginSize) {
       setScrollOffset(event.currentTarget.scrollTop);
     }
+    priceInCenter.current = (
+      BigInt(resolution) + // extra row on very top - sticky header
+      BigInt(rows?.[0].price ?? 0) -
+      BigInt(
+        Math.floor(
+          (event.currentTarget.scrollTop + Math.floor(viewportHeight / 2)) /
+            rowHeight /
+            resolution
+        )
+      ) *
+        BigInt(resolution)
+    ).toString();
+    console.log(
+      'priceInCenter',
+      priceInCenter.current,
+      Math.floor(
+        (event.currentTarget.scrollTop + viewportHeight / 2) /
+          rowHeight /
+          resolution
+      )
+    );
   };
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
@@ -186,10 +210,14 @@ export const Orderbook = ({
   return (
     <div
       className="h-full overflow-auto relative"
+      style={{ scrollbarColor: 'rebeccapurple green', scrollbarWidth: 'thin' }}
       onScroll={onScroll}
       ref={scrollRef}
     >
-      <div className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10">
+      <div
+        onClick={() => scrollToMidPrice(priceInCenter.current)}
+        className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"
+      >
         <div>{t('Bid Vol')}</div>
         <div>{t('Price')}</div>
         <div>{t('Ask Vol')}</div>
@@ -205,7 +233,7 @@ export const Orderbook = ({
           {renderedRows.data?.map((data) => {
             return (
               <Fragment key={data.price}>
-                {bestStaticBidPrice === data.price ? horizontalLine() : null}
+                {/*bestStaticBidPrice === data.price ? horizontalLine() : null*/}
                 <OrderbookRow
                   price={(BigInt(data.price) / BigInt(resolution)).toString()}
                   decimalPlaces={decimalPlaces - Math.log10(resolution)}
@@ -224,10 +252,10 @@ export const Orderbook = ({
                       : undefined
                   }
                 />
-                {bestStaticOfferPrice === data.price &&
+                {/*bestStaticOfferPrice === data.price &&
                 bestStaticOfferPrice !== bestStaticBidPrice
                   ? horizontalLine()
-                  : null}
+                : null*/}
               </Fragment>
             );
           })}
