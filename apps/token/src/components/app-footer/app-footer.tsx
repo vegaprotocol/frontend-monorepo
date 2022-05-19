@@ -6,9 +6,7 @@ import { ENV } from '../../config/env';
 export const AppFooter = () => {
   return (
     <footer className="p-12 text-ui">
-      <p className="mb-8">
-        Version: {ENV.commit || 'development'}
-      </p>
+      <p className="mb-8">Version: {ENV.commit || 'development'}</p>
       <p>
         <Trans
           i18nKey="footerLinksText"
