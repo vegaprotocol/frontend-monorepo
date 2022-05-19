@@ -1,5 +1,4 @@
 import { Arrow, Sparkline } from '@vegaprotocol/ui-toolkit';
-import { useRouter } from 'next/router';
 import { mapDataToMarketList } from '../../utils';
 import type { MarketList } from '../__generated__/MarketList';
 
@@ -44,10 +43,6 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
   const stretchedLink = `after:content-[''] after:inset-0 after:z-[1] after:absolute after:box-border`;
 
-  const { pathname, push } = useRouter();
-  if (data) {
-    console.log(mapDataToMarketList(data));
-  }
   return (
     <div className="max-h-[40rem] overflow-x-auto">
       <table className="relative h-full min-w-full whitespace-nowrap">
@@ -113,14 +108,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
         </tbody>
       </table>
 
-      <a
-        className={`${boldUnderlineClassNames} text-ui-small`}
-        href={pathname}
-        onClick={(e) => {
-          e.preventDefault();
-          push('/markets');
-        }}
-      >
+      <a className={`${boldUnderlineClassNames} text-ui-small`} href="/markets">
         {'Or view full market list'}
       </a>
     </div>
