@@ -15,6 +15,7 @@ export const MarketSparkline = ({ candles }: MarketSparklineProps) => {
     <Sparkline
       width={100}
       height={20}
+      muted={false}
       data={
         candles
           ?.filter(({ close }) => !isNaN(Number(close)))
@@ -43,7 +44,9 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
 
   const { pathname, push } = useRouter();
-
+  if (data) {
+    console.log(mapDataToMarketList(data));
+  }
   return (
     <div className="max-h-[40rem] overflow-x-auto">
       <table className="relative h-full min-w-full whitespace-nowrap">
@@ -96,7 +99,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                         <span>
                           {changePercentage.toFixed(2).toLocaleString()}%
                         </span>
-                        <span>({change.toLocaleString()})</span>
+                        <span>({change.toFixed(3).toLocaleString()})</span>
                       </span>
                     </td>
                     <td className="px-8">

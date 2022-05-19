@@ -54,22 +54,26 @@ export const lastPrice = ({ candles, decimalPlaces }: MarketList_markets) =>
 
 export const mapDataToMarketList = ({ markets }: MarketList) =>
   markets
-    ?.map((m) => ({
-      id: m.id,
-      marketName: marketCode(m),
-      lastPrice: lastPrice(m),
-      candles: candles(m),
-      changePercentage: priceChangePercentage(m),
-      change: priceChange(m),
-      open: m.marketTimestamps.open ? new Date(m.marketTimestamps.open) : null,
-      close: m.marketTimestamps.close
-        ? new Date(m.marketTimestamps.close)
-        : null,
-    }))
+    ?.map((m) => {
+      return {
+        id: m.id,
+        marketName: marketCode(m),
+        lastPrice: lastPrice(m),
+        candles: candles(m),
+        changePercentage: priceChangePercentage(m),
+        change: priceChange(m),
+        open: m.marketTimestamps.open
+          ? new Date(m.marketTimestamps.open)
+          : null,
+        close: m.marketTimestamps.close
+          ? new Date(m.marketTimestamps.close)
+          : null,
+      };
+    })
     .sort((a, b) => {
-      const diff = (b.open?.getTime() || 0) - (a.open?.getTime() || 0);
+      const diff = (a.open?.getTime() || 0) - (b.open?.getTime() || 0);
       if (diff !== 0) {
         return diff;
       }
-      return b.id === a.id ? 0 : b.id > a.id ? 1 : -1;
+      return a.id === b.id ? 0 : a.id > b.id ? 1 : -1;
     });

@@ -4,8 +4,8 @@ import { mapDataToMarketList } from './market-list.utils';
 describe('mapDataToMarketList', () => {
   it('should map queried data to market list format', () => {
     const result = mapDataToMarketList(mockData.data as unknown as MarketList);
-    expect(result).toEqual(mockMarketList);
-    console.log(JSON.stringify(result));
+    const oldToNewMarketList = mockMarketList.reverse();
+    expect(result).toEqual(oldToNewMarketList);
   });
 });
 

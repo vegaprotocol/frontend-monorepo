@@ -25,22 +25,22 @@ const marketList = ({ markets }: MarketsLanding) =>
     )
     .sort((a, b) => {
       const diff =
-        ((b.marketTimestamps.open &&
-          new Date(b.marketTimestamps.open).getTime()) ||
-          0) -
         ((a.marketTimestamps.open &&
           new Date(a.marketTimestamps.open).getTime()) ||
+          0) -
+        ((b.marketTimestamps.open &&
+          new Date(b.marketTimestamps.open).getTime()) ||
           0);
 
       if (diff !== 0) {
         return diff;
       }
-      return b.id === a.id ? 0 : b.id > a.id ? 1 : -1;
+      return a.id === b.id ? 0 : a.id > b.id ? 1 : -1;
     }) || [];
 
 export function Index() {
   // The default market selected in the platform behind the overlay
-  // should be the oldest market that is currently trading in continuous mode( ie, not in auction).
+  // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
   return (
     <>
