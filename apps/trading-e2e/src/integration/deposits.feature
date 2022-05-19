@@ -93,9 +93,9 @@ Feature: Deposits to vega wallet
 
   Scenario: Successful deposit
     When I enter the following deposit details in deposit form
-      | asset  | tBTC TEST             |
-      | to     | validDepositToAddress |
-      | amount | 1                     |
+      | asset  | tBTC TEST     |
+      | to     | vegaPublicKey |
+      | amount | 1             |
     And I submit the form
     And I can see the 'deposit pending' modal is shown
 
