@@ -42,6 +42,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
       : `text-red-dark dark:text-red-vega`;
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
+  const stretchedLink = `after:content-[''] after:inset-0 after:z-[1] after:absolute after:box-border`;
 
   const { pathname, push } = useRouter();
   if (data) {
@@ -77,15 +78,16 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                 }) => (
                   <tr
                     key={id}
-                    className="hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      push(
-                        `/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`
-                      );
-                    }}
+                    className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
                   >
-                    <td className={boldUnderlineClassNames}>{marketName}</td>
+                    <td className={`${boldUnderlineClassNames} relative`}>
+                      <a
+                        href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
+                        className={stretchedLink}
+                      >
+                        {marketName}
+                      </a>
+                    </td>
                     <td className={tdClassNames}>
                       {lastPrice?.toLocaleString()}
                     </td>
