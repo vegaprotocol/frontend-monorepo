@@ -5,10 +5,6 @@ import DepositsPage from '../pages/deposits-page';
 const depositsPage = new DepositsPage();
 const ethWallet = new EthereumWallet();
 
-const tBTC = Cypress.env('tBtcContract');
-const invalidPublicKey =
-  'zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f';
-
 beforeEach(() => {
   cy.mockWeb3Provider();
 });
@@ -38,28 +34,24 @@ When('I submit a deposit with empty fields', () => {
   depositsPage.submitForm();
 });
 
-Then('I can see validation errors present', () => {
+Then('I can see empty form validation errors present', () => {
   depositsPage.verifyFieldsAreRequired();
 });
 
-And('I enter an invalid public key', () => {
+Then('I enter the following deposit details in deposit form', (table) => {
   depositsPage.updateForm({
-    asset: tBTC,
-    to: invalidPublicKey,
-    amount: '1',
+    asset: table.rowsHash().asset,
+    to: Cypress.env(table.rowsHash().to),
+    amount: table.rowsHash().amount,
   });
+});
+
+And('I submit the form', () => {
+  depositsPage.submitForm();
 });
 
 Then('Invalid Vega key is shown', () => {
   depositsPage.verifyInvalidPublicKey();
-});
-
-And('I enter an amount less than the minimum viable amount', () => {
-  depositsPage.updateForm({
-    asset: tBTC,
-    to: invalidPublicKey,
-    amount: '0.00000000000001',
-  });
 });
 
 Then('Amount too small message shown', () => {
@@ -72,4 +64,12 @@ And('I enter a valid amount', () => {
 
 Then('Not approved message shown', () => {
   depositsPage.verifyNotApproved();
+});
+
+And('I can see the {string} modal is shown', (text) => {
+  depositsPage.checkModalContains(text);
+});
+
+And('Insufficient amount message shown', () => {
+  depositsPage.verifyInsufficientAmountMessage();
 });
