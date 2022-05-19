@@ -43,7 +43,7 @@ const SimpleMarketList = () => {
                           new Date(market.data.auctionEnd),
                           DATE_FORMAT
                         )}`
-                      : t('not active')}
+                      : '-'}
                   </div>
                   <div>{`${t('settled in')} ${
                     market.tradableInstrument.instrument.product.settlementAsset
