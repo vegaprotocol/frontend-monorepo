@@ -13,23 +13,7 @@ type Schema = WebDevServerOptions & {
 
 const LOGGER_SCOPE = 'tools/executors/serve';
 
-const filenameToEnv = (filename: string) => filename.replace('.env.', '');
-
-const getDefaultEnvFile = (envMap: Record<string, string>) => {
-  return envMap['local'] || envMap['.env'];
-};
-
-const getEnvFile = (env: string, envFiles: string[]) => {
-  const envMap = envFiles.reduce(
-    (acc, filename) => ({
-      ...acc,
-      [filenameToEnv(filename)]: filename,
-    }),
-    {}
-  );
-
-  const defaultEnvFile = getDefaultEnvFile(envMap);
-
+const logEnvData = (envMap: Record<string, string>, envFiles: string[], env?: string, defaultEnvFile?: string) => {
   if (env && !envMap[env]) {
     log.warn(LOGGER_SCOPE, `No environment called "${env}" found.`);
     log.info(
@@ -55,6 +39,25 @@ const getEnvFile = (env: string, envFiles: string[]) => {
       `Using "${envMap[env]}" as the default project environment.`
     );
   }
+}
+
+const filenameToEnv = (filename: string) => filename.replace('.env.', '');
+
+const getDefaultEnvFile = (envMap: Record<string, string>) => {
+  return envMap['local'] || envMap['.env'];
+};
+
+const getEnvFile = (env: string, envFiles: string[]) => {
+  const envMap = envFiles.reduce(
+    (acc, filename) => ({
+      ...acc,
+      [filenameToEnv(filename)]: filename,
+    }),
+    {}
+  );
+
+  const defaultEnvFile = getDefaultEnvFile(envMap);
+  logEnvData(envMap, envFiles, env, defaultEnvFile);
 
   return envMap[env] || defaultEnvFile;
 };
