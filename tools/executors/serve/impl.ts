@@ -52,7 +52,7 @@ const getEnvFile = (env: string, envFiles: string[]) => {
   } else {
     log.info(
       LOGGER_SCOPE,
-      `Using "${envMap[env]}" as the default project environment.`,
+      `Using "${envMap[env]}" as the default project environment.`
     );
   }
 
