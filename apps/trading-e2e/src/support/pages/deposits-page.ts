@@ -10,10 +10,15 @@ export default class DepositsPage extends BasePage {
     cy.visit('/portfolio');
     cy.get(`a[href='/portfolio/deposit']`).click();
     cy.url().should('include', '/portfolio/deposit');
+    cy.getByTestId('deposit-form').should('be.visible');
   }
 
   verifyFormDisplayed() {
     cy.getByTestId('deposit-form').should('be.visible');
+  }
+
+  checkModalContains(text: string) {
+    cy.get('[role="dialog"]').contains(text).should('be.visible');
   }
 
   updateForm(args?: { asset?: string; to?: string; amount?: string }) {
@@ -46,6 +51,12 @@ export default class DepositsPage extends BasePage {
   verifyAmountTooSmall() {
     cy.get(this.amountError)
       .contains('Value is below minimum')
+      .should('be.visible');
+  }
+
+  verifyInsufficientAmountMessage() {
+    cy.getByTestId('input-error-text')
+      .contains('Insufficient amount in Ethereum wallet')
       .should('be.visible');
   }
 
