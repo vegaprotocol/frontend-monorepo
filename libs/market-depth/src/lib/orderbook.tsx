@@ -10,8 +10,8 @@ interface OrderbookProps extends OrderbookData {
   onResolutionChange: (resolution: number) => void;
 }
 
-const horizontalLine = () => (
-  <div className="col-span-full border-b-1 absolute"></div>
+const horizontalLine = (top: string) => (
+  <div className="border-b-1 absolute inset-x-0" style={{ top }}></div>
 );
 
 const getNumberOfRows = (
@@ -109,12 +109,7 @@ export const Orderbook = ({
       scrollTop -= Math.ceil((viewportHeight - rowHeight) / 2);
       // adjust to current rows position
       scrollTop += (scrollRef.current.scrollTop % 21) - (scrollTop % 21);
-      const priceCenterScrollOffset = Math.max(
-        0,
-        Math.min(
-          scrollTop
-        )
-      );
+      const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
       scrollRef.current.scrollTop = priceCenterScrollOffset;
       priceInCenter.current = price;
     }
@@ -214,11 +209,12 @@ export const Orderbook = ({
       onScroll={onScroll}
       ref={scrollRef}
     >
-      <div
-        onClick={() => scrollToMidPrice(priceInCenter.current)}
-        className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"
-      >
-        <div>{t('Bid Vol')}</div>
+      <div className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10">
+        <div>
+          <button onClick={() => scrollToMidPrice(priceInCenter.current)}>
+            {t('Bid Vol')}
+          </button>
+        </div>
         <div>{t('Price')}</div>
         <div>{t('Ask Vol')}</div>
         <div>{t('Cumulative Vol')}</div>
@@ -233,7 +229,6 @@ export const Orderbook = ({
           {renderedRows.data?.map((data) => {
             return (
               <Fragment key={data.price}>
-                {/*bestStaticBidPrice === data.price ? horizontalLine() : null*/}
                 <OrderbookRow
                   price={(BigInt(data.price) / BigInt(resolution)).toString()}
                   decimalPlaces={decimalPlaces - Math.log10(resolution)}
@@ -252,10 +247,6 @@ export const Orderbook = ({
                       : undefined
                   }
                 />
-                {/*bestStaticOfferPrice === data.price &&
-                bestStaticOfferPrice !== bestStaticBidPrice
-                  ? horizontalLine()
-                : null*/}
               </Fragment>
             );
           })}
@@ -279,6 +270,28 @@ export const Orderbook = ({
           </select>
         </div>
       </div>
+      {rows?.[0].price &&
+        bestStaticBidPrice &&
+        horizontalLine(
+          `${(
+            ((BigInt(rows?.[0].price) - BigInt(bestStaticBidPrice)) /
+              BigInt(resolution) +
+              BigInt(1)) *
+              BigInt(rowHeight) -
+            BigInt(3)
+          ).toString()}px`
+        )}
+      {rows?.[0].price &&
+        bestStaticOfferPrice &&
+        horizontalLine(
+          `${(
+            ((BigInt(rows?.[0].price) - BigInt(bestStaticOfferPrice)) /
+              BigInt(resolution) +
+              BigInt(2)) *
+              BigInt(rowHeight) -
+            BigInt(3)
+          ).toString()}px`
+        )}
     </div>
   );
 };
