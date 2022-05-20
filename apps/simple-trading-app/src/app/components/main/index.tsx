@@ -1,6 +1,5 @@
 import React from 'react';
 import { useRoutes, NavLink } from 'react-router-dom';
-import { Loader, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   NavigationDrawer,
   DrawerWrapper,
@@ -17,17 +16,7 @@ export interface RouteChildProps {
 export const AppRouter = () => {
   const routes = useRoutes(routerConfig);
 
-  const splashLoading = (
-    <Splash>
-      <Loader />
-    </Splash>
-  );
-
-  return (
-    <main className="p-20 overflow-hidden">
-      <React.Suspense fallback={splashLoading}>{routes}</React.Suspense>
-    </main>
-  );
+  return <main className="p-20 overflow-hidden">{routes}</main>;
 };
 
 export const Menu = () => (
