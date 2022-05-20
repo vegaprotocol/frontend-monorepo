@@ -132,7 +132,7 @@ function serve(options, context) {
                 case 1:
                     files = _a.sent();
                     envFile = getEnvFile(env, files.filter(function (f) { return f.startsWith('.env'); }));
-                    if (envFile) {
+                    if (env && envFile) {
                         dotenv.config({ path: path.join(workspacePath, envFile), override: true });
                     }
                     return [5 /*yield**/, __values(__asyncDelegator(__asyncValues((0, dev_server_impl_1["default"])(dsOptions, context))))];

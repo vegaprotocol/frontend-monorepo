@@ -13,7 +13,12 @@ type Schema = WebDevServerOptions & {
 
 const LOGGER_SCOPE = 'tools/executors/serve';
 
-const logEnvData = (envMap: Record<string, string>, envFiles: string[], env?: string, defaultEnvFile?: string) => {
+const logEnvData = (
+  envMap: Record<string, string>,
+  envFiles: string[],
+  env?: string,
+  defaultEnvFile?: string
+) => {
   if (env && !envMap[env]) {
     log.warn(LOGGER_SCOPE, `No environment called "${env}" found.`);
     log.info(
@@ -39,7 +44,7 @@ const logEnvData = (envMap: Record<string, string>, envFiles: string[], env?: st
       `Using "${envMap[env]}" as the default project environment.`
     );
   }
-}
+};
 
 const filenameToEnv = (filename: string) => filename.replace('.env.', '');
 
@@ -76,7 +81,7 @@ export default async function* serve(
     files.filter((f) => f.startsWith('.env'))
   );
 
-  if (envFile) {
+  if (env && envFile) {
     dotenv.config({ path: path.join(workspacePath, envFile), override: true });
   }
 
