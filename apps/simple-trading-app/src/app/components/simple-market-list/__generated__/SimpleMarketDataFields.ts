@@ -27,8 +27,4 @@ export interface SimpleMarketDataFields {
    * market id of the associated mark price
    */
   market: SimpleMarketDataFields_market;
-  /**
-   * RFC3339Nano time at which the auction will stop (null if not in auction mode)
-   */
-  auctionEnd: string | null;
 }

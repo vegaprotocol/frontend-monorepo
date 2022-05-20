@@ -27,10 +27,14 @@ export interface SimpleMarkets_markets_data {
    * market id of the associated mark price
    */
   market: SimpleMarkets_markets_data_market;
+}
+
+export interface SimpleMarkets_markets_tradableInstrument_instrument_metadata {
+  __typename: "InstrumentMetadata";
   /**
-   * RFC3339Nano time at which the auction will stop (null if not in auction mode)
+   * An arbitrary list of tags to associated to associate to the Instrument (string list)
    */
-  auctionEnd: string | null;
+  tags: string[] | null;
 }
 
 export interface SimpleMarkets_markets_tradableInstrument_instrument_product_settlementAsset {
@@ -51,6 +55,10 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument_product {
 
 export interface SimpleMarkets_markets_tradableInstrument_instrument {
   __typename: "Instrument";
+  /**
+   * Metadata for this instrument
+   */
+  metadata: SimpleMarkets_markets_tradableInstrument_instrument_metadata;
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */

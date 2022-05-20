@@ -43,6 +43,9 @@ describe('SimpleMarketList', () => {
                 symbol: 'tUSD',
               },
             },
+            metadata: {
+              tags: [],
+            },
           },
         },
       },
@@ -61,10 +64,13 @@ describe('SimpleMarketList', () => {
                 symbol: 'ETH',
               },
             },
+            metadata: {
+              tags: [],
+            },
           },
         },
       },
-    ] as SimpleMarkets_markets[];
+    ] as unknown as SimpleMarkets_markets[];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useDataProvider as unknown as jest.SpyInstance<any>).mockImplementation(
       () => ({ data, error: false, loading: false })

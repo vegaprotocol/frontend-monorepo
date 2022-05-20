@@ -3,10 +3,9 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Lozenge, Splash } from '@vegaprotocol/ui-toolkit';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { format } from 'date-fns';
 import SimpleMarketPercentChange from './simple-market-percent-change';
+import SimpleMarketExpires from './simple-market-expires';
 import DataProvider from './data-provider';
-import { DATE_FORMAT } from '../../constants';
 import { MARKET_STATUS } from './constants';
 
 const SimpleMarketList = () => {
@@ -36,17 +35,12 @@ const SimpleMarketList = () => {
               key={market.id}
             >
               <div className="w-full grid sm:grid-cols-2">
-                <div className="w-full grid sm:grid-rows-3">
-                  <div className="font-extrabold">{market.name}</div>
-                  <div>
-                    {market.data?.auctionEnd
-                      ? `${t('expires')} ${format(
-                          new Date(market.data.auctionEnd),
-                          DATE_FORMAT
-                        )}`
-                      : '-'}
-                  </div>
-                  <div>{`${t('settled in')} ${
+                <div className="w-full grid sm:auto-rows-auto">
+                  <div className="font-extrabold py-2">{market.name}</div>
+                  <SimpleMarketExpires
+                    tags={market.tradableInstrument.instrument.metadata.tags}
+                  />
+                  <div className="py-2">{`${t('settled in')} ${
                     market.tradableInstrument.instrument.product.settlementAsset
                       .symbol
                   }`}</div>

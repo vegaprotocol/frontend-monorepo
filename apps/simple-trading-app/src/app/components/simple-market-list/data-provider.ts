@@ -15,7 +15,6 @@ const MARKET_DATA_FRAGMENT = gql`
       id
       state
     }
-    auctionEnd
   }
 `;
 
@@ -30,6 +29,9 @@ const MARKETS_QUERY = gql`
       }
       tradableInstrument {
         instrument {
+          metadata {
+            tags
+          }
           product {
             ... on Future {
               settlementAsset {
