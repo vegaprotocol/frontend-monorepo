@@ -97,7 +97,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                         <span>
                           {changePercentage.toFixed(2).toLocaleString()}%&nbsp;
                         </span>
-                        <span>({change.toFixed(3).toLocaleString()})</span>
+                        <span>({change.toLocaleString()})</span>
                       </span>
                     </td>
                     <td className="px-8">
