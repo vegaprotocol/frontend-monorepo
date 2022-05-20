@@ -31,7 +31,6 @@ describe('SimpleMarketList', () => {
       {
         id: '1',
         data: {
-          auctionEnd: '2022-05-15 08:00:00',
           market: {
             state: MarketState.Active,
           },
@@ -52,7 +51,6 @@ describe('SimpleMarketList', () => {
       {
         id: '2',
         data: {
-          auctionEnd: '2022-05-15 09:00:00',
           market: {
             state: MarketState.Proposed,
           },

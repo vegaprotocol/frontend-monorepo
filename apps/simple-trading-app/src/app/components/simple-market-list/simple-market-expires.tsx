@@ -1,4 +1,5 @@
 import React from 'react';
+import { t } from '@vegaprotocol/react-helpers';
 import { format, isValid, parseISO } from 'date-fns';
 import { DATE_FORMAT } from '../../constants';
 
@@ -22,7 +23,10 @@ const SimpleMarketExpires = ({
       return agg;
     }, null);
     return dateFound ? (
-      <div className="py-2">{format(dateFound as Date, DATE_FORMAT)}</div>
+      <div className="py-2">{`${t('expires')} ${format(
+        dateFound as Date,
+        DATE_FORMAT
+      )}`}</div>
     ) : null;
   }
   return null;
