@@ -20,7 +20,7 @@ const MARKET_DATA_FRAGMENT = gql`
 
 const MARKETS_QUERY = gql`
   ${MARKET_DATA_FRAGMENT}
-  query SimpleMarkets($CandleInterval: Interval!, $CandleSince: String!) {
+  query SimpleMarkets($CandleSince: String!) {
     markets {
       id
       name
@@ -41,7 +41,7 @@ const MARKETS_QUERY = gql`
           }
         }
       }
-      candles(interval: $CandleInterval, since: $CandleSince) {
+      candles(interval: I1H, since: $CandleSince) {
         open
         close
       }

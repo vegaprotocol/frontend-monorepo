@@ -11,14 +11,14 @@ import { MARKET_STATUS } from './constants';
 const SimpleMarketList = () => {
   const variables = useMemo(
     () => ({
-      CandleInterval: 'I1H',
       CandleSince: new Date(Date.now() - 24 * 60 * 60 * 1000).toJSON(),
     }),
     []
   );
+
   const { data, error, loading } = useDataProvider(
     DataProvider,
-    undefined, // @TODO - if we need a live update in the future
+    undefined,
     variables
   );
   const onClick = useCallback((marketId) => {
