@@ -45,7 +45,9 @@ export default class HomePage extends BasePage {
       .then(($list) => {
         cy.wrap($list).should('have.length', 18);
       });
+  }
 
+  verifyStatsValuesdisplayed() {
     cy.getByTestId(this.statsValue).eq(0).should('have.text', 'CONNECTED');
     cy.getByTestId(this.statsValue).eq(1).should('not.be.empty');
     cy.getByTestId(this.statsValue).eq(2).should('have.text', '2');
@@ -70,21 +72,6 @@ export default class HomePage extends BasePage {
       .should('match', /\d+\.\d+\.\d+/i);
     cy.getByTestId(this.statsValue).eq(16).should('not.be.empty');
     cy.getByTestId(this.statsValue).eq(17).should('not.be.empty');
-  }
-
-  verifyStatsValuesdisplayed() {
-    cy.getByTestId(this.statsValue)
-      .each(($value, index) => {
-        cy.wrap($value).should('not.be.empty');
-        if (index == 6) {
-          // Total staked value
-          const totalStakedRegex = /^\d{1,3}(,\d{3})*(\.\d{1,2})?$/;
-          cy.wrap($value).invoke('text').should('match', totalStakedRegex); // Check that value is number with 2dp
-        }
-      })
-      .then(($list) => {
-        cy.wrap($list).should('have.length', 18);
-      });
   }
 
   verifyStatsBlockHeightUpdating() {
