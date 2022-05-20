@@ -70,38 +70,40 @@ export const TxsInfiniteList = ({
   const isItemLoaded = (index: number) => !hasMoreTxs || index < txs.length;
 
   return (
-    <div className={className} data-testid="infinite-scroll-wrapper">
+    <div className={className} data-testid="transactions-list">
       <div className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full mb-8">
         <div className="text-h5 font-bold">Txn hash</div>
         <div className="text-h5 font-bold">Party</div>
         <div className="text-h5 font-bold pl-2">Type</div>
       </div>
-      <InfiniteLoader
-        isItemLoaded={isItemLoaded}
-        itemCount={itemCount}
-        loadMoreItems={loadMoreItems}
-      >
-        {({ onItemsRendered, ref }) => (
-          <List
-            className="List"
-            height={595}
-            itemCount={itemCount}
-            itemSize={41}
-            onItemsRendered={onItemsRendered}
-            ref={ref}
-            width={'100%'}
-          >
-            {({ index, style }) => (
-              <Item
-                index={txs[index]}
-                style={style}
-                isLoading={!isItemLoaded(index)}
-                error={error}
-              />
-            )}
-          </List>
-        )}
-      </InfiniteLoader>
+      <div data-testid="infinite-scroll-wrapper">
+        <InfiniteLoader
+          isItemLoaded={isItemLoaded}
+          itemCount={itemCount}
+          loadMoreItems={loadMoreItems}
+        >
+          {({ onItemsRendered, ref }) => (
+            <List
+              className="List"
+              height={595}
+              itemCount={itemCount}
+              itemSize={41}
+              onItemsRendered={onItemsRendered}
+              ref={ref}
+              width={'100%'}
+            >
+              {({ index, style }) => (
+                <Item
+                  index={txs[index]}
+                  style={style}
+                  isLoading={!isItemLoaded(index)}
+                  error={error}
+                />
+              )}
+            </List>
+          )}
+        </InfiniteLoader>
+      </div>
     </div>
   );
 };

@@ -25,7 +25,10 @@ export const TxsInfiniteListItem = ({
   }
 
   return (
-    <div className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full border-t border-black-60 dark:border-white-25 py-8 txs-infinite-list-item">
+    <div
+      data-testid="transaction-row"
+      className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full border-t border-black-60 dark:border-white-25 py-8 txs-infinite-list-item"
+    >
       <div className="whitespace-nowrap overflow-scroll" data-testid="tx-hash">
         <TruncatedLink
           to={`/${Routes.TX}/${TxHash}`}
