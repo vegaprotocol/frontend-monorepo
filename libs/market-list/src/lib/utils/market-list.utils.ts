@@ -1,70 +1,22 @@
-import BigNumber from 'bignumber.js';
 import type {
   MarketList,
   MarketList_markets,
-  MarketList_markets_candles,
 } from '../components/__generated__/MarketList';
 
-export const priceChangePercentage = (m: MarketList_markets): BigNumber => {
-  const change = priceChange(m);
-  const { candles } = m;
-  if (change && candles && candles.length > 0) {
-    const yesterdayLastPrice = price(candles[0]?.close, m.decimalPlaces);
-    return change.dividedBy(yesterdayLastPrice).multipliedBy(100);
-  }
-  return new BigNumber(0);
-};
-
-export const priceChange = ({
-  candles,
-  decimalPlaces,
-}: MarketList_markets): BigNumber => {
-  if (candles && candles.length > 0) {
-    const yesterdayLastPrice = price(candles[0]?.close, decimalPlaces);
-    const recentLastPrice = price(
-      candles[candles.length - 1]?.close,
-      decimalPlaces
-    );
-    if (recentLastPrice !== 'N/A' && yesterdayLastPrice !== 'N/A') {
-      return recentLastPrice.minus(yesterdayLastPrice);
-    }
-    return new BigNumber(0);
-  }
-  return new BigNumber(0);
-};
-
-export const candles = ({ candles, decimalPlaces }: MarketList_markets) =>
-  candles?.map((c: MarketList_markets_candles | null) => ({
-    open: price(c?.open, decimalPlaces),
-    close: price(c?.close, decimalPlaces),
-  }));
-
-export const price = (
-  value: number | string | null | undefined,
-  decimalPlaces: number
-): BigNumber | 'N/A' =>
-  value === undefined || value === null
-    ? 'N/A'
-    : new BigNumber(value).dividedBy(Math.pow(10, decimalPlaces));
-
-export const marketCode = ({ tradableInstrument }: MarketList_markets) =>
-  tradableInstrument.instrument?.code;
-
-export const lastPrice = ({ candles, decimalPlaces }: MarketList_markets) =>
+export const lastPrice = ({ candles }: MarketList_markets) =>
   candles && candles.length > 0
-    ? price(candles && candles[candles?.length - 1]?.close, decimalPlaces)
-    : 'N/A';
+    ? candles && candles[candles?.length - 1]?.close
+    : undefined;
 
 export const mapDataToMarketList = ({ markets }: MarketList) =>
   markets
     ?.map((m) => {
       return {
         id: m.id,
-        marketName: marketCode(m),
+        decimalPlaces: m.decimalPlaces,
+        marketName: m.tradableInstrument.instrument?.code,
         lastPrice: lastPrice(m),
-        candles: candles(m),
-        changePercentage: priceChangePercentage(m).toNumber(),
-        change: priceChange(m).toNumber(),
+        candles: (m.candles || []).filter((c) => c),
         open: m.marketTimestamps.open
           ? new Date(m.marketTimestamps.open)
           : null,

@@ -13,7 +13,7 @@ export const ArrowDown = () => (
 
 // Arrow
 export interface ArrowProps {
-  value: number;
+  value: number | bigint;
 }
 
 export const Arrow = ({ value }: ArrowProps) =>

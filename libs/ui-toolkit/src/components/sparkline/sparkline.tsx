@@ -96,7 +96,7 @@ export const SparklineView = ({
           className={`[vector-effect:non-scaling-stroke] ${strokeClassName}`}
           d={preMarketCreationPath}
           stroke="strokeCurrent"
-          strokeWidth={2}
+          strokeWidth={1}
           fill="transparent"
         />
       )}

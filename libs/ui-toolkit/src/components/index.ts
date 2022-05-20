@@ -16,6 +16,7 @@ export * from './input-error';
 export * from './key-value-table';
 export * from './loader';
 export * from './lozenge';
+export * from './price-change';
 export * from './select';
 export * from './sparkline';
 export * from './splash';

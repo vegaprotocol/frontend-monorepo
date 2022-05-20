@@ -18,7 +18,7 @@ it('Renders an svg with a single path', () => {
   expect(path).toBeInTheDocument();
   expect(path).toHaveAttribute('d', expect.any(String));
   expect(path).toHaveAttribute('stroke', expect.any(String));
-  expect(path).toHaveAttribute('stroke-width', '2');
+  expect(path).toHaveAttribute('stroke-width', '1');
   expect(path).toHaveAttribute('fill', 'transparent');
 });
 
