@@ -1,6 +1,17 @@
-@ignore
-Feature: Withdrawals
+Feature: Withdrawals to eth wallet
 
+  Background:
+    Given I navigate to withdrawals page
+    And I connect to Vega Wallet
+
+  Scenario: Form validation when fields are empty
+    When I clear ethereum address
+    And click submit
+    Then errors are displayed for empty fields
+    When I enter an invalid ethereum address
+    Then error for invalid ethereum address is displayed
+
+  @ignore
   Scenario: Can prepare a withdrawal
     Given I am on withdraw page
     And I connect eth wallet
@@ -13,14 +24,14 @@ Feature: Withdrawals
     When I click the withdraw button
     Then The vega transaction is sent
     Then The Ethereum transaction is triggered
-
+@ignore
   Scenario: Form field validation if fields are incomplete
     Given I am on withdraw page
     And I connect eth wallet
     And I connect vega wallet
     When I click the withdraw button
     Then I can see validation errors on incomplete fields
-
+@ignore
   Scenario: Can prepare a withdrawal to send to another eth wallet
     Given I am on withdraw page
     And I connect eth wallet
@@ -34,7 +45,7 @@ Feature: Withdrawals
     When I click the withdraw button
     Then The vega transaction is sent
     Then The Ethereum transaction is triggered
-
+@ignore
   Scenario: Eth key validation on form
     Given I am on withdraw page
     And I connect eth wallet
@@ -43,7 +54,7 @@ Feature: Withdrawals
     When I click the enter manually button
     And I enter eth address 'MMMMNNNN'
     Then the invalid eth address error is shown
-
+@ignore
   Scenario: Validation error if trying to withdraw more than available
     Given I am on withdrawals page
     And I have connected
@@ -51,7 +62,7 @@ Feature: Withdrawals
     And I input '1088494949494949940' tokens to withdraw
     When I click the withdraw button
     Then validation error is shown for token input amount
-
+@ignore
   Scenario: Can see pending / unfinished withdrawals
     Given I am on the withdrawals page
     And I can see there are unfinished withdrawals

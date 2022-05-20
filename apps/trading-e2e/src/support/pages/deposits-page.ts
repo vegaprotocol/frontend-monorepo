@@ -21,27 +21,8 @@ export default class DepositsPage extends BasePage {
     cy.get('[role="dialog"] > div > div > h1').should('have.text', text);
   }
 
-  updateForm(args?: { asset?: string; to?: string; amount?: string }) {
-    if (args?.asset) {
-      cy.get('select[name="asset"]').select(args.asset);
-    }
-    if (args?.to) {
-      cy.get('input[name="to"]').clear().type(args.to);
-    }
-    if (args?.amount) {
-      cy.get('input[name="amount"]').clear().type(args.amount);
-    }
-  }
-
   submitForm() {
     cy.getByTestId('deposit-submit').click();
-  }
-
-  verifyFieldsAreRequired() {
-    cy.get(this.assetError).contains(this.requiredText);
-    cy.get(this.toError).contains(this.requiredText);
-    cy.get(this.amountError).contains(this.requiredText);
-    cy.getByTestId('input-error-text').should('have.length', 3);
   }
 
   verifyInvalidPublicKey() {

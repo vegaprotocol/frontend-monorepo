@@ -163,7 +163,7 @@ export const WithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <Button type="submit">Submit</Button>
+      <Button data-testid='submit-withdrawal' type="submit">Submit</Button>
     </form>
   );
 };
