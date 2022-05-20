@@ -5,11 +5,12 @@ import { RouteTitle } from '../../../components/route-title';
 import { BlocksRefetch } from '../../../components/blocks';
 import { JumpToBlock } from '../../../components/jump-to-block';
 import { TxsInfiniteList } from '../../../components/txs';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { ChainExplorerTxResponse } from '../../types/chain-explorer-response';
+import type { TendermintBlockchainResponse } from '../../blocks/tendermint-blockchain-response';
 
 interface TxsProps {
   latestBlockHeight: string;
-  refresh: () => null;
 }
 
 interface TxsStateProps {
@@ -93,4 +94,29 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
   );
 };
 
-export { Txs };
+const Wrapper = () => {
+  const {
+    state: { data, error, loading },
+  } = useFetch<TendermintBlockchainResponse>(
+    `${DATA_SOURCES.tendermintUrl}/blockchain`
+  );
+
+  return (
+    <AsyncRenderer
+      loading={!!loading}
+      loadingMessage={t('Getting latest block height...')}
+      error={error}
+      data={data}
+      noDataMessage={t('Could not get latest block height')}
+      render={(data) => (
+        <Txs
+          latestBlockHeight={
+            data?.result?.block_metas?.[0]?.header?.height || ''
+          }
+        />
+      )}
+    />
+  );
+};
+
+export { Wrapper as TxsHome };

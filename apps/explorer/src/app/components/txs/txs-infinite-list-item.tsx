@@ -33,16 +33,16 @@ export const TxsInfiniteListItem = ({
         <TruncatedLink
           to={`/${Routes.TX}/${TxHash}`}
           text={TxHash}
-          startChars={truncateLength}
-          endChars={truncateLength}
+          startChars={TRUNCATE_LENGTH}
+          endChars={TRUNCATE_LENGTH}
         />
       </div>
       <div className="whitespace-nowrap overflow-scroll" data-testid="pub-key">
         <TruncatedLink
           to={`/${Routes.PARTIES}/${PubKey}`}
           text={PubKey}
-          startChars={truncateLength}
-          endChars={truncateLength}
+          startChars={TRUNCATE_LENGTH}
+          endChars={TRUNCATE_LENGTH}
         />
       </div>
       <div

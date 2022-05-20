@@ -12,7 +12,7 @@ import Genesis from './genesis';
 import { Block } from './blocks/id';
 import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
-import { TxsHomeBlockHeightWrapper } from './txs/home/txs-home-block-height-wrapper';
+import { TxsHome } from './txs/home';
 import { PendingTxs } from './pending';
 import flags from '../lib/flags';
 import { t } from '@vegaprotocol/react-helpers';
@@ -129,7 +129,7 @@ const routerConfig = [
       },
       {
         index: true,
-        element: <TxsHomeBlockHeightWrapper />,
+        element: <TxsHome />,
       },
     ],
   },
