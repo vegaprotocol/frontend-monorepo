@@ -25,7 +25,7 @@ export const TxsInfiniteListItem = ({
   }
 
   return (
-    <div className="grid grid-cols-[auto_1fr_200px_auto] gap-12 w-full border-t border-black-60 dark:border-white-25 py-8 txs-infinite-list-item">
+    <div className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full border-t border-black-60 dark:border-white-25 py-8 txs-infinite-list-item">
       <div className="whitespace-nowrap overflow-scroll" data-testid="tx-hash">
         <TruncatedLink
           to={`/${Routes.TX}/${TxHash}`}
@@ -34,10 +34,7 @@ export const TxsInfiniteListItem = ({
           endChars={truncateLength}
         />
       </div>
-      <div
-        className="whitespace-nowrap text-center overflow-scroll"
-        data-testid="pub-key"
-      >
+      <div className="whitespace-nowrap overflow-scroll" data-testid="pub-key">
         <TruncatedLink
           to={`/${Routes.PARTIES}/${PubKey}`}
           text={PubKey}
@@ -45,24 +42,27 @@ export const TxsInfiniteListItem = ({
           endChars={truncateLength}
         />
       </div>
-      <div className="whitespace-nowrap overflow-scroll" data-testid="type">
-        <TxOrderType orderType={Type} />
-      </div>
-      <button
-        title="More details"
-        onClick={() => setOpen(true)}
-        data-testid="command-details"
+      <div
+        className="flex justify-between whitespace-nowrap overflow-scroll"
+        data-testid="type"
       >
-        <Icon name="search-template" />
-        <Dialog
-          open={open}
-          onChange={(isOpen) => setOpen(isOpen)}
-          width="auto"
-          intent={Intent.Help}
+        <TxOrderType orderType={Type} />
+        <button
+          title="More details"
+          onClick={() => setOpen(true)}
+          data-testid="command-details"
         >
-          <SyntaxHighlighter data={JSON.parse(Command)} />
-        </Dialog>
-      </button>
+          <Icon name="search-template" />
+          <Dialog
+            open={open}
+            onChange={(isOpen) => setOpen(isOpen)}
+            width="auto"
+            intent={Intent.Help}
+          >
+            <SyntaxHighlighter data={JSON.parse(Command)} />
+          </Dialog>
+        </button>
+      </div>
     </div>
   );
 };

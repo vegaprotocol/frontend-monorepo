@@ -15,12 +15,37 @@ interface TxsInfiniteListProps {
 }
 
 interface ItemProps {
-  index: number;
+  index: ChainExplorerTxResponse;
   style: React.CSSProperties;
+  isLoading: boolean;
+  error: Error | undefined;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const NOOP = () => {};
+
+const Item = ({ index, style, isLoading, error }: ItemProps) => {
+  let content;
+  if (error) {
+    content = t(`${error}`);
+  } else if (isLoading) {
+    content = t('Loading...');
+  } else {
+    const { TxHash, PubKey, Type, Command, Sig, Nonce } = index;
+    content = (
+      <TxsInfiniteListItem
+        Type={Type}
+        Command={Command}
+        Sig={Sig}
+        PubKey={PubKey}
+        Nonce={Nonce}
+        TxHash={TxHash}
+      />
+    );
+  }
+
+  return <div style={style}>{content}</div>;
+};
 
 export const TxsInfiniteList = ({
   hasMoreTxs,
@@ -44,35 +69,12 @@ export const TxsInfiniteList = ({
   // Every row is loaded except for our loading indicator row.
   const isItemLoaded = (index: number) => !hasMoreTxs || index < txs.length;
 
-  const Item = ({ index, style }: ItemProps) => {
-    let content;
-    if (error) {
-      content = t(`${error}`);
-    } else if (!isItemLoaded(index)) {
-      content = t('Loading...');
-    } else {
-      const { TxHash, PubKey, Type, Command, Sig, Nonce } = txs[index];
-      content = (
-        <TxsInfiniteListItem
-          Type={Type}
-          Command={Command}
-          Sig={Sig}
-          PubKey={PubKey}
-          Nonce={Nonce}
-          TxHash={TxHash}
-        />
-      );
-    }
-
-    return <div style={style}>{content}</div>;
-  };
-
   return (
     <div className={className} data-testid="infinite-scroll-wrapper">
-      <div className="grid grid-cols-3 gap-12 w-full mb-8">
-        <div className="text-h5 font-bold text-center">Txn hash</div>
-        <div className="text-h5 font-bold text-center">Party</div>
-        <div className="text-h5 font-bold text-center">Type</div>
+      <div className="grid grid-cols-[repeat(2,_1fr)_240px] gap-12 w-full mb-8">
+        <div className="text-h5 font-bold">Txn hash</div>
+        <div className="text-h5 font-bold">Party</div>
+        <div className="text-h5 font-bold pl-2">Type</div>
       </div>
       <InfiniteLoader
         isItemLoaded={isItemLoaded}
@@ -89,7 +91,14 @@ export const TxsInfiniteList = ({
             ref={ref}
             width={'100%'}
           >
-            {Item}
+            {({ index, style }) => (
+              <Item
+                index={txs[index]}
+                style={style}
+                isLoading={!isItemLoaded(index)}
+                error={error}
+              />
+            )}
           </List>
         )}
       </InfiniteLoader>

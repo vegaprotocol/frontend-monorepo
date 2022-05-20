@@ -28,7 +28,7 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
 
   const reusedBodyParams = useMemo(
     () => ({
-      node_url: `${DATA_SOURCES.tendermintUrl}`,
+      node_url: DATA_SOURCES.tendermintUrl,
       transaction_height: parseInt(latestBlockHeight),
       page_size: 30,
     }),
@@ -39,21 +39,15 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
     state: { error, loading },
     refetch,
   } = useFetch(
-    `${DATA_SOURCES.chainExplorerUrl}`,
+    DATA_SOURCES.chainExplorerUrl,
     {
       method: 'POST',
-      body: JSON.stringify({
-        ...reusedBodyParams,
-      }),
+      body: JSON.stringify(reusedBodyParams),
     },
     false
   );
 
   const loadTxs = useCallback(async () => {
-    setTxsState((prev) => ({
-      ...prev,
-    }));
-
     const data = await refetch(undefined, {
       ...reusedBodyParams,
       page_number: nextPage,
