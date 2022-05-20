@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { DealTicketContainer } from '../components/deal-ticket';
+import { SimpleMarketList } from '../components/simple-market-list';
 
 export const ROUTES = {
   HOME: '/',
@@ -20,7 +21,7 @@ export const routerConfig = [
     path: ROUTES.MARKETS,
     name: 'Markets',
     text: t('Markets'),
-    element: <div>Markets</div>,
+    element: <SimpleMarketList />,
   },
   {
     path: ROUTES.TRADING,
