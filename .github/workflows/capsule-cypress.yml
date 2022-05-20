@@ -129,3 +129,10 @@ jobs:
       ## TODO only running explorer right now
       - name: Run Cypress tests
         run: yarn nx run explorer-e2e:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --env.tradingWalletPassphrase=${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }} --env.slackWebhook=${{ secrets.CYPRESS_SLACK_WEBHOOK }} --browser chrome
+      - name: Logs
+        if: ${{ always() }}
+        run: vegacapsule network logs > vega-capsule-logs.txt
+      - uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ./vega-capsule-logs.txt
