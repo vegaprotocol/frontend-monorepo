@@ -10,7 +10,7 @@ import { Routes } from '../../routes/route-names';
 import { TxOrderType } from './tx-order-type';
 import type { ChainExplorerTxResponse } from '../../routes/types/chain-explorer-response';
 
-const truncateLength = 14;
+const TRUNCATE_LENGTH = 14;
 
 export const TxsInfiniteListItem = ({
   TxHash,
