@@ -48,10 +48,13 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
   );
 
   const loadTxs = useCallback(async () => {
-    const data = await refetch(undefined, {
-      ...reusedBodyParams,
-      page_number: nextPage,
-    });
+    const data = await refetch(
+      undefined,
+      JSON.stringify({
+        ...reusedBodyParams,
+        page_number: nextPage,
+      })
+    );
 
     if (data) {
       setTxsState((prev) => ({
@@ -68,10 +71,13 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
       <RouteTitle>{t('Transactions')}</RouteTitle>
       <BlocksRefetch
         refetch={() =>
-          refetch(undefined, {
-            ...reusedBodyParams,
-            page_number: 1,
-          })
+          refetch(
+            undefined,
+            JSON.stringify({
+              ...reusedBodyParams,
+              page_number: 1,
+            })
+          )
         }
       />
       <TxsInfiniteList
