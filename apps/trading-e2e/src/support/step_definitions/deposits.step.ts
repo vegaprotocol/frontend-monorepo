@@ -5,6 +5,10 @@ import DepositsPage from '../pages/deposits-page';
 const depositsPage = new DepositsPage();
 const ethWallet = new EthereumWallet();
 
+const tBTC = Cypress.env('TBTC_CONTRACT');
+const invalidPublicKey =
+  'zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f';
+
 beforeEach(() => {
   cy.mockWeb3Provider();
 });
