@@ -49,6 +49,18 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
+var __asyncValues = (this && this.__asyncValues) || function (o) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var m = o[Symbol.asyncIterator], i;
+    return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+    function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+    function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+};
+var __asyncDelegator = (this && this.__asyncDelegator) || function (o) {
+    var i, p;
+    return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+    function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+};
 var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var g = generator.apply(thisArg, _arguments || []), i, q = [];
@@ -59,6 +71,17 @@ var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _ar
     function fulfill(value) { resume("next", value); }
     function reject(value) { resume("throw", value); }
     function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+};
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
 exports.__esModule = true;
 var fs = require("fs");
@@ -80,11 +103,16 @@ var getEnvFile = function (env, envFiles) {
     if (env && !envMap[env]) {
         log.warn(LOGGER_SCOPE, "No environment called \"".concat(env, "\" found."));
         log.info(LOGGER_SCOPE, envFiles.length > 0
-            ? "You can create a new environment by putting an \".env.".concat(env, "\" file in your project root, or you can use the following available ones: ").concat(envFiles.join(', '), ".") :
-            'To get started with environments, you can create an ".env" file in your project root with the desired variables.');
+            ? "You can create a new environment by putting an \".env.".concat(env, "\" file in your project root, or you can use the following available ones: ").concat(envFiles.join(', '), ".")
+            : 'To get started with environments, you can create an ".env" file in your project root with the desired variables.');
+    }
+    if (!envMap[env]) {
         log.info(LOGGER_SCOPE, defaultEnvFile
-            ? "Using \"".concat(defaultEnvFile, "\" as the project environment.")
+            ? "Using \"".concat(defaultEnvFile, "\" as the default project environment.")
             : 'Serving the project only using the environment variables scoped to your CLI.');
+    }
+    else {
+        log.info(LOGGER_SCOPE, "Using \"".concat(envMap[env], "\" as the default project environment."));
     }
     return envMap[env] || defaultEnvFile;
 };
@@ -102,10 +130,13 @@ function serve(options, context) {
                     files = _a.sent();
                     envFile = getEnvFile(env, files.filter(function (f) { return f.startsWith('.env'); }));
                     if (envFile) {
-                        dotenv.config({ path: path.join(workspacePath, envFile) });
+                        dotenv.config({ path: path.join(workspacePath, envFile), override: true });
+                        console.log(process.env.NX_VEGA_URL);
                     }
-                    return [4 /*yield*/, __await((0, dev_server_impl_1["default"])(dsOptions, context))];
-                case 2: return [2 /*return*/, _a.sent()];
+                    return [5 /*yield**/, __values(__asyncDelegator(__asyncValues((0, dev_server_impl_1["default"])(dsOptions, context))))];
+                case 2: return [4 /*yield*/, __await.apply(void 0, [_a.sent()])];
+                case 3: return [4 /*yield*/, __await.apply(void 0, [_a.sent()])];
+                case 4: return [2 /*return*/, _a.sent()];
             }
         });
     });
