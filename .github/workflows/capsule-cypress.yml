@@ -107,7 +107,7 @@ jobs:
 
       # May need to wait for the above to fully start...
       - name: Bootstrap network
-        run: vegacapsule network bootstrap --config-path=config.hcl
+        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl
         working-directory: capsule
 
       # - name: Wait for ETH
