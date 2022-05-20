@@ -1,6 +1,10 @@
 import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
-import { PriceFlashCell, formatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  PriceFlashCell,
+  addDecimalsFormatNumber,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type {
   Markets_markets,
@@ -60,7 +64,7 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
           type="rightAligned"
           cellRenderer="PriceFlashCell"
           valueFormatter={({ value, data }: ValueFormatterParams) =>
-            formatNumber(value, data.decimalPlaces)
+            addDecimalsFormatNumber(value, data.decimalPlaces)
           }
         />
         <AgGridColumn
@@ -68,7 +72,7 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
           field="data.bestOfferPrice"
           type="rightAligned"
           valueFormatter={({ value, data }: ValueFormatterParams) =>
-            formatNumber(value, data.decimalPlaces)
+            addDecimalsFormatNumber(value, data.decimalPlaces)
           }
           cellRenderer="PriceFlashCell"
         />
@@ -78,7 +82,7 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
           type="rightAligned"
           cellRenderer="PriceFlashCell"
           valueFormatter={({ value, data }: ValueFormatterParams) =>
-            formatNumber(value, data.decimalPlaces)
+            addDecimalsFormatNumber(value, data.decimalPlaces)
           }
         />
         <AgGridColumn headerName={t('Description')} field="name" />

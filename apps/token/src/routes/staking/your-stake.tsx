@@ -1,9 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { formatNumber } from '../../lib/format-number';
 import type { BigNumber } from '../../lib/bignumber';
 
@@ -20,15 +17,19 @@ export const YourStake = ({
 
   return (
     <div data-testid="your-stake">
-      <h2>{t('Your stake')}</h2>
+      <h2 className="text-h4 mb-8">{t('Your stake')}</h2>
       <KeyValueTable>
         <KeyValueTableRow>
-          <th>{t('Your Stake On Node (This Epoch)')}</th>
-          <td data-testid="stake-this-epoch">{formatNumber(stakeThisEpoch)}</td>
+          {t('Your Stake On Node (This Epoch)')}
+          <span data-testid="stake-this-epoch">
+            {formatNumber(stakeThisEpoch)}
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('Your Stake On Node (Next Epoch)')}</th>
-          <td data-testid="stake-next-epoch">{formatNumber(stakeNextEpoch)}</td>
+          {t('Your Stake On Node (Next Epoch)')}
+          <span data-testid="stake-next-epoch">
+            {formatNumber(stakeNextEpoch)}
+          </span>
         </KeyValueTableRow>
       </KeyValueTable>
     </div>

@@ -1,14 +1,9 @@
-import './reward-info.scss';
-
 import * as Sentry from '@sentry/react';
 import { format } from 'date-fns';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../../lib/date-formats';
 import type {
@@ -68,9 +63,10 @@ export const RewardInfo = ({
   }, [data, rewardAssetId]);
 
   return (
-    <div className="reward-info">
-      <h3 className="reward-info__sub-heading">{t('Connected Vega key')}</h3>
-      <p>{currVegaKey.pub}</p>
+    <div className="mt-24">
+      <p className="mb-8">
+        {t('Connected Vega key')}: {currVegaKey.pub}
+      </p>
       {vegaTokenRewards.length ? (
         vegaTokenRewards.map((reward, i) => {
           if (!reward) return null;
@@ -122,26 +118,30 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
       </h3>
       <KeyValueTable>
         <KeyValueTableRow>
-          <th>{t('rewardType')}</th>
-          <td>{DEFAULT_REWARD_TYPE}</td>
+          {t('rewardType')}
+          <span>{DEFAULT_REWARD_TYPE}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('yourStake')}</th>
-          <td>{stakeForEpoch.toString()}</td>
+          {t('yourStake')}
+          <span>{stakeForEpoch.toString()}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('reward')}</th>
-          <td>
+          {t('reward')}
+          <span>
             {reward.amountFormatted} {t('VEGA')}
-          </td>
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('shareOfReward')}</th>
-          <td>{new BigNumber(reward.percentageOfTotal).dp(2).toString()}%</td>
+          {t('shareOfReward')}
+          <span>
+            {new BigNumber(reward.percentageOfTotal).dp(2).toString()}%
+          </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
-          <th>{t('received')}</th>
-          <td>{format(new Date(reward.receivedAt), DATE_FORMAT_DETAILED)}</td>
+          {t('received')}
+          <span>
+            {format(new Date(reward.receivedAt), DATE_FORMAT_DETAILED)}
+          </span>
         </KeyValueTableRow>
       </KeyValueTable>
     </div>

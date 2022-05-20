@@ -9,6 +9,17 @@ module.exports = {
     ...createGlobPatternsForDependencies(__dirname),
   ],
   darkMode: 'class',
-  theme,
+  theme: {
+    ...theme,
+    extend: {
+      backgroundImage: {
+        clouds: "url('./images/clouds.png')",
+        banner: "url('./images/banner.png')",
+      },
+      backgroundPosition: {
+        clouds: '0 -300px',
+      },
+    },
+  },
   plugins: [vegaCustomClasses],
 };

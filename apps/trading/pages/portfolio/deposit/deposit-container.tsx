@@ -6,7 +6,6 @@ import { DepositManager } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
-import { isERC20Asset } from '../../../lib/assets';
 
 const DEPOSIT_PAGE_QUERY = gql`
   ${ASSET_FRAGMENT}
@@ -45,7 +44,7 @@ export const DepositContainer = ({
           <DepositManager
             bridgeAddress={ethereumConfig.collateral_bridge_contract.address}
             requiredConfirmations={ethereumConfig.confirmations}
-            assets={data.assets.filter(isERC20Asset)}
+            assets={data.assets}
             initialAssetId={assetId}
           />
         );

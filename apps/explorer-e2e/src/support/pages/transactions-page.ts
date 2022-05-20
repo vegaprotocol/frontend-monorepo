@@ -53,7 +53,7 @@ export default class TransactionsPage extends BasePage {
                 .each(($propertyName) => {
                   cy.wrap($propertyName).should('not.be.empty');
                 });
-              cy.get('span[style*="color"]')
+              cy.get('.hljs-string')
                 .should('have.length.at.least', 8)
                 .each(($propertyValue) => {
                   cy.wrap($propertyValue).should('not.be.empty');
@@ -73,7 +73,11 @@ export default class TransactionsPage extends BasePage {
     cy.wait(1000); // Wait for transactions to load if there are any
     cy.get('body').then(($body) => {
       if ($body.find(`[data-testid=${this.transactionRow}]`).length) {
-        cy.getByTestId(this.transactionRow).first().find('a').first().click();
+        cy.getByTestId(this.transactionRow)
+          .first()
+          .find('a')
+          .first()
+          .click({ force: true });
       } else {
         cy.slack('Unable to find any transactions on page');
         cy.screenshot();

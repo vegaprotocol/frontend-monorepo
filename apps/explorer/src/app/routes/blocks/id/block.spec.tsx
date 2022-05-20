@@ -2,10 +2,19 @@ import { Block } from './block';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Routes as RouteNames } from '../../route-names';
+import { useFetch } from '@vegaprotocol/react-helpers';
+
+jest.mock('@vegaprotocol/react-helpers', () => {
+  const original = jest.requireActual('@vegaprotocol/react-helpers');
+  return {
+    ...original,
+    useFetch: jest.fn(),
+  };
+});
 
 const blockId = 1085890;
 
-const createBlockResponse = () => {
+const createBlockResponse = (id: number = blockId) => {
   return {
     jsonrpc: '2.0',
     id: -1,
@@ -58,7 +67,7 @@ const createBlockResponse = () => {
           evidence: [],
         },
         last_commit: {
-          height: blockId.toString(),
+          height: id.toString(),
           round: 0,
           block_id: {
             hash: 'C50CA169545AC1280220433D7971C50D941F675E9B0FFF358ABE8F3A7F74AE0E',
@@ -110,9 +119,9 @@ const createBlockResponse = () => {
   };
 };
 
-const renderComponent = () => {
+const renderComponent = (id: number = blockId) => {
   return (
-    <MemoryRouter initialEntries={[`/${RouteNames.BLOCKS}/${blockId}`]}>
+    <MemoryRouter initialEntries={[`/${RouteNames.BLOCKS}/${id}`]}>
       <Routes>
         <Route path={`/${RouteNames.BLOCKS}/:block`} element={<Block />} />
       </Routes>
@@ -121,31 +130,41 @@ const renderComponent = () => {
 };
 
 beforeEach(() => {
-  global.fetch = jest.fn(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve(createBlockResponse()),
-    })
-  ) as jest.Mock;
   jest.useFakeTimers().setSystemTime(1648123348642);
 });
 
 afterEach(() => {
-  jest.useRealTimers();
   jest.clearAllMocks();
+  jest.useRealTimers();
 });
 
 describe('Block', () => {
+  it('renders error state if error is present', async () => {
+    (useFetch as jest.Mock).mockReturnValue({
+      state: { data: null, loading: false, error: 'asd' },
+    });
+    render(renderComponent());
+
+    expect(screen.getByText(`BLOCK ${blockId}`)).toBeInTheDocument();
+    expect(screen.getByText('Error retrieving data')).toBeInTheDocument();
+  });
+
+  it('renders loading state if present', async () => {
+    (useFetch as jest.Mock).mockReturnValue({
+      state: { data: null, loading: true, error: null },
+    });
+    render(renderComponent());
+
+    expect(screen.getByText(`BLOCK ${blockId}`)).toBeInTheDocument();
+    expect(screen.getByText('Loading...')).toBeInTheDocument();
+  });
+
   it('should render title, proposer address and time mined', async () => {
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve(createBlockResponse()),
-      })
-    ) as jest.Mock;
+    (useFetch as jest.Mock).mockReturnValue({
+      state: { data: createBlockResponse(), loading: false, error: null },
+    });
     render(renderComponent());
     await waitFor(() => screen.getByTestId('block-header'));
-
     expect(screen.getByTestId('block-header')).toHaveTextContent(
       `BLOCK ${blockId}`
     );
@@ -160,6 +179,9 @@ describe('Block', () => {
   });
 
   it('renders next and previous buttons', async () => {
+    (useFetch as jest.Mock).mockReturnValue({
+      state: { data: createBlockResponse(), loading: false, error: null },
+    });
     render(renderComponent());
     await waitFor(() => screen.getByTestId('block-header'));
 
@@ -170,6 +192,17 @@ describe('Block', () => {
     expect(screen.getByTestId('next-block')).toHaveAttribute(
       'href',
       `/${RouteNames.BLOCKS}/${blockId + 1}`
+    );
+  });
+
+  it('disables previous button on block 1', async () => {
+    (useFetch as jest.Mock).mockReturnValue({
+      state: { data: createBlockResponse(1), loading: false, error: null },
+    });
+    render(renderComponent(1));
+    await waitFor(() => screen.getByTestId('block-header'));
+    expect(screen.getByTestId('previous-block-button')).toHaveAttribute(
+      'disabled'
     );
   });
 });

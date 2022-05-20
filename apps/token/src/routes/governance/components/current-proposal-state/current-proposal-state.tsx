@@ -1,5 +1,3 @@
-import './current-proposal-state.scss';
-
 import { ProposalState } from '../../../../__generated__/globalTypes';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
@@ -9,19 +7,19 @@ export const CurrentProposalState = ({
   proposal: Proposals_proposals;
 }) => {
   const { state } = proposal;
-  let className = 'current-proposal-state__open';
+  let className = 'text-white';
 
   if (
     state === ProposalState.Declined ||
     state === ProposalState.Failed ||
     state === ProposalState.Rejected
   ) {
-    className = 'current-proposal-state__fail';
+    className = 'text-intent-danger';
   } else if (
     state === ProposalState.Enacted ||
     state === ProposalState.Passed
   ) {
-    className = 'current-proposal-state__pass';
+    className = 'text-white';
   }
   return <span className={className}>{state}</span>;
 };

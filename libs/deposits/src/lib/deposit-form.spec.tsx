@@ -44,7 +44,7 @@ beforeEach(() => {
   };
 });
 
-test('Form validation', async () => {
+it('Form validation', async () => {
   const mockUseVegaWallet = useVegaWallet as jest.Mock;
   mockUseVegaWallet.mockReturnValue({ keypair: null });
 
@@ -77,26 +77,32 @@ test('Form validation', async () => {
   fireEvent.change(screen.getByLabelText('From (Ethereum address)'), {
     target: { value: invalidEthereumAddress },
   });
-  expect(await screen.findByText('Invalid Ethereum address'));
+  expect(
+    await screen.findByText('Invalid Ethereum address')
+  ).toBeInTheDocument();
 
   const invalidVegaKey = 'abc';
   fireEvent.change(screen.getByLabelText('To (Vega key)'), {
     target: { value: invalidVegaKey },
   });
-  expect(await screen.findByText('Invalid Vega key'));
+  expect(await screen.findByText('Invalid Vega key')).toBeInTheDocument();
 
   // Max amount validation
   const amountMoreThanAvailable = '11';
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountMoreThanAvailable },
   });
-  expect(await screen.findByText('Insufficient amount in Ethereum wallet'));
+  expect(
+    await screen.findByText('Insufficient amount in Ethereum wallet')
+  ).toBeInTheDocument();
 
   const amountMoreThanLimit = '21';
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountMoreThanLimit },
   });
-  expect(await screen.findByText('Amount is above permitted maximum'));
+  expect(
+    await screen.findByText('Amount is above permitted maximum')
+  ).toBeInTheDocument();
 
   rerender(
     <DepositForm
@@ -109,7 +115,9 @@ test('Form validation', async () => {
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountMoreThanAllowance },
   });
-  expect(await screen.findByText('Amount is above approved amount'));
+  expect(
+    await screen.findByText('Amount is above approved amount')
+  ).toBeInTheDocument();
 
   // Min amount validation
   rerender(<DepositForm {...props} selectedAsset={asset} />); // Rerender with selected asset so we have asset.decimals
@@ -119,7 +127,7 @@ test('Form validation', async () => {
     target: { value: amountLessThanMinViable },
   });
 
-  expect(await screen.findByText('Value is below minimum'));
+  expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
 
   rerender(
     <DepositForm
@@ -131,10 +139,10 @@ test('Form validation', async () => {
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountLessThanLimit },
   });
-  expect(await screen.findByText('Value is below minimum'));
+  expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
 });
 
-test('Approval', () => {
+it('Approval', () => {
   const mockUseVegaWallet = useVegaWallet as jest.Mock;
   mockUseVegaWallet.mockReturnValue({ keypair: null });
 
@@ -156,7 +164,7 @@ test('Approval', () => {
   expect(props.submitApprove).toHaveBeenCalled();
 });
 
-test('Deposit', async () => {
+it('Deposit', async () => {
   const vegaKey =
     'f8885edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f';
   const mockUseVegaWallet = useVegaWallet as jest.Mock;

@@ -36,7 +36,7 @@ function setup(
   return renderHook(() => useOrderSubmit(market), { wrapper });
 }
 
-test('Has the correct default state', () => {
+it('Has the correct default state', () => {
   const { result } = setup();
   expect(typeof result.current.submit).toEqual('function');
   expect(typeof result.current.reset).toEqual('function');
@@ -45,7 +45,7 @@ test('Has the correct default state', () => {
   expect(result.current.transaction.error).toEqual(null);
 });
 
-test('Should not sendTx if no keypair', async () => {
+it('Should not sendTx if no keypair', async () => {
   const mockSendTx = jest.fn();
   const { result } = setup({ sendTx: mockSendTx, keypairs: [], keypair: null });
   await act(async () => {
@@ -54,7 +54,7 @@ test('Should not sendTx if no keypair', async () => {
   expect(mockSendTx).not.toHaveBeenCalled();
 });
 
-test('Should not sendTx side is not specified', async () => {
+it('Should not sendTx side is not specified', async () => {
   const mockSendTx = jest.fn();
   const keypair = {
     pub: '0x123',
@@ -70,7 +70,7 @@ test('Should not sendTx side is not specified', async () => {
   expect(mockSendTx).not.toHaveBeenCalled();
 });
 
-test('Create an Id if a signature is returned', async () => {
+it('Create an Id if a signature is returned', async () => {
   const signature =
     '597a7706491e6523c091bab1e4d655b62c45a224e80f6cd92ac366aa5dd9a070cc7dd3c6919cb07b81334b876c662dd43bdbe5e827c8baa17a089feb654fab0b';
   const expectedId =
@@ -106,7 +106,7 @@ test('Create an Id if a signature is returned', async () => {
   expect(result.current.id).toEqual(expectedId);
 });
 
-test('Should submit a correctly formatted order', async () => {
+it('Should submit a correctly formatted order', async () => {
   const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
   const keypair = {
     pub: '0x123',

@@ -1,5 +1,3 @@
-import './node-list.scss';
-
 import { gql, useQuery } from '@apollo/client';
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
@@ -46,6 +44,26 @@ export const NODES_QUERY = gql`
     }
   }
 `;
+
+const NodeListItemName = ({ children }: { children: React.ReactNode }) => (
+  <span className="mr-4 underline">{children}</span>
+);
+
+const NodeListTr = ({ children }: { children: React.ReactNode }) => (
+  <tr className="flex">{children}</tr>
+);
+
+const NodeListTh = ({ children }: { children: React.ReactNode }) => (
+  <th className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal">
+    {children}
+  </th>
+);
+
+const NodeListTd = ({ children }: { children: React.ReactNode }) => (
+  <td className="flex-1 break-words py-1 px-4 font-mono text-right">
+    {children}
+  </td>
+);
 
 interface NodeListProps {
   epoch: Staking_epoch | undefined;
@@ -121,13 +139,12 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
     <>
       {epoch && epoch.timestamps.start && epoch.timestamps.expiry && (
         <EpochCountdown
-          containerClass="staking-node__epoch"
           id={epoch.id}
           startDate={new Date(epoch.timestamps.start)}
           endDate={new Date(epoch.timestamps.expiry)}
         />
       )}
-      <ul className="node-list">
+      <ul role="list" className="mt-24">
         {nodes.map((n, i) => {
           return <NodeListItem key={i} {...n} />;
         })}
@@ -156,17 +173,18 @@ export const NodeListItem = ({
   const { t } = useTranslation();
 
   return (
-    <li data-testid="node-list-item">
+    <li
+      className="break-words flex flex-col justify-between mb-16 last:mb-0"
+      data-testid="node-list-item"
+    >
       <Link to={id}>
         {name ? (
-          <span className="node-list__item-name">{name}</span>
+          <NodeListItemName>{name}</NodeListItemName>
         ) : (
           <>
-            <span className="node-list__item-name">
-              {t('validatorTitleFallback')}
-            </span>
+            <NodeListItemName>{t('validatorTitleFallback')}</NodeListItemName>
             <span
-              className="node-list__item-id text-muted"
+              className="uppercase text-white-60"
               title={`${t('id')}: ${id}`}
             >
               {truncateMiddle(id)}
@@ -174,18 +192,18 @@ export const NodeListItem = ({
           </>
         )}
       </Link>
-      <table>
+      <table className="flex-1 text-body border-collapse mt-4">
         <tbody>
-          <tr>
-            <th>{t('Total stake')}</th>
-            <td>{formatNumber(stakedOnNode, 2)}</td>
-            <td>{stakedTotalPercentage}</td>
-          </tr>
-          <tr>
-            <th>{t('Your stake')}</th>
-            <td>{formatNumber(userStake, 2)}</td>
-            <td>{userStakePercentage}</td>
-          </tr>
+          <NodeListTr>
+            <NodeListTh>{t('Total stake')}</NodeListTh>
+            <NodeListTd>{formatNumber(stakedOnNode, 2)}</NodeListTd>
+            <NodeListTd>{stakedTotalPercentage}</NodeListTd>
+          </NodeListTr>
+          <NodeListTr>
+            <NodeListTh>{t('Your stake')}</NodeListTh>
+            <NodeListTd>{formatNumber(userStake, 2)}</NodeListTd>
+            <NodeListTd>{userStakePercentage}</NodeListTd>
+          </NodeListTr>
         </tbody>
       </table>
     </li>

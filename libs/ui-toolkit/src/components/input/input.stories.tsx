@@ -7,6 +7,18 @@ export default {
 
 const Template: Story = (args) => <Input {...args} value="I type words" />;
 
+const customElementPlaceholder = (
+  <span
+    style={{
+      fontFamily: 'monospace',
+      backgroundColor: 'grey',
+      padding: '4px',
+    }}
+  >
+    Ω
+  </span>
+);
+
 export const Default = Template.bind({});
 Default.args = {};
 
@@ -36,4 +48,12 @@ export const IconPrepend: Story = () => (
 
 export const IconAppend: Story = () => (
   <Input value="I type words and even more words" appendIconName="search" />
+);
+
+export const ElementPrepend: Story = () => (
+  <Input value="<- custom element" prependElement={customElementPlaceholder} />
+);
+
+export const ElementAppend: Story = () => (
+  <Input value="custom element ->" appendElement={customElementPlaceholder} />
 );

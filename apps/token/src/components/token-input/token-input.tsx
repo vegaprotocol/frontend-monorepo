@@ -1,5 +1,3 @@
-import './token-input.scss';
-
 import {
   Button,
   Callout,
@@ -37,10 +35,10 @@ export const AmountInput = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <div className="token-input__container">
+    <div className="flex">
       <Input
         data-testid="token-amount-input"
-        className="token-input__input"
+        className="flex-1"
         name={inputName}
         id={inputName}
         onChange={(e) => setAmount(e.target.value)}
@@ -56,7 +54,7 @@ export const AmountInput = ({
           variant="inline-link"
           onClick={() => setAmount(maximum.toString())}
           data-testid="token-amount-use-maximum"
-          className="text-ui token-input__use-maximum"
+          className="flex flex-col justify-center text-ui p-8 h-28 my-0 mx-8"
         >
           {t('Use maximum')}
         </Button>

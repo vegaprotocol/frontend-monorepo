@@ -1,5 +1,3 @@
-import './app-banner.scss';
-
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { Error } from '../icons';
 
@@ -12,9 +10,9 @@ export const AppBanner = () => {
   if (!bannerMessage) return <div />;
 
   return (
-    <div className="app-banner" role="alert">
+    <div className="bg-white p-8 text-black" role="alert">
       <p>
-        <span className="app-banner__icon">
+        <span className="inline-block relative top-[1px] text-intent-danger text-ui mr-[5px]">
           <Error />
         </span>
         {bannerMessage}

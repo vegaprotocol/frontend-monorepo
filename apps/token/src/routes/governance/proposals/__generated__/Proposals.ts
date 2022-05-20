@@ -3,11 +3,34 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { ProposalState, ProposalRejectionReason, VoteValue } from "./../../../../__generated__/globalTypes";
+import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Proposals
 // ====================================================
+
+export interface Proposals_proposals_rationale {
+  __typename: "ProposalRationale";
+  /**
+   * Link to a text file describing the proposal in depth.
+   * Optional except for FreeFrom proposal where it's mandatory.
+   * If set, the `url` property must be set.
+   */
+  url: string | null;
+  /**
+   * Description to show a short title / something in case the link goes offline.
+   * This is to be between 0 and 1024 unicode characters.
+   * This is mandatory for all proposal.
+   */
+  description: string;
+  /**
+   * Cryptographically secure hash (SHA3-512) of the text pointed by the `url` property
+   * so that viewers can check that the text hasn't been changed over time.
+   * Optional except for FreeFrom proposal where it's mandatory.
+   * If set, the `url` property must be set.
+   */
+  hash: string | null;
+}
 
 export interface Proposals_proposals_party {
   __typename: "Party";
@@ -15,6 +38,10 @@ export interface Proposals_proposals_party {
    * Party identifier
    */
   id: string;
+}
+
+export interface Proposals_proposals_terms_change_NewFreeform {
+  __typename: "NewFreeform";
 }
 
 export interface Proposals_proposals_terms_change_NewMarket_instrument {
@@ -93,23 +120,7 @@ export interface Proposals_proposals_terms_change_UpdateNetworkParameter {
   networkParameter: Proposals_proposals_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export interface Proposals_proposals_terms_change_NewFreeform {
-  __typename: "NewFreeform";
-  /**
-   * The URL containing content that describes the proposal
-   */
-  url: string;
-  /**
-   * A short description of what is being proposed
-   */
-  description: string;
-  /**
-   * The hash on the content of the URL
-   */
-  hash: string;
-}
-
-export type Proposals_proposals_terms_change = Proposals_proposals_terms_change_NewMarket | Proposals_proposals_terms_change_UpdateMarket | Proposals_proposals_terms_change_NewAsset | Proposals_proposals_terms_change_UpdateNetworkParameter | Proposals_proposals_terms_change_NewFreeform;
+export type Proposals_proposals_terms_change = Proposals_proposals_terms_change_NewFreeform | Proposals_proposals_terms_change_NewMarket | Proposals_proposals_terms_change_UpdateMarket | Proposals_proposals_terms_change_NewAsset | Proposals_proposals_terms_change_UpdateNetworkParameter;
 
 export interface Proposals_proposals_terms {
   __typename: "ProposalTerms";
@@ -271,6 +282,10 @@ export interface Proposals_proposals {
    * Error details of the rejectionReason
    */
   errorDetails: string | null;
+  /**
+   * Rationale behind the proposal
+   */
+  rationale: Proposals_proposals_rationale;
   /**
    * Party that prepared the proposal
    */

@@ -108,7 +108,11 @@ export const Web3Content = ({
   const { isActive, error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
-    if (connector?.connectEagerly) {
+    if (
+      connector?.connectEagerly &&
+      // Dont eager connect if this is a cypress test run
+      'Cypress' in window
+    ) {
       connector.connectEagerly();
     }
   }, [connector]);
@@ -127,8 +131,15 @@ export const Web3Content = ({
   if (!isActive) {
     return (
       <SplashWrapper>
-        <p className="mb-12">{t('Connect your Ethereum wallet')}</p>
-        <Button onClick={() => setDialogOpen(true)}>{t('Connect')}</Button>
+        <p data-testid="connect-eth-wallet-msg" className="mb-12">
+          {t('Connect your Ethereum wallet')}
+        </p>
+        <Button
+          onClick={() => setDialogOpen(true)}
+          data-testid="connect-eth-wallet-btn"
+        >
+          {t('Connect')}
+        </Button>
       </SplashWrapper>
     );
   }

@@ -3,9 +3,9 @@ import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
-import { SyntaxHighlighter } from '../../components/syntax-highlighter';
+import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { DATA_SOURCES } from '../../config';
-import useFetch from '../../hooks/use-fetch';
+import { useFetch } from '@vegaprotocol/react-helpers';
 import type { TendermintValidatorsResponse } from './tendermint-validator-response';
 import type { NodesQuery } from './__generated__/NodesQuery';
 

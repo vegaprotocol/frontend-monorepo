@@ -1,7 +1,5 @@
-import './transaction-button.scss';
-
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-
 import type { TransactionState } from '../../hooks/transaction-reducer';
 import { TxState } from '../../hooks/transaction-reducer';
 import { truncateMiddle } from '../../lib/truncate-middle';
@@ -21,6 +19,16 @@ interface TransactionButtonProps {
   reset: () => void;
 }
 
+const Wrapper = ({ children }: { children: React.ReactNode }) => (
+  <div className="mb-20">{children}</div>
+);
+
+const Text = ({ children }: { children: React.ReactNode }) => (
+  <p className="flex justify-center items-center gap-10 m-0 py-12 px-32 leading-[1.15]">
+    {children}
+  </p>
+);
+
 export const TransactionButton = ({
   text,
   transactionState,
@@ -32,31 +40,28 @@ export const TransactionButton = ({
 }: TransactionButtonProps) => {
   const { t } = useTranslation();
   const { txState, txData } = transactionState;
-  const root = 'transaction-button';
-  const wrapperClassName = `${root} transaction-button--${txState.toLowerCase()}`;
-  const buttonClassName = `${root}__button fill`;
-  const textClassName = `${root}__text`;
   const txHash = forceTxHash || txData.hash;
   const state = forceTxState || txState;
 
   if (state === TxState.Complete) {
-    const className = `transaction-button transaction-button--${TxState.Complete.toLowerCase()}`;
     return (
-      <div className={className}>
-        <p className={textClassName}>
-          <Tick />
+      <Wrapper>
+        <Text>
+          <span className="text-vega-green">
+            <Tick />
+          </span>
           <span>{t('txButtonComplete')}</span>
-        </p>
+        </Text>
         <TransactionButtonFooter txHash={txHash} />
-      </div>
+      </Wrapper>
     );
   }
 
   // User as started transaction and we are awaiting confirmation from the users wallet
   if (state === TxState.Requested) {
     return (
-      <div className={wrapperClassName}>
-        <StatefulButton className={buttonClassName} disabled={true}>
+      <Wrapper>
+        <StatefulButton disabled={true}>
           <HandUp />
           <span>{t('txButtonActionRequired')}</span>
         </StatefulButton>
@@ -64,49 +69,47 @@ export const TransactionButton = ({
           message={t('transactionHashPrompt')}
           txHash={txHash}
         />
-      </div>
+      </Wrapper>
     );
   }
 
   if (state === TxState.Pending) {
     return (
-      <div className={wrapperClassName}>
-        <StatefulButton className={buttonClassName} disabled={true}>
+      <Wrapper>
+        <StatefulButton disabled={true}>
           <Loader />
           <span>{t('txButtonAwaiting')}</span>
         </StatefulButton>
         <TransactionButtonFooter txHash={txHash} />
-      </div>
+      </Wrapper>
     );
   }
 
   if (state === TxState.Error) {
     return (
-      <div className={wrapperClassName}>
-        <p className={textClassName}>
-          <Error />
+      <Wrapper>
+        <Text>
+          <span className="text-intent-danger">
+            <Error />
+          </span>
           <span>{t('txButtonFailure')}</span>
           <Button onClick={reset} variant="inline-link">
             {t('Try again')}
           </Button>
-        </p>
+        </Text>
         <TransactionButtonFooter txHash={txHash} />
-      </div>
+      </Wrapper>
     );
   }
 
   // Idle
   return (
-    <div className={wrapperClassName}>
-      <StatefulButton
-        className={buttonClassName}
-        onClick={start}
-        disabled={disabled}
-      >
+    <Wrapper>
+      <StatefulButton onClick={start} disabled={disabled}>
         {text}
       </StatefulButton>
       <TransactionButtonFooter txHash={txHash} />
-    </div>
+    </Wrapper>
   );
 };
 
@@ -123,9 +126,11 @@ export const TransactionButtonFooter = ({
 
   if (message) {
     return (
-      <div className="transaction-button__footer">
-        <p className="transaction-button__message">
-          <Error />
+      <div className="mt-4 mb-0 mx-0">
+        <p className="m-0 py-4 pl-8 border-l border-[3px] border-intent-warning text-ui">
+          <span className="relative top-2 mr-4 text-intent-warning">
+            <Error />
+          </span>
           {message}
         </p>
       </div>
@@ -135,7 +140,7 @@ export const TransactionButtonFooter = ({
   if (txHash) {
     return (
       <div className="transaction-button__footer">
-        <p className="transaction-button__txhash">
+        <p className="flex justify-between items-start m-0 text-ui">
           <span>{t('transaction')}</span>
           <EtherscanLink text={truncateMiddle(txHash)} tx={txHash} />
         </p>

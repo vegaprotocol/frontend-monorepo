@@ -1,9 +1,9 @@
-import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce } from '@vegaprotocol/wallet';
 import type { TransactionStatus } from './deal-ticket';
 import { ExpirySelector } from './expiry-selector';
 import { SideSelector } from './side-selector';
 import { SubmitButton } from './submit-button';
+import { DealTicketLimitForm } from './deal-ticket-limit-form';
 import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { Order } from './use-order-state';
@@ -26,34 +26,13 @@ export const DealTicketLimit = ({
     <>
       <TypeSelector order={order} onSelect={(type) => updateOrder({ type })} />
       <SideSelector order={order} onSelect={(side) => updateOrder({ side })} />
-      <div className="flex items-center gap-8">
-        <div className="flex-1">
-          <FormGroup label="Amount">
-            <Input
-              value={order.size}
-              onChange={(e) => updateOrder({ size: e.target.value })}
-              className="w-full"
-              type="number"
-              data-testid="order-size"
-            />
-          </FormGroup>
-        </div>
-        <div>@</div>
-        <div className="flex-1">
-          <FormGroup
-            label={`Price (${market.tradableInstrument.instrument.product.quoteName})`}
-            labelAlign="right"
-          >
-            <Input
-              value={order.price}
-              onChange={(e) => updateOrder({ price: e.target.value })}
-              className="w-full"
-              type="number"
-              data-testid="order-price"
-            />
-          </FormGroup>
-        </div>
-      </div>
+      <DealTicketLimitForm
+        price={order.price}
+        size={order.size}
+        quoteName={market.tradableInstrument.instrument.product.quoteName}
+        onSizeChange={(size) => updateOrder({ size })}
+        onPriceChange={(price) => updateOrder({ price })}
+      />
       <TimeInForceSelector
         order={order}
         onSelect={(timeInForce) => updateOrder({ timeInForce })}

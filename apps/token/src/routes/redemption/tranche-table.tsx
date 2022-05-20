@@ -1,13 +1,8 @@
-import './tranche-table.scss';
-
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-} from '../../components/key-value-table';
+import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { Routes } from '../router-config';
@@ -41,19 +36,18 @@ export const Tranche0Table = ({
     <>
       <KeyValueTable numerical={true}>
         <KeyValueTableRow data-testid="tranche-table-total">
-          <th>
-            <span className="tranche-table__label">
-              {t('Tranche')} {trancheId}
-            </span>
-          </th>
-          <td>{formatNumber(total)}</td>
+          <span className="inline-block p-4 bg-white text-black uppercase">
+            {t('Tranche')} {trancheId}
+          </span>
+
+          <span>{formatNumber(total)}</span>
         </KeyValueTableRow>
         <KeyValueTableRow data-testid="tranche-table-locked">
-          <th>{t('Locked')}</th>
-          <td>{formatNumber(total)}</td>
+          {t('Locked')}
+          <span>{formatNumber(total)}</span>
         </KeyValueTableRow>
       </KeyValueTable>
-      <div className="tranche-table__footer" data-testid="tranche-table-footer">
+      <div className="text-right" data-testid="tranche-table-footer">
         {t(
           'All the tokens in this tranche are locked and must be assigned to a tranche before they can be redeemed.'
         )}

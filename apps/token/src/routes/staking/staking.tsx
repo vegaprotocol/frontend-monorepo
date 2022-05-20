@@ -1,5 +1,3 @@
-import './staking.scss';
-
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { Trans, useTranslation } from 'react-i18next';
@@ -18,19 +16,25 @@ import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
 import { NodeList } from './node-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { truncateMiddle } from '../../lib/truncate-middle';
 
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();
 
   return (
     <>
-      <section>
-        <p>{t('stakingDescription1')}</p>
-        <p>{t('stakingDescription2')}</p>
-        <p>{t('stakingDescription3')}</p>
-        <p>{t('stakingDescription4')}</p>
-        <p>
-          <a href={Links.STAKING_GUIDE} target="_blank" rel="noreferrer">
+      <section className="mb-24">
+        <p className="mb-12">{t('stakingDescription1')}</p>
+        <p className="mb-12">{t('stakingDescription2')}</p>
+        <p className="mb-12">{t('stakingDescription3')}</p>
+        <p className="mb-12">{t('stakingDescription4')}</p>
+        <p className="mb-12">
+          <a
+            className="underline"
+            href={Links.STAKING_GUIDE}
+            target="_blank"
+            rel="noreferrer"
+          >
             {t('readMoreStaking')}
           </a>
         </p>
@@ -73,7 +77,11 @@ export const StakingStepConnectWallets = () => {
           {t('Connected Ethereum address')}&nbsp;
           <EtherscanLink address={account} text={account} />
         </p>
-        <p>{t('stakingVegaWalletConnected', { key: keypair.pub })}</p>
+        <p>
+          {t('stakingVegaWalletConnected', {
+            key: truncateMiddle(keypair.pub),
+          })}
+        </p>
       </Callout>
     );
   }
@@ -108,7 +116,6 @@ export const StakingStepConnectWallets = () => {
                 isOpen: true,
               })
             }
-            className="fill"
             data-testid="connect-to-eth-btn"
           >
             {t('connectEthWallet')}
@@ -120,7 +127,7 @@ export const StakingStepConnectWallets = () => {
           <Callout
             iconName="tick"
             intent={Intent.Success}
-            title={`Vega wallet connected: ${keypair.pub}`}
+            title={`Vega wallet connected: ${truncateMiddle(keypair.pub)}`}
           />
         </div>
       ) : (
@@ -165,13 +172,13 @@ export const StakingStepAssociate = ({
       >
         <p>
           <Link to="/staking/associate">
-            <Button data-testid="associate-more-tokens-btn" className="fill">
+            <Button data-testid="associate-more-tokens-btn">
               {t('stakingAssociateMoreButton')}
             </Button>
           </Link>
         </p>
         <Link to="/staking/disassociate">
-          <Button data-testid="disassociate-tokens-btn" className="fill">
+          <Button data-testid="disassociate-tokens-btn">
             {t('stakingDisassociateButton')}
           </Button>
         </Link>
@@ -183,7 +190,7 @@ export const StakingStepAssociate = ({
     <>
       <p>{t('stakingStep2Text')}</p>
       <Link to="/staking/associate">
-        <Button data-testid="associate-tokens-btn" className="fill">
+        <Button data-testid="associate-tokens-btn">
           {t('associateButton')}
         </Button>
       </Link>
