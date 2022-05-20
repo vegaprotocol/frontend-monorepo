@@ -90,6 +90,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       bestStaticOfferPrice:
         data.data?.bestStaticOfferPrice &&
         getPriceLevel(data.data?.bestStaticOfferPrice, resolution),
+      indicativePrice:
+        data.data?.indicativePrice &&
+        getPriceLevel(data.data?.indicativePrice, resolution),
     };
     setOrderbookData(dataRef.current);
   }, [data, resolution]);

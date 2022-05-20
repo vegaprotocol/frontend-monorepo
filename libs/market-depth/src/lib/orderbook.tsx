@@ -1,4 +1,11 @@
-import { Fragment, useEffect, useRef, useState, useMemo } from 'react';
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback,
+} from 'react';
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
@@ -79,13 +86,13 @@ export const Orderbook = ({
   onResolutionChange,
 }: OrderbookProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  // scroll offset for which rendered rows are selected
+  // scroll offset for which rendered rows are selected, will change after user will scroll to margin of rendered data
   const [scrollOffset, setScrollOffset] = useState(0);
+  // price level which is rendered in center of vieport, need to preserve price level when rows will be added or removed
   const priceInCenter = useRef('');
-  const [hasData, setHasData] = useState(false);
+  // stores rows[0].price value
+  const [maxPriceLevel, setMaxPriceLevel] = useState('');
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-  // const [midPrice, setMidPrice] = useState('');
-  // const resolutionRef = useRef(resolution);
   // 17px of row height plus 4px gap
   const rowHeight = 21;
   // buffer size in rows
@@ -96,48 +103,41 @@ export const Orderbook = ({
     () => getNumberOfRows(rows, resolution),
     [rows, resolution]
   );
-  function scrollToMidPrice(price: string) {
-    if (scrollRef.current && rows) {
-      let scrollTop =
-        // distance in rows between midPrice and price from first row * row Height
-        (Number(
-          (BigInt(rows?.[0].price) - BigInt(price)) / BigInt(resolution)
-        ) +
-          1) * // add one row for sticky header
-        rowHeight;
-      // minus half height of viewport plus half of row
-      scrollTop -= Math.ceil((viewportHeight - rowHeight) / 2);
-      // adjust to current rows position
-      scrollTop += (scrollRef.current.scrollTop % 21) - (scrollTop % 21);
-      const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
-      scrollRef.current.scrollTop = priceCenterScrollOffset;
-      priceInCenter.current = price;
-    }
-  }
+
+  const scrollToPrice = useCallback(
+    (price: string) => {
+      if (scrollRef.current && maxPriceLevel) {
+        let scrollTop =
+          // distance in rows between midPrice and price from first row * row Height
+          (Number(
+            (BigInt(maxPriceLevel) - BigInt(price)) / BigInt(resolution)
+          ) +
+            1) * // add one row for sticky header
+          rowHeight;
+        // minus half height of viewport plus half of row
+        scrollTop -= Math.ceil((viewportHeight - rowHeight) / 2);
+        // adjust to current rows position
+        scrollTop += (scrollRef.current.scrollTop % 21) - (scrollTop % 21);
+        const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
+        scrollRef.current.scrollTop = priceCenterScrollOffset;
+        priceInCenter.current = price;
+      }
+    },
+    [maxPriceLevel, resolution, viewportHeight]
+  );
+
   useEffect(() => {
-    if (
-      bestStaticOfferPrice &&
-      bestStaticBidPrice &&
-      rows &&
-      rows.length &&
-      !hasData
-    ) {
-      setHasData(true);
+    if (rows?.[0].price !== maxPriceLevel) {
+      setMaxPriceLevel(rows?.[0].price ?? '');
     }
-  }, [bestStaticOfferPrice, bestStaticBidPrice, rows, hasData]);
+  }, [rows, maxPriceLevel]);
 
   // scroll to midPrice on resolution change
   useEffect(() => {
-    if (
-      !bestStaticOfferPrice ||
-      !bestStaticBidPrice ||
-      !rows ||
-      !rows.length ||
-      !hasData
-    ) {
+    if (!bestStaticOfferPrice || !bestStaticBidPrice || !maxPriceLevel) {
       return;
     }
-    scrollToMidPrice(
+    scrollToPrice(
       getPriceLevel(
         BigInt(bestStaticOfferPrice) +
           (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) /
@@ -146,7 +146,13 @@ export const Orderbook = ({
       )
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resolution, hasData]);
+  }, [resolution, maxPriceLevel, scrollToPrice]);
+
+  useEffect(() => {
+    if (priceInCenter.current) {
+      scrollToPrice(priceInCenter.current);
+    }
+  }, [scrollToPrice]);
 
   useEffect(() => {
     function handleResize() {
@@ -158,6 +164,14 @@ export const Orderbook = ({
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  useEffect(() => {
+    console.log('useEffect-1');
+  });
+  useEffect(() => {
+    console.log('useEffect-2');
+  });
+
   const renderedRows = useMemo(() => {
     let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
     const prependingBufferSize = Math.min(bufferSize, offset);
@@ -189,15 +203,6 @@ export const Orderbook = ({
       ) *
         BigInt(resolution)
     ).toString();
-    console.log(
-      'priceInCenter',
-      priceInCenter.current,
-      Math.floor(
-        (event.currentTarget.scrollTop + viewportHeight / 2) /
-          rowHeight /
-          resolution
-      )
-    );
   };
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
@@ -210,11 +215,7 @@ export const Orderbook = ({
       ref={scrollRef}
     >
       <div className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10">
-        <div>
-          <button onClick={() => scrollToMidPrice(priceInCenter.current)}>
-            {t('Bid Vol')}
-          </button>
-        </div>
+        <div>{t('Bid Vol')}</div>
         <div>{t('Price')}</div>
         <div>{t('Ask Vol')}</div>
         <div>{t('Cumulative Vol')}</div>

@@ -98,6 +98,7 @@ const update: Update<
     return;
   }
   sequenceNumbers[delta.market.id] = sequenceNumber;
+  Object.assign(draft.data, delta.market.data);
   if (delta.buy) {
     draft.depth.buy = updateLevels(draft.depth.buy ?? [], delta.buy);
   }
