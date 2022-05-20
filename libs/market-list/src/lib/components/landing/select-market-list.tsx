@@ -85,7 +85,9 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                       </a>
                     </td>
                     <td className={tdClassNames}>
-                      {lastPrice?.toLocaleString()}
+                      {lastPrice !== 'N/A'
+                        ? lastPrice?.toNumber().toLocaleString()
+                        : 'N/A'}
                     </td>
                     <td
                       className={`${tdClassNames} ${priceChangeClassNames(
