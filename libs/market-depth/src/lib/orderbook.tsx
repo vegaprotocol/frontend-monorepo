@@ -127,8 +127,9 @@ export const Orderbook = ({
   );
 
   useEffect(() => {
-    if (rows?.[0].price !== maxPriceLevel) {
-      setMaxPriceLevel(rows?.[0].price ?? '');
+    const newMaxPriceLevel = rows?.[0]?.price ?? '';
+    if (newMaxPriceLevel !== maxPriceLevel) {
+      setMaxPriceLevel(newMaxPriceLevel);
     }
   }, [rows, maxPriceLevel]);
 
@@ -164,13 +165,6 @@ export const Orderbook = ({
     handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  useEffect(() => {
-    console.log('useEffect-1');
-  });
-  useEffect(() => {
-    console.log('useEffect-2');
-  });
 
   const renderedRows = useMemo(() => {
     let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
@@ -271,22 +265,22 @@ export const Orderbook = ({
           </select>
         </div>
       </div>
-      {rows?.[0].price &&
+      {maxPriceLevel &&
         bestStaticBidPrice &&
         horizontalLine(
           `${(
-            ((BigInt(rows?.[0].price) - BigInt(bestStaticBidPrice)) /
+            ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
               BigInt(resolution) +
               BigInt(1)) *
               BigInt(rowHeight) -
             BigInt(3)
           ).toString()}px`
         )}
-      {rows?.[0].price &&
+      {maxPriceLevel &&
         bestStaticOfferPrice &&
         horizontalLine(
           `${(
-            ((BigInt(rows?.[0].price) - BigInt(bestStaticOfferPrice)) /
+            ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
               BigInt(resolution) +
               BigInt(2)) *
               BigInt(rowHeight) -

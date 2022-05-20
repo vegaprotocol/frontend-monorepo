@@ -1,4 +1,4 @@
-import { Story, Meta } from '@storybook/react';
+import type { Story, Meta } from '@storybook/react';
 import { Orderbook } from './orderbook';
 
 export default {
