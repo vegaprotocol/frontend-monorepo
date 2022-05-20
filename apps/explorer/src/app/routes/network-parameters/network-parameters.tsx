@@ -48,7 +48,7 @@ export const renderRow = ({
       ) : isNaN(Number(value)) ? (
         value
       ) : BIG_NUMBER_PARAMS.includes(key) ? (
-        addDecimalsFormatNumber(Number(value), 4)
+        addDecimalsFormatNumber(Number(value), 18)
       ) : (
         formatNumber(Number(value), 4)
       )}
