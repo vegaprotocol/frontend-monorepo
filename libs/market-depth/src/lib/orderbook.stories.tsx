@@ -9,7 +9,8 @@ import { MarketTradingMode } from '@vegaprotocol/types';
 import { useState } from 'react';
 
 interface Props {
-  numberOfRows: number;
+  numberOfSellRows: number;
+  numberOfBuyRows: number;
   overlap: number;
   midPrice: number;
   decimalPlaces: number;
@@ -20,7 +21,8 @@ interface Props {
 }
 
 const OrderbokMockDataProvider = ({
-  numberOfRows,
+  numberOfSellRows,
+  numberOfBuyRows,
   midPrice,
   overlap,
   decimalPlaces,
@@ -30,17 +32,17 @@ const OrderbokMockDataProvider = ({
   indicativeVolume,
 }: Props) => {
   const [resolution, setResolution] = useState(1);
-  const matrix = new Array(numberOfRows).fill(undefined);
+  let matrix = new Array(numberOfSellRows).fill(undefined);
   let price =
-    midPrice +
-    (numberOfRows - Math.ceil(overlap / 2) + 1) * resolution;
+    midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1) * resolution;
   const sell: MarketDepth_market_depth_sell[] = matrix.map((row, i) => ({
     __typename: 'PriceLevel',
     price: (price -= resolution).toString(),
-    volume: (numberOfRows - i + 1).toString(),
+    volume: (numberOfSellRows - i + 1).toString(),
     numberOfOrders: '',
   }));
   price += overlap * resolution;
+  matrix = new Array(numberOfBuyRows).fill(undefined);
   const buy: MarketDepth_market_depth_buy[] = matrix.map((row, i) => ({
     __typename: 'PriceLevel',
     price: (price -= resolution).toString(),
@@ -99,7 +101,8 @@ const Template: Story<Props> = (args) => <OrderbokMockDataProvider {...args} />;
 
 export const Continuous = Template.bind({});
 Continuous.args = {
-  numberOfRows: 100,
+  numberOfSellRows: 100,
+  numberOfBuyRows: 100,
   midPrice: 1000,
   bestStaticBidPrice: 1000,
   bestStaticOfferPrice: 1000,
@@ -109,7 +112,8 @@ Continuous.args = {
 
 export const Auction = Template.bind({});
 Auction.args = {
-  numberOfRows: 100,
+  numberOfSellRows: 100,
+  numberOfBuyRows: 100,
   midPrice: 122900,
   bestStaticBidPrice: 122905,
   bestStaticOfferPrice: 122895,
@@ -121,7 +125,8 @@ Auction.args = {
 
 export const Empty = Template.bind({});
 Empty.args = {
-  numberOfRows: 0,
+  numberOfSellRows: 0,
+  numberOfBuyRows: 0,
   midPrice: 0,
   bestStaticBidPrice: 0,
   bestStaticOfferPrice: 0,
