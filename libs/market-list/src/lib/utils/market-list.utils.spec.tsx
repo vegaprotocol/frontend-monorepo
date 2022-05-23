@@ -1,4 +1,4 @@
-import type { MarketList } from '../components/__generated__/MarketList';
+import type { MarketList } from '../components/markets-container/__generated__/MarketList';
 import { mapDataToMarketList } from './market-list.utils';
 
 describe('mapDataToMarketList', () => {

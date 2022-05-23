@@ -49,6 +49,38 @@ const MARKETS_QUERY = gql`
   }
 `;
 
+export const MARKET_LIST_QUERY = gql`
+  query MarketList($interval: Interval!, $since: String!) {
+    markets {
+      id
+      decimalPlaces
+      data {
+        market {
+          id
+        }
+        markPrice
+      }
+      tradableInstrument {
+        instrument {
+          name
+          code
+          metadata {
+            tags
+          }
+        }
+      }
+      marketTimestamps {
+        open
+        close
+      }
+      candles(interval: $interval, since: $since) {
+        open
+        close
+      }
+    }
+  }
+`;
+
 const MARKET_DATA_SUB = gql`
   ${MARKET_DATA_FRAGMENT}
   subscription MarketDataSub {

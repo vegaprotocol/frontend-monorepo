@@ -4,7 +4,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { PriceCellChange, Sparkline } from '@vegaprotocol/ui-toolkit';
 import { mapDataToMarketList } from '../../utils';
-import type { MarketList } from '../__generated__/MarketList';
+import type { MarketList } from '../markets-container/__generated__/MarketList';
 
 export interface SelectMarketListProps {
   data: MarketList | undefined;
