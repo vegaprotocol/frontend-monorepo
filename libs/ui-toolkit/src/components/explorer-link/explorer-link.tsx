@@ -3,7 +3,7 @@ import type { ReactNode, HTMLProps } from 'react';
 
 const EXPLORER_URL = process.env['NX_EXPLORER_URL'] as string;
 
-type ExplorerEntity = 'block' | 'party';
+type ExplorerEntity = 'block' | 'party' | 'transaction';
 
 type ExplorerLinkProps = HTMLProps<HTMLAnchorElement> & {
   entity: ExplorerEntity;
@@ -14,6 +14,7 @@ type ExplorerLinkProps = HTMLProps<HTMLAnchorElement> & {
 const entityUrlMap: Record<ExplorerEntity, string> = {
   block: 'blocks',
   party: 'parties',
+  transaction: 'txs',
 };
 
 /**
