@@ -50,13 +50,11 @@ jobs:
         working-directory: capsule
 
       - name: test1
-        run: echo $GOBIN
+        run: echo $(go env GOPATH)
+      - name: test1
+        run: echo $GOPATH
       - name: test1
         run: echo ${{ env.GOPATH }}
-      - name: test2
-        run: export GOBIN=$(go env GOPATH)/bin
-      - name: test3
-        run: echo $GOBIN
 
       - name: Install binaries
         run: vegacapsule install-bins
