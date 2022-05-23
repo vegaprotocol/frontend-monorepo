@@ -3,10 +3,9 @@ name: Capsule tests
 on: pull_request
 
 jobs:
-  pr:
+  build-capsule:
     name: Run capsule tests - PR
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
     env:
       GO111MODULE: 'on'
       GOPROXY: ${{ secrets.GO_PROXY }}
@@ -18,14 +17,9 @@ jobs:
         uses: actions/setup-go@v3
         id: go
         with:
-          go-version: 1.18
-      - name: Set up Node 16
-        uses: actions/setup-node@v2
-        id: npm
-        with:
-          node-version: 16
-
-      #######
+          go-version:
+            1.18
+            #######
       ## Checkout all the things
       #######
 
@@ -96,6 +90,23 @@ jobs:
       - name: Build data-node
         run: go install ./cmd/data-node/
         working-directory: data-node
+  start-network:
+    needs: [build-capsule]
+    name: Run capsule tests - PR
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    env:
+      GO111MODULE: 'on'
+      GOPROXY: ${{ secrets.GO_PROXY }}
+    steps:
+      #######
+      ## Setup langs
+      #######
+      - name: Set up Node 16
+        uses: actions/setup-node@v2
+        id: npm
+        with:
+          node-version: 16
 
       ######
       ## Start capsule
@@ -105,13 +116,35 @@ jobs:
       - name: Start nomad
         run: vegacapsule nomad &
 
-      # May need to wait for the above to fully start...
       - name: Bootstrap network
         run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl
         working-directory: capsule
+  run-tests:
+    needs: [start-network]
+    name: Run capsule tests - PR
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    steps:
+      #######
+      ## Setup langs
+      #######
+      - name: Set up Node 16
+        uses: actions/setup-node@v2
+        id: npm
+        with:
+          node-version: 16
 
-      # - name: Wait for ETH
-      #   run: vegacapsule ethereum wait
+      ######
+      ## Start capsule
+      ######
+      - name: Login to docker
+        run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
+      - name: Start nomad
+        run: vegacapsule nomad &
+
+      - name: Bootstrap network
+        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl
+        working-directory: capsule
 
       ######
       ## Run some tests
