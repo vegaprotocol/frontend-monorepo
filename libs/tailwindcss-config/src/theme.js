@@ -12,8 +12,6 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
-    bullish: '#26FF8A',
-    bearish: '#ED1515',
     vega: {
       yellow: '#EDFF22',
       pink: '#FF2D5E',
@@ -23,11 +21,12 @@ module.exports = {
       DEFAULT: '#ED1515',
       transparent: 'rgba(255, 38, 65, 0.3)',
       vega: '#FF261A',
+      dark: '#EB001B',
     },
     green: {
       DEFAULT: '#26FF8A',
       transparent: 'rgba(38, 255, 138, 0.3)',
-      dark: '#246340',
+      dark: '#008545',
       vega: '#00F780',
     },
     text: '#C7C7C7',
