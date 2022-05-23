@@ -1,33 +1,11 @@
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Interval } from '@vegaprotocol/types';
 import { AsyncRenderer, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
+import { MARKET_LIST_QUERY } from '../markets-container/markets-data-provider';
+import type { MarketList } from '../markets-container/__generated__/MarketList';
 
-import type { MarketList } from '../__generated__/MarketList';
 import { SelectMarketList } from './select-market-list';
-
-const MARKET_LIST_QUERY = gql`
-  query MarketList($interval: Interval!, $since: String!) {
-    markets {
-      id
-      decimalPlaces
-      tradableInstrument {
-        instrument {
-          name
-          code
-        }
-      }
-      marketTimestamps {
-        open
-        close
-      }
-      candles(interval: $interval, since: $since) {
-        open
-        close
-      }
-    }
-  }
-`;
 
 export const LandingDialog = () => {
   const [open, setOpen] = useState(true);

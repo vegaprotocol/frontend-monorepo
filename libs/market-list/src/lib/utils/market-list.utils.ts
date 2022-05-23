@@ -2,7 +2,7 @@ import sortBy from 'lodash/sortBy';
 import type {
   MarketList,
   MarketList_markets,
-} from '../components/__generated__/MarketList';
+} from '../components/markets-container/__generated__/MarketList';
 
 export const lastPrice = ({ candles }: MarketList_markets) =>
   candles && candles.length > 0
@@ -16,7 +16,7 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
         id: m.id,
         decimalPlaces: m.decimalPlaces,
         marketName: m.tradableInstrument.instrument?.code,
-        lastPrice: lastPrice(m),
+        lastPrice: lastPrice(m) ?? m.data?.markPrice,
         candles: (m.candles || []).filter((c) => c),
         open: m.marketTimestamps.open
           ? new Date(m.marketTimestamps.open).getTime()
