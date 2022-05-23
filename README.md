@@ -83,6 +83,14 @@ Run `yarn nx run <my-app>-e2e:e2e` to execute the e2e tests with [cypress](https
 
 Run `nx test my-app` to execute the unit tests with [Jest](https://jestjs.io), or `nx affected:test` to execute just unit tests affected by a change. You can also use `--watch` with these test to run jest in watch mode, see [Jest executor](https://nx.dev/packages/jest/executors/jest) for all CLI flags.
 
+#### Trading app E2E tests
+
+To run tests locally using your own wallets you can add the following environment variables to `cypress.json`
+
+1. Change `TRADING_TEST_VEGA_WALLET_NAME` to your Vega wallet name
+2. Add `TRADING_TEST_VEGA_WALLET_PASSPHRASE` as your wallet passphrase
+3. Add `ETH_WALLET_MNEMONIC` as your Ethereum wallet mnemonic
+
 ### Formatting
 
 In CI linting, formatting and also run. These checks can be seen in the [CI workflow file](.github/workflows//test.yml).

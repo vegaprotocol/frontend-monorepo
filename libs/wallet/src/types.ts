@@ -1,5 +1,8 @@
 import type {
+  DelegateSubmissionBody,
   OrderSubmissionBody,
+  UndelegateSubmissionBody,
+  VoteSubmissionBody,
   WithdrawSubmissionBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
 
@@ -25,4 +28,7 @@ export enum OrderTimeInForce {
 // Will make Transaction a union type as other transactions are added
 export type TransactionSubmission =
   | OrderSubmissionBody
-  | WithdrawSubmissionBody;
+  | WithdrawSubmissionBody
+  | VoteSubmissionBody
+  | DelegateSubmissionBody
+  | UndelegateSubmissionBody;

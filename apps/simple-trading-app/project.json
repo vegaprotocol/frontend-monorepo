@@ -41,7 +41,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/web:dev-server",
+      "executor": "./tools/executors/serve:serve",
       "options": {
         "buildTarget": "simple-trading-app:build",
         "hmr": true,

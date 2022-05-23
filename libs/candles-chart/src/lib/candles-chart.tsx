@@ -187,6 +187,7 @@ export const CandlesChartContainer = ({
           interval={interval}
           theme={theme}
           onOptionsChanged={(options) => {
+            setOverlays(options.overlays ?? []);
             setStudies(options.studies ?? []);
           }}
         />

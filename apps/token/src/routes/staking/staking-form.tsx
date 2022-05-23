@@ -1,5 +1,4 @@
 import { gql, useApolloClient } from '@apollo/client';
-import { Radio, RadioGroup } from '@blueprintjs/core';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -13,18 +12,18 @@ import { useSearchParams } from '../../hooks/use-search-params';
 import { BigNumber } from '../../lib/bignumber';
 import { addDecimal, removeDecimal } from '../../lib/decimals';
 import type {
-  DelegateSubmissionInput,
-  UndelegateSubmissionInput,
-} from '../../lib/vega-wallet/vega-wallet-service';
-import { vegaWalletService } from '../../lib/vega-wallet/vega-wallet-service';
-import type {
   PartyDelegations,
   PartyDelegationsVariables,
 } from './__generated__/PartyDelegations';
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
-import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
+import { Button, FormGroup, RadioGroup, Radio } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import type {
+  DelegateSubmissionBody,
+  UndelegateSubmissionBody,
+} from '@vegaprotocol/vegawallet-service-api-client';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -81,6 +80,7 @@ export const StakingForm = ({
   const navigate = useNavigate();
   const client = useApolloClient();
   const { appState } = useAppState();
+  const { sendTx } = useVegaWallet();
   const [formState, setFormState] = React.useState(FormState.Default);
   const { t } = useTranslation();
   const [action, setAction] = React.useState<StakeAction>(params.action);
@@ -114,15 +114,17 @@ export const StakingForm = ({
 
   async function onSubmit() {
     setFormState(FormState.Pending);
-    const delegateInput: DelegateSubmissionInput = {
+    const delegateInput: DelegateSubmissionBody = {
       pubKey: pubkey,
+      propagate: true,
       delegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
       },
     };
-    const undelegateInput: UndelegateSubmissionInput = {
+    const undelegateInput: UndelegateSubmissionBody = {
       pubKey: pubkey,
+      propagate: true,
       undelegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
@@ -134,12 +136,7 @@ export const StakingForm = ({
     };
     try {
       const command = action === Actions.Add ? delegateInput : undelegateInput;
-      const [err] = await vegaWalletService.commandSync(command);
-
-      if (err) {
-        setFormState(FormState.Failure);
-        Sentry.captureException(err);
-      }
+      await sendTx(command);
 
       // await success via poll
     } catch (err) {
@@ -212,28 +209,26 @@ export const StakingForm = ({
       <h2 className="text-h4 mb-8">{t('Manage your stake')}</h2>
       <FormGroup>
         <RadioGroup
-          onChange={(e) => {
+          onChange={(value) => {
             // @ts-ignore value does exist on target
-            const value = e.target.value;
             setAction(value);
             navigate(`?action=${value}`, {
               replace: true,
             });
           }}
-          selectedValue={action}
-          inline={true}
+          value={action}
         >
           <Radio
             disabled={availableStakeToAdd.isEqualTo(0)}
             value={Actions.Add}
             label="Add"
-            data-testid="add-stake-radio"
+            id="add-stake-radio"
           />
           <Radio
             disabled={availableStakeToRemove.isEqualTo(0)}
             value={Actions.Remove}
             label="Remove"
-            data-testid="remove-stake-radio"
+            id="remove-stake-radio"
           />
         </RadioGroup>
       </FormGroup>

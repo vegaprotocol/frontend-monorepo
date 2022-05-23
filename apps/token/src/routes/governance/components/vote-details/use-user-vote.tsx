@@ -2,8 +2,6 @@ import { captureException, captureMessage } from '@sentry/minimal';
 import * as React from 'react';
 
 import { VoteValue } from '../../../../__generated__/globalTypes';
-import type { VoteSubmissionInput } from '../../../../lib/vega-wallet/vega-wallet-service';
-import { vegaWalletService } from '../../../../lib/vega-wallet/vega-wallet-service';
 import { VOTE_VALUE_MAP } from './vote-types';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 
@@ -44,7 +42,7 @@ export function useUserVote(
   yesVotes: Votes | null,
   noVotes: Votes | null
 ) {
-  const { keypair } = useVegaWallet();
+  const { keypair, sendTx } = useVegaWallet();
   const yes = React.useMemo(() => yesVotes || [], [yesVotes]);
   const no = React.useMemo(() => noVotes || [], [noVotes]);
 
@@ -98,19 +96,15 @@ export function useUserVote(
     setVoteState(VoteState.Pending);
 
     try {
-      const variables: VoteSubmissionInput = {
+      const variables = {
         pubKey: keypair.pub,
+        propagate: true,
         voteSubmission: {
           value: VOTE_VALUE_MAP[value],
           proposalId,
         },
       };
-      const [err] = await vegaWalletService.commandSync(variables);
-
-      if (err) {
-        setVoteState(VoteState.Failed);
-        captureException(err);
-      }
+      await sendTx(variables);
 
       // Now await vote via poll in parent component
     } catch (err) {

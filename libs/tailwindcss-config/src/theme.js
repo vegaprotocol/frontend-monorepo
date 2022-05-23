@@ -125,7 +125,7 @@ module.exports = {
     DEFAULT: '0.225rem',
     md: '0.3rem',
     lg: '0.5rem',
-    full: '9999px',
+    full: '100%',
   },
   fontFamily: {
     mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono],
@@ -179,5 +179,6 @@ module.exports = {
     callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
     'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
+    radio: '1px 1px 0 0',
   },
 };

@@ -136,6 +136,13 @@ export function createClient() {
           },
         },
       },
+      Withdrawal: {
+        fields: {
+          pendingOnForeignChain: {
+            read: (isPending = false) => isPending,
+          },
+        },
+      },
     },
   });
 

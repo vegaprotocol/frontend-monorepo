@@ -11,6 +11,7 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
     name: 'asset-name',
     decimals: 5,
     source: {
+      __typename: 'ERC20',
       contractAddress: 'contract-address',
     },
   };
