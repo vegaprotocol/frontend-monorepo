@@ -38,7 +38,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/web:dev-server",
+      "executor": "./tools/executors/serve:serve",
       "options": {
         "port": 3000,
         "buildTarget": "explorer:build",

@@ -1,0 +1,13 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "types": ["node"],
+    "importHelpers": false,
+    "sourceMap": false,
+    "inlineSourceMap": true
+  },
+  "include": ["impl.ts"],
+  "exclude": ["node_modules"]
+}
