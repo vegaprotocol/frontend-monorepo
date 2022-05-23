@@ -15,6 +15,7 @@ export * from './input-error';
 export * from './key-value-table';
 export * from './loader';
 export * from './lozenge';
+export * from './radio-group';
 export * from './select';
 export * from './splash';
 export * from './text-area';
