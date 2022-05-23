@@ -114,7 +114,7 @@ jobs:
         working-directory: capsule
 
       ######
-      ## LEGACY: setup a vega wallet, this can be removed once all tests are running capsule
+      ## LEGACY: setup a vega wallet, this can be removed once all tests are running capsule.
       ######
       - name: Create passphrase
         run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
@@ -122,15 +122,15 @@ jobs:
         run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
 
       - name: Initialize wallet
-        run: ./vegawallet init -f
+        run: vegawallet init -f
       - name: Import wallet
-        run: ./vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
+        run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
       - name: Import config
-        run: ./vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+        run: vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
       - name: Create public key 2
-        run: ./vegawallet key generate -w UI_Trading_Test -p ./passphrase
+        run: vegawallet key generate -w UI_Trading_Test -p ./passphrase
       - name: Start service
-        run: ./vegawallet service run --network fairground  &
+        run: vegawallet service run --network fairground &
 
       ######
       ## Run some tests
