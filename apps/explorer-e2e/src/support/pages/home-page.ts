@@ -47,7 +47,7 @@ export default class HomePage extends BasePage {
       });
   }
 
-  verifyStatsValuesdisplayed() {
+  verifyStatsValuesDisplayed() {
     cy.getByTestId(this.statsValue).eq(0).should('have.text', 'CONNECTED');
     cy.getByTestId(this.statsValue).eq(1).should('not.be.empty');
     cy.getByTestId(this.statsValue).eq(2).should('have.text', '2');
