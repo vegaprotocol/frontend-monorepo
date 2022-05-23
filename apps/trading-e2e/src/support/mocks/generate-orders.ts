@@ -70,7 +70,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
 
   const defaultResult = {
     party: {
-      id: Cypress.env('vegaPublicKey'),
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
       orders,
       __typename: 'Party',
     },
