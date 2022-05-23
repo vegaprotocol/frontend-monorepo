@@ -219,6 +219,7 @@ export const Orderbook = ({
         style={{
           paddingTop: `${paddingTop}px`,
           paddingBottom: `${paddingBottom}px`,
+          minHeight: `calc(100% - ${2*rowHeight}px)`
         }}
       >
         <div className="grid grid-cols-4 gap-4 text-right text-ui-small">
@@ -252,7 +253,7 @@ export const Orderbook = ({
           <select
             onChange={(e) => onResolutionChange(Number(e.target.value))}
             value={resolution}
-            className="bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full appearance-none"
+            className="block bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full appearance-none"
           >
             {new Array(3)
               .fill(null)
