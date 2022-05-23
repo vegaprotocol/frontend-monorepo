@@ -63,8 +63,8 @@ jobs:
       - name: Start nomad
         run: vegacapsule nomad &
 
-      - name: Bootstrap network --force
-        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl
+      - name: Bootstrap network
+        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl --force
         working-directory: capsule
 
       ######
