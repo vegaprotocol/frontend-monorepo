@@ -33,7 +33,8 @@ const getNumberOfRows = (
   }
   return (
     Number(BigInt(rows[0].price) - BigInt(rows[rows.length - 1].price)) /
-    resolution
+      resolution +
+    1
   );
 };
 
@@ -52,7 +53,7 @@ const getRowsToRender = (
   const selectedRows: OrderbookRowData[] = [];
   let price = BigInt(rows[0].price) - BigInt(offset * resolution);
   let index = Math.max(
-    rows.findIndex((row) => BigInt(row.price) < price) - 1,
+    rows.findIndex((row) => BigInt(row.price) <= price) - 1,
     -1
   );
   while (selectedRows.length < limit && index + 1 < rows.length) {
@@ -236,7 +237,6 @@ export const Orderbook = ({
                   cumulativeAsk={data.cumulativeVol.ask}
                   cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
                   indicativeVolume={
-                    marketTradingMode !== MarketTradingMode.Continuous &&
                     indicativePrice === data.price
                       ? indicativeVolume
                       : undefined

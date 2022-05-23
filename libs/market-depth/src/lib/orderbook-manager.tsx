@@ -9,7 +9,7 @@ import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/
 import {
   compactRows,
   updateCompactedRows,
-  getPriceLevel,
+  mapMarketData,
 } from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
 
@@ -40,24 +40,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
           delta.buy,
           resolutionRef.current
         );
-        draft.staticMidPrice =
-          delta.market.data?.staticMidPrice &&
-          getPriceLevel(
-            delta.market.data?.staticMidPrice,
-            resolutionRef.current
-          );
-        draft.bestStaticBidPrice =
-          delta.market.data?.bestStaticBidPrice &&
-          getPriceLevel(
-            delta.market.data?.bestStaticBidPrice,
-            resolutionRef.current
-          );
-        draft.bestStaticOfferPrice =
-          delta.market.data?.bestStaticOfferPrice &&
-          getPriceLevel(
-            delta.market.data?.bestStaticOfferPrice,
-            resolutionRef.current
-          );
+        Object.assign(draft, mapMarketData(delta.market.data, resolution));
       });
       setOrderbookDataThrottled.current(dataRef.current);
       return true;
@@ -81,18 +64,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     dataRef.current = {
       ...data.data,
       rows: compactRows(data.depth.sell, data.depth.buy, resolution),
-      staticMidPrice:
-        data.data?.staticMidPrice &&
-        getPriceLevel(data.data?.staticMidPrice, resolution),
-      bestStaticBidPrice:
-        data.data?.bestStaticBidPrice &&
-        getPriceLevel(data.data?.bestStaticBidPrice, resolution),
-      bestStaticOfferPrice:
-        data.data?.bestStaticOfferPrice &&
-        getPriceLevel(data.data?.bestStaticOfferPrice, resolution),
-      indicativePrice:
-        data.data?.indicativePrice &&
-        getPriceLevel(data.data?.indicativePrice, resolution),
+      ...mapMarketData(data.data, resolution),
     };
     setOrderbookData(dataRef.current);
   }, [data, resolution]);

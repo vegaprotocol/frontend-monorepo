@@ -9,6 +9,7 @@ import type {
 import type {
   MarketDepthSubscription_marketDepthUpdate_sell,
   MarketDepthSubscription_marketDepthUpdate_buy,
+  MarketDepthSubscription_marketDepthUpdate_market_data,
 } from './__generated__/MarketDepthSubscription';
 
 export interface CumulativeVol {
@@ -182,7 +183,7 @@ export const compactRows = (
  * @param modifiedIndex
  * @returns max (sell) or min (buy) modified index in draft data, mutates draft
  */
-const partiallyUpdateCompactedData = (
+const partiallyUpdateCompactedRows = (
   dataType: VolumeType,
   draft: OrderbookRowData[],
   delta:
@@ -242,7 +243,7 @@ export const updateCompactedRows = (
   produce(rows, (draft) => {
     let sellModifiedIndex = -1;
     sell?.forEach((delta) => {
-      sellModifiedIndex = partiallyUpdateCompactedData(
+      sellModifiedIndex = partiallyUpdateCompactedRows(
         VolumeType.ask,
         draft,
         delta,
@@ -252,7 +253,7 @@ export const updateCompactedRows = (
     });
     let buyModifiedIndex = draft.length;
     buy?.forEach((delta) => {
-      buyModifiedIndex = partiallyUpdateCompactedData(
+      buyModifiedIndex = partiallyUpdateCompactedRows(
         VolumeType.bid,
         draft,
         delta,
@@ -291,6 +292,25 @@ export const updateCompactedRows = (
     // count relative volumes
     updateRelativeData(draft);
   });
+
+export const mapMarketData = (
+  data:
+    | MarketDepth_market_data
+    | MarketDepthSubscription_marketDepthUpdate_market_data
+    | null,
+  resolution: number
+) => ({
+  staticMidPrice:
+    data?.staticMidPrice && getPriceLevel(data?.staticMidPrice, resolution),
+  bestStaticBidPrice:
+    data?.bestStaticBidPrice &&
+    getPriceLevel(data?.bestStaticBidPrice, resolution),
+  bestStaticOfferPrice:
+    data?.bestStaticOfferPrice &&
+    getPriceLevel(data?.bestStaticOfferPrice, resolution),
+  indicativePrice:
+    data?.indicativePrice && getPriceLevel(data?.indicativePrice, resolution),
+});
 
 /**
  * Updates raw data with new data received from subscription - mutates input
