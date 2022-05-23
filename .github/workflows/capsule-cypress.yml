@@ -60,7 +60,7 @@ jobs:
         run: vegacapsule install-bins
         env:
           GITHUB_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          GOBIN: $(go env GOPATH)/bin
+          GOBIN: $GOBIN
 
       ######
       ## Start capsule
