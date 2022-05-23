@@ -24,7 +24,7 @@ jest.mock('next/router', () => ({
 
 describe('Index', () => {
   it('should render successfully', async () => {
-    await act(async () => {
+    act(() => {
       const { baseElement } = render(
         <MockedProvider>
           <Index />
