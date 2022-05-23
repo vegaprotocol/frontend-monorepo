@@ -51,6 +51,8 @@ jobs:
 
       - name: test1
         run: echo $GOBIN
+      - name: test1
+        run: echo $GOPATH
       - name: test2
         run: export GOBIN=$(go env GOPATH)/bin
       - name: test3
