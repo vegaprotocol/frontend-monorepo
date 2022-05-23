@@ -2,6 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { LandingDialog } from '@vegaprotocol/market-list';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import sortBy from 'lodash/sortBy';
 import MarketPage from './markets/[marketId].page';
 import type { MarketsLanding } from './__generated__/MarketsLanding';
 
@@ -18,25 +19,14 @@ const MARKETS_QUERY = gql`
 `;
 
 const marketList = ({ markets }: MarketsLanding) =>
-  markets
-    ?.filter(
+  sortBy(
+    markets?.filter(
       ({ marketTimestamps, tradingMode }) =>
         marketTimestamps.open && tradingMode === MarketTradingMode.Continuous
-    )
-    .sort((a, b) => {
-      const diff =
-        ((a.marketTimestamps.open &&
-          new Date(a.marketTimestamps.open).getTime()) ||
-          0) -
-        ((b.marketTimestamps.open &&
-          new Date(b.marketTimestamps.open).getTime()) ||
-          0);
-
-      if (diff !== 0) {
-        return diff;
-      }
-      return a.id === b.id ? 0 : a.id > b.id ? 1 : -1;
-    }) || [];
+    ) || [],
+    'marketTimestamps.open',
+    'id'
+  );
 
 export function Index() {
   // The default market selected in the platform behind the overlay

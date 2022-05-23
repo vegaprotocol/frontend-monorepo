@@ -4,6 +4,7 @@ import {
   PriceCell,
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
+import React from 'react';
 
 import { Arrow } from '../arrows/arrow';
 
@@ -43,47 +44,48 @@ const priceChangeClassNames = (value: number | bigint) =>
     ? `text-green-dark dark:text-green-vega `
     : `text-red-dark dark:text-red-vega`;
 
-export const PriceCellChange = ({
-  candles,
-  decimalPlaces,
-}: PriceChangeCellProps) => {
-  const change = priceChange(candles);
-  const changePercentage = priceChangePercentage(candles);
-  return (
-    <span
-      className={`${priceChangeClassNames(
-        change
-      )} flex items-center gap-4 justify-end`}
-    >
-      <Arrow value={change} />
-      <span className="flex items-center gap-6">
-        <span>
-          {
-            <PriceCell
-              value={changePercentage}
-              valueFormatted={formatNumberPercentage(
-                new BigNumber(changePercentage.toString()),
-                2
-              )}
-            />
-          }
-          &nbsp;
-        </span>
-        <span>
-          (
-          {
-            <PriceCell
-              value={BigInt(change)}
-              valueFormatted={addDecimalsFormatNumber(
-                change.toString(),
-                decimalPlaces ?? 0,
-                3
-              )}
-            />
-          }
-          )
+export const PriceCellChange = React.memo(
+  ({ candles, decimalPlaces }: PriceChangeCellProps) => {
+    const change = priceChange(candles);
+    const changePercentage = priceChangePercentage(candles);
+    return (
+      <span
+        className={`${priceChangeClassNames(
+          change
+        )} flex items-center gap-4 justify-end`}
+      >
+        <Arrow value={change} />
+        <span className="flex items-center gap-6">
+          <span>
+            {
+              <PriceCell
+                value={changePercentage}
+                valueFormatted={formatNumberPercentage(
+                  new BigNumber(changePercentage.toString()),
+                  2
+                )}
+              />
+            }
+            &nbsp;
+          </span>
+          <span>
+            (
+            {
+              <PriceCell
+                value={BigInt(change)}
+                valueFormatted={addDecimalsFormatNumber(
+                  change.toString(),
+                  decimalPlaces ?? 0,
+                  3
+                )}
+              />
+            }
+            )
+          </span>
         </span>
       </span>
-    </span>
-  );
-};
+    );
+  }
+);
+
+PriceCellChange.displayName = 'PriceCellChange';

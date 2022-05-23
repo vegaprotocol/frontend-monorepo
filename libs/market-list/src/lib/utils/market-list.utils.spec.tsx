@@ -4,7 +4,6 @@ import { mapDataToMarketList } from './market-list.utils';
 describe('mapDataToMarketList', () => {
   it('should map queried data to market list format', () => {
     const result = mapDataToMarketList(mockData.data as unknown as MarketList);
-    console.log();
     expect(result).toEqual(mockList);
   });
 });
@@ -24,7 +23,7 @@ const mockList = [
     id: '3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3',
     lastPrice: '14174855',
     marketName: 'AAPL.MF21',
-    open: new Date('2022-05-18T13:00:39.328Z'),
+    open: 1652878839328,
   },
   {
     candles: [
@@ -40,7 +39,7 @@ const mockList = [
     id: '062ddcb97beae5b7cc4fa20621fe0c83b2a6f7e76cf5b129c6bd3dc14e8111ef',
     lastPrice: '774',
     marketName: 'APEUSD',
-    open: new Date('2022-05-18T13:08:27.693Z'),
+    open: 1652879307693,
   },
 ];
 

@@ -1,3 +1,4 @@
+import sortBy from 'lodash/sortBy';
 import type {
   MarketList,
   MarketList_markets,
@@ -9,8 +10,8 @@ export const lastPrice = ({ candles }: MarketList_markets) =>
     : undefined;
 
 export const mapDataToMarketList = ({ markets }: MarketList) =>
-  markets
-    ?.map((m) => {
+  sortBy(
+    markets?.map((m) => {
       return {
         id: m.id,
         decimalPlaces: m.decimalPlaces,
@@ -18,17 +19,13 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
         lastPrice: lastPrice(m),
         candles: (m.candles || []).filter((c) => c),
         open: m.marketTimestamps.open
-          ? new Date(m.marketTimestamps.open)
+          ? new Date(m.marketTimestamps.open).getTime()
           : null,
         close: m.marketTimestamps.close
-          ? new Date(m.marketTimestamps.close)
+          ? new Date(m.marketTimestamps.close).getTime()
           : null,
       };
-    })
-    .sort((a, b) => {
-      const diff = (a.open?.getTime() || 0) - (b.open?.getTime() || 0);
-      if (diff !== 0) {
-        return diff;
-      }
-      return a.id === b.id ? 0 : a.id > b.id ? 1 : -1;
-    });
+    }) || [],
+    'open',
+    'id'
+  );

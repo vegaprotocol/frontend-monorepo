@@ -35,15 +35,11 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
         <tbody>
           {data &&
             mapDataToMarketList(data)
-              ?.filter(
-                ({ candles, lastPrice }) => (candles && lastPrice) || lastPrice
-              )
               .slice(0, 12)
               ?.map(({ id, marketName, lastPrice, candles, decimalPlaces }) => {
                 const candlesClose: string[] = candles
                   .map((candle) => candle?.close)
                   .filter((c): c is CandleClose => c !== null);
-                // const change = priceChange(candlesClose);
                 return (
                   <tr
                     key={id}
