@@ -50,7 +50,7 @@ jobs:
         working-directory: capsule
 
       - name: Install binaries
-        run: vegacapsule install-bins
+        run: vegacapsule install-bins --install-path
         env:
           GITHUB_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
       ######
