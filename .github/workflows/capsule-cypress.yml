@@ -33,47 +33,7 @@ jobs:
       ## Checkout all the things
       #######
 
-      # Checkout repos required to build vega capsule
-      - name: Checkout vega
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vega
-          ref: master
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './vega'
-
-      - name: Checkout data node
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/data-node
-          ref: main
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './data-node'
-
-      - name: Checkout protos
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/protos
-          ref: master
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './protos'
-
-      - name: Checkout vegatools
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vegatools
-          ref: main
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './vegatools'
-
-      - name: Checkout vega wallet
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vegawallet
-          ref: master
-          path: './vegawallet'
-
-      #Checkout capsule to build local network
+      # Checkout capsule to build local network
       - name: Checkout capsule
         uses: actions/checkout@v2
         with:
@@ -89,18 +49,10 @@ jobs:
         run: go install
         working-directory: capsule
 
-      - name: Build vega
-        run: go install ./cmd/vega/
-        working-directory: vega
-
-      - name: Build vegawallet
-        run: go install
-        working-directory: vegawallet
-
-      - name: Build data-node
-        run: go install ./cmd/data-node/
-        working-directory: data-node
-
+      - name: Install binaries
+        run: vegacapsule install-bins
+        env:
+          GITHUB_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
       ######
       ## Start capsule
       ######
@@ -114,7 +66,7 @@ jobs:
         working-directory: capsule
 
       ######
-      ## LEGACY: setup a vega wallet, this can be removed once all tests are running capsule.
+      ## Setup a Vega wallet for our user
       ######
       - name: Create passphrase
         run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
@@ -150,13 +102,17 @@ jobs:
 
       - name: Install root dependencies
         run: yarn install
-      ## TODO only running explorer right now
+
       - name: Run Cypress tests
         run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
+
+      ######
+      ## Upload logs
+      ######
 
       - name: Logs
         if: ${{ always() }}
