@@ -2,9 +2,11 @@ name: Capsule tests -- nightly
 
 # This workflow runs the frontend tests against latest develop of the core to preempt breaking changes
 
-on:
-  schedule:
-    - cron: '0 4 * * *'
+# on:
+#   schedule:
+#     - cron: '0 4 * * *'
+
+on: pull_request
 
 jobs:
   nightly:
