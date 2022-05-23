@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         vegawallet-version:
-          - '0.13.2'
+          - '0.13.2' ## TODO not being used, make it use this
     env:
       GO111MODULE: 'on'
       GOPROXY: ${{ secrets.GO_PROXY }}
@@ -116,13 +116,6 @@ jobs:
       ######
       ## LEGACY: setup a vega wallet, this can be removed once all tests are running capsule
       ######
-
-      - name: Install root dependencies
-        run: yarn install
-      - name: Download and unzip wallet
-        run: curl -L https://github.com/vegaprotocol/vegawallet/releases/download/v${{ matrix.vegawallet-version }}/vegawallet-linux-amd64.zip -O
-      - name: Unzip wallet
-        run: unzip ./vegawallet-linux-amd64.zip
       - name: Create passphrase
         run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
       - name: Create recovery
