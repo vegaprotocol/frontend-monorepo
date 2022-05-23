@@ -118,3 +118,15 @@ Auction.args = {
   indicativePrice: 122900,
   indicativeVolume: 11,
 };
+
+export const Empty = Template.bind({});
+Empty.args = {
+  numberOfRows: 0,
+  midPrice: 0,
+  bestStaticBidPrice: 0,
+  bestStaticOfferPrice: 0,
+  decimalPlaces: 3,
+  overlap: 0,
+  indicativePrice: 0,
+  indicativeVolume: 0,
+};
