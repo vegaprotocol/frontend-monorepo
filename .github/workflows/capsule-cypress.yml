@@ -143,6 +143,11 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v2
+        with:
+          main-branch-name: master
+
       - name: Install root dependencies
         run: yarn install
       ## TODO only running explorer right now
