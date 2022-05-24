@@ -17,7 +17,7 @@ export const useBridgeContract = () => {
       provider,
       provider?.getSigner()
     );
-  }, [provider]);
+  }, [provider, VEGA_ENV]);
 
   return contract;
 };
