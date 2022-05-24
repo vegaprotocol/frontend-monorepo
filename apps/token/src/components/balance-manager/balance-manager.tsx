@@ -56,7 +56,7 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     };
 
     updateBalances();
-  }, [appDispatch, contracts?.token, contracts?.vesting, account]);
+  }, [appDispatch, contracts?.token, contracts?.vesting, account, ADDRESSES.stakingBridge]);
 
   // This use effect hook is very expensive and is kept separate to prevent expensive reloading of data.
   React.useEffect(() => {
