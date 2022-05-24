@@ -56,5 +56,5 @@ export const useGetUserTrancheBalances = (
         error: e as Error,
       });
     }
-  }, [address, appDispatch, vesting]);
+  }, [address, appDispatch, tranches, vesting]);
 };
