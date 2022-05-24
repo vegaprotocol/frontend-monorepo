@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { ADDRESSES } from '../../../config';
 import { useTranches } from '../../../hooks/use-tranches';
@@ -15,6 +15,7 @@ export const TokenDetails = ({
   totalSupply: BigNumber;
   totalStaked: BigNumber;
 }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
   const { tranches } = useTranches();
@@ -22,21 +23,25 @@ export const TokenDetails = ({
     <KeyValueTable className={'token-details'}>
       <KeyValueTableRow>
         {t('Token address').toUpperCase()}
-        <EtherscanLink
+        <Link
           data-testid="token-address"
-          address={ADDRESSES.vegaTokenAddress}
-          text={ADDRESSES.vegaTokenAddress}
+          title={t('View address on Etherscan')}
           className="font-mono"
-        />
+          href={`${ETHERSCAN_URL}/address/${ADDRESSES.vegaTokenAddress}`}
+        >
+          {ADDRESSES.vegaTokenAddress}
+        </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Vesting contract'.toUpperCase())}
-        <EtherscanLink
+        <Link
           data-testid="token-contract"
-          address={ADDRESSES.vestingAddress}
-          text={ADDRESSES.vestingAddress}
+          title={t('View address on Etherscan')}
           className="font-mono"
-        />
+          href={`${ETHERSCAN_URL}/address/${ADDRESSES.vestingAddress}`}
+        >
+          {ADDRESSES.vestingAddress}
+        </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Total supply').toUpperCase()}

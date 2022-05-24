@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import type { TransactionState } from '../../hooks/transaction-reducer';
 import { TxState } from '../../hooks/transaction-reducer';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import { Button, EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Button, Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
 import { Error, HandUp, Tick } from '../icons';
 import { Loader } from '../loader';
 import { StatefulButton } from '../stateful-button';
@@ -122,6 +122,7 @@ export const TransactionButtonFooter = ({
   txHash,
   message,
 }: TransactionButtonFooterProps) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
   if (message) {
@@ -142,7 +143,12 @@ export const TransactionButtonFooter = ({
       <div className="transaction-button__footer">
         <p className="flex justify-between items-start m-0 text-ui">
           <span>{t('transaction')}</span>
-          <EtherscanLink text={truncateMiddle(txHash)} tx={txHash} />
+          <Link
+            href={`${ETHERSCAN_URL}/tx/${txHash}`}
+            title={t('View on Etherscan')}
+          >
+            {truncateMiddle(txHash)}
+          </Link>
         </p>
       </div>
     );

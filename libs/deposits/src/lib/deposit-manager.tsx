@@ -34,6 +34,7 @@ interface DepositManagerProps {
   bridgeAddress: string;
   assets: Asset[];
   initialAssetId?: string;
+  isFaucetable?: boolean;
 }
 
 export const DepositManager = ({
@@ -41,6 +42,7 @@ export const DepositManager = ({
   bridgeAddress,
   assets,
   initialAssetId,
+  isFaucetable,
 }: DepositManagerProps) => {
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
 
@@ -54,7 +56,7 @@ export const DepositManager = ({
     asset?.source.__typename === 'ERC20'
       ? asset.source.contractAddress
       : undefined,
-    process.env['NX_VEGA_ENV'] !== 'MAINNET'
+    isFaucetable
   );
   const bridgeContract = useBridgeContract();
 

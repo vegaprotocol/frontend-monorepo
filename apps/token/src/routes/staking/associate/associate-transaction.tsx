@@ -1,12 +1,13 @@
 import {
   Button,
   Callout,
-  EtherscanLink,
+  Link,
   Intent,
+  useEnvironment,
 } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouteLink } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
 import type {
@@ -35,6 +36,7 @@ export const AssociateTransaction = ({
   requiredConfirmations: number;
   linking: PartyStakeLinkings_party_stake_linkings | null;
 }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
   const remainingConfirmations = React.useMemo(() => {
@@ -71,7 +73,12 @@ export const AssociateTransaction = ({
           })}
         </p>
         <p>
-          <EtherscanLink tx={state.txData.hash || ''} />
+          <Link
+            title={t('View transaction on Etherscan')}
+            href={`${ETHERSCAN_URL}/tx/${state.txData.hash}`}
+          >
+            {state.txData.hash}
+          </Link>
         </p>
         <p data-testid="transaction-pending-footer">
           {t('pendingAssociationText', {
@@ -90,11 +97,11 @@ export const AssociateTransaction = ({
         { vegaKey }
       )}
       completeFooter={
-        <Link to={Routes.STAKING}>
+        <RouteLink to={Routes.STAKING}>
           <Button className="fill">
             {t('Nominate Stake to Validator Node')}
           </Button>
-        </Link>
+        </RouteLink>
       }
       pendingHeading={t('Associating Tokens')}
       pendingBody={t(

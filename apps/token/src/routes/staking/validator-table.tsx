@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
@@ -22,6 +22,7 @@ export const ValidatorTable = ({
   stakedTotal,
   stakeThisEpoch,
 }: ValidatorTableProps) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const stakePercentage = React.useMemo(() => {
     const total = new BigNumber(stakedTotal);
@@ -56,10 +57,12 @@ export const ValidatorTable = ({
       <KeyValueTableRow>
         <span>{t('ETHEREUM ADDRESS')}</span>
         <span>
-          <EtherscanLink
-            text={node.ethereumAdddress}
-            address={node.ethereumAdddress}
-          />
+          <Link
+            title={t('View address on Etherscan')}
+            href={`${ETHERSCAN_URL}/address/${node.ethereumAdddress}`}
+          >
+            {node.ethereumAdddress}
+          </Link>
         </span>
       </KeyValueTableRow>
       <KeyValueTableRow>

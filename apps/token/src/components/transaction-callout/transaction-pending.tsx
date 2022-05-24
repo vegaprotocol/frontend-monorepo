@@ -1,7 +1,7 @@
 import React from 'react';
 import { Callout } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
 
 export const TransactionPending = ({
   hash,
@@ -18,6 +18,7 @@ export const TransactionPending = ({
   footer?: React.ReactElement | string;
   body?: React.ReactElement | string;
 }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const remainingConfirmations = React.useMemo(() => {
     if (requiredConfirmations) {
@@ -38,7 +39,12 @@ export const TransactionPending = ({
     <Callout iconName="refresh" title={title}>
       {body && <p data-testid="transaction-pending-body">{body}</p>}
       <p>
-        <EtherscanLink tx={hash} />
+        <Link
+          title={t('View transaction on Etherscan')}
+          href={`${ETHERSCAN_URL}/tx/${hash}`}
+        >
+          {hash}
+        </Link>
       </p>
       {footer && <p data-testid="transaction-pending-footer">{footer}</p>}
     </Callout>
