@@ -34,9 +34,9 @@ export const VestingChart = () => {
           <defs>
             {[
               ['pink', Colors.pink],
-              ['green', Colors.green.vega],
+              ['green', Colors.vega.green],
               ['orange', Colors.orange],
-              ['yellow', Colors.yellow.DEFAULT],
+              ['yellow', Colors.vega.yellow],
             ].map(([key, color]) => (
               <linearGradient key={key} id={key} x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor={color} stopOpacity={0.85} />
@@ -107,7 +107,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="earlyInvestors"
-            stroke={Colors.green.vega}
+            stroke={Colors.vega.green}
             fill="url(#green)"
             yAxisId={0}
             strokeWidth={2}
@@ -119,7 +119,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="publicSale"
-            stroke={Colors.yellow.DEFAULT}
+            stroke={Colors.vega.yellow}
             fill="url(#yellow)"
             yAxisId={0}
             strokeWidth={2}

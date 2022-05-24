@@ -12,23 +12,6 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
-    vega: {
-      yellow: '#DFFF0B',
-      pink: '#FF077F',
-      green: '#00F780',
-    },
-    red: {
-      DEFAULT: '#ED1515',
-      transparent: 'rgba(255, 38, 65, 0.3)',
-      vega: '#FF261A',
-      dark: '#EB001B',
-    },
-    green: {
-      DEFAULT: '#26FF8A',
-      transparent: 'rgba(38, 255, 138, 0.3)',
-      dark: '#008545',
-      vega: '#00F780',
-    },
     text: '#C7C7C7',
     deemphasise: '#8A9BA8',
     white: {
@@ -55,13 +38,17 @@ module.exports = {
       95: 'rgba(0, 0, 0, 0.95)',
       100: 'rgba(0, 0, 0, 1)',
     },
+    vega: {
+      yellow: '#DFFF0B',
+      'yellow-dark': '#474B0A',
+      pink: '#FF077F',
+      green: '#00F780',
+      'green-dark': '#008545',
+      red: '#EB0C00',
+    },
     blue: '#1DA2FB',
     coral: '#FF6057',
     orange: '#D9822B',
-    yellow: {
-      DEFAULT: '#EDFF22',
-      dark: '#474B0A', // yellow 0.3 opacity on black
-    },
     intent: {
       danger: '#EB0C00',
       warning: '#FF7A1A',

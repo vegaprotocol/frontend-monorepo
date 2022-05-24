@@ -96,7 +96,7 @@ const getClasses = (
     standardButtonPaddingRight,
     standardButtonBorderWidth,
     buttonHeight,
-    'bg-vega-yellow dark:bg-vega-yellow hover:bg-yellow/dark dark:hover:bg-vega-yellow/30 active:bg-white dark:active:bg-black',
+    'bg-vega-yellow dark:bg-vega-yellow hover:bg-vega-yellow-dark dark:hover:bg-vega-yellow-dark active:bg-white dark:active:bg-black',
     'text-ui uppercase text-black dark:text-black hover:text-white dark:hover:text-white active:text-black dark:active:text-white',
     'border-transparent dark:border-transparent',
   ];

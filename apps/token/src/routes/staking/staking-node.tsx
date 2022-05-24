@@ -87,7 +87,9 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
 
   if (!nodeInfo) {
     return (
-      <span className={'text-red'}>{t('stakingNodeNotFound', { node })}</span>
+      <span className={'text-vega-red'}>
+        {t('stakingNodeNotFound', { node })}
+      </span>
     );
   }
 
