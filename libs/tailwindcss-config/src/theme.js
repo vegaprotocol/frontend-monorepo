@@ -45,7 +45,7 @@ module.exports = {
       green: '#00F780',
       'green-dark': '#008545',
       red: '#FF261A',
-      'red-dark': 'EB001B',
+      'red-dark': '#EB001B',
     },
     blue: '#1DA2FB',
     coral: '#FF6057',
@@ -159,7 +159,6 @@ module.exports = {
     ui: ['14px', '20px'],
     'ui-small': ['12px', '16px'],
   },
-
   boxShadow: {
     callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
