@@ -20,7 +20,7 @@ import { Web3Provider } from '@vegaprotocol/web3';
 import { Connectors } from './lib/web3-connectors';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/ui-toolkit';
+import { EnvironmentProvider } from '@vegaprotocol/react-helpers';
 
 function App() {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);

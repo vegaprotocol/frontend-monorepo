@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
-import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { ADDRESSES } from '../../../config';
 import { useTranches } from '../../../hooks/use-tranches';

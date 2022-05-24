@@ -4,7 +4,8 @@ import orderBy from 'lodash/orderBy';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { Heading } from '../../components/heading';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { SplashLoader } from '../../components/splash-loader';

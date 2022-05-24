@@ -1,5 +1,6 @@
 import type { TxData } from '@vegaprotocol/smart-contracts-sdk';
-import { Dialog, Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 

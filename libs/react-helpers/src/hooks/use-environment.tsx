@@ -26,15 +26,28 @@ type EnvKey = typeof ENV_KEYS[number];
 
 export type Environment = Record<EnvKey, string>;
 
+const getBundledEnvironmentValue = (key: EnvKey) => {
+  switch (key) {
+    // need to have these hardcoded so on build time we can insert sensible defaults
+    case 'VEGA_URL':
+      return process.env['NX_VEGA_URL'];
+    case 'VEGA_ENV':
+      return process.env['NX_VEGA_ENV'];
+    case 'ETHEREUM_CHAIN_ID':
+      return process.env['NX_ETHEREUM_CHAIN_ID'];
+    case 'ETHEREUM_PROVIDER_URL':
+      return process.env['NX_ETHEREUM_PROVIDER_URL'];
+    case 'ETHERSCAN_URL':
+      return process.env['NX_ETHERSCAN_URL'];
+  }
+};
+
 const getValue = (key: EnvKey, definintions: Partial<Environment> = {}) => {
   if (typeof window === 'undefined') {
-    return definintions[key] ?? process.env[key] ?? process.env[`NX_${key}`];
+    return definintions[key] ?? getBundledEnvironmentValue(key);
   }
   return (
-    window._ENV?.[key] ??
-    definintions[key] ??
-    process.env[key] ??
-    process.env[`NX_${key}`]
+    window._ENV?.[key] ?? definintions[key] ?? getBundledEnvironmentValue(key)
   );
 };
 

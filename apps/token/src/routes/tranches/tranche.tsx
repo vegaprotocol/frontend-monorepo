@@ -6,7 +6,8 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import { useOutletContext } from 'react-router-dom';
-import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import type { EthereumChainId } from '../../config';
 import { ADDRESSES } from '../../config';
 import { BigNumber } from '../../lib/bignumber';

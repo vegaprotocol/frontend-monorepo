@@ -4,7 +4,8 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouteLink } from 'react-router-dom';
 
 import { BulletHeader } from '../../components/bullet-header';
-import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { Links } from '../../config';
 import {
   AppStateActionType,

@@ -10,11 +10,8 @@ import {
   formatNumber,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
-import {
-  Link,
-  AgGridDynamic as AgGrid,
-  useEnvironment,
-} from '@vegaprotocol/ui-toolkit';
+import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';

@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { EthTxStatus } from '../use-ethereum-transaction';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';

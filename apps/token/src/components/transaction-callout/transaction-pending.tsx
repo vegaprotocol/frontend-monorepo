@@ -1,7 +1,8 @@
 import React from 'react';
 import { Callout } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { Link, useEnvironment } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 export const TransactionPending = ({
   hash,

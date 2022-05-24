@@ -1,10 +1,5 @@
-import {
-  Button,
-  Callout,
-  Link,
-  Intent,
-  useEnvironment,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Link, Intent } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouteLink } from 'react-router-dom';
