@@ -125,7 +125,7 @@ jobs:
       - name: Import wallet
         run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
       - name: Import config
-        run: vegawallet network import --from-url https://raw.githubusercontent.com/vegaprotocol/networks/master/fairground/fairground.toml
+        run: vegawallet network import --from-file ~/.vegacapsule/testnet/wallet/config/wallet-service/networks/DV.toml
       - name: Create public key 2
         run: vegawallet key generate -w UI_Trading_Test -p ./passphrase
       - name: Start service
