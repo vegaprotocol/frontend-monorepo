@@ -25,6 +25,7 @@
     "TRUNCATED_VEGA_PUBLIC_KEY2": "1a18cd…0cf2e4",
     "INVALID_DEPOSIT_TO_ADDRESS": "zzz85edfa7ffdb6ed996ca912e9258998e47bf3515c885cf3c63fb56b15de36f",
     "tsConfig": "tsconfig.json",
-    "TAGS": "not @todo and not @ignore and not @manual"
+    "TAGS": "not @todo and not @ignore and not @manual",
+    "ETHEREUM_WALLET_ADDRESS": "0x265Cc6d39a1B53d0d92068443009eE7410807158"
   }
 }

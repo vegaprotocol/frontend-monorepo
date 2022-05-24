@@ -35,7 +35,7 @@ When('I submit a deposit with empty fields', () => {
 });
 
 Then('I can see empty form validation errors present', () => {
-  depositsPage.verifyFormErrorDisplayed("Required", 3)
+  depositsPage.verifyFormErrorDisplayed('Required', 3);
 });
 
 Then('I enter the following deposit details in deposit form', (table) => {

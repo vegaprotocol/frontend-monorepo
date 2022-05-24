@@ -5,7 +5,9 @@ export default class BasePage {
   assetSelectField = 'select[name="asset"]';
   toAddressField = 'input[name="to"]';
   amountField = 'input[name="amount"]';
-  formFieldError = 'input-error-text'
+  formFieldError = 'input-error-text';
+  dialogHeader = 'dialog-title';
+  dialogText = 'dialog-text';
 
   closeDialog() {
     cy.getByTestId(this.closeDialogBtn, { timeout: 8000 }).click({
@@ -26,8 +28,11 @@ export default class BasePage {
   }
 
   verifyFormErrorDisplayed(expectedError: string, expectedNumErrors: number) {
-    cy.getByTestId(this.formFieldError).should('contain.text', expectedError)
-    cy.getByTestId(this.formFieldError).should('have.length', expectedNumErrors);
+    cy.getByTestId(this.formFieldError).should('contain.text', expectedError);
+    cy.getByTestId(this.formFieldError).should(
+      'have.length',
+      expectedNumErrors
+    );
   }
 
   updateTransactionform(args?: {

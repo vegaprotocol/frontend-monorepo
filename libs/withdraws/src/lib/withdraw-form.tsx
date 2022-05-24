@@ -14,7 +14,7 @@ import {
   Select,
 } from '@vegaprotocol/ui-toolkit';
 import type BigNumber from 'bignumber.js';
-import type { ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
 import type { Asset } from './types';
@@ -124,6 +124,7 @@ export const WithdrawForm = ({
         )}
         {ethereumAccount && (
           <UseButton
+            data-testid="use-connected"
             onClick={() => {
               setValue('to', ethereumAccount);
               clearErrors('to');
@@ -154,6 +155,7 @@ export const WithdrawForm = ({
         )}
         {selectedAsset && (
           <UseButton
+            data-testid="use-maximum"
             onClick={() => {
               setValue('amount', max.toFixed(selectedAsset.decimals));
               clearErrors('amount');
@@ -163,22 +165,23 @@ export const WithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <Button data-testid='submit-withdrawal' type="submit">Submit</Button>
+      <Button data-testid="submit-withdrawal" type="submit">
+        Submit
+      </Button>
     </form>
   );
 };
 
-interface UseButtonProps {
+interface UseButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  onClick: () => void;
 }
 
-const UseButton = ({ children, onClick }: UseButtonProps) => {
+const UseButton = ({ children, ...rest }: UseButtonProps) => {
   return (
     <button
+      {...rest}
       type="button"
       className="ml-auto text-ui absolute top-0 right-0 underline"
-      onClick={onClick}
     >
       {children}
     </button>
