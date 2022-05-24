@@ -65,7 +65,10 @@ export default class HomePage extends BasePage {
     cy.getByTestId(this.statsValue).eq(11).should('not.be.empty');
     cy.getByTestId(this.statsValue).eq(12).should('not.be.empty');
     cy.getByTestId(this.statsValue).eq(13).should('not.be.empty');
-    cy.getByTestId(this.statsValue).eq(14).should('have.text', '');
+    cy.getByTestId(this.statsValue)
+      .eq(14)
+      .invoke('text')
+      .should('match', /v\d+\.\d+\.\d+/i);
     cy.getByTestId(this.statsValue)
       .eq(15)
       .invoke('text')
