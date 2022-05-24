@@ -48,7 +48,7 @@ export const DepositContainer = ({
             requiredConfirmations={ethereumConfig.confirmations}
             assets={data.assets}
             initialAssetId={assetId}
-            isFaucetable={VEGA_ENV === 'MAINNET'}
+            isFaucetable={VEGA_ENV !== 'MAINNET'}
           />
         );
       }}
