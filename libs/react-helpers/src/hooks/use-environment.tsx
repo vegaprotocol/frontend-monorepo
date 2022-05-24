@@ -1,16 +1,18 @@
 import type { ReactNode } from 'react';
+import type { Networks } from '@vegaprotocol/smart-contracts-sdk';
+import { EnvironmentConfig } from '@vegaprotocol/smart-contracts-sdk';
 import { createContext, useContext } from 'react';
 
 declare global {
   interface Window {
-    _ENV?: Environment;
+    _ENV?: RawEnvironment;
   }
 }
 
-const EnvironmentContext = createContext({} as Environment);
+type VegaContracts = typeof EnvironmentConfig[Networks];
 
 type EnvironmentProviderProps = {
-  definintions?: Partial<Environment>;
+  definintions?: Partial<RawEnvironment>;
   children?: ReactNode;
 };
 
@@ -24,7 +26,16 @@ export const ENV_KEYS = [
 
 type EnvKey = typeof ENV_KEYS[number];
 
-export type Environment = Record<EnvKey, string>;
+type RawEnvironment = Record<EnvKey, string>;
+
+export type Environment = {
+  VEGA_URL: string;
+  VEGA_ENV: Networks;
+  ETHEREUM_CHAIN_ID: number;
+  ETHEREUM_PROVIDER_URL: string;
+  ETHERSCAN_URL: string;
+  ADDRESSES: VegaContracts;
+};
 
 const getBundledEnvironmentValue = (key: EnvKey) => {
   switch (key) {
@@ -42,14 +53,31 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
   }
 };
 
-const getValue = (key: EnvKey, definintions: Partial<Environment> = {}) => {
-  if (typeof window === 'undefined') {
-    return definintions[key] ?? getBundledEnvironmentValue(key);
+const transformValue = (key: EnvKey, value?: string) => {
+  switch (key) {
+    case 'VEGA_ENV':
+      return value as Networks;
+    case 'ETHEREUM_CHAIN_ID':
+      return Number(value) ?? 3;
+    default:
+      return value;
   }
-  return (
+};
+
+const getValue = (key: EnvKey, definintions: Partial<RawEnvironment> = {}) => {
+  if (typeof window === 'undefined') {
+    return transformValue(
+      key,
+      definintions[key] ?? getBundledEnvironmentValue(key)
+    );
+  }
+  return transformValue(
+    key,
     window._ENV?.[key] ?? definintions[key] ?? getBundledEnvironmentValue(key)
   );
 };
+
+const EnvironmentContext = createContext({} as Environment);
 
 export const EnvironmentProvider = ({
   definintions,
@@ -70,12 +98,17 @@ export const EnvironmentProvider = ({
 
   if (missingKeys) {
     console.warn(
-      `Error setting up the app environment. The following variables are missing from your environment: ${missingKeys}`
+      `Error setting up the app environment. The following variables are missing from your environment: ${missingKeys}.`
     );
   }
 
   return (
-    <EnvironmentContext.Provider value={environment as Environment}>
+    <EnvironmentContext.Provider
+      value={{
+        ...environment,
+        ADDRESSES: EnvironmentConfig[environment['VEGA_ENV']],
+      }}
+    >
       {children}
     </EnvironmentContext.Provider>
   );

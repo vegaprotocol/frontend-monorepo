@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 
-import { ADDRESSES } from '../../config';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import {
   AppStateActionType,
   useAppState,
@@ -17,6 +17,7 @@ interface BalanceManagerProps {
 }
 
 export const BalanceManager = ({ children }: BalanceManagerProps) => {
+  const { ADDRESSES } = useEnvironment();
   const contracts = useContracts();
   const { account } = useWeb3React();
   const { appDispatch } = useAppState();

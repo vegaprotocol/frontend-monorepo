@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 
-import { ADDRESSES } from '../config';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import {
   AppStateActionType,
   useAppState,
@@ -10,6 +10,7 @@ import {
 import { useContracts } from '../contexts/contracts/contracts-context';
 
 export const useRefreshBalances = (address: string) => {
+  const { ADDRESSES } = useEnvironment();
   const { appDispatch } = useAppState();
   const { keypair } = useVegaWallet();
   const { token, staking, vesting } = useContracts();

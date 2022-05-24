@@ -6,7 +6,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AccountType } from '../../__generated__/globalTypes';
-import { ADDRESSES } from '../../config';
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import { BigNumber } from '../../lib/bignumber';
@@ -18,6 +17,7 @@ import type {
   DelegationsVariables,
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -60,6 +60,7 @@ const DELEGATIONS_QUERY = gql`
 `;
 
 export const usePollForDelegations = () => {
+  const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const { keypair } = useVegaWallet();
   const client = useApolloClient();

@@ -2,10 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { Heading } from '../../components/heading';
-import { ADDRESSES } from '../../config';
 
 const Contracts = () => {
-  const { ETHERSCAN_URL } = useEnvironment();
+  const { ADDRESSES, ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   return (
     <section>

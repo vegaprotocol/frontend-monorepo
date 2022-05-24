@@ -1,6 +1,10 @@
 import { render } from '@testing-library/react';
 
-import { ADDRESSES, EthereumChainIds } from '../../config';
+import {
+  EthereumChainIds,
+  EnvironmentConfig,
+  Networks,
+} from '@vegaprotocol/smart-contracts-sdk';
 import type { TrancheLabelProps } from './tranche-label';
 import { TrancheLabel } from './tranche-label';
 
@@ -9,7 +13,7 @@ let props: TrancheLabelProps;
 beforeEach(() => {
   props = {
     chainId: EthereumChainIds.Mainnet,
-    contract: ADDRESSES.vestingAddress,
+    contract: EnvironmentConfig[Networks.MAINNET].vestingAddress,
     id: 5,
   };
 });

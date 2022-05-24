@@ -10,9 +10,9 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import uniqBy from 'lodash/uniqBy';
 import React from 'react';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 import { SplashLoader } from '../../components/splash-loader';
-import { ADDRESSES, APP_ENV } from '../../config';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { defaultProvider } from '../../lib/web3-connectors';
@@ -21,6 +21,7 @@ import { defaultProvider } from '../../lib/web3-connectors';
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
+  const { ADDRESSES, VEGA_ENV } = useEnvironment();
   const { provider: activeProvider, account } = useWeb3React();
   const [txs, setTxs] = React.useState<TxData[]>([]);
   const [contracts, setContracts] = React.useState<Pick<
@@ -53,13 +54,13 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
           signer
         ),
         // @ts-ignore Cant accept JsonRpcProvider provider
-        staking: new VegaStaking(APP_ENV, provider, signer),
+        staking: new VegaStaking(VEGA_ENV, provider, signer),
         // @ts-ignore Cant accept JsonRpcProvider provider
-        vesting: new VegaVesting(APP_ENV, provider, signer),
+        vesting: new VegaVesting(VEGA_ENV, provider, signer),
         // @ts-ignore Cant accept JsonRpcProvider provider
-        claim: new VegaClaim(APP_ENV, provider, signer),
+        claim: new VegaClaim(VEGA_ENV, provider, signer),
         erc20Bridge: new VegaErc20Bridge(
-          APP_ENV,
+          VEGA_ENV,
           // @ts-ignore Cant accept JsonRpcProvider provider
           provider,
           signer
