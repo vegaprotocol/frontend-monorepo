@@ -103,6 +103,7 @@ export const DepositManager = ({
         requestFaucet={faucet.perform}
         limits={limits}
         allowance={allowance}
+        isFaucetable={isFaucetable}
       />
       <TransactionDialog {...approve.transaction} name="approve" />
       <TransactionDialog {...faucet.transaction} name="faucet" />
