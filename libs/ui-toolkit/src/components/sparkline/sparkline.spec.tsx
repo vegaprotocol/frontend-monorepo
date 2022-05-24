@@ -36,7 +36,7 @@ it('Renders a red line if the last value is less than the first', () => {
   const paths = screen.getAllByTestId('sparkline-path');
   const path = paths[0];
   expect(path).toHaveClass(
-    '[vector-effect:non-scaling-stroke] stroke-vega-red'
+    '[vector-effect:non-scaling-stroke] stroke-vega-red-dark dark:stroke-vega-red'
   );
 });
 

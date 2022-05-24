@@ -7,7 +7,7 @@ export const ArrowUp = () => (
 export const ArrowDown = () => (
   <span
     data-testid="arrow-down"
-    className="w-0 h-0 border-x border-x-[4px] border-solid border-x-transparent border-t-[4px] border-t-vega-red"
+    className="w-0 h-0 border-x border-x-[4px] border-solid border-x-transparent border-t-[4px] border-t-vega-red-dark dark:border-t-vega-red"
   ></span>
 );
 
