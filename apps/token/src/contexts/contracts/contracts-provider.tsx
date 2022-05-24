@@ -67,7 +67,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
         ),
       });
     }
-  }, [activeProvider, account, ADDRESSES.vegaTokenAddress]);
+  }, [activeProvider, account, ADDRESSES.vegaTokenAddress, VEGA_ENV]);
 
   React.useEffect(() => {
     if (!contracts) return;

@@ -49,7 +49,7 @@ export const useAddAssetToWallet = (
     } catch (error) {
       Sentry.captureException(error);
     }
-  }, [address, decimals, image, provider, symbol]);
+  }, [address, decimals, image, provider, symbol, VEGA_ENV]);
 
   return React.useMemo(() => {
     return {
