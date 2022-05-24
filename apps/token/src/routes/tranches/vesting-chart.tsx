@@ -33,7 +33,7 @@ export const VestingChart = () => {
         <AreaChart data={data}>
           <defs>
             {[
-              ['pink', Colors.pink],
+              ['pink', Colors.vega.pink],
               ['green', Colors.vega.green],
               ['orange', Colors.orange],
               ['yellow', Colors.vega.yellow],
@@ -95,7 +95,7 @@ export const VestingChart = () => {
             dot={false}
             type="linear"
             dataKey="team"
-            stroke={Colors.pink}
+            stroke={Colors.vega.pink}
             fill="url(#pink)"
             yAxisId={0}
             strokeWidth={2}
