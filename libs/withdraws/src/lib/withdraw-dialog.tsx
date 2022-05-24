@@ -110,7 +110,7 @@ const getProps = (
     [VegaTxStatus.Pending]: {
       title: t('Withdrawal transaction pending'),
       icon: <Loader size="small" />,
-      intent: Intent.Progress,
+      intent: Intent.Prompt,
       children: <Step>Awaiting transaction</Step>,
     },
   };
@@ -141,7 +141,7 @@ const getProps = (
     [EthTxStatus.Pending]: {
       title: t('Ethereum transaction pending'),
       icon: <Loader size="small" />,
-      intent: Intent.Progress,
+      intent: Intent.Prompt,
       children: (
         <Step>
           <span>

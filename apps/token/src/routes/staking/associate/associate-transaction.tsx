@@ -63,7 +63,7 @@ export const AssociateTransaction = ({
 
   if (derivedTxState === TxState.Pending) {
     return (
-      <Callout intent={Intent.Progress} title={title}>
+      <Callout intent={Intent.Prompt} title={title}>
         <p data-testid="transaction-pending-body">
           {t('Associating {{amount}} VEGA tokens with Vega key {{vegaKey}}', {
             amount,

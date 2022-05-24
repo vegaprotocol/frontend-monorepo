@@ -42,12 +42,6 @@ Prompt.args = {
   children: 'Content',
 };
 
-export const Progress = Template.bind({});
-Progress.args = {
-  intent: Intent.Progress,
-  children: 'Content',
-};
-
 export const Success = Template.bind({});
 Success.args = {
   intent: Intent.Success,

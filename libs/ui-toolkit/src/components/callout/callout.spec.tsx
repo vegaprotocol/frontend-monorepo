@@ -15,7 +15,7 @@ it('renders title and icon', () => {
   expect(screen.getByText('title')).toBeInTheDocument();
 });
 
-const intents = Object.values(Intent).filter((i) => i !== Intent.Progress);
+const intents = Object.values(Intent).filter((i) => i !== Intent.Prompt);
 
 it.each(intents)('Applies class for %s', (intent) => {
   render(<Callout intent={intent} />);
@@ -25,9 +25,9 @@ it.each(intents)('Applies class for %s', (intent) => {
 });
 
 it(`Applies class for progress`, () => {
-  render(<Callout intent={Intent.Progress} />);
+  render(<Callout intent={Intent.Prompt} />);
   expect(screen.getByTestId('callout')).toHaveClass(
     'shadow-black',
-    'dark:shadow-white'
+    'dark:shadow-intent-prompt'
   );
 });

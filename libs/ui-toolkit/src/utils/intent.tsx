@@ -1,8 +1,8 @@
 export enum Intent {
   Danger = 'danger',
   Warning = 'warning',
+  Selected = 'selected',
   Prompt = 'prompt',
-  Progress = 'progress',
   Success = 'success',
   Help = 'help',
 }
@@ -10,6 +10,7 @@ export enum Intent {
 export enum TailwindIntents {
   Danger = 'danger',
   Warning = 'warning',
+  Selected = 'selected',
   Prompt = 'prompt',
   Success = 'success',
   Help = 'help',
@@ -21,8 +22,8 @@ export const getIntentShadow = (intent?: Intent) => {
     'shadow-callout': true,
     'shadow-intent-danger': intent === Intent.Danger,
     'shadow-intent-warning': intent === Intent.Warning,
-    'shadow-intent-prompt': intent === Intent.Prompt,
-    'shadow-black dark:shadow-white': intent === Intent.Progress,
+    'shadow-intent-selected': intent === Intent.Selected,
+    'shadow-black dark:shadow-intent-prompt': intent === Intent.Prompt,
     'shadow-intent-success': intent === Intent.Success,
     'shadow-intent-help': intent === Intent.Help,
   };

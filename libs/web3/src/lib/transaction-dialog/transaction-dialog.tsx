@@ -71,7 +71,7 @@ export const TransactionDialog = ({
       [EthTxStatus.Pending]: {
         title: t(`${name} pending`),
         icon: <Loader size="small" />,
-        intent: Intent.Progress,
+        intent: Intent.Prompt,
       },
       [EthTxStatus.Complete]: {
         title: t(`${name} complete`),

@@ -13,8 +13,8 @@ module.exports = {
     transparent: 'transparent',
     current: 'currentColor',
     vega: {
-      yellow: '#EDFF22',
-      pink: '#FF2D5E',
+      yellow: '#DFFF0B',
+      pink: '#FF077F',
       green: '#00F780',
     },
     red: {
@@ -57,19 +57,19 @@ module.exports = {
     },
     blue: '#1DA2FB',
     coral: '#FF6057',
-    pink: '#FF2D5E',
     orange: '#D9822B',
     yellow: {
       DEFAULT: '#EDFF22',
       dark: '#474B0A', // yellow 0.3 opacity on black
     },
     intent: {
-      danger: '#FF261A',
+      danger: '#EB0C00',
       warning: '#FF7A1A',
-      prompt: '#EDFF22',
-      success: '#26FF8A',
+      selected: '#DFFF0B',
+      success: '#00F780',
       help: '#494949',
       highlight: '#E5E5E5',
+      prompt: '#FFFFFF',
     },
     'intent-background': {
       danger: '#9E0025', // for white text
