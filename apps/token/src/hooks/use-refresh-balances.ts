@@ -45,5 +45,13 @@ export const useRefreshBalances = (address: string) => {
     } catch (err) {
       Sentry.captureException(err);
     }
-  }, [address, appDispatch, keypair?.pub, staking, token, vesting, ADDRESSES.stakingBridge]);
+  }, [
+    address,
+    appDispatch,
+    keypair?.pub,
+    staking,
+    token,
+    vesting,
+    ADDRESSES.stakingBridge,
+  ]);
 };

@@ -57,7 +57,13 @@ export const WalletAssociate = ({
       }
     };
     run();
-  }, [address, appDispatch, approveState.txState, token, ADDRESSES.stakingBridge]);
+  }, [
+    address,
+    appDispatch,
+    approveState.txState,
+    token,
+    ADDRESSES.stakingBridge,
+  ]);
 
   let pageContent = null;
 
