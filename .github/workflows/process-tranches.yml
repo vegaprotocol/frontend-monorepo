@@ -33,3 +33,4 @@ jobs:
           commit_options: '--no-verify --signoff'
           skip_fetch: true
           skip_checkout: true
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
