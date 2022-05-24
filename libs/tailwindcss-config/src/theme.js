@@ -59,9 +59,6 @@ module.exports = {
       highlight: '#E5E5E5',
       prompt: '#FFFFFF',
     },
-    'intent-background': {
-      danger: '#9E0025', // for white text
-    },
   },
   spacing: {
     0: '0px',
