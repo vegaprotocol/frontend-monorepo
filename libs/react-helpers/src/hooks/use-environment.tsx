@@ -114,4 +114,12 @@ export const EnvironmentProvider = ({
   );
 };
 
-export const useEnvironment = () => useContext(EnvironmentContext);
+export const useEnvironment = () => {
+  const context = useContext(EnvironmentContext);
+  if (context === undefined) {
+    throw new Error(
+      'Error running "useEnvironment". No context found, make sure your component is wrapped in an <EnvironmentProvider />.'
+    );
+  }
+  return context;
+};
