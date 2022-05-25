@@ -54,6 +54,6 @@ export default class VegaWallet {
   }
 
   clickOnWalletConnectDialog() {
-    cy.getByTestId(this.connectVegaBtn).click({force:true});
+    cy.getByTestId(this.connectVegaBtn).click({ force: true });
   }
 }

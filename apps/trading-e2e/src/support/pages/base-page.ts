@@ -10,13 +10,18 @@ export default class BasePage {
   }
 
   navigateToPortfolio() {
-    cy.get(`a[href='${this.porfolioUrl}']`).should('be.visible').click({force:true});
+    cy.get(`a[href='${this.porfolioUrl}']`)
+      .should('be.visible')
+      .click({ force: true });
     cy.url().should('include', '/portfolio');
     cy.getByTestId('portfolio');
   }
 
   navigateToMarkets() {
-    cy.get(`a[href='${this.marketsUrl}']`).first().should('be.visible').click({force:true});
+    cy.get(`a[href='${this.marketsUrl}']`)
+      .first()
+      .should('be.visible')
+      .click({ force: true });
     cy.url().should('include', '/markets');
     cy.getByTestId('markets');
   }

@@ -32,12 +32,14 @@ Then('I am prompted to select a market', () => {
 });
 
 And('a list of markets is shown', () => {
-  marketsPage.getOpenMarkets().then(openMarkets => { 
-    const arrayOfOpenMarkets = openMarkets.body.data.markets
-    arrayOfOpenMarkets.forEach(market => {
-      cy.contains(market.tradableInstrument.instrument.code).should('be.visible')
-    })
-  })
+  marketsPage.getOpenMarkets().then((openMarkets) => {
+    const arrayOfOpenMarkets = openMarkets.body.data.markets;
+    arrayOfOpenMarkets.forEach((market) => {
+      cy.contains(market.tradableInstrument.instrument.code).should(
+        'be.visible'
+      );
+    });
+  });
 });
 
 Given('I am on the markets page', () => {

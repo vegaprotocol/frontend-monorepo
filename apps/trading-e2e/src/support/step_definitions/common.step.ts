@@ -5,5 +5,5 @@ const basePage = new BasePage();
 
 Given('I am on the homepage', () => {
   cy.visit('/');
-  cy.contains('Loading...').should('not.exist', {timeout:8000})
+  cy.contains('Loading...').should('not.exist', { timeout: 8000 });
 });
