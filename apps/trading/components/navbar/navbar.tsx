@@ -4,13 +4,22 @@ import Link from 'next/link';
 import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 
-export const Navbar = () => {
+export interface NavbarProps {
+  setModalOpen: (modalOpen?: boolean) => void;
+}
+
+export const Navbar = ({ setModalOpen }: NavbarProps) => {
   return (
     <nav className="flex items-center">
       <Link href="/" passHref={true}>
-        <a className="px-[26px]">
+        <button
+          onClick={(e) => {
+            setModalOpen(true);
+          }}
+          className="px-[26px]"
+        >
           <Vega className="fill-black dark:fill-white" />
-        </a>
+        </button>
       </Link>
       {[
         { name: t('Trading'), path: '/markets' },

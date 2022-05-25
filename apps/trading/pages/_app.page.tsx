@@ -15,6 +15,7 @@ import { ApolloProvider } from '@apollo/client';
 import { AppLoader } from '../components/app-loader';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
 import './styles.css';
+import { LandingDialog } from '@vegaprotocol/market-list';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
   const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
@@ -23,6 +24,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
     manage: false,
   });
   const [theme, toggleTheme] = useThemeSwitcher();
+  const [modalOpen, setModalOpen] = useState(true);
 
   return (
     <ThemeContext.Provider value={theme}>
@@ -47,7 +49,17 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
             </Head>
             <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
               <div className="flex items-stretch border-b-[7px] border-vega-yellow">
-                <Navbar />
+                <Navbar
+                  setModalOpen={() => {
+                    setModalOpen(!modalOpen);
+                  }}
+                />
+                <LandingDialog
+                  dialogOpen={modalOpen}
+                  setDialogOpen={() => {
+                    setModalOpen(!modalOpen);
+                  }}
+                />
                 <div className="flex items-center gap-4 ml-auto mr-8">
                   <VegaWalletConnectButton
                     setConnectDialog={(open) =>

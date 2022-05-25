@@ -8,11 +8,15 @@ import type { MarketList } from '../markets-container/__generated__/MarketList';
 
 export interface SelectMarketListProps {
   data: MarketList | undefined;
+  setModalOpen: (modalOpen?: boolean) => void;
 }
 
 type CandleClose = Required<string>;
 
-export const SelectMarketList = ({ data }: SelectMarketListProps) => {
+export const SelectMarketList = ({
+  data,
+  setModalOpen,
+}: SelectMarketListProps) => {
   const thClassNames = (direction: 'left' | 'right') =>
     `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark/80 dark:text-white/80`;
   const tdClassNames =
@@ -48,6 +52,9 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                     <td className={`${boldUnderlineClassNames} relative`}>
                       <a
                         href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
+                        onClick={() => {
+                          setModalOpen(false);
+                        }}
                         className={stretchedLink}
                       >
                         {marketName}
@@ -87,7 +94,13 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
         </tbody>
       </table>
 
-      <a className={`${boldUnderlineClassNames} text-ui-small`} href="/markets">
+      <a
+        className={`${boldUnderlineClassNames} text-ui-small`}
+        href="/markets"
+        onClick={() => {
+          setModalOpen(false);
+        }}
+      >
         {'Or view full market list'}
       </a>
     </div>

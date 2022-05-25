@@ -34,7 +34,6 @@ export function Index() {
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
   return (
     <>
-      <LandingDialog />
       <AsyncRenderer data={data} error={error} loading={loading}>
         <MarketPage id={data && marketList(data)[0]?.id} />
       </AsyncRenderer>
