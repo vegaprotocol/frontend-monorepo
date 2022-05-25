@@ -2,7 +2,7 @@ import orderBy from 'lodash/orderBy';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useWithdrawals, WithdrawalsTable } from '@vegaprotocol/withdraws';
 
-export const Withdrawals = () => {
+export const WithdrawalsContainer = () => {
   const { data, loading, error } = useWithdrawals();
 
   return (

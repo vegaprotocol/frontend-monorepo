@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { AnchorButton, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '../../../components/web3-container';
-import { WithdrawalsPageContainer } from './withdrawals-page-container';
+import { WithdrawalsContainer } from './withdrawals-container';
 
 const Withdrawals = () => {
   const { keypair } = useVegaWallet();
@@ -21,7 +21,7 @@ const Withdrawals = () => {
               {t('Start withdrawal')}
             </AnchorButton>
           </header>
-          <WithdrawalsPageContainer />
+          <WithdrawalsContainer />
         </div>
       )}
     />
