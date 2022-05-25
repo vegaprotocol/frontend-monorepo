@@ -1,8 +1,8 @@
-import type { EthereumChainId } from '@vegaprotocol/smart-contracts-sdk';
+import type { EthereumChainId } from '@vegaprotocol/smart-contracts';
 import {
   EnvironmentConfig,
   EthereumChainIds,
-} from '@vegaprotocol/smart-contracts-sdk';
+} from '@vegaprotocol/smart-contracts';
 
 import type { Networks } from './vega';
 

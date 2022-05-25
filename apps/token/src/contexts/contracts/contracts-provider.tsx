@@ -1,11 +1,11 @@
-import type { TxData } from '@vegaprotocol/smart-contracts-sdk';
+import type { TxData } from '@vegaprotocol/smart-contracts';
 import {
   VegaClaim,
   VegaErc20Bridge,
   VegaStaking,
   ERC20Token,
   VegaVesting,
-} from '@vegaprotocol/smart-contracts-sdk';
+} from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import uniqBy from 'lodash/uniqBy';

@@ -1,4 +1,4 @@
-import type { TxData } from '@vegaprotocol/smart-contracts-sdk';
+import type { TxData } from '@vegaprotocol/smart-contracts';
 import { Dialog, EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

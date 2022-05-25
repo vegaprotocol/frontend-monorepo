@@ -1,6 +1,6 @@
 import parseJSON from 'date-fns/parseJSON';
 import { BigNumber } from '../../lib/bignumber';
-import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche } from '@vegaprotocol/smart-contracts';
 
 const json: Tranche[] = [
   {
@@ -71,7 +71,7 @@ const json: Tranche[] = [
         ],
         withdrawals: [],
         total_tokens: new BigNumber('112323.67'),
-        withdrawn_tokens: '0',
+        withdrawn_tokens: new BigNumber('0'),
         remaining_tokens: new BigNumber('112323.67'),
       },
     ],
@@ -254,7 +254,7 @@ const json: Tranche[] = [
         ],
         withdrawals: [],
         total_tokens: new BigNumber('44499.2'),
-        withdrawn_tokens: '0',
+        withdrawn_tokens: new BigNumber('0'),
         remaining_tokens: new BigNumber('44499.2'),
       },
       {
@@ -373,7 +373,7 @@ const json: Tranche[] = [
         ],
         withdrawals: [],
         total_tokens: new BigNumber('1104995.291'),
-        withdrawn_tokens: '0',
+        withdrawn_tokens: new BigNumber('0'),
         remaining_tokens: new BigNumber('1104995.291'),
       },
       {
