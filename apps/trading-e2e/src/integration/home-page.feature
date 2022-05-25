@@ -3,6 +3,13 @@ Feature: Home page
   Background:
     Given I am on the homepage
 
+  Scenario: Prompted to choose market
+    And I am prompted to select a market
+  
+  Scenario: A list of markets is shown oldest first descending
+    Then a list of markets is shown 
+    # And the markets are shown oldest descending
+
   Scenario: Visit Portfolio page
     And I navigate to portfolio page
 
