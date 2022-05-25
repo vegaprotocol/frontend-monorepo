@@ -47,7 +47,6 @@ export function Index() {
   return null;
 }
 
-
 Index.getInitialProps = () => ({
   page: 'home',
 });
