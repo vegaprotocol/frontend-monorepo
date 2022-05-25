@@ -1,13 +1,33 @@
+import { useEffect } from 'react';
 import { Web3ReactProvider } from '@web3-react/core';
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/order-list';
+import { AccountsContainer } from '@vegaprotocol/accounts';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Connectors } from '../../lib/web3-connectors';
 
 import { Withdrawals } from './withdrawals';
 import { GridTab, GridTabs } from '../../components/grid-tabs';
 
-const Portfolio = () => {
+type WalletState = {
+  connect: boolean;
+  manage: boolean;
+}
+
+type PortfolioPageProps = {
+  setVegaWalletDialog: (state: WalletState) => void;
+}
+
+const Portfolio = ({ setVegaWalletDialog }: PortfolioPageProps) => {
+  const { keypair } = useVegaWallet();
+
+  useEffect(() => {
+    if (!keypair) {
+      setVegaWalletDialog({ connect: true, manage: false });
+    }
+  }, [keypair]);
+
   const tabClassName = 'p-[16px] pl-[316px]';
 
   return (
@@ -57,7 +77,7 @@ const Portfolio = () => {
         <section className="fixed bottom-0 left-0 w-full h-[200px]">
           <GridTabs group="collaterals">
             <GridTab id="collateral" name={t('Collateral')}>
-              <p>{t('Collateral data...')}</p>
+              <AccountsContainer />
             </GridTab>
             <GridTab id="deposits" name={t('Deposits')}>
               <p>{t('Deposits data...')}</p>

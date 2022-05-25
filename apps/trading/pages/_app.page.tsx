@@ -18,7 +18,7 @@ import './styles.css';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
   const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
-  const [vegaWallet, setVegaWallet] = useState({
+  const [vegaWalletDialog, setVegaWalletDialog] = useState({
     connect: false,
     manage: false,
   });
@@ -51,10 +51,10 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
                 <div className="flex items-center gap-4 ml-auto mr-8">
                   <VegaWalletConnectButton
                     setConnectDialog={(open) =>
-                      setVegaWallet((x) => ({ ...x, connect: open }))
+                      setVegaWalletDialog((x) => ({ ...x, connect: open }))
                     }
                     setManageDialog={(open) =>
-                      setVegaWallet((x) => ({ ...x, manage: open }))
+                      setVegaWalletDialog((x) => ({ ...x, manage: open }))
                     }
                   />
                   <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
@@ -62,19 +62,19 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
               </div>
               <main data-testid={pageProps.page}>
                 {/* @ts-ignore conflict between @types/react and nextjs internal types */}
-                <Component {...pageProps} />
+                <Component {...pageProps} setVegaWalletDialog={setVegaWalletDialog} />
               </main>
               <VegaConnectDialog
                 connectors={Connectors}
-                dialogOpen={vegaWallet.connect}
+                dialogOpen={vegaWalletDialog.connect}
                 setDialogOpen={(open) =>
-                  setVegaWallet((x) => ({ ...x, connect: open }))
+                  setVegaWalletDialog((x) => ({ ...x, connect: open }))
                 }
               />
               <VegaManageDialog
-                dialogOpen={vegaWallet.manage}
+                dialogOpen={vegaWalletDialog.manage}
                 setDialogOpen={(open) =>
-                  setVegaWallet((x) => ({ ...x, manage: open }))
+                  setVegaWalletDialog((x) => ({ ...x, manage: open }))
                 }
               />
             </div>
