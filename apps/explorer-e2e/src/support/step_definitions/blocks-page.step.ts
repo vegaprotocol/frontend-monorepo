@@ -34,3 +34,11 @@ Then('previous button is disabled', () => {
 Then('I am on the second block when I click next', () => {
   blocksPage.navigateToNextBlock();
 });
+
+Then('I scroll down to the last block on the page', () => {
+  blocksPage.navigateToLastBlockOnPage();
+});
+
+Then('I can expect to see {int} blocks if i scroll {int} times', (expectedBlocks, scrollAttempts) => {
+  blocksPage.navigateToOlderBlocksWithInfiniteScroll(expectedBlocks, scrollAttempts);
+});

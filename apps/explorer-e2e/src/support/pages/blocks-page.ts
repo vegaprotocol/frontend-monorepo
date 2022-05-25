@@ -14,10 +14,11 @@ export default class BlocksPage extends BasePage {
   nextBlockBtn = 'next-block';
   jumpToBlockInput = 'block-input';
   jumpToBlockSubmit = 'go-submit';
+  infiniteScrollWrapper = 'infinite-scroll-wrapper';
 
   private waitForBlocksResponse() {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.contains('Loading...')
+      .should('not.exist', {timeout:8000});
   }
 
   validateBlocksPageDisplayed() {
@@ -37,8 +38,6 @@ export default class BlocksPage extends BasePage {
   validateBlockValidatorPage() {
     cy.getByTestId(this.minedByValidator).should('not.be.empty');
     cy.getByTestId(this.blockTime).should('not.be.empty');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // Wait for transactions to load if there are any
     cy.get('body').then(($body) => {
       if ($body.find(`[data-testid=${this.transactionsRow}] > td`).length) {
         cy.get(`[data-testid=${this.transactionsRow}] > td`).each(($cell) => {
@@ -83,6 +82,35 @@ export default class BlocksPage extends BasePage {
             expect(newBlockHeight).to.be.greaterThan(blockHeight);
           });
       });
+  }
+
+    navigateToLastBlockOnPage() {
+    this.waitForBlocksResponse();
+    cy.getByTestId(this.infiniteScrollWrapper)
+      .children()
+      .scrollTo('bottom')
+  }
+
+  navigateToOlderBlocksWithInfiniteScroll(expectedBlocks: number, scrollAttempts: number) {
+    cy.getByTestId(this.blockHeight)
+      .first()
+      .invoke('text')
+      .then($firstBlockHeight => {
+        for (let index = 0; index < scrollAttempts; index++) {
+          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          cy.getByTestId(this.infiniteScrollWrapper)
+            .children()
+            .scrollTo('bottom')
+            .wait(50);
+        }
+        cy.getByTestId(this.blockHeight)
+          .last()
+          .invoke('text')
+          .then($lastBlockHeight => {
+            const totalBlocksDisplayed = parseInt($firstBlockHeight) - parseInt($lastBlockHeight);
+            expect(totalBlocksDisplayed).to.be.at.least(expectedBlocks);
+          })
+      })
   }
 
   clickPreviousBlock() {
