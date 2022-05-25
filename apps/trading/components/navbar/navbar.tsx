@@ -14,6 +14,7 @@ export const Navbar = ({ setModalOpen }: NavbarProps) => {
       <Link href="/" passHref={true}>
         <button
           onClick={(e) => {
+            e.preventDefault();
             setModalOpen(true);
           }}
           className="px-[26px]"

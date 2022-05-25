@@ -1,7 +1,12 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Navbar } from '../components/navbar';
-import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  ThemeContext,
+  useThemeSwitcher,
+  useModalSwitcher,
+} from '@vegaprotocol/react-helpers';
 import {
   VegaConnectDialog,
   VegaManageDialog,
@@ -24,7 +29,7 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
     manage: false,
   });
   const [theme, toggleTheme] = useThemeSwitcher();
-  const [modalOpen, setModalOpen] = useState(true);
+  const [modalOpen, setModalOpen] = useModalSwitcher();
 
   return (
     <ThemeContext.Provider value={theme}>
@@ -51,13 +56,13 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
               <div className="flex items-stretch border-b-[7px] border-vega-yellow">
                 <Navbar
                   setModalOpen={() => {
-                    setModalOpen(!modalOpen);
+                    setModalOpen();
                   }}
                 />
                 <LandingDialog
-                  dialogOpen={modalOpen}
+                  dialogOpen={modalOpen === 'open'}
                   setDialogOpen={() => {
-                    setModalOpen(!modalOpen);
+                    setModalOpen();
                   }}
                 />
                 <div className="flex items-center gap-4 ml-auto mr-8">
