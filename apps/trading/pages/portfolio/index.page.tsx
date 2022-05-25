@@ -1,53 +1,74 @@
+import { Web3ReactProvider } from '@web3-react/core';
 import { t } from '@vegaprotocol/react-helpers';
+import { PositionsContainer } from '@vegaprotocol/positions';
+import { OrderListContainer } from '@vegaprotocol/order-list';
+import { Connectors } from '../../lib/web3-connectors';
+
+import { Withdrawals } from './withdrawals';
 import { GridTab, GridTabs } from '../../components/grid-tabs';
 
 const Portfolio = () => {
   const tabClassName = 'p-[16px] pl-[316px]';
 
   return (
-    <div className="h-full text-ui">
-      <main className="relative h-[calc(100%-200px)]">
-        <aside className="absolute px-[8px] py-[16px] w-[300px] mt-[28px] h-[calc(100%-28px)] w-[300px] overflow-auto">
-          <h2>{t('Filters')}</h2>
-        </aside>
-        <GridTabs group="portfolio">
-          <GridTab id="positions" name={t('Positions')}>
-            <div className={tabClassName}>
-              <h2>{t('Positions')}</h2>
-            </div>
-          </GridTab>
-          <GridTab id="orders" name={t('Orders')}>
-            <div className={tabClassName}>
-              <h2>{t('Orders')}</h2>
-            </div>
-          </GridTab>
-          <GridTab id="fills" name={t('Fills')}>
-            <div className={tabClassName}>
-              <h2>{t('Fills')}</h2>
-            </div>
-          </GridTab>
-          <GridTab id="history" name={t('History')}>
-            <div className={tabClassName}>
-              <h2>{t('History')}</h2>
-            </div>
-          </GridTab>
-        </GridTabs>
-        <section></section>
-      </main>
-      <section className="fixed bottom-0 left-0 w-full h-[200px]">
-        <GridTabs group="collaterals">
-          <GridTab id="collateral" name={t('Collateral')}>
-            <h2>{t('Collateral')}</h2>
-          </GridTab>
-          <GridTab id="deposits" name={t('Deposits')}>
-            <h2>{t('Deposits')}</h2>
-          </GridTab>
-          <GridTab id="withdrawals" name={t('Withdrawals')}>
-            <h2>{t('Withdrawals')}</h2>
-          </GridTab>
-        </GridTabs>
-      </section>
-    </div>
+    <Web3ReactProvider connectors={Connectors}>
+      <div className="h-full text-ui">
+        <main className="relative h-[calc(100%-200px)]">
+          <aside className="absolute px-[8px] py-[16px] w-[300px] mt-[28px] h-[calc(100%-28px)] w-[300px] overflow-auto">
+            <h2 className="text-h4 text-black dark:text-white">
+              {t('Filters')}
+            </h2>
+          </aside>
+          <section>
+            <GridTabs group="portfolio">
+              <GridTab id="positions" name={t('Positions')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('Positions')}
+                  </h4>
+                  <PositionsContainer />
+                </div>
+              </GridTab>
+              <GridTab id="orders" name={t('Orders')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('Orders')}
+                  </h4>
+                  <OrderListContainer />
+                </div>
+              </GridTab>
+              <GridTab id="fills" name={t('Fills')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('Fills')}
+                  </h4>
+                </div>
+              </GridTab>
+              <GridTab id="history" name={t('History')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('History')}
+                  </h4>
+                </div>
+              </GridTab>
+            </GridTabs>
+          </section>
+        </main>
+        <section className="fixed bottom-0 left-0 w-full h-[200px]">
+          <GridTabs group="collaterals">
+            <GridTab id="collateral" name={t('Collateral')}>
+              <p>{t('Collateral data...')}</p>
+            </GridTab>
+            <GridTab id="deposits" name={t('Deposits')}>
+              <p>{t('Deposits data...')}</p>
+            </GridTab>
+            <GridTab id="withdrawals" name={t('Withdrawals')}>
+              <Withdrawals />
+            </GridTab>
+          </GridTabs>
+        </section>
+      </div>
+    </Web3ReactProvider>
   );
 };
 
