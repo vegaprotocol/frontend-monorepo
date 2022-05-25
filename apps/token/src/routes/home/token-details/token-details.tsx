@@ -1,18 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
-import {
-  Callout,
-  EtherscanLink,
-  Intent,
-  Splash,
-} from '@vegaprotocol/ui-toolkit';
+import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { ADDRESSES } from '../../../config';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
-import { SplashLoader } from '../../../components/splash-loader';
 
 export const TokenDetails = ({
   totalSupply,
@@ -23,24 +17,7 @@ export const TokenDetails = ({
 }) => {
   const { t } = useTranslation();
 
-  const { tranches, loading, error } = useTranches();
-
-  if (error) {
-    return (
-      <Callout intent={Intent.Danger} title={t('errorLoadingTranches')}>
-        {error}
-      </Callout>
-    );
-  }
-
-  if (!tranches || loading) {
-    return (
-      <Splash>
-        <SplashLoader />
-      </Splash>
-    );
-  }
-
+  const { tranches } = useTranches();
   return (
     <KeyValueTable className={'token-details'}>
       <KeyValueTableRow>
