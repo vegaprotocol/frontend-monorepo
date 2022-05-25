@@ -7,12 +7,12 @@ const withdrawalsPage = new WithdrawalsPage();
 
 Given('I navigate to withdrawal page', () => {
   cy.visit('/');
+  portfolioPage.closeDialog()
   portfolioPage.navigateToPortfolio();
   portfolioPage.navigateToWithdraw();
 });
 
 Given('I navigate to withdrawals page', () => {
-  cy.visit('/');
   portfolioPage.navigateToPortfolio();
   portfolioPage.navigateToWithdrawals();
 });
@@ -90,7 +90,7 @@ Then('error for above maximum amount is displayed', () => {
 
 Then('history of withdrawals are displayed', () => {
   const ethAddressLink =
-    'https://ropsten.etherscan.io/address/0x265Cc6d39a1B53d0d92068443009eE7410807158';
+    `https://ropsten.etherscan.io/address/${Cypress.env('ETHEREUM_WALLET_ADDRESS')}`;
   const etherScanLink =
     'https://ropsten.etherscan.io/tx/0x0d1a5d209f468ff248326d4ae7647ad5a3667ce463341a0250118a95f3beb597';
 

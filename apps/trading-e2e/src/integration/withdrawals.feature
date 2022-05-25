@@ -37,7 +37,6 @@ Feature: Withdrawals to eth wallet
 
   Scenario: Able to view history of withdrawals on withdrawals page
     Given I navigate to withdrawals page
-    And I connect to Vega Wallet
     Then history of withdrawals are displayed
 
   Scenario: Vega wallet connect text shown when Vega wallet is disconnected

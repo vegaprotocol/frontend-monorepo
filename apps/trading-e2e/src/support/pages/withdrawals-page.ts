@@ -12,14 +12,6 @@ export default class WithdrawalsPage extends BasePage {
   statusColId = 'status';
   etherScanLink = 'etherscan-link';
 
-  navigateToWithdrawal() {
-    cy.visit('/');
-    this.navigateToPortfolio();
-    cy.get(`a[href='/portfolio/deposit']`).click();
-    cy.url().should('include', '/portfolio/deposit');
-    cy.getByTestId('deposit-form').should('be.visible');
-  }
-
   clearEthereumAddress() {
     cy.get(this.toAddressField).clear();
   }
