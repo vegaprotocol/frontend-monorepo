@@ -33,7 +33,7 @@ export function Index() {
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
   const [modalOpen, setModalOpen] = useModalSwitcher();
-  if (modalOpen === 'closed') {
+  if (modalOpen !== 'open') {
     setModalOpen();
   }
   return (
