@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { LandingDialog } from '@vegaprotocol/market-list';
+import { useModalSwitcher } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import sortBy from 'lodash/sortBy';
@@ -32,6 +32,10 @@ export function Index() {
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
+  const [modalOpen, setModalOpen] = useModalSwitcher();
+  if (modalOpen === 'closed') {
+    setModalOpen();
+  }
   return (
     <>
       <AsyncRenderer data={data} error={error} loading={loading}>
