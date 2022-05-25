@@ -1,6 +1,7 @@
 import {
   addDecimalsFormatNumber,
   PriceCell,
+  t,
 } from '@vegaprotocol/react-helpers';
 import { PriceCellChange, Sparkline } from '@vegaprotocol/ui-toolkit';
 import { mapDataToMarketList } from '../../utils';
@@ -105,7 +106,7 @@ export const SelectMarketList = ({
           }
         }}
       >
-        {'Or view full market list'}
+        {t('Or view full market list')}
       </a>
     </div>
   );

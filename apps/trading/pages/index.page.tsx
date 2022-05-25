@@ -1,8 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
-import { useModalSwitcher } from '@vegaprotocol/react-helpers';
+import { getCurrentModal, useModalSwitcher } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import sortBy from 'lodash/sortBy';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import MarketPage from './markets/[marketId].page';
 import type { MarketsLanding } from './__generated__/MarketsLanding';
 
@@ -32,10 +34,28 @@ export function Index() {
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
-  const [modalOpen, setModalOpen] = useModalSwitcher();
-  if (modalOpen !== 'open') {
+  const [, setModalOpen] = useModalSwitcher();
+  if (getCurrentModal() !== 'open') {
     setModalOpen();
   }
+  const { push, pathname } = useRouter();
+  useEffect(() => {
+    // conditional redirect
+    if (pathname == '/' && data) {
+      // with router.push the page may be added to history
+      // the browser on history back will  go back to this page and then forward again to the redirected page
+      // you can prevent this behaviour using location.replace
+      push(
+        data
+          ? `/markets/${
+              marketList(data)[0]?.id
+            }?portfolio=orders&trade=orderbook&chart=candles`
+          : '/markets',
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [data, pathname, push]);
   return (
     <>
       <AsyncRenderer data={data} error={error} loading={loading}>

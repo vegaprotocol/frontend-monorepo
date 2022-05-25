@@ -5,7 +5,7 @@ const closedModal = 'closed';
 const openModal = 'open';
 type modalVariant = typeof closedModal | typeof openModal;
 
-const getCurrentModal = () => {
+export const getCurrentModal = () => {
   const modal = LocalStorage.getItem('modal');
   return modal === closedModal ? closedModal : openModal;
 };
