@@ -6,6 +6,6 @@ const homePage = new HomePage();
 Then('the stats for deployed environment are correctly displayed', () => {
   homePage.verifyStatsEnvironment();
   homePage.verifyStatsTitlesDisplayed();
-  homePage.verifyStatsValuesdisplayed();
+  homePage.verifyStatsValuesDisplayed();
   homePage.verifyStatsBlockHeightUpdating();
 });

@@ -13,6 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           fetch-depth: 0
       - name: Use Node.js 16
         id: Node
@@ -23,10 +24,6 @@ jobs:
         run: yarn install
       - name: Generate queries
         run: node ./scripts/get-tranches.js
-      - uses: actions/upload-artifact@v2
-        with:
-          name: queries
-          path: ./queries.graphql
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: 'chore: update tranches'
