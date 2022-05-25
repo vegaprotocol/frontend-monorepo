@@ -27,6 +27,7 @@ export const VegaWalletConnectButton = ({
         <span className="text-ui-small font-mono mr-2">Vega key:</span>
       )}
       <button
+        aria-label="connect-vega-wallet"
         data-testid="connect-vega-wallet"
         onClick={handleClick}
         className="ml-auto inline-block text-ui-small font-mono hover:underline"

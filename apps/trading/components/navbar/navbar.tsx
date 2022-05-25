@@ -13,6 +13,7 @@ export const Navbar = ({ setModalOpen }: NavbarProps) => {
     <nav className="flex items-center">
       <Link href="/" passHref={true}>
         <button
+          aria-label="vega-logo"
           onClick={(e) => {
             e.preventDefault();
             setModalOpen();

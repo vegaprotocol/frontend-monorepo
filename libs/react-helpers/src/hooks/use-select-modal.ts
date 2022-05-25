@@ -1,19 +1,25 @@
 import { useState } from 'react';
 import { LocalStorage } from '../lib/storage';
 
-const closedModal = 'closed';
-const openModal = 'open';
-type modalVariant = typeof closedModal | typeof openModal;
+const CLOSED = 'closed';
+const OPEN = 'open';
+const SELECT_MARKET_MODAL = 'selectMarketModal';
 
-export const getCurrentModal = () => {
-  const modal = LocalStorage.getItem('modal');
-  return modal === closedModal ? closedModal : openModal;
+type modalVariant = typeof CLOSED | typeof OPEN;
+
+export const getCurrentModal = (): modalVariant => {
+  const modal = LocalStorage.getItem(SELECT_MARKET_MODAL);
+  if (modal) {
+    return modal === CLOSED ? CLOSED : OPEN;
+  } else {
+    LocalStorage.setItem(SELECT_MARKET_MODAL, OPEN);
+    return OPEN;
+  }
 };
 
-const toggleModal = () => {
-  const modal =
-    LocalStorage.getItem('modal') === closedModal ? openModal : closedModal;
-  LocalStorage.setItem('modal', modal);
+export const toggleModal = () => {
+  const modal = getCurrentModal() === CLOSED ? OPEN : CLOSED;
+  LocalStorage.setItem(SELECT_MARKET_MODAL, modal);
   return modal;
 };
 
