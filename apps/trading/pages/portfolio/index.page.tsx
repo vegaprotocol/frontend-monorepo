@@ -25,7 +25,7 @@ const Portfolio = ({ setVegaWalletDialog }: PortfolioPageProps) => {
     if (!keypair) {
       setVegaWalletDialog({ connect: true, manage: false });
     }
-  }, [keypair]);
+  }, [keypair, setVegaWalletDialog]);
 
   const tabClassName = 'p-[16px] pl-[316px]';
 
