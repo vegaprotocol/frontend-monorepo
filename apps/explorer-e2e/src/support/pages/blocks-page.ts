@@ -17,8 +17,7 @@ export default class BlocksPage extends BasePage {
   infiniteScrollWrapper = 'infinite-scroll-wrapper';
 
   private waitForBlocksResponse() {
-    cy.contains('Loading...')
-      .should('not.exist', {timeout:8000});
+    cy.contains('Loading...').should('not.exist', { timeout: 8000 });
   }
 
   validateBlocksPageDisplayed() {
@@ -84,18 +83,19 @@ export default class BlocksPage extends BasePage {
       });
   }
 
-    navigateToLastBlockOnPage() {
+  navigateToLastBlockOnPage() {
     this.waitForBlocksResponse();
-    cy.getByTestId(this.infiniteScrollWrapper)
-      .children()
-      .scrollTo('bottom')
+    cy.getByTestId(this.infiniteScrollWrapper).children().scrollTo('bottom');
   }
 
-  navigateToOlderBlocksWithInfiniteScroll(expectedBlocks: number, scrollAttempts: number) {
+  navigateToOlderBlocksWithInfiniteScroll(
+    expectedBlocks: number,
+    scrollAttempts: number
+  ) {
     cy.getByTestId(this.blockHeight)
       .first()
       .invoke('text')
-      .then($firstBlockHeight => {
+      .then(($firstBlockHeight) => {
         for (let index = 0; index < scrollAttempts; index++) {
           // eslint-disable-next-line cypress/no-unnecessary-waiting
           cy.getByTestId(this.infiniteScrollWrapper)
@@ -106,11 +106,12 @@ export default class BlocksPage extends BasePage {
         cy.getByTestId(this.blockHeight)
           .last()
           .invoke('text')
-          .then($lastBlockHeight => {
-            const totalBlocksDisplayed = parseInt($firstBlockHeight) - parseInt($lastBlockHeight);
+          .then(($lastBlockHeight) => {
+            const totalBlocksDisplayed =
+              parseInt($firstBlockHeight) - parseInt($lastBlockHeight);
             expect(totalBlocksDisplayed).to.be.at.least(expectedBlocks);
-          })
-      })
+          });
+      });
   }
 
   clickPreviousBlock() {

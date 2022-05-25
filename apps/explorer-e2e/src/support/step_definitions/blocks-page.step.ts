@@ -39,6 +39,12 @@ Then('I scroll down to the last block on the page', () => {
   blocksPage.navigateToLastBlockOnPage();
 });
 
-Then('I can expect to see {int} blocks if i scroll {int} times', (expectedBlocks, scrollAttempts) => {
-  blocksPage.navigateToOlderBlocksWithInfiniteScroll(expectedBlocks, scrollAttempts);
-});
+Then(
+  'I can expect to see {int} blocks if i scroll {int} times',
+  (expectedBlocks, scrollAttempts) => {
+    blocksPage.navigateToOlderBlocksWithInfiniteScroll(
+      expectedBlocks,
+      scrollAttempts
+    );
+  }
+);
