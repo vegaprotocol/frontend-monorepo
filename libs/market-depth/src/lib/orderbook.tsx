@@ -1,6 +1,7 @@
 import {
   Fragment,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   useMemo,
@@ -10,6 +11,7 @@ import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
 interface OrderbookProps extends OrderbookData {
   decimalPlaces: number;
@@ -17,8 +19,12 @@ interface OrderbookProps extends OrderbookData {
   onResolutionChange: (resolution: number) => void;
 }
 
-const horizontalLine = (top: string) => (
-  <div className="border-b-1 absolute inset-x-0" style={{ top }}></div>
+const horizontalLine = (top: string, testId: string) => (
+  <div
+    className="border-b-1 absolute inset-x-0"
+    style={{ top }}
+    data-testid={testId}
+  ></div>
 );
 
 const getNumberOfRows = (
@@ -91,6 +97,9 @@ export const Orderbook = ({
   const [scrollOffset, setScrollOffset] = useState(0);
   // price level which is rendered in center of vieport, need to preserve price level when rows will be added or removed
   const priceInCenter = useRef('');
+  const [lockOnMidPrice, setLockOnMidPrice] = useState(true);
+  const resolutionRef = useRef(resolution);
+  const skipPriceInCenterUpdateRef = useRef(false);
   // stores rows[0].price value
   const [maxPriceLevel, setMaxPriceLevel] = useState('');
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
@@ -106,7 +115,7 @@ export const Orderbook = ({
   );
 
   const scrollToPrice = useCallback(
-    (price: string) => {
+    (price: string, skipPriceInCenterUpdate = false) => {
       if (scrollRef.current && maxPriceLevel) {
         let scrollTop =
           // distance in rows between midPrice and price from first row * row Height
@@ -120,8 +129,10 @@ export const Orderbook = ({
         // adjust to current rows position
         scrollTop += (scrollRef.current.scrollTop % 21) - (scrollTop % 21);
         const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
-        scrollRef.current.scrollTop = priceCenterScrollOffset;
-        priceInCenter.current = price;
+        if (scrollRef.current.scrollTop !== priceCenterScrollOffset) {
+          scrollRef.current.scrollTop = priceCenterScrollOffset;
+          skipPriceInCenterUpdateRef.current = skipPriceInCenterUpdate;
+        }
       }
     },
     [maxPriceLevel, resolution, viewportHeight]
@@ -134,27 +145,35 @@ export const Orderbook = ({
     }
   }, [rows, maxPriceLevel]);
 
-  // scroll to midPrice on resolution change
-  useEffect(() => {
-    if (!bestStaticOfferPrice || !bestStaticBidPrice || !maxPriceLevel) {
+  const scrollToMidPrice = useCallback(() => {
+    if (!bestStaticOfferPrice || !bestStaticBidPrice /*|| !maxPriceLevel*/) {
       return;
     }
+    setLockOnMidPrice(true);
+    priceInCenter.current = '';
     scrollToPrice(
       getPriceLevel(
         BigInt(bestStaticOfferPrice) +
           (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) /
             BigInt(2),
         resolution
-      )
+      ),
+      true
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [resolution, maxPriceLevel, scrollToPrice]);
+  }, [bestStaticOfferPrice, bestStaticBidPrice, scrollToPrice, resolution]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (resolutionRef.current !== resolution) {
+      priceInCenter.current = '';
+      resolutionRef.current = resolution;
+      setLockOnMidPrice(true);
+    }
     if (priceInCenter.current) {
       scrollToPrice(priceInCenter.current);
+    } else {
+      scrollToMidPrice();
     }
-  }, [scrollToPrice]);
+  }, [scrollToMidPrice, scrollToPrice, resolution]);
 
   useEffect(() => {
     function handleResize() {
@@ -182,13 +201,18 @@ export const Orderbook = ({
       data: getRowsToRender(rows, resolution, offset, limit),
     };
   }, [rows, scrollOffset, resolution, viewportHeight, numberOfRows]);
+
   const onScroll = (event: React.UIEvent<HTMLDivElement>) => {
     if (Math.abs(scrollOffset - event.currentTarget.scrollTop) > marginSize) {
       setScrollOffset(event.currentTarget.scrollTop);
     }
+    if (skipPriceInCenterUpdateRef.current) {
+      skipPriceInCenterUpdateRef.current = false;
+      return;
+    }
     priceInCenter.current = (
       BigInt(resolution) + // extra row on very top - sticky header
-      BigInt(rows?.[0].price ?? 0) -
+      BigInt(rows?.[0]?.price ?? 0) -
       BigInt(
         Math.floor(
           (event.currentTarget.scrollTop + Math.floor(viewportHeight / 2)) /
@@ -198,10 +222,15 @@ export const Orderbook = ({
       ) *
         BigInt(resolution)
     ).toString();
+    if (lockOnMidPrice) {
+      setLockOnMidPrice(false);
+    }
   };
+
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
     (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
+
   return (
     <div
       className="h-full overflow-auto relative"
@@ -219,7 +248,7 @@ export const Orderbook = ({
         style={{
           paddingTop: `${paddingTop}px`,
           paddingBottom: `${paddingBottom}px`,
-          minHeight: `calc(100% - ${2*rowHeight}px)`
+          minHeight: `calc(100% - ${2 * rowHeight}px)`,
         }}
       >
         <div className="grid grid-cols-4 gap-4 text-right text-ui-small">
@@ -238,6 +267,7 @@ export const Orderbook = ({
                   cumulativeAsk={data.cumulativeVol.ask}
                   cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
                   indicativeVolume={
+                    marketTradingMode !== MarketTradingMode.Continuous &&
                     indicativePrice === data.price
                       ? indicativeVolume
                       : undefined
@@ -265,6 +295,14 @@ export const Orderbook = ({
               ))}
           </select>
         </div>
+        <div className="text-ui-small col-start-4">
+          <button onClick={scrollToMidPrice} className="block w-full">
+            mid price{' '}
+            <span className={lockOnMidPrice ? 'text-yellow' : ''}>
+              <Icon name="th-derived" />
+            </span>
+          </button>
+        </div>
       </div>
       {maxPriceLevel &&
         bestStaticBidPrice &&
@@ -275,7 +313,8 @@ export const Orderbook = ({
               BigInt(1)) *
               BigInt(rowHeight) -
             BigInt(3)
-          ).toString()}px`
+          ).toString()}px`,
+          'best-static-bid-price'
         )}
       {maxPriceLevel &&
         bestStaticOfferPrice &&
@@ -286,7 +325,8 @@ export const Orderbook = ({
               BigInt(2)) *
               BigInt(rowHeight) -
             BigInt(3)
-          ).toString()}px`
+          ).toString()}px`,
+          'best-static-offer-price'
         )}
     </div>
   );
