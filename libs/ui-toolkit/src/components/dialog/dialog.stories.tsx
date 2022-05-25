@@ -24,7 +24,6 @@ export const Default = Template.bind({});
 Default.args = {
   open: false,
   title: 'Title',
-  setOpen: () => undefined,
   children: <p>Some content</p>,
 };
 
@@ -32,7 +31,6 @@ export const Danger = Template.bind({});
 Danger.args = {
   open: false,
   title: 'Danger',
-  setOpen: () => undefined,
   children: <p>Some content</p>,
   intent: Intent.Danger,
 };
@@ -41,7 +39,6 @@ export const Success = Template.bind({});
 Success.args = {
   open: false,
   title: 'Success',
-  setOpen: () => undefined,
   children: <p>Some content</p>,
   intent: Intent.Success,
 };
@@ -50,7 +47,14 @@ export const Warning = Template.bind({});
 Warning.args = {
   open: false,
   title: 'Warning',
-  setOpen: () => undefined,
   children: <p>Some content</p>,
   intent: Intent.Warning,
+};
+
+export const Modal = Template.bind({});
+Modal.args = {
+  open: false,
+  title: 'Modal (Prompt)',
+  children: <p>Some content</p>,
+  intent: Intent.Prompt,
 };

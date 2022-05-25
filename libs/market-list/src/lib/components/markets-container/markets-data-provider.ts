@@ -1,11 +1,14 @@
 import { gql } from '@apollo/client';
-import type { Markets, Markets_markets } from './__generated__/Markets';
+import type {
+  Markets,
+  Markets_markets,
+} from '../../components/__generated__/Markets';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
 import type {
   MarketDataSub,
   MarketDataSub_marketData,
-} from './__generated__/MarketDataSub';
+} from '../../components/__generated__/MarketDataSub';
 
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketDataFields on MarketData {
@@ -41,6 +44,38 @@ const MARKETS_QUERY = gql`
             }
           }
         }
+      }
+    }
+  }
+`;
+
+export const MARKET_LIST_QUERY = gql`
+  query MarketList($interval: Interval!, $since: String!) {
+    markets {
+      id
+      decimalPlaces
+      data {
+        market {
+          id
+        }
+        markPrice
+      }
+      tradableInstrument {
+        instrument {
+          name
+          code
+          metadata {
+            tags
+          }
+        }
+      }
+      marketTimestamps {
+        open
+        close
+      }
+      candles(interval: $interval, since: $since) {
+        open
+        close
       }
     }
   }

@@ -19,7 +19,7 @@ yarn nx serve explorer
 Example configurations are provided here:
 
 - [Mainnet](./.env.mainnet)
-- [Testnet](./.env.testnet)
+- [Devnet](./.env.devnet)
 - [Testnet](./.env.testnet)
 - [Stagnet1](./.env.stagnet1)
 - [Stagnet2](./.env.stagnet2)

@@ -118,7 +118,7 @@ export const generatePositions = (
 
   const defaultResult = {
     party: {
-      id: Cypress.env('vegaPublicKey'),
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
       positions,
       __typename: 'Party',
     },

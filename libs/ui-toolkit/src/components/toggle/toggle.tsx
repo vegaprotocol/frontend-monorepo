@@ -30,7 +30,7 @@ export const Toggle = ({
   );
   const radioClasses = classnames('sr-only', 'peer');
   const buttonClasses = classnames(
-    'relative peer-checked:z-10 inline-block w-full',
+    'relative inline-block w-full',
     'border border-black-60 active:border-black dark:border-white-60 dark:active:border-white peer-checked:border-black dark:peer-checked:border-vega-yellow',
     'group-first-of-type:rounded-tl group-first-of-type:rounded-bl group-last-of-type:rounded-tr group-last-of-type:rounded-br',
     'px-28 py-4',

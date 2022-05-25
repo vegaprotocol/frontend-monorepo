@@ -9,7 +9,7 @@ import type { AgGridReact } from 'ag-grid-react';
 import type {
   Markets_markets,
   Markets_markets_data,
-} from './__generated__/Markets';
+} from '../../components/__generated__/Markets';
 import { marketsDataProvider } from './markets-data-provider';
 
 export const MarketsContainer = () => {

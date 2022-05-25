@@ -8,7 +8,10 @@ describe('MarketListTable', () => {
     await act(async () => {
       const { baseElement } = render(
         <MockedProvider>
-          <MarketListTable />
+          <MarketListTable
+            data={[]}
+            onRowClicked={jest.fn((marketId: string) => null)}
+          />
         </MockedProvider>
       );
       expect(baseElement).toBeTruthy();

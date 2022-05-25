@@ -7,7 +7,7 @@ interface AppLoaderProps {
 }
 
 /**
- * Component to handle any app initialization, startup querys and other things
+ * Component to handle any app initialization, startup queries and other things
  * that must happen for it can be used
  */
 export function AppLoader({ children }: AppLoaderProps) {
