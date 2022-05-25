@@ -5,7 +5,7 @@ import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 
 export interface NavbarProps {
-  setModalOpen: (modalOpen?: boolean) => void;
+  setModalOpen: () => void;
 }
 
 export const Navbar = ({ setModalOpen }: NavbarProps) => {
@@ -15,7 +15,7 @@ export const Navbar = ({ setModalOpen }: NavbarProps) => {
         <button
           onClick={(e) => {
             e.preventDefault();
-            setModalOpen(true);
+            setModalOpen();
           }}
           className="px-[26px]"
         >

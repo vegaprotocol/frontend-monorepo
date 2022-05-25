@@ -54,16 +54,10 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
             </Head>
             <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
               <div className="flex items-stretch border-b-[7px] border-vega-yellow">
-                <Navbar
-                  setModalOpen={() => {
-                    setModalOpen();
-                  }}
-                />
+                <Navbar setModalOpen={setModalOpen} />
                 <LandingDialog
                   dialogOpen={modalOpen === 'open'}
-                  setDialogOpen={() => {
-                    setModalOpen();
-                  }}
+                  setDialogOpen={setModalOpen}
                 />
                 <div className="flex items-center gap-4 ml-auto mr-8">
                   <VegaWalletConnectButton
