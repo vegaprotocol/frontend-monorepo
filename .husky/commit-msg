@@ -1,0 +1,12 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Lint commit messages to ensure they follow conventional commit standards
+yarn commitlint --edit "${1}"
+
+# Lint all staged files
+yarn lint-staged
+
+# Build & test affected apps
+yarn nx affected:build --uncommitted
+yarn nx affected:test --uncommitted

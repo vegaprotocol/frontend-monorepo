@@ -1,5 +1,3 @@
-import './tranche.scss';
-
 import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -16,6 +14,16 @@ import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
 import { Routes } from '../router-config';
 import { TrancheLabel } from './tranche-label';
+
+const TrancheProgressContents = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => (
+  <div className="flex justify-between gap-4 font-mono py-2 px-4 text-white-60">
+    {children}
+  </div>
+);
 
 export const Tranche = () => {
   const tranches = useOutletContext<ITranche[]>();
@@ -54,27 +62,32 @@ export const Tranche = () => {
           />
         }
       />
-      <div className="tranche__redeemed" data-test-id="redeemed-tranche-tokens">
+      <div
+        className="flex justify-between gap-x-4 py-2 px-4"
+        data-test-id="redeemed-tranche-tokens"
+      >
         <span>{t('alreadyRedeemed')}</span>
-        <span>{formatNumber(tranche.total_removed)}</span>
+        <span className="font-mono text-white-60">
+          {formatNumber(tranche.total_removed)}
+        </span>
       </div>
-      <h2>{t('Holders')}</h2>
+      <h2 className="text-h4 text-white mb-8">{t('Holders')}</h2>
       {tranche.users.length ? (
-        <ul className="tranche__user-list">
+        <ul role="list">
           {tranche.users.map((user, i) => {
             const unlocked = user.remaining_tokens.times(lockedData?.unlocked);
             const locked = user.remaining_tokens.times(lockedData?.locked);
             return (
-              <li className="tranche__user-list--item" key={i}>
+              <li className="pb-4" key={i}>
                 <EtherscanLink address={user.address} text={user.address} />
-                <div className="tranche__progress-contents">
+                <TrancheProgressContents>
                   <span>{t('Locked')}</span>
                   <span>{t('Unlocked')}</span>
-                </div>
-                <div className="tranche__progress-contents">
+                </TrancheProgressContents>
+                <TrancheProgressContents>
                   <span>{formatNumber(locked)}</span>
                   <span>{formatNumber(unlocked)}</span>
-                </div>
+                </TrancheProgressContents>
               </li>
             );
           })}

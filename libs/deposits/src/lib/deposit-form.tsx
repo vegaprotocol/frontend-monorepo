@@ -82,8 +82,8 @@ export const DepositForm = ({
   });
 
   const onDeposit = async (fields: FormFields) => {
-    if (!selectedAsset) {
-      throw new Error('Asset not selected');
+    if (!selectedAsset || selectedAsset.source.__typename !== 'ERC20') {
+      throw new Error('Invalid asset');
     }
 
     submitDeposit({
@@ -131,7 +131,11 @@ export const DepositForm = ({
   }, [assetId, onSelectAsset]);
 
   return (
-    <form onSubmit={handleSubmit(onDeposit)} noValidate={true}>
+    <form
+      onSubmit={handleSubmit(onDeposit)}
+      noValidate={true}
+      data-testid="deposit-form"
+    >
       <FormGroup
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
@@ -149,14 +153,16 @@ export const DepositForm = ({
       <FormGroup label={t('Asset')} labelFor="asset" className="relative">
         <Select {...register('asset', { validate: { required } })} id="asset">
           <option value="">{t('Please select')}</option>
-          {assets.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
+          {assets
+            .filter((a) => a.source.__typename === 'ERC20')
+            .map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
         </Select>
         {errors.asset?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError intent="danger" className="mt-4" forInput="asset">
             {errors.asset.message}
           </InputError>
         )}
@@ -166,17 +172,13 @@ export const DepositForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <FormGroup
-        label={t('To (Vega key)')}
-        labelFor="vega-key"
-        className="relative"
-      >
+      <FormGroup label={t('To (Vega key)')} labelFor="to" className="relative">
         <Input
           {...register('to', { validate: { required, vegaPublicKey } })}
-          id="vega-key"
+          id="to"
         />
         {errors.to?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError intent="danger" className="mt-4" forInput="to">
             {errors.to.message}
           </InputError>
         )}
@@ -202,8 +204,8 @@ export const DepositForm = ({
           autoComplete="off"
           id="amount"
           {...register('amount', {
-            required: t('Required'),
             validate: {
+              required,
               minSafe: (value) => minSafe(min)(value),
               maxSafe: (v) => {
                 const value = new BigNumber(v);
@@ -220,7 +222,7 @@ export const DepositForm = ({
           })}
         />
         {errors.amount?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError intent="danger" className="mt-4" forInput="amount">
             {errors.amount.message}
           </InputError>
         )}
@@ -265,7 +267,7 @@ const FormButton = ({
 
   if (!selectedAsset) {
     button = (
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" data-testid="deposit-submit">
         {t('Deposit')}
       </Button>
     );
@@ -276,14 +278,18 @@ const FormButton = ({
       </>
     );
     button = (
-      <Button type="submit" className="w-full">
+      <Button type="submit" className="w-full" data-testid="deposit-submit">
         {t('Deposit')}
       </Button>
     );
   } else {
     message = t(`Deposits of ${selectedAsset.symbol} not approved`);
     button = (
-      <Button onClick={onApproveClick} className="w-full">
+      <Button
+        onClick={onApproveClick}
+        className="w-full"
+        data-testid="deposit-approve-submit"
+      >
         {t(`Approve ${selectedAsset.symbol}`)}
       </Button>
     );

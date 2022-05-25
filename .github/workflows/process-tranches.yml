@@ -1,0 +1,35 @@
+name: Generate tranches
+
+on:
+  schedule:
+    - cron: '0 8 * * *'
+
+jobs:
+  master:
+    name: Generate Queries
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 16
+        id: Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.14.0
+      - name: Install root dependencies
+        run: yarn install
+      - name: Generate queries
+        run: node ./scripts/get-tranches.js
+      - uses: actions/upload-artifact@v2
+        with:
+          name: queries
+          path: ./queries.graphql
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: 'chore: update tranches'
+          commit_options: '--no-verify --signoff'
+          skip_fetch: true
+          skip_checkout: true

@@ -106,15 +106,25 @@ Given('I am on the trading page for a suspended market', () => {
   cy.contains('Market: SUSPENDED MARKET');
 });
 
+When('I click on {string} mocked market', (marketType) => {
+  switch (marketType) {
+    case 'Active':
+      mockMarket(MarketState.Active);
+      break;
+    case 'Suspended':
+      mockMarket(MarketState.Suspended);
+      break;
+  }
+  marketPage.clickOnMarket(marketType);
+});
+
 Then('trading page for {string} market is displayed', (marketType) => {
   switch (marketType) {
     case 'active':
-      mockMarket(MarketState.Active);
       cy.wait('@Market');
       cy.contains('Market: ACTIVE MARKET');
       break;
     case 'suspended':
-      mockMarket(MarketState.Suspended);
       cy.wait('@Market');
       cy.contains('Market: SUSPENDED MARKET');
       break;

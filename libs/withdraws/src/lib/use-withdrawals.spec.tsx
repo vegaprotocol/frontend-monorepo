@@ -11,7 +11,7 @@ import type {
 } from './__generated__/Withdrawals';
 
 describe('updateQuery', () => {
-  test('Updates existing withdrawals', () => {
+  it('Updates existing withdrawals', () => {
     const withdrawal = generateWithdrawal({
       id: '1',
       status: WithdrawalStatus.Open,
@@ -32,7 +32,7 @@ describe('updateQuery', () => {
     });
   });
 
-  test('Adds new withdrawals', () => {
+  it('Adds new withdrawals', () => {
     const withdrawal = generateWithdrawal({
       id: '1',
       amount: '100',
@@ -53,7 +53,7 @@ describe('updateQuery', () => {
     });
   });
 
-  test('Creates new party if not present', () => {
+  it('Creates new party if not present', () => {
     const withdrawalUpdate = generateWithdrawal({
       id: '2',
     });
@@ -67,7 +67,7 @@ describe('updateQuery', () => {
     });
   });
 
-  test('Handles updates and inserts simultaneously', () => {
+  it('Handles updates and inserts simultaneously', () => {
     const withdrawal1 = generateWithdrawal({
       id: '1',
       status: WithdrawalStatus.Open,

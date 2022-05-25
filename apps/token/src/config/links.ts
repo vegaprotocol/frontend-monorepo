@@ -1,7 +1,7 @@
 export const Links = {
   WALLET_RELEASES:
     'https://github.com/vegaprotocol/vegawallet-desktop/releases',
-  WALLET_GUIDE: 'https://docs.vega.xyz/docs/tools/vega-wallet',
+  WALLET_GUIDE: 'https://docs.vega.xyz/docs/mainnet/tools/vega-wallet',
   SUSHI_PAIRS: 'https://analytics.sushi.com/pairs/',
   SUSHI_ONSEN_MENU: 'https://app.sushi.com/farm',
   SUSHI_ONSEN_WHAT_IS:
@@ -11,5 +11,5 @@ export const Links = {
   GITHUB: 'https://github.com/vegaprotocol/token-frontend',
   DISCORD: 'https://vega.xyz/discord',
   STAKING_GUIDE:
-    'https://docs.vega.xyz/docs/concepts/vega-chain/#staking-on-vega',
+    'https://docs.vega.xyz/docs/mainnet/concepts/vega-chain/#staking-on-vega',
 };

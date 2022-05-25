@@ -1,7 +1,7 @@
 {
   "root": true,
   "ignorePatterns": ["**/*"],
-  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn"],
+  "plugins": ["@nrwl/nx", "eslint-plugin-unicorn", "jsx-a11y", "jest"],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
@@ -33,6 +33,13 @@
             "message": "Import the specific methods you need from lodash e.g. `import get from 'lodash/get'`. This helps with bundle sizing."
           }
         ],
+        "jsx-a11y/no-redundant-roles": [
+          "error",
+          {
+            "ul": ["list"],
+            "ol": ["list"]
+          }
+        ],
         "curly": "warn"
       }
     },
@@ -57,6 +64,13 @@
             "disallowTypeAnnotations": true
           }
         ]
+      }
+    },
+    {
+      "files": ["*.spec.ts", "*.spec.tsx"],
+      "extends": ["plugin:@nrwl/nx/typescript", "plugin:jest/recommended"],
+      "rules": {
+        "jest/consistent-test-it": ["error", { "fn": "it" }]
       }
     },
     {

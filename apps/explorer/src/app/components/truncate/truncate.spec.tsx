@@ -10,7 +10,7 @@ describe('Truncate', () => {
     expect(screen.getByTestId('truncate-test')).toBeInTheDocument();
   });
 
-  it('it truncates as expected', () => {
+  it('truncates as expected', () => {
     const test = 'randomstringblahblah';
     const startChars = 3;
     const endChars = 3;
@@ -25,7 +25,7 @@ describe('Truncate', () => {
     expect(screen.getByText(expectedString)).toBeInTheDocument();
   });
 
-  it("it doesn't truncate if the string is too short", () => {
+  it("doesn't truncate if the string is too short", () => {
     const test = 'randomstringblahblah';
     const startChars = test.length;
     const endChars = test.length;

@@ -8,6 +8,11 @@ export const PROPOSALS_FRAGMENT = gql`
     datetime
     rejectionReason
     errorDetails
+    rationale {
+      url
+      description
+      hash
+    }
     party {
       id
     }
@@ -42,11 +47,6 @@ export const PROPOSALS_FRAGMENT = gql`
             key
             value
           }
-        }
-        ... on NewFreeform {
-          url
-          description
-          hash
         }
       }
     }

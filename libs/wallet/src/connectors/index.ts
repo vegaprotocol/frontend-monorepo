@@ -1,9 +1,8 @@
 import type {
   VegaKey,
   TransactionResponse,
-  OrderSubmissionBody,
-  WithdrawSubmissionBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
+import type { TransactionSubmission } from '../types';
 export { RestConnector } from './rest-connector';
 
 type ErrorResponse =
@@ -26,6 +25,6 @@ export interface VegaConnector {
 
   /** Send a TX to the network. Only support order submission for now */
   sendTx: (
-    body: OrderSubmissionBody | WithdrawSubmissionBody
+    body: TransactionSubmission
   ) => Promise<TransactionResponse | ErrorResponse>;
 }

@@ -7,7 +7,7 @@ import { forwardRef } from 'react';
 
 jest.mock('./order-list');
 
-test('Renders a loading state while awaiting orders', () => {
+it('Renders a loading state while awaiting orders', () => {
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
     data: [],
     loading: true,
@@ -17,7 +17,7 @@ test('Renders a loading state while awaiting orders', () => {
   expect(screen.getByText('Loading...')).toBeInTheDocument();
 });
 
-test('Renders an error state', () => {
+it('Renders an error state', () => {
   const errorMsg = 'Oops! An Error';
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
     data: [],
@@ -30,7 +30,7 @@ test('Renders an error state', () => {
   ).toBeInTheDocument();
 });
 
-test('Renders the order list if orders provided', async () => {
+it('Renders the order list if orders provided', async () => {
   // @ts-ignore Orderlist is read only but we need to override with the forwardref to
   // avoid warnings about padding refs
   orderListMock.OrderList = forwardRef(() => <div>OrderList</div>);

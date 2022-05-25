@@ -1,5 +1,3 @@
-import './vega-wallet.scss';
-
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -43,13 +41,13 @@ export const VegaWallet = () => {
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
           <div>
-            <h1 className="text-h3">{t('vegaWallet')}</h1>
-            <span className="mx-8 text-h5">
+            <h1 className="text-h3 px-8 uppercase">{t('vegaWallet')}</h1>
+            <span className="mx-8 text-h6">
               {keypair && `(${keypair.name})`}
             </span>
           </div>
           {keypair && (
-            <span className="vega-wallet__curr-key">
+            <span className="font-mono px-8">
               {truncateMiddle(keypair.pub)}
             </span>
           )}
@@ -73,7 +71,6 @@ const VegaWalletNotConnected = () => {
             isOpen: true,
           })
         }
-        className="fill w-full py-12 h-auto"
         variant="secondary"
         data-testid="connect-vega"
       >

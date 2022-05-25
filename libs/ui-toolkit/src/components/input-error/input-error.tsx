@@ -6,12 +6,14 @@ interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
   className?: string;
   intent?: 'danger' | 'warning';
+  forInput?: string;
 }
 
 export const InputError = ({
   intent = 'danger',
   className,
   children,
+  forInput,
   ...props
 }: InputErrorProps) => {
   const effectiveClassName = classNames(
@@ -37,6 +39,7 @@ export const InputError = ({
   return (
     <div
       data-testid="input-error-text"
+      aria-describedby={forInput}
       className={effectiveClassName}
       {...props}
       role="alert"

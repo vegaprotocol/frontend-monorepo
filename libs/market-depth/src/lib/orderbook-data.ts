@@ -9,6 +9,7 @@ import type {
 import type {
   MarketDepthSubscription_marketDepthUpdate_sell,
   MarketDepthSubscription_marketDepthUpdate_buy,
+  MarketDepthSubscription_marketDepthUpdate_market_data,
 } from './__generated__/MarketDepthSubscription';
 
 export interface CumulativeVol {
@@ -18,7 +19,7 @@ export interface CumulativeVol {
   relativeAsk?: number;
 }
 
-export interface OrderbookRow {
+export interface OrderbookRowData {
   price: string;
   bid: number;
   bidByLevel: Record<string, number>;
@@ -31,9 +32,9 @@ export interface OrderbookRow {
 
 export type OrderbookData = Partial<
   Omit<MarketDepth_market_data, '__typename' | 'market'>
-> & { rows: OrderbookRow[] | null };
+> & { rows: OrderbookRowData[] | null };
 
-export const getPriceLevel = (price: string, resolution: number) => {
+export const getPriceLevel = (price: string | bigint, resolution: number) => {
   const p = BigInt(price);
   const r = BigInt(resolution);
   let priceLevel = (p / r) * r;
@@ -43,7 +44,7 @@ export const getPriceLevel = (price: string, resolution: number) => {
   return priceLevel.toString();
 };
 
-const getMaxVolumes = (orderbookData: OrderbookRow[]) => ({
+const getMaxVolumes = (orderbookData: OrderbookRowData[]) => ({
   bid: Math.max(...orderbookData.map((data) => data.bid)),
   ask: Math.max(...orderbookData.map((data) => data.ask)),
   cumulativeVol: Math.max(
@@ -58,7 +59,7 @@ const toPercentValue = (value?: number) => Math.ceil((value ?? 0) * 100);
 /**
  * @summary Updates relativeAsk, relativeBid, cumulativeVol.relativeAsk, cumulativeVol.relativeBid
  */
-const updateRelativeData = (data: OrderbookRow[]) => {
+const updateRelativeData = (data: OrderbookRowData[]) => {
   const { bid, ask, cumulativeVol } = getMaxVolumes(data);
   const maxBidAsk = Math.max(bid, ask);
   data.forEach((data) => {
@@ -73,11 +74,11 @@ const updateRelativeData = (data: OrderbookRow[]) => {
   });
 };
 
-const createRow = (
+export const createRow = (
   price: string,
   volume = 0,
   dataType?: VolumeType
-): OrderbookRow => ({
+): OrderbookRowData => ({
   price,
   ask: dataType === VolumeType.ask ? volume : 0,
   bid: dataType === VolumeType.bid ? volume : 0,
@@ -97,29 +98,8 @@ const mapRawData =
       | MarketDepthSubscription_marketDepthUpdate_sell
       | MarketDepth_market_depth_buy
       | MarketDepthSubscription_marketDepthUpdate_buy
-  ): OrderbookRow =>
+  ): OrderbookRowData =>
     createRow(data.price, Number(data.volume), dataType);
-
-const fillGaps = (orderbookData: OrderbookRow[], resolution: number) => {
-  if (orderbookData.length < 2) {
-    return;
-  }
-  let index = 0;
-  while (index < orderbookData.length - 1) {
-    if (
-      BigInt(orderbookData[index].price) -
-        BigInt(orderbookData[index + 1].price) !==
-      BigInt(resolution)
-    ) {
-      const data = createRow(
-        (BigInt(orderbookData[index].price) - BigInt(resolution)).toString()
-      );
-      data.cumulativeVol = { ...orderbookData[index].cumulativeVol };
-      orderbookData.splice(index + 1, 0, data);
-    }
-    index += 1;
-  }
-};
 
 /**
  * @summary merges sell amd buy data, orders by price desc, group by price level, counts cumulative and relative values
@@ -140,25 +120,25 @@ export const compactRows = (
   resolution: number
 ) => {
   // map raw sell data to OrderbookData
-  const askOrderbookData = [...(sell ?? [])].map<OrderbookRow>(
+  const askOrderbookData = [...(sell ?? [])].map<OrderbookRowData>(
     mapRawData(VolumeType.ask)
   );
   // map raw buy data to OrderbookData
-  const bidOrderbookData = [...(buy ?? [])].map<OrderbookRow>(
+  const bidOrderbookData = [...(buy ?? [])].map<OrderbookRowData>(
     mapRawData(VolumeType.bid)
   );
 
   // group by price level
-  const groupedByLevel = groupBy<OrderbookRow>(
+  const groupedByLevel = groupBy<OrderbookRowData>(
     [...askOrderbookData, ...bidOrderbookData],
     (row) => getPriceLevel(row.price, resolution)
   );
 
   // create single OrderbookData from grouped OrderbookData[], sum volumes and atore volume by level
-  const orderbookData = Object.keys(groupedByLevel).reduce<OrderbookRow[]>(
+  const orderbookData = Object.keys(groupedByLevel).reduce<OrderbookRowData[]>(
     (rows, price) =>
       rows.concat(
-        groupedByLevel[price].reduce<OrderbookRow>(
+        groupedByLevel[price].reduce<OrderbookRowData>(
           (a, c) => ({
             ...a,
             ask: a.ask + c.ask,
@@ -189,8 +169,6 @@ export const compactRows = (
       }
     }
   }
-  // fill gaps between price levels
-  fillGaps(orderbookData, resolution);
   // count relative volumes
   updateRelativeData(orderbookData);
   return orderbookData;
@@ -205,9 +183,9 @@ export const compactRows = (
  * @param modifiedIndex
  * @returns max (sell) or min (buy) modified index in draft data, mutates draft
  */
-const partiallyUpdateCompactedData = (
+const partiallyUpdateCompactedRows = (
   dataType: VolumeType,
-  draft: OrderbookRow[],
+  draft: OrderbookRowData[],
   delta:
     | MarketDepthSubscription_marketDepthUpdate_sell
     | MarketDepthSubscription_marketDepthUpdate_buy,
@@ -230,7 +208,7 @@ const partiallyUpdateCompactedData = (
       draft[index][volKey] - (draft[index][volByLevelKey][price] || 0) + volume;
     draft[index][volByLevelKey][price] = volume;
   } else {
-    const newData: OrderbookRow = createRow(priceLevel, volume, dataType);
+    const newData: OrderbookRowData = createRow(priceLevel, volume, dataType);
     index = draft.findIndex((data) => BigInt(data.price) < BigInt(priceLevel));
     if (index !== -1) {
       draft.splice(index, 0, newData);
@@ -257,28 +235,28 @@ const partiallyUpdateCompactedData = (
  * @returns void
  */
 export const updateCompactedRows = (
-  rows: OrderbookRow[],
+  rows: OrderbookRowData[],
   sell: MarketDepthSubscription_marketDepthUpdate_sell[] | null,
   buy: MarketDepthSubscription_marketDepthUpdate_buy[] | null,
   resolution: number
 ) =>
   produce(rows, (draft) => {
     let sellModifiedIndex = -1;
-    sell?.forEach((buy) => {
-      sellModifiedIndex = partiallyUpdateCompactedData(
+    sell?.forEach((delta) => {
+      sellModifiedIndex = partiallyUpdateCompactedRows(
         VolumeType.ask,
         draft,
-        buy,
+        delta,
         resolution,
         sellModifiedIndex
       );
     });
     let buyModifiedIndex = draft.length;
-    buy?.forEach((sell) => {
-      buyModifiedIndex = partiallyUpdateCompactedData(
+    buy?.forEach((delta) => {
+      buyModifiedIndex = partiallyUpdateCompactedRows(
         VolumeType.bid,
         draft,
-        sell,
+        delta,
         resolution,
         buyModifiedIndex
       );
@@ -302,11 +280,37 @@ export const updateCompactedRows = (
           draft[i - 1].cumulativeVol.bid + draft[i].bid;
       }
     }
-    // fill gaps between price levels
-    fillGaps(draft, resolution);
+    let index = 0;
+    // remove levels that do not have any volume
+    while (index < draft.length) {
+      if (!draft[index].ask && !draft[index].bid) {
+        draft.splice(index, 1);
+      } else {
+        index += 1;
+      }
+    }
     // count relative volumes
     updateRelativeData(draft);
   });
+
+export const mapMarketData = (
+  data:
+    | MarketDepth_market_data
+    | MarketDepthSubscription_marketDepthUpdate_market_data
+    | null,
+  resolution: number
+) => ({
+  staticMidPrice:
+    data?.staticMidPrice && getPriceLevel(data?.staticMidPrice, resolution),
+  bestStaticBidPrice:
+    data?.bestStaticBidPrice &&
+    getPriceLevel(data?.bestStaticBidPrice, resolution),
+  bestStaticOfferPrice:
+    data?.bestStaticOfferPrice &&
+    getPriceLevel(data?.bestStaticOfferPrice, resolution),
+  indicativePrice:
+    data?.indicativePrice && getPriceLevel(data?.indicativePrice, resolution),
+});
 
 /**
  * Updates raw data with new data received from subscription - mutates input

@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'orderbook',
+  displayName: 'market-depth',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {

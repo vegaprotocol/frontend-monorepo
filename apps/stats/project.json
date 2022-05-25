@@ -27,7 +27,6 @@
               "with": "apps/stats/src/environments/environment.prod.ts"
             }
           ],
-          "subresourceIntegrity": true,
           "optimization": true,
           "outputHashing": "all",
           "sourceMap": false,

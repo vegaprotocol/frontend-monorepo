@@ -1,5 +1,3 @@
-import './nav.scss';
-
 import { Drawer } from '@blueprintjs/core';
 import debounce from 'lodash/debounce';
 import React from 'react';
@@ -35,16 +33,18 @@ export const Nav = () => {
 
   return (
     <div
-      className={`nav nav-${isDesktop ? 'large' : 'small'} ${
-        inverted ? 'nav--inverted' : ''
+      className={`p-8 ${
+        inverted
+          ? 'bg-clouds bg-no-repeat bg-cover bg-vega-yellow'
+          : 'border-b-white border-b-1'
       }`}
     >
       {isDesktop && <NavHeader fairground={inverted} />}
-      <div className="nav__inner">
+      <div className="flex justify-between items-center mx-auto gap-12 lg:justify-start lg:ml-8">
         {!isDesktop && <NavHeader fairground={inverted} />}
-        <div className="nav__actions">
+        <div className="flex gap-12 lg:flex-auto">
           {isDesktop ? (
-            <NavLinks inverted={inverted} isDesktop={isDesktop} />
+            <NavLinks isDesktop={isDesktop} />
           ) : (
             <NavDrawer inverted={inverted} />
           )}
@@ -58,7 +58,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="nav__logo-container">
+    <div className="h-[30px] inline-flex items-center ml-8 lg:h-40 uppercase">
       <Link to="/">
         {fairground ? (
           <svg
@@ -122,18 +122,32 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
             </defs>
           </svg>
         ) : (
-          <img alt="Vega" src={vegaWhite} className="nav__logo" />
+          <img alt="Vega" src={vegaWhite} className="w-[30px] lg:w-40" />
         )}
       </Link>
-      <h1 className="text-h3">
+      <h1
+        className={`text-[28px] lg:text-h3 pl-8 ${
+          fairground ? 'text-black' : 'text-white'
+        }`}
+        data-testid="header-title"
+      >
         {fairground ? t('fairgroundTitle') : t('title')}
       </h1>
     </div>
   );
 };
 
+const DrawerSection = ({ children }: { children: React.ReactNode }) => (
+  <div className="p-12">{children}</div>
+);
+
+const IconLine = ({ inverted }: { inverted: boolean }) => (
+  <span className={`block w-28 h-4 ${inverted ? 'bg-black' : 'bg-white'}`} />
+);
+
 const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   const { appState, appDispatch } = useAppState();
+
   return (
     <>
       <button
@@ -143,14 +157,13 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
             isOpen: true,
           })
         }
-        className={`nav__drawer-button ${
-          inverted ? 'nav__drawer-button--inverted' : ''
-        }`}
+        className="flex flex-col flex-nowrap gap-4"
       >
-        <span />
-        <span />
-        <span />
+        <IconLine inverted={inverted} />
+        <IconLine inverted={inverted} />
+        <IconLine inverted={inverted} />
       </button>
+
       <Drawer
         isOpen={appState.drawerOpen}
         onClose={() =>
@@ -160,60 +173,68 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
           })
         }
         size="80%"
-        style={{ maxWidth: 420, border: '1px solid white' }}
+        className="border border-white max-w-[420px]"
       >
-        <div className="nav__drawer">
+        <div className="flex flex-col flex-nowrap justify-between h-full bg-banner overflow-y-scroll">
           <div>
-            <div className="nav__drawer-section">
+            <DrawerSection>
               <EthWallet />
-            </div>
-            <div className="nav__drawer-section">
+            </DrawerSection>
+            <DrawerSection>
               <VegaWallet />
-            </div>
+            </DrawerSection>
           </div>
-          <NavLinks inverted={false} isDesktop={false} />
+          <NavLinks isDesktop={false} />
         </div>
       </Drawer>
     </>
   );
 };
 
-const NavLinks = ({
-  isDesktop,
-  inverted,
-}: {
-  isDesktop: boolean;
-  inverted: boolean;
-}) => {
+const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => {
   const { appDispatch } = useAppState();
   const { t } = useTranslation();
   const linkProps = {
     onClick: () =>
       appDispatch({ type: AppStateActionType.SET_DRAWER, isOpen: false }),
   };
+  const routes = [
+    { route: Routes.HOME, text: t('Home') },
+    { route: Routes.VESTING, text: t('Vesting') },
+    { route: Routes.STAKING, text: t('Staking') },
+    { route: Routes.REWARDS, text: t('Rewards') },
+    { route: Routes.WITHDRAW, text: t('Withdraw') },
+    { route: Routes.GOVERNANCE, text: t('Governance') },
+  ];
   return (
     <nav
-      className={`nav-links nav-links--${isDesktop ? 'row' : 'column'}
-      ${inverted ? 'nav-links--inverted' : ''}`}
+      className={`flex uppercase
+      ${isDesktop ? 'flex-row mt-8' : 'flex-col'}`}
     >
-      <NavLink {...linkProps} to={Routes.HOME}>
-        {t('Home')}
-      </NavLink>
-      <NavLink {...linkProps} to={Routes.VESTING}>
-        {t('Vesting')}
-      </NavLink>
-      <NavLink {...linkProps} to={Routes.STAKING}>
-        {t('Staking')}
-      </NavLink>
-      <NavLink {...linkProps} to={Routes.REWARDS}>
-        {t('Rewards')}
-      </NavLink>
-      <NavLink {...linkProps} to={Routes.WITHDRAW}>
-        {t('Withdraw')}
-      </NavLink>
-      <NavLink {...linkProps} to={Routes.GOVERNANCE}>
-        {t('Governance')}
-      </NavLink>
+      {routes.map(({ route, text }) => (
+        <NavLink
+          {...linkProps}
+          to={route}
+          className={({ isActive }) =>
+            `no-underline hover:no-underline
+            ${
+              isDesktop
+                ? `py-4 px-16 ${
+                    isActive
+                      ? 'bg-black text-white'
+                      : 'bg-transparent text-black hover:text-white'
+                  }`
+                : `border-t border-white p-20 ${
+                    isActive
+                      ? 'bg-vega-yellow text-black hover:text-black'
+                      : 'bg-black text-white hover:text-vega-yellow'
+                  }`
+            }`
+          }
+        >
+          {text}
+        </NavLink>
+      ))}
     </nav>
   );
 };

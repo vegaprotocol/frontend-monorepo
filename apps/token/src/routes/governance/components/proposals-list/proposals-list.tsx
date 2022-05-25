@@ -26,7 +26,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     return (
       <li className="last:mb-0 mb-24" key={proposal.id}>
         <Link to={proposal.id} className="underline">
-          <header>{getProposalName(proposal.terms.change)}</header>
+          <header>{getProposalName(proposal)}</header>
         </Link>
         <KeyValueTable muted={true}>
           <KeyValueTableRow>

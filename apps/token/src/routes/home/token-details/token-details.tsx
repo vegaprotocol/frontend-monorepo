@@ -1,5 +1,3 @@
-import './token-details.scss';
-
 import { useTranslation } from 'react-i18next';
 
 import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
@@ -23,7 +21,7 @@ export const TokenDetails = ({
   return (
     <KeyValueTable className={'token-details'}>
       <KeyValueTableRow>
-        {t('Token address')}
+        {t('Token address').toUpperCase()}
         <EtherscanLink
           data-testid="token-address"
           address={ADDRESSES.vegaTokenAddress}
@@ -32,7 +30,7 @@ export const TokenDetails = ({
         />
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {t('Vesting contract')}
+        {t('Vesting contract'.toUpperCase())}
         <EtherscanLink
           data-testid="token-contract"
           address={ADDRESSES.vestingAddress}
@@ -41,15 +39,15 @@ export const TokenDetails = ({
         />
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {t('Total supply')}
+        {t('Total supply').toUpperCase()}
         <span data-testid="total-supply">{formatNumber(totalSupply, 2)}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {t('Circulating supply')}
+        {t('Circulating supply').toUpperCase()}
         <TokenDetailsCirculating tranches={tranches} />
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {t('Staked on Vega validator')}
+        {t('Staked on Vega validator').toUpperCase()}
         <span data-testid="staked">{formatNumber(totalStaked, 2)}</span>
       </KeyValueTableRow>
     </KeyValueTable>

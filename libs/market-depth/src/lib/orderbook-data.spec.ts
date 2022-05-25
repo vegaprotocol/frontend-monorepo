@@ -3,7 +3,7 @@ import {
   updateLevels,
   updateCompactedRows,
 } from './orderbook-data';
-import type { OrderbookRow } from './orderbook-data';
+import type { OrderbookRowData } from './orderbook-data';
 import type { MarketDepth_market_depth_sell } from './__generated__/MarketDepth';
 import type {
   MarketDepthSubscription_marketDepthUpdate_sell,
@@ -138,7 +138,7 @@ describe('updateLevels', () => {
 });
 
 describe('updateCompactedRows', () => {
-  const orderbookRows: OrderbookRow[] = [
+  const orderbookRows: OrderbookRowData[] = [
     {
       price: '120',
       cumulativeVol: {
@@ -217,14 +217,14 @@ describe('updateCompactedRows', () => {
       resolution
     );
     expect(updatedRows[0].ask).toEqual(20);
-    expect(updatedRows[0].askByLevel?.['120']).toEqual(10);
+    expect(updatedRows[0].askByLevel?.[120]).toEqual(10);
     expect(updatedRows[0].cumulativeVol.ask).toEqual(60);
-    expect(updatedRows[4].bid).toEqual(20);
-    expect(updatedRows[4].bidByLevel?.['80']).toEqual(10);
-    expect(updatedRows[4].cumulativeVol.bid).toEqual(60);
+    expect(updatedRows[2].bid).toEqual(20);
+    expect(updatedRows[2].bidByLevel?.[80]).toEqual(10);
+    expect(updatedRows[2].cumulativeVol.bid).toEqual(60);
   });
 
-  it('update with zero value volume', () => {
+  it('remove row', () => {
     const sell: MarketDepthSubscription_marketDepthUpdate_sell = {
       __typename: 'PriceLevel',
       price: '121',
@@ -243,7 +243,7 @@ describe('updateCompactedRows', () => {
       [buy],
       resolution
     );
-    expect(updatedRows.length).toEqual(5);
+    expect(updatedRows.length).toEqual(1);
   });
 
   it('add new row at the end', () => {
@@ -265,11 +265,11 @@ describe('updateCompactedRows', () => {
       [buy],
       resolution
     );
-    expect(updatedRows.length).toEqual(8);
+    expect(updatedRows.length).toEqual(5);
     expect(updatedRows[0].price).toEqual('130');
     expect(updatedRows[0].cumulativeVol.ask).toEqual(55);
-    expect(updatedRows[7].price).toEqual('60');
-    expect(updatedRows[7].cumulativeVol.bid).toEqual(55);
+    expect(updatedRows[4].price).toEqual('60');
+    expect(updatedRows[4].cumulativeVol.bid).toEqual(55);
   });
 
   it('add new row in the middle', () => {

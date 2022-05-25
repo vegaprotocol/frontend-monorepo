@@ -1,5 +1,3 @@
-import './staking-form.scss';
-
 import { gql, useApolloClient } from '@apollo/client';
 import { Radio, RadioGroup } from '@blueprintjs/core';
 import * as Sentry from '@sentry/react';
@@ -8,17 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { TokenInput } from '../../components/token-input';
-import { Colors, NetworkParams } from '../../config';
+import { NetworkParams } from '../../config';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useNetworkParam } from '../../hooks/use-network-param';
 import { useSearchParams } from '../../hooks/use-search-params';
 import { BigNumber } from '../../lib/bignumber';
 import { addDecimal, removeDecimal } from '../../lib/decimals';
-import type {
-  DelegateSubmissionInput,
-  UndelegateSubmissionInput,
-} from '../../lib/vega-wallet/vega-wallet-service';
-import { vegaWalletService } from '../../lib/vega-wallet/vega-wallet-service';
 import type {
   PartyDelegations,
   PartyDelegationsVariables,
@@ -27,6 +20,11 @@ import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
 import { Button, FormGroup } from '@vegaprotocol/ui-toolkit';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import type {
+  DelegateSubmissionBody,
+  UndelegateSubmissionBody,
+} from '@vegaprotocol/vegawallet-service-api-client';
 
 export const PARTY_DELEGATIONS_QUERY = gql`
   query PartyDelegations($partyId: ID!) {
@@ -83,6 +81,7 @@ export const StakingForm = ({
   const navigate = useNavigate();
   const client = useApolloClient();
   const { appState } = useAppState();
+  const { sendTx } = useVegaWallet();
   const [formState, setFormState] = React.useState(FormState.Default);
   const { t } = useTranslation();
   const [action, setAction] = React.useState<StakeAction>(params.action);
@@ -116,15 +115,17 @@ export const StakingForm = ({
 
   async function onSubmit() {
     setFormState(FormState.Pending);
-    const delegateInput: DelegateSubmissionInput = {
+    const delegateInput: DelegateSubmissionBody = {
       pubKey: pubkey,
+      propagate: true,
       delegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
       },
     };
-    const undelegateInput: UndelegateSubmissionInput = {
+    const undelegateInput: UndelegateSubmissionBody = {
       pubKey: pubkey,
+      propagate: true,
       undelegateSubmission: {
         nodeId,
         amount: removeDecimal(new BigNumber(amount), appState.decimals),
@@ -136,12 +137,7 @@ export const StakingForm = ({
     };
     try {
       const command = action === Actions.Add ? delegateInput : undelegateInput;
-      const [err] = await vegaWalletService.commandSync(command);
-
-      if (err) {
-        setFormState(FormState.Failure);
-        Sentry.captureException(err);
-      }
+      await sendTx(command);
 
       // await success via poll
     } catch (err) {
@@ -203,17 +199,15 @@ export const StakingForm = ({
     availableStakeToRemove.isEqualTo(0)
   ) {
     if (appState.lien.isGreaterThan(0)) {
-      return (
-        <span style={{ color: Colors.RED }}>{t('stakeNodeWrongVegaKey')}</span>
-      );
+      return <span className={'text-red'}>{t('stakeNodeWrongVegaKey')}</span>;
     } else {
-      return <span style={{ color: Colors.RED }}>{t('stakeNodeNone')}</span>;
+      return <span className={'text-red'}>{t('stakeNodeNone')}</span>;
     }
   }
 
   return (
     <>
-      <h2>{t('Manage your stake')}</h2>
+      <h2 className="text-h4 mb-8">{t('Manage your stake')}</h2>
       <FormGroup>
         <RadioGroup
           onChange={(e) => {
@@ -246,7 +240,9 @@ export const StakingForm = ({
         <>
           {action === Actions.Add ? (
             <>
-              <h2>{t('How much to Add in next epoch?')}</h2>
+              <h2 className="text-h4 mb-8">
+                {t('How much to Add in next epoch?')}
+              </h2>
               <p>
                 {t('minimumNomination', {
                   minTokens: minTokensWithDecimals,

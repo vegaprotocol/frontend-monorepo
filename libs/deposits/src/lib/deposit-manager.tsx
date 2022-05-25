@@ -10,16 +10,23 @@ import { useSubmitFaucet } from './use-submit-faucet';
 import { EthTxStatus, TransactionDialog } from '@vegaprotocol/web3';
 import { useTokenContract, useBridgeContract } from '@vegaprotocol/web3';
 
+interface ERC20AssetSource {
+  __typename: 'ERC20';
+  contractAddress: string;
+}
+
+interface BuiltinAssetSource {
+  __typename: 'BuiltinAsset';
+}
+
+type AssetSource = ERC20AssetSource | BuiltinAssetSource;
 export interface Asset {
   __typename: 'Asset';
   id: string;
   symbol: string;
   name: string;
   decimals: number;
-  source: {
-    __typename: 'ERC20';
-    contractAddress: string;
-  };
+  source: AssetSource;
 }
 
 interface DepositManagerProps {
@@ -44,7 +51,9 @@ export const DepositManager = ({
   }, [assets, assetId]);
 
   const tokenContract = useTokenContract(
-    asset?.source.contractAddress,
+    asset?.source.__typename === 'ERC20'
+      ? asset.source.contractAddress
+      : undefined,
     process.env['NX_VEGA_ENV'] !== 'MAINNET'
   );
   const bridgeContract = useBridgeContract();

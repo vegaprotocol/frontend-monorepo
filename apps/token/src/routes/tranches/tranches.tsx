@@ -1,5 +1,3 @@
-import './tranches.scss';
-
 import { useOutletContext } from 'react-router-dom';
 import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
 import { useWeb3React } from '@web3-react/core';
@@ -27,12 +25,12 @@ export const Tranches = () => {
 
   return (
     <section>
-      <h1>{t('chartTitle')}</h1>
-      <p>{t('chartAbove')}</p>
+      <h2 className="text-h4">{t('chartTitle')}</h2>
+      <p className="mb-12">{t('chartAbove')}</p>
       <VestingChart />
-      <p>{t('chartBelow')}</p>
+      <p className="mb-12">{t('chartBelow')}</p>
       {tranches?.length ? (
-        <ul className="tranches__list">
+        <ul role="list">
           {(showAll ? tranches : filteredTranches).map((tranche) => {
             return (
               <React.Fragment key={tranche.tranche_id}>
@@ -57,7 +55,7 @@ export const Tranches = () => {
       ) : (
         <p>{t('No tranches')}</p>
       )}
-      <section className="tranches__message">
+      <section className="text-center mt-32">
         <Button variant="inline-link" onClick={() => setShowAll(!showAll)}>
           {showAll
             ? t(
