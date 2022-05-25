@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { GridTab, GridTabs } from './grid-tabs';
 import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { TradesContainer } from '@vegaprotocol/trades';
@@ -13,6 +12,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import { GridTab, GridTabs } from '../../components/grid-tabs';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
