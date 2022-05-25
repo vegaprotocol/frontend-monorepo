@@ -8,7 +8,7 @@ import type { MarketList } from '../markets-container/__generated__/MarketList';
 
 export interface SelectMarketListProps {
   data: MarketList | undefined;
-  setModalOpen: (modalOpen?: boolean) => void;
+  setModalOpen?: (modalOpen?: boolean) => void;
 }
 
 type CandleClose = Required<string>;
@@ -53,7 +53,9 @@ export const SelectMarketList = ({
                       <a
                         href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
                         onClick={() => {
-                          setModalOpen(false);
+                          if (setModalOpen) {
+                            setModalOpen(false);
+                          }
                         }}
                         className={stretchedLink}
                       >
@@ -98,7 +100,9 @@ export const SelectMarketList = ({
         className={`${boldUnderlineClassNames} text-ui-small`}
         href="/markets"
         onClick={() => {
-          setModalOpen(false);
+          if (setModalOpen) {
+            setModalOpen(false);
+          }
         }}
       >
         {'Or view full market list'}
