@@ -149,12 +149,11 @@ const MARKETS_QUERY = gql`
 const Markets = () => {
   const { data } = useQuery<MarketsQuery>(MARKETS_QUERY);
 
-  if (!data || !data.markets) return null;
   return (
     <section>
       <RouteTitle data-testid="markets-heading">{t('Markets')}</RouteTitle>
 
-      {data
+      {data?.markets
         ? data.markets.map((m) => (
             <React.Fragment key={m.id}>
               <SubHeading data-testid="markets-header">{m.name}</SubHeading>

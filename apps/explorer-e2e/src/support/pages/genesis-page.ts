@@ -1,9 +1,9 @@
 import BasePage from './base-page';
 
 export default class GenesisPage extends BasePage {
-  GenesisHeader = 'genesis-header';
+  genesisHeader = 'genesis-header';
 
   genesisFieldsDisplayed() {
-    this.validateBlockDataDisplayed(this.GenesisHeader);
+    this.validateBlockDataDisplayed(this.genesisHeader);
   }
 }
