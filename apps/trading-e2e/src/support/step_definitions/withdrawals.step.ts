@@ -27,9 +27,7 @@ When('click submit', () => {
 
 When('I enter an invalid ethereum address', () => {
   withdrawalsPage.updateTransactionform({
-    asset: undefined,
     to: '0x0dAAACaa868f87BB4666F918742141cAEAe893Fa',
-    amount: undefined,
   });
   withdrawalsPage.clickSubmit();
 });
@@ -37,8 +35,6 @@ When('I enter an invalid ethereum address', () => {
 When('I select {string}', (selectedAsset) => {
   withdrawalsPage.updateTransactionform({
     asset: selectedAsset,
-    to: undefined,
-    amount: undefined,
   });
 });
 
@@ -55,6 +51,14 @@ When('I enter the following details in withdrawal form', (table) => {
     asset: table.rowsHash().asset,
     to: table.rowsHash().to,
     amount: table.rowsHash().amount,
+  });
+  withdrawalsPage.clickSubmit();
+});
+
+When('I succesfully fill in and submit withdrawal form', () => {
+  withdrawalsPage.updateTransactionform({
+    asset: Cypress.env('WITHDRAWAL_ASSET_ID'),
+    amount: '0.1',
   });
   withdrawalsPage.clickSubmit();
 });
@@ -89,11 +93,12 @@ Then('error for above maximum amount is displayed', () => {
 });
 
 Then('history of withdrawals are displayed', () => {
-  const ethAddressLink = `https://ropsten.etherscan.io/address/${Cypress.env(
+  const ethAddressLink = `${Cypress.env('ETHERSCAN_URL')}/address/${Cypress.env(
     'ETHEREUM_WALLET_ADDRESS'
   )}`;
-  const etherScanLink =
-    'https://ropsten.etherscan.io/tx/0x0d1a5d209f468ff248326d4ae7647ad5a3667ce463341a0250118a95f3beb597';
+  const etherScanLink = `${Cypress.env(
+    'ETHERSCAN_URL'
+  )}/tx/0x0d1a5d209f468ff248326d4ae7647ad5a3667ce463341a0250118a95f3beb597`;
 
   withdrawalsPage.validateWithdrawalAssetDisplayed('tEURO');
   withdrawalsPage.validateWithdrawalAmountDisplayed('10,000.00000');

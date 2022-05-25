@@ -5,9 +5,7 @@ Feature: Withdrawals to eth wallet
     And I connect to Vega Wallet
 
   Scenario: Succesfull withdrawal
-    When I enter the following details in withdrawal form
-      | asset  | tEURO TEST |
-      | amount | 0.1        |
+    When I succesfully fill in and submit withdrawal form
     Then withdrawal modal is displayed
 
   Scenario: Error displayed when fields are empty
