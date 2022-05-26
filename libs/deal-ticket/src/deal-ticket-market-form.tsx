@@ -4,6 +4,7 @@ export interface DealTicketMarketFormProps {
   quoteName?: string;
   price?: string;
   size: string;
+  step: number;
   onSizeChange: (size: string) => void;
 }
 
@@ -11,6 +12,7 @@ export const DealTicketMarketForm = ({
   size,
   onSizeChange,
   price,
+  step,
   quoteName,
 }: DealTicketMarketFormProps) => {
   return (
@@ -22,6 +24,8 @@ export const DealTicketMarketForm = ({
             onChange={(e) => onSizeChange(e.target.value)}
             className="w-full"
             type="number"
+            step={step}
+            min={step}
             data-testid="order-size"
           />
         </FormGroup>

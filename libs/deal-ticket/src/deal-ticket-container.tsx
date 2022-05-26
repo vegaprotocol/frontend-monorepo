@@ -50,8 +50,6 @@ export const DealTicketContainer = ({
     variables: { marketId },
   });
 
-  console.log(data)
-
   return (
     <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
       {data && data.market ? (

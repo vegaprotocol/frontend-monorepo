@@ -6,12 +6,14 @@ import { DealTicketMarket } from './deal-ticket-market';
 import { DealTicketLimit } from './deal-ticket-limit';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
-const DEFAULT_ORDER: Order = {
+const getDefaultOrder = (market: DealTicketQuery_market): Order => ({
   type: OrderType.Market,
   side: OrderSide.Buy,
-  size: '1',
+  size: market.positionDecimalPlaces
+    ? String(1 / Math.pow(10, market.positionDecimalPlaces))
+    : '1',
   timeInForce: OrderTimeInForce.IOC,
-};
+});
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -26,9 +28,11 @@ export const DealTicket = ({
   market,
   submit,
   transactionStatus,
-  defaultOrder = DEFAULT_ORDER,
+  defaultOrder,
 }: DealTicketProps) => {
-  const [order, updateOrder] = useOrderState(defaultOrder);
+  const [order, updateOrder] = useOrderState(
+    defaultOrder || getDefaultOrder(market)
+  );
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

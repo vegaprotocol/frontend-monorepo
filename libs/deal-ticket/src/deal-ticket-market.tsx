@@ -28,6 +28,11 @@ export const DealTicketMarket = ({
       <DealTicketMarketForm
         size={order.size}
         onSizeChange={(size) => updateOrder({ size })}
+        step={
+          market.positionDecimalPlaces
+            ? 1 / Math.pow(10, market.positionDecimalPlaces)
+            : 1
+        }
         price={
           market.depth.lastTrade
             ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
