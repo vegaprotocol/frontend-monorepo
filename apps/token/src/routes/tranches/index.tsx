@@ -6,18 +6,26 @@ import { SplashLoader } from '../../components/splash-loader';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { useTranches } from '../../hooks/use-tranches';
 import type { RouteChildProps } from '..';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 
 const TrancheRouter = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const { tranches } = useTranches();
+  const { tranches, error, loading } = useTranches();
 
-  if (!tranches) {
+  if (!tranches || loading) {
     return (
       <Splash>
         <SplashLoader />
       </Splash>
+    );
+  }
+
+  if (error) {
+    return (
+      <Callout intent={Intent.Danger} title={t('errorLoadingTranches')}>
+        {error}
+      </Callout>
     );
   }
 

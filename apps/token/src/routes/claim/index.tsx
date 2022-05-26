@@ -10,19 +10,27 @@ import type { RouteChildProps } from '..';
 import Claim from './claim';
 import { ClaimRestricted } from './claim-restricted';
 import { isRestricted } from './lib/is-restricted';
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 
 const ClaimIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
   const { account } = useWeb3React();
-  const { tranches } = useTranches();
+  const { tranches, loading, error } = useTranches();
 
-  if (!tranches) {
+  if (loading || !tranches) {
     return (
       <Splash>
         <SplashLoader />
       </Splash>
+    );
+  }
+
+  if (error) {
+    return (
+      <Callout intent={Intent.Danger} title={t('errorLoadingTranches')}>
+        {error}
+      </Callout>
     );
   }
 
