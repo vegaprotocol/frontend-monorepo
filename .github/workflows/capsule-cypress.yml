@@ -81,7 +81,7 @@ jobs:
         run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
 
       - name: Initialize wallet
-        run: vegawallet init -f
+        run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
       - name: Import wallet
         run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
       - name: Import config
