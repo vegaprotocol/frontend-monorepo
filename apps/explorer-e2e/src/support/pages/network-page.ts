@@ -26,7 +26,7 @@ export default class NetworkParametersPage extends BasePage {
       });
 
     cy.get(this.jsonParamValueNumberClassName)
-      .should('have.length.at.least', 8)
+      .should('have.length.at.least', 7)
       .each(($paramValue) => {
         cy.wrap($paramValue).should('not.be.empty');
       });
