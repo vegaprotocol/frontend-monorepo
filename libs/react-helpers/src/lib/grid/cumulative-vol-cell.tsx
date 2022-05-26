@@ -25,7 +25,7 @@ export const CumulativeVol = React.memo(
     bid,
     indicativeVolume,
     testId,
-    className
+    className,
   }: CumulativeVolProps) => {
     const askBar = relativeAsk ? (
       <div
