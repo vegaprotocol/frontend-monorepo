@@ -1,3 +1,5 @@
+import styles from './orderbook.module.scss';
+
 import {
   Fragment,
   useEffect,
@@ -233,7 +235,7 @@ export const Orderbook = ({
 
   return (
     <div
-      className="h-full overflow-auto relative"
+      className={`h-full overflow-auto relative ${styles['scroll']}`}
       style={{ scrollbarColor: 'rebeccapurple green', scrollbarWidth: 'thin' }}
       onScroll={onScroll}
       ref={scrollRef}

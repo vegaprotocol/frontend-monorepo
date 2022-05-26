@@ -1,0 +1,9 @@
+/* Works on Firefox */
+.scroll {
+  scrollbar-width: none;
+}
+
+/* Works on Chrome, Edge, and Safari */
+.scroll::-webkit-scrollbar {
+  display: none;
+}
