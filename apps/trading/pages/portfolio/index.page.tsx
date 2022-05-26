@@ -1,32 +1,13 @@
-import { useEffect } from 'react';
 import { Web3Container } from '../../components/web3-container';
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
 import { GridTab, GridTabs } from '../../components/grid-tabs';
 
-type WalletState = {
-  connect: boolean;
-  manage: boolean;
-};
-
-type PortfolioPageProps = {
-  setVegaWalletDialog: (state: WalletState) => void;
-};
-
-const Portfolio = ({ setVegaWalletDialog }: PortfolioPageProps) => {
-  const { keypair } = useVegaWallet();
-
-  useEffect(() => {
-    if (!keypair) {
-      setVegaWalletDialog({ connect: true, manage: false });
-    }
-  }, [keypair, setVegaWalletDialog]);
-
+const Portfolio = () => {
   const tabClassName = 'p-[16px] pl-[316px]';
 
   return (
