@@ -89,7 +89,7 @@ jobs:
       - name: Create public key 2
         run: vegawallet key generate -w UI_Trading_Test -p ./passphrase
       - name: Start service
-        run: vegawallet service run --network DV &
+        run: vegawallet service run --network DV --automatic-consent &
 
       ######
       ## Run some tests
