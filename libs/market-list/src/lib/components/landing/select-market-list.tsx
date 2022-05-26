@@ -48,7 +48,9 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                     className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
                   >
                     <td className={`${boldUnderlineClassNames} relative`}>
-                      <Link href={`/markets/${id}`} passHref={true}>
+                      <Link
+                        href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
+                      >
                         {marketName}
                       </Link>
                     </td>
@@ -86,10 +88,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
         </tbody>
       </table>
 
-      <a
-        href="/markets"
-        className={`${boldUnderlineClassNames} text-ui-small ${stretchedLink}`}
-      >
+      <a className={`${boldUnderlineClassNames} text-ui-small`} href="/markets">
         {t('Or view full market list')}
       </a>
     </div>
