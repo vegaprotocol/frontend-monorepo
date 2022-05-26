@@ -1,8 +1,10 @@
 import {
   addDecimalsFormatNumber,
   PriceCell,
+  t,
 } from '@vegaprotocol/react-helpers';
 import { PriceCellChange, Sparkline } from '@vegaprotocol/ui-toolkit';
+import Link from 'next/link';
 import { mapDataToMarketList } from '../../utils';
 import type { MarketList } from '../markets-container/__generated__/MarketList';
 
@@ -46,9 +48,9 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                     className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
                   >
                     <td className={`${boldUnderlineClassNames} relative`}>
-                      <a href={`/markets/${id}`} className={stretchedLink}>
+                      <Link href={`/markets/${id}`} passHref={true}>
                         {marketName}
-                      </a>
+                      </Link>
                     </td>
                     <td className={tdClassNames}>
                       {lastPrice && (
@@ -84,8 +86,11 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
         </tbody>
       </table>
 
-      <a className={`${boldUnderlineClassNames} text-ui-small`} href="/markets">
-        {'Or view full market list'}
+      <a
+        href="/markets"
+        className={`${boldUnderlineClassNames} text-ui-small ${stretchedLink}`}
+      >
+        {t('Or view full market list')}
       </a>
     </div>
   );
