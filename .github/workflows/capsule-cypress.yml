@@ -84,8 +84,6 @@ jobs:
         run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
       - name: Import wallet
         run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
-      - name: Import config
-        run: vegawallet network import --from-file ~/.vegacapsule/testnet/wallet/config/wallet-service/networks/DV.toml --home ~/.vegacapsule/testnet/wallet
       - name: Create public key 2
         run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
       - name: Start service
