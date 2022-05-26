@@ -67,11 +67,29 @@ Run `nx build my-app` to build the project. The build artifacts will be stored i
 
 Run `nx serve my-app` for a dev server. Navigate to the port specified in `app/<project-name>/project.json`. The app will automatically reload if you change any of the source files.
 
+### Using Apollo GraphQL and Generate Types
+
+In order to generate the schemas for your GraphQL queries, you can run `nx run types:generate`.
+If it is the first time you are running the command, make sure you are setting up the environment variable from `apollo.config.js`.
+
+```bash
+export  NX_VEGA_URL=https://lb.testnet.vega.xyz/query
+yarn nx run types:generate
+```
+
 ### Running tests
 
 Run `yarn nx run <my-app>-e2e:e2e` to execute the e2e tests with [cypress](https://docs.cypress.io/), or `nx affected:e2e` will execute just the end-to-end tests affected by a change. You can use the `--watch` flag to open the cypress tests UI in watch mode, see [cypress executor](https://nx.dev/packages/cypress/executors/cypress) for all CLI flags.
 
 Run `nx test my-app` to execute the unit tests with [Jest](https://jestjs.io), or `nx affected:test` to execute just unit tests affected by a change. You can also use `--watch` with these test to run jest in watch mode, see [Jest executor](https://nx.dev/packages/jest/executors/jest) for all CLI flags.
+
+#### Trading app E2E tests
+
+To run tests locally using your own wallets you can add the following environment variables to `cypress.json`
+
+1. Change `TRADING_TEST_VEGA_WALLET_NAME` to your Vega wallet name
+2. Add `TRADING_TEST_VEGA_WALLET_PASSPHRASE` as your wallet passphrase
+3. Add `ETH_WALLET_MNEMONIC` as your Ethereum wallet mnemonic
 
 ### Formatting
 

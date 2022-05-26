@@ -151,7 +151,7 @@ export const compactRows = (
       ),
     []
   );
-  // order by price, it's safe to cast to number price diff sould not exceed Number.MAX_SAFE_INTEGER
+  // order by price, it's safe to cast to number price diff should not exceed Number.MAX_SAFE_INTEGER
   orderbookData.sort((a, b) => Number(BigInt(b.price) - BigInt(a.price)));
   // count cumulative volumes
   if (orderbookData.length > 1) {

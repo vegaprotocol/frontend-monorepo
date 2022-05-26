@@ -1,1 +1,1 @@
-export { default } from './simple-market-list';
+export { default as SimpleMarketList } from './simple-market-list';

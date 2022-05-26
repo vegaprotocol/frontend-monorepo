@@ -38,7 +38,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/web:dev-server",
+      "executor": "./tools/executors/serve:serve",
       "options": {
         "port": 4210,
         "buildTarget": "token:build",

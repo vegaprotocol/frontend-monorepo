@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 
 // Address of the above key
 export class CustomizedBridge extends Eip1193Bridge {
-  chainId = Cypress.env('ethereumChainId');
+  chainId = Cypress.env('ETHEREUM_CHAIN_ID');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async sendAsync(...args: any) {
@@ -109,8 +109,8 @@ const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 const getProvider = () =>
   new JsonRpcProvider(
-    Cypress.env('ethereumProviderUrl'),
-    Cypress.env('ethereumChainId')
+    Cypress.env('ETHEREUM_PROVIDER_URL'),
+    Cypress.env('ETHEREUM_CHAIN_ID')
   );
 
 export const createBridge = () => {

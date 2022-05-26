@@ -1,6 +1,9 @@
-import { Drawer } from '@blueprintjs/core';
+import './nav.css';
+
+import classNames from 'classnames';
 import debounce from 'lodash/debounce';
 import React from 'react';
+import * as Dialog from '@radix-ui/react-dialog';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink } from 'react-router-dom';
 
@@ -126,10 +129,10 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
         )}
       </Link>
       <h1
+        data-testid="header-title"
         className={`text-[28px] lg:text-h3 pl-8 ${
           fairground ? 'text-black' : 'text-white'
         }`}
-        data-testid="header-title"
       >
         {fairground ? t('fairgroundTitle') : t('title')}
       </h1>
@@ -148,6 +151,13 @@ const IconLine = ({ inverted }: { inverted: boolean }) => (
 const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   const { appState, appDispatch } = useAppState();
 
+  const drawerContentClasses = classNames(
+    'drawer-content', // needed for css animation
+    // Positions the modal in the center of screen
+    'fixed w-[80vw] max-w-[420px] top-0 right-0',
+    'flex flex-col flex-nowrap justify-between h-full bg-banner overflow-y-scroll border-l border-white',
+    'bg-black text-white-95'
+  );
   return (
     <>
       <button
@@ -164,29 +174,30 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
         <IconLine inverted={inverted} />
       </button>
 
-      <Drawer
-        isOpen={appState.drawerOpen}
-        onClose={() =>
+      <Dialog.Root
+        open={appState.drawerOpen}
+        onOpenChange={(isOpen) =>
           appDispatch({
             type: AppStateActionType.SET_DRAWER,
-            isOpen: false,
+            isOpen,
           })
         }
-        size="80%"
-        className="border border-white max-w-[420px]"
       >
-        <div className="flex flex-col flex-nowrap justify-between h-full bg-banner overflow-y-scroll">
-          <div>
-            <DrawerSection>
-              <EthWallet />
-            </DrawerSection>
-            <DrawerSection>
-              <VegaWallet />
-            </DrawerSection>
-          </div>
-          <NavLinks isDesktop={false} />
-        </div>
-      </Drawer>
+        <Dialog.Portal>
+          <Dialog.Overlay className="fixed inset-0 bg-white/15" />
+          <Dialog.Content className={drawerContentClasses}>
+            <div>
+              <DrawerSection>
+                <EthWallet />
+              </DrawerSection>
+              <DrawerSection>
+                <VegaWallet />
+              </DrawerSection>
+            </div>
+            <NavLinks isDesktop={false} />
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog.Root>
     </>
   );
 };
@@ -206,35 +217,36 @@ const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => {
     { route: Routes.WITHDRAW, text: t('Withdraw') },
     { route: Routes.GOVERNANCE, text: t('Governance') },
   ];
+  const navClasses = classNames('flex', {
+    'flex-row gap-8 mt-8 uppercase': isDesktop,
+    'flex-col': !isDesktop,
+  });
+
   return (
-    <nav
-      className={`flex uppercase
-      ${isDesktop ? 'flex-row mt-8' : 'flex-col'}`}
-    >
-      {routes.map(({ route, text }) => (
-        <NavLink
-          {...linkProps}
-          to={route}
-          className={({ isActive }) =>
-            `no-underline hover:no-underline
-            ${
-              isDesktop
-                ? `py-4 px-16 ${
-                    isActive
-                      ? 'bg-black text-white'
-                      : 'bg-transparent text-black hover:text-white'
-                  }`
-                : `border-t border-white p-20 ${
-                    isActive
-                      ? 'bg-vega-yellow text-black hover:text-black'
-                      : 'bg-black text-white hover:text-vega-yellow'
-                  }`
-            }`
-          }
-        >
-          {text}
-        </NavLink>
-      ))}
+    <nav className={navClasses}>
+      {routes.map(({ route, text }) => {
+        return (
+          <NavLink
+            {...linkProps}
+            to={route}
+            key={route}
+            className={({ isActive }) => {
+              const linkClasses = classNames(
+                'no-underline hover:no-underline',
+                {
+                  'bg-vega-yellow text-black hover:text-black': isActive,
+                  'bg-black text-white': !isActive,
+                  'py-2 px-12': isDesktop,
+                  'border-t border-white p-20': !isDesktop,
+                }
+              );
+              return linkClasses;
+            }}
+          >
+            {text}
+          </NavLink>
+        );
+      })}
     </nav>
   );
 };
