@@ -240,8 +240,8 @@ export const Orderbook = ({
       onScroll={onScroll}
       ref={scrollRef}
     >
-      <div className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10">
-        <div>{t('Bid Vol')}</div>
+      <div className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10" style={{ gridAutoRows: '17px' }}>
+        <div className="pl-4">{t('Bid Vol')}</div>
         <div>{t('Price')}</div>
         <div>{t('Ask Vol')}</div>
         <div>{t('Cumulative Vol')}</div>
@@ -253,7 +253,7 @@ export const Orderbook = ({
           minHeight: `calc(100% - ${2 * rowHeight}px)`,
         }}
       >
-        <div className="grid grid-cols-4 gap-4 text-right text-ui-small">
+        <div className="grid grid-cols-4 gap-4 text-right text-ui-small" style={{ gridAutoRows: '17px' }}>
           {renderedRows.data?.map((data) => {
             return (
               <Fragment key={data.price}>
@@ -280,7 +280,7 @@ export const Orderbook = ({
           })}
         </div>
       </div>
-      <div className="sticky bottom-0 grid grid-cols-4 gap-4 border-t-1 text-ui-small mt-2 pb-2 bg-white dark:bg-black z-10">
+      <div className="sticky bottom-0 grid grid-cols-4 gap-4 border-t-1 text-ui-small mt-2 pb-2 bg-white dark:bg-black z-10" style={{ gridAutoRows: '17px' }}>
         <div className="text-ui-small col-start-2">
           <select
             onChange={(e) => onResolutionChange(Number(e.target.value))}
