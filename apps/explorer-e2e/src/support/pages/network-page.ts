@@ -20,13 +20,13 @@ export default class NetworkParametersPage extends BasePage {
         cy.wrap($paramName).should('not.be.empty');
       });
     cy.get(this.jsonParamValueStringClassName)
-      .should('have.length.at.least', 7)
+      .should('have.length.at.least', 6)
       .each(($paramValue) => {
         cy.wrap($paramValue).should('not.be.empty');
       });
 
     cy.get(this.jsonParamValueNumberClassName)
-      .should('have.length.at.least', 9)
+      .should('have.length.at.least', 8)
       .each(($paramValue) => {
         cy.wrap($paramValue).should('not.be.empty');
       });
