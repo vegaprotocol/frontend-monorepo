@@ -71,8 +71,8 @@ export const FlashCell = memo(({ children, value }: FlashCellProps) => {
     if (value < previousValue) {
       ref.current?.animate(
         [
-          { color: theme.Colors.vega.pink },
-          { color: theme.Colors.vega.pink, offset: 0.8 },
+          { color: theme.colors.vega.pink },
+          { color: theme.colors.vega.pink, offset: 0.8 },
           { color: 'inherit' },
         ],
         FLASH_DURATION

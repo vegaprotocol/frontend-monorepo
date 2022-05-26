@@ -34,7 +34,7 @@ const NavLink = ({ name, path, exact }: NavLinkProps) => {
     router.asPath === path || (!exact && router.asPath.startsWith(path));
   return (
     <AnchorButton
-      variant={isActive ? 'accent' : 'inline'}
+      variant={isActive ? 'accent' : 'inline-link'}
       className="px-16 py-6 h-[38px] uppercase border-0 self-end xs:text-ui sm:text-body-large md:text-h5 lg:text-h4"
       href={path}
       onClick={(e) => {

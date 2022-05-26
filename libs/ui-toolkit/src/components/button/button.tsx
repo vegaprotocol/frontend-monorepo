@@ -1,4 +1,8 @@
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react';
+import type {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes,
+  ReactNode,
+} from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
 import type { IconName } from '../icon';
@@ -11,8 +15,8 @@ import {
 } from '../../utils/class-names';
 
 interface CommonProps {
-  children?: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'accent' | 'inline' | 'inline-link';
+  children?: ReactNode;
+  variant?: 'primary' | 'secondary' | 'trade' | 'accent' | 'inline-link';
   className?: string;
   prependIconName?: IconName;
   appendIconName?: IconName;
@@ -34,10 +38,9 @@ const getClasses = (
 ) => {
   // Add classes into variables if there are multiple classes shared in multiple button styles
   const sharedClasses =
-    'inline-flex items-center justify-center box-border transition-all disabled:no-underline';
-  const underlineOnHover = 'no-underline hover:underline';
-  const commonHoverAndActiveBorder =
-    'hover:border-black dark:hover:border-white active:border-black dark:active:border-white';
+    'inline-flex items-center justify-center box-border transition-[background-color] ease-linear duration-50 disabled:no-underline';
+  const commonButtonClasses =
+    'text-ui font-semibold relative disabled:static shadow-[3px_3px_0_0] disabled:shadow-none focus-visible:shadow-vega-pink focus-visible:outline-none dark:focus-visible:shadow-vega-yellow border no-underline hover:no-underline active:top-[1px] active:left-[1px] active:shadow-[2px_2px_0_0]';
   const commonDisabled =
     'disabled:bg-black-10 dark:disabled:bg-white-10 disabled:text-black-60 dark:disabled:text-white-60 disabled:border-black-25 dark:disabled:border-white-25';
   const inlineTextColour =
@@ -62,53 +65,53 @@ const getClasses = (
 
   const primaryClasses = [
     sharedClasses,
-    commonHoverAndActiveBorder,
-    underlineOnHover,
+    commonButtonClasses,
     commonDisabled,
     standardButtonPaddingLeft,
     standardButtonPaddingRight,
     standardButtonBorderWidth,
     buttonHeight,
-    'bg-black dark:bg-white hover:bg-black-80 dark:hover:bg-white-80 active:bg-white dark:active:bg-black',
-    'text-ui text-white dark:text-black active:text-black dark:active:text-white',
+    'bg-black dark:bg-white hover:bg-black-80 dark:hover:bg-white-90 active:bg-black-80 dark:active:bg-white-90',
+    'border-white dark:border-black shadow-black active:shadow-black dark:shadow-white-80 dark:active:shadow-white',
+    'text-white dark:text-black',
   ];
 
   const secondaryClasses = [
     sharedClasses,
-    commonHoverAndActiveBorder,
-    underlineOnHover,
+    commonButtonClasses,
     commonDisabled,
     standardButtonPaddingLeft,
     standardButtonPaddingRight,
     standardButtonBorderWidth,
     buttonHeight,
-    'bg-white dark:bg-black hover:bg-black-25 dark:hover:bg-white-25 active:bg-black dark:active:bg-white',
-    'text-ui text-black dark:text-white active:text-white dark:active:text-black',
-    'border-black-60 dark:border-white-60 hover:border-black',
+    'bg-white dark:bg-black hover:bg-black-25 dark:hover:bg-white-25',
+    'border-black dark:border-white shadow-black dark:shadow-white',
+    'text-black dark:text-white',
+  ];
+
+  const tradeClasses = [
+    sharedClasses,
+    commonButtonClasses,
+    commonDisabled,
+    standardButtonPaddingLeft,
+    standardButtonPaddingRight,
+    standardButtonBorderWidth,
+    buttonHeight,
+    'bg-vega-green hover:bg-vega-green-medium',
+    'border-black shadow-black dark:shadow-white',
+    'text-black',
   ];
 
   const accentClasses = [
     sharedClasses,
-    commonHoverAndActiveBorder,
-    underlineOnHover,
     commonDisabled,
     standardButtonPaddingLeft,
     standardButtonPaddingRight,
     standardButtonBorderWidth,
     buttonHeight,
     'bg-vega-yellow dark:bg-vega-yellow hover:bg-vega-yellow-dark dark:hover:bg-vega-yellow-dark active:bg-white dark:active:bg-black',
-    'text-ui uppercase text-black dark:text-black hover:text-white dark:hover:text-white active:text-black dark:active:text-white',
+    'uppercase text-black dark:text-black hover:text-white dark:hover:text-white active:text-black dark:active:text-white',
     'border-transparent dark:border-transparent',
-  ];
-
-  const inlineClasses = [
-    sharedClasses,
-    inlineButtonPaddingLeft,
-    inlineButtonPaddingRight,
-    buttonHeight,
-    inlineTextColour,
-    'border-none',
-    'text-ui',
   ];
 
   const inlineLinkClasses = [
@@ -117,7 +120,7 @@ const getClasses = (
     inlineButtonPaddingRight,
     buttonHeight,
     inlineTextColour,
-    'underline hover:underline',
+    'underline hover:underline hover:text-black-60 dark:hover:text-white-80',
     'border-none',
   ];
 
@@ -126,10 +129,10 @@ const getClasses = (
       return primaryClasses;
     case 'secondary':
       return secondaryClasses;
+    case 'trade':
+      return tradeClasses;
     case 'accent':
       return accentClasses;
-    case 'inline':
-      return inlineClasses;
     case 'inline-link':
       return inlineLinkClasses;
     default:
@@ -159,7 +162,7 @@ const classes = (
 };
 
 const getContent = (
-  children: React.ReactNode,
+  children: ReactNode,
   prependIconName?: IconName,
   appendIconName?: IconName
 ) => {
