@@ -12,6 +12,7 @@ const DEAL_TICKET_QUERY = gql`
     market(id: $marketId) {
       id
       decimalPlaces
+      positionDecimalPlaces
       state
       tradingMode
       tradableInstrument {
@@ -48,6 +49,8 @@ export const DealTicketContainer = ({
   const { data, loading, error } = useQuery(DEAL_TICKET_QUERY, {
     variables: { marketId },
   });
+
+  console.log(data)
 
   return (
     <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
