@@ -91,6 +91,7 @@ Feature: Deposits to vega wallet
   # This next step is being skipped due to account having approved status
   # Then Not approved message shown
 
+  @ignore
   Scenario: Successful deposit
     When I enter the following deposit details in deposit form
       | asset  | tBTC TEST       |
