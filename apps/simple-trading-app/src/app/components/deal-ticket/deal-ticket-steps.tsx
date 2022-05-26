@@ -20,21 +20,35 @@ import {
   OrderType,
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  toDecimal,
+  removeDecimal,
+} from '@vegaprotocol/react-helpers';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
 }
 
-const DEFAULT_ORDER: Order = {
+const getDefaultOrder = (market: DealTicketQuery_market): Order => ({
   type: OrderType.Market,
   side: OrderSide.Buy,
-  size: '1',
+  size: String(toDecimal(market.positionDecimalPlaces)),
   timeInForce: OrderTimeInForce.IOC,
-};
+});
+
+const prepareOrder = (
+  market: DealTicketQuery_market,
+  { type, side, size, timeInForce }: Order
+): Order => ({
+  type,
+  side,
+  size: removeDecimal(size, market.positionDecimalPlaces),
+  timeInForce,
+});
 
 export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
-  const [order, updateOrder] = useOrderState(DEFAULT_ORDER);
+  const [order, updateOrder] = useOrderState(getDefaultOrder(market));
   const { submit, transaction } = useOrderSubmit(market);
 
   const transactionStatus =
@@ -49,11 +63,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     ticket = (
       <DealTicketMarketForm
         size={order.size}
-        step={
-          market.positionDecimalPlaces
-            ? 1 / Math.pow(10, market.positionDecimalPlaces)
-            : 1
-        }
+        step={toDecimal(market.positionDecimalPlaces)}
         onSizeChange={(size) => updateOrder({ size })}
         price={
           market.depth.lastTrade
@@ -68,6 +78,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       <DealTicketLimitForm
         price={order.price}
         size={order.size}
+        step={toDecimal(market.positionDecimalPlaces)}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
         onSizeChange={(size) => updateOrder({ size })}
         onPriceChange={(price) => updateOrder({ price })}
@@ -79,7 +90,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    return submit(order);
+    return submit(prepareOrder(market, order));
   };
 
   const steps = [

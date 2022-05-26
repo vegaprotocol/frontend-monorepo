@@ -5,14 +5,23 @@ import { useOrderState } from './use-order-state';
 import { DealTicketMarket } from './deal-ticket-market';
 import { DealTicketLimit } from './deal-ticket-limit';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { toDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 
 const getDefaultOrder = (market: DealTicketQuery_market): Order => ({
   type: OrderType.Market,
   side: OrderSide.Buy,
-  size: market.positionDecimalPlaces
-    ? String(1 / Math.pow(10, market.positionDecimalPlaces))
-    : '1',
+  size: String(toDecimal(market.positionDecimalPlaces)),
   timeInForce: OrderTimeInForce.IOC,
+});
+
+const prepareOrder = (
+  market: DealTicketQuery_market,
+  { type, side, size, timeInForce }: Order
+): Order => ({
+  type,
+  side,
+  size: removeDecimal(size, market.positionDecimalPlaces),
+  timeInForce,
 });
 
 export type TransactionStatus = 'default' | 'pending';
@@ -36,7 +45,7 @@ export const DealTicket = ({
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    submit(order);
+    submit(prepareOrder(market, order));
   };
 
   let ticket = null;

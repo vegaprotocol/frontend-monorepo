@@ -4,6 +4,7 @@ export interface DealTicketLimitFormProps {
   quoteName: string;
   price?: string;
   size: string;
+  step: number;
   onSizeChange: (size: string) => void;
   onPriceChange: (price: string) => void;
 }
@@ -11,6 +12,7 @@ export interface DealTicketLimitFormProps {
 export const DealTicketLimitForm = ({
   size,
   price,
+  step,
   onSizeChange,
   onPriceChange,
   quoteName,
@@ -24,6 +26,7 @@ export const DealTicketLimitForm = ({
             onChange={(e) => onSizeChange(e.target.value)}
             className="w-full"
             type="number"
+            step={step}
             data-testid="order-size"
           />
         </FormGroup>
@@ -36,6 +39,7 @@ export const DealTicketLimitForm = ({
             onChange={(e) => onPriceChange(e.target.value)}
             className="w-full"
             type="number"
+            step={step}
             data-testid="order-price"
           />
         </FormGroup>

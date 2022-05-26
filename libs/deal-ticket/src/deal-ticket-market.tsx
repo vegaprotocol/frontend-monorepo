@@ -6,7 +6,7 @@ import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { Order } from './use-order-state';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 
 interface DealTicketMarketProps {
   order: Order;
@@ -28,11 +28,7 @@ export const DealTicketMarket = ({
       <DealTicketMarketForm
         size={order.size}
         onSizeChange={(size) => updateOrder({ size })}
-        step={
-          market.positionDecimalPlaces
-            ? 1 / Math.pow(10, market.positionDecimalPlaces)
-            : 1
-        }
+        step={toDecimal(market.positionDecimalPlaces)}
         price={
           market.depth.lastTrade
             ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)

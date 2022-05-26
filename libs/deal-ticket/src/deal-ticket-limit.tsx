@@ -8,6 +8,7 @@ import { TimeInForceSelector } from './time-in-force-selector';
 import { TypeSelector } from './type-selector';
 import type { Order } from './use-order-state';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { toDecimal } from '@vegaprotocol/react-helpers';
 
 interface DealTicketLimitProps {
   order: Order;
@@ -29,6 +30,7 @@ export const DealTicketLimit = ({
       <DealTicketLimitForm
         price={order.price}
         size={order.size}
+        step={toDecimal(market.positionDecimalPlaces)}
         quoteName={market.tradableInstrument.instrument.product.quoteName}
         onSizeChange={(size) => updateOrder({ size })}
         onPriceChange={(price) => updateOrder({ price })}
