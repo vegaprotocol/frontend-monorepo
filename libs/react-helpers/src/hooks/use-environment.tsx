@@ -92,12 +92,12 @@ export const EnvironmentProvider = ({
   );
 
   const missingKeys = Object.keys(environment)
-    .filter((key) => !environment[key as EnvKey])
+    .filter((key) => typeof environment[key as EnvKey] === undefined)
     .map((key) => `"${key}"`)
     .join(', ');
 
-  if (missingKeys) {
-    console.warn(
+  if (missingKeys.length) {
+    throw new Error(
       `Error setting up the app environment. The following variables are missing from your environment: ${missingKeys}.`
     );
   }
