@@ -36,13 +36,6 @@ const ORDER_EVENT_SUB = gql`
   }
 `;
 
-const calculateOrderSize = (
-  market: DealTicketQuery_market,
-  size: string
-): string => {
-  return removeDecimal(size, market.positionDecimalPlaces);
-};
-
 export const useOrderSubmit = (market: DealTicketQuery_market) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
@@ -100,7 +93,7 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
             order.type === OrderType.Limit && order.price
               ? removeDecimal(order.price, market.decimalPlaces)
               : undefined,
-          size: calculateOrderSize(market, order.size),
+          size: removeDecimal(order.size, market.positionDecimalPlaces),
           type: order.type,
           side: order.side,
           timeInForce: order.timeInForce,
