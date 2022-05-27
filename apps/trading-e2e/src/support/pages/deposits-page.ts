@@ -17,52 +17,33 @@ export default class DepositsPage extends BasePage {
   }
 
   checkModalContains(text: string) {
-    cy.get('[role="dialog"]').contains(text).should('be.visible');
-  }
-
-  updateForm(args?: { asset?: string; to?: string; amount?: string }) {
-    if (args?.asset) {
-      cy.get('select[name="asset"]').select(args.asset);
-    }
-    if (args?.to) {
-      cy.get('input[name="to"]').clear().type(args.to);
-    }
-    if (args?.amount) {
-      cy.get('input[name="amount"]').clear().type(args.amount);
-    }
+    cy.get('[role="dialog"] > div > div > h1').should('have.text', text);
   }
 
   submitForm() {
     cy.getByTestId('deposit-submit').click();
   }
 
-  verifyFieldsAreRequired() {
-    cy.get(this.assetError).contains(this.requiredText);
-    cy.get(this.toError).contains(this.requiredText);
-    cy.get(this.amountError).contains(this.requiredText);
-    cy.getByTestId('input-error-text').should('have.length', 3);
-  }
-
   verifyInvalidPublicKey() {
-    cy.get(this.toError).contains('Invalid Vega key').should('be.visible');
+    cy.get(this.toError).should('have.text', 'Invalid Vega key');
   }
 
   verifyAmountTooSmall() {
-    cy.get(this.amountError)
-      .contains('Value is below minimum')
-      .should('be.visible');
+    cy.get(this.amountError).should('have.text', 'Value is below minimum');
   }
 
   verifyInsufficientAmountMessage() {
-    cy.getByTestId('input-error-text')
-      .contains('Insufficient amount in Ethereum wallet')
-      .should('be.visible');
+    cy.getByTestId('input-error-text').should(
+      'contain.text',
+      'Insufficient amount in Ethereum wallet'
+    );
   }
 
   verifyNotApproved() {
-    cy.get(this.amountError)
-      .contains('Amount is above approved amount')
-      .should('be.visible');
+    cy.get(this.amountError).should(
+      'have.text',
+      'Amount is above approved amount'
+    );
     cy.contains('Deposits of tBTC not approved').should('be.visible');
   }
 }
