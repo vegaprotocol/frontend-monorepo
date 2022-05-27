@@ -12,7 +12,10 @@ export interface Order {
   expiration?: Date;
 }
 
-const getDefaultOrder = (market: DealTicketQuery_market, defaultOrder?: Order): Order => ({
+const getDefaultOrder = (
+  market: DealTicketQuery_market,
+  defaultOrder?: Order
+): Order => ({
   type: OrderType.Market,
   side: OrderSide.Buy,
   timeInForce: OrderTimeInForce.IOC,
@@ -26,9 +29,11 @@ export type UpdateOrder = (order: Partial<Order>) => void;
 
 export const useOrderState = (
   market: DealTicketQuery_market,
-  defaultOrder?: Order,
+  defaultOrder?: Order
 ): [Order, UpdateOrder] => {
-  const [order, setOrder] = useState<Order>(getDefaultOrder(market, defaultOrder));
+  const [order, setOrder] = useState<Order>(
+    getDefaultOrder(market, defaultOrder)
+  );
 
   const updateOrder = useCallback((orderUpdate: Partial<Order>) => {
     setOrder((curr) => {

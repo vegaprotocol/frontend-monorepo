@@ -50,7 +50,7 @@ const defaultWalletContext = {
 
 function setup(
   context?: Partial<VegaWalletContextShape>,
-  market = defaultMarket,
+  market = defaultMarket
 ) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider>

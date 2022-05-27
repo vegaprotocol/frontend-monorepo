@@ -99,7 +99,9 @@ it('Injects ticket order', () => {
     screen.queryByTestId('order-side-SIDE_SELL-selected')
   ).not.toBeInTheDocument();
   expect(screen.getByTestId('order-size')).toHaveDisplayValue(
-    `${parseInt(order.size) / Math.pow(10, market.positionDecimalPlaces)}.${Array(market.positionDecimalPlaces).fill(0).join('')}`
+    `${
+      parseInt(order.size) / Math.pow(10, market.positionDecimalPlaces)
+    }.${Array(market.positionDecimalPlaces).fill(0).join('')}`
   );
   expect(screen.getByTestId('order-tif')).toHaveValue(order.timeInForce);
 
