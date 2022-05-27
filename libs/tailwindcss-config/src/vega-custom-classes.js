@@ -29,6 +29,15 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.syntax-highlighter-wrapper .hljs-string': {
       color: theme.colors.blue,
     },
+    '.vega-input-shadow': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}`,
+    },
+    '.vega-input-shadow-focus': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.vega.yellow}`,
+    },
+    '.vega-input-shadow-focus-error': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.intent.danger}`,
+    },
   });
 });
 
