@@ -64,6 +64,12 @@ export const generateOrderBook = (
       ],
       buy: [
         {
+          price: '826339',
+          volume: '200',
+          numberOfOrders: '5',
+          __typename: 'PriceLevel',
+        },
+        {
           price: '826336',
           volume: '1475',
           numberOfOrders: '28',
@@ -97,6 +103,12 @@ export const generateOrderBook = (
           price: '826331',
           volume: '162',
           numberOfOrders: '3',
+          __typename: 'PriceLevel',
+        },
+        {
+          price: '826328',
+          volume: '20',
+          numberOfOrders: '2',
           __typename: 'PriceLevel',
         },
       ],

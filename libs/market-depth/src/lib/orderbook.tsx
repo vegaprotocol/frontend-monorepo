@@ -292,6 +292,7 @@ export const Orderbook = ({
       >
         <div className="text-ui-small col-start-2">
           <select
+            data-testid='precision-change'
             onChange={(e) => onResolutionChange(Number(e.target.value))}
             value={resolution}
             className="block bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full appearance-none"

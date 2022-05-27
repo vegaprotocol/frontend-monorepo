@@ -16,6 +16,7 @@ import TradesList from '../trading-windows/trades-list';
 import TradingPage from '../pages/trading-page';
 import OrdersList from '../trading-windows/orders-list';
 import OrderBookList from '../trading-windows/orderbook-list';
+import MarketPage from '../pages/markets-page';
 
 const tradesList = new TradesList();
 const tradingPage = new TradingPage();
@@ -23,6 +24,7 @@ const positionsList = new PositionsList();
 const accountList = new AccountsList();
 const ordersList = new OrdersList();
 const orderBookList = new OrderBookList();
+const marketPage = new MarketPage();
 
 const mockMarket = (state: MarketState) => {
   cy.mockGQL('Market', (req) => {
@@ -173,7 +175,7 @@ When('I click on order book tab', () => {
 
 Then('orderbook is displayed with expected orders', () => {
   orderBookList.verifyOrderBookRow('826342', '0', '8.26342', '264', '1488');
-  orderBookList.verifyOrderBookRow('826336', '1475', '8.26336', '0', '1475');
+  orderBookList.verifyOrderBookRow('826336', '1475', '8.26336', '0', '1675');
   orderBookList.verifyDisplayedVolume(
     '826342',
     false,
@@ -186,29 +188,47 @@ Then('orderbook is displayed with expected orders', () => {
     '100%',
     orderBookList.testingVolume.CumulativeVolume
   );
-  //mid level price
-  orderBookList.verifyOrderBookRow('826337', '0', '8.26337', '0', '303');
+// mid level price
+  orderBookList.verifyOrderBookRow('826337', '0', '8.26337', '0', '200');
   orderBookList.verifyDisplayedVolume(
     '826337',
-    false,
-    '10%',
+    true,
+    '6%',
     orderBookList.testingVolume.CumulativeVolume
   );
+  orderBookList.verifyTopMidPricePosition('123')
+  orderBookList.verifyBottomMidPricePosition('144')
+
+// autofilled order
+  orderBookList.verifyOrderBookRow('826330', '0', '8.26330', '0', '3548');
+  orderBookList.verifyDisplayedVolume(
+    '826330',
+    true,
+    '0%',
+    orderBookList.testingVolume.BidVolume
+  );
+  orderBookList.verifyDisplayedVolume(
+    '826330',
+    true,
+    '100%',
+    orderBookList.testingVolume.CumulativeVolume
+  );
+
 });
 
 Then('orderbook can be reduced and expanded', () => {
   orderBookList.changePrecision('10');
   orderBookList.verifyOrderBookRow(
     '82634',
-    '1668',
+    '1868',
     '8.2634',
     '1488',
-    '1488/1668'
+    '1488/1868'
   );
-  orderBookList.verifyCumulativeAskBarPercentage('45%');
-  orderBookList.verifyCumulativeBidBarPercentage('50%');
+  orderBookList.verifyCumulativeAskBarPercentage('42%');
+  orderBookList.verifyCumulativeBidBarPercentage('53%');
   orderBookList.changePrecision('100');
-  orderBookList.verifyOrderBookRow('8263', '3348', '8.263', '1488', '');
+  orderBookList.verifyOrderBookRow('8263', '3568', '8.263', '1488', '');
   orderBookList.verifyDisplayedVolume(
     '8263',
     true,
@@ -218,7 +238,7 @@ Then('orderbook can be reduced and expanded', () => {
   orderBookList.verifyDisplayedVolume(
     '8263',
     false,
-    '45%',
+    '42%',
     orderBookList.testingVolume.AskVolume
   );
   orderBookList.changePrecision('1');
