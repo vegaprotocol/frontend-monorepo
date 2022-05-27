@@ -40,6 +40,14 @@ When('select a different public key', () => {
   vegaWallet.selectPublicKey();
 });
 
+When('I disconnect my Vega wallet', () => {
+  vegaWallet.validatePublicKeyDisplayed(
+    Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY')
+  );
+  vegaWallet.clickOnWalletConnectDialog();
+  vegaWallet.clickDisconnectAllKeys();
+});
+
 Then('public key is switched', () => {
   vegaWallet.validatePublicKeyDisplayed(
     Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY2')

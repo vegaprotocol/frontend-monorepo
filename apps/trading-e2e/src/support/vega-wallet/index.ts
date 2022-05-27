@@ -3,6 +3,7 @@ export default class VegaWallet {
   walletConnectors = 'connectors-list';
   walletForm = 'rest-connector-form';
   selectPublicKeyBtn = 'select-keypair-button';
+  disconnectAllKeysBtn = 'disconnect';
   walletInputError = 'input-wallet-error';
   walletFormError = 'form-error';
   inputError = 'input-error-text';
@@ -55,5 +56,9 @@ export default class VegaWallet {
 
   clickOnWalletConnectDialog() {
     cy.getByTestId(this.connectVegaBtn).click();
+  }
+
+  clickDisconnectAllKeys() {
+    cy.getByTestId(this.disconnectAllKeysBtn).click();
   }
 }

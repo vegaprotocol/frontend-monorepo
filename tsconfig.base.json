@@ -26,6 +26,7 @@
       "@vegaprotocol/order-list": ["libs/order-list/src/index.ts"],
       "@vegaprotocol/positions": ["libs/positions/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
+      "@vegaprotocol/smart-contracts": ["libs/smart-contracts/src/index.ts"],
       "@vegaprotocol/tailwindcss-config": [
         "libs/tailwindcss-config/src/index.js"
       ],
