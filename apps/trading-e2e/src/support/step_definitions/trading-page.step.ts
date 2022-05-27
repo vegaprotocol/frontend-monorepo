@@ -188,7 +188,7 @@ Then('orderbook is displayed with expected orders', () => {
     '100%',
     orderBookList.testingVolume.CumulativeVolume
   );
-// mid level price
+  // mid level price
   orderBookList.verifyOrderBookRow('826337', '0', '8.26337', '0', '200');
   orderBookList.verifyDisplayedVolume(
     '826337',
@@ -196,10 +196,10 @@ Then('orderbook is displayed with expected orders', () => {
     '6%',
     orderBookList.testingVolume.CumulativeVolume
   );
-  orderBookList.verifyTopMidPricePosition('123')
-  orderBookList.verifyBottomMidPricePosition('144')
+  orderBookList.verifyTopMidPricePosition('123');
+  orderBookList.verifyBottomMidPricePosition('144');
 
-// autofilled order
+  // autofilled order
   orderBookList.verifyOrderBookRow('826330', '0', '8.26330', '0', '3548');
   orderBookList.verifyDisplayedVolume(
     '826330',
@@ -213,7 +213,6 @@ Then('orderbook is displayed with expected orders', () => {
     '100%',
     orderBookList.testingVolume.CumulativeVolume
   );
-
 });
 
 Then('orderbook can be reduced and expanded', () => {

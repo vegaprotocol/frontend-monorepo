@@ -5,8 +5,8 @@ export default class OrderBookList {
   bidColour = 'darkgreen';
   askColour = 'maroon';
   testingVolume = TestingVolumeType;
-  topMidPriceLine = 'best-static-offer-price'
-  bottomMidPriceLine = 'best-static-bid-price'
+  topMidPriceLine = 'best-static-offer-price';
+  bottomMidPriceLine = 'best-static-bid-price';
 
   bidVolTestId(price: string) {
     return `bid-vol-${price}`;
@@ -112,13 +112,13 @@ export default class OrderBookList {
   verifyTopMidPricePosition(expectedPosition: string) {
     cy.getByTestId(this.topMidPriceLine)
       .invoke('attr', 'style')
-      .should('contain', `top: ${expectedPosition}px`)
+      .should('contain', `top: ${expectedPosition}px`);
   }
 
   verifyBottomMidPricePosition(expectedPosition: string) {
     cy.getByTestId(this.bottomMidPriceLine)
       .invoke('attr', 'style')
-      .should('contain', `top: ${expectedPosition}px`)
+      .should('contain', `top: ${expectedPosition}px`);
   }
 }
 
