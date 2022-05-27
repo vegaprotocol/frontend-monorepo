@@ -61,11 +61,6 @@ const OrderbokMockDataProvider = ({
           decimalPlaces={decimalPlaces}
           resolution={resolution}
           onResolutionChange={setResolution}
-          marketTradingMode={
-            overlap > 0
-              ? MarketTradingMode.BatchAuction
-              : MarketTradingMode.Continuous
-          }
           indicativeVolume={indicativeVolume?.toString()}
           {...mapMarketData(
             {
