@@ -116,6 +116,34 @@ export const Orderbook = ({
     [rows, resolution]
   );
 
+  const onScroll = useCallback(
+    (scrollTop: number) => {
+      if (Math.abs(scrollOffset - scrollTop) > marginSize) {
+        setScrollOffset(scrollTop);
+      }
+      if (skipPriceInCenterUpdateRef.current) {
+        skipPriceInCenterUpdateRef.current = false;
+        return;
+      }
+      priceInCenter.current = (
+        BigInt(resolution) + // extra row on very top - sticky header
+        BigInt(rows?.[0]?.price ?? 0) -
+        BigInt(
+          Math.floor(
+            (scrollTop + Math.floor(viewportHeight / 2)) /
+              rowHeight /
+              resolution
+          )
+        ) *
+          BigInt(resolution)
+      ).toString();
+      if (lockOnMidPrice) {
+        setLockOnMidPrice(false);
+      }
+    },
+    [lockOnMidPrice, marginSize, resolution, rows, scrollOffset, viewportHeight]
+  );
+
   const scrollToPrice = useCallback(
     (price: string, skipPriceInCenterUpdate = false) => {
       if (scrollRef.current && maxPriceLevel) {
@@ -132,12 +160,13 @@ export const Orderbook = ({
         scrollTop += (scrollRef.current.scrollTop % 21) - (scrollTop % 21);
         const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
         if (scrollRef.current.scrollTop !== priceCenterScrollOffset) {
+          onScroll(priceCenterScrollOffset);
           scrollRef.current.scrollTop = priceCenterScrollOffset;
           skipPriceInCenterUpdateRef.current = skipPriceInCenterUpdate;
         }
       }
     },
-    [maxPriceLevel, resolution, viewportHeight]
+    [maxPriceLevel, resolution, viewportHeight, onScroll]
   );
 
   useEffect(() => {
@@ -180,7 +209,7 @@ export const Orderbook = ({
   useEffect(() => {
     function handleResize() {
       if (scrollRef.current) {
-        setViewportHeight(scrollRef.current.clientHeight);
+        setViewportHeight(scrollRef.current.clientHeight || window.innerHeight);
       }
     }
     window.addEventListener('resize', handleResize);
@@ -204,31 +233,6 @@ export const Orderbook = ({
     };
   }, [rows, scrollOffset, resolution, viewportHeight, numberOfRows]);
 
-  const onScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    if (Math.abs(scrollOffset - event.currentTarget.scrollTop) > marginSize) {
-      setScrollOffset(event.currentTarget.scrollTop);
-    }
-    if (skipPriceInCenterUpdateRef.current) {
-      skipPriceInCenterUpdateRef.current = false;
-      return;
-    }
-    priceInCenter.current = (
-      BigInt(resolution) + // extra row on very top - sticky header
-      BigInt(rows?.[0]?.price ?? 0) -
-      BigInt(
-        Math.floor(
-          (event.currentTarget.scrollTop + Math.floor(viewportHeight / 2)) /
-            rowHeight /
-            resolution
-        )
-      ) *
-        BigInt(resolution)
-    ).toString();
-    if (lockOnMidPrice) {
-      setLockOnMidPrice(false);
-    }
-  };
-
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
     (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
@@ -237,8 +241,11 @@ export const Orderbook = ({
     <div
       className={`h-full overflow-auto relative ${styles['scroll']}`}
       style={{ scrollbarColor: 'rebeccapurple green', scrollbarWidth: 'thin' }}
-      onScroll={onScroll}
+      onScroll={(event: React.UIEvent<HTMLDivElement>) =>
+        onScroll(event.currentTarget.scrollTop)
+      }
       ref={scrollRef}
+      data-testid={'scroll'}
     >
       <div
         className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"

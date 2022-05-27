@@ -1,55 +1,15 @@
 import type { Story, Meta } from '@storybook/react';
-import { compactRows, mapMarketData } from './orderbook-data';
+import { generateMockData } from './orderbook-data';
+import type { MockDataGeneratorParams } from './orderbook-data';
 import { Orderbook } from './orderbook';
-import type {
-  MarketDepth_market_depth_sell,
-  MarketDepth_market_depth_buy,
-} from './__generated__/MarketDepth';
-import { MarketTradingMode } from '@vegaprotocol/types';
 import { useState } from 'react';
 
-interface Props {
-  numberOfSellRows: number;
-  numberOfBuyRows: number;
-  overlap: number;
-  midPrice: number;
+type Props = Omit<MockDataGeneratorParams, 'resolution'> & {
   decimalPlaces: number;
-  bestStaticBidPrice: number;
-  bestStaticOfferPrice: number;
-  indicativePrice?: number;
-  indicativeVolume?: number;
-}
+};
 
-const OrderbokMockDataProvider = ({
-  numberOfSellRows,
-  numberOfBuyRows,
-  midPrice,
-  overlap,
-  decimalPlaces,
-  bestStaticBidPrice,
-  bestStaticOfferPrice,
-  indicativePrice,
-  indicativeVolume,
-}: Props) => {
+const OrderbokMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
   const [resolution, setResolution] = useState(1);
-  let matrix = new Array(numberOfSellRows).fill(undefined);
-  let price =
-    midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1) * resolution;
-  const sell: MarketDepth_market_depth_sell[] = matrix.map((row, i) => ({
-    __typename: 'PriceLevel',
-    price: (price -= resolution).toString(),
-    volume: (numberOfSellRows - i + 1).toString(),
-    numberOfOrders: '',
-  }));
-  price += overlap * resolution;
-  matrix = new Array(numberOfBuyRows).fill(undefined);
-  const buy: MarketDepth_market_depth_buy[] = matrix.map((row, i) => ({
-    __typename: 'PriceLevel',
-    price: (price -= resolution).toString(),
-    volume: (i + 2).toString(),
-    numberOfOrders: '',
-  }));
-  const rows = compactRows(sell, buy, resolution);
   return (
     <div className="absolute inset-0 dark:bg-black dark:text-white-60 bg-white text-black-60">
       <div
@@ -57,30 +17,9 @@ const OrderbokMockDataProvider = ({
         style={{ width: '400px' }}
       >
         <Orderbook
-          rows={rows}
-          decimalPlaces={decimalPlaces}
-          resolution={resolution}
           onResolutionChange={setResolution}
-          indicativeVolume={indicativeVolume?.toString()}
-          {...mapMarketData(
-            {
-              __typename: 'MarketData',
-              staticMidPrice: '',
-              marketTradingMode:
-                overlap > 0
-                  ? MarketTradingMode.BatchAuction
-                  : MarketTradingMode.Continuous,
-              bestStaticBidPrice: bestStaticBidPrice.toString(),
-              bestStaticOfferPrice: bestStaticOfferPrice.toString(),
-              indicativePrice: indicativePrice?.toString() ?? '',
-              indicativeVolume: indicativeVolume?.toString() ?? '',
-              market: {
-                __typename: 'Market',
-                id: '',
-              },
-            },
-            resolution
-          )}
+          decimalPlaces={decimalPlaces}
+          {...generateMockData({ ...props, resolution })}
         />
       </div>
     </div>

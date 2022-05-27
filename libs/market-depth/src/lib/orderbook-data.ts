@@ -1,6 +1,7 @@
 import produce from 'immer';
 import groupBy from 'lodash/groupBy';
 import { VolumeType } from '@vegaprotocol/react-helpers';
+import { MarketTradingMode } from '@vegaprotocol/types';
 import type {
   MarketDepth_market_depth_sell,
   MarketDepth_market_depth_buy,
@@ -345,4 +346,71 @@ export const updateLevels = (
     }
   });
   return levels;
+};
+
+export interface MockDataGeneratorParams {
+  numberOfSellRows: number;
+  numberOfBuyRows: number;
+  overlap: number;
+  midPrice: number;
+  bestStaticBidPrice: number;
+  bestStaticOfferPrice: number;
+  indicativePrice?: number;
+  indicativeVolume?: number;
+  resolution: number;
+}
+
+export const generateMockData = ({
+  numberOfSellRows,
+  numberOfBuyRows,
+  midPrice,
+  overlap,
+  bestStaticBidPrice,
+  bestStaticOfferPrice,
+  indicativePrice,
+  indicativeVolume,
+  resolution,
+}: MockDataGeneratorParams) => {
+  let matrix = new Array(numberOfSellRows).fill(undefined);
+  let price =
+    midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1) * resolution;
+  const sell: MarketDepth_market_depth_sell[] = matrix.map((row, i) => ({
+    __typename: 'PriceLevel',
+    price: (price -= resolution).toString(),
+    volume: (numberOfSellRows - i + 1).toString(),
+    numberOfOrders: '',
+  }));
+  price += overlap * resolution;
+  matrix = new Array(numberOfBuyRows).fill(undefined);
+  const buy: MarketDepth_market_depth_buy[] = matrix.map((row, i) => ({
+    __typename: 'PriceLevel',
+    price: (price -= resolution).toString(),
+    volume: (i + 2).toString(),
+    numberOfOrders: '',
+  }));
+  const rows = compactRows(sell, buy, resolution);
+  return {
+    rows,
+    resolution,
+    indicativeVolume: indicativeVolume?.toString(),
+    ...mapMarketData(
+      {
+        __typename: 'MarketData',
+        staticMidPrice: '',
+        marketTradingMode:
+          overlap > 0
+            ? MarketTradingMode.BatchAuction
+            : MarketTradingMode.Continuous,
+        bestStaticBidPrice: bestStaticBidPrice.toString(),
+        bestStaticOfferPrice: bestStaticOfferPrice.toString(),
+        indicativePrice: indicativePrice?.toString() ?? '',
+        indicativeVolume: indicativeVolume?.toString() ?? '',
+        market: {
+          __typename: 'Market',
+          id: '',
+        },
+      },
+      resolution
+    ),
+  };
 };
