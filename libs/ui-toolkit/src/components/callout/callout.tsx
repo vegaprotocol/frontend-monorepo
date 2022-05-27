@@ -45,7 +45,7 @@ const getIconElement = ({
   CalloutProps,
   'icon' | 'iconName' | 'iconDescription' | 'isLoading'
 >) => {
-  const wrapperClassName = 'ml-8 mr-16 mt-8';
+  const wrapperClassName = 'mt-4';
   if (isLoading) {
     return (
       <div className={wrapperClassName}>
@@ -64,7 +64,10 @@ const getIconElement = ({
       />
     );
   }
-  return <div className={wrapperClassName}>{icon}</div>;
+  if (icon) {
+    return <div className={wrapperClassName}>{icon}</div>;
+  }
+  return null;
 };
 
 export function Callout({
@@ -85,16 +88,14 @@ export function Callout({
   });
 
   const className = classNames(
+    'flex gap-20',
     'border',
     'border-black',
     'dark:border-white',
     'text-body-large',
     'dark:text-white',
     'p-16',
-    getIntentShadow(intent),
-    {
-      flex: iconElement,
-    }
+    getIntentShadow(intent)
   );
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
     ? `h${headingLevel}`
@@ -108,7 +109,7 @@ export function Callout({
   return (
     <div data-testid="callout" className={className}>
       {iconElement}
-      {iconElement ? <div className="grow">{body}</div> : body}
+      <div className="grow">{body}</div>
     </div>
   );
 }

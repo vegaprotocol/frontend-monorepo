@@ -163,15 +163,13 @@ const ConnectedKey = () => {
         />
       )}
       <WalletCardActions>
-        <Link style={{ flex: 1 }} to={`${Routes.STAKING}/associate`}>
-          <Button variant="primary" className="w-full">
-            {t('associate')}
-          </Button>
+        <Link className="flex-1" to={`${Routes.STAKING}/associate`}>
+          <button className="w-full px-28 border h-28">{t('associate')}</button>
         </Link>
-        <Link style={{ flex: 1 }} to={`${Routes.STAKING}/disassociate`}>
-          <Button variant="primary" className="w-full">
+        <Link className="flex-1" to={`${Routes.STAKING}/disassociate`}>
+          <button className="w-full px-28 border h-28">
             {t('disassociate')}
-          </Button>
+          </button>
         </Link>
       </WalletCardActions>
     </>
@@ -187,7 +185,7 @@ export const EthWallet = () => {
   return (
     <WalletCard>
       <WalletCardHeader>
-        <h1 className="text-h3 px-8 uppercase">{t('ethereumKey')}</h1>
+        <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
         {account && (
           <div className="font-mono px-4 text-right">
             <div>{truncateMiddle(account)}</div>
@@ -215,8 +213,8 @@ export const EthWallet = () => {
         {account ? (
           <ConnectedKey />
         ) : (
-          <Button
-            className="fill button-secondary--inverted"
+          <button
+            className="w-full px-28 border h-28"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
@@ -226,7 +224,7 @@ export const EthWallet = () => {
             data-test-id="connect-to-eth-wallet-button"
           >
             {t('connectEthWalletToAssociate')}
-          </Button>
+          </button>
         )}
         {account && (
           <WalletCardActions>

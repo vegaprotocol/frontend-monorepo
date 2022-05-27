@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { BigNumber } from '../../lib/bignumber';
@@ -65,7 +65,7 @@ export const PendingStake = ({
   } else if (formState === FormState.Pending) {
     return (
       <Callout
-        iconName="refresh"
+        icon={<Loader size="small" />}
         title={t('removingPendingStake', { pendingAmount })}
       />
     );

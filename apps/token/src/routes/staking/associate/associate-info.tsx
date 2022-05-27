@@ -6,11 +6,11 @@ export const AssociateInfo = ({ pubKey }: { pubKey: string | null }) => {
   const { t } = useTranslation();
   return (
     <>
-      <h2 data-testid="associate-vega-key-header">
+      <h2 className="text-h4" data-testid="associate-vega-key-header">
         {t('What Vega wallet/key is going to control your stake?')}
       </h2>
       <ConnectedVegaKey pubKey={pubKey} />
-      <h2 data-testid="associate-amount-header">
+      <h2 className="text-h4" data-testid="associate-amount-header">
         {t('How much would you like to associate?')}
       </h2>
     </>

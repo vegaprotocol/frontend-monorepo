@@ -41,10 +41,8 @@ export const VegaWallet = () => {
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
           <div>
-            <h1 className="text-h3 px-8 uppercase">{t('vegaWallet')}</h1>
-            <span className="mx-8 text-h6">
-              {keypair && `(${keypair.name})`}
-            </span>
+            <h1 className="text-h3 uppercase">{t('vegaWallet')}</h1>
+            <span className="text-h6">{keypair && `(${keypair.name})`}</span>
           </div>
           {keypair && (
             <span className="font-mono px-8">
