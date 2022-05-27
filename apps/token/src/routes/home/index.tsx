@@ -83,7 +83,7 @@ const Home = ({ name }: RouteChildProps) => {
           <a
             data-test-id="get-vega-wallet-link"
             href={Links.WALLET_GUIDE}
-            className="underline"
+            className="underline text-white"
             target="_blank"
             rel="nofollow noreferrer"
           >
@@ -91,7 +91,10 @@ const Home = ({ name }: RouteChildProps) => {
           </a>
         </p>
         <p data-test-id="associate-vega-tokens-link-on-homepage">
-          <Link to={`${Routes.STAKING}/associate`} className="underline">
+          <Link
+            to={`${Routes.STAKING}/associate`}
+            className="underline text-white"
+          >
             {t('Associate VEGA tokens')}
           </Link>
         </p>
