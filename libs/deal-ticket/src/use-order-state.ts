@@ -1,6 +1,7 @@
-import type { OrderSide } from '@vegaprotocol/wallet';
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import { OrderTimeInForce, OrderType, OrderSide } from '@vegaprotocol/wallet';
 import { useState, useCallback } from 'react';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 
 export interface Order {
   size: string;
@@ -11,10 +12,23 @@ export interface Order {
   expiration?: Date;
 }
 
+const getDefaultOrder = (market: DealTicketQuery_market, defaultOrder?: Order): Order => ({
+  type: OrderType.Market,
+  side: OrderSide.Buy,
+  timeInForce: OrderTimeInForce.IOC,
+  ...defaultOrder,
+  size: defaultOrder?.size
+    ? addDecimal(defaultOrder.size, market.positionDecimalPlaces)
+    : String(toDecimal(market.positionDecimalPlaces)),
+});
+
 export type UpdateOrder = (order: Partial<Order>) => void;
 
-export const useOrderState = (defaultOrder: Order): [Order, UpdateOrder] => {
-  const [order, setOrder] = useState<Order>(defaultOrder);
+export const useOrderState = (
+  market: DealTicketQuery_market,
+  defaultOrder?: Order,
+): [Order, UpdateOrder] => {
+  const [order, setOrder] = useState<Order>(getDefaultOrder(market, defaultOrder));
 
   const updateOrder = useCallback((orderUpdate: Partial<Order>) => {
     setOrder((curr) => {

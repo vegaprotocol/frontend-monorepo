@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { FormEvent } from 'react';
 import Box from '@mui/material/Box';
 import { Stepper } from '../stepper';
-import type { Order, DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import {
   ExpirySelector,
   SideSelector,
@@ -15,40 +15,18 @@ import {
   DealTicketMarketForm,
 } from '@vegaprotocol/deal-ticket';
 import {
-  OrderSide,
   OrderTimeInForce,
   OrderType,
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
-import {
-  addDecimal,
-  toDecimal,
-  removeDecimal,
-} from '@vegaprotocol/react-helpers';
+import { addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
 }
 
-const getDefaultOrder = (market: DealTicketQuery_market): Order => ({
-  type: OrderType.Market,
-  side: OrderSide.Buy,
-  size: String(toDecimal(market.positionDecimalPlaces)),
-  timeInForce: OrderTimeInForce.IOC,
-});
-
-const prepareOrder = (
-  market: DealTicketQuery_market,
-  { type, side, size, timeInForce }: Order
-): Order => ({
-  type,
-  side,
-  size: removeDecimal(size, market.positionDecimalPlaces),
-  timeInForce,
-});
-
 export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
-  const [order, updateOrder] = useOrderState(getDefaultOrder(market));
+  const [order, updateOrder] = useOrderState(market);
   const { submit, transaction } = useOrderSubmit(market);
 
   const transactionStatus =
@@ -90,7 +68,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
-    return submit(prepareOrder(market, order));
+    return submit(order);
   };
 
   const steps = [

@@ -20,6 +20,7 @@ const market: DealTicketQuery_market = {
   __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
+  positionDecimalPlaces: 1,
   tradingMode: MarketTradingMode.Continuous,
   state: MarketState.Active,
   tradableInstrument: {
@@ -43,7 +44,7 @@ const market: DealTicketQuery_market = {
 const submit = jest.fn();
 const transactionStatus = 'default';
 
-function generateJsx() {
+function generateJsx(order?: Order) {
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <VegaWalletContext.Provider value={{} as any}>
@@ -57,8 +58,35 @@ function generateJsx() {
   );
 }
 
-it('Deal ticket defaults', () => {
+it('Displays ticket defaults', () => {
   render(generateJsx());
+
+  // Assert defaults are used
+  expect(
+    screen.getByTestId(`order-type-${order.type}-selected`)
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByTestId('order-side-SIDE_BUY-selected')
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByTestId('order-side-SIDE_SELL-selected')
+  ).not.toBeInTheDocument();
+  expect(screen.getByTestId('order-size')).toHaveDisplayValue(
+    String(1 / Math.pow(10, market.positionDecimalPlaces))
+  );
+  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.IOC);
+
+  // Assert last price is shown
+  expect(screen.getByTestId('last-price')).toHaveTextContent(
+    // eslint-disable-next-line
+    `~${addDecimal(market.depth.lastTrade!.price, market.decimalPlaces)} ${
+      market.tradableInstrument.instrument.product.quoteName
+    }`
+  );
+});
+
+it('Injects ticket order', () => {
+  render(generateJsx(order));
 
   // Assert defaults are used
   expect(
@@ -70,7 +98,9 @@ it('Deal ticket defaults', () => {
   expect(
     screen.queryByTestId('order-side-SIDE_SELL-selected')
   ).not.toBeInTheDocument();
-  expect(screen.getByTestId('order-size')).toHaveDisplayValue(order.size);
+  expect(screen.getByTestId('order-size')).toHaveDisplayValue(
+    `${parseInt(order.size) / Math.pow(10, market.positionDecimalPlaces)}.${Array(market.positionDecimalPlaces).fill(0).join('')}`
+  );
   expect(screen.getByTestId('order-tif')).toHaveValue(order.timeInForce);
 
   // Assert last price is shown
@@ -83,7 +113,7 @@ it('Deal ticket defaults', () => {
 });
 
 it('Can edit deal ticket', () => {
-  render(generateJsx());
+  render(generateJsx(order));
 
   // Asssert changing values
   fireEvent.click(screen.getByTestId('order-side-SIDE_BUY'));

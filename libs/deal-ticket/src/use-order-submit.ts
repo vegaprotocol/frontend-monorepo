@@ -9,6 +9,7 @@ import type {
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
 } from './__generated__/OrderEvent';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -35,12 +36,14 @@ const ORDER_EVENT_SUB = gql`
   }
 `;
 
-interface UseOrderSubmitMarket {
-  id: string;
-  decimalPlaces: number;
-}
+const calculateOrderSize = (
+  market: DealTicketQuery_market,
+  size: string
+): string => {
+  return removeDecimal(size, market.positionDecimalPlaces);
+};
 
-export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
+export const useOrderSubmit = (market: DealTicketQuery_market) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [id, setId] = useState('');
@@ -97,7 +100,7 @@ export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
             order.type === OrderType.Limit && order.price
               ? removeDecimal(order.price, market.decimalPlaces)
               : undefined,
-          size: order.size,
+          size: calculateOrderSize(market, order.size),
           type: order.type,
           side: order.side,
           timeInForce: order.timeInForce,
