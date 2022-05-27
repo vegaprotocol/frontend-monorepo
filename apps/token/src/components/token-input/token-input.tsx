@@ -75,7 +75,6 @@ export const TokenInput = ({
   perform,
   submitText,
   currency,
-
   approveText,
   allowance,
   approve,
@@ -90,7 +89,6 @@ export const TokenInput = ({
   perform: () => void;
   submitText: string;
   currency: string;
-
   requireApproval?: boolean;
   maximum?: BigNumber;
   minimum?: BigNumber;

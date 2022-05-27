@@ -92,9 +92,11 @@ export const StakingForm = ({
   React.useEffect(() => {
     setAmount('');
   }, [action, setAmount]);
+
   const { data } = useNetworkParam([
     NetworkParams.VALIDATOR_DELEGATION_MIN_AMOUNT,
   ]);
+
   const minTokensWithDecimals = React.useMemo(() => {
     const minTokens = new BigNumber(data && data.length === 1 ? data[0] : '');
     return addDecimal(minTokens, appState.decimals);

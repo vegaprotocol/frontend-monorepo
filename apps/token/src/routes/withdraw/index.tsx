@@ -22,7 +22,7 @@ const Withdraw = () => {
   return (
     <>
       <Heading title={t('withdrawPageHeading')} />
-      <p>{t('withdrawPageText')}</p>
+      <p className="mb-8">{t('withdrawPageText')}</p>
       <div className="mb-24">
         <VegaWalletContainer>
           {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
