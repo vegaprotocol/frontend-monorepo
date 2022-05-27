@@ -1,57 +1,47 @@
-@ignore
-Feature: Withdrawals
+Feature: Withdrawals to eth wallet
 
-  Scenario: Can prepare a withdrawal
-    Given I am on withdraw page
-    And I connect eth wallet
-    And I connect vega wallet
-    And I can see the withdrawals warning info
-    And I can see the from ethereum address field is automatically populated with current connected key
-    And I select asset 'tBTC'
-    And I input '100' tokens to withdraw
-    And the withdraw button is enabled
-    When I click the withdraw button
-    Then The vega transaction is sent
-    Then The Ethereum transaction is triggered
+  Background:
+    Given I navigate to withdrawal page
+    And I connect to Vega Wallet
 
-  Scenario: Form field validation if fields are incomplete
-    Given I am on withdraw page
-    And I connect eth wallet
-    And I connect vega wallet
-    When I click the withdraw button
-    Then I can see validation errors on incomplete fields
+  Scenario: Succesfull withdrawal
+    When I succesfully fill in and submit withdrawal form
+    Then withdrawal modal is displayed
 
-  Scenario: Can prepare a withdrawal to send to another eth wallet
-    Given I am on withdraw page
-    And I connect eth wallet
-    And I connect vega wallet
-    And I select asset 'tBTC'
-    And I can see an eth address is already filled in the withdraw to field
-    When I click the enter manually button
-    Then I can enter a new eth address
-    And I input '100' tokens to withdraw
-    And the withdraw button is enabled
-    When I click the withdraw button
-    Then The vega transaction is sent
-    Then The Ethereum transaction is triggered
+  Scenario: Error displayed when fields are empty
+    When I clear ethereum address
+    And click submit
+    Then errors are displayed for empty fields
 
-  Scenario: Eth key validation on form
-    Given I am on withdraw page
-    And I connect eth wallet
-    And I connect vega wallet
-    And I select asset 'tBTC'
-    When I click the enter manually button
-    And I enter eth address 'MMMMNNNN'
-    Then the invalid eth address error is shown
+  Scenario: Error displayed when invalid Ethereum address is entered
+    When I enter an invalid ethereum address
+    Then error for invalid ethereum address is displayed
 
-  Scenario: Validation error if trying to withdraw more than available
-    Given I am on withdrawals page
-    And I have connected
-    And I select asset 'tBTC'
-    And I input '1088494949494949940' tokens to withdraw
-    When I click the withdraw button
-    Then validation error is shown for token input amount
+  Scenario: Error displayed when not in range of acceptable amount
+    When I enter the following details in withdrawal form
+      | asset  | tUSDC TEST |
+      | amount | 0          |
+    Then error for below minumum amount is displayed
+    When I enter the following details in withdrawal form
+      | asset  | tUSDC TEST |
+      | amount | 1          |
+    Then error for above maximum amount is displayed
 
+  Scenario: Fill in amount using maximum
+    When I select "tDAI TEST"
+    And ethereum address is connected Ethereum wallet
+    And I click Use maximum
+    Then expected amount is "5.00000"
+
+  Scenario: Able to view history of withdrawals on withdrawals page
+    Given I navigate to withdrawals page
+    Then history of withdrawals are displayed
+
+  Scenario: Vega wallet connect text shown when Vega wallet is disconnected
+    When I disconnect my Vega wallet
+    Then connect to Vega wallet is displayed
+
+  @manual
   Scenario: Can see pending / unfinished withdrawals
     Given I am on the withdrawals page
     And I can see there are unfinished withdrawals

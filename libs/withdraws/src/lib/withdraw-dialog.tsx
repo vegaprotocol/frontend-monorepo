@@ -51,7 +51,10 @@ export const DialogWrapper = ({
     <div className="flex gap-12 max-w-full text-ui">
       <div className="pt-8 fill-current">{icon}</div>
       <div className="flex-1">
-        <h1 className="text-h4 text-black dark:text-white capitalize mb-12">
+        <h1
+          data-testid="dialog-title"
+          className="text-h4 text-black dark:text-white capitalize mb-12"
+        >
           {title}
         </h1>
         {children}
@@ -65,7 +68,11 @@ interface StepProps {
 }
 
 const Step = ({ children }: StepProps) => {
-  return <p className="flex justify-between">{children}</p>;
+  return (
+    <p data-testid="dialog-text" className="flex justify-between">
+      {children}
+    </p>
+  );
 };
 
 interface DialogProps {
