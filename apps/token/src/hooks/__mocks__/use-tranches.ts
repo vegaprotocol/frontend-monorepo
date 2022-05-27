@@ -1,7 +1,7 @@
 import React from 'react';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import mock from './tranches-mock';
-import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche } from '@vegaprotocol/smart-contracts';
 
 export function useTranches() {
   const { vesting } = useContracts();
