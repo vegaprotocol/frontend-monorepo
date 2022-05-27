@@ -22,7 +22,6 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
 
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
-  const stretchedLink = `after:content-[''] after:inset-0 after:z-[1] after:absolute after:box-border`;
   return (
     <div className="max-h-[40rem] overflow-x-auto">
       <table className="relative h-full min-w-full whitespace-nowrap">
