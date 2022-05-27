@@ -87,6 +87,7 @@ export const StatusCell = ({
         {t('Pending')}
         {data.txHash && (
           <Link
+            data-testid="etherscan-link"
             title={t('View transaction on Etherscan')}
             href={`${ethUrl}/tx/${data.txHash}`}
           >
