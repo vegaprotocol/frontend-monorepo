@@ -58,7 +58,7 @@ const transformValue = (key: EnvKey, value?: string) => {
     case 'VEGA_ENV':
       return value as Networks;
     case 'ETHEREUM_CHAIN_ID':
-      return Number(value) ?? 3;
+      return value && Number(value);
     default:
       return value;
   }
