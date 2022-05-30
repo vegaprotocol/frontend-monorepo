@@ -32,6 +32,14 @@ export function Index() {
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
+  if (data && !error && !loading) {
+    const marketId = marketList(data)[0]?.id;
+    window.history.replaceState(
+      data,
+      '',
+      marketId ? `/markets/${marketId}` : '/markets'
+    );
+  }
   return (
     <>
       <LandingDialog />
