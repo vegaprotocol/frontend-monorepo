@@ -10,11 +10,12 @@ import type { MarketList } from '../markets-container/__generated__/MarketList';
 
 export interface SelectMarketListProps {
   data: MarketList | undefined;
+  onSelect: () => void;
 }
 
 type CandleClose = Required<string>;
 
-export const SelectMarketList = ({ data }: SelectMarketListProps) => {
+export const SelectMarketList = ({ data, onSelect }: SelectMarketListProps) => {
   const thClassNames = (direction: 'left' | 'right') =>
     `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark/80 dark:text-white/80`;
   const tdClassNames =
@@ -49,8 +50,10 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                     <td className={`${boldUnderlineClassNames} relative`}>
                       <Link
                         href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
+                        passHref={true}
                       >
-                        {marketName}
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        <a onClick={onSelect}>{marketName}</a>
                       </Link>
                     </td>
                     <td className={tdClassNames}>

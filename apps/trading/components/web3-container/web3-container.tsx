@@ -111,7 +111,7 @@ export const Web3Content = ({
     if (
       connector?.connectEagerly &&
       // Dont eager connect if this is a cypress test run
-      'Cypress' in window
+      !('Cypress' in window)
     ) {
       connector.connectEagerly();
     }
