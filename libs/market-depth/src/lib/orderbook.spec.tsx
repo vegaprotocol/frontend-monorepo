@@ -29,4 +29,55 @@ describe('Orderbook', () => {
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
     expect(result.getByTestId('scroll').scrollTop).toBe(1911);
   });
+
+  it('should keep mid price row in the middle', async () => {
+    window.innerHeight = 231; // 11 rows
+    const result = render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData(params)}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+    result.rerender(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData({
+          ...params,
+          numberOfSellRows: params.numberOfSellRows - 1,
+        })}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    expect(result.getByTestId('scroll').scrollTop).toBe(1911 - 21);
+  });
+
+  it('should scroll to mid price when it will change', async () => {
+    window.innerHeight = 231; // 11 rows
+    const result = render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData(params)}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+    result.rerender(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData({
+          ...params,
+          bestStaticBidPrice: params.bestStaticBidPrice + 1,
+          bestStaticOfferPrice: params.bestStaticOfferPrice + 1,
+        })}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    expect(result.getByTestId('scroll').scrollTop).toBe(1911 - 21);
+  });
 });
