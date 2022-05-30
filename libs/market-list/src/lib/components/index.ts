@@ -1,3 +1,3 @@
 export * from './__generated__';
-export * from './landing';
+export * from './select-market';
 export * from './markets-container';
