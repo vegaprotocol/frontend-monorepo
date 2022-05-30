@@ -1,5 +1,5 @@
-import type { EthereumChainId } from '@vegaprotocol/smart-contracts-sdk';
-import { EthereumChainIds } from '@vegaprotocol/smart-contracts-sdk';
+import type { EthereumChainId } from '@vegaprotocol/smart-contracts';
+import { EthereumChainIds } from '@vegaprotocol/smart-contracts';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 const TRANCHE_LABELS: Record<number, string[]> = {

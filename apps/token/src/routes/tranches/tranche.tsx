@@ -1,5 +1,5 @@
 import type {
-  Tranche as ITranch,
+  Tranche as ITranche,
   EthereumChainId,
 } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
@@ -29,7 +29,7 @@ const TrancheProgressContents = ({
 
 export const Tranche = () => {
   const tranches = useOutletContext<ITranche[]>();
-  const { ADDRESSES, ETHERSCAN_URL, ETHEREUM_CHAIN_ID } = useEnvironment();
+  const { ADDRESSES, ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { trancheId } = useParams<{ trancheId: string }>();
   const { chainId } = useWeb3React();

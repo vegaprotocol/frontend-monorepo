@@ -4,7 +4,7 @@ import {
   EthereumChainIds,
   EnvironmentConfig,
   Networks,
-} from '@vegaprotocol/smart-contracts-sdk';
+} from '@vegaprotocol/smart-contracts';
 import type { TrancheLabelProps } from './tranche-label';
 import { TrancheLabel } from './tranche-label';
 

@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
-import { Networks } from '@vegaprotocol/smart-contracts-sdk';
+import { Networks } from '@vegaprotocol/smart-contracts';
 
 export const useAddAssetSupported = () => {
   const { connector } = useWeb3React();

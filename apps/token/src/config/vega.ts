@@ -1,4 +1,4 @@
-import { Networks } from '@vegaprotocol/smart-contracts-sdk';
+import { Networks } from '@vegaprotocol/smart-contracts';
 
 interface VegaNode {
   url: string;
