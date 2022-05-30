@@ -100,9 +100,11 @@ export const useOrderValidation = ({
 
     return '';
   }, [
+    keypair,
     step,
     market,
     fieldErrors?.size?.type,
+    fieldErrors?.size?.message,
     fieldErrors?.price?.type,
     orderType,
     orderTimeInForce,

@@ -3,8 +3,7 @@ import type { FormEvent } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import { Stepper } from '../stepper';
-import type { DealTicketQuery_market ,
-  Order} from '@vegaprotocol/deal-ticket';
+import type { DealTicketQuery_market, Order } from '@vegaprotocol/deal-ticket';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import {
   ExpirySelector,

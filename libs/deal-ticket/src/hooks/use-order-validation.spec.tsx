@@ -1,7 +1,13 @@
-import type { ReactNode } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { OrderTimeInForce, OrderType, useVegaWallet } from '@vegaprotocol/wallet';
-import type { VegaWalletContextShape, VegaKeyExtended } from '@vegaprotocol/wallet';
+import {
+  OrderTimeInForce,
+  OrderType,
+  useVegaWallet,
+} from '@vegaprotocol/wallet';
+import type {
+  VegaWalletContextShape,
+  VegaKeyExtended,
+} from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
@@ -72,8 +78,7 @@ const ERROR = {
   FIELD_PRICE_REQ: 'A price needs to be provided',
   FIELD_PRICE_MIN: 'The price cannot be negative',
   FIELD_PRICE_STEP_NULL: 'No decimal amounts allowed for this order',
-  FIELD_PRICE_STEP_DECIMAL:
-    `The amount field only takes up to ${market.positionDecimalPlaces} decimals`,
+  FIELD_PRICE_STEP_DECIMAL: `The amount field only takes up to ${market.positionDecimalPlaces} decimals`,
 };
 
 function setup(

@@ -56,7 +56,7 @@ export const DealTicket = ({
         submit(order);
       }
     },
-    [isDisabled, invalidText]
+    [isDisabled, invalidText, submit]
   );
 
   return (
