@@ -1,16 +1,16 @@
 import * as React from 'react';
-import type { FormEvent } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market, Order } from '@vegaprotocol/deal-ticket';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import {
   ExpirySelector,
   SideSelector,
   TimeInForceSelector,
   TypeSelector,
   getDefaultOrder,
+  useOrderValidation,
   useOrderSubmit,
   DealTicketAmount,
 } from '@vegaprotocol/deal-ticket';
@@ -37,10 +37,19 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     defaultValues: getDefaultOrder(market),
   });
 
-  const { submit, transaction } = useOrderSubmit(market);
-
+  const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
+
+  const invalidText = useOrderValidation({
+    step,
+    market,
+    orderType,
+    orderTimeInForce,
+    fieldErrors: errors,
+  });
+
+  const { submit, transaction } = useOrderSubmit(market);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -144,11 +153,16 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
         <Box sx={{ mb: 2 }}>
+          {invalidText && (
+            <InputError className="mb-8" data-testid="dealticket-error-message">
+              {invalidText}
+            </InputError>
+          )}
           <Button
             className="w-full mb-8"
             variant="primary"
             type="submit"
-            disabled={transactionStatus === 'pending'}
+            disabled={transactionStatus === 'pending' || !!invalidText}
             data-testid="place-order"
           >
             {transactionStatus === 'pending'
