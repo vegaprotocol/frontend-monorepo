@@ -1,18 +1,24 @@
-import { VegaErc20Bridge } from '@vegaprotocol/smart-contracts';
+import { createCollateralBridgeContract } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEthereumConfig } from './use-ethereum-config';
 
 export const useBridgeContract = () => {
-  const { VEGA_ENV } = useEnvironment();
   const { provider } = useWeb3React();
+  const config = useEthereumConfig();
 
   const contract = useMemo(() => {
-    if (!provider) {
+    if (!provider || !config) {
       return null;
     }
-    return new VegaErc20Bridge(VEGA_ENV, provider, provider?.getSigner());
-  }, [provider, VEGA_ENV]);
+
+    const signer = provider.getSigner();
+
+    return createCollateralBridgeContract(
+      config.collateral_bridge_contract.address,
+      signer || provider
+    );
+  }, [provider, config]);
 
   return contract;
 };
