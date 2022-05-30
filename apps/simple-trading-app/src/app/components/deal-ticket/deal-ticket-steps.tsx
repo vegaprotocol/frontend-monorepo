@@ -63,7 +63,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
         submit(order);
       }
     },
-    [transactionStatus]
+    [transactionStatus, submit]
   );
 
   const steps = [
