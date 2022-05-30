@@ -1,4 +1,5 @@
-import { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
+import type { Networks } from '@vegaprotocol/smart-contracts';
+import { VegaErc20Bridge } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { useEnvironment } from '@vegaprotocol/react-helpers';

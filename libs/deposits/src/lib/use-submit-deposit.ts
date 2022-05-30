@@ -8,7 +8,7 @@ import { DepositStatus } from '@vegaprotocol/types';
 import { useState } from 'react';
 import { remove0x } from '@vegaprotocol/react-helpers';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
-import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts-sdk';
+import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts';
 
 const DEPOSIT_EVENT_SUB = gql`
   subscription DepositEvent($partyId: ID!) {
