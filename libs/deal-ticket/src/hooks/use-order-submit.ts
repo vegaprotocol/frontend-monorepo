@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { gql, useSubscription } from '@apollo/client';
-import type { Order } from './use-order-state';
+import type { Order } from '../utils/get-default-order';
 import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
@@ -8,8 +8,8 @@ import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from './__generated__/OrderEvent';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+} from '../__generated__/OrderEvent';
+import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {

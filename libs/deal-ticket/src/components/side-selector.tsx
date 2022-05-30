@@ -1,14 +1,13 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { OrderSide } from '@vegaprotocol/wallet';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
-import type { Order } from './use-order-state';
 
 interface SideSelectorProps {
-  order: Order;
+  value: OrderSide;
   onSelect: (side: OrderSide) => void;
 }
 
-export const SideSelector = ({ order, onSelect }: SideSelectorProps) => {
+export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
   const toggles = Object.entries(OrderSide).map(([label, value]) => ({
     label,
     value,
@@ -19,7 +18,7 @@ export const SideSelector = ({ order, onSelect }: SideSelectorProps) => {
       <Toggle
         name="order-side"
         toggles={toggles}
-        checkedValue={order.side}
+        checkedValue={value}
         onChange={(e) => onSelect(e.target.value as OrderSide)}
       />
     </FormGroup>

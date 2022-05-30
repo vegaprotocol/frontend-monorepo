@@ -1,33 +1,47 @@
 import * as React from 'react';
 import type { FormEvent } from 'react';
+import { useForm, Controller } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import { Stepper } from '../stepper';
-import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
+import type { DealTicketQuery_market ,
+  Order} from '@vegaprotocol/deal-ticket';
+import { Button } from '@vegaprotocol/ui-toolkit';
 import {
   ExpirySelector,
   SideSelector,
-  SubmitButton,
   TimeInForceSelector,
   TypeSelector,
-  useOrderState,
+  getDefaultOrder,
   useOrderSubmit,
-  DealTicketLimitForm,
-  DealTicketMarketForm,
+  DealTicketAmount,
 } from '@vegaprotocol/deal-ticket';
 import {
   OrderTimeInForce,
   OrderType,
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
-import { addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
+import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
 }
 
 export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
-  const [order, updateOrder] = useOrderState(market);
+  const {
+    register,
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Order>({
+    mode: 'onChange',
+    defaultValues: getDefaultOrder(market),
+  });
+
   const { submit, transaction } = useOrderSubmit(market);
+
+  const orderType = watch('type');
+  const orderTimeInForce = watch('timeInForce');
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -35,41 +49,14 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       ? 'pending'
       : 'default';
 
-  let ticket = null;
-
-  if (order.type === OrderType.Market) {
-    ticket = (
-      <DealTicketMarketForm
-        size={order.size}
-        step={toDecimal(market.positionDecimalPlaces)}
-        onSizeChange={(size) => updateOrder({ size })}
-        price={
-          market.depth.lastTrade
-            ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-            : undefined
-        }
-        quoteName={market.tradableInstrument.instrument.product.quoteName}
-      />
-    );
-  } else if (order.type === OrderType.Limit) {
-    ticket = (
-      <DealTicketLimitForm
-        price={order.price}
-        size={order.size}
-        step={toDecimal(market.positionDecimalPlaces)}
-        quoteName={market.tradableInstrument.instrument.product.quoteName}
-        onSizeChange={(size) => updateOrder({ size })}
-        onPriceChange={(price) => updateOrder({ price })}
-      />
-    );
-  } else {
-    throw new Error('Invalid ticket type');
-  }
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): Promise<void> => {
-    e.preventDefault();
-    return submit(order);
-  };
+  const onSubmit = React.useCallback(
+    (order: Order) => {
+      if (transactionStatus !== 'pending') {
+        submit(order);
+      }
+    },
+    [transactionStatus]
+  );
 
   const steps = [
     {
@@ -81,9 +68,12 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       label: 'Select Order Type',
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
-        <TypeSelector
-          order={order}
-          onSelect={(type) => updateOrder({ type })}
+        <Controller
+          name="type"
+          control={control}
+          render={({ field }) => (
+            <TypeSelector value={field.value} onSelect={field.onChange} />
+          )}
         />
       ),
     },
@@ -91,9 +81,12 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       label: 'Select Market Position',
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
-        <SideSelector
-          order={order}
-          onSelect={(side) => updateOrder({ side })}
+        <Controller
+          name="side"
+          control={control}
+          render={({ field }) => (
+            <SideSelector value={field.value} onSelect={field.onChange} />
+          )}
         />
       ),
     },
@@ -101,27 +94,49 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       label: 'Select Order Size',
       description:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      component: ticket,
+      component: (
+        <DealTicketAmount
+          orderType={orderType}
+          step={0.02}
+          register={register}
+          price={
+            market.depth.lastTrade
+              ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+              : undefined
+          }
+          quoteName={market.tradableInstrument.instrument.product.quoteName}
+        />
+      ),
     },
     {
       label: 'Select Time In Force',
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
         <>
-          <TimeInForceSelector
-            order={order}
-            onSelect={(timeInForce) => updateOrder({ timeInForce })}
+          <Controller
+            name="timeInForce"
+            control={control}
+            render={({ field }) => (
+              <TimeInForceSelector
+                value={field.value}
+                orderType={orderType}
+                onSelect={field.onChange}
+              />
+            )}
           />
-          {order.timeInForce === OrderTimeInForce.GTT && (
-            <ExpirySelector
-              order={order}
-              onSelect={(date) => {
-                if (date) {
-                  updateOrder({ expiration: date });
-                }
-              }}
-            />
-          )}
+          {orderType === OrderType.Limit &&
+            orderTimeInForce === OrderTimeInForce.GTT && (
+              <Controller
+                name="expiration"
+                control={control}
+                render={({ field }) => (
+                  <ExpirySelector
+                    value={field.value}
+                    onSelect={field.onChange}
+                  />
+                )}
+              />
+            )}
         </>
       ),
     },
@@ -130,11 +145,17 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
         <Box sx={{ mb: 2 }}>
-          <SubmitButton
-            transactionStatus={transactionStatus}
-            market={market}
-            order={order}
-          />
+          <Button
+            className="w-full mb-8"
+            variant="primary"
+            type="submit"
+            disabled={transactionStatus === 'pending'}
+            data-testid="place-order"
+          >
+            {transactionStatus === 'pending'
+              ? t('Pending...')
+              : t('Place order')}
+          </Button>
         </Box>
       ),
       disabled: true,
@@ -142,7 +163,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   ];
 
   return (
-    <form onSubmit={handleSubmit} className="px-4 py-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="px-4 py-8">
       <Stepper steps={steps} />
     </form>
   );

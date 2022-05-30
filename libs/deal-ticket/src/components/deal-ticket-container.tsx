@@ -4,7 +4,7 @@ import { DealTicketManager } from './deal-ticket-manager';
 import type {
   DealTicketQuery,
   DealTicketQuery_market,
-} from './__generated__/DealTicketQuery';
+} from '../__generated__/DealTicketQuery';
 import { t } from '@vegaprotocol/react-helpers';
 
 const DEAL_TICKET_QUERY = gql`

@@ -1,6 +1,6 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, renderHook } from '@testing-library/react-hooks';
-import type { Order } from './use-order-state';
+import type { Order } from '../utils/get-default-order';
 import type {
   VegaKeyExtended,
   VegaWalletContextShape,
@@ -10,7 +10,7 @@ import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
 
 const defaultMarket: DealTicketQuery_market = {
   __typename: 'Market',
@@ -148,7 +148,7 @@ it('Should submit a correctly formatted order', async () => {
     defaultMarket
   );
 
-  const order = {
+  const order: Order = {
     type: OrderType.Limit,
     size: '10',
     timeInForce: OrderTimeInForce.GTT,
@@ -170,7 +170,7 @@ it('Should submit a correctly formatted order', async () => {
       side: OrderSide.Buy,
       timeInForce: OrderTimeInForce.GTT,
       price: '123456789', // Decimal removed
-      expiresAt: order.expiration.getTime() + '000000', // Nanoseconds appened
+      expiresAt: order.expiration?.getTime() + '000000', // Nanoseconds appened
     },
   });
 });
