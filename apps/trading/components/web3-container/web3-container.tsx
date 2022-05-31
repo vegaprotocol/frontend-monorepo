@@ -1,4 +1,4 @@
-import { Button, Splash } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer, Button, Splash } from '@vegaprotocol/ui-toolkit';
 import {
   Web3Provider,
   Web3ConnectDialog,
@@ -16,27 +16,27 @@ interface Web3ContainerProps {
 
 export const Web3Container = ({ children }: Web3ContainerProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const config = useEthereumConfig();
-
-  if (!config) {
-    return null;
-  }
+  const { config, loading, error } = useEthereumConfig();
 
   return (
-    <Web3Provider connectors={Connectors}>
-      <Web3Content
-        appChainId={Number(config.chain_id)}
-        setDialogOpen={setDialogOpen}
-      >
-        {children}
-      </Web3Content>
-      <Web3ConnectDialog
-        connectors={Connectors}
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        desiredChainId={Number(config.chain_id)}
-      />
-    </Web3Provider>
+    <AsyncRenderer data={config} loading={loading} error={error}>
+      {config ? (
+        <Web3Provider connectors={Connectors}>
+          <Web3Content
+            appChainId={Number(config.chain_id)}
+            setDialogOpen={setDialogOpen}
+          >
+            {children}
+          </Web3Content>
+          <Web3ConnectDialog
+            connectors={Connectors}
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+            desiredChainId={Number(config.chain_id)}
+          />
+        </Web3Provider>
+      ) : null}
+    </AsyncRenderer>
   );
 };
 

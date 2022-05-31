@@ -4,7 +4,7 @@ import { useEthereumConfig, useEthereumTransaction } from '@vegaprotocol/web3';
 export const useSubmitApproval = (
   contract: ReturnType<typeof createTokenContract> | null
 ) => {
-  const config = useEthereumConfig();
+  const { config } = useEthereumConfig();
 
   const transaction = useEthereumTransaction(() => {
     if (!contract || !config) {

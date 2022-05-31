@@ -5,7 +5,7 @@ import { useEthereumConfig } from './use-ethereum-config';
 
 export const useBridgeContract = () => {
   const { provider } = useWeb3React();
-  const config = useEthereumConfig();
+  const { config } = useEthereumConfig();
 
   const contract = useMemo(() => {
     if (!provider || !config) {

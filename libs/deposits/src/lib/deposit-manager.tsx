@@ -13,10 +13,7 @@ import {
   useEthereumConfig,
   useTokenDecimals,
 } from '@vegaprotocol/web3';
-import { useTokenContract, useBridgeContract } from '@vegaprotocol/web3';
-import type { BigNumber as EthersBigNumber } from 'ethers';
-import BigNumber from 'bignumber.js';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { useTokenContract } from '@vegaprotocol/web3';
 
 interface ERC20AssetSource {
   __typename: 'ERC20';
@@ -56,7 +53,7 @@ export const DepositManager = ({
     return asset;
   }, [assets, assetId]);
 
-  const ethereumConfig = useEthereumConfig();
+  const { config } = useEthereumConfig();
 
   const tokenContract = useTokenContract(
     asset?.source.__typename === 'ERC20'
@@ -119,7 +116,7 @@ export const DepositManager = ({
         name="deposit"
         confirmed={Boolean(confirmationEvent)}
         // Must wait for additional confirmations for Vega to pick up the Ethereum transaction
-        requiredConfirmations={ethereumConfig?.confirmations}
+        requiredConfirmations={config?.confirmations}
       />
     </>
   );
