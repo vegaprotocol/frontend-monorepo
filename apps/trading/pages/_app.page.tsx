@@ -8,20 +8,18 @@ import {
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
 import { Connectors } from '../lib/vega-connectors';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { createClient } from '../lib/apollo-client';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { ApolloProvider } from '@apollo/client';
 import { AppLoader } from '../components/app-loader';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
 import './styles.css';
+import { useGlobalStore } from '../stores';
 
 function VegaTradingApp({ Component, pageProps }: AppProps) {
   const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
-  const [vegaWallet, setVegaWallet] = useState({
-    connect: false,
-    manage: false,
-  });
+  const store = useGlobalStore();
   const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
@@ -50,12 +48,12 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
                 <Navbar />
                 <div className="flex items-center gap-4 ml-auto mr-8">
                   <VegaWalletConnectButton
-                    setConnectDialog={(open) =>
-                      setVegaWallet((x) => ({ ...x, connect: open }))
-                    }
-                    setManageDialog={(open) =>
-                      setVegaWallet((x) => ({ ...x, manage: open }))
-                    }
+                    setConnectDialog={(open) => {
+                      store.setVegaWalletConnectDialog(open);
+                    }}
+                    setManageDialog={(open) => {
+                      store.setVegaWalletManageDialog(open);
+                    }}
                   />
                   <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
                 </div>
@@ -66,16 +64,12 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
               </main>
               <VegaConnectDialog
                 connectors={Connectors}
-                dialogOpen={vegaWallet.connect}
-                setDialogOpen={(open) =>
-                  setVegaWallet((x) => ({ ...x, connect: open }))
-                }
+                dialogOpen={store.vegaWalletConnectDialog}
+                setDialogOpen={(open) => store.setVegaWalletConnectDialog(open)}
               />
               <VegaManageDialog
-                dialogOpen={vegaWallet.manage}
-                setDialogOpen={(open) =>
-                  setVegaWallet((x) => ({ ...x, manage: open }))
-                }
+                dialogOpen={store.vegaWalletManageDialog}
+                setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
               />
             </div>
           </AppLoader>
