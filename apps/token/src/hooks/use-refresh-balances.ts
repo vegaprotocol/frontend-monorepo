@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 
@@ -11,28 +12,33 @@ import { useContracts } from '../contexts/contracts/contracts-context';
 
 export const useRefreshBalances = (address: string) => {
   const { ADDRESSES } = useEnvironment();
-  const { appDispatch } = useAppState();
+  const {
+    appState: { decimals },
+    appDispatch,
+  } = useAppState();
   const { keypair } = useVegaWallet();
   const { token, staking, vesting } = useContracts();
 
   return React.useCallback(async () => {
     try {
-      const [
-        balance,
-        walletBalance,
-        lien,
-        allowance,
-        walletAssociatedBalance,
-        vestingAssociatedBalance,
-      ] = await Promise.all([
-        vesting.getUserBalanceAllTranches(address),
-        token.balanceOf(address),
-        vesting.getLien(address),
-        token.allowance(address, ADDRESSES.stakingBridge),
-        // Refresh connected vega key balances as well if we are connected to a vega key
-        keypair?.pub ? staking.stakeBalance(address, keypair.pub) : null,
-        keypair?.pub ? vesting.stakeBalance(address, keypair.pub) : null,
-      ]);
+      const [b, w, stats, a, walletStakeBalance, vestingStakeBalance] =
+        await Promise.all([
+          vesting.userTotalAllTranches(address),
+          token.balanceOf(address),
+          vesting.userStats(address),
+          token.allowance(address, ADDRESSES.stakingBridge),
+          // Refresh connected vega key balances as well if we are connected to a vega key
+          keypair?.pub ? staking.stakeBalance(address, keypair.pub) : null,
+          keypair?.pub ? vesting.stakeBalance(address, keypair.pub) : null,
+        ]);
+
+      const balance = toBigNum(b, decimals);
+      const walletBalance = toBigNum(w, decimals);
+      const lien = toBigNum(stats.lien, decimals);
+      const allowance = toBigNum(a, decimals);
+      const walletAssociatedBalance = toBigNum(walletStakeBalance, decimals);
+      const vestingAssociatedBalance = toBigNum(vestingStakeBalance, decimals);
+
       appDispatch({
         type: AppStateActionType.REFRESH_BALANCES,
         balance,
@@ -47,6 +53,7 @@ export const useRefreshBalances = (address: string) => {
     }
   }, [
     address,
+    decimals,
     appDispatch,
     keypair?.pub,
     staking,

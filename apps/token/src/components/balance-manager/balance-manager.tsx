@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 
@@ -10,7 +11,6 @@ import {
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useGetAssociationBreakdown } from '../../hooks/use-get-association-breakdown';
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
-import { BigNumber } from '../../lib/bignumber';
 
 interface BalanceManagerProps {
   children: React.ReactElement;
@@ -20,7 +20,10 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const { ADDRESSES } = useEnvironment();
   const contracts = useContracts();
   const { account } = useWeb3React();
-  const { appDispatch } = useAppState();
+  const {
+    appState: { decimals },
+    appDispatch,
+  } = useAppState();
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
     account || '',
@@ -37,15 +40,21 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     const updateBalances = async () => {
       if (!account) return;
       try {
-        const [balance, walletBalance, lien, allowance] = await Promise.all([
-          contracts.vesting.getUserBalanceAllTranches(account),
+        const [b, w, stats, a] = await Promise.all([
+          contracts.vesting.userTotalAllTranches(account),
           contracts.token.balanceOf(account),
-          contracts.vesting.getLien(account),
+          contracts.vesting.userStats(account),
           contracts.token.allowance(account, ADDRESSES.stakingBridge),
         ]);
+
+        const balance = toBigNum(b, decimals);
+        const walletBalance = toBigNum(w, decimals);
+        const lien = toBigNum(stats.lien, decimals);
+        const allowance = toBigNum(a, decimals);
+
         appDispatch({
           type: AppStateActionType.UPDATE_ACCOUNT_BALANCES,
-          balance: new BigNumber(balance),
+          balance,
           walletBalance,
           lien,
           allowance,
@@ -62,6 +71,7 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     contracts?.vesting,
     account,
     ADDRESSES.stakingBridge,
+    decimals,
   ]);
 
   // This use effect hook is very expensive and is kept separate to prevent expensive reloading of data.

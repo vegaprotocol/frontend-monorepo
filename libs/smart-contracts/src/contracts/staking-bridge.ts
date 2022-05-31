@@ -8,6 +8,7 @@ export const createStakingBridgeContract = (
   const contract = new ethers.Contract(address, abi, signerOrProvider);
 
   return {
+    contract,
     stake: (amount: string, vegaPublicKey: string) => {
       return contract.stake(amount, `0x${vegaPublicKey}`);
     },
