@@ -28,8 +28,6 @@ Feature: Blocks Page
     And jump to first block
     Then previous button is disabled
     And I am on the second block when I click next
-
-
   Scenario: Infinite scroll shows at least 100 new blocks
     Given I am on the homepage
     When I navigate to the blocks page
