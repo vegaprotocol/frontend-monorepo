@@ -372,19 +372,18 @@ export const generateMockData = ({
   resolution,
 }: MockDataGeneratorParams) => {
   let matrix = new Array(numberOfSellRows).fill(undefined);
-  let price =
-    midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1) * resolution;
+  let price = midPrice + (numberOfSellRows - Math.ceil(overlap / 2) + 1);
   const sell: MarketDepth_market_depth_sell[] = matrix.map((row, i) => ({
     __typename: 'PriceLevel',
-    price: (price -= resolution).toString(),
+    price: (price -= 1).toString(),
     volume: (numberOfSellRows - i + 1).toString(),
     numberOfOrders: '',
   }));
-  price += overlap * resolution;
+  price += overlap;
   matrix = new Array(numberOfBuyRows).fill(undefined);
   const buy: MarketDepth_market_depth_buy[] = matrix.map((row, i) => ({
     __typename: 'PriceLevel',
-    price: (price -= resolution).toString(),
+    price: (price -= 1).toString(),
     volume: (i + 2).toString(),
     numberOfOrders: '',
   }));

@@ -138,11 +138,7 @@ export const Orderbook = ({
         BigInt(resolution) + // extra row on very top - sticky header
         BigInt(maxPriceLevel) -
         BigInt(
-          Math.floor(
-            (scrollTop + Math.floor(viewportHeight / 2)) /
-              rowHeight /
-              resolution
-          )
+          Math.floor((scrollTop + Math.floor(viewportHeight / 2)) / rowHeight)
         ) *
           BigInt(resolution)
       ).toString();
@@ -255,14 +251,13 @@ export const Orderbook = ({
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
     (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
-
   return (
     <div
       className={`h-full overflow-auto relative ${styles['scroll']}`}
       style={{ scrollbarColor: 'rebeccapurple green', scrollbarWidth: 'thin' }}
       onScroll={onScroll}
       ref={scrollElement}
-      data-testid={'scroll'}
+      data-testid="scroll"
     >
       <div
         className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"
@@ -316,9 +311,10 @@ export const Orderbook = ({
       >
         <div className="text-ui-small col-start-2">
           <select
-            onChange={(e) => onResolutionChange(Number(e.target.value))}
+            onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}
             value={resolution}
             className="block bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full appearance-none"
+            data-testid="resolution"
           >
             {new Array(3)
               .fill(null)
@@ -331,7 +327,11 @@ export const Orderbook = ({
           </select>
         </div>
         <div className="text-ui-small col-start-4">
-          <button onClick={scrollToMidPrice} className="block w-full">
+          <button
+            onClick={scrollToMidPrice}
+            className="block w-full"
+            data-testid="scroll-to-midprice"
+          >
             mid price{' '}
             <span className={lockOnMidPrice ? 'text-yellow' : ''}>
               <Icon name="th-derived" />

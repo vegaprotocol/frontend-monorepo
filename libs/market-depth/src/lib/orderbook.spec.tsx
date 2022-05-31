@@ -80,4 +80,86 @@ describe('Orderbook', () => {
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
     expect(result.getByTestId('scroll').scrollTop).toBe(1911 - 21);
   });
+
+  it('should should keep price it the middle', async () => {
+    window.innerHeight = 231; // 11 rows
+    const result = render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData(params)}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    const scrollElement = result.getByTestId('scroll');
+    expect(scrollElement.scrollTop).toBe(1911);
+    scrollElement.scrollTop = 1911 + 21;
+    fireEvent.scroll(scrollElement);
+    result.rerender(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData({
+          ...params,
+          numberOfSellRows: params.numberOfSellRows - 1,
+        })}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+  });
+
+  it('should should get back to mid price on click', async () => {
+    window.innerHeight = 231; // 11 rows
+    const result = render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData(params)}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    const scrollElement = result.getByTestId('scroll');
+    expect(scrollElement.scrollTop).toBe(1911);
+    scrollElement.scrollTop = 0;
+    fireEvent.scroll(scrollElement);
+    expect(result.getByTestId('scroll').scrollTop).toBe(0);
+    const scrollToMidPriceButton = result.getByTestId('scroll-to-midprice');
+    fireEvent.click(scrollToMidPriceButton);
+    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+  });
+
+  it('should should get back to mid price on resolution change', async () => {
+    window.innerHeight = 231; // 11 rows
+    const result = render(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData(params)}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    const scrollElement = result.getByTestId('scroll');
+    expect(scrollElement.scrollTop).toBe(1911);
+    scrollElement.scrollTop = 0;
+    fireEvent.scroll(scrollElement);
+    expect(result.getByTestId('scroll').scrollTop).toBe(0);
+    const resolutionSelect = result.getByTestId(
+      'resolution'
+    ) as HTMLSelectElement;
+    fireEvent.change(resolutionSelect, { target: { value: '10' } });
+    expect(onResolutionChange.mock.calls.length).toBe(1);
+    expect(onResolutionChange.mock.calls[0][0]).toBe(10);
+    result.rerender(
+      <Orderbook
+        decimalPlaces={decimalPlaces}
+        {...generateMockData({
+          ...params,
+          resolution: 10,
+        })}
+        onResolutionChange={onResolutionChange}
+      />
+    );
+    expect(result.getByTestId('scroll').scrollTop).toBe(105);
+  });
 });
