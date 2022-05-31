@@ -1,10 +1,8 @@
-import type BigNumber from 'bignumber.js';
+import type { Networks } from '@vegaprotocol/react-helpers';
 import { ethers } from 'ethers';
-import { EnvironmentConfig } from '../config/ethereum';
-import type { Networks } from '../config/vega';
 import claimAbi from '../abis/claim_abi.json';
-import tokenAbi from '../abis/vega_token_abi.json';
-import { asciiToHex, removeDecimal } from '../utils';
+import { EnvironmentConfig } from '../config';
+import { asciiToHex } from '../utils';
 import { BaseContract } from './base-contract';
 
 export const UNSPENT_CODE = '0x0000000000000000000000000000000000000000';
@@ -16,8 +14,8 @@ export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
  * const provider = new Web3.providers.HttpProvider(
  *   "https://ropsten.infura.io/v3/5aff9e61ad844bcf982d0d0c3f1d29f1"
  * );
- * const web3 = new Web3(provider);
- *
+ * const web3 = new Web3(provider)
+ 
  * // Ropsten address
  * const contract = new VegaClaim(web3, "0xAf5dC1772714b2F4fae3b65eb83100f1Ea677b21")
  * contract.isCountryBlocked("US").then(console.log)
@@ -26,8 +24,6 @@ export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
  */
 export class VegaClaim extends BaseContract {
   public contract: ethers.Contract;
-  public tokenContract: ethers.Contract;
-  public dp: Promise<number>;
 
   constructor(
     network: Networks,
@@ -41,18 +37,6 @@ export class VegaClaim extends BaseContract {
       claimAbi,
       this.signer || this.provider
     );
-
-    const tokenContract = new ethers.Contract(
-      EnvironmentConfig[network].vegaTokenAddress,
-      tokenAbi,
-      this.signer || this.provider
-    );
-    this.tokenContract = tokenContract;
-
-    this.dp = (async () => {
-      const val = await tokenContract.decimals();
-      return Number(val);
-    })();
   }
 
   /** Execute contracts commit_untargeted function */
@@ -84,7 +68,7 @@ export class VegaClaim extends BaseContract {
       r,
       s,
     }: {
-      amount: BigNumber;
+      amount: string;
       tranche: number;
       expiry: number;
       target?: string;
@@ -95,14 +79,13 @@ export class VegaClaim extends BaseContract {
     },
     confirmations = 1
   ): Promise<ethers.ContractTransaction> {
-    const convertedAmount = removeDecimal(amount, await this.dp).toString();
     const tx = await this.contract[
       target != null ? 'claim_targeted' : 'claim_untargeted'
     ](
       ...[
         { r, s, v },
         {
-          amount: convertedAmount,
+          amount,
           tranche,
           expiry,
         },

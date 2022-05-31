@@ -12,8 +12,8 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 
 export const WalletAssociate = ({
   perform,
@@ -28,29 +28,36 @@ export const WalletAssociate = ({
   vegaKey: VegaKeyExtended;
   address: string;
 }) => {
-  const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const {
     appDispatch,
     appState: { walletBalance, allowance, walletAssociatedBalance, decimals },
   } = useAppState();
 
+  const { config } = useEthereumConfig();
   const { token } = useContracts();
 
   const {
     state: approveState,
     perform: approve,
     dispatch: approveDispatch,
-  } = useTransaction(() =>
+  } = useTransaction(() => {
+    if (!config) return null;
     // TODO: what value to use here?
-    token.approve(ADDRESSES.stakingBridge, '1000000000000000000')
-  );
+    return token.approve(
+      config.staking_bridge_contract.address,
+      Number.MAX_SAFE_INTEGER.toString()
+    );
+  });
 
   // Once they have approved deposits then we need to refresh their allowance
   React.useEffect(() => {
     const run = async () => {
-      if (approveState.txState === TxState.Complete) {
-        const a = await token.allowance(address, ADDRESSES.stakingBridge);
+      if (approveState.txState === TxState.Complete && config) {
+        const a = await token.allowance(
+          address,
+          config.staking_bridge_contract.address
+        );
         const allowance = toBigNum(a, decimals);
         appDispatch({
           type: AppStateActionType.SET_ALLOWANCE,
@@ -59,14 +66,7 @@ export const WalletAssociate = ({
       }
     };
     run();
-  }, [
-    address,
-    appDispatch,
-    approveState.txState,
-    token,
-    decimals,
-    ADDRESSES.stakingBridge,
-  ]);
+  }, [address, appDispatch, approveState.txState, token, decimals, config]);
 
   let pageContent = null;
 
