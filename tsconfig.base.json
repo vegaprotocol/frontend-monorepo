@@ -14,6 +14,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@vegaprotocol/accounts": ["libs/accounts/src/index.ts"],
       "@vegaprotocol/candles-chart": ["libs/candles-chart/src/index.ts"],
