@@ -1,22 +1,46 @@
+import classNames from 'classnames';
+
 export interface ArrowStyleProps {
   color?: string;
+  borderX?: number;
+  borderTop?: number;
+  borderBottom?: number;
 }
 
-export const ArrowUp = ({ color = 'green' }: ArrowStyleProps) => (
-  <span
-    data-testid="arrow-up"
-    className={`w-0 h-0 border-x border-x-[4px] border-solid border-x-transparent border-b-[4px] border-b-${color}-dark dark:border-b-${color}`}
-  ></span>
-);
-export const ArrowDown = ({ color = 'red' }: ArrowStyleProps) => (
-  <span
-    data-testid="arrow-down"
-    className={`w-0 h-0 border-x border-x-[8px] border-solid border-x-transparent border-t-[12px] border-t-${color}-dark dark:border-t-${color}`}
-  ></span>
-);
+export const ArrowUp = ({
+  color = 'green',
+  borderX = 4,
+  borderBottom = 4,
+}: ArrowStyleProps) => {
+  const className = classNames(
+    `w-0 h-0 border-x`,
+    `border-x-[` + borderX + `px]`,
+    `border-solid border-x-transparent`,
+    `border-b-[` + borderBottom + `px]`,
+    `border-b-${color}-dark`,
+    `dark:border-b-${color}`
+  );
+  return <span data-testid="arrow-up" className={className}></span>;
+};
+export const ArrowDown = ({
+  color = 'red',
+  borderX = 4,
+  borderTop = 4,
+}: ArrowStyleProps) => {
+  const className = classNames(
+    `w-0 h-0 border-x`,
+    `border-x-[` + borderX + `px]`,
+    `border-solid`,
+    `border-x-transparent`,
+    `border-t-[` + borderTop + `px]`,
+    `border-t-${color}-dark`,
+    `dark:border-t-${color}`
+  );
+  return <span data-testid="arrow-down" className={className}></span>;
+};
 
 // Arrow
-export interface ArrowProps {
+export interface ArrowProps extends ArrowStyleProps {
   value: number | bigint;
 }
 

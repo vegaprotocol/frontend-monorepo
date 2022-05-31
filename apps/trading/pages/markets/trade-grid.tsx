@@ -50,7 +50,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             className="flex items-center gap-8 px-4 hover:bg-vega-yellow dark:hover:bg-white/20"
           >
             <span className="break-words text-left">{market.name}</span>
-            <ArrowDown color="yellow" />
+            <ArrowDown color="yellow" borderX={8} borderTop={12} />
           </button>
         </h1>
         <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
@@ -150,7 +150,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
           const className = classNames('py-4', 'px-12', 'capitalize', {
-            'text-black dark:text-vega-yellow text-vega-pink': isActive,
+            'text-black dark:text-vega-yellow': isActive,
             'bg-white dark:bg-black': isActive,
             'text-black dark:text-white': !isActive,
             'bg-black-10 dark:bg-white-10': !isActive,
