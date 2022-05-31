@@ -1,12 +1,7 @@
-import {
-  Button,
-  Callout,
-  EtherscanLink,
-  Intent,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Link, Intent } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouteLink } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
 import type {
@@ -71,7 +66,12 @@ export const AssociateTransaction = ({
           })}
         </p>
         <p>
-          <EtherscanLink tx={state.txData.hash || ''} />
+          <Link
+            title={t('View transaction on Etherscan')}
+            href={`${process.env['NX_ETHERSCAN_URL']}/tx/${state.txData.hash}`}
+          >
+            {state.txData.hash}
+          </Link>
         </p>
         <p data-testid="transaction-pending-footer">
           {t('pendingAssociationText', {
@@ -90,11 +90,11 @@ export const AssociateTransaction = ({
         { vegaKey }
       )}
       completeFooter={
-        <Link to={Routes.STAKING}>
+        <RouteLink to={Routes.STAKING}>
           <Button className="fill">
             {t('Nominate Stake to Validator Node')}
           </Button>
-        </Link>
+        </RouteLink>
       }
       pendingHeading={t('Associating Tokens')}
       pendingBody={t(

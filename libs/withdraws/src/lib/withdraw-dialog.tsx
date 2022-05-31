@@ -1,10 +1,4 @@
-import {
-  Dialog,
-  EtherscanLink,
-  Icon,
-  Intent,
-  Loader,
-} from '@vegaprotocol/ui-toolkit';
+import { Dialog, Link, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
@@ -156,11 +150,13 @@ const getProps = (
               `Awaiting Ethereum transaction ${ethTx.confirmations}/1 confirmations...`
             )}
           </span>
-          <EtherscanLink
-            tx={ethTx.txHash || ''}
+          <Link
+            href={`${process.env['NX_ETHERSCAN_URL']}/tx/${ethTx.txHash}`}
+            title={t('View transaction on Etherscan')}
             className="text-vega-pink dark:text-vega-yellow"
-            text={t('View on Etherscan')}
-          />
+          >
+            {t('View on Etherscan')}
+          </Link>
         </Step>
       ),
     },
@@ -171,11 +167,13 @@ const getProps = (
       children: (
         <Step>
           <span>{t('Ethereum transaction complete')}</span>
-          <EtherscanLink
-            tx={ethTx.txHash || ''}
+          <Link
+            href={`${process.env['NX_ETHERSCAN_URL']}/tx/${ethTx.txHash}`}
+            title={t('View transaction on Etherscan')}
             className="text-vega-pink dark:text-vega-yellow"
-            text={t('View on Etherscan')}
-          />
+          >
+            {t('View on Etherscan')}
+          </Link>
         </Step>
       ),
     },

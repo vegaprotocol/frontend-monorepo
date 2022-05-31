@@ -10,10 +10,7 @@ import {
   formatNumber,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
-import {
-  EtherscanLink,
-  AgGridDynamic as AgGrid,
-} from '@vegaprotocol/ui-toolkit';
+import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
@@ -80,7 +77,13 @@ export const StatusCell = ({ value, data, complete }: StatusCellProps) => {
       <div className="flex justify-between gap-8">
         {t('Pending')}
         {data.txHash && (
-          <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
+          <Link
+            data-testid="etherscan-link"
+            title={t('View transaction on Etherscan')}
+            href={`${process.env['NX_ETHERSCAN_URL']}/tx/${data.txHash}`}
+          >
+            {t('View on Etherscan')}
+          </Link>
         )}
       </div>
     );
@@ -92,7 +95,13 @@ export const StatusCell = ({ value, data, complete }: StatusCellProps) => {
         {data.txHash ? (
           <>
             {t('Finalized')}
-            <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
+            <Link
+              data-testid="etherscan-link"
+              title={t('View transaction on Etherscan')}
+              href={`${process.env['NX_ETHERSCAN_URL']}/tx/${data.txHash}`}
+            >
+              {t('View on Etherscan')}
+            </Link>
           </>
         ) : (
           <>
@@ -110,5 +119,13 @@ export const StatusCell = ({ value, data, complete }: StatusCellProps) => {
 };
 
 const RecipientCell = ({ value, valueFormatted }: ICellRendererParams) => {
-  return <EtherscanLink address={value} text={valueFormatted} />;
+  return (
+    <Link
+      data-testid="etherscan-link"
+      title={t('View address on Etherscan')}
+      href={`${process.env['NX_ETHERSCAN_URL']}/address/${value}`}
+    >
+      {valueFormatted}
+    </Link>
+  );
 };

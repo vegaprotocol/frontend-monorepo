@@ -1,10 +1,10 @@
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouteLink } from 'react-router-dom';
 
 import { BulletHeader } from '../../components/bullet-header';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { Links } from '../../config';
 import {
   AppStateActionType,
@@ -75,7 +75,12 @@ export const StakingStepConnectWallets = () => {
       <Callout intent={Intent.Success} iconName="tick" title={'Connected'}>
         <p>
           {t('Connected Ethereum address')}&nbsp;
-          <EtherscanLink address={account} text={account} />
+          <Link
+            title={t('View address on Etherscan')}
+            href={`${process.env['NX_ETHERSCAN_URL']}/tx/${account}`}
+          >
+            {account}
+          </Link>
         </p>
         <p>
           {t('stakingVegaWalletConnected', {
@@ -171,17 +176,17 @@ export const StakingStepAssociate = ({
         title={t('stakingHasAssociated', { tokens: formatNumber(associated) })}
       >
         <p>
-          <Link to="/staking/associate">
+          <RouteLink to="/staking/associate">
             <Button data-testid="associate-more-tokens-btn">
               {t('stakingAssociateMoreButton')}
             </Button>
-          </Link>
+          </RouteLink>
         </p>
-        <Link to="/staking/disassociate">
+        <RouteLink to="/staking/disassociate">
           <Button data-testid="disassociate-tokens-btn">
             {t('stakingDisassociateButton')}
           </Button>
-        </Link>
+        </RouteLink>
       </Callout>
     );
   }
@@ -189,11 +194,11 @@ export const StakingStepAssociate = ({
   return (
     <>
       <p>{t('stakingStep2Text')}</p>
-      <Link to="/staking/associate">
+      <RouteLink to="/staking/associate">
         <Button data-testid="associate-tokens-btn">
           {t('associateButton')}
         </Button>
-      </Link>
+      </RouteLink>
     </>
   );
 };

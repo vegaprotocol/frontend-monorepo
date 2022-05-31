@@ -6,7 +6,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import { useOutletContext } from 'react-router-dom';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import type { EthereumChainId } from '../../config';
 import { ADDRESSES } from '../../config';
 import { BigNumber } from '../../lib/bignumber';
@@ -81,7 +81,12 @@ export const Tranche = () => {
             const locked = user.remaining_tokens.times(lockedData?.locked || 0);
             return (
               <li className="pb-4" key={i}>
-                <EtherscanLink address={user.address} text={user.address} />
+                <Link
+                  title={t('View address on Etherscan')}
+                  href={`${process.env['NX_ETHERSCAN_URL']}/tx/${user.address}`}
+                >
+                  {user.address}
+                </Link>
                 <TrancheProgressContents>
                   <span>{t('Locked')}</span>
                   <span>{t('Unlocked')}</span>

@@ -1,4 +1,5 @@
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { Heading } from '../../components/heading';
 import { ADDRESSES } from '../../config';
 
@@ -10,7 +11,12 @@ const Contracts = () => {
       {Object.entries(ADDRESSES).map(([key, value]) => (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>{key}:</div>
-          <EtherscanLink address={value as string} text={value as string} />
+          <Link
+            title={t('View address on Etherscan')}
+            href={`${process.env['NX_ETHERSCAN_URL']}/address/${value}`}
+          >
+            {value as string}
+          </Link>
         </div>
       ))}
     </section>

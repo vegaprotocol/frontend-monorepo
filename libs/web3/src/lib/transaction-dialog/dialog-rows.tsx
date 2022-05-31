@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { EthTxStatus } from '../use-ethereum-transaction';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
@@ -39,11 +39,13 @@ export const TxRow = ({
             `Awaiting Ethereum transaction ${confirmations}/${requiredConfirmations} confirmations...`
           )}
         </span>
-        <EtherscanLink
-          tx={txHash || ''}
+        <Link
+          href={`${process.env['ETHERSCAN_URL']}/tx/${txHash}`}
+          title={t('View transaction on Etherscan')}
           className="text-vega-pink dark:text-vega-yellow"
-          text={t('View on Etherscan')}
-        />
+        >
+          {t('View on Etherscan')}
+        </Link>
       </p>
     );
   }
@@ -56,11 +58,13 @@ export const TxRow = ({
         }`}
       >
         <span>{t('Ethereum transaction complete')}</span>
-        <EtherscanLink
-          tx={txHash || ''}
+        <Link
+          href={`${process.env['NX_ETHERSCAN_URL']}/tx/${txHash}`}
+          title={t('View on Etherscan')}
           className="text-vega-pink dark:text-vega-yellow"
-          text={t('View on Etherscan')}
-        />
+        >
+          {t('View transaction on Etherscan')}
+        </Link>
       </p>
     );
   }

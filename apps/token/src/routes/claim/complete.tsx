@@ -1,11 +1,6 @@
-import {
-  Callout,
-  Intent,
-  EtherscanLink,
-  Button,
-} from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Link, Button } from '@vegaprotocol/ui-toolkit';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouteLink } from 'react-router-dom';
 
 import type { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
@@ -38,18 +33,28 @@ export const Complete = ({
       {commitTxHash && (
         <p style={{ margin: 0 }}>
           {t('Link transaction')}:{' '}
-          <EtherscanLink tx={commitTxHash} text={commitTxHash} />
+          <Link
+            title={t('View transaction on Etherscan')}
+            href={`${process.env['NX_ETHERSCAN_URL']}/tx/${commitTxHash}`}
+          >
+            {commitTxHash}
+          </Link>
         </p>
       )}
       {claimTxHash && (
         <p>
           {t('Claim transaction')}:{' '}
-          <EtherscanLink tx={claimTxHash} text={claimTxHash} />
+          <Link
+            title={t('View transaction on Etherscan')}
+            href={`${process.env['NX_ETHERSCAN_URL']}/tx/${claimTxHash}`}
+          >
+            {claimTxHash}
+          </Link>
         </p>
       )}
-      <Link to={Routes.VESTING}>
+      <RouteLink to={Routes.VESTING}>
         <Button className="fill">{t('Check your vesting VEGA tokens')}</Button>
-      </Link>
+      </RouteLink>
     </Callout>
   );
 };
