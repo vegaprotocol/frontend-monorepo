@@ -1,8 +1,10 @@
 import {
   addDecimalsFormatNumber,
   PriceCell,
+  t,
 } from '@vegaprotocol/react-helpers';
 import { PriceCellChange, Sparkline } from '@vegaprotocol/ui-toolkit';
+import Link from 'next/link';
 import { mapDataToMarketList } from '../../utils';
 import type { MarketList } from '../markets-container/__generated__/MarketList';
 
@@ -20,7 +22,6 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
 
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
-  const stretchedLink = `after:content-[''] after:inset-0 after:z-[1] after:absolute after:box-border`;
   return (
     <div className="max-h-[40rem] overflow-x-auto">
       <table className="relative h-full min-w-full whitespace-nowrap">
@@ -46,12 +47,11 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
                     className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
                   >
                     <td className={`${boldUnderlineClassNames} relative`}>
-                      <a
+                      <Link
                         href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
-                        className={stretchedLink}
                       >
                         {marketName}
-                      </a>
+                      </Link>
                     </td>
                     <td className={tdClassNames}>
                       {lastPrice && (
@@ -88,7 +88,7 @@ export const SelectMarketList = ({ data }: SelectMarketListProps) => {
       </table>
 
       <a className={`${boldUnderlineClassNames} text-ui-small`} href="/markets">
-        {'Or view full market list'}
+        {t('Or view full market list')}
       </a>
     </div>
   );
