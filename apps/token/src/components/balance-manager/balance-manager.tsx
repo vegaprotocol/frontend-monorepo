@@ -1,9 +1,8 @@
 import * as Sentry from '@sentry/react';
 import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
-
-import { useEnvironment } from '@vegaprotocol/react-helpers';
 import {
   AppStateActionType,
   useAppState,
@@ -17,13 +16,13 @@ interface BalanceManagerProps {
 }
 
 export const BalanceManager = ({ children }: BalanceManagerProps) => {
-  const { ADDRESSES } = useEnvironment();
   const contracts = useContracts();
   const { account } = useWeb3React();
   const {
     appState: { decimals },
     appDispatch,
   } = useAppState();
+  const { config } = useEthereumConfig();
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
     account || '',
@@ -38,13 +37,16 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   // update balances on connect to Ethereum
   React.useEffect(() => {
     const updateBalances = async () => {
-      if (!account) return;
+      if (!account || !config) return;
       try {
         const [b, w, stats, a] = await Promise.all([
           contracts.vesting.userTotalAllTranches(account),
           contracts.token.balanceOf(account),
           contracts.vesting.userStats(account),
-          contracts.token.allowance(account, ADDRESSES.stakingBridge),
+          contracts.token.allowance(
+            account,
+            config.staking_bridge_contract.address
+          ),
         ]);
 
         const balance = toBigNum(b, decimals);
@@ -66,12 +68,12 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
 
     updateBalances();
   }, [
+    decimals,
     appDispatch,
     contracts?.token,
     contracts?.vesting,
     account,
-    ADDRESSES.stakingBridge,
-    decimals,
+    config,
   ]);
 
   // This use effect hook is very expensive and is kept separate to prevent expensive reloading of data.

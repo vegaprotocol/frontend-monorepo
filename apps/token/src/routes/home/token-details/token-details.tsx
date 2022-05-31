@@ -8,6 +8,12 @@ import type { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
 import { SplashLoader } from '../../../components/splash-loader';
+import { useEthereumConfig } from '@vegaprotocol/web3';
+import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
+import type { Networks } from '@vegaprotocol/react-helpers';
+
+const TOKEN_ADDRESS =
+  EnvironmentConfig[process.env['NX_VEGA_ENV'] as Networks].vegaTokenAddress;
 
 export const TokenDetails = ({
   totalSupply,
@@ -20,6 +26,7 @@ export const TokenDetails = ({
   const { t } = useTranslation();
 
   const { tranches, loading, error } = useTranches();
+  const { config } = useEthereumConfig();
 
   if (error) {
     return (
@@ -29,7 +36,7 @@ export const TokenDetails = ({
     );
   }
 
-  if (!tranches || loading) {
+  if (!tranches || loading || !config) {
     return (
       <Splash>
         <SplashLoader />
@@ -57,10 +64,9 @@ export const TokenDetails = ({
           data-testid="token-contract"
           title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
-          href={`${ETHERSCAN_URL}/address/${ADDRESSES.vestingAddress}`}
-          target="_blank"
+          href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
         >
-          {ADDRESSES.vestingAddress}
+          {config.token_vesting_contract.address}
         </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>

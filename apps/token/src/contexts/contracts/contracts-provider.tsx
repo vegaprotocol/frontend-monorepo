@@ -8,19 +8,21 @@ import { VegaClaim } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 import { SplashLoader } from '../../components/splash-loader';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { defaultProvider } from '../../lib/web3-connectors';
+import { useEthereumConfig } from '@vegaprotocol/web3';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
-  const { ADDRESSES, VEGA_ENV } = useEnvironment();
   const { provider: activeProvider, account } = useWeb3React();
+  const { config } = useEthereumConfig();
+  const { VEGA_ENV, ADDRESSES } = useEnvironment();
   // const [txs, setTxs] = React.useState<TxData[]>([]);
   const [contracts, setContracts] = React.useState<Pick<
     ContractsContextShape,
@@ -43,29 +45,29 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       signer = provider.getSigner();
     }
 
-    if (provider) {
+    if (provider && config) {
       setContracts({
         token: createTokenContract(
           ADDRESSES.vegaTokenAddress,
           signer || provider
         ),
         staking: createStakingBridgeContract(
-          ADDRESSES.stakingBridge,
+          config.staking_bridge_contract.address,
           signer || provider
         ),
         vesting: createTokenVestingContract(
-          ADDRESSES.vestingAddress,
+          config.token_vesting_contract.address,
           signer || provider
         ),
         // @ts-ignore Cant accept JsonRpcProvider provider
-        claim: new VegaClaim(APP_ENV, provider, signer),
+        claim: new VegaClaim(VEGA_ENV, provider, signer),
         erc20Bridge: createCollateralBridgeContract(
-          ADDRESSES.erc20Bridge,
+          config.collateral_bridge_contract.address,
           signer || provider
         ),
       });
     }
-  }, [activeProvider, account, ADDRESSES, VEGA_ENV]);
+  }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
 
   // React.useEffect(() => {
   //   if (!contracts) return;

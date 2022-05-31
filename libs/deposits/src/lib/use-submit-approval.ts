@@ -12,7 +12,7 @@ export const useSubmitApproval = (
     }
     return contract.approve(
       config.collateral_bridge_contract.address,
-      '100000000000000000000000000000000000000'
+      Number.MAX_SAFE_INTEGER.toString()
     );
   });
 

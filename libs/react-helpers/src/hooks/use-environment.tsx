@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import type { Networks } from '@vegaprotocol/smart-contracts';
 import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
 import { createContext, useContext } from 'react';
+import type { Networks } from '../lib/environment';
 
 declare global {
   interface Window {

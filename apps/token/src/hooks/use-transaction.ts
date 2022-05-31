@@ -11,7 +11,7 @@ import {
 } from './transaction-reducer';
 
 export const useTransaction = (
-  performTransaction: () => Promise<ethers.ContractTransaction>,
+  performTransaction: () => Promise<ethers.ContractTransaction> | null,
   requiredConfirmations = 1
 ) => {
   const { t } = useTranslation();
@@ -60,7 +60,13 @@ export const useTransaction = (
     });
 
     try {
-      const tx = await performTransaction();
+      const result = performTransaction();
+
+      if (result === null) {
+        return;
+      }
+
+      const tx = await result;
 
       dispatch({
         type: TransactionActionType.TX_SUBMITTED,
