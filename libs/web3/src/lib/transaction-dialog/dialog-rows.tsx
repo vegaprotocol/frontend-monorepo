@@ -40,6 +40,7 @@ export const TxRow = ({
           )}
         </span>
         <Link
+          data-testid="etherscan-link"
           href={`${process.env['ETHERSCAN_URL']}/tx/${txHash}`}
           title={t('View transaction on Etherscan')}
           className="text-vega-pink dark:text-vega-yellow"
