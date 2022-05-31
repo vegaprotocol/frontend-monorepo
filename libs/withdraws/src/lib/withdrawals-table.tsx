@@ -87,9 +87,9 @@ export const StatusCell = ({
         {t('Pending')}
         {data.txHash && (
           <Link
-            data-testid="etherscan-link"
             title={t('View transaction on Etherscan')}
             href={`${ethUrl}/tx/${data.txHash}`}
+            data-testid="etherscan-link"
           >
             {t('View on Etherscan')}
           </Link>
@@ -107,6 +107,7 @@ export const StatusCell = ({
             <Link
               title={t('View transaction on Etherscan')}
               href={`${ethUrl}/tx/${data.txHash}`}
+              data-testid="etherscan-link"
             >
               {t('View on Etherscan')}
             </Link>
@@ -139,6 +140,7 @@ const RecipientCell = ({
     <Link
       title={t('View address on Etherscan')}
       href={`${ethUrl}/address/${value}`}
+      data-testid="etherscan-link"
     >
       {valueFormatted}
     </Link>
