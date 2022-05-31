@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import type { VegaVesting } from '@vegaprotocol/smart-contracts-sdk';
+import type { VegaVesting } from '@vegaprotocol/smart-contracts';
 
 import {
   AppStateActionType,

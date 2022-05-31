@@ -1,6 +1,6 @@
 import { BigNumber } from '../../../lib/bignumber';
 import { sumCirculatingTokens } from './token-details-circulating';
-import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche } from '@vegaprotocol/smart-contracts';
 
 test('It sums some easy tranches correctly', () => {
   const tranches: Partial<Tranche>[] = [

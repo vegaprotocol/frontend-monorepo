@@ -1,4 +1,4 @@
-import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,8 +75,10 @@ export const Tranche = () => {
       {tranche.users.length ? (
         <ul role="list">
           {tranche.users.map((user, i) => {
-            const unlocked = user.remaining_tokens.times(lockedData?.unlocked);
-            const locked = user.remaining_tokens.times(lockedData?.locked);
+            const unlocked = user.remaining_tokens.times(
+              lockedData?.unlocked || 0
+            );
+            const locked = user.remaining_tokens.times(lockedData?.locked || 0);
             return (
               <li className="pb-4" key={i}>
                 <EtherscanLink address={user.address} text={user.address} />

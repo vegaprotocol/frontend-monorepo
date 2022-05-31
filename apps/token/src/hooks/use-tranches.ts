@@ -1,5 +1,5 @@
 import { useFetch } from '@vegaprotocol/react-helpers';
-import type { Networks, Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Networks, Tranche } from '@vegaprotocol/smart-contracts';
 import React, { useEffect } from 'react';
 import { APP_ENV } from '../config';
 
