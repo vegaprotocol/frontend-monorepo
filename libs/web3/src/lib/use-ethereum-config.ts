@@ -2,7 +2,7 @@ import { gql, useQuery } from '@apollo/client';
 import { useMemo } from 'react';
 import type { NetworkParamsQuery } from './__generated__/NetworkParamsQuery';
 
-interface EthereumConfig {
+export interface EthereumConfig {
   network_id: string;
   chain_id: string;
   confirmations: number;
@@ -23,7 +23,7 @@ interface EthereumConfig {
   };
 }
 
-const NETWORK_PARAMS_QUERY = gql`
+export const NETWORK_PARAMS_QUERY = gql`
   query NetworkParamsQuery {
     networkParameters {
       key
@@ -33,7 +33,8 @@ const NETWORK_PARAMS_QUERY = gql`
 `;
 
 export const useEthereumConfig = () => {
-  const { data } = useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);
+  const { data, loading, error } =
+    useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);
 
   const config = useMemo(() => {
     if (!data) {
@@ -59,5 +60,5 @@ export const useEthereumConfig = () => {
     return parsedConfig;
   }, [data]);
 
-  return config;
+  return { config, loading, error };
 };

@@ -28,7 +28,7 @@ const DEPOSIT_EVENT_SUB = gql`
 `;
 
 export const useSubmitDeposit = () => {
-  const config = useEthereumConfig();
+  const { config } = useEthereumConfig();
   const contract = useBridgeContract();
   const [confirmationEvent, setConfirmationEvent] =
     useState<DepositEvent_busEvents_event_Deposit | null>(null);

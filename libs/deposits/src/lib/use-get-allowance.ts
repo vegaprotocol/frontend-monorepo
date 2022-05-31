@@ -10,7 +10,7 @@ export const useGetAllowance = (
   decimals?: number
 ) => {
   const { account } = useWeb3React();
-  const config = useEthereumConfig();
+  const { config } = useEthereumConfig();
 
   const getAllowance = useCallback(() => {
     if (!contract || !account || !config) {
@@ -20,7 +20,7 @@ export const useGetAllowance = (
       account,
       config.collateral_bridge_contract.address
     );
-  }, [contract, account, config?.collateral_bridge_contract.address]);
+  }, [contract, account, config]);
 
   const {
     state: { data },

@@ -1,7 +1,4 @@
-import type {
-  createTokenContract,
-  ERC20Token,
-} from '@vegaprotocol/smart-contracts';
+import type { createTokenContract } from '@vegaprotocol/smart-contracts';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
 
 export const useSubmitFaucet = (
