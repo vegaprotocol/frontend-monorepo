@@ -83,6 +83,13 @@ const getRowsToRender = (
   return selectedRows;
 };
 
+// 17px of row height plus 4px gap
+const rowHeight = 21;
+// buffer size in rows
+const bufferSize = 30;
+// margin size in px, when reached scrollOffset will be updated
+const marginSize = bufferSize * 0.9 * rowHeight;
+
 export const Orderbook = ({
   rows,
   bestStaticBidPrice,
@@ -94,31 +101,64 @@ export const Orderbook = ({
   resolution,
   onResolutionChange,
 }: OrderbookProps) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollElement = useRef<HTMLDivElement>(null);
   // scroll offset for which rendered rows are selected, will change after user will scroll to margin of rendered data
   const [scrollOffset, setScrollOffset] = useState(0);
   // price level which is rendered in center of vieport, need to preserve price level when rows will be added or removed
-  const priceInCenter = useRef('');
+  // actual scrollTop of scrollElement current element
+  const scrollTopRef = useRef(0);
+  const priceInCenter = useRef<string>();
   const [lockOnMidPrice, setLockOnMidPrice] = useState(true);
   const resolutionRef = useRef(resolution);
-  const skipPriceInCenterUpdateRef = useRef(false);
   // stores rows[0].price value
   const [maxPriceLevel, setMaxPriceLevel] = useState('');
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
-  // 17px of row height plus 4px gap
-  const rowHeight = 21;
-  // buffer size in rows
-  const bufferSize = 30;
-  // margin size in px, when reached scrollOffset will be updated
-  const marginSize = bufferSize * 0.9 * rowHeight;
   const numberOfRows = useMemo(
     () => getNumberOfRows(rows, resolution),
     [rows, resolution]
   );
 
+  const updateScrollOffset = useCallback(
+    (scrollTop: number) => {
+      if (Math.abs(scrollOffset - scrollTop) > marginSize) {
+        setScrollOffset(scrollTop);
+      }
+    },
+    [scrollOffset]
+  );
+
+  const onScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      const { scrollTop } = event.currentTarget;
+      updateScrollOffset(scrollTop);
+      if (scrollTop === scrollTopRef.current) {
+        return;
+      }
+      priceInCenter.current = (
+        BigInt(resolution) + // extra row on very top - sticky header
+        BigInt(maxPriceLevel) -
+        BigInt(
+          Math.floor((scrollTop + Math.floor(viewportHeight / 2)) / rowHeight)
+        ) *
+          BigInt(resolution)
+      ).toString();
+      if (lockOnMidPrice) {
+        setLockOnMidPrice(false);
+      }
+      scrollTopRef.current = scrollTop;
+    },
+    [
+      resolution,
+      lockOnMidPrice,
+      maxPriceLevel,
+      viewportHeight,
+      updateScrollOffset,
+    ]
+  );
+
   const scrollToPrice = useCallback(
-    (price: string, skipPriceInCenterUpdate = false) => {
-      if (scrollRef.current && maxPriceLevel) {
+    (price: string) => {
+      if (scrollElement.current && maxPriceLevel) {
         let scrollTop =
           // distance in rows between midPrice and price from first row * row Height
           (Number(
@@ -129,15 +169,16 @@ export const Orderbook = ({
         // minus half height of viewport plus half of row
         scrollTop -= Math.ceil((viewportHeight - rowHeight) / 2);
         // adjust to current rows position
-        scrollTop += (scrollRef.current.scrollTop % 21) - (scrollTop % 21);
+        scrollTop += (scrollTopRef.current % 21) - (scrollTop % 21);
         const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
-        if (scrollRef.current.scrollTop !== priceCenterScrollOffset) {
-          scrollRef.current.scrollTop = priceCenterScrollOffset;
-          skipPriceInCenterUpdateRef.current = skipPriceInCenterUpdate;
+        if (scrollTopRef.current !== priceCenterScrollOffset) {
+          updateScrollOffset(priceCenterScrollOffset);
+          scrollTopRef.current = priceCenterScrollOffset;
+          scrollElement.current.scrollTop = priceCenterScrollOffset;
         }
       }
     },
-    [maxPriceLevel, resolution, viewportHeight]
+    [maxPriceLevel, resolution, viewportHeight, updateScrollOffset]
   );
 
   useEffect(() => {
@@ -148,25 +189,25 @@ export const Orderbook = ({
   }, [rows, maxPriceLevel]);
 
   const scrollToMidPrice = useCallback(() => {
-    if (!bestStaticOfferPrice || !bestStaticBidPrice /*|| !maxPriceLevel*/) {
+    if (!bestStaticOfferPrice || !bestStaticBidPrice) {
       return;
     }
+    priceInCenter.current = undefined;
     setLockOnMidPrice(true);
-    priceInCenter.current = '';
     scrollToPrice(
       getPriceLevel(
         BigInt(bestStaticOfferPrice) +
           (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) /
             BigInt(2),
         resolution
-      ),
-      true
+      )
     );
   }, [bestStaticOfferPrice, bestStaticBidPrice, scrollToPrice, resolution]);
 
+  // adjust scroll position to keep selected price in center
   useLayoutEffect(() => {
     if (resolutionRef.current !== resolution) {
-      priceInCenter.current = '';
+      priceInCenter.current = undefined;
       resolutionRef.current = resolution;
       setLockOnMidPrice(true);
     }
@@ -177,10 +218,13 @@ export const Orderbook = ({
     }
   }, [scrollToMidPrice, scrollToPrice, resolution]);
 
+  // handles viewport resize
   useEffect(() => {
     function handleResize() {
-      if (scrollRef.current) {
-        setViewportHeight(scrollRef.current.clientHeight);
+      if (scrollElement.current) {
+        setViewportHeight(
+          scrollElement.current.clientHeight || window.innerHeight
+        );
       }
     }
     window.addEventListener('resize', handleResize);
@@ -204,41 +248,16 @@ export const Orderbook = ({
     };
   }, [rows, scrollOffset, resolution, viewportHeight, numberOfRows]);
 
-  const onScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    if (Math.abs(scrollOffset - event.currentTarget.scrollTop) > marginSize) {
-      setScrollOffset(event.currentTarget.scrollTop);
-    }
-    if (skipPriceInCenterUpdateRef.current) {
-      skipPriceInCenterUpdateRef.current = false;
-      return;
-    }
-    priceInCenter.current = (
-      BigInt(resolution) + // extra row on very top - sticky header
-      BigInt(rows?.[0]?.price ?? 0) -
-      BigInt(
-        Math.floor(
-          (event.currentTarget.scrollTop + Math.floor(viewportHeight / 2)) /
-            rowHeight /
-            resolution
-        )
-      ) *
-        BigInt(resolution)
-    ).toString();
-    if (lockOnMidPrice) {
-      setLockOnMidPrice(false);
-    }
-  };
-
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
     (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
-
   return (
     <div
       className={`h-full overflow-auto relative ${styles['scroll']}`}
       style={{ scrollbarColor: 'rebeccapurple green', scrollbarWidth: 'thin' }}
       onScroll={onScroll}
-      ref={scrollRef}
+      ref={scrollElement}
+      data-testid="scroll"
     >
       <div
         className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"
@@ -292,10 +311,10 @@ export const Orderbook = ({
       >
         <div className="text-ui-small col-start-2">
           <select
-            data-testid="precision-change"
-            onChange={(e) => onResolutionChange(Number(e.target.value))}
+            onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}
             value={resolution}
             className="block bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full appearance-none"
+            data-testid="resolution"
           >
             {new Array(3)
               .fill(null)
@@ -308,7 +327,11 @@ export const Orderbook = ({
           </select>
         </div>
         <div className="text-ui-small col-start-4">
-          <button onClick={scrollToMidPrice} className="block w-full">
+          <button
+            onClick={scrollToMidPrice}
+            className="block w-full"
+            data-testid="scroll-to-midprice"
+          >
             mid price{' '}
             <span className={lockOnMidPrice ? 'text-yellow' : ''}>
               <Icon name="th-derived" />

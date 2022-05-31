@@ -1,7 +1,7 @@
 export default class OrderBookList {
   cumulativeVolBidBar = 'bid-bar';
   cumulativeVolAskBar = 'ask-bar';
-  precisionChange = 'precision-change';
+  precisionChange = 'resolution';
   bidColour = 'darkgreen';
   askColour = 'maroon';
   testingVolume = TestingVolumeType;
