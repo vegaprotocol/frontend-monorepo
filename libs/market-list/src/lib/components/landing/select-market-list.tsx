@@ -8,13 +8,13 @@ import Link from 'next/link';
 import { mapDataToMarketList } from '../../utils';
 import type { MarketList } from '../markets-container/__generated__/MarketList';
 
-export interface SelectMarketListProps {
+export interface SelectMarketListDataProps {
   data: MarketList | undefined;
 }
 
 type CandleClose = Required<string>;
 
-export const SelectMarketList = ({ data }: SelectMarketListProps) => {
+export const SelectMarketList = ({ data }: SelectMarketListDataProps) => {
   const thClassNames = (direction: 'left' | 'right') =>
     `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark/80 dark:text-white/80`;
   const tdClassNames =
