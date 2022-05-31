@@ -10,7 +10,7 @@ import type { MarketList } from '../markets-container/__generated__/MarketList';
 
 export interface SelectMarketListProps {
   data: MarketList | undefined;
-  onSelect: () => void;
+  onSelect: (id: string) => void;
 }
 
 type CandleClose = Required<string>;
@@ -53,7 +53,12 @@ export const SelectMarketList = ({ data, onSelect }: SelectMarketListProps) => {
                         passHref={true}
                       >
                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-                        <a onClick={onSelect}>{marketName}</a>
+                        <a
+                          onClick={() => onSelect(id)}
+                          data-testid={`market-link-${id}`}
+                        >
+                          {marketName}
+                        </a>
                       </Link>
                     </td>
                     <td className={tdClassNames}>
