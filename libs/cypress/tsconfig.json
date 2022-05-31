@@ -17,8 +17,9 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
+    "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
+    "resolveJsonModule": true,
     "noFallthroughCasesInSwitch": true
   }
 }
