@@ -11,6 +11,7 @@ const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {
     market(id: $marketId) {
       id
+      name
       decimalPlaces
       positionDecimalPlaces
       state

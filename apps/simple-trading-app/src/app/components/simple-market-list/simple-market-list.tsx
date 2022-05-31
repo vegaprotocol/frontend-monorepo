@@ -7,8 +7,10 @@ import SimpleMarketPercentChange from './simple-market-percent-change';
 import SimpleMarketExpires from './simple-market-expires';
 import DataProvider from './data-provider';
 import { MARKET_STATUS } from './constants';
+import { useNavigate } from 'react-router-dom';
 
 const SimpleMarketList = () => {
+  const navigate = useNavigate();
   const variables = useMemo(
     () => ({
       CandleInterval: 'I1H',
@@ -22,8 +24,7 @@ const SimpleMarketList = () => {
     variables
   );
   const onClick = useCallback((marketId) => {
-    // @TODO - let's try to have navigation first
-    console.log('trigger market', marketId);
+    navigate(`/trading/${marketId}`);
   }, []);
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
