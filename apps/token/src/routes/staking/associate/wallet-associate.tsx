@@ -13,6 +13,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 
 export const WalletAssociate = ({
   perform,
@@ -31,7 +32,7 @@ export const WalletAssociate = ({
   const { t } = useTranslation();
   const {
     appDispatch,
-    appState: { walletBalance, allowance, walletAssociatedBalance },
+    appState: { walletBalance, allowance, walletAssociatedBalance, decimals },
   } = useAppState();
 
   const { token } = useContracts();
@@ -40,16 +41,17 @@ export const WalletAssociate = ({
     state: approveState,
     perform: approve,
     dispatch: approveDispatch,
-  } = useTransaction(() => token.approve(ADDRESSES.stakingBridge));
+  } = useTransaction(() =>
+    // TODO: what value to use here?
+    token.approve(ADDRESSES.stakingBridge, '1000000000000000000')
+  );
 
   // Once they have approved deposits then we need to refresh their allowance
   React.useEffect(() => {
     const run = async () => {
       if (approveState.txState === TxState.Complete) {
-        const allowance = await token.allowance(
-          address,
-          ADDRESSES.stakingBridge
-        );
+        const a = await token.allowance(address, ADDRESSES.stakingBridge);
+        const allowance = toBigNum(a, decimals);
         appDispatch({
           type: AppStateActionType.SET_ALLOWANCE,
           allowance,
@@ -62,6 +64,7 @@ export const WalletAssociate = ({
     appDispatch,
     approveState.txState,
     token,
+    decimals,
     ADDRESSES.stakingBridge,
   ]);
 
