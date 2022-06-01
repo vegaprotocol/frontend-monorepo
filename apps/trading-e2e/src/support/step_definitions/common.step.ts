@@ -9,5 +9,5 @@ Given('I am on the homepage', () => {
 });
 
 When('I close the dialog form', () => {
-  basePage.closeDialog()
+  basePage.closeDialog();
 });
