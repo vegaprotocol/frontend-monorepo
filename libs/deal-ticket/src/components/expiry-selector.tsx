@@ -1,14 +1,13 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import type { Order } from './use-order-state';
 import { formatForInput } from '@vegaprotocol/react-helpers';
 
 interface ExpirySelectorProps {
-  order: Order;
+  value?: Date;
   onSelect: (expiration: Date | null) => void;
 }
 
-export const ExpirySelector = ({ order, onSelect }: ExpirySelectorProps) => {
-  const date = order.expiration ? new Date(order.expiration) : new Date();
+export const ExpirySelector = ({ value, onSelect }: ExpirySelectorProps) => {
+  const date = value ? new Date(value) : new Date();
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
   return (

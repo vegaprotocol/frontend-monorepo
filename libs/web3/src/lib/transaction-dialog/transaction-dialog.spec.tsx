@@ -74,7 +74,7 @@ it('Dialog states', () => {
   expect(
     screen.getByText('Awaiting Ethereum transaction 0/1 confirmations...')
   ).toBeInTheDocument();
-  expect(screen.getByTestId('etherscan-link')).toBeInTheDocument();
+  expect(screen.getByTestId('link')).toBeInTheDocument();
 
   rerender(generateJsx({ status: EthTxStatus.Complete, confirmations: 1 }));
   expect(screen.getByText(`${props.name} complete`)).toBeInTheDocument();

@@ -41,6 +41,7 @@ beforeEach(() => {
       max: new BigNumber(20),
     },
     allowance: new BigNumber(30),
+    isFaucetable: true,
   };
 });
 
