@@ -1,28 +1,30 @@
 import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
-import type { Order } from './use-order-state';
 
 interface TimeInForceSelectorProps {
-  order: Order;
+  value: OrderTimeInForce;
+  orderType: OrderType;
   onSelect: (tif: OrderTimeInForce) => void;
 }
 
 export const TimeInForceSelector = ({
-  order,
+  value,
+  orderType,
   onSelect,
 }: TimeInForceSelectorProps) => {
   const options =
-    order.type === OrderType.Limit
+    orderType === OrderType.Limit
       ? Object.entries(OrderTimeInForce)
       : Object.entries(OrderTimeInForce).filter(
-          ([_, value]) =>
-            value === OrderTimeInForce.FOK || value === OrderTimeInForce.IOC
+          ([_, timeInForce]) =>
+            timeInForce === OrderTimeInForce.FOK ||
+            timeInForce === OrderTimeInForce.IOC
         );
 
   return (
     <FormGroup label="Time in force">
       <Select
-        value={order.timeInForce}
+        value={value}
         onChange={(e) => onSelect(e.target.value as OrderTimeInForce)}
         className="w-full"
         data-testid="order-tif"

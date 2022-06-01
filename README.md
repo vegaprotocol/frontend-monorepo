@@ -96,7 +96,7 @@ To run tests locally using your own wallets you can add the following environmen
 In CI linting, formatting and also run. These checks can be seen in the [CI workflow file](.github/workflows//test.yml).
 
 - To fix linting errors locally run `yarn nx lint --fix`
-- To fix formatting errors local run `yarn nx format`
+- To fix formatting errors local run `yarn nx format:write`
 - For either command you may use `--all` to run across the entire repository
 
 ### Further help with Nx

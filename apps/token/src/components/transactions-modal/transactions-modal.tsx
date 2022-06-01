@@ -1,5 +1,6 @@
 import type { TxData } from '@vegaprotocol/smart-contracts';
-import { Dialog, EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +29,7 @@ const TransactionModalStatus = ({
 }) => <span className="flex gap-4 items-center">{children}</span>;
 
 export const TransactionModal = () => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { transactions } = useContracts();
   const { appState, appDispatch } = useAppState();
@@ -76,16 +78,20 @@ export const TransactionModal = () => {
             </tr>
           </thead>
           <tbody>
-            {transactions.map((t) => {
+            {transactions.map((transaction) => {
               return (
-                <tr key={t.tx.hash}>
+                <tr key={transaction.tx.hash}>
                   <TransactionModalTd>
-                    <EtherscanLink
-                      tx={t.tx.hash}
-                      text={truncateMiddle(t.tx.hash)}
-                    />
+                    <Link
+                      title={t('View transaction on Etherscan')}
+                      href={`${ETHERSCAN_URL}/tx/${transaction.tx.hash}`}
+                    >
+                      {truncateMiddle(transaction.tx.hash)}
+                    </Link>
                   </TransactionModalTd>
-                  <TransactionModalTd>{renderStatus(t)}</TransactionModalTd>
+                  <TransactionModalTd>
+                    {renderStatus(transaction)}
+                  </TransactionModalTd>
                 </tr>
               );
             })}

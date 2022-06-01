@@ -4,22 +4,17 @@ import {
   OrderType,
 } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
-import type { Order } from './use-order-state';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
+import type { Order } from '../utils/get-default-order';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
-const order: Order = {
-  type: OrderType.Market,
-  size: '100',
-  timeInForce: OrderTimeInForce.FOK,
-  side: null,
-};
 const market: DealTicketQuery_market = {
   __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
+  positionDecimalPlaces: 1,
   tradingMode: MarketTradingMode.Continuous,
   state: MarketState.Active,
   tradableInstrument: {
@@ -43,7 +38,7 @@ const market: DealTicketQuery_market = {
 const submit = jest.fn();
 const transactionStatus = 'default';
 
-function generateJsx() {
+function generateJsx(order?: Order) {
   return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <VegaWalletContext.Provider value={{} as any}>
@@ -57,21 +52,23 @@ function generateJsx() {
   );
 }
 
-it('Deal ticket defaults', () => {
+it('Displays ticket defaults', () => {
   render(generateJsx());
 
   // Assert defaults are used
   expect(
-    screen.getByTestId(`order-type-${order.type}-selected`)
+    screen.getByTestId(`order-type-${OrderType.Market}-selected`)
   ).toBeInTheDocument();
   expect(
     screen.queryByTestId('order-side-SIDE_BUY-selected')
-  ).not.toBeInTheDocument();
+  ).toBeInTheDocument();
   expect(
     screen.queryByTestId('order-side-SIDE_SELL-selected')
   ).not.toBeInTheDocument();
-  expect(screen.getByTestId('order-size')).toHaveDisplayValue(order.size);
-  expect(screen.getByTestId('order-tif')).toHaveValue(order.timeInForce);
+  expect(screen.getByTestId('order-size')).toHaveDisplayValue(
+    String(1 / Math.pow(10, market.positionDecimalPlaces))
+  );
+  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.IOC);
 
   // Assert last price is shown
   expect(screen.getByTestId('last-price')).toHaveTextContent(
@@ -82,18 +79,18 @@ it('Deal ticket defaults', () => {
   );
 });
 
-it('Can edit deal ticket', () => {
+it('Can edit deal ticket', async () => {
   render(generateJsx());
 
-  // Asssert changing values
-  fireEvent.click(screen.getByTestId('order-side-SIDE_BUY'));
-  expect(
-    screen.getByTestId('order-side-SIDE_BUY-selected')
-  ).toBeInTheDocument();
+  // BUY is selected by default
+  screen.getByTestId('order-side-SIDE_BUY-selected');
 
-  fireEvent.change(screen.getByTestId('order-size'), {
-    target: { value: '200' },
+  await act(async () => {
+    fireEvent.change(screen.getByTestId('order-size'), {
+      target: { value: '200' },
+    });
   });
+
   expect(screen.getByTestId('order-size')).toHaveDisplayValue('200');
 
   fireEvent.change(screen.getByTestId('order-tif'), {

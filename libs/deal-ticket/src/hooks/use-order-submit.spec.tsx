@@ -1,14 +1,42 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, renderHook } from '@testing-library/react-hooks';
-import type { Order } from './use-order-state';
+import type { Order } from '../utils/get-default-order';
 import type {
   VegaKeyExtended,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
+import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
+
+const defaultMarket: DealTicketQuery_market = {
+  __typename: 'Market',
+  id: 'market-id',
+  decimalPlaces: 2,
+  positionDecimalPlaces: 1,
+  tradingMode: MarketTradingMode.Continuous,
+  state: MarketState.Active,
+  tradableInstrument: {
+    __typename: 'TradableInstrument',
+    instrument: {
+      __typename: 'Instrument',
+      product: {
+        __typename: 'Future',
+        quoteName: 'quote-name',
+      },
+    },
+  },
+  depth: {
+    __typename: 'MarketDepth',
+    lastTrade: {
+      __typename: 'Trade',
+      price: '100',
+    },
+  },
+};
 
 const defaultWalletContext = {
   keypair: null,
@@ -22,7 +50,7 @@ const defaultWalletContext = {
 
 function setup(
   context?: Partial<VegaWalletContextShape>,
-  market = { id: 'market-id', decimalPlaces: 2 }
+  market = defaultMarket
 ) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider>
@@ -111,20 +139,16 @@ it('Should submit a correctly formatted order', async () => {
   const keypair = {
     pub: '0x123',
   } as VegaKeyExtended;
-  const market = {
-    id: 'market-id',
-    decimalPlaces: 2,
-  };
   const { result } = setup(
     {
       sendTx: mockSendTx,
       keypairs: [keypair],
       keypair,
     },
-    market
+    defaultMarket
   );
 
-  const order = {
+  const order: Order = {
     type: OrderType.Limit,
     size: '10',
     timeInForce: OrderTimeInForce.GTT,
@@ -141,12 +165,12 @@ it('Should submit a correctly formatted order', async () => {
     propagate: true,
     orderSubmission: {
       type: OrderType.Limit,
-      marketId: market.id, // Market provided from hook arugment
-      size: '10',
+      marketId: defaultMarket.id, // Market provided from hook arugment
+      size: '100', // size adjusted based on positionDecimalPlaces
       side: OrderSide.Buy,
       timeInForce: OrderTimeInForce.GTT,
       price: '123456789', // Decimal removed
-      expiresAt: order.expiration.getTime() + '000000', // Nanoseconds appened
+      expiresAt: order.expiration?.getTime() + '000000', // Nanoseconds appened
     },
   });
 });
