@@ -43,7 +43,6 @@ export const WalletAssociate = ({
     dispatch: approveDispatch,
   } = useTransaction(() => {
     if (!config) return null;
-    // TODO: what value to use here?
     return token.approve(
       config.staking_bridge_contract.address,
       Number.MAX_SAFE_INTEGER.toString()

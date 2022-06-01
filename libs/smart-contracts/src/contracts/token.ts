@@ -19,6 +19,7 @@ export class Token {
     );
     this.faucetable = faucetable;
   }
+
   totalSupply() {
     return this.contract.totalSupply();
   }
