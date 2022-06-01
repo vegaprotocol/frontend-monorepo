@@ -80,8 +80,8 @@ export const AssociateTransaction = ({
         <p>
           <Link
             title={t('View transaction on Etherscan')}
-            target="_blank"
             href={`${ETHERSCAN_URL}/tx/${state.txData.hash}`}
+            target="_blank"
           >
             {state.txData.hash}
           </Link>

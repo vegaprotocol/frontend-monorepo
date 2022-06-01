@@ -28,6 +28,7 @@ export const TransactionError = ({
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${hash}`}
+            target="_blank"
           >
             {hash}
           </Link>

@@ -85,6 +85,7 @@ export const TransactionModal = () => {
                     <Link
                       title={t('View transaction on Etherscan')}
                       href={`${ETHERSCAN_URL}/tx/${transaction.tx.hash}`}
+                      target="_blank"
                     >
                       {truncateMiddle(transaction.tx.hash)}
                     </Link>

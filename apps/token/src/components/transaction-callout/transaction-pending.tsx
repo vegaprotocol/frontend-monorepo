@@ -46,6 +46,7 @@ export const TransactionPending = ({
       <p className="mb-8">
         <Link
           title={t('View transaction on Etherscan')}
+          target="_blank"
           href={`${ETHERSCAN_URL}/tx/${hash}`}
         >
           {hash}

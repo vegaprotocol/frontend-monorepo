@@ -87,6 +87,7 @@ export const Tranche = () => {
                 <Link
                   title={t('View on Etherscan (opens in a new tab)')}
                   href={`${ETHERSCAN_URL}/tx/${user.address}`}
+                  target="_blank"
                 >
                   {user.address}
                 </Link>

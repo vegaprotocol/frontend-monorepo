@@ -14,8 +14,9 @@ const Contracts = () => {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>{key}:</div>
           <Link
-            title={t('View address on Etherscan')}
+            title={t('View on Etherscan (opens in a new tab)')}
             href={`${ETHERSCAN_URL}/address/${value}`}
+            target="_blank"
           >
             {value}
           </Link>

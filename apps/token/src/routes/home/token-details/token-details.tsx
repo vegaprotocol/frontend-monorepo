@@ -46,6 +46,7 @@ export const TokenDetails = ({
           title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
           href={`${ETHERSCAN_URL}/address/${ADDRESSES.vegaTokenAddress}`}
+          target="_blank"
         >
           {ADDRESSES.vegaTokenAddress}
         </Link>
@@ -57,6 +58,7 @@ export const TokenDetails = ({
           title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
           href={`${ETHERSCAN_URL}/address/${ADDRESSES.vestingAddress}`}
+          target="_blank"
         >
           {ADDRESSES.vestingAddress}
         </Link>

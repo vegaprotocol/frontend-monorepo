@@ -61,6 +61,7 @@ export const ValidatorTable = ({
           <Link
             title={t('View on Etherscan (opens in a new tab)')}
             href={`${ETHERSCAN_URL}/address/${node.ethereumAdddress}`}
+            target="_blank"
           >
             {node.ethereumAdddress}
           </Link>

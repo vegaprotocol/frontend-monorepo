@@ -153,6 +153,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
             <Link
               title={t('View on Etherscan (opens in a new tab)')}
               href={`${ETHERSCAN_URL}/tx/${withdrawal.details?.receiverAddress}`}
+              target="_blank"
             >
               {truncateMiddle(withdrawal.details?.receiverAddress ?? '')}
             </Link>
@@ -174,6 +175,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
               <Link
                 title={t('View transaction on Etherscan')}
                 href={`${ETHERSCAN_URL}/tx/${withdrawal.txHash}`}
+                target="_blank"
               >
                 {truncateMiddle(withdrawal.txHash)}
               </Link>
