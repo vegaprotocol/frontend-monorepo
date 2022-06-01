@@ -1,19 +1,19 @@
 import type {
   TxData,
-  VegaClaim,
-  createTokenContract,
-  createStakingBridgeContract,
-  createTokenVestingContract,
-  createCollateralBridgeContract,
+  Claim,
+  CollateralBridge,
+  Token,
+  TokenVesting,
+  StakingBridge,
 } from '@vegaprotocol/smart-contracts';
 import React from 'react';
 
 export interface ContractsContextShape {
-  token: ReturnType<typeof createTokenContract>;
-  staking: ReturnType<typeof createStakingBridgeContract>;
-  vesting: ReturnType<typeof createTokenVestingContract>;
-  claim: VegaClaim;
-  erc20Bridge: ReturnType<typeof createCollateralBridgeContract>;
+  token: Token;
+  staking: StakingBridge;
+  vesting: TokenVesting;
+  claim: Claim;
+  erc20Bridge: CollateralBridge;
   transactions: TxData[];
 }
 

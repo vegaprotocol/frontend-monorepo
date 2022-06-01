@@ -1,9 +1,6 @@
-import type { Networks } from '@vegaprotocol/react-helpers';
 import { ethers } from 'ethers';
-import claimAbi from '../abis/claim_abi.json';
-import { EnvironmentConfig } from '../config';
+import abi from '../abis/claim_abi.json';
 import { asciiToHex } from '../utils';
-import { BaseContract } from './base-contract';
 
 export const UNSPENT_CODE = '0x0000000000000000000000000000000000000000';
 export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
@@ -22,33 +19,19 @@ export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
  * contract.isClaimValid({ claimCode: "0x...", expiry: 0, nonce: "0x00", account: "0x00" })
  * ```
  */
-export class VegaClaim extends BaseContract {
+export class Claim {
   public contract: ethers.Contract;
 
   constructor(
-    network: Networks,
-    provider: ethers.providers.Web3Provider,
-    signer?: ethers.Signer
+    address: string,
+    signerOrProvider: ethers.Signer | ethers.providers.Provider
   ) {
-    super(provider, signer);
-
-    this.contract = new ethers.Contract(
-      EnvironmentConfig[network].claimAddress,
-      claimAbi,
-      this.signer || this.provider
-    );
+    this.contract = new ethers.Contract(address, abi, signerOrProvider);
   }
 
   /** Execute contracts commit_untargeted function */
-  async commit(
-    s: string,
-    confirmations = 1
-  ): Promise<ethers.ContractTransaction> {
-    const tx = await this.contract.commit_untargeted(s);
-
-    this.trackTransaction(tx, confirmations);
-
-    return tx;
+  public commit(s: string): Promise<ethers.ContractTransaction> {
+    return this.contract.commit_untargeted(s);
   }
 
   /**
@@ -57,29 +40,26 @@ export class VegaClaim extends BaseContract {
    * was performed and mined beforehand
    * @return {Promise<boolean>}
    */
-  public async claim(
-    {
-      amount,
-      tranche,
-      expiry,
-      target,
-      country,
-      v,
-      r,
-      s,
-    }: {
-      amount: string;
-      tranche: number;
-      expiry: number;
-      target?: string;
-      country: string;
-      v: number;
-      r: string;
-      s: string;
-    },
-    confirmations = 1
-  ): Promise<ethers.ContractTransaction> {
-    const tx = await this.contract[
+  public claim({
+    amount,
+    tranche,
+    expiry,
+    target,
+    country,
+    v,
+    r,
+    s,
+  }: {
+    amount: string;
+    tranche: number;
+    expiry: number;
+    target?: string;
+    country: string;
+    v: number;
+    r: string;
+    s: string;
+  }): Promise<ethers.ContractTransaction> {
+    return this.contract[
       target != null ? 'claim_targeted' : 'claim_untargeted'
     ](
       ...[
@@ -93,18 +73,14 @@ export class VegaClaim extends BaseContract {
         target,
       ].filter(Boolean)
     );
-
-    this.trackTransaction(tx, confirmations);
-
-    return tx;
   }
 
   /**
    * Check if this code was already committed to by this account
    * @return {Promise<boolean>}
    */
-  async isCommitted({ s }: { s: string }): Promise<string> {
-    return await this.contract.commitments(s);
+  isCommitted({ s }: { s: string }): Promise<string> {
+    return this.contract.commitments(s);
   }
 
   /**
@@ -113,7 +89,7 @@ export class VegaClaim extends BaseContract {
    * @returns Promise<boolean>
    */
   async isExpired(expiry: number): Promise<boolean> {
-    return expiry < (await this.provider.getBlock('latest')).timestamp;
+    return expiry < (await this.contract.provider.getBlock('latest')).timestamp;
   }
 
   /**

@@ -1,9 +1,7 @@
-import type { createTokenContract } from '@vegaprotocol/smart-contracts';
+import type { Token } from '@vegaprotocol/smart-contracts';
 import { useEthereumConfig, useEthereumTransaction } from '@vegaprotocol/web3';
 
-export const useSubmitApproval = (
-  contract: ReturnType<typeof createTokenContract> | null
-) => {
+export const useSubmitApproval = (contract: Token | null) => {
   const { config } = useEthereumConfig();
 
   const transaction = useEthereumTransaction(() => {

@@ -1,4 +1,4 @@
-import { createCollateralBridgeContract } from '@vegaprotocol/smart-contracts';
+import { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { useEthereumConfig } from './use-ethereum-config';
@@ -14,7 +14,7 @@ export const useBridgeContract = () => {
 
     const signer = provider.getSigner();
 
-    return createCollateralBridgeContract(
+    return new CollateralBridge(
       config.collateral_bridge_contract.address,
       signer || provider
     );

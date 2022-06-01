@@ -1,10 +1,10 @@
 import {
-  createCollateralBridgeContract,
-  createStakingBridgeContract,
-  createTokenContract,
-  createTokenVestingContract,
+  Token,
+  TokenVesting,
+  Claim,
+  CollateralBridge,
+  StakingBridge,
 } from '@vegaprotocol/smart-contracts';
-import { VegaClaim } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -47,21 +47,17 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
 
     if (provider && config) {
       setContracts({
-        token: createTokenContract(
-          ADDRESSES.vegaTokenAddress,
-          signer || provider
-        ),
-        staking: createStakingBridgeContract(
+        token: new Token(ADDRESSES.vegaTokenAddress, signer || provider),
+        staking: new StakingBridge(
           config.staking_bridge_contract.address,
           signer || provider
         ),
-        vesting: createTokenVestingContract(
+        vesting: new TokenVesting(
           config.token_vesting_contract.address,
           signer || provider
         ),
-        // @ts-ignore Cant accept JsonRpcProvider provider
-        claim: new VegaClaim(VEGA_ENV, provider, signer),
-        erc20Bridge: createCollateralBridgeContract(
+        claim: new Claim(ADDRESSES.claimAddress, signer || provider),
+        erc20Bridge: new CollateralBridge(
           config.collateral_bridge_contract.address,
           signer || provider
         ),

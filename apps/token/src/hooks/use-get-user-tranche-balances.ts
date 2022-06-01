@@ -1,6 +1,6 @@
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import type { createTokenVestingContract } from '@vegaprotocol/smart-contracts';
+import type { TokenVesting } from '@vegaprotocol/smart-contracts';
 
 import {
   AppStateActionType,
@@ -12,7 +12,7 @@ import { toBigNum } from '@vegaprotocol/react-helpers';
 
 export const useGetUserTrancheBalances = (
   address: string,
-  vesting: ReturnType<typeof createTokenVestingContract>
+  vesting: TokenVesting
 ) => {
   const {
     appState: { decimals },
