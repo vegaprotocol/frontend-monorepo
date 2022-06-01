@@ -5,5 +5,9 @@ const basePage = new BasePage();
 
 Given('I am on the homepage', () => {
   cy.visit('/');
-  cy.contains('Loading...').should('not.exist', { timeout: 8000 });
+  cy.contains('Loading...', { timeout: 60000 }).should('not.exist');
+});
+
+When('I close the dialog form', () => {
+  basePage.closeDialog()
 });

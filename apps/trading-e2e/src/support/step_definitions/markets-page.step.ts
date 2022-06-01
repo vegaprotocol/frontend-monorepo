@@ -27,21 +27,6 @@ Then('I can view markets', () => {
   marketsPage.validateMarketsAreDisplayed();
 });
 
-Then('I am prompted to select a market', () => {
-  cy.contains('Select a market to get started').should('be.visible');
-});
-
-And('a list of markets is shown', () => {
-  marketsPage.getOpenMarkets().then((openMarkets) => {
-    const arrayOfOpenMarkets = openMarkets.body.data.markets;
-    arrayOfOpenMarkets.forEach((market) => {
-      cy.contains(market.tradableInstrument.instrument.code).should(
-        'be.visible'
-      );
-    });
-  });
-});
-
 Given('I am on the markets page', () => {
   mockMarkets();
   cy.visit('/markets');

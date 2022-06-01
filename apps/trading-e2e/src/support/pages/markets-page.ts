@@ -65,14 +65,4 @@ export default class MarketPage extends BasePage {
       'portfolio=orders&trade=orderbook'
     );
   }
-
-  getOpenMarkets() {
-    const query = `{markets{marketTimestamps{open},tradableInstrument{instrument{code}}}}`;
-    return cy.request({
-      method: 'POST',
-      url: `https://lb.testnet.vega.xyz/query`,
-      body: { query },
-      headers: { 'content-type': 'application/json' },
-    });
-  }
 }
