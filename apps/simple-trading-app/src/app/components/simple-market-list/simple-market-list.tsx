@@ -23,9 +23,13 @@ const SimpleMarketList = () => {
     undefined, // @TODO - if we need a live update in the future
     variables
   );
-  const onClick = useCallback((marketId) => {
-    navigate(`/trading/${marketId}`);
-  }, []);
+  const onClick = useCallback(
+    (marketId) => {
+      navigate(`/trading/${marketId}`);
+    },
+    [navigate]
+  );
+
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       {data && data.length > 0 ? (

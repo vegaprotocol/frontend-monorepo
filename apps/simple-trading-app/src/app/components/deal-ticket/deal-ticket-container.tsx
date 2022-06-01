@@ -5,15 +5,19 @@ import {
 import { DealTicketSteps } from './deal-ticket-steps';
 import { useParams } from 'react-router-dom';
 
+const tempEmptyText = <p>Please select a market from the markets page</p>;
+
 export const DealTicketContainer = () => {
-  const { marketId } = useParams();
-  return (
-    <Container marketId={marketId as string}>
+  const { marketId } = useParams<{ marketId: string }>();
+  return marketId ? (
+    <Container marketId={marketId}>
       {(data) => (
         <DealTicketManager market={data.market}>
           <DealTicketSteps market={data.market} />
         </DealTicketManager>
       )}
     </Container>
+  ) : (
+    tempEmptyText
   );
 };

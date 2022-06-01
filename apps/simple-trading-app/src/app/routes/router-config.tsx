@@ -6,7 +6,7 @@ import { Portfolio } from '../components/portfolio';
 export const ROUTES = {
   HOME: '/',
   MARKETS: 'markets',
-  TRADING: 'trading/:marketId',
+  TRADING: 'trading',
   LIQUIDITY: 'liquidity',
   PORTFOLIO: 'portfolio',
 };
@@ -29,6 +29,12 @@ export const routerConfig = [
     name: 'Trading',
     text: t('Trading'),
     element: <DealTicketContainer />,
+    children: [
+      {
+        path: ':marketId',
+        element: <DealTicketContainer />,
+      },
+    ],
   },
   {
     path: ROUTES.LIQUIDITY,
