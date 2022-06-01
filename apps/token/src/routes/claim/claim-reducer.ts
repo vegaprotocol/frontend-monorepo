@@ -1,6 +1,6 @@
 import { BigNumber } from '../../lib/bignumber';
 import { addDecimal } from '../../lib/decimals';
-import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts-sdk';
+import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts';
 
 export enum ClaimStatus {
   Ready,

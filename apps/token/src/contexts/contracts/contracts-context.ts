@@ -5,7 +5,7 @@ import type {
   VegaStaking,
   ERC20Token,
   VegaVesting,
-} from '@vegaprotocol/smart-contracts-sdk';
+} from '@vegaprotocol/smart-contracts';
 import React from 'react';
 
 export interface ContractsContextShape {

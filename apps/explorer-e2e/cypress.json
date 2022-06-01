@@ -14,7 +14,7 @@
   "screenshotsFolder": "../../dist/cypress/apps/explorer-e2e/screenshots",
   "chromeWebSecurity": false,
   "env": {
-    "environment": "testnet",
+    "environment": "local",
     "tsConfig": "tsconfig.json",
     "TAGS": "not @todo and not @ignore and not @manual"
   }

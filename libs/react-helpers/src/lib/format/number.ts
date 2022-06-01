@@ -2,6 +2,10 @@ import { BigNumber } from 'bignumber.js';
 import memoize from 'lodash/memoize';
 import { getUserLocale } from './utils';
 
+export function toDecimal(numberOfDecimals: number) {
+  return Math.pow(10, -numberOfDecimals);
+}
+
 export function addDecimal(
   value: string | number,
   decimals: number,
@@ -39,4 +43,10 @@ export const addDecimalsFormatNumber = (
   const x = addDecimal(rawValue, decimalPlaces);
 
   return formatNumber(x, formatDecimals);
+};
+
+export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
+  const decimalPlaces =
+    typeof decimals === 'undefined' ? Math.max(value.dp(), 2) : decimals;
+  return `${value.dp(decimalPlaces).toFormat(decimalPlaces)}%`;
 };

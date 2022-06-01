@@ -28,7 +28,7 @@ const RedemptionRouter = () => {
     appState: { trancheBalances },
   } = useAppState();
   const { account } = useWeb3React();
-  const { tranches, error } = useTranches();
+  const { tranches, error, loading } = useTranches();
 
   React.useEffect(() => {
     const run = (address: string) => {
@@ -59,7 +59,7 @@ const RedemptionRouter = () => {
     );
   }
 
-  if (!tranches) {
+  if (!tranches || loading) {
     return (
       <Splash>
         <SplashLoader />

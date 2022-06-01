@@ -4,7 +4,8 @@ import orderBy from 'lodash/orderBy';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { Heading } from '../../components/heading';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { SplashLoader } from '../../components/splash-loader';
@@ -99,6 +100,7 @@ interface WithdrawalProps {
 }
 
 export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
   const renderStatus = ({
@@ -148,12 +150,12 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
         <KeyValueTableRow>
           {t('toEthereum')}
           <span>
-            <EtherscanLink
-              address={withdrawal.details?.receiverAddress as string}
-              text={truncateMiddle(
-                withdrawal.details?.receiverAddress as string
-              )}
-            />
+            <Link
+              title={t('View address on Etherscan')}
+              href={`${ETHERSCAN_URL}/tx/${withdrawal.details?.receiverAddress}`}
+            >
+              {truncateMiddle(withdrawal.details?.receiverAddress ?? '')}
+            </Link>
           </span>
         </KeyValueTableRow>
         <KeyValueTableRow>
@@ -169,10 +171,12 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
           {t('withdrawalTransaction', { foreignChain: 'Ethereum' })}
           <span>
             {withdrawal.txHash ? (
-              <EtherscanLink
-                tx={withdrawal.txHash}
-                text={truncateMiddle(withdrawal.txHash)}
-              />
+              <Link
+                title={t('View transaction on Etherscan')}
+                href={`${ETHERSCAN_URL}/tx/${withdrawal.txHash}`}
+              >
+                {truncateMiddle(withdrawal.txHash)}
+              </Link>
             ) : (
               '-'
             )}

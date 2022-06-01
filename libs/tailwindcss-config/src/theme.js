@@ -12,8 +12,6 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
-    bullish: '#26FF8A',
-    bearish: '#ED1515',
     vega: {
       yellow: '#EDFF22',
       pink: '#FF2D5E',
@@ -23,11 +21,12 @@ module.exports = {
       DEFAULT: '#ED1515',
       transparent: 'rgba(255, 38, 65, 0.3)',
       vega: '#FF261A',
+      dark: '#EB001B',
     },
     green: {
       DEFAULT: '#26FF8A',
       transparent: 'rgba(38, 255, 138, 0.3)',
-      dark: '#246340',
+      dark: '#008545',
       vega: '#00F780',
     },
     text: '#C7C7C7',
@@ -126,7 +125,7 @@ module.exports = {
     DEFAULT: '0.225rem',
     md: '0.3rem',
     lg: '0.5rem',
-    full: '9999px',
+    full: '100%',
   },
   fontFamily: {
     mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono],
@@ -180,5 +179,6 @@ module.exports = {
     callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
     'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
+    radio: '1px 1px 0 0',
   },
 };

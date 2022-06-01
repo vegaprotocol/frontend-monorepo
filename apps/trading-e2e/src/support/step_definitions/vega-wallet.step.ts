@@ -23,14 +23,16 @@ beforeEach(() => {
 When('I connect to Vega Wallet', () => {
   vegaWallet.openVegaWalletConnectDialog();
   vegaWallet.fillInWalletForm(
-    'UI_Trading_Test',
+    Cypress.env('TRADING_TEST_VEGA_WALLET_NAME'),
     Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE')
   );
   vegaWallet.clickConnectVegaWallet();
 });
 
 When('I open wallet dialog', () => {
-  vegaWallet.validatePublicKeyDisplayed(Cypress.env('truncatedVegaPubKey')); // Default Test wallet pub key
+  vegaWallet.validatePublicKeyDisplayed(
+    Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY')
+  ); // Default Test wallet pub key
   vegaWallet.clickOnWalletConnectDialog();
 });
 
@@ -38,6 +40,16 @@ When('select a different public key', () => {
   vegaWallet.selectPublicKey();
 });
 
+When('I disconnect my Vega wallet', () => {
+  vegaWallet.validatePublicKeyDisplayed(
+    Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY')
+  );
+  vegaWallet.clickOnWalletConnectDialog();
+  vegaWallet.clickDisconnectAllKeys();
+});
+
 Then('public key is switched', () => {
-  vegaWallet.validatePublicKeyDisplayed(Cypress.env('truncatedVegaPubKey2')); // Second public key for test wallet
+  vegaWallet.validatePublicKeyDisplayed(
+    Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY2')
+  ); // Second public key for test wallet
 });

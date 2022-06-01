@@ -23,7 +23,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
   });
 
   // Update the query string in the url when the active tab changes
-  // uses group property as the query stirng key
+  // uses group property as the query string key
   useEffect(() => {
     const [url, queryString] = asPath.split('?');
     const searchParams = new URLSearchParams(queryString);
