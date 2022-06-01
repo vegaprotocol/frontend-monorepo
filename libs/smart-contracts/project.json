@@ -1,0 +1,32 @@
+{
+  "root": "libs/smart-contracts",
+  "sourceRoot": "libs/smart-contracts/src",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/smart-contracts",
+        "main": "libs/smart-contracts/src/index.ts",
+        "tsConfig": "libs/smart-contracts/tsconfig.lib.json",
+        "assets": ["libs/smart-contracts/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/smart-contracts/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/smart-contracts"],
+      "options": {
+        "jestConfig": "libs/smart-contracts/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

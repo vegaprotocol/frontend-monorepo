@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import type { DepositPage } from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useEnvironment } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
 
@@ -28,6 +28,8 @@ export const DepositContainer = ({
   ethereumConfig,
   assetId,
 }: DepositContainerProps) => {
+  const { VEGA_ENV } = useEnvironment();
+
   return (
     <PageQueryContainer<DepositPage>
       query={DEPOSIT_PAGE_QUERY}
@@ -46,6 +48,7 @@ export const DepositContainer = ({
             requiredConfirmations={ethereumConfig.confirmations}
             assets={data.assets}
             initialAssetId={assetId}
+            isFaucetable={VEGA_ENV !== 'MAINNET'}
           />
         );
       }}

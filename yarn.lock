@@ -6715,15 +6715,6 @@
     "@typescript-eslint/types" "5.22.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vegaprotocol/smart-contracts-sdk@^1.6.0":
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/smart-contracts-sdk/-/smart-contracts-sdk-1.6.0.tgz#c689d5928148113dddbe39ed963c74817f432d5e"
-  integrity sha512-cNFDywrtrvR3V5WQL5BadMS8pckRaetXyxA5ttLZEghlpkMcz5BQ51GuAfK0ufank8vY3xYN0m1DalbfADQIGw==
-  dependencies:
-    deprecated-decorator "^0.1.6"
-    ethers "^5.5.2"
-    lodash "^4.17.21"
-
 "@vegaprotocol/vegawallet-service-api-client@^0.4.11":
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.11.tgz#41a623afc9957dcf8b5425f74280ba7861e92b74"
@@ -10943,11 +10934,6 @@ depd@~1.1.2:
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
   integrity sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
 
-deprecated-decorator@^0.1.6:
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/deprecated-decorator/-/deprecated-decorator-0.1.6.tgz#00966317b7a12fe92f3cc831f7583af329b86c37"
-  integrity sha1-AJZjF7ehL+kvPMgx91g68ym4bDc=
-
 deps-sort@^2.0.0, deps-sort@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/deps-sort/-/deps-sort-2.0.1.tgz#9dfdc876d2bcec3386b6829ac52162cda9fa208d"
@@ -12014,7 +12000,7 @@ etag@1.8.1, etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-ethers@^5.5.2, ethers@^5.6.0:
+ethers@^5.6.0:
   version "5.6.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.6.2.tgz#e75bac7f038c5e0fdde667dba62fc223924143a2"
   integrity sha512-EzGCbns24/Yluu7+ToWnMca3SXJ1Jk1BvWB7CCmVNxyOeM4LLvw2OLuIHhlkhQk1dtOcj9UMsdkxUh8RiG1dxQ==
@@ -21764,6 +21750,11 @@ use-sync-external-store@1.0.0:
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.0.0.tgz#d98f4a9c2e73d0f958e7e2d2c2bfb5f618cbd8fd"
   integrity sha512-AFVsxg5GkFg8GDcxnl+Z0lMAz9rE8DGJCc28qnBuQF7lac57B5smLcT37aXpXIIPz75rW4g3eXHPjhHwdGskOw==
 
+use-sync-external-store@1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.1.0.tgz#3343c3fe7f7e404db70f8c687adf5c1652d34e82"
+  integrity sha512-SEnieB2FPKEVne66NpXPd1Np4R1lTNKfjuy3XdIoPQKYBAFdzbzSZlSn1KJZUiihQLQC5Znot4SBz1EOTBwQAQ==
+
 use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
@@ -22679,6 +22670,13 @@ zustand@^4.0.0-beta.2:
   integrity sha512-cVDcspaK0CXgVmGcXB/oenhT7EFaKqD46pTmg30ciMsOoQN0ZuxEuHzpNIy9ejah0gzBL8aqHN89IMT2uFNOaA==
   dependencies:
     use-sync-external-store "1.0.0"
+
+zustand@^4.0.0-rc.1:
+  version "4.0.0-rc.1"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.0.0-rc.1.tgz#ec30a3afc03728adec7e1bd7bcc3592176372201"
+  integrity sha512-qgcs7zLqBdHu0PuT3GW4WCIY5SgXdsv30GQMu9Qpp1BA2aS+sNS8l4x0hWuyEhjXkN+701aGWawhKDv6oWJAcw==
+  dependencies:
+    use-sync-external-store "1.1.0"
 
 zwitch@^1.0.0:
   version "1.0.5"

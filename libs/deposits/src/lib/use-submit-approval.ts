@@ -1,4 +1,4 @@
-import type { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
+import type { ERC20Token } from '@vegaprotocol/smart-contracts';
 import { useEthereumTransaction } from '@vegaprotocol/web3';
 
 export const useSubmitApproval = (

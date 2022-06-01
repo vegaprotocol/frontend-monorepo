@@ -1,8 +1,8 @@
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import type { Error } from '../icons';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 export interface TransactionErrorProps {
   error: Error | null;
@@ -15,6 +15,7 @@ export const TransactionError = ({
   hash,
   onActionClick,
 }: TransactionErrorProps) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
   return (
@@ -22,7 +23,12 @@ export const TransactionError = ({
       <p>{error ? error.message : t('Something went wrong')}</p>
       {hash ? (
         <p>
-          <EtherscanLink tx={hash} />
+          <Link
+            title={t('View transaction on Etherscan')}
+            href={`${ETHERSCAN_URL}/tx/${hash}`}
+          >
+            {hash}
+          </Link>
         </p>
       ) : null}
       <Button onClick={() => onActionClick()}>{t('Try again')}</Button>

@@ -121,15 +121,13 @@ jobs:
         run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
 
       - name: Initialize wallet
-        run: vegawallet init -f
+        run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
       - name: Import wallet
-        run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase
-      - name: Import config
-        run: vegawallet network import --from-file ~/.vegacapsule/testnet/wallet/config/wallet-service/networks/DV.toml
+        run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
       - name: Create public key 2
-        run: vegawallet key generate -w UI_Trading_Test -p ./passphrase
+        run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
       - name: Start service
-        run: vegawallet service run --network fairground &
+        run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
 
       ######
       ## Run some tests
@@ -151,6 +149,7 @@ jobs:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_NIGHTLY_RUN: true
 
       ######
       ## Upload logs

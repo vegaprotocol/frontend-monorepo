@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { format } from 'date-fns';
-import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche } from '@vegaprotocol/smart-contracts';
 
 import { DATE_FORMAT_LONG } from '../../lib/date-formats';
 
