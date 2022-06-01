@@ -15,7 +15,10 @@ export interface SelectMarketListDataProps {
 
 type CandleClose = Required<string>;
 
-export const SelectMarketList = ({ data, onSelect }: SelectMarketListDataProps) => {
+export const SelectMarketList = ({
+  data,
+  onSelect,
+}: SelectMarketListDataProps) => {
   const thClassNames = (direction: 'left' | 'right') =>
     `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark/80 dark:text-white/80`;
   const tdClassNames =
