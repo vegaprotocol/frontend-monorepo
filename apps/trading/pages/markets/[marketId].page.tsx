@@ -7,6 +7,8 @@ import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { t } from '@vegaprotocol/react-helpers';
+import { useGlobalStore } from '../../stores';
+import { LandingDialog } from '@vegaprotocol/market-list';
 
 // Top level page query
 const MARKET_QUERY = gql`
@@ -21,6 +23,7 @@ const MARKET_QUERY = gql`
 const MarketPage = ({ id }: { id?: string }) => {
   const { query } = useRouter();
   const { w } = useWindowSize();
+  const store = useGlobalStore();
 
   // Default to first marketId query item if found
   const marketId =
@@ -48,10 +51,18 @@ const MarketPage = ({ id }: { id?: string }) => {
           return <Splash>{t('Market not found')}</Splash>;
         }
 
-        return w > 960 ? (
-          <TradeGrid market={market} />
-        ) : (
-          <TradePanels market={market} />
+        return (
+          <>
+            {w > 960 ? (
+              <TradeGrid market={market} />
+            ) : (
+              <TradePanels market={market} />
+            )}
+            <LandingDialog
+              open={store.landingDialog}
+              setOpen={(isOpen) => store.setLandingDialog(isOpen)}
+            />
+          </>
         );
       }}
     />
