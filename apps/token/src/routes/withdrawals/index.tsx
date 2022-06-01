@@ -151,7 +151,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
           {t('toEthereum')}
           <span>
             <Link
-              title={t('View address on Etherscan')}
+              title={t('View on Etherscan (opens in a new tab)')}
               href={`${ETHERSCAN_URL}/tx/${withdrawal.details?.receiverAddress}`}
             >
               {truncateMiddle(withdrawal.details?.receiverAddress ?? '')}

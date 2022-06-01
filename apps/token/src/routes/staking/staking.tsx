@@ -73,7 +73,7 @@ export const StakingStepConnectWallets = () => {
         <p>
           {t('Connected Ethereum address')}&nbsp;
           <Link
-            title={t('View address on Etherscan')}
+            title={t('View on Etherscan (opens in a new tab)')}
             href={`${ETHERSCAN_URL}/tx/${account}`}
           >
             {account}
