@@ -9,11 +9,6 @@ import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
 import { SplashLoader } from '../../../components/splash-loader';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
-import type { Networks } from '@vegaprotocol/react-helpers';
-
-const TOKEN_ADDRESS =
-  EnvironmentConfig[process.env['NX_VEGA_ENV'] as Networks].vegaTokenAddress;
 
 export const TokenDetails = ({
   totalSupply,

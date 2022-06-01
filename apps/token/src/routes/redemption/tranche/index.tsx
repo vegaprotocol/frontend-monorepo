@@ -1,5 +1,4 @@
-import type { Networks } from '@vegaprotocol/react-helpers';
-import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
@@ -25,6 +24,7 @@ export const RedeemFromTranche = () => {
     state: RedemptionState;
     address: string;
   }>();
+  const { ADDRESSES } = useEnvironment();
   const { vesting } = useContracts();
   const { t } = useTranslation();
   const {
@@ -111,9 +111,7 @@ export const RedeemFromTranche = () => {
                 {t(
                   'The VEGA token address is {{address}}, make sure you add this to your wallet to see your tokens',
                   {
-                    address:
-                      EnvironmentConfig[process.env['NX_VEGA_ENV'] as Networks]
-                        .vegaTokenAddress,
+                    address: ADDRESSES.vegaTokenAddress,
                   }
                 )}
               </p>

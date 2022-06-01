@@ -4,15 +4,12 @@ import { useAddAssetSupported } from '../../hooks/use-add-asset-to-wallet';
 import vegaVesting from '../../images/vega_vesting.png';
 import { AddTokenButtonLink } from '../add-token-button/add-token-button';
 import { Callout } from '@vegaprotocol/ui-toolkit';
-import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
-import type { Networks } from '@vegaprotocol/react-helpers';
-
-const LOCKED_ADDRESS =
-  EnvironmentConfig[process.env['NX_VEGA_ENV'] as Networks].lockedAddress;
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 export const AddLockedTokenAddress = () => {
   const { t } = useTranslation();
   const addSupported = useAddAssetSupported();
+  const { ADDRESSES } = useEnvironment();
   return (
     <Callout
       title={t(
@@ -23,7 +20,7 @@ export const AddLockedTokenAddress = () => {
         <>
           <p className="flex justify-center">
             <AddTokenButtonLink
-              address={LOCKED_ADDRESS}
+              address={ADDRESSES.lockedAddress}
               symbol="VEGA🔒"
               decimals={18}
               image={vegaVesting}
@@ -39,7 +36,7 @@ export const AddLockedTokenAddress = () => {
         {t(
           'The token address is {{address}}. Hit the add token button in your ERC20 wallet and enter this address.',
           {
-            address: LOCKED_ADDRESS,
+            address: ADDRESSES.lockedAddress,
           }
         )}
       </p>

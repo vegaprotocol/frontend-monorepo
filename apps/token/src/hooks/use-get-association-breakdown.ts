@@ -3,8 +3,8 @@ import type { ethers } from 'ethers';
 import * as Sentry from '@sentry/react';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type {
-  createStakingBridgeContract,
-  createTokenVestingContract,
+  StakingBridge,
+  TokenVesting,
 } from '@vegaprotocol/smart-contracts';
 
 import {
@@ -15,8 +15,8 @@ import BigNumber from 'bignumber.js';
 
 export function useGetAssociationBreakdown(
   ethAddress: string,
-  staking: ReturnType<typeof createStakingBridgeContract>,
-  vesting: ReturnType<typeof createTokenVestingContract>
+  staking: StakingBridge,
+  vesting: TokenVesting
 ): () => Promise<void> {
   const {
     appState: { decimals },
@@ -46,9 +46,7 @@ export function useGetAssociationBreakdown(
 }
 
 async function userTotalStakedByVegaKey(
-  contract:
-    | ReturnType<typeof createStakingBridgeContract>
-    | ReturnType<typeof createTokenVestingContract>,
+  contract: StakingBridge | TokenVesting,
   ethereumAccount: string,
   decimals: number
 ): Promise<{ [vegaKey: string]: BigNumber }> {

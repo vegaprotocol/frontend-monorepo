@@ -1,4 +1,4 @@
-import { createTokenContract } from '@vegaprotocol/smart-contracts';
+import { Token } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 
@@ -13,7 +13,7 @@ export const useTokenContract = (
       return null;
     }
 
-    return createTokenContract(contractAddress, provider, faucetable);
+    return new Token(contractAddress, provider, faucetable);
   }, [provider, contractAddress, faucetable]);
 
   return contract;
