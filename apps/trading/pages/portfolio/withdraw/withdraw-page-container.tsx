@@ -48,7 +48,11 @@ export const WithdrawPageContainer = ({
   const { keypair } = useVegaWallet();
 
   if (!keypair) {
-    return <p>{t('Please connect your Vega wallet')}</p>;
+    return (
+      <p data-testid="connect-vega-wallet-text">
+        {t('Please connect your Vega wallet')}
+      </p>
+    );
   }
 
   return (

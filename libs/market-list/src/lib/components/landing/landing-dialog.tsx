@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { t } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import { AsyncRenderer, Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
@@ -22,7 +23,7 @@ export const LandingDialog = () => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       {
         <Dialog
-          title="Select a market to get started"
+          title={t('Select a market to get started')}
           intent={Intent.Prompt}
           open={open}
           onChange={setClose}
