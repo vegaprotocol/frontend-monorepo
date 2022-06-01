@@ -8,7 +8,7 @@ import {
 } from '../contexts/app-state/app-state-context';
 import { BigNumber } from '../lib/bignumber';
 import { useTranches } from './use-tranches';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { convertEthersBigNum } from '@vegaprotocol/react-helpers';
 
 export const useGetUserTrancheBalances = (
   address: string,
@@ -41,8 +41,8 @@ export const useGetUserTrancheBalances = (
           vesting.getVestedForTranche(address, tId),
         ]);
 
-        const total = toBigNum(t, decimals);
-        const vested = toBigNum(v, decimals);
+        const total = convertEthersBigNum(t, decimals);
+        const vested = convertEthersBigNum(v, decimals);
 
         return {
           id: tId,

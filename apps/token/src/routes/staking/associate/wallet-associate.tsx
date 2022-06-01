@@ -12,7 +12,7 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { convertEthersBigNum } from '@vegaprotocol/react-helpers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 
 export const WalletAssociate = ({
@@ -57,7 +57,7 @@ export const WalletAssociate = ({
           address,
           config.staking_bridge_contract.address
         );
-        const allowance = toBigNum(a, decimals);
+        const allowance = convertEthersBigNum(a, decimals);
         appDispatch({
           type: AppStateActionType.SET_ALLOWANCE,
           allowance,
