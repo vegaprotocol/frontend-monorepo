@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { t } from '@vegaprotocol/react-helpers';
+import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { LandingDialog } from '@vegaprotocol/market-list';
 
@@ -37,6 +37,7 @@ const MarketPage = ({ id }: { id?: string }) => {
     );
   }
 
+  LocalStorage.setItem('marketId', marketId);
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}

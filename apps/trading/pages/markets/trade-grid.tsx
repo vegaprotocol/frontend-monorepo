@@ -13,6 +13,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import { SelectMarketDialog } from '@vegaprotocol/market-list';
+import { ArrowDown } from '@vegaprotocol/ui-toolkit';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -32,6 +34,7 @@ interface TradeGridProps {
 }
 
 export const TradeGrid = ({ market }: TradeGridProps) => {
+  const [open, setOpen] = useState(false);
   const wrapperClasses = classNames(
     'h-full max-h-full',
     'grid gap-[1px] grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
@@ -41,9 +44,16 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   return (
     <div className={wrapperClasses}>
       <header className="col-start-1 col-end-2 row-start-1 row-end-1 p-8">
-        <h1>
-          {t('Market')}: {market.name}
+        <h1 className="dark:text-vega-yellow text-black text-h4">
+          <button
+            onClick={() => setOpen(!open)}
+            className="flex items-center gap-8 px-4 hover:bg-vega-yellow dark:hover:bg-white/20"
+          >
+            <span className="break-words text-left">{market.name}</span>
+            <ArrowDown color="yellow" borderX={8} borderTop={12} />
+          </button>
         </h1>
+        <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
         <GridTabs group="chart">
