@@ -9,11 +9,13 @@ import {
   useMemo,
   useCallback,
 } from 'react';
+import classNames from 'classnames';
+
 import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
-import { Icon } from '@vegaprotocol/ui-toolkit';
+import { Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
 interface OrderbookProps extends OrderbookData {
   decimalPlaces: number;
@@ -83,8 +85,8 @@ const getRowsToRender = (
   return selectedRows;
 };
 
-// 17px of row height plus 4px gap
-const rowHeight = 21;
+// 17px of row height plus 5px gap
+export const rowHeight = 22;
 // buffer size in rows
 const bufferSize = 30;
 // margin size in px, when reached scrollOffset will be updated
@@ -169,7 +171,8 @@ export const Orderbook = ({
         // minus half height of viewport plus half of row
         scrollTop -= Math.ceil((viewportHeight - rowHeight) / 2);
         // adjust to current rows position
-        scrollTop += (scrollTopRef.current % 21) - (scrollTop % 21);
+        scrollTop +=
+          (scrollTopRef.current % rowHeight) - (scrollTop % rowHeight);
         const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
         if (scrollTopRef.current !== priceCenterScrollOffset) {
           updateScrollOffset(priceCenterScrollOffset);
@@ -251,23 +254,25 @@ export const Orderbook = ({
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
     (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
+  const minPriceLevel =
+    BigInt(maxPriceLevel) - BigInt(numberOfRows * resolution);
   return (
     <div
       className={`h-full overflow-auto relative ${styles['scroll']}`}
-      style={{ scrollbarColor: 'rebeccapurple green', scrollbarWidth: 'thin' }}
       onScroll={onScroll}
       ref={scrollElement}
       data-testid="scroll"
     >
       <div
-        className="sticky top-0 grid grid-cols-4 gap-4 border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"
+        className="sticky top-0 grid grid-cols-4 gap-5 text-right border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"
         style={{ gridAutoRows: '17px' }}
       >
-        <div className="pl-4">{t('Bid Vol')}</div>
+        <div>{t('Bid Vol')}</div>
         <div>{t('Price')}</div>
         <div>{t('Ask Vol')}</div>
-        <div>{t('Cumulative Vol')}</div>
+        <div className="pr-4">{t('Cumulative Vol')}</div>
       </div>
+
       <div
         style={{
           paddingTop: `${paddingTop}px`,
@@ -275,45 +280,56 @@ export const Orderbook = ({
           minHeight: `calc(100% - ${2 * rowHeight}px)`,
         }}
       >
-        <div
-          className="grid grid-cols-4 gap-4 text-right text-ui-small"
-          style={{ gridAutoRows: '17px' }}
-        >
-          {renderedRows.data?.map((data) => {
-            return (
-              <Fragment key={data.price}>
-                <OrderbookRow
-                  price={(BigInt(data.price) / BigInt(resolution)).toString()}
-                  decimalPlaces={decimalPlaces - Math.log10(resolution)}
-                  bid={data.bid}
-                  relativeBid={data.relativeBid}
-                  cumulativeBid={data.cumulativeVol.bid}
-                  cumulativeRelativeBid={data.cumulativeVol.relativeBid}
-                  ask={data.ask}
-                  relativeAsk={data.relativeAsk}
-                  cumulativeAsk={data.cumulativeVol.ask}
-                  cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
-                  indicativeVolume={
-                    marketTradingMode !== MarketTradingMode.Continuous &&
-                    indicativePrice === data.price
-                      ? indicativeVolume
-                      : undefined
-                  }
-                />
-              </Fragment>
-            );
-          })}
-        </div>
+        {!renderedRows.data || renderedRows.data.length === 0 ? (
+          <div className="inset-0 absolute">
+            <Splash>{t('No data')}</Splash>
+          </div>
+        ) : (
+          <div
+            className="grid grid-cols-4 gap-5 text-right text-ui-small"
+            style={{
+              gridAutoRows: '17px',
+              background:
+                'linear-gradient(#999,#999) center/1px 100% no-repeat, linear-gradient(#999,#999) center/1px 100% no-repeat, linear-gradient(#999,#999) center/1px 100% no-repeat',
+              backgroundPosition: '24.6% 0, 50% 0, 75.2% 0',
+            }}
+          >
+            {renderedRows.data?.map((data) => {
+              return (
+                <Fragment key={data.price}>
+                  <OrderbookRow
+                    price={(BigInt(data.price) / BigInt(resolution)).toString()}
+                    decimalPlaces={decimalPlaces - Math.log10(resolution)}
+                    bid={data.bid}
+                    relativeBid={data.relativeBid}
+                    cumulativeBid={data.cumulativeVol.bid}
+                    cumulativeRelativeBid={data.cumulativeVol.relativeBid}
+                    ask={data.ask}
+                    relativeAsk={data.relativeAsk}
+                    cumulativeAsk={data.cumulativeVol.ask}
+                    cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
+                    indicativeVolume={
+                      marketTradingMode !== MarketTradingMode.Continuous &&
+                      indicativePrice === data.price
+                        ? indicativeVolume
+                        : undefined
+                    }
+                  />
+                </Fragment>
+              );
+            })}
+          </div>
+        )}
       </div>
       <div
-        className="sticky bottom-0 grid grid-cols-4 gap-4 border-t-1 text-ui-small mt-2 pb-2 bg-white dark:bg-black z-10"
+        className="sticky bottom-0 grid grid-cols-4 gap-5 border-t-1 text-ui-small mt-2 pb-2 bg-white dark:bg-black z-10"
         style={{ gridAutoRows: '17px' }}
       >
         <div className="text-ui-small col-start-2">
           <select
             onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}
             value={resolution}
-            className="block bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full appearance-none"
+            className="block bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full h-full"
             data-testid="resolution"
           >
             {new Array(3)
@@ -329,11 +345,14 @@ export const Orderbook = ({
         <div className="text-ui-small col-start-4">
           <button
             onClick={scrollToMidPrice}
-            className="block w-full"
+            className={classNames('w-full h-full', {
+              hidden: lockOnMidPrice,
+              block: !lockOnMidPrice,
+            })}
             data-testid="scroll-to-midprice"
           >
-            mid price{' '}
-            <span className={lockOnMidPrice ? 'text-yellow' : ''}>
+            Go to mid
+            <span className="ml-4">
               <Icon name="th-derived" />
             </span>
           </button>
@@ -341,6 +360,8 @@ export const Orderbook = ({
       </div>
       {maxPriceLevel &&
         bestStaticBidPrice &&
+        BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
+        BigInt(bestStaticBidPrice) > minPriceLevel &&
         horizontalLine(
           `${(
             ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
@@ -353,6 +374,8 @@ export const Orderbook = ({
         )}
       {maxPriceLevel &&
         bestStaticOfferPrice &&
+        BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
+        BigInt(bestStaticOfferPrice) > minPriceLevel &&
         horizontalLine(
           `${(
             ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /

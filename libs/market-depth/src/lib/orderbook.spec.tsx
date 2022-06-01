@@ -1,6 +1,6 @@
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import { generateMockData } from './orderbook-data';
-import Orderbook from './orderbook';
+import { Orderbook, rowHeight } from './orderbook';
 
 describe('Orderbook', () => {
   const params = {
@@ -18,7 +18,7 @@ describe('Orderbook', () => {
   const onResolutionChange = jest.fn();
   const decimalPlaces = 3;
   it('should scroll to mid price on init', async () => {
-    window.innerHeight = 231; // 11 rows
+    window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -27,11 +27,11 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
-    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
   });
 
   it('should keep mid price row in the middle', async () => {
-    window.innerHeight = 231; // 11 rows
+    window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -40,7 +40,7 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
-    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
     result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -52,11 +52,11 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
-    expect(result.getByTestId('scroll').scrollTop).toBe(1911 - 21);
+    expect(result.getByTestId('scroll').scrollTop).toBe(90 * rowHeight);
   });
 
   it('should scroll to mid price when it will change', async () => {
-    window.innerHeight = 231; // 11 rows
+    window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -65,7 +65,7 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
-    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
     result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -78,11 +78,11 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
-    expect(result.getByTestId('scroll').scrollTop).toBe(1911 - 21);
+    expect(result.getByTestId('scroll').scrollTop).toBe(90 * rowHeight);
   });
 
   it('should should keep price it the middle', async () => {
-    window.innerHeight = 231; // 11 rows
+    window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -92,8 +92,8 @@ describe('Orderbook', () => {
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
     const scrollElement = result.getByTestId('scroll');
-    expect(scrollElement.scrollTop).toBe(1911);
-    scrollElement.scrollTop = 1911 + 21;
+    expect(scrollElement.scrollTop).toBe(91 * rowHeight);
+    scrollElement.scrollTop = 92 * rowHeight;
     fireEvent.scroll(scrollElement);
     result.rerender(
       <Orderbook
@@ -106,11 +106,11 @@ describe('Orderbook', () => {
       />
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
-    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
   });
 
   it('should should get back to mid price on click', async () => {
-    window.innerHeight = 231; // 11 rows
+    window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -120,17 +120,17 @@ describe('Orderbook', () => {
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
     const scrollElement = result.getByTestId('scroll');
-    expect(scrollElement.scrollTop).toBe(1911);
+    expect(scrollElement.scrollTop).toBe(91 * rowHeight);
     scrollElement.scrollTop = 0;
     fireEvent.scroll(scrollElement);
     expect(result.getByTestId('scroll').scrollTop).toBe(0);
     const scrollToMidPriceButton = result.getByTestId('scroll-to-midprice');
     fireEvent.click(scrollToMidPriceButton);
-    expect(result.getByTestId('scroll').scrollTop).toBe(1911);
+    expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
   });
 
   it('should should get back to mid price on resolution change', async () => {
-    window.innerHeight = 231; // 11 rows
+    window.innerHeight = 11 * rowHeight;
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
@@ -140,7 +140,7 @@ describe('Orderbook', () => {
     );
     await waitFor(() => screen.getByTestId('bid-vol-122900'));
     const scrollElement = result.getByTestId('scroll');
-    expect(scrollElement.scrollTop).toBe(1911);
+    expect(scrollElement.scrollTop).toBe(91 * rowHeight);
     scrollElement.scrollTop = 0;
     fireEvent.scroll(scrollElement);
     expect(result.getByTestId('scroll').scrollTop).toBe(0);
@@ -160,6 +160,6 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    expect(result.getByTestId('scroll').scrollTop).toBe(105);
+    expect(result.getByTestId('scroll').scrollTop).toBe(5 * rowHeight);
   });
 });
