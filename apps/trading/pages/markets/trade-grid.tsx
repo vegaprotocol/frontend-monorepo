@@ -14,7 +14,8 @@ import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import { SelectMarketDialog } from '@vegaprotocol/market-list';
-import { ArrowDown } from '@vegaprotocol/ui-toolkit';
+import { ArrowDown, PriceCellChange } from '@vegaprotocol/ui-toolkit';
+import type { CandleClose } from '@vegaprotocol/types';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -41,6 +42,9 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
     'bg-black-10 dark:bg-white-10',
     'text-ui'
   );
+  const candlesClose: string[] = (market?.candles || [])
+    .map((candle) => candle?.close)
+    .filter((c): c is CandleClose => c !== null);
   return (
     <div className={wrapperClasses}>
       <header className="col-start-1 col-end-2 row-start-1 row-end-1 p-8">
@@ -54,6 +58,25 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           </button>
         </h1>
         <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
+        <div className="flex items-center gap-8 ml-auto mr-8">
+          <div>
+            Change (24h)
+            {
+              <PriceCellChange
+                candles={candlesClose}
+                decimalPlaces={market.decimalPlaces}
+              />
+            }
+          </div>
+          <div>
+            Volume
+            {market.data?.indicativeVolume === '0'
+              ? '-'
+              : market.data?.indicativeVolume}
+          </div>
+          <div>Trading mode {market.tradingMode} </div>
+          <div>State {market.state}</div>
+        </div>
       </header>
       <TradeGridChild className="col-start-1 col-end-2">
         <GridTabs group="chart">

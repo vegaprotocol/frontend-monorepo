@@ -3,6 +3,7 @@ import {
   PriceCell,
   t,
 } from '@vegaprotocol/react-helpers';
+import type { CandleClose } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
 import { mapDataToMarketList } from '../../utils';
@@ -12,8 +13,6 @@ export interface SelectMarketListDataProps {
   data: MarketList | undefined;
   onSelect: (id: string) => void;
 }
-
-type CandleClose = Required<string>;
 
 export const SelectMarketList = ({
   data,

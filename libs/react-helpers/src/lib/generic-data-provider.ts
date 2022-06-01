@@ -242,8 +242,8 @@ const memoize = <Data, Delta>(
 
 /**
  * @param query Query<QueryData>
- * @param subscriptionQuery Query<SubscriptionData> query that will beused for subscription
- * @param update Update<Data, Delta> function that will be execued on each onNext, it should update data base on delta, it can restart data provider
+ * @param subscriptionQuery Query<SubscriptionData> query that will be used for subscription
+ * @param update Update<Data, Delta> function that will be executed on each onNext, it should update data base on delta, it can restart data provider
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
  * @param fetchPolicy
