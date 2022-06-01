@@ -24,7 +24,6 @@ import { useMemo } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
-import { FAUCETABLE } from '../config';
 import type { Asset } from './deposit-manager';
 
 interface FormFields {
@@ -51,6 +50,7 @@ export interface DepositFormProps {
     max: BigNumber;
   } | null;
   allowance: BigNumber | undefined;
+  isFaucetable?: boolean;
 }
 
 export const DepositForm = ({
@@ -63,6 +63,7 @@ export const DepositForm = ({
   requestFaucet,
   limits,
   allowance,
+  isFaucetable,
 }: DepositFormProps) => {
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
@@ -166,7 +167,7 @@ export const DepositForm = ({
             {errors.asset.message}
           </InputError>
         )}
-        {FAUCETABLE && selectedAsset && (
+        {isFaucetable && selectedAsset && (
           <UseButton onClick={requestFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>

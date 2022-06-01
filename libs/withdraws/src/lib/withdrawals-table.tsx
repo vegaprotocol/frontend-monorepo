@@ -10,10 +10,8 @@ import {
   formatNumber,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
-import {
-  EtherscanLink,
-  AgGridDynamic as AgGrid,
-} from '@vegaprotocol/ui-toolkit';
+import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
@@ -23,6 +21,7 @@ export interface WithdrawalsTableProps {
 }
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { transaction, submit } = useCompleteWithdraw();
 
   return (
@@ -47,6 +46,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           headerName="Recipient"
           field="details.receiverAddress"
           cellRenderer="RecipientCell"
+          cellRendererParams={{ ethUrl: ETHERSCAN_URL }}
           valueFormatter={({ value }: ValueFormatterParams) => {
             return truncateByChars(value);
           }}
@@ -62,7 +62,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           headerName="Status"
           field="status"
           cellRenderer="StatusCell"
-          cellRendererParams={{ complete: submit }}
+          cellRendererParams={{ complete: submit, ethUrl: ETHERSCAN_URL }}
         />
       </AgGrid>
       <TransactionDialog name="withdraw" {...transaction} />
@@ -71,16 +71,28 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
 };
 
 export interface StatusCellProps extends ICellRendererParams {
+  ethUrl: string;
   complete: (withdrawalId: string) => void;
 }
 
-export const StatusCell = ({ value, data, complete }: StatusCellProps) => {
+export const StatusCell = ({
+  ethUrl,
+  value,
+  data,
+  complete,
+}: StatusCellProps) => {
   if (data.pendingOnForeignChain) {
     return (
       <div className="flex justify-between gap-8">
         {t('Pending')}
         {data.txHash && (
-          <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
+          <Link
+            title={t('View transaction on Etherscan')}
+            href={`${ethUrl}/tx/${data.txHash}`}
+            data-testid="etherscan-link"
+          >
+            {t('View on Etherscan')}
+          </Link>
         )}
       </div>
     );
@@ -92,7 +104,13 @@ export const StatusCell = ({ value, data, complete }: StatusCellProps) => {
         {data.txHash ? (
           <>
             {t('Finalized')}
-            <EtherscanLink tx={data.txHash} text={t('View on Etherscan')} />
+            <Link
+              title={t('View transaction on Etherscan')}
+              href={`${ethUrl}/tx/${data.txHash}`}
+              data-testid="etherscan-link"
+            >
+              {t('View on Etherscan')}
+            </Link>
           </>
         ) : (
           <>
@@ -109,6 +127,22 @@ export const StatusCell = ({ value, data, complete }: StatusCellProps) => {
   return value;
 };
 
-const RecipientCell = ({ value, valueFormatted }: ICellRendererParams) => {
-  return <EtherscanLink address={value} text={valueFormatted} />;
+export interface RecipientCellProps extends ICellRendererParams {
+  ethUrl: string;
+}
+
+const RecipientCell = ({
+  ethUrl,
+  value,
+  valueFormatted,
+}: RecipientCellProps) => {
+  return (
+    <Link
+      title={t('View address on Etherscan')}
+      href={`${ethUrl}/address/${value}`}
+      data-testid="etherscan-link"
+    >
+      {valueFormatted}
+    </Link>
+  );
 };

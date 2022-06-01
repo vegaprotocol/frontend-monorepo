@@ -1,5 +1,6 @@
-import { ADDRESSES, EthereumChainIds } from '../../config';
-import type { EthereumChainId } from '../../config';
+import type { EthereumChainId } from '@vegaprotocol/smart-contracts';
+import { EthereumChainIds } from '@vegaprotocol/smart-contracts';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 const TRANCHE_LABELS: Record<number, string[]> = {
   '5': ['Coinlist Option 1', 'Community Whitelist'],
@@ -26,6 +27,7 @@ export interface TrancheLabelProps {
  * @param id The tranche ID on this contract
  */
 export const TrancheLabel = ({ contract, chainId, id }: TrancheLabelProps) => {
+  const { ADDRESSES } = useEnvironment();
   // Only mainnet tranches on the known vesting contract have useful name
   if (
     chainId &&
