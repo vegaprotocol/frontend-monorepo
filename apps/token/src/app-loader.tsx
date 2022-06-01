@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { convertEthersBigNum } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -45,9 +45,15 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
           token.decimals(),
         ]);
 
-        const totalSupply = toBigNum(supply, decimals);
-        const totalWallet = toBigNum(totalAssociatedWallet, decimals);
-        const totalVesting = toBigNum(totalAssociatedVesting, decimals);
+        const totalSupply = convertEthersBigNum(supply, decimals);
+        const totalWallet = convertEthersBigNum(
+          totalAssociatedWallet,
+          decimals
+        );
+        const totalVesting = convertEthersBigNum(
+          totalAssociatedVesting,
+          decimals
+        );
 
         appDispatch({
           type: AppStateActionType.SET_TOKEN,

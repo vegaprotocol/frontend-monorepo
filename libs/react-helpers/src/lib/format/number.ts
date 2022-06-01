@@ -52,6 +52,9 @@ export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   return `${value.dp(decimalPlaces).toFormat(decimalPlaces)}%`;
 };
 
-export const toBigNum = (num: EthersBigNumber, decimals: number): BigNumber => {
+export const convertEthersBigNum = (
+  num: EthersBigNumber,
+  decimals: number
+): BigNumber => {
   return new BigNumber(addDecimal(num.toString(), decimals));
 };
