@@ -70,6 +70,7 @@ const VegaWalletNotConnected = () => {
           })
         }
         variant="secondary"
+        className="w-full"
         data-testid="connect-vega"
       >
         {t('connectVegaWalletToUseAssociated')}

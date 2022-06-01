@@ -52,7 +52,7 @@ interface WalletCardContentProps {
 }
 
 export const WalletCardContent = ({ children }: WalletCardContentProps) => {
-  return <div className="my-4 mx-8">{children}</div>;
+  return <div className="mt-8">{children}</div>;
 };
 
 export const WalletCardRow = ({
