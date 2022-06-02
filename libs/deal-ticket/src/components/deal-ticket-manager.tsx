@@ -4,9 +4,9 @@ import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { OrderStatus } from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
-import { useOrderSubmit } from './use-order-submit';
 import { OrderDialog } from './order-dialog';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { useOrderSubmit } from '../hooks/use-order-submit';
+import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
 
 export interface DealTicketManagerProps {
   market: DealTicketQuery_market;

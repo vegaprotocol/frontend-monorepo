@@ -11,8 +11,7 @@
     "noPropertyAccessFromIndexSignature": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "lib": ["es5", "es6", "dom", "dom.iterable"],
-    "resolveJsonModule": true
+    "lib": ["es5", "es6", "dom", "dom.iterable"]
   },
   "files": [],
   "include": [],

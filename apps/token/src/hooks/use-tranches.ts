@@ -1,7 +1,7 @@
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { Networks, Tranche } from '@vegaprotocol/smart-contracts';
 import React, { useEffect } from 'react';
-import { APP_ENV } from '../config';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 import { BigNumber } from '../lib/bignumber';
 
@@ -15,8 +15,9 @@ const TRANCHES_URLS: { [N in Networks]: string } = {
 };
 
 export function useTranches() {
+  const { VEGA_ENV } = useEnvironment();
   const [tranches, setTranches] = React.useState<Tranche[] | null>(null);
-  const url = React.useMemo(() => TRANCHES_URLS[APP_ENV], []);
+  const url = React.useMemo(() => TRANCHES_URLS[VEGA_ENV], [VEGA_ENV]);
   const {
     state: { data, loading, error },
   } = useFetch<Tranche[] | null>(url);
