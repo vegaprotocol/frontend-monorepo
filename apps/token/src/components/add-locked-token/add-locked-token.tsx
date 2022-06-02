@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { useAddAssetSupported } from '../../hooks/use-add-asset-to-wallet';
 import vegaVesting from '../../images/vega_vesting.png';
 import { AddTokenButtonLink } from '../add-token-button/add-token-button';

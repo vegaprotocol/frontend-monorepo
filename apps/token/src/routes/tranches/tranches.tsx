@@ -8,7 +8,7 @@ import { TrancheItem } from '../redemption/tranche-item';
 import { TrancheLabel } from './tranche-label';
 import { VestingChart } from './vesting-chart';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 const trancheMinimum = 10;
 

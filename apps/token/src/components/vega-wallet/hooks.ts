@@ -17,7 +17,7 @@ import type {
   DelegationsVariables,
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
