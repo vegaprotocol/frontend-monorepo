@@ -44,7 +44,7 @@ export type Environment = {
 
 type EnvironmentState = Environment & {
   setEnvironment: (env: Partial<Environment>) => void;
-}
+};
 
 const getBundledEnvironmentValue = (key: EnvKey) => {
   switch (key) {
@@ -135,7 +135,9 @@ export const EnvironmentProvider = ({
   definitions,
   children,
 }: EnvironmentProviderProps) => {
-  const [environment, updateEnvironment] = useState<Environment>(compileEnvironment(definitions));
+  const [environment, updateEnvironment] = useState<Environment>(
+    compileEnvironment(definitions)
+  );
 
   const missingKeys = Object.keys(environment)
     .filter((key) => typeof environment[key as EnvKey] === undefined)
@@ -148,10 +150,11 @@ export const EnvironmentProvider = ({
     );
   }
 
-  const setEnvironment = (newEnvironmentProps: Partial<Environment>) => updateEnvironment({
-    ...environment,
-    ...newEnvironmentProps,
-  });
+  const setEnvironment = (newEnvironmentProps: Partial<Environment>) =>
+    updateEnvironment({
+      ...environment,
+      ...newEnvironmentProps,
+    });
 
   return (
     <EnvironmentContext.Provider value={{ ...environment, setEnvironment }}>

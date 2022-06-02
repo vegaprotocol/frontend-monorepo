@@ -10,7 +10,7 @@ type NetworkState = {
 
 type NetworkSwitcherProps = {
   onConnect: (network: NetworkState) => void;
-  onError: () => void;
+  onError?: () => void;
   onClose: () => void;
 };
 
@@ -24,7 +24,7 @@ export const NetworkSwitcher = ({ onConnect }: NetworkSwitcherProps) => {
 
   return (
     <form onSubmit={handleSubmit(onConnect)}>
-      <div className="my-3">
+      <div className="py-16">
         <Controller
           name="network"
           control={control}
@@ -37,7 +37,7 @@ export const NetworkSwitcher = ({ onConnect }: NetworkSwitcherProps) => {
           )}
         />
       </div>
-      <div className="my-3">
+      <div className="py-16">
         <Button type="submit">{t('Connect')}</Button>
       </div>
     </form>

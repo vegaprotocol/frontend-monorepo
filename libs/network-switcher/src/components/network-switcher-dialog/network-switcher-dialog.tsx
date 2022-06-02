@@ -4,24 +4,31 @@ import type { Intent } from '@vegaprotocol/ui-toolkit';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { NetworkSwitcher } from '../network-switcher';
 
-type NetworkSwitcherDialogProps = ComponentProps<typeof NetworkSwitcher> & {
+type NetworkSwitcherDialogProps = Pick<ComponentProps<typeof NetworkSwitcher>, 'onConnect' | 'onError'> & {
   dialogOpen: boolean;
   setDialogOpen: (dialogOpen: boolean) => void;
-  intent: Intent;
+  intent?: Intent;
 };
 
 export const NetworkSwitcherDialog = ({
   dialogOpen,
   setDialogOpen,
   intent,
-  ...networkSwictherProps
+  onConnect,
+  onError,
 }: NetworkSwitcherDialogProps) => {
-  <Dialog
-    open={dialogOpen}
-    onChange={setDialogOpen}
-    title={t('Choose a network')}
-    intent={intent}
-  >
-    <NetworkSwitcher {...networkSwictherProps} />
-  </Dialog>;
+  return (
+    <Dialog
+      open={dialogOpen}
+      onChange={setDialogOpen}
+      title={t('Choose a network')}
+      intent={intent}
+    >
+      <NetworkSwitcher
+        onConnect={onConnect}
+        onError={onError}
+        onClose={() => setDialogOpen(false)}
+      />
+    </Dialog>
+  );
 };
