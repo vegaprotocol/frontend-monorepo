@@ -33,6 +33,7 @@ module.exports = {
     deemphasise: '#8A9BA8',
     white: {
       DEFAULT: '#FFF',
+      muted: '#676767',
       '02': 'rgba(255, 255, 255, 0.02)',
       '05': 'rgba(255, 255, 255, 0.05)',
       10: 'rgba(255, 255, 255, 0.10)',
@@ -45,6 +46,7 @@ module.exports = {
     },
     black: {
       DEFAULT: '#000',
+      muted: '#BFCCD6',
       '02': 'rgba(0, 0, 0, 0.02)',
       '05': 'rgba(0, 0, 0, 0.05)',
       10: 'rgba(0, 0, 0, 0.10)',
@@ -79,6 +81,7 @@ module.exports = {
     0: '0px',
     2: '0.125rem',
     4: '0.25rem',
+    5: '0.3125rem',
     8: '0.5rem',
     12: '0.75rem',
     16: '1rem',
