@@ -3,9 +3,6 @@ import type { ReactNode } from 'react';
 import type { Networks } from '@vegaprotocol/smart-contracts';
 import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
 import { createContext, useContext } from 'react';
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
-import { NetworkSwitcher } from '../components/network-switcher';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -44,6 +41,10 @@ export type Environment = {
   ETHERSCAN_URL: string;
   ADDRESSES: VegaContracts;
 };
+
+type EnvironmentState = Environment & {
+  setEnvironment: (env: Partial<Environment>) => void;
+}
 
 const getBundledEnvironmentValue = (key: EnvKey) => {
   switch (key) {
@@ -105,7 +106,9 @@ const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
   );
 };
 
-const compileEnvironment = (definitions?: Partial<RawEnvironment>): Environment => {
+const compileEnvironment = (
+  definitions?: Partial<RawEnvironment>
+): Environment => {
   const environment = ENV_KEYS.reduce(
     (acc, key) => ({
       ...acc,
@@ -118,22 +121,21 @@ const compileEnvironment = (definitions?: Partial<RawEnvironment>): Environment 
     ...environment,
     ADDRESSES: EnvironmentConfig[environment['VEGA_ENV']],
     VEGA_NETWORKS: {
-      [environment.VEGA_ENV]: isBrowser ? window.location.href : environment.VEGA_NETWORKS[environment.VEGA_ENV],
+      [environment.VEGA_ENV]: isBrowser
+        ? window.location.href
+        : environment.VEGA_NETWORKS[environment.VEGA_ENV],
       ...environment.VEGA_NETWORKS,
     },
-  }
-}
+  };
+};
 
-const EnvironmentContext = createContext({} as Environment);
+const EnvironmentContext = createContext({} as EnvironmentState);
 
 export const EnvironmentProvider = ({
   definitions,
   children,
 }: EnvironmentProviderProps) => {
-  const environment = compileEnvironment(definitions);
-
-  const [isDialogOpen, setDialogOpen] = useState(false);
-  const [dialogIntent, setDialogIntent] = useState<Intent>(Intent.Prompt);
+  const [environment, updateEnvironment] = useState<Environment>(compileEnvironment(definitions));
 
   const missingKeys = Object.keys(environment)
     .filter((key) => typeof environment[key as EnvKey] === undefined)
@@ -146,28 +148,14 @@ export const EnvironmentProvider = ({
     );
   }
 
+  const setEnvironment = (newEnvironmentProps: Partial<Environment>) => updateEnvironment({
+    ...environment,
+    ...newEnvironmentProps,
+  });
+
   return (
-    <EnvironmentContext.Provider
-      value={environment}
-    >
+    <EnvironmentContext.Provider value={{ ...environment, setEnvironment }}>
       {children}
-      <Dialog
-        open={isDialogOpen}
-        onChange={setDialogOpen}
-        title={t('Choose a network')}
-        intent={dialogIntent}
-      >
-        <NetworkSwitcher
-          onClose={() => setDialogOpen(false)}
-          onConnect={({ network }) => {
-            const url = environment.VEGA_NETWORKS[network]
-            if (url && isBrowser && !window.location.href.includes(url)) {
-              window.location.href = url;
-            }
-          }}
-          onError={() => setDialogIntent(Intent.Danger)}
-        />
-      </Dialog>
     </EnvironmentContext.Provider>
   );
 };
