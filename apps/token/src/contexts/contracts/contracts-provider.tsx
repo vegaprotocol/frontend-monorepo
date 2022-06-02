@@ -10,7 +10,7 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import uniqBy from 'lodash/uniqBy';
 import React from 'react';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 import { SplashLoader } from '../../components/splash-loader';
 import type { ContractsContextShape } from './contracts-context';

@@ -3,7 +3,8 @@ import { gql } from '@apollo/client';
 import { PageQueryContainer } from '../../../components/page-query-container';
 import type { DepositPage } from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
-import { t, useEnvironment } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
 

@@ -7,7 +7,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/react-helpers';
+import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
 import { Connectors } from '../lib/vega-connectors';
 import { useMemo } from 'react';
 import { createClient } from '../lib/apollo-client';

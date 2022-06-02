@@ -1,7 +1,7 @@
 import { VegaErc20Bridge } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 export const useBridgeContract = () => {
   const { VEGA_ENV } = useEnvironment();

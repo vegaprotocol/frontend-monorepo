@@ -3,7 +3,7 @@ import { DATA_SOURCES } from './config';
 import { Header } from './components/header';
 import { StatsManager } from '@vegaprotocol/network-stats';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
-import { EnvironmentProvider } from '@vegaprotocol/react-helpers';
+import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 
 const envName = DATA_SOURCES.envName;
