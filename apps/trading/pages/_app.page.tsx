@@ -7,7 +7,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
+import { EnvironmentProvider, NetworkSwitcherDialog } from '@vegaprotocol/network-switcher';
 import { Connectors } from '../lib/vega-connectors';
 import { useMemo } from 'react';
 import { createClient } from '../lib/apollo-client';
@@ -79,6 +79,13 @@ function VegaTradingApp({ Component, pageProps }: AppProps) {
                   setDialogOpen={(open) =>
                     store.setVegaWalletManageDialog(open)
                   }
+                />
+                <NetworkSwitcherDialog
+                  dialogOpen={store.vegaWalletManageDialog}
+                  setDialogOpen={(open) =>
+                    store.setVegaWalletManageDialog(open)
+                  }
+                  onConnect={({ network }) => console.log('connect to: ', network)}
                 />
               </div>
             </AppLoader>
