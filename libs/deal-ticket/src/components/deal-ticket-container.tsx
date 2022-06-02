@@ -1,5 +1,5 @@
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { gql, useQuery } from '@apollo/client';
+import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { DealTicketManager } from './deal-ticket-manager';
 import type {
   DealTicketQuery,

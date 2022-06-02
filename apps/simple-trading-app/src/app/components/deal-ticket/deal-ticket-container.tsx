@@ -1,9 +1,9 @@
+import { useParams } from 'react-router-dom';
 import {
   DealTicketManager,
   DealTicketContainer as Container,
 } from '@vegaprotocol/deal-ticket';
 import { DealTicketSteps } from './deal-ticket-steps';
-import { useParams } from 'react-router-dom';
 
 const tempEmptyText = <p>Please select a market from the markets page</p>;
 

@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Lozenge, Splash } from '@vegaprotocol/ui-toolkit';
@@ -7,7 +8,6 @@ import SimpleMarketPercentChange from './simple-market-percent-change';
 import SimpleMarketExpires from './simple-market-expires';
 import DataProvider from './data-provider';
 import { MARKET_STATUS } from './constants';
-import { useNavigate } from 'react-router-dom';
 
 const SimpleMarketList = () => {
   const navigate = useNavigate();
