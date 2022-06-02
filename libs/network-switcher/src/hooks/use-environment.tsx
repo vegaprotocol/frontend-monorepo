@@ -22,6 +22,7 @@ export const ENV_KEYS = [
   'ETHEREUM_CHAIN_ID',
   'ETHEREUM_PROVIDER_URL',
   'ETHERSCAN_URL',
+  'NX_VEGA_NETWORKS'
 ] as const;
 
 type EnvKey = typeof ENV_KEYS[number];
@@ -35,6 +36,7 @@ export type Environment = {
   ETHEREUM_PROVIDER_URL: string;
   ETHERSCAN_URL: string;
   ADDRESSES: VegaContracts;
+  NX_VEGA_NETWORKS: Record<Networks, string>
 };
 
 const getBundledEnvironmentValue = (key: EnvKey) => {
@@ -50,8 +52,18 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_ETHEREUM_PROVIDER_URL'];
     case 'ETHERSCAN_URL':
       return process.env['NX_ETHERSCAN_URL'];
+    case 'NX_VEGA_NETWORKS':
+      return process.env['NX_VEGA_NETWORKS'];
   }
 };
+
+const produceNetworkKeyPair = (acc: Record<Networks, string>, raw: string) => {
+  const [network, ...urlChunks] = raw.split('=');
+  return {
+    ...acc,
+    [network]: urlChunks.join(''),
+  };
+}
 
 const transformValue = (key: EnvKey, value?: string) => {
   switch (key) {
@@ -59,6 +71,10 @@ const transformValue = (key: EnvKey, value?: string) => {
       return value as Networks;
     case 'ETHEREUM_CHAIN_ID':
       return value && Number(value);
+    case 'NX_VEGA_NETWORKS':
+      return value && value
+        .split(';')
+        .reduce<Record<Networks, string>>(produceNetworkKeyPair, {} as Record<Networks, string>)
     default:
       return value;
   }
