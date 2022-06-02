@@ -34,7 +34,11 @@ export interface Subscribe<Data, Delta> {
 type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
 export interface Update<Data, Delta> {
-  (draft: Draft<Data>, delta: Delta, reload: (forceReset?: boolean) => void): void;
+  (
+    draft: Draft<Data>,
+    delta: Delta,
+    reload: (forceReset?: boolean) => void
+  ): void;
 }
 
 interface GetData<QueryData, Data> {
