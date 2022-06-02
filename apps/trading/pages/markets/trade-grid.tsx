@@ -46,19 +46,17 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
   return (
-    <div className={wrapperClasses}>
-      <header className="col-start-1 col-end-2 row-start-1 row-end-1 p-8">
-        <h1 className="dark:text-vega-yellow text-black text-h4">
+    <>
+      <header className="w-full p-8">
+        <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
+        <div className="flex gap-4 ml-auto mr-8">
           <button
             onClick={() => setOpen(!open)}
-            className="flex items-center gap-8 px-4 hover:bg-vega-yellow dark:hover:bg-white/20"
+            className="dark:text-vega-yellow text-black text-h4 flex items-center gap-8 px-4 hover:bg-vega-yellow dark:hover:bg-white/20"
           >
             <span className="break-words text-left">{market.name}</span>
             <ArrowDown color="yellow" borderX={8} borderTop={12} />
           </button>
-        </h1>
-        <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
-        <div className="flex items-center gap-8 ml-auto mr-8">
           <div>
             Change (24h)
             {
@@ -78,43 +76,45 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           <div>State {market.state}</div>
         </div>
       </header>
-      <TradeGridChild className="col-start-1 col-end-2">
-        <GridTabs group="chart">
-          <GridTab id="candles" name={t('Candles')}>
-            <TradingViews.Candles marketId={market.id} />
-          </GridTab>
-          <GridTab id="depth" name={t('Depth')}>
-            <TradingViews.Depth marketId={market.id} />
-          </GridTab>
-        </GridTabs>
-      </TradeGridChild>
-      <TradeGridChild className="row-start-1 row-end-3">
-        <TradingViews.Ticket marketId={market.id} />
-      </TradeGridChild>
-      <TradeGridChild className="row-start-1 row-end-3">
-        <GridTabs group="trade">
-          <GridTab id="trades" name={t('Trades')}>
-            <TradingViews.Trades marketId={market.id} />
-          </GridTab>
-          <GridTab id="orderbook" name={t('Orderbook')}>
-            <TradingViews.Orderbook marketId={market.id} />
-          </GridTab>
-        </GridTabs>
-      </TradeGridChild>
-      <TradeGridChild className="col-span-3">
-        <GridTabs group="portfolio">
-          <GridTab id="orders" name={t('Orders')}>
-            <TradingViews.Orders />
-          </GridTab>
-          <GridTab id="positions" name={t('Positions')}>
-            <TradingViews.Positions />
-          </GridTab>
-          <GridTab id="accounts" name={t('Accounts')}>
-            <TradingViews.Accounts />
-          </GridTab>
-        </GridTabs>
-      </TradeGridChild>
-    </div>
+      <div className={wrapperClasses}>
+        <TradeGridChild className="row-start-1 row-end-3">
+          <GridTabs group="chart">
+            <GridTab id="candles" name={t('Candles')}>
+              <TradingViews.Candles marketId={market.id} />
+            </GridTab>
+            <GridTab id="depth" name={t('Depth')}>
+              <TradingViews.Depth marketId={market.id} />
+            </GridTab>
+          </GridTabs>
+        </TradeGridChild>
+        <TradeGridChild className="row-start-1 row-end-3">
+          <TradingViews.Ticket marketId={market.id} />
+        </TradeGridChild>
+        <TradeGridChild className="row-start-1 row-end-3">
+          <GridTabs group="trade">
+            <GridTab id="trades" name={t('Trades')}>
+              <TradingViews.Trades marketId={market.id} />
+            </GridTab>
+            <GridTab id="orderbook" name={t('Orderbook')}>
+              <TradingViews.Orderbook marketId={market.id} />
+            </GridTab>
+          </GridTabs>
+        </TradeGridChild>
+        <TradeGridChild className="col-span-3">
+          <GridTabs group="portfolio">
+            <GridTab id="orders" name={t('Orders')}>
+              <TradingViews.Orders />
+            </GridTab>
+            <GridTab id="positions" name={t('Positions')}>
+              <TradingViews.Positions />
+            </GridTab>
+            <GridTab id="accounts" name={t('Accounts')}>
+              <TradingViews.Accounts />
+            </GridTab>
+          </GridTabs>
+        </TradeGridChild>
+      </div>
+    </>
   );
 };
 
