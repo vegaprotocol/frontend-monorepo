@@ -1,7 +1,13 @@
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Networks } from '@vegaprotocol/smart-contracts';
 import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
 import { createContext, useContext } from 'react';
+import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
+import { NetworkSwitcher } from '../components/network-switcher';
+
+const isBrowser = typeof window !== 'undefined';
 
 declare global {
   interface Window {
@@ -12,17 +18,17 @@ declare global {
 type VegaContracts = typeof EnvironmentConfig[Networks];
 
 type EnvironmentProviderProps = {
-  definintions?: Partial<RawEnvironment>;
+  definitions?: Partial<RawEnvironment>;
   children?: ReactNode;
 };
 
 export const ENV_KEYS = [
   'VEGA_URL',
   'VEGA_ENV',
+  'VEGA_NETWORKS',
   'ETHEREUM_CHAIN_ID',
   'ETHEREUM_PROVIDER_URL',
   'ETHERSCAN_URL',
-  'NX_VEGA_NETWORKS'
 ] as const;
 
 type EnvKey = typeof ENV_KEYS[number];
@@ -32,11 +38,11 @@ type RawEnvironment = Record<EnvKey, string>;
 export type Environment = {
   VEGA_URL: string;
   VEGA_ENV: Networks;
+  VEGA_NETWORKS: Record<Networks, string>;
   ETHEREUM_CHAIN_ID: number;
   ETHEREUM_PROVIDER_URL: string;
   ETHERSCAN_URL: string;
   ADDRESSES: VegaContracts;
-  NX_VEGA_NETWORKS: Record<Networks, string>
 };
 
 const getBundledEnvironmentValue = (key: EnvKey) => {
@@ -52,7 +58,7 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_ETHEREUM_PROVIDER_URL'];
     case 'ETHERSCAN_URL':
       return process.env['NX_ETHERSCAN_URL'];
-    case 'NX_VEGA_NETWORKS':
+    case 'VEGA_NETWORKS':
       return process.env['NX_VEGA_NETWORKS'];
   }
 };
@@ -63,7 +69,7 @@ const produceNetworkKeyPair = (acc: Record<Networks, string>, raw: string) => {
     ...acc,
     [network]: urlChunks.join(''),
   };
-}
+};
 
 const transformValue = (key: EnvKey, value?: string) => {
   switch (key) {
@@ -71,41 +77,63 @@ const transformValue = (key: EnvKey, value?: string) => {
       return value as Networks;
     case 'ETHEREUM_CHAIN_ID':
       return value && Number(value);
-    case 'NX_VEGA_NETWORKS':
-      return value && value
-        .split(';')
-        .reduce<Record<Networks, string>>(produceNetworkKeyPair, {} as Record<Networks, string>)
+    case 'VEGA_NETWORKS':
+      return (
+        value &&
+        value
+          .split(';')
+          .reduce<Record<Networks, string>>(
+            produceNetworkKeyPair,
+            {} as Record<Networks, string>
+          )
+      );
     default:
       return value;
   }
 };
 
-const getValue = (key: EnvKey, definintions: Partial<RawEnvironment> = {}) => {
-  if (typeof window === 'undefined') {
+const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
+  if (!isBrowser) {
     return transformValue(
       key,
-      definintions[key] ?? getBundledEnvironmentValue(key)
+      definitions[key] ?? getBundledEnvironmentValue(key)
     );
   }
   return transformValue(
     key,
-    window._ENV?.[key] ?? definintions[key] ?? getBundledEnvironmentValue(key)
+    window._ENV?.[key] ?? definitions[key] ?? getBundledEnvironmentValue(key)
   );
 };
+
+const compileEnvironment = (definitions?: Partial<RawEnvironment>): Environment => {
+  const environment = ENV_KEYS.reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: getValue(key, definitions),
+    }),
+    {} as Environment
+  );
+
+  return {
+    ...environment,
+    ADDRESSES: EnvironmentConfig[environment['VEGA_ENV']],
+    VEGA_NETWORKS: {
+      [environment.VEGA_ENV]: isBrowser ? window.location.href : environment.VEGA_NETWORKS[environment.VEGA_ENV],
+      ...environment.VEGA_NETWORKS,
+    },
+  }
+}
 
 const EnvironmentContext = createContext({} as Environment);
 
 export const EnvironmentProvider = ({
-  definintions,
+  definitions,
   children,
 }: EnvironmentProviderProps) => {
-  const environment = ENV_KEYS.reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: getValue(key, definintions),
-    }),
-    {} as Environment
-  );
+  const environment = compileEnvironment(definitions);
+
+  const [isDialogOpen, setDialogOpen] = useState(false);
+  const [dialogIntent, setDialogIntent] = useState<Intent>(Intent.Prompt);
 
   const missingKeys = Object.keys(environment)
     .filter((key) => typeof environment[key as EnvKey] === undefined)
@@ -120,12 +148,26 @@ export const EnvironmentProvider = ({
 
   return (
     <EnvironmentContext.Provider
-      value={{
-        ...environment,
-        ADDRESSES: EnvironmentConfig[environment['VEGA_ENV']],
-      }}
+      value={environment}
     >
       {children}
+      <Dialog
+        open={isDialogOpen}
+        onChange={setDialogOpen}
+        title={t('Choose a network')}
+        intent={dialogIntent}
+      >
+        <NetworkSwitcher
+          onClose={() => setDialogOpen(false)}
+          onConnect={({ network }) => {
+            const url = environment.VEGA_NETWORKS[network]
+            if (url && isBrowser && !window.location.href.includes(url)) {
+              window.location.href = url;
+            }
+          }}
+          onError={() => setDialogIntent(Intent.Danger)}
+        />
+      </Dialog>
     </EnvironmentContext.Provider>
   );
 };

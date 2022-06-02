@@ -1,14 +1,45 @@
+import { useForm, Controller } from 'react-hook-form';
 import type { Networks } from '@vegaprotocol/smart-contracts';
+import { Button, Select } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '../../hooks';
 
 type NetworkState = {
   network: Networks;
-  url?: string;
 };
 
 type NetworkSwitcherProps = {
-  onConfirm: (network: NetworkState) => void;
+  onConnect: (network: NetworkState) => void;
+  onError: () => void;
+  onClose: () => void;
 };
 
-export const NetworkSwitcher = () => {
-  return <div />;
+export const NetworkSwitcher = ({ onConnect }: NetworkSwitcherProps) => {
+  const { VEGA_ENV, VEGA_NETWORKS } = useEnvironment();
+  const { control, handleSubmit } = useForm<NetworkState>({
+    defaultValues: {
+      network: VEGA_ENV,
+    },
+  });
+
+  return (
+    <form onSubmit={handleSubmit(onConnect)}>
+      <div className="my-3">
+        <Controller
+          name="network"
+          control={control}
+          render={({ field }) => (
+            <Select value={field.value} onChange={field.onChange}>
+              {Object.keys(VEGA_NETWORKS).map((network) => (
+                <option value={network}>{network}</option>
+              ))}
+            </Select>
+          )}
+        />
+      </div>
+      <div className="my-3">
+        <Button type="submit">{t('Connect')}</Button>
+      </div>
+    </form>
+  );
 };
