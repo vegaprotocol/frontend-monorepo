@@ -4,7 +4,10 @@ import type { Intent } from '@vegaprotocol/ui-toolkit';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
 import { NetworkSwitcher } from '../network-switcher';
 
-type NetworkSwitcherDialogProps = Pick<ComponentProps<typeof NetworkSwitcher>, 'onConnect' | 'onError'> & {
+type NetworkSwitcherDialogProps = Pick<
+  ComponentProps<typeof NetworkSwitcher>,
+  'onConnect' | 'onError'
+> & {
   dialogOpen: boolean;
   setDialogOpen: (dialogOpen: boolean) => void;
   intent?: Intent;
