@@ -1,12 +1,18 @@
 import React from 'react';
-import { subDays } from 'date-fns';
 import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
+import type { MockedResponse } from '@apollo/client/testing';
+import {
+  mockAllIsIntersecting,
+  mockIsIntersecting,
+  intersectionMockInstance,
+  setupIntersectionMocking,
+  resetIntersectionMocking,
+} from 'react-intersection-observer/test-utils';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 import { MARKETS_QUERY } from './data-provider';
-import type { MockedResponse } from '@apollo/client/testing';
+import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 import type { SimpleMarkets } from './__generated__/SimpleMarkets';
 
 const mockedNavigate = jest.fn();
@@ -30,7 +36,7 @@ describe('SimpleMarketList', () => {
       request: {
         query: MARKETS_QUERY,
         variables: {
-          CandleSince: subDays(Date.now(), 1).toJSON(),
+          CandleSince: '2022-06-02T11:11:21.721Z',
         },
       },
       result: {
@@ -97,7 +103,7 @@ describe('SimpleMarketList', () => {
       request: {
         query: MARKETS_QUERY,
         variables: {
-          CandleSince: subDays(Date.now(), 1).toJSON(),
+          CandleSince: '2022-06-02T11:11:21.721Z',
         },
       },
       result: {

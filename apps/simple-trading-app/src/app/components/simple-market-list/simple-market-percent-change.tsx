@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { InView } from 'react-intersection-observer';
 import { useSubscription } from '@apollo/client';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
@@ -45,6 +46,17 @@ const getColor = (change: number | string) => {
   return theme.colors.intent.highlight;
 };
 
+const SimpleMarketPercentChangeWrapper = (props: Props) => {
+  const [inView, setInView] = useState(false);
+
+  return (
+    // @ts-ignore falsy wrong type?
+    <InView onChange={setInView}>
+      {inView && <SimpleMarketPercentChange {...props} />}
+    </InView>
+  );
+};
+
 const SimpleMarketPercentChange = ({ candles, marketId }: Props) => {
   const { data: { candles: { close = undefined } = {} } = {} } =
     useSubscription<CandleLive, CandleLiveVariables>(CANDLE_SUB, {
@@ -55,4 +67,4 @@ const SimpleMarketPercentChange = ({ candles, marketId }: Props) => {
   return <p style={{ color }}>{change}</p>;
 };
 
-export default SimpleMarketPercentChange;
+export default SimpleMarketPercentChangeWrapper;
