@@ -18,7 +18,7 @@ const MARKET_DATA_FRAGMENT = gql`
   }
 `;
 
-const MARKETS_QUERY = gql`
+export const MARKETS_QUERY = gql`
   ${MARKET_DATA_FRAGMENT}
   query SimpleMarkets($CandleSince: String!) {
     markets {
@@ -54,6 +54,14 @@ const MARKET_DATA_SUB = gql`
   subscription SimpleMarketDataSub {
     marketData {
       ...SimpleMarketDataFields
+    }
+  }
+`;
+
+export const CANDLE_SUB = gql`
+  subscription CandleLive($marketId: ID!) {
+    candles(marketId: $marketId, interval: I1H) {
+      close
     }
   }
 `;
