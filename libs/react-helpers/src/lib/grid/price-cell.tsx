@@ -13,7 +13,7 @@ export const PriceCell = React.memo(
       return <span data-testid="price">-</span>;
     }
     return (
-      <span className="font-mono relative text-ui" data-testid="price">
+      <span className="font-mono relative text-ui-small" data-testid="price">
         {valueFormatted}
       </span>
     );

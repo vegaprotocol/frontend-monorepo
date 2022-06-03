@@ -16,7 +16,9 @@ export const Navbar = () => {
       {[
         {
           name: t('Trading'),
-          path: `/markets/${lastSelectedMarketId}`,
+          path: lastSelectedMarketId
+            ? `/markets/${lastSelectedMarketId}`
+            : '/markets',
           activeOn: '/portfolio',
         },
         { name: t('Portfolio'), path: '/portfolio' },
@@ -42,7 +44,7 @@ const NavLink = ({ name, path, exact, activeOn }: NavLinkProps) => {
     <AnchorButton
       variant={isActive ? 'accent' : 'inline'}
       className="px-16 py-6 h-[38px] uppercase border-0 self-end xs:text-ui sm:text-body-large md:text-h5 lg:text-h4"
-      href={router.asPath}
+      href={path}
       onClick={(e) => {
         e.preventDefault();
         router.push(path);
