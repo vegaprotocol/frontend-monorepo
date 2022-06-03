@@ -39,18 +39,18 @@ export const TradeMarketHeader = ({ market }: TradeGridProps) => {
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
-  const headerItemClassName = 'whitespace-nowrap flex flex-col gap-4';
+  const headerItemClassName = 'whitespace-nowrap flex flex-col';
   const itemClassName =
-    'font-sans font-normal text-xs leading-9 mb-0 text-dark/80 dark:text-white/80';
+    'font-sans font-normal mb-0 text-dark/80 dark:text-white/80 text-ui-small';
   const itemValueClassName =
-    'capitalize font-sans font-normal text-base leading-9 tracking-tighter text-black dark:text-white';
+    'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
   return (
     <header className="w-full p-8">
       <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
-      <div className="flex gap-64 ml-auto mr-8">
+      <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
           onClick={() => setOpen(!open)}
-          className="shrink-0 dark:text-vega-yellow text-black text-h4 flex items-center gap-8 px-4 hover:bg-vega-yellow dark:hover:bg-white/20"
+          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-vega-yellow dark:hover:bg-white/20"
         >
           <span className="break-words text-left">{market.name}</span>
           <ArrowDown color="yellow" borderX={8} borderTop={12} />
@@ -180,11 +180,7 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr_min-content]">
-      <header className="p-8">
-        <h1>
-          {t('Market')}: {market.name}
-        </h1>
-      </header>
+      <TradeMarketHeader market={market} />
       <div className="h-full">
         <AutoSizer>
           {({ width, height }) => (
