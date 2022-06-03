@@ -22,9 +22,10 @@ import { VegaWalletConnectButton } from '../components/vega-wallet-connect-butto
 import './styles.css';
 import { useGlobalStore } from '../stores';
 
-function AppBody ({ Component, pageProps }: AppProps) {
+function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
   const { VEGA_NETWORKS } = useEnvironment();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_, toggleTheme] = useThemeSwitcher();
 
   return (
@@ -50,21 +51,15 @@ function AppBody ({ Component, pageProps }: AppProps) {
       <VegaConnectDialog
         connectors={Connectors}
         dialogOpen={store.vegaWalletConnectDialog}
-        setDialogOpen={(open) =>
-          store.setVegaWalletConnectDialog(open)
-        }
+        setDialogOpen={(open) => store.setVegaWalletConnectDialog(open)}
       />
       <VegaManageDialog
         dialogOpen={store.vegaWalletManageDialog}
-        setDialogOpen={(open) =>
-          store.setVegaWalletManageDialog(open)
-        }
+        setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
       />
       <NetworkSwitcherDialog
         dialogOpen={store.vegaWalletManageDialog}
-        setDialogOpen={(open) =>
-          store.setVegaWalletManageDialog(open)
-        }
+        setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
         onConnect={({ network }) => {
           if (VEGA_NETWORKS[network]) {
             window.location.href = VEGA_NETWORKS[network];
