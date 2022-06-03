@@ -19,9 +19,9 @@ export const Navbar = () => {
           path: lastSelectedMarketId
             ? `/markets/${lastSelectedMarketId}`
             : '/markets',
-          activeOn: '/portfolio',
+          testId: 'markets-link',
         },
-        { name: t('Portfolio'), path: '/portfolio' },
+        { name: t('Portfolio'), path: '/portfolio', testId: 'portfolio-link' },
       ].map((route) => (
         <NavLink key={route.path} {...route} />
       ))}
@@ -33,10 +33,10 @@ interface NavLinkProps {
   name: string;
   path: string;
   exact?: boolean;
-  activeOn?: string;
+  testId?: string;
 }
 
-const NavLink = ({ name, path, exact, activeOn }: NavLinkProps) => {
+const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
   const router = useRouter();
   const isActive =
     router.asPath === path || (!exact && router.asPath.startsWith(path));
@@ -44,6 +44,7 @@ const NavLink = ({ name, path, exact, activeOn }: NavLinkProps) => {
     <AnchorButton
       variant={isActive ? 'accent' : 'inline'}
       className="px-16 py-6 h-[38px] uppercase border-0 self-end xs:text-ui sm:text-body-large md:text-h5 lg:text-h4"
+      data-testid={testId}
       href={path}
       onClick={(e) => {
         e.preventDefault();

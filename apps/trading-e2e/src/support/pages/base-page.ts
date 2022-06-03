@@ -1,6 +1,6 @@
 export default class BasePage {
   closeDialogBtn = 'dialog-close';
-  porfolioUrl = '/portfolio';
+  portfolioUrl = '/portfolio';
   marketsUrl = '/markets';
   assetSelectField = 'select[name="asset"]';
   toAddressField = 'input[name="to"]';
@@ -10,19 +10,19 @@ export default class BasePage {
   dialogText = 'dialog-text';
 
   closeDialog() {
-    cy.getByTestId(this.closeDialogBtn, { timeout: 8000 }).click({
+    cy.getByTestId(this.closeDialogBtn, { timeout: 8000 })?.click({
       force: true,
     });
   }
 
   navigateToPortfolio() {
-    cy.get(`a[href='${this.porfolioUrl}']`).should('be.visible').click();
+    cy.get(`a[href='${this.portfolioUrl}']`).should('be.visible').click();
     cy.url().should('include', '/portfolio');
     cy.getByTestId('portfolio');
   }
 
   navigateToMarkets() {
-    cy.get(`a[href='${this.marketsUrl}']`).should('be.visible').click();
+    cy.getByTestId('markets-link').should('be.visible').click();
     cy.url().should('include', '/markets');
     cy.getByTestId('markets');
   }
