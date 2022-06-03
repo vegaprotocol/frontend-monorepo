@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { subDays } from 'date-fns';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
@@ -11,6 +12,7 @@ import DataProvider from './data-provider';
 import { MARKET_STATUS } from './constants';
 
 const SimpleMarketList = () => {
+  const navigate = useNavigate();
   const statusesRef = useRef<Record<string, MarketState | ''>>({});
   const variables = useMemo(
     () => ({
@@ -42,10 +44,13 @@ const SimpleMarketList = () => {
     statusesRef.current = statuses;
   }, [data]);
 
-  const onClick = useCallback((marketId) => {
-    // @TODO - let's try to have navigation first
-    console.log('trigger market', marketId);
-  }, []);
+  const onClick = useCallback(
+    (marketId) => {
+      navigate(`/trading/${marketId}`);
+    },
+    [navigate]
+  );
+
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       {data && data.length > 0 ? (

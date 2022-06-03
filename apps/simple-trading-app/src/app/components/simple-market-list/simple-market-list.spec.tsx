@@ -9,6 +9,13 @@ import { MARKETS_QUERY } from './data-provider';
 import type { MockedResponse } from '@apollo/client/testing';
 import type { SimpleMarkets } from './__generated__/SimpleMarkets';
 
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate,
+}));
+
 jest.mock('date-fns', () => ({
   subDays: () => new Date('2022-06-02T11:11:21.721Z'),
 }));
