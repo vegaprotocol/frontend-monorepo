@@ -34,31 +34,31 @@ interface TradeGridProps {
   market: Market_market;
 }
 
-export const TradeGrid = ({ market }: TradeGridProps) => {
+export const TradeMarketHeader = ({ market }: TradeGridProps) => {
   const [open, setOpen] = useState(false);
-  const wrapperClasses = classNames(
-    'h-full max-h-full',
-    'grid gap-[1px] grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
-    'bg-black-10 dark:bg-white-10',
-    'text-ui'
-  );
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
+  const headerItemClassName = 'whitespace-nowrap flex flex-col gap-4';
+  const itemClassName =
+    'font-sans font-normal text-xs leading-9 mb-0 text-dark/80 dark:text-white/80';
+  const itemValueClassName =
+    'capitalize font-sans font-normal text-base leading-9 tracking-tighter text-black dark:text-white';
   return (
-    <>
-      <header className="w-full p-8">
-        <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
-        <div className="flex gap-4 ml-auto mr-8">
-          <button
-            onClick={() => setOpen(!open)}
-            className="dark:text-vega-yellow text-black text-h4 flex items-center gap-8 px-4 hover:bg-vega-yellow dark:hover:bg-white/20"
-          >
-            <span className="break-words text-left">{market.name}</span>
-            <ArrowDown color="yellow" borderX={8} borderTop={12} />
-          </button>
-          <div>
-            Change (24h)
+    <header className="w-full p-8">
+      <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
+      <div className="flex gap-64 ml-auto mr-8">
+        <button
+          onClick={() => setOpen(!open)}
+          className="shrink-0 dark:text-vega-yellow text-black text-h4 flex items-center gap-8 px-4 hover:bg-vega-yellow dark:hover:bg-white/20"
+        >
+          <span className="break-words text-left">{market.name}</span>
+          <ArrowDown color="yellow" borderX={8} borderTop={12} />
+        </button>
+
+        <div className="flex flex-auto items-start gap-64 overflow-x-scroll whitespace-nowrap w-[400px]">
+          <div className={headerItemClassName}>
+            <span className={itemClassName}>Change (24h)</span>
             {
               <PriceCellChange
                 candles={candlesClose}
@@ -66,16 +66,39 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               />
             }
           </div>
-          <div>
-            Volume
-            {market.data?.indicativeVolume === '0'
-              ? '-'
-              : market.data?.indicativeVolume}
+          <div className={headerItemClassName}>
+            <span className={itemClassName}>Volume</span>
+            <span className={itemValueClassName}>
+              {market.data?.indicativeVolume === '0'
+                ? '-'
+                : market.data?.indicativeVolume}
+            </span>
           </div>
-          <div>Trading mode {market.tradingMode} </div>
-          <div>State {market.state}</div>
+          <div className={headerItemClassName}>
+            <span className={itemClassName}>Trading mode</span>
+            <span className={itemValueClassName}>{market.tradingMode}</span>
+          </div>
+          <div className={headerItemClassName}>
+            <span className={itemClassName}>State</span>
+            <span className={itemValueClassName}>{market.state}</span>
+          </div>
         </div>
-      </header>
+      </div>
+    </header>
+  );
+};
+
+export const TradeGrid = ({ market }: TradeGridProps) => {
+  const wrapperClasses = classNames(
+    'h-full max-h-full',
+    'grid gap-[1px] grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
+    'bg-black-10 dark:bg-white-10',
+    'text-ui'
+  );
+
+  return (
+    <>
+      <TradeMarketHeader market={market} />
       <div className={wrapperClasses}>
         <TradeGridChild className="row-start-1 row-end-3">
           <GridTabs group="chart">
