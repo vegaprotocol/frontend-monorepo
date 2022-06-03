@@ -5,6 +5,13 @@ import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 
+const mockedNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate,
+}));
+
 jest.mock('./data-provider', () => jest.fn());
 
 jest.mock('@vegaprotocol/react-helpers', () => ({

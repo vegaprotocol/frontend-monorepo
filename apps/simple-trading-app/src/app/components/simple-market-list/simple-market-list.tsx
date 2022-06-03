@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Lozenge, Splash } from '@vegaprotocol/ui-toolkit';
@@ -9,6 +10,7 @@ import DataProvider from './data-provider';
 import { MARKET_STATUS } from './constants';
 
 const SimpleMarketList = () => {
+  const navigate = useNavigate();
   const variables = useMemo(
     () => ({
       CandleInterval: 'I1H',
@@ -21,10 +23,13 @@ const SimpleMarketList = () => {
     undefined, // @TODO - if we need a live update in the future
     variables
   );
-  const onClick = useCallback((marketId) => {
-    // @TODO - let's try to have navigation first
-    console.log('trigger market', marketId);
-  }, []);
+  const onClick = useCallback(
+    (marketId) => {
+      navigate(`/trading/${marketId}`);
+    },
+    [navigate]
+  );
+
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       {data && data.length > 0 ? (
