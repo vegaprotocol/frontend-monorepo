@@ -92,9 +92,9 @@ export const RedeemFromTranche = () => {
               {t('Tokens from this Tranche have been redeemed')}
             </strong>
           }
-          completeFooter={
+          completeBody={
             <>
-              <p>
+              <p className="mb-8">
                 {t(
                   'You have redeemed {{redeemedAmount}} VEGA tokens from this tranche. They are now free to transfer from your Ethereum wallet.',
                   {
@@ -102,7 +102,7 @@ export const RedeemFromTranche = () => {
                   }
                 )}
               </p>
-              <p>
+              <p className="mb-8">
                 {t(
                   'The VEGA token address is {{address}}, make sure you add this to your wallet to see your tokens',
                   {
@@ -114,8 +114,18 @@ export const RedeemFromTranche = () => {
                 <Trans
                   i18nKey="Go to <stakingLink>staking</stakingLink> or <governanceLink>governance</governanceLink> to see how you can use your unlocked tokens"
                   components={{
-                    stakingLink: <Link to={Routes.STAKING} />,
-                    governanceLink: <Link to={Routes.GOVERNANCE} />,
+                    stakingLink: (
+                      <Link
+                        className="underline text-white"
+                        to={Routes.STAKING}
+                      />
+                    ),
+                    governanceLink: (
+                      <Link
+                        className="underline text-white"
+                        to={Routes.GOVERNANCE}
+                      />
+                    ),
                   }}
                 />
               </p>

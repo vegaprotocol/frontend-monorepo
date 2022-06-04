@@ -200,9 +200,9 @@ export const StakingForm = ({
     availableStakeToRemove.isEqualTo(0)
   ) {
     if (appState.lien.isGreaterThan(0)) {
-      return <span className={'text-red'}>{t('stakeNodeWrongVegaKey')}</span>;
+      return <span className="text-red">{t('stakeNodeWrongVegaKey')}</span>;
     } else {
-      return <span className={'text-red'}>{t('stakeNodeNone')}</span>;
+      return <span className="text-red">{t('stakeNodeNone')}</span>;
     }
   }
 

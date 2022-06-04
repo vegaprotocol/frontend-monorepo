@@ -132,6 +132,7 @@ export const TokenInput = ({
       new BigNumber(amount).isLessThan(minimum)
     );
   }, [amount, isApproved, maximum, requireApproval, minimum]);
+
   let approveContent = null;
 
   if (showApproveButton) {
