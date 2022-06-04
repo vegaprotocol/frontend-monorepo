@@ -30,20 +30,22 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
         <p className="mb-12">{t('stakingDescription3')}</p>
         <p className="mb-12">{t('stakingDescription4')}</p>
         <p className="mb-12">
-          <Link href={Links.STAKING_GUIDE} target="_blank">
+          <Link
+            href={Links.STAKING_GUIDE}
+            className="text-white underline"
+            target="_blank"
+          >
             {t('readMoreStaking')}
           </Link>
         </p>
       </section>
 
       <section>
-        <BulletHeader tag="h2" style={{ marginTop: 0 }}>
-          {t('stakingStep1')}
-        </BulletHeader>
+        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
         <StakingStepConnectWallets />
       </section>
       <section>
-        <BulletHeader tag="h2">{t('stakingStep2')}</BulletHeader>
+        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
         <StakingStepAssociate
           associated={
             new BigNumber(
@@ -173,18 +175,18 @@ export const StakingStepAssociate = ({
         iconName="tick"
         title={t('stakingHasAssociated', { tokens: formatNumber(associated) })}
       >
-        <p>
-          <RouteLink to="/staking/associate">
+        <div className="flex flex-wrap gap-4">
+          <RouteLink to="associate">
             <Button data-testid="associate-more-tokens-btn">
               {t('stakingAssociateMoreButton')}
             </Button>
           </RouteLink>
-        </p>
-        <RouteLink to="/staking/disassociate">
-          <Button data-testid="disassociate-tokens-btn">
-            {t('stakingDisassociateButton')}
-          </Button>
-        </RouteLink>
+          <RouteLink to="disassociate">
+            <Button data-testid="disassociate-tokens-btn">
+              {t('stakingDisassociateButton')}
+            </Button>
+          </RouteLink>
+        </div>
       </Callout>
     );
   }
