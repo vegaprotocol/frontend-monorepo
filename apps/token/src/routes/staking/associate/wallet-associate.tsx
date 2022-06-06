@@ -13,7 +13,7 @@ import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { toBigNum } from '@vegaprotocol/react-helpers';
-import { useEthereumConfig } from '@vegaprotocol/web3';
+import type { EthereumConfig } from '@vegaprotocol/web3';
 
 export const WalletAssociate = ({
   perform,
@@ -21,12 +21,14 @@ export const WalletAssociate = ({
   amount,
   setAmount,
   address,
+  ethereumConfig,
 }: {
   perform: () => void;
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   vegaKey: VegaKeyExtended;
   address: string;
+  ethereumConfig: EthereumConfig;
 }) => {
   const { t } = useTranslation();
   const {
@@ -34,28 +36,26 @@ export const WalletAssociate = ({
     appState: { walletBalance, allowance, walletAssociatedBalance, decimals },
   } = useAppState();
 
-  const { config } = useEthereumConfig();
   const { token } = useContracts();
 
   const {
     state: approveState,
     perform: approve,
     dispatch: approveDispatch,
-  } = useTransaction(() => {
-    if (!config) return null;
-    return token.approve(
-      config.staking_bridge_contract.address,
+  } = useTransaction(() =>
+    token.approve(
+      ethereumConfig.staking_bridge_contract.address,
       Number.MAX_SAFE_INTEGER.toString()
-    );
-  });
+    )
+  );
 
   // Once they have approved deposits then we need to refresh their allowance
   React.useEffect(() => {
     const run = async () => {
-      if (approveState.txState === TxState.Complete && config) {
+      if (approveState.txState === TxState.Complete) {
         const a = await token.allowance(
           address,
-          config.staking_bridge_contract.address
+          ethereumConfig.staking_bridge_contract.address
         );
         const allowance = toBigNum(a, decimals);
         appDispatch({
@@ -65,7 +65,14 @@ export const WalletAssociate = ({
       }
     };
     run();
-  }, [address, appDispatch, approveState.txState, token, decimals, config]);
+  }, [
+    address,
+    appDispatch,
+    approveState.txState,
+    token,
+    decimals,
+    ethereumConfig,
+  ]);
 
   let pageContent = null;
 
