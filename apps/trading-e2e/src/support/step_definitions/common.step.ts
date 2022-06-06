@@ -2,8 +2,10 @@ import { Given } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import { generateMarketList } from '../mocks/generate-market-list';
 import BasePage from '../pages/base-page';
+import MarketPage from '../pages/markets-page';
 
 const basePage = new BasePage();
+const marketPage = new MarketPage();
 
 Given('I am on the homepage', () => {
   cy.mockGQL('MarketsList', (req) => {
@@ -15,4 +17,5 @@ Given('I am on the homepage', () => {
   });
   cy.visit('/');
   basePage.closeDialog();
+  marketPage.validateMarketsAreDisplayed();
 });

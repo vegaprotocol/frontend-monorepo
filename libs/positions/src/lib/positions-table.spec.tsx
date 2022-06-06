@@ -4,7 +4,7 @@ import type { Positions_party_positions } from './__generated__/Positions';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 const singleRow: Positions_party_positions = {
-  realisedPNL: '5',
+  realisedPNL: '520000000',
   openVolume: '100',
   unrealisedPNL: '895000',
   averageEntryPrice: '1129935',
@@ -93,7 +93,7 @@ it('Correct formatting applied', async () => {
         '+100',
         '11.29935',
         '11.38885',
-        '+5',
+        '+5,200.000',
       ];
       cells.forEach((cell, i) => {
         expect(cell).toHaveTextContent(expectedValues[i]);
