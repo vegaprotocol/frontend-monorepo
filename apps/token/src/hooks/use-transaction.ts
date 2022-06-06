@@ -63,6 +63,7 @@ export const useTransaction = (
       const result = performTransaction();
 
       if (result === null) {
+        dispatch({ type: TransactionActionType.TX_RESET });
         return;
       }
 
