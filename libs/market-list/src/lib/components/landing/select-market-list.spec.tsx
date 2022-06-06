@@ -1,14 +1,40 @@
-import { render, screen } from '@testing-library/react';
-import type { MarketList } from '../__generated__/MarketList';
+import { fireEvent, render, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import type { MarketList } from '../markets-container/__generated__/MarketList';
 import { SelectMarketList } from './select-market-list';
+
+jest.mock(
+  'next/link',
+  () =>
+    ({ children }: { children: ReactNode }) =>
+      children
+);
 
 describe('SelectMarketList', () => {
   it('should render', () => {
-    render(<SelectMarketList data={mockData.data as MarketList} />);
+    render(
+      <SelectMarketList
+        data={mockData.data as MarketList}
+        onSelect={jest.fn()}
+      />
+    );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
     expect(screen.getByText('141.75')).toBeTruthy();
     expect(screen.getByText('Or view full market list')).toBeTruthy();
+  });
+
+  it('should call onSelect callback', () => {
+    const onSelect = jest.fn();
+    const expectedMarket = mockData.data.markets[0];
+    render(
+      <SelectMarketList
+        data={mockData.data as MarketList}
+        onSelect={onSelect}
+      />
+    );
+    fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
+    expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
   });
 });
 

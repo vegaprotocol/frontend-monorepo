@@ -1,10 +1,11 @@
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouteLink } from 'react-router-dom';
 
 import { BulletHeader } from '../../components/bullet-header';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { Links } from '../../config';
 import {
   AppStateActionType,
@@ -29,14 +30,9 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
         <p className="mb-12">{t('stakingDescription3')}</p>
         <p className="mb-12">{t('stakingDescription4')}</p>
         <p className="mb-12">
-          <a
-            className="underline"
-            href={Links.STAKING_GUIDE}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <Link href={Links.STAKING_GUIDE} target="_blank">
             {t('readMoreStaking')}
-          </a>
+          </Link>
         </p>
       </section>
 
@@ -65,6 +61,7 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
 };
 
 export const StakingStepConnectWallets = () => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
@@ -75,7 +72,12 @@ export const StakingStepConnectWallets = () => {
       <Callout intent={Intent.Success} iconName="tick" title={'Connected'}>
         <p>
           {t('Connected Ethereum address')}&nbsp;
-          <EtherscanLink address={account} text={account} />
+          <Link
+            title={t('View address on Etherscan')}
+            href={`${ETHERSCAN_URL}/tx/${account}`}
+          >
+            {account}
+          </Link>
         </p>
         <p>
           {t('stakingVegaWalletConnected', {
@@ -94,7 +96,7 @@ export const StakingStepConnectWallets = () => {
           components={{
             vegaWalletLink: (
               // eslint-disable-next-line jsx-a11y/anchor-has-content
-              <a href={Links.WALLET_GUIDE} target="_blank" rel="noreferrer" />
+              <Link href={Links.WALLET_GUIDE} target="_blank" />
             ),
           }}
         />
@@ -171,17 +173,17 @@ export const StakingStepAssociate = ({
         title={t('stakingHasAssociated', { tokens: formatNumber(associated) })}
       >
         <p>
-          <Link to="/staking/associate">
+          <RouteLink to="/staking/associate">
             <Button data-testid="associate-more-tokens-btn">
               {t('stakingAssociateMoreButton')}
             </Button>
-          </Link>
+          </RouteLink>
         </p>
-        <Link to="/staking/disassociate">
+        <RouteLink to="/staking/disassociate">
           <Button data-testid="disassociate-tokens-btn">
             {t('stakingDisassociateButton')}
           </Button>
-        </Link>
+        </RouteLink>
       </Callout>
     );
   }
@@ -189,11 +191,11 @@ export const StakingStepAssociate = ({
   return (
     <>
       <p>{t('stakingStep2Text')}</p>
-      <Link to="/staking/associate">
+      <RouteLink to="/staking/associate">
         <Button data-testid="associate-tokens-btn">
           {t('associateButton')}
         </Button>
-      </Link>
+      </RouteLink>
     </>
   );
 };

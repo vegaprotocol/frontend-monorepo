@@ -1,10 +1,5 @@
-import {
-  Dialog,
-  EtherscanLink,
-  Icon,
-  Intent,
-  Loader,
-} from '@vegaprotocol/ui-toolkit';
+import { Link, Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
@@ -28,7 +23,8 @@ export const WithdrawDialog = ({
   dialogOpen,
   onDialogChange,
 }: WithdrawDialogProps) => {
-  const { intent, ...props } = getProps(approval, vegaTx, ethTx);
+  const { ETHERSCAN_URL } = useEnvironment();
+  const { intent, ...props } = getProps(approval, vegaTx, ethTx, ETHERSCAN_URL);
   return (
     <Dialog open={dialogOpen} intent={intent} onChange={onDialogChange}>
       <DialogWrapper {...props} />
@@ -51,7 +47,10 @@ export const DialogWrapper = ({
     <div className="flex gap-12 max-w-full text-ui">
       <div className="pt-8 fill-current">{icon}</div>
       <div className="flex-1">
-        <h1 className="text-h4 text-black dark:text-white capitalize mb-12">
+        <h1
+          data-testid="dialog-title"
+          className="text-h4 text-black dark:text-white capitalize mb-12"
+        >
           {title}
         </h1>
         {children}
@@ -65,7 +64,11 @@ interface StepProps {
 }
 
 const Step = ({ children }: StepProps) => {
-  return <p className="flex justify-between">{children}</p>;
+  return (
+    <p data-testid="dialog-text" className="flex justify-between">
+      {children}
+    </p>
+  );
 };
 
 interface DialogProps {
@@ -78,7 +81,8 @@ interface DialogProps {
 const getProps = (
   approval: Erc20Approval_erc20WithdrawalApproval | null,
   vegaTx: VegaTxState,
-  ethTx: EthTxState
+  ethTx: EthTxState,
+  ethUrl: string
 ) => {
   const vegaTxPropsMap: Record<VegaTxStatus, DialogProps> = {
     [VegaTxStatus.Default]: {
@@ -149,11 +153,13 @@ const getProps = (
               `Awaiting Ethereum transaction ${ethTx.confirmations}/1 confirmations...`
             )}
           </span>
-          <EtherscanLink
-            tx={ethTx.txHash || ''}
+          <Link
+            href={`${ethUrl}/tx/${ethTx.txHash}`}
+            title={t('View transaction on Etherscan')}
             className="text-vega-pink dark:text-vega-yellow"
-            text={t('View on Etherscan')}
-          />
+          >
+            {t('View on Etherscan')}
+          </Link>
         </Step>
       ),
     },
@@ -164,11 +170,13 @@ const getProps = (
       children: (
         <Step>
           <span>{t('Ethereum transaction complete')}</span>
-          <EtherscanLink
-            tx={ethTx.txHash || ''}
+          <Link
+            href={`${ethUrl}/tx/${ethTx.txHash}`}
+            title={t('View transaction on Etherscan')}
             className="text-vega-pink dark:text-vega-yellow"
-            text={t('View on Etherscan')}
-          />
+          >
+            {t('View on Etherscan')}
+          </Link>
         </Step>
       ),
     },

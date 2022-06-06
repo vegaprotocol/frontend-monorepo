@@ -34,6 +34,10 @@ export default class HomePage extends BasePage {
       'Chain ID',
     ];
 
+    cy.getByTestId(this.statsTitle).then(($list) => {
+      cy.wrap($list).should('have.length', 18);
+    });
+
     cy.getByTestId(this.statsTitle)
       .each(($title, index) => {
         cy.wrap($title).should('have.text', statTitles[index]);
@@ -43,19 +47,36 @@ export default class HomePage extends BasePage {
       });
   }
 
-  verifyStatsValuesdisplayed() {
+  verifyStatsValuesDisplayed() {
+    cy.getByTestId(this.statsValue).eq(0).should('have.text', 'CONNECTED');
+    cy.getByTestId(this.statsValue).eq(1).should('not.be.empty');
+    cy.getByTestId(this.statsValue).eq(2).should('have.text', '2');
     cy.getByTestId(this.statsValue)
-      .each(($value, index) => {
-        cy.wrap($value).should('not.be.empty');
-        if (index == 6) {
-          // Total staked value
-          const totalStakedRegex = /^\d{1,3}(,\d{3})*(\.\d{1,2})?$/;
-          cy.wrap($value).invoke('text').should('match', totalStakedRegex); // Check that value is number with 2dp
-        }
-      })
-      .then(($list) => {
-        cy.wrap($list).should('have.length', 18);
-      });
+      .eq(3)
+      .invoke('text')
+      .should('match', /\d+d \d+h \d+m \d+s/i);
+    cy.getByTestId(this.statsValue).eq(4).should('have.text', '2');
+    cy.getByTestId(this.statsValue).eq(5).should('have.text', '0');
+    cy.getByTestId(this.statsValue).eq(6).should('have.text', '0.00');
+    cy.getByTestId(this.statsValue).eq(7).should('have.text', '0');
+    cy.getByTestId(this.statsValue).eq(8).should('have.text', '0');
+    cy.getByTestId(this.statsValue).eq(9).should('have.text', '0');
+    cy.getByTestId(this.statsValue).eq(10).should('have.text', '0');
+    cy.getByTestId(this.statsValue).eq(11).should('not.be.empty');
+    cy.getByTestId(this.statsValue).eq(12).should('not.be.empty');
+    cy.getByTestId(this.statsValue).eq(13).should('not.be.empty');
+    if (Cypress.env('NIGHTLY_RUN') != true) {
+      cy.getByTestId(this.statsValue)
+        .eq(14)
+        .invoke('text')
+        .should('match', /v\d+\.\d+\.\d+/i);
+    }
+    cy.getByTestId(this.statsValue)
+      .eq(15)
+      .invoke('text')
+      .should('match', /\d+\.\d+\.\d+/i);
+    cy.getByTestId(this.statsValue).eq(16).should('not.be.empty');
+    cy.getByTestId(this.statsValue).eq(17).should('not.be.empty');
   }
 
   verifyStatsBlockHeightUpdating() {

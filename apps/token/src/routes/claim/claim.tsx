@@ -13,7 +13,7 @@ import {
   initialClaimState,
 } from './claim-reducer';
 
-import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche } from '@vegaprotocol/smart-contracts';
 
 const Claim = ({
   address,

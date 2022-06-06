@@ -1,4 +1,4 @@
-import type { Tranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche } from '@vegaprotocol/smart-contracts';
 import type { BigNumber } from '../../lib/bignumber';
 
 export interface TrancheBalance {

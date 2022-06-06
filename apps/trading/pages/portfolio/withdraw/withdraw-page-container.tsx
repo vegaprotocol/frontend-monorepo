@@ -47,10 +47,6 @@ export const WithdrawPageContainer = ({
 }: WithdrawPageContainerProps) => {
   const { keypair } = useVegaWallet();
 
-  if (!keypair) {
-    return <p>{t('Please connect your Vega wallet')}</p>;
-  }
-
   return (
     <PageQueryContainer<WithdrawPageQuery, WithdrawPageQueryVariables>
       query={WITHDRAW_PAGE_QUERY}

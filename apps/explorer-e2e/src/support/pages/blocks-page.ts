@@ -16,7 +16,6 @@ export default class BlocksPage extends BasePage {
   jumpToBlockSubmit = 'go-submit';
 
   private waitForBlocksResponse() {
-    cy.wait('@blockChain');
     // eslint-disable-next-line cypress/no-unnecessary-waiting
     cy.wait(1000);
   }
