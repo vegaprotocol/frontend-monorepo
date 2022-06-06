@@ -17,7 +17,7 @@ export default class BlocksPage extends BasePage {
   infiniteScrollWrapper = 'infinite-scroll-wrapper';
 
   private waitForBlocksResponse() {
-    cy.contains('Loading...').should('not.exist', { timeout: 8000 });
+    cy.contains('Loading...').should('not.exist', { timeout: 18000 });
   }
 
   validateBlocksPageDisplayed() {
@@ -92,24 +92,37 @@ export default class BlocksPage extends BasePage {
     expectedBlocks: number,
     scrollAttempts: number
   ) {
+    cy.intercept('https://lb.testnet.vega.xyz/tm/blockchain?maxHeight*').as('blockchain_load')
+ 
     cy.getByTestId(this.blockHeight)
-      .first()
+      .last()
       .invoke('text')
-      .then(($firstBlockHeight) => {
+      .then(($initialLastBlockHeight) => {
         for (let index = 0; index < scrollAttempts; index++) {
-          // eslint-disable-next-line cypress/no-unnecessary-waiting
+          
           cy.getByTestId(this.infiniteScrollWrapper)
             .children()
-            .scrollTo('bottom')
-            .wait(50);
+            .children()
+            .invoke('css', 'height')
+            .then(scrollTarget => {
+
+              cy.getByTestId(this.infiniteScrollWrapper)
+                .children()
+                .scrollTo(0, scrollTarget, { easing: 'linear' })
+                .wait('@blockchain_load')
+              
+              // eslint-disable-next-line cypress/no-unnecessary-waiting
+              cy.wait(5) // Need this as although network response has arrived it takes a few millisecs for the css height to expand
+            })
         }
+        
         cy.getByTestId(this.blockHeight)
           .last()
           .invoke('text')
           .then(($lastBlockHeight) => {
-            const totalBlocksDisplayed =
-              parseInt($firstBlockHeight) - parseInt($lastBlockHeight);
-            expect(totalBlocksDisplayed).to.be.at.least(expectedBlocks);
+            const totalBlocksLoadedSinceScrollBegan =
+              parseInt($initialLastBlockHeight) - parseInt($lastBlockHeight);
+            expect(totalBlocksLoadedSinceScrollBegan).to.be.at.least(expectedBlocks);
           });
       });
   }
