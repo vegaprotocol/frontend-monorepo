@@ -70,7 +70,7 @@ const RedemptionRouter = () => {
   if (!account) {
     return (
       <EthConnectPrompt>
-        <p data-testid="eth-connect-prompt">
+        <p data-testid="eth-connect-prompt" className="mb-8">
           {t(
             "Use the Ethereum wallet you want to send your tokens to. You'll also need enough Ethereum to pay gas."
           )}

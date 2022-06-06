@@ -74,11 +74,16 @@ export const RedeemFromTranche = () => {
   ) {
     return (
       <section data-testid="redemption-page">
-        <div data-testid="redemption-no-balance">
-          {t(
-            'You do not have any vesting VEGA tokens. Switch to another Ethereum key to check what can be redeemed.'
-          )}
-        </div>
+        <p data-testid="redemption-no-balance">
+          <Trans
+            i18nKey="noVestingTokens"
+            components={{
+              tranchesLink: (
+                <Link className="underline text-white" to={Routes.TRANCHES} />
+              ),
+            }}
+          />
+        </p>
       </section>
     );
   }
