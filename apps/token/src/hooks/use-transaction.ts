@@ -11,7 +11,7 @@ import {
 import { useTransactionStore } from '../stores/transactions';
 
 export const useTransaction = (
-  performTransaction: () => Promise<ethers.ContractTransaction> | null,
+  performTransaction: () => Promise<ethers.ContractTransaction>,
   requiredConfirmations = 1
 ) => {
   const { t } = useTranslation();
@@ -61,14 +61,7 @@ export const useTransaction = (
     });
 
     try {
-      const result = performTransaction();
-
-      if (result === null) {
-        dispatch({ type: TransactionActionType.TX_RESET });
-        return;
-      }
-
-      const tx = await result;
+      const tx = await performTransaction();
 
       store.add({ tx, receipt: null, pending: true, requiredConfirmations });
       dispatch({
