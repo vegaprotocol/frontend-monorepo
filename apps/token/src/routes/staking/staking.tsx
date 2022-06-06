@@ -79,7 +79,7 @@ export const StakingStepConnectWallets = () => {
             href={`${ETHERSCAN_URL}/tx/${account}`}
             target="_blank"
           >
-            {account}
+            {truncateMiddle(account)}
           </Link>
         </p>
         <p>
@@ -93,13 +93,16 @@ export const StakingStepConnectWallets = () => {
 
   return (
     <>
-      <p>
+      <p className="mb-8">
         <Trans
           i18nKey="stakingStep1Text"
           components={{
             vegaWalletLink: (
-              // eslint-disable-next-line jsx-a11y/anchor-has-content
-              <Link href={Links.WALLET_GUIDE} target="_blank" />
+              <Link
+                href={Links.WALLET_GUIDE}
+                className="text-white underline"
+                target="_blank"
+              />
             ),
           }}
         />
@@ -113,7 +116,7 @@ export const StakingStepConnectWallets = () => {
           />
         </div>
       ) : (
-        <p>
+        <p className="mb-8">
           <Button
             onClick={() =>
               appDispatch({

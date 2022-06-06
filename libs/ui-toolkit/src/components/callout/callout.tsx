@@ -102,7 +102,9 @@ export function Callout({
     : 'div';
   const body = (
     <>
-      {title && <TitleTag className="text-h5 mt-0 mb-8">{title}</TitleTag>}
+      {title && (
+        <TitleTag className="text-h5 mt-0 mb-8 last:mb-0">{title}</TitleTag>
+      )}
       {children}
     </>
   );
