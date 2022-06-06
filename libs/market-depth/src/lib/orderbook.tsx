@@ -106,9 +106,10 @@ export const Orderbook = ({
   const scrollElement = useRef<HTMLDivElement>(null);
   // scroll offset for which rendered rows are selected, will change after user will scroll to margin of rendered data
   const [scrollOffset, setScrollOffset] = useState(0);
-  // price level which is rendered in center of vieport, need to preserve price level when rows will be added or removed
   // actual scrollTop of scrollElement current element
   const scrollTopRef = useRef(0);
+  // price level which is rendered in center of viewport, need to preserve price level when rows will be added or removed
+  // if undefined then we render mid price in center
   const priceInCenter = useRef<string>();
   const [lockOnMidPrice, setLockOnMidPrice] = useState(true);
   const resolutionRef = useRef(resolution);
