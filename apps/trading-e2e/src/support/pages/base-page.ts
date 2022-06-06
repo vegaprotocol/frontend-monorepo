@@ -16,7 +16,9 @@ export default class BasePage {
   }
 
   navigateToPortfolio() {
-    cy.get(`a[href='${this.portfolioUrl}']`).should('be.visible').click();
+    cy.get(`a[href='${this.portfolioUrl}']`)
+      .should('be.visible')
+      .click({ force: true });
     cy.url().should('include', '/portfolio');
     cy.getByTestId('portfolio');
   }
@@ -24,7 +26,6 @@ export default class BasePage {
   navigateToMarkets() {
     cy.getByTestId('markets-link').should('be.visible').click({ force: true });
     cy.url().should('include', '/markets');
-    cy.getByTestId('markets');
   }
 
   verifyFormErrorDisplayed(expectedError: string, expectedNumErrors: number) {
