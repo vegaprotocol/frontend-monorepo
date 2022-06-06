@@ -13,13 +13,11 @@ export function toBigNum(
 ): BigNumber {
   return new BigNumber(
     rawValue instanceof EthersBigNumber ? rawValue.toString() : rawValue || 0
-  )
-    .dividedBy(Math.pow(10, decimals))
-    .decimalPlaces(decimals);
+  ).dividedBy(Math.pow(10, decimals));
 }
 
 export function addDecimal(
-  value: string | number,
+  value: string | number | EthersBigNumber,
   decimals: number,
   decimalPrecision = decimals
 ): string {
