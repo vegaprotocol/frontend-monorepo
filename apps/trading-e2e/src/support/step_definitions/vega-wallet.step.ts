@@ -27,6 +27,7 @@ When('I connect to Vega Wallet', () => {
     Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE')
   );
   vegaWallet.clickConnectVegaWallet();
+  vegaWallet.validateWalletConnected();
 });
 
 When('I open wallet dialog', () => {
