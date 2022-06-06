@@ -8,7 +8,7 @@ import { Icon } from '../icon';
 interface DialogProps {
   children: ReactNode;
   open: boolean;
-  onChange: (isOpen: boolean) => void;
+  onChange?: (isOpen: boolean) => void;
   title?: string;
   intent?: Intent;
   titleClassNames?: string;
@@ -30,7 +30,7 @@ export function Dialog({
     getIntentShadow(intent)
   );
   return (
-    <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange(x)}>
+    <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <DialogPrimitives.Portal>
         <DialogPrimitives.Overlay className="fixed inset-0 bg-black/50 z-10" />
         <DialogPrimitives.Content className={contentClasses}>

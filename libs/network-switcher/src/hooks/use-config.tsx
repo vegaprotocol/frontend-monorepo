@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import type { Environment } from '../types';
+import type { Environment, ConfigStatus } from '../types';
 
 type Configuration = {
   hosts: string[];
@@ -8,13 +8,6 @@ type Configuration = {
 type Data = {
   url: string;
 };
-
-export type ConfigStatus =
-  | 'success'
-  | 'loading-config'
-  | 'loading-node'
-  | 'error-loading-config'
-  | 'error-loading-node';
 
 const requestToNode = async (url: string, index: number): Promise<number> => {
   const response = await fetch(url);
@@ -60,6 +53,8 @@ export const useConfig = (environment: Environment) => {
         }
       })();
     }
+  // load config only once per runtime
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [environment.VEGA_CONFIG_URL, status, !!config, setStatus, setData]);
 
   return {

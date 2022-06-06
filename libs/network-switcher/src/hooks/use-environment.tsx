@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
-import type { ConfigStatus } from './use-config';
 import { useConfig } from './use-config';
 import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
-import type { Environment, RawEnvironment } from '../types';
+import type { Environment, RawEnvironment, ConfigStatus } from '../types';
 
 type EnvironmentProviderProps = {
   definitions?: Partial<RawEnvironment>;
@@ -13,8 +12,7 @@ type EnvironmentProviderProps = {
 };
 
 type EnvironmentState = Environment & {
-  status: ConfigStatus;
-  setEnvironment: (env: Partial<Environment>) => void;
+  configStatus: ConfigStatus;
 };
 
 const EnvironmentContext = createContext({} as EnvironmentState);
@@ -26,7 +24,7 @@ export const EnvironmentProvider = ({
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
-  const { data: config, status } = useConfig(environment);
+  const { data: config, status: configStatus } = useConfig(environment);
 
   const errorMessage = validateEnvironment(environment);
 
@@ -36,19 +34,13 @@ export const EnvironmentProvider = ({
 
   useEffect(() => {
     if (config?.url) {
-      updateEnvironment({ ...environment, VEGA_URL: config.url });
+      updateEnvironment((environment) => ({ ...environment, VEGA_URL: config.url }));
     }
   }, [config?.url]);
 
-  const setEnvironment = (newEnvironmentProps: Partial<Environment>) =>
-    updateEnvironment({
-      ...environment,
-      ...newEnvironmentProps,
-    });
-
   return (
     <EnvironmentContext.Provider
-      value={{ ...environment, status, setEnvironment }}
+      value={{ ...environment, configStatus }}
     >
       {children}
     </EnvironmentContext.Provider>
