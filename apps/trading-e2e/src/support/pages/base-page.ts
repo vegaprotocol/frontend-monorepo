@@ -22,7 +22,7 @@ export default class BasePage {
   }
 
   navigateToMarkets() {
-    cy.getByTestId('markets-link').should('be.visible').click();
+    cy.getByTestId('markets-link').should('be.visible').click({ force: true });
     cy.url().should('include', '/markets');
     cy.getByTestId('markets');
   }
@@ -35,7 +35,7 @@ export default class BasePage {
     );
   }
 
-  updateTransactionform(args?: {
+  updateTransactionForm(args?: {
     asset?: string;
     to?: string;
     amount?: string;
