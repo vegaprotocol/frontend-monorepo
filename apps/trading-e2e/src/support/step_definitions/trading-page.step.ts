@@ -88,7 +88,7 @@ Given('I am on the trading page for an active market', () => {
 
   cy.visit('/markets/market-id');
   cy.wait('@Market');
-  cy.contains('Market: ACTIVE MARKET');
+  cy.contains('ACTIVE MARKET');
 });
 
 Given('I am on the trading page for a suspended market', () => {
@@ -96,7 +96,7 @@ Given('I am on the trading page for a suspended market', () => {
 
   cy.visit('/markets/market-id');
   cy.wait('@Market');
-  cy.contains('Market: SUSPENDED MARKET');
+  cy.contains('SUSPENDED MARKET');
 });
 
 When('I click on {string} mocked market', (marketType) => {
@@ -115,11 +115,11 @@ Then('trading page for {string} market is displayed', (marketType) => {
   switch (marketType) {
     case 'active':
       cy.wait('@Market');
-      cy.contains('Market: ACTIVE MARKET');
+      cy.contains('ACTIVE MARKET');
       break;
     case 'suspended':
       cy.wait('@Market');
-      cy.contains('Market: SUSPENDED MARKET');
+      cy.contains('SUSPENDED MARKET');
       break;
   }
   tradingPage.clickOnTradesTab();

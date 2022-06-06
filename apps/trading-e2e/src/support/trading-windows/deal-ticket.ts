@@ -20,11 +20,11 @@ export default class DealTicket {
     );
 
     if (isBuy == false) {
-      cy.getByTestId(this.sellOrder).click();
+      cy.getByTestId(this.sellOrder)?.click();
     }
 
-    cy.getByTestId(this.orderSizeField).clear().type(orderSize);
-    cy.getByTestId(this.orderTypeDropDown).select(orderType);
+    cy.getByTestId(this.orderSizeField)?.clear().type(orderSize);
+    cy.getByTestId(this.orderTypeDropDown)?.select(orderType);
   }
 
   placeLimitOrder(
@@ -33,10 +33,10 @@ export default class DealTicket {
     orderPrice: string,
     orderType: string
   ) {
-    cy.getByTestId(this.limitOrderType).click();
+    cy.getByTestId(this.limitOrderType)?.click();
 
     if (isBuy == false) {
-      cy.getByTestId(this.sellOrder).click();
+      cy.getByTestId(this.sellOrder)?.click();
     }
 
     cy.getByTestId(this.orderSizeField).clear().type(orderSize);

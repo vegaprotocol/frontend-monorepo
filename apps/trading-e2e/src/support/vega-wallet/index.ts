@@ -50,6 +50,10 @@ export default class VegaWallet {
     );
   }
 
+  validateWalletConnected() {
+    cy.getByTestId(this.connectVegaBtn).should('contain.text', '…');
+  }
+
   selectPublicKey() {
     cy.getByTestId(this.selectPublicKeyBtn).click();
   }

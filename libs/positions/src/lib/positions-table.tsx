@@ -131,8 +131,10 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
             'color-vega-red': ({ value }: { value: string }) =>
               Number(value) < 0,
           }}
-          valueFormatter={({ value }: ValueFormatterParams) =>
-            volumePrefix(value)
+          valueFormatter={({ value, data }: ValueFormatterParams) =>
+            volumePrefix(
+              addDecimalsFormatNumber(value, data.market.decimalPlaces, 3)
+            )
           }
           cellRenderer="PriceFlashCell"
         />
