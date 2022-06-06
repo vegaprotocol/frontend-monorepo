@@ -20,37 +20,40 @@ import { Web3Provider } from '@vegaprotocol/web3';
 import { Connectors } from './lib/web3-connectors';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import { EnvironmentProvider } from '@vegaprotocol/react-helpers';
 
 function App() {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
   return (
     <GraphQlProvider>
       <Router>
-        <AppStateProvider>
-          <Web3Provider connectors={Connectors}>
-            <Web3Connector>
-              <VegaWalletProvider>
-                <ContractsProvider>
-                  <AppLoader>
-                    <BalanceManager>
-                      <>
-                        <div className="app dark max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
-                          <AppBanner />
-                          <TemplateSidebar sidebar={sideBar}>
-                            <AppRouter />
-                          </TemplateSidebar>
-                          <AppFooter />
-                        </div>
-                        <VegaWalletDialogs />
-                        <TransactionModal />
-                      </>
-                    </BalanceManager>
-                  </AppLoader>
-                </ContractsProvider>
-              </VegaWalletProvider>
-            </Web3Connector>
-          </Web3Provider>
-        </AppStateProvider>
+        <EnvironmentProvider>
+          <AppStateProvider>
+            <Web3Provider connectors={Connectors}>
+              <Web3Connector>
+                <VegaWalletProvider>
+                  <ContractsProvider>
+                    <AppLoader>
+                      <BalanceManager>
+                        <>
+                          <div className="app dark max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
+                            <AppBanner />
+                            <TemplateSidebar sidebar={sideBar}>
+                              <AppRouter />
+                            </TemplateSidebar>
+                            <AppFooter />
+                          </div>
+                          <VegaWalletDialogs />
+                          <TransactionModal />
+                        </>
+                      </BalanceManager>
+                    </AppLoader>
+                  </ContractsProvider>
+                </VegaWalletProvider>
+              </Web3Connector>
+            </Web3Provider>
+          </AppStateProvider>
+        </EnvironmentProvider>
       </Router>
     </GraphQlProvider>
   );

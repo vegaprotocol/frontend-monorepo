@@ -1,5 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { EthTxStatus } from '../use-ethereum-transaction';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
@@ -31,6 +32,8 @@ export const TxRow = ({
   requiredConfirmations,
   highlightComplete = true,
 }: TxRowProps) => {
+  const { ETHERSCAN_URL } = useEnvironment();
+
   if (status === EthTxStatus.Pending) {
     return (
       <p className={`flex justify-between ${ACTIVE_CLASSES}`}>
@@ -39,11 +42,13 @@ export const TxRow = ({
             `Awaiting Ethereum transaction ${confirmations}/${requiredConfirmations} confirmations...`
           )}
         </span>
-        <EtherscanLink
-          tx={txHash || ''}
+        <Link
+          href={`${ETHERSCAN_URL}/tx/${txHash}`}
+          title={t('View transaction on Etherscan')}
           className="text-vega-pink dark:text-vega-yellow"
-          text={t('View on Etherscan')}
-        />
+        >
+          {t('View on Etherscan')}
+        </Link>
       </p>
     );
   }
@@ -56,11 +61,13 @@ export const TxRow = ({
         }`}
       >
         <span>{t('Ethereum transaction complete')}</span>
-        <EtherscanLink
-          tx={txHash || ''}
+        <Link
+          href={`${ETHERSCAN_URL}/tx/${txHash}`}
+          title={t('View on Etherscan')}
           className="text-vega-pink dark:text-vega-yellow"
-          text={t('View on Etherscan')}
-        />
+        >
+          {t('View transaction on Etherscan')}
+        </Link>
       </p>
     );
   }

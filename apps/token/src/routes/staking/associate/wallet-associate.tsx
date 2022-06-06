@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TokenInput } from '../../../components/token-input';
-import { ADDRESSES } from '../../../config';
 import {
   AppStateActionType,
   useAppState,
@@ -13,6 +12,7 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 
 export const WalletAssociate = ({
   perform,
@@ -27,6 +27,7 @@ export const WalletAssociate = ({
   vegaKey: VegaKeyExtended;
   address: string;
 }) => {
+  const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const {
     appDispatch,
@@ -56,7 +57,13 @@ export const WalletAssociate = ({
       }
     };
     run();
-  }, [address, appDispatch, approveState.txState, token]);
+  }, [
+    address,
+    appDispatch,
+    approveState.txState,
+    token,
+    ADDRESSES.stakingBridge,
+  ]);
 
   let pageContent = null;
 

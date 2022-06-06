@@ -1,4 +1,4 @@
-import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts-sdk';
+import type { IClaimTokenParams } from '@vegaprotocol/smart-contracts';
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';

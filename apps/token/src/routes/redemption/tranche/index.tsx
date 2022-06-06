@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
-import { ADDRESSES } from '../../../config';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import {
@@ -25,6 +25,7 @@ export const RedeemFromTranche = () => {
     address: string;
   }>();
   const { vesting } = useContracts();
+  const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const {
     appState: { lien, totalVestedBalance, trancheBalances, totalLockedBalance },
