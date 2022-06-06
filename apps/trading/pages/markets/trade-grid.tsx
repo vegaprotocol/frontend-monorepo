@@ -59,12 +59,10 @@ export const TradeMarketHeader = ({ market }: TradeGridProps) => {
         <div className="flex flex-auto items-start gap-64 overflow-x-scroll whitespace-nowrap w-[400px]">
           <div className={headerItemClassName}>
             <span className={itemClassName}>Change (24h)</span>
-            {
-              <PriceCellChange
-                candles={candlesClose}
-                decimalPlaces={market.decimalPlaces}
-              />
-            }
+            <PriceCellChange
+              candles={candlesClose}
+              decimalPlaces={market.decimalPlaces}
+            />
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Volume</span>
