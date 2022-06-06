@@ -34,14 +34,15 @@ export const EnvironmentProvider = ({
 
   useEffect(() => {
     if (config?.url) {
-      updateEnvironment((environment) => ({ ...environment, VEGA_URL: config.url }));
+      updateEnvironment((environment) => ({
+        ...environment,
+        VEGA_URL: config.url,
+      }));
     }
   }, [config?.url]);
 
   return (
-    <EnvironmentContext.Provider
-      value={{ ...environment, configStatus }}
-    >
+    <EnvironmentContext.Provider value={{ ...environment, configStatus }}>
       {children}
     </EnvironmentContext.Provider>
   );

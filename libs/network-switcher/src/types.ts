@@ -1,4 +1,7 @@
-import { EnvironmentConfig, Networks } from '@vegaprotocol/smart-contracts';
+import type {
+  EnvironmentConfig,
+  Networks,
+} from '@vegaprotocol/smart-contracts';
 
 type VegaContracts = typeof EnvironmentConfig[Networks];
 

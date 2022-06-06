@@ -53,8 +53,8 @@ export const useConfig = (environment: Environment) => {
         }
       })();
     }
-  // load config only once per runtime
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // load config only once per runtime
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [environment.VEGA_CONFIG_URL, status, !!config, setStatus, setData]);
 
   return {
