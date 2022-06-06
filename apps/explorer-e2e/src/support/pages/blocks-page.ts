@@ -92,37 +92,39 @@ export default class BlocksPage extends BasePage {
     expectedBlocks: number,
     scrollAttempts: number
   ) {
-    cy.intercept('https://lb.testnet.vega.xyz/tm/blockchain?maxHeight*').as('blockchain_load')
- 
+    cy.intercept('https://lb.testnet.vega.xyz/tm/blockchain?maxHeight*').as(
+      'blockchain_load'
+    );
+
     cy.getByTestId(this.blockHeight)
       .last()
       .invoke('text')
       .then(($initialLastBlockHeight) => {
         for (let index = 0; index < scrollAttempts; index++) {
-          
           cy.getByTestId(this.infiniteScrollWrapper)
             .children()
             .children()
             .invoke('css', 'height')
-            .then(scrollTarget => {
-
+            .then((scrollTarget) => {
               cy.getByTestId(this.infiniteScrollWrapper)
                 .children()
                 .scrollTo(0, scrollTarget, { easing: 'linear' })
-                .wait('@blockchain_load')
-              
+                .wait('@blockchain_load');
+
               // eslint-disable-next-line cypress/no-unnecessary-waiting
-              cy.wait(5) // Need this as although network response has arrived it takes a few millisecs for the css height to expand
-            })
+              cy.wait(5); // Need this as although network response has arrived it takes a few millisecs for the css height to expand
+            });
         }
-        
+
         cy.getByTestId(this.blockHeight)
           .last()
           .invoke('text')
           .then(($lastBlockHeight) => {
             const totalBlocksLoadedSinceScrollBegan =
               parseInt($initialLastBlockHeight) - parseInt($lastBlockHeight);
-            expect(totalBlocksLoadedSinceScrollBegan).to.be.at.least(expectedBlocks);
+            expect(totalBlocksLoadedSinceScrollBegan).to.be.at.least(
+              expectedBlocks
+            );
           });
       });
   }
