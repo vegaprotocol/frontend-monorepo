@@ -20,12 +20,15 @@ const SimpleMarketList = () => {
     }),
     []
   );
-  const update = useCallback((delta) => {
-    if (statusesRef.current[delta.market.id] !== delta.market.state) {
-      return false;
-    }
-    return true;
-  }, [statusesRef]);
+  const update = useCallback(
+    (delta) => {
+      if (statusesRef.current[delta.market.id] !== delta.market.state) {
+        return false;
+      }
+      return true;
+    },
+    [statusesRef]
+  );
 
   const { data, error, loading } = useDataProvider(
     DataProvider,
