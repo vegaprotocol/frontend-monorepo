@@ -74,10 +74,3 @@ export interface EpochDetails {
   startSeconds: BigNumber;
   endSeconds: BigNumber;
 }
-
-export interface TxData {
-  tx: ethers.ContractTransaction;
-  receipt: ethers.ContractReceipt | null;
-  pending: boolean;
-  requiredConfirmations: number;
-}

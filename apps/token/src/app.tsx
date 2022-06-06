@@ -8,6 +8,7 @@ import { AppFooter } from './components/app-footer';
 import { BalanceManager } from './components/balance-manager';
 import { EthWallet } from './components/eth-wallet';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
+import { TransactionModal } from './components/transactions-modal';
 import { VegaWallet } from './components/vega-wallet';
 import { Web3Connector } from './components/web3-connector';
 import { AppStateProvider } from './contexts/app-state/app-state-provider';
@@ -42,6 +43,7 @@ function App() {
                             <AppFooter />
                           </div>
                           <VegaWalletDialogs />
+                          <TransactionModal />
                         </>
                       </BalanceManager>
                     </AppLoader>

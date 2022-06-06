@@ -2,19 +2,20 @@ import React from 'react';
 import * as Sentry from '@sentry/react';
 import { useTranslation } from 'react-i18next';
 import type { ethers } from 'ethers';
-
 import { isUnexpectedError, isUserRejection } from '../lib/web3-utils';
 import {
   initialState,
   TransactionActionType,
   transactionReducer,
 } from './transaction-reducer';
+import { useTransactionStore } from '../stores/transactions';
 
 export const useTransaction = (
   performTransaction: () => Promise<ethers.ContractTransaction> | null,
   requiredConfirmations = 1
 ) => {
   const { t } = useTranslation();
+  const store = useTransactionStore();
   const [state, dispatch] = React.useReducer(transactionReducer, {
     ...initialState,
     requiredConfirmations,
@@ -69,10 +70,12 @@ export const useTransaction = (
 
       const tx = await result;
 
+      store.add({ tx, receipt: null, pending: true, requiredConfirmations });
       dispatch({
         type: TransactionActionType.TX_SUBMITTED,
         txHash: tx.hash,
       });
+
       Sentry.addBreadcrumb({
         type: 'Transaction',
         level: Sentry.Severity.Log,
@@ -90,6 +93,7 @@ export const useTransaction = (
 
       for (let i = 1; i <= requiredConfirmations; i++) {
         receipt = await tx.wait(i);
+        store.update({ tx, receipt, pending: true, requiredConfirmations });
         dispatch({
           type: TransactionActionType.TX_CONFIRMATION,
           confirmations: receipt.confirmations,
@@ -100,11 +104,13 @@ export const useTransaction = (
         throw new Error('No receipt after confirmations are met');
       }
 
+      store.update({ tx, receipt, pending: false, requiredConfirmations });
       dispatch({
         type: TransactionActionType.TX_COMPLETE,
         receipt,
         confirmations: receipt.confirmations,
       });
+
       Sentry.addBreadcrumb({
         type: 'Transaction',
         level: Sentry.Severity.Log,
@@ -121,7 +127,7 @@ export const useTransaction = (
     } catch (err) {
       handleError(err as Error);
     }
-  }, [performTransaction, requiredConfirmations, handleError]);
+  }, [performTransaction, requiredConfirmations, handleError, store]);
 
   const reset = () => {
     dispatch({ type: TransactionActionType.TX_RESET });
