@@ -1,9 +1,11 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { subDays } from 'date-fns';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer, Lozenge, Splash } from '@vegaprotocol/ui-toolkit';
 import { Button } from '@vegaprotocol/ui-toolkit';
+import type { MarketState } from '@vegaprotocol/types';
 import SimpleMarketPercentChange from './simple-market-percent-change';
 import SimpleMarketExpires from './simple-market-expires';
 import DataProvider from './data-provider';
@@ -11,18 +13,36 @@ import { MARKET_STATUS } from './constants';
 
 const SimpleMarketList = () => {
   const navigate = useNavigate();
+  const statusesRef = useRef<Record<string, MarketState | ''>>({});
   const variables = useMemo(
     () => ({
-      CandleInterval: 'I1H',
-      CandleSince: new Date(Date.now() - 24 * 60 * 60 * 1000).toJSON(),
+      CandleSince: subDays(Date.now(), 1).toJSON(),
     }),
     []
   );
+  const update = useCallback(
+    (delta) => {
+      if (statusesRef.current[delta.market.id] !== delta.market.state) {
+        return false;
+      }
+      return true;
+    },
+    [statusesRef]
+  );
+
   const { data, error, loading } = useDataProvider(
     DataProvider,
-    undefined, // @TODO - if we need a live update in the future
+    update,
     variables
   );
+  useEffect(() => {
+    const statuses: Record<string, MarketState | ''> = {};
+    data?.forEach((market) => {
+      statuses[market.id] = market.data?.market.state || '';
+    });
+    statusesRef.current = statuses;
+  }, [data]);
+
   const onClick = useCallback(
     (marketId) => {
       navigate(`/trading/${marketId}`);
@@ -52,7 +72,10 @@ const SimpleMarketList = () => {
                 </div>
                 <div className="w-full grid sm:grid-rows-2">
                   <div>
-                    <SimpleMarketPercentChange candles={market.candles} />
+                    <SimpleMarketPercentChange
+                      candles={market.candles}
+                      marketId={market.id}
+                    />
                   </div>
                   <div>
                     <Lozenge

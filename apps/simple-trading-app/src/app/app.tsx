@@ -43,7 +43,7 @@ function App() {
         <ApolloProvider client={client}>
           <VegaWalletProvider>
             <AppLoader>
-              <div className="h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
+              <div className="max-h-full min-h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
                 <div className="flex items-stretch border-b-[7px] border-vega-yellow">
                   <DrawerToggle
                     onToggle={onToggle}
