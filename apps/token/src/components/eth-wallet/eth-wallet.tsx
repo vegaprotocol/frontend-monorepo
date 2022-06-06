@@ -7,6 +7,7 @@ import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
+import { usePendingTransactions } from '../../hooks/use-pending-transactions';
 import vegaVesting from '../../images/vega_vesting.png';
 import vegaWhite from '../../images/vega_white.png';
 import { BigNumber } from '../../lib/bignumber';
@@ -21,7 +22,7 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, Loader } from '@vegaprotocol/ui-toolkit';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
 const Colors = theme.colors;
@@ -181,6 +182,7 @@ export const EthWallet = () => {
   const { t } = useTranslation();
   const { appDispatch } = useAppState();
   const { account, connector } = useWeb3React();
+  const pendingTxs = usePendingTransactions();
 
   return (
     <WalletCard>
@@ -188,7 +190,24 @@ export const EthWallet = () => {
         <h1 className="text-h3 px-8 uppercase">{t('ethereumKey')}</h1>
         {account && (
           <div className="font-mono px-4 text-right">
-            {truncateMiddle(account)}
+            <div>{truncateMiddle(account)}</div>
+            {pendingTxs && (
+              <div>
+                <Button
+                  className="flex gap-2 justify-between p-4, bg-black text-white flex-nowrap whitespace-nowrap"
+                  data-testid="pending-transactions-btn"
+                  onClick={() =>
+                    appDispatch({
+                      type: AppStateActionType.SET_TRANSACTION_OVERLAY,
+                      isOpen: true,
+                    })
+                  }
+                >
+                  <Loader size="small" />
+                  {t('pendingTransactions')}
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </WalletCardHeader>

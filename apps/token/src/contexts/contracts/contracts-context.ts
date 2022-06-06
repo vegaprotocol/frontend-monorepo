@@ -1,5 +1,4 @@
 import type {
-  TxData,
   Claim,
   CollateralBridge,
   Token,
