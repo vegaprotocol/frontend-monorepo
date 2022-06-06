@@ -14,7 +14,6 @@ export interface ContractsContextShape {
   vesting: TokenVesting;
   claim: Claim;
   erc20Bridge: CollateralBridge;
-  transactions: TxData[];
 }
 
 export const ContractsContext = React.createContext<

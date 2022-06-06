@@ -23,7 +23,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { provider: activeProvider, account } = useWeb3React();
   const { config } = useEthereumConfig();
   const { VEGA_ENV, ADDRESSES } = useEnvironment();
-  // const [txs, setTxs] = React.useState<TxData[]>([]);
   const [contracts, setContracts] = React.useState<Pick<
     ContractsContextShape,
     'token' | 'staking' | 'vesting' | 'claim' | 'erc20Bridge'
@@ -65,26 +64,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
     }
   }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
 
-  // React.useEffect(() => {
-  //   if (!contracts) return;
-
-  //   const mergeTxs = (existing: TxData[], incoming: TxData[]) => {
-  //     return uniqBy([...incoming, ...existing], 'tx.hash');
-  //   };
-
-  //   contracts.staking.listen((txs) => {
-  //     setTxs((curr) => mergeTxs(curr, txs));
-  //   });
-
-  //   contracts.vesting.listen((txs) => {
-  //     setTxs((curr) => mergeTxs(curr, txs));
-  //   });
-  // }, [contracts]);
-
-  // React.useEffect(() => {
-  //   setTxs([]);
-  // }, [account]);
-
   if (!contracts) {
     return (
       <Splash>
@@ -94,8 +73,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   }
 
   return (
-    // TODO: re add transactions array
-    <ContractsContext.Provider value={{ ...contracts, transactions: [] }}>
+    <ContractsContext.Provider value={contracts}>
       {children}
     </ContractsContext.Provider>
   );
