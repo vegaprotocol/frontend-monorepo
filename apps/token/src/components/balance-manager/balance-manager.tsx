@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { convertEthersBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
@@ -49,10 +49,10 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
           ),
         ]);
 
-        const balance = convertEthersBigNum(b, decimals);
-        const walletBalance = convertEthersBigNum(w, decimals);
-        const lien = convertEthersBigNum(stats.lien, decimals);
-        const allowance = convertEthersBigNum(a, decimals);
+        const balance = toBigNum(b, decimals);
+        const walletBalance = toBigNum(w, decimals);
+        const lien = toBigNum(stats.lien, decimals);
+        const allowance = toBigNum(a, decimals);
 
         appDispatch({
           type: AppStateActionType.UPDATE_ACCOUNT_BALANCES,

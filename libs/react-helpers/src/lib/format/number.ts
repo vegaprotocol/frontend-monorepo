@@ -1,10 +1,21 @@
 import { BigNumber } from 'bignumber.js';
-import type { BigNumber as EthersBigNumber } from 'ethers';
+import { BigNumber as EthersBigNumber } from 'ethers';
 import memoize from 'lodash/memoize';
 import { getUserLocale } from './utils';
 
 export function toDecimal(numberOfDecimals: number) {
   return Math.pow(10, -numberOfDecimals);
+}
+
+export function toBigNum(
+  rawValue: string | number | EthersBigNumber,
+  decimals: number
+): BigNumber {
+  return new BigNumber(
+    rawValue instanceof EthersBigNumber ? rawValue.toString() : rawValue || 0
+  )
+    .dividedBy(Math.pow(10, decimals))
+    .decimalPlaces(decimals);
 }
 
 export function addDecimal(
@@ -13,9 +24,7 @@ export function addDecimal(
   decimalPrecision = decimals
 ): string {
   if (!decimals) return value.toString();
-  return new BigNumber(value || 0)
-    .dividedBy(Math.pow(10, decimals))
-    .toFixed(decimalPrecision);
+  return toBigNum(value, decimals).toFixed(decimalPrecision);
 }
 
 export function removeDecimal(value: string, decimals: number): string {
@@ -50,11 +59,4 @@ export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   const decimalPlaces =
     typeof decimals === 'undefined' ? Math.max(value.dp(), 2) : decimals;
   return `${value.dp(decimalPlaces).toFormat(decimalPlaces)}%`;
-};
-
-export const convertEthersBigNum = (
-  num: EthersBigNumber,
-  decimals: number
-): BigNumber => {
-  return new BigNumber(addDecimal(num.toString(), decimals));
 };

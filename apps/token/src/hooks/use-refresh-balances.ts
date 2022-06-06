@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/react';
-import { convertEthersBigNum } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import React from 'react';
@@ -33,18 +33,12 @@ export const useRefreshBalances = (address: string) => {
           keypair?.pub ? vesting.stakeBalance(address, keypair.pub) : null,
         ]);
 
-      const balance = convertEthersBigNum(b, decimals);
-      const walletBalance = convertEthersBigNum(w, decimals);
-      const lien = convertEthersBigNum(stats.lien, decimals);
-      const allowance = convertEthersBigNum(a, decimals);
-      const walletAssociatedBalance = convertEthersBigNum(
-        walletStakeBalance,
-        decimals
-      );
-      const vestingAssociatedBalance = convertEthersBigNum(
-        vestingStakeBalance,
-        decimals
-      );
+      const balance = toBigNum(b, decimals);
+      const walletBalance = toBigNum(w, decimals);
+      const lien = toBigNum(stats.lien, decimals);
+      const allowance = toBigNum(a, decimals);
+      const walletAssociatedBalance = toBigNum(walletStakeBalance, decimals);
+      const vestingAssociatedBalance = toBigNum(vestingStakeBalance, decimals);
 
       appDispatch({
         type: AppStateActionType.REFRESH_BALANCES,
