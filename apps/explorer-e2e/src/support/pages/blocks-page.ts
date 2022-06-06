@@ -112,7 +112,7 @@ export default class BlocksPage extends BasePage {
                 .wait('@blockchain_load');
 
               // eslint-disable-next-line cypress/no-unnecessary-waiting
-              cy.wait(5); // Need this as although network response has arrived it takes a few millisecs for the css height to expand
+              cy.wait(20); // Need this as although network response has arrived it takes a few millisecs for the css height to expand
             });
         }
 
