@@ -34,7 +34,7 @@ const Home = ({ name }: RouteChildProps) => {
 
   return (
     <>
-      <Heading title={t('theVegaToken', { symbol: '$VEGA' })} />
+      <Heading title={t('pageTitleHome')} />
       <HomeSection>
         <TokenDetails
           totalSupply={appState.totalSupply}

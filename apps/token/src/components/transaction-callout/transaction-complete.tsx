@@ -34,7 +34,7 @@ export const TransactionComplete = ({
           target="_blank"
           href={`${ETHERSCAN_URL}/tx/${hash}`}
         >
-          {hash}
+          {t('View transaction on Etherscan')}
         </Link>
       </p>
       {footer && <p data-testid="transaction-complete-footer">{footer}</p>}
