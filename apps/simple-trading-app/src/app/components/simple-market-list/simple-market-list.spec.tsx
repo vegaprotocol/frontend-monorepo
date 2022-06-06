@@ -2,13 +2,6 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
-import {
-  mockAllIsIntersecting,
-  mockIsIntersecting,
-  intersectionMockInstance,
-  setupIntersectionMocking,
-  resetIntersectionMocking,
-} from 'react-intersection-observer/test-utils';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
 import { MARKETS_QUERY } from './data-provider';
