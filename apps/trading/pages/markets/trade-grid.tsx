@@ -67,9 +67,9 @@ export const TradeMarketHeader = ({ market }: TradeGridProps) => {
           <div className={headerItemClassName}>
             <span className={itemClassName}>Volume</span>
             <span className={itemValueClassName}>
-              {market.data?.indicativeVolume === '0'
-                ? '-'
-                : market.data?.indicativeVolume}
+              {market.data && market.data.indicativeVolume !== '0'
+                ? market.data.indicativeVolume
+                : '-'}
             </span>
           </div>
           <div className={headerItemClassName}>
