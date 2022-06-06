@@ -31,6 +31,7 @@ export type EnvKey = typeof ENV_KEYS[number];
 export type RawEnvironment = Record<EnvKey, string>;
 
 export type ConfigStatus =
+  | 'idle'
   | 'success'
   | 'loading-config'
   | 'loading-node'

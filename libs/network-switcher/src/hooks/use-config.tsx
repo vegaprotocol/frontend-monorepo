@@ -21,11 +21,11 @@ export const useConfig = (environment: Environment) => {
   const [data, setData] = useState<Data | undefined>(undefined);
   const [config, setConfig] = useState<Configuration | undefined>(undefined);
   const [status, setStatus] = useState<ConfigStatus>(
-    !environment.VEGA_URL ? 'loading-config' : 'success'
+    !environment.VEGA_URL ? 'idle' : 'success'
   );
 
   useEffect(() => {
-    if (status !== 'success') {
+    if (!config && status === 'idle') {
       (async () => {
         setStatus('loading-config');
         try {
@@ -37,10 +37,12 @@ export const useConfig = (environment: Environment) => {
         }
       })();
     }
-  }, [environment.VEGA_CONFIG_URL, status, setStatus, setConfig]);
+    // load config only once per runtime
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [environment.VEGA_CONFIG_URL, !!config, status, setStatus, setConfig]);
 
   useEffect(() => {
-    if (status !== 'success' && config) {
+    if (config && !['loading-node', 'error-loading-node'].includes(status)) {
       (async () => {
         setStatus('loading-node');
         try {

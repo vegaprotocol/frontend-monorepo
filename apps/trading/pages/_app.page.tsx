@@ -26,8 +26,8 @@ function AppBody({ Component, pageProps }: AppProps) {
   const [_, toggleTheme] = useThemeSwitcher();
 
   return (
-    <AppLoader>
-      <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
+    <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
+      <AppLoader>
         <div className="flex items-stretch border-b-[7px] border-vega-yellow">
           <Navbar />
           <div className="flex items-center gap-4 ml-auto mr-8">
@@ -64,8 +64,8 @@ function AppBody({ Component, pageProps }: AppProps) {
             }
           }}
         />
-      </div>
-    </AppLoader>
+      </AppLoader>
+    </div>
   );
 }
 
