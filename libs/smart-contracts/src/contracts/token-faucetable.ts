@@ -1,15 +1,19 @@
 import type { BigNumber } from 'ethers';
 import { ethers } from 'ethers';
-import erc20Abi from '../abis/erc20_abi.json';
+import erc20AbiFaucetable from '../abis/erc20_abi_faucet.json';
 
-export class Token {
+export class TokenFaucetable {
   public contract: ethers.Contract;
 
   constructor(
     address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ) {
-    this.contract = new ethers.Contract(address, erc20Abi, signerOrProvider);
+    this.contract = new ethers.Contract(
+      address,
+      erc20AbiFaucetable,
+      signerOrProvider
+    );
   }
 
   totalSupply() {
@@ -26,5 +30,8 @@ export class Token {
   }
   decimals(): Promise<number> {
     return this.contract.decimals();
+  }
+  faucet() {
+    return this.contract.faucet();
   }
 }
