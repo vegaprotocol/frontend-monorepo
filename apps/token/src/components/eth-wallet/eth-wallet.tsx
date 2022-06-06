@@ -189,12 +189,12 @@ export const EthWallet = () => {
       <WalletCardHeader>
         <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
         {account && (
-          <div className="font-mono px-4 text-right">
-            <div>{truncateMiddle(account)}</div>
+          <div className="px-4 text-right">
+            <div className="font-mono">{truncateMiddle(account)}</div>
             {pendingTxs && (
               <div>
-                <Button
-                  className="flex gap-2 justify-between p-4, bg-black text-white flex-nowrap whitespace-nowrap"
+                <button
+                  className="flex items-center gap-4 p-4 border whitespace-nowrap"
                   data-testid="pending-transactions-btn"
                   onClick={() =>
                     appDispatch({
@@ -203,9 +203,9 @@ export const EthWallet = () => {
                     })
                   }
                 >
-                  <Loader size="small" />
+                  <Loader size="small" forceTheme="light" />
                   {t('pendingTransactions')}
-                </Button>
+                </button>
               </div>
             )}
           </div>
