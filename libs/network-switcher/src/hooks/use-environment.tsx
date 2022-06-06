@@ -75,10 +75,12 @@ const transformValue = (key: EnvKey, value?: string) => {
         try {
           return JSON.parse(value);
         } catch (e) {
-          throw new Error('Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.')
+          throw new Error(
+            'Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.'
+          );
         }
       }
-      return undefined
+      return undefined;
     }
     default:
       return value;
