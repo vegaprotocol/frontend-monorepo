@@ -1,3 +1,5 @@
+$scrollbar-width: 6px;
+
 /* Works on Firefox */
 .scroll {
   scrollbar-width: thin;
@@ -6,15 +8,15 @@
 
 /* Works on Chrome, Edge, and Safari */
 .scroll::-webkit-scrollbar {
-  width: 6px;
+  width: $scrollbar-width;
   background-color: #999;
 }
 
 .scroll::-webkit-scrollbar-thumb {
-  width: 6px;
+  width: $scrollbar-width;
   background-color: #333;
 }
 .scroll::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px rgb(0 0 0 / 30%);
+  box-shadow: inset 0 0 #{$scrollbar-width} rgb(0 0 0 / 30%);
   background-color: #999;
 }
