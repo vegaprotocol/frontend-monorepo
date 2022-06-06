@@ -1,4 +1,3 @@
-export * from './tranche-helpers';
 export * from './vega-web3-types';
 
 export * from './claim';
