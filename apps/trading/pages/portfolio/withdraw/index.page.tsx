@@ -1,8 +1,9 @@
-import { Web3Container } from '../../../components/web3-container';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { WithdrawPageContainer } from './withdraw-page-container';
 import { t } from '@vegaprotocol/react-helpers';
+import { VegaWalletContainer } from '../../../components/vega-wallet-container';
+import { Web3Container } from '../../../components/web3-container';
 
 const Withdraw = () => {
   const { query } = useRouter();
@@ -21,14 +22,16 @@ const Withdraw = () => {
   }, [query]);
 
   return (
-    <Web3Container
-      render={() => (
-        <div className="max-w-[420px] p-24 mx-auto">
-          <h1 className="text-h3 mb-12">{t('Withdraw')}</h1>
-          <WithdrawPageContainer assetId={assetId} />
-        </div>
-      )}
-    />
+    <VegaWalletContainer>
+      <Web3Container
+        render={() => (
+          <div className="max-w-[420px] p-24 mx-auto">
+            <h1 className="text-h3 mb-12">{t('Withdraw')}</h1>
+            <WithdrawPageContainer assetId={assetId} />
+          </div>
+        )}
+      />
+    </VegaWalletContainer>
   );
 };
 

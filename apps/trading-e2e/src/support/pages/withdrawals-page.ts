@@ -31,7 +31,7 @@ export default class WithdrawalsPage extends BasePage {
   validateConnectWalletText() {
     cy.getByTestId(this.connectVegaWalletText).should(
       'have.text',
-      'Please connect your Vega wallet'
+      'Connect your Vega wallet'
     );
   }
 

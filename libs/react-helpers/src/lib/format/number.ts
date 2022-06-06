@@ -2,6 +2,10 @@ import { BigNumber } from 'bignumber.js';
 import memoize from 'lodash/memoize';
 import { getUserLocale } from './utils';
 
+export function toDecimal(numberOfDecimals: number) {
+  return Math.pow(10, -numberOfDecimals);
+}
+
 export function addDecimal(
   value: string | number,
   decimals: number,

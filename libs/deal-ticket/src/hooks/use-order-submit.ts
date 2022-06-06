@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { gql, useSubscription } from '@apollo/client';
-import type { Order } from './use-order-state';
+import type { Order } from '../utils/get-default-order';
 import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
@@ -8,7 +8,8 @@ import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from './__generated__/OrderEvent';
+} from '../__generated__/OrderEvent';
+import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -35,12 +36,7 @@ const ORDER_EVENT_SUB = gql`
   }
 `;
 
-interface UseOrderSubmitMarket {
-  id: string;
-  decimalPlaces: number;
-}
-
-export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
+export const useOrderSubmit = (market: DealTicketQuery_market) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [id, setId] = useState('');
@@ -97,7 +93,7 @@ export const useOrderSubmit = (market: UseOrderSubmitMarket) => {
             order.type === OrderType.Limit && order.price
               ? removeDecimal(order.price, market.decimalPlaces)
               : undefined,
-          size: order.size,
+          size: removeDecimal(order.size, market.positionDecimalPlaces),
           type: order.type,
           side: order.side,
           timeInForce: order.timeInForce,
