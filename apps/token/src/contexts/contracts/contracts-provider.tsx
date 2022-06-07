@@ -76,7 +76,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       }
     };
     run();
-  }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
+  }, [activeProvider, account, config, ADDRESSES, VEGA_ENV, defaultProvider]);
 
   if (!contracts) {
     return (
