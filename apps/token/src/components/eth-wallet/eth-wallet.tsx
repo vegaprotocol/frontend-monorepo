@@ -22,7 +22,7 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { Button, Loader } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, Button, Loader } from '@vegaprotocol/ui-toolkit';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
 const Colors = theme.colors;
@@ -164,12 +164,14 @@ const ConnectedKey = () => {
       )}
       <WalletCardActions>
         <Link className="flex-1" to={`${Routes.STAKING}/associate`}>
-          <button className="w-full px-28 border h-28">{t('associate')}</button>
+          <span className="flex items-center justify-center w-full text-center px-28 border h-28">
+            {t('associate')}
+          </span>
         </Link>
         <Link className="flex-1" to={`${Routes.STAKING}/disassociate`}>
-          <button className="w-full px-28 border h-28">
+          <span className="flex items-center justify-center w-full px-28 border h-28">
             {t('disassociate')}
-          </button>
+          </span>
         </Link>
       </WalletCardActions>
     </>
