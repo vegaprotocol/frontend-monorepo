@@ -6,6 +6,7 @@ export function addDecimal(value: BigNumber, decimals: number): string {
     .decimalPlaces(decimals)
     .toString();
 }
+
 export function removeDecimal(value: BigNumber, decimals: number): string {
   return value.times(Math.pow(10, decimals)).toFixed(0);
 }

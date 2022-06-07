@@ -12,68 +12,66 @@ const Portfolio = () => {
   const tabClassName = 'p-[16px] pl-[316px]';
 
   return (
-    <Web3Container
-      render={() => (
-        <div className="h-full text-ui">
-          <main className="relative h-[calc(100%-200px)]">
-            <aside className="absolute px-[8px] py-[16px] w-[300px] mt-[28px] h-[calc(100%-28px)] w-[300px] overflow-auto">
-              <h2 className="text-h4 text-black dark:text-white">
-                {t('Filters')}
-              </h2>
-            </aside>
-            <section>
-              <GridTabs group="portfolio">
-                <GridTab id="positions" name={t('Positions')}>
-                  <div className={tabClassName}>
-                    <h4 className="text-h4 text-black dark:text-white">
-                      {t('Positions')}
-                    </h4>
-                    <PositionsContainer />
-                  </div>
-                </GridTab>
-                <GridTab id="orders" name={t('Orders')}>
-                  <div className={tabClassName}>
-                    <h4 className="text-h4 text-black dark:text-white">
-                      {t('Orders')}
-                    </h4>
-                    <OrderListContainer />
-                  </div>
-                </GridTab>
-                <GridTab id="fills" name={t('Fills')}>
-                  <div className={tabClassName}>
-                    <h4 className="text-h4 text-black dark:text-white">
-                      {t('Fills')}
-                    </h4>
-                  </div>
-                </GridTab>
-                <GridTab id="history" name={t('History')}>
-                  <div className={tabClassName}>
-                    <h4 className="text-h4 text-black dark:text-white">
-                      {t('History')}
-                    </h4>
-                  </div>
-                </GridTab>
-              </GridTabs>
-            </section>
-          </main>
-          <section className="fixed bottom-0 left-0 w-full h-[200px]">
-            <GridTabs group="collaterals">
-              <GridTab id="collateral" name={t('Collateral')}>
-                <AccountsContainer />
+    <Web3Container>
+      <div className="h-full text-ui">
+        <main className="relative h-[calc(100%-200px)]">
+          <aside className="absolute px-[8px] py-[16px] w-[300px] mt-[28px] h-[calc(100%-28px)] w-[300px] overflow-auto">
+            <h2 className="text-h4 text-black dark:text-white">
+              {t('Filters')}
+            </h2>
+          </aside>
+          <section>
+            <GridTabs group="portfolio">
+              <GridTab id="positions" name={t('Positions')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('Positions')}
+                  </h4>
+                  <PositionsContainer />
+                </div>
               </GridTab>
-              <GridTab id="deposits" name={t('Deposits')}>
-                <AnchorButton data-testid="deposit" href="/portfolio/deposit">
-                  {t('Deposit')}
-                </AnchorButton>
+              <GridTab id="orders" name={t('Orders')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('Orders')}
+                  </h4>
+                  <OrderListContainer />
+                </div>
               </GridTab>
-              <GridTab id="withdrawals" name={t('Withdrawals')}>
-                <WithdrawalsContainer />
+              <GridTab id="fills" name={t('Fills')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('Fills')}
+                  </h4>
+                </div>
+              </GridTab>
+              <GridTab id="history" name={t('History')}>
+                <div className={tabClassName}>
+                  <h4 className="text-h4 text-black dark:text-white">
+                    {t('History')}
+                  </h4>
+                </div>
               </GridTab>
             </GridTabs>
           </section>
-        </div>
-      )}
-    />
+        </main>
+        <section className="fixed bottom-0 left-0 w-full h-[200px]">
+          <GridTabs group="collaterals">
+            <GridTab id="collateral" name={t('Collateral')}>
+              <AccountsContainer />
+            </GridTab>
+            <GridTab id="deposits" name={t('Deposits')}>
+              <AnchorButton data-testid="deposit" href="/portfolio/deposit">
+                {t('Deposit')}
+              </AnchorButton>
+            </GridTab>
+            <GridTab id="withdrawals" name={t('Withdrawals')}>
+              <WithdrawalsContainer />
+            </GridTab>
+          </GridTabs>
+        </section>
+      </div>
+    </Web3Container>
   );
 };
 

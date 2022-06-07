@@ -1,7 +1,6 @@
-import type {
-  Tranche as ITranche,
-  EthereumChainId,
-} from '@vegaprotocol/smart-contracts';
+import { useEnvironment } from '@vegaprotocol/react-helpers';
+import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,8 +8,6 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import { useOutletContext } from 'react-router-dom';
-import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
@@ -29,7 +26,7 @@ const TrancheProgressContents = ({
 
 export const Tranche = () => {
   const tranches = useOutletContext<ITranche[]>();
-  const { ADDRESSES, ETHERSCAN_URL } = useEnvironment();
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { trancheId } = useParams<{ trancheId: string }>();
   const { chainId } = useWeb3React();
@@ -58,11 +55,7 @@ export const Tranche = () => {
         unlocked={tranche.total_added.minus(tranche.locked_amount)}
         total={tranche.total_added}
         secondaryHeader={
-          <TrancheLabel
-            contract={ADDRESSES.vestingAddress}
-            chainId={`0x${chainId}` as EthereumChainId}
-            id={tranche.tranche_id}
-          />
+          <TrancheLabel chainId={chainId} id={tranche.tranche_id} />
         }
       />
       <div
