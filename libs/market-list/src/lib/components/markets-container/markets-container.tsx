@@ -56,9 +56,7 @@ export const MarketsContainer = () => {
       <MarketListTable
         ref={gridRef}
         data={data}
-        onRowClicked={(id) =>
-          push(`/markets/${id}?portfolio=orders&trade=orderbook`)
-        }
+        onRowClicked={(id) => push(`/markets/${id}`)}
       />
     </AsyncRenderer>
   );

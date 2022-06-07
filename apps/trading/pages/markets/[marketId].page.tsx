@@ -74,7 +74,6 @@ const MarketPage = ({ id }: { id?: string }) => {
     );
   }
 
-  LocalStorage.setItem('marketId', marketId);
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}

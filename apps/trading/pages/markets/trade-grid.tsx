@@ -99,7 +99,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       <TradeMarketHeader market={market} />
       <div className={wrapperClasses}>
         <TradeGridChild className="row-start-1 row-end-3">
-          <GridTabs group="chart">
+          <GridTabs>
             <GridTab id="candles" name={t('Candles')}>
               <TradingViews.Candles marketId={market.id} />
             </GridTab>
@@ -112,7 +112,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           <TradingViews.Ticket marketId={market.id} />
         </TradeGridChild>
         <TradeGridChild className="row-start-1 row-end-3">
-          <GridTabs group="trade">
+          <GridTabs>
             <GridTab id="trades" name={t('Trades')}>
               <TradingViews.Trades marketId={market.id} />
             </GridTab>
@@ -122,7 +122,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           </GridTabs>
         </TradeGridChild>
         <TradeGridChild className="col-span-3">
-          <GridTabs group="portfolio">
+          <GridTabs>
             <GridTab id="orders" name={t('Orders')}>
               <TradingViews.Orders />
             </GridTab>
