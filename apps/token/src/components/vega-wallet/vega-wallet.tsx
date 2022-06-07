@@ -41,10 +41,8 @@ export const VegaWallet = () => {
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
           <div>
-            <h1 className="text-h3 px-8 uppercase">{t('vegaWallet')}</h1>
-            <span className="mx-8 text-h6">
-              {keypair && `(${keypair.name})`}
-            </span>
+            <h1 className="text-h3 uppercase">{t('vegaWallet')}</h1>
+            <span className="text-h6">{keypair && `(${keypair.name})`}</span>
           </div>
           {keypair && (
             <span className="font-mono px-8">
@@ -72,6 +70,7 @@ const VegaWalletNotConnected = () => {
           })
         }
         variant="secondary"
+        className="w-full"
         data-testid="connect-vega"
       >
         {t('connectVegaWalletToUseAssociated')}
@@ -182,10 +181,14 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
       ))}
       <WalletCardActions>
         <Link style={{ flex: 1 }} to={Routes.GOVERNANCE}>
-          <Button className="w-full">{t('governance')}</Button>
+          <span className="flex items-center justify-center w-full px-28 border h-28 bg-white text-black">
+            {t('governance')}
+          </span>
         </Link>
         <Link style={{ flex: 1 }} to={Routes.STAKING}>
-          <Button className="w-full">{t('staking')}</Button>
+          <span className="flex items-center justify-center w-full px-28 border h-28 bg-white text-black">
+            {t('staking')}
+          </span>
         </Link>
       </WalletCardActions>
       <VegaWalletAssetList accounts={accounts} />

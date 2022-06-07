@@ -73,6 +73,7 @@ export const AssociatePage = ({
       setSelectedStakingMethod(params.method);
     }
   }, [params.method, zeroVega, zeroVesting]);
+
   if (txState.txState !== TxState.Default) {
     return (
       <AssociateTransaction

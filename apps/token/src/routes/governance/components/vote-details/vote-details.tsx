@@ -44,15 +44,15 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
 
   return (
     <section>
-      <h3>{t('votes')}</h3>
-      <p className="mb-0">
+      <h3 className="text-h4 text-white mb-8">{t('votes')}</h3>
+      <p className="mb-8">
         <span>
           <CurrentProposalStatus proposal={proposal} />
         </span>
         .&nbsp;
         {proposal.state === ProposalState.Open ? daysLeft : null}
       </p>
-      <table className="w-full font-normal">
+      <table className="w-full font-normal mb-12">
         <thead>
           <tr>
             <th className="text-vega-green w-[18%] text-left">{t('for')}</th>
@@ -86,13 +86,13 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
               {formatNumber(yesTokens, defaultDecimals)}
             </td>
             <td></td>
-            <td className="text-white-60">
+            <td className="text-white-60 text-right">
               {formatNumber(noTokens, defaultDecimals)}
             </td>
           </tr>
         </tbody>
       </table>
-      <p>
+      <p className="mb-8">
         {t('participation')}
         {': '}
         {participationMet ? (
@@ -109,7 +109,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
       </p>
       {keypair ? (
         <>
-          <h3>{t('yourVote')}</h3>
+          <h3 className="text-h4 text-white mb-8">{t('yourVote')}</h3>
           <VoteButtonsContainer
             voteState={voteState}
             castVote={castVote}

@@ -1,14 +1,12 @@
 import './i18n';
-
 import React from 'react';
+import { ApolloProvider } from '@apollo/client';
 import { BrowserRouter as Router } from 'react-router-dom';
-
 import { AppLoader } from './app-loader';
 import { AppBanner } from './components/app-banner';
 import { AppFooter } from './components/app-footer';
 import { BalanceManager } from './components/balance-manager';
 import { EthWallet } from './components/eth-wallet';
-import { GraphQlProvider } from './components/graphql-provider';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
 import { TransactionModal } from './components/transactions-modal';
 import { VegaWallet } from './components/vega-wallet';
@@ -21,11 +19,12 @@ import { Connectors } from './lib/web3-connectors';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import { EnvironmentProvider } from '@vegaprotocol/react-helpers';
+import { client } from './lib/apollo-client';
 
 function App() {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
   return (
-    <GraphQlProvider>
+    <ApolloProvider client={client}>
       <Router>
         <EnvironmentProvider>
           <AppStateProvider>
@@ -55,7 +54,7 @@ function App() {
           </AppStateProvider>
         </EnvironmentProvider>
       </Router>
-    </GraphQlProvider>
+    </ApolloProvider>
   );
 }
 
