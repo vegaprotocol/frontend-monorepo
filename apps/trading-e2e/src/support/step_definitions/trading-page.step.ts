@@ -196,8 +196,8 @@ Then('orderbook is displayed with expected orders', () => {
     '6%',
     orderBookList.testingVolume.CumulativeVolume
   );
-  orderBookList.verifyTopMidPricePosition('123');
-  orderBookList.verifyBottomMidPricePosition('144');
+  orderBookList.verifyTopMidPricePosition('129');
+  orderBookList.verifyBottomMidPricePosition('151');
 
   // autofilled order
   orderBookList.verifyOrderBookRow('826330', '0', '8.26330', '0', '3548');
