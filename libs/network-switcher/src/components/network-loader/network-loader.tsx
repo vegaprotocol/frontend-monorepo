@@ -40,7 +40,7 @@ const getStatusCalloutProps = (
         intent: Intent.Danger,
         children: (
           <Error
-            message={t('There was an error fetching the configuration.')}
+            message={t('There was an error fetching the network configuration.')}
           />
         ),
         iconName: 'error',
