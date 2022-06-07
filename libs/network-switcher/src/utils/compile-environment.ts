@@ -1,5 +1,7 @@
-import { EnvironmentConfig, Networks } from '@vegaprotocol/smart-contracts';
-import { Environment, RawEnvironment, EnvKey, ENV_KEYS } from '../types';
+import type { Networks } from '@vegaprotocol/smart-contracts';
+import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
+import type { Environment, RawEnvironment, EnvKey } from '../types';
+import { ENV_KEYS } from '../types';
 
 declare global {
   interface Window {

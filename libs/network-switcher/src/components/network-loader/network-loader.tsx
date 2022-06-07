@@ -40,7 +40,21 @@ const getStatusCalloutProps = (
         intent: Intent.Danger,
         children: (
           <Error
-            message={t('There was an error fetching the network configuration.')}
+            message={t(
+              'There was an error fetching the network configuration.'
+            )}
+          />
+        ),
+        iconName: 'error',
+        iconDescription: t('Error'),
+      };
+    case 'error-validating-config':
+      return {
+        title: t('Error'),
+        intent: Intent.Danger,
+        children: (
+          <Error
+            message={t('The network configuration for the app is invalid.')}
           />
         ),
         iconName: 'error',
@@ -71,7 +85,7 @@ const getStatusCalloutProps = (
       };
     case 'success':
       return {
-        title: t('Error'),
+        title: t('Success'),
         intent: Intent.Success,
         children: <>{t("You're connected!")}</>,
       };

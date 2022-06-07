@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
 import { useConfig } from './use-config';
@@ -24,22 +24,13 @@ export const EnvironmentProvider = ({
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
-  const { data: config, status: configStatus } = useConfig(environment);
+  const { status: configStatus } = useConfig(environment, updateEnvironment);
 
   const errorMessage = validateEnvironment(environment);
 
   if (errorMessage) {
     throw new Error(errorMessage);
   }
-
-  useEffect(() => {
-    if (config?.url) {
-      updateEnvironment((environment) => ({
-        ...environment,
-        VEGA_URL: config.url,
-      }));
-    }
-  }, [config?.url]);
 
   return (
     <EnvironmentContext.Provider value={{ ...environment, configStatus }}>
