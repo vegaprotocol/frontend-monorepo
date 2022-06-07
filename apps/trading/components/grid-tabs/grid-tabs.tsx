@@ -50,7 +50,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
             'text-black dark:text-vega-yellow': isActive,
             'bg-white dark:bg-black': isActive,
             'text-black dark:text-white': !isActive,
-            'bg-black-10 dark:bg-white-10': !isActive,
+            'bg-black-10 dark:bg-white-25': !isActive,
           });
           return (
             <Tabs.Trigger
@@ -62,7 +62,7 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
             </Tabs.Trigger>
           );
         })}
-        <div className="bg-black-10 dark:bg-white-10 grow"></div>
+        <div className="bg-black-10 dark:bg-white-25 grow"></div>
       </Tabs.List>
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
