@@ -256,7 +256,7 @@ export const Orderbook = ({
   const paddingBottom =
     (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
   const minPriceLevel =
-    BigInt(maxPriceLevel) - BigInt(numberOfRows * resolution);
+    BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution));
   const hasData = renderedRows.data && renderedRows.data.length !== 0;
   return (
     <div
