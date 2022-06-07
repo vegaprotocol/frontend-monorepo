@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import sortBy from 'lodash/sortBy';
@@ -35,10 +36,13 @@ export function Index() {
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
   const setLandingDialog = useGlobalStore((state) => state.setLandingDialog);
+  const lastSelectedMarketId = LocalStorage.getItem('marketId');
 
   useEffect(() => {
     if (data) {
-      const marketId = marketList(data)[0]?.id;
+      const marketId = lastSelectedMarketId
+        ? lastSelectedMarketId
+        : marketList(data)[0]?.id;
 
       // If a default market is found, go to it with the landing dialog open
       if (marketId) {
@@ -50,7 +54,7 @@ export function Index() {
         replace('/markets');
       }
     }
-  }, [data, replace, setLandingDialog]);
+  }, [data, lastSelectedMarketId, replace, setLandingDialog]);
 
   return (
     <AsyncRenderer data={data} loading={loading} error={error}>

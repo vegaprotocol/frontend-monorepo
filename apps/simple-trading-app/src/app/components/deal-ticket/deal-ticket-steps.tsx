@@ -70,7 +70,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     {
       label: 'Select Asset',
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
-      component: <div />,
+      component: <h1 className="font-bold mb-16">{market.name}</h1>,
     },
     {
       label: 'Select Order Type',

@@ -1,13 +1,14 @@
 import BasePage from './base-page';
 
 export default class MarketPage extends BasePage {
-  marketRowHeaderClassname = '.ag-header-cell-text';
+  marketRowHeaderClassname = 'div > span.ag-header-cell-text';
   marketRowNameColumn = 'tradableInstrument.instrument.code';
   marketRowSymbolColumn =
     'tradableInstrument.instrument.product.settlementAsset.symbol';
   marketRowPrices = 'flash-cell';
   marketRowDescription = 'name';
   marketStateColId = 'data';
+  openMarketMenu = 'arrow-down';
 
   validateMarketsAreDisplayed() {
     // We need this to ensure that ag-grid is fully rendered before asserting
@@ -27,16 +28,12 @@ export default class MarketPage extends BasePage {
       'Description',
     ];
 
-    cy.get(this.marketRowHeaderClassname)
-      .each(($marketHeader, index) => {
-        cy.wrap($marketHeader).should(
-          'have.text',
-          expectedMarketHeaders[index]
-        );
-      })
-      .then(($list) => {
-        cy.wrap($list).should('have.length', expectedMarketHeaders.length);
-      });
+    for (let index = 0; index < expectedMarketHeaders.length; index++) {
+      cy.get(this.marketRowHeaderClassname).should(
+        'contain.text',
+        expectedMarketHeaders[index]
+      );
+    }
 
     cy.get(`[col-id='${this.marketRowNameColumn}']`).each(($marketName) => {
       cy.wrap($marketName).should('not.be.empty');
@@ -64,5 +61,9 @@ export default class MarketPage extends BasePage {
       'contain',
       'portfolio=orders&trade=orderbook'
     );
+  }
+
+  clickOpenMarketMenu() {
+    cy.getByTestId(this.openMarketMenu).click();
   }
 }
