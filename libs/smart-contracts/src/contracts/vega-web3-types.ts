@@ -1,4 +1,3 @@
-import type { ethers } from 'ethers';
 import type BigNumber from 'bignumber.js';
 
 export interface Tranche {
