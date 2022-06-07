@@ -1,21 +1,55 @@
 import { gql } from '@apollo/client';
-import type { Market, MarketVariables } from './__generated__/Market';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { t } from '@vegaprotocol/react-helpers';
+import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { LandingDialog } from '@vegaprotocol/market-list';
+import type { Market, MarketVariables } from './__generated__/Market';
+import { Interval } from '@vegaprotocol/types';
 
 // Top level page query
 const MARKET_QUERY = gql`
-  query Market($marketId: ID!) {
+  query Market($marketId: ID!, $interval: Interval!, $since: String!) {
     market(id: $marketId) {
       id
       name
+      tradingMode
+      state
+      decimalPlaces
+      data {
+        market {
+          id
+        }
+        markPrice
+        indicativeVolume
+        bestBidVolume
+        bestOfferVolume
+        bestStaticBidVolume
+        bestStaticOfferVolume
+        indicativeVolume
+      }
+      tradableInstrument {
+        instrument {
+          name
+          code
+          metadata {
+            tags
+          }
+        }
+      }
+      marketTimestamps {
+        open
+        close
+      }
+      candles(interval: $interval, since: $since) {
+        open
+        close
+        volume
+      }
     }
   }
 `;
@@ -29,6 +63,9 @@ const MarketPage = ({ id }: { id?: string }) => {
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
 
+  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+  const yTimestamp = new Date(yesterday * 1000).toISOString();
+
   if (!marketId) {
     return (
       <Splash>
@@ -37,12 +74,15 @@ const MarketPage = ({ id }: { id?: string }) => {
     );
   }
 
+  LocalStorage.setItem('marketId', marketId);
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}
       options={{
         variables: {
           marketId,
+          interval: Interval.I1H,
+          since: yTimestamp,
         },
         fetchPolicy: 'network-only',
       }}

@@ -30,7 +30,7 @@ Then('I can see the deposit form', () => {
 });
 
 When('I submit a deposit with empty fields', () => {
-  depositsPage.updateTransactionform();
+  depositsPage.updateTransactionForm();
   depositsPage.submitForm();
 });
 
@@ -39,7 +39,7 @@ Then('I can see empty form validation errors present', () => {
 });
 
 Then('I enter the following deposit details in deposit form', (table) => {
-  depositsPage.updateTransactionform({
+  depositsPage.updateTransactionForm({
     asset: table.rowsHash().asset,
     to: Cypress.env(table.rowsHash().to),
     amount: table.rowsHash().amount,
@@ -59,7 +59,7 @@ Then('Amount too small message shown', () => {
 });
 
 And('I enter a valid amount', () => {
-  depositsPage.updateTransactionform({ amount: '1' });
+  depositsPage.updateTransactionForm({ amount: '1' });
 });
 
 Then('Not approved message shown', () => {
