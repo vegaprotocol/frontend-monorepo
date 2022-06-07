@@ -1,5 +1,5 @@
-import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { gql, useQuery } from '@apollo/client';
+import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { DealTicketManager } from './deal-ticket-manager';
 import type {
   DealTicketQuery,
@@ -11,6 +11,7 @@ const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {
     market(id: $marketId) {
       id
+      name
       decimalPlaces
       positionDecimalPlaces
       state

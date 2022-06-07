@@ -12,6 +12,7 @@ interface DialogProps {
   title?: string;
   intent?: Intent;
   titleClassNames?: string;
+  contentClassNames?: string;
 }
 
 export function Dialog({
@@ -21,13 +22,15 @@ export function Dialog({
   title,
   intent,
   titleClassNames,
+  contentClassNames,
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
     'z-20 fixed w-full md:w-[520px] px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
-    getIntentShadow(intent)
+    getIntentShadow(intent),
+    contentClassNames
   );
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange(x)}>

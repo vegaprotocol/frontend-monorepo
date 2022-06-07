@@ -1,13 +1,16 @@
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
+import MarketPage from '../pages/markets-page';
 import PortfolioPage from '../pages/portfolio-page';
 import WithdrawalsPage from '../pages/withdrawals-page';
 
+const marketPage = new MarketPage();
 const portfolioPage = new PortfolioPage();
 const withdrawalsPage = new WithdrawalsPage();
 
 Given('I navigate to withdrawal page', () => {
   cy.visit('/');
   portfolioPage.closeDialog();
+  marketPage.validateMarketsAreDisplayed();
   portfolioPage.navigateToPortfolio();
   portfolioPage.navigateToWithdraw();
 });
@@ -26,14 +29,14 @@ When('click submit', () => {
 });
 
 When('I enter an invalid ethereum address', () => {
-  withdrawalsPage.updateTransactionform({
+  withdrawalsPage.updateTransactionForm({
     to: '0x0dAAACaa868f87BB4666F918742141cAEAe893Fa',
   });
   withdrawalsPage.clickSubmit();
 });
 
 When('I select {string}', (selectedAsset) => {
-  withdrawalsPage.updateTransactionform({
+  withdrawalsPage.updateTransactionForm({
     asset: selectedAsset,
   });
 });
@@ -47,7 +50,7 @@ When('I click Use maximum', () => {
 });
 
 When('I enter the following details in withdrawal form', (table) => {
-  withdrawalsPage.updateTransactionform({
+  withdrawalsPage.updateTransactionForm({
     asset: table.rowsHash().asset,
     to: table.rowsHash().to,
     amount: table.rowsHash().amount,
@@ -56,7 +59,7 @@ When('I enter the following details in withdrawal form', (table) => {
 });
 
 When('I succesfully fill in and submit withdrawal form', () => {
-  withdrawalsPage.updateTransactionform({
+  withdrawalsPage.updateTransactionForm({
     asset: Cypress.env('WITHDRAWAL_ASSET_ID'),
     amount: '0.1',
   });

@@ -10,5 +10,5 @@ export const DrawerContainer = ({ children }: Props) => (
 );
 
 export const DrawerWrapper = ({ children }: Props) => (
-  <div className="flex">{children}</div>
+  <div className="flex dark:bg-black">{children}</div>
 );

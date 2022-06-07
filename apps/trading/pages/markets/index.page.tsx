@@ -1,8 +1,6 @@
 import { MarketsContainer } from '@vegaprotocol/market-list';
 
-const Markets = () => {
-  return <MarketsContainer />;
-};
+const Markets = () => <MarketsContainer />;
 
 Markets.getInitialProps = () => ({
   page: 'markets',
