@@ -20,6 +20,7 @@ const mockMarkets = () => {
 Then('I navigate to markets page', () => {
   mockMarkets();
   marketsPage.navigateToMarkets();
+  marketsPage.clickOpenMarketMenu();
   cy.wait('@Markets');
 });
 

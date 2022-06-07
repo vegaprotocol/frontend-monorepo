@@ -56,6 +56,10 @@ export interface DealTicketQuery_market {
    */
   id: string;
   /**
+   * Market full name
+   */
+  name: string;
+  /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
    * 

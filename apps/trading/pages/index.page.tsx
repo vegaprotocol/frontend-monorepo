@@ -1,9 +1,11 @@
 import { gql, useQuery } from '@apollo/client';
-import { LandingDialog } from '@vegaprotocol/market-list';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import sortBy from 'lodash/sortBy';
-import MarketPage from './markets/[marketId].page';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useGlobalStore } from '../stores';
 import type { MarketsLanding } from './__generated__/MarketsLanding';
 
 const MARKETS_QUERY = gql`
@@ -29,24 +31,36 @@ const marketList = ({ markets }: MarketsLanding) =>
   );
 
 export function Index() {
+  const { replace } = useRouter();
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
-  if (data && !error && !loading) {
-    const marketId = marketList(data)[0]?.id;
-    window.history.replaceState(
-      data,
-      '',
-      marketId ? `/markets/${marketId}` : '/markets'
-    );
-  }
+  const setLandingDialog = useGlobalStore((state) => state.setLandingDialog);
+  const lastSelectedMarketId = LocalStorage.getItem('marketId');
+
+  useEffect(() => {
+    if (data) {
+      const marketId = lastSelectedMarketId
+        ? lastSelectedMarketId
+        : marketList(data)[0]?.id;
+
+      // If a default market is found, go to it with the landing dialog open
+      if (marketId) {
+        setLandingDialog(true);
+        replace(`/markets/${marketId}`);
+      }
+      // Fallback to the markets list page
+      else {
+        replace('/markets');
+      }
+    }
+  }, [data, lastSelectedMarketId, replace, setLandingDialog]);
+
   return (
-    <>
-      <LandingDialog />
-      <AsyncRenderer data={data} error={error} loading={loading}>
-        <MarketPage id={data && marketList(data)[0]?.id} />
-      </AsyncRenderer>
-    </>
+    <AsyncRenderer data={data} loading={loading} error={error}>
+      {/* Render a loading and error state but we will redirect if markets are found */}
+      {null}
+    </AsyncRenderer>
   );
 }
 
