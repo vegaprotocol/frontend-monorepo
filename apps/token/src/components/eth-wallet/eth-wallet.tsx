@@ -22,7 +22,7 @@ import {
   WalletCardHeader,
   WalletCardRow,
 } from '../wallet-card';
-import { Button, Loader } from '@vegaprotocol/ui-toolkit';
+import { Loader } from '@vegaprotocol/ui-toolkit';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 
 const Colors = theme.colors;
