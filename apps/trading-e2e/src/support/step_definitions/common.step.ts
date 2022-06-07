@@ -16,7 +16,9 @@ Given('I am on the homepage', () => {
     }
   });
   cy.visit('/');
-  cy.getByTestId('market', { timeout: 60000 }).should('be.visible', {timeout: 20000});
+  cy.getByTestId('market', { timeout: 60000 }).should('be.visible', {
+    timeout: 20000,
+  });
   cy.contains('Loading...', { timeout: 20000 }).should('not.exist');
 });
 
