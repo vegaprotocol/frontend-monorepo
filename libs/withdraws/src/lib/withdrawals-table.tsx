@@ -73,7 +73,6 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
 export interface StatusCellProps extends ICellRendererParams {
   ethUrl: string;
   complete: (withdrawalId: string) => void;
-  etherscanUrl: string;
 }
 
 export const StatusCell = ({
