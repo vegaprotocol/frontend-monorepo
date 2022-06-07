@@ -12,7 +12,7 @@ When('I query the server for Open Markets', function () {
 });
 
 Then('I am prompted to select a market', () => {
-  cy.contains('Select a market to get started').should('be.visible');
+  cy.contains('Select a market to get started', {timeout: 20000}).should('be.visible');
 });
 
 Then('the choose market overlay is no longer showing', () => {
@@ -82,7 +82,7 @@ Then(
     homePage
       .getOldestTradableInstrument(this.openMarketData)
       .then((oldestTradableInstrument) => {
-        cy.getByTestId('market').within(() => {
+        cy.getByTestId('market', {timeout:12000}).within(() => {
           cy.get('button')
             .contains(oldestTradableInstrument.instrument.name)
             .should('be.visible');
@@ -97,7 +97,7 @@ Then(
     homePage
       .getMostRecentTradableInstrument(this.openMarketData)
       .then((mostRecentMarketInstrument) => {
-        cy.getByTestId('market').within(() => {
+        cy.getByTestId('market', {timeout:12000}).within(() => {
           cy.get('button')
             .contains(mostRecentMarketInstrument.instrument.name)
             .should('be.visible');

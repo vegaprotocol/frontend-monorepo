@@ -45,9 +45,11 @@ Feature: Home page
     Then the most recent current trading market is loaded on the trading tab
 
   Scenario: Navigation: Visit Portfolio page
+    When I close the dialog form
     And I navigate to portfolio page
 
   Scenario: Navigation: Visit Markets page
+    When I close the dialog form
     And I navigate to markets page
 
   Scenario: Vega Wallett Overlay: Able to switch public key for connected Vega wallet
