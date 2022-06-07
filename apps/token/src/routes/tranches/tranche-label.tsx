@@ -1,6 +1,6 @@
 import type { EthereumChainId } from '@vegaprotocol/smart-contracts';
 import { EthereumChainIds } from '@vegaprotocol/smart-contracts';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 const TRANCHE_LABELS: Record<number, string[]> = {
   '5': ['Coinlist Option 1', 'Community Whitelist'],

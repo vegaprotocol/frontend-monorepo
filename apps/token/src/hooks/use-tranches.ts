@@ -1,7 +1,7 @@
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { Networks, Tranche } from '@vegaprotocol/smart-contracts';
 import React, { useEffect } from 'react';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 import { BigNumber } from '../lib/bignumber';
 

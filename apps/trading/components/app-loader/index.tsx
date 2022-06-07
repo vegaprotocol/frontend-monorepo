@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useEagerConnect } from '@vegaprotocol/wallet';
-import { NetworkLoader } from '@vegaprotocol/network-switcher';
+import { NetworkLoader } from '@vegaprotocol/environment';
 import { Connectors } from '../../lib/vega-connectors';
 import { createClient } from '../../lib/apollo-client';
 

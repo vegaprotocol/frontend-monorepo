@@ -64,7 +64,7 @@ const getStatusCalloutProps = (
       return {
         title: t('Error'),
         intent: Intent.Danger,
-        children: <Error message={t('Failed connecting to a data node.')} />,
+        children: <Error message={t('Failed to connect to a data node.')} />,
         iconName: 'error',
         iconDescription: t('Error'),
       };

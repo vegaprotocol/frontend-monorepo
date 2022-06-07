@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import React from 'react';
 
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   AppStateActionType,
   useAppState,

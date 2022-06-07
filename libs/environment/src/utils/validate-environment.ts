@@ -1,6 +1,6 @@
 import Ajv from 'ajv';
 import compileErrors from 'better-ajv-errors';
-import type { Environment} from '../types';
+import type { Environment } from '../types';
 import { ENV_KEYS } from '../types';
 
 const ajv = new Ajv({ allErrors: true });

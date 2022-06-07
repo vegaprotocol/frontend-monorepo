@@ -11,7 +11,7 @@ import {
   useEnvironment,
   EnvironmentProvider,
   NetworkSwitcherDialog,
-} from '@vegaprotocol/network-switcher';
+} from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';

@@ -3,7 +3,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import {

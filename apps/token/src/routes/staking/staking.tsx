@@ -5,7 +5,7 @@ import { Link as RouteLink } from 'react-router-dom';
 
 import { BulletHeader } from '../../components/bullet-header';
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { Links } from '../../config';
 import {
   AppStateActionType,

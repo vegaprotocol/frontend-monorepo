@@ -12,7 +12,7 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export const WalletAssociate = ({
   perform,

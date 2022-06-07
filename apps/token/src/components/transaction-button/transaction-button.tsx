@@ -4,7 +4,7 @@ import type { TransactionState } from '../../hooks/transaction-reducer';
 import { TxState } from '../../hooks/transaction-reducer';
 import { truncateMiddle } from '../../lib/truncate-middle';
 import { Button, Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { Error, HandUp, Tick } from '../icons';
 import { Loader } from '../loader';
 import { StatefulButton } from '../stateful-button';
