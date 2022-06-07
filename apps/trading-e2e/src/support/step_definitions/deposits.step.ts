@@ -1,11 +1,11 @@
-import { And, Then, When } from 'cypress-cucumber-preprocessor/steps';
+import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 import { EthereumWallet } from '../ethereum-wallet';
 import DepositsPage from '../pages/deposits-page';
 
 const depositsPage = new DepositsPage();
 const ethWallet = new EthereumWallet();
 
-beforeEach(() => {
+Given('I can connect to Ethereum', () => {
   cy.mockWeb3Provider();
 });
 
