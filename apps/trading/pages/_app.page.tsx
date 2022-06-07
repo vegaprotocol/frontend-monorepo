@@ -56,8 +56,8 @@ function AppBody({ Component, pageProps }: AppProps) {
           setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
         />
         <NetworkSwitcherDialog
-          dialogOpen={store.vegaWalletManageDialog}
-          setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
+          dialogOpen={store.vegaNetworkSwitcherDialog}
+          setDialogOpen={(open) => store.setVegaNetworkSwitcherDialog(open)}
           onConnect={({ network }) => {
             if (VEGA_NETWORKS[network]) {
               window.location.href = VEGA_NETWORKS[network];

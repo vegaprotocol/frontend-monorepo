@@ -25,16 +25,18 @@ const transformValue = (key: EnvKey, value?: string) => {
       return value as Networks;
     case 'ETHEREUM_CHAIN_ID':
       return value && Number(value);
-    case 'VEGA_NETWORKS':
-      return (
-        value &&
-        value
-          .split(';')
-          .reduce<Record<Networks, string>>(
-            produceNetworkKeyPair,
-            {} as Record<Networks, string>
-          )
-      );
+    case 'VEGA_NETWORKS': {
+      if (value) {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          throw new Error(
+            'Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.'
+          );
+        }
+      }
+      return undefined;
+    }
     default:
       return value;
   }
