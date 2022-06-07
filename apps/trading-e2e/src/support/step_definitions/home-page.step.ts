@@ -83,8 +83,10 @@ Then(
       .getOldestTradableInstrument(this.openMarketData)
       .then((oldestTradableInstrument) => {
         cy.getByTestId('market').within(() => {
-          cy.get('button').contains(oldestTradableInstrument.instrument.name).should('be.visible');
-        })
+          cy.get('button')
+            .contains(oldestTradableInstrument.instrument.name)
+            .should('be.visible');
+        });
       });
   }
 );
@@ -96,8 +98,10 @@ Then(
       .getMostRecentTradableInstrument(this.openMarketData)
       .then((mostRecentMarketInstrument) => {
         cy.getByTestId('market').within(() => {
-          cy.get('button').contains(mostRecentMarketInstrument.instrument.name).should('be.visible');
-        })
+          cy.get('button')
+            .contains(mostRecentMarketInstrument.instrument.name)
+            .should('be.visible');
+        });
       });
   }
 );

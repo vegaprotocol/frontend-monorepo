@@ -22,7 +22,6 @@ Then('I navigate to markets page', () => {
   cy.wait('@Markets');
   marketsPage.navigateToMarkets();
   marketsPage.clickOpenMarketMenu();
-  // cy.wait('@Markets');
 });
 
 Then('I can view markets', () => {

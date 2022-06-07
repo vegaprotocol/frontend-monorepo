@@ -1,4 +1,4 @@
-import { first } from "lodash";
+import { first } from 'lodash';
 
 export default class VegaWallet {
   connectVegaBtn = 'connect-vega-wallet';
