@@ -15,14 +15,12 @@ export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
   initialAssetId?: string;
-  etherscanUrl: string;
 }
 
 export const WithdrawManager = ({
   assets,
   accounts,
   initialAssetId,
-  etherscanUrl,
 }: WithdrawManagerProps) => {
   const dialogDismissed = useRef(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -104,7 +102,6 @@ export const WithdrawManager = ({
             dialogDismissed.current = true;
           }
         }}
-        etherscanUrl={etherscanUrl}
       />
     </>
   );

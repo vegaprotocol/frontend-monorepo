@@ -84,7 +84,6 @@ export const WithdrawPageContainer = ({
               assets={data.assets}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
-              etherscanUrl={ENV.etherscanUrl}
             />
           </>
         );

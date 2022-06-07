@@ -21,7 +21,6 @@ interface TxRowProps {
   status: EthTxStatus;
   txHash: string | null;
   confirmations: number;
-  etherscanUrl: string;
   requiredConfirmations: number;
   highlightComplete?: boolean;
 }
@@ -31,7 +30,6 @@ export const TxRow = ({
   txHash,
   confirmations,
   requiredConfirmations,
-  etherscanUrl,
   highlightComplete = true,
 }: TxRowProps) => {
   const { ETHERSCAN_URL } = useEnvironment();

@@ -14,7 +14,6 @@ export interface WithdrawDialogProps {
   approval: Erc20Approval_erc20WithdrawalApproval | null;
   dialogOpen: boolean;
   onDialogChange: (isOpen: boolean) => void;
-  etherscanUrl: string;
 }
 
 export const WithdrawDialog = ({
@@ -23,7 +22,6 @@ export const WithdrawDialog = ({
   approval,
   dialogOpen,
   onDialogChange,
-  etherscanUrl,
 }: WithdrawDialogProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
   const { intent, ...props } = getProps(approval, vegaTx, ethTx, ETHERSCAN_URL);

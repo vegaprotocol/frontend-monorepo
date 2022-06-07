@@ -17,12 +17,7 @@ export const WithdrawalsPageContainer = () => {
           (w) => new Date(w.createdTimestamp).getTime(),
           'desc'
         );
-        return (
-          <WithdrawalsTable
-            withdrawals={withdrawals}
-            etherscanUrl={ENV.etherscanUrl}
-          />
-        );
+        return <WithdrawalsTable withdrawals={withdrawals} />;
       }}
     />
   );

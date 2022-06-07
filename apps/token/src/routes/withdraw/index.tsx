@@ -150,11 +150,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           </Callout>
         </div>
       )}
-      <WithdrawManager
-        assets={data.assets || []}
-        accounts={accounts}
-        etherscanUrl={ENV.etherscanUrl}
-      />
+      <WithdrawManager assets={data.assets || []} accounts={accounts} />
     </>
   );
 };
