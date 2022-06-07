@@ -15,7 +15,6 @@ import type {
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
-import { ENV } from '../../config/env';
 
 const Withdraw = () => {
   const { t } = useTranslation();

@@ -18,7 +18,6 @@ import { ConnectToVega } from './connect-to-vega';
 import { NodeList } from './node-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import { ENV } from '../../config/env';
 
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();

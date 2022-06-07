@@ -10,7 +10,6 @@ import type {
   WithdrawPageQuery,
   WithdrawPageQueryVariables,
 } from './__generated__/WithdrawPageQuery';
-import { ENV } from '../../../lib/config/env';
 
 const WITHDRAW_PAGE_QUERY = gql`
   ${ASSET_FRAGMENT}

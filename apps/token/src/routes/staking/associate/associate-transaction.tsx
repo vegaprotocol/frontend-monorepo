@@ -15,7 +15,6 @@ import {
 } from '../../../hooks/transaction-reducer';
 import { Routes } from '../../router-config';
 import type { PartyStakeLinkings_party_stake_linkings } from './__generated__/PartyStakeLinkings';
-import { ENV } from '../../../config/env';
 
 export const AssociateTransaction = ({
   amount,

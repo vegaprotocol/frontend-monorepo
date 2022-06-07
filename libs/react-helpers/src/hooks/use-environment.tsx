@@ -126,7 +126,6 @@ export const EnvironmentProvider = ({
       `Error setting up the app environment. The following variables are missing from your environment: ${missingKeys}.`
     );
   }
-
   return (
     <EnvironmentContext.Provider
       value={{

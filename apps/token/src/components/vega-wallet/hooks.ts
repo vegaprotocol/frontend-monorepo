@@ -17,7 +17,6 @@ import type {
   DelegationsVariables,
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 
 const DELEGATIONS_QUERY = gql`
@@ -62,7 +61,6 @@ const DELEGATIONS_QUERY = gql`
 
 export const usePollForDelegations = () => {
   const { token: vegaToken } = useContracts();
-  const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const { keypair } = useVegaWallet();
   const client = useApolloClient();
