@@ -32,36 +32,45 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   // contracts so that we can sign transactions, otherwise use the provider for just
   // reading data
   React.useEffect(() => {
-    let signer = null;
+    const run = async () => {
+      let signer = null;
 
-    const provider = activeProvider ? activeProvider : defaultProvider;
+      const provider = activeProvider ? activeProvider : defaultProvider;
 
-    if (
-      account &&
-      activeProvider &&
-      typeof activeProvider.getSigner === 'function'
-    ) {
-      signer = provider.getSigner();
-    }
+      if (
+        account &&
+        activeProvider &&
+        typeof activeProvider.getSigner === 'function'
+      ) {
+        signer = provider.getSigner();
+      }
 
-    if (provider && config) {
-      setContracts({
-        token: new Token(ADDRESSES.vegaTokenAddress, signer || provider),
-        staking: new StakingBridge(
+      if (provider && config) {
+        const staking = new StakingBridge(
           config.staking_bridge_contract.address,
           signer || provider
-        ),
-        vesting: new TokenVesting(
-          config.token_vesting_contract.address,
-          signer || provider
-        ),
-        claim: new Claim(ADDRESSES.claimAddress, signer || provider),
-        erc20Bridge: new CollateralBridge(
-          config.collateral_bridge_contract.address,
-          signer || provider
-        ),
-      });
-    }
+        );
+        const vegaAddress = await staking.stakingToken();
+
+        setContracts({
+          token: new Token(vegaAddress, signer || provider),
+          staking: new StakingBridge(
+            config.staking_bridge_contract.address,
+            signer || provider
+          ),
+          vesting: new TokenVesting(
+            config.token_vesting_contract.address,
+            signer || provider
+          ),
+          claim: new Claim(ADDRESSES.claimAddress, signer || provider),
+          erc20Bridge: new CollateralBridge(
+            config.collateral_bridge_contract.address,
+            signer || provider
+          ),
+        });
+      }
+    };
+    run();
   }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
 
   if (!contracts) {

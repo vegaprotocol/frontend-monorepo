@@ -44,6 +44,8 @@ export const RedeemFromTranche = () => {
     perform,
     dispatch: txDispatch,
   } = useTransaction(() => vesting.withdrawFromTranche(numberId));
+  const { token } = useContracts();
+
   const redeemedAmount = React.useMemo(() => {
     return (
       trancheBalances.find(({ id: bId }) => bId.toString() === id?.toString())
@@ -106,7 +108,7 @@ export const RedeemFromTranche = () => {
                 {t(
                   'The VEGA token address is {{address}}, make sure you add this to your wallet to see your tokens',
                   {
-                    address: ADDRESSES.vegaTokenAddress,
+                    address: token.address,
                   }
                 )}
               </p>

@@ -18,6 +18,7 @@ import type {
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useContracts } from '../../contexts/contracts/contracts-context';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -60,6 +61,7 @@ const DELEGATIONS_QUERY = gql`
 `;
 
 export const usePollForDelegations = () => {
+  const { token: vegaToken } = useContracts();
   const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const { keypair } = useVegaWallet();
@@ -118,8 +120,7 @@ export const usePollForDelegations = () => {
                 .map((a) => {
                   const isVega =
                     a.asset.source.__typename === 'ERC20' &&
-                    a.asset.source.contractAddress ===
-                      ADDRESSES.vegaTokenAddress;
+                    a.asset.source.contractAddress === vegaToken.address;
 
                   return {
                     isVega,
@@ -228,7 +229,7 @@ export const usePollForDelegations = () => {
       clearInterval(interval);
       mounted = false;
     };
-  }, [client, keypair?.pub, t, ADDRESSES.vegaTokenAddress]);
+  }, [client, keypair?.pub, t, vegaToken.address]);
 
   return { delegations, currentStakeAvailable, delegatedNodes, accounts };
 };
