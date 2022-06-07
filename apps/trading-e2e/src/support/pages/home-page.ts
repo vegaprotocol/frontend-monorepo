@@ -55,7 +55,7 @@ export default class HomePage extends BasePage {
   }
 
   validateTableCodesExistOnServer(openMarketCodes: []) {
-    cy.get('table tr').each(($element, index) => {
+    cy.get('table tr', {timeout:12000}).each(($element, index) => {
       if (index > 0) {
         // skip header row
         const openMarketCodeText: string = $element.children().first().text();
@@ -64,6 +64,17 @@ export default class HomePage extends BasePage {
           openMarketCodeText,
           `Checking ${openMarketCodeText} is shown within server open markets response`
         );
+      }
+    });
+  }
+
+  validateTableContainsLastPriceAndChange() {
+    cy.get('table tr').each(($element, index) => {
+      if (index > 0) {
+        // skip header row
+        cy.get($element).within(() => {
+          cy.getByTestId('price').should('not.be.empty');
+        });
       }
     });
   }

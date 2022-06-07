@@ -1,3 +1,5 @@
+import { first } from "lodash";
+
 export default class VegaWallet {
   connectVegaBtn = 'connect-vega-wallet';
   walletConnectors = 'connectors-list';
@@ -55,7 +57,7 @@ export default class VegaWallet {
   }
 
   selectPublicKey() {
-    cy.getByTestId(this.selectPublicKeyBtn).click();
+    cy.getByTestId(this.selectPublicKeyBtn).first().click();
   }
 
   clickOnWalletConnectDialog() {

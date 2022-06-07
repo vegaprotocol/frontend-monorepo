@@ -15,8 +15,9 @@ Then('I am prompted to select a market', () => {
   cy.contains('Select a market to get started').should('be.visible');
 });
 
-Then('the choose market overlay is no longer shwoing', () => {
+Then('the choose market overlay is no longer showing', () => {
   cy.contains('Select a market to get started').should('not.exist');
+  cy.contains('Loading...', { timeout: 20000 }).should('not.exist');
 });
 
 Then(
@@ -27,10 +28,37 @@ Then(
 );
 
 Then(
+  'I expect the market overlay table to contain at least {int} rows',
+  function (expectNumber) {
+    cy.get('table tr').then((row) => {
+      expect(row.length).to.be.at.least(expectNumber);
+    });
+  }
+);
+
+Then(
   'each market shown in overlay table exists as open market on server',
   function () {
     homePage.getOpenMarketCodes(this.openMarketData).then((openMarketCodes) => {
       homePage.validateTableCodesExistOnServer(openMarketCodes);
+    });
+  }
+);
+
+Then(
+  'each market shown in overlay table contains content under the last price and change fields',
+  function () {
+    homePage.getOpenMarketCodes(this.openMarketData).then((openMarketCodes) => {
+      homePage.validateTableContainsLastPriceAndChange(openMarketCodes);
+    });
+  }
+);
+
+Then(
+  'each market shown in the full list exists as open market on server',
+  function () {
+    homePage.getOpenMarketCodes(this.openMarketData).each((openMarketCode) => {
+      cy.contains(openMarketCode).should('be.visible');
     });
   }
 );
@@ -54,34 +82,38 @@ Then(
     homePage
       .getOldestTradableInstrument(this.openMarketData)
       .then((oldestTradableInstrument) => {
-        cy.get('h1').should(
-          'contain',
-          oldestTradableInstrument.instrument.name
-        );
+        cy.getByTestId('market').within(() => {
+          cy.get('button').contains(oldestTradableInstrument.instrument.name).should('be.visible');
+        })
       });
   }
 );
 
 Then(
-  'the newest current trading market is loaded on the trading tab',
+  'the most recent current trading market is loaded on the trading tab',
   function () {
     homePage
       .getMostRecentTradableInstrument(this.openMarketData)
       .then((mostRecentMarketInstrument) => {
-        cy.get('h1').should(
-          'contain',
-          mostRecentMarketInstrument.instrument.name
-        );
+        cy.getByTestId('market').within(() => {
+          cy.get('button').contains(mostRecentMarketInstrument.instrument.name).should('be.visible');
+        })
       });
   }
 );
 
-When('I click the newest trading market on the overlay table', function () {
+When('I click the most recent trading market', function () {
   homePage
     .getMostRecentTradableInstrument(this.openMarketData)
     .then((mostRecentMarketInstrument) => {
       cy.contains(mostRecentMarketInstrument.instrument.code).click();
     });
+});
+
+When('I click the view full market list', () => {
+  cy.contains('Or view full market list').click();
+  cy.contains('Loading...').should('be.visible');
+  cy.contains('Loading...').should('not.exist');
 });
 
 When('I try to connect Vega wallet with incorrect details', () => {

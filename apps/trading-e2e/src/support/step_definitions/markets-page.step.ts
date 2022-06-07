@@ -19,9 +19,10 @@ const mockMarkets = () => {
 
 Then('I navigate to markets page', () => {
   mockMarkets();
+  cy.wait('@Markets');
   marketsPage.navigateToMarkets();
   marketsPage.clickOpenMarketMenu();
-  cy.wait('@Markets');
+  // cy.wait('@Markets');
 });
 
 Then('I can view markets', () => {
