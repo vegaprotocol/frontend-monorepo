@@ -26,7 +26,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
   });
 
@@ -39,7 +39,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
     result.rerender(
       <Orderbook
@@ -51,7 +51,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     expect(result.getByTestId('scroll').scrollTop).toBe(90 * rowHeight);
   });
 
@@ -64,7 +64,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
     result.rerender(
       <Orderbook
@@ -77,7 +77,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     expect(result.getByTestId('scroll').scrollTop).toBe(90 * rowHeight);
   });
 
@@ -90,7 +90,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     const scrollElement = result.getByTestId('scroll');
     expect(scrollElement.scrollTop).toBe(91 * rowHeight);
     scrollElement.scrollTop = 92 * rowHeight;
@@ -105,7 +105,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     expect(result.getByTestId('scroll').scrollTop).toBe(91 * rowHeight);
   });
 
@@ -118,7 +118,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     const scrollElement = result.getByTestId('scroll');
     expect(scrollElement.scrollTop).toBe(91 * rowHeight);
     scrollElement.scrollTop = 0;
@@ -138,7 +138,7 @@ describe('Orderbook', () => {
         onResolutionChange={onResolutionChange}
       />
     );
-    await waitFor(() => screen.getByTestId('bid-vol-122900'));
+    await waitFor(() => screen.getByTestId(`bid-vol-${params.midPrice}`));
     const scrollElement = result.getByTestId('scroll');
     expect(scrollElement.scrollTop).toBe(91 * rowHeight);
     scrollElement.scrollTop = 0;

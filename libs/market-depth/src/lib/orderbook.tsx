@@ -256,7 +256,8 @@ export const Orderbook = ({
   const paddingBottom =
     (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
   const minPriceLevel =
-    BigInt(maxPriceLevel) - BigInt(numberOfRows * resolution);
+    BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution));
+  const hasData = renderedRows.data && renderedRows.data.length !== 0;
   return (
     <div
       className={`h-full overflow-auto relative ${styles['scroll']}`}
@@ -279,20 +280,16 @@ export const Orderbook = ({
           paddingTop: `${paddingTop}px`,
           paddingBottom: `${paddingBottom}px`,
           minHeight: `calc(100% - ${2 * rowHeight}px)`,
+          background: hasData
+            ? 'linear-gradient(#999,#999) 24.6% 0/1px 100% no-repeat, linear-gradient(#999,#999) 50% 0/1px 100% no-repeat, linear-gradient(#999,#999) 75.2% 0/1px 100% no-repeat'
+            : 'none',
         }}
       >
-        {!renderedRows.data || renderedRows.data.length === 0 ? (
-          <div className="inset-0 absolute">
-            <Splash>{t('No data')}</Splash>
-          </div>
-        ) : (
+        {hasData ? (
           <div
             className="grid grid-cols-4 gap-5 text-right text-ui-small"
             style={{
               gridAutoRows: '17px',
-              background:
-                'linear-gradient(#999,#999) center/1px 100% no-repeat, linear-gradient(#999,#999) center/1px 100% no-repeat, linear-gradient(#999,#999) center/1px 100% no-repeat',
-              backgroundPosition: '24.6% 0, 50% 0, 75.2% 0',
             }}
           >
             {renderedRows.data?.map((data) => {
@@ -319,6 +316,10 @@ export const Orderbook = ({
                 </Fragment>
               );
             })}
+          </div>
+        ) : (
+          <div className="inset-0 absolute">
+            <Splash>{t('No data')}</Splash>
           </div>
         )}
       </div>

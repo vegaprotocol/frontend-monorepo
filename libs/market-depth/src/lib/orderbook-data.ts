@@ -196,12 +196,11 @@ const partiallyUpdateCompactedRows = (
   const { price } = delta;
   const volume = Number(delta.volume);
   const priceLevel = getPriceLevel(price, resolution);
-  const volKey = dataType === VolumeType.ask ? 'ask' : 'bid';
-  const oppositeVolKey = dataType === VolumeType.ask ? 'bid' : 'ask';
-  const volByLevelKey =
-    dataType === VolumeType.ask ? 'askByLevel' : 'bidByLevel';
-  const resolveModifiedIndex =
-    dataType === VolumeType.ask ? Math.max : Math.min;
+  const isAskDataType = dataType === VolumeType.ask;
+  const volKey = isAskDataType ? 'ask' : 'bid';
+  const oppositeVolKey = isAskDataType ? 'bid' : 'ask';
+  const volByLevelKey = isAskDataType ? 'askByLevel' : 'bidByLevel';
+  const resolveModifiedIndex = isAskDataType ? Math.max : Math.min;
   let index = draft.findIndex((data) => data.price === priceLevel);
   if (index !== -1) {
     modifiedIndex = resolveModifiedIndex(modifiedIndex, index);
@@ -214,7 +213,7 @@ const partiallyUpdateCompactedRows = (
     if (index !== -1) {
       draft.splice(index, 0, newData);
       newData.cumulativeVol[oppositeVolKey] =
-        draft[index + (dataType === VolumeType.ask ? -1 : 1)]?.cumulativeVol[
+        draft[index + (isAskDataType ? -1 : 1)]?.cumulativeVol[
           oppositeVolKey
         ] ?? 0;
       modifiedIndex = resolveModifiedIndex(modifiedIndex, index);
