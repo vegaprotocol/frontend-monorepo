@@ -4,7 +4,7 @@ import type { Networks } from '../lib/environment';
 
 declare global {
   interface Window {
-    _ENV?: RawEnvironment;
+    _env_: Record<string, string>;
   }
 }
 
@@ -37,7 +37,7 @@ export const ContractAddresses: { [key in Networks]: VegaContracts } = {
 };
 
 type EnvironmentProviderProps = {
-  definintions?: Partial<RawEnvironment>;
+  definitions?: Partial<RawEnvironment>;
   children?: ReactNode;
 };
 
@@ -89,29 +89,29 @@ const transformValue = (key: EnvKey, value?: string) => {
   }
 };
 
-const getValue = (key: EnvKey, definintions: Partial<RawEnvironment> = {}) => {
+const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
   if (typeof window === 'undefined') {
     return transformValue(
       key,
-      definintions[key] ?? getBundledEnvironmentValue(key)
+      definitions[key] ?? getBundledEnvironmentValue(key)
     );
   }
   return transformValue(
     key,
-    window._ENV?.[key] ?? definintions[key] ?? getBundledEnvironmentValue(key)
+    window._env_?.[key] ?? definitions[key] ?? getBundledEnvironmentValue(key)
   );
 };
 
 const EnvironmentContext = createContext({} as Environment);
 
 export const EnvironmentProvider = ({
-  definintions,
+  definitions,
   children,
 }: EnvironmentProviderProps) => {
   const environment = ENV_KEYS.reduce(
     (acc, key) => ({
       ...acc,
-      [key]: getValue(key, definintions),
+      [key]: getValue(key, definitions),
     }),
     {} as Environment
   );
