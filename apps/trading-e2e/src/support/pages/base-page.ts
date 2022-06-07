@@ -10,7 +10,7 @@ export default class BasePage {
   dialogText = 'dialog-text';
 
   closeDialog() {
-    cy.getByTestId(this.closeDialogBtn, { timeout: 12000 }).click({
+    cy.getByTestId(this.closeDialogBtn, { timeout: 12000 })?.click({
       force: true,
     });
   }
