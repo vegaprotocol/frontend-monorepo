@@ -56,7 +56,7 @@ export const TradeMarketHeader = ({ market }: TradeGridProps) => {
           <ArrowDown color="yellow" borderX={8} borderTop={12} />
         </button>
 
-        <div className="flex flex-auto items-start gap-64 overflow-x-scroll whitespace-nowrap w-[400px]">
+        <div className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap w-[400px]">
           <div className={headerItemClassName}>
             <span className={itemClassName}>Change (24h)</span>
             <PriceCellChange
