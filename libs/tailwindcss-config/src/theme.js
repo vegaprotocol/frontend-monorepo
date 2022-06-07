@@ -1,5 +1,10 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
+const shadeOfGray = shade => {
+  const value = Math.round(255*shade/100);
+  return `rgb(${value}, ${value}, ${value})`;
+}
+
 module.exports = {
   screens: {
     xs: '500px',
@@ -33,29 +38,33 @@ module.exports = {
     deemphasise: '#8A9BA8',
     white: {
       DEFAULT: '#FFF',
+      strong: '#FFF',
+      normal: '#F5F8FA',
       muted: '#676767',
-      '02': 'rgba(255, 255, 255, 0.02)',
-      '05': 'rgba(255, 255, 255, 0.05)',
-      10: 'rgba(255, 255, 255, 0.10)',
-      25: 'rgba(255, 255, 255, 0.25)',
-      40: 'rgba(255, 255, 255, 0.40)',
-      60: 'rgba(255, 255, 255, 0.60)',
-      80: 'rgba(255, 255, 255, 0.80)',
-      95: 'rgba(255, 255, 255, 0.95)',
-      100: 'rgba(255, 255, 255, 1.00)',
+      '02': shadeOfGray(100-2),
+      '05': shadeOfGray(100-5),
+      10: shadeOfGray(100-10),
+      25: shadeOfGray(100-25),
+      40: shadeOfGray(100-40),
+      60: shadeOfGray(100-60),
+      80: shadeOfGray(100-80),
+      95: shadeOfGray(100-95),
+      100: shadeOfGray(100-100),
     },
     black: {
       DEFAULT: '#000',
+      strong: '#000',
+      normal: '#000',
       muted: '#BFCCD6',
-      '02': 'rgba(0, 0, 0, 0.02)',
-      '05': 'rgba(0, 0, 0, 0.05)',
-      10: 'rgba(0, 0, 0, 0.10)',
-      25: 'rgba(0, 0, 0, 0.25)',
-      40: 'rgba(0, 0, 0, 0.40)',
-      60: 'rgba(0, 0, 0, 0.60)',
-      80: 'rgba(0, 0, 0, 0.80)',
-      95: 'rgba(0, 0, 0, 0.95)',
-      100: 'rgba(0, 0, 0, 1)',
+      '02': shadeOfGray(2),
+      '05': shadeOfGray(5),
+      10: shadeOfGray(10),
+      25: shadeOfGray(25),
+      40: shadeOfGray(40),
+      60: shadeOfGray(60),
+      80: shadeOfGray(80),
+      95: shadeOfGray(95),
+      100: shadeOfGray(100),
     },
     blue: '#1DA2FB',
     coral: '#FF6057',
