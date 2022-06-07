@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ICellRendererParams } from 'ag-grid-community';
 import { PriceCell } from './price-cell';
+import classNames from 'classnames';
 
 export enum VolumeType {
   bid,
@@ -28,7 +29,10 @@ export const Vol = React.memo(
     return (
       <div className="relative" data-testid={testId || 'vol'}>
         <div
-          className="h-full absolute top-0 left-0"
+          className={classNames('h-full absolute top-0', {
+            'left-0': type === VolumeType.bid,
+            'right-0': type === VolumeType.ask,
+          })}
           style={{
             width: relativeValue ? `${relativeValue}%` : '0%',
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,

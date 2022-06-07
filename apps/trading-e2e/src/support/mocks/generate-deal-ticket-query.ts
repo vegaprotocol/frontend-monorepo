@@ -10,6 +10,7 @@ export const generateDealTicketQuery = (
     market: {
       id: 'market-id',
       decimalPlaces: 2,
+      positionDecimalPlaces: 1,
       state: MarketState.Active,
       tradingMode: MarketTradingMode.Continuous,
       tradableInstrument: {

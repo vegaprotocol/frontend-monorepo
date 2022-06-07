@@ -40,12 +40,15 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
           delta.buy,
           resolutionRef.current
         );
-        Object.assign(draft, mapMarketData(delta.market.data, resolution));
+        Object.assign(
+          draft,
+          mapMarketData(delta.market.data, resolutionRef.current)
+        );
       });
       setOrderbookDataThrottled.current(dataRef.current);
       return true;
     },
-    // using resolutionRef.current to avoid using resolution as a dependency - it will cause data proiver restart on resolution change
+    // using resolutionRef.current to avoid using resolution as a dependency - it will cause data provider restart on resolution change
     []
   );
 

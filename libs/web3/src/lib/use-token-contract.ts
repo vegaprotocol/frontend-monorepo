@@ -1,4 +1,4 @@
-import { ERC20Token } from '@vegaprotocol/smart-contracts-sdk';
+import { ERC20Token } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 

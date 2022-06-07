@@ -16,6 +16,7 @@
     "react-helpers": "libs/react-helpers",
     "simple-trading-app": "apps/simple-trading-app",
     "simple-trading-app-e2e": "apps/simple-trading-app-e2e",
+    "smart-contracts": "libs/smart-contracts",
     "static": "apps/static",
     "stats": "apps/stats",
     "stats-e2e": "apps/stats-e2e",
