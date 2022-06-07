@@ -11,14 +11,6 @@ declare global {
 
 const isBrowser = typeof window !== 'undefined';
 
-const produceNetworkKeyPair = (acc: Record<Networks, string>, raw: string) => {
-  const [network, ...urlChunks] = raw.split('=');
-  return {
-    ...acc,
-    [network]: urlChunks.join(''),
-  };
-};
-
 const transformValue = (key: EnvKey, value?: string) => {
   switch (key) {
     case 'VEGA_ENV':
