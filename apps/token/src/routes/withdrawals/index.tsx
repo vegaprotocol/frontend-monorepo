@@ -1,4 +1,4 @@
-import { Button, Loader, Splash } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { format } from 'date-fns';
 import orderBy from 'lodash/orderBy';
 import React from 'react';
