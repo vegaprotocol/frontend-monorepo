@@ -14,10 +14,7 @@ export const ENV = {
   envName: windowOrDefault('NX_VEGA_ENV'),
   commit: windowOrDefault('NX_COMMIT_REF'),
   branch: windowOrDefault('NX_BRANCH'),
-  chainId: windowOrDefault('NX_ETHEREUM_CHAIN_ID'),
   vegaUrl: windowOrDefault('NX_VEGA_URL'),
-  providerUrl: windowOrDefault('NX_ETHEREUM_PROVIDER_URL'),
-  etherscanUrl: windowOrDefault('NX_ETHERSCAN_URL'),
   flags: {
     NETWORK_DOWN: TRUTHY.includes(windowOrDefault('NX_NETWORK_DOWN')),
     HOSTED_WALLET_ENABLED: TRUTHY.includes(

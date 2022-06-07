@@ -12,7 +12,7 @@ import React from 'react';
 import { SplashLoader } from '../../components/splash-loader';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
-import { defaultProvider } from '../../lib/web3-connectors';
+import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
 
@@ -22,11 +22,16 @@ import { useEnvironment } from '@vegaprotocol/react-helpers';
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { provider: activeProvider, account } = useWeb3React();
   const { config } = useEthereumConfig();
-  const { VEGA_ENV, ADDRESSES } = useEnvironment();
+  const { VEGA_ENV, ADDRESSES, ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID } =
+    useEnvironment();
   const [contracts, setContracts] = React.useState<Pick<
     ContractsContextShape,
     'token' | 'staking' | 'vesting' | 'claim' | 'erc20Bridge'
   > | null>(null);
+  const defaultProvider = createDefaultProvider(
+    ETHEREUM_PROVIDER_URL,
+    ETHEREUM_CHAIN_ID
+  );
 
   // Create instances of contract classes. If we have an account use a signer for the
   // contracts so that we can sign transactions, otherwise use the provider for just

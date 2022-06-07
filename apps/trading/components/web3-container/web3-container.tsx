@@ -6,9 +6,9 @@ import {
 } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
-import { Connectors } from '../../lib/web3-connectors';
-import { t } from '@vegaprotocol/react-helpers';
+import { useEffect, useState, useMemo } from 'react';
+import { t, useEnvironment } from '@vegaprotocol/react-helpers';
+import { createConnectors } from '../../lib/web3-connectors';
 
 interface Web3ContainerProps {
   children: ReactNode;
@@ -17,7 +17,11 @@ interface Web3ContainerProps {
 export const Web3Container = ({ children }: Web3ContainerProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const { config, loading, error } = useEthereumConfig();
-
+  const { ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID } = useEnvironment();
+  const Connectors = useMemo(
+    () => createConnectors(ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID),
+    [ETHEREUM_CHAIN_ID, ETHEREUM_PROVIDER_URL]
+  );
   return (
     <AsyncRenderer data={config} loading={loading} error={error}>
       {config ? (

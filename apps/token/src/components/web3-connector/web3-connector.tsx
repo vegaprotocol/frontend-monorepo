@@ -1,14 +1,14 @@
+import { useEnvironment } from '@vegaprotocol/react-helpers';
 import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
-import { useCallback, useEffect } from 'react';
-import { ENV } from '../../config/env';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { Connectors } from '../../lib/web3-connectors';
+import { createConnectors } from '../../lib/web3-connectors';
 
 interface Web3ConnectorProps {
   children: ReactElement;
@@ -16,13 +16,18 @@ interface Web3ConnectorProps {
 
 export function Web3Connector({ children }: Web3ConnectorProps) {
   const { appState, appDispatch } = useAppState();
+  const { ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID } = useEnvironment();
+  const Connectors = useMemo(
+    () => createConnectors(ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID),
+    [ETHEREUM_CHAIN_ID, ETHEREUM_PROVIDER_URL]
+  );
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
       appDispatch({ type: AppStateActionType.SET_ETH_WALLET_OVERLAY, isOpen });
     },
     [appDispatch]
   );
-  const appChainId = Number(ENV.chainId);
+  const appChainId = Number(ETHEREUM_CHAIN_ID);
   return (
     <>
       <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>
