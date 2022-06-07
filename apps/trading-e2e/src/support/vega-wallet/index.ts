@@ -7,6 +7,7 @@ export default class VegaWallet {
   walletInputError = 'input-wallet-error';
   walletFormError = 'form-error';
   inputError = 'input-error-text';
+  connectNetworkBtn = 'connect-network'
 
   openVegaWalletConnectDialog() {
     this.clickOnWalletConnectDialog();

@@ -38,7 +38,7 @@ export const NetworkSwitcher = ({ onConnect }: NetworkSwitcherProps) => {
         />
       </div>
       <div className="py-16">
-        <Button type="submit">{t('Connect')}</Button>
+        <Button data-testid='connect-network'type="submit">{t('Connect')}</Button>
       </div>
     </form>
   );
