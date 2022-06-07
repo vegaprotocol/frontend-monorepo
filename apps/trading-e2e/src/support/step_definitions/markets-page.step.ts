@@ -1,5 +1,4 @@
 import { And, Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
-import { forEach } from 'lodash';
 import { hasOperationName } from '..';
 import { generateMarkets } from '../mocks/generate-markets';
 import MarketsPage from '../pages/markets-page';
