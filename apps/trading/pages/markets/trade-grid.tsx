@@ -17,7 +17,6 @@ import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import { ArrowDown, PriceCellChange } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 
-
 const TradingViews = {
   Candles: CandlesChartContainer,
   Depth: DepthChartContainer,
