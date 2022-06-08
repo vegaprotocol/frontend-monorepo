@@ -42,16 +42,15 @@ export default class HomePage extends BasePage {
   }
 
   getMostRecentOpenMarket(openMarkets: OpenMarketType[]) {
-    let currentNewTime = 0;
-    let mostRecentMarket;
-    openMarkets.forEach((market: OpenMarketType) => {
-      const marketTime = Date.parse(market.marketTimestamps.open);
-      if (marketTime > currentNewTime) {
-        currentNewTime = marketTime;
-        mostRecentMarket = market;
-      }
-    });
-    return mostRecentMarket;
+    const [recentMarket] = openMarkets.sort(
+      (b, a) =>
+        new Date(a.marketTimestamps.open).getTime() -
+        new Date(b.marketTimestamps.open).getTime()
+    );
+    if (!recentMarket) {
+      throw new Error('Could not find most recent market');
+    }
+    return recentMarket;
   }
 
   validateTableCodesExistOnServer(openMarketCodes: string[]) {

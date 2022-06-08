@@ -1,4 +1,4 @@
-import { Given } from 'cypress-cucumber-preprocessor/steps';
+import { Given, When } from 'cypress-cucumber-preprocessor/steps';
 import { hasOperationName } from '..';
 import { generateMarketList } from '../mocks/generate-market-list';
 import BasePage from '../pages/base-page';

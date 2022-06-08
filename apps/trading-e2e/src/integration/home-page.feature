@@ -22,7 +22,6 @@ Feature: Home page
   
   Scenario: Choose market overlay: oldest trading market appears at top of list
     Then the oldest market trading in continous mode shown at top of overlay table
-    And the oldest market trading in continous mode shown at top of overlay table alternative
 
   Scenario: Choose market overlay: can be closed without choosing an option
     When I close the dialog form
