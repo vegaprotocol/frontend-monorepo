@@ -110,15 +110,14 @@ Then(
 Then(
   'the oldest market trading in continous mode shown at top of overlay table alternative',
   () => {
-    cy.get('@openMarketData')
-      .then((openMarkets: OpenMarketType[]) => {
-        homePage.getOldestOpenMarket(openMarkets);
-      })
-      .then((oldestOpenMarket: OpenMarketType) => {
+    cy.get<OpenMarketType[]>('@openMarketData').then(
+      (openMarkets: OpenMarketType[]) => {
+        const oldestMarket = homePage.getOldestOpenMarket(openMarkets);
         homePage.validateStringIsDisplayedAtTopOfTable(
-          oldestOpenMarket.tradableInstrument.instrument.code
+          oldestMarket.tradableInstrument.instrument.code
         );
-      });
+      }
+    );
   }
 );
 

@@ -26,20 +26,19 @@ export default class HomePage extends BasePage {
     openMarkets.forEach((market: OpenMarketType) => {
       openMarketCodes.push(market.tradableInstrument.instrument.code);
     });
-    return cy.wrap(openMarketCodes);
+    return openMarketCodes;
   }
 
   getOldestOpenMarket(openMarkets: OpenMarketType[]) {
-    let currentOldestTime = 9999999999999;
-    let oldestMarket;
-    openMarkets.forEach((market: OpenMarketType) => {
-      const marketTime = Date.parse(market.marketTimestamps.open);
-      if (marketTime < currentOldestTime) {
-        currentOldestTime = marketTime;
-        oldestMarket = market;
-      }
-    });
-    return cy.wrap(oldestMarket);
+    const [oldestMarket] = openMarkets.sort(
+      (a, b) =>
+        new Date(a.marketTimestamps.open).getTime() -
+        new Date(b.marketTimestamps.open).getTime()
+    );
+    if (!oldestMarket) {
+      throw new Error('Could not find oldest market');
+    }
+    return oldestMarket;
   }
 
   getMostRecentOpenMarket(openMarkets: OpenMarketType[]) {
@@ -52,7 +51,7 @@ export default class HomePage extends BasePage {
         mostRecentMarket = market;
       }
     });
-    return cy.wrap(mostRecentMarket);
+    return mostRecentMarket;
   }
 
   validateTableCodesExistOnServer(openMarketCodes: string[]) {
