@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { LandingDialog } from '@vegaprotocol/market-list';
 import type { Market, MarketVariables } from './__generated__/Market';
