@@ -8,7 +8,6 @@ export default class MarketPage extends BasePage {
   marketRowPrices = 'flash-cell';
   marketRowDescription = 'name';
   marketStateColId = 'data';
-  openMarketMenu = 'arrow-down';
 
   validateMarketsAreDisplayed() {
     // We need this to ensure that ag-grid is fully rendered before asserting
@@ -57,9 +56,5 @@ export default class MarketPage extends BasePage {
   clickOnMarket(text: string) {
     cy.get(`[col-id=${this.marketStateColId}]`).should('be.visible');
     cy.get(`[col-id=${this.marketStateColId}]`).contains(text).click();
-  }
-
-  clickOpenMarketMenu() {
-    cy.getByTestId(this.openMarketMenu).click();
   }
 }
