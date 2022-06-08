@@ -37,6 +37,7 @@ export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
       data-testid="proposal-votes-table"
       muted={true}
       numerical={true}
+      headingLevel={4}
     >
       <KeyValueTableRow>
         {t('willPass')}

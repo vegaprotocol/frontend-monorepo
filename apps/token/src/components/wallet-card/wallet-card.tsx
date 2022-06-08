@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
@@ -27,15 +28,13 @@ interface WalletCardProps {
   dark?: boolean;
 }
 
-export const WalletCard = ({ dark, children }: WalletCardProps) => (
-  <div
-    className={`text-ui border border-white ${
-      dark ? 'bg-black text-white' : 'bg-white text-black'
-    }`}
-  >
-    {children}
-  </div>
-);
+export const WalletCard = ({ dark, children }: WalletCardProps) => {
+  const className = classNames('text-ui border border-white', 'p-8', {
+    'bg-black text-white': dark,
+    'bg-white text-black': !dark,
+  });
+  return <div className={className}>{children}</div>;
+};
 
 interface WalletCardHeaderProps {
   children: React.ReactNode;
@@ -44,7 +43,7 @@ interface WalletCardHeaderProps {
 
 export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
   return (
-    <div className="flex justify-between items-center py-8">{children}</div>
+    <div className="flex gap-4 justify-between items-center">{children}</div>
   );
 };
 
@@ -53,7 +52,7 @@ interface WalletCardContentProps {
 }
 
 export const WalletCardContent = ({ children }: WalletCardContentProps) => {
-  return <div className="my-4 mx-8">{children}</div>;
+  return <div className="mt-8">{children}</div>;
 };
 
 export const WalletCardRow = ({

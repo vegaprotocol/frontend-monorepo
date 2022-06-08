@@ -3,10 +3,8 @@ import { format } from 'date-fns';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  ProposalState,
-  VoteValue,
-} from '../../../../__generated__/globalTypes';
+import { ProposalState } from '../../../../__generated__/globalTypes';
+import { VoteValue } from '../../../../__generated__/globalTypes';
 import {
   AppStateActionType,
   useAppState,
@@ -141,9 +139,8 @@ export const VoteButtons = ({
         : 'text-intent-danger';
     return (
       <p>
-        <span>{t('youVoted')}</span>{' '}
-        <span className={className}>{t(`voteState_${voteState}`)}</span>
-        {'. '}
+        <span>{t('youVoted')}:</span>{' '}
+        <span className={className}>{t(`voteState_${voteState}`)}</span>{' '}
         {voteDatetime ? (
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
@@ -167,17 +164,11 @@ export const VoteButtons = ({
   }
 
   return (
-    <div className="flex">
-      <Button
-        onClick={() => submitVote(VoteValue.Yes)}
-        className="w-[calc(50%_-_7px)] mt-4 mr-12"
-      >
+    <div className="flex gap-4">
+      <Button onClick={() => submitVote(VoteValue.Yes)} className="flex-1">
         {t('voteFor')}
       </Button>
-      <Button
-        onClick={() => submitVote(VoteValue.No)}
-        className="w-[calc(50%_-_7px)] mt-4"
-      >
+      <Button onClick={() => submitVote(VoteValue.No)} className="flex-1">
         {t('voteAgainst')}
       </Button>
     </div>

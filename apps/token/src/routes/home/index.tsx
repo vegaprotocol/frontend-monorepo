@@ -34,7 +34,7 @@ const Home = ({ name }: RouteChildProps) => {
 
   return (
     <>
-      <Heading title={t('theVegaToken', { symbol: '$VEGA' })} />
+      <Heading title={t('pageTitleHome')} />
       <HomeSection>
         <TokenDetails
           totalSupply={appState.totalSupply}
@@ -42,7 +42,7 @@ const Home = ({ name }: RouteChildProps) => {
         />
       </HomeSection>
       <HomeSection>
-        <h2 className="text-h4">{t('Token Vesting')}</h2>
+        <h2 className="text-h4 text-white">{t('Token Vesting')}</h2>
         <p className="mb-8">
           {t(
             'The vesting contract holds VEGA tokens until they have become unlocked.'
@@ -68,7 +68,7 @@ const Home = ({ name }: RouteChildProps) => {
         </Link>
       </HomeSection>
       <HomeSection>
-        <h2 className="text-h4">{t('USE YOUR VEGA TOKENS')}</h2>
+        <h2 className="text-h4 text-white">{t('Use your Vega tokens')}</h2>
         <p className="mb-8">
           {t(
             'To use your tokens on the Vega network they need to be associated with a Vega wallet/key.'
@@ -83,6 +83,7 @@ const Home = ({ name }: RouteChildProps) => {
           <a
             data-test-id="get-vega-wallet-link"
             href={Links.WALLET_GUIDE}
+            className="underline text-white"
             target="_blank"
             rel="nofollow noreferrer"
           >
@@ -90,15 +91,18 @@ const Home = ({ name }: RouteChildProps) => {
           </a>
         </p>
         <p data-test-id="associate-vega-tokens-link-on-homepage">
-          <Link to={`${Routes.STAKING}/associate`}>
+          <Link
+            to={`${Routes.STAKING}/associate`}
+            className="underline text-white"
+          >
             {t('Associate VEGA tokens')}
           </Link>
         </p>
       </HomeSection>
-      <div style={{ display: 'flex', gap: 36 }}>
-        <div style={{ flex: 1 }}>
+      <div className="flex gap-40">
+        <div className="flex-1">
           <HomeSection>
-            <h2 className="text-h4">{t('Staking')}</h2>
+            <h2 className="text-h4 text-white">{t('Staking')}</h2>
             <p className="mb-8">
               {t(
                 'VEGA token holders can nominate a validator node and receive staking rewards.'
@@ -111,9 +115,9 @@ const Home = ({ name }: RouteChildProps) => {
             </p>
           </HomeSection>
         </div>
-        <div style={{ flex: 1 }}>
+        <div className="flex-1">
           <HomeSection>
-            <h2 className="text-h4">{t('Governance')}</h2>
+            <h2 className="text-h4 text-white">{t('Governance')}</h2>
             <p className="mb-8">
               {t(
                 'VEGA token holders can vote on proposed changes to the network and create proposals.'
