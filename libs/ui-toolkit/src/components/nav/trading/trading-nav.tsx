@@ -17,9 +17,9 @@ const NavItem = ({ name, path, isActive, onClick }: NavItemProps) => {
         !isActive,
       'text-inherit dark:text-inherit hover:text-white hover:dark:text-black':
         !isActive,
-      'focus-visible:trading-nav-shadow-vega-pink dark:focus-visible:trading-nav-shadow-vega-yellow':
+      'focus-visible:inset-shadow-vega-pink dark:focus-visible:inset-shadow-vega-yellow':
         !isActive,
-      'focus-visible:trading-nav-shadow-white dark:focus-visible:trading-nav-shadow-black':
+      'focus-visible:inset-shadow-white dark:focus-visible:inset-shadow-black':
         isActive,
       'border-vega-pink dark:border-vega-yellow bg-vega-pink dark:bg-vega-yellow text-white dark:text-black':
         isActive,
