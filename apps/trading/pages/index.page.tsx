@@ -1,5 +1,4 @@
 import { gql, useQuery } from '@apollo/client';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import sortBy from 'lodash/sortBy';
