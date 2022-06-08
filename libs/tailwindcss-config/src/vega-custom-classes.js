@@ -38,6 +38,18 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.vega-input-shadow-focus-error': {
       boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.intent.danger}`,
     },
+    '.trading-nav-shadow-black': {
+      boxShadow: `inset 0 -2px 0 0 ${theme.colors.black.DEFAULT}`,
+    },
+    '.trading-nav-shadow-white': {
+      boxShadow: `inset 0 -2px 0 0 ${theme.colors.white.DEFAULT}`,
+    },
+    '.trading-nav-shadow-vega-yellow': {
+      boxShadow: `inset 0 -2px 0 0 ${theme.colors.vega.yellow}`,
+    },
+    '.trading-nav-shadow-vega-pink': {
+      boxShadow: `inset 0 -2px 0 0 ${theme.colors.vega.pink}`,
+    },
   });
 });
 

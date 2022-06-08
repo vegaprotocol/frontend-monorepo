@@ -105,7 +105,9 @@ module.exports = {
   borderWidth: {
     DEFAULT: '1px',
     1: '1px',
+    2: '2px',
     4: '4px',
+    7: '7px',
   },
   borderRadius: {
     none: '0',
@@ -167,5 +169,8 @@ module.exports = {
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
     'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
     radio: '1px 1px 0 0',
+  },
+  backgroundImage: {
+    'fairground-nav': "url('https://static.vega.xyz/fairground-nav-bg.jpg')",
   },
 };
