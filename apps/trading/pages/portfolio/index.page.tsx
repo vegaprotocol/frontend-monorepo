@@ -21,7 +21,7 @@ const Portfolio = () => {
             </h2>
           </aside>
           <section>
-            <GridTabs group="portfolio">
+            <GridTabs>
               <GridTab id="positions" name={t('Positions')}>
                 <div className={tabClassName}>
                   <h4 className="text-h4 text-black dark:text-white">
@@ -56,7 +56,7 @@ const Portfolio = () => {
           </section>
         </main>
         <section className="fixed bottom-0 left-0 w-full h-[200px]">
-          <GridTabs group="collaterals">
+          <GridTabs>
             <GridTab id="collateral" name={t('Collateral')}>
               <AccountsContainer />
             </GridTab>

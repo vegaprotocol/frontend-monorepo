@@ -50,10 +50,7 @@ export const SelectMarketList = ({
                     className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
                   >
                     <td className={`${boldUnderlineClassNames} relative`}>
-                      <Link
-                        href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
-                        passHref={true}
-                      >
+                      <Link href={`/markets/${id}`} passHref={true}>
                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                         <a
                           onClick={() => onSelect(id)}
