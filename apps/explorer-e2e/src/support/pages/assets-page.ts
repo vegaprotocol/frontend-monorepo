@@ -1,9 +1,15 @@
 import BasePage from './base-page';
 
 export default class AssetsPage extends BasePage {
-  assetHeader = 'asset-header';
+  assetsHeader = 'assets-header';
 
   validateAssetsDisplayed() {
-    this.validateBlockDataDisplayed(this.assetHeader);
+    cy.getByTestId(this.assetsHeader, { timeout: 8000 }).should(
+      'have.text',
+      'Assets'
+    );
+    this.validateJsonParameterNamesNotEmpty(294);
+    this.validateJsonValueStringsNotEmpty(210);
+    this.validateJsonValueNumbersNotEmpty(21);
   }
 }

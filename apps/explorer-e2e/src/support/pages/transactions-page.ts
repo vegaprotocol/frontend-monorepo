@@ -48,8 +48,8 @@ export default class TransactionsPage extends BasePage {
           .invoke('text')
           .then((txTypeTxt) => {
             if (txTypeTxt == 'Order Submission') {
-              this.validateJsonParameterNamesNotEmpty(8)
-              this.validateJsonValueStringsNotEmpty(8)
+              this.validateJsonParameterNamesNotEmpty(8);
+              this.validateJsonValueStringsNotEmpty(8);
             }
           });
       } else {

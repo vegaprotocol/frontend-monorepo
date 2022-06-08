@@ -11,9 +11,9 @@ export default class NetworkParametersPage extends BasePage {
       'Network Parameters'
     );
 
-    this.validateJsonParameterNamesNotEmpty(18)
-    this.validateJsonValueStringsNotEmpty(6)
-    this.validateJsonValueNumbersNotEmpty(7)
+    this.validateJsonParameterNamesNotEmpty(18);
+    this.validateJsonValueStringsNotEmpty(6);
+    this.validateJsonValueNumbersNotEmpty(7);
 
     cy.getByTestId(this.parameterKeyValueRow).each(($row) => {
       cy.wrap($row).find('dt').should('not.be.empty');
