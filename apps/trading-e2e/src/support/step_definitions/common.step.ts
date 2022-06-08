@@ -26,3 +26,7 @@ When('I close the dialog form', () => {
   basePage.closeDialog();
   marketPage.validateMarketsAreDisplayed();
 });
+
+Given('I can connect to Ethereum', () => {
+  cy.mockWeb3Provider();
+});

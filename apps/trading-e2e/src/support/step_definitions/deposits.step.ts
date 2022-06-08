@@ -5,10 +5,6 @@ import DepositsPage from '../pages/deposits-page';
 const depositsPage = new DepositsPage();
 const ethWallet = new EthereumWallet();
 
-beforeEach(() => {
-  cy.mockWeb3Provider();
-});
-
 Then('I navigate to deposits page', () => {
   depositsPage.navigateToDeposits();
 });

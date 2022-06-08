@@ -1,4 +1,4 @@
-import { Callout } from '@vegaprotocol/ui-toolkit';
+import { Callout, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Actions } from './staking-form';
 import type { StakeAction } from './staking-form';
@@ -22,7 +22,7 @@ export const StakePending = ({
     : t('stakeRemovePendingTitle', titleArgs);
 
   return (
-    <Callout iconName="refresh" title={title}>
+    <Callout icon={<Loader size="small" />} title={title}>
       <p>{t('timeForConfirmation')}</p>
     </Callout>
   );

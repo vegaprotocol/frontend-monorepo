@@ -20,12 +20,15 @@ export const TransactionError = ({
 
   return (
     <Callout iconName="error" intent={Intent.Danger}>
-      <p>{error ? error.message : t('Something went wrong')}</p>
+      <p className="mb-8">
+        {error ? error.message : t('Something went wrong')}
+      </p>
       {hash ? (
-        <p>
+        <p className="mb-8">
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${hash}`}
+            target="_blank"
           >
             {hash}
           </Link>
