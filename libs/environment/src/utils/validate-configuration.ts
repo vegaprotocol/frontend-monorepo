@@ -5,6 +5,7 @@ const ajv = new Ajv();
 
 const schema = {
   type: 'object',
+  additionalProperties: false,
   properties: {
     hosts: {
       type: 'array',

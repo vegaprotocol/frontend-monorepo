@@ -9,7 +9,7 @@ export type Environment = {
   VEGA_URL: string;
   VEGA_ENV: Networks;
   VEGA_CONFIG_URL: string;
-  VEGA_NETWORKS: Record<Networks, string>;
+  VEGA_NETWORKS: Partial<Record<Networks, string>>;
   ETHEREUM_CHAIN_ID: number;
   ETHEREUM_PROVIDER_URL: string;
   ETHERSCAN_URL: string;

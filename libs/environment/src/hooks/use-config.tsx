@@ -3,13 +3,17 @@ import { useState, useEffect } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import type { Environment, Configuration, ConfigStatus } from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
+import { promiseRaceToSuccess } from '../utils/promise-race-success';
 
 const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
+
+export type EnvironmentWithOptionalUrl = Partial<Environment> &
+  Omit<Environment, 'VEGA_URL'>;
 
 const requestToNode = async (url: string, index: number): Promise<number> => {
   const response = await fetch(url);
   if (!response.ok) {
-    throw new Error('');
+    throw new Error(`Failed connecting to node: ${url}.`);
   }
   return index;
 };
@@ -32,7 +36,7 @@ const getCachedConfig = () => {
 };
 
 export const useConfig = (
-  environment: Environment,
+  environment: EnvironmentWithOptionalUrl,
   updateEnvironment: Dispatch<SetStateAction<Environment>>
 ) => {
   const [config, setConfig] = useState<Configuration | undefined>(
@@ -48,17 +52,17 @@ export const useConfig = (
         setStatus('loading-config');
         try {
           const response = await fetch(environment.VEGA_CONFIG_URL);
-          const config: Configuration = await response.json();
+          const configResponse: Configuration = await response.json();
 
-          if (!validateConfiguration(config)) {
+          if (!validateConfiguration(configResponse)) {
             setStatus('error-validating-config');
             return;
           }
 
-          setConfig({ hosts: config.hosts });
+          setConfig({ hosts: configResponse.hosts });
           LocalStorage.setItem(
             LOCAL_STORAGE_NETWORK_KEY,
-            JSON.stringify({ hosts: config.hosts })
+            JSON.stringify({ hosts: configResponse.hosts })
           );
         } catch (err) {
           setStatus('error-loading-config');
@@ -90,7 +94,7 @@ export const useConfig = (
         // when there are multiple possible hosts, set the env url to the node which responds first
         try {
           const requests = config.hosts.map(requestToNode);
-          const index = await Promise.race(requests);
+          const index = await promiseRaceToSuccess(requests);
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
