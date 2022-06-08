@@ -1,17 +1,6 @@
-import React from 'react';
+import { renderHook } from '@testing-library/react-hooks';
 import { useSettlementAccount } from './use-settlement-account';
 import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
-import { render, screen } from '@testing-library/react';
-
-interface Props {
-  settlementAssetId: string;
-  accounts: PartyBalanceQuery_party_accounts[];
-}
-
-const MockComponent = ({ settlementAssetId, accounts }: Props) => {
-  const settlementAccount = useSettlementAccount(settlementAssetId, accounts);
-  return <div>{settlementAccount?.asset.name || 'Not Found'}</div>;
-};
 
 describe('useSettlementAccount Hook', () => {
   it('should filter accounts by settlementAssetId', () => {
@@ -53,26 +42,20 @@ describe('useSettlementAccount Hook', () => {
     const settlementAssetId =
       '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61';
 
-    render(
-      <MockComponent
-        settlementAssetId={settlementAssetId}
-        accounts={accounts}
-      />
+    const { result } = renderHook(() =>
+      useSettlementAccount(settlementAssetId, accounts)
     );
-    expect(screen.getByText('tDAI TEST')).toBeInTheDocument();
+    expect(result.current?.balance).toBe(accounts[1].balance);
+    expect(result.current?.asset).toEqual(accounts[1].asset);
   });
 
   it('should return null if no accounts', () => {
     const accounts: PartyBalanceQuery_party_accounts[] = [];
     const settlementAssetId =
       '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61';
-
-    render(
-      <MockComponent
-        settlementAssetId={settlementAssetId}
-        accounts={accounts}
-      />
+    const { result } = renderHook(() =>
+      useSettlementAccount(settlementAssetId, accounts)
     );
-    expect(screen.getByText('Not Found')).toBeInTheDocument();
+    expect(result.current).toBe(undefined);
   });
 });

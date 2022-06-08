@@ -3,14 +3,10 @@ import { useMemo } from 'react';
 
 export const useSettlementAccount = (
   settlementAssetId: string,
-  accounts: PartyBalanceQuery_party_accounts[] | null
+  accounts: PartyBalanceQuery_party_accounts[]
 ): PartyBalanceQuery_party_accounts | null => {
   const callback = () =>
-    accounts?.length
-      ? accounts.find((account) => {
-          return account.asset.id === settlementAssetId;
-        })
-      : null;
+    accounts.find((account) => account.asset.id === settlementAssetId);
   const account = useMemo(callback, [accounts, settlementAssetId]);
   return account as PartyBalanceQuery_party_accounts;
 };

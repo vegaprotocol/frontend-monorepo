@@ -8,6 +8,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { gql, useQuery } from '@apollo/client';
 import { DealTicketBalance } from './deal-ticket-balance';
 import * as React from 'react';
+import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 
 const tempEmptyText = <p>Please select a market from the markets page</p>;
 
@@ -31,22 +32,27 @@ export const DealTicketContainer = () => {
   const { marketId } = useParams<{ marketId: string }>();
   const { keypair } = useVegaWallet();
 
-  const { data: partyData, loading } = useQuery(PARTY_BALANCE_QUERY, {
-    variables: { partyId: keypair?.pub },
-    skip: !keypair?.pub,
-  });
+  const { data: partyData, loading } = useQuery<PartyBalanceQuery>(
+    PARTY_BALANCE_QUERY,
+    {
+      variables: { partyId: keypair?.pub },
+      skip: !keypair?.pub,
+    }
+  );
 
   return marketId ? (
     <Container marketId={marketId}>
       {(data) => (
         <DealTicketManager market={data.market}>
-          {loading ? null : (
+          {loading ? (
+            'Loading...'
+          ) : (
             <DealTicketBalance
               settlementAsset={
                 data.market.tradableInstrument.instrument.product
                   ?.settlementAsset
               }
-              accounts={partyData?.party.accounts}
+              accounts={partyData?.party?.accounts || []}
               isWalletConnected={!!keypair?.pub}
             />
           )}
