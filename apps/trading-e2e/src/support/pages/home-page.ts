@@ -1,4 +1,5 @@
 import BasePage from './base-page';
+import type { OpenMarketType } from '../step_definitions/home-page.step';
 
 export default class HomePage extends BasePage {
   validateStringIsDisplayedAtTopOfTable(value: string) {
@@ -20,41 +21,41 @@ export default class HomePage extends BasePage {
       .its('body.data.markets');
   }
 
-  getOpenMarketCodes(openMarkets: []) {
+  getOpenMarketCodes(openMarkets: OpenMarketType[]) {
     const openMarketCodes: string[] = [];
-    openMarkets.forEach((market: []) => {
+    openMarkets.forEach((market: OpenMarketType) => {
       openMarketCodes.push(market.tradableInstrument.instrument.code);
     });
     return cy.wrap(openMarketCodes);
   }
 
-  getOldestTradableInstrument(openMarkets: []) {
+  getOldestOpenMarket(openMarkets: OpenMarketType[]) {
     let currentOldestTime = 9999999999999;
-    let oldestMarketInstrument;
-    openMarkets.forEach((market: []) => {
-      const epochTimestamp = Date.parse(market.marketTimestamps.open);
-      if (epochTimestamp < currentOldestTime) {
-        currentOldestTime = epochTimestamp;
-        oldestMarketInstrument = market.tradableInstrument;
+    let oldestMarket;
+    openMarkets.forEach((market: OpenMarketType) => {
+      const marketTime = Date.parse(market.marketTimestamps.open);
+      if (marketTime < currentOldestTime) {
+        currentOldestTime = marketTime;
+        oldestMarket = market;
       }
     });
-    return cy.wrap(oldestMarketInstrument);
+    return cy.wrap(oldestMarket);
   }
 
-  getMostRecentTradableInstrument(openMarkets: []) {
+  getMostRecentOpenMarket(openMarkets: OpenMarketType[]) {
     let currentNewTime = 0;
-    let mostRecentMarketInstrument;
-    openMarkets.forEach((market: []) => {
-      const epochTimestamp = Date.parse(market.marketTimestamps.open);
-      if (epochTimestamp > currentNewTime) {
-        currentNewTime = epochTimestamp;
-        mostRecentMarketInstrument = market.tradableInstrument;
+    let mostRecentMarket;
+    openMarkets.forEach((market: OpenMarketType) => {
+      const marketTime = Date.parse(market.marketTimestamps.open);
+      if (marketTime > currentNewTime) {
+        currentNewTime = marketTime;
+        mostRecentMarket = market;
       }
     });
-    return cy.wrap(mostRecentMarketInstrument);
+    return cy.wrap(mostRecentMarket);
   }
 
-  validateTableCodesExistOnServer(openMarketCodes: []) {
+  validateTableCodesExistOnServer(openMarketCodes: string[]) {
     cy.get('table tr', { timeout: 12000 }).each(($element, index) => {
       if (index > 0) {
         // skip header row
@@ -72,7 +73,7 @@ export default class HomePage extends BasePage {
     cy.get('table tr').each(($element, index) => {
       if (index > 0) {
         // skip header row
-        cy.get($element).within(() => {
+        cy.root().within(() => {
           cy.getByTestId('price').should('not.be.empty');
         });
       }

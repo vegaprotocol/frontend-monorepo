@@ -5,9 +5,21 @@ import HomePage from '../pages/home-page';
 const vegaWallet = new VegaWallet();
 const homePage = new HomePage();
 
+export interface OpenMarketType { 
+  marketTimestamps: {
+    open: string;
+  };
+  tradableInstrument: {
+    instrument: {
+      code: string;
+      name: string;
+    };
+  };
+}
+
 When('I query the server for Open Markets', function () {
-  homePage.getOpenMarketsFromServer().then((openMarkets) => {
-    this.openMarketData = openMarkets;
+  homePage.getOpenMarketsFromServer().then((openMarkets: OpenMarketType[]) => {
+    cy.wrap(openMarkets).as('openMarketData');
   });
 });
 
@@ -24,14 +36,14 @@ Then('the choose market overlay is no longer showing', () => {
 
 Then(
   'the server contains at least {int} open markets',
-  function (expectNumber) {
-    expect(this.openMarketData.length).to.be.at.least(expectNumber);
+  function (expectNumber: number) {
+    cy.get('@openMarketData').its('length').should('be.at.least', expectNumber)
   }
 );
 
 Then(
   'I expect the market overlay table to contain at least {int} rows',
-  function (expectNumber) {
+  function (expectNumber: number) {
     cy.get('table tr').then((row) => {
       expect(row.length).to.be.at.least(expectNumber);
     });
@@ -41,52 +53,82 @@ Then(
 Then(
   'each market shown in overlay table exists as open market on server',
   function () {
-    homePage.getOpenMarketCodes(this.openMarketData).then((openMarketCodes) => {
-      homePage.validateTableCodesExistOnServer(openMarketCodes);
-    });
+    const arrayOfOpenMarketCodes: string[] = [];
+    cy.get('@openMarketData')
+      .each((openMarket: OpenMarketType) => {
+        arrayOfOpenMarketCodes.push(openMarket.tradableInstrument.instrument.code);
+    })
+    .then(() => {
+      homePage.validateTableCodesExistOnServer(arrayOfOpenMarketCodes);
+    })
   }
 );
 
 Then(
   'each market shown in overlay table contains content under the last price and change fields',
   function () {
-    homePage.getOpenMarketCodes(this.openMarketData).then((openMarketCodes) => {
-      homePage.validateTableContainsLastPriceAndChange(openMarketCodes);
-    });
+    homePage.validateTableContainsLastPriceAndChange();
   }
 );
 
 Then(
   'each market shown in the full list exists as open market on server',
   function () {
-    homePage.getOpenMarketCodes(this.openMarketData).each((openMarketCode) => {
-      cy.contains(openMarketCode).should('be.visible');
-    });
+    cy.get('@openMarketData')
+      .each((openMarket: OpenMarketType) => {
+        cy.contains(openMarket.tradableInstrument.instrument.code).should('be.visible');
+    })
   }
 );
 
 Then(
-  'the oldest market trading in continous mode shown at top of overlay table',
-  function () {
-    homePage
-      .getOldestTradableInstrument(this.openMarketData)
-      .then((oldestTradableInstrument) => {
-        homePage.validateStringIsDisplayedAtTopOfTable(
-          oldestTradableInstrument.instrument.code
-        );
-      });
+  'the oldest market trading in continous mode shown at top of overlay table', () => {
+    let currentOldestTime = 9999999999999;
+    let oldestMarketInstrumentCode: string;
+
+    cy.get('@openMarketData').each((openMarket: OpenMarketType) => {
+      const marketTime = Date.parse(openMarket.marketTimestamps.open);
+      if (marketTime < currentOldestTime) {
+        currentOldestTime = marketTime;
+        oldestMarketInstrumentCode = openMarket.tradableInstrument.instrument.code;
+      }
+    })
+    .then(() => {
+      homePage.validateStringIsDisplayedAtTopOfTable(oldestMarketInstrumentCode);
+    })
+  }
+);
+
+Then(
+  'the oldest market trading in continous mode shown at top of overlay table alternative', () => {
+    cy
+      .get('@openMarketData')
+      .then((openMarkets: OpenMarketType[]) => {
+        homePage.getOldestOpenMarket(openMarkets);
+      })
+      .then((oldestOpenMarket: OpenMarketType) => {
+        homePage.validateStringIsDisplayedAtTopOfTable(oldestOpenMarket.tradableInstrument.instrument.code);
+      })
   }
 );
 
 Then(
   'the oldest current trading market is loaded on the trading tab',
   function () {
-    homePage
-      .getOldestTradableInstrument(this.openMarketData)
-      .then((oldestTradableInstrument) => {
+    let currentOldestTime = 9999999999999;
+    let oldestMarketInstrumentName: string;
+
+    cy.get('@openMarketData').each((openMarket: OpenMarketType) => {
+      const marketTime = Date.parse(openMarket.marketTimestamps.open);
+      if (marketTime < currentOldestTime) {
+        currentOldestTime = marketTime;
+        oldestMarketInstrumentName = openMarket.tradableInstrument.instrument.name;
+      }
+    })
+    .then(() => {
         cy.getByTestId('market', { timeout: 12000 }).within(() => {
           cy.get('button')
-            .contains(oldestTradableInstrument.instrument.name)
+            .contains(oldestMarketInstrumentName)
             .should('be.visible');
         });
       });
@@ -96,23 +138,37 @@ Then(
 Then(
   'the most recent current trading market is loaded on the trading tab',
   function () {
-    homePage
-      .getMostRecentTradableInstrument(this.openMarketData)
-      .then((mostRecentMarketInstrument) => {
-        cy.getByTestId('market', { timeout: 12000 }).within(() => {
-          cy.get('button')
-            .contains(mostRecentMarketInstrument.instrument.name)
-            .should('be.visible');
-        });
+    let currentNewTime = 0;
+    let mostRecentMarketInstrumentName: string;
+    cy.get('@openMarketData').each((openMarket: OpenMarketType) => {
+      const marketTime = Date.parse(openMarket.marketTimestamps.open);
+      if (marketTime > currentNewTime) {
+        currentNewTime = marketTime;
+        mostRecentMarketInstrumentName = openMarket.tradableInstrument.instrument.name;
+      }
+    })
+    .then(() => {
+      cy.getByTestId('market', { timeout: 12000 }).within(() => {
+        cy.get('button')
+          .contains(mostRecentMarketInstrumentName)
+          .should('be.visible');
       });
+    });
   }
 );
 
 When('I click the most recent trading market', function () {
-  homePage
-    .getMostRecentTradableInstrument(this.openMarketData)
-    .then((mostRecentMarketInstrument) => {
-      cy.contains(mostRecentMarketInstrument.instrument.code).click();
+  let currentNewTime = 0;
+  let mostRecentMarketInstrumentCode: string;
+  cy.get('@openMarketData').each((openMarket: OpenMarketType) => {
+    const marketTime = Date.parse(openMarket.marketTimestamps.open);
+    if (marketTime > currentNewTime) {
+      currentNewTime = marketTime;
+      mostRecentMarketInstrumentCode = openMarket.tradableInstrument.instrument.code;
+    }
+  })
+    .then(() => {
+      cy.contains(mostRecentMarketInstrumentCode).click();
     });
 });
 
