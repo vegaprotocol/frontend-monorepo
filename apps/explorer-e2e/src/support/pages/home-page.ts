@@ -55,9 +55,9 @@ export default class HomePage extends BasePage {
       .eq(3)
       .invoke('text')
       .should('match', /\d+d \d+h \d+m \d+s/i);
-    cy.getByTestId(this.statsValue).eq(4).should('have.text', '2');
+    cy.getByTestId(this.statsValue).eq(4).should('have.text', '4');
     cy.getByTestId(this.statsValue).eq(5).should('have.text', '0');
-    cy.getByTestId(this.statsValue).eq(6).should('have.text', '0.00');
+    cy.getByTestId(this.statsValue).eq(6).should('have.text', '4.00');
     cy.getByTestId(this.statsValue).eq(7).should('have.text', '0');
     cy.getByTestId(this.statsValue).eq(8).should('have.text', '0');
     cy.getByTestId(this.statsValue).eq(9).should('have.text', '0');

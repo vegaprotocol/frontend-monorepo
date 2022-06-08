@@ -3,9 +3,6 @@ import BasePage from './base-page';
 export default class NetworkParametersPage extends BasePage {
   networkParametersHeader = 'network-param-header';
   parameters = 'parameters';
-  jsonParamNameClassName = '.hljs-attr';
-  jsonParamValueStringClassName = '.hljs-string';
-  jsonParamValueNumberClassName = '.hljs-number';
   parameterKeyValueRow = 'key-value-table-row';
 
   verifyNetworkParametersDisplayed() {
@@ -14,22 +11,9 @@ export default class NetworkParametersPage extends BasePage {
       'Network Parameters'
     );
 
-    cy.get(this.jsonParamNameClassName)
-      .should('have.length.at.least', 18)
-      .each(($paramName) => {
-        cy.wrap($paramName).should('not.be.empty');
-      });
-    cy.get(this.jsonParamValueStringClassName)
-      .should('have.length.at.least', 6)
-      .each(($paramValue) => {
-        cy.wrap($paramValue).should('not.be.empty');
-      });
-
-    cy.get(this.jsonParamValueNumberClassName)
-      .should('have.length.at.least', 7)
-      .each(($paramValue) => {
-        cy.wrap($paramValue).should('not.be.empty');
-      });
+    this.validateJsonParameterNamesNotEmpty(18)
+    this.validateJsonValueStringsNotEmpty(6)
+    this.validateJsonValueNumbersNotEmpty(7)
 
     cy.getByTestId(this.parameterKeyValueRow).each(($row) => {
       cy.wrap($row).find('dt').should('not.be.empty');

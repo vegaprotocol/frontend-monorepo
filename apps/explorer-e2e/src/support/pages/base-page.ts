@@ -13,6 +13,9 @@ export default class BasePage {
   searchButton = 'search-button';
   searchError = 'search-error';
   openMobileMenuBtn = 'open-menu';
+  jsonParamNameClassName = '.hljs-attr';
+  jsonParamValueStringClassName = '.hljs-string';
+  jsonParamValueNumberClassName = '.hljs-number';
 
   navigateToTxs() {
     cy.get(`a[href='${this.transactionsUrl}']`).click();
@@ -96,5 +99,29 @@ export default class BasePage {
           expect($list).to.have.length(headersAmount);
         });
     });
+  }
+
+  validateJsonParameterNamesNotEmpty(expectedNum: number) {
+    cy.get(this.jsonParamNameClassName)
+      .should('have.length.at.least', expectedNum)
+      .each(($paramName) => {
+        cy.wrap($paramName).should('not.be.empty');
+      });
+  }
+
+  validateJsonValueStringsNotEmpty(expectedNum: number) {
+    cy.get(this.jsonParamValueStringClassName)
+      .should('have.length.at.least', expectedNum)
+      .each(($paramValue) => {
+        cy.wrap($paramValue).should('not.be.empty');
+      });
+  }
+
+  validateJsonValueNumbersNotEmpty(expectedNum: number) {
+    cy.get(this.jsonParamValueNumberClassName)
+      .should('have.length.at.least', expectedNum)
+      .each(($paramValue) => {
+        cy.wrap($paramValue).should('not.be.empty');
+      });
   }
 }

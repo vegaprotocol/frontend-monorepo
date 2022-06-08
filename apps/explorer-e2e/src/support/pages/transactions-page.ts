@@ -48,16 +48,8 @@ export default class TransactionsPage extends BasePage {
           .invoke('text')
           .then((txTypeTxt) => {
             if (txTypeTxt == 'Order Submission') {
-              cy.get('.hljs-attr')
-                .should('have.length.at.least', 8)
-                .each(($propertyName) => {
-                  cy.wrap($propertyName).should('not.be.empty');
-                });
-              cy.get('.hljs-string')
-                .should('have.length.at.least', 8)
-                .each(($propertyValue) => {
-                  cy.wrap($propertyValue).should('not.be.empty');
-                });
+              this.validateJsonParameterNamesNotEmpty(8)
+              this.validateJsonValueStringsNotEmpty(8)
             }
           });
       } else {
