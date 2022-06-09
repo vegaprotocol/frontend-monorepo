@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState } from "@vegaprotocol/types";
+import { MarketState } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: SimpleMarkets
@@ -117,6 +117,5 @@ export interface SimpleMarkets {
 }
 
 export interface SimpleMarketsVariables {
-  CandleInterval: Interval;
   CandleSince: string;
 }

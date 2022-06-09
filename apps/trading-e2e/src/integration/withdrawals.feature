@@ -1,7 +1,8 @@
 Feature: Withdrawals to eth wallet
 
   Background:
-    Given I navigate to withdrawal page
+    Given I can connect to Ethereum
+    And I navigate to withdrawal page
     And I connect to Vega Wallet
 
   Scenario: Succesfull withdrawal

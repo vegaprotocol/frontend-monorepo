@@ -10,7 +10,7 @@ export const ProposalTermsJson = ({
   const { t } = useTranslation();
   return (
     <section>
-      <h2>{t('proposalTerms')}</h2>
+      <h2 className="text-h4 text-white mb-8">{t('proposalTerms')}</h2>
       <SyntaxHighlighter data={terms} />
     </section>
   );

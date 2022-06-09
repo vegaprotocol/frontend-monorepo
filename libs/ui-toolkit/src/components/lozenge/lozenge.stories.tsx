@@ -10,11 +10,6 @@ const Template: Story = (args) => <Lozenge {...args}>lozenge</Lozenge>;
 
 export const Default = Template.bind({});
 
-export const WithDetails = Template.bind({});
-WithDetails.args = {
-  details: 'details text',
-};
-
 export const Highlight = Template.bind({});
 Highlight.args = {
   variant: 'highlight',

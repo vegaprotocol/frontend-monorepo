@@ -1,37 +1,33 @@
-import type BigNumber from 'bignumber.js';
 import { useCallback } from 'react';
-import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts';
 import type { Asset } from './deposit-manager';
-import { useEthereumReadContract } from '@vegaprotocol/web3';
+import { useBridgeContract, useEthereumReadContract } from '@vegaprotocol/web3';
+import BigNumber from 'bignumber.js';
+import { addDecimal } from '@vegaprotocol/react-helpers';
 
-interface Limits {
-  min: BigNumber;
-  max: BigNumber;
-}
-
-export const useGetDepositLimits = (
-  contract: VegaErc20Bridge | null,
-  asset?: Asset
-): Limits | null => {
+export const useGetDepositLimits = (asset?: Asset, decimals?: number) => {
+  const contract = useBridgeContract();
   const getLimits = useCallback(async () => {
     if (!contract || !asset || asset.source.__typename !== 'ERC20') {
       return;
     }
 
     return Promise.all([
-      contract.getDepositMinimum(asset.source.contractAddress, asset.decimals),
-      contract.getDepositMaximum(asset.source.contractAddress, asset.decimals),
+      contract.getDepositMinimum(asset.source.contractAddress),
+      contract.getDepositMaximum(asset.source.contractAddress),
     ]);
   }, [asset, contract]);
 
   const {
     state: { data },
-  } = useEthereumReadContract<[BigNumber, BigNumber] | undefined>(getLimits);
+  } = useEthereumReadContract(getLimits);
 
-  if (!data) return null;
+  if (!data || !decimals) return null;
+
+  const min = new BigNumber(addDecimal(data[0].toString(), decimals));
+  const max = new BigNumber(addDecimal(data[1].toString(), decimals));
 
   return {
-    min: data[0],
-    max: data[1],
+    min,
+    max: max.isEqualTo(0) ? new BigNumber(Infinity) : max,
   };
 };

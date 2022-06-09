@@ -46,7 +46,7 @@ export const NODES_QUERY = gql`
 `;
 
 const NodeListItemName = ({ children }: { children: React.ReactNode }) => (
-  <span className="mr-4 underline">{children}</span>
+  <span className="mr-4 underline text-white">{children}</span>
 );
 
 const NodeListTr = ({ children }: { children: React.ReactNode }) => (

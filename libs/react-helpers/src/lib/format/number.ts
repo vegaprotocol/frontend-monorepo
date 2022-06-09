@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js';
+import { BigNumber as EthersBigNumber } from 'ethers';
 import memoize from 'lodash/memoize';
 import { getUserLocale } from './utils';
 
@@ -6,15 +7,22 @@ export function toDecimal(numberOfDecimals: number) {
   return Math.pow(10, -numberOfDecimals);
 }
 
+export function toBigNum(
+  rawValue: string | number | EthersBigNumber,
+  decimals: number
+): BigNumber {
+  return new BigNumber(
+    rawValue instanceof EthersBigNumber ? rawValue.toString() : rawValue || 0
+  ).dividedBy(Math.pow(10, decimals));
+}
+
 export function addDecimal(
-  value: string | number,
+  value: string | number | EthersBigNumber,
   decimals: number,
   decimalPrecision = decimals
 ): string {
   if (!decimals) return value.toString();
-  return new BigNumber(value || 0)
-    .dividedBy(Math.pow(10, decimals))
-    .toFixed(decimalPrecision);
+  return toBigNum(value, decimals).toFixed(decimalPrecision);
 }
 
 export function removeDecimal(value: string, decimals: number): string {

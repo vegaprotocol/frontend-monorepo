@@ -1,3 +1,4 @@
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { Trans } from 'react-i18next';
 
 import { Links } from '../../config';
@@ -13,8 +14,12 @@ export const AppFooter = () => {
           i18nKey="footerLinksText"
           components={{
             /* eslint-disable */
-            feedbackLink: <a href={Links.FEEDBACK} />,
-            githubLink: <a href={Links.GITHUB} />,
+            feedbackLink: (
+              <Link className="text-white underline" href={Links.FEEDBACK} />
+            ),
+            githubLink: (
+              <Link className="text-white underline" href={Links.GITHUB} />
+            ),
             /* eslint-enable */
           }}
         />

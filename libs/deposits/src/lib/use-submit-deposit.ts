@@ -7,8 +7,11 @@ import type {
 import { DepositStatus } from '@vegaprotocol/types';
 import { useState } from 'react';
 import { remove0x } from '@vegaprotocol/react-helpers';
-import { useEthereumTransaction } from '@vegaprotocol/web3';
-import type { VegaErc20Bridge } from '@vegaprotocol/smart-contracts';
+import {
+  useBridgeContract,
+  useEthereumConfig,
+  useEthereumTransaction,
+} from '@vegaprotocol/web3';
 
 const DEPOSIT_EVENT_SUB = gql`
   subscription DepositEvent($partyId: ID!) {
@@ -24,10 +27,9 @@ const DEPOSIT_EVENT_SUB = gql`
   }
 `;
 
-export const useSubmitDeposit = (
-  contract: VegaErc20Bridge | null,
-  confirmations: number
-) => {
+export const useSubmitDeposit = () => {
+  const { config } = useEthereumConfig();
+  const contract = useBridgeContract();
   const [confirmationEvent, setConfirmationEvent] =
     useState<DepositEvent_busEvents_event_Deposit | null>(null);
   // Store public key from contract arguments for use in the subscription,
@@ -52,7 +54,7 @@ export const useSubmitDeposit = (
       args.amount,
       args.vegaPublicKey
     );
-  }, confirmations);
+  }, config?.confirmations);
 
   useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
     variables: { partyId: partyId ? remove0x(partyId) : '' },

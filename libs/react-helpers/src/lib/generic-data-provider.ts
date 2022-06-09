@@ -50,7 +50,7 @@ interface GetDelta<SubscriptionData, Delta> {
 }
 
 /**
- * @param subscriptionQuery query that will beused for subscription
+ * @param subscriptionQuery query that will be used for subscription
  * @param update function that will be execued on each onNext, it should update data base on delta, it can reload data provider
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
@@ -67,7 +67,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
 ): Subscribe<Data, Delta> {
   // list of callbacks passed through subscribe call
   const callbacks: UpdateCallback<Data, Delta>[] = [];
-  // subscription is started before inital query, all deltas that will arrive before inital query response are put on queue
+  // subscription is started before initial query, all deltas that will arrive before initial query response are put on queue
   const updateQueue: Delta[] = [];
 
   let variables: OperationVariables | undefined = undefined;
@@ -92,7 +92,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     callbacks.forEach((callback) => notify(callback, delta));
   };
 
-  const initalFetch = async () => {
+  const initialFetch = async () => {
     if (!client) {
       return;
     }
@@ -103,7 +103,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         fetchPolicy,
       });
       data = getData(res.data);
-      // if there was some updates received from subscription during initial query loading apply them on just reveived data
+      // if there was some updates received from subscription during initial query loading apply them on just received data
       if (data && updateQueue && updateQueue.length > 0) {
         data = produce(data, (draft) => {
           while (updateQueue.length) {
@@ -139,7 +139,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     } else {
       loading = true;
       error = undefined;
-      initalFetch();
+      initialFetch();
     }
   };
 
@@ -180,7 +180,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         },
         () => reload()
       );
-    await initalFetch();
+    await initialFetch();
   };
 
   const reset = (clean = true) => {
@@ -245,8 +245,8 @@ const memoize = <Data, Delta>(
 
 /**
  * @param query Query<QueryData>
- * @param subscriptionQuery Query<SubscriptionData> query that will beused for subscription
- * @param update Update<Data, Delta> function that will be execued on each onNext, it should update data base on delta, it can reload data provider
+ * @param subscriptionQuery Query<SubscriptionData> query that will be used for subscription
+ * @param update Update<Data, Delta> function that will be executed on each onNext, it should update data base on delta, it can reload data provider
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
  * @param fetchPolicy
