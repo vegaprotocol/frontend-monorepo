@@ -2,7 +2,6 @@ import {
   Token,
   TokenVesting,
   Claim,
-  CollateralBridge,
   StakingBridge,
 } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';

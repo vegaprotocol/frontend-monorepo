@@ -1,5 +1,4 @@
 import {
-  addDecimal,
   removeDecimal,
   t,
   ethereumAddress,
