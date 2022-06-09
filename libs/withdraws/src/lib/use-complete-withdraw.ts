@@ -33,7 +33,13 @@ export const useCompleteWithdraw = () => {
       if (!contract) {
         return null;
       }
-      return contract.withdraw(args);
+      return contract.withdrawAsset(
+        args.assetSource,
+        args.amount,
+        args.targetAddress,
+        args.nonce,
+        args.signatures
+      );
     });
 
   const submit = useCallback(

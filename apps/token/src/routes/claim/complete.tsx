@@ -38,6 +38,7 @@ export const Complete = ({
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${commitTxHash}`}
+            target="_blank"
           >
             {commitTxHash}
           </Link>
@@ -49,6 +50,7 @@ export const Complete = ({
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${claimTxHash}`}
+            target="_blank"
           >
             {claimTxHash}
           </Link>

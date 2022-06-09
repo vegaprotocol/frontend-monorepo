@@ -1,31 +1,22 @@
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Links } from '../../config';
 
 export const DownloadWalletPrompt = () => {
   const { t } = useTranslation();
   return (
-    <>
+    <div className="mt-8">
       <h3>{t('getWallet')}</h3>
-      <p style={{ margin: 0 }}>
-        <a
-          className={'text-deemphasise'}
-          href={Links.WALLET_GUIDE}
-          target="_blank"
-          rel="noreferrer"
-        >
+      <p>
+        <Link className="text-deemphasise" href={Links.WALLET_GUIDE}>
           {t('readGuide')}
-        </a>
+        </Link>
       </p>
-      <p style={{ margin: 0 }}>
-        <a
-          className={'text-deemphasise'}
-          href={Links.WALLET_RELEASES}
-          target="_blank"
-          rel="noreferrer"
-        >
+      <p>
+        <Link className="text-deemphasise" href={Links.WALLET_RELEASES}>
           {t('downloadWallet')}
-        </a>
+        </Link>
       </p>
-    </>
+    </div>
   );
 };

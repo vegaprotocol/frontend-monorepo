@@ -1,29 +1,28 @@
-import type { TxData } from '@vegaprotocol/smart-contracts';
 import {
-  VegaClaim,
-  VegaErc20Bridge,
-  VegaStaking,
-  ERC20Token,
-  VegaVesting,
+  Token,
+  TokenVesting,
+  Claim,
+  CollateralBridge,
+  StakingBridge,
 } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
-import uniqBy from 'lodash/uniqBy';
 import React from 'react';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 import { SplashLoader } from '../../components/splash-loader';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { defaultProvider } from '../../lib/web3-connectors';
+import { useEthereumConfig } from '@vegaprotocol/web3';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
  */
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
-  const { ADDRESSES, VEGA_ENV } = useEnvironment();
   const { provider: activeProvider, account } = useWeb3React();
-  const [txs, setTxs] = React.useState<TxData[]>([]);
+  const { config } = useEthereumConfig();
+  const { VEGA_ENV, ADDRESSES } = useEnvironment();
   const [contracts, setContracts] = React.useState<Pick<
     ContractsContextShape,
     'token' | 'staking' | 'vesting' | 'claim' | 'erc20Bridge'
@@ -45,49 +44,25 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       signer = provider.getSigner();
     }
 
-    if (provider) {
+    if (provider && config) {
       setContracts({
-        token: new ERC20Token(
-          ADDRESSES.vegaTokenAddress,
-          // @ts-ignore Cant accept JsonRpcProvider provider
-          provider,
-          signer
+        token: new Token(ADDRESSES.vegaTokenAddress, signer || provider),
+        staking: new StakingBridge(
+          config.staking_bridge_contract.address,
+          signer || provider
         ),
-        // @ts-ignore Cant accept JsonRpcProvider provider
-        staking: new VegaStaking(VEGA_ENV, provider, signer),
-        // @ts-ignore Cant accept JsonRpcProvider provider
-        vesting: new VegaVesting(VEGA_ENV, provider, signer),
-        // @ts-ignore Cant accept JsonRpcProvider provider
-        claim: new VegaClaim(VEGA_ENV, provider, signer),
-        erc20Bridge: new VegaErc20Bridge(
-          VEGA_ENV,
-          // @ts-ignore Cant accept JsonRpcProvider provider
-          provider,
-          signer
+        vesting: new TokenVesting(
+          config.token_vesting_contract.address,
+          signer || provider
+        ),
+        claim: new Claim(ADDRESSES.claimAddress, signer || provider),
+        erc20Bridge: new CollateralBridge(
+          config.collateral_bridge_contract.address,
+          signer || provider
         ),
       });
     }
-  }, [activeProvider, account, ADDRESSES.vegaTokenAddress, VEGA_ENV]);
-
-  React.useEffect(() => {
-    if (!contracts) return;
-
-    const mergeTxs = (existing: TxData[], incoming: TxData[]) => {
-      return uniqBy([...incoming, ...existing], 'tx.hash');
-    };
-
-    contracts.staking.listen((txs) => {
-      setTxs((curr) => mergeTxs(curr, txs));
-    });
-
-    contracts.vesting.listen((txs) => {
-      setTxs((curr) => mergeTxs(curr, txs));
-    });
-  }, [contracts]);
-
-  React.useEffect(() => {
-    setTxs([]);
-  }, [account]);
+  }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
 
   if (!contracts) {
     return (
@@ -98,7 +73,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   }
 
   return (
-    <ContractsContext.Provider value={{ ...contracts, transactions: txs }}>
+    <ContractsContext.Provider value={contracts}>
       {children}
     </ContractsContext.Provider>
   );

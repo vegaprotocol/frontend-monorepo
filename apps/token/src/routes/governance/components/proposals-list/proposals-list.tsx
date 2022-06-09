@@ -20,58 +20,67 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     return <p>{t('noProposals')}</p>;
   }
 
-  const renderRow = (proposal: Proposals_proposals) => {
-    if (!proposal || !proposal.id) return null;
-
-    return (
-      <li className="last:mb-0 mb-24" key={proposal.id}>
-        <Link to={proposal.id} className="underline">
-          <header>{getProposalName(proposal)}</header>
-        </Link>
-        <KeyValueTable muted={true}>
-          <KeyValueTableRow>
-            {t('state')}
-            <span data-testid="governance-proposal-state">
-              <CurrentProposalState proposal={proposal} />
-            </span>
-          </KeyValueTableRow>
-          <KeyValueTableRow>
-            {isFuture(new Date(proposal.terms.closingDatetime))
-              ? t('closesOn')
-              : t('closedOn')}
-
-            <span data-testid="governance-proposal-closingDate">
-              {format(
-                new Date(proposal.terms.closingDatetime),
-                DATE_FORMAT_DETAILED
-              )}
-            </span>
-          </KeyValueTableRow>
-          <KeyValueTableRow>
-            {isFuture(new Date(proposal.terms.enactmentDatetime))
-              ? t('proposedEnactment')
-              : t('enactedOn')}
-
-            <span data-testid="governance-proposal-enactmentDate">
-              {format(
-                new Date(proposal.terms.enactmentDatetime),
-                DATE_FORMAT_DETAILED
-              )}
-            </span>
-          </KeyValueTableRow>
-        </KeyValueTable>
-      </li>
-    );
-  };
-
   return (
     <>
       <Heading title={t('pageTitleGovernance')} />
-      <p>{t('proposedChangesToVegaNetwork')}</p>
-      <p>{t('vegaTokenHoldersCanVote')}</p>
-      <p>{t('requiredMajorityDescription')}</p>
-      <h2>{t('proposals')}</h2>
-      <ul>{proposals.map((row) => renderRow(row))}</ul>
+      <p className="mb-8">{t('proposedChangesToVegaNetwork')}</p>
+      <p className="mb-8">{t('vegaTokenHoldersCanVote')}</p>
+      <p className="mb-8">{t('requiredMajorityDescription')}</p>
+      <h2 className="text-h4 text-white">{t('proposals')}</h2>
+      <ul>
+        {proposals.map((proposal) => (
+          <ProposalListItem proposal={proposal} />
+        ))}
+      </ul>
     </>
+  );
+};
+
+interface ProposalListItemProps {
+  proposal: Proposals_proposals;
+}
+
+const ProposalListItem = ({ proposal }: ProposalListItemProps) => {
+  const { t } = useTranslation();
+  if (!proposal || !proposal.id) return null;
+
+  return (
+    <li className="last:mb-0 mb-24" key={proposal.id}>
+      <Link to={proposal.id} className="underline text-white">
+        <header>{getProposalName(proposal)}</header>
+      </Link>
+      <KeyValueTable muted={true}>
+        <KeyValueTableRow>
+          {t('state')}
+          <span data-testid="governance-proposal-state">
+            <CurrentProposalState proposal={proposal} />
+          </span>
+        </KeyValueTableRow>
+        <KeyValueTableRow>
+          {isFuture(new Date(proposal.terms.closingDatetime))
+            ? t('closesOn')
+            : t('closedOn')}
+
+          <span data-testid="governance-proposal-closingDate">
+            {format(
+              new Date(proposal.terms.closingDatetime),
+              DATE_FORMAT_DETAILED
+            )}
+          </span>
+        </KeyValueTableRow>
+        <KeyValueTableRow>
+          {isFuture(new Date(proposal.terms.enactmentDatetime))
+            ? t('proposedEnactment')
+            : t('enactedOn')}
+
+          <span data-testid="governance-proposal-enactmentDate">
+            {format(
+              new Date(proposal.terms.enactmentDatetime),
+              DATE_FORMAT_DETAILED
+            )}
+          </span>
+        </KeyValueTableRow>
+      </KeyValueTable>
+    </li>
   );
 };

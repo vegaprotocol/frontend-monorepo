@@ -1,4 +1,3 @@
-import type { TxData } from '@vegaprotocol/smart-contracts';
 import { Dialog, Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/network-switcher';
 import React from 'react';
@@ -8,9 +7,10 @@ import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { useContracts } from '../../contexts/contracts/contracts-context';
 import { truncateMiddle } from '../../lib/truncate-middle';
 import { Tick } from '../icons';
+import type { TxData } from '../../stores/transactions';
+import { useTransactionStore } from '../../stores/transactions';
 
 const TransactionModalTh = ({ children }: { children: React.ReactNode }) => (
   <th className="border-b border-black-25 text-black-60 text-left font-normal">
@@ -31,7 +31,7 @@ const TransactionModalStatus = ({
 export const TransactionModal = () => {
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
-  const { transactions } = useContracts();
+  const { transactions } = useTransactionStore();
   const { appState, appDispatch } = useAppState();
 
   const renderStatus = (txObj: TxData) => {
@@ -84,6 +84,7 @@ export const TransactionModal = () => {
                   <TransactionModalTd>
                     <Link
                       title={t('View transaction on Etherscan')}
+                      target="_blank"
                       href={`${ETHERSCAN_URL}/tx/${transaction.tx.hash}`}
                     >
                       {truncateMiddle(transaction.tx.hash)}

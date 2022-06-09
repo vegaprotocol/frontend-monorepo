@@ -38,7 +38,13 @@ export const useWithdraw = (cancelled: boolean) => {
     if (!contract) {
       return null;
     }
-    return contract.withdraw(args);
+    return contract.withdrawAsset(
+      args.assetSource,
+      args.amount,
+      args.targetAddress,
+      args.nonce,
+      args.signatures
+    );
   });
 
   const { data, stopPolling } = useQuery<Erc20Approval, Erc20ApprovalVariables>(

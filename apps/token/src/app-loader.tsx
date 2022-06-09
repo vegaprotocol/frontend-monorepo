@@ -1,4 +1,5 @@
 import * as Sentry from '@sentry/react';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet, useEagerConnect } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
@@ -43,11 +44,16 @@ export const AppLoader = ({ children }: { children: React.ReactElement }) => {
           vesting.totalStaked(),
           token.decimals(),
         ]);
+
+        const totalSupply = toBigNum(supply, decimals);
+        const totalWallet = toBigNum(totalAssociatedWallet, decimals);
+        const totalVesting = toBigNum(totalAssociatedVesting, decimals);
+
         appDispatch({
           type: AppStateActionType.SET_TOKEN,
           decimals,
-          totalSupply: supply,
-          totalAssociated: totalAssociatedWallet.plus(totalAssociatedVesting),
+          totalSupply,
+          totalAssociated: totalWallet.plus(totalVesting),
         });
         setBalancesLoaded(true);
       } catch (err) {
