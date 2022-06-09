@@ -92,7 +92,7 @@ export default class BlocksPage extends BasePage {
     expectedBlocks: number,
     scrollAttempts: number
   ) {
-    cy.intercept('https://lb.testnet.vega.xyz/tm/blockchain?maxHeight*').as(
+    cy.intercept('*blockchain?maxHeight*').as(
       'blockchain_load'
     );
 
