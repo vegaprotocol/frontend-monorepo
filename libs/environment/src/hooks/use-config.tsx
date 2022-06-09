@@ -5,7 +5,7 @@ import type { Environment, Configuration, ConfigStatus } from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
 import { promiseRaceToSuccess } from '../utils/promise-race-success';
 
-const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
+export const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
 
 export type EnvironmentWithOptionalUrl = Partial<Environment> &
   Omit<Environment, 'VEGA_URL'>;
@@ -23,7 +23,14 @@ const getCachedConfig = () => {
 
   if (value) {
     try {
-      return JSON.parse(value) as Configuration;
+      const config = JSON.parse(value) as Configuration;
+      const hasValidConfig = validateConfiguration(config);
+
+      if (!hasValidConfig) {
+        throw new Error('Invalid configuration found in the storage.');
+      }
+
+      return config;
     } catch (err) {
       LocalStorage.removeItem(LOCAL_STORAGE_NETWORK_KEY);
       console.warn(
@@ -65,7 +72,6 @@ export const useConfig = (
             JSON.stringify({ hosts: configData.hosts })
           );
         } catch (err) {
-          console.log(err);
           setStatus('error-loading-config');
         }
       })();

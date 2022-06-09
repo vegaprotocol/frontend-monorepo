@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { Networks } from '@vegaprotocol/react-helpers';
 import type { EnvironmentWithOptionalUrl } from './use-config';
-import { useConfig } from './use-config';
+import { useConfig, LOCAL_STORAGE_NETWORK_KEY } from './use-config';
 
 type HostMapping = Record<string, number | Error>;
 
@@ -56,6 +56,9 @@ function setupFetch(configUrl: string, hostMap: HostMapping) {
     } as Response);
   };
 }
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
 
 global.fetch = jest.fn();
 
@@ -229,5 +232,95 @@ describe('useConfig hook', () => {
 
     expect(result.current.status).toBe('error-loading-node');
     expect(mockUpdate).not.toHaveBeenCalled();
+  });
+
+  it('caches the list of networks', async () => {
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate)
+    );
+
+    await run1.waitForNextUpdate();
+    jest.runAllTimers();
+    await run1.waitForNextUpdate();
+
+    expect(run1.result.current.status).toBe('success');
+    expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
+
+    // @ts-ignore typescript doesn't recognise the mocked instance
+    fetch.mockClear();
+
+    const run2 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate)
+    );
+
+    jest.runAllTimers();
+    await run2.waitForNextUpdate();
+
+    expect(run2.result.current.status).toBe('success');
+    expect(fetch).not.toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
+  });
+
+  it('caches the list of networks between runs', async () => {
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate)
+    );
+
+    await run1.waitForNextUpdate();
+    jest.runAllTimers();
+    await run1.waitForNextUpdate();
+
+    expect(run1.result.current.status).toBe('success');
+    expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
+
+    // @ts-ignore typescript doesn't recognise the mocked instance
+    fetch.mockClear();
+
+    const run2 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate)
+    );
+
+    jest.runAllTimers();
+    await run2.waitForNextUpdate();
+
+    expect(run2.result.current.status).toBe('success');
+    expect(fetch).not.toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
+  });
+
+  it('refetches the network configuration and resets the cache when malformed data found in the storage', async () => {
+    window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, '{not:{valid:{json');
+    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
+
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate)
+    );
+
+    await run1.waitForNextUpdate();
+    jest.runAllTimers();
+    await run1.waitForNextUpdate();
+
+    expect(run1.result.current.status).toBe('success');
+    expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
+    expect(consoleSpy).toHaveBeenCalled();
+
+    consoleSpy.mockRestore();
+  });
+
+  it('refetches the network configuration and resets the cache when invalid data found in the storage', async () => {
+    window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, JSON.stringify({ invalid: 'data' }));
+    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
+
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate)
+    );
+
+    await run1.waitForNextUpdate();
+    jest.runAllTimers();
+    await run1.waitForNextUpdate();
+
+    expect(run1.result.current.status).toBe('success');
+    expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
+    expect(consoleSpy).toHaveBeenCalled();
+
+    consoleSpy.mockRestore();
   });
 });
