@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { getVariantBackground } from '../../utils/intent';
-import type { TailwindIntents } from '../../utils/intent';
+import { Intent } from '../../utils/intent';
 
 interface LozengeProps {
   children: ReactNode;
-  variant?: TailwindIntents;
+  variant?: Intent;
   className?: string;
   details?: string;
 }
@@ -23,7 +23,7 @@ const getLozengeClasses = (variant: LozengeProps['variant']) => {
 
 export const Lozenge = ({
   children,
-  variant,
+  variant = Intent.None,
   className,
   details,
   ...props

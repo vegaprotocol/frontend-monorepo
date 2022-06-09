@@ -122,7 +122,7 @@ export const RedemptionInformation = () => {
       <Callout
         title={t('Stake your Locked VEGA tokens!')}
         iconName="hand-up"
-        intent={Intent.Prompt}
+        intent={Intent.Primary}
       >
         <p>{t('Find out more about Staking.')}</p>
         <Link to="/staking">{t('Stake VEGA tokens')}</Link>

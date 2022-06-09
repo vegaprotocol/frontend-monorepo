@@ -31,7 +31,7 @@ const getColor = (change: number | string) => {
   if (parseFloat(change as string) < 0) {
     return theme.colors.vega.pink;
   }
-  return theme.colors.intent.highlight;
+  return theme.colors.black[10];
 };
 
 const SimpleMarketPercentChange = ({ candles }: Props) => {

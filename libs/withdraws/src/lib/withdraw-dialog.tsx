@@ -108,13 +108,13 @@ const getProps = (
     [VegaTxStatus.Requested]: {
       title: t('Confirm withdrawal'),
       icon: <Icon name="hand-up" size={20} />,
-      intent: Intent.Prompt,
+      intent: Intent.Primary,
       children: <Step>Confirm withdrawal in Vega wallet</Step>,
     },
     [VegaTxStatus.Pending]: {
       title: t('Withdrawal transaction pending'),
       icon: <Loader size="small" />,
-      intent: Intent.Progress,
+      intent: Intent.None,
       children: <Step>Awaiting transaction</Step>,
     },
   };
@@ -139,13 +139,13 @@ const getProps = (
     [EthTxStatus.Requested]: {
       title: t('Confirm transaction'),
       icon: <Icon name="hand-up" size={20} />,
-      intent: Intent.Prompt,
+      intent: Intent.Primary,
       children: <Step>{t('Confirm transaction in wallet')}</Step>,
     },
     [EthTxStatus.Pending]: {
       title: t('Ethereum transaction pending'),
       icon: <Loader size="small" />,
-      intent: Intent.Progress,
+      intent: Intent.None,
       children: (
         <Step>
           <span>

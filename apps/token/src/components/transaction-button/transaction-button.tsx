@@ -90,7 +90,7 @@ export const TransactionButton = ({
     return (
       <Wrapper>
         <Text>
-          <span className="text-intent-danger">
+          <span className="text-danger">
             <Error />
           </span>
           <span>{t('txButtonFailure')}</span>
@@ -129,8 +129,8 @@ export const TransactionButtonFooter = ({
   if (message) {
     return (
       <div className="mt-4 mb-0 mx-0">
-        <p className="m-0 py-4 pl-8 border-l border-[3px] border-intent-warning text-ui">
-          <span className="relative top-2 mr-4 text-intent-warning">
+        <p className="m-0 py-4 pl-8 border-l border-[3px] border-warning text-ui">
+          <span className="relative top-2 mr-4 text-warning">
             <Error />
           </span>
           {message}

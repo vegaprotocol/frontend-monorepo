@@ -62,9 +62,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
                 progress={yesPercentage}
               />
             </th>
-            <th className="text-intent-danger w-[18%] text-right">
-              {t('against')}
-            </th>
+            <th className="text-danger w-[18%] text-right">{t('against')}</th>
           </tr>
         </thead>
         <tbody>
@@ -98,7 +96,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         {participationMet ? (
           <span className="text-vega-green mx-4">{t('met')}</span>
         ) : (
-          <span className="text-intent-danger mx-4">{t('notMet')}</span>
+          <span className="text-danger mx-4">{t('notMet')}</span>
         )}{' '}
         {formatNumber(totalTokensVoted, defaultDecimals)}{' '}
         {formatNumber(totalTokensPercentage, defaultDecimals)}%

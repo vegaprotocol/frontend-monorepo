@@ -1,9 +1,10 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
-const shadeOfGray = shade => {
-  const value = Math.round(255*shade/100);
-  return `rgb(${value}, ${value}, ${value})`;
-}
+const shadeOfGray = (shade) => {
+  const decValue = Math.round((255 * shade) / 100);
+  const hexValue = decValue.toString(16).padStart(2, '0');
+  return `#${hexValue}${hexValue}${hexValue}`;
+};
 
 module.exports = {
   screens: {
@@ -21,18 +22,17 @@ module.exports = {
       yellow: '#EDFF22',
       pink: '#FF2D5E',
       green: '#00F780',
+      red: '#FF261A',
     },
     red: {
       DEFAULT: '#ED1515',
-      transparent: 'rgba(255, 38, 65, 0.3)',
-      vega: '#FF261A',
       dark: '#EB001B',
+      bar: 'rgba(47, 246, 139, 0.45)', // #2FF68B 45%
     },
     green: {
       DEFAULT: '#26FF8A',
-      transparent: 'rgba(38, 255, 138, 0.3)',
       dark: '#008545',
-      vega: '#00F780',
+      bar: 'rgba(47, 246, 139, 0.45)', // #2FF68B 45%
     },
     text: '#C7C7C7',
     deemphasise: '#8A9BA8',
@@ -41,21 +41,6 @@ module.exports = {
       strong: '#FFF',
       normal: '#F5F8FA',
       muted: '#676767',
-      '02': shadeOfGray(100-2),
-      '05': shadeOfGray(100-5),
-      10: shadeOfGray(100-10),
-      25: shadeOfGray(100-25),
-      40: shadeOfGray(100-40),
-      60: shadeOfGray(100-60),
-      80: shadeOfGray(100-80),
-      95: shadeOfGray(100-95),
-      100: shadeOfGray(100-100),
-    },
-    black: {
-      DEFAULT: '#000',
-      strong: '#000',
-      normal: '#000',
-      muted: '#BFCCD6',
       '02': shadeOfGray(2),
       '05': shadeOfGray(5),
       10: shadeOfGray(10),
@@ -66,25 +51,32 @@ module.exports = {
       95: shadeOfGray(95),
       100: shadeOfGray(100),
     },
+    black: {
+      DEFAULT: '#000',
+      strong: '#000',
+      normal: '#000',
+      muted: '#BFCCD6',
+      '02': shadeOfGray(100 - 2),
+      '05': shadeOfGray(100 - 5),
+      10: shadeOfGray(100 - 10),
+      25: shadeOfGray(100 - 25),
+      40: shadeOfGray(100 - 40),
+      60: shadeOfGray(100 - 60),
+      80: shadeOfGray(100 - 80),
+      95: shadeOfGray(100 - 95),
+      100: shadeOfGray(100 - 100),
+    },
     blue: '#1DA2FB',
     coral: '#FF6057',
-    pink: '#FF2D5E',
     orange: '#D9822B',
     yellow: {
       DEFAULT: '#EDFF22',
       dark: '#474B0A', // yellow 0.3 opacity on black
     },
-    intent: {
-      danger: '#FF261A',
-      warning: '#FF7A1A',
-      prompt: '#EDFF22',
-      success: '#26FF8A',
-      help: '#494949',
-      highlight: '#E5E5E5',
-    },
-    'intent-background': {
-      danger: '#9E0025', // for white text
-    },
+    danger: '#FF261A',
+    warning: '#FF7A1A',
+    success: '#26FF8A',
+    'danger-bg': '#9E0025', // for white text
   },
   spacing: {
     0: '0px',

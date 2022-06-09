@@ -41,7 +41,7 @@ export const Radio = ({ id, value, label, disabled, hasError }: RadioProps) => {
     'dark:bg-white-25',
     {
       'border-black-60 dark:border-white-60': !hasError,
-      'border-intent-danger dark:border-intent-danger': hasError,
+      'border-danger dark:border-danger': hasError,
     }
   );
   return (

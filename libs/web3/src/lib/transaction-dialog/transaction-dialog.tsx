@@ -66,12 +66,12 @@ export const TransactionDialog = ({
       [EthTxStatus.Requested]: {
         title: t('Confirm transaction'),
         icon: <Icon name="hand-up" size={20} />,
-        intent: Intent.Prompt,
+        intent: Intent.Primary,
       },
       [EthTxStatus.Pending]: {
         title: t(`${name} pending`),
         icon: <Loader size="small" />,
-        intent: Intent.Progress,
+        intent: Intent.None,
       },
       [EthTxStatus.Complete]: {
         title: t(`${name} complete`),

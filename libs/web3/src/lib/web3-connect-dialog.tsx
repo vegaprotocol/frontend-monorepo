@@ -22,7 +22,7 @@ export const Web3ConnectDialog = ({
     <Dialog
       open={dialogOpen}
       onChange={setDialogOpen}
-      intent={Intent.Prompt}
+      intent={Intent.Primary}
       title={t('Connect to your Ethereum wallet')}
     >
       <ul data-testid="web3-connector-list">
