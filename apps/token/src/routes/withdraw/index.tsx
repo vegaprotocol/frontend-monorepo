@@ -15,6 +15,7 @@ import type {
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
+import { Flags } from '../../config';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -152,7 +153,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
       <WithdrawManager
         assets={data.assets || []}
         accounts={accounts}
-        useNewContract={false}
+        useNewContract={Flags.USE_NEW_CONTRACTS}
       />
     </>
   );

@@ -8,4 +8,7 @@ export const Flags = {
   MOCK: TRUTHY.includes(process.env['NX_MOCKED'] as string),
   FAIRGROUND: TRUTHY.includes(process.env['NX_FAIRGROUND'] as string),
   NETWORK_LIMITS: TRUTHY.includes(process.env['NX_NETWORK_LIMITS'] as string),
+  USE_NEW_CONTRACTS: TRUTHY.includes(
+    process.env['NX_USE_NEW_CONTRACTS'] as string
+  ),
 };
