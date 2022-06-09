@@ -3,7 +3,7 @@ import { forwardRef } from 'react';
 import classNames from 'classnames';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
-import { inputClassNames } from '../../utils/form-elements';
+import { defaultFormElement } from '../../utils/shared';
 
 type InputRootProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;
@@ -132,16 +132,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasAppended = !!(appendIconName || appendElement);
 
     const inputClassName = classNames('appearance-none', 'h-28', className, {
-      'pl-28': hasPrepended ?? hasAppended,
+      'pl-28': hasPrepended,
+      'pr-28': hasAppended,
+      'border-vega-pink dark:border-vega-pink': hasError,
     });
 
     const input = (
       <input
         {...props}
         ref={ref}
-        className={classNames(
-          inputClassNames({ className: inputClassName, hasError })
-        )}
+        className={classNames(defaultFormElement, inputClassName)}
       />
     );
 
