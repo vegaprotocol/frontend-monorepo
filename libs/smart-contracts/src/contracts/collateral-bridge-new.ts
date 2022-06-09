@@ -2,8 +2,9 @@ import type { BigNumber } from 'ethers';
 import { ethers } from 'ethers';
 import abi from '../abis/erc20_bridge_new_abi.json';
 
-export class CollateralBridge {
+export class CollateralBridgeNew {
   public contract: ethers.Contract;
+  public isNewContract = true;
 
   constructor(
     address: string,
@@ -38,6 +39,7 @@ export class CollateralBridge {
     nonce: string,
     signatures: string
   ) {
+    console.log(assetSource, amount, target, creation, nonce, signatures);
     return this.contract.withdraw_asset(
       assetSource,
       amount,

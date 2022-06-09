@@ -27,6 +27,7 @@ beforeEach(() => {
     assets: [generateAsset()],
     accounts: [generateAccount()],
     initialAssetId: undefined,
+    useNewContract: true,
   };
   mockSubmit = jest.fn();
   mockReset = jest.fn();

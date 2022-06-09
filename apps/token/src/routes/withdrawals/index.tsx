@@ -34,7 +34,7 @@ const Withdrawals = () => {
 
 const WithdrawPendingContainer = () => {
   const { t } = useTranslation();
-  const { transaction, submit } = useCompleteWithdraw();
+  const { transaction, submit } = useCompleteWithdraw(false);
   const { data, loading, error } = useWithdrawals();
 
   const withdrawals = React.useMemo(() => {

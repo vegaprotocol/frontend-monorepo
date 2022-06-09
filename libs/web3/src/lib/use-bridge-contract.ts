@@ -1,9 +1,12 @@
-import { CollateralBridge } from '@vegaprotocol/smart-contracts';
+import {
+  CollateralBridge,
+  CollateralBridgeNew,
+} from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { useEthereumConfig } from './use-ethereum-config';
 
-export const useBridgeContract = () => {
+export const useBridgeContract = (newContract: boolean) => {
   const { provider } = useWeb3React();
   const { config } = useEthereumConfig();
 
@@ -14,11 +17,16 @@ export const useBridgeContract = () => {
 
     const signer = provider.getSigner();
 
-    return new CollateralBridge(
-      config.collateral_bridge_contract.address,
-      signer || provider
-    );
-  }, [provider, config]);
+    return newContract
+      ? new CollateralBridgeNew(
+          config.collateral_bridge_contract.address,
+          signer || provider
+        )
+      : new CollateralBridge(
+          config.collateral_bridge_contract.address,
+          signer || provider
+        );
+  }, [provider, config, newContract]);
 
   return contract;
 };
