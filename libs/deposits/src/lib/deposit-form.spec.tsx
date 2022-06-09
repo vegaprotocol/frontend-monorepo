@@ -105,12 +105,7 @@ it('Form validation', async () => {
     await screen.findByText('Amount is above permitted maximum')
   ).toBeInTheDocument();
 
-  rerender(
-    <DepositForm
-      {...props}
-      limits={{ min: new BigNumber(0), max: new BigNumber(100) }}
-    />
-  );
+  rerender(<DepositForm {...props} limits={{ max: new BigNumber(100) }} />);
 
   const amountMoreThanAllowance = '31';
   fireEvent.change(screen.getByLabelText('Amount'), {
@@ -123,23 +118,11 @@ it('Form validation', async () => {
   // Min amount validation
   rerender(<DepositForm {...props} selectedAsset={asset} />); // Rerender with selected asset so we have asset.decimals
 
-  const amountLessThanMinViable = '0.00001';
+  const amountLessThanMinViable = '-0.00001';
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountLessThanMinViable },
   });
 
-  expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
-
-  rerender(
-    <DepositForm
-      {...props}
-      limits={{ max: new BigNumber(20), min: new BigNumber(10) }}
-    />
-  );
-  const amountLessThanLimit = '5';
-  fireEvent.change(screen.getByLabelText('Amount'), {
-    target: { value: amountLessThanLimit },
-  });
   expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
 });
 
@@ -190,10 +173,7 @@ it('Deposit', async () => {
     />
   );
 
-  // Check deposit limits are displayed
-  expect(
-    screen.getByText('Minimum', { selector: 'th' }).nextElementSibling
-  ).toHaveTextContent(limits.min.toString());
+  // Check deposit limit is displayed
   expect(
     screen.getByText('Maximum', { selector: 'th' }).nextElementSibling
   ).toHaveTextContent(limits.max.toString());

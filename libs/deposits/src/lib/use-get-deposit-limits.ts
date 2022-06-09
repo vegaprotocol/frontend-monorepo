@@ -11,10 +11,7 @@ export const useGetDepositLimits = (asset?: Asset, decimals?: number) => {
       return;
     }
 
-    return Promise.all([
-      contract.getDepositMinimum(asset.source.contractAddress),
-      contract.getDepositMaximum(asset.source.contractAddress),
-    ]);
+    return contract.getDepositMaximum(asset.source.contractAddress);
   }, [asset, contract]);
 
   const {
@@ -23,11 +20,9 @@ export const useGetDepositLimits = (asset?: Asset, decimals?: number) => {
 
   if (!data || !decimals) return null;
 
-  const min = new BigNumber(addDecimal(data[0].toString(), decimals));
-  const max = new BigNumber(addDecimal(data[1].toString(), decimals));
+  const max = new BigNumber(addDecimal(data.toString(), decimals));
 
   return {
-    min,
     max: max.isEqualTo(0) ? new BigNumber(Infinity) : max,
   };
 };

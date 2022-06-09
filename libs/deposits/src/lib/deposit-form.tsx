@@ -46,7 +46,6 @@ export interface DepositFormProps {
   }) => Promise<void>;
   requestFaucet: () => Promise<void>;
   limits: {
-    min: BigNumber;
     max: BigNumber;
   } | null;
   allowance: BigNumber | undefined;
@@ -96,19 +95,6 @@ export const DepositForm = ({
 
   const assetId = useWatch({ name: 'asset', control });
   const amount = useWatch({ name: 'amount', control });
-
-  const min = useMemo(() => {
-    // Min viable amount given asset decimals EG for WEI 0.000000000000000001
-    const minViableAmount = selectedAsset
-      ? new BigNumber(addDecimal('1', selectedAsset.decimals))
-      : new BigNumber(0);
-
-    const min = limits
-      ? BigNumber.maximum(minViableAmount, limits.min)
-      : minViableAmount;
-
-    return min;
-  }, [limits, selectedAsset]);
 
   const max = useMemo(() => {
     const maxApproved = allowance ? allowance : new BigNumber(Infinity);
@@ -207,7 +193,7 @@ export const DepositForm = ({
           {...register('amount', {
             validate: {
               required,
-              minSafe: (value) => minSafe(min)(value),
+              minSafe: (value) => minSafe(new BigNumber(0))(value),
               maxSafe: (v) => {
                 const value = new BigNumber(v);
                 if (value.isGreaterThan(max.approved)) {
