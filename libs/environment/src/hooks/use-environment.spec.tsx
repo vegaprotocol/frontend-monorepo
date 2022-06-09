@@ -1,8 +1,9 @@
 import type { ComponentProps } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { Networks, EnvironmentConfig } from '@vegaprotocol/smart-contracts';
+import { Networks } from '@vegaprotocol/react-helpers';
 import type { EnvironmentState } from './use-environment';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
+import { ContractAddresses } from '../types';
 
 const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
   return <EnvironmentProvider {...props} />;
@@ -38,7 +39,7 @@ const mockEnvironmentState: EnvironmentState = {
   ETHEREUM_CHAIN_ID: 3,
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
-  ADDRESSES: EnvironmentConfig[Networks.TESTNET],
+  ADDRESSES: ContractAddresses[Networks.TESTNET],
 };
 
 beforeEach(() => {

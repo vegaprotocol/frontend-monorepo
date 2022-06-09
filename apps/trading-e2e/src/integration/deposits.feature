@@ -1,7 +1,8 @@
 Feature: Deposits to vega wallet
 
   Background:
-    Given I navigate to deposits page
+    Given I can connect to Ethereum
+    And I navigate to deposits page
 
   # wallet is already connected before tests start and doesn't prompt the disconnected state
   @ignore

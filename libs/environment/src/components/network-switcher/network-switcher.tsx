@@ -1,6 +1,6 @@
 import { useForm, Controller } from 'react-hook-form';
-import type { Networks } from '@vegaprotocol/smart-contracts';
 import { Button, Select } from '@vegaprotocol/ui-toolkit';
+import type { Networks } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '../../hooks';
 

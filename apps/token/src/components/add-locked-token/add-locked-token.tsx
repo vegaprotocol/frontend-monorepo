@@ -7,9 +7,9 @@ import { AddTokenButtonLink } from '../add-token-button/add-token-button';
 import { Callout } from '@vegaprotocol/ui-toolkit';
 
 export const AddLockedTokenAddress = () => {
-  const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const addSupported = useAddAssetSupported();
+  const { ADDRESSES } = useEnvironment();
   return (
     <Callout
       title={t(

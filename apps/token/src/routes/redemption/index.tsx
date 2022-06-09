@@ -4,11 +4,13 @@ import { Heading } from '../../components/heading';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import RedemptionRouter from './redemption';
+import { useMatch } from 'react-router-dom';
+import { Routes } from '../router-config';
 
 const RedemptionIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);
   const { t } = useTranslation();
-  const tranche = ':id';
+  const tranche = useMatch(`${Routes.VESTING}/:id`);
 
   return (
     <>

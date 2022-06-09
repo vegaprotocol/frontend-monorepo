@@ -1,5 +1,5 @@
 import React from 'react';
-import { Callout } from '@vegaprotocol/ui-toolkit';
+import { Callout, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -37,11 +37,16 @@ export const TransactionPending = ({
     return defaultTitle;
   }, [heading, remainingConfirmations, t]);
   return (
-    <Callout iconName="refresh" title={title}>
-      {body && <p data-testid="transaction-pending-body">{body}</p>}
-      <p>
+    <Callout icon={<Loader size="small" />} title={title}>
+      {body && (
+        <p className="mb-8" data-testid="transaction-pending-body">
+          {body}
+        </p>
+      )}
+      <p className="mb-8">
         <Link
           title={t('View transaction on Etherscan')}
+          target="_blank"
           href={`${ETHERSCAN_URL}/tx/${hash}`}
         >
           {hash}

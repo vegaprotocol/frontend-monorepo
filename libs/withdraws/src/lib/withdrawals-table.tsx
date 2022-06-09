@@ -138,7 +138,7 @@ const RecipientCell = ({
 }: RecipientCellProps) => {
   return (
     <Link
-      title={t('View address on Etherscan')}
+      title={t('View on Etherscan (opens in a new tab)')}
       href={`${ethUrl}/address/${value}`}
       data-testid="etherscan-link"
     >

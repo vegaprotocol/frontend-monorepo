@@ -1,5 +1,5 @@
 import { useOutletContext } from 'react-router-dom';
-import type { Tranche, EthereumChainId } from '@vegaprotocol/smart-contracts';
+import type { Tranche } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,7 @@ import { TrancheItem } from '../redemption/tranche-item';
 import { TrancheLabel } from './tranche-label';
 import { VestingChart } from './vesting-chart';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 
 const trancheMinimum = 10;
 
@@ -16,12 +16,16 @@ const shouldShowTranche = (t: Tranche) =>
   !t.total_added.isLessThanOrEqualTo(trancheMinimum);
 
 export const Tranches = () => {
-  const { ADDRESSES } = useEnvironment();
   const tranches = useOutletContext<Tranche[]>();
   const [showAll, setShowAll] = React.useState<boolean>(false);
   const { t } = useTranslation();
   const { chainId } = useWeb3React();
+  const { config } = useEthereumConfig();
   const filteredTranches = tranches?.filter(shouldShowTranche) || [];
+
+  if (!config) {
+    return null;
+  }
 
   return (
     <section>
@@ -41,11 +45,7 @@ export const Tranches = () => {
                   unlocked={tranche.total_added.minus(tranche.locked_amount)}
                   total={tranche.total_added}
                   secondaryHeader={
-                    <TrancheLabel
-                      contract={ADDRESSES.vestingAddress}
-                      chainId={`0x${chainId}` as EthereumChainId}
-                      id={tranche.tranche_id}
-                    />
+                    <TrancheLabel chainId={chainId} id={tranche.tranche_id} />
                   }
                 />
               </React.Fragment>

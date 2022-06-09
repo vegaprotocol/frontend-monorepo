@@ -1,6 +1,6 @@
 import Ajv from 'ajv';
 import compileErrors from 'better-ajv-errors';
-import { Networks } from '@vegaprotocol/smart-contracts';
+import { Networks } from '@vegaprotocol/react-helpers';
 import type { Environment } from '../types';
 import { ENV_KEYS } from '../types';
 
@@ -44,14 +44,7 @@ const baseProps = {
   ADDRESSES: {
     type: 'object',
     additionalProperties: false,
-    required: [
-      'vegaTokenAddress',
-      'claimAddress',
-      'lockedAddress',
-      'vestingAddress',
-      'stakingBridge',
-      'erc20Bridge',
-    ],
+    required: ['vegaTokenAddress', 'claimAddress', 'lockedAddress'],
     properties: {
       vegaTokenAddress: {
         type: 'string',
@@ -60,15 +53,6 @@ const baseProps = {
         type: 'string',
       },
       lockedAddress: {
-        type: 'string',
-      },
-      vestingAddress: {
-        type: 'string',
-      },
-      stakingBridge: {
-        type: 'string',
-      },
-      erc20Bridge: {
         type: 'string',
       },
     },

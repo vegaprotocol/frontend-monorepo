@@ -1,7 +1,6 @@
-import type { Networks } from '@vegaprotocol/smart-contracts';
-import { EnvironmentConfig } from '@vegaprotocol/smart-contracts';
-import type { Environment, RawEnvironment, EnvKey } from '../types';
-import { ENV_KEYS } from '../types';
+import type { Networks } from '@vegaprotocol/react-helpers';
+import type { RawEnvironment, EnvKey, Environment } from '../types';
+import { ContractAddresses, ENV_KEYS } from '../types';
 
 declare global {
   interface Window {
@@ -80,7 +79,7 @@ export const compileEnvironment = (
 
   return {
     ...environment,
-    ADDRESSES: EnvironmentConfig[environment['VEGA_ENV']],
+    ADDRESSES: ContractAddresses[environment['VEGA_ENV']],
     VEGA_NETWORKS: {
       [environment.VEGA_ENV]: isBrowser
         ? window.location.href

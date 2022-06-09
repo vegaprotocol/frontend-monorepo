@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { Networks } from '@vegaprotocol/smart-contracts';
+import { Networks } from '@vegaprotocol/react-helpers';
 import type { EnvironmentWithOptionalUrl } from './use-config';
 import { useConfig } from './use-config';
 
@@ -22,12 +22,9 @@ const mockEnvironment: EnvironmentWithOptionalUrl = {
   ETHEREUM_PROVIDER_URL: 'https://ethereum.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
   ADDRESSES: {
-    vegaTokenAddress: '',
-    claimAddress: '',
-    lockedAddress: '',
-    vestingAddress: '',
-    stakingBridge: '',
-    erc20Bridge: '',
+    vegaTokenAddress: '0x0',
+    claimAddress: '0x0',
+    lockedAddress: '0x0',
   },
 };
 

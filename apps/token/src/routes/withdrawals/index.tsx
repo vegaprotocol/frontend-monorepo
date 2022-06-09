@@ -1,4 +1,4 @@
-import { Splash } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { format } from 'date-fns';
 import orderBy from 'lodash/orderBy';
 import React from 'react';
@@ -10,7 +10,6 @@ import { Heading } from '../../components/heading';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { BigNumber } from '../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
 import { addDecimal } from '../../lib/decimals';
@@ -27,21 +26,13 @@ const Withdrawals = () => {
     <>
       <Heading title={t('withdrawalsTitle')} />
       <VegaWalletContainer>
-        {(currVegaKey) => (
-          <WithdrawPendingContainer currVegaKey={currVegaKey} />
-        )}
+        {(currVegaKey) => <WithdrawPendingContainer />}
       </VegaWalletContainer>
     </>
   );
 };
 
-interface WithdrawPendingContainerProps {
-  currVegaKey: VegaKeyExtended;
-}
-
-const WithdrawPendingContainer = ({
-  currVegaKey,
-}: WithdrawPendingContainerProps) => {
+const WithdrawPendingContainer = () => {
   const { t } = useTranslation();
   const { transaction, submit } = useCompleteWithdraw();
   const { data, loading, error } = useWithdrawals();
@@ -80,11 +71,11 @@ const WithdrawPendingContainer = ({
   return (
     <>
       <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
-      <p>{t('withdrawalsText')}</p>
-      <p>{t('withdrawalsPreparedWarningText')}</p>
+      <p className="mb-8">{t('withdrawalsText')}</p>
+      <p className="mb-28">{t('withdrawalsPreparedWarningText')}</p>
       <ul role="list">
         {withdrawals.map((w) => (
-          <li key={w.id}>
+          <li key={w.id} className="mb-28">
             <Withdrawal withdrawal={w} complete={submit} />
           </li>
         ))}
@@ -102,37 +93,34 @@ interface WithdrawalProps {
 export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
+  let status = null;
+  let footer = null;
 
-  const renderStatus = ({
-    id,
-    status,
-    txHash,
-    pendingOnForeignChain,
-  }: Withdrawals_party_withdrawals) => {
-    if (pendingOnForeignChain) {
-      return t('Pending');
+  if (withdrawal.pendingOnForeignChain) {
+    status = t('Pending');
+    footer = (
+      <Button
+        className="w-full"
+        disabled={true}
+        onClick={() => complete(withdrawal.id)}
+      >
+        {t('withdrawalsCompleteButton')}
+      </Button>
+    );
+  } else if (withdrawal.status === WithdrawalStatus.Finalized) {
+    if (withdrawal.txHash) {
+      status = t('Complete');
+    } else {
+      status = t('Incomplete');
+      footer = (
+        <Button className="w-full" onClick={() => complete(withdrawal.id)}>
+          {t('withdrawalsCompleteButton')}
+        </Button>
+      );
     }
-
-    if (status === WithdrawalStatus.Finalized) {
-      if (txHash) {
-        return t('Complete');
-      } else {
-        return (
-          <>
-            {t('Incomplete')}{' '}
-            <button
-              className="text-white underline"
-              onClick={() => complete(id)}
-            >
-              {t('withdrawalsCompleteButton')}
-            </button>
-          </>
-        );
-      }
-    }
-
-    return status;
-  };
+  } else {
+    status = withdrawal.status;
+  }
 
   return (
     <div>
@@ -151,8 +139,9 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
           {t('toEthereum')}
           <span>
             <Link
-              title={t('View address on Etherscan')}
+              title={t('View on Etherscan (opens in a new tab)')}
               href={`${ETHERSCAN_URL}/tx/${withdrawal.details?.receiverAddress}`}
+              target="_blank"
             >
               {truncateMiddle(withdrawal.details?.receiverAddress ?? '')}
             </Link>
@@ -174,6 +163,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
               <Link
                 title={t('View transaction on Etherscan')}
                 href={`${ETHERSCAN_URL}/tx/${withdrawal.txHash}`}
+                target="_blank"
               >
                 {truncateMiddle(withdrawal.txHash)}
               </Link>
@@ -184,9 +174,10 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
         </KeyValueTableRow>
         <KeyValueTableRow>
           {t('status')}
-          {renderStatus(withdrawal)}
+          {status}
         </KeyValueTableRow>
       </KeyValueTable>
+      {footer}
     </div>
   );
 };

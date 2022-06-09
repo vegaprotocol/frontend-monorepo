@@ -14,8 +14,8 @@ export function useRefreshAssociatedBalances() {
     async (ethAddress: string, vegaKey: string) => {
       const [walletAssociatedBalance, vestingAssociatedBalance] =
         await Promise.all([
-          staking.stakeBalance(ethAddress, vegaKey),
-          vesting.stakeBalance(ethAddress, vegaKey),
+          staking.stakeBalance(ethAddress, `0x${vegaKey}`),
+          vesting.stakeBalance(ethAddress, `0x${vegaKey}`),
         ]);
 
       appDispatch({

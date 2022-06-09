@@ -1,6 +1,6 @@
-import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { createContext, useContext } from 'react';
+import { useState, createContext, useContext } from 'react';
+
 import { useConfig } from './use-config';
 import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
