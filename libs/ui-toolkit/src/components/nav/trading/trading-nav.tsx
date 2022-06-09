@@ -7,10 +7,18 @@ interface NavItemProps {
   path: string;
   isActive: boolean;
   onClick?: (e: MouseEvent) => null;
+  className?: string;
 }
 
-const NavItem = ({ name, path, isActive, onClick }: NavItemProps) => {
+const NavItem = ({
+  name,
+  path,
+  isActive,
+  onClick,
+  className,
+}: NavItemProps) => {
   const classes = classnames(
+    className,
     'w-full uppercase text-h4 font-normal border-2 py-4 px-12 focus-visible:outline-none dark:focus-visible:outline-none',
     {
       'border-transparent hover:bg-vega-pink hover:dark:bg-vega-yellow':

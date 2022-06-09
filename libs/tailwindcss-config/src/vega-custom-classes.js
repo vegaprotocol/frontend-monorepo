@@ -29,14 +29,27 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.syntax-highlighter-wrapper .hljs-string': {
       color: theme.colors.blue,
     },
-    '.vega-input-shadow': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}`,
+    '.input-border': {
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderTopColor: theme.colors.black['60'],
+      borderLeftColor: theme.colors.black['60'],
+      borderRightColor: theme.colors.black['40'],
+      borderBottomColor: theme.colors.black['40'],
     },
-    '.vega-input-shadow-focus': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.vega.yellow}`,
+    '.dark-input-border': {
+      borderWidth: '1px',
+      borderStyle: 'solid',
+      borderTopColor: theme.colors.white['40'],
+      borderLeftColor: theme.colors.white['40'],
+      borderRightColor: theme.colors.white['60'],
+      borderBottomColor: theme.colors.white['60'],
     },
-    '.vega-input-shadow-focus-error': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.intent.danger}`,
+    '.shadow-vega-yellow': {
+      boxShadow: `0 2px 2px 0 ${theme.colors.vega.yellow}`,
+    },
+    '.shadow-vega-pink': {
+      boxShadow: `0 2px 2px 0 ${theme.colors.vega.yellow}`,
     },
     '.inset-shadow-black': {
       boxShadow: `inset 0 -2px 0 0 ${theme.colors.black.DEFAULT}`,
@@ -49,6 +62,21 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     },
     '.inset-shadow-vega-pink': {
       boxShadow: `inset 0 -2px 0 0 ${theme.colors.vega.pink}`,
+    },
+    '.input-shadow': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}`,
+    },
+    '.input-shadow-focus': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.vega.yellow}`,
+    },
+    '.input-shadow-focus-error': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.intent.danger}`,
+    },
+    '.checkbox-focus-shadow': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, 2px 2px 0 0 ${theme.colors.vega.pink}`,
+    },
+    '.dark-checkbox-focus-shadow': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, 2px 2px 0 0 ${theme.colors.vega.yellow}`,
     },
   });
 });

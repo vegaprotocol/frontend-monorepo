@@ -5,6 +5,7 @@ export * from './button';
 export * from './callout';
 export * from './card';
 export * from './copy-with-tooltip';
+export * from './checkbox';
 export * from './dialog';
 export * from './dropdown-menu';
 export * from './link';

@@ -77,16 +77,15 @@ export const inputClassNames = ({
       'dark:bg-white-25',
       'text-black placeholder:text-black-60 dark:text-white dark:placeholder:text-white-60',
       'text-ui',
-      'focus:outline-none focus:vega-input-shadow-focus',
+      'focus:outline-none focus:input-shadow-focus',
       'disabled:bg-black-10 disabled:dark:bg-white-10',
-      'vega-input-shadow',
+      'input-shadow',
     ],
     {
       'pl-8': !includesLeftPadding(className),
       'pr-8': !includesRightPadding(className),
-      'border-intent-danger focus:vega-input-shadow-focus-error': hasError,
-      'border-t-black-60 border-l-black-60 border-b-black-40 border-r-black-40 dark:border-t-white-40 dark:border-l-white-40 dark:border-b-white-60 dark:border-r-white-60':
-        !hasError,
+      'border-intent-danger focus:input-shadow-focus-error': hasError,
+      'input-border dark:dark-input-border': !hasError,
     },
     className
   );
