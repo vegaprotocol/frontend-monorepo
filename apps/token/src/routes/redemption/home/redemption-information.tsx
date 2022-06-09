@@ -13,9 +13,9 @@ import { Tranche0Table, TrancheTable } from '../tranche-table';
 import { VestingTable } from './vesting-table';
 
 export const RedemptionInformation = () => {
-  const { state, address } = useOutletContext<{
+  const { state, account } = useOutletContext<{
     state: RedemptionState;
-    address: string;
+    account: string;
   }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -28,7 +28,9 @@ export const RedemptionInformation = () => {
       trancheBalances,
     },
   } = useAppState();
+
   const { userTranches } = state;
+
   const filteredTranches = React.useMemo(
     () =>
       userTranches.filter((tr) => {
@@ -41,6 +43,7 @@ export const RedemptionInformation = () => {
       }),
     [trancheBalances, userTranches]
   );
+
   const zeroTranche = React.useMemo(() => {
     const zeroTranche = trancheBalances.find((t) => t.id === 0);
     if (zeroTranche && zeroTranche.locked.isGreaterThan(0)) {
@@ -56,7 +59,9 @@ export const RedemptionInformation = () => {
           <Trans
             i18nKey="noVestingTokens"
             components={{
-              tranchesLink: <Link to={Routes.TRANCHES} />,
+              tranchesLink: (
+                <Link className="underline text-white" to={Routes.TRANCHES} />
+              ),
             }}
           />
         </p>
@@ -67,25 +72,29 @@ export const RedemptionInformation = () => {
 
   return (
     <section data-testid="redemption-page">
-      <Callout>
+      <div className="mb-12">
         <AddLockedTokenAddress />
-      </Callout>
-      <p className="mb-12" data-testid="redemption-description">
+      </div>
+      <p className="mb-24" data-testid="redemption-description">
         {t(
           '{{address}} has {{balance}} VEGA tokens in {{tranches}} tranches of the vesting contract.',
           {
-            address: truncateMiddle(address),
+            address: truncateMiddle(account),
             balance: formatNumber(balanceFormatted),
             tranches: filteredTranches.length,
           }
         )}
       </p>
-      <VestingTable
-        associated={lien}
-        locked={totalLockedBalance}
-        vested={totalVestedBalance}
-      />
-      {filteredTranches.length ? <h2>{t('Tranche breakdown')}</h2> : null}
+      <div className="mb-24">
+        <VestingTable
+          associated={lien}
+          locked={totalLockedBalance}
+          vested={totalVestedBalance}
+        />
+      </div>
+      {filteredTranches.length ? (
+        <h2 className="text-h4 text-white mb-12">{t('Tranche breakdown')}</h2>
+      ) : null}
       {zeroTranche && (
         <Tranche0Table
           trancheId={0}
@@ -124,8 +133,10 @@ export const RedemptionInformation = () => {
         iconName="hand-up"
         intent={Intent.Warning}
       >
-        <p>{t('Find out more about Staking.')}</p>
-        <Link to="/staking">{t('Stake VEGA tokens')}</Link>
+        <p className="mb-12">{t('Find out more about Staking.')}</p>
+        <Link to="/staking" className="underline text-white">
+          {t('Stake VEGA tokens')}
+        </Link>
       </Callout>
     </section>
   );

@@ -13,7 +13,7 @@ import type {
 import { marketsDataProvider } from './markets-data-provider';
 
 export const MarketsContainer = () => {
-  const { pathname, push } = useRouter();
+  const { push } = useRouter();
   const gridRef = useRef<AgGridReact | null>(null);
   const update = useCallback(
     (delta: Markets_markets_data) => {
@@ -56,9 +56,7 @@ export const MarketsContainer = () => {
       <MarketListTable
         ref={gridRef}
         data={data}
-        onRowClicked={(id) =>
-          push(`${pathname}/${id}?portfolio=orders&trade=orderbook`)
-        }
+        onRowClicked={(id) => push(`/markets/${id}`)}
       />
     </AsyncRenderer>
   );

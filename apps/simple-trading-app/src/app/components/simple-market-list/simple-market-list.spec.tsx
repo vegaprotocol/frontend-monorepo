@@ -1,15 +1,22 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import { MockedProvider } from '@apollo/client/testing';
+import type { MockedResponse } from '@apollo/client/testing';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
+import { MARKETS_QUERY } from './data-provider';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
+import type { SimpleMarkets } from './__generated__/SimpleMarkets';
 
-jest.mock('./data-provider', () => jest.fn());
+const mockedNavigate = jest.fn();
 
-jest.mock('@vegaprotocol/react-helpers', () => ({
-  useDataProvider: jest.fn(),
-  t: (txt: string) => txt,
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockedNavigate,
+}));
+
+jest.mock('date-fns', () => ({
+  subDays: () => new Date('2022-06-02T11:11:21.721Z'),
 }));
 
 describe('SimpleMarketList', () => {
@@ -17,16 +24,31 @@ describe('SimpleMarketList', () => {
     jest.clearAllMocks();
   });
 
-  it('should be properly renderer as empty', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useDataProvider as unknown as jest.SpyInstance<any>).mockImplementation(
-      () => ({ data: [], error: false, loading: false })
+  it('should be properly renderer as empty', async () => {
+    const mocks: MockedResponse<SimpleMarkets> = {
+      request: {
+        query: MARKETS_QUERY,
+        variables: {
+          CandleSince: '2022-06-02T11:11:21.721Z',
+        },
+      },
+      result: {
+        data: { markets: [] },
+      },
+    };
+
+    render(
+      <MockedProvider mocks={[mocks]}>
+        <SimpleMarketList />
+      </MockedProvider>
     );
-    render(<SimpleMarketList />);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
     expect(screen.getByText('No data to display')).toBeInTheDocument();
   });
 
-  it('should be properly rendered with some data', () => {
+  it('should be properly rendered with some data', async () => {
     const data = [
       {
         id: '1',
@@ -69,11 +91,26 @@ describe('SimpleMarketList', () => {
         },
       },
     ] as unknown as SimpleMarkets_markets[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useDataProvider as unknown as jest.SpyInstance<any>).mockImplementation(
-      () => ({ data, error: false, loading: false })
+
+    const mocks: MockedResponse<SimpleMarkets> = {
+      request: {
+        query: MARKETS_QUERY,
+        variables: {
+          CandleSince: '2022-06-02T11:11:21.721Z',
+        },
+      },
+      result: {
+        data: { markets: data },
+      },
+    };
+    render(
+      <MockedProvider mocks={[mocks]}>
+        <SimpleMarketList />
+      </MockedProvider>
     );
-    render(<SimpleMarketList />);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
     expect(screen.getByRole('list')).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(2);
   });

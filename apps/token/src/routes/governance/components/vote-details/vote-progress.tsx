@@ -8,21 +8,21 @@ export const VoteProgress = ({
   progress: BigNumber;
 }) => {
   return (
-    <>
+    <div className="w-full h-4 relative">
       <div
         data-testid="vote-progress-indicator"
-        className="relative top-[10px] w-[1px] h-16 bg-white z-[1]"
+        className="absolute top-[-5px] w-[1px] h-16 bg-white z-[1]"
         style={{ left: `${threshold}%` }}
       />
-      <div className="bp3-progress-bar bp3-no-stripes bg-danger rounded-none h-5">
+      <div className="w-full h-4">
         <div
-          className="bp3-progress-meter bg-vega-green rounded-none"
+          className="absolute left-0 bg-vega-green h-4"
           data-testid="vote-progress-bar"
           style={{
             width: `${progress}%`,
           }}
         />
       </div>
-    </>
+    </div>
   );
 };

@@ -1,10 +1,5 @@
 import { render } from '@testing-library/react';
 
-import {
-  EthereumChainIds,
-  EnvironmentConfig,
-  Networks,
-} from '@vegaprotocol/smart-contracts';
 import type { TrancheLabelProps } from './tranche-label';
 import { TrancheLabel } from './tranche-label';
 
@@ -12,26 +7,15 @@ let props: TrancheLabelProps;
 
 beforeEach(() => {
   props = {
-    chainId: EthereumChainIds.Mainnet,
-    contract: EnvironmentConfig[Networks.MAINNET].vestingAddress,
+    chainId: 1,
     id: 5,
   };
 });
 
 it('Renders null for right contract address, wrong network', () => {
-  const WRONG_CHAIN = EthereumChainIds.Goerli;
+  const WRONG_CHAIN = 3;
   const { container } = render(
     <TrancheLabel {...props} chainId={WRONG_CHAIN} />
-  );
-
-  expect(container).toBeEmptyDOMElement();
-});
-
-it('Renders null for right network, wrong contract address', () => {
-  const WRONG_ADDRESS = '0x0';
-
-  const { container } = render(
-    <TrancheLabel {...props} contract={WRONG_ADDRESS} />
   );
 
   expect(container).toBeEmptyDOMElement();

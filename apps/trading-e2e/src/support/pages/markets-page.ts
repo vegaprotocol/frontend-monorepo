@@ -1,7 +1,7 @@
 import BasePage from './base-page';
 
 export default class MarketPage extends BasePage {
-  marketRowHeaderClassname = '.ag-header-cell-text';
+  marketRowHeaderClassname = 'div > span.ag-header-cell-text';
   marketRowNameColumn = 'tradableInstrument.instrument.code';
   marketRowSymbolColumn =
     'tradableInstrument.instrument.product.settlementAsset.symbol';
@@ -27,16 +27,12 @@ export default class MarketPage extends BasePage {
       'Description',
     ];
 
-    cy.get(this.marketRowHeaderClassname)
-      .each(($marketHeader, index) => {
-        cy.wrap($marketHeader).should(
-          'have.text',
-          expectedMarketHeaders[index]
-        );
-      })
-      .then(($list) => {
-        cy.wrap($list).should('have.length', expectedMarketHeaders.length);
-      });
+    for (let index = 0; index < expectedMarketHeaders.length; index++) {
+      cy.get(this.marketRowHeaderClassname).should(
+        'contain.text',
+        expectedMarketHeaders[index]
+      );
+    }
 
     cy.get(`[col-id='${this.marketRowNameColumn}']`).each(($marketName) => {
       cy.wrap($marketName).should('not.be.empty');
@@ -60,9 +56,5 @@ export default class MarketPage extends BasePage {
   clickOnMarket(text: string) {
     cy.get(`[col-id=${this.marketStateColId}]`).should('be.visible');
     cy.get(`[col-id=${this.marketStateColId}]`).contains(text).click();
-    cy.url({ timeout: 8000 }).should(
-      'contain',
-      'portfolio=orders&trade=orderbook'
-    );
   }
 }

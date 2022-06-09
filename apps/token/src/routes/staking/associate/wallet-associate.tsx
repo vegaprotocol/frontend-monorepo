@@ -12,7 +12,8 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import type { EthereumConfig } from '@vegaprotocol/web3';
 
 export const WalletAssociate = ({
   perform,
@@ -20,18 +21,19 @@ export const WalletAssociate = ({
   amount,
   setAmount,
   address,
+  ethereumConfig,
 }: {
   perform: () => void;
   amount: string;
   setAmount: React.Dispatch<React.SetStateAction<string>>;
   vegaKey: VegaKeyExtended;
   address: string;
+  ethereumConfig: EthereumConfig;
 }) => {
-  const { ADDRESSES } = useEnvironment();
   const { t } = useTranslation();
   const {
     appDispatch,
-    appState: { walletBalance, allowance, walletAssociatedBalance },
+    appState: { walletBalance, allowance, walletAssociatedBalance, decimals },
   } = useAppState();
 
   const { token } = useContracts();
@@ -40,16 +42,22 @@ export const WalletAssociate = ({
     state: approveState,
     perform: approve,
     dispatch: approveDispatch,
-  } = useTransaction(() => token.approve(ADDRESSES.stakingBridge));
+  } = useTransaction(() =>
+    token.approve(
+      ethereumConfig.staking_bridge_contract.address,
+      Number.MAX_SAFE_INTEGER.toString()
+    )
+  );
 
   // Once they have approved deposits then we need to refresh their allowance
   React.useEffect(() => {
     const run = async () => {
       if (approveState.txState === TxState.Complete) {
-        const allowance = await token.allowance(
+        const a = await token.allowance(
           address,
-          ADDRESSES.stakingBridge
+          ethereumConfig.staking_bridge_contract.address
         );
+        const allowance = toBigNum(a, decimals);
         appDispatch({
           type: AppStateActionType.SET_ALLOWANCE,
           allowance,
@@ -62,7 +70,8 @@ export const WalletAssociate = ({
     appDispatch,
     approveState.txState,
     token,
-    ADDRESSES.stakingBridge,
+    decimals,
+    ethereumConfig,
   ]);
 
   let pageContent = null;

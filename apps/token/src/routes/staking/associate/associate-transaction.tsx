@@ -1,4 +1,10 @@
-import { Button, Callout, Link, Intent } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Callout,
+  Link,
+  Intent,
+  Loader,
+} from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +21,7 @@ import {
 } from '../../../hooks/transaction-reducer';
 import { Routes } from '../../router-config';
 import type { PartyStakeLinkings_party_stake_linkings } from './__generated__/PartyStakeLinkings';
+import { truncateMiddle } from '../../../lib/truncate-middle';
 
 export const AssociateTransaction = ({
   amount,
@@ -60,22 +67,23 @@ export const AssociateTransaction = ({
 
   if (derivedTxState === TxState.Pending) {
     return (
-      <Callout title={title}>
-        <p data-testid="transaction-pending-body">
+      <Callout icon={<Loader size="small" />} title={title}>
+        <p data-testid="transaction-pending-body" className="mb-8">
           {t('Associating {{amount}} VEGA tokens with Vega key {{vegaKey}}', {
             amount,
-            vegaKey,
+            vegaKey: truncateMiddle(vegaKey),
           })}
         </p>
-        <p>
+        <p className="mb-8">
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${state.txData.hash}`}
+            target="_blank"
           >
-            {state.txData.hash}
+            {t('View on Etherscan (opens in a new tab)')}
           </Link>
         </p>
-        <p data-testid="transaction-pending-footer">
+        <p data-testid="transaction-pending-footer" className="mb-8">
           {t('pendingAssociationText', {
             confirmations: requiredConfirmations,
           })}
@@ -87,10 +95,9 @@ export const AssociateTransaction = ({
   return (
     <TransactionCallout
       completeHeading={t('Done')}
-      completeBody={t(
-        'Vega key {{vegaKey}} can now participate in governance and Nominate a validator with it’s stake.',
-        { vegaKey }
-      )}
+      completeBody={t('successfullAssociationMessage', {
+        vegaKey: truncateMiddle(vegaKey),
+      })}
       completeFooter={
         <RouteLink to={Routes.STAKING}>
           <Button className="fill">

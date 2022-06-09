@@ -7,8 +7,7 @@ export default class DepositsPage extends BasePage {
   amountError = '[role="alert"][aria-describedby="amount"]';
 
   navigateToDeposits() {
-    cy.visit('/portfolio');
-    cy.get(`a[href='/portfolio/deposit']`).click();
+    cy.visit('/portfolio/deposit');
     cy.url().should('include', '/portfolio/deposit');
     cy.getByTestId('deposit-form').should('be.visible');
   }
