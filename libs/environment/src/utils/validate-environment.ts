@@ -1,5 +1,6 @@
 import Ajv from 'ajv';
 import compileErrors from 'better-ajv-errors';
+import { Networks } from '@vegaprotocol/smart-contracts';
 import type { Environment } from '../types';
 import { ENV_KEYS } from '../types';
 
@@ -8,9 +9,11 @@ const ajv = new Ajv({ allErrors: true });
 const baseProps = {
   VEGA_ENV: {
     type: 'string',
+    enum: Object.values(Networks),
   },
   VEGA_NETWORKS: {
     type: 'object',
+    additionalProperties: false,
     properties: {
       MAINNET: {
         type: 'string',
@@ -40,6 +43,7 @@ const baseProps = {
   },
   ADDRESSES: {
     type: 'object',
+    additionalProperties: false,
     required: [
       'vegaTokenAddress',
       'claimAddress',
@@ -73,7 +77,7 @@ const baseProps = {
 
 const schema = {
   type: 'object',
-  oneOf: [
+  anyOf: [
     {
       // config url is not needed when there's an explicit vega url provided
       required: ENV_KEYS.filter((key) => key !== 'VEGA_CONFIG_URL'),
@@ -83,10 +87,13 @@ const schema = {
         VEGA_URL: {
           type: 'string',
         },
+        VEGA_CONFIG_URL: {
+          type: ['string', 'null'],
+        },
       },
     },
     {
-      // vega url is not needed when there's a config url provided
+      // vega url is optional when there's a config url provided
       required: ENV_KEYS.filter((key) => key !== 'VEGA_URL'),
       additionalProperties: false,
       properties: {
@@ -110,7 +117,7 @@ export const validateEnvironment = (
   const isValid = validate(environment);
 
   if (!isValid && validate.errors) {
-    return compileErrors(schema, environment, validate.errors);
+    return compileErrors(schema, environment, validate.errors, { indent: 2 });
   }
 
   return undefined;

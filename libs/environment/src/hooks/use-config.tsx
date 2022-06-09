@@ -65,6 +65,7 @@ export const useConfig = (
             JSON.stringify({ hosts: configResponse.hosts })
           );
         } catch (err) {
+          console.log(err);
           setStatus('error-loading-config');
         }
       })();

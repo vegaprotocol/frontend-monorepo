@@ -11,7 +11,7 @@ type EnvironmentProviderProps = {
   children?: ReactNode;
 };
 
-type EnvironmentState = Environment & {
+export type EnvironmentState = Environment & {
   configStatus: ConfigStatus;
 };
 

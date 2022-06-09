@@ -62,10 +62,6 @@ function setupFetch(configUrl: string, hostMap: HostMapping) {
 
 global.fetch = jest.fn();
 
-const lsGetSpy = jest.spyOn(window.localStorage.__proto__, 'getItem');
-const lsSetSpy = jest.spyOn(window.localStorage.__proto__, 'setItem');
-const lsRemoveSpy = jest.spyOn(window.localStorage.__proto__, 'removeItem');
-
 const mockUpdate = jest.fn();
 
 beforeEach(() => {
