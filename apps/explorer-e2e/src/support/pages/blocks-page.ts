@@ -108,7 +108,7 @@ export default class BlocksPage extends BasePage {
             .then((scrollTarget) => {
               cy.getByTestId(this.infiniteScrollWrapper)
                 .children()
-                .scrollTo(0, scrollTarget, { easing: 'linear' })
+                .scrollTo(0, scrollTarget.toString(), { easing: 'linear' })
                 .wait('@blockchain_load');
 
               // eslint-disable-next-line cypress/no-unnecessary-waiting
