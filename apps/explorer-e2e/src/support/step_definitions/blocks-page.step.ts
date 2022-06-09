@@ -40,7 +40,7 @@ Then('I scroll down to the last block on the page', () => {
 });
 
 Then(
-  'I can expect to see {int} blocks if i scroll {int} times',
+  'I can expect to see at least {int} blocks if i scroll {int} times',
   (expectedBlocks, scrollAttempts) => {
     blocksPage.navigateToOlderBlocksWithInfiniteScroll(
       expectedBlocks,
