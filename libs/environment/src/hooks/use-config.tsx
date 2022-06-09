@@ -52,17 +52,17 @@ export const useConfig = (
         setStatus('loading-config');
         try {
           const response = await fetch(environment.VEGA_CONFIG_URL);
-          const configResponse: Configuration = await response.json();
+          const configData: Configuration = await response.json();
 
-          if (!validateConfiguration(configResponse)) {
+          if (!validateConfiguration(configData)) {
             setStatus('error-validating-config');
             return;
           }
 
-          setConfig({ hosts: configResponse.hosts });
+          setConfig({ hosts: configData.hosts });
           LocalStorage.setItem(
             LOCAL_STORAGE_NETWORK_KEY,
-            JSON.stringify({ hosts: configResponse.hosts })
+            JSON.stringify({ hosts: configData.hosts })
           );
         } catch (err) {
           setStatus('error-loading-config');
