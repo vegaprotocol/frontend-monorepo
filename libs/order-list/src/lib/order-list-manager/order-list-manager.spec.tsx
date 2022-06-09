@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/react-helpers';
-import type { Orders_party_orders } from './__generated__/Orders';
-import * as orderListMock from './order-list';
+import type { Orders_party_orders } from '../__generated__/Orders';
+import * as orderListMock from '../order-list';
 import { forwardRef } from 'react';
 
 jest.mock('./order-list');

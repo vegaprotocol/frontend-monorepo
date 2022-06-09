@@ -1,6 +1,6 @@
 import { act, render, screen } from '@testing-library/react';
 import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import type { Orders_party_orders } from './__generated__/Orders';
+import type { Orders_party_orders } from '../__generated__/Orders';
 import {
   OrderStatus,
   OrderTimeInForce,
@@ -101,10 +101,10 @@ it('Correct formatting applied for market order', async () => {
   });
 
   const cells = screen.getAllByRole('gridcell');
-  const expectedValues = [
-    marketOrder.market?.tradableInstrument.instrument.code,
+  const expectedValues: string[] = [
+    marketOrder.market?.tradableInstrument.instrument.code || '',
     '+10',
-    marketOrder.type,
+    marketOrder.type || '',
     marketOrder.status,
     '5',
     '-',
@@ -120,10 +120,11 @@ it('Correct formatting applied for GTT limit order', async () => {
     render(<OrderList data={[limitOrder]} />);
   });
   const cells = screen.getAllByRole('gridcell');
-  const expectedValues = [
-    limitOrder.market?.tradableInstrument.instrument.code,
+
+  const expectedValues: string[] = [
+    limitOrder.market?.tradableInstrument.instrument.code || '',
     '-10',
-    limitOrder.type,
+    limitOrder.type || '',
     limitOrder.status,
     '5',
     formatNumber(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
@@ -133,9 +134,7 @@ it('Correct formatting applied for GTT limit order', async () => {
     getDateTimeFormat().format(new Date(limitOrder.createdAt)),
     '-',
   ];
-  cells.forEach((cell, i) => {
-    expect(cell).toHaveTextContent(expectedValues[i]);
-  });
+  cells.forEach((cell, i) => expect(cell).toHaveTextContent(expectedValues[i]));
 });
 
 it('Correct formatting applied for a rejected order', async () => {

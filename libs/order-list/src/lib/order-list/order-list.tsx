@@ -1,12 +1,11 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
-import type { Orders_party_orders } from './__generated__/Orders';
+import type { Orders_party_orders } from '../__generated__/Orders';
 import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef } from 'react';
-
 interface OrderListProps {
   data: Orders_party_orders[] | null;
 }

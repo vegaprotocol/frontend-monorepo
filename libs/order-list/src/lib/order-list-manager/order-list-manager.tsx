@@ -1,15 +1,15 @@
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { OrderList } from './order-list';
-import type { OrderFields } from './__generated__/OrderFields';
+import { OrderList } from '../order-list';
+import type { OrderFields } from '../__generated__/OrderFields';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import {
   ordersDataProvider,
   prepareIncomingOrders,
   sortOrders,
-} from './orders-data-provider';
+} from '../order-data-provider';
 import { useCallback, useMemo, useRef } from 'react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { OrderSub_orders } from './__generated__/OrderSub';
+import type { OrderSub_orders } from '../__generated__/OrderSub';
 import isEqual from 'lodash/isEqual';
 
 interface OrderListManagerProps {

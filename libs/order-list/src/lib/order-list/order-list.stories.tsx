@@ -6,7 +6,7 @@ import {
   OrderTimeInForce,
 } from '@vegaprotocol/types';
 import { OrderList } from './order-list';
-import type { Orders_party_orders } from './__generated__/Orders';
+import type { Orders_party_orders } from '../__generated__/Orders';
 
 export default {
   component: OrderList,
@@ -71,7 +71,13 @@ const limitOrder: Orders_party_orders = {
   rejectionReason: null,
 };
 
-const Template: Story = (args) => <OrderList data={args.data} />;
+const Template: Story = (args) => {
+  return (
+    <div style={{ width: 1000, height: 1000 }}>
+      <OrderList data={args.data} />
+    </div>
+  );
+};
 
 export const Default = Template.bind({});
 Default.args = {

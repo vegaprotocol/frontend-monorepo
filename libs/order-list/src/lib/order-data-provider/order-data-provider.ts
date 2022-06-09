@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { OrderFields } from './__generated__/OrderFields';
-import type { Orders, Orders_party_orders } from './__generated__/Orders';
-import type { OrderSub } from './__generated__/OrderSub';
+import type { OrderFields } from '../__generated__/OrderFields';
+import type { Orders, Orders_party_orders } from '../__generated__/Orders';
+import type { OrderSub } from '../__generated__/OrderSub';
 import orderBy from 'lodash/orderBy';
 import uniqBy from 'lodash/uniqBy';
 
