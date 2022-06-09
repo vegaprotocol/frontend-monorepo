@@ -39,7 +39,6 @@ export class CollateralBridgeNew {
     nonce: string,
     signatures: string
   ) {
-    
     return this.contract.withdraw_asset(
       assetSource,
       amount,
