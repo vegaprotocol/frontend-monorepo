@@ -33,4 +33,4 @@ Feature: Blocks Page
     Given I am on the homepage
     When I navigate to the blocks page
     And I scroll down to the last block on the page
-    Then I can expect to see 300 blocks if i scroll 20 times
+    Then I can expect to see 150 blocks if i scroll 10 times
