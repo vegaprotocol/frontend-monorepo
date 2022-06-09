@@ -78,6 +78,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.dark-checkbox-focus-shadow': {
       boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, 2px 2px 0 0 ${theme.colors.vega.yellow}`,
     },
+    '.color-scheme-dark': {
+      colorScheme: 'dark',
+    },
   });
 });
 
