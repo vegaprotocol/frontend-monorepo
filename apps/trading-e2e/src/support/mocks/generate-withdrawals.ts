@@ -1,11 +1,11 @@
-import { AccountType, WithdrawalStatus } from '@vegaprotocol/types';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type { DealTicketQuery } from '@vegaprotocol/deal-ticket';
 
 export const generateWithdrawals = (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   override?: PartialDeep<any>
-): DealTicketQuery => {
+) => {
   const defaultResult = {
     party: {
       id: 'party-0',
