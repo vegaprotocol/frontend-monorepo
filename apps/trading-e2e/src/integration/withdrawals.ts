@@ -25,6 +25,10 @@ describe('withdraw', () => {
   });
 
   it('form validation', () => {
+    // Prompts that there are incomplete withdrawals
+    cy.contains('You have incomplete withdrawals');
+    cy.getByTestId('complete-withdrawals-prompt').should('exist');
+
     cy.getByTestId(submitWithdrawBtn).click();
 
     cy.getByTestId(formFieldError).should('contain.text', 'Required');
