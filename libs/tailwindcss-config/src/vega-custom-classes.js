@@ -46,10 +46,10 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       borderBottomColor: theme.colors.white['60'],
     },
     '.shadow-vega-yellow': {
-      boxShadow: `0 2px 2px 0 ${theme.colors.vega.yellow}`,
+      boxShadow: `2px 2px 0 0 ${theme.colors.vega.yellow}`,
     },
     '.shadow-vega-pink': {
-      boxShadow: `0 2px 2px 0 ${theme.colors.vega.yellow}`,
+      boxShadow: `2px 2px 0 0 ${theme.colors.vega.pink}`,
     },
     '.inset-shadow-black': {
       boxShadow: `inset 0 -2px 0 0 ${theme.colors.black.DEFAULT}`,
