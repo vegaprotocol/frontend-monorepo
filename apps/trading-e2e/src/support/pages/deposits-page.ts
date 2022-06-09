@@ -5,6 +5,8 @@ export default class DepositsPage extends BasePage {
   assetError = '[role="alert"][aria-describedby="asset"]';
   toError = '[role="alert"][aria-describedby="to"]';
   amountError = '[role="alert"][aria-describedby="amount"]';
+  depositSubmitBtn = 'deposit-submit'
+  depositApproveSubmitBtn = 'deposit-approve-submit'
 
   navigateToDeposits() {
     cy.visit('/portfolio/deposit');
@@ -20,8 +22,12 @@ export default class DepositsPage extends BasePage {
     cy.get('[role="dialog"] > div > div > h1').should('have.text', text);
   }
 
-  submitForm() {
-    cy.getByTestId('deposit-submit').click();
+  clickDepositSubmit() {
+    cy.getByTestId(this.depositSubmitBtn).click();
+  }
+
+  clickDepositApproveSubmit() {
+    cy.getByTestId(this.depositApproveSubmitBtn).click();
   }
 
   verifyInvalidPublicKey() {
