@@ -92,9 +92,7 @@ export default class BlocksPage extends BasePage {
     expectedBlocks: number,
     scrollAttempts: number
   ) {
-    cy.intercept('*blockchain?maxHeight*').as(
-      'blockchain_load'
-    );
+    cy.intercept('*blockchain?maxHeight*').as('blockchain_load');
 
     cy.getByTestId(this.blockHeight)
       .last()
