@@ -1,13 +1,11 @@
 describe('deposit form validation', () => {
-  before(() => {
-    cy.mockWeb3Provider();
-  });
-
   beforeEach(() => {
+    cy.mockWeb3Provider();
     cy.visit('/portfolio/deposit');
 
-    // When the page loads you will eagerly connect to Ethereum by default
-    // bypassing Ethereum wallet connection step
+    // Deposit page requires connection Ethereum wallet first
+    cy.getByTestId('connect-eth-wallet-btn').click();
+    cy.getByTestId('web3-connector-MetaMask').click();
 
     cy.contains('Deposit');
   });

@@ -6,7 +6,7 @@ describe('vega wallet', () => {
   const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
 
   beforeEach(() => {
-    // Using portfolio page as no mocking currently required
+    // Using portfolio page as it requires vega wallet connection
     cy.visit('/portfolio');
   });
 
@@ -47,6 +47,7 @@ describe('vega wallet', () => {
 describe('ethereum wallet', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
+    // Using portfolio is it requires Ethereum wallet connection
     cy.visit('/portfolio');
   });
 
