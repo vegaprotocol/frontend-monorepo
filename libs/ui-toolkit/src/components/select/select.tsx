@@ -1,7 +1,7 @@
 import type { SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { inputClassNames } from '../input';
+import { inputClassNames } from '../../utils/form-elements';
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;

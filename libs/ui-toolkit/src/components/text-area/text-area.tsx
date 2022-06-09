@@ -1,6 +1,6 @@
 import type { TextareaHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
-import { inputClassNames } from '../input';
+import { inputClassNames } from '../../utils/form-elements';
 
 export interface TextAreaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
