@@ -6,6 +6,7 @@ import {
   vegaPublicKey,
   minSafe,
   maxSafe,
+  addDecimal,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -112,6 +113,15 @@ export const DepositForm = ({
     };
   }, [limits, allowance, available]);
 
+  const min = useMemo(() => {
+    // Min viable amount given asset decimals EG for WEI 0.000000000000000001
+    const minViableAmount = selectedAsset
+      ? new BigNumber(addDecimal('1', selectedAsset.decimals))
+      : new BigNumber(0);
+
+    return minViableAmount;
+  }, [selectedAsset]);
+
   useEffect(() => {
     onSelectAsset(assetId);
   }, [assetId, onSelectAsset]);
@@ -192,7 +202,7 @@ export const DepositForm = ({
           {...register('amount', {
             validate: {
               required,
-              minSafe: (value) => minSafe(new BigNumber(0))(value),
+              minSafe: (value) => minSafe(new BigNumber(min))(value),
               maxSafe: (v) => {
                 const value = new BigNumber(v);
                 if (value.isGreaterThan(max.approved)) {

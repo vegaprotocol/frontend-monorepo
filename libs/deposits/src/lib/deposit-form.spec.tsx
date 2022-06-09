@@ -118,9 +118,16 @@ it('Form validation', async () => {
   // Min amount validation
   rerender(<DepositForm {...props} selectedAsset={asset} />); // Rerender with selected asset so we have asset.decimals
 
-  const amountLessThanMinViable = '-0.00001';
+  const amountLessThanMinViable = '0.00001';
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountLessThanMinViable },
+  });
+
+  expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
+
+  const amountLessThanZero = '-0.00001';
+  fireEvent.change(screen.getByLabelText('Amount'), {
+    target: { value: amountLessThanZero },
   });
 
   expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
