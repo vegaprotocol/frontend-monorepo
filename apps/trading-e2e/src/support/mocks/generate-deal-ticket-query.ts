@@ -8,7 +8,7 @@ export const generateDealTicketQuery = (
 ): DealTicketQuery => {
   const defaultResult: DealTicketQuery = {
     market: {
-      id: 'market-id',
+      id: 'market-0',
       name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 2,
       positionDecimalPlaces: 1,
