@@ -165,9 +165,7 @@ export const EnvironmentProvider = ({
   definitions,
   children,
 }: EnvironmentProviderProps) => {
-  const [environment, _updateEnvironment] = useState<Environment>(
-    compileEnvironment(definitions)
-  );
+  const [environment] = useState<Environment>(compileEnvironment(definitions));
 
   const missingKeys = Object.keys(environment)
     .filter((key) => typeof environment[key as EnvKey] === undefined)
