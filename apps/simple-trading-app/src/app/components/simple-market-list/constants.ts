@@ -3,13 +3,13 @@ import { MarketState } from '@vegaprotocol/types';
 
 export const MARKET_STATUS: Record<MarketState | '', Intent> = {
   [MarketState.Active]: Intent.Success,
-  [MarketState.Cancelled]: Intent.None,
+  [MarketState.Cancelled]: Intent.Primary,
   [MarketState.Closed]: Intent.None,
   [MarketState.Pending]: Intent.Warning,
-  [MarketState.Proposed]: Intent.Primary,
+  [MarketState.Proposed]: Intent.Warning,
   [MarketState.Rejected]: Intent.Danger,
-  [MarketState.Settled]: Intent.None,
+  [MarketState.Settled]: Intent.Primary,
   [MarketState.Suspended]: Intent.Warning,
   [MarketState.TradingTerminated]: Intent.Danger,
-  '': Intent.None,
+  '': Intent.Primary,
 };

@@ -108,7 +108,7 @@ const getProps = (
     [VegaTxStatus.Requested]: {
       title: t('Confirm withdrawal'),
       icon: <Icon name="hand-up" size={20} />,
-      intent: Intent.Primary,
+      intent: Intent.Warning,
       children: <Step>Confirm withdrawal in Vega wallet</Step>,
     },
     [VegaTxStatus.Pending]: {
@@ -139,7 +139,7 @@ const getProps = (
     [EthTxStatus.Requested]: {
       title: t('Confirm transaction'),
       icon: <Icon name="hand-up" size={20} />,
-      intent: Intent.Primary,
+      intent: Intent.Warning,
       children: <Step>{t('Confirm transaction in wallet')}</Step>,
     },
     [EthTxStatus.Pending]: {

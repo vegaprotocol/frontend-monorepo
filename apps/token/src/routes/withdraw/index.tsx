@@ -138,7 +138,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
         <div className="mb-24">
           <Callout
             title={t('pendingWithdrawalsCalloutTitle')}
-            intent={Intent.Primary}
+            intent={Intent.Warning}
           >
             <p>{t('pendingWithdrawalsCalloutText')}</p>
             <p className="mb-0">

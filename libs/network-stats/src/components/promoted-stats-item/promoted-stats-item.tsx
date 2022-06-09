@@ -18,7 +18,7 @@ export const PromotedStatsItem = ({
         ? goodThreshold(value)
           ? Intent.Success
           : Intent.Danger
-        : Intent.None,
+        : Intent.Primary,
     [goodThreshold, value]
   );
   return (

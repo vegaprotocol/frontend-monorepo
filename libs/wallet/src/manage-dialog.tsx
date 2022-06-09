@@ -23,7 +23,7 @@ export const VegaManageDialog = ({
       title={t('SELECT A VEGA KEY')}
       open={dialogOpen}
       onChange={setDialogOpen}
-      intent={Intent.Primary}
+      intent={Intent.Warning}
     >
       <div className="text-ui">
         {keypairs ? (
