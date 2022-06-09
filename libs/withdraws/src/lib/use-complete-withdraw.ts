@@ -38,9 +38,9 @@ export interface WithdrawTransactionArgs {
   targetAddress: string;
 }
 
-export const useCompleteWithdraw = (newContract: boolean) => {
+export const useCompleteWithdraw = (isNewContract: boolean) => {
   const { query, cache } = useApolloClient();
-  const contract = useBridgeContract(newContract);
+  const contract = useBridgeContract(isNewContract);
   const [id, setId] = useState('');
   const { transaction, perform } = useEthereumTransaction<
     WithdrawTransactionArgs | NewWithdrawTransactionArgs
@@ -77,7 +77,9 @@ export const useCompleteWithdraw = (newContract: boolean) => {
           Erc20Approval | Erc20ApprovalNew,
           Erc20ApprovalVariables
         >({
-          query: newContract ? ERC20_APPROVAL_QUERY_NEW : ERC20_APPROVAL_QUERY,
+          query: isNewContract
+            ? ERC20_APPROVAL_QUERY_NEW
+            : ERC20_APPROVAL_QUERY,
           variables: { withdrawalId },
         });
 
@@ -90,7 +92,7 @@ export const useCompleteWithdraw = (newContract: boolean) => {
         captureException(err);
       }
     },
-    [query, newContract, perform]
+    [query, isNewContract, perform]
   );
 
   useEffect(() => {

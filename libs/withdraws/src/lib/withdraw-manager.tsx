@@ -15,14 +15,14 @@ export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
   initialAssetId?: string;
-  useNewContract: boolean;
+  isNewContract: boolean;
 }
 
 export const WithdrawManager = ({
   assets,
   accounts,
   initialAssetId,
-  useNewContract,
+  isNewContract,
 }: WithdrawManagerProps) => {
   const dialogDismissed = useRef(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -31,7 +31,7 @@ export const WithdrawManager = ({
   const { account: ethereumAccount } = useWeb3React();
   const { ethTx, vegaTx, approval, submit, reset } = useWithdraw(
     dialogDismissed.current,
-    useNewContract
+    isNewContract
   );
 
   // Find the asset object from the select box

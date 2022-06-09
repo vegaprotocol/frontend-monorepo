@@ -6,7 +6,7 @@ import { useWeb3React } from '@web3-react/core';
 import { useMemo } from 'react';
 import { useEthereumConfig } from './use-ethereum-config';
 
-export const useBridgeContract = (newContract: boolean) => {
+export const useBridgeContract = (isNewContract: boolean) => {
   const { provider } = useWeb3React();
   const { config } = useEthereumConfig();
 
@@ -17,7 +17,7 @@ export const useBridgeContract = (newContract: boolean) => {
 
     const signer = provider.getSigner();
 
-    return newContract
+    return isNewContract
       ? new CollateralBridgeNew(
           config.collateral_bridge_contract.address,
           signer || provider
@@ -26,7 +26,7 @@ export const useBridgeContract = (newContract: boolean) => {
           config.collateral_bridge_contract.address,
           signer || provider
         );
-  }, [provider, config, newContract]);
+  }, [provider, config, isNewContract]);
 
   return contract;
 };

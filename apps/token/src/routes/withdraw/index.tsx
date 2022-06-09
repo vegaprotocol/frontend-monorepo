@@ -153,7 +153,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
       <WithdrawManager
         assets={data.assets || []}
         accounts={accounts}
-        useNewContract={Flags.USE_NEW_BRIDGE_CONTRACT}
+        isNewContract={Flags.USE_NEW_BRIDGE_CONTRACT}
       />
     </>
   );

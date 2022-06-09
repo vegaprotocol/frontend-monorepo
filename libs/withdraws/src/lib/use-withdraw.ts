@@ -25,12 +25,12 @@ export interface WithdrawalFields {
   receiverAddress: string;
 }
 
-export const useWithdraw = (cancelled: boolean, newContract: boolean) => {
+export const useWithdraw = (cancelled: boolean, isNewContract: boolean) => {
   const [withdrawalId, setWithdrawalId] = useState<string | null>(null);
   const [approval, setApproval] =
     useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
 
-  const contract = useBridgeContract(newContract);
+  const contract = useBridgeContract(isNewContract);
   const { keypair } = useVegaWallet();
   const {
     transaction: vegaTx,
@@ -70,7 +70,7 @@ export const useWithdraw = (cancelled: boolean, newContract: boolean) => {
   const { data, stopPolling } = useQuery<
     Erc20Approval | Erc20ApprovalNew,
     Erc20ApprovalVariables
-  >(newContract ? ERC20_APPROVAL_QUERY_NEW : ERC20_APPROVAL_QUERY, {
+  >(isNewContract ? ERC20_APPROVAL_QUERY_NEW : ERC20_APPROVAL_QUERY, {
     variables: { withdrawalId: withdrawalId || '' },
     skip: !withdrawalId,
     pollInterval: 1000,
