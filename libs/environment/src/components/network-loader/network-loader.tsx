@@ -1,98 +1,132 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { ReactNode, ComponentProps } from 'react';
+import type { ReactNode, FC } from 'react';
 import type { ApolloClient } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
-import { Callout, Intent, Button } from '@vegaprotocol/ui-toolkit';
+import { Callout, Intent, Button, Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '../../hooks';
 import type { ConfigStatus } from '../../types';
 
 type NetworkLoaderProps<T> = {
   children?: ReactNode;
+  skeleton?: ReactNode;
   createClient: (url: string) => ApolloClient<T>;
 };
 
-type Translate = typeof t;
+type StatusComponentProps = {
+  status: ConfigStatus;
+  children?: ReactNode;
+};
 
-type StatusComponentProps = ComponentProps<typeof Callout>;
+type MessageComponentProps = {
+  children: ReactNode;
+};
 
-const Error = ({ message }: { message: string }) => (
+type ErrorComponentProps = MessageComponentProps & {
+  showTryAgain?: boolean;
+};
+
+const Error: FC<ErrorComponentProps> = ({ children, showTryAgain }: ErrorComponentProps) => (
   <div>
-    <div className="mb-16">{message}</div>
-    <Button
-      className="mt-8"
-      variant="secondary"
-      onClick={() => window.location.reload()}
-    >
-      Try again
-    </Button>
+    <div className="mb-16">{children}</div>
+    {showTryAgain && (
+      <Button
+        className="mt-8"
+        variant="secondary"
+        onClick={() => window.location.reload()}
+      >
+        {t('Try again')}
+      </Button>
+    )}
   </div>
 );
 
-const getStatusCalloutProps = (
-  t: Translate,
-  status: ConfigStatus
-): StatusComponentProps => {
+const StatusMessage = ({ children }: MessageComponentProps) => (
+  <div className="flex items-center fixed bottom-0 right-0 px-16 bg-intent-highlight text-black">
+    {children}
+  </div>
+);
+
+const StatusComponent = ({ status, children }: StatusComponentProps) => {
   switch (status) {
     case 'error-loading-config':
-      return {
-        title: t('Error'),
-        intent: Intent.Danger,
-        children: (
-          <Error
-            message={t(
-              'There was an error fetching the network configuration.'
-            )}
-          />
-        ),
-        iconName: 'error',
-        iconDescription: t('Error'),
-      };
+      return (
+        <Callout
+          title={t('Error')}
+          intent={Intent.Danger}
+          iconName="error"
+          iconDescription={t('Error')}
+          children={
+            <Error>
+              {t('There was an error fetching the network configuration.')}
+            </Error>
+          }
+        />
+      );
     case 'error-validating-config':
-      return {
-        title: t('Error'),
-        intent: Intent.Danger,
-        children: (
-          <Error
-            message={t('The network configuration for the app is invalid.')}
-          />
-        ),
-        iconName: 'error',
-        iconDescription: t('Error'),
-      };
+      return (
+        <Callout
+          title={t('Error')}
+          intent={Intent.Danger}
+          iconName="error"
+          iconDescription={t('Error')}
+          children={
+            <Error>
+              {t('The network configuration for the app is invalid.')}
+            </Error>
+          }
+        />
+      );
     case 'error-loading-node':
-      return {
-        title: t('Error'),
-        intent: Intent.Danger,
-        children: <Error message={t('Failed to connect to a data node.')} />,
-        iconName: 'error',
-        iconDescription: t('Error'),
-      };
+      return (
+        <Callout
+          title={t('Error')}
+          intent={Intent.Danger}
+          iconName="error"
+          iconDescription={t('Error')}
+          children={
+            <Error showTryAgain>
+              {t('Failed to connect to a data node.')}
+            </Error>
+          }
+        />
+      );
     case 'idle':
     case 'loading-config':
-      return {
-        title: t('Loading'),
-        intent: Intent.Progress,
-        children: <>{t('Loading configuration...')}</>,
-        isLoading: true,
-      };
+      return (
+        <>
+          {children}
+          <StatusMessage>
+            <Loader size="small" forceTheme="light" />
+            <span className="ml-8">{t('Loading configuration...')}</span>
+          </StatusMessage>
+        </>
+      );
     case 'loading-node':
-      return {
-        title: t('Loading'),
-        intent: Intent.Progress,
-        children: <>{t('Finding a node...')}</>,
-        isLoading: true,
-      };
+      return (
+        <>
+          {children}
+          <StatusMessage>
+            <Loader size="small" forceTheme="light" />
+            <span className="ml-8">{t('Finding a node...')}</span>
+          </StatusMessage>
+        </>
+      );
     case 'success':
-      return {
-        title: t('Success'),
-        intent: Intent.Success,
-        children: <>{t("You're connected!")}</>,
-      };
+      return (
+        <>
+          {children}
+          <StatusMessage>
+            <Icon name="antenna" />
+            <span className="ml-8">{t("You're connected!")}</span>
+          </StatusMessage>
+        </>
+      );
   }
 };
 
 export function NetworkLoader<T>({
+  skeleton,
   children,
   createClient,
 }: NetworkLoaderProps<T>) {
@@ -111,9 +145,9 @@ export function NetworkLoader<T>({
   }, []);
 
   return !client ? (
-    canShowCallout ? (
+   canShowCallout ? (
       <div className="h-full min-h-screen flex items-center justify-center">
-        <Callout {...getStatusCalloutProps(t, configStatus)} />
+        <StatusComponent status={configStatus}>{skeleton}</StatusComponent>
       </div>
     ) : null
   ) : (
