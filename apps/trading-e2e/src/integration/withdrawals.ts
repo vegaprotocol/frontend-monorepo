@@ -20,8 +20,8 @@ describe('withdraw', () => {
       }
     });
     cy.visit('/portfolio/withdraw');
-    cy.wait('@WithdrawPageQuery');
     connectWallets();
+    cy.wait('@WithdrawPageQuery');
     cy.contains('Withdraw');
   });
 

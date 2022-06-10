@@ -16,6 +16,7 @@ describe('deposit form validation', () => {
     // Deposit page requires connection Ethereum wallet first
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-MetaMask').click();
+
     cy.wait('@DepositPage');
     cy.contains('Deposit');
   });
