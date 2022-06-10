@@ -7,7 +7,6 @@ declare global {
     _env_: Record<string, string>;
   }
 }
-
 interface VegaContracts {
   claimAddress: string;
   lockedAddress: string;

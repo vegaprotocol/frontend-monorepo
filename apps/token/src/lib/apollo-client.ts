@@ -9,7 +9,6 @@ import { ENV } from '../config/env';
 import { BigNumber } from './bignumber';
 import { addDecimal } from './decimals';
 import { deterministicShuffle } from './deterministic-shuffle';
-import { getDataNodeUrl } from './get-data-node-url';
 
 // Create seed in memory. Validator list order will remain the same
 // until the page is refreshed.
@@ -17,9 +16,10 @@ const VALIDATOR_RANDOMISER_SEED = (
   Math.floor(Math.random() * 1000) + 1
 ).toString();
 
-export function createClient() {
-  const { graphql } = getDataNodeUrl();
-
+export function createClient(base?: string) {
+  if (!base) {
+    throw new Error('Base must be passed into createClient!');
+  }
   const formatUintToNumber = (amount: string, decimals = 18) =>
     addDecimal(new BigNumber(amount), decimals).toString();
 
@@ -156,7 +156,7 @@ export function createClient() {
   });
 
   const httpLink = new HttpLink({
-    uri: graphql,
+    uri: base,
     credentials: 'same-origin',
   });
 

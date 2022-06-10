@@ -78,8 +78,9 @@ export const Tranche = () => {
             return (
               <li className="pb-4" key={i}>
                 <Link
-                  title={t('View address on Etherscan')}
+                  title={t('View on Etherscan (opens in a new tab)')}
                   href={`${ETHERSCAN_URL}/tx/${user.address}`}
+                  target="_blank"
                 >
                   {user.address}
                 </Link>

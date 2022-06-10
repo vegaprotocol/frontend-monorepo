@@ -40,7 +40,7 @@ const marketOrder: Orders_party_orders = {
   remaining: '5',
   price: '',
   timeInForce: OrderTimeInForce.IOC,
-  createdAt: new Date().toISOString(),
+  createdAt: new Date('2022-2-3').toISOString(),
   updatedAt: null,
   expiresAt: null,
   rejectionReason: null,
@@ -81,7 +81,7 @@ it('Correct columns are rendered', async () => {
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(8);
+  expect(headers).toHaveLength(9);
   expect(headers.map((h) => h.textContent?.trim())).toEqual([
     'Market',
     'Amount',
@@ -91,6 +91,7 @@ it('Correct columns are rendered', async () => {
     'Price',
     'Time In Force',
     'Created At',
+    'Updated At',
   ]);
 });
 
@@ -109,10 +110,9 @@ it('Correct formatting applied for market order', async () => {
     '-',
     marketOrder.timeInForce,
     getDateTimeFormat().format(new Date(marketOrder.createdAt)),
+    '-',
   ];
-  cells.forEach((cell, i) => {
-    expect(cell).toHaveTextContent(expectedValues[i]);
-  });
+  cells.forEach((cell, i) => expect(cell).toHaveTextContent(expectedValues[i]));
 });
 
 it('Correct formatting applied for GTT limit order', async () => {
@@ -131,6 +131,7 @@ it('Correct formatting applied for GTT limit order', async () => {
       new Date(limitOrder.expiresAt ?? '')
     )}`,
     getDateTimeFormat().format(new Date(limitOrder.createdAt)),
+    '-',
   ];
   cells.forEach((cell, i) => {
     expect(cell).toHaveTextContent(expectedValues[i]);

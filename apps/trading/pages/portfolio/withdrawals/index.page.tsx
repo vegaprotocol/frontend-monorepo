@@ -2,7 +2,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { VegaWalletContainer } from '../../../components/vega-wallet-container';
 import { Web3Container } from '../../../components/web3-container';
-import { WithdrawalsPageContainer } from './withdrawals-page-container';
+import { WithdrawalsContainer } from './withdrawals-container';
 
 const Withdrawals = () => {
   return (
@@ -15,7 +15,7 @@ const Withdrawals = () => {
               {t('Start withdrawal')}
             </AnchorButton>
           </header>
-          <WithdrawalsPageContainer />
+          <WithdrawalsContainer />
         </div>
       </Web3Container>
     </VegaWalletContainer>

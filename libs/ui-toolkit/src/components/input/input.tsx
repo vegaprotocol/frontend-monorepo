@@ -190,7 +190,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     if (element) {
       return (
-        <div className="inline-flex items-center relative">
+        <div className="flex items-center relative">
           {hasPrepended && element}
           {input}
           {hasAppended && element}

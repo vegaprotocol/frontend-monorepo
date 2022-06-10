@@ -2,13 +2,11 @@ import './i18n';
 
 import React, { useMemo } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
-
 import { AppLoader } from './app-loader';
 import { AppBanner } from './components/app-banner';
 import { AppFooter } from './components/app-footer';
 import { BalanceManager } from './components/balance-manager';
 import { EthWallet } from './components/eth-wallet';
-import { GraphQlProvider } from './components/graphql-provider';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
 import { TransactionModal } from './components/transactions-modal';
 import { VegaWallet } from './components/vega-wallet';
@@ -24,16 +22,20 @@ import {
   useEnvironment,
 } from '@vegaprotocol/react-helpers';
 import { createConnectors } from './lib/web3-connectors';
+import { ApolloProvider } from '@apollo/client';
+import { createClient } from './lib/apollo-client';
 
 const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
-  const { ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID } = useEnvironment();
+  const { ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID, VEGA_URL } =
+    useEnvironment();
   const Connectors = useMemo(
     () => createConnectors(ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID),
     [ETHEREUM_CHAIN_ID, ETHEREUM_PROVIDER_URL]
   );
+  const client = useMemo(() => createClient(VEGA_URL), [VEGA_URL]);
   return (
-    <GraphQlProvider>
+    <ApolloProvider client={client}>
       <Router>
         <AppStateProvider>
           <Web3Provider connectors={Connectors}>
@@ -61,7 +63,7 @@ const AppContainer = () => {
           </Web3Provider>
         </AppStateProvider>
       </Router>
-    </GraphQlProvider>
+    </ApolloProvider>
   );
 };
 

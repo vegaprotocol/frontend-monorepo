@@ -19,3 +19,7 @@ Given('I am on the homepage', () => {
   basePage.closeDialog();
   marketPage.validateMarketsAreDisplayed();
 });
+
+Given('I can connect to Ethereum', () => {
+  cy.mockWeb3Provider();
+});

@@ -11,13 +11,18 @@ Given('I navigate to withdrawal page', () => {
   cy.visit('/');
   portfolioPage.closeDialog();
   marketPage.validateMarketsAreDisplayed();
-  portfolioPage.navigateToPortfolio();
-  portfolioPage.navigateToWithdraw();
+
+  // portfolioPage.navigateToPortfolio();
+  // portfolioPage.navigateToWithdraw();
+  // Navigation functions commented out due to button being removed and not added back in yet
+  cy.visit('/portfolio/withdraw');
 });
 
 Given('I navigate to withdrawals page', () => {
-  portfolioPage.navigateToPortfolio();
-  portfolioPage.navigateToWithdrawals();
+  // portfolioPage.navigateToPortfolio();
+  // portfolioPage.navigateToWithdrawals();
+  // Navigation functions commented out due to button being removed and not added back in yet
+  cy.visit('/portfolio/withdrawals');
 });
 
 When('I clear ethereum address', () => {

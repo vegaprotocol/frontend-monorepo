@@ -47,7 +47,7 @@ export const TokenDetails = ({
         {t('Token address').toUpperCase()}
         <Link
           data-testid="token-address"
-          title={t('View address on Etherscan')}
+          title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
           href={`${ETHERSCAN_URL}/address/${token.address}`}
         >
@@ -55,10 +55,10 @@ export const TokenDetails = ({
         </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {t('Vesting contract'.toUpperCase())}
+        {t('Vesting contract').toUpperCase()}
         <Link
           data-testid="token-contract"
-          title={t('View address on Etherscan')}
+          title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
           href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
         >

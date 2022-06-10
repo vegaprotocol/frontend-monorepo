@@ -59,8 +59,9 @@ export const ValidatorTable = ({
         <span>{t('ETHEREUM ADDRESS')}</span>
         <span>
           <Link
-            title={t('View address on Etherscan')}
+            title={t('View on Etherscan (opens in a new tab)')}
             href={`${ETHERSCAN_URL}/address/${node.ethereumAdddress}`}
+            target="_blank"
           >
             {node.ethereumAdddress}
           </Link>
