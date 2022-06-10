@@ -54,7 +54,7 @@ export const Web3Content = ({
   const { isActive, error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
-    if (connector?.connectEagerly) {
+    if (connector?.connectEagerly && !('Cypress' in window)) {
       connector.connectEagerly();
     }
   }, [connector]);
