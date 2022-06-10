@@ -235,9 +235,7 @@ describe('useConfig hook', () => {
   });
 
   it('caches the list of networks', async () => {
-    const run1 = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
-    );
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -249,9 +247,7 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     fetch.mockClear();
 
-    const run2 = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
-    );
+    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
 
     jest.runAllTimers();
     await run2.waitForNextUpdate();
@@ -261,9 +257,7 @@ describe('useConfig hook', () => {
   });
 
   it('caches the list of networks between runs', async () => {
-    const run1 = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
-    );
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -275,9 +269,7 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     fetch.mockClear();
 
-    const run2 = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
-    );
+    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
 
     jest.runAllTimers();
     await run2.waitForNextUpdate();
@@ -290,9 +282,7 @@ describe('useConfig hook', () => {
     window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, '{not:{valid:{json');
     const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
-    const run1 = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
-    );
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -306,12 +296,13 @@ describe('useConfig hook', () => {
   });
 
   it('refetches the network configuration and resets the cache when invalid data found in the storage', async () => {
-    window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, JSON.stringify({ invalid: 'data' }));
+    window.localStorage.setItem(
+      LOCAL_STORAGE_NETWORK_KEY,
+      JSON.stringify({ invalid: 'data' })
+    );
     const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
-    const run1 = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
-    );
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
