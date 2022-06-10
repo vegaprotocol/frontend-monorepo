@@ -76,15 +76,6 @@ Feature: Trading page
     And place a buy 'FOK' market order with amount of 0
     Then Order rejected by wallet error shown containing text "must be positive"
 
-  @manual
-  Scenario: Deal ticket: GTT order failed because invalid date
-
-  @manual
-  Scenario: Deal ticket: GTT order failed because date in the past
-
-  @manual
-  Scenario: Deal ticket: GTT order failed because date over allowed period
-
   Scenario: Positions: Displayed when connected to wallet
     Given I am on the trading page for an active market
     And I connect to Vega Wallet
@@ -97,9 +88,40 @@ Feature: Trading page
     When I click on accounts tab
     Then accounts are displayed
     And I can see account for tEURO
- 
+
   Scenario: Orders: Placed orders displayed
     Given I am on the trading page for an active market
     And I connect to Vega Wallet
     When I click on orders tab
     Then placed orders are displayed
+
+    Scenario: Orderbook displayed
+    Given I am on the trading page for an active market
+    When I click on order book tab
+    Then orderbook is displayed with expected orders
+    And orderbook can be reduced and expanded
+
+    @todo
+    Scenario: Orderbook paginated with over 100 orders
+    Given I am on the trading page for an active market
+    When I click on order book tab
+    And a large amount is orders are received
+    Then a certain amount of orders are displayed
+
+    @todo
+    Scenario: Orderbook uses non-static prices for market in auction
+    Given I am on the trading page for a market in auction
+    When I click on order book tab
+    Then order book is rendered using non-static offers
+
+    @todo
+    Scenario: Orderbook updated when large order is made
+    Given I am on the trading page for an active market
+    When I place a large order
+    Then I should see my order have an effect on the order book
+
+    @todo
+    Scenario: Able to place order by clicking on order from orderbook
+    Given I am on the trading page for an active market
+    When I place a large order
+    Then I should see my order have an effect on the order book
