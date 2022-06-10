@@ -131,7 +131,7 @@ export const RedemptionInformation = () => {
       <Callout
         title={t('Stake your Locked VEGA tokens!')}
         iconName="hand-up"
-        intent={Intent.Prompt}
+        intent={Intent.Warning}
       >
         <p className="mb-12">{t('Find out more about Staking.')}</p>
         <Link to="/staking" className="underline text-white">

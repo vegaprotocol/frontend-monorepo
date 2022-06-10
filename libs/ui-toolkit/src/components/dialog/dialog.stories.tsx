@@ -56,5 +56,5 @@ Modal.args = {
   open: false,
   title: 'Modal (Prompt)',
   children: <p>Some content</p>,
-  intent: Intent.Prompt,
+  intent: Intent.Warning,
 };

@@ -1,40 +1,29 @@
 export enum Intent {
-  Danger = 'danger',
-  Warning = 'warning',
-  Prompt = 'prompt',
-  Progress = 'progress',
-  Success = 'success',
-  Help = 'help',
-}
-
-export enum TailwindIntents {
-  Danger = 'danger',
-  Warning = 'warning',
-  Prompt = 'prompt',
-  Success = 'success',
-  Help = 'help',
-  Highlight = 'highlight',
+  None,
+  Primary,
+  Success,
+  Warning,
+  Danger,
 }
 
 export const getIntentShadow = (intent?: Intent) => {
   return {
     'shadow-callout': true,
-    'shadow-intent-danger': intent === Intent.Danger,
-    'shadow-intent-warning': intent === Intent.Warning,
-    'shadow-intent-prompt': intent === Intent.Prompt,
-    'shadow-black dark:shadow-white': intent === Intent.Progress,
-    'shadow-intent-success': intent === Intent.Success,
-    'shadow-intent-help': intent === Intent.Help,
+    'shadow-danger': intent === Intent.Danger,
+    'shadow-warning': intent === Intent.Warning,
+    'shadow-success': intent === Intent.Success,
+    'shadow-black dark:shadow-white': intent === Intent.None,
+    'shadow-vega-pink dark:shadow-vega-yellow': intent === Intent.Primary,
   };
 };
 
-export const getVariantBackground = (variant?: TailwindIntents) => {
+export const getVariantBackground = (variant?: Intent) => {
   return {
-    'bg-intent-danger text-white': variant === TailwindIntents.Danger,
-    'bg-intent-warning text-black': variant === TailwindIntents.Warning,
-    'bg-intent-prompt text-black': variant === TailwindIntents.Prompt,
-    'bg-intent-success text-black': variant === TailwindIntents.Success,
-    'bg-intent-help text-white': variant === TailwindIntents.Help,
-    'bg-intent-highlight text-black': variant === TailwindIntents.Highlight,
+    'bg-black dark:bg-white': variant === Intent.None,
+    'bg-vega-pink text-black dark:bg-vega-yellow dark:text-black-normal':
+      variant === Intent.Primary,
+    'bg-danger text-white': variant === Intent.Danger,
+    'bg-warning text-black': variant === Intent.Warning,
+    'bg-success text-black': variant === Intent.Success,
   };
 };

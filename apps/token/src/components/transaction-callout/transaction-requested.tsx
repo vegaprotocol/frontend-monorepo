@@ -6,7 +6,7 @@ export const TransactionRequested = () => {
   return (
     <Callout
       iconName="hand-up"
-      intent={Intent.Prompt}
+      intent={Intent.Warning}
       title={t('Awaiting action in Ethereum wallet (e.g. MetaMask)')}
     />
   );

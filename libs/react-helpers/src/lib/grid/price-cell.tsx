@@ -1,4 +1,5 @@
 import React from 'react';
+import { getDecimalSeparator } from '../format';
 export interface IPriceCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
@@ -13,12 +14,22 @@ export const PriceCell = React.memo(
     ) {
       return <span data-testid="price">-</span>;
     }
+    const decimalSeparator = getDecimalSeparator();
+    const valueSplit = decimalSeparator
+      ? valueFormatted.split(decimalSeparator)
+      : [value];
     return (
       <span
         className="font-mono relative text-ui-small"
         data-testid={testId || 'price'}
       >
-        {valueFormatted}
+        {valueSplit[0]}
+        {valueSplit[1] ? decimalSeparator : null}
+        {valueSplit[1] ? (
+          <span className="text-black-muted dark:text-white-muted">
+            {valueSplit[1]}
+          </span>
+        ) : null}
       </span>
     );
   }
