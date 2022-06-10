@@ -1,12 +1,22 @@
+import { hasOperationName } from '../support';
+import { generateDepositPage } from '../support/mocks/generate-deposit-page';
+
 describe('deposit form validation', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
+    cy.mockGQL('DepositPage', (req) => {
+      if (hasOperationName(req, 'DepositPage')) {
+        req.reply({
+          body: { data: generateDepositPage() },
+        });
+      }
+    });
     cy.visit('/portfolio/deposit');
 
     // Deposit page requires connection Ethereum wallet first
     cy.getByTestId('connect-eth-wallet-btn').click();
     cy.getByTestId('web3-connector-MetaMask').click();
-
+    cy.wait('@DepositPage');
     cy.contains('Deposit');
   });
 
@@ -31,7 +41,7 @@ describe('deposit form validation', () => {
 
     // Deposit amount smaller than minimum viable for selected asset
     // Select an amount so that we have a known decimal places value to work with
-    cy.get(assetSelectField).select('tBTC TEST');
+    cy.get(assetSelectField).select('Asset 0');
     cy.get(amountField)
       .clear()
       .type('0.00000000000000000000000000000000001')
