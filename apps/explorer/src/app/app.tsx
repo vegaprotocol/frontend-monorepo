@@ -1,11 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
-import {
-  useThemeSwitcher,
-  EnvironmentProvider,
-} from '@vegaprotocol/react-helpers';
+import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
 import { createClient } from './lib/apollo-client';
 import { Nav } from './components/nav';
 import { Header } from './components/header';

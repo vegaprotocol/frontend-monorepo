@@ -13,7 +13,7 @@ import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { defaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
