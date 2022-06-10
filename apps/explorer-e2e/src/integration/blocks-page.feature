@@ -28,3 +28,9 @@ Feature: Blocks Page
     And jump to first block
     Then previous button is disabled
     And I am on the second block when I click next
+
+  Scenario: Infinite scroll shows at least 300 new blocks
+    Given I am on the homepage
+    When I navigate to the blocks page
+    And I scroll down to the last block on the page
+    Then I can expect to see at least 100 blocks if i scroll 7 times

@@ -2,7 +2,7 @@ import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 export interface TransactionErrorProps {
   error: Error | null;

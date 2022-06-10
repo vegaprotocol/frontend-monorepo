@@ -1,7 +1,8 @@
-import { t, useEnvironment } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { Link, Splash } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useEthereumConfig } from '@vegaprotocol/web3';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 
@@ -56,6 +57,7 @@ const Contracts = () => {
             title={t('View address on Etherscan')}
             href={`${ETHERSCAN_URL}/address/${value}`}
           >
+            asdfasd
             {value}
           </Link>
         </div>
