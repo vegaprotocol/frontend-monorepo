@@ -86,7 +86,7 @@ export interface MarketDepthSubscription_marketDepthUpdate {
    */
   buy: MarketDepthSubscription_marketDepthUpdate_buy[] | null;
   /**
-   * Sequence number for the current snapshot of the market depth
+   * Sequence number for the current snapshot of the market depth. It is always increasing but not monotonic.
    */
   sequenceNumber: string;
 }
