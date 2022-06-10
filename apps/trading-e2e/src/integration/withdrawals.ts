@@ -80,11 +80,11 @@ describe('withdraw', () => {
     cy.get(assetSelectField).select('Asset 0');
     cy.get(amountField).clear().type('10');
     cy.getByTestId(submitWithdrawBtn).click();
-    cy.getByTestId('dialog-title').should('have.text', 'Confirm withdrawal');
-    cy.getByTestId('dialog-text').should(
+    cy.getByTestId('dialog-title').should(
       'have.text',
-      'Confirm withdrawal in Vega wallet'
+      'Withdrawal transaction pending'
     );
+    cy.getByTestId('dialog-text').should('have.text', 'Awaiting transaction');
   });
 
   it.skip('creates a withdrawal on submit'); // Needs capsule
