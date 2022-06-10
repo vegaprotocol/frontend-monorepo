@@ -107,7 +107,6 @@ const transformValue = (key: EnvKey, value?: string) => {
     case 'ETHEREUM_CHAIN_ID':
       return value && Number(value);
     case 'VEGA_NETWORKS': {
-      console.log(value);
       if (value) {
         try {
           return JSON.parse(value);
