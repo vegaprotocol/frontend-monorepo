@@ -2,7 +2,6 @@ import {
   Button,
   Callout,
   Link,
-  Intent,
   Loader,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/network-switcher';

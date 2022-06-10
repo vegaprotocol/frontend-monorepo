@@ -1,7 +1,6 @@
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  PriceCell,
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import React from 'react';
