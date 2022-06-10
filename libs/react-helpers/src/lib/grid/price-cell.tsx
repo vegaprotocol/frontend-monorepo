@@ -2,10 +2,11 @@ import React from 'react';
 export interface IPriceCellProps {
   value: number | bigint | null | undefined;
   valueFormatted: string;
+  testId?: string;
 }
 
 export const PriceCell = React.memo(
-  ({ value, valueFormatted }: IPriceCellProps) => {
+  ({ value, valueFormatted, testId }: IPriceCellProps) => {
     if (
       (!value && value !== 0) ||
       (typeof value === 'number' && isNaN(Number(value)))
@@ -13,7 +14,10 @@ export const PriceCell = React.memo(
       return <span data-testid="price">-</span>;
     }
     return (
-      <span className="font-mono relative text-ui-small" data-testid="price">
+      <span
+        className="font-mono relative text-ui-small"
+        data-testid={testId || 'price'}
+      >
         {valueFormatted}
       </span>
     );

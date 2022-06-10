@@ -17,7 +17,12 @@ const MARKET_DEPTH_QUERY = gql`
       id
       decimalPlaces
       data {
-        midPrice
+        staticMidPrice
+        marketTradingMode
+        indicativeVolume
+        indicativePrice
+        bestStaticBidPrice
+        bestStaticOfferPrice
         market {
           id
         }
@@ -48,7 +53,12 @@ export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
       market {
         id
         data {
-          midPrice
+          staticMidPrice
+          marketTradingMode
+          indicativeVolume
+          indicativePrice
+          bestStaticBidPrice
+          bestStaticOfferPrice
           market {
             id
           }
@@ -74,7 +84,7 @@ const sequenceNumbers: Record<string, number> = {};
 const update: Update<
   MarketDepth_market,
   MarketDepthSubscription_marketDepthUpdate
-> = (draft, delta, restart) => {
+> = (draft, delta, reload) => {
   if (delta.market.id !== draft.id) {
     return;
   }
@@ -84,10 +94,11 @@ const update: Update<
   }
   if (sequenceNumber - 1 !== sequenceNumbers[delta.market.id]) {
     sequenceNumbers[delta.market.id] = 0;
-    restart(true);
+    reload();
     return;
   }
   sequenceNumbers[delta.market.id] = sequenceNumber;
+  Object.assign(draft.data, delta.market.data);
   if (delta.buy) {
     draft.depth.buy = updateLevels(draft.depth.buy ?? [], delta.buy);
   }

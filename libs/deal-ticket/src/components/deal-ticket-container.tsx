@@ -21,6 +21,11 @@ const DEAL_TICKET_QUERY = gql`
           product {
             ... on Future {
               quoteName
+              settlementAsset {
+                id
+                symbol
+                name
+              }
             }
           }
         }

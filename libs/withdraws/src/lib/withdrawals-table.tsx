@@ -22,7 +22,7 @@ export interface WithdrawalsTableProps {
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const { transaction, submit } = useCompleteWithdraw();
+  const { transaction, submit } = useCompleteWithdraw(true);
 
   return (
     <>

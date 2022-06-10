@@ -280,7 +280,7 @@ describe('useConfig hook', () => {
 
   it('refetches the network configuration and resets the cache when malformed data found in the storage', async () => {
     window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, '{not:{valid:{json');
-    const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
     const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
 
@@ -290,9 +290,9 @@ describe('useConfig hook', () => {
 
     expect(run1.result.current.status).toBe('success');
     expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleWarnSpy).toHaveBeenCalled();
 
-    consoleSpy.mockRestore();
+    consoleWarnSpy.mockRestore();
   });
 
   it('refetches the network configuration and resets the cache when invalid data found in the storage', async () => {

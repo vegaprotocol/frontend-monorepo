@@ -18,6 +18,12 @@ export const generateDealTicketQuery = (
         instrument: {
           product: {
             quoteName: 'BTC',
+            settlementAsset: {
+              __typename: 'Asset',
+              id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+              symbol: 'tBTC',
+              name: 'tBTC TEST',
+            },
             __typename: 'Future',
           },
           __typename: 'Instrument',

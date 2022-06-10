@@ -13,6 +13,9 @@ const MOCK_HOST = 'https://vega.host/query';
 
 global.fetch = jest.fn();
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noop = () => {};
+
 const mockFetch = (url: RequestInfo) => {
   if (url === mockEnvironmentState.VEGA_CONFIG_URL) {
     return Promise.resolve({
@@ -143,12 +146,22 @@ describe('useEnvironment hook', () => {
     expect(result.error).not.toBe(undefined);
   });
 
-  it('throws a validation error when VEGA_NETWORKS is not a valid json', () => {
+  it('when VEGA_NETWORKS is not a valid json, prints a warning and continues without using the value from it', () => {
+    const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
     process.env['NX_VEGA_NETWORKS'] = '{not:{valid:json';
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    expect(result.error).not.toBe(undefined);
+    expect(result.error).toBe(undefined);
+    expect(result.current).toEqual({
+      ...mockEnvironmentState,
+      VEGA_NETWORKS: {
+        [mockEnvironmentState.VEGA_ENV]: 'http://localhost/',
+      },
+    });
+
+    expect(consoleWarnSpy).toHaveBeenCalled();
+    consoleWarnSpy.mockRestore();
   });
 
   it('throws a validation error when VEGA_NETWORKS is has an invalid network as a key', () => {
