@@ -105,12 +105,7 @@ it('Form validation', async () => {
     await screen.findByText('Amount is above permitted maximum')
   ).toBeInTheDocument();
 
-  rerender(
-    <DepositForm
-      {...props}
-      limits={{ min: new BigNumber(0), max: new BigNumber(100) }}
-    />
-  );
+  rerender(<DepositForm {...props} limits={{ max: new BigNumber(100) }} />);
 
   const amountMoreThanAllowance = '31';
   fireEvent.change(screen.getByLabelText('Amount'), {
@@ -130,16 +125,11 @@ it('Form validation', async () => {
 
   expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
 
-  rerender(
-    <DepositForm
-      {...props}
-      limits={{ max: new BigNumber(20), min: new BigNumber(10) }}
-    />
-  );
-  const amountLessThanLimit = '5';
+  const amountLessThanZero = '-0.00001';
   fireEvent.change(screen.getByLabelText('Amount'), {
-    target: { value: amountLessThanLimit },
+    target: { value: amountLessThanZero },
   });
+
   expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
 });
 
@@ -190,10 +180,7 @@ it('Deposit', async () => {
     />
   );
 
-  // Check deposit limits are displayed
-  expect(
-    screen.getByText('Minimum', { selector: 'th' }).nextElementSibling
-  ).toHaveTextContent(limits.min.toString());
+  // Check deposit limit is displayed
   expect(
     screen.getByText('Maximum', { selector: 'th' }).nextElementSibling
   ).toHaveTextContent(limits.max.toString());
