@@ -1,10 +1,10 @@
 import type { BigNumber } from 'ethers';
 import { ethers } from 'ethers';
-import abi from '../abis/erc20_bridge_abi.json';
+import abi from '../abis/erc20_bridge_new_abi.json';
 
-export class CollateralBridge {
+export class CollateralBridgeNew {
   public contract: ethers.Contract;
-  public isNewContract = false;
+  public isNewContract = true;
 
   constructor(
     address: string,
@@ -20,10 +20,7 @@ export class CollateralBridge {
     return this.contract.get_asset_source(vegaAssetId);
   }
   getDepositMaximum(assetSource: string): Promise<BigNumber> {
-    return this.contract.get_deposit_maximum(assetSource);
-  }
-  getDepositMinimum(assetSource: string): Promise<BigNumber> {
-    return this.contract.get_deposit_minimum(assetSource);
+    return this.contract.get_asset_deposit_lifetime_limit(assetSource);
   }
   getMultisigControlAddres() {
     return this.contract.get_multisig_control_address();
@@ -38,6 +35,7 @@ export class CollateralBridge {
     assetSource: string,
     amount: string,
     target: string,
+    creation: string,
     nonce: string,
     signatures: string
   ) {
@@ -45,6 +43,7 @@ export class CollateralBridge {
       assetSource,
       amount,
       target,
+      creation,
       nonce,
       signatures
     );

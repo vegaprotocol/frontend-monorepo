@@ -2,7 +2,6 @@ import {
   Token,
   TokenVesting,
   Claim,
-  CollateralBridge,
   StakingBridge,
 } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
@@ -23,10 +22,8 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { provider: activeProvider, account } = useWeb3React();
   const { config } = useEthereumConfig();
   const { VEGA_ENV, ADDRESSES } = useEnvironment();
-  const [contracts, setContracts] = React.useState<Pick<
-    ContractsContextShape,
-    'token' | 'staking' | 'vesting' | 'claim' | 'erc20Bridge'
-  > | null>(null);
+  const [contracts, setContracts] =
+    React.useState<ContractsContextShape | null>(null);
 
   // Create instances of contract classes. If we have an account use a signer for the
   // contracts so that we can sign transactions, otherwise use the provider for just
@@ -56,10 +53,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
           signer || provider
         ),
         claim: new Claim(ADDRESSES.claimAddress, signer || provider),
-        erc20Bridge: new CollateralBridge(
-          config.collateral_bridge_contract.address,
-          signer || provider
-        ),
       });
     }
   }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
