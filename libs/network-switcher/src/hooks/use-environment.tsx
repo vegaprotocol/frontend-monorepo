@@ -107,13 +107,15 @@ const transformValue = (key: EnvKey, value?: string) => {
     case 'ETHEREUM_CHAIN_ID':
       return value && Number(value);
     case 'VEGA_NETWORKS': {
+      console.log(value);
       if (value) {
         try {
           return JSON.parse(value);
         } catch (e) {
-          throw new Error(
+          console.warn(
             'Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.'
           );
+          return undefined;
         }
       }
       return undefined;
