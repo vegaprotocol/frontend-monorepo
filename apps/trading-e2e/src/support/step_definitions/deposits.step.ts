@@ -27,7 +27,7 @@ Then('I can see the deposit form', () => {
 
 When('I submit a deposit with empty fields', () => {
   depositsPage.updateTransactionForm();
-  depositsPage.submitForm();
+  depositsPage.clickDepositSubmit();
 });
 
 Then('I can see empty form validation errors present', () => {
@@ -43,7 +43,7 @@ Then('I enter the following deposit details in deposit form', (table) => {
 });
 
 And('I submit the form', () => {
-  depositsPage.submitForm();
+  depositsPage.clickDepositSubmit();
 });
 
 Then('Invalid Vega key is shown', () => {
