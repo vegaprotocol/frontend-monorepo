@@ -52,7 +52,7 @@ export default class VegaWallet {
   }
 
   validateWalletConnected() {
-    cy.getByTestId(this.connectVegaBtn).should('contain.text', '…');
+    cy.getByTestId('manage-vega-wallet').should('exist');
   }
 
   selectPublicKey() {
