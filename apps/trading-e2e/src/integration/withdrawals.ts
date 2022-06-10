@@ -1,6 +1,8 @@
 import { hasOperationName } from '../support';
+import { connectEthereumWallet } from '../support/ethereum-wallet';
 import { generateWithdrawPageQuery } from '../support/mocks/generate-withdraw-page-query';
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
+import { connectVegaWallet } from '../support/vega-wallet';
 
 describe('withdraw', () => {
   const formFieldError = 'input-error-text';
@@ -66,6 +68,15 @@ describe('withdraw', () => {
   });
 
   it('triggers transaction when submitted', () => {
+    cy.mockVegaCommandSync({
+      txHash: 'test-tx-hash',
+      tx: {
+        signature: {
+          value:
+            'd86138bba739bbc1069b3dc975d20b3a1517c2b9bdd401c70eeb1a0ecbc502ec268cf3129824841178b8b506b0b7d650c76644dbd96f524a6cb2158fb7121800',
+        },
+      },
+    });
     cy.get(assetSelectField).select('Asset 0');
     cy.get(amountField).clear().type('10');
     cy.getByTestId(submitWithdrawBtn).click();
@@ -154,18 +165,8 @@ describe('withdrawals', () => {
 
 const connectWallets = () => {
   // Withdraw page requires vega wallet connection
-  const form = 'rest-connector-form';
-  const manageVegaBtn = 'manage-vega-wallet';
-  const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
-  const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
-  cy.getByTestId('vega-wallet-connect').click();
-  cy.getByTestId('connectors-list').find('button').click();
-  cy.getByTestId(form).find('#wallet').click().type(walletName);
-  cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
-  cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
-  cy.getByTestId(manageVegaBtn).should('exist');
+  connectVegaWallet();
 
   // It also requires connection Ethereum wallet
-  cy.getByTestId('connect-eth-wallet-btn').click();
-  cy.getByTestId('web3-connector-MetaMask').click();
+  connectEthereumWallet();
 };

@@ -1,74 +1,8 @@
 import { MarketState } from '@vegaprotocol/types';
 import { hasOperationName } from '../support';
-import { generateAccounts } from '../support/mocks/generate-accounts';
-import { generateCandles } from '../support/mocks/generate-candles';
-import { generateChart } from '../support/mocks/generate-chart';
-import { generateDealTicketQuery } from '../support/mocks/generate-deal-ticket-query';
-import { generateMarket } from '../support/mocks/generate-market';
 import { generateMarkets } from '../support/mocks/generate-markets';
-import { generateOrders } from '../support/mocks/generate-orders';
-import { generatePositions } from '../support/mocks/generate-positions';
-import { generateTrades } from '../support/mocks/generate-trades';
+import { mockTradingPage } from '../support/trading';
 
-const mockMarket = (state: MarketState) => {
-  cy.mockGQL('Market', (req) => {
-    if (hasOperationName(req, 'Market')) {
-      req.reply({
-        body: {
-          data: generateMarket({
-            market: {
-              name: `${state.toUpperCase()} MARKET`,
-            },
-          }),
-        },
-      });
-    }
-
-    if (hasOperationName(req, 'Orders')) {
-      req.reply({
-        body: { data: generateOrders() },
-      });
-    }
-
-    if (hasOperationName(req, 'Accounts')) {
-      req.reply({
-        body: {
-          data: generateAccounts(),
-        },
-      });
-    }
-
-    if (hasOperationName(req, 'Positions')) {
-      req.reply({
-        body: { data: generatePositions() },
-      });
-    }
-
-    if (hasOperationName(req, 'DealTicketQuery')) {
-      req.reply({
-        body: { data: generateDealTicketQuery({ market: { state } }) },
-      });
-    }
-
-    if (hasOperationName(req, 'Trades')) {
-      req.reply({
-        body: { data: generateTrades() },
-      });
-    }
-
-    if (hasOperationName(req, 'Chart')) {
-      req.reply({
-        body: { data: generateChart() },
-      });
-    }
-
-    if (hasOperationName(req, 'Candles')) {
-      req.reply({
-        body: { data: generateCandles() },
-      });
-    }
-  });
-};
 describe('markets table', () => {
   beforeEach(() => {
     cy.mockGQL('Markets', (req) => {
@@ -81,11 +15,56 @@ describe('markets table', () => {
     cy.visit('/markets');
   });
 
+  it('renders correctly', () => {
+    const marketRowHeaderClassname = 'div > span.ag-header-cell-text';
+    const marketRowNameColumn = 'tradableInstrument.instrument.code';
+    const marketRowSymbolColumn =
+      'tradableInstrument.instrument.product.settlementAsset.symbol';
+    const marketRowPrices = 'flash-cell';
+    const marketRowDescription = 'name';
+
+    cy.wait('@Markets');
+    cy.get('.ag-root-wrapper').should('be.visible');
+
+    const expectedMarketHeaders = [
+      'Market',
+      'Settlement asset',
+      'State',
+      'Best bid',
+      'Best offer',
+      'Mark price',
+      'Description',
+    ];
+
+    for (let index = 0; index < expectedMarketHeaders.length; index++) {
+      cy.get(marketRowHeaderClassname).should(
+        'contain.text',
+        expectedMarketHeaders[index]
+      );
+    }
+
+    cy.get(`[col-id='${marketRowNameColumn}']`).each(($marketName) => {
+      cy.wrap($marketName).should('not.be.empty');
+    });
+
+    cy.get(`[col-id='${marketRowSymbolColumn}']`).each(($marketSymbol) => {
+      cy.wrap($marketSymbol).should('not.be.empty');
+    });
+
+    cy.getByTestId(marketRowPrices).each(($price) => {
+      cy.wrap($price).should('not.be.empty').and('contain.text', '.');
+    });
+
+    cy.get(`[col-id='${marketRowDescription}']`).each(($marketDescription) => {
+      cy.wrap($marketDescription).should('not.be.empty');
+    });
+  });
+
   it('can select an active market', () => {
     cy.wait('@Markets');
     cy.get('.ag-root-wrapper').should('be.visible');
 
-    mockMarket(MarketState.Active);
+    mockTradingPage(MarketState.Active);
 
     // click on active market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
@@ -100,7 +79,7 @@ describe('markets table', () => {
     cy.wait('@Markets');
     cy.get('.ag-root-wrapper').should('be.visible');
 
-    mockMarket(MarketState.Suspended);
+    mockTradingPage(MarketState.Suspended);
 
     // click on active market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');

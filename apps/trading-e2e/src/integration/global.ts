@@ -1,3 +1,5 @@
+import { connectVegaWallet } from '../support/vega-wallet';
+
 describe('vega wallet', () => {
   const connectVegaBtn = 'connect-vega-wallet';
   const manageVegaBtn = 'manage-vega-wallet';
@@ -41,6 +43,21 @@ describe('vega wallet', () => {
       .find('#passphrase')
       .next('[data-testid="input-error-text"]')
       .should('have.text', 'Required');
+  });
+
+  it('can change selected public key and disconnect', () => {
+    connectVegaWallet();
+    cy.getByTestId('manage-vega-wallet').click();
+    cy.getByTestId('keypair-list').should('exist');
+    cy.getByTestId('select-keypair-button').click();
+    cy.getByTestId('keypair-list').should('not.exist');
+    cy.getByTestId('manage-vega-wallet').contains(
+      Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY2')
+    );
+    cy.getByTestId('manage-vega-wallet').click();
+    cy.getByTestId('disconnect').click();
+    cy.getByTestId('connect-vega-wallet').should('exist');
+    cy.getByTestId('manage-vega-wallet').should('not.exist');
   });
 });
 
