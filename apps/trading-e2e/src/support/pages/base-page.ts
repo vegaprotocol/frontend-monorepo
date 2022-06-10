@@ -17,13 +17,17 @@ export default class BasePage {
 
   navigateToPortfolio() {
     cy.get(`a[href='${this.portfolioUrl}']`)
+      .first()
       .should('be.visible')
       .click({ force: true });
     cy.url().should('include', '/portfolio');
   }
 
   navigateToMarkets() {
-    cy.get(`a[href='${this.marketsUrl}']`).should('be.visible').click();
+    cy.get(`a[href='${this.marketsUrl}']`)
+      .first()
+      .should('be.visible')
+      .click({ force: true });
     cy.url().should('include', '/markets');
   }
 

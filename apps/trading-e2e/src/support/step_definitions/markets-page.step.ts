@@ -22,6 +22,10 @@ Then('I navigate to markets page', () => {
   cy.wait('@Markets');
 });
 
+Then('I can view markets', () => {
+  marketsPage.validateMarketsAreDisplayed();
+});
+
 Given('I am on the markets page', () => {
   mockMarkets();
   cy.visit('/markets');
