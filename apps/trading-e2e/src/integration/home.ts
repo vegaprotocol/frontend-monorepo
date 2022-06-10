@@ -1,80 +1,171 @@
+import type { MarketList, MarketList_markets } from '@vegaprotocol/market-list';
 import { MarketState } from '@vegaprotocol/types';
 import { hasOperationName } from '../support';
 import { generateMarketList } from '../support/mocks/generate-market-list';
 import { generateMarkets } from '../support/mocks/generate-markets';
+import type { MarketsLanding } from '../support/mocks/generate-markets-landing';
 import { generateMarketsLanding } from '../support/mocks/generate-markets-landing';
 import { mockTradingPage } from '../support/trading';
 
 describe('home', () => {
-  it('redirects to a default market with the landing dialog open', () => {
-    // Mock markets query that is triggered by home page to find default market
-    cy.mockGQL('MarketsLanding', (req) => {
-      if (hasOperationName(req, 'MarketsLanding')) {
-        req.reply({
-          body: { data: generateMarketsLanding() },
-        });
-      }
+  const selectMarketOverlay = 'select-market-list';
+
+  describe('default market found', () => {
+    let marketsLanding: MarketsLanding;
+    let marketList: MarketList;
+    let oldestMarket: MarketList_markets;
+
+    beforeEach(() => {
+      marketsLanding = generateMarketsLanding();
+      marketList = generateMarketList();
+      oldestMarket = getOldestOpenMarket(
+        marketList.markets as MarketList_markets[]
+      );
+
+      // Mock markets query that is triggered by home page to find default market
+      cy.mockGQL('MarketsLanding', (req) => {
+        if (hasOperationName(req, 'MarketsLanding')) {
+          req.reply({
+            body: { data: marketsLanding },
+          });
+        }
+      });
+
+      // Market market list for the dialog that opens on a trading page
+      cy.mockGQL('MarketList', (req) => {
+        if (hasOperationName(req, 'MarketList')) {
+          req.reply({
+            body: { data: marketList },
+          });
+        }
+      });
+
+      // Mock market page
+      mockTradingPage(MarketState.Active);
+
+      cy.visit('/');
+      cy.wait('@MarketsLanding');
+      cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
+      cy.wait('@MarketList');
     });
 
-    // Market market list for the dialog that opens on a trading page
-    cy.mockGQL('MarketList', (req) => {
-      if (hasOperationName(req, 'MarketList')) {
-        req.reply({
-          body: { data: generateMarketList() },
+    it('redirects to a default market with the landing dialog open', () => {
+      // Overlay should be shown
+      cy.getByTestId(selectMarketOverlay).should('exist');
+      cy.contains('Select a market to get started').should('be.visible');
+
+      // I expect the market overlay table to contain at least 3 rows (one header row)
+      cy.getByTestId(selectMarketOverlay)
+        .get('table tr')
+        .then((row) => {
+          expect(row.length).to.eq(3);
         });
-      }
+
+      // each market shown in overlay table contains content under the last price and change fields
+      cy.getByTestId(selectMarketOverlay)
+        .get('table tr')
+        .each(($element, index) => {
+          if (index > 0) {
+            // skip header row
+            cy.root().within(() => {
+              cy.getByTestId('price').should('not.be.empty');
+            });
+          }
+        });
+
+      // the oldest market trading in continous mode shown at top of overlay table
+      cy.get('table tr')
+        .eq(1)
+        .within(() =>
+          cy
+            .contains(oldestMarket.tradableInstrument.instrument.code)
+            .should('be.visible')
+        );
+
+      cy.getByTestId('dialog-close').click();
+      cy.getByTestId(selectMarketOverlay).should('not.exist');
+
+      // the choose market overlay is no longer showing
+      cy.contains('Select a market to get started').should('not.exist');
+      cy.contains('Loading...').should('not.exist');
     });
 
-    // Mock market page
-    mockTradingPage(MarketState.Active);
+    it('can click a market name to load that market', () => {
+      // Click newer market
+      cy.getByTestId(selectMarketOverlay)
+        .should('exist')
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        .contains(marketList.markets![1].tradableInstrument.instrument.code)
+        .click();
+      cy.getByTestId(selectMarketOverlay).should('not.exist');
+      cy.url().should('include', 'market-1');
+    });
 
-    cy.visit('/');
-    cy.wait('@MarketsLanding');
-    cy.url().should('include', '/markets/market-0');
-    cy.wait('@MarketList');
-    cy.getByTestId('select-market-list').should('exist');
-    cy.getByTestId('dialog-close').click();
-    cy.getByTestId('select-market-list').should('not.exist');
+    it('view full market list goes to markets page', () => {
+      cy.getByTestId(selectMarketOverlay)
+        .should('exist')
+        .contains('Or view full market list')
+        .click();
+      cy.getByTestId(selectMarketOverlay).should('not.exist');
+      cy.url().should('include', '/markets');
+      cy.get('main[data-testid="markets"]').should('exist');
+    });
   });
 
-  it('redirects to a the market list page if no sensible default is found', () => {
-    // Mock markets query that is triggered by home page to find default market
-    cy.mockGQL('MarketsLanding', (req) => {
-      if (hasOperationName(req, 'MarketsLanding')) {
-        req.reply({
-          body: {
-            // Remove open timestamps so we can't calculate a sensible default market
-            data: generateMarketsLanding({
-              markets: [
-                {
-                  marketTimestamps: {
-                    open: '',
+  describe('no default found', () => {
+    it('redirects to a the market list page if no sensible default is found', () => {
+      // Mock markets query that is triggered by home page to find default market
+      cy.mockGQL('MarketsLanding', (req) => {
+        if (hasOperationName(req, 'MarketsLanding')) {
+          req.reply({
+            body: {
+              // Remove open timestamps so we can't calculate a sensible default market
+              data: generateMarketsLanding({
+                markets: [
+                  {
+                    marketTimestamps: {
+                      __typename: 'MarketTimestamps',
+                      open: '',
+                    },
                   },
-                },
-                {
-                  marketTimestamps: {
-                    open: '',
+                  {
+                    marketTimestamps: {
+                      __typename: 'MarketTimestamps',
+                      open: '',
+                    },
                   },
-                },
-              ],
-            }),
-          },
-        });
-      }
-    });
+                ],
+              }),
+            },
+          });
+        }
+      });
 
-    cy.mockGQL('Markets', (req) => {
-      if (hasOperationName(req, 'Markets')) {
-        req.reply({
-          body: {
-            data: generateMarkets(),
-          },
-        });
-      }
-    });
+      cy.mockGQL('Markets', (req) => {
+        if (hasOperationName(req, 'Markets')) {
+          req.reply({
+            body: {
+              data: generateMarkets(),
+            },
+          });
+        }
+      });
 
-    cy.visit('/');
-    cy.wait('@MarketsLanding');
-    cy.url().should('include', '/markets');
+      cy.visit('/');
+      cy.wait('@MarketsLanding');
+      cy.url().should('include', '/markets');
+    });
   });
 });
+
+function getOldestOpenMarket(openMarkets: MarketList_markets[]) {
+  const [oldestMarket] = openMarkets.sort(
+    (a, b) =>
+      new Date(a.marketTimestamps.open as string).getTime() -
+      new Date(b.marketTimestamps.open as string).getTime()
+  );
+  if (!oldestMarket) {
+    throw new Error('Could not find oldest market');
+  }
+  return oldestMarket;
+}
