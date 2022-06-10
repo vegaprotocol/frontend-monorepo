@@ -2,7 +2,13 @@ import { useState, useEffect, useMemo } from 'react';
 import type { ReactNode, FC } from 'react';
 import type { ApolloClient } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
-import { Callout, Intent, Button, Icon, Loader } from '@vegaprotocol/ui-toolkit';
+import {
+  Callout,
+  Intent,
+  Button,
+  Icon,
+  Loader,
+} from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '../../hooks';
 import type { ConfigStatus } from '../../types';
@@ -26,7 +32,10 @@ type ErrorComponentProps = MessageComponentProps & {
   showTryAgain?: boolean;
 };
 
-const Error: FC<ErrorComponentProps> = ({ children, showTryAgain }: ErrorComponentProps) => (
+const Error: FC<ErrorComponentProps> = ({
+  children,
+  showTryAgain,
+}: ErrorComponentProps) => (
   <div>
     <div className="mb-16">{children}</div>
     {showTryAgain && (
@@ -85,9 +94,7 @@ const StatusComponent = ({ status, children }: StatusComponentProps) => {
           iconName="error"
           iconDescription={t('Error')}
           children={
-            <Error showTryAgain>
-              {t('Failed to connect to a data node.')}
-            </Error>
+            <Error showTryAgain>{t('Failed to connect to a data node.')}</Error>
           }
         />
       );
@@ -145,7 +152,7 @@ export function NetworkLoader<T>({
   }, []);
 
   return !client ? (
-   canShowCallout ? (
+    canShowCallout ? (
       <div className="h-full min-h-screen flex items-center justify-center">
         <StatusComponent status={configStatus}>{skeleton}</StatusComponent>
       </div>
