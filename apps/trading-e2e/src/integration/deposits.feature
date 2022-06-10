@@ -79,6 +79,7 @@ Feature: Deposits to vega wallet
     And I submit the form
     Then Amount too small message shown
 
+  @ignore
   Scenario: Deposit amount greater than approved amount validation
     When I enter the following deposit details in deposit form
       | asset  | tBTC TEST                  |

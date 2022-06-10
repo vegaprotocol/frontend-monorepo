@@ -1,16 +1,13 @@
 import { Given, When, Then } from 'cypress-cucumber-preprocessor/steps';
-import MarketPage from '../pages/markets-page';
 import PortfolioPage from '../pages/portfolio-page';
 import WithdrawalsPage from '../pages/withdrawals-page';
 
-const marketPage = new MarketPage();
 const portfolioPage = new PortfolioPage();
 const withdrawalsPage = new WithdrawalsPage();
 
 Given('I navigate to withdrawal page', () => {
   cy.visit('/');
   portfolioPage.closeDialog();
-  marketPage.validateMarketsAreDisplayed();
 
   // portfolioPage.navigateToPortfolio();
   // portfolioPage.navigateToWithdraw();
