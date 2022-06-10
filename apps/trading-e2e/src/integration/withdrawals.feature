@@ -34,6 +34,7 @@ Feature: Withdrawals to eth wallet
     And I click Use maximum
     Then expected amount is "5.00000"
 
+  @ignore
   Scenario: Able to view history of withdrawals on withdrawals page
     Given I navigate to withdrawals page
     Then history of withdrawals are displayed
