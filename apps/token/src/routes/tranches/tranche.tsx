@@ -1,4 +1,3 @@
-import { useEnvironment } from '@vegaprotocol/react-helpers';
 import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts';
 import { Link } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
@@ -8,6 +7,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import { useOutletContext } from 'react-router-dom';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';

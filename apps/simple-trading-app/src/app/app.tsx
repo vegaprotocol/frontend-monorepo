@@ -9,7 +9,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/react-helpers';
+import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
 import { VegaWalletConnectButton } from './components/vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Connectors } from './lib/vega-connectors';

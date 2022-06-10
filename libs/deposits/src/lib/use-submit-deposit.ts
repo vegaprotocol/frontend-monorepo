@@ -29,7 +29,7 @@ const DEPOSIT_EVENT_SUB = gql`
 
 export const useSubmitDeposit = () => {
   const { config } = useEthereumConfig();
-  const contract = useBridgeContract();
+  const contract = useBridgeContract(true);
   const [confirmationEvent, setConfirmationEvent] =
     useState<DepositEvent_busEvents_event_Deposit | null>(null);
   // Store public key from contract arguments for use in the subscription,

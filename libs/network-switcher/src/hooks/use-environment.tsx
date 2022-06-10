@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { createContext, useContext } from 'react';
-import type { Networks } from '../lib/environment';
+import type { Networks } from '@vegaprotocol/react-helpers';
+
+const isBrowser = typeof window !== 'undefined';
 
 declare global {
   interface Window {
@@ -50,13 +53,14 @@ export const ContractAddresses: { [key in Networks]: VegaContracts } = {
 };
 
 type EnvironmentProviderProps = {
-  definintions?: Partial<RawEnvironment>;
+  definitions?: Partial<RawEnvironment>;
   children?: ReactNode;
 };
 
 export const ENV_KEYS = [
   'VEGA_URL',
   'VEGA_ENV',
+  'VEGA_NETWORKS',
   'ETHEREUM_CHAIN_ID',
   'ETHEREUM_PROVIDER_URL',
   'ETHERSCAN_URL',
@@ -69,11 +73,14 @@ type RawEnvironment = Record<EnvKey, string>;
 export type Environment = {
   VEGA_URL: string;
   VEGA_ENV: Networks;
+  VEGA_NETWORKS: Record<Networks, string>;
   ETHEREUM_CHAIN_ID: number;
   ETHEREUM_PROVIDER_URL: string;
   ETHERSCAN_URL: string;
   ADDRESSES: VegaContracts;
 };
+
+type EnvironmentState = Environment;
 
 const getBundledEnvironmentValue = (key: EnvKey) => {
   switch (key) {
@@ -88,6 +95,8 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_ETHEREUM_PROVIDER_URL'];
     case 'ETHERSCAN_URL':
       return process.env['NX_ETHERSCAN_URL'];
+    case 'VEGA_NETWORKS':
+      return process.env['NX_VEGA_NETWORKS'];
   }
 };
 
@@ -97,37 +106,67 @@ const transformValue = (key: EnvKey, value?: string) => {
       return value as Networks;
     case 'ETHEREUM_CHAIN_ID':
       return value && Number(value);
+    case 'VEGA_NETWORKS': {
+      if (value) {
+        try {
+          return JSON.parse(value);
+        } catch (e) {
+          console.warn(
+            'Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.'
+          );
+          return undefined;
+        }
+      }
+      return undefined;
+    }
     default:
       return value;
   }
 };
 
-const getValue = (key: EnvKey, definintions: Partial<RawEnvironment> = {}) => {
-  if (typeof window === 'undefined') {
+const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
+  if (!isBrowser) {
     return transformValue(
       key,
-      definintions[key] ?? getBundledEnvironmentValue(key)
+      definitions[key] ?? getBundledEnvironmentValue(key)
     );
   }
   return transformValue(
     key,
-    window._ENV?.[key] ?? definintions[key] ?? getBundledEnvironmentValue(key)
+    window._ENV?.[key] ?? definitions[key] ?? getBundledEnvironmentValue(key)
   );
 };
 
-const EnvironmentContext = createContext({} as Environment);
-
-export const EnvironmentProvider = ({
-  definintions,
-  children,
-}: EnvironmentProviderProps) => {
+const compileEnvironment = (
+  definitions?: Partial<RawEnvironment>
+): Environment => {
   const environment = ENV_KEYS.reduce(
     (acc, key) => ({
       ...acc,
-      [key]: getValue(key, definintions),
+      [key]: getValue(key, definitions),
     }),
     {} as Environment
   );
+
+  return {
+    ...environment,
+    ADDRESSES: ContractAddresses[environment['VEGA_ENV']],
+    VEGA_NETWORKS: {
+      [environment.VEGA_ENV]: isBrowser
+        ? window.location.href
+        : environment.VEGA_NETWORKS[environment.VEGA_ENV],
+      ...environment.VEGA_NETWORKS,
+    },
+  };
+};
+
+const EnvironmentContext = createContext({} as EnvironmentState);
+
+export const EnvironmentProvider = ({
+  definitions,
+  children,
+}: EnvironmentProviderProps) => {
+  const [environment] = useState<Environment>(compileEnvironment(definitions));
 
   const missingKeys = Object.keys(environment)
     .filter((key) => typeof environment[key as EnvKey] === undefined)
@@ -141,12 +180,7 @@ export const EnvironmentProvider = ({
   }
 
   return (
-    <EnvironmentContext.Provider
-      value={{
-        ...environment,
-        ADDRESSES: ContractAddresses[environment['VEGA_ENV']],
-      }}
-    >
+    <EnvironmentContext.Provider value={environment}>
       {children}
     </EnvironmentContext.Provider>
   );

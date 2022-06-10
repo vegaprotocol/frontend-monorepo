@@ -1,6 +1,5 @@
 import type {
   Claim,
-  CollateralBridge,
   Token,
   TokenVesting,
   StakingBridge,
@@ -12,7 +11,6 @@ export interface ContractsContextShape {
   staking: StakingBridge;
   vesting: TokenVesting;
   claim: Claim;
-  erc20Bridge: CollateralBridge;
 }
 
 export const ContractsContext = React.createContext<

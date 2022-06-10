@@ -3,6 +3,7 @@ import { toBigNum } from '@vegaprotocol/react-helpers';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
+
 import {
   AppStateActionType,
   useAppState,
