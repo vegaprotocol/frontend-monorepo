@@ -72,7 +72,7 @@ export const LockedProgress = ({
   unlocked,
   leftLabel,
   rightLabel,
-  leftColor = Colors.pink,
+  leftColor = Colors.vega.pink,
   rightColor = Colors.green.DEFAULT,
   light = false,
 }: LockedProgressProps) => {

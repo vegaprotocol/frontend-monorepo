@@ -1,10 +1,4 @@
-import {
-  Button,
-  Callout,
-  Link,
-  Intent,
-  Loader,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Link, Loader } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -67,11 +61,7 @@ export const AssociateTransaction = ({
 
   if (derivedTxState === TxState.Pending) {
     return (
-      <Callout
-        icon={<Loader size="small" />}
-        intent={Intent.Progress}
-        title={title}
-      >
+      <Callout icon={<Loader size="small" />} title={title}>
         <p data-testid="transaction-pending-body" className="mb-8">
           {t('Associating {{amount}} VEGA tokens with Vega key {{vegaKey}}', {
             amount,

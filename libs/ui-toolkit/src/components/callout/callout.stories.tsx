@@ -24,6 +24,12 @@ Default.args = {
   children: 'Content',
 };
 
+export const Primary = Template.bind({});
+Primary.args = {
+  intent: Intent.Primary,
+  children: 'Content',
+};
+
 export const Danger = Template.bind({});
 Danger.args = {
   intent: Intent.Danger,
@@ -36,33 +42,15 @@ Warning.args = {
   children: 'Content',
 };
 
-export const Prompt = Template.bind({});
-Prompt.args = {
-  intent: Intent.Prompt,
-  children: 'Content',
-};
-
-export const Progress = Template.bind({});
-Progress.args = {
-  intent: Intent.Progress,
-  children: 'Content',
-};
-
 export const Success = Template.bind({});
 Success.args = {
   intent: Intent.Success,
   children: 'Content',
 };
 
-export const Help = Template.bind({});
-Help.args = {
-  intent: Intent.Help,
-  children: 'Content',
-};
-
 export const IconAndContent = Template.bind({});
 IconAndContent.args = {
-  intent: Intent.Help,
+  intent: Intent.None,
   title: 'This is what this thing does',
   iconName: 'endorsed',
   children: (
@@ -77,7 +65,7 @@ IconAndContent.args = {
 
 export const CustomIconAndContent = Template.bind({});
 CustomIconAndContent.args = {
-  intent: Intent.Help,
+  intent: Intent.None,
   title: 'This is what this thing does',
   icon: (
     <span role="img" aria-label="tick">
@@ -96,7 +84,7 @@ CustomIconAndContent.args = {
 
 export const Loading = Template.bind({});
 Loading.args = {
-  intent: Intent.Help,
+  intent: Intent.None,
   title: 'This is what this thing does',
   isLoading: true,
   children: (

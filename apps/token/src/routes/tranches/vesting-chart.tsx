@@ -33,8 +33,8 @@ export const VestingChart = () => {
         <AreaChart data={data}>
           <defs>
             {[
-              ['pink', Colors.pink],
-              ['green', Colors.green.vega],
+              ['pink', Colors.vega.pink],
+              ['green', Colors.vega.green],
               ['orange', Colors.orange],
               ['yellow', Colors.yellow.DEFAULT],
             ].map(([key, color]) => (
@@ -95,7 +95,7 @@ export const VestingChart = () => {
             dot={false}
             type="linear"
             dataKey="team"
-            stroke={Colors.pink}
+            stroke={Colors.vega.pink}
             fill="url(#pink)"
             yAxisId={0}
             strokeWidth={2}
@@ -107,7 +107,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="earlyInvestors"
-            stroke={Colors.green.vega}
+            stroke={Colors.vega.green}
             fill="url(#green)"
             yAxisId={0}
             strokeWidth={2}

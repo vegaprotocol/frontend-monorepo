@@ -13,8 +13,8 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       overflowX: 'auto',
       padding: '1em',
       background: theme.colors.white.DEFAULT,
-      color: theme.colors.intent.help,
-      border: '1px solid #696969',
+      color: theme.colors.black[25],
+      border: `1px solid #${theme.colors.black[40]}`,
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: '#2C2C2C',
@@ -24,7 +24,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       color: theme.colors.vega.pink,
     },
     '.syntax-highlighter-wrapper .hljs-number': {
-      color: theme.colors.intent.warning,
+      color: theme.colors.warning,
     },
     '.syntax-highlighter-wrapper .hljs-string': {
       color: theme.colors.blue,

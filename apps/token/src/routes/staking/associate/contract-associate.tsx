@@ -31,13 +31,13 @@ export const ContractAssociate = ({
   let pageContent = null;
   if (new BigNumber(balanceFormatted).isEqualTo('0')) {
     pageContent = (
-      <div className="text-intent-danger">
+      <div className="text-danger">
         {t('You have no VEGA tokens currently vesting.')}
       </div>
     );
   } else if (new BigNumber(balanceFormatted).minus(lien).isEqualTo('0')) {
     pageContent = (
-      <div className="text-intent-danger">
+      <div className="text-danger">
         {t(
           'All VEGA tokens vesting in the connected wallet have already been associated.'
         )}

@@ -77,7 +77,7 @@ export function Callout({
   iconName,
   iconDescription,
   isLoading,
-  intent = Intent.Help,
+  intent = Intent.None,
   headingLevel,
 }: CalloutProps) {
   const iconElement = getIconElement({
