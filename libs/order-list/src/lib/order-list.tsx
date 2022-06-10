@@ -83,6 +83,12 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             return getDateTimeFormat().format(new Date(value));
           }}
         />
+        <AgGridColumn
+          field="updatedAt"
+          valueFormatter={({ value }: ValueFormatterParams) => {
+            return value ? getDateTimeFormat().format(new Date(value)) : '-';
+          }}
+        />
       </AgGrid>
     );
   }
