@@ -33,6 +33,7 @@ export const MARKETS_QUERY = gql`
             tags
           }
           product {
+            __typename
             ... on Future {
               settlementAsset {
                 symbol
@@ -62,6 +63,25 @@ export const CANDLE_SUB = gql`
   subscription CandleLive($marketId: ID!) {
     candles(marketId: $marketId, interval: I1H) {
       close
+    }
+  }
+`;
+
+export const FILTERS_QUERY = gql`
+  query MarketFilters {
+    markets {
+      tradableInstrument {
+        instrument {
+          product {
+            __typename
+            ... on Future {
+              settlementAsset {
+                symbol
+              }
+            }
+          }
+        }
+      }
     }
   }
 `;
