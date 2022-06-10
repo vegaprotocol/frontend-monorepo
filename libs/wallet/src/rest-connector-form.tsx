@@ -82,7 +82,7 @@ export function RestConnectorForm({
         )}
       </FormGroup>
       {error && (
-        <p className="text-intent-danger mb-12" data-testid="form-error">
+        <p className="text-danger mb-12" data-testid="form-error">
           {error}
         </p>
       )}

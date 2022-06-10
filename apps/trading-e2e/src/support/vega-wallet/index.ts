@@ -56,11 +56,11 @@ export default class VegaWallet {
   }
 
   selectPublicKey() {
-    cy.getByTestId(this.selectPublicKeyBtn).click();
+    cy.getByTestId(this.selectPublicKeyBtn).first().click();
   }
 
   clickOnWalletConnectDialog() {
-    cy.getByTestId(this.connectVegaBtn).click();
+    cy.getByTestId(this.connectVegaBtn).click({ force: true });
   }
 
   clickDisconnectAllKeys() {

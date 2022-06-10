@@ -41,7 +41,7 @@ export const DealTicketManager = ({
       return Intent.Danger;
     }
 
-    return Intent.Progress;
+    return Intent.None;
   };
 
   useEffect(() => {

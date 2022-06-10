@@ -25,7 +25,7 @@ export interface Subscribe<Data, Delta> {
     variables?: OperationVariables
   ): {
     unsubscribe: () => void;
-    restart: (force?: boolean) => void;
+    reload: (forceReset?: boolean) => void;
     flush: () => void;
   };
 }
@@ -34,7 +34,11 @@ export interface Subscribe<Data, Delta> {
 type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
 export interface Update<Data, Delta> {
-  (draft: Draft<Data>, delta: Delta, restart: (force?: boolean) => void): void;
+  (
+    draft: Draft<Data>,
+    delta: Delta,
+    reload: (forceReset?: boolean) => void
+  ): void;
 }
 
 interface GetData<QueryData, Data> {
@@ -47,7 +51,7 @@ interface GetDelta<SubscriptionData, Delta> {
 
 /**
  * @param subscriptionQuery query that will be used for subscription
- * @param update function that will be executed on each onNext, it should update data base on delta, it can restart data provider
+ * @param update function that will be execued on each onNext, it should update data base on delta, it can reload data provider
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
  * @param fetchPolicy
@@ -105,7 +109,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           while (updateQueue.length) {
             const delta = updateQueue.shift();
             if (delta) {
-              update(draft, delta, restart);
+              update(draft, delta, reload);
             }
           }
         });
@@ -123,13 +127,13 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
-  // restart function is passed to update and as a returned by subscribe function
-  const restart = (hard = false) => {
+  // reload function is passed to update and as a returned by subscribe function
+  const reload = (forceReset = false) => {
     if (loading) {
       return;
     }
     // hard reset on demand or when there is no apollo subscription yet
-    if (hard || !subscription) {
+    if (forceReset || !subscription) {
       reset();
       initialize();
     } else {
@@ -165,7 +169,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
             updateQueue.push(delta);
           } else {
             const newData = produce(data, (draft) => {
-              update(draft, delta, restart);
+              update(draft, delta, reload);
             });
             if (newData === data) {
               return;
@@ -174,12 +178,12 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
             notifyAll(delta);
           }
         },
-        () => restart()
+        () => reload()
       );
     await initialFetch();
   };
 
-  const reset = () => {
+  const reset = (clean = true) => {
     if (subscription) {
       subscription.unsubscribe();
       subscription = undefined;
@@ -198,7 +202,6 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     }
   };
 
-  //
   return (callback, c, v) => {
     callbacks.push(callback);
     if (callbacks.length === 1) {
@@ -210,7 +213,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     }
     return {
       unsubscribe: () => unsubscribe(callback),
-      restart,
+      reload,
       flush: () => notify(callback),
     };
   };
@@ -243,7 +246,7 @@ const memoize = <Data, Delta>(
 /**
  * @param query Query<QueryData>
  * @param subscriptionQuery Query<SubscriptionData> query that will be used for subscription
- * @param update Update<Data, Delta> function that will be executed on each onNext, it should update data base on delta, it can restart data provider
+ * @param update Update<Data, Delta> function that will be executed on each onNext, it should update data base on delta, it can reload data provider
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
  * @param fetchPolicy
@@ -252,12 +255,12 @@ const memoize = <Data, Delta>(
  * const marketMidPriceProvider = makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
  *   gql`query MarketMidPrice($marketId: ID!) { market(id: $marketId) { data { midPrice } } }`,
  *   gql`subscription MarketMidPriceSubscription($marketId: ID!) { marketDepthUpdate(marketId: $marketId) { market { data { midPrice } } } }`,
- *   (draft: Draft<Data>, delta: Delta, restart: (force?: boolean) => void) => { draft.midPrice = delta.midPrice }
+ *   (draft: Draft<Data>, delta: Delta, reload: (forceReset?: boolean) => void) => { draft.midPrice = delta.midPrice }
  *   (data:QueryData) => data.market.data.midPrice
  *   (delta:SubscriptionData) => delta.marketData.market
  *  )
  *
- * const { unsubscribe, flush, restart } = marketMidPriceProvider(
+ * const { unsubscribe, flush, reload } = marketMidPriceProvider(
  *   ({ data, error, loading, delta }) => { ... },
  *   apolloClient,
  *   { id: '1fd726454fa1220038acbf6ff9ac701d8b8bf3f2d77c93a4998544471dc58747' }
