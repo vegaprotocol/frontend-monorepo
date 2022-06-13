@@ -67,6 +67,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}`,
     },
     '.input-shadow-focus': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.vega.pink}`,
+    },
+    '.input-shadow-focus-dark': {
       boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.vega.yellow}`,
     },
     '.input-shadow-focus-error': {
@@ -75,7 +78,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.checkbox-focus-shadow': {
       boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, 2px 2px 0 0 ${theme.colors.vega.pink}`,
     },
-    '.dark-checkbox-focus-shadow': {
+    '.checkbox-focus-shadow-dark': {
       boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, 2px 2px 0 0 ${theme.colors.vega.yellow}`,
     },
     '.color-scheme-dark': {

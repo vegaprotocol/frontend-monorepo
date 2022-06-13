@@ -77,7 +77,7 @@ export const inputClassNames = ({
       'dark:bg-white-25',
       'text-black placeholder:text-black-60 dark:text-white dark:placeholder:text-white-60',
       'text-ui',
-      'focus:outline-none focus:input-shadow-focus',
+      'focus:outline-none focus:input-shadow-focus dark:focus:input-shadow-focus-dark',
       'disabled:bg-black-10 disabled:dark:bg-white-10',
       'input-shadow',
     ],

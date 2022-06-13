@@ -26,7 +26,7 @@ export const Checkbox = ({
     'col-start-1 row-start-1',
     'inline-block w-20 h-20 relative z-0',
     'input-shadow bg-white dark:bg-white-25',
-    'focus-visible:outline-none focus-visible:checkbox-focus-shadow dark:focus-visible:dark-checkbox-focus-shadow',
+    'focus-visible:outline-none focus-visible:checkbox-focus-shadow dark:focus-visible:checkbox-focus-shadow-dark',
     {
       'input-border dark:dark-input-border': !error,
       'border border-vega-red': error,
