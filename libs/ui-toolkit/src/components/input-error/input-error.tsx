@@ -27,14 +27,14 @@ export const InputError = ({
       'text-ui',
     ],
     {
-      'border-intent-danger': intent === 'danger',
-      'border-intent-warning': intent === 'warning',
+      'border-danger': intent === 'danger',
+      'border-warning': intent === 'warning',
     },
     className
   );
   const iconClassName = classNames(['mx-8'], {
-    'fill-intent-danger': intent === 'danger',
-    'fill-intent-warning': intent === 'warning',
+    'fill-danger': intent === 'danger',
+    'fill-warning': intent === 'warning',
   });
   return (
     <div

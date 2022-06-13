@@ -26,9 +26,10 @@ interface NavLinkProps {
   name: string;
   path: string;
   exact?: boolean;
+  testId?: string;
 }
 
-const NavLink = ({ name, path, exact }: NavLinkProps) => {
+const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
   const router = useRouter();
   const isActive =
     router.asPath === path || (!exact && router.asPath.startsWith(path));
@@ -36,11 +37,8 @@ const NavLink = ({ name, path, exact }: NavLinkProps) => {
     <AnchorButton
       variant={isActive ? 'accent' : 'inline-link'}
       className="px-16 py-6 h-[38px] uppercase border-0 self-end xs:text-ui sm:text-body-large md:text-h5 lg:text-h4"
+      data-testid={testId}
       href={path}
-      onClick={(e) => {
-        e.preventDefault();
-        router.push(path);
-      }}
     >
       {name}
     </AnchorButton>

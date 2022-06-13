@@ -15,19 +15,33 @@ it('renders title and icon', () => {
   expect(screen.getByText('title')).toBeInTheDocument();
 });
 
-const intents = Object.values(Intent).filter((i) => i !== Intent.Prompt);
+it(`Applies class for success intent`, () => {
+  render(<Callout intent={Intent.Danger} />);
+  expect(screen.getByTestId('callout')).toHaveClass('shadow-danger');
+});
 
-it.each(intents)('Applies class for %s', (intent) => {
-  render(<Callout intent={intent} />);
+it(`Applies class for warning intent`, () => {
+  render(<Callout intent={Intent.Warning} />);
+  expect(screen.getByTestId('callout')).toHaveClass('shadow-warning');
+});
+
+it(`Applies class for danger intent`, () => {
+  render(<Callout intent={Intent.Danger} />);
+  expect(screen.getByTestId('callout')).toHaveClass('shadow-danger');
+});
+
+it(`Applies class for primary intent`, () => {
+  render(<Callout intent={Intent.Primary} />);
   expect(screen.getByTestId('callout')).toHaveClass(
-    `shadow-intent-${intent.toLowerCase()}`
+    'shadow-vega-pink',
+    'dark:shadow-vega-yellow'
   );
 });
 
-it(`Applies class for progress`, () => {
-  render(<Callout intent={Intent.Prompt} />);
+it(`Applies class for none intent`, () => {
+  render(<Callout />);
   expect(screen.getByTestId('callout')).toHaveClass(
     'shadow-black',
-    'dark:shadow-intent-prompt'
+    'dark:shadow-white'
   );
 });

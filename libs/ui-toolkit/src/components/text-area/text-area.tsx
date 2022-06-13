@@ -1,6 +1,7 @@
+import classNames from 'classnames';
 import type { TextareaHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
-import { inputClassNames } from '../input';
+import { defaultFormElement } from '../../utils/shared';
 
 export interface TextAreaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement> {
@@ -9,7 +10,8 @@ export interface TextAreaProps
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  (props, ref) => (
-    <textarea {...props} ref={ref} className={inputClassNames(props)} />
-  )
+  ({ className, hasError, ...props }, ref) => {
+    const classes = classNames(defaultFormElement(hasError), className);
+    return <textarea {...props} ref={ref} className={classes} />;
+  }
 );

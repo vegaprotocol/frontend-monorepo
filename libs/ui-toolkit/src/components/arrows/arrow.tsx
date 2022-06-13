@@ -1,13 +1,38 @@
-export const ArrowUp = () => (
+export interface ArrowStyleProps {
+  color?: string;
+  borderX?: number;
+  borderTop?: number;
+  borderBottom?: number;
+}
+
+export const ArrowUp = ({
+  color = 'green',
+  borderX = 4,
+  borderBottom = 4,
+}: ArrowStyleProps) => (
   <span
     data-testid="arrow-up"
-    className="w-0 h-0 border-x border-x-[4px] border-solid border-x-transparent border-b-[4px] border-b-vega-green-dark dark:border-b-green"
+    style={{
+      borderLeft: `${borderX}px solid transparent`,
+      borderRight: `${borderX}px solid transparent`,
+      borderBottom: `${borderBottom}px solid`,
+    }}
+    className={`w-0 h-0 border-b-${color}-dark dark:border-b-${color}`}
   ></span>
 );
-export const ArrowDown = () => (
+export const ArrowDown = ({
+  color = 'red',
+  borderX = 4,
+  borderTop = 4,
+}: ArrowStyleProps) => (
   <span
     data-testid="arrow-down"
-    className="w-0 h-0 border-x border-x-[4px] border-solid border-x-transparent border-t-[4px] border-t-vega-red-dark dark:border-t-vega-red"
+    style={{
+      borderLeft: `${borderX}px solid transparent`,
+      borderRight: `${borderX}px solid transparent`,
+      borderTop: `${borderTop}px solid`,
+    }}
+    className={`w-0 h-0 border-t-${color}-dark dark:border-t-${color}`}
   ></span>
 );
 

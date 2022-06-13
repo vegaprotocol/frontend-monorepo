@@ -14,7 +14,7 @@ export const CurrentProposalState = ({
     state === ProposalState.Failed ||
     state === ProposalState.Rejected
   ) {
-    className = 'text-intent-danger';
+    className = 'text-danger';
   } else if (
     state === ProposalState.Enacted ||
     state === ProposalState.Passed

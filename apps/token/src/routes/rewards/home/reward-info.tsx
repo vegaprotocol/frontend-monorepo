@@ -112,8 +112,8 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
   }, [delegations, reward.epoch]);
 
   return (
-    <div>
-      <h3>
+    <div className="mb-24">
+      <h3 className="text-h5 text-white mb-4">
         {t('Epoch')} {reward.epoch.id}
       </h3>
       <KeyValueTable>

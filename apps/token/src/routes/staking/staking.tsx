@@ -5,7 +5,7 @@ import { Link as RouteLink } from 'react-router-dom';
 
 import { BulletHeader } from '../../components/bullet-header';
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { Links } from '../../config';
 import {
   AppStateActionType,
@@ -30,20 +30,22 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
         <p className="mb-12">{t('stakingDescription3')}</p>
         <p className="mb-12">{t('stakingDescription4')}</p>
         <p className="mb-12">
-          <Link href={Links.STAKING_GUIDE} target="_blank">
+          <Link
+            href={Links.STAKING_GUIDE}
+            className="text-white underline"
+            target="_blank"
+          >
             {t('readMoreStaking')}
           </Link>
         </p>
       </section>
 
       <section>
-        <BulletHeader tag="h2" style={{ marginTop: 0 }}>
-          {t('stakingStep1')}
-        </BulletHeader>
+        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
         <StakingStepConnectWallets />
       </section>
       <section>
-        <BulletHeader tag="h2">{t('stakingStep2')}</BulletHeader>
+        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
         <StakingStepAssociate
           associated={
             new BigNumber(
@@ -73,10 +75,11 @@ export const StakingStepConnectWallets = () => {
         <p>
           {t('Connected Ethereum address')}&nbsp;
           <Link
-            title={t('View address on Etherscan')}
+            title={t('View on Etherscan (opens in a new tab)')}
             href={`${ETHERSCAN_URL}/tx/${account}`}
+            target="_blank"
           >
-            {account}
+            {truncateMiddle(account)}
           </Link>
         </p>
         <p>
@@ -90,13 +93,16 @@ export const StakingStepConnectWallets = () => {
 
   return (
     <>
-      <p>
+      <p className="mb-8">
         <Trans
           i18nKey="stakingStep1Text"
           components={{
             vegaWalletLink: (
-              // eslint-disable-next-line jsx-a11y/anchor-has-content
-              <Link href={Links.WALLET_GUIDE} target="_blank" />
+              <Link
+                href={Links.WALLET_GUIDE}
+                className="text-white underline"
+                target="_blank"
+              />
             ),
           }}
         />
@@ -110,7 +116,7 @@ export const StakingStepConnectWallets = () => {
           />
         </div>
       ) : (
-        <p>
+        <p className="mb-8">
           <Button
             onClick={() =>
               appDispatch({
@@ -172,18 +178,18 @@ export const StakingStepAssociate = ({
         iconName="tick"
         title={t('stakingHasAssociated', { tokens: formatNumber(associated) })}
       >
-        <p>
-          <RouteLink to="/staking/associate">
+        <div className="flex flex-wrap gap-4">
+          <RouteLink to="associate">
             <Button data-testid="associate-more-tokens-btn">
               {t('stakingAssociateMoreButton')}
             </Button>
           </RouteLink>
-        </p>
-        <RouteLink to="/staking/disassociate">
-          <Button data-testid="disassociate-tokens-btn">
-            {t('stakingDisassociateButton')}
-          </Button>
-        </RouteLink>
+          <RouteLink to="disassociate">
+            <Button data-testid="disassociate-tokens-btn">
+              {t('stakingDisassociateButton')}
+            </Button>
+          </RouteLink>
+        </div>
       </Callout>
     );
   }

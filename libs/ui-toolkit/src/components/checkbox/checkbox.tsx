@@ -25,7 +25,7 @@ export const Checkbox = ({
   const vegaCheckboxClasses = classnames(
     'col-start-1 row-start-1',
     'inline-block w-20 h-20 relative z-0',
-    'input-shadow bg-white dark:bg-white-25',
+    'input-shadow dark:input-shadow-dark bg-white dark:bg-white-25',
     'focus-visible:outline-none focus-visible:checkbox-focus-shadow dark:focus-visible:checkbox-focus-shadow-dark',
     {
       'input-border dark:dark-input-border': !error,

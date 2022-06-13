@@ -64,7 +64,7 @@ export const WithdrawPageContainer = ({
         }
 
         const hasIncompleteWithdrawals = data.party?.withdrawals?.some(
-          (w) => w.txHash
+          (w) => w.txHash === null
         );
 
         return (
@@ -73,7 +73,10 @@ export const WithdrawPageContainer = ({
               <p className="mb-12">
                 {t('You have incomplete withdrawals.')}{' '}
                 <Link href="/portfolio/withdrawals">
-                  <a className="underline">
+                  <a
+                    className="underline"
+                    data-testid="complete-withdrawals-prompt"
+                  >
                     {t('Click here to finish withdrawal')}
                   </a>
                 </Link>
@@ -83,6 +86,7 @@ export const WithdrawPageContainer = ({
               assets={data.assets}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
+              isNewContract={true}
             />
           </>
         );

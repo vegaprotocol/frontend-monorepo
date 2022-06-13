@@ -1,7 +1,7 @@
 import type { SelectHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import classNames from 'classnames';
-import { inputClassNames } from '../input';
+import { defaultFormElement } from '../../utils/shared';
 
 export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   hasError?: boolean;
@@ -11,11 +11,11 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  (props, ref) => (
+  ({ className, hasError, ...props }, ref) => (
     <select
       ref={ref}
       {...props}
-      className={classNames(inputClassNames(props), 'h-28')}
+      className={classNames(defaultFormElement(hasError), className, 'h-28')}
     />
   )
 );

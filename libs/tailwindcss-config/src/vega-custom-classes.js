@@ -13,8 +13,8 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       overflowX: 'auto',
       padding: '1em',
       background: theme.colors.white.DEFAULT,
-      color: theme.colors.intent.help,
-      border: '1px solid #696969',
+      color: theme.colors.black[25],
+      border: `1px solid #${theme.colors.black[40]}`,
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: '#2C2C2C',
@@ -24,7 +24,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       color: theme.colors.vega.pink,
     },
     '.syntax-highlighter-wrapper .hljs-number': {
-      color: theme.colors.intent.warning,
+      color: theme.colors.warning,
     },
     '.syntax-highlighter-wrapper .hljs-string': {
       color: theme.colors.blue,
@@ -64,22 +64,28 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       boxShadow: `inset 0 -2px 0 0 ${theme.colors.vega.pink}`,
     },
     '.input-shadow': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}`,
+      boxShadow: `inset 2px 2px 6px ${theme.colors.white['80']}`,
+    },
+    '.input-shadow-dark': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['80']}`,
     },
     '.input-shadow-focus': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.vega.pink}`,
+      boxShadow: `inset 2px 2px 6px ${theme.colors.white['80']}, inset 0 -2px 0 0 ${theme.colors.vega.pink}`,
     },
     '.input-shadow-focus-dark': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.vega.yellow}`,
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['80']}, inset 0 -2px 0 0 ${theme.colors.vega.yellow}`,
     },
     '.input-shadow-focus-error': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, inset 0 -2px 0 0 ${theme.colors.intent.danger}`,
+      boxShadow: `inset 2px 2px 6px ${theme.colors.white['80']}, inset 0 -2px 0 0 ${theme.colors.danger}`,
+    },
+    '.input-shadow-focus-error-dark': {
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['80']}, inset 0 -2px 0 0 ${theme.colors.danger}`,
     },
     '.checkbox-focus-shadow': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, 2px 2px 0 0 ${theme.colors.vega.pink}`,
+      boxShadow: `inset 2px 2px 6px ${theme.colors.white['80']}, 2px 2px 0 0 ${theme.colors.vega.pink}`,
     },
     '.checkbox-focus-shadow-dark': {
-      boxShadow: `inset 2px 2px 6px ${theme.colors.black['25']}, 2px 2px 0 0 ${theme.colors.vega.yellow}`,
+      boxShadow: `inset 2px 2px 6px ${theme.colors.black['80']}, 2px 2px 0 0 ${theme.colors.vega.yellow}`,
     },
     '.color-scheme-dark': {
       colorScheme: 'dark',

@@ -231,12 +231,12 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
       className,
       prependIconName,
       appendIconName,
-      ...prosp
+      ...props
     },
     ref
   ) => {
     return (
-      <a ref={ref} className={classes(className, variant)} {...prosp}>
+      <a ref={ref} className={classes(className, variant)} {...props}>
         {getContent(children, prependIconName, appendIconName)}
       </a>
     );

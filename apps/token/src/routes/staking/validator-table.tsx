@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
@@ -59,8 +59,9 @@ export const ValidatorTable = ({
         <span>{t('ETHEREUM ADDRESS')}</span>
         <span>
           <Link
-            title={t('View address on Etherscan')}
+            title={t('View on Etherscan (opens in a new tab)')}
             href={`${ETHERSCAN_URL}/address/${node.ethereumAdddress}`}
+            target="_blank"
           >
             {node.ethereumAdddress}
           </Link>

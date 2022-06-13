@@ -92,9 +92,11 @@ export const StakingForm = ({
   React.useEffect(() => {
     setAmount('');
   }, [action, setAmount]);
+
   const { data } = useNetworkParam([
     NetworkParams.VALIDATOR_DELEGATION_MIN_AMOUNT,
   ]);
+
   const minTokensWithDecimals = React.useMemo(() => {
     const minTokens = new BigNumber(data && data.length === 1 ? data[0] : '');
     return addDecimal(minTokens, appState.decimals);
@@ -198,11 +200,9 @@ export const StakingForm = ({
     availableStakeToRemove.isEqualTo(0)
   ) {
     if (appState.lien.isGreaterThan(0)) {
-      return (
-        <span className={'text-vega-red'}>{t('stakeNodeWrongVegaKey')}</span>
-      );
+      return <span className="text-red">{t('stakeNodeWrongVegaKey')}</span>;
     } else {
-      return <span className={'text-vega-red'}>{t('stakeNodeNone')}</span>;
+      return <span className="text-red">{t('stakeNodeNone')}</span>;
     }
   }
 

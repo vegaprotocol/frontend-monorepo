@@ -3,19 +3,21 @@ import {
   PriceCell,
   t,
 } from '@vegaprotocol/react-helpers';
+import type { CandleClose } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
 import { mapDataToMarketList } from '../../utils';
 import type { MarketList } from '../markets-container/__generated__/MarketList';
 
-export interface SelectMarketListProps {
+export interface SelectMarketListDataProps {
   data: MarketList | undefined;
   onSelect: (id: string) => void;
 }
 
-type CandleClose = Required<string>;
-
-export const SelectMarketList = ({ data, onSelect }: SelectMarketListProps) => {
+export const SelectMarketList = ({
+  data,
+  onSelect,
+}: SelectMarketListDataProps) => {
   const thClassNames = (direction: 'left' | 'right') =>
     `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark/80 dark:text-white/80`;
   const tdClassNames =
@@ -24,7 +26,10 @@ export const SelectMarketList = ({ data, onSelect }: SelectMarketListProps) => {
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
   return (
-    <div className="max-h-[40rem] overflow-x-auto">
+    <div
+      className="max-h-[40rem] overflow-x-auto"
+      data-testid="select-market-list"
+    >
       <table className="relative h-full min-w-full whitespace-nowrap">
         <thead className="sticky top-0 z-10 dark:bg-black bg-white">
           <tr>
@@ -48,10 +53,7 @@ export const SelectMarketList = ({ data, onSelect }: SelectMarketListProps) => {
                     className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
                   >
                     <td className={`${boldUnderlineClassNames} relative`}>
-                      <Link
-                        href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
-                        passHref={true}
-                      >
+                      <Link href={`/markets/${id}`} passHref={true}>
                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                         <a
                           onClick={() => onSelect(id)}

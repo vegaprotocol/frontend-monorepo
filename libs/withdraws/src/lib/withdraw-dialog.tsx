@@ -1,5 +1,5 @@
 import { Link, Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
@@ -108,13 +108,13 @@ const getProps = (
     [VegaTxStatus.Requested]: {
       title: t('Confirm withdrawal'),
       icon: <Icon name="hand-up" size={20} />,
-      intent: Intent.Prompt,
+      intent: Intent.Warning,
       children: <Step>Confirm withdrawal in Vega wallet</Step>,
     },
     [VegaTxStatus.Pending]: {
       title: t('Withdrawal transaction pending'),
       icon: <Loader size="small" />,
-      intent: Intent.Prompt,
+      intent: Intent.None,
       children: <Step>Awaiting transaction</Step>,
     },
   };
@@ -139,13 +139,13 @@ const getProps = (
     [EthTxStatus.Requested]: {
       title: t('Confirm transaction'),
       icon: <Icon name="hand-up" size={20} />,
-      intent: Intent.Prompt,
+      intent: Intent.Warning,
       children: <Step>{t('Confirm transaction in wallet')}</Step>,
     },
     [EthTxStatus.Pending]: {
       title: t('Ethereum transaction pending'),
       icon: <Loader size="small" />,
-      intent: Intent.Prompt,
+      intent: Intent.None,
       children: (
         <Step>
           <span>

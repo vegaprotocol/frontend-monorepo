@@ -2,7 +2,7 @@ import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 export interface TransactionErrorProps {
   error: Error | null;
@@ -20,12 +20,15 @@ export const TransactionError = ({
 
   return (
     <Callout iconName="error" intent={Intent.Danger}>
-      <p>{error ? error.message : t('Something went wrong')}</p>
+      <p className="mb-8">
+        {error ? error.message : t('Something went wrong')}
+      </p>
       {hash ? (
-        <p>
+        <p className="mb-8">
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${hash}`}
+            target="_blank"
           >
             {hash}
           </Link>
