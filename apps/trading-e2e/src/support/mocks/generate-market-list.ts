@@ -7,7 +7,7 @@ export const generateMarketList = (
 ): MarketList => {
   const markets: MarketList_markets[] = [
     {
-      id: 'market-id',
+      id: 'market-0',
       decimalPlaces: 5,
       data: {
         market: {
@@ -38,7 +38,7 @@ export const generateMarketList = (
       __typename: 'Market',
     },
     {
-      id: 'test-market-suspended',
+      id: 'market-1',
       decimalPlaces: 2,
       data: {
         market: {

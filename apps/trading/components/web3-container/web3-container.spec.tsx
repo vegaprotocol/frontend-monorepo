@@ -5,7 +5,7 @@ import { Web3Container } from './web3-container';
 import type { useWeb3React } from '@web3-react/core';
 import type { NetworkParamsQuery } from '@vegaprotocol/web3';
 import { NETWORK_PARAMS_QUERY } from '@vegaprotocol/web3';
-import { EnvironmentProvider } from '@vegaprotocol/react-helpers';
+import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
 
 const defaultHookValue = {
   isActive: false,

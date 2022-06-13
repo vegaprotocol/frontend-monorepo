@@ -1,5 +1,5 @@
 /// <reference types="react-scripts" />
 
 interface Window {
-  _env_: Record<string, string>;
+  _env_?: Record<string, string>;
 }

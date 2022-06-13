@@ -17,13 +17,13 @@ import { AppRouter } from './routes';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import {
-  EnvironmentProvider,
-  useEnvironment,
-} from '@vegaprotocol/react-helpers';
 import { createConnectors } from './lib/web3-connectors';
 import { ApolloProvider } from '@apollo/client';
 import { createClient } from './lib/apollo-client';
+import {
+  EnvironmentProvider,
+  useEnvironment,
+} from '@vegaprotocol/network-switcher';
 
 const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);

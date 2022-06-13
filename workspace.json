@@ -11,6 +11,7 @@
     "market-depth": "libs/market-depth",
     "market-list": "libs/market-list",
     "network-stats": "libs/network-stats",
+    "network-switcher": "libs/network-switcher",
     "order-list": "libs/order-list",
     "positions": "libs/positions",
     "react-helpers": "libs/react-helpers",

@@ -1,8 +1,12 @@
 import classNames from 'classnames';
-import type { TailwindIntents } from '../../utils/intent';
+import { Intent } from '../../utils/intent';
 import { getVariantBackground } from '../../utils/intent';
 
-export const Indicator = ({ variant }: { variant?: TailwindIntents }) => {
+interface IndicatorProps {
+  variant?: Intent;
+}
+
+export const Indicator = ({ variant = Intent.None }: IndicatorProps) => {
   const names = classNames(
     'inline-block w-8 h-8 mb-2 mr-8 rounded',
     getVariantBackground(variant)

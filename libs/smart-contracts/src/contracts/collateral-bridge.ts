@@ -4,6 +4,7 @@ import abi from '../abis/erc20_bridge_abi.json';
 
 export class CollateralBridge {
   public contract: ethers.Contract;
+  public isNewContract = false;
   public address: string;
 
   constructor(

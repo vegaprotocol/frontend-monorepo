@@ -5,7 +5,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { Heading } from '../../components/heading';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { SplashLoader } from '../../components/splash-loader';
@@ -18,6 +18,7 @@ import type { Withdrawals_party_withdrawals } from '@vegaprotocol/withdraws';
 import { useCompleteWithdraw, useWithdrawals } from '@vegaprotocol/withdraws';
 import { TransactionDialog } from '@vegaprotocol/web3';
 import { WithdrawalStatus } from '../../__generated__/globalTypes';
+import { Flags } from '../../config';
 
 const Withdrawals = () => {
   const { t } = useTranslation();
@@ -34,7 +35,9 @@ const Withdrawals = () => {
 
 const WithdrawPendingContainer = () => {
   const { t } = useTranslation();
-  const { transaction, submit } = useCompleteWithdraw();
+  const { transaction, submit } = useCompleteWithdraw(
+    Flags.USE_NEW_BRIDGE_CONTRACT
+  );
   const { data, loading, error } = useWithdrawals();
 
   const withdrawals = React.useMemo(() => {

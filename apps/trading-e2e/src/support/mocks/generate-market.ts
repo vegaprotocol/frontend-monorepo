@@ -14,7 +14,7 @@ export interface Market {
 export const generateMarket = (override?: PartialDeep<Market>): Market => {
   const defaultResult = {
     market: {
-      id: 'market-id',
+      id: 'market-0',
       name: 'MARKET NAME',
       __typename: 'Market',
     },

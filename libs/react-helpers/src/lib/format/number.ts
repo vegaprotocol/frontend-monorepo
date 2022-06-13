@@ -39,6 +39,13 @@ export const getNumberFormat = memoize(
     })
 );
 
+export const getDecimalSeparator = memoize(
+  () =>
+    getNumberFormat(1)
+      .formatToParts(1.1)
+      .find((part) => part.type === 'decimal')?.value
+);
+
 export const formatNumber = (rawValue: string | number, formatDecimals = 0) => {
   return getNumberFormat(formatDecimals).format(Number(rawValue));
 };

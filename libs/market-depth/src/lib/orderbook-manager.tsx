@@ -1,44 +1,54 @@
 import throttle from 'lodash/throttle';
+import produce from 'immer';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { marketDepthDataProvider } from './market-depth-data-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/MarketDepthSubscription';
-import { compactData, updateCompactedData } from './orderbook-data';
+import {
+  compactRows,
+  updateCompactedRows,
+  mapMarketData,
+} from './orderbook-data';
 import type { OrderbookData } from './orderbook-data';
 
 interface OrderbookManagerProps {
   marketId: string;
-  resolution: number;
 }
 
-export const OrderbookManager = ({
-  marketId,
-  resolution,
-}: OrderbookManagerProps) => {
+export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
+  const [resolution, setResolution] = useState(1);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const resolutionRef = useRef(resolution);
-  const [orderbookData, setOrderbookData] = useState<OrderbookData[] | null>(
-    null
-  );
-  const dataRef = useRef<OrderbookData[] | null>(null);
+  const [orderbookData, setOrderbookData] = useState<OrderbookData>({
+    rows: null,
+  });
+  const dataRef = useRef<OrderbookData>({ rows: null });
   const setOrderbookDataThrottled = useRef(throttle(setOrderbookData, 1000));
 
   const update = useCallback(
     (delta: MarketDepthSubscription_marketDepthUpdate) => {
-      if (!dataRef.current) {
+      if (!dataRef.current.rows) {
         return false;
       }
-      dataRef.current = updateCompactedData(
-        dataRef.current,
-        delta.sell,
-        delta.buy,
-        resolutionRef.current
-      );
+      dataRef.current = produce(dataRef.current, (draft) => {
+        Object.assign(draft, delta.market.data);
+        draft.rows = updateCompactedRows(
+          draft.rows ?? [],
+          delta.sell,
+          delta.buy,
+          resolutionRef.current
+        );
+        Object.assign(
+          draft,
+          mapMarketData(delta.market.data, resolutionRef.current)
+        );
+      });
       setOrderbookDataThrottled.current(dataRef.current);
       return true;
     },
+    // using resolutionRef.current to avoid using resolution as a dependency - it will cause data provider restart on resolution change
     []
   );
 
@@ -50,11 +60,15 @@ export const OrderbookManager = ({
 
   useEffect(() => {
     if (!data) {
-      dataRef.current = null;
+      dataRef.current = { rows: null };
       setOrderbookData(dataRef.current);
       return;
     }
-    dataRef.current = compactData(data.depth.sell, data.depth.buy, resolution);
+    dataRef.current = {
+      ...data.data,
+      rows: compactRows(data.depth.sell, data.depth.buy, resolution),
+      ...mapMarketData(data.data, resolution),
+    };
     setOrderbookData(dataRef.current);
   }, [data, resolution]);
 
@@ -66,8 +80,10 @@ export const OrderbookManager = ({
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <Orderbook
-        data={orderbookData}
+        {...orderbookData}
         decimalPlaces={data?.decimalPlaces ?? 0}
+        resolution={resolution}
+        onResolutionChange={(resolution: number) => setResolution(resolution)}
       />
     </AsyncRenderer>
   );

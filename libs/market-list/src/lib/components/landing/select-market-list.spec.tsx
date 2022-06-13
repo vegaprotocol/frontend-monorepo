@@ -12,7 +12,7 @@ jest.mock(
 
 describe('SelectMarketList', () => {
   it('should render', () => {
-    render(
+    const { container } = render(
       <SelectMarketList
         data={mockData.data as MarketList}
         onSelect={jest.fn()}
@@ -20,7 +20,7 @@ describe('SelectMarketList', () => {
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
-    expect(screen.getByText('141.75')).toBeTruthy();
+    expect(container).toHaveTextContent(/141\.75/);
     expect(screen.getByText('Or view full market list')).toBeTruthy();
   });
 

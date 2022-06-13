@@ -26,7 +26,10 @@ export const SelectMarketList = ({
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
   return (
-    <div className="max-h-[40rem] overflow-x-auto">
+    <div
+      className="max-h-[40rem] overflow-x-auto"
+      data-testid="select-market-list"
+    >
       <table className="relative h-full min-w-full whitespace-nowrap">
         <thead className="sticky top-0 z-10 dark:bg-black bg-white">
           <tr>

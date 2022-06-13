@@ -7,7 +7,8 @@ import {
 import { useWeb3React } from '@web3-react/core';
 import type { ReactNode } from 'react';
 import { useEffect, useState, useMemo } from 'react';
-import { t, useEnvironment } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { createConnectors } from '../../lib/web3-connectors';
 
 interface Web3ContainerProps {
@@ -58,7 +59,7 @@ export const Web3Content = ({
   const { isActive, error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
-    if (connector?.connectEagerly) {
+    if (connector?.connectEagerly && !('Cypress' in window)) {
       connector.connectEagerly();
     }
   }, [connector]);

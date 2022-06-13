@@ -2,7 +2,6 @@ import {
   Token,
   TokenVesting,
   Claim,
-  CollateralBridge,
   StakingBridge,
 } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
@@ -14,7 +13,7 @@ import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
 import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
@@ -24,10 +23,8 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { config } = useEthereumConfig();
   const { VEGA_ENV, ADDRESSES, ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID } =
     useEnvironment();
-  const [contracts, setContracts] = React.useState<Pick<
-    ContractsContextShape,
-    'token' | 'staking' | 'vesting' | 'claim' | 'erc20Bridge'
-  > | null>(null);
+  const [contracts, setContracts] =
+    React.useState<ContractsContextShape | null>(null);
   const defaultProvider = createDefaultProvider(
     ETHEREUM_PROVIDER_URL,
     ETHEREUM_CHAIN_ID
@@ -68,10 +65,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
             signer || provider
           ),
           claim: new Claim(ADDRESSES.claimAddress, signer || provider),
-          erc20Bridge: new CollateralBridge(
-            config.collateral_bridge_contract.address,
-            signer || provider
-          ),
         });
       }
     };

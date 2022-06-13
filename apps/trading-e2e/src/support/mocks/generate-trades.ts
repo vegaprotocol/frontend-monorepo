@@ -43,7 +43,7 @@ export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
   ];
   const defaultResult = {
     market: {
-      id: 'market-id',
+      id: 'market-0',
       trades,
       __typename: 'Market',
     },

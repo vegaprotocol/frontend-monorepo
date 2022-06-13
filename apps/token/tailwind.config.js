@@ -6,6 +6,7 @@ const vegaCustomClasses = require('../../libs/tailwindcss-config/src/vega-custom
 module.exports = {
   content: [
     join(__dirname, 'src/**/*.{js,ts,jsx,tsx}'),
+    'libs/ui-toolkit/src/utils/shared.ts',
     ...createGlobPatternsForDependencies(__dirname),
   ],
   darkMode: 'class',

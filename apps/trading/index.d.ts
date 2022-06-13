@@ -6,5 +6,5 @@ declare module '*.svg' {
 }
 
 interface Window {
-  _env_: Record<string, string>;
+  _env_?: Record<string, string>;
 }
