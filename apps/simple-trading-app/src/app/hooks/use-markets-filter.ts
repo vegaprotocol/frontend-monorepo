@@ -3,7 +3,7 @@ import { useQuery } from '@apollo/client';
 import { FILTERS_QUERY } from '../components/simple-market-list/data-provider';
 import type { MarketFilters } from '../components/simple-market-list/__generated__/MarketFilters';
 
-const useMarketFiltersData = () => {
+const useMarketFilters = () => {
   const [assets, setAssets] = useState<string[]>([]);
   const [products, setProducts] = useState<string[]>([]);
   const [assetsPerProduct, setAssetsPerProduct] = useState<
@@ -42,4 +42,4 @@ const useMarketFiltersData = () => {
   return { assets, products, assetsPerProduct };
 };
 
-export default useMarketFiltersData;
+export default useMarketFilters;

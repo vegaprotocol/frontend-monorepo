@@ -126,7 +126,7 @@ describe('SimpleMarketList', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    expect(screen.getByRole('list')).toBeInTheDocument();
-    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+    expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
   });
 });

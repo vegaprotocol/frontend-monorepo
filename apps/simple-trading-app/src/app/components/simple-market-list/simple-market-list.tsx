@@ -62,7 +62,10 @@ const SimpleMarketList = () => {
       <SimpleMarketToolbar />
       <AsyncRenderer loading={loading} error={error} data={localData}>
         {localData && localData.length > 0 ? (
-          <ul className="list-none relative pt-8 pb-8">
+          <ul
+            className="list-none relative pt-8 pb-8"
+            data-testid="simple-market-list"
+          >
             {localData?.map((market) => (
               <li
                 className="w-full relative flex justify-start items-center no-underline box-border text-left pt-8 pb-8 pl-16 pr-16 mb-10"

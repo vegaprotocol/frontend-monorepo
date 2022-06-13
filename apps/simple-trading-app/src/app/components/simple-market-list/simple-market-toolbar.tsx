@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Select } from '@vegaprotocol/ui-toolkit';
+import { Button, Select } from '@vegaprotocol/ui-toolkit';
 import useMarketFiltersData from '../../hooks/use-markets-filter';
 import { STATES_FILTER } from './constants';
 
@@ -12,12 +12,12 @@ const SimpleMarketToolbar = () => {
   const params = useParams();
   const { assets, products, assetsPerProduct } = useMarketFiltersData();
   const [activeNumber, setActiveNumber] = useState(
-    products.indexOf(params.product || '') + 1 || 0
+    products?.length ? products.indexOf(params.product || '') + 1 : -1
   );
   const [activeAsset, setActiveAsset] = useState(params.asset || 'all');
   const [activeState, setActiveState] = useState(params.state || 'Active');
   const [sliderStyles, setSliderStyles] = useState<Record<string, string>>({});
-  const slideContRef = useRef<HTMLDivElement | null>(null);
+  const slideContRef = useRef<HTMLUListElement | null>(null);
   const onMenuClick = useCallback(
     (i: number) => {
       setActiveNumber(i);
@@ -30,23 +30,36 @@ const SimpleMarketToolbar = () => {
     },
     [setActiveState]
   );
+
+  useEffect(() => {
+    // handle corner case when there is product
+    // param, but no products yet
+    if (activeNumber < 0 && products?.length) {
+      setActiveNumber(products.indexOf(params.product || '') + 1 || 0);
+    }
+  }, [activeNumber, setActiveNumber, products, params]);
+
   useEffect(() => {
     const contStyles = (
-      slideContRef.current as HTMLDivElement
+      slideContRef.current as HTMLUListElement
     ).getBoundingClientRect();
-    const selectedStyles = (slideContRef.current as HTMLDivElement).children[
+    const selectedStyles = (slideContRef.current as HTMLUListElement).children[
       activeNumber
-    ].getBoundingClientRect();
-
-    const styles = {
-      backgroundColor: activeNumber ? '' : theme.colors.coral,
-      width: `${selectedStyles.width}px`,
-      left: `${selectedStyles.left - contStyles.left}px`,
-    };
+    ]?.getBoundingClientRect();
+    const styles: Record<string, string> = selectedStyles
+      ? {
+          backgroundColor: activeNumber ? '' : theme.colors.coral,
+          width: `${selectedStyles.width}px`,
+          left: `${selectedStyles.left - contStyles.left}px`,
+        }
+      : {};
     setSliderStyles(styles);
   }, [activeNumber, slideContRef]);
 
   useEffect(() => {
+    if (activeNumber < 0) {
+      return;
+    }
     const product = activeNumber ? `/${products[activeNumber - 1]}` : '';
     const asset = activeAsset !== 'all' || product ? `/${activeAsset}` : '';
     const state = activeState !== 'Active' || asset ? `/${activeState}` : '';
@@ -54,31 +67,34 @@ const SimpleMarketToolbar = () => {
   }, [activeNumber, activeAsset, activeState, products, navigate]);
 
   return (
-    <div className="max-w-max">
-      <div
+    <div className="w-max">
+      <ul
         ref={slideContRef}
         className="grid grid-flow-col auto-cols-min gap-8 relative pb-4"
+        data-testid="market-products-menu"
       >
-        <div
-          className="md:mx-16 whitespace-nowrap cursor-pointer"
-          onClick={() => onMenuClick(0)}
-        >
-          {t('All Markets')}
-        </div>
-        {products.map((product, i) => (
-          <div
-            key={product}
-            className="mx-16 whitespace-nowrap cursor-pointer"
-            onClick={() => onMenuClick(++i)}
+        <li key="all" className="md:mx-16 whitespace-nowrap cursor-pointer">
+          <Button
+            variant="inline"
+            onClick={() => onMenuClick(0)}
+            style={{ color: theme.colors.coral }}
           >
-            {product}
-          </div>
+            {t('All Markets')}
+          </Button>
+        </li>
+        {products.map((product, i) => (
+          <li key={product} className="mx-16 whitespace-nowrap cursor-pointer">
+            <Button variant="inline" onClick={() => onMenuClick(++i)}>
+              {product}
+            </Button>
+          </li>
         ))}
-        <div
+        <li
           className="absolute bottom-0 h-2 transition-left duration-300 dark:bg-white bg-black"
+          key="slider"
           style={sliderStyles}
         />
-      </div>
+      </ul>
       <div className="grid gap-8 pb-4 mt-8 md:grid-cols-[min-content,min-content,1fr]">
         <div className="md:ml-16">
           <Select
@@ -95,30 +111,38 @@ const SimpleMarketToolbar = () => {
           </Select>
         </div>
         <div className="hidden md:block">|</div>
-        <div className="grid grid-flow-col auto-cols-min md:gap-8 pb-4">
-          <div
-            className={classNames('mx-8 whitespace-nowrap cursor-pointer', {
-              'font-bold': activeAsset === 'all',
-            })}
-            onClick={() => setActiveAsset('all')}
-          >
-            {t('All')}
-          </div>
+        <ul
+          className="grid grid-flow-col auto-cols-min md:gap-8 pb-4"
+          data-testid="market-assets-menu"
+        >
+          <li key="all" className="mx-8">
+            <Button
+              variant="inline"
+              onClick={() => setActiveAsset('all')}
+              className={classNames({
+                'font-bold': activeAsset === 'all',
+              })}
+            >
+              {t('All')}
+            </Button>
+          </li>
           {(activeNumber
             ? assetsPerProduct[products[activeNumber - 1]]
             : assets
           )?.map((asset) => (
-            <div
-              key={asset}
-              className={classNames('mx-8 whitespace-nowrap cursor-pointer', {
-                'font-bold': activeAsset === asset,
-              })}
-              onClick={() => setActiveAsset(asset)}
-            >
-              {asset}
-            </div>
+            <li key={asset} className="mx-8Z">
+              <Button
+                variant="inline"
+                onClick={() => setActiveAsset(asset)}
+                className={classNames({
+                  'font-bold': activeAsset === asset,
+                })}
+              >
+                {asset}
+              </Button>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </div>
   );
