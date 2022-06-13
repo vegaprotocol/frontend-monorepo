@@ -13,6 +13,7 @@ import {
   includesBorderWidth,
   includesHeight,
 } from '../../utils/class-names';
+import classnames from 'classnames';
 
 interface CommonProps {
   children?: ReactNode;
@@ -20,6 +21,7 @@ interface CommonProps {
   className?: string;
   prependIconName?: IconName;
   appendIconName?: IconName;
+  boxShadow?: boolean;
 }
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
@@ -31,6 +33,7 @@ export interface AnchorButtonProps
 
 const getClasses = (
   variant: CommonProps['variant'],
+  boxShadow: CommonProps['boxShadow'],
   paddingLeftProvided: boolean,
   paddingRightProvided: boolean,
   borderWidthProvided: boolean,
@@ -39,8 +42,15 @@ const getClasses = (
   // Add classes into variables if there are multiple classes shared in multiple button styles
   const sharedClasses =
     'inline-flex items-center justify-center box-border transition-[background-color] ease-linear duration-50 disabled:no-underline';
-  const commonButtonClasses =
-    'text-ui font-semibold relative disabled:static shadow-[3px_3px_0_0] disabled:shadow-none focus-visible:shadow-vega-pink focus-visible:outline-none dark:focus-visible:shadow-vega-yellow border no-underline hover:no-underline active:top-[1px] active:left-[1px] active:shadow-[2px_2px_0_0]';
+  const commonButtonClasses = classnames(
+    'relative disabled:static',
+    'text-ui font-semibold disabled:shadow-none focus-visible:outline-none border no-underline hover:no-underline',
+    {
+      'shadow-none': boxShadow === false,
+      'shadow-[3px_3px_0_0] focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow active:top-[1px] active:left-[1px] active:shadow-[2px_2px_0_0]':
+        boxShadow === undefined || boxShadow,
+    }
+  );
   const commonDisabled =
     'disabled:bg-black-10 dark:disabled:bg-white-10 disabled:text-black-60 dark:disabled:text-white-60 disabled:border-black-25 dark:disabled:border-white-25';
   const inlineTextColour =
@@ -142,7 +152,8 @@ const getClasses = (
 
 const classes = (
   className: CommonProps['className'],
-  variant: CommonProps['variant']
+  variant: CommonProps['variant'],
+  boxShadow?: CommonProps['boxShadow']
 ) => {
   const paddingLeftProvided = includesLeftPadding(className);
   const paddingRightProvided = includesRightPadding(className);
@@ -152,6 +163,7 @@ const classes = (
   return classNames(
     getClasses(
       variant,
+      boxShadow,
       paddingLeftProvided,
       paddingRightProvided,
       borderWidthProvided,
@@ -193,6 +205,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       className,
       prependIconName,
       appendIconName,
+      boxShadow,
       ...props
     },
     ref
@@ -200,7 +213,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={classes(className, variant)}
+        className={classes(className, variant, boxShadow)}
         type={type}
         {...props}
       >

@@ -1,34 +1,30 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
+import { Button } from '../button';
 
-const itemStyles = classNames([
-  'text-ui',
-  'text-black',
-  'dark:text-white',
-  'flex',
-  'items-center',
-  'justify-between',
-  'leading-1',
+const itemClass = classNames(
+  'relative',
+  'flex items-center justify-between',
+  'text-ui leading-1',
+  'h-[25px]',
+  'py-0 pr-8',
   'cursor-default',
   'select-none',
   'whitespace-nowrap',
-  'h-[25px]',
-  'py-0',
-  'pr-8',
-  'color-black',
-]);
+  'focus:bg-vega-pink dark:focus:bg-vega-yellow',
+  'focus:text-white dark:focus:text-black',
+  'focus:outline-none'
+);
 
-const itemClass = classNames(itemStyles, [
-  'focus:bg-vega-yellow',
-  'dark:focus:bg-vega-yellow',
-  'focus:text-black',
-  'dark:focus:text-black',
-  'focus:outline-none',
-]);
-
-function getItemClasses(inset: boolean) {
-  return classNames(itemClass, inset ? 'pl-28' : 'pl-4', 'relative');
+function getItemClasses(inset: boolean, checked?: boolean) {
+  return classNames(
+    itemClass,
+    inset ? 'pl-28' : 'pl-8',
+    checked
+      ? 'bg-vega-pink dark:bg-vega-yellow text-white dark:text-black'
+      : 'text-black dark:text-white'
+  );
 }
 
 /**
@@ -40,7 +36,21 @@ export const DropdownMenu = DropdownMenuPrimitive.Root;
  * The button that toggles the dropdown menu.
  * By default, the {@link DropdownMenuContent} will position itself against the trigger.
  */
-export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+export const DropdownMenuTrigger = forwardRef<
+  React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
+  React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
+>(({ name, className }) => (
+  <DropdownMenuPrimitive.Trigger className="focus-visible:outline-none focus-visible:inset-shadow-vega-pink dark:focus-visible:inset-shadow-vega-yellow">
+    <Button
+      variant="secondary"
+      appendIconName="chevron-down"
+      boxShadow={false}
+      className={classNames(className, 'justify-between px-8 font-normal')}
+    >
+      {name}
+    </Button>
+  </DropdownMenuPrimitive.Trigger>
+));
 
 /**
  * Used to group multiple {@link DropdownMenuRadioItem}s.
@@ -58,7 +68,7 @@ export const DropdownMenuContent = forwardRef<
     {...contentProps}
     ref={forwardedRef}
     className={classNames(
-      'inline-block box-border border-1 border-black bg-white dark:bg-black p-4',
+      'inline-block box-border border-1 border-black bg-white dark:bg-black-60',
       className
     )}
   />
@@ -92,7 +102,10 @@ export const DropdownMenuCheckboxItem = forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(getItemClasses(inset), className)}
+    className={classNames(
+      getItemClasses(inset, checkboxItemProps.checked),
+      className
+    )}
   />
 ));
 
