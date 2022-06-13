@@ -1,9 +1,9 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { AccountsManager } from './accounts-manager';
+import { TransactionsManager } from './transactions-manager';
 
-export const AccountsContainer = () => {
+export const TransactionsContainer = () => {
   const { keypair } = useVegaWallet();
 
   if (!keypair) {
@@ -14,7 +14,5 @@ export const AccountsContainer = () => {
     );
   }
 
-  console.log(keypair)
-
-  return <AccountsManager partyId={keypair.pub} />;
+  return <TransactionsManager partyId={keypair.pub} />;
 };

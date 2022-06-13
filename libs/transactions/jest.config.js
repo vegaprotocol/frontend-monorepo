@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: 'accounts',
+  displayName: 'transactions',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -10,6 +10,6 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/accounts',
+  coverageDirectory: '../../coverage/libs/transactions',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

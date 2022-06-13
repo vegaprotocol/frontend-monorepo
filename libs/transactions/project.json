@@ -1,0 +1,43 @@
+{
+  "root": "libs/transactions",
+  "sourceRoot": "libs/transactions/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/transactions",
+        "tsConfig": "libs/transactions/tsconfig.lib.json",
+        "project": "libs/transactions/package.json",
+        "entryFile": "libs/transactions/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/transactions/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/transactions/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/transactions"],
+      "options": {
+        "jestConfig": "libs/transactions/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

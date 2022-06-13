@@ -9,12 +9,32 @@ import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
 // GraphQL query operation: DealTicketQuery
 // ====================================================
 
+export interface DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The id of the asset
+   */
+  id: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
+}
+
 export interface DealTicketQuery_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * String representing the quote (e.g. BTCUSD -> USD is quote)
    */
   quoteName: string;
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset;
 }
 
 export interface DealTicketQuery_market_tradableInstrument_instrument {
