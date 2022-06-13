@@ -34,8 +34,8 @@ export const Toggle = ({
     'border border-black-60 active:border-black dark:border-white-60 dark:active:border-white peer-checked:border-black dark:peer-checked:border-vega-yellow',
     'group-first-of-type:rounded-tl group-first-of-type:rounded-bl group-last-of-type:rounded-tr group-last-of-type:rounded-br',
     'px-28 py-4',
-    'peer-checked:bg-vega-pink dark:peer-checked:bg-vega-yellow hover:bg-black-10 dark:hover:bg-white-25 hover:peer-checked:bg-vega-pink dark:hover:peer-checked:bg-vega-yellow focus:bg-black-10 dark:focus:bg-white-25',
-    'text-ui text-center peer-checked:font-bold peer-checked:text-white dark:peer-checked:text-black text-black-60 dark:text-white-60 active:text-black dark:active:text-white focus:text-black dark:focus:text-white',
+    'peer-checked:bg-vega-pink dark:peer-checked:bg-vega-yellow hover:bg-black-10 dark:hover:bg-white-25 hover:peer-checked:bg-vega-pink dark:hover:peer-checked:bg-vega-yellow focus-visible:bg-black-10 dark:focus-visible:bg-white-25',
+    'text-ui text-center peer-checked:font-bold peer-checked:text-white dark:peer-checked:text-black text-black-60 dark:text-white-60 active:text-black dark:active:text-white focus-visible:text-black dark:focus-visible:text-white',
     'focus-within:inset-shadow-black',
     'cursor-pointer peer-checked:cursor-auto select-none transition-all duration-75'
   );
