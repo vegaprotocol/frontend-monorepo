@@ -97,8 +97,12 @@ function VegaTradingApp(props: AppProps) {
                   rel="stylesheet"
                   href="https://static.vega.xyz/fonts.css"
                 />
-                {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-                <script src="./env-config.js" type="text/javascript" />
+                {['1', 'true'].includes(
+                  process.env['NX_USE_ENV_OVERRIDES'] || ''
+                ) ? (
+                  /* eslint-disable-next-line @next/next/no-sync-scripts */
+                  <script src="./env-config.js" type="text/javascript" />
+                ) : null}
               </Head>
               <AppBody {...props} />
             </AppLoader>
