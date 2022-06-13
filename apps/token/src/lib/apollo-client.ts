@@ -173,5 +173,3 @@ export function createClient(base?: string) {
     cache,
   });
 }
-
-export const client = createClient();
