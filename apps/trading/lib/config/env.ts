@@ -12,7 +12,6 @@ const windowOrDefault = (key: string, defaultValue?: string) => {
  * So must provide the default with the key so that next can figure it out.
  */
 export const ENV = {
-  nodeEnv: windowOrDefault('NODE_ENV', process.env['NODE_ENV']),
   dsn: windowOrDefault(
     'NX_TRADING_SENTRY_DSN',
     process.env['NX_TRADING_SENTRY_DSN']

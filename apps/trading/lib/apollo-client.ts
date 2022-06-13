@@ -11,7 +11,6 @@ import { getMainDefinition } from '@apollo/client/utilities';
 import { onError } from '@apollo/client/link/error';
 import { RetryLink } from '@apollo/client/link/retry';
 import { createClient as createWSClient } from 'graphql-ws';
-import { ENV } from './config/env';
 
 export function createClient(base?: string) {
   if (!base) {
@@ -91,7 +90,7 @@ export function createClient(base?: string) {
   });
 
   return new ApolloClient({
-    connectToDevTools: ENV.nodeEnv === 'development',
+    connectToDevTools: process.env['NODE_ENV'] === 'development',
     link: from([errorLink, retryLink, splitLink]),
     cache,
   });

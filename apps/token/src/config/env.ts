@@ -9,7 +9,6 @@ const TRUTHY = ['1', 'true'];
 
 export const ENV = {
   // Environment
-  nodeEnv: windowOrDefault('NODE_ENV'),
   dsn: windowOrDefault('NX_SENTRY_DSN'),
   envName: windowOrDefault('NX_VEGA_ENV'),
   commit: windowOrDefault('NX_COMMIT_REF'),

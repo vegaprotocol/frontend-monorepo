@@ -10,7 +10,6 @@ const truthy = ['1', 'true'];
 export const ENV = {
   // Data sources
   // Environment
-  nodeEnv: windowOrDefault('NODE_ENV'),
   dsn: windowOrDefault('NX_EXPLORER_SENTRY_DSN'),
   envName: windowOrDefault('NX_VEGA_ENV'),
   dataSources: {
