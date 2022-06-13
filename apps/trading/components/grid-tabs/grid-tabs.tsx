@@ -47,7 +47,11 @@ export const GridTabs = ({ children }: GridTabsProps) => {
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           return (
-            <Tabs.Content value={child.props.id} className="h-full">
+            <Tabs.Content
+              value={child.props.id}
+              className="h-full"
+              data-testid={`tab-${child.props.id}`}
+            >
               {child.props.children}
             </Tabs.Content>
           );
@@ -63,6 +67,6 @@ interface GridTabProps {
   name: string;
 }
 
-export const GridTab = ({ children }: GridTabProps) => {
+export const GridTab = ({ id, children }: GridTabProps) => {
   return <div>{children}</div>;
 };
