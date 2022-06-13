@@ -12,9 +12,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { GridTab, GridTabs } from '../../components/grid-tabs';
 import { SelectMarketDialog } from '@vegaprotocol/market-list';
-import { ArrowDown, PriceCellChange } from '@vegaprotocol/ui-toolkit';
+import { ArrowDown, GridTab, GridTabs, PriceCellChange } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 
 const TradingViews = {
