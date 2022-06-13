@@ -12,6 +12,8 @@ type InputRootProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;
   disabled?: boolean;
   className?: string;
+  label?: string;
+  labelDescription?: string;
 };
 
 type NoPrepend = {
@@ -77,7 +79,7 @@ export const inputClassNames = ({
       'dark:bg-white-25',
       'text-black placeholder:text-black-60 dark:text-white dark:placeholder:text-white-60',
       'text-ui',
-      'focus:outline-none focus:input-shadow-focus dark:focus:input-shadow-focus-dark',
+      'focus:outline-none',
       'disabled:bg-black-10 disabled:dark:bg-white-10',
       'input-shadow',
     ],
@@ -85,7 +87,8 @@ export const inputClassNames = ({
       'pl-8': !includesLeftPadding(className),
       'pr-8': !includesRightPadding(className),
       'border-intent-danger focus:input-shadow-focus-error': hasError,
-      'input-border dark:dark-input-border': !hasError,
+      'input-border dark:dark-input-border focus:input-shadow-focus dark:focus:input-shadow-focus-dark':
+        !hasError,
     },
     className
   );
@@ -150,6 +153,8 @@ const getAffixElement = ({
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
+      label,
+      labelDescription,
       prependIconName,
       prependIconDescription,
       appendIconName,
@@ -183,6 +188,23 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       />
     );
 
+    const inputWithLabel = (
+      <label>
+        <div
+          className={classNames(
+            'mb-4 text-body-large text-black dark:text-white',
+            {
+              'border-l-4 border-intent-danger pl-8': hasError,
+            }
+          )}
+        >
+          <div className="font-bold mb-2">{label}</div>
+          {labelDescription && <div className="">{labelDescription}</div>}
+        </div>
+        {input}
+      </label>
+    );
+
     const element = getAffixElement({
       prependIconName,
       prependIconDescription,
@@ -196,12 +218,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       return (
         <div className="inline-flex items-center relative">
           {hasPrepended && element}
-          {input}
+          {label ? inputWithLabel : input}
           {hasAppended && element}
         </div>
       );
     }
 
-    return input;
+    return label ? inputWithLabel : input;
   }
 );
