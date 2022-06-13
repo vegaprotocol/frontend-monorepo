@@ -39,7 +39,7 @@ export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
->(({ name, className }) => (
+>(({ children, className }) => (
   <DropdownMenuPrimitive.Trigger className="focus-visible:outline-none focus-visible:inset-shadow-vega-pink dark:focus-visible:inset-shadow-vega-yellow">
     <Button
       variant="secondary"
@@ -47,7 +47,7 @@ export const DropdownMenuTrigger = forwardRef<
       boxShadow={false}
       className={classNames(className, 'justify-between px-8 font-normal')}
     >
-      {name}
+      {children}
     </Button>
   </DropdownMenuPrimitive.Trigger>
 ));

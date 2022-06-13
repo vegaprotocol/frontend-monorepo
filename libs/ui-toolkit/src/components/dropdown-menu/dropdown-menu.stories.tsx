@@ -6,7 +6,6 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuItemIndicator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -30,7 +29,9 @@ export const CheckboxItems = () => {
   return (
     <div style={{ textAlign: 'center', padding: 50 }}>
       <DropdownMenu>
-        <DropdownMenuTrigger name="Select many things" className="w-[300px]" />
+        <DropdownMenuTrigger className="w-[300px]">
+          <span>Select many things</span>
+        </DropdownMenuTrigger>
         <DropdownMenuContent className="w-[300px]">
           {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
             <DropdownMenuCheckboxItem
@@ -54,7 +55,9 @@ export const RadioItems = () => {
   return (
     <div style={{ textAlign: 'center', padding: 50 }}>
       <DropdownMenu>
-        <DropdownMenuTrigger name="Open" />
+        <DropdownMenuTrigger>
+          <span>Open</span>
+        </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem inset onSelect={() => console.log('minimize')}>
             Minimize window
@@ -76,6 +79,28 @@ export const RadioItems = () => {
         </DropdownMenuContent>
       </DropdownMenu>
       <p>Selected file: {file}</p>
+    </div>
+  );
+};
+
+export const IconMenu = () => {
+  const iconMenuItems = [
+    { label: 'IconMenu Item 1' },
+    { label: 'IconMenu Item 2' },
+  ];
+
+  return (
+    <div style={{ textAlign: 'center', padding: 50 }}>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Icon name="cog" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {iconMenuItems.map(({ label }) => (
+            <DropdownMenuItem key={label}>{label}</DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };
