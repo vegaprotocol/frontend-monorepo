@@ -1,4 +1,5 @@
-import BigNumber from 'bignumber.js';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
 import React from 'react';
 
 import { StakingMethod } from '../../../components/staking-method-radio';
@@ -14,15 +15,16 @@ export const useRemoveStake = (
   vegaKey: string,
   stakingMethod: StakingMethod | null
 ) => {
+  const { appState } = useAppState();
   const { staking, vesting } = useContracts();
   // Cannot use call on these as they check wallet balance
   // which if staked > wallet balance means you cannot unstaked
   // even worse if you stake everything then you can't unstake anything!
   const contractRemove = useTransaction(() =>
-    vesting.removeStake(new BigNumber(amount), vegaKey)
+    vesting.removeStake(removeDecimal(amount, appState.decimals), vegaKey)
   );
   const walletRemove = useTransaction(() =>
-    staking.removeStake(new BigNumber(amount), vegaKey)
+    staking.removeStake(removeDecimal(amount, appState.decimals), vegaKey)
   );
   const refreshBalances = useRefreshBalances(address);
   const getAssociationBreakdown = useGetAssociationBreakdown(

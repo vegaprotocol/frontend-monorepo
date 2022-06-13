@@ -1,7 +1,7 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import type { ReactElement } from 'react';
 
 export const TransactionComplete = ({
@@ -23,13 +23,18 @@ export const TransactionComplete = ({
       intent={Intent.Success}
       title={heading || t('Complete')}
     >
-      {body && <p data-testid="transaction-complete-body">{body}</p>}
-      <p>
+      {body && (
+        <p className="mb-8" data-testid="transaction-complete-body">
+          {body}
+        </p>
+      )}
+      <p className="mb-8">
         <Link
           title={t('View transaction on Etherscan')}
+          target="_blank"
           href={`${ETHERSCAN_URL}/tx/${hash}`}
         >
-          {hash}
+          {t('View transaction on Etherscan')}
         </Link>
       </p>
       {footer && <p data-testid="transaction-complete-footer">{footer}</p>}

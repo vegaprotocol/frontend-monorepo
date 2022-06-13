@@ -77,9 +77,10 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
   }, [currentEpoch, data?.party?.delegations]);
 
   const unstaked = React.useMemo(() => {
-    return new BigNumber(
+    const value = new BigNumber(
       data?.party?.stake.currentStakeAvailableFormatted || 0
     ).minus(currentDelegationAmount);
+    return value.isLessThan(0) ? new BigNumber(0) : value;
   }, [
     currentDelegationAmount,
     data?.party?.stake.currentStakeAvailableFormatted,

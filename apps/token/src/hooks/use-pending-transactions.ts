@@ -1,9 +1,8 @@
 import React from 'react';
-
-import { useContracts } from '../contexts/contracts/contracts-context';
+import { useTransactionStore } from '../stores/transactions';
 
 export const usePendingTransactions = () => {
-  const { transactions } = useContracts();
+  const { transactions } = useTransactionStore();
 
   return React.useMemo(() => {
     return transactions.some((tx) => tx.pending);

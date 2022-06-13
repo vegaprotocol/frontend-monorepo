@@ -1,6 +1,5 @@
 import { gql, useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
-import BigNumber from 'bignumber.js';
 import React from 'react';
 
 import { StakeLinkingStatus } from '../../../__generated__/globalTypes';
@@ -15,6 +14,8 @@ import type {
   PartyStakeLinkings_party_stake_linkings,
   PartyStakeLinkingsVariables,
 } from './__generated__/PartyStakeLinkings';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 export const useAddStake = (
   address: string,
@@ -24,12 +25,15 @@ export const useAddStake = (
   confirmations: number
 ) => {
   const { staking, vesting } = useContracts();
+  const {
+    appState: { decimals },
+  } = useAppState();
   const contractAdd = useTransaction(
-    () => vesting.addStake(new BigNumber(amount), vegaKey, confirmations),
+    () => vesting.stakeTokens(removeDecimal(amount, decimals), vegaKey),
     confirmations
   );
   const walletAdd = useTransaction(
-    () => staking.addStake(new BigNumber(amount), vegaKey, confirmations),
+    () => staking.stake(removeDecimal(amount, decimals), vegaKey),
     confirmations
   );
   const refreshBalances = useRefreshBalances(address);

@@ -15,7 +15,7 @@ const ProgressContents = ({
 }) => (
   <div
     className={`flex justify-between py-2 font-mono ${
-      light ? 'gap-0 px-0 text-black' : 'gap-y-0 gap-x-4 px-4 text-black-60'
+      light ? 'gap-0 px-0 text-black' : 'gap-y-0 gap-x-4 px-4'
     }`}
   >
     {children}
@@ -72,7 +72,7 @@ export const LockedProgress = ({
   unlocked,
   leftLabel,
   rightLabel,
-  leftColor = Colors.pink,
+  leftColor = Colors.vega.pink,
   rightColor = Colors.green.DEFAULT,
   light = false,
 }: LockedProgressProps) => {

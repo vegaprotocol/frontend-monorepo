@@ -8,16 +8,22 @@ export const generateDealTicketQuery = (
 ): DealTicketQuery => {
   const defaultResult: DealTicketQuery = {
     market: {
-      id: 'market-id',
+      id: 'market-0',
       name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 2,
-      positionDecimalPlaces: 1,
+      positionDecimalPlaces: 0,
       state: MarketState.Active,
       tradingMode: MarketTradingMode.Continuous,
       tradableInstrument: {
         instrument: {
           product: {
             quoteName: 'BTC',
+            settlementAsset: {
+              __typename: 'Asset',
+              id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
+              symbol: 'tBTC',
+              name: 'tBTC TEST',
+            },
             __typename: 'Future',
           },
           __typename: 'Instrument',

@@ -1,13 +1,14 @@
 import { useTranslation } from 'react-i18next';
 
 import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
 import { SplashLoader } from '../../../components/splash-loader';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 
 export const TokenDetails = ({
   totalSupply,
@@ -20,6 +21,7 @@ export const TokenDetails = ({
   const { t } = useTranslation();
 
   const { tranches, loading, error } = useTranches();
+  const { config } = useEthereumConfig();
 
   if (error) {
     return (
@@ -29,7 +31,7 @@ export const TokenDetails = ({
     );
   }
 
-  if (!tranches || loading) {
+  if (!tranches || loading || !config) {
     return (
       <Splash>
         <SplashLoader />
@@ -43,22 +45,23 @@ export const TokenDetails = ({
         {t('Token address').toUpperCase()}
         <Link
           data-testid="token-address"
-          title={t('View address on Etherscan')}
+          title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
           href={`${ETHERSCAN_URL}/address/${ADDRESSES.vegaTokenAddress}`}
+          target="_blank"
         >
           {ADDRESSES.vegaTokenAddress}
         </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {t('Vesting contract'.toUpperCase())}
+        {t('Vesting contract').toUpperCase()}
         <Link
           data-testid="token-contract"
-          title={t('View address on Etherscan')}
+          title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
-          href={`${ETHERSCAN_URL}/address/${ADDRESSES.vestingAddress}`}
+          href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
         >
-          {ADDRESSES.vestingAddress}
+          {config.token_vesting_contract.address}
         </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>

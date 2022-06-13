@@ -1,5 +1,5 @@
 import { Callout, Intent, Link, Button } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/react-helpers';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouteLink } from 'react-router-dom';
 
@@ -38,6 +38,7 @@ export const Complete = ({
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${commitTxHash}`}
+            target="_blank"
           >
             {commitTxHash}
           </Link>
@@ -49,6 +50,7 @@ export const Complete = ({
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${claimTxHash}`}
+            target="_blank"
           >
             {claimTxHash}
           </Link>

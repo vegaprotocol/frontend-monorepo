@@ -4,6 +4,7 @@ import {
   Input,
   Intent,
   FormGroup,
+  Lozenge,
 } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +26,6 @@ export const AmountInput = ({
   amount,
   setAmount,
   maximum,
-  // TODO: render currency in input when https://github.com/vegaprotocol/frontend-monorepo/issues/273
   currency,
 }: {
   amount: string;
@@ -36,25 +36,31 @@ export const AmountInput = ({
   const { t } = useTranslation();
   return (
     <div className="flex">
-      <Input
-        data-testid="token-amount-input"
-        className="flex-1"
-        name={inputName}
-        id={inputName}
-        onChange={(e) => setAmount(e.target.value)}
-        value={amount}
-        autoComplete="off"
-        type="number"
-        max={maximum.toString()}
-        min={0}
-        step="any"
-      />
+      <div className="flex-1">
+        <Input
+          data-testid="token-amount-input"
+          name={inputName}
+          id={inputName}
+          onChange={(e) => setAmount(e.target.value)}
+          value={amount}
+          autoComplete="off"
+          type="number"
+          max={maximum.toString()}
+          min={0}
+          step="any"
+          appendElement={
+            <Lozenge className="text-[10px] relative top-[-2px]">
+              {currency}
+            </Lozenge>
+          }
+        />
+      </div>
       {maximum && (
         <Button
           variant="inline-link"
           onClick={() => setAmount(maximum.toString())}
           data-testid="token-amount-use-maximum"
-          className="flex flex-col justify-center text-ui p-8 h-28 my-0 mx-8"
+          className="flex flex-col justify-center p-8 h-28 my-0 mx-8"
         >
           {t('Use maximum')}
         </Button>
@@ -69,7 +75,6 @@ export const TokenInput = ({
   perform,
   submitText,
   currency,
-
   approveText,
   allowance,
   approve,
@@ -84,7 +89,6 @@ export const TokenInput = ({
   perform: () => void;
   submitText: string;
   currency: string;
-
   requireApproval?: boolean;
   maximum?: BigNumber;
   minimum?: BigNumber;
@@ -128,6 +132,7 @@ export const TokenInput = ({
       new BigNumber(amount).isLessThan(minimum)
     );
   }, [amount, isApproved, maximum, requireApproval, minimum]);
+
   let approveContent = null;
 
   if (showApproveButton) {
@@ -158,11 +163,9 @@ export const TokenInput = ({
     }
   } else if (requireApproval) {
     approveContent = (
-      <Callout
-        iconName="tick"
-        intent={Intent.Success}
-        title={`${currency} are approved for staking`}
-      />
+      <Callout iconName="tick" intent={Intent.Success}>
+        <p>{`${currency} are approved for staking`}</p>
+      </Callout>
     );
   }
 

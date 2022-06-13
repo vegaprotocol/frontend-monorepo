@@ -53,12 +53,11 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
   <ColorItem
     title="theme.color.intent"
     subtitle="Intent"
-    colors={theme.colors.intent}
-  />
-  <ColorItem
-    title="theme.color.intent-background"
-    subtitle="Intent background"
-    colors={theme.colors['intent-background']}
+    colors={{
+      success: theme.colors.success,
+      warning: theme.colors.warning,
+      danger: theme.colors.danger,
+    }}
   />
 </ColorPalette>
 
@@ -71,7 +70,7 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
     colors={{
       black: theme.colors.black.DEFAULT,
       white: theme.colors.white.DEFAULT,
-      danger: theme.colors['intent-background'].danger,
+      danger: theme.colors['danger-bg'],
     }}
   />
 </ColorPalette>

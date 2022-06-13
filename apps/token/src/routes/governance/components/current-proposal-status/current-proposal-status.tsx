@@ -11,7 +11,7 @@ const StatusPass = ({ children }: { children: React.ReactNode }) => (
 );
 
 const StatusFail = ({ children }: { children: React.ReactNode }) => (
-  <span className="text-intent-danger">{children}</span>
+  <span className="text-danger">{children}</span>
 );
 
 export const CurrentProposalStatus = ({
