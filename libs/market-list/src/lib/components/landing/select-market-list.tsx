@@ -26,7 +26,10 @@ export const SelectMarketList = ({
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
   return (
-    <div className="max-h-[40rem] overflow-x-auto">
+    <div
+      className="max-h-[40rem] overflow-x-auto"
+      data-testid="select-market-list"
+    >
       <table className="relative h-full min-w-full whitespace-nowrap">
         <thead className="sticky top-0 z-10 dark:bg-black bg-white">
           <tr>
@@ -50,10 +53,7 @@ export const SelectMarketList = ({
                     className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
                   >
                     <td className={`${boldUnderlineClassNames} relative`}>
-                      <Link
-                        href={`/markets/${id}?portfolio=orders&trade=orderbook&chart=candles`}
-                        passHref={true}
-                      >
+                      <Link href={`/markets/${id}`} passHref={true}>
                         {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                         <a
                           onClick={() => onSelect(id)}

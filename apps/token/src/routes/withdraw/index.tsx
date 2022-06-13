@@ -15,6 +15,7 @@ import type {
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
+import { Flags } from '../../config';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -22,7 +23,7 @@ const Withdraw = () => {
   return (
     <>
       <Heading title={t('withdrawPageHeading')} />
-      <p>{t('withdrawPageText')}</p>
+      <p className="mb-8">{t('withdrawPageText')}</p>
       <div className="mb-24">
         <VegaWalletContainer>
           {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
@@ -138,18 +139,22 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
         <div className="mb-24">
           <Callout
             title={t('pendingWithdrawalsCalloutTitle')}
-            intent={Intent.Prompt}
+            intent={Intent.Warning}
           >
-            <p>{t('pendingWithdrawalsCalloutText')}</p>
-            <p className="mb-0">
-              <Link to={Routes.WITHDRAWALS}>
+            <p className="mb-8">{t('pendingWithdrawalsCalloutText')}</p>
+            <p>
+              <Link to={Routes.WITHDRAWALS} className="underline text-white">
                 {t('pendingWithdrawalsCalloutButton')}
               </Link>
             </p>
           </Callout>
         </div>
       )}
-      <WithdrawManager assets={data.assets || []} accounts={accounts} />
+      <WithdrawManager
+        assets={data.assets || []}
+        accounts={accounts}
+        isNewContract={Flags.USE_NEW_BRIDGE_CONTRACT}
+      />
     </>
   );
 };

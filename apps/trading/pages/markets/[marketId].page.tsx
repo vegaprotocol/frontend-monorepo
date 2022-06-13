@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
-import { LocalStorage, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
 import { LandingDialog } from '@vegaprotocol/market-list';
 import type { Market, MarketVariables } from './__generated__/Market';
@@ -63,8 +63,12 @@ const MarketPage = ({ id }: { id?: string }) => {
   const marketId =
     id || (Array.isArray(query.marketId) ? query.marketId[0] : query.marketId);
 
-  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-  const yTimestamp = new Date(yesterday * 1000).toISOString();
+  // Cache timestamp for yesterday to prevent full unmount of market page when
+  // a rerender occurs
+  const [yTimestamp] = useState(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  });
 
   if (!marketId) {
     return (
@@ -74,7 +78,6 @@ const MarketPage = ({ id }: { id?: string }) => {
     );
   }
 
-  LocalStorage.setItem('marketId', marketId);
   return (
     <PageQueryContainer<Market, MarketVariables>
       query={MARKET_QUERY}

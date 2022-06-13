@@ -173,8 +173,16 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
       {
         "internalType": "bytes32",
         "name": "vega_public_key",
@@ -188,62 +196,134 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes32", "name": "vega_asset_id", "type": "bytes32" }
+      {
+        "internalType": "bytes32",
+        "name": "vega_asset_id",
+        "type": "bytes32"
+      }
     ],
     "name": "get_asset_source",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      }
     ],
     "name": "get_deposit_maximum",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      }
     ],
     "name": "get_deposit_minimum",
-    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [],
     "name": "get_multisig_control_address",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      }
     ],
     "name": "get_vega_asset_id",
-    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" }
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      }
     ],
     "name": "is_asset_listed",
-    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" },
-      { "internalType": "bytes32", "name": "vega_asset_id", "type": "bytes32" },
-      { "internalType": "uint256", "name": "nonce", "type": "uint256" },
-      { "internalType": "bytes", "name": "signatures", "type": "bytes" }
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "vega_asset_id",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
     ],
     "name": "list_asset",
     "outputs": [],
@@ -252,9 +332,21 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" },
-      { "internalType": "uint256", "name": "nonce", "type": "uint256" },
-      { "internalType": "bytes", "name": "signatures", "type": "bytes" }
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
     ],
     "name": "remove_asset",
     "outputs": [],
@@ -263,14 +355,26 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "maximum_amount",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "nonce", "type": "uint256" },
-      { "internalType": "bytes", "name": "signatures", "type": "bytes" }
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
     ],
     "name": "set_deposit_maximum",
     "outputs": [],
@@ -279,14 +383,26 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" },
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      },
       {
         "internalType": "uint256",
         "name": "minimum_amount",
         "type": "uint256"
       },
-      { "internalType": "uint256", "name": "nonce", "type": "uint256" },
-      { "internalType": "bytes", "name": "signatures", "type": "bytes" }
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
     ],
     "name": "set_deposit_minimum",
     "outputs": [],
@@ -295,11 +411,31 @@
   },
   {
     "inputs": [
-      { "internalType": "address", "name": "asset_source", "type": "address" },
-      { "internalType": "uint256", "name": "amount", "type": "uint256" },
-      { "internalType": "address", "name": "target", "type": "address" },
-      { "internalType": "uint256", "name": "nonce", "type": "uint256" },
-      { "internalType": "bytes", "name": "signatures", "type": "bytes" }
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "target",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
     ],
     "name": "withdraw_asset",
     "outputs": [],

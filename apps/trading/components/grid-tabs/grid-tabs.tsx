@@ -1,37 +1,16 @@
 import * as Tabs from '@radix-ui/react-tabs';
 import classNames from 'classnames';
-import { useRouter } from 'next/router';
 import type { ReactElement, ReactNode } from 'react';
-import { Children, isValidElement, useEffect, useState } from 'react';
+import { Children, isValidElement, useState } from 'react';
 
 interface GridTabsProps {
   children: ReactElement<GridTabProps>[];
-  group: string;
 }
 
-export const GridTabs = ({ children, group }: GridTabsProps) => {
-  const { query, asPath, replace } = useRouter();
+export const GridTabs = ({ children }: GridTabsProps) => {
   const [activeTab, setActiveTab] = useState<string>(() => {
-    const tab = query[group];
-
-    if (typeof tab === 'string') {
-      return tab;
-    }
-
-    // Default to first tab
     return children[0].props.id;
   });
-
-  // Update the query string in the url when the active tab changes
-  // uses group property as the query string key
-  useEffect(() => {
-    const [url, queryString] = asPath.split('?');
-    const searchParams = new URLSearchParams(queryString);
-    searchParams.set(group, activeTab as string);
-    replace(`${url}?${searchParams.toString()}`);
-    // replace and using asPath causes a render loop
-    // eslint-disable-next-line
-  }, [activeTab, group]);
 
   return (
     <Tabs.Root
@@ -68,7 +47,11 @@ export const GridTabs = ({ children, group }: GridTabsProps) => {
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           return (
-            <Tabs.Content value={child.props.id} className="h-full">
+            <Tabs.Content
+              value={child.props.id}
+              className="h-full"
+              data-testid={`tab-${child.props.id}`}
+            >
               {child.props.children}
             </Tabs.Content>
           );
@@ -84,6 +67,6 @@ interface GridTabProps {
   name: string;
 }
 
-export const GridTab = ({ children }: GridTabProps) => {
+export const GridTab = ({ id, children }: GridTabProps) => {
   return <div>{children}</div>;
 };

@@ -26,7 +26,7 @@ export const LandingDialog = ({ open, setOpen }: LandingDialogProps) => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       <Dialog
         title={t('Select a market to get started')}
-        intent={Intent.Prompt}
+        intent={Intent.Primary}
         open={open}
         onChange={setClose}
         titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
