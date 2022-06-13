@@ -73,18 +73,23 @@ const SimpleMarketToolbar = () => {
         className="grid grid-flow-col auto-cols-min gap-8 relative pb-4"
         data-testid="market-products-menu"
       >
-        <li key="all" className="md:mx-16 whitespace-nowrap cursor-pointer">
+        <li key="all" className="md:mx-16 whitespace-nowrap">
           <Button
             variant="inline"
             onClick={() => onMenuClick(0)}
             style={{ color: theme.colors.coral }}
+            className={classNames({ active: !activeNumber })}
           >
             {t('All Markets')}
           </Button>
         </li>
         {products.map((product, i) => (
-          <li key={product} className="mx-16 whitespace-nowrap cursor-pointer">
-            <Button variant="inline" onClick={() => onMenuClick(++i)}>
+          <li key={product} className="mx-16 whitespace-nowrap">
+            <Button
+              variant="inline"
+              onClick={() => onMenuClick(++i)}
+              className={classNames({ active: activeNumber - 1 === i })}
+            >
               {product}
             </Button>
           </li>
