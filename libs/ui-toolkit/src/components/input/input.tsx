@@ -199,7 +199,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         >
           <div className="font-bold mb-2">{label}</div>
-          {labelDescription && <div className="">{labelDescription}</div>}
+          {labelDescription && (
+            <div className={classNames({ 'text-intent-danger': hasError })}>
+              {labelDescription}
+            </div>
+          )}
         </div>
         {input}
       </label>
