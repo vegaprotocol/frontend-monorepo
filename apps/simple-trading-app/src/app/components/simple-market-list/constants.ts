@@ -1,18 +1,18 @@
-import { TailwindIntents } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 import { MarketState } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/react-helpers';
 
-export const MARKET_STATUS: Record<MarketState | '', TailwindIntents> = {
-  [MarketState.Active]: TailwindIntents.Success,
-  [MarketState.Cancelled]: TailwindIntents.Highlight,
-  [MarketState.Closed]: TailwindIntents.Help,
-  [MarketState.Pending]: TailwindIntents.Warning,
-  [MarketState.Proposed]: TailwindIntents.Prompt,
-  [MarketState.Rejected]: TailwindIntents.Danger,
-  [MarketState.Settled]: TailwindIntents.Highlight,
-  [MarketState.Suspended]: TailwindIntents.Warning,
-  [MarketState.TradingTerminated]: TailwindIntents.Danger,
-  '': TailwindIntents.Highlight,
+export const MARKET_STATUS: Record<MarketState | '', Intent> = {
+  [MarketState.Active]: Intent.Success,
+  [MarketState.Cancelled]: Intent.Primary,
+  [MarketState.Closed]: Intent.None,
+  [MarketState.Pending]: Intent.Warning,
+  [MarketState.Proposed]: Intent.Warning,
+  [MarketState.Rejected]: Intent.Danger,
+  [MarketState.Settled]: Intent.Primary,
+  [MarketState.Suspended]: Intent.Warning,
+  [MarketState.TradingTerminated]: Intent.Danger,
+  '': Intent.Primary,
 };
 
 export const STATES_FILTER = [

@@ -29,7 +29,7 @@ export const TrancheProgress = ({
         <span className="tranches__progress-title">{t('Locked')}</span>
         <ProgressBar
           width={220}
-          color={Colors.pink}
+          color={Colors.vega.pink}
           percentage={lockedPercentage}
         />
         <span className="tranches__progress-numbers">

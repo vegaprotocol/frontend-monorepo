@@ -20,7 +20,7 @@ const Portfolio = () => {
               {t('Filters')}
             </h2>
           </aside>
-          <section>
+          <section data-testid="portfolio-grid">
             <GridTabs>
               <GridTab id="positions" name={t('Positions')}>
                 <div className={tabClassName}>

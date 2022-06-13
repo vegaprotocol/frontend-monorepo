@@ -1,7 +1,6 @@
 import {
   addDecimalsFormatNumber,
   formatNumberPercentage,
-  PriceCell,
 } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import React from 'react';
@@ -55,32 +54,16 @@ export const PriceCellChange = React.memo(
         )} flex items-center gap-4 justify-end`}
       >
         <Arrow value={change} />
-        <span className="flex items-center gap-6">
+        <span className="flex items-center gap-6 font-mono">
           <span>
-            {
-              <PriceCell
-                value={changePercentage}
-                valueFormatted={formatNumberPercentage(
-                  new BigNumber(changePercentage.toString()),
-                  2
-                )}
-              />
-            }
+            {formatNumberPercentage(
+              new BigNumber(changePercentage.toString()),
+              2
+            )}
             &nbsp;
           </span>
           <span>
-            (
-            {
-              <PriceCell
-                value={BigInt(change)}
-                valueFormatted={addDecimalsFormatNumber(
-                  change.toString(),
-                  decimalPlaces ?? 0,
-                  3
-                )}
-              />
-            }
-            )
+            {addDecimalsFormatNumber(change.toString(), decimalPlaces ?? 0, 3)}
           </span>
         </span>
       </span>

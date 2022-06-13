@@ -11,7 +11,10 @@ const Withdrawals = () => {
         <div className="h-full grid grid grid-rows-[min-content,1fr]">
           <header className="flex justify-between p-24">
             <h1 className="text-h3">{t('Withdrawals')}</h1>
-            <AnchorButton href="/portfolio/withdraw">
+            <AnchorButton
+              href="/portfolio/withdraw"
+              data-testid="start-withdrawal"
+            >
               {t('Start withdrawal')}
             </AnchorButton>
           </header>
