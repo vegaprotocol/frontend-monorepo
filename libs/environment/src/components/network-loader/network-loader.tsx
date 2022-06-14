@@ -152,13 +152,15 @@ export function NetworkLoader<T>({
     setShowCallout(true);
   }, []);
 
-  return !client ? (
-    canShowCallout ? (
+  if (!client) {
+    return canShowCallout ? (
       <div className="h-full min-h-screen flex items-center justify-center">
         <StatusComponent status={configStatus}>{skeleton}</StatusComponent>
       </div>
-    ) : null
-  ) : (
+    ) : null;
+  }
+
+  return (
     <ApolloProvider client={client}>{children}</ApolloProvider>
   );
 }
