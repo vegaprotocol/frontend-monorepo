@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import type { ReactNode, FC } from 'react';
+import type { ReactNode } from 'react';
 import type { ApolloClient } from '@apollo/client';
 import { ApolloProvider } from '@apollo/client';
 import {
