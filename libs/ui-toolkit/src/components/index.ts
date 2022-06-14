@@ -1,3 +1,4 @@
+export * from './accordion';
 export * from './ag-grid';
 export * from './arrows';
 export * from './async-renderer';
