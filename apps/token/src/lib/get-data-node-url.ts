@@ -1,5 +1,7 @@
+import { ENV } from '../config/env';
+
 export function getDataNodeUrl() {
-  const base = process.env['NX_VEGA_URL'];
+  const base = ENV.vegaUrl;
   if (!base) {
     throw new Error('Environment variable NX_VEGA_URL must be set');
   }

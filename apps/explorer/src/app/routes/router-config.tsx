@@ -14,7 +14,7 @@ import { Blocks } from './blocks/home';
 import { Tx } from './txs/id';
 import { Txs as TxHome } from './txs/home';
 import { PendingTxs } from './pending';
-import flags from '../lib/flags';
+import flags from '../config/flags';
 import { t } from '@vegaprotocol/react-helpers';
 import { Routes } from './route-names';
 import { NetworkParameters } from './network-parameters';
