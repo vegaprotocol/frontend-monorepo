@@ -3,12 +3,19 @@ import React, { useRef, useState } from 'react';
 interface AccordionProps {
   title: React.ReactNode;
   content: React.ReactNode;
+  open?: boolean;
 }
 
-export const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
-  const [active, setActive] = useState(false);
+export const Accordion: React.FC<AccordionProps> = ({
+  title,
+  content,
+  open = false,
+}) => {
+  const [active, setActive] = useState(open);
   const [height, setHeight] = useState('0px');
-  const [rotate, setRotate] = useState('transform duration-700 ease');
+  const [rotate, setRotate] = useState(
+    'transform duration-700 ease rotate-180'
+  );
 
   const contentSpace = useRef(null);
 
@@ -19,24 +26,29 @@ export const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
     setHeight(active ? '0px' : `${contentSpace.current.scrollHeight}px`);
     setRotate(
       active
-        ? 'transform duration-700 ease'
-        : 'transform duration-700 ease rotate-180'
+        ? 'transform duration-700 ease rotate-180'
+        : 'transform duration-700 ease'
     );
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mx-5">
       <button
+        data-testid="accordion-toggle"
         className="py-2 box-border appearance-none cursor-pointer focus:outline-none flex items-center justify-between"
         onClick={toggleAccordion}
       >
-        <p className="inline-block text-footnote light text-h5 uppercase text-black dark:text-white bold">
+        <p
+          className="inline-block text-footnote light text-h6 capitalize text-black dark:text-white pt-5"
+          data-testid="accordion-title"
+        >
           {title}
         </p>
         <svg
           width="30"
           height="30"
-          aria-label="Chevron icon"
+          aria-label="chevron icon"
+          data-testid="accordion-chevron-icon"
           className={`${rotate} inline-block fill-current`}
           viewBox="0 0 20 20"
           fill="none"
@@ -54,9 +66,12 @@ export const Accordion: React.FC<AccordionProps> = ({ title, content }) => {
       <div
         ref={contentSpace}
         style={{ maxHeight: `${height}` }}
+        data-testid="accordion-content-ref"
         className="overflow-auto transition-max-height duration-700 ease-in-out"
       >
-        <div className="pb-5">{content}</div>
+        <div className="pb-5" data-testid="accordion-content">
+          {content}
+        </div>
       </div>
     </div>
   );
