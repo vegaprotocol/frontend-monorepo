@@ -14,7 +14,7 @@ export const AccountsContainer = () => {
     );
   }
 
-  console.log(keypair)
+  console.log(keypair);
 
   return <AccountsManager partyId={keypair.pub} />;
 };

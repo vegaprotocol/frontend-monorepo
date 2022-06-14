@@ -13,7 +13,7 @@ import {
 import { transactionsDataProvider } from './transactions-data-provider';
 import type { TransactionsData } from './transactions-data-provider';
 
-type TransactionsSubscribe_accounts = any
+type TransactionsSubscribe_accounts = any;
 
 interface TransactionsManagerProps {
   partyId: string;

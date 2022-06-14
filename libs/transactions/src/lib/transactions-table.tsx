@@ -82,65 +82,66 @@ const comparator = (
   return 0;
 };
 
-export const TransactionsTable = forwardRef<AgGridReact, TransactionsTableProps>(
-  ({ data }, ref) => {
-    return (
-      <AgGrid
-        style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={t('No transactions')}
-        rowData={data}
-        getRowId={({ data }) => data.id}
-        ref={ref}
-        defaultColDef={{
-          flex: 1,
-          resizable: true,
-        }}
-        components={{ PriceCell }}
-        onSortChanged={({ api, columnApi }) => {
-          addSummaryRows(api, columnApi, getGroupId, getGroupSummaryRow);
-        }}
-        onGridReady={(event) => {
-          event.columnApi.applyColumnState({
-            state: [
-              {
-                colId: 'asset.symbol',
-                sort: 'asc',
-              },
-            ],
-          });
-        }}
-      >
-        <AgGridColumn
-          headerName={t('Asset')}
-          field="asset.symbol"
-          sortable
-          sortingOrder={['asc', 'desc']}
-          comparator={comparator}
-        />
-        <AgGridColumn
-          headerName={t('Type')}
-          field="type"
-          valueFormatter="value || '—'"
-        />
-        <AgGridColumn
-          headerName={t('Market')}
-          field="market.name"
-          valueFormatter="value || '—'"
-        />
-        <AgGridColumn
-          headerName={t('Balance')}
-          field="balance"
-          cellRenderer="PriceCell"
-          valueFormatter={({
-            value,
-            data,
-          }: TransactionsTableValueFormatterParams) =>
-            addDecimalsFormatNumber(value, data.asset.decimals)
-          }
-        />
-      </AgGrid>
-    );
-  }
-);
+export const TransactionsTable = forwardRef<
+  AgGridReact,
+  TransactionsTableProps
+>(({ data }, ref) => {
+  return (
+    <AgGrid
+      style={{ width: '100%', height: '100%' }}
+      overlayNoRowsTemplate={t('No transactions')}
+      rowData={data}
+      getRowId={({ data }) => data.id}
+      ref={ref}
+      defaultColDef={{
+        flex: 1,
+        resizable: true,
+      }}
+      components={{ PriceCell }}
+      onSortChanged={({ api, columnApi }) => {
+        addSummaryRows(api, columnApi, getGroupId, getGroupSummaryRow);
+      }}
+      onGridReady={(event) => {
+        event.columnApi.applyColumnState({
+          state: [
+            {
+              colId: 'asset.symbol',
+              sort: 'asc',
+            },
+          ],
+        });
+      }}
+    >
+      <AgGridColumn
+        headerName={t('Asset')}
+        field="asset.symbol"
+        sortable
+        sortingOrder={['asc', 'desc']}
+        comparator={comparator}
+      />
+      <AgGridColumn
+        headerName={t('Type')}
+        field="type"
+        valueFormatter="value || '—'"
+      />
+      <AgGridColumn
+        headerName={t('Market')}
+        field="market.name"
+        valueFormatter="value || '—'"
+      />
+      <AgGridColumn
+        headerName={t('Balance')}
+        field="balance"
+        cellRenderer="PriceCell"
+        valueFormatter={({
+          value,
+          data,
+        }: TransactionsTableValueFormatterParams) =>
+          addDecimalsFormatNumber(value, data.asset.decimals)
+        }
+      />
+    </AgGrid>
+  );
+});
 
 export default TransactionsTable;

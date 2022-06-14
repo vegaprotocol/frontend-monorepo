@@ -1,9 +1,11 @@
 import { gql } from '@apollo/client';
 
-type Transactions_party_deposits = any
-type Transactions_party_withdrawals = any
+type Transactions_party_deposits = any;
+type Transactions_party_withdrawals = any;
 
-export type TransactionsData = Transactions_party_deposits | Transactions_party_withdrawals;
+export type TransactionsData =
+  | Transactions_party_deposits
+  | Transactions_party_withdrawals;
 
 const TRANSACTIONS_FRAGMENT = gql`
   fragment DepositFields on Deposit {
