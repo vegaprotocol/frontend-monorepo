@@ -46,6 +46,7 @@ module.exports = {
       10: shadeOfGray(100 - 10),
       25: shadeOfGray(100 - 25),
       40: shadeOfGray(100 - 40),
+      50: shadeOfGray(100 - 50),
       60: shadeOfGray(100 - 60),
       80: shadeOfGray(100 - 80),
       90: shadeOfGray(100 - 90),
