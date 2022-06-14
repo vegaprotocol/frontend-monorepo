@@ -1,13 +1,13 @@
 import type { Story, Meta } from '@storybook/react';
-import { Accordion } from './accordion';
+import { AccordionPanel } from './accordion';
 
 export default {
-  component: Accordion,
+  component: AccordionPanel,
   title: 'Accordion',
 } as Meta;
 
 const Template: Story = (args) => (
-  <Accordion title={args.title} content={args.content} />
+  <AccordionPanel title={args.title} content={args.content} />
 );
 
 export const Default = Template.bind({});
