@@ -13,7 +13,12 @@ import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import { SelectMarketDialog } from '@vegaprotocol/market-list';
-import { ArrowDown, GridTab, GridTabs, PriceCellChange } from '@vegaprotocol/ui-toolkit';
+import {
+  ArrowDown,
+  GridTab,
+  GridTabs,
+  PriceCellChange,
+} from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 
 const TradingViews = {
