@@ -13,20 +13,15 @@ import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '../../hooks';
 import type { ConfigStatus } from '../../types';
 
-type NetworkLoaderProps<T> = {
-  children?: ReactNode;
-  skeleton?: ReactNode;
-  createClient: (url: string) => ApolloClient<T>;
-};
-
-type StatusComponentProps = {
-  status: ConfigStatus;
-  children?: ReactNode;
-};
-
 type MessageComponentProps = {
   children: ReactNode;
 };
+
+const StatusMessage = ({ children }: MessageComponentProps) => (
+  <div className="flex items-center fixed bottom-0 right-0 px-16 bg-intent-highlight text-black">
+    {children}
+  </div>
+);
 
 type ErrorComponentProps = MessageComponentProps & {
   showTryAgain?: boolean;
@@ -50,11 +45,10 @@ const Error: FC<ErrorComponentProps> = ({
   </div>
 );
 
-const StatusMessage = ({ children }: MessageComponentProps) => (
-  <div className="flex items-center fixed bottom-0 right-0 px-16 bg-intent-highlight text-black">
-    {children}
-  </div>
-);
+type StatusComponentProps = {
+  status: ConfigStatus;
+  children?: ReactNode;
+};
 
 const StatusComponent = ({ status, children }: StatusComponentProps) => {
   switch (status) {
@@ -130,6 +124,12 @@ const StatusComponent = ({ status, children }: StatusComponentProps) => {
         </>
       );
   }
+};
+
+type NetworkLoaderProps<T> = {
+  children?: ReactNode;
+  skeleton?: ReactNode;
+  createClient: (url: string) => ApolloClient<T>;
 };
 
 export function NetworkLoader<T>({
