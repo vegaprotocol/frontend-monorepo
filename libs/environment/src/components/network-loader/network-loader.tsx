@@ -24,10 +24,11 @@ const StatusMessage = ({ children }: MessageComponentProps) => (
 );
 
 type ErrorComponentProps = MessageComponentProps & {
+  children?: ReactNode;
   showTryAgain?: boolean;
 };
 
-const Error: FC<ErrorComponentProps> = ({
+const Error = ({
   children,
   showTryAgain,
 }: ErrorComponentProps) => (
