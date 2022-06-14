@@ -2,16 +2,13 @@ describe('market list', () => {
   describe('simple url', () => {
     beforeEach(() => cy.visit('/markets'));
 
-    it('selected menus', () => {
+    it('selects menus', () => {
       cy.get('.MuiDrawer-root [aria-current]').should('have.text', 'Markets');
       cy.get('select[name="states"]').should('have.value', 'Active');
       cy.get('[data-testid="market-assets-menu"] button.font-bold').should(
         'have.text',
         'All'
       );
-      cy.getByTestId('simple-market-list')
-        .children()
-        .should('have.length.gte', 2);
     });
 
     it('navigation should make possibly shortest url', () => {
@@ -44,6 +41,7 @@ describe('market list', () => {
       cy.location('pathname').should('equal', '/markets');
     });
   });
+
   describe('url params should select filters', () => {
     it('suspended status', () => {
       cy.visit('/markets/Suspended');

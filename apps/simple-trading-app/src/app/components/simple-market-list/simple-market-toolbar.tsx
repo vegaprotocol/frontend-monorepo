@@ -18,12 +18,7 @@ const SimpleMarketToolbar = () => {
   const [activeState, setActiveState] = useState(params.state || 'Active');
   const [sliderStyles, setSliderStyles] = useState<Record<string, string>>({});
   const slideContRef = useRef<HTMLUListElement | null>(null);
-  const onMenuClick = useCallback(
-    (i: number) => {
-      setActiveNumber(i);
-    },
-    [setActiveNumber]
-  );
+
   const onStateChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       setActiveState(e.target.value);
@@ -76,7 +71,7 @@ const SimpleMarketToolbar = () => {
         <li key="all" className="md:mx-16 whitespace-nowrap">
           <Button
             variant="inline"
-            onClick={() => onMenuClick(0)}
+            onClick={() => setActiveNumber(0)}
             style={{ color: theme.colors.coral }}
             className={classNames({ active: !activeNumber })}
           >
@@ -87,7 +82,7 @@ const SimpleMarketToolbar = () => {
           <li key={product} className="mx-16 whitespace-nowrap">
             <Button
               variant="inline"
-              onClick={() => onMenuClick(++i)}
+              onClick={() => setActiveNumber(++i)}
               className={classNames({ active: activeNumber - 1 === i })}
             >
               {product}
@@ -135,7 +130,7 @@ const SimpleMarketToolbar = () => {
             ? assetsPerProduct[products[activeNumber - 1]]
             : assets
           )?.map((asset) => (
-            <li key={asset} className="mx-8Z">
+            <li key={asset} className="mx-8">
               <Button
                 variant="inline"
                 onClick={() => setActiveAsset(asset)}
