@@ -28,10 +28,7 @@ type ErrorComponentProps = MessageComponentProps & {
   showTryAgain?: boolean;
 };
 
-const Error = ({
-  children,
-  showTryAgain,
-}: ErrorComponentProps) => (
+const Error = ({ children, showTryAgain }: ErrorComponentProps) => (
   <div>
     <div className="mb-16">{children}</div>
     {showTryAgain && (
@@ -160,7 +157,5 @@ export function NetworkLoader<T>({
     ) : null;
   }
 
-  return (
-    <ApolloProvider client={client}>{children}</ApolloProvider>
-  );
+  return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
