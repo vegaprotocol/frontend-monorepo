@@ -6,7 +6,7 @@ import type { Markets, Markets_markets } from '@vegaprotocol/market-list';
 export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
   const markets: Markets_markets[] = [
     {
-      id: 'market-id',
+      id: 'market-0',
       name: 'ACTIVE MARKET',
       decimalPlaces: 5,
       data: {
@@ -38,7 +38,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
       __typename: 'Market',
     },
     {
-      id: 'test-market-suspended',
+      id: 'market-1',
       name: 'SUSPENDED MARKET',
       decimalPlaces: 2,
       data: {

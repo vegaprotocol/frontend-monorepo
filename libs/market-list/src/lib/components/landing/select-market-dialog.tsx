@@ -14,7 +14,7 @@ export const SelectMarketDialog = ({
   return (
     <Dialog
       title={t('Select a market')}
-      intent={Intent.Warning}
+      intent={Intent.Primary}
       open={dialogOpen}
       onChange={() => setDialogOpen(false)}
       titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"

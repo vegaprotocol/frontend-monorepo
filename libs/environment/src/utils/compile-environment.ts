@@ -4,7 +4,7 @@ import { ContractAddresses, ENV_KEYS } from '../types';
 
 declare global {
   interface Window {
-    _ENV?: RawEnvironment;
+    _env_?: Record<string, string>;
   }
 }
 
@@ -36,7 +36,7 @@ const transformValue = (key: EnvKey, value?: string) => {
 
 const getBundledEnvironmentValue = (key: EnvKey) => {
   switch (key) {
-    // need to have these hardcoded so on build time we can insert sensible defaults
+    // need to have these hardcoded so on build time they can be replaced with the relevant environment variable
     case 'VEGA_URL':
       return process.env['NX_VEGA_URL'];
     case 'VEGA_ENV':
@@ -63,7 +63,7 @@ const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
   }
   return transformValue(
     key,
-    window._ENV?.[key] ?? definitions[key] ?? getBundledEnvironmentValue(key)
+    definitions[key] ?? window._env_?.[key] ?? getBundledEnvironmentValue(key)
   );
 };
 

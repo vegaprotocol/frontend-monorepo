@@ -91,6 +91,12 @@ function VegaTradingApp(props: AppProps) {
               href="https://static.vega.xyz/favicon.ico"
             />
             <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
+            {['1', 'true'].includes(
+              process.env['NX_USE_ENV_OVERRIDES'] || ''
+            ) ? (
+              /* eslint-disable-next-line @next/next/no-sync-scripts */
+              <script src="./env-config.js" type="text/javascript" />
+            ) : null}
           </Head>
           <AppBody {...props} />
         </VegaWalletProvider>

@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { WithdrawPageContainer } from './withdraw-page-container';
-import { t } from '@vegaprotocol/react-helpers';
 import { VegaWalletContainer } from '../../../components/vega-wallet-container';
 import { Web3Container } from '../../../components/web3-container';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Withdraw = () => {
   const { query } = useRouter();

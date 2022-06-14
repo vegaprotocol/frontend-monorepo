@@ -4,12 +4,14 @@ import erc20Abi from '../abis/erc20_abi.json';
 
 export class Token {
   public contract: ethers.Contract;
+  public address: string;
 
   constructor(
     address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ) {
     this.contract = new ethers.Contract(address, erc20Abi, signerOrProvider);
+    this.address = address;
   }
 
   totalSupply() {
