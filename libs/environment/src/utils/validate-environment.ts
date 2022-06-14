@@ -44,11 +44,8 @@ const baseProps = {
   ADDRESSES: {
     type: 'object',
     additionalProperties: false,
-    required: ['vegaTokenAddress', 'claimAddress', 'lockedAddress'],
+    required: ['claimAddress', 'lockedAddress'],
     properties: {
-      vegaTokenAddress: {
-        type: 'string',
-      },
       claimAddress: {
         type: 'string',
       },
