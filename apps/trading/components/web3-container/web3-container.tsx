@@ -8,7 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 import type { ReactNode } from 'react';
 import { useEffect, useState, useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { createConnectors } from '../../lib/web3-connectors';
 
 interface Web3ContainerProps {

@@ -14,23 +14,15 @@ const baseProps = {
   VEGA_NETWORKS: {
     type: 'object',
     additionalProperties: false,
-    properties: {
-      MAINNET: {
-        type: 'string',
-      },
-      TESTNET: {
-        type: 'string',
-      },
-      DEVNET: {
-        type: 'string',
-      },
-      STAGNET: {
-        type: 'string',
-      },
-      STAGNET2: {
-        type: 'string',
-      },
-    },
+    properties: Object.values(Networks).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: {
+          type: 'string',
+        },
+      }),
+      { CUSTOM: { type: 'string' } }
+    ),
   },
   ETHEREUM_CHAIN_ID: {
     type: 'integer',

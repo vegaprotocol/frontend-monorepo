@@ -1,4 +1,4 @@
-import type { Networks } from '@vegaprotocol/react-helpers';
+import { Networks } from '@vegaprotocol/react-helpers';
 
 export type Environment = {
   VEGA_URL: string;
@@ -45,7 +45,7 @@ interface VegaContracts {
   lockedAddress: string;
 }
 
-export const ContractAddresses: { [key in Networks]: VegaContracts } = {
+export const ContractAddresses: { [key in Networks | 'CUSTOM']: VegaContracts } = {
   CUSTOM: {
     claimAddress: customClaimAddress,
     lockedAddress: customLockedAddress,
