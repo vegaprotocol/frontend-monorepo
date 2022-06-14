@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { EnvironmentProvider } from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { DATA_SOURCES } from './config';
 import {
@@ -37,6 +38,7 @@ function App() {
   }, [location]);
 
   return (
+    <EnvironmentProvider>
     <ThemeContext.Provider value={theme}>
       <ApolloProvider client={client}>
         <VegaWalletProvider>
@@ -82,6 +84,7 @@ function App() {
         </VegaWalletProvider>
       </ApolloProvider>
     </ThemeContext.Provider>
+    </EnvironmentProvider>
   );
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MarketState } from '@vegaprotocol/types';
@@ -43,9 +43,9 @@ describe('SimpleMarketList', () => {
       </MockedProvider>
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(screen.getByText('No data to display')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('No data to display')).toBeInTheDocument();
+    });
   });
 
   it('should be properly rendered with some data', async () => {
@@ -103,15 +103,16 @@ describe('SimpleMarketList', () => {
         data: { markets: data },
       },
     };
+
     render(
       <MockedProvider mocks={[mocks]}>
         <SimpleMarketList />
       </MockedProvider>
     );
 
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(screen.getByRole('list')).toBeInTheDocument();
-    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    await waitFor(() => {
+      expect(screen.getByRole('list')).toBeInTheDocument();
+      expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    });
   });
 });
