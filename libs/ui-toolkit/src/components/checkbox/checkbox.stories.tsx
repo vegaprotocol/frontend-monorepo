@@ -39,3 +39,7 @@ export const Default: ComponentStory<typeof Checkbox> = () => (
 export const Error: ComponentStory<typeof Checkbox> = () => (
   <Checkbox label={'error'} error={true} />
 );
+
+export const Disabled: ComponentStory<typeof Checkbox> = () => (
+  <Checkbox label={'disabled'} disabled />
+);

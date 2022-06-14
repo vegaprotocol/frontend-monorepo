@@ -1,8 +1,8 @@
 import classnames from 'classnames';
 import { Icon } from '../icon';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, InputHTMLAttributes } from 'react';
 
-export interface CheckboxProps {
+export interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   className?: string;
   state?: 'checked' | 'unchecked' | 'indeterminate';
@@ -16,10 +16,11 @@ export const Checkbox = ({
   state,
   error,
   onChange,
+  ...props
 }: CheckboxProps) => {
   const containerClasses = classnames(
     className,
-    'grid grid-cols-[auto_1fr] gap-8 select-none cursor-pointer'
+    'grid grid-cols-[auto_1fr] select-none'
   );
   const inputClasses = 'sr-only peer';
   const vegaCheckboxClasses = classnames(
@@ -27,6 +28,7 @@ export const Checkbox = ({
     'inline-block w-20 h-20 relative z-0',
     'input-shadow dark:input-shadow-dark bg-white dark:bg-white-25',
     'focus-visible:outline-none focus-visible:checkbox-focus-shadow dark:focus-visible:checkbox-focus-shadow-dark',
+    'cursor-pointer peer-disabled:cursor-default',
     {
       'input-border dark:dark-input-border': !error,
       'border border-vega-red': error,
@@ -49,7 +51,9 @@ export const Checkbox = ({
     block: state === 'indeterminate',
     hidden: state === 'checked',
   });
-  const labelClasses = classnames('col-start-2 row-start-1');
+  const labelClasses = classnames(
+    'col-start-2 row-start-1 pl-8 cursor-pointer peer-disabled:cursor-default'
+  );
 
   return (
     <label
@@ -58,7 +62,12 @@ export const Checkbox = ({
         state ? `-${state}` : ''
       }`}
     >
-      <input type="checkbox" className={inputClasses} onChange={onChange} />
+      <input
+        type="checkbox"
+        className={inputClasses}
+        onChange={onChange}
+        {...props}
+      />
       <span className={vegaCheckboxClasses} />
       <span className={tickClasses}>
         <Icon name={'tick'} className="fill-vega-pink dark:fill-vega-yellow" />
