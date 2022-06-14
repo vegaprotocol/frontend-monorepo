@@ -6,12 +6,9 @@ import {
   Splash,
 } from '@vegaprotocol/ui-toolkit';
 import { DealTicketManager } from './deal-ticket-manager';
-import type {
-  DealTicketQuery,
-  DealTicketQuery_market,
-} from '../__generated__/DealTicketQuery';
 import { t } from '@vegaprotocol/react-helpers';
 import { Info } from './info-market';
+import type { DealTicketQuery_market, DealTicketQuery } from './__generated__';
 
 const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {

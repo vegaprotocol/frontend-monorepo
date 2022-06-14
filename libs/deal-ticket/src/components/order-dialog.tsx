@@ -1,6 +1,6 @@
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import type { OrderEvent_busEvents_event_Order } from '../__generated__/OrderEvent';
+import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';

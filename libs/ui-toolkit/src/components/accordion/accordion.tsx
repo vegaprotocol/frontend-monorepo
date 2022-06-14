@@ -1,17 +1,17 @@
 import React, { useRef, useState } from 'react';
 
-interface AccordionProps {
+export interface AccordionProps {
   title: React.ReactNode;
   content: React.ReactNode;
   open?: boolean;
 }
 
-export const Accordion: React.FC<AccordionProps> = ({
+export const AccordionPanel = ({
   title,
   content,
   open = false,
-}) => {
-  const [active, setActive] = useState(open);
+}: AccordionProps) => {
+  const [active, setActive] = useState(false);
   const [height, setHeight] = useState('0px');
   const [rotate, setRotate] = useState(
     'transform duration-700 ease rotate-180'
@@ -39,7 +39,7 @@ export const Accordion: React.FC<AccordionProps> = ({
         onClick={toggleAccordion}
       >
         <p
-          className="inline-block text-footnote light text-h6 capitalize text-black dark:text-white pt-5"
+          className="inline-block text-footnote font-bold text-h6 capitalize text-black dark:text-white pt-5 "
           data-testid="accordion-title"
         >
           {title}

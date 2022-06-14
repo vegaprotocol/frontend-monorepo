@@ -8,8 +8,8 @@ import {
 } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { Order } from '../utils/get-default-order';
-import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
+import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 
 export type ValidationProps = {
   step: number;

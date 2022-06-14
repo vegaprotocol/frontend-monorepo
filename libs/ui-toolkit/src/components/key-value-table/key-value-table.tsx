@@ -63,6 +63,9 @@ export interface KeyValueTableRowProps
   numerical?: boolean; // makes all values monospace
   muted?: boolean;
   inline?: boolean;
+  noBorder?: boolean;
+  dtClassName?: string;
+  ddClassName?: string;
 }
 
 export const KeyValueTableRow = ({
@@ -71,9 +74,13 @@ export const KeyValueTableRow = ({
   muted,
   numerical,
   inline = true,
+  noBorder = false,
+  dtClassName,
+  ddClassName,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
-    'flex gap-1 flex-wrap justify-between border-b first:border-t border-black dark:border-white',
+    'flex gap-1 flex-wrap justify-between ',
+    { 'border-b first:border-t border-black dark:border-white': !noBorder },
     { 'flex-col items-start': !inline },
     { 'flex-row items-center': inline },
     {
@@ -82,18 +89,19 @@ export const KeyValueTableRow = ({
     },
     className
   );
-  const dtClassName = `break-words font-medium uppercase align-top p-4 capitalize`;
-  const ddClassName = classNames(
+  const dtClassNames = `break-words font-medium uppercase align-top p-4 capitalize ${dtClassName}`;
+  const ddClassNames = classNames(
     'align-top p-4 text-black/60 dark:text-white/60 break-words',
     {
       'font-mono': numerical,
-    }
+    },
+    ddClassName
   );
 
   return (
     <dl className={dlClassName} data-testid="key-value-table-row">
-      <dt className={dtClassName}>{children[0]}</dt>
-      <dd className={ddClassName}>{children[1]}</dd>
+      <dt className={dtClassNames}>{children[0]}</dt>
+      <dd className={ddClassNames}>{children[1]}</dd>
     </dl>
   );
 };
