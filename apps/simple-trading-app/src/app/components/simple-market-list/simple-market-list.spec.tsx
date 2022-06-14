@@ -4,15 +4,19 @@ import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
-import { MARKETS_QUERY } from './data-provider';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
-import type { SimpleMarkets } from './__generated__/SimpleMarkets';
+import { FILTERS_QUERY, MARKETS_QUERY } from './data-provider';
+import type {
+  SimpleMarkets_markets,
+  SimpleMarkets,
+} from './__generated__/SimpleMarkets';
+import type { MarketFilters } from './__generated__/MarketFilters';
 
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate,
+  useParams: () => ({}),
 }));
 
 jest.mock('date-fns', () => ({
@@ -20,6 +24,15 @@ jest.mock('date-fns', () => ({
 }));
 
 describe('SimpleMarketList', () => {
+  const filterMock: MockedResponse<MarketFilters> = {
+    request: {
+      query: FILTERS_QUERY,
+    },
+    result: {
+      data: { markets: [] },
+    },
+  };
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -38,7 +51,7 @@ describe('SimpleMarketList', () => {
     };
 
     render(
-      <MockedProvider mocks={[mocks]}>
+      <MockedProvider mocks={[mocks, filterMock]}>
         <SimpleMarketList />
       </MockedProvider>
     );
@@ -74,7 +87,7 @@ describe('SimpleMarketList', () => {
         id: '2',
         data: {
           market: {
-            state: MarketState.Proposed,
+            state: MarketState.Active,
           },
         },
         tradableInstrument: {
@@ -103,16 +116,15 @@ describe('SimpleMarketList', () => {
         data: { markets: data },
       },
     };
-
     render(
-      <MockedProvider mocks={[mocks]}>
+      <MockedProvider mocks={[mocks, filterMock]}>
         <SimpleMarketList />
       </MockedProvider>
     );
 
     await waitFor(() => {
-      expect(screen.getByRole('list')).toBeInTheDocument();
-      expect(screen.getAllByRole('listitem')).toHaveLength(2);
+      expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+      expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
     });
   });
 });
