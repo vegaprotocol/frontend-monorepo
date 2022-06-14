@@ -70,6 +70,15 @@ beforeEach(() => {
 afterAll(() => {
   // @ts-ignore: typescript doesn't recognise the mocked fetch instance
   fetch.mockRestore();
+  window.localStorage.clear();
+
+  delete process.env['NX_VEGA_URL'];
+  delete process.env['NX_VEGA_ENV'];
+  delete process.env['NX_VEGA_CONFIG_URL'];
+  delete process.env['NX_ETHEREUM_CHAIN_ID'];
+  delete process.env['NX_ETHEREUM_PROVIDER_URL'];
+  delete process.env['NX_ETHERSCAN_URL'];
+  delete process.env['NX_VEGA_NETWORKS'];
 });
 
 describe('useEnvironment hook', () => {

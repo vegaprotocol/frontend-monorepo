@@ -22,7 +22,6 @@ const mockEnvironment: EnvironmentWithOptionalUrl = {
   ETHEREUM_PROVIDER_URL: 'https://ethereum.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
   ADDRESSES: {
-    vegaTokenAddress: '0x0',
     claimAddress: '0x0',
     lockedAddress: '0x0',
   },
