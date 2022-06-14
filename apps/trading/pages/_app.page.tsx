@@ -1,5 +1,6 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
@@ -20,6 +21,7 @@ import './styles.css';
 import { useGlobalStore } from '../stores';
 
 function AppBody({ Component, pageProps }: AppProps) {
+  const { push } = useRouter();
   const store = useGlobalStore();
   const { VEGA_NETWORKS } = useEnvironment();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,7 +62,7 @@ function AppBody({ Component, pageProps }: AppProps) {
           setDialogOpen={(open) => store.setVegaNetworkSwitcherDialog(open)}
           onConnect={({ network }) => {
             if (VEGA_NETWORKS[network]) {
-              window.location.href = VEGA_NETWORKS[network] ?? '';
+              push(VEGA_NETWORKS[network] ?? '');
             }
           }}
         />
