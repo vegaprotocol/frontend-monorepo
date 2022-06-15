@@ -21,10 +21,6 @@ const getDefaultEtherscanUrl = (env: Networks) => {
     : 'https://ropsten.etherscan.io';
 };
 
-const getDefaultEtherumChainId = (env: Networks) => {
-  return env === Networks.MAINNET ? 1 : 3;
-};
-
 const transformValue = (key: EnvKey, value?: string) => {
   switch (key) {
     case 'VEGA_ENV':
