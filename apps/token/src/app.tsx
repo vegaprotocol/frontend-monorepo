@@ -29,7 +29,7 @@ const AppContainer = () => {
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL, VEGA_URL } = useEnvironment();
   const Connectors = useMemo(() => {
-    if (config) {
+    if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
     }
     return undefined;

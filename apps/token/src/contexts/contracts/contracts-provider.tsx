@@ -68,10 +68,10 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
             claim: new Claim(ADDRESSES.claimAddress, signer || provider),
           });
         }
+        run();
       }
-      run();
     };
-  }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
+  }, [activeProvider, account, config, ADDRESSES, VEGA_ENV, ETHEREUM_PROVIDER_URL]);
 
   if (!contracts) {
     return (

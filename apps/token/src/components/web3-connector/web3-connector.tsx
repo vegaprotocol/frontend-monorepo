@@ -20,7 +20,7 @@ export function Web3Connector({ children }: Web3ConnectorProps) {
   const { ETHEREUM_PROVIDER_URL } = useEnvironment();
   const { config, loading, error } = useEthereumConfig();
   const Connectors = useMemo(() => {
-    if (config) {
+    if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
     }
     return undefined;
