@@ -135,6 +135,7 @@ export function NetworkLoader<T>({
   children,
   createClient,
 }: NetworkLoaderProps<T>) {
+  // this is to prevent an error rendering callouts on the server side
   const [canShowCallout, setShowCallout] = useState(false);
   const { configStatus, VEGA_URL } = useEnvironment();
 
