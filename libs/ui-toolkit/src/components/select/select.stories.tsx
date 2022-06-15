@@ -1,34 +1,28 @@
-import { Select, SelectItem } from './select';
-import type { ComponentMeta } from '@storybook/react';
+import type { Story, Meta } from '@storybook/react';
+import { Select } from './select';
 
 export default {
+  component: Select,
   title: 'Select',
-} as ComponentMeta<typeof Select>;
+} as Meta;
 
-export const DefaultSelect = () => (
-  <Select defaultValue="1">
-    <SelectItem value="1">Item 1</SelectItem>
-    <SelectItem value="2">Item 2</SelectItem>
-    <SelectItem value="3">Item 3</SelectItem>
+const Template: Story = (args) => (
+  <Select {...args}>
+    <option value="Option 1">Option 1</option>
+    <option value="Option 2">Option 2</option>
+    <option value="Option 3">Option 3</option>
   </Select>
 );
 
-export const WithError = () => (
-  <Select defaultValue="1" hasError={true}>
-    <SelectItem value="1">Item 1</SelectItem>
-    <SelectItem value="2">Item 2</SelectItem>
-    <SelectItem value="3">Item 3</SelectItem>
-  </Select>
-);
+export const Default = Template.bind({});
+Default.args = {};
 
-export const WithDisabledItems = () => (
-  <Select defaultValue="2">
-    <SelectItem value="1" disabled={true}>
-      Item 1
-    </SelectItem>
-    <SelectItem value="2">Item 2</SelectItem>
-    <SelectItem value="3" disabled={true}>
-      Item 3
-    </SelectItem>
-  </Select>
-);
+export const WithError = Template.bind({});
+WithError.args = {
+  hasError: true,
+};
+
+export const Disabled = Template.bind({});
+Disabled.args = {
+  disabled: true,
+};
