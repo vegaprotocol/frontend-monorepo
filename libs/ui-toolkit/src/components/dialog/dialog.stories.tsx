@@ -15,7 +15,9 @@ const Template: ComponentStory<typeof Dialog> = (args) => {
   return (
     <div>
       <Button onClick={() => setOpen(true)}>Open dialog</Button>
-      <Dialog {...args} open={open} setOpen={setOpen} />
+      <Dialog {...args} open={open} onChange={setOpen}>
+        {args.children}
+      </Dialog>
     </div>
   );
 };
@@ -35,14 +37,6 @@ Danger.args = {
   intent: Intent.Danger,
 };
 
-export const Success = Template.bind({});
-Success.args = {
-  open: false,
-  title: 'Success',
-  children: <p>Some content</p>,
-  intent: Intent.Success,
-};
-
 export const Warning = Template.bind({});
 Warning.args = {
   open: false,
@@ -51,10 +45,18 @@ Warning.args = {
   intent: Intent.Warning,
 };
 
-export const Modal = Template.bind({});
-Modal.args = {
+export const Success = Template.bind({});
+Success.args = {
   open: false,
-  title: 'Modal (Prompt)',
+  title: 'Success',
   children: <p>Some content</p>,
-  intent: Intent.Warning,
+  intent: Intent.Success,
+};
+
+export const Help = Template.bind({});
+Help.args = {
+  open: false,
+  title: 'Help',
+  children: <p>Some content</p>,
+  intent: Intent.Help,
 };

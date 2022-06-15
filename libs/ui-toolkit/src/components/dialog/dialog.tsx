@@ -2,7 +2,7 @@ import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import type { Intent } from '../../utils/intent';
-import { getIntentShadow } from '../../utils/intent';
+import { getIntentShadow, getIntentBorder } from '../../utils/intent';
 import { Icon } from '../icon';
 
 interface DialogProps {
@@ -30,6 +30,7 @@ export function Dialog({
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
     getIntentShadow(intent),
+    getIntentBorder(intent),
     contentClassNames
   );
   return (
