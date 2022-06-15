@@ -37,8 +37,7 @@ describe('SimpleMarketList', () => {
     jest.clearAllMocks();
   });
 
-  // [EH] Flaky test disabled, see #1304
-  it.skip('should be properly renderer as empty', async () => {
+  it('should be properly renderer as empty', async () => {
     const mocks: MockedResponse<SimpleMarkets> = {
       request: {
         query: MARKETS_QUERY,
