@@ -21,8 +21,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { provider: activeProvider, account } = useWeb3React();
   const { config } = useEthereumConfig();
-  const { VEGA_ENV, ADDRESSES, ETHEREUM_PROVIDER_URL } =
-    useEnvironment();
+  const { VEGA_ENV, ADDRESSES, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const [contracts, setContracts] =
     React.useState<ContractsContextShape | null>(null);
 
@@ -69,9 +68,9 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
             claim: new Claim(ADDRESSES.claimAddress, signer || provider),
           });
         }
-      };
+      }
       run();
-    }
+    };
   }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
 
   if (!contracts) {

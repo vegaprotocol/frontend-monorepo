@@ -28,15 +28,12 @@ const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
   const { config, loading, error } = useEthereumConfig();
   const { ETHEREUM_PROVIDER_URL, VEGA_URL } = useEnvironment();
-  const Connectors = useMemo(
-    () => {
-      if (config) {
-        return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
-      }
-      return undefined;
-    },
-    [config?.chain_id, ETHEREUM_PROVIDER_URL]
-  );
+  const Connectors = useMemo(() => {
+    if (config) {
+      return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
+    }
+    return undefined;
+  }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   const client = useMemo(() => createClient(VEGA_URL), [VEGA_URL]);
   return (
     <ApolloProvider client={client}>

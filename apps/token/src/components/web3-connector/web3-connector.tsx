@@ -19,15 +19,12 @@ export function Web3Connector({ children }: Web3ConnectorProps) {
   const { appState, appDispatch } = useAppState();
   const { ETHEREUM_PROVIDER_URL } = useEnvironment();
   const { config, loading, error } = useEthereumConfig();
-  const Connectors = useMemo(
-    () => {
-      if (config) {
-        return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
-      }
-      return undefined;
-    },
-    [config?.chain_id, ETHEREUM_PROVIDER_URL]
-  );
+  const Connectors = useMemo(() => {
+    if (config) {
+      return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
+    }
+    return undefined;
+  }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
       appDispatch({ type: AppStateActionType.SET_ETH_WALLET_OVERLAY, isOpen });
@@ -58,10 +55,7 @@ interface Web3ContentProps {
   setDialogOpen: (isOpen: boolean) => void;
 }
 
-export const Web3Content = ({
-  children,
-  appChainId,
-}: Web3ContentProps) => {
+export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
   const { error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
