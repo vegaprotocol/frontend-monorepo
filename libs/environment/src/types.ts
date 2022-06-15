@@ -11,7 +11,6 @@ export type Environment = {
   VEGA_ENV: Networks;
   VEGA_CONFIG_URL: string;
   VEGA_NETWORKS: Partial<Record<Networks, string>>;
-  ETHEREUM_CHAIN_ID: number;
   ETHEREUM_PROVIDER_URL: string;
   ETHERSCAN_URL: string;
   ADDRESSES: VegaContracts;
@@ -22,7 +21,6 @@ export const ENV_KEYS = [
   'VEGA_ENV',
   'VEGA_CONFIG_URL',
   'VEGA_NETWORKS',
-  'ETHEREUM_CHAIN_ID',
   'ETHEREUM_PROVIDER_URL',
   'ETHERSCAN_URL',
 ] as const;

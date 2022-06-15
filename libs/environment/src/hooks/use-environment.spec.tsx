@@ -38,7 +38,6 @@ const mockEnvironmentState: EnvironmentState = {
     STAGNET: 'https://stagnet.url',
     MAINNET: 'https://mainnet.url',
   },
-  ETHEREUM_CHAIN_ID: 5,
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
   ADDRESSES: ContractAddresses[Networks.TESTNET],
@@ -55,9 +54,6 @@ beforeEach(() => {
   process.env['NX_VEGA_URL'] = mockEnvironmentState.VEGA_URL;
   process.env['NX_VEGA_ENV'] = mockEnvironmentState.VEGA_ENV;
   process.env['NX_VEGA_CONFIG_URL'] = mockEnvironmentState.VEGA_CONFIG_URL;
-  process.env['NX_ETHEREUM_CHAIN_ID'] = String(
-    mockEnvironmentState.ETHEREUM_CHAIN_ID
-  );
   process.env['NX_ETHEREUM_PROVIDER_URL'] =
     mockEnvironmentState.ETHEREUM_PROVIDER_URL;
   process.env['NX_ETHERSCAN_URL'] = mockEnvironmentState.ETHERSCAN_URL;
@@ -74,7 +70,6 @@ afterAll(() => {
   delete process.env['NX_VEGA_URL'];
   delete process.env['NX_VEGA_ENV'];
   delete process.env['NX_VEGA_CONFIG_URL'];
-  delete process.env['NX_ETHEREUM_CHAIN_ID'];
   delete process.env['NX_ETHEREUM_PROVIDER_URL'];
   delete process.env['NX_ETHERSCAN_URL'];
   delete process.env['NX_VEGA_NETWORKS'];
@@ -189,7 +184,6 @@ describe('useEnvironment hook', () => {
     'uses correct default ethereum connection variables in $env',
     async ({ env, chainId, etherscanUrl, providerUrl }) => {
       process.env['NX_VEGA_ENV'] = env;
-      delete process.env['NX_ETHEREUM_CHAIN_ID'];
       delete process.env['NX_ETHEREUM_PROVIDER_URL'];
       delete process.env['NX_ETHERSCAN_URL'];
       const { result } = renderHook(() => useEnvironment(), {
@@ -199,7 +193,6 @@ describe('useEnvironment hook', () => {
       expect(result.current).toEqual({
         ...mockEnvironmentState,
         VEGA_ENV: env,
-        ETHEREUM_CHAIN_ID: Number(chainId),
         ETHEREUM_PROVIDER_URL: providerUrl,
         ETHERSCAN_URL: etherscanUrl,
         ADDRESSES: ContractAddresses[env as Networks],

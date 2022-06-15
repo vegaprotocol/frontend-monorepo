@@ -18,7 +18,6 @@ const mockEnvironment: EnvironmentWithOptionalUrl = {
   VEGA_ENV: Networks.TESTNET,
   VEGA_CONFIG_URL: 'https://vega.url/config.json',
   VEGA_NETWORKS: {},
-  ETHEREUM_CHAIN_ID: 1,
   ETHEREUM_PROVIDER_URL: 'https://ethereum.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
   ADDRESSES: {

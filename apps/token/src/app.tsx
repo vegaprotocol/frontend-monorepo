@@ -17,47 +17,58 @@ import { AppRouter } from './routes';
 import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ApolloProvider } from '@apollo/client';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment, EnvironmentProvider } from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { createConnectors } from './lib/web3-connectors';
 
 const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
-  const { ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID, VEGA_URL } =
-    useEnvironment();
+  const { config, loading, error } = useEthereumConfig();
+  const { ETHEREUM_PROVIDER_URL, VEGA_URL } = useEnvironment();
   const Connectors = useMemo(
-    () => createConnectors(ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID),
-    [ETHEREUM_CHAIN_ID, ETHEREUM_PROVIDER_URL]
+    () => {
+      if (config) {
+        return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
+      }
+      return undefined;
+    },
+    [config?.chain_id, ETHEREUM_PROVIDER_URL]
   );
   const client = useMemo(() => createClient(VEGA_URL), [VEGA_URL]);
   return (
     <ApolloProvider client={client}>
       <Router>
         <AppStateProvider>
-          <Web3Provider connectors={Connectors}>
-            <Web3Connector>
-              <VegaWalletProvider>
-                <ContractsProvider>
-                  <AppLoader>
-                    <BalanceManager>
-                      <>
-                        <div className="app dark max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
-                          <AppBanner />
-                          <TemplateSidebar sidebar={sideBar}>
-                            <AppRouter />
-                          </TemplateSidebar>
-                          <AppFooter />
-                        </div>
-                        <VegaWalletDialogs />
-                        <TransactionModal />
-                      </>
-                    </BalanceManager>
-                  </AppLoader>
-                </ContractsProvider>
-              </VegaWalletProvider>
-            </Web3Connector>
-          </Web3Provider>
+          <AsyncRenderer loading={loading} data={config} error={error}>
+            {Connectors && (
+              <Web3Provider connectors={Connectors}>
+                <Web3Connector>
+                  <VegaWalletProvider>
+                    <ContractsProvider>
+                      <AppLoader>
+                        <BalanceManager>
+                          <>
+                            <div className="app dark max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
+                              <AppBanner />
+                              <TemplateSidebar sidebar={sideBar}>
+                                <AppRouter />
+                              </TemplateSidebar>
+                              <AppFooter />
+                            </div>
+                            <VegaWalletDialogs />
+                            <TransactionModal />
+                          </>
+                        </BalanceManager>
+                      </AppLoader>
+                    </ContractsProvider>
+                  </VegaWalletProvider>
+                </Web3Connector>
+              </Web3Provider>
+            )}
+          </AsyncRenderer>
         </AppStateProvider>
       </Router>
     </ApolloProvider>

@@ -29,8 +29,6 @@ const transformValue = (key: EnvKey, value?: string) => {
   switch (key) {
     case 'VEGA_ENV':
       return value as Networks;
-    case 'ETHEREUM_CHAIN_ID':
-      return value && Number(value);
     case 'VEGA_NETWORKS': {
       if (value) {
         try {
@@ -58,8 +56,6 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_VEGA_ENV'];
     case 'VEGA_CONFIG_URL':
       return process.env['NX_VEGA_CONFIG_URL'];
-    case 'ETHEREUM_CHAIN_ID':
-      return process.env['NX_ETHEREUM_CHAIN_ID'];
     case 'ETHEREUM_PROVIDER_URL':
       return process.env['NX_ETHEREUM_PROVIDER_URL'];
     case 'ETHERSCAN_URL':
@@ -101,8 +97,6 @@ export const compileEnvironment = (
   return {
     // @ts-ignore enable using default object props
     ETHERSCAN_URL: getDefaultEtherscanUrl(environment['VEGA_ENV']),
-    // @ts-ignore enable using default object props
-    ETHEREUM_CHAIN_ID: getDefaultEtherumChainId(environment['VEGA_ENV']),
     // @ts-ignore enable using default object props
     ETHEREUM_PROVIDER_URL: getDefaultEtherumProviderUrl(
       environment['VEGA_ENV']

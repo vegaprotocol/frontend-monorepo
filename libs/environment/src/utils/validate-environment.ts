@@ -23,9 +23,6 @@ const baseProps = {
       { CUSTOM: { type: 'string' } }
     ),
   },
-  ETHEREUM_CHAIN_ID: {
-    type: 'integer',
-  },
   ETHEREUM_PROVIDER_URL: {
     type: 'string',
   },

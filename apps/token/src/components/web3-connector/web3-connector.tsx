@@ -1,5 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import { Button, Splash } from '@vegaprotocol/ui-toolkit';
+import { useEthereumConfig } from '@vegaprotocol/web3';
+import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
@@ -16,10 +17,16 @@ interface Web3ConnectorProps {
 
 export function Web3Connector({ children }: Web3ConnectorProps) {
   const { appState, appDispatch } = useAppState();
-  const { ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID } = useEnvironment();
+  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { config, loading, error } = useEthereumConfig();
   const Connectors = useMemo(
-    () => createConnectors(ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID),
-    [ETHEREUM_CHAIN_ID, ETHEREUM_PROVIDER_URL]
+    () => {
+      if (config) {
+        return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
+      }
+      return undefined;
+    },
+    [config?.chain_id, ETHEREUM_PROVIDER_URL]
   );
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
@@ -27,19 +34,21 @@ export function Web3Connector({ children }: Web3ConnectorProps) {
     },
     [appDispatch]
   );
-  const appChainId = Number(ETHEREUM_CHAIN_ID);
+  const appChainId = Number(config?.chain_id);
   return (
-    <>
+    <AsyncRenderer loading={loading} error={error} data={config}>
       <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>
         {children}
       </Web3Content>
-      <Web3ConnectDialog
-        connectors={Connectors}
-        dialogOpen={appState.ethConnectOverlay}
-        setDialogOpen={setDialogOpen}
-        desiredChainId={appChainId}
-      />
-    </>
+      {Connectors && (
+        <Web3ConnectDialog
+          connectors={Connectors}
+          dialogOpen={appState.ethConnectOverlay}
+          setDialogOpen={setDialogOpen}
+          desiredChainId={appChainId}
+        />
+      )}
+    </AsyncRenderer>
   );
 }
 
@@ -52,7 +61,6 @@ interface Web3ContentProps {
 export const Web3Content = ({
   children,
   appChainId,
-  setDialogOpen,
 }: Web3ContentProps) => {
   const { error, connector, chainId } = useWeb3React();
 
