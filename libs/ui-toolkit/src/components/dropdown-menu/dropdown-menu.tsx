@@ -10,6 +10,7 @@ const itemClass = classNames(
   'h-[25px]',
   'py-0 pr-8',
   'cursor-default',
+  'hover:cursor-pointer',
   'select-none',
   'whitespace-nowrap',
   'focus:bg-vega-pink dark:focus:bg-vega-yellow',
@@ -104,7 +105,9 @@ export const DropdownMenuCheckboxItem = forwardRef<
     ref={forwardedRef}
     className={classNames(
       getItemClasses(inset, checkboxItemProps.checked),
-      className
+      className,
+      'hover:inset-shadow-black dark:hover:inset-shadow-white',
+      'focus:inset-shadow-black dark:focus:inset-shadow-white'
     )}
   />
 ));

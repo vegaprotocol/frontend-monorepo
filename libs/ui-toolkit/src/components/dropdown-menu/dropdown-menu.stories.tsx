@@ -50,7 +50,7 @@ export const CheckboxItems = () => {
 
 export const RadioItems = () => {
   const files = ['README.md', 'index.js', 'page.css'];
-  const [file, setFile] = useState(files[1]);
+  const [selected, setSelected] = useState(files[1]);
 
   return (
     <div style={{ textAlign: 'center', padding: 50 }}>
@@ -69,7 +69,7 @@ export const RadioItems = () => {
             Smaller
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup value={file} onValueChange={setFile}>
+          <DropdownMenuRadioGroup value={selected} onValueChange={setSelected}>
             {files.map((file) => (
               <DropdownMenuRadioItem key={file} inset value={file}>
                 {file}
@@ -78,7 +78,7 @@ export const RadioItems = () => {
           </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <p>Selected file: {file}</p>
+      <p>Selected file: {selected}</p>
     </div>
   );
 };
