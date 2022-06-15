@@ -1,5 +1,5 @@
-import type { RawEnvironment, EnvKey, Environment , Networks} from '../types';
-import { ContractAddresses, ENV_KEYS } from '../types';
+import type { RawEnvironment, EnvKey, Environment } from '../types';
+import { ContractAddresses, Networks, ENV_KEYS } from '../types';
 
 declare global {
   interface Window {
@@ -8,6 +8,22 @@ declare global {
 }
 
 const isBrowser = typeof window !== 'undefined';
+
+const getDefaultEtherumProviderUrl = (env: Networks) => {
+  return env === Networks.MAINNET
+    ? 'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'
+    : 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8';
+};
+
+const getDefaultEtherscanUrl = (env: Networks) => {
+  return env === Networks.MAINNET
+    ? 'https://etherscan.io'
+    : 'https://ropsten.etherscan.io';
+};
+
+const getDefaultEtherumChainId = (env: Networks) => {
+  return env === Networks.MAINNET ? 1 : 3;
+};
 
 const transformValue = (key: EnvKey, value?: string) => {
   switch (key) {
@@ -78,6 +94,14 @@ export const compileEnvironment = (
   );
 
   return {
+    // @ts-ignore enable using default object props
+    ETHERSCAN_URL: getDefaultEtherscanUrl(environment['VEGA_ENV']),
+    // @ts-ignore enable using default object props
+    ETHEREUM_CHAIN_ID: getDefaultEtherumChainId(environment['VEGA_ENV']),
+    // @ts-ignore enable using default object props
+    ETHEREUM_PROVIDER_URL: getDefaultEtherumProviderUrl(
+      environment['VEGA_ENV']
+    ),
     ...environment,
     ADDRESSES: ContractAddresses[environment['VEGA_ENV']],
     VEGA_NETWORKS: {
