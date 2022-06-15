@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MarketState } from '@vegaprotocol/types';
@@ -11,6 +11,7 @@ import type {
   SimpleMarkets,
 } from './__generated__/SimpleMarkets';
 import type { MarketFilters } from './__generated__/MarketFilters';
+import useMarketsFilterData from '../../hooks/use-markets-filter-data';
 
 const mockedNavigate = jest.fn();
 
@@ -23,6 +24,10 @@ jest.mock('react-router-dom', () => ({
 jest.mock('date-fns', () => ({
   subDays: () => new Date('2022-06-02T11:11:21.721Z'),
 }));
+
+/*jest.mock('../../hooks/use-markets-filter-data', () => jest.fn().mockImplementation((...args) => {
+  return useMarketsFilterData.apply(this, args);
+}));*/
 
 describe('SimpleMarketList', () => {
   const filterMock: MockedResponse<MarketFilters> = {
@@ -58,8 +63,9 @@ describe('SimpleMarketList', () => {
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-
-    expect(screen.getByText('No data to display')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('No data to display')).toBeInTheDocument();
+    });
   });
 
   it('should be properly rendered with some data', async () => {
@@ -123,10 +129,11 @@ describe('SimpleMarketList', () => {
           <SimpleMarketList />
         </MockedProvider>
       );
-
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+    });
     expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
   });
 });
