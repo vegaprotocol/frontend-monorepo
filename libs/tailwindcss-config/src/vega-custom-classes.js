@@ -63,6 +63,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.inset-shadow-vega-pink': {
       boxShadow: `inset 0 -2px 0 0 ${theme.colors.vega.pink}`,
     },
+    '.inset-shadow-danger': {
+      boxShadow: `inset 0 -2px 0 0 ${theme.colors.danger}`,
+    },
     '.input-shadow': {
       boxShadow: `inset 2px 2px 6px ${theme.colors.white['80']}`,
     },
