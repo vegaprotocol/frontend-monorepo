@@ -48,6 +48,12 @@ Success.args = {
   children: 'Content',
 };
 
+export const Help = Template.bind({});
+Help.args = {
+  intent: Intent.Help,
+  children: 'Content',
+};
+
 export const IconAndContent = Template.bind({});
 IconAndContent.args = {
   intent: Intent.None,
