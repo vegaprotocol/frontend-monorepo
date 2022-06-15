@@ -25,9 +25,9 @@ const NavItem = ({
         !isActive,
       'text-inherit dark:text-inherit hover:text-white hover:dark:text-black':
         !isActive,
-      'focus-visible:inset-shadow-vega-pink dark:focus-visible:inset-shadow-vega-yellow':
+      'focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow':
         !isActive,
-      'focus-visible:inset-shadow-white dark:focus-visible:inset-shadow-black':
+      'focus-visible:shadow-inset-white dark:focus-visible:shadow-inset-black':
         isActive,
       'border-vega-pink dark:border-vega-yellow bg-vega-pink dark:bg-vega-yellow text-white dark:text-black':
         isActive,

@@ -6,7 +6,7 @@ export const defaultFormElement = (hasError?: boolean) =>
     'box-border',
     'border rounded-none',
     'bg-clip-padding',
-    'input-shadow dark:input-shadow-dark',
+    'shadow-input dark:shadow-input-dark',
     'bg-white dark:bg-white-25',
     'text-black placeholder:text-black-60 dark:text-white dark:placeholder:text-white-60',
     'text-ui',
@@ -14,9 +14,9 @@ export const defaultFormElement = (hasError?: boolean) =>
     'focus-visible:outline-none',
     'disabled:bg-black-10 disabled:dark:bg-white-10',
     {
-      'input-border dark:dark-input-border focus-visible:input-shadow-focus dark:focus-visible:input-shadow-focus-dark':
+      'input-border dark:input-border-dark focus-visible:shadow-input-focus dark:focus-visible:shadow-input-focus-dark':
         !hasError,
-      'border-vega-red focus:input-shadow-focus-error dark:focus:input-shadow-focus-error-dark':
+      'border-vega-red focus:shadow-input-focus-error dark:focus:shadow-input-focus-error-dark':
         hasError,
     }
   );

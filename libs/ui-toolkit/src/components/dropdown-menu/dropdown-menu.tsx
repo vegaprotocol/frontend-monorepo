@@ -41,7 +41,7 @@ export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
 >(({ children, className }) => (
-  <DropdownMenuPrimitive.Trigger className="focus-visible:outline-none focus-visible:inset-shadow-vega-pink dark:focus-visible:inset-shadow-vega-yellow">
+  <DropdownMenuPrimitive.Trigger className="focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow">
     <Button
       variant="secondary"
       appendIconName="chevron-down"
@@ -106,8 +106,8 @@ export const DropdownMenuCheckboxItem = forwardRef<
     className={classNames(
       getItemClasses(inset, checkboxItemProps.checked),
       className,
-      'hover:inset-shadow-black dark:hover:inset-shadow-white',
-      'focus:inset-shadow-black dark:focus:inset-shadow-white'
+      'hover:shadow-inset-black dark:hover:shadow-inset-white',
+      'focus:shadow-inset-black dark:focus:shadow-inset-white'
     )}
   />
 ));

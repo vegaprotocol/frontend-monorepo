@@ -44,15 +44,15 @@ const getClasses = (
     'inline-flex items-center justify-center box-border transition-[background-color] ease-linear duration-50 disabled:no-underline';
   const commonButtonClasses = classnames(
     'relative disabled:static',
-    'text-ui font-semibold disabled:shadow-none focus-visible:outline-none border no-underline hover:no-underline',
+    'text-ui font-semibold focus-visible:outline-none border no-underline hover:no-underline',
     {
-      'shadow-none': boxShadow === false,
+      'shadow-none': !boxShadow,
       'shadow-[3px_3px_0_0] focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow active:top-[1px] active:left-[1px] active:shadow-[2px_2px_0_0]':
         boxShadow === undefined || boxShadow,
     }
   );
   const commonDisabled =
-    'disabled:bg-black-10 dark:disabled:bg-white-10 disabled:text-black-60 dark:disabled:text-white-60 disabled:border-black-25 dark:disabled:border-white-25';
+    'disabled:bg-black-10 dark:disabled:bg-white-10 disabled:text-black-60 dark:disabled:text-white-60 disabled:border-black-25 dark:disabled:border-white-25 disabled:shadow-none dark:disabled:shadow-none';
   const inlineTextColour =
     'text-black-95 dark:text-white-95 hover:text-black hover:dark:text-white active:text-black dark:active:text-vega-yellow';
 
@@ -108,7 +108,7 @@ const getClasses = (
     standardButtonBorderWidth,
     buttonHeight,
     'bg-vega-green hover:bg-vega-green-medium',
-    'border-black shadow-black dark:shadow-white',
+    'border-black disabled:shadow-none dark:disabled:shadow-none shadow-black dark:shadow-white',
     'text-black',
   ];
 

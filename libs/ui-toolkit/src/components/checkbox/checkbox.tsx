@@ -26,11 +26,11 @@ export const Checkbox = ({
   const vegaCheckboxClasses = classnames(
     'col-start-1 row-start-1',
     'inline-block w-20 h-20 relative z-0',
-    'input-shadow dark:input-shadow-dark bg-white dark:bg-white-25',
-    'focus-visible:outline-none focus-visible:checkbox-focus-shadow dark:focus-visible:checkbox-focus-shadow-dark',
+    'shadow-input dark:shadow-input-dark bg-white dark:bg-white-25',
+    'focus-visible:outline-none focus-visible:shadow-checkbox-focus dark:focus-visible:shadow-checkbox-focus-dark',
     'cursor-pointer peer-disabled:cursor-default',
     {
-      'input-border dark:dark-input-border': !error,
+      'input-border dark:input-border-dark': !error,
       'border border-vega-red': error,
     }
   );
