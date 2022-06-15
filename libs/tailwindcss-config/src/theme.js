@@ -64,7 +64,8 @@ const colours = {
   success: '#00F780',
   help: '#494949',
   highlight: '#E5E5E5',
-  prompt: '#FFFFFF',
+  'prompt-dark': '#FFFFFF',
+  prompt: '#000000',
   'danger-bg': '#9E0025', // for white text
 };
 
@@ -191,7 +192,7 @@ module.exports = {
   boxShadow: {
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
     'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
-    intent: `${boxShadowPosition.outer}`,
+    intent: `3px 3px 0 0`,
     'vega-yellow': `${boxShadowPosition.outer} ${colours.vega.yellow}`,
     'vega-pink': `${boxShadowPosition.outer} ${colours.vega.pink}`,
     'inset-black': `${boxShadowPosition.insetUnderline} ${colours.black.DEFAULT}`,

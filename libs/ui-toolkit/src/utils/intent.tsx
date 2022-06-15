@@ -12,15 +12,31 @@ export enum Intent {
 
 export const getIntentShadow = (intent?: Intent) => {
   return {
-    'shadow-callout': true,
+    'shadow-intent': true,
     'shadow-danger': intent === Intent.Danger,
     'shadow-warning': intent === Intent.Warning,
     'shadow-selected': intent === Intent.Selected,
-    'shadow-black dark:shadow-prompt': intent === Intent.Prompt,
+    'shadow-prompt dark:shadow-prompt-dark':
+      intent === Intent.Prompt ||
+      intent === Intent.None ||
+      intent === Intent.Primary,
     'shadow-success': intent === Intent.Success,
     'shadow-help': intent === Intent.Help,
-    'shadow-black dark:shadow-white': intent === Intent.None,
-    'shadow-vega-pink dark:shadow-vega-yellow': intent === Intent.Primary,
+  };
+};
+
+export const getIntentBorder = (intent?: Intent) => {
+  return {
+    border: true,
+    'border-danger': intent === Intent.Danger,
+    'border-warning': intent === Intent.Warning,
+    'border-selected': intent === Intent.Selected,
+    'border-prompt dark:border-prompt-dark':
+      intent === Intent.Prompt ||
+      intent === Intent.None ||
+      intent === Intent.Primary,
+    'border-success': intent === Intent.Success,
+    'border-help': intent === Intent.Help,
   };
 };
 
