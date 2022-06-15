@@ -30,7 +30,8 @@ describe('SimpleMarketToolbar', () => {
     jest.resetAllMocks();
   });
 
-  it('should be properly rendered', async () => {
+  // [EH] Flaky test disabled, see #1304
+  it.skip('should be properly rendered', async () => {
     await act(async () => {
       render(
         <MockedProvider mocks={[filterMock]} addTypename={false}>
@@ -45,7 +46,8 @@ describe('SimpleMarketToolbar', () => {
     expect(screen.getByRole('combobox').children).toHaveLength(10);
   });
 
-  it('navigation should work well', async () => {
+  // [EH] Flaky test disabled, see #1304
+  it.skip('navigation should work well', async () => {
     await act(async () => {
       render(
         <MockedProvider mocks={[filterMock]} addTypename={false}>
