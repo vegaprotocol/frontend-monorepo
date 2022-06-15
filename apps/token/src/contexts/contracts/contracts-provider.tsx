@@ -68,9 +68,9 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
             claim: new Claim(ADDRESSES.claimAddress, signer || provider),
           });
         }
-        run();
       }
     };
+    run();
   }, [
     activeProvider,
     account,
