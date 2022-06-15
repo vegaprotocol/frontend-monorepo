@@ -75,7 +75,12 @@ export const Search = () => {
           </InputError>
         )}
       </FormGroup>
-      <Button type="submit" variant="secondary" data-testid="search-button">
+      <Button
+        type="submit"
+        boxShadow={false}
+        variant="secondary"
+        data-testid="search-button"
+      >
         {t('Search')}
       </Button>
     </form>
