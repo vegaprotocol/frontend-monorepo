@@ -68,6 +68,12 @@ const colours = {
   'danger-bg': '#9E0025', // for white text
 };
 
+const boxShadowPosition = {
+  outer: '2px 2px 0 0',
+  insetUnderline: 'inset 0 -2px 0 0',
+  insetShading: 'inset 2px 2px 6px',
+};
+
 module.exports = {
   screens: {
     xs: '500px',
@@ -183,25 +189,24 @@ module.exports = {
     'ui-small': ['12px', '16px'],
   },
   boxShadow: {
-    callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
     'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
-    radio: '1px 1px 0 0',
-    'vega-yellow': `2px 2px 0 0 ${colours.vega.yellow}`,
-    'vega-pink': `2px 2px 0 0 ${colours.vega.pink}`,
-    'inset-black': `inset 0 -2px 0 0 ${colours.black.DEFAULT}`,
-    'inset-white': `inset 0 -2px 0 0 ${colours.white.DEFAULT}`,
-    'inset-vega-yellow': `inset 0 -2px 0 0 ${colours.vega.yellow}`,
-    'inset-vega-pink': `inset 0 -2px 0 0 ${colours.vega.pink}`,
-    'inset-danger': `inset 0 -2px 0 0 ${colours.danger}`,
-    input: `inset 2px 2px 6px ${colours.white['80']}`,
-    'input-dark': `inset 2px 2px 6px ${colours.black['80']}`,
-    'input-focus': `inset 2px 2px 6px ${colours.white['80']}, inset 0 -2px 0 0 ${colours.vega.pink}`,
-    'input-focus-dark': `inset 2px 2px 6px ${colours.black['80']}, inset 0 -2px 0 0 ${colours.vega.yellow}`,
-    'input-focus-error': `inset 2px 2px 6px ${colours.white['80']}, inset 0 -2px 0 0 ${colours.danger}`,
-    'input-focus-error-dark': `inset 2px 2px 6px ${colours.black['80']}, inset 0 -2px 0 0 ${colours.danger}`,
-    'checkbox-focus': `inset 2px 2px 6px ${colours.white['80']}, 2px 2px 0 0 ${colours.vega.pink}`,
-    'checkbox-focus-dark': `inset 2px 2px 6px ${colours.black['80']}, 2px 2px 0 0 ${colours.vega.yellow}`,
+    intent: `${boxShadowPosition.outer}`,
+    'vega-yellow': `${boxShadowPosition.outer} ${colours.vega.yellow}`,
+    'vega-pink': `${boxShadowPosition.outer} ${colours.vega.pink}`,
+    'inset-black': `${boxShadowPosition.insetUnderline} ${colours.black.DEFAULT}`,
+    'inset-white': `${boxShadowPosition.insetUnderline} ${colours.white.DEFAULT}`,
+    'inset-vega-yellow': `${boxShadowPosition.insetUnderline} ${colours.vega.yellow}`,
+    'inset-vega-pink': `${boxShadowPosition.insetUnderline} ${colours.vega.pink}`,
+    'inset-danger': `${boxShadowPosition.insetUnderline} ${colours.danger}`,
+    input: `${boxShadowPosition.insetShading} ${colours.white['80']}`,
+    'input-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}`,
+    'input-focus': `${boxShadowPosition.insetShading} ${colours.white['80']}, ${boxShadowPosition.insetUnderline} ${colours.vega.pink}`,
+    'input-focus-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}, ${boxShadowPosition.insetUnderline} ${colours.vega.yellow}`,
+    'input-focus-error': `${boxShadowPosition.insetShading} ${colours.white['80']}, ${boxShadowPosition.insetUnderline} ${colours.danger}`,
+    'input-focus-error-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}, ${boxShadowPosition.insetUnderline} ${colours.danger}`,
+    'checkbox-focus': `${boxShadowPosition.insetShading} ${colours.white['80']}, ${boxShadowPosition.outer} ${colours.vega.pink}`,
+    'checkbox-focus-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}, ${boxShadowPosition.outer} ${colours.vega.yellow}`,
   },
   backgroundImage: {
     'fairground-nav': "url('https://static.vega.xyz/fairground-nav-bg.jpg')",
