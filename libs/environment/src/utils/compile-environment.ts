@@ -1,5 +1,4 @@
-import type { Networks } from '@vegaprotocol/react-helpers';
-import type { RawEnvironment, EnvKey, Environment } from '../types';
+import type { RawEnvironment, EnvKey, Environment , Networks} from '../types';
 import { ContractAddresses, ENV_KEYS } from '../types';
 
 declare global {

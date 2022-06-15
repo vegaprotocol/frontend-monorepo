@@ -1,4 +1,10 @@
-import type { Networks } from '@vegaprotocol/react-helpers';
+export enum Networks {
+  TESTNET = 'TESTNET',
+  STAGNET = 'STAGNET',
+  STAGNET2 = 'STAGNET2',
+  DEVNET = 'DEVNET',
+  MAINNET = 'MAINNET',
+}
 
 export type Environment = {
   VEGA_URL: string;

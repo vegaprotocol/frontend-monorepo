@@ -1,9 +1,8 @@
 import type { ComponentProps } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { Networks } from '@vegaprotocol/react-helpers';
 import type { EnvironmentState } from './use-environment';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
-import { ContractAddresses } from '../types';
+import { ContractAddresses, Networks } from '../types';
 
 const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
   return <EnvironmentProvider {...props} />;

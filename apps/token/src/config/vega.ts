@@ -1,4 +1,4 @@
-import { Networks } from '@vegaprotocol/react-helpers';
+import { Networks } from '@vegaprotocol/environment';
 
 interface VegaNode {
   url: string;

@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { Networks } from '@vegaprotocol/react-helpers';
 import type { EnvironmentWithOptionalUrl } from './use-config';
 import { useConfig, LOCAL_STORAGE_NETWORK_KEY } from './use-config';
+import { Networks } from '../types';
 
 type HostMapping = Record<string, number | Error>;
 
