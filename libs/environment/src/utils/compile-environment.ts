@@ -39,10 +39,10 @@ const transformValue = (key: EnvKey, value?: string) => {
           console.warn(
             'Error parsing the "NX_VEGA_NETWORKS" environment variable. Make sure it has a valid JSON format.'
           );
-          return undefined;
+          return {};
         }
       }
-      return undefined;
+      return {};
     }
     default:
       return value;
@@ -85,13 +85,18 @@ const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
 export const compileEnvironment = (
   definitions?: Partial<RawEnvironment>
 ): Environment => {
-  const environment = ENV_KEYS.reduce(
-    (acc, key) => ({
-      ...acc,
-      [key]: getValue(key, definitions),
-    }),
-    {} as Environment
-  );
+  const environment = ENV_KEYS.reduce((acc, key) => {
+    const value = getValue(key, definitions);
+
+    if (value) {
+      return {
+        ...acc,
+        [key]: value,
+      };
+    }
+
+    return acc;
+  }, {} as Environment);
 
   return {
     // @ts-ignore enable using default object props
@@ -104,11 +109,5 @@ export const compileEnvironment = (
     ),
     ...environment,
     ADDRESSES: ContractAddresses[environment['VEGA_ENV']],
-    VEGA_NETWORKS: {
-      [environment.VEGA_ENV]: isBrowser
-        ? window.location.href
-        : environment.VEGA_NETWORKS[environment.VEGA_ENV],
-      ...environment.VEGA_NETWORKS,
-    },
   };
 };

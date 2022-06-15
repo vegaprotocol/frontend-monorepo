@@ -38,7 +38,7 @@ const mockEnvironmentState: EnvironmentState = {
     STAGNET: 'https://stagnet.url',
     MAINNET: 'https://mainnet.url',
   },
-  ETHEREUM_CHAIN_ID: 3,
+  ETHEREUM_CHAIN_ID: 5,
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
   ADDRESSES: ContractAddresses[Networks.TESTNET],
@@ -115,7 +115,7 @@ describe('useEnvironment hook', () => {
     });
   });
 
-  it('allows for the VEGA_NETWORKS to be missing from the environment, and injects the current env with the current URL', () => {
+  it('allows for the VEGA_NETWORKS to be missing from the environment', () => {
     delete process.env['NX_VEGA_NETWORKS'];
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
@@ -123,28 +123,17 @@ describe('useEnvironment hook', () => {
     expect(result.error).toBe(undefined);
     expect(result.current).toEqual({
       ...mockEnvironmentState,
-      VEGA_NETWORKS: {
-        [mockEnvironmentState.VEGA_ENV]: 'http://localhost/',
-      },
+      VEGA_NETWORKS: {},
     });
   });
 
-  it.each`
-    key
-    ${'NX_VEGA_ENV'}
-    ${'NX_ETHEREUM_CHAIN_ID'}
-    ${'NX_ETHEREUM_PROVIDER_URL'}
-    ${'NX_ETHERSCAN_URL'}
-  `(
-    'throws a validation error when $key is not found in the environment',
-    async ({ key }) => {
-      delete process.env[key];
-      const { result } = renderHook(() => useEnvironment(), {
-        wrapper: MockWrapper,
-      });
-      expect(result.error).not.toBe(undefined);
-    }
-  );
+  it('throws a validation error when NX_VEGA_ENV is not found in the environment', async () => {
+    delete process.env['NX_VEGA_ENV'];
+    const { result } = renderHook(() => useEnvironment(), {
+      wrapper: MockWrapper,
+    });
+    expect(result.error).not.toBe(undefined);
+  });
 
   it('throws a validation error when VEGA_ENV is not a valid network', () => {
     process.env['NX_VEGA_ENV'] = 'SOMETHING';
@@ -163,9 +152,7 @@ describe('useEnvironment hook', () => {
     expect(result.error).toBe(undefined);
     expect(result.current).toEqual({
       ...mockEnvironmentState,
-      VEGA_NETWORKS: {
-        [mockEnvironmentState.VEGA_ENV]: 'http://localhost/',
-      },
+      VEGA_NETWORKS: {},
     });
 
     expect(consoleWarnSpy).toHaveBeenCalled();
@@ -190,4 +177,33 @@ describe('useEnvironment hook', () => {
     });
     expect(result.error).not.toBe(undefined);
   });
+
+  it.each`
+    env                  | chainId | etherscanUrl                      | providerUrl
+    ${Networks.DEVNET}   | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.TESTNET}  | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.STAGNET}  | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.STAGNET2} | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.MAINNET}  | ${1}    | ${'https://etherscan.io'}         | ${'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+  `(
+    'uses correct default ethereum connection variables in $env',
+    async ({ env, chainId, etherscanUrl, providerUrl }) => {
+      process.env['NX_VEGA_ENV'] = env;
+      delete process.env['NX_ETHEREUM_CHAIN_ID'];
+      delete process.env['NX_ETHEREUM_PROVIDER_URL'];
+      delete process.env['NX_ETHERSCAN_URL'];
+      const { result } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+      expect(result.error).toBe(undefined);
+      expect(result.current).toEqual({
+        ...mockEnvironmentState,
+        VEGA_ENV: env,
+        ETHEREUM_CHAIN_ID: Number(chainId),
+        ETHEREUM_PROVIDER_URL: providerUrl,
+        ETHERSCAN_URL: etherscanUrl,
+        ADDRESSES: ContractAddresses[env as Networks],
+      });
+    }
+  );
 });
