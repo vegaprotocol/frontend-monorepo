@@ -36,7 +36,6 @@ describe('home', () => {
 
       cy.get('main[data-testid="market"]').should('exist'); // Wait for page to be rendered to before checking url
       cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
-      cy.wait('@MarketList');
     });
 
     it('redirects to a default market with the landing dialog open', () => {
