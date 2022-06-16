@@ -68,7 +68,7 @@ const SimpleMarketList = () => {
           >
             {localData?.map((market) => (
               <li
-                className="w-full relative flex justify-start items-center no-underline box-border text-left pt-8 pb-8 pl-16 pr-16 mb-10"
+                className="w-full relative flex justify-start items-center no-underline box-border text-left pt-8 pb-8 mb-10"
                 key={market.id}
               >
                 <div className="w-full grid sm:grid-cols-2">

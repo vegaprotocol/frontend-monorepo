@@ -1,5 +1,4 @@
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketToolbar from './simple-market-toolbar';
@@ -31,53 +30,56 @@ describe('SimpleMarketToolbar', () => {
   });
 
   it('should be properly rendered', async () => {
-    await act(async () => {
-      render(
-        <MockedProvider mocks={[filterMock]} addTypename={false}>
-          <SimpleMarketToolbar />
-        </MockedProvider>
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
+    render(
+      <MockedProvider mocks={[filterMock]} addTypename={false}>
+        <SimpleMarketToolbar />
+      </MockedProvider>
+    );
     await waitFor(() => {
-      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
+      expect(screen.getByText('Future')).toBeInTheDocument();
     });
     expect(screen.getByTestId('market-products-menu').children).toHaveLength(3);
     expect(screen.getByTestId('market-assets-menu').children).toHaveLength(6);
-    expect(screen.getByRole('combobox').children).toHaveLength(10);
+    fireEvent.click(screen.getByTestId('state-trigger'));
+    waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      expect(screen.getByRole('menu').children).toHaveLength(10);
+    });
   });
 
   it('navigation should work well', async () => {
-    await act(async () => {
-      render(
-        <MockedProvider mocks={[filterMock]} addTypename={false}>
-          <SimpleMarketToolbar />
-        </MockedProvider>
-      );
-      await new Promise((resolve) => setTimeout(resolve, 0));
-    });
-    await waitFor(() => {
-      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
-    });
-    fireEvent.click(
-      screen
-        .getByTestId('market-products-menu')
-        .children[1].querySelector('button') as HTMLButtonElement
+    render(
+      <MockedProvider mocks={[filterMock]} addTypename={false}>
+        <SimpleMarketToolbar />
+      </MockedProvider>
     );
-    expect(mockedNavigate).toHaveBeenCalledWith('/markets/Active/all/Future');
+
+    await waitFor(() => {
+      expect(screen.getByText('Future')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText('Future'));
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith('/markets/Active/all/Future');
+    });
 
     fireEvent.click(
       screen
         .getByTestId('market-assets-menu')
         .children[5].querySelector('button') as HTMLButtonElement
     );
-    expect(mockedNavigate).toHaveBeenCalledWith('/markets/Active/tEURO/Future');
-
-    fireEvent.change(screen.getByRole('combobox'), {
-      target: { value: 'Pending' },
+    await waitFor(() => {
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        '/markets/Active/tEURO/Future'
+      );
     });
-    expect(mockedNavigate).toHaveBeenCalledWith(
-      '/markets/Pending/tEURO/Future'
-    );
+
+    fireEvent.click(screen.getByTestId('state-trigger'));
+    waitFor(() => {
+      expect(screen.getByRole('menu')).toBeInTheDocument();
+      fireEvent.click(screen.getByText('Pending'));
+      expect(mockedNavigate).toHaveBeenCalledWith(
+        '/markets/Pending/tEURO/Future'
+      );
+    });
   });
 });

@@ -4,8 +4,8 @@ describe('market list', () => {
 
     it('selects menus', () => {
       cy.get('.MuiDrawer-root [aria-current]').should('have.text', 'Markets');
-      cy.get('select[name="states"]').should('have.value', 'Active');
-      cy.get('[data-testid="market-assets-menu"] button.font-bold').should(
+      cy.getByTestId('state-trigger').should('have.text', 'Active');
+      cy.get('[data-testid="market-assets-menu"] button.active').should(
         'have.text',
         'All'
       );
@@ -14,7 +14,8 @@ describe('market list', () => {
     it('navigation should make possibly shortest url', () => {
       cy.location('pathname').should('equal', '/markets');
 
-      cy.get('select[name="states"]').select('All');
+      cy.getByTestId('state-trigger').click();
+      cy.get('[role=menuitemcheckbox]').contains('All').click();
       cy.location('pathname').should('equal', '/markets/all');
 
       let asset = '';
@@ -54,15 +55,24 @@ describe('market list', () => {
       cy.get('select[name="states"]').should('have.value', 'Suspended');
     });
 
-    it('tBTC asset', () => {
-      cy.visit('/markets/Suspended/tBTC');
-      cy.getByTestId('market-assets-menu')
-        .find('button.font-bold')
-        .should('have.text', 'tBTC');
+    it('last asset (if exists)', () => {
+      cy.intercept('POST', '/query').as('Filters');
+      cy.visit('/markets');
+      cy.wait('@Filters').then((filters) => {
+        if (filters?.response?.body.data.markets.length) {
+          const asset =
+            filters?.response?.body.data.markets[0].tradableInstrument
+              .instrument.product.settlementAsset.symbol;
+          cy.visit(`/markets/Suspended/${asset}`);
+          cy.getByTestId('market-assets-menu')
+            .find('button.font-bold')
+            .should('have.text', asset);
+        }
+      });
     });
 
     it('Future product', () => {
-      cy.visit('/markets/Suspended/tBTC/Future');
+      cy.visit('/markets/Suspended/all/Future');
       cy.getByTestId('market-products-menu')
         .find('button.active')
         .should('have.text', 'Future');
