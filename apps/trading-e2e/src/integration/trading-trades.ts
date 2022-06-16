@@ -2,7 +2,9 @@ import { MarketState } from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
 beforeEach(() => {
-  mockTradingPage(MarketState.Active);
+  cy.mockGQL((req) => {
+    mockTradingPage(req, MarketState.Active);
+  });
   cy.visit('/markets/market-0');
 });
 
