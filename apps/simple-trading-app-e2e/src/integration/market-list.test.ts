@@ -16,18 +16,26 @@ describe('market list', () => {
 
       cy.get('select[name="states"]').select('All');
       cy.location('pathname').should('equal', '/markets/all');
+
+      let asset = '';
       cy.getByTestId('market-assets-menu')
         .children()
-        .contains('tEURO')
-        .click();
-      cy.location('pathname').should('equal', '/markets/all/tEURO');
+        .then((children) => {
+          if (children.length > 1) {
+            asset = children[1].innerText;
+            if (asset) {
+              cy.wrap(children[1]).click();
+              cy.location('pathname').should('equal', `/markets/all/${asset}`);
+            }
+          }
+        });
+      if (asset) {
+        cy.get('button').contains('Future').click();
+        cy.location('pathname').should('equal', `/markets/all/${asset}/Future`);
 
-      cy.get('button').contains('Future').click();
-      cy.location('pathname').should('equal', '/markets/all/tEURO/Future');
-
-      cy.get('button').contains('All Markets').click();
-      cy.location('pathname').should('equal', '/markets/all/tEURO');
-
+        cy.get('button').contains('All Markets').click();
+        cy.location('pathname').should('equal', `/markets/all/${asset}`);
+      }
       cy.getByTestId('market-assets-menu')
         .children()
         .find('button')
