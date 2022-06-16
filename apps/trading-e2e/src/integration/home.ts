@@ -32,13 +32,13 @@ describe('home', () => {
       });
 
       cy.visit('/');
-      cy.wait('@MarketsLanding');
-      cy.wait('@MarketList');
+      cy.wait('@GQL');
+
+      cy.get('main[data-testid="market"]').should('exist'); // Wait for page to be rendered to before checking url
+      cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
     });
 
     it('redirects to a default market with the landing dialog open', () => {
-      cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
-
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
       cy.contains('Select a market to get started').should('be.visible');
