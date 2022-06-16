@@ -17,6 +17,16 @@ interface Order {
   expiresAt?: string;
 }
 
+const mockTx = {
+  txHash: 'test-tx-hash',
+  tx: {
+    signature: {
+      value:
+        'd86138bba739bbc1069b3dc975d20b3a1517c2b9bdd401c70eeb1a0ecbc502ec268cf3129824841178b8b506b0b7d650c76644dbd96f524a6cb2158fb7121800',
+    },
+  },
+};
+
 describe('deal ticket orders', () => {
   const orderSizeField = 'order-size';
   const orderPriceField = 'order-price';
@@ -33,19 +43,8 @@ describe('deal ticket orders', () => {
     connectVegaWallet();
   });
 
-  beforeEach(() => {
-    cy.mockVegaCommandSync({
-      txHash: 'test-tx-hash',
-      tx: {
-        signature: {
-          value:
-            'd86138bba739bbc1069b3dc975d20b3a1517c2b9bdd401c70eeb1a0ecbc502ec268cf3129824841178b8b506b0b7d650c76644dbd96f524a6cb2158fb7121800',
-        },
-      },
-    });
-  });
-
   it('successfully places market buy order', () => {
+    cy.mockVegaCommandSync(mockTx);
     const order: Order = {
       type: 'TYPE_MARKET',
       side: 'SIDE_BUY',
@@ -56,6 +55,7 @@ describe('deal ticket orders', () => {
   });
 
   it('successfully places market sell order', () => {
+    cy.mockVegaCommandSync(mockTx);
     const order: Order = {
       type: 'TYPE_MARKET',
       side: 'SIDE_SELL',
@@ -66,6 +66,7 @@ describe('deal ticket orders', () => {
   });
 
   it('successfully places limit buy order', () => {
+    cy.mockVegaCommandSync(mockTx);
     const order: Order = {
       type: 'TYPE_LIMIT',
       side: 'SIDE_BUY',
@@ -77,6 +78,7 @@ describe('deal ticket orders', () => {
   });
 
   it('successfully places limit sell order', () => {
+    cy.mockVegaCommandSync(mockTx);
     const order: Order = {
       type: 'TYPE_LIMIT',
       side: 'SIDE_SELL',
@@ -88,6 +90,7 @@ describe('deal ticket orders', () => {
   });
 
   it('successfully places GTT limit buy order', () => {
+    cy.mockVegaCommandSync(mockTx);
     const order: Order = {
       type: 'TYPE_LIMIT',
       side: 'SIDE_SELL',
