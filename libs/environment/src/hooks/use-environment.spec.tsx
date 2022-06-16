@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import type { EnvironmentState } from './use-environment';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
-import { ContractAddresses, Networks } from '../types';
+import { Networks } from '../types';
 
 const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
   return <EnvironmentProvider {...props} />;
@@ -40,7 +40,6 @@ const mockEnvironmentState: EnvironmentState = {
   },
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
-  ADDRESSES: ContractAddresses[Networks.TESTNET],
 };
 
 beforeEach(() => {
@@ -174,15 +173,15 @@ describe('useEnvironment hook', () => {
   });
 
   it.each`
-    env                  | chainId | etherscanUrl                      | providerUrl
-    ${Networks.DEVNET}   | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.TESTNET}  | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.STAGNET}  | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.STAGNET2} | ${3}    | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.MAINNET}  | ${1}    | ${'https://etherscan.io'}         | ${'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    env                  | etherscanUrl                      | providerUrl
+    ${Networks.DEVNET}   | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.TESTNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.STAGNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.STAGNET2} | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+    ${Networks.MAINNET}  | ${'https://etherscan.io'}         | ${'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
   `(
     'uses correct default ethereum connection variables in $env',
-    async ({ env, chainId, etherscanUrl, providerUrl }) => {
+    async ({ env, etherscanUrl, providerUrl }) => {
       process.env['NX_VEGA_ENV'] = env;
       delete process.env['NX_ETHEREUM_PROVIDER_URL'];
       delete process.env['NX_ETHERSCAN_URL'];
@@ -195,7 +194,6 @@ describe('useEnvironment hook', () => {
         VEGA_ENV: env,
         ETHEREUM_PROVIDER_URL: providerUrl,
         ETHERSCAN_URL: etherscanUrl,
-        ADDRESSES: ContractAddresses[env as Networks],
       });
     }
   );

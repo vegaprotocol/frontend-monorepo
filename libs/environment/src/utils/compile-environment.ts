@@ -1,5 +1,5 @@
 import type { RawEnvironment, EnvKey, Environment } from '../types';
-import { ContractAddresses, Networks, ENV_KEYS } from '../types';
+import { Networks, ENV_KEYS } from '../types';
 
 declare global {
   interface Window {
@@ -98,6 +98,5 @@ export const compileEnvironment = (
       environment['VEGA_ENV']
     ),
     ...environment,
-    ADDRESSES: ContractAddresses[environment['VEGA_ENV']],
   };
 };

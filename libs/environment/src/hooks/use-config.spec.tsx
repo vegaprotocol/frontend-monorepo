@@ -20,10 +20,6 @@ const mockEnvironment: EnvironmentWithOptionalUrl = {
   VEGA_NETWORKS: {},
   ETHEREUM_PROVIDER_URL: 'https://ethereum.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
-  ADDRESSES: {
-    claimAddress: '0x0',
-    lockedAddress: '0x0',
-  },
 };
 
 function setupFetch(configUrl: string, hostMap: HostMapping) {

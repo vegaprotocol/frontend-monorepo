@@ -14,6 +14,7 @@ import { ContractsContext } from './contracts-context';
 import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { ENV } from '../../config/env';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
@@ -21,7 +22,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { provider: activeProvider, account } = useWeb3React();
   const { config } = useEthereumConfig();
-  const { VEGA_ENV, ADDRESSES, ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const [contracts, setContracts] =
     React.useState<ContractsContextShape | null>(null);
 
@@ -65,7 +66,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
               config.token_vesting_contract.address,
               signer || provider
             ),
-            claim: new Claim(ADDRESSES.claimAddress, signer || provider),
+            claim: new Claim(ENV.addresses.claimAddress, signer || provider),
           });
         }
       }
@@ -75,7 +76,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
     activeProvider,
     account,
     config,
-    ADDRESSES,
+    ENV.addresses,
     VEGA_ENV,
     ETHEREUM_PROVIDER_URL,
   ]);

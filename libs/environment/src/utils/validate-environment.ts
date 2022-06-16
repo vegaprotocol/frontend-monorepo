@@ -29,19 +29,6 @@ const baseProps = {
   ETHERSCAN_URL: {
     type: 'string',
   },
-  ADDRESSES: {
-    type: 'object',
-    additionalProperties: false,
-    required: ['claimAddress', 'lockedAddress'],
-    properties: {
-      claimAddress: {
-        type: 'string',
-      },
-      lockedAddress: {
-        type: 'string',
-      },
-    },
-  },
 };
 
 const schema = {
@@ -83,6 +70,8 @@ const validate = ajv.compile(schema);
 export const validateEnvironment = (
   environment: Environment
 ): string | undefined => {
+  console.log(environment);
+
   const isValid = validate(environment);
 
   if (!isValid && validate.errors) {
