@@ -1,6 +1,8 @@
 describe('market list', () => {
   describe('simple url', () => {
-    beforeEach(() => cy.visit('/markets'));
+    beforeEach(() => {
+      cy.visit('/markets');
+    });
 
     it('selects menus', () => {
       cy.get('.MuiDrawer-root [aria-current]').should('have.text', 'Markets');
@@ -26,17 +28,25 @@ describe('market list', () => {
             asset = children[1].innerText;
             if (asset) {
               cy.wrap(children[1]).click();
-              cy.location('pathname').should('equal', `/markets/all/${asset}`);
+              cy.location('pathname').should(
+                'match',
+                new RegExp(`/markets/all/${asset}`, 'i')
+              );
+
+              cy.get('button').contains('Future').click();
+              cy.location('pathname').should(
+                'match',
+                new RegExp(`/markets/all/${asset}/Future`, 'i')
+              );
+
+              cy.get('button').contains('All Markets').click();
+              cy.location('pathname').should(
+                'match',
+                new RegExp(`/markets/all/${asset}`, 'i')
+              );
             }
           }
         });
-      if (asset) {
-        cy.get('button').contains('Future').click();
-        cy.location('pathname').should('equal', `/markets/all/${asset}/Future`);
-
-        cy.get('button').contains('All Markets').click();
-        cy.location('pathname').should('equal', `/markets/all/${asset}`);
-      }
       cy.getByTestId('market-assets-menu')
         .children()
         .find('button')
@@ -44,7 +54,8 @@ describe('market list', () => {
         .click();
       cy.location('pathname').should('equal', '/markets/all');
 
-      cy.get('select[name="states"]').select('Active');
+      cy.getByTestId('state-trigger').click();
+      cy.get('[role=menuitemcheckbox]').contains('Active').click();
       cy.location('pathname').should('equal', '/markets');
     });
   });
@@ -52,7 +63,7 @@ describe('market list', () => {
   describe('url params should select filters', () => {
     it('suspended status', () => {
       cy.visit('/markets/Suspended');
-      cy.get('select[name="states"]').should('have.value', 'Suspended');
+      cy.getByTestId('state-trigger').should('have.text', 'Suspended');
     });
 
     it('last asset (if exists)', () => {
@@ -65,7 +76,7 @@ describe('market list', () => {
               .instrument.product.settlementAsset.symbol;
           cy.visit(`/markets/Suspended/${asset}`);
           cy.getByTestId('market-assets-menu')
-            .find('button.font-bold')
+            .find('button.active')
             .should('have.text', asset);
         }
       });
