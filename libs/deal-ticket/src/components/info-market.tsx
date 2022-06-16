@@ -21,80 +21,86 @@ export interface InfoProps {
 }
 
 export const Info = ({ market }: InfoProps) => {
+  const headerClassName =
+    'text-h4 font-bold uppercase text-black dark:text-white';
   return (
-    <>
-      <p className="text-h4 p-4 uppercase">{t('Market data')}</p>
-      <AccordionPanel
-        key="fees"
-        title={t('Current Fees')}
-        content={
-          <>
-            <MarketInfoTable data={market.fees.factors} asPercentage={true} />
-            <p className="text-ui-small">
-              {t(
-                'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
-              )}
-            </p>
-          </>
-        }
-      />
-      <AccordionPanel
-        key="market-data"
-        title={t('Market data')}
-        content={
-          <MarketInfoTable
-            data={market.data}
-            decimalPlaces={market.decimalPlaces}
-          />
-        }
-      />
+    <div className="p-16 flex flex-col gap-32">
+      <div className="flex flex-col gap-16">
+        <p className={headerClassName}>{t('Market data')}</p>
+        <AccordionPanel
+          key="fees"
+          title={t('Current Fees')}
+          content={
+            <>
+              <MarketInfoTable data={market.fees.factors} asPercentage={true} />
+              <p className="text-ui-small">
+                {t(
+                  'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
+                )}
+              </p>
+            </>
+          }
+        />
+        <AccordionPanel
+          key="market-data"
+          title={t('Market data')}
+          content={
+            <MarketInfoTable
+              data={market.data}
+              decimalPlaces={market.decimalPlaces}
+            />
+          }
+        />
+      </div>
 
-      <p className="text-h4 p-4 uppercase">{t('Market specification')}</p>
-      <AccordionPanel
-        title={t('Key details')}
-        key="details"
-        content={
-          <MarketInfoTable
-            data={pick(
-              market,
-              'name',
-              'decimalPlaces',
-              'positionDecimalPlaces',
-              'tradingMode',
-              'state'
-            )}
-          />
-        }
-      />
-      <AccordionPanel
-        title={t('Instrument')}
-        key="instrument"
-        content={
-          <MarketInfoTable
-            data={{
-              product: market.tradableInstrument.instrument.product,
-              ...market.tradableInstrument.instrument.product.settlementAsset,
-            }}
-          />
-        }
-      />
-      <AccordionPanel
-        title={t('Risk Model')}
-        key="risk-model"
-        content={
-          <MarketInfoTable data={market.riskFactors} unformatted={true} />
-        }
-      />
-      {(market.priceMonitoringSettings?.parameters?.triggers ?? []).map(
-        (trigger, i) => (
-          <AccordionPanel
-            key={`trigger-${i}`}
-            title={t(`Price Monitoring Trigger #${i + 1}`)}
-            content={<MarketInfoTable data={trigger} />}
-          />
-        )
-      )}
-    </>
+      <div className="flex flex-col gap-16">
+        <p className={headerClassName}>{t('Market specification')}</p>
+        <AccordionPanel
+          title={t('Key details')}
+          key="details"
+          content={
+            <MarketInfoTable
+              data={pick(
+                market,
+                'name',
+                'decimalPlaces',
+                'positionDecimalPlaces',
+                'tradingMode',
+                'state'
+              )}
+            />
+          }
+        />
+        <AccordionPanel
+          title={t('Instrument')}
+          key="instrument"
+          content={
+            <MarketInfoTable
+              data={{
+                product: market.tradableInstrument.instrument.product,
+                ...market.tradableInstrument.instrument.product.settlementAsset,
+              }}
+            />
+          }
+        />
+        <AccordionPanel
+          title={t('Risk Model')}
+          key="risk-model"
+          content={
+            <MarketInfoTable data={market.riskFactors} unformatted={true} />
+          }
+        />
+        {(market.priceMonitoringSettings?.parameters?.triggers ?? []).map(
+          (trigger, i) => (
+            <AccordionPanel
+              key={`trigger-${i}`}
+              title={t(`Price Monitoring Trigger #${i + 1}`)}
+              content={<MarketInfoTable data={trigger} />}
+            />
+          )
+        )}
+      </div>
+    </div>
   );
 };
 
@@ -115,7 +121,7 @@ export const renderRow = ({
 }: RowProps) => {
   const isNumber = typeof value === 'number' || !isNaN(Number(value));
   const isPrimitive = typeof value === 'string' || isNumber;
-  const className = 'text-black dark:text-white text-ui px-0 font-normal';
+  const className = 'text-black dark:text-white text-ui !px-0 !font-normal';
   if (isPrimitive) {
     return (
       <KeyValueTableRow

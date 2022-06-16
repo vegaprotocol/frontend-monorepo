@@ -32,14 +32,14 @@ export const AccordionPanel = ({
   };
 
   return (
-    <div className="flex flex-col mx-5">
+    <div className="flex flex-col">
       <button
         data-testid="accordion-toggle"
-        className="py-2 box-border appearance-none cursor-pointer focus:outline-none flex items-center justify-between"
+        className="py-2 box-border appearance-none cursor-pointer focus:outline-none flex items-center justify-between border-b border-muted"
         onClick={toggleAccordion}
       >
         <p
-          className="inline-block text-footnote font-bold text-h6 capitalize text-black dark:text-white pt-5 "
+          className="inline-block text-footnote font-bold text-h5 capitalize text-black dark:text-white pt-5 "
           data-testid="accordion-title"
         >
           {title}
@@ -49,9 +49,9 @@ export const AccordionPanel = ({
           height="30"
           aria-label="chevron icon"
           data-testid="accordion-chevron-icon"
-          className={`${rotate} inline-block fill-current`}
+          className={`${rotate} inline-block fill-black dark:fill-white`}
           viewBox="0 0 20 20"
-          fill="none"
+          fill="fillCurrent"
           xmlns="http://www.w3.org/2000/svg"
         >
           <rect x="3" y="12" width="2" height="2" />
