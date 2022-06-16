@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -30,8 +30,7 @@ describe('SimpleMarketToolbar', () => {
     jest.resetAllMocks();
   });
 
-  // [EH] Flaky test disabled, see #1304
-  it.skip('should be properly rendered', async () => {
+  it('should be properly rendered', async () => {
     await act(async () => {
       render(
         <MockedProvider mocks={[filterMock]} addTypename={false}>
@@ -40,14 +39,15 @@ describe('SimpleMarketToolbar', () => {
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-
+    await waitFor(() => {
+      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
+    });
     expect(screen.getByTestId('market-products-menu').children).toHaveLength(3);
     expect(screen.getByTestId('market-assets-menu').children).toHaveLength(6);
     expect(screen.getByRole('combobox').children).toHaveLength(10);
   });
 
-  // [EH] Flaky test disabled, see #1304
-  it.skip('navigation should work well', async () => {
+  it('navigation should work well', async () => {
     await act(async () => {
       render(
         <MockedProvider mocks={[filterMock]} addTypename={false}>
@@ -56,7 +56,9 @@ describe('SimpleMarketToolbar', () => {
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-
+    await waitFor(() => {
+      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
+    });
     fireEvent.click(
       screen
         .getByTestId('market-products-menu')
