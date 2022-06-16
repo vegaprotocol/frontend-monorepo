@@ -42,10 +42,13 @@ export function Dialog({
         />
         <DialogPrimitives.Content className={contentClasses}>
           <DialogPrimitives.Close
-            className="p-12 absolute top-0 right-0"
+            className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow"
             data-testid="dialog-close"
           >
-            <Icon name="cross" />
+            <Icon
+              name="cross"
+              className="focus:outline-none focus-visible:outline-none"
+            />
           </DialogPrimitives.Close>
           {title && (
             <h1
