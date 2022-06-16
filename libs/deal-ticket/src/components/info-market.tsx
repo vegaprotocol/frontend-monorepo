@@ -104,16 +104,16 @@ export const Info = ({ market }: InfoProps) => {
   );
 };
 
-export interface RowProps {
-  key: string;
+interface RowProps {
+  field: string;
   value: any;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
 }
 
-export const renderRow = ({
-  key,
+const Row = ({
+  field,
   value,
   decimalPlaces,
   asPercentage,
@@ -125,14 +125,14 @@ export const renderRow = ({
   if (isPrimitive) {
     return (
       <KeyValueTableRow
-        key={key}
+        key={field}
         inline={isPrimitive}
         muted={true}
         noBorder={true}
         dtClassName={className}
         ddClassName={className}
       >
-        {startCase(t(key))}
+        {startCase(t(field))}
         {isNumber && !unformatted
           ? decimalPlaces
             ? addDecimalsFormatNumber(value, decimalPlaces)
@@ -163,15 +163,16 @@ export const MarketInfoTable = ({
 }: MarketInfoTableProps) => {
   return (
     <KeyValueTable muted={true}>
-      {(Object.entries(omit(data, ...omits)) || []).map(([key, value]) =>
-        renderRow({
-          key,
-          value,
-          decimalPlaces,
-          asPercentage,
-          unformatted: unformatted || key.toLowerCase().includes('volume'),
-        })
-      )}
+      {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
+        <Row
+          key={key}
+          field={key}
+          value={value}
+          decimalPlaces={decimalPlaces}
+          asPercentage={asPercentage}
+          unformatted={unformatted || key.toLowerCase().includes('volume')}
+        />
+      ))}
     </KeyValueTable>
   );
 };
