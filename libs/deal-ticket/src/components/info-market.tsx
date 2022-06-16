@@ -84,7 +84,7 @@ export const Info = ({ market }: InfoProps) => {
           }
         />
         <AccordionPanel
-          title={t('Risk Model')}
+          title={t('Risk factors')}
           key="risk-model"
           content={
             <MarketInfoTable data={market.riskFactors} unformatted={true} />
@@ -151,6 +151,7 @@ export interface MarketInfoTableProps {
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
+  omits?: string[];
 }
 
 export const MarketInfoTable = ({
@@ -158,12 +159,18 @@ export const MarketInfoTable = ({
   decimalPlaces,
   asPercentage,
   unformatted,
+  omits = ['id', '__typename'],
 }: MarketInfoTableProps) => {
   return (
     <KeyValueTable muted={true}>
-      {(Object.entries(omit(data, '__typename', 'id')) || []).map(
-        ([key, value]) =>
-          renderRow({ key, value, decimalPlaces, asPercentage, unformatted })
+      {(Object.entries(omit(data, ...omits)) || []).map(([key, value]) =>
+        renderRow({
+          key,
+          value,
+          decimalPlaces,
+          asPercentage,
+          unformatted: unformatted || key.toLowerCase().includes('volume'),
+        })
       )}
     </KeyValueTable>
   );
