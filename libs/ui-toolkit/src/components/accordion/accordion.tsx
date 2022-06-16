@@ -3,14 +3,9 @@ import React, { useRef, useState } from 'react';
 export interface AccordionProps {
   title: React.ReactNode;
   content: React.ReactNode;
-  open?: boolean;
 }
 
-export const AccordionPanel = ({
-  title,
-  content,
-  open = false,
-}: AccordionProps) => {
+export const AccordionPanel = ({ title, content }: AccordionProps) => {
   const [active, setActive] = useState(false);
   const [height, setHeight] = useState('0px');
   const [rotate, setRotate] = useState(

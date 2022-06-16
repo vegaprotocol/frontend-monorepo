@@ -84,7 +84,7 @@ export const Info = ({ market }: InfoProps) => {
           }
         />
         <AccordionPanel
-          title={t('Risk model')}
+          title={t('Risk factors')}
           key="risk-model"
           content={
             <MarketInfoTable data={market.riskFactors} unformatted={true} />
@@ -104,16 +104,16 @@ export const Info = ({ market }: InfoProps) => {
   );
 };
 
-export interface RowProps {
-  key: string;
+interface RowProps {
+  field: string;
   value: any;
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
 }
 
-export const renderRow = ({
-  key,
+const Row = ({
+  field,
   value,
   decimalPlaces,
   asPercentage,
@@ -125,14 +125,14 @@ export const renderRow = ({
   if (isPrimitive) {
     return (
       <KeyValueTableRow
-        key={key}
+        key={field}
         inline={isPrimitive}
         muted={true}
         noBorder={true}
         dtClassName={className}
         ddClassName={className}
       >
-        {startCase(t(key))}
+        {startCase(t(field))}
         {isNumber && !unformatted
           ? decimalPlaces
             ? addDecimalsFormatNumber(value, decimalPlaces)
@@ -151,6 +151,7 @@ export interface MarketInfoTableProps {
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
+  omits?: string[];
 }
 
 export const MarketInfoTable = ({
@@ -158,13 +159,20 @@ export const MarketInfoTable = ({
   decimalPlaces,
   asPercentage,
   unformatted,
+  omits = ['id', '__typename'],
 }: MarketInfoTableProps) => {
   return (
     <KeyValueTable muted={true}>
-      {(Object.entries(omit(data, '__typename', 'id')) || []).map(
-        ([key, value]) =>
-          renderRow({ key, value, decimalPlaces, asPercentage, unformatted })
-      )}
+      {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
+        <Row
+          key={key}
+          field={key}
+          value={value}
+          decimalPlaces={decimalPlaces}
+          asPercentage={asPercentage}
+          unformatted={unformatted || key.toLowerCase().includes('volume')}
+        />
+      ))}
     </KeyValueTable>
   );
 };
