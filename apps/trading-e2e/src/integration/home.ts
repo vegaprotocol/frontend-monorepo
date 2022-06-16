@@ -33,8 +33,8 @@ describe('home', () => {
 
       cy.visit('/');
       cy.wait('@MarketsLanding');
-      cy.wait('@MarketList');
       cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
+      cy.wait('@MarketList');
     });
 
     it('redirects to a default market with the landing dialog open', () => {
