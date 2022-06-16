@@ -24,8 +24,7 @@ function AppBody({ Component, pageProps }: AppProps) {
   const { push } = useRouter();
   const store = useGlobalStore();
   const { VEGA_NETWORKS } = useEnvironment();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, toggleTheme] = useThemeSwitcher();
+  const [, toggleTheme] = useThemeSwitcher();
 
   return (
     <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
