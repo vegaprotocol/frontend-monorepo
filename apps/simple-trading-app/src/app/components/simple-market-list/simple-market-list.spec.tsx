@@ -11,7 +11,6 @@ import type {
   SimpleMarkets,
 } from './__generated__/SimpleMarkets';
 import type { MarketFilters } from './__generated__/MarketFilters';
-import useMarketsFilterData from '../../hooks/use-markets-filter-data';
 
 const mockedNavigate = jest.fn();
 
@@ -24,10 +23,6 @@ jest.mock('react-router-dom', () => ({
 jest.mock('date-fns', () => ({
   subDays: () => new Date('2022-06-02T11:11:21.721Z'),
 }));
-
-/*jest.mock('../../hooks/use-markets-filter-data', () => jest.fn().mockImplementation((...args) => {
-  return useMarketsFilterData.apply(this, args);
-}));*/
 
 describe('SimpleMarketList', () => {
   const filterMock: MockedResponse<MarketFilters> = {
