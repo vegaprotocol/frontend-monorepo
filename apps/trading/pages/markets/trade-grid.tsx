@@ -12,7 +12,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { GridTab, GridTabs } from '../../components/grid-tabs';
+import { Tabs, Tab } from '@vegaprotocol/ui-toolkit';
 import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import { ArrowDown, PriceCellChange } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -99,40 +99,40 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       <TradeMarketHeader market={market} />
       <div className={wrapperClasses}>
         <TradeGridChild className="row-start-1 row-end-3">
-          <GridTabs>
-            <GridTab id="candles" name={t('Candles')}>
+          <Tabs>
+            <Tab id="candles" name={t('Candles')}>
               <TradingViews.Candles marketId={market.id} />
-            </GridTab>
-            <GridTab id="depth" name={t('Depth')}>
+            </Tab>
+            <Tab id="depth" name={t('Depth')}>
               <TradingViews.Depth marketId={market.id} />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
         <TradeGridChild className="row-start-1 row-end-3">
           <TradingViews.Ticket marketId={market.id} />
         </TradeGridChild>
         <TradeGridChild className="row-start-1 row-end-3">
-          <GridTabs>
-            <GridTab id="trades" name={t('Trades')}>
+          <Tabs>
+            <Tab id="trades" name={t('Trades')}>
               <TradingViews.Trades marketId={market.id} />
-            </GridTab>
-            <GridTab id="orderbook" name={t('Orderbook')}>
+            </Tab>
+            <Tab id="orderbook" name={t('Orderbook')}>
               <TradingViews.Orderbook marketId={market.id} />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
         <TradeGridChild className="col-span-3">
-          <GridTabs>
-            <GridTab id="orders" name={t('Orders')}>
+          <Tabs>
+            <Tab id="orders" name={t('Orders')}>
               <TradingViews.Orders />
-            </GridTab>
-            <GridTab id="positions" name={t('Positions')}>
+            </Tab>
+            <Tab id="positions" name={t('Positions')}>
               <TradingViews.Positions />
-            </GridTab>
-            <GridTab id="accounts" name={t('Accounts')}>
+            </Tab>
+            <Tab id="accounts" name={t('Accounts')}>
               <TradingViews.Accounts />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
       </div>
     </>

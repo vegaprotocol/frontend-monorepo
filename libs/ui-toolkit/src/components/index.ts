@@ -23,6 +23,7 @@ export * from './select';
 export * from './sparkline';
 export * from './splash';
 export * from './syntax-highlighter';
+export * from './tabs';
 export * from './text-area';
 export * from './theme-switcher';
 export * from './toggle';
