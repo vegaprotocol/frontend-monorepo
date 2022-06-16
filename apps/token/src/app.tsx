@@ -19,7 +19,11 @@ import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment, EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
+import {
+  useEnvironment,
+  EnvironmentProvider,
+  NetworkLoader,
+} from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { createConnectors } from './lib/web3-connectors';
 
