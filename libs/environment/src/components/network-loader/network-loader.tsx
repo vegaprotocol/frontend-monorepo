@@ -146,6 +146,8 @@ export function NetworkLoader<T>({
     return undefined;
   }, [VEGA_URL, createClient]);
 
+  console.log('CLIENT:', client);
+
   useEffect(() => {
     setShowCallout(true);
   }, []);

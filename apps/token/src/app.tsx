@@ -38,46 +38,46 @@ const AppContainer = () => {
     return undefined;
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   return (
-    <NetworkLoader createClient={createClient}>
-      <Router>
-        <AppStateProvider>
-          <AsyncRenderer loading={loading} data={config} error={error}>
-            {Connectors && (
-              <Web3Provider connectors={Connectors}>
-                <Web3Connector>
-                  <VegaWalletProvider>
-                    <ContractsProvider>
-                      <AppLoader>
-                        <BalanceManager>
-                          <>
-                            <div className="app dark max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
-                              <AppBanner />
-                              <TemplateSidebar sidebar={sideBar}>
-                                <AppRouter />
-                              </TemplateSidebar>
-                              <AppFooter />
-                            </div>
-                            <VegaWalletDialogs />
-                            <TransactionModal />
-                          </>
-                        </BalanceManager>
-                      </AppLoader>
-                    </ContractsProvider>
-                  </VegaWalletProvider>
-                </Web3Connector>
-              </Web3Provider>
-            )}
-          </AsyncRenderer>
-        </AppStateProvider>
-      </Router>
-    </NetworkLoader>
+    <Router>
+      <AppStateProvider>
+        <AsyncRenderer loading={loading} data={config} error={error}>
+          {Connectors && (
+            <Web3Provider connectors={Connectors}>
+              <Web3Connector>
+                <VegaWalletProvider>
+                  <ContractsProvider>
+                    <AppLoader>
+                      <BalanceManager>
+                        <>
+                          <div className="app dark max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
+                            <AppBanner />
+                            <TemplateSidebar sidebar={sideBar}>
+                              <AppRouter />
+                            </TemplateSidebar>
+                            <AppFooter />
+                          </div>
+                          <VegaWalletDialogs />
+                          <TransactionModal />
+                        </>
+                      </BalanceManager>
+                    </AppLoader>
+                  </ContractsProvider>
+                </VegaWalletProvider>
+              </Web3Connector>
+            </Web3Provider>
+          )}
+        </AsyncRenderer>
+      </AppStateProvider>
+    </Router>
   );
 };
 
 function App() {
   return (
     <EnvironmentProvider>
-      <AppContainer />
+      <NetworkLoader createClient={createClient}>
+        <AppContainer />
+      </NetworkLoader>
     </EnvironmentProvider>
   );
 }
