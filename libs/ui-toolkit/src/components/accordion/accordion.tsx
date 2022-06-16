@@ -14,7 +14,7 @@ export const AccordionPanel = ({
   const [active, setActive] = useState(false);
   const [height, setHeight] = useState('0px');
   const [rotate, setRotate] = useState(
-    'transform duration-700 ease rotate-180'
+    'transform duration-300 ease rotate-180'
   );
 
   const contentSpace = useRef(null);
@@ -26,8 +26,8 @@ export const AccordionPanel = ({
     setHeight(active ? '0px' : `${contentSpace.current.scrollHeight}px`);
     setRotate(
       active
-        ? 'transform duration-700 ease rotate-180'
-        : 'transform duration-700 ease'
+        ? 'transform duration-300 ease rotate-180'
+        : 'transform duration-300 ease'
     );
   };
 
@@ -39,14 +39,14 @@ export const AccordionPanel = ({
         onClick={toggleAccordion}
       >
         <p
-          className="inline-block text-footnote font-bold text-h5 capitalize text-black dark:text-white pt-5 "
+          className="inline-block text-footnote font-bold text-h6 text-black dark:text-white pt-5 "
           data-testid="accordion-title"
         >
           {title}
         </p>
         <svg
-          width="30"
-          height="30"
+          width="20"
+          height="20"
           aria-label="chevron icon"
           data-testid="accordion-chevron-icon"
           className={`${rotate} inline-block fill-black dark:fill-white`}
@@ -67,7 +67,7 @@ export const AccordionPanel = ({
         ref={contentSpace}
         style={{ maxHeight: `${height}` }}
         data-testid="accordion-content-ref"
-        className="overflow-auto transition-max-height duration-700 ease-in-out"
+        className="overflow-auto transition-max-height duration-300 ease-in-out"
       >
         <div className="pb-5" data-testid="accordion-content">
           {content}

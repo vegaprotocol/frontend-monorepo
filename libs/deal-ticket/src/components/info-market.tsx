@@ -22,14 +22,14 @@ export interface InfoProps {
 
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
-    'text-h4 font-bold uppercase text-black dark:text-white';
+    'text-h5 font-bold uppercase text-black dark:text-white';
   return (
     <div className="p-16 flex flex-col gap-32">
-      <div className="flex flex-col gap-16">
+      <div className="flex flex-col gap-12">
         <p className={headerClassName}>{t('Market data')}</p>
         <AccordionPanel
           key="fees"
-          title={t('Current Fees')}
+          title={t('Current fees')}
           content={
             <>
               <MarketInfoTable data={market.fees.factors} asPercentage={true} />
@@ -53,7 +53,7 @@ export const Info = ({ market }: InfoProps) => {
         />
       </div>
 
-      <div className="flex flex-col gap-16">
+      <div className="flex flex-col gap-12">
         <p className={headerClassName}>{t('Market specification')}</p>
         <AccordionPanel
           title={t('Key details')}
@@ -84,7 +84,7 @@ export const Info = ({ market }: InfoProps) => {
           }
         />
         <AccordionPanel
-          title={t('Risk Model')}
+          title={t('Risk model')}
           key="risk-model"
           content={
             <MarketInfoTable data={market.riskFactors} unformatted={true} />
@@ -94,7 +94,7 @@ export const Info = ({ market }: InfoProps) => {
           (trigger, i) => (
             <AccordionPanel
               key={`trigger-${i}`}
-              title={t(`Price Monitoring Trigger #${i + 1}`)}
+              title={t(`Price monitoring trigger ${i + 1}`)}
               content={<MarketInfoTable data={trigger} />}
             />
           )
