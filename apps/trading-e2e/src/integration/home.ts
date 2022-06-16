@@ -39,8 +39,6 @@ describe('home', () => {
     });
 
     it('redirects to a default market with the landing dialog open', () => {
-      cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
-
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
       cy.contains('Select a market to get started').should('be.visible');
