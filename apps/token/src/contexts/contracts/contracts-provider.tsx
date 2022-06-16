@@ -72,13 +72,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
       }
     };
     run();
-  }, [
-    activeProvider,
-    account,
-    config,
-    VEGA_ENV,
-    ETHEREUM_PROVIDER_URL,
-  ]);
+  }, [activeProvider, account, config, VEGA_ENV, ETHEREUM_PROVIDER_URL]);
 
   if (!contracts) {
     return (
