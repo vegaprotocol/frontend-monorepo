@@ -16,11 +16,9 @@ describe('market list', () => {
 
       cy.get('select[name="states"]').select('All');
       cy.location('pathname').should('equal', '/markets/all');
-
       cy.getByTestId('market-assets-menu')
         .children()
-        .last()
-        .find('button')
+        .contains('tEURO')
         .click();
       cy.location('pathname').should('equal', '/markets/all/tEURO');
 
