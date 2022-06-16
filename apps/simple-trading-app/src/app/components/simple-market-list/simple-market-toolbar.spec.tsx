@@ -43,6 +43,12 @@ describe('SimpleMarketToolbar', () => {
       expect(screen.getByTestId('market-assets-menu').children).toHaveLength(6);
       expect(screen.getByRole('combobox').children).toHaveLength(10);
     });
+    await waitFor(() => {
+      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('market-products-menu').children).toHaveLength(3);
+    expect(screen.getByTestId('market-assets-menu').children).toHaveLength(6);
+    expect(screen.getByRole('combobox').children).toHaveLength(10);
   });
 
   it('navigation should work well', async () => {
@@ -53,14 +59,14 @@ describe('SimpleMarketToolbar', () => {
     );
 
     await waitFor(() => {
-      fireEvent.click(
-        screen
-          .getByTestId('market-products-menu')
-          .children[1].querySelector('button') as HTMLButtonElement
-      );
-
-      expect(mockedNavigate).toHaveBeenCalledWith('/markets/Active/all/Future');
+      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
     });
+    fireEvent.click(
+      screen
+        .getByTestId('market-products-menu')
+        .children[1].querySelector('button') as HTMLButtonElement
+    );
+    expect(mockedNavigate).toHaveBeenCalledWith('/markets/Active/all/Future');
 
     fireEvent.click(
       screen
