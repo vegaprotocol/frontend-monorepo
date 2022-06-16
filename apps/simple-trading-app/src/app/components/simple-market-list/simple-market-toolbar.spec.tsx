@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -39,7 +39,9 @@ describe('SimpleMarketToolbar', () => {
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-
+    await waitFor(() => {
+      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
+    });
     expect(screen.getByTestId('market-products-menu').children).toHaveLength(3);
     expect(screen.getByTestId('market-assets-menu').children).toHaveLength(6);
     expect(screen.getByRole('combobox').children).toHaveLength(10);
@@ -54,7 +56,9 @@ describe('SimpleMarketToolbar', () => {
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-
+    await waitFor(() => {
+      expect(screen.getByTestId('market-assets-menu')).toBeInTheDocument();
+    });
     fireEvent.click(
       screen
         .getByTestId('market-products-menu')

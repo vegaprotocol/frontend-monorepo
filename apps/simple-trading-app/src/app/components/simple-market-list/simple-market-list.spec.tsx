@@ -1,6 +1,6 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MarketState } from '@vegaprotocol/types';
@@ -58,8 +58,9 @@ describe('SimpleMarketList', () => {
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-
-    expect(screen.getByText('No data to display')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('No data to display')).toBeInTheDocument();
+    });
   });
 
   it('should be properly rendered with some data', async () => {
@@ -123,10 +124,11 @@ describe('SimpleMarketList', () => {
           <SimpleMarketList />
         </MockedProvider>
       );
-
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+    });
     expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
   });
 });
