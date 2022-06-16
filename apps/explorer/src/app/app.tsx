@@ -1,13 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { ApolloProvider } from '@apollo/client';
 import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { EnvironmentProvider } from '@vegaprotocol/environment';
+import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
 import { Main } from './components/main';
-import { DATA_SOURCES } from './config';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 
 function App() {
@@ -20,13 +18,11 @@ function App() {
     setMenuOpen(false);
   }, [location]);
 
-  const client = useMemo(() => createClient(DATA_SOURCES.dataNodeUrl), []);
-
   return (
     <EnvironmentProvider>
       <ThemeContext.Provider value={theme}>
         <TendermintWebsocketProvider>
-          <ApolloProvider client={client}>
+          <NetworkLoader createClient={createClient}>
             <div
               className={`${
                 menuOpen && 'h-[100vh] overflow-hidden'
@@ -42,7 +38,7 @@ function App() {
                 <Main />
               </div>
             </div>
-          </ApolloProvider>
+          </NetworkLoader>
         </TendermintWebsocketProvider>
       </ThemeContext.Provider>
     </EnvironmentProvider>

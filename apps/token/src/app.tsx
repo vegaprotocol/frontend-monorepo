@@ -18,25 +18,23 @@ import { Web3Provider } from '@vegaprotocol/web3';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { ApolloProvider } from '@apollo/client';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment, EnvironmentProvider } from '@vegaprotocol/environment';
+import { useEnvironment, EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { createConnectors } from './lib/web3-connectors';
 
 const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
   const { config, loading, error } = useEthereumConfig();
-  const { ETHEREUM_PROVIDER_URL, VEGA_URL } = useEnvironment();
+  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
   const Connectors = useMemo(() => {
     if (config?.chain_id) {
       return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
     }
     return undefined;
   }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
-  const client = useMemo(() => createClient(VEGA_URL), [VEGA_URL]);
   return (
-    <ApolloProvider client={client}>
+    <NetworkLoader createClient={createClient}>
       <Router>
         <AppStateProvider>
           <AsyncRenderer loading={loading} data={config} error={error}>
@@ -68,7 +66,7 @@ const AppContainer = () => {
           </AsyncRenderer>
         </AppStateProvider>
       </Router>
-    </ApolloProvider>
+    </NetworkLoader>
   );
 };
 
