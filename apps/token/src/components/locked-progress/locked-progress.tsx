@@ -15,7 +15,7 @@ const ProgressContents = ({
 }) => (
   <div
     className={`flex justify-between py-2 font-mono ${
-      light ? 'gap-0 px-0 text-black' : 'gap-y-0 gap-x-4 px-4'
+      light ? 'gap-0 px-0 text-black' : 'gap-y-0 gap-x-4'
     }`}
   >
     {children}
@@ -25,17 +25,19 @@ const ProgressContents = ({
 const ProgressIndicator = ({
   bgColor,
   side,
+  light,
 }: {
   bgColor: string;
   side: 'left' | 'right';
+  light: boolean;
 }) => (
   <span
     style={{
       backgroundColor: bgColor,
     }}
-    className={`inline-block w-12 h-12 border border-black ${
+    className={`inline-block w-12 h-12 border ${
       side === 'left' ? 'mr-8' : 'ml-8'
-    }`}
+    } ${light ? 'border-black' : 'border-white'}`}
   />
 );
 
@@ -85,19 +87,23 @@ export const LockedProgress = ({
   }, [total, unlocked]);
 
   return (
-    <div className="border-x border-x-white">
-      <div className={`flex ${light && 'border border-black'}`}>
+    <>
+      <div className={`flex border ${light ? 'border-black' : 'border-white'}`}>
         <ProgressBar percentage={lockedPercentage} bgColor={leftColor} />
         <ProgressBar percentage={unlockedPercentage} bgColor={rightColor} />
       </div>
       <ProgressContents light={light}>
         <span>
-          <ProgressIndicator bgColor={leftColor} side={'left'} />
+          <ProgressIndicator bgColor={leftColor} side={'left'} light={false} />
           {leftLabel}
         </span>
         <span>
           {rightLabel}
-          <ProgressIndicator bgColor={rightColor} side={'right'} />
+          <ProgressIndicator
+            bgColor={rightColor}
+            side={'right'}
+            light={false}
+          />
         </span>
       </ProgressContents>
 
@@ -105,6 +111,6 @@ export const LockedProgress = ({
         <span>{formatNumber(locked, 2)}</span>
         <span>{formatNumber(unlocked, 2)}</span>
       </ProgressContents>
-    </div>
+    </>
   );
 };
