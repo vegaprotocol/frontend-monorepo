@@ -76,7 +76,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
     activeProvider,
     account,
     config,
-    ENV.addresses,
     VEGA_ENV,
     ETHEREUM_PROVIDER_URL,
   ]);
