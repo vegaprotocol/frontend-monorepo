@@ -91,7 +91,6 @@ export const useConfig = (
         // if there's only one configured node to choose from, set is as the env url
         if (config.hosts.length === 1) {
           setStatus('success');
-          console.log(`connected to ${config.hosts[0]}`);
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
             VEGA_URL: config.hosts[0],
@@ -103,7 +102,6 @@ export const useConfig = (
         try {
           const requests = config.hosts.map(requestToNode);
           const index = await promiseRaceToSuccess(requests);
-          console.log(`connected to ${config.hosts[index]}`);
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
