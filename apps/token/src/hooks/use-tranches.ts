@@ -12,6 +12,7 @@ const TRANCHES_URLS: { [N in Networks]: string } = {
   STAGNET: 'https://static.vega.xyz/assets/stagnet1-tranches.json',
   STAGNET2: 'https://static.vega.xyz/assets/stagnet2-tranches.json',
   DEVNET: 'https://static.vega.xyz/assets/devnet-tranches.json',
+  CUSTOM: 'https://static.vega.xyz/assets/testnet-tranches.json',
 };
 
 export function useTranches() {
