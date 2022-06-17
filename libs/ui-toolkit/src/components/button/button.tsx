@@ -8,6 +8,7 @@ import {
   includesRightPadding,
   includesBorderWidth,
   includesHeight,
+  includesTextColor,
 } from '../../utils/class-names';
 
 interface CommonProps {
@@ -30,7 +31,8 @@ const getClasses = (
   paddingLeftProvided: boolean,
   paddingRightProvided: boolean,
   borderWidthProvided: boolean,
-  heightProvided: boolean
+  heightProvided: boolean,
+  textColorProvided: boolean
 ) => {
   // Add classes into variables if there are multiple classes shared in multiple button styles
   const sharedClasses =
@@ -40,8 +42,9 @@ const getClasses = (
     'hover:border-black dark:hover:border-white active:border-black dark:active:border-white';
   const commonDisabled =
     'disabled:bg-black-10 dark:disabled:bg-white-10 disabled:text-black-60 dark:disabled:text-white-60 disabled:border-black-25 dark:disabled:border-white-25';
-  const inlineTextColour =
-    'text-black-95 dark:text-white-95 hover:text-black hover:dark:text-white active:text-black dark:active:text-vega-yellow';
+  const inlineTextColour = textColorProvided
+    ? ''
+    : 'text-black-95 dark:text-white-95 hover:text-black hover:dark:text-white active:text-black dark:active:text-vega-yellow';
 
   const standardButtonPaddingLeft = `${
     paddingLeftProvided ? paddingLeftProvided : 'pl-28'
@@ -145,6 +148,7 @@ const classes = (
   const paddingRightProvided = includesRightPadding(className);
   const borderWidthProvided = includesBorderWidth(className);
   const heightProvided = includesHeight(className);
+  const textColorProvided = includesTextColor(className);
 
   return classNames(
     getClasses(
@@ -152,7 +156,8 @@ const classes = (
       paddingLeftProvided,
       paddingRightProvided,
       borderWidthProvided,
-      heightProvided
+      heightProvided,
+      textColorProvided
     ),
     className
   );

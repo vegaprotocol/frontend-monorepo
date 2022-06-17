@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useSubscription } from '@apollo/client';
-import { theme } from '@vegaprotocol/tailwindcss-config';
+import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
 import type {
   CandleLive,

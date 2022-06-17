@@ -38,6 +38,7 @@ describe('SimpleMarketToolbar', () => {
     await waitFor(() => {
       expect(screen.getByText('Future')).toBeInTheDocument();
     });
+    fireEvent.click(screen.getByText('Future'));
     expect(screen.getByTestId('market-products-menu').children).toHaveLength(3);
     expect(screen.getByTestId('market-assets-menu').children).toHaveLength(6);
     fireEvent.click(screen.getByTestId('state-trigger'));
@@ -59,7 +60,7 @@ describe('SimpleMarketToolbar', () => {
     });
     fireEvent.click(screen.getByText('Future'));
     await waitFor(() => {
-      expect(mockedNavigate).toHaveBeenCalledWith('/markets/Active/all/Future');
+      expect(mockedNavigate).toHaveBeenCalledWith('/markets/Active/Future');
     });
 
     fireEvent.click(
@@ -69,7 +70,7 @@ describe('SimpleMarketToolbar', () => {
     );
     await waitFor(() => {
       expect(mockedNavigate).toHaveBeenCalledWith(
-        '/markets/Active/tEURO/Future'
+        '/markets/Active/Future/tEURO'
       );
     });
 
@@ -78,7 +79,7 @@ describe('SimpleMarketToolbar', () => {
       expect(screen.getByRole('menu')).toBeInTheDocument();
       fireEvent.click(screen.getByText('Pending'));
       expect(mockedNavigate).toHaveBeenCalledWith(
-        '/markets/Pending/tEURO/Future'
+        '/markets/Pending/Future/tEURO'
       );
     });
   });

@@ -7,6 +7,7 @@ describe('market list', () => {
     it('selects menus', () => {
       cy.get('.MuiDrawer-root [aria-current]').should('have.text', 'Markets');
       cy.getByTestId('state-trigger').should('have.text', 'Active');
+      cy.get('[aria-label="Future"]').click();
       cy.get('[data-testid="market-assets-menu"] button.active').should(
         'have.text',
         'All'
@@ -20,6 +21,8 @@ describe('market list', () => {
       cy.get('[role=menuitemcheckbox]').contains('All').click();
       cy.location('pathname').should('equal', '/markets/all');
 
+      cy.get('[aria-label="Future"]').click();
+      cy.location('pathname').should('eq', '/markets/all/Future');
       let asset = '';
       cy.getByTestId('market-assets-menu')
         .children()
@@ -30,29 +33,13 @@ describe('market list', () => {
               cy.wrap(children[1]).click();
               cy.location('pathname').should(
                 'match',
-                new RegExp(`/markets/all/${asset}`, 'i')
+                new RegExp(`/markets/all/Future/${asset}`, 'i')
               );
-
-              cy.get('button').contains('Future').click();
-              cy.location('pathname').should(
-                'match',
-                new RegExp(`/markets/all/${asset}/Future`, 'i')
-              );
-
               cy.get('button').contains('All Markets').click();
-              cy.location('pathname').should(
-                'match',
-                new RegExp(`/markets/all/${asset}`, 'i')
-              );
+              cy.location('pathname').should('eq', '/markets/all');
             }
           }
         });
-      cy.getByTestId('market-assets-menu')
-        .children()
-        .find('button')
-        .contains('All')
-        .click();
-      cy.location('pathname').should('equal', '/markets/all');
 
       cy.getByTestId('state-trigger').click();
       cy.get('[role=menuitemcheckbox]').contains('Active').click();
@@ -74,7 +61,10 @@ describe('market list', () => {
           const asset =
             filters?.response?.body.data.markets[0].tradableInstrument
               .instrument.product.settlementAsset.symbol;
-          cy.visit(`/markets/Suspended/${asset}`);
+          cy.visit(`/markets/Suspended/Future/${asset}`);
+          cy.get('[data-testid="market-products-menu"]')
+            .contains('Future')
+            .click();
           cy.getByTestId('market-assets-menu')
             .find('button.active')
             .should('have.text', asset);
@@ -83,7 +73,7 @@ describe('market list', () => {
     });
 
     it('Future product', () => {
-      cy.visit('/markets/Suspended/all/Future');
+      cy.visit('/markets/Suspended/Future');
       cy.getByTestId('market-products-menu')
         .find('button.active')
         .should('have.text', 'Future');

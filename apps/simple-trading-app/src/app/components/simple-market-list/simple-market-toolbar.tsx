@@ -7,7 +7,7 @@ import {
 } from '@radix-ui/react-dropdown-menu';
 import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/react-helpers';
-import { theme } from '@vegaprotocol/tailwindcss-config';
+import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import {
   Button,
   DropdownMenuCheckboxItem,
@@ -21,7 +21,7 @@ import { STATES_FILTER } from './constants';
 const SimpleMarketToolbar = () => {
   const navigate = useNavigate();
   const params = useParams();
-  const { assets, products, assetsPerProduct } = useMarketFiltersData();
+  const { products, assetsPerProduct } = useMarketFiltersData();
   const [isOpen, setOpen] = useState(false);
   const [activeNumber, setActiveNumber] = useState(
     products?.length ? products.indexOf(params.product || '') + 1 : -1
@@ -48,7 +48,7 @@ const SimpleMarketToolbar = () => {
     ]?.getBoundingClientRect();
     const styles: Record<string, string> = selectedStyles
       ? {
-          backgroundColor: activeNumber ? '' : theme.colors.coral,
+          backgroundColor: activeNumber ? '' : theme.colors.pink,
           width: `${selectedStyles.width}px`,
           left: `${selectedStyles.left - contStyles.left}px`,
         }
@@ -60,10 +60,15 @@ const SimpleMarketToolbar = () => {
     if (activeNumber < 0) {
       return;
     }
-    const product = activeNumber ? `/${products[activeNumber - 1]}` : '';
-    const asset = activeAsset !== 'all' || product ? `/${activeAsset}` : '';
-    const state = activeState !== 'Active' || asset ? `/${activeState}` : '';
-    navigate(`/markets${state}${asset}${product}`);
+    const asset =
+      activeNumber && activeAsset !== 'all' ? `/${activeAsset}` : '';
+    const product = activeNumber
+      ? `/${products[activeNumber - 1]}`
+      : asset
+      ? '/all'
+      : '';
+    const state = activeState !== 'Active' || product ? `/${activeState}` : '';
+    navigate(`/markets${state}${product}${asset}`);
   }, [activeNumber, activeAsset, activeState, products, navigate]);
 
   return (
@@ -77,9 +82,13 @@ const SimpleMarketToolbar = () => {
         <li key="all" className="md:mr-16 whitespace-nowrap">
           <Button
             variant="inline"
-            onClick={() => setActiveNumber(0)}
-            style={{ color: theme.colors.coral }}
-            className={classNames('text-h5 pl-0', { active: !activeNumber })}
+            onClick={() => {
+              setActiveNumber(0);
+              setActiveAsset('all');
+            }}
+            className={classNames('text-h5 pl-0 text-pink hover:opacity-75', {
+              active: !activeNumber,
+            })}
             aria-label={t('All markets')}
           >
             {t('All Markets')}
@@ -90,7 +99,7 @@ const SimpleMarketToolbar = () => {
             <Button
               variant="inline"
               onClick={() => setActiveNumber(++i)}
-              className={classNames('text-h5', {
+              className={classNames('text-h5 hover:opacity-75', {
                 active: activeNumber - 1 === i,
               })}
               aria-label={product}
@@ -106,7 +115,7 @@ const SimpleMarketToolbar = () => {
         />
       </ul>
       <div className="grid gap-8 pb-4 mt-8 md:grid-cols-[min-content,min-content,1fr]">
-        <div className="">
+        <div className="pb-8">
           <DropdownMenu onOpenChange={(open) => setOpen(open)}>
             <DropdownMenuTrigger
               className="mr-16 w-auto text-ui"
@@ -146,43 +155,42 @@ const SimpleMarketToolbar = () => {
           </DropdownMenu>
         </div>
         <div className="hidden md:block">|</div>
-        <ul
-          className="grid grid-flow-col auto-cols-min md:gap-16 sm:gap-12 pb-4 md:ml-16"
-          data-testid="market-assets-menu"
-          aria-label={t('Asset on the market')}
-        >
-          <li key="all">
-            <Button
-              variant="inline"
-              onClick={() => setActiveAsset('all')}
-              className={classNames('uppercase pl-0 md:pl-4', {
-                'text-deemphasise': activeAsset !== 'all',
-                active: activeAsset === 'all',
-              })}
-              aria-label={t('All assets')}
-            >
-              {t('All')}
-            </Button>
-          </li>
-          {(activeNumber
-            ? assetsPerProduct[products[activeNumber - 1]]
-            : assets
-          )?.map((asset) => (
-            <li key={asset}>
+        {activeNumber > 0 && (
+          <ul
+            className="grid grid-flow-col auto-cols-min md:gap-16 sm:gap-12 pb-4 md:ml-16"
+            data-testid="market-assets-menu"
+            aria-label={t('Asset on the market')}
+          >
+            <li key="all">
               <Button
                 variant="inline"
-                onClick={() => setActiveAsset(asset)}
-                className={classNames('uppercase', {
-                  'text-deemphasise': activeAsset !== asset,
-                  active: activeAsset === asset,
+                onClick={() => setActiveAsset('all')}
+                className={classNames('uppercase pl-0 md:pl-4', {
+                  'text-deemphasise': activeAsset !== 'all',
+                  active: activeAsset === 'all',
                 })}
-                aria-label={asset}
+                aria-label={t('All assets')}
               >
-                {asset}
+                {t('All')}
               </Button>
             </li>
-          ))}
-        </ul>
+            {assetsPerProduct[products[activeNumber - 1]]?.map((asset) => (
+              <li key={asset}>
+                <Button
+                  variant="inline"
+                  onClick={() => setActiveAsset(asset)}
+                  className={classNames('uppercase', {
+                    'text-deemphasise': activeAsset !== asset,
+                    active: activeAsset === asset,
+                  })}
+                  aria-label={asset}
+                >
+                  {asset}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
