@@ -1,0 +1,225 @@
+{
+  "markets": [
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "XYZalpha",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tUSDC",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tDAI",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tBTC",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tEURO",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tDAI",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tEURO",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tDAI",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tBTC",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Future"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tUSDC",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tDAI",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tDAI",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    },
+    {
+      "tradableInstrument": {
+        "instrument": {
+          "product": {
+            "__typename": "Future",
+            "settlementAsset": {
+              "symbol": "tDAI",
+              "__typename": "Asset"
+            },
+            "__typename": "Future"
+          },
+          "__typename": "Instrument"
+        },
+        "__typename": "TradableInstrument"
+      },
+      "__typename": "Market"
+    }
+  ]
+}

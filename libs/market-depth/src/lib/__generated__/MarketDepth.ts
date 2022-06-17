@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { MarketTradingMode } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: MarketDepth
 // ====================================================
@@ -18,9 +20,29 @@ export interface MarketDepth_market_data_market {
 export interface MarketDepth_market_data {
   __typename: "MarketData";
   /**
-   * the arithmetic average of the best bid price and best offer price.
+   * the arithmetic average of the best static bid price and best static offer price
    */
-  midPrice: string;
+  staticMidPrice: string;
+  /**
+   * what state the market is in (auction, continuous etc)
+   */
+  marketTradingMode: MarketTradingMode;
+  /**
+   * indicative volume if the auction ended now, 0 if not in auction mode
+   */
+  indicativeVolume: string;
+  /**
+   * indicative price if the auction ended now, 0 if not in auction mode
+   */
+  indicativePrice: string;
+  /**
+   * the highest price level on an order book for buy orders not including pegged orders.
+   */
+  bestStaticBidPrice: string;
+  /**
+   * the lowest price level on an order book for offer orders not including pegged orders.
+   */
+  bestStaticOfferPrice: string;
   /**
    * market id of the associated mark price
    */

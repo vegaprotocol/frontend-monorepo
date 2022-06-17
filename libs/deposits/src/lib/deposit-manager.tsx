@@ -7,33 +7,43 @@ import { useSubmitApproval } from './use-submit-approval';
 import { useGetDepositLimits } from './use-get-deposit-limits';
 import { useGetAllowance } from './use-get-allowance';
 import { useSubmitFaucet } from './use-submit-faucet';
-import { EthTxStatus, TransactionDialog } from '@vegaprotocol/web3';
-import { useTokenContract, useBridgeContract } from '@vegaprotocol/web3';
+import {
+  EthTxStatus,
+  TransactionDialog,
+  useEthereumConfig,
+  useTokenDecimals,
+} from '@vegaprotocol/web3';
+import { useTokenContract } from '@vegaprotocol/web3';
 
+interface ERC20AssetSource {
+  __typename: 'ERC20';
+  contractAddress: string;
+}
+
+interface BuiltinAssetSource {
+  __typename: 'BuiltinAsset';
+}
+
+type AssetSource = ERC20AssetSource | BuiltinAssetSource;
 export interface Asset {
   __typename: 'Asset';
   id: string;
   symbol: string;
   name: string;
   decimals: number;
-  source: {
-    __typename: 'ERC20';
-    contractAddress: string;
-  };
+  source: AssetSource;
 }
 
 interface DepositManagerProps {
-  requiredConfirmations: number;
-  bridgeAddress: string;
   assets: Asset[];
   initialAssetId?: string;
+  isFaucetable?: boolean;
 }
 
 export const DepositManager = ({
-  requiredConfirmations,
-  bridgeAddress,
   assets,
   initialAssetId,
+  isFaucetable,
 }: DepositManagerProps) => {
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
 
@@ -43,29 +53,34 @@ export const DepositManager = ({
     return asset;
   }, [assets, assetId]);
 
+  const { config } = useEthereumConfig();
+
   const tokenContract = useTokenContract(
-    asset?.source.contractAddress,
-    process.env['NX_VEGA_ENV'] !== 'MAINNET'
+    asset?.source.__typename === 'ERC20'
+      ? asset.source.contractAddress
+      : undefined,
+    isFaucetable
   );
-  const bridgeContract = useBridgeContract();
+
+  const decimals = useTokenDecimals(tokenContract);
 
   // Get users balance of the erc20 token selected
-  const { balanceOf, refetch } = useGetBalanceOfERC20Token(tokenContract);
+  const { balance, refetch } = useGetBalanceOfERC20Token(
+    tokenContract,
+    decimals
+  );
 
   // Get temporary deposit limits
-  const limits = useGetDepositLimits(bridgeContract, asset);
+  const limits = useGetDepositLimits(asset, decimals);
 
   // Get allowance (approved spending limit of brdige contract) for the selected asset
-  const allowance = useGetAllowance(tokenContract, bridgeAddress);
+  const allowance = useGetAllowance(tokenContract, decimals);
 
   // Set up approve transaction
-  const approve = useSubmitApproval(tokenContract, bridgeAddress);
+  const approve = useSubmitApproval(tokenContract);
 
   // Set up deposit transaction
-  const { confirmationEvent, ...deposit } = useSubmitDeposit(
-    bridgeContract,
-    requiredConfirmations
-  );
+  const { confirmationEvent, ...deposit } = useSubmitDeposit();
 
   // Set up faucet transaction
   const faucet = useSubmitFaucet(tokenContract);
@@ -83,7 +98,7 @@ export const DepositManager = ({
   return (
     <>
       <DepositForm
-        available={balanceOf}
+        available={balance}
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}
@@ -92,6 +107,7 @@ export const DepositManager = ({
         requestFaucet={faucet.perform}
         limits={limits}
         allowance={allowance}
+        isFaucetable={isFaucetable}
       />
       <TransactionDialog {...approve.transaction} name="approve" />
       <TransactionDialog {...faucet.transaction} name="faucet" />
@@ -100,7 +116,7 @@ export const DepositManager = ({
         name="deposit"
         confirmed={Boolean(confirmationEvent)}
         // Must wait for additional confirmations for Vega to pick up the Ethereum transaction
-        requiredConfirmations={requiredConfirmations}
+        requiredConfirmations={config?.confirmations}
       />
     </>
   );

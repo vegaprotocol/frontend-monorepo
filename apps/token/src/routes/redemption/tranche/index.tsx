@@ -3,7 +3,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { Link, useParams, useOutletContext } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
-import { ADDRESSES } from '../../../config';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import {
@@ -43,6 +42,8 @@ export const RedeemFromTranche = () => {
     perform,
     dispatch: txDispatch,
   } = useTransaction(() => vesting.withdrawFromTranche(numberId));
+  const { token } = useContracts();
+
   const redeemedAmount = React.useMemo(() => {
     return (
       trancheBalances.find(({ id: bId }) => bId.toString() === id?.toString())
@@ -73,11 +74,16 @@ export const RedeemFromTranche = () => {
   ) {
     return (
       <section data-testid="redemption-page">
-        <div data-testid="redemption-no-balance">
-          {t(
-            'You do not have any vesting VEGA tokens. Switch to another Ethereum key to check what can be redeemed.'
-          )}
-        </div>
+        <p data-testid="redemption-no-balance">
+          <Trans
+            i18nKey="noVestingTokens"
+            components={{
+              tranchesLink: (
+                <Link className="underline text-white" to={Routes.TRANCHES} />
+              ),
+            }}
+          />
+        </p>
       </section>
     );
   }
@@ -91,9 +97,9 @@ export const RedeemFromTranche = () => {
               {t('Tokens from this Tranche have been redeemed')}
             </strong>
           }
-          completeFooter={
+          completeBody={
             <>
-              <p>
+              <p className="mb-8">
                 {t(
                   'You have redeemed {{redeemedAmount}} VEGA tokens from this tranche. They are now free to transfer from your Ethereum wallet.',
                   {
@@ -101,11 +107,11 @@ export const RedeemFromTranche = () => {
                   }
                 )}
               </p>
-              <p>
+              <p className="mb-8">
                 {t(
                   'The VEGA token address is {{address}}, make sure you add this to your wallet to see your tokens',
                   {
-                    address: ADDRESSES.vegaTokenAddress,
+                    address: token.address,
                   }
                 )}
               </p>
@@ -113,8 +119,18 @@ export const RedeemFromTranche = () => {
                 <Trans
                   i18nKey="Go to <stakingLink>staking</stakingLink> or <governanceLink>governance</governanceLink> to see how you can use your unlocked tokens"
                   components={{
-                    stakingLink: <Link to={Routes.STAKING} />,
-                    governanceLink: <Link to={Routes.GOVERNANCE} />,
+                    stakingLink: (
+                      <Link
+                        className="underline text-white"
+                        to={Routes.STAKING}
+                      />
+                    ),
+                    governanceLink: (
+                      <Link
+                        className="underline text-white"
+                        to={Routes.GOVERNANCE}
+                      />
+                    ),
                   }}
                 />
               </p>

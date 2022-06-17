@@ -6,7 +6,6 @@ import { WithdrawManager } from '@vegaprotocol/withdraws';
 import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
 import Link from 'next/link';
 import { PageQueryContainer } from '../../../components/page-query-container';
-import { isERC20Asset } from '../../../lib/assets';
 import type {
   WithdrawPageQuery,
   WithdrawPageQueryVariables,
@@ -48,10 +47,6 @@ export const WithdrawPageContainer = ({
 }: WithdrawPageContainerProps) => {
   const { keypair } = useVegaWallet();
 
-  if (!keypair) {
-    return <p>{t('Please connect your Vega wallet')}</p>;
-  }
-
   return (
     <PageQueryContainer<WithdrawPageQuery, WithdrawPageQueryVariables>
       query={WITHDRAW_PAGE_QUERY}
@@ -69,7 +64,7 @@ export const WithdrawPageContainer = ({
         }
 
         const hasIncompleteWithdrawals = data.party?.withdrawals?.some(
-          (w) => w.txHash
+          (w) => w.txHash === null
         );
 
         return (
@@ -78,16 +73,20 @@ export const WithdrawPageContainer = ({
               <p className="mb-12">
                 {t('You have incomplete withdrawals.')}{' '}
                 <Link href="/portfolio/withdrawals">
-                  <a className="underline">
+                  <a
+                    className="underline"
+                    data-testid="complete-withdrawals-prompt"
+                  >
                     {t('Click here to finish withdrawal')}
                   </a>
                 </Link>
               </p>
             ) : null}
             <WithdrawManager
-              assets={data.assets.filter(isERC20Asset)}
+              assets={data.assets}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
+              isNewContract={true}
             />
           </>
         );

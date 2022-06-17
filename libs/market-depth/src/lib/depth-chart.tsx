@@ -107,9 +107,9 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
             decimalPlacesRef.current
           );
         }
-        draft.midPrice = delta.market.data?.midPrice
+        draft.midPrice = delta.market.data?.staticMidPrice
           ? formatMidPrice(
-              delta.market.data?.midPrice,
+              delta.market.data?.staticMidPrice,
               decimalPlacesRef.current
             )
           : undefined;
@@ -133,8 +133,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       return;
     }
     dataRef.current = {
-      midPrice: data.data?.midPrice
-        ? formatMidPrice(data.data?.midPrice, data.decimalPlaces)
+      midPrice: data.data?.staticMidPrice
+        ? formatMidPrice(data.data?.staticMidPrice, data.decimalPlaces)
         : undefined,
       data: {
         buy:

@@ -1,26 +1,34 @@
 import React from 'react';
 import * as Sentry from '@sentry/react';
-import type { VegaVesting } from '@vegaprotocol/smart-contracts-sdk';
+import type { TokenVesting } from '@vegaprotocol/smart-contracts';
 
 import {
   AppStateActionType,
   useAppState,
 } from '../contexts/app-state/app-state-context';
 import { BigNumber } from '../lib/bignumber';
+import { useTranches } from './use-tranches';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 
 export const useGetUserTrancheBalances = (
   address: string,
-  vesting: VegaVesting
+  vesting: TokenVesting
 ) => {
-  const { appDispatch } = useAppState();
+  const {
+    appState: { decimals },
+    appDispatch,
+  } = useAppState();
+  const { tranches } = useTranches();
   return React.useCallback(async () => {
     appDispatch({
       type: AppStateActionType.SET_TRANCHE_ERROR,
       error: null,
     });
     try {
-      const tranches = await vesting.getAllTranches();
-      const userTranches = tranches.filter((t) =>
+      if (!tranches) {
+        return;
+      }
+      const userTranches = tranches?.filter((t) =>
         t.users.some(
           ({ address: a }) =>
             a && address && a.toLowerCase() === address.toLowerCase()
@@ -28,10 +36,14 @@ export const useGetUserTrancheBalances = (
       );
       const trancheIds = [0, ...userTranches.map((t) => t.tranche_id)];
       const promises = trancheIds.map(async (tId) => {
-        const [total, vested] = await Promise.all([
-          vesting.userTrancheTotalBalance(address, tId),
-          vesting.userTrancheVestedBalance(address, tId),
+        const [t, v] = await Promise.all([
+          vesting.getTrancheBalance(address, tId),
+          vesting.getVestedForTranche(address, tId),
         ]);
+
+        const total = toBigNum(t, decimals);
+        const vested = toBigNum(v, decimals);
+
         return {
           id: tId,
           locked: tId === 0 ? total : total.minus(vested),
@@ -52,5 +64,5 @@ export const useGetUserTrancheBalances = (
         error: e as Error,
       });
     }
-  }, [address, appDispatch, vesting]);
+  }, [address, decimals, appDispatch, tranches, vesting]);
 };

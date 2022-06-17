@@ -1,4 +1,4 @@
-name: Cypress tests
+name: Unit tests & build
 
 on:
   push:

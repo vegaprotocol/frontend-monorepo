@@ -1,0 +1,9 @@
+{
+  "executors": {
+    "serve": {
+      "implementation": "./impl",
+      "schema": "./schema.json",
+      "description": "Starts a dev-server with an optional explicit environment."
+    }
+  }
+}

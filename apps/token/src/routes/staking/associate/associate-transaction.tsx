@@ -1,12 +1,8 @@
-import {
-  Button,
-  Callout,
-  EtherscanLink,
-  Intent,
-} from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Link, Loader } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouteLink } from 'react-router-dom';
 
 import { TransactionCallout } from '../../../components/transaction-callout';
 import type {
@@ -19,6 +15,7 @@ import {
 } from '../../../hooks/transaction-reducer';
 import { Routes } from '../../router-config';
 import type { PartyStakeLinkings_party_stake_linkings } from './__generated__/PartyStakeLinkings';
+import { truncateMiddle } from '../../../lib/truncate-middle';
 
 export const AssociateTransaction = ({
   amount,
@@ -35,6 +32,7 @@ export const AssociateTransaction = ({
   requiredConfirmations: number;
   linking: PartyStakeLinkings_party_stake_linkings | null;
 }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
   const remainingConfirmations = React.useMemo(() => {
@@ -63,17 +61,23 @@ export const AssociateTransaction = ({
 
   if (derivedTxState === TxState.Pending) {
     return (
-      <Callout intent={Intent.Progress} title={title}>
-        <p data-testid="transaction-pending-body">
+      <Callout icon={<Loader size="small" />} title={title}>
+        <p data-testid="transaction-pending-body" className="mb-8">
           {t('Associating {{amount}} VEGA tokens with Vega key {{vegaKey}}', {
             amount,
-            vegaKey,
+            vegaKey: truncateMiddle(vegaKey),
           })}
         </p>
-        <p>
-          <EtherscanLink tx={state.txData.hash || ''} />
+        <p className="mb-8">
+          <Link
+            title={t('View transaction on Etherscan')}
+            href={`${ETHERSCAN_URL}/tx/${state.txData.hash}`}
+            target="_blank"
+          >
+            {t('View on Etherscan (opens in a new tab)')}
+          </Link>
         </p>
-        <p data-testid="transaction-pending-footer">
+        <p data-testid="transaction-pending-footer" className="mb-8">
           {t('pendingAssociationText', {
             confirmations: requiredConfirmations,
           })}
@@ -85,16 +89,15 @@ export const AssociateTransaction = ({
   return (
     <TransactionCallout
       completeHeading={t('Done')}
-      completeBody={t(
-        'Vega key {{vegaKey}} can now participate in governance and Nominate a validator with it’s stake.',
-        { vegaKey }
-      )}
+      completeBody={t('successfullAssociationMessage', {
+        vegaKey: truncateMiddle(vegaKey),
+      })}
       completeFooter={
-        <Link to={Routes.STAKING}>
+        <RouteLink to={Routes.STAKING}>
           <Button className="fill">
             {t('Nominate Stake to Validator Node')}
           </Button>
-        </Link>
+        </RouteLink>
       }
       pendingHeading={t('Associating Tokens')}
       pendingBody={t(

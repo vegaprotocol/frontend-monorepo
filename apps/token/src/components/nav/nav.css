@@ -1,0 +1,25 @@
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.drawer-content[data-state='open'] {
+  animation: slideIn 150ms ease-out forwards;
+}
+
+.drawer-content[data-state='closed'] {
+  animation: slideOut 150ms ease-in forwards;
+}

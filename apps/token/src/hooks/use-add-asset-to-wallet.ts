@@ -1,9 +1,9 @@
+import React from 'react';
 import * as Sentry from '@sentry/react';
+import { Networks } from '@vegaprotocol/react-helpers';
 import { useWeb3React } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
-import React from 'react';
-
-import { APP_ENV, Networks } from '../config';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 export const useAddAssetSupported = () => {
   const { connector } = useWeb3React();
@@ -19,6 +19,7 @@ export const useAddAssetToWallet = (
   decimals: number,
   image: string
 ) => {
+  const { VEGA_ENV } = useEnvironment();
   const { provider } = useWeb3React();
   const addSupported = useAddAssetSupported();
   const add = React.useCallback(async () => {
@@ -35,10 +36,10 @@ export const useAddAssetToWallet = (
             address,
             symbol: `${symbol}${
               // Add the environment if not mainnet
-              APP_ENV === Networks.MAINNET
+              VEGA_ENV === Networks.MAINNET
                 ? ''
                 : // Remove NET as VEGA(TESTNET) is too long
-                  ` ${APP_ENV.replace('NET', '')}`
+                  ` ${VEGA_ENV.replace('NET', '')}`
             }`,
             decimals,
             image,
@@ -48,7 +49,7 @@ export const useAddAssetToWallet = (
     } catch (error) {
       Sentry.captureException(error);
     }
-  }, [address, decimals, image, provider, symbol]);
+  }, [address, decimals, image, provider, symbol, VEGA_ENV]);
 
   return React.useMemo(() => {
     return {

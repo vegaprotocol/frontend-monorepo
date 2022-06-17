@@ -11,6 +11,8 @@ interface DialogProps {
   onChange: (isOpen: boolean) => void;
   title?: string;
   intent?: Intent;
+  titleClassNames?: string;
+  contentClassNames?: string;
   width?: string;
 }
 
@@ -20,19 +22,29 @@ export function Dialog({
   onChange,
   title,
   intent,
+  titleClassNames,
+  contentClassNames,
   width,
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
-    'fixed max-w-full px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+    'z-20 fixed max-w-full px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
-    getIntentShadow(intent)
+    getIntentShadow(intent),
+    contentClassNames
   );
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange(x)}>
       <DialogPrimitives.Portal>
-        <DialogPrimitives.Overlay className="fixed inset-0 bg-black/50 dark:bg-white/15" />
+        <DialogPrimitives.Overlay
+          className="fixed inset-0 bg-black/50 z-10"
+          data-testid="dialog-overlay"
+        />
+        <DialogPrimitives.Overlay
+          className="fixed inset-0 bg-black/50 dark:bg-white/15 z-10"
+          data-testid="dialog-overlay"
+        />
         <DialogPrimitives.Content
           className={`${contentClasses} ${
             width ? `w-[${width}]` : 'w-[520px]'
@@ -45,7 +57,9 @@ export function Dialog({
             <Icon name="cross" />
           </DialogPrimitives.Close>
           {title && (
-            <h1 className="text-h5 text-black-95 dark:text-white-95 mt-0 mb-20">
+            <h1
+              className={`text-h5 text-black-95 dark:text-white-95 mt-0 mb-20 ${titleClassNames}`}
+            >
               {title}
             </h1>
           )}

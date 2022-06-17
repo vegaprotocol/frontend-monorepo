@@ -1,6 +1,7 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import type { ReactElement } from 'react';
 
 export const TransactionComplete = ({
@@ -14,6 +15,7 @@ export const TransactionComplete = ({
   footer?: ReactElement | string;
   body?: ReactElement | string;
 }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   return (
     <Callout
@@ -21,11 +23,20 @@ export const TransactionComplete = ({
       intent={Intent.Success}
       title={heading || t('Complete')}
     >
-      {body && <p data-testid="transaction-complete-body">{body}</p>}
-      <p>
-        <EtherscanLink tx={hash} />
+      {body && (
+        <p className="mb-8" data-testid="transaction-complete-body">
+          {body}
+        </p>
+      )}
+      <p className="mb-8">
+        <Link
+          title={t('View transaction on Etherscan')}
+          target="_blank"
+          href={`${ETHERSCAN_URL}/tx/${hash}`}
+        >
+          {t('View transaction on Etherscan')}
+        </Link>
       </p>
-      LINK
       {footer && <p data-testid="transaction-complete-footer">{footer}</p>}
     </Callout>
   );

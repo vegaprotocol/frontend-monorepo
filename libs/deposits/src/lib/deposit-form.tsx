@@ -1,5 +1,4 @@
 import {
-  addDecimal,
   removeDecimal,
   t,
   ethereumAddress,
@@ -7,6 +6,7 @@ import {
   vegaPublicKey,
   minSafe,
   maxSafe,
+  addDecimal,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -24,7 +24,6 @@ import { useMemo } from 'react';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
-import { FAUCETABLE } from '../config';
 import type { Asset } from './deposit-manager';
 
 interface FormFields {
@@ -47,10 +46,10 @@ export interface DepositFormProps {
   }) => Promise<void>;
   requestFaucet: () => Promise<void>;
   limits: {
-    min: BigNumber;
     max: BigNumber;
   } | null;
   allowance: BigNumber | undefined;
+  isFaucetable?: boolean;
 }
 
 export const DepositForm = ({
@@ -63,6 +62,7 @@ export const DepositForm = ({
   requestFaucet,
   limits,
   allowance,
+  isFaucetable,
 }: DepositFormProps) => {
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
@@ -82,8 +82,8 @@ export const DepositForm = ({
   });
 
   const onDeposit = async (fields: FormFields) => {
-    if (!selectedAsset) {
-      throw new Error('Asset not selected');
+    if (!selectedAsset || selectedAsset.source.__typename !== 'ERC20') {
+      throw new Error('Invalid asset');
     }
 
     submitDeposit({
@@ -95,19 +95,6 @@ export const DepositForm = ({
 
   const assetId = useWatch({ name: 'asset', control });
   const amount = useWatch({ name: 'amount', control });
-
-  const min = useMemo(() => {
-    // Min viable amount given asset decimals EG for WEI 0.000000000000000001
-    const minViableAmount = selectedAsset
-      ? new BigNumber(addDecimal('1', selectedAsset.decimals))
-      : new BigNumber(0);
-
-    const min = limits
-      ? BigNumber.maximum(minViableAmount, limits.min)
-      : minViableAmount;
-
-    return min;
-  }, [limits, selectedAsset]);
 
   const max = useMemo(() => {
     const maxApproved = allowance ? allowance : new BigNumber(Infinity);
@@ -125,6 +112,15 @@ export const DepositForm = ({
       amount: BigNumber.minimum(maxLimit, maxApproved, maxAvailable),
     };
   }, [limits, allowance, available]);
+
+  const min = useMemo(() => {
+    // Min viable amount given asset decimals EG for WEI 0.000000000000000001
+    const minViableAmount = selectedAsset
+      ? new BigNumber(addDecimal('1', selectedAsset.decimals))
+      : new BigNumber(0);
+
+    return minViableAmount;
+  }, [selectedAsset]);
 
   useEffect(() => {
     onSelectAsset(assetId);
@@ -153,18 +149,20 @@ export const DepositForm = ({
       <FormGroup label={t('Asset')} labelFor="asset" className="relative">
         <Select {...register('asset', { validate: { required } })} id="asset">
           <option value="">{t('Please select')}</option>
-          {assets.map((a) => (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          ))}
+          {assets
+            .filter((a) => a.source.__typename === 'ERC20')
+            .map((a) => (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            ))}
         </Select>
         {errors.asset?.message && (
           <InputError intent="danger" className="mt-4" forInput="asset">
             {errors.asset.message}
           </InputError>
         )}
-        {FAUCETABLE && selectedAsset && (
+        {isFaucetable && selectedAsset && (
           <UseButton onClick={requestFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>
@@ -204,7 +202,7 @@ export const DepositForm = ({
           {...register('amount', {
             validate: {
               required,
-              minSafe: (value) => minSafe(min)(value),
+              minSafe: (value) => minSafe(new BigNumber(min))(value),
               maxSafe: (v) => {
                 const value = new BigNumber(v);
                 if (value.isGreaterThan(max.approved)) {

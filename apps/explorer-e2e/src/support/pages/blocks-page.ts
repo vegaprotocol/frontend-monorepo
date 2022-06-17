@@ -14,11 +14,10 @@ export default class BlocksPage extends BasePage {
   nextBlockBtn = 'next-block';
   jumpToBlockInput = 'block-input';
   jumpToBlockSubmit = 'go-submit';
+  infiniteScrollWrapper = 'infinite-scroll-wrapper';
 
   private waitForBlocksResponse() {
-    cy.wait('@blockChain');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+    cy.contains('Loading...').should('not.exist', { timeout: 18000 });
   }
 
   validateBlocksPageDisplayed() {
@@ -38,8 +37,6 @@ export default class BlocksPage extends BasePage {
   validateBlockValidatorPage() {
     cy.getByTestId(this.minedByValidator).should('not.be.empty');
     cy.getByTestId(this.blockTime).should('not.be.empty');
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000); // Wait for transactions to load if there are any
     cy.get('body').then(($body) => {
       if ($body.find(`[data-testid=${this.transactionsRow}] > td`).length) {
         cy.get(`[data-testid=${this.transactionsRow}] > td`).each(($cell) => {
@@ -82,6 +79,50 @@ export default class BlocksPage extends BasePage {
               $newBlockHeaderTxt.replace('BLOCK ', '')
             );
             expect(newBlockHeight).to.be.greaterThan(blockHeight);
+          });
+      });
+  }
+
+  navigateToLastBlockOnPage() {
+    this.waitForBlocksResponse();
+    cy.getByTestId(this.infiniteScrollWrapper).children().scrollTo('bottom');
+  }
+
+  navigateToOlderBlocksWithInfiniteScroll(
+    expectedBlocks: number,
+    scrollAttempts: number
+  ) {
+    cy.intercept('*blockchain?maxHeight*').as('blockchain_load');
+
+    cy.getByTestId(this.blockHeight)
+      .last()
+      .invoke('text')
+      .then(($initialLastBlockHeight) => {
+        for (let index = 0; index < scrollAttempts; index++) {
+          cy.getByTestId(this.infiniteScrollWrapper)
+            .children()
+            .children()
+            .invoke('css', 'height')
+            .then((scrollTarget) => {
+              cy.getByTestId(this.infiniteScrollWrapper)
+                .children()
+                .scrollTo(0, scrollTarget.toString(), { easing: 'linear' })
+                .wait('@blockchain_load');
+
+              // eslint-disable-next-line cypress/no-unnecessary-waiting
+              cy.wait(50); // Need this as although network response has arrived it takes a few millisecs for the css height to expand
+            });
+        }
+
+        cy.getByTestId(this.blockHeight)
+          .last()
+          .invoke('text')
+          .then(($lastBlockHeight) => {
+            const totalBlocksLoadedSinceScrollBegan =
+              parseInt($initialLastBlockHeight) - parseInt($lastBlockHeight);
+            expect(totalBlocksLoadedSinceScrollBegan).to.be.at.least(
+              expectedBlocks
+            );
           });
       });
   }

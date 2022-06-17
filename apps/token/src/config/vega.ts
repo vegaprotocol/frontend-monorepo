@@ -1,11 +1,4 @@
-export enum Networks {
-  CUSTOM = 'CUSTOM',
-  TESTNET = 'TESTNET',
-  STAGNET = 'STAGNET',
-  STAGNET2 = 'STAGNET2',
-  DEVNET = 'DEVNET',
-  MAINNET = 'MAINNET',
-}
+import { Networks } from '@vegaprotocol/react-helpers';
 
 interface VegaNode {
   url: string;
@@ -23,31 +16,6 @@ type VegaNets = {
 export type NetworkConfig = {
   [N in Networks]: string[];
 };
-
-const splitFilter = (a: string) => a.split(',').filter((a) => a.length > 0);
-const getCustomNodesFromOptionalEnvironmentVariables = () => {
-  const validatorUrls = process.env['CUSTOM_URLS'] || '';
-  const validatorUrlsWithGraphQL =
-    process.env['CUSTOM_URLS_WITH_GRAPHQL'] || '';
-
-  const validatorUrlsList: string[] = splitFilter(validatorUrls);
-  const validatorUrlsWithGraphQLList: string[] = splitFilter(
-    validatorUrlsWithGraphQL
-  );
-
-  const customNodes: VegaNode[] = validatorUrlsList
-    .map((a) => ({ url: a, api: { GraphQL: false } }))
-    .concat(
-      validatorUrlsWithGraphQLList.map((a) => ({
-        url: a,
-        api: { GraphQL: true },
-      }))
-    );
-
-  return customNodes;
-};
-
-const customNodes = getCustomNodesFromOptionalEnvironmentVariables();
 
 export const VegaNetworks: VegaNets = {
   [Networks.DEVNET]: {
@@ -185,9 +153,6 @@ export const VegaNetworks: VegaNets = {
         },
       },
     ],
-  },
-  [Networks.CUSTOM]: {
-    nodes: customNodes,
   },
   [Networks.MAINNET]: {
     nodes: [],

@@ -9,7 +9,9 @@ export const ConnectedVegaKey = ({ pubKey }: { pubKey: string | null }) => {
       <strong data-testid="connected-vega-key-label">
         {pubKey ? t('Connected Vega key') : <ConnectToVega />}
       </strong>
-      <p data-testid="connected-vega-key">{pubKey}</p>
+      <p className="mb-12" data-testid="connected-vega-key">
+        {pubKey}
+      </p>
     </section>
   );
 };

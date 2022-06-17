@@ -60,7 +60,7 @@ export const CandlesChartContainer = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="px-8 flex flex-row flex-wrap gap-8">
+      <div className="p-8 flex flex-row flex-wrap gap-8">
         <DropdownMenu>
           <DropdownMenuTrigger asChild={true}>
             <Button appendIconName="caret-down" variant="secondary">
@@ -187,6 +187,7 @@ export const CandlesChartContainer = ({
           interval={interval}
           theme={theme}
           onOptionsChanged={(options) => {
+            setOverlays(options.overlays ?? []);
             setStudies(options.studies ?? []);
           }}
         />

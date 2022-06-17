@@ -1,6 +1,5 @@
-import { Overlay } from '@blueprintjs/core';
-import type { TxData } from '@vegaprotocol/smart-contracts-sdk';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,11 +7,10 @@ import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { useContracts } from '../../contexts/contracts/contracts-context';
 import { truncateMiddle } from '../../lib/truncate-middle';
 import { Tick } from '../icons';
-import { Loader } from '../loader';
-import { Modal } from '../modal';
+import type { TxData } from '../../stores/transactions';
+import { useTransactionStore } from '../../stores/transactions';
 
 const TransactionModalTh = ({ children }: { children: React.ReactNode }) => (
   <th className="border-b border-black-25 text-black-60 text-left font-normal">
@@ -31,27 +29,14 @@ const TransactionModalStatus = ({
 }) => <span className="flex gap-4 items-center">{children}</span>;
 
 export const TransactionModal = () => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
-  const { transactions } = useContracts();
+  const { transactions } = useTransactionStore();
   const { appState, appDispatch } = useAppState();
-
-  const close = React.useCallback(
-    () =>
-      appDispatch({
-        type: AppStateActionType.SET_TRANSACTION_OVERLAY,
-        isOpen: false,
-      }),
-    [appDispatch]
-  );
 
   const renderStatus = (txObj: TxData) => {
     if (!txObj.receipt) {
-      return (
-        <TransactionModalStatus>
-          <Loader invert={true} />
-          <span>{t('pending')}</span>
-        </TransactionModalStatus>
-      );
+      return <TransactionModalStatus>{t('pending')}</TransactionModalStatus>;
     }
 
     if (txObj.receipt.confirmations >= txObj.requiredConfirmations) {
@@ -65,53 +50,57 @@ export const TransactionModal = () => {
 
     return (
       <TransactionModalStatus>
-        <Loader invert={true} />
-        <span>
-          {t('confirmationsRemaining', {
-            confirmations: txObj.receipt.confirmations,
-            required: txObj.requiredConfirmations,
-          })}
-        </span>
+        {t('confirmationsRemaining', {
+          confirmations: txObj.receipt.confirmations,
+          required: txObj.requiredConfirmations,
+        })}
       </TransactionModalStatus>
     );
   };
 
   return (
-    <Overlay
-      className="bp3-dark"
-      isOpen={appState.transactionOverlay}
-      onClose={close}
-      transitionDuration={0}
+    <Dialog
+      open={appState.transactionOverlay}
+      title={t('ethTransactionModalTitle')}
+      onChange={(isOpen) =>
+        appDispatch({
+          type: AppStateActionType.SET_TRANSACTION_OVERLAY,
+          isOpen,
+        })
+      }
     >
-      <Modal title={t('ethTransactionModalTitle')}>
-        {transactions.length ? (
-          <table className="w-full">
-            <thead>
-              <tr>
-                <TransactionModalTh>{t('transaction')}</TransactionModalTh>
-                <TransactionModalTh>{t('status')}</TransactionModalTh>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((t) => {
-                return (
-                  <tr key={t.tx.hash}>
-                    <TransactionModalTd>
-                      <EtherscanLink
-                        tx={t.tx.hash}
-                        text={truncateMiddle(t.tx.hash)}
-                      />
-                    </TransactionModalTd>
-                    <TransactionModalTd>{renderStatus(t)}</TransactionModalTd>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
-          <p>{t('noTransactions')}</p>
-        )}
-      </Modal>
-    </Overlay>
+      {transactions.length ? (
+        <table className="w-full">
+          <thead>
+            <tr>
+              <TransactionModalTh>{t('transaction')}</TransactionModalTh>
+              <TransactionModalTh>{t('status')}</TransactionModalTh>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((transaction) => {
+              return (
+                <tr key={transaction.tx.hash}>
+                  <TransactionModalTd>
+                    <Link
+                      title={t('View transaction on Etherscan')}
+                      target="_blank"
+                      href={`${ETHERSCAN_URL}/tx/${transaction.tx.hash}`}
+                    >
+                      {truncateMiddle(transaction.tx.hash)}
+                    </Link>
+                  </TransactionModalTd>
+                  <TransactionModalTd>
+                    {renderStatus(transaction)}
+                  </TransactionModalTd>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      ) : (
+        <p>{t('noTransactions')}</p>
+      )}
+    </Dialog>
   );
 };

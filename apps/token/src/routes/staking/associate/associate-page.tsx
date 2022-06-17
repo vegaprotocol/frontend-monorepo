@@ -1,5 +1,6 @@
 import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
+import type { EthereumConfig } from '@vegaprotocol/web3';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,11 +19,11 @@ import { WalletAssociate } from './wallet-associate';
 export const AssociatePage = ({
   address,
   vegaKey,
-  requiredConfirmations,
+  ethereumConfig,
 }: {
   address: string;
   vegaKey: VegaKeyExtended;
-  requiredConfirmations: number;
+  ethereumConfig: EthereumConfig;
 }) => {
   const { t } = useTranslation();
   const params = useSearchParams();
@@ -45,7 +46,7 @@ export const AssociatePage = ({
     amount,
     vegaKey.pub,
     selectedStakingMethod,
-    requiredConfirmations
+    ethereumConfig.confirmations
   );
 
   const linking = usePollForStakeLinking(vegaKey.pub, txState.txData.hash);
@@ -58,10 +59,12 @@ export const AssociatePage = ({
     () => totalVestedBalance.plus(totalLockedBalance).isEqualTo(0),
     [totalLockedBalance, totalVestedBalance]
   );
+
   const zeroVega = React.useMemo(
     () => walletBalance.isEqualTo(0),
     [walletBalance]
   );
+
   React.useEffect(() => {
     if (zeroVega && !zeroVesting) {
       setSelectedStakingMethod(StakingMethod.Contract);
@@ -71,6 +74,7 @@ export const AssociatePage = ({
       setSelectedStakingMethod(params.method);
     }
   }, [params.method, zeroVega, zeroVesting]);
+
   if (txState.txState !== TxState.Default) {
     return (
       <AssociateTransaction
@@ -78,7 +82,7 @@ export const AssociatePage = ({
         vegaKey={vegaKey.pub}
         state={txState}
         dispatch={txDispatch}
-        requiredConfirmations={requiredConfirmations}
+        requiredConfirmations={ethereumConfig.confirmations}
         linking={linking}
       />
     );
@@ -125,6 +129,7 @@ export const AssociatePage = ({
             perform={txPerform}
             amount={amount}
             setAmount={setAmount}
+            ethereumConfig={ethereumConfig}
           />
         ))}
     </section>

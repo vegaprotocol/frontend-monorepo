@@ -1,12 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { ADDRESSES } from '../../../config';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
+import { SplashLoader } from '../../../components/splash-loader';
+import { useEthereumConfig } from '@vegaprotocol/web3';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
 
 export const TokenDetails = ({
   totalSupply,
@@ -15,28 +18,52 @@ export const TokenDetails = ({
   totalSupply: BigNumber;
   totalStaked: BigNumber;
 }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
-  const { tranches } = useTranches();
+  const { tranches, loading, error } = useTranches();
+  const { config } = useEthereumConfig();
+  const { token } = useContracts();
+
+  if (error) {
+    return (
+      <Callout intent={Intent.Danger} title={t('errorLoadingTranches')}>
+        {error}
+      </Callout>
+    );
+  }
+
+  if (!tranches || loading || !config) {
+    return (
+      <Splash>
+        <SplashLoader />
+      </Splash>
+    );
+  }
+
   return (
     <KeyValueTable className={'token-details'}>
       <KeyValueTableRow>
         {t('Token address').toUpperCase()}
-        <EtherscanLink
+        <Link
           data-testid="token-address"
-          address={ADDRESSES.vegaTokenAddress}
-          text={ADDRESSES.vegaTokenAddress}
+          title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
-        />
+          href={`${ETHERSCAN_URL}/address/${token.address}`}
+        >
+          {token.address}
+        </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {t('Vesting contract'.toUpperCase())}
-        <EtherscanLink
+        {t('Vesting contract').toUpperCase()}
+        <Link
           data-testid="token-contract"
-          address={ADDRESSES.vestingAddress}
-          text={ADDRESSES.vestingAddress}
+          title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
-        />
+          href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
+        >
+          {config.token_vesting_contract.address}
+        </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Total supply').toUpperCase()}

@@ -1,20 +1,16 @@
 import type {
-  TxData,
-  VegaClaim,
-  VegaErc20Bridge,
-  VegaStaking,
-  ERC20Token,
-  VegaVesting,
-} from '@vegaprotocol/smart-contracts-sdk';
+  Claim,
+  Token,
+  TokenVesting,
+  StakingBridge,
+} from '@vegaprotocol/smart-contracts';
 import React from 'react';
 
 export interface ContractsContextShape {
-  token: ERC20Token;
-  staking: VegaStaking;
-  vesting: VegaVesting;
-  claim: VegaClaim;
-  erc20Bridge: VegaErc20Bridge;
-  transactions: TxData[];
+  token: Token;
+  staking: StakingBridge;
+  vesting: TokenVesting;
+  claim: Claim;
 }
 
 export const ContractsContext = React.createContext<

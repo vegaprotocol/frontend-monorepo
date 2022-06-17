@@ -1,10 +1,11 @@
 import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link as RouteLink } from 'react-router-dom';
 
 import { BulletHeader } from '../../components/bullet-header';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { Links } from '../../config';
 import {
   AppStateActionType,
@@ -29,25 +30,22 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
         <p className="mb-12">{t('stakingDescription3')}</p>
         <p className="mb-12">{t('stakingDescription4')}</p>
         <p className="mb-12">
-          <a
-            className="underline"
+          <Link
             href={Links.STAKING_GUIDE}
+            className="text-white underline"
             target="_blank"
-            rel="noreferrer"
           >
             {t('readMoreStaking')}
-          </a>
+          </Link>
         </p>
       </section>
 
       <section>
-        <BulletHeader tag="h2" style={{ marginTop: 0 }}>
-          {t('stakingStep1')}
-        </BulletHeader>
+        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
         <StakingStepConnectWallets />
       </section>
       <section>
-        <BulletHeader tag="h2">{t('stakingStep2')}</BulletHeader>
+        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
         <StakingStepAssociate
           associated={
             new BigNumber(
@@ -65,6 +63,7 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
 };
 
 export const StakingStepConnectWallets = () => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
@@ -75,7 +74,13 @@ export const StakingStepConnectWallets = () => {
       <Callout intent={Intent.Success} iconName="tick" title={'Connected'}>
         <p>
           {t('Connected Ethereum address')}&nbsp;
-          <EtherscanLink address={account} text={account} />
+          <Link
+            title={t('View on Etherscan (opens in a new tab)')}
+            href={`${ETHERSCAN_URL}/tx/${account}`}
+            target="_blank"
+          >
+            {truncateMiddle(account)}
+          </Link>
         </p>
         <p>
           {t('stakingVegaWalletConnected', {
@@ -88,13 +93,16 @@ export const StakingStepConnectWallets = () => {
 
   return (
     <>
-      <p>
+      <p className="mb-8">
         <Trans
           i18nKey="stakingStep1Text"
           components={{
             vegaWalletLink: (
-              // eslint-disable-next-line jsx-a11y/anchor-has-content
-              <a href={Links.WALLET_GUIDE} target="_blank" rel="noreferrer" />
+              <Link
+                href={Links.WALLET_GUIDE}
+                className="text-white underline"
+                target="_blank"
+              />
             ),
           }}
         />
@@ -108,7 +116,7 @@ export const StakingStepConnectWallets = () => {
           />
         </div>
       ) : (
-        <p>
+        <p className="mb-8">
           <Button
             onClick={() =>
               appDispatch({
@@ -170,18 +178,18 @@ export const StakingStepAssociate = ({
         iconName="tick"
         title={t('stakingHasAssociated', { tokens: formatNumber(associated) })}
       >
-        <p>
-          <Link to="/staking/associate">
+        <div className="flex flex-wrap gap-4">
+          <RouteLink to="associate">
             <Button data-testid="associate-more-tokens-btn">
               {t('stakingAssociateMoreButton')}
             </Button>
-          </Link>
-        </p>
-        <Link to="/staking/disassociate">
-          <Button data-testid="disassociate-tokens-btn">
-            {t('stakingDisassociateButton')}
-          </Button>
-        </Link>
+          </RouteLink>
+          <RouteLink to="disassociate">
+            <Button data-testid="disassociate-tokens-btn">
+              {t('stakingDisassociateButton')}
+            </Button>
+          </RouteLink>
+        </div>
       </Callout>
     );
   }
@@ -189,11 +197,11 @@ export const StakingStepAssociate = ({
   return (
     <>
       <p>{t('stakingStep2Text')}</p>
-      <Link to="/staking/associate">
+      <RouteLink to="/staking/associate">
         <Button data-testid="associate-tokens-btn">
           {t('associateButton')}
         </Button>
-      </Link>
+      </RouteLink>
     </>
   );
 };

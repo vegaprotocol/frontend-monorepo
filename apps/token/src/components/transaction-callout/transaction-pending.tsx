@@ -1,7 +1,8 @@
 import React from 'react';
-import { Callout } from '@vegaprotocol/ui-toolkit';
+import { Callout, Loader } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
+import { Link } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 export const TransactionPending = ({
   hash,
@@ -18,6 +19,7 @@ export const TransactionPending = ({
   footer?: React.ReactElement | string;
   body?: React.ReactElement | string;
 }) => {
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const remainingConfirmations = React.useMemo(() => {
     if (requiredConfirmations) {
@@ -35,10 +37,20 @@ export const TransactionPending = ({
     return defaultTitle;
   }, [heading, remainingConfirmations, t]);
   return (
-    <Callout iconName="refresh" title={title}>
-      {body && <p data-testid="transaction-pending-body">{body}</p>}
-      <p>
-        <EtherscanLink tx={hash} />
+    <Callout icon={<Loader size="small" />} title={title}>
+      {body && (
+        <p className="mb-8" data-testid="transaction-pending-body">
+          {body}
+        </p>
+      )}
+      <p className="mb-8">
+        <Link
+          title={t('View transaction on Etherscan')}
+          target="_blank"
+          href={`${ETHERSCAN_URL}/tx/${hash}`}
+        >
+          {hash}
+        </Link>
       </p>
       {footer && <p data-testid="transaction-pending-footer">{footer}</p>}
     </Callout>

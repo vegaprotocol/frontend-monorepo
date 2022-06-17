@@ -37,7 +37,7 @@ export const generateCandles = (override?: PartialDeep<Candles>): Candles => {
   ];
   const defaultResult = {
     market: {
-      id: 'market-id',
+      id: 'market-0',
       decimalPlaces: 5,
       tradableInstrument: {
         instrument: {

@@ -1,5 +1,11 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
 
+const shadeOfGray = (shade) => {
+  const decValue = Math.round((255 * shade) / 100);
+  const hexValue = decValue.toString(16).padStart(2, '0');
+  return `#${hexValue}${hexValue}${hexValue}`;
+};
+
 module.exports = {
   screens: {
     xs: '500px',
@@ -12,74 +18,71 @@ module.exports = {
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
-    bullish: '#26FF8A',
-    bearish: '#ED1515',
     vega: {
       yellow: '#EDFF22',
       pink: '#FF2D5E',
       green: '#00F780',
+      red: '#FF261A',
     },
     red: {
       DEFAULT: '#ED1515',
-      transparent: 'rgba(255, 38, 65, 0.3)',
-      vega: '#FF261A',
+      dark: '#EB001B',
+      bar: 'rgba(47, 246, 139, 0.45)', // #2FF68B 45%
     },
     green: {
       DEFAULT: '#26FF8A',
-      transparent: 'rgba(38, 255, 138, 0.3)',
-      dark: '#246340',
-      vega: '#00F780',
+      dark: '#008545',
+      bar: 'rgba(47, 246, 139, 0.45)', // #2FF68B 45%
     },
     text: '#C7C7C7',
     deemphasise: '#8A9BA8',
     white: {
       DEFAULT: '#FFF',
-      '02': 'rgba(255, 255, 255, 0.02)',
-      '05': 'rgba(255, 255, 255, 0.05)',
-      10: 'rgba(255, 255, 255, 0.10)',
-      25: 'rgba(255, 255, 255, 0.25)',
-      40: 'rgba(255, 255, 255, 0.40)',
-      60: 'rgba(255, 255, 255, 0.60)',
-      80: 'rgba(255, 255, 255, 0.80)',
-      95: 'rgba(255, 255, 255, 0.95)',
-      100: 'rgba(255, 255, 255, 1.00)',
+      strong: '#FFF',
+      normal: '#F5F8FA',
+      muted: '#676767',
+      '02': shadeOfGray(2),
+      '05': shadeOfGray(5),
+      10: shadeOfGray(10),
+      25: shadeOfGray(25),
+      40: shadeOfGray(40),
+      60: shadeOfGray(60),
+      80: shadeOfGray(80),
+      95: shadeOfGray(95),
+      100: shadeOfGray(100),
     },
     black: {
       DEFAULT: '#000',
-      '02': 'rgba(0, 0, 0, 0.02)',
-      '05': 'rgba(0, 0, 0, 0.05)',
-      10: 'rgba(0, 0, 0, 0.10)',
-      25: 'rgba(0, 0, 0, 0.25)',
-      40: 'rgba(0, 0, 0, 0.40)',
-      60: 'rgba(0, 0, 0, 0.60)',
-      80: 'rgba(0, 0, 0, 0.80)',
-      95: 'rgba(0, 0, 0, 0.95)',
-      100: 'rgba(0, 0, 0, 1)',
+      strong: '#000',
+      normal: '#000',
+      muted: '#BFCCD6',
+      '02': shadeOfGray(100 - 2),
+      '05': shadeOfGray(100 - 5),
+      10: shadeOfGray(100 - 10),
+      25: shadeOfGray(100 - 25),
+      40: shadeOfGray(100 - 40),
+      60: shadeOfGray(100 - 60),
+      80: shadeOfGray(100 - 80),
+      95: shadeOfGray(100 - 95),
+      100: shadeOfGray(100 - 100),
     },
     blue: '#1DA2FB',
     coral: '#FF6057',
-    pink: '#FF2D5E',
     orange: '#D9822B',
     yellow: {
       DEFAULT: '#EDFF22',
       dark: '#474B0A', // yellow 0.3 opacity on black
     },
-    intent: {
-      danger: '#FF261A',
-      warning: '#FF7A1A',
-      prompt: '#EDFF22',
-      success: '#26FF8A',
-      help: '#494949',
-      highlight: '#E5E5E5',
-    },
-    'intent-background': {
-      danger: '#9E0025', // for white text
-    },
+    danger: '#FF261A',
+    warning: '#FF7A1A',
+    success: '#26FF8A',
+    'danger-bg': '#9E0025', // for white text
   },
   spacing: {
     0: '0px',
     2: '0.125rem',
     4: '0.25rem',
+    5: '0.3125rem',
     8: '0.5rem',
     12: '0.75rem',
     16: '1rem',
@@ -126,7 +129,7 @@ module.exports = {
     DEFAULT: '0.225rem',
     md: '0.3rem',
     lg: '0.5rem',
-    full: '9999px',
+    full: '100%',
   },
   fontFamily: {
     mono: ['Roboto Mono', ...defaultTheme.fontFamily.mono],
@@ -180,5 +183,6 @@ module.exports = {
     callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
     'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
+    radio: '1px 1px 0 0',
   },
 };

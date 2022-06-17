@@ -1,4 +1,5 @@
-import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts-sdk';
+import type { Tranche as ITranche } from '@vegaprotocol/smart-contracts';
+import { Link } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,9 +7,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import { useOutletContext } from 'react-router-dom';
-import { EtherscanLink } from '@vegaprotocol/ui-toolkit';
-import type { EthereumChainId } from '../../config';
-import { ADDRESSES } from '../../config';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
@@ -27,6 +26,7 @@ const TrancheProgressContents = ({
 
 export const Tranche = () => {
   const tranches = useOutletContext<ITranche[]>();
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
   const { trancheId } = useParams<{ trancheId: string }>();
   const { chainId } = useWeb3React();
@@ -55,11 +55,7 @@ export const Tranche = () => {
         unlocked={tranche.total_added.minus(tranche.locked_amount)}
         total={tranche.total_added}
         secondaryHeader={
-          <TrancheLabel
-            contract={ADDRESSES.vestingAddress}
-            chainId={`0x${chainId}` as EthereumChainId}
-            id={tranche.tranche_id}
-          />
+          <TrancheLabel chainId={chainId} id={tranche.tranche_id} />
         }
       />
       <div
@@ -75,11 +71,19 @@ export const Tranche = () => {
       {tranche.users.length ? (
         <ul role="list">
           {tranche.users.map((user, i) => {
-            const unlocked = user.remaining_tokens.times(lockedData?.unlocked);
-            const locked = user.remaining_tokens.times(lockedData?.locked);
+            const unlocked = user.remaining_tokens.times(
+              lockedData?.unlocked || 0
+            );
+            const locked = user.remaining_tokens.times(lockedData?.locked || 0);
             return (
               <li className="pb-4" key={i}>
-                <EtherscanLink address={user.address} text={user.address} />
+                <Link
+                  title={t('View on Etherscan (opens in a new tab)')}
+                  href={`${ETHERSCAN_URL}/tx/${user.address}`}
+                  target="_blank"
+                >
+                  {user.address}
+                </Link>
                 <TrancheProgressContents>
                   <span>{t('Locked')}</span>
                   <span>{t('Unlocked')}</span>

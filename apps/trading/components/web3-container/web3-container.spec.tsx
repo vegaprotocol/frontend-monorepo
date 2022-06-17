@@ -1,9 +1,11 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { NETWORK_PARAMS_QUERY, Web3Container } from './web3-container';
-import type { NetworkParamsQuery } from './__generated__/NetworkParamsQuery';
+import { Web3Container } from './web3-container';
 import type { useWeb3React } from '@web3-react/core';
+import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import { NETWORK_PARAMS_QUERY } from '@vegaprotocol/web3';
+import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
 
 const defaultHookValue = {
   isActive: false,
@@ -49,16 +51,16 @@ jest.mock('@web3-react/core', () => {
 
 function setup(mock = networkParamsQueryMock) {
   return render(
-    <MockedProvider mocks={[mock]}>
-      <Web3Container
-        render={({ ethereumConfig }) => (
+    <EnvironmentProvider>
+      <MockedProvider mocks={[mock]}>
+        <Web3Container>
           <div>
             <div>Child</div>
-            <div>{ethereumConfig.collateral_bridge_contract.address}</div>
+            <div>{mockEthereumConfig.collateral_bridge_contract.address}</div>
           </div>
-        )}
-      />
-    </MockedProvider>
+        </Web3Container>
+      </MockedProvider>
+    </EnvironmentProvider>
   );
 }
 
@@ -140,29 +142,5 @@ it('Shows no config found message if the network parameter doesnt exist', async 
   };
   setup(mock);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(
-    await screen.findByText('No ethereum config found')
-  ).toBeInTheDocument();
-});
-
-it('Shows message if ethereum config could not be parsed', async () => {
-  const mock: MockedResponse<NetworkParamsQuery> = {
-    request: {
-      query: NETWORK_PARAMS_QUERY,
-    },
-    result: {
-      data: {
-        networkParameters: [
-          {
-            __typename: 'NetworkParameter',
-            key: 'blockchains.ethereumConfig',
-            value: '"something invalid }',
-          },
-        ],
-      },
-    },
-  };
-  setup(mock);
-  expect(screen.getByText('Loading...')).toBeInTheDocument();
-  expect(await screen.findByText('Could not parse config')).toBeInTheDocument();
+  expect(await screen.findByText('No data')).toBeInTheDocument();
 });

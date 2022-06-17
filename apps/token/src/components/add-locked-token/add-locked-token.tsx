@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { ADDRESSES } from '../../config';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 import { useAddAssetSupported } from '../../hooks/use-add-asset-to-wallet';
 import vegaVesting from '../../images/vega_vesting.png';
 import { AddTokenButtonLink } from '../add-token-button/add-token-button';
@@ -9,6 +9,7 @@ import { Callout } from '@vegaprotocol/ui-toolkit';
 export const AddLockedTokenAddress = () => {
   const { t } = useTranslation();
   const addSupported = useAddAssetSupported();
+  const { ADDRESSES } = useEnvironment();
   return (
     <Callout
       title={t(

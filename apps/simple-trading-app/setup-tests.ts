@@ -1,4 +1,7 @@
 import '@testing-library/jest-dom';
+import { defaultFallbackInView } from 'react-intersection-observer';
+
+defaultFallbackInView(true);
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

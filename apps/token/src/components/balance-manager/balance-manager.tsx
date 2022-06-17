@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/react';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 
-import { ADDRESSES } from '../../config';
 import {
   AppStateActionType,
   useAppState,
@@ -10,7 +11,6 @@ import {
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useGetAssociationBreakdown } from '../../hooks/use-get-association-breakdown';
 import { useGetUserTrancheBalances } from '../../hooks/use-get-user-tranche-balances';
-import { BigNumber } from '../../lib/bignumber';
 
 interface BalanceManagerProps {
   children: React.ReactElement;
@@ -19,7 +19,11 @@ interface BalanceManagerProps {
 export const BalanceManager = ({ children }: BalanceManagerProps) => {
   const contracts = useContracts();
   const { account } = useWeb3React();
-  const { appDispatch } = useAppState();
+  const {
+    appState: { decimals },
+    appDispatch,
+  } = useAppState();
+  const { config } = useEthereumConfig();
 
   const getUserTrancheBalances = useGetUserTrancheBalances(
     account || '',
@@ -34,17 +38,26 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
   // update balances on connect to Ethereum
   React.useEffect(() => {
     const updateBalances = async () => {
-      if (!account) return;
+      if (!account || !config) return;
       try {
-        const [balance, walletBalance, lien, allowance] = await Promise.all([
-          contracts.vesting.getUserBalanceAllTranches(account),
+        const [b, w, stats, a] = await Promise.all([
+          contracts.vesting.userTotalAllTranches(account),
           contracts.token.balanceOf(account),
-          contracts.vesting.getLien(account),
-          contracts.token.allowance(account, ADDRESSES.stakingBridge),
+          contracts.vesting.userStats(account),
+          contracts.token.allowance(
+            account,
+            config.staking_bridge_contract.address
+          ),
         ]);
+
+        const balance = toBigNum(b, decimals);
+        const walletBalance = toBigNum(w, decimals);
+        const lien = toBigNum(stats.lien, decimals);
+        const allowance = toBigNum(a, decimals);
+
         appDispatch({
           type: AppStateActionType.UPDATE_ACCOUNT_BALANCES,
-          balance: new BigNumber(balance),
+          balance,
           walletBalance,
           lien,
           allowance,
@@ -55,7 +68,14 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
     };
 
     updateBalances();
-  }, [appDispatch, contracts?.token, contracts?.vesting, account]);
+  }, [
+    decimals,
+    appDispatch,
+    contracts?.token,
+    contracts?.vesting,
+    account,
+    config,
+  ]);
 
   // This use effect hook is very expensive and is kept separate to prevent expensive reloading of data.
   React.useEffect(() => {
