@@ -1,18 +1,23 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
-import { MARKETS_QUERY } from './data-provider';
-import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
-import type { SimpleMarkets } from './__generated__/SimpleMarkets';
+import { FILTERS_QUERY, MARKETS_QUERY } from './data-provider';
+import type {
+  SimpleMarkets_markets,
+  SimpleMarkets,
+} from './__generated__/SimpleMarkets';
+import type { MarketFilters } from './__generated__/MarketFilters';
 
 const mockedNavigate = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate,
+  useParams: () => ({}),
 }));
 
 jest.mock('date-fns', () => ({
@@ -20,6 +25,15 @@ jest.mock('date-fns', () => ({
 }));
 
 describe('SimpleMarketList', () => {
+  const filterMock: MockedResponse<MarketFilters> = {
+    request: {
+      query: FILTERS_QUERY,
+    },
+    result: {
+      data: { markets: [] },
+    },
+  };
+
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -36,16 +50,17 @@ describe('SimpleMarketList', () => {
         data: { markets: [] },
       },
     };
-
-    render(
-      <MockedProvider mocks={[mocks]}>
-        <SimpleMarketList />
-      </MockedProvider>
-    );
-
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(screen.getByText('No data to display')).toBeInTheDocument();
+    await act(async () => {
+      render(
+        <MockedProvider mocks={[mocks, filterMock]}>
+          <SimpleMarketList />
+        </MockedProvider>
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    await waitFor(() => {
+      expect(screen.getByText('No data to display')).toBeInTheDocument();
+    });
   });
 
   it('should be properly rendered with some data', async () => {
@@ -74,7 +89,7 @@ describe('SimpleMarketList', () => {
         id: '2',
         data: {
           market: {
-            state: MarketState.Proposed,
+            state: MarketState.Active,
           },
         },
         tradableInstrument: {
@@ -103,15 +118,17 @@ describe('SimpleMarketList', () => {
         data: { markets: data },
       },
     };
-    render(
-      <MockedProvider mocks={[mocks]}>
-        <SimpleMarketList />
-      </MockedProvider>
-    );
-
-    await new Promise((resolve) => setTimeout(resolve, 0));
-
-    expect(screen.getByRole('list')).toBeInTheDocument();
-    expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    await act(async () => {
+      render(
+        <MockedProvider mocks={[mocks, filterMock]}>
+          <SimpleMarketList />
+        </MockedProvider>
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
   });
 });

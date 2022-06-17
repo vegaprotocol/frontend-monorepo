@@ -7,11 +7,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import {
-  useEnvironment,
-  EnvironmentProvider,
-  NetworkSwitcherDialog,
-} from '@vegaprotocol/network-switcher';
+import { NetworkSwitcherDialog } from '@vegaprotocol/network-switcher';
 import { Connectors } from '../lib/vega-connectors';
 import { useMemo } from 'react';
 import { createClient } from '../lib/apollo-client';
@@ -21,6 +17,9 @@ import { AppLoader } from '../components/app-loader';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
 import './styles.css';
 import { useGlobalStore } from '../stores';
+import { ENV } from '../lib/config/env';
+import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/network-switcher';
 
 function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
@@ -72,7 +71,7 @@ function AppBody({ Component, pageProps }: AppProps) {
 
 function VegaTradingApp(props: AppProps) {
   const [theme] = useThemeSwitcher();
-  const client = useMemo(() => createClient(process.env['NX_VEGA_URL']), []);
+  const client = useMemo(() => createClient(ENV.vegaUrl), []);
 
   return (
     <EnvironmentProvider>
@@ -98,6 +97,12 @@ function VegaTradingApp(props: AppProps) {
                   rel="stylesheet"
                   href="https://static.vega.xyz/fonts.css"
                 />
+                {['1', 'true'].includes(
+                  process.env['NX_USE_ENV_OVERRIDES'] || ''
+                ) ? (
+                  /* eslint-disable-next-line @next/next/no-sync-scripts */
+                  <script src="./env-config.js" type="text/javascript" />
+                ) : null}
               </Head>
               <AppBody {...props} />
             </AppLoader>
