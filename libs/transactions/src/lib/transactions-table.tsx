@@ -1,60 +1,17 @@
 import { forwardRef } from 'react';
-import type { ColumnApi, ValueFormatterParams } from 'ag-grid-community';
 import {
   PriceCell,
-  addDecimalsFormatNumber,
   t,
-  addSummaryRows,
 } from '@vegaprotocol/react-helpers';
 import type { SummaryRow } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
-import type { TransactionsData } from './transactions-data-provider';
+import type { TransactionsData } from './transactions-manager';
 
 interface TransactionsTableProps {
   data: TransactionsData[] | null;
 }
-
-interface TransactionsTableValueFormatterParams extends ValueFormatterParams {
-  data: TransactionsData;
-}
-
-export const getGroupId = (
-  data: TransactionsData & SummaryRow,
-  columnApi: ColumnApi
-) => {
-  if (data.__summaryRow) {
-    return null;
-  }
-  const sortColumnId = columnApi.getColumnState().find((c) => c.sort)?.colId;
-  switch (sortColumnId) {
-    case 'asset.symbol':
-      return data.asset.id;
-  }
-  return undefined;
-};
-
-export const getGroupSummaryRow = (
-  data: TransactionsData[],
-  columnApi: ColumnApi
-): Partial<TransactionsData & SummaryRow> | null => {
-  if (!data.length) {
-    return null;
-  }
-  const sortColumnId = columnApi.getColumnState().find((c) => c.sort)?.colId;
-  switch (sortColumnId) {
-    case 'asset.symbol':
-      return {
-        __summaryRow: true,
-        balance: data
-          .reduce((a, i) => a + (parseFloat(i.balance) || 0), 0)
-          .toString(),
-        asset: data[0].asset,
-      };
-  }
-  return null;
-};
 
 const comparator = (
   valueA: string,
@@ -98,9 +55,6 @@ export const TransactionsTable = forwardRef<
         resizable: true,
       }}
       components={{ PriceCell }}
-      onSortChanged={({ api, columnApi }) => {
-        addSummaryRows(api, columnApi, getGroupId, getGroupSummaryRow);
-      }}
       onGridReady={(event) => {
         event.columnApi.applyColumnState({
           state: [
@@ -113,6 +67,16 @@ export const TransactionsTable = forwardRef<
       }}
     >
       <AgGridColumn
+        headerName={t('Type')}
+        field="__typename"
+        valueFormatter="value || '—'"
+      />
+      <AgGridColumn
+        headerName={t('Amount')}
+        field="amount"
+        sortable
+      />
+      <AgGridColumn
         headerName={t('Asset')}
         field="asset.symbol"
         sortable
@@ -120,25 +84,8 @@ export const TransactionsTable = forwardRef<
         comparator={comparator}
       />
       <AgGridColumn
-        headerName={t('Type')}
-        field="type"
-        valueFormatter="value || '—'"
-      />
-      <AgGridColumn
-        headerName={t('Market')}
-        field="market.name"
-        valueFormatter="value || '—'"
-      />
-      <AgGridColumn
-        headerName={t('Balance')}
-        field="balance"
-        cellRenderer="PriceCell"
-        valueFormatter={({
-          value,
-          data,
-        }: TransactionsTableValueFormatterParams) =>
-          addDecimalsFormatNumber(value, data.asset.decimals)
-        }
+        headerName={t('Status')}
+        field="status"
       />
     </AgGrid>
   );

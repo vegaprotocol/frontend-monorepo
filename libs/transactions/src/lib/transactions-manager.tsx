@@ -1,74 +1,40 @@
-import { useRef, useCallback, useMemo } from 'react';
-import { produce } from 'immer';
-import merge from 'lodash/merge';
+import { useRef, useMemo } from 'react';
+import { useQuery } from '@apollo/client';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { useDataProvider, addSummaryRows } from '@vegaprotocol/react-helpers';
 
 import type { AgGridReact } from 'ag-grid-react';
 import {
   TransactionsTable,
-  getGroupId,
-  getGroupSummaryRow,
 } from './transactions-table';
-import { transactionsDataProvider } from './transactions-data-provider';
-import type { TransactionsData } from './transactions-data-provider';
+import { TRANSACTIONS_QUERY } from './transactions-query';
+import { Transactions, Transactions_party_deposits, Transactions_party_withdrawals } from './__generated__/Transactions';
 
-type TransactionsSubscribe_accounts = any;
+export type TransactionsData = Transactions_party_deposits | Transactions_party_withdrawals;
 
 interface TransactionsManagerProps {
   partyId: string;
 }
 
+const compileTransactions = (data?: Transactions): TransactionsData[] => {
+  if (data === null || data === undefined) return [] as TransactionsData[];
+
+  const deposits = data.party?.deposits ?? [];
+  const withdrawals = data.party?.withdrawals ?? [];
+
+  return [...deposits, ...withdrawals].sort((a, b) => Number(a.createdTimestamp) - Number(b.createdTimestamp));
+}
+
 export const TransactionsManager = ({ partyId }: TransactionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const update = useCallback(
-    (delta: TransactionsSubscribe_accounts) => {
-      const update: TransactionsData[] = [];
-      const add: TransactionsData[] = [];
-      if (!gridRef.current) {
-        return false;
-      }
-      const rowNode = gridRef.current.api.getRowNode(delta.id);
-      if (rowNode) {
-        const updatedData = produce<TransactionsData>(
-          rowNode.data,
-          (draft: TransactionsData) => {
-            merge(draft, delta);
-          }
-        );
-        if (updatedData !== rowNode.data) {
-          update.push(updatedData);
-        }
-      } else {
-        add.push(delta);
-      }
-      if (update.length || add.length) {
-        gridRef.current.api.applyTransactionAsync({
-          update,
-          add,
-          addIndex: 0,
-        });
-      }
-      if (add.length) {
-        addSummaryRows(
-          gridRef.current.api,
-          gridRef.current.columnApi,
-          getGroupId,
-          getGroupSummaryRow
-        );
-      }
-      return true;
-    },
-    [gridRef]
-  );
-  const { data, error, loading } = useDataProvider<
-    TransactionsData[],
-    TransactionsSubscribe_accounts
-  >(transactionsDataProvider, update, variables);
+
+  const { data, error, loading } = useQuery<Transactions>(TRANSACTIONS_QUERY, { variables });
+
+  const transactions = compileTransactions(data);
+
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      <TransactionsTable ref={gridRef} data={data} />
+    <AsyncRenderer loading={loading} error={error} data={transactions}>
+      <TransactionsTable ref={gridRef} data={transactions} />
     </AsyncRenderer>
   );
 };
