@@ -1,4 +1,5 @@
 import React from 'react';
+import { act } from 'react-dom/test-utils';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
@@ -49,13 +50,14 @@ describe('SimpleMarketList', () => {
         data: { markets: [] },
       },
     };
-
-    render(
-      <MockedProvider mocks={[mocks, filterMock]}>
-        <SimpleMarketList />
-      </MockedProvider>
-    );
-
+    await act(async () => {
+      render(
+        <MockedProvider mocks={[mocks, filterMock]}>
+          <SimpleMarketList />
+        </MockedProvider>
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
     await waitFor(() => {
       expect(screen.getByText('No data to display')).toBeInTheDocument();
     });
@@ -116,15 +118,17 @@ describe('SimpleMarketList', () => {
         data: { markets: data },
       },
     };
-    render(
-      <MockedProvider mocks={[mocks, filterMock]}>
-        <SimpleMarketList />
-      </MockedProvider>
-    );
-
+    await act(async () => {
+      render(
+        <MockedProvider mocks={[mocks, filterMock]}>
+          <SimpleMarketList />
+        </MockedProvider>
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
     await waitFor(() => {
       expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
-      expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
     });
+    expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
   });
 });
