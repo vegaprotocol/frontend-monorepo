@@ -33,6 +33,7 @@
         "libs/tailwindcss-config/src/index.js"
       ],
       "@vegaprotocol/trades": ["libs/trades/src/index.ts"],
+      "@vegaprotocol/transactions": ["libs/transactions/src/index.ts"],
       "@vegaprotocol/types": ["libs/types/src/index.ts"],
       "@vegaprotocol/ui-toolkit": ["libs/ui-toolkit/src/index.ts"],
       "@vegaprotocol/wallet": ["libs/wallet/src/index.ts"],

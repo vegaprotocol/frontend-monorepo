@@ -27,6 +27,7 @@
     "trades": "libs/trades",
     "trading": "apps/trading",
     "trading-e2e": "apps/trading-e2e",
+    "transactions": "libs/transactions",
     "types": "libs/types",
     "ui-toolkit": "libs/ui-toolkit",
     "wallet": "libs/wallet",
