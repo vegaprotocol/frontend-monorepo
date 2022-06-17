@@ -20,6 +20,19 @@ export const routerConfig = [
   },
   {
     path: ROUTES.MARKETS,
+    children: [
+      {
+        path: `:state`,
+        element: <SimpleMarketList />,
+        children: [
+          {
+            path: `:asset`,
+            element: <SimpleMarketList />,
+            children: [{ path: `:product`, element: <SimpleMarketList /> }],
+          },
+        ],
+      },
+    ],
     name: 'Markets',
     text: t('Markets'),
     element: <SimpleMarketList />,

@@ -12,7 +12,7 @@ export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
  *   "https://ropsten.infura.io/v3/5aff9e61ad844bcf982d0d0c3f1d29f1"
  * );
  * const web3 = new Web3(provider)
- 
+
  * // Ropsten address
  * const contract = new VegaClaim(web3, "0xAf5dC1772714b2F4fae3b65eb83100f1Ea677b21")
  * contract.isCountryBlocked("US").then(console.log)
@@ -21,12 +21,14 @@ export const SPENT_CODE = '0x0000000000000000000000000000000000000001';
  */
 export class Claim {
   public contract: ethers.Contract;
+  public address: string;
 
   constructor(
     address: string,
     signerOrProvider: ethers.Signer | ethers.providers.Provider
   ) {
     this.contract = new ethers.Contract(address, abi, signerOrProvider);
+    this.address = address;
   }
 
   /** Execute contracts commit_untargeted function */

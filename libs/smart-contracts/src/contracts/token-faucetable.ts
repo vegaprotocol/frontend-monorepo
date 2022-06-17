@@ -4,6 +4,7 @@ import erc20AbiFaucetable from '../abis/erc20_abi_faucet.json';
 
 export class TokenFaucetable {
   public contract: ethers.Contract;
+  public address: string;
 
   constructor(
     address: string,
@@ -14,6 +15,7 @@ export class TokenFaucetable {
       erc20AbiFaucetable,
       signerOrProvider
     );
+    this.address = address;
   }
 
   totalSupply() {
