@@ -163,12 +163,70 @@ export interface DealTicketQuery_market_tradableInstrument_instrument {
   product: DealTicketQuery_market_tradableInstrument_instrument_product;
 }
 
+export interface DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel_params {
+  __typename: "LogNormalModelParams";
+  /**
+   * r parameter
+   */
+  r: number;
+  /**
+   * sigma parameter
+   */
+  sigma: number;
+  /**
+   * mu parameter
+   */
+  mu: number;
+}
+
+export interface DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel {
+  __typename: "LogNormalRiskModel";
+  /**
+   * Tau parameter of the risk model
+   */
+  tau: number;
+  /**
+   * Lambda parameter of the risk model
+   */
+  riskAversionParameter: number;
+  /**
+   * Params for the log normal risk model
+   */
+  params: DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel_params;
+}
+
+export interface DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel_params {
+  __typename: "SimpleRiskModelParams";
+  /**
+   * Risk factor for long
+   */
+  factorLong: number;
+  /**
+   * Risk factor for short
+   */
+  factorShort: number;
+}
+
+export interface DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel {
+  __typename: "SimpleRiskModel";
+  /**
+   * Params for the simple risk model
+   */
+  params: DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel_params;
+}
+
+export type DealTicketQuery_market_tradableInstrument_riskModel = DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel | DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel;
+
 export interface DealTicketQuery_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
   instrument: DealTicketQuery_market_tradableInstrument_instrument;
+  /**
+   * A reference to a risk model that is valid for the instrument
+   */
+  riskModel: DealTicketQuery_market_tradableInstrument_riskModel;
 }
 
 export interface DealTicketQuery_market_depth_lastTrade {

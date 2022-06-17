@@ -66,6 +66,23 @@ const DEAL_TICKET_QUERY = gql`
             }
           }
         }
+        riskModel {
+          ... on LogNormalRiskModel {
+            tau
+            riskAversionParameter
+            params {
+              r
+              sigma
+              mu
+            }
+          }
+          ... on SimpleRiskModel {
+            params {
+              factorLong
+              factorShort
+            }
+          }
+        }
       }
       depth {
         lastTrade {

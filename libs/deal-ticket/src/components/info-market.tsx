@@ -85,9 +85,24 @@ export const Info = ({ market }: InfoProps) => {
         />
         <AccordionPanel
           title={t('Risk factors')}
+          key="risk-factors"
+          content={
+            <MarketInfoTable
+              data={market.riskFactors}
+              unformatted={true}
+              omits={['market', '__typename']}
+            />
+          }
+        />
+        <AccordionPanel
+          title={t('Risk model')}
           key="risk-model"
           content={
-            <MarketInfoTable data={market.riskFactors} unformatted={true} />
+            <MarketInfoTable
+              data={market.tradableInstrument.riskModel}
+              unformatted={true}
+              omits={[]}
+            />
           }
         />
         {(market.priceMonitoringSettings?.parameters?.triggers ?? []).map(
