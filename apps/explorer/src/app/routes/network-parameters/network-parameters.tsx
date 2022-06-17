@@ -16,6 +16,7 @@ import type {
   NetworkParametersQuery_networkParameters,
 } from './__generated__/NetworkParametersQuery';
 import orderBy from 'lodash/orderBy';
+import startCase from 'lodash/startCase';
 
 const BIG_NUMBER_PARAMS = [
   'spam.protection.delegation.min.tokens',
@@ -42,7 +43,7 @@ export const renderRow = ({
   const isSyntaxRow = isJsonObject(value);
   return (
     <KeyValueTableRow key={key} inline={!isSyntaxRow}>
-      {key}
+      {startCase(key)}
       {isSyntaxRow ? (
         <SyntaxHighlighter data={JSON.parse(value)} />
       ) : isNaN(Number(value)) ? (

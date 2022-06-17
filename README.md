@@ -107,7 +107,7 @@ Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more
 
 ## Docker
 
-The [Dockerfile](./Dockerfile) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environement variabels to the containers. See configuration below for how to do this.
+The [Dockerfile](./Dockerfile) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environment variables to the containers. See configuration below for how to do this.
 
 You can build any of the containers locally with the following command:
 
@@ -123,7 +123,7 @@ docker run -p 3000:80 [TAG]
 
 ## Config
 
-As envrionment variabels are build time and not run time in frontend applications. We have built a system which allows for passing run time environment variables, this generates a JSON file that will override the default environement vairbales that the container was built with (which is always testnet, using the default .env files).
+As environment variables are build time and not run time in frontend applications. We have built a system which allows for passing run time environment variables, this generates a JSON file that will override the default environment variables that the container was built with (which is always testnet, using the default .env files).
 
 In order to override specific environment variables you can pass these to the container like this:
 
@@ -137,7 +137,7 @@ Which will now point the app to use a devnet data node. To see a list of all pos
 
 Coming soon! You will be able to run the containers within Vega Capsule.
 
-You can run against a local intance of Vega Cpasule today by using the .env.capsule present in the apps.
+You can run against a local instance of Vega Capsule today by using the .env.capsule present in the apps.
 
 # 📑 License
 
