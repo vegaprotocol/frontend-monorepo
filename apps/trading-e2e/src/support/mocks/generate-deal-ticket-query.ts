@@ -8,9 +8,10 @@ export const generateDealTicketQuery = (
 ): DealTicketQuery => {
   const defaultResult: DealTicketQuery = {
     market: {
+      __typename: 'Market',
       id: 'market-0',
       name: 'ETHBTC Quarterly (30 Jun 2022)',
-      decimalPlaces: 2,
+      decimalPlaces: 5,
       positionDecimalPlaces: 0,
       state: MarketState.Active,
       tradingMode: MarketTradingMode.Continuous,
@@ -20,7 +21,7 @@ export const generateDealTicketQuery = (
           __typename: 'FeeFactors',
           makerFee: '0.0002',
           infrastructureFee: '0.0005',
-          liquidityFee: '0.01',
+          liquidityFee: '0.001',
         },
       },
       priceMonitoringSettings: {
@@ -41,7 +42,7 @@ export const generateDealTicketQuery = (
       riskFactors: {
         __typename: 'RiskFactor',
         market:
-          '54b78c1b877e106842ae156332ccec740ad98d6bad43143ac6a029501dd7c6e0',
+          '99aaf48bbdb4368de634c17062cbce2f98ca85274d6ac93db8399973d95e1a1a',
         short: '0.008571790367285281',
         long: '0.008508132993273576',
       },
@@ -49,18 +50,21 @@ export const generateDealTicketQuery = (
         __typename: 'MarketData',
         market: {
           __typename: 'Market',
-          id: '54b78c1b877e106842ae156332ccec740ad98d6bad43143ac6a029501dd7c6e0',
+          id: '99aaf48bbdb4368de634c17062cbce2f98ca85274d6ac93db8399973d95e1a1a',
         },
-        markPrice: '5749',
+        markPrice: '5326',
         indicativeVolume: '0',
-        bestBidVolume: '5',
-        bestOfferVolume: '1',
-        bestStaticBidVolume: '5',
-        bestStaticOfferVolume: '1',
+        bestBidVolume: '0',
+        bestOfferVolume: '0',
+        bestStaticBidVolume: '0',
+        bestStaticOfferVolume: '0',
       },
       tradableInstrument: {
+        __typename: 'TradableInstrument',
         instrument: {
+          __typename: 'Instrument',
           product: {
+            __typename: 'Future',
             quoteName: 'BTC',
             settlementAsset: {
               __typename: 'Asset',
@@ -68,20 +72,27 @@ export const generateDealTicketQuery = (
               symbol: 'tBTC',
               name: 'tBTC TEST',
             },
-            __typename: 'Future',
           },
-          __typename: 'Instrument',
         },
-        __typename: 'TradableInstrument',
+        riskModel: {
+          __typename: 'LogNormalRiskModel',
+          tau: 0.0001140771161,
+          riskAversionParameter: 0.01,
+          params: {
+            __typename: 'LogNormalModelParams',
+            r: 0.016,
+            sigma: 0.3,
+            mu: 0,
+          },
+        },
       },
       depth: {
         __typename: 'MarketDepth',
         lastTrade: {
           __typename: 'Trade',
-          price: '100',
+          price: '5483',
         },
       },
-      __typename: 'Market',
     },
   };
 
