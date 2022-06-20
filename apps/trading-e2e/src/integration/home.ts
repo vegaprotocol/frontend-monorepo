@@ -1,6 +1,6 @@
+import { aliasQuery } from '@vegaprotocol/cypress';
 import type { MarketList, MarketList_markets } from '@vegaprotocol/market-list';
 import { MarketState } from '@vegaprotocol/types';
-import { hasOperationName } from '../support';
 import { generateMarketList } from '../support/mocks/generate-market-list';
 import { generateMarkets } from '../support/mocks/generate-markets';
 import type { MarketsLanding } from '../support/mocks/generate-markets-landing';
@@ -23,30 +23,19 @@ describe('home', () => {
       );
 
       // Mock markets query that is triggered by home page to find default market
-      cy.mockGQL('MarketsLanding', (req) => {
-        if (hasOperationName(req, 'MarketsLanding')) {
-          req.reply({
-            body: { data: marketsLanding },
-          });
-        }
-      });
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'MarketsLanding', marketsLanding);
+        aliasQuery(req, 'MarketList', marketList);
 
-      // Market market list for the dialog that opens on a trading page
-      cy.mockGQL('MarketList', (req) => {
-        if (hasOperationName(req, 'MarketList')) {
-          req.reply({
-            body: { data: marketList },
-          });
-        }
+        // Mock all market page queries
+        mockTradingPage(req, MarketState.Active);
       });
-
-      // Mock market page
-      mockTradingPage(MarketState.Active);
 
       cy.visit('/');
-      cy.wait('@MarketsLanding');
+      cy.wait('@GQL');
+
+      cy.get('main[data-testid="market"]').should('exist'); // Wait for page to be rendered to before checking url
       cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
-      cy.wait('@MarketList');
     });
 
     it('redirects to a default market with the landing dialog open', () => {
@@ -115,40 +104,31 @@ describe('home', () => {
   describe('no default found', () => {
     it('redirects to a the market list page if no sensible default is found', () => {
       // Mock markets query that is triggered by home page to find default market
-      cy.mockGQL('MarketsLanding', (req) => {
-        if (hasOperationName(req, 'MarketsLanding')) {
-          req.reply({
-            body: {
-              // Remove open timestamps so we can't calculate a sensible default market
-              data: generateMarketsLanding({
-                markets: [
-                  {
-                    marketTimestamps: {
-                      __typename: 'MarketTimestamps',
-                      open: '',
-                    },
-                  },
-                  {
-                    marketTimestamps: {
-                      __typename: 'MarketTimestamps',
-                      open: '',
-                    },
-                  },
-                ],
-              }),
-            },
-          });
-        }
-      });
+      cy.mockGQL((req) => {
+        aliasQuery(
+          req,
+          'MarketsLanding',
+          generateMarketsLanding({
+            markets: [
+              {
+                marketTimestamps: {
+                  __typename: 'MarketTimestamps',
+                  open: '',
+                },
+              },
+              {
+                marketTimestamps: {
+                  __typename: 'MarketTimestamps',
+                  open: '',
+                },
+              },
+            ],
+          })
+        );
+        aliasQuery(req, 'Markets', generateMarkets());
 
-      cy.mockGQL('Markets', (req) => {
-        if (hasOperationName(req, 'Markets')) {
-          req.reply({
-            body: {
-              data: generateMarkets(),
-            },
-          });
-        }
+        // Mock all market page queries
+        mockTradingPage(req, MarketState.Active);
       });
 
       cy.visit('/');
