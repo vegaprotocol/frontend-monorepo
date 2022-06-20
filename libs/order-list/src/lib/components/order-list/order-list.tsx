@@ -9,41 +9,49 @@ import type {
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef } from 'react';
-import type { OrderCancellationBody } from '@vegaprotocol/vegawallet-service-api-client';
-import { useVegaWallet } from '@vegaprotocol/wallet';
-import * as Sentry from '@sentry/react';
+import { useOrderCancel } from '../../hooks';
+import { EthTxStatus } from '@vegaprotocol/web3';
+import { TransactionDialog } from '@vegaprotocol/web3';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
 }
 
-export const CancelRendererButton = (params: ICellRendererParams) => {
-  const { sendTx, keypair } = useVegaWallet();
-  const cancelOrder = async (data: Orders_party_orders) => {
-    if (keypair && data.market) {
-      try {
-        const command: OrderCancellationBody = {
-          pubKey: keypair?.pub,
-          propagate: true,
-          orderCancellation: {
-            orderId: data.id,
-            marketId: data.market.id,
-          },
-        };
-        const tx = await sendTx(command);
-        console.log(params.data);
-        console.log(tx);
-      } catch (err) {
-        Sentry.captureException(err);
-      }
+export const CancelRendererButton = ({ data }: ICellRendererParams) => {
+  // const { sendTx, keypair } = useVegaWallet();
+  const { cancel, transaction } = useOrderCancel({
+    orderId: data.id,
+    marketId: data.market.id,
+  });
+  const cancelOrder = async () => {
+    const res = await cancel();
+    console.log({ transaction });
+    if (res) {
+      console.log('IMPORTANT', res);
+
+      return (
+        <TransactionDialog
+          confirmations={1}
+          name={'cancel'}
+          status={EthTxStatus.Complete}
+          error={null}
+          txHash={transaction.txHash}
+        />
+      );
     }
+    return (
+      <TransactionDialog
+        confirmations={1}
+        name={'cancel'}
+        status={EthTxStatus.Error}
+        error={{ name: 'cancel', message: 'cancelling order failed' }}
+        txHash={transaction.txHash}
+      />
+    );
   };
 
   return (
-    <Button
-      data-testid="cancel"
-      onClick={(e) => cancelOrder(params.data as Orders_party_orders)}
-    >
+    <Button data-testid="cancel" onClick={() => cancelOrder()}>
       Cancel
     </Button>
   );

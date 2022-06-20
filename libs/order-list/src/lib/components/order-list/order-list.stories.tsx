@@ -7,6 +7,8 @@ import {
 } from '@vegaprotocol/types';
 import { OrderList } from './order-list';
 import type { Orders_party_orders } from '../__generated__/Orders';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
+import { MockedProvider } from '@apollo/client/testing';
 
 export default {
   component: OrderList,
@@ -74,7 +76,9 @@ const limitOrder: Orders_party_orders = {
 const Template: Story = (args) => {
   return (
     <div style={{ width: 1000, height: 1000 }}>
-      <OrderList data={args.data} />
+      <VegaWalletContext.Provider value={{} as never}>
+        <OrderList data={args.data} />
+      </VegaWalletContext.Provider>
     </div>
   );
 };
