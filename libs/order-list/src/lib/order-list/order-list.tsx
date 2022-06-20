@@ -1,14 +1,53 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
 import type { Orders_party_orders } from '../__generated__/Orders';
 import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import type { ValueFormatterParams } from 'ag-grid-community';
+import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
+import type {
+  ICellRendererParams,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef } from 'react';
+import type { OrderCancellationBody } from '@vegaprotocol/vegawallet-service-api-client';
+import { useVegaWallet } from '@vegaprotocol/wallet';
+import * as Sentry from '@sentry/react';
+
 interface OrderListProps {
   data: Orders_party_orders[] | null;
 }
+
+export const CancelRendererButton = (params: ICellRendererParams) => {
+  const { sendTx, keypair } = useVegaWallet();
+  const cancelOrder = async (data: Orders_party_orders) => {
+    if (keypair && data.market) {
+      try {
+        const command: OrderCancellationBody = {
+          pubKey: keypair?.pub,
+          propagate: true,
+          orderCancellation: {
+            orderId: data.id,
+            marketId: data.market.id,
+          },
+        };
+        const tx = await sendTx(command);
+        console.log(params.data);
+        console.log(tx);
+      } catch (err) {
+        Sentry.captureException(err);
+      }
+    }
+  };
+
+  return (
+    <Button
+      data-testid="cancel"
+      onClick={(e) => cancelOrder(params.data as Orders_party_orders)}
+    >
+      Cancel
+    </Button>
+  );
+};
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data }, ref) => {
@@ -20,6 +59,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
+        rowHeight={40}
       >
         <AgGridColumn
           headerName="Market"
@@ -88,6 +128,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
           }}
         />
+        <AgGridColumn cellRenderer={CancelRendererButton} />
       </AgGrid>
     );
   }

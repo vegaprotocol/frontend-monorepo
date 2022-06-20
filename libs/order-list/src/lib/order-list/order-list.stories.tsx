@@ -15,7 +15,7 @@ export default {
 
 const marketOrder: Orders_party_orders = {
   __typename: 'Order',
-  id: 'order-id',
+  id: 'order-id2',
   market: {
     __typename: 'Market',
     id: 'market-id',

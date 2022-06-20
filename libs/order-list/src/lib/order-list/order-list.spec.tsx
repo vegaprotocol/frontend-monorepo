@@ -9,6 +9,8 @@ import {
   OrderRejectionReason,
 } from '@vegaprotocol/types';
 import { OrderList } from './order-list';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
+import { MockedProvider } from '@apollo/client/testing';
 
 it('No orders message shown', async () => {
   await act(async () => {
@@ -77,12 +79,19 @@ const limitOrder: Orders_party_orders = {
 
 it('Correct columns are rendered', async () => {
   await act(async () => {
-    render(<OrderList data={[marketOrder]} />);
+    render(
+      <MockedProvider>
+        <VegaWalletContext.Provider value={{} as never}>
+          <OrderList data={[marketOrder]} />
+        </VegaWalletContext.Provider>
+      </MockedProvider>
+    );
   });
 
   const headers = screen.getAllByRole('columnheader');
-  expect(headers).toHaveLength(9);
+  expect(headers).toHaveLength(10);
   expect(headers.map((h) => h.textContent?.trim())).toEqual([
+    '',
     'Market',
     'Amount',
     'Type',
@@ -97,7 +106,13 @@ it('Correct columns are rendered', async () => {
 
 it('Correct formatting applied for market order', async () => {
   await act(async () => {
-    render(<OrderList data={[marketOrder]} />);
+    render(
+      <MockedProvider>
+        <VegaWalletContext.Provider value={{} as never}>
+          <OrderList data={[marketOrder]} />
+        </VegaWalletContext.Provider>
+      </MockedProvider>
+    );
   });
 
   const cells = screen.getAllByRole('gridcell');
@@ -111,13 +126,20 @@ it('Correct formatting applied for market order', async () => {
     marketOrder.timeInForce,
     getDateTimeFormat().format(new Date(marketOrder.createdAt)),
     '-',
+    'Cancel',
   ];
   cells.forEach((cell, i) => expect(cell).toHaveTextContent(expectedValues[i]));
 });
 
 it('Correct formatting applied for GTT limit order', async () => {
   await act(async () => {
-    render(<OrderList data={[limitOrder]} />);
+    render(
+      <MockedProvider>
+        <VegaWalletContext.Provider value={{} as never}>
+          <OrderList data={[limitOrder]} />
+        </VegaWalletContext.Provider>
+      </MockedProvider>
+    );
   });
   const cells = screen.getAllByRole('gridcell');
 
@@ -133,6 +155,7 @@ it('Correct formatting applied for GTT limit order', async () => {
     )}`,
     getDateTimeFormat().format(new Date(limitOrder.createdAt)),
     '-',
+    'Cancel',
   ];
   cells.forEach((cell, i) => expect(cell).toHaveTextContent(expectedValues[i]));
 });
@@ -144,7 +167,13 @@ it('Correct formatting applied for a rejected order', async () => {
     rejectionReason: OrderRejectionReason.InsufficientAssetBalance,
   };
   await act(async () => {
-    render(<OrderList data={[rejectedOrder]} />);
+    render(
+      <MockedProvider>
+        <VegaWalletContext.Provider value={{} as never}>
+          <OrderList data={[rejectedOrder]} />
+        </VegaWalletContext.Provider>
+      </MockedProvider>
+    );
   });
   const cells = screen.getAllByRole('gridcell');
   expect(cells[3]).toHaveTextContent(
