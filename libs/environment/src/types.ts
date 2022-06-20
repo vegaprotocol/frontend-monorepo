@@ -1,37 +1,21 @@
-export enum Networks {
-  CUSTOM = 'CUSTOM',
-  TESTNET = 'TESTNET',
-  STAGNET = 'STAGNET',
-  STAGNET2 = 'STAGNET2',
-  DEVNET = 'DEVNET',
-  MAINNET = 'MAINNET',
-}
+import type z from 'zod';
 
-export type Environment = {
-  VEGA_URL: string;
-  VEGA_ENV: Networks;
-  VEGA_CONFIG_URL: string;
+import type { configSchema } from './utils/validate-configuration';
+import type { envSchema } from './utils/validate-environment';
+import { Networks, ENV_KEYS } from './utils/validate-environment';
+
+export { ENV_KEYS, Networks };
+
+export type Environment = z.infer<typeof envSchema> & {
+  // provide this manually, zod fails to compile the correct type fot VEGA_NETWORKS
   VEGA_NETWORKS: Partial<Record<Networks, string>>;
-  ETHEREUM_PROVIDER_URL: string;
-  ETHERSCAN_URL: string;
 };
 
-export const ENV_KEYS = [
-  'VEGA_URL',
-  'VEGA_ENV',
-  'VEGA_CONFIG_URL',
-  'VEGA_NETWORKS',
-  'ETHEREUM_PROVIDER_URL',
-  'ETHERSCAN_URL',
-] as const;
-
-export type EnvKey = typeof ENV_KEYS[number];
+export type EnvKey = keyof Environment;
 
 export type RawEnvironment = Record<EnvKey, string>;
 
-export type Configuration = {
-  hosts: string[];
-};
+export type Configuration = z.infer<typeof configSchema>;
 
 export type ConfigStatus =
   | 'idle'

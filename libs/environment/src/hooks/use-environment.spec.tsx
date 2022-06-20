@@ -126,7 +126,9 @@ describe('useEnvironment hook', () => {
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    expect(result.error).not.toBe(undefined);
+    expect(result.error?.message).toContain(
+      `NX_VEGA_ENV is invalid, received "undefined" instead of: 'CUSTOM' | 'TESTNET' | 'STAGNET' | 'STAGNET2' | 'DEVNET' | 'MAINNET'`
+    );
   });
 
   it('throws a validation error when VEGA_ENV is not a valid network', () => {
@@ -134,7 +136,9 @@ describe('useEnvironment hook', () => {
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    expect(result.error).not.toBe(undefined);
+    expect(result.error).not.toContain(
+      `NX_VEGA_ENV is invalid, received "SOMETHING" instead of: CUSTOM | TESTNET | STAGNET | STAGNET2 | DEVNET | MAINNET`
+    );
   });
 
   it('when VEGA_NETWORKS is not a valid json, prints a warning and continues without using the value from it', () => {
@@ -160,7 +164,9 @@ describe('useEnvironment hook', () => {
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    expect(result.error).not.toBe(undefined);
+    expect(result.error?.message).toContain(
+      `All keys in NX_VEGA_NETWORKS must represent a valid environment: CUSTOM | TESTNET | STAGNET | STAGNET2 | DEVNET | MAINNET`
+    );
   });
 
   it('throws a validation error when both VEGA_URL and VEGA_CONFIG_URL are missing in the environment', () => {
@@ -169,7 +175,9 @@ describe('useEnvironment hook', () => {
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    expect(result.error).not.toBe(undefined);
+    expect(result.error?.message).toContain(
+      `Must provide either NX_VEGA_CONFIG_URL or NX_VEGA_URL in the environment.`
+    );
   });
 
   it.each`
@@ -197,4 +205,24 @@ describe('useEnvironment hook', () => {
       });
     }
   );
+
+  it('throws a validation error when NX_ETHERSCAN_URL is not a valid url', async () => {
+    process.env['NX_ETHERSCAN_URL'] = 'invalid-url';
+    const { result } = renderHook(() => useEnvironment(), {
+      wrapper: MockWrapper,
+    });
+    expect(result.error?.message).toContain(
+      `The NX_ETHERSCAN_URL environment variable must be a valid url`
+    );
+  });
+
+  it('throws a validation error when NX_ETHEREUM_PROVIDER_URL is not a valid url', async () => {
+    process.env['NX_ETHEREUM_PROVIDER_URL'] = 'invalid-url';
+    const { result } = renderHook(() => useEnvironment(), {
+      wrapper: MockWrapper,
+    });
+    expect(result.error?.message).toContain(
+      `The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url`
+    );
+  });
 });

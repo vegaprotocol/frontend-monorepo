@@ -24,9 +24,9 @@ const getCachedConfig = () => {
   if (value) {
     try {
       const config = JSON.parse(value) as Configuration;
-      const hasValidConfig = validateConfiguration(config);
+      const hasError = validateConfiguration(config);
 
-      if (!hasValidConfig) {
+      if (hasError) {
         throw new Error('Invalid configuration found in the storage.');
       }
 
@@ -58,10 +58,10 @@ export const useConfig = (
       (async () => {
         setStatus('loading-config');
         try {
-          const response = await fetch(environment.VEGA_CONFIG_URL);
+          const response = await fetch(environment.VEGA_CONFIG_URL ?? '');
           const configData: Configuration = await response.json();
 
-          if (!validateConfiguration(configData)) {
+          if (validateConfiguration(configData)) {
             setStatus('error-validating-config');
             return;
           }

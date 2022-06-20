@@ -1,103 +1,83 @@
-import Ajv from 'ajv';
-import compileErrors from 'better-ajv-errors';
+import type { ZodIssue } from 'zod';
+import z from 'zod';
 import type { Environment } from '../types';
-import { Networks, ENV_KEYS } from '../types';
+import { compileErrors } from './compile-errors';
 
-const ajv = new Ajv({ allErrors: true });
+export enum Networks {
+  CUSTOM = 'CUSTOM',
+  TESTNET = 'TESTNET',
+  STAGNET = 'STAGNET',
+  STAGNET2 = 'STAGNET2',
+  DEVNET = 'DEVNET',
+  MAINNET = 'MAINNET',
+}
 
-const envSchema = {
-  type: 'object',
-  additionalProperties: false,
-  required: ENV_KEYS.filter(
-    (key) => !['VEGA_URL', 'VEGA_CONFIG_URL'].includes(key)
-  ),
-  properties: {
-    VEGA_ENV: {
-      type: 'string',
-      enum: Object.values(Networks),
-    },
-    VEGA_NETWORKS: {
-      type: 'object',
-      additionalProperties: false,
-      properties: Object.values(Networks).reduce(
-        (acc, key) => ({
+const schemaObject = {
+  VEGA_URL: z.optional(z.string()),
+  VEGA_CONFIG_URL: z.optional(z.string()),
+  ETHEREUM_PROVIDER_URL: z.string().url({
+    message:
+      'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
+  }),
+  ETHERSCAN_URL: z.string().url({
+    message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
+  }),
+  VEGA_ENV: z.nativeEnum(Networks),
+  VEGA_NETWORKS: z
+    .object(
+      Object.keys(Networks).reduce(
+        (acc, env) => ({
           ...acc,
-          [key]: {
-            type: 'string',
-          },
+          [env]: z.optional(z.string()),
         }),
-        { CUSTOM: { type: 'string' } }
-      ),
-    },
-    ETHEREUM_PROVIDER_URL: {
-      type: 'string',
-    },
-    ETHERSCAN_URL: {
-      type: 'string',
-    },
+        {}
+      )
+    )
+    .strict({
+      message: `All keys in NX_VEGA_NETWORKS must represent a valid environment: ${Object.keys(
+        Networks
+      ).join(' | ')}`,
+    }),
+};
+
+export const ENV_KEYS = Object.keys(schemaObject) as Array<
+  keyof typeof schemaObject
+>;
+
+const compileIssue = (issue: ZodIssue) => {
+  switch (issue.code) {
+    case 'invalid_type':
+      return `NX_${issue.path[0]} is invalid, received "${issue.received}" instead of: ${issue.expected}`;
+    case 'invalid_enum_value':
+      return `NX_${issue.path[0]} is invalid, received "${
+        issue.received
+      }" instead of: ${issue.options.join(' | ')}`;
+    default:
+      return issue.message;
+  }
+};
+
+export const envSchema = z.object(schemaObject).refine(
+  (data) => {
+    return !(!data.VEGA_URL && !data.VEGA_CONFIG_URL);
   },
-};
-
-const connectionSchema = {
-  type: 'object',
-  anyOf: [
-    {
-      // config url is not needed when there's an explicit vega url provided
-      additionalProperties: false,
-      required: ['VEGA_URL', 'VEGA_CONFIG_URL'],
-      properties: {
-        VEGA_URL: {
-          type: 'string',
-        },
-        VEGA_CONFIG_URL: {
-          type: ['string', 'null'],
-        },
-      },
-    },
-    {
-      // vega url is optional when there's a config url provided
-      additionalProperties: false,
-      required: ['VEGA_URL', 'VEGA_CONFIG_URL'],
-      properties: {
-        VEGA_URL: {
-          type: ['string', 'null'],
-        },
-        VEGA_CONFIG_URL: {
-          type: 'string',
-        },
-      },
-    },
-  ],
-};
-
-const validateEnv = ajv.compile(envSchema);
-const validateConnection = ajv.compile(connectionSchema);
+  {
+    message:
+      'Must provide either NX_VEGA_CONFIG_URL or NX_VEGA_URL in the environment.',
+  }
+);
 
 export const validateEnvironment = (
   environment: Environment
 ): string | undefined => {
-  const { VEGA_URL, VEGA_CONFIG_URL, ...rest } = environment;
-
-  const isValidEnv = validateEnv(rest);
-  const hasValidConnectionConfig = validateConnection({
-    VEGA_URL: VEGA_URL ?? null,
-    VEGA_CONFIG_URL: VEGA_CONFIG_URL ?? null,
-  });
-
-  if (!isValidEnv && validateEnv.errors) {
-    return compileErrors(envSchema, environment, validateEnv.errors, {
-      indent: 2,
-    });
-  }
-
-  if (!hasValidConnectionConfig && validateConnection.errors) {
+  try {
+    envSchema.parse(environment);
+    return undefined;
+  } catch (err: any) {
     return compileErrors(
-      connectionSchema,
-      environment,
-      validateConnection.errors,
-      { indent: 2 }
+      'Error processing the vega app environment',
+      err,
+      compileIssue
     );
   }
-
-  return undefined;
 };

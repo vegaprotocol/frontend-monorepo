@@ -67,7 +67,7 @@ beforeEach(() => {
   global.fetch.mockReset();
   // @ts-ignore typescript doesn't recognise the mocked instance
   global.fetch.mockImplementation(
-    setupFetch(mockEnvironment.VEGA_CONFIG_URL, mockHostsMap)
+    setupFetch(mockEnvironment.VEGA_CONFIG_URL ?? '', mockHostsMap)
   );
 });
 
@@ -149,7 +149,7 @@ describe('useConfig hook', () => {
 
     // @ts-ignore typescript doesn't recognise the mocked instance
     global.fetch.mockImplementation(
-      setupFetch(mockEnvironment.VEGA_CONFIG_URL, mockHostsMapScoped)
+      setupFetch(mockEnvironment.VEGA_CONFIG_URL ?? '', mockHostsMapScoped)
     );
 
     const { result, waitForNextUpdate } = renderHook(() =>
@@ -215,7 +215,7 @@ describe('useConfig hook', () => {
 
     // @ts-ignore typescript doesn't recognise the mocked instance
     global.fetch.mockImplementation(
-      setupFetch(mockEnvironment.VEGA_CONFIG_URL, mockHostsMapScoped)
+      setupFetch(mockEnvironment.VEGA_CONFIG_URL ?? '', mockHostsMapScoped)
     );
 
     const { result, waitForNextUpdate } = renderHook(() =>

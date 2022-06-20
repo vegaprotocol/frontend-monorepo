@@ -1,22 +1,18 @@
-import Ajv from 'ajv';
+import z from 'zod';
 import type { Configuration } from '../types';
+import { compileErrors } from './compile-errors';
 
-const ajv = new Ajv();
+export const configSchema = z.object({
+  hosts: z.array(z.string()),
+});
 
-const schema = {
-  type: 'object',
-  additionalProperties: false,
-  properties: {
-    hosts: {
-      type: 'array',
-      items: {
-        type: 'string',
-      },
-    },
-  },
+export const validateConfiguration = (
+  config: Configuration
+): string | undefined => {
+  try {
+    configSchema.parse(config);
+    return undefined;
+  } catch (err: any) {
+    return compileErrors('Error processing the vega app configuration', err);
+  }
 };
-
-const validate = ajv.compile(schema);
-
-export const validateConfiguration = (config: Configuration) =>
-  validate(config);
