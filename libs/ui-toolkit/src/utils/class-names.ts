@@ -9,8 +9,3 @@ export const includesBorderWidth = (className?: string) =>
 
 export const includesHeight = (className?: string) =>
   !!className?.match(/(^| )h-(\d+|auto)( |$)/);
-
-export const includesTextColor = (className?: string) =>
-  !!className?.match(
-    /(^|:| )text-((?!left|center|right|justify|start|end|ui|clip|ellipsis|xs|sm|base|lg|\d*xl|h\d)\w+)( |$)/
-  );

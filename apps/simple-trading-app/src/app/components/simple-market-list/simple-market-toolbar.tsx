@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -9,7 +9,6 @@ import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import {
-  Button,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItemIndicator,
@@ -26,18 +25,17 @@ const SimpleMarketToolbar = () => {
   const [activeNumber, setActiveNumber] = useState(
     products?.length ? products.indexOf(params.product || '') + 1 : -1
   );
-  const [activeAsset, setActiveAsset] = useState(params.asset || 'all');
-  const [activeState, setActiveState] = useState(params.state || 'Active');
+
   const [sliderStyles, setSliderStyles] = useState<Record<string, string>>({});
   const slideContRef = useRef<HTMLUListElement | null>(null);
 
   useEffect(() => {
-    // handle corner case when there is product
-    // param, but no products yet
-    if (activeNumber < 0 && products?.length) {
-      setActiveNumber(products.indexOf(params.product || '') + 1 || 0);
+    if (products.length) {
+      setActiveNumber(products.indexOf(params.product || '') + 1);
+    } else {
+      setActiveNumber(-1);
     }
-  }, [activeNumber, setActiveNumber, products, params]);
+  }, [params, products, setActiveNumber]);
 
   useEffect(() => {
     const contStyles = (
@@ -56,20 +54,17 @@ const SimpleMarketToolbar = () => {
     setSliderStyles(styles);
   }, [activeNumber, slideContRef]);
 
-  useEffect(() => {
-    if (activeNumber < 0) {
-      return;
-    }
-    const asset =
-      activeNumber && activeAsset !== 'all' ? `/${activeAsset}` : '';
-    const product = activeNumber
-      ? `/${products[activeNumber - 1]}`
-      : asset
-      ? '/all'
-      : '';
-    const state = activeState !== 'Active' || product ? `/${activeState}` : '';
-    navigate(`/markets${state}${product}${asset}`);
-  }, [activeNumber, activeAsset, activeState, products, navigate]);
+  const onStateChange = useCallback(
+    (activeState: string) => {
+      const asset =
+        params.asset && params.asset !== 'all' ? `/${params.asset}` : '';
+      const product = params.product ? `/${params.product}` : '';
+      const state =
+        activeState !== 'Active' || product ? `/${activeState}` : '';
+      navigate(`/markets${state}${product}${asset}`);
+    },
+    [params, navigate]
+  );
 
   return (
     <div className="w-max mb-16">
@@ -80,32 +75,31 @@ const SimpleMarketToolbar = () => {
         aria-label={t('Product type')}
       >
         <li key="all" className="md:mr-16 whitespace-nowrap">
-          <Button
-            variant="inline"
-            onClick={() => {
-              setActiveNumber(0);
-              setActiveAsset('all');
-            }}
+          <Link
+            to={`/markets${
+              params.state && params.state !== 'Active'
+                ? '/' + params.state
+                : ''
+            }`}
+            aria-label={t('All markets')}
             className={classNames('text-h5 pl-0 text-pink hover:opacity-75', {
               active: !activeNumber,
             })}
-            aria-label={t('All markets')}
           >
             {t('All Markets')}
-          </Button>
+          </Link>
         </li>
         {products.map((product, i) => (
           <li key={product} className="mx-16 whitespace-nowrap">
-            <Button
-              variant="inline"
-              onClick={() => setActiveNumber(++i)}
+            <Link
+              to={`/markets/${params.state || 'Active'}/${product}`}
               className={classNames('text-h5 hover:opacity-75', {
                 active: activeNumber - 1 === i,
               })}
               aria-label={product}
             >
               {product}
-            </Button>
+            </Link>
           </li>
         ))}
         <li
@@ -122,8 +116,11 @@ const SimpleMarketToolbar = () => {
               data-testid="state-trigger"
             >
               <div className="w-full justify-between uppercase inline-flex items-center justify-center box-border">
-                {STATES_FILTER.find((state) => state.value === activeState)
-                  ?.text || activeState}
+                {STATES_FILTER.find(
+                  (state) =>
+                    state.value === params.state ||
+                    (!params.state && state.value === 'Active')
+                )?.text || params.state}
                 <Icon
                   name={IconNames.ARROW_DOWN}
                   className={classNames(
@@ -142,8 +139,11 @@ const SimpleMarketToolbar = () => {
                   className="uppercase text-ui"
                   key={value}
                   inset
-                  checked={value === activeState}
-                  onCheckedChange={() => setActiveState(value)}
+                  checked={
+                    value === params.state ||
+                    (!params.state && value === 'Active')
+                  }
+                  onCheckedChange={() => onStateChange(value)}
                 >
                   <DropdownMenuItemIndicator>
                     <Icon name="tick" />
@@ -162,31 +162,29 @@ const SimpleMarketToolbar = () => {
             aria-label={t('Asset on the market')}
           >
             <li key="all">
-              <Button
-                variant="inline"
-                onClick={() => setActiveAsset('all')}
-                className={classNames('uppercase pl-0 md:pl-4', {
-                  'text-deemphasise': activeAsset !== 'all',
-                  active: activeAsset === 'all',
+              <Link
+                to={`/markets/${params.state}/${params.product}`}
+                className={classNames('uppercase pl-0 md:pl-4 text-ui', {
+                  'text-deemphasise': params.asset && params.asset !== 'all',
+                  active: !params.asset || params.asset === 'all',
                 })}
                 aria-label={t('All assets')}
               >
                 {t('All')}
-              </Button>
+              </Link>
             </li>
             {assetsPerProduct[products[activeNumber - 1]]?.map((asset) => (
               <li key={asset}>
-                <Button
-                  variant="inline"
-                  onClick={() => setActiveAsset(asset)}
-                  className={classNames('uppercase', {
-                    'text-deemphasise': activeAsset !== asset,
-                    active: activeAsset === asset,
+                <Link
+                  to={`/markets/${params.state}/${params.product}/${asset}`}
+                  className={classNames('uppercase text-ui', {
+                    'text-deemphasise': params.asset !== asset,
+                    active: params.asset === asset,
                   })}
                   aria-label={asset}
                 >
                   {asset}
-                </Button>
+                </Link>
               </li>
             ))}
           </ul>
