@@ -14,8 +14,8 @@ interface VegaContracts {
   lockedAddress: string;
 }
 
-const customClaimAddress = process.env['CUSTOM_CLAIM_ADDRESS'] as string;
-const customLockedAddress = process.env['CUSTOM_LOCKED_ADDRESS'] as string;
+const customClaimAddress = process.env['NX_CUSTOM_CLAIM_ADDRESS'] as string;
+const customLockedAddress = process.env['NX_CUSTOM_LOCKED_ADDRESS'] as string;
 
 export const ContractAddresses: {
   [key in Networks | 'CUSTOM']: VegaContracts;
