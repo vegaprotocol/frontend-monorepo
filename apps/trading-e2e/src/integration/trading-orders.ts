@@ -3,7 +3,9 @@ import { mockTradingPage } from '../support/trading';
 import { connectVegaWallet } from '../support/vega-wallet';
 
 beforeEach(() => {
-  mockTradingPage(MarketState.Active);
+  cy.mockGQL((req) => {
+    mockTradingPage(req, MarketState.Active);
+  });
   cy.visit('/markets/market-0');
 });
 

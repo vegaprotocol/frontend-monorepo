@@ -3,10 +3,9 @@ import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, GridTab, GridTabs } from '@vegaprotocol/ui-toolkit';
 
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
-import { GridTab, GridTabs } from '../../components/grid-tabs';
 
 const Portfolio = () => {
   const tabClassName = 'p-[16px] pl-[316px]';

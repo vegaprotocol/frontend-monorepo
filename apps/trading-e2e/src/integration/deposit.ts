@@ -1,15 +1,11 @@
-import { hasOperationName } from '../support';
+import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateDepositPage } from '../support/mocks/generate-deposit-page';
 
 describe('deposit form validation', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
-    cy.mockGQL('DepositPage', (req) => {
-      if (hasOperationName(req, 'DepositPage')) {
-        req.reply({
-          body: { data: generateDepositPage() },
-        });
-      }
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'DepositPage', generateDepositPage());
     });
     cy.visit('/portfolio/deposit');
 
