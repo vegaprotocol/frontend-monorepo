@@ -1,6 +1,6 @@
 import { OrderTimeInForce, OrderType, OrderSide } from '@vegaprotocol/wallet';
-import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
 import { toDecimal } from '@vegaprotocol/react-helpers';
+import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 
 export type Order =
   | {

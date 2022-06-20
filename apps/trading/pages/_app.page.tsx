@@ -25,47 +25,49 @@ function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
   const { VEGA_NETWORKS } = useEnvironment();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_, toggleTheme] = useThemeSwitcher();
+  const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
-    <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
-      <div className="flex items-stretch border-b-[7px] border-vega-yellow">
-        <Navbar />
-        <div className="flex items-center gap-4 ml-auto mr-8">
-          <VegaWalletConnectButton
-            setConnectDialog={(open) => {
-              store.setVegaWalletConnectDialog(open);
-            }}
-            setManageDialog={(open) => {
-              store.setVegaWalletManageDialog(open);
-            }}
-          />
-          <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
+    <ThemeContext.Provider value={theme}>
+      <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
+        <div className="flex items-stretch border-b-[7px] border-vega-yellow">
+          <Navbar />
+          <div className="flex items-center gap-4 ml-auto mr-8">
+            <VegaWalletConnectButton
+              setConnectDialog={(open) => {
+                store.setVegaWalletConnectDialog(open);
+              }}
+              setManageDialog={(open) => {
+                store.setVegaWalletManageDialog(open);
+              }}
+            />
+            <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
+          </div>
         </div>
+        <main data-testid={pageProps.page}>
+          {/* @ts-ignore conflict between @types/react and nextjs internal types */}
+          <Component {...pageProps} />
+        </main>
+        <VegaConnectDialog
+          connectors={Connectors}
+          dialogOpen={store.vegaWalletConnectDialog}
+          setDialogOpen={(open) => store.setVegaWalletConnectDialog(open)}
+        />
+        <VegaManageDialog
+          dialogOpen={store.vegaWalletManageDialog}
+          setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
+        />
+        <NetworkSwitcherDialog
+          dialogOpen={store.vegaNetworkSwitcherDialog}
+          setDialogOpen={(open) => store.setVegaNetworkSwitcherDialog(open)}
+          onConnect={({ network }) => {
+            if (VEGA_NETWORKS[network]) {
+              window.location.href = VEGA_NETWORKS[network];
+            }
+          }}
+        />
       </div>
-      <main data-testid={pageProps.page}>
-        {/* @ts-ignore conflict between @types/react and nextjs internal types */}
-        <Component {...pageProps} />
-      </main>
-      <VegaConnectDialog
-        connectors={Connectors}
-        dialogOpen={store.vegaWalletConnectDialog}
-        setDialogOpen={(open) => store.setVegaWalletConnectDialog(open)}
-      />
-      <VegaManageDialog
-        dialogOpen={store.vegaWalletManageDialog}
-        setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
-      />
-      <NetworkSwitcherDialog
-        dialogOpen={store.vegaNetworkSwitcherDialog}
-        setDialogOpen={(open) => store.setVegaNetworkSwitcherDialog(open)}
-        onConnect={({ network }) => {
-          if (VEGA_NETWORKS[network]) {
-            window.location.href = VEGA_NETWORKS[network];
-          }
-        }}
-      />
-    </div>
+    </ThemeContext.Provider>
   );
 }
 
