@@ -14,5 +14,5 @@ export const FillsContainer = () => {
     );
   }
 
-  return <FillsManager />;
+  return <FillsManager partyId={keypair.pub} />;
 };
