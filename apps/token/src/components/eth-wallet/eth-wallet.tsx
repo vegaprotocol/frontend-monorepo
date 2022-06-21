@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { getButtonClasses, Button } from '@vegaprotocol/ui-toolkit';
 
 import {
   AppStateActionType,
@@ -166,15 +166,17 @@ const ConnectedKey = () => {
         />
       )}
       <WalletCardActions>
-        <Link className="flex-1 pr-8" to={`${Routes.STAKING}/associate`}>
-          <Button variant={'secondary'} className="w-full">
-            {t('associate')}
-          </Button>
+        <Link
+          className={getButtonClasses('flex-1 mr-4', 'secondary')}
+          to={`${Routes.STAKING}/associate`}
+        >
+          {t('associate')}
         </Link>
-        <Link className="flex-1 pl-8" to={`${Routes.STAKING}/disassociate`}>
-          <Button variant={'secondary'} className="w-full">
-            {t('disassociate')}
-          </Button>
+        <Link
+          className={getButtonClasses('flex-1 ml-4', 'secondary')}
+          to={`${Routes.STAKING}/disassociate`}
+        >
+          {t('disassociate')}
         </Link>
       </WalletCardActions>
     </>
