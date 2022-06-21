@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { EnvironmentProvider, NetworkLoader, NetworkSwitcherDialog } from '@vegaprotocol/environment';
+import {
+  EnvironmentProvider,
+  NetworkLoader,
+  NetworkSwitcherDialog,
+} from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
