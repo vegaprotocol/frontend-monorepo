@@ -33,13 +33,13 @@ it(`Applies class for danger intent`, () => {
 it(`Applies class for primary intent`, () => {
   render(<Callout intent={Intent.Primary} />);
   expect(screen.getByTestId('callout')).toHaveClass(
-    'border-prompt dark:border-prompt-dark'
+    'border-black dark:border-white'
   );
 });
 
 it(`Applies class for none intent`, () => {
   render(<Callout />);
   expect(screen.getByTestId('callout')).toHaveClass(
-    'border-prompt dark:border-prompt-dark'
+    'border-black dark:border-white'
   );
 });

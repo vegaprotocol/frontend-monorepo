@@ -25,14 +25,22 @@ const Template: ComponentStory<typeof Dialog> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   open: false,
-  title: 'Title',
+  title: 'No intent supplied',
   children: <p>Some content</p>,
+};
+
+export const Primary = Template.bind({});
+Primary.args = {
+  open: false,
+  title: 'Intent: Primary',
+  children: <p>Some content</p>,
+  intent: Intent.Primary,
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
   open: false,
-  title: 'Danger',
+  title: 'Intent: Danger',
   children: <p>Some content</p>,
   intent: Intent.Danger,
 };
@@ -40,7 +48,7 @@ Danger.args = {
 export const Warning = Template.bind({});
 Warning.args = {
   open: false,
-  title: 'Warning',
+  title: 'Intent: Warning',
   children: <p>Some content</p>,
   intent: Intent.Warning,
 };
@@ -48,15 +56,7 @@ Warning.args = {
 export const Success = Template.bind({});
 Success.args = {
   open: false,
-  title: 'Success',
+  title: 'Intent: Success',
   children: <p>Some content</p>,
   intent: Intent.Success,
-};
-
-export const Help = Template.bind({});
-Help.args = {
-  open: false,
-  title: 'Help',
-  children: <p>Some content</p>,
-  intent: Intent.Help,
 };

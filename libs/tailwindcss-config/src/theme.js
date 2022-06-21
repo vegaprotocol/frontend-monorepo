@@ -64,10 +64,6 @@ const colours = {
   warning: '#FF7A1A',
   selected: '#DFFF0B',
   success: '#00F780',
-  help: '#494949',
-  highlight: '#E5E5E5',
-  'prompt-dark': '#FFFFFF',
-  prompt: '#000000',
   'danger-bg': '#9E0025', // for white text
 };
 

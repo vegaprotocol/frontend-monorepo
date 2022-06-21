@@ -21,37 +21,31 @@ const Template: ComponentStory<typeof Callout> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  children: 'Content',
+  children: 'No intent supplied',
 };
 
 export const Primary = Template.bind({});
 Primary.args = {
   intent: Intent.Primary,
-  children: 'Content',
+  children: 'Intent: Primary',
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
   intent: Intent.Danger,
-  children: 'Content',
+  children: 'Intent: Danger',
 };
 
 export const Warning = Template.bind({});
 Warning.args = {
   intent: Intent.Warning,
-  children: 'Content',
+  children: 'Intent: Warning',
 };
 
 export const Success = Template.bind({});
 Success.args = {
   intent: Intent.Success,
-  children: 'Content',
-};
-
-export const Help = Template.bind({});
-Help.args = {
-  intent: Intent.Help,
-  children: 'Content',
+  children: 'Intent: Success',
 };
 
 export const IconAndContent = Template.bind({});
