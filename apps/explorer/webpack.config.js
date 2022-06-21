@@ -11,9 +11,6 @@ module.exports = (config, context) => {
     : [];
   return {
     ...config,
-    plugins: [
-      ...additionalPlugins,
-      ...config.plugins,
-    ],
+    plugins: [...additionalPlugins, ...config.plugins],
   };
 };
