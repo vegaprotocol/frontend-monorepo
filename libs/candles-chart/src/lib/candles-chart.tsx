@@ -64,7 +64,7 @@ export const CandlesChartContainer = ({
     <div className="h-full flex flex-col">
       <div className="p-8 flex flex-row flex-wrap gap-8">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true} className={dropdownTriggerStyles}>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
             {t('Interval')}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -90,7 +90,7 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true} className={dropdownTriggerStyles}>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
             <Icon name={chartTypeIcon.get(chartType) as IconName} />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -112,7 +112,7 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true} className={dropdownTriggerStyles}>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
             {t('Overlays')}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -141,7 +141,7 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true} className={dropdownTriggerStyles}>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
             {t('Studies')}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
