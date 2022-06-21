@@ -20,7 +20,7 @@ const Portfolio = () => {
               {t('Filters')}
             </h2>
           </aside>
-          <section data-testid="portfolio-grid">
+          <section data-testid="portfolio-grid" className="h-[calc(100%-200px)]">
             <GridTabs>
               <GridTab id="positions" name={t('Positions')}>
                 <div className={tabClassName}>
@@ -49,8 +49,8 @@ const Portfolio = () => {
                 <div className={tabClassName}>
                   <h4 className="text-h4 text-black dark:text-white">
                     {t('History')}
-                    <TransactionsContainer />
                   </h4>
+                  <TransactionsContainer />
                 </div>
               </GridTab>
             </GridTabs>
