@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
+import { EnvironmentProvider, NetworkLoader, NetworkSwitcherDialog } from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
+import { Footer } from './components/footer';
 import { Main } from './components/main';
 import { TendermintWebsocketProvider } from './contexts/websocket/tendermint-websocket-provider';
 
 function App() {
+  const [isNetworkConfigOpen, setNetworkConfigOpen] = useState(false);
   const [theme, toggleTheme] = useThemeSwitcher();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -36,6 +38,7 @@ function App() {
                 />
                 <Nav menuOpen={menuOpen} />
                 <Main />
+                <Footer />
               </div>
             </div>
           </NetworkLoader>

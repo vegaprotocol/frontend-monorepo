@@ -10,7 +10,7 @@ interface LozengeProps {
 }
 
 const getLozengeClasses = (
-  variant: LozengeProps['variant'],
+  variant?: LozengeProps['variant'],
   className?: string
 ) => {
   return classNames(
@@ -22,7 +22,7 @@ const getLozengeClasses = (
 
 export const Lozenge = ({
   children,
-  variant = Intent.None,
+  variant,
   className,
 }: LozengeProps) => {
   return (
