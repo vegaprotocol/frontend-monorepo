@@ -9,16 +9,44 @@ import {
   KeyValueTable,
   KeyValueTableRow,
   AccordionPanel,
+  AsyncRenderer,
+  Splash,
 } from '@vegaprotocol/ui-toolkit';
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type {
+  DealTicketQuery,
+  DealTicketQuery_market,
+} from './__generated__/DealTicketQuery';
 import BigNumber from 'bignumber.js';
+import { useQuery } from '@apollo/client';
+import { DEAL_TICKET_QUERY } from './deal-ticket-container';
 
 export interface InfoProps {
   market: DealTicketQuery_market;
 }
+
+export interface MarketInfoContainerProps {
+  marketId: string;
+}
+export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
+  const { data, loading, error } = useQuery(DEAL_TICKET_QUERY, {
+    variables: { marketId },
+  });
+
+  return (
+    <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
+      {data && data.market ? (
+        <Info market={data.market} />
+      ) : (
+        <Splash>
+          <p>{t('Could not load market')}</p>
+        </Splash>
+      )}
+    </AsyncRenderer>
+  );
+};
 
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =

@@ -2,7 +2,10 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import {
+  DealTicketContainer,
+  MarketInfoContainer,
+} from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
@@ -30,6 +33,7 @@ const TradingViews = {
   Positions: PositionsContainer,
   Accounts: AccountsContainer,
   Trades: TradesContainer,
+  Info: MarketInfoContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -52,12 +56,12 @@ export const TradeMarketHeader = ({
     'font-sans font-normal mb-0 text-dark/80 dark:text-white/80 text-ui-small';
   const itemValueClassName =
     'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
-  const headerClassname = classNames(
+  const headerClassName = classNames(
     'w-full p-8 bg-white dark:bg-black',
     className
   );
   return (
-    <header className={headerClassname}>
+    <header className={headerClassName}>
       <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
@@ -128,7 +132,14 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           </GridTabs>
         </TradeGridChild>
         <TradeGridChild className="row-start-1 row-end-3">
-          <TradingViews.Ticket marketId={market.id} />
+          <GridTabs>
+            <GridTab id="ticket" name={t('Ticket')}>
+              <TradingViews.Ticket marketId={market.id} />
+            </GridTab>
+            <GridTab id="info" name={t('Info')}>
+              <TradingViews.Info marketId={market.id} />
+            </GridTab>
+          </GridTabs>
         </TradeGridChild>
         <TradeGridChild className="row-start-1 row-end-3">
           <GridTabs>
