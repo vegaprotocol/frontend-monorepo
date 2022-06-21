@@ -67,7 +67,7 @@ const SimpleMarketToolbar = () => {
   );
 
   return (
-    <div className="w-max mb-16">
+    <div className="w-max mb-16 font-alpha">
       <ul
         ref={slideContRef}
         className="grid grid-flow-col auto-cols-min gap-8 relative pb-4 mb-16"
@@ -93,9 +93,12 @@ const SimpleMarketToolbar = () => {
           <li key={product} className="mx-16 whitespace-nowrap">
             <Link
               to={`/markets/${params.state || 'Active'}/${product}`}
-              className={classNames('text-h5 hover:opacity-75', {
-                active: activeNumber - 1 === i,
-              })}
+              className={classNames(
+                'text-h5 hover:opacity-75 text-black dark:text-white',
+                {
+                  active: activeNumber - 1 === i,
+                }
+              )}
               aria-label={product}
             >
               {product}
@@ -112,7 +115,7 @@ const SimpleMarketToolbar = () => {
         <div className="pb-8">
           <DropdownMenu onOpenChange={(open) => setOpen(open)}>
             <DropdownMenuTrigger
-              className="mr-16 w-auto text-ui"
+              className="mr-16 w-auto text-capMenu text-black dark:text-white"
               data-testid="state-trigger"
             >
               <div className="w-full justify-between uppercase inline-flex items-center justify-center box-border">
@@ -136,7 +139,7 @@ const SimpleMarketToolbar = () => {
             <DropdownMenuContent>
               {STATES_FILTER.map(({ value, text }) => (
                 <DropdownMenuCheckboxItem
-                  className="uppercase text-ui"
+                  className="uppercase text-ui dark:text-white"
                   key={value}
                   inset
                   checked={
@@ -154,7 +157,9 @@ const SimpleMarketToolbar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="hidden md:block">|</div>
+        <div className="hidden md:block text-deemphasise dark:text-midGrey">
+          |
+        </div>
         {activeNumber > 0 && (
           <ul
             className="grid grid-flow-col auto-cols-min md:gap-16 sm:gap-12 pb-4 md:ml-16"
@@ -164,9 +169,11 @@ const SimpleMarketToolbar = () => {
             <li key="all">
               <Link
                 to={`/markets/${params.state}/${params.product}`}
-                className={classNames('uppercase pl-0 md:pl-4 text-ui', {
-                  'text-deemphasise': params.asset && params.asset !== 'all',
-                  active: !params.asset || params.asset === 'all',
+                className={classNames('uppercase pl-0 md:pl-4 text-capMenu', {
+                  'text-deemphasise dark:text-midGrey':
+                    params.asset && params.asset !== 'all',
+                  'active text-black dark:text-white':
+                    !params.asset || params.asset === 'all',
                 })}
                 aria-label={t('All assets')}
               >
@@ -177,9 +184,10 @@ const SimpleMarketToolbar = () => {
               <li key={asset}>
                 <Link
                   to={`/markets/${params.state}/${params.product}/${asset}`}
-                  className={classNames('uppercase text-ui', {
-                    'text-deemphasise': params.asset !== asset,
-                    active: params.asset === asset,
+                  className={classNames('uppercase text-capMenu', {
+                    'text-deemphasise dark:text-midGrey':
+                      params.asset !== asset,
+                    'active text-black dark:text-white': params.asset === asset,
                   })}
                   aria-label={asset}
                 >
