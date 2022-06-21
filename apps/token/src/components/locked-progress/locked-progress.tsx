@@ -1,8 +1,8 @@
 import React from 'react';
-
 import { formatNumber } from '../../lib/format-number';
 import type { BigNumber } from '../../lib/bignumber';
 import { theme } from '@vegaprotocol/tailwindcss-config';
+import classnames from 'classnames';
 
 const Colors = theme.colors;
 
@@ -14,9 +14,10 @@ const ProgressContents = ({
   children: React.ReactNode;
 }) => (
   <div
-    className={`flex justify-between py-2 font-mono ${
-      light ? 'gap-0 px-0 text-black' : 'gap-y-0 gap-x-4'
-    }`}
+    className={classnames('flex justify-between py-2 font-mono', {
+      'gap-0 px-0 text-black': light,
+      'gap-y-0 gap-x-4': !light,
+    })}
   >
     {children}
   </div>
@@ -35,9 +36,12 @@ const ProgressIndicator = ({
     style={{
       backgroundColor: bgColor,
     }}
-    className={`inline-block w-12 h-12 border ${
-      side === 'left' ? 'mr-8' : 'ml-8'
-    } ${light ? 'border-black' : 'border-white'}`}
+    className={classnames('inline-block w-12 h-12 border', {
+      'mr-8': side === 'left',
+      'ml-8': side === 'right',
+      'border-black': light,
+      'border-white': !light,
+    })}
   />
 );
 
@@ -88,7 +92,12 @@ export const LockedProgress = ({
 
   return (
     <>
-      <div className={`flex border ${light ? 'border-black' : 'border-white'}`}>
+      <div
+        className={classnames('flex border', {
+          'border-black': light,
+          'border-white': !light,
+        })}
+      >
         <ProgressBar percentage={lockedPercentage} bgColor={leftColor} />
         <ProgressBar percentage={unlockedPercentage} bgColor={rightColor} />
       </div>
