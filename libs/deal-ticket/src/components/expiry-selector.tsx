@@ -11,7 +11,7 @@ export const ExpirySelector = ({ value, onSelect }: ExpirySelectorProps) => {
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
   return (
-    <FormGroup label="Expiry time/date" labelFor="expiration">
+    <FormGroup label="Expiry time/date">
       <Input
         data-testid="date-picker-field"
         id="expiration"

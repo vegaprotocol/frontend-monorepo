@@ -31,7 +31,7 @@ export const EthAddressInput = ({
   }, [connectedAddress, onChange, useConnectedWallet]);
 
   return (
-    <FormGroup label={t('To')} labelFor="ethAddressInput">
+    <FormGroup label={t('To')}>
       <Input
         data-testid="token-amount-input"
         className="token-input__input"

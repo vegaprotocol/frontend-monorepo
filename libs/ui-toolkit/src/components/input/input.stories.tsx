@@ -22,30 +22,6 @@ const customElementPlaceholder = (
 export const Default = Template.bind({});
 Default.args = {};
 
-export const WithLabel = Template.bind({});
-WithLabel.args = {
-  label: 'Input label',
-};
-
-export const WithLabelAndError = Template.bind({});
-WithLabelAndError.args = {
-  label: 'Input label',
-  hasError: true,
-};
-
-export const WithLabelAndDescription = Template.bind({});
-WithLabelAndDescription.args = {
-  label: 'Input label',
-  labelDescription: 'Label description text',
-};
-
-export const WithLabelDescriptionAndError = Template.bind({});
-WithLabelDescriptionAndError.args = {
-  hasError: true,
-  label: 'Input label',
-  labelDescription: 'Label description text',
-};
-
 export const WithError = Template.bind({});
 WithError.args = {
   hasError: true,

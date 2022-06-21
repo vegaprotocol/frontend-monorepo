@@ -5,7 +5,7 @@ import { FormGroup } from './form-group';
 describe('FormGroup', () => {
   it('should render label if given a label', () => {
     render(
-      <FormGroup label="label" labelFor="test">
+      <FormGroup label="label">
         <input id="test"></input>
       </FormGroup>
     );
@@ -14,7 +14,7 @@ describe('FormGroup', () => {
 
   it('should add classes passed in', () => {
     render(
-      <FormGroup label="label" labelFor="test" className="fighter">
+      <FormGroup label="label" className="fighter">
         <input id="test"></input>
       </FormGroup>
     );
@@ -23,7 +23,7 @@ describe('FormGroup', () => {
 
   it('should render children', () => {
     render(
-      <FormGroup label="label" labelFor="test" className="fighter">
+      <FormGroup label="label" className="fighter">
         <input data-testid="foo" id="test"></input>
       </FormGroup>
     );

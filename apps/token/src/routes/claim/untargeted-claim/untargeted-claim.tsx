@@ -78,7 +78,6 @@ export const UntargetedClaim = ({
       </BulletHeader>
       <FormGroup
         label={t('Select your country or region of current residence')}
-        labelFor="country-selector"
       >
         <CountrySelector
           code={state.claimData?.country}

@@ -9,8 +9,6 @@ type InputRootProps = InputHTMLAttributes<HTMLInputElement> & {
   hasError?: boolean;
   disabled?: boolean;
   className?: string;
-  label?: string;
-  labelDescription?: string;
 };
 
 type NoPrepend = {
@@ -118,8 +116,6 @@ const getAffixElement = ({
 export const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
-      label,
-      labelDescription,
       prependIconName,
       prependIconDescription,
       appendIconName,
@@ -154,27 +150,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       />
     );
 
-    const inputWithLabel = (
-      <label>
-        <div
-          className={classNames(
-            'mb-4 text-body-large text-black dark:text-white',
-            {
-              'border-l-4 border-danger pl-8': hasError,
-            }
-          )}
-        >
-          <div className="font-bold mb-2">{label}</div>
-          {labelDescription && (
-            <div className={classNames({ 'text-danger': hasError })}>
-              {labelDescription}
-            </div>
-          )}
-        </div>
-        {input}
-      </label>
-    );
-
     const element = getAffixElement({
       prependIconName,
       prependIconDescription,
@@ -188,12 +163,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       return (
         <div className="flex items-center relative">
           {hasPrepended && element}
-          {label ? inputWithLabel : input}
+          {input}
           {hasAppended && element}
         </div>
       );
     }
 
-    return label ? inputWithLabel : input;
+    return input;
   }
 );

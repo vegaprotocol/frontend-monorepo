@@ -8,23 +8,44 @@ export default {
     label: {
       type: 'string',
     },
-    labelFor: {
+    labelDescription: {
       type: 'string',
     },
     className: {
       type: 'string',
     },
+    hasError: {
+      type: 'boolean',
+    },
   },
 } as Meta;
 
 const Template: Story = (args) => (
-  <FormGroup {...args} label="label" labelFor="test">
-    <Input id="labelFor" />
+  <FormGroup {...args}>
+    <Input />
   </FormGroup>
 );
 
 export const Default = Template.bind({});
 Default.args = {
-  label: 'label',
-  labelFor: 'labelFor',
+  label: 'Label',
+};
+
+export const Error = Template.bind({});
+Error.args = {
+  label: 'Label',
+  hasError: true,
+};
+
+export const WithDescription = Template.bind({});
+WithDescription.args = {
+  label: 'Label',
+  labelDescription: 'Label description text',
+};
+
+export const WithDescriptionAndError = Template.bind({});
+WithDescriptionAndError.args = {
+  hasError: true,
+  label: 'Label',
+  labelDescription: 'Label description text',
 };
