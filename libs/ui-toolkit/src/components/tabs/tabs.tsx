@@ -1,4 +1,4 @@
-import * as RadixTabs from '@radix-ui/react-tabs';
+import * as TabsPrimitive from '@radix-ui/react-tabs';
 import classNames from 'classnames';
 import type { ReactElement, ReactNode } from 'react';
 import { Children, isValidElement, useState } from 'react';
@@ -13,12 +13,12 @@ export const Tabs = ({ children }: TabsProps) => {
   });
 
   return (
-    <RadixTabs.Root
+    <TabsPrimitive.Root
       value={activeTab}
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <RadixTabs.List
+      <TabsPrimitive.List
         className="flex flex-nowrap gap-4 overflow-x-auto"
         role="tablist"
       >
@@ -38,32 +38,32 @@ export const Tabs = ({ children }: TabsProps) => {
             }
           );
           return (
-            <RadixTabs.Trigger
+            <TabsPrimitive.Trigger
               data-testid={child.props.name}
               value={child.props.id}
               className={triggerClass}
             >
               {child.props.name}
-            </RadixTabs.Trigger>
+            </TabsPrimitive.Trigger>
           );
         })}
         <div className="bg-black-10 dark:bg-white-25 grow"></div>
-      </RadixTabs.List>
+      </TabsPrimitive.List>
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;
           return (
-            <RadixTabs.Content
+            <TabsPrimitive.Content
               value={child.props.id}
               className="h-full"
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}
-            </RadixTabs.Content>
+            </TabsPrimitive.Content>
           );
         })}
       </div>
-    </RadixTabs.Root>
+    </TabsPrimitive.Root>
   );
 };
 
