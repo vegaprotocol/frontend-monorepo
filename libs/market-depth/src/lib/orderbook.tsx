@@ -197,7 +197,6 @@ export const Orderbook = ({
       return;
     }
     priceInCenter.current = undefined;
-    setLockOnMidPrice(true);
     scrollToPrice(
       getPriceLevel(
         BigInt(bestStaticOfferPrice) +
@@ -206,6 +205,7 @@ export const Orderbook = ({
         resolution
       )
     );
+    setLockOnMidPrice(true);
   }, [bestStaticOfferPrice, bestStaticBidPrice, scrollToPrice, resolution]);
 
   // adjust scroll position to keep selected price in center
@@ -213,7 +213,6 @@ export const Orderbook = ({
     if (resolutionRef.current !== resolution) {
       priceInCenter.current = undefined;
       resolutionRef.current = resolution;
-      setLockOnMidPrice(true);
     }
     if (priceInCenter.current) {
       scrollToPrice(priceInCenter.current);

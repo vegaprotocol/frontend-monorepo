@@ -1,5 +1,4 @@
 import throttle from 'lodash/throttle';
-import produce from 'immer';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
@@ -25,27 +24,53 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     rows: null,
   });
   const dataRef = useRef<OrderbookData>({ rows: null });
-  const setOrderbookDataThrottled = useRef(throttle(setOrderbookData, 1000));
+  const deltaRef = useRef<MarketDepthSubscription_marketDepthUpdate>();
+  const updateOrderbookData = useRef(
+    throttle(() => {
+      if (!deltaRef.current) {
+        return;
+      }
+      dataRef.current = {
+        ...deltaRef.current.market.data,
+        ...mapMarketData(deltaRef.current.market.data, resolutionRef.current),
+        rows: updateCompactedRows(
+          dataRef.current.rows ?? [],
+          deltaRef.current.sell,
+          deltaRef.current.buy,
+          resolutionRef.current
+        ),
+      };
+      console.log(deltaRef.current);
+      deltaRef.current = undefined;
+      setOrderbookData(dataRef.current);
+    }, 1000)
+  );
 
   const update = useCallback(
     (delta: MarketDepthSubscription_marketDepthUpdate) => {
       if (!dataRef.current.rows) {
         return false;
       }
-      dataRef.current = produce(dataRef.current, (draft) => {
-        Object.assign(draft, delta.market.data);
-        draft.rows = updateCompactedRows(
-          draft.rows ?? [],
-          delta.sell,
-          delta.buy,
-          resolutionRef.current
-        );
-        Object.assign(
-          draft,
-          mapMarketData(delta.market.data, resolutionRef.current)
-        );
-      });
-      setOrderbookDataThrottled.current(dataRef.current);
+      if (deltaRef.current) {
+        deltaRef.current.market = delta.market;
+        if (delta.sell) {
+          if (deltaRef.current.sell) {
+            deltaRef.current.sell.push(...delta.sell);
+          } else {
+            deltaRef.current.sell = delta.sell;
+          }
+        }
+        if (delta.buy) {
+          if (deltaRef.current.buy) {
+            deltaRef.current.buy.push(...delta.buy);
+          } else {
+            deltaRef.current.buy = delta.buy;
+          }
+        }
+      } else {
+        deltaRef.current = delta;
+      }
+      updateOrderbookData.current();
       return true;
     },
     // using resolutionRef.current to avoid using resolution as a dependency - it will cause data provider restart on resolution change

@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { gql } from '@apollo/client';
 import type {
   Markets,
@@ -90,13 +91,14 @@ const MARKET_DATA_SUB = gql`
   }
 `;
 
-const update = (draft: Markets_markets[], delta: MarketDataSub_marketData) => {
-  const index = draft.findIndex((m) => m.id === delta.market.id);
-  if (index !== -1) {
-    draft[index].data = delta;
-  }
-  // @TODO - else push new market to draft
-};
+const update = (data: Markets_markets[], delta: MarketDataSub_marketData) =>
+  produce(data, (draft) => {
+    const index = draft.findIndex((m) => m.id === delta.market.id);
+    if (index !== -1) {
+      draft[index].data = delta;
+    }
+    // @TODO - else push new market to draft
+  });
 const getData = (responseData: Markets): Markets_markets[] | null =>
   responseData.markets;
 const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>
