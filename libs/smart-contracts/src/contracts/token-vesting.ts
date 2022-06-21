@@ -14,13 +14,13 @@ export class TokenVesting {
   }
 
   stakeTokens(amount: string, vegaPublicKey: string) {
-    return this.contract.stake_tokens(amount, vegaPublicKey);
+    return this.contract.stake_tokens(amount, `0x${vegaPublicKey}`);
   }
   removeStake(amount: string, vegaPublicKey: string) {
-    return this.contract.remove_stake(amount, vegaPublicKey);
+    return this.contract.remove_stake(amount, `0x${vegaPublicKey}`);
   }
   stakeBalance(address: string, vegaPublicKey: string) {
-    return this.contract.stake_balance(address, vegaPublicKey);
+    return this.contract.stake_balance(address, `0x${vegaPublicKey}`);
   }
   totalStaked() {
     return this.contract.total_staked();
