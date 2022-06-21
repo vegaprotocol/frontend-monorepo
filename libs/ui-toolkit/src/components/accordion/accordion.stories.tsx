@@ -1,21 +1,27 @@
 import type { Story, Meta } from '@storybook/react';
-import { AccordionPanel } from './accordion';
+import { Accordion } from './accordion';
 
 export default {
-  component: AccordionPanel,
+  component: Accordion,
   title: 'Accordion',
 } as Meta;
 
-const Template: Story = (args) => (
-  <>
-    <AccordionPanel title={args.title} content={args.content} key={'1'} />
-    <AccordionPanel title={args.title} content={args.content} key={'2'} />
-    <AccordionPanel title={args.title} content={args.content} key={'3'} />
-  </>
-);
+const Template: Story = (args) => <Accordion panels={args.panels} />;
 
 export const Default = Template.bind({});
 Default.args = {
-  title: 'Title of expansion panel',
-  content: 'Lorem ipsum',
+  panels: [
+    {
+      title: 'Title of expansion panel',
+      content: 'Lorem ipsum',
+    },
+    {
+      title: 'Title of expansion panel',
+      content: 'Lorem ipsum',
+    },
+    {
+      title: 'Title of expansion panel',
+      content: 'Lorem ipsum',
+    },
+  ],
 };
