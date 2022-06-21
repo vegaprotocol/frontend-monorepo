@@ -1,11 +1,6 @@
 import * as React from 'react';
 
-export interface IconProps extends React.SVGAttributes<SVGElement> {
-  children?: never;
-  color?: string;
-}
-
-export const ChevronDownIcon = React.forwardRef<SVGSVGElement, IconProps>(
+export const ChevronDownIcon = React.forwardRef<SVGSVGElement>(
   ({ ...props }) => {
     return (
       <svg

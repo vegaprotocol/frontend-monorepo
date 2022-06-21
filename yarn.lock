@@ -3492,6 +3492,11 @@
     "@radix-ui/react-primitive" "0.1.4"
     "@radix-ui/react-use-callback-ref" "0.1.0"
 
+"@radix-ui/react-icons@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@radix-ui/react-icons/-/react-icons-1.1.1.tgz#38d2aa548035dd3b799c169bd17177b1cec3152b"
+  integrity sha512-xc3wQC59rsFylVbSusQCrrM+6695ppF730Q6yqzhRdqDcRNWIm2R6ngpzBoSOQMcwnq4p805F+Gr7xo4fmtN1A==
+
 "@radix-ui/react-id@0.1.5":
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/@radix-ui/react-id/-/react-id-0.1.5.tgz#010d311bedd5a2884c1e9bb6aaaa4e6cc1d1d3b8"
@@ -6750,10 +6755,10 @@
     "@typescript-eslint/types" "5.22.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vegaprotocol/vegawallet-service-api-client@^0.4.11":
-  version "0.4.11"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.11.tgz#41a623afc9957dcf8b5425f74280ba7861e92b74"
-  integrity sha512-yiodc3YFWG+RGG+wjpTjYmNAECP/Nv244mVu8IGVtj8LZo02KC/LpNCgmMhGaK4ZcqVtxHv9t7OUCSEWZhSgOg==
+"@vegaprotocol/vegawallet-service-api-client@^0.4.12":
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.12.tgz#65551b9a4d2e00b2c2e9ca9619d95453954a0dbf"
+  integrity sha512-Z680W8rsjz2U8R/gss7+hI0eik0euDJLlh7LzWGXUJxUC3XWO9rwJmzlqN/ZlEB4L9OzSLTSZsvlBAGwiHzUSQ==
   dependencies:
     es6-promise "^4.2.4"
     url-parse "^1.4.3"

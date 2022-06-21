@@ -14,9 +14,8 @@ export interface AccordionProps {
 
 export const Accordion = ({ panels }: AccordionProps) => {
   const AccordionChevron = styled(ChevronDownIcon, {
-    transition: 'transform 300ms ease',
+    transition: 'transform 300ms',
     '[data-state=open] &': { transform: 'rotate(180deg)' },
-    '[data-state=closed] &': { transform: 'rotate(180deg)' },
   });
 
   const open = keyframes({
