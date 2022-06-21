@@ -42,6 +42,7 @@ export const DropdownMenuTrigger = forwardRef<
   React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
 >(({ children, className }, forwardedRef) => (
   <DropdownMenuPrimitive.Trigger
+    asChild={true}
     ref={forwardedRef}
     className="focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow"
   >
