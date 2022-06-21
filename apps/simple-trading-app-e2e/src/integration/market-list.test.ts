@@ -59,8 +59,8 @@ describe('market list', () => {
       cy.wait('@Filters').then((filters) => {
         if (filters?.response?.body.data.markets.length) {
           const asset =
-            filters?.response?.body.data.markets[0].tradableInstrument
-              .instrument.product.settlementAsset.symbol;
+            filters.response.body.data.markets[0].tradableInstrument.instrument
+              .product.settlementAsset.symbol;
           cy.visit(`/markets/Suspended/Future/${asset}`);
           cy.getByTestId('market-assets-menu')
             .find('a.active')
