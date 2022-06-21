@@ -1,5 +1,8 @@
 import { act, render, screen } from '@testing-library/react';
-import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+} from '@vegaprotocol/react-helpers';
 import type { Orders_party_orders } from '../__generated__/Orders';
 import {
   OrderStatus,
@@ -149,7 +152,11 @@ it('Correct formatting applied for GTT limit order', async () => {
     limitOrder.type || '',
     limitOrder.status,
     '5',
-    formatNumber(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
+    addDecimalsFormatNumber(
+      limitOrder.price,
+      limitOrder.market?.decimalPlaces ?? 0,
+      3
+    ),
     `${limitOrder.timeInForce}: ${getDateTimeFormat().format(
       new Date(limitOrder.expiresAt ?? '')
     )}`,

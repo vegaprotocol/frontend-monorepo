@@ -1,6 +1,9 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
 import type { Orders_party_orders } from '../__generated__/Orders';
-import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+} from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import type {
   ICellRendererParams,
@@ -108,7 +111,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             if (data.type === 'Market') {
               return '-';
             }
-            return formatNumber(value, data.market.decimalPlaces);
+            return addDecimalsFormatNumber(value, data.market.decimalPlaces, 3);
           }}
         />
         <AgGridColumn
