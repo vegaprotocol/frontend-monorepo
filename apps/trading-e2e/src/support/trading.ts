@@ -1,5 +1,6 @@
+import { aliasQuery } from '@vegaprotocol/cypress';
 import type { MarketState } from '@vegaprotocol/types';
-import { hasOperationName } from '.';
+import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { generateAccounts } from './mocks/generate-accounts';
 import { generateCandles } from './mocks/generate-candles';
 import { generateChart } from './mocks/generate-chart';
@@ -9,62 +10,28 @@ import { generateOrders } from './mocks/generate-orders';
 import { generatePositions } from './mocks/generate-positions';
 import { generateTrades } from './mocks/generate-trades';
 
-export const mockTradingPage = (state: MarketState) => {
-  cy.mockGQL('Market', (req) => {
-    if (hasOperationName(req, 'Market')) {
-      req.reply({
-        body: {
-          data: generateMarket({
-            market: {
-              name: `${state.toUpperCase()} MARKET`,
-            },
-          }),
-        },
-      });
-    }
-
-    if (hasOperationName(req, 'Orders')) {
-      req.reply({
-        body: { data: generateOrders() },
-      });
-    }
-
-    if (hasOperationName(req, 'Accounts')) {
-      req.reply({
-        body: {
-          data: generateAccounts(),
-        },
-      });
-    }
-
-    if (hasOperationName(req, 'Positions')) {
-      req.reply({
-        body: { data: generatePositions() },
-      });
-    }
-
-    if (hasOperationName(req, 'DealTicketQuery')) {
-      req.reply({
-        body: { data: generateDealTicketQuery({ market: { state } }) },
-      });
-    }
-
-    if (hasOperationName(req, 'Trades')) {
-      req.reply({
-        body: { data: generateTrades() },
-      });
-    }
-
-    if (hasOperationName(req, 'Chart')) {
-      req.reply({
-        body: { data: generateChart() },
-      });
-    }
-
-    if (hasOperationName(req, 'Candles')) {
-      req.reply({
-        body: { data: generateCandles() },
-      });
-    }
-  });
+export const mockTradingPage = (
+  req: CyHttpMessages.IncomingHttpRequest,
+  state: MarketState
+) => {
+  aliasQuery(
+    req,
+    'Market',
+    generateMarket({
+      market: {
+        name: `${state.toUpperCase()} MARKET`,
+      },
+    })
+  );
+  aliasQuery(req, 'Orders', generateOrders());
+  aliasQuery(req, 'Accounts', generateAccounts());
+  aliasQuery(req, 'Positions', generatePositions());
+  aliasQuery(
+    req,
+    'DealTicketQuery',
+    generateDealTicketQuery({ market: { state } })
+  );
+  aliasQuery(req, 'Trades', generateTrades());
+  aliasQuery(req, 'Chart', generateChart());
+  aliasQuery(req, 'Candles', generateCandles());
 };

@@ -9,3 +9,5 @@ addSlackCommand();
 addMockGQLCommand();
 addMockVegaWalletCommands();
 addMockWeb3ProviderCommand();
+
+export * from './lib/graphql-test-utils';
