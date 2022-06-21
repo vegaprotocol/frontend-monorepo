@@ -26,7 +26,9 @@ const compileTransactions = (data?: Transactions): TransactionsData[] => {
   const withdrawals = data.party?.withdrawals ?? [];
 
   return [...deposits, ...withdrawals].sort(
-    (a, b) => new Date(b.createdTimestamp).getTime() - new Date(a.createdTimestamp).getTime()
+    (a, b) =>
+      new Date(b.createdTimestamp).getTime() -
+      new Date(a.createdTimestamp).getTime()
   );
 };
 
