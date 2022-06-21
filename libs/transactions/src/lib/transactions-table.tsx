@@ -3,7 +3,11 @@ import { format } from 'date-fns';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { ValueFormatterParams } from 'ag-grid-community';
-import { t, addDecimalsFormatNumber, PriceCell } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  addDecimalsFormatNumber,
+  PriceCell,
+} from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/network-switcher';
 import type { TransactionsData } from './transactions-manager';
@@ -19,11 +23,19 @@ interface TransactionsTableValueFormatterParams extends ValueFormatterParams {
 type EthLinkProps = {
   href: string;
   value: string;
-}
+};
 
-const EthLink = ({ valueFormatted: { href, value } }: { valueFormatted: EthLinkProps }) => {
-  return <Link href={href} target="_blank">{value}</Link>
-}
+const EthLink = ({
+  valueFormatted: { href, value },
+}: {
+  valueFormatted: EthLinkProps;
+}) => {
+  return (
+    <Link href={href} target="_blank">
+      {value}
+    </Link>
+  );
+};
 
 export const TransactionsTable = forwardRef<
   AgGridReact,
@@ -41,7 +53,6 @@ export const TransactionsTable = forwardRef<
         getRowId={({ data }) => data.id}
         components={{ PriceCell, EthLink }}
       >
-
         <AgGridColumn headerName={t('Asset')} field="asset.symbol" />
         <AgGridColumn
           headerName={t('Amount')}
@@ -59,9 +70,7 @@ export const TransactionsTable = forwardRef<
         <AgGridColumn
           headerName={t('Created at')}
           field="createdTimestamp"
-          valueFormatter={({
-            value,
-          }: TransactionsTableValueFormatterParams) =>
+          valueFormatter={({ value }: TransactionsTableValueFormatterParams) =>
             format(new Date(value), 'pp P')
           }
         />

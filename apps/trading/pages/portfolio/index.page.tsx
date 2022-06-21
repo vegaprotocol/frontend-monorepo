@@ -20,7 +20,10 @@ const Portfolio = () => {
               {t('Filters')}
             </h2>
           </aside>
-          <section data-testid="portfolio-grid" className="h-[calc(100%-200px)]">
+          <section
+            data-testid="portfolio-grid"
+            className="h-[calc(100%-200px)]"
+          >
             <GridTabs>
               <GridTab id="positions" name={t('Positions')}>
                 <div className={tabClassName}>
