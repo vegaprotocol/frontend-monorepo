@@ -1,66 +1,48 @@
 import * as React from 'react';
-import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
+import classNames from 'classnames';
 import type { ReactElement } from 'react';
-import { useEffect } from 'react';
-import Drawer from '@mui/material/Drawer';
 
 interface Props {
   children?: ReactElement | ReactElement[];
   isMenuOpen?: boolean;
   onToggle(): void;
+  rtl?: boolean;
+  outerClasses?: string;
+  innerClasses?: string;
 }
 
 export const NavigationDrawer = ({
   isMenuOpen = false,
   onToggle,
   children,
+  rtl,
+  outerClasses = '',
+  innerClasses = '',
 }: Props) => {
-  const [windowSize, setWindowSize] = React.useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
+  const width = 'w-full md:w-auto md:min-w-[15%] shrink-0';
+  const position = 'absolute inset-0 h-full z-10 md:static';
+  const background = 'bg-black/50 dark:bg-white/50';
+  const flex = 'flex justify-end overflow-hidden';
+  const joinedClasses = [flex, width, position, background].join(' ');
+
+  const outerStyles = classNames(joinedClasses, {
+    visible: isMenuOpen,
+    'invisible md:visible': !isMenuOpen,
+    [outerClasses]: outerClasses,
   });
-  const mobileScreenWidth = parseInt(theme.screens.md);
-  const isMobile = windowSize.width <= mobileScreenWidth;
-  const timeout = React.useRef(0);
 
-  const handleResize = () => {
-    if (timeout.current) {
-      window.cancelAnimationFrame(timeout.current);
-    }
+  const translateClose = rtl ? 'translate-x-full' : '-translate-x-full';
 
-    // Setup the new requestAnimationFrame()
-    timeout.current = window.requestAnimationFrame(function () {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    });
-  };
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.cancelAnimationFrame(timeout.current);
-    };
-  }, []);
-
-  const drawerRootClasses = {
-    root: 'w-3/4 md:w-1/4 shrink-0',
-    paper: 'p-16 w-3/4 md:w-1/4 box-border',
-  };
+  const innerStyles = classNames('w-3/4 md:w-full bg-white dark:bg-black', {
+    'translate-x-0 transition-transform md:transform-none': isMenuOpen,
+    [`${translateClose} md:transform-none`]: !isMenuOpen,
+    [innerClasses]: innerClasses,
+  });
 
   return (
-    <Drawer
-      classes={drawerRootClasses}
-      variant={isMobile ? 'temporary' : 'permanent'}
-      open={isMobile ? isMenuOpen : true}
-      onClose={onToggle}
-      ModalProps={{
-        keepMounted: true, // Better open performance on mobile.
-      }}
-    >
-      {children}
-    </Drawer>
+    <div className={outerStyles}>
+      <div className="md:hidden grow h-full" onClick={onToggle} />
+      <div className={innerStyles}>{children}</div>
+    </div>
   );
 };

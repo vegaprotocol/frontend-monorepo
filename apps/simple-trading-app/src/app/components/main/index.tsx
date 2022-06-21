@@ -3,10 +3,11 @@ import { useRoutes, NavLink } from 'react-router-dom';
 import {
   NavigationDrawer,
   DrawerWrapper,
-  DrawerContainer,
+  DrawerContent,
   DrawerToggle,
   DRAWER_TOGGLE_VARIANTS,
 } from '../drawer';
+import { NavItem } from '../nav';
 import { routerConfig } from '../../routes/router-config';
 
 export interface RouteChildProps {
@@ -20,18 +21,18 @@ export const AppRouter = () => {
 };
 
 export const Menu = () => (
-  <nav>
+  <nav className="my-20 h-full">
     {routerConfig.map((r) => (
       <NavLink
         key={r.name}
         to={r.path}
         className={({ isActive }) =>
-          `text-h5 block mb-8 px-8 hover:bg-vega-yellow hover:text-black ${
-            isActive && 'bg-vega-yellow text-black'
+          `text-h5 text-black dark:text-white block mb-40 px-40 hover:text-blue ${
+            isActive && 'text-blue dark:text-blue'
           }`
         }
       >
-        {r.text}
+        <NavItem iconName={r.icon} label={r.text} />
       </NavLink>
     ))}
   </nav>
@@ -39,24 +40,23 @@ export const Menu = () => (
 
 interface Props {
   onToggle(): void;
-
   isMenuOpen: boolean;
 }
 
 export const Main = ({ onToggle, isMenuOpen }: Props) => {
   return (
     <DrawerWrapper>
-      <NavigationDrawer onToggle={onToggle} isMenuOpen={isMenuOpen}>
+      <NavigationDrawer rtl onToggle={onToggle} isMenuOpen={isMenuOpen}>
         <DrawerToggle
           onToggle={onToggle}
           variant={DRAWER_TOGGLE_VARIANTS.CLOSE}
-          className="self-end p-16"
+          className="p-16"
         />
         <Menu />
       </NavigationDrawer>
-      <DrawerContainer>
+      <DrawerContent>
         <AppRouter />
-      </DrawerContainer>
+      </DrawerContent>
     </DrawerWrapper>
   );
 };

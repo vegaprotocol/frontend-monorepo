@@ -40,13 +40,7 @@ function App() {
           <VegaWalletProvider>
             <AppLoader>
               <div className="max-h-full min-h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
-                <div className="flex items-stretch border-b-[7px] border-vega-yellow">
-                  <DrawerToggle
-                    onToggle={onToggle}
-                    variant={DRAWER_TOGGLE_VARIANTS.OPEN}
-                    className="xs:py-32 xs:px-16"
-                  />
-
+                <div className="flex items-stretch p-16">
                   <div className="flex items-center gap-4 ml-auto mr-8">
                     <VegaWalletConnectButton
                       setConnectDialog={(open) =>
@@ -58,6 +52,11 @@ function App() {
                     />
                     <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
                   </div>
+                  <DrawerToggle
+                    onToggle={onToggle}
+                    variant={DRAWER_TOGGLE_VARIANTS.OPEN}
+                    className="xs:py-32 xs:px-16"
+                  />
                 </div>
 
                 <Main isMenuOpen={menuOpen} onToggle={onToggle} />
