@@ -8,8 +8,8 @@ import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from '../__generated__/OrderEvent';
-import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
+} from '../components/__generated__/OrderEvent';
+import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {

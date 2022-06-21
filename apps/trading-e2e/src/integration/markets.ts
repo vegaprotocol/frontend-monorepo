@@ -1,16 +1,12 @@
+import { aliasQuery } from '@vegaprotocol/cypress';
 import { MarketState } from '@vegaprotocol/types';
-import { hasOperationName } from '../support';
 import { generateMarkets } from '../support/mocks/generate-markets';
 import { mockTradingPage } from '../support/trading';
 
 describe('markets table', () => {
   beforeEach(() => {
-    cy.mockGQL('Markets', (req) => {
-      if (hasOperationName(req, 'Markets')) {
-        req.reply({
-          body: { data: generateMarkets() },
-        });
-      }
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'Markets', generateMarkets());
     });
     cy.visit('/markets');
   });
@@ -64,7 +60,9 @@ describe('markets table', () => {
     cy.wait('@Markets');
     cy.get('.ag-root-wrapper').should('be.visible');
 
-    mockTradingPage(MarketState.Active);
+    cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.Active);
+    });
 
     // click on active market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
@@ -79,7 +77,9 @@ describe('markets table', () => {
     cy.wait('@Markets');
     cy.get('.ag-root-wrapper').should('be.visible');
 
-    mockTradingPage(MarketState.Suspended);
+    cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.Suspended);
+    });
 
     // click on active market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
