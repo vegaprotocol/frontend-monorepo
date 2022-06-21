@@ -6,8 +6,9 @@ import { BrowserRouter } from 'react-router-dom';
 import './styles.css';
 
 import App from './app/app';
+import { ENV } from './app/config/env';
 
-const dsn = process.env['NX_EXPLORER_SENTRY_DSN'];
+const { dsn } = ENV;
 
 /* istanbul ignore next */
 if (dsn) {
@@ -15,7 +16,7 @@ if (dsn) {
     dsn,
     integrations: [new BrowserTracing()],
     tracesSampleRate: 1,
-    environment: process.env['NX_VEGA_ENV'],
+    environment: ENV.envName,
   });
 }
 

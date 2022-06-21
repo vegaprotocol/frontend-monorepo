@@ -4,34 +4,30 @@ import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
 
-export const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
+const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
 );
 
-const CHAIN_ID = Number(process.env['NX_ETHEREUM_CHAIN_ID']);
-const PROVIDER_URL = process.env['NX_ETHEREUM_PROVIDER_URL'] as string;
+export const createDefaultProvider = (providerUrl: string, chainId: number) => {
+  return new ethers.providers.JsonRpcProvider(providerUrl, chainId);
+};
 
-if (isNaN(CHAIN_ID)) {
-  throw new Error('Invalid Ethereum chain ID for environment');
-}
-
-export const [walletconnect, walletconnectHooks] =
-  initializeConnector<WalletConnect>(
-    (actions) =>
-      new WalletConnect(actions, {
-        rpc: {
-          [CHAIN_ID]: PROVIDER_URL,
-        },
-      }),
-    [CHAIN_ID]
-  );
-
-export const defaultProvider = new ethers.providers.JsonRpcProvider(
-  PROVIDER_URL,
-  CHAIN_ID
-);
-
-export const Connectors: [MetaMask | WalletConnect, Web3ReactHooks][] = [
-  [metamask, metamaskHooks],
-  [walletconnect, walletconnectHooks],
-];
+export const createConnectors = (providerUrl: string, chainId: number) => {
+  if (isNaN(chainId)) {
+    throw new Error('Invalid Ethereum chain ID for environment');
+  }
+  const [walletconnect, walletconnectHooks] =
+    initializeConnector<WalletConnect>(
+      (actions) =>
+        new WalletConnect(actions, {
+          rpc: {
+            [chainId]: providerUrl,
+          },
+        }),
+      [chainId]
+    );
+  return [
+    [metamask, metamaskHooks],
+    [walletconnect, walletconnectHooks],
+  ] as [MetaMask | WalletConnect, Web3ReactHooks][];
+};

@@ -15,8 +15,8 @@ export const generateWithdrawals = (
           status: WithdrawalStatus.Finalized,
           amount: '100',
           txHash: null,
-          createdTimestamp: new Date().toISOString(),
-          withdrawnTimestamp: new Date().toISOString(),
+          createdTimestamp: new Date('2022-02-02').toISOString(),
+          withdrawnTimestamp: new Date('2022-02-02').toISOString(),
           details: {
             __typename: 'Erc20WithdrawalDetails',
             receiverAddress: '0x72c22822A19D20DE7e426fB84aa047399Ddd8853',
@@ -35,8 +35,8 @@ export const generateWithdrawals = (
           amount: '100',
           txHash:
             '0x5d7b1a35ba6bd23be17bb7a159c13cdbb3121fceb94e9c6c510f5503dce48d03',
-          createdTimestamp: new Date().toISOString(),
-          withdrawnTimestamp: new Date().toISOString(),
+          createdTimestamp: new Date('2022-02-01').toISOString(),
+          withdrawnTimestamp: new Date('2022-02-01').toISOString(),
           details: {
             __typename: 'Erc20WithdrawalDetails',
             receiverAddress: '0x72c22822A19D20DE7e426fB84aa047399Ddd8853',

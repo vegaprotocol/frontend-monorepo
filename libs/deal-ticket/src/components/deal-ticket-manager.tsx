@@ -6,7 +6,7 @@ import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import { OrderDialog } from './order-dialog';
 import { useOrderSubmit } from '../hooks/use-order-submit';
-import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
 export interface DealTicketManagerProps {
   market: DealTicketQuery_market;
