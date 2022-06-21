@@ -119,3 +119,10 @@ InlineIconAppend.args = {
   appendIconName: 'search',
   variant: 'inline-link',
 };
+
+export const SpanWithButtonStyleAndContent = Template.bind({});
+SpanWithButtonStyleAndContent.args = {
+  children: 'Apply button styles to other elements (i.e. span, <Link>)',
+  appendIconName: 'search',
+  variant: 'trade',
+};

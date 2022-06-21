@@ -31,14 +31,16 @@ export interface AnchorButtonProps
   extends AnchorHTMLAttributes<HTMLAnchorElement>,
     CommonProps {}
 
-const getClasses = (
+export const getButtonClasses = (
+  className: CommonProps['className'],
   variant: CommonProps['variant'],
-  boxShadow: CommonProps['boxShadow'],
-  paddingLeftProvided: boolean,
-  paddingRightProvided: boolean,
-  borderWidthProvided: boolean,
-  heightProvided: boolean
+  boxShadow?: CommonProps['boxShadow']
 ) => {
+  const paddingLeftProvided = includesLeftPadding(className);
+  const paddingRightProvided = includesRightPadding(className);
+  const borderWidthProvided = includesBorderWidth(className);
+  const heightProvided = includesHeight(className);
+
   // Add classes into variables if there are multiple classes shared in multiple button styles
   const sharedClasses =
     'inline-flex items-center justify-center box-border transition-[background-color] ease-linear duration-50 disabled:no-underline';
@@ -134,46 +136,32 @@ const getClasses = (
     'border-none',
   ];
 
+  let variantClasses: string[];
+
   switch (variant) {
     case 'primary':
-      return primaryClasses;
+      variantClasses = primaryClasses;
+      break;
     case 'secondary':
-      return secondaryClasses;
+      variantClasses = secondaryClasses;
+      break;
     case 'trade':
-      return tradeClasses;
+      variantClasses = tradeClasses;
+      break;
     case 'accent':
-      return accentClasses;
+      variantClasses = accentClasses;
+      break;
     case 'inline-link':
-      return inlineLinkClasses;
+      variantClasses = inlineLinkClasses;
+      break;
     default:
-      return '';
+      variantClasses = [''];
   }
+
+  return classNames(...variantClasses, className);
 };
 
-const classes = (
-  className: CommonProps['className'],
-  variant: CommonProps['variant'],
-  boxShadow?: CommonProps['boxShadow']
-) => {
-  const paddingLeftProvided = includesLeftPadding(className);
-  const paddingRightProvided = includesRightPadding(className);
-  const borderWidthProvided = includesBorderWidth(className);
-  const heightProvided = includesHeight(className);
-
-  return classNames(
-    getClasses(
-      variant,
-      boxShadow,
-      paddingLeftProvided,
-      paddingRightProvided,
-      borderWidthProvided,
-      heightProvided
-    ),
-    className
-  );
-};
-
-const getContent = (
+export const getButtonContent = (
   children: ReactNode,
   prependIconName?: IconName,
   appendIconName?: IconName
@@ -213,11 +201,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={classes(className, variant, boxShadow)}
+        className={getButtonClasses(className, variant, boxShadow)}
         type={type}
         {...props}
       >
-        {getContent(children, prependIconName, appendIconName)}
+        {getButtonContent(children, prependIconName, appendIconName)}
       </button>
     );
   }
@@ -231,13 +219,18 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
       className,
       prependIconName,
       appendIconName,
+      boxShadow,
       ...props
     },
     ref
   ) => {
     return (
-      <a ref={ref} className={classes(className, variant)} {...props}>
-        {getContent(children, prependIconName, appendIconName)}
+      <a
+        ref={ref}
+        className={getButtonClasses(className, variant, boxShadow)}
+        {...props}
+      >
+        {getButtonContent(children, prependIconName, appendIconName)}
       </a>
     );
   }
