@@ -80,7 +80,6 @@ export const TransactionsTable = forwardRef<
           cellRenderer="EthLink"
           valueFormatter={({
             value,
-            data,
           }: TransactionsTableValueFormatterParams): EthLinkProps => ({
             href: `${ETHERSCAN_URL}/tx/${value}`,
             value: value,
