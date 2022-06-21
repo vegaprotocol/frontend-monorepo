@@ -1,26 +1,33 @@
 import type { AgGridReact } from 'ag-grid-react';
-import { truncateByChars } from '@vegaprotocol/react-helpers';
+import {
+  getDateTimeFormat,
+  truncateByChars,
+} from '@vegaprotocol/react-helpers';
 import { AgGridColumn } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { forwardRef } from 'react';
 import type { FillFields } from './__generated__/FillFields';
+import type { IDatasource, ValueFormatterParams } from 'ag-grid-community';
 
 interface FillsProps {
-  fills: FillFields[];
+  dataSource: IDatasource;
   partyId: string;
 }
 
 export const Fills = forwardRef<AgGridReact, FillsProps>(
-  ({ fills, partyId }, ref) => {
+  ({ partyId, dataSource }, ref) => {
     return (
       <AgGrid
         ref={ref}
-        rowData={fills}
         overlayNoRowsTemplate="No fills"
+        overlayLoadingTemplate="FOOOO"
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
+        rowModelType="infinite"
+        datasource={dataSource}
       >
+        <AgGridColumn headerName="Id" field="id" />
         <AgGridColumn
           headerName="Market"
           field="market.tradableInstrument.instrument.code"
@@ -29,6 +36,7 @@ export const Fills = forwardRef<AgGridReact, FillsProps>(
         <AgGridColumn
           headerName="Order"
           valueFormatter={({ data }: { data: FillFields }) => {
+            if (!data) return null;
             if (data.buyer.id === partyId) {
               // you are the buyer
               return truncateByChars(data.buyOrder);
@@ -42,7 +50,14 @@ export const Fills = forwardRef<AgGridReact, FillsProps>(
         />
         <AgGridColumn headerName="Size" field="size" />
         <AgGridColumn headerName="Price" field="price" />
-        <AgGridColumn headerName="Date" field="createdAt" />
+        <AgGridColumn
+          headerName="Date"
+          field="createdAt"
+          valueFormatter={({ value }: ValueFormatterParams) => {
+            if (!value) return null;
+            return getDateTimeFormat().format(new Date(value));
+          }}
+        />
       </AgGrid>
     );
   }
