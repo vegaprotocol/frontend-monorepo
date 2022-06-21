@@ -1,5 +1,5 @@
 import { Link, Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
