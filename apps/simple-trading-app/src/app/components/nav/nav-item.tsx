@@ -8,7 +8,7 @@ interface NavItemProps {
 
 export const NavItem = ({ iconName, label }: NavItemProps) => {
   return (
-    <div className="flex items-center justify-start cursor-pointer relative">
+    <div className="flex flex-col md:flex-row items-center justify-start cursor-pointer relative">
       <Icon name={iconName} className="mr-8" />
       <span>{label}</span>
     </div>

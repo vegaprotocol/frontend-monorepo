@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRoutes, NavLink } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
 import {
   NavigationDrawer,
   DrawerWrapper,
@@ -7,7 +7,7 @@ import {
   DrawerToggle,
   DRAWER_TOGGLE_VARIANTS,
 } from '../drawer';
-import { NavItem } from '../nav';
+import { Nav, TabBar } from '../nav';
 import { routerConfig } from '../../routes/router-config';
 
 export interface RouteChildProps {
@@ -19,24 +19,6 @@ export const AppRouter = () => {
 
   return <main className="p-20 overflow-hidden">{routes}</main>;
 };
-
-export const Menu = () => (
-  <nav className="my-20 h-full">
-    {routerConfig.map((r) => (
-      <NavLink
-        key={r.name}
-        to={r.path}
-        className={({ isActive }) =>
-          `text-h5 text-black dark:text-white block mb-40 px-40 hover:text-blue ${
-            isActive && 'text-blue dark:text-blue'
-          }`
-        }
-      >
-        <NavItem iconName={r.icon} label={r.text} />
-      </NavLink>
-    ))}
-  </nav>
-);
 
 interface Props {
   onToggle(): void;
@@ -52,10 +34,11 @@ export const Main = ({ onToggle, isMenuOpen }: Props) => {
           variant={DRAWER_TOGGLE_VARIANTS.CLOSE}
           className="p-16"
         />
-        <Menu />
+        <Nav className="hidden md:block my-20 h-full" />
       </NavigationDrawer>
       <DrawerContent>
         <AppRouter />
+        <TabBar />
       </DrawerContent>
     </DrawerWrapper>
   );

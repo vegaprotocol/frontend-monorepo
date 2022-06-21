@@ -19,11 +19,11 @@ interface Props {
 export const DrawerToggle = ({
   onToggle,
   variant = DRAWER_TOGGLE_VARIANTS.CLOSE,
-  className,
+  className = '',
 }: Props) => {
   const [iconName, setIconName] = useState(IconNames.MENU);
   const classes = classNames('md:hidden', {
-    [className as string]: className,
+    [className]: className,
   });
 
   useEffect(() => {
