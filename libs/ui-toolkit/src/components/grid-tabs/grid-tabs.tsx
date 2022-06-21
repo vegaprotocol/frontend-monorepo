@@ -18,31 +18,32 @@ export const GridTabs = ({ children }: GridTabsProps) => {
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <Tabs.List
-        className="flex flex-nowrap gap-4 overflow-x-auto"
-        role="tablist"
-      >
-        {Children.map(children, (child) => {
-          if (!isValidElement(child)) return null;
-          const isActive = child.props.id === activeTab;
-          const triggerClass = classNames('py-4', 'px-12', 'capitalize', {
-            'text-black dark:text-vega-yellow': isActive,
-            'bg-white dark:bg-black': isActive,
-            'text-black dark:text-white': !isActive,
-            'bg-black-10 dark:bg-white-25': !isActive,
-          });
-          return (
-            <Tabs.Trigger
-              data-testid={child.props.name}
-              value={child.props.id}
-              className={triggerClass}
-            >
-              {child.props.name}
-            </Tabs.Trigger>
-          );
-        })}
-        <div className="bg-black-10 dark:bg-white-25 grow"></div>
-      </Tabs.List>
+      <div className="bg-black-10 dark:bg-white-10">
+        <Tabs.List
+          className="flex flex-nowrap gap-4 overflow-x-auto"
+          role="tablist"
+        >
+          {Children.map(children, (child) => {
+            if (!isValidElement(child)) return null;
+            const isActive = child.props.id === activeTab;
+            const triggerClass = classNames('py-4', 'px-12', 'capitalize', {
+              'text-black dark:text-vega-yellow': isActive,
+              'bg-white dark:bg-black': isActive,
+              'text-black-60 dark:text-white-60': !isActive,
+              'bg-black-10 dark:bg-white-10': !isActive,
+            });
+            return (
+              <Tabs.Trigger
+                data-testid={child.props.name}
+                value={child.props.id}
+                className={triggerClass}
+              >
+                {child.props.name}
+              </Tabs.Trigger>
+            );
+          })}
+        </Tabs.List>
+      </div>
       <div className="h-full overflow-auto">
         {Children.map(children, (child) => {
           if (!isValidElement(child)) return null;

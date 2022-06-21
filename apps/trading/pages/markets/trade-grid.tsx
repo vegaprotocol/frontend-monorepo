@@ -34,11 +34,15 @@ const TradingViews = {
 
 type TradingView = keyof typeof TradingViews;
 
-interface TradeGridProps {
+interface TradeMarketHeaderProps {
   market: Market_market;
+  className?: string;
 }
 
-export const TradeMarketHeader = ({ market }: TradeGridProps) => {
+export const TradeMarketHeader = ({
+  market,
+  className,
+}: TradeMarketHeaderProps) => {
   const [open, setOpen] = useState(false);
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
@@ -48,8 +52,12 @@ export const TradeMarketHeader = ({ market }: TradeGridProps) => {
     'font-sans font-normal mb-0 text-dark/80 dark:text-white/80 text-ui-small';
   const itemValueClassName =
     'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
+  const headerClassname = classNames(
+    'w-full p-8 bg-white dark:bg-black',
+    className
+  );
   return (
-    <header className="w-full p-8">
+    <header className={headerClassname}>
       <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
@@ -90,19 +98,26 @@ export const TradeMarketHeader = ({ market }: TradeGridProps) => {
   );
 };
 
+interface TradeGridProps {
+  market: Market_market;
+}
+
 export const TradeGrid = ({ market }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
-    'grid gap-[1px] grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
+    'grid gap-4 grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
     'bg-black-10 dark:bg-white-10',
     'text-ui'
   );
 
   return (
     <>
-      <TradeMarketHeader market={market} />
       <div className={wrapperClasses}>
-        <TradeGridChild className="row-start-1 row-end-3">
+        <TradeMarketHeader
+          market={market}
+          className="row-start-1 row-end-2 col-start-1 col-end-2"
+        />
+        <TradeGridChild className="row-start-2 row-end-3 col-start-1 col-end-2">
           <GridTabs>
             <GridTab id="candles" name={t('Candles')}>
               <TradingViews.Candles marketId={market.id} />

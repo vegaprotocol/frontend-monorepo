@@ -6,7 +6,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { SplashLoader } from '../../components/splash-loader';
 import type { ContractsContextShape } from './contracts-context';
@@ -25,9 +25,9 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
     useEnvironment();
   const [contracts, setContracts] =
     React.useState<ContractsContextShape | null>(null);
-  const defaultProvider = createDefaultProvider(
-    ETHEREUM_PROVIDER_URL,
-    ETHEREUM_CHAIN_ID
+  const defaultProvider = useMemo(
+    () => createDefaultProvider(ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID),
+    [ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID]
   );
 
   // Create instances of contract classes. If we have an account use a signer for the
