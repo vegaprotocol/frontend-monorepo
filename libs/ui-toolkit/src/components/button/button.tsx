@@ -32,9 +32,9 @@ export interface AnchorButtonProps
     CommonProps {}
 
 export const getButtonClasses = (
-  className: CommonProps['className'],
-  variant: CommonProps['variant'],
-  boxShadow?: CommonProps['boxShadow']
+  className?: string,
+  variant?: 'primary' | 'secondary' | 'trade' | 'accent' | 'inline-link',
+  boxShadow?: boolean
 ) => {
   const paddingLeftProvided = includesLeftPadding(className);
   const paddingRightProvided = includesRightPadding(className);
