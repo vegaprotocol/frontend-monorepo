@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const SentryPlugin = require('@sentry/webpack-plugin');
 
 module.exports = (config, context) => {
@@ -15,9 +14,6 @@ module.exports = (config, context) => {
     plugins: [
       ...additionalPlugins,
       ...config.plugins,
-      new webpack.DefinePlugin({
-        'process.platform': JSON.stringify(process.platform),
-      }),
     ],
   };
 };
