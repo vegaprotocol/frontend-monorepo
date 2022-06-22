@@ -28,6 +28,7 @@ export const NavigationDrawer = ({
   const outerStyles = classNames(joinedClasses, {
     visible: isMenuOpen,
     'invisible md:visible': !isMenuOpen,
+    'flex-row-reverse': !rtl,
     [outerClasses]: outerClasses,
   });
 
