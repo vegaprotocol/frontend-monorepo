@@ -19,8 +19,10 @@
     "@emotion/styled": "^11.8.1",
     "@mui/material": "^5.6.2",
     "@nrwl/next": "13.10.3",
+    "@radix-ui/react-accordion": "^0.1.6",
     "@radix-ui/react-dialog": "^0.1.5",
     "@radix-ui/react-dropdown-menu": "^0.1.6",
+    "@radix-ui/react-icons": "^1.1.1",
     "@radix-ui/react-radio-group": "^0.1.5",
     "@radix-ui/react-tabs": "^0.1.5",
     "@radix-ui/react-tooltip": "^0.1.7",
@@ -73,6 +75,7 @@
     "tslib": "^2.0.0",
     "uuid": "^8.3.2",
     "web-vitals": "^2.1.4",
+    "zod": "^3.17.3",
     "zustand": "^4.0.0-rc.1"
   },
   "devDependencies": {

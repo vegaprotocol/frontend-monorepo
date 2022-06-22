@@ -1,6 +1,6 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { EthTxStatus } from '../use-ethereum-transaction';
 
 const ACTIVE_CLASSES = 'text-black dark:text-white';
