@@ -8,7 +8,7 @@ import {
   addDecimalsFormatNumber,
   PriceCell,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid, Link, Icon } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { FundingData } from './funding-manager';
 
@@ -33,6 +33,7 @@ const EthLink = ({
   return (
     <Link href={href} target="_blank">
       {value}
+      <Icon name="arrow-top-right"/>
     </Link>
   );
 };
@@ -40,7 +41,7 @@ const EthLink = ({
 export const FundingTable = forwardRef<AgGridReact, FundingTableProps>(
   ({ data }, ref) => {
     const { ETHERSCAN_URL } = useEnvironment();
-
+    console.log(data)
     return (
       <div style={{ height: '500px' }}>
         <AgGrid
@@ -66,14 +67,14 @@ export const FundingTable = forwardRef<AgGridReact, FundingTableProps>(
           <AgGridColumn headerName={t('Type')} field="__typename" />
           <AgGridColumn headerName={t('Status')} field="status" />
           <AgGridColumn
-            headerName={t('Created at')}
+            headerName={t('Date')}
             field="createdTimestamp"
             valueFormatter={({ value }: FundingTableValueFormatterParams) =>
-              format(new Date(value), 'pp P')
+              format(new Date(value), 'HH:mm dd MMM yyyy')
             }
           />
           <AgGridColumn
-            headerName={t('View on Etherscan')}
+            headerName={t('Transaction')}
             field="txHash"
             cellRenderer="EthLink"
             valueFormatter={({
