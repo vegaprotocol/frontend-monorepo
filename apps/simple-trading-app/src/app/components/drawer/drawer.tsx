@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { theme } from '@vegaprotocol/tailwindcss-config';
+import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import type { ReactElement } from 'react';
 import { useEffect } from 'react';
 import Drawer from '@mui/material/Drawer';

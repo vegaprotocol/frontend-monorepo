@@ -11,8 +11,6 @@ const gitOriginUrl =
   process.env['NX_GIT_ORIGIN_URL'] || process.env['GIT_ORIGIN_URL'];
 const noltUrl = process.env['NX_NOLT_URL'];
 
-console.log(gitCommitHash);
-
 const feedbackLinks = [
   {
     name: 'Nolt',
@@ -23,8 +21,6 @@ const feedbackLinks = [
     url: gitOriginUrl ? `${gitOriginUrl}/issues` : undefined,
   },
 ].filter((link) => !!link.url);
-
-console.log(feedbackLinks);
 
 export const Footer = () => {
   const [isNetworkConfigOpen, setNetworkConfigOpen] = useState(false);

@@ -3,6 +3,7 @@ import { act } from 'react-dom/test-utils';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
+import { BrowserRouter } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
 import { FILTERS_QUERY, MARKETS_QUERY } from './data-provider';
@@ -54,7 +55,8 @@ describe('SimpleMarketList', () => {
       render(
         <MockedProvider mocks={[mocks, filterMock]}>
           <SimpleMarketList />
-        </MockedProvider>
+        </MockedProvider>,
+        { wrapper: BrowserRouter }
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
@@ -122,7 +124,8 @@ describe('SimpleMarketList', () => {
       render(
         <MockedProvider mocks={[mocks, filterMock]}>
           <SimpleMarketList />
-        </MockedProvider>
+        </MockedProvider>,
+        { wrapper: BrowserRouter }
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
