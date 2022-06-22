@@ -48,13 +48,13 @@ There are a few different configuration options offered for this app:
 | `NX_APP_INFURA_ID`             | Infura fallback for if the user does not have a web3 compatible browser                              |
 | `NX_APP_HOSTED_WALLET_ENABLED` | If the hosted wallet is enabled or not. If so then allow users to login using the hosted wallet      |
 | `NX_APP_ENV`                   | Change network to connect to. When set to CUSTOM use CUSTOM\_\* vars for network parameters          |
-| `CUSTOM_URLS`                  | When NX_APP_ENV=CUSTOM use these Data Node REST URLs, optional if CUSTOM_URLS_WITH_GRAPHQL is used.  |
-| `CUSTOM_URLS_WITH_GRAPHQL`     | When NX_APP_ENV=CUSTOM use these Data Node GraphQL URLs, optional if CUSTOM_URLS is used.            |
-| `CUSTOM_TOKEN_ADDRESS`         | When NX_APP_ENV=CUSTOM specify Vega token address.                                                   |
-| `CUSTOM_CLAIM_ADDRESS`         | When NX_APP_ENV=CUSTOM specify Vega claim address.                                                   |
-| `CUSTOM_LOCKED_ADDRESS`        | When NX_APP_ENV=CUSTOM specify Vega locked address.                                                  |
-| `CUSTOM_VESTING_ADDRESS`       | When NX_APP_ENV=CUSTOM specify Vega vesting address.                                                 |
-| `CUSTOM_STAKING_BRIDGE`        | When NX_APP_ENV=CUSTOM specify Vega staking bridge address.                                          |
+| `NX_CUSTOM_URLS`               | When NX_APP_ENV=CUSTOM use these Data Node REST URLs, optional if CUSTOM_URLS_WITH_GRAPHQL is used.  |
+| `NX_CUSTOM_URLS_WITH_GRAPHQL`  | When NX_APP_ENV=CUSTOM use these Data Node GraphQL URLs, optional if CUSTOM_URLS is used.            |
+| `NX_CUSTOM_TOKEN_ADDRESS`      | When NX_APP_ENV=CUSTOM specify Vega token address.                                                   |
+| `NX_CUSTOM_CLAIM_ADDRESS`      | When NX_APP_ENV=CUSTOM specify Vega claim address.                                                   |
+| `NX_CUSTOM_LOCKED_ADDRESS`     | When NX_APP_ENV=CUSTOM specify Vega locked address.                                                  |
+| `NX_CUSTOM_VESTING_ADDRESS`    | When NX_APP_ENV=CUSTOM specify Vega vesting address.                                                 |
+| `NX_CUSTOM_STAKING_BRIDGE`     | When NX_APP_ENV=CUSTOM specify Vega staking bridge address.                                          |
 
 ## Example configs:
 

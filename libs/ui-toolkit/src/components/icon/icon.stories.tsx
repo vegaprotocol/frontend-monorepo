@@ -6,7 +6,7 @@ export default {
   title: 'Icon',
 } as Meta;
 
-const Template: Story = (args) => <Icon {...args} name="warning-sign" />;
+const Template: Story = (args) => <Icon name="warning-sign" {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {};

@@ -19,7 +19,8 @@ export const getIntentShadow = (intent?: Intent) => {
 
 export const getVariantBackground = (variant?: Intent) => {
   return {
-    'bg-black dark:bg-white': variant === Intent.None,
+    'bg-black text-white dark:bg-white dark:text-black':
+      variant === Intent.None,
     'bg-vega-pink text-black dark:bg-vega-yellow dark:text-black-normal':
       variant === Intent.Primary,
     'bg-danger text-white': variant === Intent.Danger,

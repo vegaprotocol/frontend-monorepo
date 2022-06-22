@@ -8,9 +8,9 @@ import {
 import {
   KeyValueTable,
   KeyValueTableRow,
-  AccordionPanel,
   AsyncRenderer,
   Splash,
+  Accordion,
 } from '@vegaprotocol/ui-toolkit';
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
@@ -135,97 +135,94 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
     'text-h5 font-bold uppercase text-black dark:text-white';
+  const marketDataPanels = [
+    {
+      title: t('Current fees'),
+      content: (
+        <>
+          <MarketInfoTable data={market.fees.factors} asPercentage={true} />
+          <p className="text-ui-small">
+            {t(
+              'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
+            )}
+          </p>
+        </>
+      ),
+    },
+    {
+      title: t('Market data'),
+      content: (
+        <MarketInfoTable
+          data={market.data}
+          decimalPlaces={market.decimalPlaces}
+        />
+      ),
+    },
+  ];
+  const marketSpecPanels = [
+    {
+      title: t('Key details'),
+      content: (
+        <MarketInfoTable
+          data={pick(
+            market,
+            'name',
+            'decimalPlaces',
+            'positionDecimalPlaces',
+            'tradingMode',
+            'state'
+          )}
+        />
+      ),
+    },
+    {
+      title: t('Instrument'),
+      content: (
+        <MarketInfoTable
+          data={{
+            product: market.tradableInstrument.instrument.product,
+            ...market.tradableInstrument.instrument.product.settlementAsset,
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Risk factors'),
+      content: (
+        <MarketInfoTable
+          data={market.riskFactors}
+          unformatted={true}
+          omits={['market', '__typename']}
+        />
+      ),
+    },
+    {
+      title: t('Risk model'),
+      content: (
+        <MarketInfoTable
+          data={market.tradableInstrument.riskModel}
+          unformatted={true}
+          omits={[]}
+        />
+      ),
+    },
+    ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
+      (trigger, i) => ({
+        title: t(`Price monitoring trigger ${i + 1}`),
+        content: <MarketInfoTable data={trigger} />,
+      })
+    ),
+  ];
+
   return (
     <div className="p-16 flex flex-col gap-32">
       <div className="flex flex-col gap-12">
         <p className={headerClassName}>{t('Market data')}</p>
-        <AccordionPanel
-          key="fees"
-          title={t('Current fees')}
-          content={
-            <>
-              <MarketInfoTable data={market.fees.factors} asPercentage={true} />
-              <p className="text-ui-small">
-                {t(
-                  'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
-                )}
-              </p>
-            </>
-          }
-        />
-        <AccordionPanel
-          key="market-data"
-          title={t('Market data')}
-          content={
-            <MarketInfoTable
-              data={market.data}
-              decimalPlaces={market.decimalPlaces}
-            />
-          }
-        />
+        <Accordion panels={marketDataPanels} />
       </div>
-
       <div className="flex flex-col gap-12">
         <p className={headerClassName}>{t('Market specification')}</p>
-        <AccordionPanel
-          title={t('Key details')}
-          key="details"
-          content={
-            <MarketInfoTable
-              data={pick(
-                market,
-                'name',
-                'decimalPlaces',
-                'positionDecimalPlaces',
-                'tradingMode',
-                'state'
-              )}
-            />
-          }
-        />
-        <AccordionPanel
-          title={t('Instrument')}
-          key="instrument"
-          content={
-            <MarketInfoTable
-              data={{
-                product: market.tradableInstrument.instrument.product,
-                ...market.tradableInstrument.instrument.product.settlementAsset,
-              }}
-            />
-          }
-        />
-        <AccordionPanel
-          title={t('Risk factors')}
-          key="risk-factors"
-          content={
-            <MarketInfoTable
-              data={market.riskFactors}
-              unformatted={true}
-              omits={['market', '__typename']}
-            />
-          }
-        />
-        <AccordionPanel
-          title={t('Risk model')}
-          key="risk-model"
-          content={
-            <MarketInfoTable
-              data={market.tradableInstrument.riskModel}
-              unformatted={true}
-              omits={[]}
-            />
-          }
-        />
-        {(market.priceMonitoringSettings?.parameters?.triggers ?? []).map(
-          (trigger, i) => (
-            <AccordionPanel
-              key={`trigger-${i}`}
-              title={t(`Price monitoring trigger ${i + 1}`)}
-              content={<MarketInfoTable data={trigger} />}
-            />
-          )
-        )}
+        <Accordion panels={marketSpecPanels} />
       </div>
     </div>
   );

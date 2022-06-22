@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: 'network-switcher',
+  displayName: 'environment',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/network-switcher',
+  coverageDirectory: '../../coverage/libs/environment',
 };
