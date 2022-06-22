@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Tabs, Tab } from './tabs';
 
 const renderComponent = (
@@ -24,11 +24,10 @@ describe('Tabs', () => {
     expect(screen.getByTestId('Tab three')).toBeInTheDocument();
   });
 
-  // eslint-disable-next-line jest/no-commented-out-tests
-  // it('shows tabs display the correct content when clicked', async () => {
-  //   render(renderComponent);
-  //   expect(screen.getByText('Tab one content')).toBeInTheDocument();
-  //   fireEvent.click(screen.getByText('Tab two'));
-  //   expect(await screen.getByText('Tab two content')).toBeInTheDocument();
-  // });
+  it('shows tabs display the correct content when clicked', async () => {
+    render(renderComponent);
+    expect(screen.getByText('Tab one content')).toBeInTheDocument();
+    await userEvent.click(screen.getByText('Tab two'));
+    expect(await screen.getByText('Tab two content')).toBeInTheDocument();
+  });
 });

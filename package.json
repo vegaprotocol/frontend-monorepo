@@ -28,6 +28,7 @@
     "@sentry/nextjs": "^6.19.3",
     "@sentry/react": "^6.19.2",
     "@sentry/tracing": "^6.19.2",
+    "@testing-library/user-event": "^14.2.1",
     "@vegaprotocol/vegawallet-service-api-client": "^0.4.11",
     "@walletconnect/ethereum-provider": "^1.7.5",
     "@web3-react/core": "8.0.20-beta.0",
