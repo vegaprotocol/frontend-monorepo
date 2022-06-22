@@ -20,10 +20,8 @@ interface TransactionsManagerProps {
 }
 
 const compileTransactions = (data?: Transactions): TransactionsData[] => {
-  if (data === null || data === undefined) return [] as TransactionsData[];
-
-  const deposits = data.party?.deposits ?? [];
-  const withdrawals = data.party?.withdrawals ?? [];
+  const deposits = data?.party?.deposits ?? [];
+  const withdrawals = data?.party?.withdrawals ?? [];
 
   return [...deposits, ...withdrawals].sort(
     (a, b) =>
