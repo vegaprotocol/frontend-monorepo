@@ -6,7 +6,7 @@ context('Home Page - verify elements on page', function () {
     cy.visit('/');
   });
 
-  describe('wallets disconnected', function () {
+  describe('with wallets disconnected', function () {
     before('wait for page to load', function () {
       cy.get(navigation.section, { timeout: 10000 }).should('be.visible');
     });
