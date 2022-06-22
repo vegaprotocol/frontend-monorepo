@@ -4,7 +4,7 @@ import { DealTicketManager } from './deal-ticket-manager';
 import { t } from '@vegaprotocol/react-helpers';
 import type { DealTicketQuery_market, DealTicketQuery } from './__generated__';
 
-export const DEAL_TICKET_QUERY = gql`
+const DEAL_TICKET_QUERY = gql`
   query DealTicketQuery($marketId: ID!) {
     market(id: $marketId) {
       id
@@ -13,40 +13,6 @@ export const DEAL_TICKET_QUERY = gql`
       positionDecimalPlaces
       state
       tradingMode
-      fees {
-        factors {
-          makerFee
-          infrastructureFee
-          liquidityFee
-        }
-      }
-      priceMonitoringSettings {
-        parameters {
-          triggers {
-            horizonSecs
-            probability
-            auctionExtensionSecs
-          }
-        }
-        updateFrequencySecs
-      }
-      riskFactors {
-        market
-        short
-        long
-      }
-      data {
-        market {
-          id
-        }
-        markPrice
-        indicativeVolume
-        bestBidVolume
-        bestOfferVolume
-        bestStaticBidVolume
-        bestStaticOfferVolume
-        indicativeVolume
-      }
       tradableInstrument {
         instrument {
           product {
@@ -57,23 +23,6 @@ export const DEAL_TICKET_QUERY = gql`
                 symbol
                 name
               }
-            }
-          }
-        }
-        riskModel {
-          ... on LogNormalRiskModel {
-            tau
-            riskAversionParameter
-            params {
-              r
-              sigma
-              mu
-            }
-          }
-          ... on SimpleRiskModel {
-            params {
-              factorLong
-              factorShort
             }
           }
         }

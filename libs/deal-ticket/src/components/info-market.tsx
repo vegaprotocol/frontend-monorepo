@@ -16,29 +16,113 @@ import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import type {
-  DealTicketQuery,
-  DealTicketQuery_market,
-} from './__generated__/DealTicketQuery';
+  MarketInfoQuery,
+  MarketInfoQuery_market,
+} from './__generated__/MarketInfoQuery';
 import BigNumber from 'bignumber.js';
-import { useQuery } from '@apollo/client';
-import { DEAL_TICKET_QUERY } from './deal-ticket-container';
+import { gql, useQuery } from '@apollo/client';
+
+const MARKET_INFO_QUERY = gql`
+  query MarketInfoQuery($marketId: ID!) {
+    market(id: $marketId) {
+      id
+      name
+      decimalPlaces
+      positionDecimalPlaces
+      state
+      tradingMode
+      fees {
+        factors {
+          makerFee
+          infrastructureFee
+          liquidityFee
+        }
+      }
+      priceMonitoringSettings {
+        parameters {
+          triggers {
+            horizonSecs
+            probability
+            auctionExtensionSecs
+          }
+        }
+        updateFrequencySecs
+      }
+      riskFactors {
+        market
+        short
+        long
+      }
+      data {
+        market {
+          id
+        }
+        markPrice
+        indicativeVolume
+        bestBidVolume
+        bestOfferVolume
+        bestStaticBidVolume
+        bestStaticOfferVolume
+        indicativeVolume
+      }
+      tradableInstrument {
+        instrument {
+          product {
+            ... on Future {
+              quoteName
+              settlementAsset {
+                id
+                symbol
+                name
+              }
+            }
+          }
+        }
+        riskModel {
+          ... on LogNormalRiskModel {
+            tau
+            riskAversionParameter
+            params {
+              r
+              sigma
+              mu
+            }
+          }
+          ... on SimpleRiskModel {
+            params {
+              factorLong
+              factorShort
+            }
+          }
+        }
+      }
+      depth {
+        lastTrade {
+          price
+        }
+      }
+    }
+  }
+`;
 
 export interface InfoProps {
-  market: DealTicketQuery_market;
+  market: MarketInfoQuery_market;
 }
 
 export interface MarketInfoContainerProps {
   marketId: string;
 }
 export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
-  const { data, loading, error } = useQuery(DEAL_TICKET_QUERY, {
+  const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
     variables: { marketId },
   });
 
   return (
-    <AsyncRenderer<DealTicketQuery> data={data} loading={loading} error={error}>
+    <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <Info market={data.market} />
+        <div className={'overflow-auto h-full'}>
+          <Info market={data.market} />
+        </div>
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>

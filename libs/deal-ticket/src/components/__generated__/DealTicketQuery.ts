@@ -9,124 +9,6 @@ import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
 // GraphQL query operation: DealTicketQuery
 // ====================================================
 
-export interface DealTicketQuery_market_fees_factors {
-  __typename: "FeeFactors";
-  /**
-   * The factor applied to calculate MakerFees, a non-negative float
-   */
-  makerFee: string;
-  /**
-   * The factor applied to calculate InfrastructureFees, a non-negative float
-   */
-  infrastructureFee: string;
-  /**
-   * The factor applied to calculate LiquidityFees, a non-negative float
-   */
-  liquidityFee: string;
-}
-
-export interface DealTicketQuery_market_fees {
-  __typename: "Fees";
-  /**
-   * The factors used to calculate the different fees
-   */
-  factors: DealTicketQuery_market_fees_factors;
-}
-
-export interface DealTicketQuery_market_priceMonitoringSettings_parameters_triggers {
-  __typename: "PriceMonitoringTrigger";
-  /**
-   * Price monitoring projection horizon τ in seconds (> 0).
-   */
-  horizonSecs: number;
-  /**
-   * Price monitoring probability level p. (>0 and < 1)
-   */
-  probability: number;
-  /**
-   * Price monitoring auction extension duration in seconds should the price
-   * breach it's theoretical level over the specified horizon at the specified
-   * probability level (> 0)
-   */
-  auctionExtensionSecs: number;
-}
-
-export interface DealTicketQuery_market_priceMonitoringSettings_parameters {
-  __typename: "PriceMonitoringParameters";
-  /**
-   * The list of triggers for this price monitoring
-   */
-  triggers: DealTicketQuery_market_priceMonitoringSettings_parameters_triggers[] | null;
-}
-
-export interface DealTicketQuery_market_priceMonitoringSettings {
-  __typename: "PriceMonitoringSettings";
-  /**
-   * Specified a set of PriceMonitoringParameters to be use for price monitoring purposes
-   */
-  parameters: DealTicketQuery_market_priceMonitoringSettings_parameters | null;
-  /**
-   * How often (in seconds) the price monitoring bounds should be updated
-   */
-  updateFrequencySecs: number;
-}
-
-export interface DealTicketQuery_market_riskFactors {
-  __typename: "RiskFactor";
-  /**
-   * market the risk factor was emitted for
-   */
-  market: string;
-  /**
-   * short factor
-   */
-  short: string;
-  /**
-   * long factor
-   */
-  long: string;
-}
-
-export interface DealTicketQuery_market_data_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-}
-
-export interface DealTicketQuery_market_data {
-  __typename: "MarketData";
-  /**
-   * market id of the associated mark price
-   */
-  market: DealTicketQuery_market_data_market;
-  /**
-   * the mark price (actually an unsigned int)
-   */
-  markPrice: string;
-  /**
-   * indicative volume if the auction ended now, 0 if not in auction mode
-   */
-  indicativeVolume: string;
-  /**
-   * the aggregated volume being bid at the best bid price.
-   */
-  bestBidVolume: string;
-  /**
-   * the aggregated volume being offered at the best offer price.
-   */
-  bestOfferVolume: string;
-  /**
-   * the aggregated volume being offered at the best static bid price, excluding pegged orders
-   */
-  bestStaticBidVolume: string;
-  /**
-   * the aggregated volume being offered at the best static offer price, excluding pegged orders.
-   */
-  bestStaticOfferVolume: string;
-}
-
 export interface DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
@@ -163,70 +45,12 @@ export interface DealTicketQuery_market_tradableInstrument_instrument {
   product: DealTicketQuery_market_tradableInstrument_instrument_product;
 }
 
-export interface DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel_params {
-  __typename: "LogNormalModelParams";
-  /**
-   * r parameter
-   */
-  r: number;
-  /**
-   * sigma parameter
-   */
-  sigma: number;
-  /**
-   * mu parameter
-   */
-  mu: number;
-}
-
-export interface DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel {
-  __typename: "LogNormalRiskModel";
-  /**
-   * Tau parameter of the risk model
-   */
-  tau: number;
-  /**
-   * Lambda parameter of the risk model
-   */
-  riskAversionParameter: number;
-  /**
-   * Params for the log normal risk model
-   */
-  params: DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel_params;
-}
-
-export interface DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel_params {
-  __typename: "SimpleRiskModelParams";
-  /**
-   * Risk factor for long
-   */
-  factorLong: number;
-  /**
-   * Risk factor for short
-   */
-  factorShort: number;
-}
-
-export interface DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel {
-  __typename: "SimpleRiskModel";
-  /**
-   * Params for the simple risk model
-   */
-  params: DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel_params;
-}
-
-export type DealTicketQuery_market_tradableInstrument_riskModel = DealTicketQuery_market_tradableInstrument_riskModel_LogNormalRiskModel | DealTicketQuery_market_tradableInstrument_riskModel_SimpleRiskModel;
-
 export interface DealTicketQuery_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
   instrument: DealTicketQuery_market_tradableInstrument_instrument;
-  /**
-   * A reference to a risk model that is valid for the instrument
-   */
-  riskModel: DealTicketQuery_market_tradableInstrument_riskModel;
 }
 
 export interface DealTicketQuery_market_depth_lastTrade {
@@ -286,22 +110,6 @@ export interface DealTicketQuery_market {
    * Current mode of execution of the market
    */
   tradingMode: MarketTradingMode;
-  /**
-   * Fees related data
-   */
-  fees: DealTicketQuery_market_fees;
-  /**
-   * Price monitoring settings for the market
-   */
-  priceMonitoringSettings: DealTicketQuery_market_priceMonitoringSettings;
-  /**
-   * risk factors for the market
-   */
-  riskFactors: DealTicketQuery_market_riskFactors | null;
-  /**
-   * marketData for the given market
-   */
-  data: DealTicketQuery_market_data | null;
   /**
    * An instance of or reference to a tradable instrument.
    */
