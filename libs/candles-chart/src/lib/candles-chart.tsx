@@ -17,7 +17,6 @@ import { useContext, useMemo, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
