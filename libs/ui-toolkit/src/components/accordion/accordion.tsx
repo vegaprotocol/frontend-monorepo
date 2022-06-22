@@ -26,6 +26,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
       className="flex flex-col"
       value={value}
       onValueChange={setValue}
+      collapsible
     >
       {panels.map(({ title, content }, i) => (
         <AccordionPrimitive.Item value={`item-${i + 1}`} key={`item-${i + 1}`}>
