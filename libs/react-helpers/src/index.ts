@@ -1,6 +1,5 @@
 export * from './hooks';
 export * from './lib/context';
-export * from './lib/environment';
 export * from './lib/format';
 export * from './lib/generic-data-provider';
 export * from './lib/grid';

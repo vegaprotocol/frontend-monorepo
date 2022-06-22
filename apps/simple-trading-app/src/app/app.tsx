@@ -1,15 +1,13 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { ApolloProvider } from '@apollo/client';
+import { useState, useEffect } from 'react';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
+import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
 import { createClient } from './lib/apollo-client';
-import { DATA_SOURCES } from './config';
 import {
   VegaConnectDialog,
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
 import { VegaWalletConnectButton } from './components/vega-wallet-connect-button';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Connectors } from './lib/vega-connectors';
@@ -26,8 +24,6 @@ function App() {
     manage: false,
   });
 
-  const client = useMemo(() => createClient(DATA_SOURCES.dataNodeUrl), []);
-
   const [menuOpen, setMenuOpen] = useState(false);
   const onToggle = () => setMenuOpen(!menuOpen);
 
@@ -40,7 +36,7 @@ function App() {
   return (
     <EnvironmentProvider>
       <ThemeContext.Provider value={theme}>
-        <ApolloProvider client={client}>
+        <NetworkLoader createClient={createClient}>
           <VegaWalletProvider>
             <AppLoader>
               <div className="max-h-full min-h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
@@ -82,7 +78,7 @@ function App() {
               </div>
             </AppLoader>
           </VegaWalletProvider>
-        </ApolloProvider>
+        </NetworkLoader>
       </ThemeContext.Provider>
     </EnvironmentProvider>
   );
