@@ -1,6 +1,6 @@
 {
-  "root": "libs/network-switcher",
-  "sourceRoot": "libs/network-switcher/src",
+  "root": "libs/environment",
+  "sourceRoot": "libs/environment/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/network-switcher",
-        "tsConfig": "libs/network-switcher/tsconfig.lib.json",
-        "project": "libs/network-switcher/package.json",
-        "entryFile": "libs/network-switcher/src/index.ts",
+        "outputPath": "dist/libs/environment",
+        "tsConfig": "libs/environment/tsconfig.lib.json",
+        "project": "libs/environment/package.json",
+        "entryFile": "libs/environment/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/network-switcher/README.md",
+            "glob": "libs/environment/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/network-switcher/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/environment/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/network-switcher"],
+      "outputs": ["coverage/libs/environment"],
       "options": {
-        "jestConfig": "libs/network-switcher/jest.config.js",
+        "jestConfig": "libs/environment/jest.config.js",
         "passWithNoTests": true
       }
     }

@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';

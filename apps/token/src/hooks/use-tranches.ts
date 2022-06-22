@@ -1,8 +1,8 @@
-import type { Networks } from '@vegaprotocol/react-helpers';
 import { useFetch } from '@vegaprotocol/react-helpers';
 import type { Tranche } from '@vegaprotocol/smart-contracts';
 import React, { useEffect } from 'react';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import type { Networks } from '@vegaprotocol/environment';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 import { BigNumber } from '../lib/bignumber';
 
@@ -12,6 +12,7 @@ const TRANCHES_URLS: { [N in Networks]: string } = {
   STAGNET: 'https://static.vega.xyz/assets/stagnet1-tranches.json',
   STAGNET2: 'https://static.vega.xyz/assets/stagnet2-tranches.json',
   DEVNET: 'https://static.vega.xyz/assets/devnet-tranches.json',
+  CUSTOM: 'https://static.vega.xyz/assets/testnet-tranches.json',
 };
 
 export function useTranches() {
