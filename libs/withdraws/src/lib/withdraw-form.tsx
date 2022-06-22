@@ -74,7 +74,7 @@ export const WithdrawForm = ({
       noValidate={true}
       data-testid="withdraw-form"
     >
-      <FormGroup label={t('Asset')} className="relative">
+      <FormGroup label={t('Asset')} labelFor="asset" className="relative">
         <Controller
           control={control}
           name="asset"
@@ -108,7 +108,11 @@ export const WithdrawForm = ({
         )}
       </FormGroup>
 
-      <FormGroup label={t('To (Ethereum address)')} className="relative">
+      <FormGroup
+        label={t('To (Ethereum address)')}
+        labelFor="ethereum-address"
+        className="relative"
+      >
         <Input
           {...register('to', { validate: { required, ethereumAddress } })}
           id="ethereum-address"
@@ -131,7 +135,7 @@ export const WithdrawForm = ({
         )}
       </FormGroup>
 
-      <FormGroup label={t('Amount')} className="relative">
+      <FormGroup label={t('Amount')} labelFor="amount" className="relative">
         <Input
           type="number"
           autoComplete="off"

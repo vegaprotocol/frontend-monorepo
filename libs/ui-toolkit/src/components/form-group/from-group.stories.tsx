@@ -8,6 +8,9 @@ export default {
     label: {
       type: 'string',
     },
+    labelFor: {
+      type: 'string',
+    },
     labelDescription: {
       type: 'string',
     },
@@ -22,30 +25,34 @@ export default {
 
 const Template: Story = (args) => (
   <FormGroup {...args}>
-    <Input />
+    <Input id="labelFor" />
   </FormGroup>
 );
 
 export const Default = Template.bind({});
 Default.args = {
   label: 'Label',
+  labelFor: 'labelFor',
 };
 
 export const Error = Template.bind({});
 Error.args = {
   label: 'Label',
+  labelFor: 'labelFor',
   hasError: true,
 };
 
 export const WithDescription = Template.bind({});
 WithDescription.args = {
   label: 'Label',
-  labelDescription: 'Label description text',
+  labelFor: 'labelFor',
+  labelDescription: 'with description text',
 };
 
 export const WithDescriptionAndError = Template.bind({});
 WithDescriptionAndError.args = {
   hasError: true,
   label: 'Label',
-  labelDescription: 'Label description text',
+  labelFor: 'labelFor',
+  labelDescription: 'with description text',
 };

@@ -52,7 +52,7 @@ export function RestConnectorForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
-      <FormGroup label={t('Wallet')}>
+      <FormGroup label={t('Wallet')} labelFor="wallet">
         <Input
           {...register('wallet', { required: t('Required') })}
           id="wallet"
@@ -65,7 +65,7 @@ export function RestConnectorForm({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label={t('Passphrase')}>
+      <FormGroup label={t('Passphrase')} labelFor="passphrase">
         <Input
           {...register('passphrase', { required: t('Required') })}
           id="passphrase"

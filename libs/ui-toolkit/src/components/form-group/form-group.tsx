@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 interface FormGroupProps {
   children: ReactNode;
   label?: string;
+  labelFor?: string;
   labelAlign?: 'left' | 'right';
   labelDescription?: string;
   className?: string;
@@ -13,6 +14,7 @@ interface FormGroupProps {
 export const FormGroup = ({
   children,
   label,
+  labelFor,
   labelDescription,
   labelAlign = 'left',
   className,
@@ -23,8 +25,8 @@ export const FormGroup = ({
       data-testid="form-group"
       className={className?.includes('mb') ? className : `${className} mb-20`}
     >
-      {label ? (
-        <label>
+      {label && (
+        <label htmlFor={labelFor}>
           <div
             className={classNames(
               'mb-4 text-body-large text-black dark:text-white',
@@ -41,11 +43,9 @@ export const FormGroup = ({
               </div>
             )}
           </div>
-          {children}
         </label>
-      ) : (
-        { children }
       )}
+      {children}
     </div>
   );
 };

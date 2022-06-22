@@ -146,7 +146,7 @@ export const DepositForm = ({
           </InputError>
         )}
       </FormGroup>
-      <FormGroup label={t('Asset')} className="relative">
+      <FormGroup label={t('Asset')} labelFor="asset" className="relative">
         <Select {...register('asset', { validate: { required } })} id="asset">
           <option value="">{t('Please select')}</option>
           {assets
@@ -168,7 +168,7 @@ export const DepositForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <FormGroup label={t('To (Vega key)')} className="relative">
+      <FormGroup label={t('To (Vega key)')} labelFor="to" className="relative">
         <Input
           {...register('to', { validate: { required, vegaPublicKey } })}
           id="to"
@@ -194,7 +194,7 @@ export const DepositForm = ({
           <DepositLimits limits={limits} />
         </FormGroup>
       )}
-      <FormGroup label={t('Amount')} className="relative">
+      <FormGroup label={t('Amount')} labelFor="amount" className="relative">
         <Input
           type="number"
           autoComplete="off"

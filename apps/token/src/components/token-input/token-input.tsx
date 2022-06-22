@@ -171,7 +171,7 @@ export const TokenInput = ({
 
   return (
     <>
-      <FormGroup>
+      <FormGroup label="" labelFor={inputName}>
         <AmountInput
           amount={amount}
           setAmount={setAmount}
