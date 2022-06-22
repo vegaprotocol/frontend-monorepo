@@ -3,7 +3,7 @@ import type {
   TransactionResponse,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { createContext } from 'react';
-import type { VegaConnector } from './connectors';
+import type { VegaConnector } from './connectors/vega-connector';
 import type { TransactionSubmission } from './types';
 
 export type SendTxError =

@@ -1,16 +1,30 @@
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import type { VegaTxState } from '@vegaprotocol/wallet';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '../use-vega-transaction';
+import { VegaTxStatus } from '../use-vega-transaction';
+
+export interface Market {
+  name: string;
+
+  decimalPlaces: number;
+}
+
+export interface Order {
+  status: string;
+  rejectionReason: string | null;
+  size: string;
+  price: string;
+  market: Market | null;
+  type: string | null;
+}
 
 interface OrderDialogProps {
   transaction: VegaTxState;
-  finalizedOrder: OrderEvent_busEvents_event_Order | null;
+  finalizedOrder: Order | null;
 }
 
-export const OrderDialog = ({
+export const VegaTransactionDialog = ({
   transaction,
   finalizedOrder,
 }: OrderDialogProps) => {

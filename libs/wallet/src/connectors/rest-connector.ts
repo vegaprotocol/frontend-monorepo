@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
-import type { VegaConnector } from '.';
+import type { VegaConnector } from './vega-connector';
 import type { TransactionSubmission } from '../types';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
@@ -85,7 +85,7 @@ export class RestConnector implements VegaConnector {
     }
   }
 
-  async sendTx(body: TransactionSubmission) {
+  async sendTx(body?: TransactionSubmission) {
     try {
       return await this.service.commandSyncPost(body);
     } catch (err) {

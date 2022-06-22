@@ -2,9 +2,8 @@ import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { OrderStatus } from '@vegaprotocol/types';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
-import { OrderDialog } from './order-dialog';
 import { useOrderSubmit } from '../hooks/use-order-submit';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
@@ -76,7 +75,7 @@ export const DealTicketManager = ({
         }}
         intent={getDialogIntent(transaction.status)}
       >
-        <OrderDialog
+        <VegaTransactionDialog
           transaction={transaction}
           finalizedOrder={finalizedOrder}
         />

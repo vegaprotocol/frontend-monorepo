@@ -1,6 +1,5 @@
-export * from './provider';
 export * from './context';
-export * from './hooks';
+export * from './use-vega-wallet';
 export * from './connect-dialog';
 export * from './connectors';
 export * from './storage-keys';
@@ -8,3 +7,5 @@ export * from './types';
 export * from './use-vega-transaction';
 export * from './use-eager-connect';
 export * from './manage-dialog';
+export * from './order-dialog';
+export * from './provider';

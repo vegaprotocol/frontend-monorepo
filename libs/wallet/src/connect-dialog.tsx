@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
-import type { VegaConnector } from './connectors';
+import type { VegaConnector } from './connectors/vega-connector';
 import { RestConnectorForm } from './rest-connector-form';
 import { useEffect } from 'react';
 import { RestConnector } from './connectors';
-import { useVegaWallet } from './hooks';
+import { useVegaWallet } from './use-vega-wallet';
 import { t } from '@vegaprotocol/react-helpers';
 
 export interface VegaConnectDialogProps {
