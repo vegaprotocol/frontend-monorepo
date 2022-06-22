@@ -1,5 +1,5 @@
-import navigation from '../../locators/navigation';
-import home from '../../locators/home';
+import navigation from '../../locators/navigation.locators';
+import home from '../../locators/home.locators';
 
 context('Home Page - verify elements on page', function () {
   before('visit token home page', function () {
