@@ -40,9 +40,9 @@ export const NavigationDrawer = ({
   });
 
   return (
-    <div className={outerStyles}>
+    <aside className={outerStyles}>
       <div className="md:hidden grow h-full" onClick={onToggle} />
       <div className={innerStyles}>{children}</div>
-    </div>
+    </aside>
   );
 };
