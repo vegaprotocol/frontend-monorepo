@@ -1,51 +1,38 @@
-import React from 'react';
-import * as AccordionRadix from '@radix-ui/react-accordion';
-import { keyframes, styled } from '@stitches/react';
+import React, { useState } from 'react';
+import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import ChevronDownIcon from './chevron-down';
+import classNames from 'classnames';
 
-export interface AccordionProp {
+export interface AccordionItemProps {
   title: React.ReactNode;
   content: React.ReactNode;
 }
 
 export interface AccordionProps {
-  panels: AccordionProp[];
+  panels: AccordionItemProps[];
 }
 
 export const Accordion = ({ panels }: AccordionProps) => {
-  const AccordionChevron = styled(ChevronDownIcon, {
-    transition: 'transform 300ms',
-    '[data-state=open] &': { transform: 'rotate(180deg)' },
-  });
-
-  const open = keyframes({
-    from: { height: 0 },
-    to: { height: 'var(--radix-accordion-content-height)' },
-  });
-
-  const close = keyframes({
-    from: { height: 'var(--radix-accordion-content-height)' },
-    to: { height: 0 },
-  });
-
-  const AccordionHeader = styled(AccordionRadix.Header, {
-    margin: 0,
-  });
-
-  const AccordionContent = styled(AccordionRadix.Content, {
-    overflow: 'hidden',
-    '&[data-state="open"]': { animation: `${open} 300ms ease-out forwards` },
-    '&[data-state="closed"]': { animation: `${close} 300ms ease-out forwards` },
-  });
+  const [value, setValue] = useState<string>('');
+  const triggerClassNames = classNames(
+    'w-full py-2 box-border',
+    'appearance-none cursor-pointer focus:outline-none',
+    'flex items-center justify-between border-b border-muted'
+  );
 
   return (
-    <AccordionRadix.Root type="multiple" className="flex flex-col">
+    <AccordionPrimitive.Root
+      type="single"
+      className="flex flex-col"
+      value={value}
+      onValueChange={setValue}
+    >
       {panels.map(({ title, content }, i) => (
-        <AccordionRadix.Item value={`item-${i}`} key={`item-${i}`}>
-          <AccordionHeader>
-            <AccordionRadix.Trigger
+        <AccordionPrimitive.Item value={`item-${i + 1}`} key={`item-${i + 1}`}>
+          <AccordionPrimitive.Header>
+            <AccordionPrimitive.Trigger
               data-testid="accordion-toggle"
-              className="w-full py-2 box-border appearance-none cursor-pointer focus:outline-none flex items-center justify-between border-b border-muted"
+              className={triggerClassNames}
             >
               <p
                 className="inline-block text-footnote font-bold text-h6 text-black dark:text-white pt-5"
@@ -53,19 +40,19 @@ export const Accordion = ({ panels }: AccordionProps) => {
               >
                 {title}
               </p>
-              <AccordionChevron aria-hidden />
-            </AccordionRadix.Trigger>
-          </AccordionHeader>
-          <AccordionContent
+              <ChevronDownIcon active={value === `item-${i + 1}`} aria-hidden />
+            </AccordionPrimitive.Trigger>
+          </AccordionPrimitive.Header>
+          <AccordionPrimitive.Content
             data-testid="accordion-content-ref"
             className="overflow-auto transition-max-height duration-300 ease-in-out"
           >
             <div className="pb-5" data-testid="accordion-content">
               {content}
             </div>
-          </AccordionContent>
-        </AccordionRadix.Item>
+          </AccordionPrimitive.Content>
+        </AccordionPrimitive.Item>
       ))}
-    </AccordionRadix.Root>
+    </AccordionPrimitive.Root>
   );
 };
