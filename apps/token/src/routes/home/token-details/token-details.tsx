@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';
@@ -9,6 +9,7 @@ import { formatNumber } from '../../../lib/format-number';
 import { TokenDetailsCirculating } from './token-details-circulating';
 import { SplashLoader } from '../../../components/splash-loader';
 import { useEthereumConfig } from '@vegaprotocol/web3';
+import { useContracts } from '../../../contexts/contracts/contracts-context';
 
 export const TokenDetails = ({
   totalSupply,
@@ -17,11 +18,12 @@ export const TokenDetails = ({
   totalSupply: BigNumber;
   totalStaked: BigNumber;
 }) => {
-  const { ADDRESSES, ETHERSCAN_URL } = useEnvironment();
+  const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
 
   const { tranches, loading, error } = useTranches();
   const { config } = useEthereumConfig();
+  const { token } = useContracts();
 
   if (error) {
     return (
@@ -47,10 +49,9 @@ export const TokenDetails = ({
           data-testid="token-address"
           title={t('View on Etherscan (opens in a new tab)')}
           className="font-mono"
-          href={`${ETHERSCAN_URL}/address/${ADDRESSES.vegaTokenAddress}`}
-          target="_blank"
+          href={`${ETHERSCAN_URL}/address/${token.address}`}
         >
-          {ADDRESSES.vegaTokenAddress}
+          {token.address}
         </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>

@@ -1,5 +1,5 @@
 import { Button, Callout, Link, Loader } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link as RouteLink } from 'react-router-dom';

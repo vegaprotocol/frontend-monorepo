@@ -1,6 +1,6 @@
 import './i18n';
-import React from 'react';
-import { ApolloProvider } from '@apollo/client';
+
+import React, { useMemo } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { AppBanner } from './components/app-banner';
@@ -15,19 +15,33 @@ import { AppStateProvider } from './contexts/app-state/app-state-provider';
 import { ContractsProvider } from './contexts/contracts/contracts-provider';
 import { AppRouter } from './routes';
 import { Web3Provider } from '@vegaprotocol/web3';
-import { Connectors } from './lib/web3-connectors';
 import { VegaWalletDialogs } from './components/vega-wallet-dialogs';
 import { VegaWalletProvider } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/network-switcher';
-import { client } from './lib/apollo-client';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { useEthereumConfig } from '@vegaprotocol/web3';
+import {
+  useEnvironment,
+  EnvironmentProvider,
+  NetworkLoader,
+} from '@vegaprotocol/environment';
+import { createClient } from './lib/apollo-client';
+import { createConnectors } from './lib/web3-connectors';
 
-function App() {
+const AppContainer = () => {
   const sideBar = React.useMemo(() => [<EthWallet />, <VegaWallet />], []);
+  const { config, loading, error } = useEthereumConfig();
+  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const Connectors = useMemo(() => {
+    if (config?.chain_id) {
+      return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
+    }
+    return undefined;
+  }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   return (
-    <ApolloProvider client={client}>
-      <Router>
-        <EnvironmentProvider>
-          <AppStateProvider>
+    <Router>
+      <AppStateProvider>
+        <AsyncRenderer loading={loading} data={config} error={error}>
+          {Connectors && (
             <Web3Provider connectors={Connectors}>
               <Web3Connector>
                 <VegaWalletProvider>
@@ -51,10 +65,20 @@ function App() {
                 </VegaWalletProvider>
               </Web3Connector>
             </Web3Provider>
-          </AppStateProvider>
-        </EnvironmentProvider>
-      </Router>
-    </ApolloProvider>
+          )}
+        </AsyncRenderer>
+      </AppStateProvider>
+    </Router>
+  );
+};
+
+function App() {
+  return (
+    <EnvironmentProvider>
+      <NetworkLoader createClient={createClient}>
+        <AppContainer />
+      </NetworkLoader>
+    </EnvironmentProvider>
   );
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { theme } from '@vegaprotocol/tailwindcss-config';
+import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketPercentChange from './simple-market-percent-change';
 import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';

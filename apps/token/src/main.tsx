@@ -7,11 +7,12 @@ import ReactDOM from 'react-dom';
 
 import App from './app';
 import reportWebVitals from './report-web-vitals';
+import { ENV } from './config/env';
 
-const dsn = process.env['NX_SENTRY_DSN'] || false;
-const environment = process.env['NX_VEGA_ENV'] || 'local';
-const commit = process.env['NX_COMMIT_REF'] || 'local';
-const branch = process.env['NX_BRANCH'] || 'unknown';
+const dsn = ENV.dsn || false;
+const environment = ENV.envName || 'local';
+const commit = ENV.commit || 'local';
+const branch = ENV.branch || 'unknown';
 
 /* istanbul ignore next */
 if (dsn) {

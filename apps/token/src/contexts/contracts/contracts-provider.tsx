@@ -11,9 +11,10 @@ import React from 'react';
 import { SplashLoader } from '../../components/splash-loader';
 import type { ContractsContextShape } from './contracts-context';
 import { ContractsContext } from './contracts-context';
-import { defaultProvider } from '../../lib/web3-connectors';
+import { createDefaultProvider } from '../../lib/web3-connectors';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { ENV } from '../../config/env';
 
 /**
  * Provides Vega Ethereum contract instances to its children.
@@ -21,7 +22,7 @@ import { useEnvironment } from '@vegaprotocol/network-switcher';
 export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   const { provider: activeProvider, account } = useWeb3React();
   const { config } = useEthereumConfig();
-  const { VEGA_ENV, ADDRESSES } = useEnvironment();
+  const { VEGA_ENV, ETHEREUM_PROVIDER_URL } = useEnvironment();
   const [contracts, setContracts] =
     React.useState<ContractsContextShape | null>(null);
 
@@ -29,33 +30,49 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   // contracts so that we can sign transactions, otherwise use the provider for just
   // reading data
   React.useEffect(() => {
-    let signer = null;
+    const run = async () => {
+      let signer = null;
 
-    const provider = activeProvider ? activeProvider : defaultProvider;
+      if (config) {
+        const defaultProvider = createDefaultProvider(
+          ETHEREUM_PROVIDER_URL,
+          Number(config.chain_id)
+        );
 
-    if (
-      account &&
-      activeProvider &&
-      typeof activeProvider.getSigner === 'function'
-    ) {
-      signer = provider.getSigner();
-    }
+        const provider = activeProvider ? activeProvider : defaultProvider;
 
-    if (provider && config) {
-      setContracts({
-        token: new Token(ADDRESSES.vegaTokenAddress, signer || provider),
-        staking: new StakingBridge(
-          config.staking_bridge_contract.address,
-          signer || provider
-        ),
-        vesting: new TokenVesting(
-          config.token_vesting_contract.address,
-          signer || provider
-        ),
-        claim: new Claim(ADDRESSES.claimAddress, signer || provider),
-      });
-    }
-  }, [activeProvider, account, config, ADDRESSES, VEGA_ENV]);
+        if (
+          account &&
+          activeProvider &&
+          typeof activeProvider.getSigner === 'function'
+        ) {
+          signer = provider.getSigner();
+        }
+
+        if (provider && config) {
+          const staking = new StakingBridge(
+            config.staking_bridge_contract.address,
+            signer || provider
+          );
+          const vegaAddress = await staking.stakingToken();
+
+          setContracts({
+            token: new Token(vegaAddress, signer || provider),
+            staking: new StakingBridge(
+              config.staking_bridge_contract.address,
+              signer || provider
+            ),
+            vesting: new TokenVesting(
+              config.token_vesting_contract.address,
+              signer || provider
+            ),
+            claim: new Claim(ENV.addresses.claimAddress, signer || provider),
+          });
+        }
+      }
+    };
+    run();
+  }, [activeProvider, account, config, VEGA_ENV, ETHEREUM_PROVIDER_URL]);
 
   if (!contracts) {
     return (

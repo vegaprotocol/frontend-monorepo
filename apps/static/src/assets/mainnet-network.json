@@ -1,0 +1,17 @@
+{
+  "hosts": [
+    "https://vega-data-graphql.chorus.one/query",
+    "https://vega.xprv.io/datanode/query",
+    "http://nala.mainnet.vega.community:3008/query",
+    "http://commodum.mainnet.vega.community:3008/query",
+    "http://lovali.mainnet.vega.community:3008/query",
+    "http://b-harvest.mainnet.vega.community:3008/query",
+    "http://staking-facilities.mainnet.vega.community:3008/query",
+    "http://figment.mainnet.vega.community:3008/query",
+    "http://nodes-guru.mainnet.vega.community:3008/query",
+    "http://p2p.mainnet.vega.community:3008/query",
+    "http://rockaway.mainnet.vega.community:3008/query",
+    "http://greenfield-one.mainnet.vega.community:3008/query",
+    "http://ryabina.mainnet.vega.community:3008/query"
+  ]
+}

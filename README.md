@@ -47,11 +47,11 @@ For shared Cypress logic, commands and steps.
 
 ### [Web3](./libs/web3)
 
-A ulitity library for connecting to the Ethereum network and interacting with Vega Web3 contracts.
+A utility library for connecting to the Ethereum network and interacting with Vega Web3 contracts.
 
 ### [React Helpers](./libs/react-helpers)
 
-Generic react helpers that can be used across multilpe applications, along with other utilties.
+Generic react helpers that can be used across multilpe applications, along with other utilities.
 
 # 💻 Develop
 
@@ -103,23 +103,41 @@ In CI linting, formatting and also run. These checks can be seen in the [CI work
 
 Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more.
 
-# Vegacapsule
+# Docker & Vegacapsule
 
-## Explorer
+## Docker
 
-Follow the following steps to start using a local network with the Vega Explorer:
+The [Dockerfile](./Dockerfile) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environment variables to the containers. See configuration below for how to do this.
 
-1. Prepare vegacapsule. Follow the [Vegacapsule instructions](https://github.com/vegaprotocol/vegacapsule#quick-start)
-2. Build the explorer frontend application
-3. Start the explorer frontend application with the `.env.vegacapsule` env file
-4. Go to [http://localhost:3000](http://localhost:3000) in your browser
-
-If you simply want to run Explorer locally, without using a local network:
+You can build any of the containers locally with the following command:
 
 ```bash
-cd apps/explorer && cp .env.testnet .env.local
-yarn nx run explorer:serve
+docker build . --build-arg APP=[YOUR APP] --tag=[TAG]
 ```
+
+In order to run a container:
+
+```bash
+docker run -p 3000:80 [TAG]
+```
+
+## Config
+
+As environment variables are build time and not run time in frontend applications. We have built a system which allows for passing run time environment variables, this generates a JSON file that will override the default environment variables that the container was built with (which is always testnet, using the default .env files).
+
+In order to override specific environment variables you can pass these to the container like this:
+
+```bash
+docker run -e NX_VEGA_URL=https://n04.d.vega.xyz/query -p 3000:80 [TAG]
+```
+
+Which will now point the app to use a devnet data node. To see a list of all possible config properties see the readme.md for each app in the app directory.
+
+## Vega capsule
+
+Coming soon! You will be able to run the containers within Vega Capsule.
+
+You can run against a local instance of Vega Capsule today by using the .env.capsule present in the apps.
 
 # 📑 License
 

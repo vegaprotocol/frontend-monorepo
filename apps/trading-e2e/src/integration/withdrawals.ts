@@ -1,4 +1,4 @@
-import { hasOperationName } from '../support';
+import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
@@ -6,12 +6,8 @@ import { connectVegaWallet } from '../support/vega-wallet';
 describe('withdrawals', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
-    cy.mockGQL('Withdrawals', (req) => {
-      if (hasOperationName(req, 'Withdrawals')) {
-        req.reply({
-          body: { data: generateWithdrawals() },
-        });
-      }
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'Withdrawals', generateWithdrawals());
     });
     cy.visit('/portfolio/withdrawals');
 

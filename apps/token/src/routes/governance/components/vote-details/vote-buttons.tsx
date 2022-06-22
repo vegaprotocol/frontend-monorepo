@@ -145,7 +145,6 @@ export const VoteButtons = ({
         {proposalState === ProposalState.Open ? (
           <Button
             variant="inline-link"
-            className="text-vega-yellow"
             onClick={() => {
               setChangeVote(true);
             }}

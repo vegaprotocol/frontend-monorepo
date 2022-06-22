@@ -3,9 +3,8 @@ import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
-import { Tabs, Tab } from '@vegaprotocol/ui-toolkit';
 
 const Portfolio = () => {
   const tabClassName = 'p-[16px] pl-[316px]';
