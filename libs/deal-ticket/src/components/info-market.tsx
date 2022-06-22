@@ -25,7 +25,6 @@ export const Info = ({ market }: InfoProps) => {
     'text-h5 font-bold uppercase text-black dark:text-white';
   const marketDataPanels = [
     {
-      key: 'fees',
       title: t('Current fees'),
       content: (
         <>
@@ -39,7 +38,6 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      key: 'market-data',
       title: t('Market data'),
       content: (
         <MarketInfoTable
@@ -52,7 +50,6 @@ export const Info = ({ market }: InfoProps) => {
   const marketSpecPanels = [
     {
       title: t('Key details'),
-      key: 'details',
       content: (
         <MarketInfoTable
           data={pick(
@@ -68,7 +65,6 @@ export const Info = ({ market }: InfoProps) => {
     },
     {
       title: t('Instrument'),
-      key: 'instrument',
       content: (
         <MarketInfoTable
           data={{
@@ -80,7 +76,6 @@ export const Info = ({ market }: InfoProps) => {
     },
     {
       title: t('Risk factors'),
-      key: 'risk-factors',
       content: (
         <MarketInfoTable
           data={market.riskFactors}
@@ -91,7 +86,6 @@ export const Info = ({ market }: InfoProps) => {
     },
     {
       title: t('Risk model'),
-      key: 'risk-model',
       content: (
         <MarketInfoTable
           data={market.tradableInstrument.riskModel}
@@ -103,7 +97,6 @@ export const Info = ({ market }: InfoProps) => {
     ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
       (trigger, i) => ({
         title: t(`Price monitoring trigger ${i + 1}`),
-        key: `trigger-${i}`,
         content: <MarketInfoTable data={trigger} />,
       })
     ),
