@@ -1,8 +1,8 @@
 import { useForm, Controller } from 'react-hook-form';
 import { Button, Select } from '@vegaprotocol/ui-toolkit';
-import type { Networks } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '../../hooks';
+import type { Networks } from '../../types';
 
 type NetworkState = {
   network: Networks;

@@ -1,7 +1,0 @@
-export enum Networks {
-  TESTNET = 'TESTNET',
-  STAGNET = 'STAGNET',
-  STAGNET2 = 'STAGNET2',
-  DEVNET = 'DEVNET',
-  MAINNET = 'MAINNET',
-}

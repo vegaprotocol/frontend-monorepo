@@ -26,9 +26,9 @@ export const routerConfig = [
         element: <SimpleMarketList />,
         children: [
           {
-            path: `:asset`,
+            path: `:product`,
             element: <SimpleMarketList />,
-            children: [{ path: `:product`, element: <SimpleMarketList /> }],
+            children: [{ path: `:asset`, element: <SimpleMarketList /> }],
           },
         ],
       },

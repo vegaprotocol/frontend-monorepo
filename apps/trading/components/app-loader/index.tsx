@@ -1,6 +1,8 @@
-import { useEagerConnect } from '@vegaprotocol/wallet';
-import { Connectors } from '../../lib/vega-connectors';
 import type { ReactNode } from 'react';
+import { useEagerConnect } from '@vegaprotocol/wallet';
+import { NetworkLoader } from '@vegaprotocol/environment';
+import { Connectors } from '../../lib/vega-connectors';
+import { createClient } from '../../lib/apollo-client';
 
 interface AppLoaderProps {
   children: ReactNode;
@@ -14,5 +16,5 @@ export function AppLoader({ children }: AppLoaderProps) {
   // Get keys from vega wallet immediately
   useEagerConnect(Connectors);
 
-  return <>{children}</>;
+  return <NetworkLoader createClient={createClient}>{children}</NetworkLoader>;
 }

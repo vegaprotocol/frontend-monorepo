@@ -9,7 +9,7 @@ import {
   PriceCell,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import type { FundingData } from './funding-manager';
 
 interface FundingTableProps {
