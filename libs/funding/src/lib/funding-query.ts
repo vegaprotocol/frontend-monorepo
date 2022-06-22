@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 
-const TRANSACTIONS_FRAGMENT = gql`
+const FUNDING_FRAGMENT = gql`
   fragment DepositFields on Deposit {
     id
     amount
@@ -29,9 +29,9 @@ const TRANSACTIONS_FRAGMENT = gql`
   }
 `;
 
-export const TRANSACTIONS_QUERY = gql`
-  ${TRANSACTIONS_FRAGMENT}
-  query Transactions($partyId: ID!) {
+export const FUNDING_QUERY = gql`
+  ${FUNDING_FRAGMENT}
+  query Funding($partyId: ID!) {
     party(id: $partyId) {
       id
       deposits {

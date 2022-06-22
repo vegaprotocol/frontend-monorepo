@@ -6,10 +6,10 @@
 import { DepositStatus, WithdrawalStatus } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: Transactions
+// GraphQL query operation: Funding
 // ====================================================
 
-export interface Transactions_party_deposits_asset {
+export interface Funding_party_deposits_asset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -25,7 +25,7 @@ export interface Transactions_party_deposits_asset {
   decimals: number;
 }
 
-export interface Transactions_party_deposits {
+export interface Funding_party_deposits {
   __typename: "Deposit";
   /**
    * The Vega internal id of the deposit
@@ -46,7 +46,7 @@ export interface Transactions_party_deposits {
   /**
    * The asset to be withdrawn
    */
-  asset: Transactions_party_deposits_asset;
+  asset: Funding_party_deposits_asset;
   /**
    * The current status of the deposit
    */
@@ -57,7 +57,7 @@ export interface Transactions_party_deposits {
   txHash: string | null;
 }
 
-export interface Transactions_party_withdrawals_asset {
+export interface Funding_party_withdrawals_asset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -73,7 +73,7 @@ export interface Transactions_party_withdrawals_asset {
   decimals: number;
 }
 
-export interface Transactions_party_withdrawals_details {
+export interface Funding_party_withdrawals_details {
   __typename: "Erc20WithdrawalDetails";
   /**
    * The ethereum address of the receiver of the asset funds
@@ -81,7 +81,7 @@ export interface Transactions_party_withdrawals_details {
   receiverAddress: string;
 }
 
-export interface Transactions_party_withdrawals {
+export interface Funding_party_withdrawals {
   __typename: "Withdrawal";
   /**
    * The Vega internal id of the withdrawal
@@ -98,7 +98,7 @@ export interface Transactions_party_withdrawals {
   /**
    * The asset to be withdrawn
    */
-  asset: Transactions_party_withdrawals_asset;
+  asset: Funding_party_withdrawals_asset;
   /**
    * RFC3339Nano time at which the withdrawal was created
    */
@@ -114,14 +114,14 @@ export interface Transactions_party_withdrawals {
   /**
    * Foreign chain specific details about the withdrawal
    */
-  details: Transactions_party_withdrawals_details | null;
+  details: Funding_party_withdrawals_details | null;
   /**
    * Whether or the not the withdrawal is being processed on Ethereum
    */
   pendingOnForeignChain: boolean;
 }
 
-export interface Transactions_party {
+export interface Funding_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -130,20 +130,20 @@ export interface Transactions_party {
   /**
    * The list of all deposits for a party by the party
    */
-  deposits: Transactions_party_deposits[] | null;
+  deposits: Funding_party_deposits[] | null;
   /**
    * The list of all withdrawals initiated by the party
    */
-  withdrawals: Transactions_party_withdrawals[] | null;
+  withdrawals: Funding_party_withdrawals[] | null;
 }
 
-export interface Transactions {
+export interface Funding {
   /**
    * An entity that is trading on the VEGA network
    */
-  party: Transactions_party | null;
+  party: Funding_party | null;
 }
 
-export interface TransactionsVariables {
+export interface FundingVariables {
   partyId: string;
 }

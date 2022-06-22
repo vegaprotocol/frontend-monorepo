@@ -4,7 +4,7 @@ import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { AnchorButton, GridTab, GridTabs } from '@vegaprotocol/ui-toolkit';
-import { TransactionsContainer } from '@vegaprotocol/transactions';
+import { FundingContainer } from '@vegaprotocol/funding';
 
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
 
@@ -53,7 +53,7 @@ const Portfolio = () => {
                   <h4 className="text-h4 text-black dark:text-white">
                     {t('History')}
                   </h4>
-                  <TransactionsContainer />
+                  <FundingContainer />
                 </div>
               </GridTab>
             </GridTabs>

@@ -1,6 +1,6 @@
 {
-  "root": "libs/transactions",
-  "sourceRoot": "libs/transactions/src",
+  "root": "libs/funding",
+  "sourceRoot": "libs/funding/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/transactions",
-        "tsConfig": "libs/transactions/tsconfig.lib.json",
-        "project": "libs/transactions/package.json",
-        "entryFile": "libs/transactions/src/index.ts",
+        "outputPath": "dist/libs/funding",
+        "tsConfig": "libs/funding/tsconfig.lib.json",
+        "project": "libs/funding/package.json",
+        "entryFile": "libs/funding/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/transactions/README.md",
+            "glob": "libs/funding/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/transactions/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/funding/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/transactions"],
+      "outputs": ["coverage/libs/funding"],
       "options": {
-        "jestConfig": "libs/transactions/jest.config.js",
+        "jestConfig": "libs/funding/jest.config.js",
         "passWithNoTests": true
       }
     }
