@@ -7,27 +7,39 @@ import { AgGridColumn } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { forwardRef } from 'react';
 import type { FillFields } from './__generated__/FillFields';
-import type { IDatasource, ValueFormatterParams } from 'ag-grid-community';
+import type {
+  GridApi,
+  IDatasource,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 
 interface FillsProps {
-  dataSource: IDatasource;
+  datasource: IDatasource;
   partyId: string;
+  onBodyScrollEnd: (params: { api: GridApi; top: number }) => void;
 }
 
 export const Fills = forwardRef<AgGridReact, FillsProps>(
-  ({ partyId, dataSource }, ref) => {
+  ({ partyId, datasource, onBodyScrollEnd }, ref) => {
     return (
       <AgGrid
         ref={ref}
         overlayNoRowsTemplate="No fills"
-        overlayLoadingTemplate="FOOOO"
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
+        onBodyScrollEnd={onBodyScrollEnd}
         rowModelType="infinite"
-        datasource={dataSource}
+        datasource={datasource}
       >
-        <AgGridColumn headerName="Id" field="id" />
+        <AgGridColumn
+          headerName="Id"
+          field="id"
+          valueFormatter={({ value }: ValueFormatterParams) => {
+            if (!value) return null;
+            return truncateByChars(value);
+          }}
+        />
         <AgGridColumn
           headerName="Market"
           field="market.tradableInstrument.instrument.code"

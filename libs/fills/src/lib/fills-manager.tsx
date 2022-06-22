@@ -1,60 +1,12 @@
 import type { AgGridReact } from 'ag-grid-react';
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Fills } from './fills';
 import type { Fills as FillsResult } from './__generated__/Fills';
 import type { FillsVariables } from './__generated__/Fills';
-import { gql, useApolloClient } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import reverse from 'lodash/reverse';
-import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
-
-const FILL_FRAGMENT = gql`
-  fragment FillFields on Trade {
-    id
-    createdAt
-    price
-    size
-    buyOrder
-    sellOrder
-    buyer {
-      id
-    }
-    seller {
-      id
-    }
-    market {
-      id
-      decimalPlaces
-      tradableInstrument {
-        instrument {
-          id
-          code
-        }
-      }
-    }
-  }
-`;
-
-const FILLS_QUERY = gql`
-  ${FILL_FRAGMENT}
-  query Fills($partyId: ID!, $marketId: ID, $pagination: Pagination) {
-    party(id: $partyId) {
-      id
-      tradesPaged(marketId: $marketId, pagination: $pagination) {
-        totalCount
-        edges {
-          node {
-            ...FillFields
-          }
-          cursor
-        }
-        pageInfo {
-          startCursor
-          endCursor
-        }
-      }
-    }
-  }
-`;
+import type { GridApi, IDatasource, IGetRowsParams } from 'ag-grid-community';
+import { FILLS_QUERY } from './fills-data-provider';
 
 const ROW_COUNT_PER_FETCH = 100;
 
@@ -63,9 +15,18 @@ interface FillsManagerProps {
 }
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
-  const oldestCursorRef = useRef<string | null>(null);
+  const cursorRef = useRef<{ start: string; end: string } | null>(null);
   const client = useApolloClient();
   const gridRef = useRef<AgGridReact | null>(null);
+
+  const onBodyScrollEnd = useCallback(
+    ({ api, top }: { api: GridApi; top: number }) => {
+      // TODO: Refresh when back at top
+      console.log('top', top);
+    },
+    []
+  );
+
   const fillsDataSource = useMemo<IDatasource>(() => {
     return {
       getRows: async ({ successCallback, failCallback }: IGetRowsParams) => {
@@ -76,7 +37,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
           const variables = {
             partyId,
             pagination: {
-              before: oldestCursorRef.current,
+              before: cursorRef.current?.start,
               last: ROW_COUNT_PER_FETCH,
             },
           };
@@ -90,13 +51,13 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
           if (!res.data.party?.tradesPaged.edges.length) return;
 
           const edges = reverse([...res.data.party.tradesPaged.edges]);
-          oldestCursorRef.current = edges[0].cursor;
-          const lastRow = gridRef.current.api.getInfiniteRowCount();
 
-          successCallback(
-            edges.map((e) => e.node),
-            lastRow && lastRow > 1 ? lastRow : undefined
-          );
+          cursorRef.current = {
+            start: res.data.party.tradesPaged.pageInfo.startCursor,
+            end: res.data.party.tradesPaged.pageInfo.endCursor,
+          };
+
+          successCallback(edges.map((e) => e.node));
         } catch (err) {
           failCallback();
         }
@@ -104,5 +65,12 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
     };
   }, [client, partyId]);
 
-  return <Fills ref={gridRef} dataSource={fillsDataSource} partyId={partyId} />;
+  return (
+    <Fills
+      ref={gridRef}
+      datasource={fillsDataSource}
+      partyId={partyId}
+      onBodyScrollEnd={onBodyScrollEnd}
+    />
+  );
 };
