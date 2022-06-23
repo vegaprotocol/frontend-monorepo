@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import classnames from 'classnames';
 
 interface FormGroupProps {
   children: ReactNode;
@@ -23,7 +24,7 @@ export const FormGroup = ({
   return (
     <div
       data-testid="form-group"
-      className={className?.includes('mb') ? className : `${className} mb-20`}
+      className={classnames(className, { 'mb-20': !className?.includes('mb') })}
     >
       {label && (
         <label htmlFor={labelFor}>
