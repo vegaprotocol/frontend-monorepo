@@ -5,6 +5,7 @@ import {
   CumulativeVol,
   addDecimalsFormatNumber,
   VolumeType,
+  addDecimal,
 } from '@vegaprotocol/react-helpers';
 
 interface OrderbookRowProps {
@@ -15,6 +16,7 @@ interface OrderbookRowProps {
   cumulativeRelativeAsk?: number;
   cumulativeRelativeBid?: number;
   decimalPlaces: number;
+  positionDecimalPlaces: number;
   indicativeVolume?: string;
   price: string;
   relativeAsk?: number;
@@ -30,6 +32,7 @@ export const OrderbookRow = React.memo(
     cumulativeRelativeAsk,
     cumulativeRelativeBid,
     decimalPlaces,
+    positionDecimalPlaces,
     indicativeVolume,
     price,
     relativeAsk,
@@ -40,6 +43,7 @@ export const OrderbookRow = React.memo(
         <Vol
           testId={`bid-vol-${price}`}
           value={bid}
+          valueFormatted={addDecimal(bid, positionDecimalPlaces)}
           relativeValue={relativeBid}
           type={VolumeType.bid}
         />
@@ -51,6 +55,7 @@ export const OrderbookRow = React.memo(
         <Vol
           testId={`ask-vol-${price}`}
           value={ask}
+          valueFormatted={addDecimal(ask, positionDecimalPlaces)}
           relativeValue={relativeAsk}
           type={VolumeType.ask}
         />

@@ -2,13 +2,14 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Link, Splash } from '@vegaprotocol/ui-toolkit';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 import { useEthereumConfig } from '@vegaprotocol/web3';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
+import { ENV } from '../../config/env';
 
 const Contracts = () => {
   const { config } = useEthereumConfig();
-  const { ADDRESSES, ETHERSCAN_URL } = useEnvironment();
+  const { ETHERSCAN_URL } = useEnvironment();
 
   if (!config) {
     return (
@@ -47,7 +48,7 @@ const Contracts = () => {
           </div>
         );
       })}
-      {Object.entries(ADDRESSES).map(([key, value]) => (
+      {Object.entries(ENV.addresses).map(([key, value]) => (
         <div
           key={key}
           style={{ display: 'flex', justifyContent: 'space-between' }}

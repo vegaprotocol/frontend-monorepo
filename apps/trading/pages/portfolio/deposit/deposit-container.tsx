@@ -3,7 +3,7 @@ import { PageQueryContainer } from '../../../components/page-query-container';
 import type { DepositPage } from './__generated__/DepositPage';
 import { DepositManager } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/react-helpers';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { ASSET_FRAGMENT } from '../../../lib/query-fragments';
 

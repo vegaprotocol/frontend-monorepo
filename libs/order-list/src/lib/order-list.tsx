@@ -1,11 +1,17 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
 import type { Orders_party_orders } from './__generated__/Orders';
-import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  formatNumber,
+  getDateTimeFormat,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef } from 'react';
+import BigNumber from 'bignumber.js';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -23,16 +29,18 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         getRowId={({ data }) => data.id}
       >
         <AgGridColumn
-          headerName="Market"
+          headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
         />
         <AgGridColumn
-          headerName="Amount"
+          headerName={t('Amount')}
           field="size"
           cellClass="font-mono"
           valueFormatter={({ value, data }: ValueFormatterParams) => {
             const prefix = data.side === Side.Buy ? '+' : '-';
-            return prefix + value;
+            return (
+              prefix + addDecimal(value, data.market.positionDecimalPlaces)
+            );
           }}
         />
         <AgGridColumn field="type" />
@@ -47,11 +55,18 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           }}
         />
         <AgGridColumn
-          headerName="Filled"
+          headerName={t('Filled')}
           field="remaining"
           cellClass="font-mono"
           valueFormatter={({ data }: ValueFormatterParams) => {
-            return `${Number(data.size) - Number(data.remaining)}/${data.size}`;
+            const dps = data.market.positionDecimalPlaces;
+            const size = new BigNumber(data.size);
+            const remaining = new BigNumber(data.remaining);
+            const fills = size.minus(remaining);
+            return `${addDecimal(fills.toString(), dps)}/${addDecimal(
+              size.toString(),
+              dps
+            )}`;
           }}
         />
         <AgGridColumn
