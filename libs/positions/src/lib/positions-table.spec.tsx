@@ -17,6 +17,7 @@ const singleRow: Positions_party_positions = {
       __typename: 'MarketData',
       market: { __typename: 'Market', id: '123' },
     },
+    positionDecimalPlaces: 0,
     decimalPlaces: 5,
     tradableInstrument: {
       instrument: {

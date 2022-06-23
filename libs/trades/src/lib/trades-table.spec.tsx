@@ -13,6 +13,7 @@ const trade: TradeFields = {
     __typename: 'Market',
     id: 'market-id',
     decimalPlaces: 2,
+    positionDecimalPlaces: 0,
   },
 };
 

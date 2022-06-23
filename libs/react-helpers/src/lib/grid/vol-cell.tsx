@@ -9,6 +9,7 @@ export enum VolumeType {
 }
 export interface VolProps {
   value: number | bigint | null | undefined;
+  valueFormatted: string;
   relativeValue?: number;
   type: VolumeType;
   testId?: string;
@@ -22,7 +23,7 @@ export const BID_COLOR = 'darkgreen';
 export const ASK_COLOR = 'maroon';
 
 export const Vol = React.memo(
-  ({ value, relativeValue, type, testId }: VolProps) => {
+  ({ value, valueFormatted, relativeValue, type, testId }: VolProps) => {
     if ((!value && value !== 0) || isNaN(Number(value))) {
       return <div data-testid="vol">-</div>;
     }
@@ -38,7 +39,7 @@ export const Vol = React.memo(
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,
           }}
         ></div>
-        <PriceCell value={value} valueFormatted={value.toString()} />
+        <PriceCell value={value} valueFormatted={valueFormatted} />
       </div>
     );
   }
