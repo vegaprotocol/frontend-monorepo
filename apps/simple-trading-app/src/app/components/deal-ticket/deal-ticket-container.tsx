@@ -7,7 +7,6 @@ import { DealTicketSteps } from './deal-ticket-steps';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { gql, useQuery } from '@apollo/client';
 import { DealTicketBalance } from './deal-ticket-balance';
-import * as React from 'react';
 import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 
 const tempEmptyText = <p>Please select a market from the markets page</p>;

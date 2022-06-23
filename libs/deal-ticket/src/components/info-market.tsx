@@ -8,112 +8,221 @@ import {
 import {
   KeyValueTable,
   KeyValueTableRow,
-  AccordionPanel,
+  AsyncRenderer,
+  Splash,
+  Accordion,
 } from '@vegaprotocol/ui-toolkit';
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
-import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import type {
+  MarketInfoQuery,
+  MarketInfoQuery_market,
+} from './__generated__/MarketInfoQuery';
 import BigNumber from 'bignumber.js';
+import { gql, useQuery } from '@apollo/client';
+
+const MARKET_INFO_QUERY = gql`
+  query MarketInfoQuery($marketId: ID!) {
+    market(id: $marketId) {
+      id
+      name
+      decimalPlaces
+      positionDecimalPlaces
+      state
+      tradingMode
+      fees {
+        factors {
+          makerFee
+          infrastructureFee
+          liquidityFee
+        }
+      }
+      priceMonitoringSettings {
+        parameters {
+          triggers {
+            horizonSecs
+            probability
+            auctionExtensionSecs
+          }
+        }
+        updateFrequencySecs
+      }
+      riskFactors {
+        market
+        short
+        long
+      }
+      data {
+        market {
+          id
+        }
+        markPrice
+        indicativeVolume
+        bestBidVolume
+        bestOfferVolume
+        bestStaticBidVolume
+        bestStaticOfferVolume
+        indicativeVolume
+      }
+      tradableInstrument {
+        instrument {
+          product {
+            ... on Future {
+              quoteName
+              settlementAsset {
+                id
+                symbol
+                name
+              }
+            }
+          }
+        }
+        riskModel {
+          ... on LogNormalRiskModel {
+            tau
+            riskAversionParameter
+            params {
+              r
+              sigma
+              mu
+            }
+          }
+          ... on SimpleRiskModel {
+            params {
+              factorLong
+              factorShort
+            }
+          }
+        }
+      }
+      depth {
+        lastTrade {
+          price
+        }
+      }
+    }
+  }
+`;
 
 export interface InfoProps {
-  market: DealTicketQuery_market;
+  market: MarketInfoQuery_market;
 }
+
+export interface MarketInfoContainerProps {
+  marketId: string;
+}
+export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
+  const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
+    variables: { marketId },
+  });
+
+  return (
+    <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
+      {data && data.market ? (
+        <div className={'overflow-auto h-full'}>
+          <Info market={data.market} />
+        </div>
+      ) : (
+        <Splash>
+          <p>{t('Could not load market')}</p>
+        </Splash>
+      )}
+    </AsyncRenderer>
+  );
+};
 
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
     'text-h5 font-bold uppercase text-black dark:text-white';
+  const marketDataPanels = [
+    {
+      title: t('Current fees'),
+      content: (
+        <>
+          <MarketInfoTable data={market.fees.factors} asPercentage={true} />
+          <p className="text-ui-small">
+            {t(
+              'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
+            )}
+          </p>
+        </>
+      ),
+    },
+    {
+      title: t('Market data'),
+      content: (
+        <MarketInfoTable
+          data={market.data}
+          decimalPlaces={market.decimalPlaces}
+        />
+      ),
+    },
+  ];
+  const marketSpecPanels = [
+    {
+      title: t('Key details'),
+      content: (
+        <MarketInfoTable
+          data={pick(
+            market,
+            'name',
+            'decimalPlaces',
+            'positionDecimalPlaces',
+            'tradingMode',
+            'state'
+          )}
+        />
+      ),
+    },
+    {
+      title: t('Instrument'),
+      content: (
+        <MarketInfoTable
+          data={{
+            product: market.tradableInstrument.instrument.product,
+            ...market.tradableInstrument.instrument.product.settlementAsset,
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Risk factors'),
+      content: (
+        <MarketInfoTable
+          data={market.riskFactors}
+          unformatted={true}
+          omits={['market', '__typename']}
+        />
+      ),
+    },
+    {
+      title: t('Risk model'),
+      content: (
+        <MarketInfoTable
+          data={market.tradableInstrument.riskModel}
+          unformatted={true}
+          omits={[]}
+        />
+      ),
+    },
+    ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
+      (trigger, i) => ({
+        title: t(`Price monitoring trigger ${i + 1}`),
+        content: <MarketInfoTable data={trigger} />,
+      })
+    ),
+  ];
+
   return (
     <div className="p-16 flex flex-col gap-32">
       <div className="flex flex-col gap-12">
         <p className={headerClassName}>{t('Market data')}</p>
-        <AccordionPanel
-          key="fees"
-          title={t('Current fees')}
-          content={
-            <>
-              <MarketInfoTable data={market.fees.factors} asPercentage={true} />
-              <p className="text-ui-small">
-                {t(
-                  'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
-                )}
-              </p>
-            </>
-          }
-        />
-        <AccordionPanel
-          key="market-data"
-          title={t('Market data')}
-          content={
-            <MarketInfoTable
-              data={market.data}
-              decimalPlaces={market.decimalPlaces}
-            />
-          }
-        />
+        <Accordion panels={marketDataPanels} />
       </div>
-
       <div className="flex flex-col gap-12">
         <p className={headerClassName}>{t('Market specification')}</p>
-        <AccordionPanel
-          title={t('Key details')}
-          key="details"
-          content={
-            <MarketInfoTable
-              data={pick(
-                market,
-                'name',
-                'decimalPlaces',
-                'positionDecimalPlaces',
-                'tradingMode',
-                'state'
-              )}
-            />
-          }
-        />
-        <AccordionPanel
-          title={t('Instrument')}
-          key="instrument"
-          content={
-            <MarketInfoTable
-              data={{
-                product: market.tradableInstrument.instrument.product,
-                ...market.tradableInstrument.instrument.product.settlementAsset,
-              }}
-            />
-          }
-        />
-        <AccordionPanel
-          title={t('Risk factors')}
-          key="risk-factors"
-          content={
-            <MarketInfoTable
-              data={market.riskFactors}
-              unformatted={true}
-              omits={['market', '__typename']}
-            />
-          }
-        />
-        <AccordionPanel
-          title={t('Risk model')}
-          key="risk-model"
-          content={
-            <MarketInfoTable
-              data={market.tradableInstrument.riskModel}
-              unformatted={true}
-              omits={[]}
-            />
-          }
-        />
-        {(market.priceMonitoringSettings?.parameters?.triggers ?? []).map(
-          (trigger, i) => (
-            <AccordionPanel
-              key={`trigger-${i}`}
-              title={t(`Price monitoring trigger ${i + 1}`)}
-              content={<MarketInfoTable data={trigger} />}
-            />
-          )
-        )}
+        <Accordion panels={marketSpecPanels} />
       </div>
     </div>
   );
