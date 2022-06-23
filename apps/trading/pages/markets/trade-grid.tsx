@@ -66,7 +66,7 @@ export const TradeMarketHeader = ({
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
           onClick={() => setOpen(!open)}
-          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-vega-yellow dark:hover:bg-white/20"
+          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/20 dark:hover:bg-white/20"
         >
           <span className="break-words text-left">{market.name}</span>
           <ArrowDown color="yellow" borderX={8} borderTop={12} />
