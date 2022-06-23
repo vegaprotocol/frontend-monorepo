@@ -42,8 +42,19 @@ export const NavigationDrawer = ({
 
   return (
     <aside aria-label="Sidebar Navigation Menu" className={outerStyles}>
-      <div className="md:hidden grow h-full" onClick={onToggle} />
-      <div className={innerStyles}>{children}</div>
+      <div
+        role="presentation"
+        aria-label="Content Overlay - Click To Close Sidebar Navigation"
+        className="md:hidden grow h-full"
+        onClick={onToggle}
+      />
+      <div
+        role="group"
+        aria-label="Sidebar Navigation Grouped Content"
+        className={innerStyles}
+      >
+        {children}
+      </div>
     </aside>
   );
 };
