@@ -1,4 +1,3 @@
-import type { ReactElement } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { DealTicketContainer } from '../components/deal-ticket';
 import { SimpleMarketList } from '../components/simple-market-list';
@@ -7,7 +6,6 @@ import { Portfolio } from '../components/portfolio';
 export const ROUTES = {
   MARKETS: 'markets',
   TRADING: 'trading',
-  LIQUIDITY: 'liquidity',
   PORTFOLIO: 'portfolio',
 };
 
