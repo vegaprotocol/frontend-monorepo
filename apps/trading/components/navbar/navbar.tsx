@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { Vega } from '../icons/vega';
 import Link from 'next/link';
-import { AnchorButton } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
 
