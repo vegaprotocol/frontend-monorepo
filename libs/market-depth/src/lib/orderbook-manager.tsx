@@ -40,7 +40,6 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
           resolutionRef.current
         ),
       };
-      console.log(deltaRef.current);
       deltaRef.current = undefined;
       setOrderbookData(dataRef.current);
     }, 1000)
