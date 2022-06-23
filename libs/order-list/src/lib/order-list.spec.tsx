@@ -55,7 +55,7 @@ const limitOrder: Orders_party_orders = {
     id: 'market-id',
     name: 'market-name',
     decimalPlaces: 2,
-    positionDecimalPlaces: 0,
+    positionDecimalPlaces: 2,
     tradableInstrument: {
       __typename: 'TradableInstrument',
       instrument: {
@@ -64,11 +64,11 @@ const limitOrder: Orders_party_orders = {
       },
     },
   },
-  size: '10',
+  size: '1000',
   type: OrderType.Limit,
   status: OrderStatus.Active,
   side: Side.Sell,
-  remaining: '5',
+  remaining: '500',
   price: '12345',
   timeInForce: OrderTimeInForce.GTT,
   createdAt: new Date('2022-3-3').toISOString(),
@@ -124,10 +124,10 @@ it('Correct formatting applied for GTT limit order', async () => {
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
     limitOrder.market?.tradableInstrument.instrument.code,
-    '-10',
+    '-10.00',
     limitOrder.type,
     limitOrder.status,
-    '5',
+    '5.00',
     formatNumber(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
     `${limitOrder.timeInForce}: ${getDateTimeFormat().format(
       new Date(limitOrder.expiresAt ?? '')
