@@ -16,6 +16,7 @@ const TRADES_FRAGMENT = gql`
     market {
       id
       decimalPlaces
+      positionDecimalPlaces
     }
   }
 `;

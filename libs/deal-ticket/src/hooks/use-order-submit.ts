@@ -4,12 +4,12 @@ import type { Order } from '../utils/get-default-order';
 import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
+import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from '../components/__generated__/OrderEvent';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
+} from './__generated__/OrderEvent';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -29,6 +29,7 @@ const ORDER_EVENT_SUB = gql`
           market {
             name
             decimalPlaces
+            positionDecimalPlaces
           }
         }
       }
