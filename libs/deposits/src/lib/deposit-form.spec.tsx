@@ -199,6 +199,6 @@ it('Deposit', async () => {
     // @ts-ignore contract address definitely defined
     assetSource: asset.source.contractAddress,
     amount: '1500',
-    vegaPublicKey: `0x${vegaKey}`,
+    vegaPublicKey: vegaKey,
   });
 });
