@@ -26,7 +26,7 @@ export class StakingBridge {
     return this.contract.staking_token();
   }
   stakeBalance(target: string, vegaPublicKey: string) {
-    return this.contract.stake_balance(target, vegaPublicKey);
+    return this.contract.stake_balance(target, `0x${vegaPublicKey}`);
   }
   totalStaked() {
     return this.contract.total_staked();
