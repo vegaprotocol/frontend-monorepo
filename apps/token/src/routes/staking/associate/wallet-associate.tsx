@@ -12,7 +12,7 @@ import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { AssociateInfo } from './associate-info';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { toBigNum } from '@vegaprotocol/react-helpers';
+import { removeDecimal, toBigNum } from '@vegaprotocol/react-helpers';
 import type { EthereumConfig } from '@vegaprotocol/web3';
 
 export const WalletAssociate = ({
@@ -35,6 +35,7 @@ export const WalletAssociate = ({
     appDispatch,
     appState: { walletBalance, allowance, walletAssociatedBalance, decimals },
   } = useAppState();
+  console.log(allowance.toString());
 
   const { token } = useContracts();
 
@@ -42,12 +43,12 @@ export const WalletAssociate = ({
     state: approveState,
     perform: approve,
     dispatch: approveDispatch,
-  } = useTransaction(() =>
-    token.approve(
+  } = useTransaction(() => {
+    return token.approve(
       ethereumConfig.staking_bridge_contract.address,
-      Number.MAX_SAFE_INTEGER.toString()
-    )
-  );
+      removeDecimal(Number.MAX_SAFE_INTEGER.toString(), decimals).toString()
+    );
+  });
 
   // Once they have approved deposits then we need to refresh their allowance
   React.useEffect(() => {
