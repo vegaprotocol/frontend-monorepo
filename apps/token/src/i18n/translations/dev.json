@@ -193,6 +193,7 @@
   "noGovernanceTokens": "You need some VEGA tokens to participate in governance",
   "youVoted": "You voted",
   "changeVote": "Change vote",
+  "voteRequested": "Please confirm transaction in wallet",
   "votePending": "Casting vote",
   "voteError": "Something went wrong, and your vote was not seen by the network",
   "back": "back",
