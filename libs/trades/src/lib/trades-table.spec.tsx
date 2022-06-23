@@ -7,13 +7,13 @@ const trade: TradeFields = {
   __typename: 'Trade',
   id: 'trade-id',
   price: '111122200',
-  size: '20',
+  size: '2000',
   createdAt: new Date('2022-04-06T19:00:00').toISOString(),
   market: {
     __typename: 'Market',
     id: 'market-id',
     decimalPlaces: 2,
-    positionDecimalPlaces: 0,
+    positionDecimalPlaces: 2,
   },
 };
 
@@ -35,7 +35,7 @@ it('Number and data columns are formatted', async () => {
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
     '1,111,222.00',
-    '20',
+    '20.00',
     getDateTimeFormat().format(new Date(trade.createdAt)),
   ];
   cells.forEach((cell, i) => {
