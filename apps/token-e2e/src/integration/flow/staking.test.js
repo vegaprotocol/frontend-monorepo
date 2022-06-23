@@ -28,7 +28,7 @@ context('Staking Tab - with vega wallet connected', function () {
         'Checking we have at least 2 validators'
       );
       // Choose the first validator from top of sorted list
-      this.validatorName = this.validatorNames[0]; 
+      this.validatorName = this.validatorNames[0];
     });
 
     before('drill into a specific validator - and note values', function () {
@@ -72,12 +72,15 @@ context('Staking Tab - with vega wallet connected', function () {
 
         // Check - staking page - stake on node (next epoch) - updates to reflect stake
         cy.stakingValidatorPage_check_stakeNextEpochValue(
-          parseFloat(this.initialStakeNextEpoch) + 0.1);
+          parseFloat(this.initialStakeNextEpoch) + 0.1
+        );
 
         //Check - wallet staked amount - updates balance for validator
         cy.walletVega_checkValidator_StakeNextEpochValue(
-        this.validatorName, parseFloat(this.initialStakeNextEpoch) + 0.1);
-        
+          this.validatorName,
+          parseFloat(this.initialStakeNextEpoch) + 0.1
+        );
+
         //Check - wallet unstaked amount - updates balance - Note: Skipping until capsule can enable this test
         // cy.walletVega_check_UnstakedValue_is(
         //   parseFloat(this.initialUnstakedBalance) - 0.1);

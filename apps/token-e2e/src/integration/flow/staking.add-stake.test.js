@@ -28,7 +28,7 @@ context('Staking Tab - with vega wallet connected', function () {
         'Checking we have at least 2 validators'
       );
       // Choose the first validator from top of sorted list
-      this.validatorName = this.validatorNames[0]; 
+      this.validatorName = this.validatorNames[0];
     });
 
     before('drill into a specific validator - and note values', function () {
@@ -48,12 +48,15 @@ context('Staking Tab - with vega wallet connected', function () {
     });
 
     describe('Flow - Able to stake against a validator', function () {
-      before('Check - ability to fill in fields and request a stake of 0.1 tokens', function () {
-        cy.get(staking.addStakeRadioButton).click({ force: true });
-        cy.get(staking.tokenAmountInput).type('0.1');
-        // cy.staking_waitForEpochRemainingSeconds(5);
-        cy.get('button').contains('Add 0.1 $VEGA tokens').click();
-      });
+      before(
+        'Check - ability to fill in fields and request a stake of 0.1 tokens',
+        function () {
+          cy.get(staking.addStakeRadioButton).click({ force: true });
+          cy.get(staking.tokenAmountInput).type('0.1');
+          // cy.staking_waitForEpochRemainingSeconds(5);
+          cy.get('button').contains('Add 0.1 $VEGA tokens').click();
+        }
+      );
 
       it('Check - relevant successfull feedback provided after staking', function () {
         // Wallet auto approves at this stage
@@ -74,18 +77,22 @@ context('Staking Tab - with vega wallet connected', function () {
 
       it('Check - staking page - stake on node (next epoch) - updates to reflect stake', function () {
         cy.stakingValidatorPage_check_stakeNextEpochValue(
-          parseFloat(this.initialStakeNextEpoch) + 0.1);
+          parseFloat(this.initialStakeNextEpoch) + 0.1
+        );
       });
 
       it('Check - wallet - next epoch amount - updates balance for validator', function () {
         cy.walletVega_checkValidator_StakeNextEpochValue(
-          this.validatorName, parseFloat(this.initialStakeNextEpoch) + 0.1);
+          this.validatorName,
+          parseFloat(this.initialStakeNextEpoch) + 0.1
+        );
       });
 
       it.skip('Check - wallet - unstaked amount - updates balance', function () {
         // Skipping until capsule can enable this test
         cy.walletVega_check_UnstakedValue_is(
-          parseFloat(this.initialUnstakedBalance) - 0.1);
+          parseFloat(this.initialUnstakedBalance) - 0.1
+        );
       });
     });
   });
