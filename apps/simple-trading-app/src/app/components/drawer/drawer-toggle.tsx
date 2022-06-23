@@ -34,8 +34,17 @@ export const DrawerToggle = ({
     }
   }, [variant]);
 
+  const ariaLabel = `${
+    variant === DRAWER_TOGGLE_VARIANTS.OPEN ? 'Open' : 'Close'
+  } Sidebar Navigation Menu`;
+
   return (
-    <Button variant="inline-link" className={classes} onClick={onToggle}>
+    <Button
+      aria-label={ariaLabel}
+      variant="inline-link"
+      className={classes}
+      onClick={onToggle}
+    >
       <Icon name={iconName as IconName} />
     </Button>
   );

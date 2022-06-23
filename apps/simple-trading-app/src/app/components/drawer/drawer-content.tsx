@@ -12,5 +12,9 @@ export const DrawerContent = ({ children, className = '' }: Props) => {
     [className]: className,
   });
 
-  return <div className={classes}>{children}</div>;
+  return (
+    <main aria-label="Page Content" className={classes}>
+      {children}
+    </main>
+  );
 };

@@ -32,6 +32,7 @@ const getIconPath = (name: string): ReactElement | null => {
 const IconSVGWrapper = ({ className, children }: IconSVGWrapperProps) => {
   return (
     <svg
+      role="presentation"
       className={className}
       width="24"
       height="24"
