@@ -12,22 +12,17 @@ export interface DealTicketAmountProps {
   price?: string;
 }
 
-const getAmountComponent = (type: OrderType) => {
-  switch (type) {
-    case OrderType.Market:
-      return DealTicketMarketAmount;
-    case OrderType.Limit:
-      return DealTicketLimitAmount;
-    default: {
-      throw new Error('Invalid ticket type');
-    }
-  }
-};
-
 export const DealTicketAmount = ({
   orderType,
   ...props
 }: DealTicketAmountProps) => {
-  const AmountComponent = getAmountComponent(orderType);
-  return <AmountComponent {...props} />;
+  switch (orderType) {
+    case OrderType.Market:
+      return <DealTicketMarketAmount {...props} />;
+    case OrderType.Limit:
+      return <DealTicketLimitAmount {...props} />;
+    default: {
+      throw new Error('Invalid ticket type');
+    }
+  }
 };
