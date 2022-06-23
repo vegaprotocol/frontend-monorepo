@@ -18,7 +18,14 @@ import type {
 import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
-import { Button, FormGroup, RadioGroup, Radio } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Callout,
+  FormGroup,
+  Intent,
+  Radio,
+  RadioGroup,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   DelegateSubmissionBody,
@@ -46,6 +53,7 @@ export const PARTY_DELEGATIONS_QUERY = gql`
 
 enum FormState {
   Default,
+  Requested,
   Pending,
   Success,
   Failure,
@@ -115,7 +123,7 @@ export const StakingForm = ({
   }, [action, availableStakeToAdd, availableStakeToRemove]);
 
   async function onSubmit() {
-    setFormState(FormState.Pending);
+    setFormState(FormState.Requested);
     const delegateInput: DelegateSubmissionBody = {
       pubKey: pubkey,
       propagate: true,
@@ -139,6 +147,7 @@ export const StakingForm = ({
     try {
       const command = action === Actions.Add ? delegateInput : undelegateInput;
       await sendTx(command);
+      setFormState(FormState.Pending);
 
       // await success via poll
     } catch (err) {
@@ -184,6 +193,12 @@ export const StakingForm = ({
 
   if (formState === FormState.Failure) {
     return <StakeFailure nodeName={nodeName} />;
+  } else if (formState === FormState.Requested) {
+    return (
+      <Callout title="Confirm transaction in wallet" intent={Intent.Warning}>
+        <p>Open your wallet app to confirm</p>
+      </Callout>
+    );
   } else if (formState === FormState.Pending) {
     return <StakePending action={action} amount={amount} nodeName={nodeName} />;
   } else if (formState === FormState.Success) {
