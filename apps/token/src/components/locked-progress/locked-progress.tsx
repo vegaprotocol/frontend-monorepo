@@ -102,8 +102,8 @@ export const LockedProgress = ({
       </ProgressContents>
 
       <ProgressContents light={light}>
-        <span>{formatNumber(locked, 2)}</span>
-        <span>{formatNumber(unlocked, 2)}</span>
+        <span>{formatNumber(locked, 18)}</span>
+        <span>{formatNumber(unlocked, 18)}</span>
       </ProgressContents>
     </div>
   );
