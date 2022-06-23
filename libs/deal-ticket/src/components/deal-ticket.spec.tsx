@@ -6,13 +6,14 @@ import {
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen, act } from '@testing-library/react';
 import { DealTicket } from './deal-ticket';
-import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import type { Order } from '../utils/get-default-order';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
 const market: DealTicketQuery_market = {
   __typename: 'Market',
   id: 'market-id',
+  name: 'market-name',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
   tradingMode: MarketTradingMode.Continuous,
@@ -24,6 +25,12 @@ const market: DealTicketQuery_market = {
       product: {
         __typename: 'Future',
         quoteName: 'quote-name',
+        settlementAsset: {
+          __typename: 'Asset',
+          id: 'asset-id',
+          name: 'asset-name',
+          symbol: 'asset-symbol',
+        },
       },
     },
   },

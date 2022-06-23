@@ -77,7 +77,7 @@ export const DealTicket = ({
       />
       <DealTicketAmount
         orderType={orderType}
-        step={0.02}
+        step={step}
         register={register}
         price={
           market.depth.lastTrade

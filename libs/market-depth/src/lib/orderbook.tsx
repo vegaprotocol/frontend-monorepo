@@ -19,6 +19,7 @@ import { Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
 interface OrderbookProps extends OrderbookData {
   decimalPlaces: number;
+  positionDecimalPlaces: number;
   resolution: number;
   onResolutionChange: (resolution: number) => void;
 }
@@ -100,6 +101,7 @@ export const Orderbook = ({
   indicativeVolume,
   indicativePrice,
   decimalPlaces,
+  positionDecimalPlaces,
   resolution,
   onResolutionChange,
 }: OrderbookProps) => {
@@ -298,6 +300,7 @@ export const Orderbook = ({
                   <OrderbookRow
                     price={(BigInt(data.price) / BigInt(resolution)).toString()}
                     decimalPlaces={decimalPlaces - Math.log10(resolution)}
+                    positionDecimalPlaces={positionDecimalPlaces}
                     bid={data.bid}
                     relativeBid={data.relativeBid}
                     cumulativeBid={data.cumulativeVol.bid}

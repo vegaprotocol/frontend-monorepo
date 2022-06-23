@@ -27,6 +27,7 @@ const POSITIONS_FRAGMENT = gql`
         }
       }
       decimalPlaces
+      positionDecimalPlaces
       tradableInstrument {
         instrument {
           id
