@@ -5,7 +5,7 @@ import { MarketTradingMode } from '@vegaprotocol/types';
 
 const singleRow: Positions_party_positions = {
   realisedPNL: '520000000',
-  openVolume: '100',
+  openVolume: '10000',
   unrealisedPNL: '895000',
   averageEntryPrice: '1129935',
   market: {
@@ -17,7 +17,7 @@ const singleRow: Positions_party_positions = {
       __typename: 'MarketData',
       market: { __typename: 'Market', id: '123' },
     },
-    positionDecimalPlaces: 0,
+    positionDecimalPlaces: 2,
     decimalPlaces: 5,
     tradableInstrument: {
       instrument: {
@@ -91,7 +91,7 @@ it('Correct formatting applied', async () => {
       const cells = screen.getAllByRole('gridcell');
       const expectedValues = [
         singleRow.market.tradableInstrument.instrument.code,
-        '+100',
+        '+100.00',
         '11.29935',
         '11.38885',
         '+5,200.000',
