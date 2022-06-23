@@ -31,23 +31,27 @@ Cypress.Commands.add('walletVega_getUnstakedAmount', function () {
 });
 
 Cypress.Commands.add(
-  'walletVega_getNextEpochStakeForSpecifiedValidator',
-  function (validatorName) {
+  'walletVega_checkValidator_StakeNextEpochValue',
+  function (validatorName, expectedVal) {
     // need to check if validator is present first
-    let fieldPresent = false;
     cy.get(wallet.vegawallet)
-      .within(($wallet) => {
-        if ($wallet.text().includes(`${validatorName} (Next epoch)`))
-          fieldPresent = true;
+      .within(() => {
+        cy.contains(`${validatorName} (Next epoch)`)
+        .siblings()
+        .contains(parseFloat(expectedVal).toPrecision(16));
       })
-      .then(() => {
-        if (fieldPresent == true) {
-          cy.contains(`${validatorName} (Next epoch)`)
-            .siblings()
-            .invoke('text');
-        } else {
-          return '0.000000000000000000';
-        }
-      });
+  }
+);
+
+Cypress.Commands.add(
+  'walletVega_check_UnstakedValue_is',
+  function (expectedVal) {
+    // need to check if validator is present first
+    cy.get(wallet.vegawallet)
+      .within(() => {
+        cy.contains(`Unstaked`)
+        .siblings()
+        .contains(parseFloat(expectedVal).toPrecision(16));
+      })
   }
 );
