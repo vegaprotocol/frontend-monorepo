@@ -18,9 +18,22 @@ export const OrderDialog = ({
   transaction,
   finalizedOrder,
 }: OrderDialogProps) => {
-  // TODO: When wallets support confirming transactions return UI for 'awaiting confirmation' step
-
   // Rejected by wallet
+  if (transaction.status === VegaTxStatus.Requested) {
+    return (
+      <OrderDialogWrapper
+        title="Confirm transaction in wallet"
+        icon={<Icon name="hand-up" size={20} />}
+      >
+        <p>
+          Please open your wallet application and confirm or reject the
+          transaction
+        </p>
+      </OrderDialogWrapper>
+    );
+  }
+
+  // Transaction error
   if (transaction.status === VegaTxStatus.Error) {
     return (
       <OrderDialogWrapper
