@@ -139,13 +139,12 @@ export class Url extends Connector {
 
     await this.isomorphicInitialize();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return this.provider!.request({ method: 'eth_chainId' })
-      .then((chainId: string) => {
-        this.actions.update({ chainId: Number(chainId) });
-      })
-      .catch((error: Error) => {
-        this.actions.reportError(error);
-      });
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const chainId = await this.provider!.request({ method: 'eth_chainId' });
+      this.actions.update({ chainId: Number(chainId) });
+    } catch (error) {
+      this.actions.reportError(error as Error);
+    }
   }
 }
