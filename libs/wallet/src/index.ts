@@ -9,3 +9,4 @@ export * from './use-eager-connect';
 export * from './manage-dialog';
 export * from './order-dialog';
 export * from './provider';
+export * from './order-hooks';

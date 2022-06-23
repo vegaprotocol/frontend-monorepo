@@ -12,16 +12,15 @@ import type {
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef } from 'react';
-import { useOrderCancel } from '../../hooks';
 import { EthTxStatus } from '@vegaprotocol/web3';
 import { TransactionDialog } from '@vegaprotocol/web3';
+import { useOrderCancel } from '@vegaprotocol/wallet';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
 }
 
 export const CancelRendererButton = ({ data }: ICellRendererParams) => {
-  // const { sendTx, keypair } = useVegaWallet();
   const { cancel, transaction } = useOrderCancel({
     orderId: data.id,
     marketId: data.market.id,

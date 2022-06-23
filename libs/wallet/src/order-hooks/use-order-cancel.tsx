@@ -1,7 +1,9 @@
-import { useCallback, useState } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useVegaTransaction } from '@vegaprotocol/wallet';
+import { useCallback, useEffect, useState } from 'react';
 import type { OrderCancellationBodyOrderCancellation } from '@vegaprotocol/vegawallet-service-api-client';
+import { determineId } from '@vegaprotocol/react-helpers';
+import type { Order } from '../order-dialog';
+import { useVegaTransaction } from '../use-vega-transaction';
+import { useVegaWallet } from '../use-vega-wallet';
 
 export const useOrderCancel = ({
   marketId,
@@ -9,7 +11,14 @@ export const useOrderCancel = ({
 }: OrderCancellationBodyOrderCancellation) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
-  const [finalizedOrder, setFinalizedOrder] = useState<string | null>(null);
+  const [finalizedOrder, setFinalizedOrder] = useState<Order | null>(null);
+  const [id, setId] = useState('');
+
+  useEffect(() => {
+    if (finalizedOrder) {
+      resetTransaction();
+    }
+  }, [finalizedOrder, resetTransaction]);
 
   const cancel = useCallback(async () => {
     if (!keypair) {
@@ -27,18 +36,23 @@ export const useOrderCancel = ({
       },
     });
     console.log(res);
-    if (res) setFinalizedOrder(orderId);
+
+    if (res?.signature) {
+      setId(determineId(res.signature));
+    }
     return res;
   }, [keypair, marketId, orderId, send]);
 
   const reset = useCallback(() => {
     resetTransaction();
     setFinalizedOrder(null);
+    setId('');
   }, [resetTransaction]);
 
   return {
     transaction,
     finalizedOrder,
+    id,
     cancel,
     reset,
   };
