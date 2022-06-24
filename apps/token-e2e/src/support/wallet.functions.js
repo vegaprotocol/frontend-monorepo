@@ -31,9 +31,8 @@ Cypress.Commands.add('walletVega_getUnstakedAmount', function () {
 });
 
 Cypress.Commands.add(
-  'walletVega_checkValidator_StakeNextEpochValue',
+  'walletVega_checkValidator_StakeNextEpochValue_is',
   function (validatorName, expectedVal) {
-    // need to check if validator is present first
     cy.get(wallet.vegawallet).within(() => {
       cy.contains(`${validatorName} (Next epoch)`)
         .siblings()
@@ -45,7 +44,6 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'walletVega_check_UnstakedValue_is',
   function (expectedVal) {
-    // need to check if validator is present first
     cy.get(wallet.vegawallet).within(() => {
       cy.contains(`Unstaked`)
         .siblings()

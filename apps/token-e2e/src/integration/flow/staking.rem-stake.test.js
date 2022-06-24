@@ -85,7 +85,7 @@ context('Staking Tab - with vega wallet connected', function () {
       });
 
       it('Check - wallet - next epoch amount - updates balance for validator', function () {
-        cy.walletVega_checkValidator_StakeNextEpochValue(
+        cy.walletVega_checkValidator_StakeNextEpochValue_is(
           this.validatorName,
           parseFloat(this.initialStakeNextEpoch) - 0.1
         );
