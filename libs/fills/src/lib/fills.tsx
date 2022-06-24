@@ -26,16 +26,11 @@ export const Fills = forwardRef<AgGridReact, FillsProps>(
         getRowId={({ data }) => data.id}
       >
         <AgGridColumn
-          headerName="Id"
-          field="id"
-          valueFormatter={({ value }: ValueFormatterParams) => {
-            return truncateByChars(value);
-          }}
-        />
-        <AgGridColumn
           headerName="Market"
           field="market.tradableInstrument.instrument.code"
         />
+        <AgGridColumn headerName="Size" field="size" />
+        <AgGridColumn headerName="Price" field="price" />
         {/* TODO: link to block explorer */}
         <AgGridColumn
           headerName="Order"
@@ -51,8 +46,6 @@ export const Fills = forwardRef<AgGridReact, FillsProps>(
             }
           }}
         />
-        <AgGridColumn headerName="Size" field="size" />
-        <AgGridColumn headerName="Price" field="price" />
         <AgGridColumn
           headerName="Date"
           field="createdAt"
