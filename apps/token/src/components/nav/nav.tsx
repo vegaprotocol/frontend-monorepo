@@ -46,7 +46,7 @@ export const Nav = () => {
         {!isDesktop && <NavHeader fairground={inverted} />}
         <div className="flex gap-12 lg:flex-auto">
           {isDesktop ? (
-            <NavLinks isDesktop={isDesktop} />
+            <NavLinks isDesktop={isDesktop} isInverted={inverted} />
           ) : (
             <NavDrawer inverted={inverted} />
           )}
@@ -135,7 +135,13 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
   );
 };
 
-const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => {
+const NavLinks = ({
+  isDesktop,
+  isInverted,
+}: {
+  isDesktop: boolean;
+  isInverted?: boolean;
+}) => {
   const { appDispatch } = useAppState();
   const { t } = useTranslation();
   const linkProps = {
@@ -163,18 +169,21 @@ const NavLinks = ({ isDesktop }: { isDesktop: boolean }) => {
             {...linkProps}
             to={route}
             key={route}
-            className={({ isActive }) => {
-              const linkClasses = classNames(
-                'no-underline hover:no-underline',
+            className={({ isActive }) =>
+              classNames(
+                'no-underline hover:no-underline focus-visible:outline-none focus-visible:border-none focus-visible:shadow-inset-white',
                 {
-                  'bg-vega-yellow text-black hover:text-black': isActive,
-                  'bg-black text-white': !isActive,
+                  'bg-vega-yellow text-black': !isInverted && isActive,
+                  'bg-transparent text-white hover:text-vega-yellow':
+                    !isInverted && !isActive,
+                  'bg-black text-white': isInverted && isActive,
+                  'bg-transparent text-black hover:text-white':
+                    isInverted && !isActive,
                   'py-2 px-12': isDesktop,
                   'border-t border-white p-20': !isDesktop,
                 }
-              );
-              return linkClasses;
-            }}
+              )
+            }
           >
             {text}
           </NavLink>
