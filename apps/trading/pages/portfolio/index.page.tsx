@@ -22,16 +22,6 @@ const Portfolio = () => {
     <div className={wrapperClasses}>
       <PortfolioGridChild>
         <Tabs>
-          <Tab id="fills" name={t('Fills')}>
-            <div className={tabContentClassName}>
-              <h4 className="text-h4 text-black dark:text-white p-8">
-                {t('Fills')}
-              </h4>
-              <div>
-                <FillsContainer />
-              </div>
-            </div>
-          </Tab>
           <Tab id="positions" name={t('Positions')}>
             <div className={tabContentClassName}>
               <h4 className="text-h4 text-black dark:text-white p-8">
@@ -49,6 +39,16 @@ const Portfolio = () => {
               </h4>
               <div>
                 <OrderListContainer />
+              </div>
+            </div>
+          </Tab>
+          <Tab id="fills" name={t('Fills')}>
+            <div className={tabContentClassName}>
+              <h4 className="text-h4 text-black dark:text-white p-8">
+                {t('Fills')}
+              </h4>
+              <div>
+                <FillsContainer />
               </div>
             </div>
           </Tab>
