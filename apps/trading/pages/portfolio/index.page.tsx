@@ -17,13 +17,13 @@ const Portfolio = () => {
     'bg-black-10 dark:bg-white-10',
     'text-ui'
   );
-  const tabClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
+  const tabContentClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>
       <PortfolioGridChild>
         <Tabs>
           <Tab id="fills" name={t('Fills')}>
-            <div className={tabClassName}>
+            <div className={tabContentClassName}>
               <h4 className="text-h4 text-black dark:text-white p-8">
                 {t('Fills')}
               </h4>
@@ -33,7 +33,7 @@ const Portfolio = () => {
             </div>
           </Tab>
           <Tab id="positions" name={t('Positions')}>
-            <div className={tabClassName}>
+            <div className={tabContentClassName}>
               <h4 className="text-h4 text-black dark:text-white p-8">
                 {t('Positions')}
               </h4>
@@ -43,7 +43,7 @@ const Portfolio = () => {
             </div>
           </Tab>
           <Tab id="orders" name={t('Orders')}>
-            <div className={tabClassName}>
+            <div className={tabContentClassName}>
               <h4 className="text-h4 text-black dark:text-white p-8">
                 {t('Orders')}
               </h4>
@@ -60,7 +60,7 @@ const Portfolio = () => {
             <AccountsContainer />
           </Tab>
           <Tab id="deposits" name={t('Deposits')}>
-            <div className={tabClassName}>
+            <div className={tabContentClassName}>
               <div className="p-8">
                 <AnchorButton data-testid="deposit" href="/portfolio/deposit">
                   {t('Deposit')}
@@ -95,15 +95,5 @@ const PortfolioGridChild = ({
   className,
 }: PortfolioGridChildProps) => {
   const gridChildClasses = classNames('bg-white dark:bg-black', className);
-  return (
-    <section className={gridChildClasses}>
-      <AutoSizer>
-        {({ width, height }) => (
-          <div style={{ width, height }} className="overflow-auto">
-            {children}
-          </div>
-        )}
-      </AutoSizer>
-    </section>
-  );
+  return <section className={gridChildClasses}>{children}</section>;
 };
