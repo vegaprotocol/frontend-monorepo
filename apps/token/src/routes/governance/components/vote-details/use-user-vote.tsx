@@ -17,6 +17,7 @@ export enum VoteState {
   NotCast = 'NotCast',
   Yes = 'Yes',
   No = 'No',
+  Requested = 'Requested',
   Pending = 'Pending',
   Failed = 'Failed',
 }
@@ -69,7 +70,7 @@ export function useUserVote(
     }
   }, [userVote]);
 
-  // Start a starts a timeout of 30s to set a failed message if
+  // Starts a timeout of 30s to set a failed message if
   // the vote is not seen by the time the callback is invoked
   React.useEffect(() => {
     // eslint-disable-next-line
@@ -93,7 +94,7 @@ export function useUserVote(
   async function castVote(value: VoteValue) {
     if (!proposalId || !keypair) return;
 
-    setVoteState(VoteState.Pending);
+    setVoteState(VoteState.Requested);
 
     try {
       const variables = {
@@ -105,6 +106,7 @@ export function useUserVote(
         },
       };
       await sendTx(variables);
+      setVoteState(VoteState.Pending);
 
       // Now await vote via poll in parent component
     } catch (err) {

@@ -70,6 +70,7 @@ export interface LockedProgressProps {
   leftColor?: string;
   rightColor?: string;
   light?: boolean;
+  decimals?: number;
 }
 
 export const LockedProgress = ({
@@ -81,6 +82,7 @@ export const LockedProgress = ({
   leftColor = Colors.vega.pink,
   rightColor = Colors.vega.green,
   light = false,
+  decimals = 2,
 }: LockedProgressProps) => {
   const lockedPercentage = React.useMemo(() => {
     return locked.div(total).times(100);
@@ -117,8 +119,8 @@ export const LockedProgress = ({
       </ProgressContents>
 
       <ProgressContents light={light}>
-        <span>{formatNumber(locked, 2)}</span>
-        <span>{formatNumber(unlocked, 2)}</span>
+        <span>{formatNumber(locked, decimals)}</span>
+        <span>{formatNumber(unlocked, decimals)}</span>
       </ProgressContents>
     </>
   );
