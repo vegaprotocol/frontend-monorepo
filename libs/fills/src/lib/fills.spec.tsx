@@ -1,10 +1,14 @@
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 
-import { Fills } from './fills';
+import { FillsTable } from './fills-table';
 
-describe('Fills', () => {
-  it('should render successfully', () => {
-    const { baseElement } = render(<Fills partyId="party-id" fills={[]} />);
-    expect(baseElement).toBeTruthy();
+describe('FillsTable', () => {
+  it('should render successfully', async () => {
+    await act(async () => {
+      const { baseElement } = render(
+        <FillsTable partyId="party-id" fills={[]} />
+      );
+      expect(baseElement).toBeTruthy();
+    });
   });
 });

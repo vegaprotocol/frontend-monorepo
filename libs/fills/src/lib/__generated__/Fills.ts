@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Pagination } from "@vegaprotocol/types";
+import { Pagination, Side } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Fills
@@ -25,6 +25,62 @@ export interface Fills_party_tradesPaged_edges_node_seller {
   id: string;
 }
 
+export interface Fills_party_tradesPaged_edges_node_buyerFee {
+  __typename: "TradeFee";
+  /**
+   * The maker fee, aggressive party to the other party (the one who had an order in the book)
+   */
+  makerFee: string;
+  /**
+   * The infrastructure fee, a fee paid to the node runner to maintain the vega network
+   */
+  infrastructureFee: string;
+  /**
+   * The fee paid to the market makers to provide liquidity in the market
+   */
+  liquidityFee: string;
+}
+
+export interface Fills_party_tradesPaged_edges_node_sellerFee {
+  __typename: "TradeFee";
+  /**
+   * The maker fee, aggressive party to the other party (the one who had an order in the book)
+   */
+  makerFee: string;
+  /**
+   * The infrastructure fee, a fee paid to the node runner to maintain the vega network
+   */
+  infrastructureFee: string;
+  /**
+   * The fee paid to the market makers to provide liquidity in the market
+   */
+  liquidityFee: string;
+}
+
+export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The id of the asset
+   */
+  id: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+  /**
+   * The precision of the asset
+   */
+  decimals: number;
+}
+
+export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product {
+  __typename: "Future";
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product_settlementAsset;
+}
+
 export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
@@ -35,6 +91,10 @@ export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_in
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
   code: string;
+  /**
+   * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
+   */
+  product: Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product;
 }
 
 export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument {
@@ -52,6 +112,10 @@ export interface Fills_party_tradesPaged_edges_node_market {
    */
   id: string;
   /**
+   * Market full name
+   */
+  name: string;
+  /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
    * 
@@ -68,6 +132,12 @@ export interface Fills_party_tradesPaged_edges_node_market {
    * GBX (pence)        1              4       GBP   0.000001 (  0.0001p)
    */
   decimalPlaces: number;
+  /**
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
+   * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   */
+  positionDecimalPlaces: number;
   /**
    * An instance of or reference to a tradable instrument.
    */
@@ -101,6 +171,10 @@ export interface Fills_party_tradesPaged_edges_node {
    */
   sellOrder: string;
   /**
+   * The aggressor indicates whether this trade was related to a BUY or SELL
+   */
+  aggressor: Side;
+  /**
    * The party that bought
    */
   buyer: Fills_party_tradesPaged_edges_node_buyer;
@@ -108,6 +182,14 @@ export interface Fills_party_tradesPaged_edges_node {
    * The party that sold
    */
   seller: Fills_party_tradesPaged_edges_node_seller;
+  /**
+   * The fee paid by the buyer side of the trade
+   */
+  buyerFee: Fills_party_tradesPaged_edges_node_buyerFee;
+  /**
+   * The fee paid by the seller side of the trade
+   */
+  sellerFee: Fills_party_tradesPaged_edges_node_sellerFee;
   /**
    * The market the trade occurred on
    */

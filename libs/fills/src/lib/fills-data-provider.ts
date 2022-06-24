@@ -15,19 +15,41 @@ const FILL_FRAGMENT = gql`
     size
     buyOrder
     sellOrder
+    aggressor
     buyer {
       id
     }
     seller {
       id
     }
+    buyerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
+    sellerFee {
+      makerFee
+      infrastructureFee
+      liquidityFee
+    }
     market {
       id
+      name
       decimalPlaces
+      positionDecimalPlaces
       tradableInstrument {
         instrument {
           id
           code
+          product {
+            ... on Future {
+              settlementAsset {
+                id
+                symbol
+                decimals
+              }
+            }
+          }
         }
       }
     }
@@ -65,7 +87,17 @@ export const FILLS_SUB = gql`
   }
 `;
 
-const update = (draft: FillFields[], delta: FillFields[]) => {};
+const update = (draft: FillFields[], delta: FillFields[]) => {
+  // Add or update incoming trades
+  delta.forEach((trade) => {
+    const index = draft.findIndex((t) => t.id === trade.id);
+    if (index === -1) {
+      draft.unshift(trade);
+    } else {
+      draft[index] = trade;
+    }
+  });
+};
 
 const getData = (
   responseData: Fills

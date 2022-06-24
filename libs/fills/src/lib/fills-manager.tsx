@@ -1,6 +1,6 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useMemo, useRef } from 'react';
-import { Fills } from './fills';
+import { FillsTable } from './fills-table';
 import { fillsDataProvider } from './fills-data-provider';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
@@ -30,7 +30,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
 
   return (
     <AsyncRenderer data={fills} loading={loading} error={error}>
-      <Fills ref={gridRef} partyId={partyId} fills={fills} />
+      <FillsTable ref={gridRef} partyId={partyId} fills={fills} />
     </AsyncRenderer>
   );
 };
