@@ -22,11 +22,13 @@ export interface Order {
 interface OrderDialogProps {
   transaction: VegaTxState;
   finalizedOrder: Order | null;
+  title?: string;
 }
 
 export const VegaTransactionDialog = ({
   transaction,
   finalizedOrder,
+  title = 'Order placed',
 }: OrderDialogProps) => {
   // TODO: When wallets support confirming transactions return UI for 'awaiting confirmation' step
 
@@ -50,7 +52,9 @@ export const VegaTransactionDialog = ({
   if (!finalizedOrder) {
     return (
       <OrderDialogWrapper
-        title="Awaiting network confirmation"
+        title={`Awaiting ${
+          transaction.txHash ? 'network' : 'wallet'
+        } confirmation`}
         icon={<Loader size="small" />}
       >
         {transaction.txHash && (
@@ -77,10 +81,7 @@ export const VegaTransactionDialog = ({
   }
 
   return (
-    <OrderDialogWrapper
-      title="Order placed"
-      icon={<Icon name="tick" size={20} />}
-    >
+    <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
       <p>{t(`Status: ${finalizedOrder.status}`)}</p>
       {finalizedOrder.market && (
         <p>{t(`Market: ${finalizedOrder.market.name}`)}</p>

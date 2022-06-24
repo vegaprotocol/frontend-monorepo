@@ -141,7 +141,7 @@ describe('deal ticket orders', () => {
       });
     cy.getByTestId(orderStatusHeader).should(
       'have.text',
-      'Awaiting network confirmation'
+      'Awaiting wallet confirmation'
     );
     cy.getByTestId(orderTransactionHash)
       .invoke('text')

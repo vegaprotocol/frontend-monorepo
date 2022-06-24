@@ -151,7 +151,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             </GridTab>
           </GridTabs>
         </TradeGridChild>
-        <TradeGridChild className="col-span-3">
+        <TradeGridChild className="col-span-4">
           <GridTabs>
             <GridTab id="orders" name={t('Orders')}>
               <TradingViews.Orders />
