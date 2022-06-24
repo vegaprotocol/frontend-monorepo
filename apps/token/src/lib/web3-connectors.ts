@@ -3,9 +3,16 @@ import type { Web3ReactHooks } from '@web3-react/core';
 import { initializeConnector } from '@web3-react/core';
 import { MetaMask } from '@web3-react/metamask';
 import { WalletConnect } from '@web3-react/walletconnect';
+import { Url } from './url-connector';
+import type { Connector } from '@web3-react/types';
+import { ENV } from '../config/env';
 
 const [metamask, metamaskHooks] = initializeConnector<MetaMask>(
   (actions) => new MetaMask(actions)
+);
+
+const [urlConnector, urlHooks] = initializeConnector<Url>(
+  (actions) => new Url(actions, ENV.localProviderUrl)
 );
 
 export const createDefaultProvider = (providerUrl: string, chainId: number) => {
@@ -27,7 +34,8 @@ export const createConnectors = (providerUrl: string, chainId: number) => {
       [chainId]
     );
   return [
+    ENV.urlConnect ? [urlConnector, urlHooks] : null,
     [metamask, metamaskHooks],
     [walletconnect, walletconnectHooks],
-  ] as [MetaMask | WalletConnect, Web3ReactHooks][];
+  ].filter(Boolean) as [Connector, Web3ReactHooks][];
 };

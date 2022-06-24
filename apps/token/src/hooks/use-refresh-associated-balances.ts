@@ -1,3 +1,4 @@
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import React from 'react';
 
 import {
@@ -7,23 +8,26 @@ import {
 import { useContracts } from '../contexts/contracts/contracts-context';
 
 export function useRefreshAssociatedBalances() {
-  const { appDispatch } = useAppState();
+  const {
+    appDispatch,
+    appState: { decimals },
+  } = useAppState();
   const { staking, vesting } = useContracts();
 
   return React.useCallback(
     async (ethAddress: string, vegaKey: string) => {
       const [walletAssociatedBalance, vestingAssociatedBalance] =
         await Promise.all([
-          staking.stakeBalance(ethAddress, `0x${vegaKey}`),
-          vesting.stakeBalance(ethAddress, `0x${vegaKey}`),
+          staking.stakeBalance(ethAddress, vegaKey),
+          vesting.stakeBalance(ethAddress, vegaKey),
         ]);
 
       appDispatch({
         type: AppStateActionType.REFRESH_ASSOCIATED_BALANCES,
-        walletAssociatedBalance,
-        vestingAssociatedBalance,
+        walletAssociatedBalance: toBigNum(walletAssociatedBalance, decimals),
+        vestingAssociatedBalance: toBigNum(vestingAssociatedBalance, decimals),
       });
     },
-    [staking, vesting, appDispatch]
+    [staking, vesting, appDispatch, decimals]
   );
 }

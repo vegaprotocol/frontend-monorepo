@@ -40,7 +40,7 @@ export const TrancheProgress = ({
         <span className="tranches__progress-title">{t('Redeemed')}</span>
         <ProgressBar
           width={220}
-          color={Colors.green.DEFAULT}
+          color={Colors.vega.green}
           percentage={removedPercentage}
         />
         <span className="tranches__progress-numbers">

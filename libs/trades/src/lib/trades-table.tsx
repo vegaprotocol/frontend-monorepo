@@ -14,7 +14,7 @@ import BigNumber from 'bignumber.js';
 import { sortTrades } from './trades-data-provider';
 
 export const UP_CLASS = 'text-vega-green';
-export const DOWN_CLASS = 'text-vega-pink';
+export const DOWN_CLASS = 'text-vega-red';
 
 const changeCellClass =
   (dataKey: string) =>

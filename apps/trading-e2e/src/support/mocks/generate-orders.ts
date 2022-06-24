@@ -76,6 +76,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         id: 'c6f4337b31ed57a961969c3ba10297b369d01b9e75a4cbb96db4fc62886444e6',
         name: 'BTCUSD Monthly (30 Jun 2022)',
         decimalPlaces: 5,
+        positionDecimalPlaces: 0,
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {

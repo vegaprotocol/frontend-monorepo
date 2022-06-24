@@ -49,7 +49,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         <span>
           <CurrentProposalStatus proposal={proposal} />
         </span>
-        .&nbsp;
+        {'. '}
         {proposal.state === ProposalState.Open ? daysLeft : null}
       </p>
       <table className="w-full font-normal mb-12">

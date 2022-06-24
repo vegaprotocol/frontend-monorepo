@@ -17,7 +17,6 @@ import { useContext, useMemo, useState } from 'react';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import {
-  Button,
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -58,14 +57,14 @@ export const CandlesChartContainer = ({
     return new VegaDataSource(client, marketId, keypair?.pub);
   }, [client, marketId, keypair]);
 
+  const dropdownTriggerStyles = 'border-black-60 dark:border-white-60 px-20';
+
   return (
     <div className="h-full flex flex-col">
       <div className="p-8 flex flex-row flex-wrap gap-8">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true}>
-            <Button appendIconName="caret-down" variant="secondary">
-              {t('Interval')}
-            </Button>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
+            {t('Interval')}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuRadioGroup
@@ -90,10 +89,8 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true}>
-            <Button appendIconName="caret-down" variant="secondary">
-              <Icon name={chartTypeIcon.get(chartType) as IconName} />
-            </Button>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
+            <Icon name={chartTypeIcon.get(chartType) as IconName} />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuRadioGroup
@@ -114,10 +111,8 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true}>
-            <Button appendIconName="caret-down" variant="secondary">
-              {t('Overlays')}
-            </Button>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
+            {t('Overlays')}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {Object.values(Overlay).map((overlay) => (
@@ -145,10 +140,8 @@ export const CandlesChartContainer = ({
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild={true}>
-            <Button appendIconName="caret-down" variant="secondary">
-              {t('Studies')}
-            </Button>
+          <DropdownMenuTrigger className={dropdownTriggerStyles}>
+            {t('Studies')}
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {Object.values(Study).map((study) => (
