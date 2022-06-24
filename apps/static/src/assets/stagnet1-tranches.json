@@ -38,7 +38,7 @@
     "tranche_end": "2022-11-26T13:48:10.000Z",
     "total_added": "100",
     "total_removed": "0",
-    "locked_amount": "42.62175925925926",
+    "locked_amount": "42.554014459665146",
     "deposits": [
       {
         "amount": "100",
@@ -242,7 +242,7 @@
     "tranche_end": "2022-10-12T00:53:20.000Z",
     "total_added": "1100",
     "total_removed": "673.04388635",
-    "locked_amount": "331.601306443429715",
+    "locked_amount": "330.85611364789445",
     "deposits": [
       {
         "amount": "1000",
