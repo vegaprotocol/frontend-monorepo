@@ -35,8 +35,6 @@ export const WalletAssociate = ({
     appDispatch,
     appState: { walletBalance, allowance, walletAssociatedBalance, decimals },
   } = useAppState();
-  console.log(allowance.toString());
-
   const { token } = useContracts();
 
   const {
@@ -46,7 +44,7 @@ export const WalletAssociate = ({
   } = useTransaction(() => {
     return token.approve(
       ethereumConfig.staking_bridge_contract.address,
-      removeDecimal(Number.MAX_SAFE_INTEGER.toString(), decimals).toString()
+      removeDecimal('1000000', decimals).toString()
     );
   });
 

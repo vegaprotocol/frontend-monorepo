@@ -37,7 +37,6 @@ beforeEach(() => {
     submitDeposit: jest.fn(),
     requestFaucet: jest.fn(),
     limits: {
-      min: new BigNumber(0),
       max: new BigNumber(20),
     },
     allowance: new BigNumber(30),
