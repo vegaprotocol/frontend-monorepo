@@ -51,7 +51,10 @@ const SimpleMarketPercentChangeWrapper = (props: Props) => {
 
   return (
     // @ts-ignore falsy wrong type?
-    <InView onChange={setInView}>
+    <InView
+      onChange={setInView}
+      className="flex h-full items-center justify-center"
+    >
       {inView && <SimpleMarketPercentChange {...props} />}
     </InView>
   );
@@ -64,7 +67,11 @@ const SimpleMarketPercentChange = ({ candles, marketId }: Props) => {
     });
   const change = getChange(candles, close);
   const color = getColor(change);
-  return <p style={{ color }}>{change}</p>;
+  return (
+    <div className="flex text-center" style={{ color }}>
+      {change}
+    </div>
+  );
 };
 
 export default SimpleMarketPercentChangeWrapper;

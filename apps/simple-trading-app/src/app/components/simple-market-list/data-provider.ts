@@ -35,6 +35,7 @@ export const MARKETS_QUERY = gql`
           product {
             __typename
             ... on Future {
+              quoteName
               settlementAsset {
                 symbol
               }

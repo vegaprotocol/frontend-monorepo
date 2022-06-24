@@ -27,9 +27,16 @@ const agGridLightVariables = `
   }
 `;
 
-export const AgGrid = (props: { children: ReactNode }) => (
+export const AgGrid = ({
+  children,
+  customThemeParams,
+}: {
+  children: ReactNode;
+  customThemeParams?: string;
+}) => (
   <>
     <style>{agGridLightVariables}</style>
-    {props.children}
+    {customThemeParams && <style>{customThemeParams}</style>}
+    {children}
   </>
 );

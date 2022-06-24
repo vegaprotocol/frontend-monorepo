@@ -48,6 +48,10 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument_product_set
 export interface SimpleMarkets_markets_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
+   * String representing the quote (e.g. BTCUSD -> USD is quote)
+   */
+  quoteName: string;
+  /**
    * The name of the asset (string)
    */
   settlementAsset: SimpleMarkets_markets_tradableInstrument_instrument_product_settlementAsset;

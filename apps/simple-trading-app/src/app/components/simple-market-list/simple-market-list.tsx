@@ -1,17 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { subDays } from 'date-fns';
+import type { AgGridReact } from 'ag-grid-react';
+import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
-import { AsyncRenderer, Lozenge, Splash } from '@vegaprotocol/ui-toolkit';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
+import { ThemeContext } from '@vegaprotocol/react-helpers';
 import type { MarketState } from '@vegaprotocol/types';
-import SimpleMarketPercentChange from './simple-market-percent-change';
-import SimpleMarketExpires from './simple-market-expires';
-import DataProvider from './data-provider';
-import { MARKET_STATUS } from './constants';
-import SimpleMarketToolbar from './simple-market-toolbar';
 import useMarketsFilterData from '../../hooks/use-markets-filter-data';
+import useColumnDefinitions from '../../hooks/use-column-definitions';
+import DataProvider from './data-provider';
+import * as constants from './constants';
+import SimpleMarketToolbar from './simple-market-toolbar';
 
 export type RouterParams = Partial<{
   product: string;
@@ -22,8 +29,9 @@ export type RouterParams = Partial<{
 const SimpleMarketList = () => {
   const navigate = useNavigate();
   const params = useParams<RouterParams>();
-
+  const theme = useContext(ThemeContext);
   const statusesRef = useRef<Record<string, MarketState | ''>>({});
+  const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(
     () => ({
       CandleSince: subDays(Date.now(), 1).toJSON(),
@@ -57,62 +65,33 @@ const SimpleMarketList = () => {
     [navigate]
   );
 
+  const { columnDefs, defaultColDef } = useColumnDefinitions({ onClick });
+
+  const handleOnGridReady = useCallback(() => {
+    gridRef.current?.api.sizeColumnsToFit();
+  }, [gridRef]);
+
   return (
-    <>
+    <div className="h-full grid grid-rows-[min-content,1fr]">
       <SimpleMarketToolbar />
       <AsyncRenderer loading={loading} error={error} data={localData}>
-        {localData && localData.length > 0 ? (
-          <ul
-            className="list-none relative pt-8 pb-8"
-            data-testid="simple-market-list"
-          >
-            {localData?.map((market) => (
-              <li
-                className="w-full relative flex justify-start items-center no-underline box-border text-left py-8 mb-10"
-                key={market.id}
-              >
-                <div className="w-full grid sm:grid-cols-2">
-                  <div className="w-full grid sm:auto-rows-auto">
-                    <div className="font-extrabold py-2">{market.name}</div>
-                    <SimpleMarketExpires
-                      tags={market.tradableInstrument.instrument.metadata.tags}
-                    />
-                    <div className="py-2">{`${t('settled in')} ${
-                      market.tradableInstrument.instrument.product
-                        .settlementAsset.symbol
-                    }`}</div>
-                  </div>
-                  <div className="w-full grid sm:grid-rows-2">
-                    <div>
-                      <SimpleMarketPercentChange
-                        candles={market.candles}
-                        marketId={market.id}
-                      />
-                    </div>
-                    <div>
-                      <Lozenge
-                        variant={MARKET_STATUS[market.data?.market.state || '']}
-                      >
-                        {market.data?.market.state}
-                      </Lozenge>
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute right-16 top-1/2 -translate-y-1/2">
-                  <Button
-                    onClick={() => onClick(market.id)}
-                    variant="inline"
-                    prependIconName="chevron-right"
-                  />
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <Splash>{t('No data to display')}</Splash>
-        )}
+        <AgGrid
+          defaultColDef={defaultColDef}
+          columnDefs={columnDefs}
+          rowData={localData}
+          rowHeight={60}
+          customThemeParams={
+            theme === 'dark'
+              ? constants.agGridDarkVariables
+              : constants.agGridLightVariables
+          }
+          onGridReady={handleOnGridReady}
+          ref={gridRef}
+          overlayNoRowsTemplate={t('No data to display')}
+          suppressContextMenu
+        />
       </AsyncRenderer>
-    </>
+    </div>
   );
 };
 

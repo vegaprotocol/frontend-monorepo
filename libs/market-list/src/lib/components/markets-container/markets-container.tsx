@@ -3,12 +3,17 @@ import { produce } from 'immer';
 import merge from 'lodash/merge';
 import { useRouter } from 'next/router';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import { MarketListTable, getRowId } from './market-list-table';
+import {
+  MarketListTable,
+  MarketListTableTyped,
+  getRowId,
+} from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
 import type {
   Markets_markets,
   Markets_markets_data,
+  Markets_markets_data_market,
 } from '../../components/__generated__/Markets';
 import { marketsDataProvider } from './markets-data-provider';
 

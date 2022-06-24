@@ -16,7 +16,7 @@ export interface RouteChildProps {
 export const AppRouter = () => {
   const routes = useRoutes(routerConfig);
 
-  return <main className="p-20 overflow-hidden">{routes}</main>;
+  return <main className="p-20 overflow-hidden h-full">{routes}</main>;
 };
 
 export const Menu = () => (
