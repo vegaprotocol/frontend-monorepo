@@ -53,7 +53,11 @@ const Home = ({ name }: RouteChildProps) => {
             i18nKey="Tokens are held in different <trancheLink>Tranches</trancheLink>. Each tranche has its own schedule for how the tokens are unlocked."
             components={{
               trancheLink: (
-                <Link data-testid="tranches-link" to={Routes.TRANCHES} />
+                <Link
+                  data-testid="tranches-link"
+                  to={Routes.TRANCHES}
+                  className="underline text-white"
+                />
               ),
             }}
           />
