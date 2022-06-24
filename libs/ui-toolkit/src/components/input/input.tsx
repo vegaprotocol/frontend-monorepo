@@ -131,17 +131,22 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasPrepended = !!(prependIconName || prependElement);
     const hasAppended = !!(appendIconName || appendElement);
 
-    const inputClassName = classNames('appearance-none', 'h-28', className, {
-      'pl-28': hasPrepended,
-      'pr-28': hasAppended,
-      'border-vega-pink dark:border-vega-pink': hasError,
-    });
+    const inputClassName = classNames(
+      'appearance-none',
+      'h-28',
+      'dark:color-scheme-dark',
+      className,
+      {
+        'pl-28': hasPrepended,
+        'pr-28': hasAppended,
+      }
+    );
 
     const input = (
       <input
         {...props}
         ref={ref}
-        className={classNames(defaultFormElement, inputClassName)}
+        className={classNames(defaultFormElement(hasError), inputClassName)}
       />
     );
 

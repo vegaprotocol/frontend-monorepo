@@ -180,15 +180,15 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         </div>
       ))}
       <WalletCardActions>
-        <Link style={{ flex: 1 }} to={Routes.GOVERNANCE}>
-          <span className="flex items-center justify-center w-full px-28 border h-28 bg-white text-black">
+        <Link className="flex-1 pr-8" to={Routes.GOVERNANCE}>
+          <Button variant={'secondary'} className="w-full">
             {t('governance')}
-          </span>
+          </Button>
         </Link>
-        <Link style={{ flex: 1 }} to={Routes.STAKING}>
-          <span className="flex items-center justify-center w-full px-28 border h-28 bg-white text-black">
+        <Link className="flex-1 pl-8" to={Routes.STAKING}>
+          <Button variant={'secondary'} className="w-full">
             {t('staking')}
-          </span>
+          </Button>
         </Link>
       </WalletCardActions>
       <VegaWalletAssetList accounts={accounts} />

@@ -21,15 +21,19 @@ export const Tooltip = ({ children, description, open, align }: TooltipProps) =>
       <Root open={open}>
         <Trigger asChild>{children}</Trigger>
         <Content align={align} alignOffset={5}>
+          <div className="relative z-0 p-8 bg-black-50 border border-black-60 text-white rounded-sm max-w-sm">
+            {description}
+          </div>
           <Arrow
             width={10}
             height={5}
-            offset={10}
-            className="fill-vega-green"
+            className="z-[1] fill-black-60 dark:fill-white-60 z-0 translate-x-[1px] translate-y-[-1px]"
           />
-          <div className="px-12 py-8 bg-vega-green text-black rounded-sm max-w-sm">
-            {description}
-          </div>
+          <Arrow
+            width={8}
+            height={4}
+            className="z-[1] translate-y-[-1px] fill-black-50"
+          />
         </Content>
       </Root>
     </Provider>
