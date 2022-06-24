@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 import { EthConnectPrompt } from '../../components/eth-connect-prompt';
 import { SplashLoader } from '../../components/splash-loader';
 import { useAppState } from '../../contexts/app-state/app-state-context';
-import { useContracts } from '../../contexts/contracts/contracts-context';
 import { useTranches } from '../../hooks/use-tranches';
 import { Routes as RoutesConfig } from '../router-config';
 import {
@@ -19,7 +18,6 @@ import {
 
 const RedemptionRouter = () => {
   const { t } = useTranslation();
-  const { vesting } = useContracts();
   const [state, dispatch] = React.useReducer(
     redemptionReducer,
     initialRedemptionState
@@ -49,7 +47,7 @@ const RedemptionRouter = () => {
     if (account) {
       run(account);
     }
-  }, [account, tranches, vesting]);
+  }, [account, tranches]);
 
   if (error) {
     return (
