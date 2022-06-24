@@ -38,15 +38,15 @@ export const CurrentProposalStatus = ({
     if (willPass) {
       return (
         <>
-          Currently set to{' '}
-          <span className="current-proposal-status__pass">Pass</span>
+          {t('currentlySetTo')}
+          <StatusPass>{t('pass')}</StatusPass>
         </>
       );
     } else {
       return (
         <>
-          Currently set to{' '}
-          <span className="current-proposal-status__fail">Fail</span>
+          {t('currentlySetTo')}
+          <StatusFail>{t('fail')}</StatusFail>
         </>
       );
     }
@@ -61,9 +61,7 @@ export const CurrentProposalStatus = ({
       return (
         <>
           <span>{t('voteFailedReason')}</span>
-          <span className="current-proposal-status__fail">
-            {t('participationNotMet')}
-          </span>
+          <StatusFail>{t('participationNotMet')}</StatusFail>
           <span>&nbsp;{daysClosedAgo}.</span>
         </>
       );
@@ -73,9 +71,7 @@ export const CurrentProposalStatus = ({
       return (
         <>
           <span>{t('voteFailedReason')}</span>
-          <span className="current-proposal-status__fail">
-            {t('majorityNotMet')}
-          </span>
+          <StatusFail>{t('majorityNotMet')}</StatusFail>
           <span>&nbsp;{daysClosedAgo}.</span>
         </>
       );

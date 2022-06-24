@@ -281,6 +281,7 @@
   "stakingHasAssociated": "You have {{tokens}} $VEGA tokens associated.",
   "stakingAssociateMoreButton": "Associate more $VEGA tokens with wallet",
   "stakingDisassociateButton": "Disassociate $VEGA tokens from wallet",
+  "stakingConfirm": "Open you wallet app to confirm",
   "associateButton": "Associate $VEGA tokens with wallet",
   "nodeQueryFailed": "Could not get data for validator {{node}}",
   "stakeAddPendingTitle": "Adding {{amount}} $VEGA to validator {{node}}",
@@ -541,5 +542,8 @@
   "numberOfAgainstVotes": "Number of votes against",
   "yesPercentage": "Yes percentage",
   "noPercentage": "No percentage",
-  "proposalTerms": "Proposal terms"
+  "proposalTerms": "Proposal terms",
+  "currentlySetTo": "Currently set to ",
+  "pass": "Pass",
+  "fail": "Fail"
 }

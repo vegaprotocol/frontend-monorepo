@@ -196,7 +196,7 @@ export const StakingForm = ({
   } else if (formState === FormState.Requested) {
     return (
       <Callout title="Confirm transaction in wallet" intent={Intent.Warning}>
-        <p>Open your wallet app to confirm</p>
+        <p>{t('stakingConfirm')}</p>
       </Callout>
     );
   } else if (formState === FormState.Pending) {
