@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import abi from '../abis/vesting_abi.json';
+import { prepend0x } from '../utils';
 
 export class TokenVesting {
   public contract: ethers.Contract;
@@ -14,13 +15,13 @@ export class TokenVesting {
   }
 
   stakeTokens(amount: string, vegaPublicKey: string) {
-    return this.contract.stake_tokens(amount, vegaPublicKey);
+    return this.contract.stake_tokens(amount, prepend0x(vegaPublicKey));
   }
   removeStake(amount: string, vegaPublicKey: string) {
-    return this.contract.remove_stake(amount, vegaPublicKey);
+    return this.contract.remove_stake(amount, prepend0x(vegaPublicKey));
   }
   stakeBalance(address: string, vegaPublicKey: string) {
-    return this.contract.stake_balance(address, vegaPublicKey);
+    return this.contract.stake_balance(address, prepend0x(vegaPublicKey));
   }
   totalStaked() {
     return this.contract.total_staked();

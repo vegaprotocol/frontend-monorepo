@@ -82,6 +82,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       <Orderbook
         {...orderbookData}
         decimalPlaces={data?.decimalPlaces ?? 0}
+        positionDecimalPlaces={data?.positionDecimalPlaces ?? 0}
         resolution={resolution}
         onResolutionChange={(resolution: number) => setResolution(resolution)}
       />

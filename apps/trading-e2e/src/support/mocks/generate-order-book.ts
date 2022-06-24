@@ -12,6 +12,7 @@ export const generateOrderBook = (
   const marketDepth: MarketDepth_market = {
     id: 'b2426f67b085ba8fb429f1b529d49372b2d096c6fb6f509f76c5863abb6d969e',
     decimalPlaces: 5,
+    positionDecimalPlaces: 0,
     data: {
       staticMidPrice: '826337',
       marketTradingMode: MarketTradingMode.Continuous,

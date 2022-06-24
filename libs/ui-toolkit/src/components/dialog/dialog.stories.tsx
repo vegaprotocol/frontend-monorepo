@@ -15,7 +15,9 @@ const Template: ComponentStory<typeof Dialog> = (args) => {
   return (
     <div>
       <Button onClick={() => setOpen(true)}>Open dialog</Button>
-      <Dialog {...args} open={open} setOpen={setOpen} />
+      <Dialog {...args} open={open} onChange={setOpen}>
+        {args.children}
+      </Dialog>
     </div>
   );
 };
@@ -23,38 +25,38 @@ const Template: ComponentStory<typeof Dialog> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   open: false,
-  title: 'Title',
+  title: 'No intent supplied',
   children: <p>Some content</p>,
+};
+
+export const Primary = Template.bind({});
+Primary.args = {
+  open: false,
+  title: 'Intent: Primary',
+  children: <p>Some content</p>,
+  intent: Intent.Primary,
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
   open: false,
-  title: 'Danger',
+  title: 'Intent: Danger',
   children: <p>Some content</p>,
   intent: Intent.Danger,
-};
-
-export const Success = Template.bind({});
-Success.args = {
-  open: false,
-  title: 'Success',
-  children: <p>Some content</p>,
-  intent: Intent.Success,
 };
 
 export const Warning = Template.bind({});
 Warning.args = {
   open: false,
-  title: 'Warning',
+  title: 'Intent: Warning',
   children: <p>Some content</p>,
   intent: Intent.Warning,
 };
 
-export const Modal = Template.bind({});
-Modal.args = {
+export const Success = Template.bind({});
+Success.args = {
   open: false,
-  title: 'Modal (Prompt)',
+  title: 'Intent: Success',
   children: <p>Some content</p>,
-  intent: Intent.Warning,
+  intent: Intent.Success,
 };

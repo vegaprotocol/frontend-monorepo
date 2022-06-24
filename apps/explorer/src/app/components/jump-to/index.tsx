@@ -36,7 +36,12 @@ export const JumpTo = ({
           placeholder={placeholder}
           className="max-w-[200px]"
         />
-        <Button data-testid="go-submit" variant="secondary" type="submit">
+        <Button
+          data-testid="go-submit"
+          variant="secondary"
+          boxShadow={false}
+          type="submit"
+        >
           {t('Go')}
         </Button>
       </div>

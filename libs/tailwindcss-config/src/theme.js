@@ -6,6 +6,73 @@ const shadeOfGray = (shade) => {
   return `#${hexValue}${hexValue}${hexValue}`;
 };
 
+const colours = {
+  transparent: 'transparent',
+  current: 'currentColor',
+  text: '#C7C7C7',
+  deemphasise: '#8A9BA8',
+  white: {
+    DEFAULT: '#FFF',
+    strong: '#FFF',
+    normal: '#F5F8FA',
+    muted: '#676767',
+    '02': shadeOfGray(2),
+    '05': shadeOfGray(5),
+    10: shadeOfGray(10),
+    25: shadeOfGray(25),
+    40: shadeOfGray(40),
+    60: shadeOfGray(60),
+    70: shadeOfGray(70),
+    80: shadeOfGray(80),
+    90: shadeOfGray(90),
+    95: shadeOfGray(95),
+    100: shadeOfGray(100),
+  },
+  black: {
+    DEFAULT: '#000',
+    strong: '#000',
+    normal: '#000',
+    muted: '#BFCCD6',
+    '02': shadeOfGray(100 - 2),
+    '05': shadeOfGray(100 - 5),
+    10: shadeOfGray(100 - 10),
+    25: shadeOfGray(100 - 25),
+    40: shadeOfGray(100 - 40),
+    50: shadeOfGray(100 - 50),
+    60: shadeOfGray(100 - 60),
+    70: shadeOfGray(100 - 70),
+    80: shadeOfGray(100 - 80),
+    90: shadeOfGray(100 - 90),
+    95: shadeOfGray(100 - 95),
+    100: shadeOfGray(100 - 100),
+  },
+  vega: {
+    yellow: '#DFFF0B',
+    'yellow-dark': '#474B0A',
+    pink: '#FF077F',
+    green: '#00F780',
+    'green-medium': '#00DE73',
+    'green-dark': '#008545',
+    red: '#FF261A',
+    'red-dark': '#EB001B',
+  },
+  blue: '#1DA2FB',
+  coral: '#FF6057',
+  pink: '#FF2D5E',
+  orange: '#D9822B',
+  danger: '#FF261A',
+  warning: '#FF7A1A',
+  selected: '#DFFF0B',
+  success: '#00F780',
+  'danger-bg': '#9E0025', // for white text
+};
+
+const boxShadowPosition = {
+  outer: '2px 2px 0 0',
+  insetUnderline: 'inset 0 -2px 0 0',
+  insetShading: 'inset 2px 2px 6px',
+};
+
 module.exports = {
   screens: {
     xs: '500px',
@@ -16,67 +83,7 @@ module.exports = {
     xxl: '1536px',
   },
   colors: {
-    transparent: 'transparent',
-    current: 'currentColor',
-    vega: {
-      yellow: '#EDFF22',
-      pink: '#FF2D5E',
-      green: '#00F780',
-      red: '#FF261A',
-    },
-    red: {
-      DEFAULT: '#ED1515',
-      dark: '#EB001B',
-      bar: 'rgba(47, 246, 139, 0.45)', // #2FF68B 45%
-    },
-    green: {
-      DEFAULT: '#26FF8A',
-      dark: '#008545',
-      bar: 'rgba(47, 246, 139, 0.45)', // #2FF68B 45%
-    },
-    text: '#C7C7C7',
-    deemphasise: '#8A9BA8',
-    white: {
-      DEFAULT: '#FFF',
-      strong: '#FFF',
-      normal: '#F5F8FA',
-      muted: '#676767',
-      '02': shadeOfGray(2),
-      '05': shadeOfGray(5),
-      10: shadeOfGray(10),
-      25: shadeOfGray(25),
-      40: shadeOfGray(40),
-      60: shadeOfGray(60),
-      80: shadeOfGray(80),
-      95: shadeOfGray(95),
-      100: shadeOfGray(100),
-    },
-    black: {
-      DEFAULT: '#000',
-      strong: '#000',
-      normal: '#000',
-      muted: '#BFCCD6',
-      '02': shadeOfGray(100 - 2),
-      '05': shadeOfGray(100 - 5),
-      10: shadeOfGray(100 - 10),
-      25: shadeOfGray(100 - 25),
-      40: shadeOfGray(100 - 40),
-      60: shadeOfGray(100 - 60),
-      80: shadeOfGray(100 - 80),
-      95: shadeOfGray(100 - 95),
-      100: shadeOfGray(100 - 100),
-    },
-    blue: '#1DA2FB',
-    coral: '#FF6057',
-    orange: '#D9822B',
-    yellow: {
-      DEFAULT: '#EDFF22',
-      dark: '#474B0A', // yellow 0.3 opacity on black
-    },
-    danger: '#FF261A',
-    warning: '#FF7A1A',
-    success: '#26FF8A',
-    'danger-bg': '#9E0025', // for white text
+    ...colours,
   },
   spacing: {
     0: '0px',
@@ -121,7 +128,9 @@ module.exports = {
   borderWidth: {
     DEFAULT: '1px',
     1: '1px',
+    2: '2px',
     4: '4px',
+    7: '7px',
   },
   borderRadius: {
     none: '0',
@@ -178,11 +187,27 @@ module.exports = {
     ui: ['14px', '20px'],
     'ui-small': ['12px', '16px'],
   },
-
   boxShadow: {
-    callout: '5px 5px 0 1px rgba(255, 255, 255, 0.05)',
     focus: '0px 0px 0px 1px #FFFFFF, 0px 0px 3px 2px #FFE600',
     'focus-dark': '0px 0px 0px 1px #000000, 0px 0px 3px 2px #FFE600',
-    radio: '1px 1px 0 0',
+    intent: `3px 3px 0 0`,
+    'vega-yellow': `${boxShadowPosition.outer} ${colours.vega.yellow}`,
+    'vega-pink': `${boxShadowPosition.outer} ${colours.vega.pink}`,
+    'inset-black': `${boxShadowPosition.insetUnderline} ${colours.black.DEFAULT}`,
+    'inset-white': `${boxShadowPosition.insetUnderline} ${colours.white.DEFAULT}`,
+    'inset-vega-yellow': `${boxShadowPosition.insetUnderline} ${colours.vega.yellow}`,
+    'inset-vega-pink': `${boxShadowPosition.insetUnderline} ${colours.vega.pink}`,
+    'inset-danger': `${boxShadowPosition.insetUnderline} ${colours.danger}`,
+    input: `${boxShadowPosition.insetShading} ${colours.white['80']}`,
+    'input-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}`,
+    'input-focus': `${boxShadowPosition.insetShading} ${colours.white['80']}, ${boxShadowPosition.insetUnderline} ${colours.vega.pink}`,
+    'input-focus-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}, ${boxShadowPosition.insetUnderline} ${colours.vega.yellow}`,
+    'input-focus-error': `${boxShadowPosition.insetShading} ${colours.white['80']}, ${boxShadowPosition.insetUnderline} ${colours.danger}`,
+    'input-focus-error-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}, ${boxShadowPosition.insetUnderline} ${colours.danger}`,
+    'checkbox-focus': `${boxShadowPosition.insetShading} ${colours.white['80']}, ${boxShadowPosition.outer} ${colours.vega.pink}`,
+    'checkbox-focus-dark': `${boxShadowPosition.insetShading} ${colours.black['80']}, ${boxShadowPosition.outer} ${colours.vega.yellow}`,
+  },
+  backgroundImage: {
+    'fairground-nav': "url('https://static.vega.xyz/fairground-nav-bg.jpg')",
   },
 };

@@ -1,2 +1,2 @@
 export * from './ascii-to-hex';
-export * from './hexadecimalify';
+export * from './prepend-0x';

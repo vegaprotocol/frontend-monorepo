@@ -66,7 +66,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
           <div className="h-full flex h-full items-center justify-end">
             <Button
               onClick={() => onClick(data.id)}
-              variant="inline"
+              variant="inline-link"
               appendIconName="arrow-top-right"
               className="uppercase"
             >

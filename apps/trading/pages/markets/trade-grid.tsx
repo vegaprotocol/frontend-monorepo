@@ -18,8 +18,8 @@ import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import {
   ArrowDown,
-  GridTab,
-  GridTabs,
+  Tab,
+  Tabs,
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -66,7 +66,7 @@ export const TradeMarketHeader = ({
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
           onClick={() => setOpen(!open)}
-          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-vega-yellow dark:hover:bg-white/20"
+          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/20 dark:hover:bg-white/20"
         >
           <span className="break-words text-left">{market.name}</span>
           <ArrowDown color="yellow" borderX={8} borderTop={12} />
@@ -109,7 +109,7 @@ interface TradeGridProps {
 export const TradeGrid = ({ market }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
-    'grid gap-4 grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
+    'grid gap-4 grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_300px]',
     'bg-black-10 dark:bg-white-10',
     'text-ui'
   );
@@ -122,47 +122,47 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           className="row-start-1 row-end-2 col-start-1 col-end-4"
         />
         <TradeGridChild className="row-start-2 row-end-3 col-start-1 col-end-2">
-          <GridTabs>
-            <GridTab id="candles" name={t('Candles')}>
+          <Tabs>
+            <Tab id="candles" name={t('Candles')}>
               <TradingViews.Candles marketId={market.id} />
-            </GridTab>
-            <GridTab id="depth" name={t('Depth')}>
+            </Tab>
+            <Tab id="depth" name={t('Depth')}>
               <TradingViews.Depth marketId={market.id} />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
         <TradeGridChild className="row-start-2 row-end-3 col-start-2 col-end-3">
-          <GridTabs>
-            <GridTab id="ticket" name={t('Ticket')}>
+          <Tabs>
+            <Tab id="ticket" name={t('Ticket')}>
               <TradingViews.Ticket marketId={market.id} />
-            </GridTab>
-            <GridTab id="info" name={t('Info')}>
+            </Tab>
+            <Tab id="info" name={t('Info')}>
               <TradingViews.Info marketId={market.id} />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
         <TradeGridChild className="row-start-2 row-end-3 col-start-3 col-end-4">
-          <GridTabs>
-            <GridTab id="trades" name={t('Trades')}>
+          <Tabs>
+            <Tab id="trades" name={t('Trades')}>
               <TradingViews.Trades marketId={market.id} />
-            </GridTab>
-            <GridTab id="orderbook" name={t('Orderbook')}>
+            </Tab>
+            <Tab id="orderbook" name={t('Orderbook')}>
               <TradingViews.Orderbook marketId={market.id} />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
         <TradeGridChild className="col-span-3">
-          <GridTabs>
-            <GridTab id="orders" name={t('Orders')}>
+          <Tabs>
+            <Tab id="orders" name={t('Orders')}>
               <TradingViews.Orders />
-            </GridTab>
-            <GridTab id="positions" name={t('Positions')}>
+            </Tab>
+            <Tab id="positions" name={t('Positions')}>
               <TradingViews.Positions />
-            </GridTab>
-            <GridTab id="accounts" name={t('Accounts')}>
+            </Tab>
+            <Tab id="accounts" name={t('Accounts')}>
               <TradingViews.Accounts />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
       </div>
     </>
