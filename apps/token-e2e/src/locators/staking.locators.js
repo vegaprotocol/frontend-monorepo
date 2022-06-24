@@ -7,5 +7,5 @@ export default {
   stakedAmounts: '[data-testid="staked-validator-item"]',
   stakeNextEpochValue: '[data-testid="stake-next-epoch"]',
   stakeThisEpochValue: '[data-testid="stake-this-epoch"]',
-  stakeMaximumTokens: '[data-testid="token-amount-use-maximum"]'
+  stakeMaximumTokens: '[data-testid="token-amount-use-maximum"]',
 };
