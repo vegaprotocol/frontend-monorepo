@@ -24,6 +24,7 @@ export const ProposalsContainer = () => {
   const { t } = useTranslation();
   const { data, loading, error } = useQuery<Proposals, never>(PROPOSALS_QUERY, {
     pollInterval: 5000,
+    errorPolicy: 'ignore',
   });
 
   const proposals = React.useMemo(() => {
