@@ -18,12 +18,6 @@ export const useOrderCancel = () => {
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const [id, setId] = useState('');
 
-  useEffect(() => {
-    if (finalizedOrder) {
-      resetTransaction();
-    }
-  }, [finalizedOrder, resetTransaction]);
-
   // Start a subscription looking for the newly created order
   useSubscription<OrderEvent, OrderEventVariables>(ORDER_EVENT_SUB, {
     variables: { partyId: keypair?.pub || '' },
@@ -32,25 +26,20 @@ export const useOrderCancel = () => {
       if (!subscriptionData.data?.busEvents?.length) {
         return;
       }
-
       // No types available for the subscription result
-      const matchingOrderEvent = subscriptionData.data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Order') {
-          return false;
-        }
+      const matchingOrderEvent = subscriptionData.data.busEvents[0].event;
 
-        return e.event.id === id;
-      });
-
-      if (
-        matchingOrderEvent &&
-        matchingOrderEvent.event.__typename === 'Order'
-      ) {
-        console.log({ matchingOrderEvent });
-        setFinalizedOrder(matchingOrderEvent.event);
+      if (matchingOrderEvent && matchingOrderEvent.__typename === 'Order') {
+        setFinalizedOrder(matchingOrderEvent);
       }
     },
   });
+
+  useEffect(() => {
+    if (finalizedOrder) {
+      resetTransaction();
+    }
+  }, [finalizedOrder, resetTransaction]);
 
   const cancel = useCallback(
     async (order) => {
@@ -71,7 +60,6 @@ export const useOrderCancel = () => {
 
       if (res?.signature) {
         setId(determineId(res.signature));
-        setFinalizedOrder(order);
       }
       return res;
     },

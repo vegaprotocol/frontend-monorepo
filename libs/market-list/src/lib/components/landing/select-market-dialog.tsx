@@ -18,7 +18,7 @@ export const SelectMarketDialog = ({
       open={dialogOpen}
       onChange={() => setDialogOpen(false)}
       titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
-      contentClassNames="w-full md:w-[1020px]"
+      contentClassNames="w-full lg:w-[1020px]"
     >
       <div className="h-[200px] w-full">
         <MarketsContainer />

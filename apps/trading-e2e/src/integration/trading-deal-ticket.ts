@@ -141,7 +141,7 @@ describe('deal ticket orders', () => {
       });
     cy.getByTestId(orderStatusHeader).should(
       'have.text',
-      'Awaiting wallet confirmation'
+      'Awaiting network confirmation'
     );
     cy.getByTestId(orderTransactionHash)
       .invoke('text')
@@ -152,7 +152,7 @@ describe('deal ticket orders', () => {
   it.skip('cannot place an order if market is suspended');
   it.skip('cannot place an order if size is 0');
   it.skip('cannot place an order expiry date is invalid');
-  it.skip('unsuccessfull order due to no collateral');
+  it.skip('unsuccessful order due to no collateral');
 });
 
 describe('deal ticket validation', () => {

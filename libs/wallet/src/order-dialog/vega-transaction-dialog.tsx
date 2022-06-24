@@ -69,9 +69,7 @@ export const VegaTransactionDialog = ({
   if (!finalizedOrder) {
     return (
       <OrderDialogWrapper
-        title={`Awaiting ${
-          transaction.txHash ? 'network' : 'wallet'
-        } confirmation`}
+        title="Awaiting network confirmation"
         icon={<Loader size="small" />}
       >
         {transaction.txHash && (

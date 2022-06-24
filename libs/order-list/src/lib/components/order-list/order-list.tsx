@@ -92,7 +92,6 @@ const CancelDialog = ({
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data }, ref) => {
-    // const [cancelOrder, setCancelOrder] = useState<Order | null>(null);
     const [orderDialogOpen, setOrderDialogOpen] = useState(false);
     const { cancel, transaction, finalizedOrder, reset } = useOrderCancel();
 
@@ -103,18 +102,14 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           OrderStatus.Rejected,
           OrderStatus.Expired,
           OrderStatus.Filled,
+          OrderStatus.Stopped,
         ].includes(data.status)
       ) {
         return (
           <Button
             data-testid="cancel"
             onClick={async () => {
-              const res = await cancel(data);
-              // setCancelOrder(data);
-              if (res && finalizedOrder) {
-                setOrderDialogOpen(true);
-                console.log('cancelled', { finalizedOrder }, { transaction });
-              }
+              await cancel(data);
             }}
           >
             Cancel

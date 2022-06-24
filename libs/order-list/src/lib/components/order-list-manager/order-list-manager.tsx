@@ -25,10 +25,9 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     if (!gridRef.current) {
       return false;
     }
-
     const incoming = prepareIncomingOrders(delta);
 
-    const update: OrderFields[] = [];
+    const updateRows: OrderFields[] = [];
     const add: OrderFields[] = [];
 
     incoming.forEach((d) => {
@@ -39,17 +38,17 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
       const rowNode = gridRef.current.api.getRowNode(d.id);
 
       if (rowNode) {
-        if (!isEqual) {
-          update.push(d);
+        if (!isEqual(d, rowNode.data)) {
+          updateRows.push(d);
         }
       } else {
         add.push(d);
       }
     });
 
-    if (update.length || add.length) {
+    if (updateRows.length || add.length) {
       gridRef.current.api.applyTransactionAsync({
-        update,
+        update: updateRows,
         add,
         addIndex: 0,
       });
