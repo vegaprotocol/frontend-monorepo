@@ -7,36 +7,28 @@ import { AgGridColumn } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { forwardRef } from 'react';
 import type { FillFields } from './__generated__/FillFields';
-import type {
-  GridApi,
-  IDatasource,
-  ValueFormatterParams,
-} from 'ag-grid-community';
+import type { ValueFormatterParams } from 'ag-grid-community';
 
 interface FillsProps {
-  datasource: IDatasource;
   partyId: string;
-  onBodyScrollEnd: (params: { api: GridApi; top: number }) => void;
+  fills: FillFields[];
 }
 
 export const Fills = forwardRef<AgGridReact, FillsProps>(
-  ({ partyId, datasource, onBodyScrollEnd }, ref) => {
+  ({ partyId, fills }, ref) => {
     return (
       <AgGrid
         ref={ref}
+        rowData={fills}
         overlayNoRowsTemplate="No fills"
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
-        onBodyScrollEnd={onBodyScrollEnd}
-        rowModelType="infinite"
-        datasource={datasource}
       >
         <AgGridColumn
           headerName="Id"
           field="id"
           valueFormatter={({ value }: ValueFormatterParams) => {
-            if (!value) return null;
             return truncateByChars(value);
           }}
         />
@@ -48,7 +40,6 @@ export const Fills = forwardRef<AgGridReact, FillsProps>(
         <AgGridColumn
           headerName="Order"
           valueFormatter={({ data }: { data: FillFields }) => {
-            if (!data) return null;
             if (data.buyer.id === partyId) {
               // you are the buyer
               return truncateByChars(data.buyOrder);
