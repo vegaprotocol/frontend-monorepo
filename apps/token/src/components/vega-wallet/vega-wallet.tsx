@@ -37,7 +37,7 @@ export const VegaWallet = () => {
   );
 
   return (
-    <section className="vega-wallet">
+    <section className="vega-wallet" data-testid="vega-wallet">
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
           <div>

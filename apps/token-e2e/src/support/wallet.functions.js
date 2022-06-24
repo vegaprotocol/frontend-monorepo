@@ -1,16 +1,31 @@
 import wallet from '../locators/wallet.locators';
 
+// ----------------------------------------------------------------------
+
+Cypress.Commands.add('walletVega_create', function () {
+  cy.exec('vegawallet init -f --home ~/.vegacapsule/testnet/wallet').then(() => {
+    cy.exec('echo "123" > ~/.vegacapsule/testnet/wallet/passphrase.txt').then(() => {
+      cy.exec('vegawallet create --wallet capsule_wallet -p ./passphrase.txt  --home ~/.vegacapsule/testnet/wallet', {failOnNonZeroExit: false}).then(() => {
+        cy.exec('vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet').then(() => {
+          return
+        })
+      })
+    })
+  })
+});
+
+// ----------------------------------------------------------------------
+
 Cypress.Commands.add('walletVega_connect', function () {
-  const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
-  const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
-  const walletTruncatedKey = Cypress.env('TRUNCATED_VEGA_PUBLIC_KEY');
+
+  const walletName = "capsule_wallet";
+  const walletPassphrase = "123"
 
   cy.get(wallet.vegawallet).within(() => {
     cy.get('button')
       .contains('Connect Vega wallet to use associated $VEGA')
-      .should('be.enabled')
-      .click();
-  });
+      .should('be.enabled').and('be.visible').click({force:true})
+    });
 
   cy.get('button').contains('rest provider').click();
 
@@ -20,18 +35,13 @@ Cypress.Commands.add('walletVega_connect', function () {
     cy.get('button').contains('Connect').click();
   });
 
-  cy.get(wallet.vegawallet).within(() => {
-    cy.contains(walletTruncatedKey).should('be.visible');
-    cy.contains('Assets', { timeout: 20000 }).should('be.visible');
-  });
+  cy.contains('capsule_wallet key 1', { timeout: 20000 }).should('be.visible');
 });
 
-Cypress.Commands.add('walletVega_getUnstakedAmount', function () {
-  cy.get(wallet.vegawallet).contains('Unstaked').siblings().invoke('text');
-});
+// ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'walletVega_checkValidator_StakeNextEpochValue_is',
+  'walletVega_checkThisValidator_StakeNextEpochValue_is',
   function (validatorName, expectedVal) {
     cy.get(wallet.vegawallet).within(() => {
       cy.contains(`${validatorName} (Next epoch)`)
@@ -41,13 +51,27 @@ Cypress.Commands.add(
   }
 );
 
+// ----------------------------------------------------------------------
+
 Cypress.Commands.add(
   'walletVega_check_UnstakedValue_is',
   function (expectedVal) {
     cy.get(wallet.vegawallet).within(() => {
       cy.contains(`Unstaked`)
         .siblings()
-        .contains(parseFloat(expectedVal).toPrecision(16));
+        .contains(parseFloat(expectedVal).toPrecision(16), {timeout:10000});
     });
   }
 );
+
+// ----------------------------------------------------------------------
+
+Cypress.Commands.add('walletEth_connect', function () {
+  cy.get(wallet.ethWalletConnectToEth).within(() => {
+    cy.contains('Connect Ethereum wallet to associate $VEGA')
+      .should('be.visible').click();
+  });
+
+  cy.get(wallet.ethWalletConnect).click();
+  cy.contains('Ethereum wallet connected').should('be.visible');
+});

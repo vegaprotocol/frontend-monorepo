@@ -178,14 +178,15 @@ export const NodeListItem = ({
       data-testid="node-list-item"
     >
       <Link to={id}>
-        {name ? (
-          <NodeListItemName>{name}</NodeListItemName>
-        ) : (
-          <>
+        {name ? ( 
+          <NodeListItemName>{name}</NodeListItemName> 
+        ) : ( 
+          <> 
             <NodeListItemName>{t('validatorTitleFallback')}</NodeListItemName>
             <span
               className="uppercase text-white-60"
               title={`${t('id')}: ${id}`}
+              data-testid="node-list-item-name"
             >
               {truncateMiddle(id)}
             </span>
