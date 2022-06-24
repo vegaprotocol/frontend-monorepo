@@ -51,7 +51,6 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
       if (!subscriptionData.data?.busEvents?.length) {
         return;
       }
-      console.log(subscriptionData.data);
 
       // No types available for the subscription result
       const matchingOrderEvent = subscriptionData.data.busEvents.find((e) => {
