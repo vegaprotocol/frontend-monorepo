@@ -77,7 +77,7 @@ export const DealTicket = ({
       />
       <DealTicketAmount
         orderType={orderType}
-        step={0.02}
+        step={step}
         register={register}
         price={
           market.depth.lastTrade
@@ -109,7 +109,7 @@ export const DealTicket = ({
         )}
       <Button
         className="w-full mb-8"
-        variant="primary"
+        variant="trade"
         type="submit"
         disabled={isDisabled}
         data-testid="place-order"

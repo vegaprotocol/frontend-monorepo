@@ -16,6 +16,7 @@ const MARKET_DEPTH_QUERY = gql`
     market(id: $marketId) {
       id
       decimalPlaces
+      positionDecimalPlaces
       data {
         staticMidPrice
         marketTradingMode
@@ -52,6 +53,7 @@ export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
     marketDepthUpdate(marketId: $marketId) {
       market {
         id
+        positionDecimalPlaces
         data {
           staticMidPrice
           marketTradingMode

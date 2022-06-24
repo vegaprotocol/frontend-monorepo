@@ -87,27 +87,28 @@ export class RestConnector implements VegaConnector {
 
   async sendTx(body?: TransactionSubmission) {
     try {
-      return await this.service.commandSyncPost(body);
+      const res = await this.service.commandSyncPost(body);
+      return res;
     } catch (err) {
       return this.handleSendTxError(err);
     }
   }
 
   private handleSendTxError(err: unknown) {
-    if (typeof err === 'object' && err && 'body' in err) {
+    const unpexpectedError = { error: 'Something went wrong' };
+
+    if (isServiceError(err)) {
+      if (err.code === 401) {
+        return { error: 'User rejected' };
+      }
+
       try {
-        // @ts-ignore Not sure why TS can't infer that 'body' does indeed exist on object
-        return JSON.parse(err.body);
+        return JSON.parse(err.body ?? '');
       } catch {
-        // Unexpected response
-        return {
-          error: 'Something went wrong',
-        };
+        return unpexpectedError;
       }
     } else {
-      return {
-        error: 'Something went wrong',
-      };
+      return unpexpectedError;
     }
   }
 
@@ -132,3 +133,17 @@ export class RestConnector implements VegaConnector {
     LocalStorage.removeItem(this.configKey);
   }
 }
+
+interface ServiceError {
+  code: number;
+  body: string | undefined;
+  headers: object;
+}
+
+export const isServiceError = (err: unknown): err is ServiceError => {
+  // Some responses don't contain body object
+  if (typeof err === 'object' && err !== null && 'code' in err) {
+    return true;
+  }
+  return false;
+};

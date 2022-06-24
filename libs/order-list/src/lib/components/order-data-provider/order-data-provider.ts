@@ -13,6 +13,7 @@ const ORDER_FRAGMENT = gql`
       id
       name
       decimalPlaces
+      positionDecimalPlaces
       tradableInstrument {
         instrument {
           code

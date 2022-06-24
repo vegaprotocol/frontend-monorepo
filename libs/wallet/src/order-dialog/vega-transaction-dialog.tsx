@@ -1,12 +1,16 @@
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  addDecimalsFormatNumber,
+  t,
+} from '@vegaprotocol/react-helpers';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 
 export interface Market {
   name: string;
-
+  positionDecimalPlaces?: number;
   decimalPlaces: number;
 }
 
@@ -30,9 +34,22 @@ export const VegaTransactionDialog = ({
   finalizedOrder,
   title = 'Order placed',
 }: OrderDialogProps) => {
-  // TODO: When wallets support confirming transactions return UI for 'awaiting confirmation' step
-
   // Rejected by wallet
+  if (transaction.status === VegaTxStatus.Requested) {
+    return (
+      <OrderDialogWrapper
+        title="Confirm transaction in wallet"
+        icon={<Icon name="hand-up" size={20} />}
+      >
+        <p>
+          Please open your wallet application and confirm or reject the
+          transaction
+        </p>
+      </OrderDialogWrapper>
+    );
+  }
+
+  // Transaction error
   if (transaction.status === VegaTxStatus.Error) {
     return (
       <OrderDialogWrapper
@@ -87,7 +104,14 @@ export const VegaTransactionDialog = ({
         <p>{t(`Market: ${finalizedOrder.market.name}`)}</p>
       )}
       <p>{t(`Type: ${finalizedOrder.type}`)}</p>
-      <p>{t(`Amount: ${finalizedOrder.size}`)}</p>
+      <p>
+        {t(
+          `Amount: ${addDecimal(
+            finalizedOrder.size,
+            finalizedOrder.market?.positionDecimalPlaces || 0
+          )}`
+        )}
+      </p>
       {finalizedOrder.type === 'Limit' && finalizedOrder.market && (
         <p>
           {t(

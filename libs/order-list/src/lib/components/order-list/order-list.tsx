@@ -1,8 +1,10 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
 import type { Orders_party_orders } from '../__generated__/Orders';
 import {
+  addDecimal,
   addDecimalsFormatNumber,
   getDateTimeFormat,
+  t,
 } from '@vegaprotocol/react-helpers';
 import {
   AgGridDynamic as AgGrid,
@@ -23,6 +25,7 @@ import {
   VegaTransactionDialog,
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
+import BigNumber from 'bignumber.js';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -157,13 +160,18 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             }}
           />
           <AgGridColumn
-            headerName="Filled"
+            headerName={t('Filled')}
             field="remaining"
             cellClass="font-mono"
             valueFormatter={({ data }: ValueFormatterParams) => {
-              return `${Number(data.size) - Number(data.remaining)}/${
-                data.size
-              }`;
+              const dps = data.market.positionDecimalPlaces;
+              const size = new BigNumber(data.size);
+              const remaining = new BigNumber(data.remaining);
+              const fills = size.minus(remaining);
+              return `${addDecimal(fills.toString(), dps)}/${addDecimal(
+                size.toString(),
+                dps
+              )}`;
             }}
           />
           <AgGridColumn
