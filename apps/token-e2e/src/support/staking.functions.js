@@ -6,7 +6,7 @@ Cypress.Commands.add(
   'stakingValidatorPage_check_stakeNextEpochValue',
   function (expectedVal) {
     cy.get(staking.stakeNextEpochValue, { timeout: 10000 }).contains(
-      expectedVal.toFixed(2),
+      expectedVal,
       { timeout: 10000 }
     );
   }
@@ -26,3 +26,37 @@ Cypress.Commands.add(
 );
 
 // ----------------------------------------------------------------------
+
+Cypress.Commands.add(
+  'staking_addStake',
+  function (stake) {
+    cy.get(staking.addStakeRadioButton).click({ force: true });
+    cy.get(staking.tokenAmountInput).type(stake);
+    cy.contains('Waiting for next epoch to start', { timeout: 10000 });
+    cy.get(staking.tokenInputSubmit, { timeout: 8000 })
+      .should('be.enabled')
+      .and('contain', `Add ${stake} $VEGA tokens`)
+      .and('be.visible')
+      .click();
+    cy.contains(
+      'At the beginning of the next epoch your $VEGA will be nominated to the validator'
+    );
+  }
+);
+
+// ----------------------------------------------------------------------
+
+Cypress.Commands.add(
+  'staking_removeStake',
+  function (stake) {
+    cy.get(staking.removeStakeRadioButton).click({ force: true });
+      cy.get(staking.tokenAmountInput).type(stake);
+      cy.contains('Waiting for next epoch to start', { timeout: 10000 });
+      cy.get(staking.tokenInputSubmit)
+        .should('be.enabled', { timeout: 8000 })
+        .and('contain', 'Remove 0.1 $VEGA tokens')
+        .and('be.visible')
+        .click();
+      cy.contains(`0.1 $VEGA has been removed from validator`).should('be.visible');
+  }
+);

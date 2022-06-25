@@ -178,10 +178,10 @@ export const NodeListItem = ({
       data-testid="node-list-item"
     >
       <Link to={id}>
-        {name ? ( 
-          <NodeListItemName>{name}</NodeListItemName> 
-        ) : ( 
-          <> 
+        {name ? (
+          <NodeListItemName>{name}</NodeListItemName>
+        ) : (
+          <>
             <NodeListItemName>{t('validatorTitleFallback')}</NodeListItemName>
             <span
               className="uppercase text-white-60"
