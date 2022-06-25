@@ -4,6 +4,7 @@ import {
   addDecimalsFormatNumber,
   formatNumber,
   getDateTimeFormat,
+  t,
 } from '@vegaprotocol/react-helpers';
 import { AgGridColumn } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
@@ -29,12 +30,11 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
       >
-        <AgGridColumn headerName="Market" field="market.name" />
+        <AgGridColumn headerName={t('Market')} field="market.name" />
         <AgGridColumn
-          headerName="Amount"
+          headerName={t('Amount')}
           field="size"
           cellClass={({ data }: { data: FillFields }) => {
-            console.log(data);
             let className = '';
             if (data.buyer.id === partyId) {
               className = 'text-vega-green';
@@ -59,7 +59,7 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
           }}
         />
         <AgGridColumn
-          headerName="Value"
+          headerName={t('Value')}
           field="price"
           valueFormatter={({ value, data }: ValueFormatterParams) => {
             const asset =
@@ -73,8 +73,9 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
           }}
         />
         <AgGridColumn
-          headerName="Filled value"
-          valueFormatter={({ data }: ValueFormatterParams) => {
+          headerName={t('Filled value')}
+          field="price"
+          valueFormatter={({ value, data }: ValueFormatterParams) => {
             const asset =
               data.market.tradableInstrument.instrument.product.settlementAsset
                 .symbol;
@@ -82,31 +83,34 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
               addDecimal(data.size, data.market.positionDecimalPlaces)
             );
             const price = new BigNumber(
-              addDecimal(data.price, data.market.decimalPlaces)
+              addDecimal(value, data.market.decimalPlaces)
             );
 
-            const value = size.times(price).toString();
+            const total = size.times(price).toString();
             const valueFormatted = formatNumber(
-              value,
+              total,
               data.market.decimalPlaces
             );
             return `${valueFormatted} ${asset}`;
           }}
         />
         <AgGridColumn
-          headerName="Role"
-          valueFormatter={({ data }: { data: FillFields }) => {
+          headerName={t('Role')}
+          field="aggressor"
+          valueFormatter={({ value, data }: ValueFormatterParams) => {
+            const taker = t('Taker');
+            const maker = t('Maker');
             if (data.buyer.id === partyId) {
-              if (data.aggressor === Side.Buy) {
-                return 'Taker';
+              if (value === Side.Buy) {
+                return taker;
               } else {
-                return 'Maker';
+                return maker;
               }
             } else if (data.seller.id === partyId) {
-              if (data.aggressor === Side.Sell) {
-                return 'Taker';
+              if (value === Side.Sell) {
+                return taker;
               } else {
-                return 'Maker';
+                return maker;
               }
             } else {
               return '-';
@@ -114,10 +118,10 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
           }}
         />
         <AgGridColumn
-          headerName="Fee"
-          valueFormatter={({ data }: ValueFormatterParams) => {
-            const asset =
-              data.market.tradableInstrument.instrument.product.settlementAsset;
+          headerName={t('Fee')}
+          field="market.tradableInstrument.instrument.product"
+          valueFormatter={({ value, data }: ValueFormatterParams) => {
+            const asset = value.settlementAsset;
             let feesObj;
             if (data.buyer.id === partyId) {
               feesObj = data.buyerFee;
@@ -130,15 +134,15 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
             const fee = new BigNumber(feesObj.makerFee)
               .plus(feesObj.infrastructureFee)
               .plus(feesObj.liquidityFee);
-            const value = addDecimalsFormatNumber(
+            const totalFees = addDecimalsFormatNumber(
               fee.toString(),
               asset.decimals
             );
-            return `${value} ${asset.symbol}`;
+            return `${totalFees} ${asset.symbol}`;
           }}
         />
         <AgGridColumn
-          headerName="Date"
+          headerName={t('Date')}
           field="createdAt"
           valueFormatter={({ value }: ValueFormatterParams) => {
             return getDateTimeFormat().format(new Date(value));

@@ -8,12 +8,13 @@ import type {
 
 export const generateFills = (override?: PartialDeep<Fills>): Fills => {
   const fills: Fills_party_tradesPaged_edges_node[] = [
-    generateFill(),
+    generateFill({
+      buyer: {
+        id: 'party-id',
+      },
+    }),
     generateFill({
       id: '1',
-      buyer: {
-        id: 'buyer-id',
-      },
       seller: {
         id: 'party-id',
       },
@@ -28,9 +29,6 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
     }),
     generateFill({
       id: '2',
-      buyer: {
-        id: 'buyer-id',
-      },
       seller: {
         id: 'party-id',
       },
@@ -41,6 +39,9 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
       aggressor: Side.Sell,
       market: {
         name: 'ETHBTC Quarterly (30 Jun 2022)',
+      },
+      buyer: {
+        id: 'party-id',
       },
     }),
   ];
@@ -85,7 +86,7 @@ export const generateFill = (
     aggressor: Side.Buy,
     buyer: {
       __typename: 'Party',
-      id: 'party-id',
+      id: 'buyer-id',
     },
     seller: {
       __typename: 'Party',
