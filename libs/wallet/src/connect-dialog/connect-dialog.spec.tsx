@@ -5,11 +5,11 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import type { VegaWalletContextShape } from './context';
-import { VegaWalletContext } from './context';
+import type { VegaWalletContextShape } from '../context';
+import { VegaWalletContext } from '../context';
 import { VegaConnectDialog } from './connect-dialog';
-import type { VegaConnectDialogProps } from '.';
-import { RestConnector } from './connectors';
+import type { VegaConnectDialogProps } from '..';
+import { RestConnector } from '../connectors';
 
 let defaultProps: VegaConnectDialogProps;
 let defaultContextValue: VegaWalletContextShape;
