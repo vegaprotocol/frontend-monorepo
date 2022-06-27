@@ -85,7 +85,7 @@ export class RestConnector implements VegaConnector {
     }
   }
 
-  async sendTx(body?: TransactionSubmission) {
+  async sendTx(body: TransactionSubmission) {
     try {
       const res = await this.service.commandSyncPost(body);
       return res;
@@ -95,7 +95,7 @@ export class RestConnector implements VegaConnector {
   }
 
   private handleSendTxError(err: unknown) {
-    const unpexpectedError = { error: 'Something went wrong' };
+    const unexpectedError = { error: 'Something went wrong' };
 
     if (isServiceError(err)) {
       if (err.code === 401) {
@@ -105,10 +105,10 @@ export class RestConnector implements VegaConnector {
       try {
         return JSON.parse(err.body ?? '');
       } catch {
-        return unpexpectedError;
+        return unexpectedError;
       }
     } else {
-      return unpexpectedError;
+      return unexpectedError;
     }
   }
 

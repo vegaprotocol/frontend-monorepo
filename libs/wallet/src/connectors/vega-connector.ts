@@ -24,6 +24,6 @@ export interface VegaConnector {
 
   /** Send a TX to the network. Only support order submission for now */
   sendTx: (
-    body?: TransactionSubmission
+    body: TransactionSubmission
   ) => Promise<TransactionResponse | ErrorResponse | null>;
 }

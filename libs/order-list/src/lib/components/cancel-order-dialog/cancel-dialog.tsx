@@ -19,8 +19,6 @@ export const CancelDialog = ({
   transaction,
   reset,
 }: CancelDialogProps) => {
-
-
   const getDialogIntent = () => {
     if (finalizedOrder) {
       if (finalizedOrder.status === OrderStatus.Cancelled) {
