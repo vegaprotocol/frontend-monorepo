@@ -8,7 +8,6 @@ import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
-import AutoSizer from 'react-virtualized-auto-sizer';
 
 const Portfolio = () => {
   const wrapperClasses = classNames(

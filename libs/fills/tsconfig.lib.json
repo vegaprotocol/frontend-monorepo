@@ -6,7 +6,7 @@
   },
   "files": [
     "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
-    "../../node_modules/@nrwl/react/typings/image.d.ts"
+    "../../node_modules/@nrwl/next/typings/image.d.ts"
   ],
   "exclude": [
     "**/*.spec.ts",
@@ -16,7 +16,11 @@
     "**/*.spec.js",
     "**/*.test.js",
     "**/*.spec.jsx",
-    "**/*.test.jsx"
+    "**/*.test.jsx",
+    "**/*.stories.ts",
+    "**/*.stories.js",
+    "**/*.stories.tsx",
+    "**/*.stories.jsx"
   ],
   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }
