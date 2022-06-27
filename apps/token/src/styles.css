@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply font-alpha text-h3 text-white uppercase mb-12;
+  }
+  h2 {
+    @apply text-h4 text-white mb-12;
+  }
+  p {
+    @apply text-body mb-12;
+  }
+}

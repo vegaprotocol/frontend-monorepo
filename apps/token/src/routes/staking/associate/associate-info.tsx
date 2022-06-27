@@ -13,7 +13,7 @@ export const AssociateInfo = ({ pubKey }: { pubKey: string | null }) => {
         {t('What Vega key is going to control your stake?')}
       </h2>
       <ConnectedVegaKey pubKey={pubKey} />
-      <h2 className="text-h4 text-white" data-testid="associate-amount-header">
+      <h2 data-testid="associate-amount-header">
         {t('How much would you like to associate?')}
       </h2>
     </>

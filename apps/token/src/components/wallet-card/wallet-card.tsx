@@ -42,9 +42,7 @@ interface WalletCardHeaderProps {
 }
 
 export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
-  return (
-    <div className="flex gap-4 justify-between items-center">{children}</div>
-  );
+  return <div className="grid grid-cols-[auto_1fr] gap-4">{children}</div>;
 };
 
 interface WalletCardContentProps {
@@ -147,14 +145,14 @@ export const WalletCardAsset = ({
       <div>
         <div className="flex font-medium">
           <h1
-            className={`text-h5 px-8 uppercase ${
+            className={`text-h5 mb-0 px-8 uppercase ${
               dark ? 'text-white' : 'text-black'
             }`}
           >
             {name}
           </h1>
           <h2
-            className={`text-h5 uppercase ${
+            className={`text-h5 mb-0 uppercase ${
               dark ? 'text-white-60' : 'text-black-60'
             }`}
           >

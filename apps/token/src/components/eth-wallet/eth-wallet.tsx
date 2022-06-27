@@ -192,9 +192,9 @@ export const EthWallet = () => {
   return (
     <WalletCard dark={true}>
       <WalletCardHeader>
-        <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
+        <h1 className="m-0">{t('ethereumKey')}</h1>
         {account && (
-          <div className="px-4 text-right">
+          <div className="place-self-end font-mono px-4 pb-2">
             <div className="font-mono">{truncateMiddle(account)}</div>
             {pendingTxs && (
               <div>

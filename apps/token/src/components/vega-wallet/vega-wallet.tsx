@@ -40,12 +40,12 @@ export const VegaWallet = () => {
     <section className="vega-wallet">
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
-          <div>
-            <h1 className="text-h3 uppercase">{t('vegaWallet')}</h1>
-            <span className="text-h6">{keypair && `(${keypair.name})`}</span>
+          <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
+          <div className="row-start-2 col-start-1 col-span-2 text-h6 mb-12">
+            {keypair && `(${keypair.name})`}
           </div>
           {keypair && (
-            <span className="font-mono px-8">
+            <span className="col-start-2 place-self-end font-mono pb-2 px-4">
               {truncateMiddle(keypair.pub)}
             </span>
           )}

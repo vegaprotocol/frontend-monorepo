@@ -45,7 +45,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
   return (
     <section>
       <h3 className="text-h4 text-white mb-8">{t('votes')}</h3>
-      <p className="mb-8">
+      <p>
         <span>
           <CurrentProposalStatus proposal={proposal} />
         </span>
@@ -90,7 +90,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
           </tr>
         </tbody>
       </table>
-      <p className="mb-8">
+      <p>
         {t('participation')}
         {': '}
         {participationMet ? (

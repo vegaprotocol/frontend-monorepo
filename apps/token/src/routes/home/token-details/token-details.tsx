@@ -42,13 +42,13 @@ export const TokenDetails = ({
   }
 
   return (
-    <KeyValueTable className={'token-details'}>
+    <KeyValueTable className={'token-details text-white'}>
       <KeyValueTableRow>
         {t('Token address').toUpperCase()}
         <Link
           data-testid="token-address"
           title={t('View on Etherscan (opens in a new tab)')}
-          className="font-mono"
+          className="font-mono text-white text-right"
           href={`${ETHERSCAN_URL}/address/${token.address}`}
         >
           {token.address}
@@ -59,7 +59,7 @@ export const TokenDetails = ({
         <Link
           data-testid="token-contract"
           title={t('View on Etherscan (opens in a new tab)')}
-          className="font-mono"
+          className="font-mono text-white text-right"
           href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
         >
           {config.token_vesting_contract.address}

@@ -74,7 +74,7 @@ const WithdrawPendingContainer = () => {
   return (
     <>
       <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
-      <p className="mb-8">{t('withdrawalsText')}</p>
+      <p>{t('withdrawalsText')}</p>
       <p className="mb-28">{t('withdrawalsPreparedWarningText')}</p>
       <ul role="list">
         {withdrawals.map((w) => (

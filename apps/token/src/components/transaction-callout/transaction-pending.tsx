@@ -38,12 +38,8 @@ export const TransactionPending = ({
   }, [heading, remainingConfirmations, t]);
   return (
     <Callout icon={<Loader size="small" />} title={title}>
-      {body && (
-        <p className="mb-8" data-testid="transaction-pending-body">
-          {body}
-        </p>
-      )}
-      <p className="mb-8">
+      {body && <p data-testid="transaction-pending-body">{body}</p>}
+      <p>
         <Link
           title={t('View transaction on Etherscan')}
           target="_blank"
