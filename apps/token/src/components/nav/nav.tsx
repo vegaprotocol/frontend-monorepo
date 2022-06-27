@@ -100,7 +100,7 @@ export const Nav = () => {
 
   return (
     <div
-      className={`p-16 ${
+      className={`px-16 py-8 ${
         inverted
           ? 'bg-clouds bg-no-repeat bg-cover bg-vega-yellow'
           : 'border-b-white border-b-1'
