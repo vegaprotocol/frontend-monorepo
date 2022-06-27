@@ -10,6 +10,7 @@ import type {
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
 } from './__generated__/OrderEvent';
+import { BusEventType } from '@vegaprotocol/types';
 
 const ORDER_EVENT_SUB = gql`
   subscription OrderEvent($partyId: ID!) {
@@ -55,7 +56,7 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
 
       // No types available for the subscription result
       const matchingOrderEvent = subscriptionData.data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Order') {
+        if (e.event.__typename !== BusEventType.Order) {
           return false;
         }
 
@@ -64,7 +65,7 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
 
       if (
         matchingOrderEvent &&
-        matchingOrderEvent.event.__typename === 'Order'
+        matchingOrderEvent.event.__typename === BusEventType.Order
       ) {
         setFinalizedOrder(matchingOrderEvent.event);
       }
