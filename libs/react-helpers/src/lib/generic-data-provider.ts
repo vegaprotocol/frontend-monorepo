@@ -1,5 +1,3 @@
-import { produce } from 'immer';
-import type { Draft } from 'immer';
 import type {
   ApolloClient,
   DocumentNode,
@@ -34,11 +32,7 @@ export interface Subscribe<Data, Delta> {
 type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
 export interface Update<Data, Delta> {
-  (
-    draft: Draft<Data>,
-    delta: Delta,
-    reload: (forceReset?: boolean) => void
-  ): void;
+  (data: Data, delta: Delta, reload: (forceReset?: boolean) => void): Data;
 }
 
 interface GetData<QueryData, Data> {
@@ -105,14 +99,12 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       data = getData(res.data);
       // if there was some updates received from subscription during initial query loading apply them on just received data
       if (data && updateQueue && updateQueue.length > 0) {
-        data = produce(data, (draft) => {
-          while (updateQueue.length) {
-            const delta = updateQueue.shift();
-            if (delta) {
-              update(draft, delta, reload);
-            }
+        while (updateQueue.length) {
+          const delta = updateQueue.shift();
+          if (delta) {
+            data = update(data, delta, reload);
           }
-        });
+        }
       }
     } catch (e) {
       // if error will occur data provider stops subscription
@@ -168,9 +160,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           if (loading || !data) {
             updateQueue.push(delta);
           } else {
-            const newData = produce(data, (draft) => {
-              update(draft, delta, reload);
-            });
+            const newData = update(data, delta, reload);
             if (newData === data) {
               return;
             }
