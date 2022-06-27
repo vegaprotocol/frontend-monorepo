@@ -11,7 +11,7 @@ const Template: Story<TooltipProps> = (args) => <Tooltip {...args} />;
 
 export const Uncontrolled = Template.bind({});
 Uncontrolled.args = {
-  children: <button>Click me!</button>,
+  children: <button>Hover on me!</button>,
   description: 'Tooltip content!',
 };
 

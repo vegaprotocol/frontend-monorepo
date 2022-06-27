@@ -40,8 +40,8 @@ const priceChangeClassNames = (value: number | bigint) =>
   value === 0
     ? 'text-black dark:text-white'
     : value > 0
-    ? `text-green-dark dark:text-green-vega `
-    : `text-red-dark dark:text-red-vega`;
+    ? `text-vega-green-dark dark:text-vega-green `
+    : `text-vega-red-dark dark:text-vega-red`;
 
 export const PriceCellChange = React.memo(
   ({ candles, decimalPlaces }: PriceChangeCellProps) => {

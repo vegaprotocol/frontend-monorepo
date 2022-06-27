@@ -37,6 +37,10 @@ export const DealTicketManager = ({
       return Intent.Danger;
     }
 
+    if (status === VegaTxStatus.Requested) {
+      return Intent.Warning;
+    }
+
     if (status === VegaTxStatus.Error) {
       return Intent.Danger;
     }
@@ -47,6 +51,8 @@ export const DealTicketManager = ({
   useEffect(() => {
     if (transaction.status !== VegaTxStatus.Default) {
       setOrderDialogOpen(true);
+    } else {
+      setOrderDialogOpen(false);
     }
   }, [transaction.status]);
 

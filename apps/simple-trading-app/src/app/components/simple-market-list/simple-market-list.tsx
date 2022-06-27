@@ -101,7 +101,7 @@ const SimpleMarketList = () => {
                 <div className="absolute right-16 top-1/2 -translate-y-1/2">
                   <Button
                     onClick={() => onClick(market.id)}
-                    variant="inline"
+                    variant="inline-link"
                     prependIconName="chevron-right"
                   />
                 </div>

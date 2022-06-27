@@ -88,8 +88,11 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
         <AgGridColumn
           headerName={t('Amount')}
           field="openVolume"
-          valueFormatter={({ value }: PositionsTableValueFormatterParams) =>
-            volumePrefix(value)
+          valueFormatter={({
+            value,
+            data,
+          }: PositionsTableValueFormatterParams) =>
+            volumePrefix(addDecimal(value, data.market.positionDecimalPlaces))
           }
         />
         <AgGridColumn

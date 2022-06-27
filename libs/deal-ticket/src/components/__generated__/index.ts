@@ -1,2 +1,2 @@
 export * from './DealTicketQuery';
-export * from './OrderEvent';
+export * from './MarketInfoQuery';

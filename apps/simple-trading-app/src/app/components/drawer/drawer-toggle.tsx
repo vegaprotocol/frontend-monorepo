@@ -35,7 +35,7 @@ export const DrawerToggle = ({
   }, [variant]);
 
   return (
-    <Button variant="inline" className={classes} onClick={onToggle}>
+    <Button variant="inline-link" className={classes} onClick={onToggle}>
       <Icon name={iconName as IconName} />
     </Button>
   );

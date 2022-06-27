@@ -11,9 +11,7 @@ export interface TextAreaProps
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ className, hasError, ...props }, ref) => {
-    const classes = classNames(defaultFormElement, className, {
-      'border-vega-pink dark:border-vega-pink': hasError,
-    });
+    const classes = classNames(defaultFormElement(hasError), className);
     return <textarea {...props} ref={ref} className={classes} />;
   }
 );

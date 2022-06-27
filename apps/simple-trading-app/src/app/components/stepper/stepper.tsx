@@ -70,7 +70,7 @@ export default ({ steps }: StepperProps) => {
                     {index === steps.length - 1 ? 'Finish' : 'Continue'}
                   </Button>
                   <Button
-                    variant="inline"
+                    variant="inline-link"
                     disabled={index === 0}
                     onClick={handleBack}
                   >

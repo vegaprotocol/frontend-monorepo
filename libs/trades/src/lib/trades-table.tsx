@@ -4,6 +4,7 @@ import { forwardRef, useMemo } from 'react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { TradeFields } from './__generated__/TradeFields';
 import {
+  addDecimal,
   addDecimalsFormatNumber,
   getDateTimeFormat,
   t,
@@ -13,7 +14,7 @@ import BigNumber from 'bignumber.js';
 import { sortTrades } from './trades-data-provider';
 
 export const UP_CLASS = 'text-vega-green';
-export const DOWN_CLASS = 'text-vega-pink';
+export const DOWN_CLASS = 'text-vega-red';
 
 const changeCellClass =
   (dataKey: string) =>
@@ -73,6 +74,9 @@ export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
         <AgGridColumn
           headerName={t('Size')}
           field="size"
+          valueFormatter={({ value, data }: ValueFormatterParams) => {
+            return addDecimal(value, data.market.positionDecimalPlaces);
+          }}
           cellClass={changeCellClass('size')}
         />
         <AgGridColumn

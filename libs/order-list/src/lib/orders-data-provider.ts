@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type { OrderFields } from './__generated__/OrderFields';
@@ -13,6 +14,7 @@ const ORDER_FRAGMENT = gql`
       id
       name
       decimalPlaces
+      positionDecimalPlaces
       tradableInstrument {
         instrument {
           code
@@ -77,19 +79,20 @@ export const prepareIncomingOrders = (delta: OrderFields[]) => {
   return incoming;
 };
 
-const update = (draft: OrderFields[], delta: OrderFields[]) => {
-  const incoming = prepareIncomingOrders(delta);
+const update = (data: OrderFields[], delta: OrderFields[]) =>
+  produce(data, (draft) => {
+    const incoming = prepareIncomingOrders(delta);
 
-  // Add or update incoming orders
-  incoming.forEach((order) => {
-    const index = draft.findIndex((o) => o.id === order.id);
-    if (index === -1) {
-      draft.unshift(order);
-    } else {
-      draft[index] = order;
-    }
+    // Add or update incoming orders
+    incoming.forEach((order) => {
+      const index = draft.findIndex((o) => o.id === order.id);
+      if (index === -1) {
+        draft.unshift(order);
+      } else {
+        draft[index] = order;
+      }
+    });
   });
-};
 
 const getData = (responseData: Orders): Orders_party_orders[] | null =>
   responseData?.party?.orders || null;
