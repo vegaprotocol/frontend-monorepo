@@ -12,12 +12,11 @@ export const ThemeSwitcher = ({
   sunClassName?: string;
   moonClassName?: string;
 }) => {
-  const sunClasses = classNames('dark:hidden text-black', {
-    [sunClassName]: sunClassName,
-  });
-  const moonClasses = classNames('hidden dark:inline text-white', {
-    [moonClassName]: moonClassName,
-  });
+  const sunClasses = classNames('dark:hidden text-black', sunClassName);
+  const moonClasses = classNames(
+    'hidden dark:inline text-white',
+    moonClassName
+  );
 
   return (
     <button type="button" onClick={() => onToggle()} className={className}>
