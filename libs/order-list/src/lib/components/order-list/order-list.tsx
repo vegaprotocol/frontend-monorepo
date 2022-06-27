@@ -21,10 +21,6 @@ import BigNumber from 'bignumber.js';
 interface OrderListProps {
   data: Orders_party_orders[] | null;
 }
-interface OrderListTableProps {
-  data: Orders_party_orders[] | null;
-  cancel: (body?: unknown) => Promise<unknown>;
-}
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data }, ref) => {
@@ -44,6 +40,11 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     );
   }
 );
+
+interface OrderListTableProps {
+  data: Orders_party_orders[] | null;
+  cancel: (body?: unknown) => Promise<unknown>;
+}
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
   ({ data, cancel }, ref) => {

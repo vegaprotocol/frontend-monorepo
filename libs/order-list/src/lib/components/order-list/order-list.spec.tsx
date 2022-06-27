@@ -4,76 +4,13 @@ import {
   getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
 import type { Orders_party_orders } from '../__generated__/Orders';
-import {
-  OrderStatus,
-  OrderTimeInForce,
-  OrderType,
-  Side,
-  OrderRejectionReason,
-} from '@vegaprotocol/types';
+import { OrderStatus, OrderRejectionReason } from '@vegaprotocol/types';
 import { OrderList } from './order-list';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
-
-const marketOrder: Orders_party_orders = {
-  __typename: 'Order',
-  id: 'order-id-market',
-  market: {
-    __typename: 'Market',
-    id: 'market-id',
-    name: 'market-name',
-    decimalPlaces: 2,
-    tradableInstrument: {
-      __typename: 'TradableInstrument',
-      instrument: {
-        __typename: 'Instrument',
-        code: 'instrument-code',
-      },
-    },
-  },
-  size: '10',
-  type: OrderType.Market,
-  status: OrderStatus.Active,
-  side: Side.Buy,
-  remaining: '5',
-  price: '',
-  timeInForce: OrderTimeInForce.IOC,
-  createdAt: new Date('2022-2-3').toISOString(),
-  updatedAt: null,
-  expiresAt: null,
-  rejectionReason: null,
-};
-
-const limitOrder: Orders_party_orders = {
-  __typename: 'Order',
-  id: 'order-id-limit',
-  market: {
-    __typename: 'Market',
-    id: 'market-id',
-    name: 'market-name',
-    decimalPlaces: 2,
-    tradableInstrument: {
-      __typename: 'TradableInstrument',
-      instrument: {
-        __typename: 'Instrument',
-        code: 'instrument-code',
-      },
-    },
-  },
-  size: '10',
-  type: OrderType.Limit,
-  status: OrderStatus.Active,
-  side: Side.Sell,
-  remaining: '5',
-  price: '12345',
-  timeInForce: OrderTimeInForce.GTT,
-  createdAt: new Date('2022-3-3').toISOString(),
-  expiresAt: new Date('2022-3-5').toISOString(),
-  updatedAt: null,
-  rejectionReason: null,
-};
+import { limitOrder, marketOrder } from '../mocks/generate-orders';
 
 const generateJsx = (
   orders: Orders_party_orders[] | null,
@@ -89,14 +26,14 @@ const generateJsx = (
 };
 
 describe('OrderList', () => {
-  it('No orders message shown', async () => {
+  it('should show no orders message', async () => {
     await act(async () => {
       render(generateJsx([]));
     });
     expect(screen.getByText('No orders')).toBeInTheDocument();
   });
 
-  it('Correct columns are rendered', async () => {
+  it('should render correct columns', async () => {
     await act(async () => {
       render(generateJsx([marketOrder, limitOrder]));
     });
@@ -117,7 +54,7 @@ describe('OrderList', () => {
     ]);
   });
 
-  it('Correct formatting applied for market order', async () => {
+  it('should apply correct formatting for market order', async () => {
     await act(async () => {
       render(generateJsx([marketOrder]));
     });
@@ -125,7 +62,7 @@ describe('OrderList', () => {
     const cells = screen.getAllByRole('gridcell');
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
-      '+10',
+      '+0.10',
       marketOrder.type || '',
       marketOrder.status,
       '5',
@@ -140,7 +77,7 @@ describe('OrderList', () => {
     );
   });
 
-  it('Correct formatting applied for GTT limit order', async () => {
+  it('should apply correct formatting applied for GTT limit order', async () => {
     await act(async () => {
       render(generateJsx([limitOrder]));
     });
@@ -148,7 +85,7 @@ describe('OrderList', () => {
 
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
-      '-10',
+      '+0.10',
       limitOrder.type || '',
       limitOrder.status,
       '5',
@@ -169,7 +106,7 @@ describe('OrderList', () => {
     );
   });
 
-  it('Correct formatting applied for a rejected order', async () => {
+  it('should apply correct formatting for a rejected order', async () => {
     const rejectedOrder = {
       ...marketOrder,
       status: OrderStatus.Rejected,
