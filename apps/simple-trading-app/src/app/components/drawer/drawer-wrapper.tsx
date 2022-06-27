@@ -8,9 +8,6 @@ interface Props {
 }
 
 export const DrawerWrapper = ({ children, className = '' }: Props) => {
-  const classes = classNames('flex dark:bg-black md:flex-row', {
-    [className]: className,
-  });
-
+  const classes = classNames('flex dark:bg-black md:flex-row', className);
   return <div className={classes}>{children}</div>;
 };

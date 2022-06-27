@@ -22,9 +22,7 @@ export const DrawerToggle = ({
   className = '',
 }: Props) => {
   const [iconName, setIconName] = useState(IconNames.MENU);
-  const classes = classNames('md:hidden', {
-    [className]: className,
-  });
+  const classes = classNames('md:hidden', className);
 
   useEffect(() => {
     if (variant === DRAWER_TOGGLE_VARIANTS.OPEN) {
