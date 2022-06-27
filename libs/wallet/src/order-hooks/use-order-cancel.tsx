@@ -66,7 +66,6 @@ export const useOrderCancel = () => {
         return res;
       } catch (e) {
         Sentry.captureException(e);
-        return;
       }
     },
     [keypair, send]
