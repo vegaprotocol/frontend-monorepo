@@ -4,7 +4,6 @@ import { FillsTable } from './fills-table';
 import { fillsDataProvider } from './fills-data-provider';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { FillFields } from './__generated__/FillFields';
 import type { FillsVariables } from './__generated__/Fills';
 
 interface FillsManagerProps {
@@ -30,11 +29,11 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   );
 
   const fills = useMemo(() => {
-    if (data?.length) {
+    if (!data?.length) {
       return [];
     }
 
-    return data as FillFields[];
+    return data;
   }, [data]);
 
   return (
