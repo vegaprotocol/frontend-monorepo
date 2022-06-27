@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import type { VegaKeyExtended, VegaWalletContextShape } from '../context';
 import { VegaWalletContext } from '../context';
 import { VegaTxStatus } from '../use-vega-transaction';
-import type { Order } from '../vega-transaction-dialog';
+import type { Order } from '../vega-order-transaction-dialog';
 import { useOrderCancel } from './use-order-cancel';
 
 const defaultMarket = {

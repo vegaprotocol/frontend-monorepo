@@ -29,7 +29,7 @@ interface OrderDialogProps {
   title?: string;
 }
 
-export const VegaTransactionDialog = ({
+export const VegaOrderTransactionDialog = ({
   transaction,
   finalizedOrder,
   title = 'Order placed',

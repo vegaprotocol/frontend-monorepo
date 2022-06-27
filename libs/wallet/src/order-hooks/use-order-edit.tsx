@@ -10,9 +10,8 @@ import type {
   OrderEvent_busEvents_event_Order,
 } from './__generated__/OrderEvent';
 import { ORDER_EVENT_SUB } from './order-event-query';
-import * as Sentry from '@sentry/react';
 
-export const useOrderCancel = () => {
+export const useOrderEdit = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [finalizedOrder, setFinalizedOrder] =
@@ -42,7 +41,7 @@ export const useOrderCancel = () => {
     }
   }, [finalizedOrder, resetTransaction]);
 
-  const cancel = useCallback(
+  const edit = useCallback(
     async (order) => {
       if (!keypair) {
         return;
@@ -50,24 +49,19 @@ export const useOrderCancel = () => {
 
       setFinalizedOrder(null);
 
-      try {
-        const res = await send({
-          pubKey: keypair.pub,
-          propagate: true,
-          orderCancellation: {
-            orderId: order.id,
-            marketId: order.market.id,
-          },
-        });
+      const res = await send({
+        pubKey: keypair.pub,
+        propagate: true,
+        orderCancellation: {
+          orderId: order.id,
+          marketId: order.market.id,
+        },
+      });
 
-        if (res?.signature) {
-          setId(determineId(res.signature));
-        }
-        return res;
-      } catch (e) {
-        Sentry.captureException(e);
-        return;
+      if (res?.signature) {
+        setId(determineId(res.signature));
       }
+      return res;
     },
     [keypair, send]
   );
@@ -79,10 +73,10 @@ export const useOrderCancel = () => {
   }, [resetTransaction]);
 
   return {
-    transaction,
-    finalizedOrder,
+    transactionEdit: transaction,
+    finalizedEditOrder: finalizedOrder,
     id,
-    cancel,
-    reset,
+    edit,
+    resetEdit: reset,
   };
 };

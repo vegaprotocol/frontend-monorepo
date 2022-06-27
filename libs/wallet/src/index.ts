@@ -6,7 +6,7 @@ export * from './types';
 export * from './use-vega-transaction';
 export * from './use-eager-connect';
 export * from './manage-dialog';
-export * from './vega-transaction-dialog';
+export * from './vega-order-transaction-dialog';
 export * from './provider';
 export * from './order-hooks';
 export * from './connect-dialog';

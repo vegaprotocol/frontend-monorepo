@@ -2,10 +2,10 @@ import { render, screen } from '@testing-library/react';
 import { OrderStatus, OrderType } from '@vegaprotocol/types';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
-import type { Order } from './vega-transaction-dialog';
-import { VegaTransactionDialog } from './vega-transaction-dialog';
+import type { Order } from './vega-order-transaction-dialog';
+import { VegaOrderTransactionDialog } from './vega-order-transaction-dialog';
 
-describe('VegaTransactionDialog', () => {
+describe('VegaOrderTransactionDialog', () => {
   it('should render when an order is successful', () => {
     const transaction: VegaTxState = {
       status: VegaTxStatus.Default,
@@ -22,7 +22,7 @@ describe('VegaTransactionDialog', () => {
       type: OrderType.Limit,
     };
     render(
-      <VegaTransactionDialog
+      <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
       />
@@ -48,7 +48,7 @@ describe('VegaTransactionDialog', () => {
       type: OrderType.Limit,
     };
     render(
-      <VegaTransactionDialog
+      <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
       />
@@ -74,7 +74,7 @@ describe('VegaTransactionDialog', () => {
       type: OrderType.Limit,
     };
     render(
-      <VegaTransactionDialog
+      <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
       />
@@ -100,7 +100,7 @@ describe('VegaTransactionDialog', () => {
       type: OrderType.Limit,
     };
     render(
-      <VegaTransactionDialog
+      <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
       />
@@ -118,7 +118,10 @@ describe('VegaTransactionDialog', () => {
       signature: null,
     };
     render(
-      <VegaTransactionDialog finalizedOrder={null} transaction={transaction} />
+      <VegaOrderTransactionDialog
+        finalizedOrder={null}
+        transaction={transaction}
+      />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
       'Order rejected by wallet'

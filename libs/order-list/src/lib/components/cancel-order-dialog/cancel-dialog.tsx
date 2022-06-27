@@ -1,7 +1,7 @@
 import { OrderStatus } from '@vegaprotocol/types';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import type { Order, VegaTxState } from '@vegaprotocol/wallet';
-import { VegaTxStatus, VegaTransactionDialog } from '@vegaprotocol/wallet';
+import { VegaTxStatus, VegaOrderTransactionDialog } from '@vegaprotocol/wallet';
 import { useEffect } from 'react';
 
 interface CancelDialogProps {
@@ -19,11 +19,7 @@ export const CancelDialog = ({
   transaction,
   reset,
 }: CancelDialogProps) => {
-  useEffect(() => {
-    if (transaction.status !== VegaTxStatus.Default) {
-      setOrderDialogOpen(true);
-    }
-  }, [setOrderDialogOpen, transaction.status]);
+
 
   const getDialogIntent = () => {
     if (finalizedOrder) {
@@ -35,6 +31,14 @@ export const CancelDialog = ({
     }
     return Intent.None;
   };
+
+  useEffect(() => {
+    if (transaction.status !== VegaTxStatus.Default || finalizedOrder) {
+      setOrderDialogOpen(true);
+    } else {
+      setOrderDialogOpen(false);
+    }
+  }, [finalizedOrder, setOrderDialogOpen, transaction.status]);
 
   return (
     <Dialog
@@ -49,7 +53,7 @@ export const CancelDialog = ({
       }}
       intent={getDialogIntent()}
     >
-      <VegaTransactionDialog
+      <VegaOrderTransactionDialog
         transaction={transaction}
         finalizedOrder={finalizedOrder}
         title={
