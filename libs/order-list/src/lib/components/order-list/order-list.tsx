@@ -32,7 +32,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
     return (
       <>
-        <OrderListTable data={data} cancel={cancel} />
+        <OrderListTable data={data} cancel={cancel} ref={ref} />
         <CancelDialog
           {...{
             orderDialogOpen,
@@ -157,7 +157,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
           }}
         />
-        <AgGridColumn cellRenderer={CancelRendererButton} />
+        <AgGridColumn field="cancel" cellRenderer={CancelRendererButton} />
       </AgGrid>
     );
   }
