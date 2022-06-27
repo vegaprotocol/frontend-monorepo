@@ -7,7 +7,6 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useTranslation } from 'react-i18next';
 import { Link, NavLink } from 'react-router-dom';
 import vegaWhite from '../../images/vega_white.png';
-import fish from '../../images/fish.svg';
 
 import { Flags } from '../../config';
 import {
