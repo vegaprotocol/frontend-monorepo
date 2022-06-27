@@ -11,7 +11,6 @@ import type {
 } from './__generated__/OrderEvent';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import * as Sentry from '@sentry/react';
-import { BusEventType } from '@vegaprotocol/types';
 
 export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
@@ -31,10 +30,7 @@ export const useOrderCancel = () => {
       // No types available for the subscription result
       const matchingOrderEvent = subscriptionData.data.busEvents[0].event;
 
-      if (
-        matchingOrderEvent &&
-        matchingOrderEvent.__typename === BusEventType.Order
-      ) {
+      if (matchingOrderEvent && matchingOrderEvent.__typename === 'Order') {
         setFinalizedOrder(matchingOrderEvent);
       }
     },
