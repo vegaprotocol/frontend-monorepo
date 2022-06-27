@@ -176,7 +176,10 @@ export const Orderbook = ({
         // adjust to current rows position
         scrollTop +=
           (scrollTopRef.current % rowHeight) - (scrollTop % rowHeight);
-        const priceCenterScrollOffset = Math.max(0, Math.min(scrollTop));
+        const priceCenterScrollOffset = Math.max(
+          0,
+          Math.min(scrollTop, numberOfRows * rowHeight - viewportHeight)
+        );
         if (scrollTopRef.current !== priceCenterScrollOffset) {
           updateScrollOffset(priceCenterScrollOffset);
           scrollTopRef.current = priceCenterScrollOffset;
@@ -184,7 +187,13 @@ export const Orderbook = ({
         }
       }
     },
-    [maxPriceLevel, resolution, viewportHeight, updateScrollOffset]
+    [
+      maxPriceLevel,
+      resolution,
+      viewportHeight,
+      numberOfRows,
+      updateScrollOffset,
+    ]
   );
 
   useEffect(() => {
@@ -199,23 +208,36 @@ export const Orderbook = ({
       return;
     }
     priceInCenter.current = undefined;
-    setLockOnMidPrice(true);
-    scrollToPrice(
-      getPriceLevel(
-        BigInt(bestStaticOfferPrice) +
-          (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) /
-            BigInt(2),
-        resolution
-      )
+    let midPrice = getPriceLevel(
+      BigInt(bestStaticOfferPrice) +
+        (BigInt(bestStaticBidPrice) - BigInt(bestStaticOfferPrice)) / BigInt(2),
+      resolution
     );
-  }, [bestStaticOfferPrice, bestStaticBidPrice, scrollToPrice, resolution]);
+    if (BigInt(midPrice) > BigInt(maxPriceLevel)) {
+      midPrice = maxPriceLevel;
+    } else {
+      const minPriceLevel =
+        BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution));
+      if (BigInt(midPrice) < minPriceLevel) {
+        midPrice = minPriceLevel.toString();
+      }
+    }
+    scrollToPrice(midPrice);
+    setLockOnMidPrice(true);
+  }, [
+    bestStaticOfferPrice,
+    bestStaticBidPrice,
+    scrollToPrice,
+    resolution,
+    maxPriceLevel,
+    numberOfRows,
+  ]);
 
   // adjust scroll position to keep selected price in center
   useLayoutEffect(() => {
     if (resolutionRef.current !== resolution) {
       priceInCenter.current = undefined;
       resolutionRef.current = resolution;
-      setLockOnMidPrice(true);
     }
     if (priceInCenter.current) {
       scrollToPrice(priceInCenter.current);
@@ -238,21 +260,19 @@ export const Orderbook = ({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const renderedRows = useMemo(() => {
-    let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
-    const prependingBufferSize = Math.min(bufferSize, offset);
-    offset -= prependingBufferSize;
-    const viewportSize = Math.round(viewportHeight / rowHeight);
-    const limit = Math.min(
-      prependingBufferSize + viewportSize + bufferSize,
-      numberOfRows - offset
-    );
-    return {
-      offset,
-      limit,
-      data: getRowsToRender(rows, resolution, offset, limit),
-    };
-  }, [rows, scrollOffset, resolution, viewportHeight, numberOfRows]);
+  let offset = Math.max(0, Math.round(scrollOffset / rowHeight));
+  const prependingBufferSize = Math.min(bufferSize, offset);
+  offset -= prependingBufferSize;
+  const viewportSize = Math.round(viewportHeight / rowHeight);
+  const limit = Math.min(
+    prependingBufferSize + viewportSize + bufferSize,
+    numberOfRows - offset
+  );
+  const renderedRows = {
+    offset,
+    limit,
+    data: getRowsToRender(rows, resolution, offset, limit),
+  };
 
   const paddingTop = renderedRows.offset * rowHeight;
   const paddingBottom =
