@@ -5,6 +5,7 @@ import { fillsDataProvider } from './fills-data-provider';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FillFields } from './__generated__/FillFields';
+import type { FillsVariables } from './__generated__/Fills';
 
 interface FillsManagerProps {
   partyId: string;
@@ -12,7 +13,15 @@ interface FillsManagerProps {
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const variables = useMemo(() => ({ partyId }), [partyId]);
+  const variables = useMemo<FillsVariables>(
+    () => ({
+      partyId,
+      pagination: {
+        last: 300,
+      },
+    }),
+    [partyId]
+  );
   const update = useCallback(() => false, []);
   const { data, loading, error } = useDataProvider(
     fillsDataProvider,

@@ -14,7 +14,6 @@ describe('portfolio', () => {
     it('renders fills', () => {
       cy.getByTestId('Positions').click();
       cy.getByTestId('tab-positions').contains('Please connect Vega wallet');
-      cy.pause();
     });
   });
 });
