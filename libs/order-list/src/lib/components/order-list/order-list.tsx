@@ -34,13 +34,11 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
       <>
         <OrderListTable data={data} cancel={cancel} ref={ref} />
         <CancelDialog
-          {...{
-            orderDialogOpen,
-            setOrderDialogOpen,
-            finalizedOrder,
-            transaction,
-            reset,
-          }}
+          orderDialogOpen={orderDialogOpen}
+          setOrderDialogOpen={setOrderDialogOpen}
+          finalizedOrder={finalizedOrder}
+          transaction={transaction}
+          reset={reset}
         />
       </>
     );
@@ -49,30 +47,6 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
   ({ data, cancel }, ref) => {
-    const CancelRendererButton = ({ data }: ICellRendererParams) => {
-      if (
-        ![
-          OrderStatus.Cancelled,
-          OrderStatus.Rejected,
-          OrderStatus.Expired,
-          OrderStatus.Filled,
-          OrderStatus.Stopped,
-        ].includes(data.status)
-      ) {
-        return (
-          <Button
-            data-testid="cancel"
-            onClick={async () => {
-              await cancel(data);
-            }}
-          >
-            Cancel
-          </Button>
-        );
-      }
-      return null;
-    };
-
     return (
       <AgGrid
         ref={ref}
@@ -84,16 +58,18 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         rowHeight={40}
       >
         <AgGridColumn
-          headerName="Market"
+          headerName={t('Market')}
           field="market.tradableInstrument.instrument.code"
         />
         <AgGridColumn
-          headerName="Amount"
+          headerName={t('Amount')}
           field="size"
           cellClass="font-mono"
           valueFormatter={({ value, data }: ValueFormatterParams) => {
             const prefix = data.side === Side.Buy ? '+' : '-';
-            return prefix + value;
+            return (
+              prefix + addDecimal(value, data.market.positionDecimalPlaces)
+            );
           }}
         />
         <AgGridColumn field="type" />
@@ -157,7 +133,32 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
           }}
         />
-        <AgGridColumn field="cancel" cellRenderer={CancelRendererButton} />
+        <AgGridColumn
+          field="cancel"
+          cellRenderer={({ data }: ICellRendererParams) => {
+            if (
+              ![
+                OrderStatus.Cancelled,
+                OrderStatus.Rejected,
+                OrderStatus.Expired,
+                OrderStatus.Filled,
+                OrderStatus.Stopped,
+              ].includes(data.status)
+            ) {
+              return (
+                <Button
+                  data-testid="cancel"
+                  onClick={async () => {
+                    await cancel(data);
+                  }}
+                >
+                  Cancel
+                </Button>
+              );
+            }
+            return null;
+          }}
+        />
       </AgGrid>
     );
   }
