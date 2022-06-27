@@ -30,7 +30,7 @@ export const getIntentBorder = (intent = Intent.None) => {
 
 export const getIntentTextAndBackground = (intent = Intent.None) => {
   return {
-    'bg-black text-white dark:bg-white text-black': intent === Intent.None,
+    'bg-black text-white dark:bg-white dark:text-black': intent === Intent.None,
     'bg-vega-pink text-black dark:bg-vega-yellow dark:text-black-normal':
       intent === Intent.Primary,
     'bg-danger text-white': intent === Intent.Danger,
