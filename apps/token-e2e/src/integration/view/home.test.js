@@ -1,6 +1,6 @@
 import navigation from '../../locators/navigation.locators';
 import home from '../../locators/home.locators';
-import vegaToken from '../../data/vegaToken.json';
+import vegaToken from '../../fixtures/vegaToken.json';
 
 context('Home Page - verify elements on page', function () {
   before('visit token home page', function () {

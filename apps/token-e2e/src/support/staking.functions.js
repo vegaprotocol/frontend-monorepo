@@ -3,7 +3,7 @@ import staking from '../locators/staking.locators';
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'stakingValidatorPage_check_stakeNextEpochValue',
+  'staking_validator_page_check_stakeNextEpochValue',
   function (expectedVal) {
     cy.get(staking.stakeNextEpochValue, { timeout: 10000 }).contains(
       expectedVal,
@@ -28,7 +28,7 @@ Cypress.Commands.add(
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'staking_addStake',
+  'staking_validator_page_addStake',
   function (stake) {
     cy.get(staking.addStakeRadioButton).click({ force: true });
     cy.get(staking.tokenAmountInput).type(stake);
@@ -39,7 +39,7 @@ Cypress.Commands.add(
       .and('be.visible')
       .click();
     cy.contains(
-      'At the beginning of the next epoch your $VEGA will be nominated to the validator'
+      'At the beginning of the next epoch your $VEGA will be nominated to the validator', {timeout: 20000}
     );
   }
 );
@@ -47,16 +47,16 @@ Cypress.Commands.add(
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'staking_removeStake',
+  'staking_validator_page_removeStake',
   function (stake) {
     cy.get(staking.removeStakeRadioButton).click({ force: true });
       cy.get(staking.tokenAmountInput).type(stake);
       cy.contains('Waiting for next epoch to start', { timeout: 10000 });
       cy.get(staking.tokenInputSubmit)
         .should('be.enabled', { timeout: 8000 })
-        .and('contain', 'Remove 0.1 $VEGA tokens')
+        .and('contain', 'Remove 1 $VEGA tokens at the end of epoch')
         .and('be.visible')
         .click();
-      cy.contains(`0.1 $VEGA has been removed from validator`).should('be.visible');
+      cy.contains(`${stake} $VEGA has been removed from validator`).should('be.visible');
   }
 );
