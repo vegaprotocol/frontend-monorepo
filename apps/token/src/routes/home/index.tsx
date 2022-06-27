@@ -155,5 +155,5 @@ const Home = ({ name }: RouteChildProps) => {
 export default Home;
 
 export const HomeSection = ({ children }: { children: React.ReactNode }) => {
-  return <section className="mb-24">{children}</section>;
+  return <section className="mb-28">{children}</section>;
 };

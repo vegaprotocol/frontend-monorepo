@@ -7,9 +7,9 @@
     @apply font-alpha text-h3 text-white uppercase mb-12;
   }
   h2 {
-    @apply text-h4 text-white mb-12;
+    @apply text-h4 text-white mb-8;
   }
   p {
-    @apply text-body mb-12;
+    @apply mb-12;
   }
 }
