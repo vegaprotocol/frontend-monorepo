@@ -29,10 +29,14 @@ interface WalletCardProps {
 }
 
 export const WalletCard = ({ dark, children }: WalletCardProps) => {
-  const className = classNames('text-ui border border-white', 'p-8', {
-    'bg-black text-white': dark,
-    'bg-white text-black': !dark,
-  });
+  const className = classNames(
+    'text-ui border border-white',
+    'pt-4 pl-8 pr-12 pb-12',
+    {
+      'bg-black text-white': dark,
+      'bg-white text-black': !dark,
+    }
+  );
   return <div className={className}>{children}</div>;
 };
 
