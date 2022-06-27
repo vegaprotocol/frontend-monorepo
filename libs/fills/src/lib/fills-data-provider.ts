@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import produce from 'immer';
 import type { FillFields } from './__generated__/FillFields';
 import type {
   Fills,
@@ -87,15 +88,17 @@ export const FILLS_SUB = gql`
   }
 `;
 
-const update = (draft: FillFields[], delta: FillFields[]) => {
+const update = (data: FillFields[], delta: FillFields[]) => {
   // Add or update incoming trades
-  delta.forEach((trade) => {
-    const index = draft.findIndex((t) => t.id === trade.id);
-    if (index === -1) {
-      draft.unshift(trade);
-    } else {
-      draft[index] = trade;
-    }
+  return produce(data, (draft) => {
+    delta.forEach((trade) => {
+      const index = draft.findIndex((t) => t.id === trade.id);
+      if (index === -1) {
+        draft.unshift(trade);
+      } else {
+        draft[index] = trade;
+      }
+    });
   });
 };
 
