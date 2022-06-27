@@ -25,6 +25,7 @@ context('Staking Tab - with vega wallet connected', function () {
 
     beforeEach('drill into a specific validator', function () {
         cy.vega_wallet_teardown();
+        // cy.vega_wallet_teardown_ui();
         cy.get(navigation.staking).first().click();
         cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
         cy.get(staking.validatorNames).contains(this.validatorName).click();
@@ -33,66 +34,66 @@ context('Staking Tab - with vega wallet connected', function () {
 
     it('Able to associate tokens for first time - requires approval', function () {
       cy.ethereum_wallet_approveAndAssociateTokens('2');
-      cy.vega_wallet_check_associatedValue_is('2.0');
+      cy.vega_wallet_check_associatedValue_is('2.000000000000000000');
     })
     
     it('Able to associate tokens - having previously approved', function () {
       cy.ethereum_wallet_associateTokens('2');
-      cy.vega_wallet_check_associatedValue_is('2.0');
+      cy.vega_wallet_check_associatedValue_is('2.000000000000000000');
     })
 
     it('Able to disassociate all tokens', function () {
       cy.ethereum_wallet_associateTokens('2');
-      cy.vega_wallet_check_associatedValue_is('2.0');
+      cy.vega_wallet_check_associatedValue_is('2.000000000000000000');
 
       cy.ethereum_wallet_disassociateAllTokens();
-      cy.vega_wallet_check_associatedValue_is('0.0');
+      cy.vega_wallet_check_associatedValue_is('0.000000000000000000');
     })
 
     it('Able to stake against a validator', function () {
       cy.ethereum_wallet_associateTokens('3');
-      cy.vega_wallet_check_unstakedValue_is('3.0');
+      cy.vega_wallet_check_unstakedValue_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
       cy.get(staking.validatorNames).contains(this.validatorName).click();
 
       cy.staking_validator_page_addStake('2');
-      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '2.0');
-      cy.vega_wallet_check_unstakedValue_is('1.0');
+      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '2.000000000000000000');
+      cy.vega_wallet_check_unstakedValue_is('1.000000000000000000');
     });
 
     it('Able to remove stake against a validator', function () {
       cy.ethereum_wallet_associateTokens('3');
-      cy.vega_wallet_check_unstakedValue_is('3.0');
+      cy.vega_wallet_check_unstakedValue_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
       cy.get(staking.validatorNames).contains(this.validatorName).click();
 
       cy.staking_validator_page_addStake('1');
       cy.staking_validator_page_check_stakeNextEpochValue('1.0');
-      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '1.0');
-      cy.vega_wallet_check_unstakedValue_is('2.0');
+      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '1.000000000000000000');
+      cy.vega_wallet_check_unstakedValue_is('2.000000000000000000');
 
       cy.get(navigation.staking).first().click();
       cy.get(staking.validatorNames).contains(this.validatorName).click();
       
       cy.staking_validator_page_removeStake('1');
       cy.staking_validator_page_check_stakeNextEpochValue('0.0');
-      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '0.0');
-      cy.vega_wallet_check_unstakedValue_is('3.0');
+      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '0.000000000000000000');
+      cy.vega_wallet_check_unstakedValue_is('3.000000000000000000');
     });
 
     it('Unable to remove a stake with a negative value for a validator', function () {
       cy.ethereum_wallet_associateTokens('3');
-      cy.vega_wallet_check_unstakedValue_is('3.0');
+      cy.vega_wallet_check_unstakedValue_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
       cy.get(staking.validatorNames).contains(this.validatorName).click();
       
       cy.staking_validator_page_addStake('2');
       cy.staking_validator_page_check_stakeNextEpochValue('2.0');
-      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '2.0');
-      cy.vega_wallet_check_unstakedValue_is('1.0');
+      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '2.000000000000000000');
+      cy.vega_wallet_check_unstakedValue_is('1.000000000000000000');
       
       cy.get(navigation.staking).first().click();
       cy.get(staking.validatorNames).contains(this.validatorName).click();
@@ -107,15 +108,15 @@ context('Staking Tab - with vega wallet connected', function () {
 
     it('Unable to remove a stake greater than staked amount next epoch for a validator', function () {
       cy.ethereum_wallet_associateTokens('3');
-      cy.vega_wallet_check_unstakedValue_is('3.0');
+      cy.vega_wallet_check_unstakedValue_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
       cy.get(staking.validatorNames).contains(this.validatorName).click();
 
       cy.staking_validator_page_addStake('2');
       cy.staking_validator_page_check_stakeNextEpochValue('2.0');
-      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '2.0');
-      cy.vega_wallet_check_unstakedValue_is('1.0');
+      cy.vega_wallet_check_validator_stakeNextEpochValue_is(this.validatorName, '2.000000000000000000');
+      cy.vega_wallet_check_unstakedValue_is('1.000000000000000000');
 
       cy.get(navigation.staking).first().click();
       cy.get(staking.validatorNames).contains(this.validatorName).click();

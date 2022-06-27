@@ -11,14 +11,13 @@ const vegaWalletPassphrase = Cypress.env("VEGA_WALLET_PASSPHRASE");
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
   const token = new StakingBridge();
-  cy.log(token)
-  // const vegaPubKey = '0bd8d51ac46d563af70e4c92fdc53552f800ad527109146e9dff72f6413c10c9';
-  // const ethPubKey = '0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F';
+  const vegaPubKey = '0bd8d51ac46d563af70e4c92fdc53552f800ad527109146e9dff72f6413c10c9';
+  const ethPubKey = '0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F';
 
-  // token.stakeBalance(ethPubKey, vegaPubKey).then((amount => {
-  //   cy.log(amount)
-  //   token.removeStake(amount, vegaPubKey)
-  // }))
+  token.stakeBalance(ethPubKey, vegaPubKey).then((amount => {
+    cy.log(amount)
+    token.removeStake(amount, vegaPubKey)
+  }))
 })
 
 // ---------------------------------------------------------------------- 
