@@ -4,6 +4,8 @@ import type { SimpleMarkets_markets } from '../components/simple-market-list/__g
 import MarketNameRenderer from '../components/simple-market-list/simple-market-renderer';
 import SimpleMarketPercentChange from '../components/simple-market-list/simple-market-percent-change';
 import { Button } from '@vegaprotocol/ui-toolkit';
+import type { ValueSetterParams } from 'ag-grid-community';
+import type { SimpleMarketsType } from '../components/simple-market-list/simple-market-list';
 
 interface Props {
   onClick: (marketId: string) => void;
@@ -17,7 +19,8 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         headerName: t('Markets'),
         headerClass: 'uppercase',
         minWidth: 300,
-        cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
+        field: 'name',
+        cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
           <MarketNameRenderer data={data} />
         ),
       },
@@ -26,7 +29,8 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         headerName: t('Settlement asset'),
         headerClass: 'uppercase',
         cellClass: 'uppercase flex h-full items-center',
-        cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
+        field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
+        cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
           <div className="flex h-full items-center justify-center">
             {data.tradableInstrument.instrument.product.settlementAsset.symbol}
           </div>
@@ -36,12 +40,39 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         colId: 'change',
         headerName: t('24h change'),
         headerClass: 'uppercase',
-        cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
+        field: 'percentChange',
+        valueSetter: (params: ValueSetterParams): boolean => {
+          const { oldValue, newValue, node, api, data } = params;
+          if (oldValue !== newValue) {
+            const newdata = { percentChange: newValue, ...data };
+            api.applyTransaction({ update: [newdata] });
+            return true;
+          }
+          return false;
+        },
+        cellRenderer: ({
+          data,
+          setValue,
+        }: {
+          data: SimpleMarketsType;
+          setValue: (arg: any) => void;
+        }) => (
           <SimpleMarketPercentChange
             candles={data.candles}
             marketId={data.id}
+            setValue={setValue}
           />
         ),
+        comparator: (valueA: number | '-', valueB: number | '-') => {
+          if (valueA === valueB) return 0;
+          if (valueA === '-') {
+            return -1;
+          }
+          if (valueB === '-') {
+            return 1;
+          }
+          return valueA > valueB ? 1 : -1;
+        },
       },
       {
         colId: 'status',
@@ -68,7 +99,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
               onClick={() => onClick(data.id)}
               variant="inline-link"
               appendIconName="arrow-top-right"
-              className="uppercase"
+              className="uppercase no-underline hover:no-underline"
             >
               {t('Trade')}
             </Button>

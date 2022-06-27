@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useSubscription } from '@apollo/client';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
@@ -12,6 +12,7 @@ import { CANDLE_SUB } from './data-provider';
 interface Props {
   candles: (SimpleMarkets_markets_candles | null)[] | null;
   marketId: string;
+  setValue: (arg: any) => void;
 }
 
 const getChange = (
@@ -60,13 +61,18 @@ const SimpleMarketPercentChangeWrapper = (props: Props) => {
   );
 };
 
-const SimpleMarketPercentChange = ({ candles, marketId }: Props) => {
+const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
   const { data: { candles: { close = undefined } = {} } = {} } =
     useSubscription<CandleLive, CandleLiveVariables>(CANDLE_SUB, {
       variables: { marketId },
     });
   const change = getChange(candles, close);
   const color = getColor(change);
+  useEffect(() => {
+    const value = parseFloat(change);
+    setValue(isNaN(value) ? '-' : value);
+  }, [setValue, change]);
+
   return (
     <div className="flex text-center" style={{ color }}>
       {change}

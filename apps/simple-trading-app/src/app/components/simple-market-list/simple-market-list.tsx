@@ -19,6 +19,11 @@ import useColumnDefinitions from '../../hooks/use-column-definitions';
 import DataProvider from './data-provider';
 import * as constants from './constants';
 import SimpleMarketToolbar from './simple-market-toolbar';
+import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
+
+export type SimpleMarketsType = SimpleMarkets_markets & {
+  percentChange?: number | '-';
+};
 
 export type RouterParams = Partial<{
   product: string;
@@ -48,7 +53,10 @@ const SimpleMarketList = () => {
     update,
     variables
   );
-  const localData = useMarketsFilterData(data || [], params);
+  const localData: Array<SimpleMarketsType> = useMarketsFilterData(
+    data || [],
+    params
+  );
 
   useEffect(() => {
     const statuses: Record<string, MarketState | ''> = {};
@@ -71,6 +79,8 @@ const SimpleMarketList = () => {
     gridRef.current?.api.sizeColumnsToFit();
   }, [gridRef]);
 
+  const getRowId = useCallback(({ data }) => data.id, []);
+
   return (
     <div className="h-full grid grid-rows-[min-content,1fr]">
       <SimpleMarketToolbar />
@@ -89,6 +99,7 @@ const SimpleMarketList = () => {
           ref={gridRef}
           overlayNoRowsTemplate={t('No data to display')}
           suppressContextMenu
+          getRowId={getRowId}
         />
       </AsyncRenderer>
     </div>
