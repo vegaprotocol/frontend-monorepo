@@ -1,5 +1,4 @@
 import { DepthChart } from 'pennant';
-import { produce } from 'immer';
 import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import {
@@ -92,28 +91,31 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       if (!dataRef.current) {
         return false;
       }
-      dataRef.current = produce(dataRef.current, (draft) => {
-        if (delta.buy) {
-          draft.data.buy = updateLevels(
-            draft.data.buy,
-            delta.buy,
-            decimalPlacesRef.current
-          );
-        }
-        if (delta.sell) {
-          draft.data.sell = updateLevels(
-            draft.data.sell,
-            delta.sell,
-            decimalPlacesRef.current
-          );
-        }
-        draft.midPrice = delta.market.data?.staticMidPrice
+      dataRef.current = {
+        ...dataRef.current,
+        midPrice: delta.market.data?.staticMidPrice
           ? formatMidPrice(
               delta.market.data?.staticMidPrice,
               decimalPlacesRef.current
             )
-          : undefined;
-      });
+          : undefined,
+        data: {
+          buy: delta.buy
+            ? updateLevels(
+                dataRef.current.data.buy,
+                delta.buy,
+                decimalPlacesRef.current
+              )
+            : dataRef.current.data.buy,
+          sell: delta.sell
+            ? updateLevels(
+                dataRef.current.data.sell,
+                delta.sell,
+                decimalPlacesRef.current
+              )
+            : dataRef.current.data.sell,
+        },
+      };
       setDepthDataThrottledRef.current(dataRef.current);
       return true;
     },
