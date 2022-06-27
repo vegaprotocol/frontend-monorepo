@@ -1,22 +1,22 @@
-import type {
-  Fills,
-  Fills_party_tradesPaged_edges_node,
-} from '@vegaprotocol/fills';
 import { Side } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
+import type {
+  Fills,
+  Fills_party_tradesPaged_edges_node,
+} from './__generated__/Fills';
 
 export const generateFills = (override?: PartialDeep<Fills>): Fills => {
   const fills: Fills_party_tradesPaged_edges_node[] = [
     generateFill({
       buyer: {
-        id: Cypress.env('VEGA_PUBLIC_KEY'),
+        id: 'party-id',
       },
     }),
     generateFill({
       id: '1',
       seller: {
-        id: Cypress.env('VEGA_PUBLIC_KEY'),
+        id: 'party-id',
       },
       aggressor: Side.Sell,
       buyerFee: {
@@ -30,7 +30,7 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
     generateFill({
       id: '2',
       seller: {
-        id: Cypress.env('VEGA_PUBLIC_KEY'),
+        id: 'party-id',
       },
       aggressor: Side.Buy,
     }),
@@ -41,7 +41,7 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
         name: 'ETHBTC Quarterly (30 Jun 2022)',
       },
       buyer: {
-        id: Cypress.env('VEGA_PUBLIC_KEY'),
+        id: 'party-id',
       },
     }),
   ];
