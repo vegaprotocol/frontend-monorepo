@@ -49,7 +49,7 @@ export const MarketsContainer = () => {
   const { data, error, loading } = useDataProvider<
     Markets_markets[],
     Markets_markets_data
-    >(marketsDataProvider, update);
+  >(marketsDataProvider, update);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>

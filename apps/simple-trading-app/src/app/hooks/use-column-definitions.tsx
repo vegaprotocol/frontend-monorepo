@@ -42,7 +42,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         headerClass: 'uppercase',
         field: 'percentChange',
         valueSetter: (params: ValueSetterParams): boolean => {
-          const { oldValue, newValue, node, api, data } = params;
+          const { oldValue, newValue, api, data } = params;
           if (oldValue !== newValue) {
             const newdata = { percentChange: newValue, ...data };
             api.applyTransaction({ update: [newdata] });
@@ -55,7 +55,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
           setValue,
         }: {
           data: SimpleMarketsType;
-          setValue: (arg: any) => void;
+          setValue: (arg: unknown) => void;
         }) => (
           <SimpleMarketPercentChange
             candles={data.candles}

@@ -12,7 +12,7 @@ import { CANDLE_SUB } from './data-provider';
 interface Props {
   candles: (SimpleMarkets_markets_candles | null)[] | null;
   marketId: string;
-  setValue: (arg: any) => void;
+  setValue: (arg: unknown) => void;
 }
 
 const getChange = (

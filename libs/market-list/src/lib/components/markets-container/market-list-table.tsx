@@ -19,8 +19,8 @@ interface MarketListTableProps {
 }
 
 export const getRowId = ({
-                           data,
-                         }: {
+  data,
+}: {
   data: Markets_markets | Markets_markets_data_market;
 }) => data.id;
 
