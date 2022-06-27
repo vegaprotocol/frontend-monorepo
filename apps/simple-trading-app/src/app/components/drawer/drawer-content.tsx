@@ -8,7 +8,10 @@ interface Props {
 }
 
 export const DrawerContent = ({ children, className = '' }: Props) => {
-  const classes = classNames('w-full sm:w-full grow-1', className);
+  const classes = classNames(
+    'w-full sm:w-full grow-1 p-20 overflow-hidden',
+    className
+  );
 
   return (
     <main aria-label="Page Content" className={classes}>

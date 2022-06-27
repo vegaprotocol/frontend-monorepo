@@ -14,11 +14,7 @@ export interface RouteChildProps {
   name: string;
 }
 
-export const AppRouter = () => {
-  const routes = useRoutes(routerConfig);
-
-  return <main className="p-20 overflow-hidden">{routes}</main>;
-};
+export const AppRouter = () => useRoutes(routerConfig);
 
 interface Props {
   onToggle(): void;
@@ -38,7 +34,7 @@ export const Main = ({ onToggle, isMenuOpen }: Props) => {
       </NavigationDrawer>
       <DrawerContent>
         <AppRouter />
-        <TabBar />
+        <TabBar className="md:hidden" />
       </DrawerContent>
     </DrawerWrapper>
   );
