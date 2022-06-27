@@ -104,7 +104,6 @@ describe('OrderList', () => {
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(10);
     expect(headers.map((h) => h.textContent?.trim())).toEqual([
-      '',
       'Market',
       'Amount',
       'Type',
@@ -114,6 +113,7 @@ describe('OrderList', () => {
       'Time In Force',
       'Created At',
       'Updated At',
+      'Cancel',
     ]);
   });
 
