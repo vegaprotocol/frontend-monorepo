@@ -15,10 +15,7 @@ import {
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
-import type {
-  MarketInfoQuery,
-  MarketInfoQuery_market,
-} from './__generated__/MarketInfoQuery';
+import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
 import { gql, useQuery } from '@apollo/client';
 
@@ -53,6 +50,13 @@ const MARKET_INFO_QUERY = gql`
         short
         long
       }
+      accounts {
+        type
+        asset {
+          id
+        }
+        balance
+      }
       data {
         market {
           id
@@ -64,6 +68,14 @@ const MARKET_INFO_QUERY = gql`
         bestStaticBidVolume
         bestStaticOfferVolume
         indicativeVolume
+        openInterest
+      }
+      liquidityMonitoringParameters {
+        triggeringRatio
+        targetStakeParameters {
+          timeWindow
+          scalingFactor
+        }
       }
       tradableInstrument {
         instrument {

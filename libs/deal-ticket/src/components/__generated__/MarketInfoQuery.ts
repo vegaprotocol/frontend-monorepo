@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
+import { MarketState, MarketTradingMode, AccountType } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketInfoQuery
@@ -87,6 +87,30 @@ export interface MarketInfoQuery_market_riskFactors {
   long: string;
 }
 
+export interface MarketInfoQuery_market_accounts_asset {
+  __typename: "Asset";
+  /**
+   * The id of the asset
+   */
+  id: string;
+}
+
+export interface MarketInfoQuery_market_accounts {
+  __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
+  /**
+   * Asset, the 'currency'
+   */
+  asset: MarketInfoQuery_market_accounts_asset;
+  /**
+   * Balance as string - current account balance (approx. as balances can be updated several times per second)
+   */
+  balance: string;
+}
+
 export interface MarketInfoQuery_market_data_market {
   __typename: "Market";
   /**
@@ -125,6 +149,34 @@ export interface MarketInfoQuery_market_data {
    * the aggregated volume being offered at the best static offer price, excluding pegged orders.
    */
   bestStaticOfferVolume: string;
+  /**
+   * the sum of the size of all positions greater than 0.
+   */
+  openInterest: string;
+}
+
+export interface MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters {
+  __typename: "TargetStakeParameters";
+  /**
+   * Specifies length of time window expressed in seconds for target stake calculation
+   */
+  timeWindow: number;
+  /**
+   * Specifies scaling factors used in target stake calculation
+   */
+  scalingFactor: number;
+}
+
+export interface MarketInfoQuery_market_liquidityMonitoringParameters {
+  __typename: "LiquidityMonitoringParameters";
+  /**
+   * Specifies the triggering ratio for entering liquidity auction
+   */
+  triggeringRatio: number;
+  /**
+   * Specifies parameters related to target stake calculation
+   */
+  targetStakeParameters: MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_settlementAsset {
@@ -258,14 +310,14 @@ export interface MarketInfoQuery_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   * 
+   *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   * 
+   *
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -299,9 +351,17 @@ export interface MarketInfoQuery_market {
    */
   riskFactors: MarketInfoQuery_market_riskFactors | null;
   /**
+   * Get account for a party or market
+   */
+  accounts: MarketInfoQuery_market_accounts[] | null;
+  /**
    * marketData for the given market
    */
   data: MarketInfoQuery_market_data | null;
+  /**
+   * Liquidity monitoring parameters for the market
+   */
+  liquidityMonitoringParameters: MarketInfoQuery_market_liquidityMonitoringParameters;
   /**
    * An instance of or reference to a tradable instrument.
    */
