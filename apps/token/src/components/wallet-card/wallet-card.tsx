@@ -147,23 +147,23 @@ export const WalletCardAsset = ({
         }`}
       />
       <div>
-        <div className="flex font-medium">
+        <div className="flex font-medium align-center">
           <h1
-            className={`text-h5 mb-0 px-8 uppercase ${
+            className={`text-h5 mb-0 px-8 uppercase leading-none ${
               dark ? 'text-white' : 'text-black'
             }`}
           >
             {name}
           </h1>
           <h2
-            className={`text-h5 mb-0 uppercase ${
+            className={`text-h5 mb-0 uppercase leading-none ${
               dark ? 'text-white-60' : 'text-black-60'
             }`}
           >
             {subheading || symbol}
           </h2>
         </div>
-        <div className="px-8 text-h5 basis-full">
+        <div className="px-8 text-h5 basis-full font-mono">
           <span>{integers}.</span>
           <span className={dark ? 'text-white-60' : 'text-black-60'}>
             {decimalsPlaces}

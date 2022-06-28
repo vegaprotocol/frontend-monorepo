@@ -67,7 +67,9 @@ export const TokenDetails = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Total supply').toUpperCase()}
-        <span data-testid="total-supply">{formatNumber(totalSupply, 2)}</span>
+        <span className="font-mono" data-testid="total-supply">
+          {formatNumber(totalSupply, 2)}
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Circulating supply').toUpperCase()}
@@ -75,7 +77,9 @@ export const TokenDetails = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Staked on Vega validator').toUpperCase()}
-        <span data-testid="staked">{formatNumber(totalStaked, 2)}</span>
+        <span data-testid="staked" className="font-mono">
+          {formatNumber(totalStaked, 2)}
+        </span>
       </KeyValueTableRow>
     </KeyValueTable>
   );
