@@ -21,7 +21,7 @@
         ],
         "styles": ["apps/simple-trading-app/src/styles.scss"],
         "scripts": [],
-        "webpackConfig": "apps/simple-trading-app/webpack.config.js"
+        "webpackConfig": "@nrwl/react/plugins/webpack"
       },
       "configurations": {
         "production": {
