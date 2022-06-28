@@ -22,38 +22,40 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
   return merge(defaultResult, override);
 };
 
-export const generateOrder = (partialOrder: Partial<Orders_party_orders>) => {
-  return {
-    __typename: 'Order',
-    id: 'order-id2',
-    market: {
-      __typename: 'Market',
-      id: 'market-id',
-      name: 'market-name',
-      decimalPlaces: 2,
-      positionDecimalPlaces: 2,
-      tradableInstrument: {
-        __typename: 'TradableInstrument',
-        instrument: {
-          __typename: 'Instrument',
-          code: 'instrument-code',
+export const generateOrder = (partialOrder: Partial<Orders_party_orders>) =>
+  merge(
+    {
+      __typename: 'Order',
+      id: 'order-id2',
+      market: {
+        __typename: 'Market',
+        id: 'market-id',
+        name: 'market-name',
+        decimalPlaces: 2,
+        positionDecimalPlaces: 2,
+        tradableInstrument: {
+          __typename: 'TradableInstrument',
+          instrument: {
+            __typename: 'Instrument',
+            code: 'instrument-code',
+          },
         },
       },
-    },
-    size: '10',
-    type: OrderType.Market,
-    status: OrderStatus.Active,
-    side: Side.Buy,
-    remaining: '5',
-    price: '',
-    timeInForce: OrderTimeInForce.IOC,
-    createdAt: new Date().toISOString(),
-    updatedAt: null,
-    expiresAt: null,
-    rejectionReason: null,
-    ...partialOrder,
-  } as Orders_party_orders;
-};
+      size: '10',
+      type: OrderType.Market,
+      status: OrderStatus.Active,
+      side: Side.Buy,
+      remaining: '5',
+      price: '',
+      timeInForce: OrderTimeInForce.IOC,
+      createdAt: new Date().toISOString(),
+      updatedAt: null,
+      expiresAt: null,
+      rejectionReason: null,
+    } as Orders_party_orders,
+    partialOrder
+  );
+
 
 export const limitOrder = generateOrder({
   id: 'limit-order',

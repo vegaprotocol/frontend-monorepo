@@ -106,7 +106,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (data.type === 'Market') {
               return '-';
             }
-            return addDecimalsFormatNumber(value, data.market.decimalPlaces, 3);
+            return addDecimal(value, data.market.decimalPlaces);
           }}
         />
         <AgGridColumn
