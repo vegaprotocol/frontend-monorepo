@@ -6,7 +6,7 @@
     "e2e": {
       "executor": "@nrwl/cypress:cypress",
       "options": {
-        "cypressConfig": "apps/stats-e2e/cypress.json",
+        "cypressConfig": "apps/stats-e2e/cypress.config.js",
         "devServerTarget": "stats:serve"
       },
       "configurations": {

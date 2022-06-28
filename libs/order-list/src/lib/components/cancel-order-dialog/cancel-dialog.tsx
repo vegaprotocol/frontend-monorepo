@@ -4,7 +4,7 @@ import type { Order, VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaOrderTransactionDialog } from '@vegaprotocol/wallet';
 import { useEffect } from 'react';
 
-interface CancelDialogProps {
+export interface CancelDialogProps {
   orderDialogOpen: boolean;
   setOrderDialogOpen: (isOpen: boolean) => void;
   finalizedOrder: Order | null;
