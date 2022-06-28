@@ -12,10 +12,12 @@ const vegaWalletPassphrase = Cypress.env('VEGA_WALLET_PASSPHRASE');
 
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
+// TODO remove, expected values: "http://localhost:8545/"" & "ozone access unlock valid olympic save include omit supply green clown session"
 cy.log(
   process.env.NX_ETHEREUM_PROVIDER_URL,
   process.env.NX_ETH_WALLET_MNEMONIC
 );
+
 const provider = new ethers.providers.JsonRpcProvider({
   url: process.env.NX_ETHEREUM_PROVIDER_URL,
 });
@@ -33,7 +35,7 @@ Cypress.Commands.add('vega_wallet_teardown', function () {
 
   return vesting.stakeBalance(ethPubKey, vegaPubKey).then((amount) => {
     cy.log(amount);
-    vesting.removeStake(amount, vegaPubKey);
+    return vesting.removeStake(amount, vegaPubKey);
   });
 });
 
