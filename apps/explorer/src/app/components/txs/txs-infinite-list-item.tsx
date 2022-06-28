@@ -59,8 +59,7 @@ export const TxsInfiniteListItem = ({
           <Dialog
             open={open}
             onChange={(isOpen) => setOpen(isOpen)}
-            width="auto"
-            intent={Intent.Help}
+            intent={Intent.None}
           >
             <SyntaxHighlighter data={JSON.parse(Command)} />
           </Dialog>
