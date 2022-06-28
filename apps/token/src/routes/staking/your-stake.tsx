@@ -17,7 +17,7 @@ export const YourStake = ({
 
   return (
     <div data-testid="your-stake">
-      <h2 className="text-h4 mb-8">{t('Your stake')}</h2>
+      <h2>{t('Your stake')}</h2>
       <KeyValueTable>
         <KeyValueTableRow>
           {t('Your Stake On Node (This Epoch)')}

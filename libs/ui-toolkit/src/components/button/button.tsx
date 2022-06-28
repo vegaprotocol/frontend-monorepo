@@ -47,6 +47,7 @@ export const getButtonClasses = (
   const commonButtonClasses = classnames(
     'relative disabled:static',
     'text-ui font-semibold focus-visible:outline-none border no-underline hover:no-underline',
+    'py-[3px]',
     {
       'shadow-none': !boxShadow,
       'shadow-[3px_3px_0_0] focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow active:top-[1px] active:left-[1px] active:shadow-[2px_2px_0_0]':
@@ -73,7 +74,7 @@ export const getButtonClasses = (
   const standardButtonBorderWidth = `${
     borderWidthProvided ? borderWidthProvided : 'border'
   }`;
-  const buttonHeight = `${heightProvided ? heightProvided : 'h-28'}`;
+  const buttonHeight = `${heightProvided ? heightProvided : ''}`;
 
   const primaryClasses = [
     sharedClasses,
