@@ -48,7 +48,7 @@ export function RestConnectorForm({
       }
     } catch (err) {
       if (err instanceof TypeError) {
-        setError(t(`Wallet not running at ${VEGA_DEFAULT_URL}`));
+        setError(t(`Wallet not running at ${fields.url}`));
       } else if (err instanceof Error) {
         setError(t('Authentication failed'));
       } else {
