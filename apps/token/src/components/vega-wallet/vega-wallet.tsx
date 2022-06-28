@@ -43,10 +43,10 @@ export const VegaWallet = () => {
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
           {keypair && (
             <>
-              <div className="row-start-2 col-start-1 col-span-2 text-h6 mb-12">
+              <div className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-12">
                 {keypair.name}
               </div>
-              <span className="col-start-2 place-self-end font-mono pb-2 px-4">
+              <span className="sm:col-start-2 place-self-end font-mono pb-2 px-4">
                 {truncateMiddle(keypair.pub)}
               </span>
             </>

@@ -46,7 +46,11 @@ interface WalletCardHeaderProps {
 }
 
 export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
-  return <div className="grid grid-cols-[auto_1fr] gap-4">{children}</div>;
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4">
+      {children}
+    </div>
+  );
 };
 
 interface WalletCardContentProps {
