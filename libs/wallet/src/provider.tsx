@@ -43,7 +43,6 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
         });
 
         setKeypairs(publicKeysWithName);
-
         if (publicKey === null) {
           setPublicKey(publicKeysWithName[0].pub);
         }
@@ -60,6 +59,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
     try {
       await connector.current?.disconnect();
       setKeypairs(null);
+      setPublicKey(null);
       connector.current = null;
       LocalStorage.removeItem(WALLET_KEY);
       return true;

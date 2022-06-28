@@ -48,6 +48,12 @@ export class RestConnector implements VegaConnector {
     }
   ) {
     try {
+      this.service = new DefaultApi(
+        createConfiguration({
+          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
+        })
+      );
+
       const res = await this.service.authTokenPost(params);
 
       // Renew service instance with default bearer authMethod now that we have the token
