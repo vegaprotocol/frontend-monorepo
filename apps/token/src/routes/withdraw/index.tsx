@@ -23,7 +23,7 @@ const Withdraw = () => {
   return (
     <>
       <Heading title={t('withdrawPageHeading')} />
-      <p className="mb-8">{t('withdrawPageText')}</p>
+      <p>{t('withdrawPageText')}</p>
       <div className="mb-24">
         <VegaWalletContainer>
           {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
@@ -141,7 +141,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
             title={t('pendingWithdrawalsCalloutTitle')}
             intent={Intent.Warning}
           >
-            <p className="mb-8">{t('pendingWithdrawalsCalloutText')}</p>
+            <p>{t('pendingWithdrawalsCalloutText')}</p>
             <p>
               <Link to={Routes.WITHDRAWALS} className="underline text-white">
                 {t('pendingWithdrawalsCalloutButton')}

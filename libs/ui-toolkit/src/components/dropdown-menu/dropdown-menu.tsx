@@ -13,7 +13,7 @@ const itemClass = classNames(
   'hover:cursor-pointer',
   'select-none',
   'whitespace-nowrap',
-  'focus:bg-vega-pink dark:focus:bg-vega-yellow',
+  'focus:bg-vega-highlight-item dark:focus:bg-vega-highlight-item-dark',
   'focus:text-white dark:focus:text-black',
   'focus:outline-none'
 );
@@ -23,7 +23,7 @@ function getItemClasses(inset: boolean, checked?: boolean) {
     itemClass,
     inset ? 'pl-28' : 'pl-8',
     checked
-      ? 'bg-vega-pink dark:bg-vega-yellow text-white dark:text-black'
+      ? 'bg-vega-highlight-item dark:bg-vega-highlight-item-dark text-white dark:text-black'
       : 'text-black dark:text-white'
   );
 }
@@ -73,7 +73,7 @@ export const DropdownMenuContent = forwardRef<
     {...contentProps}
     ref={forwardedRef}
     className={classNames(
-      'inline-block box-border border-1 border-black bg-white dark:bg-black-60',
+      'inline-block box-border border-1 border-black bg-dropdown-bg dark:bg-dropdown-bg-dark',
       className
     )}
   />

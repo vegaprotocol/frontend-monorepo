@@ -14,7 +14,7 @@ const ProgressContents = ({
   children: React.ReactNode;
 }) => (
   <div
-    className={classnames('flex justify-between py-2 font-mono', {
+    className={classnames('flex justify-between py-2 font-mono mb-2', {
       'gap-0 px-0 text-black': light,
       'gap-y-0 gap-x-4': !light,
     })}
@@ -93,7 +93,7 @@ export const LockedProgress = ({
   }, [total, unlocked]);
 
   return (
-    <>
+    <div className="mb-8">
       <div
         className={classnames('flex border', {
           'border-black': light,
@@ -122,6 +122,6 @@ export const LockedProgress = ({
         <span>{formatNumber(locked, decimals)}</span>
         <span>{formatNumber(unlocked, decimals)}</span>
       </ProgressContents>
-    </>
+    </div>
   );
 };

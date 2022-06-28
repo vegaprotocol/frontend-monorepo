@@ -19,17 +19,19 @@ import { NodeList } from './node-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { truncateMiddle } from '../../lib/truncate-middle';
 
+const stakingBulletStyles = { marginBottom: '12px', fontSize: '18px' };
+
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();
 
   return (
     <>
       <section className="mb-24">
-        <p className="mb-12">{t('stakingDescription1')}</p>
-        <p className="mb-12">{t('stakingDescription2')}</p>
-        <p className="mb-12">{t('stakingDescription3')}</p>
-        <p className="mb-12">{t('stakingDescription4')}</p>
-        <p className="mb-12">
+        <p>{t('stakingDescription1')}</p>
+        <p>{t('stakingDescription2')}</p>
+        <p>{t('stakingDescription3')}</p>
+        <p>{t('stakingDescription4')}</p>
+        <p>
           <Link
             href={Links.STAKING_GUIDE}
             className="text-white underline"
@@ -41,11 +43,15 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
       </section>
 
       <section>
-        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
+        <BulletHeader tag="h2" style={stakingBulletStyles}>
+          {t('stakingStep1')}
+        </BulletHeader>
         <StakingStepConnectWallets />
       </section>
       <section>
-        <BulletHeader tag="h2">{t('stakingStep1')}</BulletHeader>
+        <BulletHeader tag="h2" style={stakingBulletStyles}>
+          {t('stakingStep2')}
+        </BulletHeader>
         <StakingStepAssociate
           associated={
             new BigNumber(
@@ -55,7 +61,9 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
         />
       </section>
       <section>
-        <BulletHeader tag="h2">{t('stakingStep3')}</BulletHeader>
+        <BulletHeader tag="h2" style={stakingBulletStyles}>
+          {t('stakingStep3')}
+        </BulletHeader>
         <StakingStepSelectNode data={data} />
       </section>
     </>
@@ -82,7 +90,7 @@ export const StakingStepConnectWallets = () => {
             {truncateMiddle(account)}
           </Link>
         </p>
-        <p>
+        <p className="mb-8">
           {t('stakingVegaWalletConnected', {
             key: truncateMiddle(keypair.pub),
           })}
@@ -93,7 +101,7 @@ export const StakingStepConnectWallets = () => {
 
   return (
     <>
-      <p className="mb-8">
+      <p>
         <Trans
           i18nKey="stakingStep1Text"
           components={{
@@ -116,7 +124,7 @@ export const StakingStepConnectWallets = () => {
           />
         </div>
       ) : (
-        <p className="mb-8">
+        <p>
           <Button
             onClick={() =>
               appDispatch({

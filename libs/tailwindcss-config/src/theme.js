@@ -55,6 +55,8 @@ const colours = {
     'green-dark': '#008545',
     red: '#FF261A',
     'red-dark': '#EB001B',
+    'highlight-item': '#FF077F',
+    'highlight-item-dark': '#DFFF0B',
   },
   blue: '#1DA2FB',
   coral: '#FF6057',
@@ -65,6 +67,8 @@ const colours = {
   selected: '#DFFF0B',
   success: '#00F780',
   'danger-bg': '#9E0025', // for white text
+  'dropdown-bg': '#FFF',
+  'dropdown-bg-dark': shadeOfGray(100 - 60),
 };
 
 const boxShadowPosition = {
