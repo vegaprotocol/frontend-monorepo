@@ -8,6 +8,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 
 interface GridProps {
   children: ReactNode;
+  customThemeParams: string;
 }
 
 const AgGridLightTheme = dynamic<GridProps>(
@@ -24,11 +25,13 @@ export const AgGridThemed = ({
   style,
   className,
   gridRef,
+  customThemeParams = '',
   ...props
 }: (AgGridReactProps | AgReactUiProps) & {
   style?: React.CSSProperties;
   className?: string;
   gridRef?: React.ForwardedRef<AgGridReact>;
+  customThemeParams?: string;
 }) => {
   const theme = useContext(ThemeContext);
   const defaultProps = { rowHeight: 20, headerHeight: 22 };
@@ -40,11 +43,11 @@ export const AgGridThemed = ({
       style={style}
     >
       {theme === 'dark' ? (
-        <AgGridDarkTheme>
+        <AgGridDarkTheme customThemeParams={customThemeParams}>
           <AgGridReact {...defaultProps} {...props} ref={gridRef} />
         </AgGridDarkTheme>
       ) : (
-        <AgGridLightTheme>
+        <AgGridLightTheme customThemeParams={customThemeParams}>
           <AgGridReact {...defaultProps} {...props} ref={gridRef} />
         </AgGridLightTheme>
       )}
