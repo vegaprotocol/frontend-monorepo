@@ -1,6 +1,6 @@
 import wallet from '../locators/wallet.locators';
 import staking from '../locators/staking.locators';
-import { Vesting } from '@vegaprotocol/smart-contracts';
+import { TokenVesting } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
 // ----------------------------------------------------------------------
@@ -12,28 +12,25 @@ const vegaWalletPassphrase = Cypress.env('VEGA_WALLET_PASSPHRASE');
 
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
-// TODO remove, expected values: "http://localhost:8545/"" & "ozone access unlock valid olympic save include omit supply green clown session"
-cy.log(
-  process.env.NX_ETHEREUM_PROVIDER_URL,
-  process.env.NX_ETH_WALLET_MNEMONIC
-);
-
 const provider = new ethers.providers.JsonRpcProvider({
-  url: process.env.NX_ETHEREUM_PROVIDER_URL,
+  url: 'http://localhost:8545/', // TODO pull from config, currently exists at nx_local_provider_url
 });
 const privateKey = Wallet.fromMnemonic(
-  process.env.NX_ETH_WALLET_MNEMONIC,
+  'ozone access unlock valid olympic save include omit supply green clown session', // TODO pull from config, currently exists at nx_eth_wallet_mnemonic
   getAccount(0)
 ).privateKey;
 const signer = new Wallet(privateKey, provider);
-const vesting = new Vesting(provider, signer);
+const vesting = new TokenVesting(
+  '0xF41bD86d462D36b997C0bbb4D97a0a3382f205B7', // TODO pull from config
+  signer
+);
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
+  const ethPubKey = '0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F'; // TODO pull from config
   const vegaPubKey =
-    '0bd8d51ac46d563af70e4c92fdc53552f800ad527109146e9dff72f6413c10c9';
-  const ethPubKey = '0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F';
+    '0bd8d51ac46d563af70e4c92fdc53552f800ad527109146e9dff72f6413c10c9'; // TODO pull from config
 
-  return vesting.stakeBalance(ethPubKey, vegaPubKey).then((amount) => {
+  vesting.stakeBalance(ethPubKey, vegaPubKey).then((amount) => {
     cy.log(amount);
     return vesting.removeStake(amount, vegaPubKey);
   });
