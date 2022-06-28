@@ -67,7 +67,7 @@ const SimpleMarketToolbar = () => {
   );
 
   return (
-    <div className="w-max mb-16 font-alpha">
+    <div className="w-max mb-32 font-alpha">
       <ul
         ref={slideContRef}
         className="grid grid-flow-col auto-cols-min gap-8 relative pb-4 mb-16"

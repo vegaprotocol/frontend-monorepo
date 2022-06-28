@@ -48,24 +48,24 @@ export const agGridLightVariables = `
     position: relative;
   }
   .ag-theme-balham .ag-icon::before{
-    font-size: 14px;
-    line-height: 14px;
+    font-size: 10px;
+    line-height: 12px;
     position: absolute;
     transform: rotate(45deg);
-    top: -7px;
-    right: -18px;
+    top: -6px;
+    right: -14px;
     content: "◾";
-    background: -webkit-linear-gradient(135deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 42%, rgba(0,0,0,0) 42%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.54) 52%, rgba(0,0,0,0.54) 100%);
+    background: -webkit-linear-gradient(135deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.54) 52%, rgba(0,0,0,0.54) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .ag-theme-balham .ag-icon-desc::before{
-    background: -webkit-linear-gradient(135deg, #000 0%, #000 42%, rgba(0,0,0,0) 42%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.54) 52%, rgba(0,0,0,0.54) 100%);
+    background: -webkit-linear-gradient(135deg, #000 0%, #000 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.54) 52%, rgba(0,0,0,0.54) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .ag-theme-balham .ag-icon-asc::before{
-    background: -webkit-linear-gradient(135deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 42%, rgba(0,0,0,0) 42%, rgba(0,0,0,0) 52%, #000 52%, #000 100%);
+    background: -webkit-linear-gradient(135deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, #000 52%, #000 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -102,24 +102,25 @@ export const agGridDarkVariables = `
     position: relative;
   }
   .ag-theme-balham-dark .ag-icon::before{
-    font-size: 14px;
-    line-height: 14px;
+    font-size: 10px;
+    line-height: 12px;
     position: absolute;
     transform: rotate(45deg);
-    top: -7px;
-    right: -18px;
+    top: -6px;
+    right: -14px;
     content: "◾";
-    background: -webkit-linear-gradient(135deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 42%, rgba(0,0,0,0) 42%, rgba(0,0,0,0) 52%, rgba(245, 245, 245, 0.64) 52%, rgba(245, 245, 245, 0.64) 100%);
+    background: -webkit-linear-gradient(135deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(245, 245, 245, 0.64) 52%, rgba(245, 245, 245, 0.64) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-position: center;
   }
   .ag-theme-balham-dark .ag-icon-desc::before{
-    background: -webkit-linear-gradient(135deg, #fff 0%, #fff 42%, rgba(0,0,0,0) 42%, rgba(0,0,0,0) 52%, rgba(245, 245, 245, 0.64) 52%, rgba(245, 245, 245, 0.64) 100%);
+    background: -webkit-linear-gradient(135deg, #fff 0%, #fff 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(245, 245, 245, 0.64) 52%, rgba(245, 245, 245, 0.64) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .ag-theme-balham-dark .ag-icon-asc::before{
-    background: -webkit-linear-gradient(135deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 42%, rgba(0,0,0,0) 42%, rgba(0,0,0,0) 52%, #fff 52%, #fff 100%);
+    background: -webkit-linear-gradient(135deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, #fff 52%, #fff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

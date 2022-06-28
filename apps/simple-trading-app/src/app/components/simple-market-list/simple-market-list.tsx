@@ -58,6 +58,10 @@ const SimpleMarketList = () => {
     params
   );
 
+  const handleOnGridReady = useCallback(() => {
+    gridRef.current?.api.sizeColumnsToFit();
+  }, [gridRef]);
+
   useEffect(() => {
     const statuses: Record<string, MarketState | ''> = {};
     data?.forEach((market) => {
@@ -65,6 +69,11 @@ const SimpleMarketList = () => {
     });
     statusesRef.current = statuses;
   }, [data, statusesRef]);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleOnGridReady);
+    return () => window.removeEventListener('resize', handleOnGridReady);
+  }, [handleOnGridReady]);
 
   const onClick = useCallback(
     (marketId) => {
@@ -75,10 +84,6 @@ const SimpleMarketList = () => {
 
   const { columnDefs, defaultColDef } = useColumnDefinitions({ onClick });
 
-  const handleOnGridReady = useCallback(() => {
-    gridRef.current?.api.sizeColumnsToFit();
-  }, [gridRef]);
-
   const getRowId = useCallback(({ data }) => data.id, []);
 
   return (
@@ -86,6 +91,7 @@ const SimpleMarketList = () => {
       <SimpleMarketToolbar />
       <AsyncRenderer loading={loading} error={error} data={localData}>
         <AgGrid
+          className="mb-32 min-h-[300px]"
           defaultColDef={defaultColDef}
           columnDefs={columnDefs}
           rowData={localData}
@@ -100,6 +106,7 @@ const SimpleMarketList = () => {
           overlayNoRowsTemplate={t('No data to display')}
           suppressContextMenu
           getRowId={getRowId}
+          suppressMovableColumns
         />
       </AsyncRenderer>
     </div>

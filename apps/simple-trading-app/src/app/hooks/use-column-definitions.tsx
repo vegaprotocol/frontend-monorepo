@@ -28,6 +28,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         colId: 'asset',
         headerName: t('Settlement asset'),
         headerClass: 'uppercase',
+        minWidth: 100,
         cellClass: 'uppercase flex h-full items-center',
         field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
         cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
@@ -41,6 +42,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         headerName: t('24h change'),
         headerClass: 'uppercase',
         field: 'percentChange',
+        minWidth: 100,
         valueSetter: (params: ValueSetterParams): boolean => {
           const { oldValue, newValue, api, data } = params;
           if (oldValue !== newValue) {
@@ -79,6 +81,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         headerName: t('Status'),
         field: 'data.market.state',
         headerClass: 'uppercase',
+        minWidth: 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="uppercase flex h-full items-center justify-center">
             <div className="border text-center px-8">
@@ -91,8 +94,8 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         colId: 'trade',
         headerName: '',
         headerClass: 'uppercase',
-        type: 'rightAligned',
         sortable: false,
+        minWidth: 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="h-full flex h-full items-center justify-end">
             <Button
