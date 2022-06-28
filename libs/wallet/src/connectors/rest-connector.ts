@@ -1,6 +1,7 @@
 import type { Configuration } from '@vegaprotocol/vegawallet-service-api-client';
 import {
   createConfiguration,
+  ServerConfiguration,
   DefaultApi,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
@@ -39,13 +40,20 @@ export class RestConnector implements VegaConnector {
     this.service = new DefaultApi(this.apiConfig);
   }
 
-  async authenticate(params: { wallet: string; passphrase: string }) {
+  async authenticate(
+    url: string,
+    params: {
+      wallet: string;
+      passphrase: string;
+    }
+  ) {
     try {
       const res = await this.service.authTokenPost(params);
 
       // Renew service instance with default bearer authMethod now that we have the token
       this.service = new DefaultApi(
         createConfiguration({
+          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
           authMethods: {
             bearer: `Bearer ${res.token}`,
           },

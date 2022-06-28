@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import type { RestConnector } from '.';
 
 interface FormFields {
+  url: string;
   wallet: string;
   passphrase: string;
 }
@@ -13,6 +14,8 @@ interface RestConnectorFormProps {
   connector: RestConnector;
   onAuthenticate: () => void;
 }
+
+const VEGA_DEFAULT_URL = 'http://localhost:1789';
 
 export function RestConnectorForm({
   connector,
@@ -24,12 +27,16 @@ export function RestConnectorForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormFields>();
+  } = useForm<FormFields>({
+    defaultValues: {
+      url: VEGA_DEFAULT_URL,
+    },
+  });
 
   async function onSubmit(fields: FormFields) {
     try {
       setError('');
-      const res = await connector.authenticate({
+      const res = await connector.authenticate(fields.url, {
         wallet: fields.wallet,
         passphrase: fields.passphrase,
       });
@@ -41,7 +48,7 @@ export function RestConnectorForm({
       }
     } catch (err) {
       if (err instanceof TypeError) {
-        setError(t('Wallet not running at http://localhost:1789'));
+        setError(t(`Wallet not running at ${VEGA_DEFAULT_URL}`));
       } else if (err instanceof Error) {
         setError(t('Authentication failed'));
       } else {
@@ -52,6 +59,19 @@ export function RestConnectorForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} data-testid="rest-connector-form">
+      <FormGroup label={t('Url')} labelFor="url">
+        <Input
+          {...register('url', { required: t('Required') })}
+          id="url"
+          type="text"
+          autoFocus={true}
+        />
+        {errors.url?.message && (
+          <InputError intent="danger" className="mt-4">
+            {errors.url.message}
+          </InputError>
+        )}
+      </FormGroup>
       <FormGroup label={t('Wallet')} labelFor="wallet">
         <Input
           {...register('wallet', { required: t('Required') })}
