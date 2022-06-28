@@ -5,7 +5,10 @@ describe('market list', () => {
     });
 
     it('selects menus', () => {
-      cy.get('.MuiDrawer-root [aria-current]').should('have.text', 'Markets');
+      cy.get('[aria-label="Sidebar Navigation Menu"] [aria-current]').should(
+        'have.text',
+        'Markets'
+      );
       cy.getByTestId('state-trigger').should('have.text', 'Active');
       cy.get('[aria-label="Future"]').click();
       cy.get('[data-testid="market-assets-menu"] a.active').should(

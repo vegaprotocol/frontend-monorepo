@@ -11,6 +11,7 @@ module.exports = {
     yellow: '#DFFF0B',
     mint: '#00F780',
     pink: '#FF077F',
+    blue: '#2E6DE5',
     vega: {
       ...theme.colors.vega,
       'highlight-item': '#000',
