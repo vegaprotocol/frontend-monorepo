@@ -12,20 +12,21 @@ const vegaWalletPassphrase = Cypress.env('VEGA_WALLET_PASSPHRASE');
 
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
+cy.log(
+  process.env.NX_ETHEREUM_PROVIDER_URL,
+  process.env.NX_ETH_WALLET_MNEMONIC
+);
+const provider = new ethers.providers.JsonRpcProvider({
+  url: process.env.NX_ETHEREUM_PROVIDER_URL,
+});
+const privateKey = Wallet.fromMnemonic(
+  process.env.NX_ETH_WALLET_MNEMONIC,
+  getAccount(0)
+).privateKey;
+const signer = new Wallet(privateKey, provider);
+const vesting = new Vesting(provider, signer);
+
 Cypress.Commands.add('vega_wallet_teardown', function () {
-  cy.log(
-    process.env.NX_ETHEREUM_PROVIDER_URL,
-    process.env.NX_ETH_WALLET_MNEMONIC
-  );
-  const provider = new ethers.providers.JsonRpcProvider({
-    url: process.env.NX_ETHEREUM_PROVIDER_URL,
-  });
-  const privateKey = Wallet.fromMnemonic(
-    process.env.NX_ETH_WALLET_MNEMONIC,
-    getAccount(0)
-  ).privateKey;
-  const signer = new Wallet(privateKey, provider);
-  const vesting = new Vesting(provider, signer);
   const vegaPubKey =
     '0bd8d51ac46d563af70e4c92fdc53552f800ad527109146e9dff72f6413c10c9';
   const ethPubKey = '0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F';
