@@ -1,5 +1,5 @@
 import { Splash } from '../splash';
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 
 interface AsyncRendererProps<T> {
@@ -9,7 +9,7 @@ interface AsyncRendererProps<T> {
   errorMessage?: string;
   data: T | undefined;
   noDataMessage?: string;
-  children?: ReactElement | null;
+  children?: ReactNode | null;
   render?: (data: T) => ReactNode;
 }
 

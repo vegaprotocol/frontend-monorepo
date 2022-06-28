@@ -8,8 +8,8 @@ function colorByChange(a: number, b: number) {
   return a === b
     ? 'stroke-black/40 dark:stroke-white/40'
     : a < b
-    ? 'stroke-green-dark dark:stroke-green'
-    : 'stroke-red-dark dark:stroke-red';
+    ? 'stroke-vega-green-dark dark:stroke-vega-green'
+    : 'stroke-vega-red-dark dark:stroke-vega-red';
 }
 
 export interface SparklineProps {

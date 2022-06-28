@@ -22,6 +22,7 @@ describe('Orderbook', () => {
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData(params)}
         onResolutionChange={onResolutionChange}
       />
@@ -35,6 +36,7 @@ describe('Orderbook', () => {
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData(params)}
         onResolutionChange={onResolutionChange}
       />
@@ -44,6 +46,7 @@ describe('Orderbook', () => {
     result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData({
           ...params,
           numberOfSellRows: params.numberOfSellRows - 1,
@@ -60,6 +63,7 @@ describe('Orderbook', () => {
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData(params)}
         onResolutionChange={onResolutionChange}
       />
@@ -69,6 +73,7 @@ describe('Orderbook', () => {
     result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData({
           ...params,
           bestStaticBidPrice: params.bestStaticBidPrice + 1,
@@ -86,6 +91,7 @@ describe('Orderbook', () => {
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData(params)}
         onResolutionChange={onResolutionChange}
       />
@@ -98,6 +104,7 @@ describe('Orderbook', () => {
     result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData({
           ...params,
           numberOfSellRows: params.numberOfSellRows - 1,
@@ -114,6 +121,7 @@ describe('Orderbook', () => {
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData(params)}
         onResolutionChange={onResolutionChange}
       />
@@ -134,6 +142,7 @@ describe('Orderbook', () => {
     const result = render(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData(params)}
         onResolutionChange={onResolutionChange}
       />
@@ -153,6 +162,7 @@ describe('Orderbook', () => {
     result.rerender(
       <Orderbook
         decimalPlaces={decimalPlaces}
+        positionDecimalPlaces={0}
         {...generateMockData({
           ...params,
           resolution: 10,

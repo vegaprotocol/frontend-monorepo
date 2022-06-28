@@ -3,8 +3,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { AnchorButton, GridTab, GridTabs } from '@vegaprotocol/ui-toolkit';
-
+import { AnchorButton, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
 
 const Portfolio = () => {
@@ -20,54 +19,54 @@ const Portfolio = () => {
             </h2>
           </aside>
           <section data-testid="portfolio-grid">
-            <GridTabs>
-              <GridTab id="positions" name={t('Positions')}>
+            <Tabs>
+              <Tab id="positions" name={t('Positions')}>
                 <div className={tabClassName}>
                   <h4 className="text-h4 text-black dark:text-white">
                     {t('Positions')}
                   </h4>
                   <PositionsContainer />
                 </div>
-              </GridTab>
-              <GridTab id="orders" name={t('Orders')}>
+              </Tab>
+              <Tab id="orders" name={t('Orders')}>
                 <div className={tabClassName}>
                   <h4 className="text-h4 text-black dark:text-white">
                     {t('Orders')}
                   </h4>
                   <OrderListContainer />
                 </div>
-              </GridTab>
-              <GridTab id="fills" name={t('Fills')}>
+              </Tab>
+              <Tab id="fills" name={t('Fills')}>
                 <div className={tabClassName}>
                   <h4 className="text-h4 text-black dark:text-white">
                     {t('Fills')}
                   </h4>
                 </div>
-              </GridTab>
-              <GridTab id="history" name={t('History')}>
+              </Tab>
+              <Tab id="history" name={t('History')}>
                 <div className={tabClassName}>
                   <h4 className="text-h4 text-black dark:text-white">
                     {t('History')}
                   </h4>
                 </div>
-              </GridTab>
-            </GridTabs>
+              </Tab>
+            </Tabs>
           </section>
         </main>
         <section className="fixed bottom-0 left-0 w-full h-[200px]">
-          <GridTabs>
-            <GridTab id="collateral" name={t('Collateral')}>
+          <Tabs>
+            <Tab id="collateral" name={t('Collateral')}>
               <AccountsContainer />
-            </GridTab>
-            <GridTab id="deposits" name={t('Deposits')}>
+            </Tab>
+            <Tab id="deposits" name={t('Deposits')}>
               <AnchorButton data-testid="deposit" href="/portfolio/deposit">
                 {t('Deposit')}
               </AnchorButton>
-            </GridTab>
-            <GridTab id="withdrawals" name={t('Withdrawals')}>
+            </Tab>
+            <Tab id="withdrawals" name={t('Withdrawals')}>
               <WithdrawalsContainer />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </section>
       </div>
     </Web3Container>

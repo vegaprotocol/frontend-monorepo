@@ -21,31 +21,31 @@ const Template: ComponentStory<typeof Callout> = (args) => (
 
 export const Default = Template.bind({});
 Default.args = {
-  children: 'Content',
+  children: 'No intent supplied',
 };
 
 export const Primary = Template.bind({});
 Primary.args = {
   intent: Intent.Primary,
-  children: 'Content',
+  children: 'Intent: Primary',
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
   intent: Intent.Danger,
-  children: 'Content',
+  children: 'Intent: Danger',
 };
 
 export const Warning = Template.bind({});
 Warning.args = {
   intent: Intent.Warning,
-  children: 'Content',
+  children: 'Intent: Warning',
 };
 
 export const Success = Template.bind({});
 Success.args = {
   intent: Intent.Success,
-  children: 'Content',
+  children: 'Intent: Success',
 };
 
 export const IconAndContent = Template.bind({});
@@ -55,7 +55,7 @@ IconAndContent.args = {
   iconName: 'endorsed',
   children: (
     <div className="flex flex-col">
-      <div>With a longer explaination</div>
+      <div>With a longer explanation</div>
       <Button className="block mt-8" variant="secondary">
         Action
       </Button>
@@ -74,7 +74,7 @@ CustomIconAndContent.args = {
   ),
   children: (
     <div className="flex flex-col">
-      <div>With a longer explaination</div>
+      <div>With a longer explanation</div>
       <Button className="block mt-8" variant="secondary">
         Action
       </Button>
@@ -89,7 +89,7 @@ Loading.args = {
   isLoading: true,
   children: (
     <div className="flex flex-col">
-      <div>With a longer explaination</div>
+      <div>With a longer explanation</div>
       <Button className="block mt-8" variant="secondary">
         Action
       </Button>

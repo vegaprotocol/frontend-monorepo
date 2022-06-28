@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InView } from 'react-intersection-observer';
 import { useSubscription } from '@apollo/client';
-import { theme } from '@vegaprotocol/tailwindcss-config';
+import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
 import type {
   CandleLive,
@@ -12,6 +12,7 @@ import { CANDLE_SUB } from './data-provider';
 interface Props {
   candles: (SimpleMarkets_markets_candles | null)[] | null;
   marketId: string;
+  setValue: (arg: unknown) => void;
 }
 
 const getChange = (
@@ -51,20 +52,32 @@ const SimpleMarketPercentChangeWrapper = (props: Props) => {
 
   return (
     // @ts-ignore falsy wrong type?
-    <InView onChange={setInView}>
+    <InView
+      onChange={setInView}
+      className="flex h-full items-center justify-center"
+    >
       {inView && <SimpleMarketPercentChange {...props} />}
     </InView>
   );
 };
 
-const SimpleMarketPercentChange = ({ candles, marketId }: Props) => {
+const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
   const { data: { candles: { close = undefined } = {} } = {} } =
     useSubscription<CandleLive, CandleLiveVariables>(CANDLE_SUB, {
       variables: { marketId },
     });
   const change = getChange(candles, close);
   const color = getColor(change);
-  return <p style={{ color }}>{change}</p>;
+  useEffect(() => {
+    const value = parseFloat(change);
+    setValue(isNaN(value) ? '-' : value);
+  }, [setValue, change]);
+
+  return (
+    <div className="flex text-center" style={{ color }}>
+      {change}
+    </div>
+  );
 };
 
 export default SimpleMarketPercentChangeWrapper;

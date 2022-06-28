@@ -35,9 +35,8 @@ export const Radio = ({ id, value, label, disabled, hasError }: RadioProps) => {
   const itemClasses = classNames(
     'flex justify-center items-center',
     'w-[17px] h-[17px] rounded-full border',
-    'focus:outline-0 focus-visible:outline-0',
-    'focus-visible:shadow-radio focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
-    'border-black-60 dark:border-white-60',
+    'focus:outline-none focus-visible:outline-none',
+    'focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
     'dark:bg-white-25',
     {
       'border-black-60 dark:border-white-60': !hasError,

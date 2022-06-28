@@ -42,46 +42,52 @@ const Home = ({ name }: RouteChildProps) => {
         />
       </HomeSection>
       <HomeSection>
-        <h2 className="text-h4 text-white">{t('Token Vesting')}</h2>
-        <p className="mb-8">
+        <h2>{t('Token Vesting')}</h2>
+        <p>
           {t(
             'The vesting contract holds VEGA tokens until they have become unlocked.'
           )}
         </p>
-        <p className="mb-8">
+        <p>
           <Trans
             i18nKey="Tokens are held in different <trancheLink>Tranches</trancheLink>. Each tranche has its own schedule for how the tokens are unlocked."
             components={{
-              trancheLink: <Link to={Routes.TRANCHES} />,
+              trancheLink: (
+                <Link
+                  data-testid="tranches-link"
+                  to={Routes.TRANCHES}
+                  className="underline text-white"
+                />
+              ),
             }}
           />
         </p>
-        <p className="mb-8">
+        <p>
           {t(
             'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
           )}
         </p>
         <Link to={Routes.VESTING}>
-          <Button variant="secondary" data-test-id="check-vesting-page-btn">
+          <Button variant="secondary" data-testid="check-vesting-page-btn">
             {t('Check to see if you can redeem unlocked VEGA tokens')}
           </Button>
         </Link>
       </HomeSection>
       <HomeSection>
-        <h2 className="text-h4 text-white">{t('Use your Vega tokens')}</h2>
-        <p className="mb-8">
+        <h2 className="uppercase">{t('Use your Vega tokens')}</h2>
+        <p>
           {t(
             'To use your tokens on the Vega network they need to be associated with a Vega wallet/key.'
           )}
         </p>
-        <p className="mb-8">
+        <p>
           {t(
             'This can happen both while held in the vesting contract as well as when redeemed.'
           )}
         </p>
         <p>
           <a
-            data-test-id="get-vega-wallet-link"
+            data-testid="get-vega-wallet-link"
             href={Links.WALLET_GUIDE}
             className="underline text-white"
             target="_blank"
@@ -90,8 +96,9 @@ const Home = ({ name }: RouteChildProps) => {
             {t('Get a Vega wallet')}
           </a>
         </p>
-        <p data-test-id="associate-vega-tokens-link-on-homepage">
+        <p>
           <Link
+            data-testid="associate-vega-tokens-link-on-homepage"
             to={`${Routes.STAKING}/associate`}
             className="underline text-white"
           >
@@ -102,30 +109,38 @@ const Home = ({ name }: RouteChildProps) => {
       <div className="flex gap-40">
         <div className="flex-1">
           <HomeSection>
-            <h2 className="text-h4 text-white">{t('Staking')}</h2>
-            <p className="mb-8">
+            <h2>{t('Staking')}</h2>
+            <p>
               {t(
                 'VEGA token holders can nominate a validator node and receive staking rewards.'
               )}
             </p>
             <p>
               <Link to={Routes.STAKING}>
-                <Button variant="secondary">{t('Nominate a validator')}</Button>
+                <Button
+                  variant="secondary"
+                  data-testid="staking-button-on-homepage"
+                >
+                  {t('Nominate a validator')}
+                </Button>
               </Link>
             </p>
           </HomeSection>
         </div>
         <div className="flex-1">
           <HomeSection>
-            <h2 className="text-h4 text-white">{t('Governance')}</h2>
-            <p className="mb-8">
+            <h2>{t('Governance')}</h2>
+            <p>
               {t(
                 'VEGA token holders can vote on proposed changes to the network and create proposals.'
               )}
             </p>
             <p>
               <Link to={Routes.GOVERNANCE}>
-                <Button variant="secondary">
+                <Button
+                  variant="secondary"
+                  data-testid="governance-button-on-homepage"
+                >
                   {t('View Governance proposals')}
                 </Button>
               </Link>
@@ -140,5 +155,5 @@ const Home = ({ name }: RouteChildProps) => {
 export default Home;
 
 export const HomeSection = ({ children }: { children: React.ReactNode }) => {
-  return <section className="mb-20">{children}</section>;
+  return <section className="mb-28">{children}</section>;
 };

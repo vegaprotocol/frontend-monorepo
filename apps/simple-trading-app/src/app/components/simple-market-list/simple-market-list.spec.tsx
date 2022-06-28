@@ -1,8 +1,15 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { render, screen, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitFor,
+  cleanup,
+  getAllByRole,
+} from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
+import { BrowserRouter } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
 import { FILTERS_QUERY, MARKETS_QUERY } from './data-provider';
@@ -36,6 +43,7 @@ describe('SimpleMarketList', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    cleanup();
   });
 
   it('should be properly renderer as empty', async () => {
@@ -54,7 +62,8 @@ describe('SimpleMarketList', () => {
       render(
         <MockedProvider mocks={[mocks, filterMock]}>
           <SimpleMarketList />
-        </MockedProvider>
+        </MockedProvider>,
+        { wrapper: BrowserRouter }
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
@@ -122,13 +131,18 @@ describe('SimpleMarketList', () => {
       render(
         <MockedProvider mocks={[mocks, filterMock]}>
           <SimpleMarketList />
-        </MockedProvider>
+        </MockedProvider>,
+        { wrapper: BrowserRouter }
       );
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
     await waitFor(() => {
-      expect(screen.getByTestId('simple-market-list')).toBeInTheDocument();
+      expect(
+        document.querySelector('.ag-center-cols-container')
+      ).toBeInTheDocument();
     });
-    expect(screen.getByTestId('simple-market-list').children).toHaveLength(2);
+
+    const container = document.querySelector('.ag-center-cols-container');
+    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
   });
 });

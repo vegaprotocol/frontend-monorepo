@@ -1,29 +1,40 @@
 export enum Intent {
   None,
   Primary,
-  Success,
-  Warning,
   Danger,
+  Warning,
+  Success,
 }
 
-export const getIntentShadow = (intent?: Intent) => {
+export const getIntentShadow = (intent = Intent.None) => {
   return {
-    'shadow-callout': true,
+    'shadow-intent': true,
     'shadow-danger': intent === Intent.Danger,
     'shadow-warning': intent === Intent.Warning,
+    'shadow-black dark:shadow-white':
+      intent === Intent.None || intent === Intent.Primary,
     'shadow-success': intent === Intent.Success,
-    'shadow-black dark:shadow-white': intent === Intent.None,
-    'shadow-vega-pink dark:shadow-vega-yellow': intent === Intent.Primary,
   };
 };
 
-export const getVariantBackground = (variant?: Intent) => {
+export const getIntentBorder = (intent = Intent.None) => {
   return {
-    'bg-black dark:bg-white': variant === Intent.None,
+    border: true,
+    'border-danger': intent === Intent.Danger,
+    'border-warning': intent === Intent.Warning,
+    'border-black dark:border-white':
+      intent === Intent.None || intent === Intent.Primary,
+    'border-success': intent === Intent.Success,
+  };
+};
+
+export const getIntentTextAndBackground = (intent = Intent.None) => {
+  return {
+    'bg-black text-white dark:bg-white dark:text-black': intent === Intent.None,
     'bg-vega-pink text-black dark:bg-vega-yellow dark:text-black-normal':
-      variant === Intent.Primary,
-    'bg-danger text-white': variant === Intent.Danger,
-    'bg-warning text-black': variant === Intent.Warning,
-    'bg-success text-black': variant === Intent.Success,
+      intent === Intent.Primary,
+    'bg-danger text-white': intent === Intent.Danger,
+    'bg-warning text-black': intent === Intent.Warning,
+    'bg-success text-black': intent === Intent.Success,
   };
 };

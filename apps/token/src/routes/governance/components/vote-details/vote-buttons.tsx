@@ -124,6 +124,10 @@ export const VoteButtons = ({
     return <p>{cantVoteUI}</p>;
   }
 
+  if (voteState === VoteState.Requested) {
+    return <p>{t('voteRequested')}...</p>;
+  }
+
   if (voteState === VoteState.Pending) {
     return <p>{t('votePending')}...</p>;
   }
@@ -145,7 +149,6 @@ export const VoteButtons = ({
         {proposalState === ProposalState.Open ? (
           <Button
             variant="inline-link"
-            className="text-yellow"
             onClick={() => {
               setChangeVote(true);
             }}

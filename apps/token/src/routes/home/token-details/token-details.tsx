@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { Callout, Link, Intent, Splash } from '@vegaprotocol/ui-toolkit';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { useTranches } from '../../../hooks/use-tranches';
 import type { BigNumber } from '../../../lib/bignumber';
@@ -42,13 +42,13 @@ export const TokenDetails = ({
   }
 
   return (
-    <KeyValueTable className={'token-details'}>
+    <KeyValueTable className={'token-details text-white'}>
       <KeyValueTableRow>
         {t('Token address').toUpperCase()}
         <Link
           data-testid="token-address"
           title={t('View on Etherscan (opens in a new tab)')}
-          className="font-mono"
+          className="font-mono text-white text-right"
           href={`${ETHERSCAN_URL}/address/${token.address}`}
         >
           {token.address}
@@ -59,7 +59,7 @@ export const TokenDetails = ({
         <Link
           data-testid="token-contract"
           title={t('View on Etherscan (opens in a new tab)')}
-          className="font-mono"
+          className="font-mono text-white text-right"
           href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
         >
           {config.token_vesting_contract.address}
@@ -67,7 +67,9 @@ export const TokenDetails = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Total supply').toUpperCase()}
-        <span data-testid="total-supply">{formatNumber(totalSupply, 2)}</span>
+        <span className="font-mono" data-testid="total-supply">
+          {formatNumber(totalSupply, 2)}
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Circulating supply').toUpperCase()}
@@ -75,7 +77,9 @@ export const TokenDetails = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Staked on Vega validator').toUpperCase()}
-        <span data-testid="staked">{formatNumber(totalStaked, 2)}</span>
+        <span data-testid="staked" className="font-mono">
+          {formatNumber(totalStaked, 2)}
+        </span>
       </KeyValueTableRow>
     </KeyValueTable>
   );

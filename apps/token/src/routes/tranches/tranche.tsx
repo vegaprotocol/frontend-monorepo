@@ -7,7 +7,7 @@ import { useParams } from 'react-router';
 import { Navigate } from 'react-router-dom';
 
 import { useOutletContext } from 'react-router-dom';
-import { useEnvironment } from '@vegaprotocol/network-switcher';
+import { useEnvironment } from '@vegaprotocol/environment';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
@@ -67,7 +67,7 @@ export const Tranche = () => {
           {formatNumber(tranche.total_removed)}
         </span>
       </div>
-      <h2 className="text-h4 text-white mb-8">{t('Holders')}</h2>
+      <h2>{t('Holders')}</h2>
       {tranche.users.length ? (
         <ul role="list">
           {tranche.users.map((user, i) => {

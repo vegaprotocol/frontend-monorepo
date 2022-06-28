@@ -2,6 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
+import { getButtonClasses, Button } from '@vegaprotocol/ui-toolkit';
 
 import {
   AppStateActionType,
@@ -70,22 +71,27 @@ const AssociatedAmounts = ({
         rightLabel={t('notAssociated')}
         leftColor={Colors.white.DEFAULT}
         rightColor={Colors.black.DEFAULT}
-        light={true}
+        light={false}
       />
       {vestingAssociationByVegaKey.length ? (
-        <>
-          <hr style={{ borderStyle: 'dashed', color: Colors.text }} />
-          <WalletCardRow label="Associated with Vega keys" bold={true} />
+        <div>
+          <hr style={{ borderStyle: 'dashed' }} />
+          <WalletCardRow
+            label="Associated with Vega keys"
+            bold={true}
+            dark={true}
+          />
           {vestingAssociationByVegaKey.map(([key, amount]) => {
             return (
               <WalletCardRow
                 key={key}
                 label={removeLeadingAddressSymbol(key)}
                 value={amount}
+                dark={true}
               />
             );
           })}
-        </>
+        </div>
       ) : null}
     </>
   );
@@ -129,6 +135,7 @@ const ConnectedKey = () => {
             name="VEGA"
             symbol="In vesting contract"
             balance={totalInVestingContract}
+            dark={true}
           />
           <LockedProgress
             locked={totalLockedBalance}
@@ -136,7 +143,7 @@ const ConnectedKey = () => {
             total={totalVestedBalance.plus(totalLockedBalance)}
             leftLabel={t('Locked')}
             rightLabel={t('Unlocked')}
-            light={true}
+            light={false}
           />
         </>
       )}
@@ -153,6 +160,7 @@ const ConnectedKey = () => {
         name="VEGA"
         symbol="In Wallet"
         balance={walletWithAssociations}
+        dark={true}
       />
       {!Object.keys(
         appState.associationBreakdown.stakingAssociations
@@ -163,15 +171,17 @@ const ConnectedKey = () => {
         />
       )}
       <WalletCardActions>
-        <Link className="flex-1" to={`${Routes.STAKING}/associate`}>
-          <span className="flex items-center justify-center w-full text-center px-28 border h-28">
-            {t('associate')}
-          </span>
+        <Link
+          className={getButtonClasses('flex-1 mr-4', 'secondary')}
+          to={`${Routes.STAKING}/associate`}
+        >
+          {t('associate')}
         </Link>
-        <Link className="flex-1" to={`${Routes.STAKING}/disassociate`}>
-          <span className="flex items-center justify-center w-full px-28 border h-28">
-            {t('disassociate')}
-          </span>
+        <Link
+          className={getButtonClasses('flex-1 ml-4', 'secondary')}
+          to={`${Routes.STAKING}/disassociate`}
+        >
+          {t('disassociate')}
         </Link>
       </WalletCardActions>
     </>
@@ -185,11 +195,11 @@ export const EthWallet = () => {
   const pendingTxs = usePendingTransactions();
 
   return (
-    <WalletCard>
+    <WalletCard dark={true}>
       <WalletCardHeader>
-        <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
+        <h1 className="m-0">{t('ethereumKey')}</h1>
         {account && (
-          <div className="px-4 text-right">
+          <div className="place-self-end font-mono px-4 pb-2">
             <div className="font-mono">{truncateMiddle(account)}</div>
             {pendingTxs && (
               <div>
@@ -203,7 +213,7 @@ export const EthWallet = () => {
                     })
                   }
                 >
-                  <Loader size="small" forceTheme="light" />
+                  <Loader size="small" forceTheme="dark" />
                   {t('pendingTransactions')}
                 </button>
               </div>
@@ -215,8 +225,8 @@ export const EthWallet = () => {
         {account ? (
           <ConnectedKey />
         ) : (
-          <button
-            className="w-full px-28 border h-28"
+          <Button
+            variant={'secondary'}
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
@@ -226,7 +236,7 @@ export const EthWallet = () => {
             data-test-id="connect-to-eth-wallet-button"
           >
             {t('connectEthWalletToAssociate')}
-          </button>
+          </Button>
         )}
         {account && (
           <WalletCardActions>

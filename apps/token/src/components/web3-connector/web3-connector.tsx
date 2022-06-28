@@ -1,5 +1,6 @@
-import { useEnvironment } from '@vegaprotocol/network-switcher';
-import { Button, Splash } from '@vegaprotocol/ui-toolkit';
+import { useEnvironment } from '@vegaprotocol/environment';
+import { useEthereumConfig } from '@vegaprotocol/web3';
+import { Button, Splash, AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Web3ConnectDialog } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import type { ReactElement } from 'react';
@@ -16,30 +17,35 @@ interface Web3ConnectorProps {
 
 export function Web3Connector({ children }: Web3ConnectorProps) {
   const { appState, appDispatch } = useAppState();
-  const { ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID } = useEnvironment();
-  const Connectors = useMemo(
-    () => createConnectors(ETHEREUM_PROVIDER_URL, ETHEREUM_CHAIN_ID),
-    [ETHEREUM_CHAIN_ID, ETHEREUM_PROVIDER_URL]
-  );
+  const { ETHEREUM_PROVIDER_URL } = useEnvironment();
+  const { config, loading, error } = useEthereumConfig();
+  const Connectors = useMemo(() => {
+    if (config?.chain_id) {
+      return createConnectors(ETHEREUM_PROVIDER_URL, Number(config.chain_id));
+    }
+    return undefined;
+  }, [config?.chain_id, ETHEREUM_PROVIDER_URL]);
   const setDialogOpen = useCallback(
     (isOpen: boolean) => {
       appDispatch({ type: AppStateActionType.SET_ETH_WALLET_OVERLAY, isOpen });
     },
     [appDispatch]
   );
-  const appChainId = Number(ETHEREUM_CHAIN_ID);
+  const appChainId = Number(config?.chain_id);
   return (
-    <>
+    <AsyncRenderer loading={loading} error={error} data={config}>
       <Web3Content appChainId={appChainId} setDialogOpen={setDialogOpen}>
         {children}
       </Web3Content>
-      <Web3ConnectDialog
-        connectors={Connectors}
-        dialogOpen={appState.ethConnectOverlay}
-        setDialogOpen={setDialogOpen}
-        desiredChainId={appChainId}
-      />
-    </>
+      {Connectors && (
+        <Web3ConnectDialog
+          connectors={Connectors}
+          dialogOpen={appState.ethConnectOverlay}
+          setDialogOpen={setDialogOpen}
+          desiredChainId={appChainId}
+        />
+      )}
+    </AsyncRenderer>
   );
 }
 
@@ -49,11 +55,7 @@ interface Web3ContentProps {
   setDialogOpen: (isOpen: boolean) => void;
 }
 
-export const Web3Content = ({
-  children,
-  appChainId,
-  setDialogOpen,
-}: Web3ContentProps) => {
+export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
   const { error, connector, chainId } = useWeb3React();
 
   useEffect(() => {
@@ -77,7 +79,7 @@ export const Web3Content = ({
     return (
       <Splash>
         <div className="flex flex-col items-center gap-12">
-          <p className="mb-12">This app only works on chain ID: {appChainId}</p>
+          <p>This app only works on chain ID: {appChainId}</p>
           <Button onClick={() => connector.deactivate()}>Disconnect</Button>
         </div>
       </Splash>

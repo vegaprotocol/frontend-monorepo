@@ -40,14 +40,16 @@ export const VegaWallet = () => {
     <section className="vega-wallet">
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
-          <div>
-            <h1 className="text-h3 uppercase">{t('vegaWallet')}</h1>
-            <span className="text-h6">{keypair && `(${keypair.name})`}</span>
-          </div>
+          <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
           {keypair && (
-            <span className="font-mono px-8">
-              {truncateMiddle(keypair.pub)}
-            </span>
+            <>
+              <div className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-12">
+                {keypair.name}
+              </div>
+              <span className="sm:col-start-2 place-self-end font-mono pb-2 px-4">
+                {truncateMiddle(keypair.pub)}
+              </span>
+            </>
           )}
         </WalletCardHeader>
         <WalletCardContent>{child}</WalletCardContent>
@@ -128,6 +130,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
     <WalletCardActions>
       <Button
         variant="inline-link"
+        className="mt-4"
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
@@ -180,15 +183,15 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         </div>
       ))}
       <WalletCardActions>
-        <Link style={{ flex: 1 }} to={Routes.GOVERNANCE}>
-          <span className="flex items-center justify-center w-full px-28 border h-28 bg-white text-black">
+        <Link className="flex-1 pr-8" to={Routes.GOVERNANCE}>
+          <Button variant={'secondary'} className="w-full">
             {t('governance')}
-          </span>
+          </Button>
         </Link>
-        <Link style={{ flex: 1 }} to={Routes.STAKING}>
-          <span className="flex items-center justify-center w-full px-28 border h-28 bg-white text-black">
+        <Link className="flex-1 pl-8" to={Routes.STAKING}>
+          <Button variant={'secondary'} className="w-full">
             {t('staking')}
-          </span>
+          </Button>
         </Link>
       </WalletCardActions>
       <VegaWalletAssetList accounts={accounts} />
