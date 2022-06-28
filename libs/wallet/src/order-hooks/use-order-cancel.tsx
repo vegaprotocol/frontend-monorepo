@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { determineId } from '@vegaprotocol/react-helpers';
 
 import { useVegaTransaction } from '../use-vega-transaction';

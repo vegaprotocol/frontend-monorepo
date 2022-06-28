@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { gql, useSubscription } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
 import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
