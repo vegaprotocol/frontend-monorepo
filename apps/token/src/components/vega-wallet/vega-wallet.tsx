@@ -130,6 +130,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
     <WalletCardActions>
       <Button
         variant="inline-link"
+        className="mt-4"
         onClick={() =>
           appDispatch({
             type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
