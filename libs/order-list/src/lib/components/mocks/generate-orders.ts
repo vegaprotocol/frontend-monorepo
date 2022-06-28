@@ -56,7 +56,6 @@ export const generateOrder = (partialOrder: Partial<Orders_party_orders>) =>
     partialOrder
   );
 
-
 export const limitOrder = generateOrder({
   id: 'limit-order',
   type: OrderType.Limit,
@@ -74,7 +73,7 @@ export const marketOrder = generateOrder({
 
 export const generateMockOrders = (): Orders_party_orders[] => {
   return [
-    {
+    generateOrder({
       __typename: 'Order',
       id: '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
       market: {
@@ -99,11 +98,8 @@ export const generateMockOrders = (): Orders_party_orders[] => {
       price: '20000000',
       timeInForce: OrderTimeInForce.GTC,
       createdAt: new Date(2020, 1, 1).toISOString(),
-      updatedAt: null,
-      expiresAt: null,
-      rejectionReason: null,
-    },
-    {
+    }),
+    generateOrder({
       __typename: 'Order',
       id: '48DB6767E4E4E0F649C5A13ABFADE39F8451C27DA828DAF14B7A1E8E5EBDAD99',
       market: {
@@ -128,11 +124,8 @@ export const generateMockOrders = (): Orders_party_orders[] => {
       price: '100',
       timeInForce: OrderTimeInForce.GTC,
       createdAt: new Date().toISOString(),
-      updatedAt: null,
-      expiresAt: null,
-      rejectionReason: null,
-    },
-    {
+    }),
+    generateOrder({
       __typename: 'Order',
       id: '4e93702990712c41f6995fcbbd94f60bb372ad12d64dfa7d96d205c49f790336',
       market: {
@@ -157,10 +150,7 @@ export const generateMockOrders = (): Orders_party_orders[] => {
       price: '20000',
       timeInForce: OrderTimeInForce.GTC,
       createdAt: new Date(2022, 5, 10).toISOString(),
-      updatedAt: null,
-      expiresAt: null,
-      rejectionReason: null,
-    },
+    }),
   ];
 };
 
