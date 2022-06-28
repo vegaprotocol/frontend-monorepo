@@ -7,6 +7,7 @@ import {
 } from '@vegaprotocol/react-helpers';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export interface Market {
   name: string;
@@ -23,7 +24,7 @@ export interface Order {
   type: string | null;
 }
 
-interface OrderDialogProps {
+interface VegaOrderTransactionDialogProps {
   transaction: VegaTxState;
   finalizedOrder: Order | null;
   title?: string;
@@ -33,7 +34,8 @@ export const VegaOrderTransactionDialog = ({
   transaction,
   finalizedOrder,
   title = 'Order placed',
-}: OrderDialogProps) => {
+}: VegaOrderTransactionDialogProps) => {
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   // Rejected by wallet
   if (transaction.status === VegaTxStatus.Requested) {
     return (
@@ -74,7 +76,15 @@ export const VegaOrderTransactionDialog = ({
       >
         {transaction.txHash && (
           <p data-testid="tx-hash" className="break-all">
-            {t(`Tx hash: ${transaction.txHash}`)}
+            Tx hash: &nbsp;
+            <a
+              className="underline"
+              href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {transaction.txHash}
+            </a>
           </p>
         )}
       </OrderDialogWrapper>

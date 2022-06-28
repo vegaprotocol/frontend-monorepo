@@ -17,5 +17,9 @@ export const ENV = {
     process.env['NX_TRADING_SENTRY_DSN']
   ),
   envName: windowOrDefault('NX_VEGA_ENV', process.env['NX_VEGA_ENV']),
-  vegaUrl: windowOrDefault('NX_VEGA_URL', process.env['NX_VEGA_URL']),
+  vegaUrl: windowOrDefault('NX_VEGA_URL', process.env['X_VEGA_URL']),
+  explorerUrl: windowOrDefault(
+    'NX_VEGA_EXPLORER_URL',
+    process.env['NX_VEGA_EXPLORER_URL']
+  ),
 };
