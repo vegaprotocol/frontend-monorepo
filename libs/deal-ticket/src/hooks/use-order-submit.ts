@@ -67,15 +67,10 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setFinalizedOrder(matchingOrderEvent.event);
+        resetTransaction();
       }
     },
   });
-
-  useEffect(() => {
-    if (finalizedOrder) {
-      resetTransaction();
-    }
-  }, [finalizedOrder, resetTransaction]);
 
   const submit = useCallback(
     async (order: Order) => {

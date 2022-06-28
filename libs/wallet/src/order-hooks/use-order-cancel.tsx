@@ -32,15 +32,10 @@ export const useOrderCancel = () => {
 
       if (matchingOrderEvent && matchingOrderEvent.__typename === 'Order') {
         setUpdatedOrder(matchingOrderEvent);
+        resetTransaction();
       }
     },
   });
-
-  useEffect(() => {
-    if (updatedOrder) {
-      resetTransaction();
-    }
-  }, [updatedOrder, resetTransaction]);
 
   const cancel = useCallback(
     async (order) => {
