@@ -1,0 +1,15 @@
+{
+  "site": {
+    "id": "79baaeca-1952-4ae7-a256-f668cfc1d68e",
+    "team": "886f256a-fd19-40d5-9551-bcd71a7c8100",
+    "platform": "ipfs",
+    "source": "github",
+    "name": "vega-fairground-console"
+  },
+  "build": {
+    "baseDir": "",
+    "publicDir": "dist/apps/trading/",
+    "command": "yarn && yarn nx run build:trading static",
+    "rootDir": ""
+  }
+}
