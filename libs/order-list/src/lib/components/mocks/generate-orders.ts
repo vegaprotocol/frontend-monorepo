@@ -70,10 +70,8 @@ export const marketOrder = generateOrder({
   status: OrderStatus.Active,
 });
 
-export const generateOrdersArray = (): Orders_party_orders[] => {
+export const generateMockOrders = (): Orders_party_orders[] => {
   return [
-    marketOrder,
-    limitOrder,
     {
       __typename: 'Order',
       id: '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
@@ -162,4 +160,8 @@ export const generateOrdersArray = (): Orders_party_orders[] => {
       rejectionReason: null,
     },
   ];
+};
+
+export const generateOrdersArray = (): Orders_party_orders[] => {
+  return [marketOrder, limitOrder, ...generateMockOrders()];
 };
