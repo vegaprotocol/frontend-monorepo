@@ -135,7 +135,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
       <div className="h-[30px] inline-flex items-center lg:h-40 uppercase">
         <h1
           data-testid="header-title"
-          className={`text-h3 font-alpha uppercase calt mb-2 ${
+          className={`text-h4 sm:text-h3 font-alpha uppercase calt mb-2 ${
             fairground ? 'text-black' : 'text-white'
           }`}
         >
