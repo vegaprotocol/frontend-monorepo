@@ -41,13 +41,15 @@ export const VegaWallet = () => {
       <WalletCard dark={true}>
         <WalletCardHeader dark={true}>
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
-          <div className="row-start-2 col-start-1 col-span-2 text-h6 mb-12">
-            {keypair && `(${keypair.name})`}
-          </div>
           {keypair && (
-            <span className="col-start-2 place-self-end font-mono pb-2 px-4">
-              {truncateMiddle(keypair.pub)}
-            </span>
+            <>
+              <div className="row-start-2 col-start-1 col-span-2 text-h6 mb-12">
+                {keypair.name}
+              </div>
+              <span className="col-start-2 place-self-end font-mono pb-2 px-4">
+                {truncateMiddle(keypair.pub)}
+              </span>
+            </>
           )}
         </WalletCardHeader>
         <WalletCardContent>{child}</WalletCardContent>
