@@ -60,7 +60,7 @@ describe('market list', () => {
       cy.intercept('POST', '/query').as('Filters');
       cy.visit('/markets');
       cy.wait('@Filters').then((filters) => {
-        if (filters?.response?.body.data.markets.length) {
+        if (filters?.response?.body?.data?.markets?.length) {
           const asset =
             filters.response.body.data.markets[0].tradableInstrument.instrument
               .product.settlementAsset.symbol;
