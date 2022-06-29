@@ -18,8 +18,9 @@ export const aliasQuery = (
   if (hasOperationName(req, operationName)) {
     req.alias = operationName;
     if (data !== undefined) {
-      req.reply((res) => {
-        res.body.data = data;
+      req.reply({
+        statusCode: 200,
+        body: { data },
       });
     }
   }
