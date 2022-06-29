@@ -15,11 +15,9 @@ export default class TransactionsPage extends BasePage {
   txType = 'tx-type';
 
   validateTransactionsPagedisplayed() {
-    cy.getByTestId(this.transactionsList).should('have.length.above', 1);
-    cy.getByTestId(this.blockHeight).first().should('not.be.empty');
-    cy.getByTestId(this.numberOfTransactions).first().should('not.be.empty');
-    cy.getByTestId(this.validatorLink).first().should('not.be.empty');
-    cy.getByTestId(this.blockTime).first().should('not.be.empty');
+    // eslint-disable-next-line cypress/no-unnecessary-waiting
+    cy.wait(5000); // Wait for transactions to load if there are any
+    cy.getByTestId(this.transactionRow).should('have.length.above', 1);
   }
 
   validateRefreshBtn() {
