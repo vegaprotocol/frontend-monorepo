@@ -92,7 +92,7 @@ it('Successful connection using rest auth form', async () => {
     fireEvent.submit(screen.getByTestId('rest-connector-form'));
   });
 
-  expect(spy).toHaveBeenCalledWith('http://localhost:1789', fields);
+  expect(spy).toHaveBeenCalledWith('http://localhost:1789/api/v1', fields);
 
   expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
 });
@@ -150,7 +150,7 @@ it('Unsuccessful connection using rest auth form', async () => {
     fireEvent.submit(screen.getByTestId('rest-connector-form'));
   });
 
-  expect(spy).toHaveBeenCalledWith('http://localhost:1789', fields);
+  expect(spy).toHaveBeenCalledWith('http://localhost:1789/api/v1', fields);
 
   expect(screen.getByTestId('form-error')).toHaveTextContent(
     'Something went wrong'
@@ -168,7 +168,7 @@ it('Unsuccessful connection using rest auth form', async () => {
   });
 
   expect(screen.getByTestId('form-error')).toHaveTextContent(
-    'Wallet not running at http://localhost:1789'
+    'Wallet not running at http://localhost:1789/api/v1'
   );
 
   // Reject eg non 200 results

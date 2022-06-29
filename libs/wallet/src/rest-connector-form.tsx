@@ -15,7 +15,7 @@ interface RestConnectorFormProps {
   onAuthenticate: () => void;
 }
 
-const VEGA_DEFAULT_URL = 'http://localhost:1789';
+const VEGA_DEFAULT_URL = 'http://localhost:1789/api/v1';
 
 export function RestConnectorForm({
   connector,
