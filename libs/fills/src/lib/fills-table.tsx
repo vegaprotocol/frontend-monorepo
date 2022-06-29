@@ -25,7 +25,7 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
       <AgGrid
         ref={ref}
         rowData={fills}
-        overlayNoRowsTemplate="No fills"
+        overlayNoRowsTemplate={t('No fills')}
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
@@ -43,103 +43,27 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
             }
             return className;
           }}
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            let prefix;
-            if (data.buyer.id === partyId) {
-              prefix = '+';
-            } else if (data.seller.id) {
-              prefix = '-';
-            }
-
-            const size = addDecimalsFormatNumber(
-              value,
-              data.market.positionDecimalPlaces
-            );
-            return `${prefix}${size}`;
-          }}
+          valueFormatter={formatSize(partyId)}
         />
         <AgGridColumn
           headerName={t('Value')}
           field="price"
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            const asset =
-              data.market.tradableInstrument.instrument.product.settlementAsset
-                .symbol;
-            const valueFormatted = addDecimalsFormatNumber(
-              value,
-              data.market.decimalPlaces
-            );
-            return `${valueFormatted} ${asset}`;
-          }}
+          valueFormatter={formatPrice}
         />
         <AgGridColumn
           headerName={t('Filled value')}
           field="price"
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            const asset =
-              data.market.tradableInstrument.instrument.product.settlementAsset
-                .symbol;
-            const size = new BigNumber(
-              addDecimal(data.size, data.market.positionDecimalPlaces)
-            );
-            const price = new BigNumber(
-              addDecimal(value, data.market.decimalPlaces)
-            );
-
-            const total = size.times(price).toString();
-            const valueFormatted = formatNumber(
-              total,
-              data.market.decimalPlaces
-            );
-            return `${valueFormatted} ${asset}`;
-          }}
+          valueFormatter={formatTotal}
         />
         <AgGridColumn
           headerName={t('Role')}
           field="aggressor"
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            const taker = t('Taker');
-            const maker = t('Maker');
-            if (data.buyer.id === partyId) {
-              if (value === Side.Buy) {
-                return taker;
-              } else {
-                return maker;
-              }
-            } else if (data.seller.id === partyId) {
-              if (value === Side.Sell) {
-                return taker;
-              } else {
-                return maker;
-              }
-            } else {
-              return '-';
-            }
-          }}
+          valueFormatter={formatRole(partyId)}
         />
         <AgGridColumn
           headerName={t('Fee')}
           field="market.tradableInstrument.instrument.product"
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            const asset = value.settlementAsset;
-            let feesObj;
-            if (data.buyer.id === partyId) {
-              feesObj = data.buyerFee;
-            } else if (data.seller.id === partyId) {
-              feesObj = data.sellerFee;
-            } else {
-              return '-';
-            }
-
-            const fee = new BigNumber(feesObj.makerFee)
-              .plus(feesObj.infrastructureFee)
-              .plus(feesObj.liquidityFee);
-            const totalFees = addDecimalsFormatNumber(
-              fee.toString(),
-              asset.decimals
-            );
-            return `${totalFees} ${asset.symbol}`;
-          }}
+          valueFormatter={formatFee(partyId)}
         />
         <AgGridColumn
           headerName={t('Date')}
@@ -152,3 +76,85 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
     );
   }
 );
+
+const formatPrice = ({ value, data }: ValueFormatterParams) => {
+  const asset =
+    data.market.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const valueFormatted = addDecimalsFormatNumber(
+    value,
+    data.market.decimalPlaces
+  );
+  return `${valueFormatted} ${asset}`;
+};
+
+const formatSize = (partyId: string) => {
+  return ({ value, data }: ValueFormatterParams) => {
+    let prefix;
+    if (data.buyer.id === partyId) {
+      prefix = '+';
+    } else if (data.seller.id) {
+      prefix = '-';
+    }
+
+    const size = addDecimalsFormatNumber(
+      value,
+      data.market.positionDecimalPlaces
+    );
+    return `${prefix}${size}`;
+  };
+};
+
+const formatTotal = ({ value, data }: ValueFormatterParams) => {
+  const asset =
+    data.market.tradableInstrument.instrument.product.settlementAsset.symbol;
+  const size = new BigNumber(
+    addDecimal(data.size, data.market.positionDecimalPlaces)
+  );
+  const price = new BigNumber(addDecimal(value, data.market.decimalPlaces));
+
+  const total = size.times(price).toString();
+  const valueFormatted = formatNumber(total, data.market.decimalPlaces);
+  return `${valueFormatted} ${asset}`;
+};
+
+const formatRole = (partyId: string) => {
+  return ({ value, data }: ValueFormatterParams) => {
+    const taker = t('Taker');
+    const maker = t('Maker');
+    if (data.buyer.id === partyId) {
+      if (value === Side.Buy) {
+        return taker;
+      } else {
+        return maker;
+      }
+    } else if (data.seller.id === partyId) {
+      if (value === Side.Sell) {
+        return taker;
+      } else {
+        return maker;
+      }
+    } else {
+      return '-';
+    }
+  };
+};
+
+const formatFee = (partyId: string) => {
+  return ({ value, data }: ValueFormatterParams) => {
+    const asset = value.settlementAsset;
+    let feesObj;
+    if (data.buyer.id === partyId) {
+      feesObj = data.buyerFee;
+    } else if (data.seller.id === partyId) {
+      feesObj = data.sellerFee;
+    } else {
+      return '-';
+    }
+
+    const fee = new BigNumber(feesObj.makerFee)
+      .plus(feesObj.infrastructureFee)
+      .plus(feesObj.liquidityFee);
+    const totalFees = addDecimalsFormatNumber(fee.toString(), asset.decimals);
+    return `${totalFees} ${asset.symbol}`;
+  };
+};
