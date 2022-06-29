@@ -92,7 +92,40 @@ it('Successful connection using rest auth form', async () => {
     fireEvent.submit(screen.getByTestId('rest-connector-form'));
   });
 
-  expect(spy).toHaveBeenCalledWith(fields);
+  expect(spy).toHaveBeenCalledWith('http://localhost:1789/api/v1', fields);
+
+  expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
+});
+
+it('Successful connection using custom url', async () => {
+  const spy = jest
+    .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
+    .mockImplementation(() => Promise.resolve({ success: true, error: null }));
+
+  render(generateJSX({ dialogOpen: true }));
+  // Switches to rest form
+  fireEvent.click(screen.getByText('rest provider'));
+
+  // Client side validation
+  fireEvent.submit(screen.getByTestId('rest-connector-form'));
+  expect(spy).not.toHaveBeenCalled();
+  await waitFor(() => {
+    expect(screen.getAllByText('Required')).toHaveLength(2);
+  });
+
+  // Set custom URL
+  fireEvent.change(screen.getByLabelText('Url'), {
+    target: { value: 'localhost:1234' },
+  });
+
+  const fields = fillInForm();
+
+  // Wait for auth method to be called
+  await act(async () => {
+    fireEvent.submit(screen.getByTestId('rest-connector-form'));
+  });
+
+  expect(spy).toHaveBeenCalledWith('localhost:1234', fields);
 
   expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
 });
@@ -117,7 +150,7 @@ it('Unsuccessful connection using rest auth form', async () => {
     fireEvent.submit(screen.getByTestId('rest-connector-form'));
   });
 
-  expect(spy).toHaveBeenCalledWith(fields);
+  expect(spy).toHaveBeenCalledWith('http://localhost:1789/api/v1', fields);
 
   expect(screen.getByTestId('form-error')).toHaveTextContent(
     'Something went wrong'
@@ -135,7 +168,7 @@ it('Unsuccessful connection using rest auth form', async () => {
   });
 
   expect(screen.getByTestId('form-error')).toHaveTextContent(
-    'Wallet not running at http://localhost:1789'
+    'Wallet not running at http://localhost:1789/api/v1'
   );
 
   // Reject eg non 200 results
