@@ -33,6 +33,8 @@ beforeEach(() => {
   };
 });
 
+const DEFAULT_URL = 'http://localhost:1789/api/v1';
+
 function generateJSX(
   props?: Partial<VegaConnectDialogProps>,
   contextValue?: Partial<VegaWalletContextShape>
@@ -92,7 +94,7 @@ it('Successful connection using rest auth form', async () => {
     fireEvent.submit(screen.getByTestId('rest-connector-form'));
   });
 
-  expect(spy).toHaveBeenCalledWith('http://localhost:1789/api/v1', fields);
+  expect(spy).toHaveBeenCalledWith(DEFAULT_URL, fields);
 
   expect(defaultProps.setDialogOpen).toHaveBeenCalledWith(false);
 });
@@ -150,7 +152,7 @@ it('Unsuccessful connection using rest auth form', async () => {
     fireEvent.submit(screen.getByTestId('rest-connector-form'));
   });
 
-  expect(spy).toHaveBeenCalledWith('http://localhost:1789/api/v1', fields);
+  expect(spy).toHaveBeenCalledWith(DEFAULT_URL, fields);
 
   expect(screen.getByTestId('form-error')).toHaveTextContent(
     'Something went wrong'
@@ -168,7 +170,7 @@ it('Unsuccessful connection using rest auth form', async () => {
   });
 
   expect(screen.getByTestId('form-error')).toHaveTextContent(
-    'Wallet not running at http://localhost:1789/api/v1'
+    `Wallet not running at ${DEFAULT_URL}`
   );
 
   // Reject eg non 200 results
