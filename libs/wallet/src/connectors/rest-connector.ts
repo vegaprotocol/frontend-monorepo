@@ -5,7 +5,7 @@ import {
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
-import type { VegaConnector } from '.';
+import type { VegaConnector } from './vega-connector';
 import type { TransactionSubmission } from '../types';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
@@ -95,7 +95,7 @@ export class RestConnector implements VegaConnector {
   }
 
   private handleSendTxError(err: unknown) {
-    const unpexpectedError = { error: 'Something went wrong' };
+    const unexpectedError = { error: 'Something went wrong' };
 
     if (isServiceError(err)) {
       if (err.code === 401) {
@@ -105,10 +105,10 @@ export class RestConnector implements VegaConnector {
       try {
         return JSON.parse(err.body ?? '');
       } catch {
-        return unpexpectedError;
+        return unexpectedError;
       }
     } else {
-      return unpexpectedError;
+      return unexpectedError;
     }
   }
 

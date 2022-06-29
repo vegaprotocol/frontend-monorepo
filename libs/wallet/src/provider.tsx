@@ -2,7 +2,7 @@ import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import type { ReactNode } from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { VegaKeyExtended, VegaWalletContextShape } from '.';
-import type { VegaConnector } from './connectors';
+import type { VegaConnector } from './connectors/vega-connector';
 import { VegaWalletContext } from './context';
 import { WALLET_KEY } from './storage-keys';
 import type { TransactionSubmission } from './types';
@@ -104,7 +104,7 @@ export const VegaWalletProvider = ({ children }: VegaWalletProviderProps) => {
       disconnect,
       connector: connector.current,
       sendTx,
-    };
+    } as VegaWalletContextShape;
   }, [keypair, keypairs, setPublicKey, connect, disconnect, connector, sendTx]);
 
   return (

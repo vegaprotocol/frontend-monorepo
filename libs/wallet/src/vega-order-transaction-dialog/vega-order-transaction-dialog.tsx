@@ -5,18 +5,34 @@ import {
   addDecimalsFormatNumber,
   t,
 } from '@vegaprotocol/react-helpers';
-import type { VegaTxState } from '@vegaprotocol/wallet';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
-import type { OrderEvent_busEvents_event_Order } from '../hooks/__generated__/OrderEvent';
+import type { VegaTxState } from '../use-vega-transaction';
+import { VegaTxStatus } from '../use-vega-transaction';
+
+export interface Market {
+  name: string;
+  positionDecimalPlaces?: number;
+  decimalPlaces: number;
+}
+
+export interface Order {
+  status: string;
+  rejectionReason: string | null;
+  size: string;
+  price: string;
+  market: Market | null;
+  type: string | null;
+}
 
 interface OrderDialogProps {
   transaction: VegaTxState;
-  finalizedOrder: OrderEvent_busEvents_event_Order | null;
+  finalizedOrder: Order | null;
+  title?: string;
 }
 
-export const OrderDialog = ({
+export const VegaOrderTransactionDialog = ({
   transaction,
   finalizedOrder,
+  title = 'Order placed',
 }: OrderDialogProps) => {
   // Rejected by wallet
   if (transaction.status === VegaTxStatus.Requested) {
@@ -80,10 +96,7 @@ export const OrderDialog = ({
   }
 
   return (
-    <OrderDialogWrapper
-      title="Order placed"
-      icon={<Icon name="tick" size={20} />}
-    >
+    <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
       <p>{t(`Status: ${finalizedOrder.status}`)}</p>
       {finalizedOrder.market && (
         <p>{t(`Market: ${finalizedOrder.market.name}`)}</p>

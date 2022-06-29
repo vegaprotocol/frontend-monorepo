@@ -4,8 +4,8 @@ import {
   Side,
   OrderTimeInForce,
 } from '@vegaprotocol/types';
-import { sortOrders } from './orders-data-provider';
-import type { Orders_party_orders } from './__generated__/Orders';
+import type { Orders_party_orders } from '../__generated__/Orders';
+import { sortOrders } from './order-data-provider';
 
 const marketOrder: Orders_party_orders = {
   __typename: 'Order',

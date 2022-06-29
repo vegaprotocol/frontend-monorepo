@@ -1,16 +1,16 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
-import type { Orders_party_orders } from './__generated__/Orders';
-import {
-  addDecimal,
-  formatNumber,
-  getDateTimeFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import type { ValueFormatterParams } from 'ag-grid-community';
+import type { Orders_party_orders } from '../__generated__/Orders';
+import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
+import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
+import type {
+  ICellRendererParams,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import { forwardRef } from 'react';
+import { forwardRef, useState } from 'react';
+import { useOrderCancel } from '@vegaprotocol/wallet';
+import { CancelDialog } from '../cancel-order-dialog/cancel-dialog';
 import BigNumber from 'bignumber.js';
 
 interface OrderListProps {
@@ -19,6 +19,30 @@ interface OrderListProps {
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data }, ref) => {
+    const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+    const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
+    return (
+      <>
+        <OrderListTable data={data} cancel={cancel} ref={ref} />
+        <CancelDialog
+          orderDialogOpen={orderDialogOpen}
+          setOrderDialogOpen={setOrderDialogOpen}
+          finalizedOrder={finalizedOrder}
+          transaction={transaction}
+          reset={reset}
+        />
+      </>
+    );
+  }
+);
+
+interface OrderListTableProps {
+  data: Orders_party_orders[] | null;
+  cancel: (body?: unknown) => Promise<unknown>;
+}
+
+export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
+  ({ data, cancel }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -27,6 +51,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data.id}
+        rowHeight={40}
       >
         <AgGridColumn
           headerName={t('Market')}
@@ -76,7 +101,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             if (data.type === 'Market') {
               return '-';
             }
-            return formatNumber(value, data.market.decimalPlaces);
+            return addDecimal(value, data.market.decimalPlaces);
           }}
         />
         <AgGridColumn
@@ -102,6 +127,32 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           field="updatedAt"
           valueFormatter={({ value }: ValueFormatterParams) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
+          }}
+        />
+        <AgGridColumn
+          field="cancel"
+          cellRenderer={({ data }: ICellRendererParams) => {
+            if (
+              ![
+                OrderStatus.Cancelled,
+                OrderStatus.Rejected,
+                OrderStatus.Expired,
+                OrderStatus.Filled,
+                OrderStatus.Stopped,
+              ].includes(data.status)
+            ) {
+              return (
+                <Button
+                  data-testid="cancel"
+                  onClick={async () => {
+                    await cancel(data);
+                  }}
+                >
+                  Cancel
+                </Button>
+              );
+            }
+            return null;
           }}
         />
       </AgGrid>

@@ -10,7 +10,7 @@ import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
-import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
+import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 
 const defaultMarket: DealTicketQuery_market = {
   __typename: 'Market',
