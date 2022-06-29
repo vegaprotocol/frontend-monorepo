@@ -75,10 +75,11 @@ export const VegaOrderTransactionDialog = ({
         icon={<Loader size="small" />}
       >
         {transaction.txHash && (
-          <p data-testid="tx-hash" className="break-all">
+          <p className="break-all">
             Tx hash: &nbsp;
             <a
               className="underline"
+              data-testid="tx-hash"
               href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
               target="_blank"
               rel="noreferrer"
