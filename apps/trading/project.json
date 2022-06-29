@@ -19,7 +19,7 @@
       }
     },
     "serve": {
-      "executor": "@nrwl/next:server",
+      "executor": "./tools/executors/serve-next:serve",
       "options": {
         "buildTarget": "trading:build",
         "dev": true
