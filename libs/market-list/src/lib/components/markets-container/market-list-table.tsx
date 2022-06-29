@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import type { ValueFormatterParams } from 'ag-grid-community';
+import type { IDatasource, ValueFormatterParams } from 'ag-grid-community';
 import {
   PriceFlashCell,
   addDecimalsFormatNumber,
@@ -14,7 +14,7 @@ import type {
 } from '../__generated__/Markets';
 
 interface MarketListTableProps {
-  data: Markets_markets[] | null;
+  datasource: IDatasource;
   onRowClicked: (marketId: string) => void;
 }
 
@@ -25,12 +25,13 @@ export const getRowId = ({
 }) => data.id;
 
 export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
-  ({ data, onRowClicked }, ref) => {
+  ({ datasource, onRowClicked }, ref) => {
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate={t('No markets')}
-        rowData={data}
+        rowModelType="infinite"
+        datasource={datasource}
         getRowId={getRowId}
         ref={ref}
         defaultColDef={{
