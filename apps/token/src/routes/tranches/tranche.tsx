@@ -67,7 +67,7 @@ export const Tranche = () => {
           {formatNumber(tranche.total_removed)}
         </span>
       </div>
-      <h2 className="text-h4 text-white mb-8">{t('Holders')}</h2>
+      <h2>{t('Holders')}</h2>
       {tranche.users.length ? (
         <ul role="list">
           {tranche.users.map((user, i) => {

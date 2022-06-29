@@ -74,19 +74,24 @@ const AssociatedAmounts = ({
         light={false}
       />
       {vestingAssociationByVegaKey.length ? (
-        <>
-          <hr style={{ borderStyle: 'dashed', color: Colors.text }} />
-          <WalletCardRow label="Associated with Vega keys" bold={true} />
+        <div>
+          <hr style={{ borderStyle: 'dashed' }} />
+          <WalletCardRow
+            label="Associated with Vega keys"
+            bold={true}
+            dark={true}
+          />
           {vestingAssociationByVegaKey.map(([key, amount]) => {
             return (
               <WalletCardRow
                 key={key}
                 label={removeLeadingAddressSymbol(key)}
                 value={amount}
+                dark={true}
               />
             );
           })}
-        </>
+        </div>
       ) : null}
     </>
   );
@@ -192,9 +197,9 @@ export const EthWallet = () => {
   return (
     <WalletCard dark={true}>
       <WalletCardHeader>
-        <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
+        <h1 className="m-0">{t('ethereumKey')}</h1>
         {account && (
-          <div className="px-4 text-right">
+          <div className="place-self-end font-mono px-4 pb-2">
             <div className="font-mono">{truncateMiddle(account)}</div>
             {pendingTxs && (
               <div>
@@ -222,7 +227,6 @@ export const EthWallet = () => {
         ) : (
           <Button
             variant={'secondary'}
-            className="w-full px-28 border h-28"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_ETH_WALLET_OVERLAY,

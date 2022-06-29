@@ -25,7 +25,8 @@ export const useFetch = <T>(
 ): {
   state: State<T>;
   refetch: (
-    params?: Record<string, string | number | null | undefined> | undefined
+    params?: Record<string, string | number | null | undefined> | undefined,
+    body?: BodyInit
   ) => Promise<T | undefined>;
 } => {
   // Used to prevent state update if the component is unmounted
@@ -51,7 +52,10 @@ export const useFetch = <T>(
 
   const [state, dispatch] = useReducer(fetchReducer, initialState);
   const fetchCallback = useCallback(
-    async (params?: Record<string, string | null | undefined | number>) => {
+    async (
+      params?: Record<string, string | null | undefined | number>,
+      body?: BodyInit
+    ) => {
       if (!url) return;
 
       const fetchData = async () => {
@@ -67,7 +71,10 @@ export const useFetch = <T>(
             }
           }
 
-          const response = await fetch(assembledUrl.toString(), options);
+          const response = await fetch(assembledUrl.toString(), {
+            ...options,
+            body: body ? body : options?.body,
+          });
           if (!response.ok) {
             throw new Error(response.statusText);
           }

@@ -72,7 +72,10 @@ export const TradeMarketHeader = ({
           <ArrowDown color="yellow" borderX={8} borderTop={12} />
         </button>
 
-        <div className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap w-[400px]">
+        <div
+          data-testid="market-summary"
+          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap w-[400px]"
+        >
           <div className={headerItemClassName}>
             <span className={itemClassName}>Change (24h)</span>
             <PriceCellChange
@@ -82,7 +85,7 @@ export const TradeMarketHeader = ({
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Volume</span>
-            <span className={itemValueClassName}>
+            <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
                 ? market.data.indicativeVolume
                 : '-'}
@@ -90,11 +93,15 @@ export const TradeMarketHeader = ({
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
-            <span className={itemValueClassName}>{market.tradingMode}</span>
+            <span data-testid="trading-mode" className={itemValueClassName}>
+              {market.tradingMode}
+            </span>
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>State</span>
-            <span className={itemValueClassName}>{market.state}</span>
+            <span data-testid="market-state" className={itemValueClassName}>
+              {market.state}
+            </span>
           </div>
         </div>
       </div>

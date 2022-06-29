@@ -5,7 +5,10 @@ describe('market list', () => {
     });
 
     it('selects menus', () => {
-      cy.get('.MuiDrawer-root [aria-current]').should('have.text', 'Markets');
+      cy.get('[aria-label="Sidebar Navigation Menu"] [aria-current]').should(
+        'have.text',
+        'Markets'
+      );
       cy.getByTestId('state-trigger').should('have.text', 'Active');
       cy.get('[aria-label="Future"]').click();
       cy.get('[data-testid="market-assets-menu"] a.active').should(
@@ -57,7 +60,7 @@ describe('market list', () => {
       cy.intercept('POST', '/query').as('Filters');
       cy.visit('/markets');
       cy.wait('@Filters').then((filters) => {
-        if (filters?.response?.body.data.markets.length) {
+        if (filters?.response?.body?.data?.markets?.length) {
           const asset =
             filters.response.body.data.markets[0].tradableInstrument.instrument
               .product.settlementAsset.symbol;

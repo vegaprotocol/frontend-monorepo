@@ -64,7 +64,7 @@ export const RewardInfo = ({
 
   return (
     <div className="mt-24">
-      <p className="mb-8">
+      <p>
         {t('Connected Vega key')}: {currVegaKey.pub}
       </p>
       {vegaTokenRewards.length ? (

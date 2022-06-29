@@ -7,7 +7,6 @@ export * from './deal-ticket-market-amount';
 export * from './deal-ticket';
 export * from './expiry-selector';
 export * from './info-market';
-export * from './order-dialog';
 export * from './side-selector';
 export * from './time-in-force-selector';
 export * from './type-selector';

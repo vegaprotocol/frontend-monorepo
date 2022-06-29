@@ -9,7 +9,10 @@ interface BulletHeaderProps {
 export const BulletHeader = ({ tag, children, style }: BulletHeaderProps) => {
   return React.createElement(
     tag,
-    { className: 'mt-24 pt-8 pb-20 uppercase text-white', style },
+    {
+      className: 'mt-24 py-8 border-t border-white uppercase text-white',
+      style,
+    },
     <>
       <span className="inline-block w-[12px] h-[12px] mr-12 bg-white" />
       {children}

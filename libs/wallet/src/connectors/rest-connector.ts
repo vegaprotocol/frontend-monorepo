@@ -1,11 +1,12 @@
 import type { Configuration } from '@vegaprotocol/vegawallet-service-api-client';
 import {
   createConfiguration,
+  ServerConfiguration,
   DefaultApi,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
-import type { VegaConnector } from '.';
+import type { VegaConnector } from './vega-connector';
 import type { TransactionSubmission } from '../types';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
@@ -39,13 +40,26 @@ export class RestConnector implements VegaConnector {
     this.service = new DefaultApi(this.apiConfig);
   }
 
-  async authenticate(params: { wallet: string; passphrase: string }) {
+  async authenticate(
+    url: string,
+    params: {
+      wallet: string;
+      passphrase: string;
+    }
+  ) {
     try {
-      const res = await this.service.authTokenPost(params);
+      const service = new DefaultApi(
+        createConfiguration({
+          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
+        })
+      );
+
+      const res = await service.authTokenPost(params);
 
       // Renew service instance with default bearer authMethod now that we have the token
       this.service = new DefaultApi(
         createConfiguration({
+          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
           authMethods: {
             bearer: `Bearer ${res.token}`,
           },
@@ -95,7 +109,7 @@ export class RestConnector implements VegaConnector {
   }
 
   private handleSendTxError(err: unknown) {
-    const unpexpectedError = { error: 'Something went wrong' };
+    const unexpectedError = { error: 'Something went wrong' };
 
     if (isServiceError(err)) {
       if (err.code === 401) {
@@ -105,10 +119,10 @@ export class RestConnector implements VegaConnector {
       try {
         return JSON.parse(err.body ?? '');
       } catch {
-        return unpexpectedError;
+        return unexpectedError;
       }
     } else {
-      return unpexpectedError;
+      return unexpectedError;
     }
   }
 
