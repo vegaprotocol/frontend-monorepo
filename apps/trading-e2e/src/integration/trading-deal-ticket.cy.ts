@@ -144,8 +144,8 @@ describe('deal ticket orders', () => {
       'Awaiting network confirmation'
     );
     cy.getByTestId(orderTransactionHash)
-      .invoke('text')
-      .should('contain', 'Tx hash: test-tx-hash');
+      .invoke('attr', 'href')
+      .should('include', 'https://explorer.fairground.wtf/txs/0xtest-tx-hash');
     cy.getByTestId('dialog-close').click();
   };
 
