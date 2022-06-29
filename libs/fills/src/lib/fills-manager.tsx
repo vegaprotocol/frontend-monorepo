@@ -5,6 +5,9 @@ import { fillsDataProvider } from './fills-data-provider';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import type { FillsVariables } from './__generated__/Fills';
+import type { FillFields } from './__generated__/FillFields';
+import type { FillsSub_trades } from './__generated__/FillsSub';
+import isEqual from 'lodash/isEqual';
 
 interface FillsManagerProps {
   partyId: string;
@@ -21,7 +24,40 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
     }),
     [partyId]
   );
-  const update = useCallback(() => false, []);
+  const update = useCallback((delta: FillsSub_trades[]) => {
+    if (!gridRef.current) {
+      return false;
+    }
+    const updateRows: FillFields[] = [];
+    const add: FillFields[] = [];
+
+    delta.forEach((d) => {
+      if (!gridRef.current?.api) {
+        return;
+      }
+
+      const rowNode = gridRef.current.api.getRowNode(d.id);
+
+      if (rowNode) {
+        if (!isEqual(d, rowNode.data)) {
+          updateRows.push(d);
+        }
+      } else {
+        add.push(d);
+      }
+    });
+
+    if (updateRows.length || add.length) {
+      gridRef.current.api.applyTransactionAsync({
+        update: updateRows,
+        add,
+        addIndex: 0,
+      });
+    }
+
+    return true;
+  }, []);
+
   const { data, loading, error } = useDataProvider(
     fillsDataProvider,
     update,
