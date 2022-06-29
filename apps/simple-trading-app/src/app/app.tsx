@@ -13,6 +13,9 @@ import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { Connectors } from './lib/vega-connectors';
 import '../styles.scss';
 import { AppLoader } from './components/app-loader';
+import Logo from './components/icons/logo';
+import Video from './components/video';
+import Comet from './components/icons/comet';
 import { Main } from './components/main';
 import { DrawerToggle, DRAWER_TOGGLE_VARIANTS } from './components/drawer';
 import { useLocation } from 'react-router-dom';
@@ -40,7 +43,16 @@ function App() {
           <VegaWalletProvider>
             <AppLoader>
               <div className="max-h-full min-h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
-                <div className="flex items-stretch p-16 bg-black text-white-60">
+                <div className="flex items-stretch p-16 bg-black dark:bg-white text-white-60">
+                  <div className="absolute top-0 right-[200px] w-[500px] h-[100px] z-0 hidden md:block">
+                    <Video />
+                    <div
+                      id="swarm"
+                      className="absolute w-[500px] h-[100px] bg-black dark:bg-white"
+                    />
+                  </div>
+                  <Logo theme={theme} />
+                  <Comet />
                   <div className="flex items-center gap-4 ml-auto mr-8">
                     <VegaWalletConnectButton
                       setConnectDialog={(open) =>
