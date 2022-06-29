@@ -71,6 +71,8 @@ describe('markets table', () => {
     cy.wait('@Market');
     cy.contains('ACTIVE MARKET');
     cy.url().should('include', '/markets/market-0');
+
+    verifyMarketSummaryDisplayed('Active');
   });
 
   it('can select a suspended market', () => {
@@ -88,5 +90,28 @@ describe('markets table', () => {
     cy.wait('@Market');
     cy.contains('SUSPENDED MARKET');
     cy.url().should('include', '/markets/market-1');
+
+    verifyMarketSummaryDisplayed('Suspended');
   });
+
+  function verifyMarketSummaryDisplayed(expectedMarketState: string) {
+    const marketSummaryBlock = 'market-summary';
+    const percentageValue = 'price-change-percentage';
+    const priceChangeValue = 'price-change';
+    const tradingVolume = 'trading-volume';
+    const tradingMode = 'trading-mode';
+    const marketState = 'market-state';
+
+    cy.getByTestId(marketSummaryBlock).within(() => {
+      cy.contains('Change (24h)');
+      cy.getByTestId(percentageValue).should('not.be.empty');
+      cy.getByTestId(priceChangeValue).should('not.be.empty');
+      cy.contains('Volume');
+      cy.getByTestId(tradingVolume).should('not.be.empty');
+      cy.contains('Trading mode');
+      cy.getByTestId(tradingMode).should('not.be.empty');
+      cy.contains('State');
+      cy.getByTestId(marketState).should('have.text', expectedMarketState);
+    });
+  }
 });
