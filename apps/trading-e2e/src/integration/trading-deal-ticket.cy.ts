@@ -145,7 +145,7 @@ describe('deal ticket orders', () => {
     );
     cy.getByTestId(orderTransactionHash)
       .invoke('text')
-      .should('contain', 'Tx hash: test-tx-hash');
+      .should('contain', 'Tx hash:');
     cy.getByTestId('dialog-close').click();
   };
 
