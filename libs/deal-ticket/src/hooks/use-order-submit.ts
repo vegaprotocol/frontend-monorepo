@@ -1,41 +1,19 @@
 import { useCallback, useState } from 'react';
-import { gql, useSubscription } from '@apollo/client';
+import { useSubscription } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
-import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
-import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction } from '@vegaprotocol/wallet';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from './__generated__/OrderEvent';
-
-const ORDER_EVENT_SUB = gql`
-  subscription OrderEvent($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
-      eventId
-      block
-      type
-      event {
-        ... on Order {
-          type
-          id
-          status
-          rejectionReason
-          createdAt
-          size
-          price
-          market {
-            name
-            decimalPlaces
-            positionDecimalPlaces
-          }
-        }
-      }
-    }
-  }
-`;
+} from '@vegaprotocol/wallet';
+import {
+  OrderType,
+  useVegaWallet,
+  ORDER_EVENT_SUB,
+} from '@vegaprotocol/wallet';
+import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
+import { useVegaTransaction } from '@vegaprotocol/wallet';
+import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 
 export const useOrderSubmit = (market: DealTicketQuery_market) => {
   const { keypair } = useVegaWallet();

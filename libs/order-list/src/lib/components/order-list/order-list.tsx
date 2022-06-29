@@ -1,11 +1,6 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
 import type { Orders_party_orders } from '../__generated__/Orders';
-import {
-  addDecimal,
-  addDecimalsFormatNumber,
-  getDateTimeFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import type {
   ICellRendererParams,
