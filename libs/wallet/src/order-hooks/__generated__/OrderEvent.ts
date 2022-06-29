@@ -79,14 +79,6 @@ export type OrderEvent_busEvents_event = OrderEvent_busEvents_event_TimeUpdate |
 export interface OrderEvent_busEvents {
   __typename: "BusEvent";
   /**
-   * the id for this event
-   */
-  eventId: string;
-  /**
-   * the block hash
-   */
-  block: string;
-  /**
    * the type of event we're dealing with
    */
   type: BusEventType;
