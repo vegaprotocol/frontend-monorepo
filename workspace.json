@@ -10,6 +10,7 @@
     "explorer": "apps/explorer",
     "explorer-e2e": "apps/explorer-e2e",
     "fills": "libs/fills",
+    "footer": "libs/footer",
     "market-depth": "libs/market-depth",
     "market-list": "libs/market-list",
     "network-stats": "libs/network-stats",

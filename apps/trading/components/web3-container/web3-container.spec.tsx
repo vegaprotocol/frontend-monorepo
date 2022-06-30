@@ -44,6 +44,7 @@ const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
 const mockEnvironment = {
   VEGA_ENV: 'TESTNET',
   VEGA_NETWORKS: JSON.stringify({}),
+  GIT_BRANCH: 'test',
   GIT_COMMIT_HASH: 'abcdef',
   GIT_ORIGIN_URL: 'https://github.com/test/repo',
 };

@@ -13,6 +13,5 @@ export default async function build(
 ): Promise<ReturnType<typeof nextBuildExecutor>> {
   const { env, ...nextOptions } = options;
   await setup(env, context, 'tools/executors/next/build');
-
-  return nextBuildExecutor(nextOptions, context);
+  return await nextBuildExecutor(nextOptions, context);
 }

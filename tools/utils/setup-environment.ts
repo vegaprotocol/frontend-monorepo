@@ -8,6 +8,9 @@ import type { ExecutorContext } from '@nrwl/devkit';
 process.env['NX_GIT_COMMIT_HASH'] = execSync('git rev-parse HEAD')
   .toString()
   .replace(/[\r\n]/gm, '');
+process.env['NX_GIT_BRANCH'] = execSync('git rev-parse --abbrev-ref HEAD')
+  .toString()
+  .replace(/[\r\n]/gm, '');
 process.env['NX_GIT_ORIGIN_URL'] = execSync('git remote get-url origin')
   .toString()
   .replace('ssh://git@', 'https://')
