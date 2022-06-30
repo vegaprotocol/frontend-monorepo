@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLoader } from './app-loader';
 import { AppBanner } from './components/app-banner';
-import { AppFooter } from './components/app-footer';
+import { Footer } from '@vegaprotocol/footer';
 import { BalanceManager } from './components/balance-manager';
 import { EthWallet } from './components/eth-wallet';
 import { TemplateSidebar } from './components/page-templates/template-sidebar';
@@ -54,7 +54,7 @@ const AppContainer = () => {
                             <TemplateSidebar sidebar={sideBar}>
                               <AppRouter />
                             </TemplateSidebar>
-                            <AppFooter />
+                            <Footer />
                           </div>
                           <VegaWalletDialogs />
                           <TransactionModal />

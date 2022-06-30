@@ -43,7 +43,7 @@ export const Footer = () => {
           )}
           <p className="mb-[1rem]">
             {t('Reading network data from')}{' '}
-            <Lozenge className="bg-white-80 dark:bg-black-80">
+            <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
               {VEGA_URL}
             </Lozenge>
             .{' '}
@@ -51,7 +51,7 @@ export const Footer = () => {
           </p>
           <p className="mb-[1rem]">
             {t('Reading Ethereum data from')}{' '}
-            <Lozenge className="bg-white-80 dark:bg-black-80">
+            <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
               {ETHEREUM_PROVIDER_URL}
             </Lozenge>
             .{' '}
