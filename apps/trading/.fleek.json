@@ -8,8 +8,8 @@
   },
   "build": {
     "baseDir": "",
-    "publicDir": "dist/apps/trading/",
-    "command": "yarn && yarn nx run build:trading static",
+    "publicDir": "dist/apps/trading/exported/",
+    "command": "yarn && yarn nx export trading",
     "rootDir": ""
   }
 }
