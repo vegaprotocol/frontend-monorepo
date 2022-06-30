@@ -23,9 +23,6 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   return (
     <>
       <Heading title={t('pageTitleGovernance')} />
-      <p>{t('proposedChangesToVegaNetwork')}</p>
-      <p>{t('vegaTokenHoldersCanVote')}</p>
-      <p>{t('requiredMajorityDescription')}</p>
       <h2>{t('proposals')}</h2>
       <ul>
         {proposals.map((proposal) => (
