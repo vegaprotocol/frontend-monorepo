@@ -1,10 +1,10 @@
 module.exports = {
-  displayName: 'order-list',
+  displayName: 'orders',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/order-list',
+  coverageDirectory: '../../coverage/libs/orders',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

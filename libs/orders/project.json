@@ -1,6 +1,6 @@
 {
-  "root": "libs/order-list",
-  "sourceRoot": "libs/order-list/src",
+  "root": "libs/orders",
+  "sourceRoot": "libs/orders/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/order-list",
-        "tsConfig": "libs/order-list/tsconfig.lib.json",
-        "project": "libs/order-list/package.json",
-        "entryFile": "libs/order-list/src/index.ts",
+        "outputPath": "dist/libs/orders",
+        "tsConfig": "libs/orders/tsconfig.lib.json",
+        "project": "libs/orders/package.json",
+        "entryFile": "libs/orders/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/order-list/README.md",
+            "glob": "libs/orders/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,18 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/order-list/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "libs/orders/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/order-list"],
+      "outputs": [
+        "coverage/libs/orders"
+      ],
       "options": {
-        "jestConfig": "libs/order-list/jest.config.js",
+        "jestConfig": "libs/orders/jest.config.js",
         "passWithNoTests": true
       }
     },
@@ -45,7 +49,7 @@
         "uiFramework": "@storybook/react",
         "port": 4400,
         "config": {
-          "configFolder": "libs/order-list/.storybook"
+          "configFolder": "libs/orders/.storybook"
         }
       },
       "configurations": {
@@ -59,9 +63,9 @@
       "outputs": ["{options.outputPath}"],
       "options": {
         "uiFramework": "@storybook/react",
-        "outputPath": "dist/storybook/order-list",
+        "outputPath": "dist/storybook/orders",
         "config": {
-          "configFolder": "libs/order-list/.storybook"
+          "configFolder": "libs/orders/.storybook"
         }
       },
       "configurations": {
