@@ -22,6 +22,7 @@
       "@vegaprotocol/deal-ticket": ["libs/deal-ticket/src/index.ts"],
       "@vegaprotocol/deposits": ["libs/deposits/src/index.ts"],
       "@vegaprotocol/environment": ["libs/environment/src/index.ts"],
+      "@vegaprotocol/fills": ["libs/fills/src/index.ts"],
       "@vegaprotocol/market-depth": ["libs/market-depth/src/index.ts"],
       "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
       "@vegaprotocol/network-stats": ["libs/network-stats/src/index.ts"],
