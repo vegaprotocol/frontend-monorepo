@@ -56,14 +56,14 @@ export const TxsInfiniteListItem = ({
           data-testid="command-details"
         >
           <Icon name="search-template" />
-          <Dialog
-            open={open}
-            onChange={(isOpen) => setOpen(isOpen)}
-            intent={Intent.None}
-          >
-            <SyntaxHighlighter data={JSON.parse(Command)} />
-          </Dialog>
         </button>
+        <Dialog
+          open={open}
+          onChange={(isOpen) => setOpen(false)}
+          intent={Intent.None}
+        >
+          <SyntaxHighlighter data={JSON.parse(Command)} />
+        </Dialog>
       </div>
     </div>
   );
