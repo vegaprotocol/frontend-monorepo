@@ -25,6 +25,7 @@ const schemaObject = {
   }),
   GIT_COMMIT_HASH: z.string(),
   GIT_ORIGIN_URL: z.string(),
+  GITHUB_FEEDBACK_URL: z.optional(z.string()),
   VEGA_ENV: z.nativeEnum(Networks),
   VEGA_NETWORKS: z
     .object(

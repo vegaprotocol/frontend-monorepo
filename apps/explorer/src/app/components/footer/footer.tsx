@@ -10,7 +10,7 @@ const getFeedbackLinks = (gitOriginUrl?: string) =>
   [
     {
       name: 'Github',
-      url: gitOriginUrl ? `${gitOriginUrl}/issues` : undefined,
+      url: gitOriginUrl,
     },
   ].filter((link) => !!link.url);
 
@@ -21,9 +21,10 @@ export const Footer = () => {
     VEGA_NETWORKS,
     GIT_COMMIT_HASH,
     GIT_ORIGIN_URL,
+    GITHUB_FEEDBACK_URL,
     ETHEREUM_PROVIDER_URL,
   } = useEnvironment();
-  const feedbackLinks = getFeedbackLinks(GIT_ORIGIN_URL);
+  const feedbackLinks = getFeedbackLinks(GITHUB_FEEDBACK_URL);
 
   return (
     <>

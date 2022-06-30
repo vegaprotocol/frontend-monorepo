@@ -42,6 +42,7 @@ const mockEnvironmentState: EnvironmentState = {
   ETHERSCAN_URL: 'https://etherscan.url',
   GIT_ORIGIN_URL: 'https://github.com/test/repo',
   GIT_COMMIT_HASH: 'abcde01234',
+  GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
 };
 
 beforeEach(() => {
@@ -63,6 +64,8 @@ beforeEach(() => {
   );
   process.env['NX_GIT_ORIGIN_URL'] = mockEnvironmentState.GIT_ORIGIN_URL;
   process.env['NX_GIT_COMMIT_HASH'] = mockEnvironmentState.GIT_COMMIT_HASH;
+  process.env['NX_GITHUB_FEEDBACK_URL'] =
+    mockEnvironmentState.GITHUB_FEEDBACK_URL;
 });
 
 afterAll(() => {
