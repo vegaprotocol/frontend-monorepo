@@ -54,7 +54,7 @@ Cypress.Commands.add(
       cy.contains('Waiting for next epoch to start', { timeout: 10000 });
       cy.get(staking.tokenInputSubmit)
         .should('be.enabled', { timeout: 8000 })
-        .and('contain', 'Remove 1 $VEGA tokens at the end of epoch')
+        .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
         .and('be.visible')
         .click();
       cy.contains(`${stake} $VEGA has been removed from validator`).should('be.visible');

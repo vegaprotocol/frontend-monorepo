@@ -7,39 +7,42 @@ import '../../support/wallet.functions';
 context('Staking Tab - with vega wallet connected', function () {
   before('visit staking tab and connect vega wallet', function () {
     cy.vega_wallet_create();
-
     cy.visit('/');
-    cy.get(navigation.section, { timeout: 20000 }).should('be.visible');
-    
-    cy.get(navigation.staking).first().click();
-    cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
-    
+    cy.get(navigation.section, { timeout: 20000 }).should('be.visible');   
     cy.ethereum_wallet_connect();
     cy.vega_wallet_connect();
+    cy.vega_wallet_set_approval_amount_to('1000');
+    cy.get(navigation.staking).first().click();
     cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
-    
     cy.get(staking.validatorNames).first().invoke('text').as('validatorName');
   });
 
   describe('Vega wallet - contains VEGA tokens', function () {
 
-    beforeEach('drill into a specific validator', function () {
-        cy.vega_wallet_teardown();
-        // cy.vega_wallet_teardown_ui();
-        cy.get(navigation.staking).first().click();
-        cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
-        cy.get(staking.validatorNames).contains(this.validatorName).click();
-        cy.contains('Your Stake On Node (This Epoch)').should('be.visible');
-    })
-
-    it('Able to associate tokens for first time - requires approval', function () {
-      cy.ethereum_wallet_approveAndAssociateTokens('2');
-      cy.vega_wallet_check_associatedValue_is('2.000000000000000000');
+    beforeEach('teardown wallet & drill into a specific validator', function () {
+      cy.vega_wallet_teardown();
+      cy.get(navigation.staking).first().click();
+      cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
+      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.contains('Your Stake On Node (This Epoch)').should('be.visible');
     })
     
     it('Able to associate tokens - having previously approved', function () {
       cy.ethereum_wallet_associateTokens('2');
       cy.vega_wallet_check_associatedValue_is('2.000000000000000000');
+    })
+
+    it('Able to associate more tokens for then the approved amount of 1000 - requires re-approval', function () {
+      cy.ethereum_wallet_associateTokens('1001', 'Approve');
+      cy.vega_wallet_check_associatedValue_is('1,001.000000000000000000');
+    })
+
+    it('Able to disassociate some tokens - but not all', function () {
+      cy.ethereum_wallet_associateTokens('2');
+      cy.vega_wallet_check_associatedValue_is('2.000000000000000000');
+
+      cy.ethereum_wallet_disassociateTokens('1');
+      cy.vega_wallet_check_associatedValue_is('1.000000000000000000');
     })
 
     it('Able to disassociate all tokens', function () {
@@ -128,6 +131,11 @@ context('Staking Tab - with vega wallet connected', function () {
         .and('contain',`Remove 4 $VEGA tokens at the end of epoch`)
         .and('be.visible');
     });
+
+    it('Able to associate more tokens for then the approved amount of 1000 - requires re-approval', function () {
+      cy.ethereum_wallet_associateTokens('1001', 'Approve');
+      cy.vega_wallet_check_associatedValue_is('1,001.000000000000000000');
+    })
 
   });
 });
