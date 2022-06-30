@@ -260,7 +260,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
               return;
             }
             data = newData;
-            notifyAll(delta);
+            notifyAll({ delta });
           }
         },
         () => reload()

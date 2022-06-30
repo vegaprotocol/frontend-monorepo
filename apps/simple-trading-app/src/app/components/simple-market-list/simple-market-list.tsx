@@ -20,7 +20,7 @@ import dataProvider from './data-provider';
 import * as constants from './constants';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
-
+import type { SimpleMarketDataSub_marketData } from './__generated__/SimpleMarketDataSub';
 export type SimpleMarketsType = SimpleMarkets_markets & {
   percentChange?: number | '-';
 };
@@ -44,7 +44,8 @@ const SimpleMarketList = () => {
     []
   );
   const update = useCallback(
-    (delta) => statusesRef.current[delta.market.id] === delta.market.state,
+    ({ delta }: { delta: SimpleMarketDataSub_marketData }) =>
+      statusesRef.current[delta.market.id] === delta.market.state,
     [statusesRef]
   );
 
