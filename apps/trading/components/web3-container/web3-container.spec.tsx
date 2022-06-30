@@ -46,7 +46,7 @@ const mockEnvironment = {
   VEGA_NETWORKS: JSON.stringify({}),
   GIT_COMMIT_HASH: 'abcdef',
   GIT_ORIGIN_URL: 'https://github.com/test/repo',
-}
+};
 
 jest.mock('@web3-react/core', () => {
   const original = jest.requireActual('@web3-react/core');
