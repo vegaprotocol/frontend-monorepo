@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import type { Subscribe } from '../lib/generic-data-provider';
+import type { Subscribe, Pagination, Load } from '../lib/generic-data-provider';
 
 /**
  *
@@ -10,17 +10,33 @@ import type { Subscribe } from '../lib/generic-data-provider';
  * @param variables optional
  * @returns state: data, loading, error, methods: flush (pass updated data to update function without delta), restart: () => void}};
  */
-export function useDataProvider<Data, Delta>(
-  dataProvider: Subscribe<Data, Delta>,
-  update?: (delta: Delta) => boolean,
-  variables?: OperationVariables
-) {
+export function useDataProvider<Data, Delta>({
+  dataProvider,
+  update,
+  insert,
+  variables,
+}: {
+  dataProvider: Subscribe<Data, Delta>;
+  update?: ({ delta, data }: { delta: Delta; data: Data }) => boolean;
+  insert?: ({
+    insertData,
+    data,
+    totalCount,
+  }: {
+    insertData: Data;
+    data: Data;
+    totalCount?: number;
+  }) => boolean;
+  variables?: OperationVariables;
+}) {
   const client = useApolloClient();
   const [data, setData] = useState<Data | null>(null);
+  const [totalCount, setTotalCount] = useState<number>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | undefined>(undefined);
   const flushRef = useRef<(() => void) | undefined>(undefined);
   const reloadRef = useRef<((force?: boolean) => void) | undefined>(undefined);
+  const loadRef = useRef<Load<Data> | undefined>(undefined);
   const initialized = useRef<boolean>(false);
   const flush = useCallback(() => {
     if (flushRef.current) {
@@ -32,30 +48,48 @@ export function useDataProvider<Data, Delta>(
       reloadRef.current(force);
     }
   }, []);
+  const load = useCallback((pagination: Pagination) => {
+    if (loadRef.current) {
+      return loadRef.current(pagination);
+    }
+    return Promise.reject();
+  }, []);
   const callback = useCallback(
-    ({ data, error, loading, delta }) => {
+    ({ data, error, loading, delta, insertData, totalCount }) => {
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
-        // if update function returns true it means that component handles updates
+        // if update or insert function returns true it means that component handles updates
         // component can use flush() which will call callback without delta and cause data state update
-        if (!initialized.current || !delta || !update || !update(delta)) {
-          initialized.current = true;
-          setData(data);
+        if (initialized.current) {
+          if (delta && update && update({ delta, data })) {
+            return;
+          }
+          if (
+            insertData &&
+            insert &&
+            insert({ insertData, data, totalCount })
+          ) {
+            return;
+          }
         }
+        initialized.current = true;
+        setTotalCount(totalCount);
+        setData(data);
       }
     },
-    [update]
+    [update, insert]
   );
   useEffect(() => {
-    const { unsubscribe, flush, reload } = dataProvider(
+    const { unsubscribe, flush, reload, load } = dataProvider(
       callback,
       client,
       variables
     );
     flushRef.current = flush;
     reloadRef.current = reload;
+    loadRef.current = load;
     return unsubscribe;
   }, [client, initialized, dataProvider, callback, variables]);
-  return { data, loading, error, flush, reload };
+  return { data, loading, error, flush, reload, load, totalCount };
 }

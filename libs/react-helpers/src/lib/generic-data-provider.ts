@@ -13,8 +13,29 @@ export interface UpdateCallback<Data, Delta> {
     data: Data | null;
     error?: Error;
     loading: boolean;
+    pageInfo: PageInfo | null;
     delta?: Delta;
+    insertData?: Data | null;
+    totalCount?: number;
   }): void;
+}
+
+export interface Load<Data> {
+  (pagination: Pagination): Promise<Data | null>;
+}
+
+export interface Pagination {
+  first?: number;
+  after?: string;
+  last?: number;
+  before?: string;
+}
+
+export interface PageInfo {
+  startCursor?: string;
+  endCursor?: string;
+  hasNextPage?: boolean;
+  hasPreviousPage?: boolean;
 }
 export interface Subscribe<Data, Delta> {
   (
@@ -25,6 +46,7 @@ export interface Subscribe<Data, Delta> {
     unsubscribe: () => void;
     reload: (forceReset?: boolean) => void;
     flush: () => void;
+    load: Load<Data>;
   };
 }
 
@@ -35,8 +57,29 @@ export interface Update<Data, Delta> {
   (data: Data, delta: Delta, reload: (forceReset?: boolean) => void): Data;
 }
 
+export interface Append<Data> {
+  (
+    data: Data | null,
+    pageInfo: PageInfo,
+    insert: Data | null,
+    insertPageInfo: PageInfo | null,
+    pagination?: Pagination
+  ): {
+    data: Data | null;
+    pageInfo: PageInfo;
+  };
+}
+
 interface GetData<QueryData, Data> {
-  (subscriptionData: QueryData): Data | null;
+  (queryData: QueryData): Data | null;
+}
+
+interface GetPageInfo<QueryData> {
+  (queryData: QueryData): PageInfo | null;
+}
+
+interface GetTotalCount<QueryData> {
+  (queryData: QueryData): number | undefined;
 }
 
 interface GetDelta<SubscriptionData, Delta> {
@@ -57,6 +100,12 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   update: Update<Data, Delta>,
   getData: GetData<QueryData, Data>,
   getDelta: GetDelta<SubscriptionData, Delta>,
+  pagination?: {
+    getPageInfo: GetPageInfo<QueryData>;
+    getTotalCount: GetTotalCount<QueryData>;
+    append: Append<Data>;
+    first: number;
+  },
   fetchPolicy: FetchPolicy = 'no-cache'
 ): Subscribe<Data, Delta> {
   // list of callbacks passed through subscribe call
@@ -70,20 +119,60 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   let loading = false;
   let client: ApolloClient<object> | undefined = undefined;
   let subscription: Subscription | undefined = undefined;
+  let pageInfo: PageInfo | null = null;
+  let totalCount: number | undefined;
 
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
-  const notify = (callback: UpdateCallback<Data, Delta>, delta?: Delta) => {
+  const notify = (
+    callback: UpdateCallback<Data, Delta>,
+    updateData?: { delta?: Delta; insertData?: Data | null }
+  ) => {
     callback({
       data,
       error,
       loading,
-      delta,
+      pageInfo,
+      totalCount,
+      ...updateData,
     });
   };
 
   // notify all callbacks
-  const notifyAll = (delta?: Delta) => {
-    callbacks.forEach((callback) => notify(callback, delta));
+  const notifyAll = (updateData?: {
+    delta?: Delta;
+    insertData?: Data | null;
+  }) => {
+    callbacks.forEach((callback) => notify(callback, updateData));
+  };
+
+  const load = async (params?: Pagination) => {
+    if (!client || !pagination || !pageInfo) {
+      return Promise.reject();
+    }
+    const paginationVariables: Pagination = params ?? {
+      first: pagination.first,
+      after: pageInfo.endCursor,
+    };
+    const res = await client.query<QueryData>({
+      query,
+      variables: {
+        ...variables,
+        pagination: paginationVariables,
+      },
+      fetchPolicy,
+    });
+    const insertData = getData(res.data);
+    const insertPageInfo = pagination.getPageInfo(res.data);
+    ({ data, pageInfo } = pagination.append(
+      data,
+      pageInfo,
+      insertData,
+      insertPageInfo,
+      paginationVariables
+    ));
+    totalCount = pagination.getTotalCount(res.data);
+    notifyAll({ insertData });
+    return insertData;
   };
 
   const initialFetch = async () => {
@@ -93,10 +182,16 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     try {
       const res = await client.query<QueryData>({
         query,
-        variables,
+        variables: pagination
+          ? { ...variables, pagination: { first: pagination.first } }
+          : variables,
         fetchPolicy,
       });
       data = getData(res.data);
+      if (pagination) {
+        pageInfo = pagination.getPageInfo(res.data);
+        totalCount = pagination.getTotalCount(res.data);
+      }
       // if there was some updates received from subscription during initial query loading apply them on just received data
       if (data && updateQueue && updateQueue.length > 0) {
         while (updateQueue.length) {
@@ -205,6 +300,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       unsubscribe: () => unsubscribe(callback),
       reload,
       flush: () => notify(callback),
+      load,
     };
   };
 }
@@ -239,7 +335,7 @@ const memoize = <Data, Delta>(
  * @param update Update<Data, Delta> function that will be executed on each onNext, it should update data base on delta, it can reload data provider
  * @param getData transforms received query data to format that will be stored in data provider
  * @param getDelta transforms delta data to format that will be stored in data provider
- * @param fetchPolicy
+ * @param pagination pagination related functions { getPageInfo, getTotalCount, append, first }
  * @returns Subscribe<Data, Delta> subscribe function
  * @example
  * const marketMidPriceProvider = makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
@@ -263,6 +359,12 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
   update: Update<Data, Delta>,
   getData: GetData<QueryData, Data>,
   getDelta: GetDelta<SubscriptionData, Delta>,
+  pagination?: {
+    getPageInfo: GetPageInfo<QueryData>;
+    getTotalCount: GetTotalCount<QueryData>;
+    append: Append<Data>;
+    first: number;
+  },
   fetchPolicy: FetchPolicy = 'no-cache'
 ): Subscribe<Data, Delta> {
   const getInstance = memoize<Data, Delta>(() =>
@@ -272,6 +374,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
       update,
       getData,
       getDelta,
+      pagination,
       fetchPolicy
     )
   );

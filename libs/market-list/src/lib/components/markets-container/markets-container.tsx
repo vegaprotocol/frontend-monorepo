@@ -16,7 +16,7 @@ export const MarketsContainer = () => {
   const { push } = useRouter();
   const gridRef = useRef<AgGridReact | null>(null);
   const update = useCallback(
-    (delta: Markets_markets_data) => {
+    ({ delta }: { delta: Markets_markets_data }) => {
       const update: Markets_markets[] = [];
       const add: Markets_markets[] = [];
       if (!gridRef.current?.api) {
@@ -49,7 +49,7 @@ export const MarketsContainer = () => {
   const { data, error, loading } = useDataProvider<
     Markets_markets[],
     Markets_markets_data
-  >(marketsDataProvider, update);
+  >({ dataProvider: marketsDataProvider, update });
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>

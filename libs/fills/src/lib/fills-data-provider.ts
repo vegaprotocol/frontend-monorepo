@@ -1,10 +1,11 @@
+import produce from 'immer';
 import { gql } from '@apollo/client';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import produce from 'immer';
+import type { PageInfo, Pagination } from '@vegaprotocol/react-helpers';
 import type { FillFields } from './__generated__/FillFields';
 import type {
   Fills,
-  Fills_party_tradesPaged_edges_node,
+  Fills_party_tradesPaged_edges,
 } from './__generated__/Fills';
 import type { FillsSub } from './__generated__/FillsSub';
 
@@ -16,41 +17,19 @@ const FILL_FRAGMENT = gql`
     size
     buyOrder
     sellOrder
-    aggressor
     buyer {
       id
     }
     seller {
       id
     }
-    buyerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
-    sellerFee {
-      makerFee
-      infrastructureFee
-      liquidityFee
-    }
     market {
       id
-      name
       decimalPlaces
-      positionDecimalPlaces
       tradableInstrument {
         instrument {
           id
           code
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                decimals
-              }
-            }
-          }
         }
       }
     }
@@ -88,30 +67,69 @@ export const FILLS_SUB = gql`
   }
 `;
 
-const update = (data: FillFields[], delta: FillFields[]) => {
-  // Add or update incoming trades
+const update = (data: Fills_party_tradesPaged_edges[], delta: FillFields[]) => {
   return produce(data, (draft) => {
-    delta.forEach((trade) => {
-      const index = draft.findIndex((t) => t.id === trade.id);
-      if (index === -1) {
-        draft.unshift(trade);
+    delta.forEach((node) => {
+      const index = draft.findIndex((edge) => edge.node.id === node.id);
+      if (index !== -1) {
+        Object.assign(draft[index].node, node);
       } else {
-        draft[index] = trade;
+        draft.unshift({ node, cursor: '', __typename: 'TradeEdge' });
       }
     });
   });
 };
 
-const getData = (
-  responseData: Fills
-): Fills_party_tradesPaged_edges_node[] | null =>
-  responseData.party?.tradesPaged.edges.map((e) => e.node) || null;
+const getData = (responseData: Fills): Fills_party_tradesPaged_edges[] | null =>
+  responseData.party?.tradesPaged.edges || null;
+
+const getPageInfo = (responseData: Fills): PageInfo | null =>
+  responseData.party?.tradesPaged.pageInfo || null;
+
+const getTotalCount = (responseData: Fills): number | undefined =>
+  responseData.party?.tradesPaged.totalCount;
+
 const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
+
+const append = (
+  data: Fills_party_tradesPaged_edges[] | null,
+  pageInfo: PageInfo,
+  insert: Fills_party_tradesPaged_edges[] | null,
+  insertPageInfo: PageInfo | null,
+  pagination?: Pagination
+) => {
+  if (data && insert && insertPageInfo) {
+    if (pagination?.after) {
+      if (data[data.length - 1].cursor === pagination.after) {
+        return {
+          data: [...data, ...insert],
+          pageInfo: { ...pageInfo, endCursor: insertPageInfo.endCursor },
+        };
+      } else {
+        const cursors = data.map((item) => item.cursor);
+        const startIndex = cursors.lastIndexOf(pagination.after);
+        if (startIndex !== -1) {
+          return {
+            data: [...data.slice(0, startIndex), ...insert],
+            pageInfo: { ...pageInfo, endCursor: insertPageInfo.endCursor },
+          };
+        }
+      }
+    }
+  }
+  return { data, pageInfo };
+};
 
 export const fillsDataProvider = makeDataProvider(
   FILLS_QUERY,
   FILLS_SUB,
   update,
   getData,
-  getDelta
+  getDelta,
+  {
+    getPageInfo,
+    getTotalCount,
+    append,
+    first: 100,
+  }
 );

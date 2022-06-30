@@ -16,7 +16,7 @@ import { ThemeContext } from '@vegaprotocol/react-helpers';
 import type { MarketState } from '@vegaprotocol/types';
 import useMarketsFilterData from '../../hooks/use-markets-filter-data';
 import useColumnDefinitions from '../../hooks/use-column-definitions';
-import DataProvider from './data-provider';
+import dataProvider from './data-provider';
 import * as constants from './constants';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
@@ -48,11 +48,11 @@ const SimpleMarketList = () => {
     [statusesRef]
   );
 
-  const { data, error, loading } = useDataProvider(
-    DataProvider,
+  const { data, error, loading } = useDataProvider({
+    dataProvider,
     update,
-    variables
-  );
+    variables,
+  });
   const localData: Array<SimpleMarketsType> = useMarketsFilterData(
     data || [],
     params
