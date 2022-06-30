@@ -49,7 +49,10 @@ export const AmountInput = ({
           min={0}
           step="any"
           appendElement={
-            <Lozenge className="text-[10px] relative top-[-2px]">
+            <Lozenge
+              variant={Intent.None}
+              className="text-[10px] relative top-[-2px]"
+            >
               {currency}
             </Lozenge>
           }
