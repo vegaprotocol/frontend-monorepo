@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import classNames from 'classnames';
+import { ThemeContext } from '@vegaprotocol/react-helpers';
 
-interface Props {
-  theme: 'dark' | 'light';
-}
-
-const Logo = ({ theme }: Props) => {
+const Logo = () => {
+  const theme = useContext(ThemeContext);
   return (
     <svg
       width="38"
