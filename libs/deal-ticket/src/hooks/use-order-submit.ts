@@ -1,40 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
-import { gql, useSubscription } from '@apollo/client';
+import { useCallback, useState } from 'react';
+import { useSubscription } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
-import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
-import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
-import { useVegaTransaction } from '@vegaprotocol/wallet';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from '../components/__generated__/OrderEvent';
+} from '@vegaprotocol/wallet';
+import {
+  OrderType,
+  useVegaWallet,
+  ORDER_EVENT_SUB,
+} from '@vegaprotocol/wallet';
+import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
+import { useVegaTransaction } from '@vegaprotocol/wallet';
 import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
-
-const ORDER_EVENT_SUB = gql`
-  subscription OrderEvent($partyId: ID!) {
-    busEvents(partyId: $partyId, batchSize: 0, types: [Order]) {
-      eventId
-      block
-      type
-      event {
-        ... on Order {
-          type
-          id
-          status
-          rejectionReason
-          createdAt
-          size
-          price
-          market {
-            name
-            decimalPlaces
-          }
-        }
-      }
-    }
-  }
-`;
 
 export const useOrderSubmit = (market: DealTicketQuery_market) => {
   const { keypair } = useVegaWallet();
@@ -66,15 +45,10 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setFinalizedOrder(matchingOrderEvent.event);
+        resetTransaction();
       }
     },
   });
-
-  useEffect(() => {
-    if (finalizedOrder) {
-      resetTransaction();
-    }
-  }, [finalizedOrder, resetTransaction]);
 
   const submit = useCallback(
     async (order: Order) => {

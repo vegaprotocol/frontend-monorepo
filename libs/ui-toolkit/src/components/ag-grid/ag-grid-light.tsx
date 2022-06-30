@@ -9,7 +9,7 @@ const agGridLightVariables = `
     --ag-header-background-color: ${theme.colors.white[100]};
     --ag-odd-row-background-color: ${theme.colors.white[100]};
     --ag-row-border-color: ${theme.colors.white[100]};
-    --ag-row-hover-color: ${theme.colors.yellow.DEFAULT};
+    --ag-row-hover-color: ${theme.colors.black[10]};
     --ag-font-size: 12px;
   }
 
@@ -27,9 +27,16 @@ const agGridLightVariables = `
   }
 `;
 
-export const AgGrid = (props: { children: ReactNode }) => (
+export const AgGrid = ({
+  children,
+  customThemeParams,
+}: {
+  children: ReactNode;
+  customThemeParams?: string;
+}) => (
   <>
     <style>{agGridLightVariables}</style>
-    {props.children}
+    {customThemeParams && <style>{customThemeParams}</style>}
+    {children}
   </>
 );

@@ -6,13 +6,11 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuItemIndicator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './dropdown-menu';
-import { Button } from '../button';
 import { Icon } from '../icon';
 
 export default {
@@ -31,20 +29,16 @@ export const CheckboxItems = () => {
   return (
     <div style={{ textAlign: 'center', padding: 50 }}>
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button appendIconName="chevron-down">Options</Button>
+        <DropdownMenuTrigger className="w-[300px]">
+          <span>Select many things</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent className="w-[300px]">
           {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
             <DropdownMenuCheckboxItem
               key={label}
-              inset
               checked={checked}
               onCheckedChange={setChecked}
             >
-              <DropdownMenuItemIndicator>
-                <Icon name="tick" />
-              </DropdownMenuItemIndicator>
               {label}
             </DropdownMenuCheckboxItem>
           ))}
@@ -56,13 +50,13 @@ export const CheckboxItems = () => {
 
 export const RadioItems = () => {
   const files = ['README.md', 'index.js', 'page.css'];
-  const [file, setFile] = useState(files[1]);
+  const [selected, setSelected] = useState(files[1]);
 
   return (
     <div style={{ textAlign: 'center', padding: 50 }}>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <Button appendIconName="chevron-down">Open</Button>
+          <span>Open</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem inset onSelect={() => console.log('minimize')}>
@@ -75,19 +69,38 @@ export const RadioItems = () => {
             Smaller
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuRadioGroup value={file} onValueChange={setFile}>
+          <DropdownMenuRadioGroup value={selected} onValueChange={setSelected}>
             {files.map((file) => (
               <DropdownMenuRadioItem key={file} inset value={file}>
                 {file}
-                <DropdownMenuItemIndicator>
-                  <Icon name="tick" />
-                </DropdownMenuItemIndicator>
               </DropdownMenuRadioItem>
             ))}
           </DropdownMenuRadioGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <p>Selected file: {file}</p>
+      <p>Selected file: {selected}</p>
+    </div>
+  );
+};
+
+export const IconMenu = () => {
+  const iconMenuItems = [
+    { label: 'IconMenu Item 1' },
+    { label: 'IconMenu Item 2' },
+  ];
+
+  return (
+    <div style={{ textAlign: 'center', padding: 50 }}>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Icon name="cog" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {iconMenuItems.map(({ label }) => (
+            <DropdownMenuItem key={label}>{label}</DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

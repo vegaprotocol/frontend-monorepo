@@ -37,7 +37,6 @@ beforeEach(() => {
     submitDeposit: jest.fn(),
     requestFaucet: jest.fn(),
     limits: {
-      min: new BigNumber(0),
       max: new BigNumber(20),
     },
     allowance: new BigNumber(30),
@@ -199,6 +198,6 @@ it('Deposit', async () => {
     // @ts-ignore contract address definitely defined
     assetSource: asset.source.contractAddress,
     amount: '1500',
-    vegaPublicKey: `0x${vegaKey}`,
+    vegaPublicKey: vegaKey,
   });
 });

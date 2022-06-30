@@ -19,12 +19,10 @@ interface Props {
 export const DrawerToggle = ({
   onToggle,
   variant = DRAWER_TOGGLE_VARIANTS.CLOSE,
-  className,
+  className = '',
 }: Props) => {
   const [iconName, setIconName] = useState(IconNames.MENU);
-  const classes = classNames('md:hidden', {
-    [className as string]: className,
-  });
+  const classes = classNames('md:hidden', className);
 
   useEffect(() => {
     if (variant === DRAWER_TOGGLE_VARIANTS.OPEN) {
@@ -34,8 +32,17 @@ export const DrawerToggle = ({
     }
   }, [variant]);
 
+  const ariaLabel = `${
+    variant === DRAWER_TOGGLE_VARIANTS.OPEN ? 'Open' : 'Close'
+  } Sidebar Navigation Menu`;
+
   return (
-    <Button variant="inline" className={classes} onClick={onToggle}>
+    <Button
+      aria-label={ariaLabel}
+      variant="inline-link"
+      className={classes}
+      onClick={onToggle}
+    >
       <Icon name={iconName as IconName} />
     </Button>
   );

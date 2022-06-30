@@ -88,16 +88,15 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
 
   if (!nodeInfo) {
     return (
-      <span className={'text-red'}>{t('stakingNodeNotFound', { node })}</span>
+      <span className={'text-vega-red'}>
+        {t('stakingNodeNotFound', { node })}
+      </span>
     );
   }
 
   return (
     <>
-      <h2
-        data-test-id="validator-node-title"
-        className="text-h4 break-word mb-8"
-      >
+      <h2 data-test-id="validator-node-title" className="text-h4 break-word">
         {nodeInfo.name
           ? t('validatorTitle', { nodeName: nodeInfo.name })
           : t('validatorTitle', { nodeName: t('validatorTitleFallback') })}

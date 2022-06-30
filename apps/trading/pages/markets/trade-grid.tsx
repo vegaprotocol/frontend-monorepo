@@ -2,7 +2,10 @@ import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import { DealTicketContainer } from '@vegaprotocol/deal-ticket';
+import {
+  DealTicketContainer,
+  MarketInfoContainer,
+} from '@vegaprotocol/deal-ticket';
 import { OrderListContainer } from '@vegaprotocol/order-list';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
@@ -15,8 +18,8 @@ import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import {
   ArrowDown,
-  GridTab,
-  GridTabs,
+  Tab,
+  Tabs,
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -30,6 +33,7 @@ const TradingViews = {
   Positions: PositionsContainer,
   Accounts: AccountsContainer,
   Trades: TradesContainer,
+  Info: MarketInfoContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -52,23 +56,26 @@ export const TradeMarketHeader = ({
     'font-sans font-normal mb-0 text-dark/80 dark:text-white/80 text-ui-small';
   const itemValueClassName =
     'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
-  const headerClassname = classNames(
+  const headerClassName = classNames(
     'w-full p-8 bg-white dark:bg-black',
     className
   );
   return (
-    <header className={headerClassname}>
+    <header className={headerClassName}>
       <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
           onClick={() => setOpen(!open)}
-          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-vega-yellow dark:hover:bg-white/20"
+          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/20 dark:hover:bg-white/20"
         >
           <span className="break-words text-left">{market.name}</span>
           <ArrowDown color="yellow" borderX={8} borderTop={12} />
         </button>
 
-        <div className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap w-[400px]">
+        <div
+          data-testid="market-summary"
+          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap w-[400px]"
+        >
           <div className={headerItemClassName}>
             <span className={itemClassName}>Change (24h)</span>
             <PriceCellChange
@@ -78,7 +85,7 @@ export const TradeMarketHeader = ({
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Volume</span>
-            <span className={itemValueClassName}>
+            <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
                 ? market.data.indicativeVolume
                 : '-'}
@@ -86,11 +93,15 @@ export const TradeMarketHeader = ({
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
-            <span className={itemValueClassName}>{market.tradingMode}</span>
+            <span data-testid="trading-mode" className={itemValueClassName}>
+              {market.tradingMode}
+            </span>
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>State</span>
-            <span className={itemValueClassName}>{market.state}</span>
+            <span data-testid="market-state" className={itemValueClassName}>
+              {market.state}
+            </span>
           </div>
         </div>
       </div>
@@ -105,7 +116,7 @@ interface TradeGridProps {
 export const TradeGrid = ({ market }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
-    'grid gap-4 grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_200px]',
+    'grid gap-4 grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_300px]',
     'bg-black-10 dark:bg-white-10',
     'text-ui'
   );
@@ -115,43 +126,50 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       <div className={wrapperClasses}>
         <TradeMarketHeader
           market={market}
-          className="row-start-1 row-end-2 col-start-1 col-end-2"
+          className="row-start-1 row-end-2 col-start-1 col-end-4"
         />
         <TradeGridChild className="row-start-2 row-end-3 col-start-1 col-end-2">
-          <GridTabs>
-            <GridTab id="candles" name={t('Candles')}>
+          <Tabs>
+            <Tab id="candles" name={t('Candles')}>
               <TradingViews.Candles marketId={market.id} />
-            </GridTab>
-            <GridTab id="depth" name={t('Depth')}>
+            </Tab>
+            <Tab id="depth" name={t('Depth')}>
               <TradingViews.Depth marketId={market.id} />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
-        <TradeGridChild className="row-start-1 row-end-3">
-          <TradingViews.Ticket marketId={market.id} />
+        <TradeGridChild className="row-start-2 row-end-3 col-start-2 col-end-3">
+          <Tabs>
+            <Tab id="ticket" name={t('Ticket')}>
+              <TradingViews.Ticket marketId={market.id} />
+            </Tab>
+            <Tab id="info" name={t('Info')}>
+              <TradingViews.Info marketId={market.id} />
+            </Tab>
+          </Tabs>
         </TradeGridChild>
-        <TradeGridChild className="row-start-1 row-end-3">
-          <GridTabs>
-            <GridTab id="trades" name={t('Trades')}>
+        <TradeGridChild className="row-start-2 row-end-3 col-start-3 col-end-4">
+          <Tabs>
+            <Tab id="trades" name={t('Trades')}>
               <TradingViews.Trades marketId={market.id} />
-            </GridTab>
-            <GridTab id="orderbook" name={t('Orderbook')}>
+            </Tab>
+            <Tab id="orderbook" name={t('Orderbook')}>
               <TradingViews.Orderbook marketId={market.id} />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
         <TradeGridChild className="col-span-3">
-          <GridTabs>
-            <GridTab id="orders" name={t('Orders')}>
+          <Tabs>
+            <Tab id="orders" name={t('Orders')}>
               <TradingViews.Orders />
-            </GridTab>
-            <GridTab id="positions" name={t('Positions')}>
+            </Tab>
+            <Tab id="positions" name={t('Positions')}>
               <TradingViews.Positions />
-            </GridTab>
-            <GridTab id="accounts" name={t('Accounts')}>
+            </Tab>
+            <Tab id="accounts" name={t('Accounts')}>
               <TradingViews.Accounts />
-            </GridTab>
-          </GridTabs>
+            </Tab>
+          </Tabs>
         </TradeGridChild>
       </div>
     </>

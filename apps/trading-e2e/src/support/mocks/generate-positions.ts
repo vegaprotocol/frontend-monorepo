@@ -25,6 +25,7 @@ export const generatePositions = (
           market: { __typename: 'Market', id: '123' },
         },
         decimalPlaces: 5,
+        positionDecimalPlaces: 0,
         tradableInstrument: {
           instrument: {
             id: '',
@@ -78,6 +79,7 @@ export const generatePositions = (
           },
         },
         decimalPlaces: 5,
+        positionDecimalPlaces: 0,
         tradableInstrument: {
           instrument: {
             id: '',

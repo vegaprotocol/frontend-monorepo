@@ -1,13 +1,13 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, ReactElement } from 'react';
 import classNames from 'classnames';
-import { getIntentShadow, Intent } from '../../utils/intent';
+import { getIntentBorder, Intent } from '../../utils/intent';
 import { Loader } from '../loader';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 
 interface CalloutRootProps {
-  children?: React.ReactNode;
-  title?: React.ReactElement | string;
+  children?: ReactNode;
+  title?: ReactElement | string;
   intent?: Intent;
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   isLoading?: boolean;
@@ -89,13 +89,10 @@ export function Callout({
 
   const className = classNames(
     'flex gap-20',
-    'border',
-    'border-black',
-    'dark:border-white',
     'text-body-large',
     'dark:text-white',
     'p-16',
-    getIntentShadow(intent)
+    getIntentBorder(intent)
   );
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
     ? `h${headingLevel}`

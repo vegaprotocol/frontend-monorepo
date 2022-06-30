@@ -25,7 +25,7 @@ export const TargetAddressMismatch = ({
           }}
           components={{
             bold: <strong />,
-            red: <span className={'text-red'} />,
+            red: <span className={'text-vega-red'} />,
           }}
         />
       </p>

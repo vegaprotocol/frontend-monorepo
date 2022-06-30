@@ -1,8 +1,8 @@
 import React from 'react';
-
 import { formatNumber } from '../../lib/format-number';
 import type { BigNumber } from '../../lib/bignumber';
 import { theme } from '@vegaprotocol/tailwindcss-config';
+import classnames from 'classnames';
 
 const Colors = theme.colors;
 
@@ -14,9 +14,10 @@ const ProgressContents = ({
   children: React.ReactNode;
 }) => (
   <div
-    className={`flex justify-between py-2 font-mono ${
-      light ? 'gap-0 px-0 text-black' : 'gap-y-0 gap-x-4 px-4'
-    }`}
+    className={classnames('flex justify-between py-2 font-mono mb-2', {
+      'gap-0 px-0 text-black': light,
+      'gap-y-0 gap-x-4': !light,
+    })}
   >
     {children}
   </div>
@@ -25,17 +26,22 @@ const ProgressContents = ({
 const ProgressIndicator = ({
   bgColor,
   side,
+  light,
 }: {
   bgColor: string;
   side: 'left' | 'right';
+  light: boolean;
 }) => (
   <span
     style={{
       backgroundColor: bgColor,
     }}
-    className={`inline-block w-12 h-12 border border-black ${
-      side === 'left' ? 'mr-8' : 'ml-8'
-    }`}
+    className={classnames('inline-block w-12 h-12 border', {
+      'mr-8': side === 'left',
+      'ml-8': side === 'right',
+      'border-black': light,
+      'border-white': !light,
+    })}
   />
 );
 
@@ -64,6 +70,7 @@ export interface LockedProgressProps {
   leftColor?: string;
   rightColor?: string;
   light?: boolean;
+  decimals?: number;
 }
 
 export const LockedProgress = ({
@@ -73,8 +80,9 @@ export const LockedProgress = ({
   leftLabel,
   rightLabel,
   leftColor = Colors.vega.pink,
-  rightColor = Colors.green.DEFAULT,
+  rightColor = Colors.vega.green,
   light = false,
+  decimals = 2,
 }: LockedProgressProps) => {
   const lockedPercentage = React.useMemo(() => {
     return locked.div(total).times(100);
@@ -85,25 +93,34 @@ export const LockedProgress = ({
   }, [total, unlocked]);
 
   return (
-    <div className="border-x border-x-white">
-      <div className={`flex ${light && 'border border-black'}`}>
+    <div className="mb-8">
+      <div
+        className={classnames('flex border', {
+          'border-black': light,
+          'border-white': !light,
+        })}
+      >
         <ProgressBar percentage={lockedPercentage} bgColor={leftColor} />
         <ProgressBar percentage={unlockedPercentage} bgColor={rightColor} />
       </div>
       <ProgressContents light={light}>
         <span>
-          <ProgressIndicator bgColor={leftColor} side={'left'} />
+          <ProgressIndicator bgColor={leftColor} side={'left'} light={false} />
           {leftLabel}
         </span>
         <span>
           {rightLabel}
-          <ProgressIndicator bgColor={rightColor} side={'right'} />
+          <ProgressIndicator
+            bgColor={rightColor}
+            side={'right'}
+            light={false}
+          />
         </span>
       </ProgressContents>
 
       <ProgressContents light={light}>
-        <span>{formatNumber(locked, 2)}</span>
-        <span>{formatNumber(unlocked, 2)}</span>
+        <span>{formatNumber(locked, decimals)}</span>
+        <span>{formatNumber(unlocked, decimals)}</span>
       </ProgressContents>
     </div>
   );

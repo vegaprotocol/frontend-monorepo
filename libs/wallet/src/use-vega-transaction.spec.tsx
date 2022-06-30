@@ -2,7 +2,11 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import type { VegaWalletContextShape } from './context';
 import { VegaWalletContext } from './context';
 import type { ReactNode } from 'react';
-import { useVegaTransaction, VegaTxStatus } from './use-vega-transaction';
+import {
+  initialState,
+  useVegaTransaction,
+  VegaTxStatus,
+} from './use-vega-transaction';
 import type { OrderSubmission } from './types';
 
 const defaultWalletContext = {
@@ -93,4 +97,15 @@ it('Returns the signature if successful', async () => {
   expect(result.current.transaction.signature).toEqual(
     successObj.tx.signature.value
   );
+});
+
+it('Resets transaction state if user rejects', async () => {
+  const mockSendTx = jest
+    .fn()
+    .mockReturnValue(Promise.resolve({ error: 'User rejected' }));
+  const { result } = setup({ sendTx: mockSendTx });
+  await act(async () => {
+    result.current.send({} as OrderSubmission);
+  });
+  expect(result.current.transaction).toEqual(initialState);
 });

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
-import { getVariantBackground } from '../../utils/intent';
+import { getIntentTextAndBackground } from '../../utils/intent';
 import type { Intent } from '../../utils/intent';
 
 interface LozengeProps {
@@ -15,7 +15,7 @@ const getLozengeClasses = (
 ) => {
   return classNames(
     ['rounded-md', 'font-mono', 'leading-none', 'p-4'],
-    getVariantBackground(variant),
+    getIntentTextAndBackground(variant),
     className
   );
 };

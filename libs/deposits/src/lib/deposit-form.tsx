@@ -89,7 +89,7 @@ export const DepositForm = ({
     submitDeposit({
       assetSource: selectedAsset.source.contractAddress,
       amount: removeDecimal(fields.amount, selectedAsset.decimals),
-      vegaPublicKey: `0x${fields.to}`,
+      vegaPublicKey: fields.to,
     });
   };
 
