@@ -1,5 +1,6 @@
 import type {
   DelegateSubmissionBody,
+  OrderCancellationBody,
   OrderSubmissionBody,
   UndelegateSubmissionBody,
   VoteSubmissionBody,
@@ -28,6 +29,7 @@ export enum OrderTimeInForce {
 // Will make Transaction a union type as other transactions are added
 export type TransactionSubmission =
   | OrderSubmissionBody
+  | OrderCancellationBody
   | WithdrawSubmissionBody
   | VoteSubmissionBody
   | DelegateSubmissionBody

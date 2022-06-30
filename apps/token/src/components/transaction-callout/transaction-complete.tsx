@@ -23,12 +23,8 @@ export const TransactionComplete = ({
       intent={Intent.Success}
       title={heading || t('Complete')}
     >
-      {body && (
-        <p className="mb-8" data-testid="transaction-complete-body">
-          {body}
-        </p>
-      )}
-      <p className="mb-8">
+      {body && <p data-testid="transaction-complete-body">{body}</p>}
+      <p>
         <Link
           title={t('View transaction on Etherscan')}
           target="_blank"

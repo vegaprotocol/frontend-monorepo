@@ -11,6 +11,7 @@ type Props = (AgGridReactProps | AgReactUiProps) & {
   style?: React.CSSProperties;
   className?: string;
   gridRef?: React.Ref<AgGridReact>;
+  customThemeParams?: string;
 };
 
 // https://stackoverflow.com/questions/69433673/nextjs-reactdomserver-does-not-yet-support-suspense

@@ -73,7 +73,7 @@ export const RedeemFromTranche = () => {
     !trancheBalance
   ) {
     return (
-      <section data-testid="redemption-page">
+      <section data-testid="redemption-page" className="mb-28">
         <p data-testid="redemption-no-balance">
           <Trans
             i18nKey="noVestingTokens"
@@ -99,7 +99,7 @@ export const RedeemFromTranche = () => {
           }
           completeBody={
             <>
-              <p className="mb-8">
+              <p>
                 {t(
                   'You have redeemed {{redeemedAmount}} VEGA tokens from this tranche. They are now free to transfer from your Ethereum wallet.',
                   {
@@ -107,7 +107,7 @@ export const RedeemFromTranche = () => {
                   }
                 )}
               </p>
-              <p className="mb-8">
+              <p>
                 {t(
                   'The VEGA token address is {{address}}, make sure you add this to your wallet to see your tokens',
                   {

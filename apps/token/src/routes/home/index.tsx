@@ -42,13 +42,13 @@ const Home = ({ name }: RouteChildProps) => {
         />
       </HomeSection>
       <HomeSection>
-        <h2 className="text-h4 text-white">{t('Token Vesting')}</h2>
-        <p className="mb-8">
+        <h2>{t('Token Vesting')}</h2>
+        <p>
           {t(
             'The vesting contract holds VEGA tokens until they have become unlocked.'
           )}
         </p>
-        <p className="mb-8">
+        <p>
           <Trans
             i18nKey="Tokens are held in different <trancheLink>Tranches</trancheLink>. Each tranche has its own schedule for how the tokens are unlocked."
             components={{
@@ -62,7 +62,7 @@ const Home = ({ name }: RouteChildProps) => {
             }}
           />
         </p>
-        <p className="mb-8">
+        <p>
           {t(
             'Once unlocked they can be redeemed from the contract so that you can transfer them between wallets.'
           )}
@@ -74,13 +74,13 @@ const Home = ({ name }: RouteChildProps) => {
         </Link>
       </HomeSection>
       <HomeSection>
-        <h2 className="text-h4 text-white">{t('Use your Vega tokens')}</h2>
-        <p className="mb-8">
+        <h2 className="uppercase">{t('Use your Vega tokens')}</h2>
+        <p>
           {t(
             'To use your tokens on the Vega network they need to be associated with a Vega wallet/key.'
           )}
         </p>
-        <p className="mb-8">
+        <p>
           {t(
             'This can happen both while held in the vesting contract as well as when redeemed.'
           )}
@@ -109,8 +109,8 @@ const Home = ({ name }: RouteChildProps) => {
       <div className="flex gap-40">
         <div className="flex-1">
           <HomeSection>
-            <h2 className="text-h4 text-white">{t('Staking')}</h2>
-            <p className="mb-8">
+            <h2>{t('Staking')}</h2>
+            <p>
               {t(
                 'VEGA token holders can nominate a validator node and receive staking rewards.'
               )}
@@ -129,8 +129,8 @@ const Home = ({ name }: RouteChildProps) => {
         </div>
         <div className="flex-1">
           <HomeSection>
-            <h2 className="text-h4 text-white">{t('Governance')}</h2>
-            <p className="mb-8">
+            <h2>{t('Governance')}</h2>
+            <p>
               {t(
                 'VEGA token holders can vote on proposed changes to the network and create proposals.'
               )}
@@ -155,5 +155,5 @@ const Home = ({ name }: RouteChildProps) => {
 export default Home;
 
 export const HomeSection = ({ children }: { children: React.ReactNode }) => {
-  return <section className="mb-20">{children}</section>;
+  return <section className="mb-28">{children}</section>;
 };

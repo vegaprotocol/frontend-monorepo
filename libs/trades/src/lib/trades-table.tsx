@@ -43,7 +43,7 @@ interface TradesTableProps {
 
 export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
   ({ data }, ref) => {
-    // Sort intial trades
+    // Sort initial trades
     const trades = useMemo(() => {
       if (!data) {
         return null;
