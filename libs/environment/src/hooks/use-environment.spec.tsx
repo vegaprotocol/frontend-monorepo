@@ -40,6 +40,8 @@ const mockEnvironmentState: EnvironmentState = {
   },
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  GIT_COMMIT_HASH: 'abcde01234',
 };
 
 beforeEach(() => {
@@ -59,6 +61,8 @@ beforeEach(() => {
   process.env['NX_VEGA_NETWORKS'] = JSON.stringify(
     mockEnvironmentState.VEGA_NETWORKS
   );
+  process.env['NX_GIT_ORIGIN_URL'] = mockEnvironmentState.GIT_ORIGIN_URL;
+  process.env['NX_GIT_COMMIT_HASH'] = mockEnvironmentState.GIT_COMMIT_HASH;
 });
 
 afterAll(() => {

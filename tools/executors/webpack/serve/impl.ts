@@ -1,5 +1,5 @@
 import type { ExecutorContext } from '@nrwl/devkit';
-import setup from '../../utils/setup-environment';
+import setup from '../../../utils/setup-environment';
 import devServerExecutor, {
   WebDevServerOptions,
 } from '@nrwl/web/src/executors/dev-server/dev-server.impl';
@@ -12,8 +12,8 @@ export default async function* serve(
   options: Schema,
   context: ExecutorContext
 ): ReturnType<typeof devServerExecutor> {
-  const { env, ...dsOptions } = options;
-  setup(env, context, 'tools/executors/serve');
+  const { env, ...serverOptions } = options;
+  await setup(env, context, 'tools/executors/webpack/serve');
 
-  return yield* devServerExecutor(dsOptions, context);
+  return yield* devServerExecutor(serverOptions, context);
 }

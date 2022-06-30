@@ -6,48 +6,54 @@ import {
   NetworkSwitcherDialog,
 } from '@vegaprotocol/environment';
 
-const gitCommitHash = process.env['GIT_COMMIT_HASH'];
-const gitOriginUrl =
-  process.env['NX_GIT_ORIGIN_URL'] || process.env['GIT_ORIGIN_URL'];
-const noltUrl = process.env['NX_NOLT_URL'];
-
-const feedbackLinks = [
-  {
-    name: 'Nolt',
-    url: noltUrl,
-  },
-  {
-    name: 'Github',
-    url: gitOriginUrl ? `${gitOriginUrl}/issues` : undefined,
-  },
-].filter((link) => !!link.url);
+const getFeedbackLinks = (gitOriginUrl?: string) =>
+  [
+    {
+      name: 'Github',
+      url: gitOriginUrl ? `${gitOriginUrl}/issues` : undefined,
+    },
+  ].filter((link) => !!link.url);
 
 export const Footer = () => {
   const [isNetworkConfigOpen, setNetworkConfigOpen] = useState(false);
-  const { VEGA_URL, VEGA_NETWORKS } = useEnvironment();
+  const {
+    VEGA_URL,
+    VEGA_NETWORKS,
+    GIT_COMMIT_HASH,
+    GIT_ORIGIN_URL,
+    ETHEREUM_PROVIDER_URL,
+  } = useEnvironment();
+  const feedbackLinks = getFeedbackLinks(GIT_ORIGIN_URL);
 
   return (
     <>
       <footer className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-t-1">
         <div>
-          {gitCommitHash && (
+          {GIT_COMMIT_HASH && GIT_ORIGIN_URL && (
             <p className="mb-[1rem]">
               {t('Version/commit hash')}:{' '}
               <Link
-                href={`${gitOriginUrl}/commit/${gitCommitHash}`}
+                href={`${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}`}
                 target="_blank"
               >
-                {gitCommitHash}
+                {GIT_COMMIT_HASH}
               </Link>
             </p>
           )}
           <p className="mb-[1rem]">
-            {t('This site is reading data from')}{' '}
+            {t('Reading network data from')}{' '}
             <Lozenge className="bg-white-80 dark:bg-black-80">
               {VEGA_URL}
             </Lozenge>
             .{' '}
             <Link onClick={() => setNetworkConfigOpen(true)}>{t('Edit')}</Link>
+          </p>
+          <p className="mb-[1rem]">
+            {t('Reading Ethereum data from')}{' '}
+            <Lozenge className="bg-white-80 dark:bg-black-80">
+              {ETHEREUM_PROVIDER_URL}
+            </Lozenge>
+            .{' '}
           </p>
           {feedbackLinks.length > 0 && (
             <p className="mb-16">

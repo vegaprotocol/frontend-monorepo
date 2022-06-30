@@ -1,6 +1,6 @@
 {
   "cli": "nx",
-  "id": "serve-next",
+  "id": "serve",
   "description": "Serves an app using @nrwl/next:server",
   "type": "object",
   "properties": {

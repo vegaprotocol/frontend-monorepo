@@ -58,6 +58,10 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_ETHERSCAN_URL'];
     case 'VEGA_NETWORKS':
       return process.env['NX_VEGA_NETWORKS'];
+    case 'GIT_COMMIT_HASH':
+      return process.env['NX_GIT_COMMIT_HASH'];
+    case 'GIT_ORIGIN_URL':
+      return process.env['NX_GIT_ORIGIN_URL'];
   }
 };
 

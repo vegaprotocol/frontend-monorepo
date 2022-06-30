@@ -5,11 +5,14 @@ import * as log from 'npmlog';
 import * as dotenv from 'dotenv';
 import type { ExecutorContext } from '@nrwl/devkit';
 
-process.env['GIT_COMMIT_HASH'] = execSync('git rev-parse HEAD').toString();
-process.env['GIT_ORIGIN_URL'] = execSync('git remote get-url origin')
+process.env['NX_GIT_COMMIT_HASH'] = execSync('git rev-parse HEAD')
+  .toString()
+  .replace(/[\r\n]/gm, '');
+process.env['NX_GIT_ORIGIN_URL'] = execSync('git remote get-url origin')
   .toString()
   .replace('ssh://git@', 'https://')
-  .replace('.git', '');
+  .replace('.git', '')
+  .replace(/[\r\n]/gm, '');
 
 const logEnvData = (
   envMap: Record<string, string>,
