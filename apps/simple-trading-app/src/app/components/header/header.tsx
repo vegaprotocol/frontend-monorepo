@@ -16,13 +16,10 @@ interface Props {
 }
 const Header = ({ setVegaWallet, toggleTheme }: Props) => {
   return (
-    <div className="flex items-stretch p-16 bg-black dark:bg-white text-white-60">
+    <div className="flex items-stretch p-16 bg-black text-white-60">
       <div className="absolute top-0 right-[200px] w-[500px] h-[100px] z-0 hidden md:block">
         <Video />
-        <div
-          id="swarm"
-          className="absolute w-[500px] h-[100px] bg-black dark:bg-white"
-        />
+        <div id="swarm" className="absolute w-[500px] h-[100px] bg-black" />
       </div>
       <Logo />
       <Comet />

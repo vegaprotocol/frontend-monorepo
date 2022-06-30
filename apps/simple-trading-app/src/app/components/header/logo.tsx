@@ -1,19 +1,14 @@
 import React, { useContext } from 'react';
-import classNames from 'classnames';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 
 const Logo = () => {
-  const theme = useContext(ThemeContext);
   return (
     <svg
       width="38"
       height="44"
       fill="currentColor"
       viewBox="0 0 29 34"
-      className={classNames('m-12', {
-        'text-black-100': theme === 'dark',
-        'text-white-100': theme === 'light',
-      })}
+      className="m-12 text-white-100"
     >
       <path d="M14.5003 29.1426H9.6665V34.0001H14.5003V29.1426Z" />
       <path d="M19.3343 24.2859H14.5005V29.1434H19.3343V24.2859Z" />
