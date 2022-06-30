@@ -10,6 +10,7 @@ describe('vega wallet', () => {
   beforeEach(() => {
     // Using portfolio page as it requires vega wallet connection
     cy.visit('/portfolio');
+    cy.get('main[data-testid="portfolio"]').should('exist');
   });
 
   it('can connect', () => {
@@ -64,8 +65,10 @@ describe('vega wallet', () => {
 describe('ethereum wallet', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
-    // Using portfolio is it requires Ethereum wallet connection
+    // Using portfolio withdrawals tab is it requires Ethereum wallet connection
     cy.visit('/portfolio');
+    cy.get('main[data-testid="portfolio"]').should('exist');
+    cy.getByTestId('Withdrawals').click();
   });
 
   it('can connect', () => {
@@ -73,6 +76,6 @@ describe('ethereum wallet', () => {
     cy.getByTestId('web3-connector-list').should('exist');
     cy.getByTestId('web3-connector-MetaMask').click();
     cy.getByTestId('web3-connector-list').should('not.exist');
-    cy.getByTestId('portfolio-grid').should('exist');
+    cy.getByTestId('tab-withdrawals').should('not.be.empty');
   });
 });

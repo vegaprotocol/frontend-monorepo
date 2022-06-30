@@ -13,7 +13,7 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       overflowX: 'auto',
       padding: '1em',
       background: theme.colors.white.DEFAULT,
-      color: theme.colors.black[25],
+      color: theme.colors.black[70],
       border: `1px solid #${theme.colors.black[40]}`,
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
