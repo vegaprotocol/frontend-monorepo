@@ -6787,10 +6787,10 @@
     "@typescript-eslint/types" "5.22.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vegaprotocol/vegawallet-service-api-client@^0.4.13":
-  version "0.4.13"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.13.tgz#fb98ec0179ea6cc27e991ef3d3338327eca4f3c4"
-  integrity sha512-YK6DsDKgvb+n9QwvKYSBQ51TDon0lGpLsNdNUa4oywIjubzWGVE4g98GrEmcP+UB/AfZzLA6A9ul7F/+TSep5Q==
+"@vegaprotocol/vegawallet-service-api-client@0.4.14":
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.14.tgz#cdec296644380f95397688e10b753af328c38147"
+  integrity sha512-xQ/Dg4Bg+3LSHybYHV83i3G7i407Jj8ROElblZ2TTHTW9iHbBhbd/EHtWfUF2C6R6U27+JUZExnFPcZlvNXprA==
   dependencies:
     es6-promise "^4.2.4"
     url-parse "^1.4.3"
