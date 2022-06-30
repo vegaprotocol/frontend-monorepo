@@ -74,7 +74,7 @@
       "options": {
         "commands": [
           "cp apps/simple-trading-app/netlify.toml netlify.toml",
-          "nx build explorer"
+          "nx build simple-trading-app"
         ]
       }
     }
