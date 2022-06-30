@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-import { ThemeContext } from '@vegaprotocol/react-helpers';
+import React from 'react';
 
 const Logo = () => {
   return (
