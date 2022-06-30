@@ -20,14 +20,35 @@ export const CancelDialog = ({
   reset,
 }: CancelDialogProps) => {
   const getDialogIntent = () => {
-    if (finalizedOrder) {
-      if (finalizedOrder.status === OrderStatus.Cancelled) {
+    switch (finalizedOrder?.status) {
+      case OrderStatus.Cancelled:
         return Intent.Success;
-      }
-
-      return Intent.Danger;
+      case OrderStatus.Filled:
+        return Intent.Warning;
+      case OrderStatus.Expired:
+        return Intent.Danger;
+      default:
+        return Intent.None;
     }
-    return Intent.None;
+  };
+
+  const getTitle = () => {
+    switch (finalizedOrder?.status) {
+      case OrderStatus.Cancelled:
+        return 'Order cancelled';
+      case OrderStatus.Filled:
+        return 'Order filled';
+      case OrderStatus.PartiallyFilled:
+        return 'Order partially filled';
+      case OrderStatus.Active:
+        return 'Order submitted';
+      case OrderStatus.Rejected:
+        return 'Order rejected';
+      case OrderStatus.Expired:
+        return 'Order expired';
+      default:
+        return '';
+    }
   };
 
   useEffect(() => {
@@ -56,7 +77,7 @@ export const CancelDialog = ({
         finalizedOrder={finalizedOrder}
         title={
           finalizedOrder?.status === OrderStatus.Cancelled
-            ? 'Order cancelled'
+            ? getTitle()
             : 'Cancellation failed'
         }
       />
