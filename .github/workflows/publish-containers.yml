@@ -14,6 +14,7 @@ jobs:
       matrix:
         version: ['0.0.1']
         build-platforms: ['linux/amd64, linux/arm64']
+        app: ['explorer']
     name: Build the ${{ inputs.image_name }} image
     runs-on: ubuntu-latest
     steps:
@@ -44,7 +45,7 @@ jobs:
         with:
           context: '.'
           file: './Dockerfile'
-          build-args: 'APP=explorer'
-          platforms: ${{ matrix.build-platforms }}
+          build-args: 'APP=${{ matrix.app }}'
+          platforms: ${{ matrix.build-platform }}
           tags: ${{ steps.tags.outputs.latest }},${{ steps.tags.outputs.current }}
           push: ${{ github.event_name != 'pull_request' }}
