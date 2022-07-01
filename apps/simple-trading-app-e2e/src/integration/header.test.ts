@@ -1,4 +1,4 @@
-describe('console log header', () => {
+describe('console lite header', () => {
   beforeEach(() => cy.visit('/'));
 
   it('logo should linked home', () => {
