@@ -29,4 +29,5 @@ export * from './text-area';
 export * from './theme-switcher';
 export * from './toggle';
 export * from './tooltip';
+export * from './v-logo';
 export * from './vega-logo';
