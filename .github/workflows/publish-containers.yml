@@ -34,7 +34,7 @@ jobs:
           echo ::set-output name=latest::v${{ matrix.version }}
 
       - name: Login to DockerHub
-        if: github.event_name != 'pull_request'
+        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -48,4 +48,4 @@ jobs:
           build-args: 'APP=${{ matrix.app }}'
           platforms: ${{ matrix.build-platform }}
           tags: ${{ steps.tags.outputs.latest }},${{ steps.tags.outputs.current }}
-          push: ${{ github.event_name != 'pull_request' }}
+          # push: ${{ github.event_name != 'pull_request' }}
