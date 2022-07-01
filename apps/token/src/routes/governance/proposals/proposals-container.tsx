@@ -67,7 +67,7 @@ export const ProposalsContainer = () => {
   return (
     <>
       <Heading title={t('pageTitleGovernance')} />
-      <ProposalsList proposals={proposals} />;
+      <ProposalsList proposals={proposals} />
     </>
   );
 };
