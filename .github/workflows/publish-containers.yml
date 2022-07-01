@@ -30,8 +30,8 @@ jobs:
       - name: Collect images data
         id: tags
         run: |
-          echo ::set-output name=current::v${{ matrix.version }}
-          echo ::set-output name=latest::v${{ matrix.version }}
+          echo ::set-output vegaprotocol/${{ matrix.app }}:v${{ matrix.version }}
+          echo ::set-output vegaprotocol/${{ matrix.app }}:latest
 
       - name: Login to DockerHub
         # if: github.event_name != 'pull_request'
