@@ -61,7 +61,10 @@ const NodeListTr = ({ children }: { children: React.ReactNode }) => (
 );
 
 const NodeListTh = ({ children }: { children: React.ReactNode }) => (
-  <th className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal">
+  <th
+    role="rowheader"
+    className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal"
+  >
     {children}
   </th>
 );
@@ -196,13 +199,17 @@ export const NodeListItem = ({
             <span
               className="uppercase text-white-60"
               title={`${t('id')}: ${id}`}
+              data-testid="node-list-item-name"
             >
               {truncateMiddle(id)}
             </span>
           </>
         )}
       </Link>
-      <table className="flex-1 text-body border-collapse mt-4">
+      <table
+        className="flex-1 text-body border-collapse mt-4"
+        data-testid="node-list-item-table"
+      >
         <tbody>
           <NodeListTr>
             <NodeListTh>{t('Total stake')}</NodeListTh>
