@@ -18,7 +18,9 @@ context('Vesting Page - verify elements on page', function () {
     });
 
     it('should have VESTING header visible', function () {
-      cy.get(vesting.header).should('be.visible').and('have.text', 'Vesting');
+      cy.get(vesting.pageHeader)
+        .should('be.visible')
+        .and('have.text', 'Vesting');
     });
 
     it('should have connect Eth wallet info', function () {
