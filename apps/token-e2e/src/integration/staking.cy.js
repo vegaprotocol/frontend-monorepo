@@ -61,6 +61,7 @@ context('Staking Page - verify elements on page', function () {
             .and('have.text', 'Connect Ethereum wallet');
         });
       });
+
       it('should have connect to vega button visible', function () {
         cy.get(staking.step1).within(() => {
           cy.get(staking.connectToVegaBtn)
@@ -69,6 +70,7 @@ context('Staking Page - verify elements on page', function () {
         });
       });
     });
+
     describe('step 2 section', function () {
       it('should have header visible', function () {
         cy.get(staking.step2).within(() => {
@@ -77,6 +79,7 @@ context('Staking Page - verify elements on page', function () {
             .and('have.text', 'Step 2. Associate tokens with a Vega Wallet');
         });
       });
+
       it('should have warning visible', function () {
         cy.get(staking.step2).within(() => {
           cy.get(staking.warning)
@@ -88,6 +91,7 @@ context('Staking Page - verify elements on page', function () {
         });
       });
     });
+
     describe('step 3 section', function () {
       it('should have header visible', function () {
         cy.get(staking.step3).within(() => {
