@@ -22,6 +22,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
     return (
       <p>
         <Button
+          data-testid="connect-to-vega-wallet-btn"
           onClick={() =>
             appDispatch({
               type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
