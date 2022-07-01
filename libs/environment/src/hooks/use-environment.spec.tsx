@@ -40,6 +40,7 @@ const mockEnvironmentState: EnvironmentState = {
   },
   ETHEREUM_PROVIDER_URL: 'https://ether.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
+  setNodeSwitcherOpen: noop,
 };
 
 beforeEach(() => {

@@ -118,5 +118,6 @@ export const useConfig = (
 
   return {
     status,
+    config,
   };
 };

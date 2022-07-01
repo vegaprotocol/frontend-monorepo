@@ -4,16 +4,21 @@ import type { ReactNode } from 'react';
 
 interface RadioGroupProps {
   children: ReactNode;
+  className?: string;
   defaultValue?: string;
   value?: string;
   onChange?: (value: string) => void;
 }
 
-export const RadioGroup = ({ children, onChange }: RadioGroupProps) => {
+export const RadioGroup = ({
+  children,
+  className,
+  onChange,
+}: RadioGroupProps) => {
   return (
     <RadioGroupPrimitive.Root
       onValueChange={onChange}
-      className="flex flex-row gap-24"
+      className={classNames('flex flex-row gap-24', className)}
     >
       {children}
     </RadioGroupPrimitive.Root>
@@ -24,11 +29,19 @@ interface RadioProps {
   id: string;
   value: string;
   label: string;
+  labelClassName?: string;
   disabled?: boolean;
   hasError?: boolean;
 }
 
-export const Radio = ({ id, value, label, disabled, hasError }: RadioProps) => {
+export const Radio = ({
+  id,
+  value,
+  label,
+  labelClassName,
+  disabled,
+  hasError,
+}: RadioProps) => {
   const wrapperClasses = classNames('flex flex-row gap-8 items-center', {
     'opacity-50': disabled,
   });
@@ -38,6 +51,7 @@ export const Radio = ({ id, value, label, disabled, hasError }: RadioProps) => {
     'focus:outline-none focus-visible:outline-none',
     'focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
     'dark:bg-white-25',
+    labelClassName,
     {
       'border-black-60 dark:border-white-60': !hasError,
       'border-danger dark:border-danger': hasError,

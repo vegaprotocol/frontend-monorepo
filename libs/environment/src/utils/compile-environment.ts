@@ -58,8 +58,6 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_ETHERSCAN_URL'];
     case 'VEGA_NETWORKS':
       return process.env['NX_VEGA_NETWORKS'];
-    case 'VEGA_EXPLORER_URL':
-      return process.env['NX_VEGA_EXPLORER_URL'];
   }
 };
 

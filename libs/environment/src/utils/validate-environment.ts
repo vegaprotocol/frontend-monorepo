@@ -14,7 +14,6 @@ export enum Networks {
 
 const schemaObject = {
   VEGA_URL: z.optional(z.string()),
-  VEGA_EXPLORER_URL: z.optional(z.string()),
   VEGA_CONFIG_URL: z.optional(z.string()),
   ETHEREUM_PROVIDER_URL: z.string().url({
     message:
