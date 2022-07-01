@@ -36,19 +36,20 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
             href={Links.STAKING_GUIDE}
             className="text-white underline"
             target="_blank"
+            data-testid="staking-guide-link"
           >
             {t('readMoreStaking')}
           </Link>
         </p>
       </section>
 
-      <section>
+      <section data-testid="staking-step-1">
         <BulletHeader tag="h2" style={stakingBulletStyles}>
           {t('stakingStep1')}
         </BulletHeader>
         <StakingStepConnectWallets />
       </section>
-      <section>
+      <section data-testid="staking-step-2">
         <BulletHeader tag="h2" style={stakingBulletStyles}>
           {t('stakingStep2')}
         </BulletHeader>
@@ -60,7 +61,7 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
           }
         />
       </section>
-      <section>
+      <section data-testid="staking-step-3">
         <BulletHeader tag="h2" style={stakingBulletStyles}>
           {t('stakingStep3')}
         </BulletHeader>
