@@ -3,11 +3,10 @@ import staking from '../locators/staking.locators';
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'staking_validator_page_check_stakeNextEpochValue',
+  'staking_validator_page_check_stake_next_epoch_value',
   function (expectedVal) {
     cy.get(staking.stakeNextEpochValue, { timeout: 10000 }).contains(
-      expectedVal,
-      { timeout: 10000 }
+      expectedVal, { timeout: 10000 }
     );
   }
 );
@@ -27,7 +26,7 @@ Cypress.Commands.add(
 
 // ----------------------------------------------------------------------
 
-Cypress.Commands.add('staking_validator_page_addStake', function (stake) {
+Cypress.Commands.add('staking_validator_page_add_stake', function (stake) {
   cy.get(staking.addStakeRadioButton).click({ force: true });
   cy.get(staking.tokenAmountInput).type(stake);
   cy.contains('Waiting for next epoch to start', { timeout: 10000 });

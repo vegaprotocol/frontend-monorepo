@@ -8,44 +8,36 @@ import {
 import { ethers, Wallet } from 'ethers';
 
 // ----------------------------------------------------------------------
-const vegaWalletName = Cypress.env('VEGA_WALLET_NAME');
-const vegaWalletLocation = Cypress.env('VEGA_WALLET_LOCATION');
-const vegaWalletPassphrase = Cypress.env('VEGA_WALLET_PASSPHRASE');
 
-const ethPubKey = '0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F';
-const ethProviderUrl = 'http://localhost:8545/';
-const ethStakingBridgeContractAddress =
-  '0x9135f5afd6F055e731bca2348429482eE614CFfA';
-const ethWalletMnemonic =
-  'ozone access unlock valid olympic save include omit supply green clown session';
-const vegaPubKey =
-  'fc8661e5550f277dfae5ca2bb38a7524072f84ea56198edab35f81a733031b06';
-const vegaTokenContractAddress = '0xF41bD86d462D36b997C0bbb4D97a0a3382f205B7';
-const vegaTokenAddress = '0x67175Da1D5e966e40D11c4B2519392B2058373de';
-const queryUrl = 'http://localhost:3028/query';
+const vegaWalletName = Cypress.env('vega_wallet_name');
+const vegaWalletLocation = Cypress.env('vega_wallet_location');
+const vegaWalletPassphrase = Cypress.env('vega_wallet_passphrase');
+const vegaWalletMnemonic = Cypress.env('vega_wallet_mnemonic');
+const vegaWalletPubKey = Cypress.env('vega_wallet_public_key');
+const vegaTokenContractAddress = Cypress.env('vega_token_contract_address');
+const vegaTokenAddress = Cypress.env('vega_token_address');
+const ethWalletPubKey = Cypress.env('eth_wallet_public_key')
+const ethStakingBridgeContractAddress = Cypress.env('eth_staking_bridge_contract_address')
+const ethProviderUrl = Cypress.env('eth_provider_url');
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
+  cy.log('**_Connecting Vega Wallet_**');
   cy.wrap(
-    Wallet.fromMnemonic(ethWalletMnemonic, getAccount(0)).privateKey
+    Wallet.fromMnemonic(vegaWalletMnemonic, getAccount(0)).privateKey
   ).then((privateKey) => {
     cy.vega_wallet_teardown_staking(privateKey);
     cy.vega_wallet_teardown_vesting(privateKey);
   });
-  cy.intercept('POST', queryUrl).as('queryGrab');
-  // Wait for a couple of queries to complete so wallet UI takes changes on board
-  cy.wait(['@queryGrab', '@queryGrab'], { timeout: 10000 });
-  // Then we turn off our intercept - so that we can use it again in the future
-  cy.intercept('POST', queryUrl, (req) => req.continue());
-  cy.log('**Connecting Vega Wallet = COMPLETE**');
+  cy.log('**_Connecting Vega Wallet = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('vega_wallet_teardown_staking', function (privateKey) {
-  cy.log('**Tearing down staking tokens if required**');
+  cy.log('**_Tearing down staking tokens if required_**');
   cy.wrap(new ethers.providers.JsonRpcProvider({ url: ethProviderUrl }), {
     log: false,
   }).as('provider');
@@ -56,30 +48,30 @@ Cypress.Commands.add('vega_wallet_teardown_staking', function (privateKey) {
         log: false,
       }).as('stakingBridge');
       cy.get('@stakingBridge', { log: false }).then((stakingBridge) => {
-        cy.wrap(stakingBridge.stakeBalance(ethPubKey, vegaPubKey), {
+        cy.wrap(stakingBridge.stakeBalance(ethWalletPubKey, vegaWalletPubKey), {
           timeout: 40000,
           log: false,
         }).then((stake_amount) => {
           if (String(stake_amount) != '0') {
-            cy.wrap(stakingBridge.removeStake(stake_amount, vegaPubKey), {
+            cy.wrap(stakingBridge.removeStake(stake_amount, vegaWalletPubKey), {
               timeout: 40000,
               log: false,
             }).then((tx) => {
               cy.wrap(tx.wait(1), { timeout: 40000, log: false });
-              cy.vega_wallet_check_associatedValue_is('0.000000000000000000');
+              cy.vega_wallet_check_associated_value_is('0.000000000000000000');
             });
           }
         });
       });
     });
   });
-  cy.log('**Tearing down staking tokens = COMPLETE**');
+  cy.log('**_Tearing down staking tokens = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('vega_wallet_teardown_vesting', function (privateKey) {
-  cy.log('**Tearing down vesting tokens if required**');
+  cy.log('**_Tearing down vesting tokens if required_**');
   cy.wrap(new ethers.providers.JsonRpcProvider({ url: ethProviderUrl }), {
     log: false,
   }).as('provider');
@@ -90,12 +82,12 @@ Cypress.Commands.add('vega_wallet_teardown_vesting', function (privateKey) {
         log: false,
       }).as('vesting');
       cy.get('@vesting', { log: false }).then((vesting) => {
-        cy.wrap(vesting.stakeBalance(ethPubKey, vegaPubKey), {
+        cy.wrap(vesting.stakeBalance(ethWalletPubKey, vegaWalletPubKey), {
           timeout: 40000,
           log: false,
         }).then((vesting_amount) => {
           if (String(vesting_amount) != '0') {
-            cy.wrap(vesting.removeStake(vesting_amount, vegaPubKey), {
+            cy.wrap(vesting.removeStake(vesting_amount, vegaWalletPubKey), {
               timeout: 40000,
               log: false,
             }).then((tx) => {
@@ -106,16 +98,16 @@ Cypress.Commands.add('vega_wallet_teardown_vesting', function (privateKey) {
       });
     });
   });
-  cy.log('**Tearing down vesting tokens = COMPLETE**');
+  cy.log('**_Tearing down vesting tokens = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'vega_wallet_set_approval_amount_to',
+  'vega_wallet_set_specified_approval_amount_and_reload',
   function (resetAmount) {
-    cy.log(`**Setting token approval amount to ${resetAmount}**`);
-    cy.wrap(Wallet.fromMnemonic(ethWalletMnemonic, getAccount(0)).privateKey, {
+    cy.log(`**_Setting token approval amount to ${resetAmount}_**`);
+    cy.wrap(Wallet.fromMnemonic(vegaWalletMnemonic, getAccount(0)).privateKey, {
       log: false,
     }).then((privateKey) => {
       cy.wrap(new ethers.providers.JsonRpcProvider({ url: ethProviderUrl }), {
@@ -141,19 +133,17 @@ Cypress.Commands.add(
         });
       });
     });
-    cy.intercept('POST', queryUrl).as('queryGrab');
-    // Wait for a couple of queries to complete so wallet UI takes changes on board
-    cy.wait(['@queryGrab', '@queryGrab'], { timeout: 10000 });
-    // Then we turn off our intercept - so that we can use it again in the future
-    cy.intercept('POST', queryUrl, (req) => req.continue());
-    cy.log(`**Setting token approval amount to ${resetAmount} = COMPLETE**`);
+    cy.log(`**_Setting token approval amount to ${resetAmount} = COMPLETE_**`);
+    cy.log('**_Reloading app for token approval setting to take affect_**')
+    cy.reload();
+    cy.log('**_Reloading app for token approval setting to take affect = COMPLETE_**')
   }
 );
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('vega_wallet_teardown_ui', function () {
-  cy.log('**Tearing down associated tokens from Vega Wallet**');
+  cy.log('**_Tearing down associated tokens from Vega Wallet_**');
   let vegaPresentInWallet = false;
   cy.get(wallet.vegawallet)
     .within(() => {
@@ -167,39 +157,36 @@ Cypress.Commands.add('vega_wallet_teardown_ui', function () {
     })
     .then(() => {
       if (vegaPresentInWallet == true) {
-        cy.root().ethereum_wallet_disassociateAllTokens();
-        cy.vega_wallet_check_associatedValue_is('0.0');
+        cy.root().ethereum_wallet_disassociate_all_tokens();
+        cy.vega_wallet_check_associated_value_is('0.0');
       } else {
-        cy.log('**No need to teardown vega wallet - wallet empty**');
+        cy.log('**_No need to teardown vega wallet - wallet empty_**');
       }
     });
-  cy.log('**Tearing down associated tokens from Vega Wallet = COMPLETE**');
+  cy.log('**_Tearing down associated tokens from Vega Wallet = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
-Cypress.Commands.add('vega_wallet_create', function () {
-  cy.log('**Initializing Vega Wallet** ' + vegaWalletName);
+Cypress.Commands.add('vega_wallet_import', function () {
+  cy.log(`**_Importing Vega Wallet ${vegaWalletName}_**`);
   cy.exec(`vegawallet init -f --home ${vegaWalletLocation}`);
   cy.exec(
-    `echo ${vegaWalletPassphrase} > ./src/fixtures/vegaWalletPassphrase.txt`
-  );
-  cy.exec(
-    `vegawallet create -w ${vegaWalletName} -p ./src/fixtures//vegaWalletPassphrase.txt --home ${vegaWalletLocation}`,
+    `vegawallet import -w ${vegaWalletName} --recovery-phrase-file ./src/fixtures/wallet/recovery -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet`,
     { failOnNonZeroExit: false }
-  ).then((result) => cy.log(result.stderr));
+  )
   cy.exec(
     `vegawallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
   );
 
-  cy.log('**Initializing Vega Wallet = COMPLETE**');
+  cy.log('**_Importing Vega Wallet = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('vega_wallet_connect', function () {
-  cy.log('**Connecting Vega Wallet**');
-  cy.intercept('POST', queryUrl).as('queryGrab');
+  cy.log('**_Connecting Vega Wallet_**');
+  // cy.intercept('POST', queryUrl).as('queryGrab');
   cy.get(wallet.vegawallet).within(() => {
     cy.get('button')
       .contains('Connect Vega wallet to use associated $VEGA')
@@ -217,67 +204,61 @@ Cypress.Commands.add('vega_wallet_connect', function () {
   });
 
   cy.contains(`${vegaWalletName} key`, { timeout: 20000 }).should('be.visible');
-  // We have to wait for two queries to finish
-  cy.wait('@queryGrab', { timeout: 10000 }).wait('@queryGrab', {
-    timeout: 10000,
-  });
-  // Then we turn off our intercept - so that we can use it again in the future
-  cy.intercept('POST', queryUrl, (req) => req.continue());
-  cy.log('**Connecting Vega Wallet = COMPLETE**');
+  cy.log('**_Connecting Vega Wallet = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'vega_wallet_check_validator_stakeNextEpochValue_is',
+  'vega_wallet_check_validator_stake_next_epoch_value_is',
   function (validatorName, expectedVal) {
     cy.log(
-      `**Checking Stake Next Epoch Value for ${validatorName} is ${expectedVal}**`
+      `**_Checking Stake Next Epoch Value for ${validatorName} is ${expectedVal}_**`
     );
     cy.get(wallet.vegawallet).within(() => {
-      cy.contains(`${validatorName} (Next epoch)`)
+      cy.contains(`${validatorName} (Next epoch)`, { timeout: 40000 })
         .siblings()
-        .contains(expectedVal, { timeout: 10000 });
+        .contains(expectedVal, { timeout: 40000 });
     });
-    cy.log('**Checking Stake Next Epoch Value = Complete**');
+    cy.log('**_Checking Stake Next Epoch Value = Complete_**');
   }
 );
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'vega_wallet_check_unstakedValue_is',
+  'vega_wallet_check_unstaked_value_is',
   function (expectedVal) {
-    cy.log(`**Checking Vega Wallet Unstaked Value is ${expectedVal}**`);
+    cy.log(`**_Checking Vega Wallet Unstaked Value is ${expectedVal}_**`);
     cy.get(wallet.vegawallet).within(() => {
-      cy.contains('Unstaked', { timeout: 20000 })
+      cy.contains('Unstaked', { timeout: 40000 })
         .siblings()
-        .contains(expectedVal, { timeout: 10000 });
+        .contains(expectedVal, { timeout: 40000 });
     });
-    cy.log('**Checking Vega Wallet Unstaked Value = Complete**');
+    cy.log('**_Checking Vega Wallet Unstaked Value = Complete_**');
   }
 );
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'vega_wallet_check_associatedValue_is',
+  'vega_wallet_check_associated_value_is',
   function (expectedVal) {
-    cy.log(`**Checking Vega Wallet Asscoiated Value is ${expectedVal}**`);
+    cy.log(`**_Checking Vega Wallet Associated Value is ${expectedVal}_**`);
     cy.get(wallet.vegawallet).within(() => {
-      cy.contains('Associated', { timeout: 20000 })
+      cy.contains('Associated', { timeout: 40000 })
         .parent()
         .siblings()
         .contains(expectedVal, { timeout: 40000 });
     });
-    cy.log('**Checking Vega Wallet Asscoiated Value = COMPLETE**');
+    cy.log('**_Checking Vega Wallet Associated Value = COMPLETE_**');
   }
 );
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('ethereum_wallet_connect', function () {
-  cy.log('**Connecting Eth Wallet**');
+  cy.log('**_Connecting Eth Wallet_**');
   cy.get(wallet.ethWalletConnectToEth).within(() => {
     cy.contains('Connect Ethereum wallet to associate $VEGA')
       .should('be.visible')
@@ -289,15 +270,15 @@ Cypress.Commands.add('ethereum_wallet_connect', function () {
     // this check is required since it ensures the wallet is fully (not partially) loaded
     cy.contains('Locked', { timeout: 10000 }).should('be.visible');
   });
-  cy.log('**Connecting Eth Wallet = COMPLETE**');
+  cy.log('**_Connecting Eth Wallet = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add(
-  'ethereum_wallet_associateTokens',
+  'ethereum_wallet_associate_tokens',
   function (amount, approve) {
-    cy.log(`**Associating ${amount} tokens from Eth Wallet**`);
+    cy.log(`**_Associating ${amount} tokens from Eth Wallet_**`);
     cy.get(wallet.ethWallet).within(() =>
       cy.get(wallet.ethWalletAssociate).click()
     );
@@ -322,14 +303,14 @@ Cypress.Commands.add(
     cy.contains('can now participate in governance and nominate a validator', {
       timeout: 60000,
     });
-    cy.log('**Associating tokens from Eth Wallet = COMPLETE**');
+    cy.log('**_Associating tokens from Eth Wallet = COMPLETE_**');
   }
 );
 
 // ----------------------------------------------------------------------
 
-Cypress.Commands.add('ethereum_wallet_disassociateTokens', function (amount) {
-  cy.log(`**Disassociating ${amount} tokens from Eth Wallet**`);
+Cypress.Commands.add('ethereum_wallet_disassociate_tokens', function (amount) {
+  cy.log(`**_Disassociating ${amount} tokens from Eth Wallet_**`);
   cy.get(wallet.ethWallet).within(() =>
     cy.get(wallet.ethWalletDisassociate).click()
   );
@@ -342,13 +323,13 @@ Cypress.Commands.add('ethereum_wallet_disassociateTokens', function (amount) {
   cy.contains(`${amount} $VEGA tokens have been returned to Ethereum wallet`, {
     timeout: 60000,
   });
-  cy.log('**Disassociating tokens from Eth Wallet = COMPLETE**');
+  cy.log('**_Disassociating tokens from Eth Wallet = COMPLETE_**');
 });
 
 // ----------------------------------------------------------------------
 
-Cypress.Commands.add('ethereum_wallet_disassociateAllTokens', function () {
-  cy.log('**Disassociating tokens from Eth Wallet**');
+Cypress.Commands.add('ethereum_wallet_disassociate_all_tokens', function () {
+  cy.log('**_Disassociating tokens from Eth Wallet_**');
   cy.get(wallet.ethWallet).within(() =>
     cy.get(wallet.ethWalletDisassociate).click()
   );
@@ -358,7 +339,34 @@ Cypress.Commands.add('ethereum_wallet_disassociateAllTokens', function () {
   cy.contains('$VEGA tokens have been returned to Ethereum wallet', {
     timeout: 60000,
   });
-  cy.log('**Disassociating tokens from Eth Wallet = Complete**');
+  cy.log('**_Disassociating tokens from Eth Wallet = Complete_**');
 });
 
 // ----------------------------------------------------------------------
+
+Cypress.Commands.add(
+  'ethereum_wallet_check_associated_vega_key_value_is',
+  function (vegaShortPublicKey, expectedVal) {
+    cy.log(`**_Checking Eth Wallet Vega Key Associated Value is ${expectedVal} for key ${vegaShortPublicKey}_**`);
+    cy.get(wallet.ethWallet).within(() => {
+      cy.contains(vegaShortPublicKey, { timeout: 20000 })
+        .parent()
+        .contains(expectedVal, { timeout: 40000 });
+    });
+    cy.log('**_Checking Eth Wallet Vega Key Associated Value = COMPLETE_**');
+  }
+);
+
+// ----------------------------------------------------------------------
+
+Cypress.Commands.add(
+  'ethereum_wallet_check_associated_vega_key_is_no_longer_showing',
+  function (vegaShortPublicKey) {
+    cy.log(`**_Checking Eth Wallet Vega Key Associated is not showing_**`);
+    cy.get(wallet.ethWallet).within(() => {
+      cy.contains(vegaShortPublicKey, { timeout: 20000 })
+        .should('not.exist')
+    });
+    cy.log('**_Checking Eth Wallet Vega Key Associated is not showing = COMPLETE_**');
+  }
+);
