@@ -13,5 +13,5 @@ module.exports = defineConfig({
     videosFolder: '../../dist/cypress/apps/explorer-e2e/videos',
     screenshotsFolder: '../../dist/cypress/apps/explorer-e2e/screenshots',
     chromeWebSecurity: false,
-  }
+  },
 });
