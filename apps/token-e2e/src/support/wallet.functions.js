@@ -16,8 +16,10 @@ const vegaWalletMnemonic = Cypress.env('vega_wallet_mnemonic');
 const vegaWalletPubKey = Cypress.env('vega_wallet_public_key');
 const vegaTokenContractAddress = Cypress.env('vega_token_contract_address');
 const vegaTokenAddress = Cypress.env('vega_token_address');
-const ethWalletPubKey = Cypress.env('eth_wallet_public_key')
-const ethStakingBridgeContractAddress = Cypress.env('eth_staking_bridge_contract_address')
+const ethWalletPubKey = Cypress.env('eth_wallet_public_key');
+const ethStakingBridgeContractAddress = Cypress.env(
+  'eth_staking_bridge_contract_address'
+);
 const ethProviderUrl = Cypress.env('eth_provider_url');
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
@@ -134,9 +136,11 @@ Cypress.Commands.add(
       });
     });
     cy.log(`**_Setting token approval amount to ${resetAmount} = COMPLETE_**`);
-    cy.log('**_Reloading app for token approval setting to take affect_**')
+    cy.log('**_Reloading app for token approval setting to take affect_**');
     cy.reload();
-    cy.log('**_Reloading app for token approval setting to take affect = COMPLETE_**')
+    cy.log(
+      '**_Reloading app for token approval setting to take affect = COMPLETE_**'
+    );
   }
 );
 
@@ -174,7 +178,7 @@ Cypress.Commands.add('vega_wallet_import', function () {
   cy.exec(
     `vegawallet import -w ${vegaWalletName} --recovery-phrase-file ./src/fixtures/wallet/recovery -p ./src/fixtures/wallet/passphrase --home ~/.vegacapsule/testnet/wallet`,
     { failOnNonZeroExit: false }
-  )
+  );
   cy.exec(
     `vegawallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
   );
@@ -347,7 +351,9 @@ Cypress.Commands.add('ethereum_wallet_disassociate_all_tokens', function () {
 Cypress.Commands.add(
   'ethereum_wallet_check_associated_vega_key_value_is',
   function (vegaShortPublicKey, expectedVal) {
-    cy.log(`**_Checking Eth Wallet Vega Key Associated Value is ${expectedVal} for key ${vegaShortPublicKey}_**`);
+    cy.log(
+      `**_Checking Eth Wallet Vega Key Associated Value is ${expectedVal} for key ${vegaShortPublicKey}_**`
+    );
     cy.get(wallet.ethWallet).within(() => {
       cy.contains(vegaShortPublicKey, { timeout: 20000 })
         .parent()
@@ -364,9 +370,10 @@ Cypress.Commands.add(
   function (vegaShortPublicKey) {
     cy.log(`**_Checking Eth Wallet Vega Key Associated is not showing_**`);
     cy.get(wallet.ethWallet).within(() => {
-      cy.contains(vegaShortPublicKey, { timeout: 20000 })
-        .should('not.exist')
+      cy.contains(vegaShortPublicKey, { timeout: 20000 }).should('not.exist');
     });
-    cy.log('**_Checking Eth Wallet Vega Key Associated is not showing = COMPLETE_**');
+    cy.log(
+      '**_Checking Eth Wallet Vega Key Associated is not showing = COMPLETE_**'
+    );
   }
 );

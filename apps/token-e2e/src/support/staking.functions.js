@@ -6,7 +6,8 @@ Cypress.Commands.add(
   'staking_validator_page_check_stake_next_epoch_value',
   function (expectedVal) {
     cy.get(staking.stakeNextEpochValue, { timeout: 10000 }).contains(
-      expectedVal, { timeout: 10000 }
+      expectedVal,
+      { timeout: 10000 }
     );
   }
 );
