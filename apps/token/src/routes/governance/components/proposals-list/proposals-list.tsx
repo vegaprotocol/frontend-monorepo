@@ -1,14 +1,14 @@
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { format, isFuture } from 'date-fns';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { Heading } from '../../../../components/heading';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { getProposalName } from '../../../../lib/type-policies/proposal';
+import { ProposalHeader } from '../../../../lib/type-policies/proposal';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { CurrentProposalState } from '../current-proposal-state';
-import { useEffect, useMemo } from 'react';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
@@ -86,7 +86,7 @@ const ProposalListItem = ({ proposal }: ProposalListItemProps) => {
   return (
     <li className="last:mb-0 mb-24" key={proposal.id}>
       <Link to={proposal.id} className="underline text-white">
-        <header>{getProposalName(proposal)}</header>
+        <ProposalHeader proposal={proposal} />
       </Link>
       <KeyValueTable muted={true}>
         <KeyValueTableRow>

@@ -1,104 +1,122 @@
+import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../routes/governance/test-helpers/generate-proposals';
-import { getProposalName } from './proposal';
+import { ProposalHeader } from './proposal';
+import type { Proposals_proposals } from '../../routes/governance/proposals/__generated__/Proposals';
 
 const proposal = generateProposal();
 
+const renderComponent = (proposal: Proposals_proposals) => (
+  <ProposalHeader proposal={proposal} />
+);
+
 it('New market', () => {
-  const name = getProposalName({
-    ...proposal,
-    terms: {
-      ...proposal.terms,
-      change: {
-        __typename: 'NewMarket',
-        decimalPlaces: 1,
-        instrument: {
-          __typename: 'InstrumentConfiguration',
-          name: 'Some market',
+  render(
+    renderComponent({
+      ...proposal,
+      terms: {
+        ...proposal.terms,
+        change: {
+          __typename: 'NewMarket',
+          decimalPlaces: 1,
+          instrument: {
+            __typename: 'InstrumentConfiguration',
+            name: 'Some market',
+          },
+          metadata: [],
         },
-        metadata: [],
       },
-    },
-  });
-  expect(name).toEqual('New Market: Some market');
+    })
+  );
+  expect(screen).toHaveTextContent('New Market: Some market');
 });
 
 it('New asset', () => {
-  const name = getProposalName({
-    ...proposal,
-    terms: {
-      ...proposal.terms,
-      change: {
-        __typename: 'NewAsset',
-        symbol: 'FAKE',
-        source: {
-          __typename: 'ERC20',
-          contractAddress: '0x0',
+  render(
+    renderComponent({
+      ...proposal,
+      terms: {
+        ...proposal.terms,
+        change: {
+          __typename: 'NewAsset',
+          symbol: 'FAKE',
+          source: {
+            __typename: 'ERC20',
+            contractAddress: '0x0',
+          },
         },
       },
-    },
-  });
-  expect(name).toEqual('New Asset: FAKE');
+    })
+  );
+  expect(screen).toHaveTextContent('Asset change: FAKE');
 });
 
 it('Update market', () => {
-  const name = getProposalName({
-    ...proposal,
-    terms: {
-      ...proposal.terms,
-      change: {
-        __typename: 'UpdateMarket',
-        marketId: 'MarketId',
+  render(
+    renderComponent({
+      ...proposal,
+      terms: {
+        ...proposal.terms,
+        change: {
+          __typename: 'UpdateMarket',
+          marketId: 'MarketId',
+        },
       },
-    },
-  });
-  expect(name).toEqual('Update Market: MarketId');
+    })
+  );
+  expect(screen).toHaveTextContent('Market change: MarketId');
 });
 
 it('Update network', () => {
-  const name = getProposalName({
-    ...proposal,
-    terms: {
-      ...proposal.terms,
-      change: {
-        __typename: 'UpdateNetworkParameter',
-        networkParameter: {
-          __typename: 'NetworkParameter',
-          key: 'key',
-          value: 'value',
+  render(
+    renderComponent({
+      ...proposal,
+      terms: {
+        ...proposal.terms,
+        change: {
+          __typename: 'UpdateNetworkParameter',
+          networkParameter: {
+            __typename: 'NetworkParameter',
+            key: 'key',
+            value: 'value',
+          },
         },
       },
-    },
-  });
-  expect(name).toEqual('Update Network: key');
+    })
+  );
+  expect(screen).toHaveTextContent('Network parameter change: key');
 });
 
 it('Freeform network', () => {
-  const name = getProposalName({
-    ...proposal,
-    rationale: {
-      ...proposal.rationale,
-      hash: '0x0',
-    },
-    terms: {
-      ...proposal.terms,
-      change: {
-        __typename: 'NewFreeform',
+  render(
+    renderComponent({
+      ...proposal,
+      rationale: {
+        ...proposal.rationale,
+        hash: '0x0',
       },
-    },
-  });
-  expect(name).toEqual('Freeform: 0x0');
+      terms: {
+        ...proposal.terms,
+        change: {
+          __typename: 'NewFreeform',
+        },
+      },
+    })
+  );
+  expect(screen).toHaveTextContent('0x0');
 });
 
 it("Renders unknown proposal if it's a different proposal type", () => {
-  const name = getProposalName({
-    ...proposal,
-    terms: {
-      ...proposal.terms,
-      change: {
-        // @ts-ignore unknown proposal
-        __typename: 'Foo',
+  render(
+    renderComponent({
+      ...proposal,
+      terms: {
+        ...proposal.terms,
+        change: {
+          // @ts-ignore unknown proposal
+          __typename: 'Foo',
+        },
       },
-    },
-  });
-  expect(name).toEqual('Unknown Proposal');
+    })
+  );
+  expect(screen).toHaveTextContent('Unknown Proposal');
 });

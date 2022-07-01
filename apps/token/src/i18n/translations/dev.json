@@ -542,5 +542,10 @@
   "proposalTerms": "Proposal terms",
   "currentlySetTo": "Currently set to ",
   "pass": "Pass",
-  "fail": "Fail"
+  "fail": "Fail",
+  "Asset change": "Asset change",
+  "New market": "New market",
+  "Market change": "Market change",
+  "Network parameter change": "Network parameter change",
+  "Unknown proposal": "Unknown proposal"
 }
