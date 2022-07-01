@@ -6,21 +6,20 @@ import {
   TokenVesting,
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
+import envVars from '../fixtures/envVars.json';
 
 // ----------------------------------------------------------------------
 
-const vegaWalletName = Cypress.env('vega_wallet_name');
-const vegaWalletLocation = Cypress.env('vega_wallet_location');
-const vegaWalletPassphrase = Cypress.env('vega_wallet_passphrase');
-const vegaWalletMnemonic = Cypress.env('vega_wallet_mnemonic');
-const vegaWalletPubKey = Cypress.env('vega_wallet_public_key');
-const vegaTokenContractAddress = Cypress.env('vega_token_contract_address');
-const vegaTokenAddress = Cypress.env('vega_token_address');
-const ethWalletPubKey = Cypress.env('eth_wallet_public_key');
-const ethStakingBridgeContractAddress = Cypress.env(
-  'eth_staking_bridge_contract_address'
-);
-const ethProviderUrl = Cypress.env('eth_provider_url');
+const vegaWalletName = envVars.vegaWalletName;
+const vegaWalletLocation = envVars.vegaWalletLocation;
+const vegaWalletPassphrase = envVars.vegaWalletPassphrase;
+const vegaWalletMnemonic = envVars.vegaWalletMnemonic;
+const vegaWalletPubKey = envVars.vegaWalletPublicKey;
+const vegaTokenContractAddress = envVars.vegaTokenContractAddress;
+const vegaTokenAddress = envVars.vegaTokenAddress;
+const ethWalletPubKey = envVars.ethWalletPublicKey;
+const ethStakingBridgeContractAddress = envVars.ethStakingBridgeContractAddress;
+const ethProviderUrl = envVars.ethProviderUrl;
 const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 
 // ----------------------------------------------------------------------
@@ -190,7 +189,6 @@ Cypress.Commands.add('vega_wallet_import', function () {
 
 Cypress.Commands.add('vega_wallet_connect', function () {
   cy.log('**_Connecting Vega Wallet_**');
-  // cy.intercept('POST', queryUrl).as('queryGrab');
   cy.get(wallet.vegawallet).within(() => {
     cy.get('button')
       .contains('Connect Vega wallet to use associated $VEGA')

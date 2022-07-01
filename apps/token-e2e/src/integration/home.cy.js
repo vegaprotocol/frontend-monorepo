@@ -1,6 +1,6 @@
 import navigation from '../locators/navigation.locators';
 import home from '../locators/home.locators';
-import vegaToken from '../fixtures/vegaToken.json';
+import envVars from '../fixtures/envVars.json';
 
 context('Home Page - verify elements on page', function () {
   before('visit token home page', function () {
@@ -51,7 +51,7 @@ context('Home Page - verify elements on page', function () {
           cy.get(home.address)
             .should('be.visible')
             .invoke('text')
-            .should('be.equal', vegaToken.tokenAddress);
+            .should('be.equal', envVars.vegaTokenAddress);
         });
       });
       it('should have VESTING CONTRACT', function () {
@@ -59,7 +59,7 @@ context('Home Page - verify elements on page', function () {
           cy.get(home.contract)
             .should('be.visible')
             .invoke('text')
-            .should('be.equal', vegaToken.vestingContract);
+            .should('be.equal', envVars.vegaTokenContractAddress);
         });
       });
       it('should have TOTAL SUPPLY', function () {
