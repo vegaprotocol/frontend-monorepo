@@ -10,7 +10,7 @@ type StatisticsPayload = {
   responseTime: NodeData['responseTime']['value'];
 };
 
-const STATS_QUERY = gql`
+export const STATS_QUERY = gql`
   query GetChainId {
     statistics {
       chainId
@@ -19,7 +19,7 @@ const STATS_QUERY = gql`
   }
 `;
 
-const TIME_UPDATE_SUBSCRIPTION = gql`
+export const TIME_UPDATE_SUBSCRIPTION = gql`
   subscription blockTime {
     busEvents(types: TimeUpdate, batchSize: 1) {
       eventId

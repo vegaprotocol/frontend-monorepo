@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
 import { t } from '@vegaprotocol/react-helpers';
 import { RadioGroup, Button, Radio } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
@@ -15,10 +14,10 @@ type NodeSwitcherProps = {
   onConnect: (url: string) => void;
 };
 
-const getDefaultSelection = (urls: string[], currentUrl?: string) => {
+const getDefaultNode = (urls: string[], currentUrl?: string) => {
   return currentUrl && urls.includes(currentUrl)
-    ? { node: currentUrl }
-    : { node: undefined };
+    ? currentUrl
+    : undefined;
 };
 
 const getIsLoading = ({ chain, responseTime, block, ssl }: NodeData) => {
@@ -48,16 +47,10 @@ const getIsDisabled = (env: Networks, data: NodeData) => {
 
 export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
   const { VEGA_ENV, VEGA_URL } = useEnvironment();
+  const [node, setNode] = useState(getDefaultNode(config.hosts, VEGA_URL));
   const [highestBlock, setHighestBlock] = useState(0);
 
-  const { control, handleSubmit, getValues } = useForm({
-    defaultValues: getDefaultSelection(config.hosts, VEGA_URL),
-    reValidateMode: 'onChange',
-  });
-
-  const node = getValues('node');
-
-  const onSubmit = ({ node }: ReturnType<typeof getDefaultSelection>) => {
+  const onSubmit = (node : ReturnType<typeof getDefaultNode>) => {
     if (node) {
       onConnect(node);
     }
@@ -68,7 +61,7 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
   return (
     <div className="text-black dark:text-white min-w-[800px]">
       <NodeError />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={() => onSubmit(node)}>
         <p className="text-body-large font-bold mb-32">
           {t('Select a GraphQL node to connect to:')}
         </p>
@@ -79,42 +72,33 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
             <LayoutCell>{t('Block')}</LayoutCell>
             <LayoutCell>{t('SSL')}</LayoutCell>
           </LayoutRow>
-          <Controller
-            name="node"
-            control={control}
-            rules={{ required: true }}
-            render={({ field }) => (
-              <RadioGroup
-                className="block"
-                value={field.value}
-                onChange={(value) => {
-                  field.onChange(value);
-                }}
-              >
-                {config.hosts.map((url, index) => (
-                  <NodeStats
-                    key={index}
-                    url={url}
-                    highestBlock={highestBlock}
-                    setBlock={(block) =>
-                      setHighestBlock(Math.max(block, highestBlock))
-                    }
-                    render={(data) => (
-                      <div>
-                        <Radio
-                          id={`node-url-${index}`}
-                          labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
-                          value={url}
-                          label={url}
-                          disabled={getIsDisabled(VEGA_ENV, data)}
-                        />
-                      </div>
-                    )}
-                  />
-                ))}
-              </RadioGroup>
-            )}
-          />
+          <RadioGroup
+            className="block"
+            value={node}
+            onChange={value => setNode(value)}
+          >
+            {config.hosts.map((url, index) => (
+              <NodeStats
+                key={index}
+                url={url}
+                highestBlock={highestBlock}
+                setBlock={(block) =>
+                  setHighestBlock(Math.max(block, highestBlock))
+                }
+                render={(data) => (
+                  <div>
+                    <Radio
+                      id={`node-url-${index}`}
+                      labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
+                      value={url}
+                      label={url}
+                      disabled={getIsDisabled(VEGA_ENV, data)}
+                    />
+                  </div>
+                )}
+              />
+            ))}
+          </RadioGroup>
         </div>
         <Button
           className="w-full mt-16"
