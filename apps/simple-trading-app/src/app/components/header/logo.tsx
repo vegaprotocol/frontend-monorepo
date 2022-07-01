@@ -1,9 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { t } from '@vegaprotocol/react-helpers';
 
 const Logo = () => {
   return (
-    <NavLink to="/">
+    <NavLink aria-label={t('Go to home page')} to="/">
       <svg
         width="38"
         height="44"
