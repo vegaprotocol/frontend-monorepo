@@ -1,5 +1,7 @@
+import common from './common.locators';
+
 export default {
-  header: 'header h1',
+  ...common,
   connectPrompt: '[data-testid="eth-connect-prompt"]',
   connectButton: '[data-testid="connect-to-eth-btn"]',
 };
