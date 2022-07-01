@@ -30,17 +30,6 @@ export const Footer = () => {
     <>
       <footer className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-t-1">
         <div>
-          {GIT_COMMIT_HASH && GIT_ORIGIN_URL && (
-            <p className="mb-[1rem]">
-              {t('Version/commit hash')}:{' '}
-              <Link
-                href={`${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}`}
-                target="_blank"
-              >
-                {GIT_COMMIT_HASH}
-              </Link>
-            </p>
-          )}
           <p className="mb-[1rem]">
             {t('Reading network data from')}{' '}
             <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
@@ -56,6 +45,17 @@ export const Footer = () => {
             </Lozenge>
             .{' '}
           </p>
+          {GIT_COMMIT_HASH && GIT_ORIGIN_URL && (
+            <p className="mb-[1rem]">
+              {t('Version/commit hash')}:{' '}
+              <Link
+                href={`${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}`}
+                target="_blank"
+              >
+                {GIT_COMMIT_HASH}
+              </Link>
+            </p>
+          )}
           {feedbackLinks.length > 0 && (
             <p className="mb-16">
               {t('Known issues and feedback on')}{' '}
