@@ -19,5 +19,5 @@ export default {
   stakeNextEpochValue: '[data-testid="stake-next-epoch"]',
   stakeThisEpochValue: '[data-testid="stake-this-epoch"]',
   stakeMaximumTokens: '[data-testid="token-amount-use-maximum"]',
-  stakeAssociateWalletRadio: '[data-testid="associate-radio-wallet"]'
+  stakeAssociateWalletRadio: '[data-testid="associate-radio-wallet"]',
 };
