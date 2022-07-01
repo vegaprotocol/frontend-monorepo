@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         version: ['0.0.1']
-        build-platforms: ['linux/amd64, linux/arm64']
+        build-platform: ['linux/amd64, linux/arm64']
         app: ['explorer']
     name: Build the ${{ inputs.image_name }} image
     runs-on: ubuntu-latest
@@ -53,4 +53,3 @@ jobs:
           build-args: 'APP=${{ matrix.app }}'
           platforms: ${{ matrix.build-platform }}
           tags: ${{ steps.tags.outputs.latest }},${{ steps.tags.outputs.current }}
-          # push: ${{ github.event_name != 'pull_request' }}
