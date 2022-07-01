@@ -13,6 +13,11 @@ interface ProposalsListProps {
   proposals: Proposals_proposals[];
 }
 
+interface SortedProposalsProps {
+  open: Proposals_proposals[];
+  closed: Proposals_proposals[];
+}
+
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
 
@@ -20,12 +25,40 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     return <p>{t('noProposals')}</p>;
   }
 
+  const sortedProposals = proposals.reduce(
+    (acc: SortedProposalsProps, proposal) => {
+      if (proposal.state === 'Failed') {
+        return acc;
+      }
+      if (isFuture(new Date(proposal.terms.closingDatetime))) {
+        acc.open.push(proposal);
+      } else {
+        acc.closed.push(proposal);
+      }
+      return acc;
+    },
+    {
+      open: [],
+      closed: [],
+    }
+  );
+
   return (
     <>
       <Heading title={t('pageTitleGovernance')} />
       <h2>{t('proposals')}</h2>
+      {sortedProposals.open.length > 0 && (
+        <>
+          <ul>
+            {sortedProposals.open.map((proposal) => (
+              <ProposalListItem proposal={proposal} />
+            ))}
+          </ul>
+          <hr className="my-28 border-t-2" />
+        </>
+      )}
       <ul>
-        {proposals.map((proposal) => (
+        {sortedProposals.closed.map((proposal) => (
           <ProposalListItem proposal={proposal} />
         ))}
       </ul>
