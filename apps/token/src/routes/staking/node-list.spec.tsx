@@ -184,7 +184,6 @@ describe('Nodes list', () => {
     const items = screen.queryAllByTestId('node-list-item');
     const item = within(items[0]);
     const rows = item.getAllByRole('row');
-    screen.debug();
 
     const expectedValues = [
       ['Total stake', '14,182.45 (50.94%)'],
