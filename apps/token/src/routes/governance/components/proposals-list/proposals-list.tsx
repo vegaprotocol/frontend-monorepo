@@ -8,6 +8,7 @@ import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { getProposalName } from '../../../../lib/type-policies/proposal';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { CurrentProposalState } from '../current-proposal-state';
+import { useEffect, useMemo } from 'react';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
@@ -21,27 +22,35 @@ interface SortedProposalsProps {
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
 
+  const sortedProposals = useMemo(() => {
+    const sorted = proposals.sort(
+      (a, b) =>
+        Date.parse(b.terms.closingDatetime) -
+        Date.parse(a.terms.closingDatetime)
+    );
+
+    return sorted.reduce(
+      (acc: SortedProposalsProps, proposal) => {
+        if (proposal.state === 'Failed') {
+          return acc;
+        }
+        if (isFuture(new Date(proposal.terms.closingDatetime))) {
+          acc.open.push(proposal);
+        } else {
+          acc.closed.push(proposal);
+        }
+        return acc;
+      },
+      {
+        open: [],
+        closed: [],
+      }
+    );
+  }, [proposals]);
+
   if (proposals.length === 0) {
     return <p>{t('noProposals')}</p>;
   }
-
-  const sortedProposals = proposals.reduce(
-    (acc: SortedProposalsProps, proposal) => {
-      if (proposal.state === 'Failed') {
-        return acc;
-      }
-      if (isFuture(new Date(proposal.terms.closingDatetime))) {
-        acc.open.push(proposal);
-      } else {
-        acc.closed.push(proposal);
-      }
-      return acc;
-    },
-    {
-      open: [],
-      closed: [],
-    }
-  );
 
   return (
     <>
