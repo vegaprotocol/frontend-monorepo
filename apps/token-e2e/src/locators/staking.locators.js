@@ -7,5 +7,4 @@ export default {
   step2: '[data-testid="staking-step-2"]',
   step3: '[data-testid="staking-step-3"]',
   connectToEthBtn: '[data-testid="connect-to-eth-btn"]',
-  connectToVegaBtn: '[data-testid="connect-to-vega-wallet-btn"]',
 };
