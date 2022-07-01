@@ -1,4 +1,3 @@
-
 import navigation from '../locators/navigation.locators';
 import home from '../locators/home.locators';
 import vegaToken from '../fixtures/vegaToken.json';
