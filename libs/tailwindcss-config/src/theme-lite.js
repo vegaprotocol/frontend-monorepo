@@ -18,6 +18,9 @@ module.exports = {
       'highlight-item-dark': '#fff',
     },
     'dropdown-bg-dark': theme.colors.black['100'],
+    lite: {
+      black: '#080808',
+    },
   },
   fontSize: {
     ...theme.fontSize,

@@ -37,7 +37,7 @@ function App() {
         <NetworkLoader createClient={createClient}>
           <VegaWalletProvider>
             <AppLoader>
-              <div className="max-h-full min-h-full dark:bg-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
+              <div className="max-h-full min-h-full dark:bg-lite-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
                 <Header
                   setVegaWallet={setVegaWallet}
                   toggleTheme={toggleTheme}

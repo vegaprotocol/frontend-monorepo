@@ -1,5 +1,8 @@
 describe('console lite header', () => {
-  beforeEach(() => cy.visit('/'));
+  beforeEach(() => {
+    window.localStorage.setItem('theme', 'dark');
+    cy.visit('/');
+  });
 
   it('logo should linked home', () => {
     cy.get('span').contains('Markets').click();
@@ -10,7 +13,7 @@ describe('console lite header', () => {
 
   it('theme switcher should switch theme', () => {
     cy.get('#root').children().eq(0).as('Container');
-    cy.get('@Container').should('have.css', 'background-color', 'rgb(0, 0, 0)');
+    cy.get('@Container').should('have.css', 'background-color', 'rgb(8, 8, 8)');
     cy.getByTestId('theme-switcher').click();
     cy.get('@Container').should(
       'have.css',
@@ -23,15 +26,5 @@ describe('console lite header', () => {
     cy.get('[role="dialog"]').should('not.exist');
     cy.getByTestId('connect-vega-wallet').click();
     cy.get('[role="dialog"]').should('be.visible');
-  });
-
-  it('swarm should be present', () => {
-    cy.get('#swarm')
-      .invoke('css', 'clip-path')
-      .then((cPath) => {
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(1000);
-        cy.get('#swarm').invoke('css', 'clip-path').should('not.eq', cPath);
-      });
   });
 });

@@ -1,8 +1,6 @@
 import React from 'react';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
-import Video from './video';
 import Logo from './logo';
-import Comet from './comet';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 
 type WalletParams = {
@@ -17,18 +15,10 @@ interface Props {
 const Header = ({ setVegaWallet, toggleTheme }: Props) => {
   return (
     <div
-      className="flex items-stretch p-16 bg-black text-white-60"
+      className="flex items-stretch pr-16 py-16 bg-black text-white-60"
       data-testid="header"
     >
-      <div className="absolute top-0 right-[200px] w-[500px] h-[100px] z-0 hidden md:block">
-        <Video />
-        <div
-          id="swarm"
-          className="-top-[1px] -left-[1px] absolute w-[502px] h-[102px] bg-black"
-        />
-      </div>
       <Logo />
-      <Comet />
       <div className="flex items-center gap-4 ml-auto mr-8 relative z-10">
         <VegaWalletConnectButton
           setConnectDialog={(open) =>

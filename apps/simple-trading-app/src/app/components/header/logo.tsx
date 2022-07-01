@@ -4,13 +4,13 @@ import { t } from '@vegaprotocol/react-helpers';
 
 const Logo = () => {
   return (
-    <NavLink aria-label={t('Go to home page')} to="/">
+    <NavLink className="mx-20" aria-label={t('Go to home page')} to="/">
       <svg
-        width="38"
-        height="44"
+        width="29"
+        height="34"
         fill="currentColor"
         viewBox="0 0 29 34"
-        className="m-12 text-white-100"
+        className="mx-20 my-16 text-white"
       >
         <path d="M14.5003 29.1426H9.6665V34.0001H14.5003V29.1426Z" />
         <path d="M19.3343 24.2859H14.5005V29.1434H19.3343V24.2859Z" />
