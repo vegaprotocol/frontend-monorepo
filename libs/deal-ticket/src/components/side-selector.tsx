@@ -14,8 +14,9 @@ export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
   }));
 
   return (
-    <FormGroup label="Direction">
+    <FormGroup label="Direction" labelFor="order-side-toggle">
       <Toggle
+        id="order-side-toggle"
         name="order-side"
         toggles={toggles}
         checkedValue={value}

@@ -8,6 +8,7 @@ interface ToggleProps {
 }
 
 export interface ToggleInputProps {
+  id?: string;
   name: string;
   toggles: ToggleProps[];
   className?: string;
@@ -16,6 +17,7 @@ export interface ToggleInputProps {
 }
 
 export const Toggle = ({
+  id,
   name,
   toggles,
   className,
@@ -45,9 +47,10 @@ export const Toggle = ({
       {toggles.map(({ label, value }, key) => {
         const isSelected = value === checkedValue;
         return (
-          <label key={key} className={labelClasses}>
+          <label key={key} className={labelClasses} htmlFor={label}>
             <input
               type="radio"
+              id={label}
               name={name}
               value={value}
               onChange={onChange}

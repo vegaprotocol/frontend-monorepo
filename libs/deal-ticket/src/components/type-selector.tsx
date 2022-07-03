@@ -14,8 +14,9 @@ const toggles = Object.entries(OrderType).map(([label, value]) => ({
 
 export const TypeSelector = ({ value, onSelect }: TypeSelectorProps) => {
   return (
-    <FormGroup label="Order type">
+    <FormGroup label="Order type" labelFor="order-type">
       <Toggle
+        id="order-type"
         name="order-type"
         toggles={toggles}
         checkedValue={value}

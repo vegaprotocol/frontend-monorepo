@@ -55,7 +55,12 @@ export const Search = () => {
       onSubmit={handleSubmit(onSubmit)}
       className="flex-1 flex self-center md:ml-16 md:mr-12 md:justify-end"
     >
-      <FormGroup className="relative w-full md:w-2/3 mb-0">
+      <FormGroup
+        label="Search by block number or transaction hash"
+        className="relative w-full md:w-2/3 mb-0"
+        labelClassName="sr-only"
+        labelFor="search"
+      >
         <Input
           {...register('search')}
           id="search"
