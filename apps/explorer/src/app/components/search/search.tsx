@@ -67,7 +67,6 @@ export const Search = () => {
           data-testid="search"
           hasError={Boolean(error?.message)}
           type="text"
-          autoFocus={true}
           placeholder={t('Enter block number or transaction hash')}
         />
         {error?.message && (

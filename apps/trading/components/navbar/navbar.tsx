@@ -8,6 +8,7 @@ export const Navbar = () => {
   return (
     <nav className="flex items-center">
       <Link href="/" passHref={true}>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a className="px-[26px]">
           <Vega className="fill-black dark:fill-white" />
         </a>
@@ -43,6 +44,7 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
   );
   return (
     <Link data-testid={testId} href={path} passHref={true}>
+      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
       <a className={linkClasses}>{name}</a>
     </Link>
   );
