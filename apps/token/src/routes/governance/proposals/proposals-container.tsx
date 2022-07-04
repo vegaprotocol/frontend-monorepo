@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import { Heading } from '../../../components/heading';
 import compact from 'lodash/compact';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
@@ -63,5 +64,10 @@ export const ProposalsContainer = () => {
     );
   }
 
-  return <ProposalsList proposals={proposals} />;
+  return (
+    <>
+      <Heading title={t('pageTitleGovernance')} />
+      <ProposalsList proposals={proposals} />
+    </>
+  );
 };
