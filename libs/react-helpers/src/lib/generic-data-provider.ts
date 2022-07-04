@@ -71,15 +71,15 @@ export interface Append<Data> {
 }
 
 interface GetData<QueryData, Data> {
-  (queryData: QueryData): Data | null;
+  (queryData: QueryData, pagination: Pagination): Data | null;
 }
 
 interface GetPageInfo<QueryData> {
-  (queryData: QueryData): PageInfo | null;
+  (queryData: QueryData, pagination: Pagination): PageInfo | null;
 }
 
 interface GetTotalCount<QueryData> {
-  (queryData: QueryData): number | undefined;
+  (queryData: QueryData, pagination: Pagination): number | undefined;
 }
 
 interface GetDelta<SubscriptionData, Delta> {
@@ -161,8 +161,11 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       },
       fetchPolicy,
     });
-    const insertionData = getData(res.data);
-    const insertionDataPageInfo = pagination.getPageInfo(res.data);
+    const insertionData = getData(res.data, paginationVariables);
+    const insertionDataPageInfo = pagination.getPageInfo(
+      res.data,
+      paginationVariables
+    );
     ({ data, pageInfo } = pagination.append(
       data,
       pageInfo,
@@ -170,7 +173,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       insertionDataPageInfo,
       paginationVariables
     ));
-    totalCount = pagination.getTotalCount(res.data);
+    totalCount = pagination.getTotalCount(res.data, paginationVariables);
     notifyAll({ insertionData });
     return insertionData;
   };
@@ -187,10 +190,14 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           : variables,
         fetchPolicy,
       });
-      data = getData(res.data);
+      data = getData(res.data, { first: pagination?.first });
       if (pagination) {
-        pageInfo = pagination.getPageInfo(res.data);
-        totalCount = pagination.getTotalCount(res.data);
+        pageInfo = pagination.getPageInfo(res.data, {
+          first: pagination.first,
+        });
+        totalCount = pagination.getTotalCount(res.data, {
+          first: pagination.first,
+        });
       }
       // if there was some updates received from subscription during initial query loading apply them on just received data
       if (data && updateQueue && updateQueue.length > 0) {

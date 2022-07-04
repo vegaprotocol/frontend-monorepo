@@ -39,6 +39,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       totalCount?: number;
     }) => {
       dataRef.current = data;
+      console.log('insert', data)
       totalCountRef.current = totalCount;
       return true;
     },
@@ -60,8 +61,10 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
     startRow,
     endRow,
   }: IGetRowsParams) => {
+    console.log('getRows', startRow, ':', endRow)
     try {
       if (dataRef.current && dataRef.current.length < endRow) {
+        console.log('load');
         await load({
           first: endRow - startRow,
           after: dataRef.current[dataRef.current.length - 1].cursor,
@@ -74,10 +77,11 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       if (totalCountRef.current !== undefined) {
         if (!totalCountRef.current) {
           lastRow = 0;
-        } else if (totalCountRef.current <= endRow) {
+        } else {
           lastRow = totalCountRef.current;
         }
       }
+      console.log('successCallback');
       successCallback(rowsThisBlock, lastRow);
     } catch (e) {
       failCallback();
