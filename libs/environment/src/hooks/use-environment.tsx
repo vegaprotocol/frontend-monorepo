@@ -47,16 +47,14 @@ export const EnvironmentProvider = ({
       }}
     >
       {config && (
-        <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
-          <NodeSwitcherDialog
-            dialogOpen={isNodeSwitcherOpen}
-            setDialogOpen={setNodeSwitcherOpen}
-            config={config}
-            onConnect={(url) =>
-              updateEnvironment((env) => ({ ...env, VEGA_URL: url }))
-            }
-          />
-        </div>
+        <NodeSwitcherDialog
+          dialogOpen={isNodeSwitcherOpen}
+          setDialogOpen={setNodeSwitcherOpen}
+          config={config}
+          onConnect={(url) =>
+            updateEnvironment((env) => ({ ...env, VEGA_URL: url }))
+          }
+        />
       )}
       {children}
     </EnvironmentContext.Provider>
