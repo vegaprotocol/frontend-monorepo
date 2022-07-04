@@ -8,10 +8,9 @@ Cypress.Commands.add(
     cy.log(
       `👉 **_Checking Staking Page - Validator Stake Next Epoch Value is ${expectedVal}_**`
     );
-    cy.get(staking.stakeNextEpochValue, { timeout: 10000 }).contains(
-      expectedVal,
-      { timeout: 10000 }
-    ).should('be.visible');
+    cy.get(staking.stakeNextEpochValue, { timeout: 10000 })
+      .contains(expectedVal, { timeout: 10000 })
+      .should('be.visible');
   }
 );
 
@@ -23,19 +22,16 @@ Cypress.Commands.add(
     cy.log(
       `👉 **_Checking Staking Page - Validator Stake This Epoch Value is ${expectedVal}_**`
     );
-    cy.get(staking.stakeThisEpochValue, { timeout: 10000 }).contains(
-      expectedVal,
-      { timeout: 10000 }
-    ).should('be.visible');
+    cy.get(staking.stakeThisEpochValue, { timeout: 10000 })
+      .contains(expectedVal, { timeout: 10000 })
+      .should('be.visible');
   }
 );
 
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('staking_validator_page_add_stake', function (stake) {
-  cy.log(
-    `👉 **_Adding a stake of ${stake}_**`
-  );
+  cy.log(`👉 **_Adding a stake of ${stake}_**`);
   cy.get(staking.addStakeRadioButton).click({ force: true });
   cy.get(staking.tokenAmountInput).type(stake);
   cy.contains('Waiting for next epoch to start', { timeout: 10000 });
@@ -53,9 +49,7 @@ Cypress.Commands.add('staking_validator_page_add_stake', function (stake) {
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('staking_validator_page_removeStake', function (stake) {
-  cy.log(
-    `👉 **_Removing a stake of ${stake}_**`
-  );
+  cy.log(`👉 **_Removing a stake of ${stake}_**`);
   cy.get(staking.removeStakeRadioButton).click({ force: true });
   cy.get(staking.tokenAmountInput).type(stake);
   cy.contains('Waiting for next epoch to start', { timeout: 10000 });
@@ -68,7 +62,6 @@ Cypress.Commands.add('staking_validator_page_removeStake', function (stake) {
     'be.visible'
   );
 });
-
 
 // ----------------------------------------------------------------------
 

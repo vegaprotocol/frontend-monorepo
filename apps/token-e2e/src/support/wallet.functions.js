@@ -25,9 +25,9 @@ const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 // ----------------------------------------------------------------------
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
-  cy.wrap(
-    Wallet.fromMnemonic(vegaWalletMnemonic, getAccount(0)).privateKey, {log: false}
-  ).then((privateKey) => {
+  cy.wrap(Wallet.fromMnemonic(vegaWalletMnemonic, getAccount(0)).privateKey, {
+    log: false,
+  }).then((privateKey) => {
     cy.vega_wallet_teardown_staking(privateKey);
     cy.vega_wallet_teardown_vesting(privateKey);
     cy.vega_wallet_check_associated_value_is('0.000000000000000000');
@@ -243,7 +243,9 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'vega_wallet_check_associated_value_is',
   function (expectedVal) {
-    cy.log(`👉 **_Checking vega wallet - Associated Value is ${expectedVal}_**`);
+    cy.log(
+      `👉 **_Checking vega wallet - Associated Value is ${expectedVal}_**`
+    );
     cy.get(wallet.vegawallet).within(() => {
       cy.contains('Associated', { timeout: 40000 })
         .parent()
