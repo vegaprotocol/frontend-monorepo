@@ -75,27 +75,29 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
             value={node}
             onChange={(value) => setNode(value)}
           >
-            {config.hosts.map((url, index) => (
-              <NodeStats
-                key={index}
-                url={url}
-                highestBlock={highestBlock}
-                setBlock={(block) =>
-                  setHighestBlock(Math.max(block, highestBlock))
-                }
-                render={(data) => (
-                  <div>
-                    <Radio
-                      id={`node-url-${index}`}
-                      labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
-                      value={url}
-                      label={url}
-                      disabled={getIsDisabled(VEGA_ENV, data)}
-                    />
-                  </div>
-                )}
-              />
-            ))}
+            <div>
+              {config.hosts.map((url, index) => (
+                <NodeStats
+                  key={index}
+                  url={url}
+                  highestBlock={highestBlock}
+                  setBlock={(block) =>
+                    setHighestBlock(Math.max(block, highestBlock))
+                  }
+                  render={(data) => (
+                    <div>
+                      <Radio
+                        id={`node-url-${index}`}
+                        labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
+                        value={url}
+                        label={url}
+                        disabled={getIsDisabled(VEGA_ENV, data)}
+                      />
+                    </div>
+                  )}
+                />
+              ))}
+            </div>
           </RadioGroup>
         </div>
         <Button

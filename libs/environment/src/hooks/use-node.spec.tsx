@@ -147,101 +147,91 @@ describe('useNode hook', () => {
   it('sets statistics results', async () => {
     const url = 'https://some.url';
     const client = createMockClient();
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useNode(url, client)
-    );
+    const { result, waitFor } = renderHook(() => useNode(url, client));
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.state.block).toEqual({
+        isLoading: false,
+        hasError: false,
+        value: Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight),
+      });
 
-    expect(result.current.state.block).toEqual({
-      isLoading: false,
-      hasError: false,
-      value: Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight),
-    });
+      expect(result.current.state.chain).toEqual({
+        isLoading: false,
+        hasError: false,
+        value: MOCK_STATISTICS_QUERY_RESULT.chainId,
+      });
 
-    expect(result.current.state.chain).toEqual({
-      isLoading: false,
-      hasError: false,
-      value: MOCK_STATISTICS_QUERY_RESULT.chainId,
-    });
-
-    expect(result.current.state.responseTime).toEqual({
-      isLoading: false,
-      hasError: false,
-      value: MOCK_DURATION,
+      expect(result.current.state.responseTime).toEqual({
+        isLoading: false,
+        hasError: false,
+        value: MOCK_DURATION,
+      });
     });
   });
 
   it('sets subscription result', async () => {
     const url = 'https://some.url';
     const client = createMockClient();
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useNode(url, client)
-    );
+    const { result, waitFor } = renderHook(() => useNode(url, client));
 
-    await waitForNextUpdate();
-
-    expect(result.current.state.ssl).toEqual({
-      isLoading: false,
-      hasError: false,
-      value: true,
+    await waitFor(() => {
+      expect(result.current.state.ssl).toEqual({
+        isLoading: false,
+        hasError: false,
+        value: true,
+      });
     });
   });
 
   it('sets error when statistics request fails', async () => {
     const url = 'https://some.url';
     const client = createMockClient({ failStats: true });
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useNode(url, client)
-    );
+    const { result, waitFor } = renderHook(() => useNode(url, client));
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.state.block).toEqual({
+        isLoading: false,
+        hasError: true,
+        value: undefined,
+      });
 
-    expect(result.current.state.block).toEqual({
-      isLoading: false,
-      hasError: true,
-      value: undefined,
-    });
+      expect(result.current.state.chain).toEqual({
+        isLoading: false,
+        hasError: true,
+        value: undefined,
+      });
 
-    expect(result.current.state.chain).toEqual({
-      isLoading: false,
-      hasError: true,
-      value: undefined,
-    });
-
-    expect(result.current.state.responseTime).toEqual({
-      isLoading: false,
-      hasError: true,
-      value: undefined,
+      expect(result.current.state.responseTime).toEqual({
+        isLoading: false,
+        hasError: true,
+        value: undefined,
+      });
     });
   });
 
   it('sets error when subscription request fails', async () => {
     const url = 'https://some.url';
     const client = createMockClient({ failSubscription: true });
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useNode(url, client)
-    );
+    const { result, waitFor } = renderHook(() => useNode(url, client));
 
-    await waitForNextUpdate();
-
-    expect(result.current.state.ssl).toEqual({
-      isLoading: false,
-      hasError: true,
-      value: undefined,
+    await waitFor(() => {
+      expect(result.current.state.ssl).toEqual({
+        isLoading: false,
+        hasError: true,
+        value: undefined,
+      });
     });
   });
 
   it('allows updating block values', async () => {
     const url = 'https://some.url';
     const client = createMockClient({ failSubscription: true });
-    const { result, waitFor, waitForNextUpdate } = renderHook(() =>
-      useNode(url, client)
-    );
+    const { result, waitFor } = renderHook(() => useNode(url, client));
 
-    await waitForNextUpdate();
-
-    expect(result.current.state.block.value).toEqual(11);
+    await waitFor(() => {
+      expect(result.current.state.block.value).toEqual(11);
+    });
 
     act(() => {
       result.current.updateBlockState(12);
@@ -255,20 +245,18 @@ describe('useNode hook', () => {
   it('allows resetting the state to defaults', async () => {
     const url = 'https://some.url';
     const client = createMockClient();
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useNode(url, client)
-    );
+    const { result, waitFor } = renderHook(() => useNode(url, client));
 
-    await waitForNextUpdate();
-
-    expect(result.current.state.block.value).toBe(
-      Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight)
-    );
-    expect(result.current.state.chain.value).toBe(
-      MOCK_STATISTICS_QUERY_RESULT.chainId
-    );
-    expect(result.current.state.responseTime.value).toBe(MOCK_DURATION);
-    expect(result.current.state.ssl.value).toBe(true);
+    await waitFor(() => {
+      expect(result.current.state.block.value).toBe(
+        Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight)
+      );
+      expect(result.current.state.chain.value).toBe(
+        MOCK_STATISTICS_QUERY_RESULT.chainId
+      );
+      expect(result.current.state.responseTime.value).toBe(MOCK_DURATION);
+      expect(result.current.state.ssl.value).toBe(true);
+    });
 
     act(() => {
       result.current.reset();

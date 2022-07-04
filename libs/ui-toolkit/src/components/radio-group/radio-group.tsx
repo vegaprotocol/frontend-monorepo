@@ -44,11 +44,12 @@ export const Radio = ({
   disabled,
   hasError,
 }: RadioProps) => {
-  const wrapperClasses = classNames('flex flex-row gap-8 items-center', {
+  const wrapperClasses = classNames('relative pl-[25px]', {
     'opacity-50': disabled,
   });
   const itemClasses = classNames(
     'flex justify-center items-center',
+    // 'absolute top-0 left-0',
     'w-[17px] h-[17px] rounded-full border',
     'focus:outline-none focus-visible:outline-none',
     'focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
@@ -63,12 +64,14 @@ export const Radio = ({
     <div className={wrapperClasses}>
       <RadioGroupPrimitive.Item
         value={value}
-        className={itemClasses}
+        className="absolute h-full w-[25px] top-0 left-0"
         id={id}
         data-testid={id}
         disabled={disabled}
       >
-        <RadioGroupPrimitive.Indicator className="w-[7px] h-[7px] bg-vega-pink dark:bg-vega-yellow rounded-full" />
+        <div className={itemClasses}>
+          <RadioGroupPrimitive.Indicator className="w-[7px] h-[7px] bg-vega-pink dark:bg-vega-yellow rounded-full" />
+        </div>
       </RadioGroupPrimitive.Item>
       <label htmlFor={id} className={disabled ? '' : 'cursor-pointer'}>
         {label}
