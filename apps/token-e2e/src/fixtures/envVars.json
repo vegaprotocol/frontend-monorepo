@@ -1,6 +1,4 @@
 {
-  "tokenAddress": "0x67175Da1D5e966e40D11c4B2519392B2058373de",
-  "vestingContract": "0xF41bD86d462D36b997C0bbb4D97a0a3382f205B7",
   "ethProviderUrl": "http://localhost:8545/",
   "ethWalletPublicKey": "0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F",
   "ethStakingBridgeContractAddress": "0x9135f5afd6F055e731bca2348429482eE614CFfA",
