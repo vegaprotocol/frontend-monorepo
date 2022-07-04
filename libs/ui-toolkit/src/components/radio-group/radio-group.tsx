@@ -12,11 +12,13 @@ interface RadioGroupProps {
 
 export const RadioGroup = ({
   children,
+  value,
   className,
   onChange,
 }: RadioGroupProps) => {
   return (
     <RadioGroupPrimitive.Root
+      value={value}
       onValueChange={onChange}
       className={classNames('flex flex-row gap-24', className)}
     >
