@@ -3,6 +3,7 @@ import { produce } from 'immer';
 import { gql } from '@apollo/client';
 import type { createClient } from '../utils/apollo-client';
 import type { NodeData } from '../types';
+import type { Statistics } from './__generated__/Statistics';
 
 type StatisticsPayload = {
   block: NodeData['block']['value'];
@@ -11,7 +12,7 @@ type StatisticsPayload = {
 };
 
 export const STATS_QUERY = gql`
-  query GetChainId {
+  query Statistics {
     statistics {
       chainId
       blockHeight
@@ -20,7 +21,7 @@ export const STATS_QUERY = gql`
 `;
 
 export const TIME_UPDATE_SUBSCRIPTION = gql`
-  subscription blockTime {
+  subscription BlockTime {
     busEvents(types: TimeUpdate, batchSize: 1) {
       eventId
     }
@@ -143,7 +144,7 @@ export const useNode = (
       dispatch({ type: ACTION.CHECK_SUBSCRIPTION });
 
       client
-        .query({
+        .query<Statistics>({
           query: STATS_QUERY,
         })
         .then((res) => {
@@ -151,7 +152,7 @@ export const useNode = (
             type: ACTION.GET_STATISTICS_SUCCESS,
             payload: {
               chain: res.data.statistics.chainId,
-              block: res.data.statistics.blockHeight,
+              block: Number(res.data.statistics.blockHeight),
               responseTime: getResponseTime(url),
             },
           });
@@ -176,7 +177,7 @@ export const useNode = (
           },
         });
     }
-  }, [client, url]);
+  }, [client, url, dispatch]);
 
   return {
     state,

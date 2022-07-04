@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { gql, useQuery } from '@apollo/client';
+import type { BlockHeightStats } from './__generated__/BlockHeightStats';
 
 type NodeBlockHeightProps = {
   value?: number;
@@ -9,7 +10,7 @@ type NodeBlockHeightProps = {
 const POLL_INTERVAL = 3000;
 
 const BLOCK_HEIGHT_QUERY = gql`
-  query {
+  query BlockHeightStats {
     statistics {
       blockHeight
     }
@@ -17,9 +18,12 @@ const BLOCK_HEIGHT_QUERY = gql`
 `;
 
 export const NodeBlockHeight = ({ value, setValue }: NodeBlockHeightProps) => {
-  const { data, startPolling, stopPolling } = useQuery(BLOCK_HEIGHT_QUERY, {
-    pollInterval: POLL_INTERVAL,
-  });
+  const { data, startPolling, stopPolling } = useQuery<BlockHeightStats>(
+    BLOCK_HEIGHT_QUERY,
+    {
+      pollInterval: POLL_INTERVAL,
+    }
+  );
 
   useEffect(() => {
     const handleStartPoll = () => startPolling(POLL_INTERVAL);
@@ -34,7 +38,7 @@ export const NodeBlockHeight = ({ value, setValue }: NodeBlockHeightProps) => {
 
   useEffect(() => {
     if (data?.statistics?.blockHeight) {
-      setValue(data.statistics.blockHeight);
+      setValue(Number(data.statistics.blockHeight));
     }
   }, [setValue, data?.statistics?.blockHeight]);
 

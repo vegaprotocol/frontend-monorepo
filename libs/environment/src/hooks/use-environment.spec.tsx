@@ -81,7 +81,10 @@ describe('useEnvironment hook', () => {
       wrapper: MockWrapper,
     });
     expect(result.error).toBe(undefined);
-    expect(result.current).toEqual(mockEnvironmentState);
+    expect(result.current).toEqual({
+      ...mockEnvironmentState,
+      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+    });
   });
 
   it('allows for the VEGA_CONFIG_URL to be missing when there is a VEGA_URL present', () => {
@@ -93,6 +96,7 @@ describe('useEnvironment hook', () => {
     expect(result.current).toEqual({
       ...mockEnvironmentState,
       VEGA_CONFIG_URL: undefined,
+      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
     });
   });
 
@@ -107,6 +111,7 @@ describe('useEnvironment hook', () => {
     expect(result.current).toEqual({
       ...mockEnvironmentState,
       VEGA_URL: MOCK_HOST,
+      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
     });
   });
 
@@ -119,6 +124,7 @@ describe('useEnvironment hook', () => {
     expect(result.current).toEqual({
       ...mockEnvironmentState,
       VEGA_NETWORKS: {},
+      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
     });
   });
 
@@ -152,6 +158,7 @@ describe('useEnvironment hook', () => {
     expect(result.current).toEqual({
       ...mockEnvironmentState,
       VEGA_NETWORKS: {},
+      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
     });
 
     expect(consoleWarnSpy).toHaveBeenCalled();
@@ -203,6 +210,7 @@ describe('useEnvironment hook', () => {
         VEGA_ENV: env,
         ETHEREUM_PROVIDER_URL: providerUrl,
         ETHERSCAN_URL: etherscanUrl,
+        setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
       });
     }
   );

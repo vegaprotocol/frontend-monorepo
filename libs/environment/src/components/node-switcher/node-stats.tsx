@@ -117,6 +117,7 @@ export const NodeStats = ({
     reset();
     setClient(url ? createClient(url) : undefined);
     return () => client?.stop();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
 
   const onHandleBlockChange = useCallback(

@@ -23,7 +23,7 @@ export const EnvironmentProvider = ({
   definitions,
   children,
 }: EnvironmentProviderProps) => {
-  const [isNodeSwitcherOpen, setNodeSwitcherOpen] = useState(true);
+  const [isNodeSwitcherOpen, setNodeSwitcherOpen] = useState(false);
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );

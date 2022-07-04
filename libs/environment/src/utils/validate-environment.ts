@@ -15,14 +15,8 @@ export enum Networks {
 const schemaObject = {
   VEGA_URL: z.optional(z.string()),
   VEGA_CONFIG_URL: z.optional(z.string()),
-  ETHEREUM_PROVIDER_URL: z.string().url({
-    message:
-      'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
-  }),
-  ETHERSCAN_URL: z.string().url({
-    message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
-  }),
   VEGA_ENV: z.nativeEnum(Networks),
+  VEGA_EXPLORER_URL: z.optional(z.string()),
   VEGA_NETWORKS: z
     .object(
       Object.keys(Networks).reduce(
@@ -38,6 +32,13 @@ const schemaObject = {
         Networks
       ).join(' | ')}`,
     }),
+  ETHEREUM_PROVIDER_URL: z.string().url({
+    message:
+      'The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url',
+  }),
+  ETHERSCAN_URL: z.string().url({
+    message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
+  }),
 };
 
 export const ENV_KEYS = Object.keys(schemaObject) as Array<
