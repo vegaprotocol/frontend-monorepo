@@ -53,3 +53,4 @@ jobs:
           build-args: 'APP=${{ matrix.app }}'
           platforms: ${{ matrix.build-platform }}
           tags: ${{ steps.tags.outputs.latest }},${{ steps.tags.outputs.current }}
+          push: true
