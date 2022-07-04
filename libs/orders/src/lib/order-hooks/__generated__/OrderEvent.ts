@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { BusEventType, OrderType, OrderStatus, OrderRejectionReason } from "@vegaprotocol/types";
+import { BusEventType, OrderType, OrderStatus, OrderRejectionReason, OrderTimeInForce, Side } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL subscription operation: OrderEvent
@@ -22,14 +22,14 @@ export interface OrderEvent_busEvents_event_Order_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -68,6 +68,14 @@ export interface OrderEvent_busEvents_event_Order {
    * The worst price the order will trade at (e.g. buy for price or less, sell for price or more) (uint64)
    */
   price: string;
+  /**
+   * The timeInForce of order (determines how and if it executes, and whether it persists on the book)
+   */
+  timeInForce: OrderTimeInForce;
+  /**
+   * Whether the order is to buy or sell
+   */
+  side: Side;
   /**
    * The market the order is trading on (probably stored internally as a hash of the market details)
    */

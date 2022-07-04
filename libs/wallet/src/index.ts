@@ -8,5 +8,4 @@ export * from './use-eager-connect';
 export * from './manage-dialog';
 export * from './vega-order-transaction-dialog';
 export * from './provider';
-export * from './order-hooks';
 export * from './connect-dialog';

@@ -9,9 +9,9 @@ import type {
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef, useState } from 'react';
-import { useOrderCancel } from '@vegaprotocol/wallet';
 import { CancelDialog } from '../cancel-order-dialog/cancel-dialog';
 import BigNumber from 'bignumber.js';
+import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;

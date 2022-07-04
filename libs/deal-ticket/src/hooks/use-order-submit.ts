@@ -1,16 +1,13 @@
 import { useCallback, useState } from 'react';
 import { useSubscription } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
+import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from '@vegaprotocol/wallet';
-import {
-  OrderType,
-  useVegaWallet,
-  ORDER_EVENT_SUB,
-} from '@vegaprotocol/wallet';
+} from '@vegaprotocol/orders';
+import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';

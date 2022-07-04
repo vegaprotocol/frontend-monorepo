@@ -6,7 +6,7 @@ import {
   Intent,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
-import { useVegaWallet } from '.';
+import { useVegaWallet } from '..';
 
 export interface VegaManageDialogProps {
   dialogOpen: boolean;

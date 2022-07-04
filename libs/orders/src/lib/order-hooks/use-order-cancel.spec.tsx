@@ -2,10 +2,11 @@ import { MockedProvider } from '@apollo/client/testing';
 import { act, renderHook } from '@testing-library/react-hooks';
 import { MarketState, MarketTradingMode, OrderType } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
-import type { VegaKeyExtended, VegaWalletContextShape } from '../context';
-import { VegaWalletContext } from '../context';
-import { VegaTxStatus } from '../use-vega-transaction';
-import type { Order } from '../vega-order-transaction-dialog';
+import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
+import type {
+  VegaKeyExtended,
+  VegaWalletContextShape,
+} from '@vegaprotocol/wallet';
 import { useOrderCancel } from './use-order-cancel';
 
 const defaultMarket = {
@@ -70,7 +71,7 @@ describe('useOrderCancel', () => {
 
   it('should not sendTx if no keypair', async () => {
     const mockSendTx = jest.fn();
-    const order: Order = {
+    const order = {
       type: OrderType.Market,
       size: '10',
       price: '1234567.89',
@@ -94,7 +95,7 @@ describe('useOrderCancel', () => {
     const keypair = {
       pub: '0x123',
     } as VegaKeyExtended;
-    const order: Order = {
+    const order = {
       type: OrderType.Limit,
       size: '10',
       price: '1234567.89',

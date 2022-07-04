@@ -1,18 +1,16 @@
-import { useSubscription } from '@apollo/client';
+import { useCallback, useState } from 'react';
 import { determineId } from '@vegaprotocol/react-helpers';
-import type { OrderAmendmentBody } from '@vegaprotocol/vegawallet-service-api-client';
-import { useState, useCallback } from 'react';
-import { useVegaTransaction } from '../use-vega-transaction';
-import { useVegaWallet } from '../use-vega-wallet';
-import { ORDER_EVENT_SUB } from './order-event-query';
+import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
+import { useSubscription } from '@apollo/client';
 import type {
-  OrderEvent_busEvents_event_Order,
   OrderEvent,
   OrderEventVariables,
-} from './__generated__';
+  OrderEvent_busEvents_event_Order,
+} from './__generated__/OrderEvent';
+import { ORDER_EVENT_SUB } from './order-event-query';
 import * as Sentry from '@sentry/react';
 
-export const useOrderEdit = () => {
+export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
@@ -49,15 +47,11 @@ export const useOrderEdit = () => {
         const res = await send({
           pubKey: keypair.pub,
           propagate: true,
-          orderAmendment: {
+          orderCancellation: {
             orderId: order.id,
             marketId: order.market.id,
-            timeInForce: order.timeInForce,
-            sizeDelta: order.size,
-            price: order.price,
-            expiresAt: order.expiresAt,
           },
-        } as OrderAmendmentBody);
+        });
 
         if (res?.signature) {
           setId(determineId(res.signature));

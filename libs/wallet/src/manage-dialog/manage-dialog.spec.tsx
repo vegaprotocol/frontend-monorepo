@@ -1,9 +1,9 @@
 /* eslint-disable jest/no-conditional-expect */
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { VegaWalletContext } from './context';
-import type { VegaWalletContextShape, VegaKeyExtended } from './context';
-import type { VegaManageDialogProps } from './manage-dialog';
-import { VegaManageDialog } from './manage-dialog';
+import { VegaWalletContext } from '../context';
+import type { VegaWalletContextShape, VegaKeyExtended } from '../context';
+import type { VegaManageDialogProps } from '.';
+import { VegaManageDialog } from '.';
 
 let props: VegaManageDialogProps;
 let context: Partial<VegaWalletContextShape>;

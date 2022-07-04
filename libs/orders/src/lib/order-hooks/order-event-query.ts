@@ -13,6 +13,8 @@ export const ORDER_EVENT_SUB = gql`
           createdAt
           size
           price
+          timeInForce
+          side
           market {
             name
             decimalPlaces
