@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketPercentChange from './simple-market-percent-change';
 import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
@@ -50,8 +49,8 @@ describe('SimpleMarketPercentChange should parse proper change', () => {
       </MockedProvider>
     );
     expect(screen.getByText('100.000%')).toBeInTheDocument();
-    expect(screen.getByText('100.000%')).toHaveStyle(
-      `color: ${theme.colors.vega.green}`
+    expect(screen.getByText('100.000%')).toHaveClass(
+      'text-darkerGreen dark:text-lightGreen'
     );
   });
   it('a depreciated one', () => {
@@ -70,8 +69,6 @@ describe('SimpleMarketPercentChange should parse proper change', () => {
       </MockedProvider>
     );
     expect(screen.getByText('-50.000%')).toBeInTheDocument();
-    expect(screen.getByText('-50.000%')).toHaveStyle(
-      `color: ${theme.colors.vega.pink}`
-    );
+    expect(screen.getByText('-50.000%')).toHaveClass('text-vega-pink');
   });
 });

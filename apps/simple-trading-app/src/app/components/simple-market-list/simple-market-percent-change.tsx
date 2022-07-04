@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import classNames from 'classnames';
 import { InView } from 'react-intersection-observer';
 import { useSubscription } from '@apollo/client';
-import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import type { SimpleMarkets_markets_candles } from './__generated__/SimpleMarkets';
 import type {
   CandleLive,
@@ -37,14 +37,14 @@ const getChange = (
   return ' - ';
 };
 
-const getColor = (change: number | string) => {
+const getClassColor = (change: number | string) => {
   if (parseFloat(change as string) > 0) {
-    return theme.colors.vega.green;
+    return 'text-darkerGreen dark:text-lightGreen';
   }
   if (parseFloat(change as string) < 0) {
-    return theme.colors.vega.pink;
+    return 'text-vega-pink';
   }
-  return theme.colors.black[10];
+  return 'text-black-10';
 };
 
 const SimpleMarketPercentChangeWrapper = (props: Props) => {
@@ -67,16 +67,14 @@ const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
       variables: { marketId },
     });
   const change = getChange(candles, close);
-  const color = getColor(change);
+  const colorClasses = getClassColor(change);
   useEffect(() => {
     const value = parseFloat(change);
     setValue(isNaN(value) ? '-' : value);
   }, [setValue, change]);
 
   return (
-    <div className="flex text-center" style={{ color }}>
-      {change}
-    </div>
+    <div className={classNames('flex text-center', colorClasses)}>{change}</div>
   );
 };
 
