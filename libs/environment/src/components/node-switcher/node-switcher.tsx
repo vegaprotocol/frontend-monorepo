@@ -15,9 +15,7 @@ type NodeSwitcherProps = {
 };
 
 const getDefaultNode = (urls: string[], currentUrl?: string) => {
-  return currentUrl && urls.includes(currentUrl)
-    ? currentUrl
-    : undefined;
+  return currentUrl && urls.includes(currentUrl) ? currentUrl : undefined;
 };
 
 const getIsLoading = ({ chain, responseTime, block, ssl }: NodeData) => {
@@ -50,7 +48,7 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
   const [node, setNode] = useState(getDefaultNode(config.hosts, VEGA_URL));
   const [highestBlock, setHighestBlock] = useState(0);
 
-  const onSubmit = (node : ReturnType<typeof getDefaultNode>) => {
+  const onSubmit = (node: ReturnType<typeof getDefaultNode>) => {
     if (node) {
       onConnect(node);
     }
@@ -75,7 +73,7 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
           <RadioGroup
             className="block"
             value={node}
-            onChange={value => setNode(value)}
+            onChange={(value) => setNode(value)}
           >
             {config.hosts.map((url, index) => (
               <NodeStats
