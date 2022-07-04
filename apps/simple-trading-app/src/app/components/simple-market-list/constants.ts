@@ -73,6 +73,7 @@ export const agGridLightVariables = `
 
 export const agGridDarkVariables = `
   .ag-theme-balham-dark {
+    --ag-background-color: ${theme.colors.lite.black};
     --ag-row-border-color: ${theme.colors.transparent};
     --ag-row-hover-color: ${theme.colors.transparent};
     --ag-font-size: 15px;

@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import {
   DealTicketManager,
@@ -8,6 +9,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { gql, useQuery } from '@apollo/client';
 import { DealTicketBalance } from './deal-ticket-balance';
 import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
+import Baubles from './baubles-decor';
 
 const tempEmptyText = <p>Please select a market from the markets page</p>;
 
@@ -39,27 +41,34 @@ export const DealTicketContainer = () => {
     }
   );
 
-  return marketId ? (
-    <Container marketId={marketId}>
-      {(data) => (
-        <DealTicketManager market={data.market}>
-          {loading ? (
-            'Loading...'
-          ) : (
-            <DealTicketBalance
-              settlementAsset={
-                data.market.tradableInstrument.instrument.product
-                  ?.settlementAsset
-              }
-              accounts={partyData?.party?.accounts || []}
-              isWalletConnected={!!keypair?.pub}
-            />
-          )}
-          <DealTicketSteps market={data.market} />
-        </DealTicketManager>
-      )}
-    </Container>
-  ) : (
-    tempEmptyText
+  return (
+    <div className="flex">
+      <div className="md:w-1/2 md:min-w-[500px]">
+        {marketId ? (
+          <Container marketId={marketId}>
+            {(data) => (
+              <DealTicketManager market={data.market}>
+                {loading ? (
+                  'Loading...'
+                ) : (
+                  <DealTicketBalance
+                    settlementAsset={
+                      data.market.tradableInstrument.instrument.product
+                        ?.settlementAsset
+                    }
+                    accounts={partyData?.party?.accounts || []}
+                    isWalletConnected={!!keypair?.pub}
+                  />
+                )}
+                <DealTicketSteps market={data.market} />
+              </DealTicketManager>
+            )}
+          </Container>
+        ) : (
+          tempEmptyText
+        )}
+      </div>
+      <Baubles />
+    </div>
   );
 };
