@@ -14,7 +14,7 @@ jobs:
       matrix:
         version: ['0.0.1']
         build-platform: ['linux/amd64']
-        app: ['explorer']
+        app: ['trading', 'token']
     name: Build the ${{ inputs.image_name }} image
     runs-on: ubuntu-latest
     steps:
