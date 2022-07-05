@@ -9,9 +9,12 @@ import type {
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef, useState } from 'react';
-import { CancelDialog } from '../cancel-order-dialog/cancel-dialog';
 import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
+import {
+  VegaOrderTransactionType,
+  VegaTransactionDialog,
+} from '@vegaprotocol/wallet';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -24,12 +27,13 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     return (
       <>
         <OrderListTable data={data} cancel={cancel} ref={ref} />
-        <CancelDialog
+        <VegaTransactionDialog
           orderDialogOpen={orderDialogOpen}
           setOrderDialogOpen={setOrderDialogOpen}
           finalizedOrder={finalizedOrder}
           transaction={transaction}
           reset={reset}
+          type={VegaOrderTransactionType.CANCEL}
         />
       </>
     );

@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { OrderStatus, OrderType } from '@vegaprotocol/types';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
+import { VegaOrderTransactionType } from '../vega-transaction-dialog';
 import type { Order } from './vega-order-transaction-dialog';
 import { VegaOrderTransactionDialog } from './vega-order-transaction-dialog';
 
@@ -57,6 +58,7 @@ describe('VegaOrderTransactionDialog', () => {
       <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
+        type={VegaOrderTransactionType.Cancel}
       />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(

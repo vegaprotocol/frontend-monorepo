@@ -1,10 +1,10 @@
 import type { Story, Meta } from '@storybook/react';
 import { OrderType, OrderStatus } from '@vegaprotocol/types';
 import { OrderList, OrderListTable } from './order-list';
-import { CancelDialog } from '../cancel-order-dialog';
 import { useState } from 'react';
-import type { VegaTxState, Order } from '@vegaprotocol/wallet';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import type { Order, VegaTxState } from '@vegaprotocol/wallet';
+import { VegaOrderTransactionType } from '@vegaprotocol/wallet';
+import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { generateOrdersArray } from '../mocks';
 
 export default {
@@ -47,12 +47,13 @@ const Template2: Story = (args) => {
       <div style={{ height: 1000 }}>
         <OrderListTable data={args.data} cancel={cancel} />
       </div>
-      <CancelDialog
+      <VegaTransactionDialog
         orderDialogOpen={open}
         setOrderDialogOpen={setOpen}
         finalizedOrder={finalizedOrder}
         transaction={transaction}
         reset={reset}
+        type={VegaOrderTransactionType.CANCEL}
       />
     </>
   );

@@ -1,12 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { OrderStatus, OrderType } from '@vegaprotocol/types';
-import type { VegaTxState, Order } from '@vegaprotocol/wallet';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
-import type { CancelDialogProps } from './cancel-dialog';
-import { CancelDialog } from './cancel-dialog';
+import type { VegaTxState } from '../use-vega-transaction';
+import { VegaTxStatus } from '../use-vega-transaction';
+import type { Order } from '../vega-order-transaction-dialog';
+import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
+import { VegaOrderTransactionType } from './vega-transaction-dialog';
+import { VegaTransactionDialog } from './vega-transaction-dialog';
 
-describe('CancelDialog', () => {
-  let defaultProps: CancelDialogProps;
+describe('VegaTransactionDialog', () => {
+  let defaultProps: VegaTransactionDialogProps;
 
   beforeEach(() => {
     defaultProps = {
@@ -27,11 +29,12 @@ describe('CancelDialog', () => {
         type: OrderType.Limit,
       },
       reset: jest.fn(),
+      type: VegaOrderTransactionType.CANCEL,
     };
   });
 
   it('should render when an order is successfully cancelled', () => {
-    render(<CancelDialog {...defaultProps} />);
+    render(<VegaTransactionDialog {...defaultProps} />);
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
       'Order cancelled'
     );
@@ -57,7 +60,13 @@ describe('CancelDialog', () => {
       finalizedOrder,
     };
 
-    render(<CancelDialog {...defaultProps} {...propsForTest} />);
+    render(
+      <VegaTransactionDialog
+        {...defaultProps}
+        {...propsForTest}
+        type={VegaOrderTransactionType.CANCEL}
+      />
+    );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
       'Cancellation failed'
     );
