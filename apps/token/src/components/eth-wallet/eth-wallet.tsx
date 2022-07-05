@@ -227,6 +227,7 @@ export const EthWallet = () => {
         ) : (
           <Button
             variant={'secondary'}
+            className="w-full"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
