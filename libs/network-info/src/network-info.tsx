@@ -34,8 +34,7 @@ export const NetworkInfo = () => {
           <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
             {VEGA_URL}
           </Lozenge>
-          .{' '}
-          <Link onClick={() => setNetworkConfigOpen(true)}>{t('Edit')}</Link>
+          . <Link onClick={() => setNetworkConfigOpen(true)}>{t('Edit')}</Link>
         </p>
         <p className="mb-[1rem]">
           {t('Reading Ethereum data from')}{' '}
