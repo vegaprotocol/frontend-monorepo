@@ -8,13 +8,14 @@ name: Publish containers
 
 on:
   pull_request:
+
 jobs:
   master:
     strategy:
       matrix:
-        version: ['0.0.1']
+        version: ['0.0.2']
         build-platform: ['linux/amd64']
-        app: ['trading', 'token']
+        app: ['explorer', 'trading', 'token']
     name: Build the ${{ inputs.image_name }} image
     runs-on: ubuntu-latest
     steps:
@@ -39,7 +40,6 @@ jobs:
           echo ${{ steps.tags.outputs.current }}
 
       - name: Login to DockerHub
-        # if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
