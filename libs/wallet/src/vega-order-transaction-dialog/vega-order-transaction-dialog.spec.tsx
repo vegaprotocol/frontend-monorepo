@@ -32,6 +32,7 @@ describe('VegaOrderTransactionDialog', () => {
       <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
+        title={'Order placed'}
       />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(

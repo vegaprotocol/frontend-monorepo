@@ -27,13 +27,13 @@ export interface Order {
 interface VegaOrderTransactionDialogProps {
   transaction: VegaTxState;
   finalizedOrder: Order | null;
-  title?: string;
+  title: string;
 }
 
 export const VegaOrderTransactionDialog = ({
   transaction,
   finalizedOrder,
-  title = 'Order placed',
+  title,
 }: VegaOrderTransactionDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   // Rejected by wallet

@@ -28,6 +28,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
       <>
         <OrderListTable data={data} cancel={cancel} ref={ref} />
         <VegaTransactionDialog
+          key={`cancel-order-dialog-${transaction.txHash}`}
           orderDialogOpen={orderDialogOpen}
           setOrderDialogOpen={setOrderDialogOpen}
           finalizedOrder={finalizedOrder}
