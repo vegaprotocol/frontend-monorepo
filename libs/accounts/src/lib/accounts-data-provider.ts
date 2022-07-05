@@ -55,8 +55,8 @@ export const getId = (
 const update = (
   data: Accounts_party_accounts[],
   delta: AccountSubscribe_accounts
-) =>
-  produce(data, (draft) => {
+) => {
+  return produce(data, (draft) => {
     const id = getId(delta);
     const index = draft.findIndex((a) => getId(a) === id);
     if (index !== -1) {
@@ -65,6 +65,8 @@ const update = (
       draft.push(delta);
     }
   });
+};
+
 const getData = (responseData: Accounts): Accounts_party_accounts[] | null =>
   responseData.party ? responseData.party.accounts : null;
 const getDelta = (

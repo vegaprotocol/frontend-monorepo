@@ -3,7 +3,7 @@ import { OrderList } from '../order-list';
 import type { OrderFields } from '../__generated__/OrderFields';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import {
-  ordersDataProvider,
+  ordersDataProvider as dataProvider,
   prepareIncomingOrders,
   sortOrders,
 } from '../order-data-provider';
@@ -21,7 +21,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
   // Apply updates to the table
-  const update = useCallback((delta: OrderSub_orders[]) => {
+  const update = useCallback(({ delta }: { delta: OrderSub_orders[] }) => {
     if (!gridRef.current) {
       return false;
     }
@@ -57,11 +57,11 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     return true;
   }, []);
 
-  const { data, error, loading } = useDataProvider(
-    ordersDataProvider,
+  const { data, error, loading } = useDataProvider({
+    dataProvider,
     update,
-    variables
-  );
+    variables,
+  });
 
   const orders = useMemo(() => {
     if (!data) {

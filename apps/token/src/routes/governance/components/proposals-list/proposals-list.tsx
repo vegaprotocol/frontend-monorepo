@@ -49,7 +49,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   }, [proposals]);
 
   if (proposals.length === 0) {
-    return <p>{t('noProposals')}</p>;
+    return <p data-testid="no-proposals">{t('noProposals')}</p>;
   }
 
   return (

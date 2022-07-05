@@ -7437,14 +7437,14 @@ aes-js@^3.1.2:
   integrity sha512-e5pEa2kBnBOgR4Y/p20pskXI74UEz7de8ZGVo58asOtvSVG5YAbJeELPZxOmt+Bnz3rX753YKhfIn4X4l1PPRQ==
 
 ag-grid-community@^27.0.1:
-  version "27.1.0"
-  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-27.1.0.tgz#17f73173444a9efc4faea0f0cd6c5090e698f7ee"
-  integrity sha512-SWzIJTNa7C6Vinizelcoc1FAJQRt1pDn+A8XHQDO2GTQT+VjBnPL8fg94fLJy0EEvqaN5IhDybNS0nD07SKIQw==
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-community/-/ag-grid-community-27.3.0.tgz#b1e94a58026aaf2f0cd7920e35833325b5e762c7"
+  integrity sha512-R5oZMXEHXnOLrmhn91J8lR0bv6IAnRcU6maO+wKLMJxffRWaAYFAuw1jt7bdmcKCv8c65F6LEBx4ykSOALa9vA==
 
 ag-grid-react@^27.0.1:
-  version "27.1.0"
-  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-27.1.0.tgz#3b08203b9731a2b2d5431dddd69d68dc640c311e"
-  integrity sha512-AfRwH6BL/LribvLJ2594Fq0/MfZf/17WebjGj927bM3vABDr2OBX3qgMIaQE+kpV9mABPb51rlWLMmbCvltv2g==
+  version "27.3.0"
+  resolved "https://registry.yarnpkg.com/ag-grid-react/-/ag-grid-react-27.3.0.tgz#fe06647653f8b0b349b8e613aab8ea2e07915562"
+  integrity sha512-2bs9YfJ/shvBZQLLjny4NFvht+ic6VtpTPO0r3bHHOhlL3Fjx2rGvS6AHSwfvu+kJacHCta30PjaEbX8T3UDyw==
   dependencies:
     prop-types "^15.8.1"
 
@@ -17018,7 +17018,7 @@ nx@13.8.1:
 object-assign@^4.0.1, object-assign@^4.1.0, object-assign@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
-  integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
+  integrity sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==
 
 object-copy@^0.1.0:
   version "0.1.0"
