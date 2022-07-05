@@ -8,6 +8,8 @@ module.exports = {
     midGrey: '#828282',
     borderGrey: '#4f4f4f',
     lightGrey: '#F2F2F2',
+    lightGreen: '#00f780',
+    darkerGreen: '#008f4A',
     yellow: '#DFFF0B',
     mint: '#00F780',
     pink: '#FF077F',
@@ -18,6 +20,9 @@ module.exports = {
       'highlight-item-dark': '#fff',
     },
     'dropdown-bg-dark': theme.colors.black['100'],
+    lite: {
+      black: '#080808',
+    },
   },
   fontSize: {
     ...theme.fontSize,

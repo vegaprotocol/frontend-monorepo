@@ -61,8 +61,8 @@ export const limitOrder = generateOrder({
   type: OrderType.Limit,
   status: OrderStatus.Active,
   timeInForce: OrderTimeInForce.GTT,
-  createdAt: new Date('2022-3-3').toISOString(),
-  expiresAt: new Date('2022-3-5').toISOString(),
+  createdAt: new Date(2022, 3, 3).toISOString(),
+  expiresAt: new Date(2022, 3, 5).toISOString(),
 });
 
 export const marketOrder = generateOrder({

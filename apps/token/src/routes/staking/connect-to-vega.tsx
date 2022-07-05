@@ -18,7 +18,7 @@ export const ConnectToVega = () => {
           isOpen: true,
         })
       }
-      data-test-id="connect-to-vega-wallet-btn"
+      data-testid="connect-to-vega-wallet-btn"
     >
       {t('connectVegaWallet')}
     </Button>
