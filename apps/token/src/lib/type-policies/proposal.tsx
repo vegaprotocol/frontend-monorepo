@@ -9,29 +9,30 @@ export const ProposalHeader = ({
   const { t } = useTranslation();
   const { change } = proposal.terms;
 
-  let headerText: string;
+  let primaryText: string;
+  let secondaryText: string;
 
   switch (change.__typename) {
     case 'NewMarket':
-      headerText = `${t('New market')}: ${change.instrument.name}`;
+      primaryText = `${t('New market')}: ${change.instrument.name}`;
       break;
     case 'NewAsset':
-      headerText = `${t('Asset change')}: ${change.symbol}`;
+      primaryText = `${t('Asset change')}: ${change.symbol}`;
       break;
     case 'UpdateMarket':
-      headerText = `${t('Market change')}: ${change.marketId}`;
+      primaryText = `${t('Market change')}: ${change.marketId}`;
       break;
     case 'UpdateNetworkParameter':
-      headerText = `${t('Network parameter change')}: ${
+      primaryText = `${t('Network parameter change')}: ${
         change.networkParameter.key
       }`;
       break;
     case 'NewFreeform':
-      headerText = `${proposal.rationale.hash}`;
+      primaryText = `${proposal.rationale.hash}`;
       break;
     default:
-      headerText = `${t('Unknown proposal')}`;
+      primaryText = `${t('Unknown proposal')}`;
   }
 
-  return <header>{headerText}</header>;
+  return <header data-testid="proposal-primary-text">{primaryText}</header>;
 };

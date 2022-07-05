@@ -27,7 +27,9 @@ it('New market', () => {
       },
     })
   );
-  expect(screen).toHaveTextContent('New Market: Some market');
+  expect(screen.getByTestId('proposal-primary-text')).toHaveTextContent(
+    'New market: Some market'
+  );
 });
 
 it('New asset', () => {
@@ -47,7 +49,9 @@ it('New asset', () => {
       },
     })
   );
-  expect(screen).toHaveTextContent('Asset change: FAKE');
+  expect(screen.getByTestId('proposal-primary-text')).toHaveTextContent(
+    'Asset change: FAKE'
+  );
 });
 
 it('Update market', () => {
@@ -63,7 +67,9 @@ it('Update market', () => {
       },
     })
   );
-  expect(screen).toHaveTextContent('Market change: MarketId');
+  expect(screen.getByTestId('proposal-primary-text')).toHaveTextContent(
+    'Market change: MarketId'
+  );
 });
 
 it('Update network', () => {
@@ -83,7 +89,9 @@ it('Update network', () => {
       },
     })
   );
-  expect(screen).toHaveTextContent('Network parameter change: key');
+  expect(screen.getByTestId('proposal-primary-text')).toHaveTextContent(
+    'Network parameter change: key'
+  );
 });
 
 it('Freeform network', () => {
@@ -102,7 +110,7 @@ it('Freeform network', () => {
       },
     })
   );
-  expect(screen).toHaveTextContent('0x0');
+  expect(screen.getByTestId('proposal-primary-text')).toHaveTextContent('0x0');
 });
 
 it("Renders unknown proposal if it's a different proposal type", () => {
@@ -118,5 +126,7 @@ it("Renders unknown proposal if it's a different proposal type", () => {
       },
     })
   );
-  expect(screen).toHaveTextContent('Unknown Proposal');
+  expect(screen.getByTestId('proposal-primary-text')).toHaveTextContent(
+    'Unknown proposal'
+  );
 });
