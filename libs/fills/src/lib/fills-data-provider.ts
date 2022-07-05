@@ -94,24 +94,24 @@ const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
 const append = (
   data: Fills_party_tradesPaged_edges[] | null,
   pageInfo: PageInfo,
-  insert: Fills_party_tradesPaged_edges[] | null,
-  insertPageInfo: PageInfo | null,
+  insertionData: Fills_party_tradesPaged_edges[] | null,
+  insertionPageInfo: PageInfo | null,
   pagination?: Pagination
 ) => {
-  if (data && insert && insertPageInfo) {
+  if (data && insertionData && insertionPageInfo) {
     if (pagination?.after) {
       if (data[data.length - 1].cursor === pagination.after) {
         return {
-          data: [...data, ...insert],
-          pageInfo: { ...pageInfo, endCursor: insertPageInfo.endCursor },
+          data: [...data, ...insertionData],
+          pageInfo: { ...pageInfo, endCursor: insertionPageInfo.endCursor },
         };
       } else {
         const cursors = data.map((item) => item.cursor);
         const startIndex = cursors.lastIndexOf(pagination.after);
         if (startIndex !== -1) {
           return {
-            data: [...data.slice(0, startIndex), ...insert],
-            pageInfo: { ...pageInfo, endCursor: insertPageInfo.endCursor },
+            data: [...data.slice(0, startIndex), ...insertionData],
+            pageInfo: { ...pageInfo, endCursor: insertionPageInfo.endCursor },
           };
         }
       }

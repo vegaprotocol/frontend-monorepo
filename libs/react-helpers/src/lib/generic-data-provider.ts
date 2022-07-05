@@ -15,7 +15,7 @@ export interface UpdateCallback<Data, Delta> {
     loading: boolean;
     pageInfo: PageInfo | null;
     delta?: Delta;
-    insertData?: Data | null;
+    insertionData?: Data | null;
     totalCount?: number;
   }): void;
 }
@@ -61,8 +61,8 @@ export interface Append<Data> {
   (
     data: Data | null,
     pageInfo: PageInfo,
-    insert: Data | null,
-    insertPageInfo: PageInfo | null,
+    insertionData: Data | null,
+    insertionPageInfo: PageInfo | null,
     pagination?: Pagination
   ): {
     data: Data | null;
@@ -125,7 +125,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (
     callback: UpdateCallback<Data, Delta>,
-    updateData?: { delta?: Delta; insertData?: Data | null }
+    dataUpdate?: { delta?: Delta; insertionData?: Data | null }
   ) => {
     callback({
       data,
@@ -133,16 +133,16 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       loading,
       pageInfo,
       totalCount,
-      ...updateData,
+      ...dataUpdate,
     });
   };
 
   // notify all callbacks
-  const notifyAll = (updateData?: {
+  const notifyAll = (dataUpdate?: {
     delta?: Delta;
-    insertData?: Data | null;
+    insertionData?: Data | null;
   }) => {
-    callbacks.forEach((callback) => notify(callback, updateData));
+    callbacks.forEach((callback) => notify(callback, dataUpdate));
   };
 
   const load = async (params?: Pagination) => {
@@ -161,18 +161,18 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       },
       fetchPolicy,
     });
-    const insertData = getData(res.data);
-    const insertPageInfo = pagination.getPageInfo(res.data);
+    const insertionData = getData(res.data);
+    const insertionDataPageInfo = pagination.getPageInfo(res.data);
     ({ data, pageInfo } = pagination.append(
       data,
       pageInfo,
-      insertData,
-      insertPageInfo,
+      insertionData,
+      insertionDataPageInfo,
       paginationVariables
     ));
     totalCount = pagination.getTotalCount(res.data);
-    notifyAll({ insertData });
-    return insertData;
+    notifyAll({ insertionData });
+    return insertionData;
   };
 
   const initialFetch = async () => {

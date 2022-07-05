@@ -19,11 +19,11 @@ export function useDataProvider<Data, Delta>({
   dataProvider: Subscribe<Data, Delta>;
   update?: ({ delta, data }: { delta: Delta; data: Data }) => boolean;
   insert?: ({
-    insertData,
+    insertionData,
     data,
     totalCount,
   }: {
-    insertData: Data;
+    insertionData: Data;
     data: Data;
     totalCount?: number;
   }) => boolean;
@@ -55,7 +55,7 @@ export function useDataProvider<Data, Delta>({
     return Promise.reject();
   }, []);
   const callback = useCallback(
-    ({ data, error, loading, delta, insertData, totalCount }) => {
+    ({ data, error, loading, delta, insertionData, totalCount }) => {
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
@@ -66,9 +66,9 @@ export function useDataProvider<Data, Delta>({
             return;
           }
           if (
-            insertData &&
+            insertionData &&
             insert &&
-            insert({ insertData, data, totalCount })
+            insert({ insertionData, data, totalCount })
           ) {
             return;
           }
