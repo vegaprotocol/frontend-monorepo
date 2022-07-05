@@ -20,6 +20,7 @@ export const ORDER_EVENT_SUB = gql`
             id
             name
             decimalPlaces
+            positionDecimalPlaces
           }
         }
       }

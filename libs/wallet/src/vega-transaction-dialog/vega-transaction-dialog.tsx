@@ -1,155 +1,94 @@
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { useEffect } from 'react';
+import { useEnvironment } from '@vegaprotocol/environment';
+import get from 'lodash/get';
+import { t } from '@vegaprotocol/react-helpers';
+import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
+import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
-import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
-import type { ReactNode } from 'react';
-import {
-  addDecimalsFormatNumber,
-  formatLabel,
-  t,
-} from '@vegaprotocol/react-helpers';
-import { useEnvironment } from '@vegaprotocol/environment';
-import { OrderType } from '@vegaprotocol/types';
-import type { Order } from '../wallet-types';
-import get from 'lodash/get';
 
 export interface VegaTransactionDialogProps {
-  orderDialogOpen: boolean;
-  setOrderDialogOpen: (isOpen: boolean) => void;
-  finalizedOrder: Order | null;
+  isOpen: boolean;
+  onChange: (isOpen: boolean) => void;
   transaction: VegaTxState;
-  reset: () => void;
-  title?: string;
   children?: ReactNode;
+  intent?: Intent;
+  title?: string;
+  icon?: ReactNode;
 }
 
-const getDialogIntent = (
-  finalizedOrder: Order | null,
-  transaction: VegaTxState
-) => {
-  if (finalizedOrder) {
-    return !finalizedOrder.rejectionReason ? Intent.Success : Intent.Danger;
-  }
-  switch (transaction.status) {
-    case VegaTxStatus.Requested:
-      return Intent.Warning;
-    case VegaTxStatus.Pending:
-      return Intent.Warning;
-    case VegaTxStatus.Error:
-      return Intent.Danger;
-    default:
-      return Intent.None;
-  }
-};
-
 export const VegaTransactionDialog = ({
-  orderDialogOpen,
-  setOrderDialogOpen,
-  finalizedOrder,
+  isOpen,
+  onChange,
   transaction,
-  reset,
-  title = '',
   children,
+  intent,
+  title,
+  icon,
 }: VegaTransactionDialogProps) => {
-  // open / close dialog
-  useEffect(() => {
-    if (transaction.status !== VegaTxStatus.Default || finalizedOrder) {
-      setOrderDialogOpen(true);
-    } else {
-      setOrderDialogOpen(false);
-    }
-  }, [finalizedOrder, setOrderDialogOpen, transaction.status]);
-
+  const computedIntent = intent ? intent : getIntent(transaction);
+  const computedTitle = title ? title : getTitle(transaction);
+  const computedIcon = icon ? icon : getIcon(transaction);
+  // Each dialog can specify custom dialog content using data returned via
+  // the subscription that confirms the transaction. So if we get a success state
+  // and this custom content is provided, render it
+  const content =
+    transaction.status === VegaTxStatus.Complete && children ? (
+      children
+    ) : (
+      <VegaDialog transaction={transaction} />
+    );
   return (
     <Dialog
-      open={orderDialogOpen}
-      onChange={(isOpen) => {
-        setOrderDialogOpen(isOpen);
-
-        // If closing reset
-        if (!isOpen) {
-          reset();
-        }
-      }}
-      intent={getDialogIntent(finalizedOrder, transaction)}
+      open={isOpen}
+      onChange={onChange}
+      intent={computedIntent}
+      title={computedTitle}
+      icon={computedIcon}
     >
-      <VegaDialog
-        key={`${title.toLowerCase().split(' ').join('-')}-tx-${
-          transaction.txHash
-        }`}
-        transaction={transaction}
-        finalizedOrder={finalizedOrder}
-        title={title}
-        children={children}
-      />
+      {content}
     </Dialog>
   );
 };
 
 interface VegaDialogProps {
   transaction: VegaTxState;
-  finalizedOrder: Order | null;
-  title: string;
-  children?: ReactNode;
 }
 
-export const VegaDialog = ({
-  transaction,
-  finalizedOrder,
-  title,
-  children,
-}: VegaDialogProps) => {
+/**
+ * Default dialog content
+ */
+export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
-  const headerClassName = 'text-h5 font-bold text-black dark:text-white';
 
-  if (children && transaction.status === VegaTxStatus.Default) {
-    return <div>{children}</div>;
-  }
-
-  // Rejected by wallet
   if (transaction.status === VegaTxStatus.Requested) {
     return (
-      <OrderDialogWrapper
-        title="Confirm transaction in wallet"
-        icon={<Icon name="hand-up" size={20} />}
-      >
-        <p>
-          {t(
-            'Please open your wallet application and confirm or reject the transaction'
-          )}
-        </p>
-      </OrderDialogWrapper>
+      <p data-testid={transaction.status}>
+        {t(
+          'Please open your wallet application and confirm or reject the transaction'
+        )}
+      </p>
     );
   }
 
-  // Transaction error
   if (transaction.status === VegaTxStatus.Error) {
     return (
-      <OrderDialogWrapper
-        title="Order rejected by wallet"
-        icon={<Icon name="warning-sign" size={20} />}
-      >
+      <div data-testid={transaction.status}>
         {transaction.error && (
           <pre className="text-ui break-all whitespace-pre-wrap">
             {get(transaction.error, 'error') ??
               JSON.stringify(transaction.error, null, 2)}
           </pre>
         )}
-      </OrderDialogWrapper>
+      </div>
     );
   }
 
-  // Pending consensus
-  if (!finalizedOrder) {
+  if (transaction.status === VegaTxStatus.Pending) {
     return (
-      <OrderDialogWrapper
-        title="Awaiting network confirmation"
-        icon={<Loader size="small" />}
-      >
-        {transaction.txHash && (
-          <p className="break-all">
-            {t('Waiting for few more blocks')} - &nbsp;
+      <div data-testid={transaction.status}>
+        <p className="break-all">
+          {t('Please wait for your transaction to be confirmed')} - &nbsp;
+          {transaction.txHash && (
             <a
               className="underline"
               data-testid="tx-block-explorer"
@@ -159,108 +98,77 @@ export const VegaDialog = ({
             >
               {t('View in block explorer')}
             </a>
-          </p>
-        )}
-      </OrderDialogWrapper>
-    );
-  }
-
-  // Order on network but was rejected
-  if (finalizedOrder.status === 'Rejected') {
-    return (
-      <OrderDialogWrapper
-        title="Order failed"
-        icon={<Icon name="warning-sign" size={20} />}
-      >
-        <p data-testid="error-reason">
-          {finalizedOrder.rejectionReason &&
-            t(`Reason: ${formatLabel(finalizedOrder.rejectionReason)}`)}
+          )}
         </p>
-      </OrderDialogWrapper>
+      </div>
     );
   }
 
-  return (
-    <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {finalizedOrder.market && (
-          <div>
-            <p className={headerClassName}>{t(`Market`)}</p>
-            <p>{t(`${finalizedOrder.market.name}`)}</p>
-          </div>
-        )}
-        <div>
-          <p className={headerClassName}>{t(`Status`)}</p>
-          <p>{t(`${finalizedOrder.status}`)}</p>
-        </div>
-        {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
-          <div>
-            <p className={headerClassName}>{t(`Price`)}</p>
-            <p>
-              {addDecimalsFormatNumber(
-                finalizedOrder.price,
-                finalizedOrder.market.decimalPlaces
-              )}
-            </p>
-          </div>
-        )}
-        <div>
-          <p className={headerClassName}>{t(`Amount`)}</p>
-          <p
-            className={
-              finalizedOrder.side === 'Buy'
-                ? 'text-vega-green'
-                : 'text-vega-red'
-            }
-          >
-            {`${finalizedOrder.side === 'Buy' ? '+' : '-'} ${
-              finalizedOrder.size
-            }
-            `}
-          </p>
-        </div>
-      </div>
-      <div className="grid grid-cols-1 gap-8">
-        {transaction.txHash && (
-          <div>
-            <p className={headerClassName}>{t(`Transaction`)}</p>
+  if (transaction.status === VegaTxStatus.Complete) {
+    return (
+      <div data-testid={transaction.status}>
+        <p className="break-all">
+          {t('Your transaction has been confirmed')} - &nbsp;
+          {transaction.txHash && (
             <a
-              className="underline break-words"
+              className="underline"
               data-testid="tx-block-explorer"
               href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
               target="_blank"
               rel="noreferrer"
             >
-              {transaction.txHash}
+              {t('View in block explorer')}
             </a>
-          </div>
-        )}
+          )}
+        </p>
       </div>
-    </OrderDialogWrapper>
-  );
+    );
+  }
+
+  return null;
 };
 
-interface OrderDialogWrapperProps {
-  children: ReactNode;
-  icon: ReactNode;
-  title: string;
-}
+const getIntent = (transaction: VegaTxState) => {
+  switch (transaction.status) {
+    case VegaTxStatus.Requested:
+      return Intent.Warning;
+    case VegaTxStatus.Pending:
+      return Intent.Warning;
+    case VegaTxStatus.Error:
+      return Intent.Danger;
+    case VegaTxStatus.Complete:
+      return Intent.Success;
+    default:
+      return Intent.None;
+  }
+};
 
-export const OrderDialogWrapper = ({
-  children,
-  icon,
-  title,
-}: OrderDialogWrapperProps) => {
-  const headerClassName = 'text-h4 font-bold text-black dark:text-white';
-  return (
-    <div className="flex gap-12 max-w-full">
-      <div className="pt-8 fill-current">{icon}</div>
-      <div data-testid="order-wrapper" className="flex-1">
-        <h1 data-testid="order-status-header" className={headerClassName}>
-          {title}
-        </h1>
-        {children}
-      </div>
-    </div>
-  );
+const getTitle = (transaction: VegaTxState) => {
+  switch (transaction.status) {
+    case VegaTxStatus.Requested:
+      return t('Confirm transaction in wallet');
+    case VegaTxStatus.Pending:
+      return t('Awaiting network confirmation');
+    case VegaTxStatus.Error:
+      return t('Transaction failed');
+    case VegaTxStatus.Complete:
+      return t('Transaction complete');
+    default:
+      return '';
+  }
+};
+
+const getIcon = (transaction: VegaTxState) => {
+  switch (transaction.status) {
+    case VegaTxStatus.Requested:
+      return <Icon name="hand-up" size={20} />;
+    case VegaTxStatus.Pending:
+      return <Loader size="small" />;
+    case VegaTxStatus.Error:
+      return <Icon name="warning-sign" size={20} />;
+    case VegaTxStatus.Complete:
+      return <Icon name="tick" size={20} />;
+    default:
+      return '';
+  }
 };

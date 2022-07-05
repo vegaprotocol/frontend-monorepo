@@ -4,7 +4,6 @@ import { isEthereumError } from '../ethereum-error';
 import type { EthTxState } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
-import { DialogWrapper } from './dialog-wrapper';
 
 export interface TransactionDialogProps {
   name: string;
@@ -101,11 +100,16 @@ export const TransactionDialog = ({
     return propsMap[status];
   };
 
-  const { intent, ...wrapperProps } = getWrapperProps();
-
+  const { intent, title, icon } = getWrapperProps();
   return (
-    <Dialog open={transaction.dialogOpen} onChange={onChange} intent={intent}>
-      <DialogWrapper {...wrapperProps}>{renderContent()}</DialogWrapper>
+    <Dialog
+      open={transaction.dialogOpen}
+      onChange={onChange}
+      intent={intent}
+      title={title}
+      icon={icon}
+    >
+      {renderContent()}
     </Dialog>
   );
 };
