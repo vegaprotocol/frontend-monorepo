@@ -1,9 +1,9 @@
 module.exports = {
-  displayName: 'footer',
+  displayName: 'network-info',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/footer',
+  coverageDirectory: '../../coverage/libs/network-info',
 };

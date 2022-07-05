@@ -1,6 +1,6 @@
 {
-  "root": "libs/footer",
-  "sourceRoot": "libs/footer/src",
+  "root": "libs/network-info",
+  "sourceRoot": "libs/network-info/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/footer",
-        "tsConfig": "libs/footer/tsconfig.lib.json",
-        "project": "libs/footer/package.json",
-        "entryFile": "libs/footer/src/index.ts",
+        "outputPath": "dist/libs/network-info",
+        "tsConfig": "libs/network-info/tsconfig.lib.json",
+        "project": "libs/network-info/package.json",
+        "entryFile": "libs/network-info/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/footer/README.md",
+            "glob": "libs/network-info/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/footer/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/network-info/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/footer"],
+      "outputs": ["coverage/libs/network-info"],
       "options": {
-        "jestConfig": "libs/footer/jest.config.js",
+        "jestConfig": "libs/network-info/jest.config.js",
         "passWithNoTests": true
       }
     }

@@ -1,4 +1,4 @@
-# footer
+# network-info
 
 This library was generated with [Nx](https://nx.dev).
 
@@ -18,4 +18,4 @@ For examples, see Block Explorer's .env files [here](../../apps/explorer)
 
 ## Running unit tests
 
-Run `nx test footer` to execute the unit tests via [Jest](https://jestjs.io).
+Run `nx test network-info` to execute the unit tests via [Jest](https://jestjs.io).
