@@ -2,7 +2,7 @@ import throttle from 'lodash/throttle';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { Orderbook } from './orderbook';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import { marketDepthDataProvider } from './market-depth-data-provider';
+import dataProvider from './market-depth-data-provider';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { MarketDepthSubscription_marketDepthUpdate } from './__generated__/MarketDepthSubscription';
 import {
@@ -46,7 +46,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   );
 
   const update = useCallback(
-    (delta: MarketDepthSubscription_marketDepthUpdate) => {
+    ({ delta }: { delta: MarketDepthSubscription_marketDepthUpdate }) => {
       if (!dataRef.current.rows) {
         return false;
       }
@@ -76,11 +76,11 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
     []
   );
 
-  const { data, error, loading, flush } = useDataProvider(
-    marketDepthDataProvider,
+  const { data, error, loading, flush } = useDataProvider({
+    dataProvider,
     update,
-    variables
-  );
+    variables,
+  });
 
   useEffect(() => {
     if (!data) {
