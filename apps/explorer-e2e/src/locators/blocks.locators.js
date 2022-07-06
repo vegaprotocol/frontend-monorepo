@@ -12,4 +12,4 @@ export default {
   jumpToBlockInput: '[data-testid="block-input"]',
   jumpToBlockSubmit: '[data-testid="go-submit"]',
   infiniteScrollWrapper: '[data-testid="infinite-scroll-wrapper"]',
-}
+};

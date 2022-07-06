@@ -44,3 +44,30 @@ Cypress.Commands.add('common_switch_to_mobile_and_click_toggle', function () {
   cy.visit('/');
   cy.get(navigationLocators.mobileToggle).click();
 });
+
+Cypress.Commands.add('common_verify_json_parameters', function (expectedNum) {
+  cy.get('.hljs-attr')
+    .should('have.length.at.least', expectedNum)
+    .each(($paramName) => {
+      cy.wrap($paramName).should('not.be.empty');
+    });
+});
+
+Cypress.Commands.add(
+  'common_verify_json_string_values',
+  function (expectedNum) {
+    cy.get('.hljs-string')
+      .should('have.length.at.least', expectedNum)
+      .each(($paramValue) => {
+        cy.wrap($paramValue).should('not.be.empty');
+      });
+  }
+);
+
+Cypress.Commands.add('common_verify_json_int_values', function (expectedNum) {
+  cy.get('.hljs-number')
+    .should('have.length.at.least', expectedNum)
+    .each(($paramValue) => {
+      cy.wrap($paramValue).should('not.be.empty');
+    });
+});
