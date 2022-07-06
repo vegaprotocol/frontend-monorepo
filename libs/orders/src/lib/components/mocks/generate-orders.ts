@@ -22,7 +22,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
   return merge(defaultResult, override);
 };
 
-export const generateOrder = (partialOrder: Partial<Orders_party_orders>) =>
+export const generateOrder = (partialOrder?: Partial<Orders_party_orders>) =>
   merge(
     {
       __typename: 'Order',

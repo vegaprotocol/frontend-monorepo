@@ -2,7 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import type { Orders_party_orders } from '../__generated__/Orders';
 import { OrderStatus, OrderRejectionReason } from '@vegaprotocol/types';
-import { OrderList } from './order-list';
+import { OrderListTable } from './order-list';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
@@ -16,13 +16,13 @@ const generateJsx = (
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <OrderList data={orders} />
+        <OrderListTable data={orders} cancel={jest.fn()} />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
 };
 
-describe('OrderList', () => {
+describe('OrderListTable', () => {
   it('should show no orders message', async () => {
     await act(async () => {
       render(generateJsx([]));

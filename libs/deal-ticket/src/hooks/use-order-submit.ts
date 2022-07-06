@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import { useSubscription } from '@apollo/client';
+import { useCallback, useEffect, useState } from 'react';
+import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
 import type {
@@ -18,18 +18,22 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
   const [id, setId] = useState('');
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
+  const client = useApolloClient();
 
-  // Start a subscription looking for the newly created order
-  useSubscription<OrderEvent, OrderEventVariables>(ORDER_EVENT_SUB, {
-    variables: { partyId: keypair?.pub || '' },
-    skip: !id,
-    onSubscriptionData: ({ subscriptionData }) => {
-      if (!subscriptionData.data?.busEvents?.length) {
+  useEffect(() => {
+    const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
+      query: ORDER_EVENT_SUB,
+      variables: { partyId: keypair?.pub || '' },
+    });
+
+    // Start a subscription looking for the newly created order
+    const sub = clientSub.subscribe(({ data }) => {
+      if (!data?.busEvents?.length) {
         return;
       }
 
       // No types available for the subscription result
-      const matchingOrderEvent = subscriptionData.data.busEvents.find((e) => {
+      const matchingOrderEvent = data.busEvents.find((e) => {
         if (e.event.__typename !== 'Order') {
           return false;
         }
@@ -44,8 +48,9 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
         setFinalizedOrder(matchingOrderEvent.event);
         resetTransaction();
       }
-    },
-  });
+    });
+    return () => sub.unsubscribe();
+  }, [client, id, keypair?.pub, resetTransaction]);
 
   const submit = useCallback(
     async (order: Order) => {

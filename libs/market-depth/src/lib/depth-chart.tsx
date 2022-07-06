@@ -6,7 +6,7 @@ import {
   addDecimal,
   ThemeContext,
 } from '@vegaprotocol/react-helpers';
-import { marketDepthDataProvider } from './market-depth-data-provider';
+import dataProvider from './market-depth-data-provider';
 import {
   useCallback,
   useEffect,
@@ -87,7 +87,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
 
   // Apply updates to the table
   const update = useCallback(
-    (delta: MarketDepthSubscription_marketDepthUpdate) => {
+    ({ delta }: { delta: MarketDepthSubscription_marketDepthUpdate }) => {
       if (!dataRef.current) {
         return false;
       }
@@ -122,11 +122,11 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     []
   );
 
-  const { data, error, loading } = useDataProvider(
-    marketDepthDataProvider,
+  const { data, error, loading } = useDataProvider({
+    dataProvider,
     update,
-    variables
-  );
+    variables,
+  });
 
   useEffect(() => {
     if (!data) {

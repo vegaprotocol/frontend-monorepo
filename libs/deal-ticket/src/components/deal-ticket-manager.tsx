@@ -36,6 +36,7 @@ export const DealTicketManager = ({
         />
       )}
       <VegaTransactionDialog
+        key={`submit-order-dialog-${transaction.txHash}`}
         orderDialogOpen={orderDialogOpen}
         setOrderDialogOpen={setOrderDialogOpen}
         finalizedOrder={finalizedOrder}

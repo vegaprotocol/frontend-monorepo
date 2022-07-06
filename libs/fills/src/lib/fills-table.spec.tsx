@@ -1,11 +1,24 @@
-import { render, act, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
 import { FillsTable } from './fills-table';
-import { generateFill } from './test-helpers';
+import { generateFill, makeGetRows } from './test-helpers';
 import type { FillFields } from './__generated__/FillFields';
+
+const waitForGridToBeInTheDOM = () => {
+  return waitFor(() => {
+    expect(document.querySelector('.ag-root-wrapper')).toBeInTheDocument();
+  });
+};
+
+// since our grid starts with no data, when the overlay has gone, data has loaded
+const waitForDataToHaveLoaded = () => {
+  return waitFor(() => {
+    expect(document.querySelector('.ag-overlay-no-rows-center')).toBeNull();
+  });
+};
 
 describe('FillsTable', () => {
   let defaultFill: PartialDeep<FillFields>;
@@ -34,9 +47,14 @@ describe('FillsTable', () => {
   });
 
   it('correct columns are rendered', async () => {
-    await act(async () => {
-      render(<FillsTable partyId="party-id" fills={[generateFill()]} />);
-    });
+    render(
+      <FillsTable
+        partyId="party-id"
+        datasource={{ getRows: makeGetRows([generateFill()]) }}
+      />
+    );
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
 
     const headers = screen.getAllByRole('columnheader');
     expect(headers).toHaveLength(7);
@@ -66,14 +84,14 @@ describe('FillsTable', () => {
       },
     });
 
-    const { container } = render(
-      <FillsTable partyId={partyId} fills={[buyerFill]} />
+    render(
+      <FillsTable
+        partyId={partyId}
+        datasource={{ getRows: makeGetRows([buyerFill]) }}
+      />
     );
-
-    // Check grid has been rendered
-    await waitFor(() => {
-      expect(container.querySelector('.ag-root-wrapper')).toBeInTheDocument();
-    });
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
@@ -108,14 +126,14 @@ describe('FillsTable', () => {
       },
     });
 
-    const { container } = render(
-      <FillsTable partyId={partyId} fills={[buyerFill]} />
+    render(
+      <FillsTable
+        partyId={partyId}
+        datasource={{ getRows: makeGetRows([buyerFill]) }}
+      />
     );
-
-    // Check grid has been rendered
-    await waitFor(() => {
-      expect(container.querySelector('.ag-root-wrapper')).toBeInTheDocument();
-    });
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
 
     const cells = screen.getAllByRole('gridcell');
     const expectedValues = [
@@ -144,14 +162,14 @@ describe('FillsTable', () => {
       aggressor: Side.Sell,
     });
 
-    const { container, rerender } = render(
-      <FillsTable partyId={partyId} fills={[takerFill]} />
+    const { rerender } = render(
+      <FillsTable
+        partyId={partyId}
+        datasource={{ getRows: makeGetRows([takerFill]) }}
+      />
     );
-
-    // Check grid has been rendered
-    await waitFor(() => {
-      expect(container.querySelector('.ag-root-wrapper')).toBeInTheDocument();
-    });
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
 
     expect(
       screen
@@ -166,7 +184,14 @@ describe('FillsTable', () => {
       aggressor: Side.Buy,
     });
 
-    rerender(<FillsTable partyId={partyId} fills={[makerFill]} />);
+    rerender(
+      <FillsTable
+        partyId={partyId}
+        datasource={{ getRows: makeGetRows([makerFill]) }}
+      />
+    );
+    await waitForGridToBeInTheDOM();
+    await waitForDataToHaveLoaded();
 
     expect(
       screen

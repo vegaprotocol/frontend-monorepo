@@ -28,16 +28,12 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/orders/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["libs/orders/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/orders"
-      ],
+      "outputs": ["coverage/libs/orders"],
       "options": {
         "jestConfig": "libs/orders/jest.config.js",
         "passWithNoTests": true
