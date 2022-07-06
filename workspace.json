@@ -12,6 +12,7 @@
     "fills": "libs/fills",
     "market-depth": "libs/market-depth",
     "market-list": "libs/market-list",
+    "network-info": "libs/network-info",
     "network-stats": "libs/network-stats",
     "order-list": "libs/order-list",
     "positions": "libs/positions",

@@ -8,6 +8,6 @@
     "sourceMap": false,
     "inlineSourceMap": true
   },
-  "include": ["impl.ts"],
+  "include": ["build/impl.ts", "serve/impl.ts"],
   "exclude": ["node_modules"]
 }
