@@ -1,8 +1,8 @@
 export const MarketIconPath = () => (
   <>
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M3.5 2H2V20.5V22H3.5H22V20.5H3.5V2Z"
     />
     <rect x="5" y="15" width="2" height="2" />

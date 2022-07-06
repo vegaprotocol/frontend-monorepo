@@ -18,7 +18,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
-    (delta: PositionSubscribe_positions) => {
+    ({ delta }: { delta: PositionSubscribe_positions }) => {
       const update: Positions_party_positions[] = [];
       const add: Positions_party_positions[] = [];
       if (!gridRef.current?.api) {
@@ -52,7 +52,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const { data, error, loading } = useDataProvider<
     Positions_party_positions[],
     PositionSubscribe_positions
-  >(positionsDataProvider, update, variables);
+  >({ dataProvider: positionsDataProvider, update, variables });
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <PositionsTable ref={gridRef} data={data} />
