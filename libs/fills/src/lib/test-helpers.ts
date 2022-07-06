@@ -1,5 +1,6 @@
 import { Side } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
+import type { IGetRowsParams } from 'ag-grid-community';
 import type { PartialDeep } from 'type-fest';
 import type {
   Fills,
@@ -132,3 +133,9 @@ export const generateFill = (
 
   return merge(defaultFill, override);
 };
+
+export const makeGetRows =
+  (data: Fills_party_tradesPaged_edges_node[]) =>
+  ({ successCallback }: IGetRowsParams) => {
+    successCallback(data, data.length);
+  };

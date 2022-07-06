@@ -5,9 +5,9 @@ const Comet = () => {
     <svg
       viewBox="0 0 118 82"
       fill="currentColor"
-      className="max-w-[7.5rem] mx-auto hidden md:block absolute right-[365px] rotate-180"
+      className="max-w-[7.5rem] mx-auto"
     >
-      <g className="fill-white">
+      <g className="fill-black dark:fill-white">
         <path d="M44.3791 67.5864H41.5859V70.3796H44.3791V67.5864Z"></path>
         <path d="M47.173 64.7932V62H44.3799V64.7932V67.5863H47.173V64.7932Z"></path>
         <path d="M41.5863 70.3794H36V73.1726H41.5863V70.3794Z"></path>

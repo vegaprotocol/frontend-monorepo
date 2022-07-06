@@ -15,6 +15,11 @@ export enum Networks {
 const schemaObject = {
   VEGA_URL: z.optional(z.string()),
   VEGA_CONFIG_URL: z.optional(z.string()),
+
+  GIT_BRANCH: z.string(),
+  GIT_COMMIT_HASH: z.string(),
+  GIT_ORIGIN_URL: z.string(),
+  GITHUB_FEEDBACK_URL: z.optional(z.string()),
   VEGA_ENV: z.nativeEnum(Networks),
   VEGA_EXPLORER_URL: z.optional(z.string()),
   VEGA_NETWORKS: z

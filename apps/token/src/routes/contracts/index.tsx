@@ -42,6 +42,7 @@ const Contracts = () => {
             <Link
               title={t('View address on Etherscan')}
               href={`${ETHERSCAN_URL}/address/${contract.address}`}
+              target="_blank"
             >
               {contract.address}
             </Link>
@@ -57,6 +58,7 @@ const Contracts = () => {
           <Link
             title={t('View address on Etherscan')}
             href={`${ETHERSCAN_URL}/address/${value}`}
+            target="_blank"
           >
             {value}
           </Link>
