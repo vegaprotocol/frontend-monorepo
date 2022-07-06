@@ -94,7 +94,7 @@ const Txs = ({ latestBlockHeight }: TxsProps) => {
   );
 };
 
-const Wrapper = () => {
+export const TxsHome = () => {
   const {
     state: { data, error, loading },
   } = useFetch<TendermintBlockchainResponse>(
@@ -119,4 +119,12 @@ const Wrapper = () => {
   );
 };
 
-export { Wrapper as TxsHome };
+export const TxsHomeFallback = () => (
+  <>
+    <RouteTitle>{t('Transactions')}</RouteTitle>
+    <div>
+      The transactions list is currently disabled. Please use the search bar to
+      discover transaction data
+    </div>
+  </>
+);
