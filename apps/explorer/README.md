@@ -47,7 +47,7 @@ yarn nx run explorer:serve --env={env} # e.g. stagnet1
 There are a few different configuration options offered for this app:
 
 | **Flag**                         | **Purpose**                                                                                          |
-|----------------------------------|------------------------------------------------------------------------------------------------------|
+| -------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | `NX_CHAIN_EXPLORER_URL`          | The URL of the chain explorer service for decoding transactions                                      |
 | `NX_TENDERMINT_URL`              | The Tendermint REST URL for the Vega consesus engine                                                 |
 | `NX_TENDERMINT_WEBSOCKET_URL`    | The Tendermint Websocket URL for the Vega consensus engine                                           |
