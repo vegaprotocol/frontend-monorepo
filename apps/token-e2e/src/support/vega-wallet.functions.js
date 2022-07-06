@@ -1,8 +1,8 @@
 import wallet from '../locators/wallet.locators';
 
-const vegaWalletName = Cypress.env("vegaWalletName");
-const vegaWalletLocation = Cypress.env("vegaWalletLocation");
-const vegaWalletPassphrase = Cypress.env("vegaWalletPassphrase");
+const vegaWalletName = Cypress.env('vegaWalletName');
+const vegaWalletLocation = Cypress.env('vegaWalletLocation');
+const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
 
 cy.vega_wallet_import = () => {
   cy.highlight(`Importing Vega Wallet ${vegaWalletName}`);

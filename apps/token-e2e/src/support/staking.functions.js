@@ -31,11 +31,11 @@ cy.staking_validator_page_removeStake = (stake) => {
   );
 };
 
-cy.staking_page_associate_tokens = (amount, approve=false) => {
+cy.staking_page_associate_tokens = (amount, approve = false) => {
   cy.highlight(`Associating ${amount} tokens`);
   cy.get(staking.associateButton).click();
   cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).click();
-  cy.get(staking.tokenAmountInput, { timeout: 10000 }).type(amount);        
+  cy.get(staking.tokenAmountInput, { timeout: 10000 }).type(amount);
   if (approve) {
     cy.get(staking.tokenInputApprove, { timeout: 40000 })
       .should('be.enabled')
@@ -46,13 +46,14 @@ cy.staking_page_associate_tokens = (amount, approve=false) => {
     cy.contains('Approve $VEGA Tokens for staking on Vega', {
       timeout: 40000,
     }).should('not.exist');
-  }            
+  }
   cy.get(staking.tokenInputSubmit, { timeout: 40000 })
-    .should('be.enabled').click();
+    .should('be.enabled')
+    .click();
   cy.contains('can now participate in governance and nominate a validator', {
     timeout: 60000,
-  }).should('be.visible');   
-}
+  }).should('be.visible');
+};
 
 cy.staking_page_disassociate_tokens = (amount) => {
   cy.highlight(`Disassociating ${amount} tokens via Staking Page`);

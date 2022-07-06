@@ -1,8 +1,8 @@
 import navigation from '../locators/navigation.locators';
 import home from '../locators/home.locators';
 
-const vegaTokenAddress = Cypress.env("vegaTokenAddress");;
-const vegaTokenContractAddress = Cypress.env("vegaTokenContractAddress");
+const vegaTokenAddress = Cypress.env('vegaTokenAddress');
+const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
 
 context('Home Page - verify elements on page', function () {
   before('visit token home page', function () {

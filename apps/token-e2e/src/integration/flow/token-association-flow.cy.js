@@ -7,7 +7,7 @@ import '../../support/vega-wallet.functions';
 import '../../support/eth-wallet.functions';
 import '../../support/wallet-teardown.functions';
 
-const vegaWalletPublicKeyShort = Cypress.env("vegaWalletPublicKeyShort");
+const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 
 context('Staking Tab - with eth and vega wallets connected', function () {
   before('visit staking tab and connect vega wallet', function () {
@@ -36,7 +36,10 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
     it('Able to associate tokens - from staking page', function () {
       cy.staking_page_associate_tokens('2');
-      cy.ethereum_wallet_check_associated_vega_key_value_is(vegaWalletPublicKeyShort,'2.000000000000000000');
+      cy.ethereum_wallet_check_associated_vega_key_value_is(
+        vegaWalletPublicKeyShort,
+        '2.000000000000000000'
+      );
       cy.ethereum_wallet_check_associated_value_is('2.0');
       cy.vega_wallet_check_associated_value_is('2.000000000000000000');
       cy.vega_wallet_check_unstaked_value_is('2.000000000000000000');
@@ -44,28 +47,45 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
     it('Able to disassociate tokens - from staking page', function () {
       cy.staking_page_associate_tokens('2');
-      cy.ethereum_wallet_check_associated_vega_key_value_is(vegaWalletPublicKeyShort,'2.000000000000000000');
+      cy.ethereum_wallet_check_associated_vega_key_value_is(
+        vegaWalletPublicKeyShort,
+        '2.000000000000000000'
+      );
       cy.vega_wallet_check_associated_value_is('2.000000000000000000');
       cy.get('button').contains('Select a validator to nominate').click();
       cy.staking_page_disassociate_tokens('1');
-      cy.ethereum_wallet_check_associated_vega_key_value_is(vegaWalletPublicKeyShort,'1.000000000000000000');
+      cy.ethereum_wallet_check_associated_vega_key_value_is(
+        vegaWalletPublicKeyShort,
+        '1.000000000000000000'
+      );
       cy.ethereum_wallet_check_associated_value_is('1.0');
       cy.vega_wallet_check_associated_value_is('1.000000000000000000');
     });
 
     it('Able to access associate token form - from eth wallet', function () {
-      cy.get(wallet.ethWallet).within(() => cy.get(wallet.ethWalletAssociate).click());
-      cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should('be.enabled')
+      cy.get(wallet.ethWallet).within(() =>
+        cy.get(wallet.ethWalletAssociate).click()
+      );
+      cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should(
+        'be.enabled'
+      );
     });
 
     it('Able to access disassociate token form - from eth wallet', function () {
-      cy.get(wallet.ethWallet).within(() => cy.get(wallet.ethWalletDisassociate).click());
-      cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should('be.enabled')
+      cy.get(wallet.ethWallet).within(() =>
+        cy.get(wallet.ethWalletDisassociate).click()
+      );
+      cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should(
+        'be.enabled'
+      );
     });
 
     it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
       cy.staking_page_associate_tokens('1001', true);
-      cy.ethereum_wallet_check_associated_vega_key_value_is(vegaWalletPublicKeyShort,'1,001.000000000000000000');
+      cy.ethereum_wallet_check_associated_vega_key_value_is(
+        vegaWalletPublicKeyShort,
+        '1,001.000000000000000000'
+      );
       cy.ethereum_wallet_check_associated_value_is('1,001.00');
       cy.vega_wallet_check_associated_value_is('1,001.000000000000000000');
     });
@@ -75,7 +95,10 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_associated_value_is('2.000000000000000000');
       cy.get('button').contains('Select a validator to nominate').click();
       cy.staking_page_disassociate_tokens('1');
-      cy.ethereum_wallet_check_associated_vega_key_value_is(vegaWalletPublicKeyShort,'1.000000000000000000');
+      cy.ethereum_wallet_check_associated_vega_key_value_is(
+        vegaWalletPublicKeyShort,
+        '1.000000000000000000'
+      );
       cy.ethereum_wallet_check_associated_value_is('1.0');
       cy.vega_wallet_check_associated_value_is('1.000000000000000000');
     });
@@ -85,7 +108,9 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_associated_value_is('2.000000000000000000');
       cy.get('button').contains('Select a validator to nominate').click();
       cy.staking_page_disassociate_all_tokens();
-      cy.ethereum_wallet_check_associated_vega_key_is_no_longer_showing(vegaWalletPublicKeyShort);
+      cy.ethereum_wallet_check_associated_vega_key_is_no_longer_showing(
+        vegaWalletPublicKeyShort
+      );
       cy.ethereum_wallet_check_associated_value_is('0.0');
       cy.vega_wallet_check_associated_value_is('0.000000000000000000');
     });
