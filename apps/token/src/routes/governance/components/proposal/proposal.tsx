@@ -1,5 +1,4 @@
-import { Heading } from '../../../../components/heading';
-import { ProposalHeader } from '../../../../lib/type-policies/proposal';
+import { ProposalDescription } from '../../../../lib/type-policies/proposal';
 import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 import type { RestProposalResponse } from '../../proposal/proposal-container';
 import { ProposalChangeTable } from '../proposal-change-table';
@@ -19,7 +18,7 @@ export const Proposal = ({ proposal, terms }: ProposalProps) => {
 
   return (
     <>
-      <ProposalHeader proposal={proposal} />
+      <ProposalDescription proposal={proposal} />
       <ProposalChangeTable proposal={proposal} />
       <VoteDetails proposal={proposal} />
       <ProposalVotesTable proposal={proposal} />

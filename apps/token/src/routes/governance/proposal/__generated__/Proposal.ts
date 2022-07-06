@@ -44,12 +44,36 @@ export interface Proposal_proposal_terms_change_NewFreeform {
   __typename: "NewFreeform";
 }
 
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct {
+  __typename: "FutureProduct";
+  /**
+   * Product asset ID
+   */
+  settlementAsset: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
+}
+
 export interface Proposal_proposal_terms_change_NewMarket_instrument {
   __typename: "InstrumentConfiguration";
   /**
    * Full and fairly descriptive name for the instrument
    */
   name: string;
+  /**
+   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18)
+   */
+  code: string;
+  /**
+   * Future product specification
+   */
+  futureProduct: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct | null;
 }
 
 export interface Proposal_proposal_terms_change_NewMarket {
@@ -93,6 +117,10 @@ export type Proposal_proposal_terms_change_NewAsset_source = Proposal_proposal_t
 
 export interface Proposal_proposal_terms_change_NewAsset {
   __typename: "NewAsset";
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
   /**
    * The symbol of the asset (e.g: GBP)
    */

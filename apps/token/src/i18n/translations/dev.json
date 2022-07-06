@@ -543,9 +543,14 @@
   "currentlySetTo": "Currently set to ",
   "pass": "Pass",
   "fail": "Fail",
+  "New asset": "New asset",
   "Asset change": "Asset change",
   "New market": "New market",
   "Market change": "Market change",
-  "Network parameter change": "Network parameter change",
-  "Unknown proposal": "Unknown proposal"
+  "Network parameter": "Network parameter",
+  "Unknown proposal": "Unknown proposal",
+  "Code": "Code",
+  "settled future": "settled future",
+  "Symbol": "Symbol",
+  "Max faucet amount mint": "Max faucet amount mint"
 }

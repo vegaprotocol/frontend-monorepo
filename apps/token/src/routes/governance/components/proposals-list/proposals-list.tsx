@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import { Heading } from '../../../../components/heading';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { ProposalHeader } from '../../../../lib/type-policies/proposal';
+import { ProposalDescription } from '../../../../lib/type-policies/proposal';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { CurrentProposalState } from '../current-proposal-state';
 
@@ -86,7 +86,7 @@ const ProposalListItem = ({ proposal }: ProposalListItemProps) => {
   return (
     <li className="last:mb-0 mb-24" key={proposal.id}>
       <Link to={proposal.id} className="underline text-white">
-        <ProposalHeader proposal={proposal} />
+        <ProposalDescription proposal={proposal} />
       </Link>
       <KeyValueTable muted={true}>
         <KeyValueTableRow>
