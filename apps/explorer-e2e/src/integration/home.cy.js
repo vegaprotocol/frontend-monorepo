@@ -2,13 +2,13 @@ import stats from '../locators/stats.locators';
 import common from '../locators/common.locators';
 import '../support/common.functions';
 
-context('Home Page - elements are displayed and working', function () {
+context('Home Page', function () {
   before('visit home page', function () {
     cy.visit('/');
   });
 
   describe('Stats page', function () {
-    it('should show connected environment', function () {
+    it('Should show connected environment', function () {
       const deployedEnv = Cypress.env('environment').toUpperCase();
       cy.get(stats.statsEnvironmentTitle).should(
         'have.text',
@@ -16,7 +16,7 @@ context('Home Page - elements are displayed and working', function () {
       );
     });
 
-    it('should show environment stats', function () {
+    it('should show connected environment stats', function () {
       const statTitles = [
         'Status',
         'Height',

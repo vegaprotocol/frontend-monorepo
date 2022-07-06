@@ -11,4 +11,4 @@ export default {
   txBlock: 'block',
   txEncodedTnx: 'encoded-tnx',
   txType: 'tx-type',
-}
+};

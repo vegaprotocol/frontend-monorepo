@@ -2,12 +2,12 @@ import navigationLocators from '../locators/navigation.locators';
 import transactionsLocators from '../locators/transactions.locators';
 
 //Tests set to skip until transactions are generated after capsule start up
-context.skip('Transactions page - verify elements on page', function () {
+context.skip('Transactions page', function () {
   before('visit token home page', function () {
     cy.visit('/');
   });
 
-  describe('Transactions page', function () {
+  describe('Verify elements on page', function () {
     beforeEach('Navigate to transactions page', function () {
       cy.get(navigationLocators.transactions).click();
     });

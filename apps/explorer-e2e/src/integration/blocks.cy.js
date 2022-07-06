@@ -2,12 +2,12 @@ import '../support/common.functions';
 import blocksLocators from '../locators/blocks.locators';
 import navigationLocators from '../locators/navigation.locators';
 
-context('Blocks page - verify elements on page', function () {
+context('Blocks page', function () {
   before('visit token home page', function () {
     cy.visit('/');
   });
 
-  describe('Blocks page', function () {
+  describe('Verify elements on page', function () {
     beforeEach('navigate to blocks page', function () {
       cy.get(navigationLocators.blocks).click();
     });
@@ -22,7 +22,7 @@ context('Blocks page - verify elements on page', function () {
       validateBlocksDisplayed();
     });
 
-    it('Navigate to block validator page', function () {
+    it('Block validator page is displayed', function () {
       waitForBlocksResponse();
       cy.get(blocksLocators.blockHeight).first().click();
       cy.get(blocksLocators.minedByValidator).should('not.be.empty');
@@ -70,7 +70,7 @@ context('Blocks page - verify elements on page', function () {
         });
     });
 
-    it('Infinite scroll shows at least 300 new blocks', function () {
+    it('Infinite scroll shows at least 100 new blocks', function () {
       const expectedBlocks = 100;
       const scrollAttempts = 7;
 

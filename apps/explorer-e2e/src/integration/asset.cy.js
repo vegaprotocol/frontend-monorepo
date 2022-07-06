@@ -2,8 +2,8 @@ import commonLocators from '../locators/common.locators';
 import navigationLocators from '../locators/navigation.locators';
 import '../support/common.functions';
 
-context('Asset page - verify elements on page', function () {
-  describe('Asset page', function () {
+context('Asset page', function () {
+  describe('Verify elements on page', function () {
     it('Assets page is displayed', function () {
       cy.visit('/');
       cy.get(navigationLocators.assets).click();
