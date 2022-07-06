@@ -1,5 +1,6 @@
 import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface TimeInForceSelectorProps {
   value: OrderTimeInForce;
@@ -22,7 +23,7 @@ export const TimeInForceSelector = ({
         );
 
   return (
-    <FormGroup label="Time in force" labelFor="select-time-in-force">
+    <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select
         id="select-time-in-force"
         value={value}

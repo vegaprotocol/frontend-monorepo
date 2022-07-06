@@ -56,7 +56,7 @@ export const Search = () => {
       className="flex-1 flex self-center md:ml-16 md:mr-12 md:justify-end"
     >
       <FormGroup
-        label="Search by block number or transaction hash"
+        label={t('Search by block number or transaction hash')}
         className="relative w-full md:w-2/3 mb-0"
         labelClassName="sr-only"
         labelFor="search"

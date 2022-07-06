@@ -6,6 +6,7 @@ import {
   FormGroup,
   Lozenge,
 } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -176,7 +177,7 @@ export const TokenInput = ({
     <>
       <FormGroup
         labelClassName="sr-only"
-        label="Input Amount"
+        label={t('Input Amount')}
         labelFor={inputName}
       >
         <AmountInput

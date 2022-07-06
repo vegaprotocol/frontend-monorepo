@@ -225,7 +225,7 @@ export const StakingForm = ({
     <>
       <h2>{t('Manage your stake')}</h2>
       <FormGroup
-        label="Select if you want to add or remove stake"
+        label={t('Select if you want to add or remove stake')}
         labelFor="radio-stake-options"
         labelClassName="sr-only"
       >
