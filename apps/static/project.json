@@ -5,7 +5,7 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nrwl/web:webpack",
+      "executor": "./tools/executors/webpack:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -36,7 +36,7 @@
       }
     },
     "serve": {
-      "executor": "./tools/executors/serve:serve",
+      "executor": "./tools/executors/webpack:serve",
       "options": {
         "buildTarget": "static:build"
       },
