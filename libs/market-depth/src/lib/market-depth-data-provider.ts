@@ -131,3 +131,5 @@ export const marketDepthDataProvider = makeDataProvider(
   getData,
   getDelta
 );
+
+export default marketDepthDataProvider;

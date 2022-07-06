@@ -53,8 +53,8 @@ export const sortTrades = (trades: TradeFields[]) => {
   );
 };
 
-const update = (data: TradeFields[], delta: TradeFields[]) =>
-  produce(data, (draft) => {
+const update = (data: TradeFields[], delta: TradeFields[]) => {
+  return produce(data, (draft) => {
     const incoming = sortTrades(delta);
 
     // Add new trades to the top
@@ -65,6 +65,7 @@ const update = (data: TradeFields[], delta: TradeFields[]) =>
       draft.splice(MAX_TRADES, draft.length - MAX_TRADES);
     }
   });
+};
 
 const getData = (responseData: Trades): TradeFields[] | null =>
   responseData.market ? responseData.market.trades : null;

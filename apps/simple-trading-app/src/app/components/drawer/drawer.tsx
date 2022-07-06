@@ -34,11 +34,14 @@ export const NavigationDrawer = ({
 
   const translateClose = rtl ? 'translate-x-full' : '-translate-x-full';
 
-  const innerStyles = classNames('w-3/4 md:w-full bg-white dark:bg-black', {
-    'translate-x-0 transition-transform md:transform-none': isMenuOpen,
-    [`${translateClose} md:transform-none`]: !isMenuOpen,
-    [innerClasses]: innerClasses,
-  });
+  const innerStyles = classNames(
+    'w-3/4 md:w-full bg-white dark:bg-lite-black',
+    {
+      'translate-x-0 transition-transform md:transform-none': isMenuOpen,
+      [`${translateClose} md:transform-none`]: !isMenuOpen,
+      [innerClasses]: innerClasses,
+    }
+  );
 
   return (
     <aside aria-label="Sidebar Navigation Menu" className={outerStyles}>

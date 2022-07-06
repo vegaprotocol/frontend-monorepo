@@ -6,7 +6,7 @@ import { useCallback, useMemo, useRef } from 'react';
 import {
   MAX_TRADES,
   sortTrades,
-  tradesDataProvider,
+  tradesDataProvider as dataProvider,
 } from './trades-data-provider';
 import { TradesTable } from './trades-table';
 import type { TradeFields } from './__generated__/TradeFields';
@@ -22,7 +22,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     () => ({ marketId, maxTrades: MAX_TRADES }),
     [marketId]
   );
-  const update = useCallback((delta: TradeFields[]) => {
+  const update = useCallback(({ delta }: { delta: TradeFields[] }) => {
     if (!gridRef.current?.api) {
       return false;
     }
@@ -43,11 +43,11 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
 
     return true;
   }, []);
-  const { data, error, loading } = useDataProvider(
-    tradesDataProvider,
+  const { data, error, loading } = useDataProvider({
+    dataProvider,
     update,
-    variables
-  );
+    variables,
+  });
 
   return (
     <AsyncRenderer
