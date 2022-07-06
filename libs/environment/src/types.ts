@@ -8,6 +8,14 @@ export { ENV_KEYS, Networks };
 
 export const CUSTOM_NODE_KEY = 'custom';
 
+export enum ErrorType {
+  INVALID_URL,
+  INVALID_NETWORK,
+  SSL_ERROR,
+  CONNECTION_ERROR,
+  CONNECTION_ERROR_ALL,
+}
+
 export type Environment = z.infer<typeof envSchema> & {
   // provide this manually, zod fails to compile the correct type fot VEGA_NETWORKS
   VEGA_NETWORKS: Partial<Record<Networks, string>>;
@@ -18,15 +26,6 @@ export type EnvKey = keyof Environment;
 export type RawEnvironment = Record<EnvKey, string>;
 
 export type Configuration = z.infer<typeof configSchema>;
-
-export type ConfigStatus =
-  | 'idle'
-  | 'success'
-  | 'loading-config'
-  | 'loading-node'
-  | 'error-loading-config'
-  | 'error-validating-config'
-  | 'error-loading-node';
 
 type NodeCheck<T> = {
   isLoading: boolean;

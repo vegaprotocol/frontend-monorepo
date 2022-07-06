@@ -57,10 +57,12 @@ const noop = () => {};
 global.fetch = jest.fn();
 
 const mockUpdate = jest.fn();
+const onConnectionError = jest.fn();
 
 beforeEach(() => {
   jest.useFakeTimers();
   mockUpdate.mockClear();
+  onConnectionError.mockClear();
   window.localStorage.clear();
 
   // @ts-ignore typescript doesn't recognise the mocked instance
@@ -82,7 +84,7 @@ describe('useConfig hook', () => {
       ...mockEnvironment,
       VEGA_URL: 'https://some.url/query',
     };
-    const { result } = renderHook(() => useConfig(mockEnvWithUrl, mockUpdate));
+    const { result } = renderHook(() => useConfig(mockEnvWithUrl, mockUpdate, onConnectionError));
 
     expect(fetch).not.toHaveBeenCalled();
     expect(mockUpdate).not.toHaveBeenCalled();
@@ -98,7 +100,7 @@ describe('useConfig hook', () => {
     ];
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
     );
 
     await waitForNextUpdate();
@@ -128,7 +130,7 @@ describe('useConfig hook', () => {
     });
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
     );
 
     await waitForNextUpdate();
@@ -153,7 +155,7 @@ describe('useConfig hook', () => {
     );
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
     );
 
     await waitForNextUpdate();
@@ -174,7 +176,7 @@ describe('useConfig hook', () => {
     });
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
     );
 
     await waitForNextUpdate();
@@ -196,7 +198,7 @@ describe('useConfig hook', () => {
     });
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
     );
 
     await waitForNextUpdate();
@@ -219,7 +221,7 @@ describe('useConfig hook', () => {
     );
 
     const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, mockUpdate)
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
     );
 
     await waitForNextUpdate();
@@ -229,7 +231,7 @@ describe('useConfig hook', () => {
   });
 
   it('caches the list of networks', async () => {
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -241,7 +243,7 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     fetch.mockClear();
 
-    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
+    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
 
     jest.runAllTimers();
     await run2.waitForNextUpdate();
@@ -251,7 +253,7 @@ describe('useConfig hook', () => {
   });
 
   it('caches the list of networks between runs', async () => {
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -263,7 +265,7 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     fetch.mockClear();
 
-    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
+    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
 
     jest.runAllTimers();
     await run2.waitForNextUpdate();
@@ -276,7 +278,7 @@ describe('useConfig hook', () => {
     window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, '{not:{valid:{json');
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -296,7 +298,7 @@ describe('useConfig hook', () => {
     );
     const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
+    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();

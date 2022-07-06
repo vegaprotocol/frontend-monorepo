@@ -9,6 +9,7 @@ type NodeSwitcherDialogProps = ComponentProps<typeof NodeSwitcher> & {
 
 export const NodeSwitcherDialog = ({
   config,
+  initialErrorType,
   dialogOpen,
   setDialogOpen,
   onConnect,
@@ -17,6 +18,7 @@ export const NodeSwitcherDialog = ({
     <Dialog open={dialogOpen} contentClassNames="md:w-[856px] w-[856px]">
       <NodeSwitcher
         config={config}
+        initialErrorType={initialErrorType}
         onConnect={(url) => {
           onConnect(url);
           setDialogOpen(false);

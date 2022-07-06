@@ -1,27 +1,50 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useState, useEffect } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
+import { ErrorType } from '../types';
 import type {
   Environment,
   Configuration,
-  ConfigStatus,
   Networks,
 } from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
 import { promiseRaceToSuccess } from '../utils/promise-race-success';
+import { requestNode } from '../utils/request-node';
+import { getHasInvalidChain } from '../utils/validate-node';
 
 export const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
 
 export type EnvironmentWithOptionalUrl = Partial<Environment> &
   Omit<Environment, 'VEGA_URL'>;
 
-const requestToNode = async (url: string, index: number): Promise<number> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed connecting to node: ${url}.`);
+const requestToNode = (env: Networks, setSubscriptionStatus: (url: string, status: boolean) => void) => async (url: string): Promise<string> => new Promise((resolve, reject) => {
+  requestNode(url, {
+    onStatsSuccess: (data) => {
+      if (getHasInvalidChain(env, data.statistics.chainId)) {
+        reject(ErrorType.INVALID_NETWORK);
+        return;
+      }
+      resolve(url);
+      return;
+    },
+    onStatsFailure: () => {
+      reject(ErrorType.CONNECTION_ERROR);
+    },
+    onSubscriptionSuccess: () => {
+      setSubscriptionStatus(url, true);
+    },
+    onSubscriptionFailure: () => {
+      setSubscriptionStatus(url, false);
+    },
+  });
+});
+
+const compileHosts = (hosts: string[], envUrl?: string) => {
+  if (envUrl && !hosts.includes(envUrl)) {
+    return [...hosts, envUrl];
   }
-  return index;
-};
+  return hosts;
+}
 
 const getCachedConfig = (env: Networks) => {
   const value = LocalStorage.getItem(LOCAL_STORAGE_NETWORK_KEY);
@@ -39,7 +62,7 @@ const getCachedConfig = (env: Networks) => {
     } catch (err) {
       LocalStorage.removeItem(LOCAL_STORAGE_NETWORK_KEY);
       console.warn(
-        'Malformed data found for network configuration. Removed and continuing...'
+        'Malformed data found for network configuration. Removed cached configuration, continuing...'
       );
     }
   }
@@ -49,84 +72,100 @@ const getCachedConfig = (env: Networks) => {
 
 export const useConfig = (
   environment: EnvironmentWithOptionalUrl,
-  updateEnvironment: Dispatch<SetStateAction<Environment>>
+  updateEnvironment: Dispatch<SetStateAction<Environment>>,
+  onNodeError: (errorType: ErrorType) => void,
+  onConfigLoadError: () => void,
 ) => {
+  const [verified, setVerified] = useState(false);
+  const [subscriptionStatusMap, setSubscriptionStatusMap] = useState<Record<string, boolean>>({});
   const [config, setConfig] = useState<Configuration | undefined>(
     getCachedConfig(environment.VEGA_ENV)
   );
-  const [status, setStatus] = useState<ConfigStatus>(
-    !environment.VEGA_URL ? 'idle' : 'success'
-  );
 
   useEffect(() => {
-    if (!config && status === 'idle') {
+    if (!config) {
       (async () => {
-        setStatus('loading-config');
         try {
           const response = await fetch(environment.VEGA_CONFIG_URL ?? '');
           const configData: Configuration = await response.json();
 
           if (validateConfiguration(configData)) {
-            setStatus('error-validating-config');
+            onConfigLoadError();
             return;
           }
 
-          setConfig({ hosts: configData.hosts });
+          const hosts = compileHosts(configData.hosts, environment.VEGA_URL);
+
+          setConfig({ hosts });
           LocalStorage.setItem(
             LOCAL_STORAGE_NETWORK_KEY,
             JSON.stringify({
               [environment.VEGA_ENV]: {
-                hosts: configData.hosts,
+                hosts,
               },
             })
           );
         } catch (err) {
-          setStatus('error-loading-config');
+          onConfigLoadError();
         }
       })();
     }
     // load config only once per runtime
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [environment.VEGA_CONFIG_URL, !!config, status, setStatus, setConfig]);
+  }, [environment.VEGA_CONFIG_URL, environment.VEGA_URL, !!config, setConfig, onConfigLoadError]);
 
   useEffect(() => {
-    if (
-      config &&
-      !['loading-node', 'success', 'error-loading-node'].includes(status)
-    ) {
-      (async () => {
-        setStatus('loading-node');
-
-        // if there's only one configured node to choose from, set is as the env url
-        if (config.hosts.length === 1) {
-          setStatus('success');
-          updateEnvironment((prevEnvironment) => ({
-            ...prevEnvironment,
-            VEGA_URL: config.hosts[0],
-          }));
-          return;
-        }
-
-        // when there are multiple possible hosts, set the env url to the node which responds first
+    (async () => {
+      if (environment.VEGA_URL && !verified) {
         try {
-          const requests = config.hosts.map(requestToNode);
-          const index = await promiseRaceToSuccess(requests);
-          setStatus('success');
+          await requestToNode(environment.VEGA_ENV, (index, status) => {
+            setSubscriptionStatusMap(state => ({
+              ...state,
+              [index]: status,
+            }))
+          })(environment.VEGA_URL);
+          setVerified(true);
+        } catch (err: any) {
+          if (err in ErrorType) {
+            onNodeError(err);
+            return;
+          }
+          onNodeError(ErrorType.CONNECTION_ERROR);
+        }
+      }
+
+      if (config && !environment.VEGA_URL) {
+        try {
+          const requests = config.hosts.map(requestToNode(environment.VEGA_ENV, (url, status) => {
+            setSubscriptionStatusMap(state => ({
+              ...state,
+              [url]: status,
+            }))
+          }));
+
+          const node = await promiseRaceToSuccess(requests);
+
+          setVerified(true);
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
-            VEGA_URL: config.hosts[index],
+            VEGA_URL: node,
           }));
-        } catch (err) {
-          setStatus('error-loading-node');
+        } catch (err: any) {
+          onNodeError(ErrorType.CONNECTION_ERROR_ALL);
         }
-      })();
-    }
+      }
+    })();
     // load config only once per runtime
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, !!config, setStatus, updateEnvironment]);
+  }, [environment.VEGA_URL, verified, !!config, updateEnvironment]);
+
+  useEffect(() => {
+    if (subscriptionStatusMap[environment.VEGA_URL ?? ''] === false) {
+      onNodeError(ErrorType.SSL_ERROR);
+    }
+  }, [onNodeError, subscriptionStatusMap[environment.VEGA_URL ?? '']])
 
   return {
-    status,
     config,
   };
 };

@@ -11,7 +11,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '../../hooks';
-import type { ConfigStatus } from '../../types';
 
 type MessageComponentProps = {
   children: ReactNode;
@@ -44,11 +43,10 @@ const Error = ({ children, showTryAgain }: ErrorComponentProps) => (
 );
 
 type StatusComponentProps = {
-  status: ConfigStatus;
   children?: ReactNode;
 };
 
-const StatusComponent = ({ status, children }: StatusComponentProps) => {
+const StatusComponent = ({ children }: StatusComponentProps) => {
   switch (status) {
     case 'error-loading-config':
       return (
@@ -137,7 +135,7 @@ export function NetworkLoader<T>({
 }: NetworkLoaderProps<T>) {
   // this is to prevent an error rendering callouts on the server side
   const [canShowCallout, setShowCallout] = useState(false);
-  const { configStatus, VEGA_URL } = useEnvironment();
+  const { VEGA_URL } = useEnvironment();
 
   const client = useMemo(() => {
     if (VEGA_URL) {

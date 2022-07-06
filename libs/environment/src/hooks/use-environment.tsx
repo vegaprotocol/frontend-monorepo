@@ -5,7 +5,7 @@ import { NodeSwitcherDialog } from '../components/node-switcher-dialog';
 import { useConfig } from './use-config';
 import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
-import type { Environment, RawEnvironment, ConfigStatus } from '../types';
+import type { Environment, RawEnvironment } from '../types';
 
 type EnvironmentProviderProps = {
   definitions?: Partial<RawEnvironment>;
@@ -13,7 +13,6 @@ type EnvironmentProviderProps = {
 };
 
 export type EnvironmentState = Environment & {
-  configStatus: ConfigStatus;
   setNodeSwitcherOpen: () => void;
 };
 
@@ -27,9 +26,11 @@ export const EnvironmentProvider = ({
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
-  const { status: configStatus, config } = useConfig(
+  const { config } = useConfig(
     environment,
-    updateEnvironment
+    updateEnvironment,
+    () => setNodeSwitcherOpen(true),
+    () => setNodeSwitcherOpen(true),
   );
 
   const errorMessage = validateEnvironment(environment);
@@ -46,7 +47,6 @@ export const EnvironmentProvider = ({
     <EnvironmentContext.Provider
       value={{
         ...environment,
-        configStatus,
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
     >

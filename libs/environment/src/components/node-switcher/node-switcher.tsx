@@ -13,10 +13,11 @@ import {
   getIsNodeLoading,
   getIsNodeDisabled,
   getIsFormDisabled,
-  getErrorMessage,
+  getErrorByData,
+  getErrorByType,
 } from '../../utils/validate-node';
 import { CUSTOM_NODE_KEY } from '../../types';
-import type { Configuration, NodeData } from '../../types';
+import type { Configuration, NodeData, ErrorType } from '../../types';
 import { LayoutRow } from './layout-row';
 import { LayoutCell } from './layout-cell';
 import { NodeError } from './node-error';
@@ -25,6 +26,7 @@ import { NodeStats } from './node-stats';
 type NodeSwitcherProps = {
   error?: string;
   config: Configuration;
+  initialErrorType?: ErrorType;
   onConnect: (url: string) => void;
 };
 
@@ -39,8 +41,9 @@ const getHighestBlock = (state: Record<string, NodeData>) => {
   }, 0);
 };
 
-export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
+export const NodeSwitcher = ({ config, initialErrorType, onConnect }: NodeSwitcherProps) => {
   const { VEGA_ENV, VEGA_URL } = useEnvironment();
+  const [networkError, setNetworkError] = useState(getErrorByType(initialErrorType, VEGA_ENV, VEGA_URL));
   const [customNodeText, setCustomNodeText] = useState('');
   const [nodeRadio, setNodeRadio] = useState(
     getDefaultNode(config.hosts, VEGA_URL)
@@ -61,7 +64,7 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
     VEGA_ENV,
     state
   );
-  const currentNodeError = getErrorMessage(
+  const currentNodeError = getErrorByData(
     VEGA_ENV,
     nodeRadio && customNode && customNode === customNodeText
       ? state[nodeRadio]
@@ -70,7 +73,7 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
 
   return (
     <div className="text-black dark:text-white min-w-[800px]">
-      <NodeError {...currentNodeError} />
+      <NodeError {...(currentNodeError || networkError)} />
       <form onSubmit={() => onSubmit(nodeRadio)}>
         <p className="text-body-large font-bold mt-16 mb-32">
           {t('Select a GraphQL node to connect to:')}
@@ -85,7 +88,10 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
           <RadioGroup
             className="block"
             value={nodeRadio}
-            onChange={(value) => setNodeRadio(value)}
+            onChange={(value) => {
+              setNodeRadio(value)
+              setNetworkError(null);
+            }}
           >
             <div className="w-full">
               {config.hosts.map((node, index) => (
@@ -137,12 +143,14 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
                         value={customNodeText}
                         hasError={
                           !!customNodeText &&
-                          (!!currentNodeError.headline ||
-                            !!currentNodeError.message)
+                          !!(currentNodeError?.headline || currentNodeError?.message)
                         }
                         onChange={(e) => setCustomNodeText(e.target.value)}
                       />
-                      <Link onClick={() => setCustomNode(customNodeText)}>
+                      <Link onClick={() => {
+                        setNetworkError(null);
+                        setCustomNode(customNodeText)
+                      }}>
                         {getIsNodeLoading(state[CUSTOM_NODE_KEY])
                           ? t('Checking')
                           : t('Check')}
