@@ -13,9 +13,9 @@ jobs:
   master:
     strategy:
       matrix:
-        version: ['0.0.2']
+        version: ['0.0.3']
         build-platform: ['linux/amd64']
-        app: ['explorer', 'trading', 'token']
+        app: ['trading']
     name: Build the ${{ inputs.image_name }} image
     runs-on: ubuntu-latest
     steps:
@@ -49,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: '.'
-          file: './Dockerfile'
+          file: './Dockerfile.next'
           build-args: 'APP=${{ matrix.app }}'
           platforms: ${{ matrix.build-platform }}
           tags: ${{ steps.tags.outputs.latest }},${{ steps.tags.outputs.current }}
