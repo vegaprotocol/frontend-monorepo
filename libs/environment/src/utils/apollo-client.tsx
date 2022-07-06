@@ -14,7 +14,7 @@ import { RetryLink } from '@apollo/client/link/retry';
 
 const isBrowser = typeof window !== 'undefined';
 
-export function createClient(base?: string) {
+export default function createClient(base?: string) {
   if (!base) {
     throw new Error('Base must be passed into createClient!');
   }

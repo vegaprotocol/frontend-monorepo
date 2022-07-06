@@ -1,8 +1,22 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import { RadioGroup, Button, Radio } from '@vegaprotocol/ui-toolkit';
+import {
+  RadioGroup,
+  Button,
+  Input,
+  Link,
+  Radio,
+} from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
-import type { Configuration, NodeData, Networks } from '../../types';
+import { useNodes } from '../../hooks/use-nodes';
+import {
+  getIsNodeLoading,
+  getIsNodeDisabled,
+  getIsFormDisabled,
+  getErrorMessage,
+} from '../../utils/validate-node';
+import { CUSTOM_NODE_KEY } from '../../types';
+import type { Configuration, NodeData } from '../../types';
 import { LayoutRow } from './layout-row';
 import { LayoutCell } from './layout-cell';
 import { NodeError } from './node-error';
@@ -18,35 +32,22 @@ const getDefaultNode = (urls: string[], currentUrl?: string) => {
   return currentUrl && urls.includes(currentUrl) ? currentUrl : undefined;
 };
 
-const getIsLoading = ({ chain, responseTime, block, ssl }: NodeData) => {
-  return (
-    chain.isLoading ||
-    responseTime.isLoading ||
-    block.isLoading ||
-    ssl.isLoading
-  );
-};
-
-const getHasMatchingChain = (env: Networks, chain?: string) => {
-  return chain?.includes(env.toLowerCase()) ?? false;
-};
-
-const getIsDisabled = (env: Networks, data: NodeData) => {
-  const { chain, responseTime, block, ssl } = data;
-  return (
-    !getHasMatchingChain(env, data.chain.value) ||
-    getIsLoading(data) ||
-    chain.hasError ||
-    responseTime.hasError ||
-    block.hasError ||
-    ssl.hasError
-  );
+const getHighestBlock = (state: Record<string, NodeData>) => {
+  return Object.keys(state).reduce((acc, node) => {
+    const value = Number(state[node].block.value);
+    return value ? Math.max(acc, value) : acc;
+  }, 0);
 };
 
 export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
   const { VEGA_ENV, VEGA_URL } = useEnvironment();
-  const [node, setNode] = useState(getDefaultNode(config.hosts, VEGA_URL));
-  const [highestBlock, setHighestBlock] = useState(0);
+  const [customNodeText, setCustomNodeText] = useState('');
+  const [nodeRadio, setNodeRadio] = useState(
+    getDefaultNode(config.hosts, VEGA_URL)
+  );
+  const { state, clients, customNode, setCustomNode, updateNodeBlock } =
+    useNodes(config);
+  const highestBlock = useMemo(() => getHighestBlock(state), [state]);
 
   const onSubmit = (node: ReturnType<typeof getDefaultNode>) => {
     if (node) {
@@ -54,13 +55,24 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
     }
   };
 
-  const isSubmitDisabled = !node;
+  const isSubmitDisabled = getIsFormDisabled(
+    nodeRadio,
+    customNodeText,
+    VEGA_ENV,
+    state
+  );
+  const currentNodeError = getErrorMessage(
+    VEGA_ENV,
+    nodeRadio && customNode && customNode === customNodeText
+      ? state[nodeRadio]
+      : undefined
+  );
 
   return (
     <div className="text-black dark:text-white min-w-[800px]">
-      <NodeError />
-      <form onSubmit={() => onSubmit(node)}>
-        <p className="text-body-large font-bold mb-32">
+      <NodeError {...currentNodeError} />
+      <form onSubmit={() => onSubmit(nodeRadio)}>
+        <p className="text-body-large font-bold mt-16 mb-32">
           {t('Select a GraphQL node to connect to:')}
         </p>
         <div>
@@ -72,31 +84,73 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
           </LayoutRow>
           <RadioGroup
             className="block"
-            value={node}
-            onChange={(value) => setNode(value)}
+            value={nodeRadio}
+            onChange={(value) => setNodeRadio(value)}
           >
-            <div>
-              {config.hosts.map((url, index) => (
+            <div className="w-full">
+              {config.hosts.map((node, index) => (
                 <NodeStats
                   key={index}
-                  url={url}
+                  data={state[node]}
+                  client={clients[node]}
                   highestBlock={highestBlock}
                   setBlock={(block) =>
-                    setHighestBlock(Math.max(block, highestBlock))
+                    updateNodeBlock(node, Math.max(block, highestBlock))
                   }
-                  render={(data) => (
-                    <div>
-                      <Radio
-                        id={`node-url-${index}`}
-                        labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
-                        value={url}
-                        label={url}
-                        disabled={getIsDisabled(VEGA_ENV, data)}
+                >
+                  <div>
+                    <Radio
+                      id={`node-url-${index}`}
+                      labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
+                      value={node}
+                      label={node}
+                      disabled={getIsNodeDisabled(VEGA_ENV, state[node])}
+                    />
+                  </div>
+                </NodeStats>
+              ))}
+              <NodeStats
+                data={state[CUSTOM_NODE_KEY]}
+                client={clients[CUSTOM_NODE_KEY]}
+                highestBlock={highestBlock}
+                setBlock={(block) =>
+                  updateNodeBlock(
+                    CUSTOM_NODE_KEY,
+                    Math.max(block, highestBlock)
+                  )
+                }
+              >
+                <div className="flex w-full">
+                  <Radio
+                    id={`node-url-custom`}
+                    value={CUSTOM_NODE_KEY}
+                    label={
+                      nodeRadio === CUSTOM_NODE_KEY || !!customNode
+                        ? ''
+                        : t('Other')
+                    }
+                  />
+                  {(customNodeText || nodeRadio === CUSTOM_NODE_KEY) && (
+                    <div className="flex w-full gap-8">
+                      <Input
+                        placeholder="https://"
+                        value={customNodeText}
+                        hasError={
+                          !!customNodeText &&
+                          (!!currentNodeError.headline ||
+                            !!currentNodeError.message)
+                        }
+                        onChange={(e) => setCustomNodeText(e.target.value)}
                       />
+                      <Link onClick={() => setCustomNode(customNodeText)}>
+                        {getIsNodeLoading(state[CUSTOM_NODE_KEY])
+                          ? t('Checking')
+                          : t('Check')}
+                      </Link>
                     </div>
                   )}
-                />
-              ))}
+                </div>
+              </NodeStats>
             </div>
           </RadioGroup>
         </div>

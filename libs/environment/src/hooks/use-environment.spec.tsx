@@ -1,8 +1,15 @@
-import type { ComponentProps } from 'react';
+// having the node switcher dialog in the environment provider breaks the test renderer
+// workaround based on: https://github.com/facebook/react/issues/11565
+import type { ComponentProps, ReactNode } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import type { EnvironmentState } from './use-environment';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
 import { Networks } from '../types';
+
+jest.mock('react-dom', () => ({
+  ...jest.requireActual('react-dom'),
+  createPortal: (node: ReactNode) => node,
+}));
 
 const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
   return <EnvironmentProvider {...props} />;
@@ -44,9 +51,9 @@ const mockEnvironmentState: EnvironmentState = {
 };
 
 beforeEach(() => {
-  // @ts-ignore typscript doesn't recognise the mock implementation
+  // @ts-ignore: typscript doesn't recognise the mock implementation
   global.fetch.mockReset();
-  // @ts-ignore typscript doesn't recognise the mock implementation
+  // @ts-ignore: typscript doesn't recognise the mock implementation
   global.fetch.mockImplementation(mockFetch);
 
   window.localStorage.clear();

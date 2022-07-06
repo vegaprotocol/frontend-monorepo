@@ -6,6 +6,8 @@ import { Networks, ENV_KEYS } from './utils/validate-environment';
 
 export { ENV_KEYS, Networks };
 
+export const CUSTOM_NODE_KEY = 'custom';
+
 export type Environment = z.infer<typeof envSchema> & {
   // provide this manually, zod fails to compile the correct type fot VEGA_NETWORKS
   VEGA_NETWORKS: Partial<Record<Networks, string>>;

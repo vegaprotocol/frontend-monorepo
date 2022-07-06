@@ -1,55 +1,57 @@
 import type { ReactNode } from 'react';
-import { useEffect, useState, useCallback } from 'react';
 import { ApolloProvider } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import type { NodeData } from '../../types';
-import { createClient } from '../../utils/apollo-client';
-import { useNode } from '../../hooks/use-node';
+import type createClient from '../../utils/apollo-client';
 import { LayoutRow } from './layout-row';
 import { LayoutCell } from './layout-cell';
 import { NodeBlockHeight } from './node-block-height';
 
 type NodeStatsContentProps = {
-  data: NodeData;
+  data?: NodeData;
   highestBlock: number;
   setBlock: (value: number) => void;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 const getResponseTimeDisplayValue = (
-  responseTime: NodeData['responseTime']
+  responseTime?: NodeData['responseTime']
 ) => {
-  if (typeof responseTime.value === 'number') {
+  if (typeof responseTime?.value === 'number') {
     return `${Number(responseTime.value).toFixed(2)}ms`;
   }
-  if (responseTime.hasError) {
+  if (responseTime?.hasError) {
     return t('n/a');
   }
   return '-';
 };
 
-const getBlockDisplayValue = (block: NodeData['block']) => {
-  if (block.value) {
-    return '';
+const getBlockDisplayValue = (
+  block: NodeData['block'] | undefined,
+  setBlock: (block: number) => void
+) => {
+  if (block?.value) {
+    return <NodeBlockHeight value={block?.value} setValue={setBlock} />;
   }
-  if (block.hasError) {
+  if (block?.hasError) {
     return t('n/a');
   }
   return '-';
 };
 
-const getSslDisplayValue = (ssl: NodeData['ssl']) => {
-  if (ssl.value) {
+const getSslDisplayValue = (ssl?: NodeData['ssl']) => {
+  if (ssl?.value) {
     return t('Yes');
   }
-  if (ssl.hasError) {
+  if (ssl?.hasError) {
     return t('No');
   }
   return '-';
 };
 
 const NodeStatsContent = ({
-  data: { url, responseTime, block, ssl },
+  // @ts-ignore Allow defaulting to an empty object
+  data = {},
   highestBlock,
   setBlock,
   children,
@@ -58,24 +60,22 @@ const NodeStatsContent = ({
     <LayoutRow>
       {children}
       <LayoutCell
-        isLoading={responseTime.isLoading}
-        hasError={responseTime.hasError}
+        isLoading={data.responseTime?.isLoading}
+        hasError={data.responseTime?.hasError}
       >
-        {getResponseTimeDisplayValue(responseTime)}
+        {getResponseTimeDisplayValue(data.responseTime)}
       </LayoutCell>
       <LayoutCell
-        isLoading={block.isLoading}
+        isLoading={data.block?.isLoading}
         hasError={
-          block.hasError || (!!block.value && highestBlock > block.value)
+          data.block?.hasError ||
+          (!!data.block?.value && highestBlock > data.block.value)
         }
       >
-        {url && block.value && (
-          <NodeBlockHeight value={block.value} setValue={setBlock} />
-        )}
-        {getBlockDisplayValue(block)}
+        {getBlockDisplayValue(data.block, setBlock)}
       </LayoutCell>
-      <LayoutCell isLoading={ssl.isLoading} hasError={ssl.hasError}>
-        {getSslDisplayValue(ssl)}
+      <LayoutCell isLoading={data.ssl?.isLoading} hasError={data.ssl?.hasError}>
+        {getSslDisplayValue(data.ssl)}
       </LayoutCell>
     </LayoutRow>
   );
@@ -95,47 +95,28 @@ const Wrapper = ({ client, children }: WrapperProps) => {
 };
 
 export type NodeStatsProps = {
-  url?: string;
+  data?: NodeData;
+  client?: ReturnType<typeof createClient>;
   highestBlock: number;
   setBlock: (value: number) => void;
-  render: (data: NodeData) => ReactNode;
+  children?: ReactNode;
 };
 
 export const NodeStats = ({
-  url,
+  data,
+  client,
   highestBlock,
-  render,
+  children,
   setBlock,
 }: NodeStatsProps) => {
-  const [client, setClient] = useState<
-    undefined | ReturnType<typeof createClient>
-  >();
-  const { state, reset, updateBlockState } = useNode(url, client);
-
-  useEffect(() => {
-    client?.stop();
-    reset();
-    setClient(url ? createClient(url) : undefined);
-    return () => client?.stop();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url]);
-
-  const onHandleBlockChange = useCallback(
-    (value: number) => {
-      updateBlockState(value);
-      setBlock(value);
-    },
-    [updateBlockState, setBlock]
-  );
-
   return (
     <Wrapper client={client}>
       <NodeStatsContent
-        data={state}
+        data={data}
         highestBlock={highestBlock}
-        setBlock={onHandleBlockChange}
+        setBlock={setBlock}
       >
-        {render(state)}
+        {children}
       </NodeStatsContent>
     </Wrapper>
   );

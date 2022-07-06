@@ -1,7 +1,12 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useState, useEffect } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import type { Environment, Configuration, ConfigStatus } from '../types';
+import type {
+  Environment,
+  Configuration,
+  ConfigStatus,
+  Networks,
+} from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
 import { promiseRaceToSuccess } from '../utils/promise-race-success';
 
@@ -18,12 +23,12 @@ const requestToNode = async (url: string, index: number): Promise<number> => {
   return index;
 };
 
-const getCachedConfig = () => {
+const getCachedConfig = (env: Networks) => {
   const value = LocalStorage.getItem(LOCAL_STORAGE_NETWORK_KEY);
 
   if (value) {
     try {
-      const config = JSON.parse(value) as Configuration;
+      const config = JSON.parse(value)[env] as Configuration;
       const hasError = validateConfiguration(config);
 
       if (hasError) {
@@ -47,7 +52,7 @@ export const useConfig = (
   updateEnvironment: Dispatch<SetStateAction<Environment>>
 ) => {
   const [config, setConfig] = useState<Configuration | undefined>(
-    getCachedConfig()
+    getCachedConfig(environment.VEGA_ENV)
   );
   const [status, setStatus] = useState<ConfigStatus>(
     !environment.VEGA_URL ? 'idle' : 'success'
@@ -69,7 +74,11 @@ export const useConfig = (
           setConfig({ hosts: configData.hosts });
           LocalStorage.setItem(
             LOCAL_STORAGE_NETWORK_KEY,
-            JSON.stringify({ hosts: configData.hosts })
+            JSON.stringify({
+              [environment.VEGA_ENV]: {
+                hosts: configData.hosts,
+              },
+            })
           );
         } catch (err) {
           setStatus('error-loading-config');
