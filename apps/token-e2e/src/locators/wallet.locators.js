@@ -1,4 +1,7 @@
+import common from './common.locators';
+
 export default {
+  ...common,
   connectRestForm: '[data-testid="rest-connector-form"]',
   name: '#wallet',
   passphrase: '#passphrase',

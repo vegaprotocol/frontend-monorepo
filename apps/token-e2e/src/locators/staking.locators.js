@@ -22,5 +22,5 @@ export default {
   stakeAssociateWalletRadio: '[data-testid="associate-radio-wallet"]',
   disassociateButton: '[data-testid="disassociate-tokens-btn"]',
   associateMoreTokensButton: '[data-testid="associate-more-tokens-btn"]',
-  associateButton: '[data-testid="associate-tokens-btn"]',
+  associateButton: '[data-testid="associate-tokens-btn"]'
 };

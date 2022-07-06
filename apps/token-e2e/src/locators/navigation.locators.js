@@ -1,4 +1,7 @@
+import common from './common.locators';
+
 export default {
+  ...common,
   section: 'nav',
   home: '[href="/"]',
   vesting: '[href="/vesting"]',
