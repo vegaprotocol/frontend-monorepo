@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import type { Proposals_proposals } from '../../routes/governance/proposals/__generated__/Proposals';
+import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
-export const ProposalDescription = ({
+export const ProposalDetailHeader = ({
   proposal,
 }: {
   proposal: Proposals_proposals;
@@ -12,13 +12,13 @@ export const ProposalDescription = ({
   const { change } = proposal.terms;
 
   let headerText: string;
-  let descriptionOne: ReactNode;
-  let descriptionTwo: ReactNode;
+  let detailsOne: ReactNode;
+  let detailsTwo: ReactNode;
 
   switch (change.__typename) {
     case 'NewMarket': {
       headerText = `${t('New market')}: ${change.instrument.name}`;
-      descriptionOne = (
+      detailsOne = (
         <>
           {t('Code')}: {change.instrument.code}.{' '}
           {change.instrument.futureProduct?.settlementAsset.symbol ? (
@@ -41,7 +41,7 @@ export const ProposalDescription = ({
     }
     case 'NewAsset': {
       headerText = `${t('New asset')}: ${change.name}`;
-      descriptionOne = (
+      detailsOne = (
         <>
           {t('Symbol')}: {change.symbol}.{' '}
           <Lozenge>
@@ -57,7 +57,7 @@ export const ProposalDescription = ({
     }
     case 'UpdateNetworkParameter': {
       headerText = `${t('Network parameter')}`;
-      descriptionOne = (
+      detailsOne = (
         <>
           <Lozenge>{change.networkParameter.key}</Lozenge> {t('to')}{' '}
           <Lozenge>{change.networkParameter.value}</Lozenge>
@@ -76,7 +76,7 @@ export const ProposalDescription = ({
       headerText = `${description.substring(0, headerMaxLength - 1).trim()}${
         headerOverflow ? '…' : ''
       }`;
-      descriptionOne = headerOverflow
+      detailsOne = headerOverflow
         ? `${description
             .substring(
               headerMaxLength - 1,
@@ -84,7 +84,7 @@ export const ProposalDescription = ({
             )
             .trim()}${descriptionOneOverflow ? '…' : ''}`
         : '';
-      descriptionTwo = `${proposal.id}`;
+      detailsTwo = `${proposal.id}`;
       break;
     }
     default: {
@@ -95,8 +95,8 @@ export const ProposalDescription = ({
   return (
     <>
       <header data-testid="proposal-header">{headerText}</header>
-      <div data-testid="proposal-details-one">{descriptionOne}</div>
-      <div data-testid="proposal-details-two">{descriptionTwo}</div>
+      <div data-testid="proposal-details-one">{detailsOne}</div>
+      <div data-testid="proposal-details-two">{detailsTwo}</div>
     </>
   );
 };
