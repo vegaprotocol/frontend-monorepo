@@ -38,7 +38,7 @@ const Template2: Story = (args) => {
     rejectionReason: null,
     size: '10',
     price: '1000',
-    market: null,
+    market: { name: 'ETH/DAI (30 Jun 2022)', decimalPlaces: 5 },
     type: OrderType.Limit,
   };
   const reset = () => null;

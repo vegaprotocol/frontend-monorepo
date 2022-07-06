@@ -36,6 +36,7 @@ export const VegaOrderTransactionDialog = ({
   title,
 }: VegaOrderTransactionDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
+  const headerClassName = 'text-h5 font-bold text-black dark:text-white';
   // Rejected by wallet
   if (transaction.status === VegaTxStatus.Requested) {
     return (
@@ -108,29 +109,46 @@ export const VegaOrderTransactionDialog = ({
 
   return (
     <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
-      <p>{t(`Status: ${finalizedOrder.status}`)}</p>
-      {finalizedOrder.market && (
-        <p>{t(`Market: ${finalizedOrder.market.name}`)}</p>
-      )}
-      <p>{t(`Type: ${finalizedOrder.type}`)}</p>
-      <p>
-        {t(
-          `Amount: ${addDecimal(
-            finalizedOrder.size,
-            finalizedOrder.market?.positionDecimalPlaces || 0
-          )}`
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+        <div>
+          <p className={headerClassName}>{t(`Status`)}</p>
+          <p>{t(`${finalizedOrder.status}`)}</p>
+        </div>
+        {finalizedOrder.market && (
+          <div>
+            <p className={headerClassName}>{t(`Market`)}</p>
+            <p>{t(`${finalizedOrder.market.name}`)}</p>
+          </div>
         )}
-      </p>
-      {finalizedOrder.type === 'Limit' && finalizedOrder.market && (
-        <p>
-          {t(
-            `Price: ${addDecimalsFormatNumber(
-              finalizedOrder.price,
-              finalizedOrder.market.decimalPlaces
-            )}`
-          )}
-        </p>
-      )}
+        <div>
+          <p className={headerClassName}>{t(`Type`)}</p>
+          <p>{t(`${finalizedOrder.type}`)}</p>
+        </div>
+        <div>
+          <p className={headerClassName}>{t(`Amount`)}</p>
+          <p>
+            {t(
+              `${addDecimal(
+                finalizedOrder.size,
+                finalizedOrder.market?.positionDecimalPlaces || 0
+              )}`
+            )}
+          </p>
+        </div>
+        {finalizedOrder.type === 'Limit' && finalizedOrder.market && (
+          <div>
+            <p className={headerClassName}>{t(`Price`)}</p>
+            <p>
+              {t(
+                ` ${addDecimalsFormatNumber(
+                  finalizedOrder.price,
+                  finalizedOrder.market.decimalPlaces
+                )}`
+              )}
+            </p>
+          </div>
+        )}
+      </div>
     </OrderDialogWrapper>
   );
 };
@@ -146,11 +164,12 @@ const OrderDialogWrapper = ({
   icon,
   title,
 }: OrderDialogWrapperProps) => {
+  const headerClassName = 'text-h4 font-bold text-black dark:text-white';
   return (
     <div className="flex gap-12 max-w-full">
       <div className="pt-8 fill-current">{icon}</div>
       <div data-testid="order-wrapper" className="flex-1">
-        <h1 data-testid="order-status-header" className="text-h4">
+        <h1 data-testid="order-status-header" className={headerClassName}>
           {title}
         </h1>
         {children}
