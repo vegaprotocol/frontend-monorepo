@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
@@ -20,31 +20,37 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
 
-  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-    query: ORDER_EVENT_SUB,
-    variables: { partyId: keypair?.pub || '' },
-  });
-
-  // Start a subscription looking for the newly created order
-  const sub = clientSub.subscribe(({ data }) => {
-    if (!data?.busEvents?.length) {
-      return;
-    }
-
-    // No types available for the subscription result
-    const matchingOrderEvent = data.busEvents.find((e) => {
-      if (e.event.__typename !== 'Order') {
-        return false;
-      }
-
-      return e.event.id === id;
+  useEffect(() => {
+    const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
+      query: ORDER_EVENT_SUB,
+      variables: { partyId: keypair?.pub || '' },
     });
 
-    if (matchingOrderEvent && matchingOrderEvent.event.__typename === 'Order') {
-      setFinalizedOrder(matchingOrderEvent.event);
-      resetTransaction();
-    }
-  });
+    // Start a subscription looking for the newly created order
+    const sub = clientSub.subscribe(({ data }) => {
+      if (!data?.busEvents?.length) {
+        return;
+      }
+
+      // No types available for the subscription result
+      const matchingOrderEvent = data.busEvents.find((e) => {
+        if (e.event.__typename !== 'Order') {
+          return false;
+        }
+
+        return e.event.id === id;
+      });
+
+      if (
+        matchingOrderEvent &&
+        matchingOrderEvent.event.__typename === 'Order'
+      ) {
+        setFinalizedOrder(matchingOrderEvent.event);
+        resetTransaction();
+      }
+    });
+    return () => sub.unsubscribe();
+  }, [client, id, keypair?.pub, resetTransaction]);
 
   const submit = useCallback(
     async (order: Order) => {
@@ -86,8 +92,7 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
     resetTransaction();
     setFinalizedOrder(null);
     setId('');
-    sub.unsubscribe();
-  }, [resetTransaction, sub]);
+  }, [resetTransaction]);
 
   return {
     transaction,
