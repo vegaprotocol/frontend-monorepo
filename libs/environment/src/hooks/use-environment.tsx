@@ -38,10 +38,6 @@ export const EnvironmentProvider = ({
     throw new Error(errorMessage);
   }
 
-  useEffect(() => {
-    setNodeSwitcherOpen(true);
-  }, []);
-
   return (
     <EnvironmentContext.Provider
       value={{
