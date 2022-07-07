@@ -20,6 +20,10 @@ const mockEnvironment: EnvironmentWithOptionalUrl = {
   VEGA_NETWORKS: {},
   ETHEREUM_PROVIDER_URL: 'https://ethereum.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
+  GIT_BRANCH: 'test',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  GIT_COMMIT_HASH: 'abcde01234',
+  GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
 };
 
 function setupFetch(configUrl: string, hostMap: HostMapping) {
@@ -273,7 +277,7 @@ describe('useConfig hook', () => {
   });
 
   it('refetches the network configuration and resets the cache when malformed data found in the storage', async () => {
-    window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, '{not:{valid:{json');
+    window.localStorage.setItem(`${LOCAL_STORAGE_NETWORK_KEY}-${mockEnvironment.VEGA_ENV}`, '{not:{valid:{json');
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
     const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
@@ -291,7 +295,7 @@ describe('useConfig hook', () => {
 
   it('refetches the network configuration and resets the cache when invalid data found in the storage', async () => {
     window.localStorage.setItem(
-      LOCAL_STORAGE_NETWORK_KEY,
+      `${LOCAL_STORAGE_NETWORK_KEY}-${mockEnvironment.VEGA_ENV}`,
       JSON.stringify({ invalid: 'data' })
     );
     const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
