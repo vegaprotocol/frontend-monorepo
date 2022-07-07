@@ -76,7 +76,6 @@ export function RestConnectorForm({
           {...register('wallet', { required: t('Required') })}
           id="wallet"
           type="text"
-          autoFocus={true}
         />
         {errors.wallet?.message && (
           <InputError intent="danger" className="mt-4">

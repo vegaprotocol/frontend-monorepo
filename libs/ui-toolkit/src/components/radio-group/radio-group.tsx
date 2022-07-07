@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
 interface RadioGroupProps {
+  name?: string;
   children: ReactNode;
   className?: string;
   defaultValue?: string;
@@ -12,12 +13,14 @@ interface RadioGroupProps {
 
 export const RadioGroup = ({
   children,
+  name,
   value,
   className,
   onChange,
 }: RadioGroupProps) => {
   return (
     <RadioGroupPrimitive.Root
+      name={name}
       value={value}
       onValueChange={onChange}
       className={classNames('flex flex-row gap-24', className)}
