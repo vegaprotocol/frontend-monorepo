@@ -78,7 +78,7 @@ export const VegaOrderTransactionDialog = ({
       >
         {transaction.txHash && (
           <p className="break-all">
-            Waiting for few more blocks - &nbsp;
+            t('Waiting for few more blocks') - &nbsp;
             <a
               className="underline"
               data-testid="tx-block-explorer"
@@ -86,7 +86,7 @@ export const VegaOrderTransactionDialog = ({
               target="_blank"
               rel="noreferrer"
             >
-              View in block explorer
+              t('View in block explorer')
             </a>
           </p>
         )}
@@ -124,11 +124,9 @@ export const VegaOrderTransactionDialog = ({
         <div>
           <p className={headerClassName}>{t(`Amount`)}</p>
           <p className={finalizedOrder.side}>
-            {t(
-              `${addDecimal(
-                finalizedOrder.size,
-                finalizedOrder.market?.positionDecimalPlaces || 0
-              )}`
+            {addDecimal(
+              finalizedOrder.size,
+              finalizedOrder.market?.positionDecimalPlaces || 0
             )}
           </p>
         </div>
@@ -136,11 +134,9 @@ export const VegaOrderTransactionDialog = ({
           <div>
             <p className={headerClassName}>{t(`Price`)}</p>
             <p>
-              {t(
-                ` ${addDecimalsFormatNumber(
-                  finalizedOrder.price,
-                  finalizedOrder.market.decimalPlaces
-                )}`
+              {addDecimalsFormatNumber(
+                finalizedOrder.price,
+                finalizedOrder.market.decimalPlaces
               )}
             </p>
           </div>

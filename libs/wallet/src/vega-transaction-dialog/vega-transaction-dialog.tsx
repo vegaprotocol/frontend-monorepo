@@ -130,7 +130,7 @@ export const VegaTransactionDialog = ({
         key={`${type}-tx-order-${transaction.txHash}`}
         transaction={transaction}
         finalizedOrder={finalizedOrder}
-        title={getDialogTitle(type, finalizedOrder)}
+        title={t(getDialogTitle(type, finalizedOrder))}
       />
     </Dialog>
   );
