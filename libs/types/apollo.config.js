@@ -2,7 +2,7 @@ module.exports = {
   client: {
     service: {
       name: 'vega',
-      url: 'https://n03.stagnet2.vega.xyz/query',
+      url: process.env.NX_VEGA_URL,
     },
     includes: ['../../{apps,libs}/**/*.{ts,tsx,js,jsx,graphql}'],
     excludes: ['**/generic-data-provider.ts'],
