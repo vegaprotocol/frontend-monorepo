@@ -84,7 +84,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('2.000000000000000000');
     });
 
-    it('Able to remove part of a stake against a validator', function () {
+    it.skip('Able to remove part of a stake against a validator', function () {
       cy.staking_page_associate_tokens('4');
       cy.vega_wallet_check_unstaked_value_is('4.000000000000000000');
 
