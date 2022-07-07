@@ -22,6 +22,7 @@ export interface Order {
   price: string;
   market: Market | null;
   type: string | null;
+  side?: string;
 }
 
 interface VegaOrderTransactionDialogProps {
@@ -77,7 +78,7 @@ export const VegaOrderTransactionDialog = ({
       >
         {transaction.txHash && (
           <p className="break-all">
-            Tx hash: &nbsp;
+            Waiting for few more blocks - &nbsp;
             <a
               className="underline"
               data-testid="tx-hash"
@@ -85,7 +86,7 @@ export const VegaOrderTransactionDialog = ({
               target="_blank"
               rel="noreferrer"
             >
-              {transaction.txHash}
+              View in block explorer
             </a>
           </p>
         )}
@@ -109,11 +110,7 @@ export const VegaOrderTransactionDialog = ({
 
   return (
     <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-        <div>
-          <p className={headerClassName}>{t(`Status`)}</p>
-          <p>{t(`${finalizedOrder.status}`)}</p>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {finalizedOrder.market && (
           <div>
             <p className={headerClassName}>{t(`Market`)}</p>
@@ -121,12 +118,12 @@ export const VegaOrderTransactionDialog = ({
           </div>
         )}
         <div>
-          <p className={headerClassName}>{t(`Type`)}</p>
-          <p>{t(`${finalizedOrder.type}`)}</p>
+          <p className={headerClassName}>{t(`Status`)}</p>
+          <p>{t(`${finalizedOrder.status}`)}</p>
         </div>
         <div>
           <p className={headerClassName}>{t(`Amount`)}</p>
-          <p>
+          <p className={finalizedOrder.side}>
             {t(
               `${addDecimal(
                 finalizedOrder.size,
