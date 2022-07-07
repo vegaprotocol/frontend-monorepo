@@ -130,7 +130,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.get(staking.validatorNames).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('1');
-      cy.staking_validator_page_check_stake_next_epoch_value('1.0');
       cy.vega_wallet_check_validator_stake_next_epoch_value_is(
         this.validatorName,
         '1.000000000000000000'
