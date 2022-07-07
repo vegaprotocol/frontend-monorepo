@@ -93,7 +93,7 @@ export const getErrorMessage = (env: Networks, data?: NodeData) => {
       return {
         headline: t(`Error: the node you are reading from does not have SSL`),
         message: t(
-          '${data.url} does not have SSL. SSL is required to subscribe to data.'
+          `${data.url} does not have SSL. SSL is required to subscribe to data.`
         ),
       };
     }

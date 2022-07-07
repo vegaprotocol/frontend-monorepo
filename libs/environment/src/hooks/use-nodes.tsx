@@ -159,7 +159,6 @@ const reducer = (state: Record<string, NodeData>, action: Action) => {
 };
 
 export const useNodes = (config: Configuration) => {
-  const configCacheKey = config.hosts.join(' ');
   const [clients, setClients] = useState<ClientCollection>({});
   const [customNode, setCustomNode] = useState<undefined | string>();
   const [state, dispatch] = useReducer(reducer, getInitialState(config));
@@ -171,7 +170,7 @@ export const useNodes = (config: Configuration) => {
     return () => {
       subscriptions.forEach((unsubscribe) => unsubscribe());
     };
-  }, [configCacheKey]);
+  }, [config]);
 
   useEffect(() => {
     if (customNode) {
