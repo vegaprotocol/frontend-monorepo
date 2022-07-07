@@ -61,7 +61,6 @@ Cypress.Commands.add(
         });
       }
     );
-    // ensure to cy.reload() after running this in order to take affect
   }
 );
 
