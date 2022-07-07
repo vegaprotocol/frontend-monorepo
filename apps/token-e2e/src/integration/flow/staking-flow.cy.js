@@ -34,7 +34,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       function () {
         cy.vega_wallet_teardown();
         cy.get(navigation.staking).first().click();
-        cy.ve
       }
     );
 
