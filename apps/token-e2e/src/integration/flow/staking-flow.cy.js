@@ -34,6 +34,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       function () {
         cy.vega_wallet_teardown();
         cy.get(navigation.staking).first().click();
+        cy.ve
       }
     );
 
@@ -157,7 +158,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_validator_no_longer_showing(this.validatorName);
     });
 
-    it('Unable to remove a stake with a negative value for a validator', function () {
+    it.skip('Unable to remove a stake with a negative value for a validator', function () {
       cy.staking_page_associate_tokens('3');
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
@@ -183,7 +184,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Unable to remove a stake greater than staked amount next epoch for a validator', function () {
+    it.skip('Unable to remove a stake greater than staked amount next epoch for a validator', function () {
       cy.staking_page_associate_tokens('3');
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
@@ -209,7 +210,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Disassociating all tokens - removes all staked tokens', function () {
+    it.skip('Disassociating all tokens - removes all staked tokens', function () {
       cy.staking_page_associate_tokens('3');
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
