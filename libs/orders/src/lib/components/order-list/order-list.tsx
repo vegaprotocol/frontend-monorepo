@@ -15,6 +15,7 @@ import {
   VegaOrderTransactionType,
   VegaTransactionDialog,
 } from '@vegaprotocol/wallet';
+import { useOrderEdit } from '../../order-hooks/use-order-edit';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -23,10 +24,12 @@ interface OrderListProps {
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data }, ref) => {
     const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
+    const [editOrderDialogOpen, setEditOrderDialogOpen] = useState(false);
     const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
+    const { editTransaction, updatedOrder, resetEdit, edit } = useOrderEdit();
     return (
       <>
-        <OrderListTable data={data} cancel={cancel} ref={ref} />
+        <OrderListTable data={data} cancel={cancel} edit={edit} ref={ref} />
         <VegaTransactionDialog
           key={`cancel-order-dialog-${transaction.txHash}`}
           orderDialogOpen={cancelOrderDialogOpen}
@@ -36,6 +39,15 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           reset={reset}
           type={VegaOrderTransactionType.CANCEL}
         />
+        <VegaTransactionDialog
+          key={`edit-order-dialog-${transaction.txHash}`}
+          orderDialogOpen={editOrderDialogOpen}
+          setOrderDialogOpen={setEditOrderDialogOpen}
+          finalizedOrder={updatedOrder}
+          transaction={editTransaction}
+          reset={resetEdit}
+          type={VegaOrderTransactionType.EDIT}
+        />
       </>
     );
   }
@@ -44,10 +56,11 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
 interface OrderListTableProps {
   data: Orders_party_orders[] | null;
   cancel: (body?: unknown) => Promise<unknown>;
+  edit: (body?: unknown) => Promise<unknown>;
 }
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ data, cancel }, ref) => {
+  ({ data, cancel, edit }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -132,6 +145,33 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="updatedAt"
           valueFormatter={({ value }: ValueFormatterParams) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
+          }}
+        />
+        <AgGridColumn
+          field="edit"
+          cellRenderer={({ data }: ICellRendererParams) => {
+            if (
+              ![
+                OrderStatus.Cancelled,
+                OrderStatus.Rejected,
+                OrderStatus.Expired,
+                OrderStatus.Filled,
+                OrderStatus.Stopped,
+              ].includes(data.status)
+            ) {
+              return (
+                <Button
+                  data-testid="edit"
+                  variant="secondary"
+                  onClick={async () => {
+                    await edit(data);
+                  }}
+                >
+                  Edit
+                </Button>
+              );
+            }
+            return null;
           }}
         />
         <AgGridColumn

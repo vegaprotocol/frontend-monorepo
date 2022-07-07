@@ -94,10 +94,10 @@ export const useOrderEdit = () => {
   }, [resetTransaction]);
 
   return {
-    transaction,
+    editTransaction: transaction,
     updatedOrder,
     id,
     edit,
-    reset,
+    resetEdit: reset,
   };
 };
