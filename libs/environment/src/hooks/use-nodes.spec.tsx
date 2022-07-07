@@ -1,5 +1,3 @@
-jest.mock('../utils/apollo-client');
-
 import { renderHook, act } from '@testing-library/react-hooks';
 import { MockedProvider } from '@apollo/client/testing';
 import { ApolloClient } from '@apollo/client';
@@ -11,6 +9,8 @@ import {
   TIME_UPDATE_SUBSCRIPTION,
 } from '../utils/initialize-node';
 import { useNodes } from './use-nodes';
+
+jest.mock('../utils/apollo-client');
 
 const MOCK_DURATION = 1073;
 

@@ -161,7 +161,7 @@ export const useNodes = (config: Configuration) => {
     return () => {
       subscriptions.forEach((unsubscribe) => unsubscribe());
     };
-  // use primitive cache key to prevent infinite rerender loop
+    // use primitive cache key to prevent infinite rerender loop
   }, [config.hosts.join(';')]);
 
   useEffect(() => {
