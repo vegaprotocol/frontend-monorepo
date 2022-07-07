@@ -13,7 +13,7 @@ jobs:
   master:
     strategy:
       matrix:
-        version: ['0.0.3']
+        version: ['0.0.4']
         build-platform: ['linux/amd64']
         app: ['explorer', 'token']
     name: Build the ${{ inputs.image_name }} image
