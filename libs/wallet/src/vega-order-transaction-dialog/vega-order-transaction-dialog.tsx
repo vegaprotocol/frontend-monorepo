@@ -136,12 +136,10 @@ export const VegaOrderTransactionDialog = ({
           <div>
             <p className={headerClassName}>{t(`Price`)}</p>
             <p>
-              {t(
-                ` ${addDecimalsFormatNumber(
+              {addDecimalsFormatNumber(
                   finalizedOrder.price,
                   finalizedOrder.market.decimalPlaces
-                )}`
-              )}
+                )}
             </p>
           </div>
         )}
