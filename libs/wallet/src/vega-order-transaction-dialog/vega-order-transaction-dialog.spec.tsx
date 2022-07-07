@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import { OrderStatus, OrderType } from '@vegaprotocol/types';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
-import { VegaOrderTransactionType } from '../vega-transaction-dialog';
 import type { Order } from './vega-order-transaction-dialog';
 import { VegaOrderTransactionDialog } from './vega-order-transaction-dialog';
 
@@ -59,7 +58,7 @@ describe('VegaOrderTransactionDialog', () => {
       <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
-        type={VegaOrderTransactionType.Cancel}
+        title={'Order tx'}
       />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
@@ -86,6 +85,7 @@ describe('VegaOrderTransactionDialog', () => {
       <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
+        title={'Order tx'}
       />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
@@ -112,6 +112,7 @@ describe('VegaOrderTransactionDialog', () => {
       <VegaOrderTransactionDialog
         finalizedOrder={finalizedOrder}
         transaction={transaction}
+        title={'Order title'}
       />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
@@ -130,6 +131,7 @@ describe('VegaOrderTransactionDialog', () => {
       <VegaOrderTransactionDialog
         finalizedOrder={null}
         transaction={transaction}
+        title={'Order title'}
       />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
@@ -148,13 +150,16 @@ describe('VegaOrderTransactionDialog', () => {
       <VegaOrderTransactionDialog
         finalizedOrder={null}
         transaction={transaction}
+        title={'Order Tx'}
       />
     );
     expect(screen.getByTestId('order-status-header')).toHaveTextContent(
       'Awaiting network confirmation'
     );
-    expect(screen.getByTestId('tx-hash')).toHaveTextContent('TxHash');
-    expect(screen.getByTestId('tx-hash')).toHaveAttribute(
+    expect(screen.getByTestId('tx-block-explorer')).toHaveTextContent(
+      'View in block explorer'
+    );
+    expect(screen.getByTestId('tx-block-explorer')).toHaveAttribute(
       'href',
       'https://test.explorer.vega.network/txs/0xTxHash'
     );

@@ -81,7 +81,7 @@ export const VegaOrderTransactionDialog = ({
             Waiting for few more blocks - &nbsp;
             <a
               className="underline"
-              data-testid="tx-hash"
+              data-testid="tx-block-explorer"
               href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
               target="_blank"
               rel="noreferrer"
