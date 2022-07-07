@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Link, Lozenge } from '@vegaprotocol/ui-toolkit';
 import {
   useEnvironment,
-  NetworkSwitcherDialog,
 } from '@vegaprotocol/environment';
 
 const getFeedbackLinks = (gitOriginUrl?: string) =>
@@ -15,14 +13,13 @@ const getFeedbackLinks = (gitOriginUrl?: string) =>
   ].filter((link) => !!link.url);
 
 export const NetworkInfo = () => {
-  const [isNetworkConfigOpen, setNetworkConfigOpen] = useState(false);
   const {
     VEGA_URL,
-    VEGA_NETWORKS,
     GIT_COMMIT_HASH,
     GIT_ORIGIN_URL,
     GITHUB_FEEDBACK_URL,
     ETHEREUM_PROVIDER_URL,
+    setNodeSwitcherOpen,
   } = useEnvironment();
   const feedbackLinks = getFeedbackLinks(GITHUB_FEEDBACK_URL);
 
@@ -34,7 +31,7 @@ export const NetworkInfo = () => {
           <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
             {VEGA_URL}
           </Lozenge>
-          . <Link onClick={() => setNetworkConfigOpen(true)}>{t('Edit')}</Link>
+          . <Link onClick={() => setNodeSwitcherOpen()}>{t('Edit')}</Link>
         </p>
         <p className="mb-[1rem]">
           {t('Reading Ethereum data from')}{' '}
@@ -73,15 +70,6 @@ export const NetworkInfo = () => {
           </p>
         )}
       </div>
-      <NetworkSwitcherDialog
-        dialogOpen={isNetworkConfigOpen}
-        setDialogOpen={setNetworkConfigOpen}
-        onConnect={({ network }) => {
-          if (VEGA_NETWORKS[network]) {
-            window.location.href = VEGA_NETWORKS[network] as string;
-          }
-        }}
-      />
     </>
   );
 };
