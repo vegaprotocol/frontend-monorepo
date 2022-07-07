@@ -20,8 +20,22 @@ export enum ACTIONS {
   CHECK_SUBSCRIPTION_SUCCESS,
   CHECK_SUBSCRIPTION_FAILURE,
   UPDATE_BLOCK,
-  RESET_STATE,
 }
+
+type ActionType<T extends ACTIONS, P = undefined> = {
+  type: T;
+  node: string;
+  payload?: P;
+};
+
+export type Action =
+  | ActionType<ACTIONS.GET_STATISTICS, { url: string }>
+  | ActionType<ACTIONS.GET_STATISTICS_SUCCESS, StatisticsPayload>
+  | ActionType<ACTIONS.GET_STATISTICS_FAILURE>
+  | ActionType<ACTIONS.CHECK_SUBSCRIPTION, { url: string }>
+  | ActionType<ACTIONS.CHECK_SUBSCRIPTION_SUCCESS>
+  | ActionType<ACTIONS.CHECK_SUBSCRIPTION_FAILURE>
+  | ActionType<ACTIONS.UPDATE_BLOCK, number>;
 
 function withData<T>(value?: T) {
   return {
@@ -68,8 +82,8 @@ type ClientData = {
   subscriptions: ReturnType<typeof initializeNode>['unsubscribe'][];
 };
 
-const initializeNodes = (dispatch: Dispatch<Action>, nodes: string[]) =>
-  nodes.reduce<ClientData>(
+const initializeNodes = (dispatch: Dispatch<Action>, nodes: string[]) => {
+  return nodes.reduce<ClientData>(
     (acc, node) => {
       const { client, unsubscribe } = initializeNode(dispatch, node);
       Object.assign(acc.clients, { [node]: client });
@@ -81,22 +95,7 @@ const initializeNodes = (dispatch: Dispatch<Action>, nodes: string[]) =>
       subscriptions: [],
     }
   );
-
-type ActionType<T extends ACTIONS, P = undefined> = {
-  type: T;
-  node: string;
-  payload?: P;
 };
-
-export type Action =
-  | ActionType<ACTIONS.GET_STATISTICS, { url: string }>
-  | ActionType<ACTIONS.GET_STATISTICS_SUCCESS, StatisticsPayload>
-  | ActionType<ACTIONS.GET_STATISTICS_FAILURE>
-  | ActionType<ACTIONS.CHECK_SUBSCRIPTION, { url: string }>
-  | ActionType<ACTIONS.CHECK_SUBSCRIPTION_SUCCESS>
-  | ActionType<ACTIONS.CHECK_SUBSCRIPTION_FAILURE>
-  | ActionType<ACTIONS.UPDATE_BLOCK, number>
-  | ActionType<ACTIONS.RESET_STATE>;
 
 const reducer = (state: Record<string, NodeData>, action: Action) => {
   switch (action.type) {
@@ -145,14 +144,6 @@ const reducer = (state: Record<string, NodeData>, action: Action) => {
         if (!state[action.node]) return;
         state[action.node].block.value = action.payload;
       });
-    case ACTIONS.RESET_STATE:
-      return produce(state, (state) => {
-        if (!state[action.node]) return;
-        state[action.node].responseTime = withData();
-        state[action.node].block = withData();
-        state[action.node].ssl = withData();
-        state[action.node].chain = withData();
-      });
     default:
       return state;
   }
@@ -170,7 +161,8 @@ export const useNodes = (config: Configuration) => {
     return () => {
       subscriptions.forEach((unsubscribe) => unsubscribe());
     };
-  }, [config]);
+  // use primitive cache key to prevent infinite rerender loop
+  }, [config.hosts.join(';')]);
 
   useEffect(() => {
     if (customNode) {
@@ -198,6 +190,5 @@ export const useNodes = (config: Configuration) => {
     setCustomNode,
     updateNodeBlock: (node: string, value: number) =>
       dispatch({ type: ACTIONS.UPDATE_BLOCK, payload: value, node }),
-    resetNode: (node: string) => dispatch({ type: ACTIONS.RESET_STATE, node }),
   };
 };

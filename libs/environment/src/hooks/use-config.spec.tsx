@@ -20,6 +20,10 @@ const mockEnvironment: EnvironmentWithOptionalUrl = {
   VEGA_NETWORKS: {},
   ETHEREUM_PROVIDER_URL: 'https://ethereum.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
+  GIT_BRANCH: 'test',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  GIT_COMMIT_HASH: 'abcde01234',
+  GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
 };
 
 function setupFetch(configUrl: string, hostMap: HostMapping) {
