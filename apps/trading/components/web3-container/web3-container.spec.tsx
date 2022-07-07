@@ -41,6 +41,14 @@ const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
+const mockEnvironment = {
+  VEGA_ENV: 'TESTNET',
+  VEGA_NETWORKS: JSON.stringify({}),
+  GIT_BRANCH: 'test',
+  GIT_COMMIT_HASH: 'abcdef',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+};
+
 jest.mock('@web3-react/core', () => {
   const original = jest.requireActual('@web3-react/core');
   return {
@@ -51,7 +59,7 @@ jest.mock('@web3-react/core', () => {
 
 function setup(mock = networkParamsQueryMock) {
   return render(
-    <EnvironmentProvider>
+    <EnvironmentProvider definitions={mockEnvironment}>
       <MockedProvider mocks={[mock]}>
         <Web3Container>
           <div>

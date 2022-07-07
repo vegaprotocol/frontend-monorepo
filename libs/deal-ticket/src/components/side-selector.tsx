@@ -1,6 +1,7 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { OrderSide } from '@vegaprotocol/wallet';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface SideSelectorProps {
   value: OrderSide;
@@ -14,8 +15,9 @@ export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
   }));
 
   return (
-    <FormGroup label="Direction">
+    <FormGroup label={t('Direction')} labelFor="order-side-toggle">
       <Toggle
+        id="order-side-toggle"
         name="order-side"
         toggles={toggles}
         checkedValue={value}

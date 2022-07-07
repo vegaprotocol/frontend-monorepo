@@ -2,9 +2,21 @@
   "root": true,
   "ignorePatterns": ["**/*"],
   "plugins": ["@nrwl/nx", "eslint-plugin-unicorn", "jsx-a11y", "jest"],
+  "settings": {
+    "jsx-a11y": {
+      "components": {
+        "Button": "button",
+        "Input": "input",
+        "Select": "select",
+        "Radio": "radio",
+        "TextArea": "textarea"
+      }
+    }
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "extends": ["plugin:jsx-a11y/strict"],
       "rules": {
         "@nrwl/nx/enforce-module-boundaries": [
           "error",
