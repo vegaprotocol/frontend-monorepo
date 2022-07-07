@@ -32,7 +32,8 @@ export const Tabs = ({ children }: TabsProps) => {
                 'capitalize',
                 'focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow',
                 {
-                  'font-semibold text-vega-pink dark:text-vega-yellow': isActive,
+                  'text-vega-pink dark:text-vega-yellow [-webkit-text-stroke-width:1px]':
+                    isActive,
                   'bg-white dark:bg-black': isActive,
                   'text-black dark:text-white': !isActive,
                   'bg-white-90 dark:bg-black-70 hover:bg-white-95 dark:hover:bg-black-80':

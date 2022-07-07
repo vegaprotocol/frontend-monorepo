@@ -117,7 +117,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
     'grid gap-x-8 gap-y-4 grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_300px]',
-    'bg-black-10 dark:bg-white-10',
+    'bg-black-10 dark:bg-black-70',
     'text-ui'
   );
 
