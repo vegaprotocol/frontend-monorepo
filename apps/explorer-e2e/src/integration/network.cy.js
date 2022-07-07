@@ -1,6 +1,11 @@
 import commonLocators from '../locators/common.locators';
 import navigationLocators from '../locators/navigation.locators';
-import '../support/common.functions';
+import {
+  common_switch_to_mobile_and_click_toggle,
+  common_verify_json_int_values,
+  common_verify_json_parameters,
+  common_verify_json_string_values,
+} from '../support/common.functions';
 
 context('Network parameters page', function () {
   before('visit token home page', function () {
@@ -17,7 +22,7 @@ context('Network parameters page', function () {
     });
 
     it('Network parameter page displayed on mobile', function () {
-      cy.common_switch_to_mobile_and_click_toggle();
+      common_switch_to_mobile_and_click_toggle();
       cy.get(navigationLocators.networkParameters).click();
       verifyNetworkParametersPageDisplayed();
     });
@@ -28,8 +33,8 @@ context('Network parameters page', function () {
       'have.text',
       'Network Parameters'
     );
-    cy.common_verify_json_parameters(18);
-    cy.common_verify_json_string_values(6);
-    cy.common_verify_json_int_values(7);
+    common_verify_json_parameters(18);
+    common_verify_json_string_values(6);
+    common_verify_json_int_values(7);
   }
 });

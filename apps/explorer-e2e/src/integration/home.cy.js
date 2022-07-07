@@ -1,6 +1,9 @@
 import stats from '../locators/stats.locators';
 import common from '../locators/common.locators';
-import '../support/common.functions';
+import {
+  common_search,
+  common_validate_search_error,
+} from '../support/common.functions';
 
 context('Home Page', function () {
   before('visit home page', function () {
@@ -95,42 +98,42 @@ context('Home Page', function () {
   describe('Search bar', function () {
     it('Successful search for specific id by block id', function () {
       const blockId = '973624';
-      cy.common_search(blockId);
+      common_search(blockId);
       cy.url().should('include', blockId);
     });
 
     it('Successful search for specific id by tx hash', function () {
       const txHash =
         '9ED3718AA8308E7E08EC588EE7AADAF49711D2138860D8914B4D81A2054D9FB8';
-      cy.common_search(txHash);
+      common_search(txHash);
       cy.url().should('include', txHash);
     });
 
     it('Successful search for specific id by tx id', function () {
       const txId =
         '0x61DCCEBB955087F50D0B85382DAE138EDA9631BF1A4F92E563D528904AA38898';
-      cy.common_search(txId);
+      common_search(txId);
       cy.url().should('include', txId);
     });
 
     it('Error message displayed when invalid search by wrong string length', function () {
-      cy.common_search(
+      common_search(
         '9ED3718AA8308E7E08EC588EE7AADAF497D2138860D8914B4D81A2054D9FB8'
       );
-      cy.common_validate_search_error("Something doesn't look right");
+      common_validate_search_error("Something doesn't look right");
     });
 
     it('Error message displayed when invalid search by invalid hash', function () {
-      cy.common_search(
+      common_search(
         '9ED3718AA8308E7E08ECht8EE753DAF49711D2138860D8914B4D81A2054D9FB8'
       );
-      cy.common_validate_search_error('Transaction is not hexadecimal');
+      common_validate_search_error('Transaction is not hexadecimal');
     });
 
     it('Error message displayed when searching empty field', function () {
       cy.get(common.searchBar).clear();
       cy.get(common.searchButton).click();
-      cy.common_validate_search_error('Search required');
+      common_validate_search_error('Search required');
     });
   });
 });

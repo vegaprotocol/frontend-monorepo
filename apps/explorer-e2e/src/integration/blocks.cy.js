@@ -1,6 +1,6 @@
-import '../support/common.functions';
 import blocksLocators from '../locators/blocks.locators';
 import navigationLocators from '../locators/navigation.locators';
+import { common_switch_to_mobile_and_click_toggle } from '../support/common.functions';
 
 context('Blocks page', function () {
   before('visit token home page', function () {
@@ -17,7 +17,7 @@ context('Blocks page', function () {
     });
 
     it('Blocks page is displayed on mobile', function () {
-      cy.common_switch_to_mobile_and_click_toggle();
+      common_switch_to_mobile_and_click_toggle();
       cy.get(navigationLocators.blocks).click();
       validateBlocksDisplayed();
     });

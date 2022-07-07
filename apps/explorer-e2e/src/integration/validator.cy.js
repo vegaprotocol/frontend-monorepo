@@ -1,6 +1,6 @@
 import commonLocators from '../locators/common.locators';
 import navigationLocators from '../locators/navigation.locators';
-import '../support/common.functions';
+import { common_switch_to_mobile_and_click_toggle } from '../support/common.functions';
 
 context('Validator page', function () {
   describe('Verify elements on page', function () {
@@ -11,7 +11,7 @@ context('Validator page', function () {
     });
 
     it('Validator page is displayed on mobile', function () {
-      cy.common_switch_to_mobile_and_click_toggle();
+      common_switch_to_mobile_and_click_toggle();
       cy.get(navigationLocators.validators).click();
       validateValidatorsDisplayed();
     });
