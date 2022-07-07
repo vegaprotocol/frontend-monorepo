@@ -1,1 +1,2 @@
-export { ProposalListItem } from './proposals-list-item';
+export { ProposalsListItem } from './proposals-list-item';
+export { ProposalsListItemDetails } from './proposals-list-item-details';

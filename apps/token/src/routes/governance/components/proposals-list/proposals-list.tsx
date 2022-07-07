@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Heading } from '../../../../components/heading';
-import { ProposalListItem } from '../proposals-list-item';
+import { ProposalsListItem } from '../proposals-list-item';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 interface ProposalsListProps {
@@ -56,7 +56,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         <>
           <ul>
             {sortedProposals.open.map((proposal) => (
-              <ProposalListItem proposal={proposal} />
+              <ProposalsListItem proposal={proposal} />
             ))}
           </ul>
           <hr className="my-28 border-t-2" />
@@ -64,7 +64,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
       )}
       <ul>
         {sortedProposals.closed.map((proposal) => (
-          <ProposalListItem proposal={proposal} />
+          <ProposalsListItem proposal={proposal} />
         ))}
       </ul>
     </>

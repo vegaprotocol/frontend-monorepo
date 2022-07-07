@@ -1,4 +1,4 @@
-import { ProposalDetailHeader } from '../proposal-detail-header/proposal-detail-header';
+import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
 import type { RestProposalResponse } from '../../proposal/proposal-container';
 import { ProposalChangeTable } from '../proposal-change-table';
@@ -18,7 +18,7 @@ export const Proposal = ({ proposal, terms }: ProposalProps) => {
 
   return (
     <>
-      <ProposalDetailHeader proposal={proposal} />
+      <ProposalHeader proposal={proposal} />
       <ProposalChangeTable proposal={proposal} />
       <VoteDetails proposal={proposal} />
       <ProposalVotesTable proposal={proposal} />

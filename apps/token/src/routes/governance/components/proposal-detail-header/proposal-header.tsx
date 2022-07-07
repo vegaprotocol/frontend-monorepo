@@ -3,7 +3,7 @@ import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
-export const ProposalDetailHeader = ({
+export const ProposalHeader = ({
   proposal,
 }: {
   proposal: Proposals_proposals;
