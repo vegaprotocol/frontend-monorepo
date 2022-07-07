@@ -79,8 +79,8 @@ export const prepareIncomingOrders = (delta: OrderFields[]) => {
   return incoming;
 };
 
-const update = (data: OrderFields[], delta: OrderFields[]) =>
-  produce(data, (draft) => {
+const update = (data: OrderFields[], delta: OrderFields[]) => {
+  return produce(data, (draft) => {
     const incoming = prepareIncomingOrders(delta);
 
     // Add or update incoming orders
@@ -93,6 +93,7 @@ const update = (data: OrderFields[], delta: OrderFields[]) =>
       }
     });
   });
+};
 
 const getData = (responseData: Orders): Orders_party_orders[] | null =>
   responseData?.party?.orders || null;

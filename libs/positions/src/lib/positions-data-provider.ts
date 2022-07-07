@@ -78,8 +78,8 @@ export const POSITIONS_SUB = gql`
 const update = (
   data: Positions_party_positions[],
   delta: PositionSubscribe_positions
-) =>
-  produce(data, (draft) => {
+) => {
+  return produce(data, (draft) => {
     const index = draft.findIndex((m) => m.market.id === delta.market.id);
     if (index !== -1) {
       draft[index] = delta;
@@ -87,6 +87,8 @@ const update = (
       draft.push(delta);
     }
   });
+};
+
 const getData = (responseData: Positions): Positions_party_positions[] | null =>
   responseData.party ? responseData.party.positions : null;
 const getDelta = (
