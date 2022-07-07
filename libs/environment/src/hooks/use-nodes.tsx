@@ -150,6 +150,7 @@ const reducer = (state: Record<string, NodeData>, action: Action) => {
 };
 
 export const useNodes = (config: Configuration) => {
+  const reinitCacheKey = config.hosts.join(';');
   const [clients, setClients] = useState<ClientCollection>({});
   const [customNode, setCustomNode] = useState<undefined | string>();
   const [state, dispatch] = useReducer(reducer, getInitialState(config));
@@ -162,7 +163,8 @@ export const useNodes = (config: Configuration) => {
       subscriptions.forEach((unsubscribe) => unsubscribe());
     };
     // use primitive cache key to prevent infinite rerender loop
-  }, [config.hosts.join(';')]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reinitCacheKey]);
 
   useEffect(() => {
     if (customNode) {
