@@ -86,7 +86,7 @@ export const VegaOrderTransactionDialog = ({
               target="_blank"
               rel="noreferrer"
             >
-              View in block explorer
+              t('View in block explorer')
             </a>
           </p>
         )}
