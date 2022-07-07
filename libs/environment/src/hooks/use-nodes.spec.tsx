@@ -109,6 +109,7 @@ afterAll(() => {
 describe('useNodes hook', () => {
   it('returns the default state when empty config provided', () => {
     const { result } = renderHook(() => useNodes({ hosts: [] }));
+
     expect(result.current.state).toEqual({
       custom: initialState,
     });
@@ -272,45 +273,6 @@ describe('useNodes hook', () => {
 
     act(() => {
       result.current.updateNodeBlock('https://non-existing.url', 12);
-    });
-
-    expect(result.current.state['https://non-existing.url']).toBe(undefined);
-  });
-
-  it('allows resetting the state to defaults', async () => {
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
-
-    await waitFor(() => {
-      expect(result.current.state[url].block.value).toBe(
-        Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight)
-      );
-      expect(result.current.state[url].chain.value).toBe(
-        MOCK_STATISTICS_QUERY_RESULT.chainId
-      );
-      expect(result.current.state[url].responseTime.value).toBe(MOCK_DURATION);
-      expect(result.current.state[url].ssl.value).toBe(true);
-    });
-
-    act(() => {
-      result.current.resetNode(url);
-    });
-
-    expect(result.current.state[url]).toEqual({ ...initialState, url });
-  });
-
-  it('does nothing when calling the reset on a non-existing node', async () => {
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
-
-    await waitFor(() => {
-      expect(result.current.state[url].block.value).toEqual(
-        Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight)
-      );
-    });
-
-    act(() => {
-      result.current.resetNode('https://non-existing.url');
     });
 
     expect(result.current.state['https://non-existing.url']).toBe(undefined);

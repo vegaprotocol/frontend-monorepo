@@ -14,6 +14,8 @@ export enum ErrorType {
   SSL_ERROR,
   CONNECTION_ERROR,
   CONNECTION_ERROR_ALL,
+  CONFIG_LOAD_ERROR,
+  CONFIG_VALIDATION_ERROR,
 }
 
 export type Environment = z.infer<typeof envSchema> & {

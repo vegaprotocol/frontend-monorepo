@@ -20,6 +20,10 @@ const mockEnvironment: EnvironmentWithOptionalUrl = {
   VEGA_NETWORKS: {},
   ETHEREUM_PROVIDER_URL: 'https://ethereum.provider',
   ETHERSCAN_URL: 'https://etherscan.url',
+  GIT_BRANCH: 'test',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  GIT_COMMIT_HASH: 'abcde01234',
+  GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
 };
 
 function setupFetch(configUrl: string, hostMap: HostMapping) {
@@ -84,7 +88,9 @@ describe('useConfig hook', () => {
       ...mockEnvironment,
       VEGA_URL: 'https://some.url/query',
     };
-    const { result } = renderHook(() => useConfig(mockEnvWithUrl, mockUpdate, onConnectionError));
+    const { result } = renderHook(() =>
+      useConfig(mockEnvWithUrl, mockUpdate, onConnectionError)
+    );
 
     expect(fetch).not.toHaveBeenCalled();
     expect(mockUpdate).not.toHaveBeenCalled();
@@ -231,7 +237,9 @@ describe('useConfig hook', () => {
   });
 
   it('caches the list of networks', async () => {
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
+    );
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -243,7 +251,9 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     fetch.mockClear();
 
-    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
+    const run2 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
+    );
 
     jest.runAllTimers();
     await run2.waitForNextUpdate();
@@ -253,7 +263,9 @@ describe('useConfig hook', () => {
   });
 
   it('caches the list of networks between runs', async () => {
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
+    );
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -265,7 +277,9 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     fetch.mockClear();
 
-    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
+    const run2 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
+    );
 
     jest.runAllTimers();
     await run2.waitForNextUpdate();
@@ -278,7 +292,9 @@ describe('useConfig hook', () => {
     window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, '{not:{valid:{json');
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
+    );
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();
@@ -298,7 +314,9 @@ describe('useConfig hook', () => {
     );
     const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate, onConnectionError));
+    const run1 = renderHook(() =>
+      useConfig(mockEnvironment, mockUpdate, onConnectionError)
+    );
 
     await run1.waitForNextUpdate();
     jest.runAllTimers();

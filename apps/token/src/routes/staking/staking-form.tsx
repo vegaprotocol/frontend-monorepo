@@ -224,8 +224,13 @@ export const StakingForm = ({
   return (
     <>
       <h2>{t('Manage your stake')}</h2>
-      <FormGroup>
+      <FormGroup
+        label={t('Select if you want to add or remove stake')}
+        labelFor="radio-stake-options"
+        labelClassName="sr-only"
+      >
         <RadioGroup
+          name="radio-stake-options"
           onChange={(value) => {
             // @ts-ignore value does exist on target
             setAction(value);

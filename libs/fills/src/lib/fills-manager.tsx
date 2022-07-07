@@ -1,13 +1,13 @@
 import type { AgGridReact } from 'ag-grid-react';
-import { useCallback, useMemo, useRef } from 'react';
-import { FillsTable } from './fills-table';
-import { fillsDataProvider } from './fills-data-provider';
+import { useCallback, useRef, useMemo } from 'react';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import type { FillsVariables } from './__generated__/Fills';
-import type { FillFields } from './__generated__/FillFields';
+import { FillsTable } from './fills-table';
+import type { IGetRowsParams } from 'ag-grid-community';
+
+import { fillsDataProvider as dataProvider } from './fills-data-provider';
+import type { Fills_party_tradesPaged_edges } from './__generated__/Fills';
 import type { FillsSub_trades } from './__generated__/FillsSub';
-import isEqual from 'lodash/isEqual';
 
 interface FillsManagerProps {
   partyId: string;
@@ -15,66 +15,78 @@ interface FillsManagerProps {
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const variables = useMemo<FillsVariables>(
-    () => ({
-      partyId,
-      pagination: {
-        last: 300,
-      },
-    }),
-    [partyId]
-  );
-  const update = useCallback((delta: FillsSub_trades[]) => {
-    if (!gridRef.current) {
-      return false;
-    }
-    const updateRows: FillFields[] = [];
-    const add: FillFields[] = [];
+  const dataRef = useRef<Fills_party_tradesPaged_edges[] | null>(null);
+  const totalCountRef = useRef<number | undefined>(undefined);
 
-    delta.forEach((d) => {
+  const update = useCallback(
+    ({ data }: { data: Fills_party_tradesPaged_edges[] }) => {
       if (!gridRef.current?.api) {
-        return;
+        return false;
       }
-
-      const rowNode = gridRef.current.api.getRowNode(d.id);
-
-      if (rowNode) {
-        if (!isEqual(d, rowNode.data)) {
-          updateRows.push(d);
-        }
-      } else {
-        add.push(d);
-      }
-    });
-
-    if (updateRows.length || add.length) {
-      gridRef.current.api.applyTransactionAsync({
-        update: updateRows,
-        add,
-        addIndex: 0,
-      });
-    }
-
-    return true;
-  }, []);
-
-  const { data, loading, error } = useDataProvider(
-    fillsDataProvider,
-    update,
-    variables
+      dataRef.current = data;
+      gridRef.current.api.refreshInfiniteCache();
+      return true;
+    },
+    []
   );
 
-  const fills = useMemo(() => {
-    if (!data?.length) {
-      return [];
-    }
+  const insert = useCallback(
+    ({
+      data,
+      totalCount,
+    }: {
+      data: Fills_party_tradesPaged_edges[];
+      totalCount?: number;
+    }) => {
+      dataRef.current = data;
+      totalCountRef.current = totalCount;
+      return true;
+    },
+    []
+  );
 
-    return data;
-  }, [data]);
+  const variables = useMemo(() => ({ partyId }), [partyId]);
+
+  const { data, error, loading, load, totalCount } = useDataProvider<
+    Fills_party_tradesPaged_edges[],
+    FillsSub_trades[]
+  >({ dataProvider, update, insert, variables });
+  totalCountRef.current = totalCount;
+  dataRef.current = data;
+
+  const getRows = async ({
+    successCallback,
+    failCallback,
+    startRow,
+    endRow,
+  }: IGetRowsParams) => {
+    try {
+      if (dataRef.current && dataRef.current.length < endRow) {
+        await load({
+          first: endRow - startRow,
+          after: dataRef.current[dataRef.current.length - 1].cursor,
+        });
+      }
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow).map((edge) => edge.node)
+        : [];
+      let lastRow = -1;
+      if (totalCountRef.current !== undefined) {
+        if (!totalCountRef.current) {
+          lastRow = 0;
+        } else if (totalCountRef.current <= endRow) {
+          lastRow = totalCountRef.current;
+        }
+      }
+      successCallback(rowsThisBlock, lastRow);
+    } catch (e) {
+      failCallback();
+    }
+  };
 
   return (
-    <AsyncRenderer data={fills} loading={loading} error={error}>
-      <FillsTable ref={gridRef} partyId={partyId} fills={fills} />
+    <AsyncRenderer loading={loading} error={error} data={data}>
+      <FillsTable ref={gridRef} partyId={partyId} datasource={{ getRows }} />
     </AsyncRenderer>
   );
 };

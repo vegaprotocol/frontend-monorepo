@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
-import { useState, useEffect, createContext, useContext } from 'react';
+import { useState, createContext, useContext } from 'react';
 
 import { NodeSwitcherDialog } from '../components/node-switcher-dialog';
 import { useConfig } from './use-config';
 import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
 import type { Environment, RawEnvironment } from '../types';
+import type { ErrorType } from '../types';
 
 type EnvironmentProviderProps = {
   definitions?: Partial<RawEnvironment>;
@@ -22,26 +23,21 @@ export const EnvironmentProvider = ({
   definitions,
   children,
 }: EnvironmentProviderProps) => {
+  const [networkError, setNetworkError] = useState<undefined | ErrorType>();
   const [isNodeSwitcherOpen, setNodeSwitcherOpen] = useState(false);
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
-  const { config } = useConfig(
-    environment,
-    updateEnvironment,
-    () => setNodeSwitcherOpen(true),
-    () => setNodeSwitcherOpen(true),
-  );
+  const { config } = useConfig(environment, updateEnvironment, (errorType) => {
+    setNetworkError(errorType);
+    setNodeSwitcherOpen(true);
+  });
 
   const errorMessage = validateEnvironment(environment);
 
   if (errorMessage) {
     throw new Error(errorMessage);
   }
-
-  useEffect(() => {
-    setNodeSwitcherOpen(true);
-  }, []);
 
   return (
     <EnvironmentContext.Provider
@@ -53,6 +49,7 @@ export const EnvironmentProvider = ({
       {config && (
         <NodeSwitcherDialog
           dialogOpen={isNodeSwitcherOpen}
+          initialErrorType={networkError}
           setDialogOpen={setNodeSwitcherOpen}
           config={config}
           onConnect={(url) =>

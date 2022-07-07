@@ -62,33 +62,63 @@ export const getIsFormDisabled = (
   return getIsNodeDisabled(env, data);
 };
 
-export const getErrorByType = (errorType: ErrorType | undefined, env: Networks, url?: string) => {
+export const getErrorByType = (
+  errorType: ErrorType | undefined,
+  env: Networks,
+  url?: string
+) => {
   switch (errorType) {
-    case ErrorType.INVALID_URL: return {
-      headline: t('Error: invalid url'),
-      message: t(url ? `${url} is not a valid url.` : ''),
-    }
-    case ErrorType.INVALID_NETWORK: return {
-      headline: t(`Error: incorrect network`),
-      message: t(`This node is not on the ${env} network.`),
-    }
-    case ErrorType.SSL_ERROR: return {
-      headline: t(`Error: the node you are reading from does not have SSL`),
-      message: t(
-        '${data.url} does not have SSL. SSL is required to subscribe to data.'
-      ),
-    }
-    case ErrorType.CONNECTION_ERROR: return {
-      headline: t(`Error: can't connect to node`),
-      message: t(url ? `There was an error connecting to ${url}.` : ''),
-    }
-    case ErrorType.CONNECTION_ERROR_ALL: return {
-      headline: t(`Error: can't connect to any of the nodes on the network`),
-      message: t(`Please try entering a custom node address, or try again later.`),
-    }
-    default: return null;
+    case ErrorType.INVALID_URL:
+      return {
+        headline: t('Error: invalid url'),
+        message: t(url ? `${url} is not a valid url.` : ''),
+      };
+    case ErrorType.INVALID_NETWORK:
+      return {
+        headline: t(`Error: incorrect network`),
+        message: t(`This node is not on the ${env} network.`),
+      };
+    case ErrorType.SSL_ERROR:
+      return {
+        headline: t(`Error: the node you are reading from does not have SSL`),
+        message: t(
+          url
+            ? `${url} does not have SSL. SSL is required to subscribe to data.`
+            : ''
+        ),
+      };
+    case ErrorType.CONNECTION_ERROR:
+      return {
+        headline: t(`Error: can't connect to node`),
+        message: t(url ? `There was an error connecting to ${url}.` : ''),
+      };
+    case ErrorType.CONNECTION_ERROR_ALL:
+      return {
+        headline: t(`Error: can't connect to any of the nodes on the network`),
+        message: t(
+          `Please try entering a custom node address, or try again later.`
+        ),
+      };
+    case ErrorType.CONFIG_VALIDATION_ERROR:
+      return {
+        headline: t(
+          `Error: the configuration found for the network ${env} is invalid`
+        ),
+        message: t(
+          `Please try entering a custom node address, or try again later.`
+        ),
+      };
+    case ErrorType.CONFIG_LOAD_ERROR:
+      return {
+        headline: t(`Error: can't load network configuration`),
+        message: t(
+          `You can try entering a custom node address, or try again later.`
+        ),
+      };
+    default:
+      return null;
   }
-}
+};
 
 export const getErrorByData = (env: Networks, data?: NodeData) => {
   if (data && !getIsNodeLoading(data)) {

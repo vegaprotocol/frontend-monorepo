@@ -18,6 +18,14 @@ export const SelectMarketList = ({
   data,
   onSelect,
 }: SelectMarketListDataProps) => {
+  const handleKeyPress = (
+    event: React.KeyboardEvent<HTMLAnchorElement>,
+    id: string
+  ) => {
+    if (event.key === 'Enter') {
+      return onSelect(id);
+    }
+  };
   const thClassNames = (direction: 'left' | 'right') =>
     `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark/80 dark:text-white/80`;
   const tdClassNames =
@@ -54,8 +62,9 @@ export const SelectMarketList = ({
                   >
                     <td className={`${boldUnderlineClassNames} relative`}>
                       <Link href={`/markets/${id}`} passHref={true}>
-                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,jsx-a11y/no-static-element-interactions */}
                         <a
+                          onKeyPress={(event) => handleKeyPress(event, id)}
                           onClick={() => onSelect(id)}
                           data-testid={`market-link-${id}`}
                         >
