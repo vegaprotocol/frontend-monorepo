@@ -33,7 +33,7 @@ describe('deal ticket orders', () => {
   const orderTIFDropDown = 'order-tif';
   const placeOrderBtn = 'place-order';
   const orderStatusHeader = 'order-status-header';
-  const orderTransactionHash = 'tx-hash';
+  const orderTransactionHash = 'tx-block-explorer';
 
   before(() => {
     cy.mockGQL((req) => {

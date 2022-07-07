@@ -22,15 +22,15 @@ interface OrderListProps {
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data }, ref) => {
-    const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+    const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
     const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
     return (
       <>
         <OrderListTable data={data} cancel={cancel} ref={ref} />
         <VegaTransactionDialog
           key={`cancel-order-dialog-${transaction.txHash}`}
-          orderDialogOpen={orderDialogOpen}
-          setOrderDialogOpen={setOrderDialogOpen}
+          orderDialogOpen={cancelOrderDialogOpen}
+          setOrderDialogOpen={setCancelOrderDialogOpen}
           finalizedOrder={finalizedOrder}
           transaction={transaction}
           reset={reset}

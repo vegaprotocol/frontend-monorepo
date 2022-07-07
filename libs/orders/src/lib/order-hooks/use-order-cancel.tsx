@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react';
-import { determineId } from '@vegaprotocol/react-helpers';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import { useApolloClient } from '@apollo/client';
 import type {
@@ -31,16 +30,25 @@ export const useOrderCancel = () => {
       }
 
       // No types available for the subscription result
-      const matchingOrderEvent = data.busEvents[0].event;
+      const matchingOrderEvent = data.busEvents.find((e) => {
+        if (e.event.__typename !== 'Order') {
+          return false;
+        }
 
-      if (matchingOrderEvent && matchingOrderEvent.__typename === 'Order') {
-        setUpdatedOrder(matchingOrderEvent);
+        return e.event.id === id;
+      });
+
+      if (
+        matchingOrderEvent &&
+        matchingOrderEvent.event.__typename === 'Order'
+      ) {
+        setUpdatedOrder(matchingOrderEvent.event);
         resetTransaction();
       }
     });
 
     return () => sub.unsubscribe();
-  }, [client, keypair?.pub, resetTransaction]);
+  }, [client, keypair?.pub, id, resetTransaction]);
 
   const cancel = useCallback(
     async (order) => {
@@ -61,7 +69,7 @@ export const useOrderCancel = () => {
         });
 
         if (res?.signature) {
-          setId(determineId(res.signature));
+          setId(order.id);
         }
         return res;
       } catch (e) {
