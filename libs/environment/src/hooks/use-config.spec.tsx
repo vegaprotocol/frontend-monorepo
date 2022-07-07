@@ -277,7 +277,10 @@ describe('useConfig hook', () => {
   });
 
   it('refetches the network configuration and resets the cache when malformed data found in the storage', async () => {
-    window.localStorage.setItem(`${LOCAL_STORAGE_NETWORK_KEY}-${mockEnvironment.VEGA_ENV}`, '{not:{valid:{json');
+    window.localStorage.setItem(
+      `${LOCAL_STORAGE_NETWORK_KEY}-${mockEnvironment.VEGA_ENV}`,
+      '{not:{valid:{json'
+    );
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
     const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
