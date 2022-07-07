@@ -8,6 +8,7 @@ import {
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 import { useEnvironment } from '@vegaprotocol/environment';
+import { OrderType } from '../types';
 
 export interface Market {
   name: string;
@@ -130,7 +131,7 @@ export const VegaOrderTransactionDialog = ({
             )}
           </p>
         </div>
-        {finalizedOrder.type === 'Limit' && finalizedOrder.market && (
+        {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
           <div>
             <p className={headerClassName}>{t(`Price`)}</p>
             <p>
