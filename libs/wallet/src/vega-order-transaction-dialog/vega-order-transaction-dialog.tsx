@@ -78,7 +78,7 @@ export const VegaOrderTransactionDialog = ({
       >
         {transaction.txHash && (
           <p className="break-all">
-            Waiting for few more blocks - &nbsp;
+            t('Waiting for few more blocks') - &nbsp;
             <a
               className="underline"
               data-testid="tx-block-explorer"
