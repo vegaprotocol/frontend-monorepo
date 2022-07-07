@@ -127,6 +127,7 @@ export const VegaTransactionDialog = ({
       intent={getDialogIntent(type, finalizedOrder, transaction)}
     >
       <VegaOrderTransactionDialog
+        key={`${type}-tx-order-${transaction.txHash}`}
         transaction={transaction}
         finalizedOrder={finalizedOrder}
         title={getDialogTitle(type, finalizedOrder)}
