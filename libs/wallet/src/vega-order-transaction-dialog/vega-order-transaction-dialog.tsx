@@ -8,7 +8,7 @@ import {
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { OrderType } from '../types';
+import { OrderType } from '@vegaprotocol/types';
 
 export interface Market {
   name: string;

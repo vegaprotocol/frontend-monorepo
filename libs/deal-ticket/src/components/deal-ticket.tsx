@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { OrderType, OrderTimeInForce } from '@vegaprotocol/wallet';
+import {
+  VegaWalletOrderType,
+  VegaWalletOrderTimeInForce,
+} from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
@@ -97,8 +100,8 @@ export const DealTicket = ({
           />
         )}
       />
-      {orderType === OrderType.Limit &&
-        orderTimeInForce === OrderTimeInForce.GTT && (
+      {orderType === VegaWalletOrderType.Limit &&
+        orderTimeInForce === VegaWalletOrderTimeInForce.GTT && (
           <Controller
             name="expiration"
             control={control}

@@ -8,17 +8,17 @@ import type {
   OrderAmendmentBody,
 } from '@vegaprotocol/vegawallet-service-api-client';
 
-export enum OrderType {
+export enum VegaWalletOrderType {
   Market = 'TYPE_MARKET',
   Limit = 'TYPE_LIMIT',
 }
 
-export enum OrderSide {
+export enum VegaWalletOrderSide {
   Buy = 'SIDE_BUY',
   Sell = 'SIDE_SELL',
 }
 
-export enum OrderTimeInForce {
+export enum VegaWalletOrderTimeInForce {
   GTC = 'TIME_IN_FORCE_GTC',
   GTT = 'TIME_IN_FORCE_GTT',
   IOC = 'TIME_IN_FORCE_IOC',

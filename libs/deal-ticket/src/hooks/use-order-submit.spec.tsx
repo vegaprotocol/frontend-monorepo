@@ -5,7 +5,11 @@ import type {
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
-import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import {
+  VegaWalletOrderSide,
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderType,
+} from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
@@ -151,10 +155,10 @@ describe('useOrderSubmit', () => {
     });
 
     const order: Order = {
-      type: OrderType.Limit,
+      type: VegaWalletOrderType.Limit,
       size: '10',
-      timeInForce: OrderTimeInForce.GTT,
-      side: OrderSide.Buy,
+      timeInForce: VegaWalletOrderTimeInForce.GTT,
+      side: VegaWalletOrderSide.Buy,
       price: '1234567.89',
       expiration: new Date('2022-01-01'),
     };
@@ -166,11 +170,11 @@ describe('useOrderSubmit', () => {
       pubKey: keypair.pub,
       propagate: true,
       orderSubmission: {
-        type: OrderType.Limit,
+        type: VegaWalletOrderType.Limit,
         marketId: defaultMarket.id, // Market provided from hook argument
         size: '100', // size adjusted based on positionDecimalPlaces
-        side: OrderSide.Buy,
-        timeInForce: OrderTimeInForce.GTT,
+        side: VegaWalletOrderSide.Buy,
+        timeInForce: VegaWalletOrderTimeInForce.GTT,
         price: '123456789', // Decimal removed
         expiresAt: order.expiration?.getTime() + '000000', // Nanoseconds append
       },
@@ -242,10 +246,10 @@ describe('useOrderSubmit', () => {
     });
     await act(async () => {
       result.current.submit({
-        type: OrderType.Market,
-        side: OrderSide.Buy,
+        type: VegaWalletOrderType.Market,
+        side: VegaWalletOrderSide.Buy,
         size: '1',
-        timeInForce: OrderTimeInForce.FOK,
+        timeInForce: VegaWalletOrderTimeInForce.FOK,
       });
     });
     expect(result.current.id).toEqual(expectedId);

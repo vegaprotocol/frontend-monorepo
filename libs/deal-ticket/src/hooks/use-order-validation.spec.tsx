@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import {
-  OrderTimeInForce,
-  OrderType,
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderType,
   useVegaWallet,
 } from '@vegaprotocol/wallet';
 import type {
@@ -59,8 +59,8 @@ const defaultWalletContext = {
 const defaultOrder = {
   market,
   step: 0.1,
-  orderType: OrderType.Market,
-  orderTimeInForce: OrderTimeInForce.FOK,
+  orderType: VegaWalletOrderType.Market,
+  orderTimeInForce: VegaWalletOrderTimeInForce.FOK,
 };
 
 const ERROR = {
@@ -135,29 +135,29 @@ it.each`
   async ({ tradingMode, errorMessage }) => {
     const { result } = setup({
       market: { ...defaultOrder.market, tradingMode },
-      orderType: OrderType.Market,
+      orderType: VegaWalletOrderType.Market,
     });
     expect(result.current).toEqual(errorMessage);
   }
 );
 
 it.each`
-  tradingMode                            | orderTimeInForce        | errorMessage
-  ${MarketTradingMode.BatchAuction}      | ${OrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.MonitoringAuction} | ${OrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.OpeningAuction}    | ${OrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.BatchAuction}      | ${OrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.MonitoringAuction} | ${OrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.OpeningAuction}    | ${OrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.BatchAuction}      | ${OrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.MonitoringAuction} | ${OrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.OpeningAuction}    | ${OrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  tradingMode                            | orderTimeInForce                  | errorMessage
+  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
 `(
   'Returns an error message when submitting a limit order with a "$orderTimeInForce" value to a "$tradingMode" market',
   async ({ tradingMode, orderTimeInForce, errorMessage }) => {
     const { result } = setup({
       market: { ...defaultOrder.market, tradingMode },
-      orderType: OrderType.Limit,
+      orderType: VegaWalletOrderType.Limit,
       orderTimeInForce,
     });
     expect(result.current).toEqual(errorMessage);
