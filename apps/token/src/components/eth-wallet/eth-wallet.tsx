@@ -196,60 +196,62 @@ export const EthWallet = () => {
 
   return (
     <WalletCard dark={true}>
-      <WalletCardHeader>
-        <h1 className="m-0">{t('ethereumKey')}</h1>
-        {account && (
-          <div className="place-self-end font-mono px-4 pb-2">
-            <div className="font-mono">{truncateMiddle(account)}</div>
-            {pendingTxs && (
-              <div>
-                <button
-                  className="flex items-center gap-4 p-4 border whitespace-nowrap"
-                  data-testid="pending-transactions-btn"
-                  onClick={() =>
-                    appDispatch({
-                      type: AppStateActionType.SET_TRANSACTION_OVERLAY,
-                      isOpen: true,
-                    })
-                  }
-                >
-                  <Loader size="small" forceTheme="dark" />
-                  {t('pendingTransactions')}
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </WalletCardHeader>
-      <WalletCardContent>
-        {account ? (
-          <ConnectedKey />
-        ) : (
-          <Button
-            variant={'secondary'}
-            className="w-full"
-            onClick={() =>
-              appDispatch({
-                type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
-                isOpen: true,
-              })
-            }
-            data-test-id="connect-to-eth-wallet-button"
-          >
-            {t('connectEthWalletToAssociate')}
-          </Button>
-        )}
-        {account && (
-          <WalletCardActions>
-            <button
-              className="mt-4 underline"
-              onClick={() => connector.deactivate()}
+      <section data-testid="ethereum-wallet">
+        <WalletCardHeader>
+          <h1 className="m-0 text-h3 uppercase">{t('ethereumKey')}</h1>
+          {account && (
+            <div className="place-self-end font-mono px-4 pb-2">
+              <div className="font-mono">{truncateMiddle(account)}</div>
+              {pendingTxs && (
+                <div>
+                  <button
+                    className="flex items-center gap-4 p-4 border whitespace-nowrap"
+                    data-testid="pending-transactions-btn"
+                    onClick={() =>
+                      appDispatch({
+                        type: AppStateActionType.SET_TRANSACTION_OVERLAY,
+                        isOpen: true,
+                      })
+                    }
+                  >
+                    <Loader size="small" forceTheme="dark" />
+                    {t('pendingTransactions')}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </WalletCardHeader>
+        <WalletCardContent>
+          {account ? (
+            <ConnectedKey />
+          ) : (
+            <Button
+              variant={'secondary'}
+              className="w-full"
+              onClick={() =>
+                appDispatch({
+                  type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
+                  isOpen: true,
+                })
+              }
+              data-testid="connect-to-eth-wallet-button"
             >
-              {t('disconnect')}
-            </button>
-          </WalletCardActions>
-        )}
-      </WalletCardContent>
+              {t('connectEthWalletToAssociate')}
+            </Button>
+          )}
+          {account && (
+            <WalletCardActions>
+              <button
+                className="mt-4 underline"
+                onClick={() => connector.deactivate()}
+              >
+                {t('disconnect')}
+              </button>
+            </WalletCardActions>
+          )}
+        </WalletCardContent>
+      </section>
     </WalletCard>
   );
 };

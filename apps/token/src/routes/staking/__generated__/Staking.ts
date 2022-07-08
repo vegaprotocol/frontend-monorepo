@@ -100,6 +100,26 @@ export interface Staking_nodes_epochData {
   online: number;
 }
 
+export interface Staking_nodes_rankingScore {
+  __typename: "RankingScore";
+  /**
+   * The ranking score of the validator
+   */
+  rankingScore: string;
+  /**
+   * The stake based score of the validator (no anti-whaling)
+   */
+  stakeScore: string;
+  /**
+   * The performance score of the validator
+   */
+  performanceScore: string;
+  /**
+   * The tendermint voting power of the validator (uint32)
+   */
+  votingPower: string;
+}
+
 export interface Staking_nodes {
   __typename: "Node";
   /**
@@ -145,6 +165,10 @@ export interface Staking_nodes {
   pendingStakeFormatted: string;
   epochData: Staking_nodes_epochData | null;
   status: NodeStatus;
+  /**
+   * Ranking scores and status for the validator for the current epoch
+   */
+  rankingScore: Staking_nodes_rankingScore;
 }
 
 export interface Staking_nodeData {

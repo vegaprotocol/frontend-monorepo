@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
+import { NetworkInfo } from '@vegaprotocol/network-info';
 import { createClient } from './lib/apollo-client';
 import { Nav } from './components/nav';
 import { Header } from './components/header';
@@ -36,6 +37,9 @@ function App() {
                 />
                 <Nav menuOpen={menuOpen} />
                 <Main />
+                <footer className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-t-1">
+                  <NetworkInfo />
+                </footer>
               </div>
             </div>
           </NetworkLoader>
