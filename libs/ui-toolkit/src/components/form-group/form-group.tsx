@@ -30,7 +30,7 @@ export const FormGroup = ({
         <label htmlFor={labelFor}>
           <div
             className={classNames(
-              'mb-4 text-body-large text-black dark:text-white',
+              'mb-4 text-large text-black dark:text-white',
               {
                 'border-l-4 border-danger pl-8': hasError,
                 'text-right': labelAlign === 'right',
