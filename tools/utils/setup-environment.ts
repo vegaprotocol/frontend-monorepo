@@ -4,11 +4,9 @@ import * as log from 'npmlog';
 import * as dotenv from 'dotenv';
 import type { ExecutorContext } from '@nrwl/devkit';
 
-process.env['NX_GIT_COMMIT_HASH'] =
-  process.env['COMMIT_REF'] ?? 'dev'
-process.env['NX_GIT_BRANCH'] =
-  process.env['BRANCH'] ?? 'dev';
-process.env['NX_GIT_ORIGIN_URL'] = process.env['REPOSITORY_URL'];
+process.env['NX_GIT_COMMIT_HASH'] = process.env['COMMIT_REF'] ?? 'dev';
+process.env['NX_GIT_BRANCH'] = process.env['BRANCH'] ?? 'dev';
+process.env['NX_GIT_ORIGIN_URL'] = process.env['REPOSITORY_URL'] ?? '';
 
 const logEnvData = (
   envMap: Record<string, string>,

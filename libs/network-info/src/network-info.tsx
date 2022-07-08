@@ -43,12 +43,12 @@ export const NetworkInfo = () => {
           </Lozenge>
           .{' '}
         </p>
-        {GIT_COMMIT_HASH && GIT_ORIGIN_URL && (
+        {GIT_COMMIT_HASH && (
           <p className="mb-[1rem]">
             {t('Version/commit hash')}:{' '}
             <Link
-              href={`${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}`}
-              target="_blank"
+              href={GIT_ORIGIN_URL ? `${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}` : undefined}
+              target={GIT_ORIGIN_URL ? '_blank' : undefined}
             >
               {GIT_COMMIT_HASH}
             </Link>
