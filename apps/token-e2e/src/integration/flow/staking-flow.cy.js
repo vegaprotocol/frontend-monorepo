@@ -253,6 +253,13 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         '2.000000000000000000'
       );
     });
+
+    after(
+      'teardown wallet so state/results dont bleed into other test suites',
+      function () {
+        cy.vega_wallet_teardown();
+      }
+    );
   });
 
   cy.staking_validator_page_check_stake_next_epoch_value = (expectedVal) => {
