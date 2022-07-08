@@ -35,9 +35,9 @@ describe('home', () => {
       cy.wait('@GQL');
 
       cy.contains('Loading...').should('be.visible');
-      cy.contains('Loading...').should('not.exist')
+      cy.contains('Loading...').should('not.exist');
       cy.get('main[data-testid="market"]').should('exist'); // Wait for page to be rendered to before checking url
-      
+
       cy.url().should('include', `/markets/${oldestMarket.id}`); // Should redirect to oldest market
     });
 
