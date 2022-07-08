@@ -47,8 +47,9 @@ export const VegaOrderTransactionDialog = ({
         icon={<Icon name="hand-up" size={20} />}
       >
         <p>
-          Please open your wallet application and confirm or reject the
-          transaction
+          {t(
+            'Please open your wallet application and confirm or reject the transaction'
+          )}
         </p>
       </OrderDialogWrapper>
     );
@@ -79,7 +80,7 @@ export const VegaOrderTransactionDialog = ({
       >
         {transaction.txHash && (
           <p className="break-all">
-            t('Waiting for few more blocks') - &nbsp;
+            {t('Waiting for few more blocks')} - &nbsp;
             <a
               className="underline"
               data-testid="tx-block-explorer"
@@ -87,7 +88,7 @@ export const VegaOrderTransactionDialog = ({
               target="_blank"
               rel="noreferrer"
             >
-              t('View in block explorer')
+              {t('View in block explorer')}
             </a>
           </p>
         )}
