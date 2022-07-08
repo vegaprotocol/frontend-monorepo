@@ -23,9 +23,9 @@ const schemaObject = {
   ETHERSCAN_URL: z.string().url({
     message: 'The NX_ETHERSCAN_URL environment variable must be a valid url',
   }),
-  GIT_BRANCH: z.string(),
-  GIT_COMMIT_HASH: z.string(),
-  GIT_ORIGIN_URL: z.string(),
+  GIT_BRANCH: z.optional(z.string()),
+  GIT_COMMIT_HASH: z.optional(z.string()),
+  GIT_ORIGIN_URL: z.optional(z.string()),
   GITHUB_FEEDBACK_URL: z.optional(z.string()),
   VEGA_ENV: z.nativeEnum(Networks),
   VEGA_NETWORKS: z
