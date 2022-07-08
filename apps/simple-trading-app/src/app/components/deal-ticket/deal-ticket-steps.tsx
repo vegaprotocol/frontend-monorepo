@@ -15,8 +15,8 @@ import {
   DealTicketAmount,
 } from '@vegaprotocol/deal-ticket';
 import {
-  OrderTimeInForce,
-  OrderType,
+  VegaWalletOrderTimeInForce as OrderTimeInForce,
+  VegaWalletOrderType as OrderType,
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
