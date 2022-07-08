@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { determineId } from '@vegaprotocol/react-helpers';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import { useApolloClient } from '@apollo/client';
 import type {
@@ -69,7 +70,11 @@ export const useOrderCancel = () => {
         });
 
         if (res?.signature) {
-          setId(order.id);
+          if (order.id) {
+            setId(order.id);
+          } else {
+            setId(determineId(res.signature));
+          }
         }
         return res;
       } catch (e) {

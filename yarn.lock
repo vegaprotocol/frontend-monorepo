@@ -5936,7 +5936,7 @@
   dependencies:
     "@types/node" "*"
 
-"@types/classnames@^2.2.11", "@types/classnames@^2.3.1":
+"@types/classnames@^2.3.1":
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.3.1.tgz#3c2467aa0f1a93f1f021e3b9bcf938bd5dfdc0dd"
   integrity sha512-zeOWb0JGBoVmlQoznvqXbE0tEC/HONsnoUNH19Hc96NFsTAwTXbTqb8FMYkru1F/iqp7a18Ws3nWJvtA1sHD1A==
@@ -6357,12 +6357,12 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-dom@^17.0.0":
-  version "17.0.15"
-  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.15.tgz#f2c8efde11521a4b7991e076cb9c70ba3bb0d156"
-  integrity sha512-Tr9VU9DvNoHDWlmecmcsE5ZZiUkYx+nKBzum4Oxe1K0yJVyBlfbq7H3eXjxXqJczBKqPGq3EgfTru4MgKb9+Yw==
+"@types/react-dom@^18.0.5":
+  version "18.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.5.tgz#330b2d472c22f796e5531446939eacef8378444a"
+  integrity sha512-OWPWTUrY/NIrjsAPkAk1wW9LZeIjSvkXRhclsFO8CZcZGCOg2G0YZy4ft+rOyYxy8B7ui5iZzi9OkDebZ7/QSA==
   dependencies:
-    "@types/react" "^17"
+    "@types/react" "*"
 
 "@types/react-is@^16.7.1 || ^17.0.0":
   version "17.0.3"
@@ -6449,10 +6449,10 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^17", "@types/react@^17.0.0":
-  version "17.0.44"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.44.tgz#c3714bd34dd551ab20b8015d9d0dbec812a51ec7"
-  integrity sha512-Ye0nlw09GeMp2Suh8qoOv0odfgCoowfM/9MG6WeRD60Gq9wS90bdkdRtYbRkNhXOpG4H+YXGvj4wOWhAC0LJ1g==
+"@types/react@^18.0.14":
+  version "18.0.14"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.14.tgz#e016616ffff51dba01b04945610fe3671fdbe06d"
+  integrity sha512-x4gGuASSiWmo0xjDLpm5mPb52syZHJx02VKbqUKdLmKtAwIh63XClGsiTI1K6DO5q7ox4xAsQrU+Gl3+gGXF9Q==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -7530,17 +7530,17 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.13.0:
-  version "1.13.0"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.13.0.tgz#db9da270004c0ba9ccd5ca6c217ae745c217a959"
-  integrity sha512-Pxzph+GB8FLZUl2XLoNLrd3PKcL9IbUlrcrW4IY6KMP/c+6nYJPHaCnTiYjYLdzhs6dMA+C9RVfsUTytjBpwcg==
+allotment@1.14.2:
+  version "1.14.2"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.14.2.tgz#b89364ede0b3fbeb2927f7c1f80bc90f13248bbf"
+  integrity sha512-Gqfl2DW2hQ3RT22uiJs2yK1bSwwFbDMC4drTe3uWEjKMmwlAZmS7/vqLD1v25kqbAqdjWSzr+aqgHsRXT51BPQ==
   dependencies:
     classnames "^2.3.0"
     eventemitter3 "^4.0.0"
     lodash.clamp "^4.0.0"
     lodash.debounce "^4.0.0"
     lodash.isequal "^4.5.0"
-    use-resize-observer "^8.0.0"
+    use-resize-observer "^9.0.0"
 
 alpha-lyrae@vegaprotocol/alpha-lyrae:
   version "0.0.0"
@@ -17641,14 +17641,13 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha1-elfrVQpng/kRUzH89GY9XI4AelA=
 
-pennant@0.4.11:
-  version "0.4.11"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.11.tgz#d246ae140acd88da82ceca74f606afa0731f367b"
-  integrity sha512-H6851PEuURt4kWQFPyuT7MyVjX+mG8rDVK6x9kssOU8L/57rFS64Yu9ZQi2xcu1+q8optfEqe8WB77dd+/qjPA==
+pennant@^0.4.12:
+  version "0.4.12"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.12.tgz#c37860fcea96b79114c2ee4f22c5c18bd8e9d5a2"
+  integrity sha512-3j7YIsEcIceWIDT5A8WdkBdTPK0rzqcUzFKK3UfFYAv0xGPI7aJyyX2Gu5QfEML01A0oGtgLsjbWoxHdiSp7Hw==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
-    "@types/classnames" "^2.2.11"
     "@types/d3-array" "^2.9.0"
     "@types/d3-dispatch" "^2.0.0"
     "@types/d3-drag" "^2.0.0"
@@ -17662,10 +17661,10 @@ pennant@0.4.11:
     "@types/jest" "^27.0.1"
     "@types/lodash" "^4.14.168"
     "@types/node" "^16.0.0"
-    "@types/react" "^17.0.0"
-    "@types/react-dom" "^17.0.0"
+    "@types/react" "^18.0.14"
+    "@types/react-dom" "^18.0.5"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.13.0"
+    allotment "1.14.2"
     classnames "^2.2.6"
     d3-array "2.3.3"
     d3-delaunay "^6.0.2"
@@ -17686,7 +17685,7 @@ pennant@0.4.11:
     react-virtualized-auto-sizer "^1.0.4"
     sass "^1.49.9"
     typescript "^4.1.2"
-    use-resize-observer "^8.0.0"
+    use-resize-observer "^9.0.0"
 
 performance-now@^2.1.0:
   version "2.1.0"
@@ -21800,10 +21799,10 @@ use-latest@^1.0.0:
   dependencies:
     use-isomorphic-layout-effect "^1.0.0"
 
-use-resize-observer@^8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/use-resize-observer/-/use-resize-observer-8.0.0.tgz#69bd80c1ddd94f3758563fe107efb25fed85067a"
-  integrity sha512-n0iKSeiQpJCyaFh5JA0qsVLBIovsF4EIIR1G6XiBwKJN66ZrD4Oj62bjcuTAATPKiSp6an/2UZZxCf/67fk3sQ==
+use-resize-observer@^9.0.0:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/use-resize-observer/-/use-resize-observer-9.0.2.tgz#25830221933d9b6e931850023305eb9d24379a6b"
+  integrity sha512-JOzsmF3/IDmtjG7OE5qXOP69LEpBpwhpLSiT1XgSr+uFRX0ftJHQnDaP7Xq+uhbljLYkJt67sqsbnyXBjiY8ig==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
 

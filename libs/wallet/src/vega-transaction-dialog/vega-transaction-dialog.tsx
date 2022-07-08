@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { OrderStatus } from '@vegaprotocol/types';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
@@ -130,7 +131,7 @@ export const VegaTransactionDialog = ({
         key={`${type}-tx-order-${transaction.txHash}`}
         transaction={transaction}
         finalizedOrder={finalizedOrder}
-        title={getDialogTitle(type, finalizedOrder)}
+        title={t(getDialogTitle(type, finalizedOrder))}
       />
     </Dialog>
   );
