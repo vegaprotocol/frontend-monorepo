@@ -1,6 +1,8 @@
 import navigation from '../locators/navigation.locators';
 import home from '../locators/home.locators';
-import vegaToken from '../data/vegaToken.json';
+
+const vegaTokenAddress = Cypress.env('vegaTokenAddress');
+const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
 
 context('Home Page - verify elements on page', function () {
   before('visit token home page', function () {
@@ -51,7 +53,7 @@ context('Home Page - verify elements on page', function () {
           cy.get(home.address)
             .should('be.visible')
             .invoke('text')
-            .should('be.equal', vegaToken.tokenAddress);
+            .should('be.equal', vegaTokenAddress);
         });
       });
       it('should have VESTING CONTRACT', function () {
@@ -59,7 +61,7 @@ context('Home Page - verify elements on page', function () {
           cy.get(home.contract)
             .should('be.visible')
             .invoke('text')
-            .should('be.equal', vegaToken.vestingContract);
+            .should('be.equal', vegaTokenContractAddress);
         });
       });
       it('should have TOTAL SUPPLY', function () {
