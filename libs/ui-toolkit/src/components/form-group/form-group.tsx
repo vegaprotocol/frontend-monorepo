@@ -37,7 +37,7 @@ export const FormGroup = ({
               }
             )}
           >
-            <div className="font-bold mb-2">{label}</div>
+            <div className="font-medium mb-2">{label}</div>
             {labelDescription && (
               <div className={classNames({ 'text-danger': hasError })}>
                 {labelDescription}
