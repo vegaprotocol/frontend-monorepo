@@ -47,7 +47,11 @@ export const NetworkInfo = () => {
           <p className="mb-[1rem]">
             {t('Version/commit hash')}:{' '}
             <Link
-              href={GIT_ORIGIN_URL ? `${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}` : undefined}
+              href={
+                GIT_ORIGIN_URL
+                  ? `${GIT_ORIGIN_URL}/commit/${GIT_COMMIT_HASH}`
+                  : undefined
+              }
               target={GIT_ORIGIN_URL ? '_blank' : undefined}
             >
               {GIT_COMMIT_HASH}
