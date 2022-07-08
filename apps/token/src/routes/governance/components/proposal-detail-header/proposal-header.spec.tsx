@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
-import { ProposalDetailHeader } from './proposal';
+import { ProposalHeader } from './proposal-header';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 const proposal = generateProposal();
 
 const renderComponent = (proposal: Proposals_proposals) => (
-  <ProposalDetailHeader proposal={proposal} />
+  <ProposalHeader proposal={proposal} />
 );
 
 it('New market', () => {

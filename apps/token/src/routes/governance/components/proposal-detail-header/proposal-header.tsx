@@ -93,10 +93,12 @@ export const ProposalHeader = ({
   }
 
   return (
-    <>
-      <header data-testid="proposal-header">{headerText}</header>
+    <div className="text-ui text-white">
+      <header data-testid="proposal-header">
+        <h2 className="text-h5 font-semibold mb-4">{headerText}</h2>
+      </header>
       <div data-testid="proposal-details-one">{detailsOne}</div>
       <div data-testid="proposal-details-two">{detailsTwo}</div>
-    </>
+    </div>
   );
 };

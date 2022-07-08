@@ -1,3 +1,5 @@
+import classnames from 'classnames';
+import { Link } from 'react-router-dom';
 import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 import { useVoteInformation } from '../../hooks';
 import { useUserVote } from '../vote-details/use-user-vote';
@@ -11,8 +13,6 @@ import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { ProposalState } from '../../../../__generated__/globalTypes';
 import type { ReactNode } from 'react';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-import { Link } from 'react-router-dom';
-import React from 'react';
 
 export const ProposalsListItemDetails = ({
   proposal,
@@ -98,7 +98,7 @@ export const ProposalsListItemDetails = ({
     case ProposalState.Open: {
       proposalStatus = (
         <>
-          {t('voteState_Open')} <Icon name={'time'} />
+          {t('voteState_Open')} <Icon name={'hand'} />
         </>
       );
       voteDetails = (voteState === 'Yes' && (
@@ -123,7 +123,11 @@ export const ProposalsListItemDetails = ({
         (!majorityMet && MajorityNotReached) ||
         (willPass && (
           <>
-            {t('Set to')} <StatusPass>{t('pass')}</StatusPass>
+            {t('Set to')}{' '}
+            <StatusPass>
+              {t('pass')}
+              {}
+            </StatusPass>
           </>
         ));
       break;
@@ -142,7 +146,8 @@ export const ProposalsListItemDetails = ({
     case ProposalState.Rejected: {
       proposalStatus = (
         <>
-          {t('voteState_Rejected')} <Icon name={'warning-sign'} />
+          <StatusFail>{t('voteState_Rejected')}</StatusFail>{' '}
+          <Icon name={'warning-sign'} />
         </>
       );
       voteStatus = proposal.rejectionReason && (
@@ -153,17 +158,34 @@ export const ProposalsListItemDetails = ({
   }
 
   return (
-    <>
-      <div data-testid="proposal-status">{proposalStatus}</div>
-      {voteDetails && <div data-testid="vote-details">{voteDetails}</div>}
-      {voteStatus && <div data-testid="vote-status">{voteStatus}</div>}
-      {proposal.id && (
-        <Link to={proposal.id}>
-          <Button variant="secondary" data-testid="view-proposal-btn">
-            {t('View')}
-          </Button>
-        </Link>
+    <div
+      className={classnames(
+        'grid grid-cols-[1fr_auto] items-start gap-8',
+        'mt-4',
+        'text-ui'
       )}
-    </>
+    >
+      <div className="flex flex-col gap-8">
+        <div
+          className="flex items-center gap-8 text-white"
+          data-testid="proposal-status"
+        >
+          {proposalStatus}
+        </div>
+
+        {voteDetails && <div data-testid="vote-details">{voteDetails}</div>}
+      </div>
+      <div className="flex flex-col gap-8 text-right">
+        {voteStatus && <div data-testid="vote-status">{voteStatus}</div>}
+
+        {proposal.id && (
+          <Link to={proposal.id}>
+            <Button variant="secondary" data-testid="view-proposal-btn">
+              {t('View')}
+            </Button>
+          </Link>
+        )}
+      </div>
+    </div>
   );
 };

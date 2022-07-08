@@ -10,7 +10,7 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
   if (!proposal || !proposal.id) return null;
 
   return (
-    <li className="last:mb-0 mb-24" key={proposal.id}>
+    <li className="mx-[-20px] px-20 py-20 odd:bg-white-10" key={proposal.id}>
       <ProposalHeader proposal={proposal} />
       <ProposalsListItemDetails proposal={proposal} />
     </li>
