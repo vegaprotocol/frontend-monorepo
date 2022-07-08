@@ -31,6 +31,7 @@ context('Blocks page', function () {
     });
 
     it('Navigate to previous block', function () {
+      waitForBlocksResponse();
       cy.get(blocksLocators.blockHeight).eq(0).click();
       cy.get(blocksLocators.blockHeader)
         .invoke('text')
