@@ -9,7 +9,7 @@ export const Navbar = () => {
     <nav className="flex items-center">
       <Link href="/" passHref={true}>
         <a className="px-[26px]">
-          <Vega className="fill-black dark:fill-white" />
+          <Vega className="fill-white" />
         </a>
       </Link>
       {[
@@ -38,7 +38,7 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
     'uppercase xs:text-ui sm:text-body-large md:text-h5 lg:text-h4',
     {
       'bg-vega-pink dark:bg-vega-yellow text-white dark:text-black': isActive,
-      'text-black dark:text-white': !isActive,
+      'text-white': !isActive,
     }
   );
   return (

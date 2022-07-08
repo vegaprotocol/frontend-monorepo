@@ -28,7 +28,7 @@ function AppBody({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div className="h-full dark:bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
+      <div className="h-full bg-black dark:text-white-60 bg-white relative z-0 text-black-60 grid grid-rows-[min-content,1fr]">
         <AppLoader>
           <div className="flex items-stretch border-b-[7px] border-vega-pink dark:border-vega-yellow">
             <Navbar />
