@@ -13,8 +13,8 @@ jobs:
   master:
     strategy:
       matrix:
-        version: ['0.0.4']
-        build-platform: ['linux/amd64']
+        version: ['0.0.5']
+        build-platform: ['linux/amd64, linux/arm64']
         app: ['trading']
     name: Build the ${{ inputs.image_name }} image
     runs-on: ubuntu-latest
