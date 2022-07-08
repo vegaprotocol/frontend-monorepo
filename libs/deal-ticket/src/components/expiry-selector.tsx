@@ -1,5 +1,6 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import { formatForInput } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface ExpirySelectorProps {
   value?: Date;
@@ -11,7 +12,7 @@ export const ExpirySelector = ({ value, onSelect }: ExpirySelectorProps) => {
   const dateFormatted = formatForInput(date);
   const minDate = formatForInput(date);
   return (
-    <FormGroup label="Expiry time/date" labelFor="expiration">
+    <FormGroup label={t('Expiry time/date')} labelFor="expiration">
       <Input
         data-testid="date-picker-field"
         id="expiration"

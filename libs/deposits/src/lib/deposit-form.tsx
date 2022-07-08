@@ -190,9 +190,9 @@ export const DepositForm = ({
         )}
       </FormGroup>
       {selectedAsset && limits && (
-        <FormGroup>
+        <div className="mb-20">
           <DepositLimits limits={limits} />
-        </FormGroup>
+        </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">
         <Input

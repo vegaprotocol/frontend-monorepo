@@ -1,4 +1,5 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import { OrderType } from '@vegaprotocol/wallet';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 
@@ -14,8 +15,9 @@ const toggles = Object.entries(OrderType).map(([label, value]) => ({
 
 export const TypeSelector = ({ value, onSelect }: TypeSelectorProps) => {
   return (
-    <FormGroup label="Order type">
+    <FormGroup label={t('Order type')} labelFor="order-type">
       <Toggle
+        id="order-type"
         name="order-type"
         toggles={toggles}
         checkedValue={value}
