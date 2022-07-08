@@ -5,17 +5,25 @@ import * as log from 'npmlog';
 import * as dotenv from 'dotenv';
 import type { ExecutorContext } from '@nrwl/devkit';
 
-process.env['NX_GIT_COMMIT_HASH'] = execSync('git rev-parse HEAD')
-  .toString()
-  .replace(/[\r\n]/gm, '');
-process.env['NX_GIT_BRANCH'] = execSync('git rev-parse --abbrev-ref HEAD')
-  .toString()
-  .replace(/[\r\n]/gm, '');
-process.env['NX_GIT_ORIGIN_URL'] = execSync('git remote get-url origin')
-  .toString()
-  .replace('ssh://git@', 'https://')
-  .replace('.git', '')
-  .replace(/[\r\n]/gm, '');
+try {
+  process.env['NX_GIT_COMMIT_HASH'] =
+    process.env['COMMIT_REF'] ??
+    execSync('git rev-parse HEAD')
+      .toString()
+      .replace(/[\r\n]/gm, '');
+  process.env['NX_GIT_BRANCH'] =
+    process.env['BRANCH'] ??
+    execSync('git rev-parse --abbrev-ref HEAD')
+      .toString()
+      .replace(/[\r\n]/gm, '');
+  process.env['NX_GIT_ORIGIN_URL'] =
+    process.env['REPOSITORY_URL'] ??
+    execSync('git remote get-url origin')
+      .toString()
+      .replace('ssh://git@', 'https://')
+      .replace('.git', '')
+      .replace(/[\r\n]/gm, '');
+} catch (err) {}
 
 const logEnvData = (
   envMap: Record<string, string>,
