@@ -1,29 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { execSync } from 'child_process';
 import * as log from 'npmlog';
 import * as dotenv from 'dotenv';
 import type { ExecutorContext } from '@nrwl/devkit';
 
-try {
-  process.env['NX_GIT_COMMIT_HASH'] =
-    process.env['COMMIT_REF'] ??
-    execSync('git rev-parse HEAD')
-      .toString()
-      .replace(/[\r\n]/gm, '');
-  process.env['NX_GIT_BRANCH'] =
-    process.env['BRANCH'] ??
-    execSync('git rev-parse --abbrev-ref HEAD')
-      .toString()
-      .replace(/[\r\n]/gm, '');
-  process.env['NX_GIT_ORIGIN_URL'] =
-    process.env['REPOSITORY_URL'] ??
-    execSync('git remote get-url origin')
-      .toString()
-      .replace('ssh://git@', 'https://')
-      .replace('.git', '')
-      .replace(/[\r\n]/gm, '');
-} catch (err) {}
+process.env['NX_GIT_COMMIT_HASH'] = process.env['COMMIT_REF'] ?? 'dev';
+process.env['NX_GIT_BRANCH'] = process.env['BRANCH'] ?? 'dev';
+process.env['NX_GIT_ORIGIN_URL'] = process.env['REPOSITORY_URL'] ?? '';
 
 const logEnvData = (
   envMap: Record<string, string>,

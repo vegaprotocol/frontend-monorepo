@@ -53,6 +53,13 @@ export const STAKING_QUERY = gql`
         online
       }
       status
+      rankingScore {
+        rankingScore
+        stakeScore
+        performanceScore
+        votingPower
+        stakeScore
+      }
     }
     nodeData {
       stakedTotal
