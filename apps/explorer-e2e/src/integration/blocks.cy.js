@@ -24,14 +24,14 @@ context('Blocks page', function () {
 
     it('Block validator page is displayed', function () {
       waitForBlocksResponse();
-      cy.get(blocksLocators.blockHeight).first().click();
+      cy.get(blocksLocators.blockHeight).eq(0).click();
       cy.get(blocksLocators.minedByValidator).should('not.be.empty');
       cy.get(blocksLocators.blockTime).should('not.be.empty');
       //TODO: Add assertion for transactions when txs are added
     });
 
     it('Navigate to previous block', function () {
-      cy.get(blocksLocators.blockHeight).first().click();
+      cy.get(blocksLocators.blockHeight).eq(0).click();
       cy.get(blocksLocators.blockHeader)
         .invoke('text')
         .then(($blockHeaderTxt) => {
@@ -70,7 +70,8 @@ context('Blocks page', function () {
         });
     });
 
-    it('Infinite scroll shows at least 100 new blocks', function () {
+    // Skipping these tests for time being - since blockchain in capsule is now too small to show historical data - re-enable once addressed
+    it.skip('Infinite scroll shows at least 100 new blocks', function () {
       const expectedBlocks = 100;
       const scrollAttempts = 7;
 
