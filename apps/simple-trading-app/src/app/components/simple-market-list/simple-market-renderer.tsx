@@ -16,7 +16,7 @@ const MarketNameRenderer = ({ market }: Props) => {
           tags={market.tradableInstrument.instrument.metadata.tags}
         />
       </div>
-      <div className="col-span-2 ui-small text-deemphasise dark:text-midGrey self-start leading-3">
+      <div className="col-span-2 text-ui-small text-deemphasise dark:text-midGrey self-start leading-3">
         {market.tradableInstrument.instrument.product.quoteName}
       </div>
     </div>
