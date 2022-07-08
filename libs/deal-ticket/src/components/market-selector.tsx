@@ -152,7 +152,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     if (!lookup && !showPane) {
       setLookup(market.name);
     }
-  }, [market, lookup, setLookup]);
+  }, [market, lookup, showPane, setLookup]);
 
   const openPane = useCallback(() => {
     setShowPane(!showPane);
