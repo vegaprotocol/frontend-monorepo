@@ -1,3 +1,4 @@
+import { t } from '@vegaprotocol/react-helpers';
 import { OrderStatus } from '@vegaprotocol/types';
 import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
 import { useEffect } from 'react';
