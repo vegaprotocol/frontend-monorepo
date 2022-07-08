@@ -24,7 +24,9 @@ export const VegaWalletConnectButton = ({
   return (
     <span>
       {isConnected && (
-        <span className="text-ui-small font-mono mr-2 text-white-90">Vega key:</span>
+        <span className="text-ui-small font-mono mr-2 text-white-90">
+          Vega key:
+        </span>
       )}
       <button
         data-testid={isConnected ? 'manage-vega-wallet' : 'connect-vega-wallet'}

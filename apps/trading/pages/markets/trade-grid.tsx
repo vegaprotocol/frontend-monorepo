@@ -160,13 +160,13 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </TradeGridChild>
         <TradeGridChild className="col-span-3">
           <Tabs>
-            <Tab id="orders" name={t('Orders')}>
-              <TradingViews.Orders />
-            </Tab>
             <Tab id="positions" name={t('Positions')}>
               <TradingViews.Positions />
             </Tab>
-            <Tab id="accounts" name={t('Accounts')}>
+            <Tab id="orders" name={t('Orders')}>
+              <TradingViews.Orders />
+            </Tab>
+            <Tab id="accounts" name={t('Collateral')}>
               <TradingViews.Accounts />
             </Tab>
           </Tabs>
