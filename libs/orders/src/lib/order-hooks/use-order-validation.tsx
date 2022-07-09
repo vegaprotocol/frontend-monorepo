@@ -1,19 +1,19 @@
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
+import type { Order } from '@vegaprotocol/wallet';
 import {
   useVegaWallet,
-  OrderTimeInForce,
-  OrderType,
+  VegaWalletOrderTimeInForce as OrderTimeInForce,
+  VegaWalletOrderType as OrderType,
 } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import type { Order } from '../utils/get-default-order';
+import type { Market } from '../market';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 
 export type ValidationProps = {
   step: number;
-  market: DealTicketQuery_market;
+  market: Market;
   orderType: OrderType;
   orderTimeInForce: OrderTimeInForce;
   fieldErrors?: FieldErrors<Order>;

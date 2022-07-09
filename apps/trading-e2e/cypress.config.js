@@ -22,6 +22,7 @@ module.exports = defineConfig({
     supportFile: './src/support/index.ts',
     video: true,
     videosFolder: '../../dist/cypress/apps/trading-e2e/videos',
+    videoUploadOnPasses: false,
     screenshotsFolder: '../../dist/cypress/apps/trading-e2e/screenshots',
     chromeWebSecurity: false,
     projectId: 'et4snf',

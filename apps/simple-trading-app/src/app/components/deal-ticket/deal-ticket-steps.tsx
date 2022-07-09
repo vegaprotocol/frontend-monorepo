@@ -2,24 +2,27 @@ import * as React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import Box from '@mui/material/Box';
 import { Stepper } from '../stepper';
-import type { DealTicketQuery_market, Order } from '@vegaprotocol/deal-ticket';
+import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import {
   ExpirySelector,
   SideSelector,
   TimeInForceSelector,
   TypeSelector,
-  getDefaultOrder,
-  useOrderValidation,
-  useOrderSubmit,
   DealTicketAmount,
 } from '@vegaprotocol/deal-ticket';
+import type { Order } from '@vegaprotocol/orders';
 import {
-  OrderTimeInForce,
-  OrderType,
+  VegaWalletOrderTimeInForce as OrderTimeInForce,
+  VegaWalletOrderType as OrderType,
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
+import {
+  getDefaultOrder,
+  useOrderValidation,
+  useOrderSubmit,
+} from '@vegaprotocol/orders';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;

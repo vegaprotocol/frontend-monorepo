@@ -1,11 +1,11 @@
 import type { UseFormRegister } from 'react-hook-form';
-import { OrderType } from '@vegaprotocol/wallet';
-import type { Order } from '../utils/get-default-order';
+import { VegaWalletOrderType } from '@vegaprotocol/wallet';
+import type { Order } from '@vegaprotocol/orders';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
 
 export interface DealTicketAmountProps {
-  orderType: OrderType;
+  orderType: VegaWalletOrderType;
   step: number;
   register: UseFormRegister<Order>;
   quoteName: string;
@@ -17,9 +17,9 @@ export const DealTicketAmount = ({
   ...props
 }: DealTicketAmountProps) => {
   switch (orderType) {
-    case OrderType.Market:
+    case VegaWalletOrderType.Market:
       return <DealTicketMarketAmount {...props} />;
-    case OrderType.Limit:
+    case VegaWalletOrderType.Limit:
       return <DealTicketLimitAmount {...props} />;
     default: {
       throw new Error('Invalid ticket type');

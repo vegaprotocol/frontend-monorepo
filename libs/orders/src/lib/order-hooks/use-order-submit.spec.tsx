@@ -1,19 +1,26 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import type { Order } from '../utils/get-default-order';
+import type { Order } from '../utils';
 import type {
   VegaKeyExtended,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
-import { OrderSide, OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import {
+  VegaWalletOrderSide,
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderType,
+} from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
-import type { OrderEvent, OrderEvent_busEvents } from '@vegaprotocol/orders';
-import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
+import type {
+  OrderEvent,
+  OrderEvent_busEvents,
+} from './__generated__/OrderEvent';
+import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
+import type { Market } from '../market';
 
 const defaultMarket = {
   __typename: 'Market',
@@ -39,7 +46,7 @@ const defaultMarket = {
       price: '100',
     },
   },
-} as DealTicketQuery_market;
+} as Market;
 
 const defaultWalletContext = {
   keypair: null,
@@ -151,10 +158,10 @@ describe('useOrderSubmit', () => {
     });
 
     const order: Order = {
-      type: OrderType.Limit,
+      type: VegaWalletOrderType.Limit,
       size: '10',
-      timeInForce: OrderTimeInForce.GTT,
-      side: OrderSide.Buy,
+      timeInForce: VegaWalletOrderTimeInForce.GTT,
+      side: VegaWalletOrderSide.Buy,
       price: '1234567.89',
       expiration: new Date('2022-01-01'),
     };
@@ -166,11 +173,11 @@ describe('useOrderSubmit', () => {
       pubKey: keypair.pub,
       propagate: true,
       orderSubmission: {
-        type: OrderType.Limit,
+        type: VegaWalletOrderType.Limit,
         marketId: defaultMarket.id, // Market provided from hook argument
         size: '100', // size adjusted based on positionDecimalPlaces
-        side: OrderSide.Buy,
-        timeInForce: OrderTimeInForce.GTT,
+        side: VegaWalletOrderSide.Buy,
+        timeInForce: VegaWalletOrderTimeInForce.GTT,
         price: '123456789', // Decimal removed
         expiresAt: order.expiration?.getTime() + '000000', // Nanoseconds append
       },
@@ -242,10 +249,10 @@ describe('useOrderSubmit', () => {
     });
     await act(async () => {
       result.current.submit({
-        type: OrderType.Market,
-        side: OrderSide.Buy,
+        type: VegaWalletOrderType.Market,
+        side: VegaWalletOrderSide.Buy,
         size: '1',
-        timeInForce: OrderTimeInForce.FOK,
+        timeInForce: VegaWalletOrderTimeInForce.FOK,
       });
     });
     expect(result.current.id).toEqual(expectedId);

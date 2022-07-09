@@ -1,24 +1,31 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
-import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
+import { ORDER_EVENT_SUB } from './order-event-query';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from '@vegaprotocol/orders';
-import { OrderType, useVegaWallet } from '@vegaprotocol/wallet';
+} from './__generated__';
+import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
+import { MarketState } from '@vegaprotocol/types';
+import type { Market } from '../market';
 
-export const useOrderSubmit = (market: DealTicketQuery_market) => {
+export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [id, setId] = useState('');
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
+
+  const reset = useCallback(() => {
+    resetTransaction();
+    setFinalizedOrder(null);
+    setId('');
+  }, [resetTransaction]);
 
   useEffect(() => {
     const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
@@ -49,12 +56,15 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
         resetTransaction();
       }
     });
-    return () => sub.unsubscribe();
-  }, [client, id, keypair?.pub, resetTransaction]);
+    return () => {
+      sub.unsubscribe();
+      setFinalizedOrder(null);
+    };
+  }, [client, id, keypair?.pub, reset, resetTransaction]);
 
   const submit = useCallback(
     async (order: Order) => {
-      if (!keypair || !order.side) {
+      if (!keypair || !order.side || market.state !== MarketState.Active) {
         return;
       }
 
@@ -66,7 +76,7 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
         orderSubmission: {
           marketId: market.id,
           price:
-            order.type === OrderType.Limit && order.price
+            order.type === VegaWalletOrderType.Limit && order.price
               ? removeDecimal(order.price, market.decimalPlaces)
               : undefined,
           size: removeDecimal(order.size, market.positionDecimalPlaces),
@@ -87,12 +97,6 @@ export const useOrderSubmit = (market: DealTicketQuery_market) => {
     },
     [market, keypair, send]
   );
-
-  const reset = useCallback(() => {
-    resetTransaction();
-    setFinalizedOrder(null);
-    setId('');
-  }, [resetTransaction]);
 
   return {
     transaction,
