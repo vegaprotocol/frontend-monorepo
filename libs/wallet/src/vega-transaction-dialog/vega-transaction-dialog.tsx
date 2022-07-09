@@ -5,26 +5,25 @@ import { useEffect } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 import type { Order } from '../vega-order-transaction-dialog';
-import { VegaOrderTransactionDialog } from '../vega-order-transaction-dialog';
+import {
+  VegaOrderTransactionDialog,
+  VegaOrderTransactionType,
+} from '../vega-order-transaction-dialog';
 
 export interface VegaTransactionDialogProps {
   orderDialogOpen: boolean;
   setOrderDialogOpen: (isOpen: boolean) => void;
   finalizedOrder: Order | null;
+  newOrder?: Order | null;
   transaction: VegaTxState;
   reset: () => void;
-  type: VegaOrderTransactionType;
-}
-
-export enum VegaOrderTransactionType {
-  SUBMIT = 'submit',
-  CANCEL = 'cancel',
-  EDIT = 'edit',
+  type?: VegaOrderTransactionType;
 }
 
 const getDialogTitle = (
-  type: VegaOrderTransactionType,
-  finalizedOrder: Order | null
+  finalizedOrder: Order | null,
+  newOrder?: Order | null,
+  type?: VegaOrderTransactionType
 ) => {
   if (type === VegaOrderTransactionType.CANCEL) {
     switch (finalizedOrder?.status) {
@@ -36,6 +35,16 @@ const getDialogTitle = (
         return 'Order expired';
       default:
         return 'Cancellation failed';
+    }
+  }
+  if (type === VegaOrderTransactionType.EDIT) {
+    switch (newOrder?.status) {
+      case OrderStatus.Active:
+        return `Edit ${newOrder.market?.name} order`;
+      case OrderStatus.PartiallyFilled:
+        return 'Edit partially filled order';
+      default:
+        return 'Edit order';
     }
   }
   if (type === VegaOrderTransactionType.SUBMIT) {
@@ -52,13 +61,16 @@ const getDialogTitle = (
         return 'Submission failed';
     }
   }
-  return 'Transaction failed';
+  if (type) return 'Transaction failed';
+  // If no type then it is not an order transaction
+  return '';
 };
 
 const getDialogIntent = (
-  type: VegaOrderTransactionType,
   finalizedOrder: Order | null,
-  transaction: VegaTxState
+  newOrder?: Order | null,
+  type?: VegaOrderTransactionType,
+  transaction?: VegaTxState
 ) => {
   if (type === VegaOrderTransactionType.CANCEL) {
     switch (finalizedOrder?.status) {
@@ -87,9 +99,29 @@ const getDialogIntent = (
       case OrderStatus.Parked:
         return Intent.Warning;
       default:
-        return transaction.status === VegaTxStatus.Requested
+        return transaction?.status === VegaTxStatus.Requested
           ? Intent.Warning
-          : transaction.status === VegaTxStatus.Error
+          : transaction?.status === VegaTxStatus.Error
+          ? Intent.Danger
+          : Intent.None;
+    }
+  }
+  if (type === VegaOrderTransactionType.EDIT) {
+    switch (newOrder?.status) {
+      case OrderStatus.Active:
+        return Intent.None;
+      case OrderStatus.Filled:
+        return Intent.Success;
+      case OrderStatus.PartiallyFilled:
+        return Intent.Success;
+      case OrderStatus.Rejected:
+        return Intent.Danger;
+      case OrderStatus.Parked:
+        return Intent.Warning;
+      default:
+        return transaction?.status === VegaTxStatus.Requested
+          ? Intent.Warning
+          : transaction?.status === VegaTxStatus.Error
           ? Intent.Danger
           : Intent.None;
     }
@@ -102,12 +134,16 @@ export const VegaTransactionDialog = ({
   orderDialogOpen,
   setOrderDialogOpen,
   finalizedOrder,
+  newOrder,
   transaction,
   reset,
   type,
 }: VegaTransactionDialogProps) => {
   useEffect(() => {
-    if (transaction.status !== VegaTxStatus.Default || finalizedOrder) {
+    if (
+      transaction.status !== VegaTxStatus.Default ||
+      (finalizedOrder && finalizedOrder.status !== OrderStatus.Rejected)
+    ) {
       setOrderDialogOpen(true);
     } else {
       setOrderDialogOpen(false);
@@ -125,13 +161,15 @@ export const VegaTransactionDialog = ({
           reset();
         }
       }}
-      intent={getDialogIntent(type, finalizedOrder, transaction)}
+      intent={getDialogIntent(finalizedOrder, newOrder, type, transaction)}
     >
       <VegaOrderTransactionDialog
         key={`${type}-tx-order-${transaction.txHash}`}
         transaction={transaction}
+        newOrder={newOrder}
         finalizedOrder={finalizedOrder}
-        title={t(getDialogTitle(type, finalizedOrder))}
+        title={t(getDialogTitle(finalizedOrder, newOrder, type))}
+        type={type}
       />
     </Dialog>
   );

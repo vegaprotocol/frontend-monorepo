@@ -14,17 +14,23 @@ export default {
 
 const Template: Story = (args) => {
   const cancel = () => Promise.resolve();
+  const edit = () => Promise.resolve();
   return (
     <div style={{ height: 1000 }}>
-      <OrderListTable data={args.data} cancel={cancel} />
+      <OrderListTable data={args.data} cancel={cancel} edit={edit} />
     </div>
   );
 };
 
 const Template2: Story = (args) => {
   const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
   const cancel = () => {
     setOpen(!open);
+    return Promise.resolve();
+  };
+  const edit = () => {
+    setOpenEdit(!openEdit);
     return Promise.resolve();
   };
   const transaction: VegaTxState = {
@@ -41,11 +47,14 @@ const Template2: Story = (args) => {
     market: { name: 'ETH/DAI (30 Jun 2022)', decimalPlaces: 5 },
     type: OrderType.Limit,
   };
-  const reset = () => null;
+  const reset = () => {
+    setOpen(false);
+    setOpenEdit(false);
+  };
   return (
     <>
       <div style={{ height: 1000 }}>
-        <OrderListTable data={args.data} cancel={cancel} />
+        <OrderListTable data={args.data} cancel={cancel} edit={edit} />
       </div>
       <VegaTransactionDialog
         orderDialogOpen={open}
@@ -59,12 +68,64 @@ const Template2: Story = (args) => {
   );
 };
 
+const Template3: Story = (args) => {
+  const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const cancel = () => {
+    setOpen(!open);
+    return Promise.resolve();
+  };
+  const edit = () => {
+    setOpenEdit(!openEdit);
+    return Promise.resolve();
+  };
+  const transaction: VegaTxState = {
+    status: VegaTxStatus.Default,
+    error: null,
+    txHash: null,
+    signature: null,
+  };
+  const finalizedOrder: Order = {
+    status: OrderStatus.Cancelled,
+    rejectionReason: null,
+    size: '10',
+    price: '1000',
+    market: { name: 'ETH/DAI (30 Jun 2022)', decimalPlaces: 5 },
+    type: OrderType.Limit,
+  };
+  const reset = () => {
+    setOpen(false);
+    setOpenEdit(false);
+  };
+  return (
+    <>
+      <div style={{ height: 1000 }}>
+        <OrderListTable data={args.data} cancel={cancel} edit={edit} />
+      </div>
+      <VegaTransactionDialog
+        orderDialogOpen={openEdit}
+        setOrderDialogOpen={setOpenEdit}
+        finalizedOrder={finalizedOrder}
+        newOrder={finalizedOrder}
+        transaction={transaction}
+        reset={reset}
+        type={VegaOrderTransactionType.EDIT}
+      />
+    </>
+  );
+};
+
 export const Default = Template.bind({});
 Default.args = {
   data: generateOrdersArray(),
 };
 
-export const Modal = Template2.bind({});
-Modal.args = {
+export const CancelModal = Template2.bind({});
+CancelModal.args = {
+  data: generateOrdersArray(),
+};
+
+export const EditModal = Template3.bind({});
+EditModal.args = {
   data: generateOrdersArray(),
 };

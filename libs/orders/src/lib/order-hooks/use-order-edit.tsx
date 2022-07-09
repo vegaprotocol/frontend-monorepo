@@ -14,6 +14,8 @@ import * as Sentry from '@sentry/react';
 export const useOrderEdit = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
+  const [newOrder, setNewOrder] =
+    useState<OrderEvent_busEvents_event_Order | null>(null);
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const [id, setId] = useState('');
@@ -45,6 +47,7 @@ export const useOrderEdit = () => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setUpdatedOrder(matchingOrderEvent.event);
+        setNewOrder(null);
         resetTransaction();
       }
     });
@@ -59,6 +62,10 @@ export const useOrderEdit = () => {
       }
 
       setUpdatedOrder(null);
+      if (order) {
+        setNewOrder(order);
+      }
+      if (!newOrder) return;
 
       try {
         const res = await send({
@@ -84,12 +91,13 @@ export const useOrderEdit = () => {
         return;
       }
     },
-    [keypair, send]
+    [keypair, newOrder, send]
   );
 
   const reset = useCallback(() => {
     resetTransaction();
     setUpdatedOrder(null);
+    setNewOrder(null);
     setId('');
   }, [resetTransaction]);
 
@@ -99,5 +107,6 @@ export const useOrderEdit = () => {
     id,
     edit,
     resetEdit: reset,
+    newOrder,
   };
 };

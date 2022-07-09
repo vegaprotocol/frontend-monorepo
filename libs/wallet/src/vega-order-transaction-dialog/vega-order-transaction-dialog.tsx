@@ -9,6 +9,7 @@ import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { OrderType } from '@vegaprotocol/types';
+import get from 'lodash/get';
 
 export interface Market {
   name: string;
@@ -30,15 +31,72 @@ interface VegaOrderTransactionDialogProps {
   transaction: VegaTxState;
   finalizedOrder: Order | null;
   title: string;
+  newOrder?: Order | null;
+  type?: VegaOrderTransactionType;
+}
+
+export enum VegaOrderTransactionType {
+  SUBMIT = 'submit',
+  CANCEL = 'cancel',
+  EDIT = 'edit',
 }
 
 export const VegaOrderTransactionDialog = ({
   transaction,
   finalizedOrder,
+  newOrder,
   title,
+  type,
 }: VegaOrderTransactionDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const headerClassName = 'text-h5 font-bold text-black dark:text-white';
+  console.log('VegaOrderTransactionDialog', {
+    transaction,
+    finalizedOrder,
+    newOrder,
+    title,
+    type,
+  });
+
+  if (type === VegaOrderTransactionType.EDIT && newOrder) {
+    return (
+      <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {newOrder.market && (
+            <div>
+              <p className={headerClassName}>{t(`Market`)}</p>
+              <p>{t(`${newOrder.market.name}`)}</p>
+            </div>
+          )}
+          <div>
+            <p className={headerClassName}>{t(`Status`)}</p>
+            <p>{t(`${newOrder.status}`)}</p>
+          </div>
+          <div>
+            <p className={headerClassName}>{t(`Amount`)}</p>
+            <p className={newOrder.side}>
+              {addDecimal(
+                newOrder.size,
+                newOrder.market?.positionDecimalPlaces || 0
+              )}
+            </p>
+          </div>
+          {newOrder.type === OrderType.Limit && newOrder.market && (
+            <div>
+              <p className={headerClassName}>{t(`Price`)}</p>
+              <p>
+                {addDecimalsFormatNumber(
+                  newOrder.price,
+                  newOrder.market.decimalPlaces
+                )}
+              </p>
+            </div>
+          )}
+        </div>
+      </OrderDialogWrapper>
+    );
+  }
+
   // Rejected by wallet
   if (transaction.status === VegaTxStatus.Requested) {
     return (
@@ -64,7 +122,8 @@ export const VegaOrderTransactionDialog = ({
       >
         {transaction.error && (
           <pre className="text-ui break-all whitespace-pre-wrap">
-            {JSON.stringify(transaction.error, null, 2)}
+            {get(transaction.error, 'error') ??
+              JSON.stringify(transaction.error, null, 2)}
           </pre>
         )}
       </OrderDialogWrapper>

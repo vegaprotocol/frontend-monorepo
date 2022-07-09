@@ -3,8 +3,8 @@ import { OrderStatus, OrderType } from '@vegaprotocol/types';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 import type { Order } from '../vega-order-transaction-dialog';
+import { VegaOrderTransactionType } from '../vega-order-transaction-dialog';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
-import { VegaOrderTransactionType } from './vega-transaction-dialog';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 
 describe('VegaTransactionDialog', () => {

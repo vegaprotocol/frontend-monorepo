@@ -14,6 +14,8 @@ export type Order =
       side: VegaWalletOrderSide;
       price?: never;
       expiration?: never;
+      rejectionReason?: string | null;
+      market?: Market | null;
     }
   | {
       size: string;
@@ -22,6 +24,8 @@ export type Order =
       side: VegaWalletOrderSide;
       price?: string;
       expiration?: Date;
+      rejectionReason?: string | null;
+      market?: Market | null;
     };
 
 export const getDefaultOrder = (market: Market): Order => ({
@@ -29,4 +33,6 @@ export const getDefaultOrder = (market: Market): Order => ({
   side: VegaWalletOrderSide.Buy,
   timeInForce: VegaWalletOrderTimeInForce.IOC,
   size: String(toDecimal(market.positionDecimalPlaces)),
+  rejectionReason: null,
+  market: null,
 });

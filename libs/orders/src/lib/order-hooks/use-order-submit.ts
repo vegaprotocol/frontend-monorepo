@@ -64,11 +64,10 @@ export const useOrderSubmit = (market: Market) => {
 
   const submit = useCallback(
     async (order: Order) => {
+      setFinalizedOrder(null);
       if (!keypair || !order.side || market.state !== MarketState.Active) {
         return;
       }
-
-      setFinalizedOrder(null);
 
       const res = await send({
         pubKey: keypair.pub,
