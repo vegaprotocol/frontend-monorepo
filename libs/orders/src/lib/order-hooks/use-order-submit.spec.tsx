@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import type { Order } from '../utils/get-default-order';
+import type { Order } from '../utils';
 import type {
   VegaKeyExtended,
   VegaWalletContextShape,
@@ -13,11 +13,14 @@ import {
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
-import type { OrderEvent, OrderEvent_busEvents } from '@vegaprotocol/orders';
-import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
+import type {
+  OrderEvent,
+  OrderEvent_busEvents,
+} from './__generated__/OrderEvent';
+import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
+import type { Market } from '../market';
 
 const defaultMarket = {
   __typename: 'Market',
@@ -43,7 +46,7 @@ const defaultMarket = {
       price: '100',
     },
   },
-} as DealTicketQuery_market;
+} as Market;
 
 const defaultWalletContext = {
   keypair: null,

@@ -10,11 +10,10 @@ import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { TimeInForceSelector } from './time-in-force-selector';
-import { useOrderValidation } from '../hooks/use-order-validation';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
-import type { Order } from '../utils/get-default-order';
-import { getDefaultOrder } from '../utils/get-default-order';
 import { ExpirySelector } from './expiry-selector';
+import type { Order } from '@vegaprotocol/orders';
+import { getDefaultOrder, useOrderValidation } from '@vegaprotocol/orders';
 
 export type TransactionStatus = 'default' | 'pending';
 

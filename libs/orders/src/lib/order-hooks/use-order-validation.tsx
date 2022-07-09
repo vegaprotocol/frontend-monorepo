@@ -1,21 +1,21 @@
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
+import type { Order } from '@vegaprotocol/wallet';
 import {
   useVegaWallet,
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
+  VegaWalletOrderTimeInForce as OrderTimeInForce,
+  VegaWalletOrderType as OrderType,
 } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import type { Order } from '../utils/get-default-order';
+import type { Market } from '../market';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 
 export type ValidationProps = {
   step: number;
-  market: DealTicketQuery_market;
-  orderType: VegaWalletOrderType;
-  orderTimeInForce: VegaWalletOrderTimeInForce;
+  market: Market;
+  orderType: OrderType;
+  orderTimeInForce: OrderTimeInForce;
   fieldErrors?: FieldErrors<Order>;
 };
 
@@ -53,15 +53,15 @@ export const useOrderValidation = ({
     }
 
     if (market.tradingMode !== MarketTradingMode.Continuous) {
-      if (orderType !== VegaWalletOrderType.Limit) {
+      if (orderType !== OrderType.Limit) {
         return t('Only limit orders are permitted when market is in auction');
       }
 
       if (
         [
-          VegaWalletOrderTimeInForce.FOK,
-          VegaWalletOrderTimeInForce.IOC,
-          VegaWalletOrderTimeInForce.GFN,
+          OrderTimeInForce.FOK,
+          OrderTimeInForce.IOC,
+          OrderTimeInForce.GFN,
         ].includes(orderTimeInForce)
       ) {
         return t(

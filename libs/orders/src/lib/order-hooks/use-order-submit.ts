@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
-import { ORDER_EVENT_SUB } from '@vegaprotocol/orders';
+import { ORDER_EVENT_SUB } from './order-event-query';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
-} from '@vegaprotocol/orders';
+} from './__generated__';
 import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
 import { MarketState } from '@vegaprotocol/types';
+import type { Market } from '../market';
 
-export const useOrderSubmit = (market: DealTicketQuery_market) => {
+export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [id, setId] = useState('');

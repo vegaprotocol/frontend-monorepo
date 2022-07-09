@@ -11,12 +11,12 @@ import type {
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
-import type { DealTicketQuery_market } from '../__generated__/DealTicketQuery';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
+import type { Market } from '../market';
 
 jest.mock('@vegaprotocol/wallet');
 
-const market: DealTicketQuery_market = {
+const market: Market = {
   __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
@@ -71,7 +71,7 @@ const ERROR = {
   MARKET_WAITING: 'Market is not active yet',
   MARKET_CONTINUOUS_LIMIT:
     'Only limit orders are permitted when market is in auction',
-  MARKET_COUNTINUOUS_TIF:
+  MARKET_CONTINUOUS_TIF:
     'Only GTT, GTC and GFA are permitted when market is in auction',
   FIELD_SIZE_REQ: 'An amount needs to be provided',
   FIELD_SIZE_MIN: `The amount cannot be lower than "${defaultOrder.step}"`,
@@ -143,15 +143,15 @@ it.each`
 
 it.each`
   tradingMode                            | orderTimeInForce                  | errorMessage
-  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
-  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_COUNTINUOUS_TIF}
+  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+  ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
 `(
   'Returns an error message when submitting a limit order with a "$orderTimeInForce" value to a "$tradingMode" market',
   async ({ tradingMode, orderTimeInForce, errorMessage }) => {

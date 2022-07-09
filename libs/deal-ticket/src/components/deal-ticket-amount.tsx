@@ -1,6 +1,6 @@
 import type { UseFormRegister } from 'react-hook-form';
 import { VegaWalletOrderType } from '@vegaprotocol/wallet';
-import type { Order } from '../utils/get-default-order';
+import type { Order } from '@vegaprotocol/orders';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
 

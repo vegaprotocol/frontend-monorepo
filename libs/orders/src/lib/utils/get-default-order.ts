@@ -4,7 +4,7 @@ import {
   VegaWalletOrderSide,
 } from '@vegaprotocol/wallet';
 import { toDecimal } from '@vegaprotocol/react-helpers';
-import type { DealTicketQuery_market } from '../components/__generated__/DealTicketQuery';
+import type { Market } from '../market';
 
 export type Order =
   | {
@@ -24,7 +24,7 @@ export type Order =
       expiration?: Date;
     };
 
-export const getDefaultOrder = (market: DealTicketQuery_market): Order => ({
+export const getDefaultOrder = (market: Market): Order => ({
   type: VegaWalletOrderType.Market,
   side: VegaWalletOrderSide.Buy,
   timeInForce: VegaWalletOrderTimeInForce.IOC,
