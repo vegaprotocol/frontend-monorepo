@@ -29,8 +29,10 @@ Feature: Blocks Page
     Then previous button is disabled
     And I am on the second block when I click next
 
-  Scenario: Infinite scroll shows at least 300 new blocks
-    Given I am on the homepage
-    When I navigate to the blocks page
-    And I scroll down to the last block on the page
-    Then I can expect to see at least 100 blocks if i scroll 7 times
+# Skipping these tests for time being - since blockchain in capsule 
+# is now too small to show historical data - re-enable once addressed 
+  # Scenario: Infinite scroll shows at least 300 new blocks
+  #   Given I am on the homepage
+  #   When I navigate to the blocks page
+  #   And I scroll down to the last block on the page
+  #   Then I can expect to see at least 100 blocks if i scroll 7 times
