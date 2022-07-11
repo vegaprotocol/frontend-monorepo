@@ -150,7 +150,14 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   );
 
   const handleOnBlur = useCallback(() => {
+    console.log('lookup, showPane', lookup, showPane);
     if (!lookup && !showPane) {
+      console.log(
+        '2 lookup, showPane, market.name',
+        lookup,
+        showPane,
+        market.name
+      );
       setLookup(market.name);
     }
   }, [market, lookup, showPane, setLookup]);
@@ -164,8 +171,12 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const handleDialogOnchange = useCallback(
     (isOpen) => {
       setShowPane(isOpen);
+      if (!isOpen) {
+        setLookup(lookup || market.name);
+        inputRef.current?.focus();
+      }
     },
-    [setShowPane]
+    [setShowPane, lookup, setLookup, market.name, inputRef]
   );
 
   const selectorContent = useMemo(() => {
@@ -187,6 +198,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
             variant="inline-link"
             onClick={openPane}
             ref={arrowButtonRef}
+            data-testid="arrow-button"
           >
             <Icon
               name={IconNames.ARROW_DOWN}
@@ -203,6 +215,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
             'md:absolute flex flex-col top-[30px] z-10 md:drop-shadow-md md:border-1 md:border-black md:dark:border-white bg-white dark:bg-black text-black dark:text-white min-w-full md:max-h-[200px] overflow-y-auto',
             showPane ? 'block' : 'hidden'
           )}
+          data-testid="market-pane"
         >
           {loading && <Loader />}
           {error && (
