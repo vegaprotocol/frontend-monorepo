@@ -1,6 +1,6 @@
 import ethWallet from '../locators/wallet-eth.locators';
 
-cy.ethereum_wallet_connect = () => {
+Cypress.Commands.add('ethereum_wallet_connect', () => {
   cy.highlight('Connecting Eth Wallet');
   cy.get(ethWallet.connectToEthButton).within(() => {
     cy.contains('Connect Ethereum wallet to associate $VEGA')
@@ -13,9 +13,9 @@ cy.ethereum_wallet_connect = () => {
     // this check is required since it ensures the wallet is fully (not partially) loaded
     cy.contains('Locked', { timeout: 15000 }).should('be.visible');
   });
-};
+});
 
-cy.ethereum_wallet_check_associated_value_is = (expectedVal) => {
+Cypress.Commands.add('ethereum_wallet_check_associated_value_is', (expectedVal) => {
   cy.highlight(`Checking Eth Wallet - Associated Value is ${expectedVal}`);
   cy.get(ethWallet.walletContainer).within(() => {
     cy.contains('Associated', { timeout: 20000 })
@@ -24,9 +24,9 @@ cy.ethereum_wallet_check_associated_value_is = (expectedVal) => {
       .contains(expectedVal, { timeout: 40000 })
       .should('be.visible');
   });
-};
+});
 
-cy.ethereum_wallet_check_associated_vega_key_value_is = (
+Cypress.Commands.add('ethereum_wallet_check_associated_vega_key_value_is', (
   vegaShortPublicKey,
   expectedVal
 ) => {
@@ -39,16 +39,16 @@ cy.ethereum_wallet_check_associated_vega_key_value_is = (
       .contains(expectedVal, { timeout: 40000 })
       .should('be.visible');
   });
-};
+});
 
-cy.ethereum_wallet_check_associated_vega_key_is_no_longer_showing = (
+Cypress.Commands.add('ethereum_wallet_check_associated_vega_key_is_no_longer_showing', (
   vegaShortPublicKey
 ) => {
   cy.highlight('Checking Eth Wallet - Vega Key Associated is not showing');
   cy.get(ethWallet.walletContainer).within(() => {
     cy.contains(vegaShortPublicKey, { timeout: 20000 }).should('not.exist');
   });
-};
+});
 
 Cypress.Commands.add(
   'convertTokenValueToNumber',

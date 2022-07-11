@@ -1,10 +1,15 @@
 import staking from '../locators/staking.locators';
 
-cy.staking_validator_page_add_stake = (stake) => {
+Cypress.Commands.add('wait_for_begining_of_epoch', () => {
+  cy.contains('Waiting for next epoch to start').should('not.exist');
+  cy.contains('Waiting for next epoch to start', { timeout: 10000 });
+})
+
+Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
   cy.highlight(`Adding a stake of ${stake}`);
   cy.get(staking.addStakeRadioButton).click({ force: true });
   cy.get(staking.tokenAmountInput).type(stake);
-  cy.contains('Waiting for next epoch to start', { timeout: 10000 });
+  cy.wait_for_begining_of_epoch();
   cy.get(staking.tokenInputSubmit, { timeout: 8000 })
     .should('be.enabled')
     .and('contain', `Add ${stake} $VEGA tokens`)
@@ -14,13 +19,13 @@ cy.staking_validator_page_add_stake = (stake) => {
     'At the beginning of the next epoch your $VEGA will be nominated to the validator',
     { timeout: 20000 }
   ).should('be.visible');
-};
+});
 
-cy.staking_validator_page_removeStake = (stake) => {
+Cypress.Commands.add('staking_validator_page_removeStake', (stake) => {
   cy.highlight(`Removing a stake of ${stake}`);
   cy.get(staking.removeStakeRadioButton).click({ force: true });
   cy.get(staking.tokenAmountInput).type(stake);
-  cy.contains('Waiting for next epoch to start', { timeout: 10000 });
+  cy.wait_for_begining_of_epoch();
   cy.get(staking.tokenInputSubmit)
     .should('be.enabled', { timeout: 8000 })
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
@@ -29,9 +34,9 @@ cy.staking_validator_page_removeStake = (stake) => {
   cy.contains(`${stake} $VEGA has been removed from validator`).should(
     'be.visible'
   );
-};
+});
 
-cy.staking_page_associate_tokens = (amount, approve = false) => {
+Cypress.Commands.add('staking_page_associate_tokens', (amount, approve = false) => {
   cy.highlight(`Associating ${amount} tokens`);
   cy.get(staking.associateButton).click();
   cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).click();
@@ -53,9 +58,9 @@ cy.staking_page_associate_tokens = (amount, approve = false) => {
   cy.contains('can now participate in governance and nominate a validator', {
     timeout: 60000,
   }).should('be.visible');
-};
+});
 
-cy.staking_page_disassociate_tokens = (amount) => {
+Cypress.Commands.add('staking_page_disassociate_tokens', (amount) => {
   cy.highlight(`Disassociating ${amount} tokens via Staking Page`);
   cy.get(staking.disassociateButton).click();
   cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).click();
@@ -67,9 +72,9 @@ cy.staking_page_disassociate_tokens = (amount) => {
   cy.contains(`${amount} $VEGA tokens have been returned to Ethereum wallet`, {
     timeout: 60000,
   }).should('be.visible');
-};
+});
 
-cy.staking_page_disassociate_all_tokens = () => {
+Cypress.Commands.add('staking_page_disassociate_all_tokens', () => {
   cy.highlight(`Disassociating all tokens via Staking Page`);
   cy.get(staking.disassociateButton).click();
   cy.get(staking.stakeAssociateWalletRadio, { timeout: 20000 }).click();
@@ -78,4 +83,4 @@ cy.staking_page_disassociate_all_tokens = () => {
   cy.contains('$VEGA tokens have been returned to Ethereum wallet', {
     timeout: 60000,
   }).should('be.visible');
-};
+});

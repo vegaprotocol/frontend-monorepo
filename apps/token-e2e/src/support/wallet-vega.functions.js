@@ -4,7 +4,7 @@ const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
 
-cy.vega_wallet_import = () => {
+Cypress.Commands.add('vega_wallet_import', () => {
   cy.highlight(`Importing Vega Wallet ${vegaWalletName}`);
   cy.exec(`vegawallet init -f --home ${vegaWalletLocation}`);
   cy.exec(
@@ -14,9 +14,9 @@ cy.vega_wallet_import = () => {
   cy.exec(
     `vegawallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
   );
-};
+});
 
-cy.vega_wallet_connect = () => {
+Cypress.Commands.add('vega_wallet_connect', () => {
   cy.highlight('Connecting Vega Wallet');
   cy.get(vegaWallet.walletContainer).within(() => {
     cy.get('button')
@@ -32,9 +32,9 @@ cy.vega_wallet_connect = () => {
     cy.get('button').contains('Connect').click();
   });
   cy.contains(`${vegaWalletName} key`, { timeout: 20000 }).should('be.visible');
-};
+});
 
-cy.vega_wallet_check_unstaked_value_is = (expectedVal) => {
+Cypress.Commands.add('vega_wallet_check_unstaked_value_is', (expectedVal) => {
   cy.highlight(`Checking vega wallet - Unstaked Value is ${expectedVal}`);
   cy.get(vegaWallet.walletContainer).within(() => {
     cy.contains('Unstaked', { timeout: 40000 })
@@ -42,9 +42,9 @@ cy.vega_wallet_check_unstaked_value_is = (expectedVal) => {
       .contains(expectedVal, { timeout: 40000 })
       .should('be.visible');
   });
-};
+});
 
-cy.vega_wallet_check_associated_value_is = (expectedVal) => {
+Cypress.Commands.add('vega_wallet_check_associated_value_is', (expectedVal) => {
   cy.highlight(`Checking vega wallet - Associated Value is ${expectedVal}`);
   cy.get(vegaWallet.walletContainer).within(() => {
     cy.contains('Associated', { timeout: 40000 })
@@ -53,4 +53,4 @@ cy.vega_wallet_check_associated_value_is = (expectedVal) => {
       .contains(expectedVal, { timeout: 40000 })
       .should('be.visible');
   });
-};
+});

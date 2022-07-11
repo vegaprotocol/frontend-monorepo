@@ -64,7 +64,7 @@ Cypress.Commands.add(
   }
 );
 
-cy.vega_wallet_teardown_staking = (stakingBridgeContract) => {
+Cypress.Commands.add('vega_wallet_teardown_staking', (stakingBridgeContract) => {
   cy.highlight('Tearing down staking tokens from vega wallet if present');
   cy.wrap(
     stakingBridgeContract.stakeBalance(ethWalletPubKey, vegaWalletPubKey),
@@ -82,9 +82,9 @@ cy.vega_wallet_teardown_staking = (stakingBridgeContract) => {
       });
     }
   });
-};
+});
 
-cy.vega_wallet_teardown_vesting = (vestingContract) => {
+Cypress.Commands.add('vega_wallet_teardown_vesting', (vestingContract) => {
   cy.highlight('Tearing down vesting tokens from vega wallet if present');
   cy.wrap(vestingContract.stakeBalance(ethWalletPubKey, vegaWalletPubKey), {
     timeout: transactionTimeout,
@@ -99,8 +99,8 @@ cy.vega_wallet_teardown_vesting = (vestingContract) => {
       });
     }
   });
-};
+});
 
-cy.wait_for_transaction = (tx) => {
+Cypress.Commands.add('wait_for_transaction', (tx) => {
   cy.wrap(tx.wait(1).catch(cy.log), { timeout: transactionTimeout });
-};
+});
