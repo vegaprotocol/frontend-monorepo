@@ -280,7 +280,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       {!dialogContent && selectorContent}
       <Dialog
         titleClassNames="uppercase font-alpha"
-        contentClassNames="left-[0px] top-[90px] h-[calc(100%-90px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto"
+        contentClassNames="left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto"
         title={t('Select Market')}
         open={Boolean(dialogContent)}
         onChange={handleDialogOnchange}
