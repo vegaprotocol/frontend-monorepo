@@ -6,21 +6,22 @@ import {
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
+import { Side } from '@vegaprotocol/types';
 import { AgGridColumn } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { forwardRef } from 'react';
-import type { FillFields } from './__generated__/FillFields';
-import type { ValueFormatterParams, IDatasource } from 'ag-grid-community';
+import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
-import { Side } from '@vegaprotocol/types';
+import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
 
-export interface FillsTableProps {
+import type { FillFields } from './__generated__/FillFields';
+
+export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
-  datasource: IDatasource;
-}
+};
 
-export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
-  ({ partyId, datasource }, ref) => {
+export const FillsTable = forwardRef<AgGridReact, Props>(
+  ({ partyId, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -29,7 +30,7 @@ export const FillsTable = forwardRef<AgGridReact, FillsTableProps>(
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data?.id}
         rowModelType="infinite"
-        datasource={datasource}
+        {...props}
       >
         <AgGridColumn headerName={t('Market')} field="market.name" />
         <AgGridColumn
