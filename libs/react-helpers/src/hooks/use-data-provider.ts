@@ -48,9 +48,9 @@ export function useDataProvider<Data, Delta>({
       reloadRef.current(force);
     }
   }, []);
-  const load = useCallback((pagination: Pagination) => {
+  const load = useCallback((startRow, endRow) => {
     if (loadRef.current) {
-      return loadRef.current(pagination);
+      return loadRef.current(startRow, endRow);
     }
     return Promise.reject();
   }, []);
@@ -62,9 +62,7 @@ export function useDataProvider<Data, Delta>({
         // if update or insert function returns true it means that component handles updates
         // component can use flush() which will call callback without delta and cause data state update
         if (initialized.current) {
-          // console.log('callback', delta, update);
           if (delta && update && update({ delta, data })) {
-            // console.log('update');
             return;
           }
           if (

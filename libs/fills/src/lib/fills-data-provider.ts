@@ -1,6 +1,9 @@
 import produce from 'immer';
 import { gql } from '@apollo/client';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  defaultAppend as append,
+} from '@vegaprotocol/react-helpers';
 import type { PageInfo, Pagination } from '@vegaprotocol/react-helpers';
 import type { FillFields } from './__generated__/FillFields';
 import type {
@@ -88,12 +91,12 @@ const getData = (
   pagination: Pagination
 ): Fills_party_tradesPaged_edges[] | null => {
   const after = Number(pagination?.after || '0');
+  const skip = pagination?.skip ?? 0;
   const numOfRows = Math.min(pagination.first || 0, totalCount - after);
-  // console.log('getData', pagination, numOfRows);
   return new Array(numOfRows).fill(null).map((v, i) => ({
     __typename: 'TradeEdge',
-    node: generateFill({ id: (after + i + 1).toString() }),
-    cursor: (after + i + 1).toString(),
+    node: generateFill({ id: (after + i + skip + 1).toString() }),
+    cursor: (after + i + skip + 1).toString(),
   }));
 };
 
@@ -117,35 +120,6 @@ const getTotalCount = (
 ): number | undefined => totalCount;
 
 const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
-
-const append = (
-  data: Fills_party_tradesPaged_edges[] | null,
-  pageInfo: PageInfo,
-  insertionData: Fills_party_tradesPaged_edges[] | null,
-  insertionPageInfo: PageInfo | null,
-  pagination?: Pagination
-) => {
-  if (data && insertionData && insertionPageInfo) {
-    if (pagination?.after) {
-      if (data[data.length - 1].cursor === pagination.after) {
-        return {
-          data: [...data, ...insertionData],
-          pageInfo: { ...pageInfo, endCursor: insertionPageInfo.endCursor },
-        };
-      } else {
-        const cursors = data.map((item) => item.cursor);
-        const startIndex = cursors.lastIndexOf(pagination.after);
-        if (startIndex !== -1) {
-          return {
-            data: [...data.slice(0, startIndex), ...insertionData],
-            pageInfo: { ...pageInfo, endCursor: insertionPageInfo.endCursor },
-          };
-        }
-      }
-    }
-  }
-  return { data, pageInfo };
-};
 
 export const fillsDataProvider = makeDataProvider(
   FILLS_QUERY,

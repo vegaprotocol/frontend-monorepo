@@ -21,10 +21,11 @@ export interface UpdateCallback<Data, Delta> {
 }
 
 export interface Load<Data> {
-  (pagination: Pagination): Promise<Data | null>;
+  (start?: number, end?: number): Promise<Data | null>;
 }
 
 export interface Pagination {
+  skip?: number;
   first?: number;
   after?: string;
   last?: number;
@@ -51,22 +52,23 @@ export interface Subscribe<Data, Delta> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
+export type Query<Result> = DocumentNode | TypedDocumentNode<Result, any>;
 
 export interface Update<Data, Delta> {
   (data: Data, delta: Delta, reload: (forceReset?: boolean) => void): Data;
 }
 
+// export interface Append<Item extends Cursor>
 export interface Append<Data> {
   (
     data: Data | null,
-    pageInfo: PageInfo,
     insertionData: Data | null,
     insertionPageInfo: PageInfo | null,
-    pagination?: Pagination
+    pagination?: Pagination,
+    totalCount?: number
   ): {
     data: Data | null;
-    pageInfo: PageInfo;
+    totalCount?: number;
   };
 }
 
@@ -86,6 +88,46 @@ interface GetDelta<SubscriptionData, Delta> {
   (subscriptionData: SubscriptionData): Delta;
 }
 
+export function defaultAppend<Data>(
+  data: Data | null,
+  insertionData: Data | null,
+  insertionPageInfo: PageInfo | null,
+  pagination?: Pagination,
+  totalCount?: number
+) {
+  if (data && insertionData && insertionPageInfo) {
+    if (!(data instanceof Array) || !(insertionData instanceof Array)) {
+      throw new Error(
+        'data needs to be instance of { cursor: string }[] when using pagination'
+      );
+    }
+    if (pagination?.after) {
+      const cursors = data.map((item) => item && item.cursor);
+      const startIndex = cursors.lastIndexOf(pagination.after);
+      if (startIndex !== -1) {
+        const start = startIndex + 1 + (pagination.skip ?? 0);
+        const end = start + insertionData.length;
+        let updatedData = [
+          ...data.slice(0, start),
+          ...insertionData,
+          ...data.slice(end),
+        ];
+        if (!insertionPageInfo.hasNextPage && end < (totalCount ?? 0)) {
+          // decrease totalCount if last page is shorter than expected
+          totalCount = end;
+          updatedData = updatedData.slice(0, end);
+        }
+        return {
+          data: updatedData,
+          // increase totalCount if last page is longer than expected
+          totalCount: totalCount && Math.max(updatedData.length, totalCount),
+        };
+      }
+    }
+  }
+  return { data, totalCount };
+}
+
 /**
  * @param subscriptionQuery query that will be used for subscription
  * @param update function that will be execued on each onNext, it should update data base on delta, it can reload data provider
@@ -103,6 +145,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
     getTotalCount: GetTotalCount<QueryData>;
+    // append: Append<Data extends (infer R)[] ? R & Cursor : never>;
     append: Append<Data>;
     first: number;
   },
@@ -125,7 +168,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (
     callback: UpdateCallback<Data, Delta>,
-    dataUpdate?: { delta?: Delta; insertionData?: Data | null }
+    updateData?: { delta?: Delta; insertionData?: Data | null }
   ) => {
     callback({
       data,
@@ -133,47 +176,73 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       loading,
       pageInfo,
       totalCount,
-      ...dataUpdate,
+      ...updateData,
     });
   };
 
   // notify all callbacks
-  const notifyAll = (dataUpdate?: {
+  const notifyAll = (updateData?: {
     delta?: Delta;
     insertionData?: Data | null;
   }) => {
-    callbacks.forEach((callback) => notify(callback, dataUpdate));
+    callbacks.forEach((callback) => notify(callback, updateData));
   };
 
-  const load = async (params?: Pagination) => {
-    if (!client || !pagination || !pageInfo) {
+  const load = async (start?: number, end?: number) => {
+    if (!client || !pagination || !pageInfo || !(data instanceof Array)) {
       return Promise.reject();
     }
-    const paginationVariables: Pagination = params ?? {
+    const paginationVariables: Pagination = {
       first: pagination.first,
       after: pageInfo.endCursor,
     };
+    if (start !== undefined) {
+      if (!start) {
+        paginationVariables.after = undefined;
+      } else if (data && data[start - 1]) {
+        paginationVariables.after = (
+          data[start - 1] as { cursor: string }
+        ).cursor;
+      } else {
+        let skip = 1;
+        while (!data[start - 1 - skip] && skip <= start) {
+          skip += 1;
+        }
+        paginationVariables.skip = skip;
+        if (skip === start) {
+          paginationVariables.after = undefined;
+        } else {
+          paginationVariables.after = (
+            data[start - 1 - skip] as { cursor: string }
+          ).cursor;
+        }
+      }
+    } else if (!pageInfo.hasNextPage) {
+      return null;
+    }
     const res = await client.query<QueryData>({
       query,
       variables: {
         ...variables,
-        pagination: paginationVariables,
+        pagination: paginationVariables, // { first: paginationVariables.first }
       },
       fetchPolicy,
     });
     const insertionData = getData(res.data, paginationVariables);
-    const insertionDataPageInfo = pagination.getPageInfo(
+    const insertionPageInfo = pagination.getPageInfo(
       res.data,
       paginationVariables
     );
-    ({ data, pageInfo } = pagination.append(
+    ({ data, totalCount } = pagination.append(
       data,
-      pageInfo,
       insertionData,
-      insertionDataPageInfo,
-      paginationVariables
+      insertionPageInfo,
+      paginationVariables,
+      totalCount
     ));
-    totalCount = pagination.getTotalCount(res.data, paginationVariables);
+    pageInfo = insertionPageInfo;
+    totalCount =
+      pagination.getTotalCount(res.data, paginationVariables) ?? totalCount;
     notifyAll({ insertionData });
     return insertionData;
   };
@@ -192,12 +261,20 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       });
       data = getData(res.data, { first: pagination?.first });
       if (pagination) {
+        if (!(data instanceof Array)) {
+          throw new Error(
+            'data needs to be instance of { cursor: string }[] when using pagination'
+          );
+        }
         pageInfo = pagination.getPageInfo(res.data, {
           first: pagination.first,
         });
         totalCount = pagination.getTotalCount(res.data, {
           first: pagination.first,
         });
+        if (data && totalCount && data.length < totalCount) {
+          data.push(...new Array(totalCount - data.length).fill(null));
+        }
       }
       // if there was some updates received from subscription during initial query loading apply them on just received data
       if (data && updateQueue && updateQueue.length > 0) {
@@ -262,11 +339,11 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           if (loading || !data) {
             updateQueue.push(delta);
           } else {
-            const newData = update(data, delta, reload);
-            if (newData === data) {
+            const updatedData = update(data, delta, reload);
+            if (updatedData === data) {
               return;
             }
-            data = newData;
+            data = updatedData;
             notifyAll({ delta });
           }
         },
@@ -369,6 +446,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
     getTotalCount: GetTotalCount<QueryData>;
+    // append: Append<Data extends Array<Cursor> ? Cursor : never>;
     append: Append<Data>;
     first: number;
   },
