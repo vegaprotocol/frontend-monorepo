@@ -1,5 +1,5 @@
 import staking from '../locators/staking.locators';
-import wallet from '../locators/wallet.locators';
+import ethWallet from '../locators/wallet-eth.locators';
 
 cy.staking_validator_page_add_stake = (stake) => {
   cy.highlight(`Adding a stake of ${stake}`);
@@ -34,7 +34,7 @@ cy.staking_validator_page_removeStake = (stake) => {
 
 cy.staking_page_associate_tokens = (amount, approve = false) => {
   cy.highlight(`Associating ${amount} tokens`);
-  cy.get(wallet.ethWalletAssociate).click();
+  cy.get(ethWallet.associate).click();
   cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).click();
   cy.get(staking.tokenAmountInput, { timeout: 10000 }).type(amount);
   if (approve) {
@@ -58,7 +58,7 @@ cy.staking_page_associate_tokens = (amount, approve = false) => {
 
 cy.staking_page_disassociate_tokens = (amount) => {
   cy.highlight(`Disassociating ${amount} tokens via Staking Page`);
-  cy.get(wallet.ethWalletDisassociate).click();
+  cy.get(ethWallet.disassociate).click();
   cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).click();
   cy.get(staking.tokenAmountInput, { timeout: 10000 }).type(amount);
 
@@ -72,7 +72,7 @@ cy.staking_page_disassociate_tokens = (amount) => {
 
 cy.staking_page_disassociate_all_tokens = () => {
   cy.highlight(`Disassociating all tokens via Staking Page`);
-  cy.get(wallet.ethWalletDisassociate).click();
+  cy.get(ethWallet.disassociate).click();
   cy.get(staking.stakeAssociateWalletRadio, { timeout: 20000 }).click();
   cy.get(staking.stakeMaximumTokens, { timeout: 60000 }).click();
   cy.get(staking.tokenInputSubmit, { timeout: 10000 }).click();

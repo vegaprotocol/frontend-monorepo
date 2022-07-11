@@ -1,15 +1,15 @@
 /// <reference types="cypress" />
 import navigation from '../../locators/navigation.locators';
 import staking from '../../locators/staking.locators';
-import vegaWallet from '../../locators/wallet-vega.locators';
+import wallet from '../../locators/wallet.locators';
 import '../../support/staking.functions';
-import '../../support/wallet-vega.functions';
-import '../../support/wallet-eth.functions';
+import '../../support/vega-wallet.functions';
+import '../../support/eth-wallet.functions';
 import '../../support/wallet-teardown.functions';
 
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 
-context('Staking Flow - with eth and vega wallets connected', function () {
+context('Staking Tab - with eth and vega wallets connected', function () {
   before('visit staking tab and connect vega wallet', function () {
     cy.vega_wallet_import();
     cy.visit('/');
@@ -208,7 +208,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it.skip('Disassociating all tokens - removes all staked tokens', function () {
+    it.skip('Disassociating all tokens max - removes all staked tokens', function () {
       cy.staking_page_associate_tokens('3');
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
@@ -287,7 +287,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     cy.highlight(
       `Checking vega wallet - Stake Next Epoch Value for ${validatorName} is ${expectedVal}`
     );
-    cy.get(vegaWallet.walletContainer).within(() => {
+    cy.get(wallet.vegawallet).within(() => {
       cy.contains(`${validatorName} (Next epoch)`, { timeout: 40000 })
         .siblings()
         .contains(expectedVal, { timeout: 40000 })
@@ -302,7 +302,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     cy.highlight(
       `Checking vega wallet - Stake This Epoch Value for ${validatorName} is ${expectedVal}`
     );
-    cy.get(vegaWallet.walletContainer).within(() => {
+    cy.get(wallet.vegawallet).within(() => {
       cy.contains(`${validatorName} (This Epoch)`, { timeout: 40000 })
         .siblings()
         .contains(expectedVal, { timeout: 40000 })
@@ -314,7 +314,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     cy.highlight(
       `Checking Validator and therefore stake removed for ${validatorName}`
     );
-    cy.get(vegaWallet.walletContainer).within(() => {
+    cy.get(wallet.vegawallet).within(() => {
       cy.contains(`${validatorName}`, { timeout: 40000 }).should('not.exist', {
         timeout: 40000,
       });
@@ -328,7 +328,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     cy.highlight(
       `Checking Validator Stake Value for ${validatorName} is ${expectedVal}`
     );
-    cy.get(vegaWallet.walletContainer).within(() => {
+    cy.get(wallet.vegawallet).within(() => {
       cy.contains(`${validatorName}`, { timeout: 40000 })
         .siblings()
         .contains(expectedVal, { timeout: 40000 })
