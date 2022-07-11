@@ -545,5 +545,9 @@
   "proposalTerms": "Proposal terms",
   "currentlySetTo": "Currently set to ",
   "pass": "Pass",
-  "fail": "Fail"
+  "fail": "Fail",
+  "rankingScore": "Ranking score",
+  "stakeScore": "Stake score",
+  "performanceScore": "Performance score",
+  "votingPower": "Voting score"
 }

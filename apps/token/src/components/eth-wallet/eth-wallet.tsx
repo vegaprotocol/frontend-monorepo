@@ -128,7 +128,7 @@ const ConnectedKey = () => {
   return (
     <>
       {totalVestedBalance.plus(totalLockedBalance).isEqualTo(0) ? null : (
-        <>
+        <section data-testid="vega-in-vesting-contract">
           <WalletCardAsset
             image={vegaVesting}
             decimals={appState.decimals}
@@ -145,7 +145,7 @@ const ConnectedKey = () => {
             rightLabel={t('Unlocked')}
             light={false}
           />
-        </>
+        </section>
       )}
       {!Object.keys(appState.associationBreakdown.vestingAssociations)
         .length ? null : (
@@ -154,22 +154,24 @@ const ConnectedKey = () => {
           notAssociated={notAssociatedInContract}
         />
       )}
-      <WalletCardAsset
-        image={vegaWhite}
-        decimals={appState.decimals}
-        name="VEGA"
-        symbol="In Wallet"
-        balance={walletWithAssociations}
-        dark={true}
-      />
-      {!Object.keys(
-        appState.associationBreakdown.stakingAssociations
-      ) ? null : (
-        <AssociatedAmounts
-          associations={appState.associationBreakdown.stakingAssociations}
-          notAssociated={walletBalance}
+      <section data-testid="vega-in-wallet">
+        <WalletCardAsset
+          image={vegaWhite}
+          decimals={appState.decimals}
+          name="VEGA"
+          symbol="In Wallet"
+          balance={walletWithAssociations}
+          dark={true}
         />
-      )}
+        {!Object.keys(
+          appState.associationBreakdown.stakingAssociations
+        ) ? null : (
+          <AssociatedAmounts
+            associations={appState.associationBreakdown.stakingAssociations}
+            notAssociated={walletBalance}
+          />
+        )}
+      </section>
       <WalletCardActions>
         <Link
           className={getButtonClasses('flex-1 mr-4', 'secondary')}
@@ -196,59 +198,68 @@ export const EthWallet = () => {
 
   return (
     <WalletCard dark={true}>
-      <WalletCardHeader>
-        <h1 className="m-0">{t('ethereumKey')}</h1>
-        {account && (
-          <div className="place-self-end font-mono px-4 pb-2">
-            <div className="font-mono">{truncateMiddle(account)}</div>
-            {pendingTxs && (
-              <div>
-                <button
-                  className="flex items-center gap-4 p-4 border whitespace-nowrap"
-                  data-testid="pending-transactions-btn"
-                  onClick={() =>
-                    appDispatch({
-                      type: AppStateActionType.SET_TRANSACTION_OVERLAY,
-                      isOpen: true,
-                    })
-                  }
-                >
-                  <Loader size="small" forceTheme="dark" />
-                  {t('pendingTransactions')}
-                </button>
+      <section data-testid="ethereum-wallet">
+        <WalletCardHeader>
+          <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
+          {account && (
+            <div className="px-4 text-right">
+              <div
+                className="font-mono"
+                data-testid="ethereum-account-truncated"
+              >
+                {truncateMiddle(account)}
               </div>
-            )}
-          </div>
-        )}
-      </WalletCardHeader>
-      <WalletCardContent>
-        {account ? (
-          <ConnectedKey />
-        ) : (
-          <Button
-            variant={'secondary'}
-            onClick={() =>
-              appDispatch({
-                type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
-                isOpen: true,
-              })
-            }
-            data-test-id="connect-to-eth-wallet-button"
-          >
-            {t('connectEthWalletToAssociate')}
-          </Button>
-        )}
-        {account && (
-          <WalletCardActions>
-            <button
-              className="mt-4 underline"
-              onClick={() => connector.deactivate()}
+              {pendingTxs && (
+                <div>
+                  <button
+                    className="flex items-center gap-4 p-4 border whitespace-nowrap"
+                    data-testid="pending-transactions-btn"
+                    onClick={() =>
+                      appDispatch({
+                        type: AppStateActionType.SET_TRANSACTION_OVERLAY,
+                        isOpen: true,
+                      })
+                    }
+                  >
+                    <Loader size="small" forceTheme="dark" />
+                    {t('pendingTransactions')}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </WalletCardHeader>
+        <WalletCardContent>
+          {account ? (
+            <ConnectedKey />
+          ) : (
+            <Button
+              variant={'secondary'}
+              className="w-full px-28 border h-28"
+              onClick={() =>
+                appDispatch({
+                  type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
+                  isOpen: true,
+                })
+              }
+              data-testid="connect-to-eth-wallet-button"
             >
-              {t('disconnect')}
-            </button>
-          </WalletCardActions>
-        )}
-      </WalletCardContent>
+              {t('connectEthWalletToAssociate')}
+            </Button>
+          )}
+          {account && (
+            <WalletCardActions>
+              <button
+                className="mt-4 underline"
+                onClick={() => connector.deactivate()}
+                data-testid="disconnect-from-eth-wallet-button"
+              >
+                {t('disconnect')}
+              </button>
+            </WalletCardActions>
+          )}
+        </WalletCardContent>
+      </section>
     </WalletCard>
   );
 };
