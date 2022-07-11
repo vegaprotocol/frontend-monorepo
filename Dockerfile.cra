@@ -7,7 +7,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY yarn.lock ./
 COPY . ./
-RUN apk add python make gcc g++
+RUN apk add python3 make gcc g++
 RUN yarn
 RUN yarn nx build $APP
 
