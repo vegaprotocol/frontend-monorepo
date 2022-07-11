@@ -57,7 +57,9 @@ export const useConfig = (
   const [config, setConfig] = useState<Configuration | undefined>(
     getCachedConfig(environment.VEGA_ENV)
   );
-  const [status, setStatus] = useState<ConfigStatus>(environment.VEGA_CONFIG_URL ? 'idle' : 'success');
+  const [status, setStatus] = useState<ConfigStatus>(
+    environment.VEGA_CONFIG_URL ? 'idle' : 'success'
+  );
 
   useEffect(() => {
     if (!config && status === 'idle') {
