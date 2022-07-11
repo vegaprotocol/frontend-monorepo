@@ -26,9 +26,7 @@ context('Staking Page - verify elements on page', function () {
     });
 
     it('should have description section visible', function () {
-      cy.get(staking.stakingDescription)
-        .should('be.visible')
-        .and('have.text', 'How does staking on Vega work?');
+      cy.get(staking.stakingDescription).should('be.visible');
     });
 
     it('should have Staking Guide link visible', function () {
@@ -44,15 +42,8 @@ context('Staking Page - verify elements on page', function () {
   });
 
   describe('validators section', function () {
-    it('should have header visible', function () {
-      cy.get(staking.stakingIntro).within(() => {
-        cy.get(staking.sectionHeader)
-          .should('be.visible')
-          .and(
-            'have.text',
-            "Step 3. Select the validator you'd like to nominate"
-          );
-      });
+    it('should be visible', function () {
+      cy.get(staking.validators).should('be.visible');
     });
   });
 });

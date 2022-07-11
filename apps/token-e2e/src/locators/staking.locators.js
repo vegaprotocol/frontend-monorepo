@@ -4,6 +4,7 @@ export default {
   ...common,
   guideLink: '[data-testid="staking-guide-link"]',
   stakingDescription: '[data-testid="staking-description"]',
+  validators: '[data-testid="node-list"]',
   validatorNames: '[data-testid="node-list-item-name"]',
   epochEndingText: '[data-testid="epoch-countdown"]',
   addStakeRadioButton: '[data-testid="add-stake-radio"]',
