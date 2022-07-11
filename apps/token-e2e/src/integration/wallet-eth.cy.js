@@ -155,21 +155,21 @@ context('Ethereum Wallet - verify elements on widget', function () {
       it('should match total & locked/unlocked currency value', function () {
         cy.get(ethWallet.vegaInVesting)
           .within(() => {
-            [
-              [ethWallet.currencyValue, 'currencyValue'],
-              [ethWallet.currencyLocked, 'currencyLocked'],
-              [ethWallet.currencyUnlocked, 'currencyUnlocked'],
-            ].forEach(([element, alias]) => {
-              cy.get(element).invoke('text').as(alias);
-            });
+            cy.get(ethWallet.currencyValue)
+              .invoke('text')
+              .convertTokenValueToNumber()
+              .as('value');
+            cy.get(ethWallet.currencyLocked)
+              .invoke('text')
+              .convertTokenValueToNumber()
+              .as('locked');
+            cy.get(ethWallet.currencyUnlocked)
+              .invoke('text')
+              .convertTokenValueToNumber()
+              .as('unlocked');
           })
           .then(function () {
-            const [value, locked, unlocked] = [
-              this.currencyValue,
-              this.currencyLocked,
-              this.currencyUnlocked,
-            ].map((v) => parseFloat(v.replace(/,/g, '')));
-            expect(value).to.equal(locked + unlocked);
+            expect(this.value).to.equal(this.locked + this.unlocked);
           });
       });
     });
@@ -219,21 +219,21 @@ context('Ethereum Wallet - verify elements on widget', function () {
       it('should match total & locked/unlocked currency value', function () {
         cy.get(ethWallet.vegaInWallet)
           .within(() => {
-            [
-              [ethWallet.currencyValue, 'currencyValue'],
-              [ethWallet.currencyLocked, 'currencyLocked'],
-              [ethWallet.currencyUnlocked, 'currencyUnlocked'],
-            ].forEach(([element, alias]) => {
-              cy.get(element).invoke('text').as(alias);
-            });
+            cy.get(ethWallet.currencyValue)
+              .invoke('text')
+              .convertTokenValueToNumber()
+              .as('value');
+            cy.get(ethWallet.currencyLocked)
+              .invoke('text')
+              .convertTokenValueToNumber()
+              .as('locked');
+            cy.get(ethWallet.currencyUnlocked)
+              .invoke('text')
+              .convertTokenValueToNumber()
+              .as('unlocked');
           })
           .then(function () {
-            const [value, locked, unlocked] = [
-              this.currencyValue,
-              this.currencyLocked,
-              this.currencyUnlocked,
-            ].map((v) => parseFloat(v.replace(/,/g, '')));
-            expect(value).to.equal(locked + unlocked);
+            expect(this.value).to.equal(this.locked + this.unlocked);
           });
       });
     });

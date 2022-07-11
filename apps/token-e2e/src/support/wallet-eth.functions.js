@@ -49,3 +49,11 @@ cy.ethereum_wallet_check_associated_vega_key_is_no_longer_showing = (
     cy.contains(vegaShortPublicKey, { timeout: 20000 }).should('not.exist');
   });
 };
+
+Cypress.Commands.add(
+  'convertTokenValueToNumber',
+  { prevSubject: true },
+  (subject) => {
+    return parseFloat(subject.replace(/,/g, ''));
+  }
+);
