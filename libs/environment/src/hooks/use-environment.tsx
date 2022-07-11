@@ -49,7 +49,7 @@ export const EnvironmentProvider = ({
       {config && (
         <NodeSwitcherDialog
           dialogOpen={isNodeSwitcherOpen}
-          setDialogOpen={setNodeSwitcherOpen}
+          toggleDialogOpen={setNodeSwitcherOpen}
           config={config}
           onConnect={(url) =>
             updateEnvironment((env) => ({ ...env, VEGA_URL: url }))

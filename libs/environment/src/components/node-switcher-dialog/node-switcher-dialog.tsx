@@ -4,22 +4,22 @@ import { NodeSwitcher } from '../node-switcher';
 
 type NodeSwitcherDialogProps = ComponentProps<typeof NodeSwitcher> & {
   dialogOpen: boolean;
-  setDialogOpen: (dialogOpen: boolean) => void;
+  toggleDialogOpen: (dialogOpen: boolean) => void;
 };
 
 export const NodeSwitcherDialog = ({
   config,
   dialogOpen,
-  setDialogOpen,
+  toggleDialogOpen,
   onConnect,
 }: NodeSwitcherDialogProps) => {
   return (
-    <Dialog open={dialogOpen}>
+    <Dialog open={dialogOpen} onChange={toggleDialogOpen}>
       <NodeSwitcher
         config={config}
         onConnect={(url) => {
           onConnect(url);
-          setDialogOpen(false);
+          toggleDialogOpen(false);
         }}
       />
     </Dialog>
