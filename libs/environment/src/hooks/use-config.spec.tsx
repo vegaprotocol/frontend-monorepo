@@ -81,18 +81,6 @@ afterAll(() => {
 });
 
 describe('useConfig hook', () => {
-  it('has an initial success state when the environment already has a URL', async () => {
-    const mockEnvWithUrl = {
-      ...mockEnvironment,
-      VEGA_URL: 'https://some.url/query',
-    };
-    const { result } = renderHook(() => useConfig(mockEnvWithUrl, mockUpdate));
-
-    expect(fetch).not.toHaveBeenCalled();
-    expect(mockUpdate).not.toHaveBeenCalled();
-    expect(result.current.status).toBe('success');
-  });
-
   it('updates the environment with a host url from the network configuration', async () => {
     const allowedStatuses = [
       'idle',

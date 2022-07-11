@@ -82,13 +82,18 @@ afterAll(() => {
   delete process.env['NX_ETHEREUM_PROVIDER_URL'];
   delete process.env['NX_ETHERSCAN_URL'];
   delete process.env['NX_VEGA_NETWORKS'];
+  delete process.env['NX_GIT_BRANCH'];
+  delete process.env['NX_GIT_ORIGIN_URL'];
+  delete process.env['NX_GIT_COMMIT_HASH'];
+  delete process.env['NX_GITHUB_FEEDBACK_URL'];
 });
 
 describe('useEnvironment hook', () => {
-  it('transforms and exposes values from the environment', () => {
-    const { result } = renderHook(() => useEnvironment(), {
+  it('transforms and exposes values from the environment', async () => {
+    const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
+    await waitForNextUpdate();
     expect(result.error).toBe(undefined);
     expect(result.current).toEqual({
       ...mockEnvironmentState,
@@ -96,7 +101,7 @@ describe('useEnvironment hook', () => {
     });
   });
 
-  it('allows for the VEGA_CONFIG_URL to be missing when there is a VEGA_URL present', () => {
+  it('allows for the VEGA_CONFIG_URL to be missing when there is a VEGA_URL present', async () => {
     delete process.env['NX_VEGA_CONFIG_URL'];
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
@@ -124,11 +129,12 @@ describe('useEnvironment hook', () => {
     });
   });
 
-  it('allows for the VEGA_NETWORKS to be missing from the environment', () => {
+  it('allows for the VEGA_NETWORKS to be missing from the environment', async () => {
     delete process.env['NX_VEGA_NETWORKS'];
-    const { result } = renderHook(() => useEnvironment(), {
+    const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
+    await waitForNextUpdate();
     expect(result.error).toBe(undefined);
     expect(result.current).toEqual({
       ...mockEnvironmentState,
@@ -147,7 +153,7 @@ describe('useEnvironment hook', () => {
     );
   });
 
-  it('throws a validation error when VEGA_ENV is not a valid network', () => {
+  it('throws a validation error when VEGA_ENV is not a valid network', async () => {
     process.env['NX_VEGA_ENV'] = 'SOMETHING';
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
@@ -157,12 +163,13 @@ describe('useEnvironment hook', () => {
     );
   });
 
-  it('when VEGA_NETWORKS is not a valid json, prints a warning and continues without using the value from it', () => {
+  it('when VEGA_NETWORKS is not a valid json, prints a warning and continues without using the value from it', async () => {
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
     process.env['NX_VEGA_NETWORKS'] = '{not:{valid:json';
-    const { result } = renderHook(() => useEnvironment(), {
+    const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
+    await waitForNextUpdate();
     expect(result.error).toBe(undefined);
     expect(result.current).toEqual({
       ...mockEnvironmentState,
@@ -174,7 +181,7 @@ describe('useEnvironment hook', () => {
     consoleWarnSpy.mockRestore();
   });
 
-  it('throws a validation error when VEGA_NETWORKS is has an invalid network as a key', () => {
+  it('throws a validation error when VEGA_NETWORKS is has an invalid network as a key', async () => {
     process.env['NX_VEGA_NETWORKS'] = JSON.stringify({
       NOT_A_NETWORK: 'https://somewhere.url',
     });
@@ -186,7 +193,7 @@ describe('useEnvironment hook', () => {
     );
   });
 
-  it('throws a validation error when both VEGA_URL and VEGA_CONFIG_URL are missing in the environment', () => {
+  it('throws a validation error when both VEGA_URL and VEGA_CONFIG_URL are missing in the environment', async () => {
     delete process.env['NX_VEGA_URL'];
     delete process.env['NX_VEGA_CONFIG_URL'];
     const { result } = renderHook(() => useEnvironment(), {
@@ -210,9 +217,10 @@ describe('useEnvironment hook', () => {
       process.env['NX_VEGA_ENV'] = env;
       delete process.env['NX_ETHEREUM_PROVIDER_URL'];
       delete process.env['NX_ETHERSCAN_URL'];
-      const { result } = renderHook(() => useEnvironment(), {
+      const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
+      await waitForNextUpdate();
       expect(result.error).toBe(undefined);
       expect(result.current).toEqual({
         ...mockEnvironmentState,

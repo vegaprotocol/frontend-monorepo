@@ -57,9 +57,7 @@ export const useConfig = (
   const [config, setConfig] = useState<Configuration | undefined>(
     getCachedConfig(environment.VEGA_ENV)
   );
-  const [status, setStatus] = useState<ConfigStatus>(
-    !environment.VEGA_URL ? 'idle' : 'success'
-  );
+  const [status, setStatus] = useState<ConfigStatus>(environment.VEGA_CONFIG_URL ? 'idle' : 'success');
 
   useEffect(() => {
     if (!config && status === 'idle') {
@@ -101,7 +99,7 @@ export const useConfig = (
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
-            VEGA_URL: config.hosts[0],
+            VEGA_URL: prevEnvironment.VEGA_URL || config.hosts[0],
           }));
           return;
         }
@@ -113,7 +111,7 @@ export const useConfig = (
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
-            VEGA_URL: config.hosts[index],
+            VEGA_URL: prevEnvironment.VEGA_URL || config.hosts[index],
           }));
         } catch (err) {
           setStatus('error-loading-node');
