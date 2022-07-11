@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 import navigation from '../../locators/navigation.locators';
 import staking from '../../locators/staking.locators';
-import wallet from '../../locators/wallet.locators';
 import '../../support/staking.functions';
 import '../../support/vega-wallet.functions';
 import '../../support/eth-wallet.functions';
