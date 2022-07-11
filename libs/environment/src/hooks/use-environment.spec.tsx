@@ -36,7 +36,6 @@ const mockFetch = (url: RequestInfo) => {
 };
 
 const mockEnvironmentState: EnvironmentState = {
-  configStatus: 'success',
   VEGA_URL: 'https://vega.xyz',
   VEGA_ENV: Networks.TESTNET,
   VEGA_CONFIG_URL: 'https://vega.xyz/testnet-config.json',
@@ -65,12 +64,12 @@ beforeEach(() => {
   process.env['NX_VEGA_URL'] = mockEnvironmentState.VEGA_URL;
   process.env['NX_VEGA_ENV'] = mockEnvironmentState.VEGA_ENV;
   process.env['NX_VEGA_CONFIG_URL'] = mockEnvironmentState.VEGA_CONFIG_URL;
-  process.env['NX_ETHEREUM_PROVIDER_URL'] =
-    mockEnvironmentState.ETHEREUM_PROVIDER_URL;
-  process.env['NX_ETHERSCAN_URL'] = mockEnvironmentState.ETHERSCAN_URL;
   process.env['NX_VEGA_NETWORKS'] = JSON.stringify(
     mockEnvironmentState.VEGA_NETWORKS
   );
+  process.env['NX_ETHEREUM_PROVIDER_URL'] =
+    mockEnvironmentState.ETHEREUM_PROVIDER_URL;
+  process.env['NX_ETHERSCAN_URL'] = mockEnvironmentState.ETHERSCAN_URL;
   process.env['NX_GIT_BRANCH'] = mockEnvironmentState.GIT_BRANCH;
   process.env['NX_GIT_ORIGIN_URL'] = mockEnvironmentState.GIT_ORIGIN_URL;
   process.env['NX_GIT_COMMIT_HASH'] = mockEnvironmentState.GIT_COMMIT_HASH;
@@ -86,9 +85,13 @@ afterAll(() => {
   delete process.env['NX_VEGA_URL'];
   delete process.env['NX_VEGA_ENV'];
   delete process.env['NX_VEGA_CONFIG_URL'];
+  delete process.env['NX_VEGA_NETWORKS'];
   delete process.env['NX_ETHEREUM_PROVIDER_URL'];
   delete process.env['NX_ETHERSCAN_URL'];
-  delete process.env['NX_VEGA_NETWORKS'];
+  delete process.env['NX_GIT_BRANCH'];
+  delete process.env['NX_GIT_ORIGIN_URL'];
+  delete process.env['NX_GIT_COMMIT_HASH'];
+  delete process.env['NX_GITHUB_FEEDBACK_URL'];
 });
 
 describe('useEnvironment hook', () => {

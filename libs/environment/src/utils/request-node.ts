@@ -50,9 +50,11 @@ export const requestNode = (
       query: STATS_QUERY,
     })
     .then((res) => {
+      console.log('GOT SOME DATA!!')
       onStatsSuccess(res.data);
     })
     .catch(() => {
+      console.log('DATA ERROR!!')
       onStatsFailure();
     });
 

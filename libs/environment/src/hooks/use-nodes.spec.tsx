@@ -1,23 +1,62 @@
 import { renderHook, act } from '@testing-library/react-hooks';
-import { MockedProvider } from '@apollo/client/testing';
 import { ApolloClient } from '@apollo/client';
+import { MockedProvider } from '@apollo/client/testing';
+import { STATS_QUERY, TIME_UPDATE_SUBSCRIPTION } from '../utils/request-node';
 import createClient from '../utils/apollo-client';
 import { CUSTOM_NODE_KEY } from '../types';
-
-import {
-  STATS_QUERY,
-  TIME_UPDATE_SUBSCRIPTION,
-} from '../utils/initialize-node';
 import { useNodes } from './use-nodes';
 
 jest.mock('../utils/apollo-client');
 
-const MOCK_DURATION = 1073;
-
-const MOCK_STATISTICS_QUERY_RESULT = {
+export const MOCK_STATISTICS_QUERY_RESULT = {
   blockHeight: '11',
   chainId: 'testnet_01234',
 };
+
+class MockClient {
+  constructor ({
+    failStats = false,
+    failSubscription = false,
+  }: { failStats?: boolean; failSubscription?: boolean } = {}) {
+    const provider = new MockedProvider({
+      mocks: [
+        {
+          request: {
+            query: STATS_QUERY,
+          },
+          result: failStats
+            ? undefined
+            : {
+                data: {
+                  statistics: {
+                    __typename: 'Statistics',
+                    ...MOCK_STATISTICS_QUERY_RESULT,
+                  },
+                },
+              },
+        },
+        {
+          request: {
+            query: TIME_UPDATE_SUBSCRIPTION,
+          },
+          result: failSubscription
+            ? undefined
+            : {
+                data: {
+                  busEvents: {
+                    eventId: 'time-0',
+                  },
+                },
+              },
+        },
+      ],
+    });
+
+    return provider.state.client;
+  }
+}
+
+const MOCK_DURATION = 1073;
 
 const initialState = {
   url: '',
@@ -43,47 +82,6 @@ const initialState = {
   },
 };
 
-const createMockClient = ({
-  failStats = false,
-  failSubscription = false,
-}: { failStats?: boolean; failSubscription?: boolean } = {}) => {
-  const provider = new MockedProvider({
-    mocks: [
-      {
-        request: {
-          query: STATS_QUERY,
-        },
-        result: failStats
-          ? undefined
-          : {
-              data: {
-                statistics: {
-                  __typename: 'Statistics',
-                  ...MOCK_STATISTICS_QUERY_RESULT,
-                },
-              },
-            },
-      },
-      {
-        request: {
-          query: TIME_UPDATE_SUBSCRIPTION,
-        },
-        result: failSubscription
-          ? undefined
-          : {
-              data: {
-                busEvents: {
-                  eventId: 'time-0',
-                },
-              },
-            },
-      },
-    ],
-  });
-
-  return provider.state.client;
-};
-
 window.performance.getEntriesByName = jest
   .fn()
   .mockImplementation((url: string) => [
@@ -98,7 +96,7 @@ window.performance.getEntriesByName = jest
 
 beforeEach(() => {
   // @ts-ignore allow adding a mock return value to mocked module
-  createClient.mockReturnValue(createMockClient());
+  createClient.mockReturnValue(new MockClient());
 });
 
 afterAll(() => {
@@ -200,7 +198,7 @@ describe('useNodes hook', () => {
 
   it('sets error when statistics request fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(createMockClient({ failStats: true }));
+    createClient.mockReturnValue(new MockClient({ failStats: true }));
 
     const url = 'https://some.url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
@@ -228,7 +226,7 @@ describe('useNodes hook', () => {
 
   it('sets error when subscription request fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(createMockClient({ failSubscription: true }));
+    createClient.mockReturnValue(new MockClient({ failSubscription: true }));
 
     const url = 'https://some.url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
@@ -325,7 +323,7 @@ describe('useNodes hook', () => {
 
   it('sets error when custom node statistics request fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(createMockClient({ failStats: true }));
+    createClient.mockReturnValue(new MockClient({ failStats: true }));
 
     const customUrl = 'https://some.url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
@@ -359,7 +357,7 @@ describe('useNodes hook', () => {
 
   it('sets error when custom node subscription fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(createMockClient({ failSubscription: true }));
+    createClient.mockReturnValue(new MockClient({ failSubscription: true }));
 
     const customUrl = 'https://some.url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));

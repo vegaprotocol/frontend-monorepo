@@ -30,6 +30,7 @@ const requestToNode =
           return;
         },
         onStatsFailure: () => {
+          console.log('REJECTED!')
           reject(ErrorType.CONNECTION_ERROR);
         },
         onSubscriptionSuccess: () => {
@@ -86,42 +87,36 @@ export const useConfig = (
   );
 
   useEffect(() => {
-    if (!config) {
       (async () => {
-        try {
-          const response = await fetch(environment.VEGA_CONFIG_URL ?? '');
-          const configData: Configuration = await response.json();
+        if (!config && environment.VEGA_CONFIG_URL) {
+          try {
+            const response = await fetch(environment.VEGA_CONFIG_URL);
+            const configData: Configuration = await response.json();
 
-          if (validateConfiguration(configData)) {
-            onError(ErrorType.CONFIG_VALIDATION_ERROR);
-            return;
+            if (validateConfiguration(configData)) {
+              onError(ErrorType.CONFIG_VALIDATION_ERROR);
+              return;
+            }
+
+            const hosts = compileHosts(configData.hosts, environment.VEGA_URL);
+
+            setConfig({ hosts });
+            LocalStorage.setItem(
+              LOCAL_STORAGE_NETWORK_KEY,
+              JSON.stringify({
+                [environment.VEGA_ENV]: {
+                  hosts,
+                },
+              })
+            );
+          } catch (err) {
+            onError(ErrorType.CONFIG_LOAD_ERROR);
           }
-
-          const hosts = compileHosts(configData.hosts, environment.VEGA_URL);
-
-          setConfig({ hosts });
-          LocalStorage.setItem(
-            LOCAL_STORAGE_NETWORK_KEY,
-            JSON.stringify({
-              [environment.VEGA_ENV]: {
-                hosts,
-              },
-            })
-          );
-        } catch (err) {
-          onError(ErrorType.CONFIG_LOAD_ERROR);
         }
       })();
-    }
     // load config only once per runtime
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    environment.VEGA_CONFIG_URL,
-    environment.VEGA_URL,
-    !!config,
-    setConfig,
-    onError,
-  ]);
+  }, [environment.VEGA_CONFIG_URL, !!config, onError]);
 
   useEffect(() => {
     (async () => {
@@ -145,6 +140,7 @@ export const useConfig = (
 
       if (config && !environment.VEGA_URL) {
         try {
+          console.log('HEYA1!')
           const requests = config.hosts.map(
             requestToNode(environment.VEGA_ENV, (url, status) => {
               setSubscriptionStatusMap((state) => ({
@@ -155,6 +151,8 @@ export const useConfig = (
           );
 
           const node = await promiseRaceToSuccess(requests);
+
+          console.log('HEYA2!')
 
           setVerified(true);
           updateEnvironment((prevEnvironment) => ({
