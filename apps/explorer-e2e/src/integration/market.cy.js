@@ -1,20 +1,21 @@
-import commonLocators from '../locators/common.locators';
-import navigationLocators from '../locators/navigation.locators';
-import { common_validate_blocks_data_displayed } from '../support/common.functions';
+import '../support/common.functions';
 
 //Tests set to skip until market bug for capsule checkpoint is fixed
 context.skip('Market page', function () {
   describe('Verify elements on page', function () {
+    const marketHeaders = '[data-testid="markets-header"]';
+    const marketNavigation = 'a[href="/markets"]';
+
     it('Markets page is displayed', function () {
       cy.visit('/');
-      cy.get(navigationLocators.markets).click();
-      common_validate_blocks_data_displayed(commonLocators.marketHeaders);
+      cy.get(marketNavigation).click();
+      cy.common_validate_blocks_data_displayed(marketHeaders);
     });
 
     it('Markets page displayed on mobile', function () {
       cy.common_switch_to_mobile_and_click_toggle();
-      cy.get(navigationLocators.markets).click();
-      common_validate_blocks_data_displayed(commonLocators.marketHeaders);
+      cy.get(marketNavigation).click();
+      cy.common_validate_blocks_data_displayed(marketHeaders);
     });
   });
 });

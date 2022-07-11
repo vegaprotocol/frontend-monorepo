@@ -1,6 +1,3 @@
-import navigationLocators from '../locators/navigation.locators';
-import transactionsLocators from '../locators/transactions.locators';
-
 //Tests set to skip until transactions are generated after capsule start up
 context.skip('Transactions page', function () {
   before('visit token home page', function () {
@@ -8,15 +5,16 @@ context.skip('Transactions page', function () {
   });
 
   describe('Verify elements on page', function () {
+    const transactionNavigation = 'a[href="/txs"]';
+    const transactionRow = 'transaction-row';
+    const txHash = 'hash';
+
     beforeEach('Navigate to transactions page', function () {
-      cy.get(navigationLocators.transactions).click();
+      cy.get(transactionNavigation).click();
     });
 
     it('transactions are displayed', function () {
-      cy.get(transactionsLocators.transactionRow).should(
-        'have.length.above',
-        1
-      );
+      cy.get(transactionRow).should('have.length.above', 1);
     });
 
     it('transactions details page is displayed', function () {
@@ -26,7 +24,7 @@ context.skip('Transactions page', function () {
 
     it('transactions details page is displayed in mobile', function () {
       cy.common_switch_to_mobile_and_click_toggle();
-      cy.get(navigationLocators.transactions).click();
+      cy.get(transactionNavigation).click();
       clickTopTransaction();
       validateTxDetailsAreDisplayed();
     });
@@ -35,8 +33,8 @@ context.skip('Transactions page', function () {
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(1000); // Wait for transactions to load if there are any
       cy.get('body').then(($body) => {
-        if ($body.find(transactionsLocators.transactionRow).length) {
-          cy.get(transactionsLocators.transactionRow)
+        if ($body.find(transactionRow).length) {
+          cy.get(transactionRow)
             .first()
             .find('a')
             .first()
@@ -52,19 +50,17 @@ context.skip('Transactions page', function () {
       // eslint-disable-next-line cypress/no-unnecessary-waiting
       cy.wait(1000); // Wait for transactions to load if there are any
       cy.get('body').then(($body) => {
-        if ($body.find(transactionsLocators.txHash).length) {
-          cy.get(transactionsLocators.txHash)
-            .invoke('text')
-            .should('have.length', 64);
-          cy.get(transactionsLocators.txSubmittedBy)
+        if ($body.find(txHash).length) {
+          cy.get(txHash).invoke('text').should('have.length', 64);
+          cy.get('submitted-by')
             .find('a')
             .then(($address) => {
               cy.wrap($address).should('have.attr', 'href');
               cy.wrap($address).invoke('text').should('have.length', 66);
             });
-          cy.get(transactionsLocators.txBlock).should('not.be.empty');
-          cy.get(transactionsLocators.txEncodedTnx).should('not.be.empty');
-          cy.get(transactionsLocators.txType)
+          cy.get('block').should('not.be.empty');
+          cy.get('encoded-tnx').should('not.be.empty');
+          cy.get('tx-type')
             .should('not.be.empty')
             .invoke('text')
             .then((txTypeTxt) => {

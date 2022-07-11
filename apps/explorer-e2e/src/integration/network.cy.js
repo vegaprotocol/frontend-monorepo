@@ -1,11 +1,4 @@
-import commonLocators from '../locators/common.locators';
-import navigationLocators from '../locators/navigation.locators';
-import {
-  common_switch_to_mobile_and_click_toggle,
-  common_verify_json_int_values,
-  common_verify_json_parameters,
-  common_verify_json_string_values,
-} from '../support/common.functions';
+import '../support/common.functions';
 
 context('Network parameters page', function () {
   before('visit token home page', function () {
@@ -13,8 +6,10 @@ context('Network parameters page', function () {
   });
 
   describe('Verify elements on page', function () {
+    const networkParametersNavigation = 'a[href="/network-parameters"]';
+
     beforeEach('Navigate to network parameter page', function () {
-      cy.get(navigationLocators.networkParameters).click();
+      cy.get(networkParametersNavigation).click();
     });
 
     it('Network paremeter page is displayed', function () {
@@ -22,19 +17,19 @@ context('Network parameters page', function () {
     });
 
     it('Network parameter page displayed on mobile', function () {
-      common_switch_to_mobile_and_click_toggle();
-      cy.get(navigationLocators.networkParameters).click();
+      cy.common_switch_to_mobile_and_click_toggle();
+      cy.get(networkParametersNavigation).click();
       verifyNetworkParametersPageDisplayed();
     });
   });
 
   function verifyNetworkParametersPageDisplayed() {
-    cy.get(commonLocators.networkParametersHeader).should(
+    cy.get('[data-testid="network-param-header"]').should(
       'have.text',
       'Network Parameters'
     );
-    common_verify_json_parameters(18);
-    common_verify_json_string_values(6);
-    common_verify_json_int_values(7);
+    cy.common_verify_json_parameters(18);
+    cy.common_verify_json_string_values(6);
+    cy.common_verify_json_int_values(7);
   }
 });
