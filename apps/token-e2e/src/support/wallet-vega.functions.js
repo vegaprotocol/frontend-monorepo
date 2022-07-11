@@ -1,4 +1,4 @@
-import wallet from '../locators/wallet.locators';
+import vegaWallet from '../locators/wallet-vega.locators';
 
 const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletLocation = Cypress.env('vegaWalletLocation');
@@ -18,7 +18,7 @@ cy.vega_wallet_import = () => {
 
 cy.vega_wallet_connect = () => {
   cy.highlight('Connecting Vega Wallet');
-  cy.get(wallet.vegawallet).within(() => {
+  cy.get(vegaWallet.walletContainer).within(() => {
     cy.get('button')
       .contains('Connect Vega wallet to use associated $VEGA')
       .should('be.enabled')
@@ -26,9 +26,9 @@ cy.vega_wallet_connect = () => {
       .click({ force: true });
   });
   cy.get('button').contains('rest provider').click();
-  cy.get(wallet.connectRestForm).within(() => {
-    cy.get(wallet.name).click().type(vegaWalletName);
-    cy.get(wallet.passphrase).click().type(vegaWalletPassphrase);
+  cy.get(vegaWallet.connectRestForm).within(() => {
+    cy.get(vegaWallet.name).click().type(vegaWalletName);
+    cy.get(vegaWallet.passphrase).click().type(vegaWalletPassphrase);
     cy.get('button').contains('Connect').click();
   });
   cy.contains(`${vegaWalletName} key`, { timeout: 20000 }).should('be.visible');
@@ -36,7 +36,7 @@ cy.vega_wallet_connect = () => {
 
 cy.vega_wallet_check_unstaked_value_is = (expectedVal) => {
   cy.highlight(`Checking vega wallet - Unstaked Value is ${expectedVal}`);
-  cy.get(wallet.vegawallet).within(() => {
+  cy.get(vegaWallet.walletContainer).within(() => {
     cy.contains('Unstaked', { timeout: 40000 })
       .siblings()
       .contains(expectedVal, { timeout: 40000 })
@@ -46,7 +46,7 @@ cy.vega_wallet_check_unstaked_value_is = (expectedVal) => {
 
 cy.vega_wallet_check_associated_value_is = (expectedVal) => {
   cy.highlight(`Checking vega wallet - Associated Value is ${expectedVal}`);
-  cy.get(wallet.vegawallet).within(() => {
+  cy.get(vegaWallet.walletContainer).within(() => {
     cy.contains('Associated', { timeout: 40000 })
       .parent()
       .siblings()
