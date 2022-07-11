@@ -14,7 +14,7 @@ export const NodeSwitcherDialog = ({
   onConnect,
 }: NodeSwitcherDialogProps) => {
   return (
-    <Dialog open={dialogOpen} contentClassNames="md:w-[856px] w-[856px]">
+    <Dialog open={dialogOpen}>
       <NodeSwitcher
         config={config}
         onConnect={(url) => {

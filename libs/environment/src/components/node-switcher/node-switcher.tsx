@@ -57,7 +57,7 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
   const isSubmitDisabled = !node;
 
   return (
-    <div className="text-black dark:text-white min-w-[800px]">
+    <div className="text-black dark:text-white w-full">
       <NodeError />
       <form onSubmit={() => onSubmit(node)}>
         <p className="text-body-large font-bold mb-32">
