@@ -34,7 +34,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       }
     );
 
-    it('Able to associate tokens - from staking page', function () {
+    it('Able to associate tokens', function () {
       cy.staking_page_associate_tokens('2');
       cy.ethereum_wallet_check_associated_vega_key_value_is(
         vegaWalletPublicKeyShort,
@@ -45,7 +45,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('2.000000000000000000');
     });
 
-    it('Able to disassociate tokens - from staking page', function () {
+    it('Able to disassociate tokens', function () {
       cy.staking_page_associate_tokens('2');
       cy.ethereum_wallet_check_associated_vega_key_value_is(
         vegaWalletPublicKeyShort,
@@ -60,24 +60,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       );
       cy.ethereum_wallet_check_associated_value_is('1.0');
       cy.vega_wallet_check_associated_value_is('1.000000000000000000');
-    });
-
-    it('Able to access associate token form - from eth wallet', function () {
-      cy.get(wallet.ethWallet).within(() =>
-        cy.get(wallet.ethWalletAssociate).click()
-      );
-      cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should(
-        'be.enabled'
-      );
-    });
-
-    it('Able to access disassociate token form - from eth wallet', function () {
-      cy.get(wallet.ethWallet).within(() =>
-        cy.get(wallet.ethWalletDisassociate).click()
-      );
-      cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should(
-        'be.enabled'
-      );
     });
 
     it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {

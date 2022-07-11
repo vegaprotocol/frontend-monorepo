@@ -4,7 +4,7 @@ export default {
   ...common,
   guideLink: '[data-testid="staking-guide-link"]',
   stakingDescription: '[data-testid="staking-description"]',
-  validators: '[data-testid="node-list"]',
+  validators: '[data-testid="node-list-item"]',
   validatorNames: '[data-testid="node-list-item-name"]',
   epochEndingText: '[data-testid="epoch-countdown"]',
   addStakeRadioButton: '[data-testid="add-stake-radio"]',
@@ -17,7 +17,5 @@ export default {
   stakeThisEpochValue: '[data-testid="stake-this-epoch"]',
   stakeMaximumTokens: '[data-testid="token-amount-use-maximum"]',
   stakeAssociateWalletRadio: '[data-testid="associate-radio-wallet"]',
-  disassociateButton: '[data-testid="disassociate-tokens-btn"]',
-  associateMoreTokensButton: '[data-testid="associate-more-tokens-btn"]',
-  associateButton: '[data-testid="associate-tokens-btn"]',
+  associateMoreTokensButton: '[data-testid="associate-more-tokens-btn"]'
 };
