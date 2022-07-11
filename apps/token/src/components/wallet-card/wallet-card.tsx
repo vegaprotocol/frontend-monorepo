@@ -47,7 +47,10 @@ interface WalletCardHeaderProps {
 
 export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4">
+    <div
+      className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4"
+      data-testid="wallet-header"
+    >
       {children}
     </div>
   );
@@ -151,7 +154,10 @@ export const WalletCardAsset = ({
         }`}
       />
       <div>
-        <div className="flex font-medium align-center">
+        <div
+          className="flex font-medium align-center"
+          data-testid="currency-title"
+        >
           <h1
             className={`text-h5 mb-0 px-8 uppercase leading-none ${
               dark ? 'text-white' : 'text-black'
@@ -167,7 +173,10 @@ export const WalletCardAsset = ({
             {subheading || symbol}
           </h2>
         </div>
-        <div className="px-8 text-h5 basis-full font-mono">
+        <div
+          className="px-8 text-h5 basis-full font-mono"
+          data-testid="currency-value"
+        >
           <span>{integers}.</span>
           <span className={dark ? 'text-white-60' : 'text-black-60'}>
             {decimalsPlaces}
