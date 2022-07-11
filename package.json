@@ -38,6 +38,7 @@
     "@web3-react/walletconnect": "^8.0.23-beta.0",
     "ag-grid-community": "^27.0.1",
     "ag-grid-react": "^27.0.1",
+    "allotment": "^1.14.5",
     "alpha-lyrae": "vegaprotocol/alpha-lyrae",
     "apollo": "^2.33.9",
     "autoprefixer": "^10.4.2",

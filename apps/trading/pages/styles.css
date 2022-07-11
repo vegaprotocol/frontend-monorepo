@@ -7,3 +7,11 @@ body,
 #__next {
   @apply h-full;
 }
+
+html > body {
+  --focus-border: #ff077f;
+}
+
+html.dark > body {
+  --focus-border: #dfff0b;
+}

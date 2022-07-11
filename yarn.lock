@@ -7542,6 +7542,18 @@ allotment@1.14.2:
     lodash.isequal "^4.5.0"
     use-resize-observer "^9.0.0"
 
+allotment@^1.14.5:
+  version "1.14.5"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.14.5.tgz#c952f5a7d43ac17649f27cb699e543d85cb6169a"
+  integrity sha512-o/OsKW8HQPDkUoGpzRIULzAy1R3UmbkUw8oBGyJo91YtB7QhiRtUOU5kEUsJX/M8lpnHtJFFo3DWTgH6HXB5TA==
+  dependencies:
+    classnames "^2.3.0"
+    eventemitter3 "^4.0.0"
+    lodash.clamp "^4.0.0"
+    lodash.debounce "^4.0.0"
+    lodash.isequal "^4.5.0"
+    use-resize-observer "^9.0.0"
+
 alpha-lyrae@vegaprotocol/alpha-lyrae:
   version "0.0.0"
   resolved "https://codeload.github.com/vegaprotocol/alpha-lyrae/tar.gz/952bbedd040080c51fb9fa15b52b0093be4d3c26"
