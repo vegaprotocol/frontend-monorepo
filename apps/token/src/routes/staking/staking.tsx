@@ -1,70 +1,50 @@
-import { Button, Callout, Intent } from '@vegaprotocol/ui-toolkit';
+import { Button, Callout, Intent, Link } from '@vegaprotocol/ui-toolkit';
 import { useWeb3React } from '@web3-react/core';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link as RouteLink } from 'react-router-dom';
-
-import { BulletHeader } from '../../components/bullet-header';
-import { Link } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { Links } from '../../config';
 import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
-import type { Staking as StakingQueryResult } from './__generated__/Staking';
 import { ConnectToVega } from './connect-to-vega';
 import { NodeList } from './node-list';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { truncateMiddle } from '../../lib/truncate-middle';
-
-const stakingBulletStyles = { marginBottom: '12px', fontSize: '18px' };
+import type { BigNumber } from '../../lib/bignumber';
+import type { Staking as StakingQueryResult } from './__generated__/Staking';
 
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();
 
   return (
     <>
-      <section className="mb-24">
-        <p>{t('stakingDescription1')}</p>
-        <p>{t('stakingDescription2')}</p>
-        <p>{t('stakingDescription3')}</p>
-        <p>{t('stakingDescription4')}</p>
-        <p>
+      <section data-testid="staking-description" className="mb-24">
+        <Callout
+          intent={Intent.Primary}
+          iconName="help"
+          title={t('stakingDescriptionTitle')}
+        >
+          <ol className="mb-20">
+            <li>{t('stakingDescription1')}</li>
+            <li>{t('stakingDescription2')}</li>
+            <li>{t('stakingDescription3')}</li>
+            <li>{t('stakingDescription4')}</li>
+          </ol>
+
           <Link
             href={Links.STAKING_GUIDE}
-            className="text-white underline"
             target="_blank"
             data-testid="staking-guide-link"
           >
-            {t('readMoreStaking')}
+            <Button variant="secondary">{t('readMoreStaking')}</Button>
           </Link>
-        </p>
+        </Callout>
       </section>
 
-      <section data-testid="staking-step-1">
-        <BulletHeader tag="h2" style={stakingBulletStyles}>
-          {t('stakingStep1')}
-        </BulletHeader>
-        <StakingStepConnectWallets />
-      </section>
-      <section data-testid="staking-step-2">
-        <BulletHeader tag="h2" style={stakingBulletStyles}>
-          {t('stakingStep2')}
-        </BulletHeader>
-        <StakingStepAssociate
-          associated={
-            new BigNumber(
-              data?.party?.stake.currentStakeAvailableFormatted || '0'
-            )
-          }
-        />
-      </section>
-      <section data-testid="staking-step-3">
-        <BulletHeader tag="h2" style={stakingBulletStyles}>
-          {t('stakingStep3')}
-        </BulletHeader>
+      <section>
         <StakingStepSelectNode data={data} />
       </section>
     </>
@@ -220,5 +200,7 @@ export const StakingStepSelectNode = ({
 }: {
   data?: StakingQueryResult;
 }) => {
-  return <NodeList epoch={data?.epoch} party={data?.party} />;
+  return (
+    <NodeList data-testid="node-list" epoch={data?.epoch} party={data?.party} />
+  );
 };
