@@ -62,6 +62,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const { isMobile } = useScreenDimensions();
   const contRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const arrowButtonRef = useRef<HTMLButtonElement | null>(null);
   const [skip, setSkip] = useState(true);
   const [results, setResults] = useState<MarketNames_markets[]>([]);
   const [showPane, setShowPane] = useState(false);
@@ -80,7 +81,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     }
   }, [setShowPane, isMobile]);
 
-  useOutsideClick({ ref: contRef, func: outsideClickCb });
+  useOutsideClick({ refs: [contRef, arrowButtonRef], func: outsideClickCb });
 
   const handleOnChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,9 +171,9 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const selectorContent = useMemo(() => {
     return (
       <div className="relative flex flex-col">
-        <div className="relative w-full min-h-[30px]">
+        <div className="relative w-full min-h-[30px] dark:bg-black">
           <Input
-            className="h-[30px] w-full border-none dark:bg-black"
+            className="h-[30px] w-[calc(100%-20px)] border-none dark:bg-black"
             ref={inputRef}
             tabIndex={0}
             value={lookup}
@@ -185,6 +186,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
             className="absolute self-end top-[7px] right-0 z-10"
             variant="inline-link"
             onClick={openPane}
+            ref={arrowButtonRef}
           >
             <Icon
               name={IconNames.ARROW_DOWN}
@@ -265,7 +267,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       {!dialogContent && selectorContent}
       <Dialog
         titleClassNames="uppercase font-alpha"
-        contentClassNames="min-h-[90%] top-[10%] left-[0%] border-0 translate-x-[0] translate-y-[0] border-none"
+        contentClassNames="left-[0px] top-[90px] h-[calc(100%-90px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto"
         title={t('Select Market')}
         open={Boolean(dialogContent)}
         onChange={handleDialogOnchange}

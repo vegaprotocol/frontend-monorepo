@@ -1,24 +1,27 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 
-interface Props<T> {
-  ref: RefObject<T>;
-  func: () => void;
+interface Props {
+  refs: RefObject<HTMLElement>[];
+  func: (event: Event) => void;
 }
 
-export const useOutsideClick = <T extends HTMLElement>({
-  ref,
-  func,
-}: Props<T>) => {
+export const useOutsideClick = ({ refs, func }: Props) => {
   useEffect(() => {
     const handleClickOutside = (event: Event) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        func();
+      const found = refs.reduce((agg: boolean, item) => {
+        if (item.current && item.current.contains(event.target as Node)) {
+          agg = true;
+        }
+        return agg;
+      }, false);
+      if (!found) {
+        func(event);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref, func]);
+  }, [refs, func]);
 };
