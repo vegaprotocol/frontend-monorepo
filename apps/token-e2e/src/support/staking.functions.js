@@ -1,7 +1,6 @@
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
 const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
 const tokenInputApprove = '[data-testid="token-input-approve-button"]';
-const stakeNextEpochValue = '[data-testid="stake-next-epoch"]';
 const addStakeRadioButton = '[data-testid="add-stake-radio"]';
 const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
 const ethWalletAssociateButton = '[href="/staking/associate"]';

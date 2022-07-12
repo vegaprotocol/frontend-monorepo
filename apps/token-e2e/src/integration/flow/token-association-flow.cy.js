@@ -2,10 +2,6 @@ const stakingPageLink = '[href="/staking"]';
 const pageSpinner = 'splash-loader';
 const menuBar = 'nav';
 const validatorList = '[data-testid="node-list-item-name"]';
-const ethWalletContainer = '[data-testid="ethereum-wallet"]';
-const ethWalletAssociateButton = '[href="/staking/associate"]';
-const ethWalletDissociateButton = '[href="/staking/disassociate"]';
-const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 
 context(
