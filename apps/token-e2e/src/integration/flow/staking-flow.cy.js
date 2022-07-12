@@ -1,31 +1,28 @@
-/// <reference types="cypress" />
-import navigation from '../../locators/navigation.locators';
-import staking from '../../locators/staking.locators';
-import vegaWallet from '../../locators/wallet-vega.locators';
-import '../../support/staking.functions';
-import '../../support/wallet-vega.functions';
-import '../../support/wallet-eth.functions';
-import '../../support/wallet-teardown.functions';
-
+const stakingPageLink = '[href="/staking"]';
+const pageSpinner = 'splash-loader';
+const menuBar = 'nav';
+const validatorList = '[data-testid="node-list-item-name"]';
+const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
+const tokenAmountInputBox = '[data-testid="token-amount-input"]';
+const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
+const stakeNextEpochValue = '[data-testid="stake-next-epoch"]';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
+const vegaWalletContainer = '[data-testid="vega-wallet"]';
 
 context('Staking Flow - with eth and vega wallets connected', function () {
   before('visit staking tab and connect vega wallet', function () {
     cy.vega_wallet_import();
     cy.visit('/');
-    cy.get(navigation.section, { timeout: 20000 }).should('be.visible');
+    cy.get(menuBar, { timeout: 20000 }).should('be.visible');
     cy.vega_wallet_connect();
     cy.vega_wallet_set_specified_approval_amount('1000');
     cy.reload();
-    cy.get(navigation.section, { timeout: 20000 }).should('be.visible');
+    cy.get(menuBar, { timeout: 20000 }).should('be.visible');
     cy.ethereum_wallet_connect();
-    cy.get(navigation.staking).first().click();
-    cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
-    cy.get(staking.validatorNames).first().invoke('text').as('validatorName');
-    cy.get(staking.validatorNames)
-      .last()
-      .invoke('text')
-      .as('otherValidatorName');
+    cy.get(stakingPageLink).first().click();
+    cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
+    cy.get(validatorList).first().invoke('text').as('validatorName');
+    cy.get(validatorList).last().invoke('text').as('otherValidatorName');
   });
 
   describe('Eth wallet - contains VEGA tokens', function () {
@@ -33,7 +30,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       'teardown wallet & drill into a specific validator',
       function () {
         cy.vega_wallet_teardown();
-        cy.get(navigation.staking).first().click();
+        cy.get(stakingPageLink).first().click();
       }
     );
 
@@ -47,7 +44,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       );
 
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('2');
       cy.vega_wallet_check_validator_stake_next_epoch_value_is(
@@ -67,15 +64,15 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.staking_page_associate_tokens('5');
       cy.vega_wallet_check_unstaked_value_is('5.000000000000000000');
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('2');
       cy.vega_wallet_check_validator_staked_value_is(
         this.validatorName,
         '2.000000000000000000'
       );
-      cy.get(navigation.staking).first().click();
-      cy.get(staking.validatorNames).contains(this.otherValidatorName).click();
+      cy.get(stakingPageLink).first().click();
+      cy.get(validatorList).contains(this.otherValidatorName).click();
       cy.staking_validator_page_add_stake('1');
       cy.vega_wallet_check_validator_staked_value_is(
         this.otherValidatorName,
@@ -89,7 +86,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('4.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('3');
       cy.staking_validator_page_check_stake_next_epoch_value('3.0');
@@ -99,8 +96,8 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       );
       cy.vega_wallet_check_unstaked_value_is('1.000000000000000000');
 
-      cy.get(navigation.staking).first().click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(stakingPageLink).first().click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_removeStake('1');
       cy.staking_validator_page_check_stake_next_epoch_value('2.0');
@@ -127,7 +124,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('1');
       cy.vega_wallet_check_validator_stake_next_epoch_value_is(
@@ -136,8 +133,8 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       );
       cy.vega_wallet_check_unstaked_value_is('2.000000000000000000');
 
-      cy.get(navigation.staking).first().click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(stakingPageLink).first().click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_removeStake('1');
       cy.staking_validator_page_check_stake_next_epoch_value('0.0');
@@ -161,7 +158,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('2');
       cy.staking_validator_page_check_stake_next_epoch_value('2.0');
@@ -171,12 +168,12 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       );
       cy.vega_wallet_check_unstaked_value_is('1.000000000000000000');
 
-      cy.get(navigation.staking).first().click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
-      cy.get(staking.removeStakeRadioButton).click({ force: true });
-      cy.get(staking.tokenAmountInput).type('-0.1');
+      cy.get(stakingPageLink).first().click();
+      cy.get(validatorList).contains(this.validatorName).click();
+      cy.get(removeStakeRadioButton).click({ force: true });
+      cy.get(tokenAmountInputBox).type('-0.1');
       cy.contains('Waiting for next epoch to start', { timeout: 10000 });
-      cy.get(staking.tokenInputSubmit)
+      cy.get(tokenSubmitButton)
         .should('be.disabled', { timeout: 8000 })
         .and('contain', `Remove -0.1 $VEGA tokens at the end of epoch`)
         .and('be.visible');
@@ -187,7 +184,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('2');
       cy.staking_validator_page_check_stake_next_epoch_value('2.0');
@@ -197,12 +194,12 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       );
       cy.vega_wallet_check_unstaked_value_is('1.000000000000000000');
 
-      cy.get(navigation.staking).first().click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
-      cy.get(staking.removeStakeRadioButton).click({ force: true });
-      cy.get(staking.tokenAmountInput).type(4);
+      cy.get(stakingPageLink).first().click();
+      cy.get(validatorList).contains(this.validatorName).click();
+      cy.get(removeStakeRadioButton).click({ force: true });
+      cy.get(tokenAmountInputBox).type(4);
       cy.contains('Waiting for next epoch to start', { timeout: 10000 });
-      cy.get(staking.tokenInputSubmit)
+      cy.get(tokenSubmitButton)
         .should('be.disabled', { timeout: 8000 })
         .and('contain', `Remove 4 $VEGA tokens at the end of epoch`)
         .and('be.visible');
@@ -213,7 +210,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('2');
       cy.vega_wallet_check_unstaked_value_is('1.000000000000000000');
@@ -221,7 +218,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         this.validatorName,
         '2.000000000000000000'
       );
-      cy.get(navigation.staking).first().click();
+      cy.get(stakingPageLink).first().click();
       cy.staking_page_disassociate_all_tokens();
       cy.ethereum_wallet_check_associated_vega_key_is_no_longer_showing(
         vegaWalletPublicKeyShort
@@ -236,7 +233,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
 
       cy.get('button').contains('Select a validator to nominate').click();
-      cy.get(staking.validatorNames).contains(this.validatorName).click();
+      cy.get(validatorList).contains(this.validatorName).click();
 
       cy.staking_validator_page_add_stake('2');
       cy.vega_wallet_check_unstaked_value_is('1.000000000000000000');
@@ -244,7 +241,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         this.validatorName,
         '2.000000000000000000'
       );
-      cy.get(navigation.staking).first().click();
+      cy.get(stakingPageLink).first().click();
       cy.staking_page_disassociate_tokens('1');
       cy.ethereum_wallet_check_associated_value_is('2.0');
       cy.vega_wallet_check_associated_value_is('2.000000000000000000');
@@ -262,77 +259,89 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     );
   });
 
-  cy.staking_validator_page_check_stake_next_epoch_value = (expectedVal) => {
-    cy.highlight(
-      `Checking Staking Page - Validator Stake Next Epoch Value is ${expectedVal}`
-    );
-    cy.get(staking.stakeNextEpochValue, { timeout: 10000 })
-      .contains(expectedVal, { timeout: 10000 })
-      .should('be.visible');
-  };
-
-  cy.staking_validator_page_check_stake_this_epoch_value = (expectedVal) => {
-    cy.highlight(
-      `Checking Staking Page - Validator Stake This Epoch Value is ${expectedVal}`
-    );
-    cy.get(staking.stakeThisEpochValue, { timeout: 10000 })
-      .contains(expectedVal, { timeout: 10000 })
-      .should('be.visible');
-  };
-
-  cy.vega_wallet_check_validator_stake_next_epoch_value_is = (
-    validatorName,
-    expectedVal
-  ) => {
-    cy.highlight(
-      `Checking vega wallet - Stake Next Epoch Value for ${validatorName} is ${expectedVal}`
-    );
-    cy.get(vegaWallet.walletContainer).within(() => {
-      cy.contains(`${validatorName} (Next epoch)`, { timeout: 40000 })
-        .siblings()
-        .contains(expectedVal, { timeout: 40000 })
+  Cypress.Commands.add(
+    'staking_validator_page_check_stake_next_epoch_value',
+    (expectedVal) => {
+      cy.highlight(
+        `Checking Staking Page - Validator Stake Next Epoch Value is ${expectedVal}`
+      );
+      cy.get(stakeNextEpochValue, { timeout: 10000 })
+        .contains(expectedVal, { timeout: 10000 })
         .should('be.visible');
-    });
-  };
+    }
+  );
 
-  cy.vega_wallet_check_validator_stake_this_epoch_value_is = (
-    validatorName,
-    expectedVal
-  ) => {
-    cy.highlight(
-      `Checking vega wallet - Stake This Epoch Value for ${validatorName} is ${expectedVal}`
-    );
-    cy.get(vegaWallet.walletContainer).within(() => {
-      cy.contains(`${validatorName} (This Epoch)`, { timeout: 40000 })
-        .siblings()
-        .contains(expectedVal, { timeout: 40000 })
+  Cypress.Commands.add(
+    'staking_validator_page_check_stake_this_epoch_value',
+    (expectedVal) => {
+      cy.highlight(
+        `Checking Staking Page - Validator Stake This Epoch Value is ${expectedVal}`
+      );
+      cy.get(stakeNextEpochValue, { timeout: 10000 })
+        .contains(expectedVal, { timeout: 10000 })
         .should('be.visible');
-    });
-  };
+    }
+  );
 
-  cy.vega_wallet_check_validator_no_longer_showing = (validatorName) => {
-    cy.highlight(
-      `Checking Validator and therefore stake removed for ${validatorName}`
-    );
-    cy.get(vegaWallet.walletContainer).within(() => {
-      cy.contains(`${validatorName}`, { timeout: 40000 }).should('not.exist', {
-        timeout: 40000,
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_stake_next_epoch_value_is',
+    (validatorName, expectedVal) => {
+      cy.highlight(
+        `Checking vega wallet - Stake Next Epoch Value for ${validatorName} is ${expectedVal}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName} (Next epoch)`, { timeout: 40000 })
+          .siblings()
+          .contains(expectedVal, { timeout: 40000 })
+          .should('be.visible');
       });
-    });
-  };
+    }
+  );
 
-  cy.vega_wallet_check_validator_staked_value_is = (
-    validatorName,
-    expectedVal
-  ) => {
-    cy.highlight(
-      `Checking Validator Stake Value for ${validatorName} is ${expectedVal}`
-    );
-    cy.get(vegaWallet.walletContainer).within(() => {
-      cy.contains(`${validatorName}`, { timeout: 40000 })
-        .siblings()
-        .contains(expectedVal, { timeout: 40000 })
-        .should('be.visible');
-    });
-  };
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_stake_this_epoch_value_is',
+    (validatorName, expectedVal) => {
+      cy.highlight(
+        `Checking vega wallet - Stake This Epoch Value for ${validatorName} is ${expectedVal}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName} (This Epoch)`, { timeout: 40000 })
+          .siblings()
+          .contains(expectedVal, { timeout: 40000 })
+          .should('be.visible');
+      });
+    }
+  );
+
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_no_longer_showing',
+    (validatorName) => {
+      cy.highlight(
+        `Checking Validator and therefore stake removed for ${validatorName}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName}`, { timeout: 40000 }).should(
+          'not.exist',
+          {
+            timeout: 40000,
+          }
+        );
+      });
+    }
+  );
+
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_staked_value_is',
+    (validatorName, expectedVal) => {
+      cy.highlight(
+        `Checking Validator Stake Value for ${validatorName} is ${expectedVal}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName}`, { timeout: 40000 })
+          .siblings()
+          .contains(expectedVal, { timeout: 40000 })
+          .should('be.visible');
+      });
+    }
+  );
 });
