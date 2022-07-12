@@ -22,10 +22,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     cy.get(stakingPageLink).first().click();
     cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
     cy.get(validatorList).first().invoke('text').as('validatorName');
-    cy.get(validatorList)
-      .last()
-      .invoke('text')
-      .as('otherValidatorName');
+    cy.get(validatorList).last().invoke('text').as('otherValidatorName');
   });
 
   describe('Eth wallet - contains VEGA tokens', function () {
@@ -262,77 +259,89 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     );
   });
 
-  Cypress.Commands.add('staking_validator_page_check_stake_next_epoch_value', (expectedVal) => {
-    cy.highlight(
-      `Checking Staking Page - Validator Stake Next Epoch Value is ${expectedVal}`
-    );
-    cy.get(stakeNextEpochValue, { timeout: 10000 })
-      .contains(expectedVal, { timeout: 10000 })
-      .should('be.visible');
-  });
-
-  Cypress.Commands.add('staking_validator_page_check_stake_this_epoch_value', (expectedVal) => {
-    cy.highlight(
-      `Checking Staking Page - Validator Stake This Epoch Value is ${expectedVal}`
-    );
-    cy.get(stakeNextEpochValue, { timeout: 10000 })
-      .contains(expectedVal, { timeout: 10000 })
-      .should('be.visible');
-  });
-
-  Cypress.Commands.add('vega_wallet_check_validator_stake_next_epoch_value_is', (
-    validatorName,
-    expectedVal
-  ) => {
-    cy.highlight(
-      `Checking vega wallet - Stake Next Epoch Value for ${validatorName} is ${expectedVal}`
-    );
-    cy.get(vegaWalletContainer).within(() => {
-      cy.contains(`${validatorName} (Next epoch)`, { timeout: 40000 })
-        .siblings()
-        .contains(expectedVal, { timeout: 40000 })
+  Cypress.Commands.add(
+    'staking_validator_page_check_stake_next_epoch_value',
+    (expectedVal) => {
+      cy.highlight(
+        `Checking Staking Page - Validator Stake Next Epoch Value is ${expectedVal}`
+      );
+      cy.get(stakeNextEpochValue, { timeout: 10000 })
+        .contains(expectedVal, { timeout: 10000 })
         .should('be.visible');
-    });
-  });
+    }
+  );
 
-  Cypress.Commands.add('vega_wallet_check_validator_stake_this_epoch_value_is', (
-    validatorName,
-    expectedVal
-  ) => {
-    cy.highlight(
-      `Checking vega wallet - Stake This Epoch Value for ${validatorName} is ${expectedVal}`
-    );
-    cy.get(vegaWalletContainer).within(() => {
-      cy.contains(`${validatorName} (This Epoch)`, { timeout: 40000 })
-        .siblings()
-        .contains(expectedVal, { timeout: 40000 })
+  Cypress.Commands.add(
+    'staking_validator_page_check_stake_this_epoch_value',
+    (expectedVal) => {
+      cy.highlight(
+        `Checking Staking Page - Validator Stake This Epoch Value is ${expectedVal}`
+      );
+      cy.get(stakeNextEpochValue, { timeout: 10000 })
+        .contains(expectedVal, { timeout: 10000 })
         .should('be.visible');
-    });
-  });
+    }
+  );
 
-  Cypress.Commands.add('vega_wallet_check_validator_no_longer_showing', (validatorName) => {
-    cy.highlight(
-      `Checking Validator and therefore stake removed for ${validatorName}`
-    );
-    cy.get(vegaWalletContainer).within(() => {
-      cy.contains(`${validatorName}`, { timeout: 40000 }).should('not.exist', {
-        timeout: 40000,
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_stake_next_epoch_value_is',
+    (validatorName, expectedVal) => {
+      cy.highlight(
+        `Checking vega wallet - Stake Next Epoch Value for ${validatorName} is ${expectedVal}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName} (Next epoch)`, { timeout: 40000 })
+          .siblings()
+          .contains(expectedVal, { timeout: 40000 })
+          .should('be.visible');
       });
-    });
-  });
+    }
+  );
 
-  Cypress.Commands.add('vega_wallet_check_validator_staked_value_is', (
-    validatorName,
-    expectedVal
-  ) => {
-    cy.highlight(
-      `Checking Validator Stake Value for ${validatorName} is ${expectedVal}`
-    );
-    cy.get(vegaWalletContainer).within(() => {
-      cy.contains(`${validatorName}`, { timeout: 40000 })
-        .siblings()
-        .contains(expectedVal, { timeout: 40000 })
-        .should('be.visible');
-    });
-  });
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_stake_this_epoch_value_is',
+    (validatorName, expectedVal) => {
+      cy.highlight(
+        `Checking vega wallet - Stake This Epoch Value for ${validatorName} is ${expectedVal}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName} (This Epoch)`, { timeout: 40000 })
+          .siblings()
+          .contains(expectedVal, { timeout: 40000 })
+          .should('be.visible');
+      });
+    }
+  );
+
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_no_longer_showing',
+    (validatorName) => {
+      cy.highlight(
+        `Checking Validator and therefore stake removed for ${validatorName}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName}`, { timeout: 40000 }).should(
+          'not.exist',
+          {
+            timeout: 40000,
+          }
+        );
+      });
+    }
+  );
+
+  Cypress.Commands.add(
+    'vega_wallet_check_validator_staked_value_is',
+    (validatorName, expectedVal) => {
+      cy.highlight(
+        `Checking Validator Stake Value for ${validatorName} is ${expectedVal}`
+      );
+      cy.get(vegaWalletContainer).within(() => {
+        cy.contains(`${validatorName}`, { timeout: 40000 })
+          .siblings()
+          .contains(expectedVal, { timeout: 40000 })
+          .should('be.visible');
+      });
+    }
+  );
 });

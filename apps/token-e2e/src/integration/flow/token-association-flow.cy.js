@@ -11,7 +11,6 @@ const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 context(
   'Token association flow - with eth and vega wallets connected',
   function () {
-    
     before('visit staking tab and connect vega wallet', function () {
       cy.vega_wallet_import();
       cy.visit('/');

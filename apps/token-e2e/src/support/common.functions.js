@@ -66,9 +66,7 @@ Cypress.Commands.add(
         timeout: 40000,
       }).should('not.exist');
     }
-    cy.get(tokenSubmitButton, { timeout: 40000 })
-      .should('be.enabled')
-      .click();
+    cy.get(tokenSubmitButton, { timeout: 40000 }).should('be.enabled').click();
     cy.contains('can now participate in governance and nominate a validator', {
       timeout: 60000,
     }).should('be.visible');
@@ -81,9 +79,7 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount) => {
   cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
   cy.get(tokenAmountInputBox, { timeout: 10000 }).type(amount);
 
-  cy.get(tokenSubmitButton, { timeout: 40000 })
-    .should('be.enabled')
-    .click();
+  cy.get(tokenSubmitButton, { timeout: 40000 }).should('be.enabled').click();
   cy.contains(`${amount} $VEGA tokens have been returned to Ethereum wallet`, {
     timeout: 60000,
   }).should('be.visible');
