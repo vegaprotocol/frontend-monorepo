@@ -53,7 +53,7 @@ export const TradeMarketHeader = ({
     .filter((c): c is CandleClose => c !== null);
   const headerItemClassName = 'whitespace-nowrap flex flex-col';
   const itemClassName =
-    'font-sans font-normal mb-0 text-dark/80 dark:text-white/80 text-ui-small';
+    'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
   const itemValueClassName =
     'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
