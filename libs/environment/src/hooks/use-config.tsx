@@ -71,7 +71,7 @@ export const useConfig = (
           setConfig({ hosts });
           LocalStorage.setItem(
             getCacheKey(environment.VEGA_ENV),
-            JSON.stringify({ hosts }),
+            JSON.stringify({ hosts })
           );
         } catch (err) {
           setLoading(false);

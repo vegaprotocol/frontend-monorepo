@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import clsx from 'clsx';
+import classnames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
 
 type LayoutCellProps = {
@@ -15,7 +15,7 @@ export const LayoutCell = ({
 }: LayoutCellProps) => {
   return (
     <div
-      className={clsx('px-8 text-right', {
+      className={classnames('px-8 text-right', {
         'text-danger': !isLoading && hasError,
         'text-white-60 dark:text-black-60': isLoading,
       })}

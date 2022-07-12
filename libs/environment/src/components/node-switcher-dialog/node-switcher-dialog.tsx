@@ -15,7 +15,7 @@ export const NodeSwitcherDialog = ({
   onConnect,
 }: NodeSwitcherDialogProps) => {
   return (
-    <Dialog open={dialogOpen}>
+    <Dialog open={dialogOpen} onChange={setDialogOpen}>
       <NodeSwitcher
         config={config}
         initialErrorType={initialErrorType}
