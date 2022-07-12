@@ -17,7 +17,7 @@ export const useOrderCancel = () => {
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
-  const [id, setId] = useState('');
+  const [id, setId] = useState<string | null>(null);
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
@@ -33,7 +33,7 @@ export const useOrderCancel = () => {
     subRef.current?.unsubscribe();
     resetTransaction();
     setUpdatedOrder(null);
-    setId('');
+    setId(null);
   }, [resetTransaction]);
 
   const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
@@ -41,25 +41,30 @@ export const useOrderCancel = () => {
     variables: { partyId: keypair?.pub || '' },
   });
 
-  // Start a subscription looking for the newly created order
-  subRef.current = clientSub.subscribe(({ data }) => {
-    if (!data?.busEvents?.length) {
-      return;
-    }
-
-    // No types available for the subscription result
-    const matchingOrderEvent = data.busEvents.find((e) => {
-      if (e.event.__typename !== 'Order') {
-        return false;
+  if (id) {
+    // Start a subscription looking for the newly created order
+    subRef.current = clientSub.subscribe(({ data }) => {
+      if (!data?.busEvents?.length) {
+        return;
       }
 
-      return e.event.id === id;
-    });
+      // No types available for the subscription result
+      const matchingOrderEvent = data.busEvents.find((e) => {
+        if (e.event.__typename !== 'Order') {
+          return false;
+        }
 
-    if (matchingOrderEvent && matchingOrderEvent.event.__typename === 'Order') {
-      setUpdatedOrder(matchingOrderEvent.event);
-    }
-  });
+        return e.event.id === id;
+      });
+
+      if (
+        matchingOrderEvent &&
+        matchingOrderEvent.event.__typename === 'Order'
+      ) {
+        setUpdatedOrder(matchingOrderEvent.event);
+      }
+    });
+  }
 
   const cancel = useCallback(
     async (order) => {

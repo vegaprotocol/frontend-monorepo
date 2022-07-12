@@ -17,7 +17,7 @@ import type { Subscription } from 'zen-observable-ts';
 export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
-  const [id, setId] = useState('');
+  const [id, setId] = useState<string | null>(null);
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
@@ -26,7 +26,7 @@ export const useOrderSubmit = (market: Market) => {
     subRef.current?.unsubscribe();
     resetTransaction();
     setFinalizedOrder(null);
-    setId('');
+    setId(null);
   }, [resetTransaction]);
   const subRef = useRef<Subscription | null>(null);
 
@@ -43,25 +43,30 @@ export const useOrderSubmit = (market: Market) => {
     variables: { partyId: keypair?.pub || '' },
   });
 
-  // Start a subscription looking for the newly created order
-  subRef.current = clientSub.subscribe(({ data }) => {
-    if (!data?.busEvents?.length) {
-      return;
-    }
-
-    // No types available for the subscription result
-    const matchingOrderEvent = data.busEvents.find((e) => {
-      if (e.event.__typename !== 'Order') {
-        return false;
+  if (id) {
+    // Start a subscription looking for the newly created order
+    subRef.current = clientSub.subscribe(({ data }) => {
+      if (!data?.busEvents?.length) {
+        return;
       }
 
-      return e.event.id === id;
-    });
+      // No types available for the subscription result
+      const matchingOrderEvent = data.busEvents.find((e) => {
+        if (e.event.__typename !== 'Order') {
+          return false;
+        }
 
-    if (matchingOrderEvent && matchingOrderEvent.event.__typename === 'Order') {
-      setFinalizedOrder(matchingOrderEvent.event);
-    }
-  });
+        return e.event.id === id;
+      });
+
+      if (
+        matchingOrderEvent &&
+        matchingOrderEvent.event.__typename === 'Order'
+      ) {
+        setFinalizedOrder(matchingOrderEvent.event);
+      }
+    });
+  }
 
   const submit = useCallback(
     async (order: Order) => {
