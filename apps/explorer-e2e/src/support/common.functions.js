@@ -17,33 +17,37 @@ Cypress.Commands.add(
         });
     });
   }
-),
-  Cypress.Commands.add('common_switch_to_mobile_and_click_toggle', function () {
-    cy.viewport('iphone-x');
-    cy.visit('/');
-    cy.get('[data-testid="open-menu"]').click();
-  }),
-  Cypress.Commands.add('common_verify_json_parameters', function (expectedNum) {
-    cy.get('.hljs-attr')
-      .should('have.length.at.least', expectedNum)
-      .each(($paramName) => {
-        cy.wrap($paramName).should('not.be.empty');
-      });
-  }),
-  Cypress.Commands.add(
-    'common_verify_json_string_values',
-    function (expectedNum) {
-      cy.get('.hljs-string')
-        .should('have.length.at.least', expectedNum)
-        .each(($paramValue) => {
-          cy.wrap($paramValue).should('not.be.empty');
-        });
-    }
-  ),
-  Cypress.Commands.add('common_verify_json_int_values', function (expectedNum) {
-    cy.get('.hljs-number')
+);
+
+Cypress.Commands.add('common_switch_to_mobile_and_click_toggle', function () {
+  cy.viewport('iphone-x');
+  cy.visit('/');
+  cy.get('[data-testid="open-menu"]').click();
+});
+
+Cypress.Commands.add('common_verify_json_parameters', function (expectedNum) {
+  cy.get('.hljs-attr')
+    .should('have.length.at.least', expectedNum)
+    .each(($paramName) => {
+      cy.wrap($paramName).should('not.be.empty');
+    });
+});
+
+Cypress.Commands.add(
+  'common_verify_json_string_values',
+  function (expectedNum) {
+    cy.get('.hljs-string')
       .should('have.length.at.least', expectedNum)
       .each(($paramValue) => {
         cy.wrap($paramValue).should('not.be.empty');
       });
-  });
+  }
+);
+
+Cypress.Commands.add('common_verify_json_int_values', function (expectedNum) {
+  cy.get('.hljs-number')
+    .should('have.length.at.least', expectedNum)
+    .each(($paramValue) => {
+      cy.wrap($paramValue).should('not.be.empty');
+    });
+});

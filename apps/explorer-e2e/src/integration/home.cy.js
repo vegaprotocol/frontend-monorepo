@@ -15,26 +15,26 @@ context('Home Page', function () {
     });
 
     it('should show connected environment stats', function () {
-      const statTitles = [
-        'Status',
-        'Height',
-        'Validating nodes',
-        'Uptime',
-        'Total nodes',
-        'Inactive nodes',
-        'Total staked',
-        'Backlog',
-        'Trades / second',
-        'Orders / block',
-        'Orders / second',
-        'Transactions / block',
-        'Block time',
-        'Time',
-        'App',
-        'Tendermint',
-        'Up since',
-        'Chain ID',
-      ];
+      const statTitles = {
+        0: 'Status',
+        1: 'Height',
+        2: 'Validating nodes',
+        3: 'Uptime',
+        4: 'Total nodes',
+        5: 'Inactive nodes',
+        6: 'Total staked',
+        7: 'Backlog',
+        8: 'Trades / second',
+        9: 'Orders / block',
+        10: 'Orders / second',
+        11: 'Transactions / block',
+        12: 'Block time',
+        13: 'Time',
+        14: 'App',
+        15: 'Tendermint',
+        16: 'Up since',
+        17: 'Chain ID',
+      };
 
       cy.get('[data-testid="stats-title"]')
         .each(($list, index) => {
