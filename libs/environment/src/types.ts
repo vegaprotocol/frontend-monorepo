@@ -25,3 +25,17 @@ export type ConfigStatus =
   | 'error-loading-config'
   | 'error-validating-config'
   | 'error-loading-node';
+
+type NodeCheck<T> = {
+  isLoading: boolean;
+  hasError: boolean;
+  value?: T;
+};
+
+export type NodeData = {
+  url: string;
+  ssl: NodeCheck<boolean>;
+  block: NodeCheck<number>;
+  responseTime: NodeCheck<number>;
+  chain: NodeCheck<string>;
+};
