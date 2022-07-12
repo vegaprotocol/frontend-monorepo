@@ -1,30 +1,24 @@
-import navigation from '../locators/navigation.locators';
-import rewards from '../locators/rewards.locators';
+const locator = {
+  connectToVegaBtn: '[data-testid="connect-to-vega-wallet-btn"]',
+  warning: '[data-testid="callout"]',
+};
 
 context('Rewards Page - verify elements on page', function () {
   before('navigate to rewards page', function () {
-    cy.visit('/')
-      .get(navigation.section)
-      .within(() => {
-        cy.get(navigation.rewards).click();
-      });
+    cy.visit('/').navigateTo('rewards');
   });
 
   describe('with wallets disconnected', function () {
     it('should have REWARDS tab highlighted', function () {
-      cy.get(navigation.section).within(() => {
-        cy.get(navigation.rewards).should('have.attr', 'aria-current');
-      });
+      cy.verifyTabHighlighted('rewards');
     });
 
     it('should have rewards header visible', function () {
-      cy.get(rewards.pageHeader)
-        .should('be.visible')
-        .and('have.text', 'Rewards');
+      cy.pageHeader().should('be.visible').and('have.text', 'Rewards');
     });
 
     it('should have epoch warning', function () {
-      cy.get(rewards.warning)
+      cy.get(locator.warning)
         .should('be.visible')
         .and(
           'have.text',
@@ -33,7 +27,7 @@ context('Rewards Page - verify elements on page', function () {
     });
 
     it('should have connect Vega wallet button', function () {
-      cy.get(rewards.connectToVegaBtn)
+      cy.get(locator.connectToVegaBtn)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet');
     });

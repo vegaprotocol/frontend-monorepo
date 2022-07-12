@@ -1,36 +1,30 @@
-import navigation from '../locators/navigation.locators';
-import withdraw from '../locators/withdraw.locators';
+const locator = {
+  connectToVegaBtn: '[data-testid="connect-to-vega-wallet-btn"]',
+  warning: '[data-testid="callout"]',
+};
 
 context('Withdraw Page - verify elements on page', function () {
   before('navigate to withdraw page', function () {
-    cy.visit('/')
-      .get(navigation.section)
-      .within(() => {
-        cy.get(navigation.withdraw).click();
-      });
+    cy.visit('/').navigateTo('withdraw');
   });
 
   describe('with wallets disconnected', function () {
     it('should have withdraw tab highlighted', function () {
-      cy.get(navigation.section).within(() => {
-        cy.get(navigation.withdraw).should('have.attr', 'aria-current');
-      });
+      cy.verifyTabHighlighted('withdraw');
     });
 
     it('should have WITHDRAW header visible', function () {
-      cy.get(withdraw.pageHeader)
-        .should('be.visible')
-        .and('have.text', 'Withdraw');
+      cy.pageHeader().should('be.visible').and('have.text', 'Withdraw');
     });
 
     it('should have connect Vega wallet button', function () {
-      cy.get(withdraw.connectToVegaBtn)
+      cy.get(locator.connectToVegaBtn)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet');
     });
 
     it('should have withdraw information box', function () {
-      cy.get(withdraw.warning).should('be.visible');
+      cy.get(locator.warning).should('be.visible');
     });
   });
 });

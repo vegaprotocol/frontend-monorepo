@@ -1,5 +1,27 @@
-import navigation from '../locators/navigation.locators';
-import home from '../locators/home.locators';
+const navigation = {
+  section: 'nav',
+  home: '[href="/"]',
+  vesting: '[href="/vesting"]',
+  staking: '[href="/staking"]',
+  rewards: '[href="/rewards"]',
+  withdraw: '[href="/withdraw"]',
+  governance: '[href="/governance"]',
+};
+
+const locator = {
+  tokenDetailsTable: '.token-details',
+  address: '[data-testid="token-address"]',
+  contract: '[data-testid="token-contract"]',
+  totalSupply: '[data-testid="total-supply"]',
+  circulatingSupply: '[data-testid="circulating-supply"]',
+  staked: '[data-testid="staked"]',
+  tranchesLink: '[data-testid="tranches-link"]',
+  redeemBtn: '[data-testid="check-vesting-page-btn"]',
+  getVegaWalletLink: '[data-testid="get-vega-wallet-link"]',
+  associateVegaLink: '[data-testid="associate-vega-tokens-link-on-homepage"]',
+  stakingBtn: '[data-testid="staking-button-on-homepage"]',
+  governanceBtn: '[data-testid="governance-button-on-homepage"]',
+};
 
 const vegaTokenAddress = Cypress.env('vegaTokenAddress');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
@@ -49,73 +71,73 @@ context('Home Page - verify elements on page', function () {
 
     describe('THE $VEGA TOKEN table', function () {
       it('should have TOKEN ADDRESS', function () {
-        cy.get(home.tokenDetailsTable).within(() => {
-          cy.get(home.address)
+        cy.get(locator.tokenDetailsTable).within(() => {
+          cy.get(locator.address)
             .should('be.visible')
             .invoke('text')
             .should('be.equal', vegaTokenAddress);
         });
       });
       it('should have VESTING CONTRACT', function () {
-        cy.get(home.tokenDetailsTable).within(() => {
-          cy.get(home.contract)
+        cy.get(locator.tokenDetailsTable).within(() => {
+          cy.get(locator.contract)
             .should('be.visible')
             .invoke('text')
             .should('be.equal', vegaTokenContractAddress);
         });
       });
       it('should have TOTAL SUPPLY', function () {
-        cy.get(home.tokenDetailsTable).within(() => {
-          cy.get(home.totalSupply).should('be.visible');
+        cy.get(locator.tokenDetailsTable).within(() => {
+          cy.get(locator.totalSupply).should('be.visible');
         });
       });
       it('should have CIRCULATING SUPPLY', function () {
-        cy.get(home.tokenDetailsTable).within(() => {
-          cy.get(home.circulatingSupply).should('be.visible');
+        cy.get(locator.tokenDetailsTable).within(() => {
+          cy.get(locator.circulatingSupply).should('be.visible');
         });
       });
       it('should have STAKED $VEGA', function () {
-        cy.get(home.tokenDetailsTable).within(() => {
-          cy.get(home.staked).should('be.visible');
+        cy.get(locator.tokenDetailsTable).within(() => {
+          cy.get(locator.staked).should('be.visible');
         });
       });
     });
 
     describe('links and buttons', function () {
       it('should have TRANCHES link', function () {
-        cy.get(home.tranchesLink)
+        cy.get(locator.tranchesLink)
           .should('be.visible')
           .and('have.attr', 'href')
           .and('equal', '/tranches');
       });
       it('should have REDEEM button', function () {
-        cy.get(home.redeemBtn)
+        cy.get(locator.redeemBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
           .and('equal', '/vesting');
       });
       it('should have GET VEGA WALLET link', function () {
-        cy.get(home.getVegaWalletLink)
+        cy.get(locator.getVegaWalletLink)
           .should('be.visible')
           .and('have.attr', 'href')
           .and('equal', 'https://vega.xyz/wallet');
       });
       it('should have ASSOCIATE VEGA TOKENS link', function () {
-        cy.get(home.associateVegaLink)
+        cy.get(locator.associateVegaLink)
           .should('be.visible')
           .and('have.attr', 'href')
           .and('equal', '/staking/associate');
       });
       it('should have STAKING button', function () {
-        cy.get(home.stakingBtn)
+        cy.get(locator.stakingBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')
           .and('equal', '/staking');
       });
       it('should have GOVERNANCE button', function () {
-        cy.get(home.governanceBtn)
+        cy.get(locator.governanceBtn)
           .should('be.visible')
           .parent()
           .should('have.attr', 'href')

@@ -1,30 +1,23 @@
-import navigation from '../locators/navigation.locators';
-import governance from '../locators/governance.locators';
+const locator = {
+  noProposals: '[data-testid="no-proposals"]',
+};
 
 context('Governance Page - verify elements on page', function () {
   before('navigate to governance page', function () {
-    cy.visit('/')
-      .get(navigation.section)
-      .within(() => {
-        cy.get(navigation.governance).click();
-      });
+    cy.visit('/').navigateTo('governance');
   });
 
   describe('with no network change proposals', function () {
     it('should have governance tab highlighted', function () {
-      cy.get(navigation.section).within(() => {
-        cy.get(navigation.governance).should('have.attr', 'aria-current');
-      });
+      cy.verifyTabHighlighted('governance');
     });
 
     it('should have GOVERNANCE header visible', function () {
-      cy.get(governance.pageHeader)
-        .should('be.visible')
-        .and('have.text', 'Governance');
+      cy.pageHeader().should('be.visible').and('have.text', 'Governance');
     });
 
     it('should have information box visible', function () {
-      cy.get(governance.noProposals)
+      cy.get(locator.noProposals)
         .should('be.visible')
         .and('have.text', 'There are no active network change proposals');
     });
