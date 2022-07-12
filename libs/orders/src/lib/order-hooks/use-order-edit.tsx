@@ -10,12 +10,12 @@ import type {
   OrderEventVariables,
 } from './__generated__';
 import * as Sentry from '@sentry/react';
+import type { Orders_party_orders } from '../components/__generated__/Orders';
 
 export const useOrderEdit = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
-  const [newOrder, setNewOrder] =
-    useState<OrderEvent_busEvents_event_Order | null>(null);
+  const [newOrder, setNewOrder] = useState<Orders_party_orders | null>(null);
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const [id, setId] = useState('');
@@ -66,19 +66,15 @@ export const useOrderEdit = () => {
         setNewOrder(order);
       }
       if (!newOrder) return;
-
+      console.log('edit order', newOrder);
       try {
         const res = await send({
           pubKey: keypair.pub,
           propagate: true,
           orderAmendment: {
-            orderId: order.id,
-            marketId: order.market.id,
-            timeInForce: order.timeInForce,
-            // TODO add size delta
-            sizeDelta: order.size,
-            price: order.price,
-            expiresAt: order.expiresAt,
+            orderId: newOrder.id,
+            marketId: newOrder.market?.id || '',
+            price: newOrder.price,
           },
         } as OrderAmendmentBody);
 

@@ -58,10 +58,18 @@ export const VegaOrderTransactionDialog = ({
     type,
   });
 
-  if (type === VegaOrderTransactionType.EDIT && newOrder) {
+  if (newOrder) {
     return (
-      <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <OrderDialogWrapper
+        title="Confirm transaction in your Vega wallet"
+        icon={<Icon name="hand-up" size={20} />}
+      >
+        <p>
+          {t(
+            'Please open your wallet application and confirm or reject the transaction'
+          )}
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {newOrder.market && (
             <div>
               <p className={headerClassName}>{t(`Market`)}</p>
@@ -69,12 +77,15 @@ export const VegaOrderTransactionDialog = ({
             </div>
           )}
           <div>
-            <p className={headerClassName}>{t(`Status`)}</p>
-            <p>{t(`${newOrder.status}`)}</p>
-          </div>
-          <div>
             <p className={headerClassName}>{t(`Amount`)}</p>
-            <p className={newOrder.side}>
+            <p
+              className={
+                newOrder.side === 'Buy'
+                  ? 'text-dark-green dark:text-vega-green'
+                  : 'text-vega-red'
+              }
+            >
+              {newOrder.side === 'Buy' ? '+' : '-'}
               {addDecimal(
                 newOrder.size,
                 newOrder.market?.positionDecimalPlaces || 0
@@ -184,11 +195,15 @@ export const VegaOrderTransactionDialog = ({
         </div>
         <div>
           <p className={headerClassName}>{t(`Amount`)}</p>
-          <p className={finalizedOrder.side}>
-            {addDecimal(
-              finalizedOrder.size,
-              finalizedOrder.market?.positionDecimalPlaces || 0
-            )}
+          <p
+            className={
+              finalizedOrder.side === 'Buy'
+                ? 'text-dark-green dark:text-vega-green'
+                : 'text-red dark:text-vega-red'
+            }
+          >
+            {finalizedOrder.side === 'Buy' ? '+' : '-'}
+            {finalizedOrder.size}
           </p>
         </div>
         {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
@@ -213,7 +228,7 @@ interface OrderDialogWrapperProps {
   title: string;
 }
 
-const OrderDialogWrapper = ({
+export const OrderDialogWrapper = ({
   children,
   icon,
   title,

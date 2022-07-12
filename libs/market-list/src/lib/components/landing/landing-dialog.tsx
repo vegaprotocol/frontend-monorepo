@@ -30,6 +30,7 @@ export const LandingDialog = ({ open, setOpen }: LandingDialogProps) => {
         open={open}
         onChange={setClose}
         titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
+        contentClassNames="w-full lg:w-[520px]"
       >
         <SelectMarketList data={data} onSelect={setClose} />
       </Dialog>

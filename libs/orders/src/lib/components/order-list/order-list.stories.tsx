@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Story, Meta } from '@storybook/react';
 import { OrderType, OrderStatus } from '@vegaprotocol/types';
 import { OrderList, OrderListTable } from './order-list';
@@ -6,6 +7,7 @@ import type { Order, VegaTxState } from '@vegaprotocol/wallet';
 import { VegaOrderTransactionType } from '@vegaprotocol/wallet';
 import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { generateOrdersArray } from '../mocks';
+import type { Orders_party_orders } from '../__generated__';
 
 export default {
   component: OrderList,
@@ -14,10 +16,16 @@ export default {
 
 const Template: Story = (args) => {
   const cancel = () => Promise.resolve();
-  const edit = () => Promise.resolve();
+  const [editOrderDialogOpen, setEditOrderDialogOpen] = useState(false);
+  const [editOrder, setEditOrder] = useState<Orders_party_orders | null>(null);
   return (
     <div style={{ height: 1000 }}>
-      <OrderListTable data={args.data} cancel={cancel} edit={edit} />
+      <OrderListTable
+        data={args.data}
+        cancel={cancel}
+        setEditOrderDialogOpen={setEditOrderDialogOpen}
+        setEditOrder={setEditOrder}
+      />
     </div>
   );
 };
@@ -51,10 +59,17 @@ const Template2: Story = (args) => {
     setOpen(false);
     setOpenEdit(false);
   };
+  const [editOrderDialogOpen, setEditOrderDialogOpen] = useState(false);
+  const [editOrder, setEditOrder] = useState<Orders_party_orders | null>(null);
   return (
     <>
       <div style={{ height: 1000 }}>
-        <OrderListTable data={args.data} cancel={cancel} edit={edit} />
+        <OrderListTable
+          data={args.data}
+          cancel={cancel}
+          setEditOrder={setEditOrder}
+          setEditOrderDialogOpen={setEditOrderDialogOpen}
+        />
       </div>
       <VegaTransactionDialog
         orderDialogOpen={open}
@@ -97,10 +112,17 @@ const Template3: Story = (args) => {
     setOpen(false);
     setOpenEdit(false);
   };
+  const [editOrderDialogOpen, setEditOrderDialogOpen] = useState(false);
+  const [editOrder, setEditOrder] = useState<Orders_party_orders | null>(null);
   return (
     <>
       <div style={{ height: 1000 }}>
-        <OrderListTable data={args.data} cancel={cancel} edit={edit} />
+        <OrderListTable
+          data={args.data}
+          cancel={cancel}
+          setEditOrder={setEditOrder}
+          setEditOrderDialogOpen={setEditOrderDialogOpen}
+        />
       </div>
       <VegaTransactionDialog
         orderDialogOpen={openEdit}
