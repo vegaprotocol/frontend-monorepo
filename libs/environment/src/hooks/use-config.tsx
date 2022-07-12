@@ -16,12 +16,15 @@ const compileHosts = (hosts: string[], envUrl?: string) => {
   return hosts;
 };
 
+const getCacheKey = (env: Networks) => `${LOCAL_STORAGE_NETWORK_KEY}-${env}`;
+
 const getCachedConfig = (env: Networks) => {
-  const value = LocalStorage.getItem(LOCAL_STORAGE_NETWORK_KEY);
+  const cacheKey = getCacheKey(env);
+  const value = LocalStorage.getItem(cacheKey);
 
   if (value) {
     try {
-      const config = JSON.parse(value)[env] as Configuration;
+      const config = JSON.parse(value) as Configuration;
       const hasError = validateConfiguration(config);
 
       if (hasError) {
@@ -30,7 +33,7 @@ const getCachedConfig = (env: Networks) => {
 
       return config;
     } catch (err) {
-      LocalStorage.removeItem(LOCAL_STORAGE_NETWORK_KEY);
+      LocalStorage.removeItem(cacheKey);
       console.warn(
         'Malformed data found for network configuration. Removed cached configuration, continuing...'
       );
@@ -67,12 +70,8 @@ export const useConfig = (
 
           setConfig({ hosts });
           LocalStorage.setItem(
-            LOCAL_STORAGE_NETWORK_KEY,
-            JSON.stringify({
-              [environment.VEGA_ENV]: {
-                hosts,
-              },
-            })
+            getCacheKey(environment.VEGA_ENV),
+            JSON.stringify({ hosts }),
           );
         } catch (err) {
           setLoading(false);

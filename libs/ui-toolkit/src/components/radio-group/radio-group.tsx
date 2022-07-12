@@ -20,8 +20,8 @@ export const RadioGroup = ({
 }: RadioGroupProps) => {
   return (
     <RadioGroupPrimitive.Root
-      value={value}
       name={name}
+      value={value}
       onValueChange={onChange}
       className={classNames('flex flex-row gap-24', className)}
     >

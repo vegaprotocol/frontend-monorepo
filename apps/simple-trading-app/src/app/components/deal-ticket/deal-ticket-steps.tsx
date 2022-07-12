@@ -13,6 +13,7 @@ import {
   useOrderValidation,
   useOrderSubmit,
   DealTicketAmount,
+  MarketSelector,
 } from '@vegaprotocol/deal-ticket';
 import {
   OrderTimeInForce,
@@ -20,12 +21,23 @@ import {
   VegaTxStatus,
 } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
 }
 
 export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
+  const navigate = useNavigate();
+  const setMarket = useCallback(
+    (marketId) => {
+      navigate(`/trading/${marketId}`);
+    },
+    [navigate]
+  );
+
   const {
     register,
     control,
@@ -70,7 +82,13 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     {
       label: 'Select Asset',
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
-      component: <h1 className="font-bold mb-16">{market.name}</h1>,
+      component: (
+        <MarketSelector
+          market={market}
+          setMarket={setMarket}
+          ItemRenderer={MarketNameRenderer}
+        />
+      ),
     },
     {
       label: 'Select Order Type',
