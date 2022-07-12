@@ -33,5 +33,11 @@ module.exports = {
     ...theme.boxShadow,
     'inset-black': '',
     'inset-white': '',
+    input: 'none',
+    'input-focus': 'none',
+    'input-dark': 'none',
+    'input-focus-dark': 'none',
+    'input-focus-error': 'none',
+    'input-focus-error-dark': 'none',
   },
 };
