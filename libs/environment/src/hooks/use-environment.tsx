@@ -3,6 +3,7 @@ import { useEffect, useState, createContext, useContext } from 'react';
 
 import { NodeSwitcherDialog } from '../components/node-switcher-dialog';
 import { useConfig } from './use-config';
+import { useNodes } from './use-nodes';
 import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
 import type { Environment, RawEnvironment } from '../types';
@@ -28,10 +29,27 @@ export const EnvironmentProvider = ({
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
-  const { config } = useConfig(environment, updateEnvironment, (errorType) => {
+  const { config } = useConfig(environment, (errorType) => {
     setNetworkError(errorType);
     setNodeSwitcherOpen(true);
   });
+  const { state: nodes } = useNodes(config);
+  const nodeKeys = Object.keys(nodes);
+
+  useEffect(() => {
+    if (!environment.VEGA_URL) {
+      const successfulNodeUrl = nodeKeys.find((key) => nodes[key].verified);
+      if (successfulNodeUrl) {
+        updateEnvironment((prevEnvironment) => ({
+          ...prevEnvironment,
+          VEGA_URL: successfulNodeUrl,
+        }));
+      }
+    }
+  }, [
+    environment.VEGA_URL,
+    nodeKeys.map((key) => nodes[key].verified).join(';'),
+  ]);
 
   const errorMessage = validateEnvironment(environment);
 
@@ -39,9 +57,9 @@ export const EnvironmentProvider = ({
     throw new Error(errorMessage);
   }
 
-  useEffect(() => {
-    setNodeSwitcherOpen(true);
-  }, []);
+  // useEffect(() => {
+  //   setNodeSwitcherOpen(true);
+  // }, []);
 
   return (
     <EnvironmentContext.Provider

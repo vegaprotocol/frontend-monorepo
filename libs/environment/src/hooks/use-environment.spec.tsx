@@ -2,14 +2,19 @@
 // workaround based on: https://github.com/facebook/react/issues/11565
 import type { ComponentProps, ReactNode } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import type { EnvironmentState } from './use-environment';
+import createClient from '../utils/apollo-client';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
 import { Networks } from '../types';
+import createMockClient from './mocks/apollo-client';
+
+jest.mock('../utils/apollo-client');
 
 jest.mock('react-dom', () => ({
   ...jest.requireActual('react-dom'),
   createPortal: (node: ReactNode) => node,
 }));
+
+global.fetch = jest.fn();
 
 const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
   return <EnvironmentProvider {...props} />;
@@ -22,20 +27,7 @@ global.fetch = jest.fn();
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 
-const mockFetch = (url: RequestInfo) => {
-  if (url === mockEnvironmentState.VEGA_CONFIG_URL) {
-    return Promise.resolve({
-      ok: true,
-      json: () =>
-        Promise.resolve({
-          hosts: [MOCK_HOST],
-        }),
-    } as Response);
-  }
-  return Promise.resolve({ ok: true } as Response);
-};
-
-const mockEnvironmentState: EnvironmentState = {
+const mockEnvironmentState = {
   VEGA_URL: 'https://vega.xyz',
   VEGA_ENV: Networks.TESTNET,
   VEGA_CONFIG_URL: 'https://vega.xyz/testnet-config.json',
@@ -53,13 +45,46 @@ const mockEnvironmentState: EnvironmentState = {
   setNodeSwitcherOpen: noop,
 };
 
+const MOCK_DURATION = 76;
+
+window.performance.getEntriesByName = jest
+  .fn()
+  .mockImplementation((url: string) => [
+    {
+      entryType: 'resource',
+      name: url,
+      startTime: 0,
+      toJSON: () => ({}),
+      duration: MOCK_DURATION,
+    },
+  ]);
+
+function setupFetch(
+  configUrl: string = mockEnvironmentState.VEGA_CONFIG_URL,
+  hosts?: string[]
+) {
+  return (url: RequestInfo) => {
+    if (url === configUrl) {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ hosts: hosts || [MOCK_HOST] }),
+      } as Response);
+    }
+
+    return Promise.resolve({
+      ok: true,
+    } as Response);
+  };
+}
+
 beforeEach(() => {
   // @ts-ignore: typscript doesn't recognise the mock implementation
-  global.fetch.mockReset();
-  // @ts-ignore: typscript doesn't recognise the mock implementation
-  global.fetch.mockImplementation(mockFetch);
+  global.fetch.mockImplementation(setupFetch());
 
   window.localStorage.clear();
+
+  // @ts-ignore allow adding a mock return value to mocked module
+  createClient.mockImplementation(() => createMockClient());
 
   process.env['NX_VEGA_URL'] = mockEnvironmentState.VEGA_URL;
   process.env['NX_VEGA_ENV'] = mockEnvironmentState.VEGA_ENV;
@@ -115,21 +140,6 @@ describe('useEnvironment hook', () => {
     expect(result.current).toEqual({
       ...mockEnvironmentState,
       VEGA_CONFIG_URL: undefined,
-      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
-    });
-  });
-
-  it('allows for the VEGA_URL to be missing when there is a VEGA_CONFIG_URL present', async () => {
-    delete process.env['NX_VEGA_URL'];
-    const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
-      wrapper: MockWrapper,
-    });
-    await waitForNextUpdate();
-
-    expect(result.error).toBe(undefined);
-    expect(result.current).toEqual({
-      ...mockEnvironmentState,
-      VEGA_URL: MOCK_HOST,
       setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
     });
   });
@@ -252,5 +262,70 @@ describe('useEnvironment hook', () => {
     expect(result.error?.message).toContain(
       `The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url`
     );
+  });
+
+  describe('node selection', () => {
+    it('updates the VEGA_URL from the config when it is missing from the environment', async () => {
+      delete process.env['NX_VEGA_URL'];
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          VEGA_URL: MOCK_HOST,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it.skip('updates the VEGA_URL with the quickest node to respond from the config urls', async () => {
+      delete process.env['NX_VEGA_URL'];
+
+      const mockNodes: Record<string, any> = {
+        'https://mock-node-1.com': { hasError: false, delay: 400 },
+        'https://mock-node-2.com': { hasError: false, delay: 300 },
+        'https://mock-node-3.com': { hasError: false, delay: 200 },
+        'https://mock-node-4.com': { hasError: false, delay: 100 },
+      };
+
+      // @ts-ignore: typscript doesn't recognise the mock implementation
+      global.fetch.mockImplementation(
+        setupFetch(mockEnvironmentState.VEGA_CONFIG_URL, Object.keys(mockNodes))
+      );
+      // @ts-ignore allow adding a mock return value to mocked module
+      createClient.mockImplementation((url: keyof typeof mockNodes) => {
+        createMockClient({ statistics: mockNodes[url] });
+      });
+
+      const { nodeUrl } = Object.keys(mockNodes).reduce<{
+        nodeUrl: string;
+        delay: number;
+      }>(
+        (acc, url) => {
+          const { delay } = mockNodes[url];
+          if (delay < acc.delay) {
+            return { nodeUrl: url, delay };
+          }
+          return acc;
+        },
+        { nodeUrl: '', delay: Infinity }
+      );
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          VEGA_URL: nodeUrl,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
   });
 });

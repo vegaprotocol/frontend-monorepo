@@ -1,65 +1,18 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { ApolloClient } from '@apollo/client';
-import { MockedProvider } from '@apollo/client/testing';
-import { STATS_QUERY, TIME_UPDATE_SUBSCRIPTION } from '../utils/request-node';
 import createClient from '../utils/apollo-client';
-import { CUSTOM_NODE_KEY } from '../types';
 import { useNodes } from './use-nodes';
+import createMockClient, {
+  getMockStatisticsResult,
+} from './mocks/apollo-client';
 
 jest.mock('../utils/apollo-client');
-
-export const MOCK_STATISTICS_QUERY_RESULT = {
-  blockHeight: '11',
-  chainId: 'testnet_01234',
-};
-
-class MockClient {
-  constructor ({
-    failStats = false,
-    failSubscription = false,
-  }: { failStats?: boolean; failSubscription?: boolean } = {}) {
-    const provider = new MockedProvider({
-      mocks: [
-        {
-          request: {
-            query: STATS_QUERY,
-          },
-          result: failStats
-            ? undefined
-            : {
-                data: {
-                  statistics: {
-                    __typename: 'Statistics',
-                    ...MOCK_STATISTICS_QUERY_RESULT,
-                  },
-                },
-              },
-        },
-        {
-          request: {
-            query: TIME_UPDATE_SUBSCRIPTION,
-          },
-          result: failSubscription
-            ? undefined
-            : {
-                data: {
-                  busEvents: {
-                    eventId: 'time-0',
-                  },
-                },
-              },
-        },
-      ],
-    });
-
-    return provider.state.client;
-  }
-}
 
 const MOCK_DURATION = 1073;
 
 const initialState = {
   url: '',
+  verified: false,
   responseTime: {
     isLoading: false,
     hasError: false,
@@ -96,7 +49,7 @@ window.performance.getEntriesByName = jest
 
 beforeEach(() => {
   // @ts-ignore allow adding a mock return value to mocked module
-  createClient.mockReturnValue(new MockClient());
+  createClient.mockImplementation(() => createMockClient());
 });
 
 afterAll(() => {
@@ -108,38 +61,34 @@ describe('useNodes hook', () => {
   it('returns the default state when empty config provided', () => {
     const { result } = renderHook(() => useNodes({ hosts: [] }));
 
-    expect(result.current.state).toEqual({
-      custom: initialState,
-    });
+    expect(result.current.state).toEqual({});
   });
 
   it('sets loading state while waiting for the results', async () => {
-    const url = 'https://some.url';
+    const node = 'https://some.url';
     const { result, waitForNextUpdate } = renderHook(() =>
-      useNodes({ hosts: [url] })
+      useNodes({ hosts: [node] })
     );
 
-    expect(result.current.state[url]).toEqual({
-      url,
+    expect(result.current.state[node]).toEqual({
+      ...initialState,
+      url: node,
+      verified: false,
       responseTime: {
+        ...initialState.responseTime,
         isLoading: true,
-        hasError: false,
-        value: undefined,
       },
       block: {
+        ...initialState.block,
         isLoading: true,
-        hasError: false,
-        value: undefined,
-      },
-      ssl: {
-        isLoading: true,
-        hasError: false,
-        value: undefined,
       },
       chain: {
+        ...initialState.chain,
         isLoading: true,
-        hasError: false,
-        value: undefined,
+      },
+      ssl: {
+        ...initialState.ssl,
+        isLoading: true,
       },
     });
 
@@ -147,23 +96,24 @@ describe('useNodes hook', () => {
   });
 
   it('sets statistics results', async () => {
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
+    const mockResult = getMockStatisticsResult();
+    const node = 'https://some.url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[url].block).toEqual({
+      expect(result.current.state[node].block).toEqual({
         isLoading: false,
         hasError: false,
-        value: Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight),
+        value: Number(mockResult.statistics.blockHeight),
       });
 
-      expect(result.current.state[url].chain).toEqual({
+      expect(result.current.state[node].chain).toEqual({
         isLoading: false,
         hasError: false,
-        value: MOCK_STATISTICS_QUERY_RESULT.chainId,
+        value: mockResult.statistics.chainId,
       });
 
-      expect(result.current.state[url].responseTime).toEqual({
+      expect(result.current.state[node].responseTime).toEqual({
         isLoading: false,
         hasError: false,
         value: MOCK_DURATION,
@@ -172,11 +122,11 @@ describe('useNodes hook', () => {
   });
 
   it('sets subscription result', async () => {
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
+    const node = 'https://some.url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[url].ssl).toEqual({
+      expect(result.current.state[node].ssl).toEqual({
         isLoading: false,
         hasError: false,
         value: true,
@@ -185,38 +135,40 @@ describe('useNodes hook', () => {
   });
 
   it('sets error when host in not a valid url', async () => {
-    const url = 'not-url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
+    const node = 'not-url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[url].block.hasError).toBe(true);
-      expect(result.current.state[url].chain.hasError).toBe(true);
-      expect(result.current.state[url].responseTime.hasError).toBe(true);
-      expect(result.current.state[url].responseTime.hasError).toBe(true);
+      expect(result.current.state[node].block.hasError).toBe(true);
+      expect(result.current.state[node].chain.hasError).toBe(true);
+      expect(result.current.state[node].responseTime.hasError).toBe(true);
+      expect(result.current.state[node].responseTime.hasError).toBe(true);
     });
   });
 
   it('sets error when statistics request fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(new MockClient({ failStats: true }));
+    createClient.mockImplementation(() =>
+      createMockClient({ statistics: { hasError: true } })
+    );
 
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
+    const node = 'https://some.url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[url].block).toEqual({
+      expect(result.current.state[node].block).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
       });
 
-      expect(result.current.state[url].chain).toEqual({
+      expect(result.current.state[node].chain).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
       });
 
-      expect(result.current.state[url].responseTime).toEqual({
+      expect(result.current.state[node].responseTime).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
@@ -226,13 +178,15 @@ describe('useNodes hook', () => {
 
   it('sets error when subscription request fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(new MockClient({ failSubscription: true }));
+    createClient.mockImplementation(() =>
+      createMockClient({ busEvents: { hasError: true } })
+    );
 
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
+    const node = 'https://some.url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[url].ssl).toEqual({
+      expect(result.current.state[node].ssl).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
@@ -241,31 +195,33 @@ describe('useNodes hook', () => {
   });
 
   it('allows updating block values', async () => {
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
+    const mockResult = getMockStatisticsResult();
+    const node = 'https://some.url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[url].block.value).toEqual(
-        Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight)
+      expect(result.current.state[node].block.value).toEqual(
+        Number(mockResult.statistics.blockHeight)
       );
     });
 
     act(() => {
-      result.current.updateNodeBlock(url, 12);
+      result.current.updateNodeBlock(node, 12);
     });
 
     await waitFor(() => {
-      expect(result.current.state[url].block.value).toEqual(12);
+      expect(result.current.state[node].block.value).toEqual(12);
     });
   });
 
   it('does nothing when calling the block update on a non-existing node', async () => {
-    const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [url] }));
+    const mockResult = getMockStatisticsResult();
+    const node = 'https://some.url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
-      expect(result.current.state[url].block.value).toEqual(
-        Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight)
+      expect(result.current.state[node].block.value).toEqual(
+        Number(mockResult.statistics.blockHeight)
       );
     });
 
@@ -276,78 +232,85 @@ describe('useNodes hook', () => {
     expect(result.current.state['https://non-existing.url']).toBe(undefined);
   });
 
-  it('sets custom node and client', async () => {
-    const customUrl = 'https://some.url';
+  it('adds new node', async () => {
+    const node = 'custom-node-key';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
-    expect(result.current.state[CUSTOM_NODE_KEY]).toEqual(initialState);
+    expect(result.current.state[node]).toEqual(undefined);
 
     act(() => {
-      result.current.setCustomNode(customUrl);
+      result.current.addNode(node);
     });
 
     await waitFor(() => {
-      expect(result.current.state[CUSTOM_NODE_KEY].block.value).toEqual(
-        Number(MOCK_STATISTICS_QUERY_RESULT.blockHeight)
-      );
-      expect(result.current.state[CUSTOM_NODE_KEY].chain.value).toEqual(
-        MOCK_STATISTICS_QUERY_RESULT.chainId
-      );
-      expect(result.current.state[CUSTOM_NODE_KEY].responseTime.value).toEqual(
-        MOCK_DURATION
-      );
-      expect(result.current.state[CUSTOM_NODE_KEY].ssl.value).toEqual(true);
+      expect(result.current.state[node]).toEqual(initialState);
+    });
+  });
+
+  it('sets new url for node', async () => {
+    const node = 'https://some.url';
+    const newUrl = 'https://some-other.url';
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+
+    act(() => {
+      result.current.updateNodeUrl(node, newUrl);
+    });
+
+    await waitFor(() => {
+      expect(result.current.state[node].url).toBe(newUrl);
     });
   });
 
   it('sets error when custom node has an invalid url', async () => {
-    const customUrl = 'not-url';
+    const node = 'node-key';
+    const url = 'not-url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
-    expect(result.current.state[CUSTOM_NODE_KEY]).toEqual(initialState);
+    expect(result.current.state[node]).toBe(undefined);
 
     act(() => {
-      result.current.setCustomNode(customUrl);
+      result.current.updateNodeUrl(node, url);
     });
 
     await waitFor(() => {
-      expect(result.current.state[CUSTOM_NODE_KEY].url).toBe(customUrl);
-      expect(result.current.state[CUSTOM_NODE_KEY].block.hasError).toBe(true);
-      expect(result.current.state[CUSTOM_NODE_KEY].chain.hasError).toBe(true);
-      expect(result.current.state[CUSTOM_NODE_KEY].responseTime.hasError).toBe(
-        true
-      );
-      expect(result.current.state[CUSTOM_NODE_KEY].ssl.hasError).toBe(true);
+      expect(result.current.state[node].url).toBe(url);
+      expect(result.current.state[node].block.hasError).toBe(true);
+      expect(result.current.state[node].chain.hasError).toBe(true);
+      expect(result.current.state[node].responseTime.hasError).toBe(true);
+      expect(result.current.state[node].ssl.hasError).toBe(true);
     });
   });
 
   it('sets error when custom node statistics request fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(new MockClient({ failStats: true }));
+    createClient.mockImplementation(() =>
+      createMockClient({ statistics: { hasError: true } })
+    );
 
-    const customUrl = 'https://some.url';
+    const node = 'node-key';
+    const url = 'https://some.url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
-    expect(result.current.state[CUSTOM_NODE_KEY]).toEqual(initialState);
+    expect(result.current.state[node]).toBe(undefined);
 
     act(() => {
-      result.current.setCustomNode(customUrl);
+      result.current.updateNodeUrl(node, url);
     });
 
     await waitFor(() => {
-      expect(result.current.state[CUSTOM_NODE_KEY].block).toEqual({
+      expect(result.current.state[node].block).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
       });
 
-      expect(result.current.state[CUSTOM_NODE_KEY].chain).toEqual({
+      expect(result.current.state[node].chain).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
       });
 
-      expect(result.current.state[CUSTOM_NODE_KEY].responseTime).toEqual({
+      expect(result.current.state[node].responseTime).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
@@ -357,19 +320,22 @@ describe('useNodes hook', () => {
 
   it('sets error when custom node subscription fails', async () => {
     // @ts-ignore allow adding a mock return value to mocked module
-    createClient.mockReturnValue(new MockClient({ failSubscription: true }));
+    createClient.mockImplementation(() =>
+      createMockClient({ busEvents: { hasError: true } })
+    );
 
-    const customUrl = 'https://some.url';
+    const node = 'node-key';
+    const url = 'https://some.url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
-    expect(result.current.state[CUSTOM_NODE_KEY]).toEqual(initialState);
+    expect(result.current.state[node]).toBe(undefined);
 
     act(() => {
-      result.current.setCustomNode(customUrl);
+      result.current.updateNodeUrl(node, url);
     });
 
     await waitFor(() => {
-      expect(result.current.state[CUSTOM_NODE_KEY].ssl).toEqual({
+      expect(result.current.state[node].ssl).toEqual({
         isLoading: false,
         hasError: true,
         value: undefined,
@@ -391,17 +357,16 @@ describe('useNodes hook', () => {
   });
 
   it('exposes a client for the custom node', async () => {
-    const customUrl = 'https://some.url';
+    const node = 'node-key';
+    const url = 'https://some.url';
     const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
     act(() => {
-      result.current.setCustomNode(customUrl);
+      result.current.updateNodeUrl(node, url);
     });
 
     await waitFor(() => {
-      expect(result.current.clients[CUSTOM_NODE_KEY]).toBeInstanceOf(
-        ApolloClient
-      );
+      expect(result.current.clients[url]).toBeInstanceOf(ApolloClient);
     });
   });
 });

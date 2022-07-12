@@ -21,7 +21,7 @@ export const initializeNode = (
   dispatch({ type: ACTIONS.CHECK_SUBSCRIPTION, node, payload: { url } });
 
   const client = requestNode(url, {
-    onStatsSuccess: data => {
+    onStatsSuccess: (data) => {
       isMounted &&
         dispatch({
           type: ACTIONS.GET_STATISTICS_SUCCESS,
@@ -37,12 +37,10 @@ export const initializeNode = (
       isMounted && dispatch({ type: ACTIONS.GET_STATISTICS_FAILURE, node });
     },
     onSubscriptionSuccess: () => {
-      isMounted &&
-        dispatch({ type: ACTIONS.CHECK_SUBSCRIPTION_SUCCESS, node });
+      isMounted && dispatch({ type: ACTIONS.CHECK_SUBSCRIPTION_SUCCESS, node });
     },
     onSubscriptionFailure: () => {
-      isMounted &&
-        dispatch({ type: ACTIONS.CHECK_SUBSCRIPTION_FAILURE, node });
+      isMounted && dispatch({ type: ACTIONS.CHECK_SUBSCRIPTION_FAILURE, node });
     },
   });
 

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   RadioGroup,
@@ -41,16 +41,26 @@ const getHighestBlock = (state: Record<string, NodeData>) => {
   }, 0);
 };
 
-export const NodeSwitcher = ({ config, initialErrorType, onConnect }: NodeSwitcherProps) => {
+export const NodeSwitcher = ({
+  config,
+  initialErrorType,
+  onConnect,
+}: NodeSwitcherProps) => {
   const { VEGA_ENV, VEGA_URL } = useEnvironment();
-  const [networkError, setNetworkError] = useState(getErrorByType(initialErrorType, VEGA_ENV, VEGA_URL));
+  const [networkError, setNetworkError] = useState(
+    getErrorByType(initialErrorType, VEGA_ENV, VEGA_URL)
+  );
   const [customNodeText, setCustomNodeText] = useState('');
   const [nodeRadio, setNodeRadio] = useState(
     getDefaultNode(config.hosts, VEGA_URL)
   );
-  const { state, clients, customNode, setCustomNode, updateNodeBlock } =
+  const { state, clients, addNode, updateNodeUrl, updateNodeBlock } =
     useNodes(config);
   const highestBlock = useMemo(() => getHighestBlock(state), [state]);
+
+  useEffect(() => {
+    addNode(CUSTOM_NODE_KEY);
+  }, []);
 
   const onSubmit = (node: ReturnType<typeof getDefaultNode>) => {
     if (node) {
@@ -66,7 +76,9 @@ export const NodeSwitcher = ({ config, initialErrorType, onConnect }: NodeSwitch
   );
   const currentNodeError = getErrorByData(
     VEGA_ENV,
-    nodeRadio && customNode && customNode === customNodeText
+    nodeRadio &&
+      state[CUSTOM_NODE_KEY] &&
+      state[CUSTOM_NODE_KEY].url === customNodeText
       ? state[nodeRadio]
       : undefined
   );
@@ -89,7 +101,7 @@ export const NodeSwitcher = ({ config, initialErrorType, onConnect }: NodeSwitch
             className="block"
             value={nodeRadio}
             onChange={(value) => {
-              setNodeRadio(value)
+              setNodeRadio(value);
               setNetworkError(null);
             }}
           >
@@ -131,7 +143,7 @@ export const NodeSwitcher = ({ config, initialErrorType, onConnect }: NodeSwitch
                     id={`node-url-custom`}
                     value={CUSTOM_NODE_KEY}
                     label={
-                      nodeRadio === CUSTOM_NODE_KEY || !!customNode
+                      nodeRadio === CUSTOM_NODE_KEY || !!state[CUSTOM_NODE_KEY]
                         ? ''
                         : t('Other')
                     }
@@ -143,14 +155,19 @@ export const NodeSwitcher = ({ config, initialErrorType, onConnect }: NodeSwitch
                         value={customNodeText}
                         hasError={
                           !!customNodeText &&
-                          !!(currentNodeError?.headline || currentNodeError?.message)
+                          !!(
+                            currentNodeError?.headline ||
+                            currentNodeError?.message
+                          )
                         }
                         onChange={(e) => setCustomNodeText(e.target.value)}
                       />
-                      <Link onClick={() => {
-                        setNetworkError(null);
-                        setCustomNode(customNodeText)
-                      }}>
+                      <Link
+                        onClick={() => {
+                          setNetworkError(null);
+                          updateNodeUrl(CUSTOM_NODE_KEY, customNodeText);
+                        }}
+                      >
                         {getIsNodeLoading(state[CUSTOM_NODE_KEY])
                           ? t('Checking')
                           : t('Check')}

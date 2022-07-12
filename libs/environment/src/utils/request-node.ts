@@ -20,11 +20,11 @@ export const TIME_UPDATE_SUBSCRIPTION = gql`
 `;
 
 type Callbacks = {
-  onStatsSuccess: (data: Statistics) => void,
-  onStatsFailure: () => void,
-  onSubscriptionSuccess: () => void,
-  onSubscriptionFailure: () => void,
-}
+  onStatsSuccess: (data: Statistics) => void;
+  onStatsFailure: () => void;
+  onSubscriptionSuccess: () => void;
+  onSubscriptionFailure: () => void;
+};
 
 export const requestNode = (
   url: string,
@@ -50,11 +50,9 @@ export const requestNode = (
       query: STATS_QUERY,
     })
     .then((res) => {
-      console.log('GOT SOME DATA!!')
       onStatsSuccess(res.data);
     })
     .catch(() => {
-      console.log('DATA ERROR!!')
       onStatsFailure();
     });
 
@@ -75,4 +73,4 @@ export const requestNode = (
     });
 
   return client;
-}
+};

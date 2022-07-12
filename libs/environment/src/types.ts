@@ -37,6 +37,7 @@ type NodeCheck<T> = {
 
 export type NodeData = {
   url: string;
+  verified: boolean;
   ssl: NodeCheck<boolean>;
   block: NodeCheck<number>;
   responseTime: NodeCheck<number>;
