@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from './order-event-query';
@@ -12,6 +12,7 @@ import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import { MarketState } from '@vegaprotocol/types';
 import type { Market } from '../market';
+import type { Subscription } from 'zen-observable-ts';
 
 export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();
@@ -22,44 +23,45 @@ export const useOrderSubmit = (market: Market) => {
   const client = useApolloClient();
 
   const reset = useCallback(() => {
+    subRef.current?.unsubscribe();
     resetTransaction();
     setFinalizedOrder(null);
     setId('');
   }, [resetTransaction]);
+  const subRef = useRef<Subscription | null>(null);
 
   useEffect(() => {
-    const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-      query: ORDER_EVENT_SUB,
-      variables: { partyId: keypair?.pub || '' },
-    });
-
-    // Start a subscription looking for the newly created order
-    const sub = clientSub.subscribe(({ data }) => {
-      if (!data?.busEvents?.length) {
-        return;
-      }
-
-      // No types available for the subscription result
-      const matchingOrderEvent = data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Order') {
-          return false;
-        }
-
-        return e.event.id === id;
-      });
-
-      if (
-        matchingOrderEvent &&
-        matchingOrderEvent.event.__typename === 'Order'
-      ) {
-        setFinalizedOrder(matchingOrderEvent.event);
-      }
-    });
     return () => {
-      sub.unsubscribe();
+      subRef.current?.unsubscribe();
       setFinalizedOrder(null);
+      resetTransaction();
     };
-  }, [client, id, keypair?.pub, reset, resetTransaction]);
+  }, [resetTransaction]);
+
+  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
+    query: ORDER_EVENT_SUB,
+    variables: { partyId: keypair?.pub || '' },
+  });
+
+  // Start a subscription looking for the newly created order
+  subRef.current = clientSub.subscribe(({ data }) => {
+    if (!data?.busEvents?.length) {
+      return;
+    }
+
+    // No types available for the subscription result
+    const matchingOrderEvent = data.busEvents.find((e) => {
+      if (e.event.__typename !== 'Order') {
+        return false;
+      }
+
+      return e.event.id === id;
+    });
+
+    if (matchingOrderEvent && matchingOrderEvent.event.__typename === 'Order') {
+      setFinalizedOrder(matchingOrderEvent.event);
+    }
+  });
 
   const submit = useCallback(
     async (order: Order) => {

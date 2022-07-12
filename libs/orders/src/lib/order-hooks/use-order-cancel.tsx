@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import { useApolloClient } from '@apollo/client';
 import type {
@@ -10,6 +10,7 @@ import { ORDER_EVENT_SUB } from './order-event-query';
 import * as Sentry from '@sentry/react';
 import { OrderStatus } from '@vegaprotocol/types';
 import { determineId } from '@vegaprotocol/react-helpers';
+import type { Subscription } from 'zen-observable-ts';
 
 export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
@@ -18,47 +19,47 @@ export const useOrderCancel = () => {
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const [id, setId] = useState('');
   const client = useApolloClient();
+  const subRef = useRef<Subscription | null>(null);
+
+  useEffect(() => {
+    return () => {
+      subRef.current?.unsubscribe();
+      setUpdatedOrder(null);
+      resetTransaction();
+    };
+  }, [resetTransaction]);
 
   const reset = useCallback(() => {
+    subRef.current?.unsubscribe();
     resetTransaction();
     setUpdatedOrder(null);
     setId('');
   }, [resetTransaction]);
 
-  useEffect(() => {
-    const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-      query: ORDER_EVENT_SUB,
-      variables: { partyId: keypair?.pub || '' },
-    });
+  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
+    query: ORDER_EVENT_SUB,
+    variables: { partyId: keypair?.pub || '' },
+  });
 
-    // Start a subscription looking for the newly created order
-    const sub = clientSub.subscribe(({ data }) => {
-      if (!data?.busEvents?.length) {
-        return;
+  // Start a subscription looking for the newly created order
+  subRef.current = clientSub.subscribe(({ data }) => {
+    if (!data?.busEvents?.length) {
+      return;
+    }
+
+    // No types available for the subscription result
+    const matchingOrderEvent = data.busEvents.find((e) => {
+      if (e.event.__typename !== 'Order') {
+        return false;
       }
 
-      // No types available for the subscription result
-      const matchingOrderEvent = data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Order') {
-          return false;
-        }
-
-        return e.event.id === id;
-      });
-
-      if (
-        matchingOrderEvent &&
-        matchingOrderEvent.event.__typename === 'Order'
-      ) {
-        setUpdatedOrder(matchingOrderEvent.event);
-      }
+      return e.event.id === id;
     });
 
-    return () => {
-      sub.unsubscribe();
-      setUpdatedOrder(null);
-    };
-  }, [client, keypair?.pub, id, resetTransaction, reset]);
+    if (matchingOrderEvent && matchingOrderEvent.event.__typename === 'Order') {
+      setUpdatedOrder(matchingOrderEvent.event);
+    }
+  });
 
   const cancel = useCallback(
     async (order) => {
