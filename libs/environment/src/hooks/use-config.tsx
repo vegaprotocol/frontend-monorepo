@@ -23,12 +23,15 @@ const requestToNode = async (url: string, index: number): Promise<number> => {
   return index;
 };
 
+const getCacheKey = (env: Networks) => `${LOCAL_STORAGE_NETWORK_KEY}-${env}`;
+
 const getCachedConfig = (env: Networks) => {
-  const value = LocalStorage.getItem(LOCAL_STORAGE_NETWORK_KEY);
+  const key = getCacheKey(env);
+  const value = LocalStorage.getItem(key);
 
   if (value) {
     try {
-      const config = JSON.parse(value)[env] as Configuration;
+      const config = JSON.parse(value) as Configuration;
       const hasError = validateConfiguration(config);
 
       if (hasError) {
@@ -37,7 +40,7 @@ const getCachedConfig = (env: Networks) => {
 
       return config;
     } catch (err) {
-      LocalStorage.removeItem(LOCAL_STORAGE_NETWORK_KEY);
+      LocalStorage.removeItem(key);
       console.warn(
         'Malformed data found for network configuration. Removed and continuing...'
       );
@@ -55,7 +58,7 @@ export const useConfig = (
     getCachedConfig(environment.VEGA_ENV)
   );
   const [status, setStatus] = useState<ConfigStatus>(
-    !environment.VEGA_URL ? 'idle' : 'success'
+    environment.VEGA_CONFIG_URL ? 'idle' : 'success'
   );
 
   useEffect(() => {
@@ -73,12 +76,8 @@ export const useConfig = (
 
           setConfig({ hosts: configData.hosts });
           LocalStorage.setItem(
-            LOCAL_STORAGE_NETWORK_KEY,
-            JSON.stringify({
-              [environment.VEGA_ENV]: {
-                hosts: configData.hosts,
-              },
-            })
+            getCacheKey(environment.VEGA_ENV),
+            JSON.stringify({ hosts: configData.hosts })
           );
         } catch (err) {
           setStatus('error-loading-config');
@@ -102,7 +101,7 @@ export const useConfig = (
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
-            VEGA_URL: config.hosts[0],
+            VEGA_URL: prevEnvironment.VEGA_URL || config.hosts[0],
           }));
           return;
         }
@@ -114,7 +113,7 @@ export const useConfig = (
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
-            VEGA_URL: config.hosts[index],
+            VEGA_URL: prevEnvironment.VEGA_URL || config.hosts[index],
           }));
         } catch (err) {
           setStatus('error-loading-node');

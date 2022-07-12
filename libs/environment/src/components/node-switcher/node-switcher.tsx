@@ -69,7 +69,7 @@ export const NodeSwitcher = ({ config, onConnect }: NodeSwitcherProps) => {
   );
 
   return (
-    <div className="text-black dark:text-white min-w-[800px]">
+    <div className="text-black dark:text-white w-full">
       <NodeError {...currentNodeError} />
       <form onSubmit={() => onSubmit(nodeRadio)}>
         <p className="text-body-large font-bold mt-16 mb-32">

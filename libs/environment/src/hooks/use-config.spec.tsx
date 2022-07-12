@@ -81,18 +81,6 @@ afterAll(() => {
 });
 
 describe('useConfig hook', () => {
-  it('has an initial success state when the environment already has a URL', async () => {
-    const mockEnvWithUrl = {
-      ...mockEnvironment,
-      VEGA_URL: 'https://some.url/query',
-    };
-    const { result } = renderHook(() => useConfig(mockEnvWithUrl, mockUpdate));
-
-    expect(fetch).not.toHaveBeenCalled();
-    expect(mockUpdate).not.toHaveBeenCalled();
-    expect(result.current.status).toBe('success');
-  });
-
   it('updates the environment with a host url from the network configuration', async () => {
     const allowedStatuses = [
       'idle',
@@ -254,30 +242,11 @@ describe('useConfig hook', () => {
     expect(fetch).not.toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
   });
 
-  it('caches the list of networks between runs', async () => {
-    const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
-
-    await run1.waitForNextUpdate();
-    jest.runAllTimers();
-    await run1.waitForNextUpdate();
-
-    expect(run1.result.current.status).toBe('success');
-    expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
-
-    // @ts-ignore typescript doesn't recognise the mocked instance
-    fetch.mockClear();
-
-    const run2 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
-
-    jest.runAllTimers();
-    await run2.waitForNextUpdate();
-
-    expect(run2.result.current.status).toBe('success');
-    expect(fetch).not.toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
-  });
-
   it('refetches the network configuration and resets the cache when malformed data found in the storage', async () => {
-    window.localStorage.setItem(LOCAL_STORAGE_NETWORK_KEY, '{not:{valid:{json');
+    window.localStorage.setItem(
+      `${LOCAL_STORAGE_NETWORK_KEY}-${mockEnvironment.VEGA_ENV}`,
+      '{not:{valid:{json'
+    );
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
 
     const run1 = renderHook(() => useConfig(mockEnvironment, mockUpdate));
@@ -295,7 +264,7 @@ describe('useConfig hook', () => {
 
   it('refetches the network configuration and resets the cache when invalid data found in the storage', async () => {
     window.localStorage.setItem(
-      LOCAL_STORAGE_NETWORK_KEY,
+      `${LOCAL_STORAGE_NETWORK_KEY}-${mockEnvironment.VEGA_ENV}`,
       JSON.stringify({ invalid: 'data' })
     );
     const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
