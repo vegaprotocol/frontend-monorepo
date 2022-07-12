@@ -1,8 +1,4 @@
-import {
-  StakingBridge,
-  Token,
-  TokenVesting,
-} from '@vegaprotocol/smart-contracts';
+import {  StakingBridge, Token, TokenVesting } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
@@ -18,9 +14,7 @@ const getAccount = (number = 0) => `m/44'/60'/0'/0/${number}`;
 const transactionTimeout = '50000';
 
 before('Vega wallet teardown prep', function () {
-  cy.wrap(new ethers.providers.JsonRpcProvider({ url: ethProviderUrl }), {
-    log: false,
-  }).as('provider');
+  cy.wrap(new ethers.providers.JsonRpcProvider({ url: ethProviderUrl }), {log: false}).as('provider');
 
   cy.wrap(Wallet.fromMnemonic(vegaWalletMnemonic, getAccount(0)).privateKey, {
     log: false,

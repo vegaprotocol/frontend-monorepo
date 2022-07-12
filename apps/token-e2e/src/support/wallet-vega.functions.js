@@ -1,5 +1,5 @@
-import vegaWallet from '../locators/wallet-vega.locators';
-
+const vegaWalletContainer = '[data-testid="vega-wallet"]';
+const restConnectorForm = '[data-testid="rest-connector-form"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
@@ -18,7 +18,7 @@ Cypress.Commands.add('vega_wallet_import', () => {
 
 Cypress.Commands.add('vega_wallet_connect', () => {
   cy.highlight('Connecting Vega Wallet');
-  cy.get(vegaWallet.walletContainer).within(() => {
+  cy.get(vegaWalletContainer).within(() => {
     cy.get('button')
       .contains('Connect Vega wallet to use associated $VEGA')
       .should('be.enabled')
@@ -26,9 +26,9 @@ Cypress.Commands.add('vega_wallet_connect', () => {
       .click({ force: true });
   });
   cy.get('button').contains('rest provider').click();
-  cy.get(vegaWallet.connectRestForm).within(() => {
-    cy.get(vegaWallet.name).click().type(vegaWalletName);
-    cy.get(vegaWallet.passphrase).click().type(vegaWalletPassphrase);
+  cy.get(restConnectorForm).within(() => {
+    cy.get('#wallet').click().type(vegaWalletName);
+    cy.get('#passphrase').click().type(vegaWalletPassphrase);
     cy.get('button').contains('Connect').click();
   });
   cy.contains(`${vegaWalletName} key`, { timeout: 20000 }).should('be.visible');
@@ -36,7 +36,7 @@ Cypress.Commands.add('vega_wallet_connect', () => {
 
 Cypress.Commands.add('vega_wallet_check_unstaked_value_is', (expectedVal) => {
   cy.highlight(`Checking vega wallet - Unstaked Value is ${expectedVal}`);
-  cy.get(vegaWallet.walletContainer).within(() => {
+  cy.get(vegaWalletContainer).within(() => {
     cy.contains('Unstaked', { timeout: 40000 })
       .siblings()
       .contains(expectedVal, { timeout: 40000 })
@@ -46,7 +46,7 @@ Cypress.Commands.add('vega_wallet_check_unstaked_value_is', (expectedVal) => {
 
 Cypress.Commands.add('vega_wallet_check_associated_value_is', (expectedVal) => {
   cy.highlight(`Checking vega wallet - Associated Value is ${expectedVal}`);
-  cy.get(vegaWallet.walletContainer).within(() => {
+  cy.get(vegaWalletContainer).within(() => {
     cy.contains('Associated', { timeout: 40000 })
       .parent()
       .siblings()

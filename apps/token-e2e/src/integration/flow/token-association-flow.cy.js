@@ -1,29 +1,29 @@
-/// <reference types="cypress" />
-import navigation from '../../locators/navigation.locators';
-import staking from '../../locators/staking.locators';
-import ethWallet from '../../locators/wallet-eth.locators';
-import '../../support/staking.functions';
-import '../../support/wallet-vega.functions';
-import '../../support/wallet-eth.functions';
-import '../../support/wallet-teardown.functions';
-
+const stakingPageLink = '[href="/staking"]';
+const pageSpinner = 'splash-loader';
+const menuBar = 'nav';
+const validatorList = '[data-testid="node-list-item-name"]';
+const ethWalletContainer = '[data-testid="ethereum-wallet"]';
+const ethWalletAssociateButton = '[href="/staking/associate"]';
+const ethWalletDissociateButton = '[href="/staking/disassociate"]';
+const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 
 context(
   'Token association flow - with eth and vega wallets connected',
   function () {
+    
     before('visit staking tab and connect vega wallet', function () {
       cy.vega_wallet_import();
       cy.visit('/');
-      cy.get(navigation.section, { timeout: 20000 }).should('be.visible');
+      cy.get(menuBar, { timeout: 20000 }).should('be.visible');
       cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
       cy.reload();
-      cy.get(navigation.section, { timeout: 20000 }).should('be.visible');
+      cy.get(menuBar, { timeout: 20000 }).should('be.visible');
       cy.ethereum_wallet_connect();
-      cy.get(navigation.staking).first().click();
-      cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
-      cy.get(staking.validatorNames).first().invoke('text').as('validatorName');
+      cy.get(stakingPageLink).first().click();
+      cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
+      cy.get(validatorList).first().invoke('text').as('validatorName');
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
@@ -31,12 +31,12 @@ context(
         'teardown wallet & drill into a specific validator',
         function () {
           cy.vega_wallet_teardown();
-          cy.get(navigation.staking).first().click();
-          cy.get(navigation.spinner, { timeout: 20000 }).should('not.exist');
+          cy.get(stakingPageLink).first().click();
+          cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
         }
       );
 
-      it('Able to associate tokens - from staking page', function () {
+      it('Able to associate tokens', function () {
         cy.staking_page_associate_tokens('2');
         cy.ethereum_wallet_check_associated_vega_key_value_is(
           vegaWalletPublicKeyShort,
@@ -47,7 +47,7 @@ context(
         cy.vega_wallet_check_unstaked_value_is('2.000000000000000000');
       });
 
-      it('Able to disassociate tokens - from staking page', function () {
+      it('Able to disassociate tokens', function () {
         cy.staking_page_associate_tokens('2');
         cy.ethereum_wallet_check_associated_vega_key_value_is(
           vegaWalletPublicKeyShort,
@@ -62,24 +62,6 @@ context(
         );
         cy.ethereum_wallet_check_associated_value_is('1.0');
         cy.vega_wallet_check_associated_value_is('1.000000000000000000');
-      });
-
-      it('Able to access associate token form - from eth wallet', function () {
-        cy.get(ethWallet.walletContainer).within(() =>
-          cy.get(ethWallet.associate).click()
-        );
-        cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should(
-          'be.enabled'
-        );
-      });
-
-      it('Able to access disassociate token form - from eth wallet', function () {
-        cy.get(ethWallet.walletContainer).within(() =>
-          cy.get(ethWallet.disassociate).click()
-        );
-        cy.get(staking.stakeAssociateWalletRadio, { timeout: 30000 }).should(
-          'be.enabled'
-        );
       });
 
       it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
