@@ -2,7 +2,9 @@ import staking from '../locators/staking.locators';
 
 Cypress.Commands.add('wait_for_begining_of_epoch', () => {
   cy.highlight(`Waiting for next epoch to start`);
-  cy.contains('Waiting for next epoch to start', { timeout: 10000 }).should('not.exist');
+  cy.contains('Waiting for next epoch to start', { timeout: 10000 }).should(
+    'not.exist'
+  );
   cy.contains('Waiting for next epoch to start', { timeout: 20000 });
 });
 
