@@ -11,10 +11,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import { forwardRef, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
-import {
-  VegaOrderTransactionType,
-  VegaTransactionDialog,
-} from '@vegaprotocol/wallet';
+import { VegaTransactionDialog } from '@vegaprotocol/wallet';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -24,6 +21,18 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data }, ref) => {
     const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
     const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
+    const getDialogTitle = (status?: string) => {
+      switch (status) {
+        case OrderStatus.Cancelled:
+          return 'Order cancelled';
+        case OrderStatus.Rejected:
+          return 'Order rejected';
+        case OrderStatus.Expired:
+          return 'Order expired';
+        default:
+          return 'Cancellation failed';
+      }
+    };
     return (
       <>
         <OrderListTable data={data} cancel={cancel} ref={ref} />
@@ -34,7 +43,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           finalizedOrder={finalizedOrder}
           transaction={transaction}
           reset={reset}
-          type={VegaOrderTransactionType.CANCEL}
+          title={getDialogTitle(finalizedOrder?.status)}
         />
       </>
     );

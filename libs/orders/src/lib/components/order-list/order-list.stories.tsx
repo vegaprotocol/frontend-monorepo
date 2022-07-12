@@ -3,7 +3,6 @@ import { OrderType, OrderStatus } from '@vegaprotocol/types';
 import { OrderList, OrderListTable } from './order-list';
 import { useState } from 'react';
 import type { Order, VegaTxState } from '@vegaprotocol/wallet';
-import { VegaOrderTransactionType } from '@vegaprotocol/wallet';
 import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { generateOrdersArray } from '../mocks';
 
@@ -53,7 +52,7 @@ const Template2: Story = (args) => {
         finalizedOrder={finalizedOrder}
         transaction={transaction}
         reset={reset}
-        type={VegaOrderTransactionType.CANCEL}
+        title={'Order cancelled'}
       />
     </>
   );

@@ -36,3 +36,19 @@ export type TransactionSubmission =
   | DelegateSubmissionBody
   | UndelegateSubmissionBody
   | OrderAmendmentBody;
+
+export interface Market {
+  name: string;
+  positionDecimalPlaces?: number;
+  decimalPlaces: number;
+}
+
+export interface Order {
+  status: string;
+  rejectionReason: string | null;
+  size: string;
+  price: string;
+  market: Market | null;
+  type: string | null;
+  side?: string;
+}
