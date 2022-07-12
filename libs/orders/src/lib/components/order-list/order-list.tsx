@@ -15,12 +15,16 @@ import { VegaTransactionDialog } from '@vegaprotocol/wallet';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
+  showCancelled?: boolean;
 }
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
-  ({ data }, ref) => {
+  ({ data, showCancelled = true }, ref) => {
     const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
     const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
+    const ordersData = showCancelled
+      ? data
+      : data?.filter((o) => o.status !== OrderStatus.Cancelled) || null;
     const getDialogTitle = (status?: string) => {
       switch (status) {
         case OrderStatus.Cancelled:
@@ -35,7 +39,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     };
     return (
       <>
-        <OrderListTable data={data} cancel={cancel} ref={ref} />
+        <OrderListTable data={ordersData} cancel={cancel} ref={ref} />
         <VegaTransactionDialog
           key={`cancel-order-dialog-${transaction.txHash}`}
           orderDialogOpen={cancelOrderDialogOpen}

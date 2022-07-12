@@ -70,6 +70,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     return sortOrders(data);
   }, [data]);
 
+  // We can set <OrderList showCancelled={false} to hide cancelled orders
   return (
     <AsyncRenderer loading={loading} error={error} data={orders}>
       <OrderList ref={gridRef} data={orders} />
