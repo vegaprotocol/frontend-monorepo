@@ -53,7 +53,6 @@ export const useOrderSubmit = (market: Market) => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setFinalizedOrder(matchingOrderEvent.event);
-        resetTransaction();
       }
     });
     return () => {

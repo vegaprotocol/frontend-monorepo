@@ -1,10 +1,6 @@
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import {
-  addDecimal,
-  addDecimalsFormatNumber,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -125,11 +121,17 @@ export const VegaOrderTransactionDialog = ({
         </div>
         <div>
           <p className={headerClassName}>{t(`Amount`)}</p>
-          <p className={finalizedOrder.side}>
-            {addDecimal(
-              finalizedOrder.size,
-              finalizedOrder.market?.positionDecimalPlaces || 0
-            )}
+          <p
+            className={
+              finalizedOrder.side === 'Buy'
+                ? ' text-green-dark dark:text-vega-green'
+                : 'text-vega-red'
+            }
+          >
+            {`${finalizedOrder.side === 'Buy' ? '+' : '-'} ${
+              finalizedOrder.size
+            }
+            `}
           </p>
         </div>
         {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
@@ -141,6 +143,22 @@ export const VegaOrderTransactionDialog = ({
                 finalizedOrder.market.decimalPlaces
               )}
             </p>
+          </div>
+        )}
+      </div>
+      <div className="grid grid-cols-1 gap-8">
+        {transaction.txHash && (
+          <div>
+            <p className={headerClassName}>{t(`Transaction`)}</p>
+            <a
+              className="underline break-words"
+              data-testid="tx-block-explorer"
+              href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {transaction.txHash}
+            </a>
           </div>
         )}
       </div>

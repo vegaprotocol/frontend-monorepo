@@ -51,7 +51,6 @@ export const useOrderCancel = () => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setUpdatedOrder(matchingOrderEvent.event);
-        resetTransaction();
       }
     });
 
