@@ -4,10 +4,12 @@ import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { AnchorButton, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
-import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
+import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { DepositsContainer } from './deposits-container';
 
 const Portfolio = () => {
   const wrapperClasses = classNames(
@@ -22,54 +24,58 @@ const Portfolio = () => {
       <PortfolioGridChild>
         <Tabs>
           <Tab id="positions" name={t('Positions')}>
-            <div className={tabContentClassName}>
-              <h4 className="text-h4 text-black dark:text-white p-8">
-                {t('Positions')}
-              </h4>
-              <div>
-                <PositionsContainer />
+            <VegaWalletContainer>
+              <div className={tabContentClassName}>
+                <h4 className="text-h4 text-black dark:text-white p-8">
+                  {t('Positions')}
+                </h4>
+                <div>
+                  <PositionsContainer />
+                </div>
               </div>
-            </div>
+            </VegaWalletContainer>
           </Tab>
           <Tab id="orders" name={t('Orders')}>
-            <div className={tabContentClassName}>
-              <h4 className="text-h4 text-black dark:text-white p-8">
-                {t('Orders')}
-              </h4>
-              <div>
-                <OrderListContainer />
+            <VegaWalletContainer>
+              <div className={tabContentClassName}>
+                <h4 className="text-h4 text-black dark:text-white p-8">
+                  {t('Orders')}
+                </h4>
+                <div>
+                  <OrderListContainer />
+                </div>
               </div>
-            </div>
+            </VegaWalletContainer>
           </Tab>
           <Tab id="fills" name={t('Fills')}>
-            <div className={tabContentClassName}>
-              <h4 className="text-h4 text-black dark:text-white p-8">
-                {t('Fills')}
-              </h4>
-              <div>
-                <FillsContainer />
+            <VegaWalletContainer>
+              <div className={tabContentClassName}>
+                <h4 className="text-h4 text-black dark:text-white p-8">
+                  {t('Fills')}
+                </h4>
+                <div>
+                  <FillsContainer />
+                </div>
               </div>
-            </div>
+            </VegaWalletContainer>
           </Tab>
         </Tabs>
       </PortfolioGridChild>
       <PortfolioGridChild>
         <Tabs>
           <Tab id="collateral" name={t('Collateral')}>
-            <AccountsContainer />
+            <VegaWalletContainer>
+              <AccountsContainer />
+            </VegaWalletContainer>
           </Tab>
           <Tab id="deposits" name={t('Deposits')}>
-            <div className={tabContentClassName}>
-              <div className="p-8">
-                <AnchorButton data-testid="deposit" href="/portfolio/deposit">
-                  {t('Deposit')}
-                </AnchorButton>
-              </div>
-            </div>
+            <DepositsContainer />
           </Tab>
           <Tab id="withdrawals" name={t('Withdrawals')}>
             <Web3Container>
-              <WithdrawalsContainer />
+              <VegaWalletContainer>
+                <WithdrawalsContainer />
+              </VegaWalletContainer>
             </Web3Container>
           </Tab>
         </Tabs>
