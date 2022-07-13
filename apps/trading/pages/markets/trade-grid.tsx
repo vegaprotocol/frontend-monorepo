@@ -28,12 +28,12 @@ const TradingViews = {
   Candles: CandlesChartContainer,
   Depth: DepthChartContainer,
   Ticket: DealTicketContainer,
-  Orderbook: OrderbookContainer,
-  Orders: OrderListContainer,
-  Positions: PositionsContainer,
-  Accounts: AccountsContainer,
-  Trades: TradesContainer,
   Info: MarketInfoContainer,
+  Orderbook: OrderbookContainer,
+  Trades: TradesContainer,
+  Positions: PositionsContainer,
+  Orders: OrderListContainer,
+  Collateral: AccountsContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -167,7 +167,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               <TradingViews.Orders />
             </Tab>
             <Tab id="accounts" name={t('Collateral')}>
-              <TradingViews.Accounts />
+              <TradingViews.Collateral />
             </Tab>
           </Tabs>
         </TradeGridChild>
