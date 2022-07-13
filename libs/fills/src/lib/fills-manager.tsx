@@ -12,7 +12,6 @@ import type {
 import { fillsDataProvider as dataProvider } from './fills-data-provider';
 import type { Fills_party_tradesPaged_edges } from './__generated__/Fills';
 import type { FillsSub_trades } from './__generated__/FillsSub';
-import { generateFill } from './test-helpers';
 
 interface FillsManagerProps {
   partyId: string;
@@ -134,6 +133,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <FillsTable
+        pagination
         ref={gridRef}
         partyId={partyId}
         datasource={{ getRows }}

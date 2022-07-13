@@ -29,7 +29,6 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         defaultColDef={{ flex: 1, resizable: true }}
         style={{ width: '100%', height: '100%' }}
         getRowId={({ data }) => data?.id}
-        rowModelType="infinite"
         {...props}
       >
         <AgGridColumn headerName={t('Market')} field="market.name" />

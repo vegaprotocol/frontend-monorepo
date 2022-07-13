@@ -79,7 +79,7 @@ export const generateFill = (
   const defaultFill: Fills_party_tradesPaged_edges_node = {
     __typename: 'Trade',
     id: '0',
-    createdAt: new Date().toISOString(),
+    createdAt: '2005-04-02T19:37:00.000Z',
     price: '10000000',
     size: '50000',
     buyOrder: 'buy-order',
@@ -133,9 +133,3 @@ export const generateFill = (
 
   return merge(defaultFill, override);
 };
-
-export const makeGetRows =
-  (data: Fills_party_tradesPaged_edges_node[]) =>
-  ({ successCallback }: IGetRowsParams) => {
-    successCallback(data, data.length);
-  };
