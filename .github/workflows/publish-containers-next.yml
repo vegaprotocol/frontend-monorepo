@@ -36,7 +36,7 @@ jobs:
       - name: Collect images data
         id: tags
         run: |
-          echo '::set-output name=current::vegaprotocol/${{ matrix.app }}:v${{ steps.vars.outputs.tag }}'
+          echo '::set-output name=current::vegaprotocol/${{ matrix.app }}:${{ steps.vars.outputs.tag }}'
           echo '::set-output name=latest::vegaprotocol/${{ matrix.app }}:latest'
 
       - name: Echo tags
