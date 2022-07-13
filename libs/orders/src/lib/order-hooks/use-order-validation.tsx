@@ -60,7 +60,7 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t(
-          `This market is ${market.state.toLowerCase()} and only accepting orders liquidity order`
+          `This market is ${market.state.toLowerCase()} and only accepting liquidity orders`
         ),
       };
     }
@@ -95,7 +95,9 @@ export const useOrderValidation = ({
 
         return {
           isDisabled: false,
-          message: t('Market is currently suspended. Can accept only LP'),
+          message: t(
+            'This market is currently suspended and only accepting liquidity orders'
+          ),
         };
       }
 
@@ -105,13 +107,15 @@ export const useOrderValidation = ({
       ) {
         return {
           isDisabled: false,
-          message: t('Market is not active yet. Can accept only LP'),
+          message: t(
+            'This market is not active yet and can accept only liquidity orders'
+          ),
         };
       }
 
       return {
         isDisabled: true,
-        message: t('Market is no longer active.'),
+        message: t('This market is no longer active.'),
       };
     }
 

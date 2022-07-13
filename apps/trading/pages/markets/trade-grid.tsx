@@ -23,6 +23,7 @@ import {
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
+import startCase from 'lodash/startCase';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -94,7 +95,7 @@ export const TradeMarketHeader = ({
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode}
+              {startCase(market.tradingMode)}
             </span>
           </div>
           <div className={headerItemClassName}>

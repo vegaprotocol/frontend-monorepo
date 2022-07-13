@@ -5,6 +5,7 @@ import type {
   OrderAmendmentBodyOrderAmendment,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { useState, useCallback, useEffect, useRef } from 'react';
+import type { Order } from '@vegaprotocol/wallet';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { Subscription } from 'zen-observable-ts';
@@ -38,20 +39,12 @@ export const useOrderEdit = () => {
   }, [resetTransaction]);
 
   const edit = useCallback(
-    async (order) => {
-      if (!keypair || !order.market?.id) {
+    async (order: Order) => {
+      if (!keypair) {
         return;
       }
 
       setUpdatedOrder(null);
-      console.log('edit order', {
-        orderId: order.id,
-        marketId: order.market.id,
-        price: order.price,
-        timeInForce: order.timeInForce,
-        sizeDelta: 0,
-        expiresAt: order.expiresAt,
-      });
 
       try {
         const res = await send({
@@ -59,16 +52,11 @@ export const useOrderEdit = () => {
           propagate: true,
           orderAmendment: {
             orderId: order.id,
-            marketId: order.market.id,
-            price: order.price,
-            timeInForce: order.timeInForce,
-            sizeDelta: '0',
-            expiresAt: order.expiration
-              ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
-                // just append 6 zeroes
-                order.expiration.getTime().toString() + '000000'
-              : undefined,
-          } as OrderAmendmentBodyOrderAmendment,
+            marketId: order.market?.id,
+            price: { value: order.price },
+            timeInForce: `TIME_IN_FORCE_${order.timeInForce}`,
+            sizeDelta: 0,
+          } as unknown as OrderAmendmentBodyOrderAmendment,
         } as OrderAmendmentBody);
 
         if (res?.signature) {
