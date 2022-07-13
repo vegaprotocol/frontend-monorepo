@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from './order-event-query';
