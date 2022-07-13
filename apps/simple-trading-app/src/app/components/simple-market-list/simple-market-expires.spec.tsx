@@ -13,7 +13,7 @@ describe('SimpleMarketExpires', () => {
         'settlement:20220525T1200',
       ];
       render(<SimpleMarketExpires tags={tags} />);
-      expect(screen.getByText('expires 25 May 2022 12:00')).toBeInTheDocument();
+      expect(screen.getByText('May 25')).toBeInTheDocument();
     });
 
     it('settlement-date:date', () => {
@@ -24,7 +24,7 @@ describe('SimpleMarketExpires', () => {
       ];
       render(<SimpleMarketExpires tags={tags} />);
       expect(
-        screen.getByText('expires 25 April 2022 12:00')
+        screen.getByText('April 25')
       ).toBeInTheDocument();
     });
 
@@ -36,7 +36,7 @@ describe('SimpleMarketExpires', () => {
       ];
       render(<SimpleMarketExpires tags={tags} />);
       expect(
-        screen.getByText('expires 25 March 2022 12:00')
+        screen.getByText('March 25')
       ).toBeInTheDocument();
     });
 

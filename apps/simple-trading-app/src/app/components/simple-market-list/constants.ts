@@ -1,5 +1,7 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
+import { IS_MARKET_TRADABLE } from '../../constants';
+import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 
 export const STATES_FILTER = [
   { value: 'all', text: t('All') },
@@ -20,15 +22,30 @@ export const agGridLightVariables = `
     --ag-row-hover-color: ${theme.colors.transparent};
     --ag-font-size: 15px;
   }
-  .ag-theme-balham .ag-row-hover {
+  .ag-theme-balham .ag-header-cell{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .ag-theme-balham .ag-cell{
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+  .ag-theme-balham .ag-cell.overflow-visible{
+    overflow: visible;
+  }
+  .ag-theme-balham .ag-row-hover:not(.mobile) {
     --ag-row-border-color: ${theme.colors.black[100]};
+  }
+  .ag-theme-balham .ag-row-hover .icon-green-hover {
+    fill: ${theme.colors.darkerGreen};
   }
   .ag-theme-balham [col-id="status"] .ag-header-cell-label,
   .ag-theme-balham [col-id="asset"] .ag-header-cell-label,
   .ag-theme-balham [col-id="change"] .ag-header-cell-label{
     justify-content: center;
   }
-  .ag-theme-balham .ag-header-row .ag-header-cell:first-child{
+  .ag-theme-balham .ag-header-row .ag-header-cell:first-child,
+  .ag-theme-balham .ag-row.mobile .ag-cell:first-child{
     padding-left: 0;
   }
   .ag-theme-balham .ag-ltr .ag-header-cell::after, .ag-theme-balham .ag-ltr .ag-header-group-cell::after {
@@ -78,13 +95,31 @@ export const agGridDarkVariables = `
     --ag-row-hover-color: ${theme.colors.transparent};
     --ag-font-size: 15px;
   }
-  .ag-theme-balham-dark .ag-row-hover {
+  .ag-theme-balham-dark .ag-header-cell{
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .ag-theme-balham-dark .ag-cell{
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+  .ag-theme-balham-dark .ag-cell.overflow-visible{
+    overflow: visible;
+  }
+  .ag-theme-balham-dark .ag-row-hover:not(.mobile){
     --ag-row-border-color: ${theme.colors.white[100]};
+  }
+  .ag-theme-balham-dark .ag-row-hover .icon-green-hover {
+    fill: ${theme.colors.lightGreen};
   }
   .ag-theme-balham-dark [col-id="status"] .ag-header-cell-label,
   .ag-theme-balham-dark [col-id="asset"] .ag-header-cell-label,
   .ag-theme-balham-dark [col-id="change"] .ag-header-cell-label{
     justify-content: center;
+  }
+  .ag-theme-balham-dark .ag-header-row .ag-header-cell:first-child,
+  .ag-theme-balham-dark .ag-row.mobile .ag-cell:first-child{
+    padding-left: 0;
   }
   .ag-theme-balham-dark .ag-header-row .ag-header-cell:first-child{
     padding-left: 0;
@@ -126,3 +161,8 @@ export const agGridDarkVariables = `
     -webkit-text-fill-color: transparent;
   }
 `;
+
+export const ROW_CLASS_RULES = {
+  'cursor-pointer': ({ data }: { data: SimpleMarkets_markets }) =>
+    IS_MARKET_TRADABLE(data),
+};

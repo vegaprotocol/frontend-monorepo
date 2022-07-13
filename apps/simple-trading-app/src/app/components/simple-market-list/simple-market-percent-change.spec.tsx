@@ -68,7 +68,7 @@ describe('SimpleMarketPercentChange should parse proper change', () => {
         />
       </MockedProvider>
     );
-    expect(screen.getByText('-50.000%')).toBeInTheDocument();
-    expect(screen.getByText('-50.000%')).toHaveClass('text-vega-pink');
+    expect(screen.getByText('50.000%')).toBeInTheDocument();
+    expect(screen.getByText('50.000%')).toHaveClass('text-vega-pink');
   });
 });

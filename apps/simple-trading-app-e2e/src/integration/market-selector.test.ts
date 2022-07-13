@@ -76,7 +76,6 @@ describe('market selector', () => {
         .children()
         .find('[role="button"]')
         .should('have.length', markets.length);
-      cy.pause();
       cy.getByTestId('dialog-close').click();
       cy.get('input[placeholder="Search"]').should(
         'have.value',

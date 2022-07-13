@@ -9,7 +9,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { subDays } from 'date-fns';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  useDataProvider,
+  useScreenDimensions,
+} from '@vegaprotocol/react-helpers';
 import { t } from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
@@ -21,6 +24,8 @@ import * as constants from './constants';
 import SimpleMarketToolbar from './simple-market-toolbar';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 import type { SimpleMarketDataSub_marketData } from './__generated__/SimpleMarketDataSub';
+import { IS_MARKET_TRADABLE } from '../../constants';
+
 export type SimpleMarketsType = SimpleMarkets_markets & {
   percentChange?: number | '-';
 };
@@ -32,6 +37,7 @@ export type RouterParams = Partial<{
 }>;
 
 const SimpleMarketList = () => {
+  const { isMobile } = useScreenDimensions();
   const navigate = useNavigate();
   const params = useParams<RouterParams>();
   const theme = useContext(ThemeContext);
@@ -76,16 +82,18 @@ const SimpleMarketList = () => {
     return () => window.removeEventListener('resize', handleOnGridReady);
   }, [handleOnGridReady]);
 
-  const onClick = useCallback(
-    (marketId) => {
-      navigate(`/trading/${marketId}`);
+  const { columnDefs, defaultColDef } = useColumnDefinitions({ isMobile });
+
+  const getRowId = useCallback(({ data }) => data.id, []);
+
+  const handleRowClicked = useCallback(
+    ({ data }: { data: SimpleMarketsType }) => {
+      if (IS_MARKET_TRADABLE(data)) {
+        navigate(`/trading/${data.id}`);
+      }
     },
     [navigate]
   );
-
-  const { columnDefs, defaultColDef } = useColumnDefinitions({ onClick });
-
-  const getRowId = useCallback(({ data }) => data.id, []);
 
   return (
     <div className="h-full grid grid-rows-[min-content,1fr]">
@@ -103,11 +111,15 @@ const SimpleMarketList = () => {
               : constants.agGridLightVariables
           }
           onGridReady={handleOnGridReady}
+          onRowClicked={handleRowClicked}
+          rowClass={isMobile ? 'mobile' : ''}
+          rowClassRules={constants.ROW_CLASS_RULES}
           ref={gridRef}
           overlayNoRowsTemplate={t('No data to display')}
           suppressContextMenu
           getRowId={getRowId}
           suppressMovableColumns
+          suppressRowTransform
         />
       </AsyncRenderer>
     </div>
