@@ -16,6 +16,7 @@ export const ORDER_EVENT_SUB = gql`
           timeInForce
           side
           market {
+            id
             name
             decimalPlaces
           }

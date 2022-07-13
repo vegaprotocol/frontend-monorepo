@@ -110,6 +110,7 @@ export enum MarketTradingMode {
   BatchAuction = "BatchAuction",
   Continuous = "Continuous",
   MonitoringAuction = "MonitoringAuction",
+  NoTrading = "NoTrading",
   OpeningAuction = "OpeningAuction",
 }
 
@@ -211,6 +212,7 @@ export enum ProposalRejectionReason {
   EnactTimeTooLate = "EnactTimeTooLate",
   EnactTimeTooSoon = "EnactTimeTooSoon",
   IncompatibleTimestamps = "IncompatibleTimestamps",
+  InsufficientEquityLikeShare = "InsufficientEquityLikeShare",
   InsufficientTokens = "InsufficientTokens",
   InvalidAsset = "InvalidAsset",
   InvalidAssetDetails = "InvalidAssetDetails",
@@ -218,6 +220,7 @@ export enum ProposalRejectionReason {
   InvalidFutureMaturityTimestamp = "InvalidFutureMaturityTimestamp",
   InvalidFutureProduct = "InvalidFutureProduct",
   InvalidInstrumentSecurity = "InvalidInstrumentSecurity",
+  InvalidMarket = "InvalidMarket",
   InvalidRiskParameter = "InvalidRiskParameter",
   InvalidShape = "InvalidShape",
   MajorityThresholdNotReached = "MajorityThresholdNotReached",
@@ -236,6 +239,8 @@ export enum ProposalRejectionReason {
   OpeningAuctionDurationTooSmall = "OpeningAuctionDurationTooSmall",
   ParticipationThresholdNotReached = "ParticipationThresholdNotReached",
   ProductMaturityIsPassed = "ProductMaturityIsPassed",
+  TooManyMarketDecimalPlaces = "TooManyMarketDecimalPlaces",
+  TooManyPriceMonitoringTriggers = "TooManyPriceMonitoringTriggers",
   UnsupportedProduct = "UnsupportedProduct",
   UnsupportedTradingMode = "UnsupportedTradingMode",
 }
@@ -286,16 +291,6 @@ export enum WithdrawalStatus {
   Finalized = "Finalized",
   Open = "Open",
   Rejected = "Rejected",
-}
-
-/**
- * Pagination constructs to support cursor based pagination in the API
- */
-export interface Pagination {
-  first?: number | null;
-  after?: string | null;
-  last?: number | null;
-  before?: string | null;
 }
 
 //==============================================================

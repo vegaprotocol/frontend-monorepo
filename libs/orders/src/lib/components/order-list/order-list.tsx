@@ -13,7 +13,6 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { VegaTransactionDialog } from '@vegaprotocol/wallet';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
-import { OrderEditDialog } from '../order-edit-dialog/order-edit-dialog';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -24,13 +23,17 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data, showCancelled = true }, ref) => {
     const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
     const [editOrderDialogOpen, setEditOrderDialogOpen] = useState(false);
-    // const [editOrderTxDialogOpen, setEditOrderTxDialogOpen] = useState(false);
     const [editOrder, setEditOrder] = useState<Orders_party_orders | null>(
       null
     );
 
     const { transaction, updatedOrder, reset, cancel } = useOrderCancel();
-    const { edit } = useOrderEdit();
+    const {
+      editTransaction,
+      updatedOrder: editedOrder,
+      resetEdit,
+      edit,
+    } = useOrderEdit();
     const ordersData = showCancelled
       ? data
       : data?.filter((o) => o.status !== OrderStatus.Cancelled) || null;
@@ -59,19 +62,23 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           key={`cancel-order-dialog-${transaction.txHash}`}
           orderDialogOpen={cancelOrderDialogOpen}
           setOrderDialogOpen={setCancelOrderDialogOpen}
-          finalizedOrder={updatedOrder}
           transaction={transaction}
           reset={reset}
           title={getCancelDialogTitle(updatedOrder?.status)}
+          finalizedOrder={updatedOrder}
         />
-        <OrderEditDialog
-          order={editOrder}
+        <VegaTransactionDialog
+          key={`edit-order-dialog-${transaction.txHash}`}
+          orderDialogOpen={editOrderDialogOpen}
+          setOrderDialogOpen={setEditOrderDialogOpen}
+          transaction={editTransaction}
+          reset={resetEdit}
           title={`Edit ${
             editOrder?.market?.tradableInstrument.instrument.code ?? ''
           } order`}
           edit={edit}
-          orderDialogOpen={editOrderDialogOpen}
-          setOrderDialogOpen={setEditOrderDialogOpen}
+          editOrder={editOrder}
+          finalizedOrder={editedOrder}
         />
       </>
     );

@@ -5,7 +5,7 @@ import type {
   OrderAmendmentBodyOrderAmendment,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { Order } from '@vegaprotocol/wallet';
+import type { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { Subscription } from 'zen-observable-ts';
@@ -39,7 +39,7 @@ export const useOrderEdit = () => {
   }, [resetTransaction]);
 
   const edit = useCallback(
-    async (order: Order) => {
+    async (order) => {
       if (!keypair) {
         return;
       }
@@ -52,9 +52,10 @@ export const useOrderEdit = () => {
           propagate: true,
           orderAmendment: {
             orderId: order.id,
-            marketId: order.market?.id,
+            marketId: order?.market?.id,
             price: { value: order.price },
-            timeInForce: `TIME_IN_FORCE_${order.timeInForce}`,
+            timeInForce:
+              `TIME_IN_FORCE_${order.timeInForce}` as VegaWalletOrderTimeInForce,
             sizeDelta: 0,
           } as unknown as OrderAmendmentBodyOrderAmendment,
         } as OrderAmendmentBody);

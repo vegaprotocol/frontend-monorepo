@@ -53,5 +53,4 @@ export interface Order {
   market: Market | null;
   type: string | null;
   side?: string;
-  timeInForce?: VegaWalletOrderTimeInForce;
 }
