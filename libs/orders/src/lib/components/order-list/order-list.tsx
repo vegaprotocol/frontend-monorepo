@@ -66,7 +66,9 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
         />
         <OrderEditDialog
           order={editOrder}
-          title={`Edit order`}
+          title={`Edit ${
+            editOrder?.market?.tradableInstrument.instrument.code ?? ''
+          } order`}
           edit={edit}
           orderDialogOpen={editOrderDialogOpen}
           setOrderDialogOpen={setEditOrderDialogOpen}
@@ -79,7 +81,6 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
 interface OrderListTableProps {
   data: Orders_party_orders[] | null;
   cancel: (body?: unknown) => Promise<unknown>;
-  // edit: (body?: unknown) => Promise<unknown>;
   setEditOrderDialogOpen: (value: boolean) => void;
   setEditOrder: (order: Orders_party_orders | null) => void;
 }

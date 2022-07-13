@@ -20,65 +20,33 @@ export const useOrderEdit = () => {
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
-  const [id, setId] = useState<string | null>(null);
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
   const reset = useCallback(() => {
     resetTransaction();
     setUpdatedOrder(null);
-    setId('');
+    subRef.current?.unsubscribe();
   }, [resetTransaction]);
 
   useEffect(() => {
     return () => {
-      subRef.current?.unsubscribe();
-      setUpdatedOrder(null);
       resetTransaction();
+      setUpdatedOrder(null);
+      subRef.current?.unsubscribe();
     };
   }, [resetTransaction]);
 
-  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-    query: ORDER_EVENT_SUB,
-    variables: { partyId: keypair?.pub || '' },
-  });
-
-  if (id) {
-    // Start a subscription looking for the newly created order
-    subRef.current = clientSub.subscribe(({ data }) => {
-      if (!data?.busEvents?.length) {
-        return;
-      }
-
-      // No types available for the subscription result
-      const matchingOrderEvent = data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Order') {
-          return false;
-        }
-
-        return e.event.id === id;
-      });
-
-      if (
-        matchingOrderEvent &&
-        matchingOrderEvent.event.__typename === 'Order'
-      ) {
-        setUpdatedOrder(matchingOrderEvent.event);
-        resetTransaction();
-      }
-    });
-  }
-
   const edit = useCallback(
     async (order) => {
-      if (!keypair) {
+      if (!keypair || !order.market?.id) {
         return;
       }
 
       setUpdatedOrder(null);
       console.log('edit order', {
         orderId: order.id,
-        marketId: order.market?.id || '',
+        marketId: order.market.id,
         price: order.price,
         timeInForce: order.timeInForce,
         // 'sizeDelta'?: string;
@@ -91,7 +59,7 @@ export const useOrderEdit = () => {
           propagate: true,
           orderAmendment: {
             orderId: order.id,
-            marketId: order.market?.id || '',
+            marketId: order.market.id,
             price: order.price,
             timeInForce: order.timeInForce,
             // 'sizeDelta'?: string;
@@ -100,10 +68,36 @@ export const useOrderEdit = () => {
         } as OrderAmendmentBody);
 
         if (res?.signature) {
-          if (order.id) {
-            setId(order.id);
-          } else {
-            setId(determineId(res.signature));
+          const resId = determineId(res.signature);
+          if (resId) {
+            // Start a subscription looking for the newly created order
+            subRef.current = client
+              .subscribe<OrderEvent, OrderEventVariables>({
+                query: ORDER_EVENT_SUB,
+                variables: { partyId: keypair?.pub || '' },
+              })
+              .subscribe(({ data }) => {
+                if (!data?.busEvents?.length) {
+                  return;
+                }
+
+                // No types available for the subscription result
+                const matchingOrderEvent = data.busEvents.find((e) => {
+                  if (e.event.__typename !== 'Order') {
+                    return false;
+                  }
+
+                  return e.event.id === resId;
+                });
+
+                if (
+                  matchingOrderEvent &&
+                  matchingOrderEvent.event.__typename === 'Order'
+                ) {
+                  setUpdatedOrder(matchingOrderEvent.event);
+                  subRef.current?.unsubscribe();
+                }
+              });
           }
         }
         return res;
@@ -112,13 +106,12 @@ export const useOrderEdit = () => {
         return;
       }
     },
-    [keypair, send]
+    [client, keypair, send]
   );
 
   return {
     editTransaction: transaction,
     updatedOrder,
-    id,
     edit,
     resetEdit: reset,
   };
