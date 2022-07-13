@@ -18,21 +18,25 @@ describe('accounts', () => {
 
     cy.getByTestId('tab-accounts').should('be.visible');
     cy.getByTestId('tab-accounts')
+      .should('be.visible')
       .get(`[row-id='General-tEURO-null']`)
       .find('[col-id="asset.symbol"]')
       .should('have.text', 'tEURO');
 
     cy.getByTestId('tab-accounts')
+      .should('be.visible')
       .get(`[row-id='General-tEURO-null']`)
       .find('[col-id="type"]')
       .should('have.text', 'General');
 
     cy.getByTestId('tab-accounts')
+      .should('be.visible')
       .get(`[row-id='General-tEURO-null']`)
       .find('[col-id="market.name"]')
       .should('have.text', '—');
 
     cy.getByTestId('tab-accounts')
+      .should('be.visible')
       .get(`[row-id='General-tEURO-null']`)
       .find('[col-id="balance"]')
       .should('have.text', '1,000.00000');
