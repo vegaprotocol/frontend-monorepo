@@ -60,10 +60,10 @@ export const useConfig = (
         try {
           const response = await fetch(environment.VEGA_CONFIG_URL);
           const configData: Configuration = await response.json();
-          isMounted && setLoading(false);
 
           if (validateConfiguration(configData)) {
             onError(ErrorType.CONFIG_VALIDATION_ERROR);
+            isMounted && setLoading(false);
             return;
           }
 
@@ -74,6 +74,7 @@ export const useConfig = (
             getCacheKey(environment.VEGA_ENV),
             JSON.stringify({ hosts })
           );
+          isMounted && setLoading(false);
         } catch (err) {
           isMounted && setLoading(false);
           onError(ErrorType.CONFIG_LOAD_ERROR);

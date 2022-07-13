@@ -20,7 +20,7 @@ export const getHasInvalidChain = (env: Networks, chain = '') => {
   return !(chain.split('-')[0] === env.toLowerCase() ?? false);
 };
 
-const getHasInvalidUrl = (url: string) => {
+export const getIsInvalidUrl = (url: string) => {
   try {
     new URL(url);
     return false;
@@ -34,7 +34,7 @@ export const getIsNodeDisabled = (env: Networks, data?: NodeData) => {
     !!data &&
     (getIsNodeLoading(data) ||
       getHasInvalidChain(env, data.chain.value) ||
-      getHasInvalidUrl(data.url) ||
+      getIsInvalidUrl(data.url) ||
       data.chain.hasError ||
       data.responseTime.hasError ||
       data.block.hasError ||
@@ -123,8 +123,8 @@ export const getErrorByType = (
 };
 
 export const getErrorType = (env: Networks, data?: NodeData) => {
-  if (data && !getIsNodeLoading(data)) {
-    if (getHasInvalidUrl(data.url)) {
+  if (data && !getIsNodeLoading(data) && data.initialized) {
+    if (getIsInvalidUrl(data.url)) {
       return ErrorType.INVALID_URL;
     }
 

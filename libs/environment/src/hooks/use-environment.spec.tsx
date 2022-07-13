@@ -4,9 +4,10 @@ import type { ComponentProps, ReactNode } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import createClient from '../utils/apollo-client';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
-import { Networks } from '../types';
+import { Networks, ErrorType } from '../types';
 import type { MockRequestConfig } from './mocks/apollo-client';
 import createMockClient from './mocks/apollo-client';
+import { getErrorByType } from '../utils/validate-node';
 
 jest.mock('../utils/apollo-client');
 
@@ -22,8 +23,6 @@ const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
 };
 
 const MOCK_HOST = 'https://vega.host/query';
-
-global.fetch = jest.fn();
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
@@ -85,8 +84,8 @@ const getQuickestNode = (mockNodes: Record<string, MockRequestConfig>) => {
     delay: number;
   }>(
     (acc, url) => {
-      const { delay = 0 } = mockNodes[url];
-      if (delay < acc.delay) {
+      const { delay = 0, hasError = false } = mockNodes[url];
+      if (!hasError && delay < acc.delay) {
         return { nodeUrl: url, delay };
       }
       return acc;
@@ -311,9 +310,9 @@ describe('useEnvironment hook', () => {
       delete process.env['NX_VEGA_URL'];
 
       const mockNodes: Record<string, any> = {
-        'https://mock-node-1.com': { hasError: false, delay: 4000 },
-        'https://mock-node-2.com': { hasError: false, delay: 5000 },
-        'https://mock-node-3.com': { hasError: false, delay: 8000 },
+        'https://mock-node-1.com': { hasError: false, delay: 4 },
+        'https://mock-node-2.com': { hasError: false, delay: 5 },
+        'https://mock-node-3.com': { hasError: false, delay: 8 },
         'https://mock-node-4.com': { hasError: false, delay: 0 },
       };
 
@@ -337,6 +336,251 @@ describe('useEnvironment hook', () => {
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_URL: nodeUrl,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it('ignores failing nodes and selects the first successful one to use', async () => {
+      delete process.env['NX_VEGA_URL'];
+
+      const mockNodes: Record<string, any> = {
+        'https://mock-node-1.com': { hasError: true, delay: 4 },
+        'https://mock-node-2.com': { hasError: false, delay: 5 },
+        'https://mock-node-3.com': { hasError: false, delay: 8 },
+        'https://mock-node-4.com': { hasError: true, delay: 0 },
+      };
+
+      // @ts-ignore: typscript doesn't recognise the mock implementation
+      global.fetch.mockImplementation(
+        setupFetch(mockEnvironmentState.VEGA_CONFIG_URL, Object.keys(mockNodes))
+      );
+      // @ts-ignore allow adding a mock return value to mocked module
+      createClient.mockImplementation((url: keyof typeof mockNodes) => {
+        return createMockClient({ statistics: mockNodes[url] });
+      });
+
+      const nodeUrl = getQuickestNode(mockNodes);
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          VEGA_URL: nodeUrl,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it('has a network error when cannot connect to any nodes', async () => {
+      delete process.env['NX_VEGA_URL'];
+
+      const mockNodes: Record<string, any> = {
+        'https://mock-node-1.com': { hasError: true, delay: 4 },
+        'https://mock-node-2.com': { hasError: true, delay: 5 },
+        'https://mock-node-3.com': { hasError: true, delay: 8 },
+        'https://mock-node-4.com': { hasError: true, delay: 0 },
+      };
+
+      // @ts-ignore: typscript doesn't recognise the mock implementation
+      global.fetch.mockImplementation(
+        setupFetch(mockEnvironmentState.VEGA_CONFIG_URL, Object.keys(mockNodes))
+      );
+      // @ts-ignore allow adding a mock return value to mocked module
+      createClient.mockImplementation((url: keyof typeof mockNodes) => {
+        return createMockClient({ statistics: mockNodes[url] });
+      });
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          VEGA_URL: undefined,
+          networkError: ErrorType.CONNECTION_ERROR_ALL,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it('has a network error when it cannot fetch the network config and there is no VEGA_URL in the environment', async () => {
+      delete process.env['NX_VEGA_URL'];
+
+      // @ts-ignore: typscript doesn't recognise the mock implementation
+      global.fetch.mockImplementation(() => {
+        throw new Error('Cannot fetch');
+      });
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          VEGA_URL: undefined,
+          networkError: ErrorType.CONFIG_LOAD_ERROR,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it('logs an error when it cannot fetch the network config and there is a VEGA_URL in the environment', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
+
+      // @ts-ignore: typscript doesn't recognise the mock implementation
+      global.fetch.mockImplementation(() => {
+        throw new Error('Cannot fetch');
+      });
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          getErrorByType(ErrorType.CONFIG_LOAD_ERROR, mockEnvironmentState.VEGA_ENV)?.headline
+        );
+      });
+    });
+
+    // SKIP due to https://github.com/facebook/jest/issues/12670
+    it.skip('has a network error when the config is invalid and there is no VEGA_URL in the environment', async () => {
+      delete process.env['NX_VEGA_URL'];
+
+      // @ts-ignore: typscript doesn't recognise the mock implementation
+      global.fetch.mockImplementation(() => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ some: 'invalid-object' }),
+      }));
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          VEGA_URL: undefined,
+          networkError: ErrorType.CONFIG_VALIDATION_ERROR,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    // SKIP due to https://github.com/facebook/jest/issues/12670
+    it.skip('logs an error when the network config in invalid and there is a VEGA_URL in the environment', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
+
+      // @ts-ignore: typscript doesn't recognise the mock implementation
+      global.fetch.mockImplementation(() => Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ some: 'invalid-object' }),
+      }));
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+        expect(consoleWarnSpy).toHaveBeenCalledWith(
+          getErrorByType(ErrorType.CONFIG_VALIDATION_ERROR, mockEnvironmentState.VEGA_ENV)?.headline
+        );
+      });
+    });
+
+    // SKIP due to https://github.com/facebook/jest/issues/12670
+    it.skip('has a network error when the selected node is not a valid url', async () => {
+      process.env['NX_VEGA_URL'] = 'not-url';
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          networkError: ErrorType.INVALID_URL,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it('has a network error when cannot connect to the selected node', async () => {
+      // @ts-ignore allow adding a mock return value to mocked module
+      createClient.mockImplementation(() => {
+        return createMockClient({ statistics: { hasError: true } });
+      });
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          networkError: ErrorType.CONNECTION_ERROR,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it('has a network error when the selected node is not on the correct network', async () => {
+      // @ts-ignore allow adding a mock return value to mocked module
+      createClient.mockImplementation(() => {
+        return createMockClient({ network: Networks.MAINNET });
+      });
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          networkError: ErrorType.INVALID_NETWORK,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
+      });
+    });
+
+    it('has a network error when the selected node has not ssl available', async () => {
+      // @ts-ignore allow adding a mock return value to mocked module
+      createClient.mockImplementation(() => {
+        return createMockClient({ busEvents: { hasError: true } });
+      });
+
+      const { result, waitFor } = renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          networkError: ErrorType.SSL_ERROR,
           setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
         });
       });

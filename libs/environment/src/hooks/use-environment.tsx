@@ -6,7 +6,7 @@ import { useConfig } from './use-config';
 import { useNodes } from './use-nodes';
 import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
-import { getErrorType, getIsNodeLoading } from '../utils/validate-node';
+import { getErrorType, getErrorByType, getIsNodeLoading } from '../utils/validate-node';
 import { ErrorType } from '../types';
 import type { Environment, RawEnvironment, NodeData } from '../types';
 
@@ -35,8 +35,13 @@ export const EnvironmentProvider = ({
     compileEnvironment(definitions)
   );
   const { config } = useConfig(environment, (errorType) => {
-    setNetworkError(errorType);
-    setNodeSwitcherOpen(true);
+    if (!environment.VEGA_URL) {
+      setNetworkError(errorType);
+      setNodeSwitcherOpen(true);
+    } else {
+      const error = getErrorByType(errorType, environment.VEGA_ENV);
+      error && console.warn(error.headline);
+    }
   });
   const { state: nodes, clients } = useNodes(environment.VEGA_ENV, config);
   const nodeKeys = Object.keys(nodes);
@@ -51,33 +56,31 @@ export const EnvironmentProvider = ({
           VEGA_URL: successfulNodeUrl,
         }));
       }
-    } else {
-      // if the selected node has errors
-      if (nodes[environment.VEGA_URL]) {
-        const errorType = getErrorType(
-          environment.VEGA_ENV,
-          nodes[environment.VEGA_URL]
-        );
-        if (errorType) {
-          Object.keys(clients).forEach((node) => clients[node]?.stop());
-          setNetworkError(errorType);
-          setNodeSwitcherOpen(true);
-          return;
-        }
-      }
+    }
 
-      // if the config doesn't contain nodes the app can connect to
-      if (
-        nodeKeys.length > 0 &&
-        nodeKeys.filter((key) => hasFinishedLoading(nodes[key])).length ===
-        nodeKeys.length
-      ) {
-        console.log(nodeKeys.filter((key) => hasFinishedLoading(nodes[key])), nodeKeys)
-
+    // if the selected node has errors
+    if (environment.VEGA_URL && nodes[environment.VEGA_URL]) {
+      const errorType = getErrorType(
+        environment.VEGA_ENV,
+        nodes[environment.VEGA_URL]
+      );
+      if (errorType !== null) {
         Object.keys(clients).forEach((node) => clients[node]?.stop());
-        setNetworkError(ErrorType.CONNECTION_ERROR_ALL);
+        setNetworkError(errorType);
         setNodeSwitcherOpen(true);
+        return;
       }
+    }
+
+    // if the config doesn't contain nodes the app can connect to
+    if (
+      nodeKeys.length > 0 &&
+      nodeKeys.filter((key) => hasFinishedLoading(nodes[key])).length ===
+        nodeKeys.length
+    ) {
+      Object.keys(clients).forEach((node) => clients[node]?.stop());
+      setNetworkError(ErrorType.CONNECTION_ERROR_ALL);
+      setNodeSwitcherOpen(true);
     }
   }, [environment.VEGA_URL, nodes]);
 
