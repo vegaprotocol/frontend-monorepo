@@ -282,7 +282,7 @@ export const Orderbook = ({
   const hasData = renderedRows.data && renderedRows.data.length !== 0;
   return (
     <div
-      className={`h-full overflow-auto relative ${styles['scroll']} pl-4`}
+      className={`h-full overflow-auto relative ${styles['scroll']} pl-4 pt-4`}
       onScroll={onScroll}
       ref={scrollElement}
       data-testid="scroll"
