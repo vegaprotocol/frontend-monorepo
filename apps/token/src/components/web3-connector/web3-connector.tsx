@@ -68,7 +68,7 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
     return (
       <Splash>
         <div className="flex flex-col items-center gap-12">
-          <p>Something went wrong: {error.message}</p>
+          <p className="text-white">Something went wrong: {error.message}</p>
           <Button onClick={() => connector.deactivate()}>Disconnect</Button>
         </div>
       </Splash>
