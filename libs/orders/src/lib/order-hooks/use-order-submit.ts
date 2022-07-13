@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from './order-event-query';
@@ -25,8 +25,7 @@ export const useOrderSubmit = (market: Market) => {
   const reset = useCallback(() => {
     resetTransaction();
     setFinalizedOrder(null);
-    // obs cancelled prematurely
-    // subRef.current?.unsubscribe();
+    subRef.current?.unsubscribe();
   }, [resetTransaction]);
 
   useEffect(() => {
@@ -36,11 +35,6 @@ export const useOrderSubmit = (market: Market) => {
       subRef.current?.unsubscribe();
     };
   }, [resetTransaction]);
-
-  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-    query: ORDER_EVENT_SUB,
-    variables: { partyId: keypair?.pub || '' },
-  });
 
   const submit = useCallback(
     async (order: Order) => {
@@ -75,29 +69,33 @@ export const useOrderSubmit = (market: Market) => {
           const resId = determineId(res.signature);
           if (resId) {
             // Start a subscription looking for the newly created order
-            subRef.current = clientSub.subscribe(({ data }) => {
-              if (!data?.busEvents?.length) {
-                return;
-              }
-
-              // No types available for the subscription result
-              const matchingOrderEvent = data.busEvents.find((e) => {
-                if (e.event.__typename !== 'Order') {
-                  return false;
+            subRef.current = client
+              .subscribe<OrderEvent, OrderEventVariables>({
+                query: ORDER_EVENT_SUB,
+                variables: { partyId: keypair?.pub || '' },
+              })
+              .subscribe(({ data }) => {
+                if (!data?.busEvents?.length) {
+                  return;
                 }
 
-                return e.event.id === resId;
-              });
+                // No types available for the subscription result
+                const matchingOrderEvent = data.busEvents.find((e) => {
+                  if (e.event.__typename !== 'Order') {
+                    return false;
+                  }
 
-              if (
-                matchingOrderEvent &&
-                matchingOrderEvent.event.__typename === 'Order'
-              ) {
-                setFinalizedOrder(matchingOrderEvent.event);
-                // obs cancelled prematurely
-                // subRef.current?.unsubscribe();
-              }
-            });
+                  return e.event.id === resId;
+                });
+
+                if (
+                  matchingOrderEvent &&
+                  matchingOrderEvent.event.__typename === 'Order'
+                ) {
+                  setFinalizedOrder(matchingOrderEvent.event);
+                  subRef.current?.unsubscribe();
+                }
+              });
           }
         }
         return res;
@@ -107,12 +105,12 @@ export const useOrderSubmit = (market: Market) => {
       }
     },
     [
+      client,
       keypair,
       send,
       market.id,
       market.decimalPlaces,
       market.positionDecimalPlaces,
-      clientSub,
     ]
   );
 

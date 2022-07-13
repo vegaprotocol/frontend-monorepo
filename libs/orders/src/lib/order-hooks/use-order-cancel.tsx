@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import { useApolloClient } from '@apollo/client';
 import type {
@@ -31,14 +31,8 @@ export const useOrderCancel = () => {
   const reset = useCallback(() => {
     resetTransaction();
     setUpdatedOrder(null);
-    // obs cancelled prematurely
-    // subRef.current?.unsubscribe();
+    subRef.current?.unsubscribe();
   }, [resetTransaction]);
-
-  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-    query: ORDER_EVENT_SUB,
-    variables: { partyId: keypair?.pub || '' },
-  });
 
   const cancel = useCallback(
     async (order) => {
@@ -76,29 +70,33 @@ export const useOrderCancel = () => {
           // setId(resId);
           if (resId) {
             // Start a subscription looking for the newly created order
-            subRef.current = clientSub.subscribe(({ data }) => {
-              if (!data?.busEvents?.length) {
-                return;
-              }
-
-              // No types available for the subscription result
-              const matchingOrderEvent = data.busEvents.find((e) => {
-                if (e.event.__typename !== 'Order') {
-                  return false;
+            subRef.current = client
+              .subscribe<OrderEvent, OrderEventVariables>({
+                query: ORDER_EVENT_SUB,
+                variables: { partyId: keypair?.pub || '' },
+              })
+              .subscribe(({ data }) => {
+                if (!data?.busEvents?.length) {
+                  return;
                 }
 
-                return e.event.id === resId;
-              });
+                // No types available for the subscription result
+                const matchingOrderEvent = data.busEvents.find((e) => {
+                  if (e.event.__typename !== 'Order') {
+                    return false;
+                  }
 
-              if (
-                matchingOrderEvent &&
-                matchingOrderEvent.event.__typename === 'Order'
-              ) {
-                setUpdatedOrder(matchingOrderEvent.event);
-                // obs cancelled prematurely
-                // subRef.current?.unsubscribe();
-              }
-            });
+                  return e.event.id === resId;
+                });
+
+                if (
+                  matchingOrderEvent &&
+                  matchingOrderEvent.event.__typename === 'Order'
+                ) {
+                  setUpdatedOrder(matchingOrderEvent.event);
+                  subRef.current?.unsubscribe();
+                }
+              });
           }
         }
         return res;
@@ -107,7 +105,7 @@ export const useOrderCancel = () => {
         return;
       }
     },
-    [clientSub, keypair, send]
+    [client, keypair, send]
   );
 
   return {
