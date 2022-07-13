@@ -1,7 +1,9 @@
+/// <reference types="cypress" />
 const stakingPageLink = '[href="/staking"]';
 const pageSpinner = 'splash-loader';
 const menuBar = 'nav';
 const validatorList = '[data-testid="node-list-item-name"]';
+const validatorWithinList = '[data-testid="node-list-item"]'
 const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
 const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
@@ -34,7 +36,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       }
     );
 
-    it('Able to stake against a validator', function () {
+    it.only('Able to stake against a validator', function () {
       cy.staking_page_associate_tokens('3');
       cy.vega_wallet_check_unstaked_value_is('3.000000000000000000');
       cy.ethereum_wallet_check_associated_value_is('3.0');
@@ -56,8 +58,12 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         this.validatorName,
         '2.000000000000000000'
       );
-      cy.staking_validator_page_check_stake_next_epoch_value('2.0');
       cy.staking_validator_page_check_stake_this_epoch_value('2.0');
+      cy.staking_validator_page_check_stake_next_epoch_value('2.0');
+      cy.get(stakingPageLink).first().click();
+      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+        .should('contain', '2.0')
+        .and('contain', '100%')
     });
 
     it('Able to stake against mulitple validators', function () {
@@ -79,9 +85,16 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         '1.000000000000000000'
       );
       cy.vega_wallet_check_unstaked_value_is('2.000000000000000000');
+      cy.get(stakingPageLink).first().click();
+      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+        .should('contain', '2.00')
+        .and('contain', '66.67%');
+      cy.staking_validator_page_get_specified_validator_value(this.otherValidatorName, 'Total stake')
+        .should('contain', '1.00')
+        .and('contain', '33.33%');
     });
 
-    it.skip('Able to remove part of a stake against a validator', function () {
+    it('Able to remove part of a stake against a validator', function () {
       cy.staking_page_associate_tokens('4');
       cy.vega_wallet_check_unstaked_value_is('4.000000000000000000');
 
@@ -98,10 +111,9 @@ context('Staking Flow - with eth and vega wallets connected', function () {
 
       cy.get(stakingPageLink).first().click();
       cy.get(validatorList).contains(this.validatorName).click();
-
-      cy.staking_validator_page_removeStake('1');
-      cy.staking_validator_page_check_stake_next_epoch_value('2.0');
       cy.staking_validator_page_check_stake_this_epoch_value('3.0');
+      cy.staking_validator_page_remove_stake('1');
+      cy.staking_validator_page_check_stake_next_epoch_value('2.0');
       cy.vega_wallet_check_validator_stake_next_epoch_value_is(
         this.validatorName,
         '2.000000000000000000'
@@ -117,6 +129,10 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       );
       cy.staking_validator_page_check_stake_next_epoch_value('2.0');
       cy.staking_validator_page_check_stake_this_epoch_value('2.0');
+      cy.get(stakingPageLink).first().click();
+      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+        .should('contain', '2.0')
+        .and('contain', '100%');
     });
 
     it('Able to remove a full stake against a validator', function () {
@@ -136,7 +152,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.get(stakingPageLink).first().click();
       cy.get(validatorList).contains(this.validatorName).click();
 
-      cy.staking_validator_page_removeStake('1');
+      cy.staking_validator_page_remove_stake('1');
       cy.staking_validator_page_check_stake_next_epoch_value('0.0');
 
       cy.vega_wallet_check_validator_stake_this_epoch_value_is(
@@ -151,6 +167,9 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.staking_validator_page_check_stake_next_epoch_value('0.0');
       cy.staking_validator_page_check_stake_this_epoch_value('0.0');
       cy.vega_wallet_check_validator_no_longer_showing(this.validatorName);
+      cy.get(stakingPageLink).first().click();
+      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+        .should('contain', '0.0')
     });
 
     it.skip('Unable to remove a stake with a negative value for a validator', function () {
@@ -226,6 +245,9 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.ethereum_wallet_check_associated_value_is('0.0');
       cy.vega_wallet_check_associated_value_is('0.000000000000000000');
       cy.vega_wallet_check_validator_no_longer_showing(this.validatorName);
+      cy.get(stakingPageLink).first().click();
+      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+        .should('contain', '0.0')
     });
 
     it('Disassociating some tokens - prioritizes unstaked tokens', function () {
@@ -249,14 +271,18 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         this.validatorName,
         '2.000000000000000000'
       );
+      cy.get(stakingPageLink).first().click();
+      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+        .should('contain', '2.0')
+        .and('contain', '100%')
     });
 
-    after(
-      'teardown wallet so state/results dont bleed into other test suites',
-      function () {
-        cy.vega_wallet_teardown();
-      }
-    );
+    // after(
+    //   'teardown wallet so state/results dont bleed into other test suites',
+    //   function () {
+    //     cy.vega_wallet_teardown();
+    //   }
+    // );
   });
 
   Cypress.Commands.add(
@@ -280,6 +306,21 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.get(stakeNextEpochValue, { timeout: 10000 })
         .contains(expectedVal, { timeout: 10000 })
         .should('be.visible');
+    }
+  );
+
+  Cypress.Commands.add(
+    'staking_validator_page_get_specified_validator_value',
+    (validatorName, label) => {
+      cy.highlight(
+        `Getting ${label} value for ${validatorName} - from validator list`
+      );
+      cy.get(validatorWithinList, { timeout: 10000 })
+        .contains(validatorName)
+        .parent()
+        .contains(label)
+        .siblings()
+        .invoke('text')
     }
   );
 
