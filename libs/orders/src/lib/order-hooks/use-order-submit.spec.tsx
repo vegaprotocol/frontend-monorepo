@@ -221,40 +221,4 @@ describe('useOrderSubmit', () => {
     });
     expect(mockSendTx).not.toHaveBeenCalled();
   });
-
-  it('create an Id if a signature is returned', async () => {
-    const signature =
-      '597a7706491e6523c091bab1e4d655b62c45a224e80f6cd92ac366aa5dd9a070cc7dd3c6919cb07b81334b876c662dd43bdbe5e827c8baa17a089feb654fab0b';
-    const expectedId =
-      '2fe09b0e2e6ed35f8883802629c7d609d3cc2fc9ce3cec0b7824a0d581bd3747';
-    const successObj = {
-      tx: {
-        inputData: 'input-data',
-        signature: {
-          algo: 'algo',
-          version: 1,
-          value: signature,
-        },
-      },
-      txHash: '0x123',
-    };
-    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(successObj));
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
-    const { result } = setup({
-      sendTx: mockSendTx,
-      keypairs: [keypair],
-      keypair,
-    });
-    await act(async () => {
-      result.current.submit({
-        type: VegaWalletOrderType.Market,
-        side: VegaWalletOrderSide.Buy,
-        size: '1',
-        timeInForce: VegaWalletOrderTimeInForce.FOK,
-      });
-    });
-    expect(result.current.id).toEqual(expectedId);
-  });
 });
