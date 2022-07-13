@@ -11,7 +11,13 @@ export interface TextAreaProps
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ className, hasError, ...props }, ref) => {
-    const classes = classNames(defaultFormElement(hasError), className);
+
+    const textAreaClassName = classNames(
+      'shadow-input dark:shadow-input-dark',
+      className
+    );
+
+    const classes = classNames(defaultFormElement(hasError), textAreaClassName);
     return <textarea {...props} ref={ref} className={classes} />;
   }
 );
