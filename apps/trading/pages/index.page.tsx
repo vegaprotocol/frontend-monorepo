@@ -20,15 +20,18 @@ const MARKETS_QUERY = gql`
   }
 `;
 
-const marketList = ({ markets }: MarketsLanding) =>
-  orderBy(
+const marketList = ({ markets }: MarketsLanding) => {
+  const filteredMarkets =
     markets?.filter(
       ({ marketTimestamps, tradingMode }) =>
         marketTimestamps.open && tradingMode === MarketTradingMode.Continuous
-    ) || [],
+    ) || [];
+  return orderBy(
+    filteredMarkets.length === 0 ? markets : filteredMarkets,
     ['state', 'marketTimestamps.open', 'id'],
     ['asc', 'asc', 'asc']
   );
+};
 
 export function Index() {
   const { replace } = useRouter();

@@ -66,6 +66,17 @@ export const OrderEditDialog = ({
               <p>{t(`${order.market.name}`)}</p>
             </div>
           )}
+          {order.type === OrderType.Limit && order.market && (
+            <div>
+              <p className={headerClassName}>{t(`Last price`)}</p>
+              <p>
+                {addDecimalsFormatNumber(
+                  order.price,
+                  order.market.decimalPlaces
+                )}
+              </p>
+            </div>
+          )}
           <div>
             <p className={headerClassName}>{t(`Amount remaining`)}</p>
             <p
@@ -79,17 +90,6 @@ export const OrderEditDialog = ({
               {order.size}
             </p>
           </div>
-          {order.type === OrderType.Limit && order.market && (
-            <div>
-              <p className={headerClassName}>{t(`Last price`)}</p>
-              <p>
-                {addDecimalsFormatNumber(
-                  order.price,
-                  order.market.decimalPlaces
-                )}
-              </p>
-            </div>
-          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-12">

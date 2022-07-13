@@ -49,7 +49,7 @@ export const useOrderEdit = () => {
         marketId: order.market.id,
         price: order.price,
         timeInForce: order.timeInForce,
-        // 'sizeDelta'?: string;
+        sizeDelta: 0,
         expiresAt: order.expiresAt,
       });
 
@@ -62,8 +62,12 @@ export const useOrderEdit = () => {
             marketId: order.market.id,
             price: order.price,
             timeInForce: order.timeInForce,
-            // 'sizeDelta'?: string;
-            expiresAt: order.expiresAt,
+            sizeDelta: '0',
+            expiresAt: order.expiration
+              ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
+                // just append 6 zeroes
+                order.expiration.getTime().toString() + '000000'
+              : undefined,
           } as OrderAmendmentBodyOrderAmendment,
         } as OrderAmendmentBody);
 

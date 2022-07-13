@@ -40,19 +40,27 @@ export const useOrderValidation = ({
       };
     }
 
+    if ([MarketState.Cancelled, MarketState.Rejected].includes(market.state)) {
+      return {
+        isDisabled: true,
+        message: t(
+          `This market is ${market.state.toLowerCase()} and not accepting orders`
+        ),
+      };
+    }
+
     if (
       [
         MarketState.Cancelled,
         MarketState.Closed,
-        MarketState.Rejected,
+        MarketState.Proposed,
         MarketState.Settled,
-        MarketState.TradingTerminated,
       ].includes(market.state)
     ) {
       return {
         isDisabled: true,
         message: t(
-          `Market is ${market.state.toLowerCase()}. No orders can be placed.`
+          `This market is ${market.state.toLowerCase()} and only accepting orders liquidity order`
         ),
       };
     }

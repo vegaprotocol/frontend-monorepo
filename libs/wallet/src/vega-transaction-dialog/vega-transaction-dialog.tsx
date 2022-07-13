@@ -176,6 +176,17 @@ export const VegaDialog = ({
           <p className={headerClassName}>{t(`Status`)}</p>
           <p>{t(`${finalizedOrder.status}`)}</p>
         </div>
+        {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
+          <div>
+            <p className={headerClassName}>{t(`Price`)}</p>
+            <p>
+              {addDecimalsFormatNumber(
+                finalizedOrder.price,
+                finalizedOrder.market.decimalPlaces
+              )}
+            </p>
+          </div>
+        )}
         <div>
           <p className={headerClassName}>{t(`Amount`)}</p>
           <p
@@ -191,17 +202,6 @@ export const VegaDialog = ({
             `}
           </p>
         </div>
-        {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
-          <div>
-            <p className={headerClassName}>{t(`Price`)}</p>
-            <p>
-              {addDecimalsFormatNumber(
-                finalizedOrder.price,
-                finalizedOrder.market.decimalPlaces
-              )}
-            </p>
-          </div>
-        )}
       </div>
       <div className="grid grid-cols-1 gap-8">
         {transaction.txHash && (
