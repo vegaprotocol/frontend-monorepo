@@ -16,7 +16,12 @@ const generateJsx = (
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <OrderListTable data={orders} cancel={jest.fn()} edit={jest.fn()} />
+        <OrderListTable
+          data={orders}
+          cancel={jest.fn()}
+          setEditOrderDialogOpen={jest.fn()}
+          setEditOrder={jest.fn()}
+        />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
