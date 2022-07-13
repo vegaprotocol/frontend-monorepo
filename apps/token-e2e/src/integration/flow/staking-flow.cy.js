@@ -3,7 +3,7 @@ const stakingPageLink = '[href="/staking"]';
 const pageSpinner = 'splash-loader';
 const menuBar = 'nav';
 const validatorList = '[data-testid="node-list-item-name"]';
-const validatorWithinList = '[data-testid="node-list-item"]'
+const validatorWithinList = '[data-testid="node-list-item"]';
 const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
 const tokenAmountInputBox = '[data-testid="token-amount-input"]';
 const tokenSubmitButton = '[data-testid="token-input-submit-button"]';
@@ -61,9 +61,12 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.staking_validator_page_check_stake_this_epoch_value('2.0');
       cy.staking_validator_page_check_stake_next_epoch_value('2.0');
       cy.get(stakingPageLink).first().click();
-      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+      cy.staking_validator_page_get_specified_validator_value(
+        this.validatorName,
+        'Total stake'
+      )
         .should('contain', '2.0')
-        .and('contain', '100%')
+        .and('contain', '100%');
     });
 
     it('Able to stake against mulitple validators', function () {
@@ -86,10 +89,16 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       );
       cy.vega_wallet_check_unstaked_value_is('2.000000000000000000');
       cy.get(stakingPageLink).first().click();
-      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+      cy.staking_validator_page_get_specified_validator_value(
+        this.validatorName,
+        'Total stake'
+      )
         .should('contain', '2.00')
         .and('contain', '66.67%');
-      cy.staking_validator_page_get_specified_validator_value(this.otherValidatorName, 'Total stake')
+      cy.staking_validator_page_get_specified_validator_value(
+        this.otherValidatorName,
+        'Total stake'
+      )
         .should('contain', '1.00')
         .and('contain', '33.33%');
     });
@@ -130,7 +139,10 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.staking_validator_page_check_stake_next_epoch_value('2.0');
       cy.staking_validator_page_check_stake_this_epoch_value('2.0');
       cy.get(stakingPageLink).first().click();
-      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+      cy.staking_validator_page_get_specified_validator_value(
+        this.validatorName,
+        'Total stake'
+      )
         .should('contain', '2.0')
         .and('contain', '100%');
     });
@@ -168,8 +180,10 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.staking_validator_page_check_stake_this_epoch_value('0.0');
       cy.vega_wallet_check_validator_no_longer_showing(this.validatorName);
       cy.get(stakingPageLink).first().click();
-      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
-        .should('contain', '0.0')
+      cy.staking_validator_page_get_specified_validator_value(
+        this.validatorName,
+        'Total stake'
+      ).should('contain', '0.0');
     });
 
     it.skip('Unable to remove a stake with a negative value for a validator', function () {
@@ -246,8 +260,10 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.vega_wallet_check_associated_value_is('0.000000000000000000');
       cy.vega_wallet_check_validator_no_longer_showing(this.validatorName);
       cy.get(stakingPageLink).first().click();
-      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
-        .should('contain', '0.0')
+      cy.staking_validator_page_get_specified_validator_value(
+        this.validatorName,
+        'Total stake'
+      ).should('contain', '0.0');
     });
 
     it('Disassociating some tokens - prioritizes unstaked tokens', function () {
@@ -272,9 +288,12 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         '2.000000000000000000'
       );
       cy.get(stakingPageLink).first().click();
-      cy.staking_validator_page_get_specified_validator_value(this.validatorName, 'Total stake')
+      cy.staking_validator_page_get_specified_validator_value(
+        this.validatorName,
+        'Total stake'
+      )
         .should('contain', '2.0')
-        .and('contain', '100%')
+        .and('contain', '100%');
     });
 
     // after(
@@ -320,7 +339,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         .parent()
         .contains(label)
         .siblings()
-        .invoke('text')
+        .invoke('text');
     }
   );
 
