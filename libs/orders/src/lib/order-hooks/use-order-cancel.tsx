@@ -17,7 +17,6 @@ export const useOrderCancel = () => {
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
-  const [id, setId] = useState<string | null>(null);
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
@@ -30,41 +29,10 @@ export const useOrderCancel = () => {
   }, [resetTransaction]);
 
   const reset = useCallback(() => {
-    subRef.current?.unsubscribe();
     resetTransaction();
     setUpdatedOrder(null);
-    setId(null);
+    subRef.current?.unsubscribe();
   }, [resetTransaction]);
-
-  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-    query: ORDER_EVENT_SUB,
-    variables: { partyId: keypair?.pub || '' },
-  });
-
-  if (id) {
-    // Start a subscription looking for the newly created order
-    subRef.current = clientSub.subscribe(({ data }) => {
-      if (!data?.busEvents?.length) {
-        return;
-      }
-
-      // No types available for the subscription result
-      const matchingOrderEvent = data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Order') {
-          return false;
-        }
-
-        return e.event.id === id;
-      });
-
-      if (
-        matchingOrderEvent &&
-        matchingOrderEvent.event.__typename === 'Order'
-      ) {
-        setUpdatedOrder(matchingOrderEvent.event);
-      }
-    });
-  }
 
   const cancel = useCallback(
     async (order) => {
@@ -97,10 +65,38 @@ export const useOrderCancel = () => {
         });
 
         if (res?.signature) {
-          if (order.id) {
-            setId(order.id);
-          } else {
-            setId(determineId(res.signature));
+          const resId = order.id ?? determineId(res.signature);
+          setUpdatedOrder(null);
+          // setId(resId);
+          if (resId) {
+            // Start a subscription looking for the newly created order
+            subRef.current = client
+              .subscribe<OrderEvent, OrderEventVariables>({
+                query: ORDER_EVENT_SUB,
+                variables: { partyId: keypair?.pub || '' },
+              })
+              .subscribe(({ data }) => {
+                if (!data?.busEvents?.length) {
+                  return;
+                }
+
+                // No types available for the subscription result
+                const matchingOrderEvent = data.busEvents.find((e) => {
+                  if (e.event.__typename !== 'Order') {
+                    return false;
+                  }
+
+                  return e.event.id === resId;
+                });
+
+                if (
+                  matchingOrderEvent &&
+                  matchingOrderEvent.event.__typename === 'Order'
+                ) {
+                  setUpdatedOrder(matchingOrderEvent.event);
+                  subRef.current?.unsubscribe();
+                }
+              });
           }
         }
         return res;
@@ -109,13 +105,12 @@ export const useOrderCancel = () => {
         return;
       }
     },
-    [keypair, send]
+    [client, keypair, send]
   );
 
   return {
     transaction,
-    finalizedOrder: updatedOrder,
-    id,
+    updatedOrder,
     cancel,
     reset,
   };

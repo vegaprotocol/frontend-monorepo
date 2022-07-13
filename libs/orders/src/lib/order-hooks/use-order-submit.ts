@@ -10,62 +10,31 @@ import type {
 import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
+import * as Sentry from '@sentry/react';
 import type { Market } from '../market';
 import type { Subscription } from 'zen-observable-ts';
 
 export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();
+  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
-  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
-  const [id, setId] = useState<string | null>(null);
-  const subRef = useRef<Subscription | null>(null);
   const client = useApolloClient();
+  const subRef = useRef<Subscription | null>(null);
 
   const reset = useCallback(() => {
-    subRef.current?.unsubscribe();
     resetTransaction();
     setFinalizedOrder(null);
-    setId(null);
+    subRef.current?.unsubscribe();
   }, [resetTransaction]);
 
   useEffect(() => {
     return () => {
-      subRef.current?.unsubscribe();
-      setFinalizedOrder(null);
       resetTransaction();
+      setFinalizedOrder(null);
+      subRef.current?.unsubscribe();
     };
   }, [resetTransaction]);
-
-  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-    query: ORDER_EVENT_SUB,
-    variables: { partyId: keypair?.pub || '' },
-  });
-
-  if (id) {
-    // Start a subscription looking for the newly created order
-    subRef.current = clientSub.subscribe(({ data }) => {
-      if (!data?.busEvents?.length) {
-        return;
-      }
-
-      // No types available for the subscription result
-      const matchingOrderEvent = data.busEvents.find((e) => {
-        if (e.event.__typename !== 'Order') {
-          return false;
-        }
-
-        return e.event.id === id;
-      });
-
-      if (
-        matchingOrderEvent &&
-        matchingOrderEvent.event.__typename === 'Order'
-      ) {
-        setFinalizedOrder(matchingOrderEvent.event);
-      }
-    });
-  }
 
   const submit = useCallback(
     async (order: Order) => {
@@ -74,38 +43,80 @@ export const useOrderSubmit = (market: Market) => {
       }
 
       setFinalizedOrder(null);
-      const res = await send({
-        pubKey: keypair.pub,
-        propagate: true,
-        orderSubmission: {
-          marketId: market.id,
-          price:
-            order.type === VegaWalletOrderType.Limit && order.price
-              ? removeDecimal(order.price, market.decimalPlaces)
+      try {
+        const res = await send({
+          pubKey: keypair.pub,
+          propagate: true,
+          orderSubmission: {
+            marketId: market.id,
+            price:
+              order.type === VegaWalletOrderType.Limit && order.price
+                ? removeDecimal(order.price, market.decimalPlaces)
+                : undefined,
+            size: removeDecimal(order.size, market.positionDecimalPlaces),
+            type: order.type,
+            side: order.side,
+            timeInForce: order.timeInForce,
+            expiresAt: order.expiration
+              ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
+                // just append 6 zeroes
+                order.expiration.getTime().toString() + '000000'
               : undefined,
-          size: removeDecimal(order.size, market.positionDecimalPlaces),
-          type: order.type,
-          side: order.side,
-          timeInForce: order.timeInForce,
-          expiresAt: order.expiration
-            ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
-              // just append 6 zeroes
-              order.expiration.getTime().toString() + '000000'
-            : undefined,
-        },
-      });
+          },
+        });
 
-      if (res?.signature) {
-        setId(determineId(res.signature));
+        if (res?.signature) {
+          const resId = determineId(res.signature);
+          if (resId) {
+            // Start a subscription looking for the newly created order
+            subRef.current = client
+              .subscribe<OrderEvent, OrderEventVariables>({
+                query: ORDER_EVENT_SUB,
+                variables: { partyId: keypair?.pub || '' },
+              })
+              .subscribe(({ data }) => {
+                if (!data?.busEvents?.length) {
+                  return;
+                }
+
+                // No types available for the subscription result
+                const matchingOrderEvent = data.busEvents.find((e) => {
+                  if (e.event.__typename !== 'Order') {
+                    return false;
+                  }
+
+                  return e.event.id === resId;
+                });
+
+                if (
+                  matchingOrderEvent &&
+                  matchingOrderEvent.event.__typename === 'Order'
+                ) {
+                  setFinalizedOrder(matchingOrderEvent.event);
+                  subRef.current?.unsubscribe();
+                }
+              });
+          }
+        }
+        return res;
+      } catch (e) {
+        Sentry.captureException(e);
+        return;
       }
     },
-    [market, keypair, send]
+    [
+      client,
+      keypair,
+      send,
+      market.id,
+      market.decimalPlaces,
+      market.positionDecimalPlaces,
+    ]
   );
 
   return {
     transaction,
     finalizedOrder,
-    id,
     submit,
     reset,
   };

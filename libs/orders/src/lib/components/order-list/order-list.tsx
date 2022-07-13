@@ -29,7 +29,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
       null
     );
 
-    const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
+    const { transaction, updatedOrder, reset, cancel } = useOrderCancel();
     const { edit } = useOrderEdit();
     const ordersData = showCancelled
       ? data
@@ -59,10 +59,10 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           key={`cancel-order-dialog-${transaction.txHash}`}
           orderDialogOpen={cancelOrderDialogOpen}
           setOrderDialogOpen={setCancelOrderDialogOpen}
-          finalizedOrder={finalizedOrder}
+          finalizedOrder={updatedOrder}
           transaction={transaction}
           reset={reset}
-          title={getCancelDialogTitle(finalizedOrder?.status)}
+          title={getCancelDialogTitle(updatedOrder?.status)}
         />
         <OrderEditDialog
           order={editOrder}

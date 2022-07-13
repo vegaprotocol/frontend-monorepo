@@ -89,10 +89,10 @@ const Template3: Story = (args) => {
     setOpen(!open);
     return Promise.resolve();
   };
-  const edit = () => {
-    setOpenEdit(!openEdit);
-    return Promise.resolve();
-  };
+  // const edit = () => {
+  //   setOpenEdit(!openEdit);
+  //   return Promise.resolve();
+  // };
   const transaction: VegaTxState = {
     status: VegaTxStatus.Default,
     error: null,
@@ -127,10 +127,8 @@ const Template3: Story = (args) => {
         orderDialogOpen={openEdit}
         setOrderDialogOpen={setOpenEdit}
         finalizedOrder={finalizedOrder}
-        newOrder={finalizedOrder}
         transaction={transaction}
         reset={reset}
-        type={VegaOrderTransactionType.EDIT}
       />
     </>
   );
