@@ -27,7 +27,7 @@
       "@vegaprotocol/market-list": ["libs/market-list/src/index.ts"],
       "@vegaprotocol/network-info": ["libs/network-info/src/index.ts"],
       "@vegaprotocol/network-stats": ["libs/network-stats/src/index.ts"],
-      "@vegaprotocol/order-list": ["libs/order-list/src/index.ts"],
+      "@vegaprotocol/orders": ["libs/orders/src/index.ts"],
       "@vegaprotocol/positions": ["libs/positions/src/index.ts"],
       "@vegaprotocol/react-helpers": ["libs/react-helpers/src/index.ts"],
       "@vegaprotocol/smart-contracts": ["libs/smart-contracts/src/index.ts"],
