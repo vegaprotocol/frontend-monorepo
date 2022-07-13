@@ -28,33 +28,93 @@ export const useOrderValidation = ({
 }: ValidationProps) => {
   const { keypair } = useVegaWallet();
 
-  const invalidText = useMemo(() => {
+  const { message, isDisabled } = useMemo(() => {
     if (!keypair) {
-      return t('No public key selected');
+      return { message: t('No public key selected'), isDisabled: true };
     }
 
     if (keypair.tainted) {
-      return t('Selected public key has been tainted');
+      return {
+        isDisabled: true,
+        message: t('Selected public key has been tainted'),
+      };
+    }
+
+    if (
+      [
+        MarketState.Cancelled,
+        MarketState.Closed,
+        MarketState.Rejected,
+        MarketState.Settled,
+        MarketState.TradingTerminated,
+      ].includes(market.state)
+    ) {
+      return {
+        isDisabled: true,
+        message: t(
+          `Market is ${market.state.toLowerCase()}. No orders can be placed.`
+        ),
+      };
     }
 
     if (market.state !== MarketState.Active) {
       if (market.state === MarketState.Suspended) {
-        return t('Market is currently suspended');
+        if (market.tradingMode === MarketTradingMode.Continuous) {
+          if (orderType !== OrderType.Limit) {
+            return {
+              isDisabled: true,
+              message: t(
+                'Only limit orders are permitted when market is in auction'
+              ),
+            };
+          }
+
+          if (
+            [
+              OrderTimeInForce.FOK,
+              OrderTimeInForce.IOC,
+              OrderTimeInForce.GFN,
+            ].includes(orderTimeInForce)
+          ) {
+            return {
+              isDisabled: true,
+              message: t(
+                'Only GTT, GTC and GFA are permitted when market is in auction'
+              ),
+            };
+          }
+        }
+
+        return {
+          isDisabled: false,
+          message: t('Market is currently suspended. Can accept only LP'),
+        };
       }
 
       if (
         market.state === MarketState.Proposed ||
         market.state === MarketState.Pending
       ) {
-        return t('Market is not active yet');
+        return {
+          isDisabled: false,
+          message: t('Market is not active yet. Can accept only LP'),
+        };
       }
 
-      return t('Market is no longer active');
+      return {
+        isDisabled: true,
+        message: t('Market is no longer active.'),
+      };
     }
 
     if (market.tradingMode !== MarketTradingMode.Continuous) {
       if (orderType !== OrderType.Limit) {
-        return t('Only limit orders are permitted when market is in auction');
+        return {
+          isDisabled: true,
+          message: t(
+            'Only limit orders are permitted when market is in auction'
+          ),
+        };
       }
 
       if (
@@ -64,26 +124,41 @@ export const useOrderValidation = ({
           OrderTimeInForce.GFN,
         ].includes(orderTimeInForce)
       ) {
-        return t(
-          'Only GTT, GTC and GFA are permitted when market is in auction'
-        );
+        return {
+          isDisabled: true,
+          message: t(
+            'Only GTT, GTC and GFA are permitted when market is in auction'
+          ),
+        };
       }
     }
 
     if (fieldErrors?.size?.type === 'required') {
-      return t('An amount needs to be provided');
+      return {
+        isDisabled: true,
+        message: t('An amount needs to be provided'),
+      };
     }
 
     if (fieldErrors?.size?.type === 'min') {
-      return t(`The amount cannot be lower than "${step}"`);
+      return {
+        isDisabled: true,
+        message: t(`The amount cannot be lower than "${step}"`),
+      };
     }
 
     if (fieldErrors?.price?.type === 'required') {
-      return t('A price needs to be provided');
+      return {
+        isDisabled: true,
+        message: t('A price needs to be provided'),
+      };
     }
 
     if (fieldErrors?.price?.type === 'min') {
-      return t(`The price cannot be negative`);
+      return {
+        isDisabled: true,
+        message: t(`The price cannot be negative`),
+      };
     }
 
     if (
@@ -91,14 +166,20 @@ export const useOrderValidation = ({
       fieldErrors?.size?.message === ERROR_SIZE_DECIMAL
     ) {
       if (market.positionDecimalPlaces === 0) {
-        return t('No decimal amounts allowed for this order');
+        return {
+          isDisabled: true,
+          message: t('No decimal amounts allowed for this order'),
+        };
       }
-      return t(
-        `The amount field only takes up to ${market.positionDecimalPlaces} decimals`
-      );
+      return {
+        isDisabled: true,
+        message: t(
+          `The amount field only takes up to ${market.positionDecimalPlaces} decimals`
+        ),
+      };
     }
 
-    return '';
+    return { isDisabled: false, message: '' };
   }, [
     keypair,
     step,
@@ -110,5 +191,5 @@ export const useOrderValidation = ({
     orderTimeInForce,
   ]);
 
-  return invalidText;
+  return { message, isDisabled };
 };

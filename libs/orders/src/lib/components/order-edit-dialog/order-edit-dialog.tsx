@@ -20,6 +20,9 @@ interface OrderEditDialogProps {
   orderDialogOpen: boolean;
   setOrderDialogOpen: (isOpen: boolean) => void;
 }
+interface FormFields {
+  entryPrice: string;
+}
 
 export const OrderEditDialog = ({
   order,
@@ -28,9 +31,6 @@ export const OrderEditDialog = ({
   orderDialogOpen,
   setOrderDialogOpen,
 }: OrderEditDialogProps) => {
-  interface FormFields {
-    entryPrice: string;
-  }
   const headerClassName = 'text-h5 font-bold text-black dark:text-white';
   const {
     register,
@@ -95,8 +95,16 @@ export const OrderEditDialog = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-12">
           <form
             onSubmit={handleSubmit(async (data) => {
-              await edit({ ...order, price: data.entryPrice });
-              setOrderDialogOpen(false);
+              const editResponse = await edit({
+                ...order,
+                price: (
+                  Number(data.entryPrice) *
+                  Math.pow(10, order.market?.decimalPlaces ?? 0)
+                ).toString(),
+              });
+              if (editResponse) {
+                setOrderDialogOpen(false);
+              }
             })}
             data-testid="edit-order"
           >

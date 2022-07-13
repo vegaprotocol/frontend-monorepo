@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import { useApolloClient } from '@apollo/client';
 import type {
@@ -10,29 +10,40 @@ import { ORDER_EVENT_SUB } from './order-event-query';
 import * as Sentry from '@sentry/react';
 import { OrderStatus } from '@vegaprotocol/types';
 import { determineId } from '@vegaprotocol/react-helpers';
+import type { Subscription } from 'zen-observable-ts';
 
 export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
-  const [id, setId] = useState('');
+  const [id, setId] = useState<string | null>(null);
   const client = useApolloClient();
-
-  const reset = useCallback(() => {
-    resetTransaction();
-    setUpdatedOrder(null);
-    setId('');
-  }, [resetTransaction]);
+  const subRef = useRef<Subscription | null>(null);
 
   useEffect(() => {
-    const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-      query: ORDER_EVENT_SUB,
-      variables: { partyId: keypair?.pub || '' },
-    });
+    return () => {
+      subRef.current?.unsubscribe();
+      setUpdatedOrder(null);
+      resetTransaction();
+    };
+  }, [resetTransaction]);
 
+  const reset = useCallback(() => {
+    subRef.current?.unsubscribe();
+    resetTransaction();
+    setUpdatedOrder(null);
+    setId(null);
+  }, [resetTransaction]);
+
+  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
+    query: ORDER_EVENT_SUB,
+    variables: { partyId: keypair?.pub || '' },
+  });
+
+  if (id) {
     // Start a subscription looking for the newly created order
-    const sub = clientSub.subscribe(({ data }) => {
+    subRef.current = clientSub.subscribe(({ data }) => {
       if (!data?.busEvents?.length) {
         return;
       }
@@ -51,15 +62,9 @@ export const useOrderCancel = () => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setUpdatedOrder(matchingOrderEvent.event);
-        resetTransaction();
       }
     });
-
-    return () => {
-      sub.unsubscribe();
-      setUpdatedOrder(null);
-    };
-  }, [client, keypair?.pub, id, resetTransaction, reset]);
+  }
 
   const cancel = useCallback(
     async (order) => {

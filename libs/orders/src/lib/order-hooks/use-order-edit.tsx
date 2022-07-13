@@ -1,34 +1,51 @@
 import { useApolloClient } from '@apollo/client';
 import { determineId } from '@vegaprotocol/react-helpers';
-import type { OrderAmendmentBody } from '@vegaprotocol/vegawallet-service-api-client';
-import { useState, useCallback, useEffect } from 'react';
+import type {
+  OrderAmendmentBody,
+  OrderAmendmentBodyOrderAmendment,
+} from '@vegaprotocol/vegawallet-service-api-client';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { ORDER_EVENT_SUB } from './order-event-query';
+import type { Subscription } from 'zen-observable-ts';
 import type {
   OrderEvent_busEvents_event_Order,
   OrderEvent,
   OrderEventVariables,
 } from './__generated__';
 import * as Sentry from '@sentry/react';
-import type { Orders_party_orders } from '../components/__generated__/Orders';
 
 export const useOrderEdit = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
-  const [newOrder, setNewOrder] = useState<Orders_party_orders | null>(null);
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
-  const [id, setId] = useState('');
+  const [id, setId] = useState<string | null>(null);
   const client = useApolloClient();
+  const subRef = useRef<Subscription | null>(null);
+
+  const reset = useCallback(() => {
+    resetTransaction();
+    setUpdatedOrder(null);
+    setId('');
+  }, [resetTransaction]);
 
   useEffect(() => {
-    const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-      query: ORDER_EVENT_SUB,
-      variables: { partyId: keypair?.pub || '' },
-    });
+    return () => {
+      subRef.current?.unsubscribe();
+      setUpdatedOrder(null);
+      resetTransaction();
+    };
+  }, [resetTransaction]);
 
+  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
+    query: ORDER_EVENT_SUB,
+    variables: { partyId: keypair?.pub || '' },
+  });
+
+  if (id) {
     // Start a subscription looking for the newly created order
-    const sub = clientSub.subscribe(({ data }) => {
+    subRef.current = clientSub.subscribe(({ data }) => {
       if (!data?.busEvents?.length) {
         return;
       }
@@ -47,13 +64,10 @@ export const useOrderEdit = () => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setUpdatedOrder(matchingOrderEvent.event);
-        setNewOrder(null);
         resetTransaction();
       }
     });
-
-    return () => sub.unsubscribe();
-  }, [client, keypair?.pub, id, resetTransaction]);
+  }
 
   const edit = useCallback(
     async (order) => {
@@ -62,24 +76,35 @@ export const useOrderEdit = () => {
       }
 
       setUpdatedOrder(null);
-      if (order) {
-        setNewOrder(order);
-      }
-      if (!newOrder) return;
-      console.log('edit order', newOrder);
+      console.log('edit order', {
+        orderId: order.id,
+        marketId: order.market?.id || '',
+        price: order.price,
+        timeInForce: order.timeInForce,
+        // 'sizeDelta'?: string;
+        expiresAt: order.expiresAt,
+      });
+
       try {
         const res = await send({
           pubKey: keypair.pub,
           propagate: true,
           orderAmendment: {
-            orderId: newOrder.id,
-            marketId: newOrder.market?.id || '',
-            price: newOrder.price,
-          },
+            orderId: order.id,
+            marketId: order.market?.id || '',
+            price: order.price,
+            timeInForce: order.timeInForce,
+            // 'sizeDelta'?: string;
+            expiresAt: order.expiresAt,
+          } as OrderAmendmentBodyOrderAmendment,
         } as OrderAmendmentBody);
 
         if (res?.signature) {
-          setId(determineId(res.signature));
+          if (order.id) {
+            setId(order.id);
+          } else {
+            setId(determineId(res.signature));
+          }
         }
         return res;
       } catch (e) {
@@ -87,15 +112,8 @@ export const useOrderEdit = () => {
         return;
       }
     },
-    [keypair, newOrder, send]
+    [keypair, send]
   );
-
-  const reset = useCallback(() => {
-    resetTransaction();
-    setUpdatedOrder(null);
-    setNewOrder(null);
-    setId('');
-  }, [resetTransaction]);
 
   return {
     editTransaction: transaction,
@@ -103,6 +121,5 @@ export const useOrderEdit = () => {
     id,
     edit,
     resetEdit: reset,
-    newOrder,
   };
 };

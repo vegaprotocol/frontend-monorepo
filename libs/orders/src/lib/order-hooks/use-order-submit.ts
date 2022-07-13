@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from './order-event-query';
@@ -10,31 +10,41 @@ import type {
 import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
-import { MarketState } from '@vegaprotocol/types';
 import type { Market } from '../market';
+import type { Subscription } from 'zen-observable-ts';
 
 export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();
-  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
-  const [id, setId] = useState('');
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
+  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
+  const [id, setId] = useState<string | null>(null);
+  const subRef = useRef<Subscription | null>(null);
   const client = useApolloClient();
 
   const reset = useCallback(() => {
+    subRef.current?.unsubscribe();
     resetTransaction();
     setFinalizedOrder(null);
-    setId('');
+    setId(null);
   }, [resetTransaction]);
 
   useEffect(() => {
-    const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
-      query: ORDER_EVENT_SUB,
-      variables: { partyId: keypair?.pub || '' },
-    });
+    return () => {
+      subRef.current?.unsubscribe();
+      setFinalizedOrder(null);
+      resetTransaction();
+    };
+  }, [resetTransaction]);
 
+  const clientSub = client.subscribe<OrderEvent, OrderEventVariables>({
+    query: ORDER_EVENT_SUB,
+    variables: { partyId: keypair?.pub || '' },
+  });
+
+  if (id) {
     // Start a subscription looking for the newly created order
-    const sub = clientSub.subscribe(({ data }) => {
+    subRef.current = clientSub.subscribe(({ data }) => {
       if (!data?.busEvents?.length) {
         return;
       }
@@ -53,22 +63,17 @@ export const useOrderSubmit = (market: Market) => {
         matchingOrderEvent.event.__typename === 'Order'
       ) {
         setFinalizedOrder(matchingOrderEvent.event);
-        resetTransaction();
       }
     });
-    return () => {
-      sub.unsubscribe();
-      setFinalizedOrder(null);
-    };
-  }, [client, id, keypair?.pub, reset, resetTransaction]);
+  }
 
   const submit = useCallback(
     async (order: Order) => {
-      setFinalizedOrder(null);
-      if (!keypair || !order.side || market.state !== MarketState.Active) {
+      if (!keypair || !order.side) {
         return;
       }
 
+      setFinalizedOrder(null);
       const res = await send({
         pubKey: keypair.pub,
         propagate: true,

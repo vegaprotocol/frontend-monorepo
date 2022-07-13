@@ -1,13 +1,10 @@
 import type { ReactNode } from 'react';
 import { useState } from 'react';
-import {
-  VegaOrderTransactionType,
-  VegaTransactionDialog,
-  VegaTxStatus,
-} from '@vegaprotocol/wallet';
+import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { useOrderSubmit } from '@vegaprotocol/orders';
+import { OrderStatus } from '@vegaprotocol/types';
 
 export interface DealTicketManagerProps {
   market: DealTicketQuery_market;
@@ -20,7 +17,20 @@ export const DealTicketManager = ({
 }: DealTicketManagerProps) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
-
+  const getDialogTitle = (status?: string) => {
+    switch (status) {
+      case OrderStatus.Active:
+        return 'Order submitted';
+      case OrderStatus.Filled:
+        return 'Order filled';
+      case OrderStatus.PartiallyFilled:
+        return 'Order partially filled';
+      case OrderStatus.Parked:
+        return 'Order parked';
+      default:
+        return 'Submission failed';
+    }
+  };
   return (
     <>
       {children || (
@@ -42,7 +52,7 @@ export const DealTicketManager = ({
         finalizedOrder={finalizedOrder}
         transaction={transaction}
         reset={reset}
-        type={VegaOrderTransactionType.SUBMIT}
+        title={getDialogTitle(finalizedOrder?.status)}
       />
     </>
   );
