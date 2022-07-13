@@ -3,7 +3,7 @@ import {
   TIME_UPDATE_SUBSCRIPTION,
 } from '../../utils/request-node';
 import { BLOCK_HEIGHT_QUERY } from '../../components/node-switcher/node-block-height';
-import { BlockHeightStats } from '../../components/node-switcher/__generated__/BlockHeightStats';
+import type { BlockHeightStats } from '../../components/node-switcher/__generated__/BlockHeightStats';
 import type { Statistics } from '../../utils/__generated__/Statistics';
 import type { BlockTime } from '../../utils/__generated__/BlockTime';
 import { Networks } from '../../types';

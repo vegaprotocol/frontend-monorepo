@@ -434,7 +434,9 @@ describe('useEnvironment hook', () => {
     });
 
     it('logs an error when it cannot fetch the network config and there is a VEGA_URL in the environment', async () => {
-      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
+      const consoleWarnSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(noop);
 
       // @ts-ignore: typscript doesn't recognise the mock implementation
       global.fetch.mockImplementation(() => {
@@ -452,7 +454,10 @@ describe('useEnvironment hook', () => {
           setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
         });
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          getErrorByType(ErrorType.CONFIG_LOAD_ERROR, mockEnvironmentState.VEGA_ENV)?.headline
+          getErrorByType(
+            ErrorType.CONFIG_LOAD_ERROR,
+            mockEnvironmentState.VEGA_ENV
+          )?.headline
         );
       });
     });
@@ -462,10 +467,12 @@ describe('useEnvironment hook', () => {
       delete process.env['NX_VEGA_URL'];
 
       // @ts-ignore: typscript doesn't recognise the mock implementation
-      global.fetch.mockImplementation(() => Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ some: 'invalid-object' }),
-      }));
+      global.fetch.mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ some: 'invalid-object' }),
+        })
+      );
 
       const { result, waitFor } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
@@ -484,13 +491,17 @@ describe('useEnvironment hook', () => {
 
     // SKIP due to https://github.com/facebook/jest/issues/12670
     it.skip('logs an error when the network config in invalid and there is a VEGA_URL in the environment', async () => {
-      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
+      const consoleWarnSpy = jest
+        .spyOn(console, 'warn')
+        .mockImplementation(noop);
 
       // @ts-ignore: typscript doesn't recognise the mock implementation
-      global.fetch.mockImplementation(() => Promise.resolve({
-        ok: true,
-        json: () => Promise.resolve({ some: 'invalid-object' }),
-      }));
+      global.fetch.mockImplementation(() =>
+        Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({ some: 'invalid-object' }),
+        })
+      );
 
       const { result, waitFor } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
@@ -503,7 +514,10 @@ describe('useEnvironment hook', () => {
           setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
         });
         expect(consoleWarnSpy).toHaveBeenCalledWith(
-          getErrorByType(ErrorType.CONFIG_VALIDATION_ERROR, mockEnvironmentState.VEGA_ENV)?.headline
+          getErrorByType(
+            ErrorType.CONFIG_VALIDATION_ERROR,
+            mockEnvironmentState.VEGA_ENV
+          )?.headline
         );
       });
     });
