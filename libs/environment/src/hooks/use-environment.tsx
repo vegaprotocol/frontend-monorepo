@@ -16,6 +16,7 @@ type EnvironmentProviderProps = {
 };
 
 export type EnvironmentState = Environment & {
+  networkError?: ErrorType;
   setNodeSwitcherOpen: () => void;
 };
 
@@ -50,27 +51,33 @@ export const EnvironmentProvider = ({
           VEGA_URL: successfulNodeUrl,
         }));
       }
-    }
+    } else {
+      // if the selected node has errors
+      if (nodes[environment.VEGA_URL]) {
+        const errorType = getErrorType(
+          environment.VEGA_ENV,
+          nodes[environment.VEGA_URL]
+        );
+        if (errorType) {
+          Object.keys(clients).forEach((node) => clients[node]?.stop());
+          setNetworkError(errorType);
+          setNodeSwitcherOpen(true);
+          return;
+        }
+      }
 
-    if (environment.VEGA_URL && nodes[environment.VEGA_URL]) {
-      const errorType = getErrorType(
-        environment.VEGA_ENV,
-        nodes[environment.VEGA_URL]
-      );
-      if (errorType) {
+      // if the config doesn't contain nodes the app can connect to
+      if (
+        nodeKeys.length > 0 &&
+        nodeKeys.filter((key) => hasFinishedLoading(nodes[key])).length ===
+        nodeKeys.length
+      ) {
+        console.log(nodeKeys.filter((key) => hasFinishedLoading(nodes[key])), nodeKeys)
+
         Object.keys(clients).forEach((node) => clients[node]?.stop());
-        setNetworkError(errorType);
+        setNetworkError(ErrorType.CONNECTION_ERROR_ALL);
         setNodeSwitcherOpen(true);
       }
-    }
-
-    if (
-      nodeKeys.filter((key) => hasFinishedLoading(nodes[key])).length ===
-      nodeKeys.length
-    ) {
-      Object.keys(clients).forEach((node) => clients[node]?.stop());
-      setNetworkError(ErrorType.CONNECTION_ERROR_ALL);
-      setNodeSwitcherOpen(true);
     }
   }, [environment.VEGA_URL, nodes]);
 
@@ -84,12 +91,13 @@ export const EnvironmentProvider = ({
     <EnvironmentContext.Provider
       value={{
         ...environment,
+        networkError,
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
     >
-      {config && (
+      {config && isNodeSwitcherOpen && (
         <NodeSwitcherDialog
-          dialogOpen={isNodeSwitcherOpen}
+          dialogOpen={true}
           initialErrorType={networkError}
           setDialogOpen={setNodeSwitcherOpen}
           config={config}

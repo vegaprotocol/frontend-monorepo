@@ -104,7 +104,11 @@ const getHandler = (
     });
 };
 
-export default function ({ network, statistics, busEvents }: MockClientProps = {}) {
+export default function ({
+  network,
+  statistics,
+  busEvents,
+}: MockClientProps = {}) {
   const mockClient = createMockClient();
 
   mockClient.setRequestHandler(

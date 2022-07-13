@@ -44,6 +44,7 @@ const mockEnvironmentState = {
   GIT_COMMIT_HASH: 'abcde01234',
   GITHUB_FEEDBACK_URL: 'https://github.com/test/feedback',
   setNodeSwitcherOpen: noop,
+  networkError: undefined,
 };
 
 const MOCK_DURATION = 76;
@@ -248,6 +249,9 @@ describe('useEnvironment hook', () => {
   `(
     'uses correct default ethereum connection variables in $env',
     async ({ env, etherscanUrl, providerUrl }) => {
+      // @ts-ignore allow adding a mock return value to mocked module
+      createClient.mockImplementation(() => createMockClient({ network: env }));
+
       process.env['NX_VEGA_ENV'] = env;
       delete process.env['NX_ETHEREUM_PROVIDER_URL'];
       delete process.env['NX_ETHERSCAN_URL'];
