@@ -8,7 +8,7 @@ import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
 import { getErrorType, getIsNodeLoading } from '../utils/validate-node';
 import { ErrorType } from '../types';
-import type { Environment, RawEnvironment , NodeData } from '../types';
+import type { Environment, RawEnvironment, NodeData } from '../types';
 
 type EnvironmentProviderProps = {
   definitions?: Partial<RawEnvironment>;

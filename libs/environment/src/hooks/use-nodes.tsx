@@ -3,7 +3,7 @@ import { useState, useEffect, useReducer } from 'react';
 import { produce } from 'immer';
 import type createClient from '../utils/apollo-client';
 import { initializeNode } from '../utils/initialize-node';
-import { getErrorType } from '../utils/validate-node';
+import { getErrorType, getIsNodeLoading } from '../utils/validate-node';
 import type { NodeData, Configuration, Networks } from '../types';
 
 type StatisticsPayload = {
@@ -131,6 +131,7 @@ const reducer =
             action.payload?.responseTime
           );
           state[action.node].verified =
+            !getIsNodeLoading(state[action.node]) &&
             getErrorType(env, state[action.node]) === null;
         });
       case ACTIONS.GET_STATISTICS_FAILURE:
@@ -154,6 +155,7 @@ const reducer =
           if (!state[action.node]) return;
           state[action.node].ssl = withData(true);
           state[action.node].verified =
+            !getIsNodeLoading(state[action.node]) &&
             getErrorType(env, state[action.node]) === null;
         });
       case ACTIONS.CHECK_SUBSCRIPTION_FAILURE:

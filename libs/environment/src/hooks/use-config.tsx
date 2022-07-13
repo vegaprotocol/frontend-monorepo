@@ -53,13 +53,14 @@ export const useConfig = (
   );
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       if (!config && environment.VEGA_CONFIG_URL) {
-        setLoading(true);
+        isMounted && setLoading(true);
         try {
           const response = await fetch(environment.VEGA_CONFIG_URL);
           const configData: Configuration = await response.json();
-          setLoading(false);
+          isMounted && setLoading(false);
 
           if (validateConfiguration(configData)) {
             onError(ErrorType.CONFIG_VALIDATION_ERROR);
@@ -68,20 +69,23 @@ export const useConfig = (
 
           const hosts = compileHosts(configData.hosts, environment.VEGA_URL);
 
-          setConfig({ hosts });
+          isMounted && setConfig({ hosts });
           LocalStorage.setItem(
             getCacheKey(environment.VEGA_ENV),
             JSON.stringify({ hosts })
           );
         } catch (err) {
-          setLoading(false);
+          isMounted && setLoading(false);
           onError(ErrorType.CONFIG_LOAD_ERROR);
         }
       }
     })();
+    return () => {
+      isMounted = false;
+    };
     // load config only once per runtime
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [environment.VEGA_CONFIG_URL, !!config, onError]);
+  }, [environment.VEGA_CONFIG_URL, !!config, onError, setLoading]);
 
   return {
     loading,

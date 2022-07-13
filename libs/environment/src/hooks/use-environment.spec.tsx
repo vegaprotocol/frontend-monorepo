@@ -5,6 +5,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import createClient from '../utils/apollo-client';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
 import { Networks } from '../types';
+import type { MockRequestConfig } from './mocks/apollo-client';
 import createMockClient from './mocks/apollo-client';
 
 jest.mock('../utils/apollo-client');
@@ -76,6 +77,23 @@ function setupFetch(
     } as Response);
   };
 }
+
+const getQuickestNode = (mockNodes: Record<string, MockRequestConfig>) => {
+  const { nodeUrl } = Object.keys(mockNodes).reduce<{
+    nodeUrl?: string;
+    delay: number;
+  }>(
+    (acc, url) => {
+      const { delay = 0 } = mockNodes[url];
+      if (delay < acc.delay) {
+        return { nodeUrl: url, delay };
+      }
+      return acc;
+    },
+    { nodeUrl: undefined, delay: Infinity }
+  );
+  return nodeUrl;
+};
 
 beforeEach(() => {
   // @ts-ignore: typscript doesn't recognise the mock implementation
@@ -285,14 +303,14 @@ describe('useEnvironment hook', () => {
       });
     });
 
-    it.skip('updates the VEGA_URL with the quickest node to respond from the config urls', async () => {
+    it('updates the VEGA_URL with the quickest node to respond from the config urls', async () => {
       delete process.env['NX_VEGA_URL'];
 
       const mockNodes: Record<string, any> = {
-        'https://mock-node-1.com': { hasError: false, delay: 400 },
-        'https://mock-node-2.com': { hasError: false, delay: 300 },
-        'https://mock-node-3.com': { hasError: false, delay: 200 },
-        'https://mock-node-4.com': { hasError: false, delay: 100 },
+        'https://mock-node-1.com': { hasError: false, delay: 4000 },
+        'https://mock-node-2.com': { hasError: false, delay: 5000 },
+        'https://mock-node-3.com': { hasError: false, delay: 8000 },
+        'https://mock-node-4.com': { hasError: false, delay: 0 },
       };
 
       // @ts-ignore: typscript doesn't recognise the mock implementation
@@ -301,22 +319,10 @@ describe('useEnvironment hook', () => {
       );
       // @ts-ignore allow adding a mock return value to mocked module
       createClient.mockImplementation((url: keyof typeof mockNodes) => {
-        createMockClient({ statistics: mockNodes[url] });
+        return createMockClient({ statistics: mockNodes[url] });
       });
 
-      const { nodeUrl } = Object.keys(mockNodes).reduce<{
-        nodeUrl: string;
-        delay: number;
-      }>(
-        (acc, url) => {
-          const { delay } = mockNodes[url];
-          if (delay < acc.delay) {
-            return { nodeUrl: url, delay };
-          }
-          return acc;
-        },
-        { nodeUrl: '', delay: Infinity }
-      );
+      const nodeUrl = getQuickestNode(mockNodes);
 
       const { result, waitFor } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,

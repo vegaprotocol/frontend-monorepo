@@ -9,7 +9,7 @@ type NodeBlockHeightProps = {
 
 const POLL_INTERVAL = 3000;
 
-const BLOCK_HEIGHT_QUERY = gql`
+export const BLOCK_HEIGHT_QUERY = gql`
   query BlockHeightStats {
     statistics {
       blockHeight
