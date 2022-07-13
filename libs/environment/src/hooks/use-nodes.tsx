@@ -3,7 +3,8 @@ import { useState, useEffect, useReducer } from 'react';
 import { produce } from 'immer';
 import type createClient from '../utils/apollo-client';
 import { initializeNode } from '../utils/initialize-node';
-import type { NodeData, Configuration } from '../types';
+import { getErrorType } from '../utils/validate-node';
+import type { NodeData, Configuration, Networks } from '../types';
 
 type StatisticsPayload = {
   block: NodeData['block']['value'];
@@ -59,6 +60,7 @@ function withError<T>(value?: T) {
 const getNodeData = (url?: string): NodeData => ({
   url: url ?? '',
   verified: false,
+  initialized: false,
   responseTime: withData(),
   block: withData(),
   ssl: withData(),
@@ -106,87 +108,94 @@ const initializeNodes = (
   );
 };
 
-const reducer = (state: Record<string, NodeData>, action: Action) => {
-  switch (action.type) {
-    case ACTIONS.GET_STATISTICS:
-      return produce(state, (state) => {
-        if (!state[action.node]) {
-          state[action.node] = getNodeData(action.payload?.url);
-        }
-        state[action.node].url = action.payload?.url ?? '';
-        state[action.node].block.isLoading = true;
-        state[action.node].chain.isLoading = true;
-        state[action.node].responseTime.isLoading = true;
-      });
-    case ACTIONS.GET_STATISTICS_SUCCESS:
-      return produce(state, (state) => {
-        if (!state[action.node]) return;
-        state[action.node].block = withData(action.payload?.block);
-        state[action.node].chain = withData(action.payload?.chain);
-        state[action.node].responseTime = withData(
-          action.payload?.responseTime
-        );
-        state[action.node].verified =
-          state[action.node].ssl.value !== undefined ? true : false;
-      });
-    case ACTIONS.GET_STATISTICS_FAILURE:
-      return produce(state, (state) => {
-        if (!state[action.node]) return;
-        state[action.node].block = withError();
-        state[action.node].chain = withError();
-        state[action.node].responseTime = withError();
-      });
-    case ACTIONS.CHECK_SUBSCRIPTION:
-      return produce(state, (state) => {
-        if (!state[action.node]) {
-          state[action.node] = getNodeData(action.payload?.url);
-        }
-        state[action.node].url = action.payload?.url ?? '';
-        state[action.node].ssl.isLoading = true;
-      });
-    case ACTIONS.CHECK_SUBSCRIPTION_SUCCESS:
-      return produce(state, (state) => {
-        if (!state[action.node]) return;
-        state[action.node].ssl = withData(true);
-        state[action.node].verified =
-          state[action.node].block.value &&
-          state[action.node].chain.value &&
-          state[action.node].responseTime.value !== undefined
-            ? true
-            : false;
-      });
-    case ACTIONS.CHECK_SUBSCRIPTION_FAILURE:
-      return produce(state, (state) => {
-        if (!state[action.node]) return;
-        state[action.node].ssl = withError();
-      });
-    case ACTIONS.ADD_NODE:
-      return produce(state, (state) => {
-        state[action.node] = getNodeData();
-      });
-    case ACTIONS.UPDATE_NODE_URL:
-      return produce(state, (state) => {
-        if (!state[action.node]) {
-          state[action.node] = getNodeData(action.payload?.url);
-        } else {
+const reducer =
+  (env: Networks) => (state: Record<string, NodeData>, action: Action) => {
+    switch (action.type) {
+      case ACTIONS.GET_STATISTICS:
+        return produce(state, (state) => {
+          if (!state[action.node]) {
+            state[action.node] = getNodeData(action.payload?.url);
+          }
           state[action.node].url = action.payload?.url ?? '';
-        }
-      });
-    case ACTIONS.UPDATE_NODE_BLOCK:
-      return produce(state, (state) => {
-        if (!state[action.node]) return;
-        state[action.node].block.value = action.payload;
-      });
-    default:
-      return state;
-  }
-};
+          state[action.node].initialized = true;
+          state[action.node].block.isLoading = true;
+          state[action.node].chain.isLoading = true;
+          state[action.node].responseTime.isLoading = true;
+        });
+      case ACTIONS.GET_STATISTICS_SUCCESS:
+        return produce(state, (state) => {
+          if (!state[action.node]) return;
+          state[action.node].block = withData(action.payload?.block);
+          state[action.node].chain = withData(action.payload?.chain);
+          state[action.node].responseTime = withData(
+            action.payload?.responseTime
+          );
+          state[action.node].verified =
+            getErrorType(env, state[action.node]) === null;
+        });
+      case ACTIONS.GET_STATISTICS_FAILURE:
+        return produce(state, (state) => {
+          if (!state[action.node]) return;
+          state[action.node].block = withError();
+          state[action.node].chain = withError();
+          state[action.node].responseTime = withError();
+        });
+      case ACTIONS.CHECK_SUBSCRIPTION:
+        return produce(state, (state) => {
+          if (!state[action.node]) {
+            state[action.node] = getNodeData(action.payload?.url);
+          }
+          state[action.node].url = action.payload?.url ?? '';
+          state[action.node].ssl.isLoading = true;
+          state[action.node].initialized = true;
+        });
+      case ACTIONS.CHECK_SUBSCRIPTION_SUCCESS:
+        return produce(state, (state) => {
+          if (!state[action.node]) return;
+          state[action.node].ssl = withData(true);
+          state[action.node].verified =
+            getErrorType(env, state[action.node]) === null;
+        });
+      case ACTIONS.CHECK_SUBSCRIPTION_FAILURE:
+        return produce(state, (state) => {
+          if (!state[action.node]) return;
+          state[action.node].ssl = withError();
+        });
+      case ACTIONS.ADD_NODE:
+        return produce(state, (state) => {
+          state[action.node] = getNodeData();
+        });
+      case ACTIONS.UPDATE_NODE_URL:
+        return produce(state, (state) => {
+          const existingNode = Object.keys(state).find(
+            (node) =>
+              action.node !== node && state[node].url === action.payload?.url
+          );
+          state[action.node] = existingNode
+            ? state[existingNode]
+            : getNodeData(action.payload?.url);
+        });
+      case ACTIONS.UPDATE_NODE_BLOCK:
+        return produce(state, (state) => {
+          if (!state[action.node]) return;
+          state[action.node].block.value = action.payload;
+        });
+      default:
+        return state;
+    }
+  };
 
-export const useNodes = (config?: Configuration) => {
+export const useNodes = (env: Networks, config?: Configuration) => {
   const [clients, setClients] = useState<ClientCollection>({});
-  const [state, dispatch] = useReducer(reducer, getInitialState(config));
+  const [state, dispatch] = useReducer(reducer(env), getInitialState(config));
   const configCacheKey = config?.hosts.join(';');
   const allUrls = Object.keys(state).map((node) => state[node].url);
+
+  useEffect(() => {
+    return () => {
+      Object.keys(clients).forEach((url) => clients[url]?.stop());
+    };
+  }, []);
 
   useEffect(() => {
     const nodeUrlMap = (config?.hosts || []).reduce(
@@ -200,7 +209,6 @@ export const useNodes = (config?: Configuration) => {
     setClients(newClients);
 
     return () => {
-      Object.keys(clients).forEach((key) => clients[key]?.stop());
       subscriptions.forEach((unsubscribe) => unsubscribe());
     };
     // use primitive cache key to prevent infinite rerender loop
@@ -230,7 +238,6 @@ export const useNodes = (config?: Configuration) => {
     }));
 
     return () => {
-      Object.keys(newClients).forEach((key) => newClients[key]?.stop());
       subscriptions.forEach((unsubscribe) => unsubscribe());
     };
     // use primitive cache key to prevent infinite rerender loop

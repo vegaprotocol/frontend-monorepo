@@ -6,8 +6,9 @@ import { useConfig } from './use-config';
 import { useNodes } from './use-nodes';
 import { compileEnvironment } from '../utils/compile-environment';
 import { validateEnvironment } from '../utils/validate-environment';
-import type { Environment, RawEnvironment } from '../types';
-import type { ErrorType } from '../types';
+import { getErrorType, getIsNodeLoading } from '../utils/validate-node';
+import { ErrorType } from '../types';
+import type { Environment, RawEnvironment , NodeData } from '../types';
 
 type EnvironmentProviderProps = {
   definitions?: Partial<RawEnvironment>;
@@ -19,6 +20,9 @@ export type EnvironmentState = Environment & {
 };
 
 const EnvironmentContext = createContext({} as EnvironmentState);
+
+const hasFinishedLoading = (node: NodeData) =>
+  node.initialized && !getIsNodeLoading(node) && !node.verified;
 
 export const EnvironmentProvider = ({
   definitions,
@@ -33,33 +37,48 @@ export const EnvironmentProvider = ({
     setNetworkError(errorType);
     setNodeSwitcherOpen(true);
   });
-  const { state: nodes } = useNodes(config);
+  const { state: nodes, clients } = useNodes(environment.VEGA_ENV, config);
   const nodeKeys = Object.keys(nodes);
 
   useEffect(() => {
     if (!environment.VEGA_URL) {
       const successfulNodeUrl = nodeKeys.find((key) => nodes[key].verified);
       if (successfulNodeUrl) {
+        Object.keys(clients).forEach((node) => clients[node]?.stop());
         updateEnvironment((prevEnvironment) => ({
           ...prevEnvironment,
           VEGA_URL: successfulNodeUrl,
         }));
       }
     }
-  }, [
-    environment.VEGA_URL,
-    nodeKeys.map((key) => nodes[key].verified).join(';'),
-  ]);
+
+    if (environment.VEGA_URL && nodes[environment.VEGA_URL]) {
+      const errorType = getErrorType(
+        environment.VEGA_ENV,
+        nodes[environment.VEGA_URL]
+      );
+      if (errorType) {
+        Object.keys(clients).forEach((node) => clients[node]?.stop());
+        setNetworkError(errorType);
+        setNodeSwitcherOpen(true);
+      }
+    }
+
+    if (
+      nodeKeys.filter((key) => hasFinishedLoading(nodes[key])).length ===
+      nodeKeys.length
+    ) {
+      Object.keys(clients).forEach((node) => clients[node]?.stop());
+      setNetworkError(ErrorType.CONNECTION_ERROR_ALL);
+      setNodeSwitcherOpen(true);
+    }
+  }, [environment.VEGA_URL, nodes]);
 
   const errorMessage = validateEnvironment(environment);
 
   if (errorMessage) {
     throw new Error(errorMessage);
   }
-
-  // useEffect(() => {
-  //   setNodeSwitcherOpen(true);
-  // }, []);
 
   return (
     <EnvironmentContext.Provider

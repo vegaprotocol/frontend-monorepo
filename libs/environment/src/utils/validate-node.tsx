@@ -16,8 +16,8 @@ export const getIsNodeLoading = ({
   );
 };
 
-export const getHasInvalidChain = (env: Networks, chain?: string) => {
-  return !(chain?.includes(env.toLowerCase()) ?? false);
+export const getHasInvalidChain = (env: Networks, chain = '') => {
+  return !(chain.split('-')[0] === env.toLowerCase() ?? false);
 };
 
 const getHasInvalidUrl = (url: string) => {
@@ -29,15 +29,16 @@ const getHasInvalidUrl = (url: string) => {
   }
 };
 
-export const getIsNodeDisabled = (env: Networks, data: NodeData) => {
+export const getIsNodeDisabled = (env: Networks, data?: NodeData) => {
   return (
-    getIsNodeLoading(data) ||
-    getHasInvalidChain(env, data.chain.value) ||
-    getHasInvalidUrl(data.url) ||
-    data.chain.hasError ||
-    data.responseTime.hasError ||
-    data.block.hasError ||
-    data.ssl.hasError
+    !!data &&
+    (getIsNodeLoading(data) ||
+      getHasInvalidChain(env, data.chain.value) ||
+      getHasInvalidUrl(data.url) ||
+      data.chain.hasError ||
+      data.responseTime.hasError ||
+      data.block.hasError ||
+      data.ssl.hasError)
   );
 };
 
@@ -53,6 +54,7 @@ export const getIsFormDisabled = (
 
   if (
     currentNode === CUSTOM_NODE_KEY &&
+    state[CUSTOM_NODE_KEY] &&
     inputText !== state[CUSTOM_NODE_KEY].url
   ) {
     return true;
@@ -63,7 +65,7 @@ export const getIsFormDisabled = (
 };
 
 export const getErrorByType = (
-  errorType: ErrorType | undefined,
+  errorType: ErrorType | undefined | null,
   env: Networks,
   url?: string
 ) => {
@@ -120,14 +122,10 @@ export const getErrorByType = (
   }
 };
 
-export const getErrorByData = (env: Networks, data?: NodeData) => {
+export const getErrorType = (env: Networks, data?: NodeData) => {
   if (data && !getIsNodeLoading(data)) {
-    if (getHasInvalidChain(env, data.chain.value)) {
-      return getErrorByType(ErrorType.INVALID_NETWORK, env, data.url);
-    }
-
     if (getHasInvalidUrl(data.url)) {
-      return getErrorByType(ErrorType.INVALID_URL, env, data.url);
+      return ErrorType.INVALID_URL;
     }
 
     if (
@@ -135,11 +133,15 @@ export const getErrorByData = (env: Networks, data?: NodeData) => {
       data.responseTime.hasError ||
       data.block.hasError
     ) {
-      return getErrorByType(ErrorType.CONNECTION_ERROR, env, data.url);
+      return ErrorType.CONNECTION_ERROR;
+    }
+
+    if (getHasInvalidChain(env, data.chain.value)) {
+      return ErrorType.INVALID_NETWORK;
     }
 
     if (data.ssl.hasError) {
-      return getErrorByType(ErrorType.SSL_ERROR, env, data.url);
+      return ErrorType.SSL_ERROR;
     }
   }
 
