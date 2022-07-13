@@ -1,24 +1,22 @@
-const locator = {
-  connectToVegaBtn: '[data-testid="connect-to-vega-wallet-btn"]',
-  warning: '[data-testid="callout"]',
-};
+const connectToVegaBtn = '[data-testid="connect-to-vega-wallet-btn"]';
+const warning = '[data-testid="callout"]';
 
 context('Rewards Page - verify elements on page', function () {
   before('navigate to rewards page', function () {
-    cy.visit('/').navigateTo('rewards');
+    cy.visit('/').navigate_to('rewards');
   });
 
   describe('with wallets disconnected', function () {
     it('should have REWARDS tab highlighted', function () {
-      cy.verifyTabHighlighted('rewards');
+      cy.verify_tab_highlighted('rewards');
     });
 
     it('should have rewards header visible', function () {
-      cy.pageHeader().should('be.visible').and('have.text', 'Rewards');
+      cy.verify_page_header('Rewards');
     });
 
     it('should have epoch warning', function () {
-      cy.get(locator.warning)
+      cy.get(warning)
         .should('be.visible')
         .and(
           'have.text',
@@ -27,7 +25,7 @@ context('Rewards Page - verify elements on page', function () {
     });
 
     it('should have connect Vega wallet button', function () {
-      cy.get(locator.connectToVegaBtn)
+      cy.get(connectToVegaBtn)
         .should('be.visible')
         .and('have.text', 'Connect Vega wallet');
     });

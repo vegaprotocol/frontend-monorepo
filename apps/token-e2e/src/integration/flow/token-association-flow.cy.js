@@ -1,8 +1,6 @@
-const locator = {
-  pageSpinner: 'splash-loader',
-  menuBar: 'nav',
-  validatorList: '[data-testid="node-list-item-name"]',
-};
+const pageSpinner = 'splash-loader';
+const menuBar = 'nav';
+const validatorList = '[data-testid="node-list-item-name"]';
 
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 
@@ -12,15 +10,15 @@ context(
     before('visit staking tab and connect vega wallet', function () {
       cy.vega_wallet_import();
       cy.visit('/');
-      cy.get(locator.menuBar, { timeout: 20000 }).should('be.visible');
+      cy.get(menuBar, { timeout: 20000 }).should('be.visible');
       cy.vega_wallet_connect();
       cy.vega_wallet_set_specified_approval_amount('1000');
       cy.reload();
-      cy.get(locator.menuBar, { timeout: 20000 }).should('be.visible');
+      cy.get(menuBar, { timeout: 20000 }).should('be.visible');
       cy.ethereum_wallet_connect();
-      cy.navigateTo('staking');
-      cy.get(locator.pageSpinner, { timeout: 20000 }).should('not.exist');
-      cy.get(locator.validatorList).first().invoke('text').as('validatorName');
+      cy.navigate_to('staking');
+      cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
+      cy.get(validatorList).first().invoke('text').as('validatorName');
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {
@@ -28,8 +26,8 @@ context(
         'teardown wallet & drill into a specific validator',
         function () {
           cy.vega_wallet_teardown();
-          cy.navigateTo('staking');
-          cy.get(locator.pageSpinner, { timeout: 20000 }).should('not.exist');
+          cy.navigate_to('staking');
+          cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
         }
       );
 

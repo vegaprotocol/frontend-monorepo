@@ -1,34 +1,30 @@
-const locator = {
-  guideLink: '[data-testid="staking-guide-link"]',
-  step1: '[data-testid="staking-step-1"]',
-  step2: '[data-testid="staking-step-2"]',
-  step3: '[data-testid="staking-step-3"]',
-  sectionHeader: 'h2',
-  connectToEthBtn: '[data-testid="connect-to-eth-btn"]',
-  connectToVegaBtn: '[data-testid="connect-to-vega-wallet-btn"]',
-  link: '[data-testid="link"]',
-  warning: '[data-testid="callout"]',
-};
+const guideLink = '[data-testid="staking-guide-link"]';
+const step1 = '[data-testid="staking-step-1"]';
+const step2 = '[data-testid="staking-step-2"]';
+const step3 = '[data-testid="staking-step-3"]';
+const sectionHeader = 'h2';
+const connectToEthBtn = '[data-testid="connect-to-eth-btn"]';
+const connectToVegaBtn = '[data-testid="connect-to-vega-wallet-btn"]';
+const link = '[data-testid="link"]';
+const warning = '[data-testid="callout"]';
 
 context('Staking Page - verify elements on page', function () {
   before('navigate to staking page', function () {
-    cy.visit('/').navigateTo('staking');
+    cy.visit('/').navigate_to('staking');
   });
 
   describe('with wallets disconnected', function () {
     describe('description section', function () {
       it('should have staking tab highlighted', function () {
-        cy.verifyTabHighlighted('staking');
+        cy.verify_tab_highlighted('staking');
       });
 
       it('should have STAKING ON VEGA header visible', function () {
-        cy.pageHeader()
-          .should('be.visible')
-          .and('have.text', 'Staking on Vega');
+        cy.verify_page_header('Staking on Vega');
       });
 
       it('should have Staking Guide link visible', function () {
-        cy.get(locator.guideLink)
+        cy.get(guideLink)
           .should('be.visible')
           .and('have.text', 'Read more about staking on Vega')
           .and(
@@ -41,16 +37,16 @@ context('Staking Page - verify elements on page', function () {
 
     describe('step 1 section', function () {
       it('should have header visible', function () {
-        cy.get(locator.step1).within(() => {
-          cy.get(locator.sectionHeader)
+        cy.get(step1).within(() => {
+          cy.get(sectionHeader)
             .should('be.visible')
             .and('have.text', 'Step 1. Connect to a Vega Wallet');
         });
       });
 
       it('should have text visible', function () {
-        cy.get(locator.step1).within(() => {
-          cy.get(locator.link)
+        cy.get(step1).within(() => {
+          cy.get(link)
             .should('be.visible')
             .and('have.text', 'Vega Wallet')
             .and('have.attr', 'href', 'https://vega.xyz/wallet');
@@ -58,16 +54,16 @@ context('Staking Page - verify elements on page', function () {
       });
 
       it('should have connect to eth button visible', function () {
-        cy.get(locator.step1).within(() => {
-          cy.get(locator.connectToEthBtn)
+        cy.get(step1).within(() => {
+          cy.get(connectToEthBtn)
             .should('be.visible')
             .and('have.text', 'Connect Ethereum wallet');
         });
       });
 
       it('should have connect to vega button visible', function () {
-        cy.get(locator.step1).within(() => {
-          cy.get(locator.connectToVegaBtn)
+        cy.get(step1).within(() => {
+          cy.get(connectToVegaBtn)
             .should('be.visible')
             .and('have.text', 'Connect Vega wallet');
         });
@@ -76,16 +72,16 @@ context('Staking Page - verify elements on page', function () {
 
     describe('step 2 section', function () {
       it('should have header visible', function () {
-        cy.get(locator.step2).within(() => {
-          cy.get(locator.sectionHeader)
+        cy.get(step2).within(() => {
+          cy.get(sectionHeader)
             .should('be.visible')
             .and('have.text', 'Step 2. Associate tokens with a Vega Wallet');
         });
       });
 
       it('should have warning visible', function () {
-        cy.get(locator.step2).within(() => {
-          cy.get(locator.warning)
+        cy.get(step2).within(() => {
+          cy.get(warning)
             .should('be.visible')
             .and(
               'have.text',
@@ -97,8 +93,8 @@ context('Staking Page - verify elements on page', function () {
 
     describe('step 3 section', function () {
       it('should have header visible', function () {
-        cy.get(locator.step3).within(() => {
-          cy.get(locator.sectionHeader)
+        cy.get(step3).within(() => {
+          cy.get(sectionHeader)
             .should('be.visible')
             .and(
               'have.text',
