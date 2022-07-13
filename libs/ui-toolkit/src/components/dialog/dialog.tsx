@@ -42,7 +42,7 @@ export function Dialog({
         />
         <DialogPrimitives.Content className={contentClasses}>
           <DialogPrimitives.Close
-            className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow"
+            className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow focus-visible:top-[7px] focus-visible:right-[7px]"
             data-testid="dialog-close"
           >
             <Icon
