@@ -21,7 +21,7 @@ interface OrderListProps {
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data, showCancelled = true }, ref) => {
     const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
-    const { transaction, finalizedOrder, reset, cancel } = useOrderCancel();
+    const { transaction, updatedOrder, reset, cancel } = useOrderCancel();
     const ordersData = showCancelled
       ? data
       : data?.filter((o) => o.status !== OrderStatus.Cancelled) || null;
@@ -44,10 +44,10 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           key={`cancel-order-dialog-${transaction.txHash}`}
           orderDialogOpen={cancelOrderDialogOpen}
           setOrderDialogOpen={setCancelOrderDialogOpen}
-          finalizedOrder={finalizedOrder}
+          finalizedOrder={updatedOrder}
           transaction={transaction}
           reset={reset}
-          title={getDialogTitle(finalizedOrder?.status)}
+          title={getDialogTitle(updatedOrder?.status)}
         />
       </>
     );
