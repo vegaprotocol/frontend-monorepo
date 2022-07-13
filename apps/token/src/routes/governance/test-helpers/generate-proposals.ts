@@ -67,12 +67,15 @@ export function generateProposal(
 }
 
 export const generateYesVotes = (
-  numberOfVotes = 5
+  numberOfVotes = 5,
+  fixedTokenValue?: number
 ): ProposalFields_votes_yes => {
   return {
     __typename: 'ProposalVoteSide',
     totalNumber: faker.datatype.number({ min: 0, max: 100 }).toString(),
-    totalTokens: faker.datatype.number({ min: 1, max: 10000 }).toString(),
+    totalTokens: faker.datatype
+      .number({ min: 1, max: 10000000000000000000000 })
+      .toString(),
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
         __typename: 'Vote',
@@ -82,12 +85,14 @@ export const generateYesVotes = (
           __typename: 'Party',
           stake: {
             __typename: 'PartyStake',
-            currentStakeAvailable: faker.datatype
-              .number({
-                min: 1,
-                max: 10000,
-              })
-              .toString(),
+            currentStakeAvailable: fixedTokenValue
+              ? fixedTokenValue.toString()
+              : faker.datatype
+                  .number({
+                    min: 1000000000000000000,
+                    max: 10000000000000000000000,
+                  })
+                  .toString(),
           },
         },
         datetime: faker.date.past().toISOString(),
@@ -96,11 +101,16 @@ export const generateYesVotes = (
   };
 };
 
-export const generateNoVotes = (numberOfVotes = 5): ProposalFields_votes_no => {
+export const generateNoVotes = (
+  numberOfVotes = 5,
+  fixedTokenValue?: number
+): ProposalFields_votes_no => {
   return {
     __typename: 'ProposalVoteSide',
     totalNumber: faker.datatype.number({ min: 0, max: 100 }).toString(),
-    totalTokens: faker.datatype.number({ min: 1, max: 10000 }).toString(),
+    totalTokens: faker.datatype
+      .number({ min: 1000000000000000000, max: 10000000000000000000000 })
+      .toString(),
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
         __typename: 'Vote',
@@ -110,12 +120,14 @@ export const generateNoVotes = (numberOfVotes = 5): ProposalFields_votes_no => {
           __typename: 'Party',
           stake: {
             __typename: 'PartyStake',
-            currentStakeAvailable: faker.datatype
-              .number({
-                min: 1,
-                max: 10000,
-              })
-              .toString(),
+            currentStakeAvailable: fixedTokenValue
+              ? fixedTokenValue.toString()
+              : faker.datatype
+                  .number({
+                    min: 1000000000000000000,
+                    max: 10000000000000000000000,
+                  })
+                  .toString(),
           },
         },
         datetime: faker.date.past().toISOString(),

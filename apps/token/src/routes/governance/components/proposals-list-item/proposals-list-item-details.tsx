@@ -123,11 +123,12 @@ export const ProposalsListItemDetails = ({
         (!majorityMet && MajorityNotReached) ||
         (willPass && (
           <>
-            {t('Set to')}{' '}
-            <StatusPass>
-              {t('pass')}
-              {}
-            </StatusPass>
+            {t('Set to')} <StatusPass>{t('pass')}</StatusPass>
+          </>
+        )) ||
+        (!willPass && (
+          <>
+            {t('Set to')} <StatusFail>{t('fail')}</StatusFail>
           </>
         ));
       break;
