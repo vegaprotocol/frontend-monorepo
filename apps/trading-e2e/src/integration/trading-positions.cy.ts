@@ -18,7 +18,7 @@ describe('positions', () => {
 
     cy.getByTestId('tab-positions').should('be.visible');
     cy.getByTestId('tab-positions')
-      .get('[col-id="market.tradableInstrument.instrument.code"]')
+      .get('[col-id="market.tradableInstrument.instrument.code"]').should('be.visible')
       .each(($marketSymbol) => {
         cy.wrap($marketSymbol).invoke('text').should('not.be.empty');
       });
