@@ -11,7 +11,7 @@ beforeEach(() => {
 
 describe('accounts', () => {
   it('renders accounts', () => {
-    cy.getByTestId('Accounts').click();
+    cy.getByTestId('Collateral').click();
     cy.getByTestId('tab-accounts').contains('Please connect Vega wallet');
 
     connectVegaWallet();
