@@ -73,15 +73,15 @@ export interface Append<Data> {
 }
 
 interface GetData<QueryData, Data> {
-  (queryData: QueryData, pagination: Pagination): Data | null;
+  (queryData: QueryData): Data | null;
 }
 
 interface GetPageInfo<QueryData> {
-  (queryData: QueryData, pagination: Pagination): PageInfo | null;
+  (queryData: QueryData): PageInfo | null;
 }
 
 interface GetTotalCount<QueryData> {
-  (queryData: QueryData, pagination: Pagination): number | undefined;
+  (queryData: QueryData): number | undefined;
 }
 
 interface GetDelta<SubscriptionData, Delta> {
@@ -224,15 +224,12 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       query,
       variables: {
         ...variables,
-        pagination: paginationVariables, // { first: paginationVariables.first }
+        pagination: paginationVariables,
       },
       fetchPolicy,
     });
-    const insertionData = getData(res.data, paginationVariables);
-    const insertionPageInfo = pagination.getPageInfo(
-      res.data,
-      paginationVariables
-    );
+    const insertionData = getData(res.data);
+    const insertionPageInfo = pagination.getPageInfo(res.data);
     ({ data, totalCount } = pagination.append(
       data,
       insertionData,
@@ -242,7 +239,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
     ));
     pageInfo = insertionPageInfo;
     totalCount =
-      pagination.getTotalCount(res.data, paginationVariables) ?? totalCount;
+      pagination.getTotalCount(res.data) ?? totalCount;
     notifyAll({ insertionData });
     return insertionData;
   };
@@ -259,19 +256,15 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           : variables,
         fetchPolicy,
       });
-      data = getData(res.data, { first: pagination?.first });
+      data = getData(res.data);
       if (pagination) {
         if (!(data instanceof Array)) {
           throw new Error(
             'data needs to be instance of { cursor: string }[] when using pagination'
           );
         }
-        pageInfo = pagination.getPageInfo(res.data, {
-          first: pagination.first,
-        });
-        totalCount = pagination.getTotalCount(res.data, {
-          first: pagination.first,
-        });
+        pageInfo = pagination.getPageInfo(res.data);
+        totalCount = pagination.getTotalCount(res.data);
         if (data && totalCount && data.length < totalCount) {
           data.push(...new Array(totalCount - data.length).fill(null));
         }

@@ -19,7 +19,7 @@ interface FillsManagerProps {
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<Fills_party_tradesPaged_edges[] | null>(null);
+  const dataRef = useRef<(Fills_party_tradesPaged_edges | null)[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);
@@ -43,14 +43,14 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       data,
       delta,
     }: {
-      data: Fills_party_tradesPaged_edges[];
+      data: (Fills_party_tradesPaged_edges | null)[];
       delta: FillsSub_trades[];
     }) => {
       if (!gridRef.current?.api) {
         return false;
       }
       if (!scrolledToTop.current) {
-        const createdAt = dataRef.current?.[0].node.createdAt;
+        const createdAt = dataRef.current?.[0]?.node.createdAt;
         if (createdAt) {
           newRows.current += delta.filter(
             (trade) => trade.createdAt > createdAt
@@ -91,26 +91,23 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const getRows = async ({
     successCallback,
     failCallback,
-    startRow: rawStartRow,
-    endRow: rawEndRow,
+    startRow,
+    endRow,
   }: IGetRowsParams) => {
-    const startRow = rawStartRow + newRows.current;
-    const endRow = rawEndRow + newRows.current;
+    startRow += newRows.current;
+    endRow += newRows.current;
     try {
-      if (
-        dataRef.current &&
-        dataRef.current.slice(startRow, endRow).some((i) => !i)
-      ) {
-        await load(startRow, endRow);
+      if (dataRef.current && dataRef.current.indexOf(null) < endRow) {
+        await load();
       }
       const rowsThisBlock = dataRef.current
-        ? dataRef.current.slice(startRow, endRow).map((edge) => edge.node)
+        ? dataRef.current.slice(startRow, endRow).map((edge) => edge?.node)
         : [];
       let lastRow = -1;
       if (totalCountRef.current !== undefined) {
         if (!totalCountRef.current) {
           lastRow = 0;
-        } else {
+        } else if (totalCountRef.current <= endRow) {
           lastRow = totalCountRef.current;
         }
       }
@@ -133,7 +130,6 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <FillsTable
-        pagination
         ref={gridRef}
         partyId={partyId}
         datasource={{ getRows }}

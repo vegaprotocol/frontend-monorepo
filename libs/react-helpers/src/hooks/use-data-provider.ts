@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import type { Subscribe, Pagination, Load } from '../lib/generic-data-provider';
+import type { Subscribe, Load } from '../lib/generic-data-provider';
 
 /**
  *
@@ -48,9 +48,9 @@ export function useDataProvider<Data, Delta>({
       reloadRef.current(force);
     }
   }, []);
-  const load = useCallback((startRow, endRow) => {
+  const load = useCallback<Load<Data>>((...args) => {
     if (loadRef.current) {
-      return loadRef.current(startRow, endRow);
+      return loadRef.current(...args);
     }
     return Promise.reject();
   }, []);

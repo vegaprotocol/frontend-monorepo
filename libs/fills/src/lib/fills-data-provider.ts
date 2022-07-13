@@ -4,13 +4,12 @@ import {
   makeDataProvider,
   defaultAppend as append,
 } from '@vegaprotocol/react-helpers';
-import type { PageInfo, Pagination } from '@vegaprotocol/react-helpers';
+import type { PageInfo } from '@vegaprotocol/react-helpers';
 import type { FillFields } from './__generated__/FillFields';
 import type {
   Fills,
   Fills_party_tradesPaged_edges,
 } from './__generated__/Fills';
-import { generateFill } from './test-helpers';
 import type { FillsSub } from './__generated__/FillsSub';
 
 const FILL_FRAGMENT = gql`
@@ -84,40 +83,14 @@ const update = (data: Fills_party_tradesPaged_edges[], delta: FillFields[]) => {
   });
 };
 
-const totalCount = 45000;
+const getData = (responseData: Fills): Fills_party_tradesPaged_edges[] | null =>
+  responseData.party?.tradesPaged.edges || null;
 
-const getData = (
-  responseData: Fills,
-  pagination: Pagination
-): Fills_party_tradesPaged_edges[] | null => {
-  const after = Number(pagination?.after || '0');
-  const skip = pagination?.skip ?? 0;
-  const numOfRows = Math.min(pagination.first || 0, totalCount - after);
-  return new Array(numOfRows).fill(null).map((v, i) => ({
-    __typename: 'TradeEdge',
-    node: generateFill({ id: (after + i + skip + 1).toString() }),
-    cursor: (after + i + skip + 1).toString(),
-  }));
-};
+const getPageInfo = (responseData: Fills): PageInfo | null =>
+  responseData.party?.tradesPaged.pageInfo || null;
 
-const getPageInfo = (
-  responseData: Fills,
-  pagination: Pagination
-): PageInfo | null => {
-  const endCursor = Math.min(
-    (Number(pagination.after) || 0) + (pagination.first || 0),
-    totalCount
-  );
-  return {
-    endCursor: endCursor.toString(),
-    hasNextPage: endCursor < totalCount,
-  };
-};
-
-const getTotalCount = (
-  responseData: Fills,
-  pagination: Pagination
-): number | undefined => totalCount;
+const getTotalCount = (responseData: Fills): number | undefined =>
+  responseData.party?.tradesPaged.totalCount;
 
 const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
 
