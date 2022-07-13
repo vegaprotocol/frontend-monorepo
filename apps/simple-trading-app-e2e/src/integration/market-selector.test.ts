@@ -42,7 +42,7 @@ describe('market selector', () => {
         .find('[role="button"]')
         .should('have.length', 1);
       cy.get('input[placeholder="Search"]').clear();
-      cy.get('input[placeholder="Search"]').type('app')
+      cy.get('input[placeholder="Search"]').type('app');
       const filtered = markets.filter((market) => market.name.match(/app/i));
       cy.getByTestId('market-pane')
         .children()
