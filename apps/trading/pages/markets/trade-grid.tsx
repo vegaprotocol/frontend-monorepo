@@ -74,7 +74,7 @@ export const TradeMarketHeader = ({
 
         <div
           data-testid="market-summary"
-          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap w-[400px]"
+          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap"
         >
           <div className={headerItemClassName}>
             <span className={itemClassName}>Change (24h)</span>
