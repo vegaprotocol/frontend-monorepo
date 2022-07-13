@@ -10,7 +10,7 @@ interface SideSelectorProps {
 
 export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
   const toggles = Object.entries(VegaWalletOrderSide).map(([label, value]) => ({
-    label,
+    label: label === 'Buy' ? 'Long' : 'Short',
     value,
   }));
 
