@@ -93,19 +93,21 @@ export const NodeSwitcher = ({
   );
 
   return (
-    <div className="text-black dark:text-white min-w-[800px]">
+    <div className="text-black dark:text-white w-full lg:min-w-[800px]">
       <NodeError {...(customNodeError || networkError)} />
       <form onSubmit={() => onSubmit(nodeRadio)}>
         <p className="text-body-large font-bold mt-16 mb-32">
           {t('Select a GraphQL node to connect to:')}
         </p>
         <div>
-          <LayoutRow>
-            <div />
-            <LayoutCell>{t('Response time')}</LayoutCell>
-            <LayoutCell>{t('Block')}</LayoutCell>
-            <LayoutCell>{t('SSL')}</LayoutCell>
-          </LayoutRow>
+          <div className="hidden lg:block">
+            <LayoutRow>
+              <div />
+              <span className="px-8 text-right">{t('Response time')}</span>
+              <span className="px-8 text-right">{t('Block')}</span>
+              <span className="px-8 text-right">{t('SSL')}</span>
+            </LayoutRow>
+          </div>
           <RadioGroup
             className="block"
             value={nodeRadio}
@@ -123,7 +125,7 @@ export const NodeSwitcher = ({
                   highestBlock={highestBlock}
                   setBlock={(block) => updateNodeBlock(node, block)}
                 >
-                  <div>
+                  <div className="mb-8 break-all">
                     <Radio
                       id={`node-url-${index}`}
                       labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
@@ -140,7 +142,7 @@ export const NodeSwitcher = ({
                 highestBlock={highestBlock}
                 setBlock={(block) => updateNodeBlock(CUSTOM_NODE_KEY, block)}
               >
-                <div className="flex w-full">
+                <div className="flex w-full mb-8">
                   <Radio
                     id={`node-url-custom`}
                     value={CUSTOM_NODE_KEY}

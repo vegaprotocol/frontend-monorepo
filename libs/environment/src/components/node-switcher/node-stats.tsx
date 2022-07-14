@@ -60,12 +60,14 @@ const NodeStatsContent = ({
     <LayoutRow>
       {children}
       <LayoutCell
+        label={t('Response time')}
         isLoading={data.responseTime?.isLoading}
         hasError={data.responseTime?.hasError}
       >
         {getResponseTimeDisplayValue(data.responseTime)}
       </LayoutCell>
       <LayoutCell
+        label={t('Block')}
         isLoading={data.block?.isLoading}
         hasError={
           data.block?.hasError ||
@@ -74,7 +76,11 @@ const NodeStatsContent = ({
       >
         {getBlockDisplayValue(data.block, setBlock)}
       </LayoutCell>
-      <LayoutCell isLoading={data.ssl?.isLoading} hasError={data.ssl?.hasError}>
+      <LayoutCell
+        label={t('SSL')}
+        isLoading={data.ssl?.isLoading}
+        hasError={data.ssl?.hasError}
+      >
         {getSslDisplayValue(data.ssl)}
       </LayoutCell>
     </LayoutRow>
