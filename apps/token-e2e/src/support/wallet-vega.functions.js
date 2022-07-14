@@ -33,39 +33,3 @@ Cypress.Commands.add('vega_wallet_connect', () => {
   });
   cy.contains(`${vegaWalletName} key`, { timeout: 20000 }).should('be.visible');
 });
-
-Cypress.Commands.add('vega_wallet_check_unstaked_value_is', (expectedVal) => {
-  cy.highlight(`Checking vega wallet - Unstaked Value is ${expectedVal}`);
-  cy.get(vegaWalletContainer).within(() => {
-    cy.contains('Unstaked', { timeout: 40000 })
-      .siblings()
-      .contains(expectedVal, { timeout: 40000 })
-      .should('be.visible');
-  });
-});
-
-// Cypress.Commands.add('vega_wallet_get_updated_unstaked_value', () => {
-//   cy.highlight(`Getting vega wallet - Unstaked Value once changed`);
-//   cy.get(vegaWalletContainer).within(() => {
-//     cy.contains('Unstaked', { timeout: 40000 })
-//       .siblings()
-//       .invoke('text')
-//       .then(currentValue => {
-//         cy.contains('Unstaked', { timeout: 40000 })
-//           .siblings()
-//           .contains(currentValue, { timeout: 60000 })
-//           .should('not.exist')
-//       })
-//   });
-// });
-
-Cypress.Commands.add('vega_wallet_check_associated_value_is', (expectedVal) => {
-  cy.highlight(`Checking vega wallet - Associated Value is ${expectedVal}`);
-  cy.get(vegaWalletContainer).within(() => {
-    cy.contains('Associated', { timeout: 40000 })
-      .parent()
-      .siblings()
-      .contains(expectedVal, { timeout: 40000 })
-      .should('be.visible');
-  });
-});
