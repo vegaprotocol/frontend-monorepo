@@ -104,7 +104,10 @@ export const useWithdraw = (cancelled: boolean, isNewContract: boolean) => {
   );
 
   useEffect(() => {
-    if (data?.erc20WithdrawalApproval) {
+    if (
+      data?.erc20WithdrawalApproval &&
+      data.erc20WithdrawalApproval.signatures.length > 2
+    ) {
       stopPolling();
       setApproval(data.erc20WithdrawalApproval);
     }

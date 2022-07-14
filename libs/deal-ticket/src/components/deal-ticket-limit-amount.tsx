@@ -32,7 +32,7 @@ export const DealTicketLimitAmount = ({
           />
         </FormGroup>
       </div>
-      <div>@</div>
+      <div className="pt-4 text-black dark:text-white">@</div>
       <div className="flex-1">
         <FormGroup
           labelFor="input-price-quote"

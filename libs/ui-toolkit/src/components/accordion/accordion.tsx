@@ -36,7 +36,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
               className={triggerClassNames}
             >
               <p
-                className="inline-block text-footnote font-bold text-h6 text-black dark:text-white pt-5"
+                className="inline-block text-footnote font-medium text-h6 text-black dark:text-white pt-5"
                 data-testid="accordion-title"
               >
                 {title}

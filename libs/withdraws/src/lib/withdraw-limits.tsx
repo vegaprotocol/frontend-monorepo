@@ -1,13 +1,13 @@
 import { t } from '@vegaprotocol/react-helpers';
 import type BigNumber from 'bignumber.js';
 
-interface DepositLimitsProps {
+interface WithdrawLimitsProps {
   limits: {
     max: BigNumber;
   };
 }
 
-export const DepositLimits = ({ limits }: DepositLimitsProps) => {
+export const WithdrawLimits = ({ limits }: WithdrawLimitsProps) => {
   let maxLimit = '';
 
   if (limits.max.isEqualTo(Infinity)) {
@@ -20,7 +20,7 @@ export const DepositLimits = ({ limits }: DepositLimitsProps) => {
 
   return (
     <>
-      <p className="text-ui font-bold">{t('Deposit limits')}</p>
+      <p className="text-ui font-bold">{t('Withdraw limits')}</p>
       <table className="w-full text-ui">
         <tbody>
           <tr>
