@@ -96,12 +96,12 @@ describe(`useOrderValidation`, () => {
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
 
-  it('Returns an error message when no keypair found', async () => {
+  it('Returns an error message when no keypair found', () => {
     const { result } = setup(defaultOrder, { keypair: null });
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
   });
 
-  it('Returns an error message when the keypair is tainted', async () => {
+  it('Returns an error message when the keypair is tainted', () => {
     const { result } = setup(defaultOrder, {
       keypair: { ...defaultWalletContext.keypair, tainted: true },
     });
@@ -115,7 +115,7 @@ describe(`useOrderValidation`, () => {
     ${MarketState.TradingTerminated}
   `(
     'Returns an error message for market state when no longer accepting orders',
-    async ({ state }) => {
+    ({ state }) => {
       const { result } = setup({ market: { ...defaultOrder.market, state } });
       expect(result.current).toStrictEqual({
         isDisabled: true,
@@ -133,7 +133,7 @@ describe(`useOrderValidation`, () => {
     ${MarketState.Closed}
   `(
     'Returns an error message for market state suspended or pending',
-    async ({ state }) => {
+    ({ state }) => {
       const { result } = setup({
         market: {
           ...defaultOrder.market,
@@ -155,7 +155,7 @@ describe(`useOrderValidation`, () => {
     ${MarketTradingMode.OpeningAuction}    | ${ERROR.MARKET_CONTINUOUS_LIMIT}
   `(
     `Returns an error message when trying to submit a non-limit order for a "$tradingMode" market`,
-    async ({ tradingMode, errorMessage }) => {
+    ({ tradingMode, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
         orderType: VegaWalletOrderType.Market,
@@ -180,7 +180,7 @@ describe(`useOrderValidation`, () => {
     ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
   `(
     `Returns an error message when submitting a limit order with a "$orderTimeInForce" value to a "$tradingMode" market`,
-    async ({ tradingMode, orderTimeInForce, errorMessage }) => {
+    ({ tradingMode, orderTimeInForce, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
         orderType: VegaWalletOrderType.Limit,
@@ -201,7 +201,7 @@ describe(`useOrderValidation`, () => {
     ${`price`} | ${`min`}      | ${ERROR.FIELD_PRICE_MIN}
   `(
     `Returns an error message when the order $fieldName "$errorType" validation fails`,
-    async ({ fieldName, errorType, errorMessage }) => {
+    ({ fieldName, errorType, errorMessage }) => {
       const { result } = setup({
         fieldErrors: { [fieldName]: { type: errorType } },
       });
@@ -212,7 +212,7 @@ describe(`useOrderValidation`, () => {
     }
   );
 
-  it('Returns an error message when the order size incorrectly has decimal values', async () => {
+  it('Returns an error message when the order size incorrectly has decimal values', () => {
     const { result } = setup({
       market: { ...market, positionDecimalPlaces: 0 },
       fieldErrors: { size: { type: `validate`, message: ERROR_SIZE_DECIMAL } },
@@ -223,7 +223,7 @@ describe(`useOrderValidation`, () => {
     });
   });
 
-  it('Returns an error message when the order size has more decimals then allowed', async () => {
+  it('Returns an error message when the order size has more decimals then allowed', () => {
     const { result } = setup({
       fieldErrors: { size: { type: `validate`, message: ERROR_SIZE_DECIMAL } },
     });
