@@ -22,7 +22,7 @@ context(
       cy.verify_page_header('The $VEGA token');
       cy.ethereum_wallet_connect();
       cy.navigate_to('staking');
-      cy.wait_for_spinner()
+      cy.wait_for_spinner();
       cy.get(validatorList).first().invoke('text').as('validatorName');
     });
 
@@ -32,7 +32,7 @@ context(
         function () {
           cy.vega_wallet_teardown();
           cy.navigate_to('staking');
-          cy.wait_for_spinner()
+          cy.wait_for_spinner();
         }
       );
 
