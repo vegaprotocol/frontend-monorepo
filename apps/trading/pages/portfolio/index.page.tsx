@@ -4,6 +4,8 @@ import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { AnchorButton, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import { FundingContainer } from '@vegaprotocol/funding';
+
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import classNames from 'classnames';
@@ -48,6 +50,16 @@ const Portfolio = () => {
               </h4>
               <div>
                 <FillsContainer />
+              </div>
+            </div>
+          </Tab>
+          <Tab id="fills" name={t('History')}>
+            <div className={tabContentClassName}>
+              <h4 className="text-h4 text-black dark:text-white p-8">
+                {t('History')}
+              </h4>
+              <div>
+                <FundingContainer />
               </div>
             </div>
           </Tab>

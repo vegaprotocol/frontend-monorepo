@@ -1,0 +1,43 @@
+{
+  "root": "libs/funding",
+  "sourceRoot": "libs/funding/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/funding",
+        "tsConfig": "libs/funding/tsconfig.lib.json",
+        "project": "libs/funding/package.json",
+        "entryFile": "libs/funding/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/funding/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/funding/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/funding"],
+      "options": {
+        "jestConfig": "libs/funding/jest.config.js",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
