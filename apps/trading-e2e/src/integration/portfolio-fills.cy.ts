@@ -2,6 +2,7 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateFill, generateFills } from '../support/mocks/generate-fills';
 import { Side } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
+import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 describe('fills', () => {
   before(() => {
@@ -58,6 +59,7 @@ describe('fills', () => {
     });
     cy.mockGQL((req) => {
       aliasQuery(req, 'Fills', result);
+      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
     });
     cy.visit('/portfolio');
     cy.get('main[data-testid="portfolio"]').should('exist');
