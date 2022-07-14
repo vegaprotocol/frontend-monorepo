@@ -22,7 +22,7 @@ export const WithdrawalsContainer = () => {
             <WithdrawalsTable withdrawals={withdrawals} />
             <div className="p-12">
               <Link href="/portfolio/withdraw" passHref={true}>
-                <Button>Withdraw</Button>
+                <Button data-testid="start-withdrawal">Withdraw</Button>
               </Link>
             </div>
           </div>

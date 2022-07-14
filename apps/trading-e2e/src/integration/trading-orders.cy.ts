@@ -21,7 +21,7 @@ describe('orders', () => {
 
   beforeEach(() => {
     cy.getByTestId('Orders').click();
-    cy.getByTestId('tab-orders').contains('Connect your Vega wallet');
+    cy.getByTestId('tab-orders').contains('Please connect Vega wallet');
 
     connectVegaWallet();
   });

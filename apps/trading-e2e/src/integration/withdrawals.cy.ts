@@ -18,8 +18,6 @@ describe('withdrawals', () => {
 
     // It also requires connection Ethereum wallet
     connectEthereumWallet();
-
-    cy.contains('Withdrawals');
   });
 
   it('renders history of withdrawals', () => {
@@ -29,7 +27,6 @@ describe('withdrawals', () => {
     const etherScanLink = `${Cypress.env(
       'ETHERSCAN_URL'
     )}/tx/0x5d7b1a35ba6bd23be17bb7a159c13cdbb3121fceb94e9c6c510f5503dce48d03`;
-    cy.contains('Withdrawals');
 
     const row = '.ag-center-cols-container[role="rowgroup"] > [role="row"]';
 
