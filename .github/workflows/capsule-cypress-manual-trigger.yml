@@ -1,14 +1,29 @@
-name: Capsule tests -- nightly
+name: Capsule tests -- manual trigger
 
-# This workflow runs the frontend tests against latest develop of the core to preempt breaking changes
+# This workflow runs the frontend tests against chosen branch
 
 on:
-  schedule:
-    - cron: '0 4 * * *'
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project'
+        required: true
+        type: choice
+        options:
+          - explorer
+          - simple-trading-app
+          - stats
+          - token
+          - trading
+      includeFlows:
+        description: 'Include long flows (if any)?'
+        required: true
+        type: boolean
+        default: true
 
 jobs:
-  nightly:
-    name: Run capsule tests -- nightly
+  manual:
+    name: Run capsule tests -- manual trigger
     runs-on: ubuntu-latest
     env:
       GO111MODULE: 'on'
@@ -102,12 +117,12 @@ jobs:
         run: yarn install
 
       - name: Run Cypress tests
-        run: yarn nx run-many --target=e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: yarn nx run-many --target=e2e --project=${{inputs.project}} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_INCLUDE_FLOWS: true
+          CYPRESS_INCLUDE_FLOWS: ${{inputs.includeFlows}}
 
       ######
       ## Upload logs
