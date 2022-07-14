@@ -1,7 +1,7 @@
 import { Web3Container } from '../../components/web3-container';
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import { OrderListContainer } from '@vegaprotocol/order-list';
+import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { AnchorButton, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';

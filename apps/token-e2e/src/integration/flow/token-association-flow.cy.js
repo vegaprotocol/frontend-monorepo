@@ -1,7 +1,7 @@
-const stakingPageLink = '[href="/staking"]';
 const pageSpinner = 'splash-loader';
 const menuBar = 'nav';
 const validatorList = '[data-testid="node-list-item-name"]';
+
 const vegaWalletPublicKeyShort = Cypress.env('vegaWalletPublicKeyShort');
 
 context(
@@ -16,7 +16,7 @@ context(
       cy.reload();
       cy.get(menuBar, { timeout: 20000 }).should('be.visible');
       cy.ethereum_wallet_connect();
-      cy.get(stakingPageLink).first().click();
+      cy.navigate_to('staking');
       cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
       cy.get(validatorList).first().invoke('text').as('validatorName');
     });
@@ -26,7 +26,7 @@ context(
         'teardown wallet & drill into a specific validator',
         function () {
           cy.vega_wallet_teardown();
-          cy.get(stakingPageLink).first().click();
+          cy.navigate_to('staking');
           cy.get(pageSpinner, { timeout: 20000 }).should('not.exist');
         }
       );

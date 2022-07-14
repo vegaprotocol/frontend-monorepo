@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
-import sortBy from 'lodash/sortBy';
+import orderBy from 'lodash/orderBy';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useGlobalStore } from '../stores';
@@ -12,6 +12,7 @@ const MARKETS_QUERY = gql`
     markets {
       id
       tradingMode
+      state
       marketTimestamps {
         open
       }
@@ -20,13 +21,13 @@ const MARKETS_QUERY = gql`
 `;
 
 const marketList = ({ markets }: MarketsLanding) =>
-  sortBy(
+  orderBy(
     markets?.filter(
       ({ marketTimestamps, tradingMode }) =>
         marketTimestamps.open && tradingMode === MarketTradingMode.Continuous
     ) || [],
-    'marketTimestamps.open',
-    'id'
+    ['state', 'marketTimestamps.open', 'id'],
+    ['asc', 'asc', 'asc']
   );
 
 export function Index() {

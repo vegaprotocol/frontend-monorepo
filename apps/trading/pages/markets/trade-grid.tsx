@@ -6,7 +6,7 @@ import {
   DealTicketContainer,
   MarketInfoContainer,
 } from '@vegaprotocol/deal-ticket';
-import { OrderListContainer } from '@vegaprotocol/order-list';
+import { OrderListContainer } from '@vegaprotocol/orders';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';

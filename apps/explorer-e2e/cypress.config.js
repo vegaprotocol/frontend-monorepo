@@ -1,16 +1,13 @@
 const { defineConfig } = require('cypress');
-const setupNodeEvents = require('./src/plugins/index.js');
 
 module.exports = defineConfig({
   projectId: 'et4snf',
 
   e2e: {
-    setupNodeEvents,
     baseUrl: 'http://localhost:3000',
     fileServerFolder: '.',
     fixturesFolder: false,
-    specPattern: '**/*.feature',
-    excludeSpecPattern: '**/*.js',
+    specPattern: '**/*.cy.{js,jsx,ts,tsx}',
     modifyObstructiveCode: false,
     supportFile: './src/support/index.ts',
     video: true,

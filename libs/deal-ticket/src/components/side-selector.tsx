@@ -1,16 +1,16 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
-import { OrderSide } from '@vegaprotocol/wallet';
+import { VegaWalletOrderSide } from '@vegaprotocol/wallet';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 
 interface SideSelectorProps {
-  value: OrderSide;
-  onSelect: (side: OrderSide) => void;
+  value: VegaWalletOrderSide;
+  onSelect: (side: VegaWalletOrderSide) => void;
 }
 
 export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
-  const toggles = Object.entries(OrderSide).map(([label, value]) => ({
-    label,
+  const toggles = Object.entries(VegaWalletOrderSide).map(([label, value]) => ({
+    label: label === 'Buy' ? 'Long' : 'Short',
     value,
   }));
 
@@ -21,7 +21,7 @@ export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
         name="order-side"
         toggles={toggles}
         checkedValue={value}
-        onChange={(e) => onSelect(e.target.value as OrderSide)}
+        onChange={(e) => onSelect(e.target.value as VegaWalletOrderSide)}
       />
     </FormGroup>
   );
