@@ -309,7 +309,7 @@ describe('useEnvironment hook', () => {
     it('updates the VEGA_URL with the quickest node to respond from the config urls', async () => {
       delete process.env['NX_VEGA_URL'];
 
-      const mockNodes: Record<string, NodeData> = {
+      const mockNodes: Record<string, MockRequestConfig> = {
         'https://mock-node-1.com': { hasError: false, delay: 4 },
         'https://mock-node-2.com': { hasError: false, delay: 5 },
         'https://mock-node-3.com': { hasError: false, delay: 8 },
