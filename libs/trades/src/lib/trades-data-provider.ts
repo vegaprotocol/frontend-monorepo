@@ -1,7 +1,15 @@
 import { gql } from '@apollo/client';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  defaultAppend as append,
+} from '@vegaprotocol/react-helpers';
+import type { PageInfo } from '@vegaprotocol/react-helpers';
 import type { TradeFields } from './__generated__/TradeFields';
-import type { Trades } from './__generated__/Trades';
+import type {
+  Trades,
+  Trades_market_tradesConnection_edges,
+  Trades_market_tradesConnection_edges_node,
+} from './__generated__/Trades';
 import type { TradesSub } from './__generated__/TradesSub';
 import orderBy from 'lodash/orderBy';
 import produce from 'immer';
@@ -24,11 +32,21 @@ const TRADES_FRAGMENT = gql`
 
 export const TRADES_QUERY = gql`
   ${TRADES_FRAGMENT}
-  query Trades($marketId: ID!, $maxTrades: Int!) {
+  query Trades($marketId: ID!, $pagination: Pagination) {
     market(id: $marketId) {
       id
-      trades(last: $maxTrades) {
-        ...TradeFields
+      tradesConnection(pagination: $pagination) {
+        totalCount
+        edges {
+          node {
+            ...TradeFields
+          }
+          cursor
+        }
+        pageInfo {
+          startCursor
+          endCursor
+        }
       }
     }
   }
@@ -43,40 +61,54 @@ export const TRADES_SUB = gql`
   }
 `;
 
-export const sortTrades = (trades: TradeFields[]) => {
-  return orderBy(
-    trades,
-    (t) => {
-      return new Date(t.createdAt).getTime();
-    },
-    'desc'
-  );
-};
-
-const update = (data: TradeFields[], delta: TradeFields[]) => {
+const update = (
+  data: (Trades_market_tradesConnection_edges | null)[],
+  delta: TradeFields[]
+) => {
   return produce(data, (draft) => {
-    const incoming = sortTrades(delta);
-
-    // Add new trades to the top
-    draft.unshift(...incoming);
-
-    // Remove old trades from the bottom
-    if (draft.length > MAX_TRADES) {
-      draft.splice(MAX_TRADES, draft.length - MAX_TRADES);
-    }
+    orderBy(delta, 'createdAt', 'desc').forEach((node) => {
+      const index = draft.findIndex((edge) => edge?.node.id === node.id);
+      if (index !== -1) {
+        if (draft[index]?.node) {
+          Object.assign(
+            draft[index]?.node as Trades_market_tradesConnection_edges_node,
+            node
+          );
+        }
+      } else {
+        const firstNode = draft[0]?.node;
+        if (firstNode && node.createdAt >= firstNode.createdAt) {
+          draft.unshift({ node, cursor: '', __typename: 'TradeEdge' });
+        }
+      }
+    });
   });
 };
 
-const getData = (responseData: Trades): TradeFields[] | null =>
-  responseData.market ? responseData.market.trades : null;
+const getData = (
+  responseData: Trades
+): Trades_market_tradesConnection_edges[] | null =>
+  responseData.market ? responseData.market.tradesConnection.edges : null;
 
 const getDelta = (subscriptionData: TradesSub): TradeFields[] =>
   subscriptionData?.trades || [];
+
+const getPageInfo = (responseData: Trades): PageInfo | null =>
+  responseData.market?.tradesConnection.pageInfo || null;
+
+const getTotalCount = (responseData: Trades): number | undefined =>
+  responseData.market?.tradesConnection.totalCount;
 
 export const tradesDataProvider = makeDataProvider(
   TRADES_QUERY,
   TRADES_SUB,
   update,
   getData,
-  getDelta
+  getDelta,
+  {
+    getPageInfo,
+    getTotalCount,
+    append,
+    first: 100,
+  }
 );

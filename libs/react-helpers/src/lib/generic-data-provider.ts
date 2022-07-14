@@ -238,8 +238,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       totalCount
     ));
     pageInfo = insertionPageInfo;
-    totalCount =
-      pagination.getTotalCount(res.data) ?? totalCount;
+    totalCount = pagination.getTotalCount(res.data) ?? totalCount;
     notifyAll({ insertionData });
     return insertionData;
   };

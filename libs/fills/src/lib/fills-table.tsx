@@ -13,12 +13,16 @@ import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-
 import type { FillFields } from './__generated__/FillFields';
+import type { Fills_party_tradesConnection_edges_node } from './__generated__/Fills';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
 };
+
+interface AccountsTableValueFormatterParams extends ValueFormatterParams {
+  data: Fills_party_tradesConnection_edges_node;
+}
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
   ({ partyId, ...props }, ref) => {
@@ -69,7 +73,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         <AgGridColumn
           headerName={t('Date')}
           field="createdAt"
-          valueFormatter={({ value }: ValueFormatterParams) => {
+          valueFormatter={({ value }: AccountsTableValueFormatterParams) => {
             if (value === undefined) {
               return value;
             }
@@ -81,7 +85,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
   }
 );
 
-const formatPrice = ({ value, data }: ValueFormatterParams) => {
+const formatPrice = ({ value, data }: AccountsTableValueFormatterParams) => {
   if (value === undefined) {
     return value;
   }
@@ -95,7 +99,7 @@ const formatPrice = ({ value, data }: ValueFormatterParams) => {
 };
 
 const formatSize = (partyId: string) => {
-  return ({ value, data }: ValueFormatterParams) => {
+  return ({ value, data }: AccountsTableValueFormatterParams) => {
     if (value === undefined) {
       return value;
     }
@@ -114,7 +118,7 @@ const formatSize = (partyId: string) => {
   };
 };
 
-const formatTotal = ({ value, data }: ValueFormatterParams) => {
+const formatTotal = ({ value, data }: AccountsTableValueFormatterParams) => {
   if (value === undefined) {
     return value;
   }
@@ -131,7 +135,7 @@ const formatTotal = ({ value, data }: ValueFormatterParams) => {
 };
 
 const formatRole = (partyId: string) => {
-  return ({ value, data }: ValueFormatterParams) => {
+  return ({ value, data }: AccountsTableValueFormatterParams) => {
     if (value === undefined) {
       return value;
     }
@@ -156,7 +160,7 @@ const formatRole = (partyId: string) => {
 };
 
 const formatFee = (partyId: string) => {
-  return ({ value, data }: ValueFormatterParams) => {
+  return ({ value, data }: AccountsTableValueFormatterParams) => {
     if (value === undefined) {
       return value;
     }
