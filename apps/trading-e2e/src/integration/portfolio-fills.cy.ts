@@ -67,7 +67,7 @@ describe('fills', () => {
 
   it('renders fills', () => {
     cy.getByTestId('Fills').click();
-    cy.getByTestId('tab-fills').contains('Please connect Vega wallet');
+    cy.getByTestId('tab-fills').contains('Connect your Vega wallet');
 
     connectVegaWallet();
 

@@ -12,7 +12,7 @@ beforeEach(() => {
 describe('positions', () => {
   it('renders positions', () => {
     cy.getByTestId('Positions').click();
-    cy.getByTestId('tab-positions').contains('Please connect Vega wallet');
+    cy.getByTestId('tab-positions').contains('Connect your Vega wallet');
 
     connectVegaWallet();
 
