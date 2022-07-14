@@ -2,8 +2,6 @@ import {
   STATS_QUERY,
   TIME_UPDATE_SUBSCRIPTION,
 } from '../../utils/request-node';
-import { BLOCK_HEIGHT_QUERY } from '../../components/node-switcher/node-block-height';
-import type { BlockHeightStats } from '../../components/node-switcher/__generated__/BlockHeightStats';
 import type { Statistics } from '../../utils/__generated__/Statistics';
 import type { BlockTime } from '../../utils/__generated__/BlockTime';
 import { Networks } from '../../types';
@@ -36,13 +34,6 @@ export const getMockStatisticsResult = (
   statistics: {
     __typename: 'Statistics',
     chainId: `${env.toLowerCase()}-0123`,
-    blockHeight: '11',
-  },
-});
-
-export const getMockStatisticsBlockHeightResult = (): BlockHeightStats => ({
-  statistics: {
-    __typename: 'Statistics',
     blockHeight: '11',
   },
 });
@@ -85,10 +76,6 @@ export default function ({
   mockClient.setRequestHandler(
     TIME_UPDATE_SUBSCRIPTION,
     getHandler(busEvents, getMockBusEventsResult())
-  );
-  mockClient.setRequestHandler(
-    BLOCK_HEIGHT_QUERY,
-    getHandler(statistics, getMockStatisticsBlockHeightResult())
   );
 
   return mockClient;
