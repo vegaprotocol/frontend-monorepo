@@ -10,6 +10,7 @@ import type {
   Markets_markets_data,
 } from '../../components/__generated__/Markets';
 import { marketsDataProvider as dataProvider } from './markets-data-provider';
+import { MarketState } from '@vegaprotocol/types';
 
 export const MarketsContainer = () => {
   const { push } = useRouter();
@@ -28,14 +29,15 @@ export const MarketsContainer = () => {
     Markets_markets_data
   >({ dataProvider, update });
   dataRef.current = data;
-
   const getRows = async ({
     successCallback,
     startRow,
     endRow,
   }: IGetRowsParams) => {
     const rowsThisBlock = dataRef.current
-      ? dataRef.current.slice(startRow, endRow)
+      ? dataRef.current
+          .slice(startRow, endRow)
+          .filter((m) => m.data?.market.state !== MarketState.Rejected)
       : [];
     const lastRow = dataRef.current?.length ?? -1;
     successCallback(rowsThisBlock, lastRow);
@@ -47,7 +49,7 @@ export const MarketsContainer = () => {
         datasource={{ getRows }}
         ref={gridRef}
         onRowClicked={(id) => {
-          push(`/markets/${id}`, `/markets/${id}`, { shallow: false });
+          push(`/markets/${id}`);
         }}
       />
     </AsyncRenderer>
