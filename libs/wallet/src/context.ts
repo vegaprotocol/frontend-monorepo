@@ -4,7 +4,7 @@ import type {
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { createContext } from 'react';
 import type { VegaConnector } from './connectors';
-import type { TransactionSubmission } from './types';
+import type { TransactionSubmission } from './wallet-types';
 
 export type SendTxError =
   | {

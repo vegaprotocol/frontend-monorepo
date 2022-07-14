@@ -1,14 +1,14 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { OrderType } from '@vegaprotocol/wallet';
+import { VegaWalletOrderType } from '@vegaprotocol/wallet';
 import { Toggle } from '@vegaprotocol/ui-toolkit';
 
 interface TypeSelectorProps {
-  value: OrderType;
-  onSelect: (type: OrderType) => void;
+  value: VegaWalletOrderType;
+  onSelect: (type: VegaWalletOrderType) => void;
 }
 
-const toggles = Object.entries(OrderType).map(([label, value]) => ({
+const toggles = Object.entries(VegaWalletOrderType).map(([label, value]) => ({
   label,
   value,
 }));
@@ -21,7 +21,7 @@ export const TypeSelector = ({ value, onSelect }: TypeSelectorProps) => {
         name="order-type"
         toggles={toggles}
         checkedValue={value}
-        onChange={(e) => onSelect(e.target.value as OrderType)}
+        onChange={(e) => onSelect(e.target.value as VegaWalletOrderType)}
       />
     </FormGroup>
   );
