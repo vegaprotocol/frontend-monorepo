@@ -24,9 +24,12 @@ context('Governance Page - verify elements on page', function () {
     });
 
     it('should have information box visible', function () {
-      cy.get(governance.noProposals)
+      cy.get(governance.noOpenProposals)
         .should('be.visible')
-        .and('have.text', 'There are no active network change proposals');
+        .and('have.text', 'There are no open or yet to enact proposals');
+      cy.get(governance.noClosedProposals)
+        .should('be.visible')
+        .and('have.text', 'There are no enacted or failed proposals');
     });
   });
 });

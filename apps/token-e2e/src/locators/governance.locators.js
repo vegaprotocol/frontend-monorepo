@@ -2,5 +2,6 @@ import common from './common.locators';
 
 export default {
   ...common,
-  noProposals: '[data-testid="no-proposals"]',
+  noOpenProposals: '[data-testid="no-open-proposals"]',
+  noClosedProposals: '[data-testid="no-closed-proposals"]',
 };
