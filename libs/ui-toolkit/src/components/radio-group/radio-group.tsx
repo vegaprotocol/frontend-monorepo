@@ -52,7 +52,6 @@ export const Radio = ({
   });
   const itemClasses = classNames(
     'flex justify-center items-center',
-    // 'absolute top-0 left-0',
     'w-[17px] h-[17px] rounded-full border',
     'focus:outline-none focus-visible:outline-none',
     'focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
