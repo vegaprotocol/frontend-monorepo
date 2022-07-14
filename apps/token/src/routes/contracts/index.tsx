@@ -42,8 +42,9 @@ const Contracts = () => {
             <Link
               title={t('View address on Etherscan')}
               href={`${ETHERSCAN_URL}/address/${contract.address}`}
+              target="_blank"
             >
-              {config.collateral_bridge_contract.address}
+              {contract.address}
             </Link>
           </div>
         );
@@ -57,8 +58,8 @@ const Contracts = () => {
           <Link
             title={t('View address on Etherscan')}
             href={`${ETHERSCAN_URL}/address/${value}`}
+            target="_blank"
           >
-            asdfasd
             {value}
           </Link>
         </div>

@@ -22,7 +22,7 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const update = useCallback(
-    (delta: AccountSubscribe_accounts) => {
+    ({ delta }: { delta: AccountSubscribe_accounts }) => {
       const update: Accounts_party_accounts[] = [];
       const add: Accounts_party_accounts[] = [];
       if (!gridRef.current) {
@@ -64,7 +64,7 @@ export const AccountsManager = ({ partyId }: AccountsManagerProps) => {
   const { data, error, loading } = useDataProvider<
     Accounts_party_accounts[],
     AccountSubscribe_accounts
-  >(accountsDataProvider, update, variables);
+  >({ dataProvider: accountsDataProvider, update, variables });
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <AccountsTable ref={gridRef} data={data} />

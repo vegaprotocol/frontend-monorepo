@@ -8,7 +8,7 @@ import { EpochCountdown } from '../../components/epoch-countdown';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import type { Nodes } from './__generated__/Nodes';
+import type { Nodes, Nodes_nodes_rankingScore } from './__generated__/Nodes';
 import type { Staking_epoch, Staking_party } from './__generated__/Staking';
 
 export const NODES_QUERY = gql`
@@ -33,6 +33,13 @@ export const NODES_QUERY = gql`
         online
       }
       status
+      rankingScore {
+        rankingScore
+        stakeScore
+        performanceScore
+        votingPower
+        stakeScore
+      }
     }
     nodeData {
       stakedTotal
@@ -54,7 +61,10 @@ const NodeListTr = ({ children }: { children: React.ReactNode }) => (
 );
 
 const NodeListTh = ({ children }: { children: React.ReactNode }) => (
-  <th className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal">
+  <th
+    role="rowheader"
+    className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal"
+  >
     {children}
   </th>
 );
@@ -113,6 +123,7 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
         userStake,
         userStakePercentage,
         epoch,
+        scores: node.rankingScore,
       };
     });
 
@@ -160,6 +171,7 @@ export interface NodeListItemProps {
   stakedTotalPercentage: string;
   userStake: BigNumber;
   userStakePercentage: string;
+  scores: Nodes_nodes_rankingScore;
 }
 
 export const NodeListItem = ({
@@ -169,6 +181,7 @@ export const NodeListItem = ({
   stakedTotalPercentage,
   userStake,
   userStakePercentage,
+  scores,
 }: NodeListItemProps) => {
   const { t } = useTranslation();
 
@@ -186,24 +199,36 @@ export const NodeListItem = ({
             <span
               className="uppercase text-white-60"
               title={`${t('id')}: ${id}`}
+              data-testid="node-list-item-name"
             >
               {truncateMiddle(id)}
             </span>
           </>
         )}
       </Link>
-      <table className="flex-1 text-body border-collapse mt-4">
+      <table
+        className="flex-1 text-body border-collapse mt-4"
+        data-testid="node-list-item-table"
+      >
         <tbody>
           <NodeListTr>
             <NodeListTh>{t('Total stake')}</NodeListTh>
-            <NodeListTd>{formatNumber(stakedOnNode, 2)}</NodeListTd>
-            <NodeListTd>{stakedTotalPercentage}</NodeListTd>
+            <NodeListTd>
+              {formatNumber(stakedOnNode, 2)} ({stakedTotalPercentage})
+            </NodeListTd>
           </NodeListTr>
-          <NodeListTr>
-            <NodeListTh>{t('Your stake')}</NodeListTh>
-            <NodeListTd>{formatNumber(userStake, 2)}</NodeListTd>
-            <NodeListTd>{userStakePercentage}</NodeListTd>
-          </NodeListTr>
+          {scores
+            ? Object.entries(scores)
+                .filter(([key]) => key !== '__typename')
+                .map(([key, value]) => (
+                  <NodeListTr key={`${id}_${key}`}>
+                    <NodeListTh>{t(key)}</NodeListTh>
+                    <NodeListTd>
+                      {formatNumber(new BigNumber(value), 4)}
+                    </NodeListTd>
+                  </NodeListTr>
+                ))
+            : null}
         </tbody>
       </table>
     </li>

@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { gql } from '@apollo/client';
 import type {
   Positions,
@@ -27,6 +28,7 @@ const POSITIONS_FRAGMENT = gql`
         }
       }
       decimalPlaces
+      positionDecimalPlaces
       tradableInstrument {
         instrument {
           id
@@ -74,16 +76,19 @@ export const POSITIONS_SUB = gql`
 `;
 
 const update = (
-  draft: Positions_party_positions[],
+  data: Positions_party_positions[],
   delta: PositionSubscribe_positions
 ) => {
-  const index = draft.findIndex((m) => m.market.id === delta.market.id);
-  if (index !== -1) {
-    draft[index] = delta;
-  } else {
-    draft.push(delta);
-  }
+  return produce(data, (draft) => {
+    const index = draft.findIndex((m) => m.market.id === delta.market.id);
+    if (index !== -1) {
+      draft[index] = delta;
+    } else {
+      draft.push(delta);
+    }
+  });
 };
+
 const getData = (responseData: Positions): Positions_party_positions[] | null =>
   responseData.party ? responseData.party.positions : null;
 const getDelta = (

@@ -62,13 +62,13 @@ export const AssociateTransaction = ({
   if (derivedTxState === TxState.Pending) {
     return (
       <Callout icon={<Loader size="small" />} title={title}>
-        <p data-testid="transaction-pending-body" className="mb-8">
+        <p data-testid="transaction-pending-body">
           {t('Associating {{amount}} VEGA tokens with Vega key {{vegaKey}}', {
             amount,
             vegaKey: truncateMiddle(vegaKey),
           })}
         </p>
-        <p className="mb-8">
+        <p>
           <Link
             title={t('View transaction on Etherscan')}
             href={`${ETHERSCAN_URL}/tx/${state.txData.hash}`}
@@ -77,7 +77,7 @@ export const AssociateTransaction = ({
             {t('View on Etherscan (opens in a new tab)')}
           </Link>
         </p>
-        <p data-testid="transaction-pending-footer" className="mb-8">
+        <p data-testid="transaction-pending-footer">
           {t('pendingAssociationText', {
             confirmations: requiredConfirmations,
           })}

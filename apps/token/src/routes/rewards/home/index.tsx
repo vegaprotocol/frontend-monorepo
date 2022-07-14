@@ -109,8 +109,8 @@ export const RewardsIndex = () => {
   return (
     <section className="rewards">
       <Heading title={t('pageTitleRewards')} />
-      <p className="mb-8">{t('rewardsPara1')}</p>
-      <p className="mb-8">{t('rewardsPara2')}</p>
+      <p>{t('rewardsPara1')}</p>
+      <p>{t('rewardsPara2')}</p>
       {payoutDuration ? (
         <div className="my-24">
           <Callout
@@ -149,6 +149,7 @@ export const RewardsIndex = () => {
         ) : (
           <Button
             className="mt-12"
+            data-testid="connect-to-vega-wallet-btn"
             onClick={() =>
               appDispatch({
                 type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,

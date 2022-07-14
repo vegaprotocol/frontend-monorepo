@@ -15,9 +15,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     <select
       ref={ref}
       {...props}
-      className={classNames(defaultFormElement, className, 'h-28', {
-        'border-vega-pink dark:border-vega-pink': hasError,
-      })}
+      className={classNames(defaultFormElement(hasError), className, 'h-28')}
     />
   )
 );

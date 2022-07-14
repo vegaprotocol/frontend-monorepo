@@ -101,7 +101,9 @@ const PROPOSAL_QUERY = gql`
 `;
 
 const Governance = () => {
-  const { data } = useQuery<ProposalsQuery>(PROPOSAL_QUERY);
+  const { data } = useQuery<ProposalsQuery>(PROPOSAL_QUERY, {
+    errorPolicy: 'ignore',
+  });
 
   if (!data) return null;
   return (

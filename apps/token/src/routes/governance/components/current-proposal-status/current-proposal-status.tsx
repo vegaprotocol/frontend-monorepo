@@ -34,30 +34,22 @@ export const CurrentProposalStatus = ({
     { addSuffix: true }
   );
 
-  if (proposal.state === ProposalState.Open && willPass) {
-    return <StatusPass>{t('shouldPass')}</StatusPass>;
-  }
-
-  if (!participationMet) {
-    return (
-      <>
-        <span>{t('voteFailedReason')}</span>
-        <span className="current-proposal-status__fail">
-          {t('participationNotMet')}
-        </span>
-        <span>&nbsp;{daysClosedAgo}.</span>
-      </>
-    );
-  }
-
-  if (!majorityMet) {
-    return (
-      <>
-        <span>{t('voteFailedReason')}</span>
-        <StatusFail>{t('majorityNotMet')}</StatusFail>
-        <span>&nbsp;{daysClosedAgo}.</span>
-      </>
-    );
+  if (proposal.state === ProposalState.Open) {
+    if (willPass) {
+      return (
+        <>
+          {t('currentlySetTo')}
+          <StatusPass>{t('pass')}</StatusPass>
+        </>
+      );
+    } else {
+      return (
+        <>
+          {t('currentlySetTo')}
+          <StatusFail>{t('fail')}</StatusFail>
+        </>
+      );
+    }
   }
 
   if (
@@ -65,6 +57,26 @@ export const CurrentProposalStatus = ({
     proposal.state === ProposalState.Declined ||
     proposal.state === ProposalState.Rejected
   ) {
+    if (!participationMet) {
+      return (
+        <>
+          <span>{t('voteFailedReason')}</span>
+          <StatusFail>{t('participationNotMet')}</StatusFail>
+          <span>&nbsp;{daysClosedAgo}.</span>
+        </>
+      );
+    }
+
+    if (!majorityMet) {
+      return (
+        <>
+          <span>{t('voteFailedReason')}</span>
+          <StatusFail>{t('majorityNotMet')}</StatusFail>
+          <span>&nbsp;{daysClosedAgo}.</span>
+        </>
+      );
+    }
+
     return (
       <>
         <span>{t('voteFailedReason')}</span>

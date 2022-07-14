@@ -16,6 +16,7 @@ const MARKET_DEPTH_QUERY = gql`
     market(id: $marketId) {
       id
       decimalPlaces
+      positionDecimalPlaces
       data {
         staticMidPrice
         marketTradingMode
@@ -52,6 +53,7 @@ export const MARKET_DEPTH_SUBSCRIPTION_QUERY = gql`
     marketDepthUpdate(marketId: $marketId) {
       market {
         id
+        positionDecimalPlaces
         data {
           staticMidPrice
           marketTradingMode
@@ -84,27 +86,31 @@ const sequenceNumbers: Record<string, number> = {};
 const update: Update<
   MarketDepth_market,
   MarketDepthSubscription_marketDepthUpdate
-> = (draft, delta, reload) => {
-  if (delta.market.id !== draft.id) {
-    return;
+> = (data, delta, reload) => {
+  if (delta.market.id !== data.id) {
+    return data;
   }
   const sequenceNumber = Number(delta.sequenceNumber);
   if (sequenceNumber <= sequenceNumbers[delta.market.id]) {
-    return;
+    return data;
   }
+  /*
   if (sequenceNumber - 1 !== sequenceNumbers[delta.market.id]) {
     sequenceNumbers[delta.market.id] = 0;
     reload();
     return;
   }
+  */
   sequenceNumbers[delta.market.id] = sequenceNumber;
-  Object.assign(draft.data, delta.market.data);
+  const updatedData = { ...data };
+  data.data = delta.market.data;
   if (delta.buy) {
-    draft.depth.buy = updateLevels(draft.depth.buy ?? [], delta.buy);
+    updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
   }
   if (delta.sell) {
-    draft.depth.sell = updateLevels(draft.depth.sell ?? [], delta.sell);
+    updatedData.depth.sell = updateLevels(data.depth.sell ?? [], delta.sell);
   }
+  return updatedData;
 };
 
 const getData = (responseData: MarketDepth) => {
@@ -125,3 +131,5 @@ export const marketDepthDataProvider = makeDataProvider(
   getData,
   getDelta
 );
+
+export default marketDepthDataProvider;

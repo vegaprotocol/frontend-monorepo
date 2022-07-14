@@ -31,10 +31,27 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
     colors={theme.colors.black}
   />
   <ColorItem
+    title="theme.color.blue"
+    subtitle="Blue"
+    colors={[theme.colors.blue]}
+  />
+  <ColorItem
     title="theme.color.coral"
     subtitle="Coral"
     colors={[theme.colors.coral]}
   />
+  <ColorItem
+    title="theme.color.orange"
+    subtitle="Orange"
+    colors={[theme.colors.orange]}
+  />
+  <ColorPalette>
+    <ColorItem
+      title="theme.color.selected"
+      subtitle="Selected"
+      colors={[theme.colors.selected]}
+    />
+  </ColorPalette>
 </ColorPalette>
 
 ### Vega
@@ -51,13 +68,23 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
 
 <ColorPalette>
   <ColorItem
-    title="theme.color.intent"
-    subtitle="Intent"
-    colors={{
-      success: theme.colors.success,
-      warning: theme.colors.warning,
-      danger: theme.colors.danger,
-    }}
+    title="theme.color.danger"
+    subtitle="danger"
+    colors={[theme.colors.danger]}
+  />
+</ColorPalette>
+<ColorPalette>
+  <ColorItem
+    title="theme.color.warning"
+    subtitle="warning"
+    colors={[theme.colors.warning]}
+  />
+</ColorPalette>
+<ColorPalette>
+  <ColorItem
+    title="theme.color.success"
+    subtitle="success"
+    colors={[theme.colors.success]}
   />
 </ColorPalette>
 

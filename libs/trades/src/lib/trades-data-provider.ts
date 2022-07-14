@@ -4,6 +4,7 @@ import type { TradeFields } from './__generated__/TradeFields';
 import type { Trades } from './__generated__/Trades';
 import type { TradesSub } from './__generated__/TradesSub';
 import orderBy from 'lodash/orderBy';
+import produce from 'immer';
 
 export const MAX_TRADES = 50;
 
@@ -16,6 +17,7 @@ const TRADES_FRAGMENT = gql`
     market {
       id
       decimalPlaces
+      positionDecimalPlaces
     }
   }
 `;
@@ -51,16 +53,18 @@ export const sortTrades = (trades: TradeFields[]) => {
   );
 };
 
-const update = (draft: TradeFields[], delta: TradeFields[]) => {
-  const incoming = sortTrades(delta);
+const update = (data: TradeFields[], delta: TradeFields[]) => {
+  return produce(data, (draft) => {
+    const incoming = sortTrades(delta);
 
-  // Add new trades to the top
-  draft.unshift(...incoming);
+    // Add new trades to the top
+    draft.unshift(...incoming);
 
-  // Remove old trades from the bottom
-  if (draft.length > MAX_TRADES) {
-    draft.splice(MAX_TRADES, draft.length - MAX_TRADES);
-  }
+    // Remove old trades from the bottom
+    if (draft.length > MAX_TRADES) {
+      draft.splice(MAX_TRADES, draft.length - MAX_TRADES);
+    }
+  });
 };
 
 const getData = (responseData: Trades): TradeFields[] | null =>

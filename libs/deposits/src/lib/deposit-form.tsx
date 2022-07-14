@@ -89,7 +89,7 @@ export const DepositForm = ({
     submitDeposit({
       assetSource: selectedAsset.source.contractAddress,
       amount: removeDecimal(fields.amount, selectedAsset.decimals),
-      vegaPublicKey: `0x${fields.to}`,
+      vegaPublicKey: fields.to,
     });
   };
 
@@ -190,9 +190,9 @@ export const DepositForm = ({
         )}
       </FormGroup>
       {selectedAsset && limits && (
-        <FormGroup>
+        <div className="mb-20">
           <DepositLimits limits={limits} />
-        </FormGroup>
+        </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">
         <Input

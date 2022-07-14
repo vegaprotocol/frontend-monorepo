@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import type { TransactionSubmission } from './types';
-import { useVegaWallet } from './hooks';
+import type { TransactionSubmission } from './wallet-types';
+import { useVegaWallet } from './use-vega-wallet';
 import type { SendTxError } from './context';
 
 export enum VegaTxStatus {
@@ -44,6 +44,10 @@ export const useVegaTransaction = () => {
     [setTransaction]
   );
 
+  const reset = useCallback(() => {
+    setTransaction(initialState);
+  }, [setTransaction]);
+
   const send = useCallback(
     async (tx: TransactionSubmission) => {
       setTransaction({
@@ -61,7 +65,12 @@ export const useVegaTransaction = () => {
       }
 
       if ('error' in res) {
-        handleError(res);
+        // Close dialog if user rejects the transaction
+        if (res.error === 'User rejected') {
+          reset();
+        } else {
+          handleError(res);
+        }
         return null;
       } else if ('errors' in res) {
         handleError(res);
@@ -79,12 +88,8 @@ export const useVegaTransaction = () => {
 
       return null;
     },
-    [sendTx, handleError, setTransaction]
+    [sendTx, handleError, setTransaction, reset]
   );
-
-  const reset = useCallback(() => {
-    setTransaction(initialState);
-  }, [setTransaction]);
 
   return { send, transaction, reset };
 };

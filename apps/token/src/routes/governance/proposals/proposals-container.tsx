@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
+import { Heading } from '../../../components/heading';
 import compact from 'lodash/compact';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
@@ -24,6 +25,7 @@ export const ProposalsContainer = () => {
   const { t } = useTranslation();
   const { data, loading, error } = useQuery<Proposals, never>(PROPOSALS_QUERY, {
     pollInterval: 5000,
+    errorPolicy: 'ignore', // this is to get around some backend issues and should be removed in future
   });
 
   const proposals = React.useMemo(() => {
@@ -62,5 +64,10 @@ export const ProposalsContainer = () => {
     );
   }
 
-  return <ProposalsList proposals={proposals} />;
+  return (
+    <>
+      <Heading title={t('pageTitleGovernance')} />
+      <ProposalsList proposals={proposals} />
+    </>
+  );
 };

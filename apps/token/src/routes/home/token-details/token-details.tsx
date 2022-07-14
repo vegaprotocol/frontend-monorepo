@@ -42,14 +42,15 @@ export const TokenDetails = ({
   }
 
   return (
-    <KeyValueTable className={'token-details'}>
+    <KeyValueTable className={'token-details text-white'}>
       <KeyValueTableRow>
         {t('Token address').toUpperCase()}
         <Link
           data-testid="token-address"
           title={t('View on Etherscan (opens in a new tab)')}
-          className="font-mono"
+          className="font-mono text-white text-right"
           href={`${ETHERSCAN_URL}/address/${token.address}`}
+          target="_blank"
         >
           {token.address}
         </Link>
@@ -59,15 +60,18 @@ export const TokenDetails = ({
         <Link
           data-testid="token-contract"
           title={t('View on Etherscan (opens in a new tab)')}
-          className="font-mono"
+          className="font-mono text-white text-right"
           href={`${ETHERSCAN_URL}/address/${config.token_vesting_contract.address}`}
+          target="_blank"
         >
           {config.token_vesting_contract.address}
         </Link>
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Total supply').toUpperCase()}
-        <span data-testid="total-supply">{formatNumber(totalSupply, 2)}</span>
+        <span className="font-mono" data-testid="total-supply">
+          {formatNumber(totalSupply, 2)}
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Circulating supply').toUpperCase()}
@@ -75,7 +79,9 @@ export const TokenDetails = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('Staked on Vega validator').toUpperCase()}
-        <span data-testid="staked">{formatNumber(totalStaked, 2)}</span>
+        <span data-testid="staked" className="font-mono">
+          {formatNumber(totalStaked, 2)}
+        </span>
       </KeyValueTableRow>
     </KeyValueTable>
   );

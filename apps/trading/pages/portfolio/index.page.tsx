@@ -1,81 +1,92 @@
 import { Web3Container } from '../../components/web3-container';
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import { OrderListContainer } from '@vegaprotocol/order-list';
+import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { AnchorButton, GridTab, GridTabs } from '@vegaprotocol/ui-toolkit';
+import { AnchorButton, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { FundingContainer } from '@vegaprotocol/funding';
 
 import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
+import { FillsContainer } from '@vegaprotocol/fills';
+import classNames from 'classnames';
+import type { ReactNode } from 'react';
 
 const Portfolio = () => {
-  const tabClassName = 'p-[16px] pl-[316px]';
-
+  const wrapperClasses = classNames(
+    'h-full max-h-full',
+    'grid gap-4 grid-rows-[1fr_300px]',
+    'bg-black-10 dark:bg-white-10',
+    'text-ui'
+  );
+  const tabContentClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
   return (
-    <Web3Container>
-      <div className="h-full text-ui">
-        <main className="relative h-[calc(100%-200px)]">
-          <aside className="absolute px-[8px] py-[16px] w-[300px] mt-[28px] h-[calc(100%-28px)] w-[300px] overflow-auto">
-            <h2 className="text-h4 text-black dark:text-white">
-              {t('Filters')}
-            </h2>
-          </aside>
-          <section
-            data-testid="portfolio-grid"
-            className="h-[calc(100%-200px)]"
-          >
-            <GridTabs>
-              <GridTab id="positions" name={t('Positions')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('Positions')}
-                  </h4>
-                  <PositionsContainer />
-                </div>
-              </GridTab>
-              <GridTab id="orders" name={t('Orders')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('Orders')}
-                  </h4>
-                  <OrderListContainer />
-                </div>
-              </GridTab>
-              <GridTab id="fills" name={t('Fills')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('Fills')}
-                  </h4>
-                </div>
-              </GridTab>
-              <GridTab id="history" name={t('History')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('History')}
-                  </h4>
-                  <FundingContainer />
-                </div>
-              </GridTab>
-            </GridTabs>
-          </section>
-        </main>
-        <section className="fixed bottom-0 left-0 w-full h-[200px]">
-          <GridTabs>
-            <GridTab id="collateral" name={t('Collateral')}>
-              <AccountsContainer />
-            </GridTab>
-            <GridTab id="deposits" name={t('Deposits')}>
-              <AnchorButton data-testid="deposit" href="/portfolio/deposit">
-                {t('Deposit')}
-              </AnchorButton>
-            </GridTab>
-            <GridTab id="withdrawals" name={t('Withdrawals')}>
+    <div className={wrapperClasses}>
+      <PortfolioGridChild>
+        <Tabs>
+          <Tab id="positions" name={t('Positions')}>
+            <div className={tabContentClassName}>
+              <h4 className="text-h4 text-black dark:text-white p-8">
+                {t('Positions')}
+              </h4>
+              <div>
+                <PositionsContainer />
+              </div>
+            </div>
+          </Tab>
+          <Tab id="orders" name={t('Orders')}>
+            <div className={tabContentClassName}>
+              <h4 className="text-h4 text-black dark:text-white p-8">
+                {t('Orders')}
+              </h4>
+              <div>
+                <OrderListContainer />
+              </div>
+            </div>
+          </Tab>
+          <Tab id="fills" name={t('Fills')}>
+            <div className={tabContentClassName}>
+              <h4 className="text-h4 text-black dark:text-white p-8">
+                {t('Fills')}
+              </h4>
+              <div>
+                <FillsContainer />
+              </div>
+            </div>
+          </Tab>
+          <Tab id="fills" name={t('History')}>
+            <div className={tabContentClassName}>
+              <h4 className="text-h4 text-black dark:text-white p-8">
+                {t('History')}
+              </h4>
+              <div>
+                <FundingContainer />
+              </div>
+            </div>
+          </Tab>
+        </Tabs>
+      </PortfolioGridChild>
+      <PortfolioGridChild>
+        <Tabs>
+          <Tab id="collateral" name={t('Collateral')}>
+            <AccountsContainer />
+          </Tab>
+          <Tab id="deposits" name={t('Deposits')}>
+            <div className={tabContentClassName}>
+              <div className="p-8">
+                <AnchorButton data-testid="deposit" href="/portfolio/deposit">
+                  {t('Deposit')}
+                </AnchorButton>
+              </div>
+            </div>
+          </Tab>
+          <Tab id="withdrawals" name={t('Withdrawals')}>
+            <Web3Container>
               <WithdrawalsContainer />
-            </GridTab>
-          </GridTabs>
-        </section>
-      </div>
-    </Web3Container>
+            </Web3Container>
+          </Tab>
+        </Tabs>
+      </PortfolioGridChild>
+    </div>
   );
 };
 
@@ -84,3 +95,16 @@ Portfolio.getInitialProps = () => ({
 });
 
 export default Portfolio;
+
+interface PortfolioGridChildProps {
+  children: ReactNode;
+  className?: string;
+}
+
+const PortfolioGridChild = ({
+  children,
+  className,
+}: PortfolioGridChildProps) => {
+  const gridChildClasses = classNames('bg-white dark:bg-black', className);
+  return <section className={gridChildClasses}>{children}</section>;
+};

@@ -1,3 +1,4 @@
+import produce from 'immer';
 import { gql } from '@apollo/client';
 import type {
   Accounts,
@@ -52,17 +53,20 @@ export const getId = (
 ) => `${data.type}-${data.asset.symbol}-${data.market?.id ?? 'null'}`;
 
 const update = (
-  draft: Accounts_party_accounts[],
+  data: Accounts_party_accounts[],
   delta: AccountSubscribe_accounts
 ) => {
-  const id = getId(delta);
-  const index = draft.findIndex((a) => getId(a) === id);
-  if (index !== -1) {
-    draft[index] = delta;
-  } else {
-    draft.push(delta);
-  }
+  return produce(data, (draft) => {
+    const id = getId(delta);
+    const index = draft.findIndex((a) => getId(a) === id);
+    if (index !== -1) {
+      draft[index] = delta;
+    } else {
+      draft.push(delta);
+    }
+  });
 };
+
 const getData = (responseData: Accounts): Accounts_party_accounts[] | null =>
   responseData.party ? responseData.party.accounts : null;
 const getDelta = (

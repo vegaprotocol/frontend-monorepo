@@ -1,12 +1,13 @@
 import type { Configuration } from '@vegaprotocol/vegawallet-service-api-client';
 import {
   createConfiguration,
+  ServerConfiguration,
   DefaultApi,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
-import type { VegaConnector } from '.';
-import type { TransactionSubmission } from '../types';
+import type { VegaConnector } from './vega-connector';
+import type { TransactionSubmission } from '../wallet-types';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...
@@ -39,13 +40,26 @@ export class RestConnector implements VegaConnector {
     this.service = new DefaultApi(this.apiConfig);
   }
 
-  async authenticate(params: { wallet: string; passphrase: string }) {
+  async authenticate(
+    url: string,
+    params: {
+      wallet: string;
+      passphrase: string;
+    }
+  ) {
     try {
-      const res = await this.service.authTokenPost(params);
+      const service = new DefaultApi(
+        createConfiguration({
+          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
+        })
+      );
+
+      const res = await service.authTokenPost(params);
 
       // Renew service instance with default bearer authMethod now that we have the token
       this.service = new DefaultApi(
         createConfiguration({
+          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
           authMethods: {
             bearer: `Bearer ${res.token}`,
           },
@@ -87,27 +101,28 @@ export class RestConnector implements VegaConnector {
 
   async sendTx(body: TransactionSubmission) {
     try {
-      return await this.service.commandSyncPost(body);
+      const res = await this.service.commandSyncPost(body);
+      return res;
     } catch (err) {
       return this.handleSendTxError(err);
     }
   }
 
   private handleSendTxError(err: unknown) {
-    if (typeof err === 'object' && err && 'body' in err) {
+    const unexpectedError = { error: 'Something went wrong' };
+
+    if (isServiceError(err)) {
+      if (err.code === 401) {
+        return { error: 'User rejected' };
+      }
+
       try {
-        // @ts-ignore Not sure why TS can't infer that 'body' does indeed exist on object
-        return JSON.parse(err.body);
+        return JSON.parse(err.body ?? '');
       } catch {
-        // Unexpected response
-        return {
-          error: 'Something went wrong',
-        };
+        return unexpectedError;
       }
     } else {
-      return {
-        error: 'Something went wrong',
-      };
+      return unexpectedError;
     }
   }
 
@@ -132,3 +147,17 @@ export class RestConnector implements VegaConnector {
     LocalStorage.removeItem(this.configKey);
   }
 }
+
+interface ServiceError {
+  code: number;
+  body: string | undefined;
+  headers: object;
+}
+
+export const isServiceError = (err: unknown): err is ServiceError => {
+  // Some responses don't contain body object
+  if (typeof err === 'object' && err !== null && 'code' in err) {
+    return true;
+  }
+  return false;
+};

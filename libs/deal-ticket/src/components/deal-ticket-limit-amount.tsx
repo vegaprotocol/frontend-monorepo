@@ -1,5 +1,6 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import { validateSize } from '../utils/validate-size';
+import { t } from '@vegaprotocol/react-helpers';
+import { validateSize } from '@vegaprotocol/orders';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
 export type DealTicketLimitAmountProps = Omit<
@@ -15,8 +16,9 @@ export const DealTicketLimitAmount = ({
   return (
     <div className="flex items-center gap-8">
       <div className="flex-1">
-        <FormGroup label="Amount">
+        <FormGroup label={t('Amount')} labelFor="input-order-size-limit">
           <Input
+            id="input-order-size-limit"
             className="w-full"
             type="number"
             step={step}
@@ -32,8 +34,13 @@ export const DealTicketLimitAmount = ({
       </div>
       <div>@</div>
       <div className="flex-1">
-        <FormGroup label={`Price (${quoteName})`} labelAlign="right">
+        <FormGroup
+          labelFor="input-price-quote"
+          label={t(`Price (${quoteName})`)}
+          labelAlign="right"
+        >
           <Input
+            id="input-price-quote"
             className="w-full"
             type="number"
             step={step}

@@ -3,7 +3,6 @@ import { format, isFuture } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { Heading } from '../../../../components/heading';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { getProposalName } from '../../../../lib/type-policies/proposal';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
@@ -17,16 +16,15 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
 
   if (proposals.length === 0) {
-    return <p>{t('noProposals')}</p>;
+    return <p data-testid="no-proposals">{t('noProposals')}</p>;
   }
 
   return (
     <>
-      <Heading title={t('pageTitleGovernance')} />
-      <p className="mb-8">{t('proposedChangesToVegaNetwork')}</p>
-      <p className="mb-8">{t('vegaTokenHoldersCanVote')}</p>
-      <p className="mb-8">{t('requiredMajorityDescription')}</p>
-      <h2 className="text-h4 text-white">{t('proposals')}</h2>
+      <p>{t('proposedChangesToVegaNetwork')}</p>
+      <p>{t('vegaTokenHoldersCanVote')}</p>
+      <p>{t('requiredMajorityDescription')}</p>
+      <h2>{t('proposals')}</h2>
       <ul>
         {proposals.map((proposal) => (
           <ProposalListItem proposal={proposal} />

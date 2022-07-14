@@ -1,4 +1,4 @@
-import { Lozenge } from '@vegaprotocol/ui-toolkit';
+import { Lozenge, Intent } from '@vegaprotocol/ui-toolkit';
 
 interface TxOrderTypeProps {
   orderType: string;
@@ -36,7 +36,7 @@ const displayString: StringMap = {
 
 export const TxOrderType = ({ orderType, className }: TxOrderTypeProps) => {
   return (
-    <Lozenge data-testid="tx-type" className={className}>
+    <Lozenge data-testid="tx-type" variant={Intent.None} className={className}>
       {displayString[orderType] || orderType}
     </Lozenge>
   );

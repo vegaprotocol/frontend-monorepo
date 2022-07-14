@@ -11,6 +11,11 @@ const Template: Story = (args) => <Lozenge {...args}>lozenge</Lozenge>;
 
 export const Default = Template.bind({});
 
+export const None = Template.bind({});
+None.args = {
+  variant: Intent.None,
+};
+
 export const Primary = Template.bind({});
 Primary.args = {
   variant: Intent.Primary,

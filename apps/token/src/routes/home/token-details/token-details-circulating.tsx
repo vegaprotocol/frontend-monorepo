@@ -37,7 +37,7 @@ export const TokenDetailsCirculating = ({
 }) => {
   const totalCirculating = sumCirculatingTokens(tranches);
   return (
-    <span data-testid="circulating-supply">
+    <span data-testid="circulating-supply" className="font-mono">
       {formatNumber(totalCirculating, 2)}
     </span>
   );
