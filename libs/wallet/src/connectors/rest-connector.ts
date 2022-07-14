@@ -7,7 +7,7 @@ import {
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
 import type { VegaConnector } from './vega-connector';
-import type { TransactionSubmission } from '../types';
+import type { TransactionSubmission } from '../wallet-types';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
 // need to use local storage, I don't think so...

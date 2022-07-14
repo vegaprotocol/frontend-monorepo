@@ -21,7 +21,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         minWidth: 300,
         field: 'name',
         cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
-          <MarketNameRenderer data={data} />
+          <MarketNameRenderer market={data} />
         ),
       },
       {

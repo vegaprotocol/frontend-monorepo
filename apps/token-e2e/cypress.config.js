@@ -18,6 +18,7 @@ module.exports = defineConfig({
   env: {
     ethProviderUrl: 'http://localhost:8545/',
     ethWalletPublicKey: '0xEe7D375bcB50C26d52E1A4a472D8822A2A22d94F',
+    ethWalletPublicKeyTruncated: '0xEe7D…d94F',
     ethStakingBridgeContractAddress:
       '0x9135f5afd6F055e731bca2348429482eE614CFfA',
     vegaWalletName: 'capsule_wallet',
