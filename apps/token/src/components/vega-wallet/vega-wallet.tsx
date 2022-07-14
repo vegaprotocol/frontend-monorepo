@@ -155,35 +155,35 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         dark={true}
       />
       <div data-testid="vega-wallet-balance-unstaked">
-      <WalletCardRow label={t('unstaked')} value={unstaked} dark={true} />
+        <WalletCardRow label={t('unstaked')} value={unstaked} dark={true} />
       </div>
       {delegatedNodes.length ? (
-        <WalletCardRow label={t('stakedValidators')} dark={true} bold={true}/>
+        <WalletCardRow label={t('stakedValidators')} dark={true} bold={true} />
       ) : null}
-      {delegatedNodes.map((d) => ( 
+      {delegatedNodes.map((d) => (
         <div key={d.nodeId} data-testid="vega-wallet-balance-staked-validators">
           {d.currentEpochStake && d.currentEpochStake.isGreaterThan(0) && (
             <div data-testid="vega-wallet-balance-this-epoch">
-            <WalletCardRow
-              label={`${d.name || truncateMiddle(d.nodeId)} ${
-                d.hasStakePending ? `(${t('thisEpoch')})` : ''
-              }`}
-              link={`${Routes.STAKING}/${d.nodeId}`}
-              value={d.currentEpochStake}
-              dark={true}
-            />
+              <WalletCardRow
+                label={`${d.name || truncateMiddle(d.nodeId)} ${
+                  d.hasStakePending ? `(${t('thisEpoch')})` : ''
+                }`}
+                link={`${Routes.STAKING}/${d.nodeId}`}
+                value={d.currentEpochStake}
+                dark={true}
+              />
             </div>
           )}
           {d.hasStakePending && (
             <div data-testid="vega-wallet-balance-next-epoch">
-            <WalletCardRow
-              label={`${d.name || truncateMiddle(d.nodeId)} (${t(
-                'nextEpoch'
-              )})`}
-              link={`${Routes.STAKING}/${d.nodeId}`}
-              value={d.nextEpochStake}
-              dark={true}
-            />
+              <WalletCardRow
+                label={`${d.name || truncateMiddle(d.nodeId)} (${t(
+                  'nextEpoch'
+                )})`}
+                link={`${Routes.STAKING}/${d.nodeId}`}
+                value={d.nextEpochStake}
+                dark={true}
+              />
             </div>
           )}
         </div>
