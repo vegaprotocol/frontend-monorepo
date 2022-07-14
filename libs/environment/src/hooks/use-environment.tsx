@@ -52,12 +52,14 @@ export const EnvironmentProvider = ({
 
   useEffect(() => {
     if (!environment.VEGA_URL) {
-      const successfulNodeUrl = nodeKeys.find((key) => nodes[key].verified);
-      if (successfulNodeUrl) {
+      const successfulNodeKey = nodeKeys.find(
+        (key) => nodes[key].verified
+      ) as keyof typeof nodes;
+      if (successfulNodeKey && nodes[successfulNodeKey]) {
         Object.keys(clients).forEach((node) => clients[node]?.stop());
         updateEnvironment((prevEnvironment) => ({
           ...prevEnvironment,
-          VEGA_URL: successfulNodeUrl,
+          VEGA_URL: nodes[successfulNodeKey].url,
         }));
       }
     }

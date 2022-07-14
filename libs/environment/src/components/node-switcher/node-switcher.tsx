@@ -66,8 +66,8 @@ export const NodeSwitcher = ({
   const customUrl = state[CUSTOM_NODE_KEY]?.url;
 
   const onSubmit = (node: ReturnType<typeof getDefaultNode>) => {
-    if (node) {
-      onConnect(node);
+    if (node && state[node]) {
+      onConnect(state[node].url);
     }
   };
 
