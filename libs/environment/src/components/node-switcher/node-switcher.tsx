@@ -20,7 +20,6 @@ import {
 import { CUSTOM_NODE_KEY } from '../../types';
 import type { Configuration, NodeData, ErrorType, Networks } from '../../types';
 import { LayoutRow } from './layout-row';
-import { LayoutCell } from './layout-cell';
 import { NodeError } from './node-error';
 import { NodeStats } from './node-stats';
 
