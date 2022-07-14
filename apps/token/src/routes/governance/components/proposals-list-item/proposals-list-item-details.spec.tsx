@@ -1,8 +1,6 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { format } from 'date-fns';
@@ -17,65 +15,22 @@ import {
   generateYesVotes,
 } from '../../test-helpers/generate-proposals';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
-import { NETWORK_PARAMS_QUERY } from '@vegaprotocol/web3';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
+import {
+  mockPubkey,
+  mockWalletContext,
+  networkParamsQueryMock,
+  amendToDate,
+  lastWeek,
+  nextWeek,
+} from '../../test-helpers/mocks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 const proposal = generateProposal();
-const mockPubkey = '0x123';
-const mockKeypair = {
-  pub: mockPubkey,
-} as VegaKeyExtended;
 
-const mockWalletContext = {
-  keypair: mockKeypair,
-  keypairs: [mockKeypair],
-  sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
-  connect: jest.fn(),
-  disconnect: jest.fn(),
-  selectPublicKey: jest.fn(),
-  connector: null,
-};
-
-const mockEthereumConfig = {
-  network_id: '3',
-  chain_id: '3',
-  confirmations: 3,
-  collateral_bridge_contract: {
-    address: 'bridge address',
-  },
-};
-
-const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
-  request: {
-    query: NETWORK_PARAMS_QUERY,
-  },
-  result: {
-    data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'blockchains.ethereumConfig',
-          value: JSON.stringify(mockEthereumConfig),
-        },
-      ],
-    },
-  },
-};
-
-const amendToDate = (amendmentInSeconds: number) => {
-  const now = new Date();
-  return new Date(now.getTime() + amendmentInSeconds * 1000);
-};
-
-const oneWeek = 60 * 60 * 24 * 7;
 const oneDay = 60 * 60 * 24;
 const oneHour = 60 * 60;
 const oneMinute = 60;
-
-const lastWeek = amendToDate(-oneWeek);
-const nextWeek = amendToDate(oneWeek);
 
 const renderComponent = (
   proposal: Proposals_proposals,

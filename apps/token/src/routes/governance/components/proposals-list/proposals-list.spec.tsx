@@ -1,70 +1,22 @@
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { MockedProvider } from '@apollo/client/testing';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
-import { NETWORK_PARAMS_QUERY } from '@vegaprotocol/web3';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalsList } from './proposals-list';
 import { ProposalState } from '@vegaprotocol/types';
 import { render, screen } from '@testing-library/react';
-import type { MockedResponse } from '@apollo/client/testing';
-import type { NetworkParamsQuery } from '@vegaprotocol/web3';
+import {
+  mockWalletContext,
+  networkParamsQueryMock,
+  lastMonth,
+  lastWeek,
+  nextMonth,
+  nextWeek,
+} from '../../test-helpers/mocks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 
 const proposal = generateProposal();
-const mockPubkey = '0x123';
-const mockKeypair = {
-  pub: mockPubkey,
-} as VegaKeyExtended;
-
-const mockWalletContext = {
-  keypair: mockKeypair,
-  keypairs: [mockKeypair],
-  sendTx: jest.fn().mockReturnValue(Promise.resolve(null)),
-  connect: jest.fn(),
-  disconnect: jest.fn(),
-  selectPublicKey: jest.fn(),
-  connector: null,
-};
-
-const mockEthereumConfig = {
-  network_id: '3',
-  chain_id: '3',
-  confirmations: 3,
-  collateral_bridge_contract: {
-    address: 'bridge address',
-  },
-};
-
-const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
-  request: {
-    query: NETWORK_PARAMS_QUERY,
-  },
-  result: {
-    data: {
-      networkParameters: [
-        {
-          __typename: 'NetworkParameter',
-          key: 'blockchains.ethereumConfig',
-          value: JSON.stringify(mockEthereumConfig),
-        },
-      ],
-    },
-  },
-};
-
-const amendToDate = (amendmentInSeconds: number) => {
-  const now = new Date();
-  return new Date(now.getTime() + amendmentInSeconds * 1000);
-};
-
-const oneWeek = 60 * 60 * 24 * 7;
-
-const lastMonth = amendToDate(-(oneWeek * 4));
-const lastWeek = amendToDate(-oneWeek);
-const nextWeek = amendToDate(oneWeek);
-const nextMonth = amendToDate(oneWeek * 4);
 
 const openProposalClosesNextMonth = {
   ...proposal,
