@@ -86,6 +86,8 @@ export const EnvironmentProvider = ({
       setNetworkError(ErrorType.CONNECTION_ERROR_ALL);
       setNodeSwitcherOpen(true);
     }
+    // prevent infinite render loop by skipping deps which will change as a result
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [environment.VEGA_URL, nodes]);
 
   const errorMessage = validateEnvironment(environment);

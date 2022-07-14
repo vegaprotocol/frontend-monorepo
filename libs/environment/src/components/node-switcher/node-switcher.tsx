@@ -59,7 +59,10 @@ export const NodeSwitcher = ({
     VEGA_ENV,
     config
   );
-  const highestBlock = useMemo(() => getHighestBlock(VEGA_ENV, state), [state]);
+  const highestBlock = useMemo(
+    () => getHighestBlock(VEGA_ENV, state),
+    [VEGA_ENV, state]
+  );
   const customUrl = state[CUSTOM_NODE_KEY]?.url;
 
   const onSubmit = (node: ReturnType<typeof getDefaultNode>) => {

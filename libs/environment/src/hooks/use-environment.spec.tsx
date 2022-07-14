@@ -309,7 +309,7 @@ describe('useEnvironment hook', () => {
     it('updates the VEGA_URL with the quickest node to respond from the config urls', async () => {
       delete process.env['NX_VEGA_URL'];
 
-      const mockNodes: Record<string, any> = {
+      const mockNodes: Record<string, NodeData> = {
         'https://mock-node-1.com': { hasError: false, delay: 4 },
         'https://mock-node-2.com': { hasError: false, delay: 5 },
         'https://mock-node-3.com': { hasError: false, delay: 8 },
@@ -344,7 +344,7 @@ describe('useEnvironment hook', () => {
     it('ignores failing nodes and selects the first successful one to use', async () => {
       delete process.env['NX_VEGA_URL'];
 
-      const mockNodes: Record<string, any> = {
+      const mockNodes: Record<string, MockRequestConfig> = {
         'https://mock-node-1.com': { hasError: true, delay: 4 },
         'https://mock-node-2.com': { hasError: false, delay: 5 },
         'https://mock-node-3.com': { hasError: false, delay: 8 },
@@ -379,7 +379,7 @@ describe('useEnvironment hook', () => {
     it('has a network error when cannot connect to any nodes', async () => {
       delete process.env['NX_VEGA_URL'];
 
-      const mockNodes: Record<string, any> = {
+      const mockNodes: Record<string, MockRequestConfig> = {
         'https://mock-node-1.com': { hasError: true, delay: 4 },
         'https://mock-node-2.com': { hasError: true, delay: 5 },
         'https://mock-node-3.com': { hasError: true, delay: 8 },
@@ -463,6 +463,7 @@ describe('useEnvironment hook', () => {
     });
 
     // SKIP due to https://github.com/facebook/jest/issues/12670
+    // eslint-disable-next-line jest/no-disabled-tests
     it.skip('has a network error when the config is invalid and there is no VEGA_URL in the environment', async () => {
       delete process.env['NX_VEGA_URL'];
 
@@ -490,6 +491,7 @@ describe('useEnvironment hook', () => {
     });
 
     // SKIP due to https://github.com/facebook/jest/issues/12670
+    // eslint-disable-next-line jest/no-disabled-tests
     it.skip('logs an error when the network config in invalid and there is a VEGA_URL in the environment', async () => {
       const consoleWarnSpy = jest
         .spyOn(console, 'warn')
@@ -523,6 +525,7 @@ describe('useEnvironment hook', () => {
     });
 
     // SKIP due to https://github.com/facebook/jest/issues/12670
+    // eslint-disable-next-line jest/no-disabled-tests
     it.skip('has a network error when the selected node is not a valid url', async () => {
       process.env['NX_VEGA_URL'] = 'not-url';
 

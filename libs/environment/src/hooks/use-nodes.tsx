@@ -197,6 +197,8 @@ export const useNodes = (env: Networks, config?: Configuration) => {
     return () => {
       Object.keys(clients).forEach((url) => clients[url]?.stop());
     };
+    // stop all created clients on unmount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

@@ -40,9 +40,7 @@ export const getMockStatisticsResult = (
   },
 });
 
-export const getMockStatisticsBlockHeightResult = (
-  env: Networks = Networks.TESTNET
-): BlockHeightStats => ({
+export const getMockStatisticsBlockHeightResult = (): BlockHeightStats => ({
   statistics: {
     __typename: 'Statistics',
     blockHeight: '11',
@@ -57,12 +55,12 @@ export const getMockQueryResult = (env: Networks): Statistics => ({
   },
 });
 
-const getHandler = (
+function getHandler<T>(
   { hasError, delay = 0 }: MockRequestConfig = {},
-  result: any
-) => {
+  result: T
+) {
   return () =>
-    new Promise<RequestHandlerResponse<any>>((resolve, reject) => {
+    new Promise<RequestHandlerResponse<T>>((resolve, reject) => {
       setTimeout(() => {
         if (hasError) {
           reject(new Error('Failed to execute query.'));
@@ -71,7 +69,7 @@ const getHandler = (
         resolve({ data: result });
       }, delay);
     });
-};
+}
 
 export default function ({
   network,
