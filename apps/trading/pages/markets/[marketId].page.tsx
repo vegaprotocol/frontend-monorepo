@@ -20,6 +20,7 @@ const MARKET_QUERY = gql`
       tradingMode
       state
       decimalPlaces
+      positionDecimalPlaces
       data {
         market {
           id
