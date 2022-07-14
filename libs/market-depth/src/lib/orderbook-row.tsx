@@ -66,7 +66,7 @@ export const OrderbookRow = React.memo(
           relativeAsk={cumulativeRelativeAsk}
           relativeBid={cumulativeRelativeBid}
           indicativeVolume={indicativeVolume}
-          className="pr-4"
+          className="pr-4 text-black dark:text-white"
         />
       </>
     );
