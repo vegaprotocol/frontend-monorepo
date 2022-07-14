@@ -89,7 +89,7 @@ export const TradeMarketHeader = ({
             <span className={itemClassName}>Volume</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
-                ? market.data.indicativeVolume
+                ? Number(market.data.indicativeVolume).toLocaleString()
                 : '-'}
             </span>
           </div>
