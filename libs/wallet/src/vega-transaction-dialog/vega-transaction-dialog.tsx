@@ -204,7 +204,6 @@ export const VegaDialog = ({
 
   // Edit order
   if (edit && editOrder && transaction.status === VegaTxStatus.Default) {
-    console.log({ editOrder }, { finalizedOrder }, { transaction });
     return <VegaOrderEditDialog title={title} order={editOrder} edit={edit} />;
   }
 
