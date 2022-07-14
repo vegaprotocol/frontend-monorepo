@@ -54,8 +54,8 @@ context(
         cy.get(vegaWalletAssociatedBalance, txTimeout)
           .should('contain', 2.0, txTimeout);
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout)
-          .should('contain', 2.0, txTimeout);
+        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+          'contain', 2.0, txTimeout);
       });
 
       it('Able to disassociate tokens', function () {

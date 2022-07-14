@@ -378,8 +378,8 @@ context('Staking Flow - with eth and vega wallets connected', function () {
     it('Disassociating all tokens - removes all staked tokens', function () {
       cy.staking_page_associate_tokens('3');
 
-      cy.get(vegaWalletUnstakedBalance, txTimeout)
-        .should('contain', 3.0, txTimeout);
+      cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+        'contain', 3.0, txTimeout);
 
       cy.get('button')
         .contains('Select a validator to nominate')
