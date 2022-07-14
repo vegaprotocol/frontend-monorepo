@@ -4,17 +4,13 @@ import { WithdrawForm } from './withdraw-form';
 import type { WithdrawalFields } from './use-withdraw';
 import { useWithdraw } from './use-withdraw';
 import { WithdrawDialog } from './withdraw-dialog';
-import {
-  isExpectedEthereumError,
-  EthTxStatus,
-  useTokenDecimals,
-} from '@vegaprotocol/web3';
+import { isExpectedEthereumError, EthTxStatus } from '@vegaprotocol/web3';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import type { Account, Asset } from './types';
 import { useWeb3React } from '@web3-react/core';
-import { useGetWithdrawaLimits } from './use-get-withdraw-limits';
+import { useGetWithdrawLimits } from './use-get-withdraw-limits';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
@@ -44,7 +40,7 @@ export const WithdrawManager = ({
     return assets?.find((a) => a.id === assetId);
   }, [assets, assetId]);
 
-  const limits = useGetWithdrawaLimits(asset);
+  const limits = useGetWithdrawLimits(asset);
 
   const max = useMemo(() => {
     if (!asset) {
@@ -55,11 +51,9 @@ export const WithdrawManager = ({
       (a) => a.type === AccountType.General && a.asset.id === asset.id
     );
 
-    if (!account) {
-      return new BigNumber(0);
-    }
-
-    const v = new BigNumber(addDecimal(account.balance, asset.decimals));
+    const v = account
+      ? new BigNumber(addDecimal(account.balance, asset.decimals))
+      : new BigNumber(0);
     return BigNumber.minimum(v, limits ? limits.max : new BigNumber(Infinity));
   }, [asset, accounts, limits]);
 
@@ -99,6 +93,7 @@ export const WithdrawManager = ({
         max={max}
         min={min}
         submitWithdraw={handleSubmit}
+        limits={limits}
       />
       <WithdrawDialog
         vegaTx={vegaTx}

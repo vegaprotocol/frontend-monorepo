@@ -13,7 +13,7 @@ export const useSubmitApproval = (
       return null;
     }
 
-    const amount = removeDecimal('1000', decimals);
+    const amount = removeDecimal('1000000', decimals);
 
     return contract.approve(config.collateral_bridge_contract.address, amount);
   });

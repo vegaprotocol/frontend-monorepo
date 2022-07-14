@@ -32,6 +32,9 @@ export interface WithdrawFormProps {
   min: BigNumber;
   selectedAsset?: Asset;
   ethereumAccount?: string;
+  limits: {
+    max: BigNumber;
+  } | null;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalFields) => void;
 }
@@ -42,6 +45,7 @@ export const WithdrawForm = ({
   min,
   selectedAsset,
   ethereumAccount,
+  limits,
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
@@ -135,9 +139,9 @@ export const WithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-      {selectedAsset && max && (
+      {selectedAsset && limits && (
         <div className="mb-20">
-          <WithdrawLimits max={max} />
+          <WithdrawLimits limits={limits} />
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">

@@ -4,7 +4,7 @@ import { useBridgeContract, useEthereumReadContract } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
-export const useGetWithdrawaLimits = (asset?: Asset) => {
+export const useGetWithdrawLimits = (asset?: Asset) => {
   const contract = useBridgeContract(true);
   const getLimits = useCallback(async () => {
     if (!contract || !asset || asset.source.__typename !== 'ERC20') {
