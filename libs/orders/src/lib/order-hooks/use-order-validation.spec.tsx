@@ -9,7 +9,8 @@ import type {
   VegaKeyExtended,
 } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import { marketTranslations, ValidationProps } from './use-order-validation';
+import type { ValidationProps } from './use-order-validation';
+import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Market } from '../market';
