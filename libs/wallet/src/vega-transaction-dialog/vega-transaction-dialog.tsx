@@ -10,6 +10,7 @@ import { OrderType } from '@vegaprotocol/types';
 import type { Order } from '../wallet-types';
 import { FormGroup, Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
+import get from 'lodash/get';
 
 export interface VegaTransactionDialogProps {
   orderDialogOpen: boolean;
@@ -232,7 +233,8 @@ export const VegaDialog = ({
       >
         {transaction.error && (
           <pre className="text-ui break-all whitespace-pre-wrap">
-            {JSON.stringify(transaction.error, null, 2)}
+            {get(transaction.error, 'error') ??
+              JSON.stringify(transaction.error, null, 2)}
           </pre>
         )}
       </OrderDialogWrapper>

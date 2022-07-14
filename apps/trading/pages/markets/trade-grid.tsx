@@ -11,7 +11,7 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import type { Market_market } from './__generated__/Market';
-import { t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -89,7 +89,7 @@ export const TradeMarketHeader = ({
             <span className={itemClassName}>Volume</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
-                ? Number(market.data.indicativeVolume).toLocaleString()
+                ? formatNumber(market.data.indicativeVolume)
                 : '-'}
             </span>
           </div>

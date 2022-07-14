@@ -40,25 +40,32 @@ export const useOrderValidation = ({
       };
     }
 
-    if ([MarketState.Cancelled, MarketState.Rejected].includes(market.state)) {
+    if (
+      [
+        MarketState.Settled,
+        MarketState.Rejected,
+        MarketState.TradingTerminated,
+      ].includes(market.state)
+    ) {
       return {
         isDisabled: true,
         message: t(
-          `This market is ${market.state.toLowerCase()} and not accepting orders`
+          `This market is ${market.state.toLowerCase()} and no longer accepting orders`
         ),
       };
     }
 
     if (
       [
+        MarketState.Suspended,
+        MarketState.Pending,
+        MarketState.Proposed,
         MarketState.Cancelled,
         MarketState.Closed,
-        MarketState.Proposed,
-        MarketState.Settled,
       ].includes(market.state)
     ) {
       return {
-        isDisabled: true,
+        isDisabled: false,
         message: t(
           `This market is ${market.state.toLowerCase()} and only accepting liquidity orders`
         ),
@@ -96,7 +103,7 @@ export const useOrderValidation = ({
         return {
           isDisabled: false,
           message: t(
-            'This market is currently suspended and only accepting liquidity orders'
+            `This market is ${market.state.toLowerCase()} and only accepting liquidity orders`
           ),
         };
       }
@@ -108,7 +115,7 @@ export const useOrderValidation = ({
         return {
           isDisabled: false,
           message: t(
-            'This market is not active yet and can accept only liquidity orders'
+            `This market is ${market.state.toLowerCase()} and only accepting liquidity orders`
           ),
         };
       }
