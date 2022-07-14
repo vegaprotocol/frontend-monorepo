@@ -23,6 +23,8 @@ import {
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
+import { MarketTradingMode } from '@vegaprotocol/types';
+import startCase from 'lodash/startCase';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -87,20 +89,18 @@ export const TradeMarketHeader = ({
             <span className={itemClassName}>Volume</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
-                ? market.data.indicativeVolume
+                ? Number(market.data.indicativeVolume).toLocaleString()
                 : '-'}
             </span>
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode}
-            </span>
-          </div>
-          <div className={headerItemClassName}>
-            <span className={itemClassName}>State</span>
-            <span data-testid="market-state" className={itemValueClassName}>
-              {market.state}
+              {startCase(
+                market.tradingMode === MarketTradingMode.Continuous
+                  ? 'Continuous Trading'
+                  : market.tradingMode
+              )}
             </span>
           </div>
         </div>
