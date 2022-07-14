@@ -29,9 +29,9 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
 
     const { transaction, updatedOrder, reset, cancel } = useOrderCancel();
     const {
-      editTransaction,
+      transaction: editTransaction,
       updatedOrder: editedOrder,
-      resetEdit,
+      reset: resetEdit,
       edit,
     } = useOrderEdit();
     const ordersData = showCancelled
@@ -73,9 +73,15 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           setOrderDialogOpen={setEditOrderDialogOpen}
           transaction={editTransaction}
           reset={resetEdit}
-          title={`Edit ${
-            editOrder?.market?.tradableInstrument.instrument.code ?? ''
-          } order`}
+          title={
+            editedOrder
+              ? `Order ${
+                  editOrder?.market?.tradableInstrument.instrument.code ?? ''
+                } updated`
+              : `Edit ${
+                  editOrder?.market?.tradableInstrument.instrument.code ?? ''
+                } order`
+          }
           edit={edit}
           editOrder={editOrder}
           finalizedOrder={editedOrder}

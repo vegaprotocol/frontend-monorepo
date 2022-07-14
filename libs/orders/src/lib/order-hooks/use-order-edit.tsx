@@ -61,7 +61,9 @@ export const useOrderEdit = () => {
         } as OrderAmendmentBody);
 
         if (res?.signature) {
-          const resId = determineId(res.signature);
+          const resId = order.id ?? determineId(res.signature);
+          setUpdatedOrder(null);
+          // setId(resId);
           if (resId) {
             // Start a subscription looking for the newly created order
             subRef.current = client
@@ -103,9 +105,9 @@ export const useOrderEdit = () => {
   );
 
   return {
-    editTransaction: transaction,
+    transaction,
     updatedOrder,
     edit,
-    resetEdit: reset,
+    reset,
   };
 };
