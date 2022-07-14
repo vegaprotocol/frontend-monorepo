@@ -2,6 +2,7 @@ import type {
   Fills,
   Fills_party_tradesConnection_edges_node,
 } from '@vegaprotocol/fills';
+import { Side } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
