@@ -15,6 +15,7 @@ import {
   getIsFormDisabled,
   getErrorType,
   getErrorByType,
+  getHasInvalidChain,
 } from '../../utils/validate-node';
 import { CUSTOM_NODE_KEY } from '../../types';
 import type { Configuration, NodeData, ErrorType, Networks } from '../../types';
@@ -36,7 +37,7 @@ const getDefaultNode = (urls: string[], currentUrl?: string) => {
 
 const getHighestBlock = (env: Networks, state: Record<string, NodeData>) => {
   return Object.keys(state).reduce((acc, node) => {
-    if (state[node].chain.value !== env) return acc;
+    if (getHasInvalidChain(env, state[node].chain.value)) return acc;
     const value = Number(state[node].block.value);
     return value ? Math.max(acc, value) : acc;
   }, 0);
