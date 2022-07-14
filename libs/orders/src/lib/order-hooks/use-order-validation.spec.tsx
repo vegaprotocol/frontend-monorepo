@@ -9,7 +9,7 @@ import type {
   VegaKeyExtended,
 } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import type { ValidationProps } from './use-order-validation';
+import { marketTranslations, ValidationProps } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Market } from '../market';
@@ -90,7 +90,7 @@ function setup(
   return renderHook(() => useOrderValidation({ ...defaultOrder, ...props }));
 }
 
-describe(`useOrderValidation`, () => {
+describe('useOrderValidation', () => {
   it('Returns empty string when given valid data', () => {
     const { result } = setup();
     expect(result.current).toStrictEqual({ isDisabled: false, message: `` });
@@ -119,7 +119,9 @@ describe(`useOrderValidation`, () => {
       const { result } = setup({ market: { ...defaultOrder.market, state } });
       expect(result.current).toStrictEqual({
         isDisabled: true,
-        message: `This market is ${state.toLowerCase()} and no longer accepting orders`,
+        message: `This market is ${marketTranslations(
+          state
+        )} and no longer accepting orders`,
       });
     }
   );

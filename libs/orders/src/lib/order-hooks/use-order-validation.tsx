@@ -19,6 +19,15 @@ export type ValidationProps = {
   fieldErrors?: FieldErrors<Order>;
 };
 
+export const marketTranslations = (marketState: MarketState) => {
+  switch (marketState) {
+    case MarketState.TradingTerminated:
+      return t('terminated');
+    default:
+      return t(marketState).toLowerCase();
+  }
+};
+
 export const useOrderValidation = ({
   step,
   market,
@@ -50,7 +59,9 @@ export const useOrderValidation = ({
       return {
         isDisabled: true,
         message: t(
-          `This market is ${market.state.toLowerCase()} and no longer accepting orders`
+          `This market is ${marketTranslations(
+            market.state
+          )} and no longer accepting orders`
         ),
       };
     }
@@ -67,7 +78,9 @@ export const useOrderValidation = ({
       return {
         isDisabled: false,
         message: t(
-          `This market is ${market.state.toLowerCase()} and only accepting liquidity orders`
+          `This market is ${marketTranslations(
+            market.state
+          )} and only accepting liquidity orders`
         ),
       };
     }
@@ -103,7 +116,9 @@ export const useOrderValidation = ({
         return {
           isDisabled: false,
           message: t(
-            `This market is ${market.state.toLowerCase()} and only accepting liquidity orders`
+            `This market is ${marketTranslations(
+              market.state
+            )} and only accepting liquidity orders`
           ),
         };
       }
@@ -115,7 +130,9 @@ export const useOrderValidation = ({
         return {
           isDisabled: false,
           message: t(
-            `This market is ${market.state.toLowerCase()} and only accepting liquidity orders`
+            `This market is ${marketTranslations(
+              market.state
+            )} and only accepting liquidity orders`
           ),
         };
       }
