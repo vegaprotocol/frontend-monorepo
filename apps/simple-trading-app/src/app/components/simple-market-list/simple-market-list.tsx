@@ -96,20 +96,26 @@ const SimpleMarketList = () => {
   );
 
   const onTabToNExtCell = useCallback((params) => {
-    const { api, previousCellPosition: { rowIndex } } = params;
+    const {
+      api,
+      previousCellPosition: { rowIndex },
+    } = params;
     const rowCount = api.getDisplayedRowCount();
-    if(rowCount <= rowIndex + 1){
+    if (rowCount <= rowIndex + 1) {
       return null;
     }
     return { ...params.previousCellPosition, rowIndex: rowIndex + 1 };
-  }, [])
+  }, []);
 
-  const onCellKeyDown = useCallback((params) => {
-    const { event: { key = '' } = {}, data } = params;
-    if(key === 'Enter'){
-      handleRowClicked({ data });
-    }
-  }, [handleRowClicked]);
+  const onCellKeyDown = useCallback(
+    (params) => {
+      const { event: { key = '' } = {}, data } = params;
+      if (key === 'Enter') {
+        handleRowClicked({ data });
+      }
+    },
+    [handleRowClicked]
+  );
 
   return (
     <div className="h-full grid grid-rows-[min-content,1fr]">
