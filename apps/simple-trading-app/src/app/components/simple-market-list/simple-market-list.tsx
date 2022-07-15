@@ -95,7 +95,7 @@ const SimpleMarketList = () => {
     [navigate]
   );
 
-  const onTabToNExtCell = useCallback((params) => {
+  const onTabToNextCell = useCallback((params) => {
     const {
       api,
       previousCellPosition: { rowIndex },
