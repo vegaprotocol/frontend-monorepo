@@ -17,6 +17,7 @@ export const Icon = ({ size = 16, name, className, ariaLabel }: IconProps) => {
     'fill-current',
     'align-text-bottom',
     'fill-current',
+    'shrink-0',
     {
       'w-20': size === 20,
       'h-20': size === 20,

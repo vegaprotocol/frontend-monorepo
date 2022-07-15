@@ -14,7 +14,6 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     env:
       GO111MODULE: 'on'
-      GOPROXY: ${{ secrets.GO_PROXY }}
     steps:
       #######
       ## Setup langs

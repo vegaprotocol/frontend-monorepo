@@ -46,7 +46,7 @@ describe('fills', () => {
     ];
     const result = generateFills({
       party: {
-        tradesPaged: {
+        tradesConnection: {
           edges: fills.map((f, i) => {
             return {
               __typename: 'TradeEdge',

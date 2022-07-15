@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketTradingMode, MarketState } from "@vegaprotocol/types";
+import { Interval, MarketTradingMode, MarketState, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Market
@@ -47,6 +47,10 @@ export interface Market_market_data {
    * the aggregated volume being offered at the best static offer price, excluding pegged orders.
    */
   bestStaticOfferVolume: string;
+  /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
 }
 
 export interface Market_market_tradableInstrument_instrument_metadata {

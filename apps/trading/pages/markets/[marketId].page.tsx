@@ -32,6 +32,7 @@ const MARKET_QUERY = gql`
         bestStaticBidVolume
         bestStaticOfferVolume
         indicativeVolume
+        trigger
       }
       tradableInstrument {
         instrument {

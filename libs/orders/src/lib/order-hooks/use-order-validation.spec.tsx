@@ -74,12 +74,12 @@ const ERROR = {
     'Only limit orders are permitted when market is in auction',
   MARKET_CONTINUOUS_TIF:
     'Only GTT, GTC and GFA are permitted when market is in auction',
-  FIELD_SIZE_REQ: 'An amount needs to be provided',
+  FIELD_SIZE_REQ: 'You need to provide an amount',
   FIELD_SIZE_MIN: `The amount cannot be lower than "${defaultOrder.step}"`,
-  FIELD_PRICE_REQ: 'A price needs to be provided',
+  FIELD_PRICE_REQ: 'You need to provide a price',
   FIELD_PRICE_MIN: 'The price cannot be negative',
-  FIELD_PRICE_STEP_NULL: 'No decimal amounts allowed for this order',
-  FIELD_PRICE_STEP_DECIMAL: `The amount field only takes up to ${market.positionDecimalPlaces} decimals`,
+  FIELD_PRICE_STEP_NULL: 'Order sizes must be in whole numbers for this market',
+  FIELD_PRICE_STEP_DECIMAL: `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`,
 };
 
 function setup(
@@ -115,14 +115,14 @@ describe('useOrderValidation', () => {
     ${MarketState.Rejected}
     ${MarketState.TradingTerminated}
   `(
-    'Returns an error message for market state when no longer accepting orders',
+    'Returns an error message for market state when not accepting orders',
     ({ state }) => {
       const { result } = setup({ market: { ...defaultOrder.market, state } });
       expect(result.current).toStrictEqual({
         isDisabled: true,
         message: `This market is ${marketTranslations(
           state
-        )} and no longer accepting orders`,
+        )} and not accepting orders`,
       });
     }
   );
@@ -146,7 +146,7 @@ describe('useOrderValidation', () => {
       });
       expect(result.current).toStrictEqual({
         isDisabled: false,
-        message: `This market is ${state.toLowerCase()} and only accepting liquidity orders`,
+        message: `This market is ${state.toLowerCase()} and only accepting liquidity commitment orders`,
       });
     }
   );
@@ -226,7 +226,7 @@ describe('useOrderValidation', () => {
     });
   });
 
-  it('Returns an error message when the order size has more decimals then allowed', () => {
+  it('Returns an error message when the order size has more decimals than allowed', () => {
     const { result } = setup({
       fieldErrors: { size: { type: `validate`, message: ERROR_SIZE_DECIMAL } },
     });

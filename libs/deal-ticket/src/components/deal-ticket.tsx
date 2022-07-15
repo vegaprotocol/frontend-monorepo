@@ -4,7 +4,11 @@ import {
   VegaWalletOrderType,
   VegaWalletOrderTimeInForce,
 } from '@vegaprotocol/wallet';
-import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  toDecimal,
+  addDecimalsFormatNumber,
+} from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -83,7 +87,10 @@ export const DealTicket = ({
         register={register}
         price={
           market.depth.lastTrade
-            ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+            ? addDecimalsFormatNumber(
+                market.depth.lastTrade.price,
+                market.decimalPlaces
+              )
             : undefined
         }
         quoteName={market.tradableInstrument.instrument.product.quoteName}

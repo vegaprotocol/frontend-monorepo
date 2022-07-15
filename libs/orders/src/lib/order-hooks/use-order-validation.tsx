@@ -61,7 +61,7 @@ export const useOrderValidation = ({
         message: t(
           `This market is ${marketTranslations(
             market.state
-          )} and no longer accepting orders`
+          )} and not accepting orders`
         ),
       };
     }
@@ -80,7 +80,7 @@ export const useOrderValidation = ({
         message: t(
           `This market is ${marketTranslations(
             market.state
-          )} and only accepting liquidity orders`
+          )} and only accepting liquidity commitment orders`
         ),
       };
     }
@@ -118,7 +118,7 @@ export const useOrderValidation = ({
           message: t(
             `This market is ${marketTranslations(
               market.state
-            )} and only accepting liquidity orders`
+            )} and only accepting liquidity commitment orders`
           ),
         };
       }
@@ -132,7 +132,7 @@ export const useOrderValidation = ({
           message: t(
             `This market is ${marketTranslations(
               market.state
-            )} and only accepting liquidity orders`
+            )} and only accepting liquidity commitment orders`
           ),
         };
       }
@@ -172,7 +172,7 @@ export const useOrderValidation = ({
     if (fieldErrors?.size?.type === 'required') {
       return {
         isDisabled: true,
-        message: t('An amount needs to be provided'),
+        message: t('You need to provide an amount'),
       };
     }
 
@@ -186,7 +186,7 @@ export const useOrderValidation = ({
     if (fieldErrors?.price?.type === 'required') {
       return {
         isDisabled: true,
-        message: t('A price needs to be provided'),
+        message: t('You need to provide a price'),
       };
     }
 
@@ -204,13 +204,13 @@ export const useOrderValidation = ({
       if (market.positionDecimalPlaces === 0) {
         return {
           isDisabled: true,
-          message: t('No decimal amounts allowed for this order'),
+          message: t('Order sizes must be in whole numbers for this market'),
         };
       }
       return {
         isDisabled: true,
         message: t(
-          `The amount field only takes up to ${market.positionDecimalPlaces} decimals`
+          `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`
         ),
       };
     }
