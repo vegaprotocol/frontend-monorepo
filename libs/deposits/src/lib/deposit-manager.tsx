@@ -11,7 +11,6 @@ import {
   EthTxStatus,
   TransactionDialog,
   useEthereumConfig,
-  useTokenDecimals,
 } from '@vegaprotocol/web3';
 import { useTokenContract } from '@vegaprotocol/web3';
 
@@ -62,22 +61,20 @@ export const DepositManager = ({
     isFaucetable
   );
 
-  const decimals = useTokenDecimals(tokenContract);
-
   // Get users balance of the erc20 token selected
   const { balance, refetch } = useGetBalanceOfERC20Token(
     tokenContract,
-    decimals
+    asset?.decimals
   );
 
   // Get temporary deposit limits
-  const limits = useGetDepositLimits(asset, decimals);
+  const limits = useGetDepositLimits(asset);
 
   // Get allowance (approved spending limit of brdige contract) for the selected asset
-  const allowance = useGetAllowance(tokenContract, decimals);
+  const allowance = useGetAllowance(tokenContract, asset?.decimals);
 
   // Set up approve transaction
-  const approve = useSubmitApproval(tokenContract, decimals);
+  const approve = useSubmitApproval(tokenContract, asset?.decimals);
 
   // Set up deposit transaction
   const { confirmationEvent, ...deposit } = useSubmitDeposit();

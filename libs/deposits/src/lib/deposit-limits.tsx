@@ -4,6 +4,7 @@ import type BigNumber from 'bignumber.js';
 interface DepositLimitsProps {
   limits: {
     max: BigNumber;
+    deposited: BigNumber;
   };
 }
 
@@ -24,8 +25,14 @@ export const DepositLimits = ({ limits }: DepositLimitsProps) => {
       <table className="w-full text-ui">
         <tbody>
           <tr>
-            <th className="text-left font-normal">{t('Maximum')}</th>
+            <th className="text-left font-normal">{t('Max deposit total')}</th>
             <td className="text-right">{maxLimit}</td>
+          </tr>
+          <tr>
+            <th className="text-left font-normal">
+              {t('Remaining available')}
+            </th>
+            <td className="text-right">{limits.deposited.toString()}</td>
           </tr>
         </tbody>
       </table>
