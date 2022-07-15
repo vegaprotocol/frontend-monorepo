@@ -11,7 +11,11 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import type { Market_market } from './__generated__/Market';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  formatLabel,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -25,8 +29,6 @@ import {
 import type { CandleClose } from '@vegaprotocol/types';
 import { AuctionTrigger } from '@vegaprotocol/types';
 import { MarketTradingMode } from '@vegaprotocol/types';
-import capitalize from 'lodash/capitalize';
-import startCase from 'lodash/startCase';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -46,8 +48,6 @@ interface TradeMarketHeaderProps {
   market: Market_market;
   className?: string;
 }
-
-const formatLabel = (str: string) => capitalize(startCase(str).toLowerCase());
 
 export const TradeMarketHeader = ({
   market,
