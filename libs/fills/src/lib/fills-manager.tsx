@@ -135,6 +135,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
         ref={gridRef}
         partyId={partyId}
         datasource={{ getRows }}
+        rowModelType="infinite"
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
       />

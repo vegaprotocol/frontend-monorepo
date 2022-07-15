@@ -143,6 +143,7 @@ export const TradesContainer = ({ marketId }: TradesContainerProps) => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       <TradesTable
         ref={gridRef}
+        rowModelType="infinite"
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}
