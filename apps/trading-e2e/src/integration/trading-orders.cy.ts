@@ -29,50 +29,52 @@ describe('orders', () => {
   it('renders orders', () => {
     cy.getByTestId('tab-orders').should('be.visible');
 
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderSymbol}']`)
-      .each(($symbol) => {
+    cy.getByTestId('tab-orders').within(() => {
+      cy.get(`[col-id='${orderSymbol}']`).each(($symbol) => {
         cy.wrap($symbol).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderSize}']`)
-      .each(($size) => {
+
+      cy.get(`[col-id='${orderSize}']`).each(($size) => {
         cy.wrap($size).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderType}']`)
-      .each(($type) => {
+
+      cy.get(`[col-id='${orderType}']`).each(($type) => {
         cy.wrap($type).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderStatus}']`)
-      .each(($status) => {
+
+      cy.get(`[col-id='${orderStatus}']`).each(($status) => {
         cy.wrap($status).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderRemaining}']`)
-      .each(($remaining) => {
+
+      cy.get(`[col-id='${orderRemaining}']`).each(($remaining) => {
         cy.wrap($remaining).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderPrice}']`)
-      .each(($price) => {
+
+      cy.get(`[col-id='${orderPrice}']`).each(($price) => {
         cy.wrap($price).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderTimeInForce}']`)
-      .each(($timeInForce) => {
+
+      cy.get(`[col-id='${orderTimeInForce}']`).each(($timeInForce) => {
         cy.wrap($timeInForce).invoke('text').should('not.be.empty');
       });
-    cy.getByTestId('tab-orders')
-      .get(`[col-id='${orderCreatedAt}']`)
-      .each(($dateTime) => {
+
+      cy.get(`[col-id='${orderCreatedAt}']`).each(($dateTime) => {
         cy.wrap($dateTime).invoke('text').should('not.be.empty');
       });
+
+      cy.getByTestId('cancel')
+        .should('be.visible')
+        .and('have.length.at.least', 1);
+    });
   });
 
   it('orders are sorted by most recent order', () => {
-    const expectedOrderList = ['TSLA.QM21', 'BTCUSD.MF21', 'AAVEDAI.MF21'];
+    const expectedOrderList = [
+      'UNIDAI.MF21',
+      'TSLA.QM21',
+      'BTCUSD.MF21',
+      'AAVEDAI.MF21',
+    ];
 
     cy.getByTestId('tab-orders')
       .get(`[col-id='${orderSymbol}']`)
