@@ -132,7 +132,7 @@ export const useOrderValidation = ({
           message: t(
             `This market is ${marketTranslations(
               market.state
-            )} and only accepting liquidity orders`
+            )} and only accepting liquidity commitment orders`
           ),
         };
       }
