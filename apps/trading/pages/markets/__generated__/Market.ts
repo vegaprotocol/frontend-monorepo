@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketTradingMode, MarketState } from "@vegaprotocol/types";
+import { Interval, MarketTradingMode, MarketState, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Market
@@ -47,6 +47,10 @@ export interface Market_market_data {
    * the aggregated volume being offered at the best static offer price, excluding pegged orders.
    */
   bestStaticOfferVolume: string;
+  /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
 }
 
 export interface Market_market_tradableInstrument_instrument_metadata {
@@ -145,7 +149,7 @@ export interface Market_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicate the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
    */
