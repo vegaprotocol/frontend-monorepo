@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import { ProposalContainer } from './governance/proposal';
 import { ProposalsContainer } from './governance/proposals';
 
@@ -14,6 +15,8 @@ import { StakingNodeContainer } from './staking/staking-node';
 import { StakingNodesContainer } from './staking/staking-nodes-container';
 import { Tranche } from './tranches/tranche';
 import { Tranches } from './tranches/tranches';
+import Withdraw from './withdraw';
+import Withdrawals from './withdrawals';
 
 export const Routes = {
   HOME: '/',
@@ -137,12 +140,12 @@ const routerConfig = [
   {
     path: Routes.WITHDRAW,
     name: 'Withdraw',
-    component: LazyWithdraw,
+    component: Withdraw,
   },
   {
     path: Routes.WITHDRAWALS,
     name: 'Withdrawals',
-    component: LazyWithdrawals,
+    component: Withdrawals,
   },
   {
     path: Routes.VESTING,
@@ -164,8 +167,8 @@ const routerConfig = [
     name: 'Governance',
     component: LazyGovernance,
     children: [
-      { path: ':proposalId', element: <ProposalContainer /> },
       { index: true, element: <ProposalsContainer /> },
+      { path: ':proposalId', element: <ProposalContainer /> },
     ],
   },
   {
