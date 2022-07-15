@@ -172,7 +172,7 @@ export const useOrderValidation = ({
     if (fieldErrors?.size?.type === 'required') {
       return {
         isDisabled: true,
-        message: t('An amount needs to be provided'),
+        message: t('You need to provide an amount'),
       };
     }
 
