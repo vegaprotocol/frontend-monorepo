@@ -21,7 +21,6 @@ export const InputError = ({
       'flex',
       'items-center',
       'box-border',
-      'h-28',
       'border-l-4',
       'text-black-95 dark:text-white-95',
       'text-ui',
@@ -44,7 +43,7 @@ export const InputError = ({
       {...props}
       role="alert"
     >
-      <Icon name="warning-sign" className={iconClassName} />
+      <Icon name="warning-sign" size={16} className={iconClassName} />
       {children}
     </div>
   );
