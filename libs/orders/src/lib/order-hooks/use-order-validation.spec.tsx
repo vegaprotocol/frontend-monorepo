@@ -226,7 +226,7 @@ describe('useOrderValidation', () => {
     });
   });
 
-  it('Returns an error message when the order size has more decimals then allowed', () => {
+  it('Returns an error message when the order size has more decimals than allowed', () => {
     const { result } = setup({
       fieldErrors: { size: { type: `validate`, message: ERROR_SIZE_DECIMAL } },
     });
