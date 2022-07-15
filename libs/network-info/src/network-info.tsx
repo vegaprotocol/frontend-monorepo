@@ -23,15 +23,15 @@ export const NetworkInfo = () => {
   const feedbackLinks = getFeedbackLinks(GITHUB_FEEDBACK_URL);
 
   return (
-    <div data-testid='git-info'>
-      <p data-testid='git-network-data' className="mb-16">
+    <div data-testid="git-info">
+      <p data-testid="git-network-data" className="mb-16">
         {t('Reading network data from')}{' '}
         <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
           {VEGA_URL}
         </Lozenge>
         . <Link onClick={() => setNodeSwitcherOpen()}>{t('Edit')}</Link>
       </p>
-      <p data-testid='git-eth-data' className="mb-16">
+      <p data-testid="git-eth-data" className="mb-16">
         {t('Reading Ethereum data from')}{' '}
         <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
           {ETHEREUM_PROVIDER_URL}
@@ -39,7 +39,7 @@ export const NetworkInfo = () => {
         .{' '}
       </p>
       {GIT_COMMIT_HASH && (
-        <p data-testid='git-commit-hash' className="mb-16">
+        <p data-testid="git-commit-hash" className="mb-16">
           {t('Version/commit hash')}:{' '}
           <Link
             href={
