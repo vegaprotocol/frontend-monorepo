@@ -157,6 +157,7 @@ const getProps = (
             href={`${ethUrl}/tx/${ethTx.txHash}`}
             title={t('View transaction on Etherscan')}
             className="text-vega-pink dark:text-vega-yellow"
+            target="_blank"
           >
             {t('View on Etherscan')}
           </Link>
@@ -174,6 +175,7 @@ const getProps = (
             href={`${ethUrl}/tx/${ethTx.txHash}`}
             title={t('View transaction on Etherscan')}
             className="text-vega-pink dark:text-vega-yellow"
+            target="_blank"
           >
             {t('View on Etherscan')}
           </Link>

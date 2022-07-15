@@ -90,6 +90,7 @@ export const StatusCell = ({
             title={t('View transaction on Etherscan')}
             href={`${ethUrl}/tx/${data.txHash}`}
             data-testid="etherscan-link"
+            target="_blank"
           >
             {t('View on Etherscan')}
           </Link>
@@ -108,6 +109,7 @@ export const StatusCell = ({
               title={t('View transaction on Etherscan')}
               href={`${ethUrl}/tx/${data.txHash}`}
               data-testid="etherscan-link"
+              target="_blank"
             >
               {t('View on Etherscan')}
             </Link>
