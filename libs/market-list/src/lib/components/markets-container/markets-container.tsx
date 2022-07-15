@@ -21,7 +21,6 @@ export const MarketsContainer = () => {
     }
     dataRef.current = data;
     gridRef.current.api.refreshInfiniteCache();
-    console.log('refreshInfiniteCache');
     return true;
   }, []);
   const { data, error, loading } = useDataProvider<
@@ -39,17 +38,17 @@ export const MarketsContainer = () => {
       ? dataRef.current.slice(startRow, endRow)
       : [];
     const lastRow = dataRef.current?.length ?? -1;
-    console.log('successCallback');
-    successCallback([rowsThisBlock], lastRow);
+    successCallback(rowsThisBlock, lastRow);
   };
-
-  console.log('render');
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <MarketListTable
+        rowModelType="infinite"
         datasource={{ getRows }}
         ref={gridRef}
-        onRowClicked={(id) => push(`/markets/${id}`)}
+        onRowClicked={({ data }: { data: Markets_markets }) =>
+          push(`/markets/${data.id}`)
+        }
       />
     </AsyncRenderer>
   );
