@@ -7,7 +7,7 @@ import {
   getDateTimeFormat,
   t,
   truncateByChars,
-  formatNumber,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
@@ -39,7 +39,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           headerName="Amount"
           field="amount"
           valueFormatter={({ value, data }: ValueFormatterParams) => {
-            return formatNumber(value, data.asset.decimals);
+            return addDecimalsFormatNumber(value, data.asset.decimals);
           }}
         />
         <AgGridColumn
