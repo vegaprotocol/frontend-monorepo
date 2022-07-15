@@ -1,7 +1,12 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useState, useEffect } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import type { Environment, Configuration, ConfigStatus } from '../types';
+import type {
+  Environment,
+  Configuration,
+  ConfigStatus,
+  Networks,
+} from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
 import { promiseRaceToSuccess } from '../utils/promise-race-success';
 
@@ -18,8 +23,11 @@ const requestToNode = async (url: string, index: number): Promise<number> => {
   return index;
 };
 
-const getCachedConfig = () => {
-  const value = LocalStorage.getItem(LOCAL_STORAGE_NETWORK_KEY);
+const getCacheKey = (env: Networks) => `${LOCAL_STORAGE_NETWORK_KEY}-${env}`;
+
+const getCachedConfig = (env: Networks) => {
+  const key = getCacheKey(env);
+  const value = LocalStorage.getItem(key);
 
   if (value) {
     try {
@@ -32,7 +40,7 @@ const getCachedConfig = () => {
 
       return config;
     } catch (err) {
-      LocalStorage.removeItem(LOCAL_STORAGE_NETWORK_KEY);
+      LocalStorage.removeItem(key);
       console.warn(
         'Malformed data found for network configuration. Removed and continuing...'
       );
@@ -47,10 +55,10 @@ export const useConfig = (
   updateEnvironment: Dispatch<SetStateAction<Environment>>
 ) => {
   const [config, setConfig] = useState<Configuration | undefined>(
-    getCachedConfig()
+    getCachedConfig(environment.VEGA_ENV)
   );
   const [status, setStatus] = useState<ConfigStatus>(
-    !environment.VEGA_URL ? 'idle' : 'success'
+    environment.VEGA_CONFIG_URL ? 'idle' : 'success'
   );
 
   useEffect(() => {
@@ -68,7 +76,7 @@ export const useConfig = (
 
           setConfig({ hosts: configData.hosts });
           LocalStorage.setItem(
-            LOCAL_STORAGE_NETWORK_KEY,
+            getCacheKey(environment.VEGA_ENV),
             JSON.stringify({ hosts: configData.hosts })
           );
         } catch (err) {
@@ -93,7 +101,7 @@ export const useConfig = (
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
-            VEGA_URL: config.hosts[0],
+            VEGA_URL: prevEnvironment.VEGA_URL || config.hosts[0],
           }));
           return;
         }
@@ -105,7 +113,7 @@ export const useConfig = (
           setStatus('success');
           updateEnvironment((prevEnvironment) => ({
             ...prevEnvironment,
-            VEGA_URL: config.hosts[index],
+            VEGA_URL: prevEnvironment.VEGA_URL || config.hosts[index],
           }));
         } catch (err) {
           setStatus('error-loading-node');
@@ -118,5 +126,6 @@ export const useConfig = (
 
   return {
     status,
+    config,
   };
 };

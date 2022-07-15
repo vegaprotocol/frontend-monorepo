@@ -67,6 +67,7 @@ export const SelectMarketList = ({
                           onKeyPress={(event) => handleKeyPress(event, id)}
                           onClick={() => onSelect(id)}
                           data-testid={`market-link-${id}`}
+                          className={`focus:decoration-vega-yellow`}
                         >
                           {marketName}
                         </a>
@@ -106,7 +107,10 @@ export const SelectMarketList = ({
         </tbody>
       </table>
 
-      <a className={`${boldUnderlineClassNames} text-ui-small`} href="/markets">
+      <a
+        className={`${boldUnderlineClassNames} text-ui-small focus:decoration-vega-yellow`}
+        href="/markets"
+      >
         {t('Or view full market list')}
       </a>
     </div>

@@ -135,6 +135,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       'appearance-none',
       'h-28',
       'dark:color-scheme-dark',
+      'shadow-input dark:shadow-input-dark',
       className,
       {
         'pl-28': hasPrepended,

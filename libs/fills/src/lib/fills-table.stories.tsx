@@ -28,7 +28,10 @@ Default.args = {
   rowData: fills.party?.tradesConnection.edges.map((e) => e.node) || [],
 };
 
-const getData = (start: number, end: number): Fills_party_tradesConnection_edges[] =>
+const getData = (
+  start: number,
+  end: number
+): Fills_party_tradesConnection_edges[] =>
   new Array(end - start).fill(null).map((v, i) => ({
     __typename: 'TradeEdge',
     node: generateFill({
@@ -240,7 +243,9 @@ PaginationScroll.args = { pagination: false };
 
 const InfiniteScrollManager = () => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<(Fills_party_tradesConnection_edges | null)[] | null>(null);
+  const dataRef = useRef<(Fills_party_tradesConnection_edges | null)[] | null>(
+    null
+  );
   const totalCountRef = useRef<number | undefined>(undefined);
   const newRows = useRef(0);
   const scrolledToTop = useRef(true);

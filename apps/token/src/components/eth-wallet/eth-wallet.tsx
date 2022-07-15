@@ -83,12 +83,14 @@ const AssociatedAmounts = ({
           />
           {vestingAssociationByVegaKey.map(([key, amount]) => {
             return (
-              <WalletCardRow
-                key={key}
-                label={removeLeadingAddressSymbol(key)}
-                value={amount}
-                dark={true}
-              />
+              <div data-testid="eth-wallet-associated-balances">
+                <WalletCardRow
+                  key={key}
+                  label={removeLeadingAddressSymbol(key)}
+                  value={amount}
+                  dark={true}
+                />
+              </div>
             );
           })}
         </div>

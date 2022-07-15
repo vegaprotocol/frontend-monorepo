@@ -134,7 +134,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
-    'text-h5 font-bold uppercase text-black dark:text-white';
+    'text-h5 font-medium uppercase text-black dark:text-white';
   const marketDataPanels = [
     {
       title: t('Current fees'),

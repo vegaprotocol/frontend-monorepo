@@ -50,7 +50,6 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
       getRowId={({ data }) => data.id}
       ref={ref}
       defaultColDef={{
-        flex: 1,
         resizable: true,
       }}
       {...props}
@@ -58,6 +57,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Price')}
         field="price"
+        width={130}
         cellClass={changeCellClass('price')}
         valueFormatter={({ value, data }: TradesTableValueFormatterParams) => {
           if (!data?.market) {
@@ -69,6 +69,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Size')}
         field="size"
+        width={125}
         valueFormatter={({ value, data }: TradesTableValueFormatterParams) => {
           if (!data?.market) {
             return null;
@@ -80,6 +81,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Created at')}
         field="createdAt"
+        width={170}
         valueFormatter={({ value }: TradesTableValueFormatterParams) => {
           return value && getDateTimeFormat().format(new Date(value));
         }}
