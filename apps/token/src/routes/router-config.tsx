@@ -1,5 +1,4 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 import { ProposalContainer } from './governance/proposal';
 import { ProposalsContainer } from './governance/proposals';
 
@@ -76,20 +75,6 @@ const LazyContracts = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-tranches", webpackPrefetch: true */ './contracts'
-    )
-);
-
-const LazyWithdraw = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-withdraw", webpackPrefetch: true */ './withdraw'
-    )
-);
-
-const LazyWithdrawals = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-withdrawals", webpackPrefetch: true */ './withdrawals'
     )
 );
 
