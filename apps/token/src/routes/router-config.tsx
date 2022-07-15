@@ -16,6 +16,13 @@ import { Tranche } from './tranches/tranche';
 import { Tranches } from './tranches/tranches';
 import Withdraw from './withdraw';
 import Withdrawals from './withdrawals';
+import Governance from './governance';
+import Contracts from './contracts';
+import Rewards from './rewards';
+import Vesting from './redemption';
+import Claim from './claim';
+import StakingHome from './staking';
+import TranchesHome from './tranches';
 
 export const Routes = {
   HOME: '/',
@@ -32,52 +39,6 @@ export const Routes = {
   CONTRACTS: '/contracts',
 };
 
-const LazyTranches = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-tranches", webpackPrefetch: true */ './tranches'
-    )
-);
-
-const LazyClaim = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-claim", webpackPrefetch: true */ './claim'
-    )
-);
-
-const LazyRedemption = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-redemption", webpackPrefetch: true */ './redemption'
-    )
-);
-const LazyStaking = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-staking", webpackPrefetch: true */ './staking'
-    )
-);
-const LazyGovernance = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-governance", webpackPrefetch: true */ './governance'
-    )
-);
-const LazyRewards = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-rewards", webpackPrefetch: true */ './rewards'
-    )
-);
-
-const LazyContracts = React.lazy(
-  () =>
-    import(
-      /* webpackChunkName: "route-tranches", webpackPrefetch: true */ './contracts'
-    )
-);
-
 const routerConfig = [
   {
     path: Routes.HOME,
@@ -88,7 +49,7 @@ const routerConfig = [
   {
     path: Routes.TRANCHES,
     name: 'Tranches',
-    component: LazyTranches,
+    component: TranchesHome,
     children: [
       { index: true, element: <Tranches /> },
       { path: ':trancheId', element: <Tranche /> },
@@ -97,12 +58,12 @@ const routerConfig = [
   {
     path: Routes.CLAIM,
     name: 'Claim',
-    component: LazyClaim,
+    component: Claim,
   },
   {
     path: Routes.STAKING,
     name: 'Staking',
-    component: LazyStaking,
+    component: StakingHome,
     children: [
       { path: 'associate', element: <AssociateContainer /> },
       { path: 'disassociate', element: <DisassociateContainer /> },
@@ -120,7 +81,7 @@ const routerConfig = [
   {
     path: Routes.REWARDS,
     name: 'Rewards',
-    component: LazyRewards,
+    component: Rewards,
   },
   {
     path: Routes.WITHDRAW,
@@ -135,7 +96,7 @@ const routerConfig = [
   {
     path: Routes.VESTING,
     name: 'Vesting',
-    component: LazyRedemption,
+    component: Vesting,
     children: [
       {
         index: true,
@@ -150,22 +111,22 @@ const routerConfig = [
   {
     path: Routes.GOVERNANCE,
     name: 'Governance',
-    component: LazyGovernance,
+    component: Governance,
     children: [
       { index: true, element: <ProposalsContainer /> },
       { path: ':proposalId', element: <ProposalContainer /> },
     ],
   },
   {
+    path: Routes.CONTRACTS,
+    name: 'Contracts',
+    component: Contracts,
+  },
+  {
     path: Routes.NOT_PERMITTED,
     name: 'Not permitted',
     // Not lazy as loaded when a user first hits the site
     component: NotPermitted,
-  },
-  {
-    path: Routes.CONTRACTS,
-    name: 'Contracts',
-    component: LazyContracts,
   },
   {
     path: '*',
