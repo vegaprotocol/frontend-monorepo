@@ -144,7 +144,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const handleInputKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       if (event.key === 'ArrowDown') {
-        (contRef.current?.children[0] as HTMLDivElement).focus();
+        (contRef.current?.children[0] as HTMLDivElement)?.focus();
       }
     },
     [contRef]

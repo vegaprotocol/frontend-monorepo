@@ -23,9 +23,7 @@ describe('SimpleMarketExpires', () => {
         'settlement-date:2022-04-25T1200',
       ];
       render(<SimpleMarketExpires tags={tags} />);
-      expect(
-        screen.getByText('April 25')
-      ).toBeInTheDocument();
+      expect(screen.getByText('April 25')).toBeInTheDocument();
     });
 
     it('last one proper tag should matter', () => {
@@ -35,9 +33,7 @@ describe('SimpleMarketExpires', () => {
         'settlement-expiry-date:2022-03-25T12:00:00',
       ];
       render(<SimpleMarketExpires tags={tags} />);
-      expect(
-        screen.getByText('March 25')
-      ).toBeInTheDocument();
+      expect(screen.getByText('March 25')).toBeInTheDocument();
     });
 
     it('when no proper tag nor date should be null', () => {

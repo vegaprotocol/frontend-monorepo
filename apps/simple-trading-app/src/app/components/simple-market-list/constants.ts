@@ -57,32 +57,43 @@ export const agGridLightVariables = `
   .ag-theme-balham .ag-header{
      border-bottom-width: 0;
   }
+  .ag-theme-balham .ag-has-focus .ag-row.ag-row-focus{
+    border: 1px solid #0091ea;
+  }
   .ag-theme-balham .ag-has-focus .ag-row.ag-row-focus .ag-cell-focus {
     outline: none;
     border-width: 0;
   }
   .ag-theme-balham .ag-header-label-icon .ag-icon{
+    font-family: unset;
+    font-size: 20px;
+    font-weight: 600;
     position: relative;
+    height: 20px;
+    line-height: 20px;
+    -moz-osx-font-smoothing: unset;
   }
   .ag-theme-balham .ag-icon::before{
-    font-size: 10px;
-    line-height: 12px;
-    position: absolute;
-    transform: rotate(45deg);
-    top: -6px;
-    right: -14px;
-    content: "◾";
-    background: -webkit-linear-gradient(135deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.54) 52%, rgba(0,0,0,0.54) 100%);
+    display: inline-block;
+    font-family: Arial;
+    font-size: 20px;
+    line-height: 20px;
+    height: 20px;
+    content: "⬥";
+    background: linear-gradient(0deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 49%, rgba(0,0,0,0) 49%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.54) 60%, rgba(0,0,0,0.54) 100%);
+    background: -moz-linear-gradient(-90deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 54%, rgba(0,0,0,0) 54%, rgba(0,0,0,0) 66%, rgba(0,0,0,0.54) 66%, rgba(0,0,0,0.54) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .ag-theme-balham .ag-icon-desc::before{
-    background: -webkit-linear-gradient(135deg, #000 0%, #000 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(0,0,0,0.54) 52%, rgba(0,0,0,0.54) 100%);
+    background: linear-gradient(0deg, #000 0%, #000 49%, rgba(0,0,0,0) 49%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.54) 60%, rgba(0,0,0,0.54) 100%);
+    background: -moz-linear-gradient(-90deg, #000 0%, #000 54%, rgba(0,0,0,0) 54%, rgba(0,0,0,0) 66%, rgba(0,0,0,0.54) 66%, rgba(0,0,0,0.54) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .ag-theme-balham .ag-icon-asc::before{
-    background: -webkit-linear-gradient(135deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, #000 52%, #000 100%);
+    background: linear-gradient(0deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 49%, rgba(0,0,0,0) 49%, rgba(0,0,0,0) 60%, #000 60%, #000 100%);
+    background: -moz-linear-gradient(-90deg, rgba(0,0,0,0.54) 0%, rgba(0,0,0,0.54) 54%, rgba(0,0,0,0) 54%, rgba(0,0,0,0) 66%, #000 66%, #000 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -93,6 +104,8 @@ export const agGridDarkVariables = `
     --ag-background-color: ${theme.colors.lite.black};
     --ag-row-border-color: ${theme.colors.transparent};
     --ag-row-hover-color: ${theme.colors.transparent};
+    --ag-odd-row-background-color: ${theme.colors.transparent};
+    --ag-header-background-color: ${theme.colors.transparent};
     --ag-font-size: 15px;
   }
   .ag-theme-balham-dark .ag-header-cell{
@@ -130,33 +143,44 @@ export const agGridDarkVariables = `
   .ag-theme-balham-dark .ag-header{
      border-bottom-width: 0;
   }
+  .ag-theme-balham-dark .ag-has-focus .ag-row.ag-row-focus{
+    border: 1px solid #0091ea;
+  }
   .ag-theme-balham-dark .ag-has-focus .ag-row.ag-row-focus .ag-cell-focus {
     outline: none;
     border-width: 0;
   }
   .ag-theme-balham-dark .ag-header-label-icon .ag-icon{
+    font-family: unset;
+    font-size: 20px;
+    font-weight: 600;
     position: relative;
+    height: 20px;
+    line-height: 20px;
+    -moz-osx-font-smoothing: unset;
   }
   .ag-theme-balham-dark .ag-icon::before{
-    font-size: 10px;
-    line-height: 12px;
-    position: absolute;
-    transform: rotate(45deg);
-    top: -6px;
-    right: -14px;
-    content: "◾";
-    background: -webkit-linear-gradient(135deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(245, 245, 245, 0.64) 52%, rgba(245, 245, 245, 0.64) 100%);
+    display: inline-block;
+    font-family: Arial;
+    font-size: 20px;
+    line-height: 20px;
+    height: 20px;
+    content: "⬥";
+    background: linear-gradient(0deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 49%, rgba(0,0,0,0) 49%, rgba(0,0,0,0) 60%, rgba(245, 245, 245, 0.64) 60%, rgba(245, 245, 245, 0.64) 100%);
+    background: -moz-linear-gradient(-90deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 54%, rgba(0,0,0,0) 54%, rgba(0,0,0,0) 66%, rgba(245, 245, 245, 0.64) 66%, rgba(245, 245, 245, 0.64) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-position: center;
+    -webkit-font-smoothing: antialiased;
   }
   .ag-theme-balham-dark .ag-icon-desc::before{
-    background: -webkit-linear-gradient(135deg, #fff 0%, #fff 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, rgba(245, 245, 245, 0.64) 52%, rgba(245, 245, 245, 0.64) 100%);
+    background: linear-gradient(0deg, #fff 0%, #fff 49%, rgba(0,0,0,0) 49%, rgba(0,0,0,0) 60%, rgba(245, 245, 245, 0.64) 60%, rgba(245, 245, 245, 0.64) 100%);
+    background: -moz-linear-gradient(-90deg, #fff 0%, #fff 54%, rgba(0,0,0,0) 54%, rgba(0,0,0,0) 66%, rgba(245, 245, 245, 0.64) 66%, rgba(245, 245, 245, 0.64) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
   .ag-theme-balham-dark .ag-icon-asc::before{
-    background: -webkit-linear-gradient(135deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 40%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 52%, #fff 52%, #fff 100%);
+    background: linear-gradient(0deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 49%, rgba(0,0,0,0) 49%, rgba(0,0,0,0) 60%, #fff 60%, #fff 100%);
+    background: -moz-linear-gradient(-90deg, rgba(245, 245, 245, 0.64) 0%, rgba(245, 245, 245, 0.64) 54%, rgba(0,0,0,0) 54%, rgba(0,0,0,0) 66%, #fff 66%, #fff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -164,5 +188,5 @@ export const agGridDarkVariables = `
 
 export const ROW_CLASS_RULES = {
   'cursor-pointer': ({ data }: { data: SimpleMarkets_markets }) =>
-    IS_MARKET_TRADABLE(data),
+    IS_MARKET_TRADABLE(data || {}),
 };

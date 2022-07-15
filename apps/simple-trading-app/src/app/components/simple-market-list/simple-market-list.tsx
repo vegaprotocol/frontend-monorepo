@@ -55,7 +55,7 @@ const SimpleMarketList = () => {
     [statusesRef]
   );
 
-  const { data, error, loading } = useDataProvider({
+  const { data, error, loading, load, totalCount } = useDataProvider({
     dataProvider,
     update,
     variables,
@@ -95,6 +95,22 @@ const SimpleMarketList = () => {
     [navigate]
   );
 
+  const onTabToNExtCell = useCallback((params) => {
+    const { api, previousCellPosition: { rowIndex } } = params;
+    const rowCount = api.getDisplayedRowCount();
+    if(rowCount <= rowIndex + 1){
+      return null;
+    }
+    return { ...params.previousCellPosition, rowIndex: rowIndex + 1 };
+  }, [])
+
+  const onCellKeyDown = useCallback((params) => {
+    const { event: { key = '' } = {}, data } = params;
+    if(key === 'Enter'){
+      handleRowClicked({ data });
+    }
+  }, [handleRowClicked]);
+
   return (
     <div className="h-full grid grid-rows-[min-content,1fr]">
       <SimpleMarketToolbar />
@@ -120,6 +136,8 @@ const SimpleMarketList = () => {
           getRowId={getRowId}
           suppressMovableColumns
           suppressRowTransform
+          onCellKeyDown={onCellKeyDown}
+          tabToNextCell={onTabToNExtCell}
         />
       </AsyncRenderer>
     </div>
