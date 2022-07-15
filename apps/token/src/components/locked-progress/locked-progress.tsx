@@ -99,6 +99,7 @@ export const LockedProgress = ({
           'border-black': light,
           'border-white': !light,
         })}
+        data-testid="progress-bar"
       >
         <ProgressBar percentage={lockedPercentage} bgColor={leftColor} />
         <ProgressBar percentage={unlockedPercentage} bgColor={rightColor} />
@@ -119,8 +120,12 @@ export const LockedProgress = ({
       </ProgressContents>
 
       <ProgressContents light={light}>
-        <span>{formatNumber(locked, decimals)}</span>
-        <span>{formatNumber(unlocked, decimals)}</span>
+        <span data-testid="currency-locked">
+          {formatNumber(locked, decimals)}
+        </span>
+        <span data-testid="currency-unlocked">
+          {formatNumber(unlocked, decimals)}
+        </span>
       </ProgressContents>
     </div>
   );

@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GO111MODULE: 'on'
-      GOPROXY: ${{ secrets.GO_PROXY }}
     steps:
       #######
       ## Setup langs

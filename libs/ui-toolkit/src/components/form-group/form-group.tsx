@@ -33,14 +33,14 @@ export const FormGroup = ({
           {
             <div
               className={classNames(
-                'mb-4 text-body-large text-black dark:text-white',
+                'mb-4 text-large text-black dark:text-white',
                 {
                   'border-l-4 border-danger pl-8': hasError,
                   'text-right': labelAlign === 'right',
                 }
               )}
             >
-              <div className="font-bold mb-2">{label}</div>
+              <div className="font-medium mb-2">{label}</div>
               {labelDescription && (
                 <div className={classNames({ 'text-danger': hasError })}>
                   {labelDescription}

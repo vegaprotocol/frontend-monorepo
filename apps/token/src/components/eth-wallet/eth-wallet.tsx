@@ -83,12 +83,14 @@ const AssociatedAmounts = ({
           />
           {vestingAssociationByVegaKey.map(([key, amount]) => {
             return (
-              <WalletCardRow
-                key={key}
-                label={removeLeadingAddressSymbol(key)}
-                value={amount}
-                dark={true}
-              />
+              <div data-testid="eth-wallet-associated-balances">
+                <WalletCardRow
+                  key={key}
+                  label={removeLeadingAddressSymbol(key)}
+                  value={amount}
+                  dark={true}
+                />
+              </div>
             );
           })}
         </div>
@@ -128,7 +130,7 @@ const ConnectedKey = () => {
   return (
     <>
       {totalVestedBalance.plus(totalLockedBalance).isEqualTo(0) ? null : (
-        <>
+        <section data-testid="vega-in-vesting-contract">
           <WalletCardAsset
             image={vegaVesting}
             decimals={appState.decimals}
@@ -145,7 +147,7 @@ const ConnectedKey = () => {
             rightLabel={t('Unlocked')}
             light={false}
           />
-        </>
+        </section>
       )}
       {!Object.keys(appState.associationBreakdown.vestingAssociations)
         .length ? null : (
@@ -154,22 +156,24 @@ const ConnectedKey = () => {
           notAssociated={notAssociatedInContract}
         />
       )}
-      <WalletCardAsset
-        image={vegaWhite}
-        decimals={appState.decimals}
-        name="VEGA"
-        symbol="In Wallet"
-        balance={walletWithAssociations}
-        dark={true}
-      />
-      {!Object.keys(
-        appState.associationBreakdown.stakingAssociations
-      ) ? null : (
-        <AssociatedAmounts
-          associations={appState.associationBreakdown.stakingAssociations}
-          notAssociated={walletBalance}
+      <section data-testid="vega-in-wallet">
+        <WalletCardAsset
+          image={vegaWhite}
+          decimals={appState.decimals}
+          name="VEGA"
+          symbol="In Wallet"
+          balance={walletWithAssociations}
+          dark={true}
         />
-      )}
+        {!Object.keys(
+          appState.associationBreakdown.stakingAssociations
+        ) ? null : (
+          <AssociatedAmounts
+            associations={appState.associationBreakdown.stakingAssociations}
+            notAssociated={walletBalance}
+          />
+        )}
+      </section>
       <WalletCardActions>
         <Link
           className={getButtonClasses('flex-1 mr-4', 'secondary')}
@@ -201,7 +205,12 @@ export const EthWallet = () => {
           <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
           {account && (
             <div className="px-4 text-right">
-              <div className="font-mono">{truncateMiddle(account)}</div>
+              <div
+                className="font-mono"
+                data-testid="ethereum-account-truncated"
+              >
+                {truncateMiddle(account)}
+              </div>
               {pendingTxs && (
                 <div>
                   <button
@@ -245,6 +254,7 @@ export const EthWallet = () => {
               <button
                 className="mt-4 underline"
                 onClick={() => connector.deactivate()}
+                data-testid="disconnect-from-eth-wallet-button"
               >
                 {t('disconnect')}
               </button>

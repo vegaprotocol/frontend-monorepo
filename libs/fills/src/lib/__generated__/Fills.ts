@@ -9,7 +9,7 @@ import { Pagination, Side } from "@vegaprotocol/types";
 // GraphQL query operation: Fills
 // ====================================================
 
-export interface Fills_party_tradesPaged_edges_node_buyer {
+export interface Fills_party_tradesConnection_edges_node_buyer {
   __typename: "Party";
   /**
    * Party identifier
@@ -17,7 +17,7 @@ export interface Fills_party_tradesPaged_edges_node_buyer {
   id: string;
 }
 
-export interface Fills_party_tradesPaged_edges_node_seller {
+export interface Fills_party_tradesConnection_edges_node_seller {
   __typename: "Party";
   /**
    * Party identifier
@@ -25,7 +25,7 @@ export interface Fills_party_tradesPaged_edges_node_seller {
   id: string;
 }
 
-export interface Fills_party_tradesPaged_edges_node_buyerFee {
+export interface Fills_party_tradesConnection_edges_node_buyerFee {
   __typename: "TradeFee";
   /**
    * The maker fee, aggressive party to the other party (the one who had an order in the book)
@@ -41,7 +41,7 @@ export interface Fills_party_tradesPaged_edges_node_buyerFee {
   liquidityFee: string;
 }
 
-export interface Fills_party_tradesPaged_edges_node_sellerFee {
+export interface Fills_party_tradesConnection_edges_node_sellerFee {
   __typename: "TradeFee";
   /**
    * The maker fee, aggressive party to the other party (the one who had an order in the book)
@@ -57,7 +57,7 @@ export interface Fills_party_tradesPaged_edges_node_sellerFee {
   liquidityFee: string;
 }
 
-export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product_settlementAsset {
+export interface Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
    * The id of the asset
@@ -73,15 +73,15 @@ export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_in
   decimals: number;
 }
 
-export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product {
+export interface Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * The name of the asset (string)
    */
-  settlementAsset: Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product_settlementAsset;
+  settlementAsset: Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument_product_settlementAsset;
 }
 
-export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument {
+export interface Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Uniquely identify an instrument across all instruments available on Vega (string)
@@ -94,18 +94,18 @@ export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument_in
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
-  product: Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument_product;
+  product: Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument_product;
 }
 
-export interface Fills_party_tradesPaged_edges_node_market_tradableInstrument {
+export interface Fills_party_tradesConnection_edges_node_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
-  instrument: Fills_party_tradesPaged_edges_node_market_tradableInstrument_instrument;
+  instrument: Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument;
 }
 
-export interface Fills_party_tradesPaged_edges_node_market {
+export interface Fills_party_tradesConnection_edges_node_market {
   __typename: "Market";
   /**
    * Market ID
@@ -141,10 +141,10 @@ export interface Fills_party_tradesPaged_edges_node_market {
   /**
    * An instance of or reference to a tradable instrument.
    */
-  tradableInstrument: Fills_party_tradesPaged_edges_node_market_tradableInstrument;
+  tradableInstrument: Fills_party_tradesConnection_edges_node_market_tradableInstrument;
 }
 
-export interface Fills_party_tradesPaged_edges_node {
+export interface Fills_party_tradesConnection_edges_node {
   __typename: "Trade";
   /**
    * The hash of the trade data
@@ -177,38 +177,38 @@ export interface Fills_party_tradesPaged_edges_node {
   /**
    * The party that bought
    */
-  buyer: Fills_party_tradesPaged_edges_node_buyer;
+  buyer: Fills_party_tradesConnection_edges_node_buyer;
   /**
    * The party that sold
    */
-  seller: Fills_party_tradesPaged_edges_node_seller;
+  seller: Fills_party_tradesConnection_edges_node_seller;
   /**
    * The fee paid by the buyer side of the trade
    */
-  buyerFee: Fills_party_tradesPaged_edges_node_buyerFee;
+  buyerFee: Fills_party_tradesConnection_edges_node_buyerFee;
   /**
    * The fee paid by the seller side of the trade
    */
-  sellerFee: Fills_party_tradesPaged_edges_node_sellerFee;
+  sellerFee: Fills_party_tradesConnection_edges_node_sellerFee;
   /**
    * The market the trade occurred on
    */
-  market: Fills_party_tradesPaged_edges_node_market;
+  market: Fills_party_tradesConnection_edges_node_market;
 }
 
-export interface Fills_party_tradesPaged_edges {
+export interface Fills_party_tradesConnection_edges {
   __typename: "TradeEdge";
-  node: Fills_party_tradesPaged_edges_node;
+  node: Fills_party_tradesConnection_edges_node;
   cursor: string;
 }
 
-export interface Fills_party_tradesPaged_pageInfo {
+export interface Fills_party_tradesConnection_pageInfo {
   __typename: "PageInfo";
   startCursor: string;
   endCursor: string;
 }
 
-export interface Fills_party_tradesPaged {
+export interface Fills_party_tradesConnection {
   __typename: "TradeConnection";
   /**
    * The total number of trades in this connection
@@ -217,11 +217,11 @@ export interface Fills_party_tradesPaged {
   /**
    * The trade in this connection
    */
-  edges: Fills_party_tradesPaged_edges[];
+  edges: Fills_party_tradesConnection_edges[];
   /**
    * The pagination information
    */
-  pageInfo: Fills_party_tradesPaged_pageInfo;
+  pageInfo: Fills_party_tradesConnection_pageInfo;
 }
 
 export interface Fills_party {
@@ -230,7 +230,7 @@ export interface Fills_party {
    * Party identifier
    */
   id: string;
-  tradesPaged: Fills_party_tradesPaged;
+  tradesConnection: Fills_party_tradesConnection;
 }
 
 export interface Fills {

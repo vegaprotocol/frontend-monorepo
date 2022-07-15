@@ -24,12 +24,14 @@ export const VegaWalletConnectButton = ({
   return (
     <span>
       {isConnected && (
-        <span className="text-ui-small font-mono mr-2">Vega key:</span>
+        <span className="text-ui-small font-mono mr-2 text-white-90">
+          Vega key:
+        </span>
       )}
       <button
         data-testid={isConnected ? 'manage-vega-wallet' : 'connect-vega-wallet'}
         onClick={handleClick}
-        className="ml-auto inline-block text-ui-small font-mono hover:underline"
+        className="ml-auto inline-block text-ui-small font-mono hover:underline text-white-90"
       >
         {isConnected ? truncateByChars(keypair.pub) : 'Connect Vega wallet'}
       </button>

@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type { Orders, Orders_party_orders } from '@vegaprotocol/order-list';
+import type { Orders, Orders_party_orders } from '@vegaprotocol/orders';
 import {
   OrderStatus,
   OrderTimeInForce,

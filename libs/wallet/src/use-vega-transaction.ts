@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import type { TransactionSubmission } from './types';
+import type { TransactionSubmission } from './wallet-types';
 import { useVegaWallet } from './use-vega-wallet';
 import type { SendTxError } from './context';
 
