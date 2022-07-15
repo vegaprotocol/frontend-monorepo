@@ -23,7 +23,7 @@ import {
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import capitalize from 'lodash/capitalize';
 import startCase from 'lodash/startCase';
 
 const TradingViews = {
@@ -57,7 +57,7 @@ export const TradeMarketHeader = ({
   const itemClassName =
     'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
   const itemValueClassName =
-    'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
+    'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
     'w-full p-8 bg-white dark:bg-black',
     className
@@ -99,11 +99,7 @@ export const TradeMarketHeader = ({
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
-              {startCase(
-                market.tradingMode === MarketTradingMode.Continuous
-                  ? 'Continuous Trading'
-                  : market.tradingMode
-              )}
+              {capitalize(startCase(market.tradingMode).toLowerCase())}
             </span>
           </div>
         </div>
