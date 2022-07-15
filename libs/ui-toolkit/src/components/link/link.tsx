@@ -9,8 +9,10 @@ type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
  * Form an HTML link tag
  */
 export const Link = ({ className, children, ...props }: LinkProps) => {
-  const anchorClassName = classNames(className, 'cursor-pointer', {
+  const anchorClassName = classNames(className, {
     underline: typeof children === 'string',
+    'cursor-pointer': props['aria-disabled'] !== true,
+    'opacity-50 pointer-events-none': props['aria-disabled'] === true,
   });
 
   return (
