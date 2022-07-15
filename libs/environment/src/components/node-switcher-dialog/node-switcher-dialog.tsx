@@ -1,10 +1,14 @@
 import type { ComponentProps } from 'react';
-import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Loader } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { NodeSwitcher } from '../node-switcher';
-import { Configuration } from '../../types';
+import { useEnvironment } from '../../hooks/use-environment';
+import type { Configuration } from '../../types';
 
-type NodeSwitcherDialogProps = Pick<ComponentProps<typeof NodeSwitcher>, 'initialErrorType' | 'onConnect'> & {
+type NodeSwitcherDialogProps = Pick<
+  ComponentProps<typeof NodeSwitcher>,
+  'initialErrorType' | 'onConnect'
+> & {
   config?: Configuration;
   dialogOpen: boolean;
   setDialogOpen: (dialogOpen: boolean) => void;
@@ -17,18 +21,34 @@ export const NodeSwitcherDialog = ({
   setDialogOpen,
   onConnect,
 }: NodeSwitcherDialogProps) => {
+  const { VEGA_ENV } = useEnvironment();
   return (
     <Dialog open={dialogOpen} onChange={setDialogOpen}>
-      {!config && t('Loading configuration...')}
+      <div className="uppercase text-h3 text-center mb-8">{t('Connected node')}</div>
+      {!config && (
+        <div className="py-16">
+          <p className="mb-32 text-center">{t('Loading configuration...')}</p>
+          <Loader size="large" />
+        </div>
+      )}
       {config && dialogOpen && (
-        <NodeSwitcher
-          config={config}
-          initialErrorType={initialErrorType}
-          onConnect={(url) => {
-            onConnect(url);
-            setDialogOpen(false);
-          }}
-        />
+        <>
+          <p className="mb-32 text-center">
+            {t(`This app will only work on a`)}
+            {' '}
+            <span className="font-mono capitalize">{VEGA_ENV.toLowerCase()}</span>
+            {' '}
+            {t('chain ID')}
+          </p>
+          <NodeSwitcher
+            config={config}
+            initialErrorType={initialErrorType}
+            onConnect={(url) => {
+              onConnect(url);
+              setDialogOpen(false);
+            }}
+          />
+        </>
       )}
     </Dialog>
   );
