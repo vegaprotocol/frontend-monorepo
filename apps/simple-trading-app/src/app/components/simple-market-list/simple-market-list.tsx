@@ -55,7 +55,7 @@ const SimpleMarketList = () => {
     [statusesRef]
   );
 
-  const { data, error, loading, load, totalCount } = useDataProvider({
+  const { data, error, loading } = useDataProvider({
     dataProvider,
     update,
     variables,
