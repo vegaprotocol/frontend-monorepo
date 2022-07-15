@@ -69,7 +69,6 @@ describe('markets table', () => {
     cy.get('[role="gridcell"][col-id=data]').contains('Active').click();
 
     cy.wait('@Market');
-    cy.get('.ag-root-wrapper').should('be.visible');
     cy.contains('ACTIVE MARKET');
     cy.url().should('include', '/markets/market-0');
 
