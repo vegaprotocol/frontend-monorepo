@@ -143,7 +143,7 @@ const SimpleMarketList = () => {
           suppressMovableColumns
           suppressRowTransform
           onCellKeyDown={onCellKeyDown}
-          tabToNextCell={onTabToNExtCell}
+          tabToNextCell={onTabToNextCell}
         />
       </AsyncRenderer>
     </div>
