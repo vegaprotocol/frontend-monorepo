@@ -53,7 +53,10 @@ context('Home Page', function () {
         .should('match', /\d+d \d+h \d+m \d+s/i);
       cy.get(statsValue).eq(4).should('have.text', '2');
       cy.get(statsValue).eq(5).should('have.text', '0');
-      cy.get(statsValue).eq(6).should('have.text', '0.00');
+      cy.get(statsValue)
+        .eq(6)
+        .invoke('text')
+        .should('match', /\d+\.\d\d(?!\d)/i);
       cy.get(statsValue).eq(7).should('have.text', '0');
       cy.get(statsValue).eq(8).should('have.text', '0');
       cy.get(statsValue).eq(9).should('have.text', '0');
