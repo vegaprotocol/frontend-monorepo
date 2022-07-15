@@ -33,8 +33,11 @@ export const DealTicketMarketAmount = ({
           />
         </FormGroup>
       </div>
-      <div className="pt-4">@</div>
-      <div className="flex-1 pt-4" data-testid="last-price">
+      <div className="pt-4 text-black dark:text-white">@</div>
+      <div
+        className="flex-1 pt-4 text-black dark:text-white"
+        data-testid="last-price"
+      >
         {price && quoteName ? (
           <>
             ~{price} {quoteName}
