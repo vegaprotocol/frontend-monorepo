@@ -204,13 +204,13 @@ export const useOrderValidation = ({
       if (market.positionDecimalPlaces === 0) {
         return {
           isDisabled: true,
-          message: t('No decimal amounts allowed for this order'),
+          message: t('No fractional amounts are allowed for this order'),
         };
       }
       return {
         isDisabled: true,
         message: t(
-          `The amount field only takes up to ${market.positionDecimalPlaces} decimals`
+          `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`
         ),
       };
     }
