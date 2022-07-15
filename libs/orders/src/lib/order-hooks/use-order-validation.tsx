@@ -186,7 +186,7 @@ export const useOrderValidation = ({
     if (fieldErrors?.price?.type === 'required') {
       return {
         isDisabled: true,
-        message: t('A price needs to be provided'),
+        message: t('You need to provide a price'),
       };
     }
 
