@@ -282,7 +282,7 @@ export const Orderbook = ({
   const hasData = renderedRows.data && renderedRows.data.length !== 0;
   return (
     <div
-      className={`h-full overflow-auto relative ${styles['scroll']}`}
+      className={`h-full overflow-auto relative ${styles['scroll']} pl-4 pt-4`}
       onScroll={onScroll}
       ref={scrollElement}
       data-testid="scroll"
@@ -354,7 +354,7 @@ export const Orderbook = ({
           <select
             onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}
             value={resolution}
-            className="block bg-black-25 dark:bg-white-25 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full h-full"
+            className="block bg-black-10 dark:bg-black-70 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full h-full"
             data-testid="resolution"
           >
             {new Array(3)

@@ -77,7 +77,7 @@ export const DepositManager = ({
   const allowance = useGetAllowance(tokenContract, decimals);
 
   // Set up approve transaction
-  const approve = useSubmitApproval(tokenContract);
+  const approve = useSubmitApproval(tokenContract, decimals);
 
   // Set up deposit transaction
   const { confirmationEvent, ...deposit } = useSubmitDeposit();

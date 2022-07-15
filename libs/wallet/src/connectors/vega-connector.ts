@@ -2,7 +2,7 @@ import type {
   VegaKey,
   TransactionResponse,
 } from '@vegaprotocol/vegawallet-service-api-client';
-import type { TransactionSubmission } from '../types';
+import type { TransactionSubmission } from '../wallet-types';
 
 type ErrorResponse =
   | {

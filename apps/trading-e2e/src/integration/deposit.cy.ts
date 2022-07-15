@@ -1,10 +1,12 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateDepositPage } from '../support/mocks/generate-deposit-page';
+import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 describe('deposit form validation', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
+      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
       aliasQuery(req, 'DepositPage', generateDepositPage());
     });
     cy.visit('/portfolio/deposit');
