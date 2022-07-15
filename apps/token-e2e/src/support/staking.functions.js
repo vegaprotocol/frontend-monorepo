@@ -9,7 +9,6 @@ const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 
 Cypress.Commands.add('wait_for_begining_of_epoch', () => {
-  cy.highlight(`Waiting for next epoch to start`);
   cy.contains('Waiting for next epoch to start', { timeout: 10000 }).should(
     'not.exist'
   );
@@ -26,13 +25,9 @@ Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
     .and('contain', `Add ${stake} $VEGA tokens`)
     .and('be.visible')
     .click();
-  cy.contains(
-    'At the beginning of the next epoch your $VEGA will be nominated to the validator',
-    { timeout: 20000 }
-  ).should('be.visible');
 });
 
-Cypress.Commands.add('staking_validator_page_removeStake', (stake) => {
+Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
   cy.highlight(`Removing a stake of ${stake}`);
   cy.get(removeStakeRadioButton).click({ force: true });
   cy.get(tokenAmountInputBox).type(stake);
@@ -42,9 +37,6 @@ Cypress.Commands.add('staking_validator_page_removeStake', (stake) => {
     .and('contain', `Remove ${stake} $VEGA tokens at the end of epoch`)
     .and('be.visible')
     .click();
-  cy.contains(`${stake} $VEGA has been removed from validator`).should(
-    'be.visible'
-  );
 });
 
 Cypress.Commands.add(

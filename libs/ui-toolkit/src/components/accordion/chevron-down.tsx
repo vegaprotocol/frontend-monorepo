@@ -4,22 +4,22 @@ export const ChevronDownIcon = ({ active }: ChevronDownIconProps) => {
     : 'transform duration-300 ease';
   return (
     <svg
-      width="20"
-      height="20"
+      width="14"
+      height="8"
       aria-label="chevron icon"
       data-testid="accordion-chevron-icon"
-      viewBox="0 0 20 20"
+      viewBox="0 0 14 8"
       fill="fillCurrent"
       xmlns="http://www.w3.org/2000/svg"
-      className={`${rotate} inline-block fill-black dark:fill-white`}
+      className={`${rotate} inline-block fill-black dark:fill-white mx-4`}
     >
-      <rect x="17" y="8" width="2" height="2" />
-      <rect x="15" y="10" width="2" height="2" />
-      <rect x="13" y="12" width="2" height="2" />
-      <rect x="11" y="14" width="2" height="2" />
-      <rect x="9" y="12" width="2" height="2" />
-      <rect x="7" y="10" width="2" height="2" />
-      <rect x="5" y="8" width="2" height="2" />
+      <rect x="12" y="0" width="2" height="2" />
+      <rect x="10" y="2" width="2" height="2" />
+      <rect x="8" y="4" width="2" height="2" />
+      <rect x="6" y="6" width="2" height="2" />
+      <rect x="4" y="4" width="2" height="2" />
+      <rect x="2" y="2" width="2" height="2" />
+      <rect x="0" y="0" width="2" height="2" />
     </svg>
   );
 };

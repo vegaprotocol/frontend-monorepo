@@ -36,6 +36,9 @@ export class CollateralBridgeNew {
   isAssetListed(address: string) {
     return this.contract.is_asset_listed(address);
   }
+  getWithdrawThreshold(assetSource: string) {
+    return this.contract.get_withdraw_threshold(assetSource);
+  }
   withdrawAsset(
     assetSource: string,
     amount: string,

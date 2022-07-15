@@ -5,6 +5,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
+const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
 const vegaTokenContractAddress = Cypress.env('vegaTokenContractAddress');
@@ -41,7 +42,12 @@ before('Vega wallet teardown prep', function () {
 Cypress.Commands.add('vega_wallet_teardown', function () {
   cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
   cy.vega_wallet_teardown_vesting(this.vestingContract);
-  cy.vega_wallet_check_associated_value_is('0.000000000000000000');
+
+  cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
+    'contain',
+    '0.000000000000000000',
+    { timeout: transactionTimeout }
+  );
 });
 
 Cypress.Commands.add(

@@ -1,5 +1,6 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
+import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 import { generateWithdrawPageQuery } from '../support/mocks/generate-withdraw-page-query';
 import { connectVegaWallet } from '../support/vega-wallet';
 
@@ -15,6 +16,7 @@ describe('withdraw', () => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
       aliasQuery(req, 'WithdrawPageQuery', generateWithdrawPageQuery());
+      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
     });
     cy.visit('/portfolio/withdraw');
 

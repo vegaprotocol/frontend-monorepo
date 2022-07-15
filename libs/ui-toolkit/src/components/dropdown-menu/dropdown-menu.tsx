@@ -44,7 +44,7 @@ export const DropdownMenuTrigger = forwardRef<
   <DropdownMenuPrimitive.Trigger
     asChild={true}
     ref={forwardedRef}
-    className="focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow"
+    className="focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow transition-none hover:bg-white-95 dark:hover:bg-black-80"
   >
     <Button
       variant="secondary"
