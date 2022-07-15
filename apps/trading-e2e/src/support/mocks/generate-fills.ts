@@ -1,13 +1,13 @@
 import type {
   Fills,
-  Fills_party_tradesPaged_edges_node,
+  Fills_party_tradesConnection_edges_node,
 } from '@vegaprotocol/fills';
 import { Side } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
 export const generateFills = (override?: PartialDeep<Fills>): Fills => {
-  const fills: Fills_party_tradesPaged_edges_node[] = [
+  const fills: Fills_party_tradesConnection_edges_node[] = [
     generateFill({
       buyer: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
@@ -49,7 +49,7 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
   const defaultResult: Fills = {
     party: {
       id: 'buyer-id',
-      tradesPaged: {
+      tradesConnection: {
         __typename: 'TradeConnection',
         totalCount: 1,
         edges: fills.map((f) => {
@@ -73,9 +73,9 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
 };
 
 export const generateFill = (
-  override?: PartialDeep<Fills_party_tradesPaged_edges_node>
+  override?: PartialDeep<Fills_party_tradesConnection_edges_node>
 ) => {
-  const defaultFill: Fills_party_tradesPaged_edges_node = {
+  const defaultFill: Fills_party_tradesConnection_edges_node = {
     __typename: 'Trade',
     id: '0',
     createdAt: new Date().toISOString(),

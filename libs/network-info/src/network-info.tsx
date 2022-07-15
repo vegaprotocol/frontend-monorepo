@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Link, Lozenge } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
@@ -56,7 +57,7 @@ export const NetworkInfo = () => {
         <p className="mb-16">
           {t('Known issues and feedback on')}{' '}
           {feedbackLinks.map(({ name, url }, index) => (
-            <>
+            <Fragment key={index}>
               <Link key={index} href={url}>
                 {name}
               </Link>
@@ -66,7 +67,7 @@ export const NetworkInfo = () => {
               {feedbackLinks.length > 1 &&
                 index === feedbackLinks.length - 1 &&
                 `, ${t('and')} `}
-            </>
+            </Fragment>
           ))}
         </p>
       )}
