@@ -1,8 +1,11 @@
 import type { ComponentProps } from 'react';
 import { Dialog } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import { NodeSwitcher } from '../node-switcher';
+import { Configuration } from '../../types';
 
-type NodeSwitcherDialogProps = ComponentProps<typeof NodeSwitcher> & {
+type NodeSwitcherDialogProps = Pick<ComponentProps<typeof NodeSwitcher>, 'initialErrorType' | 'onConnect'> & {
+  config?: Configuration;
   dialogOpen: boolean;
   setDialogOpen: (dialogOpen: boolean) => void;
 };
@@ -16,14 +19,17 @@ export const NodeSwitcherDialog = ({
 }: NodeSwitcherDialogProps) => {
   return (
     <Dialog open={dialogOpen} onChange={setDialogOpen}>
-      <NodeSwitcher
-        config={config}
-        initialErrorType={initialErrorType}
-        onConnect={(url) => {
-          onConnect(url);
-          setDialogOpen(false);
-        }}
-      />
+      {!config && t('Loading configuration...')}
+      {config && dialogOpen && (
+        <NodeSwitcher
+          config={config}
+          initialErrorType={initialErrorType}
+          onConnect={(url) => {
+            onConnect(url);
+            setDialogOpen(false);
+          }}
+        />
+      )}
     </Dialog>
   );
 };

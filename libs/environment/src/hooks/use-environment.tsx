@@ -106,17 +106,15 @@ export const EnvironmentProvider = ({
         setNodeSwitcherOpen: () => setNodeSwitcherOpen(true),
       }}
     >
-      {config && isNodeSwitcherOpen && (
-        <NodeSwitcherDialog
-          dialogOpen={true}
-          initialErrorType={networkError}
-          setDialogOpen={setNodeSwitcherOpen}
-          config={config}
-          onConnect={(url) =>
-            updateEnvironment((env) => ({ ...env, VEGA_URL: url }))
-          }
-        />
-      )}
+      <NodeSwitcherDialog
+        dialogOpen={isNodeSwitcherOpen}
+        initialErrorType={networkError}
+        setDialogOpen={setNodeSwitcherOpen}
+        config={config}
+        onConnect={(url) =>
+          updateEnvironment((env) => ({ ...env, VEGA_URL: url }))
+        }
+      />
       {children}
     </EnvironmentContext.Provider>
   );
