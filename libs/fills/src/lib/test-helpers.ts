@@ -1,10 +1,10 @@
-import { Side } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
   Fills,
   Fills_party_tradesConnection_edges_node,
 } from './__generated__/Fills';
+import { Side } from '@vegaprotocol/types';
 
 export const generateFills = (override?: PartialDeep<Fills>): Fills => {
   const fills: Fills_party_tradesConnection_edges_node[] = [
