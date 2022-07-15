@@ -9,9 +9,9 @@ body,
 }
 
 html > body {
-  --focus-border: #ff077f;
+  --focus-border: theme('colors.vega.pink');
 }
 
 html.dark > body {
-  --focus-border: #dfff0b;
+  --focus-border: theme('colors.vega.yellow');
 }
