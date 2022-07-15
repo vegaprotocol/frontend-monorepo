@@ -78,7 +78,7 @@ const ERROR = {
   FIELD_SIZE_MIN: `The amount cannot be lower than "${defaultOrder.step}"`,
   FIELD_PRICE_REQ: 'You need to provide a price',
   FIELD_PRICE_MIN: 'The price cannot be negative',
-  FIELD_PRICE_STEP_NULL: 'No fractional amounts are allowed for this order',
+  FIELD_PRICE_STEP_NULL: 'Order sizes must be whole numbers for this market',
   FIELD_PRICE_STEP_DECIMAL: `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`,
 };
 

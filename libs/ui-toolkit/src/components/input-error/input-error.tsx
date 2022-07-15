@@ -43,7 +43,7 @@ export const InputError = ({
       {...props}
       role="alert"
     >
-      <Icon name="warning-sign" size={16} className={iconClassName} />
+      <Icon name="warning-sign" size={20} className={iconClassName} />
       {children}
     </div>
   );
