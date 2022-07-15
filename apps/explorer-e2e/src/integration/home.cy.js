@@ -90,6 +90,28 @@ context('Home Page', function () {
     });
   });
 
+  describe('Git info', function () {
+    it('git info is rendered on the footer of the page', function () {
+      cy.getByTestId('git-info').within(() => {
+        cy.getByTestId('git-network-data').within(() => {
+          cy.contains('Reading network data from').should('be.visible');
+          cy.get('span').should('have.text', Cypress.env('networkQueryUrl'));
+          cy.getByTestId('link').should('be.visible');
+        });
+
+        cy.getByTestId('git-eth-data').within(() => {
+          cy.contains('Reading Ethereum data from').should('be.visible');
+          cy.get('span').should('have.text', Cypress.env('ethUrl'));
+        });
+
+        cy.getByTestId('git-commit-hash').within(() => {
+          cy.contains('Version/commit hash:').should('be.visible');
+          cy.getByTestId('link').should('have.text', Cypress.env('commitHash'));
+        });
+      });
+    });
+  });
+
   describe('Search bar', function () {
     it('Successful search for specific id by block id', function () {
       const blockId = '973624';
