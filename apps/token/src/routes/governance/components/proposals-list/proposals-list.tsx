@@ -1,9 +1,9 @@
 import { isFuture } from 'date-fns';
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
+import { ProposalsListFilter } from '../proposals-list-filter';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 interface ProposalsListProps {
@@ -17,52 +17,51 @@ interface SortedProposalsProps {
 
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
+  const [filterString, setFilterString] = useState('');
 
-  const sortedProposals = useMemo(() => {
-    const sorted = proposals.sort(
-      (a, b) =>
-        Date.parse(b.terms.closingDatetime) -
-        Date.parse(a.terms.closingDatetime)
-    );
+  const failedProposalsCulled = proposals.filter(
+    ({ state }) => state !== 'Failed'
+  );
 
-    return sorted.reduce(
-      (acc: SortedProposalsProps, proposal) => {
-        if (proposal.state === 'Failed') {
-          return acc;
-        }
-        if (isFuture(new Date(proposal.terms.closingDatetime))) {
-          acc.open.push(proposal);
-        } else {
-          acc.closed.push(proposal);
-        }
-        return acc;
-      },
-      {
-        open: [],
-        closed: [],
+  const sortedProposals = failedProposalsCulled.reduce(
+    (acc: SortedProposalsProps, proposal) => {
+      if (isFuture(new Date(proposal.terms.closingDatetime))) {
+        acc.open.push(proposal);
+      } else {
+        acc.closed.push(proposal);
       }
-    );
-  }, [proposals]);
+      return acc;
+    },
+    {
+      open: [],
+      closed: [],
+    }
+  );
+
+  const filterPredicate = (p: Proposals_proposals) =>
+    p.id?.includes(filterString) ||
+    p.party?.id?.toString().includes(filterString) ||
+    p.rationale?.description?.includes(filterString);
 
   return (
     <>
       <Heading title={t('pageTitleGovernance')} />
-      <h2>{t('proposals')}</h2>
+      {failedProposalsCulled.length > 0 && (
+        <ProposalsListFilter setFilterString={setFilterString} />
+      )}
       {sortedProposals.open.length > 0 ? (
         <ul data-testid="open-proposals">
-          {sortedProposals.open.map((proposal) => (
+          {sortedProposals.open.filter(filterPredicate).map((proposal) => (
             <ProposalsListItem key={proposal.id} proposal={proposal} />
           ))}
         </ul>
       ) : (
         <p data-testid="no-open-proposals">{t('noOpenProposals')}</p>
       )}
-      {sortedProposals.open.length > 0 && sortedProposals.closed.length > 0 && (
-        <hr className="my-28 border-t-2" />
-      )}
+      <hr className="my-20 border-t-2" />
       {sortedProposals.closed.length > 0 ? (
         <ul data-testid="closed-proposals">
-          {sortedProposals.closed.map((proposal) => (
+          {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
             <ProposalsListItem key={proposal.id} proposal={proposal} />
           ))}
         </ul>

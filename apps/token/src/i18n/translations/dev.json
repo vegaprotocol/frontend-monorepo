@@ -169,7 +169,7 @@
   "Majority": "Majority",
   "not reached": "not reached",
   "noOpenProposals": "There are no open or yet to enact proposals",
-  "noClosedProposals": "There are no enacted or failed proposals",
+  "noClosedProposals": "There are no enacted or rejected proposals",
   "updateNetworkParam": "Update Network Param",
   "proposedOn": "Proposed on",
   "proposedBy": "Proposed by",
@@ -604,5 +604,7 @@
   "InvalidRiskParameter": "Invalid risk parameter",
   "MajorityThresholdNotReached":  "Majority threshold not reached",
   "ParticipationThresholdNotReached": "Participation threshold not reached",
-  "InvalidAssetDetails":  "Invalid asset details"
+  "InvalidAssetDetails":  "Invalid asset details",
+  "FilterProposals": "Filter proposals",
+  "FilterProposalsDescription": "Filter proposals by proposal ID, proposer ID or proposal rationale"
 }

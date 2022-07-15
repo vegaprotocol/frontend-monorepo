@@ -29,7 +29,7 @@ context('Governance Page - verify elements on page', function () {
         .and('have.text', 'There are no open or yet to enact proposals');
       cy.get(governance.noClosedProposals)
         .should('be.visible')
-        .and('have.text', 'There are no enacted or failed proposals');
+        .and('have.text', 'There are no enacted or rejected proposals');
     });
   });
 });
