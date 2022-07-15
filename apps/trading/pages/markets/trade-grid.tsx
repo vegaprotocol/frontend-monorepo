@@ -23,6 +23,7 @@ import {
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
+import { AuctionTrigger } from '@vegaprotocol/types';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import capitalize from 'lodash/capitalize';
 import startCase from 'lodash/startCase';
@@ -102,7 +103,9 @@ export const TradeMarketHeader = ({
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode === MarketTradingMode.MonitoringAuction
+              {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+              market.data?.trigger &&
+              market.data.trigger !== AuctionTrigger.Unspecified
                 ? `${formatLabel(
                     market.tradingMode
                   )} - ${market.data?.trigger.toLowerCase()}`
