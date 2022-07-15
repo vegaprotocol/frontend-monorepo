@@ -9,6 +9,7 @@ type NodeSwitcherDialogProps = Pick<
   ComponentProps<typeof NodeSwitcher>,
   'initialErrorType' | 'onConnect'
 > & {
+  loading: boolean;
   config?: Configuration;
   dialogOpen: boolean;
   setDialogOpen: (dialogOpen: boolean) => void;
@@ -16,6 +17,7 @@ type NodeSwitcherDialogProps = Pick<
 
 export const NodeSwitcherDialog = ({
   config,
+  loading,
   initialErrorType,
   dialogOpen,
   setDialogOpen,
@@ -24,8 +26,10 @@ export const NodeSwitcherDialog = ({
   const { VEGA_ENV } = useEnvironment();
   return (
     <Dialog open={dialogOpen} onChange={setDialogOpen}>
-      <div className="uppercase text-h3 text-center mb-8">{t('Connected node')}</div>
-      {!config && (
+      <div className="uppercase text-h3 text-center mb-8">
+        {t('Connected node')}
+      </div>
+      {!config && loading && (
         <div className="py-16">
           <p className="mb-32 text-center">{t('Loading configuration...')}</p>
           <Loader size="large" />
@@ -34,11 +38,11 @@ export const NodeSwitcherDialog = ({
       {config && dialogOpen && (
         <>
           <p className="mb-32 text-center">
-            {t(`This app will only work on a`)}
-            {' '}
-            <span className="font-mono capitalize">{VEGA_ENV.toLowerCase()}</span>
-            {' '}
-            {t('chain ID')}
+            {t(`This app will only work on a `)}
+            <span className="font-mono capitalize">
+              {VEGA_ENV.toLowerCase()}
+            </span>
+            {t(' chain ID')}
           </p>
           <NodeSwitcher
             config={config}

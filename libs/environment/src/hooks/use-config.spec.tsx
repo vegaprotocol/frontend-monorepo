@@ -60,8 +60,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  // @ts-ignore: typescript doesn't recognise the mocked fetch instance
-  fetch.mockRestore();
+  jest.clearAllMocks();
 });
 
 describe('useConfig hook', () => {
@@ -110,7 +109,7 @@ describe('useConfig hook', () => {
     );
 
     await waitForNextUpdate();
-    expect(result.current.config).toBe(undefined);
+    expect(result.current.config).toEqual({ hosts: [] });
     expect(onError).toHaveBeenCalledWith(ErrorType.CONFIG_LOAD_ERROR);
   });
 

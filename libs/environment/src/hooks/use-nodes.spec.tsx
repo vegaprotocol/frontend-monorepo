@@ -56,8 +56,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  // @ts-ignore allow deleting the spy function after we're done with the tests
-  delete window.performance.getEntriesByName;
+  jest.clearAllMocks();
 });
 
 describe('useNodes hook', () => {

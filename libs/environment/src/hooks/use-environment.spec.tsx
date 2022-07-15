@@ -121,10 +121,6 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  // @ts-ignore: typescript doesn't recognise the mocked fetch instance
-  fetch.mockRestore();
-  window.localStorage.clear();
-
   delete process.env['NX_VEGA_URL'];
   delete process.env['NX_VEGA_ENV'];
   delete process.env['NX_VEGA_CONFIG_URL'];
@@ -135,6 +131,8 @@ afterAll(() => {
   delete process.env['NX_GIT_ORIGIN_URL'];
   delete process.env['NX_GIT_COMMIT_HASH'];
   delete process.env['NX_GITHUB_FEEDBACK_URL'];
+
+  jest.clearAllMocks();
 });
 
 describe('useEnvironment hook', () => {

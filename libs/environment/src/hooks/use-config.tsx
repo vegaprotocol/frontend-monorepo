@@ -76,7 +76,10 @@ export const useConfig = (
           );
           isMounted && setLoading(false);
         } catch (err) {
-          isMounted && setLoading(false);
+          if (isMounted) {
+            setLoading(false);
+            setConfig({ hosts: [] });
+          }
           onError(ErrorType.CONFIG_LOAD_ERROR);
         }
       }

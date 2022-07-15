@@ -38,7 +38,7 @@ export const EnvironmentProvider = ({
   const [environment, updateEnvironment] = useState<Environment>(
     compileEnvironment(definitions)
   );
-  const { config } = useConfig(environment, (errorType) => {
+  const { loading, config } = useConfig(environment, (errorType) => {
     if (!environment.VEGA_URL) {
       setNetworkError(errorType);
       setNodeSwitcherOpen(true);
@@ -110,6 +110,7 @@ export const EnvironmentProvider = ({
         dialogOpen={isNodeSwitcherOpen}
         initialErrorType={networkError}
         setDialogOpen={setNodeSwitcherOpen}
+        loading={loading}
         config={config}
         onConnect={(url) =>
           updateEnvironment((env) => ({ ...env, VEGA_URL: url }))
