@@ -204,7 +204,7 @@ export const useOrderValidation = ({
       if (market.positionDecimalPlaces === 0) {
         return {
           isDisabled: true,
-          message: t('Order sizes must be whole numbers for this market'),
+          message: t('Order sizes must be in whole numbers for this market'),
         };
       }
       return {
