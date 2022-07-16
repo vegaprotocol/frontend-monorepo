@@ -66,6 +66,11 @@ describe('markets table', () => {
 
     // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
+    cy.get('[role="gridcell"][col-id=data]').contains('ACTIVE MARKET').click();
+
+    cy.wait('@Market');
+    cy.contains('ACTIVE MARKET');
+    cy.url().should('include', '/markets/market-0');
     verifyMarketSummaryDisplayed();
   });
 
