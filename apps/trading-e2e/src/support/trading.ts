@@ -1,5 +1,5 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import type { MarketTradingMode } from '@vegaprotocol/types';
+import type { MarketState } from '@vegaprotocol/types';
 import type { CyHttpMessages } from 'cypress/types/net-stubbing';
 import { generateAccounts } from './mocks/generate-accounts';
 import { generateCandles } from './mocks/generate-candles';
@@ -13,15 +13,15 @@ import { generateTrades } from './mocks/generate-trades';
 
 export const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
-  tradingMode: MarketTradingMode
+  state: MarketState
 ) => {
   aliasQuery(
     req,
     'Market',
     generateMarket({
       market: {
-        name: tradingMode,
-        tradingMode: tradingMode,
+        name: `${state.toUpperCase()} MARKET`,
+        state: state,
       },
     })
   );
@@ -31,12 +31,12 @@ export const mockTradingPage = (
   aliasQuery(
     req,
     'DealTicketQuery',
-    generateDealTicketQuery({ market: { tradingMode } })
+    generateDealTicketQuery({ market: { state } })
   );
   aliasQuery(
     req,
     'MarketInfoQuery',
-    generateMarketInfoQuery({ market: { tradingMode } })
+    generateMarketInfoQuery({ market: { state } })
   );
   aliasQuery(req, 'Trades', generateTrades());
   aliasQuery(req, 'Chart', generateChart());
