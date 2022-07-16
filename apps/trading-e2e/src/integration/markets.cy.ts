@@ -69,19 +69,6 @@ describe('markets table', () => {
     verifyMarketSummaryDisplayed();
   });
 
-  it('can select a suspended market', () => {
-    cy.wait('@Markets');
-    cy.get('.ag-root-wrapper').should('be.visible');
-
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Suspended);
-    });
-
-    // click on market
-    cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    verifyMarketSummaryDisplayed();
-  });
-
   function verifyMarketSummaryDisplayed() {
     const marketSummaryBlock = 'market-summary';
     const percentageValue = 'price-change-percentage';
