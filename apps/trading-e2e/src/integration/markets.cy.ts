@@ -1,5 +1,5 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { MarketState } from '@vegaprotocol/types';
+import { MarketTradingMode } from '@vegaprotocol/types';
 import { generateMarkets } from '../support/mocks/generate-markets';
 import { mockTradingPage } from '../support/trading';
 
@@ -56,37 +56,37 @@ describe('markets table', () => {
     });
   });
 
-  it('can select an active market', () => {
+  it('can select an continuously trading market', () => {
     cy.wait('@Markets');
     cy.get('.ag-root-wrapper').should('be.visible');
 
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Active);
+      mockTradingPage(req, MarketTradingMode.Continuous);
     });
 
-    // click on active market
+    // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
 
     cy.wait('@Market');
-    cy.contains('ACTIVE MARKET');
+    cy.contains(MarketTradingMode.Continuous);
     cy.url().should('include', '/markets/market-0');
 
     verifyMarketSummaryDisplayed();
   });
 
-  it('can select a suspended market', () => {
+  it('can select a monitoring auction trading market', () => {
     cy.wait('@Markets');
     cy.get('.ag-root-wrapper').should('be.visible');
 
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Suspended);
+      mockTradingPage(req, MarketTradingMode.MonitoringAuction);
     });
 
-    // click on active market
+    // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
 
     cy.wait('@Market');
-    cy.contains('SUSPENDED MARKET');
+    cy.contains(MarketTradingMode.MonitoringAuction);
     cy.url().should('include', '/markets/market-1');
 
     verifyMarketSummaryDisplayed();
