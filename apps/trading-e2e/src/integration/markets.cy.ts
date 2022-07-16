@@ -79,7 +79,6 @@ describe('markets table', () => {
 
     // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-
     verifyMarketSummaryDisplayed();
   });
 
