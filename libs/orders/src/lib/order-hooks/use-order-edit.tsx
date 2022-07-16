@@ -6,7 +6,6 @@ import type {
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
-import { VegaWalletOrderType } from '@vegaprotocol/wallet';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { Subscription } from 'zen-observable-ts';
