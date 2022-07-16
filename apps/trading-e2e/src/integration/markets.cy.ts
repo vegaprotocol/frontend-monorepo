@@ -66,7 +66,7 @@ describe('markets table', () => {
 
     // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.get('[role="gridcell"][col-id=data]').contains('ACTIVE MARKET').click();
+    cy.get('[role="gridcell"][col-id=name]').contains('ACTIVE MARKET').click();
 
     cy.wait('@Market');
     cy.contains('ACTIVE MARKET');
