@@ -25,7 +25,7 @@ describe('markets table', () => {
     const expectedMarketHeaders = [
       'Market',
       'Settlement asset',
-      'State',
+      'Trading mode',
       'Best bid',
       'Best offer',
       'Mark price',
@@ -66,7 +66,6 @@ describe('markets table', () => {
 
     // click on active market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.get('[role="gridcell"][col-id=data]').contains('Active').click();
 
     cy.wait('@Market');
     cy.contains('ACTIVE MARKET');
@@ -85,7 +84,6 @@ describe('markets table', () => {
 
     // click on active market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.get('[role="gridcell"][col-id=data]').contains('Suspended').click();
 
     cy.wait('@Market');
     cy.contains('SUSPENDED MARKET');
