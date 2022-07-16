@@ -1,11 +1,12 @@
 import { useApolloClient } from '@apollo/client';
-import { determineId } from '@vegaprotocol/react-helpers';
+import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import type {
   OrderAmendmentBody,
   OrderAmendmentBodyOrderAmendment,
 } from '@vegaprotocol/vegawallet-service-api-client';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
+import { VegaWalletOrderType } from '@vegaprotocol/wallet';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { Subscription } from 'zen-observable-ts';
@@ -53,10 +54,23 @@ export const useOrderEdit = () => {
           orderAmendment: {
             orderId: order.id,
             marketId: order?.market?.id,
-            price: { value: order.price },
+            price: {
+              value: removeDecimal(
+                order.price,
+                order.market.decimalPlaces ?? 0
+              ),
+            },
             timeInForce:
               `TIME_IN_FORCE_${order.timeInForce}` as VegaWalletOrderTimeInForce,
             sizeDelta: 0,
+            expiresAt: order.expiresAt
+              ? {
+                  value:
+                    // Wallet expects timestamp in nanoseconds,
+                    // we don't have that level of accuracy so just append 6 zeroes
+                    new Date(order.expiresAt).getTime().toString() + '000000',
+                }
+              : undefined,
           } as unknown as OrderAmendmentBodyOrderAmendment,
         } as OrderAmendmentBody);
 

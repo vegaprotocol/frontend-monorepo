@@ -164,10 +164,7 @@ export const VegaOrderEditDialog = ({
           onSubmit={handleSubmit(async (data) => {
             await edit({
               ...order,
-              price: (
-                Number(data.entryPrice) *
-                Math.pow(10, order.market?.decimalPlaces ?? 0)
-              ).toString(),
+              price: data.entryPrice,
             });
           })}
           data-testid="edit-order"
