@@ -64,10 +64,8 @@ describe('markets table', () => {
       mockTradingPage(req, MarketState.Active);
     });
 
-    // click on active market
+    // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.url().should('include', '/markets/market-0');
-
     verifyMarketSummaryDisplayed();
   });
 
@@ -79,9 +77,8 @@ describe('markets table', () => {
       mockTradingPage(req, MarketState.Suspended);
     });
 
-    // click on active market
+    // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.url().should('include', '/markets/market-1');
 
     verifyMarketSummaryDisplayed();
   });
