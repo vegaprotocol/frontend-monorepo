@@ -9,11 +9,18 @@ import {
   EthTxStatus,
   initialState as ethTxInitialState,
 } from '@vegaprotocol/web3';
+import BigNumber from 'bignumber.js';
 
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
 jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ account: ethereumAddress }),
+}));
+
+jest.mock('./use-get-withdraw-limits', () => ({
+  useGetWithdrawLimits: () => {
+    return { max: new BigNumber(1000000) };
+  },
 }));
 
 let props: WithdrawManagerProps;

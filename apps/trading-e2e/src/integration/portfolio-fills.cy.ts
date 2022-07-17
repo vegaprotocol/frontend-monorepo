@@ -2,6 +2,7 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateFill, generateFills } from '../support/mocks/generate-fills';
 import { Side } from '@vegaprotocol/types';
 import { connectVegaWallet } from '../support/vega-wallet';
+import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
 describe('fills', () => {
   before(() => {
@@ -45,7 +46,7 @@ describe('fills', () => {
     ];
     const result = generateFills({
       party: {
-        tradesPaged: {
+        tradesConnection: {
           edges: fills.map((f, i) => {
             return {
               __typename: 'TradeEdge',
@@ -58,6 +59,7 @@ describe('fills', () => {
     });
     cy.mockGQL((req) => {
       aliasQuery(req, 'Fills', result);
+      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
     });
     cy.visit('/portfolio');
     cy.get('main[data-testid="portfolio"]').should('exist');
@@ -65,7 +67,7 @@ describe('fills', () => {
 
   it('renders fills', () => {
     cy.getByTestId('Fills').click();
-    cy.getByTestId('tab-fills').contains('Please connect Vega wallet');
+    cy.getByTestId('tab-fills').contains('Connect your Vega wallet');
 
     connectVegaWallet();
 

@@ -27,6 +27,8 @@ module.exports = defineConfig({
     chromeWebSecurity: false,
     projectId: 'et4snf',
     defaultCommandTimeout: 10000,
+    viewportWidth: 1440,
+    viewportHeight: 900,
   },
   env: {
     TRADING_TEST_VEGA_WALLET_NAME: 'UI_Trading_Test',

@@ -14,13 +14,14 @@ import { RetryLink } from '@apollo/client/link/retry';
 
 const isBrowser = typeof window !== 'undefined';
 
-export function createClient(base?: string) {
+export const GQL_PATH = 'query';
+
+export default function createClient(base?: string) {
   if (!base) {
     throw new Error('Base must be passed into createClient!');
   }
-  const gqlPath = 'query';
-  const urlHTTP = new URL(gqlPath, base);
-  const urlWS = new URL(gqlPath, base);
+  const urlHTTP = new URL(GQL_PATH, base);
+  const urlWS = new URL(GQL_PATH, base);
   // Replace http with ws, preserving if its a secure connection eg. https => wss
   urlWS.protocol = urlWS.protocol.replace('http', 'ws');
 

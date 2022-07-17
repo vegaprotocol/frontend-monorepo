@@ -21,6 +21,7 @@ const MARKET_DATA_FRAGMENT = gql`
     bestBidPrice
     bestOfferPrice
     markPrice
+    trigger
   }
 `;
 

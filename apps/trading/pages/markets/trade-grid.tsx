@@ -11,7 +11,11 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import type { Market_market } from './__generated__/Market';
-import { t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  formatLabel,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -23,17 +27,19 @@ import {
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
+import { AuctionTrigger } from '@vegaprotocol/types';
+import { MarketTradingMode } from '@vegaprotocol/types';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
   Depth: DepthChartContainer,
   Ticket: DealTicketContainer,
-  Orderbook: OrderbookContainer,
-  Orders: OrderListContainer,
-  Positions: PositionsContainer,
-  Accounts: AccountsContainer,
-  Trades: TradesContainer,
   Info: MarketInfoContainer,
+  Orderbook: OrderbookContainer,
+  Trades: TradesContainer,
+  Positions: PositionsContainer,
+  Orders: OrderListContainer,
+  Collateral: AccountsContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -53,9 +59,9 @@ export const TradeMarketHeader = ({
     .filter((c): c is CandleClose => c !== null);
   const headerItemClassName = 'whitespace-nowrap flex flex-col';
   const itemClassName =
-    'font-sans font-normal mb-0 text-dark/80 dark:text-white/80 text-ui-small';
+    'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
   const itemValueClassName =
-    'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
+    'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
     'w-full p-8 bg-white dark:bg-black',
     className
@@ -66,7 +72,7 @@ export const TradeMarketHeader = ({
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
           onClick={() => setOpen(!open)}
-          className="shrink-0 dark:text-vega-yellow text-black text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/20 dark:hover:bg-white/20"
+          className="shrink-0 text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/10 dark:hover:bg-white/20"
         >
           <span className="break-words text-left">{market.name}</span>
           <ArrowDown color="yellow" borderX={8} borderTop={12} />
@@ -74,7 +80,7 @@ export const TradeMarketHeader = ({
 
         <div
           data-testid="market-summary"
-          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap w-[400px]"
+          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap"
         >
           <div className={headerItemClassName}>
             <span className={itemClassName}>Change (24h)</span>
@@ -87,20 +93,23 @@ export const TradeMarketHeader = ({
             <span className={itemClassName}>Volume</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
-                ? market.data.indicativeVolume
+                ? addDecimalsFormatNumber(
+                    market.data.indicativeVolume,
+                    market.positionDecimalPlaces
+                  )
                 : '-'}
             </span>
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode}
-            </span>
-          </div>
-          <div className={headerItemClassName}>
-            <span className={itemClassName}>State</span>
-            <span data-testid="market-state" className={itemValueClassName}>
-              {market.state}
+              {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+              market.data?.trigger &&
+              market.data.trigger !== AuctionTrigger.Unspecified
+                ? `${formatLabel(
+                    market.tradingMode
+                  )} - ${market.data?.trigger.toLowerCase()}`
+                : formatLabel(market.tradingMode)}
             </span>
           </div>
         </div>
@@ -116,8 +125,8 @@ interface TradeGridProps {
 export const TradeGrid = ({ market }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
-    'grid gap-4 grid-cols-[1fr_375px_460px] grid-rows-[min-content_1fr_300px]',
-    'bg-black-10 dark:bg-white-10',
+    'grid gap-x-8 gap-y-4 grid-cols-[1fr_325px_425px] grid-rows-[min-content_1fr_200px]',
+    'bg-black-10 dark:bg-black-70',
     'text-ui'
   );
 
@@ -150,24 +159,24 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </TradeGridChild>
         <TradeGridChild className="row-start-2 row-end-3 col-start-3 col-end-4">
           <Tabs>
-            <Tab id="trades" name={t('Trades')}>
-              <TradingViews.Trades marketId={market.id} />
-            </Tab>
             <Tab id="orderbook" name={t('Orderbook')}>
               <TradingViews.Orderbook marketId={market.id} />
+            </Tab>
+            <Tab id="trades" name={t('Trades')}>
+              <TradingViews.Trades marketId={market.id} />
             </Tab>
           </Tabs>
         </TradeGridChild>
         <TradeGridChild className="col-span-3">
           <Tabs>
-            <Tab id="orders" name={t('Orders')}>
-              <TradingViews.Orders />
-            </Tab>
             <Tab id="positions" name={t('Positions')}>
               <TradingViews.Positions />
             </Tab>
-            <Tab id="accounts" name={t('Accounts')}>
-              <TradingViews.Accounts />
+            <Tab id="orders" name={t('Orders')}>
+              <TradingViews.Orders />
+            </Tab>
+            <Tab id="accounts" name={t('Collateral')}>
+              <TradingViews.Collateral />
             </Tab>
           </Tabs>
         </TradeGridChild>

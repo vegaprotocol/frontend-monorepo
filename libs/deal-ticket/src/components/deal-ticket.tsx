@@ -4,7 +4,11 @@ import {
   VegaWalletOrderType,
   VegaWalletOrderTimeInForce,
 } from '@vegaprotocol/wallet';
-import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  toDecimal,
+  addDecimalsFormatNumber,
+} from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -43,26 +47,26 @@ export const DealTicket = ({
   const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
-  const invalidText = useOrderValidation({
+  const { message, isDisabled: disabled } = useOrderValidation({
     step,
     market,
     orderType,
     orderTimeInForce,
     fieldErrors: errors,
   });
-  const isDisabled = transactionStatus === 'pending' || Boolean(invalidText);
+  const isDisabled = transactionStatus === 'pending' || disabled;
 
   const onSubmit = useCallback(
     (order: Order) => {
-      if (!isDisabled && !invalidText) {
+      if (!isDisabled) {
         submit(order);
       }
     },
-    [isDisabled, invalidText, submit]
+    [isDisabled, submit]
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="px-4 py-8" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="px-12 py-8" noValidate>
       <Controller
         name="type"
         control={control}
@@ -83,7 +87,10 @@ export const DealTicket = ({
         register={register}
         price={
           market.depth.lastTrade
-            ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+            ? addDecimalsFormatNumber(
+                market.depth.lastTrade.price,
+                market.decimalPlaces
+              )
             : undefined
         }
         quoteName={market.tradableInstrument.instrument.product.quoteName}
@@ -118,9 +125,12 @@ export const DealTicket = ({
       >
         {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
       </Button>
-      {invalidText && (
-        <InputError className="mb-8" data-testid="dealticket-error-message">
-          {invalidText}
+      {message && (
+        <InputError
+          className="mt-12 mb-12"
+          data-testid="dealticket-error-message"
+        >
+          {message}
         </InputError>
       )}
     </form>
