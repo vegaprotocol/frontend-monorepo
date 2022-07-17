@@ -4,6 +4,11 @@ import type {
   VegaKeyExtended,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
+import {
+  VegaWalletOrderSide,
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderType,
+} from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
@@ -14,6 +19,15 @@ import type {
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
+import {
+  MarketTradingMode,
+  MarketState,
+  OrderTimeInForce,
+} from '@vegaprotocol/types';
+import type {
+  OrderAmendmentBodyOrderAmendment,
+  OrderAmendmentBody,
+} from '@vegaprotocol/vegawallet-service-api-client';
 
 const defaultWalletContext = {
   keypair: null,
@@ -109,7 +123,73 @@ function setup(context?: Partial<VegaWalletContextShape>) {
   return renderHook(() => useOrderEdit(), { wrapper });
 }
 
+const defaultMarket = {
+  __typename: 'Market',
+  id: 'market-id',
+  decimalPlaces: 2,
+  positionDecimalPlaces: 1,
+  tradingMode: MarketTradingMode.Continuous,
+  state: MarketState.Active,
+  tradableInstrument: {
+    __typename: 'TradableInstrument',
+    instrument: {
+      __typename: 'Instrument',
+      product: {
+        __typename: 'Future',
+        quoteName: 'quote-name',
+      },
+    },
+  },
+  depth: {
+    __typename: 'MarketDepth',
+    lastTrade: {
+      __typename: 'Trade',
+      price: '100',
+    },
+  },
+};
+
 describe('useOrderEdit', () => {
+  it('should edit a correctly formatted order', async () => {
+    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
+    const keypair = {
+      pub: '0x123',
+    } as VegaKeyExtended;
+    const { result } = setup({
+      sendTx: mockSendTx,
+      keypairs: [keypair],
+      keypair,
+    });
+
+    const order = {
+      id: 'order-id',
+      type: VegaWalletOrderType.Limit,
+      size: '10',
+      timeInForce: OrderTimeInForce.GTT, // order timeInForce is transformed to wallet timeInForce
+      side: VegaWalletOrderSide.Buy,
+      price: '1234567.89',
+      expiration: new Date('2022-01-01'),
+      expiresAt: new Date('2022-01-01'),
+      market: { id: 'market-id' },
+    };
+    await act(async () => {
+      result.current.edit(order);
+    });
+
+    expect(mockSendTx).toHaveBeenCalledWith({
+      pubKey: keypair.pub,
+      propagate: true,
+      orderAmendment: {
+        orderId: 'order-id',
+        marketId: defaultMarket.id, // Market provided from hook argument
+        timeInForce: VegaWalletOrderTimeInForce.GTT,
+        price: { value: '1234567.89' }, // Decimal removed
+        sizeDelta: 0,
+        expiresAt: { value: order.expiration?.getTime() + '000000' }, // Nanoseconds append
+      } as unknown as OrderAmendmentBodyOrderAmendment,
+    } as OrderAmendmentBody);
+  });
+
   it('has the correct default state', () => {
     const { result } = setup();
     expect(typeof result.current.edit).toEqual('function');
