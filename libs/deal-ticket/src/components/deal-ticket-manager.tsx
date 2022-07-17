@@ -1,12 +1,10 @@
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
-import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
-import { OrderStatus } from '@vegaprotocol/types';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { useState } from 'react';
+import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
-import { OrderDialog } from './order-dialog';
-import { useOrderSubmit } from '../hooks/use-order-submit';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
+import { useOrderSubmit } from '@vegaprotocol/orders';
+import { OrderStatus } from '@vegaprotocol/types';
 
 export interface DealTicketManagerProps {
   market: DealTicketQuery_market;
@@ -19,43 +17,20 @@ export const DealTicketManager = ({
 }: DealTicketManagerProps) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
-
-  const getDialogIntent = (status: VegaTxStatus) => {
-    if (finalizedOrder) {
-      if (
-        finalizedOrder.status === OrderStatus.Active ||
-        finalizedOrder.status === OrderStatus.Filled ||
-        finalizedOrder.status === OrderStatus.PartiallyFilled
-      ) {
-        return Intent.Success;
-      }
-
-      if (finalizedOrder.status === OrderStatus.Parked) {
-        return Intent.Warning;
-      }
-
-      return Intent.Danger;
+  const getDialogTitle = (status?: string) => {
+    switch (status) {
+      case OrderStatus.Active:
+        return 'Order submitted';
+      case OrderStatus.Filled:
+        return 'Order filled';
+      case OrderStatus.PartiallyFilled:
+        return 'Order partially filled';
+      case OrderStatus.Parked:
+        return 'Order parked';
+      default:
+        return 'Submission failed';
     }
-
-    if (status === VegaTxStatus.Requested) {
-      return Intent.Warning;
-    }
-
-    if (status === VegaTxStatus.Error) {
-      return Intent.Danger;
-    }
-
-    return Intent.None;
   };
-
-  useEffect(() => {
-    if (transaction.status !== VegaTxStatus.Default) {
-      setOrderDialogOpen(true);
-    } else {
-      setOrderDialogOpen(false);
-    }
-  }, [transaction.status]);
-
   return (
     <>
       {children || (
@@ -70,23 +45,15 @@ export const DealTicketManager = ({
           }
         />
       )}
-      <Dialog
-        open={orderDialogOpen}
-        onChange={(isOpen) => {
-          setOrderDialogOpen(isOpen);
-
-          // If closing reset
-          if (!isOpen) {
-            reset();
-          }
-        }}
-        intent={getDialogIntent(transaction.status)}
-      >
-        <OrderDialog
-          transaction={transaction}
-          finalizedOrder={finalizedOrder}
-        />
-      </Dialog>
+      <VegaTransactionDialog
+        key={`submit-order-dialog-${transaction.txHash}`}
+        orderDialogOpen={orderDialogOpen}
+        setOrderDialogOpen={setOrderDialogOpen}
+        finalizedOrder={finalizedOrder}
+        transaction={transaction}
+        reset={reset}
+        title={getDialogTitle(finalizedOrder?.status)}
+      />
     </>
   );
 };

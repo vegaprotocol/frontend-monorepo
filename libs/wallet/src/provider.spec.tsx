@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import type { VegaKey } from '@vegaprotocol/vegawallet-service-api-client';
 import { RestConnector } from './connectors';
-import { useVegaWallet } from './hooks';
+import { useVegaWallet } from './use-vega-wallet';
 import { VegaWalletProvider } from './provider';
 import { WALLET_KEY } from './storage-keys';
 
@@ -34,6 +34,7 @@ const TestComponent = () => {
       {keypairs?.length ? (
         <ul data-testid="keypair-list">
           {keypairs.map((kp) => (
+            // eslint-disable-next-line jsx-a11y/click-events-have-key-events,jsx-a11y/no-noninteractive-element-interactions
             <li key={kp.pub} onClick={() => selectPublicKey(kp.pub)}>
               {kp.pub}
             </li>

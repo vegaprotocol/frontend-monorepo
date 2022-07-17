@@ -55,16 +55,18 @@ export const RedemptionInformation = () => {
   if (!filteredTranches.length) {
     return (
       <section data-testid="redemption-page">
-        <p className="mb-12" data-testid="redemption-no-balance">
-          <Trans
-            i18nKey="noVestingTokens"
-            components={{
-              tranchesLink: (
-                <Link className="underline text-white" to={Routes.TRANCHES} />
-              ),
-            }}
-          />
-        </p>
+        <div className="mb-20">
+          <p data-testid="redemption-no-balance">
+            <Trans
+              i18nKey="noVestingTokens"
+              components={{
+                tranchesLink: (
+                  <Link className="underline text-white" to={Routes.TRANCHES} />
+                ),
+              }}
+            />
+          </p>
+        </div>
         <AddLockedTokenAddress />
       </section>
     );
@@ -92,9 +94,7 @@ export const RedemptionInformation = () => {
           vested={totalVestedBalance}
         />
       </div>
-      {filteredTranches.length ? (
-        <h2 className="text-h4 text-white mb-12">{t('Tranche breakdown')}</h2>
-      ) : null}
+      {filteredTranches.length ? <h2>{t('Tranche breakdown')}</h2> : null}
       {zeroTranche && (
         <Tranche0Table
           trancheId={0}
@@ -133,7 +133,7 @@ export const RedemptionInformation = () => {
         iconName="hand-up"
         intent={Intent.Warning}
       >
-        <p className="mb-12">{t('Find out more about Staking.')}</p>
+        <p>{t('Find out more about Staking.')}</p>
         <Link to="/staking" className="underline text-white">
           {t('Stake VEGA tokens')}
         </Link>

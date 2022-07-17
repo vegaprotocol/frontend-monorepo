@@ -28,9 +28,10 @@ export const Nav = ({ menuOpen }: NavProps) => {
             className={({ isActive }) =>
               classnames(
                 'block mb-8 px-8',
-                'text-h5 hover:bg-vega-yellow hover:text-black',
+                'text-h5 hover:bg-vega-pink dark:hover:bg-vega-yellow hover:text-white dark:hover:text-black',
                 {
-                  'bg-vega-yellow text-black': isActive,
+                  'bg-vega-pink text-white dark:bg-vega-yellow dark:text-black':
+                    isActive,
                 }
               )
             }

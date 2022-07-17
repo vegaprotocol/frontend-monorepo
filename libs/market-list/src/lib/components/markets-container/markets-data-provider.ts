@@ -21,6 +21,7 @@ const MARKET_DATA_FRAGMENT = gql`
     bestBidPrice
     bestOfferPrice
     markPrice
+    trigger
   }
 `;
 
@@ -55,6 +56,7 @@ export const MARKET_LIST_QUERY = gql`
     markets {
       id
       decimalPlaces
+      state
       data {
         market {
           id
@@ -91,14 +93,16 @@ const MARKET_DATA_SUB = gql`
   }
 `;
 
-const update = (data: Markets_markets[], delta: MarketDataSub_marketData) =>
-  produce(data, (draft) => {
+const update = (data: Markets_markets[], delta: MarketDataSub_marketData) => {
+  return produce(data, (draft) => {
     const index = draft.findIndex((m) => m.id === delta.market.id);
     if (index !== -1) {
       draft[index].data = delta;
     }
     // @TODO - else push new market to draft
   });
+};
+
 const getData = (responseData: Markets): Markets_markets[] | null =>
   responseData.markets;
 const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>

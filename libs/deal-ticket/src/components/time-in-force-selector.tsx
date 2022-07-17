@@ -1,10 +1,14 @@
 import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
-import { OrderTimeInForce, OrderType } from '@vegaprotocol/wallet';
+import {
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderType,
+} from '@vegaprotocol/wallet';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface TimeInForceSelectorProps {
-  value: OrderTimeInForce;
-  orderType: OrderType;
-  onSelect: (tif: OrderTimeInForce) => void;
+  value: VegaWalletOrderTimeInForce;
+  orderType: VegaWalletOrderType;
+  onSelect: (tif: VegaWalletOrderTimeInForce) => void;
 }
 
 export const TimeInForceSelector = ({
@@ -13,19 +17,20 @@ export const TimeInForceSelector = ({
   onSelect,
 }: TimeInForceSelectorProps) => {
   const options =
-    orderType === OrderType.Limit
-      ? Object.entries(OrderTimeInForce)
-      : Object.entries(OrderTimeInForce).filter(
+    orderType === VegaWalletOrderType.Limit
+      ? Object.entries(VegaWalletOrderTimeInForce)
+      : Object.entries(VegaWalletOrderTimeInForce).filter(
           ([_, timeInForce]) =>
-            timeInForce === OrderTimeInForce.FOK ||
-            timeInForce === OrderTimeInForce.IOC
+            timeInForce === VegaWalletOrderTimeInForce.FOK ||
+            timeInForce === VegaWalletOrderTimeInForce.IOC
         );
 
   return (
-    <FormGroup label="Time in force">
+    <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select
+        id="select-time-in-force"
         value={value}
-        onChange={(e) => onSelect(e.target.value as OrderTimeInForce)}
+        onChange={(e) => onSelect(e.target.value as VegaWalletOrderTimeInForce)}
         className="w-full"
         data-testid="order-tif"
       >

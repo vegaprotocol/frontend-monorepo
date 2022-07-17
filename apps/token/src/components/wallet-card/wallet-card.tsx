@@ -29,10 +29,14 @@ interface WalletCardProps {
 }
 
 export const WalletCard = ({ dark, children }: WalletCardProps) => {
-  const className = classNames('text-ui border border-white', 'p-8', {
-    'bg-black text-white': dark,
-    'bg-white text-black': !dark,
-  });
+  const className = classNames(
+    'text-ui border border-white',
+    'pt-4 pl-8 pr-12 pb-12',
+    {
+      'bg-black text-white': dark,
+      'bg-white text-black': !dark,
+    }
+  );
   return <div className={className}>{children}</div>;
 };
 
@@ -43,7 +47,12 @@ interface WalletCardHeaderProps {
 
 export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
   return (
-    <div className="flex gap-4 justify-between items-center">{children}</div>
+    <div
+      className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4"
+      data-testid="wallet-header"
+    >
+      {children}
+    </div>
   );
 };
 
@@ -145,23 +154,29 @@ export const WalletCardAsset = ({
         }`}
       />
       <div>
-        <div className="flex font-medium">
+        <div
+          className="flex font-medium align-center"
+          data-testid="currency-title"
+        >
           <h1
-            className={`text-h5 px-8 uppercase ${
+            className={`text-h5 mb-0 px-8 uppercase leading-none ${
               dark ? 'text-white' : 'text-black'
             }`}
           >
             {name}
           </h1>
           <h2
-            className={`text-h5 uppercase ${
+            className={`text-h5 mb-0 uppercase leading-none ${
               dark ? 'text-white-60' : 'text-black-60'
             }`}
           >
             {subheading || symbol}
           </h2>
         </div>
-        <div className="px-8 text-h5 basis-full">
+        <div
+          className="px-8 text-h5 basis-full font-mono"
+          data-testid="currency-value"
+        >
           <span>{integers}.</span>
           <span className={dark ? 'text-white-60' : 'text-black-60'}>
             {decimalsPlaces}

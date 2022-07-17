@@ -223,9 +223,14 @@ export const StakingForm = ({
 
   return (
     <>
-      <h2 className="text-h4 mb-8">{t('Manage your stake')}</h2>
-      <FormGroup>
+      <h2>{t('Manage your stake')}</h2>
+      <FormGroup
+        label={t('Select if you want to add or remove stake')}
+        labelFor="radio-stake-options"
+        labelClassName="sr-only"
+      >
         <RadioGroup
+          name="radio-stake-options"
           onChange={(value) => {
             // @ts-ignore value does exist on target
             setAction(value);
@@ -254,9 +259,7 @@ export const StakingForm = ({
         <>
           {action === Actions.Add ? (
             <>
-              <h2 className="text-h4 mb-8">
-                {t('How much to Add in next epoch?')}
-              </h2>
+              <h2>{t('How much to Add in next epoch?')}</h2>
               <p>
                 {t('minimumNomination', {
                   minTokens: minTokensWithDecimals,

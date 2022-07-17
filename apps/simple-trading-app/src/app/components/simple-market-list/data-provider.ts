@@ -36,6 +36,7 @@ export const MARKETS_QUERY = gql`
           product {
             __typename
             ... on Future {
+              quoteName
               settlementAsset {
                 symbol
               }
@@ -90,14 +91,15 @@ export const FILTERS_QUERY = gql`
 const update = (
   data: SimpleMarkets_markets[],
   delta: SimpleMarketDataSub_marketData
-) =>
-  produce(data, (draft) => {
+) => {
+  return produce(data, (draft) => {
     const index = draft.findIndex((m) => m.id === delta.market.id);
     if (index !== -1) {
       draft[index].data = delta;
     }
     // @TODO - else push new market to draft
   });
+};
 
 const getData = (responseData: SimpleMarkets) => responseData.markets;
 const getDelta = (

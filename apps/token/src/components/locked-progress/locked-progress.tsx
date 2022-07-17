@@ -14,7 +14,7 @@ const ProgressContents = ({
   children: React.ReactNode;
 }) => (
   <div
-    className={classnames('flex justify-between py-2 font-mono', {
+    className={classnames('flex justify-between py-2 font-mono mb-2', {
       'gap-0 px-0 text-black': light,
       'gap-y-0 gap-x-4': !light,
     })}
@@ -93,12 +93,13 @@ export const LockedProgress = ({
   }, [total, unlocked]);
 
   return (
-    <>
+    <div className="mb-8">
       <div
         className={classnames('flex border', {
           'border-black': light,
           'border-white': !light,
         })}
+        data-testid="progress-bar"
       >
         <ProgressBar percentage={lockedPercentage} bgColor={leftColor} />
         <ProgressBar percentage={unlockedPercentage} bgColor={rightColor} />
@@ -119,9 +120,13 @@ export const LockedProgress = ({
       </ProgressContents>
 
       <ProgressContents light={light}>
-        <span>{formatNumber(locked, decimals)}</span>
-        <span>{formatNumber(unlocked, decimals)}</span>
+        <span data-testid="currency-locked">
+          {formatNumber(locked, decimals)}
+        </span>
+        <span data-testid="currency-unlocked">
+          {formatNumber(unlocked, decimals)}
+        </span>
       </ProgressContents>
-    </>
+    </div>
   );
 };

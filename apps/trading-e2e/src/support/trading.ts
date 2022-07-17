@@ -21,6 +21,7 @@ export const mockTradingPage = (
     generateMarket({
       market: {
         name: `${state.toUpperCase()} MARKET`,
+        state: state,
       },
     })
   );

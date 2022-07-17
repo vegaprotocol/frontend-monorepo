@@ -29,10 +29,10 @@ export const Tranches = () => {
 
   return (
     <section>
-      <h2 className="text-h4">{t('chartTitle')}</h2>
-      <p className="mb-12">{t('chartAbove')}</p>
+      <h2>{t('chartTitle')}</h2>
+      <p>{t('chartAbove')}</p>
       <VestingChart />
-      <p className="mb-12">{t('chartBelow')}</p>
+      <p>{t('chartBelow')}</p>
       {tranches?.length ? (
         <ul role="list">
           {(showAll ? tranches : filteredTranches).map((tranche) => {

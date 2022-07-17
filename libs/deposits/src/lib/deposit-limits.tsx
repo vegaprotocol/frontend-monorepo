@@ -8,12 +8,19 @@ interface DepositLimitsProps {
 }
 
 export const DepositLimits = ({ limits }: DepositLimitsProps) => {
-  const maxLimit = limits.max.isEqualTo(Infinity)
-    ? t('No limit')
-    : limits.max.toString();
+  let maxLimit = '';
+
+  if (limits.max.isEqualTo(Infinity)) {
+    maxLimit = t('No limit');
+  } else if (limits.max.isGreaterThan(1_000_000)) {
+    maxLimit = t('1m+');
+  } else {
+    maxLimit = limits.max.toString();
+  }
+
   return (
     <>
-      <p className="text-ui font-bold">{t('Temporary deposit limits')}</p>
+      <p className="text-ui font-bold">{t('Deposit limits')}</p>
       <table className="w-full text-ui">
         <tbody>
           <tr>

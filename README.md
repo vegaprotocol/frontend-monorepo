@@ -16,7 +16,7 @@ The trading interface built based on a component toolkit. It will provide a way 
 
 ### [Token](./apps/token)
 
-The utlity dApp for interacting with the Vega token and using its' utility. This includes; delegation, nomination, governance and redemption of tokens.
+The utility dApp for interacting with the Vega token and using its' utility. This includes; delegation, nomination, governance and redemption of tokens.
 
 ### [Explorer](./apps/explorer)
 
@@ -51,7 +51,7 @@ A utility library for connecting to the Ethereum network and interacting with Ve
 
 ### [React Helpers](./libs/react-helpers)
 
-Generic react helpers that can be used across multilpe applications, along with other utilities.
+Generic react helpers that can be used across multiple applications, along with other utilities.
 
 # 💻 Develop
 

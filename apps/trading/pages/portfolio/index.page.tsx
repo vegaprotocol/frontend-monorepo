@@ -1,75 +1,86 @@
 import { Web3Container } from '../../components/web3-container';
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import { OrderListContainer } from '@vegaprotocol/order-list';
+import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { AnchorButton, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
-import { WithdrawalsContainer } from './withdrawals/withdrawals-container';
+import { Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import { WithdrawalsContainer } from './withdrawals-container';
+import { FillsContainer } from '@vegaprotocol/fills';
+import classNames from 'classnames';
+import type { ReactNode } from 'react';
+import { VegaWalletContainer } from '../../components/vega-wallet-container';
+import { DepositsContainer } from './deposits-container';
 
 const Portfolio = () => {
-  const tabClassName = 'p-[16px] pl-[316px]';
-
+  const wrapperClasses = classNames(
+    'h-full max-h-full',
+    'grid gap-4 grid-rows-[1fr_300px]',
+    'bg-black-10 dark:bg-white-10',
+    'text-ui'
+  );
+  const tabContentClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
   return (
-    <Web3Container>
-      <div className="h-full text-ui">
-        <main className="relative h-[calc(100%-200px)]">
-          <aside className="absolute px-[8px] py-[16px] w-[300px] mt-[28px] h-[calc(100%-28px)] w-[300px] overflow-auto">
-            <h2 className="text-h4 text-black dark:text-white">
-              {t('Filters')}
-            </h2>
-          </aside>
-          <section data-testid="portfolio-grid">
-            <Tabs>
-              <Tab id="positions" name={t('Positions')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('Positions')}
-                  </h4>
+    <div className={wrapperClasses}>
+      <PortfolioGridChild>
+        <Tabs>
+          <Tab id="positions" name={t('Positions')}>
+            <VegaWalletContainer>
+              <div className={tabContentClassName}>
+                <h4 className="text-h4 text-black dark:text-white p-8">
+                  {t('Positions')}
+                </h4>
+                <div>
                   <PositionsContainer />
                 </div>
-              </Tab>
-              <Tab id="orders" name={t('Orders')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('Orders')}
-                  </h4>
+              </div>
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="orders" name={t('Orders')}>
+            <VegaWalletContainer>
+              <div className={tabContentClassName}>
+                <h4 className="text-h4 text-black dark:text-white p-8">
+                  {t('Orders')}
+                </h4>
+                <div>
                   <OrderListContainer />
                 </div>
-              </Tab>
-              <Tab id="fills" name={t('Fills')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('Fills')}
-                  </h4>
+              </div>
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="fills" name={t('Fills')}>
+            <VegaWalletContainer>
+              <div className={tabContentClassName}>
+                <h4 className="text-h4 text-black dark:text-white p-8">
+                  {t('Fills')}
+                </h4>
+                <div>
+                  <FillsContainer />
                 </div>
-              </Tab>
-              <Tab id="history" name={t('History')}>
-                <div className={tabClassName}>
-                  <h4 className="text-h4 text-black dark:text-white">
-                    {t('History')}
-                  </h4>
-                </div>
-              </Tab>
-            </Tabs>
-          </section>
-        </main>
-        <section className="fixed bottom-0 left-0 w-full h-[200px]">
-          <Tabs>
-            <Tab id="collateral" name={t('Collateral')}>
+              </div>
+            </VegaWalletContainer>
+          </Tab>
+        </Tabs>
+      </PortfolioGridChild>
+      <PortfolioGridChild>
+        <Tabs>
+          <Tab id="collateral" name={t('Collateral')}>
+            <VegaWalletContainer>
               <AccountsContainer />
-            </Tab>
-            <Tab id="deposits" name={t('Deposits')}>
-              <AnchorButton data-testid="deposit" href="/portfolio/deposit">
-                {t('Deposit')}
-              </AnchorButton>
-            </Tab>
-            <Tab id="withdrawals" name={t('Withdrawals')}>
-              <WithdrawalsContainer />
-            </Tab>
-          </Tabs>
-        </section>
-      </div>
-    </Web3Container>
+            </VegaWalletContainer>
+          </Tab>
+          <Tab id="deposits" name={t('Deposits')}>
+            <DepositsContainer />
+          </Tab>
+          <Tab id="withdrawals" name={t('Withdrawals')}>
+            <Web3Container>
+              <VegaWalletContainer>
+                <WithdrawalsContainer />
+              </VegaWalletContainer>
+            </Web3Container>
+          </Tab>
+        </Tabs>
+      </PortfolioGridChild>
+    </div>
   );
 };
 
@@ -78,3 +89,16 @@ Portfolio.getInitialProps = () => ({
 });
 
 export default Portfolio;
+
+interface PortfolioGridChildProps {
+  children: ReactNode;
+  className?: string;
+}
+
+const PortfolioGridChild = ({
+  children,
+  className,
+}: PortfolioGridChildProps) => {
+  const gridChildClasses = classNames('bg-white dark:bg-black', className);
+  return <section className={gridChildClasses}>{children}</section>;
+};

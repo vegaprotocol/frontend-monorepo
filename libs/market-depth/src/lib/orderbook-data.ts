@@ -150,9 +150,9 @@ export const compactRows = (
       groupedByLevel[price].pop() as PartialOrderbookRowData
     );
     row.price = price;
-    let subRow: PartialOrderbookRowData | undefined;
-    // eslint-disable-next-line no-cond-assign
-    while ((subRow = groupedByLevel[price].pop())) {
+    let subRow: PartialOrderbookRowData | undefined =
+      groupedByLevel[price].pop();
+    while (subRow) {
       row.ask += subRow.ask;
       row.bid += subRow.bid;
       if (subRow.ask) {
@@ -161,6 +161,7 @@ export const compactRows = (
       if (subRow.bid) {
         row.bidByLevel[subRow.price] = subRow.bid;
       }
+      subRow = groupedByLevel[price].pop();
     }
     orderbookData.push(row);
   });

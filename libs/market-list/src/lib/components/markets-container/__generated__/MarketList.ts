@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval } from "@vegaprotocol/types";
+import { Interval, MarketState } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketList
@@ -108,6 +108,10 @@ export interface MarketList_markets {
    * GBX (pence)        1              4       GBP   0.000001 (  0.0001p)
    */
   decimalPlaces: number;
+  /**
+   * Current state of the market
+   */
+  state: MarketState;
   /**
    * marketData for the given market
    */

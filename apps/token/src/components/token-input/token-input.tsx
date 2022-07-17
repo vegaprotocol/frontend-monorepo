@@ -6,6 +6,7 @@ import {
   FormGroup,
   Lozenge,
 } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -49,7 +50,10 @@ export const AmountInput = ({
           min={0}
           step="any"
           appendElement={
-            <Lozenge className="text-[10px] relative top-[-2px]">
+            <Lozenge
+              variant={Intent.None}
+              className="text-[10px] relative top-[-2px]"
+            >
               {currency}
             </Lozenge>
           }
@@ -171,7 +175,11 @@ export const TokenInput = ({
 
   return (
     <>
-      <FormGroup label="" labelFor={inputName}>
+      <FormGroup
+        labelClassName="sr-only"
+        label={t('Input Amount')}
+        labelFor={inputName}
+      >
         <AmountInput
           amount={amount}
           setAmount={setAmount}

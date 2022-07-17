@@ -43,7 +43,7 @@ interface TradesTableProps {
 
 export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
   ({ data }, ref) => {
-    // Sort intial trades
+    // Sort initial trades
     const trades = useMemo(() => {
       if (!data) {
         return null;
@@ -59,13 +59,13 @@ export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
         getRowId={({ data }) => data.id}
         ref={ref}
         defaultColDef={{
-          flex: 1,
           resizable: true,
         }}
       >
         <AgGridColumn
           headerName={t('Price')}
           field="price"
+          width={130}
           cellClass={changeCellClass('price')}
           valueFormatter={({ value, data }: ValueFormatterParams) => {
             return addDecimalsFormatNumber(value, data.market.decimalPlaces);
@@ -74,6 +74,7 @@ export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
         <AgGridColumn
           headerName={t('Size')}
           field="size"
+          width={125}
           valueFormatter={({ value, data }: ValueFormatterParams) => {
             return addDecimal(value, data.market.positionDecimalPlaces);
           }}
@@ -82,6 +83,7 @@ export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
         <AgGridColumn
           headerName={t('Created at')}
           field="createdAt"
+          width={170}
           valueFormatter={({ value }: ValueFormatterParams) => {
             return getDateTimeFormat().format(new Date(value));
           }}
