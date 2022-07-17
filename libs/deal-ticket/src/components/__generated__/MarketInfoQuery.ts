@@ -9,6 +9,30 @@ import { MarketState, MarketTradingMode, AccountType } from "@vegaprotocol/types
 // GraphQL query operation: MarketInfoQuery
 // ====================================================
 
+export interface MarketInfoQuery_market_accounts_asset {
+  __typename: "Asset";
+  /**
+   * The id of the asset
+   */
+  id: string;
+}
+
+export interface MarketInfoQuery_market_accounts {
+  __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
+  /**
+   * Asset, the 'currency'
+   */
+  asset: MarketInfoQuery_market_accounts_asset;
+  /**
+   * Balance as string - current account balance (approx. as balances can be updated several times per second)
+   */
+  balance: string;
+}
+
 export interface MarketInfoQuery_market_fees_factors {
   __typename: "FeeFactors";
   /**
@@ -85,30 +109,6 @@ export interface MarketInfoQuery_market_riskFactors {
    * long factor
    */
   long: string;
-}
-
-export interface MarketInfoQuery_market_accounts_asset {
-  __typename: "Asset";
-  /**
-   * The id of the asset
-   */
-  id: string;
-}
-
-export interface MarketInfoQuery_market_accounts {
-  __typename: "Account";
-  /**
-   * Account type (General, Margin, etc)
-   */
-  type: AccountType;
-  /**
-   * Asset, the 'currency'
-   */
-  asset: MarketInfoQuery_market_accounts_asset;
-  /**
-   * Balance as string - current account balance (approx. as balances can be updated several times per second)
-   */
-  balance: string;
 }
 
 export interface MarketInfoQuery_market_data_market {
@@ -310,14 +310,14 @@ export interface MarketInfoQuery_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -339,6 +339,10 @@ export interface MarketInfoQuery_market {
    */
   tradingMode: MarketTradingMode;
   /**
+   * Get account for a party or market
+   */
+  accounts: MarketInfoQuery_market_accounts[] | null;
+  /**
    * Fees related data
    */
   fees: MarketInfoQuery_market_fees;
@@ -350,10 +354,6 @@ export interface MarketInfoQuery_market {
    * risk factors for the market
    */
   riskFactors: MarketInfoQuery_market_riskFactors | null;
-  /**
-   * Get account for a party or market
-   */
-  accounts: MarketInfoQuery_market_accounts[] | null;
   /**
    * marketData for the given market
    */

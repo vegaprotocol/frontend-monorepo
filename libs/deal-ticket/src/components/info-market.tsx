@@ -28,6 +28,13 @@ const MARKET_INFO_QUERY = gql`
       positionDecimalPlaces
       state
       tradingMode
+      accounts {
+        type
+        asset {
+          id
+        }
+        balance
+      }
       fees {
         factors {
           makerFee
