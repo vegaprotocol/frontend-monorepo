@@ -1,23 +1,15 @@
 import * as React from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import Box from '@mui/material/Box';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import {
-  ExpirySelector,
   SideSelector,
-  TimeInForceSelector,
-  TypeSelector,
   DealTicketAmount,
   MarketSelector,
 } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
-import {
-  VegaWalletOrderTimeInForce as OrderTimeInForce,
-  VegaWalletOrderType as OrderType,
-  VegaTxStatus,
-} from '@vegaprotocol/wallet';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 import {
   getDefaultOrder,
@@ -84,7 +76,6 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const steps = [
     {
       label: t('Select Market'),
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
         <MarketSelector
           market={market}
@@ -94,21 +85,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       ),
     },
     {
-      label: 'Select Order Type',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
-      component: (
-        <Controller
-          name="type"
-          control={control}
-          render={({ field }) => (
-            <TypeSelector value={field.value} onSelect={field.onChange} />
-          )}
-        />
-      ),
-    },
-    {
-      label: 'Select Market Position',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+      label: t('Select Direction'),
       component: (
         <Controller
           name="side"
@@ -120,9 +97,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       ),
     },
     {
-      label: 'Select Order Size',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+      label: t('Choose Position Size'),
       component: (
         <DealTicketAmount
           orderType={orderType}
@@ -138,42 +113,9 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       ),
     },
     {
-      label: 'Select Time In Force',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+      label: t('Review Trade'),
       component: (
-        <>
-          <Controller
-            name="timeInForce"
-            control={control}
-            render={({ field }) => (
-              <TimeInForceSelector
-                value={field.value}
-                orderType={orderType}
-                onSelect={field.onChange}
-              />
-            )}
-          />
-          {orderType === OrderType.Limit &&
-            orderTimeInForce === OrderTimeInForce.GTT && (
-              <Controller
-                name="expiration"
-                control={control}
-                render={({ field }) => (
-                  <ExpirySelector
-                    value={field.value}
-                    onSelect={field.onChange}
-                  />
-                )}
-              />
-            )}
-        </>
-      ),
-    },
-    {
-      label: 'Review & Submit Order',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
-      component: (
-        <Box sx={{ mb: 2 }}>
+        <div className="mb-8">
           {invalidText && (
             <InputError className="mb-8" data-testid="dealticket-error-message">
               {invalidText}
@@ -190,7 +132,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
               ? t('Pending...')
               : t('Place order')}
           </Button>
-        </Box>
+        </div>
       ),
       disabled: true,
     },

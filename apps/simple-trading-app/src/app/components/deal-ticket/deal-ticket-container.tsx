@@ -43,7 +43,7 @@ export const DealTicketContainer = () => {
 
   return (
     <div className="flex">
-      <div className="md:w-1/2 md:min-w-[500px]">
+      <div className="w-full md:w-1/2 md:min-w-[500px]">
         {marketId ? (
           <Container marketId={marketId}>
             {(data) => (

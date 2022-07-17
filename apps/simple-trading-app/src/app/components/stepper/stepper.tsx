@@ -1,93 +1,143 @@
 import * as React from 'react';
 import type { ReactNode } from 'react';
-import Box from '@mui/material/Box';
+import classNames from 'classnames';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import Stepper from '@mui/material/Stepper';
-import Step from '@mui/material/Step';
-import StepLabel from '@mui/material/StepLabel';
-import StepContent from '@mui/material/StepContent';
-import Paper from '@mui/material/Paper';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
+import { t } from '@vegaprotocol/react-helpers';
+import { Counter } from './counter';
 
-type Step = {
+export type TStep = {
   label: string;
-  description: string;
   component: ReactNode;
   disabled?: boolean;
 };
 
-interface StepperProps {
-  steps: Step[];
+export interface StepperProps {
+  steps: TStep[];
+  className?: string;
 }
 
-export default ({ steps }: StepperProps) => {
+export const Stepper = ({ steps }: StepperProps) => {
   const [activeStep, setActiveStep] = React.useState(0);
+  const lastStep = steps.length - 1;
+  const isLastStep = activeStep === lastStep;
 
   const handleClick = (index: typeof activeStep) => {
     setActiveStep(index);
   };
 
+  const handleKeyPress = (
+    event: React.KeyboardEvent<HTMLButtonElement>,
+  ) => {
+    if (event.key === 'ArrowLeft' && activeStep > 0) {
+      return setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    } else if (event.key === 'ArrowRight' && !isLastStep) {
+      return setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+    return false;
+  };
+
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
+    if (!isLastStep) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
 
   return (
-    <Paper square elevation={1} sx={{ p: 3, mt: 5 }}>
-      <Stepper activeStep={activeStep} orientation="vertical">
-        {steps.map((step, index) => (
-          <Step key={step.label}>
-            <StepLabel
-              optional={
-                index === steps.length - 1 ? (
-                  <Typography variant="caption">Last step</Typography>
-                ) : null
-              }
-              style={{ cursor: 'pointer' }}
-              onClick={() => handleClick(index)}
+    <div>
+      <ol
+        aria-label={t('Step by step to make a trade')}
+        className="relative flex md:flex-col justify-between list-none"
+      >
+        {steps.map((step, index) => {
+          const isActive = activeStep === index;
+          const isFirstStep = !index;
+          const isLastStep = lastStep === index;
+          return (
+            <li
+              className="flex-1"
+              key={`${index}-${step.label}`}
+              aria-label={t(`Step ${index + 1}`)}
             >
-              {step.label}
-            </StepLabel>
-            <StepContent>
-              <Typography sx={{ mb: 2 }}>{step.description}</Typography>
-              {step.component}
-              <Divider sx={{ mb: 2 }} />
-              <Box>
-                <div>
-                  <Button
-                    variant="secondary"
-                    onClick={handleNext}
-                    disabled={step.disabled}
+              <div className="flex relative md:pt-16">
+                {!isFirstStep ? (
+                  <div
+                    aria-hidden
+                    className="flex-auto	absolute top-[20px] -left-1/2 right-1/2 md:-top-1/2 md:bottom-1/2 md:left-[29.5px] md:right-auto"
                   >
-                    {index === steps.length - 1 ? 'Finish' : 'Continue'}
-                  </Button>
-                  <Button
-                    variant="inline-link"
-                    disabled={index === 0}
-                    onClick={handleBack}
+                    <span className="h-full block border-t-1 border-black dark:border-white w-full md:border-l-1 md:border-t-0" />
+                  </div>
+                ) : undefined}
+                <button
+                  role="tab"
+                  aria-selected={isActive}
+                  type="button"
+                  id={`step-${index}-control`}
+                  aria-controls={`step-${index}-panel`}
+                  onKeyDown={(event) => handleKeyPress(event)}
+                  onClick={() => handleClick(index)}
+                  className="cursor-pointer z-10	flex flex-col md:flex-row items-center w-full text-center"
+                >
+                  <Counter
+                    className="md:mr-16"
+                    isActive={isActive}
+                    label={(index + 1).toString()}
+                  />
+                  <h3
+                    className={classNames(
+                      'md:mt-0 font-alpha uppercase text-black dark:text-white',
+                      {
+                        'mt-8 text-md md:text-2xl': isActive,
+                        'mt-16 text-sm md:text-md ml-8': !isActive,
+                      }
+                    )}
                   >
-                    Back
-                  </Button>
-                </div>
-              </Box>
-            </StepContent>
-          </Step>
-        ))}
-      </Stepper>
-      {activeStep === steps.length && (
-        <Paper square elevation={0} sx={{ p: 3 }}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset}>Reset</Button>
-        </Paper>
-      )}
-    </Paper>
+                    {step.label}
+                  </h3>
+                </button>
+              </div>
+              <div
+                /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
+                tabIndex={0}
+                id={`step-${index}-panel`}
+                aria-labelledby={`step-${index}-control`}
+                aria-hidden={!isActive}
+                role="tabpanel"
+                className={classNames(
+                  'hidden md:block md:border-black md:dark:border-white md:ml-[29.5px] md:pl-[45px]',
+                  {
+                    'invisible h-0': !isActive,
+                    'visible h-full': isActive,
+                    'md:border-l': !isLastStep,
+                  }
+                )}
+              >
+                {step.component}
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+      <div
+        id={`step-${activeStep}-panel`}
+        aria-labelledby={`step-${activeStep}-control`}
+        role="tabpanel"
+        className="md:hidden mt-32"
+        /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
+        tabIndex={0}
+      >
+        {steps[activeStep].component}
+        {!isLastStep && (
+          <Button
+            className="w-full !py-8 mt-64 md:sr-only"
+            boxShadow={false}
+            variant="secondary"
+            onClick={handleNext}
+            disabled={steps[activeStep].disabled}
+          >
+            {t('Next')}
+          </Button>
+        )}
+      </div>
+    </div>
   );
 };
