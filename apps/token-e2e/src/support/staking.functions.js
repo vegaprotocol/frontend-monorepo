@@ -49,18 +49,20 @@ Cypress.Commands.add(
     cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
     cy.get(tokenAmountInputBox, epochTimeout).type(amount);
     if (approve) {
-      cy.get(tokenInputApprove, epochTimeout)
-        .should('be.enabled')
-        .click();
+      cy.get(tokenInputApprove, epochTimeout).should('be.enabled').click();
       cy.contains('Approve $VEGA Tokens for staking on Vega').should(
         'be.visible'
       );
-      cy.contains('Approve $VEGA Tokens for staking on Vega', epochTimeout).should(
-        'not.exist');
+      cy.contains(
+        'Approve $VEGA Tokens for staking on Vega',
+        epochTimeout
+      ).should('not.exist');
     }
     cy.get(tokenSubmitButton, epochTimeout).should('be.enabled').click();
-    cy.contains('can now participate in governance and nominate a validator', txTimeout).should(
-      'be.visible');
+    cy.contains(
+      'can now participate in governance and nominate a validator',
+      txTimeout
+    ).should('be.visible');
   }
 );
 
@@ -71,8 +73,10 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount) => {
   cy.get(tokenAmountInputBox, epochTimeout).type(amount);
 
   cy.get(tokenSubmitButton, epochTimeout).should('be.enabled').click();
-  cy.contains(`${amount} $VEGA tokens have been returned to Ethereum wallet`, txTimeout).should(
-    'be.visible');
+  cy.contains(
+    `${amount} $VEGA tokens have been returned to Ethereum wallet`,
+    txTimeout
+  ).should('be.visible');
 });
 
 Cypress.Commands.add('staking_page_disassociate_all_tokens', () => {
@@ -81,6 +85,8 @@ Cypress.Commands.add('staking_page_disassociate_all_tokens', () => {
   cy.get(associateWalletRadioButton, epochTimeout).click();
   cy.get(stakeMaximumTokens, epochTimeout).click();
   cy.get(tokenSubmitButton, epochTimeout).click();
-  cy.contains('$VEGA tokens have been returned to Ethereum wallet', txTimeout).should(
-    'be.visible');
+  cy.contains(
+    '$VEGA tokens have been returned to Ethereum wallet',
+    txTimeout
+  ).should('be.visible');
 });

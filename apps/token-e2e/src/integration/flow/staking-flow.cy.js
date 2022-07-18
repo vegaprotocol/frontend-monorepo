@@ -441,9 +441,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.staking_page_disassociate_all_tokens();
 
       cy.get(ethWalletContainer).within(() => {
-        cy.contains(vegaWalletPublicKeyShort, txTimeout).should(
-          'not.exist'
-        );
+        cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
       });
 
       cy.get(ethWalletTotalAssociatedBalance, txTimeout)

@@ -5,7 +5,7 @@ module.exports = defineConfig({
   e2e: {
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
-    fixturesFolder: "./src/fixtures/",
+    fixturesFolder: './src/fixtures/',
     specPattern: [
       './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
       process.env.CYPRESS_INCLUDE_FLOWS
@@ -39,6 +39,6 @@ module.exports = defineConfig({
     vegaTokenContractAddress: '0xF41bD86d462D36b997C0bbb4D97a0a3382f205B7',
     vegaTokenAddress: '0x67175Da1D5e966e40D11c4B2519392B2058373de',
     txTimeout: { timeout: 30000 },
-    epochTimeout: { timeout: 10000 }
+    epochTimeout: { timeout: 10000 },
   },
 });

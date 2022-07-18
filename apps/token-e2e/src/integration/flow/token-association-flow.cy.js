@@ -150,15 +150,11 @@ context(
         cy.staking_page_disassociate_all_tokens();
 
         cy.get(ethWalletContainer).within(() => {
-          cy.contains(vegaWalletPublicKeyShort, txTimeout).should(
-            'not.exist'
-          );
+          cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
 
         cy.get(ethWalletContainer).within(() => {
-          cy.contains(vegaWalletPublicKeyShort, txTimeout).should(
-            'not.exist'
-          );
+          cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
         });
 
         cy.get(vegaWalletAssociatedBalance, txTimeout).should(
