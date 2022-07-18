@@ -1,5 +1,4 @@
 import {
-  ethereumAddress,
   maxSafe,
   minSafe,
   t,
@@ -13,6 +12,7 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
+import { Web3WalletInput } from '@vegaprotocol/web3';
 import type BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -112,16 +112,12 @@ export const WithdrawForm = ({
           </InputError>
         )}
       </FormGroup>
-
       <FormGroup
         label={t('To (Ethereum address)')}
         labelFor="ethereum-address"
         className="relative"
       >
-        <Input
-          {...register('to', { validate: { required, ethereumAddress } })}
-          id="ethereum-address"
-        />
+        <Web3WalletInput id="ethereum-address" />
         {errors.to?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.to.message}

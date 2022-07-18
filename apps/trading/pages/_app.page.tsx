@@ -44,7 +44,7 @@ function AppBody({ Component, pageProps }: AppProps) {
               <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
             </div>
           </div>
-          <main data-testid={pageProps.page}>
+          <main data-testid={pageProps.page} className="bg-white dark:bg-black">
             {/* @ts-ignore conflict between @types/react and nextjs internal types */}
             <Component {...pageProps} />
           </main>
