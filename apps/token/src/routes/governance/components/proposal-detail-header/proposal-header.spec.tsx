@@ -3,37 +3,35 @@ import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalHeader } from './proposal-header';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
-const proposal = generateProposal();
-
 const renderComponent = (proposal: Proposals_proposals) => (
   <ProposalHeader proposal={proposal} />
 );
 
 it('New market', () => {
   render(
-    renderComponent({
-      ...proposal,
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'NewMarket',
-          decimalPlaces: 1,
-          instrument: {
-            __typename: 'InstrumentConfiguration',
-            name: 'Some market',
-            code: 'FX:BTCUSD/DEC99',
-            futureProduct: {
-              __typename: 'FutureProduct',
-              settlementAsset: {
-                __typename: 'Asset',
-                symbol: 'tGBP',
+    renderComponent(
+      generateProposal({
+        terms: {
+          change: {
+            __typename: 'NewMarket',
+            decimalPlaces: 1,
+            instrument: {
+              __typename: 'InstrumentConfiguration',
+              name: 'Some market',
+              code: 'FX:BTCUSD/DEC99',
+              futureProduct: {
+                __typename: 'FutureProduct',
+                settlementAsset: {
+                  __typename: 'Asset',
+                  symbol: 'tGBP',
+                },
               },
             },
+            metadata: [],
           },
-          metadata: [],
         },
-      },
-    })
+      })
+    )
   );
   expect(screen.getByTestId('proposal-header')).toHaveTextContent(
     'New market: Some market'
@@ -45,16 +43,16 @@ it('New market', () => {
 
 it('Update market', () => {
   render(
-    renderComponent({
-      ...proposal,
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'UpdateMarket',
-          marketId: 'MarketId',
+    renderComponent(
+      generateProposal({
+        terms: {
+          change: {
+            __typename: 'UpdateMarket',
+            marketId: 'MarketId',
+          },
         },
-      },
-    })
+      })
+    )
   );
   expect(screen.getByTestId('proposal-header')).toHaveTextContent(
     'Market change: MarketId'
@@ -63,21 +61,21 @@ it('Update market', () => {
 
 it('New asset - ERC20', () => {
   render(
-    renderComponent({
-      ...proposal,
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'NewAsset',
-          name: 'Fake currency',
-          symbol: 'FAKE',
-          source: {
-            __typename: 'ERC20',
-            contractAddress: '0x0',
+    renderComponent(
+      generateProposal({
+        terms: {
+          change: {
+            __typename: 'NewAsset',
+            name: 'Fake currency',
+            symbol: 'FAKE',
+            source: {
+              __typename: 'ERC20',
+              contractAddress: '0x0',
+            },
           },
         },
-      },
-    })
+      })
+    )
   );
   expect(screen.getByTestId('proposal-header')).toHaveTextContent(
     'New asset: Fake currency'
@@ -89,21 +87,21 @@ it('New asset - ERC20', () => {
 
 it('New asset - BuiltInAsset', () => {
   render(
-    renderComponent({
-      ...proposal,
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'NewAsset',
-          name: 'Fake currency',
-          symbol: 'BIA',
-          source: {
-            __typename: 'BuiltinAsset',
-            maxFaucetAmountMint: '300',
+    renderComponent(
+      generateProposal({
+        terms: {
+          change: {
+            __typename: 'NewAsset',
+            name: 'Fake currency',
+            symbol: 'BIA',
+            source: {
+              __typename: 'BuiltinAsset',
+              maxFaucetAmountMint: '300',
+            },
           },
         },
-      },
-    })
+      })
+    )
   );
   expect(screen.getByTestId('proposal-header')).toHaveTextContent(
     'New asset: Fake currency'
@@ -115,20 +113,20 @@ it('New asset - BuiltInAsset', () => {
 
 it('Update network', () => {
   render(
-    renderComponent({
-      ...proposal,
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'UpdateNetworkParameter',
-          networkParameter: {
-            __typename: 'NetworkParameter',
-            key: 'Network key',
-            value: 'Network value',
+    renderComponent(
+      generateProposal({
+        terms: {
+          change: {
+            __typename: 'UpdateNetworkParameter',
+            networkParameter: {
+              __typename: 'NetworkParameter',
+              key: 'Network key',
+              value: 'Network value',
+            },
           },
         },
-      },
-    })
+      })
+    )
   );
   expect(screen.getByTestId('proposal-header')).toHaveTextContent(
     'Network parameter'
@@ -140,21 +138,20 @@ it('Update network', () => {
 
 it('Freeform network - short rationale', () => {
   render(
-    renderComponent({
-      ...proposal,
-      id: 'short',
-      rationale: {
-        ...proposal.rationale,
-        hash: '0x0',
-        description: 'freeform description',
-      },
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'NewFreeform',
+    renderComponent(
+      generateProposal({
+        id: 'short',
+        rationale: {
+          hash: '0x0',
+          description: 'freeform description',
         },
-      },
-    })
+        terms: {
+          change: {
+            __typename: 'NewFreeform',
+          },
+        },
+      })
+    )
   );
   expect(screen.getByTestId('proposal-header')).toHaveTextContent(
     'freeform description'
@@ -165,22 +162,21 @@ it('Freeform network - short rationale', () => {
 
 it('Freeform network - long rationale (105 chars)', () => {
   render(
-    renderComponent({
-      ...proposal,
-      id: 'long',
-      rationale: {
-        ...proposal.rationale,
-        hash: '0x0',
-        description:
-          'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
-      },
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'NewFreeform',
+    renderComponent(
+      generateProposal({
+        id: 'long',
+        rationale: {
+          hash: '0x0',
+          description:
+            'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
         },
-      },
-    })
+        terms: {
+          change: {
+            __typename: 'NewFreeform',
+          },
+        },
+      })
+    )
   );
   // For a rationale over 100 chars, we expect the header to be truncated at
   // 100 chars with ellipsis and the details-one element to contain the rest.
@@ -193,22 +189,21 @@ it('Freeform network - long rationale (105 chars)', () => {
 
 it('Freeform network - extra long rationale (165 chars)', () => {
   render(
-    renderComponent({
-      ...proposal,
-      id: 'extraLong',
-      rationale: {
-        ...proposal.rationale,
-        hash: '0x0',
-        description:
-          'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
-      },
-      terms: {
-        ...proposal.terms,
-        change: {
-          __typename: 'NewFreeform',
+    renderComponent(
+      generateProposal({
+        id: 'extraLong',
+        rationale: {
+          hash: '0x0',
+          description:
+            'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
         },
-      },
-    })
+        terms: {
+          change: {
+            __typename: 'NewFreeform',
+          },
+        },
+      })
+    )
   );
   // For a rationale over 160 chars, we expect the header to be truncated at 100
   // chars with ellipsis and the details-one element to contain 60 chars and also
@@ -226,16 +221,16 @@ it('Freeform network - extra long rationale (165 chars)', () => {
 
 it("Renders unknown proposal if it's a different proposal type", () => {
   render(
-    renderComponent({
-      ...proposal,
-      terms: {
-        ...proposal.terms,
-        change: {
-          // @ts-ignore unknown proposal
-          __typename: 'Foo',
+    renderComponent(
+      generateProposal({
+        terms: {
+          change: {
+            // @ts-ignore unknown proposal
+            __typename: 'Foo',
+          },
         },
-      },
-    })
+      })
+    )
   );
   expect(screen.getByTestId('proposal-header')).toHaveTextContent(
     'Unknown proposal'
