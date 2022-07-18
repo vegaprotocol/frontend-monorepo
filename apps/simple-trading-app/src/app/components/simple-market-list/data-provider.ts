@@ -30,6 +30,7 @@ export const MARKETS_QUERY = gql`
       }
       tradableInstrument {
         instrument {
+          code
           metadata {
             tags
           }

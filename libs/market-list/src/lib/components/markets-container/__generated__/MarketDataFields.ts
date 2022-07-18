@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
+import { MarketState, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL fragment: MarketDataFields
@@ -43,4 +43,8 @@ export interface MarketDataFields {
    * the mark price (actually an unsigned int)
    */
   markPrice: string;
+  /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
 }

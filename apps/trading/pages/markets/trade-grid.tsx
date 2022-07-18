@@ -11,7 +11,11 @@ import { TradesContainer } from '@vegaprotocol/trades';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import type { Market_market } from './__generated__/Market';
-import { t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  formatLabel,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
@@ -23,6 +27,8 @@ import {
   PriceCellChange,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
+import { AuctionTrigger } from '@vegaprotocol/types';
+import { MarketTradingMode } from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
 import 'allotment/dist/style.css';
 
@@ -57,7 +63,7 @@ export const TradeMarketHeader = ({
   const itemClassName =
     'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
   const itemValueClassName =
-    'capitalize font-sans tracking-tighter text-black dark:text-white text-ui';
+    'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
     'w-full p-8 bg-white dark:bg-black',
     className
@@ -89,20 +95,23 @@ export const TradeMarketHeader = ({
             <span className={itemClassName}>Volume</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
-                ? market.data.indicativeVolume
+                ? addDecimalsFormatNumber(
+                    market.data.indicativeVolume,
+                    market.positionDecimalPlaces
+                  )
                 : '-'}
             </span>
           </div>
           <div className={headerItemClassName}>
             <span className={itemClassName}>Trading mode</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode}
-            </span>
-          </div>
-          <div className={headerItemClassName}>
-            <span className={itemClassName}>State</span>
-            <span data-testid="market-state" className={itemValueClassName}>
-              {market.state}
+              {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+              market.data?.trigger &&
+              market.data.trigger !== AuctionTrigger.Unspecified
+                ? `${formatLabel(
+                    market.tradingMode
+                  )} - ${market.data?.trigger.toLowerCase()}`
+                : formatLabel(market.tradingMode)}
             </span>
           </div>
         </div>

@@ -25,7 +25,7 @@ describe('markets table', () => {
     const expectedMarketHeaders = [
       'Market',
       'Settlement asset',
-      'State',
+      'Trading mode',
       'Best bid',
       'Best offer',
       'Mark price',
@@ -64,43 +64,22 @@ describe('markets table', () => {
       mockTradingPage(req, MarketState.Active);
     });
 
-    // click on active market
+    // click on market
     cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.get('[role="gridcell"][col-id=data]').contains('Active').click();
+    cy.get('[role="gridcell"][col-id=name]').contains('ACTIVE MARKET').click();
 
     cy.wait('@Market');
     cy.contains('ACTIVE MARKET');
     cy.url().should('include', '/markets/market-0');
-
-    verifyMarketSummaryDisplayed('Active');
+    verifyMarketSummaryDisplayed();
   });
 
-  it('can select a suspended market', () => {
-    cy.wait('@Markets');
-    cy.get('.ag-root-wrapper').should('be.visible');
-
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Suspended);
-    });
-
-    // click on active market
-    cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.get('[role="gridcell"][col-id=data]').contains('Suspended').click();
-
-    cy.wait('@Market');
-    cy.contains('SUSPENDED MARKET');
-    cy.url().should('include', '/markets/market-1');
-
-    verifyMarketSummaryDisplayed('Suspended');
-  });
-
-  function verifyMarketSummaryDisplayed(expectedMarketState: string) {
+  function verifyMarketSummaryDisplayed() {
     const marketSummaryBlock = 'market-summary';
     const percentageValue = 'price-change-percentage';
     const priceChangeValue = 'price-change';
     const tradingVolume = 'trading-volume';
     const tradingMode = 'trading-mode';
-    const marketState = 'market-state';
 
     cy.getByTestId(marketSummaryBlock).within(() => {
       cy.contains('Change (24h)');
@@ -110,8 +89,6 @@ describe('markets table', () => {
       cy.getByTestId(tradingVolume).should('not.be.empty');
       cy.contains('Trading mode');
       cy.getByTestId(tradingMode).should('not.be.empty');
-      cy.contains('State');
-      cy.getByTestId(marketState).should('have.text', expectedMarketState);
     });
   }
 });

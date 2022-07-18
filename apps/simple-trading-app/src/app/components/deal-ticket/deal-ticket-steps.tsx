@@ -56,7 +56,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
 
-  const invalidText = useOrderValidation({
+  const { message: invalidText, isDisabled } = useOrderValidation({
     step,
     market,
     orderType,
@@ -83,7 +83,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
   const steps = [
     {
-      label: 'Select Asset',
+      label: t('Select Market'),
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
         <MarketSelector
@@ -183,7 +183,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
             className="w-full mb-8"
             variant="primary"
             type="submit"
-            disabled={transactionStatus === 'pending' || !!invalidText}
+            disabled={transactionStatus === 'pending' || isDisabled}
             data-testid="place-order"
           >
             {transactionStatus === 'pending'

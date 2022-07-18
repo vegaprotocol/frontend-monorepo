@@ -67,7 +67,7 @@ const SimpleMarketToolbar = () => {
   );
 
   return (
-    <div className="w-max mb-32 font-alpha">
+    <div className="w-full max-w-full mb-32 font-alpha">
       <ul
         ref={slideContRef}
         className="grid grid-flow-col auto-cols-min gap-8 relative pb-4 mb-16"
@@ -162,7 +162,7 @@ const SimpleMarketToolbar = () => {
         </div>
         {activeNumber > 0 && (
           <ul
-            className="grid grid-flow-col auto-cols-min md:gap-16 gap-12 pb-4 md:ml-16"
+            className="md:gap-16 gap-12 pb-4 md:ml-16 flex flex-wrap"
             data-testid="market-assets-menu"
             aria-label={t('Asset on the market')}
           >
