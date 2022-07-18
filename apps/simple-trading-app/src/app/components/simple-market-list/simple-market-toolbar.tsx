@@ -162,7 +162,7 @@ const SimpleMarketToolbar = () => {
         </div>
         {activeNumber > 0 && (
           <ul
-            className="--grid --grid-flow-col-dense --auto-cols-min md:gap-16 gap-12 pb-4 md:ml-16 flex flex-wrap"
+            className="md:gap-16 gap-12 pb-4 md:ml-16 flex flex-wrap"
             data-testid="market-assets-menu"
             aria-label={t('Asset on the market')}
           >

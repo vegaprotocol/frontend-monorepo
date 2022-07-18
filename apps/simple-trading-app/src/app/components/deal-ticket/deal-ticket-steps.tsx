@@ -83,7 +83,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
 
   const steps = [
     {
-      label: 'Select Asset',
+      label: t('Select Market'),
       description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
         <MarketSelector
