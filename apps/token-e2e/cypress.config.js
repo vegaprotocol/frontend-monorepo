@@ -7,7 +7,8 @@ module.exports = defineConfig({
     fileServerFolder: '.',
     fixturesFolder: false,
     specPattern:
-      process.env.CYPRESS_INCLUDE_FLOWS == 'true'
+      process.env.CYPRESS_INCLUDE_FLOWS === 'true' ||
+      process.env.CYPRESS_INCLUDE_FLOWS === true
         ? [
             './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
             './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
