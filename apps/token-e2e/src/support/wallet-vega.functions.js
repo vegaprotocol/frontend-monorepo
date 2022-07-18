@@ -3,6 +3,7 @@ const restConnectorForm = '[data-testid="rest-connector-form"]';
 const vegaWalletName = Cypress.env('vegaWalletName');
 const vegaWalletLocation = Cypress.env('vegaWalletLocation');
 const vegaWalletPassphrase = Cypress.env('vegaWalletPassphrase');
+const vegaWalletPublicKey = Cypress.env('vegaWalletPublicKey');
 
 Cypress.Commands.add('vega_wallet_import', () => {
   cy.highlight(`Importing Vega Wallet ${vegaWalletName}`);
@@ -15,6 +16,22 @@ Cypress.Commands.add('vega_wallet_import', () => {
     `vegawallet service run --network DV --automatic-consent  --home ${vegaWalletLocation}`
   );
 });
+
+Cypress.Commands.add('vega_wallet_create_proposal_freeform', (durationMinutes) => {
+  cy.fixture('/proposals/freeform.json').then(freeformProposal => {
+    
+    let timestamp = Math.floor(Date.now() / 1000);
+    timestamp += durationMinutes * 60;
+    freeformProposal.proposalSubmission.terms.closingTimestamp = timestamp
+    freeformProposal.proposalSubmission.rationale.description += timestamp
+    let proposalPayload = JSON.stringify(freeformProposal)
+    
+    cy.exec(
+      `vegawallet command send -w ${vegaWalletName} --pubkey ${vegaWalletPublicKey} --home ~/.vegacapsule/testnet/wallet -p ./src/fixtures/wallet/passphrase --network DV '${proposalPayload}'`
+    );
+    cy.wrap(freeformProposal.proposalSubmission.rationale.description)
+  })
+})
 
 Cypress.Commands.add('vega_wallet_connect', () => {
   cy.highlight('Connecting Vega Wallet');

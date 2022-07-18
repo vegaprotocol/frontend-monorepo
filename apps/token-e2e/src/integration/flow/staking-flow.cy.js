@@ -22,8 +22,8 @@ const ethWalletAssociatedBalances =
   '[data-testid="eth-wallet-associated-balances"]';
 const ethWalletTotalAssociatedBalance = '[data-testid="currency-locked"]';
 const ethWalletContainer = '[data-testid="ethereum-wallet"]';
-const txTimeout = { timeout: 40000 };
-const epochTimeout = { timeout: 10000 };
+const txTimeout = Cypress.env('txTimeout');
+const epochTimeout = Cypress.env('epochTimeout');
 
 context('Staking Flow - with eth and vega wallets connected', function () {
   before('visit staking tab and connect vega wallet', function () {
@@ -64,7 +64,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         .should('be.visible');
 
       cy.get(ethWalletAssociatedBalances, txTimeout)
-        .contains(vegaWalletPublicKeyShort)
+        .contains(vegaWalletPublicKeyShort, txTimeout)
         .parent()
         .should('contain', 3.0, txTimeout);
 
@@ -441,7 +441,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       cy.staking_page_disassociate_all_tokens();
 
       cy.get(ethWalletContainer).within(() => {
-        cy.contains(vegaWalletPublicKeyShort, { timeout: 20000 }).should(
+        cy.contains(vegaWalletPublicKeyShort, txTimeout).should(
           'not.exist'
         );
       });
