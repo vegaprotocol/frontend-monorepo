@@ -5,7 +5,6 @@ import { DepositForm } from './deposit-form';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import type { Asset } from './deposit-manager';
-import { DepositLimits } from './deposit-limits';
 
 jest.mock('@vegaprotocol/wallet');
 jest.mock('@web3-react/core');

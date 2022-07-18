@@ -62,7 +62,7 @@ export const DepositManager = ({
   );
 
   // Get users balance of the erc20 token selected
-  const { balance, refetch } = useGetBalanceOfERC20Token(
+  const { balance, refetch: refetchBalance } = useGetBalanceOfERC20Token(
     tokenContract,
     asset?.decimals
   );
@@ -71,7 +71,10 @@ export const DepositManager = ({
   const limits = useGetDepositLimits(asset);
 
   // Get allowance (approved spending limit of brdige contract) for the selected asset
-  const allowance = useGetAllowance(tokenContract, asset?.decimals);
+  const { allowance, refetch: refetchAllowance } = useGetAllowance(
+    tokenContract,
+    asset?.decimals
+  );
 
   // Set up approve transaction
   const approve = useSubmitApproval(tokenContract, asset?.decimals);
@@ -88,9 +91,16 @@ export const DepositManager = ({
       faucet.transaction.status === EthTxStatus.Complete ||
       confirmationEvent !== null
     ) {
-      refetch();
+      refetchBalance();
     }
-  }, [confirmationEvent, refetch, faucet.transaction.status]);
+  }, [confirmationEvent, refetchBalance, faucet.transaction.status]);
+
+  // After an approval transaction refetch allowance
+  useEffect(() => {
+    if (approve.transaction.status === EthTxStatus.Complete) {
+      refetchAllowance();
+    }
+  }, [approve.transaction.status, refetchAllowance]);
 
   return (
     <>

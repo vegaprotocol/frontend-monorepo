@@ -29,10 +29,16 @@ export const DepositLimits = ({ limits }: DepositLimitsProps) => {
             <td className="text-right">{maxLimit}</td>
           </tr>
           <tr>
+            <th className="text-left font-normal">{t('Deposited')}</th>
+            <td className="text-right">{limits.deposited.toString()}</td>
+          </tr>
+          <tr>
             <th className="text-left font-normal">
               {t('Remaining available')}
             </th>
-            <td className="text-right">{limits.deposited.toString()}</td>
+            <td className="text-right">
+              {limits.max.minus(limits.deposited).toString()}
+            </td>
           </tr>
         </tbody>
       </table>
