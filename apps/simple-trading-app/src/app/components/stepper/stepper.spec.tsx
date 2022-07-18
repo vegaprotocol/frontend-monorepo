@@ -3,6 +3,15 @@ import { render, waitFor, fireEvent } from '@testing-library/react';
 import { Stepper } from './index';
 import type { TStep } from './index';
 
+jest.mock('@vegaprotocol/react-helpers', () => {
+  return {
+    t: (a: string) => a,
+    useScreenDimensions: jest.fn(() => ({
+      isMobile: true,
+    })),
+  };
+});
+
 // Used to disable the error you get from muted video https://github.com/testing-library/react-testing-library/issues/470
 Object.defineProperty(HTMLMediaElement.prototype, 'muted', {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -26,15 +35,13 @@ const steps: TStep[] = [
 
 describe('Stepper Component', () => {
   it('should render it as a list', async () => {
-    const { getByLabelText, getAllByText, getAllByRole } = await render(
+    const { getByLabelText, getByRole, getByText } = await render(
       <Stepper steps={steps} />
     );
     expect(getByLabelText('Step by step to make a trade')).toBeTruthy();
     expect(getByLabelText('Step 1')).toBeTruthy();
     expect(getByLabelText('Step 2')).toBeTruthy();
     expect(getByLabelText('Step 3')).toBeTruthy();
-    expect(getAllByText('Alpha Content')).toBeTruthy();
-    expect(getAllByRole('tabpanel')).toHaveLength(2);
   });
 
   it('should go to the correct tab on click', async () => {
@@ -111,5 +118,9 @@ describe('Stepper Component', () => {
       'aria-selected',
       'false'
     );
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });

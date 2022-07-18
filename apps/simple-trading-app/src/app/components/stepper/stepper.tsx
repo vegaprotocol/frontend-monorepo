@@ -2,7 +2,7 @@ import * as React from 'react';
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
 import { Button } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, useScreenDimensions } from '@vegaprotocol/react-helpers';
 import { Counter } from './counter';
 
 export type TStep = {
@@ -20,14 +20,13 @@ export const Stepper = ({ steps }: StepperProps) => {
   const [activeStep, setActiveStep] = React.useState(0);
   const lastStep = steps.length - 1;
   const isLastStep = activeStep === lastStep;
+  const { isMobile } = useScreenDimensions();
 
   const handleClick = (index: typeof activeStep) => {
     setActiveStep(index);
   };
 
-  const handleKeyPress = (
-    event: React.KeyboardEvent<HTMLButtonElement>,
-  ) => {
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLButtonElement>) => {
     if (event.key === 'ArrowLeft' && activeStep > 0) {
       return setActiveStep((prevActiveStep) => prevActiveStep - 1);
     } else if (event.key === 'ArrowRight' && !isLastStep) {
@@ -41,6 +40,8 @@ export const Stepper = ({ steps }: StepperProps) => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
+
+  console.log('isMobile', isMobile);
 
   return (
     <div>
@@ -62,7 +63,7 @@ export const Stepper = ({ steps }: StepperProps) => {
                 {!isFirstStep ? (
                   <div
                     aria-hidden
-                    className="flex-auto	absolute top-[20px] -left-1/2 right-1/2 md:-top-1/2 md:bottom-1/2 md:left-[29.5px] md:right-auto"
+                    className="flex-auto absolute top-[20px] -left-1/2 right-1/2 md:-top-1/2 md:bottom-1/2 md:left-[29.5px] md:right-auto"
                   >
                     <span className="h-full block border-t-1 border-black dark:border-white w-full md:border-l-1 md:border-t-0" />
                   </div>
@@ -75,7 +76,7 @@ export const Stepper = ({ steps }: StepperProps) => {
                   aria-controls={`step-${index}-panel`}
                   onKeyDown={(event) => handleKeyPress(event)}
                   onClick={() => handleClick(index)}
-                  className="cursor-pointer z-10	flex flex-col md:flex-row items-center w-full text-center"
+                  className="cursor-pointer z-10 flex flex-col md:flex-row items-center w-full text-center"
                 >
                   <Counter
                     className="md:mr-16"
@@ -95,49 +96,53 @@ export const Stepper = ({ steps }: StepperProps) => {
                   </h3>
                 </button>
               </div>
-              <div
-                /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
-                tabIndex={0}
-                id={`step-${index}-panel`}
-                aria-labelledby={`step-${index}-control`}
-                aria-hidden={!isActive}
-                role="tabpanel"
-                className={classNames(
-                  'hidden md:block md:border-black md:dark:border-white md:ml-[29.5px] md:pl-[45px]',
-                  {
-                    'invisible h-0': !isActive,
-                    'visible h-full': isActive,
-                    'md:border-l': !isLastStep,
-                  }
-                )}
-              >
-                {step.component}
-              </div>
+              {!isMobile && (
+                <div
+                  /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
+                  tabIndex={0}
+                  id={`step-${index}-panel`}
+                  aria-labelledby={`step-${index}-control`}
+                  aria-hidden={!isActive}
+                  role="tabpanel"
+                  className={classNames(
+                    'hidden md:block md:border-black md:dark:border-white md:ml-[29.5px] md:pl-[45px]',
+                    {
+                      'invisible h-0': !isActive,
+                      'visible h-full': isActive,
+                      'md:border-l': !isLastStep,
+                    }
+                  )}
+                >
+                  {step.component}
+                </div>
+              )}
             </li>
           );
         })}
       </ol>
-      <div
-        id={`step-${activeStep}-panel`}
-        aria-labelledby={`step-${activeStep}-control`}
-        role="tabpanel"
-        className="md:hidden mt-32"
-        /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
-        tabIndex={0}
-      >
-        {steps[activeStep].component}
-        {!isLastStep && (
-          <Button
-            className="w-full !py-8 mt-64 md:sr-only"
-            boxShadow={false}
-            variant="secondary"
-            onClick={handleNext}
-            disabled={steps[activeStep].disabled}
-          >
-            {t('Next')}
-          </Button>
-        )}
-      </div>
+      {isMobile && (
+        <div
+          id={`step-${activeStep}-panel`}
+          aria-labelledby={`step-${activeStep}-control`}
+          role="tabpanel"
+          className="md:hidden mt-32" // md:hidden as fallback
+          /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
+          tabIndex={0}
+        >
+          {steps[activeStep].component}
+          {!isLastStep && (
+            <Button
+              className="w-full !py-8 mt-64 md:sr-only"
+              boxShadow={false}
+              variant="secondary"
+              onClick={handleNext}
+              disabled={steps[activeStep].disabled}
+            >
+              {t('Next')}
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 };
