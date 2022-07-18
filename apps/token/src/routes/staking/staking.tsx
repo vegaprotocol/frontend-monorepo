@@ -108,7 +108,7 @@ export const StakingStepConnectWallets = () => {
           components={{
             vegaWalletLink: (
               <Link
-                href={Links.WALLET_GUIDE}
+                href={Links.WALLET_PAGE}
                 className="text-white underline"
                 target="_blank"
               />

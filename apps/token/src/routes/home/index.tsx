@@ -88,7 +88,7 @@ const Home = ({ name }: RouteChildProps) => {
         <p>
           <a
             data-testid="get-vega-wallet-link"
-            href={Links.WALLET_GUIDE}
+            href={Links.WALLET_PAGE}
             className="underline text-white"
             target="_blank"
             rel="nofollow noreferrer"

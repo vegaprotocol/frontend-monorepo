@@ -20,7 +20,9 @@ module.exports = defineConfig({
   },
   env: {
     environment: 'CUSTOM',
+    networkQueryUrl: 'http://localhost:3028/query',
+    ethUrl: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
+    commitHash: 'dev',
     tsConfig: 'tsconfig.json',
-    TAGS: 'not @todo and not @ignore and not @manual',
   },
 });
