@@ -51,7 +51,6 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
       id: 'buyer-id',
       tradesConnection: {
         __typename: 'TradeConnection',
-        totalCount: 1,
         edges: fills.map((f) => {
           return {
             __typename: 'TradeEdge',

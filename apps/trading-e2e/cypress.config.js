@@ -44,7 +44,7 @@ module.exports = defineConfig({
     ETHERSCAN_URL: 'https://ropsten.etherscan.io',
     tsConfig: 'tsconfig.json',
     TAGS: 'not @todo and not @ignore and not @manual',
-    TRADING_TEST_VEGA_WALLET_PASSPHRASE: 'UI_Trading_Test',
+    TRADING_TEST_VEGA_WALLET_PASSPHRASE: '123',
     ETH_WALLET_MNEMONIC:
       'ugly gallery notice network true range brave clarify flat logic someone chunk',
   },
