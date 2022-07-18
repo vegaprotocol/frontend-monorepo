@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { AppStateProvider } from '../../../../contexts/app-state/app-state-provider';
 import { ProposalsList } from './proposals-list';
 import { ProposalState } from '@vegaprotocol/types';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import {
   mockWalletContext,
   networkParamsQueryMock,
@@ -108,15 +108,10 @@ it('Places proposals correctly in open or closed lists', () => {
       rejectedProposalClosedLastMonth,
     ])
   );
-  const openProposals = screen.getByTestId('open-proposals');
-  const closedProposals = screen.getByTestId('closed-proposals');
-  expect(
-    openProposals.querySelectorAll("[data-testid='proposals-list-item']").length
-  ).toBe(2);
-  expect(
-    closedProposals.querySelectorAll("[data-testid='proposals-list-item']")
-      .length
-  ).toBe(2);
+  const openProposals = within(screen.getByTestId('open-proposals'));
+  const closedProposals = within(screen.getByTestId('closed-proposals'));
+  expect(openProposals.getAllByTestId('proposals-list-item').length).toBe(2);
+  expect(closedProposals.getAllByTestId('proposals-list-item').length).toBe(2);
 });
 
 it('Orders proposals correctly by closingDateTime', () => {
@@ -128,13 +123,13 @@ it('Orders proposals correctly by closingDateTime', () => {
       enactedProposalClosedLastWeek,
     ])
   );
-  const openProposals = screen.getByTestId('open-proposals');
-  const closedProposals = screen.getByTestId('closed-proposals');
-  const openProposalsItems = openProposals.querySelectorAll(
-    "[data-testid='proposals-list-item']"
+  const openProposals = within(screen.getByTestId('open-proposals'));
+  const closedProposals = within(screen.getByTestId('closed-proposals'));
+  const openProposalsItems = openProposals.getAllByTestId(
+    'proposals-list-item'
   );
-  const closedProposalsItems = closedProposals.querySelectorAll(
-    "[data-testid='proposals-list-item']"
+  const closedProposalsItems = closedProposals.getAllByTestId(
+    'proposals-list-item'
   );
   expect(openProposalsItems[0]).toHaveAttribute('id', 'proposal1');
   expect(openProposalsItems[1]).toHaveAttribute('id', 'proposal2');

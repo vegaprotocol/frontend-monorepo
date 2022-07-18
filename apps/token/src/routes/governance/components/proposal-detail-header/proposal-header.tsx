@@ -98,7 +98,7 @@ export const ProposalHeader = ({
         <h2 className="text-h5 font-semibold mb-4">{headerText}</h2>
       </header>
       <div data-testid="proposal-details-one">{detailsOne}</div>
-      <div data-testid="proposal-details-two">{detailsTwo}</div>
+      {detailsTwo && <div data-testid="proposal-details-two">{detailsTwo}</div>}
     </div>
   );
 };
