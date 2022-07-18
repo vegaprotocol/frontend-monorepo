@@ -118,7 +118,7 @@ export const StatusCell = ({
           <>
             {t('Open')}
             <button className="underline" onClick={() => complete(data.id)}>
-              {t('Complete')}
+              {t('Click to complete')}
             </button>
           </>
         )}
@@ -143,6 +143,7 @@ const RecipientCell = ({
       title={t('View on Etherscan (opens in a new tab)')}
       href={`${ethUrl}/address/${value}`}
       data-testid="etherscan-link"
+      target="_blank"
     >
       {valueFormatted}
     </Link>

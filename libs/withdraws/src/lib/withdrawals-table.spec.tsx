@@ -76,7 +76,9 @@ describe('StatusCell', () => {
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Open')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Complete', { selector: 'button' }));
+    fireEvent.click(
+      screen.getByText('Click to complete', { selector: 'button' })
+    );
     expect(mockComplete).toHaveBeenCalled();
   });
 
