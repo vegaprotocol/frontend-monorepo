@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import type { Order } from '../utils';
 import type {
   VegaKeyExtended,
   VegaWalletContextShape,
@@ -149,6 +148,25 @@ const defaultMarket = {
   },
 };
 
+const order = {
+  id: 'order-id',
+  type: VegaWalletOrderType.Limit,
+  size: '10',
+  timeInForce: OrderTimeInForce.GTT, // order timeInForce is transformed to wallet timeInForce
+  side: VegaWalletOrderSide.Buy,
+  price: '1234567.89',
+  expiration: new Date('2022-01-01'),
+  expiresAt: new Date('2022-01-01'),
+  status: VegaTxStatus.Pending,
+  rejectionReason: null,
+  market: {
+    id: 'market-id',
+    decimalPlaces: 2,
+    name: 'ETHDAI',
+    positionDecimalPlaces: 2,
+  },
+};
+
 describe('useOrderEdit', () => {
   it('should edit a correctly formatted order', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve({}));
@@ -161,17 +179,6 @@ describe('useOrderEdit', () => {
       keypair,
     });
 
-    const order = {
-      id: 'order-id',
-      type: VegaWalletOrderType.Limit,
-      size: '10',
-      timeInForce: OrderTimeInForce.GTT, // order timeInForce is transformed to wallet timeInForce
-      side: VegaWalletOrderSide.Buy,
-      price: '1234567.89',
-      expiration: new Date('2022-01-01'),
-      expiresAt: new Date('2022-01-01'),
-      market: { id: 'market-id' },
-    };
     await act(async () => {
       result.current.edit(order);
     });
@@ -183,7 +190,7 @@ describe('useOrderEdit', () => {
         orderId: 'order-id',
         marketId: defaultMarket.id, // Market provided from hook argument
         timeInForce: VegaWalletOrderTimeInForce.GTT,
-        price: { value: '1234567.89' }, // Decimal removed
+        price: { value: '123456789' }, // Decimal removed
         sizeDelta: 0,
         expiresAt: { value: order.expiration?.getTime() + '000000' }, // Nanoseconds append
       } as unknown as OrderAmendmentBodyOrderAmendment,
@@ -207,23 +214,7 @@ describe('useOrderEdit', () => {
       keypair: null,
     });
     await act(async () => {
-      result.current.edit({} as Order);
-    });
-    expect(mockSendTx).not.toHaveBeenCalled();
-  });
-
-  it('should not sendTx side is not specified', async () => {
-    const mockSendTx = jest.fn();
-    const keypair = {
-      pub: '0x123',
-    } as VegaKeyExtended;
-    const { result } = setup({
-      sendTx: mockSendTx,
-      keypairs: [keypair],
-      keypair,
-    });
-    await act(async () => {
-      result.current.edit({} as Order);
+      result.current.edit(order);
     });
     expect(mockSendTx).not.toHaveBeenCalled();
   });

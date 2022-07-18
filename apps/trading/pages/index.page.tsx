@@ -20,7 +20,7 @@ const MARKETS_QUERY = gql`
   }
 `;
 
-const marketList = ({ markets }: MarketsLanding) => {
+const getMarketList = ({ markets = [] }: MarketsLanding) => {
   const filteredMarkets =
     markets?.filter(
       ({ marketTimestamps, tradingMode }) =>
@@ -42,7 +42,7 @@ export function Index() {
 
   useEffect(() => {
     if (data) {
-      const marketId = marketList(data)[0]?.id;
+      const marketId = getMarketList(data)[0]?.id;
 
       // If a default market is found, go to it with the landing dialog open
       if (marketId) {

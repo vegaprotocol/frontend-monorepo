@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { VegaTransactionDialog } from '@vegaprotocol/wallet';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
+import { OrderEditDialog } from './order-edit-dialog';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -49,6 +50,14 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           return 'Cancellation failed';
       }
     };
+    const getEditDialogTitle = () =>
+      editedOrder
+        ? `Order ${
+            editOrder?.market?.tradableInstrument.instrument.code ?? ''
+          } updated`
+        : `Edit ${
+            editOrder?.market?.tradableInstrument.instrument.code ?? ''
+          } order`;
     return (
       <>
         <OrderListTable
@@ -73,19 +82,17 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           setOrderDialogOpen={setEditOrderDialogOpen}
           transaction={editTransaction}
           reset={resetEdit}
-          title={
-            editedOrder
-              ? `Order ${
-                  editOrder?.market?.tradableInstrument.instrument.code ?? ''
-                } updated`
-              : `Edit ${
-                  editOrder?.market?.tradableInstrument.instrument.code ?? ''
-                } order`
-          }
-          edit={edit}
-          editOrder={editOrder}
+          title={getEditDialogTitle()}
           finalizedOrder={editedOrder}
-        />
+        >
+          {
+            <OrderEditDialog
+              title={getEditDialogTitle()}
+              order={editOrder}
+              edit={edit}
+            />
+          }
+        </VegaTransactionDialog>
       </>
     );
   }
