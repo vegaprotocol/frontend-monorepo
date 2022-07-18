@@ -6,13 +6,18 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
     fixturesFolder: false,
-    specPattern: '**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: [
+      './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
+      process.env.CYPRESS_INCLUDE_FLOWS
+        ? './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}'
+        : '',
+    ],
     modifyObstructiveCode: false,
     supportFile: './src/support/index.ts',
     video: true,
     videoUploadOnPasses: false,
-    videosFolder: '../../dist/cypress/apps/explorer-e2e/videos',
-    screenshotsFolder: '../../dist/cypress/apps/explorer-e2e/screenshots',
+    videosFolder: '../../dist/cypress/apps/token-e2e/videos',
+    screenshotsFolder: '../../dist/cypress/apps/token-e2e/screenshots',
     chromeWebSecurity: false,
     viewportWidth: 1440,
     viewportHeight: 900,
