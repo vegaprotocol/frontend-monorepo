@@ -112,8 +112,8 @@ export function defaultAppend<Data>(
           ...insertionData,
           ...data.slice(end),
         ];
-        if (!insertionPageInfo.hasNextPage && end < (totalCount ?? 0)) {
-          // decrease totalCount if last page is shorter than expected
+        if (!insertionPageInfo.hasNextPage && end !== (totalCount ?? 0)) {
+          // adjust totalCount if last page is shorter or longer than expected
           totalCount = end;
           updatedData = updatedData.slice(0, end);
         }
@@ -144,8 +144,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
   getDelta: GetDelta<SubscriptionData, Delta>,
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
-    getTotalCount: GetTotalCount<QueryData>;
-    // append: Append<Data extends (infer R)[] ? R & Cursor : never>;
+    getTotalCount?: GetTotalCount<QueryData>;
     append: Append<Data>;
     first: number;
   },
@@ -238,7 +237,9 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
       totalCount
     ));
     pageInfo = insertionPageInfo;
-    totalCount = pagination.getTotalCount(res.data) ?? totalCount;
+    totalCount =
+      (pagination.getTotalCount && pagination.getTotalCount(res.data)) ??
+      totalCount;
     notifyAll({ insertionData });
     return insertionData;
   };
@@ -263,7 +264,8 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           );
         }
         pageInfo = pagination.getPageInfo(res.data);
-        totalCount = pagination.getTotalCount(res.data);
+        totalCount =
+          pagination.getTotalCount && pagination.getTotalCount(res.data);
         if (data && totalCount && data.length < totalCount) {
           data.push(...new Array(totalCount - data.length).fill(null));
         }
@@ -437,8 +439,7 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
   getDelta: GetDelta<SubscriptionData, Delta>,
   pagination?: {
     getPageInfo: GetPageInfo<QueryData>;
-    getTotalCount: GetTotalCount<QueryData>;
-    // append: Append<Data extends Array<Cursor> ? Cursor : never>;
+    getTotalCount?: GetTotalCount<QueryData>;
     append: Append<Data>;
     first: number;
   },

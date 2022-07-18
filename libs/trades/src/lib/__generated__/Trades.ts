@@ -79,10 +79,6 @@ export interface Trades_market_tradesConnection_pageInfo {
 export interface Trades_market_tradesConnection {
   __typename: "TradeConnection";
   /**
-   * The total number of trades in this connection
-   */
-  totalCount: number;
-  /**
    * The trade in this connection
    */
   edges: Trades_market_tradesConnection_edges[];

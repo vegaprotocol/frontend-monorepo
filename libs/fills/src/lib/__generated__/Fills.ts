@@ -211,10 +211,6 @@ export interface Fills_party_tradesConnection_pageInfo {
 export interface Fills_party_tradesConnection {
   __typename: "TradeConnection";
   /**
-   * The total number of trades in this connection
-   */
-  totalCount: number;
-  /**
    * The trade in this connection
    */
   edges: Fills_party_tradesConnection_edges[];

@@ -36,7 +36,6 @@ export const TRADES_QUERY = gql`
     market(id: $marketId) {
       id
       tradesConnection(pagination: $pagination) {
-        totalCount
         edges {
           node {
             ...TradeFields
@@ -96,9 +95,6 @@ const getDelta = (subscriptionData: TradesSub): TradeFields[] =>
 const getPageInfo = (responseData: Trades): PageInfo | null =>
   responseData.market?.tradesConnection.pageInfo || null;
 
-const getTotalCount = (responseData: Trades): number | undefined =>
-  responseData.market?.tradesConnection.totalCount;
-
 export const tradesDataProvider = makeDataProvider(
   TRADES_QUERY,
   TRADES_SUB,
@@ -107,7 +103,6 @@ export const tradesDataProvider = makeDataProvider(
   getDelta,
   {
     getPageInfo,
-    getTotalCount,
     append,
     first: 100,
   }

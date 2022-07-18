@@ -76,6 +76,15 @@ describe('data provider', () => {
     }
   );
 
+  const generateData = (start = 0, size = first) => {
+    return new Array(size).fill(null).map((v, i) => ({
+      cursor: (i + start + 1).toString(),
+      node: {
+        id: (i + start + 1).toString(),
+      },
+    }));
+  };
+
   const clientSubscribeUnsubscribe = jest.fn();
   const clientSubscribeSubscribe = jest.fn<
     Subscription,
@@ -253,17 +262,9 @@ describe('data provider', () => {
     subscription.unsubscribe();
   });
 
-  it('loads requested data blocks and inserts data', async () => {
+  it('loads requested data blocks and inserts data with total count', async () => {
     callback.mockClear();
     const totalCount = 1000;
-    const generateData = (start = 0, size = first) => {
-      return new Array(size).fill(null).map((v, i) => ({
-        cursor: (i + start + 1).toString(),
-        node: {
-          id: (i + start + 1).toString(),
-        },
-      }));
-    };
     const subscription = paginatedSubscribe(callback, client);
     await resolveQuery({
       data: generateData(),
@@ -384,5 +385,45 @@ describe('data provider', () => {
     expect(lastCallbackArgs[0].totalCount).toBe(1000);
 
     subscription.unsubscribe();
+  });
+
+  it('loads requested data blocks and inserts data without totalCount', async () => {
+    callback.mockClear();
+    const totalCount = undefined;
+    const subscription = paginatedSubscribe(callback, client);
+    await resolveQuery({
+      data: generateData(),
+      totalCount,
+      pageInfo: {
+        hasNextPage: true,
+        endCursor: '100',
+      },
+    });
+    let lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
+    expect(lastCallbackArgs[0].totalCount).toBe(undefined);
+
+    // load next page
+    subscription.load();
+    await resolveQuery({
+      data: generateData(100),
+      pageInfo: {
+        hasNextPage: true,
+        endCursor: '200',
+      },
+    });
+    lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
+    expect(lastCallbackArgs[0].totalCount).toBe(undefined);
+
+    // load last page
+    subscription.load();
+    await resolveQuery({
+      data: generateData(200, 50),
+      pageInfo: {
+        hasNextPage: false,
+        endCursor: '250',
+      },
+    });
+    lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
+    expect(lastCallbackArgs[0].totalCount).toBe(250);
   });
 });
