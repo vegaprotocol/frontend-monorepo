@@ -49,7 +49,8 @@ const updateLevels = (
     | MarketDepthSubscription_marketDepthUpdate_buy
     | MarketDepthSubscription_marketDepthUpdate_sell
   )[],
-  decimalPlaces: number
+  decimalPlaces: number,
+  reverse = false
 ) => {
   updates.forEach((update) => {
     const updateLevel = formatLevel(update, decimalPlaces);
@@ -61,7 +62,11 @@ const updateLevels = (
         Object.assign(levels[index], updateLevel);
       }
     } else if (update.volume !== '0') {
-      index = levels.findIndex((level) => level.price > updateLevel.price);
+      index = levels.findIndex((level) =>
+        reverse
+          ? level.price < updateLevel.price
+          : level.price > updateLevel.price
+      );
       if (index !== -1) {
         levels.splice(index, 0, updateLevel);
       } else {
@@ -104,7 +109,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
             ? updateLevels(
                 dataRef.current.data.buy,
                 delta.buy,
-                decimalPlacesRef.current
+                decimalPlacesRef.current,
+                true
               )
             : dataRef.current.data.buy,
           sell: delta.sell
