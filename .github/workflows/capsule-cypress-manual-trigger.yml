@@ -117,7 +117,7 @@ jobs:
         run: yarn install
 
       - name: Run Cypress tests
-        run: yarn nx run-many --target=e2e --project=${{inputs.project}} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: yarn nx run-many --target=e2e --projects=${{inputs.project}} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
