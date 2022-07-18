@@ -20,6 +20,9 @@ beforeEach(() => {
     assets,
     min: new BigNumber(0.00001),
     max: new BigNumber(100),
+    limits: {
+      max: new BigNumber(200),
+    },
     ethereumAccount: undefined,
     selectedAsset: undefined,
     onSelectAsset: jest.fn(),

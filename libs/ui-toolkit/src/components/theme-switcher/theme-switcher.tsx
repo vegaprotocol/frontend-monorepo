@@ -13,7 +13,7 @@ export const ThemeSwitcher = ({
   sunClassName?: string;
   moonClassName?: string;
 }) => {
-  const sunClasses = classNames('dark:hidden text-black', sunClassName);
+  const sunClasses = classNames('dark:hidden text-white', sunClassName);
   const moonClasses = classNames(
     'hidden dark:inline text-white',
     moonClassName

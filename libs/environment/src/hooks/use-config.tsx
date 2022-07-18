@@ -1,25 +1,26 @@
-import type { Dispatch, SetStateAction } from 'react';
 import { useState, useEffect } from 'react';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
-import type { Environment, Configuration, ConfigStatus } from '../types';
+import { ErrorType } from '../types';
+import type { Environment, Configuration, Networks } from '../types';
 import { validateConfiguration } from '../utils/validate-configuration';
-import { promiseRaceToSuccess } from '../utils/promise-race-success';
 
 export const LOCAL_STORAGE_NETWORK_KEY = 'vegaNetworkConfig';
 
 export type EnvironmentWithOptionalUrl = Partial<Environment> &
   Omit<Environment, 'VEGA_URL'>;
 
-const requestToNode = async (url: string, index: number): Promise<number> => {
-  const response = await fetch(url);
-  if (!response.ok) {
-    throw new Error(`Failed connecting to node: ${url}.`);
+const compileHosts = (hosts: string[], envUrl?: string) => {
+  if (envUrl && !hosts.includes(envUrl)) {
+    return [...hosts, envUrl];
   }
-  return index;
+  return hosts;
 };
 
-const getCachedConfig = () => {
-  const value = LocalStorage.getItem(LOCAL_STORAGE_NETWORK_KEY);
+const getCacheKey = (env: Networks) => `${LOCAL_STORAGE_NETWORK_KEY}-${env}`;
+
+const getCachedConfig = (env: Networks) => {
+  const cacheKey = getCacheKey(env);
+  const value = LocalStorage.getItem(cacheKey);
 
   if (value) {
     try {
@@ -32,9 +33,9 @@ const getCachedConfig = () => {
 
       return config;
     } catch (err) {
-      LocalStorage.removeItem(LOCAL_STORAGE_NETWORK_KEY);
+      LocalStorage.removeItem(cacheKey);
       console.warn(
-        'Malformed data found for network configuration. Removed and continuing...'
+        'Malformed data found for network configuration. Removed cached configuration, continuing...'
       );
     }
   }
@@ -44,79 +45,54 @@ const getCachedConfig = () => {
 
 export const useConfig = (
   environment: EnvironmentWithOptionalUrl,
-  updateEnvironment: Dispatch<SetStateAction<Environment>>
+  onError: (errorType: ErrorType) => void
 ) => {
+  const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<Configuration | undefined>(
-    getCachedConfig()
-  );
-  const [status, setStatus] = useState<ConfigStatus>(
-    !environment.VEGA_URL ? 'idle' : 'success'
+    getCachedConfig(environment.VEGA_ENV)
   );
 
   useEffect(() => {
-    if (!config && status === 'idle') {
-      (async () => {
-        setStatus('loading-config');
+    let isMounted = true;
+    (async () => {
+      if (!config && environment.VEGA_CONFIG_URL) {
+        isMounted && setLoading(true);
         try {
-          const response = await fetch(environment.VEGA_CONFIG_URL ?? '');
+          const response = await fetch(environment.VEGA_CONFIG_URL);
           const configData: Configuration = await response.json();
 
           if (validateConfiguration(configData)) {
-            setStatus('error-validating-config');
+            onError(ErrorType.CONFIG_VALIDATION_ERROR);
+            isMounted && setLoading(false);
             return;
           }
 
-          setConfig({ hosts: configData.hosts });
+          const hosts = compileHosts(configData.hosts, environment.VEGA_URL);
+
+          isMounted && setConfig({ hosts });
           LocalStorage.setItem(
-            LOCAL_STORAGE_NETWORK_KEY,
-            JSON.stringify({ hosts: configData.hosts })
+            getCacheKey(environment.VEGA_ENV),
+            JSON.stringify({ hosts })
           );
+          isMounted && setLoading(false);
         } catch (err) {
-          setStatus('error-loading-config');
+          if (isMounted) {
+            setLoading(false);
+            setConfig({ hosts: [] });
+          }
+          onError(ErrorType.CONFIG_LOAD_ERROR);
         }
-      })();
-    }
+      }
+    })();
+    return () => {
+      isMounted = false;
+    };
     // load config only once per runtime
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [environment.VEGA_CONFIG_URL, !!config, status, setStatus, setConfig]);
-
-  useEffect(() => {
-    if (
-      config &&
-      !['loading-node', 'success', 'error-loading-node'].includes(status)
-    ) {
-      (async () => {
-        setStatus('loading-node');
-
-        // if there's only one configured node to choose from, set is as the env url
-        if (config.hosts.length === 1) {
-          setStatus('success');
-          updateEnvironment((prevEnvironment) => ({
-            ...prevEnvironment,
-            VEGA_URL: config.hosts[0],
-          }));
-          return;
-        }
-
-        // when there are multiple possible hosts, set the env url to the node which responds first
-        try {
-          const requests = config.hosts.map(requestToNode);
-          const index = await promiseRaceToSuccess(requests);
-          setStatus('success');
-          updateEnvironment((prevEnvironment) => ({
-            ...prevEnvironment,
-            VEGA_URL: config.hosts[index],
-          }));
-        } catch (err) {
-          setStatus('error-loading-node');
-        }
-      })();
-    }
-    // load config only once per runtime
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [status, !!config, setStatus, updateEnvironment]);
+  }, [environment.VEGA_CONFIG_URL, !!config, onError, setLoading]);
 
   return {
-    status,
+    loading,
+    config,
   };
 };

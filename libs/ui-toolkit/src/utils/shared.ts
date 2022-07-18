@@ -6,7 +6,6 @@ export const defaultFormElement = (hasError?: boolean) =>
     'box-border',
     'border rounded-none',
     'bg-clip-padding',
-    'shadow-input dark:shadow-input-dark',
     'bg-white dark:bg-white-25',
     'text-black placeholder:text-black-60 dark:text-white dark:placeholder:text-white-60',
     'text-ui',

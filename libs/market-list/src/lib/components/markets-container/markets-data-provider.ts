@@ -21,6 +21,7 @@ const MARKET_DATA_FRAGMENT = gql`
     bestBidPrice
     bestOfferPrice
     markPrice
+    trigger
   }
 `;
 
@@ -55,6 +56,7 @@ export const MARKET_LIST_QUERY = gql`
     markets {
       id
       decimalPlaces
+      state
       data {
         market {
           id

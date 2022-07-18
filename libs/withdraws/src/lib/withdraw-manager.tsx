@@ -10,6 +10,7 @@ import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import type { Account, Asset } from './types';
 import { useWeb3React } from '@web3-react/core';
+import { useGetWithdrawLimits } from './use-get-withdraw-limits';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
@@ -39,6 +40,8 @@ export const WithdrawManager = ({
     return assets?.find((a) => a.id === assetId);
   }, [assets, assetId]);
 
+  const limits = useGetWithdrawLimits(asset);
+
   const max = useMemo(() => {
     if (!asset) {
       return new BigNumber(0);
@@ -48,13 +51,11 @@ export const WithdrawManager = ({
       (a) => a.type === AccountType.General && a.asset.id === asset.id
     );
 
-    if (!account) {
-      return new BigNumber(0);
-    }
-
-    const v = new BigNumber(addDecimal(account.balance, asset.decimals));
-    return v;
-  }, [asset, accounts]);
+    const v = account
+      ? new BigNumber(addDecimal(account.balance, asset.decimals))
+      : new BigNumber(0);
+    return BigNumber.minimum(v, limits ? limits.max : new BigNumber(Infinity));
+  }, [asset, accounts, limits]);
 
   const min = useMemo(() => {
     return asset
@@ -92,6 +93,7 @@ export const WithdrawManager = ({
         max={max}
         min={min}
         submitWithdraw={handleSubmit}
+        limits={limits}
       />
       <WithdrawDialog
         vegaTx={vegaTx}

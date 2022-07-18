@@ -18,6 +18,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
 import type { Asset } from './types';
+import { WithdrawLimits } from './withdraw-limits';
 
 interface FormFields {
   asset: string;
@@ -31,6 +32,9 @@ export interface WithdrawFormProps {
   min: BigNumber;
   selectedAsset?: Asset;
   ethereumAccount?: string;
+  limits: {
+    max: BigNumber;
+  } | null;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalFields) => void;
 }
@@ -41,6 +45,7 @@ export const WithdrawForm = ({
   min,
   selectedAsset,
   ethereumAccount,
+  limits,
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
@@ -134,7 +139,11 @@ export const WithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-
+      {selectedAsset && limits && (
+        <div className="mb-20">
+          <WithdrawLimits limits={limits} />
+        </div>
+      )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">
         <Input
           type="number"

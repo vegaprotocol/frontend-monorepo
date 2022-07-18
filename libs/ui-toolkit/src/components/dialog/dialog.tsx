@@ -26,7 +26,7 @@ export function Dialog({
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed w-full md:w-[520px] px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+    'z-20 fixed w-full md:w-[720px] lg:w-[940px] px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
     getIntentShadow(intent),
@@ -42,7 +42,7 @@ export function Dialog({
         />
         <DialogPrimitives.Content className={contentClasses}>
           <DialogPrimitives.Close
-            className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow"
+            className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow focus-visible:top-[7px] focus-visible:right-[7px]"
             data-testid="dialog-close"
           >
             <Icon

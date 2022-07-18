@@ -1,0 +1,138 @@
+name: Capsule tests -- manual trigger
+
+# This workflow runs the frontend tests against chosen branch
+
+on:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project'
+        required: true
+        type: choice
+        options:
+          - explorer
+          - simple-trading-app
+          - stats
+          - token
+          - trading
+      includeFlows:
+        description: 'Include long flows (if any)?'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  manual:
+    name: Run capsule tests -- manual trigger
+    runs-on: ubuntu-latest
+    env:
+      GO111MODULE: 'on'
+      GOPROXY: ${{ secrets.GO_PROXY }}
+    steps:
+      #######
+      ## Setup langs
+      #######
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        id: go
+        with:
+          go-version: 1.18
+      - name: Set up Node 16
+        uses: actions/setup-node@v2
+        id: npm
+        with:
+          node-version: 16
+
+      #######
+      ## Checkout capsule
+      #######
+
+      # Checkout capsule to build local network
+      - name: Checkout capsule
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/vegacapsule
+          ref: main
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+          path: './capsule'
+
+      #######
+      ## Build binaries
+      #######
+      - name: Build capsule
+        run: go install
+        working-directory: capsule
+
+      - name: Set GOBIN
+        run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
+
+      - name: Install binaries
+        run: vegacapsule install-bins
+        env:
+          GITHUB_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+          GOBIN: ${{ env.GOBIN }}
+
+      ######
+      ## Start capsule
+      ######
+      - name: Login to docker
+        run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
+
+      - name: Start nomad
+        run: vegacapsule nomad &
+
+      - name: Bootstrap network
+        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl --force
+        working-directory: capsule
+
+      ######
+      ## Setup a Vega wallet for our user
+      ######
+      - name: Create passphrase
+        run: echo "${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}" > ./passphrase
+      - name: Create recovery
+        run: echo "${{ secrets.TRADING_TEST_VEGA_WALLET_RECOVERY }}" > ./recovery
+
+      - name: Initialize wallet
+        run: vegawallet init -f --home ~/.vegacapsule/testnet/wallet
+      - name: Import wallet
+        run: vegawallet import -w UI_Trading_Test --recovery-phrase-file ./recovery -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+      - name: Create public key 2
+        run: vegawallet key generate -w UI_Trading_Test -p ./passphrase --home ~/.vegacapsule/testnet/wallet
+      - name: Start service
+        run: vegawallet service run --network DV --automatic-consent  --home ~/.vegacapsule/testnet/wallet &
+
+      ######
+      ## Run some tests
+      ######
+
+      # Checkout front ends
+      - name: Checkout frontend mono repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Install root dependencies
+        run: yarn install
+
+      - name: Run Cypress tests
+        run: yarn nx run-many --target=e2e --project=${{inputs.project}} --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        env:
+          CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
+          CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
+          CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_INCLUDE_FLOWS: ${{inputs.includeFlows}}
+
+      ######
+      ## Upload logs
+      ######
+
+      - name: Logs
+        if: ${{ always() }}
+        run: vegacapsule network logs > vega-capsule-logs.txt
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: logs
+          path: ./vega-capsule-logs.txt

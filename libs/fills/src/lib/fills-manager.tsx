@@ -6,7 +6,7 @@ import { FillsTable } from './fills-table';
 import type { IGetRowsParams } from 'ag-grid-community';
 
 import { fillsDataProvider as dataProvider } from './fills-data-provider';
-import type { Fills_party_tradesPaged_edges } from './__generated__/Fills';
+import type { Fills_party_tradesConnection_edges } from './__generated__/Fills';
 import type { FillsSub_trades } from './__generated__/FillsSub';
 
 interface FillsManagerProps {
@@ -15,11 +15,11 @@ interface FillsManagerProps {
 
 export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
-  const dataRef = useRef<Fills_party_tradesPaged_edges[] | null>(null);
+  const dataRef = useRef<Fills_party_tradesConnection_edges[] | null>(null);
   const totalCountRef = useRef<number | undefined>(undefined);
 
   const update = useCallback(
-    ({ data }: { data: Fills_party_tradesPaged_edges[] }) => {
+    ({ data }: { data: Fills_party_tradesConnection_edges[] }) => {
       if (!gridRef.current?.api) {
         return false;
       }
@@ -35,7 +35,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
       data,
       totalCount,
     }: {
-      data: Fills_party_tradesPaged_edges[];
+      data: Fills_party_tradesConnection_edges[];
       totalCount?: number;
     }) => {
       dataRef.current = data;
@@ -48,7 +48,7 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
 
   const { data, error, loading, load, totalCount } = useDataProvider<
-    Fills_party_tradesPaged_edges[],
+    Fills_party_tradesConnection_edges[],
     FillsSub_trades[]
   >({ dataProvider, update, insert, variables });
   totalCountRef.current = totalCount;

@@ -14,7 +14,6 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     env:
       GO111MODULE: 'on'
-      GOPROXY: ${{ secrets.GO_PROXY }}
     steps:
       #######
       ## Setup langs
@@ -114,6 +113,7 @@ jobs:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
+          CYPRESS_INCLUDE_FLOWS: false
 
       ######
       ## Upload logs
