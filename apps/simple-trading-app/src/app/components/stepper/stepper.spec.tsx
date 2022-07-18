@@ -35,9 +35,7 @@ const steps: TStep[] = [
 
 describe('Stepper Component', () => {
   it('should render it as a list', async () => {
-    const { getByLabelText, getByRole, getByText } = await render(
-      <Stepper steps={steps} />
-    );
+    const { getByLabelText } = await render(<Stepper steps={steps} />);
     expect(getByLabelText('Step by step to make a trade')).toBeTruthy();
     expect(getByLabelText('Step 1')).toBeTruthy();
     expect(getByLabelText('Step 2')).toBeTruthy();
