@@ -62,6 +62,8 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
           __typename: 'PageInfo',
           startCursor: '1',
           endCursor: '2',
+          hasNextPage: false,
+          hasPreviousPage: false,
         },
       },
       __typename: 'Party',

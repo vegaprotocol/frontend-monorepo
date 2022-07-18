@@ -78,6 +78,8 @@ export const FILLS_QUERY = gql`
         pageInfo {
           startCursor
           endCursor
+          hasNextPage
+          hasPreviousPage
         }
       }
     }

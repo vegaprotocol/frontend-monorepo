@@ -7,6 +7,7 @@ import type {
 } from '@apollo/client';
 import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
+import type { Pagination as PaginationWithoutSkip } from '@vegaprotocol/types';
 
 export interface UpdateCallback<Data, Delta> {
   (arg: {
@@ -24,13 +25,9 @@ export interface Load<Data> {
   (start?: number, end?: number): Promise<Data | null>;
 }
 
-export interface Pagination {
+type Pagination = PaginationWithoutSkip & {
   skip?: number;
-  first?: number;
-  after?: string;
-  last?: number;
-  before?: string;
-}
+};
 
 export interface PageInfo {
   startCursor?: string;
@@ -264,8 +261,13 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
           );
         }
         pageInfo = pagination.getPageInfo(res.data);
-        totalCount =
-          pagination.getTotalCount && pagination.getTotalCount(res.data);
+        if (pageInfo && !pageInfo.hasNextPage) {
+          totalCount = data.length;
+        } else {
+          totalCount =
+            pagination.getTotalCount && pagination.getTotalCount(res.data);
+        }
+
         if (data && totalCount && data.length < totalCount) {
           data.push(...new Array(totalCount - data.length).fill(null));
         }

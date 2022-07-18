@@ -45,6 +45,8 @@ export const TRADES_QUERY = gql`
         pageInfo {
           startCursor
           endCursor
+          hasNextPage
+          hasPreviousPage
         }
       }
     }

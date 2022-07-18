@@ -112,6 +112,8 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
         } else if (totalCountRef.current <= endRow) {
           lastRow = totalCountRef.current;
         }
+      } else if (rowsThisBlock.length < endRow - startRow) {
+        lastRow = rowsThisBlock.length;
       }
       successCallback(rowsThisBlock, lastRow);
     } catch (e) {

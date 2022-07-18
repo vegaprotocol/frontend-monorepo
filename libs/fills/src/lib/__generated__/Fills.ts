@@ -206,6 +206,8 @@ export interface Fills_party_tradesConnection_pageInfo {
   __typename: "PageInfo";
   startCursor: string;
   endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
 export interface Fills_party_tradesConnection {

@@ -52,7 +52,6 @@ export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
       id: 'market-0',
       tradesConnection: {
         __typename: 'TradeConnection',
-        totalCount: 1,
         edges: trades.map((node, i) => {
           return {
             __typename: 'TradeEdge',
@@ -64,6 +63,8 @@ export const generateTrades = (override?: PartialDeep<Trades>): Trades => {
           __typename: 'PageInfo',
           startCursor: '0',
           endCursor: trades.length.toString(),
+          hasNextPage: false,
+          hasPreviousPage: false,
         },
       },
       __typename: 'Market',

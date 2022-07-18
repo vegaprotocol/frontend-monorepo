@@ -425,5 +425,21 @@ describe('data provider', () => {
     });
     lastCallbackArgs = callback.mock.calls[callback.mock.calls.length - 1];
     expect(lastCallbackArgs[0].totalCount).toBe(250);
+    subscription.unsubscribe();
+  });
+
+  it('sets total count when first page has no next page', async () => {
+    const subscription = paginatedSubscribe(callback, client);
+    await resolveQuery({
+      data: generateData(),
+      pageInfo: {
+        hasNextPage: false,
+        endCursor: '100',
+      },
+    });
+    const lastCallbackArgs =
+      callback.mock.calls[callback.mock.calls.length - 1];
+    expect(lastCallbackArgs[0].totalCount).toBe(100);
+    subscription.unsubscribe();
   });
 });
