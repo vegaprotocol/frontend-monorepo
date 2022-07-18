@@ -1,5 +1,6 @@
 import * as faker from 'faker';
-import merge from 'lodash/merge';
+import { isArray } from 'lodash';
+import mergeWith from 'lodash/mergeWith';
 
 import { ProposalState, VoteValue } from '../../../__generated__/globalTypes';
 import type { DeepPartial } from '../../../lib/type-helpers';
@@ -60,9 +61,15 @@ export function generateProposal(
     },
   };
 
-  return merge<ProposalFields, DeepPartial<ProposalFields>>(
+  return mergeWith<ProposalFields, DeepPartial<ProposalFields>>(
     defaultProposal,
-    override
+    override,
+    (objValue, srcValue) => {
+      if (!isArray(objValue)) {
+        return;
+      }
+      return srcValue;
+    }
   );
 }
 
