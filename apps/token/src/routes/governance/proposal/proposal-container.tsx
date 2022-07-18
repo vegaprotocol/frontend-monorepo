@@ -13,6 +13,7 @@ import type {
   Proposal as ProposalQueryResult,
   ProposalVariables,
 } from './__generated__/Proposal';
+import { ENV } from '../../../config/env';
 
 /**
  * TODO: how do we do this properly to ensure that it is kept up to date?
@@ -41,7 +42,7 @@ export const ProposalContainer = () => {
   const { base } = getDataNodeUrl();
   const proposalUrl = React.useMemo(
     () =>
-      new URL(`datanode/rest/governance/proposal/${params.proposalId}`, base)
+      new URL(`${ENV.restUrl}/governance/proposal/${params.proposalId}`, base)
         .href,
     [base, params.proposalId]
   );
