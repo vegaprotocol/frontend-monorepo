@@ -25,7 +25,7 @@ const ethWalletContainer = '[data-testid="ethereum-wallet"]';
 const txTimeout = { timeout: 40000 };
 const epochTimeout = { timeout: 10000 };
 
-context('Staking Flow - with eth and vega wallets connected', function () {
+context('Staking Tab - with eth and vega wallets connected', function () {
   before('visit staking tab and connect vega wallet', function () {
     cy.vega_wallet_import();
     cy.visit('/');
@@ -411,7 +411,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Disassociating all tokens - removes all staked tokens', function () {
+    it.skip('Disassociating all tokens max - removes all staked tokens', function () {
       cy.staking_page_associate_tokens('3');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
