@@ -1,22 +1,23 @@
 import { act, render, screen } from '@testing-library/react';
 import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import type { Orders_party_orders } from '../__generated__/Orders';
 import { OrderStatus, OrderRejectionReason } from '@vegaprotocol/types';
-import { OrderListTable } from './order-list';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
 import { MockedProvider } from '@apollo/client/testing';
+
+import { OrderListTable } from '../';
+import type { Orders_party_ordersConnection_edges_node } from '../';
 import { limitOrder, marketOrder } from '../mocks/generate-orders';
 
 const generateJsx = (
-  orders: Orders_party_orders[] | null,
+  orders: Orders_party_ordersConnection_edges_node[] | null,
   context: PartialDeep<VegaWalletContextShape> = { keypair: { pub: '0x123' } }
 ) => {
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <OrderListTable data={orders} cancel={jest.fn()} />
+        <OrderListTable rowData={orders} cancel={jest.fn()} />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );

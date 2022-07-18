@@ -15,7 +15,7 @@ const Template: Story = (args) => {
   const cancel = () => Promise.resolve();
   return (
     <div style={{ height: 1000 }}>
-      <OrderListTable data={args.data} cancel={cancel} />
+      <OrderListTable rowData={args.data} cancel={cancel} />
     </div>
   );
 };
@@ -44,7 +44,7 @@ const Template2: Story = (args) => {
   return (
     <>
       <div style={{ height: 1000 }}>
-        <OrderListTable data={args.data} cancel={cancel} />
+        <OrderListTable rowData={args.data} cancel={cancel} />
       </div>
       <VegaTransactionDialog
         orderDialogOpen={open}
