@@ -55,7 +55,7 @@ describe('withdrawals', () => {
       .find('[col-id="status"]')
       .should('contain.text', 'Open')
       .find('button')
-      .contains('Complete');
+      .contains('Click to complete');
 
     // Second row is complete so last cell should have a link to the tx
     cy.get(row)
