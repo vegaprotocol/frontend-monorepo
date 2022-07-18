@@ -1,7 +1,7 @@
 import {
   VegaWalletContext,
-  OrderTimeInForce,
-  OrderType,
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderType,
 } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { fireEvent, render, screen, act } from '@testing-library/react';
@@ -64,7 +64,7 @@ it('Displays ticket defaults', () => {
 
   // Assert defaults are used
   expect(
-    screen.getByTestId(`order-type-${OrderType.Market}-selected`)
+    screen.getByTestId(`order-type-${VegaWalletOrderType.Market}-selected`)
   ).toBeInTheDocument();
   expect(
     screen.queryByTestId('order-side-SIDE_BUY-selected')
@@ -75,7 +75,9 @@ it('Displays ticket defaults', () => {
   expect(screen.getByTestId('order-size')).toHaveDisplayValue(
     String(1 / Math.pow(10, market.positionDecimalPlaces))
   );
-  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.IOC);
+  expect(screen.getByTestId('order-tif')).toHaveValue(
+    VegaWalletOrderTimeInForce.IOC
+  );
 
   // Assert last price is shown
   expect(screen.getByTestId('last-price')).toHaveTextContent(
@@ -101,9 +103,11 @@ it('Can edit deal ticket', async () => {
   expect(screen.getByTestId('order-size')).toHaveDisplayValue('200');
 
   fireEvent.change(screen.getByTestId('order-tif'), {
-    target: { value: OrderTimeInForce.IOC },
+    target: { value: VegaWalletOrderTimeInForce.IOC },
   });
-  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.IOC);
+  expect(screen.getByTestId('order-tif')).toHaveValue(
+    VegaWalletOrderTimeInForce.IOC
+  );
 
   // Switch to limit order
   fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
@@ -113,7 +117,7 @@ it('Can edit deal ticket', async () => {
 
   // Check all TIF options shown
   expect(screen.getByTestId('order-tif').children).toHaveLength(
-    Object.keys(OrderTimeInForce).length
+    Object.keys(VegaWalletOrderTimeInForce).length
   );
 });
 
@@ -130,26 +134,34 @@ it('Handles TIF select box dependent on order type', () => {
   // Switch to limit order and check all TIF options shown
   fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
   expect(screen.getByTestId('order-tif').children).toHaveLength(
-    Object.keys(OrderTimeInForce).length
+    Object.keys(VegaWalletOrderTimeInForce).length
   );
 
   // Change to GTC
   fireEvent.change(screen.getByTestId('order-tif'), {
-    target: { value: OrderTimeInForce.GTC },
+    target: { value: VegaWalletOrderTimeInForce.GTC },
   });
-  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.GTC);
+  expect(screen.getByTestId('order-tif')).toHaveValue(
+    VegaWalletOrderTimeInForce.GTC
+  );
 
   // Switch back to market order and TIF should now be IOC
   fireEvent.click(screen.getByTestId('order-type-TYPE_MARKET'));
-  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.IOC);
+  expect(screen.getByTestId('order-tif')).toHaveValue(
+    VegaWalletOrderTimeInForce.IOC
+  );
 
   // Switch tif to FOK
   fireEvent.change(screen.getByTestId('order-tif'), {
-    target: { value: OrderTimeInForce.FOK },
+    target: { value: VegaWalletOrderTimeInForce.FOK },
   });
-  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.FOK);
+  expect(screen.getByTestId('order-tif')).toHaveValue(
+    VegaWalletOrderTimeInForce.FOK
+  );
 
   // Change back to limit and check we are still on FOK
   fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
-  expect(screen.getByTestId('order-tif')).toHaveValue(OrderTimeInForce.FOK);
+  expect(screen.getByTestId('order-tif')).toHaveValue(
+    VegaWalletOrderTimeInForce.FOK
+  );
 });

@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GO111MODULE: 'on'
-      GOPROXY: ${{ secrets.GO_PROXY }}
     steps:
       #######
       ## Setup langs
@@ -29,48 +28,8 @@ jobs:
           node-version: 16
 
       #######
-      ## Checkout all the things
+      ## Checkout capsule
       #######
-
-      # Checkout repos required to build vega capsule
-      - name: Checkout vega
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vega
-          ref: master
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './vega'
-
-      - name: Checkout data node
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/data-node
-          ref: main
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './data-node'
-
-      - name: Checkout protos
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/protos
-          ref: master
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './protos'
-
-      - name: Checkout vegatools
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vegatools
-          ref: main
-          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
-          path: './vegatools'
-
-      - name: Checkout vega wallet
-        uses: actions/checkout@v2
-        with:
-          repository: vegaprotocol/vegawallet
-          ref: master
-          path: './vegawallet'
 
       # Checkout capsule to build local network
       - name: Checkout capsule
@@ -88,28 +47,26 @@ jobs:
         run: go install
         working-directory: capsule
 
-      - name: Build vega
-        run: go install ./cmd/vega/
-        working-directory: vega
+      - name: Set GOBIN
+        run: echo GOBIN=$(go env GOPATH)/bin >> $GITHUB_ENV
 
-      - name: Build vegawallet
-        run: go install
-        working-directory: vegawallet
-
-      - name: Build data-node
-        run: go install ./cmd/data-node/
-        working-directory: data-node
+      - name: Install binaries
+        run: vegacapsule install-bins
+        env:
+          GITHUB_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+          GOBIN: ${{ env.GOBIN }}
 
       ######
       ## Start capsule
       ######
       - name: Login to docker
         run: echo -n ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }} | docker login https://ghcr.io -u vega-ci-bot --password-stdin
+
       - name: Start nomad
         run: vegacapsule nomad &
 
       - name: Bootstrap network
-        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl
+        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl --force
         working-directory: capsule
 
       ######
@@ -150,6 +107,7 @@ jobs:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_NIGHTLY_RUN: true
+          CYPRESS_INCLUDE_FLOWS: true
 
       ######
       ## Upload logs

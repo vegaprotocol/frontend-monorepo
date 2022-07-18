@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketTradingMode } from "@vegaprotocol/types";
+import { MarketTradingMode, MarketState } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketsLanding
@@ -27,6 +27,10 @@ export interface MarketsLanding_markets {
    * Current mode of execution of the market
    */
   tradingMode: MarketTradingMode;
+  /**
+   * Current state of the market
+   */
+  state: MarketState;
   /**
    * timestamps for state changes in the market
    */

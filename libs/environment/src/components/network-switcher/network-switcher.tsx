@@ -30,8 +30,10 @@ export const NetworkSwitcher = ({ onConnect }: NetworkSwitcherProps) => {
           control={control}
           render={({ field }) => (
             <Select value={field.value} onChange={field.onChange}>
-              {Object.keys(VEGA_NETWORKS).map((network) => (
-                <option value={network}>{network}</option>
+              {Object.keys(VEGA_NETWORKS).map((network, index) => (
+                <option key={index} value={network}>
+                  {network}
+                </option>
               ))}
             </Select>
           )}

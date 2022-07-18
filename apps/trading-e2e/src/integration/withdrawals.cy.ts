@@ -1,5 +1,6 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { connectEthereumWallet } from '../support/ethereum-wallet';
+import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 import { generateWithdrawals } from '../support/mocks/generate-withdrawals';
 import { connectVegaWallet } from '../support/vega-wallet';
 
@@ -8,6 +9,7 @@ describe('withdrawals', () => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
       aliasQuery(req, 'Withdrawals', generateWithdrawals());
+      aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
     });
     cy.visit('/portfolio/withdrawals');
 
@@ -16,8 +18,6 @@ describe('withdrawals', () => {
 
     // It also requires connection Ethereum wallet
     connectEthereumWallet();
-
-    cy.contains('Withdrawals');
   });
 
   it('renders history of withdrawals', () => {
@@ -27,7 +27,6 @@ describe('withdrawals', () => {
     const etherScanLink = `${Cypress.env(
       'ETHERSCAN_URL'
     )}/tx/0x5d7b1a35ba6bd23be17bb7a159c13cdbb3121fceb94e9c6c510f5503dce48d03`;
-    cy.contains('Withdrawals');
 
     const row = '.ag-center-cols-container[role="rowgroup"] > [role="row"]';
 

@@ -1,17 +1,23 @@
 import { useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import { OrderType, OrderTimeInForce } from '@vegaprotocol/wallet';
-import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
+import {
+  VegaWalletOrderType,
+  VegaWalletOrderTimeInForce,
+} from '@vegaprotocol/wallet';
+import {
+  t,
+  toDecimal,
+  addDecimalsFormatNumber,
+} from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
 import { DealTicketAmount } from './deal-ticket-amount';
 import { TimeInForceSelector } from './time-in-force-selector';
-import { useOrderValidation } from '../hooks/use-order-validation';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
-import type { Order } from '../utils/get-default-order';
-import { getDefaultOrder } from '../utils/get-default-order';
 import { ExpirySelector } from './expiry-selector';
+import type { Order } from '@vegaprotocol/orders';
+import { getDefaultOrder, useOrderValidation } from '@vegaprotocol/orders';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -41,26 +47,26 @@ export const DealTicket = ({
   const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
-  const invalidText = useOrderValidation({
+  const { message, isDisabled: disabled } = useOrderValidation({
     step,
     market,
     orderType,
     orderTimeInForce,
     fieldErrors: errors,
   });
-  const isDisabled = transactionStatus === 'pending' || Boolean(invalidText);
+  const isDisabled = transactionStatus === 'pending' || disabled;
 
   const onSubmit = useCallback(
     (order: Order) => {
-      if (!isDisabled && !invalidText) {
+      if (!isDisabled) {
         submit(order);
       }
     },
-    [isDisabled, invalidText, submit]
+    [isDisabled, submit]
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="px-4 py-8" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="px-12 py-8" noValidate>
       <Controller
         name="type"
         control={control}
@@ -81,7 +87,10 @@ export const DealTicket = ({
         register={register}
         price={
           market.depth.lastTrade
-            ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+            ? addDecimalsFormatNumber(
+                market.depth.lastTrade.price,
+                market.decimalPlaces
+              )
             : undefined
         }
         quoteName={market.tradableInstrument.instrument.product.quoteName}
@@ -97,8 +106,8 @@ export const DealTicket = ({
           />
         )}
       />
-      {orderType === OrderType.Limit &&
-        orderTimeInForce === OrderTimeInForce.GTT && (
+      {orderType === VegaWalletOrderType.Limit &&
+        orderTimeInForce === VegaWalletOrderTimeInForce.GTT && (
           <Controller
             name="expiration"
             control={control}
@@ -116,9 +125,12 @@ export const DealTicket = ({
       >
         {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
       </Button>
-      {invalidText && (
-        <InputError className="mb-8" data-testid="dealticket-error-message">
-          {invalidText}
+      {message && (
+        <InputError
+          className="mt-12 mb-12"
+          data-testid="dealticket-error-message"
+        >
+          {message}
         </InputError>
       )}
     </form>

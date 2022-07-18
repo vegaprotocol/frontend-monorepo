@@ -16,7 +16,7 @@ Default.args = {
   partyId: 'party-id',
   datasource: {
     getRows: makeGetRows(
-      fills.party?.tradesPaged.edges.map((e) => e.node) || []
+      fills.party?.tradesConnection.edges.map((e) => e.node) || []
     ),
   },
 };

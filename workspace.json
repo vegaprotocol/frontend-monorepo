@@ -14,7 +14,7 @@
     "market-list": "libs/market-list",
     "network-info": "libs/network-info",
     "network-stats": "libs/network-stats",
-    "order-list": "libs/order-list",
+    "orders": "libs/orders",
     "positions": "libs/positions",
     "react-helpers": "libs/react-helpers",
     "simple-trading-app": "apps/simple-trading-app",
