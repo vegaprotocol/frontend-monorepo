@@ -26,8 +26,6 @@ import {
 } from '../../test-helpers/mocks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
-const proposal = generateProposal();
-
 const oneDay = 60 * 60 * 24;
 const oneHour = 60 * 60;
 const oneMinute = 60;

@@ -1,5 +1,5 @@
 import * as faker from 'faker';
-import { isArray } from 'lodash';
+import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 
 import { ProposalState, VoteValue } from '../../../__generated__/globalTypes';
