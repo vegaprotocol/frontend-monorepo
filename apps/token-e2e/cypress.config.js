@@ -40,5 +40,7 @@ module.exports = defineConfig({
     vegaWalletPublicKeyShort: '02ecea…2f65',
     vegaTokenContractAddress: '0xF41bD86d462D36b997C0bbb4D97a0a3382f205B7',
     vegaTokenAddress: '0x67175Da1D5e966e40D11c4B2519392B2058373de',
+    txTimeout: { timeout: 30000 },
+    epochTimeout: { timeout: 10000 },
   },
 });
