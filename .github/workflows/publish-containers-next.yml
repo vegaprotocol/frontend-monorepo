@@ -32,7 +32,6 @@ jobs:
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # TODO take version from tag
       - name: Collect images data
         id: tags
         run: |
