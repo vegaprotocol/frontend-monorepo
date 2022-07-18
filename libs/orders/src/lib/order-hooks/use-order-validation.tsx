@@ -19,6 +19,15 @@ export type ValidationProps = {
   fieldErrors?: FieldErrors<Order>;
 };
 
+export const marketTranslations = (marketState: MarketState) => {
+  switch (marketState) {
+    case MarketState.TradingTerminated:
+      return t('terminated');
+    default:
+      return t(marketState).toLowerCase();
+  }
+};
+
 export const useOrderValidation = ({
   step,
   market,
@@ -28,33 +37,120 @@ export const useOrderValidation = ({
 }: ValidationProps) => {
   const { keypair } = useVegaWallet();
 
-  const invalidText = useMemo(() => {
+  const { message, isDisabled } = useMemo(() => {
     if (!keypair) {
-      return t('No public key selected');
+      return { message: t('No public key selected'), isDisabled: true };
     }
 
     if (keypair.tainted) {
-      return t('Selected public key has been tainted');
+      return {
+        isDisabled: true,
+        message: t('Selected public key has been tainted'),
+      };
+    }
+
+    if (
+      [
+        MarketState.Settled,
+        MarketState.Rejected,
+        MarketState.TradingTerminated,
+      ].includes(market.state)
+    ) {
+      return {
+        isDisabled: true,
+        message: t(
+          `This market is ${marketTranslations(
+            market.state
+          )} and not accepting orders`
+        ),
+      };
+    }
+
+    if (
+      [
+        MarketState.Suspended,
+        MarketState.Pending,
+        MarketState.Proposed,
+        MarketState.Cancelled,
+        MarketState.Closed,
+      ].includes(market.state)
+    ) {
+      return {
+        isDisabled: false,
+        message: t(
+          `This market is ${marketTranslations(
+            market.state
+          )} and only accepting liquidity commitment orders`
+        ),
+      };
     }
 
     if (market.state !== MarketState.Active) {
       if (market.state === MarketState.Suspended) {
-        return t('Market is currently suspended');
+        if (market.tradingMode === MarketTradingMode.Continuous) {
+          if (orderType !== OrderType.Limit) {
+            return {
+              isDisabled: true,
+              message: t(
+                'Only limit orders are permitted when market is in auction'
+              ),
+            };
+          }
+
+          if (
+            [
+              OrderTimeInForce.FOK,
+              OrderTimeInForce.IOC,
+              OrderTimeInForce.GFN,
+            ].includes(orderTimeInForce)
+          ) {
+            return {
+              isDisabled: true,
+              message: t(
+                'Only GTT, GTC and GFA are permitted when market is in auction'
+              ),
+            };
+          }
+        }
+
+        return {
+          isDisabled: false,
+          message: t(
+            `This market is ${marketTranslations(
+              market.state
+            )} and only accepting liquidity commitment orders`
+          ),
+        };
       }
 
       if (
         market.state === MarketState.Proposed ||
         market.state === MarketState.Pending
       ) {
-        return t('Market is not active yet');
+        return {
+          isDisabled: false,
+          message: t(
+            `This market is ${marketTranslations(
+              market.state
+            )} and only accepting liquidity commitment orders`
+          ),
+        };
       }
 
-      return t('Market is no longer active');
+      return {
+        isDisabled: true,
+        message: t('This market is no longer active.'),
+      };
     }
 
     if (market.tradingMode !== MarketTradingMode.Continuous) {
       if (orderType !== OrderType.Limit) {
-        return t('Only limit orders are permitted when market is in auction');
+        return {
+          isDisabled: true,
+          message: t(
+            'Only limit orders are permitted when market is in auction'
+          ),
+        };
       }
 
       if (
@@ -64,26 +160,41 @@ export const useOrderValidation = ({
           OrderTimeInForce.GFN,
         ].includes(orderTimeInForce)
       ) {
-        return t(
-          'Only GTT, GTC and GFA are permitted when market is in auction'
-        );
+        return {
+          isDisabled: true,
+          message: t(
+            'Only GTT, GTC and GFA are permitted when market is in auction'
+          ),
+        };
       }
     }
 
     if (fieldErrors?.size?.type === 'required') {
-      return t('An amount needs to be provided');
+      return {
+        isDisabled: true,
+        message: t('You need to provide an amount'),
+      };
     }
 
     if (fieldErrors?.size?.type === 'min') {
-      return t(`The amount cannot be lower than "${step}"`);
+      return {
+        isDisabled: true,
+        message: t(`The amount cannot be lower than "${step}"`),
+      };
     }
 
     if (fieldErrors?.price?.type === 'required') {
-      return t('A price needs to be provided');
+      return {
+        isDisabled: true,
+        message: t('You need to provide a price'),
+      };
     }
 
     if (fieldErrors?.price?.type === 'min') {
-      return t(`The price cannot be negative`);
+      return {
+        isDisabled: true,
+        message: t(`The price cannot be negative`),
+      };
     }
 
     if (
@@ -91,14 +202,20 @@ export const useOrderValidation = ({
       fieldErrors?.size?.message === ERROR_SIZE_DECIMAL
     ) {
       if (market.positionDecimalPlaces === 0) {
-        return t('No decimal amounts allowed for this order');
+        return {
+          isDisabled: true,
+          message: t('Order sizes must be in whole numbers for this market'),
+        };
       }
-      return t(
-        `The amount field only takes up to ${market.positionDecimalPlaces} decimals`
-      );
+      return {
+        isDisabled: true,
+        message: t(
+          `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`
+        ),
+      };
     }
 
-    return '';
+    return { isDisabled: false, message: '' };
   }, [
     keypair,
     step,
@@ -110,5 +227,5 @@ export const useOrderValidation = ({
     orderTimeInForce,
   ]);
 
-  return invalidText;
+  return { message, isDisabled };
 };

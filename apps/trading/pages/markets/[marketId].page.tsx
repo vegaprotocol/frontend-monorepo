@@ -20,6 +20,7 @@ const MARKET_QUERY = gql`
       tradingMode
       state
       decimalPlaces
+      positionDecimalPlaces
       data {
         market {
           id
@@ -31,6 +32,7 @@ const MARKET_QUERY = gql`
         bestStaticBidVolume
         bestStaticOfferVolume
         indicativeVolume
+        trigger
       }
       tradableInstrument {
         instrument {

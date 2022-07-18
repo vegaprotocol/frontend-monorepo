@@ -1,3 +1,4 @@
+import { MarketState } from '@vegaprotocol/types';
 import orderBy from 'lodash/orderBy';
 import type {
   MarketList,
@@ -11,22 +12,24 @@ export const lastPrice = ({ candles }: MarketList_markets) =>
 
 export const mapDataToMarketList = ({ markets }: MarketList) =>
   orderBy(
-    markets?.map((m) => {
-      return {
-        id: m.id,
-        decimalPlaces: m.decimalPlaces,
-        marketName: m.tradableInstrument.instrument?.code,
-        lastPrice: lastPrice(m) ?? m.data?.markPrice,
-        candles: (m.candles || []).filter((c) => c),
-        open: m.marketTimestamps.open
-          ? new Date(m.marketTimestamps.open).getTime()
-          : null,
-        close: m.marketTimestamps.close
-          ? new Date(m.marketTimestamps.close).getTime()
-          : null,
-        state: m.state,
-      };
-    }) || [],
+    markets
+      ?.filter((m) => m.state !== MarketState.Rejected)
+      .map((m) => {
+        return {
+          id: m.id,
+          decimalPlaces: m.decimalPlaces,
+          marketName: m.tradableInstrument.instrument?.code,
+          lastPrice: lastPrice(m) ?? m.data?.markPrice,
+          candles: (m.candles || []).filter((c) => c),
+          open: m.marketTimestamps.open
+            ? new Date(m.marketTimestamps.open).getTime()
+            : null,
+          close: m.marketTimestamps.close
+            ? new Date(m.marketTimestamps.close).getTime()
+            : null,
+          state: m.state,
+        };
+      }) || [],
     ['state', 'open', 'id'],
     ['asc', 'asc', 'asc']
   );

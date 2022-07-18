@@ -34,6 +34,7 @@ export const MARKET_NAMES_QUERY = gql`
       name
       tradableInstrument {
         instrument {
+          code
           metadata {
             tags
           }
@@ -51,7 +52,7 @@ export const MARKET_NAMES_QUERY = gql`
 interface Props {
   market: DealTicketQuery_market;
   setMarket: (marketId: string) => void;
-  ItemRenderer?: React.FC<{ market: MarketNames_markets }>;
+  ItemRenderer?: React.FC<{ market: MarketNames_markets; isMobile?: boolean }>;
 }
 
 function escapeRegExp(str: string) {
@@ -143,21 +144,14 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const handleInputKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       if (event.key === 'ArrowDown') {
-        (contRef.current?.children[0] as HTMLDivElement).focus();
+        (contRef.current?.children[0] as HTMLDivElement)?.focus();
       }
     },
     [contRef]
   );
 
   const handleOnBlur = useCallback(() => {
-    console.log('lookup, showPane', lookup, showPane);
     if (!lookup && !showPane) {
-      console.log(
-        '2 lookup, showPane, market.name',
-        lookup,
-        showPane,
-        market.name
-      );
       setLookup(market.name);
     }
   }, [market, lookup, showPane, setLookup]);
