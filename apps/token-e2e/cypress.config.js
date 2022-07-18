@@ -5,7 +5,7 @@ module.exports = defineConfig({
   e2e: {
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
-    fixturesFolder: false,
+    fixturesFolder: './src/fixtures',
     specPattern:
       process.env.CYPRESS_INCLUDE_FLOWS === 'true' ||
       process.env.CYPRESS_INCLUDE_FLOWS === true

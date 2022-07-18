@@ -13,10 +13,10 @@ context('Governance flow - with eth and vega wallets connected', function () {
     beforeEach(
       'teardown wallet & drill into a specific validator',
       function () {
-        // cy.vega_wallet_teardown();
+        cy.vega_wallet_teardown();
         cy.navigate_to('staking');
         cy.wait_for_spinner();
-        // cy.staking_page_associate_tokens('2');
+        cy.staking_page_associate_tokens('2');
       }
     );
 
