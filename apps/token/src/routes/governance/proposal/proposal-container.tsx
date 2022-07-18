@@ -39,12 +39,9 @@ export const PROPOSAL_QUERY = gql`
 export const ProposalContainer = () => {
   const { t } = useTranslation();
   const params = useParams<{ proposalId: string }>();
-  const { base } = getDataNodeUrl();
   const proposalUrl = React.useMemo(
-    () =>
-      new URL(`${ENV.restUrl}/governance/proposal/${params.proposalId}`, base)
-        .href,
-    [base, params.proposalId]
+    () => new URL(`governance/proposal/${params.proposalId}`, ENV.restUrl).href,
+    [params.proposalId]
   );
 
   const {
