@@ -257,7 +257,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>(
         fetchPolicy,
       });
       data = getData(res.data);
-      if (pagination) {
+      if (data && pagination) {
         if (!(data instanceof Array)) {
           throw new Error(
             'data needs to be instance of { cursor: string }[] when using pagination'
