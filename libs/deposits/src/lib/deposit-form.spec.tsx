@@ -38,6 +38,7 @@ beforeEach(() => {
     requestFaucet: jest.fn(),
     limits: {
       max: new BigNumber(20),
+      deposited: new BigNumber(10),
     },
     allowance: new BigNumber(30),
     isFaucetable: true,
@@ -88,7 +89,7 @@ it('Form validation', async () => {
   expect(await screen.findByText('Invalid Vega key')).toBeInTheDocument();
 
   // Max amount validation
-  const amountMoreThanAvailable = '11';
+  const amountMoreThanAvailable = '7'; // but also less than lifetime limit available
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountMoreThanAvailable },
   });
@@ -96,7 +97,7 @@ it('Form validation', async () => {
     await screen.findByText('Insufficient amount in Ethereum wallet')
   ).toBeInTheDocument();
 
-  const amountMoreThanLimit = '21';
+  const amountMoreThanLimit = '11';
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: amountMoreThanLimit },
   });
@@ -104,7 +105,12 @@ it('Form validation', async () => {
     await screen.findByText('Amount is above permitted maximum')
   ).toBeInTheDocument();
 
-  rerender(<DepositForm {...props} limits={{ max: new BigNumber(100) }} />);
+  rerender(
+    <DepositForm
+      {...props}
+      limits={{ max: new BigNumber(100), deposited: new BigNumber(10) }}
+    />
+  );
 
   const amountMoreThanAllowance = '31';
   fireEvent.change(screen.getByLabelText('Amount'), {
@@ -165,8 +171,8 @@ it('Deposit', async () => {
   mockUseWeb3React.mockReturnValue({ account });
 
   const limits = {
-    min: new BigNumber(10),
     max: new BigNumber(20),
+    deposited: new BigNumber(10),
   };
 
   render(
@@ -181,11 +187,15 @@ it('Deposit', async () => {
 
   // Check deposit limit is displayed
   expect(
-    screen.getByText('Maximum', { selector: 'th' }).nextElementSibling
+    screen.getByText('Max deposit total', { selector: 'th' }).nextElementSibling
   ).toHaveTextContent(limits.max.toString());
+  expect(
+    screen.getByText('Remaining available', { selector: 'th' })
+      .nextElementSibling
+  ).toHaveTextContent(limits.max.minus(limits.deposited).toString());
 
   fireEvent.change(screen.getByLabelText('Amount'), {
-    target: { value: '15' },
+    target: { value: '8' },
   });
 
   await act(async () => {
@@ -197,7 +207,7 @@ it('Deposit', async () => {
   expect(props.submitDeposit).toHaveBeenCalledWith({
     // @ts-ignore contract address definitely defined
     assetSource: asset.source.contractAddress,
-    amount: '1500',
+    amount: '800',
     vegaPublicKey: vegaKey,
   });
 });

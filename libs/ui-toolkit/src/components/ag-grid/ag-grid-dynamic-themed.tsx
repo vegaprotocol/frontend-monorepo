@@ -34,7 +34,7 @@ export const AgGridThemed = ({
   customThemeParams?: string;
 }) => {
   const theme = useContext(ThemeContext);
-  const defaultProps = { rowHeight: 20, headerHeight: 22 };
+  const defaultProps = { rowHeight: 22, headerHeight: 22 };
   return (
     <div
       className={`${className ?? ''} ${
