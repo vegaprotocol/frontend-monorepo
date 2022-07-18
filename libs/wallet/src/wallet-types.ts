@@ -47,8 +47,8 @@ export interface Market {
 
 export interface Order {
   id?: string;
-  status: string;
-  rejectionReason: string | null;
+  status?: string;
+  rejectionReason?: string | null;
   size: string;
   price: string;
   market: Market | null;
