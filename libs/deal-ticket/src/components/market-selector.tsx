@@ -206,7 +206,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
         <hr className="md:hidden mb-5" />
         <div
           className={classNames(
-            'md:absolute flex flex-col top-[30px] z-10 md:drop-shadow-md md:border-1 md:border-black md:dark:border-white bg-white dark:bg-black text-black dark:text-white min-w-full md:max-h-[200px] overflow-y-auto',
+            'md:absolute z-20 flex flex-col top-[30px] z-10 md:drop-shadow-md md:border-1 md:border-black md:dark:border-white bg-white dark:bg-black text-black dark:text-white min-w-full md:max-h-[200px] overflow-y-auto',
             showPane ? 'block' : 'hidden'
           )}
           data-testid="market-pane"
@@ -221,7 +221,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
                 role="button"
                 tabIndex={0}
                 key={market.id}
-                className="cursor-pointer focus:bg-white-95 focus:outline-0 dark:focus:bg-black-80 px-20 py-5"
+                className="bg-white dark:bg-black cursor-pointer focus:bg-white-95 focus:outline-0 dark:focus:bg-black-80 px-20 py-5"
                 onClick={() => handleMarketSelect(market)}
                 onKeyDown={(e) => handleItemKeyDown(e, market, i)}
               >
