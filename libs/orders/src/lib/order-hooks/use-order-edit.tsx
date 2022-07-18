@@ -73,7 +73,7 @@ export const useOrderEdit = () => {
         if (res?.signature) {
           const resId = order.id ?? determineId(res.signature);
           setUpdatedOrder(null);
-          // setId(resId);
+
           if (resId) {
             // Start a subscription looking for the newly created order
             subRef.current = client

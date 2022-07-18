@@ -52,12 +52,16 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     };
     const getEditDialogTitle = () =>
       editedOrder
-        ? `Order ${
-            editOrder?.market?.tradableInstrument.instrument.code ?? ''
-          } updated`
-        : `Edit ${
-            editOrder?.market?.tradableInstrument.instrument.code ?? ''
-          } order`;
+        ? t(
+            `Order ${
+              editOrder?.market?.tradableInstrument.instrument.code ?? ''
+            } updated`
+          )
+        : t(
+            `Edit ${
+              editOrder?.market?.tradableInstrument.instrument.code ?? ''
+            } order`
+          );
     return (
       <>
         <OrderListTable
