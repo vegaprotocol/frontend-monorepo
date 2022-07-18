@@ -38,7 +38,7 @@ export const useOrderEdit = () => {
 
   const edit = useCallback(
     async (order: Order) => {
-      if (!keypair) {
+      if (!keypair || !order.market) {
         return;
       }
 
@@ -52,10 +52,7 @@ export const useOrderEdit = () => {
             orderId: order.id,
             marketId: order?.market?.id,
             price: {
-              value: removeDecimal(
-                order.price,
-                order.market?.decimalPlaces ?? 0
-              ),
+              value: removeDecimal(order.price, order.market?.decimalPlaces),
             },
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
             sizeDelta: 0,
