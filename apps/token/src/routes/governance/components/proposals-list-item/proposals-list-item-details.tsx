@@ -14,6 +14,23 @@ import { ProposalState } from '../../../../__generated__/globalTypes';
 import type { ReactNode } from 'react';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
+const MajorityNotReached = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {t('Majority')} <StatusFail>{t('not reached')}</StatusFail>
+    </>
+  );
+};
+const ParticipationNotReached = () => {
+  const { t } = useTranslation();
+  return (
+    <>
+      {t('Participation')} <StatusFail>{t('not reached')}</StatusFail>
+    </>
+  );
+};
+
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
@@ -28,16 +45,6 @@ export const ProposalsListItemDetails = ({
     proposal.id,
     proposal.votes.yes.votes,
     proposal.votes.no.votes
-  );
-  const MajorityNotReached = (
-    <>
-      {t('Majority')} <StatusFail>{t('not reached')}</StatusFail>
-    </>
-  );
-  const ParticipationNotReached = (
-    <>
-      {t('Participation')} <StatusFail>{t('not reached')}</StatusFail>
-    </>
   );
 
   let proposalStatus: ReactNode;
@@ -119,8 +126,8 @@ export const ProposalsListItemDetails = ({
           </>
         );
       voteStatus =
-        (!participationMet && ParticipationNotReached) ||
-        (!majorityMet && MajorityNotReached) ||
+        (!participationMet && <ParticipationNotReached />) ||
+        (!majorityMet && <MajorityNotReached />) ||
         (willPass && (
           <>
             {t('Set to')} <StatusPass>{t('pass')}</StatusPass>
@@ -140,8 +147,8 @@ export const ProposalsListItemDetails = ({
         </>
       );
       voteStatus =
-        (!participationMet && ParticipationNotReached) ||
-        (!majorityMet && MajorityNotReached);
+        (!participationMet && <ParticipationNotReached />) ||
+        (!majorityMet && <MajorityNotReached />);
       break;
     }
     case ProposalState.Rejected: {
