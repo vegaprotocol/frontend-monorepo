@@ -97,6 +97,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
   }: IGetRowsParams) => {
     startRow += newRows.current;
     endRow += newRows.current;
+    console.log('getRows');
     try {
       if (dataRef.current && dataRef.current.indexOf(null) < endRow) {
         await load();
@@ -111,6 +112,8 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
         } else if (totalCountRef.current <= endRow) {
           lastRow = totalCountRef.current;
         }
+      } else if (rowsThisBlock.length < endRow - startRow) {
+        lastRow = rowsThisBlock.length;
       }
       successCallback(rowsThisBlock, lastRow);
     } catch (e) {
@@ -132,6 +135,7 @@ export const OrderListManager = ({ partyId }: OrderListManagerProps) => {
     <AsyncRenderer loading={loading} error={error} data={data}>
       <OrderList
         ref={gridRef}
+        rowModelType="infinite"
         datasource={{ getRows }}
         onBodyScrollEnd={onBodyScrollEnd}
         onBodyScroll={onBodyScroll}

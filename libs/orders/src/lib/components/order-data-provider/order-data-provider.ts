@@ -57,6 +57,8 @@ export const ORDERS_QUERY = gql`
         pageInfo {
           startCursor
           endCursor
+          hasNextPage
+          hasPreviousPage
         }
       }
     }

@@ -130,6 +130,8 @@ export interface Orders_party_ordersConnection_pageInfo {
   __typename: "PageInfo";
   startCursor: string;
   endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
 export interface Orders_party_ordersConnection {
