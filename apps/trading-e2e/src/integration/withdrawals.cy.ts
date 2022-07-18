@@ -38,7 +38,7 @@ describe('withdrawals', () => {
     cy.get(row)
       .eq(0)
       .find('[col-id="amount"]')
-      .should('contain.text', '100.00000');
+      .should('contain.text', '0.00100');
     cy.get(row)
       .eq(0)
       .find('[col-id="details.receiverAddress"]')
