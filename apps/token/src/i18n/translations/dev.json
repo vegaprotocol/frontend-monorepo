@@ -514,7 +514,7 @@
   "unknownEthereumConnectionError": "An unknown error occurred. Check the console in your browser's web developer tools for more details",
   "stakingDescriptionTitle": "How does staking on Vega work?",
   "stakingDescription1": "1. VEGA is an ERC20 token. Associate it with a Vega wallet using the staking bridge",
-  "stakingDescription2": "2. Use your Vega wallet to nominate a validator",
+  "stakingDescription2": "2. Use this site and your Vega wallet to nominate a validator",
   "stakingDescription3": "3. Earn a share of trading fees and treasury rewards for each full epoch staked",
   "stakingDescription4": "4. Move your stake if your validator is penalised",
   "readMoreStaking": "Read more about staking on Vega",
