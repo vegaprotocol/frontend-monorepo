@@ -9,6 +9,7 @@ export type TStep = {
   label: string;
   component: ReactNode;
   disabled?: boolean;
+  value?: string;
 };
 
 export interface StepperProps {
@@ -40,8 +41,6 @@ export const Stepper = ({ steps }: StepperProps) => {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
-
-  console.log('isMobile', isMobile);
 
   return (
     <div>
@@ -76,24 +75,34 @@ export const Stepper = ({ steps }: StepperProps) => {
                   aria-controls={`step-${index}-panel`}
                   onKeyDown={(event) => handleKeyPress(event)}
                   onClick={() => handleClick(index)}
-                  className="cursor-pointer z-10 flex flex-col md:flex-row items-center w-full text-center"
+                  className="cursor-pointer z-10 flex w-full items-center"
                 >
-                  <Counter
-                    className="md:mr-16"
-                    isActive={isActive}
-                    label={(index + 1).toString()}
-                  />
-                  <h3
-                    className={classNames(
-                      'md:mt-0 font-alpha uppercase text-black dark:text-white',
-                      {
-                        'mt-8 text-md md:text-2xl': isActive,
-                        'mt-16 text-sm md:text-md ml-8': !isActive,
-                      }
-                    )}
-                  >
-                    {step.label}
-                  </h3>
+                  <div className="flex-1 flex flex-col md:flex-row items-center w-full text-center">
+                    <Counter
+                      className="md:mr-16"
+                      isActive={isActive}
+                      label={(index + 1).toString()}
+                    />
+                    <h3
+                      className={classNames(
+                        'md:mt-0 font-alpha uppercase text-black dark:text-white',
+                        {
+                          'mt-8 text-md md:text-2xl': isActive,
+                          'mt-16 text-sm md:text-md ml-8': !isActive,
+                        }
+                      )}
+                    >
+                      {step.label}
+                    </h3>
+                  </div>
+                  {step.value && !isActive && (
+                    <span
+                      aria-label={`Selected value ${step.value}`}
+                      className="text-blue hidden md:block"
+                    >
+                      {step.value}
+                    </span>
+                  )}
                 </button>
               </div>
               {!isMobile && (
