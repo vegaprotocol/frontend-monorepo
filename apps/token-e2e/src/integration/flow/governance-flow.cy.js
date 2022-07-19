@@ -29,10 +29,10 @@ context('Governance flow - with eth and vega wallets connected', function () {
     );
 
     it('Able to create a freeform proposal', function () {
-      cy.vega_wallet_create_proposal_freeform('15')
-      .then((proposal) => {
+      cy.vega_wallet_create_proposal_freeform('15').then((proposal) => {
         expect(proposal).to.have.text(
-          'party has insufficient tokens to submit proposal request in this epoch');
+          'party has insufficient tokens to submit proposal request in this epoch'
+        );
       });
     });
 
@@ -45,11 +45,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
         txTimeout
       );
 
-      cy.vega_wallet_create_proposal_freeform('15')
-        .then((proposal) => {
-          expect(proposal).to.have.text(
-            'party has insufficient tokens to submit proposal request in this epoch');
-        });
+      cy.vega_wallet_create_proposal_freeform('15').then((proposal) => {
+        expect(proposal).to.have.text(
+          'party has insufficient tokens to submit proposal request in this epoch'
+        );
+      });
     });
   });
 });
