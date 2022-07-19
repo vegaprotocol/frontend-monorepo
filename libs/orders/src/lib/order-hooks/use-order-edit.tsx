@@ -1,6 +1,5 @@
 import { useApolloClient } from '@apollo/client';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
-import type { OrderAmendmentBody } from '@vegaprotocol/vegawallet-service-api-client';
 import { useState, useCallback, useEffect, useRef } from 'react';
 import type { Order } from '@vegaprotocol/wallet';
 import { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
@@ -38,7 +37,7 @@ export const useOrderEdit = () => {
 
   const edit = useCallback(
     async (order: Order) => {
-      if (!keypair || !order.market) {
+      if (!keypair || !order.market || !order.market.id) {
         return;
       }
 
@@ -50,7 +49,7 @@ export const useOrderEdit = () => {
           propagate: true,
           orderAmendment: {
             orderId: order.id,
-            marketId: order?.market?.id,
+            marketId: order.market.id,
             price: {
               value: removeDecimal(order.price, order.market?.decimalPlaces),
             },
@@ -65,7 +64,7 @@ export const useOrderEdit = () => {
                 }
               : undefined,
           },
-        } as OrderAmendmentBody);
+        });
 
         if (res?.signature) {
           const resId = order.id ?? determineId(res.signature);

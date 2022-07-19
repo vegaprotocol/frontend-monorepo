@@ -89,13 +89,11 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           title={getEditDialogTitle()}
           finalizedOrder={editedOrder}
         >
-          {
-            <OrderEditDialog
-              title={getEditDialogTitle()}
-              order={editOrder}
-              edit={edit}
-            />
-          }
+          <OrderEditDialog
+            title={getEditDialogTitle()}
+            order={editOrder}
+            edit={edit}
+          />
         </VegaTransactionDialog>
       </>
     );
