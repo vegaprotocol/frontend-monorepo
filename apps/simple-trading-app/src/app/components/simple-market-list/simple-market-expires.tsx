@@ -1,7 +1,6 @@
 import React from 'react';
-import { t } from '@vegaprotocol/react-helpers';
 import { format, isValid, parseISO } from 'date-fns';
-import { DATE_FORMAT } from '../../constants';
+import { EXPIRE_DATE_FORMAT } from '../../constants';
 
 const SimpleMarketExpires = ({
   tags,
@@ -23,9 +22,9 @@ const SimpleMarketExpires = ({
       return agg;
     }, null);
     return dateFound ? (
-      <div className="py-2">{`${t('expires')} ${format(
+      <div className="p-2 text-ui-small border-1 border-pink text-pink inline-block">{`${format(
         dateFound as Date,
-        DATE_FORMAT
+        EXPIRE_DATE_FORMAT
       )}`}</div>
     ) : null;
   }
