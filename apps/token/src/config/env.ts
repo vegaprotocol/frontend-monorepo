@@ -55,7 +55,7 @@ export const ENV = {
   commit: windowOrDefault('NX_COMMIT_REF'),
   branch: windowOrDefault('NX_BRANCH'),
   vegaUrl: windowOrDefault('NX_VEGA_URL'),
-  restUrl: windowOrDefault('NX_REST_URL'),
+  restUrl: windowOrDefault('NX_VEGA_REST'),
   urlConnect: TRUTHY.includes(windowOrDefault('NX_ETH_URL_CONNECT')),
   ethWalletMnemonic: windowOrDefault('NX_ETH_WALLET_MNEMONIC'),
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
