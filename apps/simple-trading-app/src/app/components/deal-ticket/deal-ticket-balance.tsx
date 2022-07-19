@@ -41,12 +41,17 @@ export const DealTicketBalance = ({
     <p>{t('Please connect your Vega wallet to see your balance')}</p>
   );
 
+  const ariaLabel = t(`${settlementAssetSymbol} Balance`);
+
   return (
-    <div className={classNames('text-right', className)}>
+    <aside
+      aria-label={ariaLabel}
+      className={classNames('text-right', className)}
+    >
       <div className="inline-block">
         <span className="text-blue">{settlementAssetSymbol}</span>
         {isWalletConnected ? balance : connectWallet}
       </div>
-    </div>
+    </aside>
   );
 };
