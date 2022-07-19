@@ -29,7 +29,10 @@ export const LandingDialog = ({ open, setOpen }: LandingDialogProps) => {
         intent={Intent.Primary}
         open={open}
         onChange={setClose}
-        titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
+        titleClassNames={
+          'font-bold font-sans text-3xl tracking-tight mb-0 pl-8'
+        }
+        contentClassNames={'md:w-[520px] lg:w-[520px] w-full'}
       >
         <SelectMarketList data={data} onSelect={setClose} />
       </Dialog>

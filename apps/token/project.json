@@ -18,7 +18,7 @@
         "assets": ["apps/token/src/favicon.ico", "apps/token/src/assets"],
         "styles": ["apps/token/src/styles.css"],
         "scripts": [],
-        "webpackConfig": "apps/explorer/webpack.config.js"
+        "webpackConfig": "apps/token/webpack.config.js"
       },
       "configurations": {
         "production": {

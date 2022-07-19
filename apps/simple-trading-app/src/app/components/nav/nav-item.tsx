@@ -10,7 +10,7 @@ export const NavItem = ({ iconName, label }: NavItemProps) => {
   return (
     <div className="flex flex-col md:flex-row items-center justify-start cursor-pointer relative">
       <Icon name={iconName} className="mr-8" />
-      <span>{label}</span>
+      <span className="text-lg">{label}</span>
     </div>
   );
 };

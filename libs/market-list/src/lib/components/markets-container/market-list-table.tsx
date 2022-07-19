@@ -4,11 +4,13 @@ import {
   PriceFlashCell,
   addDecimalsFormatNumber,
   t,
+  formatLabel,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Markets_markets } from '../__generated__/Markets';
+import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
 
 interface MarketListTableProps {
   datasource: IDatasource;
@@ -44,13 +46,19 @@ export const MarketListTable = forwardRef<AgGridReact, MarketListTableProps>(
           field="tradableInstrument.instrument.product.settlementAsset.symbol"
         />
         <AgGridColumn
-          headerName={t('State')}
+          headerName={t('Trading mode')}
           field="data"
-          valueFormatter={({ value }: ValueFormatterParams) =>
-            value === undefined
-              ? value
-              : `${value.market.state} (${value.market.tradingMode})`
-          }
+          minWidth={200}
+          valueFormatter={({ value }: ValueFormatterParams) => {
+            if (!value) return value;
+            const { market, trigger } = value;
+            return market &&
+              market.tradingMode === MarketTradingMode.MonitoringAuction &&
+              trigger &&
+              trigger !== AuctionTrigger.Unspecified
+              ? `${formatLabel(market.tradingMode)} - ${trigger.toLowerCase()}`
+              : formatLabel(market?.tradingMode);
+          }}
         />
         <AgGridColumn
           headerName={t('Best bid')}
