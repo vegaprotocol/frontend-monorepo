@@ -229,7 +229,8 @@ describe('Deposit form', () => {
 
     // Check deposit limit is displayed
     expect(
-      screen.getByText('Max deposit total', { selector: 'th' }).nextElementSibling
+      screen.getByText('Max deposit total', { selector: 'th' })
+        .nextElementSibling
     ).toHaveTextContent(limits.max.toString());
     expect(
       screen.getByText('Remaining available', { selector: 'th' })
