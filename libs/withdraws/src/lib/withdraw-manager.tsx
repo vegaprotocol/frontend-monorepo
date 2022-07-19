@@ -9,7 +9,6 @@ import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import type { Account, Asset } from './types';
-import { useWeb3React } from '@web3-react/core';
 import { useGetWithdrawLimits } from './use-get-withdraw-limits';
 
 export interface WithdrawManagerProps {
@@ -29,7 +28,6 @@ export const WithdrawManager = ({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
 
-  const { account: ethereumAccount } = useWeb3React();
   const { ethTx, vegaTx, approval, submit, reset } = useWithdraw(
     dialogDismissed.current,
     isNewContract
@@ -86,7 +84,6 @@ export const WithdrawManager = ({
   return (
     <>
       <WithdrawForm
-        ethereumAccount={ethereumAccount}
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}

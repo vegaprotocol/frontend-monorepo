@@ -1,5 +1,6 @@
 import {
   removeDecimal,
+  ethereumAddress,
   t,
   required,
   vegaPublicKey,
@@ -135,7 +136,12 @@ export const DepositForm = ({
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
       >
-        <Web3WalletInput id="ethereum-address" />
+        <Web3WalletInput
+          inputProps={{
+            id: 'ethereum-address',
+            ...register('from', { validate: { required, ethereumAddress } })
+          }}
+        />
         {errors.from?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.from.message}
