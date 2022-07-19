@@ -9,45 +9,28 @@ import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { truncateMiddle } from '../../lib/truncate-middle';
 import type { Nodes, Nodes_nodes_rankingScore } from './__generated__/Nodes';
-import type { Staking_epoch, Staking_party } from './__generated__/Staking';
+import type { Staking_epoch } from './__generated__/Staking';
 
 export const NODES_QUERY = gql`
   query Nodes {
     nodes {
+      avatarUrl
       id
       name
       pubkey
-      infoUrl
-      location
-      stakedByOperator
-      stakedByDelegates
       stakedTotal
-      pendingStake
-      stakedByOperatorFormatted @client
-      stakedByDelegatesFormatted @client
       stakedTotalFormatted @client
-      pendingStakeFormatted @client
-      epochData {
-        total
-        offline
-        online
-      }
-      status
       rankingScore {
         rankingScore
         stakeScore
         performanceScore
         votingPower
-        stakeScore
+        status
       }
     }
     nodeData {
       stakedTotal
       stakedTotalFormatted @client
-      totalNodes
-      inactiveNodes
-      validatingNodes
-      uptime
     }
   }
 `;
@@ -86,7 +69,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const nodes = React.useMemo<NodeListItemProps[]>(() => {
     if (!data?.nodes) return [];
 
-    const nodesWithPercentages = data.nodes.map((node) => {
+    return data.nodes.map((node) => {
       const stakedTotal = new BigNumber(
         data?.nodeData?.stakedTotalFormatted || 0
       );
@@ -108,8 +91,6 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         scores: node.rankingScore,
       };
     });
-
-    return nodesWithPercentages;
   }, [data, epoch]);
 
   if (error) {
