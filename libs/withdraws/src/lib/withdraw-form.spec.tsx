@@ -42,7 +42,9 @@ describe('Withdrawal form', () => {
     render(<WithdrawForm {...props} />);
 
     expect(screen.getByLabelText('Asset')).toHaveValue('');
-    expect(screen.getByLabelText('To (Ethereum address)')).toHaveValue(MOCK_ETH_ADDRESS);
+    expect(screen.getByLabelText('To (Ethereum address)')).toHaveValue(
+      MOCK_ETH_ADDRESS
+    );
     expect(screen.getByLabelText('Amount')).toHaveValue(null);
   });
 
@@ -85,7 +87,9 @@ describe('Withdrawal form', () => {
 
       fireEvent.submit(screen.getByTestId('withdraw-form'));
 
-      expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
+      expect(
+        await screen.findByText('Value is below minimum')
+      ).toBeInTheDocument();
     });
 
     it('passes validation with correct field values', async () => {

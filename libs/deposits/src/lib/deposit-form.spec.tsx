@@ -53,7 +53,9 @@ describe('Deposit form', () => {
     render(<DepositForm {...props} />);
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
-    expect(screen.getByLabelText('From (Ethereum address)')).toHaveValue(MOCK_ETH_ADDRESS);
+    expect(screen.getByLabelText('From (Ethereum address)')).toHaveValue(
+      MOCK_ETH_ADDRESS
+    );
     expect(screen.getByLabelText('Asset')).toHaveValue('');
     expect(screen.getByLabelText('To (Vega key)')).toHaveValue('');
     expect(screen.getByLabelText('Amount')).toHaveValue(null);
@@ -150,7 +152,9 @@ describe('Deposit form', () => {
       });
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
-      expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
+      expect(
+        await screen.findByText('Value is below minimum')
+      ).toBeInTheDocument();
     });
 
     it('fails when submitted amount is less than zero', async () => {
@@ -162,7 +166,9 @@ describe('Deposit form', () => {
       });
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
-      expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
+      expect(
+        await screen.findByText('Value is below minimum')
+      ).toBeInTheDocument();
     });
   });
 
@@ -182,7 +188,9 @@ describe('Deposit form', () => {
     );
 
     fireEvent.click(
-      screen.getByText(`Approve ${asset.symbol}`, { selector: '[type="button"]' })
+      screen.getByText(`Approve ${asset.symbol}`, {
+        selector: '[type="button"]',
+      })
     );
 
     expect(props.submitApprove).toHaveBeenCalled();

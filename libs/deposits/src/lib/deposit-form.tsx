@@ -139,7 +139,7 @@ export const DepositForm = ({
         <Web3WalletInput
           inputProps={{
             id: 'ethereum-address',
-            ...register('from', { validate: { required, ethereumAddress } })
+            ...register('from', { validate: { required, ethereumAddress } }),
           }}
         />
         {errors.from?.message && (
