@@ -77,10 +77,9 @@ const NodeListTd = ({ children }: { children: React.ReactNode }) => (
 
 interface NodeListProps {
   epoch: Staking_epoch | undefined;
-  party: Staking_party | null | undefined;
 }
 
-export const NodeList = ({ epoch, party }: NodeListProps) => {
+export const NodeList = ({ epoch }: NodeListProps) => {
   const { t } = useTranslation();
   const { data, error, loading } = useQuery<Nodes>(NODES_QUERY);
 
@@ -98,21 +97,6 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
           : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
             '%';
 
-      const userStake = party?.delegations?.length
-        ? party?.delegations
-            ?.filter((d) => d.node.id === node.id)
-            ?.filter((d) => d.epoch === Number(epoch?.id))
-            .reduce((sum, d) => {
-              const value = new BigNumber(d.amountFormatted);
-              return sum.plus(value);
-            }, new BigNumber(0))
-        : new BigNumber(0);
-
-      const userStakePercentage =
-        userStake.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-          ? '-'
-          : userStake.dividedBy(stakedOnNode).times(100).dp(2).toString() + '%';
-
       return {
         id: node.id,
         name: node.name,
@@ -120,15 +104,13 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
         stakedTotal,
         stakedOnNode,
         stakedTotalPercentage,
-        userStake,
-        userStakePercentage,
         epoch,
         scores: node.rankingScore,
       };
     });
 
     return nodesWithPercentages;
-  }, [data, epoch, party]);
+  }, [data, epoch]);
 
   if (error) {
     return (
@@ -169,8 +151,6 @@ export interface NodeListItemProps {
   name: string;
   stakedOnNode: BigNumber;
   stakedTotalPercentage: string;
-  userStake: BigNumber;
-  userStakePercentage: string;
   scores: Nodes_nodes_rankingScore;
 }
 
@@ -179,8 +159,6 @@ export const NodeListItem = ({
   name,
   stakedOnNode,
   stakedTotalPercentage,
-  userStake,
-  userStakePercentage,
   scores,
 }: NodeListItemProps) => {
   const { t } = useTranslation();

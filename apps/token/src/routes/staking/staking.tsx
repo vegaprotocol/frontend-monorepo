@@ -44,7 +44,5 @@ export const StakingStepSelectNode = ({
 }: {
   data?: StakingQueryResult;
 }) => {
-  return (
-    <NodeList data-testid="node-list" epoch={data?.epoch} party={data?.party} />
-  );
+  return <NodeList data-testid="node-list" epoch={data?.epoch} />;
 };

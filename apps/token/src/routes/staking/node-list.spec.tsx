@@ -117,27 +117,6 @@ const renderNodeList = () => {
               expiry: new Date(1000 * 60 * 60 * 24).toISOString(),
             },
           }}
-          party={{
-            __typename: 'Party',
-            id: 'foo',
-            delegations: [
-              {
-                __typename: 'Delegation',
-                amount: '0',
-                amountFormatted: '0',
-                epoch: 1,
-                node: {
-                  __typename: 'Node',
-                  id: 'bar',
-                },
-              },
-            ],
-            stake: {
-              __typename: 'PartyStake',
-              currentStakeAvailable: '0',
-              currentStakeAvailableFormatted: '0',
-            },
-          }}
         />
       </MockedProvider>
     </MemoryRouter>
