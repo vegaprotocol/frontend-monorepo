@@ -13,3 +13,8 @@ addMockWeb3ProviderCommand();
 addHighlightLog();
 
 export * from './lib/graphql-test-utils';
+
+Cypress.on(
+  'uncaught:exception',
+  (err) => !err.message.includes('ResizeObserver loop limit exceeded')
+);

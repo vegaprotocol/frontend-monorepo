@@ -1,7 +1,5 @@
 export const Links = {
-  WALLET_RELEASES:
-    'https://github.com/vegaprotocol/vegawallet-desktop/releases',
-  WALLET_GUIDE: 'https://vega.xyz/wallet',
+  WALLET_PAGE: 'https://vega.xyz/wallet',
   SUSHI_PAIRS: 'https://analytics.sushi.com/pairs/',
   SUSHI_ONSEN_MENU: 'https://app.sushi.com/farm',
   SUSHI_ONSEN_WHAT_IS:

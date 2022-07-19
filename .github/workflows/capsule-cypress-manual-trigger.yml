@@ -1,19 +1,33 @@
-name: Capsule tests
+name: Capsule tests -- manual trigger
+
+# This workflow runs the frontend tests against chosen branch
 
 on:
-  push:
-    branches:
-      - master
-      - develop
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      project:
+        description: 'Project'
+        required: true
+        type: choice
+        options:
+          - explorer-e2e
+          - simple-trading-app-e2e
+          - stats-e2e
+          - token-e2e
+          - trading-e2e
+      includeFlows:
+        description: 'Include long flows (if any)?'
+        required: true
+        type: boolean
+        default: true
 
 jobs:
-  pr:
-    name: Run capsule tests - PR
+  manual:
+    name: Run capsule tests -- manual trigger
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
     env:
       GO111MODULE: 'on'
+      GOPROXY: ${{ secrets.GO_PROXY }}
     steps:
       #######
       ## Setup langs
@@ -99,21 +113,16 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
 
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v2
-        with:
-          main-branch-name: master
-
       - name: Install root dependencies
         run: yarn install
 
       - name: Run Cypress tests
-        run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: yarn nx run ${{inputs.project}}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_INCLUDE_FLOWS: false
+          CYPRESS_INCLUDE_FLOWS: ${{inputs.includeFlows}}
 
       ######
       ## Upload logs
@@ -124,7 +133,6 @@ jobs:
         run: vegacapsule network logs > vega-capsule-logs.txt
 
       - uses: actions/upload-artifact@v2
-        if: ${{ always() }}
         with:
           name: logs
           path: ./vega-capsule-logs.txt

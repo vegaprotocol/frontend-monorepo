@@ -15,6 +15,8 @@ interface Props {
   setValue: (arg: unknown) => void;
 }
 
+const EMPTY_VALUE = ' - ';
+
 const getChange = (
   candles: (SimpleMarkets_markets_candles | null)[] | null,
   lastClose?: string
@@ -34,17 +36,27 @@ const getChange = (
       return Number(((last - first) / first) * 100).toFixed(3) + '%';
     }
   }
-  return ' - ';
+  return EMPTY_VALUE;
 };
 
 const getClassColor = (change: number | string) => {
   if (parseFloat(change as string) > 0) {
-    return 'text-darkerGreen dark:text-lightGreen';
+    return 'text-darkerGreen dark:text-lightGreen percent-change-up';
   }
   if (parseFloat(change as string) < 0) {
-    return 'text-vega-pink';
+    return 'text-vega-pink percent-change-down';
   }
-  return 'text-black-10';
+  if (change === EMPTY_VALUE) {
+    return 'text-black-10';
+  }
+  return 'text-black-10 percent-change-unchanged';
+};
+
+const displayValue = (value: string) => {
+  if (parseFloat(value) < 0) {
+    return value.replace('-', '');
+  }
+  return value;
 };
 
 const SimpleMarketPercentChangeWrapper = (props: Props) => {
@@ -74,7 +86,9 @@ const SimpleMarketPercentChange = ({ candles, marketId, setValue }: Props) => {
   }, [setValue, change]);
 
   return (
-    <div className={classNames('flex text-center', colorClasses)}>{change}</div>
+    <div className={classNames('flex text-center before:block', colorClasses)}>
+      {displayValue(change)}
+    </div>
   );
 };
 

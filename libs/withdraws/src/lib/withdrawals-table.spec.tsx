@@ -1,6 +1,9 @@
 import { MockedProvider } from '@apollo/client/testing';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { formatNumber, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  getDateTimeFormat,
+} from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import { generateWithdrawal } from './test-helpers';
 import type {
@@ -40,7 +43,7 @@ it('Renders the correct columns', async () => {
   const cells = screen.getAllByRole('gridcell');
   const expectedValues = [
     'asset-symbol',
-    formatNumber(withdrawal.amount, withdrawal.asset.decimals),
+    addDecimalsFormatNumber(withdrawal.amount, withdrawal.asset.decimals),
     '123456\u2026123456',
     getDateTimeFormat().format(new Date(withdrawal.createdTimestamp)),
     withdrawal.status,
@@ -73,7 +76,9 @@ describe('StatusCell', () => {
     render(<StatusCell {...props} />);
 
     expect(screen.getByText('Open')).toBeInTheDocument();
-    fireEvent.click(screen.getByText('Complete', { selector: 'button' }));
+    fireEvent.click(
+      screen.getByText('Click to complete', { selector: 'button' })
+    );
     expect(mockComplete).toHaveBeenCalled();
   });
 

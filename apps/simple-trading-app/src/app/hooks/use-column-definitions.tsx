@@ -1,48 +1,62 @@
 import React, { useMemo } from 'react';
+import classNames from 'classnames';
 import { t } from '@vegaprotocol/react-helpers';
 import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
 import MarketNameRenderer from '../components/simple-market-list/simple-market-renderer';
 import SimpleMarketPercentChange from '../components/simple-market-list/simple-market-percent-change';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ValueSetterParams } from 'ag-grid-community';
 import type { SimpleMarketsType } from '../components/simple-market-list/simple-market-list';
+import { IconNames } from '@blueprintjs/icons';
+import { IS_MARKET_TRADABLE } from '../constants';
 
 interface Props {
-  onClick: (marketId: string) => void;
+  isMobile: boolean;
 }
 
-const useColumnDefinitions = ({ onClick }: Props) => {
+const useColumnDefinitions = ({ isMobile }: Props) => {
   const columnDefs = useMemo(() => {
     return [
       {
         colId: 'market',
         headerName: t('Markets'),
         headerClass: 'uppercase',
-        minWidth: 300,
+        minWidth: isMobile ? 160 : 350,
         field: 'name',
+        cellClass: 'overflow-visible',
         cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
-          <MarketNameRenderer market={data} />
+          <MarketNameRenderer market={data} isMobile={isMobile} />
         ),
       },
       {
         colId: 'asset',
-        headerName: t('Settlement asset'),
+        headerName: t(isMobile ? 'Asset' : 'Settlement asset'),
         headerClass: 'uppercase',
-        minWidth: 100,
+        minWidth: isMobile ? 50 : 80,
         cellClass: 'uppercase flex h-full items-center',
         field: 'tradableInstrument.instrument.product.settlementAsset.symbol',
         cellRenderer: ({ data }: { data: SimpleMarketsType }) => (
-          <div className="flex h-full items-center justify-center">
-            {data.tradableInstrument.instrument.product.settlementAsset.symbol}
+          <div
+            className="grid h-full items-center text-center"
+            title={
+              data.tradableInstrument.instrument.product.settlementAsset.symbol
+            }
+          >
+            <div className="truncate min-w-0">
+              {
+                data.tradableInstrument.instrument.product.settlementAsset
+                  .symbol
+              }
+            </div>
           </div>
         ),
       },
       {
         colId: 'change',
-        headerName: t('24h change'),
+        headerName: t(isMobile ? '24h' : '24h change'),
         headerClass: 'uppercase',
         field: 'percentChange',
-        minWidth: 100,
+        minWidth: isMobile ? 80 : 100,
         valueSetter: (params: ValueSetterParams): boolean => {
           const { oldValue, newValue, api, data } = params;
           if (oldValue !== newValue) {
@@ -84,7 +98,7 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         minWidth: 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="uppercase flex h-full items-center justify-center">
-            <div className="border text-center px-8">
+            <div className="border text-center px-2 md:px-8 leading-4 md:leading-6">
               {data.data?.market.state}
             </div>
           </div>
@@ -95,22 +109,23 @@ const useColumnDefinitions = ({ onClick }: Props) => {
         headerName: '',
         headerClass: 'uppercase',
         sortable: false,
-        minWidth: 100,
+        width: isMobile ? 35 : 100,
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="h-full flex h-full items-center justify-end">
-            <Button
-              onClick={() => onClick(data.id)}
-              variant="inline-link"
-              appendIconName="arrow-top-right"
-              className="uppercase no-underline hover:no-underline"
-            >
-              {t('Trade')}
-            </Button>
+            <div className="uppercase text-center pr-8">
+              {!isMobile && t('Trade')}
+              <Icon
+                name={IconNames.ARROW_TOP_RIGHT}
+                className={classNames('fill-current ml-5', {
+                  'icon-green-hover': IS_MARKET_TRADABLE(data),
+                })}
+              />
+            </div>
           </div>
         ),
       },
     ];
-  }, [onClick]);
+  }, [isMobile]);
 
   const defaultColDef = useMemo(() => {
     return {
