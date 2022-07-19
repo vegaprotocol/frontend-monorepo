@@ -75,10 +75,7 @@ it('Update network', () => {
 it('Freeform network', () => {
   const name = getProposalName({
     ...proposal,
-    rationale: {
-      ...proposal.rationale,
-      hash: '0x0',
-    },
+    id: 'test-id',
     terms: {
       ...proposal.terms,
       change: {
@@ -86,7 +83,7 @@ it('Freeform network', () => {
       },
     },
   });
-  expect(name).toEqual('Freeform: 0x0');
+  expect(name).toEqual('Freeform: test-id');
 });
 
 it("Renders unknown proposal if it's a different proposal type", () => {
