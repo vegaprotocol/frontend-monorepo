@@ -38,9 +38,12 @@ const changeCellClass =
   };
 
 type Props = AgGridReactProps | AgReactUiProps;
-interface TradesTableValueFormatterParams extends ValueFormatterParams {
+type TradesTableValueFormatterParams = Omit<
+  ValueFormatterParams,
+  'data' | 'value'
+> & {
   data: Trades_market_tradesConnection_edges_node | null;
-}
+};
 
 export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
   return (
@@ -59,7 +62,12 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         field="price"
         width={130}
         cellClass={changeCellClass('price')}
-        valueFormatter={({ value, data }: TradesTableValueFormatterParams) => {
+        valueFormatter={({
+          value,
+          data,
+        }: TradesTableValueFormatterParams & {
+          value: Trades_market_tradesConnection_edges_node['price'];
+        }) => {
           if (!data?.market) {
             return null;
           }
@@ -70,7 +78,12 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Size')}
         field="size"
         width={125}
-        valueFormatter={({ value, data }: TradesTableValueFormatterParams) => {
+        valueFormatter={({
+          value,
+          data,
+        }: TradesTableValueFormatterParams & {
+          value: Trades_market_tradesConnection_edges_node['size'];
+        }) => {
           if (!data?.market) {
             return null;
           }
@@ -82,7 +95,11 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Created at')}
         field="createdAt"
         width={170}
-        valueFormatter={({ value }: TradesTableValueFormatterParams) => {
+        valueFormatter={({
+          value,
+        }: TradesTableValueFormatterParams & {
+          value: Trades_market_tradesConnection_edges_node['createdAt'];
+        }) => {
           return value && getDateTimeFormat().format(new Date(value));
         }}
       />

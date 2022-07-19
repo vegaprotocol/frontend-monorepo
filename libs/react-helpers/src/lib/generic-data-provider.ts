@@ -55,7 +55,6 @@ export interface Update<Data, Delta> {
   (data: Data, delta: Delta, reload: (forceReset?: boolean) => void): Data;
 }
 
-// export interface Append<Item extends Cursor>
 export interface Append<Data> {
   (
     data: Data | null,

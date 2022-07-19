@@ -8,11 +8,25 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
-import type { AgGridReact } from 'ag-grid-react';
-import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
+import type {
+  AgGridReact,
+  AgGridReactProps,
+  AgReactUiProps,
+} from 'ag-grid-react';
 import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
+import type {
+  Markets_markets,
+  Markets_markets_data,
+} from './__generated__/Markets';
 
 type Props = AgGridReactProps | AgReactUiProps;
+
+type MarketListTableValueFormatterParams = Omit<
+  ValueFormatterParams,
+  'data' | 'value'
+> & {
+  data: Markets_markets;
+};
 
 export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
   return (
@@ -41,7 +55,11 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Trading mode')}
         field="data"
         minWidth={200}
-        valueFormatter={({ value }: ValueFormatterParams) => {
+        valueFormatter={({
+          value,
+        }: MarketListTableValueFormatterParams & {
+          value?: Markets_markets_data;
+        }) => {
           if (!value) return value;
           const { market, trigger } = value;
           return market &&
@@ -57,7 +75,12 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         field="data.bestBidPrice"
         type="rightAligned"
         cellRenderer="PriceFlashCell"
-        valueFormatter={({ value, data }: ValueFormatterParams) =>
+        valueFormatter={({
+          value,
+          data,
+        }: MarketListTableValueFormatterParams & {
+          value?: Markets_markets_data['bestBidPrice'];
+        }) =>
           value === undefined
             ? value
             : addDecimalsFormatNumber(value, data.decimalPlaces)
@@ -67,7 +90,12 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Best offer')}
         field="data.bestOfferPrice"
         type="rightAligned"
-        valueFormatter={({ value, data }: ValueFormatterParams) =>
+        valueFormatter={({
+          value,
+          data,
+        }: MarketListTableValueFormatterParams & {
+          value?: Markets_markets_data['bestOfferPrice'];
+        }) =>
           value === undefined
             ? value
             : addDecimalsFormatNumber(value, data.decimalPlaces)
@@ -79,7 +107,12 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         field="data.markPrice"
         type="rightAligned"
         cellRenderer="PriceFlashCell"
-        valueFormatter={({ value, data }: ValueFormatterParams) =>
+        valueFormatter={({
+          value,
+          data,
+        }: MarketListTableValueFormatterParams & {
+          value?: Markets_markets_data['markPrice'];
+        }) =>
           value === undefined
             ? value
             : addDecimalsFormatNumber(value, data.decimalPlaces)

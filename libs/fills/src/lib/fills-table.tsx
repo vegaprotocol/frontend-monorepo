@@ -13,16 +13,22 @@ import { forwardRef } from 'react';
 import type { ValueFormatterParams } from 'ag-grid-community';
 import BigNumber from 'bignumber.js';
 import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
-import type { FillFields } from './__generated__/FillFields';
+import type {
+  FillFields,
+  FillFields_market_tradableInstrument_instrument_product,
+} from './__generated__/FillFields';
 import type { Fills_party_tradesConnection_edges_node } from './__generated__/Fills';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
 };
 
-interface AccountsTableValueFormatterParams extends ValueFormatterParams {
-  data: Fills_party_tradesConnection_edges_node;
-}
+type AccountsTableValueFormatterParams = Omit<
+  ValueFormatterParams,
+  'data' | 'value'
+> & {
+  data: Fills_party_tradesConnection_edges_node | null;
+};
 
 export const FillsTable = forwardRef<AgGridReact, Props>(
   ({ partyId, ...props }, ref) => {
@@ -73,7 +79,11 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         <AgGridColumn
           headerName={t('Date')}
           field="createdAt"
-          valueFormatter={({ value }: AccountsTableValueFormatterParams) => {
+          valueFormatter={({
+            value,
+          }: AccountsTableValueFormatterParams & {
+            value: Fills_party_tradesConnection_edges_node['createdAt'];
+          }) => {
             if (value === undefined) {
               return value;
             }
@@ -85,9 +95,14 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
   }
 );
 
-const formatPrice = ({ value, data }: AccountsTableValueFormatterParams) => {
-  if (value === undefined) {
-    return value;
+const formatPrice = ({
+  value,
+  data,
+}: AccountsTableValueFormatterParams & {
+  value?: Fills_party_tradesConnection_edges_node['price'];
+}) => {
+  if (value === undefined || !data) {
+    return undefined;
   }
   const asset =
     data?.market.tradableInstrument.instrument.product.settlementAsset.symbol;
@@ -99,9 +114,14 @@ const formatPrice = ({ value, data }: AccountsTableValueFormatterParams) => {
 };
 
 const formatSize = (partyId: string) => {
-  return ({ value, data }: AccountsTableValueFormatterParams) => {
-    if (value === undefined) {
-      return value;
+  return ({
+    value,
+    data,
+  }: AccountsTableValueFormatterParams & {
+    value?: Fills_party_tradesConnection_edges_node['size'];
+  }) => {
+    if (value === undefined || !data) {
+      return undefined;
     }
     let prefix;
     if (data?.buyer.id === partyId) {
@@ -118,9 +138,14 @@ const formatSize = (partyId: string) => {
   };
 };
 
-const formatTotal = ({ value, data }: AccountsTableValueFormatterParams) => {
-  if (value === undefined) {
-    return value;
+const formatTotal = ({
+  value,
+  data,
+}: AccountsTableValueFormatterParams & {
+  value?: Fills_party_tradesConnection_edges_node['price'];
+}) => {
+  if (value === undefined || !data) {
+    return undefined;
   }
   const asset =
     data?.market.tradableInstrument.instrument.product.settlementAsset.symbol;
@@ -135,7 +160,12 @@ const formatTotal = ({ value, data }: AccountsTableValueFormatterParams) => {
 };
 
 const formatRole = (partyId: string) => {
-  return ({ value, data }: AccountsTableValueFormatterParams) => {
+  return ({
+    value,
+    data,
+  }: AccountsTableValueFormatterParams & {
+    value?: Fills_party_tradesConnection_edges_node['aggressor'];
+  }) => {
     if (value === undefined) {
       return value;
     }
@@ -160,7 +190,12 @@ const formatRole = (partyId: string) => {
 };
 
 const formatFee = (partyId: string) => {
-  return ({ value, data }: AccountsTableValueFormatterParams) => {
+  return ({
+    value,
+    data,
+  }: AccountsTableValueFormatterParams & {
+    value?: FillFields_market_tradableInstrument_instrument_product;
+  }) => {
     if (value === undefined) {
       return value;
     }

@@ -8,7 +8,7 @@ import type { IGetRowsParams } from 'ag-grid-community';
 import type {
   Markets_markets,
   Markets_markets_data,
-} from '../../components/__generated__/Markets';
+} from './__generated__/Markets';
 import { marketsDataProvider as dataProvider } from './markets-data-provider';
 import { MarketState } from '@vegaprotocol/types';
 
