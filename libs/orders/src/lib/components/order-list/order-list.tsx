@@ -53,9 +53,12 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   }
 );
 
-interface OrderListTableValueFormatterParams extends ValueFormatterParams {
+type OrderListTableValueFormatterParams = Omit<
+  ValueFormatterParams,
+  'data' | 'value'
+> & {
   data: Orders_party_ordersConnection_edges_node | null;
-}
+};
 
 type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
   cancel: (body?: unknown) => Promise<unknown>;
@@ -84,9 +87,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
-          }: OrderListTableValueFormatterParams) => {
-            if (!data || !data.market) {
-              return null;
+          }: OrderListTableValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['size'];
+          }) => {
+            if (value === undefined || !data || !data.market) {
+              return undefined;
             }
             const prefix = data.side === Side.Buy ? '+' : '-';
             return (
@@ -100,9 +105,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
-          }: OrderListTableValueFormatterParams) => {
-            if (!data || !data.market) {
-              return null;
+          }: OrderListTableValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['status'];
+          }) => {
+            if (value === undefined || !data || !data.market) {
+              return undefined;
             }
             if (value === OrderStatus.Rejected) {
               return `${value}: ${data.rejectionReason}`;
@@ -114,13 +121,18 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           headerName={t('Filled')}
           field="remaining"
           cellClass="font-mono"
-          valueFormatter={({ data }: OrderListTableValueFormatterParams) => {
-            if (!data || !data.market) {
-              return null;
+          valueFormatter={({
+            data,
+            value,
+          }: OrderListTableValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['remaining'];
+          }) => {
+            if (value === undefined || !data || !data.market) {
+              return undefined;
             }
             const dps = data.market.positionDecimalPlaces;
             const size = new BigNumber(data.size);
-            const remaining = new BigNumber(data.remaining);
+            const remaining = new BigNumber(value);
             const fills = size.minus(remaining);
             return `${addDecimal(fills.toString(), dps)}/${addDecimal(
               size.toString(),
@@ -134,8 +146,15 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
-          }: OrderListTableValueFormatterParams) => {
-            if (!data || !data.market || data.type === 'Market') {
+          }: OrderListTableValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['price'];
+          }) => {
+            if (
+              value === undefined ||
+              !data ||
+              !data.market ||
+              data.type === 'Market'
+            ) {
               return '-';
             }
             return addDecimal(value, data.market.decimalPlaces);
@@ -146,9 +165,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           valueFormatter={({
             value,
             data,
-          }: OrderListTableValueFormatterParams) => {
-            if (!data || !data.market) {
-              return null;
+          }: OrderListTableValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['timeInForce'];
+          }) => {
+            if (value === undefined || !data || !data.market) {
+              return undefined;
             }
             if (value === OrderTimeInForce.GTT && data.expiresAt) {
               const expiry = getDateTimeFormat().format(
@@ -162,13 +183,21 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="createdAt"
-          valueFormatter={({ value }: OrderListTableValueFormatterParams) => {
-            return getDateTimeFormat().format(new Date(value));
+          valueFormatter={({
+            value,
+          }: OrderListTableValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['createdAt'];
+          }) => {
+            return value ? getDateTimeFormat().format(new Date(value)) : value;
           }}
         />
         <AgGridColumn
           field="updatedAt"
-          valueFormatter={({ value }: OrderListTableValueFormatterParams) => {
+          valueFormatter={({
+            value,
+          }: OrderListTableValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['updatedAt'];
+          }) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
           }}
         />
