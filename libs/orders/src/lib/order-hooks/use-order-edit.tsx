@@ -1,7 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { Order } from '@vegaprotocol/wallet';
 import { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { ORDER_EVENT_SUB } from './order-event-query';
@@ -12,10 +11,27 @@ import type {
   OrderEventVariables,
 } from './__generated__';
 import * as Sentry from '@sentry/react';
+import type { OrderTimeInForce } from '@vegaprotocol/types';
+
+type OrderEditInput = {
+  id: string;
+  market: {
+    id: string;
+    decimalPlaces: number;
+  };
+  price: string;
+  timeInForce: OrderTimeInForce;
+  expiresAt?: string;
+};
 
 export const useOrderEdit = () => {
   const { keypair } = useVegaWallet();
-  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
+  const {
+    send,
+    transaction,
+    setComplete,
+    reset: resetTransaction,
+  } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
@@ -36,8 +52,8 @@ export const useOrderEdit = () => {
   }, [resetTransaction]);
 
   const edit = useCallback(
-    async (order: Order) => {
-      if (!keypair || !order.market || !order.market.id) {
+    async (order: OrderEditInput) => {
+      if (!keypair) {
         return;
       }
 
@@ -51,7 +67,7 @@ export const useOrderEdit = () => {
             orderId: order.id,
             marketId: order.market.id,
             price: {
-              value: removeDecimal(order.price, order.market?.decimalPlaces),
+              value: removeDecimal(order.price, order.market.decimalPlaces),
             },
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
             sizeDelta: 0,
@@ -96,18 +112,18 @@ export const useOrderEdit = () => {
                   matchingOrderEvent.event.__typename === 'Order'
                 ) {
                   setUpdatedOrder(matchingOrderEvent.event);
+                  setComplete();
                   subRef.current?.unsubscribe();
                 }
               });
           }
         }
-        return res;
       } catch (e) {
         Sentry.captureException(e);
         return;
       }
     },
-    [client, keypair, send]
+    [client, keypair, setComplete, send]
   );
 
   return {

@@ -117,6 +117,12 @@ const getProps = (
       intent: Intent.None,
       children: <Step>Awaiting transaction</Step>,
     },
+    [VegaTxStatus.Complete]: {
+      title: t('Withdrawal successful'),
+      icon: 'tick',
+      intent: Intent.Success,
+      children: <Step>Withdrawal has completed</Step>,
+    },
   };
 
   const ethTxPropsMap: Record<EthTxStatus, DialogProps> = {

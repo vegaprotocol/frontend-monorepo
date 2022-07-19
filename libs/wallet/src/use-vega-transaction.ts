@@ -8,8 +8,7 @@ export enum VegaTxStatus {
   Requested = 'Requested',
   Pending = 'Pending',
   Error = 'Error',
-  // Note no complete state as we have to use api calls/subs to check if
-  // our transaction was completed
+  Complete = 'Complete',
 }
 
 export interface VegaTxState {
@@ -46,6 +45,10 @@ export const useVegaTransaction = () => {
 
   const reset = useCallback(() => {
     setTransaction(initialState);
+  }, [setTransaction]);
+
+  const setComplete = useCallback(() => {
+    setTransaction({ status: VegaTxStatus.Complete });
   }, [setTransaction]);
 
   const send = useCallback(
@@ -91,5 +94,5 @@ export const useVegaTransaction = () => {
     [sendTx, handleError, setTransaction, reset]
   );
 
-  return { send, transaction, reset };
+  return { send, transaction, setComplete, reset };
 };

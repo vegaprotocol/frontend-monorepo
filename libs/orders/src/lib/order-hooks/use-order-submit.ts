@@ -1,22 +1,44 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
-import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
 } from './__generated__';
+import type {
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderSide,
+} from '@vegaprotocol/wallet';
 import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
-import type { Market } from '../market';
 import type { Subscription } from 'zen-observable-ts';
 
-export const useOrderSubmit = (market: Market) => {
+export type OrderSubmitInput = {
+  size: string;
+  type: VegaWalletOrderType.Market | VegaWalletOrderType.Limit;
+  timeInForce: VegaWalletOrderTimeInForce;
+  side: VegaWalletOrderSide;
+  price?: string;
+  expiration?: Date;
+};
+
+export type OrderSubmitMarket = {
+  id: string;
+  decimalPlaces: number;
+  positionDecimalPlaces: number;
+};
+
+export const useOrderSubmit = (market: OrderSubmitMarket) => {
   const { keypair } = useVegaWallet();
-  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
+  const {
+    send,
+    transaction,
+    setComplete,
+    reset: resetTransaction,
+  } = useVegaTransaction();
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
@@ -37,12 +59,13 @@ export const useOrderSubmit = (market: Market) => {
   }, [resetTransaction]);
 
   const submit = useCallback(
-    async (order: Order) => {
-      if (!keypair || !order.side) {
+    async (order: OrderSubmitInput) => {
+      if (!keypair) {
         return;
       }
 
       setFinalizedOrder(null);
+
       try {
         const res = await send({
           pubKey: keypair.pub,
@@ -57,11 +80,12 @@ export const useOrderSubmit = (market: Market) => {
             type: order.type,
             side: order.side,
             timeInForce: order.timeInForce,
-            expiresAt: order.expiration
-              ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
-                // just append 6 zeroes
-                order.expiration.getTime().toString() + '000000'
-              : undefined,
+            expiresAt:
+              order.type === VegaWalletOrderType.Limit && order.expiration
+                ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
+                  // just append 6 zeroes
+                  order.expiration.getTime().toString() + '000000'
+                : undefined,
           },
         });
 
@@ -93,6 +117,7 @@ export const useOrderSubmit = (market: Market) => {
                   matchingOrderEvent.event.__typename === 'Order'
                 ) {
                   setFinalizedOrder(matchingOrderEvent.event);
+                  setComplete();
                   subRef.current?.unsubscribe();
                 }
               });
@@ -104,14 +129,7 @@ export const useOrderSubmit = (market: Market) => {
         return;
       }
     },
-    [
-      client,
-      keypair,
-      send,
-      market.id,
-      market.decimalPlaces,
-      market.positionDecimalPlaces,
-    ]
+    [client, keypair, send, market, setComplete]
   );
 
   return {

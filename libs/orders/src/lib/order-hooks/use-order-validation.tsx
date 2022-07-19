@@ -1,22 +1,27 @@
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
-import type { Order } from '@vegaprotocol/wallet';
 import {
   useVegaWallet,
   VegaWalletOrderTimeInForce as OrderTimeInForce,
   VegaWalletOrderType as OrderType,
 } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
-import type { Market } from '../market';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
+import type { OrderSubmitInput } from './use-order-submit';
 
-export type ValidationProps = {
+export type UseValidationArgs = {
   step: number;
-  market: Market;
+  market: {
+    id: string;
+    decimalPlaces: number;
+    positionDecimalPlaces: number;
+    state: MarketState;
+    tradingMode: MarketTradingMode;
+  };
   orderType: OrderType;
   orderTimeInForce: OrderTimeInForce;
-  fieldErrors?: FieldErrors<Order>;
+  fieldErrors?: FieldErrors<OrderSubmitInput>;
 };
 
 export const marketTranslations = (marketState: MarketState) => {
@@ -34,7 +39,7 @@ export const useOrderValidation = ({
   fieldErrors = {},
   orderType,
   orderTimeInForce,
-}: ValidationProps) => {
+}: UseValidationArgs) => {
   const { keypair } = useVegaWallet();
 
   const { message, isDisabled } = useMemo(() => {

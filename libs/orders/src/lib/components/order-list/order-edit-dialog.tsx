@@ -6,25 +6,18 @@ import {
 import { OrderType } from '@vegaprotocol/types';
 import { FormGroup, Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
-import Icon from 'react-syntax-highlighter';
-import { OrderDialogWrapper } from '@vegaprotocol/wallet';
-import type { Order } from '@vegaprotocol/wallet';
+import type { Orders_party_orders } from '../__generated__';
 
 interface OrderEditDialogProps {
-  title: string;
-  order: Order | null;
-  edit: (body: Order) => Promise<unknown>;
+  order: Orders_party_orders;
+  onSubmit: (order: Orders_party_orders) => void;
 }
 
 interface FormFields {
   entryPrice: string;
 }
 
-export const OrderEditDialog = ({
-  order,
-  title,
-  edit,
-}: OrderEditDialogProps) => {
+export const OrderEditDialog = ({ order, onSubmit }: OrderEditDialogProps) => {
   const headerClassName = 'text-h5 font-bold text-black dark:text-white';
   const {
     register,
@@ -39,7 +32,7 @@ export const OrderEditDialog = ({
   });
   if (!order) return null;
   return (
-    <OrderDialogWrapper title={title} icon={<Icon name="hand-up" size={20} />}>
+    <div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {order.market && (
           <div>
@@ -69,11 +62,10 @@ export const OrderEditDialog = ({
           </p>
         </div>
       </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-12">
         <form
-          onSubmit={handleSubmit(async (data) => {
-            await edit({
+          onSubmit={handleSubmit((data) => {
+            onSubmit({
               ...order,
               price: data.entryPrice,
             });
@@ -97,6 +89,6 @@ export const OrderEditDialog = ({
           </Button>
         </form>
       </div>
-    </OrderDialogWrapper>
+    </div>
   );
 };

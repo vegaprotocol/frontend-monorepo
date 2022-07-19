@@ -8,13 +8,22 @@ import type {
 } from './__generated__/OrderEvent';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import * as Sentry from '@sentry/react';
-import { OrderStatus } from '@vegaprotocol/types';
 import { determineId } from '@vegaprotocol/react-helpers';
 import type { Subscription } from 'zen-observable-ts';
 
+export type OrderCancelInput = {
+  orderId: string;
+  marketId: string;
+};
+
 export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
-  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
+  const {
+    send,
+    transaction,
+    setComplete,
+    reset: resetTransaction,
+  } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
@@ -35,20 +44,8 @@ export const useOrderCancel = () => {
   }, [resetTransaction]);
 
   const cancel = useCallback(
-    async (order) => {
+    async (order: OrderCancelInput) => {
       if (!keypair) {
-        return;
-      }
-
-      if (
-        [
-          OrderStatus.Cancelled,
-          OrderStatus.Rejected,
-          OrderStatus.Expired,
-          OrderStatus.Filled,
-          OrderStatus.Stopped,
-        ].includes(order.status)
-      ) {
         return;
       }
 
@@ -59,13 +56,13 @@ export const useOrderCancel = () => {
           pubKey: keypair.pub,
           propagate: true,
           orderCancellation: {
-            orderId: order.id,
-            marketId: order.market.id,
+            orderId: order.orderId,
+            marketId: order.marketId,
           },
         });
 
         if (res?.signature) {
-          const resId = order.id ?? determineId(res.signature);
+          const resId = order.orderId ?? determineId(res.signature);
           setUpdatedOrder(null);
 
           if (resId) {
@@ -94,18 +91,18 @@ export const useOrderCancel = () => {
                   matchingOrderEvent.event.__typename === 'Order'
                 ) {
                   setUpdatedOrder(matchingOrderEvent.event);
+                  setComplete();
                   subRef.current?.unsubscribe();
                 }
               });
           }
         }
-        return res;
       } catch (e) {
         Sentry.captureException(e);
         return;
       }
     },
-    [client, keypair, send]
+    [client, keypair, send, setComplete]
   );
 
   return {
