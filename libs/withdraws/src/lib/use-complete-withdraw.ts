@@ -1,5 +1,5 @@
 import { gql, useApolloClient } from '@apollo/client';
-import { captureException } from '@sentry/nextjs';
+import { captureException } from '@sentry/react';
 import type {
   CollateralBridge,
   CollateralBridgeNew,

@@ -34,6 +34,7 @@ export const MARKET_NAMES_QUERY = gql`
       name
       tradableInstrument {
         instrument {
+          code
           metadata {
             tags
           }
@@ -51,7 +52,7 @@ export const MARKET_NAMES_QUERY = gql`
 interface Props {
   market: DealTicketQuery_market;
   setMarket: (marketId: string) => void;
-  ItemRenderer?: React.FC<{ market: MarketNames_markets }>;
+  ItemRenderer?: React.FC<{ market: MarketNames_markets; isMobile?: boolean }>;
 }
 
 function escapeRegExp(str: string) {
@@ -143,21 +144,14 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const handleInputKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
       if (event.key === 'ArrowDown') {
-        (contRef.current?.children[0] as HTMLDivElement).focus();
+        (contRef.current?.children[0] as HTMLDivElement)?.focus();
       }
     },
     [contRef]
   );
 
   const handleOnBlur = useCallback(() => {
-    console.log('lookup, showPane', lookup, showPane);
     if (!lookup && !showPane) {
-      console.log(
-        '2 lookup, showPane, market.name',
-        lookup,
-        showPane,
-        market.name
-      );
       setLookup(market.name);
     }
   }, [market, lookup, showPane, setLookup]);
@@ -212,7 +206,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
         <hr className="md:hidden mb-5" />
         <div
           className={classNames(
-            'md:absolute flex flex-col top-[30px] z-10 md:drop-shadow-md md:border-1 md:border-black md:dark:border-white bg-white dark:bg-black text-black dark:text-white min-w-full md:max-h-[200px] overflow-y-auto',
+            'md:absolute z-20 flex flex-col top-[30px] z-10 md:drop-shadow-md md:border-1 md:border-black md:dark:border-white bg-white dark:bg-black text-black dark:text-white min-w-full md:max-h-[200px] overflow-y-auto',
             showPane ? 'block' : 'hidden'
           )}
           data-testid="market-pane"
@@ -227,7 +221,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
                 role="button"
                 tabIndex={0}
                 key={market.id}
-                className="cursor-pointer focus:bg-white-95 focus:outline-0 dark:focus:bg-black-80 px-20 py-5"
+                className="bg-white dark:bg-black cursor-pointer focus:bg-white-95 focus:outline-0 dark:focus:bg-black-80 px-20 py-5"
                 onClick={() => handleMarketSelect(market)}
                 onKeyDown={(e) => handleItemKeyDown(e, market, i)}
               >

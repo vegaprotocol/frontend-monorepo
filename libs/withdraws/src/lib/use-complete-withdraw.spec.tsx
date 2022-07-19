@@ -7,7 +7,7 @@ import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Erc20Approval } from './__generated__/Erc20Approval';
 import { ERC20_APPROVAL_QUERY_NEW } from './queries';
 import * as web3 from '@vegaprotocol/web3';
-import * as sentry from '@sentry/nextjs';
+import * as sentry from '@sentry/react';
 import type { Erc20ApprovalNew_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalNew';
 
 jest.mock('@vegaprotocol/web3', () => ({

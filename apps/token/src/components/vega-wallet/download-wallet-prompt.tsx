@@ -8,13 +8,8 @@ export const DownloadWalletPrompt = () => {
     <>
       <h3 className="mt-12 mb-4">{t('getWallet')}</h3>
       <p className="mb-4">
-        <Link className="text-deemphasise" href={Links.WALLET_GUIDE}>
-          {t('readGuide')}
-        </Link>
-      </p>
-      <p className="mb-4">
-        <Link className="text-deemphasise" href={Links.WALLET_RELEASES}>
-          {t('downloadWallet')}
+        <Link className="text-deemphasise" href={Links.WALLET_PAGE}>
+          {t('getWalletLink')}
         </Link>
       </p>
     </>
