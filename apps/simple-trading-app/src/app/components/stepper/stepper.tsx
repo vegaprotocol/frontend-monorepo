@@ -146,6 +146,7 @@ export const Stepper = ({ steps }: StepperProps) => {
               variant="secondary"
               onClick={handleNext}
               disabled={steps[activeStep].disabled}
+              data-testid="next-button"
             >
               {t('Next')}
             </Button>

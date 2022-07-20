@@ -39,6 +39,58 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       marginTop: '10px',
       marginRight: '5px',
     },
+    '.buyButton': {
+      textTransform: 'uppercase',
+      textDecoration: 'none',
+      backgroundColor: 'rgba(0, 143, 74, 0.1)',
+      border: `1px solid ${theme.colors.darkerGreen}`,
+      color: theme.colors.darkerGreen,
+      paddingTop: '0.5rem',
+      paddingBottom: '0.5rem',
+      '&:hover': {
+        backgroundColor: theme.colors.darkerGreen,
+        color: theme.colors.white.DEFAULT,
+      },
+      '&.selected': {
+        backgroundColor: theme.colors.darkerGreen,
+        color: theme.colors.white.DEFAULT,
+      },
+    },
+    '.buyButtonDark': {
+      color: theme.colors.darkerGreen,
+      '&:hover': {
+        color: theme.colors.black.DEFAULT,
+      },
+      '&.selected': {
+        color: theme.colors.black.DEFAULT,
+      },
+    },
+    '.sellButton': {
+      textTransform: 'uppercase',
+      textDecoration: 'none',
+      paddingTop: '0.5rem',
+      paddingBottom: '0.5rem',
+      backgroundColor: 'rgba(255, 8, 126, 0.1)',
+      border: `1px solid ${theme.colors.pink}`,
+      color: theme.colors.pink,
+      '&:hover': {
+        color: theme.colors.white.DEFAULT,
+        backgroundColor: theme.colors.pink,
+      },
+      '&.selected': {
+        backgroundColor: theme.colors.pink,
+        color: theme.colors.white.DEFAULT,
+      },
+    },
+    '.sellButtonDark': {
+      color: theme.colors.pink,
+      '&:hover': {
+        color: theme.colors.black.DEFAULT,
+      },
+      '&.selected': {
+        color: theme.colors.black.DEFAULT,
+      },
+    },
   });
 });
 
