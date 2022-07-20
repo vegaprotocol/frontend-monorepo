@@ -261,6 +261,12 @@ export const Info = ({ market }: InfoProps) => {
         />
       ),
     },
+    ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
+      (trigger, i) => ({
+        title: t(`Price monitoring trigger ${i + 1}`),
+        content: <MarketInfoTable data={trigger} />,
+      })
+    ),
     {
       title: t('Liquidity monitoring parameters'),
       content: (
@@ -273,12 +279,6 @@ export const Info = ({ market }: InfoProps) => {
         />
       ),
     },
-    ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
-      (trigger, i) => ({
-        title: t(`Price monitoring trigger ${i + 1}`),
-        content: <MarketInfoTable data={trigger} />,
-      })
-    ),
   ];
 
   return (
