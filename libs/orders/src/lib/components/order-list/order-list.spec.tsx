@@ -16,7 +16,12 @@ const generateJsx = (
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <OrderListTable data={orders} cancel={jest.fn()} />
+        <OrderListTable
+          data={orders}
+          cancel={jest.fn()}
+          setEditOrderDialogOpen={jest.fn()}
+          setEditOrder={jest.fn()}
+        />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
@@ -36,7 +41,7 @@ describe('OrderListTable', () => {
     });
 
     const headers = screen.getAllByRole('columnheader');
-    expect(headers).toHaveLength(10);
+    expect(headers).toHaveLength(11);
     expect(headers.map((h) => h.textContent?.trim())).toEqual([
       'Market',
       'Amount',
@@ -47,6 +52,7 @@ describe('OrderListTable', () => {
       'Time In Force',
       'Created At',
       'Updated At',
+      'Edit',
       'Cancel',
     ]);
   });
@@ -67,6 +73,7 @@ describe('OrderListTable', () => {
       marketOrder.timeInForce,
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
       '-',
+      'Edit',
       'Cancel',
     ];
     cells.forEach((cell, i) =>
@@ -92,6 +99,7 @@ describe('OrderListTable', () => {
       )}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
       '-',
+      'Edit',
       'Cancel',
     ];
     cells.forEach((cell, i) =>

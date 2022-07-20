@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import { useApolloClient } from '@apollo/client';
+import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import type { Order } from '@vegaprotocol/wallet';
+import { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
+import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
+import { ORDER_EVENT_SUB } from './order-event-query';
+import type { Subscription } from 'zen-observable-ts';
 import type {
+  OrderEvent_busEvents_event_Order,
   OrderEvent,
   OrderEventVariables,
-  OrderEvent_busEvents_event_Order,
-} from './__generated__/OrderEvent';
-import { ORDER_EVENT_SUB } from './order-event-query';
+} from './__generated__';
 import * as Sentry from '@sentry/react';
-import { OrderStatus } from '@vegaprotocol/types';
-import { determineId } from '@vegaprotocol/react-helpers';
-import type { Subscription } from 'zen-observable-ts';
 
-export const useOrderCancel = () => {
+export const useOrderEdit = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
@@ -20,35 +21,23 @@ export const useOrderCancel = () => {
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
 
-  useEffect(() => {
-    return () => {
-      subRef.current?.unsubscribe();
-      setUpdatedOrder(null);
-      resetTransaction();
-    };
-  }, [resetTransaction]);
-
   const reset = useCallback(() => {
     resetTransaction();
     setUpdatedOrder(null);
     subRef.current?.unsubscribe();
   }, [resetTransaction]);
 
-  const cancel = useCallback(
-    async (order) => {
-      if (!keypair) {
-        return;
-      }
+  useEffect(() => {
+    return () => {
+      resetTransaction();
+      setUpdatedOrder(null);
+      subRef.current?.unsubscribe();
+    };
+  }, [resetTransaction]);
 
-      if (
-        [
-          OrderStatus.Cancelled,
-          OrderStatus.Rejected,
-          OrderStatus.Expired,
-          OrderStatus.Filled,
-          OrderStatus.Stopped,
-        ].includes(order.status)
-      ) {
+  const edit = useCallback(
+    async (order: Order) => {
+      if (!keypair || !order.market || !order.market.id) {
         return;
       }
 
@@ -58,9 +47,22 @@ export const useOrderCancel = () => {
         const res = await send({
           pubKey: keypair.pub,
           propagate: true,
-          orderCancellation: {
+          orderAmendment: {
             orderId: order.id,
             marketId: order.market.id,
+            price: {
+              value: removeDecimal(order.price, order.market?.decimalPlaces),
+            },
+            timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
+            sizeDelta: 0,
+            expiresAt: order.expiresAt
+              ? {
+                  value:
+                    // Wallet expects timestamp in nanoseconds,
+                    // we don't have that level of accuracy so just append 6 zeroes
+                    new Date(order.expiresAt).getTime().toString() + '000000',
+                }
+              : undefined,
           },
         });
 
@@ -111,7 +113,7 @@ export const useOrderCancel = () => {
   return {
     transaction,
     updatedOrder,
-    cancel,
+    edit,
     reset,
   };
 };
