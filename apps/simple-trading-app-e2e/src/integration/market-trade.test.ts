@@ -37,7 +37,7 @@ describe('Market trade', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
-      cy.get('button').contains('Next').click();
+      cy.getByTestId('next-button').scrollIntoView().click();
 
       cy.get('button[aria-label="Open long position"]').should(
         'have.class',
