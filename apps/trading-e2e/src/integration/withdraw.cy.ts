@@ -11,9 +11,7 @@ describe('withdraw', () => {
   const amountField = 'input[name="amount"]';
   const useMaximumAmount = 'use-maximum';
   const submitWithdrawBtn = 'submit-withdrawal';
-  const ethAddressValue = `${Cypress.env(
-    'ETHEREUM_WALLET_ADDRESS'
-  )}/address/0x265Cc6d39a1B53d0d92068443009eE7410807158`;
+  const ethAddressValue = Cypress.env('ETHEREUM_WALLET_ADDRESS');
 
   beforeEach(() => {
     cy.mockWeb3Provider();
