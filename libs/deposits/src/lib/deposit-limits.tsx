@@ -10,13 +10,19 @@ interface DepositLimitsProps {
 
 export const DepositLimits = ({ limits }: DepositLimitsProps) => {
   let maxLimit = '';
-
   if (limits.max.isEqualTo(Infinity)) {
     maxLimit = t('No limit');
   } else if (limits.max.isGreaterThan(1_000_000)) {
     maxLimit = t('1m+');
   } else {
     maxLimit = limits.max.toString();
+  }
+
+  let remaining = '';
+  if (limits.deposited.isEqualTo(0)) {
+    remaining = maxLimit;
+  } else {
+    remaining = limits.max.minus(limits.deposited).toString();
   }
 
   return (
@@ -36,9 +42,7 @@ export const DepositLimits = ({ limits }: DepositLimitsProps) => {
             <th className="text-left font-normal">
               {t('Remaining available')}
             </th>
-            <td className="text-right">
-              {limits.max.minus(limits.deposited).toString()}
-            </td>
+            <td className="text-right">{remaining}</td>
           </tr>
         </tbody>
       </table>
