@@ -20,9 +20,11 @@ export const useGetWithdrawLimits = (asset?: Asset) => {
 
   if (!data || !asset) return null;
 
-  const max = new BigNumber(addDecimal(data.toString(), asset.decimals));
-
+  const value = new BigNumber(addDecimal(data.toString(), asset.decimals));
+  const max = value.isEqualTo(0)
+    ? new BigNumber(Infinity)
+    : value.minus(new BigNumber(addDecimal('1', asset.decimals)));
   return {
-    max: max.isEqualTo(0) ? new BigNumber(Infinity) : max,
+    max,
   };
 };

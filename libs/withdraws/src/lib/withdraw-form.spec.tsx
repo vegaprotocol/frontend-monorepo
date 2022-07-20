@@ -79,7 +79,7 @@ describe('Withdrawal form', () => {
         await screen.findByText('Invalid Ethereum address')
       ).toBeInTheDocument();
       expect(
-        screen.getByText('Amount is more than balance')
+        screen.getByText('Insufficient amount in account')
       ).toBeInTheDocument();
     });
 

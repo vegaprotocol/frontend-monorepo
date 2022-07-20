@@ -33,7 +33,7 @@ beforeEach(() => {
     assets: [asset],
     selectedAsset: undefined,
     onSelectAsset: jest.fn(),
-    available: new BigNumber(5),
+    balance: new BigNumber(5),
     submitApprove: jest.fn(),
     submitDeposit: jest.fn(),
     requestFaucet: jest.fn(),
@@ -125,7 +125,7 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Amount is above permitted maximum')
+        await screen.findByText('Insufficient amount in Ethereum wallet')
       ).toBeInTheDocument();
     });
 
@@ -133,6 +133,7 @@ describe('Deposit form', () => {
       render(
         <DepositForm
           {...props}
+          balance={new BigNumber(100)}
           limits={{ max: new BigNumber(100), deposited: new BigNumber(10) }}
         />
       );
@@ -216,12 +217,13 @@ describe('Deposit form', () => {
       max: new BigNumber(20),
       deposited: new BigNumber(10),
     };
+    const balance = new BigNumber(50);
 
     render(
       <DepositForm
         {...props}
         allowance={new BigNumber(100)}
-        available={new BigNumber(50)}
+        balance={balance}
         limits={limits}
         selectedAsset={asset}
       />
@@ -229,12 +231,18 @@ describe('Deposit form', () => {
 
     // Check deposit limit is displayed
     expect(
-      screen.getByText('Max deposit total', { selector: 'th' })
+      screen.getByText('Balance available', { selector: 'th' })
+        .nextElementSibling
+    ).toHaveTextContent(balance.toString());
+    expect(
+      screen.getByText('Maximum total deposit amount', { selector: 'th' })
         .nextElementSibling
     ).toHaveTextContent(limits.max.toString());
     expect(
-      screen.getByText('Remaining available', { selector: 'th' })
-        .nextElementSibling
+      screen.getByText('Deposited', { selector: 'th' }).nextElementSibling
+    ).toHaveTextContent(limits.deposited.toString());
+    expect(
+      screen.getByText('Remaining', { selector: 'th' }).nextElementSibling
     ).toHaveTextContent(limits.max.minus(limits.deposited).toString());
 
     fireEvent.change(screen.getByLabelText('Amount'), {

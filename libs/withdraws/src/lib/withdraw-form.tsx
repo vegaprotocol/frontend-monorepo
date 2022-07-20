@@ -109,7 +109,6 @@ export const WithdrawForm = ({
             </Select>
           )}
         />
-
         {errors.asset?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.asset.message}
@@ -135,7 +134,7 @@ export const WithdrawForm = ({
       </FormGroup>
       {selectedAsset && limits && (
         <div className="mb-20">
-          <WithdrawLimits limits={limits} />
+          <WithdrawLimits limits={limits} balance={max.balance} />
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">
@@ -149,7 +148,7 @@ export const WithdrawForm = ({
               maxSafe: (v) => {
                 const value = new BigNumber(v);
                 if (value.isGreaterThan(max.balance)) {
-                  return t('Amount is more than balance');
+                  return t('Insufficient amount in account');
                 } else if (value.isGreaterThan(max.threshold)) {
                   return t('Amount is above temporary withdrawal limit');
                 }

@@ -6,9 +6,10 @@ interface DepositLimitsProps {
     max: BigNumber;
     deposited: BigNumber;
   };
+  balance?: BigNumber;
 }
 
-export const DepositLimits = ({ limits }: DepositLimitsProps) => {
+export const DepositLimits = ({ limits, balance }: DepositLimitsProps) => {
   let maxLimit = '';
   if (limits.max.isEqualTo(Infinity)) {
     maxLimit = t('No limit');
@@ -26,26 +27,27 @@ export const DepositLimits = ({ limits }: DepositLimitsProps) => {
   }
 
   return (
-    <>
-      <p className="text-ui font-bold">{t('Deposit limits')}</p>
-      <table className="w-full text-ui">
-        <tbody>
-          <tr>
-            <th className="text-left font-normal">{t('Max deposit total')}</th>
-            <td className="text-right">{maxLimit}</td>
-          </tr>
-          <tr>
-            <th className="text-left font-normal">{t('Deposited')}</th>
-            <td className="text-right">{limits.deposited.toString()}</td>
-          </tr>
-          <tr>
-            <th className="text-left font-normal">
-              {t('Remaining available')}
-            </th>
-            <td className="text-right">{remaining}</td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+    <table className="w-full text-ui">
+      <tbody>
+        <tr>
+          <th className="text-left font-normal">{t('Balance available')}</th>
+          <td className="text-right">{balance ? balance.toString() : 0}</td>
+        </tr>
+        <tr>
+          <th className="text-left font-normal">
+            {t('Maximum total deposit amount')}
+          </th>
+          <td className="text-right">{maxLimit}</td>
+        </tr>
+        <tr>
+          <th className="text-left font-normal">{t('Deposited')}</th>
+          <td className="text-right">{limits.deposited.toString()}</td>
+        </tr>
+        <tr>
+          <th className="text-left font-normal">{t('Remaining')}</th>
+          <td className="text-right">{remaining}</td>
+        </tr>
+      </tbody>
+    </table>
   );
 };

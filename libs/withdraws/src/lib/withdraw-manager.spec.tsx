@@ -112,7 +112,7 @@ it('Correct min max values provided to form', async () => {
   });
   fireEvent.submit(screen.getByTestId('withdraw-form'));
   expect(
-    await screen.findByText('Amount is more than balance')
+    await screen.findByText('Insufficient amount in account')
   ).toBeInTheDocument();
   expect(mockSubmit).not.toBeCalled();
 });
