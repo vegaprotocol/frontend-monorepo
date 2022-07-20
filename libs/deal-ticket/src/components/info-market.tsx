@@ -215,7 +215,8 @@ export const Info = ({ market }: InfoProps) => {
           data={{
             marketName: market.tradableInstrument.instrument.name,
             code: market.tradableInstrument.instrument.code,
-            productType: market.tradableInstrument.instrument.product.__typename,
+            productType:
+              market.tradableInstrument.instrument.product.__typename,
             ...market.tradableInstrument.instrument.product,
             ...market.tradableInstrument.instrument.product.settlementAsset,
           }}
