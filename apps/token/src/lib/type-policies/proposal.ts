@@ -12,7 +12,7 @@ export function getProposalName(proposal: Proposals_proposals) {
   } else if (change.__typename === 'UpdateNetworkParameter') {
     return `Update Network: ${change.networkParameter.key}`;
   } else if (change.__typename === 'NewFreeform') {
-    return `Freeform: ${proposal.rationale.hash}`;
+    return `Freeform: ${proposal.id}`;
   }
 
   return 'Unknown Proposal';
