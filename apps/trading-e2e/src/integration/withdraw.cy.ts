@@ -42,7 +42,10 @@ describe('withdraw', () => {
     cy.getByTestId(formFieldError).should('have.length', 2);
 
     // Test for Ethereum address
-    cy.get(toAddressField).should('have.value', process.env['ETHEREUM_WALLET_ADDRESS'])
+    cy.get(toAddressField).should(
+      'have.value',
+      process.env['ETHEREUM_WALLET_ADDRESS']
+    );
 
     // Test min amount
     cy.get(assetSelectField).select('Asset 1'); // Select asset so we have a min viable amount calculated
