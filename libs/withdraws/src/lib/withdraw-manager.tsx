@@ -38,22 +38,35 @@ export const WithdrawManager = ({
     return assets?.find((a) => a.id === assetId);
   }, [assets, assetId]);
 
+  const account = useMemo(() => {
+    return accounts.find(
+      (a) => a.type === AccountType.General && a.asset.id === asset?.id
+    );
+  }, [asset, accounts]);
+
   const limits = useGetWithdrawLimits(asset);
 
   const max = useMemo(() => {
     if (!asset) {
-      return new BigNumber(0);
+      return {
+        balance: new BigNumber(0),
+        threshold: new BigNumber(0),
+      };
     }
 
-    const account = accounts.find(
-      (a) => a.type === AccountType.General && a.asset.id === asset.id
-    );
-
-    const v = account
+    const balance = account
       ? new BigNumber(addDecimal(account.balance, asset.decimals))
       : new BigNumber(0);
-    return BigNumber.minimum(v, limits ? limits.max : new BigNumber(Infinity));
-  }, [asset, accounts, limits]);
+
+    const threshold = limits
+      ? limits.max.minus(new BigNumber(addDecimal('1', asset.decimals)))
+      : new BigNumber(Infinity);
+
+    return {
+      balance,
+      threshold,
+    };
+  }, [asset, account, limits]);
 
   const min = useMemo(() => {
     return asset

@@ -1,10 +1,10 @@
 import {
   ethereumAddress,
-  maxSafe,
   minSafe,
   t,
   removeDecimal,
   required,
+  maxSafe,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -15,7 +15,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { Web3WalletInput } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
-import type BigNumber from 'bignumber.js';
+import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
@@ -30,7 +30,10 @@ interface FormFields {
 
 export interface WithdrawFormProps {
   assets: Asset[];
-  max: BigNumber;
+  max: {
+    balance: BigNumber;
+    threshold: BigNumber;
+  };
   min: BigNumber;
   selectedAsset?: Asset;
   limits: {
@@ -49,7 +52,7 @@ export const WithdrawForm = ({
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
-  const { account } = useWeb3React();
+  const { account: address } = useWeb3React();
   const {
     register,
     handleSubmit,
@@ -60,7 +63,7 @@ export const WithdrawForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: selectedAsset?.id,
-      to: account,
+      to: address,
     },
   });
   const onSubmit = async (fields: FormFields) => {
@@ -143,7 +146,17 @@ export const WithdrawForm = ({
           {...register('amount', {
             validate: {
               required,
-              maxSafe: (value) => maxSafe(max)(value),
+              maxSafe: (v) => {
+                const value = new BigNumber(v);
+                if (value.isGreaterThan(max.balance)) {
+                  return t('Amount is more than balance');
+                } else if (value.isGreaterThan(max.threshold)) {
+                  return t('Amount is above temporary withdrawal limit');
+                }
+                return maxSafe(BigNumber.minimum(max.balance, max.threshold))(
+                  v
+                );
+              },
               minSafe: (value) => minSafe(min)(value),
             },
           })}
@@ -157,7 +170,7 @@ export const WithdrawForm = ({
           <UseButton
             data-testid="use-maximum"
             onClick={() => {
-              setValue('amount', max.toFixed(selectedAsset.decimals));
+              setValue('amount', max.balance.toFixed(selectedAsset.decimals));
               clearErrors('amount');
             }}
           >
