@@ -57,7 +57,7 @@ describe('Market trade', () => {
         'have.class',
         'selected'
       );
-      cy.get('button').contains('Next').click();
+      cy.getByTestId('next-button').scrollIntoView().click();
       cy.get('#step-1-control').should(
         'contain.html',
         'aria-label="Selected value Short"'
