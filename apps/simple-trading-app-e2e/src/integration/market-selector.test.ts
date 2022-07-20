@@ -28,7 +28,11 @@ describe('market selector', () => {
         .children()
         .find('[role="button"]')
         .should('contain.text', markets[0].name);
-      cy.getByTestId('market-pane').children().find('[role="button"]').click();
+      cy.getByTestId('market-pane')
+        .first()
+        .within(() => {
+          cy.get('[role="button"]').click();
+        });
       cy.getByTestId('market-pane').should('not.be.visible');
     }
   });
