@@ -9,7 +9,7 @@ interface Props {
 
 export const DrawerContent = ({ children, className = '' }: Props) => {
   const classes = classNames(
-    'w-full sm:w-full grow-1 p-20 overflow-hidden',
+    'w-full sm:w-full grow-1 p-12 md:p-20 overflow-hidden',
     className
   );
 

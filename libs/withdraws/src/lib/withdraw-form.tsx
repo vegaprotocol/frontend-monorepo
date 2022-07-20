@@ -112,7 +112,6 @@ export const WithdrawForm = ({
           </InputError>
         )}
       </FormGroup>
-
       <FormGroup
         label={t('To (Ethereum address)')}
         labelFor="ethereum-address"
@@ -121,6 +120,7 @@ export const WithdrawForm = ({
         <Input
           {...register('to', { validate: { required, ethereumAddress } })}
           id="ethereum-address"
+          autoComplete="off"
         />
         {errors.to?.message && (
           <InputError intent="danger" className="mt-4">

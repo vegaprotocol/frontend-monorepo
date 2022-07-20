@@ -19,13 +19,12 @@ export const useGetAllowance = (contract: Token | null, decimals?: number) => {
     );
   }, [contract, account, config]);
 
-  const {
-    state: { data },
-  } = useEthereumReadContract(getAllowance);
+  const { state, refetch } = useEthereumReadContract(getAllowance);
 
-  if (!data || !decimals) return;
+  const allowance =
+    state.data && decimals
+      ? new BigNumber(addDecimal(state.data.toString(), decimals))
+      : undefined;
 
-  const allowance = new BigNumber(addDecimal(data.toString(), decimals));
-
-  return allowance;
+  return { allowance, refetch };
 };

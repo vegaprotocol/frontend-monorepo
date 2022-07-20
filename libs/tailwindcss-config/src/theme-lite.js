@@ -1,4 +1,5 @@
 const theme = require('./theme');
+const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
   ...theme,
@@ -25,9 +26,11 @@ module.exports = {
     },
   },
   fontSize: {
-    ...theme.fontSize,
+    ...defaultTheme.fontSize,
     capMenu: ['15px', { lineHeight: '24px', letterSpacing: '-0.01em' }],
     market: ['15px', { lineHeight: '24px' }],
+    'ui-small': ['12px', { lineHeight: '14px' }],
+    'ui-tiny': ['10px', { lineHeight: '18px' }],
   },
   boxShadow: {
     ...theme.boxShadow,
@@ -39,5 +42,11 @@ module.exports = {
     'input-focus-dark': 'none',
     'input-focus-error': 'none',
     'input-focus-error-dark': 'none',
+  },
+  extend: {
+    transitionProperty: {
+      height: 'height',
+      'max-height': 'max-height',
+    },
   },
 };

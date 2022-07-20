@@ -53,7 +53,10 @@ context('Home Page', function () {
         .should('match', /\d+d \d+h \d+m \d+s/i);
       cy.get(statsValue).eq(4).should('have.text', '2');
       cy.get(statsValue).eq(5).should('have.text', '0');
-      cy.get(statsValue).eq(6).should('have.text', '0.00');
+      cy.get(statsValue)
+        .eq(6)
+        .invoke('text')
+        .should('match', /\d+\.\d\d(?!\d)/i);
       cy.get(statsValue).eq(7).should('have.text', '0');
       cy.get(statsValue).eq(8).should('have.text', '0');
       cy.get(statsValue).eq(9).should('have.text', '0');
@@ -87,6 +90,28 @@ context('Home Page', function () {
               expect(blockHeightTxt).not.to.eq(newBlockHeightTxt);
             });
         });
+    });
+  });
+
+  describe('Git info', function () {
+    it('git info is rendered on the footer of the page', function () {
+      cy.getByTestId('git-info').within(() => {
+        cy.getByTestId('git-network-data').within(() => {
+          cy.contains('Reading network data from').should('be.visible');
+          cy.get('span').should('have.text', Cypress.env('networkQueryUrl'));
+          cy.getByTestId('link').should('be.visible');
+        });
+
+        cy.getByTestId('git-eth-data').within(() => {
+          cy.contains('Reading Ethereum data from').should('be.visible');
+          cy.get('span').should('have.text', Cypress.env('ethUrl'));
+        });
+
+        cy.getByTestId('git-commit-hash').within(() => {
+          cy.contains('Version/commit hash:').should('be.visible');
+          cy.getByTestId('link').should('have.text', Cypress.env('commitHash'));
+        });
+      });
     });
   });
 
