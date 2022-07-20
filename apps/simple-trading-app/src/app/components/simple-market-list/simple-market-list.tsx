@@ -66,7 +66,7 @@ const SimpleMarketList = () => {
   );
 
   const handleOnGridReady = useCallback(() => {
-    gridRef.current?.api.sizeColumnsToFit();
+    gridRef.current?.api?.sizeColumnsToFit();
   }, [gridRef]);
 
   useEffect(() => {
