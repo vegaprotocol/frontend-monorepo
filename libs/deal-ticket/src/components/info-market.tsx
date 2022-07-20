@@ -18,6 +18,7 @@ import omit from 'lodash/omit';
 import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
 import { gql, useQuery } from '@apollo/client';
+import set from 'lodash/set';
 
 const MARKET_INFO_QUERY = gql`
   query MarketInfoQuery($marketId: ID!) {
@@ -222,6 +223,21 @@ export const Info = ({ market }: InfoProps) => {
               market.tradableInstrument.instrument.product.__typename,
             ...market.tradableInstrument.instrument.product,
             ...market.tradableInstrument.instrument.product.settlementAsset,
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Instrument metadata'),
+      content: (
+        <MarketInfoTable
+          data={{
+            ...market.tradableInstrument.instrument.metadata.tags
+              ?.map((tag) => {
+                const [key, value] = tag.split(':');
+                return { [key]: value };
+              })
+              .reduce((acc, curr) => ({ ...acc, ...curr }), {}),
           }}
         />
       ),
