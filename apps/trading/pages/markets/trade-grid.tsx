@@ -85,14 +85,14 @@ export const TradeMarketHeader = ({
           className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap"
         >
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Change (24h)</span>
+            <span className={itemClassName}>{t('Change (24h)')}</span>
             <PriceCellChange
               candles={candlesClose}
               decimalPlaces={market.decimalPlaces}
             />
           </div>
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Volume</span>
+            <span className={itemClassName}>{t('Volume')}</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
@@ -103,7 +103,7 @@ export const TradeMarketHeader = ({
             </span>
           </div>
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Trading mode</span>
+            <span className={itemClassName}>{t('Trading mode')}</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
               {market.tradingMode === MarketTradingMode.MonitoringAuction &&
               market.data?.trigger &&
@@ -112,6 +112,26 @@ export const TradeMarketHeader = ({
                     market.tradingMode
                   )} - ${market.data?.trigger.toLowerCase()}`
                 : formatLabel(market.tradingMode)}
+            </span>
+          </div>
+          <div className={headerItemClassName}>
+            <span className={itemClassName}>{t('Mark Price')}</span>
+            <span data-testid="mark-price" className={itemValueClassName}>
+              {market.data && market.data.markPrice !== '0'
+                ? addDecimalsFormatNumber(
+                    market.data.markPrice,
+                    market.decimalPlaces
+                  )
+                : '-'}
+            </span>
+          </div>
+          <div className={headerItemClassName}>
+            <span className={itemClassName}>{t('Settlement asset')}</span>
+            <span data-testid="trading-mode" className={itemValueClassName}>
+              {
+                market.tradableInstrument.instrument.product.settlementAsset
+                  .symbol
+              }
             </span>
           </div>
         </div>

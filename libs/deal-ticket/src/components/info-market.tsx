@@ -89,6 +89,9 @@ const MARKET_INFO_QUERY = gql`
           id
           name
           code
+          metadata {
+            tags
+          }
           product {
             ... on Future {
               quoteName

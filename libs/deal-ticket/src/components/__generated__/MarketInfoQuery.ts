@@ -179,6 +179,14 @@ export interface MarketInfoQuery_market_liquidityMonitoringParameters {
   targetStakeParameters: MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters;
 }
 
+export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
+  __typename: "InstrumentMetadata";
+  /**
+   * An arbitrary list of tags to associated to associate to the Instrument (string list)
+   */
+  tags: string[] | null;
+}
+
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
@@ -255,6 +263,10 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument {
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
   code: string;
+  /**
+   * Metadata for this instrument
+   */
+  metadata: MarketInfoQuery_market_tradableInstrument_instrument_metadata;
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */

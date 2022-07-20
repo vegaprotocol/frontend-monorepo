@@ -41,6 +41,16 @@ const MARKET_QUERY = gql`
           metadata {
             tags
           }
+          product {
+            ... on Future {
+              quoteName
+              settlementAsset {
+                id
+                symbol
+                name
+              }
+            }
+          }
         }
       }
       marketTimestamps {
