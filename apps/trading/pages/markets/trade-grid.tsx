@@ -115,7 +115,7 @@ export const TradeMarketHeader = ({
             </span>
           </div>
           <div className={headerItemClassName}>
-            <span className={itemClassName}>{t('Mark Price')}</span>
+            <span className={itemClassName}>{t('Price')}</span>
             <span data-testid="mark-price" className={itemValueClassName}>
               {market.data && market.data.markPrice !== '0'
                 ? addDecimalsFormatNumber(
