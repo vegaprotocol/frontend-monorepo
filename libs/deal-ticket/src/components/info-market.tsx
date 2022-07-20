@@ -95,6 +95,16 @@ const MARKET_INFO_QUERY = gql`
                 symbol
                 name
               }
+              oracleSpecForSettlementPrice {
+                id
+              }
+              oracleSpecForTradingTermination {
+                id
+              }
+              oracleSpecBinding {
+                settlementPriceProperty
+                tradingTerminationProperty
+              }
             }
           }
         }
@@ -190,7 +200,8 @@ export const Info = ({ market }: InfoProps) => {
             'decimalPlaces',
             'positionDecimalPlaces',
             'tradingMode',
-            'state'
+            'state',
+            'id'
           )}
         />
       ),
@@ -200,7 +211,7 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            product: market.tradableInstrument.instrument.product,
+            ...market.tradableInstrument.instrument.product,
             ...market.tradableInstrument.instrument.product.settlementAsset,
           }}
         />
@@ -281,7 +292,7 @@ const Row = ({
           ? decimalPlaces
             ? addDecimalsFormatNumber(value, decimalPlaces)
             : asPercentage
-            ? formatNumberPercentage(new BigNumber(value))
+            ? formatNumberPercentage(new BigNumber(value * 100))
             : formatNumber(Number(value))
           : value}
       </KeyValueTableRow>
@@ -303,7 +314,7 @@ export const MarketInfoTable = ({
   decimalPlaces,
   asPercentage,
   unformatted,
-  omits = ['id', '__typename'],
+  omits = ['__typename'],
 }: MarketInfoTableProps) => {
   return (
     <KeyValueTable muted={true}>

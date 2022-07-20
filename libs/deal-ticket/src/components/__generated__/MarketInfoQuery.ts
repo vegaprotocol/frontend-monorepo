@@ -195,6 +195,28 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_se
   name: string;
 }
 
+export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice {
+  __typename: "OracleSpec";
+  /**
+   * id is a hash generated from the OracleSpec data.
+   */
+  id: string;
+}
+
+export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination {
+  __typename: "OracleSpec";
+  /**
+   * id is a hash generated from the OracleSpec data.
+   */
+  id: string;
+}
+
+export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecBinding {
+  __typename: "OracleSpecToFutureBinding";
+  settlementPriceProperty: string;
+  tradingTerminationProperty: string;
+}
+
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
@@ -205,6 +227,18 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product {
    * The name of the asset (string)
    */
   settlementAsset: MarketInfoQuery_market_tradableInstrument_instrument_product_settlementAsset;
+  /**
+   * The oracle spec describing the oracle data of interest for settlement price.
+   */
+  oracleSpecForSettlementPrice: MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice;
+  /**
+   * The oracle spec describing the oracle data of interest for trading termination.
+   */
+  oracleSpecForTradingTermination: MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination;
+  /**
+   * The binding between the oracle spec and the settlement price
+   */
+  oracleSpecBinding: MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecBinding;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument {
