@@ -56,6 +56,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           GOBIN: ${{ env.GOBIN }}
 
+      - name: Checkout Vega
+        uses: actions/checkout@v2
+        with:
+          repository: vegaprotocol/vega
+          ref: develop
+          token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
+          path: './vega'
+
+      - name: Install binary from Vega repo
+        run: go install ./cmd/vega
+        working-directory: vega
+
       ######
       ## Start capsule
       ######
