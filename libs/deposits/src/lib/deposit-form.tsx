@@ -47,6 +47,7 @@ export interface DepositFormProps {
   requestFaucet: () => Promise<void>;
   limits: {
     max: BigNumber;
+    deposited: BigNumber;
   } | null;
   allowance: BigNumber | undefined;
   isFaucetable?: boolean;
@@ -97,12 +98,16 @@ export const DepositForm = ({
   const amount = useWatch({ name: 'amount', control });
 
   const max = useMemo(() => {
-    const maxApproved = allowance ? allowance : new BigNumber(Infinity);
-    const maxAvailable = available ? available : new BigNumber(Infinity);
-    // A max limit of zero indicates that there is no limit
+    const maxApproved = allowance ? allowance : new BigNumber(0);
+    const maxAvailable = available ? available : new BigNumber(0);
+
+    // limits.max is a lifetime deposit limit, so the actual max value for form
+    // input is the max minus whats already been deposited
     let maxLimit = new BigNumber(Infinity);
+
+    // A max limit of zero indicates that there is no limit
     if (limits && limits.max.isGreaterThan(0)) {
-      maxLimit = limits.max;
+      maxLimit = limits.max.minus(limits.deposited);
     }
 
     return {

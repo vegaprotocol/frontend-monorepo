@@ -6,12 +6,14 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:4210',
     fileServerFolder: '.',
     fixturesFolder: false,
-    specPattern: [
-      './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
-      process.env.CYPRESS_INCLUDE_FLOWS
-        ? './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}'
-        : '',
-    ],
+    specPattern:
+      process.env.CYPRESS_INCLUDE_FLOWS === 'true' ||
+      process.env.CYPRESS_INCLUDE_FLOWS === true
+        ? [
+            './src/integration/view/**/*.cy.{js,jsx,ts,tsx}',
+            './src/integration/flow/**/*.cy.{js,jsx,ts,tsx}',
+          ]
+        : ['./src/integration/view/**/*.cy.{js,jsx,ts,tsx}'],
     modifyObstructiveCode: false,
     supportFile: './src/support/index.ts',
     video: true,
