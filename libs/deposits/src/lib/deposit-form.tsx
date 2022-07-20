@@ -1,7 +1,7 @@
 import {
   removeDecimal,
-  t,
   ethereumAddress,
+  t,
   required,
   vegaPublicKey,
   minSafe,
@@ -18,10 +18,10 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
+import { Web3WalletInput } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
-import { useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import type { Asset } from './deposit-manager';
@@ -141,9 +141,11 @@ export const DepositForm = ({
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
       >
-        <Input
-          {...register('from', { validate: { required, ethereumAddress } })}
-          id="ethereum-address"
+        <Web3WalletInput
+          inputProps={{
+            id: 'ethereum-address',
+            ...register('from', { validate: { required, ethereumAddress } }),
+          }}
         />
         {errors.from?.message && (
           <InputError intent="danger" className="mt-4">

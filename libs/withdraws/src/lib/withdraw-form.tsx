@@ -13,6 +13,8 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
+import { Web3WalletInput } from '@vegaprotocol/web3';
+import { useWeb3React } from '@web3-react/core';
 import type BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -31,7 +33,6 @@ export interface WithdrawFormProps {
   max: BigNumber;
   min: BigNumber;
   selectedAsset?: Asset;
-  ethereumAccount?: string;
   limits: {
     max: BigNumber;
   } | null;
@@ -44,11 +45,11 @@ export const WithdrawForm = ({
   max,
   min,
   selectedAsset,
-  ethereumAccount,
   limits,
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
+  const { account } = useWeb3React();
   const {
     register,
     handleSubmit,
@@ -59,7 +60,7 @@ export const WithdrawForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: selectedAsset?.id,
-      to: ethereumAccount,
+      to: account,
     },
   });
   const onSubmit = async (fields: FormFields) => {
@@ -117,26 +118,16 @@ export const WithdrawForm = ({
         labelFor="ethereum-address"
         className="relative"
       >
-        <Input
-          {...register('to', { validate: { required, ethereumAddress } })}
-          id="ethereum-address"
-          autoComplete="off"
+        <Web3WalletInput
+          inputProps={{
+            id: 'ethereum-address',
+            ...register('to', { validate: { required, ethereumAddress } }),
+          }}
         />
         {errors.to?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.to.message}
           </InputError>
-        )}
-        {ethereumAccount && (
-          <UseButton
-            data-testid="use-connected"
-            onClick={() => {
-              setValue('to', ethereumAccount);
-              clearErrors('to');
-            }}
-          >
-            {t('Use connected')}
-          </UseButton>
         )}
       </FormGroup>
       {selectedAsset && limits && (
