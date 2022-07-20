@@ -3,11 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
-import {
-  SideSelector,
-  DealTicketAmount,
-  MarketSelector,
-} from '@vegaprotocol/deal-ticket';
+import { DealTicketAmount, MarketSelector } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
@@ -19,6 +15,7 @@ import {
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
+import SideSelector, { SIDE_NAMES } from './side-selector';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
@@ -47,6 +44,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
+  const orderSide = watch('side');
 
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
@@ -96,6 +94,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
           )}
         />
       ),
+      value: SIDE_NAMES[orderSide] || '',
     },
     {
       label: t('Choose Position Size'),

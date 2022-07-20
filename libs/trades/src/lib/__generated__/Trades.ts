@@ -3,11 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { Pagination } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: Trades
 // ====================================================
 
-export interface Trades_market_trades_market {
+export interface Trades_market_tradesConnection_edges_node_market {
   __typename: "Market";
   /**
    * Market ID
@@ -38,7 +40,7 @@ export interface Trades_market_trades_market {
   positionDecimalPlaces: number;
 }
 
-export interface Trades_market_trades {
+export interface Trades_market_tradesConnection_edges_node {
   __typename: "Trade";
   /**
    * The hash of the trade data
@@ -59,7 +61,33 @@ export interface Trades_market_trades {
   /**
    * The market the trade occurred on
    */
-  market: Trades_market_trades_market;
+  market: Trades_market_tradesConnection_edges_node_market;
+}
+
+export interface Trades_market_tradesConnection_edges {
+  __typename: "TradeEdge";
+  node: Trades_market_tradesConnection_edges_node;
+  cursor: string;
+}
+
+export interface Trades_market_tradesConnection_pageInfo {
+  __typename: "PageInfo";
+  startCursor: string;
+  endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface Trades_market_tradesConnection {
+  __typename: "TradeConnection";
+  /**
+   * The trade in this connection
+   */
+  edges: Trades_market_tradesConnection_edges[];
+  /**
+   * The pagination information
+   */
+  pageInfo: Trades_market_tradesConnection_pageInfo;
 }
 
 export interface Trades_market {
@@ -68,10 +96,7 @@ export interface Trades_market {
    * Market ID
    */
   id: string;
-  /**
-   * Trades on a market
-   */
-  trades: Trades_market_trades[] | null;
+  tradesConnection: Trades_market_tradesConnection;
 }
 
 export interface Trades {
@@ -83,5 +108,5 @@ export interface Trades {
 
 export interface TradesVariables {
   marketId: string;
-  maxTrades: number;
+  pagination?: Pagination | null;
 }

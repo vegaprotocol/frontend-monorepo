@@ -19,7 +19,7 @@ const trade: TradeFields = {
 
 it('Correct columns are rendered', async () => {
   await act(async () => {
-    render(<TradesTable data={[trade]} />);
+    render(<TradesTable rowData={[trade]} />);
   });
   const expectedHeaders = ['Price', 'Size', 'Created at'];
   const headers = screen.getAllByRole('columnheader');
@@ -29,7 +29,7 @@ it('Correct columns are rendered', async () => {
 
 it('Number and data columns are formatted', async () => {
   await act(async () => {
-    render(<TradesTable data={[trade]} />);
+    render(<TradesTable rowData={[trade]} />);
   });
 
   const cells = screen.getAllByRole('gridcell');
@@ -51,7 +51,7 @@ it('Price and size columns are formatted', async () => {
     size: (Number(trade.size) - 10).toString(),
   };
   await act(async () => {
-    render(<TradesTable data={[trade2, trade]} />);
+    render(<TradesTable rowData={[trade2, trade]} />);
   });
 
   const cells = screen.getAllByRole('gridcell');
