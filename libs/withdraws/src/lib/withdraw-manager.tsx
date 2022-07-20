@@ -58,9 +58,13 @@ export const WithdrawManager = ({
       ? new BigNumber(addDecimal(account.balance, asset.decimals))
       : new BigNumber(0);
 
+    const threshold = limits
+      ? limits.max.minus(new BigNumber(addDecimal('1', asset.decimals)))
+      : new BigNumber(Infinity);
+
     return {
       balance,
-      threshold: limits ? limits.max : new BigNumber(Infinity),
+      threshold,
     };
   }, [asset, account, limits]);
 
