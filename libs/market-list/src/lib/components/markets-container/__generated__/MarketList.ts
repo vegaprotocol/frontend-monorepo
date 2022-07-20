@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState } from "@vegaprotocol/types";
+import { Interval, MarketState, MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketList
@@ -112,6 +112,10 @@ export interface MarketList_markets {
    * Current state of the market
    */
   state: MarketState;
+  /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
   /**
    * marketData for the given market
    */

@@ -86,6 +86,7 @@ const MARKET_INFO_QUERY = gql`
       }
       tradableInstrument {
         instrument {
+          id
           product {
             ... on Future {
               quoteName

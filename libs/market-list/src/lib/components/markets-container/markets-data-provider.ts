@@ -57,6 +57,7 @@ export const MARKET_LIST_QUERY = gql`
       id
       decimalPlaces
       state
+      tradingMode
       data {
         market {
           id
