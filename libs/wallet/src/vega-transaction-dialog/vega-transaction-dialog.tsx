@@ -21,6 +21,7 @@ export interface VegaTransactionDialogProps {
   transaction: VegaTxState;
   reset: () => void;
   title?: string;
+  children?: ReactNode;
 }
 
 const getDialogIntent = (
@@ -49,6 +50,7 @@ export const VegaTransactionDialog = ({
   transaction,
   reset,
   title = '',
+  children,
 }: VegaTransactionDialogProps) => {
   // open / close dialog
   useEffect(() => {
@@ -79,6 +81,7 @@ export const VegaTransactionDialog = ({
         transaction={transaction}
         finalizedOrder={finalizedOrder}
         title={title}
+        children={children}
       />
     </Dialog>
   );
@@ -88,15 +91,22 @@ interface VegaDialogProps {
   transaction: VegaTxState;
   finalizedOrder: Order | null;
   title: string;
+  children?: ReactNode;
 }
 
 export const VegaDialog = ({
   transaction,
   finalizedOrder,
   title,
+  children,
 }: VegaDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   const headerClassName = 'text-h5 font-bold text-black dark:text-white';
+
+  if (children && transaction.status === VegaTxStatus.Default) {
+    return <div>{children}</div>;
+  }
+
   // Rejected by wallet
   if (transaction.status === VegaTxStatus.Requested) {
     return (
@@ -183,6 +193,17 @@ export const VegaDialog = ({
           <p className={headerClassName}>{t(`Status`)}</p>
           <p>{t(`${finalizedOrder.status}`)}</p>
         </div>
+        {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
+          <div>
+            <p className={headerClassName}>{t(`Price`)}</p>
+            <p>
+              {addDecimalsFormatNumber(
+                finalizedOrder.price,
+                finalizedOrder.market.decimalPlaces
+              )}
+            </p>
+          </div>
+        )}
         <div>
           <p className={headerClassName}>{t(`Amount`)}</p>
           <p
@@ -198,17 +219,6 @@ export const VegaDialog = ({
             `}
           </p>
         </div>
-        {finalizedOrder.type === OrderType.Limit && finalizedOrder.market && (
-          <div>
-            <p className={headerClassName}>{t(`Price`)}</p>
-            <p>
-              {addDecimalsFormatNumber(
-                finalizedOrder.price,
-                finalizedOrder.market.decimalPlaces
-              )}
-            </p>
-          </div>
-        )}
       </div>
       <div className="grid grid-cols-1 gap-8">
         {transaction.txHash && (
@@ -236,7 +246,7 @@ interface OrderDialogWrapperProps {
   title: string;
 }
 
-const OrderDialogWrapper = ({
+export const OrderDialogWrapper = ({
   children,
   icon,
   title,

@@ -17,6 +17,8 @@ import { forwardRef, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { VegaTransactionDialog } from '@vegaprotocol/wallet';
+import { useOrderEdit } from '../../order-hooks/use-order-edit';
+import { OrderEditDialog } from './order-edit-dialog';
 
 interface OrderListProps {
   data: Orders_party_orders[] | null;
@@ -26,11 +28,22 @@ interface OrderListProps {
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   ({ data, showCancelled = true }, ref) => {
     const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
+    const [editOrderDialogOpen, setEditOrderDialogOpen] = useState(false);
+    const [editOrder, setEditOrder] = useState<Orders_party_orders | null>(
+      null
+    );
+
     const { transaction, updatedOrder, reset, cancel } = useOrderCancel();
+    const {
+      transaction: editTransaction,
+      updatedOrder: editedOrder,
+      reset: resetEdit,
+      edit,
+    } = useOrderEdit();
     const ordersData = showCancelled
       ? data
       : data?.filter((o) => o.status !== OrderStatus.Cancelled) || null;
-    const getDialogTitle = (status?: string) => {
+    const getCancelDialogTitle = (status?: string) => {
       switch (status) {
         case OrderStatus.Cancelled:
           return 'Order cancelled';
@@ -42,18 +55,51 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           return 'Cancellation failed';
       }
     };
+    const getEditDialogTitle = () =>
+      editedOrder
+        ? t(
+            `Order ${
+              editOrder?.market?.tradableInstrument.instrument.code ?? ''
+            } updated`
+          )
+        : t(
+            `Edit ${
+              editOrder?.market?.tradableInstrument.instrument.code ?? ''
+            } order`
+          );
     return (
       <>
-        <OrderListTable data={ordersData} cancel={cancel} ref={ref} />
+        <OrderListTable
+          data={ordersData}
+          cancel={cancel}
+          ref={ref}
+          setEditOrderDialogOpen={setEditOrderDialogOpen}
+          setEditOrder={setEditOrder}
+        />
         <VegaTransactionDialog
           key={`cancel-order-dialog-${transaction.txHash}`}
           orderDialogOpen={cancelOrderDialogOpen}
           setOrderDialogOpen={setCancelOrderDialogOpen}
-          finalizedOrder={updatedOrder}
           transaction={transaction}
           reset={reset}
-          title={getDialogTitle(updatedOrder?.status)}
+          title={getCancelDialogTitle(updatedOrder?.status)}
+          finalizedOrder={updatedOrder}
         />
+        <VegaTransactionDialog
+          key={`edit-order-dialog-${transaction.txHash}`}
+          orderDialogOpen={editOrderDialogOpen}
+          setOrderDialogOpen={setEditOrderDialogOpen}
+          transaction={editTransaction}
+          reset={resetEdit}
+          title={getEditDialogTitle()}
+          finalizedOrder={editedOrder}
+        >
+          <OrderEditDialog
+            title={getEditDialogTitle()}
+            order={editOrder}
+            edit={edit}
+          />
+        </VegaTransactionDialog>
       </>
     );
   }
@@ -62,10 +108,12 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
 interface OrderListTableProps {
   data: Orders_party_orders[] | null;
   cancel: (body?: unknown) => Promise<unknown>;
+  setEditOrderDialogOpen: (value: boolean) => void;
+  setEditOrder: (order: Orders_party_orders | null) => void;
 }
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ data, cancel }, ref) => {
+  ({ data, cancel, setEditOrderDialogOpen, setEditOrder }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -150,6 +198,34 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="updatedAt"
           valueFormatter={({ value }: ValueFormatterParams) => {
             return value ? getDateTimeFormat().format(new Date(value)) : '-';
+          }}
+        />
+        <AgGridColumn
+          field="edit"
+          cellRenderer={({ data }: ICellRendererParams) => {
+            if (
+              ![
+                OrderStatus.Cancelled,
+                OrderStatus.Rejected,
+                OrderStatus.Expired,
+                OrderStatus.Filled,
+                OrderStatus.Stopped,
+              ].includes(data.status)
+            ) {
+              return (
+                <Button
+                  data-testid="edit"
+                  variant="secondary"
+                  onClick={() => {
+                    setEditOrderDialogOpen(true);
+                    setEditOrder(data);
+                  }}
+                >
+                  Edit
+                </Button>
+              );
+            }
+            return null;
           }}
         />
         <AgGridColumn

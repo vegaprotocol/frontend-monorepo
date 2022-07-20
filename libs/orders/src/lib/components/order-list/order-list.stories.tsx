@@ -1,5 +1,5 @@
 import type { Story, Meta } from '@storybook/react';
-import { OrderType, OrderStatus } from '@vegaprotocol/types';
+import { OrderType, OrderStatus, OrderTimeInForce } from '@vegaprotocol/types';
 import { OrderList, OrderListTable } from './order-list';
 import { useState } from 'react';
 import type { Order, VegaTxState } from '@vegaprotocol/wallet';
@@ -15,7 +15,16 @@ const Template: Story = (args) => {
   const cancel = () => Promise.resolve();
   return (
     <div style={{ height: 1000 }}>
-      <OrderListTable data={args.data} cancel={cancel} />
+      <OrderListTable
+        data={args.data}
+        cancel={cancel}
+        setEditOrderDialogOpen={() => {
+          return;
+        }}
+        setEditOrder={() => {
+          return;
+        }}
+      />
     </div>
   );
 };
@@ -39,12 +48,22 @@ const Template2: Story = (args) => {
     price: '1000',
     market: { name: 'ETH/DAI (30 Jun 2022)', decimalPlaces: 5 },
     type: OrderType.Limit,
+    timeInForce: OrderTimeInForce.GTC,
   };
   const reset = () => null;
   return (
     <>
       <div style={{ height: 1000 }}>
-        <OrderListTable data={args.data} cancel={cancel} />
+        <OrderListTable
+          data={args.data}
+          cancel={cancel}
+          setEditOrderDialogOpen={() => {
+            return;
+          }}
+          setEditOrder={() => {
+            return;
+          }}
+        />
       </div>
       <VegaTransactionDialog
         orderDialogOpen={open}
