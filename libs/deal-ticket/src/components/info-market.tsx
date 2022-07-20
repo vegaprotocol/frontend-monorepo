@@ -246,6 +246,18 @@ export const Info = ({ market }: InfoProps) => {
         />
       ),
     },
+    {
+      title: t('Liquidity monitoring parameters'),
+      content: (
+        <MarketInfoTable
+          data={{
+            triggeringRatio:
+              market.liquidityMonitoringParameters.triggeringRatio,
+            ...market.liquidityMonitoringParameters.targetStakeParameters,
+          }}
+        />
+      ),
+    },
     ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
       (trigger, i) => ({
         title: t(`Price monitoring trigger ${i + 1}`),
