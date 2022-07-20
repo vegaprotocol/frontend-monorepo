@@ -8,7 +8,7 @@ import type { IGetRowsParams } from 'ag-grid-community';
 import type {
   Markets_markets,
   Markets_markets_data,
-} from '../../components/__generated__/Markets';
+} from './__generated__/Markets';
 import { marketsDataProvider as dataProvider } from './markets-data-provider';
 import { MarketState } from '@vegaprotocol/types';
 
@@ -42,15 +42,15 @@ export const MarketsContainer = () => {
     const lastRow = dataRef.current?.length ?? -1;
     successCallback(rowsThisBlock, lastRow);
   };
-
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <MarketListTable
+        rowModelType="infinite"
         datasource={{ getRows }}
         ref={gridRef}
-        onRowClicked={(id) => {
-          push(`/markets/${id}`);
-        }}
+        onRowClicked={({ data }: { data: Markets_markets }) =>
+          push(`/markets/${data.id}`)
+        }
       />
     </AsyncRenderer>
   );

@@ -9,14 +9,14 @@ describe('market selector', () => {
     });
     cy.visit('/markets');
     cy.wait('@gqlSimpleMarketsQuery').then((response) => {
-      if (response.response?.body?.data?.markets?.length) {
-        markets = response.response?.body?.data?.markets;
+      if (response.response.body.data?.markets?.length) {
+        markets = response.response.body.data.markets;
       }
     });
   });
 
   it('should be properly rendered', () => {
-    if (markets) {
+    if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       cy.get('input[placeholder="Search"]').should(
         'have.value',
@@ -34,7 +34,7 @@ describe('market selector', () => {
   });
 
   it('typing should change list', () => {
-    if (markets) {
+    if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       cy.get('input[placeholder="Search"]').type('{backspace}');
       cy.getByTestId('market-pane')
@@ -65,7 +65,7 @@ describe('market selector', () => {
   });
 
   it('mobile view', () => {
-    if (markets) {
+    if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
       cy.get('[role="dialog"]').should('not.exist');
