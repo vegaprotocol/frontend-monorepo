@@ -18,7 +18,6 @@ import omit from 'lodash/omit';
 import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
 import { gql, useQuery } from '@apollo/client';
-import set from 'lodash/set';
 
 const MARKET_INFO_QUERY = gql`
   query MarketInfoQuery($marketId: ID!) {
