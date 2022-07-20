@@ -248,6 +248,14 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument {
    */
   id: string;
   /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+  /**
+   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
+   */
+  code: string;
+  /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
   product: MarketInfoQuery_market_tradableInstrument_instrument_product;

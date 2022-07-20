@@ -87,6 +87,8 @@ const MARKET_INFO_QUERY = gql`
       tradableInstrument {
         instrument {
           id
+          name
+          code
           product {
             ... on Future {
               quoteName
@@ -211,6 +213,8 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
+            marketName: market.tradableInstrument.instrument.name,
+            code: market.tradableInstrument.instrument.code,
             ...market.tradableInstrument.instrument.product,
             ...market.tradableInstrument.instrument.product.settlementAsset,
           }}
