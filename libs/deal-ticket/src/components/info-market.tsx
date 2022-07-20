@@ -221,7 +221,7 @@ export const Info = ({ market }: InfoProps) => {
             productType:
               market.tradableInstrument.instrument.product.__typename,
             ...market.tradableInstrument.instrument.product,
-            ...market.tradableInstrument.instrument.product.settlementAsset,
+            ...market.tradableInstrument.instrument.product?.settlementAsset,
           }}
         />
       ),
