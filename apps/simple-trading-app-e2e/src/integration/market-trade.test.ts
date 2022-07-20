@@ -11,13 +11,13 @@ describe('Market trade', () => {
     });
     cy.visit('/markets');
     cy.wait('@SimpleMarkets').then((response) => {
-      if (response.response?.body?.data?.markets?.length) {
-        markets = response.response?.body?.data?.markets;
+      if (response.response.body.data?.markets?.length) {
+        markets = response.response.body.data.markets;
       }
     });
   });
   it('side selector should work well', () => {
-    if (markets) {
+    if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       cy.get('#step-1-control [aria-label^="Selected value"]').should(
         'have.text',
@@ -34,7 +34,7 @@ describe('Market trade', () => {
   });
 
   it('mobile view should work well', () => {
-    if (markets) {
+    if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
       cy.get('button').contains('Next').click();
