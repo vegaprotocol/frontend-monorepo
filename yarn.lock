@@ -6693,7 +6693,7 @@
     "@typescript-eslint/types" "5.22.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vegaprotocol/vegawallet-service-api-client@^0.4.15":
+"@vegaprotocol/vegawallet-service-api-client@0.4.15":
   version "0.4.15"
   resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.15.tgz#b303fec121b9b334a678161a6f66b360aeed5f0d"
   integrity sha512-YwJkUgFvFqpA1xPYQ30ILGddgzjwD9lclsu1GvwK2AUX/8e3iUcXyr37wLd/t8mDZ7P3Zb2AsuLJP8uZ6E1GHQ==
