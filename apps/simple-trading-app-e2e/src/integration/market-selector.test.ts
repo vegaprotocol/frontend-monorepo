@@ -27,12 +27,13 @@ describe('market selector', () => {
       cy.getByTestId('market-pane')
         .children()
         .find('[role="button"]')
+        .first()
         .should('contain.text', markets[0].name);
       cy.getByTestId('market-pane')
+        .children()
+        .find('[role="button"]')
         .first()
-        .within(() => {
-          cy.get('[role="button"]').click();
-        });
+        .click();
       cy.getByTestId('market-pane').should('not.be.visible');
     }
   });
@@ -44,7 +45,7 @@ describe('market selector', () => {
       cy.getByTestId('market-pane')
         .children()
         .find('[role="button"]')
-        .should('have.length', 1);
+        .should('have.length.at.least', 1);
       cy.get('input[placeholder="Search"]').clear();
       cy.get('input[placeholder="Search"]').type('app');
       const filtered = markets.filter((market) => market.name.match(/app/i));
