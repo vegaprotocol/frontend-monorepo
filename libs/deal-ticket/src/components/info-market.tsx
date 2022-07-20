@@ -227,7 +227,7 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Instrument metadata'),
+      title: t('Metadata'),
       content: (
         <MarketInfoTable
           data={{
