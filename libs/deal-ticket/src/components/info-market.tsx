@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   addDecimalsFormatNumber,
+  formatLabel,
   formatNumber,
   formatNumberPercentage,
   t,
@@ -194,20 +195,28 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
   ];
+
+  const keyDetails = pick(
+    market,
+    'name',
+    'decimalPlaces',
+    'positionDecimalPlaces',
+    'tradingMode',
+    'state',
+    'id' as 'marketId'
+  );
   const marketSpecPanels = [
     {
       title: t('Key details'),
       content: (
         <MarketInfoTable
-          data={pick(
-            market,
-            'name',
-            'decimalPlaces',
-            'positionDecimalPlaces',
-            'tradingMode',
-            'state',
-            'id'
-          )}
+          data={{
+            ...keyDetails,
+            marketId: keyDetails.id,
+            id: undefined,
+            tradingMode:
+              keyDetails.tradingMode && formatLabel(keyDetails.tradingMode),
+          }}
         />
       ),
     },
