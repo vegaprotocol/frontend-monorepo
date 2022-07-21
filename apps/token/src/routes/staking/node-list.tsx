@@ -5,8 +5,8 @@ import {
   AsyncRenderer,
 } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
 import { EpochCountdown } from '../../components/epoch-countdown';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
@@ -42,9 +42,30 @@ interface NodeListProps {
   epoch: Staking_epoch | undefined;
 }
 
+interface ValidatorRendererProps {
+  data: { Validator: { avatarUrl: string; name: string } };
+}
+
+const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
+  const { avatarUrl, name } = data.Validator;
+  return (
+    <div className="flex items-center">
+      {avatarUrl && (
+        <img
+          className="h-28 w-28 rounded-full mr-8"
+          src={avatarUrl}
+          alt={`Avatar icon for ${name}`}
+        />
+      )}
+      {name}
+    </div>
+  );
+};
+
 export const NodeList = ({ epoch }: NodeListProps) => {
   const { t } = useTranslation();
   const { data, error, loading } = useQuery<Nodes>(NODES_QUERY);
+  const navigate = useNavigate();
 
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
@@ -59,21 +80,31 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           ? '-'
           : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
             '%';
+      const status = t(`status-${node.rankingScore.status}`);
 
       return {
         id: node.id,
         [t('validator')]: {
-          avatar: node.avatarUrl,
+          avatarUrl: node.avatarUrl,
           name: node.name,
         },
         [t('totalStakeThisEpoch')]: formatNumber(stakedTotal, 2),
         [t('share')]: stakedTotalPercentage,
         [t('validatorStake')]: formatNumber(stakedOnNode, 2),
         [t('nextEpoch')]: node.pendingStake,
-        [t('rankingScore')]: node.rankingScore.rankingScore,
-        [t('stakeScore')]: node.rankingScore.stakeScore,
-        [t('status')]: node.rankingScore.status,
-        [t('performanceScore')]: node.rankingScore.performanceScore,
+        [t('rankingScore')]: formatNumber(
+          new BigNumber(node.rankingScore.rankingScore),
+          5
+        ),
+        [t('stakeScore')]: formatNumber(
+          new BigNumber(node.rankingScore.stakeScore),
+          5
+        ),
+        [t('status')]: status,
+        [t('performanceScore')]: formatNumber(
+          new BigNumber(node.rankingScore.performanceScore),
+          5
+        ),
         [t('votingPower')]: node.rankingScore.votingPower,
       };
     });
@@ -84,7 +115,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
     const colDefs = useMemo(
       () => [
-        { field: t('validator') },
+        { field: t('validator'), cellRendererFramework: ValidatorRenderer },
         { field: t('status') },
         { field: t('totalStakeThisEpoch') },
         { field: t('share') },
@@ -105,21 +136,18 @@ export const NodeList = ({ epoch }: NodeListProps) => {
       []
     );
 
-    const nodeListStyles = `
-    :root{ --ag-row-height: 100px }
-    `;
-
     return (
       <AgGrid
-        customThemeParams={nodeListStyles}
         domLayout="autoHeight"
-        style={{ width: '100%' }}
+        style={{ width: '100%', fontSize: '14px' }}
         overlayNoRowsTemplate={t('noValidators')}
         ref={ref}
         rowData={nodes}
+        rowHeight={32}
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
         animateRows={true}
+        suppressCellSelection={true}
         onGridReady={(event) => {
           event.columnApi.applyColumnState({
             state: [
@@ -130,6 +158,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
             ],
           });
           event.columnApi.autoSizeAllColumns(false);
+        }}
+        onCellClicked={(event) => {
+          navigate(event.data.id);
         }}
       />
     );

@@ -555,5 +555,9 @@
   "totalStakeThisEpoch": "Total stake this epoch",
   "share": "Share",
   "validatorStake": "Validator stake",
-  "Nodes": "Nodes"
+  "Nodes": "Nodes",
+  "status-tendermint": "Consensus",
+  "status-ersatz": "Ersatz",
+  "status-pending": "Pending",
+  "status-unspecified": "Unspecified"
 }
