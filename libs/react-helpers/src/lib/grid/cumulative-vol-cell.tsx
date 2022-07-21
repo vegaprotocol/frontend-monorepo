@@ -30,7 +30,7 @@ export const CumulativeVol = React.memo(
     const askBar = relativeAsk ? (
       <div
         data-testid="ask-bar"
-        className="absolute left-0 top-0"
+        className="absolute left-0 top-0 opacity-40 dark:opacity-100"
         style={{
           height: relativeBid && relativeAsk ? '50%' : '100%',
           width: `${relativeAsk}%`,
@@ -41,7 +41,7 @@ export const CumulativeVol = React.memo(
     const bidBar = relativeBid ? (
       <div
         data-testid="bid-bar"
-        className="absolute top-0 left-0"
+        className="absolute top-0 left-0 opacity-40 dark:opacity-100"
         style={{
           height: relativeBid && relativeAsk ? '50%' : '100%',
           top: relativeBid && relativeAsk ? '50%' : '0',

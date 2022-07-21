@@ -105,7 +105,7 @@ export const DepositManager = ({
   return (
     <>
       <DepositForm
-        available={balance}
+        balance={balance}
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}

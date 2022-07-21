@@ -1,5 +1,10 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
-import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  formatLabel,
+  getDateTimeFormat,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
 import type {
   ICellRendererParams,
@@ -161,7 +166,9 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               return undefined;
             }
             if (value === OrderStatus.Rejected) {
-              return `${value}: ${data.rejectionReason}`;
+              return `${value}: ${
+                data.rejectionReason && formatLabel(data.rejectionReason)
+              }`;
             }
             return value;
           }}
