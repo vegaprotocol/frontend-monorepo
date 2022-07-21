@@ -4,7 +4,11 @@ import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
 import { Icon, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  formatLabel,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { OrderType } from '@vegaprotocol/types';
 import type { Order } from '../wallet-types';
@@ -169,7 +173,8 @@ export const VegaDialog = ({
         icon={<Icon name="warning-sign" size={20} />}
       >
         <p data-testid="error-reason">
-          {t(`Reason: ${finalizedOrder.rejectionReason}`)}
+          {finalizedOrder.rejectionReason &&
+            t(`Reason: ${formatLabel(finalizedOrder.rejectionReason)}`)}
         </p>
       </OrderDialogWrapper>
     );

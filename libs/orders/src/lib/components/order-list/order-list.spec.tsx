@@ -1,5 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
-import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  formatLabel,
+  getDateTimeFormat,
+} from '@vegaprotocol/react-helpers';
 import type { Orders_party_orders } from '../__generated__/Orders';
 import { OrderStatus, OrderRejectionReason } from '@vegaprotocol/types';
 import { OrderListTable } from './order-list';
@@ -118,7 +122,7 @@ describe('OrderListTable', () => {
     });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[3]).toHaveTextContent(
-      `${rejectedOrder.status}: ${rejectedOrder.rejectionReason}`
+      `${rejectedOrder.status}: ${formatLabel(rejectedOrder.rejectionReason)}`
     );
   });
 });
