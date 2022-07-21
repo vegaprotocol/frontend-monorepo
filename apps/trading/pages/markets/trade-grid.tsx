@@ -65,7 +65,7 @@ export const TradeMarketHeader = ({
   const itemValueClassName =
     'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
-    'w-full p-8 bg-white dark:bg-black',
+    'w-full p-8 mb-4 bg-white dark:bg-black',
     className
   );
   return (
@@ -140,7 +140,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
           <Allotment.Pane>
             <Allotment proportionalLayout={false} minSize={200}>
               <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
-                <TradeGridChild className="h-full px-4">
+                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="candles" name={t('Candles')}>
                       <TradingViews.Candles marketId={market.id} />
@@ -153,13 +153,13 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Allotment.Pane>
               <Allotment.Pane
                 priority={LayoutPriority.Low}
-                preferredSize={375}
+                preferredSize={330}
                 minSize={200}
               >
-                <TradeGridChild className="h-full px-4">
+                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="ticket" name={t('Ticket')}>
-                      <TradingViews.Ticket marketId={market.id} />
+                      <TradingViews.Ticket marketId={market.id}/>
                     </Tab>
                     <Tab id="info" name={t('Info')}>
                       <TradingViews.Info marketId={market.id} />
@@ -169,10 +169,10 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Allotment.Pane>
               <Allotment.Pane
                 priority={LayoutPriority.Low}
-                preferredSize={460}
+                preferredSize={430}
                 minSize={200}
               >
-                <TradeGridChild className="h-full px-4">
+                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="orderbook" name={t('Orderbook')}>
                       <TradingViews.Orderbook marketId={market.id} />
@@ -186,12 +186,11 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             </Allotment>
           </Allotment.Pane>
           <Allotment.Pane
-            snap={true}
             priority={LayoutPriority.Low}
             preferredSize={200}
-            minSize={200}
+            minSize={50}
           >
-            <TradeGridChild className="h-full">
+            <TradeGridChild className="h-full mt-4">
               <Tabs>
                 <Tab id="positions" name={t('Positions')}>
                   <TradingViews.Positions />
