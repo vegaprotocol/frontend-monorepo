@@ -12,8 +12,6 @@ import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
-import * as constants from '../../../../simple-trading-app/src/app/components/simple-market-list/constants';
-import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 
 export const NODES_QUERY = gql`
   query Nodes {
