@@ -1,6 +1,7 @@
 import type { ethers } from 'ethers';
 import { useCallback, useState } from 'react';
-import { EthereumError, isEthereumError } from './ethereum-error';
+import type { EthereumError } from './ethereum-error';
+import { isEthereumError } from './ethereum-error';
 
 export enum EthTxStatus {
   Default = 'Default',
@@ -28,10 +29,9 @@ export const initialState = {
   confirmations: 0,
 };
 
-export const useEthereumTransaction = <TArgs = void>(
-  performTransaction: (
-    args: TArgs
-  ) => Promise<ethers.ContractTransaction> | null,
+export const useEthereumTransaction = <TContract>(
+  contract: TContract | null,
+  methodName: keyof TContract,
   requiredConfirmations = 1
 ) => {
   const [transaction, _setTransaction] = useState<EthTxState>(initialState);
@@ -44,7 +44,24 @@ export const useEthereumTransaction = <TArgs = void>(
   }, []);
 
   const perform = useCallback(
-    async (args: TArgs) => {
+    async (...args) => {
+      if (!contract || typeof contract[methodName] !== 'function') {
+        throw new Error('Method not found on contract');
+      }
+
+      try {
+        // @ts-ignore asdf asdf asdf
+        await contract.contract.callStatic[methodName](...args);
+      } catch (err) {
+        // call static failed
+        setTransaction({
+          status: EthTxStatus.Error,
+          // @ts-ignore asdf asdf asdf
+          error: err,
+        });
+        return;
+      }
+
       setTransaction({
         status: EthTxStatus.Requested,
         error: null,
@@ -52,7 +69,8 @@ export const useEthereumTransaction = <TArgs = void>(
       });
 
       try {
-        const res = performTransaction(args);
+        // @ts-ignore asdf asdf asdf
+        const res = contract[methodName](...args);
 
         if (res === null) {
           setTransaction({ status: EthTxStatus.Default });
@@ -67,6 +85,7 @@ export const useEthereumTransaction = <TArgs = void>(
 
         for (let i = 1; i <= requiredConfirmations; i++) {
           receipt = await tx.wait(i);
+          // @ts-ignore lost type safety on contract
           setTransaction({ confirmations: receipt.confirmations });
         }
 
@@ -76,13 +95,8 @@ export const useEthereumTransaction = <TArgs = void>(
 
         setTransaction({ status: EthTxStatus.Complete, receipt });
       } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof Error || isEthereumError(err)) {
           setTransaction({ status: EthTxStatus.Error, error: err });
-        } else if (isEthereumError(err)) {
-          setTransaction({
-            status: EthTxStatus.Error,
-            error: new EthereumError(err.message, err.code),
-          });
         } else {
           setTransaction({
             status: EthTxStatus.Error,
@@ -91,7 +105,7 @@ export const useEthereumTransaction = <TArgs = void>(
         }
       }
     },
-    [performTransaction, requiredConfirmations, setTransaction]
+    [contract, methodName, requiredConfirmations, setTransaction]
   );
 
   const reset = useCallback(() => {

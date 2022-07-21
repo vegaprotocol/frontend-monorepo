@@ -32,9 +32,23 @@ export const TransactionDialog = ({
 
   const renderContent = () => {
     if (status === EthTxStatus.Error) {
+      const classNames = 'break-all text-black dark:text-white';
+      // @ts-ignore asdf asdf asdf
+      if ('reason' in error) {
+        return (
+          <p className={classNames}>
+            {/*
+            // @ts-ignore asdf asdf asdf */}
+            {t('Error')}: {error.reason}
+          </p>
+        );
+      }
+
       return (
-        <p className="break-all text-black dark:text-white">
-          {error && error.message}
+        <p className={classNames}>
+          {/*
+          // @ts-ignore asdf asdf asdf */}
+          {t('Error')}: {error.message}
         </p>
       );
     }

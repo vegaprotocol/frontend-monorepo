@@ -1,7 +1,6 @@
 import type { BigNumber } from 'ethers';
 import { ethers } from 'ethers';
 import abi from '../abis/erc20_bridge_abi.json';
-import { prepend0x } from '../utils';
 
 export class CollateralBridge {
   public contract: ethers.Contract;
@@ -16,12 +15,8 @@ export class CollateralBridge {
     this.address = address;
   }
 
-  depositAsset(assetSource: string, amount: string, vegaPublicKey: string) {
-    return this.contract.deposit_asset(
-      assetSource,
-      amount,
-      prepend0x(vegaPublicKey)
-    );
+  deposit_asset(assetSource: string, amount: string, vegaPublicKey: string) {
+    return this.contract.deposit_asset(assetSource, amount, vegaPublicKey);
   }
   getAssetSource(vegaAssetId: string) {
     return this.contract.get_asset_source(vegaAssetId);
@@ -44,7 +39,7 @@ export class CollateralBridge {
   getWithdrawThreshold(assetSource: string) {
     return this.contract.get_withdraw_threshold(assetSource);
   }
-  withdrawAsset(
+  withdraw_asset(
     assetSource: string,
     amount: string,
     target: string,

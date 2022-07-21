@@ -132,7 +132,10 @@ const getProps = (
       intent: Intent.Danger,
       children: (
         <Step>
-          {ethTx.error ? ethTx.error.message : t('Something went wrong')}
+          {ethTx.error
+            ? // @ts-ignore asdf asdf asdf
+              `Error: ${ethTx.error.reason}`
+            : t('Something went wrong')}
         </Step>
       ),
     },
