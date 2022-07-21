@@ -4,7 +4,7 @@ import { Side } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 
 import { FillsTable } from './fills-table';
-import { generateFill, makeGetRows } from './test-helpers';
+import { generateFill } from './test-helpers';
 import type { FillFields } from './__generated__/FillFields';
 
 const waitForGridToBeInTheDOM = () => {
@@ -47,12 +47,7 @@ describe('FillsTable', () => {
   });
 
   it('correct columns are rendered', async () => {
-    render(
-      <FillsTable
-        partyId="party-id"
-        datasource={{ getRows: makeGetRows([generateFill()]) }}
-      />
-    );
+    render(<FillsTable partyId="party-id" rowData={[generateFill()]} />);
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -84,12 +79,7 @@ describe('FillsTable', () => {
       },
     });
 
-    render(
-      <FillsTable
-        partyId={partyId}
-        datasource={{ getRows: makeGetRows([buyerFill]) }}
-      />
-    );
+    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -126,12 +116,7 @@ describe('FillsTable', () => {
       },
     });
 
-    render(
-      <FillsTable
-        partyId={partyId}
-        datasource={{ getRows: makeGetRows([buyerFill]) }}
-      />
-    );
+    render(<FillsTable partyId={partyId} rowData={[buyerFill]} />);
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 
@@ -163,10 +148,7 @@ describe('FillsTable', () => {
     });
 
     const { rerender } = render(
-      <FillsTable
-        partyId={partyId}
-        datasource={{ getRows: makeGetRows([takerFill]) }}
-      />
+      <FillsTable partyId={partyId} rowData={[takerFill]} />
     );
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
@@ -184,12 +166,7 @@ describe('FillsTable', () => {
       aggressor: Side.Buy,
     });
 
-    rerender(
-      <FillsTable
-        partyId={partyId}
-        datasource={{ getRows: makeGetRows([makerFill]) }}
-      />
-    );
+    rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);
     await waitForGridToBeInTheDOM();
     await waitForDataToHaveLoaded();
 

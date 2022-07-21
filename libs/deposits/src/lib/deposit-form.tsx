@@ -1,7 +1,7 @@
 import {
   removeDecimal,
-  t,
   ethereumAddress,
+  t,
   required,
   vegaPublicKey,
   minSafe,
@@ -18,10 +18,10 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
+import { Web3WalletInput } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
-import { useMemo } from 'react';
-import { useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
 import type { Asset } from './deposit-manager';
@@ -37,7 +37,7 @@ export interface DepositFormProps {
   assets: Asset[];
   selectedAsset?: Asset;
   onSelectAsset: (assetId: string) => void;
-  available: BigNumber | undefined;
+  balance: BigNumber | undefined;
   submitApprove: () => Promise<void>;
   submitDeposit: (args: {
     assetSource: string;
@@ -57,7 +57,7 @@ export const DepositForm = ({
   assets,
   selectedAsset,
   onSelectAsset,
-  available,
+  balance,
   submitApprove,
   submitDeposit,
   requestFaucet,
@@ -99,7 +99,7 @@ export const DepositForm = ({
 
   const max = useMemo(() => {
     const maxApproved = allowance ? allowance : new BigNumber(0);
-    const maxAvailable = available ? available : new BigNumber(0);
+    const maxAvailable = balance ? balance : new BigNumber(0);
 
     // limits.max is a lifetime deposit limit, so the actual max value for form
     // input is the max minus whats already been deposited
@@ -116,7 +116,7 @@ export const DepositForm = ({
       limit: maxLimit,
       amount: BigNumber.minimum(maxLimit, maxApproved, maxAvailable),
     };
-  }, [limits, allowance, available]);
+  }, [limits, allowance, balance]);
 
   const min = useMemo(() => {
     // Min viable amount given asset decimals EG for WEI 0.000000000000000001
@@ -141,9 +141,11 @@ export const DepositForm = ({
         label={t('From (Ethereum address)')}
         labelFor="ethereum-address"
       >
-        <Input
-          {...register('from', { validate: { required, ethereumAddress } })}
-          id="ethereum-address"
+        <Web3WalletInput
+          inputProps={{
+            id: 'ethereum-address',
+            ...register('from', { validate: { required, ethereumAddress } }),
+          }}
         />
         {errors.from?.message && (
           <InputError intent="danger" className="mt-4">
@@ -196,7 +198,7 @@ export const DepositForm = ({
       </FormGroup>
       {selectedAsset && limits && (
         <div className="mb-20">
-          <DepositLimits limits={limits} />
+          <DepositLimits limits={limits} balance={balance} />
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">
@@ -210,12 +212,12 @@ export const DepositForm = ({
               minSafe: (value) => minSafe(new BigNumber(min))(value),
               maxSafe: (v) => {
                 const value = new BigNumber(v);
-                if (value.isGreaterThan(max.approved)) {
-                  return t('Amount is above approved amount');
-                } else if (value.isGreaterThan(max.limit)) {
-                  return t('Amount is above permitted maximum');
-                } else if (value.isGreaterThan(max.available)) {
+                if (value.isGreaterThan(max.available)) {
                   return t('Insufficient amount in Ethereum wallet');
+                } else if (value.isGreaterThan(max.limit)) {
+                  return t('Amount is above temporary deposit limit');
+                } else if (value.isGreaterThan(max.approved)) {
+                  return t('Amount is above approved amount');
                 }
                 return maxSafe(max.amount)(v);
               },
@@ -227,10 +229,10 @@ export const DepositForm = ({
             {errors.amount.message}
           </InputError>
         )}
-        {account && selectedAsset && available && (
+        {selectedAsset && balance && (
           <UseButton
             onClick={() => {
-              setValue('amount', max.amount.toFixed(selectedAsset.decimals));
+              setValue('amount', balance.toFixed(selectedAsset.decimals));
               clearErrors('amount');
             }}
           >

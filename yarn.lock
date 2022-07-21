@@ -6693,10 +6693,10 @@
     "@typescript-eslint/types" "5.22.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vegaprotocol/vegawallet-service-api-client@0.4.14":
-  version "0.4.14"
-  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.14.tgz#cdec296644380f95397688e10b753af328c38147"
-  integrity sha512-xQ/Dg4Bg+3LSHybYHV83i3G7i407Jj8ROElblZ2TTHTW9iHbBhbd/EHtWfUF2C6R6U27+JUZExnFPcZlvNXprA==
+"@vegaprotocol/vegawallet-service-api-client@0.4.15":
+  version "0.4.15"
+  resolved "https://registry.yarnpkg.com/@vegaprotocol/vegawallet-service-api-client/-/vegawallet-service-api-client-0.4.15.tgz#b303fec121b9b334a678161a6f66b360aeed5f0d"
+  integrity sha512-YwJkUgFvFqpA1xPYQ30ILGddgzjwD9lclsu1GvwK2AUX/8e3iUcXyr37wLd/t8mDZ7P3Zb2AsuLJP8uZ6E1GHQ==
   dependencies:
     es6-promise "^4.2.4"
     url-parse "^1.4.3"
@@ -7440,6 +7440,18 @@ allotment@1.14.2:
   version "1.14.2"
   resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.14.2.tgz#b89364ede0b3fbeb2927f7c1f80bc90f13248bbf"
   integrity sha512-Gqfl2DW2hQ3RT22uiJs2yK1bSwwFbDMC4drTe3uWEjKMmwlAZmS7/vqLD1v25kqbAqdjWSzr+aqgHsRXT51BPQ==
+  dependencies:
+    classnames "^2.3.0"
+    eventemitter3 "^4.0.0"
+    lodash.clamp "^4.0.0"
+    lodash.debounce "^4.0.0"
+    lodash.isequal "^4.5.0"
+    use-resize-observer "^9.0.0"
+
+allotment@^1.14.5:
+  version "1.14.5"
+  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.14.5.tgz#c952f5a7d43ac17649f27cb699e543d85cb6169a"
+  integrity sha512-o/OsKW8HQPDkUoGpzRIULzAy1R3UmbkUw8oBGyJo91YtB7QhiRtUOU5kEUsJX/M8lpnHtJFFo3DWTgH6HXB5TA==
   dependencies:
     classnames "^2.3.0"
     eventemitter3 "^4.0.0"

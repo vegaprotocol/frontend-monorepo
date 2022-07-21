@@ -1,6 +1,9 @@
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
-import type { Orders, Orders_party_orders } from '@vegaprotocol/orders';
+import type {
+  Orders,
+  Orders_party_ordersConnection_edges_node,
+} from '@vegaprotocol/orders';
 import {
   OrderStatus,
   OrderTimeInForce,
@@ -9,7 +12,7 @@ import {
 } from '@vegaprotocol/types';
 
 export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
-  const orders: Orders_party_orders[] = [
+  const orders: Orders_party_ordersConnection_edges_node[] = [
     {
       __typename: 'Order',
       id: '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
@@ -34,7 +37,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       remaining: '0',
       price: '20000000',
       timeInForce: OrderTimeInForce.GTC,
-      createdAt: new Date(2020, 1, 1).toISOString(),
+      createdAt: new Date(2020, 1, 30).toISOString(),
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
@@ -63,7 +66,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       remaining: '0',
       price: '100',
       timeInForce: OrderTimeInForce.GTC,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(2020, 1, 29).toISOString(),
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
@@ -92,7 +95,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       remaining: '0',
       price: '20000',
       timeInForce: OrderTimeInForce.GTC,
-      createdAt: new Date(2022, 5, 10).toISOString(),
+      createdAt: new Date(2020, 1, 28).toISOString(),
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
@@ -121,17 +124,35 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
       remaining: '0',
       price: '100000',
       timeInForce: OrderTimeInForce.GTC,
-      createdAt: new Date(2022, 7, 15).toISOString(),
+      createdAt: new Date(2020, 1, 27).toISOString(),
       updatedAt: null,
       expiresAt: null,
       rejectionReason: null,
     },
   ];
 
-  const defaultResult = {
+  const defaultResult: Orders = {
     party: {
       id: Cypress.env('VEGA_PUBLIC_KEY'),
-      orders,
+      ordersConnection: {
+        __typename: 'OrderConnection',
+        edges: orders.map((f) => {
+          return {
+            __typename: 'OrderEdge',
+            node: f,
+            cursor: f.id,
+          };
+        }),
+        pageInfo: {
+          __typename: 'PageInfo',
+          startCursor:
+            '066468C06549101DAF7BC51099E1412A0067DC08C246B7D8013C9D0CBF1E8EE7',
+          endCursor:
+            '94737d2bafafa4bc3b80a56ef084ae52a983b91aa067c31e243c61a0f962a836',
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
+      },
       __typename: 'Party',
     },
   };

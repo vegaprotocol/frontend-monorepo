@@ -6,7 +6,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "postinstall": "husky install && yarn tsc -b tools/executors/**"
+    "postinstall": "husky install && yarn tsc -b tools/executors/next && yarn tsc -b tools/executors/webpack"
   },
   "engines": {
     "node": ">=16.14.0"
@@ -30,13 +30,14 @@
     "@sentry/react": "^6.19.2",
     "@sentry/tracing": "^6.19.2",
     "@testing-library/user-event": "^14.2.1",
-    "@vegaprotocol/vegawallet-service-api-client": "0.4.14",
+    "@vegaprotocol/vegawallet-service-api-client": "0.4.15",
     "@walletconnect/ethereum-provider": "^1.7.5",
     "@web3-react/core": "8.0.20-beta.0",
     "@web3-react/metamask": "8.0.16-beta.0",
     "@web3-react/walletconnect": "^8.0.23-beta.0",
     "ag-grid-community": "^27.0.1",
     "ag-grid-react": "^27.0.1",
+    "allotment": "^1.14.5",
     "alpha-lyrae": "vegaprotocol/alpha-lyrae",
     "apollo": "^2.33.9",
     "autoprefixer": "^10.4.2",

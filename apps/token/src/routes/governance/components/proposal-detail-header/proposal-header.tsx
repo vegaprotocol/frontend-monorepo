@@ -66,25 +66,30 @@ export const ProposalHeader = ({
       break;
     }
     case 'NewFreeform': {
-      const description = proposal.rationale.description.trim();
-      const headerMaxLength = 100;
-      const descriptionOneMaxLength = 60;
-      const headerOverflow = description.length > headerMaxLength;
-      const descriptionOneOverflow =
-        description.length > headerMaxLength + descriptionOneMaxLength;
+      // When rationale exists:
+      // const description = proposal.rationale.description.trim();
+      // const headerMaxLength = 100;
+      // const descriptionOneMaxLength = 60;
+      // const headerOverflow = description.length > headerMaxLength;
+      // const descriptionOneOverflow =
+      //   description.length > headerMaxLength + descriptionOneMaxLength;
+      //
+      // headerText = `${description.substring(0, headerMaxLength - 1).trim()}${
+      //   headerOverflow ? '…' : ''
+      // }`;
+      // detailsOne = headerOverflow
+      //   ? `${description
+      //       .substring(
+      //         headerMaxLength - 1,
+      //         headerMaxLength + descriptionOneMaxLength - 1
+      //       )
+      //       .trim()}${descriptionOneOverflow ? '…' : ''}`
+      //   : '';
+      // detailsTwo = `${proposal.id}`;
+      headerText = proposal.id
+        ? proposal.id.trim()
+        : `${t('Unknown proposal')}`;
 
-      headerText = `${description.substring(0, headerMaxLength - 1).trim()}${
-        headerOverflow ? '…' : ''
-      }`;
-      detailsOne = headerOverflow
-        ? `${description
-            .substring(
-              headerMaxLength - 1,
-              headerMaxLength + descriptionOneMaxLength - 1
-            )
-            .trim()}${descriptionOneOverflow ? '…' : ''}`
-        : '';
-      detailsTwo = `${proposal.id}`;
       break;
     }
     default: {
@@ -97,7 +102,7 @@ export const ProposalHeader = ({
       <header data-testid="proposal-header">
         <h2 className="text-h5 font-semibold mb-4">{headerText}</h2>
       </header>
-      <div data-testid="proposal-details-one">{detailsOne}</div>
+      {detailsOne && <div data-testid="proposal-details-one">{detailsOne}</div>}
       {detailsTwo && <div data-testid="proposal-details-two">{detailsTwo}</div>}
     </div>
   );

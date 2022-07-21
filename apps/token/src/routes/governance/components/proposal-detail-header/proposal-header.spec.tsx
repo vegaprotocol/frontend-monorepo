@@ -137,15 +137,17 @@ describe('Proposal header', () => {
     );
   });
 
-  it('Renders Freeform network - short rationale', () => {
+  // Skipped until proposals have rationale
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('Renders Freeform network - short rationale', () => {
     render(
       renderComponent(
         generateProposal({
           id: 'short',
-          rationale: {
-            hash: '0x0',
-            description: 'freeform description',
-          },
+          // rationale: {
+          //   hash: '0x0',
+          //   description: 'freeform description',
+          // },
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -163,16 +165,18 @@ describe('Proposal header', () => {
     );
   });
 
-  it('Renders Freeform network - long rationale (105 chars)', () => {
+  // Skipped until proposals have rationale
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('Renders Freeform network - long rationale (105 chars)', () => {
     render(
       renderComponent(
         generateProposal({
           id: 'long',
-          rationale: {
-            hash: '0x0',
-            description:
-              'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
-          },
+          // rationale: {
+          //   hash: '0x0',
+          //   description:
+          //     'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
+          // },
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -194,16 +198,18 @@ describe('Proposal header', () => {
     );
   });
 
-  it('Renders Freeform network - extra long rationale (165 chars)', () => {
+  // Skipped until proposals have rationale
+  // eslint-disable-next-line jest/no-disabled-tests
+  it.skip('Renders Freeform network - extra long rationale (165 chars)', () => {
     render(
       renderComponent(
         generateProposal({
           id: 'extraLong',
-          rationale: {
-            hash: '0x0',
-            description:
-              'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
-          },
+          // rationale: {
+          //   hash: '0x0',
+          //   description:
+          //     'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
+          // },
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -224,6 +230,31 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'extraLong'
     );
+  });
+
+  // Remove once proposals have rationale and re-enable above tests
+  it('Renders Freeform network - id for title', () => {
+    render(
+      renderComponent(
+        generateProposal({
+          id: 'freeform title',
+          terms: {
+            change: {
+              __typename: 'NewFreeform',
+            },
+          },
+        })
+      )
+    );
+    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+      'freeform title'
+    );
+    expect(
+      screen.queryByTestId('proposal-details-one')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('proposal-details-two')
+    ).not.toBeInTheDocument();
   });
 
   it("Renders unknown proposal if it's a different proposal type", () => {

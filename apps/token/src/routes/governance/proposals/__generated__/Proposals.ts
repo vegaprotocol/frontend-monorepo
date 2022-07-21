@@ -9,29 +9,6 @@ import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol
 // GraphQL query operation: Proposals
 // ====================================================
 
-export interface Proposals_proposals_rationale {
-  __typename: "ProposalRationale";
-  /**
-   * Link to a text file describing the proposal in depth.
-   * Optional except for FreeFrom proposal where it's mandatory.
-   * If set, the `url` property must be set.
-   */
-  url: string | null;
-  /**
-   * Description to show a short title / something in case the link goes offline.
-   * This is to be between 0 and 1024 unicode characters.
-   * This is mandatory for all proposal.
-   */
-  description: string;
-  /**
-   * Cryptographically secure hash (SHA3-512) of the text pointed by the `url` property
-   * so that viewers can check that the text hasn't been changed over time.
-   * Optional except for FreeFrom proposal where it's mandatory.
-   * If set, the `url` property must be set.
-   */
-  hash: string | null;
-}
-
 export interface Proposals_proposals_party {
   __typename: "Party";
   /**
@@ -310,10 +287,6 @@ export interface Proposals_proposals {
    * Error details of the rejectionReason
    */
   errorDetails: string | null;
-  /**
-   * Rationale behind the proposal
-   */
-  rationale: Proposals_proposals_rationale;
   /**
    * Party that prepared the proposal
    */

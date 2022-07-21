@@ -25,12 +25,6 @@ export function generateProposal(
       __typename: 'Party',
       id: faker.datatype.uuid(),
     },
-    rationale: {
-      __typename: 'ProposalRationale',
-      hash: faker.datatype.uuid(),
-      url: faker.internet.url(),
-      description: faker.lorem.words(),
-    },
     terms: {
       __typename: 'ProposalTerms',
       closingDatetime:

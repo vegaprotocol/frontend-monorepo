@@ -8,11 +8,6 @@ export const PROPOSALS_FRAGMENT = gql`
     datetime
     rejectionReason
     errorDetails
-    rationale {
-      url
-      description
-      hash
-    }
     party {
       id
     }

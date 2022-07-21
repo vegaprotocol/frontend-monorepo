@@ -1,10 +1,10 @@
 import {
   ethereumAddress,
-  maxSafe,
   minSafe,
   t,
   removeDecimal,
   required,
+  maxSafe,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -13,7 +13,9 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
-import type BigNumber from 'bignumber.js';
+import { Web3WalletInput } from '@vegaprotocol/web3';
+import { useWeb3React } from '@web3-react/core';
+import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
@@ -28,10 +30,12 @@ interface FormFields {
 
 export interface WithdrawFormProps {
   assets: Asset[];
-  max: BigNumber;
+  max: {
+    balance: BigNumber;
+    threshold: BigNumber;
+  };
   min: BigNumber;
   selectedAsset?: Asset;
-  ethereumAccount?: string;
   limits: {
     max: BigNumber;
   } | null;
@@ -44,11 +48,11 @@ export const WithdrawForm = ({
   max,
   min,
   selectedAsset,
-  ethereumAccount,
   limits,
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
+  const { account: address } = useWeb3React();
   const {
     register,
     handleSubmit,
@@ -59,7 +63,7 @@ export const WithdrawForm = ({
   } = useForm<FormFields>({
     defaultValues: {
       asset: selectedAsset?.id,
-      to: ethereumAccount,
+      to: address,
     },
   });
   const onSubmit = async (fields: FormFields) => {
@@ -105,7 +109,6 @@ export const WithdrawForm = ({
             </Select>
           )}
         />
-
         {errors.asset?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.asset.message}
@@ -117,31 +120,21 @@ export const WithdrawForm = ({
         labelFor="ethereum-address"
         className="relative"
       >
-        <Input
-          {...register('to', { validate: { required, ethereumAddress } })}
-          id="ethereum-address"
-          autoComplete="off"
+        <Web3WalletInput
+          inputProps={{
+            id: 'ethereum-address',
+            ...register('to', { validate: { required, ethereumAddress } }),
+          }}
         />
         {errors.to?.message && (
           <InputError intent="danger" className="mt-4">
             {errors.to.message}
           </InputError>
         )}
-        {ethereumAccount && (
-          <UseButton
-            data-testid="use-connected"
-            onClick={() => {
-              setValue('to', ethereumAccount);
-              clearErrors('to');
-            }}
-          >
-            {t('Use connected')}
-          </UseButton>
-        )}
       </FormGroup>
       {selectedAsset && limits && (
         <div className="mb-20">
-          <WithdrawLimits limits={limits} />
+          <WithdrawLimits limits={limits} balance={max.balance} />
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">
@@ -152,7 +145,17 @@ export const WithdrawForm = ({
           {...register('amount', {
             validate: {
               required,
-              maxSafe: (value) => maxSafe(max)(value),
+              maxSafe: (v) => {
+                const value = new BigNumber(v);
+                if (value.isGreaterThan(max.balance)) {
+                  return t('Insufficient amount in account');
+                } else if (value.isGreaterThan(max.threshold)) {
+                  return t('Amount is above temporary withdrawal limit');
+                }
+                return maxSafe(BigNumber.minimum(max.balance, max.threshold))(
+                  v
+                );
+              },
               minSafe: (value) => minSafe(min)(value),
             },
           })}
@@ -166,7 +169,7 @@ export const WithdrawForm = ({
           <UseButton
             data-testid="use-maximum"
             onClick={() => {
-              setValue('amount', max.toFixed(selectedAsset.decimals));
+              setValue('amount', max.balance.toFixed(selectedAsset.decimals));
               clearErrors('amount');
             }}
           >
