@@ -16,7 +16,7 @@ const Template: Story = (args) => {
   return (
     <div style={{ height: 1000 }}>
       <OrderListTable
-        data={args.data}
+        rowData={args.data}
         cancel={cancel}
         setEditOrderDialogOpen={() => {
           return;
@@ -55,7 +55,7 @@ const Template2: Story = (args) => {
     <>
       <div style={{ height: 1000 }}>
         <OrderListTable
-          data={args.data}
+          rowData={args.data}
           cancel={cancel}
           setEditOrderDialogOpen={() => {
             return;

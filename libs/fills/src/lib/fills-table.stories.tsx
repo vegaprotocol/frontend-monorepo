@@ -3,15 +3,12 @@ import type { Props } from './fills-table';
 import type { AgGridReact } from 'ag-grid-react';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useCallback, useRef } from 'react';
+import { makeInfiniteScrollGetRows } from '@vegaprotocol/react-helpers';
 import { FillsTable } from './fills-table';
 import { generateFills, generateFill } from './test-helpers';
 import type { Fills_party_tradesConnection_edges } from './__generated__/Fills';
 import type { FillsSub_trades } from './__generated__/FillsSub';
-import type {
-  IGetRowsParams,
-  BodyScrollEvent,
-  BodyScrollEndEvent,
-} from 'ag-grid-community';
+import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 
 export default {
   component: FillsTable,
@@ -73,7 +70,7 @@ const useDataProvider = ({
       const insertionData = getData(start, end);
       data.splice(start, end - start, ...insertionData);
       insert({ data, totalCount, insertionData });
-      return Promise.resolve();
+      return Promise.resolve(insertionData);
     },
     totalCount,
   };
@@ -152,39 +149,12 @@ const PaginationManager = ({ pagination }: PaginationManagerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = async ({
-    successCallback,
-    failCallback,
-    startRow,
-    endRow,
-  }: IGetRowsParams) => {
-    startRow += newRows.current;
-    endRow += newRows.current;
-    try {
-      if (
-        dataRef.current &&
-        dataRef.current.slice(startRow, endRow).some((i) => !i)
-      ) {
-        await load(startRow, endRow);
-      }
-      const rowsThisBlock = dataRef.current
-        ? dataRef.current.slice(startRow, endRow).map((edge) => edge.node)
-        : [];
-      let lastRow = -1;
-      if (totalCountRef.current !== undefined) {
-        if (!totalCountRef.current) {
-          lastRow = 0;
-        } else {
-          lastRow = totalCountRef.current;
-        }
-      } else if (rowsThisBlock.length < endRow - startRow) {
-        lastRow = rowsThisBlock.length;
-      }
-      successCallback(rowsThisBlock, lastRow);
-    } catch (e) {
-      failCallback();
-    }
-  };
+  const getRows = makeInfiniteScrollGetRows<Fills_party_tradesConnection_edges>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {
@@ -313,36 +283,12 @@ const InfiniteScrollManager = () => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = async ({
-    successCallback,
-    failCallback,
-    startRow,
-    endRow,
-  }: IGetRowsParams) => {
-    startRow += newRows.current;
-    endRow += newRows.current;
-    try {
-      if (dataRef.current && dataRef.current.indexOf(null) < endRow) {
-        await load();
-      }
-      const rowsThisBlock = dataRef.current
-        ? dataRef.current.slice(startRow, endRow).map((edge) => edge?.node)
-        : [];
-      let lastRow = -1;
-      if (totalCountRef.current !== undefined) {
-        if (!totalCountRef.current) {
-          lastRow = 0;
-        } else if (totalCountRef.current <= endRow) {
-          lastRow = totalCountRef.current;
-        }
-      } else if (rowsThisBlock.length < endRow - startRow) {
-        lastRow = rowsThisBlock.length;
-      }
-      successCallback(rowsThisBlock, lastRow);
-    } catch (e) {
-      failCallback();
-    }
-  };
+  const getRows = makeInfiniteScrollGetRows<Fills_party_tradesConnection_edges>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {
