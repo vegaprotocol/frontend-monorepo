@@ -3,27 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Links } from '../../config';
 import { NodeList } from './node-list';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
-import { useMatch } from 'react-router-dom';
-import React from 'react';
-import { Heading } from '../../components/heading';
 
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();
-  const associate = useMatch('/staking/associate');
-  const disassociate = useMatch('/staking/disassociate');
-
-  const title = React.useMemo(() => {
-    if (associate) {
-      return t('pageTitleAssociate');
-    } else if (disassociate) {
-      return t('pageTitleDisassociate');
-    }
-    return t('pageTitleStaking');
-  }, [associate, disassociate, t]);
 
   return (
     <>
-      <Heading title={title} />
       <section className="mb-20">
         <Callout
           intent={Intent.Primary}
