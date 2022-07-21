@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { NodeList, NODES_QUERY } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
@@ -12,6 +12,7 @@ jest.mock('../../components/epoch-countdown', () => ({
 const nodeFactory = (overrides?: Partial<Nodes_nodes>) => ({
   id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
   name: 'Skynet',
+  avatarUrl: 'https://upload.wikimedia.org/wikipedia/en/2/25/Marvin-TV-3.jpg',
   pubkey: '6abc23391a9f888ab240415bf63d6844b03fc360be822f4a1d2cd832d87b2917',
   infoUrl: 'https://en.wikipedia.org/wiki/Skynet_(Terminator)',
   location: '',
@@ -19,18 +20,6 @@ const nodeFactory = (overrides?: Partial<Nodes_nodes>) => ({
   stakedByDelegates: '11182454495731682635157',
   stakedTotal: '14182454495731682635157',
   pendingStake: '0',
-  stakedByOperatorFormatted: addDecimal(
-    overrides?.stakedByOperator || '3000000000000000000000',
-    18
-  ),
-  stakedByDelegatesFormatted: addDecimal(
-    overrides?.stakedByDelegates || '11182454495731682635157',
-    18
-  ),
-  stakedTotalFormatted: addDecimal(
-    overrides?.stakedTotal || '14182454495731682635157',
-    18
-  ),
   pendingStakeFormatted: addDecimal(overrides?.pendingStake || '0', 18),
   epochData: null,
   status: 'Validator',
@@ -39,6 +28,7 @@ const nodeFactory = (overrides?: Partial<Nodes_nodes>) => ({
     stakeScore: '0.3392701644525644',
     performanceScore: '0.9998677767864936',
     votingPower: '2407',
+    status: 'tendermint',
     __typename: 'RankingScore',
   },
   __typename: 'Node',
@@ -53,15 +43,13 @@ const MOCK_NODES = {
       name: 'T-800 Terminator',
       pubkey:
         'ccc3b8362c25b09d20df8ea407b0a476d6b24a0e72bc063d0033c8841652ddd4',
-      infoUrl: 'https://en.wikipedia.org/wiki/Terminator_(character)',
-      stakedByOperator: '3000000000000000000000',
-      stakedByDelegates: '6618711883996159534058',
       stakedTotal: '9618711883996159534058',
       rankingScore: {
         rankingScore: '0.4601942440481428',
         stakeScore: '0.2300971220240714',
         performanceScore: '1',
         votingPower: '2408',
+        status: 'tendermint',
         __typename: 'RankingScore',
       },
     }),
@@ -70,9 +58,6 @@ const MOCK_NODES = {
       name: 'NCC-1701-E',
       pubkey:
         '0931a8fd8cc935458f470e435a05414387cea6f329d648be894fcd44bd517a2b',
-      infoUrl: 'https://en.wikipedia.org/wiki/USS_Enterprise_(NCC-1701-E)',
-      stakedByOperator: '3000000000000000000000',
-      stakedByDelegates: '1041343338923442976709',
       stakedTotal: '4041343338923442976709',
       pendingStake: '0',
       rankingScore: {
@@ -80,6 +65,7 @@ const MOCK_NODES = {
         stakeScore: '0.0966762995515676',
         performanceScore: '0.999629748500531',
         votingPower: '1163',
+        status: 'tendermint',
         __typename: 'RankingScore',
       },
     }),
@@ -139,45 +125,5 @@ describe('Nodes list', () => {
       expect(screen.getByText(MOCK_NODES.nodes[0].name)).toBeInTheDocument();
     });
     expect(screen.getByTestId('epoch-info')).toBeInTheDocument();
-  });
-
-  it('should a lit of all nodes', async () => {
-    renderNodeList();
-
-    await waitFor(() => {
-      expect(screen.getByText(MOCK_NODES.nodes[0].name)).toBeInTheDocument();
-    });
-    const items = screen.queryAllByTestId('node-list-item');
-    expect(items).toHaveLength(3);
-    for (const item of MOCK_NODES.nodes) {
-      expect(screen.getByText(item.name)).toBeInTheDocument();
-    }
-  });
-
-  it('should list the total stake and rewards of each node', async () => {
-    renderNodeList();
-
-    await waitFor(() => {
-      expect(screen.getByText(MOCK_NODES.nodes[0].name)).toBeInTheDocument();
-    });
-    const items = screen.queryAllByTestId('node-list-item');
-    const item = within(items[0]);
-    const rows = item.getAllByRole('row');
-
-    const expectedValues = [
-      ['Total stake', '14,182.45 (50.94%)'],
-      ['Ranking score', '0.6785'],
-      ['Stake score', '0.3393'],
-      ['Performance score', '0.9999'],
-      ['Voting score', '2,407.0000'],
-    ];
-
-    for (const [i, r] of rows.entries()) {
-      const row = within(r);
-      const cell = row.getByRole('cell');
-      const header = row.getByRole('rowheader');
-      expect(header).toHaveTextContent(expectedValues[i][0]);
-      expect(cell).toHaveTextContent(expectedValues[i][1]);
-    }
   });
 });

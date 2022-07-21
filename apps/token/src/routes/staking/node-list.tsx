@@ -12,6 +12,8 @@ import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
+import * as constants from '../../../../simple-trading-app/src/app/components/simple-market-list/constants';
+import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 
 export const NODES_QUERY = gql`
   query Nodes {
@@ -61,6 +63,14 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
     </div>
   );
 };
+
+// Custom styling to account for the scrollbar. This is needed because the
+// AG Grid places the scrollbar over the bottom validator, which obstructs
+const nodeListGridStyles = `
+  .ag-theme-balham-dark .ag-body-horizontal-scroll {
+    opacity: 0.25;
+  }
+`;
 
 export const NodeList = ({ epoch }: NodeListProps) => {
   const { t } = useTranslation();
@@ -115,7 +125,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
     const colDefs = useMemo(
       () => [
-        { field: t('validator'), cellRendererFramework: ValidatorRenderer },
+        { field: t('validator'), cellRenderer: ValidatorRenderer },
         { field: t('status') },
         { field: t('totalStakeThisEpoch') },
         { field: t('share') },
@@ -140,6 +150,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
       <AgGrid
         domLayout="autoHeight"
         style={{ width: '100%', fontSize: '14px' }}
+        customThemeParams={nodeListGridStyles}
         overlayNoRowsTemplate={t('noValidators')}
         ref={ref}
         rowData={nodes}
@@ -147,7 +158,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         columnDefs={colDefs}
         defaultColDef={defaultColDef}
         animateRows={true}
-        suppressCellSelection={true}
+        suppressCellFocus={true}
         onGridReady={(event) => {
           event.columnApi.applyColumnState({
             state: [
