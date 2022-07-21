@@ -125,15 +125,18 @@ export const TradeMarketHeader = ({
                 : '-'}
             </span>
           </div>
-          <div className={headerItemClassName}>
-            <span className={itemClassName}>{t('Settlement asset')}</span>
-            <span data-testid="trading-mode" className={itemValueClassName}>
-              {
-                market.tradableInstrument.instrument.product.settlementAsset
-                  .symbol
-              }
-            </span>
-          </div>
+          {market.tradableInstrument.instrument.product?.settlementAsset
+            ?.symbol && (
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Settlement asset')}</span>
+              <span data-testid="trading-mode" className={itemValueClassName}>
+                {
+                  market.tradableInstrument.instrument.product?.settlementAsset
+                    ?.symbol
+                }
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </header>
