@@ -182,7 +182,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                 <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="ticket" name={t('Ticket')}>
-                      <TradingViews.Ticket marketId={market.id}/>
+                      <TradingViews.Ticket marketId={market.id} />
                     </Tab>
                     <Tab id="info" name={t('Info')}>
                       <TradingViews.Info marketId={market.id} />
