@@ -16,6 +16,10 @@ export interface OrderEvent_busEvents_event_TimeUpdate {
 export interface OrderEvent_busEvents_event_Order_market {
   __typename: "Market";
   /**
+   * Market ID
+   */
+  id: string;
+  /**
    * Market full name
    */
   name: string;

@@ -1,5 +1,4 @@
 import merge from 'lodash/merge';
-import type { IGetRowsParams } from 'ag-grid-community';
 import type { PartialDeep } from 'type-fest';
 import type {
   Fills,
@@ -52,7 +51,6 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
       id: 'buyer-id',
       tradesConnection: {
         __typename: 'TradeConnection',
-        totalCount: 1,
         edges: fills.map((f) => {
           return {
             __typename: 'TradeEdge',
@@ -64,6 +62,8 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
           __typename: 'PageInfo',
           startCursor: '1',
           endCursor: '2',
+          hasNextPage: false,
+          hasPreviousPage: false,
         },
       },
       __typename: 'Party',
@@ -79,7 +79,7 @@ export const generateFill = (
   const defaultFill: Fills_party_tradesConnection_edges_node = {
     __typename: 'Trade',
     id: '0',
-    createdAt: new Date().toISOString(),
+    createdAt: '2005-04-02T19:37:00.000Z',
     price: '10000000',
     size: '50000',
     buyOrder: 'buy-order',
@@ -133,9 +133,3 @@ export const generateFill = (
 
   return merge(defaultFill, override);
 };
-
-export const makeGetRows =
-  (data: Fills_party_tradesConnection_edges_node[]) =>
-  ({ successCallback }: IGetRowsParams) => {
-    successCallback(data, data.length);
-  };

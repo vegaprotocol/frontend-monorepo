@@ -1,11 +1,16 @@
 import produce from 'immer';
+import orderBy from 'lodash/orderBy';
 import { gql } from '@apollo/client';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
-import type { PageInfo, Pagination } from '@vegaprotocol/react-helpers';
+import {
+  makeDataProvider,
+  defaultAppend as append,
+} from '@vegaprotocol/react-helpers';
+import type { PageInfo } from '@vegaprotocol/react-helpers';
 import type { FillFields } from './__generated__/FillFields';
 import type {
   Fills,
   Fills_party_tradesConnection_edges,
+  Fills_party_tradesConnection_edges_node,
 } from './__generated__/Fills';
 import type { FillsSub } from './__generated__/FillsSub';
 
@@ -64,7 +69,6 @@ export const FILLS_QUERY = gql`
     party(id: $partyId) {
       id
       tradesConnection(marketId: $marketId, pagination: $pagination) {
-        totalCount
         edges {
           node {
             ...FillFields
@@ -74,6 +78,8 @@ export const FILLS_QUERY = gql`
         pageInfo {
           startCursor
           endCursor
+          hasNextPage
+          hasPreviousPage
         }
       }
     }
@@ -90,16 +96,24 @@ export const FILLS_SUB = gql`
 `;
 
 const update = (
-  data: Fills_party_tradesConnection_edges[],
+  data: (Fills_party_tradesConnection_edges | null)[],
   delta: FillFields[]
 ) => {
   return produce(data, (draft) => {
-    delta.forEach((node) => {
-      const index = draft.findIndex((edge) => edge.node.id === node.id);
+    orderBy(delta, 'createdAt').forEach((node) => {
+      const index = draft.findIndex((edge) => edge?.node.id === node.id);
       if (index !== -1) {
-        Object.assign(draft[index].node, node);
+        if (draft[index]?.node) {
+          Object.assign(
+            draft[index]?.node as Fills_party_tradesConnection_edges_node,
+            node
+          );
+        }
       } else {
-        draft.unshift({ node, cursor: '', __typename: 'TradeEdge' });
+        const firstNode = draft[0]?.node;
+        if (firstNode && node.createdAt >= firstNode.createdAt) {
+          draft.unshift({ node, cursor: '', __typename: 'TradeEdge' });
+        }
       }
     });
   });
@@ -113,39 +127,7 @@ const getData = (
 const getPageInfo = (responseData: Fills): PageInfo | null =>
   responseData.party?.tradesConnection.pageInfo || null;
 
-const getTotalCount = (responseData: Fills): number | undefined =>
-  responseData.party?.tradesConnection.totalCount;
-
 const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
-
-const append = (
-  data: Fills_party_tradesConnection_edges[] | null,
-  pageInfo: PageInfo,
-  insertionData: Fills_party_tradesConnection_edges[] | null,
-  insertionPageInfo: PageInfo | null,
-  pagination?: Pagination
-) => {
-  if (data && insertionData && insertionPageInfo) {
-    if (pagination?.after) {
-      if (data[data.length - 1].cursor === pagination.after) {
-        return {
-          data: [...data, ...insertionData],
-          pageInfo: { ...pageInfo, endCursor: insertionPageInfo.endCursor },
-        };
-      } else {
-        const cursors = data.map((item) => item.cursor);
-        const startIndex = cursors.lastIndexOf(pagination.after);
-        if (startIndex !== -1) {
-          return {
-            data: [...data.slice(0, startIndex), ...insertionData],
-            pageInfo: { ...pageInfo, endCursor: insertionPageInfo.endCursor },
-          };
-        }
-      }
-    }
-  }
-  return { data, pageInfo };
-};
 
 export const fillsDataProvider = makeDataProvider(
   FILLS_QUERY,
@@ -155,7 +137,6 @@ export const fillsDataProvider = makeDataProvider(
   getDelta,
   {
     getPageInfo,
-    getTotalCount,
     append,
     first: 100,
   }

@@ -3,11 +3,35 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
+import { MarketState, MarketTradingMode, AccountType } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketInfoQuery
 // ====================================================
+
+export interface MarketInfoQuery_market_accounts_asset {
+  __typename: "Asset";
+  /**
+   * The id of the asset
+   */
+  id: string;
+}
+
+export interface MarketInfoQuery_market_accounts {
+  __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
+  /**
+   * Asset, the 'currency'
+   */
+  asset: MarketInfoQuery_market_accounts_asset;
+  /**
+   * Balance as string - current account balance (approx. as balances can be updated several times per second)
+   */
+  balance: string;
+}
 
 export interface MarketInfoQuery_market_fees_factors {
   __typename: "FeeFactors";
@@ -125,6 +149,42 @@ export interface MarketInfoQuery_market_data {
    * the aggregated volume being offered at the best static offer price, excluding pegged orders.
    */
   bestStaticOfferVolume: string;
+  /**
+   * the sum of the size of all positions greater than 0.
+   */
+  openInterest: string;
+}
+
+export interface MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters {
+  __typename: "TargetStakeParameters";
+  /**
+   * Specifies length of time window expressed in seconds for target stake calculation
+   */
+  timeWindow: number;
+  /**
+   * Specifies scaling factors used in target stake calculation
+   */
+  scalingFactor: number;
+}
+
+export interface MarketInfoQuery_market_liquidityMonitoringParameters {
+  __typename: "LiquidityMonitoringParameters";
+  /**
+   * Specifies the triggering ratio for entering liquidity auction
+   */
+  triggeringRatio: number;
+  /**
+   * Specifies parameters related to target stake calculation
+   */
+  targetStakeParameters: MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters;
+}
+
+export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
+  __typename: "InstrumentMetadata";
+  /**
+   * An arbitrary list of tags to associated to associate to the Instrument (string list)
+   */
+  tags: string[] | null;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_settlementAsset {
@@ -143,6 +203,28 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_se
   name: string;
 }
 
+export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice {
+  __typename: "OracleSpec";
+  /**
+   * id is a hash generated from the OracleSpec data.
+   */
+  id: string;
+}
+
+export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination {
+  __typename: "OracleSpec";
+  /**
+   * id is a hash generated from the OracleSpec data.
+   */
+  id: string;
+}
+
+export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecBinding {
+  __typename: "OracleSpecToFutureBinding";
+  settlementPriceProperty: string;
+  tradingTerminationProperty: string;
+}
+
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
@@ -153,10 +235,38 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product {
    * The name of the asset (string)
    */
   settlementAsset: MarketInfoQuery_market_tradableInstrument_instrument_product_settlementAsset;
+  /**
+   * The oracle spec describing the oracle data of interest for settlement price.
+   */
+  oracleSpecForSettlementPrice: MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice;
+  /**
+   * The oracle spec describing the oracle data of interest for trading termination.
+   */
+  oracleSpecForTradingTermination: MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination;
+  /**
+   * The binding between the oracle spec and the settlement price
+   */
+  oracleSpecBinding: MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecBinding;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument {
   __typename: "Instrument";
+  /**
+   * Uniquely identify an instrument across all instruments available on Vega (string)
+   */
+  id: string;
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+  /**
+   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
+   */
+  code: string;
+  /**
+   * Metadata for this instrument
+   */
+  metadata: MarketInfoQuery_market_tradableInstrument_instrument_metadata;
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
@@ -258,14 +368,14 @@ export interface MarketInfoQuery_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
-   * 
+   *
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   * 
+   *
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -287,6 +397,10 @@ export interface MarketInfoQuery_market {
    */
   tradingMode: MarketTradingMode;
   /**
+   * Get account for a party or market
+   */
+  accounts: MarketInfoQuery_market_accounts[] | null;
+  /**
    * Fees related data
    */
   fees: MarketInfoQuery_market_fees;
@@ -302,6 +416,10 @@ export interface MarketInfoQuery_market {
    * marketData for the given market
    */
   data: MarketInfoQuery_market_data | null;
+  /**
+   * Liquidity monitoring parameters for the market
+   */
+  liquidityMonitoringParameters: MarketInfoQuery_market_liquidityMonitoringParameters;
   /**
    * An instance of or reference to a tradable instrument.
    */

@@ -3,13 +3,10 @@ import { gql } from '@apollo/client';
 import type {
   Markets,
   Markets_markets,
-} from '../../components/__generated__/Markets';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
-
-import type {
   MarketDataSub,
   MarketDataSub_marketData,
-} from '../../components/__generated__/MarketDataSub';
+} from './';
+import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketDataFields on MarketData {
@@ -57,6 +54,7 @@ export const MARKET_LIST_QUERY = gql`
       id
       decimalPlaces
       state
+      tradingMode
       data {
         market {
           id

@@ -11,6 +11,7 @@ describe('withdraw', () => {
   const amountField = 'input[name="amount"]';
   const useMaximumAmount = 'use-maximum';
   const submitWithdrawBtn = 'submit-withdrawal';
+  const ethAddressValue = Cypress.env('ETHEREUM_WALLET_ADDRESS');
 
   beforeEach(() => {
     cy.mockWeb3Provider();
@@ -41,12 +42,8 @@ describe('withdraw', () => {
     // only 2 despite 3 fields because the ethereum address will be auto populated
     cy.getByTestId(formFieldError).should('have.length', 2);
 
-    // Test for invalid Ethereum address
-    cy.get(toAddressField)
-      .clear()
-      .type('invalid-ethereum-address')
-      .next('[data-testid="input-error-text"]')
-      .should('contain.text', 'Invalid Ethereum address');
+    // Test for Ethereum address
+    cy.get(toAddressField).should('have.value', ethAddressValue);
 
     // Test min amount
     cy.get(assetSelectField).select('Asset 1'); // Select asset so we have a min viable amount calculated
@@ -61,7 +58,7 @@ describe('withdraw', () => {
       .clear()
       .type('1') // Will be above maximum because the vega wallet doesnt have any collateral
       .next('[data-testid="input-error-text"]')
-      .should('contain.text', 'Value is above maximum');
+      .should('contain.text', 'Insufficient amount in account');
   });
 
   it('can set amount using use maximum button', () => {

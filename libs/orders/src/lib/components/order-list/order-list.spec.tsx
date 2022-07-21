@@ -1,5 +1,9 @@
 import { act, render, screen } from '@testing-library/react';
-import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import {
+  addDecimal,
+  formatLabel,
+  getDateTimeFormat,
+} from '@vegaprotocol/react-helpers';
 import type { Orders_party_orders } from '../__generated__/Orders';
 import { OrderStatus, OrderRejectionReason } from '@vegaprotocol/types';
 import { OrderListTable } from './order-list';
@@ -16,7 +20,12 @@ const generateJsx = (
   return (
     <MockedProvider>
       <VegaWalletContext.Provider value={context as VegaWalletContextShape}>
-        <OrderListTable data={orders} cancel={jest.fn()} />
+        <OrderListTable
+          data={orders}
+          cancel={jest.fn()}
+          setEditOrderDialogOpen={jest.fn()}
+          setEditOrder={jest.fn()}
+        />
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
@@ -36,7 +45,7 @@ describe('OrderListTable', () => {
     });
 
     const headers = screen.getAllByRole('columnheader');
-    expect(headers).toHaveLength(10);
+    expect(headers).toHaveLength(11);
     expect(headers.map((h) => h.textContent?.trim())).toEqual([
       'Market',
       'Amount',
@@ -47,6 +56,7 @@ describe('OrderListTable', () => {
       'Time In Force',
       'Created At',
       'Updated At',
+      'Edit',
       'Cancel',
     ]);
   });
@@ -67,6 +77,7 @@ describe('OrderListTable', () => {
       marketOrder.timeInForce,
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
       '-',
+      'Edit',
       'Cancel',
     ];
     cells.forEach((cell, i) =>
@@ -92,6 +103,7 @@ describe('OrderListTable', () => {
       )}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
       '-',
+      'Edit',
       'Cancel',
     ];
     cells.forEach((cell, i) =>
@@ -110,7 +122,7 @@ describe('OrderListTable', () => {
     });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[3]).toHaveTextContent(
-      `${rejectedOrder.status}: ${rejectedOrder.rejectionReason}`
+      `${rejectedOrder.status}: ${formatLabel(rejectedOrder.rejectionReason)}`
     );
   });
 });

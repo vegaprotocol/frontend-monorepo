@@ -6,7 +6,7 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "postinstall": "husky install && yarn tsc -b tools/executors/**"
+    "postinstall": "husky install && yarn tsc -b tools/executors/next && yarn tsc -b tools/executors/webpack"
   },
   "engines": {
     "node": ">=16.14.0"
@@ -30,7 +30,7 @@
     "@sentry/react": "^6.19.2",
     "@sentry/tracing": "^6.19.2",
     "@testing-library/user-event": "^14.2.1",
-    "@vegaprotocol/vegawallet-service-api-client": "0.4.14",
+    "@vegaprotocol/vegawallet-service-api-client": "0.4.15",
     "@walletconnect/ethereum-provider": "^1.7.5",
     "@web3-react/core": "8.0.20-beta.0",
     "@web3-react/metamask": "8.0.16-beta.0",
