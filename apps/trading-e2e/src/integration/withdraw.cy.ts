@@ -58,7 +58,7 @@ describe('withdraw', () => {
       .clear()
       .type('1') // Will be above maximum because the vega wallet doesnt have any collateral
       .next('[data-testid="input-error-text"]')
-      .should('contain.text', 'Value is above maximum');
+      .should('contain.text', 'Insufficient amount in account');
   });
 
   it('can set amount using use maximum button', () => {
