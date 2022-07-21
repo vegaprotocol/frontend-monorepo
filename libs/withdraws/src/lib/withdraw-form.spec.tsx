@@ -26,7 +26,10 @@ beforeEach(() => {
   props = {
     assets,
     min: new BigNumber(0.00001),
-    max: new BigNumber(100),
+    max: {
+      balance: new BigNumber(100),
+      threshold: new BigNumber(200),
+    },
     limits: {
       max: new BigNumber(200),
     },
@@ -75,7 +78,9 @@ describe('Withdrawal form', () => {
       expect(
         await screen.findByText('Invalid Ethereum address')
       ).toBeInTheDocument();
-      expect(screen.getByText('Value is above maximum')).toBeInTheDocument();
+      expect(
+        screen.getByText('Insufficient amount in account')
+      ).toBeInTheDocument();
     });
 
     it('fails when submitted amount is less than the minimum limit', async () => {
@@ -111,14 +116,14 @@ describe('Withdrawal form', () => {
     });
   });
 
-  it('populates amount field with maximum value when clicking the "use maximum" button', () => {
+  it('populates amount field with balance value when clicking the "use maximum" button', () => {
     const asset = props.assets[0];
     render(<WithdrawForm {...props} selectedAsset={asset} />);
 
     fireEvent.click(screen.getByText('Use maximum'));
 
     expect(screen.getByLabelText('Amount')).toHaveValue(
-      Number(props.max.toFixed(asset.decimals))
+      Number(props.max.balance.toFixed(asset.decimals))
     );
   });
 });
