@@ -548,6 +548,12 @@
   "fail": "Fail",
   "rankingScore": "Ranking score",
   "stakeScore": "Stake score",
-  "performanceScore": "Performance score",
-  "votingPower": "Voting score"
+  "performanceScore": "Performance",
+  "votingPower": "Voting power",
+  "noValidators": "No validators",
+  "validator": "Validator",
+  "totalStakeThisEpoch": "Total stake this epoch",
+  "share": "Share",
+  "validatorStake": "Validator stake",
+  "Nodes": "Nodes"
 }

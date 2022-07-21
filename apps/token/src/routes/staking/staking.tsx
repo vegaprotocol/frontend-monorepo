@@ -3,13 +3,28 @@ import { useTranslation } from 'react-i18next';
 import { Links } from '../../config';
 import { NodeList } from './node-list';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
+import { useMatch } from 'react-router-dom';
+import React from 'react';
+import { Heading } from '../../components/heading';
 
 export const Staking = ({ data }: { data?: StakingQueryResult }) => {
   const { t } = useTranslation();
+  const associate = useMatch('/staking/associate');
+  const disassociate = useMatch('/staking/disassociate');
+
+  const title = React.useMemo(() => {
+    if (associate) {
+      return t('pageTitleAssociate');
+    } else if (disassociate) {
+      return t('pageTitleDisassociate');
+    }
+    return t('pageTitleStaking');
+  }, [associate, disassociate, t]);
 
   return (
     <>
-      <section data-testid="staking-description" className="mb-24">
+      <Heading title={title} />
+      <section className="mb-20">
         <Callout
           intent={Intent.Primary}
           iconName="help"
@@ -33,16 +48,9 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
       </section>
 
       <section>
-        <StakingStepSelectNode data={data} />
+        <h2 className="text-h4 uppercase">{t('Nodes')}</h2>
+        <NodeList data-testid="node-list" epoch={data?.epoch} />
       </section>
     </>
   );
-};
-
-export const StakingStepSelectNode = ({
-  data,
-}: {
-  data?: StakingQueryResult;
-}) => {
-  return <NodeList data-testid="node-list" epoch={data?.epoch} />;
 };

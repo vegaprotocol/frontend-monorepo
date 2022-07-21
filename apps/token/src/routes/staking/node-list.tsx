@@ -1,14 +1,16 @@
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
+import { useMemo, useRef, forwardRef } from 'react';
+import {
+  AgGridDynamic as AgGrid,
+  AsyncRenderer,
+} from '@vegaprotocol/ui-toolkit';
+import type { AgGridReact } from 'ag-grid-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 
 import { EpochCountdown } from '../../components/epoch-countdown';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
-import { truncateMiddle } from '../../lib/truncate-middle';
-import type { Nodes, Nodes_nodes_rankingScore } from './__generated__/Nodes';
+import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
 
 export const NODES_QUERY = gql`
@@ -20,6 +22,7 @@ export const NODES_QUERY = gql`
       pubkey
       stakedTotal
       stakedTotalFormatted @client
+      pendingStake
       rankingScore {
         rankingScore
         stakeScore
@@ -35,29 +38,6 @@ export const NODES_QUERY = gql`
   }
 `;
 
-const NodeListItemName = ({ children }: { children: React.ReactNode }) => (
-  <span className="mr-4 underline text-white">{children}</span>
-);
-
-const NodeListTr = ({ children }: { children: React.ReactNode }) => (
-  <tr className="flex">{children}</tr>
-);
-
-const NodeListTh = ({ children }: { children: React.ReactNode }) => (
-  <th
-    role="rowheader"
-    className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal"
-  >
-    {children}
-  </th>
-);
-
-const NodeListTd = ({ children }: { children: React.ReactNode }) => (
-  <td className="flex-1 break-words py-1 px-4 font-mono text-right">
-    {children}
-  </td>
-);
-
 interface NodeListProps {
   epoch: Staking_epoch | undefined;
 }
@@ -66,7 +46,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const { t } = useTranslation();
   const { data, error, loading } = useQuery<Nodes>(NODES_QUERY);
 
-  const nodes = React.useMemo<NodeListItemProps[]>(() => {
+  const nodes = useMemo(() => {
     if (!data?.nodes) return [];
 
     return data.nodes.map((node) => {
@@ -82,35 +62,81 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
       return {
         id: node.id,
-        name: node.name,
-        pubkey: node.pubkey,
-        stakedTotal,
-        stakedOnNode,
-        stakedTotalPercentage,
-        epoch,
-        scores: node.rankingScore,
+        [t('validator')]: {
+          avatar: node.avatarUrl,
+          name: node.name,
+        },
+        [t('totalStakeThisEpoch')]: formatNumber(stakedTotal, 2),
+        [t('share')]: stakedTotalPercentage,
+        [t('validatorStake')]: formatNumber(stakedOnNode, 2),
+        [t('nextEpoch')]: node.pendingStake,
+        [t('rankingScore')]: node.rankingScore.rankingScore,
+        [t('stakeScore')]: node.rankingScore.stakeScore,
+        [t('status')]: node.rankingScore.status,
+        [t('performanceScore')]: node.rankingScore.performanceScore,
+        [t('votingPower')]: node.rankingScore.votingPower,
       };
     });
-  }, [data, epoch]);
+  }, [data, t]);
 
-  if (error) {
-    return (
-      <Callout intent={Intent.Danger} title={t('Something went wrong')}>
-        <pre>{error.message}</pre>
-      </Callout>
-    );
-  }
+  const gridRef = useRef<AgGridReact | null>(null);
 
-  if (loading) {
-    return (
-      <div>
-        <p>{t('Loading')}</p>
-      </div>
+  const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
+    const colDefs = useMemo(
+      () => [
+        { field: t('validator') },
+        { field: t('status') },
+        { field: t('totalStakeThisEpoch') },
+        { field: t('share') },
+        { field: t('validatorStake') },
+        { field: t('nextEpoch') },
+        { field: t('rankingScore') },
+        { field: t('stakeScore') },
+        { field: t('performanceScore') },
+        { field: t('votingPower') },
+      ],
+      []
     );
-  }
+
+    const defaultColDef = useMemo(
+      () => ({
+        sortable: true,
+      }),
+      []
+    );
+
+    const nodeListStyles = `
+    :root{ --ag-row-height: 100px }
+    `;
+
+    return (
+      <AgGrid
+        customThemeParams={nodeListStyles}
+        domLayout="autoHeight"
+        style={{ width: '100%' }}
+        overlayNoRowsTemplate={t('noValidators')}
+        ref={ref}
+        rowData={nodes}
+        columnDefs={colDefs}
+        defaultColDef={defaultColDef}
+        animateRows={true}
+        onGridReady={(event) => {
+          event.columnApi.applyColumnState({
+            state: [
+              {
+                colId: t('rankingScore'),
+                sort: 'desc',
+              },
+            ],
+          });
+          event.columnApi.autoSizeAllColumns(false);
+        }}
+      />
+    );
+  });
 
   return (
-    <>
+    <AsyncRenderer loading={loading} error={error} data={nodes}>
       {epoch && epoch.timestamps.start && epoch.timestamps.expiry && (
         <EpochCountdown
           id={epoch.id}
@@ -118,78 +144,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           endDate={new Date(epoch.timestamps.expiry)}
         />
       )}
-      <ul role="list" className="mt-24">
-        {nodes.map((n, i) => {
-          return <NodeListItem key={i} {...n} />;
-        })}
-      </ul>
-    </>
-  );
-};
-
-export interface NodeListItemProps {
-  id: string;
-  name: string;
-  stakedOnNode: BigNumber;
-  stakedTotalPercentage: string;
-  scores: Nodes_nodes_rankingScore;
-}
-
-export const NodeListItem = ({
-  id,
-  name,
-  stakedOnNode,
-  stakedTotalPercentage,
-  scores,
-}: NodeListItemProps) => {
-  const { t } = useTranslation();
-
-  return (
-    <li
-      className="break-words flex flex-col justify-between mb-16 last:mb-0"
-      data-testid="node-list-item"
-    >
-      <Link to={id}>
-        {name ? (
-          <NodeListItemName>{name}</NodeListItemName>
-        ) : (
-          <>
-            <NodeListItemName>{t('validatorTitleFallback')}</NodeListItemName>
-            <span
-              className="uppercase text-white-60"
-              title={`${t('id')}: ${id}`}
-              data-testid="node-list-item-name"
-            >
-              {truncateMiddle(id)}
-            </span>
-          </>
-        )}
-      </Link>
-      <table
-        className="flex-1 text-body border-collapse mt-4"
-        data-testid="node-list-item-table"
-      >
-        <tbody>
-          <NodeListTr>
-            <NodeListTh>{t('Total stake')}</NodeListTh>
-            <NodeListTd>
-              {formatNumber(stakedOnNode, 2)} ({stakedTotalPercentage})
-            </NodeListTd>
-          </NodeListTr>
-          {scores
-            ? Object.entries(scores)
-                .filter(([key]) => key !== '__typename')
-                .map(([key, value]) => (
-                  <NodeListTr key={`${id}_${key}`}>
-                    <NodeListTh>{t(key)}</NodeListTh>
-                    <NodeListTd>
-                      {formatNumber(new BigNumber(value), 4)}
-                    </NodeListTd>
-                  </NodeListTr>
-                ))
-            : null}
-        </tbody>
-      </table>
-    </li>
+      <NodeListTable ref={gridRef} />
+    </AsyncRenderer>
   );
 };
