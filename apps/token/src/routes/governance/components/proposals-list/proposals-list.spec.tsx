@@ -26,9 +26,6 @@ const openProposalClosesNextMonth = generateProposal({
     closingDatetime: nextMonth.toString(),
     enactmentDatetime: nextMonth.toString(),
   },
-  rationale: {
-    description: 'proposal that closes next month',
-  },
 });
 
 const openProposalClosesNextWeek = generateProposal({
@@ -40,9 +37,6 @@ const openProposalClosesNextWeek = generateProposal({
   terms: {
     closingDatetime: nextWeek.toString(),
     enactmentDatetime: nextWeek.toString(),
-  },
-  rationale: {
-    description: 'proposal that closes next week',
   },
 });
 
@@ -202,13 +196,13 @@ describe('Proposals list', () => {
     expect(container.querySelector('#proposal1')).not.toBeInTheDocument();
   });
 
-  it('Filters list by text - proposal rationale', () => {
+  it('Filters list by text - proposal id', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
     );
     fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
     fireEvent.change(screen.getByTestId('filter-input'), {
-      target: { value: 'proposal that closes next month' },
+      target: { value: 'proposal1' },
     });
     const container = screen.getByTestId('open-proposals');
     expect(container.querySelector('#proposal1')).toBeInTheDocument();
@@ -221,7 +215,7 @@ describe('Proposals list', () => {
     );
     fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
     fireEvent.change(screen.getByTestId('filter-input'), {
-      target: { value: 'next month' },
+      target: { value: 'osal1' },
     });
     const container = screen.getByTestId('open-proposals');
     expect(container.querySelector('#proposal1')).toBeInTheDocument();

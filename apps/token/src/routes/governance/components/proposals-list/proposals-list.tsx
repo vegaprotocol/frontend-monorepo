@@ -40,8 +40,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
 
   const filterPredicate = (p: Proposals_proposals) =>
     p.id?.includes(filterString) ||
-    p.party?.id?.toString().includes(filterString) ||
-    p.rationale?.description?.includes(filterString);
+    p.party?.id?.toString().includes(filterString);
 
   return (
     <>
