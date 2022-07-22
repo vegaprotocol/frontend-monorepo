@@ -29,7 +29,14 @@ export const initialState = {
   confirmations: 0,
 };
 
-export const useEthereumTransaction = <TContract>(
+type DefaultContract = {
+  contract: ethers.Contract;
+};
+
+export const useEthereumTransaction = <
+  TContract extends DefaultContract,
+  TMethod extends string
+>(
   contract: TContract | null,
   methodName: keyof TContract,
   requiredConfirmations = 1
@@ -44,20 +51,22 @@ export const useEthereumTransaction = <TContract>(
   }, []);
 
   const perform = useCallback(
-    async (...args) => {
-      if (!contract || typeof contract[methodName] !== 'function') {
-        throw new Error('Method not found on contract');
-      }
-
+    // @ts-ignore TS errors here as TMethod doesn satisifed the constraints on TContract
+    async (...args: Parameters<TContract[TMethod]>) => {
       try {
-        // @ts-ignore asdf asdf asdf
-        await contract.contract.callStatic[methodName](...args);
+        if (
+          !contract ||
+          typeof contract[methodName] !== 'function' ||
+          typeof contract.contract.callStatic[methodName as string] !==
+            'function'
+        ) {
+          throw new Error('method not found on contract');
+        }
+        await contract.contract.callStatic[methodName as string](args);
       } catch (err) {
-        // call static failed
         setTransaction({
           status: EthTxStatus.Error,
-          // @ts-ignore asdf asdf asdf
-          error: err,
+          error: err as EthereumError,
         });
         return;
       }
@@ -69,15 +78,13 @@ export const useEthereumTransaction = <TContract>(
       });
 
       try {
-        // @ts-ignore asdf asdf asdf
-        const res = contract[methodName](...args);
+        const method = contract[methodName];
 
-        if (res === null) {
-          setTransaction({ status: EthTxStatus.Default });
-          return;
+        if (!method || typeof method !== 'function') {
+          throw new Error('method not found on contract');
         }
 
-        const tx = await res;
+        const tx = await method(...args);
 
         let receipt: ethers.ContractReceipt | null = null;
 
@@ -85,12 +92,15 @@ export const useEthereumTransaction = <TContract>(
 
         for (let i = 1; i <= requiredConfirmations; i++) {
           receipt = await tx.wait(i);
-          // @ts-ignore lost type safety on contract
-          setTransaction({ confirmations: receipt.confirmations });
+          setTransaction({
+            confirmations: receipt
+              ? receipt.confirmations
+              : requiredConfirmations,
+          });
         }
 
         if (!receipt) {
-          throw new Error('No receipt after confirmations are met');
+          throw new Error('no receipt after confirmations are met');
         }
 
         setTransaction({ status: EthTxStatus.Complete, receipt });

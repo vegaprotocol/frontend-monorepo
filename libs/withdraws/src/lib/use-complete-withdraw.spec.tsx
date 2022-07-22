@@ -11,7 +11,10 @@ import * as sentry from '@sentry/react';
 import type { Erc20ApprovalNew_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalNew';
 
 jest.mock('@vegaprotocol/web3', () => ({
-  useBridgeContract: jest.fn(),
+  useBridgeContract: jest.fn().mockReturnValue({
+    withdraw_asset: jest.fn(),
+    isNewContract: true,
+  }),
   useEthereumTransaction: jest.fn(),
 }));
 
@@ -56,7 +59,14 @@ it('Should perform the Ethereum transaction with the fetched approval', async ()
     result.current.submit(withdrawalId);
   });
   await waitFor(() => {
-    expect(mockPerform).toHaveBeenCalledWith(erc20WithdrawalApproval);
+    expect(mockPerform).toHaveBeenCalledWith(
+      erc20WithdrawalApproval.assetSource,
+      erc20WithdrawalApproval.amount,
+      erc20WithdrawalApproval.targetAddress,
+      erc20WithdrawalApproval.creation,
+      erc20WithdrawalApproval.nonce,
+      erc20WithdrawalApproval.signatures
+    );
     expect(result.current.withdrawalId).toBe(withdrawalId);
   });
 });

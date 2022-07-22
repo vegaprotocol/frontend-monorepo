@@ -41,7 +41,8 @@ export const useSubmitDeposit = () => {
   // NOTE: it may be different from the users connected key
   const [partyId, setPartyId] = useState<string | null>(null);
   const { transaction, perform } = useEthereumTransaction<
-    CollateralBridgeNew | CollateralBridge
+    CollateralBridgeNew | CollateralBridge,
+    'deposit_asset'
   >(contract, 'deposit_asset', config?.confirmations);
 
   useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {

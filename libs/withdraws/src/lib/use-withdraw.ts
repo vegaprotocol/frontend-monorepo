@@ -44,10 +44,10 @@ export const useWithdraw = (cancelled: boolean, isNewContract: boolean) => {
     transaction: ethTx,
     perform,
     reset: resetEthTx,
-  } = useEthereumTransaction<CollateralBridgeNew | CollateralBridge>(
-    contract,
+  } = useEthereumTransaction<
+    CollateralBridgeNew | CollateralBridge,
     'withdraw_asset'
-  );
+  >(contract, 'withdraw_asset');
 
   const { data, stopPolling } = useQuery<
     Erc20Approval | Erc20ApprovalNew,

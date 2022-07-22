@@ -10,7 +10,10 @@ import { useWithdraw } from './use-withdraw';
 import type { Erc20ApprovalNew } from './__generated__/Erc20ApprovalNew';
 
 jest.mock('@vegaprotocol/web3', () => ({
-  useBridgeContract: jest.fn(),
+  useBridgeContract: jest.fn().mockReturnValue({
+    withdraw_asset: jest.fn(),
+    isNewContract: true,
+  }),
   useEthereumTransaction: jest.fn(),
 }));
 
@@ -141,9 +144,15 @@ it('Creates withdrawal and immediately submits Ethereum transaction', async () =
     // @ts-ignore MockedRespones types inteferring
     mockERC20Approval.result.data.erc20WithdrawalApproval
   );
+  // @ts-ignore MockedRespones types inteferring
+  const withdrawal = mockERC20Approval.result.data.erc20WithdrawalApproval;
   expect(mockPerform).toHaveBeenCalledWith(
-    // @ts-ignore MockedRespones types inteferring
-    mockERC20Approval.result.data.erc20WithdrawalApproval
+    withdrawal.assetSource,
+    withdrawal.amount,
+    withdrawal.targetAddress,
+    withdrawal.creation,
+    withdrawal.nonce,
+    withdrawal.signatures
   );
 });
 

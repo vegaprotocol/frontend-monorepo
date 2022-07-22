@@ -1,11 +1,7 @@
-import { MockedProvider } from '@apollo/client/testing';
-import { waitFor } from '@testing-library/react';
 import { renderHook, act } from '@testing-library/react-hooks/dom';
 import { EthTxStatus } from './use-ethereum-transaction';
-import type { ReactNode } from 'react';
 import { useEthereumTransaction } from './use-ethereum-transaction';
 import type { ethers } from 'ethers';
-import { EthereumError } from './ethereum-error';
 
 beforeAll(() => {
   jest.useFakeTimers();
@@ -17,53 +13,52 @@ afterAll(() => {
 
 class MockContract {
   static txHash = 'tx-hash';
-  confirmations = 0;
-  depositAsset(args: {
-    assetSource: string;
-    amount: string;
-    vegaPublicKey: string;
-  }): Promise<ethers.ContractTransaction> {
+  contract = {
+    callStatic: {
+      deposit_asset() {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(true);
+          }, 10);
+        });
+      },
+    },
+  } as unknown as ethers.Contract;
+
+  deposit_asset(assetSource: string, amount: string, vegaPublicKey: string) {
     return Promise.resolve({
       hash: MockContract.txHash,
       wait: () => {
-        this.confirmations++;
+        confirmations++;
         return new Promise((resolve) => {
-          setTimeout(
-            () =>
-              resolve({
-                from: 'foo',
-                confirmations: this.confirmations,
-              } as ethers.ContractReceipt),
-            100
-          );
+          setTimeout(() => {
+            resolve({
+              from: 'foo',
+              confirmations,
+            } as any);
+          }, 100);
         });
       },
     } as ethers.ContractTransaction);
   }
 }
 
+let confirmations = 0;
 const mockContract = new MockContract();
 const requiredConfirmations = 3;
 
-function setup(perform: () => void) {
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider>{children}</MockedProvider>
-  );
-  return renderHook(
-    // @ts-ignore force MockContract
-    () => useEthereumTransaction(perform, requiredConfirmations),
-    { wrapper }
+function setup(methodName: 'deposit_asset' = 'deposit_asset') {
+  return renderHook(() =>
+    useEthereumTransaction<MockContract, 'deposit_asset'>(
+      mockContract,
+      methodName,
+      requiredConfirmations
+    )
   );
 }
 
 it('Ethereum transaction flow', async () => {
-  const { result } = setup(() => {
-    return mockContract.depositAsset({
-      assetSource: 'asset-source',
-      amount: '100',
-      vegaPublicKey: 'vega-key',
-    });
-  });
+  const { result } = setup();
 
   expect(result.current).toEqual({
     transaction: {
@@ -77,27 +72,30 @@ it('Ethereum transaction flow', async () => {
     reset: expect.any(Function),
   });
 
-  act(() => {
-    result.current.perform();
-  });
+  result.current.perform('asset-source', '100', 'vega-key');
 
-  expect(result.current.transaction.status).toEqual(EthTxStatus.Requested);
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Default); // still default as we await result of static call
   expect(result.current.transaction.confirmations).toBe(0);
 
-  await waitFor(() => {
-    expect(result.current.transaction.status).toEqual(EthTxStatus.Pending);
-    expect(result.current.transaction.txHash).toEqual(MockContract.txHash);
+  await act(async () => {
+    jest.advanceTimersByTime(10);
   });
+
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Pending);
+  expect(result.current.transaction.txHash).toEqual(MockContract.txHash);
+  expect(result.current.transaction.confirmations).toBe(0);
 
   await act(async () => {
     jest.advanceTimersByTime(100);
   });
+
   expect(result.current.transaction.confirmations).toBe(1);
   expect(result.current.transaction.status).toEqual(EthTxStatus.Pending);
 
   await act(async () => {
     jest.advanceTimersByTime(100);
   });
+
   expect(result.current.transaction.confirmations).toBe(2);
   expect(result.current.transaction.status).toEqual(EthTxStatus.Pending);
 
@@ -114,18 +112,14 @@ it('Ethereum transaction flow', async () => {
   });
 });
 
-it('Error handling', async () => {
-  const { result } = setup(() => {
-    throw new EthereumError(errorMsg, 500);
+describe('error handling', () => {
+  it('ensures correct method is used', async () => {
+    const { result } = setup('non-existing-method' as 'deposit_asset');
+
+    act(() => {
+      result.current.perform('asset-rouce', '100', 'vega-key');
+    });
+
+    expect(result.current.transaction.status).toEqual(EthTxStatus.Error);
   });
-
-  const errorMsg = 'test-error';
-
-  act(() => {
-    result.current.perform();
-  });
-
-  expect(result.current.transaction.status).toEqual(EthTxStatus.Error);
-  expect(result.current.transaction.error instanceof EthereumError).toBe(true);
-  expect(result.current.transaction.error?.message).toBe(errorMsg);
 });

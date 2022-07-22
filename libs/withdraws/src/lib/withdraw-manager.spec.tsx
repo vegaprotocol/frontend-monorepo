@@ -76,7 +76,7 @@ it('Expected Ethereum error closes the dialog', async () => {
     ethTx: {
       ...useWithdrawValue.ethTx,
       status: EthTxStatus.Error,
-      error: new EthereumError('User rejected transaction', 4001),
+      error: new EthereumError('User rejected transaction', 4001, 'reason'),
     },
   });
   rerender(generateJsx(props));

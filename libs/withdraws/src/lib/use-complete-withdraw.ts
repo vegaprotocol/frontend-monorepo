@@ -26,7 +26,8 @@ export const useCompleteWithdraw = (isNewContract: boolean) => {
   const contract = useBridgeContract(isNewContract);
   const [id, setId] = useState('');
   const { transaction, perform } = useEthereumTransaction<
-    CollateralBridgeNew | CollateralBridge
+    CollateralBridgeNew | CollateralBridge,
+    'withdraw_asset'
   >(contract, 'withdraw_asset');
 
   const submit = useCallback(
@@ -70,7 +71,6 @@ export const useCompleteWithdraw = (isNewContract: boolean) => {
           );
         }
       } catch (err) {
-        console.log(err);
         captureException(err);
       }
     },
