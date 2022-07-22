@@ -18,25 +18,25 @@ export class CollateralBridge {
   deposit_asset(assetSource: string, amount: string, vegaPublicKey: string) {
     return this.contract.deposit_asset(assetSource, amount, vegaPublicKey);
   }
-  getAssetSource(vegaAssetId: string) {
+  get_asset_source(vegaAssetId: string) {
     return this.contract.get_asset_source(vegaAssetId);
   }
-  getDepositMaximum(assetSource: string): Promise<BigNumber> {
+  get_deposit_maximum(assetSource: string): Promise<BigNumber> {
     return this.contract.get_deposit_maximum(assetSource);
   }
-  getDepositMinimum(assetSource: string): Promise<BigNumber> {
+  get_deposit_minimum(assetSource: string): Promise<BigNumber> {
     return this.contract.get_deposit_minimum(assetSource);
   }
-  getMultisigControlAddres() {
+  get_multisig_control_address() {
     return this.contract.get_multisig_control_address();
   }
-  getVegaAssetId(address: string) {
+  get_vega_asset_id(address: string) {
     return this.contract.get_vega_asset_id(address);
   }
-  isAssetListed(address: string) {
+  is_asset_listed(address: string) {
     return this.contract.is_asset_listed(address);
   }
-  getWithdrawThreshold(assetSource: string) {
+  get_withdraw_threshold(assetSource: string) {
     return this.contract.get_withdraw_threshold(assetSource);
   }
   withdraw_asset(

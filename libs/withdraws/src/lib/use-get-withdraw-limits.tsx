@@ -11,7 +11,7 @@ export const useGetWithdrawLimits = (asset?: Asset) => {
       return;
     }
 
-    return contract.getWithdrawThreshold(asset.source.contractAddress);
+    return contract.get_withdraw_threshold(asset.source.contractAddress);
   }, [asset, contract]);
 
   const {
