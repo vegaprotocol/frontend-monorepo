@@ -63,7 +63,7 @@ export function Dialog({
                   {title}
                 </h1>
               )}
-              {children}
+              <div className="text-black-60 dark:text-white-60">{children}</div>
             </div>
           </div>
         </DialogPrimitives.Content>
