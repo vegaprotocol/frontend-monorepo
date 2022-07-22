@@ -51,7 +51,7 @@ export const useEthereumTransaction = <
   }, []);
 
   const perform = useCallback(
-    // @ts-ignore TS errors here as TMethod doesn't satisify the constraints on TContract
+    // @ts-ignore TS errors here as TMethod doesn't satisfy the constraints on TContract
     // its a tricky one to fix but does enforce the correct types when calling perform
     async (...args: Parameters<TContract[TMethod]>) => {
       try {
