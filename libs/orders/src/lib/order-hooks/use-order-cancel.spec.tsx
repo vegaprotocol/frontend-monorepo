@@ -147,23 +147,15 @@ describe('useOrderCancel', () => {
     expect(result.current.transaction.error).toEqual(null);
   });
 
-  it('should not sendTx if no keypair', async () => {
+  it('should not sendTx if no keypair', () => {
     const mockSendTx = jest.fn();
-    const order = {
-      type: OrderType.Market,
-      size: '10',
-      price: '1234567.89',
-      status: '',
-      rejectionReason: null,
-      market: defaultMarket,
-    };
     const { result } = setup({
       sendTx: mockSendTx,
       keypairs: [],
       keypair: null,
     });
-    await act(async () => {
-      result.current.cancel(order);
+    act(() => {
+      result.current.cancel({ orderId: 'order-id', marketId: 'market-id' });
     });
     expect(mockSendTx).not.toHaveBeenCalled();
   });
@@ -173,30 +165,24 @@ describe('useOrderCancel', () => {
     const keypair = {
       pub: '0x123',
     } as VegaKeyExtended;
-    const order = {
-      type: OrderType.Limit,
-      size: '10',
-      price: '1234567.89',
-      status: '',
-      rejectionReason: null,
-      market: defaultMarket,
-    };
     const { result } = setup({
       sendTx: mockSendTx,
       keypairs: [keypair],
       keypair,
     });
 
-    await act(async () => {
-      result.current.cancel(order);
+    const args = {
+      orderId: 'order-id',
+      marketId: 'market-id',
+    };
+    act(() => {
+      result.current.cancel(args);
     });
 
     expect(mockSendTx).toHaveBeenCalledWith({
       pubKey: keypair.pub,
       propagate: true,
-      orderCancellation: {
-        marketId: 'market-id',
-      },
+      orderCancellation: args,
     });
   });
 });

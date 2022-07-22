@@ -70,7 +70,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
             // @ts-ignore fix me please!
             sizeDelta: 0,
-            expiresAt: order.expiresAt,
+            expiresAt: { value: order.expiresAt },
           },
         });
 
