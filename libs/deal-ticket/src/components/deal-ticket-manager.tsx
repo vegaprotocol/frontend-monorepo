@@ -11,7 +11,7 @@ import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { useOrderSubmit } from '@vegaprotocol/orders';
 import { OrderStatus, OrderType, Side } from '@vegaprotocol/types';
 import type { OrderEvent_busEvents_event_Order } from '@vegaprotocol/orders';
-import { Icon } from '@vegaprotocol/ui-toolkit';
+import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import {
   addDecimalsFormatNumber,
   formatLabel,
@@ -55,6 +55,7 @@ export const DealTicketManager = ({
           if (!isOpen) reset();
           setOrderDialogOpen(isOpen);
         }}
+        intent={getDialogIntent(finalizedOrder?.status)}
         transaction={transaction}
       >
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
@@ -72,11 +73,13 @@ const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
   if (!order) return null;
 
+  const title = getDialogTitle(order.status);
+
   // Order on network but was rejected
-  if (order.status === 'Rejected') {
+  if (order.status === OrderStatus.Rejected) {
     return (
       <OrderDialogWrapper
-        title="Order failed"
+        title={title}
         icon={<Icon name="warning-sign" size={20} />}
       >
         <p data-testid="error-reason">
@@ -88,7 +91,7 @@ const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   }
 
   return (
-    <OrderDialogWrapper title={'Foo'} icon={<Icon name="tick" size={20} />}>
+    <OrderDialogWrapper title={title} icon={<Icon name="tick" size={20} />}>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {order.market && (
           <div>
@@ -140,7 +143,25 @@ const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   );
 };
 
-const getDialogTitle = (status?: string) => {
+const getDialogIntent = (status?: OrderStatus) => {
+  if (!status) {
+    return Intent.None;
+  }
+
+  switch (status) {
+    case OrderStatus.Parked:
+    case OrderStatus.Expired:
+      return Intent.Warning;
+    case OrderStatus.Rejected:
+    case OrderStatus.Stopped:
+    case OrderStatus.Cancelled:
+      return Intent.Danger;
+    default:
+      return Intent.Success;
+  }
+};
+
+const getDialogTitle = (status: OrderStatus) => {
   switch (status) {
     case OrderStatus.Active:
       return 'Order submitted';

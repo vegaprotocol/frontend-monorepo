@@ -1,7 +1,7 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import get from 'lodash/get';
 import { t } from '@vegaprotocol/react-helpers';
-import { Dialog, Icon, Loader } from '@vegaprotocol/ui-toolkit';
+import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
@@ -11,6 +11,7 @@ export interface VegaTransactionDialogProps {
   onChange: (isOpen: boolean) => void;
   transaction: VegaTxState;
   children?: ReactNode;
+  intent?: Intent;
 }
 
 export const VegaTransactionDialog = ({
@@ -18,14 +19,21 @@ export const VegaTransactionDialog = ({
   onChange,
   transaction,
   children,
+  intent,
 }: VegaTransactionDialogProps) => {
+  const computedIntent = intent ? intent : getIntent(transaction);
+  // Each dialog can specify custom dialog content using data returned via
+  // the subscription that confirms the transaction. So if we get a success state
+  // and this custom content is provided, render it
+  const content =
+    transaction.status === VegaTxStatus.Complete && children ? (
+      children
+    ) : (
+      <VegaDialog transaction={transaction} />
+    );
   return (
-    <Dialog open={isOpen} onChange={onChange}>
-      {transaction.status === VegaTxStatus.Complete && children ? (
-        children
-      ) : (
-        <VegaDialog transaction={transaction} />
-      )}
+    <Dialog open={isOpen} onChange={onChange} intent={computedIntent}>
+      {content}
     </Dialog>
   );
 };
@@ -34,9 +42,11 @@ interface VegaDialogProps {
   transaction: VegaTxState;
 }
 
+/**
+ * Default dialog content
+ */
 const VegaDialog = ({ transaction }: VegaDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
-  const headerClassName = 'text-h5 font-bold text-black dark:text-white';
 
   if (transaction.status === VegaTxStatus.Requested) {
     return (
@@ -145,21 +155,17 @@ export const OrderDialogWrapper = ({
   );
 };
 
-// const getDialogIntent = (
-//   finalizedOrder: Order | null,
-//   transaction: VegaTxState
-// ) => {
-//   if (finalizedOrder) {
-//     return !finalizedOrder.rejectionReason ? Intent.Success : Intent.Danger;
-//   }
-//   switch (transaction.status) {
-//     case VegaTxStatus.Requested:
-//       return Intent.Warning;
-//     case VegaTxStatus.Pending:
-//       return Intent.Warning;
-//     case VegaTxStatus.Error:
-//       return Intent.Danger;
-//     default:
-//       return Intent.None;
-//   }
-// };
+const getIntent = (transaction: VegaTxState) => {
+  switch (transaction.status) {
+    case VegaTxStatus.Requested:
+      return Intent.Warning;
+    case VegaTxStatus.Pending:
+      return Intent.Warning;
+    case VegaTxStatus.Error:
+      return Intent.Danger;
+    case VegaTxStatus.Complete:
+      return Intent.Success;
+    default:
+      return Intent.None;
+  }
+};
