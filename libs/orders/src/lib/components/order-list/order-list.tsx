@@ -24,6 +24,7 @@ import { useOrderCancel } from '../../order-hooks/use-order-cancel';
 import { VegaTransactionDialog } from '@vegaprotocol/wallet';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
+import type { OrderFields } from '../order-data-provider/__generated__';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
@@ -31,8 +32,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
     const [cancelTxOpen, setCancelTxOpen] = useState(false);
     const [editTxOpen, setEditTxOpen] = useState(false);
-    const [editOrder, setEditOrder] =
-      useState<Orders_party_ordersConnection_edges_node | null>(null);
+    const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
 
     const { transaction, cancelledOrder, reset, cancel } = useOrderCancel();
 
@@ -47,7 +47,14 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
       <>
         <OrderListTable
           {...props}
-          cancel={cancel}
+          cancel={(order) => {
+            if (!order.market?.id) return;
+            setCancelTxOpen(true);
+            cancel({
+              orderId: order.id,
+              marketId: order.market.id,
+            });
+          }}
           ref={ref}
           setEditOrder={setEditOrder}
         />
@@ -94,8 +101,8 @@ type OrderListTableValueFormatterParams = Omit<
 };
 
 type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
-  cancel: (body?: unknown) => Promise<unknown>;
-  setEditOrder: (order: Orders_party_ordersConnection_edges_node) => void;
+  cancel: (order: OrderFields) => void;
+  setEditOrder: (order: OrderFields) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
@@ -240,15 +247,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           field="edit"
           cellRenderer={({ data }: ICellRendererParams) => {
-            if (
-              ![
-                OrderStatus.Cancelled,
-                OrderStatus.Rejected,
-                OrderStatus.Expired,
-                OrderStatus.Filled,
-                OrderStatus.Stopped,
-              ].includes(data.status)
-            ) {
+            if (isOrderActive(data.status)) {
               return (
                 <Button
                   data-testid="edit"
@@ -261,32 +260,21 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
                 </Button>
               );
             }
+
             return null;
           }}
         />
         <AgGridColumn
           field="cancel"
           cellRenderer={({ data }: ICellRendererParams) => {
-            if (
-              ![
-                OrderStatus.Cancelled,
-                OrderStatus.Rejected,
-                OrderStatus.Expired,
-                OrderStatus.Filled,
-                OrderStatus.Stopped,
-              ].includes(data.status)
-            ) {
+            if (isOrderActive(data.status)) {
               return (
-                <Button
-                  data-testid="cancel"
-                  onClick={async () => {
-                    await cancel(data);
-                  }}
-                >
+                <Button data-testid="cancel" onClick={() => cancel(data)}>
                   Cancel
                 </Button>
               );
             }
+
             return null;
           }}
         />
@@ -307,3 +295,16 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
 //           return 'Cancellation failed';
 //       }
 //     };
+
+/**
+ * Check if an order is active to determine if it can be edited or cancelled
+ */
+const isOrderActive = (status: OrderStatus) => {
+  return ![
+    OrderStatus.Cancelled,
+    OrderStatus.Rejected,
+    OrderStatus.Expired,
+    OrderStatus.Filled,
+    OrderStatus.Stopped,
+  ].includes(status);
+};

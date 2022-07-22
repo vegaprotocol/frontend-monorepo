@@ -33,7 +33,12 @@ export interface Market {
 
 export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();
-  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
+  const {
+    send,
+    transaction,
+    reset: resetTransaction,
+    setComplete,
+  } = useVegaTransaction();
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
@@ -110,6 +115,7 @@ export const useOrderSubmit = (market: Market) => {
                   matchingOrderEvent.event.__typename === 'Order'
                 ) {
                   setFinalizedOrder(matchingOrderEvent.event);
+                  setComplete();
                   subRef.current?.unsubscribe();
                 }
               });
@@ -121,14 +127,7 @@ export const useOrderSubmit = (market: Market) => {
         return;
       }
     },
-    [
-      client,
-      keypair,
-      send,
-      market.id,
-      market.decimalPlaces,
-      market.positionDecimalPlaces,
-    ]
+    [client, keypair, send, market, setComplete]
   );
 
   return {

@@ -12,9 +12,19 @@ import { OrderStatus } from '@vegaprotocol/types';
 import { determineId } from '@vegaprotocol/react-helpers';
 import type { Subscription } from 'zen-observable-ts';
 
+interface CancelOrderArgs {
+  orderId: string;
+  marketId: string;
+}
+
 export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
-  const { send, transaction, reset: resetTransaction } = useVegaTransaction();
+  const {
+    send,
+    transaction,
+    reset: resetTransaction,
+    setComplete,
+  } = useVegaTransaction();
   const [cancelledOrder, setCancelledOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
@@ -35,20 +45,8 @@ export const useOrderCancel = () => {
   }, [resetTransaction]);
 
   const cancel = useCallback(
-    async (order) => {
+    async (args: CancelOrderArgs) => {
       if (!keypair) {
-        return;
-      }
-
-      if (
-        [
-          OrderStatus.Cancelled,
-          OrderStatus.Rejected,
-          OrderStatus.Expired,
-          OrderStatus.Filled,
-          OrderStatus.Stopped,
-        ].includes(order.status)
-      ) {
         return;
       }
 
@@ -59,13 +57,13 @@ export const useOrderCancel = () => {
           pubKey: keypair.pub,
           propagate: true,
           orderCancellation: {
-            orderId: order.id,
-            marketId: order.market.id,
+            orderId: args.orderId,
+            marketId: args.marketId,
           },
         });
 
         if (res?.signature) {
-          const resId = order.id ?? determineId(res.signature);
+          const resId = args.orderId ?? determineId(res.signature);
           setCancelledOrder(null);
 
           if (resId) {
@@ -94,6 +92,7 @@ export const useOrderCancel = () => {
                   matchingOrderEvent.event.__typename === 'Order'
                 ) {
                   setCancelledOrder(matchingOrderEvent.event);
+                  setComplete();
                   subRef.current?.unsubscribe();
                 }
               });
@@ -105,7 +104,7 @@ export const useOrderCancel = () => {
         return;
       }
     },
-    [client, keypair, send]
+    [client, keypair, send, setComplete]
   );
 
   return {
