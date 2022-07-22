@@ -4,6 +4,7 @@ import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import type { EthTxState } from '@vegaprotocol/web3';
+import { isEthereumError } from '@vegaprotocol/web3';
 import { EthTxStatus } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
@@ -132,9 +133,10 @@ const getProps = (
       intent: Intent.Danger,
       children: (
         <Step>
-          {ethTx.error
-            ? // @ts-ignore asdf asdf asdf
-              `Error: ${ethTx.error.reason}`
+          {isEthereumError(ethTx.error)
+            ? `Error: ${ethTx.error.reason}`
+            : ethTx.error instanceof Error
+            ? t(`Error: ${ethTx.error.message}`)
             : t('Something went wrong')}
         </Step>
       ),
