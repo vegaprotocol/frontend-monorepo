@@ -87,7 +87,7 @@ export const ProposalHeader = ({
       //   : '';
       // detailsTwo = `${proposal.id}`;
       headerText = proposal.id
-        ? proposal.id.trim()
+        ? `${t('Freeform proposal')}: ${proposal.id.trim()}`
         : `${t('Unknown proposal')}`;
 
       break;

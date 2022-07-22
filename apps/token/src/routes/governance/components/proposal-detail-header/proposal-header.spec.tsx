@@ -167,7 +167,7 @@ describe('Proposal header', () => {
 
   // Skipped until proposals have rationale
   // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('Renders Freeform network - long rationale (105 chars)', () => {
+  it.skip('Renders Freeform proposal - long rationale (105 chars)', () => {
     render(
       renderComponent(
         generateProposal({
@@ -200,7 +200,7 @@ describe('Proposal header', () => {
 
   // Skipped until proposals have rationale
   // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('Renders Freeform network - extra long rationale (165 chars)', () => {
+  it.skip('Renders Freeform proposal - extra long rationale (165 chars)', () => {
     render(
       renderComponent(
         generateProposal({
@@ -233,11 +233,11 @@ describe('Proposal header', () => {
   });
 
   // Remove once proposals have rationale and re-enable above tests
-  it('Renders Freeform network - id for title', () => {
+  it('Renders Freeform proposal - id for title', () => {
     render(
       renderComponent(
         generateProposal({
-          id: 'freeform title',
+          id: 'freeform id',
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -247,7 +247,7 @@ describe('Proposal header', () => {
       )
     );
     expect(screen.getByTestId('proposal-header')).toHaveTextContent(
-      'freeform title'
+      'Freeform proposal: freeform id'
     );
     expect(
       screen.queryByTestId('proposal-details-one')

@@ -607,5 +607,6 @@
   "ParticipationThresholdNotReached": "Participation threshold not reached",
   "InvalidAssetDetails": "Invalid asset details",
   "FilterProposals": "Filter proposals",
-  "FilterProposalsDescription": "Filter by proposal ID or proposer ID"
+  "FilterProposalsDescription": "Filter by proposal ID or proposer ID",
+  "Freeform proposal": "Freeform proposal"
 }
