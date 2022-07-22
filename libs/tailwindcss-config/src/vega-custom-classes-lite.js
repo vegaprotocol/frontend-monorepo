@@ -45,8 +45,6 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       backgroundColor: 'rgba(0, 143, 74, 0.1)',
       border: `1px solid ${theme.colors.darkerGreen}`,
       color: theme.colors.darkerGreen,
-      paddingTop: '0.5rem',
-      paddingBottom: '0.5rem',
       '&:hover': {
         backgroundColor: theme.colors.darkerGreen,
         color: theme.colors.white.DEFAULT,
@@ -68,8 +66,6 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
     '.sellButton': {
       textTransform: 'uppercase',
       textDecoration: 'none',
-      paddingTop: '0.5rem',
-      paddingBottom: '0.5rem',
       backgroundColor: 'rgba(255, 8, 126, 0.1)',
       border: `1px solid ${theme.colors.pink}`,
       color: theme.colors.pink,

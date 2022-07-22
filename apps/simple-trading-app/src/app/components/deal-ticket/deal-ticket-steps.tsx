@@ -1,8 +1,9 @@
-import * as React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
-import { Button, InputError } from '@vegaprotocol/ui-toolkit';
+import { InputError } from '@vegaprotocol/ui-toolkit';
 import { DealTicketAmount, MarketSelector } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
@@ -12,16 +13,20 @@ import {
   useOrderValidation,
   useOrderSubmit,
 } from '@vegaprotocol/orders';
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
+import ReviewTrade from './review-trade';
+import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
+  partyData?: PartyBalanceQuery;
 }
 
-export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
+export const DealTicketSteps = ({
+  market,
+  partyData,
+}: DealTicketMarketProps) => {
   const navigate = useNavigate();
   const setMarket = useCallback(
     (marketId) => {
@@ -36,6 +41,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     handleSubmit,
     watch,
     formState: { errors },
+    getValues,
   } = useForm<Order>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -121,17 +127,13 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
               {invalidText}
             </InputError>
           )}
-          <Button
-            className="w-full mb-8"
-            variant="primary"
-            type="submit"
-            disabled={transactionStatus === 'pending' || isDisabled}
-            data-testid="place-order"
-          >
-            {transactionStatus === 'pending'
-              ? t('Pending...')
-              : t('Place order')}
-          </Button>
+          <ReviewTrade
+            market={market}
+            isDisabled={isDisabled}
+            transactionStatus={transactionStatus}
+            order={getValues()}
+            partyData={partyData}
+          />
         </div>
       ),
       disabled: true,
