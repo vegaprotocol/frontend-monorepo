@@ -5,8 +5,9 @@ import { DealTicket } from './deal-ticket';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { useOrderSubmit } from '@vegaprotocol/orders';
 import { OrderStatus } from '@vegaprotocol/types';
-import { Intent } from '@vegaprotocol/ui-toolkit';
+import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
 import { OrderFeedback } from './order-feedback';
+import { t } from '@vegaprotocol/react-helpers';
 
 export interface DealTicketManagerProps {
   market: DealTicketQuery_market;
@@ -45,6 +46,8 @@ export const DealTicketManager = ({
           setOrderDialogOpen(isOpen);
         }}
         intent={getDialogIntent(finalizedOrder?.status)}
+        title={getDialogTitle(finalizedOrder?.status)}
+        icon={getDialogIcon(finalizedOrder?.status)}
         transaction={transaction}
       >
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
@@ -53,9 +56,28 @@ export const DealTicketManager = ({
   );
 };
 
+const getDialogTitle = (status?: OrderStatus) => {
+  if (!status) {
+    return t('Awaiting order');
+  }
+
+  switch (status) {
+    case OrderStatus.Active:
+      return t('Order submitted');
+    case OrderStatus.Filled:
+      return t('Order filled');
+    case OrderStatus.PartiallyFilled:
+      return t('Order partially filled');
+    case OrderStatus.Parked:
+      return t('Order parked');
+    default:
+      return t('Submission failed');
+  }
+};
+
 const getDialogIntent = (status?: OrderStatus) => {
   if (!status) {
-    return Intent.None;
+    return;
   }
 
   switch (status) {
@@ -67,6 +89,24 @@ const getDialogIntent = (status?: OrderStatus) => {
     case OrderStatus.Cancelled:
       return Intent.Danger;
     default:
-      return Intent.Success;
+      return;
+  }
+};
+
+const getDialogIcon = (status?: OrderStatus) => {
+  if (!status) {
+    return;
+  }
+
+  switch (status) {
+    case OrderStatus.Parked:
+    case OrderStatus.Expired:
+      return <Icon name="warning-sign" size={20} />;
+    case OrderStatus.Rejected:
+    case OrderStatus.Stopped:
+    case OrderStatus.Cancelled:
+      return <Icon name="error" size={20} />;
+    default:
+      return;
   }
 };

@@ -5,7 +5,6 @@ import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
-import { VegaTransactionDialogWrapper } from './vega-transaction-dialog-wrapper';
 
 export interface VegaTransactionDialogProps {
   isOpen: boolean;
@@ -13,6 +12,8 @@ export interface VegaTransactionDialogProps {
   transaction: VegaTxState;
   children?: ReactNode;
   intent?: Intent;
+  title?: string;
+  icon?: ReactNode;
 }
 
 export const VegaTransactionDialog = ({
@@ -21,8 +22,12 @@ export const VegaTransactionDialog = ({
   transaction,
   children,
   intent,
+  title,
+  icon,
 }: VegaTransactionDialogProps) => {
   const computedIntent = intent ? intent : getIntent(transaction);
+  const computedTitle = title ? title : getTitle(transaction);
+  const computedIcon = icon ? icon : getIcon(transaction);
   // Each dialog can specify custom dialog content using data returned via
   // the subscription that confirms the transaction. So if we get a success state
   // and this custom content is provided, render it
@@ -33,7 +38,13 @@ export const VegaTransactionDialog = ({
       <VegaDialog transaction={transaction} />
     );
   return (
-    <Dialog open={isOpen} onChange={onChange} intent={computedIntent}>
+    <Dialog
+      open={isOpen}
+      onChange={onChange}
+      intent={computedIntent}
+      title={computedTitle}
+      icon={computedIcon}
+    >
       {content}
     </Dialog>
   );
@@ -51,41 +62,30 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
 
   if (transaction.status === VegaTxStatus.Requested) {
     return (
-      <VegaTransactionDialogWrapper
-        title="Confirm transaction in wallet"
-        icon={<Icon name="hand-up" size={20} />}
-      >
-        <p>
-          {t(
-            'Please open your wallet application and confirm or reject the transaction'
-          )}
-        </p>
-      </VegaTransactionDialogWrapper>
+      <p>
+        {t(
+          'Please open your wallet application and confirm or reject the transaction'
+        )}
+      </p>
     );
   }
 
   if (transaction.status === VegaTxStatus.Error) {
     return (
-      <VegaTransactionDialogWrapper
-        title="Order rejected by wallet"
-        icon={<Icon name="warning-sign" size={20} />}
-      >
+      <div>
         {transaction.error && (
           <pre className="text-ui break-all whitespace-pre-wrap">
             {get(transaction.error, 'error') ??
               JSON.stringify(transaction.error, null, 2)}
           </pre>
         )}
-      </VegaTransactionDialogWrapper>
+      </div>
     );
   }
 
   if (transaction.status === VegaTxStatus.Pending) {
     return (
-      <VegaTransactionDialogWrapper
-        title="Awaiting network confirmation"
-        icon={<Loader size="small" />}
-      >
+      <div>
         {transaction.txHash && (
           <p className="break-all">
             {t('Please wait for your transaction to be confirmed')} - &nbsp;
@@ -100,16 +100,13 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
             </a>
           </p>
         )}
-      </VegaTransactionDialogWrapper>
+      </div>
     );
   }
 
   if (transaction.status === VegaTxStatus.Complete) {
     return (
-      <VegaTransactionDialogWrapper
-        title="Transaction complete"
-        icon={<Icon name="tick" />}
-      >
+      <div>
         {transaction.txHash && (
           <p className="break-all">
             {t('Your transaction has been confirmed')} - &nbsp;
@@ -124,7 +121,7 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
             </a>
           </p>
         )}
-      </VegaTransactionDialogWrapper>
+      </div>
     );
   }
 
@@ -143,5 +140,35 @@ const getIntent = (transaction: VegaTxState) => {
       return Intent.Success;
     default:
       return Intent.None;
+  }
+};
+
+const getTitle = (transaction: VegaTxState) => {
+  switch (transaction.status) {
+    case VegaTxStatus.Requested:
+      return t('Confirm transaction in wallet');
+    case VegaTxStatus.Pending:
+      return t('Awaiting network confirmation');
+    case VegaTxStatus.Error:
+      return t('Transaction failed');
+    case VegaTxStatus.Complete:
+      return t('Transaction complete');
+    default:
+      return '';
+  }
+};
+
+const getIcon = (transaction: VegaTxState) => {
+  switch (transaction.status) {
+    case VegaTxStatus.Requested:
+      return <Icon name="hand-up" size={20} />;
+    case VegaTxStatus.Pending:
+      return <Loader size="small" />;
+    case VegaTxStatus.Error:
+      return <Icon name="warning-sign" size={20} />;
+    case VegaTxStatus.Complete:
+      return <Icon name="tick" size={20} />;
+    default:
+      return '';
   }
 };
