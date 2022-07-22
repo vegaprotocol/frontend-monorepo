@@ -247,6 +247,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           field="edit"
           cellRenderer={({ data }: ICellRendererParams) => {
+            if (!data) return null;
             if (isOrderActive(data.status)) {
               return (
                 <Button
@@ -267,6 +268,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           field="cancel"
           cellRenderer={({ data }: ICellRendererParams) => {
+            if (!data) return null;
             if (isOrderActive(data.status)) {
               return (
                 <Button data-testid="cancel" onClick={() => cancel(data)}>

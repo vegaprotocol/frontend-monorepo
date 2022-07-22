@@ -8,7 +8,6 @@ import type {
 } from './__generated__/OrderEvent';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import * as Sentry from '@sentry/react';
-import { OrderStatus } from '@vegaprotocol/types';
 import { determineId } from '@vegaprotocol/react-helpers';
 import type { Subscription } from 'zen-observable-ts';
 
