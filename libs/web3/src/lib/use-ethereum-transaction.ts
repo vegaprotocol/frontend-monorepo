@@ -62,7 +62,7 @@ export const useEthereumTransaction = <
         ) {
           throw new Error('method not found on contract');
         }
-        await contract.contract.callStatic[methodName as string](args);
+        await contract.contract.callStatic[methodName as string](...args);
       } catch (err) {
         setTransaction({
           status: EthTxStatus.Error,
@@ -84,7 +84,7 @@ export const useEthereumTransaction = <
           throw new Error('method not found on contract');
         }
 
-        const tx = await method(...args);
+        const tx = await method.call(contract, ...args);
 
         let receipt: ethers.ContractReceipt | null = null;
 
