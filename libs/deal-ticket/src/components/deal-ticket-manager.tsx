@@ -58,7 +58,7 @@ export const DealTicketManager = ({
 
 const getDialogTitle = (status?: OrderStatus) => {
   if (!status) {
-    return t('Awaiting order');
+    return undefined;
   }
 
   switch (status) {

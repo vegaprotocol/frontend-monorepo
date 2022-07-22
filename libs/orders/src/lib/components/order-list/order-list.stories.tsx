@@ -29,7 +29,7 @@ const Template: Story = (args) => {
 
 const Template2: Story = (args) => {
   const [open, setOpen] = useState(false);
-  const [editOrder, setEditOrder] = useState<OrderFields | null>(false);
+  const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
   const cancel = () => {
     setOpen(!open);
     return Promise.resolve();

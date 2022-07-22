@@ -3,11 +3,7 @@ import type {
   VegaKeyExtended,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
-import {
-  VegaWalletOrderSide,
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-} from '@vegaprotocol/wallet';
+import { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
@@ -18,15 +14,6 @@ import type {
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import {
-  MarketTradingMode,
-  MarketState,
-  OrderTimeInForce,
-} from '@vegaprotocol/types';
-import type {
-  OrderAmendmentBodyOrderAmendment,
-  OrderAmendmentBody,
-} from '@vegaprotocol/vegawallet-service-api-client';
 import type { OrderFields } from '../components';
 import { generateOrder } from '../components';
 
@@ -123,51 +110,6 @@ function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
   );
   return renderHook(() => useOrderEdit(order), { wrapper });
 }
-
-// const defaultMarket = {
-//   __typename: 'Market',
-//   id: 'market-id',
-//   decimalPlaces: 2,
-//   positionDecimalPlaces: 1,
-//   tradingMode: MarketTradingMode.Continuous,
-//   state: MarketState.Active,
-//   tradableInstrument: {
-//     __typename: 'TradableInstrument',
-//     instrument: {
-//       __typename: 'Instrument',
-//       product: {
-//         __typename: 'Future',
-//         quoteName: 'quote-name',
-//       },
-//     },
-//   },
-//   depth: {
-//     __typename: 'MarketDepth',
-//     lastTrade: {
-//       __typename: 'Trade',
-//       price: '100',
-//     },
-//   },
-// };
-
-// const order = {
-//   id: 'order-id',
-//   type: VegaWalletOrderType.Limit,
-//   size: '10',
-//   timeInForce: OrderTimeInForce.GTT, // order timeInForce is transformed to wallet timeInForce
-//   side: VegaWalletOrderSide.Buy,
-//   price: '1234567.89',
-//   expiration: new Date('2022-01-01'),
-//   expiresAt: new Date('2022-01-01'),
-//   status: VegaTxStatus.Pending,
-//   rejectionReason: null,
-//   market: {
-//     id: 'market-id',
-//     decimalPlaces: 2,
-//     name: 'ETHDAI',
-//     positionDecimalPlaces: 2,
-//   },
-// };
 
 describe('useOrderEdit', () => {
   it('should edit a correctly formatted order', async () => {
