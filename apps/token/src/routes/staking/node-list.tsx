@@ -52,7 +52,7 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
     <div className="flex items-center">
       {avatarUrl && (
         <img
-          className="h-28 w-28 rounded-full mr-8"
+          className="h-24 w-24 rounded-full mr-8"
           src={avatarUrl}
           alt={`Avatar icon for ${name}`}
         />
@@ -147,7 +147,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     return (
       <AgGrid
         domLayout="autoHeight"
-        style={{ width: '100%', fontSize: '14px' }}
+        style={{ width: '100%' }}
         customThemeParams={nodeListGridStyles}
         overlayNoRowsTemplate={t('noValidators')}
         ref={ref}
