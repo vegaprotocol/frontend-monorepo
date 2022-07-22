@@ -34,11 +34,10 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
     const [editTxOpen, setEditTxOpen] = useState(false);
     const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
 
-    const { transaction, cancelledOrder, reset, cancel } = useOrderCancel();
+    const { transaction, reset, cancel } = useOrderCancel();
 
     const {
       transaction: editTransaction,
-      updatedOrder,
       reset: resetEdit,
       edit,
     } = useOrderEdit(editOrder);
@@ -284,19 +283,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
     );
   }
 );
-
-// const getCancelDialogTitle = (status?: string) => {
-//       switch (status) {
-//         case OrderStatus.Cancelled:
-//           return 'Order cancelled';
-//         case OrderStatus.Rejected:
-//           return 'Order rejected';
-//         case OrderStatus.Expired:
-//           return 'Order expired';
-//         default:
-//           return 'Cancellation failed';
-//       }
-//     };
 
 /**
  * Check if an order is active to determine if it can be edited or cancelled

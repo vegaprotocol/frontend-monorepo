@@ -118,6 +118,12 @@ const getProps = (
       intent: Intent.None,
       children: <Step>Awaiting transaction</Step>,
     },
+    [VegaTxStatus.Complete]: {
+      title: t('Withdrawal transaction complete'),
+      icon: <Icon name="tick" />,
+      intent: Intent.Success,
+      children: <Step>Withdrawal created</Step>,
+    },
   };
 
   const completeProps = {

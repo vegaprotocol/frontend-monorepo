@@ -5,6 +5,7 @@ import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
+import { VegaTransactionDialogWrapper } from './vega-transaction-dialog-wrapper';
 
 export interface VegaTransactionDialogProps {
   isOpen: boolean;
@@ -50,7 +51,7 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
 
   if (transaction.status === VegaTxStatus.Requested) {
     return (
-      <OrderDialogWrapper
+      <VegaTransactionDialogWrapper
         title="Confirm transaction in wallet"
         icon={<Icon name="hand-up" size={20} />}
       >
@@ -59,13 +60,13 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
             'Please open your wallet application and confirm or reject the transaction'
           )}
         </p>
-      </OrderDialogWrapper>
+      </VegaTransactionDialogWrapper>
     );
   }
 
   if (transaction.status === VegaTxStatus.Error) {
     return (
-      <OrderDialogWrapper
+      <VegaTransactionDialogWrapper
         title="Order rejected by wallet"
         icon={<Icon name="warning-sign" size={20} />}
       >
@@ -75,13 +76,13 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
               JSON.stringify(transaction.error, null, 2)}
           </pre>
         )}
-      </OrderDialogWrapper>
+      </VegaTransactionDialogWrapper>
     );
   }
 
   if (transaction.status === VegaTxStatus.Pending) {
     return (
-      <OrderDialogWrapper
+      <VegaTransactionDialogWrapper
         title="Awaiting network confirmation"
         icon={<Loader size="small" />}
       >
@@ -99,13 +100,13 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
             </a>
           </p>
         )}
-      </OrderDialogWrapper>
+      </VegaTransactionDialogWrapper>
     );
   }
 
   if (transaction.status === VegaTxStatus.Complete) {
     return (
-      <OrderDialogWrapper
+      <VegaTransactionDialogWrapper
         title="Transaction complete"
         icon={<Icon name="tick" />}
       >
@@ -123,36 +124,11 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
             </a>
           </p>
         )}
-      </OrderDialogWrapper>
+      </VegaTransactionDialogWrapper>
     );
   }
 
   return null;
-};
-
-interface OrderDialogWrapperProps {
-  children: ReactNode;
-  icon: ReactNode;
-  title: string;
-}
-
-export const OrderDialogWrapper = ({
-  children,
-  icon,
-  title,
-}: OrderDialogWrapperProps) => {
-  const headerClassName = 'text-h4 font-bold text-black dark:text-white';
-  return (
-    <div className="flex gap-12 max-w-full">
-      <div className="pt-8 fill-current">{icon}</div>
-      <div data-testid="order-wrapper" className="flex-1">
-        <h1 data-testid="order-status-header" className={headerClassName}>
-          {title}
-        </h1>
-        {children}
-      </div>
-    </div>
-  );
 };
 
 const getIntent = (transaction: VegaTxState) => {
