@@ -170,19 +170,6 @@ describe('Proposals list', () => {
     ).toBeInTheDocument();
   });
 
-  it('Filters list by text - proposal id', () => {
-    render(
-      renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
-    );
-    fireEvent.click(screen.getByTestId('set-proposals-filter-visible'));
-    fireEvent.change(screen.getByTestId('filter-input'), {
-      target: { value: 'proposal1' },
-    });
-    const container = screen.getByTestId('open-proposals');
-    expect(container.querySelector('#proposal1')).toBeInTheDocument();
-    expect(container.querySelector('#proposal2')).not.toBeInTheDocument();
-  });
-
   it('Filters list by text - party id', () => {
     render(
       renderComponent([openProposalClosesNextMonth, openProposalClosesNextWeek])
