@@ -1,9 +1,11 @@
 import { useApolloClient } from '@apollo/client';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useState, useCallback, useEffect, useRef } from 'react';
-import type { Order } from '@vegaprotocol/wallet';
-import { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
-import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
+import {
+  useVegaTransaction,
+  useVegaWallet,
+  VegaWalletOrderTimeInForce,
+} from '@vegaprotocol/wallet';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { Subscription } from 'zen-observable-ts';
 import type {
@@ -12,8 +14,14 @@ import type {
   OrderEventVariables,
 } from './__generated__';
 import * as Sentry from '@sentry/react';
+import type { OrderFields } from '../components';
 
-export const useOrderEdit = () => {
+// Can only edit price for now
+export interface EditOrderArgs {
+  price: string;
+}
+
+export const useOrderEdit = (order: OrderFields | null) => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
   const [updatedOrder, setUpdatedOrder] =
@@ -36,8 +44,8 @@ export const useOrderEdit = () => {
   }, [resetTransaction]);
 
   const edit = useCallback(
-    async (order: Order) => {
-      if (!keypair || !order.market || !order.market.id) {
+    async (args: EditOrderArgs) => {
+      if (!keypair || !order || !order.market) {
         return;
       }
 
@@ -52,20 +60,12 @@ export const useOrderEdit = () => {
             marketId: order.market.id,
             // @ts-ignore fix me please!
             price: {
-              value: removeDecimal(order.price, order.market?.decimalPlaces),
+              value: removeDecimal(args.price, order.market.decimalPlaces),
             },
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
             // @ts-ignore fix me please!
             sizeDelta: 0,
-            // @ts-ignore fix me please!
-            expiresAt: order.expiresAt
-              ? {
-                  value:
-                    // Wallet expects timestamp in nanoseconds,
-                    // we don't have that level of accuracy so just append 6 zeroes
-                    new Date(order.expiresAt).getTime().toString() + '000000',
-                }
-              : undefined,
+            expiresAt: order.expiresAt,
           },
         });
 
@@ -110,7 +110,7 @@ export const useOrderEdit = () => {
         return;
       }
     },
-    [client, keypair, send]
+    [client, keypair, send, order]
   );
 
   return {

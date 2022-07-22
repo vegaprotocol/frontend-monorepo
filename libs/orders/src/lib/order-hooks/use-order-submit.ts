@@ -1,18 +1,35 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useApolloClient } from '@apollo/client';
-import type { Order } from '../utils/get-default-order';
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type {
   OrderEvent,
   OrderEventVariables,
   OrderEvent_busEvents_event_Order,
 } from './__generated__';
+import type {
+  VegaWalletOrderTimeInForce,
+  VegaWalletOrderSide,
+} from '@vegaprotocol/wallet';
 import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
-import type { Market } from '../market';
 import type { Subscription } from 'zen-observable-ts';
+
+export interface Order {
+  type: VegaWalletOrderType;
+  size: string;
+  side: VegaWalletOrderSide;
+  timeInForce: VegaWalletOrderTimeInForce;
+  price?: string;
+  expiration?: Date;
+}
+
+export interface Market {
+  id: string;
+  decimalPlaces: number;
+  positionDecimalPlaces: number;
+}
 
 export const useOrderSubmit = (market: Market) => {
   const { keypair } = useVegaWallet();

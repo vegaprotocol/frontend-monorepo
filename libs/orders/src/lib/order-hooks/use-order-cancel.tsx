@@ -15,7 +15,7 @@ import type { Subscription } from 'zen-observable-ts';
 export const useOrderCancel = () => {
   const { keypair } = useVegaWallet();
   const { send, transaction, reset: resetTransaction } = useVegaTransaction();
-  const [updatedOrder, setUpdatedOrder] =
+  const [cancelledOrder, setCancelledOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
   const client = useApolloClient();
   const subRef = useRef<Subscription | null>(null);
@@ -23,14 +23,14 @@ export const useOrderCancel = () => {
   useEffect(() => {
     return () => {
       subRef.current?.unsubscribe();
-      setUpdatedOrder(null);
+      setCancelledOrder(null);
       resetTransaction();
     };
   }, [resetTransaction]);
 
   const reset = useCallback(() => {
     resetTransaction();
-    setUpdatedOrder(null);
+    setCancelledOrder(null);
     subRef.current?.unsubscribe();
   }, [resetTransaction]);
 
@@ -52,7 +52,7 @@ export const useOrderCancel = () => {
         return;
       }
 
-      setUpdatedOrder(null);
+      setCancelledOrder(null);
 
       try {
         const res = await send({
@@ -66,7 +66,7 @@ export const useOrderCancel = () => {
 
         if (res?.signature) {
           const resId = order.id ?? determineId(res.signature);
-          setUpdatedOrder(null);
+          setCancelledOrder(null);
 
           if (resId) {
             // Start a subscription looking for the newly created order
@@ -93,7 +93,7 @@ export const useOrderCancel = () => {
                   matchingOrderEvent &&
                   matchingOrderEvent.event.__typename === 'Order'
                 ) {
-                  setUpdatedOrder(matchingOrderEvent.event);
+                  setCancelledOrder(matchingOrderEvent.event);
                   subRef.current?.unsubscribe();
                 }
               });
@@ -110,7 +110,7 @@ export const useOrderCancel = () => {
 
   return {
     transaction,
-    updatedOrder,
+    cancelledOrder,
     cancel,
     reset,
   };

@@ -64,15 +64,7 @@ export const useVegaTransaction = () => {
         return null;
       }
 
-      if ('error' in res) {
-        // Close dialog if user rejects the transaction
-        if (res.error === 'User rejected') {
-          reset();
-        } else {
-          handleError(res);
-        }
-        return null;
-      } else if ('errors' in res) {
+      if ('errors' in res || 'error' in res) {
         handleError(res);
         return null;
       } else if (res.tx?.signature?.value && res.txHash) {
@@ -88,7 +80,7 @@ export const useVegaTransaction = () => {
 
       return null;
     },
-    [sendTx, handleError, setTransaction, reset]
+    [sendTx, handleError, setTransaction]
   );
 
   return { send, transaction, reset };
