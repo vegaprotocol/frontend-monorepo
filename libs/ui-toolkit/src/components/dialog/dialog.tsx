@@ -54,7 +54,7 @@ export function Dialog({
           </DialogPrimitives.Close>
           <div className="flex gap-12 max-w-full">
             {icon && <div className="pt-8 fill-current">{icon}</div>}
-            <div data-testid="order-wrapper" className="flex-1">
+            <div data-testid="dialog-content" className="flex-1">
               {title && (
                 <h1
                   className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6 capitalize ${titleClassNames}`}

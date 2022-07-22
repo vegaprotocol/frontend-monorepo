@@ -8,7 +8,7 @@ import {
 import { OrderStatus, OrderType, Side } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 
-interface OrderFeedbackProps {
+export interface OrderFeedbackProps {
   transaction: VegaTxState;
   order: OrderEvent_busEvents_event_Order | null;
 }
@@ -29,7 +29,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   }
 
   return (
-    <>
+    <div data-testid="order-confirmed">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
         {order.market && (
           <div>
@@ -56,7 +56,10 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
               order.side === Side.Buy ? 'text-vega-green' : 'text-vega-red'
             }
           >
-            {`${order.side === Side.Buy ? '+' : '-'} ${order.size}
+            {`${order.side === Side.Buy ? '+' : '-'} ${addDecimalsFormatNumber(
+              order.size,
+              order.market?.positionDecimalPlaces ?? 0
+            )}
             `}
           </p>
         </div>
@@ -77,6 +80,6 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };

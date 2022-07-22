@@ -57,12 +57,12 @@ interface VegaDialogProps {
 /**
  * Default dialog content
  */
-const VegaDialog = ({ transaction }: VegaDialogProps) => {
+export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
 
   if (transaction.status === VegaTxStatus.Requested) {
     return (
-      <p>
+      <p data-testid={transaction.status}>
         {t(
           'Please open your wallet application and confirm or reject the transaction'
         )}
@@ -72,7 +72,7 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
 
   if (transaction.status === VegaTxStatus.Error) {
     return (
-      <div>
+      <div data-testid={transaction.status}>
         {transaction.error && (
           <pre className="text-ui break-all whitespace-pre-wrap">
             {get(transaction.error, 'error') ??
@@ -85,10 +85,10 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
 
   if (transaction.status === VegaTxStatus.Pending) {
     return (
-      <div>
-        {transaction.txHash && (
-          <p className="break-all">
-            {t('Please wait for your transaction to be confirmed')} - &nbsp;
+      <div data-testid={transaction.status}>
+        <p className="break-all">
+          {t('Please wait for your transaction to be confirmed')} - &nbsp;
+          {transaction.txHash && (
             <a
               className="underline"
               data-testid="tx-block-explorer"
@@ -98,18 +98,18 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
             >
               {t('View in block explorer')}
             </a>
-          </p>
-        )}
+          )}
+        </p>
       </div>
     );
   }
 
   if (transaction.status === VegaTxStatus.Complete) {
     return (
-      <div>
-        {transaction.txHash && (
-          <p className="break-all">
-            {t('Your transaction has been confirmed')} - &nbsp;
+      <div data-testid={transaction.status}>
+        <p className="break-all">
+          {t('Your transaction has been confirmed')} - &nbsp;
+          {transaction.txHash && (
             <a
               className="underline"
               data-testid="tx-block-explorer"
@@ -119,8 +119,8 @@ const VegaDialog = ({ transaction }: VegaDialogProps) => {
             >
               {t('View in block explorer')}
             </a>
-          </p>
-        )}
+          )}
+        </p>
       </div>
     );
   }

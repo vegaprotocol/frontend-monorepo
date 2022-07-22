@@ -1,10 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import { OrderStatus, OrderType } from '@vegaprotocol/types';
-import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
-import type { Order } from '../wallet-types';
 import type { VegaTransactionDialogProps } from './vega-transaction-dialog';
-import { VegaDialog, VegaTransactionDialog } from './vega-transaction-dialog';
+import { VegaTransactionDialog } from './vega-transaction-dialog';
 
 jest.mock('@vegaprotocol/environment', () => ({
   useEnvironment: () => ({
@@ -13,222 +10,109 @@ jest.mock('@vegaprotocol/environment', () => ({
 }));
 
 describe('VegaTransactionDialog', () => {
-  let defaultProps: VegaTransactionDialogProps;
+  let props: VegaTransactionDialogProps;
 
   beforeEach(() => {
-    defaultProps = {
-      orderDialogOpen: true,
-      setOrderDialogOpen: () => false,
+    props = {
+      isOpen: true,
+      onChange: () => false,
       transaction: {
-        status: VegaTxStatus.Default,
-        error: null,
-        txHash: null,
-        signature: null,
-      },
-      finalizedOrder: {
-        status: OrderStatus.Cancelled,
-        rejectionReason: null,
-        size: '10',
-        price: '1000',
-        market: null,
-        type: OrderType.Limit,
-      },
-      reset: jest.fn(),
-      title: 'Order cancelled',
-    };
-  });
-
-  it('should render when an order is successfully cancelled', () => {
-    render(<VegaTransactionDialog {...defaultProps} />);
-    expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-      'Order cancelled'
-    );
-  });
-
-  it('should render when an order is not successfully cancelled', () => {
-    const transaction: VegaTxState = {
-      status: VegaTxStatus.Default,
-      error: null,
-      txHash: null,
-      signature: null,
-    };
-    const finalizedOrder: Order = {
-      status: OrderStatus.Active,
-      rejectionReason: null,
-      size: '10',
-      price: '1000',
-      market: null,
-      type: OrderType.Limit,
-    };
-    const propsForTest = {
-      transaction,
-      finalizedOrder,
-    };
-
-    render(
-      <VegaTransactionDialog
-        {...defaultProps}
-        {...propsForTest}
-        title={'Cancellation failed'}
-      />
-    );
-    expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-      'Cancellation failed'
-    );
-  });
-
-  describe('TransactionDialog', () => {
-    it('should render when an order is successful', () => {
-      const transaction: VegaTxState = {
-        status: VegaTxStatus.Default,
-        error: null,
-        txHash: null,
-        signature: null,
-      };
-      const finalizedOrder: Order = {
-        status: OrderStatus.Active,
-        rejectionReason: null,
-        size: '10',
-        price: '1000',
-        market: null,
-        type: OrderType.Limit,
-      };
-      render(
-        <VegaDialog
-          finalizedOrder={finalizedOrder}
-          transaction={transaction}
-          title={'Order placed'}
-        />
-      );
-      expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-        'Order placed'
-      );
-    });
-
-    it('should render when transaction is requested', () => {
-      const transaction: VegaTxState = {
         status: VegaTxStatus.Requested,
         error: null,
         txHash: null,
         signature: null,
-      };
-      const finalizedOrder: Order = {
-        status: OrderStatus.Active,
-        rejectionReason: null,
-        size: '10',
-        price: '1000',
-        market: null,
-        type: OrderType.Limit,
-      };
-      render(
-        <VegaDialog
-          finalizedOrder={finalizedOrder}
-          transaction={transaction}
-          title={'Order tx'}
-        />
-      );
-      expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-        'Confirm transaction in wallet'
-      );
-    });
-
-    it('should render when transaction has error', () => {
-      const transaction: VegaTxState = {
-        status: VegaTxStatus.Error,
-        error: null,
-        txHash: null,
-        signature: null,
-      };
-      const finalizedOrder: Order = {
-        status: OrderStatus.Active,
-        rejectionReason: null,
-        size: '10',
-        price: '1000',
-        market: null,
-        type: OrderType.Limit,
-      };
-      render(
-        <VegaDialog
-          finalizedOrder={finalizedOrder}
-          transaction={transaction}
-          title={'Order tx'}
-        />
-      );
-      expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-        'Order rejected by wallet'
-      );
-    });
-
-    it('should render when an order is rejected', () => {
-      const transaction: VegaTxState = {
-        status: VegaTxStatus.Default,
-        error: null,
-        txHash: null,
-        signature: null,
-      };
-      const finalizedOrder: Order = {
-        status: OrderStatus.Rejected,
-        rejectionReason: null,
-        size: '10',
-        price: '1000',
-        market: null,
-        type: OrderType.Limit,
-      };
-      render(
-        <VegaDialog
-          finalizedOrder={finalizedOrder}
-          transaction={transaction}
-          title={'Order title'}
-        />
-      );
-      expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-        'Order failed'
-      );
-    });
-
-    it('should render when pending consensus', () => {
-      const transaction: VegaTxState = {
-        status: VegaTxStatus.Error,
-        error: null,
-        txHash: null,
-        signature: null,
-      };
-      render(
-        <VegaDialog
-          finalizedOrder={null}
-          transaction={transaction}
-          title={'Order title'}
-        />
-      );
-      expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-        'Order rejected by wallet'
-      );
-    });
-
-    it('should render awaiting network confirmation and add link to tx in block explorer', () => {
-      const transaction: VegaTxState = {
-        status: VegaTxStatus.Default,
-        error: null,
-        txHash: 'TxHash',
-        signature: null,
-      };
-      render(
-        <VegaDialog
-          finalizedOrder={null}
-          transaction={transaction}
-          title={'Order Tx'}
-        />
-      );
-      expect(screen.getByTestId('order-status-header')).toHaveTextContent(
-        'Awaiting network confirmation'
-      );
-      expect(screen.getByTestId('tx-block-explorer')).toHaveTextContent(
-        'View in block explorer'
-      );
-      expect(screen.getByTestId('tx-block-explorer')).toHaveAttribute(
-        'href',
-        'https://test.explorer.vega.network/txs/0xTxHash'
-      );
-    });
+      },
+    };
   });
+
+  it('requested', () => {
+    render(<VegaTransactionDialog {...props} />);
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(/confirm/i);
+    expect(screen.getByTestId(VegaTxStatus.Requested)).toHaveTextContent(
+      /please open your wallet/i
+    );
+  });
+
+  it('pending', () => {
+    render(
+      <VegaTransactionDialog
+        {...props}
+        transaction={{
+          ...props.transaction,
+          txHash: 'tx-hash',
+          status: VegaTxStatus.Pending,
+        }}
+      />
+    );
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(/awaiting/i);
+    expect(screen.getByTestId(VegaTxStatus.Pending)).toHaveTextContent(
+      /please wait/i
+    );
+    testBlockExplorerLink('tx-hash');
+  });
+
+  it('error', () => {
+    render(
+      <VegaTransactionDialog
+        {...props}
+        transaction={{
+          ...props.transaction,
+          error: { message: 'rejected' },
+          status: VegaTxStatus.Error,
+        }}
+      />
+    );
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(/failed/i);
+    expect(screen.getByTestId(VegaTxStatus.Error)).toHaveTextContent(
+      /rejected/i
+    );
+  });
+
+  it('default complete', () => {
+    render(
+      <VegaTransactionDialog
+        {...props}
+        transaction={{
+          ...props.transaction,
+          txHash: 'tx-hash',
+          status: VegaTxStatus.Complete,
+        }}
+      />
+    );
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(/complete/i);
+    expect(screen.getByTestId(VegaTxStatus.Complete)).toHaveTextContent(
+      /confirmed/i
+    );
+    testBlockExplorerLink('tx-hash');
+  });
+
+  it('custom complete', () => {
+    render(
+      <VegaTransactionDialog
+        {...props}
+        transaction={{
+          ...props.transaction,
+          txHash: 'tx-hash',
+          status: VegaTxStatus.Complete,
+        }}
+        title="Custom title"
+      >
+        <div>Custom content</div>
+      </VegaTransactionDialog>
+    );
+    expect(screen.getByTestId('dialog-title')).toHaveTextContent(
+      'Custom title'
+    );
+    expect(screen.getByText('Custom content')).toBeInTheDocument();
+  });
+
+  function testBlockExplorerLink(txHash: string) {
+    expect(screen.getByTestId('tx-block-explorer')).toHaveTextContent(
+      'View in block explorer'
+    );
+    expect(screen.getByTestId('tx-block-explorer')).toHaveAttribute(
+      'href',
+      `https://test.explorer.vega.network/txs/0x${txHash}`
+    );
+  }
 });
