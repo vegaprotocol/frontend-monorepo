@@ -35,7 +35,7 @@ class MockContract {
             resolve({
               from: 'foo',
               confirmations,
-            } as any);
+            } as ethers.ContractReceipt);
           }, 100);
         });
       },
