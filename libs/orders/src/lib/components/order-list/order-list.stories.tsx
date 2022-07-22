@@ -4,6 +4,8 @@ import { useState } from 'react';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { generateOrdersArray } from '../mocks';
+import { OrderEditDialog } from './order-edit-dialog';
+import type { OrderFields } from '../order-data-provider';
 
 export default {
   component: OrderList,
@@ -27,33 +29,25 @@ const Template: Story = (args) => {
 
 const Template2: Story = (args) => {
   const [open, setOpen] = useState(false);
+  const [editOrder, setEditOrder] = useState<OrderFields | null>(false);
   const cancel = () => {
     setOpen(!open);
     return Promise.resolve();
   };
   const transaction: VegaTxState = {
-    status: VegaTxStatus.Default,
+    status: VegaTxStatus.Requested,
     error: null,
     txHash: null,
     signature: null,
   };
-  // const finalizedOrder: Order = {
-  //   status: OrderStatus.Cancelled,
-  //   rejectionReason: null,
-  //   size: '10',
-  //   price: '1000',
-  //   market: { name: 'ETH/DAI (30 Jun 2022)', decimalPlaces: 5 },
-  //   type: OrderType.Limit,
-  //   timeInForce: OrderTimeInForce.GTC,
-  // };
   return (
     <>
       <div style={{ height: 1000 }}>
         <OrderListTable
           rowData={args.data}
           cancel={cancel}
-          setEditOrder={() => {
-            return;
+          setEditOrder={(order) => {
+            setEditOrder(order);
           }}
         />
       </div>
@@ -61,6 +55,16 @@ const Template2: Story = (args) => {
         isOpen={open}
         onChange={setOpen}
         transaction={transaction}
+      />
+      <OrderEditDialog
+        isOpen={Boolean(editOrder)}
+        onChange={(isOpen) => {
+          if (!isOpen) setEditOrder(null);
+        }}
+        order={editOrder}
+        onSubmit={(fields) => {
+          return;
+        }}
       />
     </>
   );
