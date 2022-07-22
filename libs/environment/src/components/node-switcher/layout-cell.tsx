@@ -7,6 +7,7 @@ type LayoutCellProps = {
   hasError?: boolean;
   isLoading?: boolean;
   children?: ReactNode;
+  dataTestId?: string;
 };
 
 export const LayoutCell = ({
@@ -14,6 +15,7 @@ export const LayoutCell = ({
   label,
   isLoading,
   children,
+  dataTestId,
 }: LayoutCellProps) => {
   const classes = [
     'px-8 lg:text-right flex justify-between lg:block',
@@ -22,7 +24,7 @@ export const LayoutCell = ({
   ];
 
   return (
-    <div className={classnames(classes)}>
+    <div data-testid={dataTestId} className={classnames(classes)}>
       {label && <span className="lg:hidden">{label}</span>}
       <span
         className={classnames('font-mono', {

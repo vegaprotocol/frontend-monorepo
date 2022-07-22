@@ -152,7 +152,10 @@ export const NodeSwitcher = ({
                     }
                   />
                   {(customNodeText || nodeRadio === CUSTOM_NODE_KEY) && (
-                    <div className="flex w-full gap-8">
+                    <div
+                      data-testid="custom-node"
+                      className="flex w-full gap-8"
+                    >
                       <Input
                         placeholder="https://"
                         value={customNodeText}
@@ -188,6 +191,7 @@ export const NodeSwitcher = ({
           className="w-full mt-16"
           disabled={isSubmitDisabled}
           type="submit"
+          data-testid="connect"
         >
           {t('Connect')}
         </Button>
