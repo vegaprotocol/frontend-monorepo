@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
-import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { useOrderSubmit } from '@vegaprotocol/orders';
@@ -18,8 +17,7 @@ export const DealTicketManager = ({
   market,
   children,
 }: DealTicketManagerProps) => {
-  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
-  const { submit, transaction, finalizedOrder, reset, Dialog } =
+  const { submit, transaction, finalizedOrder, TransactionDialog } =
     useOrderSubmit(market);
 
   return (
@@ -27,10 +25,7 @@ export const DealTicketManager = ({
       {children || (
         <DealTicket
           market={market}
-          submit={(order) => {
-            setOrderDialogOpen(true);
-            submit(order);
-          }}
+          submit={(order) => submit(order)}
           transactionStatus={
             transaction.status === VegaTxStatus.Requested ||
             transaction.status === VegaTxStatus.Pending
@@ -39,20 +34,20 @@ export const DealTicketManager = ({
           }
         />
       )}
-      <Dialog
-        intent={getDialogIntent(finalizedOrder?.status)}
+      <TransactionDialog
         title={getDialogTitle(finalizedOrder?.status)}
+        intent={getDialogIntent(finalizedOrder?.status)}
         icon={getDialogIcon(finalizedOrder?.status)}
       >
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
-      </Dialog>
+      </TransactionDialog>
     </>
   );
 };
 
-const getDialogTitle = (status?: OrderStatus) => {
+const getDialogTitle = (status?: OrderStatus): string | undefined => {
   if (!status) {
-    return undefined;
+    return;
   }
 
   switch (status) {
@@ -69,7 +64,7 @@ const getDialogTitle = (status?: OrderStatus) => {
   }
 };
 
-const getDialogIntent = (status?: OrderStatus) => {
+const getDialogIntent = (status?: OrderStatus): Intent | undefined => {
   if (!status) {
     return;
   }
@@ -87,7 +82,7 @@ const getDialogIntent = (status?: OrderStatus) => {
   }
 };
 
-const getDialogIcon = (status?: OrderStatus) => {
+const getDialogIcon = (status?: OrderStatus): ReactNode | undefined => {
   if (!status) {
     return;
   }

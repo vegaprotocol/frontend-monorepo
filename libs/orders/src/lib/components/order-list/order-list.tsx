@@ -47,8 +47,8 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           ref={ref}
           setEditOrder={setEditOrder}
         />
-        <orderCancel.Dialog />
-        <orderEdit.Dialog />
+        <orderCancel.TransactionDialog />
+        <orderEdit.TransactionDialog />
         <OrderEditDialog
           isOpen={Boolean(editOrder)}
           onChange={(isOpen) => {

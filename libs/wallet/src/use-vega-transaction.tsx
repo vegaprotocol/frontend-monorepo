@@ -7,11 +7,12 @@ import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 
 export interface DialogProps {
-  children?: ReactNode;
+  children?: JSX.Element;
   intent?: Intent;
   title?: string;
   icon?: ReactNode;
 }
+
 export enum VegaTxStatus {
   Default = 'Default',
   Requested = 'Requested',
@@ -102,20 +103,25 @@ export const useVegaTransaction = () => {
     [sendTx, handleError, setTransaction, reset]
   );
 
-  const Dialog = useMemo(() => {
-    return ({ children }: DialogProps) => (
+  const TransactionDialog = useMemo(() => {
+    return (props: DialogProps) => (
       <VegaTransactionDialog
+        {...props}
         isOpen={transaction.dialogOpen}
         onChange={(isOpen) => {
           if (!isOpen) reset();
           setTransaction({ dialogOpen: isOpen });
         }}
         transaction={transaction}
-      >
-        {children}
-      </VegaTransactionDialog>
+      />
     );
   }, [transaction, setTransaction, reset]);
 
-  return { send, transaction, reset, setComplete, Dialog };
+  return {
+    send,
+    transaction,
+    reset,
+    setComplete,
+    TransactionDialog,
+  };
 };

@@ -22,7 +22,7 @@ export const useOrderCancel = () => {
     transaction,
     reset: resetTransaction,
     setComplete,
-    Dialog,
+    TransactionDialog,
   } = useVegaTransaction();
 
   const reset = useCallback(() => {
@@ -70,7 +70,7 @@ export const useOrderCancel = () => {
   return {
     transaction,
     cancelledOrder,
-    Dialog,
+    TransactionDialog,
     cancel,
     reset,
   };

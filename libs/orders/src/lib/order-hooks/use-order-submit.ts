@@ -34,7 +34,7 @@ export const useOrderSubmit = (market: Market) => {
     transaction,
     reset: resetTransaction,
     setComplete,
-    Dialog,
+    TransactionDialog,
   } = useVegaTransaction();
 
   const [finalizedOrder, setFinalizedOrder] =
@@ -96,7 +96,7 @@ export const useOrderSubmit = (market: Market) => {
   return {
     transaction,
     finalizedOrder,
-    Dialog,
+    TransactionDialog,
     submit,
     reset,
   };
