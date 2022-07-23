@@ -1,4 +1,8 @@
-import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
+import {
+  determineId,
+  removeDecimal,
+  toNanoSeconds,
+} from '@vegaprotocol/react-helpers';
 import { useState, useCallback } from 'react';
 import {
   useVegaTransaction,
@@ -60,10 +64,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
             sizeDelta: 0,
             expiresAt: order.expiresAt
               ? {
-                  value:
-                    // Wallet expects timestamp in nanoseconds,
-                    // we don't have that level of accuracy so just append 6 zeroes
-                    new Date(order.expiresAt).getTime().toString() + '000000',
+                  value: toNanoSeconds(new Date(order.expiresAt)), // Wallet expects timestamp in nanoseconds
                 }
               : undefined,
           },

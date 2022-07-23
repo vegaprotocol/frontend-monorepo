@@ -5,7 +5,11 @@ import type {
   VegaWalletOrderSide,
 } from '@vegaprotocol/wallet';
 import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
-import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
+import {
+  determineId,
+  removeDecimal,
+  toNanoSeconds,
+} from '@vegaprotocol/react-helpers';
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
@@ -68,9 +72,7 @@ export const useOrderSubmit = (market: Market) => {
             side: order.side,
             timeInForce: order.timeInForce,
             expiresAt: order.expiration
-              ? // Wallet expects timestamp in nanoseconds, we don't have that level of accuracy so
-                // just append 6 zeroes
-                order.expiration.getTime().toString() + '000000'
+              ? toNanoSeconds(order.expiration) // Wallet expects timestampe in nanoseconds
               : undefined,
           },
         });
