@@ -120,6 +120,25 @@ const getProps = (
     },
   };
 
+  const completeProps = {
+    title: t('Withdrawal complete'),
+    icon: <Icon name="tick" />,
+    intent: Intent.Success,
+    children: (
+      <Step>
+        <span>{t('Ethereum transaction complete')}</span>
+        <Link
+          href={`${ethUrl}/tx/${ethTx.txHash}`}
+          title={t('View transaction on Etherscan')}
+          className="text-vega-pink dark:text-vega-yellow"
+          target="_blank"
+        >
+          {t('View on Etherscan')}
+        </Link>
+      </Step>
+    ),
+  };
+
   const ethTxPropsMap: Record<EthTxStatus, DialogProps> = {
     [EthTxStatus.Default]: {
       title: '',
@@ -169,24 +188,8 @@ const getProps = (
         </Step>
       ),
     },
-    [EthTxStatus.Complete]: {
-      title: t('Withdrawal complete'),
-      icon: <Icon name="tick" />,
-      intent: Intent.Success,
-      children: (
-        <Step>
-          <span>{t('Ethereum transaction complete')}</span>
-          <Link
-            href={`${ethUrl}/tx/${ethTx.txHash}`}
-            title={t('View transaction on Etherscan')}
-            className="text-vega-pink dark:text-vega-yellow"
-            target="_blank"
-          >
-            {t('View on Etherscan')}
-          </Link>
-        </Step>
-      ),
-    },
+    [EthTxStatus.Complete]: completeProps,
+    [EthTxStatus.Confirmed]: completeProps,
   };
 
   return approval ? ethTxPropsMap[ethTx.status] : vegaTxPropsMap[vegaTx.status];

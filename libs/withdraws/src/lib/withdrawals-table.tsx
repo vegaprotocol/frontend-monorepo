@@ -12,7 +12,6 @@ import {
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
 
@@ -22,7 +21,7 @@ export interface WithdrawalsTableProps {
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const { transaction, submit } = useCompleteWithdraw(true);
+  const { submit, dialog } = useCompleteWithdraw(true);
 
   return (
     <>
@@ -65,7 +64,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           cellRendererParams={{ complete: submit, ethUrl: ETHERSCAN_URL }}
         />
       </AgGrid>
-      <TransactionDialog name="withdraw" {...transaction} />
+      {dialog}
     </>
   );
 };

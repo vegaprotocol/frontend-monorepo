@@ -1,13 +1,17 @@
+import { formatLabel } from '@vegaprotocol/react-helpers';
 import type { ethers } from 'ethers';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { EthereumError } from './ethereum-error';
+import { isExpectedEthereumError } from './ethereum-error';
 import { isEthereumError } from './ethereum-error';
+import { TransactionDialog } from './transaction-dialog';
 
 export enum EthTxStatus {
   Default = 'Default',
   Requested = 'Requested',
   Pending = 'Pending',
   Complete = 'Complete',
+  Confirmed = 'Confirmed',
   Error = 'Error',
 }
 
@@ -19,6 +23,7 @@ export interface EthTxState {
   txHash: string | null;
   receipt: ethers.ContractReceipt | null;
   confirmations: number;
+  dialogOpen: boolean;
 }
 
 export const initialState = {
@@ -27,6 +32,7 @@ export const initialState = {
   txHash: null,
   receipt: null,
   confirmations: 0,
+  dialogOpen: false,
 };
 
 type DefaultContract = {
@@ -39,7 +45,8 @@ export const useEthereumTransaction = <
 >(
   contract: TContract | null,
   methodName: keyof TContract,
-  requiredConfirmations = 1
+  requiredConfirmations = 1,
+  requiresConfirmation = false
 ) => {
   const [transaction, _setTransaction] = useState<EthTxState>(initialState);
 
@@ -54,6 +61,13 @@ export const useEthereumTransaction = <
     // @ts-ignore TS errors here as TMethod doesn't satisfy the constraints on TContract
     // its a tricky one to fix but does enforce the correct types when calling perform
     async (...args: Parameters<TContract[TMethod]>) => {
+      setTransaction({
+        status: EthTxStatus.Requested,
+        error: null,
+        confirmations: 0,
+        dialogOpen: true,
+      });
+
       try {
         if (
           !contract ||
@@ -71,12 +85,6 @@ export const useEthereumTransaction = <
         });
         return;
       }
-
-      setTransaction({
-        status: EthTxStatus.Requested,
-        error: null,
-        confirmations: 0,
-      });
 
       try {
         const method = contract[methodName];
@@ -104,10 +112,18 @@ export const useEthereumTransaction = <
           throw new Error('no receipt after confirmations are met');
         }
 
-        setTransaction({ status: EthTxStatus.Complete, receipt });
+        if (requiresConfirmation) {
+          setTransaction({ status: EthTxStatus.Complete, receipt });
+        } else {
+          setTransaction({ status: EthTxStatus.Confirmed, receipt });
+        }
       } catch (err) {
         if (err instanceof Error || isEthereumError(err)) {
-          setTransaction({ status: EthTxStatus.Error, error: err });
+          if (isExpectedEthereumError(err)) {
+            setTransaction({ dialogOpen: false });
+          } else {
+            setTransaction({ status: EthTxStatus.Error, error: err });
+          }
         } else {
           setTransaction({
             status: EthTxStatus.Error,
@@ -116,12 +132,36 @@ export const useEthereumTransaction = <
         }
       }
     },
-    [contract, methodName, requiredConfirmations, setTransaction]
+    [
+      contract,
+      methodName,
+      requiredConfirmations,
+      requiresConfirmation,
+      setTransaction,
+    ]
   );
 
   const reset = useCallback(() => {
     setTransaction(initialState);
   }, [setTransaction]);
 
-  return { perform, transaction, reset };
+  const setConfirmed = useCallback(() => {
+    setTransaction({ status: EthTxStatus.Confirmed });
+  }, [setTransaction]);
+
+  const dialog = useMemo(() => {
+    return (
+      <TransactionDialog
+        name={formatLabel(methodName as string)}
+        isOpen={transaction.dialogOpen}
+        onChange={() => {
+          reset();
+        }}
+        transaction={transaction}
+        requiredConfirmations={requiredConfirmations}
+      />
+    );
+  }, [methodName, transaction, requiredConfirmations, reset]);
+
+  return { perform, transaction, reset, setConfirmed, dialog };
 };
