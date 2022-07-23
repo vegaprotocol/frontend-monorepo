@@ -21,7 +21,6 @@ import type { Orders_party_ordersConnection_edges_node } from '../';
 import BigNumber from 'bignumber.js';
 
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
-import { VegaTransactionDialog } from '@vegaprotocol/wallet';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
 import type { OrderFields } from '../order-data-provider/__generated__';

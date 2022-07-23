@@ -141,7 +141,7 @@ describe('useOrderEdit', () => {
         timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
         price: { value: '123456789' }, // Decimal removed
         sizeDelta: 0,
-        expiresAt: { value: order.expiresAt }, // Nanoseconds append
+        expiresAt: undefined,
       },
     });
   });

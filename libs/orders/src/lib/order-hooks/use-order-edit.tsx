@@ -1,20 +1,14 @@
-import { useApolloClient } from '@apollo/client';
 import { determineId, removeDecimal } from '@vegaprotocol/react-helpers';
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback } from 'react';
 import {
   useVegaTransaction,
   useVegaWallet,
   VegaWalletOrderTimeInForce,
 } from '@vegaprotocol/wallet';
-import { ORDER_EVENT_SUB } from './order-event-query';
-import type { Subscription } from 'zen-observable-ts';
-import type {
-  OrderEvent_busEvents_event_Order,
-  OrderEvent,
-  OrderEventVariables,
-} from './__generated__';
+import type { OrderEvent_busEvents_event_Order } from './__generated__';
 import * as Sentry from '@sentry/react';
 import type { OrderFields } from '../components';
+import { useOrderEvent } from './use-order-event';
 
 // Can only edit price for now
 export interface EditOrderArgs {
@@ -22,10 +16,8 @@ export interface EditOrderArgs {
 }
 
 export const useOrderEdit = (order: OrderFields | null) => {
-  const client = useApolloClient();
   const { keypair } = useVegaWallet();
 
-  const subRef = useRef<Subscription | null>(null);
   const [updatedOrder, setUpdatedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
 
@@ -37,18 +29,11 @@ export const useOrderEdit = (order: OrderFields | null) => {
     Dialog,
   } = useVegaTransaction();
 
+  const waitForOrderEvent = useOrderEvent();
+
   const reset = useCallback(() => {
     resetTransaction();
     setUpdatedOrder(null);
-    subRef.current?.unsubscribe();
-  }, [resetTransaction]);
-
-  useEffect(() => {
-    return () => {
-      resetTransaction();
-      setUpdatedOrder(null);
-      subRef.current?.unsubscribe();
-    };
   }, [resetTransaction]);
 
   const edit = useCallback(
@@ -73,7 +58,14 @@ export const useOrderEdit = (order: OrderFields | null) => {
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
             // @ts-ignore fix me please!
             sizeDelta: 0,
-            expiresAt: { value: order.expiresAt },
+            expiresAt: order.expiresAt
+              ? {
+                  value:
+                    // Wallet expects timestamp in nanoseconds,
+                    // we don't have that level of accuracy so just append 6 zeroes
+                    new Date(order.expiresAt).getTime().toString() + '000000',
+                }
+              : undefined,
           },
         });
 
@@ -83,43 +75,18 @@ export const useOrderEdit = (order: OrderFields | null) => {
 
           if (resId) {
             // Start a subscription looking for the newly created order
-            subRef.current = client
-              .subscribe<OrderEvent, OrderEventVariables>({
-                query: ORDER_EVENT_SUB,
-                variables: { partyId: keypair?.pub || '' },
-              })
-              .subscribe(({ data }) => {
-                if (!data?.busEvents?.length) {
-                  return;
-                }
-
-                // No types available for the subscription result
-                const matchingOrderEvent = data.busEvents.find((e) => {
-                  if (e.event.__typename !== 'Order') {
-                    return false;
-                  }
-
-                  return e.event.id === resId;
-                });
-
-                if (
-                  matchingOrderEvent &&
-                  matchingOrderEvent.event.__typename === 'Order'
-                ) {
-                  setUpdatedOrder(matchingOrderEvent.event);
-                  setComplete();
-                  subRef.current?.unsubscribe();
-                }
-              });
+            waitForOrderEvent(resId, keypair.pub, (order) => {
+              setUpdatedOrder(order);
+              setComplete();
+            });
           }
         }
-        return res;
       } catch (e) {
         Sentry.captureException(e);
         return;
       }
     },
-    [client, keypair, send, order, setComplete]
+    [keypair, send, order, setComplete, waitForOrderEvent]
   );
 
   return {

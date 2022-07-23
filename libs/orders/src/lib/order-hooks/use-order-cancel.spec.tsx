@@ -1,7 +1,6 @@
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import { act, renderHook } from '@testing-library/react-hooks';
-import { MarketState, MarketTradingMode, OrderType } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type {
@@ -14,33 +13,6 @@ import type {
   OrderEvent_busEvents,
 } from './__generated__/OrderEvent';
 import { ORDER_EVENT_SUB } from './order-event-query';
-
-const defaultMarket = {
-  __typename: 'Market',
-  id: 'market-id',
-  decimalPlaces: 2,
-  positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.Continuous,
-  state: MarketState.Active,
-  name: 'market-name',
-  tradableInstrument: {
-    __typename: 'TradableInstrument',
-    instrument: {
-      __typename: 'Instrument',
-      product: {
-        __typename: 'Future',
-        quoteName: 'quote-name',
-      },
-    },
-  },
-  depth: {
-    __typename: 'MarketDepth',
-    lastTrade: {
-      __typename: 'Trade',
-      price: '100',
-    },
-  },
-};
 
 const defaultWalletContext = {
   keypair: null,
