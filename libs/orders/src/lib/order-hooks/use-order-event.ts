@@ -18,14 +18,12 @@ export const useOrderEvent = () => {
       partyId: string,
       callback: (order: OrderEvent_busEvents_event_Order) => void
     ) => {
-      console.log('starting');
       subRef.current = client
         .subscribe<OrderEvent, OrderEventVariables>({
           query: ORDER_EVENT_SUB,
           variables: { partyId },
         })
         .subscribe(({ data }) => {
-          console.log('data', data);
           if (!data?.busEvents?.length) {
             return;
           }
@@ -43,7 +41,6 @@ export const useOrderEvent = () => {
             matchingOrderEvent &&
             matchingOrderEvent.event.__typename === 'Order'
           ) {
-            console.log('found');
             callback(matchingOrderEvent.event);
             subRef.current?.unsubscribe();
           }
