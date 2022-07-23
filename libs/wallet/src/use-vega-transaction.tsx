@@ -4,7 +4,14 @@ import type { TransactionSubmission } from './wallet-types';
 import { useVegaWallet } from './use-vega-wallet';
 import type { SendTxError } from './context';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
+import type { Intent } from '@vegaprotocol/ui-toolkit';
 
+export interface DialogProps {
+  children?: ReactNode;
+  intent?: Intent;
+  title?: string;
+  icon?: ReactNode;
+}
 export enum VegaTxStatus {
   Default = 'Default',
   Requested = 'Requested',
@@ -96,7 +103,7 @@ export const useVegaTransaction = () => {
   );
 
   const Dialog = useMemo(() => {
-    return ({ children }: { children?: ReactNode }) => (
+    return ({ children }: DialogProps) => (
       <VegaTransactionDialog
         isOpen={transaction.dialogOpen}
         onChange={(isOpen) => {

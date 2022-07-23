@@ -39,7 +39,11 @@ export const DealTicketManager = ({
           }
         />
       )}
-      <Dialog>
+      <Dialog
+        intent={getDialogIntent(finalizedOrder?.status)}
+        title={getDialogTitle(finalizedOrder?.status)}
+        icon={getDialogIcon(finalizedOrder?.status)}
+      >
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
       </Dialog>
     </>
