@@ -1,7 +1,9 @@
-import { useCallback, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { TransactionSubmission } from './wallet-types';
 import { useVegaWallet } from './use-vega-wallet';
 import type { SendTxError } from './context';
+import { VegaTransactionDialog } from './vega-transaction-dialog';
 
 export enum VegaTxStatus {
   Default = 'Default',
@@ -16,6 +18,7 @@ export interface VegaTxState {
   error: object | null;
   txHash: string | null;
   signature: string | null;
+  dialogOpen: boolean;
 }
 
 export const initialState = {
@@ -23,6 +26,7 @@ export const initialState = {
   error: null,
   txHash: null,
   signature: null,
+  dialogOpen: false,
 };
 
 export const useVegaTransaction = () => {
@@ -58,6 +62,7 @@ export const useVegaTransaction = () => {
         txHash: null,
         signature: null,
         status: VegaTxStatus.Requested,
+        dialogOpen: true,
       });
 
       const res = await sendTx(tx);
@@ -66,10 +71,14 @@ export const useVegaTransaction = () => {
         setTransaction({ status: VegaTxStatus.Default });
         return null;
       }
-
-      if ('errors' in res || 'error' in res) {
+      if ('errors' in res) {
         handleError(res);
-        return null;
+      } else if ('error' in res) {
+        if (res.error === 'User rejected') {
+          reset();
+        } else {
+          handleError(res);
+        }
       } else if (res.tx?.signature?.value && res.txHash) {
         setTransaction({
           status: VegaTxStatus.Pending,
@@ -83,8 +92,23 @@ export const useVegaTransaction = () => {
 
       return null;
     },
-    [sendTx, handleError, setTransaction]
+    [sendTx, handleError, setTransaction, reset]
   );
 
-  return { send, transaction, reset, setComplete };
+  const Dialog = useMemo(() => {
+    return ({ children }: { children?: ReactNode }) => (
+      <VegaTransactionDialog
+        isOpen={transaction.dialogOpen}
+        onChange={(isOpen) => {
+          if (!isOpen) reset();
+          setTransaction({ dialogOpen: isOpen });
+        }}
+        transaction={transaction}
+      >
+        {children}
+      </VegaTransactionDialog>
+    );
+  }, [transaction, setTransaction, reset]);
+
+  return { send, transaction, reset, setComplete, Dialog };
 };

@@ -39,6 +39,7 @@ const Template2: Story = (args) => {
     error: null,
     txHash: null,
     signature: null,
+    dialogOpen: false,
   };
   return (
     <>

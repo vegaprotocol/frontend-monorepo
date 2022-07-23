@@ -19,7 +19,8 @@ export const DealTicketManager = ({
   children,
 }: DealTicketManagerProps) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
-  const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
+  const { submit, transaction, finalizedOrder, reset, Dialog } =
+    useOrderSubmit(market);
 
   return (
     <>
@@ -38,20 +39,9 @@ export const DealTicketManager = ({
           }
         />
       )}
-      <VegaTransactionDialog
-        key={`submit-order-dialog-${transaction.txHash}`}
-        isOpen={orderDialogOpen}
-        onChange={(isOpen) => {
-          if (!isOpen) reset();
-          setOrderDialogOpen(isOpen);
-        }}
-        intent={getDialogIntent(finalizedOrder?.status)}
-        title={getDialogTitle(finalizedOrder?.status)}
-        icon={getDialogIcon(finalizedOrder?.status)}
-        transaction={transaction}
-      >
+      <Dialog>
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
-      </VegaTransactionDialog>
+      </Dialog>
     </>
   );
 };

@@ -17,25 +17,20 @@ interface CancelOrderArgs {
 }
 
 export const useOrderCancel = () => {
+  const client = useApolloClient();
   const { keypair } = useVegaWallet();
+
+  const subRef = useRef<Subscription | null>(null);
+  const [cancelledOrder, setCancelledOrder] =
+    useState<OrderEvent_busEvents_event_Order | null>(null);
+
   const {
     send,
     transaction,
     reset: resetTransaction,
     setComplete,
+    Dialog,
   } = useVegaTransaction();
-  const [cancelledOrder, setCancelledOrder] =
-    useState<OrderEvent_busEvents_event_Order | null>(null);
-  const client = useApolloClient();
-  const subRef = useRef<Subscription | null>(null);
-
-  useEffect(() => {
-    return () => {
-      subRef.current?.unsubscribe();
-      setCancelledOrder(null);
-      resetTransaction();
-    };
-  }, [resetTransaction]);
 
   const reset = useCallback(() => {
     resetTransaction();
@@ -106,9 +101,18 @@ export const useOrderCancel = () => {
     [client, keypair, send, setComplete]
   );
 
+  useEffect(() => {
+    return () => {
+      subRef.current?.unsubscribe();
+      setCancelledOrder(null);
+      resetTransaction();
+    };
+  }, [resetTransaction]);
+
   return {
     transaction,
     cancelledOrder,
+    Dialog,
     cancel,
     reset,
   };

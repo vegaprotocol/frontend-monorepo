@@ -30,26 +30,17 @@ type OrderListProps = AgGridReactProps | AgReactUiProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [cancelTxOpen, setCancelTxOpen] = useState(false);
-    const [editTxOpen, setEditTxOpen] = useState(false);
     const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
-
-    const { transaction, reset, cancel } = useOrderCancel();
-
-    const {
-      transaction: editTransaction,
-      reset: resetEdit,
-      edit,
-    } = useOrderEdit(editOrder);
+    const orderCancel = useOrderCancel();
+    const orderEdit = useOrderEdit(editOrder);
 
     return (
       <>
         <OrderListTable
           {...props}
           cancel={(order) => {
-            if (!order.market?.id) return;
-            setCancelTxOpen(true);
-            cancel({
+            if (!order.market) return;
+            orderCancel.cancel({
               orderId: order.id,
               marketId: order.market.id,
             });
@@ -57,24 +48,8 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           ref={ref}
           setEditOrder={setEditOrder}
         />
-        <VegaTransactionDialog
-          key={`cancel-order-dialog-${transaction.txHash}`}
-          isOpen={cancelTxOpen}
-          onChange={(isOpen) => {
-            if (!isOpen) reset();
-            setCancelTxOpen(isOpen);
-          }}
-          transaction={transaction}
-        />
-        <VegaTransactionDialog
-          key={`edit-order-dialog-${transaction.txHash}`}
-          isOpen={editTxOpen}
-          onChange={(isOpen) => {
-            if (!isOpen) resetEdit();
-            setEditTxOpen(isOpen);
-          }}
-          transaction={editTransaction}
-        />
+        <orderCancel.Dialog />
+        <orderEdit.Dialog />
         <OrderEditDialog
           isOpen={Boolean(editOrder)}
           onChange={(isOpen) => {
@@ -83,8 +58,7 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
           order={editOrder}
           onSubmit={(fields) => {
             setEditOrder(null);
-            setEditTxOpen(true);
-            edit({ price: fields.entryPrice });
+            orderEdit.edit({ price: fields.entryPrice });
           }}
         />
       </>

@@ -22,17 +22,20 @@ export interface EditOrderArgs {
 }
 
 export const useOrderEdit = (order: OrderFields | null) => {
+  const client = useApolloClient();
   const { keypair } = useVegaWallet();
+
+  const subRef = useRef<Subscription | null>(null);
+  const [updatedOrder, setUpdatedOrder] =
+    useState<OrderEvent_busEvents_event_Order | null>(null);
+
   const {
     send,
     transaction,
     reset: resetTransaction,
     setComplete,
+    Dialog,
   } = useVegaTransaction();
-  const [updatedOrder, setUpdatedOrder] =
-    useState<OrderEvent_busEvents_event_Order | null>(null);
-  const client = useApolloClient();
-  const subRef = useRef<Subscription | null>(null);
 
   const reset = useCallback(() => {
     resetTransaction();
@@ -122,6 +125,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
   return {
     transaction,
     updatedOrder,
+    Dialog,
     edit,
     reset,
   };

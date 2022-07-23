@@ -38,6 +38,7 @@ export const useOrderSubmit = (market: Market) => {
     transaction,
     reset: resetTransaction,
     setComplete,
+    Dialog,
   } = useVegaTransaction();
   const [finalizedOrder, setFinalizedOrder] =
     useState<OrderEvent_busEvents_event_Order | null>(null);
@@ -133,6 +134,7 @@ export const useOrderSubmit = (market: Market) => {
   return {
     transaction,
     finalizedOrder,
+    Dialog,
     submit,
     reset,
   };
