@@ -154,6 +154,7 @@ export const DepositForm = ({
           render={({ field }) => (
             <Select
               id="asset"
+              {...field}
               onChange={(e) => {
                 field.onChange(e);
                 onSelectAsset(e.target.value);

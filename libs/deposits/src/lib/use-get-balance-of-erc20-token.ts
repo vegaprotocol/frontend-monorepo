@@ -1,4 +1,3 @@
-import { useEthereumReadContract } from '@vegaprotocol/web3';
 import type { Token } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';

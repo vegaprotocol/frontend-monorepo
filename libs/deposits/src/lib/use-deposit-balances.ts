@@ -16,7 +16,7 @@ export const useDepositBalances = (isFaucetable: boolean) => {
     asset?.source.__typename === 'ERC20'
       ? asset.source.contractAddress
       : undefined,
-    true
+    isFaucetable
   );
   const bridgeContract = useBridgeContract(true);
   const getAllowance = useGetAllowance(tokenContract, asset);
@@ -26,7 +26,7 @@ export const useDepositBalances = (isFaucetable: boolean) => {
 
   useEffect(() => {
     const getBalances = async () => {
-      const res = await Promise.all([
+      const [max, deposited, balance, allowance] = await Promise.all([
         getDepositMaximum(),
         getDepositedAmount(),
         getBalance(),
@@ -34,10 +34,10 @@ export const useDepositBalances = (isFaucetable: boolean) => {
       ]);
 
       update({
-        max: res[0],
-        deposited: res[1],
-        balance: res[2],
-        allowance: res[3],
+        max,
+        deposited,
+        balance,
+        allowance,
       });
     };
 
