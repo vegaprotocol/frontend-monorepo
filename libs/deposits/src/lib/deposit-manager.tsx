@@ -119,9 +119,9 @@ export const DepositManager = ({
         allowance={allowance}
         isFaucetable={isFaucetable}
       />
-      {approve.dialog}
-      {faucet.dialog}
-      {deposit.dialog}
+      <approve.Dialog />
+      <faucet.Dialog />
+      <deposit.Dialog />
     </>
   );
 };

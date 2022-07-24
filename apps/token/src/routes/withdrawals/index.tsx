@@ -35,7 +35,7 @@ const Withdrawals = () => {
 
 const WithdrawPendingContainer = () => {
   const { t } = useTranslation();
-  const { transaction, submit } = useCompleteWithdraw(
+  const { transaction, submit, Dialog } = useCompleteWithdraw(
     Flags.USE_NEW_BRIDGE_CONTRACT
   );
   const { data, loading, error } = useWithdrawals();
@@ -83,7 +83,7 @@ const WithdrawPendingContainer = () => {
           </li>
         ))}
       </ul>
-      <TransactionDialog name="withdraw" {...transaction} />
+      <Dialog />
     </>
   );
 };

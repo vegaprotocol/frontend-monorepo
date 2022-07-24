@@ -21,7 +21,7 @@ export interface WithdrawalsTableProps {
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const { submit, dialog } = useCompleteWithdraw(true);
+  const { submit, Dialog } = useCompleteWithdraw(true);
 
   return (
     <>
@@ -64,7 +64,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           cellRendererParams={{ complete: submit, ethUrl: ETHERSCAN_URL }}
         />
       </AgGrid>
-      {dialog}
+      <Dialog />
     </>
   );
 };

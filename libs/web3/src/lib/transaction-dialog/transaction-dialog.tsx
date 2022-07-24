@@ -8,17 +8,14 @@ import { DialogWrapper } from './dialog-wrapper';
 
 export interface TransactionDialogProps {
   name: string;
-  isOpen: boolean;
   onChange: (isOpen: boolean) => void;
   transaction: EthTxState;
   // Undefined means this dialog isn't expecting an additional event for a complete state, a boolean
   // value means it is but hasn't been received yet
   requiredConfirmations?: number;
-  confirmed?: boolean;
 }
 
 export const TransactionDialog = ({
-  isOpen,
   onChange,
   name,
   transaction,
@@ -107,7 +104,7 @@ export const TransactionDialog = ({
   const { intent, ...wrapperProps } = getWrapperProps();
 
   return (
-    <Dialog open={isOpen} onChange={onChange} intent={intent}>
+    <Dialog open={transaction.dialogOpen} onChange={onChange} intent={intent}>
       <DialogWrapper {...wrapperProps}>{renderContent()}</DialogWrapper>
     </Dialog>
   );

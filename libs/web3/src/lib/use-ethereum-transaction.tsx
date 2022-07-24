@@ -149,11 +149,10 @@ export const useEthereumTransaction = <
     setTransaction({ status: EthTxStatus.Confirmed });
   }, [setTransaction]);
 
-  const dialog = useMemo(() => {
-    return (
+  const Dialog = useMemo(() => {
+    return () => (
       <TransactionDialog
         name={formatLabel(methodName as string)}
-        isOpen={transaction.dialogOpen}
         onChange={() => {
           reset();
         }}
@@ -163,5 +162,5 @@ export const useEthereumTransaction = <
     );
   }, [methodName, transaction, requiredConfirmations, reset]);
 
-  return { perform, transaction, reset, setConfirmed, dialog };
+  return { perform, transaction, reset, setConfirmed, Dialog };
 };
