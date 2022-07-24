@@ -1,30 +1,29 @@
 import type { Token } from '@vegaprotocol/smart-contracts';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
-import { useEthereumConfig, useEthereumReadContract } from '@vegaprotocol/web3';
+import { useEthereumConfig } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/react-helpers';
+import type { Asset } from './deposit-manager';
 
-export const useGetAllowance = (contract: Token | null, decimals?: number) => {
+export const useGetAllowance = (
+  contract: Token | null,
+  asset: Asset | undefined
+) => {
   const { account } = useWeb3React();
   const { config } = useEthereumConfig();
 
-  const getAllowance = useCallback(() => {
-    if (!contract || !account || !config) {
+  const getAllowance = useCallback(async () => {
+    if (!contract || !account || !config || !asset) {
       return;
     }
-    return contract.allowance(
+    const res = await contract.allowance(
       account,
       config.collateral_bridge_contract.address
     );
-  }, [contract, account, config]);
 
-  const { state, refetch } = useEthereumReadContract(getAllowance);
+    return new BigNumber(addDecimal(res.toString(), asset.decimals));
+  }, [contract, account, config, asset]);
 
-  const allowance =
-    state.data && decimals
-      ? new BigNumber(addDecimal(state.data.toString(), decimals))
-      : undefined;
-
-  return { allowance, refetch };
+  return getAllowance;
 };

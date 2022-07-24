@@ -4,27 +4,21 @@ import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import { addDecimal } from '@vegaprotocol/react-helpers';
+import type { Asset } from './deposit-manager';
 
 export const useGetBalanceOfERC20Token = (
   contract: Token | null,
-  decimals: number | undefined
+  asset: Asset | undefined
 ) => {
   const { account } = useWeb3React();
-
-  const getBalance = useCallback(() => {
-    if (!contract || !account) {
+  const getBalance = useCallback(async () => {
+    if (!contract || !asset || !account) {
       return;
     }
 
-    return contract.balanceOf(account);
-  }, [contract, account]);
+    const res = await contract.balanceOf(account);
+    return new BigNumber(addDecimal(res.toString(), asset.decimals));
+  }, [contract, asset, account]);
 
-  const { state, refetch } = useEthereumReadContract(getBalance);
-
-  const balance =
-    state.data && decimals
-      ? new BigNumber(addDecimal(state.data?.toString(), decimals))
-      : undefined;
-
-  return { balance, refetch };
+  return getBalance;
 };
