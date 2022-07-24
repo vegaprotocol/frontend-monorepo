@@ -50,10 +50,10 @@ context('Staking Flow - with eth and vega wallets connected', function () {
       }
     );
 
-    it('Able to stake against a validator', function () {
+    it('Able to stake against a validator', function () {//1002-STAK-staking.md#Nominate-a-validator
       cy.staking_page_associate_tokens('3');
 
-      cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+      cy.get(vegaWalletUnstakedBalance, txTimeout).should( //1002-STAK-0034 but this looks like a function that gets the amount but not a test?
         'contain',
         3.0,
         txTimeout
@@ -108,7 +108,7 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         .and('contain', '100%');
     });
 
-    it('Able to stake against mulitple validators', function () {
+    it('Able to stake against mulitple validators', function () {//I like that there is a test for this, but doesn't match an ACs should it?
       cy.staking_page_associate_tokens('5');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -128,9 +128,9 @@ context('Staking Flow - with eth and vega wallets connected', function () {
         .should('contain', 2.0, txTimeout);
 
       cy.navigate_to('staking');
-      cy.get(stakeValidatorList).contains(this.otherValidatorName).click();
+      cy.get(stakeValidatorList).contains(this.otherValidatorName).click();//1002-STAK-0050
 
-      cy.staking_validator_page_add_stake('1');
+      cy.staking_validator_page_add_stake('1');//1002-STAK-0033
 
       cy.get(vegaWalletStakedBalances, txTimeout)
         .should('have.length', 2, txTimeout)

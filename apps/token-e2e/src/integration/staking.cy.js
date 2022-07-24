@@ -15,15 +15,15 @@ context('Staking Page - verify elements on page', function () {
 
   describe('with wallets disconnected', function () {
     describe('description section', function () {
-      it('should have staking tab highlighted', function () {
+      it('should have staking tab highlighted', function () { //No AC, doesn't need one
         cy.verify_tab_highlighted('staking');
       });
 
-      it('should have STAKING ON VEGA header visible', function () {
+      it('should have STAKING ON VEGA header visible', function () { //No AC, doesn't need one
         cy.verify_page_header('Staking on Vega');
       });
 
-      it('should have Staking Guide link visible', function () {
+      it('should have Staking Guide link visible', function () { //0000-SORD-0003
         cy.get(guideLink)
           .should('be.visible')
           .and('have.text', 'Read more about staking on Vega')
@@ -36,7 +36,7 @@ context('Staking Page - verify elements on page', function () {
     });
 
     describe('step 1 section', function () {
-      it('should have header visible', function () {
+      it('should have header visible', function () { //1002-STAK-0032  but should re-phrase
         cy.get(step1).within(() => {
           cy.get(sectionHeader)
             .should('be.visible')
@@ -44,7 +44,7 @@ context('Staking Page - verify elements on page', function () {
         });
       });
 
-      it('should have text visible', function () {
+      it('should have text visible', function () { //Related to but not actually 0000-WALL-0001
         cy.get(step1).within(() => {
           cy.get(link)
             .should('be.visible')
@@ -53,7 +53,7 @@ context('Staking Page - verify elements on page', function () {
         });
       });
 
-      it('should have connect to eth button visible', function () {
+      it('should have connect to eth button visible', function () {//1000-ASSO-0002 but should re-phrase
         cy.get(step1).within(() => {
           cy.get(connectToEthBtn)
             .should('be.visible')
@@ -61,7 +61,7 @@ context('Staking Page - verify elements on page', function () {
         });
       });
 
-      it('should have connect to vega button visible', function () {
+      it('should have connect to vega button visible', function () { //1002-STAK-0032 and 1002-STAK-0041
         cy.get(step1).within(() => {
           cy.get(connectToVegaBtn)
             .should('be.visible')
@@ -71,7 +71,7 @@ context('Staking Page - verify elements on page', function () {
     });
 
     describe('step 2 section', function () {
-      it('should have header visible', function () {
+      it('should have header visible', function () {// design detail
         cy.get(step2).within(() => {
           cy.get(sectionHeader)
             .should('be.visible')
@@ -79,7 +79,7 @@ context('Staking Page - verify elements on page', function () {
         });
       });
 
-      it('should have warning visible', function () {
+      it('should have warning visible', function () { //design detail, new design doesn't have this
         cy.get(step2).within(() => {
           cy.get(warning)
             .should('be.visible')
@@ -92,7 +92,7 @@ context('Staking Page - verify elements on page', function () {
     });
 
     describe('step 3 section', function () {
-      it('should have header visible', function () {
+      it('should have header visible', function () {//design detail, new design doesn't have this
         cy.get(step3).within(() => {
           cy.get(sectionHeader)
             .should('be.visible')
