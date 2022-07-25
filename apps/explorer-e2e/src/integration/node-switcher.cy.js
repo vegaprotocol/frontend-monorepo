@@ -2,6 +2,7 @@ const nodeErrorType = 'node-error-type';
 const nodeErrorMsg = 'node-error-message';
 const nodeId = 'node-url-0';
 const customNodeBtn = 'custom-node';
+const closeDialogBtn = 'dialog-close';
 
 context('Node switcher', function () {
   before('visit home page', function () {
@@ -15,7 +16,7 @@ context('Node switcher', function () {
   describe('form validations and responses', function () {
     beforeEach('open node selector', function () {
       cy.getByTestId('git-network-data').within(() => {
-        cy.getByTestId('link').click({ force: true });
+        cy.getByTestId('link').click();
       });
     });
     it('node data is displayed', function () {
@@ -29,15 +30,10 @@ context('Node switcher', function () {
             .and('have.attr', 'aria-checked', 'true');
           cy.get('label').should('have.text', Cypress.env('networkQueryUrl'));
           cy.getByTestId('response-time-cell')
-            .find('.font-mono')
             .should('not.be.empty')
             .and('contain.text', 'ms');
-          cy.getByTestId('block-cell')
-            .find('.font-mono')
-            .should('not.be.empty');
-          cy.getByTestId('ssl-cell')
-            .find('.font-mono')
-            .should('have.text', 'Yes');
+          cy.getByTestId('block-cell').should('not.be.empty');
+          cy.getByTestId('ssl-cell').should('have.text', 'Yes');
         });
     });
 
@@ -68,10 +64,14 @@ context('Node switcher', function () {
       cy.getByTestId('node-url-custom').click();
 
       cy.getByTestId(customNodeBtn).within(() => {
-        cy.get('input').clear().type('https://lb.testnet.vega.xyz/query');
+        cy.get('input').clear().type('https://n04.d.vega.xyz/query');
         cy.getByTestId('link').click();
       });
       validateNodeError(errorTypeTxt, nodeErrorTxt);
+    });
+
+    afterEach('Close node switcher', function () {
+      cy.getByTestId(closeDialogBtn).click();
     });
 
     function validateNodeError(errortype, errorMsg) {

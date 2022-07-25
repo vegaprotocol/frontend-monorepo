@@ -24,9 +24,10 @@ export const LayoutCell = ({
   ];
 
   return (
-    <div data-testid={dataTestId} className={classnames(classes)}>
+    <div className={classnames(classes)}>
       {label && <span className="lg:hidden">{label}</span>}
       <span
+        data-testid={dataTestId}
         className={classnames('font-mono', {
           'text-danger': !isLoading && hasError,
           'text-white-60 dark:text-black-60': isLoading,
