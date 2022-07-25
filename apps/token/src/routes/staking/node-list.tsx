@@ -96,6 +96,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           avatarUrl: node.avatarUrl,
           name: node.name,
         },
+        [t('status')]: status,
         [t('totalStakeThisEpoch')]: formatNumber(stakedTotal, 2),
         [t('share')]: stakedTotalPercentage,
         [t('validatorStake')]: formatNumber(stakedOnNode, 2),
@@ -108,7 +109,6 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           new BigNumber(node.rankingScore.stakeScore),
           5
         ),
-        [t('status')]: status,
         [t('performanceScore')]: formatNumber(
           new BigNumber(node.rankingScore.performanceScore),
           5
@@ -145,33 +145,35 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     );
 
     return (
-      <AgGrid
-        domLayout="autoHeight"
-        style={{ width: '100%' }}
-        customThemeParams={nodeListGridStyles}
-        overlayNoRowsTemplate={t('noValidators')}
-        ref={ref}
-        rowData={nodes}
-        rowHeight={32}
-        columnDefs={colDefs}
-        defaultColDef={defaultColDef}
-        animateRows={true}
-        suppressCellFocus={true}
-        onGridReady={(event) => {
-          event.columnApi.applyColumnState({
-            state: [
-              {
-                colId: t('rankingScore'),
-                sort: 'desc',
-              },
-            ],
-          });
-          event.columnApi.autoSizeAllColumns(false);
-        }}
-        onCellClicked={(event) => {
-          navigate(event.data.id);
-        }}
-      />
+      <div data-testid="validators-grid">
+        <AgGrid
+          domLayout="autoHeight"
+          style={{ width: '100%' }}
+          customThemeParams={nodeListGridStyles}
+          overlayNoRowsTemplate={t('noValidators')}
+          ref={ref}
+          rowData={nodes}
+          rowHeight={32}
+          columnDefs={colDefs}
+          defaultColDef={defaultColDef}
+          animateRows={true}
+          suppressCellFocus={true}
+          onGridReady={(event) => {
+            event.columnApi.applyColumnState({
+              state: [
+                {
+                  colId: t('rankingScore'),
+                  sort: 'desc',
+                },
+              ],
+            });
+            event.columnApi.autoSizeAllColumns(false);
+          }}
+          onCellClicked={(event) => {
+            navigate(event.data.id);
+          }}
+        />
+      </div>
     );
   });
 

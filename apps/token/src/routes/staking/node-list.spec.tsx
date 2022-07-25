@@ -1,9 +1,10 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import { NodeList, NODES_QUERY } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type { Nodes_nodes } from './__generated__/Nodes';
+import { useTranslation } from 'react-i18next';
 
 jest.mock('../../components/epoch-countdown', () => ({
   EpochCountdown: () => <div data-testid="epoch-info"></div>,
@@ -19,6 +20,10 @@ const nodeFactory = (overrides?: Partial<Nodes_nodes>) => ({
   stakedByOperator: '3000000000000000000000',
   stakedByDelegates: '11182454495731682635157',
   stakedTotal: '14182454495731682635157',
+  stakedTotalFormatted: addDecimal(
+    overrides?.stakedTotal || '14182454495731682635157',
+    18
+  ),
   pendingStake: '0',
   pendingStakeFormatted: addDecimal(overrides?.pendingStake || '0', 18),
   epochData: null,
@@ -81,14 +86,14 @@ const MOCK_NODES = {
   },
 };
 
-const renderNodeList = () => {
+const renderNodeList = (data = MOCK_NODES) => {
   return render(
     <MemoryRouter>
       <MockedProvider
         mocks={[
           {
             request: { query: NODES_QUERY },
-            result: { data: MOCK_NODES },
+            result: { data },
           },
         ]}
       >
@@ -125,5 +130,102 @@ describe('Nodes list', () => {
       expect(screen.getByText(MOCK_NODES.nodes[0].name)).toBeInTheDocument();
     });
     expect(screen.getByTestId('epoch-info')).toBeInTheDocument();
+  });
+
+  it('should render a list of all nodes', async () => {
+    renderNodeList();
+
+    await waitFor(() => {
+      expect(screen.getByText(MOCK_NODES.nodes[0].name)).toBeInTheDocument();
+      expect(screen.getByText(MOCK_NODES.nodes[1].name)).toBeInTheDocument();
+      expect(screen.getByText(MOCK_NODES.nodes[2].name)).toBeInTheDocument();
+    });
+  });
+
+  it('should display the correctly formatted fields in the correct columns', async () => {
+    const MOCK_NODE = {
+      nodes: [
+        nodeFactory({
+          id: '966438c6bffac737cfb08173ffcb3f393c4692b099ad80cb45a82e2dc0a8cf99',
+          name: 'T-800 Terminator',
+          avatarUrl:
+            'https://upload.wikimedia.org/wikipedia/en/9/94/T-800_%28Model_101%29.png',
+          pubkey:
+            'ccc3b8362c25b09d20df8ea407b0a476d6b24a0e72bc063d0033c8841652ddd4',
+          stakedTotal: '9618711883996159534058',
+          rankingScore: {
+            rankingScore: '0.4601942440481428',
+            stakeScore: '0.2300971220240714',
+            performanceScore: '1',
+            votingPower: '2408',
+            status: 'tendermint',
+            __typename: 'RankingScore',
+          },
+        }),
+      ],
+      nodeData: {
+        stakedTotal: '9618711883996159534058',
+        stakedTotalFormatted: addDecimal('9618711883996159534058', 18),
+        totalNodes: 1,
+        inactiveNodes: 0,
+        validatingNodes: 1,
+        uptime: 1560.266845703125,
+        __typename: 'NodeData',
+      },
+    };
+
+    renderNodeList(MOCK_NODE);
+    await waitFor(() => {
+      expect(screen.getByText(MOCK_NODE.nodes[0].name)).toBeInTheDocument();
+    });
+
+    const grid = screen.getByTestId('validators-grid');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Validator"]')
+    ).toHaveTextContent('T-800 Terminator');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Validator"] img')
+    ).toHaveAttribute(
+      'src',
+      'https://upload.wikimedia.org/wikipedia/en/9/94/T-800_%28Model_101%29.png'
+    );
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Status"]')
+    ).toHaveTextContent('Consensus');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Total stake this epoch"]')
+    ).toHaveTextContent('9,618.71');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Share"]')
+    ).toHaveTextContent('100%');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Validator stake"]')
+    ).toHaveTextContent('9,618.71');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Next epoch"]')
+    ).toHaveTextContent('0');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Ranking score"]')
+    ).toHaveTextContent('0.46019');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Stake score"]')
+    ).toHaveTextContent('0.23010');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Performance"]')
+    ).toHaveTextContent('1.00000');
+
+    expect(
+      grid.querySelector('[role="gridcell"][col-id="Voting power"]')
+    ).toHaveTextContent('2408');
   });
 });
