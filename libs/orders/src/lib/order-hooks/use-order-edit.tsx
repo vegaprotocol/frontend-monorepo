@@ -1,8 +1,4 @@
-import {
-  determineId,
-  removeDecimal,
-  toNanoSeconds,
-} from '@vegaprotocol/react-helpers';
+import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useState, useCallback } from 'react';
 import {
   useVegaTransaction,
@@ -49,7 +45,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
       setUpdatedOrder(null);
 
       try {
-        const res = await send({
+        await send({
           pubKey: keypair.pub,
           propagate: true,
           orderAmendment: {
@@ -70,18 +66,10 @@ export const useOrderEdit = (order: OrderFields | null) => {
           },
         });
 
-        if (res?.signature) {
-          const resId = order.id ?? determineId(res.signature);
-          setUpdatedOrder(null);
-
-          if (resId) {
-            // Start a subscription looking for the newly created order
-            waitForOrderEvent(resId, keypair.pub, (order) => {
-              setUpdatedOrder(order);
-              setComplete();
-            });
-          }
-        }
+        waitForOrderEvent(order.id, keypair.pub, (updatedOrder) => {
+          setUpdatedOrder(updatedOrder);
+          setComplete();
+        });
       } catch (e) {
         Sentry.captureException(e);
         return;

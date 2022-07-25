@@ -7,7 +7,7 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
-import { generateOrder } from '@vegaprotocol/orders';
+import { generateOrder } from '../mocks/generate-orders';
 import type { OrderFeedbackProps } from './order-feedback';
 import { OrderFeedback } from './order-feedback';
 

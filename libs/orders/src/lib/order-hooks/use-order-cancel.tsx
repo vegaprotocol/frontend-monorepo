@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import * as Sentry from '@sentry/react';
-import { determineId } from '@vegaprotocol/react-helpers';
 import { useOrderEvent } from './use-order-event';
 
 interface CancelOrderArgs {
@@ -39,7 +38,7 @@ export const useOrderCancel = () => {
       setCancelledOrder(null);
 
       try {
-        const res = await send({
+        await send({
           pubKey: keypair.pub,
           propagate: true,
           orderCancellation: {
@@ -48,17 +47,10 @@ export const useOrderCancel = () => {
           },
         });
 
-        if (res?.signature) {
-          const resId = args.orderId ?? determineId(res.signature);
-          setCancelledOrder(null);
-
-          if (resId) {
-            waitForOrderEvent(resId, keypair.pub, (order) => {
-              setCancelledOrder(order);
-              setComplete();
-            });
-          }
-        }
+        waitForOrderEvent(args.orderId, keypair.pub, (cancelledOrder) => {
+          setCancelledOrder(cancelledOrder);
+          setComplete();
+        });
       } catch (e) {
         Sentry.captureException(e);
         return;
