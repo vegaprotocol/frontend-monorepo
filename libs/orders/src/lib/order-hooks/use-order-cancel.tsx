@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import type { OrderEvent_busEvents_event_Order } from './__generated__/OrderEvent';
 import * as Sentry from '@sentry/react';
