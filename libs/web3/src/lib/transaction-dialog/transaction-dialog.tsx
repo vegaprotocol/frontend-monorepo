@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { isExpectedEthereumError } from '../ethereum-error';
+import { isEthereumError, isExpectedEthereumError } from '../ethereum-error';
+import type { TxError } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 import { DialogWrapper } from './dialog-wrapper';
@@ -9,7 +10,7 @@ import { DialogWrapper } from './dialog-wrapper';
 export interface TransactionDialogProps {
   name: string;
   status: EthTxStatus;
-  error: Error | null;
+  error: TxError | null;
   confirmations: number;
   txHash: string | null;
   requiredConfirmations?: number;
@@ -32,9 +33,26 @@ export const TransactionDialog = ({
 
   const renderContent = () => {
     if (status === EthTxStatus.Error) {
+      const classNames = 'break-all text-black dark:text-white';
+      if (isEthereumError(error)) {
+        return (
+          <p className={classNames}>
+            {t('Error')}: {error.reason}
+          </p>
+        );
+      }
+
+      if (error instanceof Error) {
+        return (
+          <p className={classNames}>
+            {t('Error')}: {error.message}
+          </p>
+        );
+      }
+
       return (
-        <p className="break-all text-black dark:text-white">
-          {error && error.message}
+        <p className={classNames}>
+          {t('Error')}: {t('Unknown error')}
         </p>
       );
     }

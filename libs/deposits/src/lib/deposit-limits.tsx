@@ -23,7 +23,10 @@ export const DepositLimits = ({ limits, balance }: DepositLimitsProps) => {
   if (limits.deposited.isEqualTo(0)) {
     remaining = maxLimit;
   } else {
-    remaining = limits.max.minus(limits.deposited).toString();
+    const amountRemaining = limits.max.minus(limits.deposited);
+    remaining = amountRemaining.isGreaterThan(1_000_000)
+      ? t('1m+')
+      : amountRemaining.toString();
   }
 
   return (

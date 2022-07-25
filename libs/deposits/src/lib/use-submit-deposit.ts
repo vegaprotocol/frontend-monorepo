@@ -12,6 +12,11 @@ import {
   useEthereumConfig,
   useEthereumTransaction,
 } from '@vegaprotocol/web3';
+import type {
+  CollateralBridge,
+  CollateralBridgeNew,
+} from '@vegaprotocol/smart-contracts';
+import { prepend0x } from '@vegaprotocol/smart-contracts';
 
 const DEPOSIT_EVENT_SUB = gql`
   subscription DepositEvent($partyId: ID!) {
@@ -35,26 +40,10 @@ export const useSubmitDeposit = () => {
   // Store public key from contract arguments for use in the subscription,
   // NOTE: it may be different from the users connected key
   const [partyId, setPartyId] = useState<string | null>(null);
-
-  const { transaction, perform } = useEthereumTransaction<{
-    assetSource: string;
-    amount: string;
-    vegaPublicKey: string;
-  }>((args) => {
-    if (!contract) {
-      return null;
-    }
-    // New deposit started clear old confirmation event and start
-    // tracking deposits for the new public key
-    setConfirmationEvent(null);
-    setPartyId(args.vegaPublicKey);
-
-    return contract.depositAsset(
-      args.assetSource,
-      args.amount,
-      args.vegaPublicKey
-    );
-  }, config?.confirmations);
+  const { transaction, perform } = useEthereumTransaction<
+    CollateralBridgeNew | CollateralBridge,
+    'deposit_asset'
+  >(contract, 'deposit_asset', config?.confirmations);
 
   useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
     variables: { partyId: partyId ? remove0x(partyId) : '' },
@@ -90,7 +79,12 @@ export const useSubmitDeposit = () => {
 
   return {
     ...transaction,
-    perform,
+    perform: (...args: Parameters<typeof perform>) => {
+      setConfirmationEvent(null);
+      setPartyId(args[2]);
+      const publicKey = prepend0x(args[2]);
+      perform(args[0], args[1], publicKey);
+    },
     confirmationEvent,
   };
 };

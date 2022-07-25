@@ -1,6 +1,7 @@
 import type { ethers } from 'ethers';
 import { useCallback, useState } from 'react';
-import { EthereumError, isEthereumError } from './ethereum-error';
+import type { EthereumError } from './ethereum-error';
+import { isEthereumError } from './ethereum-error';
 
 export enum EthTxStatus {
   Default = 'Default',
@@ -28,10 +29,16 @@ export const initialState = {
   confirmations: 0,
 };
 
-export const useEthereumTransaction = <TArgs = void>(
-  performTransaction: (
-    args: TArgs
-  ) => Promise<ethers.ContractTransaction> | null,
+type DefaultContract = {
+  contract: ethers.Contract;
+};
+
+export const useEthereumTransaction = <
+  TContract extends DefaultContract,
+  TMethod extends string
+>(
+  contract: TContract | null,
+  methodName: keyof TContract,
   requiredConfirmations = 1
 ) => {
   const [transaction, _setTransaction] = useState<EthTxState>(initialState);
@@ -44,7 +51,27 @@ export const useEthereumTransaction = <TArgs = void>(
   }, []);
 
   const perform = useCallback(
-    async (args: TArgs) => {
+    // @ts-ignore TS errors here as TMethod doesn't satisfy the constraints on TContract
+    // its a tricky one to fix but does enforce the correct types when calling perform
+    async (...args: Parameters<TContract[TMethod]>) => {
+      try {
+        if (
+          !contract ||
+          typeof contract[methodName] !== 'function' ||
+          typeof contract.contract.callStatic[methodName as string] !==
+            'function'
+        ) {
+          throw new Error('method not found on contract');
+        }
+        await contract.contract.callStatic[methodName as string](...args);
+      } catch (err) {
+        setTransaction({
+          status: EthTxStatus.Error,
+          error: err as EthereumError,
+        });
+        return;
+      }
+
       setTransaction({
         status: EthTxStatus.Requested,
         error: null,
@@ -52,14 +79,13 @@ export const useEthereumTransaction = <TArgs = void>(
       });
 
       try {
-        const res = performTransaction(args);
+        const method = contract[methodName];
 
-        if (res === null) {
-          setTransaction({ status: EthTxStatus.Default });
-          return;
+        if (!method || typeof method !== 'function') {
+          throw new Error('method not found on contract');
         }
 
-        const tx = await res;
+        const tx = await method.call(contract, ...args);
 
         let receipt: ethers.ContractReceipt | null = null;
 
@@ -67,22 +93,21 @@ export const useEthereumTransaction = <TArgs = void>(
 
         for (let i = 1; i <= requiredConfirmations; i++) {
           receipt = await tx.wait(i);
-          setTransaction({ confirmations: receipt.confirmations });
+          setTransaction({
+            confirmations: receipt
+              ? receipt.confirmations
+              : requiredConfirmations,
+          });
         }
 
         if (!receipt) {
-          throw new Error('No receipt after confirmations are met');
+          throw new Error('no receipt after confirmations are met');
         }
 
         setTransaction({ status: EthTxStatus.Complete, receipt });
       } catch (err) {
-        if (err instanceof Error) {
+        if (err instanceof Error || isEthereumError(err)) {
           setTransaction({ status: EthTxStatus.Error, error: err });
-        } else if (isEthereumError(err)) {
-          setTransaction({
-            status: EthTxStatus.Error,
-            error: new EthereumError(err.message, err.code),
-          });
         } else {
           setTransaction({
             status: EthTxStatus.Error,
@@ -91,7 +116,7 @@ export const useEthereumTransaction = <TArgs = void>(
         }
       }
     },
-    [performTransaction, requiredConfirmations, setTransaction]
+    [contract, methodName, requiredConfirmations, setTransaction]
   );
 
   const reset = useCallback(() => {
