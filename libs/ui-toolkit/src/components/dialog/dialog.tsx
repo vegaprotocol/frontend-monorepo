@@ -57,7 +57,7 @@ export function Dialog({
             <div data-testid="dialog-content" className="flex-1">
               {title && (
                 <h1
-                  className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6 capitalize ${titleClassNames}`}
+                  className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6 ${titleClassNames}`}
                   data-testid="dialog-title"
                 >
                   {title}
