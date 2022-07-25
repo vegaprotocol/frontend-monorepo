@@ -2,11 +2,7 @@ import { act, renderHook } from '@testing-library/react-hooks';
 import type { VegaWalletContextShape } from './context';
 import { VegaWalletContext } from './context';
 import type { ReactNode } from 'react';
-import {
-  initialState,
-  useVegaTransaction,
-  VegaTxStatus,
-} from './use-vega-transaction';
+import { useVegaTransaction, VegaTxStatus } from './use-vega-transaction';
 import type { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
 
 const defaultWalletContext = {
