@@ -1,13 +1,12 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { useCallback, useRef, useMemo } from 'react';
-import { useDataProvider } from '@vegaprotocol/react-helpers';
+import {
+  useDataProvider,
+  makeInfiniteScrollGetRows,
+} from '@vegaprotocol/react-helpers';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { FillsTable } from './fills-table';
-import type {
-  IGetRowsParams,
-  BodyScrollEvent,
-  BodyScrollEndEvent,
-} from 'ag-grid-community';
+import type { BodyScrollEvent, BodyScrollEndEvent } from 'ag-grid-community';
 
 import { fillsDataProvider as dataProvider } from './fills-data-provider';
 import type { Fills_party_tradesConnection_edges } from './__generated__/Fills';
@@ -90,36 +89,12 @@ export const FillsManager = ({ partyId }: FillsManagerProps) => {
   totalCountRef.current = totalCount;
   dataRef.current = data;
 
-  const getRows = async ({
-    successCallback,
-    failCallback,
-    startRow,
-    endRow,
-  }: IGetRowsParams) => {
-    startRow += newRows.current;
-    endRow += newRows.current;
-    try {
-      if (dataRef.current && dataRef.current.indexOf(null) < endRow) {
-        await load();
-      }
-      const rowsThisBlock = dataRef.current
-        ? dataRef.current.slice(startRow, endRow).map((edge) => edge?.node)
-        : [];
-      let lastRow = -1;
-      if (totalCountRef.current !== undefined) {
-        if (!totalCountRef.current) {
-          lastRow = 0;
-        } else if (totalCountRef.current <= endRow) {
-          lastRow = totalCountRef.current;
-        }
-      } else if (rowsThisBlock.length < endRow - startRow) {
-        lastRow = rowsThisBlock.length;
-      }
-      successCallback(rowsThisBlock, lastRow);
-    } catch (e) {
-      failCallback();
-    }
-  };
+  const getRows = makeInfiniteScrollGetRows<Fills_party_tradesConnection_edges>(
+    newRows,
+    dataRef,
+    totalCountRef,
+    load
+  );
 
   const onBodyScrollEnd = (event: BodyScrollEndEvent) => {
     if (event.top === 0) {

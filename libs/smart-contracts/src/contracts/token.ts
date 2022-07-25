@@ -29,4 +29,7 @@ export class Token {
   decimals(): Promise<number> {
     return this.contract.decimals();
   }
+  faucet() {
+    /* No op */
+  }
 }

@@ -1,3 +1,4 @@
+import type { OrderTimeInForce } from '@vegaprotocol/types';
 import type {
   DelegateSubmissionBody,
   OrderCancellationBody,
@@ -41,14 +42,18 @@ export interface Market {
   name: string;
   positionDecimalPlaces?: number;
   decimalPlaces: number;
+  id?: string;
 }
 
 export interface Order {
-  status: string;
-  rejectionReason: string | null;
+  id?: string;
+  status?: string;
+  rejectionReason?: string | null;
   size: string;
   price: string;
   market: Market | null;
   type: string | null;
   side?: string;
+  timeInForce: OrderTimeInForce;
+  expiresAt?: Date | string | null;
 }

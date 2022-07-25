@@ -5,9 +5,10 @@ interface WithdrawLimitsProps {
   limits: {
     max: BigNumber;
   };
+  balance: BigNumber;
 }
 
-export const WithdrawLimits = ({ limits }: WithdrawLimitsProps) => {
+export const WithdrawLimits = ({ limits, balance }: WithdrawLimitsProps) => {
   let maxLimit = '';
 
   if (limits.max.isEqualTo(Infinity)) {
@@ -19,16 +20,17 @@ export const WithdrawLimits = ({ limits }: WithdrawLimitsProps) => {
   }
 
   return (
-    <>
-      <p className="text-ui font-bold">{t('Withdraw limits')}</p>
-      <table className="w-full text-ui">
-        <tbody>
-          <tr>
-            <th className="text-left font-normal">{t('Maximum')}</th>
-            <td className="text-right">{maxLimit}</td>
-          </tr>
-        </tbody>
-      </table>
-    </>
+    <table className="w-full text-ui">
+      <tbody>
+        <tr>
+          <th className="text-left font-normal">{t('Balance available')}</th>
+          <td className="text-right">{balance.toString()}</td>
+        </tr>
+        <tr>
+          <th className="text-left font-normal">{t('Maximum withdrawal')}</th>
+          <td className="text-right">{maxLimit}</td>
+        </tr>
+      </tbody>
+    </table>
   );
 };

@@ -21,10 +21,10 @@ export const useRemoveStake = (
   // which if staked > wallet balance means you cannot unstaked
   // even worse if you stake everything then you can't unstake anything!
   const contractRemove = useTransaction(() =>
-    vesting.removeStake(removeDecimal(amount, appState.decimals), vegaKey)
+    vesting.remove_stake(removeDecimal(amount, appState.decimals), vegaKey)
   );
   const walletRemove = useTransaction(() =>
-    staking.removeStake(removeDecimal(amount, appState.decimals), vegaKey)
+    staking.remove_stake(removeDecimal(amount, appState.decimals), vegaKey)
   );
   const refreshBalances = useRefreshBalances(address);
   const getAssociationBreakdown = useGetAssociationBreakdown(

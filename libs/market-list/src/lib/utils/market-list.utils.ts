@@ -1,4 +1,4 @@
-import { MarketState } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import orderBy from 'lodash/orderBy';
 import type {
   MarketList,
@@ -13,7 +13,11 @@ export const lastPrice = ({ candles }: MarketList_markets) =>
 export const mapDataToMarketList = ({ markets }: MarketList) =>
   orderBy(
     markets
-      ?.filter((m) => m.state !== MarketState.Rejected)
+      ?.filter(
+        (m) =>
+          m.state !== MarketState.Rejected &&
+          m.tradingMode !== MarketTradingMode.NoTrading
+      )
       .map((m) => {
         return {
           id: m.id,

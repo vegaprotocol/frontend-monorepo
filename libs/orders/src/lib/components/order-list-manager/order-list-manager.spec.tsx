@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import { OrderListManager } from './order-list-manager';
 import * as useDataProviderHook from '@vegaprotocol/react-helpers';
-import type { Orders_party_orders } from '../__generated__/Orders';
-import * as orderListMock from '../order-list';
+import type { Orders_party_ordersConnection_edges_node } from '../';
+import * as orderListMock from '../';
 import { forwardRef } from 'react';
 
 jest.mock('./order-list');
@@ -12,6 +12,10 @@ it('Renders a loading state while awaiting orders', () => {
     data: [],
     loading: true,
     error: undefined,
+    flush: jest.fn(),
+    reload: jest.fn(),
+    load: jest.fn(),
+    totalCount: 0,
   });
   render(<OrderListManager partyId="0x123" />);
   expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -23,6 +27,10 @@ it('Renders an error state', () => {
     data: [],
     loading: false,
     error: new Error(errorMsg),
+    flush: jest.fn(),
+    reload: jest.fn(),
+    load: jest.fn(),
+    totalCount: undefined,
   });
   render(<OrderListManager partyId="0x123" />);
   expect(
@@ -35,9 +43,13 @@ it('Renders the order list if orders provided', async () => {
   // avoid warnings about padding refs
   orderListMock.OrderList = forwardRef(() => <div>OrderList</div>);
   jest.spyOn(useDataProviderHook, 'useDataProvider').mockReturnValue({
-    data: [{ id: '1' } as Orders_party_orders],
+    data: [{ id: '1' } as Orders_party_ordersConnection_edges_node],
     loading: false,
     error: undefined,
+    flush: jest.fn(),
+    reload: jest.fn(),
+    load: jest.fn(),
+    totalCount: undefined,
   });
   render(<OrderListManager partyId="0x123" />);
   expect(await screen.findByText('OrderList')).toBeInTheDocument();
