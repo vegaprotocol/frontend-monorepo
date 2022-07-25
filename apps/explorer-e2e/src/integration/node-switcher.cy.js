@@ -1,24 +1,28 @@
 const nodeErrorType = 'node-error-type';
 const nodeErrorMsg = 'node-error-message';
-const nodeId = 'node-url-1';
-const customNodeBtn = 'node-url-custom';
+const nodeId = 'node-url-0';
+const customNodeBtn = 'custom-node';
 
 context('Node switcher', function () {
   before('visit home page', function () {
+    cy.intercept('GET', 'https://static.vega.xyz/assets/capsule-network.json', {
+      hosts: ['http://localhost:3028/query'],
+    }).as('nodeData');
     cy.visit('/');
+    cy.wait('@nodeData');
   });
 
   describe('form validations and responses', function () {
     this.beforeEach('open node selector', function () {
       cy.getByTestId('git-network-data').within(() => {
-        cy.getByTestId('link').click();
+        cy.getByTestId('link').click({ force: true });
       });
     });
     it('node data is displayed', function () {
       cy.getByTestId('node-row').should('have.length.at.least', 1);
 
       cy.getByTestId('node-row')
-        .eq(1)
+        .eq(0)
         .within(() => {
           cy.getByTestId(nodeId)
             .should('exist')
