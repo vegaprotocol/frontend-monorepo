@@ -123,16 +123,16 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
     const colDefs = useMemo(
       () => [
-        { field: t('validator'), cellRenderer: ValidatorRenderer },
-        { field: t('status') },
-        { field: t('totalStakeThisEpoch') },
-        { field: t('share') },
-        { field: t('validatorStake') },
-        { field: t('nextEpoch') },
-        { field: t('rankingScore') },
-        { field: t('stakeScore') },
-        { field: t('performanceScore') },
-        { field: t('votingPower') },
+        { field: t('validator').toString(), cellRenderer: ValidatorRenderer },
+        { field: t('status').toString() },
+        { field: t('totalStakeThisEpoch').toString() },
+        { field: t('share').toString() },
+        { field: t('validatorStake').toString() },
+        { field: t('nextEpoch').toString() },
+        { field: t('rankingScore').toString() },
+        { field: t('stakeScore').toString() },
+        { field: t('performanceScore').toString() },
+        { field: t('votingPower').toString() },
       ],
       []
     );
