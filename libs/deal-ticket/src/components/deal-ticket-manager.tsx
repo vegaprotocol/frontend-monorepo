@@ -11,26 +11,28 @@ export interface DealTicketManagerProps {
   children?: ReactNode | ReactNode[];
 }
 
+export const getDialogTitle = (status?: string) => {
+  switch (status) {
+    case OrderStatus.Active:
+      return 'Order submitted';
+    case OrderStatus.Filled:
+      return 'Order filled';
+    case OrderStatus.PartiallyFilled:
+      return 'Order partially filled';
+    case OrderStatus.Parked:
+      return 'Order parked';
+    default:
+      return 'Submission failed';
+  }
+};
+
 export const DealTicketManager = ({
   market,
   children,
 }: DealTicketManagerProps) => {
   const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
-  const getDialogTitle = (status?: string) => {
-    switch (status) {
-      case OrderStatus.Active:
-        return 'Order submitted';
-      case OrderStatus.Filled:
-        return 'Order filled';
-      case OrderStatus.PartiallyFilled:
-        return 'Order partially filled';
-      case OrderStatus.Parked:
-        return 'Order parked';
-      default:
-        return 'Submission failed';
-    }
-  };
+
   return (
     <>
       {children || (

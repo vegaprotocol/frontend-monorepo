@@ -1,12 +1,16 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
-import { DealTicketAmount, MarketSelector } from '@vegaprotocol/deal-ticket';
+import {
+  DealTicketAmount,
+  getDialogTitle,
+  MarketSelector,
+} from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 import {
   getDefaultOrder,
@@ -27,6 +31,7 @@ export const DealTicketSteps = ({
   market,
   partyData,
 }: DealTicketMarketProps) => {
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const navigate = useNavigate();
   const setMarket = useCallback(
     (marketId) => {
@@ -60,7 +65,7 @@ export const DealTicketSteps = ({
     fieldErrors: errors,
   });
 
-  const { submit, transaction } = useOrderSubmit(market);
+  const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -107,7 +112,7 @@ export const DealTicketSteps = ({
       component: (
         <DealTicketAmount
           orderType={orderType}
-          step={0.02}
+          step={step}
           register={register}
           price={
             market.depth.lastTrade
@@ -133,6 +138,15 @@ export const DealTicketSteps = ({
             transactionStatus={transactionStatus}
             order={getValues()}
             partyData={partyData}
+          />
+          <VegaTransactionDialog
+            key={`submit-order-dialog-${transaction.txHash}`}
+            orderDialogOpen={orderDialogOpen}
+            setOrderDialogOpen={setOrderDialogOpen}
+            finalizedOrder={finalizedOrder}
+            transaction={transaction}
+            reset={reset}
+            title={getDialogTitle(finalizedOrder?.status)}
           />
         </div>
       ),

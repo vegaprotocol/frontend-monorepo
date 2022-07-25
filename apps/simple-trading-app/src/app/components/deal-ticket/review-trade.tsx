@@ -104,8 +104,9 @@ export default ({
         </KeyValueTableRow>
         <KeyValueTableRow noBorder>
           <>{t('Est. margin')}</>
-          <div className="text-black dark:text-white">
-            {estMargin} <Icon name={IconNames.ISSUE} className="rotate-180" />
+          <div className="text-black dark:text-white flex gap-x-5 items-center">
+            {estMargin}
+            <Icon name={IconNames.ISSUE} className="rotate-180" />
           </div>
         </KeyValueTableRow>
         <KeyValueTableRow noBorder>
@@ -115,15 +116,16 @@ export default ({
               ({market.tradableInstrument.instrument.product.quoteName})
             </div>
           </>
-          <div className="text-black dark:text-white">
-            {formatNumber(order.size, market.decimalPlaces)}{' '}
+          <div className="text-black dark:text-white flex gap-x-5 items-center">
+            {formatNumber(order.size, market.decimalPlaces)}
             <Icon name={IconNames.ISSUE} className="rotate-180" />
           </div>
         </KeyValueTableRow>
         <KeyValueTableRow noBorder>
           <>{t('Est. close out')}</>
-          <div className="text-black dark:text-white">
-            {estCloseOut} <Icon name={IconNames.ISSUE} className="rotate-180" />
+          <div className="text-black dark:text-white flex gap-x-5 items-center">
+            {estCloseOut}
+            <Icon name={IconNames.ISSUE} className="rotate-180" />
           </div>
         </KeyValueTableRow>
       </KeyValueTable>
