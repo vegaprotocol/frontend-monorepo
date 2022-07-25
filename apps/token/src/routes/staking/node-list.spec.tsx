@@ -1,44 +1,44 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import merge from 'lodash/merge';
 import { NodeList, NODES_QUERY } from './node-list';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type { Nodes_nodes } from './__generated__/Nodes';
-import { useTranslation } from 'react-i18next';
+import type { PartialDeep } from 'type-fest';
 
 jest.mock('../../components/epoch-countdown', () => ({
   EpochCountdown: () => <div data-testid="epoch-info"></div>,
 }));
 
-const nodeFactory = (overrides?: Partial<Nodes_nodes>) => ({
-  id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
-  name: 'Skynet',
-  avatarUrl: 'https://upload.wikimedia.org/wikipedia/en/2/25/Marvin-TV-3.jpg',
-  pubkey: '6abc23391a9f888ab240415bf63d6844b03fc360be822f4a1d2cd832d87b2917',
-  infoUrl: 'https://en.wikipedia.org/wiki/Skynet_(Terminator)',
-  location: '',
-  stakedByOperator: '3000000000000000000000',
-  stakedByDelegates: '11182454495731682635157',
-  stakedTotal: '14182454495731682635157',
-  stakedTotalFormatted: addDecimal(
-    overrides?.stakedTotal || '14182454495731682635157',
-    18
-  ),
-  pendingStake: '0',
-  pendingStakeFormatted: addDecimal(overrides?.pendingStake || '0', 18),
-  epochData: null,
-  status: 'Validator',
-  rankingScore: {
-    rankingScore: '0.67845061012234727427532760837568',
-    stakeScore: '0.3392701644525644',
-    performanceScore: '0.9998677767864936',
-    votingPower: '2407',
-    status: 'tendermint',
-    __typename: 'RankingScore',
-  },
-  __typename: 'Node',
-  ...overrides,
-});
+const nodeFactory = (overrides?: PartialDeep<Nodes_nodes>) => {
+  const defaultNode = {
+    id: 'ccc022b7e63a4d0a6d3a193c3940c88574060e58a184964c994998d86835a1b4',
+    name: 'Skynet',
+    avatarUrl: 'https://upload.wikimedia.org/wikipedia/en/2/25/Marvin-TV-3.jpg',
+    pubkey: '6abc23391a9f888ab240415bf63d6844b03fc360be822f4a1d2cd832d87b2917',
+    infoUrl: 'https://en.wikipedia.org/wiki/Skynet_(Terminator)',
+    location: '',
+    stakedByOperator: '3000000000000000000000',
+    stakedByDelegates: '11182454495731682635157',
+    stakedTotal: '14182454495731682635157',
+    stakedTotalFormatted: addDecimal('14182454495731682635157', 18),
+    pendingStake: '0',
+    pendingStakeFormatted: addDecimal('0', 18),
+    epochData: null,
+    status: 'Validator',
+    rankingScore: {
+      rankingScore: '0.67845061012234727427532760837568',
+      stakeScore: '0.3392701644525644',
+      performanceScore: '0.9998677767864936',
+      votingPower: '2407',
+      status: 'tendermint',
+      __typename: 'RankingScore',
+    },
+    __typename: 'Node',
+  };
+  return merge(defaultNode, overrides);
+};
 
 const MOCK_NODES = {
   nodes: [
@@ -49,6 +49,7 @@ const MOCK_NODES = {
       pubkey:
         'ccc3b8362c25b09d20df8ea407b0a476d6b24a0e72bc063d0033c8841652ddd4',
       stakedTotal: '9618711883996159534058',
+      stakedTotalFormatted: addDecimal('9618711883996159534058', 18),
       rankingScore: {
         rankingScore: '0.4601942440481428',
         stakeScore: '0.2300971220240714',
@@ -64,6 +65,7 @@ const MOCK_NODES = {
       pubkey:
         '0931a8fd8cc935458f470e435a05414387cea6f329d648be894fcd44bd517a2b',
       stakedTotal: '4041343338923442976709',
+      stakedTotalFormatted: addDecimal('4041343338923442976709', 18),
       pendingStake: '0',
       rankingScore: {
         rankingScore: '0.1932810100133910357676209647912',
@@ -153,6 +155,7 @@ describe('Nodes list', () => {
           pubkey:
             'ccc3b8362c25b09d20df8ea407b0a476d6b24a0e72bc063d0033c8841652ddd4',
           stakedTotal: '9618711883996159534058',
+          stakedTotalFormatted: addDecimal('9618711883996159534058', 18),
           rankingScore: {
             rankingScore: '0.4601942440481428',
             stakeScore: '0.2300971220240714',
