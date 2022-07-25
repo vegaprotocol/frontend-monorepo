@@ -67,14 +67,19 @@ it('Ethereum transaction flow', async () => {
       error: null,
       confirmations: 0,
       receipt: null,
+      dialogOpen: false,
     },
+    Dialog: expect.any(Function),
+    setConfirmed: expect.any(Function),
     perform: expect.any(Function),
     reset: expect.any(Function),
   });
 
-  result.current.perform('asset-source', '100', 'vega-key');
+  act(() => {
+    result.current.perform('asset-source', '100', 'vega-key');
+  });
 
-  expect(result.current.transaction.status).toEqual(EthTxStatus.Default); // still default as we await result of static call
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Requested); // still default as we await result of static call
   expect(result.current.transaction.confirmations).toBe(0);
 
   await act(async () => {
@@ -105,7 +110,7 @@ it('Ethereum transaction flow', async () => {
   expect(result.current.transaction.confirmations).toBe(3);
 
   // Now complete as required confirmations have been surpassed
-  expect(result.current.transaction.status).toEqual(EthTxStatus.Complete);
+  expect(result.current.transaction.status).toEqual(EthTxStatus.Confirmed);
   expect(result.current.transaction.receipt).toEqual({
     from: 'foo',
     confirmations: result.current.transaction.confirmations,

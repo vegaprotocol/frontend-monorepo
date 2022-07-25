@@ -1,4 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import merge from 'lodash/merge';
+import type { PartialDeep } from 'type-fest';
 import { EthereumError } from '../ethereum-error';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import type { TransactionDialogProps } from './transaction-dialog';
@@ -15,15 +17,21 @@ let props: TransactionDialogProps;
 beforeEach(() => {
   props = {
     name: 'test',
-    status: EthTxStatus.Default,
-    txHash: null,
-    error: null,
-    confirmations: 1,
+    onChange: jest.fn(),
+    transaction: {
+      status: EthTxStatus.Default,
+      txHash: null,
+      error: null,
+      confirmations: 1,
+      receipt: null,
+      dialogOpen: true,
+    },
   };
 });
 
-const generateJsx = (moreProps?: Partial<TransactionDialogProps>) => {
-  return <TransactionDialog {...props} {...moreProps} />;
+const generateJsx = (moreProps?: PartialDeep<TransactionDialogProps>) => {
+  const mergedProps = merge(props, moreProps);
+  return <TransactionDialog {...mergedProps} />;
 };
 
 it('Opens when tx starts and closes if the user rejects the tx', () => {
@@ -32,15 +40,17 @@ it('Opens when tx starts and closes if the user rejects the tx', () => {
   // Dialog closed by default
   expect(container).toBeEmptyDOMElement();
 
-  rerender(generateJsx({ status: EthTxStatus.Pending }));
+  rerender(generateJsx({ transaction: { status: EthTxStatus.Pending } }));
 
   expect(screen.getByRole('dialog')).toBeInTheDocument();
 
   // User rejecting the tx closes the dialog
   rerender(
     generateJsx({
-      status: EthTxStatus.Error,
-      error: new EthereumError('User rejected', 4001, 'reason'),
+      transaction: {
+        status: EthTxStatus.Error,
+        error: new EthereumError('User rejected', 4001, 'reason'),
+      },
     })
   );
 
@@ -49,26 +59,34 @@ it('Opens when tx starts and closes if the user rejects the tx', () => {
 
 it('Doesn\t repoen if user dismissed the dialog', () => {
   const { container, rerender } = render(
-    generateJsx({ status: EthTxStatus.Pending })
+    generateJsx({ transaction: { status: EthTxStatus.Pending } })
   );
 
   fireEvent.click(screen.getByTestId('dialog-close'));
 
   expect(container).toBeEmptyDOMElement();
 
-  rerender(generateJsx({ status: EthTxStatus.Complete }));
+  rerender(generateJsx({ transaction: { status: EthTxStatus.Complete } }));
 
   // Should still be closed even though tx updated
   expect(container).toBeEmptyDOMElement();
 });
 
 it('Dialog states', () => {
-  const { rerender } = render(generateJsx({ status: EthTxStatus.Requested }));
+  // Requested
+  const { rerender } = render(
+    generateJsx({ transaction: { status: EthTxStatus.Requested } })
+  );
   expect(screen.getByText('Confirm transaction')).toBeInTheDocument();
   expect(screen.getByText('Confirm transaction in wallet')).toBeInTheDocument();
   expect(screen.getByText('Await Ethereum transaction')).toBeInTheDocument();
 
-  rerender(generateJsx({ status: EthTxStatus.Pending, confirmations: 0 }));
+  // Pending
+  rerender(
+    generateJsx({
+      transaction: { status: EthTxStatus.Pending, confirmations: 0 },
+    })
+  );
   expect(screen.getByText(`${props.name} pending`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(
@@ -76,38 +94,40 @@ it('Dialog states', () => {
   ).toBeInTheDocument();
   expect(screen.getByTestId('link')).toBeInTheDocument();
 
-  rerender(generateJsx({ status: EthTxStatus.Complete, confirmations: 1 }));
-  expect(screen.getByText(`${props.name} complete`)).toBeInTheDocument();
-  expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
-  expect(screen.getByText('Ethereum transaction complete')).toBeInTheDocument();
-
-  const errorMsg = 'Something went wrong';
-  const reason = 'Transaction failed';
+  // Ethereum complete
   rerender(
     generateJsx({
-      status: EthTxStatus.Error,
-      error: new EthereumError(errorMsg, 1, reason),
+      transaction: { status: EthTxStatus.Complete, confirmations: 1 },
     })
-  );
-  expect(screen.getByText(`${props.name} failed`)).toBeInTheDocument();
-  expect(screen.getByText(`Error: ${reason}`)).toBeInTheDocument();
-});
-
-it('Success state waits for confirmation event if provided', () => {
-  const { rerender } = render(
-    generateJsx({ status: EthTxStatus.Complete, confirmed: false })
   );
   expect(screen.getByText(`${props.name} pending`)).toBeInTheDocument();
   expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(screen.getByText('Ethereum transaction complete')).toBeInTheDocument();
-  expect(
-    screen.getByText('Vega is confirming your transaction...')
-  ).toBeInTheDocument();
 
-  // @ts-ignore enforce truthy on confirmation event
-  rerender(generateJsx({ confirmed: true, status: EthTxStatus.Complete }));
-  expect(
-    screen.queryByText('Vega is confirming your transaction...')
-  ).not.toBeInTheDocument();
+  // Ethereum confirmed (via api)
+  rerender(
+    generateJsx({
+      transaction: {
+        status: EthTxStatus.Confirmed,
+        error: null,
+      },
+    })
+  );
+  expect(screen.getByText(`${props.name} complete`)).toBeInTheDocument();
+  expect(screen.getByText('Confirmed in wallet')).toBeInTheDocument();
   expect(screen.getByText('Transaction confirmed')).toBeInTheDocument();
+
+  // Error
+  const errorMsg = 'Something went wrong';
+  const reason = 'Transaction failed';
+  rerender(
+    generateJsx({
+      transaction: {
+        status: EthTxStatus.Error,
+        error: new EthereumError(errorMsg, 1, reason),
+      },
+    })
+  );
+  expect(screen.getByText(`${props.name} failed`)).toBeInTheDocument();
+  expect(screen.getByText(`Error: ${reason}`)).toBeInTheDocument();
 });
