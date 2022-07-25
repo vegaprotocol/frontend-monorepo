@@ -1,5 +1,5 @@
 import * as React from 'react';
-import classNames from 'classNames';
+import classNames from 'classnames';
 import type { DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset } from '@vegaprotocol/deal-ticket';
 import type { PartyBalanceQuery_party_accounts } from './__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from '../../hooks/use-settlement-account';
