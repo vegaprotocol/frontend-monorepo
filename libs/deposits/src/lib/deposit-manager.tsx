@@ -4,7 +4,7 @@ import sortBy from 'lodash/sortBy';
 import { useSubmitApproval } from './use-submit-approval';
 import { useSubmitFaucet } from './use-submit-faucet';
 import { useDepositStore } from './deposit-store';
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
 
 interface ERC20AssetSource {
