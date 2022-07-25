@@ -13,7 +13,7 @@ context('Node switcher', function () {
   });
 
   describe('form validations and responses', function () {
-    this.beforeEach('open node selector', function () {
+    beforeEach('open node selector', function () {
       cy.getByTestId('git-network-data').within(() => {
         cy.getByTestId('link').click({ force: true });
       });
