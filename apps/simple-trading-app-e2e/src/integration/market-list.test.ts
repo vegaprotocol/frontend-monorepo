@@ -1,6 +1,14 @@
+import { aliasQuery } from '@vegaprotocol/cypress';
+import { generateSimpleMarkets } from '../support/mocks/generate-markets';
+import { generateFilters } from '../support/mocks/generate-filters';
+
 describe('market list', () => {
   describe('simple url', () => {
     beforeEach(() => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
+        aliasQuery(req, 'MarketFilters', generateFilters());
+      });
       cy.visit('/markets');
     });
 
@@ -51,15 +59,21 @@ describe('market list', () => {
   });
 
   describe('url params should select filters', () => {
+    beforeEach(() => {
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
+        aliasQuery(req, 'MarketFilters', generateFilters());
+      });
+    });
+
     it('suspended status', () => {
       cy.visit('/markets/Suspended');
       cy.getByTestId('state-trigger').should('have.text', 'Suspended');
     });
 
     it('last asset (if exists)', () => {
-      cy.intercept('POST', '/query').as('Filters');
       cy.visit('/markets');
-      cy.wait('@Filters').then((filters) => {
+      cy.wait('@MarketFilters').then((filters) => {
         if (filters?.response?.body?.data?.markets?.length) {
           const asset =
             filters.response.body.data.markets[0].tradableInstrument.instrument
