@@ -40,7 +40,7 @@ it('Opens when tx starts and closes if the user rejects the tx', () => {
   rerender(
     generateJsx({
       status: EthTxStatus.Error,
-      error: new EthereumError('User rejected', 4001),
+      error: new EthereumError('User rejected', 4001, 'reason'),
     })
   );
 
@@ -82,11 +82,15 @@ it('Dialog states', () => {
   expect(screen.getByText('Ethereum transaction complete')).toBeInTheDocument();
 
   const errorMsg = 'Something went wrong';
+  const reason = 'Transaction failed';
   rerender(
-    generateJsx({ status: EthTxStatus.Error, error: new Error(errorMsg) })
+    generateJsx({
+      status: EthTxStatus.Error,
+      error: new EthereumError(errorMsg, 1, reason),
+    })
   );
   expect(screen.getByText(`${props.name} failed`)).toBeInTheDocument();
-  expect(screen.getByText(errorMsg)).toBeInTheDocument();
+  expect(screen.getByText(`Error: ${reason}`)).toBeInTheDocument();
 });
 
 it('Success state waits for confirmation event if provided', () => {

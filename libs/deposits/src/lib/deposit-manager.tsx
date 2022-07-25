@@ -13,6 +13,7 @@ import {
   useEthereumConfig,
 } from '@vegaprotocol/web3';
 import { useTokenContract } from '@vegaprotocol/web3';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 interface ERC20AssetSource {
   __typename: 'ERC20';
@@ -77,7 +78,7 @@ export const DepositManager = ({
   );
 
   // Set up approve transaction
-  const approve = useSubmitApproval(tokenContract, asset?.decimals);
+  const approve = useSubmitApproval(tokenContract);
 
   // Set up deposit transaction
   const { confirmationEvent, ...deposit } = useSubmitDeposit();
@@ -109,9 +110,15 @@ export const DepositManager = ({
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}
-        submitApprove={approve.perform}
-        submitDeposit={deposit.perform}
-        requestFaucet={faucet.perform}
+        submitApprove={() => {
+          if (!asset || !config) return;
+          const amount = removeDecimal('1000000', asset.decimals);
+          approve.perform(config.collateral_bridge_contract.address, amount);
+        }}
+        submitDeposit={(args) => {
+          deposit.perform(args.assetSource, args.amount, args.vegaPublicKey);
+        }}
+        requestFaucet={() => faucet.perform()}
         limits={limits}
         allowance={allowance}
         isFaucetable={isFaucetable}

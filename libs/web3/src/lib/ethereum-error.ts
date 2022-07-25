@@ -1,10 +1,12 @@
 export class EthereumError extends Error {
   code: number;
+  reason: string;
 
-  constructor(message: string, code: number) {
+  constructor(message: string, code: number, reason: string) {
     super(message);
-    this.code = code;
     this.name = 'EthereumError';
+    this.code = code;
+    this.reason = reason;
   }
 }
 
