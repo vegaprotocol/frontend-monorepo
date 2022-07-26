@@ -24,7 +24,7 @@ const changeCellClass =
 
     if (typeof rowIndex === 'number') {
       const prevRowNode = api.getModel().getRow(rowIndex + 1);
-      const prevValue = prevRowNode?.data[dataKey];
+      const prevValue = prevRowNode?.data && prevRowNode.data[dataKey];
       const valueNum = new BigNumber(value);
 
       if (valueNum.isGreaterThan(prevValue)) {
