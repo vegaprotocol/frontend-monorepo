@@ -1,5 +1,5 @@
 const guideLink = '[data-testid="staking-guide-link"]';
-const validators = '[data-testid="node-list-item"]';
+const validators = '[data-testid="validators-grid"]';
 
 context('Staking Page - verify elements on page', function () {
   before('navigate to staking page', function () {
