@@ -1,5 +1,9 @@
 import merge from 'lodash/merge';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  MarketState,
+  MarketTradingMode,
+} from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { Markets, Markets_markets } from '@vegaprotocol/market-list';
 
@@ -19,6 +23,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
         bestBidPrice: '0',
         bestOfferPrice: '0',
         markPrice: '4612690058',
+        trigger: AuctionTrigger.Unspecified,
         __typename: 'MarketData',
       },
       tradableInstrument: {
@@ -51,6 +56,7 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
         bestBidPrice: '0',
         bestOfferPrice: '0',
         markPrice: '8441',
+        trigger: AuctionTrigger.Unspecified,
         __typename: 'MarketData',
       },
       tradableInstrument: {

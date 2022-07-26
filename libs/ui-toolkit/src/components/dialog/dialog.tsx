@@ -10,6 +10,7 @@ interface DialogProps {
   open: boolean;
   onChange?: (isOpen: boolean) => void;
   title?: string;
+  icon?: ReactNode;
   intent?: Intent;
   titleClassNames?: string;
   contentClassNames?: string;
@@ -20,6 +21,7 @@ export function Dialog({
   open,
   onChange,
   title,
+  icon,
   intent,
   titleClassNames,
   contentClassNames,
@@ -50,15 +52,20 @@ export function Dialog({
               className="focus:outline-none focus-visible:outline-none"
             />
           </DialogPrimitives.Close>
-          {title && (
-            <h1
-              className={`text-h5 text-black-95 dark:text-white-95 mt-0 mb-20 ${titleClassNames}`}
-              data-testid="dialog-title"
-            >
-              {title}
-            </h1>
-          )}
-          {children}
+          <div className="flex gap-12 max-w-full">
+            {icon && <div className="pt-8 fill-current">{icon}</div>}
+            <div data-testid="dialog-content" className="flex-1">
+              {title && (
+                <h1
+                  className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6 ${titleClassNames}`}
+                  data-testid="dialog-title"
+                >
+                  {title}
+                </h1>
+              )}
+              <div className="text-black-60 dark:text-white-60">{children}</div>
+            </div>
+          </div>
         </DialogPrimitives.Content>
       </DialogPrimitives.Portal>
     </DialogPrimitives.Root>

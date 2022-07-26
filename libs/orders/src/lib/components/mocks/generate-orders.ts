@@ -6,42 +6,42 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import type { Orders_party_ordersConnection_edges_node } from '../';
+import type { PartialDeep } from 'type-fest';
 
 export const generateOrder = (
-  partialOrder: Partial<Orders_party_ordersConnection_edges_node>
-) =>
-  merge(
-    {
-      __typename: 'Order',
-      id: 'order-id2',
-      market: {
-        __typename: 'Market',
-        id: 'market-id',
-        name: 'market-name',
-        decimalPlaces: 2,
-        positionDecimalPlaces: 2,
-        tradableInstrument: {
-          __typename: 'TradableInstrument',
-          instrument: {
-            __typename: 'Instrument',
-            code: 'instrument-code',
-          },
+  partialOrder?: PartialDeep<Orders_party_ordersConnection_edges_node>
+) => {
+  const order: Orders_party_ordersConnection_edges_node = {
+    __typename: 'Order',
+    id: 'order-id2',
+    market: {
+      __typename: 'Market',
+      id: 'market-id',
+      name: 'market-name',
+      decimalPlaces: 2,
+      positionDecimalPlaces: 2,
+      tradableInstrument: {
+        __typename: 'TradableInstrument',
+        instrument: {
+          __typename: 'Instrument',
+          code: 'instrument-code',
         },
       },
-      size: '10',
-      type: OrderType.Market,
-      status: OrderStatus.Active,
-      side: Side.Buy,
-      remaining: '5',
-      price: '',
-      timeInForce: OrderTimeInForce.IOC,
-      createdAt: new Date().toISOString(),
-      updatedAt: null,
-      expiresAt: null,
-      rejectionReason: null,
-    } as Orders_party_ordersConnection_edges_node,
-    partialOrder
-  );
+    },
+    size: '10',
+    type: OrderType.Market,
+    status: OrderStatus.Active,
+    side: Side.Buy,
+    remaining: '5',
+    price: '',
+    timeInForce: OrderTimeInForce.IOC,
+    createdAt: new Date().toISOString(),
+    updatedAt: null,
+    expiresAt: null,
+    rejectionReason: null,
+  };
+  return merge(order, partialOrder);
+};
 
 export const limitOrder = generateOrder({
   id: 'limit-order',

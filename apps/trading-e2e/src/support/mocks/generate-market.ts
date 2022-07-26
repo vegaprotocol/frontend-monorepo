@@ -1,5 +1,9 @@
 import merge from 'lodash/merge';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  MarketState,
+  MarketTradingMode,
+} from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import type { Market } from '../../../../trading/pages/markets/__generated__/Market';
@@ -12,6 +16,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
       tradingMode: MarketTradingMode.Continuous,
       state: MarketState.Active,
       decimalPlaces: 5,
+      positionDecimalPlaces: 0,
       data: {
         market: {
           id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
@@ -23,6 +28,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
         bestOfferVolume: '100',
         bestStaticBidVolume: '482',
         bestStaticOfferVolume: '2188',
+        trigger: AuctionTrigger.Unspecified,
         __typename: 'MarketData',
       },
       tradableInstrument: {
@@ -39,6 +45,16 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
               'sector:crypto',
             ],
             __typename: 'InstrumentMetadata',
+          },
+          product: {
+            quoteName: 'BTCUSD Monthly',
+            settlementAsset: {
+              id: '000',
+              symbol: 'USD',
+              name: 'United States Dollar',
+              __typename: 'Asset',
+            },
+            __typename: 'Future',
           },
           __typename: 'Instrument',
         },
