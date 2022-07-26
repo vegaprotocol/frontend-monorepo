@@ -58,6 +58,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
             // @ts-ignore fix me please!
             sizeDelta: 0,
+            // @ts-ignore fix me please!
             expiresAt: order.expiresAt
               ? {
                   value: toNanoSeconds(new Date(order.expiresAt)), // Wallet expects timestamp in nanoseconds

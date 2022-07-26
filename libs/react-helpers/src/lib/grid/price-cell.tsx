@@ -19,18 +19,20 @@ export const PriceCell = React.memo(
       ? valueFormatted.split(decimalSeparator)
       : [value];
     return (
-      <span
+      <div
         className="font-mono relative text-ui-small text-black dark:text-white"
         data-testid={testId || 'price'}
       >
-        {valueSplit[0]}
-        {valueSplit[1] ? decimalSeparator : null}
-        {valueSplit[1] ? (
-          <span className="text-black-60 dark:text-white-60">
-            {valueSplit[1]}
-          </span>
-        ) : null}
-      </span>
+        <span>{valueSplit[0].toString()}</span>
+        <span>{valueSplit[1] ? decimalSeparator : null}</span>
+        <span>
+          {valueSplit[1] ? (
+            <span className="text-black-60 dark:text-white-60">
+              {valueSplit[1].toString()}
+            </span>
+          ) : null}
+        </span>
+      </div>
     );
   }
 );

@@ -202,9 +202,9 @@ export const EthWallet = () => {
     <WalletCard dark={true}>
       <section data-testid="ethereum-wallet">
         <WalletCardHeader>
-          <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
+          <h1 className="m-0 text-h3 uppercase">{t('ethereumKey')}</h1>
           {account && (
-            <div className="px-4 text-right">
+            <div className="place-self-end font-mono px-4 pb-2">
               <div
                 className="font-mono"
                 data-testid="ethereum-account-truncated"
@@ -237,7 +237,7 @@ export const EthWallet = () => {
           ) : (
             <Button
               variant={'secondary'}
-              className="w-full px-28 border h-28"
+              className="w-full"
               onClick={() =>
                 appDispatch({
                   type: AppStateActionType.SET_ETH_WALLET_OVERLAY,

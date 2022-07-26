@@ -24,7 +24,7 @@ interface DealTicketMarketProps {
 export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const navigate = useNavigate();
   const setMarket = useCallback(
-    (marketId) => {
+    (marketId: string) => {
       navigate(`/trading/${marketId}`);
     },
     [navigate]

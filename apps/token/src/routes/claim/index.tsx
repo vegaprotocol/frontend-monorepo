@@ -29,7 +29,7 @@ const ClaimIndex = ({ name }: RouteChildProps) => {
   if (error) {
     return (
       <Callout intent={Intent.Danger} title={t('errorLoadingTranches')}>
-        {error}
+        <span>{error.message}</span>
       </Callout>
     );
   }
