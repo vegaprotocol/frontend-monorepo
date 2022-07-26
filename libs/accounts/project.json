@@ -6,13 +6,17 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/accounts",
         "tsConfig": "libs/accounts/tsconfig.lib.json",
         "project": "libs/accounts/package.json",
         "entryFile": "libs/accounts/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": [
+          "react/jsx-runtime"
+        ],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
@@ -26,14 +30,20 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/accounts/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "libs/accounts/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/accounts"],
+      "outputs": [
+        "coverage/libs/accounts"
+      ],
       "options": {
         "jestConfig": "libs/accounts/jest.config.js",
         "passWithNoTests": true

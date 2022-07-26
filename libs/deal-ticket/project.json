@@ -6,13 +6,17 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/deal-ticket",
         "tsConfig": "libs/deal-ticket/tsconfig.lib.json",
         "project": "libs/deal-ticket/package.json",
         "entryFile": "libs/deal-ticket/src/index.ts",
-        "external": ["react/jsx-runtime"],
+        "external": [
+          "react/jsx-runtime"
+        ],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
@@ -26,14 +30,20 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
+      "outputs": [
+        "{options.outputFile}"
+      ],
       "options": {
-        "lintFilePatterns": ["libs/deal-ticket/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": [
+          "libs/deal-ticket/**/*.{ts,tsx,js,jsx}"
+        ]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/deal-ticket"],
+      "outputs": [
+        "coverage/libs/deal-ticket"
+      ],
       "options": {
         "jestConfig": "libs/deal-ticket/jest.config.js",
         "passWithNoTests": true
