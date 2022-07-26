@@ -31,3 +31,4 @@ export * from './theme-switcher';
 export * from './toggle';
 export * from './tooltip';
 export * from './vega-logo';
+export * from './slider';
