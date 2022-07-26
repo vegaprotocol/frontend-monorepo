@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
@@ -7,15 +7,18 @@ import { InputError } from '@vegaprotocol/ui-toolkit';
 import {
   DealTicketAmount,
   getDialogTitle,
+  getDialogIntent,
+  getDialogIcon,
   MarketSelector,
 } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
-import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 import {
   getDefaultOrder,
   useOrderValidation,
   useOrderSubmit,
+  OrderFeedback,
 } from '@vegaprotocol/orders';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
@@ -31,7 +34,6 @@ export const DealTicketSteps = ({
   market,
   partyData,
 }: DealTicketMarketProps) => {
-  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
   const navigate = useNavigate();
   const setMarket = useCallback(
     (marketId) => {
@@ -65,7 +67,8 @@ export const DealTicketSteps = ({
     fieldErrors: errors,
   });
 
-  const { submit, transaction, finalizedOrder, reset } = useOrderSubmit(market);
+  const { submit, transaction, finalizedOrder, TransactionDialog } =
+    useOrderSubmit(market);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -139,15 +142,13 @@ export const DealTicketSteps = ({
             order={order}
             partyData={partyData}
           />
-          <VegaTransactionDialog
-            key={`submit-order-dialog-${transaction.txHash}`}
-            orderDialogOpen={orderDialogOpen}
-            setOrderDialogOpen={setOrderDialogOpen}
-            finalizedOrder={finalizedOrder}
-            transaction={transaction}
-            reset={reset}
+          <TransactionDialog
             title={getDialogTitle(finalizedOrder?.status)}
-          />
+            intent={getDialogIntent(finalizedOrder?.status)}
+            icon={getDialogIcon(finalizedOrder?.status)}
+          >
+            <OrderFeedback transaction={transaction} order={finalizedOrder} />
+          </TransactionDialog>
         </div>
       ),
       disabled: true,

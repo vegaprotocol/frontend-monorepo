@@ -4,16 +4,22 @@ import {
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { OrderType } from '@vegaprotocol/types';
-import { FormGroup, Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
+import {
+  FormGroup,
+  Input,
+  InputError,
+  Button,
+  Dialog,
+  Icon,
+} from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
-import Icon from 'react-syntax-highlighter';
-import { OrderDialogWrapper } from '@vegaprotocol/wallet';
-import type { Order } from '@vegaprotocol/wallet';
+import type { OrderFields } from '../order-data-provider';
 
 interface OrderEditDialogProps {
-  title: string;
-  order: Order | null;
-  edit: (body: Order) => Promise<unknown>;
+  isOpen: boolean;
+  onChange: (isOpen: boolean) => void;
+  order: OrderFields | null;
+  onSubmit: (fields: FormFields) => void;
 }
 
 interface FormFields {
@@ -21,9 +27,10 @@ interface FormFields {
 }
 
 export const OrderEditDialog = ({
+  isOpen,
+  onChange,
   order,
-  title,
-  edit,
+  onSubmit,
 }: OrderEditDialogProps) => {
   const headerClassName = 'text-h5 font-bold text-black dark:text-white';
   const {
@@ -37,9 +44,16 @@ export const OrderEditDialog = ({
         : '',
     },
   });
+
   if (!order) return null;
+
   return (
-    <OrderDialogWrapper title={title} icon={<Icon name="hand-up" size={20} />}>
+    <Dialog
+      open={isOpen}
+      onChange={onChange}
+      title={t('Edit order')}
+      icon={<Icon name="edit" />}
+    >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {order.market && (
           <div>
@@ -49,7 +63,7 @@ export const OrderEditDialog = ({
         )}
         {order.type === OrderType.Limit && order.market && (
           <div>
-            <p className={headerClassName}>{t(`Last price`)}</p>
+            <p className={headerClassName}>{t(`Current price`)}</p>
             <p>
               {addDecimalsFormatNumber(order.price, order.market.decimalPlaces)}
             </p>
@@ -71,15 +85,7 @@ export const OrderEditDialog = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-12">
-        <form
-          onSubmit={handleSubmit(async (data) => {
-            await edit({
-              ...order,
-              price: data.entryPrice,
-            });
-          })}
-          data-testid="edit-order"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input
               {...register('entryPrice', { required: t('Required') })}
@@ -97,6 +103,6 @@ export const OrderEditDialog = ({
           </Button>
         </form>
       </div>
-    </OrderDialogWrapper>
+    </Dialog>
   );
 };
