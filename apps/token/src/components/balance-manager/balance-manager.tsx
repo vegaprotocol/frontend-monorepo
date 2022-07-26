@@ -41,9 +41,9 @@ export const BalanceManager = ({ children }: BalanceManagerProps) => {
       if (!account || !config) return;
       try {
         const [b, w, stats, a] = await Promise.all([
-          contracts.vesting.userTotalAllTranches(account),
+          contracts.vesting.user_total_all_tranches(account),
           contracts.token.balanceOf(account),
-          contracts.vesting.userStats(account),
+          contracts.vesting.user_stats(account),
           contracts.token.allowance(
             account,
             config.staking_bridge_contract.address
