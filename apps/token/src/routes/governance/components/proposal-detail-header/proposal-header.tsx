@@ -66,7 +66,7 @@ export const ProposalHeader = ({
       break;
     }
     case 'NewFreeform': {
-      // When rationale exists:
+      // When rationale exists (https://github.com/vegaprotocol/frontend-monorepo/issues/824):
       // const description = proposal.rationale.description.trim();
       // const headerMaxLength = 100;
       // const descriptionOneMaxLength = 60;
