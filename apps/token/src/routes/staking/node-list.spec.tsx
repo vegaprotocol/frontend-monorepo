@@ -185,50 +185,50 @@ describe('Nodes list', () => {
     const grid = screen.getByTestId('validators-grid');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Validator"]')
+      grid.querySelector('[role="gridcell"][col-id="validator"]')
     ).toHaveTextContent('T-800 Terminator');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Validator"] img')
+      grid.querySelector('[role="gridcell"][col-id="validator"] img')
     ).toHaveAttribute(
       'src',
       'https://upload.wikimedia.org/wikipedia/en/9/94/T-800_%28Model_101%29.png'
     );
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Status"]')
+      grid.querySelector('[role="gridcell"][col-id="status"]')
     ).toHaveTextContent('Consensus');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Total stake this epoch"]')
+      grid.querySelector('[role="gridcell"][col-id="totalStakeThisEpoch"]')
     ).toHaveTextContent('9,618.71');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Share"]')
+      grid.querySelector('[role="gridcell"][col-id="share"]')
     ).toHaveTextContent('100%');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Validator stake"]')
+      grid.querySelector('[role="gridcell"][col-id="validatorStake"]')
     ).toHaveTextContent('9,618.71');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Next epoch"]')
+      grid.querySelector('[role="gridcell"][col-id="pendingStake"]')
     ).toHaveTextContent('0');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Ranking score"]')
+      grid.querySelector('[role="gridcell"][col-id="rankingScore"]')
     ).toHaveTextContent('0.46019');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Stake score"]')
+      grid.querySelector('[role="gridcell"][col-id="stakeScore"]')
     ).toHaveTextContent('0.23010');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Performance"]')
+      grid.querySelector('[role="gridcell"][col-id="performanceScore"]')
     ).toHaveTextContent('1.00000');
 
     expect(
-      grid.querySelector('[role="gridcell"][col-id="Voting power"]')
+      grid.querySelector('[role="gridcell"][col-id="votingPower"]')
     ).toHaveTextContent('2408');
   });
 });

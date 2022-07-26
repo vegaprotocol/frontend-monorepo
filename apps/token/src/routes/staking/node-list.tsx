@@ -13,6 +13,17 @@ import { formatNumber } from '../../lib/format-number';
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
 
+const VALIDATOR = 'validator';
+const STATUS = 'status';
+const TOTAL_STAKE_THIS_EPOCH = 'totalStakeThisEpoch';
+const SHARE = 'share';
+const VALIDATOR_STAKE = 'validatorStake';
+const PENDING_STAKE = 'pendingStake';
+const RANKING_SCORE = 'rankingScore';
+const STAKE_SCORE = 'stakeScore';
+const PERFORMANCE_SCORE = 'performanceScore';
+const VOTING_POWER = 'votingPower';
+
 export const NODES_QUERY = gql`
   query Nodes {
     nodes {
@@ -43,11 +54,11 @@ interface NodeListProps {
 }
 
 interface ValidatorRendererProps {
-  data: { Validator: { avatarUrl: string; name: string } };
+  data: { validator: { avatarUrl: string; name: string } };
 }
 
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
-  const { avatarUrl, name } = data.Validator;
+  const { avatarUrl, name } = data.validator;
   return (
     <div className="flex items-center">
       {avatarUrl && (
@@ -78,44 +89,50 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
 
-    return data.nodes.map((node) => {
-      const stakedTotal = new BigNumber(
-        data?.nodeData?.stakedTotalFormatted || 0
-      );
-      const stakedOnNode = new BigNumber(node.stakedTotalFormatted);
-      const stakedTotalPercentage =
-        stakedTotal.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-          ? '-'
-          : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
-            '%';
-      const status = t(`status-${node.rankingScore.status}`);
-
-      return {
-        id: node.id,
-        [t('validator')]: {
-          avatarUrl: node.avatarUrl,
-          name: node.name,
+    return data.nodes.map(
+      ({
+        id,
+        name,
+        avatarUrl,
+        stakedTotalFormatted,
+        rankingScore: {
+          rankingScore,
+          stakeScore,
+          status,
+          performanceScore,
+          votingPower,
         },
-        [t('status')]: status,
-        [t('totalStakeThisEpoch')]: formatNumber(stakedTotal, 2),
-        [t('share')]: stakedTotalPercentage,
-        [t('validatorStake')]: formatNumber(stakedOnNode, 2),
-        [t('nextEpoch')]: node.pendingStake,
-        [t('rankingScore')]: formatNumber(
-          new BigNumber(node.rankingScore.rankingScore),
-          5
-        ),
-        [t('stakeScore')]: formatNumber(
-          new BigNumber(node.rankingScore.stakeScore),
-          5
-        ),
-        [t('performanceScore')]: formatNumber(
-          new BigNumber(node.rankingScore.performanceScore),
-          5
-        ),
-        [t('votingPower')]: node.rankingScore.votingPower,
-      };
-    });
+        pendingStake,
+      }) => {
+        const stakedTotal = new BigNumber(
+          data?.nodeData?.stakedTotalFormatted || 0
+        );
+        const stakedOnNode = new BigNumber(stakedTotalFormatted);
+        const stakedTotalPercentage =
+          stakedTotal.isEqualTo(0) || stakedOnNode.isEqualTo(0)
+            ? '-'
+            : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
+              '%';
+        const statusTranslated = t(`status-${status}`);
+
+        return {
+          id,
+          [VALIDATOR]: {
+            avatarUrl,
+            name,
+          },
+          [STATUS]: statusTranslated,
+          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotal, 2),
+          [SHARE]: stakedTotalPercentage,
+          [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
+          [PENDING_STAKE]: pendingStake,
+          [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
+          [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
+          [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
+          [VOTING_POWER]: votingPower,
+        };
+      }
+    );
   }, [data, t]);
 
   const gridRef = useRef<AgGridReact | null>(null);
@@ -123,16 +140,26 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
     const colDefs = useMemo(
       () => [
-        { field: t('validator').toString(), cellRenderer: ValidatorRenderer },
-        { field: t('status').toString() },
-        { field: t('totalStakeThisEpoch').toString() },
-        { field: t('share').toString() },
-        { field: t('validatorStake').toString() },
-        { field: t('nextEpoch').toString() },
-        { field: t('rankingScore').toString() },
-        { field: t('stakeScore').toString() },
-        { field: t('performanceScore').toString() },
-        { field: t('votingPower').toString() },
+        {
+          field: VALIDATOR,
+          headerName: t('validator').toString(),
+          cellRenderer: ValidatorRenderer,
+        },
+        { field: STATUS, headerName: t('status').toString() },
+        {
+          field: TOTAL_STAKE_THIS_EPOCH,
+          headerName: t('totalStakeThisEpoch').toString(),
+        },
+        { field: SHARE, headerName: t('share').toString() },
+        { field: VALIDATOR_STAKE, headerName: t('validatorStake').toString() },
+        { field: PENDING_STAKE, headerName: t('nextEpoch').toString() },
+        { field: RANKING_SCORE, headerName: t('rankingScore').toString() },
+        { field: STAKE_SCORE, headerName: t('stakeScore').toString() },
+        {
+          field: PERFORMANCE_SCORE,
+          headerName: t('performanceScore').toString(),
+        },
+        { field: VOTING_POWER, headerName: t('votingPower').toString() },
       ],
       []
     );
