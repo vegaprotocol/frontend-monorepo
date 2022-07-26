@@ -12,6 +12,7 @@ type NodeStatsContentProps = {
   highestBlock: number;
   setBlock: (value: number) => void;
   children?: ReactNode;
+  dataTestId?: string;
 };
 
 const getResponseTimeDisplayValue = (
@@ -55,14 +56,16 @@ const NodeStatsContent = ({
   highestBlock,
   setBlock,
   children,
+  dataTestId,
 }: NodeStatsContentProps) => {
   return (
-    <LayoutRow>
+    <LayoutRow dataTestId={dataTestId}>
       {children}
       <LayoutCell
         label={t('Response time')}
         isLoading={data.responseTime?.isLoading}
         hasError={data.responseTime?.hasError}
+        dataTestId="response-time-cell"
       >
         {getResponseTimeDisplayValue(data.responseTime)}
       </LayoutCell>
@@ -73,6 +76,7 @@ const NodeStatsContent = ({
           data.block?.hasError ||
           (!!data.block?.value && highestBlock > data.block.value)
         }
+        dataTestId="block-cell"
       >
         {getBlockDisplayValue(data.block, setBlock)}
       </LayoutCell>
@@ -80,6 +84,7 @@ const NodeStatsContent = ({
         label={t('SSL')}
         isLoading={data.ssl?.isLoading}
         hasError={data.ssl?.hasError}
+        dataTestId="ssl-cell"
       >
         {getSslDisplayValue(data.ssl)}
       </LayoutCell>
@@ -121,6 +126,7 @@ export const NodeStats = ({
         data={data}
         highestBlock={highestBlock}
         setBlock={setBlock}
+        dataTestId="node-row"
       >
         {children}
       </NodeStatsContent>

@@ -85,9 +85,7 @@ export const useVoteInformation = ({
 
   const requiredMajorityPercentage = React.useMemo(
     () =>
-      requiredMajority
-        ? new BigNumber(requiredMajority).multipliedBy(100)
-        : new BigNumber(100),
+      requiredMajority ? new BigNumber(requiredMajority) : new BigNumber(100),
     [requiredMajority]
   );
 
@@ -155,7 +153,9 @@ export const useVoteInformation = ({
   const willPass = React.useMemo(
     () =>
       participationMet &&
-      new BigNumber(yesPercentage).isGreaterThan(requiredMajorityPercentage),
+      new BigNumber(yesPercentage).isGreaterThanOrEqualTo(
+        requiredMajorityPercentage
+      ),
     [participationMet, requiredMajorityPercentage, yesPercentage]
   );
 

@@ -1,4 +1,5 @@
-const noProposals = '[data-testid="no-proposals"]';
+const noOpenProposals = '[data-testid="no-open-proposals"]';
+const noClosedProposals = '[data-testid="no-closed-proposals"]';
 
 context('Governance Page - verify elements on page', function () {
   before('navigate to governance page', function () {
@@ -14,10 +15,13 @@ context('Governance Page - verify elements on page', function () {
       cy.verify_page_header('Governance');
     });
 
-    it('should have information box visible', function () {
-      cy.get(noProposals)
+    it('should have information visible', function () {
+      cy.get(noOpenProposals)
         .should('be.visible')
-        .and('have.text', 'There are no active network change proposals');
+        .and('have.text', 'There are no open or yet to enact proposals');
+      cy.get(noClosedProposals)
+        .should('be.visible')
+        .and('have.text', 'There are no enacted or rejected proposals');
     });
   });
 });
