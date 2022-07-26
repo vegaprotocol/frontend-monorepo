@@ -3,11 +3,17 @@ import './styles.css';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import App from './app';
 import reportWebVitals from './report-web-vitals';
 import { ENV } from './config/env';
+
+import { createRoot } from 'react-dom/client';
+
+const container = document.getElementById('root');
+// React docs: createRoot(container!) if we use TypeScript
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container!);
 
 const dsn = ENV.dsn || false;
 const environment = ENV.envName || 'local';
@@ -38,11 +44,10 @@ if (dsn) {
   Sentry.setTag('commit', commit);
 }
 
-ReactDOM.render(
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

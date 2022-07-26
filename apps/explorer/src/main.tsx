@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 import { StrictMode } from 'react';
-import * as ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import './styles.css';
+import { createRoot } from 'react-dom/client';
 
 import App from './app/app';
 import { ENV } from './app/config/env';
@@ -20,11 +20,15 @@ if (dsn) {
   });
 }
 
-ReactDOM.render(
+const container = document.getElementById('root');
+// React docs: createRoot(container!) if we use TypeScript
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(container!);
+
+root.render(
   <StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </StrictMode>,
-  document.getElementById('root')
+  </StrictMode>
 );
