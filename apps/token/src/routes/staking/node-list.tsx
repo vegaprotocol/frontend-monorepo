@@ -26,11 +26,6 @@ const VOTING_POWER = 'votingPower';
 
 export const NODES_QUERY = gql`
   query Nodes {
-    epoch {
-      timestamps {
-        expiry
-      }
-    }
     nodes {
       avatarUrl
       id
@@ -93,9 +88,9 @@ export const NodeList = ({ epoch }: NodeListProps) => {
 
   useEffect(() => {
     const epochInterval = setInterval(() => {
-      if (!data?.epoch.timestamps.expiry) return;
+      if (!epoch?.timestamps.expiry) return;
       const now = Date.now();
-      const expiry = new Date(data.epoch.timestamps.expiry).getTime();
+      const expiry = new Date(epoch.timestamps.expiry).getTime();
 
       if (now > expiry) {
         refetch();
@@ -106,7 +101,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     return () => {
       clearInterval(epochInterval);
     };
-  }, [data?.epoch.timestamps.expiry, refetch]);
+  }, [epoch?.timestamps.expiry, refetch]);
 
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
