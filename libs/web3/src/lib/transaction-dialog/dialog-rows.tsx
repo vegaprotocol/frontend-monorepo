@@ -79,18 +79,14 @@ export const TxRow = ({
 
 interface ConfirmationEventRowProps {
   status: EthTxStatus;
-  confirmed: boolean;
 }
 
-export const ConfirmationEventRow = ({
-  status,
-  confirmed,
-}: ConfirmationEventRowProps) => {
-  if (status !== EthTxStatus.Complete) {
+export const ConfirmationEventRow = ({ status }: ConfirmationEventRowProps) => {
+  if (status !== EthTxStatus.Complete && status !== EthTxStatus.Confirmed) {
     return <p>{t('Vega confirmation')}</p>;
   }
 
-  if (!confirmed) {
+  if (status === EthTxStatus.Complete) {
     return (
       <p className="text-black dark:text-white">
         {t('Vega is confirming your transaction...')}

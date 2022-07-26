@@ -25,7 +25,7 @@ export const useCompleteWithdraw = (isNewContract: boolean) => {
   const { query, cache } = useApolloClient();
   const contract = useBridgeContract(isNewContract);
   const [id, setId] = useState('');
-  const { transaction, perform } = useEthereumTransaction<
+  const { transaction, perform, Dialog } = useEthereumTransaction<
     CollateralBridgeNew | CollateralBridge,
     'withdraw_asset'
   >(contract, 'withdraw_asset');
@@ -91,5 +91,5 @@ export const useCompleteWithdraw = (isNewContract: boolean) => {
     }
   }, [cache, transaction.txHash, id]);
 
-  return { transaction, submit, withdrawalId: id };
+  return { transaction, Dialog, submit, withdrawalId: id };
 };
