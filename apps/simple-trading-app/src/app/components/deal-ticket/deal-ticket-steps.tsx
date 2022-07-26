@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
@@ -19,7 +19,9 @@ import {
   useOrderValidation,
   useOrderSubmit,
   OrderFeedback,
+  validateSize
 } from '@vegaprotocol/orders';
+import { DealTicketSize } from './deal-ticket-size';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
@@ -43,10 +45,10 @@ export const DealTicketSteps = ({
   );
 
   const {
-    register,
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<Order>({
     mode: 'onChange',
@@ -57,6 +59,7 @@ export const DealTicketSteps = ({
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
   const orderSide = watch('side');
+  const orderSize = watch('size');
   const order = watch();
 
   const { message: invalidText, isDisabled } = useOrderValidation({
@@ -69,6 +72,15 @@ export const DealTicketSteps = ({
 
   const { submit, transaction, finalizedOrder, TransactionDialog } =
     useOrderSubmit(market);
+
+  const onSizeChange = (value: number[]) => {
+    const newVal = value[0].toString();
+    const isValid = validateSize(step)(newVal);
+    if (isValid) {
+      setValue('size', newVal);
+    }
+  };
+
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -113,14 +125,15 @@ export const DealTicketSteps = ({
     {
       label: t('Choose Position Size'),
       component: (
-        <DealTicketAmount
-          orderType={orderType}
-          step={step}
-          register={register}
+        <DealTicketSize
+          step={toDecimal(market.positionDecimalPlaces)}
+          onValueChange={onSizeChange}
+          value={parseFloat(orderSize)}
+          name="size"
           price={
             market.depth.lastTrade
               ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-              : undefined
+              : ''
           }
           quoteName={market.tradableInstrument.instrument.product.quoteName}
         />
