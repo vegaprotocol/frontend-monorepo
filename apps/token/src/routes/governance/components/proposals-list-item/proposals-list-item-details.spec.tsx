@@ -20,15 +20,19 @@ import {
   mockPubkey,
   mockWalletContext,
   networkParamsQueryMock,
-  amendToDate,
-  lastWeek,
-  nextWeek,
 } from '../../test-helpers/mocks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
-const oneDay = 60 * 60 * 24;
-const oneHour = 60 * 60;
-const oneMinute = 60;
+const oneMinute = 1000 * 60;
+const oneHour = oneMinute * 60;
+const oneDay = oneHour * 24;
+const oneWeek = oneDay * 7;
+
+const fiveMinutes = new Date(oneMinute * 5);
+const fiveHours = new Date(oneHour * 5);
+const fiveDays = new Date(oneDay * 5);
+const lastWeek = new Date(-oneWeek);
+const nextWeek = new Date(oneWeek);
 
 const renderComponent = (
   proposal: Proposals_proposals,
@@ -44,6 +48,14 @@ const renderComponent = (
     </MockedProvider>
   </Router>
 );
+
+beforeAll(() => {
+  jest.useFakeTimers();
+  jest.setSystemTime(0);
+});
+afterAll(() => {
+  jest.useRealTimers();
+});
 
 describe('Proposals list item details', () => {
   it('Renders proposal state: Enacted', () => {
@@ -101,7 +113,6 @@ describe('Proposals list item details', () => {
   });
 
   it('Renders proposal state: Open - 5 minutes left to vote', () => {
-    const fiveMinutes = amendToDate(oneMinute * 5);
     render(
       renderComponent(
         generateProposal({
@@ -119,13 +130,12 @@ describe('Proposals list item details', () => {
   });
 
   it('Renders proposal state: Open - 5 hours left to vote', () => {
-    const fiveMinutes = amendToDate(oneHour * 5);
     render(
       renderComponent(
         generateProposal({
           state: ProposalState.Open,
           terms: {
-            closingDatetime: fiveMinutes.toString(),
+            closingDatetime: fiveHours.toString(),
           },
         })
       )
@@ -137,13 +147,12 @@ describe('Proposals list item details', () => {
   });
 
   it('Renders proposal state: Open - 5 days left to vote', () => {
-    const fiveMinutes = amendToDate(oneDay * 5);
     render(
       renderComponent(
         generateProposal({
           state: ProposalState.Open,
           terms: {
-            closingDatetime: fiveMinutes.toString(),
+            closingDatetime: fiveDays.toString(),
           },
         })
       )
