@@ -20,19 +20,13 @@ import {
   mockPubkey,
   mockWalletContext,
   networkParamsQueryMock,
+  fiveMinutes,
+  fiveHours,
+  fiveDays,
+  lastWeek,
+  nextWeek,
 } from '../../test-helpers/mocks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-
-const oneMinute = 1000 * 60;
-const oneHour = oneMinute * 60;
-const oneDay = oneHour * 24;
-const oneWeek = oneDay * 7;
-
-const fiveMinutes = new Date(oneMinute * 5);
-const fiveHours = new Date(oneHour * 5);
-const fiveDays = new Date(oneDay * 5);
-const lastWeek = new Date(-oneWeek);
-const nextWeek = new Date(oneWeek);
 
 const renderComponent = (
   proposal: Proposals_proposals,

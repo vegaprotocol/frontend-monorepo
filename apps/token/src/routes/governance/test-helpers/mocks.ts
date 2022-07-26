@@ -44,14 +44,16 @@ export const networkParamsQueryMock: MockedResponse<NetworkParamsQuery> = {
   },
 };
 
-export const amendToDate = (amendmentInSeconds: number) => {
-  const now = new Date();
-  return new Date(now.getTime() + amendmentInSeconds * 1000);
-};
+const oneMinute = 1000 * 60;
+const oneHour = oneMinute * 60;
+const oneDay = oneHour * 24;
+const oneWeek = oneDay * 7;
+const oneMonth = oneWeek * 4;
 
-const oneWeek = 60 * 60 * 24 * 7;
-
-export const lastMonth = amendToDate(-(oneWeek * 4));
-export const lastWeek = amendToDate(-oneWeek);
-export const nextWeek = amendToDate(oneWeek);
-export const nextMonth = amendToDate(oneWeek * 4);
+export const fiveMinutes = new Date(oneMinute * 5);
+export const fiveHours = new Date(oneHour * 5);
+export const fiveDays = new Date(oneDay * 5);
+export const lastWeek = new Date(-oneWeek);
+export const nextWeek = new Date(oneWeek);
+export const lastMonth = new Date(-oneMonth);
+export const nextMonth = new Date(oneMonth);

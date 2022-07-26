@@ -9,10 +9,10 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import {
   mockWalletContext,
   networkParamsQueryMock,
-  lastMonth,
   lastWeek,
-  nextMonth,
   nextWeek,
+  lastMonth,
+  nextMonth,
 } from '../../test-helpers/mocks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
@@ -74,6 +74,14 @@ const renderComponent = (proposals: Proposals_proposals[]) => (
     </MockedProvider>
   </Router>
 );
+
+beforeAll(() => {
+  jest.useFakeTimers();
+  jest.setSystemTime(0);
+});
+afterAll(() => {
+  jest.useRealTimers();
+});
 
 describe('Proposals list', () => {
   it('Culls failed proposals', () => {
