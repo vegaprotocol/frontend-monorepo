@@ -75,7 +75,9 @@ context('Node switcher', function () {
     });
 
     function validateNodeError(errortype, errorMsg) {
-      cy.getByTestId(nodeErrorType).should('have.text', errortype);
+      cy.getByTestId(nodeErrorType).should('have.text', errortype, {
+        timeout: 1000,
+      });
       cy.getByTestId(nodeErrorMsg).should('have.text', errorMsg);
     }
   });
