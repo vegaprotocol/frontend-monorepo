@@ -7,6 +7,22 @@
 // GraphQL query operation: Nodes
 // ====================================================
 
+export interface Nodes_epoch_timestamps {
+  __typename: "EpochTimestamps";
+  /**
+   * RFC3339 timestamp - Vega time of epoch expiry
+   */
+  expiry: string | null;
+}
+
+export interface Nodes_epoch {
+  __typename: "Epoch";
+  /**
+   * Timestamps for start/end etc
+   */
+  timestamps: Nodes_epoch_timestamps;
+}
+
 export interface Nodes_nodes_rankingScore {
   __typename: "RankingScore";
   /**
@@ -68,6 +84,10 @@ export interface Nodes_nodeData {
 }
 
 export interface Nodes {
+  /**
+   * get data for a specific epoch, if id omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   */
+  epoch: Nodes_epoch;
   /**
    * all known network nodes
    */

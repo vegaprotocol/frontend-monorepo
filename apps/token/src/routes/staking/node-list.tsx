@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { useMemo, useRef, forwardRef } from 'react';
+import { useEffect, useMemo, useRef, forwardRef } from 'react';
 import {
   AgGridDynamic as AgGrid,
   AsyncRenderer,
@@ -26,6 +26,11 @@ const VOTING_POWER = 'votingPower';
 
 export const NODES_QUERY = gql`
   query Nodes {
+    epoch {
+      timestamps {
+        expiry
+      }
+    }
     nodes {
       avatarUrl
       id
@@ -83,8 +88,25 @@ const nodeListGridStyles = `
 
 export const NodeList = ({ epoch }: NodeListProps) => {
   const { t } = useTranslation();
-  const { data, error, loading } = useQuery<Nodes>(NODES_QUERY);
+  const { data, error, loading, refetch } = useQuery<Nodes>(NODES_QUERY);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const epochInterval = setInterval(() => {
+      if (!data?.epoch.timestamps.expiry) return;
+      const now = Date.now();
+      const expiry = new Date(data.epoch.timestamps.expiry).getTime();
+
+      if (now > expiry) {
+        refetch();
+        clearInterval(epochInterval);
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(epochInterval);
+    };
+  }, [data?.epoch.timestamps.expiry, refetch]);
 
   const nodes = useMemo(() => {
     if (!data?.nodes) return [];
