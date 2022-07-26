@@ -23,7 +23,7 @@ context('Staking Page - verify elements on page', function () {
         cy.verify_page_header('Staking on Vega');
       });
 
-      it('should have Staking Guide link visible', function () { //0000-SORD-0003
+      it('should have Staking Guide link visible', function () { //0000-STAK-0003
         cy.get(guideLink)
           .should('be.visible')
           .and('have.text', 'Read more about staking on Vega')
