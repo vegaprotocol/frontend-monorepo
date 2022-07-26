@@ -1,4 +1,5 @@
 import { gql, useSubscription } from '@apollo/client';
+import * as Sentry from '@sentry/react';
 import type {
   DepositEvent,
   DepositEventVariables,
@@ -96,12 +97,16 @@ export const useSubmitDeposit = () => {
       vegaPublicKey: string;
     }) => {
       if (!asset) return;
-      setPartyId(args.vegaPublicKey);
-      const publicKey = prepend0x(args.vegaPublicKey);
-      const amount = removeDecimal(args.amount, asset.decimals);
-      await transaction.perform(args.assetSource, amount, publicKey);
-      const balance = await getBalance();
-      update({ balance });
+      try {
+        setPartyId(args.vegaPublicKey);
+        const publicKey = prepend0x(args.vegaPublicKey);
+        const amount = removeDecimal(args.amount, asset.decimals);
+        await transaction.perform(args.assetSource, amount, publicKey);
+        const balance = await getBalance();
+        update({ balance });
+      } catch (err) {
+        Sentry.captureException(err);
+      }
     },
   };
 };

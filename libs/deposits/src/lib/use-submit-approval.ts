@@ -1,4 +1,5 @@
 import { removeDecimal } from '@vegaprotocol/react-helpers';
+import * as Sentry from '@sentry/react';
 import type { Token } from '@vegaprotocol/smart-contracts';
 import {
   useEthereumConfig,
@@ -26,13 +27,17 @@ export const useSubmitApproval = () => {
     ...transaction,
     perform: async () => {
       if (!asset || !config) return;
-      const amount = removeDecimal('1000000', asset.decimals);
-      await transaction.perform(
-        config.collateral_bridge_contract.address,
-        amount
-      );
-      const allowance = await getAllowance();
-      update({ allowance });
+      try {
+        const amount = removeDecimal('1000000', asset.decimals);
+        await transaction.perform(
+          config.collateral_bridge_contract.address,
+          amount
+        );
+        const allowance = await getAllowance();
+        update({ allowance });
+      } catch (err) {
+        Sentry.captureException(err);
+      }
     },
   };
 };
