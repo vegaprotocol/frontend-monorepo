@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
   displayName: 'cypress',
   preset: '../../jest.preset.js',

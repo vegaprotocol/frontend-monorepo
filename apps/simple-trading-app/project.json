@@ -65,7 +65,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/simple-trading-app"],
       "options": {
-        "jestConfig": "apps/simple-trading-app/jest.config.js",
+        "jestConfig": "apps/simple-trading-app/jest.config.ts",
         "passWithNoTests": true
       }
     },

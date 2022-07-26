@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
   displayName: 'smart-contracts',
   preset: '../../jest.preset.js',

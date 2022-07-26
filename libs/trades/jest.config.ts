@@ -1,10 +1,11 @@
+/* eslint-disable */
 module.exports = {
-  displayName: 'market-depth',
+  displayName: 'trades',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/market-depth',
+  coverageDirectory: '../../coverage/libs/trades',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

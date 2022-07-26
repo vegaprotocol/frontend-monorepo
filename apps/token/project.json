@@ -62,7 +62,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/token"],
       "options": {
-        "jestConfig": "apps/token/jest.config.js",
+        "jestConfig": "apps/token/jest.config.ts",
         "passWithNoTests": true
       }
     },

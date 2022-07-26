@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
   displayName: 'react-helpers',
   preset: '../../jest.preset.js',

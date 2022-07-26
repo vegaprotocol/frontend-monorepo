@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/market-depth",
         "tsConfig": "libs/market-depth/tsconfig.lib.json",
         "project": "libs/market-depth/package.json",
         "entryFile": "libs/market-depth/src/index.ts",
-        "external": [
-          "react/jsx-runtime"
-        ],
+        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
@@ -30,22 +26,16 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/market-depth/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["libs/market-depth/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/market-depth"
-      ],
+      "outputs": ["coverage/libs/market-depth"],
       "options": {
-        "jestConfig": "libs/market-depth/jest.config.js",
+        "jestConfig": "libs/market-depth/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -66,9 +56,7 @@
     },
     "build-storybook": {
       "executor": "@nrwl/storybook:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "uiFramework": "@storybook/react",
         "outputPath": "dist/storybook/market-depth",

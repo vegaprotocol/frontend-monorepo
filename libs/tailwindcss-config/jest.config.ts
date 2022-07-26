@@ -1,3 +1,4 @@
+/* eslint-disable */
 module.exports = {
   displayName: 'tailwindcss-config',
   preset: '../../jest.preset.js',

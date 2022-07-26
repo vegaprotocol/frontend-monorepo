@@ -1,10 +1,10 @@
+/* eslint-disable */
 module.exports = {
-  displayName: 'web3',
+  displayName: 'network-info',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/web3',
-  setupFilesAfterEnv: ['./src/setup-tests.ts'],
+  coverageDirectory: '../../coverage/libs/network-info',
 };

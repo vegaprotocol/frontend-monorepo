@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/fills",
         "tsConfig": "libs/fills/tsconfig.lib.json",
         "project": "libs/fills/package.json",
         "entryFile": "libs/fills/src/index.ts",
-        "external": [
-          "react/jsx-runtime"
-        ],
+        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
@@ -30,22 +26,16 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/fills/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["libs/fills/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/fills"
-      ],
+      "outputs": ["coverage/libs/fills"],
       "options": {
-        "jestConfig": "libs/fills/jest.config.js",
+        "jestConfig": "libs/fills/jest.config.ts",
         "passWithNoTests": true
       }
     },
@@ -66,9 +56,7 @@
     },
     "build-storybook": {
       "executor": "@nrwl/storybook:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "uiFramework": "@storybook/react",
         "outputPath": "dist/storybook/fills",

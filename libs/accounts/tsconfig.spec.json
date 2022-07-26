@@ -15,6 +15,7 @@
     "**/*.test.jsx",
     "**/*.spec.jsx",
     "**/*.d.ts",
-    "../react-helpers/src/lib/grid-cells/summary-row.spec.ts"
+    "../react-helpers/src/lib/grid-cells/summary-row.spec.ts",
+    "jest.config.ts"
   ]
 }

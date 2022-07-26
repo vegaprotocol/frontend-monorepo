@@ -1,10 +1,10 @@
+/* eslint-disable */
 module.exports = {
-  displayName: 'candles-chart',
+  displayName: 'network-stats',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/candles-chart',
-  setupFiles: ['jest-canvas-mock'],
+  coverageDirectory: '../../coverage/libs/network-stats',
 };

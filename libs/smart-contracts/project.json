@@ -23,7 +23,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/smart-contracts"],
       "options": {
-        "jestConfig": "libs/smart-contracts/jest.config.js",
+        "jestConfig": "libs/smart-contracts/jest.config.ts",
         "passWithNoTests": true
       }
     }

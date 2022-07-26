@@ -1,10 +1,11 @@
+/* eslint-disable */
 module.exports = {
-  displayName: 'trades',
+  displayName: 'deal-ticket',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/trades',
+  coverageDirectory: '../../coverage/libs/deal-ticket',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

@@ -1,11 +1,12 @@
+/* eslint-disable */
 module.exports = {
-  displayName: 'trading',
+  displayName: 'explorer',
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
-    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nrwl/next/babel'] }],
+    '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/apps/trading',
-  setupFilesAfterEnv: ['./setup-tests.ts'],
+  coverageDirectory: '../../coverage/apps/explorer',
+  setupFilesAfterEnv: ['./src/app/setup-tests.ts'],
 };

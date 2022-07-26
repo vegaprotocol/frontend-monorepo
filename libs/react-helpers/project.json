@@ -6,17 +6,13 @@
   "targets": {
     "build": {
       "executor": "@nrwl/web:rollup",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/libs/react-helpers",
         "tsConfig": "libs/react-helpers/tsconfig.lib.json",
         "project": "libs/react-helpers/package.json",
         "entryFile": "libs/react-helpers/src/index.ts",
-        "external": [
-          "react/jsx-runtime"
-        ],
+        "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
@@ -30,22 +26,16 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "libs/react-helpers/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["libs/react-helpers/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": [
-        "coverage/libs/react-helpers"
-      ],
+      "outputs": ["coverage/libs/react-helpers"],
       "options": {
-        "jestConfig": "libs/react-helpers/jest.config.js",
+        "jestConfig": "libs/react-helpers/jest.config.ts",
         "passWithNoTests": true
       }
     }
