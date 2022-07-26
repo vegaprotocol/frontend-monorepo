@@ -1,5 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
-import type { Order } from '../utils';
+import { act, renderHook } from '@testing-library/react';
 import type {
   VegaKeyExtended,
   VegaWalletContextShape,
@@ -12,6 +11,7 @@ import {
 } from '@vegaprotocol/wallet';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
+import type { Market, Order } from './use-order-submit';
 import { useOrderSubmit } from './use-order-submit';
 import type {
   OrderEvent,
@@ -20,7 +20,6 @@ import type {
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { Market } from '../market';
 import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 
 const defaultMarket = {
