@@ -12,6 +12,7 @@ import {
   VegaWalletOrderType,
 } from '@vegaprotocol/wallet';
 import { addDecimal } from '@vegaprotocol/react-helpers';
+import useMarketPositions from './use-market-positions';
 
 export const ESTIMATE_ORDER_QUERY = gql`
   query estimateOrder(
@@ -63,6 +64,8 @@ const types: Record<VegaWalletOrderType, OrderType> = {
 };
 
 const useOrderMargin = ({ order, market, partyId }: Props) => {
+  const marketPositions = useMarketPositions({ marketId: market.id, partyId });
+
   const { data } = useQuery<estimateOrder, estimateOrderVariables>(
     ESTIMATE_ORDER_QUERY,
     {
@@ -70,7 +73,10 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
         marketId: market.id,
         partyId,
         price: market.depth.lastTrade?.price,
-        size: order.size,
+        size:
+          marketPositions && marketPositions.balanceSum
+            ? order.size + marketPositions.openVolume
+            : order.size,
         side: order.side === VegaWalletOrderSide.Buy ? Side.Buy : Side.Sell,
         timeInForce: times[order.timeInForce],
         type: types[order.type],
@@ -79,9 +85,14 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
     }
   );
   if (data?.estimateOrder.marginLevels.initialLevel) {
-    return addDecimal(
-      data.estimateOrder.marginLevels.initialLevel,
-      market.decimalPlaces
+    return Math.max(
+      0,
+      parseFloat(
+        addDecimal(
+          data.estimateOrder.marginLevels.initialLevel,
+          market.decimalPlaces
+        )
+      ) - (marketPositions?.balanceSum || 0)
     );
   }
   return ' - ';

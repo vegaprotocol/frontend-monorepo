@@ -46,7 +46,6 @@ export const DealTicketSteps = ({
     handleSubmit,
     watch,
     formState: { errors },
-    getValues,
   } = useForm<Order>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -56,6 +55,7 @@ export const DealTicketSteps = ({
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
   const orderSide = watch('side');
+  const order = watch();
 
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
@@ -136,7 +136,7 @@ export const DealTicketSteps = ({
             market={market}
             isDisabled={isDisabled}
             transactionStatus={transactionStatus}
-            order={getValues()}
+            order={order}
             partyData={partyData}
           />
           <VegaTransactionDialog
