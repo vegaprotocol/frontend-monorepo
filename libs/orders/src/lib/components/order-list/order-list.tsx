@@ -5,7 +5,11 @@ import {
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid, Button } from '@vegaprotocol/ui-toolkit';
+import {
+  AgGridDynamic as AgGrid,
+  Button,
+  Intent,
+} from '@vegaprotocol/ui-toolkit';
 import type {
   ICellRendererParams,
   ValueFormatterParams,
@@ -21,83 +25,61 @@ import type { Orders_party_ordersConnection_edges_node } from '../';
 import BigNumber from 'bignumber.js';
 
 import { useOrderCancel } from '../../order-hooks/use-order-cancel';
-import { VegaTransactionDialog } from '@vegaprotocol/wallet';
 import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
+import type { OrderFields } from '../order-data-provider/__generated__';
+import { OrderFeedback } from '../order-feedback';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
 export const OrderList = forwardRef<AgGridReact, OrderListProps>(
   (props, ref) => {
-    const [cancelOrderDialogOpen, setCancelOrderDialogOpen] = useState(false);
-    const [editOrderDialogOpen, setEditOrderDialogOpen] = useState(false);
-    const [editOrder, setEditOrder] =
-      useState<Orders_party_ordersConnection_edges_node | null>(null);
+    const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
+    const orderCancel = useOrderCancel();
+    const orderEdit = useOrderEdit(editOrder);
 
-    const { transaction, updatedOrder, reset, cancel } = useOrderCancel();
-    const {
-      transaction: editTransaction,
-      updatedOrder: editedOrder,
-      reset: resetEdit,
-      edit,
-    } = useOrderEdit();
-    const getCancelDialogTitle = (status?: string) => {
-      switch (status) {
-        case OrderStatus.Cancelled:
-          return 'Order cancelled';
-        case OrderStatus.Rejected:
-          return 'Order rejected';
-        case OrderStatus.Expired:
-          return 'Order expired';
-        default:
-          return 'Cancellation failed';
-      }
-    };
-    const getEditDialogTitle = () =>
-      editedOrder
-        ? t(
-            `Order ${
-              editOrder?.market?.tradableInstrument.instrument.code ?? ''
-            } updated`
-          )
-        : t(
-            `Edit ${
-              editOrder?.market?.tradableInstrument.instrument.code ?? ''
-            } order`
-          );
     return (
       <>
         <OrderListTable
           {...props}
-          cancel={cancel}
+          cancel={(order) => {
+            if (!order.market) return;
+            orderCancel.cancel({
+              orderId: order.id,
+              marketId: order.market.id,
+            });
+          }}
           ref={ref}
-          setEditOrderDialogOpen={setEditOrderDialogOpen}
           setEditOrder={setEditOrder}
         />
-        <VegaTransactionDialog
-          key={`cancel-order-dialog-${transaction.txHash}`}
-          orderDialogOpen={cancelOrderDialogOpen}
-          setOrderDialogOpen={setCancelOrderDialogOpen}
-          transaction={transaction}
-          reset={reset}
-          title={getCancelDialogTitle(updatedOrder?.status)}
-          finalizedOrder={updatedOrder}
-        />
-        <VegaTransactionDialog
-          key={`edit-order-dialog-${transaction.txHash}`}
-          orderDialogOpen={editOrderDialogOpen}
-          setOrderDialogOpen={setEditOrderDialogOpen}
-          transaction={editTransaction}
-          reset={resetEdit}
-          title={getEditDialogTitle()}
-          finalizedOrder={editedOrder}
+        <orderCancel.TransactionDialog
+          title={getCancelDialogTitle(orderCancel.cancelledOrder?.status)}
+          intent={getCancelDialogIntent(orderCancel.cancelledOrder?.status)}
         >
-          <OrderEditDialog
-            title={getEditDialogTitle()}
-            order={editOrder}
-            edit={edit}
+          <OrderFeedback
+            transaction={orderCancel.transaction}
+            order={orderCancel.cancelledOrder}
           />
-        </VegaTransactionDialog>
+        </orderCancel.TransactionDialog>
+        <orderEdit.TransactionDialog
+          title={getEditDialogTitle(orderEdit.updatedOrder?.status)}
+        >
+          <OrderFeedback
+            transaction={orderEdit.transaction}
+            order={orderEdit.updatedOrder}
+          />
+        </orderEdit.TransactionDialog>
+        <OrderEditDialog
+          isOpen={Boolean(editOrder)}
+          onChange={(isOpen) => {
+            if (!isOpen) setEditOrder(null);
+          }}
+          order={editOrder}
+          onSubmit={(fields) => {
+            setEditOrder(null);
+            orderEdit.edit({ price: fields.entryPrice });
+          }}
+        />
       </>
     );
   }
@@ -111,15 +93,12 @@ type OrderListTableValueFormatterParams = Omit<
 };
 
 type OrderListTableProps = (AgGridReactProps | AgReactUiProps) & {
-  cancel: (body?: unknown) => Promise<unknown>;
-  setEditOrderDialogOpen: (value: boolean) => void;
-  setEditOrder: (
-    order: Orders_party_ordersConnection_edges_node | null
-  ) => void;
+  cancel: (order: OrderFields) => void;
+  setEditOrder: (order: OrderFields) => void;
 };
 
 export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
-  ({ cancel, setEditOrderDialogOpen, setEditOrder, ...props }, ref) => {
+  ({ cancel, setEditOrder, ...props }, ref) => {
     return (
       <AgGrid
         ref={ref}
@@ -260,54 +239,36 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           field="edit"
           cellRenderer={({ data }: ICellRendererParams) => {
-            if (
-              ![
-                OrderStatus.Cancelled,
-                OrderStatus.Rejected,
-                OrderStatus.Expired,
-                OrderStatus.Filled,
-                OrderStatus.Stopped,
-              ].includes(data.status)
-            ) {
+            if (!data) return null;
+            if (isOrderActive(data.status)) {
               return (
                 <Button
                   data-testid="edit"
                   variant="secondary"
                   onClick={() => {
-                    setEditOrderDialogOpen(true);
                     setEditOrder(data);
                   }}
                 >
-                  Edit
+                  {t('Edit')}
                 </Button>
               );
             }
+
             return null;
           }}
         />
         <AgGridColumn
           field="cancel"
           cellRenderer={({ data }: ICellRendererParams) => {
-            if (
-              ![
-                OrderStatus.Cancelled,
-                OrderStatus.Rejected,
-                OrderStatus.Expired,
-                OrderStatus.Filled,
-                OrderStatus.Stopped,
-              ].includes(data.status)
-            ) {
+            if (!data) return null;
+            if (isOrderActive(data.status)) {
               return (
-                <Button
-                  data-testid="cancel"
-                  onClick={async () => {
-                    await cancel(data);
-                  }}
-                >
+                <Button data-testid="cancel" onClick={() => cancel(data)}>
                   Cancel
                 </Button>
               );
             }
+
             return null;
           }}
         />
@@ -315,3 +276,61 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
     );
   }
 );
+
+/**
+ * Check if an order is active to determine if it can be edited or cancelled
+ */
+const isOrderActive = (status: OrderStatus) => {
+  return ![
+    OrderStatus.Cancelled,
+    OrderStatus.Rejected,
+    OrderStatus.Expired,
+    OrderStatus.Filled,
+    OrderStatus.Stopped,
+  ].includes(status);
+};
+
+const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
+  if (!status) {
+    return;
+  }
+
+  switch (status) {
+    case OrderStatus.Active:
+      return t('Order updated');
+    case OrderStatus.Filled:
+      return t('Order filled');
+    case OrderStatus.PartiallyFilled:
+      return t('Order partially filled');
+    case OrderStatus.Parked:
+      return t('Order parked');
+    default:
+      return t('Submission failed');
+  }
+};
+
+const getCancelDialogIntent = (status?: OrderStatus): Intent | undefined => {
+  if (!status) {
+    return;
+  }
+
+  switch (status) {
+    case OrderStatus.Cancelled:
+      return Intent.Success;
+    default:
+      return Intent.Danger;
+  }
+};
+
+const getCancelDialogTitle = (status?: OrderStatus): string | undefined => {
+  if (!status) {
+    return;
+  }
+
+  switch (status) {
+    case OrderStatus.Cancelled:
+      return t('Order cancelled');
+    default:
+      return t('Order cancellation failed');
+  }
+};

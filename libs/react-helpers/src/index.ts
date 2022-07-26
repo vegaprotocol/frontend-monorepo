@@ -8,4 +8,5 @@ export * from './lib/i18n';
 export * from './lib/pagination';
 export * from './lib/remove-0x';
 export * from './lib/storage';
+export * from './lib/time';
 export * from './lib/validate';
