@@ -1,5 +1,5 @@
 /* eslint-disable */
-module.exports = {
+export default {
   displayName: 'simple-trading-app',
   preset: '../../jest.preset.js',
   transform: {

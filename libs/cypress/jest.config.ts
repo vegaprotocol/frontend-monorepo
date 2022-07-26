@@ -1,5 +1,5 @@
 /* eslint-disable */
-module.exports = {
+export default {
   displayName: 'cypress',
   preset: '../../jest.preset.js',
   globals: {

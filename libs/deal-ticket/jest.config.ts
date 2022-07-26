@@ -1,5 +1,5 @@
 /* eslint-disable */
-module.exports = {
+export default {
   displayName: 'deal-ticket',
   preset: '../../jest.preset.js',
   transform: {

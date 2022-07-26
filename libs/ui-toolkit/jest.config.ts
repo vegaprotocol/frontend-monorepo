@@ -1,5 +1,5 @@
 /* eslint-disable */
-module.exports = {
+export default {
   displayName: 'ui-toolkit',
   preset: '../../jest.preset.js',
   transform: {
