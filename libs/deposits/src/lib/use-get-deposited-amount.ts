@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import * as Sentry from '@sentry/react';
 import { ethers } from 'ethers';
 import type { Asset } from './deposit-manager';
 import { useEthereumConfig } from '@vegaprotocol/web3';
@@ -21,22 +22,28 @@ export const useGetDepositedAmount = (asset: Asset | undefined) => {
     ) {
       return;
     }
-    const abicoder = new ethers.utils.AbiCoder();
-    const innerHash = ethers.utils.keccak256(
-      abicoder.encode(['address', 'uint256'], [account, 4])
-    );
-    const storageLocation = ethers.utils.keccak256(
-      abicoder.encode(
-        ['address', 'bytes32'],
-        [asset.source.contractAddress, innerHash]
-      )
-    );
-    const res = await provider.getStorageAt(
-      config.collateral_bridge_contract.address,
-      storageLocation
-    );
-    const value = new BigNumber(res, 16).toString();
-    return new BigNumber(addDecimal(value, asset.decimals));
+
+    try {
+      const abicoder = new ethers.utils.AbiCoder();
+      const innerHash = ethers.utils.keccak256(
+        abicoder.encode(['address', 'uint256'], [account, 4])
+      );
+      const storageLocation = ethers.utils.keccak256(
+        abicoder.encode(
+          ['address', 'bytes32'],
+          [asset.source.contractAddress, innerHash]
+        )
+      );
+      const res = await provider.getStorageAt(
+        config.collateral_bridge_contract.address,
+        storageLocation
+      );
+      const value = new BigNumber(res, 16).toString();
+      return new BigNumber(addDecimal(value, asset.decimals));
+    } catch (err) {
+      Sentry.captureException(err);
+      return;
+    }
   }, [provider, asset, config, account]);
 
   return getDepositedAmount;

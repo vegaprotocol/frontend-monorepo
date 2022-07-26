@@ -1,4 +1,5 @@
 import type { Token } from '@vegaprotocol/smart-contracts';
+import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
@@ -15,8 +16,13 @@ export const useGetBalanceOfERC20Token = (
       return;
     }
 
-    const res = await contract.balanceOf(account);
-    return new BigNumber(addDecimal(res.toString(), asset.decimals));
+    try {
+      const res = await contract.balanceOf(account);
+      return new BigNumber(addDecimal(res.toString(), asset.decimals));
+    } catch (err) {
+      Sentry.captureException(err);
+      return;
+    }
   }, [contract, asset, account]);
 
   return getBalance;

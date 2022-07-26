@@ -1,5 +1,6 @@
 import { useBridgeContract, useTokenContract } from '@vegaprotocol/web3';
 import { useEffect } from 'react';
+import * as Sentry from '@sentry/react';
 import { useDepositStore } from './deposit-store';
 import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
@@ -26,19 +27,23 @@ export const useDepositBalances = (isFaucetable: boolean) => {
 
   useEffect(() => {
     const getBalances = async () => {
-      const [max, deposited, balance, allowance] = await Promise.all([
-        getDepositMaximum(),
-        getDepositedAmount(),
-        getBalance(),
-        getAllowance(),
-      ]);
+      try {
+        const [max, deposited, balance, allowance] = await Promise.all([
+          getDepositMaximum(),
+          getDepositedAmount(),
+          getBalance(),
+          getAllowance(),
+        ]);
 
-      update({
-        max,
-        deposited,
-        balance,
-        allowance,
-      });
+        update({
+          max,
+          deposited,
+          balance,
+          allowance,
+        });
+      } catch (err) {
+        Sentry.captureException(err);
+      }
     };
 
     if (asset) {
