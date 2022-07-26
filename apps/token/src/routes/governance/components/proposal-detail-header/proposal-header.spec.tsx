@@ -137,7 +137,7 @@ describe('Proposal header', () => {
     );
   });
 
-  // Skipped until proposals have rationale
+  // Skipped until proposals have rationale - https://github.com/vegaprotocol/frontend-monorepo/issues/824
   // eslint-disable-next-line jest/no-disabled-tests
   it.skip('Renders Freeform network - short rationale', () => {
     render(
