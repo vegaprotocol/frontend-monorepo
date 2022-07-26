@@ -48,25 +48,36 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
       {failedProposalsCulled.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
-      {sortedProposals.open.length > 0 ? (
-        <ul data-testid="open-proposals">
-          {sortedProposals.open.filter(filterPredicate).map((proposal) => (
-            <ProposalsListItem key={proposal.id} proposal={proposal} />
-          ))}
-        </ul>
-      ) : (
-        <p data-testid="no-open-proposals">{t('noOpenProposals')}</p>
-      )}
-      <hr className="my-20 border-t-2" />
-      {sortedProposals.closed.length > 0 ? (
-        <ul data-testid="closed-proposals">
-          {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
-            <ProposalsListItem key={proposal.id} proposal={proposal} />
-          ))}
-        </ul>
-      ) : (
-        <p data-testid="no-closed-proposals">{t('noClosedProposals')}</p>
-      )}
+
+      <section className="mx-[-20px] p-20 bg-white-10">
+        <h2 className="text-h4 mb-0">{t('openProposals')}</h2>
+        {sortedProposals.open.length > 0 ? (
+          <ul data-testid="open-proposals">
+            {sortedProposals.open.filter(filterPredicate).map((proposal) => (
+              <ProposalsListItem key={proposal.id} proposal={proposal} />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-12 mb-0" data-testid="no-open-proposals">
+            {t('noOpenProposals')}
+          </p>
+        )}
+      </section>
+
+      <section className="mx-[-20px] p-20">
+        <h2 className="text-h4 mb-0">{t('closedProposals')}</h2>
+        {sortedProposals.closed.length > 0 ? (
+          <ul data-testid="closed-proposals">
+            {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
+              <ProposalsListItem key={proposal.id} proposal={proposal} />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-12 mb-0" data-testid="no-closed-proposals">
+            {t('noClosedProposals')}
+          </p>
+        )}
+      </section>
     </>
   );
 };

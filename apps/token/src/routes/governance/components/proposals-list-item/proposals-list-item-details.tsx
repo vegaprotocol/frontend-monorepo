@@ -168,32 +168,40 @@ export const ProposalsListItemDetails = ({
   return (
     <div
       className={classnames(
-        'grid grid-cols-[1fr_auto] items-start gap-8',
+        'grid grid-cols-[1fr_auto] items-start gap-4',
         'mt-4',
         'text-ui'
       )}
     >
-      <div className="flex flex-col gap-8">
-        <div
-          className="flex items-center gap-8 text-white"
-          data-testid="proposal-status"
-        >
-          {proposalStatus}
-        </div>
-
-        {voteDetails && <div data-testid="vote-details">{voteDetails}</div>}
+      <div
+        className="col-start-1 row-start-1 flex items-center gap-4 text-white"
+        data-testid="proposal-status"
+      >
+        {proposalStatus}
       </div>
-      <div className="flex flex-col gap-8 text-right">
-        {voteStatus && <div data-testid="vote-status">{voteStatus}</div>}
-
-        {proposal.id && (
+      {voteDetails && (
+        <div className="col-start-1 row-start-2" data-testid="vote-details">
+          {voteDetails}
+        </div>
+      )}
+      {voteStatus && (
+        <div
+          className="col-start-2 row-start-1 justify-self-end"
+          data-testid="vote-status"
+        >
+          testing testing 123
+          {voteStatus}
+        </div>
+      )}
+      {proposal.id && (
+        <div className="col-start-2 row-start-2 justify-self-end">
           <Link to={proposal.id}>
             <Button variant="secondary" data-testid="view-proposal-btn">
               {t('View')}
             </Button>
           </Link>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -166,6 +166,8 @@
   "Participation": "Participation",
   "Majority": "Majority",
   "not reached": "not reached",
+  "openProposals": "Open proposals",
+  "closedProposals": "Closed proposals",
   "noOpenProposals": "There are no open or yet to enact proposals",
   "noClosedProposals": "There are no enacted or rejected proposals",
   "participationNotMet": "Participation not met",

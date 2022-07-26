@@ -11,7 +11,7 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
 
   return (
     <li
-      className="mx-[-20px] px-20 py-20 odd:bg-white-10"
+      className="py-20 border-b border-white-40"
       id={proposal.id}
       data-testid="proposals-list-item"
     >
