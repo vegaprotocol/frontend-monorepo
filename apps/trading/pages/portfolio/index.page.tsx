@@ -15,7 +15,7 @@ const Portfolio = () => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
     'grid gap-4 grid-rows-[1fr_300px]',
-    'bg-black-10 dark:bg-white-10',
+    'bg-black-10 dark:bg-black-70',
     'text-ui'
   );
   const tabContentClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
