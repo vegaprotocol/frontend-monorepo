@@ -1,5 +1,4 @@
 {
-  "root": "libs/market-list",
   "sourceRoot": "libs/market-list/src",
   "projectType": "library",
   "tags": [],

@@ -1,5 +1,4 @@
 {
-  "root": "libs/wallet",
   "sourceRoot": "libs/wallet/src",
   "projectType": "library",
   "tags": [],

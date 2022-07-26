@@ -1,5 +1,4 @@
 {
-  "root": "apps/trading-e2e",
   "sourceRoot": "apps/trading-e2e/src",
   "projectType": "application",
   "targets": {

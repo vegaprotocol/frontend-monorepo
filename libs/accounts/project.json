@@ -1,5 +1,4 @@
 {
-  "root": "libs/accounts",
   "sourceRoot": "libs/accounts/src",
   "projectType": "library",
   "tags": [],

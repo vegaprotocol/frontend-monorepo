@@ -1,5 +1,4 @@
 {
-  "root": "libs/positions",
   "sourceRoot": "libs/positions/src",
   "projectType": "library",
   "tags": [],

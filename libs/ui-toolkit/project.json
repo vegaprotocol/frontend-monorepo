@@ -1,5 +1,4 @@
 {
-  "root": "libs/ui-toolkit",
   "sourceRoot": "libs/ui-toolkit/src",
   "projectType": "library",
   "tags": [],

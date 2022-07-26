@@ -1,5 +1,4 @@
 {
-  "root": "libs/network-info",
   "sourceRoot": "libs/network-info/src",
   "projectType": "library",
   "tags": [],

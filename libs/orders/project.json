@@ -1,5 +1,4 @@
 {
-  "root": "libs/orders",
   "sourceRoot": "libs/orders/src",
   "projectType": "library",
   "tags": [],

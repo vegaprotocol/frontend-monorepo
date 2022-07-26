@@ -1,5 +1,4 @@
 {
-  "root": "apps/explorer",
   "sourceRoot": "apps/explorer/src",
   "projectType": "application",
   "targets": {
@@ -67,7 +66,7 @@
       }
     },
     "build-netlify": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "cp apps/explorer/netlify.toml netlify.toml",

@@ -1,5 +1,4 @@
 {
-  "root": "libs/smart-contracts",
   "sourceRoot": "libs/smart-contracts/src",
   "targets": {
     "build": {

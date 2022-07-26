@@ -1,5 +1,4 @@
 {
-  "root": "apps/explorer-e2e",
   "sourceRoot": "apps/explorer-e2e/src",
   "projectType": "application",
   "targets": {

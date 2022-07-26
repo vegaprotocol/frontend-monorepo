@@ -1,5 +1,4 @@
 {
-  "root": "libs/trades",
   "sourceRoot": "libs/trades/src",
   "projectType": "library",
   "tags": [],

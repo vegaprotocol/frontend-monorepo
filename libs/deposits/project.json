@@ -1,5 +1,4 @@
 {
-  "root": "libs/deposits",
   "sourceRoot": "libs/deposits/src",
   "projectType": "library",
   "tags": [],

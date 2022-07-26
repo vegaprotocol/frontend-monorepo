@@ -1,5 +1,4 @@
 {
-  "root": "apps/trading",
   "sourceRoot": "apps/trading",
   "projectType": "application",
   "targets": {

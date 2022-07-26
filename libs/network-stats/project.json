@@ -1,5 +1,4 @@
 {
-  "root": "libs/network-stats",
   "sourceRoot": "libs/network-stats/src",
   "projectType": "library",
   "tags": [],

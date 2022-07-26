@@ -1,5 +1,4 @@
 {
-  "root": "libs/web3",
   "sourceRoot": "libs/web3/src",
   "projectType": "library",
   "tags": [],

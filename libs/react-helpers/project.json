@@ -1,5 +1,4 @@
 {
-  "root": "libs/react-helpers",
   "sourceRoot": "libs/react-helpers/src",
   "projectType": "library",
   "tags": [],

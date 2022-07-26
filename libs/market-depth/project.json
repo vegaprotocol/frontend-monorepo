@@ -1,5 +1,4 @@
 {
-  "root": "libs/market-depth",
   "sourceRoot": "libs/market-depth/src",
   "projectType": "library",
   "tags": [],

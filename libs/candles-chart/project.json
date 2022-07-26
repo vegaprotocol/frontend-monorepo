@@ -1,5 +1,4 @@
 {
-  "root": "libs/candles-chart",
   "sourceRoot": "libs/candles-chart/src",
   "projectType": "library",
   "tags": [],

@@ -1,5 +1,4 @@
 {
-  "root": "libs/environment",
   "sourceRoot": "libs/environment/src",
   "projectType": "library",
   "tags": [],

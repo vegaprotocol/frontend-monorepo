@@ -1,5 +1,4 @@
 {
-  "root": "libs/cypress",
   "sourceRoot": "libs/cypress/src",
   "projectType": "library",
   "targets": {
