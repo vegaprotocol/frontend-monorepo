@@ -63,5 +63,6 @@
       "unitTestRunner": "jest"
     }
   },
-  "defaultProject": "trading"
+  "defaultProject": "trading",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }
