@@ -10,6 +10,7 @@ export const useGetDepositedAmount = (asset: Asset | undefined) => {
   const { account, provider } = useWeb3React();
   const { config } = useEthereumConfig();
 
+  // For an explaination of how this code works see here: https://gist.github.com/emilbayes/44a36f59b06b1f3edb9cf914041544ed
   const getDepositedAmount = useCallback(async () => {
     if (
       !provider ||
