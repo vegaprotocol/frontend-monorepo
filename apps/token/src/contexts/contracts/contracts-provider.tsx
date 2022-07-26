@@ -54,7 +54,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
             config.staking_bridge_contract.address,
             signer || provider
           );
-          const vegaAddress = await staking.stakingToken();
+          const vegaAddress = await staking.staking_token();
 
           setContracts({
             token: new Token(vegaAddress, signer || provider),

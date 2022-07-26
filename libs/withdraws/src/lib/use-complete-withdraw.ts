@@ -21,58 +21,22 @@ export const PENDING_WITHDRAWAL_FRAGMMENT = gql`
   }
 `;
 
-export interface NewWithdrawTransactionArgs {
-  assetSource: string;
-  amount: string;
-  nonce: string;
-  signatures: string;
-  targetAddress: string;
-  creation: string;
-}
-
-export interface WithdrawTransactionArgs {
-  assetSource: string;
-  amount: string;
-  nonce: string;
-  signatures: string;
-  targetAddress: string;
-}
-
 export const useCompleteWithdraw = (isNewContract: boolean) => {
   const { query, cache } = useApolloClient();
   const contract = useBridgeContract(isNewContract);
   const [id, setId] = useState('');
-  const { transaction, perform } = useEthereumTransaction<
-    WithdrawTransactionArgs | NewWithdrawTransactionArgs
-  >((args) => {
-    if (!contract) {
-      return null;
-    }
-    if (contract.isNewContract) {
-      const withdrawalData = args as NewWithdrawTransactionArgs;
-      return (contract as CollateralBridgeNew).withdrawAsset(
-        withdrawalData.assetSource,
-        withdrawalData.amount,
-        withdrawalData.targetAddress,
-        withdrawalData.creation,
-        withdrawalData.nonce,
-        withdrawalData.signatures
-      );
-    } else {
-      return (contract as CollateralBridge).withdrawAsset(
-        args.assetSource,
-        args.amount,
-        args.targetAddress,
-        args.nonce,
-        args.signatures
-      );
-    }
-  });
+  const { transaction, perform, Dialog } = useEthereumTransaction<
+    CollateralBridgeNew | CollateralBridge,
+    'withdraw_asset'
+  >(contract, 'withdraw_asset');
 
   const submit = useCallback(
     async (withdrawalId: string) => {
       setId(withdrawalId);
       try {
+        if (!contract) {
+          return;
+        }
         const res = await query<
           Erc20Approval | Erc20ApprovalNew,
           Erc20ApprovalVariables
@@ -83,16 +47,34 @@ export const useCompleteWithdraw = (isNewContract: boolean) => {
           variables: { withdrawalId },
         });
 
-        if (!res.data.erc20WithdrawalApproval) {
+        const approval = res.data.erc20WithdrawalApproval;
+        if (!approval) {
           throw new Error('Could not retrieve withdrawal approval');
         }
 
-        perform(res.data.erc20WithdrawalApproval);
+        if (contract.isNewContract && 'creation' in approval) {
+          perform(
+            approval.assetSource,
+            approval.amount,
+            approval.targetAddress,
+            approval.creation,
+            approval.nonce,
+            approval.signatures
+          );
+        } else {
+          perform(
+            approval.assetSource,
+            approval.amount,
+            approval.targetAddress,
+            approval.nonce,
+            approval.signatures
+          );
+        }
       } catch (err) {
         captureException(err);
       }
     },
-    [query, isNewContract, perform]
+    [contract, query, isNewContract, perform]
   );
 
   useEffect(() => {
@@ -109,5 +91,5 @@ export const useCompleteWithdraw = (isNewContract: boolean) => {
     }
   }, [cache, transaction.txHash, id]);
 
-  return { transaction, submit, withdrawalId: id };
+  return { transaction, Dialog, submit, withdrawalId: id };
 };

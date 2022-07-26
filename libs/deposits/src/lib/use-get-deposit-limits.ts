@@ -20,7 +20,7 @@ export const useGetDepositLimits = (asset?: Asset) => {
       return;
     }
 
-    return contract.getDepositMaximum(asset.source.contractAddress);
+    return contract.get_deposit_maximum(asset.source.contractAddress);
   }, [asset, contract]);
 
   useEffect(() => {

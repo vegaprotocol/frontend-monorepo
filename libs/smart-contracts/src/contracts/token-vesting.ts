@@ -14,31 +14,31 @@ export class TokenVesting {
     this.address = address;
   }
 
-  stakeTokens(amount: string, vegaPublicKey: string) {
+  stake_tokens(amount: string, vegaPublicKey: string) {
     return this.contract.stake_tokens(amount, prepend0x(vegaPublicKey));
   }
-  removeStake(amount: string, vegaPublicKey: string) {
+  remove_stake(amount: string, vegaPublicKey: string) {
     return this.contract.remove_stake(amount, prepend0x(vegaPublicKey));
   }
-  stakeBalance(address: string, vegaPublicKey: string) {
+  stake_balance(address: string, vegaPublicKey: string) {
     return this.contract.stake_balance(address, prepend0x(vegaPublicKey));
   }
-  totalStaked() {
+  total_staked() {
     return this.contract.total_staked();
   }
-  userStats(address: string) {
+  user_stats(address: string) {
     return this.contract.user_stats(address);
   }
-  getTrancheBalance(address: string, trancheId: number) {
+  get_tranche_balance(address: string, trancheId: number) {
     return this.contract.get_tranche_balance(address, trancheId);
   }
-  getVestedForTranche(address: string, trancheId: number) {
+  get_vested_for_tranche(address: string, trancheId: number) {
     return this.contract.get_vested_for_tranche(address, trancheId);
   }
-  userTotalAllTranches(address: string) {
+  user_total_all_tranches(address: string) {
     return this.contract.user_total_all_tranches(address);
   }
-  withdrawFromTranche(trancheId: number) {
+  withdraw_from_tranche(trancheId: number) {
     return this.contract.withdraw_from_tranche(trancheId);
   }
 }

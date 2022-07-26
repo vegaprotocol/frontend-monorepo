@@ -7,12 +7,9 @@ import { useSubmitApproval } from './use-submit-approval';
 import { useGetDepositLimits } from './use-get-deposit-limits';
 import { useGetAllowance } from './use-get-allowance';
 import { useSubmitFaucet } from './use-submit-faucet';
-import {
-  EthTxStatus,
-  TransactionDialog,
-  useEthereumConfig,
-} from '@vegaprotocol/web3';
+import { EthTxStatus, useEthereumConfig } from '@vegaprotocol/web3';
 import { useTokenContract } from '@vegaprotocol/web3';
+import { removeDecimal } from '@vegaprotocol/react-helpers';
 
 interface ERC20AssetSource {
   __typename: 'ERC20';
@@ -77,10 +74,10 @@ export const DepositManager = ({
   );
 
   // Set up approve transaction
-  const approve = useSubmitApproval(tokenContract, asset?.decimals);
+  const approve = useSubmitApproval(tokenContract);
 
   // Set up deposit transaction
-  const { confirmationEvent, ...deposit } = useSubmitDeposit();
+  const deposit = useSubmitDeposit();
 
   // Set up faucet transaction
   const faucet = useSubmitFaucet(tokenContract);
@@ -88,16 +85,16 @@ export const DepositManager = ({
   // Update balance after confirmation event has been received
   useEffect(() => {
     if (
-      faucet.transaction.status === EthTxStatus.Complete ||
-      confirmationEvent !== null
+      faucet.transaction.status === EthTxStatus.Confirmed ||
+      deposit.transaction.status === EthTxStatus.Confirmed
     ) {
       refetchBalance();
     }
-  }, [confirmationEvent, refetchBalance, faucet.transaction.status]);
+  }, [deposit.transaction.status, faucet.transaction.status, refetchBalance]);
 
   // After an approval transaction refetch allowance
   useEffect(() => {
-    if (approve.transaction.status === EthTxStatus.Complete) {
+    if (approve.transaction.status === EthTxStatus.Confirmed) {
       refetchAllowance();
     }
   }, [approve.transaction.status, refetchAllowance]);
@@ -109,22 +106,22 @@ export const DepositManager = ({
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}
-        submitApprove={approve.perform}
-        submitDeposit={deposit.perform}
-        requestFaucet={faucet.perform}
+        submitApprove={() => {
+          if (!asset || !config) return;
+          const amount = removeDecimal('1000000', asset.decimals);
+          approve.perform(config.collateral_bridge_contract.address, amount);
+        }}
+        submitDeposit={(args) => {
+          deposit.perform(args.assetSource, args.amount, args.vegaPublicKey);
+        }}
+        requestFaucet={() => faucet.perform()}
         limits={limits}
         allowance={allowance}
         isFaucetable={isFaucetable}
       />
-      <TransactionDialog {...approve.transaction} name="approve" />
-      <TransactionDialog {...faucet.transaction} name="faucet" />
-      <TransactionDialog
-        {...deposit}
-        name="deposit"
-        confirmed={Boolean(confirmationEvent)}
-        // Must wait for additional confirmations for Vega to pick up the Ethereum transaction
-        requiredConfirmations={config?.confirmations}
-      />
+      <approve.Dialog />
+      <faucet.Dialog />
+      <deposit.Dialog />
     </>
   );
 };

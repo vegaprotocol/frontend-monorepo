@@ -80,7 +80,9 @@ const getValue = (key: EnvKey, definitions: Partial<RawEnvironment> = {}) => {
   }
   return transformValue(
     key,
-    definitions[key] ?? window._env_?.[key] ?? getBundledEnvironmentValue(key)
+    definitions[key] ??
+      window._env_?.[`NX_${key}`] ??
+      getBundledEnvironmentValue(key)
   );
 };
 

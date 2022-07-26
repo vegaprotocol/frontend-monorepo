@@ -1,0 +1,60 @@
+name: Publish CRA containers
+
+'on':
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-pre[0-9]+'
+
+jobs:
+  master:
+    strategy:
+      matrix:
+        build-platform: ['linux/amd64']
+        app: ['explorer', 'token']
+    name: Build the ${{ inputs.image_name }} image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+      - name: Check output
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ steps.vars.outputs.tag }}
+      - uses: actions/checkout@v3
+      - name: Set up QEMU
+        id: quemu
+        uses: docker/setup-qemu-action@v2
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Collect images data
+        id: tags
+        run: |
+          echo '::set-output name=current::vegaprotocol/${{ matrix.app }}:${{ steps.vars.outputs.tag }}'
+          echo '::set-output name=latest::vegaprotocol/${{ matrix.app }}:latest'
+
+      - name: Echo tags
+        run: |
+          echo ${{ steps.tags.outputs.latest }}
+          echo ${{ steps.tags.outputs.current }}
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Docker build
+        uses: docker/build-push-action@v3
+        with:
+          context: '.'
+          file: './Dockerfile.cra'
+          build-args: 'APP=${{ matrix.app }}'
+          platforms: ${{ matrix.build-platform }}
+          tags: ${{ steps.tags.outputs.latest }},${{ steps.tags.outputs.current }}
+          push: true

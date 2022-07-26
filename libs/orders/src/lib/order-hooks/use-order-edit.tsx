@@ -50,11 +50,14 @@ export const useOrderEdit = () => {
           orderAmendment: {
             orderId: order.id,
             marketId: order.market.id,
+            // @ts-ignore fix me please!
             price: {
               value: removeDecimal(order.price, order.market?.decimalPlaces),
             },
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
+            // @ts-ignore fix me please!
             sizeDelta: 0,
+            // @ts-ignore fix me please!
             expiresAt: order.expiresAt
               ? {
                   value:

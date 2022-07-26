@@ -4,6 +4,7 @@ import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import type { EthTxState } from '@vegaprotocol/web3';
+import { isEthereumError } from '@vegaprotocol/web3';
 import { EthTxStatus } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
@@ -119,6 +120,25 @@ const getProps = (
     },
   };
 
+  const completeProps = {
+    title: t('Withdrawal complete'),
+    icon: <Icon name="tick" />,
+    intent: Intent.Success,
+    children: (
+      <Step>
+        <span>{t('Ethereum transaction complete')}</span>
+        <Link
+          href={`${ethUrl}/tx/${ethTx.txHash}`}
+          title={t('View transaction on Etherscan')}
+          className="text-vega-pink dark:text-vega-yellow"
+          target="_blank"
+        >
+          {t('View on Etherscan')}
+        </Link>
+      </Step>
+    ),
+  };
+
   const ethTxPropsMap: Record<EthTxStatus, DialogProps> = {
     [EthTxStatus.Default]: {
       title: '',
@@ -132,7 +152,11 @@ const getProps = (
       intent: Intent.Danger,
       children: (
         <Step>
-          {ethTx.error ? ethTx.error.message : t('Something went wrong')}
+          {isEthereumError(ethTx.error)
+            ? `Error: ${ethTx.error.reason}`
+            : ethTx.error instanceof Error
+            ? t(`Error: ${ethTx.error.message}`)
+            : t('Something went wrong')}
         </Step>
       ),
     },
@@ -164,24 +188,8 @@ const getProps = (
         </Step>
       ),
     },
-    [EthTxStatus.Complete]: {
-      title: t('Withdrawal complete'),
-      icon: <Icon name="tick" />,
-      intent: Intent.Success,
-      children: (
-        <Step>
-          <span>{t('Ethereum transaction complete')}</span>
-          <Link
-            href={`${ethUrl}/tx/${ethTx.txHash}`}
-            title={t('View transaction on Etherscan')}
-            className="text-vega-pink dark:text-vega-yellow"
-            target="_blank"
-          >
-            {t('View on Etherscan')}
-          </Link>
-        </Step>
-      ),
-    },
+    [EthTxStatus.Complete]: completeProps,
+    [EthTxStatus.Confirmed]: completeProps,
   };
 
   return approval ? ethTxPropsMap[ethTx.status] : vegaTxPropsMap[vegaTx.status];

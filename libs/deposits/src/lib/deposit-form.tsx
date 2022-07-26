@@ -38,13 +38,13 @@ export interface DepositFormProps {
   selectedAsset?: Asset;
   onSelectAsset: (assetId: string) => void;
   balance: BigNumber | undefined;
-  submitApprove: () => Promise<void>;
+  submitApprove: () => void;
   submitDeposit: (args: {
     assetSource: string;
     amount: string;
     vegaPublicKey: string;
-  }) => Promise<void>;
-  requestFaucet: () => Promise<void>;
+  }) => void;
+  requestFaucet: () => void;
   limits: {
     max: BigNumber;
     deposited: BigNumber;

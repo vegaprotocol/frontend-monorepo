@@ -17,23 +17,23 @@ export class StakingBridge {
   stake(amount: string, vegaPublicKey: string) {
     return this.contract.stake(amount, prepend0x(vegaPublicKey));
   }
-  removeStake(amount: string, vegaPublicKey: string) {
+  remove_stake(amount: string, vegaPublicKey: string) {
     return this.contract.remove_stake(amount, prepend0x(vegaPublicKey));
   }
-  transferStake(amount: string, newAddress: string, vegaPublicKey: string) {
+  transfer_stake(amount: string, newAddress: string, vegaPublicKey: string) {
     return this.contract.transfer_stake(
       amount,
       newAddress,
       prepend0x(vegaPublicKey)
     );
   }
-  stakingToken() {
+  staking_token() {
     return this.contract.staking_token();
   }
-  stakeBalance(target: string, vegaPublicKey: string) {
+  stake_balance(target: string, vegaPublicKey: string) {
     return this.contract.stake_balance(target, prepend0x(vegaPublicKey));
   }
-  totalStaked() {
+  total_staked() {
     return this.contract.total_staked();
   }
 }

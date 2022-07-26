@@ -24,13 +24,13 @@ export const useRefreshBalances = (address: string) => {
     try {
       const [b, w, stats, a, walletStakeBalance, vestingStakeBalance] =
         await Promise.all([
-          vesting.userTotalAllTranches(address),
+          vesting.user_total_all_tranches(address),
           token.balanceOf(address),
-          vesting.userStats(address),
+          vesting.user_stats(address),
           token.allowance(address, config.staking_bridge_contract.address),
           // Refresh connected vega key balances as well if we are connected to a vega key
-          keypair?.pub ? staking.stakeBalance(address, keypair.pub) : null,
-          keypair?.pub ? vesting.stakeBalance(address, keypair.pub) : null,
+          keypair?.pub ? staking.stake_balance(address, keypair.pub) : null,
+          keypair?.pub ? vesting.stake_balance(address, keypair.pub) : null,
         ]);
 
       const balance = toBigNum(b, decimals);
