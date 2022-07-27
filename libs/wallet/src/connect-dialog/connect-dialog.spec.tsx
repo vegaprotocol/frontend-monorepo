@@ -10,6 +10,7 @@ import { VegaWalletContext } from '../context';
 import { VegaConnectDialog } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import { RestConnector } from '../connectors';
+import { EnvironmentProvider } from '@vegaprotocol/environment';
 
 let defaultProps: VegaConnectDialogProps;
 let defaultContextValue: VegaWalletContextShape;
@@ -35,16 +36,28 @@ beforeEach(() => {
 
 const DEFAULT_URL = 'http://localhost:1789/api/v1';
 
+const mockEnvironment = {
+  VEGA_ENV: 'TESTNET',
+  VEGA_URL: 'https://vega-node.url',
+  VEGA_NETWORKS: JSON.stringify({}),
+  GIT_BRANCH: 'test',
+  GIT_COMMIT_HASH: 'abcdef',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  VEGA_WALLET_URL: DEFAULT_URL,
+};
+
 function generateJSX(
   props?: Partial<VegaConnectDialogProps>,
   contextValue?: Partial<VegaWalletContextShape>
 ) {
   return (
-    <VegaWalletContext.Provider
-      value={{ ...defaultContextValue, ...contextValue }}
-    >
-      <VegaConnectDialog {...defaultProps} {...props} />
-    </VegaWalletContext.Provider>
+    <EnvironmentProvider definitions={mockEnvironment}>
+      <VegaWalletContext.Provider
+        value={{ ...defaultContextValue, ...contextValue }}
+      >
+        <VegaConnectDialog {...defaultProps} {...props} />
+      </VegaWalletContext.Provider>
+    </EnvironmentProvider>
   );
 }
 
