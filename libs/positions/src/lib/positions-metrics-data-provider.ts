@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import produce from 'immer';
 import type {
   PositionsMetrics,
   PositionsMetrics_party,
@@ -11,43 +12,55 @@ import type {
 } from './__generated__/PositionsMetricsSubsciption';
 
 import { AccountType } from '@vegaprotocol/types';
+import type { MarketTradingMode } from '@vegaprotocol/types';
 
-const significantDigits = 4;
-const round = (value: number) => {
-  const digits =
-    significantDigits - Math.floor(Math.log10(Math.abs(value))) - 1;
-  return Math.round(value * digits) / digits;
-};
-
-interface PositionMetrics {
-  markPrice: BigInt;
-  openVolume: number;
-  marginAccountBalance: number;
-  generalAccountBalance: number;
-  capitalUtilisation: number;
-  currentLeverage: number;
-  // riskFactor: number;
-  leverageMaintenance: number;
-  leverageSearch: number;
-  leverageInitial: number;
-  leverageRelease: number;
-  marginSearch: number;
-  marginMaintenance: number;
-  searchPrice: BigInt;
-  liquidationPrice: BigInt;
+export interface Position {
+  averageEntryPrice: bigint;
+  capitalUtilisation: bigint;
+  currentLeverage: bigint;
+  decimalPlaces: number;
+  generalAccountBalance: bigint;
+  instrumentName: string;
+  leverageInitial: bigint;
+  leverageMaintenance: bigint;
+  leverageRelease: bigint;
+  leverageSearch: bigint;
+  liquidationPrice: bigint;
+  marginAccountBalance: bigint;
+  marginMaintenance: bigint;
+  marginSearch: bigint;
+  marketId: string;
+  marketTradingMode: MarketTradingMode;
+  markPrice: bigint;
+  notional: bigint;
+  openVolume: bigint;
+  realisedPNL: bigint;
+  searchPrice: bigint;
+  updatedAt: string | null;
 }
 
-interface Data {
+export interface Data {
   party: PositionsMetrics_party | null;
-  metrics: PositionMetrics[] | null;
+  positions: Position[] | null;
 }
 
 const POSITIONS_METRICS_FRAGMENT = gql`
   fragment PositionMetricsFields on Position {
+    realisedPNL
     openVolume
+    unrealisedPNL
+    averageEntryPrice
+    updatedAt
     market {
       id
       decimalPlaces
+      positionDecimalPlaces
+      tradingMode
+      tradableInstrument {
+        instrument {
+          name
+        }
+      }
       accounts {
         balance
         market {
@@ -58,26 +71,6 @@ const POSITIONS_METRICS_FRAGMENT = gql`
           decimals
         }
       }
-      #tradableInstrument {
-      #  instrument {
-      #    name
-      #  }
-      #  marginCalculator {
-      #    scalingFactors {
-      #      searchLevel
-      #    }
-      #  }
-      #  riskModel {
-      #    ... on LogNormalRiskModel {
-      #      tau
-      #      params {
-      #        mu
-      #        r
-      #        sigma
-      #      }
-      #    }
-      #  }
-      #}
       data {
         markPrice
       }
@@ -130,13 +123,44 @@ export const POSITIONS_METRICS_SUBSCRIPTION = gql`
   }
 `;
 
+/*
+const alphanumericComparator = (a: string, b: string, isInverted: boolean) => {
+  if (a < b) {
+    return isInverted ? 1 : -1;
+  }
+
+  if (a > b) {
+    return isInverted ? -1 : 1;
+  }
+
+  return 0;
+};
+
+const comparator = (
+  valueA: string,
+  valueB: string,
+  nodeA: { data: Positions_party_positions },
+  nodeB: { data: Positions_party_positions },
+  isInverted: boolean
+) =>
+  alphanumericComparator(
+    nodeA.data.market.tradableInstrument.instrument.name,
+    nodeB.data.market.tradableInstrument.instrument.name,
+    isInverted
+  ) ||
+  alphanumericComparator(
+    nodeA.data.market.id,
+    nodeB.data.market.id,
+    isInverted
+  );
+*/
+
 const getMetrics = (data: PositionsMetrics_party | null) => {
   if (!data || !data.positionsConnection.edges) {
-    return null;
+    return [];
   }
-  const metrics: PositionMetrics[] = [];
+  const metrics: Position[] = [];
   data.positionsConnection.edges.forEach((position) => {
-    const openVolume = Number(position.node.openVolume);
     const market = position.node.market;
     const marketData = market.data;
     const marginLevel = data.marginsConnection.edges?.find(
@@ -155,73 +179,122 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
     );
     const assetDecimalPlaces = marginAccount.asset.decimals;
     const marketDecimalPlaces = market.decimalPlaces;
+    const { positionDecimalPlaces } = market;
+    const decimalPlaces = Math.max(
+      marginAccount.asset.decimals,
+      market.decimalPlaces,
+      market.positionDecimalPlaces
+    );
+    const assetDecimalPlacesCorrection = BigInt(
+      10 ** (decimalPlaces - assetDecimalPlaces)
+    );
+    const marketDecimalPlacesCorrection = BigInt(
+      10 ** (decimalPlaces - marketDecimalPlaces)
+    );
+    const positionDecimalPlacesCorrection = BigInt(
+      10 ** (decimalPlaces - positionDecimalPlaces)
+    );
+    const openVolume =
+      BigInt(position.node.openVolume) * positionDecimalPlacesCorrection;
+    const averageEntryPrice =
+      BigInt(position.node.averageEntryPrice) * marketDecimalPlacesCorrection;
+
+    const realisedPNL =
+      BigInt(position.node.realisedPNL) * marketDecimalPlacesCorrection;
 
     const marginAccountBalance = marginAccount
-      ? Number(marginAccount.balance) * 10 ** -assetDecimalPlaces
-      : 0;
+      ? BigInt(marginAccount.balance) * assetDecimalPlacesCorrection
+      : BigInt(0);
     const generalAccountBalance = generalAccount
-      ? Number(generalAccount.balance) * 10 ** -assetDecimalPlaces
-      : 0;
+      ? BigInt(generalAccount.balance) * assetDecimalPlacesCorrection
+      : BigInt(0);
+
+    const markPrice =
+      BigInt(marketData.markPrice) * marketDecimalPlacesCorrection;
 
     const notional =
-      Math.abs(openVolume) *
-      Number(marketData.markPrice) *
-      10 ** -marketDecimalPlaces;
-    const currentLeverage = round(
-      notional / (generalAccountBalance + marginAccountBalance)
-    );
-    const capitalUtilisation = round(
-      (marginAccountBalance / (marginAccountBalance + generalAccountBalance)) *
-        100
-    );
+      (openVolume > 0 ? openVolume : openVolume * BigInt(-1)) * markPrice;
+    const currentLeverage =
+      notional / (generalAccountBalance + marginAccountBalance);
+    const capitalUtilisation =
+      (BigInt(100) * marginAccountBalance) /
+      (marginAccountBalance + generalAccountBalance);
 
     const marginMaintenance =
-      Number(marginLevel.maintenanceLevel) * 10 ** -marketDecimalPlaces;
+      BigInt(marginLevel.maintenanceLevel) * marketDecimalPlacesCorrection;
     const marginSearch =
-      Number(marginLevel.searchLevel) * 10 ** -marketDecimalPlaces;
+      BigInt(marginLevel.searchLevel) * marketDecimalPlacesCorrection;
     const marginInitial =
-      Number(marginLevel.initialLevel) * 10 ** -marketDecimalPlaces;
+      BigInt(marginLevel.initialLevel) * marketDecimalPlacesCorrection;
     const marginRelease =
-      Number(marginLevel.collateralReleaseLevel) * 10 ** -marketDecimalPlaces;
-
-    const markPrice = BigInt(marketData.markPrice);
+      BigInt(marginLevel.collateralReleaseLevel) *
+      marketDecimalPlacesCorrection;
 
     const searchPrice =
-      BigInt((marginSearch - marginAccountBalance) / openVolume) + markPrice;
+      (marginSearch - marginAccountBalance) / openVolume + markPrice;
     const liquidationPrice =
-      BigInt(
-        (marginMaintenance - marginAccountBalance - generalAccountBalance) /
-          openVolume
-      ) + markPrice;
+      (marginMaintenance - marginAccountBalance - generalAccountBalance) /
+        openVolume +
+      markPrice;
 
     metrics.push({
-      markPrice,
-      openVolume,
-      marginAccountBalance,
-      generalAccountBalance,
+      averageEntryPrice,
       capitalUtilisation,
       currentLeverage,
-      leverageMaintenance: round(notional / marginMaintenance),
-      leverageSearch: round(notional / marginSearch),
-      leverageInitial: round(notional / marginInitial),
-      leverageRelease: round(notional / marginRelease),
-      marginSearch,
-      marginMaintenance,
-      searchPrice,
+      decimalPlaces,
+      generalAccountBalance,
+      instrumentName: position.node.market.tradableInstrument.instrument.name,
+      leverageInitial: notional / marginInitial,
+      leverageMaintenance: notional / marginMaintenance,
+      leverageRelease: notional / marginRelease,
+      leverageSearch: notional / marginSearch,
       liquidationPrice,
+      marginAccountBalance,
+      marginMaintenance,
+      marginSearch,
+      marketId: position.node.market.id,
+      marketTradingMode: position.node.market.tradingMode,
+      markPrice,
+      notional,
+      openVolume,
+      realisedPNL,
+      searchPrice,
+      updatedAt: position.node.updatedAt,
     });
   });
   return metrics;
 };
 
 const update = (data: Data, delta: PositionsMetricsSubsciption_positions) => {
-  return data;
+  if (!data.party?.positionsConnection.edges) {
+    return data;
+  }
+  const edges = produce(data.party.positionsConnection.edges, (draft) => {
+    const index = draft.findIndex(
+      (edge) => edge.node.market.id === delta.market.id
+    );
+    if (index !== -1) {
+      draft[index].node = delta;
+    } else {
+      draft.push({ __typename: 'PositionEdge', node: delta });
+    }
+  });
+  const party = produce(data.party, (draft) => {
+    draft.positionsConnection.edges = edges;
+  });
+  if (party === data.party) {
+    return data;
+  }
+  return {
+    party,
+    positions: getMetrics(party),
+  };
 };
 
 const getData = (responseData: PositionsMetrics): Data => {
   return {
     party: responseData.party,
-    metrics: getMetrics(responseData.party),
+    positions: getMetrics(responseData.party)?.sort(),
   };
 };
 
@@ -229,7 +302,7 @@ const getDelta = (
   subscriptionData: PositionsMetricsSubsciption
 ): PositionsMetricsSubsciption_positions => subscriptionData.positions;
 
-export const positionsDataProvider = makeDataProvider<
+export const positionsMetricsDataProvider = makeDataProvider<
   PositionsMetrics,
   Data,
   PositionsMetricsSubsciption,

@@ -3,9 +3,27 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { MarketTradingMode } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL subscription operation: PositionsMetricsSubsciption
 // ====================================================
+
+export interface PositionsMetricsSubsciption_positions_market_tradableInstrument_instrument {
+  __typename: "Instrument";
+  /**
+   * Full and fairly descriptive name for the instrument
+   */
+  name: string;
+}
+
+export interface PositionsMetricsSubsciption_positions_market_tradableInstrument {
+  __typename: "TradableInstrument";
+  /**
+   * An instance of or reference to a fully specified instrument.
+   */
+  instrument: PositionsMetricsSubsciption_positions_market_tradableInstrument_instrument;
+}
 
 export interface PositionsMetricsSubsciption_positions_market_accounts_market {
   __typename: "Market";
@@ -75,6 +93,20 @@ export interface PositionsMetricsSubsciption_positions_market {
    */
   decimalPlaces: number;
   /**
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
+   * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   */
+  positionDecimalPlaces: number;
+  /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
+  /**
+   * An instance of or reference to a tradable instrument.
+   */
+  tradableInstrument: PositionsMetricsSubsciption_positions_market_tradableInstrument;
+  /**
    * Get account for a party or market
    */
   accounts: PositionsMetricsSubsciption_positions_market_accounts[] | null;
@@ -87,9 +119,25 @@ export interface PositionsMetricsSubsciption_positions_market {
 export interface PositionsMetricsSubsciption_positions {
   __typename: "Position";
   /**
+   * Realised Profit and Loss (int64)
+   */
+  realisedPNL: string;
+  /**
    * Open volume (uint64)
    */
   openVolume: string;
+  /**
+   * Unrealised Profit and Loss (int64)
+   */
+  unrealisedPNL: string;
+  /**
+   * Average entry price for this position
+   */
+  averageEntryPrice: string;
+  /**
+   * RFC3339Nano time the position was updated
+   */
+  updatedAt: string | null;
   /**
    * Market relating to this position
    */

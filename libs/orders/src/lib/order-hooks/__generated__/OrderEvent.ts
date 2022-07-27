@@ -77,6 +77,10 @@ export interface OrderEvent_busEvents_event_Order {
    */
   timeInForce: OrderTimeInForce;
   /**
+   * Expiration time of this order (ISO-8601 RFC3339+Nano formatted date)
+   */
+  expiresAt: string | null;
+  /**
    * Whether the order is to buy or sell
    */
   side: Side;

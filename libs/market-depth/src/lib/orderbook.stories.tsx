@@ -18,6 +18,7 @@ const OrderbokMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
       >
         <Orderbook
           onResolutionChange={setResolution}
+          positionDecimalPlaces={decimalPlaces}
           decimalPlaces={decimalPlaces}
           {...generateMockData({ ...props, resolution })}
         />

@@ -31,23 +31,8 @@ const POSITIONS_FRAGMENT = gql`
       positionDecimalPlaces
       tradableInstrument {
         instrument {
-          id
           name
-          metadata {
-            tags
-          }
           code
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                name
-                decimals
-              }
-              quoteName
-            }
-          }
         }
       }
     }
