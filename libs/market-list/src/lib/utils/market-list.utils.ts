@@ -20,8 +20,7 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
       )
       .map((m) => {
         return {
-          id: m.id,
-          decimalPlaces: m.decimalPlaces,
+          ...m,
           marketName: m.tradableInstrument.instrument?.code,
           lastPrice: lastPrice(m) ?? m.data?.markPrice,
           candles: (m.candles || []).filter((c) => c),
@@ -31,7 +30,6 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
           close: m.marketTimestamps.close
             ? new Date(m.marketTimestamps.close).getTime()
             : null,
-          state: m.state,
         };
       }) || [],
     ['state', 'open', 'id'],

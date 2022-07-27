@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState, MarketTradingMode } from "@vegaprotocol/types";
+import { Interval, MarketState, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketList
@@ -15,6 +15,14 @@ export interface MarketList_markets_data_market {
    * Market ID
    */
   id: string;
+  /**
+   * Current state of the market
+   */
+  state: MarketState;
+  /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
 }
 
 export interface MarketList_markets_data {
@@ -24,9 +32,21 @@ export interface MarketList_markets_data {
    */
   market: MarketList_markets_data_market;
   /**
+   * the highest price level on an order book for buy orders.
+   */
+  bestBidPrice: string;
+  /**
+   * the lowest price level on an order book for offer orders.
+   */
+  bestOfferPrice: string;
+  /**
    * the mark price (actually an unsigned int)
    */
   markPrice: string;
+  /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
 }
 
 export interface MarketList_markets_tradableInstrument_instrument_metadata {
@@ -35,6 +55,22 @@ export interface MarketList_markets_tradableInstrument_instrument_metadata {
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
    */
   tags: string[] | null;
+}
+
+export interface MarketList_markets_tradableInstrument_instrument_product_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+}
+
+export interface MarketList_markets_tradableInstrument_instrument_product {
+  __typename: "Future";
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: MarketList_markets_tradableInstrument_instrument_product_settlementAsset;
 }
 
 export interface MarketList_markets_tradableInstrument_instrument {
@@ -51,6 +87,10 @@ export interface MarketList_markets_tradableInstrument_instrument {
    * Metadata for this instrument
    */
   metadata: MarketList_markets_tradableInstrument_instrument_metadata;
+  /**
+   * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
+   */
+  product: MarketList_markets_tradableInstrument_instrument_product;
 }
 
 export interface MarketList_markets_tradableInstrument {

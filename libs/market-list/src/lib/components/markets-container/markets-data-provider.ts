@@ -1,10 +1,10 @@
 import produce from 'immer';
 import { gql } from '@apollo/client';
 import type {
-  Markets,
-  Markets_markets,
   MarketDataSub,
   MarketDataSub_marketData,
+  MarketList,
+  MarketList_markets,
 } from './';
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
@@ -22,32 +22,6 @@ const MARKET_DATA_FRAGMENT = gql`
   }
 `;
 
-const MARKETS_QUERY = gql`
-  ${MARKET_DATA_FRAGMENT}
-  query Markets {
-    markets {
-      id
-      name
-      decimalPlaces
-      data {
-        ...MarketDataFields
-      }
-      tradableInstrument {
-        instrument {
-          code
-          product {
-            ... on Future {
-              settlementAsset {
-                symbol
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 export const MARKET_LIST_QUERY = gql`
   query MarketList($interval: Interval!, $since: String!) {
     markets {
@@ -56,10 +30,7 @@ export const MARKET_LIST_QUERY = gql`
       state
       tradingMode
       data {
-        market {
-          id
-        }
-        markPrice
+        ...MarketDataFields
       }
       tradableInstrument {
         instrument {
@@ -67,6 +38,14 @@ export const MARKET_LIST_QUERY = gql`
           code
           metadata {
             tags
+          }
+
+          product {
+            ... on Future {
+              settlementAsset {
+                symbol
+              }
+            }
           }
         }
       }
@@ -91,7 +70,10 @@ const MARKET_DATA_SUB = gql`
   }
 `;
 
-const update = (data: Markets_markets[], delta: MarketDataSub_marketData) => {
+const update = (
+  data: MarketList_markets[],
+  delta: MarketDataSub_marketData
+) => {
   return produce(data, (draft) => {
     const index = draft.findIndex((m) => m.id === delta.market.id);
     if (index !== -1) {
@@ -101,14 +83,14 @@ const update = (data: Markets_markets[], delta: MarketDataSub_marketData) => {
   });
 };
 
-const getData = (responseData: Markets): Markets_markets[] | null =>
+const getData = (responseData: MarketList): MarketList_markets[] | null =>
   responseData.markets;
 const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>
   subscriptionData.marketData;
 
 export const marketsDataProvider = makeDataProvider<
-  Markets,
-  Markets_markets[],
+  MarketList,
+  MarketList_markets[],
   MarketDataSub,
   MarketDataSub_marketData
->(MARKETS_QUERY, MARKET_DATA_SUB, update, getData, getDelta);
+>(MARKET_LIST_QUERY, MARKET_DATA_SUB, update, getData, getDelta);
