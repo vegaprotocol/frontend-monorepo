@@ -9,7 +9,7 @@ import type { CandleClose } from '@vegaprotocol/types';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
-import { mapDataToMarketList } from '../utils';
+import { mapDataToMarketList, totalFees } from '../utils';
 import type {
   MarketList,
   MarketList_markets_fees_factors,
@@ -282,11 +282,7 @@ export const FeesBreakdown = ({
         </tr>
         <tr>
           <td className={thClassNames('left')}>{t('Total Fees')}</td>
-          <td className={tdClassNames}>
-            {formatNumberPercentage(
-              new BigNumber(feeFactors.makerFee).times(100)
-            )}
-          </td>
+          <td className={tdClassNames}>{totalFees(feeFactors)}</td>
         </tr>
       </tbody>
     </table>
