@@ -15,13 +15,13 @@ interface TimeInForceSelectorProps {
 export const timeInForceLabel = (tif: string) => {
   switch (tif) {
     case VegaWalletOrderTimeInForce.GTC:
-      return t('Good til Cancelled');
+      return t(`Good 'til Cancelled`);
     case VegaWalletOrderTimeInForce.IOC:
       return t('Immediate or Cancel');
     case VegaWalletOrderTimeInForce.FOK:
       return t('Fill or Kill');
     case VegaWalletOrderTimeInForce.GTT:
-      return t(' Good til Time');
+      return t(`Good 'til Time`);
     case VegaWalletOrderTimeInForce.GFN:
       return t('Good for Normal');
     case VegaWalletOrderTimeInForce.GFA:
