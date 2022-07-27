@@ -15,27 +15,29 @@ import { AccountType } from '@vegaprotocol/types';
 import type { MarketTradingMode } from '@vegaprotocol/types';
 
 export interface Position {
-  averageEntryPrice: bigint;
-  capitalUtilisation: bigint;
-  currentLeverage: bigint;
+  marketName: string;
+  averageEntryPrice: string;
+  capitalUtilisation: string;
+  currentLeverage: string;
   decimalPlaces: number;
-  generalAccountBalance: bigint;
+  generalAccountBalance: string;
+  totalBalance: string;
   instrumentName: string;
-  leverageInitial: bigint;
-  leverageMaintenance: bigint;
-  leverageRelease: bigint;
-  leverageSearch: bigint;
-  liquidationPrice: bigint;
-  marginAccountBalance: bigint;
-  marginMaintenance: bigint;
-  marginSearch: bigint;
+  // leverageInitial: string;
+  // leverageMaintenance: string;
+  // leverageRelease: string;
+  // leverageSearch: string;
+  liquidationPrice: string;
+  marginAccountBalance: string;
+  marginMaintenance: string;
+  marginSearch: string;
   marketId: string;
   marketTradingMode: MarketTradingMode;
-  markPrice: bigint;
-  notional: bigint;
-  openVolume: bigint;
-  realisedPNL: bigint;
-  searchPrice: bigint;
+  markPrice: string;
+  notional: string;
+  openVolume: string;
+  realisedPNL: string;
+  searchPrice: string;
   updatedAt: string | null;
 }
 
@@ -53,6 +55,7 @@ const POSITIONS_METRICS_FRAGMENT = gql`
     updatedAt
     market {
       id
+      name
       decimalPlaces
       positionDecimalPlaces
       tradingMode
@@ -214,21 +217,22 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
 
     const notional =
       (openVolume > 0 ? openVolume : openVolume * BigInt(-1)) * markPrice;
-    const currentLeverage =
-      notional / (generalAccountBalance + marginAccountBalance);
+    const totalBalance = marginAccountBalance + generalAccountBalance;
+    const currentLeverage = notional / totalBalance;
     const capitalUtilisation =
-      (BigInt(100) * marginAccountBalance) /
-      (marginAccountBalance + generalAccountBalance);
+      (BigInt(100) * marginAccountBalance) / totalBalance;
 
     const marginMaintenance =
       BigInt(marginLevel.maintenanceLevel) * marketDecimalPlacesCorrection;
     const marginSearch =
       BigInt(marginLevel.searchLevel) * marketDecimalPlacesCorrection;
+    /*
     const marginInitial =
       BigInt(marginLevel.initialLevel) * marketDecimalPlacesCorrection;
     const marginRelease =
       BigInt(marginLevel.collateralReleaseLevel) *
       marketDecimalPlacesCorrection;
+    */
 
     const searchPrice =
       (marginSearch - marginAccountBalance) / openVolume + markPrice;
@@ -238,27 +242,29 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
       markPrice;
 
     metrics.push({
-      averageEntryPrice,
-      capitalUtilisation,
-      currentLeverage,
+      marketName: market.name,
+      averageEntryPrice: averageEntryPrice.toString(),
+      capitalUtilisation: capitalUtilisation.toString(),
+      currentLeverage: currentLeverage.toString(),
       decimalPlaces,
-      generalAccountBalance,
+      generalAccountBalance: generalAccountBalance.toString(),
       instrumentName: position.node.market.tradableInstrument.instrument.name,
-      leverageInitial: notional / marginInitial,
-      leverageMaintenance: notional / marginMaintenance,
-      leverageRelease: notional / marginRelease,
-      leverageSearch: notional / marginSearch,
-      liquidationPrice,
-      marginAccountBalance,
-      marginMaintenance,
-      marginSearch,
+      totalBalance: totalBalance.toString(),
+      // leverageInitial: notional / marginInitial,
+      // leverageMaintenance: notional / marginMaintenance,
+      // leverageRelease: notional / marginRelease,
+      // leverageSearch: notional / marginSearch,
+      liquidationPrice: liquidationPrice.toString(),
+      marginAccountBalance: marginAccountBalance.toString(),
+      marginMaintenance: marginMaintenance.toString(),
+      marginSearch: marginSearch.toString(),
       marketId: position.node.market.id,
       marketTradingMode: position.node.market.tradingMode,
-      markPrice,
-      notional,
-      openVolume,
-      realisedPNL,
-      searchPrice,
+      markPrice: markPrice.toString(),
+      notional: notional.toString(),
+      openVolume: openVolume.toString(),
+      realisedPNL: realisedPNL.toString(),
+      searchPrice: searchPrice.toString(),
       updatedAt: position.node.updatedAt,
     });
   });

@@ -8,6 +8,7 @@ import {
   addDecimal,
   t,
   formatNumber,
+  getDateTimeFormat,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
@@ -38,23 +39,63 @@ type PositionsTableValueFormatterParams = Omit<
   data: Position;
 };
 
+export interface MarketNameCellProps {
+  valueFormatted?: [string, string];
+}
+
+export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
+  return valueFormatted ? (
+    <div className="leading-tight">
+      <div>{valueFormatted[0]}</div>
+      {valueFormatted[1] ? <div>{valueFormatted[1]}</div> : null}
+    </div>
+  ) : null;
+};
+
 export interface PriceCellProps {
   valueFormatted?: [string, string, number];
 }
 
 export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
   return valueFormatted ? (
-    <div className="font-mono">
-      <div className="float-left">${valueFormatted[0]}</div>
-      <div className="float-right">${valueFormatted[1]}</div>
-      <ProgressBar value={valueFormatted[2]} />
-    </div>
-  ) : (
-    ''
-  );
+    <>
+      <div className="flex justify-between leading-tight">
+        <div>{valueFormatted[0]}</div>
+        <div>{valueFormatted[1]}</div>
+      </div>
+      <ProgressBar value={valueFormatted[2]} className="mt-4" />
+    </>
+  ) : null;
 };
 
 ProgressBarCell.displayName = 'PriceFlashCell';
+
+export interface AmountCellProps {
+  valueFormatted?: { volume: string; decimalPlaces: number; notional: string };
+}
+
+export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
+  if (!valueFormatted) {
+    return null;
+  }
+  const { volume, decimalPlaces, notional } = valueFormatted;
+  return valueFormatted ? (
+    <div className="leading-tight">
+      <div
+        className={classNames('text-right', {
+          'color-vega-green': ({ value }: { value: string }) =>
+            Number(value) > 0,
+          'color-vega-red': ({ value }: { value: string }) => Number(value) < 0,
+        })}
+      >
+        {volumePrefix(addDecimal(volume, decimalPlaces))}
+      </div>
+      <div className="text-right">{addDecimal(notional, decimalPlaces)}</div>
+    </div>
+  ) : null;
+};
+
+AmountCell.displayName = 'AmountCell';
 
 export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
   return (
@@ -62,6 +103,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
       style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate="No positions"
       getRowId={getRowId}
+      rowHeight={34}
       ref={ref}
       defaultColDef={{
         flex: 1,
@@ -70,36 +112,44 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
       components={{ PriceFlashCell, ProgressBarCell }}
       {...props}
     >
-      <AgGridColumn headerName={t('Market')} field="name" />
+      <AgGridColumn
+        headerName={t('Market')}
+        field="marketName"
+        cellRenderer={MarketNameCell}
+        valueFormatter={({
+          value,
+        }: PositionsTableValueFormatterParams & {
+          value: Position['marketName'];
+        }) => {
+          if (!value) {
+            return undefined;
+          }
+          const matches = value.match(/^(.*)\((.*)\)\s*$/);
+          if (matches) {
+            return [matches[1], matches[2]];
+          }
+          return [value];
+        }}
+      />
       <AgGridColumn
         headerName={t('Amount')}
         field="openVolume"
+        type="rightAligned"
+        cellRenderer={AmountCell}
         valueFormatter={({
           value,
           data,
         }: PositionsTableValueFormatterParams & {
           value: Position['openVolume'];
         }) => {
-          if (!data) {
+          if (!value || !data) {
             return undefined;
           }
-          return (
-            <>
-              <div
-                className={classNames('text-right', {
-                  'color-vega-green': ({ value }: { value: string }) =>
-                    Number(value) > 0,
-                  'color-vega-red': ({ value }: { value: string }) =>
-                    Number(value) < 0,
-                })}
-              >
-                {volumePrefix(addDecimal(value.toString(), data.decimalPlaces))}
-              </div>
-              <div className="text-right">
-                {addDecimal(data.notional.toString(), data.decimalPlaces)}
-              </div>
-            </>
-          );
+          return {
+            volume: value,
+            decimalPlaces: data.decimalPlaces,
+            notional: data.notional,
+          };
         }}
       />
       <AgGridColumn
@@ -135,29 +185,33 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
             '</div>',
         }}
         cellRenderer="ProgressBarCell"
-        valueFormatter={({ data }: PositionsTableValueFormatterParams) => {
+        valueFormatter={({
+          data,
+        }: PositionsTableValueFormatterParams):
+          | PriceCellProps['valueFormatted']
+          | undefined => {
           if (!data) {
             return undefined;
           }
-          const min =
-            data.openVolume > 0
-              ? data.averageEntryPrice
-              : data.liquidationPrice;
-          const max =
-            data.openVolume > 0
-              ? data.averageEntryPrice
-              : data.liquidationPrice;
-          const mid = data.markPrice;
+          const openVolume = BigInt(data.openVolume);
+          const min = BigInt(
+            openVolume > 0 ? data.averageEntryPrice : data.liquidationPrice
+          );
+          const max = BigInt(
+            openVolume > 0 ? data.averageEntryPrice : data.liquidationPrice
+          );
+          const mid = BigInt(data.markPrice);
+          const range = max - min;
           return [
             addDecimalsFormatNumber(min.toString(), data.decimalPlaces),
             addDecimalsFormatNumber(max.toString(), data.decimalPlaces),
-            ((mid - min) * BigInt(100)) / (max - min),
+            range ? Number(((mid - min) * BigInt(100)) / range) : 0,
           ];
         }}
       />
       <AgGridColumn
         headerName={t('Leverage')}
-        field="leverage"
+        field="currentLeverage"
         type="rightAligned"
         cellRenderer="PriceFlashCell"
         valueFormatter={({
@@ -170,23 +224,22 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
       />
       <AgGridColumn
         headerName={t('Margin allocated')}
-        field="averageEntryPrice"
-        valueFormatter={({ data }: PositionsTableValueFormatterParams) => {
+        field="capitalUtilisation"
+        type="rightAligned"
+        cellRenderer="ProgressBarCell"
+        valueFormatter={({
+          data,
+          value,
+        }: PositionsTableValueFormatterParams & {
+          value: Position['capitalUtilisation'];
+        }): PriceCellProps['valueFormatted'] | undefined => {
           if (!data) {
             return undefined;
           }
-          const totalBalance =
-            data.marginAccountBalance + data.generalAccountBalance;
-          const marginAllocated = Number(
-            (data.marginAccountBalance * BigInt(100)) / totalBalance
-          );
           return [
-            `${marginAllocated}%`,
-            addDecimalsFormatNumber(
-              totalBalance.toString(),
-              data.decimalPlaces
-            ),
-            marginAllocated,
+            `${value}%`,
+            addDecimalsFormatNumber(data.totalBalance, data.decimalPlaces),
+            Number(value),
           ];
         }}
       />
@@ -216,23 +269,16 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Updated')}
         field="updatedAt"
-        valueFormatter={({ data }: PositionsTableValueFormatterParams) => {
-          if (!data) {
-            return undefined;
+        type="rightAligned"
+        valueFormatter={({
+          value,
+        }: PositionsTableValueFormatterParams & {
+          value: Position['updatedAt'];
+        }) => {
+          if (!value) {
+            return value;
           }
-          const totalBalance =
-            data.marginAccountBalance + data.generalAccountBalance;
-          const marginAllocated = Number(
-            (data.marginAccountBalance * BigInt(100)) / totalBalance
-          );
-          return [
-            `${marginAllocated}%`,
-            addDecimalsFormatNumber(
-              totalBalance.toString(),
-              data.decimalPlaces
-            ),
-            marginAllocated,
-          ];
+          return getDateTimeFormat().format(new Date(value));
         }}
       />
     </AgGrid>

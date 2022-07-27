@@ -55,7 +55,7 @@ export const DepositManager = ({
   const { config } = useEthereumConfig();
 
   const tokenContract = useTokenContract(
-    asset?.source.__typename === 'ERC20'
+    asset?.source.__typename === ERC20AssetSource.__typename
       ? asset.source.contractAddress
       : undefined,
     isFaucetable
