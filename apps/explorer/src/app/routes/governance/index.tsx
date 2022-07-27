@@ -108,7 +108,9 @@ const Governance = () => {
   if (!data) return null;
   return (
     <section>
-      <RouteTitle data-testid="governance-header">{t('Governance')}</RouteTitle>
+      <RouteTitle data-testid="governance-header">
+        {t('Governance Proposals')}
+      </RouteTitle>
       {data.proposals?.map((p) => (
         <React.Fragment key={p.id}>
           <SubHeading>{getProposalName(p.terms.change)}</SubHeading>
