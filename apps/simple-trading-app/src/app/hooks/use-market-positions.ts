@@ -39,27 +39,31 @@ export default ({ marketId, partyId }: Props): PositionMargin => {
   const { data } = useQuery<marketPositions, marketPositionsVariables>(
     MARKET_POSITIONS_QUERY,
     {
-      pollInterval: 1000 * 30,
+      pollInterval: 15000,
       variables: { partyId },
+      skip: !partyId,
     }
   );
+
   const markets =
     data?.party?.positionsConnection?.edges
       ?.filter((nodes) => nodes.node.market.id === marketId)
       .map((nodes) => nodes.node) || [];
-  if (markets.length) {
-    return {
-      openVolume: markets.reduce((agg, item) => agg + +item.openVolume, 0),
-      balanceSum: markets.reduce(
-        (agg, item) =>
-          agg +
-          (item.market.accounts?.reduce(
+
+  return markets.length
+    ? markets.reduce(
+        (agg, item) => {
+          const balance = item.market.accounts?.reduce(
             (acagg, account) => acagg + (+account.balance || 0),
             0
-          ) || 0),
-        0
-      ),
-    };
-  }
-  return null;
+          );
+          if (balance) {
+            agg.balanceSum += balance;
+            agg.openVolume += +item.openVolume;
+          }
+          return agg;
+        },
+        { openVolume: 0, balanceSum: 0 }
+      )
+    : null;
 };

@@ -73,10 +73,7 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
         marketId: market.id,
         partyId,
         price: market.depth.lastTrade?.price,
-        size:
-          marketPositions && marketPositions.balanceSum
-            ? order.size + marketPositions.openVolume
-            : order.size,
+        size: order.size + (marketPositions?.openVolume || 0),
         side: order.side === VegaWalletOrderSide.Buy ? Side.Buy : Side.Sell,
         timeInForce: times[order.timeInForce],
         type: types[order.type],
