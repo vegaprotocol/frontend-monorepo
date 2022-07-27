@@ -6,7 +6,11 @@ import type {
 } from './__generated__/DepositEvent';
 import { DepositStatus } from '@vegaprotocol/types';
 import { useState } from 'react';
-import { remove0x, removeDecimal } from '@vegaprotocol/react-helpers';
+import {
+  isAssetTypeERC20,
+  remove0x,
+  removeDecimal,
+} from '@vegaprotocol/react-helpers';
 import {
   useBridgeContract,
   useEthereumConfig,
@@ -40,9 +44,7 @@ export const useSubmitDeposit = () => {
   const { config } = useEthereumConfig();
   const bridgeContract = useBridgeContract(true);
   const tokenContract = useTokenContract(
-    asset?.source.__typename === 'ERC20'
-      ? asset.source.contractAddress
-      : undefined,
+    isAssetTypeERC20(asset) ? asset : undefined,
     true
   );
 

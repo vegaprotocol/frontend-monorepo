@@ -3,8 +3,8 @@ import BigNumber from 'bignumber.js';
 import { useWeb3React } from '@web3-react/core';
 import { WithdrawForm } from './withdraw-form';
 import { generateAsset } from './test-helpers';
-import type { Asset } from './types';
 import type { WithdrawFormProps } from './withdraw-form';
+import type { Asset } from '@vegaprotocol/react-helpers';
 
 jest.mock('@web3-react/core');
 

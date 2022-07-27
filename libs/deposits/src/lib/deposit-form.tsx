@@ -1,3 +1,4 @@
+import type { Asset } from '@vegaprotocol/react-helpers';
 import {
   ethereumAddress,
   t,
@@ -6,6 +7,7 @@ import {
   minSafe,
   maxSafe,
   addDecimal,
+  isAssetTypeERC20,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -23,7 +25,6 @@ import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
-import type { Asset } from './deposit-manager';
 
 interface FormFields {
   asset: string;
@@ -161,13 +162,11 @@ export const DepositForm = ({
               }}
             >
               <option value="">{t('Please select')}</option>
-              {assets
-                .filter((a) => a.source.__typename === 'ERC20')
-                .map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
+              {assets.filter(isAssetTypeERC20).map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
             </Select>
           )}
         />

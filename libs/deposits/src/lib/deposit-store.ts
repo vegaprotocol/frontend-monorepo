@@ -1,7 +1,7 @@
+import type { Asset } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import type { SetState } from 'zustand';
 import create from 'zustand';
-import type { Asset } from './deposit-manager';
 
 interface DepositStore {
   balance: BigNumber;
@@ -12,7 +12,7 @@ interface DepositStore {
   update: (state: Partial<DepositStore>) => void;
 }
 
-export const useDepositStore = create((set: SetState<DepositStore>, get) => ({
+export const useDepositStore = create((set: SetState<DepositStore>) => ({
   balance: new BigNumber(0),
   allowance: new BigNumber(0),
   deposited: new BigNumber(0),

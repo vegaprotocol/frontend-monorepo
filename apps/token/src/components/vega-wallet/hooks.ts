@@ -18,6 +18,7 @@ import type {
 } from './__generated__/Delegations';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
+import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -117,7 +118,7 @@ export const usePollForDelegations = () => {
                 .filter((a) => a.type === AccountType.General)
                 .map((a) => {
                   const isVega =
-                    a.asset.source.__typename === 'ERC20' &&
+                    isAssetTypeERC20(a.asset) &&
                     a.asset.source.contractAddress === vegaToken.address;
 
                   return {
@@ -131,10 +132,9 @@ export const usePollForDelegations = () => {
                     ),
                     image: isVega ? vegaBlack : noIcon,
                     border: isVega,
-                    address:
-                      a.asset.source.__typename === 'ERC20'
-                        ? a.asset.source.contractAddress
-                        : undefined,
+                    address: isAssetTypeERC20(a.asset)
+                      ? a.asset.source.contractAddress
+                      : undefined,
                   };
                 })
                 .sort((a, b) => {

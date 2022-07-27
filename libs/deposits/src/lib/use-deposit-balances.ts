@@ -6,6 +6,7 @@ import { useGetAllowance } from './use-get-allowance';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
 import { useGetDepositMaximum } from './use-get-deposit-maximum';
 import { useGetDepositedAmount } from './use-get-deposited-amount';
+import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
 
 /**
  * Hook which fetches all the balances required for despoiting
@@ -14,9 +15,7 @@ import { useGetDepositedAmount } from './use-get-deposited-amount';
 export const useDepositBalances = (isFaucetable: boolean) => {
   const { asset, update } = useDepositStore();
   const tokenContract = useTokenContract(
-    asset?.source.__typename === 'ERC20'
-      ? asset.source.contractAddress
-      : undefined,
+    isAssetTypeERC20(asset) ? asset : undefined,
     isFaucetable
   );
   const bridgeContract = useBridgeContract(true);

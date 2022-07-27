@@ -6,26 +6,7 @@ import { useSubmitFaucet } from './use-submit-faucet';
 import { useDepositStore } from './deposit-store';
 import { useCallback } from 'react';
 import { useDepositBalances } from './use-deposit-balances';
-
-interface ERC20AssetSource {
-  __typename: 'ERC20';
-  contractAddress: string;
-}
-
-interface BuiltinAssetSource {
-  __typename: 'BuiltinAsset';
-}
-
-type AssetSource = ERC20AssetSource | BuiltinAssetSource;
-
-export interface Asset {
-  __typename: 'Asset';
-  id: string;
-  symbol: string;
-  name: string;
-  decimals: number;
-  source: AssetSource;
-}
+import type { Asset } from '@vegaprotocol/react-helpers';
 
 interface DepositManagerProps {
   assets: Asset[];

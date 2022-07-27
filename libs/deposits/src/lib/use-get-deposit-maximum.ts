@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import * as Sentry from '@sentry/react';
-import type { Asset } from './deposit-manager';
 import BigNumber from 'bignumber.js';
+import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import type {
   CollateralBridge,
