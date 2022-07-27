@@ -71,6 +71,10 @@ export interface MarketList_markets_data {
    * what triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
+  /**
+   * indicative volume if the auction ended now, 0 if not in auction mode
+   */
+  indicativeVolume: string;
 }
 
 export interface MarketList_markets_tradableInstrument_instrument_metadata {
@@ -164,6 +168,10 @@ export interface MarketList_markets {
    */
   id: string;
   /**
+   * Market full name
+   */
+  name: string;
+  /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
    * 
@@ -180,6 +188,12 @@ export interface MarketList_markets {
    * GBX (pence)        1              4       GBP   0.000001 (  0.0001p)
    */
   decimalPlaces: number;
+  /**
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
+   * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   */
+  positionDecimalPlaces: number;
   /**
    * Current state of the market
    */

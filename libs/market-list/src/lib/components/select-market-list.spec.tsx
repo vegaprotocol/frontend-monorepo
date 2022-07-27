@@ -14,14 +14,13 @@ describe('SelectMarketList', () => {
   it('should render', () => {
     const { container } = render(
       <SelectMarketList
-        data={mockData.data as MarketList}
+        data={mockData.data as unknown as MarketList}
         onSelect={jest.fn()}
       />
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
     expect(container).toHaveTextContent(/141\.75/);
-    expect(screen.getByText('Or view full market list')).toBeTruthy();
   });
 
   it('should call onSelect callback', () => {
@@ -29,7 +28,7 @@ describe('SelectMarketList', () => {
     const expectedMarket = mockData.data.markets[0];
     render(
       <SelectMarketList
-        data={mockData.data as MarketList}
+        data={mockData.data as unknown as MarketList}
         onSelect={onSelect}
       />
     );
@@ -57,6 +56,15 @@ const mockData = {
           __typename: 'MarketTimestamps',
           open: '2022-05-18T13:08:27.693537312Z',
           close: null,
+        },
+        fees: {
+          __typename: 'Fees',
+          factors: {
+            __typename: 'Factors',
+            infrastructureFee: 0.01,
+            makerFee: 0.01,
+            liquidityFee: 0.01,
+          },
         },
         candles: [
           {
@@ -101,6 +109,15 @@ const mockData = {
             __typename: 'Instrument',
             name: 'Apple Monthly (30 Jun 2022)',
             code: 'AAPL.MF21',
+          },
+        },
+        fees: {
+          __typename: 'Fees',
+          factors: {
+            __typename: 'Factors',
+            infrastructureFee: 0.01,
+            makerFee: 0.01,
+            liquidityFee: 0.01,
           },
         },
         marketTimestamps: {

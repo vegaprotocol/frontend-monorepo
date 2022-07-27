@@ -47,6 +47,10 @@ export interface MarketDataSub_marketData {
    * what triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
+  /**
+   * indicative volume if the auction ended now, 0 if not in auction mode
+   */
+  indicativeVolume: string;
 }
 
 export interface MarketDataSub {

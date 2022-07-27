@@ -19,6 +19,7 @@ const MARKET_DATA_FRAGMENT = gql`
     bestOfferPrice
     markPrice
     trigger
+    indicativeVolume
   }
 `;
 
@@ -26,7 +27,9 @@ export const MARKET_LIST_QUERY = gql`
   query MarketList($interval: Interval!, $since: String!) {
     markets {
       id
+      name
       decimalPlaces
+      positionDecimalPlaces
       state
       tradingMode
       fees {
@@ -46,6 +49,7 @@ export const MARKET_LIST_QUERY = gql`
         bestOfferPrice
         markPrice
         trigger
+        indicativeVolume
       }
       tradableInstrument {
         instrument {

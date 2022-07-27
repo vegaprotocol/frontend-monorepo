@@ -24,19 +24,19 @@ export function Dialog({
   icon,
   intent,
   titleClassNames,
-  size,
+  size = 'large',
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed w-full md:w-[720px] lg:w-[940px] px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+    'z-20 fixed  px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
     getIntentShadow(intent),
     getIntentBorder(intent),
     {
       'md:w-[520px] lg:w-[520px] w-full': size === 'small',
-      'w-full lg:w-[1020px]': size === 'large',
-      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto':
+      'w-full w-full md:w-[720px] lg:w-[940px]': size === 'large',
+      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto w-full':
         size === 'tall',
     }
   );
