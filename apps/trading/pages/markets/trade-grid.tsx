@@ -22,6 +22,7 @@ import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import {
   ArrowDown,
+  ArrowUp,
   Tab,
   Tabs,
   PriceCellChange,
@@ -75,14 +76,26 @@ export const TradeMarketHeader = ({
         setDialogOpen={setOpen}
         detailed={true}
         size="tall"
+        title={t('All markets')}
       />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
           onClick={() => setOpen(!open)}
-          className="shrink-0 text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/10 dark:hover:bg-white/20"
+          className="shrink-0  text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/10 dark:hover:bg-white/20"
         >
-          <span className="break-words text-left">{market.name}</span>
-          <ArrowDown color="yellow" borderX={8} borderTop={12} />
+          {open ? (
+            <>
+              <span className="break-words text-left text-white">
+                {t('Select a market')}
+              </span>
+              <ArrowUp color="white" borderX={8} borderBottom={12} />
+            </>
+          ) : (
+            <>
+              <span className="break-words text-left">{market.name}</span>
+              <ArrowDown color="yellow" borderX={8} borderTop={12} />
+            </>
+          )}
         </button>
 
         <div
