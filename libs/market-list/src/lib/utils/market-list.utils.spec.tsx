@@ -1,4 +1,4 @@
-import type { MarketList } from '../components/markets-container/__generated__/MarketList';
+import type { MarketList } from '../__generated__/MarketList';
 import { mapDataToMarketList } from './market-list.utils';
 
 describe('mapDataToMarketList', () => {
@@ -10,6 +10,7 @@ describe('mapDataToMarketList', () => {
 
 const mockList = [
   {
+    __typename: 'Market',
     candles: [
       { __typename: 'Candle', close: '14633864', open: '14707175' },
       { __typename: 'Candle', close: '14550193', open: '14658400' },
@@ -24,8 +25,27 @@ const mockList = [
     lastPrice: '14174855',
     marketName: 'AAPL.MF21',
     open: 1652878839328,
+    tradableInstrument: {
+      __typename: 'TradableInstrument',
+      instrument: {
+        __typename: 'Instrument',
+        code: 'AAPL.MF21',
+        name: 'Apple Monthly (30 Jun 2022)',
+      },
+    },
+    marketTimestamps: {
+      __typename: 'MarketTimestamps',
+      close: null,
+      open: '2022-05-18T13:00:39.328347732Z',
+    },
   },
   {
+    __typename: 'Market',
+    marketTimestamps: {
+      __typename: 'MarketTimestamps',
+      close: null,
+      open: '2022-05-18T13:08:27.693537312Z',
+    },
     candles: [
       { __typename: 'Candle', close: '798', open: '822' },
       { __typename: 'Candle', close: '792', open: '793' },
@@ -36,6 +56,14 @@ const mockList = [
     ],
     close: null,
     decimalPlaces: 2,
+    tradableInstrument: {
+      __typename: 'TradableInstrument',
+      instrument: {
+        __typename: 'Instrument',
+        code: 'APEUSD',
+        name: 'APEUSD (May 2022)',
+      },
+    },
     id: '062ddcb97beae5b7cc4fa20621fe0c83b2a6f7e76cf5b129c6bd3dc14e8111ef',
     lastPrice: '774',
     marketName: 'APEUSD',

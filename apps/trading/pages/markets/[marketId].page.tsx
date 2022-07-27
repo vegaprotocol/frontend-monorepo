@@ -7,7 +7,7 @@ import { PageQueryContainer } from '../../components/page-query-container';
 import { TradeGrid, TradePanels } from './trade-grid';
 import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
-import { LandingDialog } from '@vegaprotocol/market-list';
+import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import type { Market, MarketVariables } from './__generated__/Market';
 import { Interval } from '@vegaprotocol/types';
 
@@ -82,6 +82,12 @@ const MarketPage = ({ id }: { id?: string }) => {
     return new Date(yesterday * 1000).toISOString();
   });
 
+  useEffect(() => {
+    if (marketId && store.marketId !== marketId) {
+      store.setMarketId(marketId);
+    }
+  }, [marketId, store]);
+
   if (!marketId) {
     return (
       <Splash>
@@ -114,9 +120,14 @@ const MarketPage = ({ id }: { id?: string }) => {
             ) : (
               <TradePanels market={market} />
             )}
-            <LandingDialog
-              open={store.landingDialog}
-              setOpen={(isOpen) => store.setLandingDialog(isOpen)}
+            <SelectMarketDialog
+              dialogOpen={store.landingDialog}
+              setDialogOpen={(isOpen: boolean) =>
+                store.setLandingDialog(isOpen)
+              }
+              title={t('Select a market to get started')}
+              detailed={false}
+              size="small"
             />
           </>
         );

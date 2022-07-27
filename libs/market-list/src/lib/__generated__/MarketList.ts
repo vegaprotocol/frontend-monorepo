@@ -9,6 +9,30 @@ import { Interval, MarketState, MarketTradingMode, AuctionTrigger } from "@vegap
 // GraphQL query operation: MarketList
 // ====================================================
 
+export interface MarketList_markets_fees_factors {
+  __typename: "FeeFactors";
+  /**
+   * The factor applied to calculate MakerFees, a non-negative float
+   */
+  makerFee: string;
+  /**
+   * The factor applied to calculate InfrastructureFees, a non-negative float
+   */
+  infrastructureFee: string;
+  /**
+   * The factor applied to calculate LiquidityFees, a non-negative float
+   */
+  liquidityFee: string;
+}
+
+export interface MarketList_markets_fees {
+  __typename: "Fees";
+  /**
+   * The factors used to calculate the different fees
+   */
+  factors: MarketList_markets_fees_factors;
+}
+
 export interface MarketList_markets_data_market {
   __typename: "Market";
   /**
@@ -123,6 +147,14 @@ export interface MarketList_markets_candles {
    * Close price (uint64)
    */
   close: string;
+  /**
+   * High price (uint64)
+   */
+  high: string;
+  /**
+   * Low price (uint64)
+   */
+  low: string;
 }
 
 export interface MarketList_markets {
@@ -156,6 +188,10 @@ export interface MarketList_markets {
    * Current mode of execution of the market
    */
   tradingMode: MarketTradingMode;
+  /**
+   * Fees related data
+   */
+  fees: MarketList_markets_fees;
   /**
    * marketData for the given market
    */

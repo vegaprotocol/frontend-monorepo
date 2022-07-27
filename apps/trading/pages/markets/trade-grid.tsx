@@ -70,7 +70,12 @@ export const TradeMarketHeader = ({
   );
   return (
     <header className={headerClassName}>
-      <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
+      <SelectMarketDialog
+        dialogOpen={open}
+        setDialogOpen={setOpen}
+        detailed={true}
+        size="tall"
+      />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
           onClick={() => setOpen(!open)}

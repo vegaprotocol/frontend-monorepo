@@ -6,17 +6,61 @@ import {
 import type { CandleClose } from '@vegaprotocol/types';
 import { PriceCellChange, Sparkline } from '@vegaprotocol/ui-toolkit';
 import Link from 'next/link';
-import { mapDataToMarketList } from '../../utils';
-import type { MarketList } from '../markets-container/__generated__/MarketList';
+import { mapDataToMarketList } from '../utils';
+import type { MarketList } from '../__generated__/MarketList';
+import { useQuery } from '@apollo/client';
+import { Interval } from '@vegaprotocol/types';
+import { Dialog, Intent } from '@vegaprotocol/ui-toolkit';
+import { MARKET_LIST_QUERY } from '../markets-data-provider';
+import isNil from 'lodash/isNil';
+
+export interface SelectMarketListProps {
+  dialogOpen: boolean;
+  setDialogOpen: (open: boolean) => void;
+  title?: string;
+  detailed?: boolean;
+  size?: 'small' | 'large' | 'tall';
+}
+
+export const SelectMarketDialog = ({
+  dialogOpen,
+  setDialogOpen,
+  title = t('Select a market'),
+  detailed = false,
+  size,
+}: SelectMarketListProps) => {
+  const setClose = () => setDialogOpen(false);
+
+  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+  const yTimestamp = new Date(yesterday * 1000).toISOString();
+
+  const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
+    variables: { interval: Interval.I1H, since: yTimestamp },
+  });
+  return (
+    <Dialog
+      title={title}
+      intent={Intent.Primary}
+      open={!isNil(data) && dialogOpen}
+      onChange={() => setDialogOpen(false)}
+      titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
+      size={size}
+    >
+      <SelectMarketList data={data} onSelect={setClose} detailed={detailed} />
+    </Dialog>
+  );
+};
 
 export interface SelectMarketListDataProps {
   data: MarketList | undefined;
   onSelect: (id: string) => void;
+  detailed?: boolean;
 }
 
 export const SelectMarketList = ({
   data,
   onSelect,
+  detailed = false,
 }: SelectMarketListDataProps) => {
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
@@ -33,6 +77,8 @@ export const SelectMarketList = ({
 
   const boldUnderlineClassNames =
     'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
+  const marketList = data && mapDataToMarketList(data);
+
   return (
     <div
       className="max-h-[40rem] overflow-x-auto"
@@ -41,17 +87,29 @@ export const SelectMarketList = ({
       <table className="relative h-full min-w-full whitespace-nowrap">
         <thead className="sticky top-0 z-10 dark:bg-black bg-white">
           <tr>
-            <th className={thClassNames('left')}>Market</th>
-            <th className={thClassNames('right')}>Last price</th>
-            <th className={thClassNames('right')}>Change (24h)</th>
+            <th className={thClassNames('left')}>{t('Market')}</th>
+            <th className={thClassNames('right')}>{t('Last price')}</th>
+            {detailed && (
+              <th className={thClassNames('left')}>{t('Settlement asset')}</th>
+            )}
+            <th className={thClassNames('right')}>{t('Change (24h)')}</th>
             <th className={thClassNames('right')}></th>
+            {detailed && (
+              <>
+                <th className={thClassNames('right')}>{t('24h High')}</th>
+                <th className={thClassNames('right')}>{t('24h Low')}</th>
+                <th className={thClassNames('left')}>{t('Trading mode')}</th>
+                <th className={thClassNames('left')}>{t('Taker fee')}</th>
+                <th className={thClassNames('left')}>{t('Volume')}</th>
+                <th className={thClassNames('left')}>{t('Full name')}</th>
+              </>
+            )}
           </tr>
         </thead>
         <tbody>
           {data &&
-            mapDataToMarketList(data)
-              .slice(0, 12)
-              ?.map(({ id, marketName, lastPrice, candles, decimalPlaces }) => {
+            marketList?.map(
+              ({ id, marketName, lastPrice, candles, decimalPlaces }) => {
                 const candlesClose: string[] = candles
                   .map((candle) => candle?.close)
                   .filter((c): c is CandleClose => c !== null);
@@ -103,7 +161,8 @@ export const SelectMarketList = ({
                     </td>
                   </tr>
                 );
-              })}
+              }
+            )}
         </tbody>
       </table>
 

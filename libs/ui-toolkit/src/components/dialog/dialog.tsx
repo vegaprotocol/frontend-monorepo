@@ -13,7 +13,7 @@ interface DialogProps {
   icon?: ReactNode;
   intent?: Intent;
   titleClassNames?: string;
-  contentClassNames?: string;
+  size?: 'small' | 'large' | 'tall';
 }
 
 export function Dialog({
@@ -24,7 +24,7 @@ export function Dialog({
   icon,
   intent,
   titleClassNames,
-  contentClassNames,
+  size,
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
@@ -33,7 +33,12 @@ export function Dialog({
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
     getIntentShadow(intent),
     getIntentBorder(intent),
-    contentClassNames
+    {
+      'md:w-[520px] lg:w-[520px] w-full': size === 'small',
+      'w-full lg:w-[1020px]': size === 'large',
+      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto':
+        size === 'tall',
+    }
   );
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>

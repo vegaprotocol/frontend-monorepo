@@ -3,7 +3,7 @@ import orderBy from 'lodash/orderBy';
 import type {
   MarketList,
   MarketList_markets,
-} from '../components/markets-container/__generated__/MarketList';
+} from '../__generated__/MarketList';
 
 export const lastPrice = ({ candles }: MarketList_markets) =>
   candles && candles.length > 0

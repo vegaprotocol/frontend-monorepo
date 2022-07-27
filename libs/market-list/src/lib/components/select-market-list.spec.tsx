@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
-import type { MarketList } from '../markets-container/__generated__/MarketList';
+import type { MarketList } from '../__generated__/MarketList';
 import { SelectMarketList } from './select-market-list';
 
 jest.mock(

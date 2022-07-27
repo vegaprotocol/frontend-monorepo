@@ -1,12 +1,12 @@
 import produce from 'immer';
 import { gql } from '@apollo/client';
+import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
   MarketDataSub,
   MarketDataSub_marketData,
   MarketList,
   MarketList_markets,
-} from './';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+} from './__generated__';
 
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketDataFields on MarketData {
@@ -29,8 +29,23 @@ export const MARKET_LIST_QUERY = gql`
       decimalPlaces
       state
       tradingMode
+      fees {
+        factors {
+          makerFee
+          infrastructureFee
+          liquidityFee
+        }
+      }
       data {
-        ...MarketDataFields
+        market {
+          id
+          state
+          tradingMode
+        }
+        bestBidPrice
+        bestOfferPrice
+        markPrice
+        trigger
       }
       tradableInstrument {
         instrument {
@@ -39,7 +54,6 @@ export const MARKET_LIST_QUERY = gql`
           metadata {
             tags
           }
-
           product {
             ... on Future {
               settlementAsset {
@@ -56,6 +70,8 @@ export const MARKET_LIST_QUERY = gql`
       candles(interval: $interval, since: $since) {
         open
         close
+        high
+        low
       }
     }
   }
