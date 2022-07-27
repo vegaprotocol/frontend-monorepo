@@ -160,7 +160,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
       <div className={wrapperClasses}>
         <TradeMarketHeader market={market} />
         <Allotment vertical={true}>
-          <Allotment.Pane>
+          <Allotment.Pane minSize={75}>
             <Allotment proportionalLayout={false} minSize={200}>
               <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
                 <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
