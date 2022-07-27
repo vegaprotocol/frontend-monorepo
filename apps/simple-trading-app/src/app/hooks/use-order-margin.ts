@@ -11,7 +11,7 @@ import {
   VegaWalletOrderTimeInForce,
   VegaWalletOrderType,
 } from '@vegaprotocol/wallet';
-import { addDecimal } from '@vegaprotocol/react-helpers';
+import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
 import useMarketPositions from './use-market-positions';
 
 export const ESTIMATE_ORDER_QUERY = gql`
@@ -82,14 +82,17 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
     }
   );
   if (data?.estimateOrder.marginLevels.initialLevel) {
-    return Math.max(
-      0,
-      parseFloat(
-        addDecimal(
-          data.estimateOrder.marginLevels.initialLevel,
-          market.decimalPlaces
-        )
-      ) - (marketPositions?.balanceSum || 0)
+    return formatNumber(
+      Math.max(
+        0,
+        parseFloat(
+          addDecimal(
+            data.estimateOrder.marginLevels.initialLevel,
+            market.decimalPlaces
+          )
+        ) - (marketPositions?.balanceSum || 0)
+      ),
+      market.decimalPlaces
     );
   }
   return ' - ';
