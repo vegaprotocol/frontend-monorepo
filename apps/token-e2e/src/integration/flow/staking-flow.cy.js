@@ -25,7 +25,8 @@ const ethWalletContainer = '[data-testid="ethereum-wallet"]';
 const txTimeout = { timeout: 40000 };
 const epochTimeout = { timeout: 10000 };
 
-context('Staking Tab - with eth and vega wallets connected', function () {
+// Tests skipped because of change of the UI of data nodes
+context.skip('Staking Tab - with eth and vega wallets connected', function () {
   before('visit staking tab and connect vega wallet', function () {
     cy.vega_wallet_import();
     cy.visit('/');
