@@ -66,8 +66,8 @@ const governanceRoutes = flags.governance
   ? [
       {
         path: Routes.GOVERNANCE,
-        name: 'Governance',
-        text: t('Proposals'),
+        name: 'Governance proposals',
+        text: t('Governance Proposals'),
         element: <Governance />,
       },
     ]
