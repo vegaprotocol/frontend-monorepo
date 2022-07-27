@@ -68,6 +68,8 @@ const getBundledEnvironmentValue = (key: EnvKey) => {
       return process.env['NX_GITHUB_FEEDBACK_URL'];
     case 'VEGA_EXPLORER_URL':
       return process.env['NX_VEGA_EXPLORER_URL'];
+    case 'VEGA_WALLET_URL':
+      return process.env['NX_VEGA_WALLET_URL'];
   }
 };
 
