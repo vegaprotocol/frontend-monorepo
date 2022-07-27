@@ -142,6 +142,8 @@ context('Vega Wallet - verify elements on widget', function () {
 
   describe('when vega wallet connected', function () {
     before('connect vega wallet', function () {
+      cy.vega_wallet_import();
+
       //   cy.vega_wallet_connect();  - to be changed when dialog state is fixed - https://github.com/vegaprotocol/frontend-monorepo/issues/838
       // then code below can be removed
       cy.get(restConnectorForm).within(() => {
