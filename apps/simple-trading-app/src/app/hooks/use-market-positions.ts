@@ -1,11 +1,12 @@
 import { gql, useQuery } from '@apollo/client';
+import { BigNumber } from 'bignumber.js';
 import type {
-  marketPositions,
-  marketPositionsVariables,
+  MarketPositions,
+  MarketPositionsVariables,
 } from './__generated__/marketPositions';
 
 const MARKET_POSITIONS_QUERY = gql`
-  query marketPositions($partyId: ID!) {
+  query MarketPositions($partyId: ID!) {
     party(id: $partyId) {
       id
       positionsConnection {
@@ -31,12 +32,12 @@ interface Props {
 }
 
 type PositionMargin = {
-  openVolume: number;
-  balanceSum: number;
+  openVolume: BigNumber;
+  balanceSum: BigNumber;
 } | null;
 
 export default ({ marketId, partyId }: Props): PositionMargin => {
-  const { data } = useQuery<marketPositions, marketPositionsVariables>(
+  const { data } = useQuery<MarketPositions, MarketPositionsVariables>(
     MARKET_POSITIONS_QUERY,
     {
       pollInterval: 15000,
@@ -54,16 +55,16 @@ export default ({ marketId, partyId }: Props): PositionMargin => {
     ? markets.reduce(
         (agg, item) => {
           const balance = item.market.accounts?.reduce(
-            (acagg, account) => acagg + (+account.balance || 0),
-            0
+            (acagg, account) => acagg.plus(account.balance || 0),
+            new BigNumber(0)
           );
           if (balance) {
-            agg.balanceSum += balance;
-            agg.openVolume += +item.openVolume;
+            agg.balanceSum = agg.balanceSum.plus(balance);
+            agg.openVolume = agg.openVolume.plus(item.openVolume);
           }
           return agg;
         },
-        { openVolume: 0, balanceSum: 0 }
+        { openVolume: new BigNumber(0), balanceSum: new BigNumber(0) }
       )
     : null;
 };

@@ -6,10 +6,10 @@
 import { Side, OrderTimeInForce, OrderType } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: estimateOrder
+// GraphQL query operation: EstimateOrder
 // ====================================================
 
-export interface estimateOrder_estimateOrder_marginLevels {
+export interface EstimateOrder_estimateOrder_marginLevels {
   __typename: "MarginLevels";
   /**
    * this is the minimal margin required for a party to place a new order on the network (unsigned int actually)
@@ -17,7 +17,7 @@ export interface estimateOrder_estimateOrder_marginLevels {
   initialLevel: string;
 }
 
-export interface estimateOrder_estimateOrder {
+export interface EstimateOrder_estimateOrder {
   __typename: "OrderEstimate";
   /**
    * The total estimated amount of fee if the order was to trade
@@ -26,17 +26,17 @@ export interface estimateOrder_estimateOrder {
   /**
    * The margin requirement for this order
    */
-  marginLevels: estimateOrder_estimateOrder_marginLevels;
+  marginLevels: EstimateOrder_estimateOrder_marginLevels;
 }
 
-export interface estimateOrder {
+export interface EstimateOrder {
   /**
    * return an estimation of the potential cost for a new order
    */
-  estimateOrder: estimateOrder_estimateOrder;
+  estimateOrder: EstimateOrder_estimateOrder;
 }
 
-export interface estimateOrderVariables {
+export interface EstimateOrderVariables {
   marketId: string;
   partyId: string;
   price?: string | null;

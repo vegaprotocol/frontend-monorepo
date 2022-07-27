@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js';
 import type { Order } from '@vegaprotocol/orders';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import type { PartyBalanceQuery } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
@@ -17,17 +18,18 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
     partyData?.party?.accounts || []
   );
   if (account?.balance && market.depth.lastTrade) {
-    const price = parseFloat(
+    const price = new BigNumber(
       addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
     );
-    const balance = parseFloat(
+    const balance = new BigNumber(
       addDecimal(account.balance, account.asset.decimals)
     );
     const { size, side } = order;
+    const bigOne = new BigNumber(1);
     return formatNumber(
       side === VegaWalletOrderSide.Buy
-        ? (1 - balance / (+size * price)) * price
-        : (1 + balance / (+size * price)) * price,
+        ? bigOne.minus(balance.div(price.times(size))).times(price)
+        : bigOne.plus(balance.div(price.times(size))).times(price),
       market.decimalPlaces
     );
   }

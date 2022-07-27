@@ -1,8 +1,8 @@
 import type { Order } from '@vegaprotocol/orders';
 import { gql, useQuery } from '@apollo/client';
 import type {
-  estimateOrder,
-  estimateOrderVariables,
+  EstimateOrder,
+  EstimateOrderVariables,
 } from './__generated__/estimateOrder';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
@@ -13,9 +13,10 @@ import {
 } from '@vegaprotocol/wallet';
 import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
 import useMarketPositions from './use-market-positions';
+import { BigNumber } from 'bignumber.js';
 
 export const ESTIMATE_ORDER_QUERY = gql`
-  query estimateOrder(
+  query EstimateOrder(
     $marketId: ID!
     $partyId: ID!
     $price: String
@@ -65,15 +66,23 @@ const types: Record<VegaWalletOrderType, OrderType> = {
 
 const useOrderMargin = ({ order, market, partyId }: Props) => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
-
-  const { data } = useQuery<estimateOrder, estimateOrderVariables>(
+  console.log('marketPositions', marketPositions);
+  console.log(
+    'marketPositions.openVolume',
+    marketPositions?.openVolume.toNumber()
+  );
+  console.log(
+    'marketPositions.balanceSum',
+    marketPositions?.balanceSum.toNumber()
+  );
+  const { data } = useQuery<EstimateOrder, EstimateOrderVariables>(
     ESTIMATE_ORDER_QUERY,
     {
       variables: {
         marketId: market.id,
         partyId,
         price: market.depth.lastTrade?.price,
-        size: order.size + (marketPositions?.openVolume || 0),
+        size: order.size + (marketPositions?.openVolume.toNumber() || 0),
         side: order.side === VegaWalletOrderSide.Buy ? Side.Buy : Side.Sell,
         timeInForce: times[order.timeInForce],
         type: types[order.type],
@@ -85,12 +94,14 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
     return formatNumber(
       Math.max(
         0,
-        parseFloat(
+        new BigNumber(
           addDecimal(
             data.estimateOrder.marginLevels.initialLevel,
             market.decimalPlaces
           )
-        ) - (marketPositions?.balanceSum || 0)
+        )
+          .minus(marketPositions?.balanceSum.toNumber() || 0)
+          .toNumber()
       ),
       market.decimalPlaces
     );

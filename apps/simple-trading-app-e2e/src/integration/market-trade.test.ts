@@ -25,8 +25,8 @@ describe('Market trade', () => {
       aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
       aliasQuery(req, 'DealTicketQuery', generateDealTicket());
       aliasQuery(req, 'MarketTags', generateMarketTags());
-      aliasQuery(req, 'marketPositions', generateMarketPositions());
-      aliasQuery(req, 'estimateOrder', generateEstimateOrder());
+      aliasQuery(req, 'MarketPositions', generateMarketPositions());
+      aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
       aliasQuery(req, 'PartyBalanceQuery', generatePartyBalance());
     });
     cy.visit('/markets');
