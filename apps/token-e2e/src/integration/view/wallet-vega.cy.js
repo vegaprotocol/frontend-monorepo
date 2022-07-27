@@ -99,7 +99,9 @@ context('Vega Wallet - verify elements on widget', function () {
 
     it('should have url field visible', function () {
       cy.get(restConnectorForm).within(() => {
-        cy.get(restUrl).should('be.visible');
+        cy.get(restUrl)
+          .should('be.visible')
+          .and('have.value', 'http://localhost:1789/api/v1');
       });
     });
 
