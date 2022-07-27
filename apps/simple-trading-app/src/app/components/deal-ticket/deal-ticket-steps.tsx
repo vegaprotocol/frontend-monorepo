@@ -1,9 +1,16 @@
-import * as React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
-import { Button, InputError } from '@vegaprotocol/ui-toolkit';
-import { DealTicketAmount, MarketSelector } from '@vegaprotocol/deal-ticket';
+import { InputError } from '@vegaprotocol/ui-toolkit';
+import {
+  DealTicketAmount,
+  getDialogTitle,
+  getDialogIntent,
+  getDialogIcon,
+  MarketSelector,
+} from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
@@ -11,17 +18,22 @@ import {
   getDefaultOrder,
   useOrderValidation,
   useOrderSubmit,
+  OrderFeedback,
 } from '@vegaprotocol/orders';
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
+import ReviewTrade from './review-trade';
+import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
+  partyData?: PartyBalanceQuery;
 }
 
-export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
+export const DealTicketSteps = ({
+  market,
+  partyData,
+}: DealTicketMarketProps) => {
   const navigate = useNavigate();
   const setMarket = useCallback(
     (marketId) => {
@@ -45,6 +57,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
   const orderSide = watch('side');
+  const order = watch();
 
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
@@ -54,7 +67,8 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     fieldErrors: errors,
   });
 
-  const { submit, transaction } = useOrderSubmit(market);
+  const { submit, transaction, finalizedOrder, TransactionDialog } =
+    useOrderSubmit(market);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -101,7 +115,7 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
       component: (
         <DealTicketAmount
           orderType={orderType}
-          step={0.02}
+          step={step}
           register={register}
           price={
             market.depth.lastTrade
@@ -121,17 +135,20 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
               {invalidText}
             </InputError>
           )}
-          <Button
-            className="w-full mb-8"
-            variant="primary"
-            type="submit"
-            disabled={transactionStatus === 'pending' || isDisabled}
-            data-testid="place-order"
+          <ReviewTrade
+            market={market}
+            isDisabled={isDisabled}
+            transactionStatus={transactionStatus}
+            order={order}
+            partyData={partyData}
+          />
+          <TransactionDialog
+            title={getDialogTitle(finalizedOrder?.status)}
+            intent={getDialogIntent(finalizedOrder?.status)}
+            icon={getDialogIcon(finalizedOrder?.status)}
           >
-            {transactionStatus === 'pending'
-              ? t('Pending...')
-              : t('Place order')}
-          </Button>
+            <OrderFeedback transaction={transaction} order={finalizedOrder} />
+          </TransactionDialog>
         </div>
       ),
       disabled: true,
