@@ -29,8 +29,9 @@ export interface Position {
   // leverageSearch: string;
   liquidationPrice: string;
   marginAccountBalance: string;
-  marginMaintenance: string;
+  // marginMaintenance: string;
   marginSearch: string;
+  marginInitial: string;
   marketId: string;
   marketTradingMode: MarketTradingMode;
   markPrice: string;
@@ -226,9 +227,9 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
       BigInt(marginLevel.maintenanceLevel) * marketDecimalPlacesCorrection;
     const marginSearch =
       BigInt(marginLevel.searchLevel) * marketDecimalPlacesCorrection;
-    /*
     const marginInitial =
       BigInt(marginLevel.initialLevel) * marketDecimalPlacesCorrection;
+    /*
     const marginRelease =
       BigInt(marginLevel.collateralReleaseLevel) *
       marketDecimalPlacesCorrection;
@@ -256,8 +257,9 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
       // leverageSearch: notional / marginSearch,
       liquidationPrice: liquidationPrice.toString(),
       marginAccountBalance: marginAccountBalance.toString(),
-      marginMaintenance: marginMaintenance.toString(),
+      // marginMaintenance: marginMaintenance.toString(),
       marginSearch: marginSearch.toString(),
+      marginInitial: marginInitial.toString(),
       marketId: position.node.market.id,
       marketTradingMode: position.node.market.tradingMode,
       markPrice: markPrice.toString(),

@@ -16,6 +16,7 @@ import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { Position } from './positions-metrics-data-provider';
 import { MarketTradingMode } from '@vegaprotocol/types';
+import { Intent } from '@vegaprotocol/ui-toolkit';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
 
@@ -53,17 +54,26 @@ export const MarketNameCell = ({ valueFormatted }: MarketNameCellProps) => {
 };
 
 export interface PriceCellProps {
-  valueFormatted?: [string, string, number];
+  valueFormatted?: {
+    low: string;
+    high: string;
+    value: number;
+    variant?: Intent;
+  };
 }
 
 export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
   return valueFormatted ? (
     <>
       <div className="flex justify-between leading-tight">
-        <div>{valueFormatted[0]}</div>
-        <div>{valueFormatted[1]}</div>
+        <div>{valueFormatted.low}</div>
+        <div>{valueFormatted.high}</div>
       </div>
-      <ProgressBar value={valueFormatted[2]} className="mt-4" />
+      <ProgressBar
+        value={valueFormatted.value}
+        variant={valueFormatted.variant}
+        className="mt-4"
+      />
     </>
   ) : null;
 };
@@ -178,12 +188,11 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerComponentParams={{
           template:
             '<div class="ag-cell-label-container" role="presentation">' +
-            '  <div ref="eLabel" class="ag-header-cell-label" role="presentation" style="justify-content: space-between;">' +
-            '    <span ref="eText" class="ag-header-cell-text" role="columnheader"></span>' +
-            `    <span>${t('Liquidation price (est)')}</span>` +
-            '  </div>' +
+            `  <span>${t('Liquidation price (est)')}</span>` +
+            '  <span ref="eText" class="ag-header-cell-text"></span>' +
             '</div>',
         }}
+        flex={2}
         cellRenderer="ProgressBarCell"
         valueFormatter={({
           data,
@@ -193,20 +202,24 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!data) {
             return undefined;
           }
-          const openVolume = BigInt(data.openVolume);
-          const min = BigInt(
-            openVolume > 0 ? data.averageEntryPrice : data.liquidationPrice
-          );
-          const max = BigInt(
-            openVolume > 0 ? data.averageEntryPrice : data.liquidationPrice
-          );
+          // const openVolume = BigInt(data.openVolume);
+          const min = BigInt(data.averageEntryPrice);
+          const max = BigInt(data.liquidationPrice);
           const mid = BigInt(data.markPrice);
           const range = max - min;
-          return [
-            addDecimalsFormatNumber(min.toString(), data.decimalPlaces),
-            addDecimalsFormatNumber(max.toString(), data.decimalPlaces),
-            range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-          ];
+          const warningLevelReached =
+            BigInt(data.marginAccountBalance) <
+              BigInt(data.marginSearch) +
+                (BigInt(data.marginInitial) - BigInt(data.marginSearch)) /
+                  BigInt(2) &&
+            BigInt(data.generalAccountBalance) <
+              BigInt(data.marginInitial) - BigInt(data.marginSearch);
+          return {
+            low: addDecimalsFormatNumber(min.toString(), data.decimalPlaces),
+            high: addDecimalsFormatNumber(max.toString(), data.decimalPlaces),
+            value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
+            variant: warningLevelReached ? Intent.Danger : undefined,
+          };
         }}
       />
       <AgGridColumn
@@ -226,6 +239,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Margin allocated')}
         field="capitalUtilisation"
         type="rightAligned"
+        flex={2}
         cellRenderer="ProgressBarCell"
         valueFormatter={({
           data,
@@ -236,11 +250,14 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!data) {
             return undefined;
           }
-          return [
-            `${value}%`,
-            addDecimalsFormatNumber(data.totalBalance, data.decimalPlaces),
-            Number(value),
-          ];
+          return {
+            low: `${value}%`,
+            high: addDecimalsFormatNumber(
+              data.totalBalance,
+              data.decimalPlaces
+            ),
+            value: Number(value),
+          };
         }}
       />
       <AgGridColumn
@@ -261,7 +278,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value === undefined
             ? undefined
             : volumePrefix(
-                addDecimalsFormatNumber(value.toString(), data.decimalPlaces, 3)
+                addDecimalsFormatNumber(value.toString(), data.decimalPlaces)
               )
         }
         cellRenderer="PriceFlashCell"
