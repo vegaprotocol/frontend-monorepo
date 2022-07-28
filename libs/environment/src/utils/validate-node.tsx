@@ -17,7 +17,7 @@ export const getIsNodeLoading = ({
 };
 
 export const getHasInvalidChain = (env: Networks, chain = '') => {
-  return !(chain.split('-')[0] === env.toLowerCase() ?? false);
+  return !chain.split('-').includes(env.toLowerCase());
 };
 
 export const getIsInvalidUrl = (url: string) => {
