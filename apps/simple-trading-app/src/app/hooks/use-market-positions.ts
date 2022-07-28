@@ -40,7 +40,7 @@ export default ({ marketId, partyId }: Props): PositionMargin => {
   const { data } = useQuery<MarketPositions, MarketPositionsVariables>(
     MARKET_POSITIONS_QUERY,
     {
-      pollInterval: 15000,
+      pollInterval: 5000,
       variables: { partyId },
       skip: !partyId,
     }

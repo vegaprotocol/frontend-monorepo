@@ -25,8 +25,8 @@ export const generateMarketPositions = () => {
               market: {
                 id: 'first-btcusd-id',
                 accounts: [
-                  { balance: '10', __typename: 'Account' },
-                  { balance: '15', __typename: 'Account' },
+                  { balance: '10222', __typename: 'Account' },
+                  { balance: '255107', __typename: 'Account' },
                 ],
                 __typename: 'Market',
               },
