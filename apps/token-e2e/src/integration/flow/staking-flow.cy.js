@@ -52,7 +52,7 @@ context.skip('Staking Tab - with eth and vega wallets connected', function () {
     );
 
     it('Able to stake against a validator', function () {
-      cy.staking_page_associate_tokens('3'); // 1002-STAK-0004
+      cy.staking_page_associate_tokens('3'); // 1002-STAK-004
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',

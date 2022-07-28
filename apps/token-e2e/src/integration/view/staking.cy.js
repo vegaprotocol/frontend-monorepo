@@ -28,7 +28,7 @@ context('Staking Page - verify elements on page', function () {
       });
 
       it('should have Staking Guide link visible', function () {
-        // 0000-STAK-0003
+        // 1002-STAK-003
         cy.get(guideLink)
           .should('be.visible')
           .and('have.text', 'Read more about staking on Vega')
@@ -41,7 +41,7 @@ context('Staking Page - verify elements on page', function () {
     });
 
     describe('validators section', function () {
-      // 1002-STAK-0050
+      // 1002-STAK-050
       it('should be visible', function () {
         cy.get(validators).should('be.visible');
       });
@@ -53,14 +53,14 @@ context('Staking Page - verify elements on page', function () {
       cy.vega_wallet_connect();
     });
 
-    it('Should be able to see static information about a validator', function () { // 1002-STAK-0050
+    it('Should be able to see static information about a validator', function () { // 1002-STAK-050
       cy.get('[col-id="validator"]').first.click()
-      cy.get(validatorTitle).should('not.be.empty'); // 1002-STAK-0005
-      cy.get(validatorId).should('not.be.empty'); // 1002-STAK-0007
-      cy.get(validatorPubKey).should('not.be.empty'); // 1002-STAK-0008
-      // TODO validators missing url for more information about them 1002-STAK-0009
-      cy.get(ethAddressLink).should('not.be.empty').and('have.attr', 'href') // 1002-STAK-0010
-      cy.get(totalStake).should('match', stakeNumberRegex) // 1002-STAK-0012
+      cy.get(validatorTitle).should('not.be.empty'); // 1002-STAK-005
+      cy.get(validatorId).should('not.be.empty'); // 1002-STAK-007
+      cy.get(validatorPubKey).should('not.be.empty'); // 1002-STAK-008
+      // TODO validators missing url for more information about them 1002-STAK-009
+      cy.get(ethAddressLink).should('not.be.empty').and('have.attr', 'href') // 1002-STAK-010
+      cy.get(totalStake).should('match', stakeNumberRegex) // 1002-STAK-012
       cy.get(pendingStake).should('match', stakeNumberRegex)
       cy.get(stakedByOperator).should('match', stakeNumberRegex)
       cy.get(stakedByDelegates).should('match', stakeNumberRegex)
@@ -77,7 +77,7 @@ context('Staking Page - verify elements on page', function () {
 
       cy.get(epochCountDown).within(() => {
         cy.get(epochTitle).should('not.be.empty');
-        cy.get(nextEpochInfo).should('contain.text', 'epoch') // 1002-STAK-0011
+        cy.get(nextEpochInfo).should('contain.text', 'epoch') // 1002-STAK-011
       })
     })
   });
