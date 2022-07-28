@@ -3,7 +3,7 @@ import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
 import Markets from './markets';
-import Oracles from './oracles';
+import { OracleSpecs } from './oracles';
 import Party from './parties';
 import { Parties } from './parties/home';
 import { Party as PartySingle } from './parties/id';
@@ -89,9 +89,9 @@ const oraclesRoutes = flags.oracles
   ? [
       {
         path: Routes.ORACLES,
-        name: 'Oracles',
-        text: t('Oracles'),
-        element: <Oracles />,
+        name: 'Oracle specs',
+        text: t('Oracle specs'),
+        element: <OracleSpecs />,
       },
     ]
   : [];

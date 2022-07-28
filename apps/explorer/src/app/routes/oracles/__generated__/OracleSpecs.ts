@@ -6,10 +6,10 @@
 import { OracleSpecStatus, PropertyKeyType, ConditionOperator } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: Oracles
+// GraphQL query operation: OracleSpecs
 // ====================================================
 
-export interface Oracles_oracleSpecs_filters_key {
+export interface OracleSpecs_oracleSpecs_filters_key {
   __typename: "PropertyKey";
   /**
    * name is the name of the property.
@@ -21,7 +21,7 @@ export interface Oracles_oracleSpecs_filters_key {
   type: PropertyKeyType;
 }
 
-export interface Oracles_oracleSpecs_filters_conditions {
+export interface OracleSpecs_oracleSpecs_filters_conditions {
   __typename: "Condition";
   /**
    * value is used by the comparator.
@@ -33,20 +33,20 @@ export interface Oracles_oracleSpecs_filters_conditions {
   operator: ConditionOperator;
 }
 
-export interface Oracles_oracleSpecs_filters {
+export interface OracleSpecs_oracleSpecs_filters {
   __typename: "Filter";
   /**
    * key is the oracle data property key targeted by the filter.
    */
-  key: Oracles_oracleSpecs_filters_key;
+  key: OracleSpecs_oracleSpecs_filters_key;
   /**
    * conditions are the conditions that should be matched by the data to be
    * considered of interest.
    */
-  conditions: Oracles_oracleSpecs_filters_conditions[] | null;
+  conditions: OracleSpecs_oracleSpecs_filters_conditions[] | null;
 }
 
-export interface Oracles_oracleSpecs_data {
+export interface OracleSpecs_oracleSpecs_data {
   __typename: "OracleData";
   /**
    * pubKeys is the list of public keys that signed the data
@@ -54,7 +54,7 @@ export interface Oracles_oracleSpecs_data {
   pubKeys: string[] | null;
 }
 
-export interface Oracles_oracleSpecs {
+export interface OracleSpecs_oracleSpecs {
   __typename: "OracleSpec";
   /**
    * status describes the status of the oracle spec
@@ -82,16 +82,16 @@ export interface Oracles_oracleSpecs {
    * filters describes which oracle data are considered of interest or not for
    * the product (or the risk model).
    */
-  filters: Oracles_oracleSpecs_filters[] | null;
+  filters: OracleSpecs_oracleSpecs_filters[] | null;
   /**
    * data list all the oracle data broadcast to this spec
    */
-  data: Oracles_oracleSpecs_data[];
+  data: OracleSpecs_oracleSpecs_data[];
 }
 
-export interface Oracles {
+export interface OracleSpecs {
   /**
    * All registered oracle specs
    */
-  oracleSpecs: Oracles_oracleSpecs[] | null;
+  oracleSpecs: OracleSpecs_oracleSpecs[] | null;
 }

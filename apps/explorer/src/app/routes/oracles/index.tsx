@@ -1,15 +1,14 @@
 import { gql, useQuery } from '@apollo/client';
-import type { Oracles as OraclesQuery } from './__generated__/Oracles';
+import type { OracleSpecs as OracleSpecsQuery } from './__generated__/OracleSpecs';
 
 import React from 'react';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../components/route-title';
 import { t } from '@vegaprotocol/react-helpers';
 import { SubHeading } from '../../components/sub-heading';
-import { getProposalName } from '../governance';
 
-const ORACLES_QUERY = gql`
-  query Oracles {
+const ORACLE_SPECS_QUERY = gql`
+  query OracleSpecs {
     oracleSpecs {
       status
       id
@@ -33,12 +32,12 @@ const ORACLES_QUERY = gql`
   }
 `;
 
-const Oracles = () => {
-  const { data } = useQuery<OraclesQuery>(ORACLES_QUERY);
+export const OracleSpecs = () => {
+  const { data } = useQuery<OracleSpecsQuery>(ORACLE_SPECS_QUERY);
 
   return (
     <section>
-      <RouteTitle data-testid="oracles-heading">{t('Oracles')}</RouteTitle>
+      <RouteTitle data-testid="oracle-specs-heading">{t('Oracles')}</RouteTitle>
       {data?.oracleSpecs
         ? data.oracleSpecs.map((o) => (
             <React.Fragment key={o.id}>
@@ -50,5 +49,3 @@ const Oracles = () => {
     </section>
   );
 };
-
-export default Oracles;
