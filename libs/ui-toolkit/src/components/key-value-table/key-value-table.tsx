@@ -77,6 +77,7 @@ export const KeyValueTableRow = ({
   noBorder = false,
   dtClassName,
   ddClassName,
+  id,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
     'flex gap-1 flex-wrap justify-between ',
@@ -98,8 +99,17 @@ export const KeyValueTableRow = ({
     ddClassName
   );
 
+  const attributes = {} as Partial<React.HTMLProps<HTMLDListElement>>;
+  if (id) {
+    attributes.id = id;
+  }
+
   return (
-    <dl className={dlClassName} data-testid="key-value-table-row">
+    <dl
+      className={dlClassName}
+      data-testid="key-value-table-row"
+      {...attributes}
+    >
       <dt className={dtClassNames}>{children[0]}</dt>
       <dd className={ddClassNames}>{children[1]}</dd>
     </dl>
