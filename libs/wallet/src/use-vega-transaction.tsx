@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import type { TransactionSubmission } from './wallet-types';
+import type { TransactionError, TransactionSubmission } from './wallet-types';
 import { useVegaWallet } from './use-vega-wallet';
-import type { SendTxError } from './context';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 
@@ -23,7 +22,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: object | null;
+  error: TransactionError | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -49,7 +48,7 @@ export const useVegaTransaction = () => {
   }, []);
 
   const handleError = useCallback(
-    (error: SendTxError) => {
+    (error: TransactionError) => {
       setTransaction({ error, status: VegaTxStatus.Error });
     },
     [setTransaction]
@@ -76,23 +75,23 @@ export const useVegaTransaction = () => {
       const res = await sendTx(tx);
 
       if (res === null) {
-        setTransaction({ status: VegaTxStatus.Default });
-        return null;
+        // User rejected
+        reset();
+        return;
       }
-      if ('errors' in res) {
+
+      if (isError(res)) {
         handleError(res);
-      } else if ('error' in res) {
-        if (res.error === 'User rejected') {
-          reset();
-        } else {
-          handleError(res);
-        }
-      } else if (res.tx?.signature?.value && res.txHash) {
+        return;
+      }
+
+      if (res.tx?.signature?.value && res.txHash) {
         setTransaction({
           status: VegaTxStatus.Pending,
           txHash: res.txHash,
           signature: res.tx.signature.value,
         });
+
         return {
           signature: res.tx.signature?.value,
         };
@@ -124,4 +123,15 @@ export const useVegaTransaction = () => {
     setComplete,
     TransactionDialog,
   };
+};
+
+const isError = (error: unknown): error is TransactionError => {
+  if (
+    error !== null &&
+    typeof error === 'object' &&
+    ('error' in error || 'errors' in error)
+  ) {
+    return true;
+  }
+  return false;
 };

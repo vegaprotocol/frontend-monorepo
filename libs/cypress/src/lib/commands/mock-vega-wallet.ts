@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import type { TransactionResponse } from '@vegaprotocol/vegawallet-service-api-client';
+import type { TransactionResponse } from '@vegaprotocol/wallet';
 import type { PartialDeep } from 'type-fest';
 
 declare global {

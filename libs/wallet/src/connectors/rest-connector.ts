@@ -1,9 +1,3 @@
-import type { Configuration } from '@vegaprotocol/vegawallet-service-api-client';
-import {
-  createConfiguration,
-  ServerConfiguration,
-  DefaultApi,
-} from '@vegaprotocol/vegawallet-service-api-client';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
 import type { VegaConnector } from './vega-connector';
@@ -14,30 +8,26 @@ import type { TransactionSubmission } from '../wallet-types';
 interface RestConnectorConfig {
   token: string | null;
   connector: 'rest';
+  url: string | null;
 }
+
+type Endpoint = 'auth/token' | 'command/sync' | 'keys';
 
 /**
  * Connector for using the Vega Wallet Service rest api, requires authentication to get a session token
  */
 export class RestConnector implements VegaConnector {
   configKey = WALLET_CONFIG;
-  apiConfig: Configuration;
-  service: DefaultApi;
   description = 'Connects using REST to a running Vega wallet service';
+  url: string | null = null;
+  token: string | null = null;
 
   constructor() {
     const cfg = this.getConfig();
-
-    // If theres a stored auth token create api config with bearer authMethod
-    this.apiConfig = cfg?.token
-      ? createConfiguration({
-          authMethods: {
-            bearer: `Bearer ${cfg.token}`,
-          },
-        })
-      : createConfiguration();
-
-    this.service = new DefaultApi(this.apiConfig);
+    if (cfg) {
+      this.token = cfg.token;
+      this.url = cfg.url;
+    }
   }
 
   async authenticate(
@@ -48,26 +38,20 @@ export class RestConnector implements VegaConnector {
     }
   ) {
     try {
-      const service = new DefaultApi(
-        createConfiguration({
-          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
-        })
-      );
+      this.url = url;
 
-      const res = await service.authTokenPost(params);
-
-      // Renew service instance with default bearer authMethod now that we have the token
-      this.service = new DefaultApi(
-        createConfiguration({
-          baseServer: new ServerConfiguration<Record<string, never>>(url, {}),
-          authMethods: {
-            bearer: `Bearer ${res.token}`,
-          },
-        })
-      );
+      const res = await this.request('auth/token', {
+        method: 'post',
+        body: JSON.stringify(params),
+      });
 
       // Store the token, and other things for later
-      this.setConfig({ connector: 'rest', token: res.token });
+      this.setConfig({
+        connector: 'rest',
+        token: res.data.token,
+        url: this.url,
+      });
+      this.token = res.data.token;
 
       return { success: true, error: null };
     } catch (err) {
@@ -77,10 +61,15 @@ export class RestConnector implements VegaConnector {
 
   async connect() {
     try {
-      const res = await this.service.keysGet();
-      return res.keys;
+      const res = await this.request('keys', {
+        method: 'get',
+        headers: {
+          authorization: `Bearer ${this.token}`,
+        },
+      });
+
+      return res.data.keys;
     } catch (err) {
-      console.error(err);
       // keysGet failed, its likely that the session has expired so remove the token from storage
       this.clearConfig();
       return null;
@@ -89,7 +78,12 @@ export class RestConnector implements VegaConnector {
 
   async disconnect() {
     try {
-      await this.service.authTokenDelete();
+      await this.request('auth/token', {
+        method: 'delete',
+        headers: {
+          authorization: `Bearer ${this.token}`,
+        },
+      });
     } catch (err) {
       console.error(err);
     } finally {
@@ -101,28 +95,24 @@ export class RestConnector implements VegaConnector {
 
   async sendTx(body: TransactionSubmission) {
     try {
-      const res = await this.service.commandSyncPost(body);
-      return res;
+      const res = await this.request('command/sync', {
+        method: 'post',
+        body: JSON.stringify(body),
+        headers: {
+          authorization: `Bearer ${this.token}`,
+        },
+      });
+
+      if (res.status === 401) {
+        // User rejected
+        return null;
+      }
+
+      return res.data;
     } catch (err) {
-      return this.handleSendTxError(err);
-    }
-  }
-
-  private handleSendTxError(err: unknown) {
-    const unexpectedError = { error: 'Something went wrong' };
-
-    if (isServiceError(err)) {
-      if (err.code === 401) {
-        return { error: 'User rejected' };
-      }
-
-      try {
-        return JSON.parse(err.body ?? '');
-      } catch {
-        return unexpectedError;
-      }
-    } else {
-      return unexpectedError;
+      return {
+        error: 'Failed to fetch',
+      };
     }
   }
 
@@ -146,18 +136,13 @@ export class RestConnector implements VegaConnector {
   private clearConfig() {
     LocalStorage.removeItem(this.configKey);
   }
-}
 
-interface ServiceError {
-  code: number;
-  body: string | undefined;
-  headers: object;
-}
-
-export const isServiceError = (err: unknown): err is ServiceError => {
-  // Some responses don't contain body object
-  if (typeof err === 'object' && err !== null && 'code' in err) {
-    return true;
+  private async request(endpoint: Endpoint, options: RequestInit) {
+    const fetchResult = await fetch(`${this.url}/${endpoint}`, options);
+    const jsonResult = await fetchResult.json();
+    return {
+      status: fetchResult.status,
+      data: jsonResult,
+    };
   }
-  return false;
-};
+}
