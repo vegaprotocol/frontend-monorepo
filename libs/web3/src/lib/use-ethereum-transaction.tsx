@@ -130,6 +130,7 @@ export const useEthereumTransaction = <
             error: new Error('Something went wrong'),
           });
         }
+        return;
       }
     },
     [

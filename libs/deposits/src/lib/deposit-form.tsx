@@ -1,5 +1,5 @@
+import type { Asset } from '@vegaprotocol/react-helpers';
 import {
-  removeDecimal,
   ethereumAddress,
   t,
   required,
@@ -7,6 +7,7 @@ import {
   minSafe,
   maxSafe,
   addDecimal,
+  isAssetTypeERC20,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -21,10 +22,9 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3WalletInput } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
 import type { ReactNode } from 'react';
-import { useMemo, useEffect } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useMemo } from 'react';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
-import type { Asset } from './deposit-manager';
 
 interface FormFields {
   asset: string;
@@ -45,10 +45,8 @@ export interface DepositFormProps {
     vegaPublicKey: string;
   }) => void;
   requestFaucet: () => void;
-  limits: {
-    max: BigNumber;
-    deposited: BigNumber;
-  } | null;
+  max: BigNumber | undefined;
+  deposited: BigNumber | undefined;
   allowance: BigNumber | undefined;
   isFaucetable?: boolean;
 }
@@ -58,10 +56,11 @@ export const DepositForm = ({
   selectedAsset,
   onSelectAsset,
   balance,
+  max,
+  deposited,
   submitApprove,
   submitDeposit,
   requestFaucet,
-  limits,
   allowance,
   isFaucetable,
 }: DepositFormProps) => {
@@ -89,15 +88,14 @@ export const DepositForm = ({
 
     submitDeposit({
       assetSource: selectedAsset.source.contractAddress,
-      amount: removeDecimal(fields.amount, selectedAsset.decimals),
+      amount: fields.amount,
       vegaPublicKey: fields.to,
     });
   };
 
-  const assetId = useWatch({ name: 'asset', control });
   const amount = useWatch({ name: 'amount', control });
 
-  const max = useMemo(() => {
+  const maxAmount = useMemo(() => {
     const maxApproved = allowance ? allowance : new BigNumber(0);
     const maxAvailable = balance ? balance : new BigNumber(0);
 
@@ -106,8 +104,8 @@ export const DepositForm = ({
     let maxLimit = new BigNumber(Infinity);
 
     // A max limit of zero indicates that there is no limit
-    if (limits && limits.max.isGreaterThan(0)) {
-      maxLimit = limits.max.minus(limits.deposited);
+    if (max && deposited && max.isGreaterThan(0)) {
+      maxLimit = max.minus(deposited);
     }
 
     return {
@@ -116,7 +114,7 @@ export const DepositForm = ({
       limit: maxLimit,
       amount: BigNumber.minimum(maxLimit, maxApproved, maxAvailable),
     };
-  }, [limits, allowance, balance]);
+  }, [max, deposited, allowance, balance]);
 
   const min = useMemo(() => {
     // Min viable amount given asset decimals EG for WEI 0.000000000000000001
@@ -126,10 +124,6 @@ export const DepositForm = ({
 
     return minViableAmount;
   }, [selectedAsset]);
-
-  useEffect(() => {
-    onSelectAsset(assetId);
-  }, [assetId, onSelectAsset]);
 
   return (
     <form
@@ -154,16 +148,28 @@ export const DepositForm = ({
         )}
       </FormGroup>
       <FormGroup label={t('Asset')} labelFor="asset" className="relative">
-        <Select {...register('asset', { validate: { required } })} id="asset">
-          <option value="">{t('Please select')}</option>
-          {assets
-            .filter((a) => a.source.__typename === 'ERC20')
-            .map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            ))}
-        </Select>
+        <Controller
+          control={control}
+          name="asset"
+          rules={{ validate: { required } }}
+          render={({ field }) => (
+            <Select
+              id="asset"
+              {...field}
+              onChange={(e) => {
+                field.onChange(e);
+                onSelectAsset(e.target.value);
+              }}
+            >
+              <option value="">{t('Please select')}</option>
+              {assets.filter(isAssetTypeERC20).map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </Select>
+          )}
+        />
         {errors.asset?.message && (
           <InputError intent="danger" className="mt-4" forInput="asset">
             {errors.asset.message}
@@ -196,9 +202,9 @@ export const DepositForm = ({
           </UseButton>
         )}
       </FormGroup>
-      {selectedAsset && limits && (
+      {selectedAsset && max && deposited && (
         <div className="mb-20">
-          <DepositLimits limits={limits} balance={balance} />
+          <DepositLimits max={max} deposited={deposited} balance={balance} />
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount" className="relative">
@@ -212,14 +218,14 @@ export const DepositForm = ({
               minSafe: (value) => minSafe(new BigNumber(min))(value),
               maxSafe: (v) => {
                 const value = new BigNumber(v);
-                if (value.isGreaterThan(max.available)) {
+                if (value.isGreaterThan(maxAmount.available)) {
                   return t('Insufficient amount in Ethereum wallet');
-                } else if (value.isGreaterThan(max.limit)) {
+                } else if (value.isGreaterThan(maxAmount.limit)) {
                   return t('Amount is above temporary deposit limit');
-                } else if (value.isGreaterThan(max.approved)) {
+                } else if (value.isGreaterThan(maxAmount.approved)) {
                   return t('Amount is above approved amount');
                 }
-                return maxSafe(max.amount)(v);
+                return maxSafe(maxAmount.amount)(v);
               },
             },
           })}

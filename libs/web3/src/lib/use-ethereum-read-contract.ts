@@ -51,9 +51,11 @@ export const useEthereumReadContract = <T>(
       const response = await result;
       if (cancelRequest.current) return;
       dispatch({ type: ActionType.FETCHED, payload: response });
+      return response;
     } catch (error) {
       if (cancelRequest.current) return;
       dispatch({ type: ActionType.ERROR, error: error as Error });
+      return;
     }
   }, [contractFunc]);
 

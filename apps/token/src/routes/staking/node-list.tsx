@@ -66,6 +66,7 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
           className="h-24 w-24 rounded-full mr-8"
           src={avatarUrl}
           alt={`Avatar icon for ${name}`}
+          onError={(e) => (e.currentTarget.style.display = 'none')}
         />
       )}
       {name}
