@@ -73,12 +73,15 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
         marketId: market.id,
         partyId,
         price: market.depth.lastTrade?.price,
-        size: order.size + (marketPositions?.openVolume.toNumber() || 0),
+        size: new BigNumber(marketPositions?.openVolume || 0)
+          .plus(order.size)
+          .toString(),
         side: order.side === VegaWalletOrderSide.Buy ? Side.Buy : Side.Sell,
         timeInForce: times[order.timeInForce],
         type: types[order.type],
       },
-      skip: !partyId || !market.id || !order.size,
+      skip:
+        !partyId || !market.id || !order.size || !market.depth.lastTrade?.price,
     }
   );
   if (data?.estimateOrder.marginLevels.initialLevel) {

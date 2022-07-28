@@ -31,7 +31,7 @@ interface Props {
   partyId: string;
 }
 
-type PositionMargin = {
+export type PositionMargin = {
   openVolume: BigNumber;
   balanceSum: BigNumber;
 } | null;
