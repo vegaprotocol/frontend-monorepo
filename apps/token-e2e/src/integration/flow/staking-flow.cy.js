@@ -27,8 +27,8 @@ const epochTimeout = { timeout: 10000 };
 
 // Tests skipped because of change of the UI of data nodes
 context.skip('Staking Tab - with eth and vega wallets connected', function () {
-  before('visit staking tab and connect vega wallet', function () { 
-    // 1002-STAK-002
+  // 1002-STAK-002, 1002-STAK-032
+  before('visit staking tab and connect vega wallet', function () {
     cy.vega_wallet_import();
     cy.visit('/');
     cy.verify_page_header('The $VEGA token');
@@ -52,8 +52,9 @@ context.skip('Staking Tab - with eth and vega wallets connected', function () {
       }
     );
 
+    // 1002-STAK-004
     it('Able to stake against a validator', function () {
-      cy.staking_page_associate_tokens('3'); // 1002-STAK-004
+      cy.staking_page_associate_tokens('3');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -72,10 +73,13 @@ context.skip('Staking Tab - with eth and vega wallets connected', function () {
 
       cy.get('button').contains('Select a validator to nominate').click();
 
+      // 1002-STAK-031
       cy.get(stakeValidatorList).contains(this.validatorName).click();
 
+      // 1002-STAK-033, 1002-STAK-034, 1002-STAK-037
       cy.staking_validator_page_add_stake('2');
 
+      // 1002-STAK-038
       cy.get(vegaWalletNextEpochBalances, txTimeout)
         .should('contain', 2.0, txTimeout)
         .and('contain', this.validatorName)
@@ -91,11 +95,11 @@ context.skip('Staking Tab - with eth and vega wallets connected', function () {
         .should('contain', 2.0, txTimeout)
         .and('contain', this.validatorName);
 
-      cy.get(stakeNextEpochValue, epochTimeout)
+      cy.get(stakeNextEpochValue, epochTimeout) // 1002-STAK-016
         .contains(2.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(stakeThisEpochValue, epochTimeout)
+      cy.get(stakeThisEpochValue, epochTimeout) // 1002-STAK-013
         .contains(2.0, epochTimeout)
         .should('be.visible');
 
@@ -170,6 +174,7 @@ context.skip('Staking Tab - with eth and vega wallets connected', function () {
         .and('contain', '33.33%');
     });
 
+    // 1002-STAK-041
     it('Able to remove part of a stake against a validator', function () {
       cy.staking_page_associate_tokens('4');
 
@@ -200,10 +205,13 @@ context.skip('Staking Tab - with eth and vega wallets connected', function () {
       );
 
       cy.navigate_to('staking');
+      // 1002-STAK-040
       cy.get(stakeValidatorList).contains(this.validatorName).click();
 
+      // 1002-STAK-044, 1002-STAK-048
       cy.staking_validator_page_remove_stake('1');
 
+      // 1002-STAK-049
       cy.get(stakeNextEpochValue, epochTimeout)
         .contains(2.0, epochTimeout)
         .should('be.visible');
