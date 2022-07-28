@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js';
 import type { Order } from '@vegaprotocol/orders';
 import { gql, useQuery } from '@apollo/client';
 import type {
@@ -13,7 +14,6 @@ import {
 } from '@vegaprotocol/wallet';
 import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
 import useMarketPositions from './use-market-positions';
-import { BigNumber } from 'bignumber.js';
 
 export const ESTIMATE_ORDER_QUERY = gql`
   query EstimateOrder(
@@ -66,15 +66,6 @@ const types: Record<VegaWalletOrderType, OrderType> = {
 
 const useOrderMargin = ({ order, market, partyId }: Props) => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
-  console.log('marketPositions', marketPositions);
-  console.log(
-    'marketPositions.openVolume',
-    marketPositions?.openVolume.toNumber()
-  );
-  console.log(
-    'marketPositions.balanceSum',
-    marketPositions?.balanceSum.toNumber()
-  );
   const { data } = useQuery<EstimateOrder, EstimateOrderVariables>(
     ESTIMATE_ORDER_QUERY,
     {

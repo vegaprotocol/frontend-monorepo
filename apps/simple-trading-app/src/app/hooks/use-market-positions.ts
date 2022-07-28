@@ -54,11 +54,12 @@ export default ({ marketId, partyId }: Props): PositionMargin => {
   return markets.length
     ? markets.reduce(
         (agg, item) => {
-          const balance = item.market.accounts?.reduce(
-            (acagg, account) => acagg.plus(account.balance || 0),
-            new BigNumber(0)
-          );
-          if (balance) {
+          const balance =
+            item.market.accounts?.reduce(
+              (acagg, account) => acagg.plus(account.balance || 0),
+              new BigNumber(0)
+            ) || new BigNumber(0);
+          if (!balance.isZero()) {
             agg.balanceSum = agg.balanceSum.plus(balance);
             agg.openVolume = agg.openVolume.plus(item.openVolume);
           }
