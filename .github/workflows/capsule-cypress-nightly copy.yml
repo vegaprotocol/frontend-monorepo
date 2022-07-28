@@ -1,10 +1,8 @@
-name: Capsule tests -- nightly
+name: Capsule tests -- nightly test copy
 
 # This workflow runs the frontend tests against latest develop of the core to preempt breaking changes
 
-on:
-  schedule:
-    - cron: '0 4 * * *'
+on: workflow_dispatch
 
 jobs:
   nightly:
@@ -119,7 +117,7 @@ jobs:
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
           CYPRESS_NIGHTLY_RUN: true
-          CYPRESS_INCLUDE_FLOWS: true
+          CYPRESS_INCLUDE_FLOWS: 'true'
 
       ######
       ## Upload logs
