@@ -1,5 +1,5 @@
 {
-  "root": "libs/withdraws",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/withdraws/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/withdraws"],
       "options": {
-        "jestConfig": "libs/withdraws/jest.config.js",
+        "jestConfig": "libs/withdraws/jest.config.ts",
         "passWithNoTests": true
       }
     }

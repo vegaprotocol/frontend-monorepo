@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'market-list',
   preset: '../../jest.preset.js',
   transform: {

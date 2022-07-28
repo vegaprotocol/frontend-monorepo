@@ -13,6 +13,7 @@ import {
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
+import type { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
 export interface Order {
   type: VegaWalletOrderType;
@@ -27,6 +28,8 @@ export interface Market {
   id: string;
   decimalPlaces: number;
   positionDecimalPlaces: number;
+  tradingMode?: MarketTradingMode;
+  state?: MarketState;
 }
 
 export const useOrderSubmit = (market: Market) => {

@@ -1,5 +1,5 @@
 {
-  "root": "libs/wallet",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/wallet/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/wallet"],
       "options": {
-        "jestConfig": "libs/wallet/jest.config.js",
+        "jestConfig": "libs/wallet/jest.config.ts",
         "passWithNoTests": true
       }
     }

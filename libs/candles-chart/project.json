@@ -1,5 +1,5 @@
 {
-  "root": "libs/candles-chart",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/candles-chart/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/candles-chart"],
       "options": {
-        "jestConfig": "libs/candles-chart/jest.config.js",
+        "jestConfig": "libs/candles-chart/jest.config.ts",
         "passWithNoTests": true
       }
     }

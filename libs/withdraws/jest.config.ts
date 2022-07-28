@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'withdraws',
   preset: '../../jest.preset.js',
   transform: {

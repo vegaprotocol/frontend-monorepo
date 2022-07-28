@@ -1,5 +1,6 @@
-module.exports = {
-  displayName: 'fills',
+/* eslint-disable */
+export default {
+  displayName: 'positions',
   preset: '../../jest.preset.js',
   globals: {
     'ts-jest': {
@@ -10,6 +11,6 @@ module.exports = {
     '^.+\\.[tj]sx?$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/fills',
+  coverageDirectory: '../../coverage/libs/positions',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

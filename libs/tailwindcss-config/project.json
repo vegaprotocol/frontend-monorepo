@@ -1,5 +1,5 @@
 {
-  "root": "libs/tailwindcss-config",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/tailwindcss-config/src",
   "projectType": "library",
   "targets": {
@@ -24,7 +24,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/tailwindcss-config"],
       "options": {
-        "jestConfig": "libs/tailwindcss-config/jest.config.js",
+        "jestConfig": "libs/tailwindcss-config/jest.config.ts",
         "passWithNoTests": true
       }
     }

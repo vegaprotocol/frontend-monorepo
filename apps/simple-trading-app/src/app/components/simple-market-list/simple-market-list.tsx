@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   useCallback,
   useContext,
@@ -84,7 +85,7 @@ const SimpleMarketList = () => {
 
   const { columnDefs, defaultColDef } = useColumnDefinitions({ isMobile });
 
-  const getRowId = useCallback(({ data }) => data.id, []);
+  const getRowId = useCallback(({ data }: any) => data.id, []);
 
   const handleRowClicked = useCallback(
     ({ data }: { data: SimpleMarketsType }) => {
@@ -95,7 +96,7 @@ const SimpleMarketList = () => {
     [navigate]
   );
 
-  const onTabToNextCell = useCallback((params) => {
+  const onTabToNextCell = useCallback((params: any) => {
     const {
       api,
       previousCellPosition: { rowIndex },
@@ -108,7 +109,7 @@ const SimpleMarketList = () => {
   }, []);
 
   const onCellKeyDown = useCallback(
-    (params) => {
+    (params: any) => {
       const { event: { key = '' } = {}, data } = params;
       if (key === 'Enter') {
         handleRowClicked({ data });

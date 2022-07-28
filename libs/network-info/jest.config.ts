@@ -1,10 +1,10 @@
-module.exports = {
-  displayName: 'orders',
+/* eslint-disable */
+export default {
+  displayName: 'network-info',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/orders',
-  setupFilesAfterEnv: ['./src/setup-tests.ts'],
+  coverageDirectory: '../../coverage/libs/network-info',
 };

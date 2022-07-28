@@ -1,4 +1,5 @@
-module.exports = {
+/* eslint-disable */
+export default {
   displayName: 'trading',
   preset: '../../jest.preset.js',
   transform: {

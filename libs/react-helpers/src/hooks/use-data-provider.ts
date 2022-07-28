@@ -55,7 +55,8 @@ export function useDataProvider<Data, Delta>({
     return Promise.reject();
   }, []);
   const callback = useCallback(
-    ({ data, error, loading, delta, insertionData, totalCount }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ({ data, error, loading, delta, insertionData, totalCount }: any) => {
       setError(error);
       setLoading(loading);
       if (!error && !loading) {

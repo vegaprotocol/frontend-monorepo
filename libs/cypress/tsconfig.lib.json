@@ -6,5 +6,5 @@
     "types": ["cypress", "node"]
   },
   "include": ["**/*.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "exclude": ["**/*.spec.ts", "jest.config.ts"]
 }

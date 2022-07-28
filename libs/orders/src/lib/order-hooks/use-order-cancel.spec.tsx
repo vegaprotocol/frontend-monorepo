@@ -1,6 +1,6 @@
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type {

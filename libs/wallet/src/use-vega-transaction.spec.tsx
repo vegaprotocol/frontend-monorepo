@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import type { VegaWalletContextShape } from './context';
 import { VegaWalletContext } from './context';
 import type { ReactNode } from 'react';
@@ -24,73 +24,75 @@ function setup(context?: Partial<VegaWalletContextShape>) {
   return renderHook(() => useVegaTransaction(), { wrapper });
 }
 
-it('Has the correct default state', () => {
-  const { result } = setup();
-  expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
-  expect(result.current.transaction.txHash).toEqual(null);
-  expect(result.current.transaction.signature).toEqual(null);
-  expect(result.current.transaction.error).toEqual(null);
-  expect(typeof result.current.reset).toEqual('function');
-  expect(typeof result.current.send).toEqual('function');
-});
-
-it('If provider returns null status should be default', async () => {
-  const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(null));
-  const { result } = setup({ sendTx: mockSendTx });
-  await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+describe('useVegaTransaction', () => {
+  it('Has the correct default state', () => {
+    const { result } = setup();
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
+    expect(result.current.transaction.txHash).toEqual(null);
+    expect(result.current.transaction.signature).toEqual(null);
+    expect(result.current.transaction.error).toEqual(null);
+    expect(typeof result.current.reset).toEqual('function');
+    expect(typeof result.current.send).toEqual('function');
   });
-  expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
-});
 
-it('Handles a single error', async () => {
-  const errorMessage = 'Oops error!';
-  const mockSendTx = jest
-    .fn()
-    .mockReturnValue(Promise.resolve({ error: errorMessage }));
-  const { result } = setup({ sendTx: mockSendTx });
-  await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+  it('If provider returns null status should be default', async () => {
+    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(null));
+    const { result } = setup({ sendTx: mockSendTx });
+    await act(async () => {
+      result.current.send({} as OrderSubmissionBody);
+    });
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
   });
-  expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-  expect(result.current.transaction.error).toEqual({ error: errorMessage });
-});
 
-it('Handles multiple errors', async () => {
-  const errorObj = {
-    errors: {
-      something: 'Went wrong!',
-    },
-  };
-  const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(errorObj));
-  const { result } = setup({ sendTx: mockSendTx });
-  await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+  it('Handles a single error', async () => {
+    const errorMessage = 'Oops error!';
+    const mockSendTx = jest
+      .fn()
+      .mockReturnValue(Promise.resolve({ error: errorMessage }));
+    const { result } = setup({ sendTx: mockSendTx });
+    await act(async () => {
+      result.current.send({} as OrderSubmissionBody);
+    });
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
+    expect(result.current.transaction.error).toEqual({ error: errorMessage });
   });
-  expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-  expect(result.current.transaction.error).toEqual(errorObj);
-});
 
-it('Returns the signature if successful', async () => {
-  const successObj = {
-    tx: {
-      inputData: 'input-data',
-      signature: {
-        algo: 'algo',
-        version: 1,
-        value: 'signature',
+  it('Handles multiple errors', async () => {
+    const errorObj = {
+      errors: {
+        something: 'Went wrong!',
       },
-    },
-    txHash: '0x123',
-  };
-  const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(successObj));
-  const { result } = setup({ sendTx: mockSendTx });
-  await act(async () => {
-    result.current.send({} as OrderSubmissionBody);
+    };
+    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(errorObj));
+    const { result } = setup({ sendTx: mockSendTx });
+    await act(async () => {
+      result.current.send({} as OrderSubmissionBody);
+    });
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
+    expect(result.current.transaction.error).toEqual(errorObj);
   });
-  expect(result.current.transaction.status).toEqual(VegaTxStatus.Pending);
-  expect(result.current.transaction.txHash).toEqual(successObj.txHash);
-  expect(result.current.transaction.signature).toEqual(
-    successObj.tx.signature.value
-  );
+
+  it('Returns the signature if successful', async () => {
+    const successObj = {
+      tx: {
+        inputData: 'input-data',
+        signature: {
+          algo: 'algo',
+          version: 1,
+          value: 'signature',
+        },
+      },
+      txHash: '0x123',
+    };
+    const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(successObj));
+    const { result } = setup({ sendTx: mockSendTx });
+    await act(async () => {
+      result.current.send({} as OrderSubmissionBody);
+    });
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Pending);
+    expect(result.current.transaction.txHash).toEqual(successObj.txHash);
+    expect(result.current.transaction.signature).toEqual(
+      successObj.tx.signature.value
+    );
+  });
 });

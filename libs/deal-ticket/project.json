@@ -1,5 +1,5 @@
 {
-  "root": "libs/deal-ticket",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/deal-ticket/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/deal-ticket"],
       "options": {
-        "jestConfig": "libs/deal-ticket/jest.config.js",
+        "jestConfig": "libs/deal-ticket/jest.config.ts",
         "passWithNoTests": true
       }
     }

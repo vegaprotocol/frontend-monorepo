@@ -1,5 +1,5 @@
 {
-  "root": "libs/network-stats",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/network-stats/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/network-stats"],
       "options": {
-        "jestConfig": "libs/network-stats/jest.config.js",
+        "jestConfig": "libs/network-stats/jest.config.ts",
         "passWithNoTests": true
       }
     }
