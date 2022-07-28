@@ -4,13 +4,13 @@ const validatorTitle = '[data-testid="validator-node-title"]';
 const validatorId = '[data-testid="validator-id"]';
 const validatorPubKey = '[data-testid="validator-public-key"]';
 const ethAddressLink = '[data-testid="link"]';
-const totalStake = '[data-testid="total-stake"]'
-const pendingStake = '[data-testid="pending-stake"]'
-const stakedByOperator = '[data-testid="staked-by-operator"]'
-const stakedByDelegates = '[data-testid="staked-by-delegates"]'
-const stakeShare = '[data-testid="stakedByDelegates"]'
+const totalStake = '[data-testid="total-stake"]';
+const pendingStake = '[data-testid="pending-stake"]';
+const stakedByOperator = '[data-testid="staked-by-operator"]';
+const stakedByDelegates = '[data-testid="staked-by-delegates"]';
+const stakeShare = '[data-testid="stakedByDelegates"]';
 const epochCountDown = '[data-testid="epoch-countdown"]';
-const stakeNumberRegex = /^\d*\.?\d*$/
+const stakeNumberRegex = /^\d*\.?\d*$/;
 
 context('Staking Page - verify elements on page', function () {
   before('navigate to staking page', function () {
@@ -53,32 +53,38 @@ context('Staking Page - verify elements on page', function () {
       cy.vega_wallet_connect();
     });
 
-    it('Should be able to see static information about a validator', function () { // 1002-STAK-050
-      cy.get('[col-id="validator"]').first.click()
+    it('Should be able to see static information about a validator', function () {
+      // 1002-STAK-050
+      cy.get('[col-id="validator"]').first.click();
       cy.get(validatorTitle).should('not.be.empty'); // 1002-STAK-005
       cy.get(validatorId).should('not.be.empty'); // 1002-STAK-007
       cy.get(validatorPubKey).should('not.be.empty'); // 1002-STAK-008
       // TODO validators missing url for more information about them 1002-STAK-009
-      cy.get(ethAddressLink).should('not.be.empty').and('have.attr', 'href') // 1002-STAK-010
-      cy.get(totalStake).should('match', stakeNumberRegex) // 1002-STAK-012
-      cy.get(pendingStake).should('match', stakeNumberRegex)
-      cy.get(stakedByOperator).should('match', stakeNumberRegex)
-      cy.get(stakedByDelegates).should('match', stakeNumberRegex)
-      cy.get(stakeShare).invoke('text').then(($stakePercentage) => {
-        if ($stakePercentage != '-') {
-          cy.wrap($stakePercentage).should('match', /\b(?<!\.)(?!0+(?:\.0+)?%)(?:\d|[1-9]\d|100)(?:(?<!100)\.\d+)?%/)
-        }
-      })
+      cy.get(ethAddressLink).should('not.be.empty').and('have.attr', 'href'); // 1002-STAK-010
+      cy.get(totalStake).should('match', stakeNumberRegex); // 1002-STAK-012
+      cy.get(pendingStake).should('match', stakeNumberRegex);
+      cy.get(stakedByOperator).should('match', stakeNumberRegex);
+      cy.get(stakedByDelegates).should('match', stakeNumberRegex);
+      cy.get(stakeShare)
+        .invoke('text')
+        .then(($stakePercentage) => {
+          if ($stakePercentage != '-') {
+            cy.wrap($stakePercentage).should(
+              'match',
+              /\b(?<!\.)(?!0+(?:\.0+)?%)(?:\d|[1-9]\d|100)(?:(?<!100)\.\d+)?%/
+            );
+          }
+        });
     });
 
     it('should be able to see epoch information', function () {
-      const epochTitle = 'h3'
-      const nextEpochInfo = 'p'
+      const epochTitle = 'h3';
+      const nextEpochInfo = 'p';
 
       cy.get(epochCountDown).within(() => {
         cy.get(epochTitle).should('not.be.empty');
-        cy.get(nextEpochInfo).should('contain.text', 'epoch') // 1002-STAK-011
-      })
-    })
+        cy.get(nextEpochInfo).should('contain.text', 'epoch'); // 1002-STAK-011
+      });
+    });
   });
 });

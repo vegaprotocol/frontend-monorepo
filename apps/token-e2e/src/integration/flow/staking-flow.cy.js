@@ -27,7 +27,8 @@ const epochTimeout = { timeout: 10000 };
 
 // Tests skipped because of change of the UI of data nodes
 context.skip('Staking Tab - with eth and vega wallets connected', function () {
-  before('visit staking tab and connect vega wallet', function () { // 1002-STAK-0002
+  before('visit staking tab and connect vega wallet', function () { 
+    // 1002-STAK-002
     cy.vega_wallet_import();
     cy.visit('/');
     cy.verify_page_header('The $VEGA token');
