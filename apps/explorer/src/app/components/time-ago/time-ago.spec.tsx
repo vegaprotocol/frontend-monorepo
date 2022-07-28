@@ -11,23 +11,16 @@ afterEach(() => {
 });
 
 describe('Time ago', () => {
-  it('should render successfully with string input', () => {
+  it('should render successfully', () => {
     const dateString = new Date().toString();
-    render(<TimeAgo data-testid="date-string-input" date={dateString} />);
+    render(<TimeAgo data-testid="date" date={dateString} />);
 
-    expect(screen.getByTestId('date-string-input')).toBeInTheDocument();
-  });
-
-  it('should render successfully with date input', () => {
-    const date = new Date();
-    render(<TimeAgo data-testid="date-input" date={date} />);
-
-    expect(screen.getByTestId('date-input')).toBeInTheDocument();
+    expect(screen.getByTestId('date')).toBeInTheDocument();
   });
 
   it('should show the correct amount of time ago', () => {
     const secondsToWait = 10;
-    const date = new Date(-(secondsToWait * 1000));
+    const date = new Date(-(secondsToWait * 1000)).toString();
 
     render(<TimeAgo data-testid="test-time-ago" date={date} />);
 
@@ -37,7 +30,7 @@ describe('Time ago', () => {
   });
 
   it('should show the correct amount of time ago after time has advanced', () => {
-    const date = new Date();
+    const date = new Date().toString();
 
     render(<TimeAgo data-testid="test-time-elapsed" date={date} />);
 
