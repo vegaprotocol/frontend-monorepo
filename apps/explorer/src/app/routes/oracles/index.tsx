@@ -32,7 +32,7 @@ const ORACLE_SPECS_QUERY = gql`
   }
 `;
 
-export const OracleSpecs = () => {
+const Oracles = () => {
   const { data } = useQuery<OracleSpecsQuery>(ORACLE_SPECS_QUERY);
 
   return (
@@ -49,3 +49,5 @@ export const OracleSpecs = () => {
     </section>
   );
 };
+
+export default Oracles;
