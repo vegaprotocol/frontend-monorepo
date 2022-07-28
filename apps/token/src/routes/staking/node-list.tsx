@@ -142,7 +142,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotal, 2),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
-          [PENDING_STAKE]: pendingStake,
+          [PENDING_STAKE]: formatNumber(pendingStake, 2),
           [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
           [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
           [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
