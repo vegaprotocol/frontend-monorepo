@@ -45,7 +45,9 @@ export const renderRow = ({
       key={key}
       inline={!isSyntaxRow}
       id={key}
-      className={'target:bg-vega-yellow target:text-black'}
+      className={
+        'group target:bg-vega-pink target:!text-white dark:target:bg-vega-yellow dark:target:!text-black'
+      }
     >
       {key}
       {isSyntaxRow ? (

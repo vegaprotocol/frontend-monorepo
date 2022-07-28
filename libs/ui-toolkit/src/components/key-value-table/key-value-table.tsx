@@ -93,6 +93,7 @@ export const KeyValueTableRow = ({
   const dtClassNames = `break-words font-medium uppercase align-top p-4 capitalize ${dtClassName}`;
   const ddClassNames = classNames(
     'align-top p-4 text-black/60 dark:text-white/60 break-words',
+    'group-target:text-white dark:group-target:text-black',
     {
       'font-mono': numerical,
     },
