@@ -1,3 +1,7 @@
+import type { z } from 'zod';
+import type { GetKeysSchema, TransactionResponseSchema } from './connectors';
+import type { IterableElement } from 'type-fest';
+
 interface BaseTransaction {
   pubKey: string;
   propagate: boolean;
@@ -109,31 +113,9 @@ export type TransactionSubmission =
   | UndelegateSubmissionBody
   | OrderAmendmentBody;
 
-export interface TransactionResponse {
-  txHash: string;
-  tx: {
-    _from: {
-      pubKey: string;
-    };
-    inputData: string;
-    signature: {
-      algo: string;
-      value: string;
-      version: number;
-    };
-  };
-}
-
-export interface VegaKey {
-  index: number;
-  pub: string;
-  algorithm: {
-    name: string;
-    version: number;
-  };
-  tainted: boolean;
-  meta: Array<{ key: string; value: string }>;
-}
+export type TransactionResponse = z.infer<typeof TransactionResponseSchema>;
+export type GetKeysResponse = z.infer<typeof GetKeysSchema>;
+export type VegaKey = IterableElement<GetKeysResponse['keys']>;
 
 export type TransactionError =
   | {
