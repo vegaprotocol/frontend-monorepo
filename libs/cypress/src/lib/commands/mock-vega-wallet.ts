@@ -17,7 +17,10 @@ export function addMockVegaWalletCommands() {
     'mockVegaCommandSync',
     (override?: PartialDeep<TransactionResponse>) => {
       const defaultTransactionResponse = {
+        txId: 'tx-id',
         txHash: 'tx-hash',
+        sentAt: new Date().toISOString(),
+        receivedAt: new Date().toISOString(),
         tx: {
           input_data:
             'CPe6vpiqsPqxDBDC1w7KPkoKQGE4Y2M0NjUwMjhiMGY4OTM4YTYzZTEzNDViYzM2ODc3ZWRmODg4MjNmOWU0ZmI4ZDRlN2VkMmFlMzAwNzA3ZTMYASABKAM4Ag==',
@@ -28,7 +31,7 @@ export function addMockVegaWalletCommands() {
             version: 1,
           },
           From: {
-            PubKey: Cypress.env('vegaPublicKey'),
+            PubKey: Cypress.env('VEGA_PUBLIC_KEY'),
           },
           version: 2,
           pow: {
