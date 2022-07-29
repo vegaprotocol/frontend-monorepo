@@ -28,7 +28,7 @@ Example configurations are provided here:
 - [Devnet](./.env.devnet)
 - [Testnet](./.env.testnet)
 - [Stagnet1](./.env.stagnet1)
-- [Stagnet2](./.env.stagnet2)
+- [Stagnet3](./.env.stagnet3)
 
 For convenience, you can boot the app injecting one of the configurations above by running:
 
