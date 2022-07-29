@@ -192,10 +192,20 @@ export class RestConnector implements VegaConnector {
 
   private async request(endpoint: Endpoint, options: RequestInit) {
     const fetchResult = await fetch(`${this.url}/${endpoint}`, options);
-    const jsonResult = await fetchResult.json();
-    return {
-      status: fetchResult.status,
-      data: jsonResult,
-    };
+
+    // auth/token delete doesnt return json
+    if (endpoint === 'auth/token' && options.method === 'delete') {
+      const textResult = await fetchResult.text();
+      return {
+        status: fetchResult.status,
+        data: textResult,
+      };
+    } else {
+      const jsonResult = await fetchResult.json();
+      return {
+        status: fetchResult.status,
+        data: jsonResult,
+      };
+    }
   }
 }

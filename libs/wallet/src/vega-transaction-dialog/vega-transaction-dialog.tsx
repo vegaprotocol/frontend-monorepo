@@ -1,5 +1,4 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import get from 'lodash/get';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
