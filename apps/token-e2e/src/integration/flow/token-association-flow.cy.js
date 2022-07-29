@@ -37,6 +37,11 @@ context(
       );
 
       it('Able to associate tokens', function () {
+        //1000-ASSO-0008
+        //1000-ASSO-0009
+        //1000-ASSO-0030
+        //1000-ASSO-0014
+        //1000-ASSO-0015
         cy.staking_page_associate_tokens('2');
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
@@ -54,6 +59,10 @@ context(
       });
 
       it('Able to disassociate tokens', function () {
+        // 1000-ASSO-0025
+        // 1000-ASSO-0027
+        // 1000-ASSO-0028
+        // 1000-ASSO-0029
         cy.staking_page_associate_tokens('2');
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
@@ -80,6 +89,7 @@ context(
       });
 
       it('Able to associate more tokens than the approved amount of 1000 - requires re-approval', function () {
+        //1000-ASSO-0011
         cy.staking_page_associate_tokens('1001', true);
 
         cy.get(ethWalletAssociatedBalances, txTimeout)

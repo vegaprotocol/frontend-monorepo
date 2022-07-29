@@ -45,6 +45,7 @@ context('Ethereum Wallet - verify elements on widget', function () {
   });
 
   describe('when Connect Ethereum clicked', function () {
+    // 1000-ASSO-0002
     before('', function () {
       cy.get(connectToEthButton).click();
     });
@@ -121,6 +122,7 @@ context('Ethereum Wallet - verify elements on widget', function () {
     });
 
     describe('VEGA IN VESTING CONTRACT', function () {
+      // 1000-ASSO-0007
       it('should have currency title visible', function () {
         cy.get(vegaInVesting).within(() => {
           cy.get(currencyTitle)
@@ -185,6 +187,7 @@ context('Ethereum Wallet - verify elements on widget', function () {
     });
 
     describe('VEGA IN WALLET', function () {
+      // 1000-ASSO-0007
       it('should have currency title visible', function () {
         cy.get(vegaInWallet).within(() => {
           cy.get(currencyTitle)

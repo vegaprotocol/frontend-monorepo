@@ -76,6 +76,7 @@ context('Home Page - verify elements on page', function () {
         });
       });
       it('should have VESTING CONTRACT', function () {
+        // 1000-ASSO-0001
         cy.get(tokenDetailsTable).within(() => {
           cy.get(contract)
             .should('be.visible')
