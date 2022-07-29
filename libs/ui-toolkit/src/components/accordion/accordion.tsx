@@ -17,7 +17,8 @@ export const Accordion = ({ panels }: AccordionProps) => {
   const triggerClassNames = classNames(
     'w-full py-2 box-border',
     'appearance-none cursor-pointer focus:outline-none',
-    'flex items-center justify-between border-b border-muted'
+    'flex items-center justify-between border-b border-muted',
+    'text-left'
   );
 
   return (
