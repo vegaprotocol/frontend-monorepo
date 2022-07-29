@@ -266,14 +266,37 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         type="rightAligned"
         cellClassRules={{
           'color-vega-green': ({ value }: { value: string }) =>
-            Number(value) > 0,
-          'color-vega-red': ({ value }: { value: string }) => Number(value) < 0,
+            BigInt(value) > 0,
+          'color-vega-red': ({ value }: { value: string }) => BigInt(value) < 0,
         }}
         valueFormatter={({
           value,
           data,
         }: PositionsTableValueFormatterParams & {
           value: Position['realisedPNL'];
+        }) =>
+          value === undefined
+            ? undefined
+            : volumePrefix(
+                addDecimalsFormatNumber(value.toString(), data.decimalPlaces)
+              )
+        }
+        cellRenderer="PriceFlashCell"
+      />
+      <AgGridColumn
+        headerName={t('Unrealised PNL')}
+        field="unrealisedPNL"
+        type="rightAligned"
+        cellClassRules={{
+          'color-vega-green': ({ value }: { value: string }) =>
+            BigInt(value) > 0,
+          'color-vega-red': ({ value }: { value: string }) => BigInt(value) < 0,
+        }}
+        valueFormatter={({
+          value,
+          data,
+        }: PositionsTableValueFormatterParams & {
+          value: Position['unrealisedPNL'];
         }) =>
           value === undefined
             ? undefined

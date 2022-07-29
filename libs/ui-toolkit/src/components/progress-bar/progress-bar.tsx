@@ -16,12 +16,14 @@ export const ProgressBar = ({
   return (
     <div
       style={{ height: '6px' }}
-      className={classNames('bg-white-muted relative', className)}
+      className={classNames('bg-black-10 relative', className)}
     >
       <div
         className={classNames(
           'absolute left-0 top-0 bottom-0',
-          getIntentTextAndBackground(variant ?? Intent.None)
+          variant === undefined || variant === Intent.None
+            ? 'bg-black-60'
+            : getIntentTextAndBackground(variant ?? Intent.None)
         )}
         style={{ width: `${value}%` }}
       ></div>

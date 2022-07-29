@@ -15,6 +15,18 @@ export interface PositionsMetrics_party_accounts_asset {
    * The id of the asset
    */
   id: string;
+  /**
+   * The precision of the asset
+   */
+  decimals: number;
+}
+
+export interface PositionsMetrics_party_accounts_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
 }
 
 export interface PositionsMetrics_party_accounts {
@@ -31,6 +43,10 @@ export interface PositionsMetrics_party_accounts {
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */
   balance: string;
+  /**
+   * Market (only relevant to margin accounts)
+   */
+  market: PositionsMetrics_party_accounts_market | null;
 }
 
 export interface PositionsMetrics_party_marginsConnection_edges_node_market {
@@ -39,6 +55,14 @@ export interface PositionsMetrics_party_marginsConnection_edges_node_market {
    * Market ID
    */
   id: string;
+}
+
+export interface PositionsMetrics_party_marginsConnection_edges_node_asset {
+  __typename: "Asset";
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
 }
 
 export interface PositionsMetrics_party_marginsConnection_edges_node {
@@ -64,6 +88,10 @@ export interface PositionsMetrics_party_marginsConnection_edges_node {
    * the general account of the party for the given asset.
    */
   collateralReleaseLevel: string;
+  /**
+   * asset for the current margins
+   */
+  asset: PositionsMetrics_party_marginsConnection_edges_node_asset;
 }
 
 export interface PositionsMetrics_party_marginsConnection_edges {
@@ -93,42 +121,6 @@ export interface PositionsMetrics_party_positionsConnection_edges_node_market_tr
    * An instance of or reference to a fully specified instrument.
    */
   instrument: PositionsMetrics_party_positionsConnection_edges_node_market_tradableInstrument_instrument;
-}
-
-export interface PositionsMetrics_party_positionsConnection_edges_node_market_accounts_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-}
-
-export interface PositionsMetrics_party_positionsConnection_edges_node_market_accounts_asset {
-  __typename: "Asset";
-  /**
-   * The id of the asset
-   */
-  id: string;
-  /**
-   * The precision of the asset
-   */
-  decimals: number;
-}
-
-export interface PositionsMetrics_party_positionsConnection_edges_node_market_accounts {
-  __typename: "Account";
-  /**
-   * Balance as string - current account balance (approx. as balances can be updated several times per second)
-   */
-  balance: string;
-  /**
-   * Market (only relevant to margin accounts)
-   */
-  market: PositionsMetrics_party_positionsConnection_edges_node_market_accounts_market | null;
-  /**
-   * Asset, the 'currency'
-   */
-  asset: PositionsMetrics_party_positionsConnection_edges_node_market_accounts_asset;
 }
 
 export interface PositionsMetrics_party_positionsConnection_edges_node_market_data {
@@ -180,10 +172,6 @@ export interface PositionsMetrics_party_positionsConnection_edges_node_market {
    * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: PositionsMetrics_party_positionsConnection_edges_node_market_tradableInstrument;
-  /**
-   * Get account for a party or market
-   */
-  accounts: PositionsMetrics_party_positionsConnection_edges_node_market_accounts[] | null;
   /**
    * marketData for the given market
    */

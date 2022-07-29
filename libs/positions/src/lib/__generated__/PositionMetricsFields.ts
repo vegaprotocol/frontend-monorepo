@@ -25,42 +25,6 @@ export interface PositionMetricsFields_market_tradableInstrument {
   instrument: PositionMetricsFields_market_tradableInstrument_instrument;
 }
 
-export interface PositionMetricsFields_market_accounts_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-}
-
-export interface PositionMetricsFields_market_accounts_asset {
-  __typename: "Asset";
-  /**
-   * The id of the asset
-   */
-  id: string;
-  /**
-   * The precision of the asset
-   */
-  decimals: number;
-}
-
-export interface PositionMetricsFields_market_accounts {
-  __typename: "Account";
-  /**
-   * Balance as string - current account balance (approx. as balances can be updated several times per second)
-   */
-  balance: string;
-  /**
-   * Market (only relevant to margin accounts)
-   */
-  market: PositionMetricsFields_market_accounts_market | null;
-  /**
-   * Asset, the 'currency'
-   */
-  asset: PositionMetricsFields_market_accounts_asset;
-}
-
 export interface PositionMetricsFields_market_data {
   __typename: "MarketData";
   /**
@@ -110,10 +74,6 @@ export interface PositionMetricsFields_market {
    * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: PositionMetricsFields_market_tradableInstrument;
-  /**
-   * Get account for a party or market
-   */
-  accounts: PositionMetricsFields_market_accounts[] | null;
   /**
    * marketData for the given market
    */

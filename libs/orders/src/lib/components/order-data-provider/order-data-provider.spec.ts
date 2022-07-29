@@ -15,6 +15,7 @@ const marketOrder: Orders_party_orders = {
     id: 'market-id',
     name: 'market-name',
     decimalPlaces: 2,
+    positionDecimalPlaces: 2,
     tradableInstrument: {
       __typename: 'TradableInstrument',
       instrument: {
@@ -44,6 +45,7 @@ const limitOrder: Orders_party_orders = {
     id: 'market-id',
     name: 'market-name',
     decimalPlaces: 2,
+    positionDecimalPlaces: 2,
     tradableInstrument: {
       __typename: 'TradableInstrument',
       instrument: {

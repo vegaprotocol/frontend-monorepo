@@ -22,7 +22,7 @@ export interface Position {
   decimalPlaces: number;
   generalAccountBalance: string;
   totalBalance: string;
-  instrumentName: string;
+  assetSymbol: string;
   // leverageInitial: string;
   // leverageMaintenance: string;
   // leverageRelease: string;
@@ -38,6 +38,7 @@ export interface Position {
   notional: string;
   openVolume: string;
   realisedPNL: string;
+  unrealisedPNL: string;
   searchPrice: string;
   updatedAt: string | null;
 }
@@ -65,16 +66,6 @@ const POSITIONS_METRICS_FRAGMENT = gql`
           name
         }
       }
-      accounts {
-        balance
-        market {
-          id
-        }
-        asset {
-          id
-          decimals
-        }
-      }
       data {
         markPrice
       }
@@ -87,12 +78,16 @@ const POSITION_METRICS_QUERY = gql`
   query PositionsMetrics($partyId: ID!) {
     party(id: $partyId) {
       id
-      accounts(type: General) {
+      accounts {
         type
         asset {
           id
+          decimals
         }
         balance
+        market {
+          id
+        }
       }
       marginsConnection {
         edges {
@@ -104,6 +99,9 @@ const POSITION_METRICS_QUERY = gql`
             searchLevel
             initialLevel
             collateralReleaseLevel
+            asset {
+              symbol
+            }
           }
         }
       }
@@ -159,7 +157,7 @@ const comparator = (
   );
 */
 
-const getMetrics = (data: PositionsMetrics_party | null) => {
+export const getMetrics = (data: PositionsMetrics_party | null) => {
   if (!data || !data.positionsConnection.edges) {
     return [];
   }
@@ -170,7 +168,7 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
     const marginLevel = data.marginsConnection.edges?.find(
       (margin) => margin.node.market.id === market.id
     )?.node;
-    const marginAccount = market.accounts?.find(
+    const marginAccount = data.accounts?.find(
       (account) => account.market?.id === market.id
     );
     if (!marginAccount || !marginLevel || !marketData) {
@@ -205,6 +203,8 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
 
     const realisedPNL =
       BigInt(position.node.realisedPNL) * marketDecimalPlacesCorrection;
+    const unrealisedPNL =
+      BigInt(position.node.unrealisedPNL) * marketDecimalPlacesCorrection;
 
     const marginAccountBalance = marginAccount
       ? BigInt(marginAccount.balance) * assetDecimalPlacesCorrection
@@ -217,7 +217,8 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
       BigInt(marketData.markPrice) * marketDecimalPlacesCorrection;
 
     const notional =
-      (openVolume > 0 ? openVolume : openVolume * BigInt(-1)) * markPrice;
+      ((openVolume > 0 ? openVolume : openVolume * BigInt(-1)) * markPrice) /
+      BigInt(decimalPlaces);
     const totalBalance = marginAccountBalance + generalAccountBalance;
     const currentLeverage = notional / totalBalance;
     const capitalUtilisation =
@@ -236,9 +237,12 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
     */
 
     const searchPrice =
-      (marginSearch - marginAccountBalance) / openVolume + markPrice;
+      (BigInt(decimalPlaces) * (marginSearch - marginAccountBalance)) /
+        openVolume +
+      markPrice;
     const liquidationPrice =
-      (marginMaintenance - marginAccountBalance - generalAccountBalance) /
+      (BigInt(decimalPlaces) *
+        (marginMaintenance - marginAccountBalance - generalAccountBalance)) /
         openVolume +
       markPrice;
 
@@ -249,7 +253,7 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
       currentLeverage: currentLeverage.toString(),
       decimalPlaces,
       generalAccountBalance: generalAccountBalance.toString(),
-      instrumentName: position.node.market.tradableInstrument.instrument.name,
+      assetSymbol: marginLevel.asset.symbol,
       totalBalance: totalBalance.toString(),
       // leverageInitial: notional / marginInitial,
       // leverageMaintenance: notional / marginMaintenance,
@@ -266,6 +270,7 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
       notional: notional.toString(),
       openVolume: openVolume.toString(),
       realisedPNL: realisedPNL.toString(),
+      unrealisedPNL: unrealisedPNL.toString(),
       searchPrice: searchPrice.toString(),
       updatedAt: position.node.updatedAt,
     });
@@ -273,7 +278,10 @@ const getMetrics = (data: PositionsMetrics_party | null) => {
   return metrics;
 };
 
-const update = (data: Data, delta: PositionsMetricsSubsciption_positions) => {
+export const update = (
+  data: Data,
+  delta: PositionsMetricsSubsciption_positions
+) => {
   if (!data.party?.positionsConnection.edges) {
     return data;
   }
@@ -302,7 +310,7 @@ const update = (data: Data, delta: PositionsMetricsSubsciption_positions) => {
 const getData = (responseData: PositionsMetrics): Data => {
   return {
     party: responseData.party,
-    positions: getMetrics(responseData.party)?.sort(),
+    positions: getMetrics(responseData.party)?.sort(), //#TODO sort by updated at desc here on in table
   };
 };
 

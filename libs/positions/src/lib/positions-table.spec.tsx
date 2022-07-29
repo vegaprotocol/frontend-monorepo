@@ -11,7 +11,7 @@ const singleRow: Position = {
   decimalPlaces: 2,
   generalAccountBalance: '0',
   totalBalance: '0',
-  instrumentName: 'BTC',
+  assetSymbol: 'BTC',
   // leverageInitial: '0',
   // leverageMaintenance: '0',
   // leverageRelease: '0',
@@ -27,6 +27,7 @@ const singleRow: Position = {
   notional: '0',
   openVolume: '0',
   realisedPNL: '0',
+  unrealisedPNL: '0',
   searchPrice: '0',
   updatedAt: '2022-07-27T15:02:58.400Z',
 };
@@ -45,7 +46,7 @@ it('Render correct columns', async () => {
     render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
       const headers = await screen.getAllByRole('columnheader');
-      expect(headers).toHaveLength(8);
+      expect(headers).toHaveLength(9);
       expect(
         headers.map((h) =>
           h.querySelector('[ref="eText"]')?.textContent?.trim()
@@ -58,6 +59,7 @@ it('Render correct columns', async () => {
         'Leverage',
         'Margin allocated',
         'Realised PNL',
+        'Unrealised PNL',
         'Updated',
       ]);
     });

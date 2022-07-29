@@ -19,7 +19,7 @@ const longPosition: Position = {
   decimalPlaces: 2,
   generalAccountBalance: '0',
   totalBalance: '45353',
-  instrumentName: 'BTC',
+  assetSymbol: 'BTC',
   // leverageInitial: '0',
   // leverageMaintenance: '0',
   // leverageRelease: '0',
@@ -35,6 +35,7 @@ const longPosition: Position = {
   notional: '46667989',
   openVolume: '4123',
   realisedPNL: '45',
+  unrealisedPNL: '45',
   searchPrice: '1132123',
   updatedAt: '2022-07-27T15:02:58.400Z',
 };
@@ -47,7 +48,7 @@ const shortPosition: Position = {
   decimalPlaces: 2,
   generalAccountBalance: '0',
   totalBalance: '3856',
-  instrumentName: 'ETH',
+  assetSymbol: 'ETH',
   // leverageInitial: '0',
   // leverageMaintenance: '0',
   // leverageRelease: '0',
@@ -63,6 +64,7 @@ const shortPosition: Position = {
   notional: '836344',
   openVolume: '-3467',
   realisedPNL: '0',
+  unrealisedPNL: '0',
   searchPrice: '0',
   updatedAt: '2022-07-26T14:01:34.800Z',
 };
