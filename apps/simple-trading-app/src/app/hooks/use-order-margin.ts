@@ -86,12 +86,12 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
   );
   if (data?.estimateOrder.marginLevels.initialLevel) {
     return addDecimal(
-      Math.max(
+      BigNumber.maximum(
         0,
-        new BigNumber(data.estimateOrder.marginLevels.initialLevel)
-          .minus(marketPositions?.balance || 0)
-          .toNumber()
-      ),
+        new BigNumber(data.estimateOrder.marginLevels.initialLevel).minus(
+          marketPositions?.balance || 0
+        )
+      ).toString(),
       market.decimalPlaces
     );
   }
