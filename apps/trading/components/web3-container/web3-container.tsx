@@ -63,7 +63,8 @@ export const Web3Content = ({
     if (connector?.connectEagerly && !('Cypress' in window)) {
       connector.connectEagerly();
     }
-  }, [connector]);
+    // eslint-disable-next-line
+  }, []);
 
   if (error) {
     return (
