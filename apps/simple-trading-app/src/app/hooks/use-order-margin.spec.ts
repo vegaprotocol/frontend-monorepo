@@ -20,7 +20,7 @@ jest.mock('@apollo/client', () => ({
 
 let mockMarketPositions: PositionMargin = {
   openVolume: new BigNumber(1),
-  balanceSum: new BigNumber(100000),
+  balance: new BigNumber(100000),
 };
 jest.mock('./use-market-positions', () => jest.fn(() => mockMarketPositions));
 

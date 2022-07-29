@@ -89,7 +89,7 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
       Math.max(
         0,
         new BigNumber(data.estimateOrder.marginLevels.initialLevel)
-          .minus(marketPositions?.balanceSum || 0)
+          .minus(marketPositions?.balance || 0)
           .toNumber()
       ),
       market.decimalPlaces

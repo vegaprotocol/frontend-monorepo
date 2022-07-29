@@ -3,45 +3,42 @@ import useMarketPositions from './use-market-positions';
 
 let mockNotEmptyData = {
   party: {
+    accounts: [
+      {
+        balance: '50001000000',
+        asset: {
+          decimals: 5,
+        },
+        market: {
+          id: 'marketId',
+        },
+      },
+      {
+        balance: '700000000000000000000000000000',
+        asset: {
+          decimals: 5,
+        },
+        market: {
+          id: 'someOtherMarketId',
+        },
+      },
+    ],
     positionsConnection: {
       edges: [
         {
           node: {
+            openVolume: '100002',
             market: {
               id: 'marketId',
-              accounts: [
-                {
-                  balance: '1000000',
-                },
-              ],
             },
-            openVolume: '2',
           },
         },
         {
           node: {
-            market: {
-              id: 'marketId',
-              accounts: [
-                {
-                  balance: '50000000000',
-                },
-              ],
-            },
-            openVolume: '100000',
-          },
-        },
-        {
-          node: {
+            openVolume: '3',
             market: {
               id: 'someOtherMarketId',
-              accounts: [
-                {
-                  balance: '700000000000000000000000000000',
-                },
-              ],
             },
-            openVolume: '3',
           },
         },
       ],
@@ -63,25 +60,31 @@ describe('useOrderPosition Hook', () => {
       useMarketPositions({ marketId: 'marketId', partyId: 'partyId' })
     );
     expect(result.current?.openVolume.toNumber()).toEqual(100002);
-    expect(result.current?.balanceSum.toString()).toEqual('50001000000');
+    expect(result.current?.balance.toString()).toEqual('50001000000');
   });
 
-  it('if balance equal 0, volume should be 0', () => {
+  it('if balance equal 0 return null', () => {
     mockNotEmptyData = {
       party: {
+        accounts: [
+          {
+            balance: '0',
+            asset: {
+              decimals: 5,
+            },
+            market: {
+              id: 'marketId',
+            },
+          },
+        ],
         positionsConnection: {
           edges: [
             {
               node: {
+                openVolume: '2',
                 market: {
                   id: 'marketId',
-                  accounts: [
-                    {
-                      balance: '0',
-                    },
-                  ],
                 },
-                openVolume: '2',
               },
             },
           ],
@@ -91,26 +94,31 @@ describe('useOrderPosition Hook', () => {
     const { result } = renderHook(() =>
       useMarketPositions({ marketId: 'marketId', partyId: 'partyId' })
     );
-    expect(result.current?.openVolume.toNumber()).toEqual(0);
-    expect(result.current?.balanceSum.toString()).toEqual('0');
+    expect(result.current).toBeNull();
   });
 
   it('if no markets return null', () => {
     mockNotEmptyData = {
       party: {
+        accounts: [
+          {
+            balance: '33330',
+            asset: {
+              decimals: 5,
+            },
+            market: {
+              id: 'otherMarketId',
+            },
+          },
+        ],
         positionsConnection: {
           edges: [
             {
               node: {
+                openVolume: '2',
                 market: {
                   id: 'otherMarketId',
-                  accounts: [
-                    {
-                      balance: '33330',
-                    },
-                  ],
                 },
-                openVolume: '2',
               },
             },
           ],

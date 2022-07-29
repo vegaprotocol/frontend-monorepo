@@ -3,16 +3,46 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { AccountType } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: MarketPositions
 // ====================================================
 
-export interface MarketPositions_party_positionsConnection_edges_node_market_accounts {
+export interface MarketPositions_party_accounts_asset {
+  __typename: "Asset";
+  /**
+   * The precision of the asset
+   */
+  decimals: number;
+}
+
+export interface MarketPositions_party_accounts_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface MarketPositions_party_accounts {
   __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
   /**
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */
   balance: string;
+  /**
+   * Asset, the 'currency'
+   */
+  asset: MarketPositions_party_accounts_asset;
+  /**
+   * Market (only relevant to margin accounts)
+   */
+  market: MarketPositions_party_accounts_market | null;
 }
 
 export interface MarketPositions_party_positionsConnection_edges_node_market {
@@ -21,10 +51,6 @@ export interface MarketPositions_party_positionsConnection_edges_node_market {
    * Market ID
    */
   id: string;
-  /**
-   * Get account for a party or market
-   */
-  accounts: MarketPositions_party_positionsConnection_edges_node_market_accounts[] | null;
 }
 
 export interface MarketPositions_party_positionsConnection_edges_node {
@@ -58,6 +84,10 @@ export interface MarketPositions_party {
    * Party identifier
    */
   id: string;
+  /**
+   * Collateral accounts relating to a party
+   */
+  accounts: MarketPositions_party_accounts[] | null;
   /**
    * Trading positions relating to a party
    */

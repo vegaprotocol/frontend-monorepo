@@ -9,15 +9,22 @@ const MARKET_POSITIONS_QUERY = gql`
   query MarketPositions($partyId: ID!) {
     party(id: $partyId) {
       id
+      accounts {
+        type
+        balance
+        asset {
+          decimals
+        }
+        market {
+          id
+        }
+      }
       positionsConnection {
         edges {
           node {
             openVolume
             market {
               id
-              accounts {
-                balance
-              }
             }
           }
         }
@@ -33,7 +40,8 @@ interface Props {
 
 export type PositionMargin = {
   openVolume: BigNumber;
-  balanceSum: BigNumber;
+  balance: BigNumber;
+  balanceDecimals?: number;
 } | null;
 
 export default ({ marketId, partyId }: Props): PositionMargin => {
@@ -46,26 +54,24 @@ export default ({ marketId, partyId }: Props): PositionMargin => {
     }
   );
 
-  const markets =
-    data?.party?.positionsConnection?.edges
-      ?.filter((nodes) => nodes.node.market.id === marketId)
-      .map((nodes) => nodes.node) || [];
+  const account = data?.party?.accounts?.find(
+    (nodes) => nodes.market?.id === marketId
+  );
 
-  return markets.length
-    ? markets.reduce(
-        (agg, item) => {
-          const balance =
-            item.market.accounts?.reduce(
-              (acagg, account) => acagg.plus(account.balance || 0),
-              new BigNumber(0)
-            ) || new BigNumber(0);
-          if (!balance.isZero()) {
-            agg.balanceSum = agg.balanceSum.plus(balance);
-            agg.openVolume = agg.openVolume.plus(item.openVolume);
-          }
-          return agg;
-        },
-        { openVolume: new BigNumber(0), balanceSum: new BigNumber(0) }
-      )
-    : null;
+  if (account) {
+    const balance = new BigNumber(account.balance || 0);
+    const openVolume = new BigNumber(
+      data?.party?.positionsConnection?.edges?.find(
+        (nodes) => nodes.node.market.id === marketId
+      )?.node.openVolume || 0
+    );
+    if (!balance.isZero() && !openVolume.isZero()) {
+      return {
+        balance,
+        balanceDecimals: account?.asset.decimals,
+        openVolume,
+      };
+    }
+  }
+  return null;
 };
