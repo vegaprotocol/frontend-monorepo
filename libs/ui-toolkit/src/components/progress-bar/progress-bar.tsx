@@ -1,18 +1,14 @@
 import classNames from 'classnames';
-import { getIntentTextAndBackground } from '../../utils/intent';
+import { getIntentBackground } from '../../utils/intent';
 import { Intent } from '../../utils/intent';
 
 interface ProgressBarProps {
   value?: number;
-  variant?: Intent;
+  intent?: Intent;
   className?: string;
 }
 
-export const ProgressBar = ({
-  className,
-  variant,
-  value,
-}: ProgressBarProps) => {
+export const ProgressBar = ({ className, intent, value }: ProgressBarProps) => {
   return (
     <div
       style={{ height: '6px' }}
@@ -21,11 +17,11 @@ export const ProgressBar = ({
       <div
         className={classNames(
           'absolute left-0 top-0 bottom-0',
-          variant === undefined || variant === Intent.None
+          intent === undefined || intent === Intent.None
             ? 'bg-black-60'
-            : getIntentTextAndBackground(variant ?? Intent.None)
+            : getIntentBackground(intent ?? Intent.None)
         )}
-        style={{ width: `${value}%` }}
+        style={{ width: `${Math.max(0, value ?? 0)}%` }}
       ></div>
     </div>
   );

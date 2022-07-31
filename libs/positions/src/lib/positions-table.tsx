@@ -58,7 +58,7 @@ export interface PriceCellProps {
     low: string;
     high: string;
     value: number;
-    variant?: Intent;
+    intent?: Intent;
   };
 }
 
@@ -71,7 +71,7 @@ export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
       </div>
       <ProgressBar
         value={valueFormatted.value}
-        variant={valueFormatted.variant}
+        intent={valueFormatted.intent}
         className="mt-4"
       />
     </>
@@ -157,7 +157,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           }
           return {
             volume: value,
-            decimalPlaces: data.decimalPlaces,
+            decimalPlaces: data.positionDecimalPlaces,
             notional: data.notional,
           };
         }}
@@ -179,7 +179,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (data.marketTradingMode === MarketTradingMode.OpeningAuction) {
             return '-';
           }
-          return addDecimal(value.toString(), data.decimalPlaces);
+          return addDecimal(value.toString(), data.marketDecimalPlaces);
         }}
       />
       <AgGridColumn
@@ -202,23 +202,21 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!data) {
             return undefined;
           }
-          // const openVolume = BigInt(data.openVolume);
           const min = BigInt(data.averageEntryPrice);
           const max = BigInt(data.liquidationPrice);
           const mid = BigInt(data.markPrice);
           const range = max - min;
-          const warningLevelReached =
-            BigInt(data.marginAccountBalance) <
-              BigInt(data.marginSearch) +
-                (BigInt(data.marginInitial) - BigInt(data.marginSearch)) /
-                  BigInt(2) &&
-            BigInt(data.generalAccountBalance) <
-              BigInt(data.marginInitial) - BigInt(data.marginSearch);
           return {
-            low: addDecimalsFormatNumber(min.toString(), data.decimalPlaces),
-            high: addDecimalsFormatNumber(max.toString(), data.decimalPlaces),
+            low: addDecimalsFormatNumber(
+              min.toString(),
+              data.marketDecimalPlaces
+            ),
+            high: addDecimalsFormatNumber(
+              max.toString(),
+              data.marketDecimalPlaces
+            ),
             value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-            variant: warningLevelReached ? Intent.Danger : undefined,
+            intent: data.lowMarginLevel ? Intent.Danger : undefined,
           };
         }}
       />
@@ -254,7 +252,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
             low: `${value}%`,
             high: addDecimalsFormatNumber(
               data.totalBalance,
-              data.decimalPlaces
+              data.assetDecimals
             ),
             value: Number(value),
           };
@@ -278,7 +276,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value === undefined
             ? undefined
             : volumePrefix(
-                addDecimalsFormatNumber(value.toString(), data.decimalPlaces)
+                addDecimalsFormatNumber(value.toString(), data.assetDecimals)
               )
         }
         cellRenderer="PriceFlashCell"
@@ -301,7 +299,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value === undefined
             ? undefined
             : volumePrefix(
-                addDecimalsFormatNumber(value.toString(), data.decimalPlaces)
+                addDecimalsFormatNumber(value.toString(), data.assetDecimals)
               )
         }
         cellRenderer="PriceFlashCell"

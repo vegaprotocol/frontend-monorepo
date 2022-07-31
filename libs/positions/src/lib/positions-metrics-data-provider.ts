@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import produce from 'immer';
+import BigNumber from 'bignumber.js';
 import type {
   PositionsMetrics,
   PositionsMetrics_party,
@@ -18,9 +19,11 @@ export interface Position {
   marketName: string;
   averageEntryPrice: string;
   capitalUtilisation: string;
-  currentLeverage: string;
-  decimalPlaces: number;
-  generalAccountBalance: string;
+  currentLeverage: number;
+  assetDecimals: number;
+  marketDecimalPlaces: number;
+  positionDecimalPlaces: number;
+  // generalAccountBalance: string;
   totalBalance: string;
   assetSymbol: string;
   // leverageInitial: string;
@@ -28,10 +31,11 @@ export interface Position {
   // leverageRelease: string;
   // leverageSearch: string;
   liquidationPrice: string;
-  marginAccountBalance: string;
+  lowMarginLevel: boolean;
+  // marginAccountBalance: string;
   // marginMaintenance: string;
-  marginSearch: string;
-  marginInitial: string;
+  // marginSearch: string;
+  // marginInitial: string;
   marketId: string;
   marketTradingMode: MarketTradingMode;
   markPrice: string;
@@ -179,99 +183,96 @@ export const getMetrics = (data: PositionsMetrics_party | null) => {
         account.asset.id === marginAccount.asset.id &&
         account.type === AccountType.General
     );
-    const assetDecimalPlaces = marginAccount.asset.decimals;
-    const marketDecimalPlaces = market.decimalPlaces;
-    const { positionDecimalPlaces } = market;
-    const decimalPlaces = Math.max(
-      marginAccount.asset.decimals,
-      market.decimalPlaces,
-      market.positionDecimalPlaces
+    const assetDecimals = marginAccount.asset.decimals;
+    const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
+      market;
+    const openVolume = new BigNumber(position.node.openVolume).dividedBy(
+      10 ** positionDecimalPlaces
     );
-    const assetDecimalPlacesCorrection = BigInt(
-      10 ** (decimalPlaces - assetDecimalPlaces)
-    );
-    const marketDecimalPlacesCorrection = BigInt(
-      10 ** (decimalPlaces - marketDecimalPlaces)
-    );
-    const positionDecimalPlacesCorrection = BigInt(
-      10 ** (decimalPlaces - positionDecimalPlaces)
-    );
-    const openVolume =
-      BigInt(position.node.openVolume) * positionDecimalPlacesCorrection;
-    const averageEntryPrice =
-      BigInt(position.node.averageEntryPrice) * marketDecimalPlacesCorrection;
-
-    const realisedPNL =
-      BigInt(position.node.realisedPNL) * marketDecimalPlacesCorrection;
-    const unrealisedPNL =
-      BigInt(position.node.unrealisedPNL) * marketDecimalPlacesCorrection;
 
     const marginAccountBalance = marginAccount
-      ? BigInt(marginAccount.balance) * assetDecimalPlacesCorrection
-      : BigInt(0);
+      ? new BigNumber(marginAccount.balance).dividedBy(10 ** assetDecimals)
+      : new BigNumber(0);
     const generalAccountBalance = generalAccount
-      ? BigInt(generalAccount.balance) * assetDecimalPlacesCorrection
-      : BigInt(0);
+      ? new BigNumber(generalAccount.balance).dividedBy(10 ** assetDecimals)
+      : new BigNumber(0);
 
-    const markPrice =
-      BigInt(marketData.markPrice) * marketDecimalPlacesCorrection;
+    const markPrice = new BigNumber(marketData.markPrice).dividedBy(
+      10 ** marketDecimalPlaces
+    );
 
-    const notional =
-      ((openVolume > 0 ? openVolume : openVolume * BigInt(-1)) * markPrice) /
-      BigInt(decimalPlaces);
-    const totalBalance = marginAccountBalance + generalAccountBalance;
-    const currentLeverage = notional / totalBalance;
-    const capitalUtilisation =
-      (BigInt(100) * marginAccountBalance) / totalBalance;
+    const notional = (
+      openVolume.isGreaterThan(0) ? openVolume : openVolume.multipliedBy(-1)
+    ).multipliedBy(markPrice);
+    const totalBalance = marginAccountBalance.plus(generalAccountBalance);
+    const currentLeverage = notional.dividedBy(totalBalance);
+    const capitalUtilisation = marginAccountBalance
+      .dividedBy(totalBalance)
+      .multipliedBy(100);
 
-    const marginMaintenance =
-      BigInt(marginLevel.maintenanceLevel) * marketDecimalPlacesCorrection;
-    const marginSearch =
-      BigInt(marginLevel.searchLevel) * marketDecimalPlacesCorrection;
-    const marginInitial =
-      BigInt(marginLevel.initialLevel) * marketDecimalPlacesCorrection;
+    const marginMaintenance = new BigNumber(
+      marginLevel.maintenanceLevel
+    ).multipliedBy(marketDecimalPlaces);
+    const marginSearch = new BigNumber(marginLevel.searchLevel).multipliedBy(
+      marketDecimalPlaces
+    );
+    const marginInitial = new BigNumber(marginLevel.initialLevel).multipliedBy(
+      marketDecimalPlaces
+    );
     /*
-    const marginRelease =
-      BigInt(marginLevel.collateralReleaseLevel) *
-      marketDecimalPlacesCorrection;
+    const marginRelease =  = new BigNumber(marginLevel.collateralReleaseLevel).multipliedBy(
+      marketDecimalPlaces
+    );
     */
 
-    const searchPrice =
-      (BigInt(decimalPlaces) * (marginSearch - marginAccountBalance)) /
-        openVolume +
-      markPrice;
-    const liquidationPrice =
-      (BigInt(decimalPlaces) *
-        (marginMaintenance - marginAccountBalance - generalAccountBalance)) /
-        openVolume +
-      markPrice;
+    const searchPrice = marginSearch
+      .minus(marginAccountBalance)
+      .dividedBy(openVolume)
+      .plus(markPrice);
+    const liquidationPrice = marginMaintenance
+      .minus(marginAccountBalance)
+      .minus(generalAccountBalance)
+      .dividedBy(openVolume)
+      .plus(markPrice);
+
+    const lowMarginLevel =
+      marginAccountBalance.isLessThan(
+        marginSearch.plus(marginInitial.minus(marginSearch).dividedBy(2))
+      ) && generalAccountBalance.isLessThan(marginInitial.minus(marginSearch));
 
     metrics.push({
       marketName: market.name,
-      averageEntryPrice: averageEntryPrice.toString(),
-      capitalUtilisation: capitalUtilisation.toString(),
-      currentLeverage: currentLeverage.toString(),
-      decimalPlaces,
-      generalAccountBalance: generalAccountBalance.toString(),
+      averageEntryPrice: position.node.averageEntryPrice,
+      capitalUtilisation: capitalUtilisation.toFixed(0),
+      currentLeverage: currentLeverage.toNumber(),
+      marketDecimalPlaces,
+      positionDecimalPlaces,
+      assetDecimals,
+      // generalAccountBalance: generalAccount?.balance ?? '0',
       assetSymbol: marginLevel.asset.symbol,
-      totalBalance: totalBalance.toString(),
+      totalBalance: totalBalance.multipliedBy(10 ** assetDecimals).toFixed(),
+      lowMarginLevel,
       // leverageInitial: notional / marginInitial,
       // leverageMaintenance: notional / marginMaintenance,
       // leverageRelease: notional / marginRelease,
       // leverageSearch: notional / marginSearch,
-      liquidationPrice: liquidationPrice.toString(),
-      marginAccountBalance: marginAccountBalance.toString(),
+      liquidationPrice: liquidationPrice
+        .multipliedBy(10 ** marketDecimalPlaces)
+        .toFixed(0),
+      // marginAccountBalance: marginAccount.balance,
       // marginMaintenance: marginMaintenance.toString(),
-      marginSearch: marginSearch.toString(),
-      marginInitial: marginInitial.toString(),
+      // marginSearch: marginSearch.multipliedBy(10 ** assetDecimals).toFixed(),
+      // marginInitial: marginInitial.multipliedBy(10 ** assetDecimals).toFixed(),
       marketId: position.node.market.id,
       marketTradingMode: position.node.market.tradingMode,
-      markPrice: markPrice.toString(),
-      notional: notional.toString(),
-      openVolume: openVolume.toString(),
-      realisedPNL: realisedPNL.toString(),
-      unrealisedPNL: unrealisedPNL.toString(),
-      searchPrice: searchPrice.toString(),
+      markPrice: marketData.markPrice,
+      notional: notional.multipliedBy(10 ** assetDecimals).toFixed(0),
+      openVolume: position.node.openVolume,
+      realisedPNL: position.node.realisedPNL,
+      unrealisedPNL: position.node.unrealisedPNL,
+      searchPrice: searchPrice
+        .multipliedBy(10 ** marketDecimalPlaces)
+        .toFixed(0),
       updatedAt: position.node.updatedAt,
     });
   });

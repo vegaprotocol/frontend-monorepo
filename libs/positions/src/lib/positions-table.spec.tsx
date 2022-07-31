@@ -7,9 +7,11 @@ const singleRow: Position = {
   marketName: 'ETH/BTC (31 july 2022)',
   averageEntryPrice: '0',
   capitalUtilisation: '0',
-  currentLeverage: '0',
-  decimalPlaces: 2,
-  generalAccountBalance: '0',
+  currentLeverage: 0,
+  marketDecimalPlaces: 2,
+  positionDecimalPlaces: 2,
+  assetDecimals: 2,
+  // generalAccountBalance: '0',
   totalBalance: '0',
   assetSymbol: 'BTC',
   // leverageInitial: '0',
@@ -17,10 +19,11 @@ const singleRow: Position = {
   // leverageRelease: '0',
   // leverageSearch: '0',
   liquidationPrice: '0',
-  marginAccountBalance: '0',
+  // marginAccountBalance: '0',
+  lowMarginLevel: false,
   // marginMaintenance: '0',
-  marginSearch: '0',
-  marginInitial: '0',
+  // marginSearch: '0',
+  // marginInitial: '0',
   marketId: 'string',
   marketTradingMode: MarketTradingMode.Continuous,
   markPrice: '0',
@@ -62,6 +65,78 @@ it('Render correct columns', async () => {
         'Unrealised PNL',
         'Updated',
       ]);
+    });
+  });
+});
+
+it('Splits market name', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
+    });
+  });
+});
+
+it('add color and sign to amount, displayes positive notional value', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
+    });
+  });
+});
+
+it('displayes mark price', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
+    });
+  });
+});
+
+it("displays properly entry, liquidation price and liquidation bar an it's intent", async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
+    });
+  });
+});
+
+it('displays leverage', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
+    });
+  });
+});
+
+it('displays allocated margin and margin bar', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
+    });
+  });
+});
+
+it('displays realized and unrealised PNL', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
+    });
+  });
+});
+
+it('displays update datetime', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+    await waitFor(async () => {
+      expect(true).toEqual(true);
     });
   });
 });

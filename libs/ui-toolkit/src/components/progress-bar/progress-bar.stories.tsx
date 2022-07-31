@@ -9,7 +9,7 @@ export default {
     order: ['Default', 'None', 'Primary', 'Danger', 'Warning', 'Success'],
   },
   argTypes: {
-    variant: {
+    intent: {
       options: Object.values(Intent).filter((x) => typeof x === 'string'),
       mapping: Intent,
       control: {
@@ -28,7 +28,7 @@ Default.args = {
 
 export const None = Template.bind({});
 None.args = {
-  variant: 'None',
+  intent: 'None',
   value: 10,
 };
 
@@ -40,18 +40,18 @@ Primary.args = {
 
 export const Success = Template.bind({});
 Success.args = {
-  variant: 'Success',
+  intent: 'Success',
   value: 30,
 };
 
 export const Warning = Template.bind({});
 Warning.args = {
-  variant: 'Warning',
+  intent: 'Warning',
   value: 40,
 };
 
 export const Danger = Template.bind({});
 Danger.args = {
-  variant: 'Danger',
+  intent: 'Danger',
   value: 50,
 };
