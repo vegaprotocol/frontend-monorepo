@@ -4,14 +4,6 @@ import type {
   TransactionResponse,
 } from '../wallet-types';
 
-type ErrorResponse =
-  | {
-      error: string;
-    }
-  | {
-      errors: object;
-    };
-
 export interface VegaConnector {
   /** Description of how to use this connector */
   description: string;
@@ -25,5 +17,5 @@ export interface VegaConnector {
   /** Send a TX to the network. Only support order submission for now */
   sendTx: (
     body: TransactionSubmission
-  ) => Promise<TransactionResponse | ErrorResponse | null>;
+  ) => Promise<TransactionResponse | { error: string } | null>;
 }

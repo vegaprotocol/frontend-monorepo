@@ -1,7 +1,8 @@
-import { LocalStorage } from '@vegaprotocol/react-helpers';
+import * as Sentry from '@sentry/react';
+import { LocalStorage, t } from '@vegaprotocol/react-helpers';
 import { WALLET_CONFIG } from '../storage-keys';
 import type { VegaConnector } from './vega-connector';
-import type { TransactionSubmission } from '../wallet-types';
+import type { TransactionError, TransactionSubmission } from '../wallet-types';
 import { z } from 'zod';
 
 // Perhaps there should be a default ConnectorConfig that others can extend off. Do all connectors
@@ -12,7 +13,11 @@ interface RestConnectorConfig {
   url: string | null;
 }
 
-type Endpoint = 'auth/token' | 'command/sync' | 'keys';
+enum Endpoints {
+  Auth = 'auth/token',
+  Command = 'command/sync',
+  Keys = 'keys',
+}
 
 export const AuthTokenSchema = z.object({
   token: z.string(),
@@ -87,10 +92,18 @@ export class RestConnector implements VegaConnector {
     try {
       this.url = url;
 
-      const res = await this.request('auth/token', {
+      const res = await this.request(Endpoints.Auth, {
         method: 'post',
         body: JSON.stringify(params),
       });
+
+      if (res.status === 403) {
+        return { success: false, error: t('Invalid credentials') };
+      }
+
+      if (res.error) {
+        return { success: false, error: res.error };
+      }
 
       const data = AuthTokenSchema.parse(res.data);
 
@@ -104,18 +117,22 @@ export class RestConnector implements VegaConnector {
 
       return { success: true, error: null };
     } catch (err) {
-      return { success: false, error: err };
+      return { success: false, error: 'Authentication failed' };
     }
   }
 
   async connect() {
     try {
-      const res = await this.request('keys', {
+      const res = await this.request(Endpoints.Keys, {
         method: 'get',
         headers: {
           authorization: `Bearer ${this.token}`,
         },
       });
+
+      if (res.error) {
+        return null;
+      }
 
       const data = GetKeysSchema.parse(res.data);
 
@@ -129,14 +146,14 @@ export class RestConnector implements VegaConnector {
 
   async disconnect() {
     try {
-      await this.request('auth/token', {
+      await this.request(Endpoints.Auth, {
         method: 'delete',
         headers: {
           authorization: `Bearer ${this.token}`,
         },
       });
     } catch (err) {
-      console.error(err);
+      Sentry.captureException(err);
     } finally {
       // Always clear config, if authTokenDelete fails the user still tried to
       // connect so clear the config (and containing token) from storage
@@ -146,7 +163,7 @@ export class RestConnector implements VegaConnector {
 
   async sendTx(body: TransactionSubmission) {
     try {
-      const res = await this.request('command/sync', {
+      const res = await this.request(Endpoints.Command, {
         method: 'post',
         body: JSON.stringify(body),
         headers: {
@@ -154,18 +171,23 @@ export class RestConnector implements VegaConnector {
         },
       });
 
+      // User rejected
       if (res.status === 401) {
-        // User rejected
         return null;
+      }
+
+      if (res.error) {
+        return {
+          error: res.error,
+        };
       }
 
       const data = TransactionResponseSchema.parse(res.data);
 
       return data;
     } catch (err) {
-      return {
-        error: 'Failed to fetch',
-      };
+      Sentry.captureException(err);
+      return null;
     }
   }
 
@@ -190,27 +212,57 @@ export class RestConnector implements VegaConnector {
     LocalStorage.removeItem(this.configKey);
   }
 
-  private async request(endpoint: Endpoint, options: RequestInit) {
-    const fetchResult = await fetch(`${this.url}/${endpoint}`, {
-      ...options,
-      headers: {
-        ...options.headers,
-        'Content-Type': 'application/json',
-      },
-    });
+  /** Parse more complex error object into a single string */
+  private parseError(err: TransactionError): string {
+    if ('error' in err) {
+      return err.error;
+    }
 
-    // auth/token delete doesnt return json
-    if (endpoint === 'auth/token' && options.method === 'delete') {
-      const textResult = await fetchResult.text();
+    if ('errors' in err) {
+      return err.errors['*'].join(', ');
+    }
+
+    return t("Something wen't wrong");
+  }
+
+  private async request(
+    endpoint: Endpoints,
+    options: RequestInit
+  ): Promise<{ status?: number; data?: unknown; error?: string }> {
+    try {
+      const fetchResult = await fetch(`${this.url}/${endpoint}`, {
+        ...options,
+        headers: {
+          ...options.headers,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!fetchResult.ok) {
+        const errorData = await fetchResult.json();
+        return {
+          status: fetchResult.status,
+          error: this.parseError(errorData),
+        };
+      }
+
+      // auth/token delete doesnt return json
+      if (endpoint === 'auth/token' && options.method === 'delete') {
+        const textResult = await fetchResult.text();
+        return {
+          status: fetchResult.status,
+          data: textResult,
+        };
+      } else {
+        const jsonResult = await fetchResult.json();
+        return {
+          status: fetchResult.status,
+          data: jsonResult,
+        };
+      }
+    } catch (err) {
       return {
-        status: fetchResult.status,
-        data: textResult,
-      };
-    } else {
-      const jsonResult = await fetchResult.json();
-      return {
-        status: fetchResult.status,
-        data: jsonResult,
+        error: 'Failed to fetch',
       };
     }
   }

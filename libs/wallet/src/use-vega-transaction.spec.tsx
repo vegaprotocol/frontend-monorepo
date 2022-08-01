@@ -53,14 +53,12 @@ it('Handles a single error', async () => {
     result.current.send({} as OrderSubmissionBody);
   });
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-  expect(result.current.transaction.error).toEqual({ error: errorMessage });
+  expect(result.current.transaction.error).toEqual(errorMessage);
 });
 
 it('Handles multiple errors', async () => {
   const errorObj = {
-    errors: {
-      something: 'Went wrong!',
-    },
+    error: 'Went wrong!',
   };
   const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(errorObj));
   const { result } = setup({ sendTx: mockSendTx });
@@ -68,7 +66,7 @@ it('Handles multiple errors', async () => {
     result.current.send({} as OrderSubmissionBody);
   });
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-  expect(result.current.transaction.error).toEqual(errorObj);
+  expect(result.current.transaction.error).toEqual(errorObj.error);
 });
 
 it('Returns the signature if successful', async () => {
