@@ -1,4 +1,4 @@
-import type { TransactionError, VegaKey } from './wallet-types';
+import type { VegaKey } from './wallet-types';
 import { createContext } from 'react';
 import type { VegaConnector } from './connectors';
 import type {
