@@ -2,17 +2,13 @@ import { t } from '@vegaprotocol/react-helpers';
 import { CUSTOM_NODE_KEY, ErrorType } from '../types';
 import type { Networks, NodeData } from '../types';
 
-export const getIsNodeLoading = ({
-  chain,
-  responseTime,
-  block,
-  ssl,
-}: NodeData) => {
+export const getIsNodeLoading = (node?: NodeData):boolean => {
+  if (!node) return false;
   return (
-    chain.isLoading ||
-    responseTime.isLoading ||
-    block.isLoading ||
-    ssl.isLoading
+    node.chain.isLoading ||
+    node.responseTime.isLoading ||
+    node.block.isLoading ||
+    node.ssl.isLoading
   );
 };
 
