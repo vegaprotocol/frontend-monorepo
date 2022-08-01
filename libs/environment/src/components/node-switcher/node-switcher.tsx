@@ -169,7 +169,10 @@ export const NodeSwitcher = ({
                         onChange={(e) => setCustomNodeText(e.target.value)}
                       />
                       <Link
-                        aria-disabled={!customNodeText || getIsNodeLoading(state[CUSTOM_NODE_KEY])}
+                        aria-disabled={
+                          !customNodeText ||
+                          getIsNodeLoading(state[CUSTOM_NODE_KEY])
+                        }
                         onClick={() => {
                           setNetworkError(null);
                           updateNodeUrl(CUSTOM_NODE_KEY, customNodeText);
