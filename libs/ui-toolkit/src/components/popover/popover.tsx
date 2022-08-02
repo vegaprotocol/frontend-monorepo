@@ -1,9 +1,8 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 import classNames from 'classnames';
-
 import { getIntentBorder } from '../../utils/intent';
-
 import type { Intent } from '../../utils/intent';
+
 export interface PopoverProps extends PopoverPrimitive.PopoverProps {
   trigger: React.ReactNode | string;
   children: React.ReactNode;
@@ -23,10 +22,7 @@ export const Popover = ({
     <PopoverPrimitive.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <PopoverPrimitive.Trigger
         data-testid="popover-trigger"
-        className={classNames(
-          getIntentBorder(intent),
-          'border-none'
-        )}
+        className={classNames(getIntentBorder(intent), 'border-none')}
       >
         {trigger}
       </PopoverPrimitive.Trigger>
