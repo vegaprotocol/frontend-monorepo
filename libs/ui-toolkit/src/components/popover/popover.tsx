@@ -24,11 +24,8 @@ export const Popover = ({
       <PopoverPrimitive.Trigger
         data-testid="popover-trigger"
         className={classNames(
-          {
-            'border-2': open,
-            'border-none': !open,
-          },
-          getIntentBorder(intent)
+          getIntentBorder(intent),
+          'border-none'
         )}
       >
         {trigger}

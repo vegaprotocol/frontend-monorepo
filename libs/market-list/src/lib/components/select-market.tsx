@@ -1,13 +1,8 @@
 import { useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
-import {
-  ArrowDown,
-  ArrowUp,
-  Dialog,
-  Intent,
-  Popover,
-} from '@vegaprotocol/ui-toolkit';
+import { ArrowDown, ArrowUp, Dialog, Intent, Popover } from '@vegaprotocol/ui-toolkit';
+import classNames from 'classnames';
 import isNil from 'lodash/isNil';
 import { useState } from 'react';
 
@@ -15,7 +10,6 @@ import { MARKET_LIST_QUERY } from '../markets-data-provider';
 import { SelectMarketList } from './select-market-list';
 
 import type { MarketList } from '../__generated__';
-
 export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
   const [open, setOpen] = useState(false);
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
@@ -25,27 +19,25 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
     variables: { interval: Interval.I1H, since: yTimestamp },
   });
   const isOpen = !isNil(data) && open;
+  const headerTriggerButtonClassName = "flex items-center gap-8 shrink-0 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20";
   return (
     <Popover
       open={isOpen}
       onChange={setOpen}
-      trigger={
-        <button className="shrink-0 text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 hover:bg-black/10 dark:hover:bg-white/20">
-          {isOpen ? (
-            <>
-              <span className="break-words p-5 text-left dark:text-white text-black">
-                {t('Select a market')}
-              </span>
-              <ArrowUp borderX={8} borderBottom={12} />
-            </>
-          ) : (
-            <>
-              <span className="break-words text-left ml-5">{marketName}</span>
-              <ArrowDown color="yellow" borderX={8} borderTop={12} />
-            </>
-          )}
-        </button>
-      }
+      trigger=
+      {isOpen ? (
+        <div className={classNames("dark:text-white text-black", headerTriggerButtonClassName)}>
+          <span className="break-words p-5 text-left dark:text-white text-black">
+            {t('Select a market')}
+          </span>
+          <ArrowUp color="white" borderX={8} borderBottom={12} />
+        </div>
+      ) : (
+        <div className={classNames("dark:text-vega-yellow text-vega-pink", headerTriggerButtonClassName)}>
+          <span className="break-words text-left ml-5 ">{marketName}</span>
+          <ArrowDown color="yellow" borderX={8} borderTop={12} />
+        </div>
+      )}
     >
       <div className="m-20">
         <h1
