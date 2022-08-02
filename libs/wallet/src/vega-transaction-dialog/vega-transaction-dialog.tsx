@@ -70,18 +70,11 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   }
 
   if (transaction.status === VegaTxStatus.Error) {
-    let content = null;
-
-    if (transaction.error) {
-      if ('errors' in transaction.error) {
-        content = transaction.error.errors['*'].map((e) => <p>{e}</p>);
-      } else if ('error' in transaction.error) {
-        content = <p>{transaction.error.error}</p>;
-      } else {
-        content = <p>{t('Something went wrong')}</p>;
-      }
-    }
-    return <div data-testid={transaction.status}>{content}</div>;
+    return (
+      <div data-testid={transaction.status}>
+        <p>{transaction.error}</p>
+      </div>
+    );
   }
 
   if (transaction.status === VegaTxStatus.Pending) {

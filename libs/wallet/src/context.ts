@@ -1,4 +1,4 @@
-import type { TransactionError, VegaKey } from './wallet-types';
+import type { VegaKey } from './wallet-types';
 import { createContext } from 'react';
 import type { VegaConnector } from './connectors';
 import type {
@@ -32,7 +32,7 @@ export interface VegaWalletContextShape {
   /** Send a transaction to the network, only order submissions for now */
   sendTx: (
     tx: TransactionSubmission
-  ) => Promise<TransactionResponse | TransactionError> | null;
+  ) => Promise<TransactionResponse | { error: string }> | null;
 }
 
 export const VegaWalletContext = createContext<
