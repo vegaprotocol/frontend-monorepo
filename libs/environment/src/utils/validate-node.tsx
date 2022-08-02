@@ -40,7 +40,6 @@ export const getIsNodeDisabled = (env: Networks, data?: NodeData) => {
 
 export const getIsFormDisabled = (
   currentNode: string | undefined,
-  inputText: string,
   env: Networks,
   state: Record<string, NodeData>
 ) => {
@@ -48,16 +47,8 @@ export const getIsFormDisabled = (
     return true;
   }
 
-  if (
-    currentNode === CUSTOM_NODE_KEY &&
-    state[CUSTOM_NODE_KEY] &&
-    inputText !== state[CUSTOM_NODE_KEY].url
-  ) {
-    return true;
-  }
-
   const data = state[currentNode];
-  return getIsNodeDisabled(env, data);
+  return data ? getIsNodeDisabled(env, data) : true;
 };
 
 export const getErrorByType = (
