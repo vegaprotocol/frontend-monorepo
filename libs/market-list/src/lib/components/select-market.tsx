@@ -75,21 +75,23 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
       }
     >
       <div className="m-20">
-        {keypair && (
-          <>
-            <h1
-              className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
-              data-testid="dialog-title"
-            >
-              {t('My markets')}
-            </h1>
-            <SelectMarketList
-              data={positionMarkets}
-              onSelect={() => setOpen(false)}
-              detailed={true}
-            />
-          </>
-        )}
+        {keypair &&
+          positionMarkets &&
+          (positionMarkets?.markets ?? []).length > 0 && (
+            <>
+              <h1
+                className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
+                data-testid="dialog-title"
+              >
+                {t('My markets')}
+              </h1>
+              <SelectMarketList
+                data={positionMarkets}
+                onSelect={() => setOpen(false)}
+                detailed={true}
+              />
+            </>
+          )}
         <h1
           className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
           data-testid="dialog-title"
