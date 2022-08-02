@@ -3,7 +3,11 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { SelectMarketList } from './select-market-list';
 
 import type { ReactNode } from 'react';
-import type { MarketList } from '../__generated__/MarketList';
+import type {
+  MarketList,
+  MarketList_markets,
+} from '../__generated__/MarketList';
+
 jest.mock(
   'next/link',
   () =>
@@ -14,10 +18,7 @@ jest.mock(
 describe('SelectMarket', () => {
   it('should render', () => {
     const { container } = render(
-      <SelectMarketList
-        data={mockData.data as unknown as MarketList}
-        onSelect={jest.fn()}
-      />
+      <SelectMarketList data={mockData.data} onSelect={jest.fn()} />
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
@@ -45,6 +46,11 @@ const mockData = {
         __typename: 'Market',
         id: '062ddcb97beae5b7cc4fa20621fe0c83b2a6f7e76cf5b129c6bd3dc14e8111ef',
         decimalPlaces: 2,
+        name: '',
+        positionDecimalPlaces: 4,
+        state: 'Active',
+        tradingMode: 'Continuous',
+        data: {},
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {
@@ -61,10 +67,10 @@ const mockData = {
         fees: {
           __typename: 'Fees',
           factors: {
-            __typename: 'Factors',
-            infrastructureFee: 0.01,
-            makerFee: 0.01,
-            liquidityFee: 0.01,
+            __typename: 'FeeFactors',
+            infrastructureFee: '0.01',
+            makerFee: '0.01',
+            liquidityFee: '0.01',
           },
         },
         candles: [
@@ -99,7 +105,7 @@ const mockData = {
             close: '774',
           },
         ],
-      },
+      } as MarketList_markets,
       {
         __typename: 'Market',
         id: '3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3',
@@ -115,10 +121,10 @@ const mockData = {
         fees: {
           __typename: 'Fees',
           factors: {
-            __typename: 'Factors',
-            infrastructureFee: 0.01,
-            makerFee: 0.01,
-            liquidityFee: 0.01,
+            __typename: 'FeeFactors',
+            infrastructureFee: '0.01',
+            makerFee: '0.01',
+            liquidityFee: '0.01',
           },
         },
         marketTimestamps: {
@@ -158,7 +164,12 @@ const mockData = {
             close: '14174855',
           },
         ],
-      },
+        name: '',
+        positionDecimalPlaces: 4,
+        state: 'Active',
+        tradingMode: 'Continuous',
+        data: {},
+      } as MarketList_markets,
     ],
   },
 };
