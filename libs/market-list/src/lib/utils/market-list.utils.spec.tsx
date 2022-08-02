@@ -19,22 +19,22 @@ const mockList = [
         close: '16293551',
         high: '16320190',
         low: '16023805',
-        __typename: 'Candle'
+        __typename: 'Candle',
       },
       {
         open: '16293548',
         close: '16322118',
         high: '16365861',
         low: '16192970',
-        __typename: 'Candle'
-      }
+        __typename: 'Candle',
+      },
     ],
     fees: {
       factors: {
         makerFee: 0.0002,
         infrastructureFee: 0.0005,
-        liquidityFee: 0.001
-      }
+        liquidityFee: 0.001,
+      },
     },
     tradableInstrument: {
       __typename: 'TradableInstrument',
@@ -44,14 +44,14 @@ const mockList = [
         code: 'AAPL.MF21',
         product: {
           settlementAsset: { symbol: 'AAPL.MF21', __typename: 'Asset' },
-          __typename: 'Future'
-        }
-      }
+          __typename: 'Future',
+        },
+      },
     },
     marketTimestamps: {
       __typename: 'MarketTimestamps',
       open: '2022-05-18T13:00:39.328347732Z',
-      close: null
+      close: null,
     },
     marketName: 'AAPL.MF21',
     settlementAsset: 'AAPL.MF21',
@@ -60,7 +60,7 @@ const mockList = [
     candleLow: '16023805',
     open: 1652878839328,
     close: null,
-    totalFees: '0.14%'
+    totalFees: '0.14%',
   },
   {
     __typename: 'Market',
@@ -70,8 +70,8 @@ const mockList = [
       factors: {
         makerFee: 0.0002,
         infrastructureFee: 0.0005,
-        liquidityFee: 0.001
-      }
+        liquidityFee: 0.001,
+      },
     },
     tradableInstrument: {
       __typename: 'TradableInstrument',
@@ -81,14 +81,14 @@ const mockList = [
         code: 'APEUSD',
         product: {
           settlementAsset: { symbol: 'APEUSD', __typename: 'Asset' },
-          __typename: 'Future'
-        }
-      }
+          __typename: 'Future',
+        },
+      },
     },
     marketTimestamps: {
       __typename: 'MarketTimestamps',
       open: '2022-05-18T13:08:27.693537312Z',
-      close: null
+      close: null,
     },
     candles: [
       {
@@ -96,15 +96,15 @@ const mockList = [
         close: '16293551',
         high: '16320190',
         low: '16023805',
-        __typename: 'Candle'
+        __typename: 'Candle',
       },
       {
         open: '16293548',
         close: '16322118',
         high: '16365861',
         low: '16192970',
-        __typename: 'Candle'
-      }
+        __typename: 'Candle',
+      },
     ],
     marketName: 'APEUSD',
     settlementAsset: 'APEUSD',
@@ -113,8 +113,8 @@ const mockList = [
     candleLow: '16023805',
     open: 1652879307693,
     close: null,
-    totalFees: '0.14%'
-  }
+    totalFees: '0.14%',
+  },
 ];
 
 const mockData = {
@@ -128,8 +128,8 @@ const mockData = {
           factors: {
             makerFee: 0.0002,
             infrastructureFee: 0.0005,
-            liquidityFee: 0.001
-          }
+            liquidityFee: 0.001,
+          },
         },
         tradableInstrument: {
           __typename: 'TradableInstrument',
@@ -140,17 +140,17 @@ const mockData = {
             product: {
               settlementAsset: {
                 symbol: 'APEUSD',
-                __typename: 'Asset'
+                __typename: 'Asset',
               },
-              __typename: 'Future'
-            }
-          }
+              __typename: 'Future',
+            },
+          },
         },
 
         marketTimestamps: {
           __typename: 'MarketTimestamps',
           open: '2022-05-18T13:08:27.693537312Z',
-          close: null
+          close: null,
         },
         candles: [
           {
@@ -158,16 +158,16 @@ const mockData = {
             close: '16293551',
             high: '16320190',
             low: '16023805',
-            __typename: 'Candle'
+            __typename: 'Candle',
           },
           {
             open: '16293548',
             close: '16322118',
             high: '16365861',
             low: '16192970',
-            __typename: 'Candle'
-          }
-        ]
+            __typename: 'Candle',
+          },
+        ],
       },
       {
         __typename: 'Market',
@@ -179,22 +179,22 @@ const mockData = {
             close: '16293551',
             high: '16320190',
             low: '16023805',
-            __typename: 'Candle'
+            __typename: 'Candle',
           },
           {
             open: '16293548',
             close: '16322118',
             high: '16365861',
             low: '16192970',
-            __typename: 'Candle'
-          }
+            __typename: 'Candle',
+          },
         ],
         fees: {
           factors: {
             makerFee: 0.0002,
             infrastructureFee: 0.0005,
-            liquidityFee: 0.001
-          }
+            liquidityFee: 0.001,
+          },
         },
         tradableInstrument: {
           __typename: 'TradableInstrument',
@@ -205,18 +205,18 @@ const mockData = {
             product: {
               settlementAsset: {
                 symbol: 'AAPL.MF21',
-                __typename: 'Asset'
+                __typename: 'Asset',
               },
-              __typename: 'Future'
-            }
-          }
+              __typename: 'Future',
+            },
+          },
         },
         marketTimestamps: {
           __typename: 'MarketTimestamps',
           open: '2022-05-18T13:00:39.328347732Z',
-          close: null
-        }
-      }
-    ]
-  }
+          close: null,
+        },
+      },
+    ],
+  },
 };
