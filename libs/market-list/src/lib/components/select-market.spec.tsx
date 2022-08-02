@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import type { ReactNode } from 'react';
-import type { MarketList } from '../__generated__/MarketList';
+
 import { SelectMarketList } from './select-market-list';
 
+import type { ReactNode } from 'react';
+import type { MarketList } from '../__generated__/MarketList';
 jest.mock(
   'next/link',
   () =>
@@ -10,7 +11,7 @@ jest.mock(
       children
 );
 
-describe('SelectMarketList', () => {
+describe('SelectMarket', () => {
   it('should render', () => {
     const { container } = render(
       <SelectMarketList

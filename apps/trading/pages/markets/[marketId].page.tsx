@@ -1,16 +1,17 @@
 import { gql } from '@apollo/client';
+import { SelectMarketDialog } from '@vegaprotocol/market-list';
+import { t } from '@vegaprotocol/react-helpers';
+import { Interval } from '@vegaprotocol/types';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import debounce from 'lodash/debounce';
-import { PageQueryContainer } from '../../components/page-query-container';
-import { TradeGrid, TradePanels } from './trade-grid';
-import { t } from '@vegaprotocol/react-helpers';
-import { useGlobalStore } from '../../stores';
-import { SelectMarketDialog } from '@vegaprotocol/market-list';
-import type { Market, MarketVariables } from './__generated__/Market';
-import { Interval } from '@vegaprotocol/types';
 
+import { PageQueryContainer } from '../../components/page-query-container';
+import { useGlobalStore } from '../../stores';
+import { TradeGrid, TradePanels } from './trade-grid';
+
+import type { Market, MarketVariables } from './__generated__/Market';
 // Top level page query
 const MARKET_QUERY = gql`
   query Market($marketId: ID!, $interval: Interval!, $since: String!) {
@@ -126,7 +127,6 @@ const MarketPage = ({ id }: { id?: string }) => {
                 store.setLandingDialog(isOpen)
               }
               title={t('Select a market to get started')}
-              detailed={false}
               size="small"
             />
           </>

@@ -1,10 +1,11 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
-import type { ReactNode } from 'react';
-import type { Intent } from '../../utils/intent';
-import { getIntentShadow, getIntentBorder } from '../../utils/intent';
+
+import { getIntentBorder, getIntentShadow } from '../../utils/intent';
 import { Icon } from '../icon';
 
+import type { ReactNode } from 'react';
+import type { Intent } from '../../utils/intent';
 interface DialogProps {
   children: ReactNode;
   open: boolean;
