@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { CUSTOM_NODE_KEY, ErrorType } from '../types';
+import { ErrorType } from '../types';
 import type { Networks, NodeData } from '../types';
 
 export const getIsNodeLoading = (node?: NodeData): boolean => {
