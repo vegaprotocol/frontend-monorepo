@@ -14,7 +14,12 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   const [open, setOpen] = useState(args.open);
   return (
     <div>
-      <Popover {...args} open={open} onChange={setOpen} trigger={<Button variant="accent">Trigger</Button>}>
+      <Popover
+        {...args}
+        open={open}
+        onChange={setOpen}
+        trigger={<Button variant="accent">Trigger</Button>}
+      >
         {args.children}
       </Popover>
     </div>

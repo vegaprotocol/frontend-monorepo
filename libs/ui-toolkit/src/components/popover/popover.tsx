@@ -17,16 +17,19 @@ export const Popover = ({
   children,
   open,
   onChange,
-  intent
+  intent,
 }: PopoverProps) => {
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <PopoverPrimitive.Trigger
         data-testid="popover-trigger"
-        className={classNames({
-          'border-2': open,
-          'border-none': !open,
-        }, getIntentBorder(intent))}
+        className={classNames(
+          {
+            'border-2': open,
+            'border-none': !open,
+          },
+          getIntentBorder(intent)
+        )}
       >
         {trigger}
       </PopoverPrimitive.Trigger>
@@ -34,10 +37,15 @@ export const Popover = ({
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           data-testid="popover-content"
-          className={classNames(" w-[100vw] h-full ", getIntentBorder(intent), 'dark:bg-black bg-white', {
-            'border-2': open,
-            'border-none': !open,
-          })}
+          className={classNames(
+            ' w-[100vw] h-full ',
+            getIntentBorder(intent),
+            'dark:bg-black bg-white',
+            {
+              'border-2': open,
+              'border-none': !open,
+            }
+          )}
         >
           {children}
           <PopoverPrimitive.Close />
