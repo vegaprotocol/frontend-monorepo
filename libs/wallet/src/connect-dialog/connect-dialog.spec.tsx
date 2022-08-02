@@ -146,11 +146,12 @@ it('Successful connection using custom url', async () => {
 });
 
 it('Unsuccessful connection using rest auth form', async () => {
+  const errMessage = 'Error message';
   // Error from service
   let spy = jest
     .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
     .mockImplementation(() =>
-      Promise.resolve({ success: false, error: 'Error message' })
+      Promise.resolve({ success: false, error: errMessage })
     );
 
   render(generateJSX({ dialogOpen: true }));
@@ -167,9 +168,7 @@ it('Unsuccessful connection using rest auth form', async () => {
 
   expect(spy).toHaveBeenCalledWith(DEFAULT_URL, fields);
 
-  expect(screen.getByTestId('form-error')).toHaveTextContent(
-    'Something went wrong'
-  );
+  expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
   expect(defaultProps.setDialogOpen).not.toHaveBeenCalled();
 
   // Fetch failed due to wallet not running

@@ -69,18 +69,6 @@ const getProps = (
   ethTx: EthTxState,
   ethUrl: string
 ) => {
-  const renderVegaTxError = () => {
-    if (vegaTx.error) {
-      if ('errors' in vegaTx.error) {
-        return vegaTx.error.errors['*'].map((e) => <p>{e}</p>);
-      } else if ('error' in vegaTx.error) {
-        return <p>{vegaTx.error.error}</p>;
-      } else {
-        return <p>{t('Something went wrong')}</p>;
-      }
-    }
-    return null;
-  };
   const vegaTxPropsMap: Record<VegaTxStatus, DialogProps> = {
     [VegaTxStatus.Default]: {
       title: '',
@@ -92,7 +80,11 @@ const getProps = (
       title: t('Withdrawal transaction failed'),
       icon: <Icon name="warning-sign" size={20} />,
       intent: Intent.Danger,
-      children: <Step>{renderVegaTxError()}</Step>,
+      children: (
+        <Step>
+          <p>{vegaTx.error}</p>
+        </Step>
+      ),
     },
     [VegaTxStatus.Requested]: {
       title: t('Confirm withdrawal'),

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
-import type { TransactionError, TransactionSubmission } from './wallet-types';
+import type { TransactionSubmission } from './wallet-types';
 import { useVegaWallet } from './use-vega-wallet';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
@@ -22,7 +22,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: TransactionError | null;
+  error: string | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -46,13 +46,6 @@ export const useVegaTransaction = () => {
       ...update,
     }));
   }, []);
-
-  const handleError = useCallback(
-    (error: TransactionError) => {
-      setTransaction({ error, status: VegaTxStatus.Error });
-    },
-    [setTransaction]
-  );
 
   const reset = useCallback(() => {
     setTransaction(initialState);
@@ -81,7 +74,7 @@ export const useVegaTransaction = () => {
       }
 
       if (isError(res)) {
-        handleError(res);
+        setTransaction({ error: res.error, status: VegaTxStatus.Error });
         return;
       }
 
@@ -99,7 +92,7 @@ export const useVegaTransaction = () => {
 
       return null;
     },
-    [sendTx, handleError, setTransaction, reset]
+    [sendTx, setTransaction, reset]
   );
 
   const TransactionDialog = useMemo(() => {
@@ -125,12 +118,8 @@ export const useVegaTransaction = () => {
   };
 };
 
-const isError = (error: unknown): error is TransactionError => {
-  if (
-    error !== null &&
-    typeof error === 'object' &&
-    ('error' in error || 'errors' in error)
-  ) {
+const isError = (error: unknown): error is { error: string } => {
+  if (error !== null && typeof error === 'object' && 'error' in error) {
     return true;
   }
   return false;
