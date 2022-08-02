@@ -1,4 +1,4 @@
-name: Capsule tests -- nightly
+name: Capsule tests -- night run
 
 # This workflow runs the frontend tests against latest develop of the core to preempt breaking changes
 

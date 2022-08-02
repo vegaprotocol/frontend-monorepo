@@ -8,5 +8,6 @@ export const Routes = {
   GENESIS: 'genesis',
   GOVERNANCE: 'governance',
   MARKETS: 'markets',
+  ORACLES: 'oracles',
   NETWORK_PARAMETERS: 'network-parameters',
 };

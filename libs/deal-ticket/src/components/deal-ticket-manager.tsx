@@ -44,7 +44,7 @@ export const DealTicketManager = ({
   );
 };
 
-const getDialogTitle = (status?: OrderStatus): string | undefined => {
+export const getDialogTitle = (status?: OrderStatus): string | undefined => {
   if (!status) {
     return;
   }
@@ -63,7 +63,7 @@ const getDialogTitle = (status?: OrderStatus): string | undefined => {
   }
 };
 
-const getDialogIntent = (status?: OrderStatus): Intent | undefined => {
+export const getDialogIntent = (status?: OrderStatus): Intent | undefined => {
   if (!status) {
     return;
   }
@@ -81,7 +81,7 @@ const getDialogIntent = (status?: OrderStatus): Intent | undefined => {
   }
 };
 
-const getDialogIcon = (status?: OrderStatus): ReactNode | undefined => {
+export const getDialogIcon = (status?: OrderStatus): ReactNode | undefined => {
   if (!status) {
     return;
   }

@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import type { Asset } from './types';
 import { useBridgeContract, useEthereumReadContract } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
+import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export const useGetWithdrawLimits = (asset?: Asset) => {

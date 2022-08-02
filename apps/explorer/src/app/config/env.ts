@@ -24,6 +24,7 @@ export const ENV = {
     genesis: truthy.includes(windowOrDefault('NX_EXPLORER_GENESIS')),
     governance: truthy.includes(windowOrDefault('NX_EXPLORER_GOVERNANCE')),
     markets: truthy.includes(windowOrDefault('NX_EXPLORER_MARKETS')),
+    oracles: truthy.includes(windowOrDefault('NX_EXPLORER_ORACLES')),
     txsList: truthy.includes(windowOrDefault('NX_EXPLORER_TXS_LIST')),
     networkParameters: truthy.includes(
       windowOrDefault('NX_EXPLORER_NETWORK_PARAMETERS')

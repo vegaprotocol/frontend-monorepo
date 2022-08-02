@@ -5,10 +5,11 @@ import type { WithdrawalFields } from './use-withdraw';
 import { useWithdraw } from './use-withdraw';
 import { WithdrawDialog } from './withdraw-dialog';
 import { isExpectedEthereumError, EthTxStatus } from '@vegaprotocol/web3';
+import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-import type { Account, Asset } from './types';
+import type { Account } from './types';
 import { useGetWithdrawLimits } from './use-get-withdraw-limits';
 
 export interface WithdrawManagerProps {

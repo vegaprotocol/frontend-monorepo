@@ -3,7 +3,7 @@ import type { VegaWalletContextShape } from './context';
 import { VegaWalletContext } from './context';
 import type { ReactNode } from 'react';
 import { useVegaTransaction, VegaTxStatus } from './use-vega-transaction';
-import type { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
+import type { OrderSubmissionBody } from './wallet-types';
 
 const defaultWalletContext = {
   keypair: null,

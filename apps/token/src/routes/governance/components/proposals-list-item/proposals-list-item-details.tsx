@@ -189,7 +189,6 @@ export const ProposalsListItemDetails = ({
           className="col-start-2 row-start-1 justify-self-end"
           data-testid="vote-status"
         >
-          testing testing 123
           {voteStatus}
         </div>
       )}

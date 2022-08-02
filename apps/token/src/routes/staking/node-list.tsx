@@ -57,6 +57,8 @@ interface ValidatorRendererProps {
   data: { validator: { avatarUrl: string; name: string } };
 }
 
+const stripNonDigits = (string: string) => string.replace(/\D/g, '');
+
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { avatarUrl, name } = data.validator;
   return (
@@ -66,6 +68,7 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
           className="h-24 w-24 rounded-full mr-8"
           src={avatarUrl}
           alt={`Avatar icon for ${name}`}
+          onError={(e) => (e.currentTarget.style.display = 'none')}
         />
       )}
       {name}
@@ -142,7 +145,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotal, 2),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
-          [PENDING_STAKE]: pendingStake,
+          [PENDING_STAKE]: formatNumber(pendingStake, 2),
           [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
           [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
           [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
@@ -167,16 +170,34 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           field: TOTAL_STAKE_THIS_EPOCH,
           headerName: t('totalStakeThisEpoch').toString(),
         },
-        { field: SHARE, headerName: t('share').toString() },
-        { field: VALIDATOR_STAKE, headerName: t('validatorStake').toString() },
-        { field: PENDING_STAKE, headerName: t('nextEpoch').toString() },
-        { field: RANKING_SCORE, headerName: t('rankingScore').toString() },
-        { field: STAKE_SCORE, headerName: t('stakeScore').toString() },
+        {
+          field: SHARE,
+          headerName: t('share').toString(),
+        },
+        {
+          field: VALIDATOR_STAKE,
+          headerName: t('validatorStake').toString(),
+        },
+        {
+          field: PENDING_STAKE,
+          headerName: t('nextEpoch').toString(),
+        },
+        {
+          field: RANKING_SCORE,
+          headerName: t('rankingScore').toString(),
+        },
+        {
+          field: STAKE_SCORE,
+          headerName: t('stakeScore').toString(),
+        },
         {
           field: PERFORMANCE_SCORE,
           headerName: t('performanceScore').toString(),
         },
-        { field: VOTING_POWER, headerName: t('votingPower').toString() },
+        {
+          field: VOTING_POWER,
+          headerName: t('votingPower').toString(),
+        },
       ],
       []
     );
@@ -184,6 +205,8 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     const defaultColDef = useMemo(
       () => ({
         sortable: true,
+        comparator: (a: string, b: string) =>
+          parseFloat(stripNonDigits(a)) - parseFloat(stripNonDigits(b)),
       }),
       []
     );
@@ -206,7 +229,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
             event.columnApi.applyColumnState({
               state: [
                 {
-                  colId: t('rankingScore'),
+                  colId: RANKING_SCORE,
                   sort: 'desc',
                 },
               ],

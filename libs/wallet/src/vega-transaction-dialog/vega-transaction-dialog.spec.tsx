@@ -57,7 +57,7 @@ describe('VegaTransactionDialog', () => {
         {...props}
         transaction={{
           ...props.transaction,
-          error: { message: 'rejected' },
+          error: { error: 'rejected' },
           status: VegaTxStatus.Error,
         }}
       />
