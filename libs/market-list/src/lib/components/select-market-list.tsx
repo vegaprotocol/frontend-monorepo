@@ -67,19 +67,28 @@ export const SelectMarketList = ({
                 <th className={thClassNames('right')}>{t('24h High')}</th>
                 <th className={thClassNames('right')}>{t('24h Low')}</th>
                 <th className={thClassNames('left')}>{t('Trading mode')}</th>
-                <th className={thClassNames('right')}><Tooltip
-                  description={
-                    <div className="text-ui-small">{t("Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:")}
-                      <ul>
-                        <li className="py-5">{t("An infrastructure fee")}</li>
-                        <li className="py-5">{t("A maker fee")}</li>
-                        <li className="py-5">{t("A liquidity provision fee")}</li>
-                      </ul>
-                    </div>
-                  }
-                >
-                  <span className="border-b-2 border-dotted">{t('Taker fee')}</span>
-                </Tooltip></th>
+                <th className={thClassNames('right')}>
+                  <Tooltip
+                    description={
+                      <div className="text-ui-small">
+                        {t(
+                          'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
+                        )}
+                        <ul>
+                          <li className="py-5">{t('An infrastructure fee')}</li>
+                          <li className="py-5">{t('A maker fee')}</li>
+                          <li className="py-5">
+                            {t('A liquidity provision fee')}
+                          </li>
+                        </ul>
+                      </div>
+                    }
+                  >
+                    <span className="border-b-2 border-dotted">
+                      {t('Taker fee')}
+                    </span>
+                  </Tooltip>
+                </th>
                 <th className={thClassNames('right')}>{t('Volume')}</th>
                 <th className={thClassNames('left')}>{t('Full name')}</th>
               </>
@@ -182,11 +191,11 @@ export const SelectMarketList = ({
                       <td className={`${thClassNames('left')} `}>
                         {market.tradingMode ===
                           MarketTradingMode.MonitoringAuction &&
-                          market.data?.trigger &&
-                          market.data.trigger !== AuctionTrigger.Unspecified
+                        market.data?.trigger &&
+                        market.data.trigger !== AuctionTrigger.Unspecified
                           ? `${formatLabel(
-                            market.tradingMode
-                          )} - ${market.data?.trigger.toLowerCase()}`
+                              market.tradingMode
+                            )} - ${market.data?.trigger.toLowerCase()}`
                           : formatLabel(market.tradingMode)}
                       </td>
                       <td className={`${tdClassNames}`}>
@@ -195,15 +204,17 @@ export const SelectMarketList = ({
                             <FeesBreakdown feeFactors={market.fees.factors} />
                           }
                         >
-                          <span className="border-b-2 border-dotted">{market.totalFees || '-'}</span>
+                          <span className="border-b-2 border-dotted">
+                            {market.totalFees || '-'}
+                          </span>
                         </Tooltip>
                       </td>
                       <td className={`${tdClassNames} `}>
                         {market.data && market.data.indicativeVolume !== '0'
                           ? addDecimalsFormatNumber(
-                            market.data.indicativeVolume,
-                            market.positionDecimalPlaces
-                          )
+                              market.data.indicativeVolume,
+                              market.positionDecimalPlaces
+                            )
                           : '-'}
                       </td>
                       <td className={`${thClassNames('left')} `}>
