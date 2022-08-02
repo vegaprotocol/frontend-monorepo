@@ -1,4 +1,4 @@
-import { formatNumberPercentage, toBigNum } from '@vegaprotocol/react-helpers';
+import { formatNumberPercentage } from '@vegaprotocol/react-helpers';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import orderBy from 'lodash/orderBy';
@@ -41,15 +41,23 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
           candleHigh: m.candles
             ?.reduce(
               (acc: BigNumber, c) =>
-                acc.plus(toBigNum(c?.high ?? 0, m.decimalPlaces)),
+                c?.high
+                  ? acc.isGreaterThan(new BigNumber(c.high))
+                    ? acc
+                    : new BigNumber(c.high)
+                  : acc,
               new BigNumber(0)
             )
             .toString(),
           candleLow: m.candles
             ?.reduce(
               (acc: BigNumber, c) =>
-                acc.plus(toBigNum(c?.low ?? 0, m.decimalPlaces)),
-              new BigNumber(0)
+                c?.low
+                  ? acc.isLessThan(new BigNumber(c.low))
+                    ? acc
+                    : new BigNumber(c.low)
+                  : acc,
+              new BigNumber(m.candles?.[0]?.high ?? 0)
             )
             .toString(),
           open: m.marketTimestamps.open
@@ -61,6 +69,6 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
           totalFees: totalFees(m.fees.factors),
         };
       }) || [],
-    ['state', 'open', 'id'],
-    ['asc', 'asc', 'asc']
+    ['open', 'id'],
+    ['asc', 'asc']
   );

@@ -141,7 +141,7 @@ export const SelectMarketList = ({
                   <td className={tdClassNames}>
                     {market.lastPrice ? (
                       <PriceCell
-                        value={BigInt(market.lastPrice)}
+                        value={new BigNumber(market.lastPrice).toNumber()}
                         valueFormatted={addDecimalsFormatNumber(
                           market.lastPrice.toString(),
                           market.decimalPlaces,
@@ -178,7 +178,7 @@ export const SelectMarketList = ({
                       <td className={`${tdClassNames} `}>
                         {market.candleHigh ? (
                           <PriceCell
-                            value={BigInt(market.candleHigh)}
+                            value={new BigNumber(market.candleHigh).toNumber()}
                             valueFormatted={addDecimalsFormatNumber(
                               market.candleHigh.toString(),
                               market.decimalPlaces,
@@ -192,7 +192,7 @@ export const SelectMarketList = ({
                       <td className={`${tdClassNames} `}>
                         {market.candleLow ? (
                           <PriceCell
-                            value={BigInt(market.candleLow)}
+                            value={new BigNumber(market.candleLow).toNumber()}
                             valueFormatted={addDecimalsFormatNumber(
                               market.candleLow.toString(),
                               market.decimalPlaces,
