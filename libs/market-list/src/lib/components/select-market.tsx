@@ -113,7 +113,7 @@ export interface SelectMarketDialogProps {
   setDialogOpen: (open: boolean) => void;
   title?: string;
   detailed?: boolean;
-  size?: 'small' | 'large' | 'tall';
+  size?: 'small' | 'large';
 }
 
 export const SelectMarketDialog = ({
