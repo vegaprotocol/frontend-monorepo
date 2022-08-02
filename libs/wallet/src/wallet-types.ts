@@ -79,6 +79,148 @@ export interface WithdrawSubmissionBody extends BaseTransaction {
   };
 }
 
+export interface ProposalNewMarketTerms {
+  newMarket: {
+    changes: {
+      decimalPlaces: string;
+      positionDecimalPlaces: string;
+      instrument: {
+        name: string;
+        code: string;
+        future: {
+          settlementAsset: string;
+          quoteName: string;
+          settlementPriceDecimals: number;
+          oracleSpecForSettlementPrice: OracleSpecFor;
+          oracleSpecForTradingTermination: OracleSpecFor;
+          oracleSpecBinding: OracleSpecBinding;
+        };
+      };
+      metadata?: string[];
+      priceMonitoringParameters?: PriceMonitoringParameters;
+      liquidityMonitoringParameters?: {
+        targetStakeParameters: {
+          timeWindow: string;
+          scalingFactor: number;
+        };
+        triggeringRatio: number;
+        auctionExtension: string;
+      };
+      logNormal: LogNormal;
+    };
+    liquidityCommitment: {
+      commitmentAmount: string;
+      fee: string;
+      buys: Buy[];
+      sells: Buy[];
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+export interface ProposalUpdateMarketTerms {
+  updateMarket: {
+    marketId: string;
+    changes: {
+      instrument: {
+        code: string;
+        future: {
+          quoteName: string;
+          settlementPriceDecimals: number;
+          oracleSpecForSettlementPrice: OracleSpecFor;
+          oracleSpecForTradingTermination: OracleSpecFor;
+          oracleSpecBinding: OracleSpecBinding;
+        };
+      };
+      priceMonitoringParameters?: PriceMonitoringParameters;
+      logNormal: LogNormal;
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+export interface ProposalNetworkParameterTerms {
+  updateNetworkParameter: {
+    changes: {
+      key: string;
+      value: string;
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
+export interface ProposalFreeformTerms {
+  newFreeform: Record<string, never>;
+  closingTimestamp: number;
+}
+
+export interface OracleSpecBinding {
+  settlementPriceProperty: string;
+  tradingTerminationProperty: string;
+}
+
+export interface OracleSpecFor {
+  pubKeys: string[];
+  filters: Filter[];
+}
+
+export interface Filter {
+  key: {
+    name: string;
+    type: string;
+  };
+  conditions?: Condition[];
+}
+
+export interface Condition {
+  operator: string;
+  value: string;
+}
+
+interface LogNormal {
+  tau: number;
+  riskAversionParameter: number;
+  params: {
+    mu: number;
+    r: number;
+    sigma: number;
+  };
+}
+
+interface PriceMonitoringParameters {
+  triggers: Trigger[];
+}
+
+interface Trigger {
+  horizon: string;
+  probability: string;
+  auctionExtension: string;
+}
+
+interface Buy {
+  offset: string;
+  proportion: number;
+  reference: string;
+}
+
+export interface ProposalSubmissionBody extends BaseTransaction {
+  proposalSubmission: {
+    rationale: {
+      description: string;
+      hash?: string;
+      url?: string;
+    };
+    terms:
+      | ProposalFreeformTerms
+      | ProposalNewMarketTerms
+      | ProposalUpdateMarketTerms
+      | ProposalNetworkParameterTerms;
+  };
+}
+
 export enum VegaWalletVoteValue {
   Yes = 'VALUE_YES',
   No = 'VALUE_NO',
@@ -111,7 +253,8 @@ export type TransactionSubmission =
   | VoteSubmissionBody
   | DelegateSubmissionBody
   | UndelegateSubmissionBody
-  | OrderAmendmentBody;
+  | OrderAmendmentBody
+  | ProposalSubmissionBody;
 
 export type TransactionResponse = z.infer<typeof TransactionResponseSchema>;
 export type GetKeysResponse = z.infer<typeof GetKeysSchema>;
