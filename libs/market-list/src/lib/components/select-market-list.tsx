@@ -69,11 +69,11 @@ export const SelectMarketList = ({
                 <th className={thClassNames('left')}>{t('Trading mode')}</th>
                 <th className={thClassNames('right')}><Tooltip
                   description={
-                    <div className="text-ui-small">Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:
+                    <div className="text-ui-small">{t("Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:")}
                       <ul>
-                        <li className="py-5">An infrastructure fee</li>
-                        <li className="py-5">A maker fee</li>
-                        <li className="py-5">A liquidity provision fee</li>
+                        <li className="py-5">{t("An infrastructure fee")}</li>
+                        <li className="py-5">{t("A maker fee")}</li>
+                        <li className="py-5">{t("A liquidity provision fee")}</li>
                       </ul>
                     </div>
                   }
