@@ -25,7 +25,6 @@ describe('Market trade', () => {
     cy.visit('/markets');
     cy.wait('@SimpleMarkets').then((response) => {
       if (response.response.body.data?.markets?.length) {
-        console.log(response.response.body.data.markets);
         markets = response.response.body.data.markets;
       }
     });
