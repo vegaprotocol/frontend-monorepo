@@ -23,42 +23,94 @@ const thClassNames = (direction: 'left' | 'right') =>
 const tdClassNames =
   'px-8 font-sans leading-9 capitalize text-ui-small text-right text-dark dark:text-white';
 
-export const SelectMarketTableHeader = ({ detailed = false }) => {
+export interface Column {
+  value: string | React.ReactNode;
+  className: string;
+  onlyOnDetailed: boolean;
+}
+
+export const detailedHeaders: Column[] = [
+  {
+    value: t('Market'),
+    className: thClassNames('left'),
+    onlyOnDetailed: false,
+  },
+  {
+    value: t('Last price'),
+    className: thClassNames('right'),
+    onlyOnDetailed: false,
+  },
+  {
+    value: t('Settlement asset'),
+    className: thClassNames('left'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Change (24h)'),
+    className: thClassNames('right'),
+    onlyOnDetailed: false,
+  },
+  { value: t(''), className: thClassNames('right'), onlyOnDetailed: false },
+  {
+    value: t('24h High'),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('24h Low'),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Trading mode'),
+    className: thClassNames('left'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: (
+      <Tooltip
+        description={
+          <span className="text-ui-small">
+            {t(
+              'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
+            )}
+            <ul>
+              <li className="py-5">{t('An infrastructure fee')}</li>
+              <li className="py-5">{t('A maker fee')}</li>
+              <li className="py-5">{t('A liquidity provision fee')}</li>
+            </ul>
+          </span>
+        }
+      >
+        <span className="border-b-2 border-dotted">{t('Taker fee')}</span>
+      </Tooltip>
+    ),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Volume'),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Full name'),
+    className: thClassNames('left'),
+    onlyOnDetailed: true,
+  },
+];
+
+export const SelectMarketTableHeader = ({
+  detailed = false,
+  headers = detailedHeaders,
+}) => {
   return (
     <tr>
-      <th className={thClassNames('left')}>{t('Market')}</th>
-      <th className={thClassNames('right')}>{t('Last price')}</th>
-      {detailed && (
-        <th className={thClassNames('left')}>{t('Settlement asset')}</th>
-      )}
-      <th className={thClassNames('right')}>{t('Change (24h)')}</th>
-      <th className={thClassNames('right')}></th>
-      {detailed && (
-        <>
-          <th className={thClassNames('right')}>{t('24h High')}</th>
-          <th className={thClassNames('right')}>{t('24h Low')}</th>
-          <th className={thClassNames('left')}>{t('Trading mode')}</th>
-          <th className={thClassNames('right')}>
-            <Tooltip
-              description={
-                <span className="text-ui-small">
-                  {t(
-                    'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
-                  )}
-                  <ul>
-                    <li className="py-5">{t('An infrastructure fee')}</li>
-                    <li className="py-5">{t('A maker fee')}</li>
-                    <li className="py-5">{t('A liquidity provision fee')}</li>
-                  </ul>
-                </span>
-              }
-            >
-              <span className="border-b-2 border-dotted">{t('Taker fee')}</span>
-            </Tooltip>
-          </th>
-          <th className={thClassNames('right')}>{t('Volume')}</th>
-          <th className={thClassNames('left')}>{t('Full name')}</th>
-        </>
+      {headers.map(
+        ({ value, className, onlyOnDetailed }: Column) =>
+          (!onlyOnDetailed || detailed === onlyOnDetailed) && (
+            <th className={className}>{value}</th>
+          )
       )}
     </tr>
   );
