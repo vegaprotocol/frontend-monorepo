@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { act } from 'react-dom/test-utils';
 import {
   render,
@@ -60,6 +60,7 @@ describe('SimpleMarketList', () => {
     };
     await act(async () => {
       render(
+        // @ts-ignore different versions of react types in apollo and app
         <MockedProvider mocks={[mocks, filterMock]}>
           <SimpleMarketList />
         </MockedProvider>,
@@ -129,6 +130,7 @@ describe('SimpleMarketList', () => {
     };
     await act(async () => {
       render(
+        // @ts-ignore different versions of react types in apollo and app
         <MockedProvider mocks={[mocks, filterMock]}>
           <SimpleMarketList />
         </MockedProvider>,

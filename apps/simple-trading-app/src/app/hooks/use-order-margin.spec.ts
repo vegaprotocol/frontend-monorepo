@@ -58,7 +58,7 @@ describe('useOrderMargin Hook', () => {
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
       .plus(order.size)
       .toString();
-    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       calledSize
     );
   });
@@ -74,7 +74,7 @@ describe('useOrderMargin Hook', () => {
     );
     expect(result.current).toEqual('200000');
 
-    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       order.size
     );
   });
@@ -99,7 +99,7 @@ describe('useOrderMargin Hook', () => {
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
       .plus(order.size)
       .toString();
-    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       calledSize
     );
   });

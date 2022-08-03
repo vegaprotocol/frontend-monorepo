@@ -59,6 +59,7 @@ describe('SimpleMarketToolbar', () => {
 
   it('should be properly rendered', async () => {
     render(
+      // @ts-ignore different versions of react types in apollo and app
       <MockedProvider mocks={[filterMock]} addTypename={false}>
         <WrappedCompForTest />
       </MockedProvider>,
@@ -83,6 +84,7 @@ describe('SimpleMarketToolbar', () => {
 
   it('navigation should work well', async () => {
     render(
+      // @ts-ignore different versions of react types in apollo and app
       <MockedProvider mocks={[filterMock]} addTypename={false}>
         <WrappedCompForTest />
       </MockedProvider>,
