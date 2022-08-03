@@ -18,7 +18,7 @@ import {
   useOrderValidation,
   useOrderSubmit,
   OrderFeedback,
-  validateSize
+  validateSize,
 } from '@vegaprotocol/orders';
 import { DealTicketSize } from './deal-ticket-size';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';

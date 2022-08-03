@@ -15,6 +15,6 @@ export const useSettlementAccount = (
 
       return account.asset.id === settlementAssetId;
     });
-  const account = useMemo(callback, [accounts, settlementAssetId]);
+  const account = useMemo(callback, [accounts, settlementAssetId, type]);
   return account as PartyBalanceQuery_party_accounts;
 };
