@@ -157,6 +157,25 @@ export interface ProposalFreeformTerms {
   closingTimestamp: number;
 }
 
+export interface ProposalNewAssetTerms {
+  newAsset: {
+    changes: {
+      name: string;
+      symbol: string;
+      totalSupply: string;
+      decimals: string;
+      quantum: string;
+      erc20: {
+        contractAddress: string;
+        withdrawThreshold: string;
+        lifetimeLimit: string;
+      };
+    };
+  };
+  closingTimestamp: number;
+  enactmentTimestamp: number;
+}
+
 export interface OracleSpecBinding {
   settlementPriceProperty: string;
   tradingTerminationProperty: string;
@@ -220,7 +239,8 @@ export interface ProposalSubmission {
     | ProposalFreeformTerms
     | ProposalNewMarketTerms
     | ProposalUpdateMarketTerms
-    | ProposalNetworkParameterTerms;
+    | ProposalNetworkParameterTerms
+    | ProposalNewAssetTerms;
 }
 
 export enum VegaWalletVoteValue {
