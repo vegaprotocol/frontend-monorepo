@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { SelectMarketList } from './select-market-list';
+import { SelectMarketTableBody } from './select-market-table';
 
 import type { ReactNode } from 'react';
 import type {
@@ -18,7 +18,7 @@ jest.mock(
 describe('SelectMarket', () => {
   it('should render', () => {
     const { container } = render(
-      <SelectMarketList data={mockData.data} onSelect={jest.fn()} />
+      <SelectMarketTableBody data={mockData.data} onSelect={jest.fn()} />
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
@@ -29,7 +29,7 @@ describe('SelectMarket', () => {
     const onSelect = jest.fn();
     const expectedMarket = mockData.data.markets[0];
     render(
-      <SelectMarketList
+      <SelectMarketTableBody
         data={mockData.data as unknown as MarketList}
         onSelect={onSelect}
       />

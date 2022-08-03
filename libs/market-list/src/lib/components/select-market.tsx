@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import {
+  AsyncRenderer,
   Dialog,
   Intent,
   Popover,
@@ -11,10 +12,78 @@ import classNames from 'classnames';
 import isNil from 'lodash/isNil';
 import { useMemo, useState } from 'react';
 import { MARKET_LIST_QUERY } from '../markets-data-provider';
-import { SelectMarketList } from './select-market-list';
+import {
+  SelectMarketTableBody,
+  SelectMarketTableHeader,
+} from './select-market-table';
 import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { positionsDataProvider } from '@vegaprotocol/positions';
+
+export const SelectMarketLandingTable = ({
+  data,
+  onSelect,
+  detailed = false,
+}: {
+  data: MarketList | undefined;
+  onSelect?: (id: string) => void;
+  detailed?: boolean;
+}) => {
+  return (
+    <div
+      className="max-h-[40rem] overflow-x-auto"
+      data-testid="select-market-list"
+    >
+      <table className="relative h-full min-w-full whitespace-nowrap">
+        <thead className="sticky top-0 z-10 dark:bg-black bg-white">
+          <SelectMarketTableHeader />
+        </thead>
+        <SelectMarketTableBody
+          data={data}
+          detailed={detailed}
+          onSelect={onSelect}
+        />
+      </table>
+    </div>
+  );
+};
+
+export const SelectAllMarketsTableBody = ({
+  data,
+  title = t('All markets'),
+  setOpen,
+  loading = false,
+  error,
+}: {
+  title: string;
+  data?: MarketList;
+  loading?: boolean;
+  error?: Error | null | undefined;
+  setOpen: (open: boolean) => void;
+}) => {
+  return (
+    <>
+      <thead className="sticky top-0 z-10 dark:bg-black bg-white">
+        <tr>
+          <h1
+            className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
+            data-testid="dialog-title"
+          >
+            {title}
+          </h1>
+        </tr>
+        <SelectMarketTableHeader detailed={true} />
+      </thead>
+      <AsyncRenderer data={data} loading={loading} error={error}>
+        <SelectMarketTableBody
+          data={data}
+          detailed={true}
+          onSelect={() => setOpen(false)}
+        />
+      </AsyncRenderer>
+    </>
+  );
+};
 
 export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
   const { keypair } = useVegaWallet();
@@ -63,54 +132,43 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
         </div>
       }
     >
-      <div className="m-20">
-        {keypair &&
-          positionMarkets &&
-          (positionMarkets?.markets ?? []).length > 0 && (
-            <>
-              <h1
-                className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
-                data-testid="dialog-title"
-              >
-                {t('My markets')}
-              </h1>
-              <SelectMarketList
+      <div
+        className="max-h-[40rem] overflow-x-auto m-20"
+        data-testid="select-market-list"
+      >
+        <table className="relative h-full min-w-full whitespace-nowrap">
+          {keypair &&
+            positionMarkets &&
+            (positionMarkets?.markets ?? []).length > 0 && (
+              <SelectAllMarketsTableBody
+                title={t('My markets')}
                 data={positionMarkets}
-                onSelect={() => setOpen(false)}
-                detailed={true}
+                setOpen={setOpen}
               />
-            </>
-          )}
-        <h1
-          className={`text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
-          data-testid="dialog-title"
-        >
-          {t('All markets')}
-        </h1>
-        <SelectMarketList
-          data={data}
-          onSelect={() => setOpen(false)}
-          detailed={true}
-        />
+            )}
+          <SelectAllMarketsTableBody
+            title={t('All markets')}
+            data={data}
+            setOpen={setOpen}
+          />
+        </table>
       </div>
     </Popover>
   );
 };
-
-export interface SelectMarketDialogProps {
-  dialogOpen: boolean;
-  setDialogOpen: (open: boolean) => void;
-  title?: string;
-  detailed?: boolean;
-  size?: 'small' | 'large';
-}
 
 export const SelectMarketDialog = ({
   dialogOpen,
   setDialogOpen,
   title = t('Select a market'),
   size,
-}: SelectMarketDialogProps) => {
+}: {
+  dialogOpen: boolean;
+  setDialogOpen: (open: boolean) => void;
+  title?: string;
+  detailed?: boolean;
+  size?: 'small' | 'large';
+}) => {
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
   const yTimestamp = new Date(yesterday * 1000).toISOString();
 
@@ -126,7 +184,7 @@ export const SelectMarketDialog = ({
       titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
       size={size}
     >
-      <SelectMarketList
+      <SelectMarketLandingTable
         data={data}
         onSelect={() => setDialogOpen(false)}
         detailed={false}

@@ -22,7 +22,11 @@ export const Popover = ({
     <PopoverPrimitive.Root open={open} onOpenChange={(x) => onChange?.(x)}>
       <PopoverPrimitive.Trigger
         data-testid="popover-trigger"
-        className={classNames(getIntentBorder(intent), 'border-none', 'ease-in-out duration-200')}
+        className={classNames(
+          getIntentBorder(intent),
+          'border-none',
+          'ease-in-out duration-200'
+        )}
       >
         {trigger}
       </PopoverPrimitive.Trigger>
