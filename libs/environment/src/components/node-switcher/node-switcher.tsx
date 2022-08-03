@@ -71,12 +71,7 @@ export const NodeSwitcher = ({
     }
   };
 
-  const isSubmitDisabled = getIsFormDisabled(
-    nodeRadio,
-    customNodeText,
-    VEGA_ENV,
-    state
-  );
+  const isSubmitDisabled = getIsFormDisabled(nodeRadio, VEGA_ENV, state);
 
   const customNodeData =
     nodeRadio &&
