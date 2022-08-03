@@ -8,3 +8,5 @@ import 'regenerator-runtime/runtime';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 window.Buffer = require('buffer/').Buffer;
+// eslint-disable-next-line no-undef, no-global-assign, no-native-reassign
+window.global = globalThis;
