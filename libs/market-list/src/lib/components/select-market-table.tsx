@@ -19,7 +19,7 @@ import type {
 } from '../__generated__/MarketList';
 
 const thClassNames = (direction: 'left' | 'right') =>
-  `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark dark:text-white first:w-[10%]`;
+  `px-8 text-${direction} font-sans text-ui-small leading-9 mb-0 text-dark dark:text-white first:w-[10%]`;
 const tdClassNames =
   'px-8 font-sans leading-9 capitalize text-ui-small text-right text-dark dark:text-white';
 
@@ -107,9 +107,11 @@ export const SelectMarketTableHeader = ({
   return (
     <tr>
       {headers.map(
-        ({ value, className, onlyOnDetailed }: Column) =>
+        ({ value, className, onlyOnDetailed }, i) =>
           (!onlyOnDetailed || detailed === onlyOnDetailed) && (
-            <th className={className}>{value}</th>
+            <th key={i} className={className}>
+              {value}
+            </th>
           )
       )}
     </tr>
@@ -123,12 +125,6 @@ export const FeesBreakdown = ({
 }) => {
   return (
     <table>
-      <thead>
-        <tr>
-          <th></th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         <tr>
           <td className={thClassNames('left')}>{t('Infrastructure Fee')}</td>
@@ -229,11 +225,11 @@ export const SelectMarketTableBody = ({
                 )}
               </td>
               {detailed && (
-                <td className={`${thClassNames('left')} `}>
+                <td className={thClassNames('left')}>
                   {market.settlementAsset}
                 </td>
               )}
-              <td className={`${tdClassNames} `}>
+              <td className={tdClassNames}>
                 <PriceCellChange
                   candles={candlesClose}
                   decimalPlaces={market.decimalPlaces}
@@ -251,7 +247,7 @@ export const SelectMarketTableBody = ({
               </td>
               {detailed && (
                 <>
-                  <td className={`${tdClassNames} `}>
+                  <td className={tdClassNames}>
                     {market.candleHigh ? (
                       <PriceCell
                         value={new BigNumber(market.candleHigh).toNumber()}
@@ -265,7 +261,7 @@ export const SelectMarketTableBody = ({
                       '-'
                     )}
                   </td>
-                  <td className={`${tdClassNames} `}>
+                  <td className={tdClassNames}>
                     {market.candleLow ? (
                       <PriceCell
                         value={new BigNumber(market.candleLow).toNumber()}
@@ -279,17 +275,17 @@ export const SelectMarketTableBody = ({
                       '-'
                     )}
                   </td>
-                  <td className={`${thClassNames('left')} `}>
+                  <td className={thClassNames('left')}>
                     {market.tradingMode ===
                       MarketTradingMode.MonitoringAuction &&
-                      market.data?.trigger &&
-                      market.data.trigger !== AuctionTrigger.Unspecified
+                    market.data?.trigger &&
+                    market.data.trigger !== AuctionTrigger.Unspecified
                       ? `${formatLabel(
-                        market.tradingMode
-                      )} - ${market.data?.trigger.toLowerCase()}`
+                          market.tradingMode
+                        )} - ${market.data?.trigger.toLowerCase()}`
                       : formatLabel(market.tradingMode)}
                   </td>
-                  <td className={`${tdClassNames}`}>
+                  <td className={tdClassNames}>
                     <Tooltip
                       description={
                         <FeesBreakdown feeFactors={market.fees.factors} />
@@ -300,15 +296,15 @@ export const SelectMarketTableBody = ({
                       </span>
                     </Tooltip>
                   </td>
-                  <td className={`${tdClassNames} `}>
+                  <td className={tdClassNames}>
                     {market.data && market.data.indicativeVolume !== '0'
                       ? addDecimalsFormatNumber(
-                        market.data.indicativeVolume,
-                        market.positionDecimalPlaces
-                      )
+                          market.data.indicativeVolume,
+                          market.positionDecimalPlaces
+                        )
                       : '-'}
                   </td>
-                  <td className={`${thClassNames('left')} `}>{market.name}</td>
+                  <td className={thClassNames('left')}>{market.name}</td>
                 </>
               )}
             </tr>

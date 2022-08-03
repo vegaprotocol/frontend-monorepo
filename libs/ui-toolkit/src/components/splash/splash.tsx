@@ -10,5 +10,5 @@ export const Splash = ({ children }: SplashProps) => {
     'w-full h-full',
     'flex items-center justify-center'
   );
-  return <span className={splashClasses}>{children}</span>;
+  return <div className={splashClasses}>{children}</div>;
 };

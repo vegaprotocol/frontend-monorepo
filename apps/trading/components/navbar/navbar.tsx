@@ -6,8 +6,8 @@ import classNames from 'classnames';
 import { useGlobalStore } from '../../stores/global';
 
 export const Navbar = () => {
-  const store = useGlobalStore();
-  const tradingPath = store.marketId ? `/markets/${store.marketId}` : '/';
+  const { marketId } = useGlobalStore();
+  const tradingPath = marketId ? `/markets/${marketId}` : '/';
   return (
     <nav className="flex items-center">
       <Link href="/" passHref={true}>

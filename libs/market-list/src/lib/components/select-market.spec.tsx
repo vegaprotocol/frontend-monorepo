@@ -3,10 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { SelectMarketTableBody } from './select-market-table';
 
 import type { ReactNode } from 'react';
-import type {
-  MarketList,
-  MarketList_markets,
-} from '../__generated__/MarketList';
+import type { MarketList_markets } from '../__generated__/MarketList';
 
 jest.mock(
   'next/link',
@@ -28,12 +25,7 @@ describe('SelectMarket', () => {
   it('should call onSelect callback', () => {
     const onSelect = jest.fn();
     const expectedMarket = mockData.data.markets[0];
-    render(
-      <SelectMarketTableBody
-        data={mockData.data as unknown as MarketList}
-        onSelect={onSelect}
-      />
-    );
+    render(<SelectMarketTableBody data={mockData.data} onSelect={onSelect} />);
     fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
     expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
   });

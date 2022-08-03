@@ -15,7 +15,7 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   return (
     <div>
       <Popover
-        {...args}
+        intent={args.intent}
         open={open}
         onChange={setOpen}
         trigger={<Button variant="accent">Trigger</Button>}
