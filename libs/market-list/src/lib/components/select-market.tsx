@@ -2,11 +2,10 @@ import { useQuery } from '@apollo/client';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import {
-  ArrowDown,
-  ArrowUp,
   Dialog,
   Intent,
   Popover,
+  RotatingArrow,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import isNil from 'lodash/isNil';
@@ -48,30 +47,20 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
       open={open}
       onChange={setOpen}
       trigger={
-        open ? (
-          <div
-            className={classNames(
-              'dark:text-white text-black border-2 border-black dark:border-white whitespace-nowrap',
-              'border-b-0',
-              headerTriggerButtonClassName
-            )}
-          >
-            <span className="p-5 text-left dark:text-white text-black">
-              {t('Select a market')}
-            </span>
-            <ArrowUp color="white" borderX={8} borderBottom={12} />
-          </div>
-        ) : (
-          <div
-            className={classNames(
-              'dark:text-vega-yellow text-vega-pink',
-              headerTriggerButtonClassName
-            )}
-          >
-            <span className="break-words text-left ml-5 ">{marketName}</span>
-            <ArrowDown color="yellow" borderX={8} borderTop={12} />
-          </div>
-        )
+        <div
+          className={classNames(
+            'dark:text-vega-yellow text-vega-pink',
+            headerTriggerButtonClassName
+          )}
+        >
+          <span className="break-words text-left ml-5 ">{marketName}</span>
+          <RotatingArrow
+            color="yellow"
+            borderX={8}
+            borderBottom={12}
+            up={open}
+          />
+        </div>
       }
     >
       <div className="m-20">
