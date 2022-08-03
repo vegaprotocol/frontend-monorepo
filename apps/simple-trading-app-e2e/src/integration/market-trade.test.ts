@@ -25,6 +25,7 @@ describe('Market trade', () => {
     cy.visit('/markets');
     cy.wait('@SimpleMarkets').then((response) => {
       if (response.response.body.data?.markets?.length) {
+        console.log(response.response.body.data.markets);
         markets = response.response.body.data.markets;
       }
     });
@@ -81,14 +82,15 @@ describe('Market trade', () => {
 
   it('size selector should work well', () => {
     if (markets?.length) {
-      cy.visit(`/trading/${markets[0].id}`);
-      cy.get('#step-2-panel').find('input').invoke('val', 2).trigger('change');
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel').find('dd').eq(0).should('have.text', '1');
+      cy.get('#step-2-panel').find('[role="slider"]').type('{rightarrow}');
 
-      cy.get('#step-2-panel')
-        .find('dl')
-        .eq(1)
-        .find('dd')
-        .should('have.text', '2');
+      cy.get('#step-2-panel').find('dd').eq(0).should('have.text', '2');
     }
   });
 

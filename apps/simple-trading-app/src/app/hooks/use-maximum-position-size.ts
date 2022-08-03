@@ -53,9 +53,9 @@ export default ({
     (marketPositions.openVolume.isNegative() &&
       order.side === VegaWalletOrderSide.Sell);
 
-  return (
-    new BigNumber(size)
-      [isSameSide ? 'minus' : 'plus'](marketPositions.openVolume)
-      .toNumber() || 0
+  const adjustedForVolume = new BigNumber(size)[isSameSide ? 'minus' : 'plus'](
+    marketPositions.openVolume
   );
+
+  return adjustedForVolume.isNegative() ? 0 : adjustedForVolume.toNumber();
 };
