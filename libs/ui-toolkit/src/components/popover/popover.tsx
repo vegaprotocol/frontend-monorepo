@@ -36,7 +36,8 @@ export const Popover = ({
             {
               'border-2': open,
               'border-none': !open,
-            }
+            },
+            'ease-in-out duration-200'
           )}
         >
           {children}
