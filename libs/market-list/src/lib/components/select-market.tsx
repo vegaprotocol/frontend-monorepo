@@ -140,10 +140,9 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
           className={`text-h4 mb-10 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
           data-testid="dialog-title"
         >
-          {t("Select a market")}
+          {t('Select a market')}
         </h1>
         <table className="relative h-full min-w-full whitespace-nowrap">
-
           {keypair &&
             positionMarkets &&
             (positionMarkets?.markets ?? []).length > 0 && (
