@@ -2,7 +2,6 @@ import { useQuery } from '@apollo/client';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import {
-  AsyncRenderer,
   Dialog,
   Intent,
   Popover,
@@ -61,35 +60,31 @@ export const SelectAllMarketsTableBody = ({
   error?: Error | null | undefined;
   setOpen: (open: boolean) => void;
 }) => {
-  return (
+  return data ? (
     <>
       <thead className="sticky top-0 z-10 dark:bg-black bg-white">
         <tr
           className={`text-h5 mt-5 font-bold text-black-95 dark:text-white-95 mb-6`}
           data-testid="dialog-title"
         >
-          <td>{title}</td>
+          <th>{title}</th>
         </tr>
+        <SelectMarketTableHeader detailed={true} />
       </thead>
-      {data ? (
-        <>
-          <thead>
-            <SelectMarketTableHeader detailed={true} />
-          </thead>
-          <SelectMarketTableBody
-            data={data}
-            detailed={true}
-            onSelect={() => setOpen(false)}
-          />
-        </>
-      ) : (
-        <thead>
-          <tr>
-            <td>{t('Loading market data...')}</td>
-          </tr>
-        </thead>
-      )}
+      <SelectMarketTableBody
+        data={data}
+        detailed={true}
+        onSelect={() => setOpen(false)}
+      />
     </>
+  ) : (
+    <thead>
+      <tr>
+        <td className="text-black dark:text-white text-h5 mt-10">
+          {t('Loading market data...')}
+        </td>
+      </tr>
+    </thead>
   );
 };
 
