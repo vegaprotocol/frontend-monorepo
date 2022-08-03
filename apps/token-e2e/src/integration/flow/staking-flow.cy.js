@@ -29,7 +29,6 @@ const partValidatorId = '…';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
-// Tests skipped because of change of the UI of data nodes
 context('Staking Tab - with eth and vega wallets connected', function () {
   // 1002-STKE-002, 1002-STKE-032
   before('visit staking tab and connect vega wallet', function () {
@@ -108,6 +107,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('be.visible');
 
       cy.navigate_to('staking');
+
       cy.validate_validator_list_total_stake_and_share('0', '', '2.00', '100%');
     });
 
@@ -121,6 +121,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       );
 
       cy.get('button').contains('Select a validator to nominate').click();
+
       cy.click_on_validator_from_list(0);
 
       cy.staking_validator_page_add_stake('2');
@@ -131,7 +132,8 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('contain', 2.0, txTimeout);
 
       cy.navigate_to('staking');
-      cy.click_on_validator_from_list(1); // different validator which has now moved to top of the list
+
+      cy.click_on_validator_from_list(1);
 
       cy.staking_validator_page_add_stake('1');
 
@@ -139,6 +141,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('have.length', 2, txTimeout)
         .eq(0)
         .should('contain', 2.0, txTimeout);
+
       cy.get(vegaWalletStakedBalances, txTimeout)
         .eq(1)
         .should('contain', 1.0, txTimeout);
@@ -154,14 +157,12 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.get(`[row-id="${0}"]`).within(() => {
         cy.get(stakeValidatorListTotalStake).should('have.text', '3.00');
         cy.get(stakeValidatorListTotalShare).should('have.text', '66.67%');
-
         cy.get(stakeValdatorListValidatorStake).should('have.text', '2.00');
       });
 
       cy.get(`[row-id="${1}"]`).within(() => {
         cy.get(stakeValidatorListTotalStake).should('have.text', '3.00');
         cy.get(stakeValidatorListTotalShare).should('have.text', '33.33%');
-
         cy.get(stakeValdatorListValidatorStake).should('have.text', '1.00');
       });
     });
@@ -177,6 +178,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       );
 
       cy.get('button').contains('Select a validator to nominate').click();
+
       cy.click_on_validator_from_list(0);
 
       cy.staking_validator_page_add_stake('3');
@@ -237,9 +239,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('be.visible');
 
       cy.get(totalStake).should('have.text', '2');
+
       cy.get(stakeShare).should('have.text', '100%');
 
       cy.navigate_to('staking');
+
       cy.validate_validator_list_total_stake_and_share('0', '', '2.00', '100%');
     });
 
@@ -308,6 +312,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('not.exist', txTimeout);
 
       cy.navigate_to('staking');
+
       cy.validate_validator_list_total_stake_and_share('0', '', '0.00', '-');
     });
 
@@ -500,10 +505,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .and('contain', partValidatorId);
 
       cy.navigate_to('staking');
+
       cy.validate_validator_list_total_stake_and_share('0', '', '2.00', '100%');
     });
 
-    it('Selecting use maximum where tokens are allready staked - suggests the unstaked token amount', function () {
+    it('Selecting use maximum where tokens are already staked - suggests the unstaked token amount', function () {
       cy.staking_page_associate_tokens('3');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(

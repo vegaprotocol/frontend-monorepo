@@ -96,7 +96,7 @@ Cypress.Commands.add(
     cy.contains('Waiting for next epoch to start').should('not.exist');
     cy.get(stakeValidatorListPendingStake, txTimeout).should(
       'not.contain',
-      '2,000,000,000,000,000,000.00'
+      '2,000,000,000,000,000,000.00' // number due to bug #936
     );
     if (validatorName) {
       cy.contains(validatorName).click();
