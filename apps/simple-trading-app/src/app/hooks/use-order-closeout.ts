@@ -40,16 +40,6 @@ const CLOSEOUT_PRICE_QUERY = gql`
           }
         }
       }
-      positionsConnection {
-        edges {
-          node {
-            openVolume
-            market {
-              id
-            }
-          }
-        }
-      }
     }
   }
 `;
@@ -113,7 +103,7 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
       markPriceData?.market?.decimalPlaces || 0
     )
   );
-
+  // regarding formula (marginMaintenanceLevel - positionAccountBalance - generalAccountBalance) / volume + markPrice
   const marginDifference = marginMaintenanceLevel
     .minus(positionAccountBalance)
     .minus(generalAccountBalance);

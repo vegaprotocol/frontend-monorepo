@@ -90,39 +90,6 @@ export interface PartyMarketData_party_marginsConnection {
   edges: PartyMarketData_party_marginsConnection_edges[] | null;
 }
 
-export interface PartyMarketData_party_positionsConnection_edges_node_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-}
-
-export interface PartyMarketData_party_positionsConnection_edges_node {
-  __typename: "Position";
-  /**
-   * Open volume (uint64)
-   */
-  openVolume: string;
-  /**
-   * Market relating to this position
-   */
-  market: PartyMarketData_party_positionsConnection_edges_node_market;
-}
-
-export interface PartyMarketData_party_positionsConnection_edges {
-  __typename: "PositionEdge";
-  node: PartyMarketData_party_positionsConnection_edges_node;
-}
-
-export interface PartyMarketData_party_positionsConnection {
-  __typename: "PositionConnection";
-  /**
-   * The positions in this connection
-   */
-  edges: PartyMarketData_party_positionsConnection_edges[] | null;
-}
-
 export interface PartyMarketData_party {
   __typename: "Party";
   /**
@@ -137,10 +104,6 @@ export interface PartyMarketData_party {
    * Margin level for a market
    */
   marginsConnection: PartyMarketData_party_marginsConnection;
-  /**
-   * Trading positions relating to a party
-   */
-  positionsConnection: PartyMarketData_party_positionsConnection;
 }
 
 export interface PartyMarketData {
