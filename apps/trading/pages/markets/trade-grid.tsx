@@ -61,7 +61,7 @@ export const TradeMarketHeader = ({
   const itemValueClassName =
     'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
-    'w-full p-8 bg-white dark:bg-black',
+    'w-full bg-white dark:bg-black',
     className
   );
 
@@ -71,7 +71,7 @@ export const TradeMarketHeader = ({
         <SelectMarketPopover marketName={market.name} />
         <div
           data-testid="market-summary"
-          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap"
+          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap py-8 pr-8"
         >
           <div className={headerItemClassName}>
             <span className={itemClassName}>{t('Change (24h)')}</span>

@@ -26,7 +26,6 @@ export const Popover = ({
       >
         {trigger}
       </PopoverPrimitive.Trigger>
-      <PopoverPrimitive.Anchor />
       <PopoverPrimitive.Portal>
         <PopoverPrimitive.Content
           data-testid="popover-content"
@@ -41,8 +40,6 @@ export const Popover = ({
           )}
         >
           {children}
-          <PopoverPrimitive.Close />
-          <PopoverPrimitive.Arrow />
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>
     </PopoverPrimitive.Root>

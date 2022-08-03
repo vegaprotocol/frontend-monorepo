@@ -19,7 +19,7 @@ import type {
 } from '../__generated__/MarketList';
 
 const thClassNames = (direction: 'left' | 'right') =>
-  `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark dark:text-white`;
+  `px-8 text-${direction} font-sans font-normal text-ui-small leading-9 mb-0 text-dark dark:text-white first:w-[10%]`;
 const tdClassNames =
   'px-8 font-sans leading-9 capitalize text-ui-small text-right text-dark dark:text-white';
 
@@ -44,7 +44,7 @@ export const SelectMarketList = ({
   };
 
   const boldUnderlineClassNames =
-    'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80';
+    'px-8 underline font-sans text-base leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80 first:w-[10%]';
   const marketList = data && mapDataToMarketList(data);
 
   return (

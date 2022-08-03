@@ -26,9 +26,8 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
   const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
     variables: { interval: Interval.I1H, since: yTimestamp },
   });
-  const isOpen = !isNil(data) && open;
   const headerTriggerButtonClassName =
-    'flex items-center gap-8 shrink-0 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
+    'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
 
   const { data: marketDataPositions } = useDataProvider({
@@ -46,17 +45,18 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
 
   return (
     <Popover
-      open={isOpen}
+      open={open}
       onChange={setOpen}
       trigger={
-        isOpen ? (
+        open ? (
           <div
             className={classNames(
-              'dark:text-white text-black',
+              'dark:text-white text-black border-2 border-black dark:border-white whitespace-nowrap',
+              'border-b-0',
               headerTriggerButtonClassName
             )}
           >
-            <span className="break-words p-5 text-left dark:text-white text-black">
+            <span className="p-5 text-left dark:text-white text-black">
               {t('Select a market')}
             </span>
             <ArrowUp color="white" borderX={8} borderBottom={12} />
