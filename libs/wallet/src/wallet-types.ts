@@ -207,18 +207,20 @@ interface Buy {
 }
 
 export interface ProposalSubmissionBody extends BaseTransaction {
-  proposalSubmission: {
-    rationale: {
-      description: string;
-      hash?: string;
-      url?: string;
-    };
-    terms:
-      | ProposalFreeformTerms
-      | ProposalNewMarketTerms
-      | ProposalUpdateMarketTerms
-      | ProposalNetworkParameterTerms;
+  proposalSubmission: ProposalSubmission;
+}
+
+export interface ProposalSubmission {
+  rationale: {
+    description: string;
+    hash?: string;
+    url?: string;
   };
+  terms:
+    | ProposalFreeformTerms
+    | ProposalNewMarketTerms
+    | ProposalUpdateMarketTerms
+    | ProposalNetworkParameterTerms;
 }
 
 export enum VegaWalletVoteValue {
