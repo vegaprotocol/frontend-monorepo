@@ -160,6 +160,7 @@ export const DealTicketSteps = ({
           estMargin={estMargin || ' - '}
         />
       ),
+      value: orderSize,
     },
     {
       label: t('Review Trade'),
