@@ -17,6 +17,7 @@ const PARTY_BALANCE_QUERY = gql`
   query PartyBalanceQuery($partyId: ID!) {
     party(id: $partyId) {
       accounts {
+        type
         balance
         asset {
           id

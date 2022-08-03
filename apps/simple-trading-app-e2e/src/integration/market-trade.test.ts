@@ -29,6 +29,7 @@ describe('Market trade', () => {
       }
     });
   });
+
   it('side selector should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
@@ -46,7 +47,7 @@ describe('Market trade', () => {
     }
   });
 
-  it('mobile view should work well', () => {
+  it('side selector mobile view should work well', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
@@ -75,6 +76,19 @@ describe('Market trade', () => {
         'contain.html',
         'aria-label="Selected value Short"'
       );
+    }
+  });
+
+  it('size selector should work well', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[0].id}`);
+      cy.get('#step-2-panel').find('input').invoke('val', 2).trigger('change');
+
+      cy.get('#step-2-panel')
+        .find('dl')
+        .eq(1)
+        .find('dd')
+        .should('have.text', '2');
     }
   });
 

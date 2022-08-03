@@ -1,18 +1,17 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import {
-  DealTicketAmount,
   getOrderDialogTitle,
   getOrderDialogIntent,
   getOrderDialogIcon,
   MarketSelector,
 } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { useVegaWallet, VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 import {
   getDefaultOrder,
@@ -26,6 +25,9 @@ import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
 import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
+import useOrderCloseOut from '../../hooks/use-order-closeout';
+import useOrderMargin from '../../hooks/use-order-margin';
+import useMaximumPositionSize from '../../hooks/use-maximum-position-size';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
@@ -61,6 +63,23 @@ export const DealTicketSteps = ({
   const orderSide = watch('side');
   const orderSize = watch('size');
   const order = watch();
+  const estCloseOut = useOrderCloseOut({ order, market, partyData });
+  const { keypair } = useVegaWallet();
+  const estMargin = useOrderMargin({
+    order,
+    market,
+    partyId: keypair?.pub || '',
+  });
+
+  const maxTrade = useMaximumPositionSize({
+    partyId: keypair?.pub || '',
+    accounts: partyData?.party?.accounts || [],
+    marketId: market.id,
+    settlementAssetId:
+      market.tradableInstrument.instrument.product.settlementAsset.id,
+    price: market?.depth?.lastTrade?.price,
+    order,
+  });
 
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
@@ -80,7 +99,6 @@ export const DealTicketSteps = ({
       setValue('size', newVal);
     }
   };
-
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -126,7 +144,9 @@ export const DealTicketSteps = ({
       label: t('Choose Position Size'),
       component: (
         <DealTicketSize
-          step={toDecimal(market.positionDecimalPlaces)}
+          step={step}
+          min={step}
+          max={maxTrade}
           onValueChange={onSizeChange}
           value={parseFloat(orderSize)}
           name="size"
@@ -136,6 +156,8 @@ export const DealTicketSteps = ({
               : ''
           }
           quoteName={market.tradableInstrument.instrument.product.quoteName}
+          estCloseOut={estCloseOut}
+          estMargin={estMargin || ' - '}
         />
       ),
     },
@@ -153,7 +175,8 @@ export const DealTicketSteps = ({
             isDisabled={isDisabled}
             transactionStatus={transactionStatus}
             order={order}
-            partyData={partyData}
+            estCloseOut={estCloseOut}
+            estMargin={estMargin || ' - '}
           />
           <TransactionDialog
             title={getOrderDialogTitle(finalizedOrder?.status)}
