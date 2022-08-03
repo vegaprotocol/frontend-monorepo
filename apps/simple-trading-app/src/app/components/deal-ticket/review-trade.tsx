@@ -10,17 +10,14 @@ import classNames from 'classnames';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { SIDE_NAMES } from './side-selector';
-import { useVegaWallet, VegaWalletOrderSide } from '@vegaprotocol/wallet';
+import { VegaWalletOrderSide } from '@vegaprotocol/wallet';
 import SimpleMarketExpires from '../simple-market-list/simple-market-expires';
 import { gql, useQuery } from '@apollo/client';
 import type {
   MarketTags,
   MarketTagsVariables,
 } from './__generated__/MarketTags';
-import useOrderMargin from '../../hooks/use-order-margin';
-import useOrderCloseOut from '../../hooks/use-order-closeout';
 import { IconNames } from '@blueprintjs/icons';
-import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 
 export const MARKET_TAGS_QUERY = gql`
   query MarketTags($marketId: ID!) {
@@ -41,7 +38,8 @@ interface Props {
   isDisabled: boolean;
   transactionStatus?: string;
   order: Order;
-  partyData?: PartyBalanceQuery;
+  estCloseOut: string;
+  estMargin: string;
 }
 
 export default ({
@@ -49,21 +47,16 @@ export default ({
   market,
   order,
   transactionStatus,
-  partyData,
+  estCloseOut,
+  estMargin,
 }: Props) => {
-  const { keypair } = useVegaWallet();
   const { data: tagsData } = useQuery<MarketTags, MarketTagsVariables>(
     MARKET_TAGS_QUERY,
     {
       variables: { marketId: market.id },
     }
   );
-  const estMargin = useOrderMargin({
-    order,
-    market,
-    partyId: keypair?.pub || '',
-  });
-  const estCloseOut = useOrderCloseOut({ order, market, partyData });
+
   return (
     <div className="mb-8 text-black dark:text-white">
       <KeyValueTable>

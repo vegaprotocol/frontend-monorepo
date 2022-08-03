@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { AccountType } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: PartyBalanceQuery
 // ====================================================
@@ -29,6 +31,10 @@ export interface PartyBalanceQuery_party_accounts_asset {
 
 export interface PartyBalanceQuery_party_accounts {
   __typename: "Account";
+  /**
+   * Account type (General, Margin, etc)
+   */
+  type: AccountType;
   /**
    * Balance as string - current account balance (approx. as balances can be updated several times per second)
    */
