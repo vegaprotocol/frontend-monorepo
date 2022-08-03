@@ -64,40 +64,48 @@ export const SelectAllMarketsTableBody = ({
   return (
     <>
       <thead className="sticky top-0 z-10 dark:bg-black bg-white">
-        <tr>
-          <h1
-            className={`text-h5 mt-5 font-bold text-black-95 dark:text-white-95 mb-6`}
-            data-testid="dialog-title"
-          >
-            {title}
-          </h1>
+        <tr
+          className={`text-h5 mt-5 font-bold text-black-95 dark:text-white-95 mb-6`}
+          data-testid="dialog-title"
+        >
+          <td>{title}</td>
         </tr>
-        <SelectMarketTableHeader detailed={true} />
       </thead>
-      <AsyncRenderer data={data} loading={loading} error={error}>
-        <SelectMarketTableBody
-          data={data}
-          detailed={true}
-          onSelect={() => setOpen(false)}
-        />
-      </AsyncRenderer>
+      {data ? (
+        <>
+          <thead>
+            <SelectMarketTableHeader detailed={true} />
+          </thead>
+          <SelectMarketTableBody
+            data={data}
+            detailed={true}
+            onSelect={() => setOpen(false)}
+          />
+        </>
+      ) : (
+        <thead>
+          <tr>
+            <td>{t('Loading market data...')}</td>
+          </tr>
+        </thead>
+      )}
     </>
   );
 };
 
 export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
+  const headerTriggerButtonClassName =
+    'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
+
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
   const yTimestamp = new Date(yesterday * 1000).toISOString();
 
+  const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
   const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
     variables: { interval: Interval.I1H, since: yTimestamp },
   });
-  const headerTriggerButtonClassName =
-    'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
-  const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
-
   const { data: marketDataPositions } = useDataProvider({
     dataProvider: positionsDataProvider,
     variables,
@@ -136,12 +144,12 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
         className="max-h-[40rem] overflow-x-auto m-20"
         data-testid="select-market-list"
       >
-        <h1
+        <span
           className={`text-h4 mb-10 font-bold text-black-95 dark:text-white-95 mt-0 mb-6`}
           data-testid="dialog-title"
         >
           {t('Select a market')}
-        </h1>
+        </span>
         <table className="relative h-full min-w-full whitespace-nowrap">
           {keypair &&
             positionMarkets &&

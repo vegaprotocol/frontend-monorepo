@@ -41,7 +41,7 @@ export const SelectMarketTableHeader = ({ detailed = false }) => {
           <th className={thClassNames('right')}>
             <Tooltip
               description={
-                <div className="text-ui-small">
+                <span className="text-ui-small">
                   {t(
                     'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
                   )}
@@ -50,7 +50,7 @@ export const SelectMarketTableHeader = ({ detailed = false }) => {
                     <li className="py-5">{t('A maker fee')}</li>
                     <li className="py-5">{t('A liquidity provision fee')}</li>
                   </ul>
-                </div>
+                </span>
               }
             >
               <span className="border-b-2 border-dotted">{t('Taker fee')}</span>
@@ -72,8 +72,10 @@ export const FeesBreakdown = ({
   return (
     <table>
       <thead>
-        <th></th>
-        <th></th>
+        <tr>
+          <th></th>
+          <th></th>
+        </tr>
       </thead>
       <tbody>
         <tr>
