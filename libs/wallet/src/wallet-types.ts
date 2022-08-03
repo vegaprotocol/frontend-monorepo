@@ -285,7 +285,7 @@ export type VegaKey = IterableElement<GetKeysResponse['keys']>;
 export type TransactionError =
   | {
       errors: {
-        '*': string[];
+        [key: string]: string[];
       };
     }
   | {
