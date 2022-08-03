@@ -25,6 +25,8 @@ const useProposalNetworkParams = ({
     NetworkParams.GOV_ASSET_REQUIRED_PARTICIPATION,
     NetworkParams.GOV_UPDATE_NET_PARAM_REQUIRED_MAJORITY,
     NetworkParams.GOV_UPDATE_NET_PARAM_REQUIRED_PARTICIPATION,
+    NetworkParams.GOV_FREEFORM_REQUIRED_MAJORITY,
+    NetworkParams.GOV_FREEFORM_REQUIRED_PARTICIPATION,
   ]);
   if (loading || !data) {
     return {
@@ -42,6 +44,8 @@ const useProposalNetworkParams = ({
     assetParticipation,
     paramMajority,
     paramParticipation,
+    freeformMajority,
+    freeformParticipation,
   ] = data;
 
   switch (proposal.terms.change.__typename) {
@@ -64,6 +68,11 @@ const useProposalNetworkParams = ({
       return {
         requiredMajority: newMarketMajority,
         requiredParticipation: new BigNumber(newMarketParticipation),
+      };
+    case 'NewFreeform':
+      return {
+        requiredMajority: freeformMajority,
+        requiredParticipation: freeformParticipation,
       };
     default:
       throw new Error('Unknown proposal type');
