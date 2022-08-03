@@ -14,6 +14,9 @@ export const lastPrice = ({ candles }: MarketList_markets) =>
     : undefined;
 
 export const totalFees = (fees: MarketList_markets_fees_factors) => {
+  if (!fees) {
+    return undefined;
+  }
   return formatNumberPercentage(
     new BigNumber(fees.makerFee)
       .plus(fees.liquidityFee)
@@ -66,7 +69,7 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
           close: m.marketTimestamps.close
             ? new Date(m.marketTimestamps.close).getTime()
             : null,
-          totalFees: totalFees(m.fees.factors),
+          totalFees: totalFees(m.fees?.factors),
         };
       }) || [],
     ['open', 'id'],
