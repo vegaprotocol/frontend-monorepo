@@ -3,11 +3,35 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState, MarketTradingMode } from "@vegaprotocol/types";
+import { Interval, MarketState, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketList
 // ====================================================
+
+export interface MarketList_markets_fees_factors {
+  __typename: "FeeFactors";
+  /**
+   * The factor applied to calculate MakerFees, a non-negative float
+   */
+  makerFee: string;
+  /**
+   * The factor applied to calculate InfrastructureFees, a non-negative float
+   */
+  infrastructureFee: string;
+  /**
+   * The factor applied to calculate LiquidityFees, a non-negative float
+   */
+  liquidityFee: string;
+}
+
+export interface MarketList_markets_fees {
+  __typename: "Fees";
+  /**
+   * The factors used to calculate the different fees
+   */
+  factors: MarketList_markets_fees_factors;
+}
 
 export interface MarketList_markets_data_market {
   __typename: "Market";
@@ -15,6 +39,14 @@ export interface MarketList_markets_data_market {
    * Market ID
    */
   id: string;
+  /**
+   * Current state of the market
+   */
+  state: MarketState;
+  /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
 }
 
 export interface MarketList_markets_data {
@@ -24,9 +56,25 @@ export interface MarketList_markets_data {
    */
   market: MarketList_markets_data_market;
   /**
+   * the highest price level on an order book for buy orders.
+   */
+  bestBidPrice: string;
+  /**
+   * the lowest price level on an order book for offer orders.
+   */
+  bestOfferPrice: string;
+  /**
    * the mark price (actually an unsigned int)
    */
   markPrice: string;
+  /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
+  /**
+   * indicative volume if the auction ended now, 0 if not in auction mode
+   */
+  indicativeVolume: string;
 }
 
 export interface MarketList_markets_tradableInstrument_instrument_metadata {
@@ -35,6 +83,22 @@ export interface MarketList_markets_tradableInstrument_instrument_metadata {
    * An arbitrary list of tags to associated to associate to the Instrument (string list)
    */
   tags: string[] | null;
+}
+
+export interface MarketList_markets_tradableInstrument_instrument_product_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+}
+
+export interface MarketList_markets_tradableInstrument_instrument_product {
+  __typename: "Future";
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: MarketList_markets_tradableInstrument_instrument_product_settlementAsset;
 }
 
 export interface MarketList_markets_tradableInstrument_instrument {
@@ -51,6 +115,10 @@ export interface MarketList_markets_tradableInstrument_instrument {
    * Metadata for this instrument
    */
   metadata: MarketList_markets_tradableInstrument_instrument_metadata;
+  /**
+   * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
+   */
+  product: MarketList_markets_tradableInstrument_instrument_product;
 }
 
 export interface MarketList_markets_tradableInstrument {
@@ -83,6 +151,14 @@ export interface MarketList_markets_candles {
    * Close price (uint64)
    */
   close: string;
+  /**
+   * High price (uint64)
+   */
+  high: string;
+  /**
+   * Low price (uint64)
+   */
+  low: string;
 }
 
 export interface MarketList_markets {
@@ -91,6 +167,10 @@ export interface MarketList_markets {
    * Market ID
    */
   id: string;
+  /**
+   * Market full name
+   */
+  name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
@@ -109,6 +189,12 @@ export interface MarketList_markets {
    */
   decimalPlaces: number;
   /**
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
+   * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   */
+  positionDecimalPlaces: number;
+  /**
    * Current state of the market
    */
   state: MarketState;
@@ -116,6 +202,10 @@ export interface MarketList_markets {
    * Current mode of execution of the market
    */
   tradingMode: MarketTradingMode;
+  /**
+   * Fees related data
+   */
+  fees: MarketList_markets_fees;
   /**
    * marketData for the given market
    */

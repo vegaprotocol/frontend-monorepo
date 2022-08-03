@@ -3,8 +3,11 @@ import { Vega } from '../icons/vega';
 import Link from 'next/link';
 import { t } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
+import { useGlobalStore } from '../../stores/global';
 
 export const Navbar = () => {
+  const { marketId } = useGlobalStore();
+  const tradingPath = marketId ? `/markets/${marketId}` : '/';
   return (
     <nav className="flex items-center">
       <Link href="/" passHref={true}>
@@ -14,7 +17,11 @@ export const Navbar = () => {
         </a>
       </Link>
       {[
-        { name: t('Trading'), path: '/markets' },
+        {
+          name: t('Trading'),
+          path: tradingPath,
+          exact: false,
+        },
         { name: t('Portfolio'), path: '/portfolio' },
       ].map((route) => (
         <NavLink key={route.path} {...route} />

@@ -9,7 +9,7 @@ import {
 
 export interface TooltipProps {
   children: React.ReactElement;
-  description?: string;
+  description?: string | React.ReactElement;
   open?: boolean;
   align?: 'start' | 'center' | 'end';
 }

@@ -24,7 +24,6 @@ const generateJsx = (
         <OrderListTable
           rowData={orders}
           cancel={jest.fn()}
-          setEditOrderDialogOpen={jest.fn()}
           setEditOrder={jest.fn()}
         />
       </VegaWalletContext.Provider>
