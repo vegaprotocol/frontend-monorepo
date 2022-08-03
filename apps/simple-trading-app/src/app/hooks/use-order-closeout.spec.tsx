@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { MockedProvider } from '@apollo/client/testing';
 import useOrderCloseOut from './use-order-closeout';
@@ -54,6 +54,7 @@ describe('useOrderCloseOut Hook', () => {
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
+          // @ts-ignore different versions of react types in apollo and app
           <MockedProvider mocks={[]}>{children}</MockedProvider>
         ),
       }
@@ -71,6 +72,7 @@ describe('useOrderCloseOut Hook', () => {
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
+          // @ts-ignore different versions of react types in apollo and app
           <MockedProvider mocks={[]}>{children}</MockedProvider>
         ),
       }
@@ -87,6 +89,7 @@ describe('useOrderCloseOut Hook', () => {
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
+          // @ts-ignore different versions of react types in apollo and app
           <MockedProvider mocks={[]}>{children}</MockedProvider>
         ),
       }

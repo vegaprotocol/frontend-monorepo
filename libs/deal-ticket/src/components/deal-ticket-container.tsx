@@ -51,6 +51,7 @@ export const DealTicketContainer = ({
 }: DealTicketContainerProps) => {
   const { data, loading, error } = useQuery(DEAL_TICKET_QUERY, {
     variables: { marketId },
+    fetchPolicy: 'no-cache',
   });
 
   return (
