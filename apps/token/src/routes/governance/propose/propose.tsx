@@ -1,28 +1,48 @@
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FormGroup, TextArea, Button } from '@vegaprotocol/ui-toolkit';
+import { ProposalForm } from './proposal-form';
+import { useProposalSubmit } from '@vegaprotocol/proposals';
 import { Heading } from '../../../components/heading';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { VegaWalletContainer } from '../../../components/vega-wallet-container';
+import {
+  getProposalDialogTitle,
+  getProposalDialogIntent,
+  getProposalDialogIcon,
+} from '@vegaprotocol/proposals';
 
 export const Propose = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { t } = useTranslation();
-  const onProposalSubmission = () => {
-    setIsSubmitting(true);
-  };
+  const { finalizedProposal, submit, transaction, TransactionDialog } =
+    useProposalSubmit();
+
+  const transactionStatus =
+    transaction.status === VegaTxStatus.Requested ||
+    transaction.status === VegaTxStatus.Pending
+      ? 'pending'
+      : 'default';
+
   return (
     <>
       <Heading title={t('NewProposal')} />
-      <p>{t('MinProposalRequirements')}</p>
-      <FormGroup
-        label="Make a proposal by submitting JSON in the textarea below"
-        labelFor="proposal-text"
-        labelClassName="sr-only"
-      >
-        <TextArea id="proposal-text" />
-        <Button variant="primary" type="submit" onSubmit={onProposalSubmission}>
-          {isSubmitting ? t('submitting') : t('submit')} {t('proposal')}
-        </Button>
-      </FormGroup>
+      <VegaWalletContainer>
+        {() => (
+          <>
+            <p>{t('MinProposalRequirements')}</p>
+            <ProposalForm
+              onSubmit={async (fields) => {
+                if (transactionStatus !== 'pending') {
+                  await submit(JSON.parse(fields.proposalData));
+                }
+              }}
+            />
+            <TransactionDialog
+              title={getProposalDialogTitle(finalizedProposal?.state)}
+              intent={getProposalDialogIntent(finalizedProposal?.state)}
+              icon={getProposalDialogIcon(finalizedProposal?.state)}
+            />
+          </>
+        )}
+      </VegaWalletContainer>
     </>
   );
 };

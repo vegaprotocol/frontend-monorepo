@@ -6,9 +6,9 @@ import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import {
   DealTicketAmount,
-  getDialogTitle,
-  getDialogIntent,
-  getDialogIcon,
+  getOrderDialogTitle,
+  getOrderDialogIntent,
+  getOrderDialogIcon,
   MarketSelector,
 } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
@@ -143,9 +143,9 @@ export const DealTicketSteps = ({
             partyData={partyData}
           />
           <TransactionDialog
-            title={getDialogTitle(finalizedOrder?.status)}
-            intent={getDialogIntent(finalizedOrder?.status)}
-            icon={getDialogIcon(finalizedOrder?.status)}
+            title={getOrderDialogTitle(finalizedOrder?.status)}
+            intent={getOrderDialogIntent(finalizedOrder?.status)}
+            icon={getOrderDialogIcon(finalizedOrder?.status)}
           >
             <OrderFeedback transaction={transaction} order={finalizedOrder} />
           </TransactionDialog>
