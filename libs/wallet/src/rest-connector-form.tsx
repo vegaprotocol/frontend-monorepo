@@ -33,6 +33,7 @@ export function RestConnectorForm({
   });
 
   async function onSubmit(fields: FormFields) {
+    const authFailedMessage = t('Authentication failed');
     try {
       setError('');
       const res = await connector.authenticate(fields.url, {
@@ -43,13 +44,13 @@ export function RestConnectorForm({
       if (res.success) {
         onAuthenticate();
       } else {
-        throw res.error;
+        setError(res.error || authFailedMessage);
       }
     } catch (err) {
       if (err instanceof TypeError) {
         setError(t(`Wallet not running at ${fields.url}`));
       } else if (err instanceof Error) {
-        setError(t('Authentication failed'));
+        setError(authFailedMessage);
       } else {
         setError(t('Something went wrong'));
       }

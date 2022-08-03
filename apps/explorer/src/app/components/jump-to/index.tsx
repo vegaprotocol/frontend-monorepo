@@ -9,6 +9,8 @@ interface JumpToProps {
   inputType: HTMLInputTypeAttribute;
   inputName: string;
   submitHandler: (arg0: SyntheticEvent) => void;
+  inputMin?: string | number;
+  inputMax?: string | number;
 }
 
 export const JumpTo = ({
@@ -18,6 +20,8 @@ export const JumpTo = ({
   inputType,
   inputName,
   submitHandler,
+  inputMin,
+  inputMax,
 }: JumpToProps) => {
   return (
     <form onSubmit={submitHandler}>
@@ -35,6 +39,8 @@ export const JumpTo = ({
           name={inputName}
           placeholder={placeholder}
           className="max-w-[200px]"
+          min={inputMin}
+          max={inputMax}
         />
         <Button
           data-testid="go-submit"

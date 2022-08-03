@@ -139,7 +139,7 @@ describe('useOrderEdit', () => {
         // eslint-disable-next-line
         marketId: order.market!.id,
         timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
-        price: { value: '123456789' }, // Decimal removed
+        price: '123456789', // Decimal removed
         sizeDelta: 0,
         expiresAt: undefined,
       },

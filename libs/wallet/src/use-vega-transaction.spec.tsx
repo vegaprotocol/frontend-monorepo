@@ -3,7 +3,7 @@ import type { VegaWalletContextShape } from './context';
 import { VegaWalletContext } from './context';
 import type { ReactNode } from 'react';
 import { useVegaTransaction, VegaTxStatus } from './use-vega-transaction';
-import type { OrderSubmissionBody } from '@vegaprotocol/vegawallet-service-api-client';
+import type { OrderSubmissionBody } from './wallet-types';
 
 const defaultWalletContext = {
   keypair: null,
@@ -53,14 +53,12 @@ it('Handles a single error', async () => {
     result.current.send({} as OrderSubmissionBody);
   });
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-  expect(result.current.transaction.error).toEqual({ error: errorMessage });
+  expect(result.current.transaction.error).toEqual(errorMessage);
 });
 
 it('Handles multiple errors', async () => {
   const errorObj = {
-    errors: {
-      something: 'Went wrong!',
-    },
+    error: 'Went wrong!',
   };
   const mockSendTx = jest.fn().mockReturnValue(Promise.resolve(errorObj));
   const { result } = setup({ sendTx: mockSendTx });
@@ -68,7 +66,7 @@ it('Handles multiple errors', async () => {
     result.current.send({} as OrderSubmissionBody);
   });
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Error);
-  expect(result.current.transaction.error).toEqual(errorObj);
+  expect(result.current.transaction.error).toEqual(errorObj.error);
 });
 
 it('Returns the signature if successful', async () => {

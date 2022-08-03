@@ -19,10 +19,6 @@ interface RewardInfoProps {
   rewardAssetId: string;
 }
 
-// Note: For now the only reward type is Staking. We'll need this from the API
-// at a later date
-const DEFAULT_REWARD_TYPE = 'Staking';
-
 export const RewardInfo = ({
   data,
   currVegaKey,
@@ -119,7 +115,7 @@ export const RewardTable = ({ reward, delegations }: RewardTableProps) => {
       <KeyValueTable>
         <KeyValueTableRow>
           {t('rewardType')}
-          <span>{DEFAULT_REWARD_TYPE}</span>
+          <span>{reward.rewardType}</span>
         </KeyValueTableRow>
         <KeyValueTableRow>
           {t('yourStake')}

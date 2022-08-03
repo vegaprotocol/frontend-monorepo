@@ -94,7 +94,7 @@ describe('Market trade', () => {
         .find('dl')
         .eq(1)
         .find('dd div')
-        .should('have.text', '3.44055');
+        .should('have.text', '25.78726');
       cy.getByTestId('key-value-table')
         .find('dl')
         .eq(2)

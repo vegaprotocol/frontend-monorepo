@@ -2,6 +2,28 @@ export const generateMarketPositions = () => {
   return {
     party: {
       id: '2e1ef32e5804e14232406aebaad719087d326afa5c648b7824d0823d8a46c8d1',
+      accounts: [
+        {
+          asset: {
+            decimals: 5,
+          },
+          balance: '400000000000000000000',
+          market: {
+            id: '2751c508f9759761f912890f37fb3f97a00300bf7685c02a56a86e05facfe221',
+            __typename: 'Market',
+          },
+        },
+        {
+          asset: {
+            decimals: 5,
+          },
+          balance: '265329',
+          market: {
+            id: 'first-btcusd-id',
+            __typename: 'Market',
+          },
+        },
+      ],
       positionsConnection: {
         edges: [
           {
@@ -9,10 +31,6 @@ export const generateMarketPositions = () => {
               openVolume: '3',
               market: {
                 id: '2751c508f9759761f912890f37fb3f97a00300bf7685c02a56a86e05facfe221',
-                accounts: [
-                  { balance: '0', __typename: 'Account' },
-                  { balance: '0', __typename: 'Account' },
-                ],
                 __typename: 'Market',
               },
               __typename: 'Position',
@@ -24,10 +42,6 @@ export const generateMarketPositions = () => {
               openVolume: '12',
               market: {
                 id: 'first-btcusd-id',
-                accounts: [
-                  { balance: '10', __typename: 'Account' },
-                  { balance: '15', __typename: 'Account' },
-                ],
                 __typename: 'Market',
               },
               __typename: 'Position',

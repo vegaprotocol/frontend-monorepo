@@ -82,11 +82,7 @@ const getProps = (
       intent: Intent.Danger,
       children: (
         <Step>
-          {vegaTx.error && (
-            <pre className="text-ui break-all whitespace-pre-wrap">
-              {JSON.stringify(vegaTx.error, null, 2)}
-            </pre>
-          )}
+          <p>{vegaTx.error}</p>
         </Step>
       ),
     },

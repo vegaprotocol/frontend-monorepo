@@ -25,7 +25,7 @@ export const SplashLoader = ({ text = 'Loading' }: { text?: string }) => {
           );
         })}
       </div>
-      <div>{text}</div>
+      <div className="text-white">{text}</div>
     </div>
   );
 };

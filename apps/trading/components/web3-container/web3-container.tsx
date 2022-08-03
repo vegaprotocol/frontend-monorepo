@@ -63,7 +63,10 @@ export const Web3Content = ({
     if (connector?.connectEagerly && !('Cypress' in window)) {
       connector.connectEagerly();
     }
-  }, [connector]);
+    // wallet connect doesnt handle connectEagerly being called when connector is also in the
+    // deps array.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (error) {
     return (

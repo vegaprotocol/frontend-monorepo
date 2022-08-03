@@ -90,3 +90,19 @@ it('Applies muted class if prop is passed', () => {
     'w-full border-collapse mb-8 [border-spacing:0] break-all'
   );
 });
+
+it('Applies id to row if passed', () => {
+  render(
+    <KeyValueTable>
+      <KeyValueTableRow inline={false} id="thisistheid">
+        <span>My value</span>
+        <span>My value</span>
+      </KeyValueTableRow>
+    </KeyValueTable>
+  );
+
+  expect(screen.getByTestId('key-value-table-row')).toHaveAttribute(
+    'id',
+    'thisistheid'
+  );
+});

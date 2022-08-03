@@ -1,5 +1,4 @@
 import { useEnvironment } from '@vegaprotocol/environment';
-import get from 'lodash/get';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
@@ -73,12 +72,7 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
   if (transaction.status === VegaTxStatus.Error) {
     return (
       <div data-testid={transaction.status}>
-        {transaction.error && (
-          <pre className="text-ui break-all whitespace-pre-wrap">
-            {get(transaction.error, 'error') ??
-              JSON.stringify(transaction.error, null, 2)}
-          </pre>
-        )}
+        <p>{transaction.error}</p>
       </div>
     );
   }
