@@ -219,10 +219,15 @@ export class RestConnector implements VegaConnector {
     }
 
     if ('errors' in err) {
-      return err.errors['*'].join(', ');
+      const result = Object.entries(err.errors)
+        .map((entry) => {
+          return `${entry[0]}: ${entry[1].join(' | ')}`;
+        })
+        .join(', ');
+      return result;
     }
 
-    return t("Something wen't wrong");
+    return t('Something went wrong');
   }
 
   private async request(
@@ -240,9 +245,10 @@ export class RestConnector implements VegaConnector {
 
       if (!fetchResult.ok) {
         const errorData = await fetchResult.json();
+        const error = this.parseError(errorData);
         return {
           status: fetchResult.status,
-          error: this.parseError(errorData),
+          error,
         };
       }
 
