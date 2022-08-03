@@ -17,6 +17,7 @@ import { Connectors } from '../lib/vega-connectors';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
+import { RiskNoticeDialog } from '../components/risk-notice-dialog';
 import './styles.css';
 import { useGlobalStore } from '../stores';
 
@@ -69,6 +70,10 @@ function AppBody({ Component, pageProps }: AppProps) {
                 push(VEGA_NETWORKS[network] ?? '');
               }
             }}
+          />
+          <RiskNoticeDialog
+            dialogOpen={store.vegaRiskNoticeDialog}
+            onCloseDialog={() => store.setVegaRiskNoticeDialog(false)}
           />
         </AppLoader>
       </div>
