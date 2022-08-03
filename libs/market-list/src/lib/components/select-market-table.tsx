@@ -29,7 +29,7 @@ export interface Column {
   onlyOnDetailed: boolean;
 }
 
-export const detailedHeaders: Column[] = [
+export const columnHeaders: Column[] = [
   {
     value: t('Market'),
     className: thClassNames('left'),
@@ -102,7 +102,7 @@ export const detailedHeaders: Column[] = [
 
 export const SelectMarketTableHeader = ({
   detailed = false,
-  headers = detailedHeaders,
+  headers = columnHeaders,
 }) => {
   return (
     <tr>
@@ -282,11 +282,11 @@ export const SelectMarketTableBody = ({
                   <td className={`${thClassNames('left')} `}>
                     {market.tradingMode ===
                       MarketTradingMode.MonitoringAuction &&
-                    market.data?.trigger &&
-                    market.data.trigger !== AuctionTrigger.Unspecified
+                      market.data?.trigger &&
+                      market.data.trigger !== AuctionTrigger.Unspecified
                       ? `${formatLabel(
-                          market.tradingMode
-                        )} - ${market.data?.trigger.toLowerCase()}`
+                        market.tradingMode
+                      )} - ${market.data?.trigger.toLowerCase()}`
                       : formatLabel(market.tradingMode)}
                   </td>
                   <td className={`${tdClassNames}`}>
@@ -303,9 +303,9 @@ export const SelectMarketTableBody = ({
                   <td className={`${tdClassNames} `}>
                     {market.data && market.data.indicativeVolume !== '0'
                       ? addDecimalsFormatNumber(
-                          market.data.indicativeVolume,
-                          market.positionDecimalPlaces
-                        )
+                        market.data.indicativeVolume,
+                        market.positionDecimalPlaces
+                      )
                       : '-'}
                   </td>
                   <td className={`${thClassNames('left')} `}>{market.name}</td>
