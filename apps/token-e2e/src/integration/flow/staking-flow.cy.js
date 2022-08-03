@@ -431,7 +431,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
       cy.get(vegaWalletStakedBalances, txTimeout)
         .should('contain', 2.0, txTimeout)
-        .and('contain', '');
+        .and('contain', partValidatorId);
 
       cy.navigate_to('staking');
 
