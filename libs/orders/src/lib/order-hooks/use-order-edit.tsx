@@ -51,15 +51,11 @@ export const useOrderEdit = (order: OrderFields | null) => {
           orderAmendment: {
             orderId: order.id,
             marketId: order.market.id,
-            price: {
-              value: removeDecimal(args.price, order.market.decimalPlaces),
-            },
+            price: removeDecimal(args.price, order.market.decimalPlaces),
             timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
             sizeDelta: 0,
             expiresAt: order.expiresAt
-              ? {
-                  value: toNanoSeconds(new Date(order.expiresAt)), // Wallet expects timestamp in nanoseconds
-                }
+              ? toNanoSeconds(new Date(order.expiresAt)) // Wallet expects timestamp in nanoseconds
               : undefined,
           },
         });

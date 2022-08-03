@@ -49,14 +49,8 @@ export interface OrderAmendmentBody extends BaseTransaction {
     reference?: string;
     timeInForce: VegaWalletOrderTimeInForce;
     sizeDelta?: number;
-    // Note this is soon changing to price?: string
-    price?: {
-      value: string;
-    };
-    // Note this is soon changing to expiresAt?: number
-    expiresAt?: {
-      value: string;
-    };
+    price?: string;
+    expiresAt?: string;
   };
 }
 
