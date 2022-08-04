@@ -11,14 +11,13 @@ import classNames from 'classnames';
 import isNil from 'lodash/isNil';
 import { useMemo, useState } from 'react';
 import { MARKET_LIST_QUERY } from '../markets-data-provider';
-import type { Column } from './select-market-table';
-import { SelectMarketTableRow } from './select-market-table';
-import { columns } from './select-market-table';
-import { SelectMarketTableHeader } from './select-market-table';
+import type { Column } from './select-market-columns';
+import { columns } from './select-market-columns';
 import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { mapDataToMarketList } from '../utils/market-list.utils';
+import { SelectMarketTableHeader, SelectMarketTableRow } from './select-market-table';
 
 export const SelectMarketLandingTable = ({
   data,
