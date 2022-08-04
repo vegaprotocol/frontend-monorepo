@@ -43,7 +43,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
       >
         <AgGridColumn headerName={t('Market')} field="market.name" />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="size"
           cellClass={({ data }: { data: FillFields }) => {
             let className = '';

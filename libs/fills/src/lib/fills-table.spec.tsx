@@ -55,7 +55,7 @@ describe('FillsTable', () => {
     expect(headers).toHaveLength(7);
     expect(headers.map((h) => h.textContent?.trim())).toEqual([
       'Market',
-      'Amount',
+      'Size',
       'Value',
       'Filled value',
       'Role',

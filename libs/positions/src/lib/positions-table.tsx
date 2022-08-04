@@ -86,7 +86,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           sortable
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="openVolume"
           valueFormatter={({
             value,

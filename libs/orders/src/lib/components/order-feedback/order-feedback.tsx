@@ -81,7 +81,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           </div>
         )}
         <div>
-          <p className={labelClass}>{t(`Amount`)}</p>
+          <p className={labelClass}>{t(`Size`)}</p>
           <p
             className={
               order.side === Side.Buy ? 'text-vega-green' : 'text-vega-red'

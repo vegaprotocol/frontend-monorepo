@@ -75,7 +75,7 @@ it('Render correct columns', async () => {
         )
       ).toEqual([
         'Market',
-        'Amount',
+        'Size',
         'Average Entry Price',
         'Mark Price',
         'Realised PNL',

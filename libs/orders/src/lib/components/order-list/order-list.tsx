@@ -114,7 +114,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="market.tradableInstrument.instrument.code"
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="size"
           cellClass="font-mono"
           valueFormatter={({
