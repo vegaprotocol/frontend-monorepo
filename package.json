@@ -30,6 +30,7 @@
     "@sentry/react": "^6.19.2",
     "@sentry/tracing": "^6.19.2",
     "@testing-library/user-event": "^14.2.1",
+    "@types/tailwindcss": "^3.1.0",
     "@walletconnect/ethereum-provider": "^1.7.5",
     "@web3-react/core": "8.0.20-beta.0",
     "@web3-react/metamask": "8.0.16-beta.0",
