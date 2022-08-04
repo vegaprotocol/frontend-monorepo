@@ -1,5 +1,5 @@
 {
-  "root": "libs/positions",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/positions/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/positions"],
       "options": {
-        "jestConfig": "libs/positions/jest.config.js",
+        "jestConfig": "libs/positions/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -1,10 +1,11 @@
-module.exports = {
-  displayName: 'trades',
+/* eslint-disable */
+export default {
+  displayName: 'environment',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/trades',
+  coverageDirectory: '../../coverage/libs/environment',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

@@ -1,6 +1,6 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
-  "root": "apps/static",
   "sourceRoot": "apps/static/src",
   "tags": [],
   "targets": {
@@ -46,9 +46,8 @@
         }
       }
     },
-
     "build-netlify": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "cp apps/static/netlify.toml netlify.toml",

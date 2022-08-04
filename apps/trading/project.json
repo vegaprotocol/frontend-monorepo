@@ -1,5 +1,5 @@
 {
-  "root": "apps/trading",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/trading",
   "projectType": "application",
   "targets": {
@@ -41,7 +41,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/trading"],
       "options": {
-        "jestConfig": "apps/trading/jest.config.js",
+        "jestConfig": "apps/trading/jest.config.ts",
         "passWithNoTests": true
       }
     },

@@ -1,10 +1,12 @@
-module.exports = {
-  displayName: 'wallet',
+/* eslint-disable */
+export default {
+  displayName: 'stats',
   preset: '../../jest.preset.js',
   transform: {
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/wallet',
+  coverageDirectory: '../../coverage/apps/stats',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

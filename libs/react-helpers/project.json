@@ -1,5 +1,5 @@
 {
-  "root": "libs/react-helpers",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/react-helpers/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/react-helpers"],
       "options": {
-        "jestConfig": "libs/react-helpers/jest.config.js",
+        "jestConfig": "libs/react-helpers/jest.config.ts",
         "passWithNoTests": true
       }
     }

@@ -1,5 +1,5 @@
 {
-  "root": "apps/simple-trading-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/simple-trading-app/src",
   "projectType": "application",
   "targets": {
@@ -65,12 +65,12 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/simple-trading-app"],
       "options": {
-        "jestConfig": "apps/simple-trading-app/jest.config.js",
+        "jestConfig": "apps/simple-trading-app/jest.config.ts",
         "passWithNoTests": true
       }
     },
     "build-netlify": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "cp apps/simple-trading-app/netlify.toml netlify.toml",

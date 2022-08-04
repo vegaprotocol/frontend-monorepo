@@ -1,10 +1,11 @@
-module.exports = {
-  displayName: 'deal-ticket',
+/* eslint-disable */
+export default {
+  displayName: 'web3',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/deal-ticket',
+  coverageDirectory: '../../coverage/libs/web3',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

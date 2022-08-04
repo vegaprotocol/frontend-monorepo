@@ -1,10 +1,10 @@
-module.exports = {
-  displayName: 'candles-chart',
+/* eslint-disable */
+export default {
+  displayName: 'types',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/candles-chart',
-  setupFiles: ['jest-canvas-mock'],
+  coverageDirectory: '../../coverage/libs/types',
 };

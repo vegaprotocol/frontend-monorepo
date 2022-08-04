@@ -1,5 +1,5 @@
 {
-  "root": "libs/network-info",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/network-info/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/network-info"],
       "options": {
-        "jestConfig": "libs/network-info/jest.config.js",
+        "jestConfig": "libs/network-info/jest.config.ts",
         "passWithNoTests": true
       }
     }

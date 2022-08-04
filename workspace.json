@@ -34,5 +34,6 @@
     "wallet": "libs/wallet",
     "web3": "libs/web3",
     "withdraws": "libs/withdraws"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }
