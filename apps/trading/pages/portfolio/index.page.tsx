@@ -10,8 +10,8 @@ import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
+import { ResizablePanel } from '@vegaprotocol/ui-toolkit';
 import { Allotment, LayoutPriority } from 'allotment';
-import 'allotment/dist/style.css';
 
 const Portfolio = () => {
   const wrapperClasses = classNames(
@@ -23,7 +23,7 @@ const Portfolio = () => {
   const tabContentClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>
-      <Allotment vertical={true}>
+      <ResizablePanel vertical={true}>
         <Allotment.Pane minSize={75}>
           <PortfolioGridChild className="h-full">
             <Tabs>
@@ -91,7 +91,7 @@ const Portfolio = () => {
             </Tabs>
           </PortfolioGridChild>
         </Allotment.Pane>
-      </Allotment>
+      </ResizablePanel>
     </div>
   );
 };

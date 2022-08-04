@@ -25,12 +25,12 @@ import {
   Tab,
   Tabs,
   PriceCellChange,
+  ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 import { AuctionTrigger } from '@vegaprotocol/types';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
-import 'allotment/dist/style.css';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -159,9 +159,9 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
     <>
       <div className={wrapperClasses}>
         <TradeMarketHeader market={market} />
-        <Allotment vertical={true}>
+        <ResizablePanel vertical={true}>
           <Allotment.Pane minSize={75}>
-            <Allotment proportionalLayout={false} minSize={200}>
+            <ResizablePanel proportionalLayout={false} minSize={200}>
               <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
                 <TradeGridChild className="h-full pr-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
@@ -206,7 +206,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                   </Tabs>
                 </TradeGridChild>
               </Allotment.Pane>
-            </Allotment>
+            </ResizablePanel>
           </Allotment.Pane>
           <Allotment.Pane
             priority={LayoutPriority.Low}
@@ -227,7 +227,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Tabs>
             </TradeGridChild>
           </Allotment.Pane>
-        </Allotment>
+        </ResizablePanel>
       </div>
     </>
   );
