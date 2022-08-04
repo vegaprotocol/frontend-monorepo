@@ -67,11 +67,11 @@ it('Render correct columns', async () => {
   await act(async () => {
     render(<PositionsTable data={singleRowData} />);
     await waitFor(async () => {
-      const headers = await screen.getAllByRole('columnheader');
+      const headers = screen.getAllByRole('columnheader');
       expect(headers).toHaveLength(5);
       expect(
         headers.map((h) =>
-          h.querySelector('[ref="eText"]')?.textContent?.trim()
+          h.textContent?.trim()
         )
       ).toEqual([
         'Market',
