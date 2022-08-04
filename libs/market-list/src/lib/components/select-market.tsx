@@ -27,7 +27,7 @@ export const SelectMarketLandingTable = ({
   onSelect,
 }: {
   data: MarketList | undefined;
-  onSelect?: (id: string) => void;
+  onSelect: (id: string) => void;
 }) => {
   const marketList = data && mapDataToMarketList(data);
   return (
@@ -57,10 +57,12 @@ export const SelectAllMarketsTableBody = ({
   data,
   title = t('All markets'),
   headers,
+  onSelect,
 }: {
   data?: MarketList;
   title?: string;
   headers?: Column[];
+  onSelect: (id?: string) => void;
 }) => {
   const marketList = data && mapDataToMarketList(data);
   return data ? (
@@ -81,7 +83,7 @@ export const SelectAllMarketsTableBody = ({
             <SelectMarketTableRow
               key={i}
               detailed={true}
-              columns={columns(market)}
+              columns={columns(market, onSelect)}
             />
           ))}
       </tbody>
@@ -172,9 +174,14 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
               <SelectAllMarketsTableBody
                 title={t('My markets')}
                 data={positionMarkets}
+                onSelect={() => setOpen(false)}
               />
             )}
-          <SelectAllMarketsTableBody title={t('All markets')} data={data} />
+          <SelectAllMarketsTableBody
+            title={t('All markets')}
+            data={data}
+            onSelect={() => setOpen(false)}
+          />
         </table>
       </div>
     </Popover>

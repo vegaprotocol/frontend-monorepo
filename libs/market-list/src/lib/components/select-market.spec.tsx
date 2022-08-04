@@ -17,12 +17,16 @@ jest.mock(
 
 describe('SelectMarket', () => {
   it('should render the SelectAllMarketsTableBody', () => {
+    const onSelect = jest.fn();
+    const expectedMarket = mockData.data.markets[0];
     const { container } = render(
-      <SelectAllMarketsTableBody data={mockData.data} />
+      <SelectAllMarketsTableBody data={mockData.data} onSelect={onSelect} />
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
     expect(container).toHaveTextContent(/141\.75/);
+    fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
+    expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
   });
 
   it('should call onSelect callback on SelectMarketLandingTable', () => {

@@ -105,7 +105,7 @@ export const columnHeaders: Column[] = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const columns = (market: any, onSelect?: (id: string) => void) => {
+export const columns = (market: any, onSelect: (id: string) => void) => {
   const candlesClose = market.candles
     .map((candle: { close: string }) => candle?.close)
     .filter((c: string): c is CandleClose => c !== null);
@@ -125,9 +125,7 @@ export const columns = (market: any, onSelect?: (id: string) => void) => {
           <a
             onKeyPress={(event) => handleKeyPress(event, market.id)}
             onClick={() => {
-              if (onSelect) {
-                onSelect(market.id);
-              }
+              onSelect(market.id);
             }}
             data-testid={`market-link-${market.id}`}
             className={`focus:decoration-vega-pink dark:focus:decoration-vega-yellow text-black dark:text-white`}
