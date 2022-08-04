@@ -1,7 +1,7 @@
 // having the node switcher dialog in the environment provider breaks the test renderer
 // workaround based on: https://github.com/facebook/react/issues/11565
 import type { ComponentProps, ReactNode } from 'react';
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import createClient from '../utils/apollo-client';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
 import { Networks, ErrorType } from '../types';
@@ -25,7 +25,7 @@ const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
 const MOCK_HOST = 'https://vega.host/query';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => { };
+const noop = () => {};
 
 const mockEnvironmentState = {
   VEGA_URL: 'https://vega.xyz',
@@ -126,14 +126,15 @@ afterAll(() => {
 
 describe('useEnvironment hook', () => {
   it('transforms and exposes values from the environment', async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
+    const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    await waitForNextUpdate();
-    expect(result.error).toBe(undefined);
-    expect(result.current).toEqual({
-      ...mockEnvironmentState,
-      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+    await waitFor(() => {
+      expect(result.error).toBe(undefined);
+      expect(result.current).toEqual({
+        ...mockEnvironmentState,
+        setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+      });
     });
   });
 
@@ -152,15 +153,16 @@ describe('useEnvironment hook', () => {
 
   it('allows for the VEGA_NETWORKS to be missing from the environment', async () => {
     delete process.env['NX_VEGA_NETWORKS'];
-    const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
+    const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    await waitForNextUpdate();
-    expect(result.error).toBe(undefined);
-    expect(result.current).toEqual({
-      ...mockEnvironmentState,
-      VEGA_NETWORKS: {},
-      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+    await waitFor(() => {
+      expect(result.error).toBe(undefined);
+      expect(result.current).toEqual({
+        ...mockEnvironmentState,
+        VEGA_NETWORKS: {},
+        setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+      });
     });
   });
 
@@ -187,15 +189,16 @@ describe('useEnvironment hook', () => {
   it('when VEGA_NETWORKS is not a valid json, prints a warning and continues without using the value from it', async () => {
     const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation(noop);
     process.env['NX_VEGA_NETWORKS'] = '{not:{valid:json';
-    const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
+    const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
-    await waitForNextUpdate();
-    expect(result.error).toBe(undefined);
-    expect(result.current).toEqual({
-      ...mockEnvironmentState,
-      VEGA_NETWORKS: {},
-      setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+    await waitFor(() => {
+      expect(result.error).toBe(undefined);
+      expect(result.current).toEqual({
+        ...mockEnvironmentState,
+        VEGA_NETWORKS: {},
+        setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+      });
     });
 
     expect(consoleWarnSpy).toHaveBeenCalled();
@@ -241,17 +244,18 @@ describe('useEnvironment hook', () => {
       process.env['NX_VEGA_ENV'] = env;
       delete process.env['NX_ETHEREUM_PROVIDER_URL'];
       delete process.env['NX_ETHERSCAN_URL'];
-      const { result, waitForNextUpdate } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
-      await waitForNextUpdate();
-      expect(result.error).toBe(undefined);
-      expect(result.current).toEqual({
-        ...mockEnvironmentState,
-        VEGA_ENV: env,
-        ETHEREUM_PROVIDER_URL: providerUrl,
-        ETHERSCAN_URL: etherscanUrl,
-        setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+      await waitFor(() => {
+        expect(result.error).toBe(undefined);
+        expect(result.current).toEqual({
+          ...mockEnvironmentState,
+          VEGA_ENV: env,
+          ETHEREUM_PROVIDER_URL: providerUrl,
+          ETHERSCAN_URL: etherscanUrl,
+          setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
+        });
       });
     }
   );
@@ -279,7 +283,7 @@ describe('useEnvironment hook', () => {
   describe('node selection', () => {
     it('updates the VEGA_URL from the config when it is missing from the environment', async () => {
       delete process.env['NX_VEGA_URL'];
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -314,7 +318,7 @@ describe('useEnvironment hook', () => {
 
       const nodeUrl = getQuickestNode(mockNodes);
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -349,7 +353,7 @@ describe('useEnvironment hook', () => {
 
       const nodeUrl = getQuickestNode(mockNodes);
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -382,7 +386,7 @@ describe('useEnvironment hook', () => {
         return createMockClient({ statistics: mockNodes[url] });
       });
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -405,7 +409,7 @@ describe('useEnvironment hook', () => {
         throw new Error('Cannot fetch');
       });
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -430,7 +434,7 @@ describe('useEnvironment hook', () => {
         throw new Error('Cannot fetch');
       });
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -462,7 +466,7 @@ describe('useEnvironment hook', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -492,7 +496,7 @@ describe('useEnvironment hook', () => {
         })
       );
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -516,7 +520,7 @@ describe('useEnvironment hook', () => {
     it.skip('has a network error when the selected node is not a valid url', async () => {
       process.env['NX_VEGA_URL'] = 'not-url';
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -536,7 +540,7 @@ describe('useEnvironment hook', () => {
         return createMockClient({ statistics: { hasError: true } });
       });
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -556,7 +560,7 @@ describe('useEnvironment hook', () => {
         return createMockClient({ network: Networks.MAINNET });
       });
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 
@@ -576,7 +580,7 @@ describe('useEnvironment hook', () => {
         return createMockClient({ busEvents: { hasError: true } });
       });
 
-      const { result, waitFor } = renderHook(() => useEnvironment(), {
+      const { result } = renderHook(() => useEnvironment(), {
         wrapper: MockWrapper,
       });
 

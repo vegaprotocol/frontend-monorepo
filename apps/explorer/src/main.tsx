@@ -1,7 +1,6 @@
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
-import { StrictMode } from 'react';
-import * as ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import './styles.css';
 
@@ -19,12 +18,11 @@ if (dsn) {
     environment: ENV.envName,
   });
 }
+const rootElement = document.getElementById('root');
+const root = createRoot(rootElement);
 
-ReactDOM.render(
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>,
-  document.getElementById('root')
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
 );

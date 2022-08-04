@@ -1,10 +1,11 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { ApolloClient } from '@apollo/client';
 import createClient from '../utils/apollo-client';
 import { useNodes } from './use-nodes';
 import createMockClient, {
   getMockStatisticsResult,
 } from './mocks/apollo-client';
+import { waitFor } from '@testing-library/react';
 
 jest.mock('../utils/apollo-client');
 
@@ -65,9 +66,7 @@ describe('useNodes hook', () => {
 
   it('sets loading state while waiting for the results', async () => {
     const node = 'https://some.url';
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useNodes({ hosts: [node] })
-    );
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     expect(result.current.state[node]).toEqual({
       ...initialState,
@@ -91,13 +90,13 @@ describe('useNodes hook', () => {
       },
     });
 
-    await waitForNextUpdate();
+    // await waitFor(() => { });
   });
 
   it('sets statistics results', async () => {
     const mockResult = getMockStatisticsResult();
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block).toEqual({
@@ -122,7 +121,7 @@ describe('useNodes hook', () => {
 
   it('sets subscription result', async () => {
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].ssl).toEqual({
@@ -135,7 +134,7 @@ describe('useNodes hook', () => {
 
   it('sets error when host in not a valid url', async () => {
     const node = 'not-url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block.hasError).toBe(true);
@@ -152,7 +151,7 @@ describe('useNodes hook', () => {
     );
 
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block).toEqual({
@@ -182,7 +181,7 @@ describe('useNodes hook', () => {
     );
 
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].ssl).toEqual({
@@ -196,7 +195,7 @@ describe('useNodes hook', () => {
   it('allows updating block values', async () => {
     const mockResult = getMockStatisticsResult();
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block.value).toEqual(
@@ -216,7 +215,7 @@ describe('useNodes hook', () => {
   it('does nothing when calling the block update on a non-existing node', async () => {
     const mockResult = getMockStatisticsResult();
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block.value).toEqual(
@@ -233,7 +232,7 @@ describe('useNodes hook', () => {
 
   it('adds new node', async () => {
     const node = 'custom-node-key';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
+    const { result } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toEqual(undefined);
 
@@ -249,7 +248,7 @@ describe('useNodes hook', () => {
   it('sets new url for node', async () => {
     const node = 'https://some.url';
     const newUrl = 'https://some-other.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
+    const { result } = renderHook(() => useNodes({ hosts: [node] }));
 
     act(() => {
       result.current.updateNodeUrl(node, newUrl);
@@ -263,7 +262,7 @@ describe('useNodes hook', () => {
   it('sets error when custom node has an invalid url', async () => {
     const node = 'node-key';
     const url = 'not-url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
+    const { result } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toBe(undefined);
 
@@ -288,7 +287,7 @@ describe('useNodes hook', () => {
 
     const node = 'node-key';
     const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
+    const { result } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toBe(undefined);
 
@@ -325,7 +324,7 @@ describe('useNodes hook', () => {
 
     const node = 'node-key';
     const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
+    const { result } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toBe(undefined);
 
@@ -345,9 +344,7 @@ describe('useNodes hook', () => {
   it('exposes a collection of clients', async () => {
     const url1 = 'https://some.url';
     const url2 = 'https://some-other.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes({ hosts: [url1, url2] })
-    );
+    const { result } = renderHook(() => useNodes({ hosts: [url1, url2] }));
 
     await waitFor(() => {
       expect(result.current.clients[url1]).toBeInstanceOf(ApolloClient);
@@ -358,7 +355,7 @@ describe('useNodes hook', () => {
   it('exposes a client for the custom node', async () => {
     const node = 'node-key';
     const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
+    const { result } = renderHook(() => useNodes({ hosts: [] }));
 
     act(() => {
       result.current.updateNodeUrl(node, url);

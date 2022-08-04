@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import type { EnvironmentWithOptionalUrl } from './use-config';
 import { useConfig } from './use-config';
 import { Networks, ErrorType } from '../types';
@@ -75,22 +75,23 @@ describe('useConfig hook', () => {
   });
 
   it('fetches configuration from the provided url', async () => {
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, onError)
-    );
+    const { result } = renderHook(() => useConfig(mockEnvironment, onError));
 
-    await waitForNextUpdate();
-    expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
-    expect(result.current.config).toEqual(mockConfig);
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(mockEnvironment.VEGA_CONFIG_URL);
+      expect(result.current.config).toEqual(mockConfig);
+    });
   });
 
   it('caches the configuration', async () => {
-    const { result: firstResult, waitForNextUpdate: waitForFirstUpdate } =
-      renderHook(() => useConfig(mockEnvironment, onError));
+    const { result: firstResult } = renderHook(() =>
+      useConfig(mockEnvironment, onError)
+    );
 
-    await waitForFirstUpdate();
-    expect(fetch).toHaveBeenCalledTimes(1);
-    expect(firstResult.current.config).toEqual(mockConfig);
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(firstResult.current.config).toEqual(mockConfig);
+    });
 
     const { result: secondResult } = renderHook(() =>
       useConfig(mockEnvironment, onError)
@@ -104,13 +105,12 @@ describe('useConfig hook', () => {
     // @ts-ignore typescript doesn't recognise the mocked instance
     global.fetch.mockImplementation(() => Promise.reject());
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, onError)
-    );
+    const { result } = renderHook(() => useConfig(mockEnvironment, onError));
 
-    await waitForNextUpdate();
-    expect(result.current.config).toEqual({ hosts: [] });
-    expect(onError).toHaveBeenCalledWith(ErrorType.CONFIG_LOAD_ERROR);
+    await waitFor(() => {
+      expect(result.current.config).toEqual({ hosts: [] });
+      expect(onError).toHaveBeenCalledWith(ErrorType.CONFIG_LOAD_ERROR);
+    });
   });
 
   it('executes the error callback when the config validation fails', async () => {
@@ -122,12 +122,11 @@ describe('useConfig hook', () => {
       })
     );
 
-    const { result, waitForNextUpdate } = renderHook(() =>
-      useConfig(mockEnvironment, onError)
-    );
+    const { result } = renderHook(() => useConfig(mockEnvironment, onError));
 
-    await waitForNextUpdate();
-    expect(result.current.config).toBe(undefined);
-    expect(onError).toHaveBeenCalledWith(ErrorType.CONFIG_VALIDATION_ERROR);
+    await waitFor(() => {
+      expect(result.current.config).toBe(undefined);
+      expect(onError).toHaveBeenCalledWith(ErrorType.CONFIG_VALIDATION_ERROR);
+    });
   });
 });
