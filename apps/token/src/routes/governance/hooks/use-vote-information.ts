@@ -25,6 +25,8 @@ const useProposalNetworkParams = ({
     NetworkParams.GOV_ASSET_REQUIRED_PARTICIPATION,
     NetworkParams.GOV_UPDATE_NET_PARAM_REQUIRED_MAJORITY,
     NetworkParams.GOV_UPDATE_NET_PARAM_REQUIRED_PARTICIPATION,
+    NetworkParams.GOV_FREEFORM_REQUIRED_MAJORITY,
+    NetworkParams.GOV_FREEFORM_REQUIRED_PARTICIPATION,
   ]);
   if (loading || !data) {
     return {
@@ -42,6 +44,8 @@ const useProposalNetworkParams = ({
     assetParticipation,
     paramMajority,
     paramParticipation,
+    freeformMajority,
+    freeformParticipation,
   ] = data;
 
   switch (proposal.terms.change.__typename) {
@@ -65,6 +69,11 @@ const useProposalNetworkParams = ({
         requiredMajority: newMarketMajority,
         requiredParticipation: new BigNumber(newMarketParticipation),
       };
+    case 'NewFreeform':
+      return {
+        requiredMajority: freeformMajority,
+        requiredParticipation: freeformParticipation,
+      };
     default:
       throw new Error('Unknown proposal type');
   }
@@ -85,9 +94,7 @@ export const useVoteInformation = ({
 
   const requiredMajorityPercentage = React.useMemo(
     () =>
-      requiredMajority
-        ? new BigNumber(requiredMajority).multipliedBy(100)
-        : new BigNumber(100),
+      requiredMajority ? new BigNumber(requiredMajority) : new BigNumber(100),
     [requiredMajority]
   );
 
@@ -155,7 +162,9 @@ export const useVoteInformation = ({
   const willPass = React.useMemo(
     () =>
       participationMet &&
-      new BigNumber(yesPercentage).isGreaterThan(requiredMajorityPercentage),
+      new BigNumber(yesPercentage).isGreaterThanOrEqualTo(
+        requiredMajorityPercentage
+      ),
     [participationMet, requiredMajorityPercentage, yesPercentage]
   );
 

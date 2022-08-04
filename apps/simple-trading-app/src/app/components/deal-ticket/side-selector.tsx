@@ -29,6 +29,7 @@ export default ({ value, onSelect }: SideSelectorProps) => {
           variant="inline-link"
           aria-label={t('Open long position')}
           className={classNames(
+            'py-8',
             'buyButton hover:buyButton dark:buyButtonDark dark:hover:buyButtonDark',
             { selected: value === VegaWalletOrderSide.Buy }
           )}
@@ -40,6 +41,7 @@ export default ({ value, onSelect }: SideSelectorProps) => {
           variant="inline-link"
           aria-label={t('Open short position')}
           className={classNames(
+            'py-8',
             'sellButton hover:sellButton dark:sellButtonDark dark:hover:sellButtonDark',
             { selected: value === VegaWalletOrderSide.Sell }
           )}

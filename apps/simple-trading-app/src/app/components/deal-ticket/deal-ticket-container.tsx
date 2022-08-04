@@ -61,7 +61,7 @@ export const DealTicketContainer = () => {
                     isWalletConnected={!!keypair?.pub}
                   />
                 )}
-                <DealTicketSteps market={data.market} />
+                <DealTicketSteps market={data.market} partyData={partyData} />
               </DealTicketManager>
             )}
           </Container>

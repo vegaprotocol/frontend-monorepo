@@ -2,7 +2,6 @@ import type { ReactNode } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 import type { TransactionSubmission } from './wallet-types';
 import { useVegaWallet } from './use-vega-wallet';
-import type { SendTxError } from './context';
 import { VegaTransactionDialog } from './vega-transaction-dialog';
 import type { Intent } from '@vegaprotocol/ui-toolkit';
 
@@ -23,7 +22,7 @@ export enum VegaTxStatus {
 
 export interface VegaTxState {
   status: VegaTxStatus;
-  error: object | null;
+  error: string | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -48,13 +47,6 @@ export const useVegaTransaction = () => {
     }));
   }, []);
 
-  const handleError = useCallback(
-    (error: SendTxError) => {
-      setTransaction({ error, status: VegaTxStatus.Error });
-    },
-    [setTransaction]
-  );
-
   const reset = useCallback(() => {
     setTransaction(initialState);
   }, [setTransaction]);
@@ -76,23 +68,23 @@ export const useVegaTransaction = () => {
       const res = await sendTx(tx);
 
       if (res === null) {
-        setTransaction({ status: VegaTxStatus.Default });
-        return null;
+        // User rejected
+        reset();
+        return;
       }
-      if ('errors' in res) {
-        handleError(res);
-      } else if ('error' in res) {
-        if (res.error === 'User rejected') {
-          reset();
-        } else {
-          handleError(res);
-        }
-      } else if (res.tx?.signature?.value && res.txHash) {
+
+      if (isError(res)) {
+        setTransaction({ error: res.error, status: VegaTxStatus.Error });
+        return;
+      }
+
+      if (res.tx?.signature?.value && res.txHash) {
         setTransaction({
           status: VegaTxStatus.Pending,
           txHash: res.txHash,
           signature: res.tx.signature.value,
         });
+
         return {
           signature: res.tx.signature?.value,
         };
@@ -100,7 +92,7 @@ export const useVegaTransaction = () => {
 
       return null;
     },
-    [sendTx, handleError, setTransaction, reset]
+    [sendTx, setTransaction, reset]
   );
 
   const TransactionDialog = useMemo(() => {
@@ -124,4 +116,11 @@ export const useVegaTransaction = () => {
     setComplete,
     TransactionDialog,
   };
+};
+
+const isError = (error: unknown): error is { error: string } => {
+  if (error !== null && typeof error === 'object' && 'error' in error) {
+    return true;
+  }
+  return false;
 };

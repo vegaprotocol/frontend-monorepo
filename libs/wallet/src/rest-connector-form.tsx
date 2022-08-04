@@ -1,3 +1,4 @@
+import { useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { Button, FormGroup, Input, InputError } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
@@ -15,25 +16,24 @@ interface RestConnectorFormProps {
   onAuthenticate: () => void;
 }
 
-const VEGA_DEFAULT_URL = 'http://localhost:1789/api/v1';
-
 export function RestConnectorForm({
   connector,
   onAuthenticate,
 }: RestConnectorFormProps) {
   const [error, setError] = useState('');
-
+  const { VEGA_WALLET_URL } = useEnvironment();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
-      url: VEGA_DEFAULT_URL,
+      url: VEGA_WALLET_URL,
     },
   });
 
   async function onSubmit(fields: FormFields) {
+    const authFailedMessage = t('Authentication failed');
     try {
       setError('');
       const res = await connector.authenticate(fields.url, {
@@ -44,13 +44,13 @@ export function RestConnectorForm({
       if (res.success) {
         onAuthenticate();
       } else {
-        throw res.error;
+        setError(res.error || authFailedMessage);
       }
     } catch (err) {
       if (err instanceof TypeError) {
         setError(t(`Wallet not running at ${fields.url}`));
       } else if (err instanceof Error) {
-        setError(t('Authentication failed'));
+        setError(authFailedMessage);
       } else {
         setError(t('Something went wrong'));
       }

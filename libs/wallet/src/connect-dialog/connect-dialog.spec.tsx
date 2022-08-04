@@ -10,6 +10,7 @@ import { VegaWalletContext } from '../context';
 import { VegaConnectDialog } from './connect-dialog';
 import type { VegaConnectDialogProps } from '..';
 import { RestConnector } from '../connectors';
+import { EnvironmentProvider } from '@vegaprotocol/environment';
 
 let defaultProps: VegaConnectDialogProps;
 let defaultContextValue: VegaWalletContextShape;
@@ -35,16 +36,28 @@ beforeEach(() => {
 
 const DEFAULT_URL = 'http://localhost:1789/api/v1';
 
+const mockEnvironment = {
+  VEGA_ENV: 'TESTNET',
+  VEGA_URL: 'https://vega-node.url',
+  VEGA_NETWORKS: JSON.stringify({}),
+  GIT_BRANCH: 'test',
+  GIT_COMMIT_HASH: 'abcdef',
+  GIT_ORIGIN_URL: 'https://github.com/test/repo',
+  VEGA_WALLET_URL: DEFAULT_URL,
+};
+
 function generateJSX(
   props?: Partial<VegaConnectDialogProps>,
   contextValue?: Partial<VegaWalletContextShape>
 ) {
   return (
-    <VegaWalletContext.Provider
-      value={{ ...defaultContextValue, ...contextValue }}
-    >
-      <VegaConnectDialog {...defaultProps} {...props} />
-    </VegaWalletContext.Provider>
+    <EnvironmentProvider definitions={mockEnvironment}>
+      <VegaWalletContext.Provider
+        value={{ ...defaultContextValue, ...contextValue }}
+      >
+        <VegaConnectDialog {...defaultProps} {...props} />
+      </VegaWalletContext.Provider>
+    </EnvironmentProvider>
   );
 }
 
@@ -133,11 +146,12 @@ it('Successful connection using custom url', async () => {
 });
 
 it('Unsuccessful connection using rest auth form', async () => {
+  const errMessage = 'Error message';
   // Error from service
   let spy = jest
     .spyOn(defaultProps.connectors['rest'] as RestConnector, 'authenticate')
     .mockImplementation(() =>
-      Promise.resolve({ success: false, error: 'Error message' })
+      Promise.resolve({ success: false, error: errMessage })
     );
 
   render(generateJSX({ dialogOpen: true }));
@@ -154,9 +168,7 @@ it('Unsuccessful connection using rest auth form', async () => {
 
   expect(spy).toHaveBeenCalledWith(DEFAULT_URL, fields);
 
-  expect(screen.getByTestId('form-error')).toHaveTextContent(
-    'Something went wrong'
-  );
+  expect(screen.getByTestId('form-error')).toHaveTextContent(errMessage);
   expect(defaultProps.setDialogOpen).not.toHaveBeenCalled();
 
   // Fetch failed due to wallet not running

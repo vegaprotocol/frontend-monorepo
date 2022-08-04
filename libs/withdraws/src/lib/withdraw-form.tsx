@@ -1,3 +1,4 @@
+import type { Asset } from '@vegaprotocol/react-helpers';
 import {
   ethereumAddress,
   minSafe,
@@ -5,6 +6,7 @@ import {
   removeDecimal,
   required,
   maxSafe,
+  isAssetTypeERC20,
 } from '@vegaprotocol/react-helpers';
 import {
   Button,
@@ -19,7 +21,6 @@ import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import type { WithdrawalFields } from './use-withdraw';
-import type { Asset } from './types';
 import { WithdrawLimits } from './withdraw-limits';
 
 interface FormFields {
@@ -99,13 +100,11 @@ export const WithdrawForm = ({
               id="asset"
             >
               <option value="">{t('Please select')}</option>
-              {assets
-                .filter((a) => a.source.__typename === 'ERC20')
-                .map((a) => (
-                  <option key={a.id} value={a.id}>
-                    {a.name}
-                  </option>
-                ))}
+              {assets.filter(isAssetTypeERC20).map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
             </Select>
           )}
         />

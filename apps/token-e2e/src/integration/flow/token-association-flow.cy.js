@@ -1,4 +1,4 @@
-const validatorList = '[data-testid="node-list-item-name"]';
+const validatorsGrid = '[data-testid="validators-grid"]';
 const ethWalletContainer = '[data-testid="ethereum-wallet"]';
 const ethWalletAssociatedBalances =
   '[data-testid="eth-wallet-associated-balances"]';
@@ -23,7 +23,7 @@ context(
       cy.ethereum_wallet_connect();
       cy.navigate_to('staking');
       cy.wait_for_spinner();
-      cy.get(validatorList).first().invoke('text').as('validatorName');
+      cy.get(validatorsGrid).should('be.visible');
     });
 
     describe('Eth wallet - contains VEGA tokens', function () {

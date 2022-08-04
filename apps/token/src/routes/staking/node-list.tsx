@@ -1,153 +1,251 @@
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
+import { useEffect, useMemo, useRef, forwardRef } from 'react';
+import {
+  AgGridDynamic as AgGrid,
+  AsyncRenderer,
+} from '@vegaprotocol/ui-toolkit';
+import type { AgGridReact } from 'ag-grid-react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
 import { EpochCountdown } from '../../components/epoch-countdown';
 import { BigNumber } from '../../lib/bignumber';
-import { formatNumber } from '../../lib/format-number';
-import { truncateMiddle } from '../../lib/truncate-middle';
-import type { Nodes, Nodes_nodes_rankingScore } from './__generated__/Nodes';
-import type { Staking_epoch, Staking_party } from './__generated__/Staking';
+import { formatNumber } from '@vegaprotocol/react-helpers';
+import type { Nodes } from './__generated__/Nodes';
+import type { Staking_epoch } from './__generated__/Staking';
+
+const VALIDATOR = 'validator';
+const STATUS = 'status';
+const TOTAL_STAKE_THIS_EPOCH = 'totalStakeThisEpoch';
+const SHARE = 'share';
+const VALIDATOR_STAKE = 'validatorStake';
+const PENDING_STAKE = 'pendingStake';
+const RANKING_SCORE = 'rankingScore';
+const STAKE_SCORE = 'stakeScore';
+const PERFORMANCE_SCORE = 'performanceScore';
+const VOTING_POWER = 'votingPower';
 
 export const NODES_QUERY = gql`
   query Nodes {
     nodes {
+      avatarUrl
       id
       name
       pubkey
-      infoUrl
-      location
-      stakedByOperator
-      stakedByDelegates
       stakedTotal
-      pendingStake
-      stakedByOperatorFormatted @client
-      stakedByDelegatesFormatted @client
       stakedTotalFormatted @client
-      pendingStakeFormatted @client
-      epochData {
-        total
-        offline
-        online
-      }
-      status
+      pendingStake
       rankingScore {
         rankingScore
         stakeScore
         performanceScore
         votingPower
-        stakeScore
+        status
       }
     }
     nodeData {
       stakedTotal
       stakedTotalFormatted @client
-      totalNodes
-      inactiveNodes
-      validatingNodes
-      uptime
     }
   }
 `;
 
-const NodeListItemName = ({ children }: { children: React.ReactNode }) => (
-  <span className="mr-4 underline text-white">{children}</span>
-);
-
-const NodeListTr = ({ children }: { children: React.ReactNode }) => (
-  <tr className="flex">{children}</tr>
-);
-
-const NodeListTh = ({ children }: { children: React.ReactNode }) => (
-  <th
-    role="rowheader"
-    className="flex-1 break-words py-1 pr-4 pl-0 text-white-60 font-normal"
-  >
-    {children}
-  </th>
-);
-
-const NodeListTd = ({ children }: { children: React.ReactNode }) => (
-  <td className="flex-1 break-words py-1 px-4 font-mono text-right">
-    {children}
-  </td>
-);
-
 interface NodeListProps {
   epoch: Staking_epoch | undefined;
-  party: Staking_party | null | undefined;
 }
 
-export const NodeList = ({ epoch, party }: NodeListProps) => {
-  const { t } = useTranslation();
-  const { data, error, loading } = useQuery<Nodes>(NODES_QUERY);
+interface ValidatorRendererProps {
+  data: { validator: { avatarUrl: string; name: string } };
+}
 
-  const nodes = React.useMemo<NodeListItemProps[]>(() => {
+const stripNonDigits = (string: string) => string.replace(/\D/g, '');
+
+const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
+  const { avatarUrl, name } = data.validator;
+  return (
+    <div className="flex items-center">
+      {avatarUrl && (
+        <img
+          className="h-24 w-24 rounded-full mr-8"
+          src={avatarUrl}
+          alt={`Avatar icon for ${name}`}
+          onError={(e) => (e.currentTarget.style.display = 'none')}
+        />
+      )}
+      {name}
+    </div>
+  );
+};
+
+// Custom styling to account for the scrollbar. This is needed because the
+// AG Grid places the scrollbar over the bottom validator, which obstructs
+const nodeListGridStyles = `
+  .ag-theme-balham-dark .ag-body-horizontal-scroll {
+    opacity: 0.25;
+  }
+`;
+
+export const NodeList = ({ epoch }: NodeListProps) => {
+  const { t } = useTranslation();
+  const { data, error, loading, refetch } = useQuery<Nodes>(NODES_QUERY);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const epochInterval = setInterval(() => {
+      if (!epoch?.timestamps.expiry) return;
+      const now = Date.now();
+      const expiry = new Date(epoch.timestamps.expiry).getTime();
+
+      if (now > expiry) {
+        refetch();
+        clearInterval(epochInterval);
+      }
+    }, 10000);
+
+    return () => {
+      clearInterval(epochInterval);
+    };
+  }, [epoch?.timestamps.expiry, refetch]);
+
+  const nodes = useMemo(() => {
     if (!data?.nodes) return [];
 
-    const nodesWithPercentages = data.nodes.map((node) => {
-      const stakedTotal = new BigNumber(
-        data?.nodeData?.stakedTotalFormatted || 0
-      );
-      const stakedOnNode = new BigNumber(node.stakedTotalFormatted);
-      const stakedTotalPercentage =
-        stakedTotal.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-          ? '-'
-          : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
-            '%';
+    return data.nodes.map(
+      ({
+        id,
+        name,
+        avatarUrl,
+        stakedTotalFormatted,
+        rankingScore: {
+          rankingScore,
+          stakeScore,
+          status,
+          performanceScore,
+          votingPower,
+        },
+        pendingStake,
+      }) => {
+        const stakedTotal = new BigNumber(
+          data?.nodeData?.stakedTotalFormatted || 0
+        );
+        const stakedOnNode = new BigNumber(stakedTotalFormatted);
+        const stakedTotalPercentage =
+          stakedTotal.isEqualTo(0) || stakedOnNode.isEqualTo(0)
+            ? '-'
+            : stakedOnNode.dividedBy(stakedTotal).times(100).dp(2).toString() +
+              '%';
+        const statusTranslated = t(`status-${status}`);
 
-      const userStake = party?.delegations?.length
-        ? party?.delegations
-            ?.filter((d) => d.node.id === node.id)
-            ?.filter((d) => d.epoch === Number(epoch?.id))
-            .reduce((sum, d) => {
-              const value = new BigNumber(d.amountFormatted);
-              return sum.plus(value);
-            }, new BigNumber(0))
-        : new BigNumber(0);
-
-      const userStakePercentage =
-        userStake.isEqualTo(0) || stakedOnNode.isEqualTo(0)
-          ? '-'
-          : userStake.dividedBy(stakedOnNode).times(100).dp(2).toString() + '%';
-
-      return {
-        id: node.id,
-        name: node.name,
-        pubkey: node.pubkey,
-        stakedTotal,
-        stakedOnNode,
-        stakedTotalPercentage,
-        userStake,
-        userStakePercentage,
-        epoch,
-        scores: node.rankingScore,
-      };
-    });
-
-    return nodesWithPercentages;
-  }, [data, epoch, party]);
-
-  if (error) {
-    return (
-      <Callout intent={Intent.Danger} title={t('Something went wrong')}>
-        <pre>{error.message}</pre>
-      </Callout>
+        return {
+          id,
+          [VALIDATOR]: {
+            avatarUrl,
+            name,
+          },
+          [STATUS]: statusTranslated,
+          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotal, 2),
+          [SHARE]: stakedTotalPercentage,
+          [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
+          [PENDING_STAKE]: formatNumber(pendingStake, 2),
+          [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
+          [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
+          [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
+          [VOTING_POWER]: votingPower,
+        };
+      }
     );
-  }
+  }, [data, t]);
 
-  if (loading) {
+  const gridRef = useRef<AgGridReact | null>(null);
+
+  const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
+    const colDefs = useMemo(
+      () => [
+        {
+          field: VALIDATOR,
+          headerName: t('validator').toString(),
+          cellRenderer: ValidatorRenderer,
+        },
+        { field: STATUS, headerName: t('status').toString() },
+        {
+          field: TOTAL_STAKE_THIS_EPOCH,
+          headerName: t('totalStakeThisEpoch').toString(),
+        },
+        {
+          field: SHARE,
+          headerName: t('share').toString(),
+        },
+        {
+          field: VALIDATOR_STAKE,
+          headerName: t('validatorStake').toString(),
+        },
+        {
+          field: PENDING_STAKE,
+          headerName: t('nextEpoch').toString(),
+        },
+        {
+          field: RANKING_SCORE,
+          headerName: t('rankingScore').toString(),
+        },
+        {
+          field: STAKE_SCORE,
+          headerName: t('stakeScore').toString(),
+        },
+        {
+          field: PERFORMANCE_SCORE,
+          headerName: t('performanceScore').toString(),
+        },
+        {
+          field: VOTING_POWER,
+          headerName: t('votingPower').toString(),
+        },
+      ],
+      []
+    );
+
+    const defaultColDef = useMemo(
+      () => ({
+        sortable: true,
+        comparator: (a: string, b: string) =>
+          parseFloat(stripNonDigits(a)) - parseFloat(stripNonDigits(b)),
+      }),
+      []
+    );
+
     return (
-      <div>
-        <p>{t('Loading')}</p>
+      <div data-testid="validators-grid">
+        <AgGrid
+          domLayout="autoHeight"
+          style={{ width: '100%' }}
+          customThemeParams={nodeListGridStyles}
+          overlayNoRowsTemplate={t('noValidators')}
+          ref={ref}
+          rowData={nodes}
+          rowHeight={32}
+          columnDefs={colDefs}
+          defaultColDef={defaultColDef}
+          animateRows={true}
+          suppressCellFocus={true}
+          onGridReady={(event) => {
+            event.columnApi.applyColumnState({
+              state: [
+                {
+                  colId: RANKING_SCORE,
+                  sort: 'desc',
+                },
+              ],
+            });
+            event.columnApi.autoSizeAllColumns(false);
+          }}
+          onCellClicked={(event) => {
+            navigate(event.data.id);
+          }}
+        />
       </div>
     );
-  }
+  });
 
   return (
-    <>
+    <AsyncRenderer loading={loading} error={error} data={nodes}>
       {epoch && epoch.timestamps.start && epoch.timestamps.expiry && (
         <EpochCountdown
           id={epoch.id}
@@ -155,82 +253,7 @@ export const NodeList = ({ epoch, party }: NodeListProps) => {
           endDate={new Date(epoch.timestamps.expiry)}
         />
       )}
-      <ul role="list" className="mt-24">
-        {nodes.map((n, i) => {
-          return <NodeListItem key={i} {...n} />;
-        })}
-      </ul>
-    </>
-  );
-};
-
-export interface NodeListItemProps {
-  id: string;
-  name: string;
-  stakedOnNode: BigNumber;
-  stakedTotalPercentage: string;
-  userStake: BigNumber;
-  userStakePercentage: string;
-  scores: Nodes_nodes_rankingScore;
-}
-
-export const NodeListItem = ({
-  id,
-  name,
-  stakedOnNode,
-  stakedTotalPercentage,
-  userStake,
-  userStakePercentage,
-  scores,
-}: NodeListItemProps) => {
-  const { t } = useTranslation();
-
-  return (
-    <li
-      className="break-words flex flex-col justify-between mb-16 last:mb-0"
-      data-testid="node-list-item"
-    >
-      <Link to={id}>
-        {name ? (
-          <NodeListItemName>{name}</NodeListItemName>
-        ) : (
-          <>
-            <NodeListItemName>{t('validatorTitleFallback')}</NodeListItemName>
-            <span
-              className="uppercase text-white-60"
-              title={`${t('id')}: ${id}`}
-              data-testid="node-list-item-name"
-            >
-              {truncateMiddle(id)}
-            </span>
-          </>
-        )}
-      </Link>
-      <table
-        className="flex-1 text-body border-collapse mt-4"
-        data-testid="node-list-item-table"
-      >
-        <tbody>
-          <NodeListTr>
-            <NodeListTh>{t('Total stake')}</NodeListTh>
-            <NodeListTd>
-              {formatNumber(stakedOnNode, 2)} ({stakedTotalPercentage})
-            </NodeListTd>
-          </NodeListTr>
-          {scores
-            ? Object.entries(scores)
-                .filter(([key]) => key !== '__typename')
-                .map(([key, value]) => (
-                  <NodeListTr key={`${id}_${key}`}>
-                    <NodeListTh>{t(key)}</NodeListTh>
-                    <NodeListTd>
-                      {formatNumber(new BigNumber(value), 4)}
-                    </NodeListTd>
-                  </NodeListTr>
-                ))
-            : null}
-        </tbody>
-      </table>
-    </li>
+      <NodeListTable ref={gridRef} />
+    </AsyncRenderer>
   );
 };

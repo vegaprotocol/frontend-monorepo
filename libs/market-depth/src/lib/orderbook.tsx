@@ -288,7 +288,7 @@ export const Orderbook = ({
       data-testid="scroll"
     >
       <div
-        className="sticky top-0 pt-4 grid grid-cols-4 gap-5 text-right border-b-1 text-ui-small mb-2 pb-2 bg-white dark:bg-black z-10"
+        className="sticky top-0 grid grid-cols-4 gap-5 text-right border-b-1 text-ui-small mb-2 pt-4 pb-2 bg-white dark:bg-black z-10"
         style={{ gridAutoRows: '17px' }}
       >
         <div>{t('Bid vol')}</div>
