@@ -1,6 +1,6 @@
 {
-  "root": "libs/proposals",
-  "sourceRoot": "libs/proposals/src",
+  "root": "libs/governance",
+  "sourceRoot": "libs/governance/src",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -8,16 +8,16 @@
       "executor": "@nrwl/web:rollup",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/libs/proposals",
-        "tsConfig": "libs/proposals/tsconfig.lib.json",
-        "project": "libs/proposals/package.json",
-        "entryFile": "libs/proposals/src/index.ts",
+        "outputPath": "dist/libs/governance",
+        "tsConfig": "libs/governance/tsconfig.lib.json",
+        "project": "libs/governance/package.json",
+        "entryFile": "libs/governance/src/index.ts",
         "external": ["react/jsx-runtime"],
         "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
         "compiler": "babel",
         "assets": [
           {
-            "glob": "libs/proposals/README.md",
+            "glob": "libs/governance/README.md",
             "input": ".",
             "output": "."
           }
@@ -28,14 +28,14 @@
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": ["libs/proposals/**/*.{ts,tsx,js,jsx}"]
+        "lintFilePatterns": ["libs/governance/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/proposals"],
+      "outputs": ["coverage/libs/governance"],
       "options": {
-        "jestConfig": "libs/proposals/jest.config.js",
+        "jestConfig": "libs/governance/jest.config.js",
         "passWithNoTests": true
       }
     }

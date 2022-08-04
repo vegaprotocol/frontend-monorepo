@@ -16,7 +16,7 @@
     "network-stats": "libs/network-stats",
     "orders": "libs/orders",
     "positions": "libs/positions",
-    "proposals": "libs/proposals",
+    "governance": "libs/governance",
     "react-helpers": "libs/react-helpers",
     "simple-trading-app": "apps/simple-trading-app",
     "simple-trading-app-e2e": "apps/simple-trading-app-e2e",
