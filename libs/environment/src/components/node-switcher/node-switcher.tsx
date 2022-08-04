@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   RadioGroup,
@@ -55,14 +55,9 @@ export const NodeSwitcher = ({
   const [nodeRadio, setNodeRadio] = useState(
     getDefaultNode(config.hosts, VEGA_URL)
   );
-  const { state, clients, updateNodeUrl, updateNodeBlock } = useNodes(
-    VEGA_ENV,
-    config
-  );
-  const highestBlock = useMemo(
-    () => getHighestBlock(VEGA_ENV, state),
-    [VEGA_ENV, state]
-  );
+  const { state, clients, updateNodeUrl, updateNodeBlock } = useNodes(config);
+  const highestBlock = getHighestBlock(VEGA_ENV, state);
+
   const customUrl = state[CUSTOM_NODE_KEY]?.url;
 
   const onSubmit = (node: ReturnType<typeof getDefaultNode>) => {
@@ -89,7 +84,12 @@ export const NodeSwitcher = ({
   return (
     <div className="text-black dark:text-white w-full lg:min-w-[800px]">
       <NodeError {...(customNodeError || networkError)} />
-      <form onSubmit={() => onSubmit(nodeRadio)}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          onSubmit(nodeRadio);
+        }}
+      >
         <p className="text-body-large font-bold mt-16 mb-32">
           {t('Select a GraphQL node to connect to:')}
         </p>
@@ -119,7 +119,7 @@ export const NodeSwitcher = ({
                   highestBlock={highestBlock}
                   setBlock={(block) => updateNodeBlock(node, block)}
                 >
-                  <div className="mb-8 break-all">
+                  <div className="mb-8 break-all" data-testid="node">
                     <Radio
                       id={`node-url-${index}`}
                       labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
@@ -153,6 +153,7 @@ export const NodeSwitcher = ({
                     >
                       <Input
                         placeholder="https://"
+                        role="textbox"
                         value={customNodeText}
                         hasError={
                           !!customNodeText &&

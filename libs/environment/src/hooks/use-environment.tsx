@@ -12,7 +12,7 @@ import {
   getIsNodeLoading,
 } from '../utils/validate-node';
 import { ErrorType } from '../types';
-import type { Environment, RawEnvironment, NodeData } from '../types';
+import type { Environment, Networks, RawEnvironment, NodeData } from '../types';
 
 type EnvironmentProviderProps = {
   definitions?: Partial<RawEnvironment>;
@@ -26,8 +26,10 @@ export type EnvironmentState = Environment & {
 
 const EnvironmentContext = createContext({} as EnvironmentState);
 
-const hasFinishedLoading = (node: NodeData) =>
-  node.initialized && !getIsNodeLoading(node) && !node.verified;
+const hasFinishedLoading = (env: Networks, node: NodeData) =>
+  node.initialized &&
+  !getIsNodeLoading(node) &&
+  getErrorType(env, node) === null;
 
 export const EnvironmentProvider = ({
   definitions,
@@ -47,13 +49,13 @@ export const EnvironmentProvider = ({
       error && console.warn(error.headline);
     }
   });
-  const { state: nodes, clients } = useNodes(environment.VEGA_ENV, config);
+  const { state: nodes, clients } = useNodes(config);
   const nodeKeys = Object.keys(nodes);
 
   useEffect(() => {
     if (!environment.VEGA_URL) {
-      const successfulNodeKey = nodeKeys.find(
-        (key) => nodes[key].verified
+      const successfulNodeKey = nodeKeys.find((key) =>
+        hasFinishedLoading(environment.VEGA_ENV, nodes[key])
       ) as keyof typeof nodes;
       if (successfulNodeKey && nodes[successfulNodeKey]) {
         Object.keys(clients).forEach((node) => clients[node]?.stop());
@@ -81,8 +83,9 @@ export const EnvironmentProvider = ({
     // if the config doesn't contain nodes the app can connect to
     if (
       nodeKeys.length > 0 &&
-      nodeKeys.filter((key) => hasFinishedLoading(nodes[key])).length ===
-        nodeKeys.length
+      nodeKeys.filter((key) =>
+        hasFinishedLoading(environment.VEGA_ENV, nodes[key])
+      ).length === nodeKeys.length
     ) {
       Object.keys(clients).forEach((node) => clients[node]?.stop());
       setNetworkError(ErrorType.CONNECTION_ERROR_ALL);
