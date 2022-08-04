@@ -1,9 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { SelectMarketTableBody } from './select-market-table';
-
 import type { ReactNode } from 'react';
 import type { MarketList_markets } from '../__generated__/MarketList';
+
+import {
+  SelectAllMarketsTableBody,
+  SelectMarketLandingTable,
+} from './select-market';
 
 jest.mock(
   'next/link',
@@ -13,19 +16,21 @@ jest.mock(
 );
 
 describe('SelectMarket', () => {
-  it('should render', () => {
+  it('should render the SelectAllMarketsTableBody', () => {
     const { container } = render(
-      <SelectMarketTableBody data={mockData.data} onSelect={jest.fn()} />
+      <SelectAllMarketsTableBody data={mockData.data} />
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
     expect(container).toHaveTextContent(/141\.75/);
   });
 
-  it('should call onSelect callback', () => {
+  it('should call onSelect callback on SelectMarketLandingTable', () => {
     const onSelect = jest.fn();
     const expectedMarket = mockData.data.markets[0];
-    render(<SelectMarketTableBody data={mockData.data} onSelect={onSelect} />);
+    render(
+      <SelectMarketLandingTable data={mockData.data} onSelect={onSelect} />
+    );
     fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
     expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
   });
