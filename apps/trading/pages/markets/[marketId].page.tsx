@@ -127,7 +127,6 @@ const MarketPage = ({ id }: { id?: string }) => {
                 store.setLandingDialog(isOpen)
               }
               title={t('Select a market to get started')}
-              size="small"
             />
           </>
         );

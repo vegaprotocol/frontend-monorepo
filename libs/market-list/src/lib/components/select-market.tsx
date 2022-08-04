@@ -183,13 +183,11 @@ export const SelectMarketDialog = ({
   dialogOpen,
   setDialogOpen,
   title = t('Select a market'),
-  size,
 }: {
   dialogOpen: boolean;
   setDialogOpen: (open: boolean) => void;
   title?: string;
   detailed?: boolean;
-  size?: 'small' | 'large';
 }) => {
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
   const yTimestamp = new Date(yesterday * 1000).toISOString();
@@ -204,7 +202,7 @@ export const SelectMarketDialog = ({
       open={!isNil(data) && dialogOpen}
       onChange={() => setDialogOpen(false)}
       titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
-      size={size}
+      size="small"
     >
       <SelectMarketLandingTable
         data={data}
