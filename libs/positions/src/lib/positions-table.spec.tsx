@@ -69,11 +69,7 @@ it('Render correct columns', async () => {
     await waitFor(async () => {
       const headers = screen.getAllByRole('columnheader');
       expect(headers).toHaveLength(5);
-      expect(
-        headers.map((h) =>
-          h.textContent?.trim()
-        )
-      ).toEqual([
+      expect(headers.map((h) => h.textContent?.trim())).toEqual([
         'Market',
         'Amount',
         'Average Entry Price',
