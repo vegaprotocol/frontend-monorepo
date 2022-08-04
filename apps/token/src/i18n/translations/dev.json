@@ -625,13 +625,5 @@
   "FilterProposalsDescription": "Filter by proposal ID or proposer ID",
   "Freeform proposal": "Freeform proposal",
   "NewProposal": "New proposal",
-  "MinProposalRequirements": "You must have at least 1 VEGA to make a proposal",
-  "ProposalSubmitted": "Proposal submitted",
-  "ProposalWaitingForNodeVote": "Proposal waiting for node vote",
-  "ProposalPassed": "Proposal passed",
-  "ProposalEnacted": "Proposal enacted",
-  "ProposalDeclined": "Proposal declined",
-  "ProposalRejected": "Proposal rejected",
-  "ProposalFailed": "Proposal failed",
-  "MustBeValidJson": "Data must be valid JSON"
+  "MinProposalRequirements": "You must have at least 1 VEGA to make a proposal"
 }

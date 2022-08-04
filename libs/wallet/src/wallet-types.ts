@@ -79,7 +79,7 @@ export interface WithdrawSubmissionBody extends BaseTransaction {
   };
 }
 
-export interface ProposalNewMarketTerms {
+interface ProposalNewMarketTerms {
   newMarket: {
     changes: {
       decimalPlaces: string;
@@ -119,7 +119,7 @@ export interface ProposalNewMarketTerms {
   enactmentTimestamp: number;
 }
 
-export interface ProposalUpdateMarketTerms {
+interface ProposalUpdateMarketTerms {
   updateMarket: {
     marketId: string;
     changes: {
@@ -141,7 +141,7 @@ export interface ProposalUpdateMarketTerms {
   enactmentTimestamp: number;
 }
 
-export interface ProposalNetworkParameterTerms {
+interface ProposalNetworkParameterTerms {
   updateNetworkParameter: {
     changes: {
       key: string;
@@ -152,12 +152,12 @@ export interface ProposalNetworkParameterTerms {
   enactmentTimestamp: number;
 }
 
-export interface ProposalFreeformTerms {
+interface ProposalFreeformTerms {
   newFreeform: Record<string, never>;
   closingTimestamp: number;
 }
 
-export interface ProposalNewAssetTerms {
+interface ProposalNewAssetTerms {
   newAsset: {
     changes: {
       name: string;
@@ -176,17 +176,17 @@ export interface ProposalNewAssetTerms {
   enactmentTimestamp: number;
 }
 
-export interface OracleSpecBinding {
+interface OracleSpecBinding {
   settlementPriceProperty: string;
   tradingTerminationProperty: string;
 }
 
-export interface OracleSpecFor {
+interface OracleSpecFor {
   pubKeys: string[];
   filters: Filter[];
 }
 
-export interface Filter {
+interface Filter {
   key: {
     name: string;
     type: string;
@@ -194,7 +194,7 @@ export interface Filter {
   conditions?: Condition[];
 }
 
-export interface Condition {
+interface Condition {
   operator: string;
   value: string;
 }
@@ -225,10 +225,6 @@ interface Buy {
   reference: string;
 }
 
-export interface ProposalSubmissionBody extends BaseTransaction {
-  proposalSubmission: ProposalSubmission;
-}
-
 export interface ProposalSubmission {
   rationale: {
     description: string;
@@ -241,6 +237,10 @@ export interface ProposalSubmission {
     | ProposalUpdateMarketTerms
     | ProposalNetworkParameterTerms
     | ProposalNewAssetTerms;
+}
+
+export interface ProposalSubmissionBody extends BaseTransaction {
+  proposalSubmission: ProposalSubmission;
 }
 
 export enum VegaWalletVoteValue {
