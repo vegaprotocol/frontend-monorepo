@@ -1,24 +1,39 @@
 import { Button, FormGroup, TextArea } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
-
-interface ProposalFormProps {
-  onSubmit: (formFields: FormFields) => void;
-}
+import { useProposalSubmit } from './proposals-hooks';
+import {
+  getProposalDialogIcon,
+  getProposalDialogIntent,
+  getProposalDialogTitle,
+} from '../utils';
+import { VegaTxStatus } from '@vegaprotocol/wallet';
 
 export interface FormFields {
   proposalData: string;
 }
 
-export const ProposalForm = ({ onSubmit }: ProposalFormProps) => {
+export const ProposalForm = () => {
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<FormFields>();
+  const { finalizedProposal, submit, transaction, TransactionDialog } =
+    useProposalSubmit();
+
   const { t } = useTranslation();
 
   const hasError = !!errors.proposalData?.message;
+
+  const onSubmit = async (fields: FormFields) => {
+    if (
+      transaction.status !== VegaTxStatus.Requested ||
+      (transaction.status && VegaTxStatus.Pending)
+    ) {
+      await submit(JSON.parse(fields.proposalData));
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -50,6 +65,11 @@ export const ProposalForm = ({ onSubmit }: ProposalFormProps) => {
           {isSubmitting ? t('submitting') : t('submit')} {t('proposal')}
         </Button>
       </FormGroup>
+      <TransactionDialog
+        title={getProposalDialogTitle(finalizedProposal?.state)}
+        intent={getProposalDialogIntent(finalizedProposal?.state)}
+        icon={getProposalDialogIcon(finalizedProposal?.state)}
+      />
     </form>
   );
 };
