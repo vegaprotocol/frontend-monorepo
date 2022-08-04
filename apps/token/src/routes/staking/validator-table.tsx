@@ -105,11 +105,13 @@ export const ValidatorTable = ({
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('OWN STAKE (THIS EPOCH)')}</span>
-        <span data-testid='own-stake'>{formatNumber(stakeThisEpoch)}</span>
+        <span data-testid="own-stake">{formatNumber(stakeThisEpoch)}</span>
       </KeyValueTableRow>
       <KeyValueTableRow>
         <span>{t('NOMINATED (THIS EPOCH)')}</span>
-        <span data-testid='nominated-stake'>{node.stakedByDelegatesFormatted}</span>
+        <span data-testid="nominated-stake">
+          {node.stakedByDelegatesFormatted}
+        </span>
       </KeyValueTableRow>
     </KeyValueTable>
   );
