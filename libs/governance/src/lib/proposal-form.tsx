@@ -1,5 +1,9 @@
-import { Button, FormGroup, TextArea } from '@vegaprotocol/ui-toolkit';
-import { useTranslation } from 'react-i18next';
+import {
+  Button,
+  FormGroup,
+  InputError,
+  TextArea,
+} from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useProposalSubmit } from './proposals-hooks';
 import {
@@ -7,7 +11,7 @@ import {
   getProposalDialogIntent,
   getProposalDialogTitle,
 } from '../utils';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { t } from '@vegaprotocol/react-helpers';
 
 export interface FormFields {
   proposalData: string;
@@ -19,20 +23,12 @@ export const ProposalForm = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<FormFields>();
-  const { finalizedProposal, submit, transaction, TransactionDialog } =
-    useProposalSubmit();
+  const { finalizedProposal, submit, TransactionDialog } = useProposalSubmit();
 
-  const { t } = useTranslation();
-
-  const hasError = !!errors.proposalData?.message;
+  const hasError = Boolean(errors.proposalData?.message);
 
   const onSubmit = async (fields: FormFields) => {
-    if (
-      transaction.status !== VegaTxStatus.Requested ||
-      (transaction.status && VegaTxStatus.Pending)
-    ) {
-      await submit(JSON.parse(fields.proposalData));
-    }
+    await submit(JSON.parse(fields.proposalData));
   };
 
   return (
@@ -40,31 +36,41 @@ export const ProposalForm = () => {
       <FormGroup
         label="Make a proposal by submitting JSON"
         labelFor="proposal-data"
-        labelDescription={errors.proposalData?.message}
-        hasError={hasError}
       >
         <TextArea
           id="proposal-data"
           className="min-h-[200px]"
           hasError={hasError}
+          data-testid="proposal-data"
           {...register('proposalData', {
-            required: t('required'),
+            required: t('Required'),
             validate: {
               validateJson: (value) => {
                 try {
                   JSON.parse(value);
                   return true;
                 } catch (e) {
-                  return t('MustBeValidJson');
+                  return t('Must be valid JSON');
                 }
               },
             },
           })}
         />
-        <Button variant="primary" type="submit" className="my-20">
-          {isSubmitting ? t('submitting') : t('submit')} {t('proposal')}
-        </Button>
+        {errors.proposalData?.message && (
+          <InputError intent="danger" className="mt-4">
+            {errors.proposalData?.message}
+          </InputError>
+        )}
       </FormGroup>
+      <Button
+        variant="primary"
+        type="submit"
+        className="my-20"
+        data-testid="proposal-submit"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
+      </Button>
       <TransactionDialog
         title={getProposalDialogTitle(finalizedProposal?.state)}
         intent={getProposalDialogIntent(finalizedProposal?.state)}

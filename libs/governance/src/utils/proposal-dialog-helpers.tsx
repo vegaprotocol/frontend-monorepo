@@ -12,19 +12,19 @@ export const getProposalDialogTitle = (
 
   switch (status) {
     case ProposalState.Open:
-      return t('ProposalSubmitted');
+      return t('Proposal submitted');
     case ProposalState.WaitingForNodeVote:
-      return t('ProposalWaitingForNodeVote');
+      return t('Proposal waiting for node vote');
     case ProposalState.Passed:
-      return t('ProposalPassed');
+      return t('Proposal passed');
     case ProposalState.Enacted:
-      return t('ProposalEnacted');
+      return t('Proposal enacted');
     case ProposalState.Declined:
-      return t('ProposalDeclined');
+      return t('Proposal declined');
     case ProposalState.Rejected:
-      return t('ProposalRejected');
+      return t('Proposal rejected');
     case ProposalState.Failed:
-      return t('ProposalFailed');
+      return t('Proposal failed');
     default:
       return t('Submission failed');
   }

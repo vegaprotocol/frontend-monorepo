@@ -1,12 +1,28 @@
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient, gql } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { PROPOSAL_EVENT_SUB } from './proposal-event-query';
 import type {
   ProposalEvent,
   ProposalEventVariables,
   ProposalEvent_busEvents_event_Proposal,
-} from './__generated__';
+} from './__generated__/ProposalEvent';
 import type { Subscription } from 'zen-observable-ts';
+
+export const PROPOSAL_EVENT_SUB = gql`
+  subscription ProposalEvent($partyId: ID!) {
+    busEvents(partyId: $partyId, batchSize: 0, types: [Proposal]) {
+      type
+      event {
+        ... on Proposal {
+          id
+          reference
+          state
+          rejectionReason
+          errorDetails
+        }
+      }
+    }
+  }
+`;
 
 export const useProposalEvent = () => {
   const client = useApolloClient();

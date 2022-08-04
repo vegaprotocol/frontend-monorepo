@@ -4,27 +4,17 @@ import { useVegaWallet, useVegaTransaction } from '@vegaprotocol/wallet';
 import { determineId } from '@vegaprotocol/react-helpers';
 import { useProposalEvent } from './use-proposal-event';
 import type { ProposalSubmission } from '@vegaprotocol/wallet';
-import type { ProposalEvent_busEvents_event_Proposal } from './__generated__';
+import type { ProposalEvent_busEvents_event_Proposal } from './__generated__/ProposalEvent';
 
 export const useProposalSubmit = () => {
   const { keypair } = useVegaWallet();
   const waitForProposalEvent = useProposalEvent();
 
-  const {
-    send,
-    transaction,
-    reset: resetTransaction,
-    setComplete,
-    TransactionDialog,
-  } = useVegaTransaction();
+  const { send, transaction, setComplete, TransactionDialog } =
+    useVegaTransaction();
 
   const [finalizedProposal, setFinalizedProposal] =
     useState<ProposalEvent_busEvents_event_Proposal | null>(null);
-
-  const reset = useCallback(() => {
-    resetTransaction();
-    setFinalizedProposal(null);
-  }, [resetTransaction]);
 
   const submit = useCallback(
     async (proposal: ProposalSubmission) => {
@@ -64,6 +54,5 @@ export const useProposalSubmit = () => {
     finalizedProposal,
     TransactionDialog,
     submit,
-    reset,
   };
 };
