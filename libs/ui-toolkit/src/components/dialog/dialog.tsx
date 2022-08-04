@@ -14,7 +14,7 @@ interface DialogProps {
   icon?: ReactNode;
   intent?: Intent;
   titleClassNames?: string;
-  size?: 'small' | 'large';
+  size?: 'small' | 'large' | 'large-mobile';
 }
 
 export function Dialog({
@@ -37,6 +37,8 @@ export function Dialog({
     {
       'md:w-[520px] lg:w-[520px] w-full': size === 'small',
       'w-full w-full md:w-[720px] lg:w-[940px]': size === 'large',
+      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto':
+        size === 'large-mobile',
     }
   );
   return (
