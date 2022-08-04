@@ -26,10 +26,15 @@ export type EnvironmentState = Environment & {
 
 const EnvironmentContext = createContext({} as EnvironmentState);
 
-const hasFinishedLoading = (env: Networks, node: NodeData) =>
+const hasLoaded = (env: Networks, node: NodeData) =>
   node.initialized &&
   !getIsNodeLoading(node) &&
   getErrorType(env, node) === null;
+
+const hasFailedLoading = (env: Networks, node: NodeData) =>
+  node.initialized &&
+  !getIsNodeLoading(node) &&
+  getErrorType(env, node) !== null;
 
 export const EnvironmentProvider = ({
   definitions,
@@ -55,8 +60,8 @@ export const EnvironmentProvider = ({
   useEffect(() => {
     if (!environment.VEGA_URL) {
       const successfulNodeKey = nodeKeys.find((key) =>
-        hasFinishedLoading(environment.VEGA_ENV, nodes[key])
-      ) as keyof typeof nodes;
+        hasLoaded(environment.VEGA_ENV, nodes[key])
+      );
       if (successfulNodeKey && nodes[successfulNodeKey]) {
         Object.keys(clients).forEach((node) => clients[node]?.stop());
         updateEnvironment((prevEnvironment) => ({
@@ -84,7 +89,7 @@ export const EnvironmentProvider = ({
     if (
       nodeKeys.length > 0 &&
       nodeKeys.filter((key) =>
-        hasFinishedLoading(environment.VEGA_ENV, nodes[key])
+        hasFailedLoading(environment.VEGA_ENV, nodes[key])
       ).length === nodeKeys.length
     ) {
       Object.keys(clients).forEach((node) => clients[node]?.stop());

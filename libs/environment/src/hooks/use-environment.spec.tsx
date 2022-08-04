@@ -121,17 +121,6 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  delete process.env['NX_VEGA_URL'];
-  delete process.env['NX_VEGA_ENV'];
-  delete process.env['NX_VEGA_CONFIG_URL'];
-  delete process.env['NX_VEGA_NETWORKS'];
-  delete process.env['NX_ETHEREUM_PROVIDER_URL'];
-  delete process.env['NX_ETHERSCAN_URL'];
-  delete process.env['NX_GIT_BRANCH'];
-  delete process.env['NX_GIT_ORIGIN_URL'];
-  delete process.env['NX_GIT_COMMIT_HASH'];
-  delete process.env['NX_GITHUB_FEEDBACK_URL'];
-
   jest.clearAllMocks();
 });
 
