@@ -1,7 +1,8 @@
-const plugin = require('tailwindcss/plugin');
-const theme = require('./theme-lite');
+import plugin from 'tailwindcss/plugin';
+import theme from './theme-lite';
 
-const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const vegaCustomClassesLite = plugin(function ({ addUtilities }: {addUtilities: any}): void {
   addUtilities({
     '.input-border': {
       borderWidth: '0',
@@ -90,4 +91,4 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
   });
 });
 
-module.exports = vegaCustomClassesLite;
+export default vegaCustomClassesLite;

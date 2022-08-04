@@ -1,7 +1,7 @@
-const theme = require('./theme');
-const defaultTheme = require('tailwindcss/defaultTheme');
+import theme from './theme';
+import defaultTheme from 'tailwindcss/defaultTheme';
 
-module.exports = {
+export default {
   ...theme,
   colors: {
     ...theme.colors,

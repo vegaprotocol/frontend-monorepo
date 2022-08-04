@@ -1,6 +1,6 @@
-const defaultTheme = require('tailwindcss/defaultTheme');
+import defaultTheme from 'tailwindcss/defaultTheme';
 
-const shadeOfGray = (shade) => {
+const shadeOfGray = (shade: number) => {
   const decValue = Math.round((255 * shade) / 100);
   const hexValue = decValue.toString(16).padStart(2, '0');
   return `#${hexValue}${hexValue}${hexValue}`;
@@ -77,7 +77,7 @@ const boxShadowPosition = {
   insetShading: 'inset 2px 2px 6px',
 };
 
-module.exports = {
+export default {
   screens: {
     xs: '500px',
     sm: '640px',

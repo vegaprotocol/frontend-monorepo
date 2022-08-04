@@ -1,7 +1,8 @@
-const plugin = require('tailwindcss/plugin');
-const theme = require('./theme');
+import plugin from 'tailwindcss/plugin';
+import theme from './theme';
 
-const vegaCustomClasses = plugin(function ({ addUtilities }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const vegaCustomClasses = plugin(function ({ addUtilities }: {addUtilities: any}) {
   addUtilities({
     '.calt': {
       fontFeatureSettings: "'calt'",
@@ -54,4 +55,4 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
   });
 });
 
-module.exports = vegaCustomClasses;
+export default vegaCustomClasses;
