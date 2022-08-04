@@ -217,11 +217,11 @@ export const columns = (market: any, onSelect?: (id: string) => void) => {
     {
       value:
         market.tradingMode === MarketTradingMode.MonitoringAuction &&
-          market.data?.trigger &&
-          market.data.trigger !== AuctionTrigger.Unspecified
+        market.data?.trigger &&
+        market.data.trigger !== AuctionTrigger.Unspecified
           ? `${formatLabel(
-            market.tradingMode
-          )} - ${market.data?.trigger.toLowerCase()}`
+              market.tradingMode
+            )} - ${market.data?.trigger.toLowerCase()}`
           : formatLabel(market.tradingMode),
       className: thClassNames('left'),
       onlyOnDetailed: true,
@@ -243,9 +243,9 @@ export const columns = (market: any, onSelect?: (id: string) => void) => {
       value:
         market.data && market.data.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
-            market.data.indicativeVolume,
-            market.positionDecimalPlaces
-          )
+              market.data.indicativeVolume,
+              market.positionDecimalPlaces
+            )
           : '-',
       className: tdClassNames,
       onlyOnDetailed: true,

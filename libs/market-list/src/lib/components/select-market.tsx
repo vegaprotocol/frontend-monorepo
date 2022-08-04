@@ -17,7 +17,10 @@ import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { positionsDataProvider } from '@vegaprotocol/positions';
 import { mapDataToMarketList } from '../utils/market-list.utils';
-import { SelectMarketTableHeader, SelectMarketTableRow } from './select-market-table';
+import {
+  SelectMarketTableHeader,
+  SelectMarketTableRow,
+} from './select-market-table';
 
 export const SelectMarketLandingTable = ({
   data,

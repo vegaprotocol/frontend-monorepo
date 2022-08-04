@@ -1,5 +1,5 @@
-import type { Column } from "./select-market-columns";
-import { columnHeaders } from "./select-market-columns";
+import type { Column } from './select-market-columns';
+import { columnHeaders } from './select-market-columns';
 
 export const SelectMarketTableHeader = ({
   detailed = false,
