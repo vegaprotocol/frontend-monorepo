@@ -107,12 +107,11 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
   const marginDifference = marginMaintenanceLevel
     .minus(positionAccountBalance)
     .minus(generalAccountBalance);
-  const closeOut = BigNumber.maximum(
-    0,
-    marginDifference.div(volume).plus(markPrice)
-  );
-
-  return formatNumber(closeOut, market.decimalPlaces);
+  const closeOut = marginDifference.div(volume).plus(markPrice);
+  if(closeOut.isPositive()){
+    return formatNumber(closeOut, market.decimalPlaces);
+  }
+  return ' - ';
 };
 
 export default useOrderCloseOut;

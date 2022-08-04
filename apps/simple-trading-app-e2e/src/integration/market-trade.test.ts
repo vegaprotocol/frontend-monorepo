@@ -108,7 +108,7 @@ describe('Market trade', () => {
         .find('dl')
         .eq(3)
         .find('dd div')
-        .should('have.text', '0.00000');
+        .should('have.text', ' - ');
       cy.getByTestId('place-order').click();
       cy.getByTestId('dialog-title').should(
         'have.text',

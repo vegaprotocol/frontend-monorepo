@@ -59,7 +59,7 @@ describe('useOrderCloseOut Hook', () => {
         ),
       }
     );
-    expect(result.current).toEqual('0.00000');
+    expect(result.current).toEqual(' - ');
   });
 
   it('return proper sell value', () => {
