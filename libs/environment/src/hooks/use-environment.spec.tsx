@@ -1,7 +1,7 @@
 // having the node switcher dialog in the environment provider breaks the test renderer
 // workaround based on: https://github.com/facebook/react/issues/11565
 import type { ComponentProps, ReactNode } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import createClient from '../utils/apollo-client';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
 import { Networks, ErrorType } from '../types';
@@ -25,7 +25,7 @@ const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
 const MOCK_HOST = 'https://vega.host/query';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
+const noop = () => { };
 
 const mockEnvironmentState = {
   VEGA_URL: 'https://vega.xyz',

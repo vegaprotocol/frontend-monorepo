@@ -1,5 +1,5 @@
 import { useApplyGridTransaction } from './use-apply-grid-transaction';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 
 type Items = Array<{ id: string; value: number }>;
 
