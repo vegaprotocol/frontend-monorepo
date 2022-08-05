@@ -23,7 +23,7 @@ const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
 const MOCK_HOST = 'https://vega.host/query';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => { };
+const noop = () => {};
 
 const mockEnvironmentState = {
   VEGA_URL: 'https://vega.xyz',
@@ -144,12 +144,13 @@ describe('throws error', () => {
       mockEnvironmentState.GITHUB_FEEDBACK_URL;
   });
 
-  beforeEach(() => jest.resetModules()) // clears the cache of the modules
+  beforeEach(() => jest.resetModules()); // clears the cache of the modules
   it('throws a validation error when NX_ETHERSCAN_URL is not a valid url', () => {
     process.env['NX_ETHERSCAN_URL'] = 'invalid-url';
-    const result = () => renderHook(() => useEnvironment(), {
-      wrapper: MockWrapper,
-    });
+    const result = () =>
+      renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
     expect(result).toThrow(
       `The NX_ETHERSCAN_URL environment variable must be a valid url`
     );
@@ -157,9 +158,10 @@ describe('throws error', () => {
 
   it('throws a validation error when NX_ETHEREUM_PROVIDER_URL is not a valid url', () => {
     process.env['NX_ETHEREUM_PROVIDER_URL'] = 'invalid-url';
-    const result = () => renderHook(() => useEnvironment(), {
-      wrapper: MockWrapper,
-    });
+    const result = () =>
+      renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
     expect(result).toThrow(
       `The NX_ETHEREUM_PROVIDER_URL environment variable must be a valid url`
     );
@@ -169,18 +171,22 @@ describe('throws error', () => {
     process.env['NX_VEGA_NETWORKS'] = JSON.stringify({
       NOT_A_NETWORK: 'https://somewhere.url',
     });
-    const result = () => renderHook(() => useEnvironment(), {
-      wrapper: MockWrapper,
-    });
-    expect(result).toThrow(`All keys in NX_VEGA_NETWORKS must represent a valid environment: CUSTOM | TESTNET | STAGNET | STAGNET2 | DEVNET | MAINNET`);
+    const result = () =>
+      renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
+    expect(result).toThrow(
+      `All keys in NX_VEGA_NETWORKS must represent a valid environment: CUSTOM | TESTNET | STAGNET | STAGNET2 | DEVNET | MAINNET`
+    );
   });
 
   it('throws a validation error when both VEGA_URL and VEGA_CONFIG_URL are missing in the environment', () => {
     delete process.env['NX_VEGA_URL'];
     delete process.env['NX_VEGA_CONFIG_URL'];
-    const result = () => renderHook(() => useEnvironment(), {
-      wrapper: MockWrapper,
-    });
+    const result = () =>
+      renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
     expect(result).toThrow(
       `Must provide either NX_VEGA_CONFIG_URL or NX_VEGA_URL in the environment.`
     );
@@ -188,9 +194,10 @@ describe('throws error', () => {
 
   it('throws a validation error when NX_VEGA_ENV is not found in the environment', () => {
     delete process.env['NX_VEGA_ENV'];
-    const result = () => renderHook(() => useEnvironment(), {
-      wrapper: MockWrapper,
-    });
+    const result = () =>
+      renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
     expect(result).toThrow(
       `NX_VEGA_ENV is invalid, received "undefined" instead of: 'CUSTOM' | 'TESTNET' | 'STAGNET' | 'STAGNET2' | 'DEVNET' | 'MAINNET'`
     );
@@ -198,9 +205,10 @@ describe('throws error', () => {
 
   it('throws a validation error when VEGA_ENV is not a valid network', () => {
     process.env['NX_VEGA_ENV'] = 'SOMETHING';
-    const result = () => renderHook(() => useEnvironment(), {
-      wrapper: MockWrapper,
-    });
+    const result = () =>
+      renderHook(() => useEnvironment(), {
+        wrapper: MockWrapper,
+      });
     expect(result).not.toThrow(
       `Error processing the vega app environment:
     - NX_VEGA_ENV is invalid, received "SOMETHING" instead of: CUSTOM | TESTNET | STAGNET | STAGNET2 | DEVNET | MAINNET`

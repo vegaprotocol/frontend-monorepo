@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+div {
+  --focus-border: theme('colors.vega.pink');
+  --separator-border: theme('colors.black.10');
+}
+
+div.dark div {
+  --focus-border: theme('colors.vega.yellow');
+  --separator-border: theme('colors.black.70');
+}

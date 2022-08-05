@@ -68,13 +68,9 @@ describe('PositionsTable', () => {
     act(async () => {
       render(<PositionsTable data={singleRowData} />);
       await waitFor(async () => {
-        const headers = await screen.getAllByRole('columnheader');
+        const headers = screen.getAllByRole('columnheader');
         expect(headers).toHaveLength(5);
-        expect(
-          headers.map((h) =>
-            h.querySelector('[ref="eText"]')?.textContent?.trim()
-          )
-        ).toEqual([
+        expect(headers.map((h) => h.textContent?.trim())).toEqual([
           'Market',
           'Amount',
           'Average Entry Price',

@@ -25,7 +25,7 @@ const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
 const MOCK_HOST = 'https://vega.host/query';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => { };
+const noop = () => {};
 
 const mockEnvironmentState = {
   VEGA_URL: 'https://vega.xyz',
@@ -126,7 +126,6 @@ afterAll(() => {
 
 describe('useEnvironment hook', () => {
   it('transforms and exposes values from the environment', async () => {
-
     const { result } = renderHook(() => useEnvironment(), {
       wrapper: MockWrapper,
     });
@@ -159,7 +158,6 @@ it('allows for the VEGA_NETWORKS to be missing from the environment', async () =
       wrapper: MockWrapper,
     });
     await waitFor(() => {
-
       expect(result.current).toEqual({
         ...mockEnvironmentState,
         VEGA_NETWORKS: {},
@@ -190,13 +188,13 @@ it('when VEGA_NETWORKS is not a valid json, prints a warning and continues witho
 });
 
 it.each`
-    env                  | etherscanUrl                      | providerUrl
-    ${Networks.DEVNET}   | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.TESTNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.STAGNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.STAGNET2} | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-    ${Networks.MAINNET}  | ${'https://etherscan.io'}         | ${'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-  `(
+  env                  | etherscanUrl                      | providerUrl
+  ${Networks.DEVNET}   | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+  ${Networks.TESTNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+  ${Networks.STAGNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+  ${Networks.STAGNET2} | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+  ${Networks.MAINNET}  | ${'https://etherscan.io'}         | ${'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+`(
   'uses correct default ethereum connection variables in $env',
   async ({ env, etherscanUrl, providerUrl }) => {
     act(async () => {
@@ -210,7 +208,6 @@ it.each`
         wrapper: MockWrapper,
       });
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_ENV: env,
@@ -232,7 +229,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_URL: MOCK_HOST,
@@ -269,7 +265,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_URL: nodeUrl,
@@ -306,7 +301,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_URL: nodeUrl,
@@ -341,7 +335,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_URL: undefined,
@@ -366,7 +359,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_URL: undefined,
@@ -393,7 +385,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
@@ -427,7 +418,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           VEGA_URL: undefined,
@@ -459,7 +449,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           setNodeSwitcherOpen: result.current.setNodeSwitcherOpen,
@@ -485,7 +474,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           networkError: ErrorType.INVALID_URL,
@@ -507,7 +495,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           networkError: ErrorType.CONNECTION_ERROR,
@@ -529,7 +516,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           networkError: ErrorType.INVALID_NETWORK,
@@ -538,7 +524,6 @@ describe('node selection', () => {
       });
     });
   });
-
 
   it('has a network error when the selected node has not ssl available', async () => {
     act(async () => {
@@ -552,7 +537,6 @@ describe('node selection', () => {
       });
 
       await waitFor(() => {
-
         expect(result.current).toEqual({
           ...mockEnvironmentState,
           networkError: ErrorType.SSL_ERROR,
