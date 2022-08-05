@@ -98,7 +98,7 @@ describe('FillsTable', () => {
     });
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-    expect(amountCell).toHaveClass('text-vega-green');
+    expect(amountCell).toHaveClass('text-vega-green-dark');
   });
 
   it('formats cells correctly for seller fill', async () => {
@@ -135,7 +135,7 @@ describe('FillsTable', () => {
     });
 
     const amountCell = cells.find((c) => c.getAttribute('col-id') === 'size');
-    expect(amountCell).toHaveClass('text-vega-red');
+    expect(amountCell).toHaveClass('text-vega-red-dark');
   });
 
   it('renders correct maker or taker role', async () => {

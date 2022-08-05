@@ -88,6 +88,18 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
         <AgGridColumn
           headerName={t('Size')}
           field="openVolume"
+          cellClassRules={{
+            'text-vega-green-dark dark:text-vega-green': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) > 0,
+            'text-vega-red-dark dark:text-vega-red': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) < 0,
+          }}
           valueFormatter={({
             value,
             data,
@@ -129,10 +141,16 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           field="realisedPNL"
           type="rightAligned"
           cellClassRules={{
-            'color-vega-green': ({ value }: { value: string }) =>
-              Number(value) > 0,
-            'color-vega-red': ({ value }: { value: string }) =>
-              Number(value) < 0,
+            'text-vega-green-dark dark:text-vega-green': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) > 0,
+            'text-vega-red-dark dark:text-vega-red': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) < 0,
           }}
           valueFormatter={({ value, data }: ValueFormatterParams) =>
             volumePrefix(

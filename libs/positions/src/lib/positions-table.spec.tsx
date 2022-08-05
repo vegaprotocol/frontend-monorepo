@@ -99,7 +99,7 @@ it('Correct formatting applied', async () => {
       cells.forEach((cell, i) => {
         expect(cell).toHaveTextContent(expectedValues[i]);
       });
-      expect(cells[cells.length - 1]).toHaveClass('color-vega-green');
+      expect(cells[cells.length - 1]).toHaveClass('text-vega-green-dark');
     });
   });
 });
