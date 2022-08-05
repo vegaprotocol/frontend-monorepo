@@ -1,3 +1,4 @@
+import { MockedProvider } from '@apollo/react-testing';
 import { waitFor, fireEvent, render, screen } from '@testing-library/react';
 import BigNumber from 'bignumber.js';
 import type { DepositFormProps } from './deposit-form';
@@ -48,8 +49,15 @@ beforeEach(() => {
 });
 
 describe('Deposit form', () => {
+
+  const makeDepositForm = () => (
+    <MockedProvider>
+      <DepositForm {...props} />
+    </MockedProvider>
+  );
+
   it('renders with default values', async () => {
-    render(<DepositForm {...props} />);
+    render(makeDepositForm());
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
     expect(screen.getByLabelText('From (Ethereum address)')).toHaveValue(
@@ -62,7 +70,7 @@ describe('Deposit form', () => {
 
   describe('fields validation', () => {
     it('fails when submitted with empty required fields', async () => {
-      render(<DepositForm {...props} />);
+      render(makeDepositForm());
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
@@ -76,7 +84,7 @@ describe('Deposit form', () => {
 
     it('fails when submitted with invalid ethereum address', async () => {
       (useWeb3React as jest.Mock).mockReturnValue({ account: '123' });
-      render(<DepositForm {...props} />);
+      render(makeDepositForm());
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
@@ -86,7 +94,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted with invalid vega wallet key', async () => {
-      render(<DepositForm {...props} />);
+      render(makeDepositForm());
 
       const invalidVegaKey = 'abc';
       fireEvent.change(screen.getByLabelText('To (Vega key)'), {
@@ -98,7 +106,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is more than the amount available in the ethereum wallet', async () => {
-      render(<DepositForm {...props} />);
+      render(makeDepositForm());
 
       // Max amount validation
       const amountMoreThanAvailable = '7';
@@ -114,7 +122,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is more than the maximum limit', async () => {
-      render(<DepositForm {...props} />);
+      render(makeDepositForm());
 
       const amountMoreThanLimit = '21';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -129,12 +137,14 @@ describe('Deposit form', () => {
 
     it('fails when submitted amount is more than the approved amount', async () => {
       render(
-        <DepositForm
-          {...props}
-          balance={new BigNumber(100)}
-          max={new BigNumber(100)}
-          deposited={new BigNumber(10)}
-        />
+        <MockedProvider>
+          <DepositForm
+            {...props}
+            balance={new BigNumber(100)}
+            max={new BigNumber(100)}
+            deposited={new BigNumber(10)}
+          />
+        </MockedProvider>
       );
 
       const amountMoreThanAllowance = '31';
@@ -150,7 +160,7 @@ describe('Deposit form', () => {
 
     it('fails when submitted amount is less than the minimum limit', async () => {
       // Min amount validation
-      render(<DepositForm {...props} selectedAsset={asset} />); // Render with selected asset so we have asset.decimals
+      render(<MockedProvider><DepositForm {...props} selectedAsset={asset} /></MockedProvider>); // Render with selected asset so we have asset.decimals
 
       const amountLessThanMinViable = '0.00001';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -164,7 +174,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is less than zero', async () => {
-      render(<DepositForm {...props} />);
+      render(makeDepositForm());
 
       const amountLessThanZero = '-0.00001';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -186,11 +196,13 @@ describe('Deposit form', () => {
     mockUseWeb3React.mockReturnValue({ account: undefined });
 
     render(
-      <DepositForm
-        {...props}
-        allowance={new BigNumber(0)}
-        selectedAsset={asset}
-      />
+      <MockedProvider>
+        <DepositForm
+          {...props}
+          allowance={new BigNumber(0)}
+          selectedAsset={asset}
+        />
+      </MockedProvider>
     );
 
     fireEvent.click(
@@ -216,14 +228,16 @@ describe('Deposit form', () => {
     const max = new BigNumber(20);
     const deposited = new BigNumber(10);
     render(
-      <DepositForm
-        {...props}
-        allowance={new BigNumber(100)}
-        balance={balance}
-        max={max}
-        deposited={deposited}
-        selectedAsset={asset}
-      />
+      <MockedProvider>
+        <DepositForm
+          {...props}
+          allowance={new BigNumber(100)}
+          balance={balance}
+          max={max}
+          deposited={deposited}
+          selectedAsset={asset}
+        />
+      </MockedProvider>
     );
 
     // Check deposit limit is displayed
@@ -258,5 +272,19 @@ describe('Deposit form', () => {
         vegaPublicKey: vegaKey,
       });
     });
+  });
+
+  it('shows "View asset details" button when an asset is selected', async () => {
+    render(
+      <MockedProvider>
+        <DepositForm {...props} selectedAsset={asset} />
+      </MockedProvider>
+    );
+    expect(await screen.getByTestId('view-asset-details')).toBeInTheDocument();
+  });
+
+  it('does not shows "View asset details" button when no asset is selected', async () => {
+    render(makeDepositForm());
+    expect(await screen.queryAllByTestId('view-asset-details')).toHaveLength(0);
   });
 });

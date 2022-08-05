@@ -21,10 +21,16 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useWeb3React } from '@web3-react/core';
 import { Web3WalletInput } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
+import {
+  AssetDetailsDialog,
+  DEFAULT_ASSET_DETAILS_STATE,
+} from '@vegaprotocol/market-list';
+import type { AssetDetailsDialogState } from '@vegaprotocol/market-list';
 
 interface FormFields {
   asset: string;
@@ -64,6 +70,8 @@ export const DepositForm = ({
   allowance,
   isFaucetable,
 }: DepositFormProps) => {
+  const [{ isAssetDetailsDialogOpen, assetDetailsDialogSymbol }, setState] =
+    useState<AssetDetailsDialogState>(DEFAULT_ASSET_DETAILS_STATE);
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
   const {
@@ -179,6 +187,32 @@ export const DepositForm = ({
           <UseButton onClick={requestFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>
+        )}
+        {!errors.asset?.message && selectedAsset && (
+          <>
+            <button
+              data-testid="view-asset-details"
+              className="text-ui underline"
+              onClick={() =>
+                setState({
+                  isAssetDetailsDialogOpen: true,
+                  assetDetailsDialogSymbol: selectedAsset,
+                })
+              }
+            >
+              {t('View asset details')}
+            </button>
+            <AssetDetailsDialog
+              open={isAssetDetailsDialogOpen}
+              assetSymbol={assetDetailsDialogSymbol}
+              onChange={(isOpen) =>
+                setState({
+                  isAssetDetailsDialogOpen: isOpen,
+                  assetDetailsDialogSymbol,
+                })
+              }
+            ></AssetDetailsDialog>
+          </>
         )}
       </FormGroup>
       <FormGroup label={t('To (Vega key)')} labelFor="to" className="relative">

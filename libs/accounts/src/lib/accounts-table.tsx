@@ -1,5 +1,9 @@
-import { forwardRef } from 'react';
-import type { ColumnApi, ValueFormatterParams } from 'ag-grid-community';
+import { forwardRef, useState } from 'react';
+import type {
+  ColumnApi,
+  GroupCellRendererParams,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import {
   PriceCell,
   addDecimalsFormatNumber,
@@ -12,6 +16,12 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Accounts_party_accounts } from './__generated__/Accounts';
 import { getId } from './accounts-data-provider';
+import {
+  AssetDetailsDialog,
+  DEFAULT_ASSET_DETAILS_STATE,
+} from '@vegaprotocol/market-list';
+import type { AssetDetailsDialogState } from '@vegaprotocol/market-list';
+import { is } from 'immer/dist/internal';
 
 interface AccountsTableProps {
   data: Accounts_party_accounts[] | null;
@@ -85,61 +95,92 @@ const comparator = (
 
 export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
   ({ data }, ref) => {
+    const [{ isAssetDetailsDialogOpen, assetDetailsDialogSymbol }, setState] =
+      useState<AssetDetailsDialogState>(DEFAULT_ASSET_DETAILS_STATE);
     return (
-      <AgGrid
-        style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={t('No accounts')}
-        rowData={data}
-        getRowId={({ data }) => getId(data)}
-        ref={ref}
-        defaultColDef={{
-          flex: 1,
-          resizable: true,
-        }}
-        components={{ PriceCell }}
-        onSortChanged={({ api, columnApi }) => {
-          addSummaryRows(api, columnApi, getGroupId, getGroupSummaryRow);
-        }}
-        onGridReady={(event) => {
-          event.columnApi.applyColumnState({
-            state: [
-              {
-                colId: 'asset.symbol',
-                sort: 'asc',
-              },
-            ],
-          });
-        }}
-      >
-        <AgGridColumn
-          headerName={t('Asset')}
-          field="asset.symbol"
-          sortable
-          sortingOrder={['asc', 'desc']}
-          comparator={comparator}
-        />
-        <AgGridColumn
-          headerName={t('Type')}
-          field="type"
-          valueFormatter="value || '—'"
-        />
-        <AgGridColumn
-          headerName={t('Market')}
-          field="market.name"
-          valueFormatter="value || '—'"
-        />
-        <AgGridColumn
-          headerName={t('Balance')}
-          field="balance"
-          cellRenderer="PriceCell"
-          valueFormatter={({
-            value,
-            data,
-          }: AccountsTableValueFormatterParams) =>
-            addDecimalsFormatNumber(value, data.asset.decimals)
+      <>
+        <AgGrid
+          style={{ width: '100%', height: '100%' }}
+          overlayNoRowsTemplate={t('No accounts')}
+          rowData={data}
+          getRowId={({ data }) => getId(data)}
+          ref={ref}
+          defaultColDef={{
+            flex: 1,
+            resizable: true,
+          }}
+          components={{ PriceCell }}
+          onSortChanged={({ api, columnApi }) => {
+            addSummaryRows(api, columnApi, getGroupId, getGroupSummaryRow);
+          }}
+          onGridReady={(event) => {
+            event.columnApi.applyColumnState({
+              state: [
+                {
+                  colId: 'asset.symbol',
+                  sort: 'asc',
+                },
+              ],
+            });
+          }}
+        >
+          <AgGridColumn
+            headerName={t('Asset')}
+            field="asset.symbol"
+            sortable
+            sortingOrder={['asc', 'desc']}
+            comparator={comparator}
+            cellRenderer={({ value }: GroupCellRendererParams) =>
+              value && value.length > 0 ? (
+                <button
+                  className="hover:underline"
+                  onClick={() =>
+                    setState({
+                      isAssetDetailsDialogOpen: true,
+                      assetDetailsDialogSymbol: value,
+                    })
+                  }
+                >
+                  {value}
+                </button>
+              ) : (
+                ''
+              )
+            }
+          />
+          <AgGridColumn
+            headerName={t('Type')}
+            field="type"
+            valueFormatter="value || '—'"
+          />
+          <AgGridColumn
+            headerName={t('Market')}
+            field="market.name"
+            valueFormatter="value || '—'"
+          />
+          <AgGridColumn
+            headerName={t('Balance')}
+            field="balance"
+            cellRenderer="PriceCell"
+            valueFormatter={({
+              value,
+              data,
+            }: AccountsTableValueFormatterParams) =>
+              addDecimalsFormatNumber(value, data.asset.decimals)
+            }
+          />
+        </AgGrid>
+        <AssetDetailsDialog
+          open={isAssetDetailsDialogOpen}
+          assetSymbol={assetDetailsDialogSymbol}
+          onChange={(isOpen) =>
+            setState({
+              isAssetDetailsDialogOpen: isOpen,
+              assetDetailsDialogSymbol,
+            })
           }
-        />
-      </AgGrid>
+        ></AssetDetailsDialog>
+      </>
     );
   }
 );

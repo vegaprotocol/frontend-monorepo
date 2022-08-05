@@ -19,12 +19,17 @@ import {
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { SelectMarketDialog } from '@vegaprotocol/market-list';
+import {
+  AssetDetailsDialog,
+  SelectMarketDialog,
+} from '@vegaprotocol/market-list';
+import type { AssetDetailsDialogState } from '@vegaprotocol/market-list';
 import {
   ArrowDown,
   Tab,
   Tabs,
   PriceCellChange,
+  Button,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 import { AuctionTrigger } from '@vegaprotocol/types';
@@ -55,10 +60,23 @@ export const TradeMarketHeader = ({
   market,
   className,
 }: TradeMarketHeaderProps) => {
-  const [open, setOpen] = useState(false);
+  const [
+    {
+      isSelectMarketDialog,
+      isAssetDetailsDialogOpen,
+      assetDetailsDialogSymbol,
+    },
+    setState,
+  ] = useState<AssetDetailsDialogState & { isSelectMarketDialog: boolean }>({
+    isSelectMarketDialog: false,
+    isAssetDetailsDialogOpen: false,
+    assetDetailsDialogSymbol: '',
+  });
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
+  const symbol =
+    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
   const headerItemClassName = 'whitespace-nowrap flex flex-col';
   const itemClassName =
     'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
@@ -70,10 +88,25 @@ export const TradeMarketHeader = ({
   );
   return (
     <header className={headerClassName}>
-      <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
+      <SelectMarketDialog
+        dialogOpen={isSelectMarketDialog}
+        setDialogOpen={(isOpen) =>
+          setState({
+            isSelectMarketDialog: isOpen,
+            isAssetDetailsDialogOpen: false,
+            assetDetailsDialogSymbol: '',
+          })
+        }
+      />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
         <button
-          onClick={() => setOpen(!open)}
+          onClick={() =>
+            setState({
+              isSelectMarketDialog: !isSelectMarketDialog,
+              isAssetDetailsDialogOpen: false,
+              assetDetailsDialogSymbol: '',
+            })
+          }
           className="shrink-0 text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/10 dark:hover:bg-white/20"
         >
           <span className="break-words text-left">{market.name}</span>
@@ -125,15 +158,34 @@ export const TradeMarketHeader = ({
                 : '-'}
             </span>
           </div>
-          {market.tradableInstrument.instrument.product?.settlementAsset
-            ?.symbol && (
+          {symbol && (
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Settlement asset')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
-                {
-                  market.tradableInstrument.instrument.product?.settlementAsset
-                    ?.symbol
-                }
+                <Button
+                  variant="inline-link"
+                  className="no-underline hover:underline"
+                  onClick={() =>
+                    setState({
+                      isSelectMarketDialog: false,
+                      isAssetDetailsDialogOpen: !isAssetDetailsDialogOpen,
+                      assetDetailsDialogSymbol: symbol,
+                    })
+                  }
+                >
+                  {symbol}
+                </Button>
+                <AssetDetailsDialog
+                  assetSymbol={assetDetailsDialogSymbol}
+                  open={isAssetDetailsDialogOpen}
+                  onChange={(isOpen) =>
+                    setState({
+                      isSelectMarketDialog: false,
+                      isAssetDetailsDialogOpen: isOpen,
+                      assetDetailsDialogSymbol,
+                    })
+                  }
+                ></AssetDetailsDialog>
               </span>
             </div>
           )}
