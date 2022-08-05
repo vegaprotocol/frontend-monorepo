@@ -67,7 +67,9 @@ const Portfolio = () => {
                 </VegaWalletContainer>
               </Tab>
               <Tab id="deposits" name={t('Deposits')}>
-                <DepositsContainer />
+                <VegaWalletContainer>
+                  <DepositsContainer />
+                </VegaWalletContainer>
               </Tab>
               <Tab id="withdrawals" name={t('Withdrawals')}>
                 <Web3Container>

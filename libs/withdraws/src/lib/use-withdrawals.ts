@@ -105,11 +105,7 @@ export const updateQuery: UpdateQueryFn<
         pendingOnForeignChain: false,
       };
     })
-    .filter(
-      isWithdrawalEvent
-      // Need this type cast here, TS can't infer that we've filtered any event types
-      // that arent Withdrawals
-    ) as WithdrawalEvent_busEvents_event_Withdrawal[];
+    .filter(isWithdrawalEvent);
 
   const withdrawals = uniqBy([...incoming, ...curr], 'id');
 
