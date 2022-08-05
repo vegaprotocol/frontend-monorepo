@@ -72,10 +72,12 @@ describe('SimpleMarketToolbar', () => {
       });
       fireEvent.click(screen.getByText('Future'));
       await waitFor(() => {
-        expect(screen.getByTestId('market-products-menu').children).toHaveLength(
-          3
+        expect(
+          screen.getByTestId('market-products-menu').children
+        ).toHaveLength(3);
+        expect(screen.getByTestId('market-assets-menu').children).toHaveLength(
+          6
         );
-        expect(screen.getByTestId('market-assets-menu').children).toHaveLength(6);
       });
       fireEvent.click(screen.getByTestId('state-trigger'));
       waitFor(() => {
@@ -87,7 +89,6 @@ describe('SimpleMarketToolbar', () => {
 
   it('navigation should work well', async () => {
     act(async () => {
-
       render(
         // @ts-ignore different versions of react types in apollo and app
         <MockedProvider mocks={[filterMock]} addTypename={false}>

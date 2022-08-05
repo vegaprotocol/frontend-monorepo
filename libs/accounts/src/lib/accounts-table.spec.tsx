@@ -22,7 +22,6 @@ const singleRow: Accounts_party_accounts = {
 const singleRowData = [singleRow];
 
 describe('AccountsTable', () => {
-
   it('should render successfully', async () => {
     await act(async () => {
       const { baseElement } = render(<AccountsTable data={[]} />);

@@ -57,7 +57,6 @@ const singleRow: Positions_party_positions = {
 const singleRowData = [singleRow];
 
 describe('PositionsTable', () => {
-
   it('should render successfully', async () => {
     act(async () => {
       const { baseElement } = render(<PositionsTable data={[]} />);
