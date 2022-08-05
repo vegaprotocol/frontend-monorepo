@@ -120,7 +120,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
       return (
         <>
           {t(
-            'This is the standard trading mode where trades are executed never orders are received.'
+            'This is the standard trading mode where trades are executed whenever orders are received.'
           )}
         </>
       );
