@@ -83,6 +83,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       // 1002-STKE-038
       cy.get(vegaWalletNextEpochBalances, txTimeout)
         .should('contain', 2.0, txTimeout)
+        .and('contain', partValidatorId)
         .and('contain', 'Next epoch');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -91,12 +92,10 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         txTimeout
       );
 
-      cy.get(vegaWalletStakedBalances, txTimeout).should(
-        // 1002-STKE-039
-        'contain',
-        2.0,
-        txTimeout
-      );
+      // 1002-STKE-039
+      cy.get(vegaWalletStakedBalances, txTimeout)
+        .should('contain', 2.0, txTimeout)
+        .and('contain', partValidatorId);
 
       cy.get(stakeNextEpochValue, epochTimeout) // 1002-STKE-016
         .contains(2.0, epochTimeout)
@@ -127,7 +126,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.staking_validator_page_add_stake('2');
 
       cy.get(vegaWalletStakedBalances, txTimeout)
-        .contains(partValidatorId, txTimeout)
         .parent()
         .should('contain', 2.0, txTimeout);
 
@@ -187,10 +185,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains(3.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout)
-        .should('contain', 3.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'Next epoch');
+      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
+        'contain',
+        3.0,
+        txTimeout
+      );
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -206,14 +205,13 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.staking_validator_page_remove_stake('1');
 
       // 1002-STKE-049
-      cy.get(stakeNextEpochValue, epochTimeout)
-        .contains(2.0, epochTimeout)
-        .should('be.visible');
+      cy.get(stakeNextEpochValue, epochTimeout).contains(2.0, epochTimeout);
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout)
-        .should('contain', 2.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'Next epoch');
+      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
+        'contain',
+        2.0,
+        txTimeout
+      );
 
       cy.get(vegaWalletThisEpochBalances, txTimeout)
         .should('contain', 3.0, txTimeout)
@@ -226,9 +224,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         txTimeout
       );
 
-      cy.get(vegaWalletStakedBalances, txTimeout)
-        .should('contain', 2.0, txTimeout)
-        .and('contain', partValidatorId);
+      cy.get(vegaWalletStakedBalances, txTimeout).should(
+        'contain',
+        2.0,
+        txTimeout
+      );
 
       cy.get(stakeNextEpochValue, epochTimeout)
         .contains(2.0, epochTimeout)
@@ -262,10 +262,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
       cy.staking_validator_page_add_stake('1');
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout)
-        .should('contain', 1.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'Next epoch');
+      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
+        'contain',
+        1.0,
+        txTimeout
+      );
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -283,15 +284,17 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains(0.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(vegaWalletThisEpochBalances, txTimeout)
-        .should('contain', 1.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'This Epoch');
+      cy.get(vegaWalletThisEpochBalances, txTimeout).should(
+        'contain',
+        1.0,
+        txTimeout
+      );
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout)
-        .should('contain', 0.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'Next epoch');
+      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
+        'contain',
+        0.0,
+        txTimeout
+      );
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -335,10 +338,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains(2.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout)
-        .should('contain', 2.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'Next epoch');
+      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
+        'contain',
+        2.0,
+        txTimeout
+      );
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -383,8 +387,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
       cy.get(vegaWalletNextEpochBalances, txTimeout)
         .should('contain', 2.0, txTimeout)
-        .and('contain', partValidatorId)
-        .and('contain', 'Next epoch');
+        .and('contain', partValidatorId);
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -429,9 +432,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         txTimeout
       );
 
-      cy.get(vegaWalletStakedBalances, txTimeout)
-        .should('contain', 2.0, txTimeout)
-        .and('contain', partValidatorId);
+      cy.get(vegaWalletStakedBalances, txTimeout).should(
+        'contain',
+        2.0,
+        txTimeout
+      );
 
       cy.navigate_to('staking');
 
@@ -482,9 +487,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         txTimeout
       );
 
-      cy.get(vegaWalletStakedBalances, txTimeout)
-        .should('contain', 2.0, txTimeout)
-        .and('contain', partValidatorId);
+      cy.get(vegaWalletStakedBalances, txTimeout).should(
+        'contain',
+        2.0,
+        txTimeout
+      );
 
       cy.navigate_to('staking');
 
