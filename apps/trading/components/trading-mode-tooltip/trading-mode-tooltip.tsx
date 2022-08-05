@@ -115,7 +115,6 @@ type TradingModeTooltipProps = {
 };
 
 export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
-  console.log(market);
   switch (market.tradingMode) {
     case MarketTradingMode.Continuous: {
       return (
