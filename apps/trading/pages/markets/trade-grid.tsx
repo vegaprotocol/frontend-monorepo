@@ -104,7 +104,10 @@ export const TradeMarketHeader = ({
                 : '-'}
             </span>
           </div>
-          <Tooltip align="start" description={<TradingModeTooltip market={market} />}>
+          <Tooltip
+            align="start"
+            description={<TradingModeTooltip market={market} />}
+          >
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Trading mode')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
