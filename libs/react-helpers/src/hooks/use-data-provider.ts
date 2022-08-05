@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
@@ -14,14 +15,14 @@ export function useDataProvider<Data, Delta>({
   dataProvider,
   update,
   insert,
-  variables,
+  variables
 }: {
   dataProvider: Subscribe<Data, Delta>;
   update?: ({ delta, data }: { delta: Delta; data: Data }) => boolean;
   insert?: ({
     insertionData,
     data,
-    totalCount,
+    totalCount
   }: {
     insertionData: Data;
     data: Data;

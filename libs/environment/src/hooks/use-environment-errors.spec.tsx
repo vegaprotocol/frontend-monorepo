@@ -23,7 +23,7 @@ const MockWrapper = (props: ComponentProps<typeof EnvironmentProvider>) => {
 const MOCK_HOST = 'https://vega.host/query';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {};
+const noop = () => { };
 
 const mockEnvironmentState = {
   VEGA_URL: 'https://vega.xyz',
