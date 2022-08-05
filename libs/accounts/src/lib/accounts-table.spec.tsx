@@ -26,7 +26,7 @@ const makeAccountsTable = (data: Accounts_party_accounts[] | null) => (
   <MockedProvider>
     <AccountsTable data={data} />
   </MockedProvider>
-)
+);
 
 it('should render successfully', async () => {
   await act(async () => {

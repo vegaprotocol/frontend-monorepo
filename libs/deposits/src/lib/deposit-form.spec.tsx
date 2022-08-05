@@ -49,7 +49,6 @@ beforeEach(() => {
 });
 
 describe('Deposit form', () => {
-
   const makeDepositForm = () => (
     <MockedProvider>
       <DepositForm {...props} />
@@ -160,7 +159,11 @@ describe('Deposit form', () => {
 
     it('fails when submitted amount is less than the minimum limit', async () => {
       // Min amount validation
-      render(<MockedProvider><DepositForm {...props} selectedAsset={asset} /></MockedProvider>); // Render with selected asset so we have asset.decimals
+      render(
+        <MockedProvider>
+          <DepositForm {...props} selectedAsset={asset} />
+        </MockedProvider>
+      ); // Render with selected asset so we have asset.decimals
 
       const amountLessThanMinViable = '0.00001';
       fireEvent.change(screen.getByLabelText('Amount'), {
