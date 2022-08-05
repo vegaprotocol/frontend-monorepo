@@ -34,9 +34,9 @@ export const DealTicketManager = ({
         />
       )}
       <TransactionDialog
-        title={getDialogTitle(finalizedOrder?.status)}
-        intent={getDialogIntent(finalizedOrder?.status)}
-        icon={getDialogIcon(finalizedOrder?.status)}
+        title={getOrderDialogTitle(finalizedOrder?.status)}
+        intent={getOrderDialogIntent(finalizedOrder?.status)}
+        icon={getOrderDialogIcon(finalizedOrder?.status)}
       >
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
       </TransactionDialog>
@@ -44,7 +44,9 @@ export const DealTicketManager = ({
   );
 };
 
-export const getDialogTitle = (status?: OrderStatus): string | undefined => {
+export const getOrderDialogTitle = (
+  status?: OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }
@@ -63,7 +65,9 @@ export const getDialogTitle = (status?: OrderStatus): string | undefined => {
   }
 };
 
-export const getDialogIntent = (status?: OrderStatus): Intent | undefined => {
+export const getOrderDialogIntent = (
+  status?: OrderStatus
+): Intent | undefined => {
   if (!status) {
     return;
   }
@@ -81,7 +85,9 @@ export const getDialogIntent = (status?: OrderStatus): Intent | undefined => {
   }
 };
 
-export const getDialogIcon = (status?: OrderStatus): ReactNode | undefined => {
+export const getOrderDialogIcon = (
+  status?: OrderStatus
+): ReactNode | undefined => {
   if (!status) {
     return;
   }

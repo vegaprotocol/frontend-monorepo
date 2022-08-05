@@ -5,6 +5,8 @@ import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
 import { generatePartyBalance } from '../support/mocks/generate-party-balance';
+import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
+import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
 
 const connectVegaWallet = () => {
   const form = 'rest-connector-form';
@@ -28,6 +30,8 @@ describe('Market trade', () => {
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
       aliasQuery(req, 'PartyBalanceQuery', generatePartyBalance());
+      aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
+      aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
     });
     cy.visit('/markets');
     cy.wait('@SimpleMarkets').then((response) => {
@@ -104,7 +108,7 @@ describe('Market trade', () => {
         .find('dl')
         .eq(3)
         .find('dd div')
-        .should('have.text', '-785.81045');
+        .should('have.text', ' - ');
       cy.getByTestId('place-order').click();
       cy.getByTestId('dialog-title').should(
         'have.text',

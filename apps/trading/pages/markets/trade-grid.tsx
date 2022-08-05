@@ -26,12 +26,12 @@ import {
   Tabs,
   PriceCellChange,
   Tooltip,
+  ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 import { AuctionTrigger } from '@vegaprotocol/types';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
-import 'allotment/dist/style.css';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
 const TradingViews = {
@@ -166,11 +166,11 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
     <>
       <div className={wrapperClasses}>
         <TradeMarketHeader market={market} />
-        <Allotment vertical={true}>
-          <Allotment.Pane>
-            <Allotment proportionalLayout={false} minSize={200}>
+        <ResizablePanel vertical={true}>
+          <Allotment.Pane minSize={75}>
+            <ResizablePanel proportionalLayout={false} minSize={200}>
               <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
-                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
+                <TradeGridChild className="h-full pr-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="candles" name={t('Candles')}>
                       <TradingViews.Candles marketId={market.id} />
@@ -202,7 +202,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                 preferredSize={430}
                 minSize={200}
               >
-                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
+                <TradeGridChild className="h-full pl-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="orderbook" name={t('Orderbook')}>
                       <TradingViews.Orderbook marketId={market.id} />
@@ -213,7 +213,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                   </Tabs>
                 </TradeGridChild>
               </Allotment.Pane>
-            </Allotment>
+            </ResizablePanel>
           </Allotment.Pane>
           <Allotment.Pane
             priority={LayoutPriority.Low}
@@ -234,7 +234,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Tabs>
             </TradeGridChild>
           </Allotment.Pane>
-        </Allotment>
+        </ResizablePanel>
       </div>
     </>
   );

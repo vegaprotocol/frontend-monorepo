@@ -23,6 +23,9 @@ export function createClient(base?: string) {
 
   const cache = new InMemoryCache({
     typePolicies: {
+      Party: {
+        keyFields: false,
+      },
       Query: {},
       Account: {
         keyFields: false,
