@@ -5,7 +5,6 @@ import { renderHook } from '@testing-library/react';
 import createClient from '../utils/apollo-client';
 import { useEnvironment, EnvironmentProvider } from './use-environment';
 import { Networks } from '../types';
-import type { MockRequestConfig } from './mocks/apollo-client';
 import createMockClient from './mocks/apollo-client';
 jest.mock('../utils/apollo-client');
 
@@ -75,23 +74,6 @@ function setupFetch(
     } as Response);
   };
 }
-
-const getQuickestNode = (mockNodes: Record<string, MockRequestConfig>) => {
-  const { nodeUrl } = Object.keys(mockNodes).reduce<{
-    nodeUrl?: string;
-    delay: number;
-  }>(
-    (acc, url) => {
-      const { delay = 0, hasError = false } = mockNodes[url];
-      if (!hasError && delay < acc.delay) {
-        return { nodeUrl: url, delay };
-      }
-      return acc;
-    },
-    { nodeUrl: undefined, delay: Infinity }
-  );
-  return nodeUrl;
-};
 
 beforeEach(() => {
   // @ts-ignore: typescript doesn't recognize the mock implementation
