@@ -91,7 +91,6 @@ export const WithdrawPageContainer = ({
             <WithdrawManager
               assets={assets}
               accounts={data.party?.accounts || []}
-              initialAssetId={assetId}
             />
           </>
         );

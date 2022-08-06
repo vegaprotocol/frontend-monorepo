@@ -37,6 +37,7 @@ export const useCompleteWithdraw = () => {
           query: ERC20_APPROVAL_QUERY,
           variables: { withdrawalId },
         });
+        console.log(res);
 
         const approval = res.data.erc20WithdrawalApproval;
         if (!approval) {

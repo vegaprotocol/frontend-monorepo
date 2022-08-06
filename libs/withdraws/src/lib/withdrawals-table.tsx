@@ -9,7 +9,6 @@ import {
   truncateByChars,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { WithdrawalStatus } from '@vegaprotocol/types';
 import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useCompleteWithdraw } from './use-complete-withdraw';
@@ -98,34 +97,30 @@ export const StatusCell = ({
     );
   }
 
-  if (value === WithdrawalStatus.STATUS_FINALIZED) {
+  if (!data.txHash) {
     return (
       <div className="flex justify-between gap-8">
-        {data.txHash ? (
-          <>
-            {t('Finalized')}
-            <Link
-              title={t('View transaction on Etherscan')}
-              href={`${ethUrl}/tx/${data.txHash}`}
-              data-testid="etherscan-link"
-              target="_blank"
-            >
-              {t('View on Etherscan')}
-            </Link>
-          </>
-        ) : (
-          <>
-            {t('Open')}
-            <button className="underline" onClick={() => complete(data.id)}>
-              {t('Click to complete')}
-            </button>
-          </>
-        )}
+        {t('Open')}
+        <button className="underline" onClick={() => complete(data.id)}>
+          {t('Click to complete')}
+        </button>
       </div>
     );
   }
 
-  return value;
+  return (
+    <div className="flex justify-between gap-8">
+      {t('Finalized')}
+      <Link
+        title={t('View transaction on Etherscan')}
+        href={`${ethUrl}/tx/${data.txHash}`}
+        data-testid="etherscan-link"
+        target="_blank"
+      >
+        {t('View on Etherscan')}
+      </Link>
+    </div>
+  );
 };
 
 export interface RecipientCellProps extends ICellRendererParams {
