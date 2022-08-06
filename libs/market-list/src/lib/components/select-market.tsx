@@ -16,7 +16,7 @@ import { columns } from './select-market-columns';
 import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { positionsDataProvider } from '@vegaprotocol/positions';
-import { mapDataToMarketList } from '../utils/market-list.utils';
+import { mapDataToMarketList } from '../utils/market-utils';
 import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
@@ -62,10 +62,10 @@ export const SelectAllMarketsTableBody = ({
   data?: MarketList;
   title?: string;
   headers?: Column[];
-  onSelect: (id?: string) => void;
+  onSelect: (id: string) => void;
 }) => {
   const marketList = data && mapDataToMarketList(data);
-  return data ? (
+  return marketList ? (
     <>
       <thead className="sticky top-0 z-10 dark:bg-black bg-white">
         <tr
@@ -99,7 +99,13 @@ export const SelectAllMarketsTableBody = ({
   );
 };
 
-export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
+export const SelectMarketPopover = ({
+  marketName,
+  onSelect,
+}: {
+  marketName: string;
+  onSelect: (id: string) => void;
+}) => {
   const headerTriggerButtonClassName =
     'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
 
@@ -134,6 +140,11 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
             size: position?.openVolume,
           };
         }) || null,
+  };
+
+  const onSelectMarket = (marketId: string) => {
+    onSelect(marketId);
+    setOpen(false);
   };
 
   return (
@@ -174,13 +185,13 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
               <SelectAllMarketsTableBody
                 title={t('My markets')}
                 data={positionMarkets}
-                onSelect={() => setOpen(false)}
+                onSelect={onSelectMarket}
               />
             )}
           <SelectAllMarketsTableBody
             title={t('All markets')}
             data={data}
-            onSelect={() => setOpen(false)}
+            onSelect={onSelectMarket}
           />
         </table>
       </div>
@@ -191,15 +202,22 @@ export const SelectMarketPopover = ({ marketName }: { marketName: string }) => {
 export const SelectMarketDialog = ({
   dialogOpen,
   setDialogOpen,
+  onSelect,
   title = t('Select a market'),
 }: {
   dialogOpen: boolean;
   setDialogOpen: (open: boolean) => void;
   title?: string;
   detailed?: boolean;
+  onSelect: (id: string) => void;
 }) => {
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
   const yTimestamp = new Date(yesterday * 1000).toISOString();
+
+  const onSelectMarket = (id: string) => {
+    onSelect(id);
+    setDialogOpen(false);
+  };
 
   const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
     variables: { interval: Interval.I1H, since: yTimestamp },
@@ -213,10 +231,7 @@ export const SelectMarketDialog = ({
       titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
       size="small"
     >
-      <SelectMarketLandingTable
-        data={data}
-        onSelect={() => setDialogOpen(false)}
-      />
+      <SelectMarketLandingTable data={data} onSelect={onSelectMarket} />
     </Dialog>
   );
 };

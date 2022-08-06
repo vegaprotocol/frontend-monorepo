@@ -277,7 +277,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
         title={t('Select market')}
         open={Boolean(dialogContent)}
         onChange={handleDialogOnchange}
-        size="large-mobile"
+        size="large"
       >
         {dialogContent}
       </Dialog>

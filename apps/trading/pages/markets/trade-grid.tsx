@@ -29,6 +29,8 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
 import type { CandleClose } from '@vegaprotocol/types';
+import { useGlobalStore } from '../../stores';
+
 const TradingViews = {
   Candles: CandlesChartContainer,
   Depth: DepthChartContainer,
@@ -65,10 +67,17 @@ export const TradeMarketHeader = ({
     className
   );
 
+  const store = useGlobalStore();
+  const onSelect = (marketId: string) => {
+    if (marketId && store.marketId !== marketId) {
+      store.setMarketId(marketId);
+    }
+  };
+
   return (
     <header className={headerClassName}>
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
-        <SelectMarketPopover marketName={market.name} />
+        <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
         <div
           data-testid="market-summary"
           className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap py-8 pr-8"

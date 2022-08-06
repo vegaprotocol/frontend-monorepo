@@ -1,5 +1,5 @@
 import type { MarketList } from '../__generated__/MarketList';
-import { mapDataToMarketList } from './market-list.utils';
+import { mapDataToMarketList } from './market-utils';
 
 describe('mapDataToMarketList', () => {
   it('should map queried data to market list format', () => {

@@ -6,7 +6,6 @@ import { Splash } from '@vegaprotocol/ui-toolkit';
 import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-
 import { PageQueryContainer } from '../../components/page-query-container';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
@@ -83,12 +82,6 @@ const MarketPage = ({ id }: { id?: string }) => {
     return new Date(yesterday * 1000).toISOString();
   });
 
-  useEffect(() => {
-    if (marketId && store.marketId !== marketId) {
-      store.setMarketId(marketId);
-    }
-  }, [marketId, store]);
-
   if (!marketId) {
     return (
       <Splash>
@@ -126,6 +119,11 @@ const MarketPage = ({ id }: { id?: string }) => {
               setDialogOpen={(isOpen: boolean) =>
                 store.setLandingDialog(isOpen)
               }
+              onSelect={(marketId: string) => {
+                if (marketId && store.marketId !== marketId) {
+                  store.setMarketId(marketId);
+                }
+              }}
               title={t('Select a market to get started')}
             />
           </>

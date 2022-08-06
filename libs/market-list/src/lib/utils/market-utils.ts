@@ -41,28 +41,8 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
             m.tradableInstrument.instrument.product?.settlementAsset?.symbol,
           lastPrice: lastPrice(m) ?? m.data?.markPrice,
           candles: (m.candles || []).filter((c) => c),
-          candleHigh: m.candles
-            ?.reduce(
-              (acc: BigNumber, c) =>
-                c?.high
-                  ? acc.isGreaterThan(new BigNumber(c.high))
-                    ? acc
-                    : new BigNumber(c.high)
-                  : acc,
-              new BigNumber(0)
-            )
-            .toString(),
-          candleLow: m.candles
-            ?.reduce(
-              (acc: BigNumber, c) =>
-                c?.low
-                  ? acc.isLessThan(new BigNumber(c.low))
-                    ? acc
-                    : new BigNumber(c.low)
-                  : acc,
-              new BigNumber(m.candles?.[0]?.high ?? 0)
-            )
-            .toString(),
+          candleHigh: calcCandleHigh(m),
+          candleLow: calcCandleLow(m),
           open: m.marketTimestamps.open
             ? new Date(m.marketTimestamps.open).getTime()
             : null,
@@ -75,3 +55,31 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
     ['open', 'id'],
     ['asc', 'asc']
   );
+
+export const calcCandleLow = (m: MarketList_markets): string | undefined => {
+  return m.candles
+    ?.reduce((acc: BigNumber, c) => {
+      if (c?.low) {
+        if (acc.isLessThan(new BigNumber(c.low))) {
+          return acc;
+        }
+        return new BigNumber(c.low);
+      }
+      return acc;
+    }, new BigNumber(m.candles?.[0]?.high ?? 0))
+    .toString();
+};
+
+export const calcCandleHigh = (m: MarketList_markets): string | undefined => {
+  return m.candles
+    ?.reduce((acc: BigNumber, c) => {
+      if (c?.high) {
+        if (acc.isGreaterThan(new BigNumber(c.high))) {
+          return acc;
+        }
+        return new BigNumber(c.high);
+      }
+      return acc;
+    }, new BigNumber(0))
+    .toString();
+};

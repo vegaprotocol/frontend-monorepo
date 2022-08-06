@@ -14,7 +14,7 @@ interface DialogProps {
   icon?: ReactNode;
   intent?: Intent;
   titleClassNames?: string;
-  size?: 'small' | 'large' | 'large-mobile';
+  size?: 'small' | 'medium' | 'large';
 }
 
 export function Dialog({
@@ -25,7 +25,7 @@ export function Dialog({
   icon,
   intent,
   titleClassNames,
-  size = 'large',
+  size = 'medium',
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
@@ -36,9 +36,9 @@ export function Dialog({
     getIntentBorder(intent),
     {
       'md:w-[520px] lg:w-[520px] w-full': size === 'small',
-      'w-full w-full md:w-[720px] lg:w-[940px]': size === 'large',
+      'w-full w-full md:w-[720px] lg:w-[940px]': size === 'medium',
       'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto':
-        size === 'large-mobile',
+        size === 'large',
     }
   );
   return (
