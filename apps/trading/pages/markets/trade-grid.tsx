@@ -1,15 +1,9 @@
 import 'allotment/dist/style.css';
-
-import { AccountsContainer } from '@vegaprotocol/accounts';
-import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
   DealTicketContainer,
   MarketInfoContainer,
 } from '@vegaprotocol/deal-ticket';
-import {
-  DepthChartContainer,
-  OrderbookContainer,
-} from '@vegaprotocol/market-depth';
+import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { PositionsContainer } from '@vegaprotocol/positions';
@@ -20,7 +14,6 @@ import {
 } from '@vegaprotocol/react-helpers';
 import { TradesContainer } from '@vegaprotocol/trades';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
-import { PriceCellChange, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { Allotment, LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import { useState } from 'react';
@@ -30,6 +23,15 @@ import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
 import type { CandleClose } from '@vegaprotocol/types';
 import { useGlobalStore } from '../../stores';
+import { AccountsContainer } from '@vegaprotocol/accounts';
+import { DepthChartContainer } from '@vegaprotocol/market-depth';
+import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import {
+  Tab,
+  Tabs,
+  PriceCellChange,
+  ResizablePanel,
+} from '@vegaprotocol/ui-toolkit';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -157,11 +159,11 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
     <>
       <div className={wrapperClasses}>
         <TradeMarketHeader market={market} />
-        <Allotment vertical={true}>
-          <Allotment.Pane>
-            <Allotment proportionalLayout={false} minSize={200}>
+        <ResizablePanel vertical={true}>
+          <Allotment.Pane minSize={75}>
+            <ResizablePanel proportionalLayout={false} minSize={200}>
               <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
-                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
+                <TradeGridChild className="h-full pr-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="candles" name={t('Candles')}>
                       <TradingViews.Candles marketId={market.id} />
@@ -193,7 +195,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                 preferredSize={430}
                 minSize={200}
               >
-                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
+                <TradeGridChild className="h-full pl-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="orderbook" name={t('Orderbook')}>
                       <TradingViews.Orderbook marketId={market.id} />
@@ -204,7 +206,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                   </Tabs>
                 </TradeGridChild>
               </Allotment.Pane>
-            </Allotment>
+            </ResizablePanel>
           </Allotment.Pane>
           <Allotment.Pane
             priority={LayoutPriority.Low}
@@ -225,7 +227,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Tabs>
             </TradeGridChild>
           </Allotment.Pane>
-        </Allotment>
+        </ResizablePanel>
       </div>
     </>
   );

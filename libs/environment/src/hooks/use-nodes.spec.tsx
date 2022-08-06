@@ -2,19 +2,16 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { ApolloClient } from '@apollo/client';
 import createClient from '../utils/apollo-client';
 import { useNodes } from './use-nodes';
-import { Networks } from '../types';
 import createMockClient, {
   getMockStatisticsResult,
 } from './mocks/apollo-client';
 
 jest.mock('../utils/apollo-client');
 
-const MOCK_ENV = Networks.DEVNET;
 const MOCK_DURATION = 1073;
 
 const initialState = {
   url: '',
-  verified: false,
   initialized: false,
   responseTime: {
     isLoading: false,
@@ -61,7 +58,7 @@ afterAll(() => {
 
 describe('useNodes hook', () => {
   it('returns the default state when empty config provided', () => {
-    const { result } = renderHook(() => useNodes(MOCK_ENV, { hosts: [] }));
+    const { result } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state).toEqual({});
   });
@@ -69,13 +66,12 @@ describe('useNodes hook', () => {
   it('sets loading state while waiting for the results', async () => {
     const node = 'https://some.url';
     const { result, waitForNextUpdate } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
+      useNodes({ hosts: [node] })
     );
 
     expect(result.current.state[node]).toEqual({
       ...initialState,
       url: node,
-      verified: false,
       initialized: true,
       responseTime: {
         ...initialState.responseTime,
@@ -101,9 +97,7 @@ describe('useNodes hook', () => {
   it('sets statistics results', async () => {
     const mockResult = getMockStatisticsResult();
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block).toEqual({
@@ -128,9 +122,7 @@ describe('useNodes hook', () => {
 
   it('sets subscription result', async () => {
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].ssl).toEqual({
@@ -143,9 +135,7 @@ describe('useNodes hook', () => {
 
   it('sets error when host in not a valid url', async () => {
     const node = 'not-url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block.hasError).toBe(true);
@@ -162,9 +152,7 @@ describe('useNodes hook', () => {
     );
 
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block).toEqual({
@@ -194,9 +182,7 @@ describe('useNodes hook', () => {
     );
 
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].ssl).toEqual({
@@ -210,9 +196,7 @@ describe('useNodes hook', () => {
   it('allows updating block values', async () => {
     const mockResult = getMockStatisticsResult();
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block.value).toEqual(
@@ -232,9 +216,7 @@ describe('useNodes hook', () => {
   it('does nothing when calling the block update on a non-existing node', async () => {
     const mockResult = getMockStatisticsResult();
     const node = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     await waitFor(() => {
       expect(result.current.state[node].block.value).toEqual(
@@ -251,9 +233,7 @@ describe('useNodes hook', () => {
 
   it('adds new node', async () => {
     const node = 'custom-node-key';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toEqual(undefined);
 
@@ -269,9 +249,7 @@ describe('useNodes hook', () => {
   it('sets new url for node', async () => {
     const node = 'https://some.url';
     const newUrl = 'https://some-other.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [node] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [node] }));
 
     act(() => {
       result.current.updateNodeUrl(node, newUrl);
@@ -285,9 +263,7 @@ describe('useNodes hook', () => {
   it('sets error when custom node has an invalid url', async () => {
     const node = 'node-key';
     const url = 'not-url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toBe(undefined);
 
@@ -312,9 +288,7 @@ describe('useNodes hook', () => {
 
     const node = 'node-key';
     const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toBe(undefined);
 
@@ -351,9 +325,7 @@ describe('useNodes hook', () => {
 
     const node = 'node-key';
     const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
     expect(result.current.state[node]).toBe(undefined);
 
@@ -374,7 +346,7 @@ describe('useNodes hook', () => {
     const url1 = 'https://some.url';
     const url2 = 'https://some-other.url';
     const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [url1, url2] })
+      useNodes({ hosts: [url1, url2] })
     );
 
     await waitFor(() => {
@@ -386,9 +358,7 @@ describe('useNodes hook', () => {
   it('exposes a client for the custom node', async () => {
     const node = 'node-key';
     const url = 'https://some.url';
-    const { result, waitFor } = renderHook(() =>
-      useNodes(MOCK_ENV, { hosts: [] })
-    );
+    const { result, waitFor } = renderHook(() => useNodes({ hosts: [] }));
 
     act(() => {
       result.current.updateNodeUrl(node, url);

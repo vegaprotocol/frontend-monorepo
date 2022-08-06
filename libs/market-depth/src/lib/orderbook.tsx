@@ -291,10 +291,10 @@ export const Orderbook = ({
         className="sticky top-0 grid grid-cols-4 gap-5 text-right border-b-1 text-ui-small mb-2 pt-4 pb-2 bg-white dark:bg-black z-10"
         style={{ gridAutoRows: '17px' }}
       >
-        <div>{t('Bid Vol')}</div>
+        <div>{t('Bid vol')}</div>
         <div>{t('Price')}</div>
-        <div>{t('Ask Vol')}</div>
-        <div className="pr-4">{t('Cumulative Vol')}</div>
+        <div>{t('Ask vol')}</div>
+        <div className="pr-4">{t('Cumulative vol')}</div>
       </div>
 
       <div

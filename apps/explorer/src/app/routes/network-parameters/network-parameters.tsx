@@ -33,6 +33,8 @@ const BIG_NUMBER_PARAMS = [
   'spam.protection.proposal.min.tokens',
   'governance.proposal.updateMarket.minProposerBalance',
   'governance.proposal.asset.minProposerBalance',
+  'governance.proposal.market.minProposerBalance',
+  'governance.proposal.market.minVoterBalance',
 ];
 
 export const renderRow = ({
