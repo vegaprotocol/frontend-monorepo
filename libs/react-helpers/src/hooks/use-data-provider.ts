@@ -15,14 +15,14 @@ export function useDataProvider<Data, Delta>({
   dataProvider,
   update,
   insert,
-  variables
+  variables,
 }: {
   dataProvider: Subscribe<Data, Delta>;
   update?: ({ delta, data }: { delta: Delta; data: Data }) => boolean;
   insert?: ({
     insertionData,
     data,
-    totalCount
+    totalCount,
   }: {
     insertionData: Data;
     data: Data;
