@@ -31,7 +31,7 @@ export const DepositManager = ({
   const faucet = useSubmitFaucet();
 
   const handleSelectAsset = useCallback(
-    (id) => {
+    (id: string) => {
       const asset = assets.find((a) => a.id === id);
       if (!asset) return;
       update({ asset });

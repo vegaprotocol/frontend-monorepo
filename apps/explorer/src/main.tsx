@@ -19,9 +19,9 @@ if (dsn) {
   });
 }
 const rootElement = document.getElementById('root');
-const root = createRoot(rootElement);
+const root = rootElement && createRoot(rootElement);
 
-root.render(
+root?.render(
   <BrowserRouter>
     <App />
   </BrowserRouter>

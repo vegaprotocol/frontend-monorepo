@@ -3,9 +3,9 @@ import { BrowserRouter } from 'react-router-dom';
 
 import App from './app/app';
 const rootElement = document.getElementById('root');
-const root = createRoot(rootElement);
+const root = rootElement && createRoot(rootElement);
 
-root.render(
+root?.render(
   <BrowserRouter>
     <App />
   </BrowserRouter>
