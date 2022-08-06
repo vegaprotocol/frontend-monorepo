@@ -64,7 +64,8 @@ export const SelectAllMarketsTableBody = ({
   headers?: Column[];
   onSelect: (id: string) => void;
 }) => {
-  const marketList = data && mapDataToMarketList(data);
+  const marketList = useMemo(() => data && mapDataToMarketList(data), [data]);
+
   return marketList ? (
     <>
       <thead className="sticky top-0 z-10 dark:bg-black bg-white">
@@ -123,24 +124,27 @@ export const SelectMarketPopover = ({
     variables,
   });
 
-  const positionMarkets: MarketList = {
-    markets:
-      data?.markets
-        ?.filter((market) =>
-          marketDataPositions?.find(
-            (position) => position.market.id === market.id
+  const positionMarkets = useMemo(
+    () => ({
+      markets:
+        data?.markets
+          ?.filter((market) =>
+            marketDataPositions?.find(
+              (position) => position.market.id === market.id
+            )
           )
-        )
-        .map((market) => {
-          const position = marketDataPositions?.find(
-            (position) => position.market.id === market.id
-          );
-          return {
-            ...market,
-            size: position?.openVolume,
-          };
-        }) || null,
-  };
+          .map((market) => {
+            const position = marketDataPositions?.find(
+              (position) => position.market.id === market.id
+            );
+            return {
+              ...market,
+              size: position?.openVolume,
+            };
+          }) || null,
+    }),
+    [data, marketDataPositions]
+  );
 
   const onSelectMarket = (marketId: string) => {
     onSelect(marketId);
