@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import ChevronDownIcon from './chevron-down';
+import AccordionChevron from './chevron-down';
 import classNames from 'classnames';
 
 export interface AccordionItemProps {
@@ -13,7 +13,6 @@ export interface AccordionProps {
 }
 
 export const Accordion = ({ panels }: AccordionProps) => {
-  const [value, setValue] = useState<string>('');
   const triggerClassNames = classNames(
     'w-full py-2 box-border',
     'appearance-none cursor-pointer focus:outline-none',
@@ -22,13 +21,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
   );
 
   return (
-    <AccordionPrimitive.Root
-      type="single"
-      className="flex flex-col"
-      value={value}
-      onValueChange={setValue}
-      collapsible
-    >
+    <AccordionPrimitive.Root type="multiple" className="flex flex-col">
       {panels.map(({ title, content }, i) => (
         <AccordionPrimitive.Item value={`item-${i + 1}`} key={`item-${i + 1}`}>
           <AccordionPrimitive.Header>
@@ -42,7 +35,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
               >
                 {title}
               </p>
-              <ChevronDownIcon active={value === `item-${i + 1}`} aria-hidden />
+              <AccordionChevron aria-hidden />
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content
