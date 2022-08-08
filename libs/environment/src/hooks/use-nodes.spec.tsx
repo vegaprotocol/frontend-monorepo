@@ -89,7 +89,6 @@ describe('useNodes hook', () => {
         isLoading: true,
       },
     });
-
   });
 
   it('sets statistics results', async () => {
