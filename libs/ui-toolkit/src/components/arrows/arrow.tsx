@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 
 export interface ArrowStyleProps {
-  color?: string;
   borderX?: number;
   borderTop?: number;
   borderBottom?: number;
@@ -9,12 +8,11 @@ export interface ArrowStyleProps {
 }
 
 export const RotatingArrow = ({
-  color = 'green',
   borderX = 4,
   borderBottom = 4,
   up = true,
 }: ArrowStyleProps) => {
-  const arrowClassName = `w-0 h-0 border-b-${color}-dark dark:border-b-${color}`;
+  const arrowClassName = `w-0 h-0 border-b-currentColor-dark dark:border-b-currentColor`;
   return (
     <span
       data-testid="arrow-up"
@@ -31,11 +29,7 @@ export const RotatingArrow = ({
   );
 };
 
-export const ArrowUp = ({
-  color = 'green',
-  borderX = 4,
-  borderBottom = 4,
-}: ArrowStyleProps) => (
+export const ArrowUp = ({ borderX = 4, borderBottom = 4 }: ArrowStyleProps) => (
   <span
     data-testid="arrow-up"
     style={{
@@ -43,15 +37,11 @@ export const ArrowUp = ({
       borderRight: `${borderX}px solid transparent`,
       borderBottom: `${borderBottom}px solid`,
     }}
-    className={`w-0 h-0 border-b-${color}-dark dark:border-b-${color}`}
+    className={`w-0 h-0 border-b-currentColor-dark dark:border-b-currentColor`}
   ></span>
 );
 
-export const ArrowDown = ({
-  color = 'red',
-  borderX = 4,
-  borderTop = 4,
-}: ArrowStyleProps) => (
+export const ArrowDown = ({ borderX = 4, borderTop = 4 }: ArrowStyleProps) => (
   <span
     data-testid="arrow-down"
     style={{
@@ -59,7 +49,7 @@ export const ArrowDown = ({
       borderRight: `${borderX}px solid transparent`,
       borderTop: `${borderTop}px solid`,
     }}
-    className={`w-0 h-0 border-t-${color}-dark dark:border-t-${color}`}
+    className={`w-0 h-0 border-t-currentColor-dark dark:border-t-currentColor`}
   ></span>
 );
 

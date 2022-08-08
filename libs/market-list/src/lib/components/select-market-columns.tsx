@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   addDecimalsFormatNumber,
   formatLabel,
@@ -333,7 +334,6 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
   return selectMarketColumns;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const columnsPositionMarkets = (
   market: any,
   onSelect: (id: string) => void
