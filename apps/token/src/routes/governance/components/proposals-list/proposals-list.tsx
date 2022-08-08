@@ -51,6 +51,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         <Heading centerContent={false} title={t('pageTitleGovernance')} />
         <Link
           className="mb-16 xs:justify-self-end"
+          data-testid="new-proposal-link"
           to={`${Routes.GOVERNANCE}/propose`}
         >
           <Button variant={'primary'}>{t('NewProposal')}</Button>
