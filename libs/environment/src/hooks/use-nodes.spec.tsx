@@ -90,7 +90,6 @@ describe('useNodes hook', () => {
       },
     });
 
-    // await waitFor(() => { });
   });
 
   it('sets statistics results', async () => {
