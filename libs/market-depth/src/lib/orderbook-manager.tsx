@@ -94,6 +94,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       ...mapMarketData(data.data, resolution),
     };
     setOrderbookData(dataRef.current);
+    return () => {
+      updateOrderbookData.current.cancel();
+    }
   }, [data, resolution]);
 
   useEffect(() => {
