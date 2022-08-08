@@ -62,6 +62,9 @@ export const Web3Content = ({ children, appChainId }: Web3ContentProps) => {
     if (connector?.connectEagerly) {
       connector.connectEagerly();
     }
+    // wallet connect doesnt handle connectEagerly being called when connector is also in the
+    // deps array.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connector]);
 
   if (error) {
