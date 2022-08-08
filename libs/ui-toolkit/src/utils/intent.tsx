@@ -48,5 +48,5 @@ export const getIntentText = (intent?: Intent) => {
 };
 
 export const getIntentTextAndBackground = (intent?: Intent) => {
-  return `${getIntentText(intent)} ${getIntentBackground(intent)}`;
+  return { ...getIntentText(intent), ...getIntentBackground(intent) };
 };

@@ -167,7 +167,7 @@ describe('getMetrics', () => {
 
     expect(metrics[0].assetSymbol).toEqual('tDAI');
     expect(metrics[0].averageEntryPrice).toEqual('8993727');
-    expect(metrics[0].capitalUtilisation).toEqual('4');
+    expect(metrics[0].capitalUtilisation).toEqual(4);
     expect(metrics[0].currentLeverage).toBeCloseTo(1.02);
     expect(metrics[0].marketDecimalPlaces).toEqual(5);
     expect(metrics[0].positionDecimalPlaces).toEqual(0);
@@ -190,7 +190,7 @@ describe('getMetrics', () => {
 
     expect(metrics[1].assetSymbol).toEqual('tDAI');
     expect(metrics[1].averageEntryPrice).toEqual('840158');
-    expect(metrics[1].capitalUtilisation).toEqual('0');
+    expect(metrics[1].capitalUtilisation).toEqual(0);
     expect(metrics[1].currentLeverage).toBeCloseTo(0.097);
     expect(metrics[1].marketDecimalPlaces).toEqual(5);
     expect(metrics[1].positionDecimalPlaces).toEqual(0);

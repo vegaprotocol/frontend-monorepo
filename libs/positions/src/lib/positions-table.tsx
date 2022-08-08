@@ -5,7 +5,6 @@ import {
   PriceFlashCell,
   addDecimalsFormatNumber,
   volumePrefix,
-  addDecimal,
   t,
   formatNumber,
   getDateTimeFormat,
@@ -80,26 +79,34 @@ export const ProgressBarCell = ({ valueFormatted }: PriceCellProps) => {
 ProgressBarCell.displayName = 'PriceFlashCell';
 
 export interface AmountCellProps {
-  valueFormatted?: { volume: string; decimalPlaces: number; notional: string };
+  valueFormatted?: Pick<
+    Position,
+    'openVolume' | 'marketDecimalPlaces' | 'positionDecimalPlaces' | 'notional'
+  >;
 }
 
 export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
   if (!valueFormatted) {
     return null;
   }
-  const { volume, decimalPlaces, notional } = valueFormatted;
+  const { openVolume, positionDecimalPlaces, marketDecimalPlaces, notional } =
+    valueFormatted;
+  const isShortPosition = openVolume.startsWith('-');
   return valueFormatted ? (
     <div className="leading-tight">
       <div
         className={classNames('text-right', {
-          'color-vega-green': ({ value }: { value: string }) =>
-            Number(value) > 0,
-          'color-vega-red': ({ value }: { value: string }) => Number(value) < 0,
+          'color-vega-green': !isShortPosition,
+          'color-vega-red': isShortPosition,
         })}
       >
-        {volumePrefix(addDecimal(volume, decimalPlaces))}
+        {volumePrefix(
+          addDecimalsFormatNumber(openVolume, positionDecimalPlaces)
+        )}
       </div>
-      <div className="text-right">{addDecimal(notional, decimalPlaces)}</div>
+      <div className="text-right">
+        {addDecimalsFormatNumber(notional, marketDecimalPlaces)}
+      </div>
     </div>
   ) : null;
 };
@@ -135,7 +142,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           }
           const matches = value.match(/^(.*)\((.*)\)\s*$/);
           if (matches) {
-            return [matches[1], matches[2]];
+            return [matches[1].trim(), matches[2].trim()];
           }
           return [value];
         }}
@@ -150,15 +157,11 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           data,
         }: PositionsTableValueFormatterParams & {
           value: Position['openVolume'];
-        }) => {
+        }): AmountCellProps['valueFormatted'] => {
           if (!value || !data) {
             return undefined;
           }
-          return {
-            volume: value,
-            decimalPlaces: data.positionDecimalPlaces,
-            notional: data.notional,
-          };
+          return data;
         }}
       />
       <AgGridColumn
@@ -178,7 +181,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (data.marketTradingMode === MarketTradingMode.OpeningAuction) {
             return '-';
           }
-          return addDecimal(value.toString(), data.marketDecimalPlaces);
+          return addDecimalsFormatNumber(
+            value.toString(),
+            data.marketDecimalPlaces
+          );
         }}
       />
       <AgGridColumn
@@ -248,7 +254,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
             return undefined;
           }
           return {
-            low: `${value}%`,
+            low: `${formatNumber(value, 2)}%`,
             high: addDecimalsFormatNumber(
               data.totalBalance,
               data.assetDecimals
@@ -274,9 +280,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         }) =>
           value === undefined
             ? undefined
-            : volumePrefix(
-                addDecimalsFormatNumber(value.toString(), data.assetDecimals)
-              )
+            : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
         }
         cellRenderer="PriceFlashCell"
         headerTooltip={t('P&L excludes any fees paid.')}
@@ -298,9 +302,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         }) =>
           value === undefined
             ? undefined
-            : volumePrefix(
-                addDecimalsFormatNumber(value.toString(), data.assetDecimals)
-              )
+            : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
         }
         cellRenderer="PriceFlashCell"
       />

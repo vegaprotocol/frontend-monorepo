@@ -18,7 +18,7 @@ import type { MarketTradingMode } from '@vegaprotocol/types';
 export interface Position {
   marketName: string;
   averageEntryPrice: string;
-  capitalUtilisation: string;
+  capitalUtilisation: number;
   currentLeverage: number;
   assetDecimals: number;
   marketDecimalPlaces: number;
@@ -243,7 +243,7 @@ export const getMetrics = (data: PositionsMetrics_party | null) => {
     metrics.push({
       marketName: market.name,
       averageEntryPrice: position.node.averageEntryPrice,
-      capitalUtilisation: capitalUtilisation.toFixed(0),
+      capitalUtilisation: Math.round(capitalUtilisation.toNumber()),
       currentLeverage: currentLeverage.toNumber(),
       marketDecimalPlaces,
       positionDecimalPlaces,
@@ -266,7 +266,7 @@ export const getMetrics = (data: PositionsMetrics_party | null) => {
       marketId: position.node.market.id,
       marketTradingMode: position.node.market.tradingMode,
       markPrice: marketData.markPrice,
-      notional: notional.multipliedBy(10 ** assetDecimals).toFixed(0),
+      notional: notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0),
       openVolume: position.node.openVolume,
       realisedPNL: position.node.realisedPNL,
       unrealisedPNL: position.node.unrealisedPNL,
