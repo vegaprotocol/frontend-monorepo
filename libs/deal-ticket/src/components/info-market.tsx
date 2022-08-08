@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   addDecimalsFormatNumber,
+  formatLabel,
   formatNumber,
   formatNumberPercentage,
   t,
@@ -15,10 +16,7 @@ import {
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
-import type {
-  MarketInfoQuery,
-  MarketInfoQuery_market,
-} from './__generated__/MarketInfoQuery';
+import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
 import { gql, useQuery } from '@apollo/client';
 
@@ -31,6 +29,13 @@ const MARKET_INFO_QUERY = gql`
       positionDecimalPlaces
       state
       tradingMode
+      accounts {
+        type
+        asset {
+          id
+        }
+        balance
+      }
       fees {
         factors {
           makerFee
@@ -53,6 +58,13 @@ const MARKET_INFO_QUERY = gql`
         short
         long
       }
+      accounts {
+        type
+        asset {
+          id
+        }
+        balance
+      }
       data {
         market {
           id
@@ -64,9 +76,23 @@ const MARKET_INFO_QUERY = gql`
         bestStaticBidVolume
         bestStaticOfferVolume
         indicativeVolume
+        openInterest
+      }
+      liquidityMonitoringParameters {
+        triggeringRatio
+        targetStakeParameters {
+          timeWindow
+          scalingFactor
+        }
       }
       tradableInstrument {
         instrument {
+          id
+          name
+          code
+          metadata {
+            tags
+          }
           product {
             ... on Future {
               quoteName
@@ -74,6 +100,16 @@ const MARKET_INFO_QUERY = gql`
                 id
                 symbol
                 name
+              }
+              oracleSpecForSettlementPrice {
+                id
+              }
+              oracleSpecForTradingTermination {
+                id
+              }
+              oracleSpecBinding {
+                settlementPriceProperty
+                tradingTerminationProperty
               }
             }
           }
@@ -159,19 +195,28 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
   ];
+
+  const keyDetails = pick(
+    market,
+    'name',
+    'decimalPlaces',
+    'positionDecimalPlaces',
+    'tradingMode',
+    'state',
+    'id' as 'marketId'
+  );
   const marketSpecPanels = [
     {
       title: t('Key details'),
       content: (
         <MarketInfoTable
-          data={pick(
-            market,
-            'name',
-            'decimalPlaces',
-            'positionDecimalPlaces',
-            'tradingMode',
-            'state'
-          )}
+          data={{
+            ...keyDetails,
+            marketId: keyDetails.id,
+            id: undefined,
+            tradingMode:
+              keyDetails.tradingMode && formatLabel(keyDetails.tradingMode),
+          }}
         />
       ),
     },
@@ -180,8 +225,28 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            product: market.tradableInstrument.instrument.product,
-            ...market.tradableInstrument.instrument.product.settlementAsset,
+            marketName: market.tradableInstrument.instrument.name,
+            code: market.tradableInstrument.instrument.code,
+            productType:
+              market.tradableInstrument.instrument.product.__typename,
+            ...market.tradableInstrument.instrument.product,
+            ...(market.tradableInstrument.instrument.product?.settlementAsset ??
+              {}),
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Metadata'),
+      content: (
+        <MarketInfoTable
+          data={{
+            ...market.tradableInstrument.instrument.metadata.tags
+              ?.map((tag) => {
+                const [key, value] = tag.split(':');
+                return { [key]: value };
+              })
+              .reduce((acc, curr) => ({ ...acc, ...curr }), {}),
           }}
         />
       ),
@@ -212,6 +277,18 @@ export const Info = ({ market }: InfoProps) => {
         content: <MarketInfoTable data={trigger} />,
       })
     ),
+    {
+      title: t('Liquidity monitoring parameters'),
+      content: (
+        <MarketInfoTable
+          data={{
+            triggeringRatio:
+              market.liquidityMonitoringParameters.triggeringRatio,
+            ...market.liquidityMonitoringParameters.targetStakeParameters,
+          }}
+        />
+      ),
+    },
   ];
 
   return (
@@ -261,7 +338,7 @@ const Row = ({
           ? decimalPlaces
             ? addDecimalsFormatNumber(value, decimalPlaces)
             : asPercentage
-            ? formatNumberPercentage(new BigNumber(value))
+            ? formatNumberPercentage(new BigNumber(value * 100))
             : formatNumber(Number(value))
           : value}
       </KeyValueTableRow>
@@ -283,7 +360,7 @@ export const MarketInfoTable = ({
   decimalPlaces,
   asPercentage,
   unformatted,
-  omits = ['id', '__typename'],
+  omits = ['__typename'],
 }: MarketInfoTableProps) => {
   return (
     <KeyValueTable muted={true}>

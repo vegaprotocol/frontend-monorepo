@@ -53,6 +53,6 @@ describe('deposit form validation', () => {
       .clear()
       .type('100')
       .next(`[data-testid="${formFieldError}"]`)
-      .should('have.text', 'Amount is above approved amount');
+      .should('have.text', 'Insufficient amount in Ethereum wallet');
   });
 });

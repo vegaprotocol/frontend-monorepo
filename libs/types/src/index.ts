@@ -1,2 +1,2 @@
-export * from './__generated__/globalTypes';
+export * from './__generated__';
 export * from './candle';

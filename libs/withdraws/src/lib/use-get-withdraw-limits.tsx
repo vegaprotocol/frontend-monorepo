@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
-import type { Asset } from './types';
 import { useBridgeContract, useEthereumReadContract } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
+import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export const useGetWithdrawLimits = (asset?: Asset) => {
@@ -11,7 +11,7 @@ export const useGetWithdrawLimits = (asset?: Asset) => {
       return;
     }
 
-    return contract.getWithdrawThreshold(asset.source.contractAddress);
+    return contract.get_withdraw_threshold(asset.source.contractAddress);
   }, [asset, contract]);
 
   const {
@@ -20,9 +20,11 @@ export const useGetWithdrawLimits = (asset?: Asset) => {
 
   if (!data || !asset) return null;
 
-  const max = new BigNumber(addDecimal(data.toString(), asset.decimals));
-
+  const value = new BigNumber(addDecimal(data.toString(), asset.decimals));
+  const max = value.isEqualTo(0)
+    ? new BigNumber(Infinity)
+    : value.minus(new BigNumber(addDecimal('1', asset.decimals)));
   return {
-    max: max.isEqualTo(0) ? new BigNumber(Infinity) : max,
+    max,
   };
 };

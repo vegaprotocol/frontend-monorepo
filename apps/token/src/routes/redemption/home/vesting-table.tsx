@@ -63,7 +63,7 @@ export const VestingTable = ({
           {formatNumber(associated)}
         </KeyValueTableRow>
       </KeyValueTable>
-      <div className="flex">
+      <div className="flex border-white border">
         <div
           className="bg-vega-pink h-16"
           style={{ flex: lockedPercentage.toNumber() }}

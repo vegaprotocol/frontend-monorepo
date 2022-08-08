@@ -1,23 +1,19 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { CUSTOM_NODE_KEY, ErrorType } from '../types';
+import { ErrorType } from '../types';
 import type { Networks, NodeData } from '../types';
 
-export const getIsNodeLoading = ({
-  chain,
-  responseTime,
-  block,
-  ssl,
-}: NodeData) => {
+export const getIsNodeLoading = (node?: NodeData): boolean => {
+  if (!node) return false;
   return (
-    chain.isLoading ||
-    responseTime.isLoading ||
-    block.isLoading ||
-    ssl.isLoading
+    node.chain.isLoading ||
+    node.responseTime.isLoading ||
+    node.block.isLoading ||
+    node.ssl.isLoading
   );
 };
 
 export const getHasInvalidChain = (env: Networks, chain = '') => {
-  return !(chain.split('-')[0] === env.toLowerCase() ?? false);
+  return !chain.split('-').includes(env.toLowerCase());
 };
 
 export const getIsInvalidUrl = (url: string) => {
@@ -44,7 +40,6 @@ export const getIsNodeDisabled = (env: Networks, data?: NodeData) => {
 
 export const getIsFormDisabled = (
   currentNode: string | undefined,
-  inputText: string,
   env: Networks,
   state: Record<string, NodeData>
 ) => {
@@ -52,16 +47,8 @@ export const getIsFormDisabled = (
     return true;
   }
 
-  if (
-    currentNode === CUSTOM_NODE_KEY &&
-    state[CUSTOM_NODE_KEY] &&
-    inputText !== state[CUSTOM_NODE_KEY].url
-  ) {
-    return true;
-  }
-
   const data = state[currentNode];
-  return getIsNodeDisabled(env, data);
+  return data ? getIsNodeDisabled(env, data) : true;
 };
 
 export const getErrorByType = (

@@ -33,14 +33,12 @@ beforeEach(() => {
     assets: [asset],
     selectedAsset: undefined,
     onSelectAsset: jest.fn(),
-    available: new BigNumber(5),
+    balance: new BigNumber(5),
     submitApprove: jest.fn(),
     submitDeposit: jest.fn(),
     requestFaucet: jest.fn(),
-    limits: {
-      max: new BigNumber(20),
-      deposited: new BigNumber(10),
-    },
+    max: new BigNumber(20),
+    deposited: new BigNumber(10),
     allowance: new BigNumber(30),
     isFaucetable: true,
   };
@@ -125,7 +123,7 @@ describe('Deposit form', () => {
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
       expect(
-        await screen.findByText('Amount is above permitted maximum')
+        await screen.findByText('Insufficient amount in Ethereum wallet')
       ).toBeInTheDocument();
     });
 
@@ -133,7 +131,9 @@ describe('Deposit form', () => {
       render(
         <DepositForm
           {...props}
-          limits={{ max: new BigNumber(100), deposited: new BigNumber(10) }}
+          balance={new BigNumber(100)}
+          max={new BigNumber(100)}
+          deposited={new BigNumber(10)}
         />
       );
 
@@ -212,30 +212,35 @@ describe('Deposit form', () => {
     const mockUseWeb3React = useWeb3React as jest.Mock;
     mockUseWeb3React.mockReturnValue({ account });
 
-    const limits = {
-      max: new BigNumber(20),
-      deposited: new BigNumber(10),
-    };
-
+    const balance = new BigNumber(50);
+    const max = new BigNumber(20);
+    const deposited = new BigNumber(10);
     render(
       <DepositForm
         {...props}
         allowance={new BigNumber(100)}
-        available={new BigNumber(50)}
-        limits={limits}
+        balance={balance}
+        max={max}
+        deposited={deposited}
         selectedAsset={asset}
       />
     );
 
     // Check deposit limit is displayed
     expect(
-      screen.getByText('Max deposit total', { selector: 'th' })
+      screen.getByText('Balance available', { selector: 'th' })
         .nextElementSibling
-    ).toHaveTextContent(limits.max.toString());
+    ).toHaveTextContent(balance.toString());
     expect(
-      screen.getByText('Remaining available', { selector: 'th' })
+      screen.getByText('Maximum total deposit amount', { selector: 'th' })
         .nextElementSibling
-    ).toHaveTextContent(limits.max.minus(limits.deposited).toString());
+    ).toHaveTextContent(max.toString());
+    expect(
+      screen.getByText('Deposited', { selector: 'th' }).nextElementSibling
+    ).toHaveTextContent(deposited.toString());
+    expect(
+      screen.getByText('Remaining', { selector: 'th' }).nextElementSibling
+    ).toHaveTextContent(max.minus(deposited).toString());
 
     fireEvent.change(screen.getByLabelText('Amount'), {
       target: { value: '8' },
@@ -249,7 +254,7 @@ describe('Deposit form', () => {
       expect(props.submitDeposit).toHaveBeenCalledWith({
         // @ts-ignore contract address definitely defined
         assetSource: asset.source.contractAddress,
-        amount: '800',
+        amount: '8',
         vegaPublicKey: vegaKey,
       });
     });

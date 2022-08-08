@@ -20,6 +20,12 @@ export const PROPOSALS_FRAGMENT = gql`
           metadata
           instrument {
             name
+            code
+            futureProduct {
+              settlementAsset {
+                symbol
+              }
+            }
           }
         }
         ... on UpdateMarket {
@@ -27,12 +33,15 @@ export const PROPOSALS_FRAGMENT = gql`
         }
         ... on NewAsset {
           __typename
+          name
           symbol
           source {
             ... on BuiltinAsset {
+              __typename
               maxFaucetAmountMint
             }
             ... on ERC20 {
+              __typename
               contractAddress
             }
           }

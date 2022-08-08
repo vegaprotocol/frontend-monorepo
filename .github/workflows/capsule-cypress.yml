@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vegacapsule
-          ref: v0.2.0
+          ref: v0.2.1
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './capsule'
 
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: vegaprotocol/vega
-          ref: develop
+          ref: tm35.9
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './vega'
 

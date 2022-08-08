@@ -29,6 +29,7 @@ export const JumpToBlock = () => {
       inputType="number"
       inputName="blockNumber"
       submitHandler={handleSubmit}
+      inputMin={1}
     />
   );
 };

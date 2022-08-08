@@ -25,12 +25,12 @@ import {
   Tab,
   Tabs,
   PriceCellChange,
+  ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 import { AuctionTrigger } from '@vegaprotocol/types';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
-import 'allotment/dist/style.css';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -65,7 +65,7 @@ export const TradeMarketHeader = ({
   const itemValueClassName =
     'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
-    'w-full p-8 bg-white dark:bg-black',
+    'w-full p-8 mb-4 bg-white dark:bg-black',
     className
   );
   return (
@@ -85,14 +85,14 @@ export const TradeMarketHeader = ({
           className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap"
         >
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Change (24h)</span>
+            <span className={itemClassName}>{t('Change (24h)')}</span>
             <PriceCellChange
               candles={candlesClose}
               decimalPlaces={market.decimalPlaces}
             />
           </div>
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Volume</span>
+            <span className={itemClassName}>{t('Volume')}</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
@@ -103,7 +103,7 @@ export const TradeMarketHeader = ({
             </span>
           </div>
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Trading mode</span>
+            <span className={itemClassName}>{t('Trading mode')}</span>
             <span data-testid="trading-mode" className={itemValueClassName}>
               {market.tradingMode === MarketTradingMode.MonitoringAuction &&
               market.data?.trigger &&
@@ -114,6 +114,29 @@ export const TradeMarketHeader = ({
                 : formatLabel(market.tradingMode)}
             </span>
           </div>
+          <div className={headerItemClassName}>
+            <span className={itemClassName}>{t('Price')}</span>
+            <span data-testid="mark-price" className={itemValueClassName}>
+              {market.data && market.data.markPrice !== '0'
+                ? addDecimalsFormatNumber(
+                    market.data.markPrice,
+                    market.decimalPlaces
+                  )
+                : '-'}
+            </span>
+          </div>
+          {market.tradableInstrument.instrument.product?.settlementAsset
+            ?.symbol && (
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Settlement asset')}</span>
+              <span data-testid="trading-mode" className={itemValueClassName}>
+                {
+                  market.tradableInstrument.instrument.product?.settlementAsset
+                    ?.symbol
+                }
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </header>
@@ -136,11 +159,11 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
     <>
       <div className={wrapperClasses}>
         <TradeMarketHeader market={market} />
-        <Allotment vertical={true}>
-          <Allotment.Pane>
-            <Allotment proportionalLayout={false} minSize={200}>
+        <ResizablePanel vertical={true}>
+          <Allotment.Pane minSize={75}>
+            <ResizablePanel proportionalLayout={false} minSize={200}>
               <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
-                <TradeGridChild className="h-full px-4">
+                <TradeGridChild className="h-full pr-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="candles" name={t('Candles')}>
                       <TradingViews.Candles marketId={market.id} />
@@ -153,10 +176,10 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Allotment.Pane>
               <Allotment.Pane
                 priority={LayoutPriority.Low}
-                preferredSize={375}
+                preferredSize={330}
                 minSize={200}
               >
-                <TradeGridChild className="h-full px-4">
+                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="ticket" name={t('Ticket')}>
                       <TradingViews.Ticket marketId={market.id} />
@@ -169,10 +192,10 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Allotment.Pane>
               <Allotment.Pane
                 priority={LayoutPriority.Low}
-                preferredSize={460}
+                preferredSize={430}
                 minSize={200}
               >
-                <TradeGridChild className="h-full px-4">
+                <TradeGridChild className="h-full pl-4 bg-black-10 dark:bg-black-70">
                   <Tabs>
                     <Tab id="orderbook" name={t('Orderbook')}>
                       <TradingViews.Orderbook marketId={market.id} />
@@ -183,15 +206,14 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                   </Tabs>
                 </TradeGridChild>
               </Allotment.Pane>
-            </Allotment>
+            </ResizablePanel>
           </Allotment.Pane>
           <Allotment.Pane
-            snap={true}
             priority={LayoutPriority.Low}
             preferredSize={200}
-            minSize={200}
+            minSize={50}
           >
-            <TradeGridChild className="h-full">
+            <TradeGridChild className="h-full mt-4">
               <Tabs>
                 <Tab id="positions" name={t('Positions')}>
                   <TradingViews.Positions />
@@ -205,7 +227,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Tabs>
             </TradeGridChild>
           </Allotment.Pane>
-        </Allotment>
+        </ResizablePanel>
       </div>
     </>
   );

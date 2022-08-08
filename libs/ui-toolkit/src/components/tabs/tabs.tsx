@@ -60,7 +60,7 @@ export const Tabs = ({ children }: TabsProps) => {
           return (
             <TabsPrimitive.Content
               value={child.props.id}
-              className="h-full"
+              className="h-full bg-white dark:bg-black"
               data-testid={`tab-${child.props.id}`}
             >
               {child.props.children}

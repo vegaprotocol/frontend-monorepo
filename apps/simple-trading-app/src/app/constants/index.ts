@@ -1,7 +1,7 @@
 import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
 
 export const DATE_FORMAT = 'dd MMMM yyyy HH:mm';
-export const EXPIRE_DATE_FORMAT = 'MMMM dd';
+export const EXPIRE_DATE_FORMAT = 'MMM dd';
 
 export const TRADABLE_STATES = {
   Active: true,

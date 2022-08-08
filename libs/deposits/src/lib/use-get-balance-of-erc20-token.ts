@@ -1,30 +1,29 @@
-import { useEthereumReadContract } from '@vegaprotocol/web3';
 import type { Token } from '@vegaprotocol/smart-contracts';
+import * as Sentry from '@sentry/react';
 import { useWeb3React } from '@web3-react/core';
 import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
+import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export const useGetBalanceOfERC20Token = (
   contract: Token | null,
-  decimals: number | undefined
+  asset: Asset | undefined
 ) => {
   const { account } = useWeb3React();
-
-  const getBalance = useCallback(() => {
-    if (!contract || !account) {
+  const getBalance = useCallback(async () => {
+    if (!contract || !asset || !account) {
       return;
     }
 
-    return contract.balanceOf(account);
-  }, [contract, account]);
+    try {
+      const res = await contract.balanceOf(account);
+      return new BigNumber(addDecimal(res.toString(), asset.decimals));
+    } catch (err) {
+      Sentry.captureException(err);
+      return;
+    }
+  }, [contract, asset, account]);
 
-  const { state, refetch } = useEthereumReadContract(getBalance);
-
-  const balance =
-    state.data && decimals
-      ? new BigNumber(addDecimal(state.data?.toString(), decimals))
-      : undefined;
-
-  return { balance, refetch };
+  return getBalance;
 };

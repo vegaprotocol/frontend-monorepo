@@ -3,6 +3,7 @@ import BlockPage from './blocks';
 import Governance from './governance';
 import Home from './home';
 import Markets from './markets';
+import Oracles from './oracles';
 import Party from './parties';
 import { Parties } from './parties/home';
 import { Party as PartySingle } from './parties/id';
@@ -66,8 +67,8 @@ const governanceRoutes = flags.governance
   ? [
       {
         path: Routes.GOVERNANCE,
-        name: 'Governance',
-        text: t('Proposals'),
+        name: 'Governance proposals',
+        text: t('Governance Proposals'),
         element: <Governance />,
       },
     ]
@@ -80,6 +81,17 @@ const marketsRoutes = flags.markets
         name: 'Markets',
         text: t('Markets'),
         element: <Markets />,
+      },
+    ]
+  : [];
+
+const oraclesRoutes = flags.oracles
+  ? [
+      {
+        path: Routes.ORACLES,
+        name: 'Oracles',
+        text: t('Oracles'),
+        element: <Oracles />,
       },
     ]
   : [];
@@ -154,6 +166,7 @@ const routerConfig = [
   ...genesisRoutes,
   ...governanceRoutes,
   ...marketsRoutes,
+  ...oraclesRoutes,
   ...networkParametersRoutes,
   ...validators,
 ];

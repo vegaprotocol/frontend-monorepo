@@ -1,6 +1,5 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
@@ -8,11 +7,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import {
-  useEnvironment,
-  EnvironmentProvider,
-  NetworkSwitcherDialog,
-} from '@vegaprotocol/environment';
+import { EnvironmentProvider } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';
@@ -21,14 +16,12 @@ import './styles.css';
 import { useGlobalStore } from '../stores';
 
 function AppBody({ Component, pageProps }: AppProps) {
-  const { push } = useRouter();
   const store = useGlobalStore();
-  const { VEGA_NETWORKS } = useEnvironment();
   const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div className="h-full text-white relative text-black-60 dark:text-white-60 z-0 grid grid-rows-[min-content,1fr]">
+      <div className="h-full relative text-black-60 dark:text-white-60 z-0 grid grid-rows-[min-content,1fr]">
         <AppLoader>
           <div className="flex items-stretch border-b-[7px] bg-black border-vega-pink dark:border-vega-yellow">
             <Navbar />
@@ -41,7 +34,11 @@ function AppBody({ Component, pageProps }: AppProps) {
                   store.setVegaWalletManageDialog(open);
                 }}
               />
-              <ThemeSwitcher onToggle={toggleTheme} className="-my-4" />
+              <ThemeSwitcher
+                onToggle={toggleTheme}
+                className="-my-4"
+                sunClassName="text-white"
+              />
             </div>
           </div>
           <main data-testid={pageProps.page} className="dark:bg-black">
@@ -56,15 +53,6 @@ function AppBody({ Component, pageProps }: AppProps) {
           <VegaManageDialog
             dialogOpen={store.vegaWalletManageDialog}
             setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
-          />
-          <NetworkSwitcherDialog
-            dialogOpen={store.vegaNetworkSwitcherDialog}
-            setDialogOpen={(open) => store.setVegaNetworkSwitcherDialog(open)}
-            onConnect={({ network }) => {
-              if (VEGA_NETWORKS[network]) {
-                push(VEGA_NETWORKS[network] ?? '');
-              }
-            }}
           />
         </AppLoader>
       </div>
@@ -93,7 +81,7 @@ function VegaTradingApp(props: AppProps) {
           <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
           {['1', 'true'].includes(process.env['NX_USE_ENV_OVERRIDES'] || '') ? (
             /* eslint-disable-next-line @next/next/no-sync-scripts */
-            <script src="./env-config.js" type="text/javascript" />
+            <script src="/assets/env-config.js" type="text/javascript" />
           ) : null}
         </Head>
         <AppBody {...props} />

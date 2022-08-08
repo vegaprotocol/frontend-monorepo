@@ -1,6 +1,7 @@
 import { extent } from 'd3-array';
 import { scaleLinear } from 'd3-scale';
 import { line } from 'd3-shape';
+import classNames from 'classnames';
 import isEqual from 'lodash/isEqual';
 import React from 'react';
 
@@ -84,7 +85,7 @@ export const SparklineView = ({
   return (
     <svg
       data-testid="sparkline-svg"
-      className={`pt-px pr-0 w-full overflow-visible ${className}`}
+      className={classNames('pt-px pr-0 w-full overflow-visible', className)}
       width={width}
       height={height}
       viewBox="0 0 100 100"
@@ -104,7 +105,7 @@ export const SparklineView = ({
         <path
           data-testid="sparkline-path"
           d={mainPath}
-          className={strokeClassName}
+          className={`[vector-effect:non-scaling-stroke] ${strokeClassName}`}
           stroke="strokeCurrent"
           strokeWidth={2}
           fill="transparent"

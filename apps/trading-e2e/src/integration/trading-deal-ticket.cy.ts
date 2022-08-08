@@ -28,13 +28,6 @@ const mockTx = {
 };
 
 describe('deal ticket orders', () => {
-  const orderSizeField = 'order-size';
-  const orderPriceField = 'order-price';
-  const orderTIFDropDown = 'order-tif';
-  const placeOrderBtn = 'place-order';
-  const orderStatusHeader = 'order-status-header';
-  const orderTransactionHash = 'tx-block-explorer';
-
   before(() => {
     cy.mockGQL((req) => {
       mockTradingPage(req, MarketState.Active);
@@ -107,7 +100,15 @@ describe('deal ticket orders', () => {
   });
 
   const testOrder = (order: Order, expected?: Partial<Order>) => {
+    const orderSizeField = 'order-size';
+    const orderPriceField = 'order-price';
+    const orderTIFDropDown = 'order-tif';
+    const placeOrderBtn = 'place-order';
+    const dialogTitle = 'dialog-title';
+    const orderTransactionHash = 'tx-block-explorer';
+
     const { type, side, size, price, timeInForce, expiresAt } = order;
+
     cy.get(`[name="order-type"][value="${type}"`).click({ force: true }); // force as input is hidden and displayed as a button
     cy.get(`[name="order-side"][value="${side}"`).click({ force: true });
     cy.getByTestId(orderSizeField).clear().type(size);
@@ -139,7 +140,7 @@ describe('deal ticket orders', () => {
           ...expectedOrder,
         },
       });
-    cy.getByTestId(orderStatusHeader).should(
+    cy.getByTestId(dialogTitle).should(
       'have.text',
       'Awaiting network confirmation'
     );

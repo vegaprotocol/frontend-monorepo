@@ -61,6 +61,34 @@ export interface Market_market_tradableInstrument_instrument_metadata {
   tags: string[] | null;
 }
 
+export interface Market_market_tradableInstrument_instrument_product_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The id of the asset
+   */
+  id: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
+}
+
+export interface Market_market_tradableInstrument_instrument_product {
+  __typename: "Future";
+  /**
+   * String representing the quote (e.g. BTCUSD -> USD is quote)
+   */
+  quoteName: string;
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: Market_market_tradableInstrument_instrument_product_settlementAsset;
+}
+
 export interface Market_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
@@ -75,6 +103,10 @@ export interface Market_market_tradableInstrument_instrument {
    * Metadata for this instrument
    */
   metadata: Market_market_tradableInstrument_instrument_metadata;
+  /**
+   * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
+   */
+  product: Market_market_tradableInstrument_instrument_product;
 }
 
 export interface Market_market_tradableInstrument {

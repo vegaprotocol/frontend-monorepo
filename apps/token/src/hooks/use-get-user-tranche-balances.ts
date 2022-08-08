@@ -37,8 +37,8 @@ export const useGetUserTrancheBalances = (
       const trancheIds = [0, ...userTranches.map((t) => t.tranche_id)];
       const promises = trancheIds.map(async (tId) => {
         const [t, v] = await Promise.all([
-          vesting.getTrancheBalance(address, tId),
-          vesting.getVestedForTranche(address, tId),
+          vesting.get_tranche_balance(address, tId),
+          vesting.get_vested_for_tranche(address, tId),
         ]);
 
         const total = toBigNum(t, decimals);

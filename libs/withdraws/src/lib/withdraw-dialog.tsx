@@ -4,6 +4,7 @@ import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import type { EthTxState } from '@vegaprotocol/web3';
+import { isEthereumError } from '@vegaprotocol/web3';
 import { EthTxStatus } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/react-helpers';
 import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
@@ -24,38 +25,22 @@ export const WithdrawDialog = ({
   onDialogChange,
 }: WithdrawDialogProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const { intent, ...props } = getProps(approval, vegaTx, ethTx, ETHERSCAN_URL);
-  return (
-    <Dialog open={dialogOpen} intent={intent} onChange={onDialogChange}>
-      <DialogWrapper {...props} />
-    </Dialog>
+  const { intent, title, icon, children } = getProps(
+    approval,
+    vegaTx,
+    ethTx,
+    ETHERSCAN_URL
   );
-};
-
-interface DialogWrapperProps {
-  children: ReactNode;
-  icon: ReactNode;
-  title: string;
-}
-
-export const DialogWrapper = ({
-  children,
-  icon,
-  title,
-}: DialogWrapperProps) => {
   return (
-    <div className="flex gap-12 max-w-full text-ui">
-      <div className="pt-8 fill-current">{icon}</div>
-      <div className="flex-1">
-        <h1
-          data-testid="dialog-title"
-          className="text-h4 text-black dark:text-white capitalize mb-12"
-        >
-          {title}
-        </h1>
-        {children}
-      </div>
-    </div>
+    <Dialog
+      open={dialogOpen}
+      onChange={onDialogChange}
+      intent={intent}
+      title={title}
+      icon={icon}
+    >
+      {children}
+    </Dialog>
   );
 };
 
@@ -97,11 +82,7 @@ const getProps = (
       intent: Intent.Danger,
       children: (
         <Step>
-          {vegaTx.error && (
-            <pre className="text-ui break-all whitespace-pre-wrap">
-              {JSON.stringify(vegaTx.error, null, 2)}
-            </pre>
-          )}
+          <p>{vegaTx.error}</p>
         </Step>
       ),
     },
@@ -117,6 +98,31 @@ const getProps = (
       intent: Intent.None,
       children: <Step>Awaiting transaction</Step>,
     },
+    [VegaTxStatus.Complete]: {
+      title: t('Withdrawal transaction complete'),
+      icon: <Icon name="tick" />,
+      intent: Intent.Success,
+      children: <Step>Withdrawal created</Step>,
+    },
+  };
+
+  const completeProps = {
+    title: t('Withdrawal complete'),
+    icon: <Icon name="tick" />,
+    intent: Intent.Success,
+    children: (
+      <Step>
+        <span>{t('Ethereum transaction complete')}</span>
+        <Link
+          href={`${ethUrl}/tx/${ethTx.txHash}`}
+          title={t('View transaction on Etherscan')}
+          className="text-vega-pink dark:text-vega-yellow"
+          target="_blank"
+        >
+          {t('View on Etherscan')}
+        </Link>
+      </Step>
+    ),
   };
 
   const ethTxPropsMap: Record<EthTxStatus, DialogProps> = {
@@ -132,7 +138,11 @@ const getProps = (
       intent: Intent.Danger,
       children: (
         <Step>
-          {ethTx.error ? ethTx.error.message : t('Something went wrong')}
+          {isEthereumError(ethTx.error)
+            ? `Error: ${ethTx.error.reason}`
+            : ethTx.error instanceof Error
+            ? t(`Error: ${ethTx.error.message}`)
+            : t('Something went wrong')}
         </Step>
       ),
     },
@@ -164,24 +174,8 @@ const getProps = (
         </Step>
       ),
     },
-    [EthTxStatus.Complete]: {
-      title: t('Withdrawal complete'),
-      icon: <Icon name="tick" />,
-      intent: Intent.Success,
-      children: (
-        <Step>
-          <span>{t('Ethereum transaction complete')}</span>
-          <Link
-            href={`${ethUrl}/tx/${ethTx.txHash}`}
-            title={t('View transaction on Etherscan')}
-            className="text-vega-pink dark:text-vega-yellow"
-            target="_blank"
-          >
-            {t('View on Etherscan')}
-          </Link>
-        </Step>
-      ),
-    },
+    [EthTxStatus.Complete]: completeProps,
+    [EthTxStatus.Confirmed]: completeProps,
   };
 
   return approval ? ethTxPropsMap[ethTx.status] : vegaTxPropsMap[vegaTx.status];

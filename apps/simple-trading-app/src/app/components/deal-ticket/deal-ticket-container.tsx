@@ -52,6 +52,7 @@ export const DealTicketContainer = () => {
                   'Loading...'
                 ) : (
                   <DealTicketBalance
+                    className="mb-16"
                     settlementAsset={
                       data.market.tradableInstrument.instrument.product
                         ?.settlementAsset
@@ -60,7 +61,7 @@ export const DealTicketContainer = () => {
                     isWalletConnected={!!keypair?.pub}
                   />
                 )}
-                <DealTicketSteps market={data.market} />
+                <DealTicketSteps market={data.market} partyData={partyData} />
               </DealTicketManager>
             )}
           </Container>

@@ -3,11 +3,7 @@ import type {
   VegaKeyExtended,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
-import {
-  VegaWalletOrderSide,
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-} from '@vegaprotocol/wallet';
+import { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
@@ -18,15 +14,8 @@ import type {
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import {
-  MarketTradingMode,
-  MarketState,
-  OrderTimeInForce,
-} from '@vegaprotocol/types';
-import type {
-  OrderAmendmentBodyOrderAmendment,
-  OrderAmendmentBody,
-} from '@vegaprotocol/vegawallet-service-api-client';
+import type { OrderFields } from '../components';
+import { generateOrder } from '../components';
 
 const defaultWalletContext = {
   keypair: null,
@@ -38,7 +27,7 @@ const defaultWalletContext = {
   connector: null,
 };
 
-function setup(context?: Partial<VegaWalletContextShape>) {
+function setup(order: OrderFields, context?: Partial<VegaWalletContextShape>) {
   const mocks: MockedResponse<OrderEvent> = {
     request: {
       query: ORDER_EVENT_SUB,
@@ -119,53 +108,8 @@ function setup(context?: Partial<VegaWalletContextShape>) {
       </VegaWalletContext.Provider>
     </MockedProvider>
   );
-  return renderHook(() => useOrderEdit(), { wrapper });
+  return renderHook(() => useOrderEdit(order), { wrapper });
 }
-
-const defaultMarket = {
-  __typename: 'Market',
-  id: 'market-id',
-  decimalPlaces: 2,
-  positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.Continuous,
-  state: MarketState.Active,
-  tradableInstrument: {
-    __typename: 'TradableInstrument',
-    instrument: {
-      __typename: 'Instrument',
-      product: {
-        __typename: 'Future',
-        quoteName: 'quote-name',
-      },
-    },
-  },
-  depth: {
-    __typename: 'MarketDepth',
-    lastTrade: {
-      __typename: 'Trade',
-      price: '100',
-    },
-  },
-};
-
-const order = {
-  id: 'order-id',
-  type: VegaWalletOrderType.Limit,
-  size: '10',
-  timeInForce: OrderTimeInForce.GTT, // order timeInForce is transformed to wallet timeInForce
-  side: VegaWalletOrderSide.Buy,
-  price: '1234567.89',
-  expiration: new Date('2022-01-01'),
-  expiresAt: new Date('2022-01-01'),
-  status: VegaTxStatus.Pending,
-  rejectionReason: null,
-  market: {
-    id: 'market-id',
-    decimalPlaces: 2,
-    name: 'ETHDAI',
-    positionDecimalPlaces: 2,
-  },
-};
 
 describe('useOrderEdit', () => {
   it('should edit a correctly formatted order', async () => {
@@ -173,32 +117,38 @@ describe('useOrderEdit', () => {
     const keypair = {
       pub: '0x123',
     } as VegaKeyExtended;
-    const { result } = setup({
+    const order = generateOrder({
+      price: '123456789',
+      market: { decimalPlaces: 2 },
+    });
+    const { result } = setup(order, {
       sendTx: mockSendTx,
       keypairs: [keypair],
       keypair,
     });
 
-    await act(async () => {
-      result.current.edit(order);
+    act(() => {
+      result.current.edit({ price: '1234567.89' });
     });
 
     expect(mockSendTx).toHaveBeenCalledWith({
       pubKey: keypair.pub,
       propagate: true,
       orderAmendment: {
-        orderId: 'order-id',
-        marketId: defaultMarket.id, // Market provided from hook argument
-        timeInForce: VegaWalletOrderTimeInForce.GTT,
+        orderId: order.id,
+        // eslint-disable-next-line
+        marketId: order.market!.id,
+        timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
         price: { value: '123456789' }, // Decimal removed
         sizeDelta: 0,
-        expiresAt: { value: order.expiration?.getTime() + '000000' }, // Nanoseconds append
-      } as unknown as OrderAmendmentBodyOrderAmendment,
-    } as OrderAmendmentBody);
+        expiresAt: undefined,
+      },
+    });
   });
 
   it('has the correct default state', () => {
-    const { result } = setup();
+    const order = generateOrder();
+    const { result } = setup(order);
     expect(typeof result.current.edit).toEqual('function');
     expect(typeof result.current.reset).toEqual('function');
     expect(result.current.transaction.status).toEqual(VegaTxStatus.Default);
@@ -207,8 +157,9 @@ describe('useOrderEdit', () => {
   });
 
   it('should not sendTx if no keypair', async () => {
+    const order = generateOrder();
     const mockSendTx = jest.fn();
-    const { result } = setup({
+    const { result } = setup(order, {
       sendTx: mockSendTx,
       keypairs: [],
       keypair: null,

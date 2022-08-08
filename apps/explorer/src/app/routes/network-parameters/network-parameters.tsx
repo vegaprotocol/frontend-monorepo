@@ -16,7 +16,6 @@ import type {
   NetworkParametersQuery_networkParameters,
 } from './__generated__/NetworkParametersQuery';
 import orderBy from 'lodash/orderBy';
-import startCase from 'lodash/startCase';
 
 const BIG_NUMBER_PARAMS = [
   'spam.protection.delegation.min.tokens',
@@ -34,6 +33,8 @@ const BIG_NUMBER_PARAMS = [
   'spam.protection.proposal.min.tokens',
   'governance.proposal.updateMarket.minProposerBalance',
   'governance.proposal.asset.minProposerBalance',
+  'governance.proposal.market.minProposerBalance',
+  'governance.proposal.market.minVoterBalance',
 ];
 
 export const renderRow = ({
@@ -42,8 +43,15 @@ export const renderRow = ({
 }: NetworkParametersQuery_networkParameters) => {
   const isSyntaxRow = isJsonObject(value);
   return (
-    <KeyValueTableRow key={key} inline={!isSyntaxRow}>
-      {startCase(key)}
+    <KeyValueTableRow
+      key={key}
+      inline={!isSyntaxRow}
+      id={key}
+      className={
+        'group target:bg-vega-pink target:text-white dark:target:bg-vega-yellow dark:target:text-black'
+      }
+    >
+      {key}
       {isSyntaxRow ? (
         <SyntaxHighlighter data={JSON.parse(value)} />
       ) : isNaN(Number(value)) ? (

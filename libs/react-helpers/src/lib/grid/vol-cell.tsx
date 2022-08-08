@@ -30,10 +30,13 @@ export const Vol = React.memo(
     return (
       <div className="relative" data-testid={testId || 'vol'}>
         <div
-          className={classNames('h-full absolute top-0', {
-            'left-0': type === VolumeType.bid,
-            'right-0': type === VolumeType.ask,
-          })}
+          className={classNames(
+            'h-full absolute top-0 opacity-40 dark:opacity-100',
+            {
+              'left-0': type === VolumeType.bid,
+              'right-0': type === VolumeType.ask,
+            }
+          )}
           style={{
             width: relativeValue ? `${relativeValue}%` : '0%',
             backgroundColor: type === VolumeType.bid ? BID_COLOR : ASK_COLOR,

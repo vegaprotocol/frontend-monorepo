@@ -6,11 +6,11 @@ import { ProposalState } from '../../../../__generated__/globalTypes';
 import { useVoteInformation } from '../../hooks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
-const StatusPass = ({ children }: { children: React.ReactNode }) => (
+export const StatusPass = ({ children }: { children: React.ReactNode }) => (
   <span className="text-vega-green">{children}</span>
 );
 
-const StatusFail = ({ children }: { children: React.ReactNode }) => (
+export const StatusFail = ({ children }: { children: React.ReactNode }) => (
   <span className="text-danger">{children}</span>
 );
 

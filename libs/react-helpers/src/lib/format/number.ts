@@ -46,7 +46,10 @@ export const getDecimalSeparator = memoize(
       .find((part) => part.type === 'decimal')?.value
 );
 
-export const formatNumber = (rawValue: string | number, formatDecimals = 0) => {
+export const formatNumber = (
+  rawValue: string | number | BigNumber,
+  formatDecimals = 0
+) => {
   return getNumberFormat(formatDecimals).format(Number(rawValue));
 };
 

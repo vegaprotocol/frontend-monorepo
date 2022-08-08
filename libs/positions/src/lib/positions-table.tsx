@@ -27,7 +27,6 @@ export interface GetRowsParams extends Omit<IGetRowsParams, 'successCallback'> {
 export interface Datasource extends IDatasource {
   getRows(params: GetRowsParams): void;
 }
-
 interface Props extends AgGridReactProps {
   rowData?: Position[] | null;
   datasource?: Datasource;
@@ -280,6 +279,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
               )
         }
         cellRenderer="PriceFlashCell"
+        headerTooltip={t('P&L excludes any fees paid.')}
       />
       <AgGridColumn
         headerName={t('Unrealised PNL')}
