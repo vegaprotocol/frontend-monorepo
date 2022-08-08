@@ -5,8 +5,8 @@ import type { ReactNode } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';
 import * as web3 from '@vegaprotocol/web3';
 import * as wallet from '@vegaprotocol/wallet';
-import type { WithdrawalFields } from './use-withdraw';
-import { useWithdraw } from './use-withdraw';
+import type { WithdrawalFields } from './use-create-withdraw';
+import { useCreateWithdraw } from './use-create-withdraw';
 import type { Erc20Approval } from './__generated__/Erc20Approval';
 
 jest.mock('@vegaprotocol/web3', () => ({
@@ -30,7 +30,7 @@ function setup(mocks?: MockedResponse[], cancelled = false) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useWithdraw(cancelled), { wrapper });
+  return renderHook(() => useCreateWithdraw(), { wrapper });
 }
 
 const signature =

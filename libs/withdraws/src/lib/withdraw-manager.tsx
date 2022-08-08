@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
-import { useWithdraw } from './use-withdraw';
+import { useCreateWithdraw } from './use-create-withdraw';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
@@ -16,7 +16,7 @@ export interface WithdrawManagerProps {
 }
 
 export const WithdrawManager = ({ assets, accounts }: WithdrawManagerProps) => {
-  const { submit, transaction } = useWithdraw();
+  const { submit, transaction } = useCreateWithdraw();
   const [assetId, setAssetId] = useState<string | undefined>();
 
   // Find the asset object from the select box

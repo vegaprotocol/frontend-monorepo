@@ -10,7 +10,7 @@ export interface WithdrawalFields {
   receiverAddress: string;
 }
 
-export const useWithdraw = () => {
+export const useCreateWithdraw = () => {
   const waitForWithdrawalApproval = useWithdrawalApproval();
   const [approval, setApproval] =
     useState<Erc20Approval_erc20WithdrawalApproval | null>(null);

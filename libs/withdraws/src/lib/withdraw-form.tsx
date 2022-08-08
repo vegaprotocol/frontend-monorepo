@@ -20,7 +20,7 @@ import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import type { WithdrawalFields } from './use-withdraw';
+import type { WithdrawalFields } from './use-create-withdraw';
 import { WithdrawLimits } from './withdraw-limits';
 
 interface FormFields {
