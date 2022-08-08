@@ -30,8 +30,10 @@ import {
   Tab,
   Tabs,
   PriceCellChange,
+  Tooltip,
   ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
+import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -96,47 +98,52 @@ export const TradeMarketHeader = ({
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
-                    market.data.indicativeVolume,
-                    market.positionDecimalPlaces
-                  )
+                  market.data.indicativeVolume,
+                  market.positionDecimalPlaces
+                )
                 : '-'}
             </span>
           </div>
-          <div className={headerItemClassName}>
-            <span className={itemClassName}>{t('Trading mode')}</span>
-            <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode === MarketTradingMode.MonitoringAuction &&
-              market.data?.trigger &&
-              market.data.trigger !== AuctionTrigger.Unspecified
-                ? `${formatLabel(
+          <Tooltip
+            align="start"
+            description={<TradingModeTooltip market={market} />}
+          >
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Trading mode')}</span>
+              <span data-testid="trading-mode" className={itemValueClassName}>
+                {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+                  market.data?.trigger &&
+                  market.data.trigger !== AuctionTrigger.Unspecified
+                  ? `${formatLabel(
                     market.tradingMode
                   )} - ${market.data?.trigger.toLowerCase()}`
-                : formatLabel(market.tradingMode)}
-            </span>
-          </div>
+                  : formatLabel(market.tradingMode)}
+              </span>
+            </div>
+          </Tooltip>
           <div className={headerItemClassName}>
             <span className={itemClassName}>{t('Price')}</span>
             <span data-testid="mark-price" className={itemValueClassName}>
               {market.data && market.data.markPrice !== '0'
                 ? addDecimalsFormatNumber(
-                    market.data.markPrice,
-                    market.decimalPlaces
-                  )
+                  market.data.markPrice,
+                  market.decimalPlaces
+                )
                 : '-'}
             </span>
           </div>
           {market.tradableInstrument.instrument.product?.settlementAsset
             ?.symbol && (
-            <div className={headerItemClassName}>
-              <span className={itemClassName}>{t('Settlement asset')}</span>
-              <span data-testid="trading-mode" className={itemValueClassName}>
-                {
-                  market.tradableInstrument.instrument.product?.settlementAsset
-                    ?.symbol
-                }
-              </span>
-            </div>
-          )}
+              <div className={headerItemClassName}>
+                <span className={itemClassName}>{t('Settlement asset')}</span>
+                <span data-testid="trading-mode" className={itemValueClassName}>
+                  {
+                    market.tradableInstrument.instrument.product?.settlementAsset
+                      ?.symbol
+                  }
+                </span>
+              </div>
+            )}
         </div>
       </div>
     </header>
