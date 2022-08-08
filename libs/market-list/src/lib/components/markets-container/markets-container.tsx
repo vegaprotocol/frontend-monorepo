@@ -20,7 +20,7 @@ export const MarketsContainer = () => {
   };
 
   return (
-    <table className="m-20">
+    <table className="m-20 w-full overflow-y-auto">
       <SelectAllMarketsTableBody
         title={t('All markets')}
         data={data}

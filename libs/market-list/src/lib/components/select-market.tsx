@@ -172,12 +172,7 @@ export const SelectMarketPopover = ({
           )}
         >
           <span className="break-words text-left ml-5 ">{marketName}</span>
-          <RotatingArrow
-            color="yellow"
-            borderX={8}
-            borderBottom={12}
-            up={open}
-          />
+          <RotatingArrow borderX={8} borderBottom={12} up={open} />
         </div>
       }
     >
@@ -191,7 +186,7 @@ export const SelectMarketPopover = ({
         >
           {t('Select a market')}
         </span>
-        <table className="relative h-full min-w-full whitespace-nowrap">
+        <table className="relative h-full w-full whitespace-nowrap overflow-y-auto">
           {keypair &&
             positionMarkets?.markets &&
             positionMarkets.markets.length > 0 && (
