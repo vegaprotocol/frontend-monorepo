@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { t, useDataProvider } from '@vegaprotocol/react-helpers';
+import { t, useDataProvider, volumePrefix } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import {
   Dialog,
@@ -12,6 +12,11 @@ import isNil from 'lodash/isNil';
 import { useMemo, useState } from 'react';
 import { MARKET_LIST_QUERY } from '../markets-data-provider';
 import type { Column } from './select-market-columns';
+import {
+  columnHeadersPositionMarkets,
+  columnsPositionMarkets,
+} from './select-market-columns';
+import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
 import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
@@ -56,13 +61,16 @@ export const SelectMarketLandingTable = ({
 export const SelectAllMarketsTableBody = ({
   data,
   title = t('All markets'),
-  headers,
   onSelect,
+  headers = columnHeaders,
+  tableColumns = (market) => columns(market, onSelect),
 }: {
   data?: MarketList;
   title?: string;
-  headers?: Column[];
   onSelect: (id: string) => void;
+  headers?: Column[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tableColumns?: (market: any) => Column[];
 }) => {
   const marketList = useMemo(() => data && mapDataToMarketList(data), [data]);
 
@@ -84,7 +92,7 @@ export const SelectAllMarketsTableBody = ({
             <SelectMarketTableRow
               key={i}
               detailed={true}
-              columns={columns(market, onSelect)}
+              columns={tableColumns(market)}
             />
           ))}
       </tbody>
@@ -139,7 +147,8 @@ export const SelectMarketPopover = ({
             );
             return {
               ...market,
-              size: position?.openVolume,
+              openVolume:
+                position?.openVolume && volumePrefix(position.openVolume),
             };
           }) || null,
     }),
@@ -190,6 +199,10 @@ export const SelectMarketPopover = ({
                 title={t('My markets')}
                 data={positionMarkets}
                 onSelect={onSelectMarket}
+                headers={columnHeadersPositionMarkets}
+                tableColumns={(market) =>
+                  columnsPositionMarkets(market, onSelectMarket)
+                }
               />
             )}
           <SelectAllMarketsTableBody

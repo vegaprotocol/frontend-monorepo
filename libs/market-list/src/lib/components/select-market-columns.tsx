@@ -33,6 +33,77 @@ export interface Column {
   onlyOnDetailed: boolean;
 }
 
+export const columnHeadersPositionMarkets: Column[] = [
+  {
+    value: t('Market'),
+    className: thClassNames('left'),
+    onlyOnDetailed: false,
+  },
+  {
+    value: t('Last price'),
+    className: thClassNames('right'),
+    onlyOnDetailed: false,
+  },
+  {
+    value: t('Settlement asset'),
+    className: thClassNames('left'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Change (24h)'),
+    className: thClassNames('right'),
+    onlyOnDetailed: false,
+  },
+  { value: t(''), className: thClassNames('right'), onlyOnDetailed: false },
+  {
+    value: t('24h High'),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('24h Low'),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Trading mode'),
+    className: thClassNames('left'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: (
+      <Tooltip
+        description={
+          <span className="text-ui-small">
+            {t(
+              'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
+            )}
+            <ul>
+              <li className="py-5">{t('An infrastructure fee')}</li>
+              <li className="py-5">{t('A maker fee')}</li>
+              <li className="py-5">{t('A liquidity provision fee')}</li>
+            </ul>
+          </span>
+        }
+      >
+        <span className="border-b-2 border-dotted">{t('Taker fee')}</span>
+      </Tooltip>
+    ),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Volume'),
+    className: thClassNames('right'),
+    onlyOnDetailed: true,
+  },
+  {
+    value: t('Position'),
+    className: thClassNames('left'),
+    onlyOnDetailed: true,
+  },
+];
+
 export const columnHeaders: Column[] = [
   {
     value: t('Market'),
@@ -256,6 +327,174 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
     {
       value: market.openVolume,
       className: thClassNames('right'),
+      onlyOnDetailed: true,
+    },
+  ];
+  return selectMarketColumns;
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const columnsPositionMarkets = (
+  market: any,
+  onSelect: (id: string) => void
+) => {
+  const candlesClose = market.candles
+    .map((candle: { close: string }) => candle?.close)
+    .filter((c: string): c is CandleClose => c !== null);
+  const handleKeyPress = (
+    event: React.KeyboardEvent<HTMLAnchorElement>,
+    id: string
+  ) => {
+    if (event.key === 'Enter' && onSelect) {
+      return onSelect(id);
+    }
+  };
+  const selectMarketColumns: Column[] = [
+    {
+      value: (
+        <Link href={`/markets/${market.id}`} passHref={true}>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid,jsx-a11y/no-static-element-interactions */}
+          <a
+            onKeyPress={(event) => handleKeyPress(event, market.id)}
+            onClick={() => {
+              onSelect(market.id);
+            }}
+            data-testid={`market-link-${market.id}`}
+            className={`focus:decoration-vega-pink dark:focus:decoration-vega-yellow text-black dark:text-white`}
+          >
+            {market.tradableInstrument.instrument.code}
+          </a>
+        </Link>
+      ),
+      className: `${boldUnderlineClassNames} relative`,
+      onlyOnDetailed: false,
+    },
+    {
+      value: market.lastPrice ? (
+        <PriceCell
+          value={new BigNumber(market.lastPrice).toNumber()}
+          valueFormatted={addDecimalsFormatNumber(
+            market.lastPrice.toString(),
+            market.decimalPlaces,
+            2
+          )}
+        />
+      ) : (
+        '-'
+      ),
+      className: tdClassNames,
+      onlyOnDetailed: false,
+    },
+    {
+      value: market.settlementAsset,
+      className: thClassNames('left'),
+      onlyOnDetailed: false,
+    },
+    {
+      value: (
+        <PriceCellChange
+          candles={candlesClose}
+          decimalPlaces={market.decimalPlaces}
+        />
+      ),
+      className: tdClassNames,
+      onlyOnDetailed: false,
+    },
+    {
+      value: market.candles && (
+        <Sparkline
+          width={100}
+          height={20}
+          muted={false}
+          data={candlesClose.map((c: string) => Number(c))}
+        />
+      ),
+      className: 'px-8',
+      onlyOnDetailed: false,
+    },
+    {
+      value: market.candleHigh ? (
+        <PriceCell
+          value={new BigNumber(market.candleHigh).toNumber()}
+          valueFormatted={addDecimalsFormatNumber(
+            market.candleHigh.toString(),
+            market.decimalPlaces,
+            2
+          )}
+        />
+      ) : (
+        '-'
+      ),
+      className: tdClassNames,
+      onlyOnDetailed: true,
+    },
+    {
+      value: market.candleLow ? (
+        <PriceCell
+          value={new BigNumber(market.candleLow).toNumber()}
+          valueFormatted={addDecimalsFormatNumber(
+            market.candleLow.toString(),
+            market.decimalPlaces,
+            2
+          )}
+        />
+      ) : (
+        '-'
+      ),
+      className: tdClassNames,
+      onlyOnDetailed: true,
+    },
+    {
+      value:
+        market.tradingMode === MarketTradingMode.MonitoringAuction &&
+        market.data?.trigger &&
+        market.data.trigger !== AuctionTrigger.Unspecified
+          ? `${formatLabel(
+              market.tradingMode
+            )} - ${market.data?.trigger.toLowerCase()}`
+          : formatLabel(market.tradingMode),
+      className: thClassNames('left'),
+      onlyOnDetailed: true,
+    },
+    {
+      value: (
+        <Tooltip
+          description={<FeesBreakdown feeFactors={market.fees.factors} />}
+        >
+          <span className="border-b-2 border-dotted">
+            {market.totalFees ?? '-'}
+          </span>
+        </Tooltip>
+      ),
+      className: tdClassNames,
+      onlyOnDetailed: true,
+    },
+    {
+      value:
+        market.data && market.data.indicativeVolume !== '0'
+          ? addDecimalsFormatNumber(
+              market.data.indicativeVolume,
+              market.positionDecimalPlaces
+            )
+          : '-',
+      className: tdClassNames,
+      onlyOnDetailed: true,
+    },
+    {
+      value: (
+        <p
+          className={
+            market.openVolume.includes('+')
+              ? 'text-dark-green dark:text-vega-green'
+              : market.openVolume.includes('-')
+              ? 'text-red dark:text-vega-red'
+              : 'text-black dark:text-white'
+          }
+        >
+          {market.openVolume}
+        </p>
+      ),
+      className: thClassNames('left'),
       onlyOnDetailed: true,
     },
   ];
