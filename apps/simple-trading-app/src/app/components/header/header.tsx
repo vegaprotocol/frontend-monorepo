@@ -1,18 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import Logo from './logo';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-
-type WalletParams = {
-  connect: boolean;
-  manage: boolean;
-};
+import LocalContext from '../../context/local-context';
 
 interface Props {
-  setVegaWallet: (func: (wParams: WalletParams) => WalletParams) => void;
   toggleTheme: () => void;
 }
-const Header = ({ setVegaWallet, toggleTheme }: Props) => {
+const Header = ({ toggleTheme }: Props) => {
+  const { setConnect, setManage } = useContext(LocalContext);
   return (
     <div
       className="flex items-stretch pr-16 py-16 bg-black text-white-60"
@@ -21,12 +17,8 @@ const Header = ({ setVegaWallet, toggleTheme }: Props) => {
       <Logo />
       <div className="flex items-center gap-4 ml-auto mr-8 relative z-10">
         <VegaWalletConnectButton
-          setConnectDialog={(open) =>
-            setVegaWallet((x) => ({ ...x, connect: open }))
-          }
-          setManageDialog={(open) =>
-            setVegaWallet((x) => ({ ...x, manage: open }))
-          }
+          setConnectDialog={setConnect}
+          setManageDialog={setManage}
         />
         <ThemeSwitcher
           onToggle={toggleTheme}
