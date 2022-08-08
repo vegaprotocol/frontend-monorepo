@@ -8,7 +8,9 @@ interface Props {
   toggleTheme: () => void;
 }
 const Header = ({ toggleTheme }: Props) => {
-  const { setConnect, setManage } = useContext(LocalContext);
+  const {
+    vegaWalletDialog: { setConnect, setManage },
+  } = useContext(LocalContext);
   return (
     <div
       className="flex items-stretch pr-16 py-16 bg-black text-white-60"

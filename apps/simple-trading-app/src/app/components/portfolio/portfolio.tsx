@@ -10,7 +10,9 @@ import { FillsContainer } from '@vegaprotocol/fills';
 
 export const Portfolio = () => {
   const { keypair } = useVegaWallet();
-  const { setConnect } = useContext(LocalContext);
+  const {
+    vegaWalletDialog: { setConnect },
+  } = useContext(LocalContext);
   if (!keypair) {
     return (
       <Splash>

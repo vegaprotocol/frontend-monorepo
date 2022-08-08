@@ -43,11 +43,11 @@ function App() {
                   <VegaConnectDialog
                     connectors={Connectors}
                     dialogOpen={localValues.vegaWalletDialog.connect}
-                    setDialogOpen={localValues.setConnect}
+                    setDialogOpen={localValues.vegaWalletDialog.setConnect}
                   />
                   <VegaManageDialog
                     dialogOpen={localValues.vegaWalletDialog.manage}
-                    setDialogOpen={localValues.setManage}
+                    setDialogOpen={localValues.vegaWalletDialog.setManage}
                   />
                 </div>
               </AppLoader>

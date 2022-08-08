@@ -3,12 +3,12 @@ import { createContext } from 'react';
 export interface VegaWalletDialogState {
   connect: boolean;
   manage: boolean;
+  setConnect: (isOpen: boolean) => void;
+  setManage: (isOpen: boolean) => void;
 }
 
 export interface LocalValues {
   vegaWalletDialog: VegaWalletDialogState;
-  setConnect: (isOpen: boolean) => void;
-  setManage: (isOpen: boolean) => void;
 }
 
 const LocalContext = createContext<LocalValues>({} as LocalValues);

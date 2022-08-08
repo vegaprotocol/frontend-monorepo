@@ -6,9 +6,7 @@ const useLocalValues = () => {
   const [manage, setManage] = useState<boolean>(false);
   return useMemo<LocalValues>(
     () => ({
-      vegaWalletDialog: { connect, manage },
-      setConnect,
-      setManage,
+      vegaWalletDialog: { connect, manage, setConnect, setManage },
     }),
     [connect, manage, setConnect, setManage]
   );
