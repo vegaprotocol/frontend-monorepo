@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
-import AccordionChevron from './chevron-down';
 import classNames from 'classnames';
+import { ChevronDownIcon } from '@radix-ui/react-icons';
 
 export interface AccordionItemProps {
   title: React.ReactNode;
@@ -13,6 +13,7 @@ export interface AccordionProps {
 }
 
 export const Accordion = ({ panels }: AccordionProps) => {
+  const [values, setValues] = useState<string[]>([]);
   const triggerClassNames = classNames(
     'w-full py-2 box-border',
     'appearance-none cursor-pointer focus:outline-none',
@@ -21,7 +22,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
   );
 
   return (
-    <AccordionPrimitive.Root type="multiple" className="flex flex-col">
+    <AccordionPrimitive.Root type="multiple" className="flex flex-col" value={values} onValueChange={setValues}>
       {panels.map(({ title, content }, i) => (
         <AccordionPrimitive.Item value={`item-${i + 1}`} key={`item-${i + 1}`}>
           <AccordionPrimitive.Header>
@@ -35,7 +36,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
               >
                 {title}
               </p>
-              <AccordionChevron aria-hidden />
+              <AccordionChevron active={values.includes(`item-${i + 1}`)} aria-hidden />
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content
@@ -49,5 +50,11 @@ export const Accordion = ({ panels }: AccordionProps) => {
         </AccordionPrimitive.Item>
       ))}
     </AccordionPrimitive.Root>
+  );
+};
+
+export const AccordionChevron = ({ active }: { active: boolean }) => {
+  return (
+    <ChevronDownIcon className={classNames('w-20 h-20 transition ease-in-out duration-300', { 'transform rotate-180': active })} aria-hidden />
   );
 };
