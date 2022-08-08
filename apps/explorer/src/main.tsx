@@ -6,6 +6,7 @@ import './styles.css';
 
 import App from './app/app';
 import { ENV } from './app/config/env';
+import { StrictMode } from 'react';
 
 const { dsn } = ENV;
 
@@ -22,7 +23,9 @@ const rootElement = document.getElementById('root');
 const root = rootElement && createRoot(rootElement);
 
 root?.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
+  <StrictMode>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>
 );

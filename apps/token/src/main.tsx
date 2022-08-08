@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client';
 import App from './app';
 import reportWebVitals from './report-web-vitals';
 import { ENV } from './config/env';
+import { StrictMode } from 'react';
 
 const dsn = ENV.dsn || false;
 const environment = ENV.envName || 'local';
@@ -40,7 +41,11 @@ if (dsn) {
 const rootElement = document.getElementById('root');
 const root = rootElement && createRoot(rootElement);
 
-root?.render(<App />);
+root?.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
