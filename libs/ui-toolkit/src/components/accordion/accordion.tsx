@@ -22,7 +22,12 @@ export const Accordion = ({ panels }: AccordionProps) => {
   );
 
   return (
-    <AccordionPrimitive.Root type="multiple" className="flex flex-col" value={values} onValueChange={setValues}>
+    <AccordionPrimitive.Root
+      type="multiple"
+      className="flex flex-col"
+      value={values}
+      onValueChange={setValues}
+    >
       {panels.map(({ title, content }, i) => (
         <AccordionPrimitive.Item value={`item-${i + 1}`} key={`item-${i + 1}`}>
           <AccordionPrimitive.Header>
@@ -36,7 +41,10 @@ export const Accordion = ({ panels }: AccordionProps) => {
               >
                 {title}
               </p>
-              <AccordionChevron active={values.includes(`item-${i + 1}`)} aria-hidden />
+              <AccordionChevron
+                active={values.includes(`item-${i + 1}`)}
+                aria-hidden
+              />
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content
@@ -55,6 +63,11 @@ export const Accordion = ({ panels }: AccordionProps) => {
 
 export const AccordionChevron = ({ active }: { active: boolean }) => {
   return (
-    <ChevronDownIcon className={classNames('w-20 h-20 transition ease-in-out duration-300', { 'transform rotate-180': active })} aria-hidden />
+    <ChevronDownIcon
+      className={classNames('w-20 h-20 transition ease-in-out duration-300', {
+        'transform rotate-180': active,
+      })}
+      aria-hidden
+    />
   );
 };
