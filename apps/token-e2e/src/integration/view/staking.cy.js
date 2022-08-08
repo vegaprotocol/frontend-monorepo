@@ -86,7 +86,7 @@ context('Staking Page - verify elements on page', function () {
 
       // 1002-STKE-021
       it('Should be able to see validator ranking score', function () {
-        //
+        cy.get('.ag-body-horizontal-scroll-viewport').scrollTo('right');
         cy.get('[col-id="rankingScore"]')
           .should('have.length.at.least', 1)
           .each(($rankingScore) => {
@@ -114,7 +114,6 @@ context('Staking Page - verify elements on page', function () {
 
       // 1002-STKE-024
       it('Should be able to see validator voting power score', function () {
-        cy.get('.ag-body-horizontal-scroll-viewport').scrollTo('right');
         cy.get('[col-id="votingPower"]')
           .should('have.length.at.least', 1)
           .each(($votingPower) => {

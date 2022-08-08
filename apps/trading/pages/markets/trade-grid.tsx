@@ -25,12 +25,14 @@ import {
   Tab,
   Tabs,
   PriceCellChange,
+  Tooltip,
   ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
 import type { CandleClose } from '@vegaprotocol/types';
 import { AuctionTrigger } from '@vegaprotocol/types';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
+import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -102,18 +104,23 @@ export const TradeMarketHeader = ({
                 : '-'}
             </span>
           </div>
-          <div className={headerItemClassName}>
-            <span className={itemClassName}>{t('Trading mode')}</span>
-            <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode === MarketTradingMode.MonitoringAuction &&
-              market.data?.trigger &&
-              market.data.trigger !== AuctionTrigger.Unspecified
-                ? `${formatLabel(
-                    market.tradingMode
-                  )} - ${market.data?.trigger.toLowerCase()}`
-                : formatLabel(market.tradingMode)}
-            </span>
-          </div>
+          <Tooltip
+            align="start"
+            description={<TradingModeTooltip market={market} />}
+          >
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Trading mode')}</span>
+              <span data-testid="trading-mode" className={itemValueClassName}>
+                {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+                market.data?.trigger &&
+                market.data.trigger !== AuctionTrigger.Unspecified
+                  ? `${formatLabel(
+                      market.tradingMode
+                    )} - ${market.data?.trigger.toLowerCase()}`
+                  : formatLabel(market.tradingMode)}
+              </span>
+            </div>
+          </Tooltip>
           <div className={headerItemClassName}>
             <span className={itemClassName}>{t('Price')}</span>
             <span data-testid="mark-price" className={itemValueClassName}>

@@ -34,6 +34,7 @@ export const NODES_QUERY = gql`
       stakedTotal
       stakedTotalFormatted @client
       pendingStake
+      pendingStakeFormatted @client
       rankingScore {
         rankingScore
         stakeScore
@@ -122,7 +123,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           performanceScore,
           votingPower,
         },
-        pendingStake,
+        pendingStakeFormatted,
       }) => {
         const stakedTotal = new BigNumber(
           data?.nodeData?.stakedTotalFormatted || 0
@@ -142,10 +143,10 @@ export const NodeList = ({ epoch }: NodeListProps) => {
             name,
           },
           [STATUS]: statusTranslated,
-          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotal, 2),
+          [TOTAL_STAKE_THIS_EPOCH]: formatNumber(stakedTotalFormatted, 2),
           [SHARE]: stakedTotalPercentage,
           [VALIDATOR_STAKE]: formatNumber(stakedOnNode, 2),
-          [PENDING_STAKE]: formatNumber(pendingStake, 2),
+          [PENDING_STAKE]: formatNumber(pendingStakeFormatted, 2),
           [RANKING_SCORE]: formatNumber(new BigNumber(rankingScore), 5),
           [STAKE_SCORE]: formatNumber(new BigNumber(stakeScore), 5),
           [PERFORMANCE_SCORE]: formatNumber(new BigNumber(performanceScore), 5),
