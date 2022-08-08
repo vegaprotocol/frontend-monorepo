@@ -1,10 +1,13 @@
 import { isFuture } from 'date-fns';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import { Routes } from '../../../router-config';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { Link } from 'react-router-dom';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
@@ -44,7 +47,16 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
 
   return (
     <>
-      <Heading title={t('pageTitleGovernance')} />
+      <div className="grid xs:grid-cols-2 items-center">
+        <Heading centerContent={false} title={t('pageTitleGovernance')} />
+        <Link
+          className="mb-16 xs:justify-self-end"
+          to={`${Routes.GOVERNANCE}/propose`}
+        >
+          <Button variant={'primary'}>{t('NewProposal')}</Button>
+        </Link>
+      </div>
+
       {failedProposalsCulled.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
