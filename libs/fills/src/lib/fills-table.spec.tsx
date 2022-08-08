@@ -1,7 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
-import { act } from 'react-dom/test-utils';
 import type { PartialDeep } from 'type-fest';
 
 import { FillsTable } from './fills-table';
