@@ -98,9 +98,9 @@ export const TradeMarketHeader = ({
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
-                  market.data.indicativeVolume,
-                  market.positionDecimalPlaces
-                )
+                    market.data.indicativeVolume,
+                    market.positionDecimalPlaces
+                  )
                 : '-'}
             </span>
           </div>
@@ -112,11 +112,11 @@ export const TradeMarketHeader = ({
               <span className={itemClassName}>{t('Trading mode')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
                 {market.tradingMode === MarketTradingMode.MonitoringAuction &&
-                  market.data?.trigger &&
-                  market.data.trigger !== AuctionTrigger.Unspecified
+                market.data?.trigger &&
+                market.data.trigger !== AuctionTrigger.Unspecified
                   ? `${formatLabel(
-                    market.tradingMode
-                  )} - ${market.data?.trigger.toLowerCase()}`
+                      market.tradingMode
+                    )} - ${market.data?.trigger.toLowerCase()}`
                   : formatLabel(market.tradingMode)}
               </span>
             </div>
@@ -126,24 +126,24 @@ export const TradeMarketHeader = ({
             <span data-testid="mark-price" className={itemValueClassName}>
               {market.data && market.data.markPrice !== '0'
                 ? addDecimalsFormatNumber(
-                  market.data.markPrice,
-                  market.decimalPlaces
-                )
+                    market.data.markPrice,
+                    market.decimalPlaces
+                  )
                 : '-'}
             </span>
           </div>
           {market.tradableInstrument.instrument.product?.settlementAsset
             ?.symbol && (
-              <div className={headerItemClassName}>
-                <span className={itemClassName}>{t('Settlement asset')}</span>
-                <span data-testid="trading-mode" className={itemValueClassName}>
-                  {
-                    market.tradableInstrument.instrument.product?.settlementAsset
-                      ?.symbol
-                  }
-                </span>
-              </div>
-            )}
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Settlement asset')}</span>
+              <span data-testid="trading-mode" className={itemValueClassName}>
+                {
+                  market.tradableInstrument.instrument.product?.settlementAsset
+                    ?.symbol
+                }
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </header>
