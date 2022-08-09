@@ -52,6 +52,7 @@ export interface Nodes_nodes {
    * Amount of stake on the next epoch
    */
   pendingStake: string;
+  pendingStakeFormatted: string;
   /**
    * Ranking scores and status for the validator for the current epoch
    */

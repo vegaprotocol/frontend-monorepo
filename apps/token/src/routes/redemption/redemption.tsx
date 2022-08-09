@@ -52,7 +52,7 @@ const RedemptionRouter = () => {
   if (error) {
     return (
       <Callout intent={Intent.Danger} title={t('errorLoadingTranches')}>
-        {error}
+        {error.message}
       </Callout>
     );
   }

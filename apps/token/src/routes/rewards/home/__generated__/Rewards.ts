@@ -3,8 +3,6 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { AccountType } from "@vegaprotocol/types";
-
 // ====================================================
 // GraphQL query operation: Rewards
 // ====================================================
@@ -47,10 +45,6 @@ export interface Rewards_party_rewardDetails_rewards_epoch {
 
 export interface Rewards_party_rewardDetails_rewards {
   __typename: "Reward";
-  /**
-   * The type of reward
-   */
-  rewardType: AccountType;
   /**
    * The asset this reward is paid in
    */

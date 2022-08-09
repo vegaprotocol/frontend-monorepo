@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react-hooks/dom';
+import { renderHook, act } from '@testing-library/react';
 import { EthTxStatus } from './use-ethereum-transaction';
 import { useEthereumTransaction } from './use-ethereum-transaction';
 import type { ethers } from 'ethers';
