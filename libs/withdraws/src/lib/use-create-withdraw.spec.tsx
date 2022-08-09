@@ -1,42 +1,40 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react-hooks/dom';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';
-import * as web3 from '@vegaprotocol/web3';
-import * as wallet from '@vegaprotocol/wallet';
 import type { WithdrawalFields } from './use-create-withdraw';
 import { useCreateWithdraw } from './use-create-withdraw';
 import type { Erc20Approval } from './__generated__/Erc20Approval';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import {
+  initialState,
+  VegaTxStatus,
+  VegaWalletContext,
+} from '@vegaprotocol/wallet';
+import { waitFor } from '@testing-library/react';
+import { determineId } from '@vegaprotocol/react-helpers';
 
-jest.mock('@vegaprotocol/web3', () => ({
-  useBridgeContract: jest.fn().mockReturnValue({
-    withdraw_asset: jest.fn(),
-    isNewContract: true,
-  }),
-  useEthereumTransaction: jest.fn(),
-}));
-
-jest.mock('@vegaprotocol/wallet', () => ({
-  useVegaWallet: jest.fn().mockReturnValue({ keypair: { pub: 'pubkey' } }),
-  useVegaTransaction: jest.fn().mockReturnValue({
-    transaction: {},
-    send: jest.fn(),
-    reset: jest.fn(),
-  }),
-}));
-
-function setup(mocks?: MockedResponse[], cancelled = false) {
+function setup(
+  vegaWalletContext: Partial<VegaWalletContextShape>,
+  mocks?: MockedResponse[]
+) {
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks}>{children}</MockedProvider>
+    <MockedProvider mocks={mocks}>
+      <VegaWalletContext.Provider
+        value={vegaWalletContext as VegaWalletContextShape}
+      >
+        {children}
+      </VegaWalletContext.Provider>
+    </MockedProvider>
   );
   return renderHook(() => useCreateWithdraw(), { wrapper });
 }
 
+const txHash = 'tx-hash';
 const signature =
   'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909';
-const derivedWithdrawalId =
-  '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50';
+const derivedWithdrawalId = determineId(signature);
 
 beforeAll(() => {
   jest.useFakeTimers();
@@ -46,37 +44,19 @@ afterAll(() => {
   jest.useRealTimers();
 });
 
-let pubkey: string;
+const pubkey = '0x123';
 let mockSend: jest.Mock;
-let mockPerform: jest.Mock;
-let mockEthReset: jest.Mock;
 let mockVegaReset: jest.Mock;
 let withdrawalInput: WithdrawalFields;
 let mockERC20Approval: MockedResponse<Erc20Approval>;
 
 beforeEach(() => {
-  pubkey = 'pubkey';
-  mockSend = jest.fn().mockReturnValue(Promise.resolve({ signature }));
-  mockPerform = jest.fn();
-  mockEthReset = jest.fn();
+  mockSend = jest
+    .fn()
+    .mockReturnValue(
+      Promise.resolve({ txHash, tx: { signature: { value: signature } } })
+    );
   mockVegaReset = jest.fn();
-
-  jest.spyOn(web3, 'useEthereumTransaction').mockReturnValue({
-    // @ts-ignore allow null transaction as its not used in hook logic
-    transaction: null,
-    perform: mockPerform,
-    reset: mockEthReset,
-  });
-  jest
-    .spyOn(wallet, 'useVegaWallet')
-    // @ts-ignore only need to mock keypair
-    .mockReturnValue({ keypair: { pub: pubkey } });
-  jest.spyOn(wallet, 'useVegaTransaction').mockReturnValue({
-    // @ts-ignore allow null transaction as its not used in hook logic
-    transaction: null,
-    send: mockSend,
-    reset: mockVegaReset,
-  });
 
   withdrawalInput = {
     amount: '100',
@@ -106,10 +86,18 @@ beforeEach(() => {
   };
 });
 
-it('Creates withdrawal and immediately submits Ethereum transaction', async () => {
-  const { result } = setup([mockERC20Approval]);
+it('Creates withdrawal and waits for approval creation', async () => {
+  const { result } = setup(
+    { sendTx: mockSend, keypair: { pub: pubkey } as any },
+    [mockERC20Approval]
+  );
 
-  await act(async () => {
+  expect(result.current.transaction).toEqual(initialState);
+  expect(result.current.submit).toEqual(expect.any(Function));
+  expect(result.current.reset).toEqual(expect.any(Function));
+  expect(result.current.approval).toEqual(null);
+
+  act(() => {
     result.current.submit(withdrawalInput);
   });
 
@@ -127,63 +115,24 @@ it('Creates withdrawal and immediately submits Ethereum transaction', async () =
     },
   });
 
-  expect(result.current.withdrawalId).toEqual(derivedWithdrawalId);
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Requested);
 
-  // Query 'poll' not returned yet and eth transaction shouldn't have
-  // started
-  expect(result.current.approval).toEqual(null);
-  expect(mockPerform).not.toHaveBeenCalled();
-
-  // Advance query delay time so query result is returned and the
-  // eth transaction should be called with the approval query result
-  await act(async () => {
-    jest.advanceTimersByTime(mockERC20Approval.delay || 0);
+  await waitFor(() => {
+    expect(result.current.transaction.status).toEqual(VegaTxStatus.Pending);
+    expect(result.current.transaction.dialogOpen).toBe(true);
+    // Poll for erc20Approval should not be complete yet
+    expect(result.current.approval).toEqual(null);
   });
 
+  await act(async () => {
+    // Advance time by delay plus interval length to ensure mock result is triggered
+    // eslint-disable-next-line
+    jest.advanceTimersByTime(mockERC20Approval.delay! + 1000);
+  });
+
+  expect(result.current.transaction.status).toEqual(VegaTxStatus.Complete);
   expect(result.current.approval).toEqual(
     // @ts-ignore MockedRespones types inteferring
     mockERC20Approval.result.data.erc20WithdrawalApproval
   );
-  // @ts-ignore MockedRespones types inteferring
-  const withdrawal = mockERC20Approval.result.data.erc20WithdrawalApproval;
-  expect(mockPerform).toHaveBeenCalledWith(
-    withdrawal.assetSource,
-    withdrawal.amount,
-    withdrawal.targetAddress,
-    withdrawal.creation,
-    withdrawal.nonce,
-    withdrawal.signatures
-  );
-});
-
-it('Doesnt perform Ethereum tx if cancelled', async () => {
-  const { result } = setup([mockERC20Approval], true);
-
-  await act(async () => {
-    result.current.submit(withdrawalInput);
-  });
-
-  await act(async () => {
-    jest.advanceTimersByTime(mockERC20Approval.delay || 0);
-  });
-
-  expect(result.current.approval).toEqual(
-    // @ts-ignore MockedRespone types inteferring
-    mockERC20Approval.result.data.erc20WithdrawalApproval
-  );
-
-  // Approval set, but cancelled flag is set, so the Ethereum
-  // TX should not be invoked
-  expect(mockPerform).not.toHaveBeenCalled();
-});
-
-it('Reset will reset both transactions', async () => {
-  const { result } = setup([mockERC20Approval]);
-
-  await act(async () => {
-    result.current.reset();
-  });
-
-  expect(mockEthReset).toHaveBeenCalled();
-  expect(mockVegaReset).toHaveBeenCalled();
 });
