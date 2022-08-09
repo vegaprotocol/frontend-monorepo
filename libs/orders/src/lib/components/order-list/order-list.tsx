@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
 import {
   addDecimal,
