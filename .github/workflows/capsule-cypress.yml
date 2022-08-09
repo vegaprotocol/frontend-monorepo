@@ -108,7 +108,7 @@ jobs:
       - name: Checkout frontend mono repo
         uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: master
           fetch-depth: 0
 
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
@@ -120,7 +120,7 @@ jobs:
         run: yarn install
 
       - name: Run Cypress tests
-        run: npx nx run-many:e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: npx nx run-many --target=e2e --all --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
