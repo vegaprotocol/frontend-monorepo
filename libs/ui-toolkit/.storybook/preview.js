@@ -25,11 +25,11 @@ export const globalTypes = {
   theme: {
     name: 'Theme',
     description: 'Global theme for components',
-    defaultValue: 'sideBySide',
+    defaultValue: 'dark',
     toolbar: {
       icon: 'circlehollow',
       items: [
-        { value: 'light', title: 'Light' },
+        { value: 'light', title: 'Light', class: ['blah'] },
         { value: 'dark', title: 'Dark' },
         { value: 'sideBySide', title: 'Side by side' },
       ],
@@ -56,6 +56,8 @@ const withTheme = (Story, context) => {
   const storyClasses = `h-[100vh] w-[100vw] ${
     theme === 'dark' ? darkThemeClasses : lightThemeClasses
   }`;
+
+  document.body.classList.toggle('dark', theme === 'dark');
 
   return theme === 'sideBySide' ? (
     <>
