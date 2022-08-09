@@ -122,7 +122,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             'text-vega-green-dark dark:text-vega-green': ({
               data,
             }: {
-              data: Orders_party_ordersConnection_edges_node,
+              data: Orders_party_ordersConnection_edges_node;
             }) => data.side === Side.Buy,
             'text-vega-red-dark dark:text-vega-red': ({
               data,
