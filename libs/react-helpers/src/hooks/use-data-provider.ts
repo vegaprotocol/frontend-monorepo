@@ -1,8 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApolloClient } from '@apollo/client';
 import type { OperationVariables } from '@apollo/client';
-import type { Subscribe, Load } from '../lib/generic-data-provider';
+import type {
+  Subscribe,
+  Load,
+  UpdateCallbackArgs,
+} from '../lib/generic-data-provider';
 
 /**
  *
@@ -56,20 +59,27 @@ export function useDataProvider<Data, Delta>({
     return Promise.reject();
   }, []);
   const callback = useCallback(
-    ({ data, error, loading, delta, insertionData, totalCount }: any) => {
+    ({
+      data,
+      error,
+      loading,
+      delta,
+      insertionData,
+      totalCount,
+    }: UpdateCallbackArgs<Data, Delta>) => {
       setError(error);
       setLoading(loading);
       if (!error && !loading) {
         // if update or insert function returns true it means that component handles updates
         // component can use flush() which will call callback without delta and cause data state update
         if (initialized.current) {
-          if (delta && update && update({ delta, data })) {
+          if (delta && update && update({ delta, data: data as Data })) {
             return;
           }
           if (
             insertionData &&
             insert &&
-            insert({ insertionData, data, totalCount })
+            insert({ insertionData, data: data as Data, totalCount })
           ) {
             return;
           }
