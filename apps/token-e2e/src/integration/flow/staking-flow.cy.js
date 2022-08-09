@@ -154,15 +154,30 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.navigate_to('staking');
 
       cy.get(`[row-id="${0}"]`).within(() => {
-        cy.get(stakeValidatorListTotalStake).should('have.text', '2.00').and('be.visible');
-        cy.get(stakeValidatorListTotalShare).should('have.text', '66.67%').and('be.visible');
-        cy.get(stakeValidatorListValidatorStake).scrollIntoView().should('have.text', '2.00').and('be.visible');
+        cy.get(stakeValidatorListTotalStake)
+          .should('have.text', '2.00')
+          .and('be.visible');
+        cy.get(stakeValidatorListTotalShare)
+          .should('have.text', '66.67%')
+          .and('be.visible');
+        cy.get(stakeValidatorListValidatorStake)
+          .scrollIntoView()
+          .should('have.text', '2.00')
+          .and('be.visible');
       });
 
       cy.get(`[row-id="${1}"]`).within(() => {
-        cy.get(stakeValidatorListTotalStake).scrollIntoView().should('have.text', '1.00').and('be.visible');
-        cy.get(stakeValidatorListTotalShare).should('have.text', '33.33%').and('be.visible');
-        cy.get(stakeValidatorListValidatorStake).scrollIntoView().should('have.text', '1.00').and('be.visible');
+        cy.get(stakeValidatorListTotalStake)
+          .scrollIntoView()
+          .should('have.text', '1.00')
+          .and('be.visible');
+        cy.get(stakeValidatorListTotalShare)
+          .should('have.text', '33.33%')
+          .and('be.visible');
+        cy.get(stakeValidatorListValidatorStake)
+          .scrollIntoView()
+          .should('have.text', '1.00')
+          .and('be.visible');
       });
     });
 
