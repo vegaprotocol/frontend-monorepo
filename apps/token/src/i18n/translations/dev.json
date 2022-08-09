@@ -625,6 +625,6 @@
   "FilterProposalsDescription": "Filter by proposal ID or proposer ID",
   "Freeform proposal": "Freeform proposal",
   "NewProposal": "New proposal",
-  "MinProposalRequirements": "You must have at least 1 VEGA staked to make a proposal",
+  "MinProposalRequirements": "You must have at least 1 VEGA associated to make a proposal",
   "totalSupply": "Total Supply"
 }
