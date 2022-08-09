@@ -2,6 +2,7 @@ import '../src/styles.scss';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   backgrounds: { disable: true },
+  layout: 'fullscreen',
   a11y: {
     config: {
       rules: [
@@ -18,39 +19,64 @@ export const parameters = {
       ],
     },
   },
-  /*themes: {
-    default: 'dark',
-    list: [
-      { name: 'dark', class: ['dark', 'bg-black'], color: '#000' },
-      { name: 'light', class: '', color: '#FFF' },
-    ],
-  },*/
 };
 
-export const decorators = [
-  (Story, context) =>
-    context.parameters.themes === false ? (
-      <div className="text-body">
-        <Story />
-      </div>
-    ) : (
-      <div className="text-body">
-        <StoryWrapper className="dark bg-black">
-          <Story />
-        </StoryWrapper>
-        <StoryWrapper>
-          <Story />
-        </StoryWrapper>
-      </div>
-    ),
-];
+export const globalTypes = {
+  theme: {
+    name: 'Theme',
+    description: 'Global theme for components',
+    defaultValue: 'sideBySide',
+    toolbar: {
+      icon: 'circlehollow',
+      items: [
+        { value: 'light', title: 'Light' },
+        { value: 'dark', title: 'Dark' },
+        { value: 'sideBySide', title: 'Side by side' },
+      ],
+      showName: true,
+    },
+  },
+};
 
-const StoryWrapper = ({ children, className }) => (
-  <div className={className}>
+const StoryWrapper = ({ children, className, style }) => (
+  <div style={style} className={className}>
     <div className="p-16">
-      <div className="dark:bg-black dark:text-white-60 bg-white text-black-60">
+      <div className="text-body dark:bg-black dark:text-white-60 bg-white text-black-60">
         {children}
       </div>
     </div>
   </div>
 );
+
+const lightThemeClasses = 'bg-white text-black';
+const darkThemeClasses = 'dark bg-black text-white';
+
+const withTheme = (Story, context) => {
+  const theme = context.parameters.theme || context.globals.theme;
+  const storyClasses = `h-[100vh] w-[100vw] ${
+    theme === 'dark' ? darkThemeClasses : lightThemeClasses
+  }`;
+
+  return theme === 'sideBySide' ? (
+    <>
+      <div className={lightThemeClasses}>
+        <StoryWrapper>
+          <Story />
+        </StoryWrapper>
+      </div>
+      <div className={darkThemeClasses}>
+        <StoryWrapper>
+          <Story />
+        </StoryWrapper>
+      </div>
+    </>
+  ) : (
+    <div className={storyClasses}>
+      <StoryWrapper>
+        <Story />
+      </StoryWrapper>
+    </div>
+  );
+};
+
+export const decorators = [withTheme];
