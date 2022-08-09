@@ -36,7 +36,7 @@ export const DealTicketSteps = ({
 }: DealTicketMarketProps) => {
   const navigate = useNavigate();
   const setMarket = useCallback(
-    (marketId) => {
+    (marketId: string) => {
       navigate(`/trading/${marketId}`);
     },
     [navigate]

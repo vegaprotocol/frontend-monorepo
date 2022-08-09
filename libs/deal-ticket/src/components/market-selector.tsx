@@ -99,7 +99,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   );
 
   const handleMarketSelect = useCallback(
-    ({ id, name }) => {
+    ({ id, name }: { id: string; name: string }) => {
       setLookup(name);
       setShowPane(false);
       setMarket(id);
@@ -163,7 +163,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   }, [showPane, setShowPane, setSkip, inputRef]);
 
   const handleDialogOnchange = useCallback(
-    (isOpen) => {
+    (isOpen: boolean) => {
       setShowPane(isOpen);
       if (!isOpen) {
         setLookup(lookup || market.name);
