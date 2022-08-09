@@ -64,7 +64,7 @@ context('Node switcher', function () {
       cy.getByTestId('node-url-custom').click();
 
       cy.getByTestId(customNodeBtn).within(() => {
-        cy.get('input').clear().type('https://n04.d.vega.xyz/query');
+        cy.get('input').clear().type('https://api.token.vega.xyz/query');
         cy.getByTestId('link').click();
       });
       validateNodeError(errorTypeTxt, nodeErrorTxt);
@@ -75,9 +75,10 @@ context('Node switcher', function () {
     });
 
     function validateNodeError(errortype, errorMsg) {
-      cy.getByTestId(nodeErrorType).should('have.text', errortype, {
-        timeout: 1000,
-      });
+      cy.getByTestId(nodeErrorType, { timeout: 10000 }).should(
+        'have.text',
+        errortype
+      );
       cy.getByTestId(nodeErrorMsg).should('have.text', errorMsg);
     }
   });
