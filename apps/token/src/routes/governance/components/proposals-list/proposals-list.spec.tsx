@@ -84,6 +84,12 @@ afterAll(() => {
 });
 
 describe('Proposals list', () => {
+  it('Render a page title and link to the make proposal form', () => {
+    render(renderComponent([]));
+    expect(screen.getByText('Governance')).toBeInTheDocument();
+    expect(screen.getByTestId('new-proposal-link')).toBeInTheDocument();
+  });
+
   it('Culls failed proposals', () => {
     render(renderComponent([failedProposal]));
     expect(screen.queryByTestId('open-proposals')).not.toBeInTheDocument();
