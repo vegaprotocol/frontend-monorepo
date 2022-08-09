@@ -48,7 +48,7 @@ export const columnHeadersPositionMarkets: Column[] = [
   {
     value: t('Settlement asset'),
     className: thClassNames('left'),
-    onlyOnDetailed: true,
+    onlyOnDetailed: false,
   },
   {
     value: t('Change (24h)'),
@@ -119,7 +119,7 @@ export const columnHeaders: Column[] = [
   {
     value: t('Settlement asset'),
     className: thClassNames('left'),
-    onlyOnDetailed: true,
+    onlyOnDetailed: false,
   },
   {
     value: t('Change (24h)'),
