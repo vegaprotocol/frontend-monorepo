@@ -69,19 +69,22 @@ describe('ProposalForm', () => {
   it('handles validation', async () => {
     const mockSendTx = jest.fn().mockReturnValue(Promise.resolve());
     setup(mockSendTx);
-
-    fireEvent.click(screen.getByTestId('proposal-submit'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('proposal-submit'));
+    });
     expect(mockSendTx).not.toHaveBeenCalled();
 
     expect(await screen.findByTestId('input-error-text')).toHaveTextContent(
       'Required'
     );
-
-    fireEvent.change(screen.getByTestId('proposal-data'), {
-      target: { value: 'invalid' },
+    await act(async () => {
+      fireEvent.change(screen.getByTestId('proposal-data'), {
+        target: { value: 'invalid' },
+      });
     });
-
-    fireEvent.click(screen.getByTestId('proposal-submit'));
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('proposal-submit'));
+    });
     expect(mockSendTx).not.toHaveBeenCalled();
 
     expect(await screen.findByTestId('input-error-text')).toHaveTextContent(

@@ -25,6 +25,14 @@ import SimpleMarketToolbar from './simple-market-toolbar';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 import type { SimpleMarketDataSub_marketData } from './__generated__/SimpleMarketDataSub';
 import { IS_MARKET_TRADABLE } from '../../constants';
+import type {
+  CellKeyDownEvent,
+  FullWidthCellKeyDownEvent,
+} from 'ag-grid-community/dist/lib/events';
+import type {
+  GetRowIdParams,
+  TabToNextCellParams,
+} from 'ag-grid-community/dist/lib/entities/iCallbackParams';
 
 export type SimpleMarketsType = SimpleMarkets_markets & {
   percentChange?: number | '-';
@@ -84,7 +92,7 @@ const SimpleMarketList = () => {
 
   const { columnDefs, defaultColDef } = useColumnDefinitions({ isMobile });
 
-  const getRowId = useCallback(({ data }) => data.id, []);
+  const getRowId = useCallback(({ data }: GetRowIdParams) => data.id, []);
 
   const handleRowClicked = useCallback(
     ({ data }: { data: SimpleMarketsType }) => {
@@ -95,7 +103,7 @@ const SimpleMarketList = () => {
     [navigate]
   );
 
-  const onTabToNextCell = useCallback((params) => {
+  const onTabToNextCell = useCallback((params: TabToNextCellParams) => {
     const {
       api,
       previousCellPosition: { rowIndex },
@@ -108,7 +116,11 @@ const SimpleMarketList = () => {
   }, []);
 
   const onCellKeyDown = useCallback(
-    (params) => {
+    (
+      params: (CellKeyDownEvent | FullWidthCellKeyDownEvent) & {
+        event: KeyboardEvent;
+      }
+    ) => {
       const { event: { key = '' } = {}, data } = params;
       if (key === 'Enter') {
         handleRowClicked({ data });
