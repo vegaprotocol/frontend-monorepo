@@ -515,32 +515,32 @@ export const FeesBreakdown = ({
   return (
     <KeyValueTable muted={true}>
       <KeyValueTableRow>
-        <td className={thClassNames('left')}>{t('Infrastructure Fee')}</td>
-        <td className={tdClassNames}>
+        <span className={thClassNames('left')}>{t('Infrastructure Fee')}</span>
+        <span className={tdClassNames}>
           {formatNumberPercentage(
             new BigNumber(feeFactors.infrastructureFee).times(100)
           )}
-        </td>
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <td className={thClassNames('left')}>{t('Liquidity Fee')}</td>
-        <td className={tdClassNames}>
+        <span className={thClassNames('left')}>{t('Liquidity Fee')}</span>
+        <span className={tdClassNames}>
           {formatNumberPercentage(
             new BigNumber(feeFactors.liquidityFee).times(100)
           )}
-        </td>
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <td className={thClassNames('left')}>{t('Maker Fee')}</td>
-        <td className={tdClassNames}>
+        <span className={thClassNames('left')}>{t('Maker Fee')}</span>
+        <span className={tdClassNames}>
           {formatNumberPercentage(
             new BigNumber(feeFactors.makerFee).times(100)
           )}
-        </td>
+        </span>
       </KeyValueTableRow>
       <KeyValueTableRow>
-        <td className={thClassNames('left')}>{t('Total Fees')}</td>
-        <td className={tdClassNames}>{totalFees(feeFactors)}</td>
+        <span className={thClassNames('left')}>{t('Total Fees')}</span>
+        <span className={tdClassNames}>{totalFees(feeFactors)}</span>
       </KeyValueTableRow>
     </KeyValueTable>
   );
