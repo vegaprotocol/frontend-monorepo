@@ -1,7 +1,7 @@
 import { useRef, useCallback, useMemo } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import type { PositionsMetricsSubsciption_positions } from './__generated__/PositionsMetricsSubsciption';
+import type { PositionsMetricsSubscription_positions } from './__generated__/PositionsMetricsSubscription';
 import type { AgGridReact } from 'ag-grid-react';
 import PositionsTable from './positions-table';
 import type { GetRowsParams } from './positions-table';
@@ -26,7 +26,7 @@ export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   }, []);
   const { data, error, loading } = useDataProvider<
     Data,
-    PositionsMetricsSubsciption_positions
+    PositionsMetricsSubscription_positions
   >({ dataProvider, update, variables });
   dataRef.current = data?.positions || null;
   const getRows = async ({

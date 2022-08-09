@@ -6,10 +6,10 @@
 import { MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL subscription operation: PositionsMetricsSubsciption
+// GraphQL subscription operation: PositionsMetricsSubscription
 // ====================================================
 
-export interface PositionsMetricsSubsciption_positions_market_tradableInstrument_instrument {
+export interface PositionsMetricsSubscription_positions_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Full and fairly descriptive name for the instrument
@@ -17,15 +17,15 @@ export interface PositionsMetricsSubsciption_positions_market_tradableInstrument
   name: string;
 }
 
-export interface PositionsMetricsSubsciption_positions_market_tradableInstrument {
+export interface PositionsMetricsSubscription_positions_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
-  instrument: PositionsMetricsSubsciption_positions_market_tradableInstrument_instrument;
+  instrument: PositionsMetricsSubscription_positions_market_tradableInstrument_instrument;
 }
 
-export interface PositionsMetricsSubsciption_positions_market_data {
+export interface PositionsMetricsSubscription_positions_market_data {
   __typename: "MarketData";
   /**
    * the mark price (actually an unsigned int)
@@ -33,7 +33,7 @@ export interface PositionsMetricsSubsciption_positions_market_data {
   markPrice: string;
 }
 
-export interface PositionsMetricsSubsciption_positions_market {
+export interface PositionsMetricsSubscription_positions_market {
   __typename: "Market";
   /**
    * Market ID
@@ -73,14 +73,14 @@ export interface PositionsMetricsSubsciption_positions_market {
   /**
    * An instance of or reference to a tradable instrument.
    */
-  tradableInstrument: PositionsMetricsSubsciption_positions_market_tradableInstrument;
+  tradableInstrument: PositionsMetricsSubscription_positions_market_tradableInstrument;
   /**
    * marketData for the given market
    */
-  data: PositionsMetricsSubsciption_positions_market_data | null;
+  data: PositionsMetricsSubscription_positions_market_data | null;
 }
 
-export interface PositionsMetricsSubsciption_positions {
+export interface PositionsMetricsSubscription_positions {
   __typename: "Position";
   /**
    * Realised Profit and Loss (int64)
@@ -105,16 +105,16 @@ export interface PositionsMetricsSubsciption_positions {
   /**
    * Market relating to this position
    */
-  market: PositionsMetricsSubsciption_positions_market;
+  market: PositionsMetricsSubscription_positions_market;
 }
 
-export interface PositionsMetricsSubsciption {
+export interface PositionsMetricsSubscription {
   /**
    * Subscribe to the positions updates
    */
-  positions: PositionsMetricsSubsciption_positions;
+  positions: PositionsMetricsSubscription_positions;
 }
 
-export interface PositionsMetricsSubsciptionVariables {
+export interface PositionsMetricsSubscriptionVariables {
   partyId: string;
 }

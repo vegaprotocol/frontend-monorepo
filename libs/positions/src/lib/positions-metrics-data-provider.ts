@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
+import sortBy from 'lodash/sortBy';
 import type {
   PositionsMetrics,
   PositionsMetrics_party,
@@ -8,9 +9,9 @@ import type {
 import { makeDataProvider } from '@vegaprotocol/react-helpers';
 
 import type {
-  PositionsMetricsSubsciption,
-  PositionsMetricsSubsciption_positions,
-} from './__generated__/PositionsMetricsSubsciption';
+  PositionsMetricsSubscription,
+  PositionsMetricsSubscription_positions,
+} from './__generated__/PositionsMetricsSubscription';
 
 import { AccountType } from '@vegaprotocol/types';
 import type { MarketTradingMode } from '@vegaprotocol/types';
@@ -122,7 +123,7 @@ const POSITION_METRICS_QUERY = gql`
 
 export const POSITIONS_METRICS_SUBSCRIPTION = gql`
   ${POSITIONS_METRICS_FRAGMENT}
-  subscription PositionsMetricsSubsciption($partyId: ID!) {
+  subscription PositionsMetricsSubscription($partyId: ID!) {
     positions(partyId: $partyId) {
       ...PositionMetricsFields
     }
@@ -161,7 +162,7 @@ const comparator = (
   );
 */
 
-export const getMetrics = (data: PositionsMetrics_party | null) => {
+export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
   if (!data || !data.positionsConnection.edges) {
     return [];
   }
@@ -281,7 +282,7 @@ export const getMetrics = (data: PositionsMetrics_party | null) => {
 
 export const update = (
   data: Data,
-  delta: PositionsMetricsSubsciption_positions
+  delta: PositionsMetricsSubscription_positions
 ) => {
   if (!data.party?.positionsConnection.edges) {
     return data;
@@ -311,19 +312,19 @@ export const update = (
 const getData = (responseData: PositionsMetrics): Data => {
   return {
     party: responseData.party,
-    positions: getMetrics(responseData.party)?.sort(), //#TODO sort by updated at desc here on in table
+    positions: sortBy(getMetrics(responseData.party), 'updatedAt').reverse(),
   };
 };
 
 const getDelta = (
-  subscriptionData: PositionsMetricsSubsciption
-): PositionsMetricsSubsciption_positions => subscriptionData.positions;
+  subscriptionData: PositionsMetricsSubscription
+): PositionsMetricsSubscription_positions => subscriptionData.positions;
 
 export const positionsMetricsDataProvider = makeDataProvider<
   PositionsMetrics,
   Data,
-  PositionsMetricsSubsciption,
-  PositionsMetricsSubsciption_positions
+  PositionsMetricsSubscription,
+  PositionsMetricsSubscription_positions
 >(
   POSITION_METRICS_QUERY,
   POSITIONS_METRICS_SUBSCRIPTION,
