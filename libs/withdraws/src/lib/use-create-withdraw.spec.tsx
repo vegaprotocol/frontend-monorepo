@@ -46,7 +46,6 @@ afterAll(() => {
 
 const pubkey = '0x123';
 let mockSend: jest.Mock;
-let mockVegaReset: jest.Mock;
 let withdrawalInput: WithdrawalFields;
 let mockERC20Approval: MockedResponse<Erc20Approval>;
 
@@ -56,7 +55,6 @@ beforeEach(() => {
     .mockReturnValue(
       Promise.resolve({ txHash, tx: { signature: { value: signature } } })
     );
-  mockVegaReset = jest.fn();
 
   withdrawalInput = {
     amount: '100',
@@ -88,7 +86,8 @@ beforeEach(() => {
 
 it('Creates withdrawal and waits for approval creation', async () => {
   const { result } = setup(
-    { sendTx: mockSend, keypair: { pub: pubkey } as any },
+    // @ts-ignore only need pub property from keypair
+    { sendTx: mockSend, keypair: { pub: pubkey } },
     [mockERC20Approval]
   );
 

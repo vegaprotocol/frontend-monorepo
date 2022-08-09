@@ -21,14 +21,12 @@ jest.mock('./use-get-withdraw-limits', () => ({
 }));
 
 let props: WithdrawManagerProps;
-let mockReset: jest.Mock;
 
 beforeEach(() => {
   props = {
     assets: [generateAsset()],
     accounts: [generateAccount()],
   };
-  mockReset = jest.fn();
 });
 
 const generateJsx = (
@@ -58,7 +56,8 @@ it('Valid form submission shows the transaction status', async () => {
   );
   const pubKey = '0x123';
   render(
-    generateJsx(props, { sendTx: mockSendTx, keypair: { pub: pubKey } as any })
+    // @ts-ignore only need pub field in keypair
+    generateJsx(props, { sendTx: mockSendTx, keypair: { pub: pubKey } })
   );
   await act(async () => {
     await submitValid();
@@ -83,7 +82,8 @@ it('Valid form submission shows the transaction status', async () => {
 it('Correct min max values provided to form', async () => {
   const mockSendTx = jest.fn();
   render(
-    generateJsx(props, { sendTx: mockSendTx, keypair: { pub: '0x123' } as any })
+    // @ts-ignore only need pub field in keypair
+    generateJsx(props, { sendTx: mockSendTx, keypair: { pub: '0x123' } })
   );
 
   // Set other fields to be valid
