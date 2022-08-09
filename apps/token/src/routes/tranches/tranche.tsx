@@ -11,7 +11,7 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
 import { TrancheItem } from '../redemption/tranche-item';
-import { Routes } from '../router-config';
+import Routes from '../routes';
 import { TrancheLabel } from './tranche-label';
 
 const TrancheProgressContents = ({

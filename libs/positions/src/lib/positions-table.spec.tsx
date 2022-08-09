@@ -38,17 +38,17 @@ const singleRow: Position = {
 const singleRowData = [singleRow];
 
 it('should render successfully', async () => {
-  await act(async () => {
+  act(async () => {
     const { baseElement } = render(<PositionsTable rowData={[]} />);
     expect(baseElement).toBeTruthy();
   });
 });
 
 it('Render correct columns', async () => {
-  await act(async () => {
+  act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
-      const headers = await screen.getAllByRole('columnheader');
+      const headers = screen.getAllByRole('columnheader');
       expect(headers).toHaveLength(9);
       expect(
         headers.map((h) =>
@@ -70,7 +70,7 @@ it('Render correct columns', async () => {
 });
 
 it('Splits market name', async () => {
-  await act(async () => {
+  act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
       expect(screen.getByText('ETH/BTC')).toBeTruthy();
@@ -80,10 +80,10 @@ it('Splits market name', async () => {
 });
 
 it('add color and sign to amount, displays positive notional value', async () => {
-  await act(async () => {
+  act(async () => {
     const result = render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       const values = cells[1].querySelectorAll('.text-right');
       expect(values[0].classList.contains('color-vega-green')).toBeTruthy();
       expect(values[0].classList.contains('color-vega-red')).toBeFalsy();
@@ -94,7 +94,7 @@ it('add color and sign to amount, displays positive notional value', async () =>
       <PositionsTable rowData={[{ ...singleRow, openVolume: '-100' }]} />
     );
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       const values = cells[1].querySelectorAll('.text-right');
       expect(values[0].classList.contains('color-vega-green')).toBeFalsy();
       expect(values[0].classList.contains('color-vega-red')).toBeTruthy();
@@ -105,10 +105,10 @@ it('add color and sign to amount, displays positive notional value', async () =>
 });
 
 it('displays mark price', async () => {
-  await act(async () => {
+  act(async () => {
     const result = render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       expect(cells[2].textContent).toEqual('12.3');
     });
     result.rerender(
@@ -119,17 +119,17 @@ it('displays mark price', async () => {
       />
     );
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       expect(cells[2].textContent).toEqual('-');
     });
   });
 });
 
 it("displays properly entry, liquidation price and liquidation bar and it's intent", async () => {
-  await act(async () => {
+  act(async () => {
     const result = render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       const cell = cells[3];
       const entryPrice = cell.firstElementChild?.firstElementChild?.textContent;
       const liquidationPrice =
@@ -146,7 +146,7 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
       <PositionsTable rowData={[{ ...singleRow, lowMarginLevel: true }]} />
     );
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       const cell = cells[3];
       const progressBar = cell.lastElementChild?.firstElementChild;
       expect(progressBar?.classList.contains('bg-danger')).toEqual(true);
@@ -155,20 +155,20 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
 });
 
 it('displays leverage', async () => {
-  await act(async () => {
+  act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       expect(cells[4].textContent).toEqual('1.1');
     });
   });
 });
 
 it('displays allocated margin and margin bar', async () => {
-  await act(async () => {
+  act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
+      const cells = screen.getAllByRole('gridcell');
       const cell = cells[5];
       const capitalUtilisation =
         cell.firstElementChild?.firstElementChild?.textContent;
@@ -185,7 +185,7 @@ it('displays allocated margin and margin bar', async () => {
 });
 
 it('displays realised and unrealised PNL', async () => {
-  await act(async () => {
+  act(async () => {
     render(<PositionsTable rowData={singleRowData} />);
     await waitFor(async () => {
       const cells = await screen.getAllByRole('gridcell');

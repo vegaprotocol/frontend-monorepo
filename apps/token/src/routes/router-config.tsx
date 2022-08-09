@@ -15,21 +15,7 @@ import { StakingNodeContainer } from './staking/staking-node';
 import { StakingNodesContainer } from './staking/staking-nodes-container';
 import { Tranche } from './tranches/tranche';
 import { Tranches } from './tranches/tranches';
-
-export const Routes = {
-  HOME: '/',
-  TRANCHES: '/tranches',
-  CLAIM: '/claim',
-  STAKING: '/staking',
-  REWARDS: '/rewards',
-  WITHDRAW: '/withdraw',
-  WITHDRAWALS: '/withdrawals',
-  GOVERNANCE: '/governance',
-  VESTING: '/vesting',
-  NOT_PERMITTED: '/not-permitted',
-  NOT_FOUND: '/not-found',
-  CONTRACTS: '/contracts',
-};
+import Routes from './routes';
 
 const LazyTranches = React.lazy(
   () =>

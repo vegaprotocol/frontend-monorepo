@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import useOrderCloseOut from './use-order-closeout';
 import type { Order } from '@vegaprotocol/orders';

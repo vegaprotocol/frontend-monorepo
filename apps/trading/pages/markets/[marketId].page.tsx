@@ -25,13 +25,17 @@ const MARKET_QUERY = gql`
         market {
           id
         }
+        auctionStart
+        auctionEnd
         markPrice
         indicativeVolume
+        indicativePrice
+        suppliedStake
+        targetStake
         bestBidVolume
         bestOfferVolume
         bestStaticBidVolume
         bestStaticOfferVolume
-        indicativeVolume
         trigger
       }
       tradableInstrument {

@@ -21,41 +21,43 @@ const singleRow: Accounts_party_accounts = {
 };
 const singleRowData = [singleRow];
 
-it('should render successfully', async () => {
-  await act(async () => {
-    const { baseElement } = render(<AccountsTable data={[]} />);
-    expect(baseElement).toBeTruthy();
-  });
-});
-
-it('Render correct columns', async () => {
-  await act(async () => {
-    render(<AccountsTable data={singleRowData} />);
-    await waitFor(async () => {
-      const headers = await screen.getAllByRole('columnheader');
-      expect(headers).toHaveLength(4);
-      expect(
-        headers.map((h) =>
-          h.querySelector('[ref="eText"]')?.textContent?.trim()
-        )
-      ).toEqual(['Asset', 'Type', 'Market', 'Balance']);
+describe('AccountsTable', () => {
+  it('should render successfully', async () => {
+    await act(async () => {
+      const { baseElement } = render(<AccountsTable data={[]} />);
+      expect(baseElement).toBeTruthy();
     });
   });
-});
 
-it('Correct formatting applied', async () => {
-  await act(async () => {
-    render(<AccountsTable data={singleRowData} />);
-    await waitFor(async () => {
-      const cells = await screen.getAllByRole('gridcell');
-      const expectedValues = [
-        'tBTC',
-        singleRow.type,
-        'BTCUSD Monthly (30 Jun 2022)',
-        '1,256.00000',
-      ];
-      cells.forEach((cell, i) => {
-        expect(cell).toHaveTextContent(expectedValues[i]);
+  it('should render correct columns', async () => {
+    act(async () => {
+      render(<AccountsTable data={singleRowData} />);
+      await waitFor(async () => {
+        const headers = await screen.getAllByRole('columnheader');
+        expect(headers).toHaveLength(4);
+        expect(
+          headers.map((h) =>
+            h.querySelector('[ref="eText"]')?.textContent?.trim()
+          )
+        ).toEqual(['Asset', 'Type', 'Market', 'Balance']);
+      });
+    });
+  });
+
+  it('should apply correct formatting', async () => {
+    act(async () => {
+      render(<AccountsTable data={singleRowData} />);
+      await waitFor(async () => {
+        const cells = await screen.getAllByRole('gridcell');
+        const expectedValues = [
+          'tBTC',
+          singleRow.type,
+          'BTCUSD Monthly (30 Jun 2022)',
+          '1,256.00000',
+        ];
+        cells.forEach((cell, i) => {
+          expect(cell).toHaveTextContent(expectedValues[i]);
+        });
       });
     });
   });

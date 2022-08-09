@@ -7,7 +7,7 @@ import { AddLockedTokenAddress } from '../../../components/add-locked-token';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { formatNumber } from '../../../lib/format-number';
 import { truncateMiddle } from '../../../lib/truncate-middle';
-import { Routes } from '../../router-config';
+import Routes from '../../routes';
 import type { RedemptionState } from '../redemption-reducer';
 import { Tranche0Table, TrancheTable } from '../tranche-table';
 import { VestingTable } from './vesting-table';
