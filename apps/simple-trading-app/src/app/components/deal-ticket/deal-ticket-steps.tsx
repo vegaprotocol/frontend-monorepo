@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
+import { BigNumber } from 'bignumber.js';
 import {
   getOrderDialogTitle,
   getOrderDialogIntent,
@@ -81,6 +82,10 @@ export const DealTicketSteps = ({
     order,
   });
 
+  const max = new BigNumber(maxTrade)
+    .decimalPlaces(market.positionDecimalPlaces)
+    .toNumber();
+
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
     market,
@@ -93,9 +98,11 @@ export const DealTicketSteps = ({
     useOrderSubmit(market);
 
   const onSizeChange = (value: number[]) => {
-    const newVal = value[0].toString();
+    const newVal = new BigNumber(value[0])
+      .decimalPlaces(market.positionDecimalPlaces)
+      .toString();
     const isValid = validateSize(step)(newVal);
-    if (isValid) {
+    if (isValid !== 'step') {
       setValue('size', newVal);
     }
   };
@@ -146,15 +153,16 @@ export const DealTicketSteps = ({
         <DealTicketSize
           step={step}
           min={step}
-          max={maxTrade}
+          max={max}
           onValueChange={onSizeChange}
-          value={parseFloat(orderSize)}
+          value={new BigNumber(orderSize).toNumber()}
           name="size"
           price={
             market.depth.lastTrade
               ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
               : ''
           }
+          positionDecimalPlaces={market.positionDecimalPlaces}
           quoteName={market.tradableInstrument.instrument.product.quoteName}
           estCloseOut={estCloseOut}
           estMargin={estMargin || ' - '}
