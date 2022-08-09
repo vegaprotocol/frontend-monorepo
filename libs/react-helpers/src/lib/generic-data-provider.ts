@@ -9,16 +9,18 @@ import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
 import type { Pagination as PaginationWithoutSkip } from '@vegaprotocol/types';
 
+export type UpdateCallbackArgs<Data, Delta> = {
+  data: Data | null;
+  error?: Error;
+  loading: boolean;
+  pageInfo: PageInfo | null;
+  delta?: Delta;
+  insertionData?: Data | null;
+  totalCount?: number;
+};
+
 export interface UpdateCallback<Data, Delta> {
-  (arg: {
-    data: Data | null;
-    error?: Error;
-    loading: boolean;
-    pageInfo: PageInfo | null;
-    delta?: Delta;
-    insertionData?: Data | null;
-    totalCount?: number;
-  }): void;
+  (arg: UpdateCallbackArgs<Data, Delta>): void;
 }
 
 export interface Load<Data> {
