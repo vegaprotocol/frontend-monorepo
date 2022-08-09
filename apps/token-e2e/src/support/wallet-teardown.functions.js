@@ -5,6 +5,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
+const vegaWalletContainer = '[data-testid="vega-wallet"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
@@ -40,14 +41,23 @@ before('Vega wallet teardown prep', function () {
 });
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
-  cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
-  cy.vega_wallet_teardown_vesting(this.vestingContract);
+  cy.get(vegaWalletContainer).within(() => {
+    cy.get(vegaWalletAssociatedBalance).invoke('text').then(balance => {
+      if (balance != "0.000000000000000000")
+      {
+        cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
+        cy.vega_wallet_teardown_vesting(this.vestingContract);
+      }
+    })
+  })
 
-  cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
+  cy.get(vegaWalletContainer).within(() => {
+    cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
     'contain',
     '0.000000000000000000',
     { timeout: transactionTimeout }
-  );
+    );
+  })
 });
 
 Cypress.Commands.add(
