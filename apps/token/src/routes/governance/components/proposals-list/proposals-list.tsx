@@ -5,7 +5,7 @@ import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-import { Routes } from '../../../router-config';
+import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
 
