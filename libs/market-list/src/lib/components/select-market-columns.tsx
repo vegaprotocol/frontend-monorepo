@@ -7,7 +7,13 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
-import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
+import {
+  KeyValueTable,
+  KeyValueTableRow,
+  PriceCellChange,
+  Sparkline,
+  Tooltip,
+} from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 
@@ -79,10 +85,10 @@ export const columnHeadersPositionMarkets: Column[] = [
             {t(
               'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
             )}
-            <ul>
+            <ul className="list-disc mx-20">
               <li className="py-5">{t('An infrastructure fee')}</li>
-              <li className="py-5">{t('A maker fee')}</li>
               <li className="py-5">{t('A liquidity provision fee')}</li>
+              <li className="py-5">{t('A maker fee')}</li>
             </ul>
           </span>
         }
@@ -507,37 +513,35 @@ export const FeesBreakdown = ({
   feeFactors: MarketList_markets_fees_factors;
 }) => {
   return (
-    <table>
-      <tbody>
-        <tr>
-          <td className={thClassNames('left')}>{t('Infrastructure Fee')}</td>
-          <td className={tdClassNames}>
-            {formatNumberPercentage(
-              new BigNumber(feeFactors.infrastructureFee).times(100)
-            )}
-          </td>
-        </tr>
-        <tr>
-          <td className={thClassNames('left')}>{t('Liquidity Fee')}</td>
-          <td className={tdClassNames}>
-            {formatNumberPercentage(
-              new BigNumber(feeFactors.liquidityFee).times(100)
-            )}
-          </td>
-        </tr>
-        <tr>
-          <td className={thClassNames('left')}>{t('Maker Fee')}</td>
-          <td className={tdClassNames}>
-            {formatNumberPercentage(
-              new BigNumber(feeFactors.makerFee).times(100)
-            )}
-          </td>
-        </tr>
-        <tr>
-          <td className={thClassNames('left')}>{t('Total Fees')}</td>
-          <td className={tdClassNames}>{totalFees(feeFactors)}</td>
-        </tr>
-      </tbody>
-    </table>
+    <KeyValueTable muted={true}>
+      <KeyValueTableRow>
+        <td className={thClassNames('left')}>{t('Infrastructure Fee')}</td>
+        <td className={tdClassNames}>
+          {formatNumberPercentage(
+            new BigNumber(feeFactors.infrastructureFee).times(100)
+          )}
+        </td>
+      </KeyValueTableRow>
+      <KeyValueTableRow>
+        <td className={thClassNames('left')}>{t('Liquidity Fee')}</td>
+        <td className={tdClassNames}>
+          {formatNumberPercentage(
+            new BigNumber(feeFactors.liquidityFee).times(100)
+          )}
+        </td>
+      </KeyValueTableRow>
+      <KeyValueTableRow>
+        <td className={thClassNames('left')}>{t('Maker Fee')}</td>
+        <td className={tdClassNames}>
+          {formatNumberPercentage(
+            new BigNumber(feeFactors.makerFee).times(100)
+          )}
+        </td>
+      </KeyValueTableRow>
+      <KeyValueTableRow>
+        <td className={thClassNames('left')}>{t('Total Fees')}</td>
+        <td className={tdClassNames}>{totalFees(feeFactors)}</td>
+      </KeyValueTableRow>
+    </KeyValueTable>
   );
 };
