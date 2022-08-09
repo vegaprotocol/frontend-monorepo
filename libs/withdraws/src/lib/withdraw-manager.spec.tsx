@@ -1,15 +1,12 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { generateAccount, generateAsset } from './test-helpers';
 import type { WithdrawManagerProps } from './withdraw-manager';
 import { WithdrawManager } from './withdraw-manager';
-import * as withdrawHook from './use-withdraw';
-import { initialState as vegaTxInitialState } from '@vegaprotocol/wallet';
-import {
-  EthereumError,
-  EthTxStatus,
-  initialState as ethTxInitialState,
-} from '@vegaprotocol/web3';
+import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
+import { VegaWalletContext } from '@vegaprotocol/wallet';
 import BigNumber from 'bignumber.js';
+import { MockedProvider } from '@apollo/client/testing';
 
 const ethereumAddress = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
@@ -24,66 +21,70 @@ jest.mock('./use-get-withdraw-limits', () => ({
 }));
 
 let props: WithdrawManagerProps;
-let useWithdrawValue: ReturnType<typeof withdrawHook.useWithdraw>;
-let useWithdraw: jest.SpyInstance;
-let mockSubmit: jest.Mock;
 let mockReset: jest.Mock;
 
 beforeEach(() => {
   props = {
     assets: [generateAsset()],
     accounts: [generateAccount()],
-    initialAssetId: undefined,
   };
-  mockSubmit = jest.fn();
   mockReset = jest.fn();
-  useWithdrawValue = {
-    ethTx: ethTxInitialState,
-    vegaTx: vegaTxInitialState,
-    approval: null,
-    withdrawalId: null,
-    submit: mockSubmit,
-    reset: mockReset,
-  };
-  useWithdraw = jest
-    .spyOn(withdrawHook, 'useWithdraw')
-    .mockReturnValue(useWithdrawValue);
 });
 
-const generateJsx = (props: WithdrawManagerProps) => (
-  <WithdrawManager {...props} />
+const generateJsx = (
+  props: WithdrawManagerProps,
+  vegaWalletContext: Partial<VegaWalletContextShape>
+) => (
+  <MockedProvider>
+    <VegaWalletContext.Provider
+      value={vegaWalletContext as VegaWalletContextShape}
+    >
+      <WithdrawManager {...props} />
+    </VegaWalletContext.Provider>
+  </MockedProvider>
 );
 
-it('Valid form submission opens transaction dialog', async () => {
-  render(generateJsx(props));
-  submitValid();
-  expect(await screen.findByRole('dialog')).toBeInTheDocument();
-  expect(mockReset).toHaveBeenCalled();
-  expect(mockSubmit).toHaveBeenCalledWith({
-    amount: '1000',
-    asset: props.assets[0].id,
-    receiverAddress: ethereumAddress,
+it('Valid form submission shows the transaction status', async () => {
+  const mockSendTx = jest.fn().mockReturnValue(
+    Promise.resolve({
+      txHash: '0x123',
+      tx: {
+        signature: {
+          value:
+            'cfe592d169f87d0671dd447751036d0dddc165b9c4b65e5a5060e2bbadd1aa726d4cbe9d3c3b327bcb0bff4f83999592619a2493f9bbd251fae99ce7ce766909',
+        },
+      },
+    })
+  );
+  const pubKey = '0x123';
+  render(
+    generateJsx(props, { sendTx: mockSendTx, keypair: { pub: pubKey } as any })
+  );
+  await act(async () => {
+    await submitValid();
   });
-});
-
-it('Expected Ethereum error closes the dialog', async () => {
-  const { rerender } = render(generateJsx(props));
-  submitValid();
-  expect(await screen.findByRole('dialog')).toBeInTheDocument();
-  useWithdraw.mockReturnValue({
-    ...useWithdrawValue,
-    ethTx: {
-      ...useWithdrawValue.ethTx,
-      status: EthTxStatus.Error,
-      error: new EthereumError('User rejected transaction', 4001, 'reason'),
+  expect(mockSendTx).toHaveBeenCalledWith({
+    propagate: true,
+    pubKey,
+    withdrawSubmission: {
+      amount: '1000',
+      asset: props.assets[0].id,
+      ext: {
+        erc20: {
+          receiverAddress: ethereumAddress,
+        },
+      },
     },
   });
-  rerender(generateJsx(props));
-  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  expect(screen.queryByTestId('withdraw-form')).not.toBeInTheDocument();
+  expect(screen.getByTestId('Pending')).toBeInTheDocument();
 });
 
 it('Correct min max values provided to form', async () => {
-  render(generateJsx(props));
+  const mockSendTx = jest.fn();
+  render(
+    generateJsx(props, { sendTx: mockSendTx, keypair: { pub: '0x123' } as any })
+  );
 
   // Set other fields to be valid
   fireEvent.change(screen.getByLabelText('Asset'), {
@@ -99,7 +100,7 @@ it('Correct min max values provided to form', async () => {
   });
   fireEvent.submit(screen.getByTestId('withdraw-form'));
   expect(await screen.findByText('Value is below minimum')).toBeInTheDocument();
-  expect(mockSubmit).not.toBeCalled();
+  expect(mockSendTx).not.toBeCalled();
 
   fireEvent.change(screen.getByLabelText('Amount'), {
     target: { value: '0.00001' },
@@ -113,19 +114,14 @@ it('Correct min max values provided to form', async () => {
   expect(
     await screen.findByText('Insufficient amount in account')
   ).toBeInTheDocument();
-  expect(mockSubmit).not.toBeCalled();
+  expect(mockSendTx).not.toBeCalled();
 });
 
-it('Initial asset id can preselect asset', async () => {
-  const asset = props.assets[0];
-  render(generateJsx({ ...props, initialAssetId: asset.id }));
-  expect(screen.getByLabelText('Asset')).toHaveValue(asset.id);
-});
-
-const submitValid = () => {
-  fireEvent.change(screen.getByLabelText('Asset'), {
-    target: { value: props.assets[0].id },
-  });
+const submitValid = async () => {
+  await userEvent.selectOptions(
+    screen.getByLabelText('Asset'),
+    props.assets[0].id
+  );
   fireEvent.change(screen.getByLabelText('To (Ethereum address)'), {
     target: { value: ethereumAddress },
   });

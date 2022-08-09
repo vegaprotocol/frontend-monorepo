@@ -109,11 +109,14 @@ describe('StatusCell', () => {
   });
 
   it('Fallback', () => {
-    props.value = WithdrawalStatus.STATUS_REJECTED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
-
-    expect(screen.getByText('STATUS_REJECTED')).toBeInTheDocument();
+    const link = screen.getByText('View on Etherscan');
+    expect(link).toBeInTheDocument();
+    expect(link).toHaveAttribute(
+      'href',
+      expect.stringContaining(`tx/${props.data.txHash}`)
+    );
   });
 });
