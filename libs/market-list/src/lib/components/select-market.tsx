@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { t, useDataProvider, volumePrefix } from '@vegaprotocol/react-helpers';
+import { t, volumePrefix } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import {
   Dialog,
@@ -20,7 +20,8 @@ import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
 import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { positionsDataProvider } from '@vegaprotocol/positions';
+import type { Positions } from '@vegaprotocol/positions';
+import { POSITION_QUERY } from '@vegaprotocol/positions';
 import { mapDataToMarketList } from '../utils/market-utils';
 import {
   SelectMarketTableHeader,
@@ -127,8 +128,7 @@ export const SelectMarketPopover = ({
   const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
     variables: { interval: Interval.I1H, since: yTimestamp },
   });
-  const { data: marketDataPositions } = useDataProvider({
-    dataProvider: positionsDataProvider,
+  const { data: marketDataPositions } = useQuery<Positions>(POSITION_QUERY, {
     variables,
   });
 
@@ -137,12 +137,12 @@ export const SelectMarketPopover = ({
       markets:
         data?.markets
           ?.filter((market) =>
-            marketDataPositions?.find(
+            marketDataPositions?.party?.positions?.find(
               (position) => position.market.id === market.id
             )
           )
           .map((market) => {
-            const position = marketDataPositions?.find(
+            const position = marketDataPositions?.party?.positions?.find(
               (position) => position.market.id === market.id
             );
             return {
