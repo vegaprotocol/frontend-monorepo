@@ -83,6 +83,7 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
   });
 
   useEffect(() => {
+    const throttleRunnner = updateOrderbookData.current;
     if (!data) {
       dataRef.current = { rows: null };
       setOrderbookData(dataRef.current);
@@ -94,8 +95,9 @@ export const OrderbookManager = ({ marketId }: OrderbookManagerProps) => {
       ...mapMarketData(data.data, resolution),
     };
     setOrderbookData(dataRef.current);
+
     return () => {
-      updateOrderbookData.current.cancel();
+      throttleRunnner.cancel();
     };
   }, [data, resolution]);
 
