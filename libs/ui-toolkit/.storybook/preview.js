@@ -29,7 +29,7 @@ export const globalTypes = {
     toolbar: {
       icon: 'circlehollow',
       items: [
-        { value: 'light', title: 'Light', class: ['blah'] },
+        { value: 'light', title: 'Light' },
         { value: 'dark', title: 'Dark' },
         { value: 'sideBySide', title: 'Side by side' },
       ],
