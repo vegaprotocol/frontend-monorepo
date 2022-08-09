@@ -130,38 +130,6 @@ export const POSITIONS_METRICS_SUBSCRIPTION = gql`
   }
 `;
 
-/*
-const alphanumericComparator = (a: string, b: string, isInverted: boolean) => {
-  if (a < b) {
-    return isInverted ? 1 : -1;
-  }
-
-  if (a > b) {
-    return isInverted ? -1 : 1;
-  }
-
-  return 0;
-};
-
-const comparator = (
-  valueA: string,
-  valueB: string,
-  nodeA: { data: Positions_party_positions },
-  nodeB: { data: Positions_party_positions },
-  isInverted: boolean
-) =>
-  alphanumericComparator(
-    nodeA.data.market.tradableInstrument.instrument.name,
-    nodeB.data.market.tradableInstrument.instrument.name,
-    isInverted
-  ) ||
-  alphanumericComparator(
-    nodeA.data.market.id,
-    nodeB.data.market.id,
-    isInverted
-  );
-*/
-
 export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
   if (!data || !data.positionsConnection.edges) {
     return [];
@@ -206,10 +174,12 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
       openVolume.isGreaterThan(0) ? openVolume : openVolume.multipliedBy(-1)
     ).multipliedBy(markPrice);
     const totalBalance = marginAccountBalance.plus(generalAccountBalance);
-    const currentLeverage = notional.dividedBy(totalBalance);
-    const capitalUtilisation = marginAccountBalance
-      .dividedBy(totalBalance)
-      .multipliedBy(100);
+    const currentLeverage = totalBalance.isEqualTo(0)
+      ? new BigNumber(0)
+      : notional.dividedBy(totalBalance);
+    const capitalUtilisation = totalBalance.isEqualTo(0)
+      ? new BigNumber(0)
+      : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
 
     const marginMaintenance = new BigNumber(
       marginLevel.maintenanceLevel
@@ -226,15 +196,19 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
     );
     */
 
-    const searchPrice = marginSearch
-      .minus(marginAccountBalance)
-      .dividedBy(openVolume)
-      .plus(markPrice);
-    const liquidationPrice = marginMaintenance
-      .minus(marginAccountBalance)
-      .minus(generalAccountBalance)
-      .dividedBy(openVolume)
-      .plus(markPrice);
+    const searchPrice = openVolume.isEqualTo(0)
+      ? markPrice
+      : marginSearch
+          .minus(marginAccountBalance)
+          .dividedBy(openVolume)
+          .plus(markPrice);
+    const liquidationPrice = openVolume.isEqualTo(0)
+      ? markPrice
+      : marginMaintenance
+          .minus(marginAccountBalance)
+          .minus(generalAccountBalance)
+          .dividedBy(openVolume)
+          .plus(markPrice);
 
     const lowMarginLevel =
       marginAccountBalance.isLessThan(
