@@ -85,7 +85,7 @@ export const columnHeadersPositionMarkets: Column[] = [
             {t(
               'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
             )}
-            <ul className="list-disc mx-20">
+            <ul className="list-disc ml-20">
               <li className="py-5">{t('An infrastructure fee')}</li>
               <li className="py-5">{t('A liquidity provision fee')}</li>
               <li className="py-5">{t('A maker fee')}</li>
@@ -156,10 +156,10 @@ export const columnHeaders: Column[] = [
             {t(
               'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
             )}
-            <ul>
+            <ul className="list-disc ml-20">
               <li className="py-5">{t('An infrastructure fee')}</li>
-              <li className="py-5">{t('A maker fee')}</li>
               <li className="py-5">{t('A liquidity provision fee')}</li>
+              <li className="py-5">{t('A maker fee')}</li>
             </ul>
           </span>
         }
