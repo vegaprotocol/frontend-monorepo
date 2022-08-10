@@ -3,10 +3,10 @@ import * as Sentry from '@sentry/react';
 import BigNumber from 'bignumber.js';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
-import type { CollateralBridgeNew } from '@vegaprotocol/smart-contracts';
+import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
 export const useGetDepositMaximum = (
-  contract: CollateralBridgeNew | null,
+  contract: CollateralBridge | null,
   asset: Asset | undefined
 ) => {
   const getDepositMaximum = useCallback(async () => {

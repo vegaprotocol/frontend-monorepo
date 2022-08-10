@@ -3,13 +3,13 @@ import { determineId } from '@vegaprotocol/react-helpers';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useState } from 'react';
-import { ERC20_APPROVAL_QUERY_NEW } from './queries';
-import type { Erc20ApprovalVariables } from './__generated__/Erc20Approval';
+import { ERC20_APPROVAL_QUERY } from './queries';
 import type {
-  Erc20ApprovalNew,
-  Erc20ApprovalNew_erc20WithdrawalApproval,
-} from './__generated__/Erc20ApprovalNew';
-import type { CollateralBridgeNew } from '@vegaprotocol/smart-contracts';
+  Erc20Approval,
+  Erc20Approval_erc20WithdrawalApproval,
+  Erc20ApprovalVariables,
+} from './__generated__/Erc20Approval';
+import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
 export interface WithdrawalFields {
   amount: string;
@@ -20,7 +20,7 @@ export interface WithdrawalFields {
 export const useWithdraw = (cancelled: boolean) => {
   const [withdrawalId, setWithdrawalId] = useState<string | null>(null);
   const [approval, setApproval] =
-    useState<Erc20ApprovalNew_erc20WithdrawalApproval | null>(null);
+    useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
 
   const contract = useBridgeContract();
   const { keypair } = useVegaWallet();
@@ -34,19 +34,19 @@ export const useWithdraw = (cancelled: boolean) => {
     transaction: ethTx,
     perform,
     reset: resetEthTx,
-  } = useEthereumTransaction<CollateralBridgeNew, 'withdraw_asset'>(
+  } = useEthereumTransaction<CollateralBridge, 'withdraw_asset'>(
     contract,
     'withdraw_asset'
   );
 
-  const { data, stopPolling } = useQuery<
-    Erc20ApprovalNew,
-    Erc20ApprovalVariables
-  >(ERC20_APPROVAL_QUERY_NEW, {
-    variables: { withdrawalId: withdrawalId || '' },
-    skip: !withdrawalId,
-    pollInterval: 1000,
-  });
+  const { data, stopPolling } = useQuery<Erc20Approval, Erc20ApprovalVariables>(
+    ERC20_APPROVAL_QUERY,
+    {
+      variables: { withdrawalId: withdrawalId || '' },
+      skip: !withdrawalId,
+      pollInterval: 1000,
+    }
+  );
 
   const submit = useCallback(
     async (withdrawal: WithdrawalFields) => {

@@ -17,7 +17,7 @@ import {
   useEthereumTransaction,
   useTokenContract,
 } from '@vegaprotocol/web3';
-import type { CollateralBridgeNew } from '@vegaprotocol/smart-contracts';
+import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 import { prepend0x } from '@vegaprotocol/smart-contracts';
 import { useDepositStore } from './deposit-store';
 import { useGetBalanceOfERC20Token } from './use-get-balance-of-erc20-token';
@@ -51,10 +51,12 @@ export const useSubmitDeposit = () => {
 
   const getBalance = useGetBalanceOfERC20Token(tokenContract, asset);
 
-  const transaction = useEthereumTransaction<
-    CollateralBridgeNew,
-    'deposit_asset'
-  >(bridgeContract, 'deposit_asset', config?.confirmations, true);
+  const transaction = useEthereumTransaction<CollateralBridge, 'deposit_asset'>(
+    bridgeContract,
+    'deposit_asset',
+    config?.confirmations,
+    true
+  );
 
   useSubscription<DepositEvent, DepositEventVariables>(DEPOSIT_EVENT_SUB, {
     variables: { partyId: partyId ? remove0x(partyId) : '' },

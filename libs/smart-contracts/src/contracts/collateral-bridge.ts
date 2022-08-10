@@ -1,8 +1,8 @@
 import type { BigNumber } from 'ethers';
 import { ethers } from 'ethers';
-import abi from '../abis/erc20_bridge_new_abi.json';
+import abi from '../abis/erc20_bridge_abi.json';
 
-export class CollateralBridgeNew {
+export class CollateralBridge {
   public contract: ethers.Contract;
   public isNewContract = true;
 
