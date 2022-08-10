@@ -15,6 +15,7 @@ import type {
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
 import { AccountType } from '@vegaprotocol/types';
+import { assetsConnectionToAssets } from '@vegaprotocol/react-helpers';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -75,14 +76,18 @@ const WITHDRAW_PAGE_QUERY = gql`
         }
       }
     }
-    assets {
-      id
-      symbol
-      name
-      decimals
-      source {
-        ... on ERC20 {
-          contractAddress
+    assetsConnection {
+      edges {
+        node {
+          id
+          symbol
+          name
+          decimals
+          source {
+            ... on ERC20 {
+              contractAddress
+            }
+          }
         }
       }
     }
@@ -134,6 +139,8 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
     );
   }
 
+  const assets = assetsConnectionToAssets(data.assetsConnection);
+
   return (
     <>
       {hasPendingWithdrawals && (
@@ -151,7 +158,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           </Callout>
         </div>
       )}
-      <WithdrawManager assets={data.assets || []} accounts={accounts} />
+      <WithdrawManager assets={assets || []} accounts={accounts} />
     </>
   );
 };

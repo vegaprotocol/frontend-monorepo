@@ -16,6 +16,16 @@ export interface Asset {
   source: ERC20AssetSource | BuiltinAssetSource;
 }
 
+interface AssetEdge {
+  __typename: "AssetEdge";
+  node: Asset
+}
+
+interface AssetsConnection {
+  __typename: "AssetsConnection";
+  edges: (AssetEdge | null)[] | null
+}
+
 export type ERC20Asset = Omit<Asset, 'source'> & {
   source: ERC20AssetSource;
 };
@@ -27,4 +37,11 @@ export type BuiltinAsset = Omit<Asset, 'source'> & {
 export const isAssetTypeERC20 = (asset?: Asset): asset is ERC20Asset => {
   if (!asset?.source) return false;
   return asset.source.__typename === 'ERC20';
+};
+
+export const assetsConnectionToAssets = (assetsConnection: AssetsConnection): Asset[] => {
+  const edges = assetsConnection.edges?.filter(e => e && e?.node);
+  if (!edges) return [];
+  
+  return (edges as AssetEdge[]).map(e => e.node);
 };

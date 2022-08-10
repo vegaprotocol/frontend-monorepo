@@ -140,11 +140,11 @@ export interface WithdrawPage_party {
   withdrawals: WithdrawPage_party_withdrawals[] | null;
 }
 
-export interface WithdrawPage_assets_source_BuiltinAsset {
+export interface WithdrawPage_assetsConnection_edges_node_source_BuiltinAsset {
   __typename: "BuiltinAsset";
 }
 
-export interface WithdrawPage_assets_source_ERC20 {
+export interface WithdrawPage_assetsConnection_edges_node_source_ERC20 {
   __typename: "ERC20";
   /**
    * The address of the ERC20 contract
@@ -152,9 +152,9 @@ export interface WithdrawPage_assets_source_ERC20 {
   contractAddress: string;
 }
 
-export type WithdrawPage_assets_source = WithdrawPage_assets_source_BuiltinAsset | WithdrawPage_assets_source_ERC20;
+export type WithdrawPage_assetsConnection_edges_node_source = WithdrawPage_assetsConnection_edges_node_source_BuiltinAsset | WithdrawPage_assetsConnection_edges_node_source_ERC20;
 
-export interface WithdrawPage_assets {
+export interface WithdrawPage_assetsConnection_edges_node {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -175,7 +175,20 @@ export interface WithdrawPage_assets {
   /**
    * The origin source of the asset (e.g: an ERC20 asset)
    */
-  source: WithdrawPage_assets_source;
+  source: WithdrawPage_assetsConnection_edges_node_source;
+}
+
+export interface WithdrawPage_assetsConnection_edges {
+  __typename: "AssetEdge";
+  node: WithdrawPage_assetsConnection_edges_node;
+}
+
+export interface WithdrawPage_assetsConnection {
+  __typename: "AssetsConnection";
+  /**
+   * The assets
+   */
+  edges: (WithdrawPage_assetsConnection_edges | null)[] | null;
 }
 
 export interface WithdrawPage {
@@ -184,9 +197,9 @@ export interface WithdrawPage {
    */
   party: WithdrawPage_party | null;
   /**
-   * The list of all assets in use in the Vega network
+   * The list of all assets in use in the vega network or the specified asset if id is provided
    */
-  assets: WithdrawPage_assets[] | null;
+  assetsConnection: WithdrawPage_assetsConnection;
 }
 
 export interface WithdrawPageVariables {

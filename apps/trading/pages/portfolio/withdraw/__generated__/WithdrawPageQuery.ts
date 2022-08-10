@@ -65,11 +65,11 @@ export interface WithdrawPageQuery_party {
   accounts: WithdrawPageQuery_party_accounts[] | null;
 }
 
-export interface WithdrawPageQuery_assets_source_BuiltinAsset {
+export interface WithdrawPageQuery_assetsConnection_edges_node_source_BuiltinAsset {
   __typename: "BuiltinAsset";
 }
 
-export interface WithdrawPageQuery_assets_source_ERC20 {
+export interface WithdrawPageQuery_assetsConnection_edges_node_source_ERC20 {
   __typename: "ERC20";
   /**
    * The address of the ERC20 contract
@@ -77,9 +77,9 @@ export interface WithdrawPageQuery_assets_source_ERC20 {
   contractAddress: string;
 }
 
-export type WithdrawPageQuery_assets_source = WithdrawPageQuery_assets_source_BuiltinAsset | WithdrawPageQuery_assets_source_ERC20;
+export type WithdrawPageQuery_assetsConnection_edges_node_source = WithdrawPageQuery_assetsConnection_edges_node_source_BuiltinAsset | WithdrawPageQuery_assetsConnection_edges_node_source_ERC20;
 
-export interface WithdrawPageQuery_assets {
+export interface WithdrawPageQuery_assetsConnection_edges_node {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -100,7 +100,20 @@ export interface WithdrawPageQuery_assets {
   /**
    * The origin source of the asset (e.g: an ERC20 asset)
    */
-  source: WithdrawPageQuery_assets_source;
+  source: WithdrawPageQuery_assetsConnection_edges_node_source;
+}
+
+export interface WithdrawPageQuery_assetsConnection_edges {
+  __typename: "AssetEdge";
+  node: WithdrawPageQuery_assetsConnection_edges_node;
+}
+
+export interface WithdrawPageQuery_assetsConnection {
+  __typename: "AssetsConnection";
+  /**
+   * The assets
+   */
+  edges: (WithdrawPageQuery_assetsConnection_edges | null)[] | null;
 }
 
 export interface WithdrawPageQuery {
@@ -109,9 +122,9 @@ export interface WithdrawPageQuery {
    */
   party: WithdrawPageQuery_party | null;
   /**
-   * The list of all assets in use in the Vega network
+   * The list of all assets in use in the vega network or the specified asset if id is provided
    */
-  assets: WithdrawPageQuery_assets[] | null;
+  assetsConnection: WithdrawPageQuery_assetsConnection;
 }
 
 export interface WithdrawPageQueryVariables {
