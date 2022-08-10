@@ -17,13 +17,13 @@ export interface Asset {
 }
 
 interface AssetEdge {
-  __typename: "AssetEdge";
-  node: Asset
+  __typename: 'AssetEdge';
+  node: Asset;
 }
 
 interface AssetsConnection {
-  __typename: "AssetsConnection";
-  edges: (AssetEdge | null)[] | null
+  __typename: 'AssetsConnection';
+  edges: (AssetEdge | null)[] | null;
 }
 
 export type ERC20Asset = Omit<Asset, 'source'> & {
@@ -39,9 +39,11 @@ export const isAssetTypeERC20 = (asset?: Asset): asset is ERC20Asset => {
   return asset.source.__typename === 'ERC20';
 };
 
-export const assetsConnectionToAssets = (assetsConnection: AssetsConnection): Asset[] => {
-  const edges = assetsConnection.edges?.filter(e => e && e?.node);
+export const assetsConnectionToAssets = (
+  assetsConnection: AssetsConnection
+): Asset[] => {
+  const edges = assetsConnection.edges?.filter((e) => e && e?.node);
   if (!edges) return [];
-  
-  return (edges as AssetEdge[]).map(e => e.node);
+
+  return (edges as AssetEdge[]).map((e) => e.node);
 };
