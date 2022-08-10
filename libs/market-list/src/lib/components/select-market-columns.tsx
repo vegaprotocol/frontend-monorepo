@@ -305,7 +305,7 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
     {
       value: (
         <Tooltip
-          description={<FeesBreakdown feeFactors={market.fees.factors} />}
+          description={<FeesBreakdown feeFactors={market.fees?.factors} />}
         >
           <span className="border-b-2 border-dotted">
             {market.totalFees ?? '-'}
@@ -465,7 +465,7 @@ export const columnsPositionMarkets = (
     {
       value: (
         <Tooltip
-          description={<FeesBreakdown feeFactors={market.fees.factors} />}
+          description={<FeesBreakdown feeFactors={market.fees?.factors} />}
         >
           <span className="border-b-2 border-dotted">
             {market.totalFees ?? '-'}
@@ -510,8 +510,9 @@ export const columnsPositionMarkets = (
 export const FeesBreakdown = ({
   feeFactors,
 }: {
-  feeFactors: MarketList_markets_fees_factors;
+  feeFactors?: MarketList_markets_fees_factors;
 }) => {
+  if (!feeFactors) return null;
   return (
     <KeyValueTable muted={true}>
       <KeyValueTableRow>
