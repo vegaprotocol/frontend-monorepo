@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
-import { Routes } from '../router-config';
+import Routes from '../routes';
 import { TrancheItem } from './tranche-item';
 import { Button } from '@vegaprotocol/ui-toolkit';
 

@@ -71,3 +71,5 @@ export const Tranches = () => {
     </section>
   );
 };
+
+export default Tranches;

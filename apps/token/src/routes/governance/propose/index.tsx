@@ -1,1 +1,1 @@
-export { Propose } from './propose';
+export { Propose, Propose as default } from './propose';
