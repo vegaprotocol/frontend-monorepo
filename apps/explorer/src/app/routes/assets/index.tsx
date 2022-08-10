@@ -4,28 +4,35 @@ import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import type { AssetsQuery } from './__generated__/AssetsQuery';
+import type {
+  AssetsQuery,
+  AssetsQuery_assetsConnection_edges,
+} from './__generated__/AssetsQuery';
 
 export const ASSETS_QUERY = gql`
   query AssetsQuery {
-    assets {
-      id
-      name
-      symbol
-      decimals
-      source {
-        ... on ERC20 {
-          contractAddress
-        }
-        ... on BuiltinAsset {
-          maxFaucetAmountMint
-        }
-      }
-      infrastructureFeeAccount {
-        type
-        balance
-        market {
+    assetsConnection {
+      edges {
+        node {
           id
+          name
+          symbol
+          decimals
+          source {
+            ... on ERC20 {
+              contractAddress
+            }
+            ... on BuiltinAsset {
+              maxFaucetAmountMint
+            }
+          }
+          infrastructureFeeAccount {
+            type
+            balance
+            market {
+              id
+            }
+          }
         }
       }
     }
@@ -34,16 +41,22 @@ export const ASSETS_QUERY = gql`
 
 const Assets = () => {
   const { data } = useQuery<AssetsQuery>(ASSETS_QUERY);
-  if (!data || !data.assets) return null;
+
+  const assets =
+    (data?.assetsConnection?.edges?.filter(
+      (e) => e != null && e.node != null
+    ) as AssetsQuery_assetsConnection_edges[]) || [];
+  if (assets.length === 0) return null;
+
   return (
     <section>
       <RouteTitle data-testid="assets-header">{t('Assets')}</RouteTitle>
-      {data?.assets.map((a) => (
-        <React.Fragment key={a.id}>
+      {assets.map((a) => (
+        <React.Fragment key={a.node.id}>
           <SubHeading data-testid="asset-header">
-            {a.name} ({a.symbol})
+            {a?.node.name} ({a.node.symbol})
           </SubHeading>
-          <SyntaxHighlighter data={a} />
+          <SyntaxHighlighter data={a.node} />
         </React.Fragment>
       ))}
     </section>
