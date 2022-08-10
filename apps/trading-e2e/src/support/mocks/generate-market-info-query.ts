@@ -84,6 +84,15 @@ export const generateMarketInfoQuery = (
         bestStaticOfferVolume: '1',
         openInterest: '0',
       },
+      liquidityMonitoringParameters: {
+        triggeringRatio: 0,
+        targetStakeParameters: {
+          timeWindow: 3600,
+          scalingFactor: 10,
+          __typename: 'TargetStakeParameters',
+        },
+        __typename: 'LiquidityMonitoringParameters',
+      },
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
