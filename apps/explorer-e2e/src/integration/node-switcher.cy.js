@@ -71,7 +71,7 @@ context('Node switcher', function () {
     });
 
     afterEach('Close node switcher', function () {
-      cy.getByTestId(closeDialogBtn).click();
+      cy.getByTestId(closeDialogBtn).should('be.visible').click();
     });
 
     function validateNodeError(errortype, errorMsg) {

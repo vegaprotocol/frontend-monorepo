@@ -141,3 +141,5 @@ export const RedemptionInformation = () => {
     </section>
   );
 };
+
+export default RedemptionInformation;

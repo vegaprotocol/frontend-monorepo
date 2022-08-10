@@ -102,3 +102,5 @@ export const Tranche = () => {
     </>
   );
 };
+
+export default Tranche;

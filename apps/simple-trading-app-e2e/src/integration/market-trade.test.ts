@@ -7,18 +7,7 @@ import { generateEstimateOrder } from '../support/mocks/generate-estimate-order'
 import { generatePartyBalance } from '../support/mocks/generate-party-balance';
 import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
-
-const connectVegaWallet = () => {
-  const form = 'rest-connector-form';
-  const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
-  const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
-
-  cy.getByTestId('connect-vega-wallet').click();
-  cy.getByTestId('connectors-list').find('button').click();
-  cy.getByTestId(form).find('#wallet').click().type(walletName);
-  cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
-  cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
-};
+import { connectVegaWallet } from '../support/connect-wallet';
 
 describe('Market trade', () => {
   let markets;

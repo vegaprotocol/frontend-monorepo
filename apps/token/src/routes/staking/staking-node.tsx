@@ -135,3 +135,5 @@ export const StakingNode = ({ vegaKey, data }: StakingNodeProps) => {
     </>
   );
 };
+
+export default StakingNodeContainer;

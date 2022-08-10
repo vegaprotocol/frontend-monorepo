@@ -153,3 +153,5 @@ export const RedeemFromTranche = () => {
     </section>
   );
 };
+
+export default RedeemFromTranche;

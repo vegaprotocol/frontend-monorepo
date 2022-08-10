@@ -1,26 +1,27 @@
 import React from 'react';
-import { ProposalContainer } from './governance/proposal';
-import { ProposalsContainer } from './governance/proposals';
-import { Propose } from './governance/propose';
-
 import Home from './home';
 import NotFound from './not-found';
 import NotPermitted from './not-permitted';
-import { RedemptionInformation } from './redemption/home/redemption-information';
-import { RedeemFromTranche } from './redemption/tranche';
-import { AssociateContainer } from './staking/associate/associate-page-container';
-import { DisassociateContainer } from './staking/disassociate/disassociate-page-container';
-import { Staking } from './staking/staking';
-import { StakingNodeContainer } from './staking/staking-node';
-import { StakingNodesContainer } from './staking/staking-nodes-container';
-import { Tranche } from './tranches/tranche';
-import { Tranches } from './tranches/tranches';
 import Routes from './routes';
 
 const LazyTranches = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-tranches", webpackPrefetch: true */ './tranches'
+    )
+);
+
+const LazyTranchesTranche = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-tranches-tranche", webpackPrefetch: true */ './tranches/tranche'
+    )
+);
+
+const LazyTranchesTranches = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-tranches-tranches", webpackPrefetch: true */ './tranches/tranches'
     )
 );
 
@@ -37,18 +38,90 @@ const LazyRedemption = React.lazy(
       /* webpackChunkName: "route-redemption", webpackPrefetch: true */ './redemption'
     )
 );
+
+const LazyRedemptionIndex = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-redemption-index", webpackPrefetch: true */ './redemption/home/redemption-information'
+    )
+);
+
+const LazyRedemptionTranche = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-redemption-tranche", webpackPrefetch: true */ './redemption/tranche'
+    )
+);
 const LazyStaking = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-staking", webpackPrefetch: true */ './staking'
     )
 );
+
+const LazyStakingAssociate = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-staking-associate", webpackPrefetch: true */ './staking/associate/associate-page-container'
+    )
+);
+
+const LazyStakingDisassociate = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-staking-disassociate", webpackPrefetch: true */ './staking/disassociate/disassociate-page-container'
+    )
+);
+
+const LazyStakingIndex = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-staking-index", webpackPrefetch: true */ './staking/staking'
+    )
+);
+
+const LazyStakingNode = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-staking-node", webpackPrefetch: true */ './staking/staking-node'
+    )
+);
+
+const LazyStakingNodes = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-staking-nodes", webpackPrefetch: true */ './staking/staking-nodes-container'
+    )
+);
+
 const LazyGovernance = React.lazy(
   () =>
     import(
       /* webpackChunkName: "route-governance", webpackPrefetch: true */ './governance'
     )
 );
+
+const LazyGovernanceProposal = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-proposal", webpackPrefetch: true */ './governance/proposal'
+    )
+);
+
+const LazyGovernanceProposals = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-proposals", webpackPrefetch: true */ './governance/proposals'
+    )
+);
+
+const LazyGovernancePropose = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose'
+    )
+);
+
 const LazyRewards = React.lazy(
   () =>
     import(
@@ -89,8 +162,8 @@ const routerConfig = [
     name: 'Tranches',
     component: LazyTranches,
     children: [
-      { index: true, element: <Tranches /> },
-      { path: ':trancheId', element: <Tranche /> },
+      { index: true, element: <LazyTranchesTranches /> },
+      { path: ':trancheId', element: <LazyTranchesTranche /> },
     ],
   },
   {
@@ -103,15 +176,15 @@ const routerConfig = [
     name: 'Staking',
     component: LazyStaking,
     children: [
-      { path: 'associate', element: <AssociateContainer /> },
-      { path: 'disassociate', element: <DisassociateContainer /> },
-      { path: ':node', element: <StakingNodeContainer /> },
+      { path: 'associate', element: <LazyStakingAssociate /> },
+      { path: 'disassociate', element: <LazyStakingDisassociate /> },
+      { path: ':node', element: <LazyStakingNode /> },
       {
         index: true,
         element: (
-          <StakingNodesContainer>
-            {({ data }) => <Staking data={data} />}
-          </StakingNodesContainer>
+          <LazyStakingNodes>
+            {({ data }) => <LazyStakingIndex data={data} />}
+          </LazyStakingNodes>
         ),
       },
     ],
@@ -138,11 +211,11 @@ const routerConfig = [
     children: [
       {
         index: true,
-        element: <RedemptionInformation />,
+        element: <LazyRedemptionIndex />,
       },
       {
         path: ':id',
-        element: <RedeemFromTranche />,
+        element: <LazyRedemptionTranche />,
       },
     ],
   },
@@ -151,9 +224,9 @@ const routerConfig = [
     name: 'Governance',
     component: LazyGovernance,
     children: [
-      { path: ':proposalId', element: <ProposalContainer /> },
-      { path: 'propose', element: <Propose /> },
-      { index: true, element: <ProposalsContainer /> },
+      { path: ':proposalId', element: <LazyGovernanceProposal /> },
+      { path: 'propose', element: <LazyGovernancePropose /> },
+      { index: true, element: <LazyGovernanceProposals /> },
     ],
   },
   {
