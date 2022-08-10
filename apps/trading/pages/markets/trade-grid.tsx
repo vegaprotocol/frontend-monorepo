@@ -62,16 +62,18 @@ export const TradeMarketHeader = ({
 }: TradeMarketHeaderProps) => {
   const [
     {
-      isSelectMarketDialog,
+      isSelectMarketDialogOpen,
       isAssetDetailsDialogOpen,
       assetDetailsDialogSymbol,
     },
     setState,
-  ] = useState<AssetDetailsDialogState & { isSelectMarketDialog: boolean }>({
-    isSelectMarketDialog: false,
-    isAssetDetailsDialogOpen: false,
-    assetDetailsDialogSymbol: '',
-  });
+  ] = useState<AssetDetailsDialogState & { isSelectMarketDialogOpen: boolean }>(
+    {
+      isSelectMarketDialogOpen: false,
+      isAssetDetailsDialogOpen: false,
+      assetDetailsDialogSymbol: '',
+    }
+  );
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
@@ -89,10 +91,10 @@ export const TradeMarketHeader = ({
   return (
     <header className={headerClassName}>
       <SelectMarketDialog
-        dialogOpen={isSelectMarketDialog}
+        dialogOpen={isSelectMarketDialogOpen}
         setDialogOpen={(isOpen) =>
           setState({
-            isSelectMarketDialog: isOpen,
+            isSelectMarketDialogOpen: isOpen,
             isAssetDetailsDialogOpen: false,
             assetDetailsDialogSymbol: '',
           })
@@ -102,7 +104,7 @@ export const TradeMarketHeader = ({
         <button
           onClick={() =>
             setState({
-              isSelectMarketDialog: !isSelectMarketDialog,
+              isSelectMarketDialogOpen: !isSelectMarketDialogOpen,
               isAssetDetailsDialogOpen: false,
               assetDetailsDialogSymbol: '',
             })
@@ -167,7 +169,7 @@ export const TradeMarketHeader = ({
                   className="no-underline hover:underline"
                   onClick={() =>
                     setState({
-                      isSelectMarketDialog: false,
+                      isSelectMarketDialogOpen: false,
                       isAssetDetailsDialogOpen: !isAssetDetailsDialogOpen,
                       assetDetailsDialogSymbol: symbol,
                     })
@@ -180,7 +182,7 @@ export const TradeMarketHeader = ({
                   open={isAssetDetailsDialogOpen}
                   onChange={(isOpen) =>
                     setState({
-                      isSelectMarketDialog: false,
+                      isSelectMarketDialogOpen: false,
                       isAssetDetailsDialogOpen: isOpen,
                       assetDetailsDialogSymbol,
                     })
