@@ -19,7 +19,12 @@ export type AssetDetailsDialogState = {
   assetDetailsDialogSymbol: string | Asset;
 };
 
-type AssetDetails = { label: string; value: string; tooltip: string }[];
+type AssetDetails = {
+  key: string;
+  label: string;
+  value: string;
+  tooltip: string;
+}[];
 
 export const DEFAULT_ASSET_DETAILS_STATE: AssetDetailsDialogState = {
   isAssetDetailsDialogOpen: false,
@@ -72,31 +77,37 @@ export const AssetDetailsDialog = ({
   if (asset != null) {
     details = [
       {
+        key: 'name',
         label: t('Name'),
         value: asset.node.name,
         tooltip: '', // t('Name of the asset (e.g: Great British Pound)')
       },
       {
+        key: 'symbol',
         label: t('Symbol'),
         value: asset.node.symbol,
         tooltip: '', // t('Symbol of the asset (e.g: GBP)')
       },
       {
+        key: 'decimals',
         label: t('Decimals'),
         value: asset.node.decimals.toString(),
         tooltip: t('Number of decimal / precision handled by this asset'),
       },
       {
+        key: 'quantum',
         label: t('Quantum'),
         value: asset.node.quantum,
         tooltip: t('The minimum economically meaningful amount in the asset'),
       },
       {
+        key: 'totalsupply',
         label: t('Total supply'),
         value: formatNumber(toBigNum(asset.node.totalSupply, 0)),
         tooltip: t('Total circulating supply for the asset'),
       },
       {
+        key: 'contractaddress',
         label: t('Contract address'),
         value: (
           asset.node
@@ -107,6 +118,7 @@ export const AssetDetailsDialog = ({
         ),
       },
       {
+        key: 'withdrawalthreshold',
         label: t('Withdrawal threshold'),
         value: (
           asset.node
@@ -117,6 +129,7 @@ export const AssetDetailsDialog = ({
         ),
       },
       {
+        key: 'lifetimelimit',
         label: t('Lifetime limit'),
         value: (
           asset.node
@@ -133,33 +146,30 @@ export const AssetDetailsDialog = ({
     <div className="pt-8 pb-20 table w-full">
       {details
         .filter(({ value }) => value && value.length > 0)
-        .map(({ label, value, tooltip }) => {
-          const key = label.replace(/\s+/, '').toLowerCase();
-          return (
-            <div key={key} className="flex flex-col md:table-row">
-              <div
-                data-testid={`${key}_label`}
-                className="table-cell w-1/3 py-2 first-letter:uppercase"
-              >
-                {tooltip.length > 0 ? (
-                  <Tooltip description={tooltip}>
-                    <span className="underline underline-offset-2 decoration-dotted cursor-help">
-                      {label}
-                    </span>
-                  </Tooltip>
-                ) : (
-                  <span>{label}</span>
-                )}
-              </div>
-              <div
-                data-testid={`${key}_value`}
-                className="table-cell pb-5 md:pb-0"
-              >
-                {value}
-              </div>
+        .map(({ key, label, value, tooltip }) => (
+          <div key={key} className="flex flex-col md:table-row">
+            <div
+              data-testid={`${key}_label`}
+              className="table-cell w-1/3 py-2 first-letter:uppercase"
+            >
+              {tooltip.length > 0 ? (
+                <Tooltip description={tooltip}>
+                  <span className="underline underline-offset-2 decoration-dotted cursor-help">
+                    {label}
+                  </span>
+                </Tooltip>
+              ) : (
+                <span>{label}</span>
+              )}
             </div>
-          );
-        })}
+            <div
+              data-testid={`${key}_value`}
+              className="table-cell pb-5 md:pb-0"
+            >
+              {value}
+            </div>
+          </div>
+        ))}
     </div>
   ) : (
     <div className="py-40">
