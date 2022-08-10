@@ -163,7 +163,7 @@ describe('DealTicket', () => {
     // Change back to limit and check we are still on FOK
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
     expect(screen.getByTestId('order-tif')).toHaveValue(
-      VegaWalletOrderTimeInForce.FOK
+      VegaWalletOrderTimeInForce.GTC
     );
   });
 });
