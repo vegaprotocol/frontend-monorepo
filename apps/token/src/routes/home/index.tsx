@@ -9,7 +9,7 @@ import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useDocumentTitle } from '../../hooks/use-document-title';
 import { BigNumber } from '../../lib/bignumber';
 import type { RouteChildProps } from '..';
-import { Routes } from '../router-config';
+import Routes from '../routes';
 import type { NodeData } from './__generated__/NodeData';
 import { TokenDetails } from './token-details';
 import { Button } from '@vegaprotocol/ui-toolkit';

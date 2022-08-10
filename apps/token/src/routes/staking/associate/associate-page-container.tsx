@@ -26,3 +26,5 @@ export const AssociateContainer = () => {
     </StakingWalletsContainer>
   );
 };
+
+export default AssociateContainer;

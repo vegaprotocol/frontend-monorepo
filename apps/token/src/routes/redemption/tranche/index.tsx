@@ -14,7 +14,7 @@ import { useRefreshBalances } from '../../../hooks/use-refresh-balances';
 import { useTransaction } from '../../../hooks/use-transaction';
 import { BigNumber } from '../../../lib/bignumber';
 import { formatNumber } from '../../../lib/format-number';
-import { Routes } from '../../router-config';
+import Routes from '../../routes';
 import type { RedemptionState } from '../redemption-reducer';
 import { TrancheTable } from '../tranche-table';
 
@@ -153,3 +153,5 @@ export const RedeemFromTranche = () => {
     </section>
   );
 };
+
+export default RedeemFromTranche;

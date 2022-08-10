@@ -10,7 +10,7 @@ import type {
   TransactionState,
 } from '../../../hooks/transaction-reducer';
 import { TransactionActionType } from '../../../hooks/transaction-reducer';
-import { Routes } from '../../router-config';
+import Routes from '../../routes';
 
 export const DisassociateTransaction = ({
   amount,

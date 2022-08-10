@@ -56,50 +56,48 @@ const singleRow: Positions_party_positions = {
 };
 const singleRowData = [singleRow];
 
-it('should render successfully', async () => {
-  await act(async () => {
-    const { baseElement } = render(<PositionsTable data={[]} />);
-    expect(baseElement).toBeTruthy();
-  });
-});
-
-it('Render correct columns', async () => {
-  await act(async () => {
-    render(<PositionsTable data={singleRowData} />);
-    await waitFor(async () => {
-      const headers = await screen.getAllByRole('columnheader');
-      expect(headers).toHaveLength(5);
-      expect(
-        headers.map((h) =>
-          h.querySelector('[ref="eText"]')?.textContent?.trim()
-        )
-      ).toEqual([
-        'Market',
-        'Amount',
-        'Average Entry Price',
-        'Mark Price',
-        'Realised PNL',
-      ]);
+describe('PositionsTable', () => {
+  it('should render successfully', async () => {
+    act(async () => {
+      const { baseElement } = render(<PositionsTable data={[]} />);
+      expect(baseElement).toBeTruthy();
     });
   });
-});
 
-it('Correct formatting applied', async () => {
-  await act(async () => {
-    render(<PositionsTable data={singleRowData} />);
-    await waitFor(async () => {
-      const cells = screen.getAllByRole('gridcell');
-      const expectedValues = [
-        singleRow.market.tradableInstrument.instrument.code,
-        '+100.00',
-        '11.29935',
-        '11.38885',
-        '+5,200.000',
-      ];
-      cells.forEach((cell, i) => {
-        expect(cell).toHaveTextContent(expectedValues[i]);
+  it('should render correct columns', async () => {
+    act(async () => {
+      render(<PositionsTable data={singleRowData} />);
+      await waitFor(async () => {
+        const headers = screen.getAllByRole('columnheader');
+        expect(headers).toHaveLength(5);
+        expect(headers.map((h) => h.textContent?.trim())).toEqual([
+          'Market',
+          'Amount',
+          'Average Entry Price',
+          'Mark Price',
+          'Realised PNL',
+        ]);
       });
-      expect(cells[cells.length - 1]).toHaveClass('color-vega-green');
+    });
+  });
+
+  it('should apply correct formatting', () => {
+    act(async () => {
+      render(<PositionsTable data={singleRowData} />);
+      await waitFor(async () => {
+        const cells = screen.getAllByRole('gridcell');
+        const expectedValues = [
+          singleRow.market.tradableInstrument.instrument.code,
+          '+100.00',
+          '11.29935',
+          '11.38885',
+          '+5,200.000',
+        ];
+        cells.forEach((cell, i) => {
+          expect(cell).toHaveTextContent(expectedValues[i]);
+        });
+        expect(cells[cells.length - 1]).toHaveClass('color-vega-green');
+      });
     });
   });
 });
