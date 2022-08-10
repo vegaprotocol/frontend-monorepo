@@ -174,6 +174,7 @@ interface ProposalNewAssetTerms {
   };
   closingTimestamp: number;
   enactmentTimestamp: number;
+  validationTimestamp: number;
 }
 
 interface OracleSpecBinding {
