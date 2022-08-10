@@ -30,7 +30,7 @@ function setup(mocks?: MockedResponse[], cancelled = false) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useWithdraw(cancelled, true), { wrapper });
+  return renderHook(() => useWithdraw(cancelled), { wrapper });
 }
 
 const signature =

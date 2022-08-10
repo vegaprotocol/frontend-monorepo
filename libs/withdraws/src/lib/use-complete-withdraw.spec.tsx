@@ -22,7 +22,7 @@ function setup(mocks?: MockedResponse[]) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useCompleteWithdraw(true), { wrapper });
+  return renderHook(() => useCompleteWithdraw(), { wrapper });
 }
 
 it('Should perform the Ethereum transaction with the fetched approval', async () => {
