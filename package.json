@@ -28,6 +28,7 @@
     "@radix-ui/react-popover": "^1.0.0",
     "@radix-ui/react-radio-group": "^0.1.5",
     "@radix-ui/react-select": "^0.1.1",
+    "@radix-ui/react-slider": "^1.0.0",
     "@radix-ui/react-tabs": "^0.1.5",
     "@radix-ui/react-tooltip": "^0.1.7",
     "@sentry/nextjs": "^6.19.3",
