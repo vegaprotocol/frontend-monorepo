@@ -39,3 +39,5 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
     </>
   );
 };
+
+export default Staking;

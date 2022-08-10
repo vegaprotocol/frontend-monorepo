@@ -9,7 +9,7 @@ import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { Routes } from '../router-config';
+import Routes from '../routes';
 import type {
   WithdrawPage,
   WithdrawPageVariables,

@@ -13,7 +13,7 @@ import {
   AppStateActionType,
   useAppState,
 } from '../../contexts/app-state/app-state-context';
-import { Routes } from '../../routes/router-config';
+import Routes from '../../routes/routes';
 import { EthWallet } from '../eth-wallet';
 import { VegaWallet } from '../vega-wallet';
 

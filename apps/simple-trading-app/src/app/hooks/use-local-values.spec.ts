@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import useLocalValues from './use-local-values';
 
 describe('local values hook', () => {

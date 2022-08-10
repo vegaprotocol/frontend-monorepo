@@ -5,7 +5,7 @@ import { Link as RouteLink } from 'react-router-dom';
 
 import type { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '../../lib/format-number';
-import { Routes } from '../router-config';
+import Routes from '../routes';
 
 export const Complete = ({
   address,
