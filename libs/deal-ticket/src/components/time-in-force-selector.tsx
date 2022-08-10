@@ -44,6 +44,7 @@ export const TimeInForceSelector = ({
             timeInForce === VegaWalletOrderTimeInForce.FOK ||
             timeInForce === VegaWalletOrderTimeInForce.IOC
         );
+
   return (
     <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select
