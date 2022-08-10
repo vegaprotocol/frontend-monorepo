@@ -153,9 +153,19 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
             'color-vega-red': ({ value }: { value: string }) =>
               Number(value) < 0,
           }}
-          valueFormatter={({ value, data }: { value: string, data: Positions_party_positions }) =>
+          valueFormatter={({
+            value,
+            data,
+          }: {
+            value: string;
+            data: Positions_party_positions;
+          }) =>
             volumePrefix(
-              addDecimalsFormatNumber(value, data.market.tradableInstrument.instrument.product.settlementAsset.decimals)
+              addDecimalsFormatNumber(
+                value,
+                data.market.tradableInstrument.instrument.product
+                  .settlementAsset.decimals
+              )
             )
           }
           cellRenderer="PriceFlashCell"

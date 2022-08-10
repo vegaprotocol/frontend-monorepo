@@ -6993,19 +6993,7 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.14.2:
-  version "1.14.2"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.14.2.tgz#b89364ede0b3fbeb2927f7c1f80bc90f13248bbf"
-  integrity sha512-Gqfl2DW2hQ3RT22uiJs2yK1bSwwFbDMC4drTe3uWEjKMmwlAZmS7/vqLD1v25kqbAqdjWSzr+aqgHsRXT51BPQ==
-  dependencies:
-    classnames "^2.3.0"
-    eventemitter3 "^4.0.0"
-    lodash.clamp "^4.0.0"
-    lodash.debounce "^4.0.0"
-    lodash.isequal "^4.5.0"
-    use-resize-observer "^9.0.0"
-
-allotment@^1.14.5:
+allotment@1.15.0, allotment@^1.14.5:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.15.0.tgz#3e27eb0d048b8da3d1acb8bc53610b63f84d5c5a"
   integrity sha512-9JXAm59/XD5Djfpso0rgGZdA23n3v5XeicwjNoInp2qlBa/HFZtnMDujm6NHOSjOCQPWhkOt4ybYgz8H3ed+8A==
@@ -16915,10 +16903,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennant@^0.4.12:
-  version "0.4.12"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.12.tgz#c37860fcea96b79114c2ee4f22c5c18bd8e9d5a2"
-  integrity sha512-3j7YIsEcIceWIDT5A8WdkBdTPK0rzqcUzFKK3UfFYAv0xGPI7aJyyX2Gu5QfEML01A0oGtgLsjbWoxHdiSp7Hw==
+pennant@^0.4.14:
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.14.tgz#9d51fc47faf9b51efee965c6df8a0746c70bdce6"
+  integrity sha512-O0a5uPGrQfX8eDULVJVuSsYloLjPl/91kdmbaZbc3bq+N9nYIRNu5uRdxAm0LPaqVhNU+Tp1dwNPeL6JFF73xw==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
@@ -16938,7 +16926,7 @@ pennant@^0.4.12:
     "@types/react" "^18.0.14"
     "@types/react-dom" "^18.0.5"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.14.2"
+    allotment "1.15.0"
     classnames "^2.2.6"
     d3-array "2.3.3"
     d3-delaunay "^6.0.2"
