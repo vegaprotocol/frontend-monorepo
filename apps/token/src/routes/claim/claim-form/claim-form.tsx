@@ -14,7 +14,7 @@ import {
   TransactionActionType,
   TxState,
 } from '../../../hooks/transaction-reducer';
-import { Routes } from '../../router-config';
+import Routes from '../../routes';
 
 export interface ICountry {
   name: string;
