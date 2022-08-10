@@ -4,7 +4,6 @@ import {
   VegaWalletOrderType,
 } from '@vegaprotocol/wallet';
 import { t } from '@vegaprotocol/react-helpers';
-import { useEffect } from 'react';
 
 interface TimeInForceSelectorProps {
   value: VegaWalletOrderTimeInForce;
@@ -45,13 +44,6 @@ export const TimeInForceSelector = ({
             timeInForce === VegaWalletOrderTimeInForce.FOK ||
             timeInForce === VegaWalletOrderTimeInForce.IOC
         );
-  useEffect(() => {
-    onSelect(
-      orderType === VegaWalletOrderType.Limit
-        ? VegaWalletOrderTimeInForce.GTC
-        : VegaWalletOrderTimeInForce.IOC
-    );
-  }, [onSelect, orderType]);
   return (
     <FormGroup label={t('Time in force')} labelFor="select-time-in-force">
       <Select

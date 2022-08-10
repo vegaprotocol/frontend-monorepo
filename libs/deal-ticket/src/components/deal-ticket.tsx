@@ -39,6 +39,7 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
   } = useForm<Order>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
@@ -71,7 +72,17 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          <TypeSelector value={field.value} onSelect={field.onChange} />
+          <TypeSelector
+            value={field.value}
+            onSelect={(type) => {
+              if (type === VegaWalletOrderType.Limit) {
+                setValue('timeInForce', VegaWalletOrderTimeInForce.GTC);
+              } else {
+                setValue('timeInForce', VegaWalletOrderTimeInForce.IOC);
+              }
+              field.onChange(type);
+            }}
+          />
         )}
       />
       <Controller
