@@ -67,8 +67,8 @@ describe('orders', () => {
         .and('have.length.at.least', 1);
 
       cy.getByTestId('edit')
-      .should('be.visible')
-      .and('have.length.at.least', 1);
+        .should('be.visible')
+        .and('have.length.at.least', 1);
     });
   });
 
