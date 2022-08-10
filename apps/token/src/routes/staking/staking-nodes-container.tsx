@@ -128,3 +128,5 @@ export const StakingNodesContainer = ({
 
   return children({ data });
 };
+
+export default StakingNodesContainer;
