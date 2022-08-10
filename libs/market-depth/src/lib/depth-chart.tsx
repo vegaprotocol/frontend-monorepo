@@ -166,7 +166,9 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
         <DepthChart
           {...depthData}
           theme={theme}
-          volumeFormat={volume => addDecimalsFormatNumber(volume, data?.positionDecimalPlaces || 0)}
+          volumeFormat={(volume) =>
+            addDecimalsFormatNumber(volume, data?.positionDecimalPlaces || 0)
+          }
         />
       )}
     </AsyncRenderer>
