@@ -50,7 +50,6 @@ describe('SimpleMarketList', () => {
     };
     await act(async () => {
       render(
-        // @ts-ignore different versions of react types in apollo and app
         <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
@@ -120,7 +119,6 @@ describe('SimpleMarketList', () => {
     };
     await act(async () => {
       render(
-        // @ts-ignore different versions of react types in apollo and app
         <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
@@ -133,8 +131,9 @@ describe('SimpleMarketList', () => {
         document.querySelector('.ag-center-cols-container')
       ).toBeInTheDocument();
     });
-
-    const container = document.querySelector('.ag-center-cols-container');
-    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
+    await waitFor(() => {
+      const container = document.querySelector('.ag-center-cols-container');
+      expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
+    });
   });
 });
