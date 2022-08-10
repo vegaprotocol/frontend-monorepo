@@ -40,9 +40,9 @@ export const isAssetTypeERC20 = (asset?: Asset): asset is ERC20Asset => {
 };
 
 export const assetsConnectionToAssets = (
-  assetsConnection: AssetsConnection
+  assetsConnection: AssetsConnection | undefined | null
 ): Asset[] => {
-  const edges = assetsConnection.edges?.filter((e) => e && e?.node);
+  const edges = assetsConnection?.edges?.filter((e) => e && e?.node);
   if (!edges) return [];
 
   return (edges as AssetEdge[]).map((e) => e.node);

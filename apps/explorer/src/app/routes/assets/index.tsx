@@ -1,13 +1,10 @@
 import { gql, useQuery } from '@apollo/client';
-import { t } from '@vegaprotocol/react-helpers';
+import { assetsConnectionToAssets, t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
-import type {
-  AssetsQuery,
-  AssetsQuery_assetsConnection_edges,
-} from './__generated__/AssetsQuery';
+import type { AssetsQuery } from './__generated__/AssetsQuery';
 
 export const ASSETS_QUERY = gql`
   query AssetsQuery {
@@ -42,21 +39,17 @@ export const ASSETS_QUERY = gql`
 const Assets = () => {
   const { data } = useQuery<AssetsQuery>(ASSETS_QUERY);
 
-  const assets =
-    (data?.assetsConnection?.edges?.filter(
-      (e) => e != null && e.node != null
-    ) as AssetsQuery_assetsConnection_edges[]) || [];
-  if (assets.length === 0) return null;
+  const assets = assetsConnectionToAssets(data?.assetsConnection);
 
   return (
     <section>
       <RouteTitle data-testid="assets-header">{t('Assets')}</RouteTitle>
       {assets.map((a) => (
-        <React.Fragment key={a.node.id}>
+        <React.Fragment key={a.id}>
           <SubHeading data-testid="asset-header">
-            {a?.node.name} ({a.node.symbol})
+            {a.name} ({a.symbol})
           </SubHeading>
-          <SyntaxHighlighter data={a.node} />
+          <SyntaxHighlighter data={a} />
         </React.Fragment>
       ))}
     </section>
