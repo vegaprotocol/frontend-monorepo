@@ -121,7 +121,10 @@ export const DealTicketSize = ({
         <SliderThumb />
       </SliderRoot>
 
-      <div className="flex w-full justify-between text-black dark:text-white mb-32">
+      <div
+        data-testid="percentage-selector"
+        className="flex w-full justify-between text-black dark:text-white mb-32"
+      >
         {sizeRatios.map((size, index) => {
           const proportionalSize = size ? (size / 100) * max : min;
           return (

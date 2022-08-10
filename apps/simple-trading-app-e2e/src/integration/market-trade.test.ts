@@ -79,17 +79,76 @@ describe('Market trade', () => {
     }
   });
 
-  it('size selector should work well', () => {
+  it('size slider should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[1].id}`);
       connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').click();
       cy.get('button[aria-label="Open short position"]').click();
       cy.get('#step-2-control').click();
-      cy.get('#step-2-panel').find('dd').eq(0).should('have.text', '1');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
       cy.get('#step-2-panel').find('[role="slider"]').type('{rightarrow}');
 
-      cy.get('#step-2-panel').find('dd').eq(0).should('have.text', '2');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '2');
+    }
+  });
+
+  it('percentage selection should work well', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+      cy.getByTestId('percentage-selector')
+        .find('button')
+        .contains('Max')
+        .click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '9');
+    }
+  });
+
+  it('size input should work well', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('input')
+        .type('{backspace}2');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '2');
     }
   });
 
