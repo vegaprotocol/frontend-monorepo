@@ -22,7 +22,11 @@ const singleRow: Accounts_party_accounts = {
 };
 const singleRowData = [singleRow];
 
-const makeAccountsTable = (data: Accounts_party_accounts[] | null) => (
+const WrappedAccountsTable = ({
+  data,
+}: {
+  data: Accounts_party_accounts[] | null;
+}) => (
   <MockedProvider>
     <AccountsTable data={data} />
   </MockedProvider>
@@ -30,14 +34,14 @@ const makeAccountsTable = (data: Accounts_party_accounts[] | null) => (
 
 it('should render successfully', async () => {
   await act(async () => {
-    const { baseElement } = render(makeAccountsTable([]));
+    const { baseElement } = render(<WrappedAccountsTable data={[]} />);
     expect(baseElement).toBeTruthy();
   });
 });
 
 it('Render correct columns', async () => {
   await act(async () => {
-    render(makeAccountsTable(singleRowData));
+    render(<WrappedAccountsTable data={singleRowData} />);
     await waitFor(async () => {
       const headers = await screen.getAllByRole('columnheader');
       expect(headers).toHaveLength(4);
@@ -52,7 +56,7 @@ it('Render correct columns', async () => {
 
 it('Correct formatting applied', async () => {
   await act(async () => {
-    render(makeAccountsTable(singleRowData));
+    render(<WrappedAccountsTable data={singleRowData} />);
     await waitFor(async () => {
       const cells = await screen.getAllByRole('gridcell');
       const expectedValues = [

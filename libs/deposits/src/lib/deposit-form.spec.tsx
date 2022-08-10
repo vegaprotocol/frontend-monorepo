@@ -25,12 +25,12 @@ function generateAsset(): Asset {
 }
 
 let asset: Asset;
-let props: DepositFormProps;
+let defaultProps: DepositFormProps;
 const MOCK_ETH_ADDRESS = '0x72c22822A19D20DE7e426fB84aa047399Ddd8853';
 
 beforeEach(() => {
   asset = generateAsset();
-  props = {
+  defaultProps = {
     assets: [asset],
     selectedAsset: undefined,
     onSelectAsset: jest.fn(),
@@ -49,14 +49,14 @@ beforeEach(() => {
 });
 
 describe('Deposit form', () => {
-  const makeDepositForm = () => (
+  const WrappedDepositForm = (props: DepositFormProps) => (
     <MockedProvider>
       <DepositForm {...props} />
     </MockedProvider>
   );
 
   it('renders with default values', async () => {
-    render(makeDepositForm());
+    render(<WrappedDepositForm {...defaultProps} />);
 
     // Assert default values (including) from/to provided by useVegaWallet and useWeb3React
     expect(screen.getByLabelText('From (Ethereum address)')).toHaveValue(
@@ -69,11 +69,11 @@ describe('Deposit form', () => {
 
   describe('fields validation', () => {
     it('fails when submitted with empty required fields', async () => {
-      render(makeDepositForm());
+      render(<WrappedDepositForm {...defaultProps} />);
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
-      expect(props.submitDeposit).not.toHaveBeenCalled();
+      expect(defaultProps.submitDeposit).not.toHaveBeenCalled();
       const validationMessages = await screen.findAllByRole('alert');
       expect(validationMessages).toHaveLength(3);
       validationMessages.forEach((el) => {
@@ -83,7 +83,7 @@ describe('Deposit form', () => {
 
     it('fails when submitted with invalid ethereum address', async () => {
       (useWeb3React as jest.Mock).mockReturnValue({ account: '123' });
-      render(makeDepositForm());
+      render(<WrappedDepositForm {...defaultProps} />);
 
       fireEvent.submit(screen.getByTestId('deposit-form'));
 
@@ -93,7 +93,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted with invalid vega wallet key', async () => {
-      render(makeDepositForm());
+      render(<WrappedDepositForm {...defaultProps} />);
 
       const invalidVegaKey = 'abc';
       fireEvent.change(screen.getByLabelText('To (Vega key)'), {
@@ -105,7 +105,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is more than the amount available in the ethereum wallet', async () => {
-      render(makeDepositForm());
+      render(<WrappedDepositForm {...defaultProps} />);
 
       // Max amount validation
       const amountMoreThanAvailable = '7';
@@ -121,7 +121,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is more than the maximum limit', async () => {
-      render(makeDepositForm());
+      render(<WrappedDepositForm {...defaultProps} />);
 
       const amountMoreThanLimit = '21';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -136,14 +136,12 @@ describe('Deposit form', () => {
 
     it('fails when submitted amount is more than the approved amount', async () => {
       render(
-        <MockedProvider>
-          <DepositForm
-            {...props}
-            balance={new BigNumber(100)}
-            max={new BigNumber(100)}
-            deposited={new BigNumber(10)}
-          />
-        </MockedProvider>
+        <WrappedDepositForm
+          {...defaultProps}
+          balance={new BigNumber(100)}
+          max={new BigNumber(100)}
+          deposited={new BigNumber(10)}
+        />
       );
 
       const amountMoreThanAllowance = '31';
@@ -161,7 +159,7 @@ describe('Deposit form', () => {
       // Min amount validation
       render(
         <MockedProvider>
-          <DepositForm {...props} selectedAsset={asset} />
+          <DepositForm {...defaultProps} selectedAsset={asset} />
         </MockedProvider>
       ); // Render with selected asset so we have asset.decimals
 
@@ -177,7 +175,7 @@ describe('Deposit form', () => {
     });
 
     it('fails when submitted amount is less than zero', async () => {
-      render(makeDepositForm());
+      render(<WrappedDepositForm {...defaultProps} />);
 
       const amountLessThanZero = '-0.00001';
       fireEvent.change(screen.getByLabelText('Amount'), {
@@ -199,13 +197,11 @@ describe('Deposit form', () => {
     mockUseWeb3React.mockReturnValue({ account: undefined });
 
     render(
-      <MockedProvider>
-        <DepositForm
-          {...props}
-          allowance={new BigNumber(0)}
-          selectedAsset={asset}
-        />
-      </MockedProvider>
+      <WrappedDepositForm
+        {...defaultProps}
+        allowance={new BigNumber(0)}
+        selectedAsset={asset}
+      />
     );
 
     fireEvent.click(
@@ -214,7 +210,7 @@ describe('Deposit form', () => {
       })
     );
 
-    expect(props.submitApprove).toHaveBeenCalled();
+    expect(defaultProps.submitApprove).toHaveBeenCalled();
   });
 
   it('handles submitting a deposit', async () => {
@@ -231,16 +227,14 @@ describe('Deposit form', () => {
     const max = new BigNumber(20);
     const deposited = new BigNumber(10);
     render(
-      <MockedProvider>
-        <DepositForm
-          {...props}
-          allowance={new BigNumber(100)}
-          balance={balance}
-          max={max}
-          deposited={deposited}
-          selectedAsset={asset}
-        />
-      </MockedProvider>
+      <WrappedDepositForm
+        {...defaultProps}
+        allowance={new BigNumber(100)}
+        balance={balance}
+        max={max}
+        deposited={deposited}
+        selectedAsset={asset}
+      />
     );
 
     // Check deposit limit is displayed
@@ -268,7 +262,7 @@ describe('Deposit form', () => {
     );
 
     await waitFor(() => {
-      expect(props.submitDeposit).toHaveBeenCalledWith({
+      expect(defaultProps.submitDeposit).toHaveBeenCalledWith({
         // @ts-ignore contract address definitely defined
         assetSource: asset.source.contractAddress,
         amount: '8',
@@ -278,16 +272,12 @@ describe('Deposit form', () => {
   });
 
   it('shows "View asset details" button when an asset is selected', async () => {
-    render(
-      <MockedProvider>
-        <DepositForm {...props} selectedAsset={asset} />
-      </MockedProvider>
-    );
+    render(<WrappedDepositForm {...defaultProps} selectedAsset={asset} />);
     expect(await screen.getByTestId('view-asset-details')).toBeInTheDocument();
   });
 
   it('does not shows "View asset details" button when no asset is selected', async () => {
-    render(makeDepositForm());
+    render(<WrappedDepositForm {...defaultProps} />);
     expect(await screen.queryAllByTestId('view-asset-details')).toHaveLength(0);
   });
 });

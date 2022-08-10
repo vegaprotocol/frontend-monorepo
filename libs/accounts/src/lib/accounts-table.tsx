@@ -21,7 +21,6 @@ import {
   DEFAULT_ASSET_DETAILS_STATE,
 } from '@vegaprotocol/market-list';
 import type { AssetDetailsDialogState } from '@vegaprotocol/market-list';
-import { is } from 'immer/dist/internal';
 
 interface AccountsTableProps {
   data: Accounts_party_accounts[] | null;

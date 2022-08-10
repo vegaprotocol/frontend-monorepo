@@ -325,14 +325,14 @@ describe('AssetDetailsDialog', () => {
     'should show correct data given %p symbol',
     async (requestedSymbol, symbol, name, totalSupply) => {
       render(makeDialog(requestedSymbol));
-      expect((await screen.findByTestId('Symbol_val')).textContent).toContain(
+      expect((await screen.findByTestId('symbol_value')).textContent).toContain(
         symbol
       );
-      expect((await screen.findByTestId('Name_val')).textContent).toContain(
+      expect((await screen.findByTestId('name_value')).textContent).toContain(
         name
       );
       expect(
-        (await screen.findByTestId('TotalSupply_val')).textContent
+        (await screen.findByTestId('totalsupply_value')).textContent
       ).toContain(totalSupply);
     }
   );
