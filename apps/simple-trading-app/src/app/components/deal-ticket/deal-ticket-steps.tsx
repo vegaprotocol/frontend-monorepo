@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
@@ -58,6 +58,7 @@ export const DealTicketSteps = ({
     defaultValues: getDefaultOrder(market),
   });
 
+  const [max, setMax] = useState<number | null>(null);
   const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
@@ -82,9 +83,13 @@ export const DealTicketSteps = ({
     order,
   });
 
-  const max = new BigNumber(maxTrade)
-    .decimalPlaces(market.positionDecimalPlaces)
-    .toNumber();
+  useEffect(() => {
+    setMax(
+      new BigNumber(maxTrade)
+        .decimalPlaces(market.positionDecimalPlaces)
+        .toNumber()
+    );
+  }, [maxTrade, market.positionDecimalPlaces]);
 
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
@@ -149,25 +154,28 @@ export const DealTicketSteps = ({
     },
     {
       label: t('Choose Position Size'),
-      component: (
-        <DealTicketSize
-          step={step}
-          min={step}
-          max={max}
-          onValueChange={onSizeChange}
-          value={new BigNumber(orderSize).toNumber()}
-          name="size"
-          price={
-            market.depth.lastTrade
-              ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-              : ''
-          }
-          positionDecimalPlaces={market.positionDecimalPlaces}
-          quoteName={market.tradableInstrument.instrument.product.quoteName}
-          estCloseOut={estCloseOut}
-          estMargin={estMargin || ' - '}
-        />
-      ),
+      component:
+        max !== null ? (
+          <DealTicketSize
+            step={step}
+            min={step}
+            max={max}
+            onValueChange={onSizeChange}
+            value={new BigNumber(orderSize).toNumber()}
+            name="size"
+            price={
+              market.depth.lastTrade
+                ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+                : ''
+            }
+            positionDecimalPlaces={market.positionDecimalPlaces}
+            quoteName={market.tradableInstrument.instrument.product.quoteName}
+            estCloseOut={estCloseOut}
+            estMargin={estMargin || ' - '}
+          />
+        ) : (
+          'loading...'
+        ),
       value: orderSize,
     },
     {

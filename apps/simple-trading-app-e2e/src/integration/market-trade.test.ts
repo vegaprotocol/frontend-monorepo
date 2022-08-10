@@ -121,7 +121,7 @@ describe('Market trade', () => {
         .find('dd')
         .eq(0)
         .find('button')
-        .should('have.text', '9');
+        .should('have.text', '21');
     }
   });
 
