@@ -15,7 +15,6 @@ import {
   InputError,
   Select,
 } from '@vegaprotocol/ui-toolkit';
-import { Web3WalletInput } from '@vegaprotocol/web3';
 import { useWeb3React } from '@web3-react/core';
 import BigNumber from 'bignumber.js';
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
@@ -113,11 +112,9 @@ export const WithdrawForm = ({
         )}
       </FormGroup>
       <FormGroup label={t('To (Ethereum address)')} labelFor="ethereum-address">
-        <Web3WalletInput
-          inputProps={{
-            id: 'ethereum-address',
-            ...register('to', { validate: { required, ethereumAddress } }),
-          }}
+        <Input
+          id="ethereum-address"
+          {...register('to', { validate: { required, ethereumAddress } })}
         />
         {errors.to?.message && (
           <InputError intent="danger">{errors.to.message}</InputError>
