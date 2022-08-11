@@ -65,7 +65,7 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
             <Button
               variant="inline-link"
               prependIconName="duplicate"
-              title="Copy tx hash to clipboard"
+              title="Copy tx to clipboard"
               onClick={() => navigator.clipboard.writeText(txData.tx)}
               data-testid="copy-tx-to-clipboard"
             />
