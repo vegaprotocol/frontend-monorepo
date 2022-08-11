@@ -1,8 +1,9 @@
 import { AccountType, MarketTradingMode } from '@vegaprotocol/types';
-import type { PositionsMetrics } from './__generated__/PositionsMetrics';
-import { getMetrics } from './positions-metrics-data-provider';
+import type { Accounts } from '@vegaprotocol/accounts';
+import type { Positions } from './__generated__/Positions';
+import { getMetrics } from './data-providers';
 
-const data: PositionsMetrics = {
+const accounts: Accounts = {
   party: {
     __typename: 'Party',
     id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
@@ -12,6 +13,7 @@ const data: PositionsMetrics = {
         type: AccountType.General,
         asset: {
           __typename: 'Asset',
+          symbol: 'tDAI',
           id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
           decimals: 5,
         },
@@ -23,12 +25,14 @@ const data: PositionsMetrics = {
         type: AccountType.Margin,
         asset: {
           __typename: 'Asset',
+          symbol: 'tDAI',
           id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
           decimals: 5,
         },
         balance: '33353727',
         market: {
           __typename: 'Market',
+          name: 'AAVEDAI Monthly (30 Jun 2022)',
           id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
         },
       },
@@ -37,57 +41,25 @@ const data: PositionsMetrics = {
         type: AccountType.Margin,
         asset: {
           __typename: 'Asset',
+          symbol: 'tDAI',
           id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
           decimals: 5,
         },
         balance: '3274050',
         market: {
           __typename: 'Market',
+          name: 'UNIDAI Monthly (30 Jun 2022)',
           id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
         },
       },
     ],
-    marginsConnection: {
-      __typename: 'MarginConnection',
-      edges: [
-        {
-          __typename: 'MarginEdge',
-          node: {
-            __typename: 'MarginLevels',
-            maintenanceLevel: '0',
-            searchLevel: '0',
-            initialLevel: '0',
-            collateralReleaseLevel: '0',
-            market: {
-              __typename: 'Market',
-              id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
-            },
-            asset: {
-              __typename: 'Asset',
-              symbol: 'tDAI',
-            },
-          },
-        },
-        {
-          __typename: 'MarginEdge',
-          node: {
-            __typename: 'MarginLevels',
-            maintenanceLevel: '0',
-            searchLevel: '0',
-            initialLevel: '0',
-            collateralReleaseLevel: '0',
-            market: {
-              __typename: 'Market',
-              id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
-            },
-            asset: {
-              __typename: 'Asset',
-              symbol: 'tDAI',
-            },
-          },
-        },
-      ],
-    },
+  },
+};
+
+const data: Positions = {
+  party: {
+    __typename: 'Party',
+    id: '02eceaba4df2bef76ea10caf728d8a099a2aa846cced25737cccaa9812342f65',
     positionsConnection: {
       __typename: 'PositionConnection',
       edges: [
@@ -100,6 +72,29 @@ const data: PositionsMetrics = {
             updatedAt: '2022-07-28T14:53:54.725477Z',
             realisedPNL: '0',
             unrealisedPNL: '43804770',
+            marginsConnection: {
+              __typename: 'MarginConnection',
+              edges: [
+                {
+                  __typename: 'MarginEdge',
+                  node: {
+                    __typename: 'MarginLevels',
+                    maintenanceLevel: '0',
+                    searchLevel: '0',
+                    initialLevel: '0',
+                    collateralReleaseLevel: '0',
+                    market: {
+                      __typename: 'Market',
+                      id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
+                    },
+                    asset: {
+                      __typename: 'Asset',
+                      symbol: 'tDAI',
+                    },
+                  },
+                },
+              ],
+            },
             market: {
               __typename: 'Market',
               name: 'AAVEDAI Monthly (30 Jun 2022)',
@@ -130,6 +125,29 @@ const data: PositionsMetrics = {
             unrealisedPNL: '-9112700',
             averageEntryPrice: '840158',
             updatedAt: '2022-07-28T15:09:34.441143Z',
+            marginsConnection: {
+              __typename: 'MarginConnection',
+              edges: [
+                {
+                  __typename: 'MarginEdge',
+                  node: {
+                    __typename: 'MarginLevels',
+                    maintenanceLevel: '0',
+                    searchLevel: '0',
+                    initialLevel: '0',
+                    collateralReleaseLevel: '0',
+                    market: {
+                      __typename: 'Market',
+                      id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
+                    },
+                    asset: {
+                      __typename: 'Asset',
+                      symbol: 'tDAI',
+                    },
+                  },
+                },
+              ],
+            },
             market: {
               __typename: 'Market',
               id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
@@ -158,12 +176,12 @@ const data: PositionsMetrics = {
 
 describe('getMetrics', () => {
   it('returns positions metrics', () => {
-    const metrics = getMetrics(data.party);
+    const metrics = getMetrics(data, accounts);
     expect(metrics.length).toEqual(2);
   });
 
   it('calculates metrics', () => {
-    const metrics = getMetrics(data.party);
+    const metrics = getMetrics(data, accounts);
 
     expect(metrics[0].assetSymbol).toEqual('tDAI');
     expect(metrics[0].averageEntryPrice).toEqual('8993727');

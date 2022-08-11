@@ -97,15 +97,15 @@ const getDelta = (subscriptionData: TradesSub): TradeFields[] =>
 const getPageInfo = (responseData: Trades): PageInfo | null =>
   responseData.market?.tradesConnection.pageInfo || null;
 
-export const tradesDataProvider = makeDataProvider(
-  TRADES_QUERY,
-  TRADES_SUB,
+export const tradesDataProvider = makeDataProvider({
+  query: TRADES_QUERY,
+  subscriptionQuery: TRADES_SUB,
   update,
   getData,
   getDelta,
-  {
+  pagination: {
     getPageInfo,
     append,
     first: 100,
-  }
-);
+  },
+});

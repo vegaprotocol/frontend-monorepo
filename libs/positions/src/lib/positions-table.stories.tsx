@@ -1,6 +1,6 @@
 import type { Story, Meta } from '@storybook/react';
 import { PositionsTable } from './positions-table';
-import type { Position } from './positions-metrics-data-provider';
+import type { Position } from './data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 export default {
@@ -14,7 +14,7 @@ export const Primary = Template.bind({});
 const longPosition: Position = {
   marketName: 'BTC/USD (31 july 2022)',
   averageEntryPrice: '1134564',
-  capitalUtilisation: 10.0,
+  capitalUtilisation: 10,
   currentLeverage: 11,
   assetDecimals: 2,
   marketDecimalPlaces: 2,
@@ -46,7 +46,7 @@ const longPosition: Position = {
 const shortPosition: Position = {
   marketName: 'ETH/USD (31 august 2022)',
   averageEntryPrice: '23976',
-  capitalUtilisation: 87.0,
+  capitalUtilisation: 87,
   currentLeverage: 7,
   assetDecimals: 2,
   marketDecimalPlaces: 2,

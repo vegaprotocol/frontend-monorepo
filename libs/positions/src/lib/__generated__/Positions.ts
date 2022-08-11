@@ -9,7 +9,7 @@ import { MarketTradingMode } from "@vegaprotocol/types";
 // GraphQL query operation: Positions
 // ====================================================
 
-export interface Positions_party_positions_market_data_market {
+export interface Positions_party_positionsConnection_edges_node_marginsConnection_edges_node_market {
   __typename: "Market";
   /**
    * Market ID
@@ -17,43 +17,81 @@ export interface Positions_party_positions_market_data_market {
   id: string;
 }
 
-export interface Positions_party_positions_market_data {
-  __typename: "MarketData";
+export interface Positions_party_positionsConnection_edges_node_marginsConnection_edges_node_asset {
+  __typename: "Asset";
   /**
-   * the mark price (actually an unsigned int)
+   * The symbol of the asset (e.g: GBP)
    */
-  markPrice: string;
-  /**
-   * what state the market is in (auction, continuous etc)
-   */
-  marketTradingMode: MarketTradingMode;
-  /**
-   * market id of the associated mark price
-   */
-  market: Positions_party_positions_market_data_market;
+  symbol: string;
 }
 
-export interface Positions_party_positions_market_tradableInstrument_instrument {
+export interface Positions_party_positionsConnection_edges_node_marginsConnection_edges_node {
+  __typename: "MarginLevels";
+  /**
+   * market in which the margin is required for this party
+   */
+  market: Positions_party_positionsConnection_edges_node_marginsConnection_edges_node_market;
+  /**
+   * minimal margin for the position to be maintained in the network (unsigned int actually)
+   */
+  maintenanceLevel: string;
+  /**
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned int actually)
+   */
+  searchLevel: string;
+  /**
+   * this is the minimal margin required for a party to place a new order on the network (unsigned int actually)
+   */
+  initialLevel: string;
+  /**
+   * If the margin of the party is greater than this level, then collateral will be released from the margin account into
+   * the general account of the party for the given asset.
+   */
+  collateralReleaseLevel: string;
+  /**
+   * asset for the current margins
+   */
+  asset: Positions_party_positionsConnection_edges_node_marginsConnection_edges_node_asset;
+}
+
+export interface Positions_party_positionsConnection_edges_node_marginsConnection_edges {
+  __typename: "MarginEdge";
+  node: Positions_party_positionsConnection_edges_node_marginsConnection_edges_node;
+}
+
+export interface Positions_party_positionsConnection_edges_node_marginsConnection {
+  __typename: "MarginConnection";
+  /**
+   * The margin levels in this connection
+   */
+  edges: Positions_party_positionsConnection_edges_node_marginsConnection_edges[] | null;
+}
+
+export interface Positions_party_positionsConnection_edges_node_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Full and fairly descriptive name for the instrument
    */
   name: string;
-  /**
-   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
-   */
-  code: string;
 }
 
-export interface Positions_party_positions_market_tradableInstrument {
+export interface Positions_party_positionsConnection_edges_node_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
-  instrument: Positions_party_positions_market_tradableInstrument_instrument;
+  instrument: Positions_party_positionsConnection_edges_node_market_tradableInstrument_instrument;
 }
 
-export interface Positions_party_positions_market {
+export interface Positions_party_positionsConnection_edges_node_market_data {
+  __typename: "MarketData";
+  /**
+   * the mark price (actually an unsigned int)
+   */
+  markPrice: string;
+}
+
+export interface Positions_party_positionsConnection_edges_node_market {
   __typename: "Market";
   /**
    * Market ID
@@ -63,10 +101,6 @@ export interface Positions_party_positions_market {
    * Market full name
    */
   name: string;
-  /**
-   * marketData for the given market
-   */
-  data: Positions_party_positions_market_data | null;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
@@ -91,12 +125,20 @@ export interface Positions_party_positions_market {
    */
   positionDecimalPlaces: number;
   /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
+  /**
    * An instance of or reference to a tradable instrument.
    */
-  tradableInstrument: Positions_party_positions_market_tradableInstrument;
+  tradableInstrument: Positions_party_positionsConnection_edges_node_market_tradableInstrument;
+  /**
+   * marketData for the given market
+   */
+  data: Positions_party_positionsConnection_edges_node_market_data | null;
 }
 
-export interface Positions_party_positions {
+export interface Positions_party_positionsConnection_edges_node {
   __typename: "Position";
   /**
    * Realised Profit and Loss (int64)
@@ -115,9 +157,30 @@ export interface Positions_party_positions {
    */
   averageEntryPrice: string;
   /**
+   * RFC3339Nano time the position was updated
+   */
+  updatedAt: string | null;
+  /**
+   * margins of the party for the given position
+   */
+  marginsConnection: Positions_party_positionsConnection_edges_node_marginsConnection;
+  /**
    * Market relating to this position
    */
-  market: Positions_party_positions_market;
+  market: Positions_party_positionsConnection_edges_node_market;
+}
+
+export interface Positions_party_positionsConnection_edges {
+  __typename: "PositionEdge";
+  node: Positions_party_positionsConnection_edges_node;
+}
+
+export interface Positions_party_positionsConnection {
+  __typename: "PositionConnection";
+  /**
+   * The positions in this connection
+   */
+  edges: Positions_party_positionsConnection_edges[] | null;
 }
 
 export interface Positions_party {
@@ -129,7 +192,7 @@ export interface Positions_party {
   /**
    * Trading positions relating to a party
    */
-  positions: Positions_party_positions[] | null;
+  positionsConnection: Positions_party_positionsConnection;
 }
 
 export interface Positions {

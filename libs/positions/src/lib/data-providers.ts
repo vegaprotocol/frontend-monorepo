@@ -2,16 +2,18 @@ import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import type {
-  PositionsMetrics,
-  PositionsMetrics_party,
-} from './__generated__/PositionsMetrics';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import type { Accounts } from '@vegaprotocol/accounts';
+import { accountsDataProvider } from '@vegaprotocol/accounts';
+import type { Positions, Positions_party } from './__generated__/Positions';
+import {
+  makeDataProvider,
+  makeDependencyDataProvider,
+} from '@vegaprotocol/react-helpers';
 
 import type {
-  PositionsMetricsSubscription,
-  PositionsMetricsSubscription_positions,
-} from './__generated__/PositionsMetricsSubscription';
+  PositionsSubscription,
+  PositionsSubscription_positions,
+} from './__generated__/PositionsSubscription';
 
 import { AccountType } from '@vegaprotocol/types';
 import type { MarketTradingMode } from '@vegaprotocol/types';
@@ -40,17 +42,33 @@ export interface Position {
 }
 
 export interface Data {
-  party: PositionsMetrics_party | null;
+  party: Positions_party | null;
   positions: Position[] | null;
 }
 
-const POSITIONS_METRICS_FRAGMENT = gql`
-  fragment PositionMetricsFields on Position {
+const POSITION_FIELDS = gql`
+  fragment PositionFields on Position {
     realisedPNL
     openVolume
     unrealisedPNL
     averageEntryPrice
     updatedAt
+    marginsConnection {
+      edges {
+        node {
+          market {
+            id
+          }
+          maintenanceLevel
+          searchLevel
+          initialLevel
+          collateralReleaseLevel
+          asset {
+            symbol
+          }
+        }
+      }
+    }
     market {
       id
       name
@@ -69,42 +87,15 @@ const POSITIONS_METRICS_FRAGMENT = gql`
   }
 `;
 
-const POSITION_METRICS_QUERY = gql`
-  ${POSITIONS_METRICS_FRAGMENT}
-  query PositionsMetrics($partyId: ID!) {
+export const POSITIONS_QUERY = gql`
+  ${POSITION_FIELDS}
+  query Positions($partyId: ID!) {
     party(id: $partyId) {
       id
-      accounts {
-        type
-        asset {
-          id
-          decimals
-        }
-        balance
-        market {
-          id
-        }
-      }
-      marginsConnection {
-        edges {
-          node {
-            market {
-              id
-            }
-            maintenanceLevel
-            searchLevel
-            initialLevel
-            collateralReleaseLevel
-            asset {
-              symbol
-            }
-          }
-        }
-      }
       positionsConnection {
         edges {
           node {
-            ...PositionMetricsFields
+            ...PositionFields
           }
         }
       }
@@ -112,33 +103,36 @@ const POSITION_METRICS_QUERY = gql`
   }
 `;
 
-export const POSITIONS_METRICS_SUBSCRIPTION = gql`
-  ${POSITIONS_METRICS_FRAGMENT}
-  subscription PositionsMetricsSubscription($partyId: ID!) {
+export const POSITIONS_SUBSCRIPTION = gql`
+  ${POSITION_FIELDS}
+  subscription PositionsSubscription($partyId: ID!) {
     positions(partyId: $partyId) {
-      ...PositionMetricsFields
+      ...PositionFields
     }
   }
 `;
 
-export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
-  if (!data || !data.positionsConnection.edges) {
+export const getMetrics = (
+  data: Positions | null,
+  accounts: Accounts | null
+): Position[] => {
+  if (!data || !data.party?.positionsConnection.edges) {
     return [];
   }
   const metrics: Position[] = [];
-  data.positionsConnection.edges.forEach((position) => {
+  data.party?.positionsConnection.edges.forEach((position) => {
     const market = position.node.market;
     const marketData = market.data;
-    const marginLevel = data.marginsConnection.edges?.find(
+    const marginLevel = position.node.marginsConnection.edges?.find(
       (margin) => margin.node.market.id === market.id
     )?.node;
-    const marginAccount = data.accounts?.find(
+    const marginAccount = accounts?.party?.accounts?.find(
       (account) => account.market?.id === market.id
     );
     if (!marginAccount || !marginLevel || !marketData) {
       return;
     }
-    const generalAccount = data.accounts?.find(
+    const generalAccount = accounts?.party?.accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
         account.type === AccountType.General
@@ -232,54 +226,46 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
 };
 
 export const update = (
-  data: Data,
-  delta: PositionsMetricsSubscription_positions
+  data: Positions_party,
+  delta: PositionsSubscription_positions
 ) => {
-  if (!data.party?.positionsConnection.edges) {
-    return data;
-  }
-  const edges = produce(data.party.positionsConnection.edges, (draft) => {
-    const index = draft.findIndex(
+  return produce(data, (draft) => {
+    if (!draft.positionsConnection.edges) {
+      return;
+    }
+    const index = draft.positionsConnection.edges.findIndex(
       (edge) => edge.node.market.id === delta.market.id
     );
     if (index !== -1) {
-      draft[index].node = delta;
+      draft.positionsConnection.edges[index].node = delta;
     } else {
-      draft.push({ __typename: 'PositionEdge', node: delta });
+      draft.positionsConnection.edges.push({
+        __typename: 'PositionEdge',
+        node: delta,
+      });
     }
   });
-  const party = produce(data.party, (draft) => {
-    draft.positionsConnection.edges = edges;
-  });
-  if (party === data.party) {
-    return data;
-  }
-  return {
-    party,
-    positions: getMetrics(party),
-  };
 };
 
-const getData = (responseData: PositionsMetrics): Data => {
-  return {
-    party: responseData.party,
-    positions: sortBy(getMetrics(responseData.party), 'updatedAt').reverse(),
-  };
-};
-
-const getDelta = (
-  subscriptionData: PositionsMetricsSubscription
-): PositionsMetricsSubscription_positions => subscriptionData.positions;
-
-export const positionsMetricsDataProvider = makeDataProvider<
-  PositionsMetrics,
-  Data,
-  PositionsMetricsSubscription,
-  PositionsMetricsSubscription_positions
->(
-  POSITION_METRICS_QUERY,
-  POSITIONS_METRICS_SUBSCRIPTION,
+export const positionDataProvider = makeDataProvider<
+  Positions,
+  Positions_party,
+  PositionsSubscription,
+  PositionsSubscription_positions
+>({
+  query: POSITIONS_QUERY,
+  subscriptionQuery: POSITIONS_SUBSCRIPTION,
   update,
-  getData,
-  getDelta
-);
+  getData: (responseData: Positions) => responseData.party,
+  getDelta: (subscriptionData: PositionsSubscription) =>
+    subscriptionData.positions,
+});
+
+export const positionsMetricsDataProvider = makeDependencyDataProvider<
+  Position[]
+>([positionDataProvider, accountsDataProvider], ([positions, accounts]) => {
+  return sortBy(
+    getMetrics(positions as Positions | null, accounts as Accounts | null),
+    'updatedAt'
+  ).reverse();
+});

@@ -48,13 +48,13 @@ describe('data provider', () => {
   };
   const subscriptionQuery: Query<SubscriptionData> = query;
 
-  const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
+  const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
     query,
     subscriptionQuery,
     update,
-    (r) => r.data,
-    (r) => r.data
-  );
+    getData: (r) => r.data,
+    getDelta: (r) => r.data,
+  });
 
   const first = 100;
   const paginatedSubscribe = makeDataProvider<
@@ -62,19 +62,19 @@ describe('data provider', () => {
     Data,
     SubscriptionData,
     Delta
-  >(
+  >({
     query,
     subscriptionQuery,
     update,
-    (r) => r.data,
-    (r) => r.data,
-    {
+    getData: (r) => r.data,
+    getDelta: (r) => r.data,
+    pagination: {
       first,
       append: defaultAppend,
       getPageInfo: (r) => r?.pageInfo ?? null,
       getTotalCount: (r) => r?.totalCount,
-    }
-  );
+    },
+  });
 
   const generateData = (start = 0, size = first) => {
     return new Array(size).fill(null).map((v, i) => ({
@@ -276,7 +276,7 @@ describe('data provider', () => {
     });
 
     // load next page
-    subscription.load();
+    subscription.load && subscription.load();
     let lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
     expect(lastQueryArgs?.variables?.pagination).toEqual({
@@ -292,7 +292,7 @@ describe('data provider', () => {
     });
 
     // load page with skip
-    subscription.load(500, 600);
+    subscription.load && subscription.load(500, 600);
     lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
     expect(lastQueryArgs?.variables?.pagination).toEqual({
@@ -309,7 +309,7 @@ describe('data provider', () => {
     });
 
     // load in the gap
-    subscription.load(400, 500);
+    subscription.load && subscription.load(400, 500);
     lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
     expect(lastQueryArgs?.variables?.pagination).toEqual({
@@ -326,7 +326,7 @@ describe('data provider', () => {
     });
 
     // load page after last block
-    subscription.load(700, 800);
+    subscription.load && subscription.load(700, 800);
     lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
     expect(lastQueryArgs?.variables?.pagination).toEqual({
@@ -343,7 +343,7 @@ describe('data provider', () => {
     });
 
     // load last page shorter than expected
-    subscription.load(950, 1050);
+    subscription.load && subscription.load(950, 1050);
     lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
     expect(lastQueryArgs?.variables?.pagination).toEqual({
@@ -363,11 +363,11 @@ describe('data provider', () => {
 
     // load next page when pageInfo.hasNextPage === false
     const clientQueryCallsLength = clientQuery.mock.calls.length;
-    subscription.load();
+    subscription.load && subscription.load();
     expect(clientQuery.mock.calls.length).toBe(clientQueryCallsLength);
 
     // load last page longer than expected
-    subscription.load(960, 1000);
+    subscription.load && subscription.load(960, 1000);
     lastQueryArgs =
       clientQuery.mock.calls[clientQuery.mock.calls.length - 1][0];
     expect(lastQueryArgs?.variables?.pagination).toEqual({
@@ -403,7 +403,7 @@ describe('data provider', () => {
     expect(lastCallbackArgs[0].totalCount).toBe(undefined);
 
     // load next page
-    subscription.load();
+    subscription.load && subscription.load();
     await resolveQuery({
       data: generateData(100),
       pageInfo: {
@@ -415,7 +415,7 @@ describe('data provider', () => {
     expect(lastCallbackArgs[0].totalCount).toBe(undefined);
 
     // load last page
-    subscription.load();
+    subscription.load && subscription.load();
     await resolveQuery({
       data: generateData(200, 50),
       pageInfo: {

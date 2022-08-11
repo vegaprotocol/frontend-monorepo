@@ -112,6 +112,12 @@ export const dataProvider = makeDataProvider<
   SimpleMarkets_markets[],
   SimpleMarketDataSub,
   SimpleMarketDataSub_marketData
->(MARKETS_QUERY, MARKET_DATA_SUB, update, getData, getDelta);
+>({
+  query: MARKETS_QUERY,
+  subscriptionQuery: MARKET_DATA_SUB,
+  update,
+  getData,
+  getDelta,
+});
 
 export default dataProvider;
