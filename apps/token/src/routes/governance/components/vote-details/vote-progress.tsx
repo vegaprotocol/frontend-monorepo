@@ -8,7 +8,7 @@ export const VoteProgress = ({
   progress: BigNumber;
 }) => {
   return (
-    <div className="w-full h-4 relative">
+    <div className="w-full h-4 relative bg-black-50">
       <div
         data-testid="vote-progress-indicator"
         className="absolute top-[-5px] w-[1px] h-16 bg-white z-[1]"
