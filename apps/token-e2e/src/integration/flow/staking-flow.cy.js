@@ -278,14 +278,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
       cy.staking_validator_page_add_stake('1');
 
-      // below check soemtimes fails since epoch duration is occasionally too quick for check to complete
-      // Looking into expanding epoch duration but for now to reduce flake: disabling this check
-      // cy.get(vegaWalletNextEpochBalances, txTimeout).should(
-      //   'contain',
-      //   1.0,
-      //   txTimeout
-      // );
-
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
         2.0,
