@@ -31,7 +31,7 @@ const PERCENTAGE_PARAMS = [
   'governance.proposal.updateNetParam.requiredMajority',
   'governance.proposal.updateNetParam.requiredParticipation',
   'validators.vote.required',
-]
+];
 
 const BIG_NUMBER_PARAMS = [
   'spam.protection.delegation.min.tokens',
@@ -55,7 +55,9 @@ const BIG_NUMBER_PARAMS = [
 
 export const NetworkParameterRow = ({
   row: { key, value },
-}: { row: NetworkParametersQuery_networkParameters }) => {
+}: {
+  row: NetworkParametersQuery_networkParameters;
+}) => {
   const isSyntaxRow = isJsonObject(value);
 
   return (
