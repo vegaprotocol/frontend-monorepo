@@ -94,7 +94,9 @@ export const useVoteInformation = ({
 
   const requiredMajorityPercentage = React.useMemo(
     () =>
-      requiredMajority ? new BigNumber(requiredMajority) : new BigNumber(100),
+      requiredMajority
+        ? new BigNumber(requiredMajority).times(100)
+        : new BigNumber(100),
     [requiredMajority]
   );
 
@@ -110,7 +112,7 @@ export const useVoteInformation = ({
       },
       new BigNumber(0)
     );
-    return new BigNumber(addDecimal(new BigNumber(totalNoVotes), 18));
+    return new BigNumber(addDecimal(totalNoVotes, 18));
   }, [proposal.votes.no.votes]);
 
   const yesTokens = React.useMemo(() => {
@@ -125,7 +127,7 @@ export const useVoteInformation = ({
       },
       new BigNumber(0)
     );
-    return new BigNumber(addDecimal(new BigNumber(totalYesVotes), 18));
+    return new BigNumber(addDecimal(totalYesVotes, 18));
   }, [proposal.votes.yes.votes]);
 
   const totalTokensVoted = React.useMemo(
