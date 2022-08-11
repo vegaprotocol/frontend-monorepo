@@ -9,7 +9,7 @@ import {
 import vegaWhite from '../../images/vega_white.png';
 import { BigNumber } from '../../lib/bignumber';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import { Routes } from '../../routes/router-config';
+import Routes from '../../routes/routes';
 import { BulletHeader } from '../bullet-header';
 import type { WalletCardAssetProps } from '../wallet-card';
 import {
@@ -43,10 +43,16 @@ export const VegaWallet = () => {
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
           {keypair && (
             <>
-              <div className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-12">
+              <div
+                data-testid="wallet-name"
+                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-12"
+              >
                 {keypair.name}
               </div>
-              <span className="sm:col-start-2 place-self-end font-mono pb-2 px-4">
+              <span
+                data-testid="vega-account-truncated"
+                className="sm:col-start-2 place-self-end font-mono pb-2 px-4"
+              >
                 {truncateMiddle(keypair.pub)}
               </span>
             </>
@@ -129,6 +135,7 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
   const footer = (
     <WalletCardActions>
       <Button
+        data-testid="manage-vega-wallet"
         variant="inline-link"
         className="mt-4"
         onClick={() =>

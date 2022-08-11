@@ -1,60 +1,95 @@
-import * as React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import Box from '@mui/material/Box';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
-import { Button, InputError } from '@vegaprotocol/ui-toolkit';
+import { InputError } from '@vegaprotocol/ui-toolkit';
+import { BigNumber } from 'bignumber.js';
 import {
-  ExpirySelector,
-  SideSelector,
-  TimeInForceSelector,
-  TypeSelector,
-  DealTicketAmount,
+  getOrderDialogTitle,
+  getOrderDialogIntent,
+  getOrderDialogIcon,
   MarketSelector,
 } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
-import {
-  VegaWalletOrderTimeInForce as OrderTimeInForce,
-  VegaWalletOrderType as OrderType,
-  VegaTxStatus,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet, VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 import {
   getDefaultOrder,
   useOrderValidation,
   useOrderSubmit,
+  OrderFeedback,
+  validateSize,
 } from '@vegaprotocol/orders';
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { DealTicketSize } from './deal-ticket-size';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
+import SideSelector, { SIDE_NAMES } from './side-selector';
+import ReviewTrade from './review-trade';
+import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
+import useOrderCloseOut from '../../hooks/use-order-closeout';
+import useOrderMargin from '../../hooks/use-order-margin';
+import useMaximumPositionSize from '../../hooks/use-maximum-position-size';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
+  partyData?: PartyBalanceQuery;
 }
 
-export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
+export const DealTicketSteps = ({
+  market,
+  partyData,
+}: DealTicketMarketProps) => {
   const navigate = useNavigate();
   const setMarket = useCallback(
-    (marketId) => {
+    (marketId: string) => {
       navigate(`/trading/${marketId}`);
     },
     [navigate]
   );
 
   const {
-    register,
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<Order>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
 
+  const [max, setMax] = useState<number | null>(null);
   const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
+  const orderSide = watch('side');
+  const orderSize = watch('size');
+  const order = watch();
+  const estCloseOut = useOrderCloseOut({ order, market, partyData });
+  const { keypair } = useVegaWallet();
+  const estMargin = useOrderMargin({
+    order,
+    market,
+    partyId: keypair?.pub || '',
+  });
+
+  const maxTrade = useMaximumPositionSize({
+    partyId: keypair?.pub || '',
+    accounts: partyData?.party?.accounts || [],
+    marketId: market.id,
+    settlementAssetId:
+      market.tradableInstrument.instrument.product.settlementAsset.id,
+    price: market?.depth?.lastTrade?.price,
+    order,
+  });
+
+  useEffect(() => {
+    setMax(
+      new BigNumber(maxTrade)
+        .decimalPlaces(market.positionDecimalPlaces)
+        .toNumber()
+    );
+  }, [maxTrade, market.positionDecimalPlaces]);
 
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
@@ -64,7 +99,18 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
     fieldErrors: errors,
   });
 
-  const { submit, transaction } = useOrderSubmit(market);
+  const { submit, transaction, finalizedOrder, TransactionDialog } =
+    useOrderSubmit(market);
+
+  const onSizeChange = (value: number[]) => {
+    const newVal = new BigNumber(value[0])
+      .decimalPlaces(market.positionDecimalPlaces)
+      .toString();
+    const isValid = validateSize(step)(newVal);
+    if (isValid !== 'step') {
+      setValue('size', newVal);
+    }
+  };
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -84,7 +130,6 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
   const steps = [
     {
       label: t('Select Market'),
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
       component: (
         <MarketSelector
           market={market}
@@ -92,23 +137,10 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
           ItemRenderer={MarketNameRenderer}
         />
       ),
+      value: market.name,
     },
     {
-      label: 'Select Order Type',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
-      component: (
-        <Controller
-          name="type"
-          control={control}
-          render={({ field }) => (
-            <TypeSelector value={field.value} onSelect={field.onChange} />
-          )}
-        />
-      ),
-    },
-    {
-      label: 'Select Market Position',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+      label: t('Select Direction'),
       component: (
         <Controller
           name="side"
@@ -118,79 +150,59 @@ export const DealTicketSteps = ({ market }: DealTicketMarketProps) => {
           )}
         />
       ),
+      value: SIDE_NAMES[orderSide] || '',
     },
     {
-      label: 'Select Order Size',
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-      component: (
-        <DealTicketAmount
-          orderType={orderType}
-          step={0.02}
-          register={register}
-          price={
-            market.depth.lastTrade
-              ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-              : undefined
-          }
-          quoteName={market.tradableInstrument.instrument.product.quoteName}
-        />
-      ),
-    },
-    {
-      label: 'Select Time In Force',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
-      component: (
-        <>
-          <Controller
-            name="timeInForce"
-            control={control}
-            render={({ field }) => (
-              <TimeInForceSelector
-                value={field.value}
-                orderType={orderType}
-                onSelect={field.onChange}
-              />
-            )}
+      label: t('Choose Position Size'),
+      component:
+        max !== null ? (
+          <DealTicketSize
+            step={step}
+            min={step}
+            max={max}
+            onValueChange={onSizeChange}
+            value={new BigNumber(orderSize).toNumber()}
+            name="size"
+            price={
+              market.depth.lastTrade
+                ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
+                : ''
+            }
+            positionDecimalPlaces={market.positionDecimalPlaces}
+            quoteName={market.tradableInstrument.instrument.product.quoteName}
+            estCloseOut={estCloseOut}
+            estMargin={estMargin || ' - '}
           />
-          {orderType === OrderType.Limit &&
-            orderTimeInForce === OrderTimeInForce.GTT && (
-              <Controller
-                name="expiration"
-                control={control}
-                render={({ field }) => (
-                  <ExpirySelector
-                    value={field.value}
-                    onSelect={field.onChange}
-                  />
-                )}
-              />
-            )}
-        </>
-      ),
+        ) : (
+          'loading...'
+        ),
+      value: orderSize,
     },
     {
-      label: 'Review & Submit Order',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.`,
+      label: t('Review Trade'),
       component: (
-        <Box sx={{ mb: 2 }}>
+        <div className="mb-8">
           {invalidText && (
             <InputError className="mb-8" data-testid="dealticket-error-message">
               {invalidText}
             </InputError>
           )}
-          <Button
-            className="w-full mb-8"
-            variant="primary"
-            type="submit"
-            disabled={transactionStatus === 'pending' || isDisabled}
-            data-testid="place-order"
+          <ReviewTrade
+            market={market}
+            isDisabled={isDisabled}
+            transactionStatus={transactionStatus}
+            order={order}
+            estCloseOut={estCloseOut}
+            estMargin={estMargin || ' - '}
+          />
+          <TransactionDialog
+            title={getOrderDialogTitle(finalizedOrder?.status)}
+            intent={getOrderDialogIntent(finalizedOrder?.status)}
+            icon={getOrderDialogIcon(finalizedOrder?.status)}
           >
-            {transactionStatus === 'pending'
-              ? t('Pending...')
-              : t('Place order')}
-          </Button>
-        </Box>
+            <OrderFeedback transaction={transaction} order={finalizedOrder} />
+          </TransactionDialog>
+        </div>
       ),
       disabled: true,
     },

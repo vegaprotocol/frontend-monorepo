@@ -9,29 +9,6 @@ import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol
 // GraphQL query operation: Proposal
 // ====================================================
 
-export interface Proposal_proposal_rationale {
-  __typename: "ProposalRationale";
-  /**
-   * Link to a text file describing the proposal in depth.
-   * Optional except for FreeFrom proposal where it's mandatory.
-   * If set, the `url` property must be set.
-   */
-  url: string | null;
-  /**
-   * Description to show a short title / something in case the link goes offline.
-   * This is to be between 0 and 1024 unicode characters.
-   * This is mandatory for all proposal.
-   */
-  description: string;
-  /**
-   * Cryptographically secure hash (SHA3-512) of the text pointed by the `url` property
-   * so that viewers can check that the text hasn't been changed over time.
-   * Optional except for FreeFrom proposal where it's mandatory.
-   * If set, the `url` property must be set.
-   */
-  hash: string | null;
-}
-
 export interface Proposal_proposal_party {
   __typename: "Party";
   /**
@@ -44,12 +21,36 @@ export interface Proposal_proposal_terms_change_NewFreeform {
   __typename: "NewFreeform";
 }
 
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+}
+
+export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct {
+  __typename: "FutureProduct";
+  /**
+   * Product asset ID
+   */
+  settlementAsset: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
+}
+
 export interface Proposal_proposal_terms_change_NewMarket_instrument {
   __typename: "InstrumentConfiguration";
   /**
    * Full and fairly descriptive name for the instrument
    */
   name: string;
+  /**
+   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18)
+   */
+  code: string;
+  /**
+   * Future product specification
+   */
+  futureProduct: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct | null;
 }
 
 export interface Proposal_proposal_terms_change_NewMarket {
@@ -93,6 +94,10 @@ export type Proposal_proposal_terms_change_NewAsset_source = Proposal_proposal_t
 
 export interface Proposal_proposal_terms_change_NewAsset {
   __typename: "NewAsset";
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
   /**
    * The symbol of the asset (e.g: GBP)
    */
@@ -282,10 +287,6 @@ export interface Proposal_proposal {
    * Error details of the rejectionReason
    */
   errorDetails: string | null;
-  /**
-   * Rationale behind the proposal
-   */
-  rationale: Proposal_proposal_rationale;
   /**
    * Party that prepared the proposal
    */

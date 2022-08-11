@@ -16,6 +16,10 @@ export interface OrderEvent_busEvents_event_TimeUpdate {
 export interface OrderEvent_busEvents_event_Order_market {
   __typename: "Market";
   /**
+   * Market ID
+   */
+  id: string;
+  /**
    * Market full name
    */
   name: string;
@@ -36,6 +40,12 @@ export interface OrderEvent_busEvents_event_Order_market {
    * GBX (pence)        1              4       GBP   0.000001 (  0.0001p)
    */
   decimalPlaces: number;
+  /**
+   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
+   * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   */
+  positionDecimalPlaces: number;
 }
 
 export interface OrderEvent_busEvents_event_Order {
@@ -72,6 +82,10 @@ export interface OrderEvent_busEvents_event_Order {
    * The timeInForce of order (determines how and if it executes, and whether it persists on the book)
    */
   timeInForce: OrderTimeInForce;
+  /**
+   * Expiration time of this order (ISO-8601 RFC3339+Nano formatted date)
+   */
+  expiresAt: string | null;
   /**
    * Whether the order is to buy or sell
    */

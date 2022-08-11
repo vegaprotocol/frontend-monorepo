@@ -5,34 +5,30 @@ import type { WithdrawalFields } from './use-withdraw';
 import { useWithdraw } from './use-withdraw';
 import { WithdrawDialog } from './withdraw-dialog';
 import { isExpectedEthereumError, EthTxStatus } from '@vegaprotocol/web3';
+import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
-import type { Account, Asset } from './types';
-import { useWeb3React } from '@web3-react/core';
+import type { Account } from './types';
 import { useGetWithdrawLimits } from './use-get-withdraw-limits';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
   initialAssetId?: string;
-  isNewContract: boolean;
 }
 
 export const WithdrawManager = ({
   assets,
   accounts,
   initialAssetId,
-  isNewContract,
 }: WithdrawManagerProps) => {
   const dialogDismissed = useRef(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
 
-  const { account: ethereumAccount } = useWeb3React();
   const { ethTx, vegaTx, approval, submit, reset } = useWithdraw(
-    dialogDismissed.current,
-    isNewContract
+    dialogDismissed.current
   );
 
   // Find the asset object from the select box
@@ -40,22 +36,31 @@ export const WithdrawManager = ({
     return assets?.find((a) => a.id === assetId);
   }, [assets, assetId]);
 
+  const account = useMemo(() => {
+    return accounts.find(
+      (a) => a.type === AccountType.General && a.asset.id === asset?.id
+    );
+  }, [asset, accounts]);
+
   const limits = useGetWithdrawLimits(asset);
 
   const max = useMemo(() => {
     if (!asset) {
-      return new BigNumber(0);
+      return {
+        balance: new BigNumber(0),
+        threshold: new BigNumber(0),
+      };
     }
 
-    const account = accounts.find(
-      (a) => a.type === AccountType.General && a.asset.id === asset.id
-    );
-
-    const v = account
+    const balance = account
       ? new BigNumber(addDecimal(account.balance, asset.decimals))
       : new BigNumber(0);
-    return BigNumber.minimum(v, limits ? limits.max : new BigNumber(Infinity));
-  }, [asset, accounts, limits]);
+
+    return {
+      balance,
+      threshold: limits ? limits.max : new BigNumber(Infinity),
+    };
+  }, [asset, account, limits]);
 
   const min = useMemo(() => {
     return asset
@@ -86,7 +91,6 @@ export const WithdrawManager = ({
   return (
     <>
       <WithdrawForm
-        ethereumAccount={ethereumAccount}
         selectedAsset={asset}
         onSelectAsset={(id) => setAssetId(id)}
         assets={sortBy(assets, 'name')}

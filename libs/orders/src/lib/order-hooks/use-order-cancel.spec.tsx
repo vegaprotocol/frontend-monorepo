@@ -1,7 +1,6 @@
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import { act, renderHook } from '@testing-library/react-hooks';
-import { MarketState, MarketTradingMode, OrderType } from '@vegaprotocol/types';
+import { act, renderHook } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type {
@@ -14,33 +13,6 @@ import type {
   OrderEvent_busEvents,
 } from './__generated__/OrderEvent';
 import { ORDER_EVENT_SUB } from './order-event-query';
-
-const defaultMarket = {
-  __typename: 'Market',
-  id: 'market-id',
-  decimalPlaces: 2,
-  positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.Continuous,
-  state: MarketState.Active,
-  name: 'market-name',
-  tradableInstrument: {
-    __typename: 'TradableInstrument',
-    instrument: {
-      __typename: 'Instrument',
-      product: {
-        __typename: 'Future',
-        quoteName: 'quote-name',
-      },
-    },
-  },
-  depth: {
-    __typename: 'MarketDepth',
-    lastTrade: {
-      __typename: 'Trade',
-      price: '100',
-    },
-  },
-};
 
 const defaultWalletContext = {
   keypair: null,
@@ -147,23 +119,15 @@ describe('useOrderCancel', () => {
     expect(result.current.transaction.error).toEqual(null);
   });
 
-  it('should not sendTx if no keypair', async () => {
+  it('should not sendTx if no keypair', () => {
     const mockSendTx = jest.fn();
-    const order = {
-      type: OrderType.Market,
-      size: '10',
-      price: '1234567.89',
-      status: '',
-      rejectionReason: null,
-      market: defaultMarket,
-    };
     const { result } = setup({
       sendTx: mockSendTx,
       keypairs: [],
       keypair: null,
     });
-    await act(async () => {
-      result.current.cancel(order);
+    act(() => {
+      result.current.cancel({ orderId: 'order-id', marketId: 'market-id' });
     });
     expect(mockSendTx).not.toHaveBeenCalled();
   });
@@ -173,30 +137,24 @@ describe('useOrderCancel', () => {
     const keypair = {
       pub: '0x123',
     } as VegaKeyExtended;
-    const order = {
-      type: OrderType.Limit,
-      size: '10',
-      price: '1234567.89',
-      status: '',
-      rejectionReason: null,
-      market: defaultMarket,
-    };
     const { result } = setup({
       sendTx: mockSendTx,
       keypairs: [keypair],
       keypair,
     });
 
-    await act(async () => {
-      result.current.cancel(order);
+    const args = {
+      orderId: 'order-id',
+      marketId: 'market-id',
+    };
+    act(() => {
+      result.current.cancel(args);
     });
 
     expect(mockSendTx).toHaveBeenCalledWith({
       pubKey: keypair.pub,
       propagate: true,
-      orderCancellation: {
-        marketId: 'market-id',
-      },
+      orderCancellation: args,
     });
   });
 });

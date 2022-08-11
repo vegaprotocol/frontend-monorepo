@@ -2,7 +2,9 @@ import React from 'react';
 import type { BlockMeta } from '../../routes/blocks/tendermint-blockchain-response';
 import { Routes } from '../../routes/route-names';
 import { Link } from 'react-router-dom';
-import { SecondsAgo } from '../seconds-ago';
+import { getDateTimeFormat } from '@vegaprotocol/react-helpers';
+import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { TimeAgo } from '../time-ago';
 import { TableWithTbody, TableRow, TableCell } from '../table';
 import { t } from '@vegaprotocol/react-helpers';
 
@@ -53,7 +55,16 @@ export const BlockData = ({ block, className }: BlockProps) => {
           className="text-center pr-28 text-neutral-300 w-[170px]"
           aria-label={t('Block genesis')}
         >
-          <SecondsAgo date={block.header?.time} />
+          <Tooltip
+            description={getDateTimeFormat().format(
+              new Date(block.header.time)
+            )}
+          >
+            {/*For some reason we get forwardRef errors if we pass in the TimeAgo component directly*/}
+            <span>
+              <TimeAgo date={block.header.time} />
+            </span>
+          </Tooltip>
         </TableCell>
       </TableRow>
     </TableWithTbody>

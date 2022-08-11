@@ -17,6 +17,7 @@ const PARTY_BALANCE_QUERY = gql`
   query PartyBalanceQuery($partyId: ID!) {
     party(id: $partyId) {
       accounts {
+        type
         balance
         asset {
           id
@@ -43,7 +44,7 @@ export const DealTicketContainer = () => {
 
   return (
     <div className="flex">
-      <div className="md:w-1/2 md:min-w-[500px]">
+      <div className="w-full md:w-1/2 md:min-w-[500px]">
         {marketId ? (
           <Container marketId={marketId}>
             {(data) => (
@@ -52,6 +53,7 @@ export const DealTicketContainer = () => {
                   'Loading...'
                 ) : (
                   <DealTicketBalance
+                    className="mb-16"
                     settlementAsset={
                       data.market.tradableInstrument.instrument.product
                         ?.settlementAsset
@@ -60,7 +62,7 @@ export const DealTicketContainer = () => {
                     isWalletConnected={!!keypair?.pub}
                   />
                 )}
-                <DealTicketSteps market={data.market} />
+                <DealTicketSteps market={data.market} partyData={partyData} />
               </DealTicketManager>
             )}
           </Container>

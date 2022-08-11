@@ -3,27 +3,9 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { NodeStatus } from "@vegaprotocol/types";
-
 // ====================================================
 // GraphQL query operation: Nodes
 // ====================================================
-
-export interface Nodes_nodes_epochData {
-  __typename: "EpochData";
-  /**
-   * Total number of epochs since node was created
-   */
-  total: number;
-  /**
-   * Total number of offline epochs since node was created
-   */
-  offline: number;
-  /**
-   * Total number of online epochs since node was created
-   */
-  online: number;
-}
 
 export interface Nodes_nodes_rankingScore {
   __typename: "RankingScore";
@@ -43,10 +25,15 @@ export interface Nodes_nodes_rankingScore {
    * The tendermint voting power of the validator (uint32)
    */
   votingPower: string;
+  /**
+   * The current validation status of the validator
+   */
+  status: string;
 }
 
 export interface Nodes_nodes {
   __typename: "Node";
+  avatarUrl: string | null;
   /**
    * The node url eg n01.vega.xyz
    */
@@ -57,35 +44,15 @@ export interface Nodes_nodes {
    */
   pubkey: string;
   /**
-   * URL where I can find out more info on the node. Will this be possible?
-   */
-  infoUrl: string;
-  /**
-   * Country code for the location of the node
-   */
-  location: string;
-  /**
-   * The amount the node has put up themselves
-   */
-  stakedByOperator: string;
-  /**
-   * The amount of stake that has been delegated by token holders
-   */
-  stakedByDelegates: string;
-  /**
    * Total amount staked on node
    */
   stakedTotal: string;
+  stakedTotalFormatted: string;
   /**
    * Amount of stake on the next epoch
    */
   pendingStake: string;
-  stakedByOperatorFormatted: string;
-  stakedByDelegatesFormatted: string;
-  stakedTotalFormatted: string;
   pendingStakeFormatted: string;
-  epochData: Nodes_nodes_epochData | null;
-  status: NodeStatus;
   /**
    * Ranking scores and status for the validator for the current epoch
    */
@@ -99,22 +66,6 @@ export interface Nodes_nodeData {
    */
   stakedTotal: string;
   stakedTotalFormatted: string;
-  /**
-   * Total number of nodes
-   */
-  totalNodes: number;
-  /**
-   * Number of inactive nodes
-   */
-  inactiveNodes: number;
-  /**
-   * Number of nodes validating
-   */
-  validatingNodes: number;
-  /**
-   * Total uptime for all epochs across all nodes. Or specify a number of epochs
-   */
-  uptime: number;
 }
 
 export interface Nodes {

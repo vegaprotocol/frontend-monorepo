@@ -13,7 +13,7 @@ import vegaVesting from '../../images/vega_vesting.png';
 import vegaWhite from '../../images/vega_white.png';
 import { BigNumber } from '../../lib/bignumber';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import { Routes } from '../../routes/router-config';
+import Routes from '../../routes/routes';
 import { LockedProgress } from '../locked-progress';
 import {
   WalletCard,
@@ -81,9 +81,9 @@ const AssociatedAmounts = ({
             bold={true}
             dark={true}
           />
-          {vestingAssociationByVegaKey.map(([key, amount]) => {
+          {vestingAssociationByVegaKey.map(([key, amount], i) => {
             return (
-              <div data-testid="eth-wallet-associated-balances">
+              <div data-testid="eth-wallet-associated-balances" key={i}>
                 <WalletCardRow
                   key={key}
                   label={removeLeadingAddressSymbol(key)}
@@ -202,9 +202,9 @@ export const EthWallet = () => {
     <WalletCard dark={true}>
       <section data-testid="ethereum-wallet">
         <WalletCardHeader>
-          <h1 className="text-h3 uppercase">{t('ethereumKey')}</h1>
+          <h1 className="m-0 text-h3 uppercase">{t('ethereumKey')}</h1>
           {account && (
-            <div className="px-4 text-right">
+            <div className="place-self-end font-mono px-4 pb-2">
               <div
                 className="font-mono"
                 data-testid="ethereum-account-truncated"
@@ -237,7 +237,7 @@ export const EthWallet = () => {
           ) : (
             <Button
               variant={'secondary'}
-              className="w-full px-28 border h-28"
+              className="w-full"
               onClick={() =>
                 appDispatch({
                   type: AppStateActionType.SET_ETH_WALLET_OVERLAY,

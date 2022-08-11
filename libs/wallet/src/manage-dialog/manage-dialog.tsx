@@ -57,11 +57,23 @@ export const VegaManageDialog = ({
                     </Button>
                   )}
                   <div className="flex justify-between text-ui-small">
-                    <p className="font-mono">
+                    <p
+                      data-testid="vega-public-key-trunc"
+                      className="font-mono block sm:hidden"
+                    >
                       {truncateByChars(kp.pub, 23, 23)}
                     </p>
+                    <p
+                      data-testid="vega-public-key-full"
+                      className="font-mono hidden sm:block"
+                    >
+                      {kp.pub}
+                    </p>
                     <CopyWithTooltip text={kp.pub}>
-                      <button className="underline">
+                      <button
+                        data-testid="copy-vega-public-key"
+                        className="underline"
+                      >
                         <Icon name="duplicate" className="mr-4" />
                         {t('Copy')}
                       </button>

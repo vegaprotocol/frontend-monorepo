@@ -174,7 +174,7 @@ describe('Block', () => {
     );
     expect(proposer).toHaveAttribute('href', `/${RouteNames.VALIDATORS}`);
     expect(screen.getByTestId('block-time')).toHaveTextContent(
-      '3528 seconds ago'
+      '59 minutes ago'
     );
   });
 

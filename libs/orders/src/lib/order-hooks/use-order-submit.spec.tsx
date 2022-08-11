@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import type { Order } from '../utils';
 import type {
   VegaKeyExtended,
@@ -21,6 +21,7 @@ import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { Market } from '../market';
+import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 
 const defaultMarket = {
   __typename: 'Market',
@@ -179,7 +180,9 @@ describe('useOrderSubmit', () => {
         side: VegaWalletOrderSide.Buy,
         timeInForce: VegaWalletOrderTimeInForce.GTT,
         price: '123456789', // Decimal removed
-        expiresAt: order.expiration?.getTime() + '000000', // Nanoseconds append
+        expiresAt: order.expiration
+          ? toNanoSeconds(order.expiration)
+          : undefined,
       },
     });
   });

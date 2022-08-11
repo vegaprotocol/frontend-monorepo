@@ -1,40 +1,49 @@
-import { useEffect, useRef, useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
-import { isExpectedEthereumError } from '../ethereum-error';
+import { isEthereumError } from '../ethereum-error';
+import type { EthTxState } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
-import { DialogWrapper } from './dialog-wrapper';
 
 export interface TransactionDialogProps {
   name: string;
-  status: EthTxStatus;
-  error: Error | null;
-  confirmations: number;
-  txHash: string | null;
-  requiredConfirmations?: number;
+  onChange: (isOpen: boolean) => void;
+  transaction: EthTxState;
   // Undefined means this dialog isn't expecting an additional event for a complete state, a boolean
   // value means it is but hasn't been received yet
-  confirmed?: boolean;
+  requiredConfirmations?: number;
 }
 
 export const TransactionDialog = ({
+  onChange,
   name,
-  status,
-  error,
-  confirmations,
-  txHash,
+  transaction,
   requiredConfirmations = 1,
-  confirmed,
 }: TransactionDialogProps) => {
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const dialogDismissed = useRef(false);
+  const { status, error, confirmations, txHash } = transaction;
 
   const renderContent = () => {
     if (status === EthTxStatus.Error) {
+      const classNames = 'break-all text-black dark:text-white';
+      if (isEthereumError(error)) {
+        return (
+          <p className={classNames}>
+            {t('Error')}: {error.reason}
+          </p>
+        );
+      }
+
+      if (error instanceof Error) {
+        return (
+          <p className={classNames}>
+            {t('Error')}: {error.message}
+          </p>
+        );
+      }
+
       return (
-        <p className="break-all text-black dark:text-white">
-          {error && error.message}
+        <p className={classNames}>
+          {t('Error')}: {t('Unknown error')}
         </p>
       );
     }
@@ -49,15 +58,18 @@ export const TransactionDialog = ({
           requiredConfirmations={requiredConfirmations}
           highlightComplete={false}
         />
-        {confirmed !== undefined && (
-          <ConfirmationEventRow status={status} confirmed={confirmed} />
-        )}
+        <ConfirmationEventRow status={status} />
       </>
     );
   };
 
   const getWrapperProps = () => {
     const propsMap = {
+      [EthTxStatus.Default]: {
+        title: '',
+        icon: null,
+        intent: undefined,
+      },
       [EthTxStatus.Error]: {
         title: t(`${name} failed`),
         icon: <Icon name="warning-sign" size={20} />,
@@ -74,57 +86,30 @@ export const TransactionDialog = ({
         intent: Intent.None,
       },
       [EthTxStatus.Complete]: {
+        title: t(`${name} pending`),
+        icon: <Loader size="small" />,
+        intent: Intent.None,
+      },
+      [EthTxStatus.Confirmed]: {
         title: t(`${name} complete`),
         icon: <Icon name="tick" />,
         intent: Intent.Success,
       },
     };
 
-    // Dialog not showing
-    if (status === EthTxStatus.Default) {
-      return { intent: undefined, title: '', icon: null };
-    }
-
-    // Confirmation event bool is required so
-    if (confirmed !== undefined) {
-      // Vega has confirmed Tx
-      if (confirmed === true) {
-        return propsMap[EthTxStatus.Complete];
-      }
-      // Tx is complete but still awaiting for Vega to confirm
-      else if (status === EthTxStatus.Complete) {
-        return propsMap[EthTxStatus.Pending];
-      }
-    }
-
     return propsMap[status];
   };
 
-  useEffect(() => {
-    // Close dialog if error is due to user rejecting the tx
-    if (status === EthTxStatus.Error && isExpectedEthereumError(error)) {
-      setDialogOpen(false);
-      return;
-    }
-
-    if (status !== EthTxStatus.Default && !dialogDismissed.current) {
-      setDialogOpen(true);
-      return;
-    }
-  }, [status, error]);
-
-  const { intent, ...wrapperProps } = getWrapperProps();
-
+  const { intent, title, icon } = getWrapperProps();
   return (
     <Dialog
-      open={dialogOpen}
-      onChange={(isOpen) => {
-        setDialogOpen(isOpen);
-        dialogDismissed.current = true;
-      }}
+      open={transaction.dialogOpen}
+      onChange={onChange}
       intent={intent}
+      title={title}
+      icon={icon}
     >
-      <DialogWrapper {...wrapperProps}>{renderContent()}</DialogWrapper>
+      {renderContent()}
     </Dialog>
   );
 };

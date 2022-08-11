@@ -65,15 +65,19 @@ describe('orders', () => {
       cy.getByTestId('cancel')
         .should('be.visible')
         .and('have.length.at.least', 1);
+
+      cy.getByTestId('edit')
+        .should('be.visible')
+        .and('have.length.at.least', 1);
     });
   });
 
   it('orders are sorted by most recent order', () => {
     const expectedOrderList = [
-      'UNIDAI.MF21',
+      'AAVEDAI.MF21',
       'TSLA.QM21',
       'BTCUSD.MF21',
-      'AAVEDAI.MF21',
+      'UNIDAI.MF21',
     ];
 
     cy.getByTestId('tab-orders')

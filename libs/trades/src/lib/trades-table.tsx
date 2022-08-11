@@ -1,8 +1,7 @@
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import { forwardRef, useMemo } from 'react';
+import { forwardRef } from 'react';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
-import type { TradeFields } from './__generated__/TradeFields';
 import {
   addDecimal,
   addDecimalsFormatNumber,
@@ -10,8 +9,9 @@ import {
   t,
 } from '@vegaprotocol/react-helpers';
 import type { CellClassParams, ValueFormatterParams } from 'ag-grid-community';
+import type { AgGridReactProps, AgReactUiProps } from 'ag-grid-react';
+import type { Trades_market_tradesConnection_edges_node } from './__generated__/Trades';
 import BigNumber from 'bignumber.js';
-import { sortTrades } from './trades-data-provider';
 
 export const UP_CLASS = 'text-vega-green';
 export const DOWN_CLASS = 'text-vega-red';
@@ -24,7 +24,7 @@ const changeCellClass =
 
     if (typeof rowIndex === 'number') {
       const prevRowNode = api.getModel().getRow(rowIndex + 1);
-      const prevValue = prevRowNode?.data[dataKey];
+      const prevValue = prevRowNode?.data && prevRowNode.data[dataKey];
       const valueNum = new BigNumber(value);
 
       if (valueNum.isGreaterThan(prevValue)) {
@@ -37,58 +37,72 @@ const changeCellClass =
     return ['font-mono', colorClass].join(' ');
   };
 
-interface TradesTableProps {
-  data: TradeFields[] | null;
-}
+type Props = AgGridReactProps | AgReactUiProps;
+type TradesTableValueFormatterParams = Omit<
+  ValueFormatterParams,
+  'data' | 'value'
+> & {
+  data: Trades_market_tradesConnection_edges_node | null;
+};
 
-export const TradesTable = forwardRef<AgGridReact, TradesTableProps>(
-  ({ data }, ref) => {
-    // Sort initial trades
-    const trades = useMemo(() => {
-      if (!data) {
-        return null;
-      }
-      return sortTrades(data);
-    }, [data]);
-
-    return (
-      <AgGrid
-        style={{ width: '100%', height: '100%' }}
-        overlayNoRowsTemplate={t('No trades')}
-        rowData={trades}
-        getRowId={({ data }) => data.id}
-        ref={ref}
-        defaultColDef={{
-          resizable: true,
+export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
+  return (
+    <AgGrid
+      style={{ width: '100%', height: '100%' }}
+      overlayNoRowsTemplate={t('No trades')}
+      getRowId={({ data }) => data.id}
+      ref={ref}
+      defaultColDef={{
+        resizable: true,
+      }}
+      {...props}
+    >
+      <AgGridColumn
+        headerName={t('Price')}
+        field="price"
+        width={130}
+        cellClass={changeCellClass('price')}
+        valueFormatter={({
+          value,
+          data,
+        }: TradesTableValueFormatterParams & {
+          value: Trades_market_tradesConnection_edges_node['price'];
+        }) => {
+          if (!data?.market) {
+            return null;
+          }
+          return addDecimalsFormatNumber(value, data.market.decimalPlaces);
         }}
-      >
-        <AgGridColumn
-          headerName={t('Price')}
-          field="price"
-          width={130}
-          cellClass={changeCellClass('price')}
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            return addDecimalsFormatNumber(value, data.market.decimalPlaces);
-          }}
-        />
-        <AgGridColumn
-          headerName={t('Size')}
-          field="size"
-          width={125}
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
-            return addDecimal(value, data.market.positionDecimalPlaces);
-          }}
-          cellClass={changeCellClass('size')}
-        />
-        <AgGridColumn
-          headerName={t('Created at')}
-          field="createdAt"
-          width={170}
-          valueFormatter={({ value }: ValueFormatterParams) => {
-            return getDateTimeFormat().format(new Date(value));
-          }}
-        />
-      </AgGrid>
-    );
-  }
-);
+      />
+      <AgGridColumn
+        headerName={t('Size')}
+        field="size"
+        width={125}
+        valueFormatter={({
+          value,
+          data,
+        }: TradesTableValueFormatterParams & {
+          value: Trades_market_tradesConnection_edges_node['size'];
+        }) => {
+          if (!data?.market) {
+            return null;
+          }
+          return addDecimal(value, data.market.positionDecimalPlaces);
+        }}
+        cellClass={changeCellClass('size')}
+      />
+      <AgGridColumn
+        headerName={t('Created at')}
+        field="createdAt"
+        width={170}
+        valueFormatter={({
+          value,
+        }: TradesTableValueFormatterParams & {
+          value: Trades_market_tradesConnection_edges_node['createdAt'];
+        }) => {
+          return value && getDateTimeFormat().format(new Date(value));
+        }}
+      />
+    </AgGrid>
+  );
+});

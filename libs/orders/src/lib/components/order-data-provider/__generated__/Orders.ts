@@ -3,13 +3,13 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { OrderType, Side, OrderStatus, OrderRejectionReason, OrderTimeInForce } from "@vegaprotocol/types";
+import { Pagination, OrderType, Side, OrderStatus, OrderRejectionReason, OrderTimeInForce } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: Orders
 // ====================================================
 
-export interface Orders_party_orders_market_tradableInstrument_instrument {
+export interface Orders_party_ordersConnection_edges_node_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
@@ -17,15 +17,15 @@ export interface Orders_party_orders_market_tradableInstrument_instrument {
   code: string;
 }
 
-export interface Orders_party_orders_market_tradableInstrument {
+export interface Orders_party_ordersConnection_edges_node_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
-  instrument: Orders_party_orders_market_tradableInstrument_instrument;
+  instrument: Orders_party_ordersConnection_edges_node_market_tradableInstrument_instrument;
 }
 
-export interface Orders_party_orders_market {
+export interface Orders_party_ordersConnection_edges_node_market {
   __typename: "Market";
   /**
    * Market ID
@@ -61,10 +61,10 @@ export interface Orders_party_orders_market {
   /**
    * An instance of or reference to a tradable instrument.
    */
-  tradableInstrument: Orders_party_orders_market_tradableInstrument;
+  tradableInstrument: Orders_party_ordersConnection_edges_node_market_tradableInstrument;
 }
 
-export interface Orders_party_orders {
+export interface Orders_party_ordersConnection_edges_node {
   __typename: "Order";
   /**
    * Hash of the order data
@@ -73,7 +73,7 @@ export interface Orders_party_orders {
   /**
    * The market the order is trading on (probably stored internally as a hash of the market details)
    */
-  market: Orders_party_orders_market | null;
+  market: Orders_party_ordersConnection_edges_node_market | null;
   /**
    * Type the order type (defaults to PARTY)
    */
@@ -120,6 +120,32 @@ export interface Orders_party_orders {
   updatedAt: string | null;
 }
 
+export interface Orders_party_ordersConnection_edges {
+  __typename: "OrderEdge";
+  node: Orders_party_ordersConnection_edges_node;
+  cursor: string | null;
+}
+
+export interface Orders_party_ordersConnection_pageInfo {
+  __typename: "PageInfo";
+  startCursor: string;
+  endCursor: string;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface Orders_party_ordersConnection {
+  __typename: "OrderConnection";
+  /**
+   * The orders in this connection
+   */
+  edges: Orders_party_ordersConnection_edges[] | null;
+  /**
+   * The pagination information
+   */
+  pageInfo: Orders_party_ordersConnection_pageInfo | null;
+}
+
 export interface Orders_party {
   __typename: "Party";
   /**
@@ -129,7 +155,7 @@ export interface Orders_party {
   /**
    * Orders relating to a party
    */
-  orders: Orders_party_orders[] | null;
+  ordersConnection: Orders_party_ordersConnection;
 }
 
 export interface Orders {
@@ -141,4 +167,5 @@ export interface Orders {
 
 export interface OrdersVariables {
   partyId: string;
+  pagination?: Pagination | null;
 }

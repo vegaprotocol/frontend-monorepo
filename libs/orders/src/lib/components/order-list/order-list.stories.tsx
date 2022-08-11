@@ -1,10 +1,11 @@
 import type { Story, Meta } from '@storybook/react';
-import { OrderType, OrderStatus } from '@vegaprotocol/types';
 import { OrderList, OrderListTable } from './order-list';
 import { useState } from 'react';
-import type { Order, VegaTxState } from '@vegaprotocol/wallet';
+import type { VegaTxState } from '@vegaprotocol/wallet';
 import { VegaTransactionDialog, VegaTxStatus } from '@vegaprotocol/wallet';
 import { generateOrdersArray } from '../mocks';
+import { OrderEditDialog } from './order-edit-dialog';
+import type { OrderFields } from '../order-data-provider';
 
 export default {
   component: OrderList,
@@ -15,44 +16,56 @@ const Template: Story = (args) => {
   const cancel = () => Promise.resolve();
   return (
     <div style={{ height: 1000 }}>
-      <OrderListTable data={args.data} cancel={cancel} />
+      <OrderListTable
+        rowData={args.data}
+        cancel={cancel}
+        setEditOrder={() => {
+          return;
+        }}
+      />
     </div>
   );
 };
 
 const Template2: Story = (args) => {
   const [open, setOpen] = useState(false);
+  const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
   const cancel = () => {
     setOpen(!open);
     return Promise.resolve();
   };
   const transaction: VegaTxState = {
-    status: VegaTxStatus.Default,
+    status: VegaTxStatus.Requested,
     error: null,
     txHash: null,
     signature: null,
+    dialogOpen: false,
   };
-  const finalizedOrder: Order = {
-    status: OrderStatus.Cancelled,
-    rejectionReason: null,
-    size: '10',
-    price: '1000',
-    market: { name: 'ETH/DAI (30 Jun 2022)', decimalPlaces: 5 },
-    type: OrderType.Limit,
-  };
-  const reset = () => null;
   return (
     <>
       <div style={{ height: 1000 }}>
-        <OrderListTable data={args.data} cancel={cancel} />
+        <OrderListTable
+          rowData={args.data}
+          cancel={cancel}
+          setEditOrder={(order) => {
+            setEditOrder(order);
+          }}
+        />
       </div>
       <VegaTransactionDialog
-        orderDialogOpen={open}
-        setOrderDialogOpen={setOpen}
-        finalizedOrder={finalizedOrder}
+        isOpen={open}
+        onChange={setOpen}
         transaction={transaction}
-        reset={reset}
-        title={'Order cancelled'}
+      />
+      <OrderEditDialog
+        isOpen={Boolean(editOrder)}
+        onChange={(isOpen) => {
+          if (!isOpen) setEditOrder(null);
+        }}
+        order={editOrder}
+        onSubmit={(fields) => {
+          return;
+        }}
       />
     </>
   );

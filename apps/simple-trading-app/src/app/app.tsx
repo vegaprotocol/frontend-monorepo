@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { createClient } from './lib/apollo-client';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { EnvironmentProvider, NetworkLoader } from '@vegaprotocol/environment';
-import { createClient } from './lib/apollo-client';
 import {
   VegaConnectDialog,
   VegaManageDialog,
@@ -13,14 +14,12 @@ import '../styles.scss';
 import { AppLoader } from './components/app-loader';
 import Header from './components/header';
 import { Main } from './components/main';
-import { useLocation } from 'react-router-dom';
+import LocalContext from './context/local-context';
+import useLocalValues from './hooks/use-local-values';
 
 function App() {
+  const localValues = useLocalValues();
   const [theme, toggleTheme] = useThemeSwitcher();
-  const [vegaWallet, setVegaWallet] = useState({
-    connect: false,
-    manage: false,
-  });
 
   const [menuOpen, setMenuOpen] = useState(false);
   const onToggle = () => setMenuOpen(!menuOpen);
@@ -36,28 +35,23 @@ function App() {
       <ThemeContext.Provider value={theme}>
         <NetworkLoader createClient={createClient}>
           <VegaWalletProvider>
-            <AppLoader>
-              <div className="max-h-full min-h-full dark:bg-lite-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
-                <Header
-                  setVegaWallet={setVegaWallet}
-                  toggleTheme={toggleTheme}
-                />
-                <Main isMenuOpen={menuOpen} onToggle={onToggle} />
-                <VegaConnectDialog
-                  connectors={Connectors}
-                  dialogOpen={vegaWallet.connect}
-                  setDialogOpen={(open) =>
-                    setVegaWallet((x) => ({ ...x, connect: open }))
-                  }
-                />
-                <VegaManageDialog
-                  dialogOpen={vegaWallet.manage}
-                  setDialogOpen={(open) =>
-                    setVegaWallet((x) => ({ ...x, manage: open }))
-                  }
-                />
-              </div>
-            </AppLoader>
+            <LocalContext.Provider value={localValues}>
+              <AppLoader>
+                <div className="max-h-full min-h-full dark:bg-lite-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
+                  <Header toggleTheme={toggleTheme} />
+                  <Main isMenuOpen={menuOpen} onToggle={onToggle} />
+                  <VegaConnectDialog
+                    connectors={Connectors}
+                    dialogOpen={localValues.vegaWalletDialog.connect}
+                    setDialogOpen={localValues.vegaWalletDialog.setConnect}
+                  />
+                  <VegaManageDialog
+                    dialogOpen={localValues.vegaWalletDialog.manage}
+                    setDialogOpen={localValues.vegaWalletDialog.setManage}
+                  />
+                </div>
+              </AppLoader>
+            </LocalContext.Provider>
           </VegaWalletProvider>
         </NetworkLoader>
       </ThemeContext.Provider>

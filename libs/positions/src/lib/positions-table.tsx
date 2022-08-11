@@ -7,7 +7,7 @@ import {
   addDecimal,
   t,
 } from '@vegaprotocol/react-helpers';
-import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import { AgGridDynamic as AgGrid, Tooltip } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Positions_party_positions } from './__generated__/Positions';
@@ -16,6 +16,22 @@ import { MarketTradingMode } from '@vegaprotocol/types';
 interface PositionsTableProps {
   data: Positions_party_positions[] | null;
 }
+
+type ColumnHeaderProps = {
+  displayName: string;
+  tooltipContent?: string;
+};
+
+const ColumnHeader = ({ displayName, tooltipContent }: ColumnHeaderProps) => {
+  if (tooltipContent) {
+    return (
+      <Tooltip description={tooltipContent}>
+        <span>{displayName}</span>
+      </Tooltip>
+    );
+  }
+  return displayName;
+};
 
 export const getRowId = ({ data }: { data: Positions_party_positions }) =>
   data.market.id;
@@ -77,7 +93,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
             ],
           });
         }}
-        components={{ PriceFlashCell }}
+        components={{ PriceFlashCell, agColumnHeader: ColumnHeader }}
       >
         <AgGridColumn
           headerName={t('Market')}
@@ -86,8 +102,20 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           sortable
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="openVolume"
+          cellClassRules={{
+            'text-vega-green-dark dark:text-vega-green': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) > 0,
+            'text-vega-red-dark dark:text-vega-red': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) < 0,
+          }}
           valueFormatter={({
             value,
             data,
@@ -128,11 +156,20 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           headerName={t('Realised PNL')}
           field="realisedPNL"
           type="rightAligned"
+          headerComponentParams={{
+            tooltipContent: t('P&L excludes any fees paid.'),
+          }}
           cellClassRules={{
-            'color-vega-green': ({ value }: { value: string }) =>
-              Number(value) > 0,
-            'color-vega-red': ({ value }: { value: string }) =>
-              Number(value) < 0,
+            'text-vega-green-dark dark:text-vega-green': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) > 0,
+            'text-vega-red-dark dark:text-vega-red': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) < 0,
           }}
           valueFormatter={({ value, data }: ValueFormatterParams) =>
             volumePrefix(

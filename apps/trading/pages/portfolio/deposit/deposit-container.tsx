@@ -16,14 +16,10 @@ const DEPOSIT_PAGE_QUERY = gql`
   }
 `;
 
-interface DepositContainerProps {
-  assetId?: string;
-}
-
 /**
  *  Fetches data required for the Deposit page
  */
-export const DepositContainer = ({ assetId }: DepositContainerProps) => {
+export const DepositContainer = () => {
   const { VEGA_ENV } = useEnvironment();
 
   return (
@@ -41,7 +37,6 @@ export const DepositContainer = ({ assetId }: DepositContainerProps) => {
         return (
           <DepositManager
             assets={data.assets}
-            initialAssetId={assetId}
             isFaucetable={VEGA_ENV !== 'MAINNET'}
           />
         );

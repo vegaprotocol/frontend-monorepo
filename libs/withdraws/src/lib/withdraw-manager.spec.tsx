@@ -34,7 +34,6 @@ beforeEach(() => {
     assets: [generateAsset()],
     accounts: [generateAccount()],
     initialAssetId: undefined,
-    isNewContract: true,
   };
   mockSubmit = jest.fn();
   mockReset = jest.fn();
@@ -76,7 +75,7 @@ it('Expected Ethereum error closes the dialog', async () => {
     ethTx: {
       ...useWithdrawValue.ethTx,
       status: EthTxStatus.Error,
-      error: new EthereumError('User rejected transaction', 4001),
+      error: new EthereumError('User rejected transaction', 4001, 'reason'),
     },
   });
   rerender(generateJsx(props));
@@ -111,7 +110,9 @@ it('Correct min max values provided to form', async () => {
     target: { value: '2' },
   });
   fireEvent.submit(screen.getByTestId('withdraw-form'));
-  expect(await screen.findByText('Value is above maximum')).toBeInTheDocument();
+  expect(
+    await screen.findByText('Insufficient amount in account')
+  ).toBeInTheDocument();
   expect(mockSubmit).not.toBeCalled();
 });
 

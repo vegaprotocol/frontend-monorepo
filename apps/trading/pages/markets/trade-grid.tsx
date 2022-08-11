@@ -1,34 +1,39 @@
-import classNames from 'classnames';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import type { ReactNode } from 'react';
-import { useState } from 'react';
+import 'allotment/dist/style.css';
 import {
   DealTicketContainer,
   MarketInfoContainer,
 } from '@vegaprotocol/deal-ticket';
-import { OrderListContainer } from '@vegaprotocol/orders';
-import { TradesContainer } from '@vegaprotocol/trades';
-import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import type { Market_market } from './__generated__/Market';
+import { SelectMarketPopover } from '@vegaprotocol/market-list';
+import { OrderListContainer } from '@vegaprotocol/orders';
+import { PositionsContainer } from '@vegaprotocol/positions';
 import {
   addDecimalsFormatNumber,
   formatLabel,
   t,
 } from '@vegaprotocol/react-helpers';
+import { TradesContainer } from '@vegaprotocol/trades';
+import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import { Allotment, LayoutPriority } from 'allotment';
+import classNames from 'classnames';
+import { useState } from 'react';
+import AutoSizer from 'react-virtualized-auto-sizer';
+
+import type { ReactNode } from 'react';
+import type { Market_market } from './__generated__/Market';
+import type { CandleClose } from '@vegaprotocol/types';
+import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import {
-  ArrowDown,
   Tab,
   Tabs,
   PriceCellChange,
+  Tooltip,
+  ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
-import type { CandleClose } from '@vegaprotocol/types';
-import { AuctionTrigger } from '@vegaprotocol/types';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
 const TradingViews = {
   Candles: CandlesChartContainer,
@@ -53,44 +58,43 @@ export const TradeMarketHeader = ({
   market,
   className,
 }: TradeMarketHeaderProps) => {
-  const [open, setOpen] = useState(false);
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
-  const headerItemClassName = 'whitespace-nowrap flex flex-col';
+  const headerItemClassName = 'whitespace-nowrap flex flex-col ';
   const itemClassName =
     'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
   const itemValueClassName =
     'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
-    'w-full p-8 bg-white dark:bg-black',
+    'w-full bg-white dark:bg-black',
     className
   );
+
+  const store = useGlobalStore();
+  const onSelect = (marketId: string) => {
+    if (marketId && store.marketId !== marketId) {
+      store.setMarketId(marketId);
+    }
+  };
+
   return (
     <header className={headerClassName}>
-      <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
-        <button
-          onClick={() => setOpen(!open)}
-          className="shrink-0 text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/10 dark:hover:bg-white/20"
-        >
-          <span className="break-words text-left">{market.name}</span>
-          <ArrowDown color="yellow" borderX={8} borderTop={12} />
-        </button>
-
+        <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
         <div
           data-testid="market-summary"
-          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap"
+          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap py-8 pr-8"
         >
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Change (24h)</span>
+            <span className={itemClassName}>{t('Change (24h)')}</span>
             <PriceCellChange
               candles={candlesClose}
               decimalPlaces={market.decimalPlaces}
             />
           </div>
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Volume</span>
+            <span className={itemClassName}>{t('Volume')}</span>
             <span data-testid="trading-volume" className={itemValueClassName}>
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
@@ -100,18 +104,46 @@ export const TradeMarketHeader = ({
                 : '-'}
             </span>
           </div>
+          <Tooltip
+            align="start"
+            description={<TradingModeTooltip market={market} />}
+          >
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Trading mode')}</span>
+              <span data-testid="trading-mode" className={itemValueClassName}>
+                {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+                market.data?.trigger &&
+                market.data.trigger !== AuctionTrigger.Unspecified
+                  ? `${formatLabel(
+                      market.tradingMode
+                    )} - ${market.data?.trigger.toLowerCase()}`
+                  : formatLabel(market.tradingMode)}
+              </span>
+            </div>
+          </Tooltip>
           <div className={headerItemClassName}>
-            <span className={itemClassName}>Trading mode</span>
-            <span data-testid="trading-mode" className={itemValueClassName}>
-              {market.tradingMode === MarketTradingMode.MonitoringAuction &&
-              market.data?.trigger &&
-              market.data.trigger !== AuctionTrigger.Unspecified
-                ? `${formatLabel(
-                    market.tradingMode
-                  )} - ${market.data?.trigger.toLowerCase()}`
-                : formatLabel(market.tradingMode)}
+            <span className={itemClassName}>{t('Price')}</span>
+            <span data-testid="mark-price" className={itemValueClassName}>
+              {market.data && market.data.markPrice !== '0'
+                ? addDecimalsFormatNumber(
+                    market.data.markPrice,
+                    market.decimalPlaces
+                  )
+                : '-'}
             </span>
           </div>
+          {market.tradableInstrument.instrument.product?.settlementAsset
+            ?.symbol && (
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Settlement asset')}</span>
+              <span data-testid="trading-mode" className={itemValueClassName}>
+                {
+                  market.tradableInstrument.instrument.product?.settlementAsset
+                    ?.symbol
+                }
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </header>
@@ -125,7 +157,7 @@ interface TradeGridProps {
 export const TradeGrid = ({ market }: TradeGridProps) => {
   const wrapperClasses = classNames(
     'h-full max-h-full',
-    'grid gap-x-8 gap-y-4 grid-cols-[1fr_325px_425px] grid-rows-[min-content_1fr_200px]',
+    'flex flex-col',
     'bg-black-10 dark:bg-black-70',
     'text-ui'
   );
@@ -133,53 +165,76 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   return (
     <>
       <div className={wrapperClasses}>
-        <TradeMarketHeader
-          market={market}
-          className="row-start-1 row-end-2 col-start-1 col-end-4"
-        />
-        <TradeGridChild className="row-start-2 row-end-3 col-start-1 col-end-2">
-          <Tabs>
-            <Tab id="candles" name={t('Candles')}>
-              <TradingViews.Candles marketId={market.id} />
-            </Tab>
-            <Tab id="depth" name={t('Depth')}>
-              <TradingViews.Depth marketId={market.id} />
-            </Tab>
-          </Tabs>
-        </TradeGridChild>
-        <TradeGridChild className="row-start-2 row-end-3 col-start-2 col-end-3">
-          <Tabs>
-            <Tab id="ticket" name={t('Ticket')}>
-              <TradingViews.Ticket marketId={market.id} />
-            </Tab>
-            <Tab id="info" name={t('Info')}>
-              <TradingViews.Info marketId={market.id} />
-            </Tab>
-          </Tabs>
-        </TradeGridChild>
-        <TradeGridChild className="row-start-2 row-end-3 col-start-3 col-end-4">
-          <Tabs>
-            <Tab id="orderbook" name={t('Orderbook')}>
-              <TradingViews.Orderbook marketId={market.id} />
-            </Tab>
-            <Tab id="trades" name={t('Trades')}>
-              <TradingViews.Trades marketId={market.id} />
-            </Tab>
-          </Tabs>
-        </TradeGridChild>
-        <TradeGridChild className="col-span-3">
-          <Tabs>
-            <Tab id="positions" name={t('Positions')}>
-              <TradingViews.Positions />
-            </Tab>
-            <Tab id="orders" name={t('Orders')}>
-              <TradingViews.Orders />
-            </Tab>
-            <Tab id="accounts" name={t('Collateral')}>
-              <TradingViews.Collateral />
-            </Tab>
-          </Tabs>
-        </TradeGridChild>
+        <TradeMarketHeader market={market} />
+        <ResizablePanel vertical={true}>
+          <Allotment.Pane minSize={75}>
+            <ResizablePanel proportionalLayout={false} minSize={200}>
+              <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
+                <TradeGridChild className="h-full pr-4 bg-black-10 dark:bg-black-70">
+                  <Tabs>
+                    <Tab id="candles" name={t('Candles')}>
+                      <TradingViews.Candles marketId={market.id} />
+                    </Tab>
+                    <Tab id="depth" name={t('Depth')}>
+                      <TradingViews.Depth marketId={market.id} />
+                    </Tab>
+                  </Tabs>
+                </TradeGridChild>
+              </Allotment.Pane>
+              <Allotment.Pane
+                priority={LayoutPriority.Low}
+                preferredSize={330}
+                minSize={200}
+              >
+                <TradeGridChild className="h-full px-4 bg-black-10 dark:bg-black-70">
+                  <Tabs>
+                    <Tab id="ticket" name={t('Ticket')}>
+                      <TradingViews.Ticket marketId={market.id} />
+                    </Tab>
+                    <Tab id="info" name={t('Info')}>
+                      <TradingViews.Info marketId={market.id} />
+                    </Tab>
+                  </Tabs>
+                </TradeGridChild>
+              </Allotment.Pane>
+              <Allotment.Pane
+                priority={LayoutPriority.Low}
+                preferredSize={430}
+                minSize={200}
+              >
+                <TradeGridChild className="h-full pl-4 bg-black-10 dark:bg-black-70">
+                  <Tabs>
+                    <Tab id="orderbook" name={t('Orderbook')}>
+                      <TradingViews.Orderbook marketId={market.id} />
+                    </Tab>
+                    <Tab id="trades" name={t('Trades')}>
+                      <TradingViews.Trades marketId={market.id} />
+                    </Tab>
+                  </Tabs>
+                </TradeGridChild>
+              </Allotment.Pane>
+            </ResizablePanel>
+          </Allotment.Pane>
+          <Allotment.Pane
+            priority={LayoutPriority.Low}
+            preferredSize={200}
+            minSize={50}
+          >
+            <TradeGridChild className="h-full mt-4">
+              <Tabs>
+                <Tab id="positions" name={t('Positions')}>
+                  <TradingViews.Positions />
+                </Tab>
+                <Tab id="orders" name={t('Orders')}>
+                  <TradingViews.Orders />
+                </Tab>
+                <Tab id="accounts" name={t('Collateral')}>
+                  <TradingViews.Collateral />
+                </Tab>
+              </Tabs>
+            </TradeGridChild>
+          </Allotment.Pane>
+        </ResizablePanel>
       </div>
     </>
   );

@@ -3,21 +3,13 @@ import { determineId } from '@vegaprotocol/react-helpers';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import { useCallback, useEffect, useState } from 'react';
-import { ERC20_APPROVAL_QUERY, ERC20_APPROVAL_QUERY_NEW } from './queries';
-import type {
-  NewWithdrawTransactionArgs,
-  WithdrawTransactionArgs,
-} from './use-complete-withdraw';
+import { ERC20_APPROVAL_QUERY } from './queries';
 import type {
   Erc20Approval,
-  Erc20ApprovalVariables,
   Erc20Approval_erc20WithdrawalApproval,
+  Erc20ApprovalVariables,
 } from './__generated__/Erc20Approval';
-import type {
-  CollateralBridge,
-  CollateralBridgeNew,
-} from '@vegaprotocol/smart-contracts';
-import type { Erc20ApprovalNew } from './__generated__/Erc20ApprovalNew';
+import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
 
 export interface WithdrawalFields {
   amount: string;
@@ -25,12 +17,12 @@ export interface WithdrawalFields {
   receiverAddress: string;
 }
 
-export const useWithdraw = (cancelled: boolean, isNewContract: boolean) => {
+export const useWithdraw = (cancelled: boolean) => {
   const [withdrawalId, setWithdrawalId] = useState<string | null>(null);
   const [approval, setApproval] =
     useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
 
-  const contract = useBridgeContract(isNewContract);
+  const contract = useBridgeContract();
   const { keypair } = useVegaWallet();
   const {
     transaction: vegaTx,
@@ -42,39 +34,19 @@ export const useWithdraw = (cancelled: boolean, isNewContract: boolean) => {
     transaction: ethTx,
     perform,
     reset: resetEthTx,
-  } = useEthereumTransaction<WithdrawTransactionArgs>((args) => {
-    if (!contract) {
-      return null;
-    }
-    if (contract.isNewContract) {
-      const withdrawalArguments = args as NewWithdrawTransactionArgs;
-      return (contract as CollateralBridgeNew).withdrawAsset(
-        withdrawalArguments.assetSource,
-        withdrawalArguments.amount,
-        withdrawalArguments.targetAddress,
-        withdrawalArguments.creation,
-        withdrawalArguments.nonce,
-        withdrawalArguments.signatures
-      );
-    } else {
-      return (contract as CollateralBridge).withdrawAsset(
-        args.assetSource,
-        args.amount,
-        args.targetAddress,
-        args.nonce,
-        args.signatures
-      );
-    }
-  });
+  } = useEthereumTransaction<CollateralBridge, 'withdraw_asset'>(
+    contract,
+    'withdraw_asset'
+  );
 
-  const { data, stopPolling } = useQuery<
-    Erc20Approval | Erc20ApprovalNew,
-    Erc20ApprovalVariables
-  >(isNewContract ? ERC20_APPROVAL_QUERY_NEW : ERC20_APPROVAL_QUERY, {
-    variables: { withdrawalId: withdrawalId || '' },
-    skip: !withdrawalId,
-    pollInterval: 1000,
-  });
+  const { data, stopPolling } = useQuery<Erc20Approval, Erc20ApprovalVariables>(
+    ERC20_APPROVAL_QUERY,
+    {
+      variables: { withdrawalId: withdrawalId || '' },
+      skip: !withdrawalId,
+      pollInterval: 1000,
+    }
+  );
 
   const submit = useCallback(
     async (withdrawal: WithdrawalFields) => {
@@ -114,11 +86,18 @@ export const useWithdraw = (cancelled: boolean, isNewContract: boolean) => {
   }, [data, stopPolling]);
 
   useEffect(() => {
-    if (approval && !cancelled) {
-      perform(approval);
+    if (approval && contract && !cancelled) {
+      perform(
+        approval.assetSource,
+        approval.amount,
+        approval.targetAddress,
+        approval.creation,
+        approval.nonce,
+        approval.signatures
+      );
     }
     // eslint-disable-next-line
-  }, [approval]);
+  }, [approval, contract]);
 
   const reset = useCallback(() => {
     resetVegaTx();

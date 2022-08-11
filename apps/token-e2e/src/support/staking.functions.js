@@ -7,6 +7,10 @@ const ethWalletAssociateButton = '[href="/staking/associate"]';
 const ethWalletDissociateButton = '[href="/staking/disassociate"]';
 const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
+const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
+const stakeValidatorListTotalStake = '[col-id="totalStakeThisEpoch"]';
+const stakeValidatorListTotalShare = '[col-id="share"]';
+const stakeValidatorListName = '[col-id="validator"]';
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
@@ -19,7 +23,7 @@ Cypress.Commands.add('wait_for_begining_of_epoch', () => {
 
 Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
   cy.highlight(`Adding a stake of ${stake}`);
-  cy.get(addStakeRadioButton).click({ force: true });
+  cy.get(addStakeRadioButton, { timeout: 8000 }).click({ force: true });
   cy.get(tokenAmountInputBox).type(stake);
   cy.wait_for_begining_of_epoch();
   cy.get(tokenSubmitButton, epochTimeout)
@@ -31,7 +35,7 @@ Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
 
 Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
   cy.highlight(`Removing a stake of ${stake}`);
-  cy.get(removeStakeRadioButton).click({ force: true });
+  cy.get(removeStakeRadioButton, { timeout: 8000 }).click();
   cy.get(tokenAmountInputBox).type(stake);
   cy.wait_for_begining_of_epoch();
   cy.get(tokenSubmitButton)
@@ -49,7 +53,7 @@ Cypress.Commands.add(
     cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
     cy.get(tokenAmountInputBox, epochTimeout).type(amount);
     if (approve) {
-      cy.get(tokenInputApprove, epochTimeout).should('be.enabled').click();
+      cy.get(tokenInputApprove, txTimeout).should('be.enabled').click();
       cy.contains('Approve $VEGA Tokens for staking on Vega').should(
         'be.visible'
       );
@@ -90,3 +94,45 @@ Cypress.Commands.add('staking_page_disassociate_all_tokens', () => {
     txTimeout
   ).should('be.visible');
 });
+
+Cypress.Commands.add(
+  'click_on_validator_from_list',
+  (validatorNumber, validatorName = null) => {
+    cy.contains('Waiting for next epoch to start').should('not.exist');
+    // below is to ensure validator list is shown
+    cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
+    cy.get(stakeValidatorListPendingStake, txTimeout).should(
+      'not.contain',
+      '2,000,000,000,000,000,000.00' // number due to bug #936
+    );
+    if (validatorName) {
+      cy.contains(validatorName).click();
+    } else {
+      cy.get(`[row-id="${validatorNumber}"]`)
+        .find(stakeValidatorListName)
+        .click();
+    }
+  }
+);
+
+Cypress.Commands.add(
+  'validate_validator_list_total_stake_and_share',
+  (
+    positionOnList,
+    expectedValidatorName,
+    expectedTotalStake,
+    expectedTotalShare
+  ) => {
+    cy.get(`[row-id="${positionOnList}"]`).within(() => {
+      cy.get(stakeValidatorListName).should('have.text', expectedValidatorName);
+      cy.get(stakeValidatorListTotalStake).should(
+        'have.text',
+        expectedTotalStake
+      );
+      cy.get(stakeValidatorListTotalShare).should(
+        'have.text',
+        expectedTotalShare
+      );
+    });
+  }
+);

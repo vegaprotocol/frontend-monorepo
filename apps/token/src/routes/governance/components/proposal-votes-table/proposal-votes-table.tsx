@@ -7,6 +7,7 @@ import {
 } from '../../../../lib/format-number';
 import { useVoteInformation } from '../../hooks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import { useAppState } from '../../../../contexts/app-state/app-state-context';
 
 interface ProposalVotesTableProps {
   proposal: Proposals_proposals;
@@ -14,6 +15,9 @@ interface ProposalVotesTableProps {
 
 export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
   const { t } = useTranslation();
+  const {
+    appState: { totalSupply },
+  } = useAppState();
   const {
     willPass,
     totalTokensPercentage,
@@ -54,6 +58,10 @@ export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
       <KeyValueTableRow>
         {t('tokenForProposal')}
         {formatNumber(yesTokens, 2)}
+      </KeyValueTableRow>
+      <KeyValueTableRow>
+        {t('totalSupply')}
+        {formatNumber(totalSupply, 2)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('tokensAgainstProposal')}

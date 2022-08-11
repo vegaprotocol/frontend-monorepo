@@ -7,12 +7,11 @@ import {
   getDateTimeFormat,
   t,
   truncateByChars,
-  formatNumber,
+  addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { WithdrawalStatus } from '@vegaprotocol/types';
 import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
-import { TransactionDialog } from '@vegaprotocol/web3';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
 
@@ -22,7 +21,7 @@ export interface WithdrawalsTableProps {
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const { transaction, submit } = useCompleteWithdraw(true);
+  const { submit, Dialog } = useCompleteWithdraw();
 
   return (
     <>
@@ -39,7 +38,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           headerName="Amount"
           field="amount"
           valueFormatter={({ value, data }: ValueFormatterParams) => {
-            return formatNumber(value, data.asset.decimals);
+            return addDecimalsFormatNumber(value, data.asset.decimals);
           }}
         />
         <AgGridColumn
@@ -65,7 +64,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           cellRendererParams={{ complete: submit, ethUrl: ETHERSCAN_URL }}
         />
       </AgGrid>
-      <TransactionDialog name="withdraw" {...transaction} />
+      <Dialog />
     </>
   );
 };
@@ -90,6 +89,7 @@ export const StatusCell = ({
             title={t('View transaction on Etherscan')}
             href={`${ethUrl}/tx/${data.txHash}`}
             data-testid="etherscan-link"
+            target="_blank"
           >
             {t('View on Etherscan')}
           </Link>
@@ -108,6 +108,7 @@ export const StatusCell = ({
               title={t('View transaction on Etherscan')}
               href={`${ethUrl}/tx/${data.txHash}`}
               data-testid="etherscan-link"
+              target="_blank"
             >
               {t('View on Etherscan')}
             </Link>
@@ -116,7 +117,7 @@ export const StatusCell = ({
           <>
             {t('Open')}
             <button className="underline" onClick={() => complete(data.id)}>
-              {t('Complete')}
+              {t('Click to complete')}
             </button>
           </>
         )}
@@ -141,6 +142,7 @@ const RecipientCell = ({
       title={t('View on Etherscan (opens in a new tab)')}
       href={`${ethUrl}/address/${value}`}
       data-testid="etherscan-link"
+      target="_blank"
     >
       {valueFormatted}
     </Link>

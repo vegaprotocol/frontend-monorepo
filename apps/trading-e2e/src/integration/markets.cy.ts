@@ -11,7 +11,7 @@ describe('markets table', () => {
     cy.visit('/markets');
   });
 
-  it('renders correctly', () => {
+  it.skip('renders correctly', () => {
     const marketRowHeaderClassname = 'div > span.ag-header-cell-text';
     const marketRowNameColumn = 'tradableInstrument.instrument.code';
     const marketRowSymbolColumn =
@@ -56,7 +56,7 @@ describe('markets table', () => {
     });
   });
 
-  it('can select an active market', () => {
+  it.skip('can select an active market', () => {
     cy.wait('@Markets');
     cy.get('.ag-root-wrapper').should('be.visible');
 

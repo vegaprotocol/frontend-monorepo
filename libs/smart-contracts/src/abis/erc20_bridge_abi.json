@@ -5,65 +5,10 @@
         "internalType": "address payable",
         "name": "erc20_asset_pool",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "multisig_control",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
     "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "asset_source",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "new_maximum",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
-      }
-    ],
-    "name": "Asset_Deposit_Maximum_Set",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "asset_source",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "new_minimum",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
-      }
-    ],
-    "name": "Asset_Deposit_Minimum_Set",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -94,6 +39,31 @@
       }
     ],
     "name": "Asset_Deposited",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "lifetime_limit",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "withdraw_threshold",
+        "type": "uint256"
+      }
+    ],
+    "name": "Asset_Limits_Updated",
     "type": "event"
   },
   {
@@ -172,6 +142,70 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [],
+    "name": "Bridge_Resumed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [],
+    "name": "Bridge_Stopped",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "withdraw_delay",
+        "type": "uint256"
+      }
+    ],
+    "name": "Bridge_Withdraw_Delay_Set",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "depositor",
+        "type": "address"
+      }
+    ],
+    "name": "Depositor_Exempted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "depositor",
+        "type": "address"
+      }
+    ],
+    "name": "Depositor_Exemption_Revoked",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "default_withdraw_delay",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -195,6 +229,45 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "erc20_asset_pool_address",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "exempt_depositor",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      }
+    ],
+    "name": "get_asset_deposit_lifetime_limit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "bytes32",
@@ -208,44 +281,6 @@
         "internalType": "address",
         "name": "",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "asset_source",
-        "type": "address"
-      }
-    ],
-    "name": "get_deposit_maximum",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "asset_source",
-        "type": "address"
-      }
-    ],
-    "name": "get_deposit_minimum",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -291,7 +326,94 @@
         "type": "address"
       }
     ],
+    "name": "get_withdraw_threshold",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
+    ],
+    "name": "global_resume",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
+    ],
+    "name": "global_stop",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "asset_source",
+        "type": "address"
+      }
+    ],
     "name": "is_asset_listed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "depositor",
+        "type": "address"
+      }
+    ],
+    "name": "is_exempt_depositor",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "is_stopped",
     "outputs": [
       {
         "internalType": "bool",
@@ -313,6 +435,16 @@
         "internalType": "bytes32",
         "name": "vega_asset_id",
         "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lifetime_limit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "withdraw_threshold",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",
@@ -354,29 +486,8 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "asset_source",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "maximum_amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "nonce",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "signatures",
-        "type": "bytes"
-      }
-    ],
-    "name": "set_deposit_maximum",
+    "inputs": [],
+    "name": "revoke_exempt_depositor",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -390,7 +501,12 @@
       },
       {
         "internalType": "uint256",
-        "name": "minimum_amount",
+        "name": "lifetime_limit",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "threshold",
         "type": "uint256"
       },
       {
@@ -404,7 +520,30 @@
         "type": "bytes"
       }
     ],
-    "name": "set_deposit_minimum",
+    "name": "set_asset_limits",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "delay",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nonce",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signatures",
+        "type": "bytes"
+      }
+    ],
+    "name": "set_withdraw_delay",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -425,6 +564,11 @@
         "internalType": "address",
         "name": "target",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "creation",
+        "type": "uint256"
       },
       {
         "internalType": "uint256",

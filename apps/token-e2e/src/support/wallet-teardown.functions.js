@@ -5,6 +5,7 @@ import {
 } from '@vegaprotocol/smart-contracts';
 import { ethers, Wallet } from 'ethers';
 
+const vegaWalletContainer = '[data-testid="vega-wallet"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const vegaWalletMnemonic = Cypress.env('vegaWalletMnemonic');
 const vegaWalletPubKey = Cypress.env('vegaWalletPublicKey');
@@ -40,14 +41,24 @@ before('Vega wallet teardown prep', function () {
 });
 
 Cypress.Commands.add('vega_wallet_teardown', function () {
-  cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
-  cy.vega_wallet_teardown_vesting(this.vestingContract);
+  cy.get(vegaWalletContainer).within(() => {
+    cy.get(vegaWalletAssociatedBalance)
+      .invoke('text')
+      .then((balance) => {
+        if (balance != '0.000000000000000000') {
+          cy.vega_wallet_teardown_staking(this.stakingBridgeContract);
+          cy.vega_wallet_teardown_vesting(this.vestingContract);
+        }
+      });
+  });
 
-  cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
-    'contain',
-    '0.000000000000000000',
-    { timeout: transactionTimeout }
-  );
+  cy.get(vegaWalletContainer).within(() => {
+    cy.get(vegaWalletAssociatedBalance, { timeout: transactionTimeout }).should(
+      'contain',
+      '0.000000000000000000',
+      { timeout: transactionTimeout }
+    );
+  });
 });
 
 Cypress.Commands.add(
@@ -75,7 +86,7 @@ Cypress.Commands.add(
   (stakingBridgeContract) => {
     cy.highlight('Tearing down staking tokens from vega wallet if present');
     cy.wrap(
-      stakingBridgeContract.stakeBalance(ethWalletPubKey, vegaWalletPubKey),
+      stakingBridgeContract.stake_balance(ethWalletPubKey, vegaWalletPubKey),
       {
         timeout: transactionTimeout,
         log: false,
@@ -83,7 +94,7 @@ Cypress.Commands.add(
     ).then((stake_amount) => {
       if (String(stake_amount) != '0') {
         cy.wrap(
-          stakingBridgeContract.removeStake(stake_amount, vegaWalletPubKey),
+          stakingBridgeContract.remove_stake(stake_amount, vegaWalletPubKey),
           { timeout: transactionTimeout, log: false }
         ).then((tx) => {
           cy.wait_for_transaction(tx);
@@ -95,12 +106,12 @@ Cypress.Commands.add(
 
 Cypress.Commands.add('vega_wallet_teardown_vesting', (vestingContract) => {
   cy.highlight('Tearing down vesting tokens from vega wallet if present');
-  cy.wrap(vestingContract.stakeBalance(ethWalletPubKey, vegaWalletPubKey), {
+  cy.wrap(vestingContract.stake_balance(ethWalletPubKey, vegaWalletPubKey), {
     timeout: transactionTimeout,
     log: false,
   }).then((vesting_amount) => {
     if (String(vesting_amount) != '0') {
-      cy.wrap(vestingContract.removeStake(vesting_amount, vegaWalletPubKey), {
+      cy.wrap(vestingContract.remove_stake(vesting_amount, vegaWalletPubKey), {
         timeout: transactionTimeout,
         log: false,
       }).then((tx) => {

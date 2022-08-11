@@ -30,6 +30,7 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
   // contracts so that we can sign transactions, otherwise use the provider for just
   // reading data
   React.useEffect(() => {
+    let cancelled = false;
     const run = async () => {
       let signer = null;
 
@@ -38,7 +39,6 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
           ETHEREUM_PROVIDER_URL,
           Number(config.chain_id)
         );
-
         const provider = activeProvider ? activeProvider : defaultProvider;
 
         if (
@@ -54,24 +54,29 @@ export const ContractsProvider = ({ children }: { children: JSX.Element }) => {
             config.staking_bridge_contract.address,
             signer || provider
           );
-          const vegaAddress = await staking.stakingToken();
-
-          setContracts({
-            token: new Token(vegaAddress, signer || provider),
-            staking: new StakingBridge(
-              config.staking_bridge_contract.address,
-              signer || provider
-            ),
-            vesting: new TokenVesting(
-              config.token_vesting_contract.address,
-              signer || provider
-            ),
-            claim: new Claim(ENV.addresses.claimAddress, signer || provider),
-          });
+          const vegaAddress = await staking.staking_token();
+          if (!cancelled) {
+            setContracts({
+              token: new Token(vegaAddress, signer || provider),
+              staking: new StakingBridge(
+                config.staking_bridge_contract.address,
+                signer || provider
+              ),
+              vesting: new TokenVesting(
+                config.token_vesting_contract.address,
+                signer || provider
+              ),
+              claim: new Claim(ENV.addresses.claimAddress, signer || provider),
+            });
+          }
         }
       }
     };
     run();
+    return () => {
+      //  TODO: hacky quick fix for release to prevent race condition, find a better fix for this.
+      cancelled = true;
+    };
   }, [activeProvider, account, config, VEGA_ENV, ETHEREUM_PROVIDER_URL]);
 
   if (!contracts) {

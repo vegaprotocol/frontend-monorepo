@@ -2,6 +2,8 @@ import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateDepositPage } from '../support/mocks/generate-deposit-page';
 import { generateNetworkParameters } from '../support/mocks/generate-network-parameters';
 
+const connectEthWalletBtn = 'connect-eth-wallet-btn';
+
 describe('deposit form validation', () => {
   beforeEach(() => {
     cy.mockWeb3Provider();
@@ -12,7 +14,7 @@ describe('deposit form validation', () => {
     cy.visit('/portfolio/deposit');
 
     // Deposit page requires connection Ethereum wallet first
-    cy.getByTestId('connect-eth-wallet-btn').click();
+    cy.getByTestId(connectEthWalletBtn).click();
     cy.getByTestId('web3-connector-MetaMask').click();
 
     cy.wait('@DepositPage');
@@ -53,6 +55,21 @@ describe('deposit form validation', () => {
       .clear()
       .type('100')
       .next(`[data-testid="${formFieldError}"]`)
-      .should('have.text', 'Amount is above approved amount');
+      .should('have.text', 'Insufficient amount in Ethereum wallet');
+  });
+
+  it('able to disconnect eth wallet', () => {
+    const ethWalletAddress = Cypress.env('ETHEREUM_WALLET_ADDRESS');
+
+    cy.get('#ethereum-address').should('have.value', ethWalletAddress).click();
+    cy.getByTestId('dialog-content').within(() => {
+      cy.get('p').should('have.text', `Connected with ${ethWalletAddress}`);
+      cy.get('button')
+        .should('have.text', 'Disconnect Ethereum Wallet')
+        .click();
+    });
+
+    cy.getByTestId('connect-eth-wallet-msg').should('exist');
+    cy.getByTestId(connectEthWalletBtn).should('exist');
   });
 });

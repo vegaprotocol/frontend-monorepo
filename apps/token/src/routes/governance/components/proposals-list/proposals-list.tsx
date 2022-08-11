@@ -1,84 +1,96 @@
-import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
-import { format, isFuture } from 'date-fns';
+import { isFuture } from 'date-fns';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
-
-import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
-import { getProposalName } from '../../../../lib/type-policies/proposal';
+import { Heading } from '../../../../components/heading';
+import { ProposalsListItem } from '../proposals-list-item';
+import { ProposalsListFilter } from '../proposals-list-filter';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-import { CurrentProposalState } from '../current-proposal-state';
+import Routes from '../../../routes';
+import { Button } from '@vegaprotocol/ui-toolkit';
+import { Link } from 'react-router-dom';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
 }
 
+interface SortedProposalsProps {
+  open: Proposals_proposals[];
+  closed: Proposals_proposals[];
+}
+
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
+  const [filterString, setFilterString] = useState('');
 
-  if (proposals.length === 0) {
-    return <p data-testid="no-proposals">{t('noProposals')}</p>;
-  }
+  const failedProposalsCulled = proposals.filter(
+    ({ state }) => state !== 'Failed'
+  );
+
+  const sortedProposals = failedProposalsCulled.reduce(
+    (acc: SortedProposalsProps, proposal) => {
+      if (isFuture(new Date(proposal.terms.closingDatetime))) {
+        acc.open.push(proposal);
+      } else {
+        acc.closed.push(proposal);
+      }
+      return acc;
+    },
+    {
+      open: [],
+      closed: [],
+    }
+  );
+
+  const filterPredicate = (p: Proposals_proposals) =>
+    p.id?.includes(filterString) ||
+    p.party?.id?.toString().includes(filterString);
 
   return (
     <>
-      <p>{t('proposedChangesToVegaNetwork')}</p>
-      <p>{t('vegaTokenHoldersCanVote')}</p>
-      <p>{t('requiredMajorityDescription')}</p>
-      <h2>{t('proposals')}</h2>
-      <ul>
-        {proposals.map((proposal) => (
-          <ProposalListItem proposal={proposal} />
-        ))}
-      </ul>
+      <div className="grid xs:grid-cols-2 items-center">
+        <Heading centerContent={false} title={t('pageTitleGovernance')} />
+        <Link
+          className="mb-16 xs:justify-self-end"
+          data-testid="new-proposal-link"
+          to={`${Routes.GOVERNANCE}/propose`}
+        >
+          <Button variant={'primary'}>{t('NewProposal')}</Button>
+        </Link>
+      </div>
+
+      {failedProposalsCulled.length > 0 && (
+        <ProposalsListFilter setFilterString={setFilterString} />
+      )}
+
+      <section className="mx-[-20px] p-20 bg-white-10">
+        <h2 className="text-h4 mb-0">{t('openProposals')}</h2>
+        {sortedProposals.open.length > 0 ? (
+          <ul data-testid="open-proposals">
+            {sortedProposals.open.filter(filterPredicate).map((proposal) => (
+              <ProposalsListItem key={proposal.id} proposal={proposal} />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-12 mb-0" data-testid="no-open-proposals">
+            {t('noOpenProposals')}
+          </p>
+        )}
+      </section>
+
+      <section className="mx-[-20px] p-20">
+        <h2 className="text-h4 mb-0">{t('closedProposals')}</h2>
+        {sortedProposals.closed.length > 0 ? (
+          <ul data-testid="closed-proposals">
+            {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
+              <ProposalsListItem key={proposal.id} proposal={proposal} />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-12 mb-0" data-testid="no-closed-proposals">
+            {t('noClosedProposals')}
+          </p>
+        )}
+      </section>
     </>
-  );
-};
-
-interface ProposalListItemProps {
-  proposal: Proposals_proposals;
-}
-
-const ProposalListItem = ({ proposal }: ProposalListItemProps) => {
-  const { t } = useTranslation();
-  if (!proposal || !proposal.id) return null;
-
-  return (
-    <li className="last:mb-0 mb-24" key={proposal.id}>
-      <Link to={proposal.id} className="underline text-white">
-        <header>{getProposalName(proposal)}</header>
-      </Link>
-      <KeyValueTable muted={true}>
-        <KeyValueTableRow>
-          {t('state')}
-          <span data-testid="governance-proposal-state">
-            <CurrentProposalState proposal={proposal} />
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {isFuture(new Date(proposal.terms.closingDatetime))
-            ? t('closesOn')
-            : t('closedOn')}
-
-          <span data-testid="governance-proposal-closingDate">
-            {format(
-              new Date(proposal.terms.closingDatetime),
-              DATE_FORMAT_DETAILED
-            )}
-          </span>
-        </KeyValueTableRow>
-        <KeyValueTableRow>
-          {isFuture(new Date(proposal.terms.enactmentDatetime))
-            ? t('proposedEnactment')
-            : t('enactedOn')}
-
-          <span data-testid="governance-proposal-enactmentDate">
-            {format(
-              new Date(proposal.terms.enactmentDatetime),
-              DATE_FORMAT_DETAILED
-            )}
-          </span>
-        </KeyValueTableRow>
-      </KeyValueTable>
-    </li>
   );
 };

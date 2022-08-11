@@ -2,8 +2,7 @@ import { captureException, captureMessage } from '@sentry/minimal';
 import * as React from 'react';
 
 import { VoteValue } from '../../../../__generated__/globalTypes';
-import { VOTE_VALUE_MAP } from './vote-types';
-import { useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet, VegaWalletVoteValue } from '@vegaprotocol/wallet';
 
 export type Vote = {
   value: VoteValue;
@@ -101,7 +100,7 @@ export function useUserVote(
         pubKey: keypair.pub,
         propagate: true,
         voteSubmission: {
-          value: VOTE_VALUE_MAP[value],
+          value: VegaWalletVoteValue[value],
           proposalId,
         },
       };

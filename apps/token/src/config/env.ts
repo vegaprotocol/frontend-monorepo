@@ -67,9 +67,6 @@ export const ENV = {
     MOCK: TRUTHY.includes(windowOrDefault('NX_MOCKED')),
     FAIRGROUND: TRUTHY.includes(windowOrDefault('NX_FAIRGROUND')),
     NETWORK_LIMITS: TRUTHY.includes(windowOrDefault('NX_NETWORK_LIMITS')),
-    USE_NEW_BRIDGE_CONTRACT: TRUTHY.includes(
-      process.env['NX_IS_NEW_BRIDGE_CONTRACT'] as string
-    ),
   },
   addresses:
     ContractAddresses[(envName === 'local' ? 'CUSTOM' : envName) as Networks],

@@ -69,8 +69,7 @@ Run `nx serve my-app` for a dev server. Navigate to the port specified in `app/<
 
 ### Using Apollo GraphQL and Generate Types
 
-In order to generate the schemas for your GraphQL queries, you can run `nx run types:generate`.
-If it is the first time you are running the command, make sure you are setting up the environment variable from `apollo.config.js`.
+In order to generate the schemas for your GraphQL queries, you can run `NX_VEGA_URL=[YOUR URL HERE] nx run types:generate`.
 
 ```bash
 export  NX_VEGA_URL=https://lb.testnet.vega.xyz/query

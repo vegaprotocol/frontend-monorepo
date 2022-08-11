@@ -14,10 +14,13 @@ export const ORDER_EVENT_SUB = gql`
           size
           price
           timeInForce
+          expiresAt
           side
           market {
+            id
             name
             decimalPlaces
+            positionDecimalPlaces
           }
         }
       }

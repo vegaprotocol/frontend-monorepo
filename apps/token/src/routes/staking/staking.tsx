@@ -9,7 +9,7 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
 
   return (
     <>
-      <section data-testid="staking-description" className="mb-24">
+      <section className="mb-20">
         <Callout
           intent={Intent.Primary}
           iconName="help"
@@ -33,18 +33,11 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
       </section>
 
       <section>
-        <StakingStepSelectNode data={data} />
+        <h2 className="text-h4 uppercase">{t('Nodes')}</h2>
+        <NodeList data-testid="node-list" epoch={data?.epoch} />
       </section>
     </>
   );
 };
 
-export const StakingStepSelectNode = ({
-  data,
-}: {
-  data?: StakingQueryResult;
-}) => {
-  return (
-    <NodeList data-testid="node-list" epoch={data?.epoch} party={data?.party} />
-  );
-};
+export default Staking;

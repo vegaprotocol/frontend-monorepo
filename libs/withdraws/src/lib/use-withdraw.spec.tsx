@@ -1,16 +1,19 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
-import { ERC20_APPROVAL_QUERY_NEW } from './queries';
+import { ERC20_APPROVAL_QUERY } from './queries';
 import * as web3 from '@vegaprotocol/web3';
 import * as wallet from '@vegaprotocol/wallet';
 import type { WithdrawalFields } from './use-withdraw';
 import { useWithdraw } from './use-withdraw';
-import type { Erc20ApprovalNew } from './__generated__/Erc20ApprovalNew';
+import type { Erc20Approval } from './__generated__/Erc20Approval';
 
 jest.mock('@vegaprotocol/web3', () => ({
-  useBridgeContract: jest.fn(),
+  useBridgeContract: jest.fn().mockReturnValue({
+    withdraw_asset: jest.fn(),
+    isNewContract: true,
+  }),
   useEthereumTransaction: jest.fn(),
 }));
 
@@ -27,7 +30,7 @@ function setup(mocks?: MockedResponse[], cancelled = false) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useWithdraw(cancelled, true), { wrapper });
+  return renderHook(() => useWithdraw(cancelled), { wrapper });
 }
 
 const signature =
@@ -49,7 +52,7 @@ let mockPerform: jest.Mock;
 let mockEthReset: jest.Mock;
 let mockVegaReset: jest.Mock;
 let withdrawalInput: WithdrawalFields;
-let mockERC20Approval: MockedResponse<Erc20ApprovalNew>;
+let mockERC20Approval: MockedResponse<Erc20Approval>;
 
 beforeEach(() => {
   pubkey = 'pubkey';
@@ -82,7 +85,7 @@ beforeEach(() => {
   };
   mockERC20Approval = {
     request: {
-      query: ERC20_APPROVAL_QUERY_NEW,
+      query: ERC20_APPROVAL_QUERY,
       variables: { withdrawalId: derivedWithdrawalId },
     },
     result: {
@@ -141,9 +144,15 @@ it('Creates withdrawal and immediately submits Ethereum transaction', async () =
     // @ts-ignore MockedRespones types inteferring
     mockERC20Approval.result.data.erc20WithdrawalApproval
   );
+  // @ts-ignore MockedRespones types inteferring
+  const withdrawal = mockERC20Approval.result.data.erc20WithdrawalApproval;
   expect(mockPerform).toHaveBeenCalledWith(
-    // @ts-ignore MockedRespones types inteferring
-    mockERC20Approval.result.data.erc20WithdrawalApproval
+    withdrawal.assetSource,
+    withdrawal.amount,
+    withdrawal.targetAddress,
+    withdrawal.creation,
+    withdrawal.nonce,
+    withdrawal.signatures
   );
 });
 

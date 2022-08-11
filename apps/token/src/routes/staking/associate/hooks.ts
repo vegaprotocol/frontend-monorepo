@@ -29,7 +29,7 @@ export const useAddStake = (
     appState: { decimals },
   } = useAppState();
   const contractAdd = useTransaction(
-    () => vesting.stakeTokens(removeDecimal(amount, decimals), vegaKey),
+    () => vesting.stake_tokens(removeDecimal(amount, decimals), vegaKey),
     confirmations
   );
   const walletAdd = useTransaction(

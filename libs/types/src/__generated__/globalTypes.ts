@@ -68,6 +68,17 @@ export enum BusEventType {
 }
 
 /**
+ * Comparator describes the type of comparison.
+ */
+export enum ConditionOperator {
+  OperatorEquals = "OperatorEquals",
+  OperatorGreaterThan = "OperatorGreaterThan",
+  OperatorGreaterThanOrEqual = "OperatorGreaterThanOrEqual",
+  OperatorLessThan = "OperatorLessThan",
+  OperatorLessThanOrEqual = "OperatorLessThanOrEqual",
+}
+
+/**
  * The status of a deposit
  */
 export enum DepositStatus {
@@ -117,6 +128,14 @@ export enum MarketTradingMode {
 export enum NodeStatus {
   NonValidator = "NonValidator",
   Validator = "Validator",
+}
+
+/**
+ * Status describe the status of the oracle spec
+ */
+export enum OracleSpecStatus {
+  StatusActive = "StatusActive",
+  StatusUnused = "StatusUnused",
 }
 
 /**
@@ -200,6 +219,19 @@ export enum OrderType {
   Limit = "Limit",
   Market = "Market",
   Network = "Network",
+}
+
+/**
+ * Type describes the type of properties that are supported by the oracle
+ * engine.
+ */
+export enum PropertyKeyType {
+  TypeBoolean = "TypeBoolean",
+  TypeDecimal = "TypeDecimal",
+  TypeEmpty = "TypeEmpty",
+  TypeInteger = "TypeInteger",
+  TypeString = "TypeString",
+  TypeTimestamp = "TypeTimestamp",
 }
 
 /**

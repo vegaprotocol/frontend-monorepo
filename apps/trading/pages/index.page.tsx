@@ -1,5 +1,4 @@
 import { gql, useQuery } from '@apollo/client';
-import { MarketTradingMode } from '@vegaprotocol/types';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import orderBy from 'lodash/orderBy';
 import { useRouter } from 'next/router';
@@ -20,15 +19,9 @@ const MARKETS_QUERY = gql`
   }
 `;
 
-const marketList = ({ markets }: MarketsLanding) =>
-  orderBy(
-    markets?.filter(
-      ({ marketTimestamps, tradingMode }) =>
-        marketTimestamps.open && tradingMode === MarketTradingMode.Continuous
-    ) || [],
-    ['state', 'marketTimestamps.open', 'id'],
-    ['asc', 'asc', 'asc']
-  );
+const getMarketList = ({ markets = [] }: MarketsLanding) => {
+  return orderBy(markets, ['marketTimestamps.open', 'id'], ['asc', 'asc']);
+};
 
 export function Index() {
   const { replace } = useRouter();
@@ -39,7 +32,7 @@ export function Index() {
 
   useEffect(() => {
     if (data) {
-      const marketId = marketList(data)[0]?.id;
+      const marketId = getMarketList(data)[0]?.id;
 
       // If a default market is found, go to it with the landing dialog open
       if (marketId) {

@@ -1,12 +1,19 @@
-export interface HeadingProps {
+import classNames from 'classnames';
+
+interface HeadingProps {
   title?: string;
+  centerContent?: boolean;
 }
 
-export const Heading = ({ title }: HeadingProps) => {
+export const Heading = ({ title, centerContent = true }: HeadingProps) => {
   if (!title) return null;
 
   return (
-    <header className="my-0 mx-auto">
+    <header
+      className={classNames('my-0', {
+        'mx-auto': centerContent,
+      })}
+    >
       <h1 className="font-alpha calt">{title}</h1>
     </header>
   );
