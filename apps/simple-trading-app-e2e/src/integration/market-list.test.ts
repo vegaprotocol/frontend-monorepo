@@ -95,7 +95,7 @@ describe('market list', () => {
   });
 
   describe('long list of results should be handled properly', () => {
-    it('5000 of markets', () => {
+    it('handles 5000 markets', () => {
       cy.viewport(1440, 900);
       cy.mockGQL((req) => {
         aliasQuery(req, 'SimpleMarkets', generateLongListMarkets(5000));
