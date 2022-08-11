@@ -2,7 +2,6 @@ const nodeErrorType = 'node-error-type';
 const nodeErrorMsg = 'node-error-message';
 const nodeId = 'node-url-0';
 const customNodeBtn = 'custom-node';
-const closeDialogBtn = 'dialog-close';
 
 context('Node switcher', function () {
   beforeEach('visit home page', function () {
