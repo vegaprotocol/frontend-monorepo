@@ -1,10 +1,11 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
-import type { ReactNode } from 'react';
-import type { Intent } from '../../utils/intent';
-import { getIntentShadow, getIntentBorder } from '../../utils/intent';
+
+import { getIntentBorder, getIntentShadow } from '../../utils/intent';
 import { Icon } from '../icon';
 
+import type { ReactNode } from 'react';
+import type { Intent } from '../../utils/intent';
 interface DialogProps {
   children: ReactNode;
   open: boolean;
@@ -13,7 +14,7 @@ interface DialogProps {
   icon?: ReactNode;
   intent?: Intent;
   titleClassNames?: string;
-  contentClassNames?: string;
+  size?: 'small' | 'medium' | 'large';
 }
 
 export function Dialog({
@@ -24,16 +25,21 @@ export function Dialog({
   icon,
   intent,
   titleClassNames,
-  contentClassNames,
+  size = 'medium',
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed w-full md:w-[720px] lg:w-[940px] px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+    'z-20 fixed  px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
     getIntentShadow(intent),
     getIntentBorder(intent),
-    contentClassNames
+    {
+      'lg:w-[620px] w-full': size === 'small',
+      'w-full w-full md:w-[720px] lg:w-[940px]': size === 'medium',
+      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto':
+        size === 'large',
+    }
   );
   return (
     <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>

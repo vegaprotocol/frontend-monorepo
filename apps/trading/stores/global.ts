@@ -10,6 +10,8 @@ interface GlobalStore {
   setVegaNetworkSwitcherDialog: (isOpen: boolean) => void;
   landingDialog: boolean;
   setLandingDialog: (isOpen: boolean) => void;
+  marketId: string | null;
+  setMarketId: (marketId: string) => void;
 }
 
 export const useGlobalStore = create((set: SetState<GlobalStore>) => ({
@@ -28,5 +30,9 @@ export const useGlobalStore = create((set: SetState<GlobalStore>) => ({
   landingDialog: false,
   setLandingDialog: (isOpen: boolean) => {
     set({ landingDialog: isOpen });
+  },
+  marketId: null,
+  setMarketId: (id: string) => {
+    set({ marketId: id });
   },
 }));
