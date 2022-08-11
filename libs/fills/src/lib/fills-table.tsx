@@ -43,14 +43,14 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
       >
         <AgGridColumn headerName={t('Market')} field="market.name" />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="size"
           cellClass={({ data }: { data: FillFields }) => {
             let className = '';
             if (data?.buyer.id === partyId) {
-              className = 'text-vega-green';
+              className = 'text-vega-green-dark dark:text-vega-green';
             } else if (data?.seller.id) {
-              className = 'text-vega-red';
+              className = 'text-vega-red-dark dark:text-vega-red';
             }
             return className;
           }}
