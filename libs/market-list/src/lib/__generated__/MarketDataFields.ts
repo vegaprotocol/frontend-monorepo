@@ -6,10 +6,10 @@
 import { MarketState, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL subscription operation: MarketDataSub
+// GraphQL fragment: MarketDataFields
 // ====================================================
 
-export interface MarketDataSub_marketData_market {
+export interface MarketDataFields_market {
   __typename: "Market";
   /**
    * Market ID
@@ -25,12 +25,12 @@ export interface MarketDataSub_marketData_market {
   tradingMode: MarketTradingMode;
 }
 
-export interface MarketDataSub_marketData {
+export interface MarketDataFields {
   __typename: "MarketData";
   /**
    * market id of the associated mark price
    */
-  market: MarketDataSub_marketData_market;
+  market: MarketDataFields_market;
   /**
    * the highest price level on an order book for buy orders.
    */
@@ -47,11 +47,8 @@ export interface MarketDataSub_marketData {
    * what triggered an auction (if an auction was started)
    */
   trigger: AuctionTrigger;
-}
-
-export interface MarketDataSub {
   /**
-   * Subscribe to the mark price changes
+   * indicative volume if the auction ended now, 0 if not in auction mode
    */
-  marketData: MarketDataSub_marketData;
+  indicativeVolume: string;
 }

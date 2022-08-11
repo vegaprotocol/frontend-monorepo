@@ -81,10 +81,12 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           </div>
         )}
         <div>
-          <p className={labelClass}>{t(`Amount`)}</p>
+          <p className={labelClass}>{t(`Size`)}</p>
           <p
             className={
-              order.side === Side.Buy ? 'text-vega-green' : 'text-vega-red'
+              order.side === Side.Buy
+                ? 'text-vega-green-dark dark:text-vega-green'
+                : 'text-vega-red-dark dark:text-vega-red'
             }
           >
             {`${order.side === Side.Buy ? '+' : '-'} ${addDecimalsFormatNumber(

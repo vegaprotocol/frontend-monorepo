@@ -1,7 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+
 import type { ReactNode } from 'react';
-import type { MarketList } from '../markets-container/__generated__/MarketList';
-import { SelectMarketList } from './select-market-list';
+import type { MarketList_markets } from '../__generated__/MarketList';
+
+import {
+  SelectAllMarketsTableBody,
+  SelectMarketLandingTable,
+} from './select-market';
 
 jest.mock(
   'next/link',
@@ -10,28 +15,25 @@ jest.mock(
       children
 );
 
-describe('SelectMarketList', () => {
-  it('should render', () => {
+describe('SelectMarket', () => {
+  it('should render the SelectAllMarketsTableBody', () => {
+    const onSelect = jest.fn();
+    const expectedMarket = mockData.data.markets[0];
     const { container } = render(
-      <SelectMarketList
-        data={mockData.data as MarketList}
-        onSelect={jest.fn()}
-      />
+      <SelectAllMarketsTableBody data={mockData.data} onSelect={onSelect} />
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
     expect(container).toHaveTextContent(/141\.75/);
-    expect(screen.getByText('Or view full market list')).toBeTruthy();
+    fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
+    expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
   });
 
-  it('should call onSelect callback', () => {
+  it('should call onSelect callback on SelectMarketLandingTable', () => {
     const onSelect = jest.fn();
     const expectedMarket = mockData.data.markets[0];
     render(
-      <SelectMarketList
-        data={mockData.data as MarketList}
-        onSelect={onSelect}
-      />
+      <SelectMarketLandingTable data={mockData.data} onSelect={onSelect} />
     );
     fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
     expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);
@@ -45,6 +47,11 @@ const mockData = {
         __typename: 'Market',
         id: '062ddcb97beae5b7cc4fa20621fe0c83b2a6f7e76cf5b129c6bd3dc14e8111ef',
         decimalPlaces: 2,
+        name: '',
+        positionDecimalPlaces: 4,
+        state: 'Active',
+        tradingMode: 'Continuous',
+        data: {},
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {
@@ -57,6 +64,15 @@ const mockData = {
           __typename: 'MarketTimestamps',
           open: '2022-05-18T13:08:27.693537312Z',
           close: null,
+        },
+        fees: {
+          __typename: 'Fees',
+          factors: {
+            __typename: 'FeeFactors',
+            infrastructureFee: '0.01',
+            makerFee: '0.01',
+            liquidityFee: '0.01',
+          },
         },
         candles: [
           {
@@ -90,7 +106,7 @@ const mockData = {
             close: '774',
           },
         ],
-      },
+      } as MarketList_markets,
       {
         __typename: 'Market',
         id: '3e6671566ccf5c33702e955fe8b018683fcdb812bfe3ed283fc250bb4f798ff3',
@@ -101,6 +117,15 @@ const mockData = {
             __typename: 'Instrument',
             name: 'Apple Monthly (30 Jun 2022)',
             code: 'AAPL.MF21',
+          },
+        },
+        fees: {
+          __typename: 'Fees',
+          factors: {
+            __typename: 'FeeFactors',
+            infrastructureFee: '0.01',
+            makerFee: '0.01',
+            liquidityFee: '0.01',
           },
         },
         marketTimestamps: {
@@ -140,7 +165,12 @@ const mockData = {
             close: '14174855',
           },
         ],
-      },
+        name: '',
+        positionDecimalPlaces: 4,
+        state: 'Active',
+        tradingMode: 'Continuous',
+        data: {},
+      } as MarketList_markets,
     ],
   },
 };

@@ -28,7 +28,7 @@ export const Tooltip = ({ children, description, open, align }: TooltipProps) =>
           <Arrow
             width={10}
             height={5}
-            className="z-[1] mx-8 fill-black-60 dark:fill-white-60 z-0 translate-x-[1px] translate-y-[-1px]"
+            className="mx-8 fill-black-60 dark:fill-white-60 z-0 translate-x-[1px] translate-y-[-1px]"
           />
           <Arrow
             width={8}
