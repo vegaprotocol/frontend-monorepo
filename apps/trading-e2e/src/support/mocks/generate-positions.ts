@@ -2,112 +2,106 @@ import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 import type {
   Positions,
-  Positions_party_positions,
+  Positions_party_positionsConnection_edges_node,
 } from '@vegaprotocol/positions';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 export const generatePositions = (
   override?: PartialDeep<Positions>
 ): Positions => {
-  const positions: Positions_party_positions[] = [
+  const nodes: Positions_party_positionsConnection_edges_node[] = [
     {
+      __typename: 'Position',
       realisedPNL: '0',
       openVolume: '6',
       unrealisedPNL: '895000',
       averageEntryPrice: '1129935',
+      updatedAt: '2022-07-28T15:09:34.441143Z',
+      marginsConnection: {
+        __typename: 'MarginConnection',
+        edges: [
+          {
+            __typename: 'MarginEdge',
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
+              },
+              asset: {
+                __typename: 'Asset',
+                symbol: 'tDAI',
+              },
+            },
+          },
+        ],
+      },
       market: {
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
         name: 'UNIDAI Monthly (30 Jun 2022)',
+        tradingMode: MarketTradingMode.Continuous,
         data: {
           markPrice: '17588787',
-          marketTradingMode: MarketTradingMode.Continuous,
           __typename: 'MarketData',
-          market: { __typename: 'Market', id: '123' },
         },
         decimalPlaces: 5,
         positionDecimalPlaces: 0,
         tradableInstrument: {
           instrument: {
-            id: '',
             name: 'UNIDAI Monthly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:3C58ED2A4A6C5D7E',
-                'base:UNI',
-                'quote:DAI',
-                'class:fx/crypto',
-                'monthly',
-                'sector:defi',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            code: 'UNIDAI.MF21',
-            product: {
-              settlementAsset: {
-                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-                symbol: 'tDAI',
-                name: 'tDAI TEST',
-                decimals: 5,
-                __typename: 'Asset',
-              },
-              quoteName: 'DAI',
-              __typename: 'Future',
-            },
             __typename: 'Instrument',
           },
           __typename: 'TradableInstrument',
         },
         __typename: 'Market',
       },
-      __typename: 'Position',
     },
     {
       realisedPNL: '0',
       openVolume: '1',
       unrealisedPNL: '-22519',
       averageEntryPrice: '84400088',
+      updatedAt: '2022-07-28T14:53:54.725477Z',
+      marginsConnection: {
+        __typename: 'MarginConnection',
+        edges: [
+          {
+            __typename: 'MarginEdge',
+            node: {
+              __typename: 'MarginLevels',
+              maintenanceLevel: '0',
+              searchLevel: '0',
+              initialLevel: '0',
+              collateralReleaseLevel: '0',
+              market: {
+                __typename: 'Market',
+                id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376  ',
+              },
+              asset: {
+                __typename: 'Asset',
+                symbol: 'tEURO',
+              },
+            },
+          },
+        ],
+      },
       market: {
         id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
         name: 'Tesla Quarterly (30 Jun 2022)',
+        tradingMode: MarketTradingMode.Continuous,
         data: {
           markPrice: '84377569',
-          marketTradingMode: MarketTradingMode.Continuous,
           __typename: 'MarketData',
-          market: {
-            __typename: 'Market',
-            id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
-          },
         },
         decimalPlaces: 5,
         positionDecimalPlaces: 0,
         tradableInstrument: {
           instrument: {
-            id: '',
             name: 'Tesla Quarterly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:5A86B190C384997F',
-                'quote:EURO',
-                'ticker:TSLA',
-                'class:equities/single-stock-futures',
-                'sector:tech',
-                'listing_venue:NASDAQ',
-                'country:US',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
-            code: 'TSLA.QM21',
-            product: {
-              settlementAsset: {
-                id: '8b52d4a3a4b0ffe733cddbc2b67be273816cfeb6ca4c8b339bac03ffba08e4e4',
-                symbol: 'tEURO',
-                name: 'tEURO TEST',
-                decimals: 5,
-                __typename: 'Asset',
-              },
-              quoteName: 'EURO',
-              __typename: 'Future',
-            },
             __typename: 'Instrument',
           },
           __typename: 'TradableInstrument',
@@ -118,11 +112,19 @@ export const generatePositions = (
     },
   ];
 
-  const defaultResult = {
+  const defaultResult: Positions = {
     party: {
-      id: Cypress.env('VEGA_PUBLIC_KEY'),
-      positions,
       __typename: 'Party',
+      id: Cypress.env('VEGA_PUBLIC_KEY'),
+      positionsConnection: {
+        __typename: 'PositionConnection',
+        edges: nodes.map((node) => {
+          return {
+            __typename: 'PositionEdge',
+            node,
+          };
+        }),
+      },
     },
   };
 
