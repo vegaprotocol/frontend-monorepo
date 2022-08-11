@@ -106,7 +106,7 @@ describe('market list', () => {
         performance.mark('end-5k');
         performance.measure('load-5k', 'start-5k', 'end-5k');
         const measure = performance.getEntriesByName('load-5k')[0];
-        expect(measure.duration).lte(3000);
+        expect(measure.duration).lte(20000);
         cy.log(`Ag-grid 5k load took ${measure.duration} milliseconds.`);
 
         cy.get('.ag-root').should('have.attr', 'aria-rowcount', '5001');
@@ -139,7 +139,7 @@ describe('market list', () => {
         performance.mark('end-50k');
         performance.measure('load-50k', 'start-50k', 'end-50k');
         const measure = performance.getEntriesByName('load-50k')[0];
-        expect(measure.duration).lte(20000);
+        expect(measure.duration).lte(50000);
         cy.log(`Ag-grid 50k load took ${measure.duration} milliseconds.`);
 
         cy.get('.ag-root').should('have.attr', 'aria-rowcount', '50001');
