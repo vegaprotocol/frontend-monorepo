@@ -43,7 +43,7 @@ export const OrderbookRow = React.memo(
         <Vol
           testId={`bid-vol-${price}`}
           value={bid}
-          valueFormatted={addDecimal(bid, decimalPlaces)}
+          valueFormatted={addDecimal(bid, positionDecimalPlaces)}
           relativeValue={relativeBid}
           type={VolumeType.bid}
         />
