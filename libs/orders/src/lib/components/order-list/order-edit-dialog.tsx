@@ -70,7 +70,7 @@ export const OrderEditDialog = ({
           </div>
         )}
         <div>
-          <p className={headerClassName}>{t(`Amount remaining`)}</p>
+          <p className={headerClassName}>{t(`Remaining size`)}</p>
           <p
             className={
               order.side === 'Buy'

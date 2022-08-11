@@ -80,7 +80,7 @@ describe('OrderFeedback', () => {
     expect(screen.getByText('Price').nextElementSibling).toHaveTextContent(
       '1.00'
     );
-    expect(screen.getByText('Amount').nextElementSibling).toHaveTextContent(
+    expect(screen.getByText('Size').nextElementSibling).toHaveTextContent(
       `+ 200`
     );
   });

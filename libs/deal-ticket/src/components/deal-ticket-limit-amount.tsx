@@ -16,7 +16,7 @@ export const DealTicketLimitAmount = ({
   return (
     <div className="flex items-center gap-8">
       <div className="flex-1">
-        <FormGroup label={t('Amount')} labelFor="input-order-size-limit">
+        <FormGroup label={t('Size')} labelFor="input-order-size-limit">
           <Input
             id="input-order-size-limit"
             className="w-full"
