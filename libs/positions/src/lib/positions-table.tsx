@@ -148,24 +148,20 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
             tooltipContent: t('P&L excludes any fees paid.'),
           }}
           cellClassRules={{
-            'color-vega-green': ({ value }: { value: string }) =>
-              Number(value) > 0,
-            'color-vega-red': ({ value }: { value: string }) =>
-              Number(value) < 0,
+            'text-vega-green-dark dark:text-vega-green': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) > 0,
+            'text-vega-red-dark dark:text-vega-red': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) < 0,
           }}
-          valueFormatter={({
-            value,
-            data,
-          }: {
-            value: string;
-            data: Positions_party_positions;
-          }) =>
+          valueFormatter={({ value, data }: ValueFormatterParams) =>
             volumePrefix(
-              addDecimalsFormatNumber(
-                value,
-                data.market.tradableInstrument.instrument.product
-                  .settlementAsset.decimals
-              )
+              addDecimalsFormatNumber(value, data.market.decimalPlaces, 3)
             )
           }
           cellRenderer="PriceFlashCell"
