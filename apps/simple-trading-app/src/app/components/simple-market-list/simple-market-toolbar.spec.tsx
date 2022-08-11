@@ -12,9 +12,7 @@ describe('SimpleMarketToolbar', () => {
       {
         path: '/',
         element: (
-          <SimpleMarketToolbar
-            data={filterData as unknown as SimpleMarkets_markets[]}
-          />
+          <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
         ),
       },
       {
@@ -24,7 +22,7 @@ describe('SimpleMarketToolbar', () => {
             path: `:state`,
             element: (
               <SimpleMarketToolbar
-                data={filterData as unknown as SimpleMarkets_markets[]}
+                data={filterData as SimpleMarkets_markets[]}
               />
             ),
             children: [
@@ -32,7 +30,7 @@ describe('SimpleMarketToolbar', () => {
                 path: `:product`,
                 element: (
                   <SimpleMarketToolbar
-                    data={filterData as unknown as SimpleMarkets_markets[]}
+                    data={filterData as SimpleMarkets_markets[]}
                   />
                 ),
                 children: [
@@ -40,7 +38,7 @@ describe('SimpleMarketToolbar', () => {
                     path: `:asset`,
                     element: (
                       <SimpleMarketToolbar
-                        data={filterData as unknown as SimpleMarkets_markets[]}
+                        data={filterData as SimpleMarkets_markets[]}
                       />
                     ),
                   },
@@ -50,9 +48,7 @@ describe('SimpleMarketToolbar', () => {
           },
         ],
         element: (
-          <SimpleMarketToolbar
-            data={filterData as unknown as SimpleMarkets_markets[]}
-          />
+          <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
         ),
       },
     ]);
