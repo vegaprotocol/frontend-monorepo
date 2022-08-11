@@ -30,8 +30,8 @@ const useProposalNetworkParams = ({
   ]);
   if (loading || !data) {
     return {
-      requiredMajority: new BigNumber(100),
-      requiredParticipation: new BigNumber(100),
+      requiredMajority: new BigNumber(1),
+      requiredParticipation: new BigNumber(1),
     };
   }
 
@@ -154,8 +154,8 @@ export const useVoteInformation = ({
   }, [requiredParticipation, totalTokensVoted, totalSupply]);
 
   const majorityMet = React.useMemo(() => {
-    return totalTokensVoted.isGreaterThanOrEqualTo(requiredMajority);
-  }, [requiredMajority, totalTokensVoted]);
+    return yesPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage) || noPercentage.isGreaterThanOrEqualTo(requiredMajorityPercentage);
+  }, [yesPercentage, noPercentage, requiredMajorityPercentage]);
 
   const totalTokensPercentage = React.useMemo(() => {
     return totalTokensVoted.multipliedBy(100).dividedBy(totalSupply);
@@ -169,6 +169,8 @@ export const useVoteInformation = ({
       ),
     [participationMet, requiredMajorityPercentage, yesPercentage]
   );
+
+  
 
   return {
     willPass,
