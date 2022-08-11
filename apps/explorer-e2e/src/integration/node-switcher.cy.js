@@ -28,9 +28,7 @@ context('Node switcher', function () {
             .should('exist')
             .and('have.attr', 'aria-checked', 'true');
           cy.get('label').should('have.text', Cypress.env('networkQueryUrl'));
-          cy.getByTestId('response-time-cell')
-            .should('not.be.empty')
-            .and('contain.text', 'ms');
+          cy.getByTestId('response-time-cell').should('contain.text', 'ms');
           cy.getByTestId('block-cell').should('not.be.empty');
           cy.getByTestId('ssl-cell').should('have.text', 'Yes');
         });
