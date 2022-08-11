@@ -317,7 +317,7 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
     },
     {
       value:
-        market.data && market.data.indicativeVolume !== '0'
+        market.data.indicativeVolume && market.data.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
               market.data.indicativeVolume,
               market.positionDecimalPlaces
@@ -329,11 +329,6 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
     {
       value: market.name,
       className: thClassNames('left'),
-      onlyOnDetailed: true,
-    },
-    {
-      value: market.openVolume,
-      className: thClassNames('right'),
       onlyOnDetailed: true,
     },
   ];
