@@ -4,6 +4,7 @@ export const generateMarketPositions = () => {
       id: '2e1ef32e5804e14232406aebaad719087d326afa5c648b7824d0823d8a46c8d1',
       accounts: [
         {
+          type: 'General',
           asset: {
             decimals: 5,
           },
@@ -14,6 +15,7 @@ export const generateMarketPositions = () => {
           },
         },
         {
+          type: 'Margin',
           asset: {
             decimals: 5,
           },

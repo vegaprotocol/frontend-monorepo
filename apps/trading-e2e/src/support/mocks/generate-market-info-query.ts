@@ -1,5 +1,9 @@
 import type { MarketInfoQuery } from '@vegaprotocol/deal-ticket';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  AccountType,
+  MarketState,
+  MarketTradingMode,
+} from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
 
@@ -15,6 +19,26 @@ export const generateMarketInfoQuery = (
       positionDecimalPlaces: 0,
       state: MarketState.Active,
       tradingMode: MarketTradingMode.Continuous,
+      accounts: [
+        {
+          type: AccountType.Insurance,
+          asset: {
+            id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+            __typename: 'Asset',
+          },
+          balance: '0',
+          __typename: 'Account',
+        },
+        {
+          type: AccountType.FeeLiquidity,
+          asset: {
+            id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+            __typename: 'Asset',
+          },
+          balance: '0',
+          __typename: 'Account',
+        },
+      ],
       fees: {
         __typename: 'Fees',
         factors: {
@@ -58,11 +82,35 @@ export const generateMarketInfoQuery = (
         bestOfferVolume: '1',
         bestStaticBidVolume: '5',
         bestStaticOfferVolume: '1',
+        openInterest: '0',
+      },
+      liquidityMonitoringParameters: {
+        triggeringRatio: 0,
+        targetStakeParameters: {
+          timeWindow: 3600,
+          scalingFactor: 10,
+          __typename: 'TargetStakeParameters',
+        },
+        __typename: 'LiquidityMonitoringParameters',
       },
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
           __typename: 'Instrument',
+          id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
+          name: 'BTCUSD Monthly (30 Jun 2022)',
+          code: 'BTCUSD.MF21',
+          metadata: {
+            tags: [
+              'formerly: 076BB86A5AA41E3E',
+              'base: BTC',
+              'quote: USD',
+              'class: fx/crypto',
+              'monthly',
+              'sector :crypto',
+            ],
+            __typename: 'InstrumentMetadata',
+          },
           product: {
             __typename: 'Future',
             quoteName: 'BTC',
@@ -71,6 +119,19 @@ export const generateMarketInfoQuery = (
               id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
               symbol: 'tBTC',
               name: 'tBTC TEST',
+            },
+            oracleSpecForSettlementPrice: {
+              __typename: 'OracleSpec',
+              id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
+            },
+            oracleSpecForTradingTermination: {
+              __typename: 'OracleSpec',
+              id: 'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f',
+            },
+            oracleSpecBinding: {
+              __typename: 'OracleSpecToFutureBinding',
+              settlementPriceProperty: 'prices.BTC.value',
+              tradingTerminationProperty: 'termination.BTC.value',
             },
           },
         },
