@@ -114,9 +114,21 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
           field="market.tradableInstrument.instrument.code"
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="size"
           cellClass="font-mono"
+          cellClassRules={{
+            'text-vega-green-dark dark:text-vega-green': ({
+              data,
+            }: {
+              data: Orders_party_ordersConnection_edges_node;
+            }) => data.side === Side.Buy,
+            'text-vega-red-dark dark:text-vega-red': ({
+              data,
+            }: {
+              data: Orders_party_ordersConnection_edges_node;
+            }) => data.side === Side.Sell,
+          }}
           valueFormatter={({
             value,
             data,

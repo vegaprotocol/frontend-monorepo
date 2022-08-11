@@ -102,8 +102,20 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           sortable
         />
         <AgGridColumn
-          headerName={t('Amount')}
+          headerName={t('Size')}
           field="openVolume"
+          cellClassRules={{
+            'text-vega-green-dark dark:text-vega-green': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) > 0,
+            'text-vega-red-dark dark:text-vega-red': ({
+              value,
+            }: {
+              value: string;
+            }) => Number(value) < 0,
+          }}
           valueFormatter={({
             value,
             data,

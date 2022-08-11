@@ -72,7 +72,7 @@ describe('PositionsTable', () => {
         expect(headers).toHaveLength(5);
         expect(headers.map((h) => h.textContent?.trim())).toEqual([
           'Market',
-          'Amount',
+          'Size',
           'Average Entry Price',
           'Mark Price',
           'Realised PNL',
@@ -96,7 +96,7 @@ describe('PositionsTable', () => {
         cells.forEach((cell, i) => {
           expect(cell).toHaveTextContent(expectedValues[i]);
         });
-        expect(cells[cells.length - 1]).toHaveClass('color-vega-green');
+        expect(cells[cells.length - 1]).toHaveClass('text-vega-green-dark');
       });
     });
   });

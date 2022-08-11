@@ -49,7 +49,7 @@ describe('OrderListTable', () => {
     expect(headers).toHaveLength(11);
     expect(headers.map((h) => h.textContent?.trim())).toEqual([
       'Market',
-      'Amount',
+      'Size',
       'Type',
       'Status',
       'Filled',
