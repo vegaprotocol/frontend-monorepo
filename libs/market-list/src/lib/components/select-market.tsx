@@ -77,7 +77,7 @@ export const SelectAllMarketsTableBody = ({
 
   return marketList ? (
     <>
-      <thead className="sticky top-0 z-10 dark:bg-black bg-white">
+      <thead>
         <tr
           className={`text-h5 font-bold text-black-95 dark:text-white-95 mb-6`}
           data-testid="dialog-title"
@@ -88,14 +88,13 @@ export const SelectAllMarketsTableBody = ({
       </thead>
 
       <tbody>
-        {data &&
-          marketList?.map((market, i) => (
-            <SelectMarketTableRow
-              key={i}
-              detailed={true}
-              columns={tableColumns(market)}
-            />
-          ))}
+        {marketList?.map((market, i) => (
+          <SelectMarketTableRow
+            key={i}
+            detailed={true}
+            columns={tableColumns(market)}
+          />
+        ))}
       </tbody>
     </>
   ) : (

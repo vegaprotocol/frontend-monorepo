@@ -15,7 +15,7 @@ export interface OrderFeedbackProps {
 
 export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   const { VEGA_EXPLORER_URL } = useEnvironment();
-  const labelClass = 'font-bold';
+  const labelClass = 'font-bold text-black dark:text-white';
   if (!order) return null;
 
   // Order on network but was rejected

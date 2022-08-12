@@ -152,7 +152,7 @@ export const columnHeaders: Column[] = [
     value: (
       <Tooltip
         description={
-          <span className="text-ui-small">
+          <span>
             {t(
               'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
             )}

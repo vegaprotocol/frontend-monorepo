@@ -16,11 +16,16 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import useMarketFiltersData from '../../hooks/use-markets-filter';
 import { STATES_FILTER } from './constants';
+import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 
-const SimpleMarketToolbar = () => {
+interface Props {
+  data: SimpleMarkets_markets[];
+}
+
+const SimpleMarketToolbar = ({ data }: Props) => {
   const navigate = useNavigate();
   const params = useParams();
-  const { products, assetsPerProduct } = useMarketFiltersData();
+  const { products, assetsPerProduct } = useMarketFiltersData(data);
   const [isOpen, setOpen] = useState(false);
   const [activeNumber, setActiveNumber] = useState(
     products?.length ? products.indexOf(params.product || '') + 1 : -1
