@@ -38,9 +38,8 @@ interface PriceLevel {
 
 const formatLevel = (
   priceLevel: MarketDepth_market_depth_buy | MarketDepth_market_depth_sell,
-  decimalPlaces: number
 ): PriceLevel => ({
-  price: Number(addDecimal(priceLevel.price, decimalPlaces)),
+  price: Number(priceLevel.price),
   volume: Number(priceLevel.volume),
 });
 
@@ -50,11 +49,10 @@ const updateLevels = (
     | MarketDepthSubscription_marketDepthUpdate_buy
     | MarketDepthSubscription_marketDepthUpdate_sell
   )[],
-  decimalPlaces: number,
   reverse = false
 ) => {
   updates.forEach((update) => {
-    const updateLevel = formatLevel(update, decimalPlaces);
+    const updateLevel = formatLevel(update);
     let index = levels.findIndex((level) => level.price === updateLevel.price);
     if (index !== -1) {
       if (update.volume === '0') {
@@ -110,7 +108,6 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
             ? updateLevels(
                 dataRef.current.data.buy,
                 delta.buy,
-                decimalPlacesRef.current,
                 true
               )
             : dataRef.current.data.buy,
@@ -118,7 +115,6 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
             ? updateLevels(
                 dataRef.current.data.sell,
                 delta.sell,
-                decimalPlacesRef.current
               )
             : dataRef.current.data.sell,
         },
@@ -148,11 +144,11 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       data: {
         buy:
           data.depth.buy?.map((priceLevel) =>
-            formatLevel(priceLevel, data.decimalPlaces)
+            formatLevel(priceLevel)
           ) ?? [],
         sell:
           data.depth.sell?.map((priceLevel) =>
-            formatLevel(priceLevel, data.decimalPlaces)
+            formatLevel(priceLevel)
           ) ?? [],
       },
     };
@@ -168,6 +164,9 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
           theme={theme}
           volumeFormat={(volume) =>
             addDecimalsFormatNumber(volume, data?.positionDecimalPlaces || 0)
+          }
+          priceFormat={(price) =>
+            addDecimalsFormatNumber(price, data?.decimalPlaces || 0)
           }
         />
       )}
