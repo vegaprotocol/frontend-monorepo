@@ -137,11 +137,11 @@ describe('market list', () => {
         'have.text',
         'Loading...'
       );
-      cy.get('.ag-center-cols-container', { timeout: 50000 }).then(() => {
+      cy.get('.ag-center-cols-container', { timeout: 100000 }).then(() => {
         performance.mark('end-50k');
         performance.measure('load-50k', 'start-50k', 'end-50k');
         const measure = performance.getEntriesByName('load-50k')[0];
-        expect(measure.duration).lte(50000);
+        expect(measure.duration).lte(85000);
         cy.log(`Ag-grid 50k load took ${measure.duration} milliseconds.`);
 
         cy.get('.ag-root').should('have.attr', 'aria-rowcount', '50001');
