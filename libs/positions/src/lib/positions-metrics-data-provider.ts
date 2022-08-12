@@ -24,19 +24,10 @@ export interface Position {
   assetDecimals: number;
   marketDecimalPlaces: number;
   positionDecimalPlaces: number;
-  // generalAccountBalance: string;
   totalBalance: string;
   assetSymbol: string;
-  // leverageInitial: string;
-  // leverageMaintenance: string;
-  // leverageRelease: string;
-  // leverageSearch: string;
   liquidationPrice: string;
   lowMarginLevel: boolean;
-  // marginAccountBalance: string;
-  // marginMaintenance: string;
-  // marginSearch: string;
-  // marginInitial: string;
   marketId: string;
   marketTradingMode: MarketTradingMode;
   markPrice: string;
@@ -190,11 +181,6 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
     const marginInitial = new BigNumber(marginLevel.initialLevel).multipliedBy(
       marketDecimalPlaces
     );
-    /*
-    const marginRelease =  = new BigNumber(marginLevel.collateralReleaseLevel).multipliedBy(
-      marketDecimalPlaces
-    );
-    */
 
     const searchPrice = openVolume.isEqualTo(0)
       ? markPrice
@@ -223,21 +209,12 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
       marketDecimalPlaces,
       positionDecimalPlaces,
       assetDecimals,
-      // generalAccountBalance: generalAccount?.balance ?? '0',
       assetSymbol: marginLevel.asset.symbol,
       totalBalance: totalBalance.multipliedBy(10 ** assetDecimals).toFixed(),
       lowMarginLevel,
-      // leverageInitial: notional / marginInitial,
-      // leverageMaintenance: notional / marginMaintenance,
-      // leverageRelease: notional / marginRelease,
-      // leverageSearch: notional / marginSearch,
       liquidationPrice: liquidationPrice
         .multipliedBy(10 ** marketDecimalPlaces)
         .toFixed(0),
-      // marginAccountBalance: marginAccount.balance,
-      // marginMaintenance: marginMaintenance.toString(),
-      // marginSearch: marginSearch.multipliedBy(10 ** assetDecimals).toFixed(),
-      // marginInitial: marginInitial.multipliedBy(10 ** assetDecimals).toFixed(),
       marketId: position.node.market.id,
       marketTradingMode: position.node.market.tradingMode,
       markPrice: marketData.markPrice,

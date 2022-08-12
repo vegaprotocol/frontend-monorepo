@@ -140,6 +140,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!value) {
             return undefined;
           }
+          // split market name into two parts, 'Part1 (Part2)'
           const matches = value.match(/^(.*)\((.*)\)\s*$/);
           if (matches) {
             return [matches[1].trim(), matches[2].trim()];
