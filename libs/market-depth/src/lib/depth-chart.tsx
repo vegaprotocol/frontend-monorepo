@@ -37,10 +37,12 @@ interface PriceLevel {
 }
 
 const parseLevel = (
-  priceLevel: MarketDepth_market_depth_buy | MarketDepth_market_depth_sell
+  priceLevel: MarketDepth_market_depth_buy | MarketDepth_market_depth_sell,
+  priceDecimalPlaces: number = 0,
+  volumeDecimalPlaces: number = 0,
 ): PriceLevel => ({
-  price: Number(priceLevel.price),
-  volume: Number(priceLevel.volume),
+  price: Number(addDecimal(priceLevel.price, priceDecimalPlaces)),
+  volume: Number(addDecimal(priceLevel.volume, volumeDecimalPlaces)),
 });
 
 const updateLevels = (
@@ -49,10 +51,12 @@ const updateLevels = (
     | MarketDepthSubscription_marketDepthUpdate_buy
     | MarketDepthSubscription_marketDepthUpdate_sell
   )[],
+  decimalPlaces: number,
+  positionDecimalPlaces: number,
   reverse = false
 ) => {
   updates.forEach((update) => {
-    const updateLevel = parseLevel(update);
+    const updateLevel = parseLevel(update, decimalPlaces, positionDecimalPlaces);
     let index = levels.findIndex((level) => level.price === updateLevel.price);
     if (index !== -1) {
       if (update.volume === '0') {
@@ -85,7 +89,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const theme = useContext(ThemeContext);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const [depthData, setDepthData] = useState<DepthData | null>(null);
-  const decimalPlacesRef = useRef<number>(0);
+  const [decimalPlaces, setDecimalPlaces] = useState<number>(0);
+  const [positionDecimalPlaces, setPositionDecimalPlaces] = useState<number>(0);
   const dataRef = useRef<DepthData | null>(null);
   const setDepthDataThrottledRef = useRef(throttle(setDepthData, 1000));
 
@@ -100,22 +105,22 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
         midPrice: delta.market.data?.staticMidPrice
           ? formatMidPrice(
               delta.market.data?.staticMidPrice,
-              decimalPlacesRef.current
+              decimalPlaces,
             )
           : undefined,
         data: {
           buy: delta.buy
-            ? updateLevels(dataRef.current.data.buy, delta.buy, true)
+            ? updateLevels(dataRef.current.data.buy, delta.buy, decimalPlaces, positionDecimalPlaces, true)
             : dataRef.current.data.buy,
           sell: delta.sell
-            ? updateLevels(dataRef.current.data.sell, delta.sell)
+            ? updateLevels(dataRef.current.data.sell, delta.sell, decimalPlaces, positionDecimalPlaces)
             : dataRef.current.data.sell,
         },
       };
       setDepthDataThrottledRef.current(dataRef.current);
       return true;
     },
-    []
+    [decimalPlaces, positionDecimalPlaces]
   );
 
   const { data, error, loading } = useDataProvider({
@@ -135,13 +140,14 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
         ? formatMidPrice(data.data?.staticMidPrice, data.decimalPlaces)
         : undefined,
       data: {
-        buy: data.depth.buy?.map((priceLevel) => parseLevel(priceLevel)) ?? [],
+        buy: data.depth.buy?.map((priceLevel) => parseLevel(priceLevel, data.decimalPlaces, data.positionDecimalPlaces)) ?? [],
         sell:
-          data.depth.sell?.map((priceLevel) => parseLevel(priceLevel)) ?? [],
+          data.depth.sell?.map((priceLevel) => parseLevel(priceLevel, data.decimalPlaces, data.positionDecimalPlaces)) ?? [],
       },
     };
     setDepthData(dataRef.current);
-    decimalPlacesRef.current = data.decimalPlaces;
+    setDecimalPlaces(data.decimalPlaces);
+    setPositionDecimalPlaces(data.positionDecimalPlaces);
   }, [data]);
 
   return (
