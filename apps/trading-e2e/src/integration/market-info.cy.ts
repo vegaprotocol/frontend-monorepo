@@ -23,15 +23,20 @@ describe('market info is displayed', () => {
     validateMarketDataRow(2, 'Liquidity Fee', '1.00%');
   });
 
-  it('market data displated', () => {
-    cy.getByTestId(marketTitle).contains('Market data').click();
+  it('market volume displayed', () => {
+    cy.getByTestId(marketTitle).contains('Market volume').click();
 
-    validateMarketDataRow(0, 'Mark Price', '57.49');
     validateMarketDataRow(1, 'Indicative Volume', '0');
     validateMarketDataRow(2, 'Best Bid Volume', '5');
     validateMarketDataRow(3, 'Best Offer Volume', '1');
     validateMarketDataRow(4, 'Best Static Bid Volume', '5');
     validateMarketDataRow(5, 'Best Static Offer Volume', '1');
+  });
+
+  it('market price and interest displayed', () => {
+    cy.getByTestId(marketTitle).contains('Market price and interest').click();
+
+    validateMarketDataRow(0, 'Mark Price', '57.49');
     validateMarketDataRow(6, 'Open Interest', '0.00');
   });
 
