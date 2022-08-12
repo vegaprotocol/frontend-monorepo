@@ -4,6 +4,7 @@ import {
   Icon,
   KeyValueTable,
   KeyValueTableRow,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import * as React from 'react';
 import classNames from 'classnames';
@@ -99,26 +100,53 @@ export default ({
           <>{t('Est. margin')}</>
           <div className="text-black dark:text-white flex gap-x-5 items-center">
             {estMargin}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
+            <Tooltip
+              align="center"
+              description={t(
+                'When opening a position on a futures market, you must post margin to cover any potential losses that you may incur. The margin is typically a fraction of the notional position size. For example, for a notional position size of $500, if the margin requirement is 10%, then the estimated margin would be approximately $50.'
+              )}
+            >
+              <div className="cursor-help">
+                <Icon name={IconNames.ISSUE} className="block rotate-180" />
+              </div>
+            </Tooltip>
           </div>
         </KeyValueTableRow>
         <KeyValueTableRow noBorder>
           <>
-            {t('Size')}{' '}
+            {t('No. of contracts')}{' '}
             <div className="text-ui-small inline">
               ({market.tradableInstrument.instrument.product.quoteName})
             </div>
           </>
           <div className="text-black dark:text-white flex gap-x-5 items-center">
             {formatNumber(order.size, market.decimalPlaces)}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
+            <Tooltip
+              align="center"
+              description={t(
+                'The number of contracts determines how many units of the futures contract to buy or sell. For example, this is similar to buying one share of a listed company. The value of 1 contract is equivalent to the price of the contract. For example, if the current price is $50, then one contract is worth $50.'
+              )}
+            >
+              <div className="cursor-help">
+                <Icon name={IconNames.ISSUE} className="rotate-180" />
+              </div>
+            </Tooltip>
           </div>
         </KeyValueTableRow>
         <KeyValueTableRow noBorder>
           <>{t('Est. close out')}</>
           <div className="text-black dark:text-white flex gap-x-5 items-center">
             {estCloseOut}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
+            <Tooltip
+              align="center"
+              description={t(
+                'Because you only need to post a fraction of your position size as margin when trading futures, it is possible to obtain leverage meaning your notional position size exceeds your account balance. In this scenario, if the market moves against your position, it will sometimes be necessary to force close your position due to insufficient funds. The estimated close out tells you the price at which that would happen based on current position and account balance.'
+              )}
+            >
+              <div className="cursor-help">
+                <Icon name={IconNames.ISSUE} className="rotate-180" />
+              </div>
+            </Tooltip>
           </div>
         </KeyValueTableRow>
       </KeyValueTable>
