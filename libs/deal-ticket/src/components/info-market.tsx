@@ -219,7 +219,7 @@ export const Info = ({ market }: InfoProps) => {
         <MarketInfoTable
           data={{
             ...keyDetails,
-            marketId: keyDetails.id,
+            marketID: keyDetails.id,
             id: undefined,
             tradingMode:
               keyDetails.tradingMode && formatLabel(keyDetails.tradingMode),
@@ -237,8 +237,22 @@ export const Info = ({ market }: InfoProps) => {
             productType:
               market.tradableInstrument.instrument.product.__typename,
             ...market.tradableInstrument.instrument.product,
-            ...(market.tradableInstrument.instrument.product?.settlementAsset ??
-              {}),
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Settlement asset'),
+      content: (
+        <MarketInfoTable
+          data={{
+            name: market.tradableInstrument.instrument.product?.settlementAsset
+              .name,
+            symbol:
+              market.tradableInstrument.instrument.product?.settlementAsset
+                .symbol,
+            ID: market.tradableInstrument.instrument.product?.settlementAsset
+              .id,
           }}
         />
       ),
