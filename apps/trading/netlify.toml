@@ -1,2 +1,2 @@
 [functions]
-  included_files = ["!node_modules/uglify-js/**/*", "!node_modules/terser/**/*", "!node_modules/core-linux-x64-gnu/**/*", "!node_modules/core-linux-x64-musl/**/*"]
+  included_files = ["!node_modules/@swc/**/*"]
