@@ -484,7 +484,7 @@
     "@babel/helper-plugin-utils" "^7.18.6"
     "@babel/plugin-syntax-dynamic-import" "^7.8.3"
 
-"@babel/plugin-proposal-export-default-from@^7.12.1", "@babel/plugin-proposal-export-default-from@^7.18.10":
+"@babel/plugin-proposal-export-default-from@^7.12.1":
   version "7.18.10"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-export-default-from/-/plugin-proposal-export-default-from-7.18.10.tgz#091f4794dbce4027c03cf4ebc64d3fb96b75c206"
   integrity sha512-5H2N3R2aQFxkV4PIBUR/i7PUSwgTZjouJKzI8eKswfIjT0PhvzkPn0t0wIS5zn6maQuvtT0t1oHtMUz61LOuow==
@@ -1077,7 +1077,7 @@
     "@babel/helper-create-regexp-features-plugin" "^7.18.6"
     "@babel/helper-plugin-utils" "^7.18.6"
 
-"@babel/preset-env@^7.12.1", "@babel/preset-env@^7.12.11", "@babel/preset-env@^7.15.0", "@babel/preset-env@^7.16.0", "@babel/preset-env@^7.18.10", "@babel/preset-env@^7.18.2":
+"@babel/preset-env@^7.12.1", "@babel/preset-env@^7.12.11", "@babel/preset-env@^7.15.0", "@babel/preset-env@^7.16.0", "@babel/preset-env@^7.18.2":
   version "7.18.10"
   resolved "https://registry.yarnpkg.com/@babel/preset-env/-/preset-env-7.18.10.tgz#83b8dfe70d7eea1aae5a10635ab0a5fe60dfc0f4"
   integrity sha512-wVxs1yjFdW3Z/XkNfXKoblxoHgbtUF7/l3PvvP4m02Qz9TZ6uZGxRVYjSQeR87oQmHco9zWitW5J82DJ7sCjvA==
