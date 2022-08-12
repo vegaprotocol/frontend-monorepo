@@ -138,15 +138,19 @@ Cypress.Commands.add(
     });
   }
 );
-Cypress.Commands.add('staking_page_ensure_at_least_one_unstaked_token_is_associated', () => {
-  cy.highlight(`Checking if at least 1 token is associated`);
-  cy.get(vegaWalletUnstakedBalance)
-    .children()
-    .children()
-    .eq(1)
-    .invoke('text')
-    .then((unstakedBalance) => {
-      if (parseInt(unstakedBalance) < 1) {cy.staking_page_associate_tokens('1')};
-    })
-
-});
+Cypress.Commands.add(
+  'staking_page_ensure_at_least_one_unstaked_token_is_associated',
+  () => {
+    cy.highlight(`Checking if at least 1 token is associated`);
+    cy.get(vegaWalletUnstakedBalance)
+      .children()
+      .children()
+      .eq(1)
+      .invoke('text')
+      .then((unstakedBalance) => {
+        if (parseInt(unstakedBalance) < 1) {
+          cy.staking_page_associate_tokens('1');
+        }
+      });
+  }
+);
