@@ -38,8 +38,8 @@ interface PriceLevel {
 
 const parseLevel = (
   priceLevel: MarketDepth_market_depth_buy | MarketDepth_market_depth_sell,
-  priceDecimalPlaces: number = 0,
-  volumeDecimalPlaces: number = 0,
+  priceDecimalPlaces = 0,
+  volumeDecimalPlaces = 0
 ): PriceLevel => ({
   price: Number(addDecimal(priceLevel.price, priceDecimalPlaces)),
   volume: Number(addDecimal(priceLevel.volume, volumeDecimalPlaces)),
@@ -56,7 +56,11 @@ const updateLevels = (
   reverse = false
 ) => {
   updates.forEach((update) => {
-    const updateLevel = parseLevel(update, decimalPlaces, positionDecimalPlaces);
+    const updateLevel = parseLevel(
+      update,
+      decimalPlaces,
+      positionDecimalPlaces
+    );
     let index = levels.findIndex((level) => level.price === updateLevel.price);
     if (index !== -1) {
       if (update.volume === '0') {
@@ -103,17 +107,25 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       dataRef.current = {
         ...dataRef.current,
         midPrice: delta.market.data?.staticMidPrice
-          ? formatMidPrice(
-              delta.market.data?.staticMidPrice,
-              decimalPlaces,
-            )
+          ? formatMidPrice(delta.market.data?.staticMidPrice, decimalPlaces)
           : undefined,
         data: {
           buy: delta.buy
-            ? updateLevels(dataRef.current.data.buy, delta.buy, decimalPlaces, positionDecimalPlaces, true)
+            ? updateLevels(
+                dataRef.current.data.buy,
+                delta.buy,
+                decimalPlaces,
+                positionDecimalPlaces,
+                true
+              )
             : dataRef.current.data.buy,
           sell: delta.sell
-            ? updateLevels(dataRef.current.data.sell, delta.sell, decimalPlaces, positionDecimalPlaces)
+            ? updateLevels(
+                dataRef.current.data.sell,
+                delta.sell,
+                decimalPlaces,
+                positionDecimalPlaces
+              )
             : dataRef.current.data.sell,
         },
       };
@@ -140,9 +152,22 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
         ? formatMidPrice(data.data?.staticMidPrice, data.decimalPlaces)
         : undefined,
       data: {
-        buy: data.depth.buy?.map((priceLevel) => parseLevel(priceLevel, data.decimalPlaces, data.positionDecimalPlaces)) ?? [],
+        buy:
+          data.depth.buy?.map((priceLevel) =>
+            parseLevel(
+              priceLevel,
+              data.decimalPlaces,
+              data.positionDecimalPlaces
+            )
+          ) ?? [],
         sell:
-          data.depth.sell?.map((priceLevel) => parseLevel(priceLevel, data.decimalPlaces, data.positionDecimalPlaces)) ?? [],
+          data.depth.sell?.map((priceLevel) =>
+            parseLevel(
+              priceLevel,
+              data.decimalPlaces,
+              data.positionDecimalPlaces
+            )
+          ) ?? [],
       },
     };
     setDepthData(dataRef.current);
