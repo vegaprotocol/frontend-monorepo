@@ -1,20 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
-import { FILTERS_QUERY } from '../components/simple-market-list/data-provider';
-import type { MarketFilters } from '../components/simple-market-list/__generated__/MarketFilters';
+import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
 
-const useMarketFilters = () => {
+const useMarketFilters = (data: SimpleMarkets_markets[]) => {
   const [products, setProducts] = useState<string[]>([]);
   const [assetsPerProduct, setAssetsPerProduct] = useState<
     Record<string, string[]>
   >({});
-  const { data } = useQuery<MarketFilters>(FILTERS_QUERY, {
-    pollInterval: 5000,
-  });
+
   useEffect(() => {
     const localProducts = new Set<string>();
     const localAssetPerProduct: Record<string, Set<string>> = {};
-    data?.markets?.forEach((item) => {
+    data?.forEach((item) => {
       const product = item.tradableInstrument.instrument.product.__typename;
       const asset =
         item.tradableInstrument.instrument.product.settlementAsset.symbol;
