@@ -17,32 +17,6 @@ Cypress.Commands.add('vega_wallet_import', () => {
   );
 });
 
-Cypress.Commands.add(
-  'vega_wallet_create_proposal_freeform',
-  (durationMinutes) => {
-    let proposal = {};
-    cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
-      let timestamp = Math.floor(Date.now() / 1000);
-      timestamp += durationMinutes * 60;
-      freeformProposal.proposalSubmission.terms.closingTimestamp = timestamp;
-      freeformProposal.proposalSubmission.rationale.description += timestamp;
-      let proposalPayload = JSON.stringify(freeformProposal);
-
-      cy.exec(
-        `vegawallet command send -w ${vegaWalletName} --pubkey ${vegaWalletPublicKey} --home ~/.vegacapsule/testnet/wallet -p ./src/fixtures/wallet/passphrase --network DV '${proposalPayload}'`,
-        { failOnNonZeroExit: false }
-      )
-        .its('stdout')
-        .then((stdout) => {
-          proposal['response'] = stdout;
-          proposal['description'] =
-            freeformProposal.proposalSubmission.rationale.description;
-          return proposal;
-        });
-    });
-  }
-);
-
 Cypress.Commands.add('vega_wallet_connect', () => {
   cy.highlight('Connecting Vega Wallet');
   cy.get(vegaWalletContainer).within(() => {

@@ -5,6 +5,8 @@ const addStakeRadioButton = '[data-testid="add-stake-radio"]';
 const removeStakeRadioButton = '[data-testid="remove-stake-radio"]';
 const ethWalletAssociateButton = '[href="/staking/associate"]';
 const ethWalletDissociateButton = '[href="/staking/disassociate"]';
+const vegaWalletUnstakedBalance =
+  '[data-testid="vega-wallet-balance-unstaked"]';
 const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
@@ -136,3 +138,15 @@ Cypress.Commands.add(
     });
   }
 );
+Cypress.Commands.add('staking_page_ensure_at_least_one_unstaked_token_is_associated', () => {
+  cy.highlight(`Checking if at least 1 token is associated`);
+  cy.get(vegaWalletUnstakedBalance)
+    .children()
+    .children()
+    .eq(1)
+    .invoke('text')
+    .then((unstakedBalance) => {
+      if (parseInt(unstakedBalance) < 1) {cy.staking_page_associate_tokens('1')};
+    })
+
+});
