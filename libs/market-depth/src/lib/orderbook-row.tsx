@@ -50,7 +50,7 @@ export const OrderbookRow = React.memo(
         <PriceCell
           testId={`price-${price}`}
           value={BigInt(price)}
-          valueFormatted={addDecimalsFormatNumber(price, positionDecimalPlaces)}
+          valueFormatted={addDecimalsFormatNumber(price, decimalPlaces)}
         />
         <Vol
           testId={`ask-vol-${price}`}
