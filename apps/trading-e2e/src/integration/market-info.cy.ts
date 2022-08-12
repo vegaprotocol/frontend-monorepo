@@ -43,7 +43,7 @@ describe('market info is displayed', () => {
     validateMarketDataRow(2, 'Position Decimal Places', '0');
     validateMarketDataRow(3, 'Trading Mode', 'Continuous');
     validateMarketDataRow(4, 'State', 'Active');
-    validateMarketDataRow(5, 'Market Id', 'market-0');
+    validateMarketDataRow(5, 'Market ID', 'market-0');
   });
 
   it('instrument displayed', () => {
@@ -58,13 +58,13 @@ describe('market info is displayed', () => {
   it('settlement asset displayed', () => {
     cy.getByTestId(marketTitle).contains('Settlement asset').click();
 
+    validateMarketDataRow(0, 'Name', 'tBTC TEST');
+    validateMarketDataRow(1, 'Symbol', 'tBTC');
     validateMarketDataRow(
-      4,
+      2,
       'ID',
       '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c'
     );
-    validateMarketDataRow(5, 'Symbol', 'tBTC');
-    validateMarketDataRow(6, 'Name', 'tBTC TEST');
   });
 
   it('metadata displayed', () => {
