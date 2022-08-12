@@ -1,2 +1,2 @@
 [functions]
-  included_files = ["!node_modules/@swc/core-linux-x64-gnu/**/*", "!node_modules/@swc/core-linux-x64-musl/**/*"]
+  included_files = ["!node_modules/@swc/core-linux-x64-gnu/swc.linux-x64-gnu.node"]
