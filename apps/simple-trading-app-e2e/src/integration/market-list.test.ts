@@ -112,7 +112,8 @@ describe('market list', () => {
         cy.get('.ag-root').should('have.attr', 'aria-rowcount', '5001');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
-          .should('have.length', 21);
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(21, 2));
         cy.get('.ag-cell-label-container').eq(4).click();
         for (let i = 0; i < 50; i++) {
           cy.get('body').realPress('Tab');
@@ -120,7 +121,8 @@ describe('market list', () => {
         cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
-          .should('have.length', 31);
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(31, 2));
       });
     });
 
@@ -145,7 +147,9 @@ describe('market list', () => {
         cy.get('.ag-root').should('have.attr', 'aria-rowcount', '50001');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
-          .should('have.length', 21);
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(21, 2));
+
         cy.get('.ag-cell-label-container').eq(4).click();
         for (let i = 0; i < 50; i++) {
           cy.get('body').realPress('Tab');
@@ -153,7 +157,8 @@ describe('market list', () => {
         cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
-          .should('have.length', 31);
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(31, 2));
       });
     });
   });
