@@ -84,6 +84,10 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product {
 export interface MarketsQuery_markets_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
+   * Uniquely identify an instrument across all instruments available on Vega (string)
+   */
+  id: string;
+  /**
    * Full and fairly descriptive name for the instrument
    */
   name: string;
@@ -91,10 +95,6 @@ export interface MarketsQuery_markets_tradableInstrument_instrument {
    * Metadata for this instrument
    */
   metadata: MarketsQuery_markets_tradableInstrument_instrument_metadata;
-  /**
-   * Uniquely identify an instrument across all instruments available on Vega (string)
-   */
-  id: string;
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */

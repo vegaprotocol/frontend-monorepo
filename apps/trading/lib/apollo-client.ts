@@ -31,7 +31,13 @@ export function createClient(base?: string) {
         },
       },
       Instrument: {
-        keyFields: false,
+        keyFields: ['product'],
+      },
+      TradableInstrument: {
+        keyFields: ['instrument'],
+      },
+      Product: {
+        keyFields: ['settlementAsset', ['id']],
       },
       MarketData: {
         keyFields: ['market', ['id']],

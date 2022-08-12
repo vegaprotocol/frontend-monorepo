@@ -34,12 +34,14 @@ export const MARKET_NAMES_QUERY = gql`
       name
       tradableInstrument {
         instrument {
+          id
           code
           metadata {
             tags
           }
           product {
             ... on Future {
+              id
               quoteName
             }
           }
