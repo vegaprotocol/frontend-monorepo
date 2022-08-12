@@ -82,6 +82,9 @@ const POSITION_FIELDS = gql`
       }
       data {
         markPrice
+        market {
+          id
+        }
       }
     }
   }

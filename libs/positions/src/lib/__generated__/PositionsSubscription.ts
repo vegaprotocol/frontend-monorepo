@@ -83,12 +83,24 @@ export interface PositionsSubscription_positions_market_tradableInstrument {
   instrument: PositionsSubscription_positions_market_tradableInstrument_instrument;
 }
 
+export interface PositionsSubscription_positions_market_data_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
 export interface PositionsSubscription_positions_market_data {
   __typename: "MarketData";
   /**
    * the mark price (actually an unsigned int)
    */
   markPrice: string;
+  /**
+   * market id of the associated mark price
+   */
+  market: PositionsSubscription_positions_market_data_market;
 }
 
 export interface PositionsSubscription_positions_market {
