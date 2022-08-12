@@ -1,4 +1,16 @@
 {
   "cSpell.language": "en-GB",
-  "cSpell.words": ["vegaprotocol"]
+  "cSpell.words": ["vegaprotocol"],
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#000000",
+    "activityBar.foreground": "#ffffff",
+    "activityBar.inactiveForeground": "#474B0A", // vega-yellow-dark
+    "activityBar.activeBorder": "#DFFF0B", // vega-yellow
+    "titleBar.activeBackground": "#DFFF0B", // vega-yellow
+    "titleBar.activeForeground": "#000000",
+    "titleBar.inactiveBackground": "#474B0A", // vega-yellow-dark
+    "titleBar.inactiveForeground": "#000000",
+    "activityBarBadge.background": "#DFFF0B",
+    "activityBarBadge.foreground": "#000000", // vega-yellow
+  }
 }

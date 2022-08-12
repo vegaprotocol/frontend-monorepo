@@ -1,4 +1,3 @@
-import type { SetState } from 'zustand';
 import create from 'zustand';
 
 interface GlobalStore {
@@ -12,7 +11,7 @@ interface GlobalStore {
   setLandingDialog: (isOpen: boolean) => void;
 }
 
-export const useGlobalStore = create((set: SetState<GlobalStore>) => ({
+export const useGlobalStore = create<GlobalStore>((set) => ({
   vegaWalletConnectDialog: false,
   setVegaWalletConnectDialog: (isOpen: boolean) => {
     set({ vegaWalletConnectDialog: isOpen });

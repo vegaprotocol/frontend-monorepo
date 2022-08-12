@@ -298,21 +298,23 @@ const mocks = [
   },
 ];
 
-const makeDialog = (assetSymbol: string) => {
-  return (
-    <MockedProvider mocks={mocks}>
-      <AssetDetailsDialog
-        assetSymbol={assetSymbol}
-        open={true}
-        onChange={() => false}
-      ></AssetDetailsDialog>
-    </MockedProvider>
-  );
-};
+const WrappedAssetDetailsDialog = ({
+  assetSymbol,
+}: {
+  assetSymbol: string;
+}) => (
+  <MockedProvider mocks={mocks}>
+    <AssetDetailsDialog
+      assetSymbol={assetSymbol}
+      open={true}
+      onChange={() => false}
+    ></AssetDetailsDialog>
+  </MockedProvider>
+);
 
 describe('AssetDetailsDialog', () => {
   it('should show no data message given unknown asset symbol', () => {
-    render(makeDialog('UNKNOWN_FOR_SURE'));
+    render(<WrappedAssetDetailsDialog assetSymbol={'UNKNOWN_FOR_SURE'} />);
     expect(screen.getByText('No data')).toBeInTheDocument();
   });
 
@@ -324,7 +326,7 @@ describe('AssetDetailsDialog', () => {
   it.each(cases)(
     'should show correct data given %p symbol',
     async (requestedSymbol, symbol, name, totalSupply) => {
-      render(makeDialog(requestedSymbol));
+      render(<WrappedAssetDetailsDialog assetSymbol={requestedSymbol} />);
       expect((await screen.findByTestId('symbol_value')).textContent).toContain(
         symbol
       );

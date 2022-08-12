@@ -20,10 +20,9 @@ import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import {
-  AssetDetailsDialog,
   SelectMarketDialog,
+  useAssetDetailsDialogStore,
 } from '@vegaprotocol/market-list';
-import type { AssetDetailsDialogState } from '@vegaprotocol/market-list';
 import {
   ArrowDown,
   Tab,
@@ -62,20 +61,15 @@ export const TradeMarketHeader = ({
   market,
   className,
 }: TradeMarketHeaderProps) => {
-  const [
-    {
-      isSelectMarketDialogOpen,
-      isAssetDetailsDialogOpen,
-      assetDetailsDialogSymbol,
-    },
-    setState,
-  ] = useState<AssetDetailsDialogState & { isSelectMarketDialogOpen: boolean }>(
-    {
-      isSelectMarketDialogOpen: false,
-      isAssetDetailsDialogOpen: false,
-      assetDetailsDialogSymbol: '',
-    }
-  );
+  const {
+    isAssetDetailsDialogOpen,
+    assetDetailsDialogSymbol,
+    setAssetDetailsDialogOpen,
+    setAssetDetailsDialogSymbol,
+  } = useAssetDetailsDialogStore();
+  const [{ isSelectMarketDialogOpen }, setState] = useState({
+    isSelectMarketDialogOpen: false,
+  });
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
@@ -95,11 +89,7 @@ export const TradeMarketHeader = ({
       <SelectMarketDialog
         dialogOpen={isSelectMarketDialogOpen}
         setDialogOpen={(isOpen) =>
-          setState({
-            isSelectMarketDialogOpen: isOpen,
-            isAssetDetailsDialogOpen: false,
-            assetDetailsDialogSymbol: '',
-          })
+          setState({ isSelectMarketDialogOpen: isOpen })
         }
       />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
@@ -107,8 +97,6 @@ export const TradeMarketHeader = ({
           onClick={() =>
             setState({
               isSelectMarketDialogOpen: !isSelectMarketDialogOpen,
-              isAssetDetailsDialogOpen: false,
-              assetDetailsDialogSymbol: '',
             })
           }
           className="shrink-0 text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/10 dark:hover:bg-white/20"
@@ -174,27 +162,16 @@ export const TradeMarketHeader = ({
                 <Button
                   variant="inline-link"
                   className="no-underline hover:underline"
-                  onClick={() =>
+                  onClick={() => {
                     setState({
                       isSelectMarketDialogOpen: false,
-                      isAssetDetailsDialogOpen: !isAssetDetailsDialogOpen,
-                      assetDetailsDialogSymbol: symbol,
-                    })
-                  }
+                    });
+                    setAssetDetailsDialogOpen(true);
+                    setAssetDetailsDialogSymbol(symbol);
+                  }}
                 >
                   {symbol}
                 </Button>
-                <AssetDetailsDialog
-                  assetSymbol={assetDetailsDialogSymbol}
-                  open={isAssetDetailsDialogOpen}
-                  onChange={(isOpen) =>
-                    setState({
-                      isSelectMarketDialogOpen: false,
-                      isAssetDetailsDialogOpen: isOpen,
-                      assetDetailsDialogSymbol,
-                    })
-                  }
-                ></AssetDetailsDialog>
               </span>
             </div>
           )}

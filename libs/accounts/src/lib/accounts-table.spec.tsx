@@ -1,5 +1,4 @@
 import AccountsTable from './accounts-table';
-import { MockedProvider } from '@apollo/react-testing';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import type { Accounts_party_accounts } from './__generated__/Accounts';
 import { AccountType } from '@vegaprotocol/types';
@@ -22,27 +21,17 @@ const singleRow: Accounts_party_accounts = {
 };
 const singleRowData = [singleRow];
 
-const WrappedAccountsTable = ({
-  data,
-}: {
-  data: Accounts_party_accounts[] | null;
-}) => (
-  <MockedProvider>
-    <AccountsTable data={data} />
-  </MockedProvider>
-);
-
 describe('AccountsTable', () => {
   it('should render successfully', async () => {
     await act(async () => {
-      const { baseElement } = render(<WrappedAccountsTable data={[]} />);
+      const { baseElement } = render(<AccountsTable data={[]} />);
       expect(baseElement).toBeTruthy();
     });
   });
 
-  it('Render correct columns', async () => {
-    await act(async () => {
-      render(<WrappedAccountsTable data={singleRowData} />);
+  it('should render correct columns', async () => {
+    act(async () => {
+      render(<AccountsTable data={singleRowData} />);
       await waitFor(async () => {
         const headers = await screen.getAllByRole('columnheader');
         expect(headers).toHaveLength(4);
@@ -55,9 +44,9 @@ describe('AccountsTable', () => {
     });
   });
 
-  it('Correct formatting applied', async () => {
-    await act(async () => {
-      render(<WrappedAccountsTable data={singleRowData} />);
+  it('should apply correct formatting', async () => {
+    act(async () => {
+      render(<AccountsTable data={singleRowData} />);
       await waitFor(async () => {
         const cells = await screen.getAllByRole('gridcell');
         const expectedValues = [

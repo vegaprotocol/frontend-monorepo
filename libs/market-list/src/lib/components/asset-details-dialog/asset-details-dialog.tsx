@@ -13,11 +13,27 @@ import type {
   AssetsConnection,
   AssetsConnection_assetsConnection_edges_node_source_ERC20,
 } from './__generated__/AssetsConnection';
+import create from 'zustand';
 
-export type AssetDetailsDialogState = {
+export type AssetDetailsDialogStore = {
   isAssetDetailsDialogOpen: boolean;
   assetDetailsDialogSymbol: string | Asset;
+  setAssetDetailsDialogOpen: (isOpen: boolean) => void;
+  setAssetDetailsDialogSymbol: (symbol: string | Asset) => void;
 };
+
+export const useAssetDetailsDialogStore = create<AssetDetailsDialogStore>(
+  (set) => ({
+    isAssetDetailsDialogOpen: false,
+    assetDetailsDialogSymbol: '',
+    setAssetDetailsDialogOpen: (isOpen: boolean) => {
+      set({ isAssetDetailsDialogOpen: isOpen });
+    },
+    setAssetDetailsDialogSymbol: (symbol: string | Asset) => {
+      set({ assetDetailsDialogSymbol: symbol });
+    },
+  })
+);
 
 type AssetDetails = {
   key: string;
@@ -25,11 +41,6 @@ type AssetDetails = {
   value: string;
   tooltip: string;
 }[];
-
-export const DEFAULT_ASSET_DETAILS_STATE: AssetDetailsDialogState = {
-  isAssetDetailsDialogOpen: false,
-  assetDetailsDialogSymbol: '',
-};
 
 export const ASSETS_CONNECTION_QUERY = gql`
   query AssetsConnection {
