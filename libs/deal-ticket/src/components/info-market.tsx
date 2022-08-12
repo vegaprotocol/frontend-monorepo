@@ -19,6 +19,7 @@ import omit from 'lodash/omit';
 import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
 import { gql, useQuery } from '@apollo/client';
+import { totalFees } from '@vegaprotocol/market-list';
 
 const MARKET_INFO_QUERY = gql`
   query MarketInfoQuery($marketId: ID!) {
@@ -176,7 +177,13 @@ export const Info = ({ market }: InfoProps) => {
       title: t('Current fees'),
       content: (
         <>
-          <MarketInfoTable data={market.fees.factors} asPercentage={true} />
+          <MarketInfoTable
+            data={{
+              ...market.fees.factors,
+              totalFees: totalFees(market.fees.factors),
+            }}
+            asPercentage={true}
+          />
           <p className="text-ui-small">
             {t(
               'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'

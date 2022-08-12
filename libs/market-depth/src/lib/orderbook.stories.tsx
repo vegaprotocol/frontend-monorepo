@@ -8,7 +8,7 @@ type Props = Omit<MockDataGeneratorParams, 'resolution'> & {
   decimalPlaces: number;
 };
 
-const OrderbokMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
+const OrderbookMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
   const [resolution, setResolution] = useState(1);
   return (
     <div className="absolute inset-0 dark:bg-black dark:text-white-60 bg-white text-black-60">
@@ -17,8 +17,8 @@ const OrderbokMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
         style={{ width: '400px' }}
       >
         <Orderbook
+          positionDecimalPlaces={0}
           onResolutionChange={setResolution}
-          positionDecimalPlaces={decimalPlaces}
           decimalPlaces={decimalPlaces}
           {...generateMockData({ ...props, resolution })}
         />
@@ -28,11 +28,13 @@ const OrderbokMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
 };
 
 export default {
-  component: OrderbokMockDataProvider,
+  component: OrderbookMockDataProvider,
   title: 'Orderbook',
 } as Meta;
 
-const Template: Story<Props> = (args) => <OrderbokMockDataProvider {...args} />;
+const Template: Story<Props> = (args) => (
+  <OrderbookMockDataProvider {...args} />
+);
 
 export const Continuous = Template.bind({});
 Continuous.args = {

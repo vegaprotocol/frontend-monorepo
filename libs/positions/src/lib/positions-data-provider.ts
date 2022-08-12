@@ -39,7 +39,7 @@ const POSITIONS_FRAGMENT = gql`
   }
 `;
 
-const POSITION_QUERY = gql`
+export const POSITION_QUERY = gql`
   ${POSITIONS_FRAGMENT}
   query Positions($partyId: ID!) {
     party(id: $partyId) {

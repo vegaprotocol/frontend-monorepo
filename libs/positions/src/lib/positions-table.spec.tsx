@@ -85,8 +85,8 @@ it('add color and sign to amount, displays positive notional value', async () =>
     await waitFor(async () => {
       const cells = screen.getAllByRole('gridcell');
       const values = cells[1].querySelectorAll('.text-right');
-      expect(values[0].classList.contains('color-vega-green')).toBeTruthy();
-      expect(values[0].classList.contains('color-vega-red')).toBeFalsy();
+      expect(values[0].classList.contains('text-vega-green-dark')).toBeTruthy();
+      expect(values[0].classList.contains('text-vega-red-dark')).toBeFalsy();
       expect(values[0].textContent).toEqual('+100');
       expect(values[1].textContent).toEqual('1,230.0');
     });
@@ -96,8 +96,8 @@ it('add color and sign to amount, displays positive notional value', async () =>
     await waitFor(async () => {
       const cells = screen.getAllByRole('gridcell');
       const values = cells[1].querySelectorAll('.text-right');
-      expect(values[0].classList.contains('color-vega-green')).toBeFalsy();
-      expect(values[0].classList.contains('color-vega-red')).toBeTruthy();
+      expect(values[0].classList.contains('text-vega-green-dark')).toBeFalsy();
+      expect(values[0].classList.contains('text-vega-red-dark')).toBeTruthy();
       expect(values[0].textContent?.startsWith('-100')).toBeTruthy();
       expect(values[1].textContent).toEqual('1,230.0');
     });

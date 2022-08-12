@@ -1,12 +1,12 @@
 import produce from 'immer';
 import { gql } from '@apollo/client';
+import { makeDataProvider } from '@vegaprotocol/react-helpers';
 import type {
-  Markets,
-  Markets_markets,
   MarketDataSub,
   MarketDataSub_marketData,
-} from './';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+  MarketList,
+  MarketList_markets,
+} from './__generated__';
 
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketDataFields on MarketData {
@@ -19,32 +19,7 @@ const MARKET_DATA_FRAGMENT = gql`
     bestOfferPrice
     markPrice
     trigger
-  }
-`;
-
-const MARKETS_QUERY = gql`
-  ${MARKET_DATA_FRAGMENT}
-  query Markets {
-    markets {
-      id
-      name
-      decimalPlaces
-      data {
-        ...MarketDataFields
-      }
-      tradableInstrument {
-        instrument {
-          code
-          product {
-            ... on Future {
-              settlementAsset {
-                symbol
-              }
-            }
-          }
-        }
-      }
-    }
+    indicativeVolume
   }
 `;
 
@@ -52,14 +27,29 @@ export const MARKET_LIST_QUERY = gql`
   query MarketList($interval: Interval!, $since: String!) {
     markets {
       id
+      name
       decimalPlaces
+      positionDecimalPlaces
       state
       tradingMode
+      fees {
+        factors {
+          makerFee
+          infrastructureFee
+          liquidityFee
+        }
+      }
       data {
         market {
           id
+          state
+          tradingMode
         }
+        bestBidPrice
+        bestOfferPrice
         markPrice
+        trigger
+        indicativeVolume
       }
       tradableInstrument {
         instrument {
@@ -67,6 +57,13 @@ export const MARKET_LIST_QUERY = gql`
           code
           metadata {
             tags
+          }
+          product {
+            ... on Future {
+              settlementAsset {
+                symbol
+              }
+            }
           }
         }
       }
@@ -77,6 +74,8 @@ export const MARKET_LIST_QUERY = gql`
       candles(interval: $interval, since: $since) {
         open
         close
+        high
+        low
       }
     }
   }
@@ -91,7 +90,10 @@ const MARKET_DATA_SUB = gql`
   }
 `;
 
-const update = (data: Markets_markets[], delta: MarketDataSub_marketData) => {
+const update = (
+  data: MarketList_markets[],
+  delta: MarketDataSub_marketData
+) => {
   return produce(data, (draft) => {
     const index = draft.findIndex((m) => m.id === delta.market.id);
     if (index !== -1) {
@@ -101,14 +103,14 @@ const update = (data: Markets_markets[], delta: MarketDataSub_marketData) => {
   });
 };
 
-const getData = (responseData: Markets): Markets_markets[] | null =>
+const getData = (responseData: MarketList): MarketList_markets[] | null =>
   responseData.markets;
 const getDelta = (subscriptionData: MarketDataSub): MarketDataSub_marketData =>
   subscriptionData.marketData;
 
 export const marketsDataProvider = makeDataProvider<
-  Markets,
-  Markets_markets[],
+  MarketList,
+  MarketList_markets[],
   MarketDataSub,
   MarketDataSub_marketData
->(MARKETS_QUERY, MARKET_DATA_SUB, update, getData, getDelta);
+>(MARKET_LIST_QUERY, MARKET_DATA_SUB, update, getData, getDelta);

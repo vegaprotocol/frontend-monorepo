@@ -34,6 +34,10 @@ export interface Erc20Approval_erc20WithdrawalApproval {
    * Timestamp in seconds for expiry of the approval
    */
   expiry: string;
+  /**
+   * Timestamp at which the withdrawal was created
+   */
+  creation: string;
 }
 
 export interface Erc20Approval {

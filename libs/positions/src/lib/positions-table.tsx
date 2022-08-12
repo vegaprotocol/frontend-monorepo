@@ -96,8 +96,8 @@ export const AmountCell = ({ valueFormatted }: AmountCellProps) => {
     <div className="leading-tight">
       <div
         className={classNames('text-right', {
-          'color-vega-green': !isShortPosition,
-          'color-vega-red': isShortPosition,
+          'text-vega-green-dark dark:text-vega-green': !isShortPosition,
+          'text-vega-red-dark dark:text-vega-red': isShortPosition,
         })}
       >
         {volumePrefix(
@@ -268,9 +268,16 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         field="realisedPNL"
         type="rightAligned"
         cellClassRules={{
-          'color-vega-green': ({ value }: { value: string }) =>
-            BigInt(value) > 0,
-          'color-vega-red': ({ value }: { value: string }) => BigInt(value) < 0,
+          'text-vega-green-dark dark:text-vega-green': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) > 0,
+          'text-vega-red-dark dark:text-vega-red': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) < 0,
         }}
         valueFormatter={({
           value,
@@ -290,9 +297,16 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         field="unrealisedPNL"
         type="rightAligned"
         cellClassRules={{
-          'color-vega-green': ({ value }: { value: string }) =>
-            BigInt(value) > 0,
-          'color-vega-red': ({ value }: { value: string }) => BigInt(value) < 0,
+          'text-vega-green-dark dark:text-vega-green': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) > 0,
+          'text-vega-red-dark dark:text-vega-red': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) < 0,
         }}
         valueFormatter={({
           value,
