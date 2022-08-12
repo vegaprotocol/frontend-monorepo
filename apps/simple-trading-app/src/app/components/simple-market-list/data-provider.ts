@@ -70,25 +70,6 @@ export const CANDLE_SUB = gql`
   }
 `;
 
-export const FILTERS_QUERY = gql`
-  query MarketFilters {
-    markets {
-      tradableInstrument {
-        instrument {
-          product {
-            __typename
-            ... on Future {
-              settlementAsset {
-                symbol
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
 const update = (
   data: SimpleMarkets_markets[],
   delta: SimpleMarketDataSub_marketData

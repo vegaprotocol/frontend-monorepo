@@ -6,7 +6,7 @@ export const SelectMarketTableHeader = ({
   headers = columnHeaders,
 }) => {
   return (
-    <tr>
+    <tr className="sticky top-[-0.5rem] z-10 dark:bg-black bg-white">
       {headers.map(
         ({ value, className, onlyOnDetailed }, i) =>
           (!onlyOnDetailed || detailed === onlyOnDetailed) && (
