@@ -2,10 +2,9 @@ const nodeErrorType = 'node-error-type';
 const nodeErrorMsg = 'node-error-message';
 const nodeId = 'node-url-0';
 const customNodeBtn = 'custom-node';
-const closeDialogBtn = 'dialog-close';
 
 context('Node switcher', function () {
-  before('visit home page', function () {
+  beforeEach('visit home page', function () {
     cy.intercept('GET', 'https://static.vega.xyz/assets/capsule-network.json', {
       hosts: ['http://localhost:3028/query'],
     }).as('nodeData');
@@ -20,7 +19,7 @@ context('Node switcher', function () {
       });
     });
     it('node data is displayed', function () {
-      cy.getByTestId('node-row').should('have.length.at.least', 1);
+      cy.getByTestId('node-row').should('have.length.at.least', 2);
 
       cy.getByTestId('node-row')
         .eq(0)
@@ -29,19 +28,10 @@ context('Node switcher', function () {
             .should('exist')
             .and('have.attr', 'aria-checked', 'true');
           cy.get('label').should('have.text', Cypress.env('networkQueryUrl'));
-          cy.getByTestId('response-time-cell')
-            .should('not.be.empty')
-            .and('contain.text', 'ms');
+          cy.getByTestId('response-time-cell').should('contain.text', 'ms');
           cy.getByTestId('block-cell').should('not.be.empty');
           cy.getByTestId('ssl-cell').should('have.text', 'Yes');
         });
-    });
-
-    it('Incorrect network displayed', function () {
-      const errorTypeTxt = 'Error: incorrect network';
-      const nodeErrorTxt = 'This node is not on the CUSTOM network.';
-
-      validateNodeError(errorTypeTxt, nodeErrorTxt);
     });
 
     it('cannot connect to network using invalid url', function () {
@@ -68,10 +58,6 @@ context('Node switcher', function () {
         cy.getByTestId('link').click();
       });
       validateNodeError(errorTypeTxt, nodeErrorTxt);
-    });
-
-    afterEach('Close node switcher', function () {
-      cy.getByTestId(closeDialogBtn).should('be.enabled').click();
     });
 
     function validateNodeError(errortype, errorMsg) {

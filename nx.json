@@ -1,5 +1,5 @@
 {
-  "npmScope": "vegaprotocol",
+  "npmScope": "@vegaprotocol",
   "affected": {
     "defaultBase": "master"
   },

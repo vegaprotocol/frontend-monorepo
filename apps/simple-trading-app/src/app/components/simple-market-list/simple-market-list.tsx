@@ -131,7 +131,7 @@ const SimpleMarketList = () => {
 
   return (
     <div className="h-full grid grid-rows-[min-content,1fr]">
-      <SimpleMarketToolbar />
+      <SimpleMarketToolbar data={data || []} />
       <AsyncRenderer loading={loading} error={error} data={localData}>
         <AgGrid
           className="mb-32 min-h-[300px]"

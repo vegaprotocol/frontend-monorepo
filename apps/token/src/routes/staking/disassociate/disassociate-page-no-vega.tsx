@@ -14,7 +14,9 @@ export const DisassociatePageNoVega = () => {
   const params = useSearchParams();
   const [amount, setAmount] = React.useState<string>('');
   const [selectedStakingMethod, setSelectedStakingMethod] =
-    React.useState<StakingMethod | null>(params.method || null);
+    React.useState<StakingMethod | null>(
+      (params.method as StakingMethod) || null
+    );
 
   return (
     <section className="disassociate-page" data-testid="disassociate-page">
