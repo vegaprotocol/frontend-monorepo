@@ -169,7 +169,11 @@ export const DealTicketSteps = ({
                 : ''
             }
             positionDecimalPlaces={market.positionDecimalPlaces}
-            quoteName={market.tradableInstrument.instrument.product.quoteName}
+            marketDecimalPlaces={market.decimalPlaces}
+            quoteName={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            }
             estCloseOut={estCloseOut}
             estMargin={estMargin || ' - '}
           />

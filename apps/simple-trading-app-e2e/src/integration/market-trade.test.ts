@@ -152,6 +152,39 @@ describe('Market trade', () => {
     }
   });
 
+  it('notional position size should be present', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('input')
+        .type('{backspace}2');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(2)
+        .find('span')
+        .should('have.text', 'Est. Position Size');
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(2)
+        .find('small')
+        .should('have.text', '(tDAI)');
+      cy.get('#step-2-panel').find('dd').eq(2).should('have.text', '197.86012');
+    }
+  });
+
   it('order review should display proper calculations', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
