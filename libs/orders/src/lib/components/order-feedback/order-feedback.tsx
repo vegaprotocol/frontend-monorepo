@@ -77,7 +77,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
       {orderRejectionReason && (
         <div>
           <p className={labelClass}>{t(`Reason`)}</p>
-          <p>{t(orderRejectionReason)}</p>
+          <p data-testid="error-reason">{t(orderRejectionReason)}</p>
         </div>
       )}
     </div>

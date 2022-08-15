@@ -45,7 +45,7 @@ describe('OrderFeedback', () => {
     const order = generateOrder(orderFields);
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('error-reason')).toHaveTextContent(
-      `Reason: ${formatLabel(orderFields.rejectionReason)}`
+      `${formatLabel(orderFields.rejectionReason)}`
     );
   });
 
