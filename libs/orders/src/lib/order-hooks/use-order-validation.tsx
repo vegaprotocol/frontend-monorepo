@@ -128,14 +128,14 @@ export const useOrderValidation = ({
       };
     }
 
-    if (fieldErrors?.price?.type === 'required') {
+    if (fieldErrors?.price?.type === 'required' && orderType !== OrderType.Market) {
       return {
         isDisabled: true,
         message: t('You need to provide a price'),
       };
     }
 
-    if (fieldErrors?.price?.type === 'min') {
+    if (fieldErrors?.price?.type === 'min' && orderType !== OrderType.Market) {
       return {
         isDisabled: true,
         message: t(`The price cannot be negative`),
