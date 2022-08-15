@@ -114,7 +114,13 @@ export const useOrderValidation = ({
       }
     }
 
-    if ([MarketTradingMode.BatchAuction, MarketTradingMode.MonitoringAuction, MarketTradingMode.OpeningAuction].includes(market.tradingMode)) {
+    if (
+      [
+        MarketTradingMode.BatchAuction,
+        MarketTradingMode.MonitoringAuction,
+        MarketTradingMode.OpeningAuction,
+      ].includes(market.tradingMode)
+    ) {
       return {
         isDisabled: false,
         message: t(
