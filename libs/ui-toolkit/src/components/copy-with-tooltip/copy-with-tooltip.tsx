@@ -31,7 +31,7 @@ export function CopyWithTooltip({ children, text }: CopyWithTooltipProps) {
   return (
     <CopyToClipboard text={text} onCopy={() => setCopied(true)}>
       {/* Needs this wrapping div as tooltip component interfers with element used to capture click for copy */}
-      <span>
+      <span className="inline-flex content-center">
         <Tooltip description="Copied" open={copied} align="center">
           {children}
         </Tooltip>
