@@ -1,6 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
-import { Dialog, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
+import { Toast, Icon, Intent, Loader } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
 import type { VegaTxState } from '../use-vega-transaction';
 import { VegaTxStatus } from '../use-vega-transaction';
@@ -37,15 +37,15 @@ export const VegaTransactionDialog = ({
       <VegaDialog transaction={transaction} />
     );
   return (
-    <Dialog
+    <Toast
       open={isOpen}
-      onChange={onChange}
+      onOpenChange={onChange}
       intent={computedIntent}
       title={computedTitle}
       icon={computedIcon}
     >
       {content}
-    </Dialog>
+    </Toast>
   );
 };
 

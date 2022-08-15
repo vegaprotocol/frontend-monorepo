@@ -2,11 +2,11 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEvent_busEvents_event_Order } from '../../order-hooks/__generated__';
 import {
   addDecimalsFormatNumber,
-  formatLabel,
   t,
 } from '@vegaprotocol/react-helpers';
 import { OrderStatus, OrderType, Side } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
+import startCase from 'lodash/startCase';
 
 export interface OrderFeedbackProps {
   transaction: VegaTxState;
@@ -23,7 +23,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
     return (
       <p data-testid="error-reason">
         {order.rejectionReason &&
-          t(`Reason: ${formatLabel(order.rejectionReason)}`)}
+          t(`Reason: ${startCase(order.rejectionReason)}`)}
       </p>
     );
   }
@@ -44,7 +44,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
             <div>
               <p className={labelClass}>{t('Transaction')}</p>
               <a
-                className="underline break-words"
+                className="underline break-all"
                 data-testid="tx-block-explorer"
                 href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
                 target="_blank"
@@ -102,7 +102,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           <div>
             <p className={labelClass}>{t('Transaction')}</p>
             <a
-              className="underline break-words"
+              className="underline break-all"
               data-testid="tx-block-explorer"
               href={`${VEGA_EXPLORER_URL}/txs/0x${transaction.txHash}`}
               target="_blank"
