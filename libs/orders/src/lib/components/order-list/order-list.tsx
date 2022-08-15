@@ -316,16 +316,8 @@ const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
       return t('Order partially filled');
     case OrderStatus.Parked:
       return t('Order parked');
-    case OrderStatus.Stopped:
-      return t('Order stopped');
-    case OrderStatus.Cancelled:
-      return t('Order cancelled');
-    case OrderStatus.Expired:
-      return t('Order expired');
-    case OrderStatus.Rejected:
-      return t('Order rejected');
     default:
-      return t('Amendment failed');
+      return t('Submission failed');
   }
 };
 
