@@ -81,18 +81,20 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
         </div>
       )}
     </div>
-
   );
 };
 
-const rejectionReason = (order: OrderEvent_busEvents_event_Order): string | null => {
+const rejectionReason = (
+  order: OrderEvent_busEvents_event_Order
+): string | null => {
   switch (order.status) {
     case OrderStatus.Stopped:
-      return t(`The network could not fill the ${order.timeInForce} order and it has been stopped`);
+      return t(
+        `The network could not fill the ${order.timeInForce} order and it has been stopped`
+      );
     case OrderStatus.Rejected:
       return order.rejectionReason && t(formatLabel(order.rejectionReason));
-    default: return null;
+    default:
+      return null;
   }
-}
-
-
+};
