@@ -1,5 +1,5 @@
 import { Routes } from '../../route-names';
-import type { Result } from '../tendermint-transaction-response.d';
+import { Button, CopyWithTooltip } from '@vegaprotocol/ui-toolkit';
 import {
   TableWithTbody,
   TableCell,
@@ -8,15 +8,16 @@ import {
 } from '../../../components/table';
 import { TruncateInline } from '../../../components/truncate/truncate';
 import { t } from '@vegaprotocol/react-helpers';
-
 import { HighlightedLink } from '../../../components/highlighted-link';
+import type { Result } from '../tendermint-transaction-response.d';
+
 interface TxDetailsProps {
   txData: Result | undefined;
   pubKey: string | undefined;
   className?: string;
 }
 
-const truncateLength = 30;
+export const txDetailsTruncateLength = 30;
 
 export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
   if (!txData) {
@@ -50,12 +51,25 @@ export const TxDetails = ({ txData, pubKey, className }: TxDetailsProps) => {
       </TableRow>
       <TableRow modifier="bordered">
         <TableCell>{t('Encoded txn')}</TableCell>
-        <TableCell modifier="bordered" data-testid="encoded-tnx">
+        <TableCell
+          modifier="bordered"
+          data-testid="encoded-tnx"
+          className="flex justify-between"
+        >
           <TruncateInline
             text={txData.tx}
-            startChars={truncateLength}
-            endChars={truncateLength}
+            startChars={txDetailsTruncateLength}
+            endChars={txDetailsTruncateLength}
           />
+          <CopyWithTooltip text="">
+            <Button
+              variant="inline-link"
+              prependIconName="duplicate"
+              title={t('Copy tx to clipboard')}
+              onClick={() => navigator.clipboard.writeText(txData.tx)}
+              data-testid="copy-tx-to-clipboard"
+            />
+          </CopyWithTooltip>
         </TableCell>
       </TableRow>
     </TableWithTbody>
