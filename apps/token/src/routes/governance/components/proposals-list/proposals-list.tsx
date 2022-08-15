@@ -91,6 +91,10 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           </p>
         )}
       </section>
+
+      <Link className="underline" to={'/governance/rejected'}>
+        See rejected proposals
+      </Link>
     </>
   );
 };
