@@ -1,9 +1,6 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEvent_busEvents_event_Order } from '../../order-hooks/__generated__';
-import {
-  addDecimalsFormatNumber,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { OrderStatus, OrderType, Side } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import startCase from 'lodash/startCase';
