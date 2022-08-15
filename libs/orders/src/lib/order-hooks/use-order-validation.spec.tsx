@@ -114,6 +114,7 @@ describe('useOrderValidation', () => {
     ${MarketState.Rejected}
     ${MarketState.TradingTerminated}
     ${MarketState.Closed}
+    ${MarketState.Cancelled}
   `(
     'Returns an error message for market state when not accepting orders',
     ({ state }) => {

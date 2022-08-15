@@ -57,6 +57,7 @@ export const useOrderValidation = ({
         MarketState.Settled,
         MarketState.Rejected,
         MarketState.TradingTerminated,
+        MarketState.Cancelled,
         MarketState.Closed,
       ].includes(market.state)
     ) {
