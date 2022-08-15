@@ -88,13 +88,21 @@ export const OrderEditDialog = ({
         <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input
-              {...register('entryPrice', { required: t('Required') })}
+              {...register('entryPrice', {
+                required: t('You need to provide a price'),
+                min: 0,
+              })}
               id="entryPrice"
-              type="text"
+              type="number"
             />
             {errors.entryPrice?.message && (
               <InputError intent="danger" className="mt-4">
                 {errors.entryPrice.message}
+              </InputError>
+            )}
+            {errors.entryPrice?.type === 'min' && (
+              <InputError intent="danger" className="mt-4">
+                {t('The price cannot be negative')}
               </InputError>
             )}
           </FormGroup>

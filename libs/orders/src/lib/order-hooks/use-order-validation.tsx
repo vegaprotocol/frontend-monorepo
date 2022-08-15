@@ -114,21 +114,6 @@ export const useOrderValidation = ({
       }
     }
 
-    if (
-      [
-        MarketTradingMode.BatchAuction,
-        MarketTradingMode.MonitoringAuction,
-        MarketTradingMode.OpeningAuction,
-      ].includes(market.tradingMode)
-    ) {
-      return {
-        isDisabled: false,
-        message: t(
-          'Any orders placed now will not trade until the auction ends'
-        ),
-      };
-    }
-
     if (fieldErrors?.size?.type === 'required') {
       return {
         isDisabled: true,
@@ -171,6 +156,21 @@ export const useOrderValidation = ({
         isDisabled: true,
         message: t(
           `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`
+        ),
+      };
+    }
+
+    if (
+      [
+        MarketTradingMode.BatchAuction,
+        MarketTradingMode.MonitoringAuction,
+        MarketTradingMode.OpeningAuction,
+      ].includes(market.tradingMode)
+    ) {
+      return {
+        isDisabled: false,
+        message: t(
+          'Any orders placed now will not trade until the auction ends'
         ),
       };
     }
