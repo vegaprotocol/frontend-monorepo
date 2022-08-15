@@ -79,6 +79,7 @@ export const DealTicketSteps = ({
   const emptyString = ' - ';
 
   const [notionalSize, setNotionalSize] = useState<string | null>(null);
+  const [fees, setFees] = useState<string | null>(null);
 
   const maxTrade = useMaximumPositionSize({
     partyId: keypair?.pub || '',
@@ -128,6 +129,18 @@ export const DealTicketSteps = ({
       setNotionalSize(addDecimal(size, market.decimalPlaces));
     }
   }, [market, value]);
+
+  useEffect(() => {
+    if (estMargin?.fees && notionalSize) {
+      const percentage = new BigNumber(estMargin?.fees)
+        .dividedBy(notionalSize)
+        .multipliedBy(100)
+        .decimalPlaces(2)
+        .toString();
+
+      setFees(`${estMargin.fees} (${percentage}%)`);
+    }
+  }, [estMargin, notionalSize]);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -188,7 +201,7 @@ export const DealTicketSteps = ({
             }
             notionalSize={notionalSize || emptyString}
             estCloseOut={estCloseOut}
-            fees={estMargin?.fees || emptyString}
+            fees={fees || emptyString}
             estMargin={estMargin?.margin || emptyString}
           />
         ) : (
@@ -218,7 +231,7 @@ export const DealTicketSteps = ({
                 .symbol
             }
             notionalSize={notionalSize || emptyString}
-            fees={estMargin?.fees || emptyString}
+            fees={fees || emptyString}
           />
           <TransactionDialog
             title={getOrderDialogTitle(finalizedOrder?.status)}

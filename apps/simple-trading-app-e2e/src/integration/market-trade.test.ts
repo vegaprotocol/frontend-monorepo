@@ -190,7 +190,10 @@ describe('Market trade', () => {
         .find('dt')
         .eq(3)
         .should('have.text', 'Est. Fees (tDAI)');
-      cy.get('#step-2-panel').find('dd').eq(3).should('have.text', '3.00000');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00000 (3.03%)');
     }
   });
 
@@ -204,7 +207,10 @@ describe('Market trade', () => {
 
       cy.get('#step-3-panel').find('dd').eq(2).should('have.text', '98.93006');
 
-      cy.get('#step-3-panel').find('dd').eq(3).should('have.text', '3.00000');
+      cy.get('#step-3-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00000 (3.03%)');
 
       cy.get('#step-3-panel').find('dd').eq(4).should('have.text', ' - ');
 
