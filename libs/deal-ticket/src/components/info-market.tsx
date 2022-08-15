@@ -193,11 +193,28 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Market data'),
+      title: t('Market price and interest'),
       content: (
         <MarketInfoTable
-          data={market.data}
+          data={pick(market.data, 'name', 'markPrice', 'openInterest')}
           decimalPlaces={market.decimalPlaces}
+        />
+      ),
+    },
+    {
+      title: t('Market volume'),
+      content: (
+        <MarketInfoTable
+          data={pick(
+            market.data,
+            'name',
+            'indicativeVolume',
+            'bestBidVolume',
+            'bestOfferVolume',
+            'bestStaticBidVolume',
+            'bestStaticOfferVolume'
+          )}
+          decimalPlaces={market.positionDecimalPlaces}
         />
       ),
     },
