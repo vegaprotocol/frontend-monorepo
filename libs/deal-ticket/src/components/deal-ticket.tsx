@@ -138,6 +138,7 @@ export const DealTicket = ({
       </Button>
       {message && (
         <InputError
+          intent={isDisabled ? 'danger' : 'warning'}
           className="mt-12 mb-12"
           data-testid="dealticket-error-message"
         >

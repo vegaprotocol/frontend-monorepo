@@ -81,7 +81,13 @@ export const useOrderValidation = ({
       };
     }
 
-    if ([MarketTradingMode.BatchAuction, MarketTradingMode.MonitoringAuction, MarketTradingMode.OpeningAuction].includes(market.tradingMode)) {
+    if (
+      [
+        MarketTradingMode.BatchAuction,
+        MarketTradingMode.MonitoringAuction,
+        MarketTradingMode.OpeningAuction,
+      ].includes(market.tradingMode)
+    ) {
       if (orderType !== OrderType.Limit) {
         return {
           isDisabled: true,
@@ -105,6 +111,15 @@ export const useOrderValidation = ({
           ),
         };
       }
+    }
+
+    if (market.state === MarketState.Suspended) {
+      return {
+        isDisabled: false,
+        message: t(
+          'Any orders placed now will not trade until the auction ends'
+        ),
+      };
     }
 
     if (fieldErrors?.size?.type === 'required') {
