@@ -22,7 +22,6 @@ import { totalFees } from '../utils';
 import type { CandleClose } from '@vegaprotocol/types';
 import type { MarketList_markets_fees_factors } from '../__generated__/MarketList';
 import classNames from 'classnames';
-import { string } from 'zod';
 
 export const thClassNames = (direction: 'left' | 'right') =>
   `px-8 text-${direction} font-sans text-ui-small leading-9 mb-0 text-dark dark:text-white first:w-[10%]`;
