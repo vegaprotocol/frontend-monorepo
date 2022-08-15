@@ -22,8 +22,9 @@ interface DealTicketSizeProps {
   price: string;
   estCloseOut: string;
   estMargin: string;
+  fees: string;
   positionDecimalPlaces: number;
-  marketDecimalPlaces: number;
+  notionalSize: string;
 }
 
 const getSizeLabel = (value: number): string => {
@@ -48,15 +49,12 @@ export const DealTicketSize = ({
   onValueChange,
   estCloseOut,
   positionDecimalPlaces,
-  marketDecimalPlaces,
+  fees,
+  notionalSize,
 }: DealTicketSizeProps) => {
   const sizeRatios = [0, 25, 50, 75, 100];
   const [inputValue, setInputValue] = useState(value);
   const [isInputVisible, setIsInputVisible] = useState(false);
-  const notionalSize = new BigNumber(price)
-    .multipliedBy(value)
-    .decimalPlaces(marketDecimalPlaces)
-    .toFormat(marketDecimalPlaces);
 
   const onInputValueChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -190,7 +188,7 @@ export const DealTicketSize = ({
           </dd>
         </div>
         <div className="flex justify-between mb-8">
-          <dt>{t('Est. price')}</dt>
+          <dt>{t('Est. Price')}</dt>
           <dd>{price}</dd>
         </div>
         <div className="flex justify-between mb-8">
@@ -200,6 +198,14 @@ export const DealTicketSize = ({
             <small>({quoteName})</small>
           </dt>
           <dd>{notionalSize}</dd>
+        </div>
+        <div className="flex justify-between mb-8">
+          <dt>
+            <span>{t('Est. Fees')}</span>
+            &nbsp;
+            <small>({quoteName})</small>
+          </dt>
+          <dd>{fees}</dd>
         </div>
         <div className="flex justify-between">
           <dt>{t('Est. close out')}</dt>

@@ -185,6 +185,27 @@ describe('Market trade', () => {
     }
   });
 
+  it('total fees should be displayed', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(3)
+        .find('span')
+        .should('have.text', 'Est. Fees');
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(3)
+        .find('small')
+        .should('have.text', '(tDAI)');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '16085.09240212.7380425.46');
+    }
+  });
+
   it('order review should display proper calculations', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);

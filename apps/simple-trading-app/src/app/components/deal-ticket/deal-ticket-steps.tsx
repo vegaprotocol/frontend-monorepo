@@ -72,6 +72,13 @@ export const DealTicketSteps = ({
     market,
     partyId: keypair?.pub || '',
   });
+  const value = new BigNumber(orderSize).toNumber();
+  const price =
+    market.depth.lastTrade &&
+    addDecimal(market.depth.lastTrade.price, market.decimalPlaces);
+  const emptyString = ' - ';
+
+  const [notionalSize, setNotionalSize] = useState<string | null>(null);
 
   const maxTrade = useMaximumPositionSize({
     partyId: keypair?.pub || '',
@@ -111,6 +118,17 @@ export const DealTicketSteps = ({
       setValue('size', newVal);
     }
   };
+
+  useEffect(() => {
+    if (market?.depth?.lastTrade?.price) {
+      const size = new BigNumber(market.depth.lastTrade.price)
+        .multipliedBy(value)
+        .decimalPlaces(market.decimalPlaces)
+        .toFormat(market.decimalPlaces);
+
+      setNotionalSize(size);
+    }
+  }, [market, value]);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -163,19 +181,16 @@ export const DealTicketSteps = ({
             onValueChange={onSizeChange}
             value={new BigNumber(orderSize).toNumber()}
             name="size"
-            price={
-              market.depth.lastTrade
-                ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-                : ''
-            }
+            price={price || emptyString}
             positionDecimalPlaces={market.positionDecimalPlaces}
-            marketDecimalPlaces={market.decimalPlaces}
             quoteName={
               market.tradableInstrument.instrument.product.settlementAsset
                 .symbol
             }
+            notionalSize={notionalSize || emptyString}
             estCloseOut={estCloseOut}
-            estMargin={estMargin || ' - '}
+            fees={estMargin?.fees || emptyString}
+            estMargin={estMargin?.margin || emptyString}
           />
         ) : (
           'loading...'
@@ -197,7 +212,7 @@ export const DealTicketSteps = ({
             transactionStatus={transactionStatus}
             order={order}
             estCloseOut={estCloseOut}
-            estMargin={estMargin || ' - '}
+            estMargin={estMargin?.margin || emptyString}
           />
           <TransactionDialog
             title={getOrderDialogTitle(finalizedOrder?.status)}
