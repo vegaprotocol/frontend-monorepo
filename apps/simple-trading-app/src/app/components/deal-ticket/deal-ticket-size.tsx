@@ -10,6 +10,7 @@ import {
   FormGroup,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
+import { DealTicketEstimates } from './deal-ticket-estimates';
 
 interface DealTicketSizeProps {
   step: number;
@@ -187,31 +188,14 @@ export const DealTicketSize = ({
             </FormGroup>
           </dd>
         </div>
-        <div className="flex justify-between mb-8">
-          <dt>{t('Est. Price')}</dt>
-          <dd>{price}</dd>
-        </div>
-        <div className="flex justify-between mb-8">
-          <dt>
-            <span>{t('Est. Position Size')}</span>
-            &nbsp;
-            <small>({quoteName})</small>
-          </dt>
-          <dd>{notionalSize}</dd>
-        </div>
-        <div className="flex justify-between mb-8">
-          <dt>
-            <span>{t('Est. Fees')}</span>
-            &nbsp;
-            <small>({quoteName})</small>
-          </dt>
-          <dd>{fees}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt>{t('Est. close out')}</dt>
-          <dd>{estCloseOut}</dd>
-        </div>
       </dl>
+      <DealTicketEstimates
+        quoteName={quoteName}
+        fees={fees}
+        estCloseOut={estCloseOut}
+        price={price}
+        notionalSize={notionalSize}
+      />
     </div>
   );
 };

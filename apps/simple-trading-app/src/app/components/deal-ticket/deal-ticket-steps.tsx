@@ -123,10 +123,9 @@ export const DealTicketSteps = ({
     if (market?.depth?.lastTrade?.price) {
       const size = new BigNumber(market.depth.lastTrade.price)
         .multipliedBy(value)
-        .decimalPlaces(market.decimalPlaces)
-        .toFormat(market.decimalPlaces);
+        .toNumber();
 
-      setNotionalSize(size);
+      setNotionalSize(addDecimal(size, market.decimalPlaces));
     }
   }, [market, value]);
 
@@ -213,6 +212,13 @@ export const DealTicketSteps = ({
             order={order}
             estCloseOut={estCloseOut}
             estMargin={estMargin?.margin || emptyString}
+            price={price || emptyString}
+            quoteName={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            }
+            notionalSize={notionalSize || emptyString}
+            fees={estMargin?.fees || emptyString}
           />
           <TransactionDialog
             title={getOrderDialogTitle(finalizedOrder?.status)}

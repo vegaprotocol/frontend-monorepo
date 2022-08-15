@@ -1,7 +1,6 @@
-import { addDecimal, formatNumber, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import {
   Button,
-  Icon,
   KeyValueTable,
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
@@ -17,7 +16,7 @@ import type {
   MarketTags,
   MarketTagsVariables,
 } from './__generated__/MarketTags';
-import { IconNames } from '@blueprintjs/icons';
+import { DealTicketEstimates } from './deal-ticket-estimates';
 
 export const MARKET_TAGS_QUERY = gql`
   query MarketTags($marketId: ID!) {
@@ -40,6 +39,10 @@ interface Props {
   order: Order;
   estCloseOut: string;
   estMargin: string;
+  quoteName: string;
+  price: string;
+  fees: string;
+  notionalSize: string;
 }
 
 export default ({
@@ -48,7 +51,10 @@ export default ({
   order,
   transactionStatus,
   estCloseOut,
-  estMargin,
+  quoteName,
+  fees,
+  price,
+  notionalSize,
 }: Props) => {
   const { data: tagsData } = useQuery<MarketTags, MarketTagsVariables>(
     MARKET_TAGS_QUERY,
@@ -88,40 +94,19 @@ export default ({
             </div>
           </div>
           <div className="text-blue">
-            @{' '}
-            {market.depth.lastTrade
-              ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-              : ' - '}{' '}
+            {`@ ${price} `}
             <span className="text-ui-small inline">(EST)</span>
           </div>
         </KeyValueTableRow>
-        <KeyValueTableRow noBorder>
-          <>{t('Est. margin')}</>
-          <div className="text-black dark:text-white flex gap-x-5 items-center">
-            {estMargin}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
-          </div>
-        </KeyValueTableRow>
-        <KeyValueTableRow noBorder>
-          <>
-            {t('Size')}{' '}
-            <div className="text-ui-small inline">
-              ({market.tradableInstrument.instrument.product.quoteName})
-            </div>
-          </>
-          <div className="text-black dark:text-white flex gap-x-5 items-center">
-            {formatNumber(order.size, market.decimalPlaces)}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
-          </div>
-        </KeyValueTableRow>
-        <KeyValueTableRow noBorder>
-          <>{t('Est. close out')}</>
-          <div className="text-black dark:text-white flex gap-x-5 items-center">
-            {estCloseOut}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
-          </div>
-        </KeyValueTableRow>
       </KeyValueTable>
+
+      <DealTicketEstimates
+        size={order.size}
+        quoteName={quoteName}
+        fees={fees}
+        estCloseOut={estCloseOut}
+        notionalSize={notionalSize}
+      />
 
       <Button
         className="w-full !py-8 mt-64 max-w-sm"
