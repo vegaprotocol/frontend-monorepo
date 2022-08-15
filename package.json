@@ -26,7 +26,7 @@
     "@radix-ui/react-select": "^0.1.1",
     "@radix-ui/react-slider": "^1.0.0",
     "@radix-ui/react-tabs": "^0.1.5",
-    "@radix-ui/react-tooltip": "^0.1.7",
+    "@radix-ui/react-tooltip": "^1.0.0",
     "@sentry/nextjs": "^6.19.3",
     "@sentry/react": "^6.19.2",
     "@sentry/tracing": "^6.19.2",
