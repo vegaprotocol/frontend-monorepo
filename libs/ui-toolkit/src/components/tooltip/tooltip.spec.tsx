@@ -5,24 +5,25 @@ it('Renders a tooltip', async () => {
   const props = {
     description: 'description',
     children: <button>Tooltip</button>,
+    open: true,
   };
   render(<Tooltip {...props} />);
   // radix applies the data-state attribute
-  expect(screen.getByRole('button')).toHaveAttribute('data-state', 'closed');
-  fireEvent.mouseOver(screen.getByRole('button'));
-  expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  const trigger = screen.getByRole('button');
+  expect(trigger).toHaveAttribute('data-state', 'instant-open');
+  expect(screen.queryByRole('tooltip')).toBeInTheDocument();
 });
 
 it('Doesnt render a tooltip if no description provided', () => {
   const props = {
     description: undefined,
     children: <button>Tooltip</button>,
+    open: true,
   };
   render(<Tooltip {...props} />);
   expect(screen.getByRole('button')).not.toHaveAttribute(
     'data-state',
     'closed'
   );
-  fireEvent.mouseOver(screen.getByRole('button'));
   expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 });
