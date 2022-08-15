@@ -205,6 +205,7 @@ describe('useOrderValidation', () => {
     ({ fieldName, errorType, errorMessage }) => {
       const { result } = setup({
         fieldErrors: { [fieldName]: { type: errorType } },
+        orderType: VegaWalletOrderType.Limit,
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,
