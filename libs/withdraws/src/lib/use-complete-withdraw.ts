@@ -1,13 +1,17 @@
 import { gql, useApolloClient } from '@apollo/client';
 import { captureException } from '@sentry/react';
-import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
+import type {
+  CollateralBridge,
+  CollateralBridgeNew,
+} from '@vegaprotocol/smart-contracts';
 import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
-import { ERC20_APPROVAL_QUERY } from './queries';
+import { ERC20_APPROVAL_QUERY, ERC20_APPROVAL_QUERY_NEW } from './queries';
 import type {
   Erc20Approval,
   Erc20ApprovalVariables,
 } from './__generated__/Erc20Approval';
+import type { Erc20ApprovalNew } from './__generated__/Erc20ApprovalNew';
 import type { PendingWithdrawal } from './__generated__/PendingWithdrawal';
 
 export const PENDING_WITHDRAWAL_FRAGMMENT = gql`
@@ -17,12 +21,12 @@ export const PENDING_WITHDRAWAL_FRAGMMENT = gql`
   }
 `;
 
-export const useCompleteWithdraw = () => {
+export const useCompleteWithdraw = (isNewContract: boolean) => {
   const { query, cache } = useApolloClient();
-  const contract = useBridgeContract();
+  const contract = useBridgeContract(isNewContract);
   const [id, setId] = useState('');
   const { transaction, perform, Dialog } = useEthereumTransaction<
-    CollateralBridge,
+    CollateralBridgeNew | CollateralBridge,
     'withdraw_asset'
   >(contract, 'withdraw_asset');
 
@@ -33,8 +37,13 @@ export const useCompleteWithdraw = () => {
         if (!contract) {
           return;
         }
-        const res = await query<Erc20Approval, Erc20ApprovalVariables>({
-          query: ERC20_APPROVAL_QUERY,
+        const res = await query<
+          Erc20Approval | Erc20ApprovalNew,
+          Erc20ApprovalVariables
+        >({
+          query: isNewContract
+            ? ERC20_APPROVAL_QUERY_NEW
+            : ERC20_APPROVAL_QUERY,
           variables: { withdrawalId },
         });
 
@@ -43,19 +52,29 @@ export const useCompleteWithdraw = () => {
           throw new Error('Could not retrieve withdrawal approval');
         }
 
-        perform(
-          approval.assetSource,
-          approval.amount,
-          approval.targetAddress,
-          approval.creation,
-          approval.nonce,
-          approval.signatures
-        );
+        if (contract.isNewContract && 'creation' in approval) {
+          perform(
+            approval.assetSource,
+            approval.amount,
+            approval.targetAddress,
+            approval.creation,
+            approval.nonce,
+            approval.signatures
+          );
+        } else {
+          perform(
+            approval.assetSource,
+            approval.amount,
+            approval.targetAddress,
+            approval.nonce,
+            approval.signatures
+          );
+        }
       } catch (err) {
         captureException(err);
       }
     },
-    [contract, query, perform]
+    [contract, query, isNewContract, perform]
   );
 
   useEffect(() => {

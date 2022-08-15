@@ -5,7 +5,7 @@ import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 
 export const useGetWithdrawLimits = (asset?: Asset) => {
-  const contract = useBridgeContract();
+  const contract = useBridgeContract(true);
   const getLimits = useCallback(async () => {
     if (!contract || !asset || asset.source.__typename !== 'ERC20') {
       return;

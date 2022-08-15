@@ -2,12 +2,12 @@ import { act, renderHook } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
-import { ERC20_APPROVAL_QUERY } from './queries';
+import { ERC20_APPROVAL_QUERY_NEW } from './queries';
 import * as web3 from '@vegaprotocol/web3';
 import * as wallet from '@vegaprotocol/wallet';
 import type { WithdrawalFields } from './use-withdraw';
 import { useWithdraw } from './use-withdraw';
-import type { Erc20Approval } from './__generated__/Erc20Approval';
+import type { Erc20ApprovalNew } from './__generated__/Erc20ApprovalNew';
 
 jest.mock('@vegaprotocol/web3', () => ({
   useBridgeContract: jest.fn().mockReturnValue({
@@ -30,7 +30,7 @@ function setup(mocks?: MockedResponse[], cancelled = false) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useWithdraw(cancelled), { wrapper });
+  return renderHook(() => useWithdraw(cancelled, true), { wrapper });
 }
 
 const signature =
@@ -52,7 +52,7 @@ let mockPerform: jest.Mock;
 let mockEthReset: jest.Mock;
 let mockVegaReset: jest.Mock;
 let withdrawalInput: WithdrawalFields;
-let mockERC20Approval: MockedResponse<Erc20Approval>;
+let mockERC20Approval: MockedResponse<Erc20ApprovalNew>;
 
 beforeEach(() => {
   pubkey = 'pubkey';
@@ -85,7 +85,7 @@ beforeEach(() => {
   };
   mockERC20Approval = {
     request: {
-      query: ERC20_APPROVAL_QUERY,
+      query: ERC20_APPROVAL_QUERY_NEW,
       variables: { withdrawalId: derivedWithdrawalId },
     },
     result: {

@@ -16,19 +16,22 @@ export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
   initialAssetId?: string;
+  isNewContract: boolean;
 }
 
 export const WithdrawManager = ({
   assets,
   accounts,
   initialAssetId,
+  isNewContract,
 }: WithdrawManagerProps) => {
   const dialogDismissed = useRef(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [assetId, setAssetId] = useState<string | undefined>(initialAssetId);
 
   const { ethTx, vegaTx, approval, submit, reset } = useWithdraw(
-    dialogDismissed.current
+    dialogDismissed.current,
+    isNewContract
   );
 
   // Find the asset object from the select box

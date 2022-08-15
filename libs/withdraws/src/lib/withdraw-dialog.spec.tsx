@@ -21,7 +21,6 @@ const approval: Erc20Approval_erc20WithdrawalApproval = {
   signatures: 'signatures',
   targetAddress: 'target-address',
   expiry: 'expiry',
-  creation: '1660158537747',
 };
 
 const generateJsx = (override?: PartialDeep<WithdrawDialogProps>) => {

@@ -18,7 +18,7 @@ export const useDepositBalances = (isFaucetable: boolean) => {
     isAssetTypeERC20(asset) ? asset : undefined,
     isFaucetable
   );
-  const bridgeContract = useBridgeContract();
+  const bridgeContract = useBridgeContract(true);
   const getAllowance = useGetAllowance(tokenContract, asset);
   const getBalance = useGetBalanceOfERC20Token(tokenContract, asset);
   const getDepositMaximum = useGetDepositMaximum(bridgeContract, asset);

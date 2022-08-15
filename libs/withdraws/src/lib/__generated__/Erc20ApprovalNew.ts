@@ -4,10 +4,10 @@
 // This file was automatically generated and should not be edited.
 
 // ====================================================
-// GraphQL query operation: Erc20Approval
+// GraphQL query operation: Erc20ApprovalNew
 // ====================================================
 
-export interface Erc20Approval_erc20WithdrawalApproval {
+export interface Erc20ApprovalNew_erc20WithdrawalApproval {
   __typename: "Erc20WithdrawalApproval";
   /**
    * The source asset in the ethereum network
@@ -34,15 +34,19 @@ export interface Erc20Approval_erc20WithdrawalApproval {
    * Timestamp in seconds for expiry of the approval
    */
   expiry: string;
+  /**
+   * Timestamp at which the withdrawal was created
+   */
+  creation: string;
 }
 
-export interface Erc20Approval {
+export interface Erc20ApprovalNew {
   /**
    * find an erc20 withdrawal approval using its withdrawal id
    */
-  erc20WithdrawalApproval: Erc20Approval_erc20WithdrawalApproval | null;
+  erc20WithdrawalApproval: Erc20ApprovalNew_erc20WithdrawalApproval | null;
 }
 
-export interface Erc20ApprovalVariables {
+export interface Erc20ApprovalNewVariables {
   withdrawalId: string;
 }

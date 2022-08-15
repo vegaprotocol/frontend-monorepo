@@ -17,6 +17,7 @@ import { truncateMiddle } from '../../lib/truncate-middle';
 import type { Withdrawals_party_withdrawals } from '@vegaprotocol/withdraws';
 import { useCompleteWithdraw, useWithdrawals } from '@vegaprotocol/withdraws';
 import { WithdrawalStatus } from '../../__generated__/globalTypes';
+import { Flags } from '../../config';
 
 const Withdrawals = () => {
   const { t } = useTranslation();
@@ -33,7 +34,7 @@ const Withdrawals = () => {
 
 const WithdrawPendingContainer = () => {
   const { t } = useTranslation();
-  const { submit, Dialog } = useCompleteWithdraw();
+  const { submit, Dialog } = useCompleteWithdraw(Flags.USE_NEW_BRIDGE_CONTRACT);
   const { data, loading, error } = useWithdrawals();
 
   const withdrawals = React.useMemo(() => {
@@ -92,7 +93,7 @@ interface WithdrawalProps {
 export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
   const { t } = useTranslation();
-  let status;
+  let status = null;
   let footer = null;
 
   if (withdrawal.pendingOnForeignChain) {

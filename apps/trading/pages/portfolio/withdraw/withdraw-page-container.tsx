@@ -87,6 +87,7 @@ export const WithdrawPageContainer = ({
               assets={data.assets}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
+              isNewContract={true}
             />
           </>
         );
