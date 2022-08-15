@@ -96,6 +96,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           flex: 1,
           resizable: true,
         }}
+        rowHeight={40}
         components={{ PriceCell }}
         onSortChanged={({ api, columnApi }) => {
           addSummaryRows(api, columnApi, getGroupId, getGroupSummaryRow);

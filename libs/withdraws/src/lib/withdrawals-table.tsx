@@ -32,6 +32,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
         style={{ width: '100%', height: '100%' }}
         components={{ StatusCell, RecipientCell }}
         suppressCellFocus={true}
+        rowHeight={40}
       >
         <AgGridColumn headerName="Asset" field="asset.symbol" />
         <AgGridColumn

@@ -83,6 +83,7 @@ export const PositionsTable = forwardRef<AgGridReact, PositionsTableProps>(
           flex: 1,
           resizable: true,
         }}
+        rowHeight={40}
         onGridReady={(event) => {
           event.columnApi.applyColumnState({
             state: [
