@@ -128,7 +128,10 @@ export const useOrderValidation = ({
       };
     }
 
-    if (fieldErrors?.price?.type === 'required' && orderType !== OrderType.Market) {
+    if (
+      fieldErrors?.price?.type === 'required' &&
+      orderType !== OrderType.Market
+    ) {
       return {
         isDisabled: true,
         message: t('You need to provide a price'),
