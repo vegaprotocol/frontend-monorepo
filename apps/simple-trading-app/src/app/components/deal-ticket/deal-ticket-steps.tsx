@@ -72,6 +72,14 @@ export const DealTicketSteps = ({
     market,
     partyId: keypair?.pub || '',
   });
+  const value = new BigNumber(orderSize).toNumber();
+  const price =
+    market.depth.lastTrade &&
+    addDecimal(market.depth.lastTrade.price, market.decimalPlaces);
+  const emptyString = ' - ';
+
+  const [notionalSize, setNotionalSize] = useState<string | null>(null);
+  const [fees, setFees] = useState<string | null>(null);
 
   const maxTrade = useMaximumPositionSize({
     partyId: keypair?.pub || '',
@@ -111,6 +119,28 @@ export const DealTicketSteps = ({
       setValue('size', newVal);
     }
   };
+
+  useEffect(() => {
+    if (market?.depth?.lastTrade?.price) {
+      const size = new BigNumber(market.depth.lastTrade.price)
+        .multipliedBy(value)
+        .toNumber();
+
+      setNotionalSize(addDecimal(size, market.decimalPlaces));
+    }
+  }, [market, value]);
+
+  useEffect(() => {
+    if (estMargin?.fees && notionalSize) {
+      const percentage = new BigNumber(estMargin?.fees)
+        .dividedBy(notionalSize)
+        .multipliedBy(100)
+        .decimalPlaces(2)
+        .toString();
+
+      setFees(`${estMargin.fees} (${percentage}%)`);
+    }
+  }, [estMargin, notionalSize]);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -163,15 +193,16 @@ export const DealTicketSteps = ({
             onValueChange={onSizeChange}
             value={new BigNumber(orderSize).toNumber()}
             name="size"
-            price={
-              market.depth.lastTrade
-                ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-                : ''
-            }
+            price={price || emptyString}
             positionDecimalPlaces={market.positionDecimalPlaces}
-            quoteName={market.tradableInstrument.instrument.product.quoteName}
+            quoteName={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            }
+            notionalSize={notionalSize || emptyString}
             estCloseOut={estCloseOut}
-            estMargin={estMargin || ' - '}
+            fees={fees || emptyString}
+            estMargin={estMargin?.margin || emptyString}
           />
         ) : (
           'loading...'
@@ -193,7 +224,14 @@ export const DealTicketSteps = ({
             transactionStatus={transactionStatus}
             order={order}
             estCloseOut={estCloseOut}
-            estMargin={estMargin || ' - '}
+            estMargin={estMargin?.margin || emptyString}
+            price={price || emptyString}
+            quoteName={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            }
+            notionalSize={notionalSize || emptyString}
+            fees={fees || emptyString}
           />
           <TransactionDialog
             title={getOrderDialogTitle(finalizedOrder?.status)}
