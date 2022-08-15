@@ -10,7 +10,7 @@ import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Order } from './use-order-submit';
 
-export type ValidationArgs = {
+export type ValidationProps = {
   step: number;
   market: {
     state: MarketState;
@@ -37,7 +37,7 @@ export const useOrderValidation = ({
   fieldErrors = {},
   orderType,
   orderTimeInForce,
-}: ValidationArgs) => {
+}: ValidationProps) => {
   const { keypair } = useVegaWallet();
 
   const { message, isDisabled } = useMemo(() => {
@@ -57,6 +57,7 @@ export const useOrderValidation = ({
         MarketState.Settled,
         MarketState.Rejected,
         MarketState.TradingTerminated,
+        MarketState.Closed,
       ].includes(market.state)
     ) {
       return {
@@ -69,15 +70,7 @@ export const useOrderValidation = ({
       };
     }
 
-    if (
-      [
-        MarketState.Suspended,
-        MarketState.Pending,
-        MarketState.Proposed,
-        MarketState.Cancelled,
-        MarketState.Closed,
-      ].includes(market.state)
-    ) {
+    if ([MarketState.Proposed, MarketState.Pending].includes(market.state)) {
       return {
         isDisabled: false,
         message: t(
@@ -88,65 +81,7 @@ export const useOrderValidation = ({
       };
     }
 
-    if (market.state !== MarketState.Active) {
-      if (market.state === MarketState.Suspended) {
-        if (market.tradingMode === MarketTradingMode.Continuous) {
-          if (orderType !== OrderType.Limit) {
-            return {
-              isDisabled: true,
-              message: t(
-                'Only limit orders are permitted when market is in auction'
-              ),
-            };
-          }
-
-          if (
-            [
-              OrderTimeInForce.FOK,
-              OrderTimeInForce.IOC,
-              OrderTimeInForce.GFN,
-            ].includes(orderTimeInForce)
-          ) {
-            return {
-              isDisabled: true,
-              message: t(
-                'Only GTT, GTC and GFA are permitted when market is in auction'
-              ),
-            };
-          }
-        }
-
-        return {
-          isDisabled: false,
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and only accepting liquidity commitment orders`
-          ),
-        };
-      }
-
-      if (
-        market.state === MarketState.Proposed ||
-        market.state === MarketState.Pending
-      ) {
-        return {
-          isDisabled: false,
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and only accepting liquidity commitment orders`
-          ),
-        };
-      }
-
-      return {
-        isDisabled: true,
-        message: t('This market is no longer active.'),
-      };
-    }
-
-    if (market.tradingMode !== MarketTradingMode.Continuous) {
+    if ([MarketTradingMode.BatchAuction, MarketTradingMode.MonitoringAuction, MarketTradingMode.OpeningAuction].includes(market.tradingMode)) {
       if (orderType !== OrderType.Limit) {
         return {
           isDisabled: true,

@@ -1,7 +1,6 @@
 import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
 import {
   addDecimal,
-  formatLabel,
   getDateTimeFormat,
   t,
 } from '@vegaprotocol/react-helpers';
@@ -29,6 +28,7 @@ import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
 import type { OrderFields } from '../order-data-provider/__generated__';
 import { OrderFeedback } from '../order-feedback';
+import startCase from 'lodash/startCase';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
@@ -157,9 +157,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               return undefined;
             }
             if (value === OrderStatus.Rejected) {
-              return `${value}: ${
-                data.rejectionReason && formatLabel(data.rejectionReason)
-              }`;
+              return `${value}: ${data.rejectionReason && startCase(data.rejectionReason)
+                }`;
             }
             return value;
           }}
@@ -316,8 +315,16 @@ const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
       return t('Order partially filled');
     case OrderStatus.Parked:
       return t('Order parked');
+    case OrderStatus.Stopped:
+      return t('Order stopped');
+    case OrderStatus.Expired:
+      return t('Order expired');
+    case OrderStatus.Cancelled:
+      return t('Order cancelled');
+    case OrderStatus.Rejected:
+      return t('Order rejected');
     default:
-      return t('Submission failed');
+      return t('Order amendment failed');
   }
 };
 
