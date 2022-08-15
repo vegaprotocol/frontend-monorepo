@@ -46,69 +46,6 @@ describe('markets table', () => {
     verifyMarketSummaryDisplayed();
   });
 
-  it.skip('renders correctly - old', () => {
-    const marketRowHeaderClassname = 'div > span.ag-header-cell-text';
-    const marketRowNameColumn = 'tradableInstrument.instrument.code';
-    const marketRowSymbolColumn =
-      'tradableInstrument.instrument.product.settlementAsset.symbol';
-    const marketRowPrices = 'flash-cell';
-    const marketRowDescription = 'name';
-
-    cy.wait('@Markets');
-    cy.get('.ag-root-wrapper').should('be.visible');
-
-    const expectedMarketHeaders = [
-      'Market',
-      'Settlement asset',
-      'Trading mode',
-      'Best bid',
-      'Best offer',
-      'Mark price',
-      'Description',
-    ];
-
-    for (let index = 0; index < expectedMarketHeaders.length; index++) {
-      cy.get(marketRowHeaderClassname).should(
-        'contain.text',
-        expectedMarketHeaders[index]
-      );
-    }
-
-    cy.get(`[col-id='${marketRowNameColumn}']`).each(($marketName) => {
-      cy.wrap($marketName).should('not.be.empty');
-    });
-
-    cy.get(`[col-id='${marketRowSymbolColumn}']`).each(($marketSymbol) => {
-      cy.wrap($marketSymbol).should('not.be.empty');
-    });
-
-    cy.getByTestId(marketRowPrices).each(($price) => {
-      cy.wrap($price).should('not.be.empty').and('contain.text', '.');
-    });
-
-    cy.get(`[col-id='${marketRowDescription}']`).each(($marketDescription) => {
-      cy.wrap($marketDescription).should('not.be.empty');
-    });
-  });
-
-  it.skip('can select an active market', () => {
-    cy.wait('@Markets');
-    cy.get('.ag-root-wrapper').should('be.visible');
-
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Active);
-    });
-
-    // click on market
-    cy.get('[role="gridcell"][col-id=data]').should('be.visible');
-    cy.get('[role="gridcell"][col-id=name]').contains('ACTIVE MARKET').click();
-
-    cy.wait('@Market');
-    cy.contains('ACTIVE MARKET');
-    cy.url().should('include', '/markets/market-0');
-    verifyMarketSummaryDisplayed();
-  });
-
   function openMarketDropDown() {
     cy.getByTestId('dialog-close').click();
     cy.getByTestId('popover-trigger').click();
@@ -130,6 +67,7 @@ describe('markets table', () => {
       cy.getByTestId(tradingVolume).should('not.be.empty');
       cy.contains('Trading mode');
       cy.getByTestId(tradingMode).should('not.be.empty');
+      cy.getByTestId('mark-price').should('not.be.empty');
     });
   }
 });
