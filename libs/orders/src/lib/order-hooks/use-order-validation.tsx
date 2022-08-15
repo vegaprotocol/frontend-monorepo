@@ -114,7 +114,7 @@ export const useOrderValidation = ({
       }
     }
 
-    if (market.state === MarketState.Suspended) {
+    if ([MarketTradingMode.BatchAuction, MarketTradingMode.MonitoringAuction, MarketTradingMode.OpeningAuction].includes(market.tradingMode)) {
       return {
         isDisabled: false,
         message: t(
