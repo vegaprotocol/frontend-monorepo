@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import type { Accounts } from '@vegaprotocol/accounts';
+import type { Accounts_party_accounts } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
 import type { Positions, Positions_party } from './__generated__/Positions';
 import {
@@ -116,26 +116,26 @@ export const POSITIONS_SUBSCRIPTION = gql`
 `;
 
 export const getMetrics = (
-  data: Positions | null,
-  accounts: Accounts | null
+  data: Positions_party | null,
+  accounts: Accounts_party_accounts[] | null
 ): Position[] => {
-  if (!data || !data.party?.positionsConnection.edges) {
+  if (!data || !data?.positionsConnection.edges) {
     return [];
   }
   const metrics: Position[] = [];
-  data.party?.positionsConnection.edges.forEach((position) => {
+  data?.positionsConnection.edges.forEach((position) => {
     const market = position.node.market;
     const marketData = market.data;
     const marginLevel = position.node.marginsConnection.edges?.find(
       (margin) => margin.node.market.id === market.id
     )?.node;
-    const marginAccount = accounts?.party?.accounts?.find(
-      (account) => account.market?.id === market.id
-    );
+    const marginAccount = accounts?.find((account) => {
+      return account.market?.id === market.id;
+    });
     if (!marginAccount || !marginLevel || !marketData) {
       return;
     }
-    const generalAccount = accounts?.party?.accounts?.find(
+    const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
         account.type === AccountType.General
@@ -230,10 +230,10 @@ export const getMetrics = (
 
 export const update = (
   data: Positions_party,
-  delta: PositionsSubscription_positions
+  delta: PositionsSubscription_positions | null
 ) => {
   return produce(data, (draft) => {
-    if (!draft.positionsConnection.edges) {
+    if (!draft.positionsConnection.edges || !delta) {
       return;
     }
     const index = draft.positionsConnection.edges.findIndex(
@@ -268,7 +268,10 @@ export const positionsMetricsDataProvider = makeDependencyDataProvider<
   Position[]
 >([positionDataProvider, accountsDataProvider], ([positions, accounts]) => {
   return sortBy(
-    getMetrics(positions as Positions | null, accounts as Accounts | null),
+    getMetrics(
+      positions as Positions_party | null,
+      accounts as Accounts_party_accounts[] | null
+    ),
     'updatedAt'
   ).reverse();
 });

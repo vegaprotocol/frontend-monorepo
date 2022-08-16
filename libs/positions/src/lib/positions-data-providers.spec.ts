@@ -184,12 +184,12 @@ const data: Positions = {
 
 describe('getMetrics', () => {
   it('returns positions metrics', () => {
-    const metrics = getMetrics(data, accounts);
+    const metrics = getMetrics(data.party, accounts.party?.accounts ?? null);
     expect(metrics.length).toEqual(2);
   });
 
   it('calculates metrics', () => {
-    const metrics = getMetrics(data, accounts);
+    const metrics = getMetrics(data.party, accounts.party?.accounts ?? null);
 
     expect(metrics[0].assetSymbol).toEqual('tDAI');
     expect(metrics[0].averageEntryPrice).toEqual('8993727');

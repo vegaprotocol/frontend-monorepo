@@ -83,7 +83,7 @@ export const generatePositions = (
               collateralReleaseLevel: '0',
               market: {
                 __typename: 'Market',
-                id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376  ',
+                id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
               },
               asset: {
                 __typename: 'Asset',
