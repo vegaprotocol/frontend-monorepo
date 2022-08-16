@@ -9,7 +9,7 @@ it('Renders a tooltip', async () => {
   render(<Tooltip {...props} />);
   // radix applies the data-state attribute
   expect(screen.getByRole('button')).toHaveAttribute('data-state', 'closed');
-  fireEvent.mouseOver(screen.getByRole('button'));
+  fireEvent.pointerMove(screen.getByRole('button'));
   expect(await screen.findByRole('tooltip')).toBeInTheDocument();
 });
 
@@ -23,6 +23,6 @@ it('Doesnt render a tooltip if no description provided', () => {
     'data-state',
     'closed'
   );
-  fireEvent.mouseOver(screen.getByRole('button'));
+  fireEvent.pointerMove(screen.getByRole('button'));
   expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
 });

@@ -90,25 +90,30 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
     '.tooltip-content': {
       '& > div': {
         fontSize: '12px',
-        borderColor: theme.colors.black.DEFAULT,
         borderWeight: '1px',
-        backgroundColor: 'rgb(220, 220, 200)',
         borderRadius: '7px',
-        color: '#333333',
+        borderColor: theme.colors.black.DEFAULT,
+        backgroundColor: theme.colors.black.DEFAULT,
+        color: theme.colors.white.DEFAULT,
       },
       '& svg[width="10"]': {
         fill: theme.colors.black.DEFAULT,
       },
       '& svg[width="8"]': {
-        fill: 'rgb(220, 220, 200)',
+        fill: theme.colors.black.DEFAULT,
       },
     },
     '.tooltip-content-dark': {
       '& > div': {
-        borderColor: theme.colors.white.DEFAULT,
+        borderColor: theme.colors.black.DEFAULT,
+        backgroundColor: '#dcdcc8',
+        color: '#333333',
       },
       '& svg[width="10"]': {
         fill: theme.colors.white.DEFAULT,
+      },
+      '& svg[width="8"]': {
+        fill: '#dcdcc8',
       },
     },
   });

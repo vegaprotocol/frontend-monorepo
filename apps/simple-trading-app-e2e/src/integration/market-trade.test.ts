@@ -113,6 +113,9 @@ describe('Market trade', () => {
         .eq(0)
         .find('button')
         .should('have.text', '1');
+
+      cy.getByTestId('max-label').should('have.text', '21');
+
       cy.getByTestId('percentage-selector')
         .find('button')
         .contains('Max')
@@ -157,6 +160,13 @@ describe('Market trade', () => {
       cy.visit(`/trading/${markets[0].id}`);
       connectVegaWallet();
       cy.get('h3').contains('Review Trade').click();
+
+      cy.get('.cursor-help').eq(0).trigger('mouseover');
+      cy.get('[data-radix-portal]').contains(
+        'When opening a position on a futures market,'
+      );
+      cy.get('.cursor-help').eq(0).trigger('mouseout');
+      cy.get('[data-radix-portal]').should('not.be.visible');
       cy.getByTestId('key-value-table')
         .find('dl')
         .eq(1)
