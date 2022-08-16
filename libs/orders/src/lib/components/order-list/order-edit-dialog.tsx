@@ -1,5 +1,4 @@
 import {
-  addDecimal,
   t,
   addDecimalsFormatNumber,
   toDecimal,
@@ -40,14 +39,12 @@ export const OrderEditDialog = ({
     handleSubmit,
   } = useForm<FormFields>({
     defaultValues: {
-      entryPrice: order?.price
-        ? addDecimal(order?.price, order?.market?.decimalPlaces ?? 0)
-        : '',
+      entryPrice: order?.price ? order.price : '',
     },
   });
 
   if (!order) return null;
-  const step = toDecimal(order.market?.positionDecimalPlaces ?? 0);
+  const step = toDecimal(order.market?.decimalPlaces ?? 0);
 
   return (
     <Dialog
