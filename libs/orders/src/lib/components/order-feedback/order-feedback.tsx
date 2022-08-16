@@ -90,7 +90,7 @@ const rejectionReason = (
   switch (order.status) {
     case OrderStatus.Stopped:
       return t(
-        `The network could not fill the ${order.timeInForce} order and it has been stopped`
+        `Your ${order.timeInForce} order was not filled and it has been stopped`
       );
     case OrderStatus.Rejected:
       return order.rejectionReason && t(formatLabel(order.rejectionReason));
