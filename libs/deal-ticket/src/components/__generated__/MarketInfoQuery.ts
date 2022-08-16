@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { MarketState, MarketTradingMode, AccountType } from "@vegaprotocol/types";
+import { Interval, MarketState, MarketTradingMode, AccountType, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketInfoQuery
@@ -119,6 +119,44 @@ export interface MarketInfoQuery_market_data_market {
   id: string;
 }
 
+export interface MarketInfoQuery_market_data_priceMonitoringBounds_trigger {
+  __typename: "PriceMonitoringTrigger";
+  /**
+   * Price monitoring projection horizon τ in seconds (> 0).
+   */
+  horizonSecs: number;
+  /**
+   * Price monitoring probability level p. (>0 and < 1)
+   */
+  probability: number;
+  /**
+   * Price monitoring auction extension duration in seconds should the price
+   * breach it's theoretical level over the specified horizon at the specified
+   * probability level (> 0)
+   */
+  auctionExtensionSecs: number;
+}
+
+export interface MarketInfoQuery_market_data_priceMonitoringBounds {
+  __typename: "PriceMonitoringBounds";
+  /**
+   * Minimum price that isn't currently breaching the specified price monitoring trigger
+   */
+  minValidPrice: string;
+  /**
+   * Maximum price that isn't currently breaching the specified price monitoring trigger
+   */
+  maxValidPrice: string;
+  /**
+   * Price monitoring trigger associated with the bounds
+   */
+  trigger: MarketInfoQuery_market_data_priceMonitoringBounds_trigger;
+  /**
+   * Reference price used to calculate the valid price range
+   */
+  referencePrice: string;
+}
+
 export interface MarketInfoQuery_market_data {
   __typename: "MarketData";
   /**
@@ -153,6 +191,22 @@ export interface MarketInfoQuery_market_data {
    * the sum of the size of all positions greater than 0.
    */
   openInterest: string;
+  /**
+   * the highest price level on an order book for buy orders.
+   */
+  bestBidPrice: string;
+  /**
+   * the lowest price level on an order book for offer orders.
+   */
+  bestOfferPrice: string;
+  /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
+  /**
+   * A list of valid price ranges per associated trigger
+   */
+  priceMonitoringBounds: MarketInfoQuery_market_data_priceMonitoringBounds[] | null;
 }
 
 export interface MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters {
@@ -177,6 +231,26 @@ export interface MarketInfoQuery_market_liquidityMonitoringParameters {
    * Specifies parameters related to target stake calculation
    */
   targetStakeParameters: MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters;
+}
+
+export interface MarketInfoQuery_market_candles {
+  __typename: "Candle";
+  /**
+   * Open price (uint64)
+   */
+  open: string;
+  /**
+   * Close price (uint64)
+   */
+  close: string;
+  /**
+   * High price (uint64)
+   */
+  high: string;
+  /**
+   * Low price (uint64)
+   */
+  low: string;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
@@ -421,6 +495,10 @@ export interface MarketInfoQuery_market {
    */
   liquidityMonitoringParameters: MarketInfoQuery_market_liquidityMonitoringParameters;
   /**
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by params
+   */
+  candles: (MarketInfoQuery_market_candles | null)[] | null;
+  /**
    * An instance of or reference to a tradable instrument.
    */
   tradableInstrument: MarketInfoQuery_market_tradableInstrument;
@@ -439,4 +517,6 @@ export interface MarketInfoQuery {
 
 export interface MarketInfoQueryVariables {
   marketId: string;
+  interval: Interval;
+  since: string;
 }

@@ -18,129 +18,10 @@ import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
-
-const MARKET_INFO_QUERY = gql`
-  query MarketInfoQuery($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      name
-      decimalPlaces
-      positionDecimalPlaces
-      state
-      tradingMode
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
-      fees {
-        factors {
-          makerFee
-          infrastructureFee
-          liquidityFee
-        }
-      }
-      priceMonitoringSettings {
-        parameters {
-          triggers {
-            horizonSecs
-            probability
-            auctionExtensionSecs
-          }
-        }
-        updateFrequencySecs
-      }
-      riskFactors {
-        market
-        short
-        long
-      }
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
-      data {
-        market {
-          id
-        }
-        markPrice
-        indicativeVolume
-        bestBidVolume
-        bestOfferVolume
-        bestStaticBidVolume
-        bestStaticOfferVolume
-        indicativeVolume
-        openInterest
-      }
-      liquidityMonitoringParameters {
-        triggeringRatio
-        targetStakeParameters {
-          timeWindow
-          scalingFactor
-        }
-      }
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-              oracleSpecForSettlementPrice {
-                id
-              }
-              oracleSpecForTradingTermination {
-                id
-              }
-              oracleSpecBinding {
-                settlementPriceProperty
-                tradingTerminationProperty
-              }
-            }
-          }
-        }
-        riskModel {
-          ... on LogNormalRiskModel {
-            tau
-            riskAversionParameter
-            params {
-              r
-              sigma
-              mu
-            }
-          }
-          ... on SimpleRiskModel {
-            params {
-              factorLong
-              factorShort
-            }
-          }
-        }
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
-    }
-  }
-`;
+import { Interval } from '@vegaprotocol/types';
+import { MARKET_INFO_QUERY } from './info-market-query';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
@@ -150,8 +31,11 @@ export interface MarketInfoContainerProps {
   marketId: string;
 }
 export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
+  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+  const yTimestamp = new Date(yesterday * 1000).toISOString();
+
   const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
-    variables: { marketId },
+    variables: { marketId, interval: Interval.I1H, since: yTimestamp },
   });
 
   return (
@@ -212,7 +96,10 @@ export const Info = ({ market }: InfoProps) => {
             'bestBidVolume',
             'bestOfferVolume',
             'bestStaticBidVolume',
-            'bestStaticOfferVolume'
+            'bestStaticOfferVolume',
+            'bestBidPrice',
+            'bestOfferPrice',
+            'trigger'
           )}
           decimalPlaces={market.positionDecimalPlaces}
         />
@@ -311,10 +198,16 @@ export const Info = ({ market }: InfoProps) => {
     },
     ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
       (trigger, i) => ({
-        title: t(`Price monitoring trigger ${i + 1}`),
+        title: t(`Price monitoring trigger #${i + 1}`),
         content: <MarketInfoTable data={trigger} />,
       })
     ),
+    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
+      title: t(`Price monitoring bound #${i + 1}`),
+      content: (
+        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
+      ),
+    })),
     {
       title: t('Liquidity monitoring parameters'),
       content: (
