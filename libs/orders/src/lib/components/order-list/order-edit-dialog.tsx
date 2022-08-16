@@ -87,7 +87,7 @@ export const OrderEditDialog = ({
         <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input
-              type="text"
+              type="number"
               step={step}
               {...register('entryPrice', {
                 required: t('You need to provide a price'),
