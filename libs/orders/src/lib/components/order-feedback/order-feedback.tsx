@@ -18,7 +18,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   const labelClass = 'font-bold text-black dark:text-white';
   if (!order) return null;
 
-  const orderRejectionReason = rejectionReason(order);
+  const orderRejectionReason = getRejectionReason(order);
 
   return (
     <div data-testid="order-confirmed">
@@ -84,13 +84,13 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   );
 };
 
-const rejectionReason = (
+const getRejectionReason = (
   order: OrderEvent_busEvents_event_Order
 ): string | null => {
   switch (order.status) {
     case OrderStatus.Stopped:
       return t(
-        `The network could not fill the ${order.timeInForce} order and it has been stopped`
+        `Your ${order.timeInForce} order was not filled and it has been stopped`
       );
     case OrderStatus.Rejected:
       return order.rejectionReason && t(formatLabel(order.rejectionReason));
