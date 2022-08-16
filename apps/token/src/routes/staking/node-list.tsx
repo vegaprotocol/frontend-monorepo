@@ -87,7 +87,10 @@ const nodeListGridStyles = `
 
 export const NodeList = ({ epoch }: NodeListProps) => {
   const { t } = useTranslation();
-  const { data, error, loading, refetch } = useQuery<Nodes>(NODES_QUERY);
+  // errorPolicy due to vegaprotocol/vega issue 5898
+  const { data, error, loading, refetch } = useQuery<Nodes>(NODES_QUERY, {
+    errorPolicy: 'ignore',
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
