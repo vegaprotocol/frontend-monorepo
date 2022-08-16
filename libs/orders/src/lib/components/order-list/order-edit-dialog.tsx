@@ -37,14 +37,15 @@ export const OrderEditDialog = ({
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<FormFields>({
-    defaultValues: {
-      entryPrice: order?.price ? order.price : '',
-    },
-  });
+    setValue,
+  } = useForm<FormFields>();
 
   if (!order) return null;
   const step = toDecimal(order.market?.decimalPlaces ?? 0);
+  setValue(
+    'entryPrice',
+    addDecimalsFormatNumber(order.price, order.market?.decimalPlaces ?? 0)
+  );
 
   return (
     <Dialog
