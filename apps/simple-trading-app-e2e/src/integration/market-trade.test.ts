@@ -206,9 +206,11 @@ describe('Market trade', () => {
       connectVegaWallet();
       cy.get('h3').contains('Review Trade').click();
 
-      cy.get('.cursor-help').eq(0).trigger('mouseover');
-      cy.get('[data-radix-portal]').contains(
-        'When opening a position on a futures market,'
+      cy.getByTestId('review-trade')
+        .get('#contracts_tooltip_trigger')
+        .realHover();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The number of contracts determines'
       );
       cy.get('#step-3-panel').find('dd').eq(1).should('have.text', '1');
 

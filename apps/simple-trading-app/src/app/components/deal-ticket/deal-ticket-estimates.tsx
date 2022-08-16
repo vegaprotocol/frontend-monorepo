@@ -1,6 +1,9 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
+import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { IconNames } from '@blueprintjs/icons';
+import * as constants from './constants';
 
 interface DealTicketEstimatesProps {
   quoteName?: string;
@@ -36,8 +39,22 @@ export const DealTicketEstimates = ({
   <dl className="text-black dark:text-white">
     {size && (
       <div className="flex justify-between mb-8">
-        <DataTitle>{t('No. of Contracts')}</DataTitle>
-        <dd>{size}</dd>
+        <DataTitle>{t('Contracts')}</DataTitle>
+        <dd className="flex gap-x-5 items-center">
+          {size}
+          <Tooltip
+            align="center"
+            description={constants.CONTRACTS_MARGIN_TOOLTIP_TEXT}
+          >
+            <div className="cursor-help" id="contracts_tooltip_trigger">
+              <Icon
+                name={IconNames.ISSUE}
+                className="block rotate-180"
+                ariaLabel={constants.CONTRACTS_MARGIN_TOOLTIP_TEXT}
+              />
+            </div>
+          </Tooltip>
+        </dd>
       </div>
     )}
     {price && (
@@ -49,19 +66,58 @@ export const DealTicketEstimates = ({
     {notionalSize && (
       <div className="flex justify-between mb-8">
         <DataTitle quoteName={quoteName}>{t('Est. Position Size')}</DataTitle>
-        <dd>{notionalSize}</dd>
+        <dd className="flex gap-x-5 items-center">
+          {notionalSize}
+          <Tooltip
+            align="center"
+            description={constants.NOTIONAL_SIZE_TOOLTIP_TEXT}
+          >
+            <div className="cursor-help">
+              <Icon
+                name={IconNames.ISSUE}
+                className="block rotate-180"
+                ariaLabel={constants.NOTIONAL_SIZE_TOOLTIP_TEXT}
+              />
+            </div>
+          </Tooltip>
+        </dd>
       </div>
     )}
     {fees && (
       <div className="flex justify-between mb-8">
         <DataTitle quoteName={quoteName}>{t('Est. Fees')}</DataTitle>
-        <dd>{fees}</dd>
+        <dd className="flex gap-x-5 items-center">
+          {fees}
+          <Tooltip align="center" description={constants.EST_FEES_TOOLTIP_TEXT}>
+            <div className="cursor-help">
+              <Icon
+                name={IconNames.ISSUE}
+                className="block rotate-180"
+                ariaLabel={constants.EST_FEES_TOOLTIP_TEXT}
+              />
+            </div>
+          </Tooltip>
+        </dd>
       </div>
     )}
     {estMargin && (
       <div className="flex justify-between mb-8">
         <DataTitle quoteName={quoteName}>{t('Est. Margin')}</DataTitle>
-        <dd>{estMargin}</dd>
+        <dd className="flex gap-x-5 items-center">
+          {estMargin}
+          <Tooltip
+            align="center"
+            description={constants.EST_MARGIN_TOOLTIP_TEXT}
+          >
+            <div className="cursor-help">
+              <Icon
+                name={IconNames.ISSUE}
+                className="block rotate-180"
+                ariaLabel={constants.EST_MARGIN_TOOLTIP_TEXT}
+              />
+            </div>
+          </Tooltip>
+        </dd>
       </div>
     )}
     {estCloseOut && (
@@ -71,7 +127,21 @@ export const DealTicketEstimates = ({
           &nbsp;
           <small>({quoteName})</small>
         </dt>
-        <dd>{estCloseOut}</dd>
+        <dd className="flex gap-x-5 items-center">
+          {estCloseOut}
+          <Tooltip
+            align="center"
+            description={constants.EST_CLOSEOUT_TOOLTIP_TEXT}
+          >
+            <div className="cursor-help">
+              <Icon
+                name={IconNames.ISSUE}
+                className="block rotate-180"
+                ariaLabel={constants.EST_CLOSEOUT_TOOLTIP_TEXT}
+              />
+            </div>
+          </Tooltip>
+        </dd>
       </div>
     )}
   </dl>
