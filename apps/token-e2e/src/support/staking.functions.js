@@ -138,7 +138,7 @@ Cypress.Commands.add(
     });
   }
 );
-  
+
 Cypress.Commands.add(
   'ensure_specified_unstaked_tokens_are_associated',
   (tokenAmount) => {

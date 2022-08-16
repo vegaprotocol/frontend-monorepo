@@ -16,13 +16,15 @@ context('Governance flow - with eth and vega wallets connected', function () {
     cy.vega_wallet_import();
     cy.visit('/');
     cy.verify_page_header('The $VEGA token');
-    cy.get_network_parameters().then(network_parameters => {
-      cy.wrap(network_parameters['governance.proposal.freeform.minProposerBalance'])
-        .as('minProposerBalance');
-      cy.wrap(network_parameters['governance.proposal.freeform.minClose'])
-        .as('minProposerBalance');
+    cy.get_network_parameters().then((network_parameters) => {
+      cy.wrap(
+        network_parameters['governance.proposal.freeform.minProposerBalance']
+      ).as('minProposerBalance');
+      cy.wrap(network_parameters['governance.proposal.freeform.minClose']).as(
+        'minProposerBalance'
+      );
     });
-    cy.pause()
+    cy.pause();
     cy.vega_wallet_connect();
     cy.vega_wallet_set_specified_approval_amount('1000');
     cy.reload();
