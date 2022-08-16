@@ -31,30 +31,15 @@ const POSITIONS_FRAGMENT = gql`
       positionDecimalPlaces
       tradableInstrument {
         instrument {
-          id
           name
-          metadata {
-            tags
-          }
           code
-          product {
-            ... on Future {
-              settlementAsset {
-                id
-                symbol
-                name
-                decimals
-              }
-              quoteName
-            }
-          }
         }
       }
     }
   }
 `;
 
-const POSITION_QUERY = gql`
+export const POSITION_QUERY = gql`
   ${POSITIONS_FRAGMENT}
   query Positions($partyId: ID!) {
     party(id: $partyId) {

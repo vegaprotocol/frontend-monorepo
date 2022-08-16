@@ -1,29 +1,34 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
+import { BigNumber } from 'bignumber.js';
 import {
-  DealTicketAmount,
   getOrderDialogTitle,
   getOrderDialogIntent,
   getOrderDialogIcon,
   MarketSelector,
 } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
-import { VegaTxStatus } from '@vegaprotocol/wallet';
+import { useVegaWallet, VegaTxStatus } from '@vegaprotocol/wallet';
 import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
 import {
   getDefaultOrder,
   useOrderValidation,
   useOrderSubmit,
   OrderFeedback,
+  validateSize,
 } from '@vegaprotocol/orders';
+import { DealTicketSize } from './deal-ticket-size';
 import MarketNameRenderer from '../simple-market-list/simple-market-renderer';
 import SideSelector, { SIDE_NAMES } from './side-selector';
 import ReviewTrade from './review-trade';
 import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
+import useOrderCloseOut from '../../hooks/use-order-closeout';
+import useOrderMargin from '../../hooks/use-order-margin';
+import useMaximumPositionSize from '../../hooks/use-maximum-position-size';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
@@ -43,21 +48,56 @@ export const DealTicketSteps = ({
   );
 
   const {
-    register,
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<Order>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
 
+  const [max, setMax] = useState<number | null>(null);
   const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
   const orderSide = watch('side');
+  const orderSize = watch('size');
   const order = watch();
+  const estCloseOut = useOrderCloseOut({ order, market, partyData });
+  const { keypair } = useVegaWallet();
+  const estMargin = useOrderMargin({
+    order,
+    market,
+    partyId: keypair?.pub || '',
+  });
+  const value = new BigNumber(orderSize).toNumber();
+  const price =
+    market.depth.lastTrade &&
+    addDecimal(market.depth.lastTrade.price, market.decimalPlaces);
+  const emptyString = ' - ';
+
+  const [notionalSize, setNotionalSize] = useState<string | null>(null);
+  const [fees, setFees] = useState<string | null>(null);
+
+  const maxTrade = useMaximumPositionSize({
+    partyId: keypair?.pub || '',
+    accounts: partyData?.party?.accounts || [],
+    marketId: market.id,
+    settlementAssetId:
+      market.tradableInstrument.instrument.product.settlementAsset.id,
+    price: market?.depth?.lastTrade?.price,
+    order,
+  });
+
+  useEffect(() => {
+    setMax(
+      new BigNumber(maxTrade)
+        .decimalPlaces(market.positionDecimalPlaces)
+        .toNumber()
+    );
+  }, [maxTrade, market.positionDecimalPlaces]);
 
   const { message: invalidText, isDisabled } = useOrderValidation({
     step,
@@ -69,6 +109,38 @@ export const DealTicketSteps = ({
 
   const { submit, transaction, finalizedOrder, TransactionDialog } =
     useOrderSubmit(market);
+
+  const onSizeChange = (value: number[]) => {
+    const newVal = new BigNumber(value[0])
+      .decimalPlaces(market.positionDecimalPlaces)
+      .toString();
+    const isValid = validateSize(step)(newVal);
+    if (isValid !== 'step') {
+      setValue('size', newVal);
+    }
+  };
+
+  useEffect(() => {
+    if (market?.depth?.lastTrade?.price) {
+      const size = new BigNumber(market.depth.lastTrade.price)
+        .multipliedBy(value)
+        .toNumber();
+
+      setNotionalSize(addDecimal(size, market.decimalPlaces));
+    }
+  }, [market, value]);
+
+  useEffect(() => {
+    if (estMargin?.fees && notionalSize) {
+      const percentage = new BigNumber(estMargin?.fees)
+        .dividedBy(notionalSize)
+        .multipliedBy(100)
+        .decimalPlaces(2)
+        .toString();
+
+      setFees(`${estMargin.fees} (${percentage}%)`);
+    }
+  }, [estMargin, notionalSize]);
 
   const transactionStatus =
     transaction.status === VegaTxStatus.Requested ||
@@ -112,19 +184,30 @@ export const DealTicketSteps = ({
     },
     {
       label: t('Choose Position Size'),
-      component: (
-        <DealTicketAmount
-          orderType={orderType}
-          step={step}
-          register={register}
-          price={
-            market.depth.lastTrade
-              ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-              : undefined
-          }
-          quoteName={market.tradableInstrument.instrument.product.quoteName}
-        />
-      ),
+      component:
+        max !== null ? (
+          <DealTicketSize
+            step={step}
+            min={step}
+            max={max}
+            onValueChange={onSizeChange}
+            value={new BigNumber(orderSize).toNumber()}
+            name="size"
+            price={price || emptyString}
+            positionDecimalPlaces={market.positionDecimalPlaces}
+            quoteName={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            }
+            notionalSize={notionalSize || emptyString}
+            estCloseOut={estCloseOut}
+            fees={fees || emptyString}
+            estMargin={estMargin?.margin || emptyString}
+          />
+        ) : (
+          'loading...'
+        ),
+      value: orderSize,
     },
     {
       label: t('Review Trade'),
@@ -140,7 +223,15 @@ export const DealTicketSteps = ({
             isDisabled={isDisabled}
             transactionStatus={transactionStatus}
             order={order}
-            partyData={partyData}
+            estCloseOut={estCloseOut}
+            estMargin={estMargin?.margin || emptyString}
+            price={price || emptyString}
+            quoteName={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .symbol
+            }
+            notionalSize={notionalSize || emptyString}
+            fees={fees || emptyString}
           />
           <TransactionDialog
             title={getOrderDialogTitle(finalizedOrder?.status)}

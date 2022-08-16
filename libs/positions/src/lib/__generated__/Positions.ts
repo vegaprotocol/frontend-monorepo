@@ -33,68 +33,16 @@ export interface Positions_party_positions_market_data {
   market: Positions_party_positions_market_data_market;
 }
 
-export interface Positions_party_positions_market_tradableInstrument_instrument_metadata {
-  __typename: "InstrumentMetadata";
-  /**
-   * An arbitrary list of tags to associated to associate to the Instrument (string list)
-   */
-  tags: string[] | null;
-}
-
-export interface Positions_party_positions_market_tradableInstrument_instrument_product_settlementAsset {
-  __typename: "Asset";
-  /**
-   * The id of the asset
-   */
-  id: string;
-  /**
-   * The symbol of the asset (e.g: GBP)
-   */
-  symbol: string;
-  /**
-   * The full name of the asset (e.g: Great British Pound)
-   */
-  name: string;
-  /**
-   * The precision of the asset
-   */
-  decimals: number;
-}
-
-export interface Positions_party_positions_market_tradableInstrument_instrument_product {
-  __typename: "Future";
-  /**
-   * The name of the asset (string)
-   */
-  settlementAsset: Positions_party_positions_market_tradableInstrument_instrument_product_settlementAsset;
-  /**
-   * String representing the quote (e.g. BTCUSD -> USD is quote)
-   */
-  quoteName: string;
-}
-
 export interface Positions_party_positions_market_tradableInstrument_instrument {
   __typename: "Instrument";
-  /**
-   * Uniquely identify an instrument across all instruments available on Vega (string)
-   */
-  id: string;
   /**
    * Full and fairly descriptive name for the instrument
    */
   name: string;
   /**
-   * Metadata for this instrument
-   */
-  metadata: Positions_party_positions_market_tradableInstrument_instrument_metadata;
-  /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
   code: string;
-  /**
-   * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
-   */
-  product: Positions_party_positions_market_tradableInstrument_instrument_product;
 }
 
 export interface Positions_party_positions_market_tradableInstrument {

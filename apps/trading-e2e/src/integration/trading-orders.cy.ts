@@ -65,6 +65,10 @@ describe('orders', () => {
       cy.getByTestId('cancel')
         .should('be.visible')
         .and('have.length.at.least', 1);
+
+      cy.getByTestId('edit')
+        .should('be.visible')
+        .and('have.length.at.least', 1);
     });
   });
 

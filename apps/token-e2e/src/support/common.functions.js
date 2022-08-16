@@ -14,7 +14,7 @@ const navigation = {
   rewards: '[href="/rewards"]',
   withdraw: '[href="/withdraw"]',
   governance: '[href="/governance"]',
-  pageSpinner: 'splash-loader',
+  pageSpinner: '[data-testid="splash-loader"]',
 };
 
 Cypress.Commands.add('navigate_to', (page) => {
