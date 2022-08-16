@@ -80,7 +80,14 @@ export const Info = ({ market }: InfoProps) => {
       title: t('Market price and interest'),
       content: (
         <MarketInfoTable
-          data={pick(market.data, 'name', 'markPrice', 'openInterest')}
+          data={pick(
+            market.data,
+            'name',
+            'markPrice',
+            'openInterest',
+            'bestBidPrice',
+            'bestOfferPrice'
+          )}
           decimalPlaces={market.decimalPlaces}
         />
       ),
@@ -97,8 +104,6 @@ export const Info = ({ market }: InfoProps) => {
             'bestOfferVolume',
             'bestStaticBidVolume',
             'bestStaticOfferVolume',
-            'bestBidPrice',
-            'bestOfferPrice',
             'trigger'
           )}
           decimalPlaces={market.positionDecimalPlaces}
