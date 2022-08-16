@@ -4,6 +4,7 @@ import { gql, useQuery } from '@apollo/client';
 import type {
   EstimateOrder,
   EstimateOrderVariables,
+  EstimateOrder_estimateOrder_fee,
 } from './__generated__/estimateOrder';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
@@ -37,7 +38,11 @@ export const ESTIMATE_ORDER_QUERY = gql`
       expiration: $expiration
       type: $type
     ) {
-      totalFeeAmount
+      fee {
+        makerFee
+        infrastructureFee
+        liquidityFee
+      }
       marginLevels {
         initialLevel
       }
@@ -65,7 +70,22 @@ const types: Record<VegaWalletOrderType, OrderType> = {
   [VegaWalletOrderType.Limit]: OrderType.Limit,
 };
 
-const useOrderMargin = ({ order, market, partyId }: Props) => {
+const addFees = (feeObj: EstimateOrder_estimateOrder_fee) => {
+  return new BigNumber(feeObj.makerFee)
+    .plus(feeObj.liquidityFee)
+    .plus(feeObj.infrastructureFee);
+};
+
+export interface OrderMargin {
+  margin: string;
+  fees: string | null;
+}
+
+const useOrderMargin = ({
+  order,
+  market,
+  partyId,
+}: Props): OrderMargin | null => {
   const marketPositions = useMarketPositions({ marketId: market.id, partyId });
   const markPriceData = useMarketData(market.id);
   const { data } = useQuery<EstimateOrder, EstimateOrderVariables>(
@@ -97,17 +117,22 @@ const useOrderMargin = ({ order, market, partyId }: Props) => {
   );
 
   if (data?.estimateOrder.marginLevels.initialLevel) {
-    return addDecimal(
-      BigNumber.maximum(
-        0,
-        new BigNumber(data.estimateOrder.marginLevels.initialLevel).minus(
-          marketPositions?.balance || 0
-        )
-      ).toString(),
-      market.decimalPlaces
-    );
+    const fees =
+      data?.estimateOrder?.fee && addFees(data.estimateOrder.fee).toString();
+    return {
+      margin: addDecimal(
+        BigNumber.maximum(
+          0,
+          new BigNumber(data.estimateOrder.marginLevels.initialLevel).minus(
+            marketPositions?.balance || 0
+          )
+        ).toString(),
+        market.decimalPlaces
+      ),
+      fees: addDecimal(fees, market.decimalPlaces),
+    };
   }
-  return ' - ';
+  return null;
 };
 
 export default useOrderMargin;

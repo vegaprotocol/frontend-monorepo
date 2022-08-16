@@ -10,6 +10,7 @@ import {
   FormGroup,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
+import { DealTicketEstimates } from './deal-ticket-estimates';
 
 interface DealTicketSizeProps {
   step: number;
@@ -22,7 +23,9 @@ interface DealTicketSizeProps {
   price: string;
   estCloseOut: string;
   estMargin: string;
+  fees: string;
   positionDecimalPlaces: number;
+  notionalSize: string;
 }
 
 const getSizeLabel = (value: number): string => {
@@ -47,6 +50,8 @@ export const DealTicketSize = ({
   onValueChange,
   estCloseOut,
   positionDecimalPlaces,
+  fees,
+  notionalSize,
 }: DealTicketSizeProps) => {
   const sizeRatios = [0, 25, 50, 75, 100];
   const [inputValue, setInputValue] = useState(value);
@@ -142,11 +147,7 @@ export const DealTicketSize = ({
 
       <dl className="text-black dark:text-white">
         <div className="flex items-center justify-between mb-8">
-          <dt>
-            <span>{t('Size')}</span>
-            &nbsp;
-            <small>({quoteName})</small>
-          </dt>
+          <dt>{t('Contracts')}</dt>
           <dd className="flex justify-end w-full">
             <FormGroup
               className="mb-0 flex items-center"
@@ -187,15 +188,14 @@ export const DealTicketSize = ({
             </FormGroup>
           </dd>
         </div>
-        <div className="flex justify-between mb-8">
-          <dt>{t('Est. price')}</dt>
-          <dd>{price}</dd>
-        </div>
-        <div className="flex justify-between">
-          <dt>{t('Est. close out')}</dt>
-          <dd>{estCloseOut}</dd>
-        </div>
       </dl>
+      <DealTicketEstimates
+        quoteName={quoteName}
+        fees={fees}
+        estCloseOut={estCloseOut}
+        price={price}
+        notionalSize={notionalSize}
+      />
     </div>
   );
 };
