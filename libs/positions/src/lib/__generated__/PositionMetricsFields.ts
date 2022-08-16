@@ -6,54 +6,34 @@
 import { MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL subscription operation: PositionSubscribe
+// GraphQL fragment: PositionMetricsFields
 // ====================================================
 
-export interface PositionSubscribe_positions_market_data_market {
-  __typename: "Market";
-  /**
-   * Market ID
-   */
-  id: string;
-}
-
-export interface PositionSubscribe_positions_market_data {
-  __typename: "MarketData";
-  /**
-   * the mark price (actually an unsigned int)
-   */
-  markPrice: string;
-  /**
-   * what state the market is in (auction, continuous etc)
-   */
-  marketTradingMode: MarketTradingMode;
-  /**
-   * market id of the associated mark price
-   */
-  market: PositionSubscribe_positions_market_data_market;
-}
-
-export interface PositionSubscribe_positions_market_tradableInstrument_instrument {
+export interface PositionMetricsFields_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Full and fairly descriptive name for the instrument
    */
   name: string;
-  /**
-   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
-   */
-  code: string;
 }
 
-export interface PositionSubscribe_positions_market_tradableInstrument {
+export interface PositionMetricsFields_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of or reference to a fully specified instrument.
    */
-  instrument: PositionSubscribe_positions_market_tradableInstrument_instrument;
+  instrument: PositionMetricsFields_market_tradableInstrument_instrument;
 }
 
-export interface PositionSubscribe_positions_market {
+export interface PositionMetricsFields_market_data {
+  __typename: "MarketData";
+  /**
+   * the mark price (actually an unsigned int)
+   */
+  markPrice: string;
+}
+
+export interface PositionMetricsFields_market {
   __typename: "Market";
   /**
    * Market ID
@@ -63,10 +43,6 @@ export interface PositionSubscribe_positions_market {
    * Market full name
    */
   name: string;
-  /**
-   * marketData for the given market
-   */
-  data: PositionSubscribe_positions_market_data | null;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the Market. (uint64)
@@ -91,12 +67,20 @@ export interface PositionSubscribe_positions_market {
    */
   positionDecimalPlaces: number;
   /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
+  /**
    * An instance of or reference to a tradable instrument.
    */
-  tradableInstrument: PositionSubscribe_positions_market_tradableInstrument;
+  tradableInstrument: PositionMetricsFields_market_tradableInstrument;
+  /**
+   * marketData for the given market
+   */
+  data: PositionMetricsFields_market_data | null;
 }
 
-export interface PositionSubscribe_positions {
+export interface PositionMetricsFields {
   __typename: "Position";
   /**
    * Realised Profit and Loss (int64)
@@ -115,18 +99,11 @@ export interface PositionSubscribe_positions {
    */
   averageEntryPrice: string;
   /**
+   * RFC3339Nano time the position was updated
+   */
+  updatedAt: string | null;
+  /**
    * Market relating to this position
    */
-  market: PositionSubscribe_positions_market;
-}
-
-export interface PositionSubscribe {
-  /**
-   * Subscribe to the positions updates
-   */
-  positions: PositionSubscribe_positions;
-}
-
-export interface PositionSubscribeVariables {
-  partyId: string;
+  market: PositionMetricsFields_market;
 }
