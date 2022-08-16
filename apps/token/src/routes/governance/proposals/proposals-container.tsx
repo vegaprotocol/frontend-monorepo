@@ -1,6 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
+import filter from 'lodash/filter';
 import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import React from 'react';
@@ -34,6 +35,7 @@ export const ProposalsContainer = () => {
 
     return flow([
       compact,
+      (arr) => filter(arr, ({ state }) => state !== 'Rejected'),
       (arr) =>
         orderBy(
           arr,

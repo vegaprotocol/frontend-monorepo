@@ -49,18 +49,13 @@ const enactedProposalClosedLastWeek = generateProposal({
   },
 });
 
-const rejectedProposalClosedLastMonth = generateProposal({
+const failedProposalClosedLastMonth = generateProposal({
   id: 'proposal4',
-  state: ProposalState.Rejected,
+  state: ProposalState.Failed,
   terms: {
     closingDatetime: lastMonth.toString(),
     enactmentDatetime: lastMonth.toString(),
   },
-});
-
-const failedProposal = generateProposal({
-  id: 'proposal5',
-  state: ProposalState.Failed,
 });
 
 const renderComponent = (proposals: Proposals_proposals[]) => (
@@ -90,14 +85,6 @@ describe('Proposals list', () => {
     expect(screen.getByTestId('new-proposal-link')).toBeInTheDocument();
   });
 
-  it('Culls failed proposals', () => {
-    render(renderComponent([failedProposal]));
-    expect(screen.queryByTestId('open-proposals')).not.toBeInTheDocument();
-    expect(screen.getByTestId('no-open-proposals')).toBeInTheDocument();
-    expect(screen.queryByTestId('closed-proposals')).not.toBeInTheDocument();
-    expect(screen.getByTestId('no-closed-proposals')).toBeInTheDocument();
-  });
-
   it('Will hide filter if no proposals', () => {
     render(renderComponent([]));
     expect(
@@ -116,7 +103,7 @@ describe('Proposals list', () => {
         openProposalClosesNextWeek,
         openProposalClosesNextMonth,
         enactedProposalClosedLastWeek,
-        rejectedProposalClosedLastMonth,
+        failedProposalClosedLastMonth,
       ])
     );
     const openProposals = within(screen.getByTestId('open-proposals'));
@@ -130,7 +117,7 @@ describe('Proposals list', () => {
   it('Orders proposals correctly by closingDateTime', () => {
     render(
       renderComponent([
-        rejectedProposalClosedLastMonth,
+        failedProposalClosedLastMonth,
         openProposalClosesNextMonth,
         openProposalClosesNextWeek,
         enactedProposalClosedLastWeek,

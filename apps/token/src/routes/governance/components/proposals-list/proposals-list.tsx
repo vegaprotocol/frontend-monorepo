@@ -22,11 +22,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
 
-  const failedProposalsCulled = proposals.filter(
-    ({ state }) => state !== 'Failed'
-  );
-
-  const sortedProposals = failedProposalsCulled.reduce(
+  const sortedProposals = proposals.reduce(
     (acc: SortedProposalsProps, proposal) => {
       if (isFuture(new Date(proposal.terms.closingDatetime))) {
         acc.open.push(proposal);
@@ -58,7 +54,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         </Link>
       </div>
 
-      {failedProposalsCulled.length > 0 && (
+      {proposals.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
 
