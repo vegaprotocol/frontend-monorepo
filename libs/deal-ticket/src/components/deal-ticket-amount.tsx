@@ -3,10 +3,11 @@ import { VegaWalletOrderType } from '@vegaprotocol/wallet';
 import type { Order } from '@vegaprotocol/orders';
 import { DealTicketMarketAmount } from './deal-ticket-market-amount';
 import { DealTicketLimitAmount } from './deal-ticket-limit-amount';
+import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 
 export interface DealTicketAmountProps {
   orderType: VegaWalletOrderType;
-  step: number;
+  market: DealTicketQuery_market;
   register: UseFormRegister<Order>;
   quoteName: string;
   price?: string;
