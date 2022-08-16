@@ -38,7 +38,7 @@ describe('markets table', () => {
     });
 
     openMarketDropDown();
-    cy.getByTestId('market-link-market-0').click();
+    cy.getByTestId('market-link-market-0').should('be.visible').click();
 
     cy.wait('@Market');
     cy.contains('ACTIVE MARKET');
