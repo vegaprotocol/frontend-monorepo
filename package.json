@@ -7,7 +7,7 @@
     "build": "nx build",
     "test": "nx test",
     "postinstall": "husky install && yarn tsc -b tools/executors/next && yarn tsc -b tools/executors/webpack",
-    "test-all": "nx run-many --all --target=test"
+    "test:all": "nx run-many --all --target=test"
   },
   "engines": {
     "node": ">=16.14.0"
