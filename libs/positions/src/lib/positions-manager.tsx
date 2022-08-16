@@ -4,8 +4,8 @@ import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
 import PositionsTable from './positions-table';
 import type { GetRowsParams } from './positions-table';
-import { positionsMetricsDataProvider as dataProvider } from './data-providers';
-import type { Position } from './data-providers';
+import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
+import type { Position } from './positions-data-providers';
 
 interface PositionsManagerProps {
   partyId: string;

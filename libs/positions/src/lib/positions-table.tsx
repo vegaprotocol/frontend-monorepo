@@ -13,7 +13,7 @@ import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
-import type { Position } from './data-providers';
+import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 

@@ -1,6 +1,6 @@
 import type { Story, Meta } from '@storybook/react';
 import { PositionsTable } from './positions-table';
-import type { Position } from './data-providers';
+import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 export default {

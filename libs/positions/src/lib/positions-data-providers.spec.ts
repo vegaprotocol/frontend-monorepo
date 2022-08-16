@@ -1,7 +1,7 @@
 import { AccountType, MarketTradingMode } from '@vegaprotocol/types';
 import type { Accounts } from '@vegaprotocol/accounts';
 import type { Positions } from './__generated__/Positions';
-import { getMetrics } from './data-providers';
+import { getMetrics } from './positions-data-providers';
 
 const accounts: Accounts = {
   party: {

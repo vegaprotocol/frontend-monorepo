@@ -9,6 +9,7 @@ import { generateMarket } from './mocks/generate-market';
 import { generateMarketInfoQuery } from './mocks/generate-market-info-query';
 import { generateOrders } from './mocks/generate-orders';
 import { generatePositions } from './mocks/generate-positions';
+import { generatePositionsMetrics } from './mocks/generate-positions-metrics';
 import { generateTrades } from './mocks/generate-trades';
 
 export const mockTradingPage = (
@@ -28,6 +29,7 @@ export const mockTradingPage = (
   aliasQuery(req, 'Orders', generateOrders());
   aliasQuery(req, 'Accounts', generateAccounts());
   aliasQuery(req, 'Positions', generatePositions());
+  aliasQuery(req, 'PositionsMetrics', generatePositionsMetrics());
   aliasQuery(
     req,
     'DealTicketQuery',

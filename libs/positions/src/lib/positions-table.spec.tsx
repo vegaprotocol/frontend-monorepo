@@ -1,7 +1,7 @@
 import type { RenderResult } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
-import type { Position } from './data-providers';
+import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 const singleRow: Position = {
