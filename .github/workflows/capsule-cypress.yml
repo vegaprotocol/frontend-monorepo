@@ -115,6 +115,7 @@ jobs:
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
+          working-directory: frontend-monorepo
           main-branch-name: master
 
       - name: Install root dependencies
