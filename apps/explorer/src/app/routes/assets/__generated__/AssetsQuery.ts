@@ -66,10 +66,6 @@ export interface AssetsQuery_assets {
    */
   symbol: string;
   /**
-   * The total supply of the market
-   */
-  totalSupply: string;
-  /**
    * The precision of the asset
    */
   decimals: number;
