@@ -15,9 +15,9 @@ import type {
 } from 'ag-grid-react';
 import { MarketTradingMode, AuctionTrigger } from '@vegaprotocol/types';
 import type {
-  Markets_markets,
-  Markets_markets_data,
-} from './__generated__/Markets';
+  MarketList_markets,
+  MarketList_markets_data,
+} from '../../__generated__';
 
 type Props = AgGridReactProps | AgReactUiProps;
 
@@ -25,7 +25,7 @@ type MarketListTableValueFormatterParams = Omit<
   ValueFormatterParams,
   'data' | 'value'
 > & {
-  data: Markets_markets;
+  data: MarketList_markets;
 };
 
 export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
@@ -58,7 +58,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
         valueFormatter={({
           value,
         }: MarketListTableValueFormatterParams & {
-          value?: Markets_markets_data;
+          value?: MarketList_markets_data;
         }) => {
           if (!value) return value;
           const { market, trigger } = value;
@@ -79,7 +79,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value,
           data,
         }: MarketListTableValueFormatterParams & {
-          value?: Markets_markets_data['bestBidPrice'];
+          value?: MarketList_markets_data['bestBidPrice'];
         }) =>
           value === undefined
             ? value
@@ -94,7 +94,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value,
           data,
         }: MarketListTableValueFormatterParams & {
-          value?: Markets_markets_data['bestOfferPrice'];
+          value?: MarketList_markets_data['bestOfferPrice'];
         }) =>
           value === undefined
             ? value
@@ -111,7 +111,7 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
           value,
           data,
         }: MarketListTableValueFormatterParams & {
-          value?: Markets_markets_data['markPrice'];
+          value?: MarketList_markets_data['markPrice'];
         }) =>
           value === undefined
             ? value

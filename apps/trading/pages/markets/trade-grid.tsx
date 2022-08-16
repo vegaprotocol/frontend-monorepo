@@ -1,37 +1,38 @@
-import classNames from 'classnames';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import type { ReactNode } from 'react';
-import { useState } from 'react';
+import 'allotment/dist/style.css';
 import {
   DealTicketContainer,
   MarketInfoContainer,
 } from '@vegaprotocol/deal-ticket';
-import { OrderListContainer } from '@vegaprotocol/orders';
-import { TradesContainer } from '@vegaprotocol/trades';
-import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
-import type { Market_market } from './__generated__/Market';
+import { SelectMarketPopover } from '@vegaprotocol/market-list';
+import { OrderListContainer } from '@vegaprotocol/orders';
+import { PositionsContainer } from '@vegaprotocol/positions';
 import {
   addDecimalsFormatNumber,
   formatLabel,
   t,
 } from '@vegaprotocol/react-helpers';
+import { TradesContainer } from '@vegaprotocol/trades';
+import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import { Allotment, LayoutPriority } from 'allotment';
+import classNames from 'classnames';
+import { useState } from 'react';
+import AutoSizer from 'react-virtualized-auto-sizer';
+
+import type { ReactNode } from 'react';
+import type { Market_market } from './__generated__/Market';
+import type { CandleClose } from '@vegaprotocol/types';
+import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { SelectMarketDialog } from '@vegaprotocol/market-list';
 import {
-  ArrowDown,
   Tab,
   Tabs,
   PriceCellChange,
   Tooltip,
   ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
-import type { CandleClose } from '@vegaprotocol/types';
-import { AuctionTrigger } from '@vegaprotocol/types';
-import { MarketTradingMode } from '@vegaprotocol/types';
-import { Allotment, LayoutPriority } from 'allotment';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
 const TradingViews = {
@@ -57,34 +58,33 @@ export const TradeMarketHeader = ({
   market,
   className,
 }: TradeMarketHeaderProps) => {
-  const [open, setOpen] = useState(false);
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
-  const headerItemClassName = 'whitespace-nowrap flex flex-col';
+  const headerItemClassName = 'whitespace-nowrap flex flex-col ';
   const itemClassName =
     'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
   const itemValueClassName =
     'font-sans tracking-tighter text-black dark:text-white text-ui';
   const headerClassName = classNames(
-    'w-full p-8 mb-4 bg-white dark:bg-black',
+    'w-full bg-white dark:bg-black',
     className
   );
+
+  const store = useGlobalStore();
+  const onSelect = (marketId: string) => {
+    if (marketId && store.marketId !== marketId) {
+      store.setMarketId(marketId);
+    }
+  };
+
   return (
     <header className={headerClassName}>
-      <SelectMarketDialog dialogOpen={open} setDialogOpen={setOpen} />
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
-        <button
-          onClick={() => setOpen(!open)}
-          className="shrink-0 text-vega-pink dark:text-vega-yellow font-medium text-h5 flex items-center gap-8 px-4 py-0 h-37 hover:bg-black/10 dark:hover:bg-white/20"
-        >
-          <span className="break-words text-left">{market.name}</span>
-          <ArrowDown color="yellow" borderX={8} borderTop={12} />
-        </button>
-
+        <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
         <div
           data-testid="market-summary"
-          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap"
+          className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap py-8 pr-8"
         >
           <div className={headerItemClassName}>
             <span className={itemClassName}>{t('Change (24h)')}</span>

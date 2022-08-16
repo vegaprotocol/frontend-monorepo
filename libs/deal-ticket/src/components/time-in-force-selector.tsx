@@ -54,13 +54,11 @@ export const TimeInForceSelector = ({
         className="w-full"
         data-testid="order-tif"
       >
-        {options.map(([key, value]) => {
-          return (
-            <option key={key} value={value}>
-              {`${timeInForceLabel(value)} (${key})`}
-            </option>
-          );
-        })}
+        {options.map(([key, value]) => (
+          <option key={key} value={value}>
+            {`${timeInForceLabel(value)} (${key})`}
+          </option>
+        ))}
       </Select>
     </FormGroup>
   );

@@ -26,7 +26,9 @@ export const DisassociatePage = ({
   const params = useSearchParams();
   const [amount, setAmount] = React.useState<string>('');
   const [selectedStakingMethod, setSelectedStakingMethod] =
-    React.useState<StakingMethod | null>(params.method || null);
+    React.useState<StakingMethod | null>(
+      (params.method as StakingMethod) || null
+    );
   const refreshBalances = useRefreshAssociatedBalances();
 
   // Clear the amount when the staking method changes

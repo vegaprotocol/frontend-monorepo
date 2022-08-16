@@ -152,26 +152,68 @@ describe('Market trade', () => {
     }
   });
 
+  it('notional position size should be present', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('input')
+        .type('{backspace}2');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(2)
+        .should('have.text', 'Est. Position Size (tDAI)');
+      cy.get('#step-2-panel').find('dd').eq(2).should('have.text', '197.86012');
+    }
+  });
+
+  it('total fees should be displayed', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(3)
+        .should('have.text', 'Est. Fees (tDAI)');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00000 (3.03%)');
+    }
+  });
+
   it('order review should display proper calculations', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       connectVegaWallet();
       cy.get('h3').contains('Review Trade').click();
-      cy.getByTestId('key-value-table')
-        .find('dl')
-        .eq(1)
-        .find('dd div')
-        .should('have.text', '25.78726');
-      cy.getByTestId('key-value-table')
-        .find('dl')
-        .eq(2)
-        .find('dd div')
-        .should('have.text', '1.00000');
-      cy.getByTestId('key-value-table')
-        .find('dl')
+
+      cy.get('#step-3-panel').find('dd').eq(1).should('have.text', '1');
+
+      cy.get('#step-3-panel').find('dd').eq(2).should('have.text', '98.93006');
+
+      cy.get('#step-3-panel')
+        .find('dd')
         .eq(3)
-        .find('dd div')
-        .should('have.text', ' - ');
+        .should('have.text', '3.00000 (3.03%)');
+
+      cy.get('#step-3-panel').find('dd').eq(4).should('have.text', ' - ');
+
       cy.getByTestId('place-order').click();
       cy.getByTestId('dialog-title').should(
         'have.text',
