@@ -20,12 +20,20 @@ import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
-import { Interval } from '@vegaprotocol/types';
+import { AccountType, Interval } from '@vegaprotocol/types';
 import { MARKET_INFO_QUERY } from './info-market-query';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
 }
+
+export const calcCandleVolume = (m: any): string | undefined => {
+  return m.candles
+    ?.reduce((acc: BigNumber, c: { volume: BigNumber.Value }) => {
+      return acc.plus(new BigNumber(c.volume));
+    }, new BigNumber(m.candles?.[0]?.volume ?? 0))
+    .toString();
+};
 
 export interface MarketInfoContainerProps {
   marketId: string;
@@ -96,20 +104,28 @@ export const Info = ({ market }: InfoProps) => {
       title: t('Market volume'),
       content: (
         <MarketInfoTable
-          data={pick(
-            market.data,
-            'name',
-            'indicativeVolume',
-            'bestBidVolume',
-            'bestOfferVolume',
-            'bestStaticBidVolume',
-            'bestStaticOfferVolume',
-            'trigger'
-          )}
+          data={{
+            ...pick(
+              market.data,
+              'name',
+              'indicativeVolume',
+              'bestBidVolume',
+              'bestOfferVolume',
+              'bestStaticBidVolume',
+              'bestStaticOfferVolume'
+            ),
+            '24hourVolume': calcCandleVolume(market),
+          }}
           decimalPlaces={market.positionDecimalPlaces}
         />
       ),
     },
+    ...(market.accounts || [])
+      .filter((a) => a.type === AccountType.Insurance)
+      .map((a, i) => ({
+        title: t(`Insurance Pool #${i + 1}`),
+        content: <MarketInfoTable data={{ ...a, assetID: a.asset.id }} />,
+      })),
   ];
 
   const keyDetails = pick(

@@ -8,6 +8,13 @@ export const MARKET_INFO_QUERY = gql`
       decimalPlaces
       positionDecimalPlaces
       state
+      accounts {
+        type
+        asset {
+          id
+        }
+        balance
+      }
       tradingMode
       accounts {
         type
@@ -78,10 +85,7 @@ export const MARKET_INFO_QUERY = gql`
         }
       }
       candles(interval: $interval, since: $since) {
-        open
-        close
-        high
-        low
+        volume
       }
       tradableInstrument {
         instrument {

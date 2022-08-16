@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState, MarketTradingMode, AccountType, AuctionTrigger } from "@vegaprotocol/types";
+import { Interval, MarketState, AccountType, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketInfoQuery
@@ -236,21 +236,9 @@ export interface MarketInfoQuery_market_liquidityMonitoringParameters {
 export interface MarketInfoQuery_market_candles {
   __typename: "Candle";
   /**
-   * Open price (uint64)
+   * Volume price (uint64)
    */
-  open: string;
-  /**
-   * Close price (uint64)
-   */
-  close: string;
-  /**
-   * High price (uint64)
-   */
-  high: string;
-  /**
-   * Low price (uint64)
-   */
-  low: string;
+  volume: string;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
@@ -467,13 +455,13 @@ export interface MarketInfoQuery_market {
    */
   state: MarketState;
   /**
-   * Current mode of execution of the market
-   */
-  tradingMode: MarketTradingMode;
-  /**
    * Get account for a party or market
    */
   accounts: MarketInfoQuery_market_accounts[] | null;
+  /**
+   * Current mode of execution of the market
+   */
+  tradingMode: MarketTradingMode;
   /**
    * Fees related data
    */
