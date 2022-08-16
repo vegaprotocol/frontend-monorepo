@@ -54,7 +54,6 @@ describe('useOrderCloseOut Hook', () => {
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
-          // @ts-ignore different versions of react types in apollo and app
           <MockedProvider mocks={[]}>{children}</MockedProvider>
         ),
       }
@@ -72,7 +71,6 @@ describe('useOrderCloseOut Hook', () => {
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
-          // @ts-ignore different versions of react types in apollo and app
           <MockedProvider mocks={[]}>{children}</MockedProvider>
         ),
       }
@@ -89,7 +87,6 @@ describe('useOrderCloseOut Hook', () => {
         }),
       {
         wrapper: ({ children }: { children: React.ReactNode }) => (
-          // @ts-ignore different versions of react types in apollo and app
           <MockedProvider mocks={[]}>{children}</MockedProvider>
         ),
       }

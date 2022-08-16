@@ -38,6 +38,7 @@ export interface Column {
   value: string | React.ReactNode;
   className: string;
   onlyOnDetailed: boolean;
+  dataTestId?: string;
 }
 
 export const columnHeadersPositionMarkets: Column[] = [
@@ -152,7 +153,7 @@ export const columnHeaders: Column[] = [
     value: (
       <Tooltip
         description={
-          <span className="text-ui-small">
+          <span>
             {t(
               'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
             )}
@@ -233,6 +234,7 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
     },
     {
       value: market.settlementAsset,
+      dataTestId: 'settlement-asset',
       className: thClassNames('left'),
       onlyOnDetailed: false,
     },
@@ -301,6 +303,7 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
           : formatLabel(market.tradingMode),
       className: thClassNames('left'),
       onlyOnDetailed: true,
+      dataTestId: 'trading-mode',
     },
     {
       value: (
@@ -314,6 +317,7 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
       ),
       className: tdClassNames,
       onlyOnDetailed: true,
+      dataTestId: 'taker-fee',
     },
     {
       value:
@@ -325,11 +329,13 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
           : '-',
       className: tdClassNames,
       onlyOnDetailed: true,
+      dataTestId: 'market-volume',
     },
     {
       value: market.name,
       className: thClassNames('left'),
       onlyOnDetailed: true,
+      dataTestId: 'market-name',
     },
   ];
   return selectMarketColumns;

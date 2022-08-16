@@ -23,16 +23,21 @@ describe('market info is displayed', () => {
     validateMarketDataRow(2, 'Liquidity Fee', '1.00%');
   });
 
-  it('market data displated', () => {
-    cy.getByTestId(marketTitle).contains('Market data').click();
+  it('market volume displayed', () => {
+    cy.getByTestId(marketTitle).contains('Market volume').click();
+
+    validateMarketDataRow(0, 'Indicative Volume', '0');
+    validateMarketDataRow(1, 'Best Bid Volume', '5');
+    validateMarketDataRow(2, 'Best Offer Volume', '1');
+    validateMarketDataRow(3, 'Best Static Bid Volume', '5');
+    validateMarketDataRow(4, 'Best Static Offer Volume', '1');
+  });
+
+  it('market price and interest displayed', () => {
+    cy.getByTestId(marketTitle).contains('Market price and interest').click();
 
     validateMarketDataRow(0, 'Mark Price', '57.49');
-    validateMarketDataRow(1, 'Indicative Volume', '0');
-    validateMarketDataRow(2, 'Best Bid Volume', '5');
-    validateMarketDataRow(3, 'Best Offer Volume', '1');
-    validateMarketDataRow(4, 'Best Static Bid Volume', '5');
-    validateMarketDataRow(5, 'Best Static Offer Volume', '1');
-    validateMarketDataRow(6, 'Open Interest', '0.00');
+    validateMarketDataRow(1, 'Open Interest', '0.00');
   });
 
   it('key details displayed', () => {
@@ -43,7 +48,7 @@ describe('market info is displayed', () => {
     validateMarketDataRow(2, 'Position Decimal Places', '0');
     validateMarketDataRow(3, 'Trading Mode', 'Continuous');
     validateMarketDataRow(4, 'State', 'Active');
-    validateMarketDataRow(5, 'Market Id', 'market-0');
+    validateMarketDataRow(5, 'Market ID', 'market-0');
   });
 
   it('instrument displayed', () => {
@@ -53,13 +58,18 @@ describe('market info is displayed', () => {
     validateMarketDataRow(1, 'Code', 'BTCUSD.MF21');
     validateMarketDataRow(2, 'Product Type', 'Future');
     validateMarketDataRow(3, 'Quote Name', 'BTC');
+  });
+
+  it('settlement asset displayed', () => {
+    cy.getByTestId(marketTitle).contains('Settlement asset').click();
+
+    validateMarketDataRow(0, 'Name', 'tBTC TEST');
+    validateMarketDataRow(1, 'Symbol', 'tBTC');
     validateMarketDataRow(
-      4,
-      'Id',
+      2,
+      'ID',
       '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c'
     );
-    validateMarketDataRow(5, 'Symbol', 'tBTC');
-    validateMarketDataRow(6, 'Name', 'tBTC TEST');
   });
 
   it('metadata displayed', () => {

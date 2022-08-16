@@ -91,7 +91,9 @@ export const StakingForm = ({
   const { sendTx } = useVegaWallet();
   const [formState, setFormState] = React.useState(FormState.Default);
   const { t } = useTranslation();
-  const [action, setAction] = React.useState<StakeAction>(params.action);
+  const [action, setAction] = React.useState<StakeAction>(
+    params.action as StakeAction
+  );
   const [amount, setAmount] = React.useState('');
   const [removeType, setRemoveType] = React.useState<RemoveType>(
     RemoveType.EndOfEpoch

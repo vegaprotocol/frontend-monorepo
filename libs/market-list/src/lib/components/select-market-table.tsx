@@ -6,7 +6,7 @@ export const SelectMarketTableHeader = ({
   headers = columnHeaders,
 }) => {
   return (
-    <tr>
+    <tr className="sticky top-[-0.5rem] z-10 dark:bg-black bg-white">
       {headers.map(
         ({ value, className, onlyOnDetailed }, i) =>
           (!onlyOnDetailed || detailed === onlyOnDetailed) && (
@@ -31,9 +31,9 @@ export const SelectMarketTableRow = ({
       className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
     >
       {columns.map(
-        ({ value, className, onlyOnDetailed }, i) =>
+        ({ value, className, dataTestId, onlyOnDetailed }, i) =>
           (!onlyOnDetailed || detailed === onlyOnDetailed) && (
-            <td key={i} className={className}>
+            <td key={i} data-testid={dataTestId} className={className}>
               {value}
             </td>
           )
