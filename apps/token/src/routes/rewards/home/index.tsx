@@ -30,6 +30,7 @@ export const REWARDS_QUERY = gql`
           symbol
         }
         rewards {
+          rewardType
           asset {
             id
           }
