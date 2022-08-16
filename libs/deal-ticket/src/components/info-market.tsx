@@ -85,14 +85,13 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Market price and interest'),
+      title: t('Market price'),
       content: (
         <MarketInfoTable
           data={pick(
             market.data,
             'name',
             'markPrice',
-            'openInterest',
             'bestBidPrice',
             'bestOfferPrice'
           )}
@@ -112,9 +111,10 @@ export const Info = ({ market }: InfoProps) => {
               'bestBidVolume',
               'bestOfferVolume',
               'bestStaticBidVolume',
-              'bestStaticOfferVolume'
+              'bestStaticOfferVolume',
+              'openInterest'
             ),
-            '24hourVolume': calcCandleVolume(market),
+            '24hourVolume': formatNumber(calcCandleVolume(market) ?? '-'),
           }}
           decimalPlaces={market.positionDecimalPlaces}
         />
@@ -123,8 +123,19 @@ export const Info = ({ market }: InfoProps) => {
     ...(market.accounts || [])
       .filter((a) => a.type === AccountType.Insurance)
       .map((a, i) => ({
-        title: t(`Insurance Pool #${i + 1}`),
-        content: <MarketInfoTable data={{ ...a, assetID: a.asset.id }} />,
+        title: t(`Insurance Pool`),
+        content: (
+          <MarketInfoTable
+            data={{
+              ...a,
+              balance: `${a.balance}
+           ${market.tradableInstrument.instrument.product?.settlementAsset.symbol}`,
+              name: market.tradableInstrument.instrument.product
+                ?.settlementAsset.name,
+              assetID: a.asset.id,
+            }}
+          />
+        ),
       })),
   ];
 
@@ -176,8 +187,8 @@ export const Info = ({ market }: InfoProps) => {
             symbol:
               market.tradableInstrument.instrument.product?.settlementAsset
                 .symbol,
-            ID: market.tradableInstrument.instrument.product?.settlementAsset
-              .id,
+            assetID:
+              market.tradableInstrument.instrument.product?.settlementAsset.id,
           }}
         />
       ),
@@ -237,6 +248,22 @@ export const Info = ({ market }: InfoProps) => {
             triggeringRatio:
               market.liquidityMonitoringParameters.triggeringRatio,
             ...market.liquidityMonitoringParameters.targetStakeParameters,
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Oracle'),
+      content: (
+        <MarketInfoTable
+          data={{
+            ...market.tradableInstrument.instrument.product.oracleSpecBinding,
+            priceOracle:
+              market.tradableInstrument.instrument.product
+                .oracleSpecForSettlementPrice.id,
+            terminationOracle:
+              market.tradableInstrument.instrument.product
+                .oracleSpecForTradingTermination.id,
           }}
         />
       ),
