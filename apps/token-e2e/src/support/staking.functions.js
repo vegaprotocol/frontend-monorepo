@@ -138,18 +138,19 @@ Cypress.Commands.add(
     });
   }
 );
+  
 Cypress.Commands.add(
-  'staking_page_ensure_at_least_specified_unstaked_tokens_are_associated',
-  (minimumTokens) => {
-    cy.highlight(`Ensuring if at least ${minimumTokens} token is associated`);
+  'ensure_specified_unstaked_tokens_are_associated',
+  (tokenAmount) => {
+    cy.highlight(`Ensuring ${tokenAmount} token(s) associated`);
     cy.get(vegaWalletUnstakedBalance)
       .children()
       .children()
       .eq(1)
       .invoke('text')
       .then((unstakedBalance) => {
-        if (parseInt(unstakedBalance) < parseInt(minimumTokens)) {
-          cy.staking_page_associate_tokens(minimumTokens);
+        if (parseFloat(unstakedBalance) != parseFloat(tokenAmount)) {
+          cy.staking_page_associate_tokens(tokenAmount);
         }
       });
   }

@@ -16,7 +16,13 @@ context('Governance flow - with eth and vega wallets connected', function () {
     cy.vega_wallet_import();
     cy.visit('/');
     cy.verify_page_header('The $VEGA token');
-    cy.get_network_parameters().as('network_parameters');
+    cy.get_network_parameters().then(network_parameters => {
+      cy.wrap(network_parameters['governance.proposal.freeform.minProposerBalance'])
+        .as('minProposerBalance');
+      cy.wrap(network_parameters['governance.proposal.freeform.minClose'])
+        .as('minProposerBalance');
+    });
+    cy.pause()
     cy.vega_wallet_connect();
     cy.vega_wallet_set_specified_approval_amount('1000');
     cy.reload();
@@ -30,13 +36,12 @@ context('Governance flow - with eth and vega wallets connected', function () {
       function () {
         cy.navigate_to('staking');
         cy.wait_for_spinner();
-        // cy.log(this.network_parameters['governance.proposal.freeform.minProposerBalance']);
       }
     );
 
     it('Able to submit a valid freeform proposal with positive feedback', function () {
-      cy.staking_page_ensure_at_least_specified_unstaked_tokens_are_associated(
-        '1'
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
@@ -52,9 +57,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
     });
 
-    it('Able to see a newly created freeform proposal in an open state', function () {
-      cy.staking_page_ensure_at_least_specified_unstaked_tokens_are_associated(
-        '1'
+    it('Able to see a newly created freeform proposal - in an open state', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
@@ -94,9 +99,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .contains('NewFreeform');
     });
 
-    it.only('Able to see a newly created freeform proposal - proposed and closing dates', function () {
-      cy.staking_page_ensure_at_least_specified_unstaked_tokens_are_associated(
-        '1'
+    it('Able to see a newly created freeform proposal - proposed and closing dates', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
@@ -138,9 +143,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
       );
     });
 
-    it('Able to see a newly created freeform proposal unvoted status set to fail', function () {
-      cy.staking_page_ensure_at_least_specified_unstaked_tokens_are_associated(
-        '1'
+    it('Able to see a newly created freeform proposal - default status set to fail', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
@@ -178,9 +183,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it('Unable to create a proposal which has a closing time earlier than system default', function () {
-      cy.staking_page_ensure_at_least_specified_unstaked_tokens_are_associated(
-        '1'
+    it.skip('Unable to create a proposal - which has a closing time earlier than system default', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
@@ -196,12 +201,36 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
     });
 
-    it('Unable to create a freeform proposal without any tokens associated', function () {
-      //also do some
+    it.skip('Unable to create a freeform proposal - when no tokens are associated', function () {
       cy.vega_wallet_teardown();
       cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
         '0.000000000000000000',
         txTimeout
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
+        (closingDateTimestamp) => {
+          cy.create_freeform_proposal(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains(
+        'party has insufficient tokens to submit proposal request in this epoch'
+      ).should('be.visible');
+      cy.get(dialogCloseButton).click();
+    });
+
+    it.skip('Unable to create a freeform proposal - when some but not enough tokens are associated', function () {
+      cy.vega_wallet_teardown();
+      cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
+        '0.000000000000000000',
+        txTimeout
+      );
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance - 0.1
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
