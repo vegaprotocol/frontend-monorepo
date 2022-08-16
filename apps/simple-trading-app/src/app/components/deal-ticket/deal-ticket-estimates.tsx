@@ -46,7 +46,11 @@ export const DealTicketEstimates = ({
             align="center"
             description={constants.CONTRACTS_MARGIN_TOOLTIP_TEXT}
           >
-            <div className="cursor-help" id="contracts_tooltip_trigger">
+            <div
+              className="cursor-help"
+              id="contracts_tooltip_trigger"
+              tabIndex={-1}
+            >
               <Icon
                 name={IconNames.ISSUE}
                 className="block rotate-180"
@@ -72,7 +76,7 @@ export const DealTicketEstimates = ({
             align="center"
             description={constants.NOTIONAL_SIZE_TOOLTIP_TEXT}
           >
-            <div className="cursor-help">
+            <div className="cursor-help" tabIndex={-1}>
               <Icon
                 name={IconNames.ISSUE}
                 className="block rotate-180"
@@ -89,7 +93,7 @@ export const DealTicketEstimates = ({
         <dd className="flex gap-x-5 items-center">
           {fees}
           <Tooltip align="center" description={constants.EST_FEES_TOOLTIP_TEXT}>
-            <div className="cursor-help">
+            <div className="cursor-help" tabIndex={-1}>
               <Icon
                 name={IconNames.ISSUE}
                 className="block rotate-180"
@@ -109,7 +113,7 @@ export const DealTicketEstimates = ({
             align="center"
             description={constants.EST_MARGIN_TOOLTIP_TEXT}
           >
-            <div className="cursor-help">
+            <div className="cursor-help" tabIndex={-1}>
               <Icon
                 name={IconNames.ISSUE}
                 className="block rotate-180"
@@ -133,7 +137,7 @@ export const DealTicketEstimates = ({
             align="center"
             description={constants.EST_CLOSEOUT_TOOLTIP_TEXT}
           >
-            <div className="cursor-help">
+            <div className="cursor-help" tabIndex={-1}>
               <Icon
                 name={IconNames.ISSUE}
                 className="block rotate-180"
