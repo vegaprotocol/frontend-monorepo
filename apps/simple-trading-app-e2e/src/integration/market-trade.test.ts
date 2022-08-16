@@ -230,4 +230,23 @@ describe('Market trade', () => {
       );
     }
   });
+
+  it('info tooltip on mobile view should work well', () => {
+    if (markets?.length) {
+      cy.viewport('iphone-xr');
+      cy.visit(`/trading/${markets[0].id}`);
+      cy.get('h3').contains('Review Trade').click();
+      cy.getByTestId('review-trade')
+        .get('#contracts_tooltip_trigger')
+        .realTouch();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The number of contracts determines'
+      );
+
+      cy.getByTestId('review-trade').get('div.cursor-help').eq(1).realTouch();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The notional size represents the position size'
+      );
+    }
+  });
 });
