@@ -2,6 +2,7 @@ import {
   addDecimal,
   t,
   addDecimalsFormatNumber,
+  toDecimal,
 } from '@vegaprotocol/react-helpers';
 import { OrderType } from '@vegaprotocol/types';
 import {
@@ -46,6 +47,7 @@ export const OrderEditDialog = ({
   });
 
   if (!order) return null;
+  const step = toDecimal(order.market?.positionDecimalPlaces ?? 0);
 
   return (
     <Dialog
@@ -88,12 +90,13 @@ export const OrderEditDialog = ({
         <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input
+              type="text"
+              step={step}
               {...register('entryPrice', {
                 required: t('You need to provide a price'),
                 min: 0,
               })}
               id="entryPrice"
-              type="number"
             />
             {errors.entryPrice?.message && (
               <InputError intent="danger" className="mt-4">
