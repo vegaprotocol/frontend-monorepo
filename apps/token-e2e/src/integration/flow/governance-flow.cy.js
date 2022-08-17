@@ -12,7 +12,7 @@ const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const txTimeout = Cypress.env('txTimeout');
 
 context('Governance flow - with eth and vega wallets connected', function () {
-  before('visit staking tab and connect vega wallet', function () {
+  before('connect wallets and set approval limit', function () {
     cy.vega_wallet_import();
     cy.visit('/');
     cy.verify_page_header('The $VEGA token');
@@ -20,11 +20,13 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.wrap(
         network_parameters['governance.proposal.freeform.minProposerBalance']
       ).as('minProposerBalance');
-      cy.wrap(network_parameters['governance.proposal.freeform.minClose']).as(
-        'minProposerBalance'
-      );
+      cy.wrap(
+        network_parameters['governance.proposal.freeform.minClose'].split("h")[0]/24
+      ).as('minCloseDays');
+      cy.wrap(
+        network_parameters['governance.proposal.freeform.maxClose'].split("h")[0]/24
+      ).as('maxCloseDays');
     });
-    cy.pause();
     cy.vega_wallet_connect();
     cy.vega_wallet_set_specified_approval_amount('1000');
     cy.reload();
@@ -34,14 +36,14 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
   describe('Eth wallet - contains VEGA tokens', function () {
     beforeEach(
-      'teardown wallet & drill into a specific validator',
+      'visit staking tab',
       function () {
         cy.navigate_to('staking');
         cy.wait_for_spinner();
       }
     );
 
-    it('Able to submit a valid freeform proposal with positive feedback', function () {
+    it('Able to submit a valid freeform proposal - with minimum tokens associated - positive feedback', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -185,7 +187,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it.skip('Unable to create a proposal - which has a closing time earlier than system default', function () {
+    it('Unable to create a proposal - which has a closing time earlier than system default', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -193,7 +195,25 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.wait_for_spinner();
       cy.get(newProposalButton).should('be.visible').click();
       cy.get(newProposalDatabox).click();
-      cy.create_ten_digit_unix_timestamp_for_specified_days('1').then(
+      cy.create_ten_digit_unix_timestamp_for_specified_days(this.minCloseDays - 1).then(
+        (closingDateTimestamp) => {
+          cy.create_freeform_proposal(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal rejected').should('be.visible');
+      cy.get(dialogCloseButton).click();
+    });
+
+    it('Unable to create a proposal - which has a closing time later than system default', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days(this.maxCloseDays + 1).then(
         (closingDateTimestamp) => {
           cy.create_freeform_proposal(closingDateTimestamp);
         }
@@ -290,7 +310,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
     Cypress.Commands.add('create_freeform_proposal', (timestamp) => {
       cy.fixture('/proposals/freeform.json').then((freeformProposal) => {
         freeformProposal.terms.closingTimestamp = timestamp;
-        freeformProposal.rationale.description += timestamp;
+        freeformProposal.rationale.title += timestamp;
         let proposalPayload = JSON.stringify(freeformProposal);
 
         cy.get(newProposalDatabox).type(proposalPayload, {
