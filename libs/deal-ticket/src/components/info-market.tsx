@@ -123,7 +123,7 @@ export const Info = ({ market }: InfoProps) => {
     ...(market.accounts || [])
       .filter((a) => a.type === AccountType.Insurance)
       .map((a, i) => ({
-        title: t(`Insurance Pool`),
+        title: t(`Insurance pool`),
         content: (
           <MarketInfoTable
             data={{

@@ -34,6 +34,18 @@ describe('market info is displayed', () => {
     validateMarketDataRow(5, 'Open Interest', '0');
   });
 
+  it('insurance pool', () => {
+    cy.getByTestId(marketTitle).contains('Insurance pool').click();
+
+    validateMarketDataRow(0, 'Type', 'Insurance');
+    validateMarketDataRow(2, 'Name', 'tBTC TEST');
+    validateMarketDataRow(
+      3,
+      'Asset ID',
+      '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61'
+    );
+  });
+
   it('market price', () => {
     cy.getByTestId(marketTitle).contains('Market price').click();
     validateMarketDataRow(0, 'Mark Price', '57.49');
