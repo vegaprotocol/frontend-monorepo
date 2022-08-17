@@ -14,6 +14,7 @@ export interface UpdateCallback<Data, Delta> {
     data: Data | null;
     error?: Error;
     loading: boolean;
+    loaded: boolean;
     pageInfo: PageInfo | null;
     delta?: Delta;
     insertionData?: Data | null;
@@ -167,7 +168,8 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   let variables: OperationVariables | undefined;
   let data: Data | null = null;
   let error: Error | undefined;
-  let loading = false;
+  let loading = true;
+  let loaded = false;
   let client: ApolloClient<object> | undefined;
   let subscription: Subscription | undefined;
   let pageInfo: PageInfo | null = null;
@@ -182,6 +184,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
       data,
       error,
       loading,
+      loaded,
       pageInfo,
       totalCount,
       ...updateData,
@@ -293,6 +296,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
           }
         }
       }
+      loaded = true;
     } catch (e) {
       // if error will occur data provider stops subscription
       error = e as Error;
@@ -323,7 +327,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   };
 
   const initialize = async () => {
-    if (subscription || loading) {
+    if (subscription) {
       return;
     }
     loading = true;
@@ -360,7 +364,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
     await initialFetch();
   };
 
-  const reset = (clean = true) => {
+  const reset = () => {
     if (subscription) {
       subscription.unsubscribe();
       subscription = undefined;
@@ -368,6 +372,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
     data = null;
     error = undefined;
     loading = false;
+    loaded = false;
     notifyAll();
   };
 
@@ -457,13 +462,13 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
 
 type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
-type CombineDependenciesData<Data> = (
+export type CombineDerivedData<Data> = (
   parts: Parameters<DependencyUpdateCallback>['0']['data'][]
 ) => Data | null;
 
-function makeDependencyDataProviderInternal<Data>(
+function makeDerivedDataProviderInternal<Data>(
   dependencies: DependencySubscribe[],
-  combineData: CombineDependenciesData<Data>
+  combineData: CombineDerivedData<Data>
 ): Subscribe<Data, never> {
   let subscriptions: ReturnType<DependencySubscribe>[] | undefined;
   let client: ApolloClient<object> | undefined;
@@ -472,7 +477,8 @@ function makeDependencyDataProviderInternal<Data>(
   const parts: Parameters<DependencyUpdateCallback>['0'][] = [];
   let data: Data | null = null;
   let error: Error | undefined;
-  let loading = false;
+  let loading = true;
+  let loaded = false;
 
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (callback: UpdateCallback<Data, never>) => {
@@ -480,6 +486,7 @@ function makeDependencyDataProviderInternal<Data>(
       data,
       error,
       loading,
+      loaded,
       pageInfo: null,
     });
   };
@@ -491,33 +498,30 @@ function makeDependencyDataProviderInternal<Data>(
     });
 
   const combine = () => {
-    const newError = dependencies
+    let newError: Error | undefined;
+    let newLoading = false;
+    let newLoaded = true;
+    dependencies
       .map((dependency, i) => parts[i])
-      .find((part) => part && part.error)?.error;
+      .forEach((part) => {
+        newError = newError || (part && part.error);
+        newLoading = newLoading || !part || part.loading;
+        newLoaded = newLoaded && part && part.loaded;
+      });
 
-    if (newError) {
-      if (newError !== error) {
-        error = newError;
-        notifyAll();
-      }
-      return;
-    }
-    error = newError;
-    const newLoading = !!dependencies
-      .map((dependency, i) => parts[i])
-      .find((part) => !part || part.loading);
-
-    if (newLoading) {
-      if (newLoading !== loading) {
-        loading = newLoading;
-        notifyAll();
-      }
-      return;
-    }
-    loading = newLoading;
-    const newData = combineData(parts.map((part) => part.data));
-    if (newData !== data) {
+    const newData = newLoaded
+      ? combineData(parts.map((part) => part.data))
+      : data;
+    if (
+      newLoading !== loading ||
+      newError !== error ||
+      newLoaded !== loaded ||
+      newData !== data
+    ) {
       data = newData;
+      loading = newLoading;
+      error = newError;
+      loaded = newLoaded;
       notifyAll();
     }
   };
@@ -538,18 +542,16 @@ function makeDependencyDataProviderInternal<Data>(
     );
   };
 
-  const reset = () => {
-    data = null;
-    error = undefined;
-    loading = false;
-    notifyAll();
-  };
-
   // remove callback from list, and unsubscribe if there is no more callbacks registered
   const unsubscribe = (callback: UpdateCallback<Data, never>) => {
     callbacks.splice(callbacks.indexOf(callback), 1);
     if (callbacks.length === 0) {
-      reset();
+      subscriptions?.forEach((subscription) => subscription.unsubscribe());
+      subscriptions = undefined;
+      data = null;
+      error = undefined;
+      loading = true;
+      loaded = false;
     }
   };
 
@@ -574,12 +576,12 @@ function makeDependencyDataProviderInternal<Data>(
   };
 }
 
-export function makeDependencyDataProvider<Data>(
+export function makeDerivedDataProvider<Data>(
   dependencies: DependencySubscribe[],
-  combineData: CombineDependenciesData<Data>
+  combineData: CombineDerivedData<Data>
 ): Subscribe<Data, never> {
   const getInstance = memoize<Data, never>(() =>
-    makeDependencyDataProviderInternal(dependencies, combineData)
+    makeDerivedDataProviderInternal(dependencies, combineData)
   );
   return (callback, client, variables) =>
     getInstance(variables)(callback, client, variables);

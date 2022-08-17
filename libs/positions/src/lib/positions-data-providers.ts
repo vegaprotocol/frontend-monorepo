@@ -4,10 +4,11 @@ import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
 import type { Accounts_party_accounts } from '@vegaprotocol/accounts';
 import { accountsDataProvider } from '@vegaprotocol/accounts';
+import { toBigNum } from '@vegaprotocol/react-helpers';
 import type { Positions, Positions_party } from './__generated__/Positions';
 import {
   makeDataProvider,
-  makeDependencyDataProvider,
+  makeDerivedDataProvider,
 } from '@vegaprotocol/react-helpers';
 
 import type {
@@ -143,20 +144,20 @@ export const getMetrics = (
     const assetDecimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
       market;
-    const openVolume = new BigNumber(position.node.openVolume).dividedBy(
-      10 ** positionDecimalPlaces
+    const openVolume = toBigNum(
+      position.node.openVolume,
+      positionDecimalPlaces
     );
 
-    const marginAccountBalance = marginAccount
-      ? new BigNumber(marginAccount.balance).dividedBy(10 ** assetDecimals)
-      : new BigNumber(0);
-    const generalAccountBalance = generalAccount
-      ? new BigNumber(generalAccount.balance).dividedBy(10 ** assetDecimals)
-      : new BigNumber(0);
-
-    const markPrice = new BigNumber(marketData.markPrice).dividedBy(
-      10 ** marketDecimalPlaces
+    const marginAccountBalance = toBigNum(
+      marginAccount.balance ?? 0,
+      assetDecimals
     );
+    const generalAccountBalance = toBigNum(
+      generalAccount?.balance ?? 0,
+      assetDecimals
+    );
+    const markPrice = toBigNum(marketData.markPrice, marketDecimalPlaces);
 
     const notional = (
       openVolume.isGreaterThan(0) ? openVolume : openVolume.multipliedBy(-1)
@@ -169,13 +170,13 @@ export const getMetrics = (
       ? new BigNumber(0)
       : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
 
-    const marginMaintenance = new BigNumber(
-      marginLevel.maintenanceLevel
-    ).multipliedBy(marketDecimalPlaces);
-    const marginSearch = new BigNumber(marginLevel.searchLevel).multipliedBy(
+    const marginMaintenance = toBigNum(
+      marginLevel.maintenanceLevel,
       marketDecimalPlaces
     );
-    const marginInitial = new BigNumber(marginLevel.initialLevel).multipliedBy(
+    const marginSearch = toBigNum(marginLevel.searchLevel, marketDecimalPlaces);
+    const marginInitial = toBigNum(
+      marginLevel.initialLevel,
       marketDecimalPlaces
     );
 
@@ -264,14 +265,15 @@ export const positionDataProvider = makeDataProvider<
     subscriptionData.positions,
 });
 
-export const positionsMetricsDataProvider = makeDependencyDataProvider<
-  Position[]
->([positionDataProvider, accountsDataProvider], ([positions, accounts]) => {
-  return sortBy(
-    getMetrics(
-      positions as Positions_party | null,
-      accounts as Accounts_party_accounts[] | null
-    ),
-    'updatedAt'
-  ).reverse();
-});
+export const positionsMetricsDataProvider = makeDerivedDataProvider<Position[]>(
+  [positionDataProvider, accountsDataProvider],
+  ([positions, accounts]) => {
+    return sortBy(
+      getMetrics(
+        positions as Positions_party | null,
+        accounts as Accounts_party_accounts[] | null
+      ),
+      'updatedAt'
+    ).reverse();
+  }
+);

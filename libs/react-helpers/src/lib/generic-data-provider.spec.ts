@@ -1,5 +1,10 @@
-import { makeDataProvider, defaultAppend } from './generic-data-provider';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+  defaultAppend,
+} from './generic-data-provider';
 import type {
+  CombineDerivedData,
   Query,
   UpdateCallback,
   Update,
@@ -28,118 +33,158 @@ type QueryData = {
   totalCount?: number;
 };
 
+type CombinedData = {
+  totalCount?: number;
+};
+
 type SubscriptionData = QueryData;
 type Delta = Data;
 
-describe('data provider', () => {
-  const update = jest.fn<
-    ReturnType<Update<Data, Delta>>,
-    Parameters<Update<Data, Delta>>
-  >();
+const update = jest.fn<
+  ReturnType<Update<Data, Delta>>,
+  Parameters<Update<Data, Delta>>
+>();
 
-  const callback = jest.fn<
-    ReturnType<UpdateCallback<Data, Delta>>,
-    Parameters<UpdateCallback<Data, Delta>>
-  >();
+const callback = jest.fn<
+  ReturnType<UpdateCallback<Data, Delta>>,
+  Parameters<UpdateCallback<Data, Delta>>
+>();
 
-  const query: Query<QueryData> = {
-    kind: 'Document',
-    definitions: [],
-  };
-  const subscriptionQuery: Query<SubscriptionData> = query;
+const query: Query<QueryData> = {
+  kind: 'Document',
+  definitions: [],
+};
+const subscriptionQuery: Query<SubscriptionData> = query;
 
-  const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
-    query,
-    subscriptionQuery,
-    update,
-    getData: (r) => r.data,
-    getDelta: (r) => r.data,
-  });
+const subscribe = makeDataProvider<QueryData, Data, SubscriptionData, Delta>({
+  query,
+  subscriptionQuery,
+  update,
+  getData: (r) => r.data,
+  getDelta: (r) => r.data,
+});
 
-  const first = 100;
-  const paginatedSubscribe = makeDataProvider<
-    QueryData,
-    Data,
-    SubscriptionData,
-    Delta
-  >({
-    query,
-    subscriptionQuery,
-    update,
-    getData: (r) => r.data,
-    getDelta: (r) => r.data,
-    pagination: {
-      first,
-      append: defaultAppend,
-      getPageInfo: (r) => r?.pageInfo ?? null,
-      getTotalCount: (r) => r?.totalCount,
+const secondSubscribe = makeDataProvider<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta
+>({
+  query,
+  subscriptionQuery,
+  update,
+  getData: (r) => r.data,
+  getDelta: (r) => r.data,
+});
+
+const combineData = jest.fn<
+  ReturnType<CombineDerivedData<CombinedData>>,
+  Parameters<CombineDerivedData<CombinedData>>
+>();
+
+const derivedSubscribe = makeDerivedDataProvider(
+  [subscribe, secondSubscribe],
+  combineData
+);
+
+const first = 100;
+const paginatedSubscribe = makeDataProvider<
+  QueryData,
+  Data,
+  SubscriptionData,
+  Delta
+>({
+  query,
+  subscriptionQuery,
+  update,
+  getData: (r) => r.data,
+  getDelta: (r) => r.data,
+  pagination: {
+    first,
+    append: defaultAppend,
+    getPageInfo: (r) => r?.pageInfo ?? null,
+    getTotalCount: (r) => r?.totalCount,
+  },
+});
+
+const generateData = (start = 0, size = first) => {
+  return new Array(size).fill(null).map((v, i) => ({
+    cursor: (i + start + 1).toString(),
+    node: {
+      id: (i + start + 1).toString(),
     },
-  });
-
-  const generateData = (start = 0, size = first) => {
-    return new Array(size).fill(null).map((v, i) => ({
-      cursor: (i + start + 1).toString(),
-      node: {
-        id: (i + start + 1).toString(),
-      },
-    }));
-  };
-
-  const clientSubscribeUnsubscribe = jest.fn();
-  const clientSubscribeSubscribe = jest.fn<
-    Subscription,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [(value: FetchResult<SubscriptionData>) => void, (error: any) => void]
-  >(() => ({
-    unsubscribe: clientSubscribeUnsubscribe,
-    closed: false,
   }));
+};
 
-  const clientSubscribe = jest.fn<
-    Observable<FetchResult<SubscriptionData>>,
-    [SubscriptionOptions<OperationVariables, SubscriptionData>]
-  >(
-    () =>
-      ({
-        subscribe: clientSubscribeSubscribe,
-      } as unknown as Observable<FetchResult<SubscriptionData>>)
-  );
+const clientSubscribeUnsubscribe = jest.fn();
+const clientSubscribeSubscribe = jest.fn<
+  Subscription,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [(value: FetchResult<SubscriptionData>) => void, (error: any) => void]
+>(() => ({
+  unsubscribe: clientSubscribeUnsubscribe,
+  closed: false,
+}));
 
-  const clientQueryPromise: {
-    resolve?: (
-      value:
-        | ApolloQueryResult<QueryData>
-        | PromiseLike<ApolloQueryResult<QueryData>>
-    ) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reject?: (reason?: any) => void;
-  } = {};
+const clientSubscribe = jest.fn<
+  Observable<FetchResult<SubscriptionData>>,
+  [SubscriptionOptions<OperationVariables, SubscriptionData>]
+>(
+  () =>
+    ({
+      subscribe: clientSubscribeSubscribe,
+    } as unknown as Observable<FetchResult<SubscriptionData>>)
+);
 
-  const clientQuery = jest.fn<
-    Promise<ApolloQueryResult<QueryData>>,
-    [QueryOptions<OperationVariables, QueryData>]
-  >(() => {
-    return new Promise((resolve, reject) => {
-      clientQueryPromise.resolve = resolve;
-      clientQueryPromise.reject = reject;
-    });
+const clientQueryPromises: {
+  resolve: (
+    value:
+      | ApolloQueryResult<QueryData>
+      | PromiseLike<ApolloQueryResult<QueryData>>
+  ) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  reject: (reason?: any) => void;
+}[] = [];
+
+const clientQuery = jest.fn<
+  Promise<ApolloQueryResult<QueryData>>,
+  [QueryOptions<OperationVariables, QueryData>]
+>(() => {
+  return new Promise((resolve, reject) => {
+    clientQueryPromises.push({ resolve, reject });
   });
+});
 
-  const client = {
-    query: clientQuery,
-    subscribe: clientSubscribe,
-  } as unknown as ApolloClient<object>;
+const client = {
+  query: clientQuery,
+  subscribe: clientSubscribe,
+} as unknown as ApolloClient<object>;
 
-  const resolveQuery = async (data: QueryData) => {
-    if (clientQueryPromise.resolve) {
-      await clientQueryPromise.resolve({
-        data,
-        loading: false,
-        networkStatus: 8,
-      });
-    }
-  };
+const resolveQuery = async (data: QueryData) => {
+  const clientQueryPromise = clientQueryPromises.shift();
+  if (clientQueryPromise) {
+    await clientQueryPromise.resolve({
+      data,
+      loading: false,
+      networkStatus: 8,
+    });
+  }
+};
 
+const rejectQuery = async (reason: Error) => {
+  const clientQueryPromise = clientQueryPromises.shift();
+  if (clientQueryPromise) {
+    await clientQueryPromise.reject(reason);
+  }
+};
+
+const clearPendingQueries = () => {
+  while (clientQueryPromises.length) {
+    clientQueryPromises.pop();
+  }
+};
+
+describe('data provider', () => {
   it('memoize instance and unsubscribe if no subscribers', () => {
     const subscription1 = subscribe(jest.fn(), client);
     const subscription2 = subscribe(jest.fn(), client);
@@ -201,6 +246,7 @@ describe('data provider', () => {
   });
 
   it('refetch data on reload', async () => {
+    clearPendingQueries();
     clientQuery.mockClear();
     clientSubscribeUnsubscribe.mockClear();
     clientSubscribeSubscribe.mockClear();
@@ -241,8 +287,9 @@ describe('data provider', () => {
     subscription.unsubscribe();
   });
 
-  it('fills data with nulls if paginaton is enabled', async () => {
+  it('fills data with nulls if pagination is enabled', async () => {
     callback.mockClear();
+    clearPendingQueries();
     const totalCount = 1000;
     const data: Item[] = new Array(first).fill(null).map((v, i) => ({
       cursor: i.toString(),
@@ -440,6 +487,80 @@ describe('data provider', () => {
     const lastCallbackArgs =
       callback.mock.calls[callback.mock.calls.length - 1];
     expect(lastCallbackArgs[0].totalCount).toBe(100);
+    subscription.unsubscribe();
+  });
+});
+
+describe('derived data provider', () => {
+  it('memoize instance and unsubscribe if no subscribers', () => {
+    clientSubscribeSubscribe.mockClear();
+    clientSubscribeUnsubscribe.mockClear();
+    const variables = {};
+    const subscription1 = derivedSubscribe(jest.fn(), client, variables);
+    const subscription2 = derivedSubscribe(jest.fn(), client, variables);
+    expect(clientSubscribeSubscribe.mock.calls.length).toEqual(2);
+    subscription1.unsubscribe();
+    expect(clientSubscribeUnsubscribe.mock.calls.length).toEqual(0);
+    subscription2.unsubscribe();
+    expect(clientSubscribeUnsubscribe.mock.calls.length).toEqual(2);
+  });
+
+  it('calls callback on each meaningful update, uses combineData function', async () => {
+    clearPendingQueries();
+    const part1: Item[] = [];
+    const part2: Item[] = [];
+    const callback = jest.fn<
+      ReturnType<UpdateCallback<CombinedData, never>>,
+      Parameters<UpdateCallback<CombinedData, never>>
+    >();
+    const subscription = derivedSubscribe(callback, client);
+    const data = { totalCount: 0 };
+    combineData.mockReturnValueOnce(data);
+    expect(callback.mock.calls.length).toBe(0);
+    await resolveQuery({ data: part1 });
+    expect(combineData.mock.calls.length).toBe(0);
+    expect(callback.mock.calls.length).toBe(0);
+    await resolveQuery({ data: part2 });
+    expect(combineData.mock.calls.length).toBe(1);
+    expect(combineData.mock.calls[0][0][0]).toBe(part1);
+    expect(combineData.mock.calls[0][0][1]).toBe(part2);
+    expect(callback.mock.calls.length).toBe(1);
+    expect(callback.mock.calls[0][0].data).toBe(data);
+    expect(callback.mock.calls[0][0].loading).toBe(false);
+    subscription.unsubscribe();
+  });
+
+  it('callback with error if any dependency has error, reloads all dependencies on reload', async () => {
+    combineData.mockClear();
+    const part1: Item[] = [];
+    const part2: Item[] = [];
+    const callback = jest.fn<
+      ReturnType<UpdateCallback<CombinedData, never>>,
+      Parameters<UpdateCallback<CombinedData, never>>
+    >();
+    const subscription = derivedSubscribe(callback, client);
+    const data = { totalCount: 0 };
+    combineData.mockReturnValueOnce(data);
+    expect(callback.mock.calls.length).toBe(0);
+    await resolveQuery({ data: part1 });
+    expect(combineData.mock.calls.length).toBe(0);
+    expect(callback.mock.calls.length).toBe(0);
+    const error = new Error('');
+    await rejectQuery(error);
+    expect(combineData.mock.calls.length).toBe(0);
+    expect(callback.mock.calls.length).toBe(1);
+    expect(callback.mock.calls[0][0].error).toBe(error);
+    expect(callback.mock.calls[0][0].loading).toBe(false);
+    subscription.reload();
+    expect(callback.mock.calls.length).toBe(3);
+    expect(callback.mock.calls[2][0].loading).toBe(true);
+    await resolveQuery({ data: part1 });
+    expect(callback.mock.calls.length).toBe(3);
+    await resolveQuery({ data: part2 });
+    expect(callback.mock.calls.length).toBe(4);
+    expect(callback.mock.calls[3][0].data).toStrictEqual(data);
+    expect(callback.mock.calls[3][0].loading).toBe(false);
+    expect(callback.mock.calls[3][0].error).toBeUndefined();
     subscription.unsubscribe();
   });
 });
