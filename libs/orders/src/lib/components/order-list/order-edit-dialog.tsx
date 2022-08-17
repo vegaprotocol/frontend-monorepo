@@ -86,18 +86,18 @@ export const OrderEditDialog = ({
               step={step}
               {...register('entryPrice', {
                 required: t('You need to provide a price'),
-                min: 0,
+                validate: {
+                  min: (value) =>
+                    Number(value) > 0
+                      ? true
+                      : t('The price cannot be negative'),
+                },
               })}
               id="entryPrice"
             />
             {errors.entryPrice?.message && (
               <InputError intent="danger" className="mt-4">
                 {errors.entryPrice.message}
-              </InputError>
-            )}
-            {errors.entryPrice?.type === 'min' && (
-              <InputError intent="danger" className="mt-4">
-                {t('The price cannot be negative')}
               </InputError>
             )}
           </FormGroup>
