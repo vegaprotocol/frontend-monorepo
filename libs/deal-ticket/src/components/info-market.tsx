@@ -64,6 +64,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
     'text-h5 font-medium uppercase text-black dark:text-white';
+  const dayVolume = calcCandleVolume(market);
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -114,7 +115,8 @@ export const Info = ({ market }: InfoProps) => {
               'bestStaticOfferVolume',
               'openInterest'
             ),
-            '24hourVolume': formatNumber(calcCandleVolume(market) ?? '-'),
+            '24hourVolume':
+              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
           }}
           decimalPlaces={market.positionDecimalPlaces}
         />
