@@ -65,17 +65,19 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             order={orderEdit.updatedOrder}
           />
         </orderEdit.TransactionDialog>
-        <OrderEditDialog
-          isOpen={Boolean(editOrder)}
-          onChange={(isOpen) => {
-            if (!isOpen) setEditOrder(null);
-          }}
-          order={editOrder}
-          onSubmit={(fields) => {
-            setEditOrder(null);
-            orderEdit.edit({ price: fields.entryPrice });
-          }}
-        />
+        {editOrder && (
+          <OrderEditDialog
+            isOpen={Boolean(editOrder)}
+            onChange={(isOpen) => {
+              if (!isOpen) setEditOrder(null);
+            }}
+            order={editOrder}
+            onSubmit={(fields) => {
+              setEditOrder(null);
+              orderEdit.edit({ price: fields.entryPrice });
+            }}
+          />
+        )}
       </>
     );
   }

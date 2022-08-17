@@ -18,7 +18,7 @@ import type { OrderFields } from '../order-data-provider';
 interface OrderEditDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
-  order: OrderFields | null;
+  order: OrderFields;
   onSubmit: (fields: FormFields) => void;
 }
 
@@ -37,15 +37,9 @@ export const OrderEditDialog = ({
     register,
     formState: { errors },
     handleSubmit,
-    setValue,
   } = useForm<FormFields>();
 
-  if (!order) return null;
   const step = toDecimal(order.market?.decimalPlaces ?? 0);
-  setValue(
-    'entryPrice',
-    addDecimalsFormatNumber(order.price, order.market?.decimalPlaces ?? 0)
-  );
 
   return (
     <Dialog
