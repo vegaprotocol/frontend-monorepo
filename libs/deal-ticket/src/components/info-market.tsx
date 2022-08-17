@@ -230,12 +230,12 @@ export const Info = ({ market }: InfoProps) => {
     },
     ...(market.priceMonitoringSettings?.parameters?.triggers || []).map(
       (trigger, i) => ({
-        title: t(`Price monitoring trigger #${i + 1}`),
+        title: t(`Price monitoring trigger ${i + 1}`),
         content: <MarketInfoTable data={trigger} />,
       })
     ),
     ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
-      title: t(`Price monitoring bound #${i + 1}`),
+      title: t(`Price monitoring bound ${i + 1}`),
       content: (
         <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
       ),
