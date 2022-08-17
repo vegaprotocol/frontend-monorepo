@@ -475,7 +475,7 @@ const Row = ({
         ddClassName={className}
       >
         <Tooltip description={tooltipMapping[field]} align="start">
-          <div>{startCase(t(field))}</div>
+          <div tabIndex={-1}>{startCase(t(field))}</div>
         </Tooltip>
         {isNumber && !unformatted
           ? decimalPlaces
