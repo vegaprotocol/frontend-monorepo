@@ -30,9 +30,23 @@ describe('Market trade', () => {
     });
   });
 
+  it('should not display steps if wallet is disconnected', () => {
+    cy.visit(`/trading/${markets[0].id}`);
+    cy.getByTestId('trading-connect-wallet')
+      .find('h3')
+      .should('have.text', 'Please connect your Vega wallet to make a trade');
+    cy.getByTestId('trading-connect-wallet')
+      .find('button')
+      .should('have.text', 'Connect Vega wallet');
+    cy.getByTestId('trading-connect-wallet')
+      .find('a')
+      .should('have.text', 'https://vega.xyz/wallet');
+  });
+
   it('side selector should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').should(
         'have.text',
         'Long'
@@ -51,6 +65,7 @@ describe('Market trade', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.getByTestId('next-button').scrollIntoView().click();
 
       cy.get('button[aria-label="Open long position"]').should(
@@ -237,6 +252,7 @@ describe('Market trade', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.get('h3').contains('Review Trade').click();
       cy.getByTestId('review-trade')
         .get('#contracts_tooltip_trigger')
