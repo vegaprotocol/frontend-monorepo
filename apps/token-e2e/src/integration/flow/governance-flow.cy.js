@@ -21,10 +21,14 @@ context('Governance flow - with eth and vega wallets connected', function () {
         network_parameters['governance.proposal.freeform.minProposerBalance']
       ).as('minProposerBalance');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.minClose'].split("h")[0]/24
+        network_parameters['governance.proposal.freeform.minClose'].split(
+          'h'
+        )[0] / 24
       ).as('minCloseDays');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.maxClose'].split("h")[0]/24
+        network_parameters['governance.proposal.freeform.maxClose'].split(
+          'h'
+        )[0] / 24
       ).as('maxCloseDays');
     });
     cy.vega_wallet_connect();
@@ -35,13 +39,10 @@ context('Governance flow - with eth and vega wallets connected', function () {
   });
 
   describe('Eth wallet - contains VEGA tokens', function () {
-    beforeEach(
-      'visit staking tab',
-      function () {
-        cy.navigate_to('staking');
-        cy.wait_for_spinner();
-      }
-    );
+    beforeEach('visit staking tab', function () {
+      cy.navigate_to('staking');
+      cy.wait_for_spinner();
+    });
 
     it('Able to submit a valid freeform proposal - with minimum tokens associated - positive feedback', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
@@ -195,11 +196,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.wait_for_spinner();
       cy.get(newProposalButton).should('be.visible').click();
       cy.get(newProposalDatabox).click();
-      cy.create_ten_digit_unix_timestamp_for_specified_days(this.minCloseDays - 1).then(
-        (closingDateTimestamp) => {
-          cy.create_freeform_proposal(closingDateTimestamp);
-        }
-      );
+      cy.create_ten_digit_unix_timestamp_for_specified_days(
+        this.minCloseDays - 1
+      ).then((closingDateTimestamp) => {
+        cy.create_freeform_proposal(closingDateTimestamp);
+      });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Proposal rejected').should('be.visible');
       cy.get(dialogCloseButton).click();
@@ -213,11 +214,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.wait_for_spinner();
       cy.get(newProposalButton).should('be.visible').click();
       cy.get(newProposalDatabox).click();
-      cy.create_ten_digit_unix_timestamp_for_specified_days(this.maxCloseDays + 1).then(
-        (closingDateTimestamp) => {
-          cy.create_freeform_proposal(closingDateTimestamp);
-        }
-      );
+      cy.create_ten_digit_unix_timestamp_for_specified_days(
+        this.maxCloseDays + 1
+      ).then((closingDateTimestamp) => {
+        cy.create_freeform_proposal(closingDateTimestamp);
+      });
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Proposal rejected').should('be.visible');
       cy.get(dialogCloseButton).click();
