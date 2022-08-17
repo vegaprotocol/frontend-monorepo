@@ -11,7 +11,7 @@ import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Order } from './use-order-submit';
 
 export type ValidationProps = {
-  step: number;
+  step?: number;
   market: {
     state: MarketState;
     tradingMode: MarketTradingMode;
