@@ -278,12 +278,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
       cy.staking_validator_page_add_stake('1');
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
-        'contain',
-        1.0,
-        txTimeout
-      );
-
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
         2.0,

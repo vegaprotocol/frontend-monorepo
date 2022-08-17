@@ -87,6 +87,35 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
         color: theme.colors.black.DEFAULT,
       },
     },
+    '.tooltip-content': {
+      '& > div': {
+        fontSize: '12px',
+        borderWeight: '1px',
+        borderRadius: '7px',
+        borderColor: theme.colors.black.DEFAULT,
+        backgroundColor: theme.colors.black.DEFAULT,
+        color: theme.colors.white.DEFAULT,
+      },
+      '& svg[width="10"]': {
+        fill: theme.colors.black.DEFAULT,
+      },
+      '& svg[width="8"]': {
+        fill: theme.colors.black.DEFAULT,
+      },
+    },
+    '.tooltip-content-dark': {
+      '& > div': {
+        borderColor: theme.colors.black.DEFAULT,
+        backgroundColor: '#dcdcc8',
+        color: '#333333',
+      },
+      '& svg[width="10"]': {
+        fill: theme.colors.white.DEFAULT,
+      },
+      '& svg[width="8"]': {
+        fill: '#dcdcc8',
+      },
+    },
   });
 });
 
