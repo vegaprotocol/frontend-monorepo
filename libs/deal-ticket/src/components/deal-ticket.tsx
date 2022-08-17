@@ -4,11 +4,7 @@ import {
   VegaWalletOrderType,
   VegaWalletOrderTimeInForce,
 } from '@vegaprotocol/wallet';
-import {
-  t,
-  toDecimal,
-  addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -45,11 +41,9 @@ export const DealTicket = ({
     defaultValues: getDefaultOrder(market),
   });
 
-  const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
   const { message, isDisabled: disabled } = useOrderValidation({
-    step,
     market,
     orderType,
     orderTimeInForce,
@@ -94,7 +88,7 @@ export const DealTicket = ({
       />
       <DealTicketAmount
         orderType={orderType}
-        step={step}
+        market={market}
         register={register}
         price={
           market.depth.lastTrade

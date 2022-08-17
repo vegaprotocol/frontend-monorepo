@@ -1,6 +1,6 @@
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import {
   useVegaWallet,
   VegaWalletOrderTimeInForce as OrderTimeInForce,
@@ -32,13 +32,13 @@ export const marketTranslations = (marketState: MarketState) => {
 };
 
 export const useOrderValidation = ({
-  step,
   market,
   fieldErrors = {},
   orderType,
   orderTimeInForce,
 }: ValidationProps) => {
   const { keypair } = useVegaWallet();
+  const minSize = toDecimal(market.positionDecimalPlaces);
 
   const { message, isDisabled } = useMemo(() => {
     if (!keypair) {
@@ -124,7 +124,7 @@ export const useOrderValidation = ({
     if (fieldErrors?.size?.type === 'min') {
       return {
         isDisabled: true,
-        message: t(`The amount cannot be lower than "${step}"`),
+        message: t(`The amount cannot be lower than "${minSize}"`),
       };
     }
 
@@ -180,8 +180,8 @@ export const useOrderValidation = ({
 
     return { isDisabled: false, message: '' };
   }, [
+    minSize,
     keypair,
-    step,
     market,
     fieldErrors?.size?.type,
     fieldErrors?.size?.message,

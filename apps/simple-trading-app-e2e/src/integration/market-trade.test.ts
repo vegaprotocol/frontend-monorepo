@@ -113,6 +113,9 @@ describe('Market trade', () => {
         .eq(0)
         .find('button')
         .should('have.text', '1');
+
+      cy.getByTestId('max-label').should('have.text', '21');
+
       cy.getByTestId('percentage-selector')
         .find('button')
         .contains('Max')
@@ -203,6 +206,14 @@ describe('Market trade', () => {
       connectVegaWallet();
       cy.get('h3').contains('Review Trade').click();
 
+      cy.getByTestId('review-trade')
+        .get('#contracts_tooltip_trigger')
+        .trigger('click')
+        .realTouch();
+
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The number of contracts determines'
+      );
       cy.get('#step-3-panel').find('dd').eq(1).should('have.text', '1');
 
       cy.get('#step-3-panel').find('dd').eq(2).should('have.text', '98.93006');
@@ -218,6 +229,25 @@ describe('Market trade', () => {
       cy.getByTestId('dialog-title').should(
         'have.text',
         'Confirm transaction in wallet'
+      );
+    }
+  });
+
+  it('info tooltip on mobile view should work well', () => {
+    if (markets?.length) {
+      cy.viewport('iphone-xr');
+      cy.visit(`/trading/${markets[0].id}`);
+      cy.get('h3').contains('Review Trade').click();
+      cy.getByTestId('review-trade')
+        .get('#contracts_tooltip_trigger')
+        .realTouch();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The number of contracts determines'
+      );
+
+      cy.getByTestId('review-trade').get('div.cursor-help').eq(1).realTouch();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The notional size represents the position size'
       );
     }
   });
