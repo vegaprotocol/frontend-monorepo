@@ -41,24 +41,16 @@ context(
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
-          .parent()
-          .should('contain', 2.0, txTimeout);
+          .parent(txTimeout)
+          .should('contain', 2.0);
 
         cy.get(ethWalletTotalAssociatedBalance, txTimeout)
           .contains('2.0', txTimeout)
           .should('be.visible');
 
-        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-          'contain',
-          2.0,
-          txTimeout
-        );
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
 
-        cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-          'contain',
-          2.0,
-          txTimeout
-        );
+        cy.get(vegaWalletUnstakedBalance, txTimeout).should('contain', 2.0);
       });
 
       it('Able to disassociate tokens', function () {
@@ -66,8 +58,8 @@ context(
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
-          .parent()
-          .should('contain', 2.0, txTimeout);
+          .parent(txTimeout)
+          .should('contain', 2.0);
 
         cy.get(ethWalletTotalAssociatedBalance, txTimeout)
           .contains('2.0', txTimeout)
@@ -79,8 +71,8 @@ context(
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
-          .parent()
-          .should('contain', 1.0, txTimeout);
+          .parent(txTimeout)
+          .should('contain', 1.0);
 
         cy.get(ethWalletTotalAssociatedBalance, txTimeout)
           .contains('1.0', txTimeout)
@@ -101,19 +93,14 @@ context(
 
         cy.get(vegaWalletAssociatedBalance, txTimeout).should(
           'contain',
-          '1,001.000000000000000000',
-          txTimeout
+          '1,001.000000000000000000'
         );
       });
 
       it('Able to disassociate a partial amount of tokens currently associated', function () {
         cy.staking_page_associate_tokens('2');
 
-        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-          'contain',
-          2.0,
-          txTimeout
-        );
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
 
         cy.get('button').contains('Select a validator to nominate').click();
 
@@ -121,29 +108,21 @@ context(
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
-          .parent()
-          .should('contain', 1.0, txTimeout);
+          .parent(txTimeout)
+          .should('contain', 1.0);
 
         cy.get(ethWalletAssociatedBalances, txTimeout)
           .contains(vegaWalletPublicKeyShort)
-          .parent()
-          .should('contain', 1.0, txTimeout);
+          .parent(txTimeout)
+          .should('contain', 1.0);
 
-        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-          'contain',
-          1.0,
-          txTimeout
-        );
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 1.0);
       });
 
       it('Able to disassociate all tokens', function () {
         cy.staking_page_associate_tokens('2');
 
-        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-          'contain',
-          2.0,
-          txTimeout
-        );
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
 
         cy.get('button').contains('Select a validator to nominate').click();
 
@@ -161,11 +140,7 @@ context(
           );
         });
 
-        cy.get(vegaWalletAssociatedBalance, txTimeout).should(
-          'contain',
-          0.0,
-          txTimeout
-        );
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 0.0);
       });
     });
   }
