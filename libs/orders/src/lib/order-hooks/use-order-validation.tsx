@@ -219,6 +219,7 @@ export const useOrderValidation = ({
 
     return { isDisabled: false, message: '' };
   }, [
+    minSize,
     keypair,
     market,
     fieldErrors?.size?.type,
