@@ -208,7 +208,9 @@ describe('Market trade', () => {
 
       cy.getByTestId('review-trade')
         .get('#contracts_tooltip_trigger')
-        .realHover();
+        .trigger('click')
+        .realTouch();
+
       cy.get('[data-radix-popper-content-wrapper]').contains(
         'The number of contracts determines'
       );
