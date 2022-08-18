@@ -31,7 +31,7 @@ export function createClient(base?: string) {
         },
       },
       Instrument: {
-        keyFields: ['product'],
+        keyFields: false,
       },
       TradableInstrument: {
         keyFields: ['instrument'],
