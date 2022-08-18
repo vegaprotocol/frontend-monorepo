@@ -384,7 +384,7 @@ const tooltipMapping: Record<string, ReactNode> = {
     'How big the smallest order / position on the market can be.'
   ),
   tradingMode: t('The trading mode the market is currently running.'),
-  state: t('The current state of the Market'),
+  state: t('The current state of the market'),
 
   base: t(
     'The first currency in a pair for a currency-based derivatives market.'
