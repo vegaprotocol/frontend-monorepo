@@ -100,7 +100,6 @@ export const DealTicketSteps = ({
   }, [maxTrade, market.positionDecimalPlaces]);
 
   const { message: invalidText, isDisabled } = useOrderValidation({
-    step,
     market,
     orderType,
     orderTimeInForce,
