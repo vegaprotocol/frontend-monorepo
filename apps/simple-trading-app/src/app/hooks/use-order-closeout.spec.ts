@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import useOrderCloseOut from './use-order-closeout';
 import type { Order } from '@vegaprotocol/orders';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
