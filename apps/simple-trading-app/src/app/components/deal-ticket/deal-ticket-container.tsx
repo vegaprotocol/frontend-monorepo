@@ -1,20 +1,23 @@
 import * as React from 'react';
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
+import { gql, useQuery } from '@apollo/client';
 import {
   DealTicketManager,
   DealTicketContainer as Container,
 } from '@vegaprotocol/deal-ticket';
-import { DealTicketSteps } from './deal-ticket-steps';
+import { Button, Loader } from '@vegaprotocol/ui-toolkit';
+import { t } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { gql, useQuery } from '@apollo/client';
+import { DealTicketSteps } from './deal-ticket-steps';
 import { DealTicketBalance } from './deal-ticket-balance';
-import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 import Baubles from './baubles-decor';
-import { useContext } from 'react';
 import LocalContext from '../../context/local-context';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 
-const tempEmptyText = <p>Please select a market from the markets page</p>;
+const tempEmptyText = (
+  <p>{t('Please select a market from the markets page')}</p>
+);
 
 const PARTY_BALANCE_QUERY = gql`
   query PartyBalanceQuery($partyId: ID!) {
@@ -48,7 +51,7 @@ export const DealTicketContainer = () => {
     }
   );
 
-  const loadingText = 'Loading...';
+  const loader = <Loader />;
 
   const container = marketId ? (
     <Container marketId={marketId}>
@@ -66,7 +69,7 @@ export const DealTicketContainer = () => {
 
         return (
           <DealTicketManager market={data.market}>
-            {loading ? loadingText : balance}
+            {loading ? loader : balance}
             <DealTicketSteps market={data.market} partyData={partyData} />
           </DealTicketManager>
         );
@@ -82,24 +85,24 @@ export const DealTicketContainer = () => {
       data-testid="trading-connect-wallet"
     >
       <h3 className="mb-16 text-2xl text-offBlack dark:text-white">
-        Please connect your Vega wallet to make a trade
+        {t('Please connect your Vega wallet to make a trade')}
       </h3>
       <Button
         variant="primary"
         onClick={() => setConnect(true)}
         className="h-[50px] mb-16"
       >
-        Connect Vega wallet
+        {t('Connect Vega wallet')}
       </Button>
       <h4 className="text-lg text-offBlack dark:text-white">
-        Don't have a wallet?
+        {t("Don't have a wallet?")}
       </h4>
       <p>
-        Head over to{' '}
+        {t('Head over to ')}
         <a className="text-blue" href="https://vega.xyz/wallet">
           https://vega.xyz/wallet
-        </a>{' '}
-        and follow the steps to create one.
+        </a>
+        {t(' and follow the steps to create one.')}
       </p>
     </section>
   );
