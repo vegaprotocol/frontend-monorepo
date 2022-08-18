@@ -1,8 +1,9 @@
-import { useRouter } from 'next/router';
-import { Vega } from '../icons/vega';
-import Link from 'next/link';
-import { t } from '@vegaprotocol/react-helpers';
 import classNames from 'classnames';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { NetworkSwitcher } from '@vegaprotocol/environment';
+import { t } from '@vegaprotocol/react-helpers';
+import { Vega } from '../icons/vega';
 import { useGlobalStore } from '../../stores/global';
 
 export const Navbar = () => {
@@ -10,12 +11,15 @@ export const Navbar = () => {
   const tradingPath = marketId ? `/markets/${marketId}` : '/';
   return (
     <nav className="flex items-center">
-      <Link href="/" passHref={true}>
-        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-        <a className="px-[26px]">
-          <Vega className="fill-white" />
-        </a>
-      </Link>
+      <div className="flex items-center h-full">
+        <Link href="/" passHref={true}>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a className="px-[26px]">
+            <Vega className="fill-white" />
+          </a>
+        </Link>
+        <NetworkSwitcher />
+      </div>
       {[
         {
           name: t('Trading'),

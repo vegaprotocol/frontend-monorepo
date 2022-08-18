@@ -1,0 +1,13 @@
+[
+  {
+    "tranche_id": 1,
+    "tranche_start": "2022-02-04T14:08:37.000Z",
+    "tranche_end": "2023-02-04T14:08:37.000Z",
+    "total_added": "0",
+    "total_removed": "0",
+    "locked_amount": "0",
+    "deposits": [],
+    "withdrawals": [],
+    "users": []
+  }
+]

@@ -158,7 +158,7 @@ describe('throws error', () => {
         wrapper: MockWrapper,
       });
     expect(result).toThrow(
-      `All keys in NX_VEGA_NETWORKS must represent a valid environment: CUSTOM | TESTNET | STAGNET | STAGNET2 | DEVNET | MAINNET`
+      `All keys in NX_VEGA_NETWORKS must represent a valid environment: CUSTOM | TESTNET | STAGNET | STAGNET2 | STAGNET3 | DEVNET | MAINNET`
     );
   });
 
@@ -181,7 +181,7 @@ describe('throws error', () => {
         wrapper: MockWrapper,
       });
     expect(result).toThrow(
-      `NX_VEGA_ENV is invalid, received "undefined" instead of: 'CUSTOM' | 'TESTNET' | 'STAGNET' | 'STAGNET2' | 'DEVNET' | 'MAINNET'`
+      `NX_VEGA_ENV is invalid, received "undefined" instead of: 'CUSTOM' | 'TESTNET' | 'STAGNET' | 'STAGNET2' | 'STAGNET3' | 'DEVNET' | 'MAINNET'`
     );
   });
 
