@@ -15,9 +15,10 @@ import {
 } from '../../utils/class-names';
 import classnames from 'classnames';
 
+type Variant = 'primary' | 'secondary' | 'trade' | 'accent' | 'inline-link';
 interface CommonProps {
   children?: ReactNode;
-  variant?: 'primary' | 'secondary' | 'trade' | 'accent' | 'inline-link';
+  variant?: Variant;
   className?: string;
   prependIconName?: IconName;
   appendIconName?: IconName;
@@ -33,7 +34,7 @@ export interface AnchorButtonProps
 
 export const getButtonClasses = (
   className?: string,
-  variant?: 'primary' | 'secondary' | 'trade' | 'accent' | 'inline-link',
+  variant?: Variant,
   boxShadow?: boolean
 ) => {
   const paddingLeftProvided = includesLeftPadding(className);
