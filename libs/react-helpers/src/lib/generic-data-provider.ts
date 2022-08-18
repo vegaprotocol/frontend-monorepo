@@ -522,10 +522,10 @@ function makeDerivedDataProviderInternal<Data>(
       newLoaded !== loaded ||
       newData !== data
     ) {
-      data = newData;
       loading = newLoading;
       error = newError;
       loaded = newLoaded;
+      data = newData;
       notifyAll();
     }
   };
