@@ -37,7 +37,7 @@ export function Dialog({
     {
       'lg:w-[620px] w-full': size === 'small',
       'w-full w-full md:w-[720px] lg:w-[940px]': size === 'medium',
-      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto':
+      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto w-full':
         size === 'large',
     }
   );

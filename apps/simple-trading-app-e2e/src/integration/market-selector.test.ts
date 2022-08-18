@@ -1,14 +1,31 @@
+import { aliasQuery } from '@vegaprotocol/cypress';
+import { generateSimpleMarkets } from '../support/mocks/generate-markets';
+import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
+import { generateMarketTags } from '../support/mocks/generate-market-tags';
+import { generateMarketPositions } from '../support/mocks/generate-market-positions';
+import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
+import { generatePartyBalance } from '../support/mocks/generate-party-balance';
+import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
+import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
+import { generateMarketNames } from '../support/mocks/generate-market-names';
+
 describe('market selector', () => {
   let markets;
-  before(() => {
-    cy.intercept('POST', '/query', (req) => {
-      const { body } = req;
-      if (body.operationName === 'SimpleMarkets') {
-        req.alias = `gqlSimpleMarketsQuery`;
-      }
+  beforeEach(() => {
+    cy.mockGQL((req) => {
+      aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
+      aliasQuery(req, 'DealTicketQuery', generateDealTicket());
+      aliasQuery(req, 'MarketTags', generateMarketTags());
+      aliasQuery(req, 'MarketPositions', generateMarketPositions());
+      aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
+      aliasQuery(req, 'PartyBalanceQuery', generatePartyBalance());
+      aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
+      aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
+      aliasQuery(req, 'MarketNames', generateMarketNames());
     });
+
     cy.visit('/markets');
-    cy.wait('@gqlSimpleMarketsQuery').then((response) => {
+    cy.wait('@SimpleMarkets').then((response) => {
       if (response.response.body.data?.markets?.length) {
         markets = response.response.body.data.markets;
       }
@@ -47,8 +64,12 @@ describe('market selector', () => {
         .find('[role="button"]')
         .should('have.length.at.least', 1);
       cy.get('input[placeholder="Search"]').clear();
-      cy.get('input[placeholder="Search"]').type('app');
-      const filtered = markets.filter((market) => market.name.match(/app/i));
+      cy.get('input[placeholder="Search"]').type('aa');
+      const filtered = markets.filter(
+        (market) => market.state === 'Active' && market.name.match(/aa/i)
+      );
+      cy.log('filtered', filtered);
+      console.log('filtered', filtered);
       cy.getByTestId('market-pane')
         .children()
         .find('[role="button"]')
@@ -69,7 +90,7 @@ describe('market selector', () => {
     }
   });
 
-  it('mobile view', () => {
+  it.only('mobile view', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
@@ -80,7 +101,8 @@ describe('market selector', () => {
       cy.getByTestId('market-pane')
         .children()
         .find('[role="button"]')
-        .should('have.length', markets.length);
+        .should('have.length', 3);
+      cy.get('div[role="dialog"]').should('have.class', 'w-full');
       cy.getByTestId('dialog-close').click();
       cy.get('input[placeholder="Search"]').should(
         'have.value',

@@ -1,115 +1,4 @@
-const protoCandles = [
-  { open: '9556163', close: '9587028', __typename: 'Candle' },
-  {
-    open: '9587028',
-    close: '9769899',
-    __typename: 'Candle',
-  },
-  { open: '9769899', close: '9586292', __typename: 'Candle' },
-  {
-    open: '9586292',
-    close: '9261774',
-    __typename: 'Candle',
-  },
-  { open: '9261773', close: '9236369', __typename: 'Candle' },
-  {
-    open: '9236369',
-    close: '9226070',
-    __typename: 'Candle',
-  },
-  { open: '9226077', close: '9233252', __typename: 'Candle' },
-  {
-    open: '9249854',
-    close: '9333038',
-    __typename: 'Candle',
-  },
-  { open: '9333038', close: '9410371', __typename: 'Candle' },
-  {
-    open: '9410371',
-    close: '9626249',
-    __typename: 'Candle',
-  },
-  { open: '9626247', close: '9493253', __typename: 'Candle' },
-  {
-    open: '9493253',
-    close: '9309054',
-    __typename: 'Candle',
-  },
-  { open: '9309054', close: '9378428', __typename: 'Candle' },
-  {
-    open: '9378428',
-    close: '9352996',
-    __typename: 'Candle',
-  },
-  { open: '9352996', close: '9451142', __typename: 'Candle' },
-  {
-    open: '9451142',
-    close: '9691070',
-    __typename: 'Candle',
-  },
-  { open: '9691071', close: '9622031', __typename: 'Candle' },
-  {
-    open: '9622034',
-    close: '9519285',
-    __typename: 'Candle',
-  },
-  { open: '9528904', close: '9671275', __typename: 'Candle' },
-  {
-    open: '9671275',
-    close: '9988454',
-    __typename: 'Candle',
-  },
-  { open: '9982457', close: '10085537', __typename: 'Candle' },
-  {
-    open: '10085537',
-    close: '9967390',
-    __typename: 'Candle',
-  },
-  { open: '9967390', close: '9974844', __typename: 'Candle' },
-  {
-    open: '9974844',
-    close: '9940706',
-    __typename: 'Candle',
-  },
-];
-
-const protoMarket = {
-  id: 'first-btcusd-id',
-  name: 'AAVEDAI Monthly (30 Jun 2022)',
-  data: {
-    market: {
-      id: 'first-btcusd-id',
-      state: 'Active',
-      __typename: 'Market',
-    },
-    __typename: 'MarketData',
-  },
-  tradableInstrument: {
-    instrument: {
-      code: 'AAVEDAI.MF21',
-      metadata: {
-        tags: [
-          'formerly:2839D9B2329C9E70',
-          'base:AAVE',
-          'quote:DAI',
-          'class:fx/crypto',
-          'monthly',
-          'sector:defi',
-        ],
-        __typename: 'InstrumentMetadata',
-      },
-      product: {
-        __typename: 'Future',
-        quoteName: 'DAI',
-        settlementAsset: { symbol: 'tDAI', __typename: 'Asset' },
-      },
-      __typename: 'Instrument',
-    },
-    __typename: 'TradableInstrument',
-  },
-  candles: protoCandles,
-  __typename: 'Market',
-};
+import { protoMarket } from './commons';
 
 export const generateSimpleMarkets = () => {
   return {
@@ -118,6 +7,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '57fbaa322e97cfc8bb5f1de048c37e033c41b1ac1906d3aed9960912a067ef5a',
         name: 'CELUSD (June 2022)',
+        state: 'Active',
         data: {
           market: {
             id: '57fbaa322e97cfc8bb5f1de048c37e033c41b1ac1906d3aed9960912a067ef5a',
@@ -154,6 +44,7 @@ export const generateSimpleMarkets = () => {
       {
         id: 'ccf2f04865e5951ac3405da6e16b7cbdb535a0ad32df4df2dbed4262cf473255',
         name: 'XMRUSD market',
+        state: 'Suspended',
         data: {
           market: {
             id: 'ccf2f04865e5951ac3405da6e16b7cbdb535a0ad32df4df2dbed4262cf473255',
@@ -190,6 +81,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '6030e5b4e0ca3297a26081e5af4d453f97f96baab2d74bf56f84efcffc4c382f',
         name: 'UNIDAI Monthly (30 Jun 2022)',
+        state: 'Active',
         data: {
           market: {
             id: '6030e5b4e0ca3297a26081e5af4d453f97f96baab2d74bf56f84efcffc4c382f',
@@ -300,6 +192,7 @@ export const generateSimpleMarkets = () => {
       {
         id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
         name: 'XMRUSD market',
+        state: 'Pending',
         data: {
           market: {
             id: 'de74a5572045b300e8ec50d136896912ec76e7d7ec135bc305dfd4854d9363a4',
@@ -409,6 +302,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '31ea96284611771e486c820acb26a325a99664f9854b5a7e7ad99023efa8f9e6',
         name: 'ApeCoin (18 Jul 2022)',
+        state: 'Closed',
         data: {
           market: {
             id: '31ea96284611771e486c820acb26a325a99664f9854b5a7e7ad99023efa8f9e6',
@@ -444,6 +338,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '34cff959cdc2ffdb0f167820d701fe8b51cc6b8588e650d93369aaa22d6f8b74',
         name: 'BTCUSD Monthly (18 Jul 2022)',
+        state: 'Settled',
         data: {
           market: {
             id: '34cff959cdc2ffdb0f167820d701fe8b51cc6b8588e650d93369aaa22d6f8b74',
@@ -481,6 +376,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
         name: 'Builders Club x ETHcc',
+        state: 'Settled',
         data: {
           market: {
             id: '87b0bbb3c171baa5d97dfc3852332829c91e5c5dc9f7c8fb584c6d8ac75aaaf2',
@@ -578,6 +474,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '45266143c6e9b58f4cff9b8906e971c531bb29ea7af01066973f9b77e8134823',
         name: 'BTCUSD Monthly (18 Jul 2022)',
+        state: 'Pending',
         data: {
           market: {
             id: '45266143c6e9b58f4cff9b8906e971c531bb29ea7af01066973f9b77e8134823',
@@ -615,6 +512,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
         name: 'ETHBTC Quarterly (30 Jun 2022)',
+        state: 'Active',
         data: {
           market: {
             id: '65663ebdc96161162769c4d5c5508137416748178d7cb28e2cb0d07a151a2bc6',
@@ -725,6 +623,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
         name: 'Apple Monthly (30 Jun 2022)',
+        state: 'Active',
         data: {
           market: {
             id: '234afabd27e3bce1a879039c041f9f00f915d98459935ddafd0169d38dd13850',
@@ -836,6 +735,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
         name: 'Tesla Quarterly (30 Jun 2022)',
+        state: 'Active',
         data: {
           market: {
             id: '9f2a3c1caa67bb0773ec18d908d32b55b129b9ec2d106a8e9a87f6aa5c0375a6',
@@ -947,6 +847,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
         name: 'Go big or Go home',
+        state: 'Active',
         data: {
           market: {
             id: '8a45ee934d3ddac4b036f9884df1064a5353c620a56f775ba36597d0edef9a7a',
@@ -997,6 +898,7 @@ export const generateSimpleMarkets = () => {
       {
         id: 'aede7b9ac0c3b225004929c5455160a00f59864aad32ec366e8a2bff1b30fd0f',
         name: 'BTCUSD Monthly (08 Jul 2022)',
+        state: 'Active',
         data: {
           market: {
             id: 'aede7b9ac0c3b225004929c5455160a00f59864aad32ec366e8a2bff1b30fd0f',
@@ -1034,6 +936,7 @@ export const generateSimpleMarkets = () => {
       {
         id: '9398707e01daa1a1f1ca6ff87cf8d6c03fe7373ce31121ce81b99a129e6bda47',
         name: 'BTCUSD Monthly (18 Jul 2022)',
+        state: 'Active',
         data: {
           market: {
             id: '9398707e01daa1a1f1ca6ff87cf8d6c03fe7373ce31121ce81b99a129e6bda47',

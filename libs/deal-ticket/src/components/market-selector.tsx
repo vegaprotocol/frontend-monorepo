@@ -32,6 +32,7 @@ export const MARKET_NAMES_QUERY = gql`
     markets {
       id
       name
+      state
       tradableInstrument {
         instrument {
           code
@@ -249,8 +250,10 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
 
   useEffect(() => {
     setResults(
-      data?.markets?.filter((item: MarketNames_markets) =>
-        item.name.match(new RegExp(escapeRegExp(lookup), 'i'))
+      data?.markets?.filter(
+        (item: MarketNames_markets) =>
+          item.state === 'Active' &&
+          item.name.match(new RegExp(escapeRegExp(lookup), 'i'))
       ) || []
     );
   }, [data, lookup]);
