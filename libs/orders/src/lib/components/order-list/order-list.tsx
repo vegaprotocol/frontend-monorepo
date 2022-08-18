@@ -120,12 +120,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
-            }) => data.side === Side.Buy,
+            }) => data?.side === Side.Buy,
             'text-vega-red-dark dark:text-vega-red': ({
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
-            }) => data.side === Side.Sell,
+            }) => data?.side === Side.Sell,
           }}
           valueFormatter={({
             value,
@@ -136,7 +136,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
-            const prefix = data.side === Side.Buy ? '+' : '-';
+            const prefix = data ? (data.side === Side.Buy ? '+' : '-') : '';
             return (
               prefix + addDecimal(value, data.market.positionDecimalPlaces)
             );
