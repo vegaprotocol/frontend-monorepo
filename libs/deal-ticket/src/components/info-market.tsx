@@ -254,6 +254,7 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
+            ...market.tradableInstrument.instrument.product.oracleSpecBinding,
             priceOracle:
               market.tradableInstrument.instrument.product
                 .oracleSpecForSettlementPrice.id,
