@@ -1,11 +1,11 @@
 {
-    "rationale": {
-      "url": "https://dweb.link/ipfs/bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si",
-      "hash": "bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si",
-      "description": "Freeform Proposal Description Posted in by Cypress",
-      "title": "Freeform Proposal with unique id of: "
-    },
-    "terms": {
-      "closingTimestamp": 1657721401
-    }
+  "rationale": {
+    "url": "https://dweb.link/ipfs/bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si",
+    "hash": "bafybeigwwctpv37xdcwacqxvekr6e4kaemqsrv34em6glkbiceo3fcy4si",
+    "description": "Freeform Proposal Description Posted in by Cypress",
+    "title": "Freeform Proposal with unique id of: "
+  },
+  "terms": {
+    "closingTimestamp": 1657721401
   }
+}
