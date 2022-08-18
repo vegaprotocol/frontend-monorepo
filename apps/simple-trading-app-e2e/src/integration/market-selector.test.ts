@@ -90,7 +90,7 @@ describe('market selector', () => {
     }
   });
 
-  it.only('mobile view', () => {
+  it('mobile view', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
