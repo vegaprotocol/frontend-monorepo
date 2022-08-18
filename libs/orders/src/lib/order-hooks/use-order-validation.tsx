@@ -10,7 +10,8 @@ import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Order } from './use-order-submit';
 
-export type ValidationArgs = {
+export type ValidationProps = {
+  step?: number;
   market: {
     state: MarketState;
     tradingMode: MarketTradingMode;
@@ -35,7 +36,7 @@ export const useOrderValidation = ({
   fieldErrors = {},
   orderType,
   orderTimeInForce,
-}: ValidationArgs) => {
+}: ValidationProps) => {
   const { keypair } = useVegaWallet();
   const minSize = toDecimal(market.positionDecimalPlaces);
 
@@ -56,6 +57,8 @@ export const useOrderValidation = ({
         MarketState.Settled,
         MarketState.Rejected,
         MarketState.TradingTerminated,
+        MarketState.Cancelled,
+        MarketState.Closed,
       ].includes(market.state)
     ) {
       return {
@@ -68,15 +71,7 @@ export const useOrderValidation = ({
       };
     }
 
-    if (
-      [
-        MarketState.Suspended,
-        MarketState.Pending,
-        MarketState.Proposed,
-        MarketState.Cancelled,
-        MarketState.Closed,
-      ].includes(market.state)
-    ) {
+    if ([MarketState.Proposed, MarketState.Pending].includes(market.state)) {
       return {
         isDisabled: false,
         message: t(
@@ -87,65 +82,13 @@ export const useOrderValidation = ({
       };
     }
 
-    if (market.state !== MarketState.Active) {
-      if (market.state === MarketState.Suspended) {
-        if (market.tradingMode === MarketTradingMode.Continuous) {
-          if (orderType !== OrderType.Limit) {
-            return {
-              isDisabled: true,
-              message: t(
-                'Only limit orders are permitted when market is in auction'
-              ),
-            };
-          }
-
-          if (
-            [
-              OrderTimeInForce.FOK,
-              OrderTimeInForce.IOC,
-              OrderTimeInForce.GFN,
-            ].includes(orderTimeInForce)
-          ) {
-            return {
-              isDisabled: true,
-              message: t(
-                'Only GTT, GTC and GFA are permitted when market is in auction'
-              ),
-            };
-          }
-        }
-
-        return {
-          isDisabled: false,
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and only accepting liquidity commitment orders`
-          ),
-        };
-      }
-
-      if (
-        market.state === MarketState.Proposed ||
-        market.state === MarketState.Pending
-      ) {
-        return {
-          isDisabled: false,
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and only accepting liquidity commitment orders`
-          ),
-        };
-      }
-
-      return {
-        isDisabled: true,
-        message: t('This market is no longer active.'),
-      };
-    }
-
-    if (market.tradingMode !== MarketTradingMode.Continuous) {
+    if (
+      [
+        MarketTradingMode.BatchAuction,
+        MarketTradingMode.MonitoringAuction,
+        MarketTradingMode.OpeningAuction,
+      ].includes(market.tradingMode)
+    ) {
       if (orderType !== OrderType.Limit) {
         return {
           isDisabled: true,
@@ -185,14 +128,17 @@ export const useOrderValidation = ({
       };
     }
 
-    if (fieldErrors?.price?.type === 'required') {
+    if (
+      fieldErrors?.price?.type === 'required' &&
+      orderType !== OrderType.Market
+    ) {
       return {
         isDisabled: true,
         message: t('You need to provide a price'),
       };
     }
 
-    if (fieldErrors?.price?.type === 'min') {
+    if (fieldErrors?.price?.type === 'min' && orderType !== OrderType.Market) {
       return {
         isDisabled: true,
         message: t(`The price cannot be negative`),
@@ -213,6 +159,21 @@ export const useOrderValidation = ({
         isDisabled: true,
         message: t(
           `The amount field accepts up to ${market.positionDecimalPlaces} decimal places`
+        ),
+      };
+    }
+
+    if (
+      [
+        MarketTradingMode.BatchAuction,
+        MarketTradingMode.MonitoringAuction,
+        MarketTradingMode.OpeningAuction,
+      ].includes(market.tradingMode)
+    ) {
+      return {
+        isDisabled: false,
+        message: t(
+          'Any orders placed now will not trade until the auction ends'
         ),
       };
     }
