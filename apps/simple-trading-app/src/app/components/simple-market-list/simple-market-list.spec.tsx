@@ -12,12 +12,11 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';
 import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
-import { FILTERS_QUERY, MARKETS_QUERY } from './data-provider';
+import { MARKETS_QUERY } from './data-provider';
 import type {
   SimpleMarkets_markets,
   SimpleMarkets,
 } from './__generated__/SimpleMarkets';
-import type { MarketFilters } from './__generated__/MarketFilters';
 
 const mockedNavigate = jest.fn();
 
@@ -32,15 +31,6 @@ jest.mock('date-fns', () => ({
 }));
 
 describe('SimpleMarketList', () => {
-  const filterMock: MockedResponse<MarketFilters> = {
-    request: {
-      query: FILTERS_QUERY,
-    },
-    result: {
-      data: { markets: [] },
-    },
-  };
-
   afterEach(() => {
     jest.clearAllMocks();
     cleanup();
@@ -60,8 +50,7 @@ describe('SimpleMarketList', () => {
     };
     await act(async () => {
       render(
-        // @ts-ignore different versions of react types in apollo and app
-        <MockedProvider mocks={[mocks, filterMock]}>
+        <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
@@ -130,8 +119,7 @@ describe('SimpleMarketList', () => {
     };
     await act(async () => {
       render(
-        // @ts-ignore different versions of react types in apollo and app
-        <MockedProvider mocks={[mocks, filterMock]}>
+        <MockedProvider mocks={[mocks]}>
           <SimpleMarketList />
         </MockedProvider>,
         { wrapper: BrowserRouter }
@@ -143,8 +131,9 @@ describe('SimpleMarketList', () => {
         document.querySelector('.ag-center-cols-container')
       ).toBeInTheDocument();
     });
-
-    const container = document.querySelector('.ag-center-cols-container');
-    expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
+    await waitFor(() => {
+      const container = document.querySelector('.ag-center-cols-container');
+      expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
+    });
   });
 });

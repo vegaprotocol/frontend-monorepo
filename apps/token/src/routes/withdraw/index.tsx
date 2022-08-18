@@ -9,13 +9,12 @@ import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
-import { Routes } from '../router-config';
+import Routes from '../routes';
 import type {
   WithdrawPage,
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
-import { Flags } from '../../config';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -150,11 +149,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           </Callout>
         </div>
       )}
-      <WithdrawManager
-        assets={data.assets || []}
-        accounts={accounts}
-        isNewContract={Flags.USE_NEW_BRIDGE_CONTRACT}
-      />
+      <WithdrawManager assets={data.assets || []} accounts={accounts} />
     </>
   );
 };

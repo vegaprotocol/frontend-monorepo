@@ -3,45 +3,53 @@ import { useLocation, useRoutes, BrowserRouter } from 'react-router-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/react-testing';
 import SimpleMarketToolbar from './simple-market-toolbar';
-import type { MockedResponse } from '@apollo/client/testing';
-import type { MarketFilters } from './__generated__/MarketFilters';
-import { FILTERS_QUERY } from './data-provider';
-import filterData from './mocks/market-filters.json';
+import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
+import { markets as filterData } from './mocks/market-filters.json';
 
 describe('SimpleMarketToolbar', () => {
-  const filterMock: MockedResponse<MarketFilters> = {
-    request: {
-      query: FILTERS_QUERY,
-    },
-    result: {
-      data: filterData as unknown as MarketFilters,
-    },
-  };
-
   const WrappedCompForTest = () => {
     const routes = useRoutes([
       {
         path: '/',
-        element: <SimpleMarketToolbar />,
+        element: (
+          <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+        ),
       },
       {
         path: 'markets',
         children: [
           {
             path: `:state`,
-            element: <SimpleMarketToolbar />,
+            element: (
+              <SimpleMarketToolbar
+                data={filterData as SimpleMarkets_markets[]}
+              />
+            ),
             children: [
               {
                 path: `:product`,
-                element: <SimpleMarketToolbar />,
+                element: (
+                  <SimpleMarketToolbar
+                    data={filterData as SimpleMarkets_markets[]}
+                  />
+                ),
                 children: [
-                  { path: `:asset`, element: <SimpleMarketToolbar /> },
+                  {
+                    path: `:asset`,
+                    element: (
+                      <SimpleMarketToolbar
+                        data={filterData as SimpleMarkets_markets[]}
+                      />
+                    ),
+                  },
                 ],
               },
             ],
           },
         ],
-        element: <SimpleMarketToolbar />,
+        element: (
+          <SimpleMarketToolbar data={filterData as SimpleMarkets_markets[]} />
+        ),
       },
     ]);
     const location = useLocation();
@@ -59,8 +67,7 @@ describe('SimpleMarketToolbar', () => {
 
   it('should be properly rendered', async () => {
     render(
-      // @ts-ignore different versions of react types in apollo and app
-      <MockedProvider mocks={[filterMock]} addTypename={false}>
+      <MockedProvider mocks={[]} addTypename={false}>
         <WrappedCompForTest />
       </MockedProvider>,
       { wrapper: BrowserRouter }
@@ -84,8 +91,7 @@ describe('SimpleMarketToolbar', () => {
 
   it('navigation should work well', async () => {
     render(
-      // @ts-ignore different versions of react types in apollo and app
-      <MockedProvider mocks={[filterMock]} addTypename={false}>
+      <MockedProvider mocks={[]} addTypename={false}>
         <WrappedCompForTest />
       </MockedProvider>,
       { wrapper: BrowserRouter }
@@ -95,6 +101,7 @@ describe('SimpleMarketToolbar', () => {
       expect(screen.getByText('Future')).toBeInTheDocument();
     });
     fireEvent.click(screen.getByText('Future'));
+
     await waitFor(() => {
       expect(screen.getByTestId('location-display')).toHaveTextContent(
         '/markets/Active/Future'

@@ -51,6 +51,7 @@ export default ({ marketId, partyId }: Props): PositionMargin => {
       pollInterval: 5000,
       variables: { partyId },
       skip: !partyId,
+      fetchPolicy: 'no-cache',
     }
   );
 

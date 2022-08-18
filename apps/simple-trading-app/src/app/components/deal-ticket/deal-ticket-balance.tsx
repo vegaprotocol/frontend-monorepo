@@ -4,6 +4,7 @@ import type { DealTicketQuery_market_tradableInstrument_instrument_product_settl
 import type { PartyBalanceQuery_party_accounts } from './__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from '../../hooks/use-settlement-account';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { AccountType } from '@vegaprotocol/types';
 
 interface DealTicketBalanceProps {
   settlementAsset: DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset;
@@ -20,7 +21,11 @@ export const DealTicketBalance = ({
 }: DealTicketBalanceProps) => {
   const settlementAssetId = settlementAsset?.id;
   const settlementAssetSymbol = settlementAsset?.symbol;
-  const settlementAccount = useSettlementAccount(settlementAssetId, accounts);
+  const settlementAccount = useSettlementAccount(
+    settlementAssetId,
+    accounts,
+    AccountType.General
+  );
   const formatedNumber =
     settlementAccount?.balance &&
     settlementAccount.asset.decimals &&

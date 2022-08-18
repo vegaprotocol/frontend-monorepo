@@ -23,8 +23,11 @@ export function createClient(base?: string) {
 
   const cache = new InMemoryCache({
     typePolicies: {
+      Market: {
+        merge: true,
+      },
       Party: {
-        keyFields: false,
+        merge: true,
       },
       Query: {},
       Account: {

@@ -9,7 +9,7 @@ import { EthConnectPrompt } from '../../components/eth-connect-prompt';
 import { SplashLoader } from '../../components/splash-loader';
 import { useAppState } from '../../contexts/app-state/app-state-context';
 import { useTranches } from '../../hooks/use-tranches';
-import { Routes as RoutesConfig } from '../router-config';
+import RoutesConfig from '../routes';
 import {
   initialRedemptionState,
   RedemptionActionType,
@@ -52,7 +52,7 @@ const RedemptionRouter = () => {
   if (error) {
     return (
       <Callout intent={Intent.Danger} title={t('errorLoadingTranches')}>
-        {error}
+        {error.message}
       </Callout>
     );
   }

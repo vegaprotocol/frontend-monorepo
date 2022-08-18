@@ -1,14 +1,14 @@
-import { act, renderHook } from '@testing-library/react-hooks';
+import { act, renderHook } from '@testing-library/react';
 import { waitFor } from '@testing-library/react';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { Erc20Approval } from './__generated__/Erc20Approval';
-import { ERC20_APPROVAL_QUERY_NEW } from './queries';
+import { ERC20_APPROVAL_QUERY } from './queries';
 import * as web3 from '@vegaprotocol/web3';
 import * as sentry from '@sentry/react';
-import type { Erc20ApprovalNew_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalNew';
+import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
 
 jest.mock('@vegaprotocol/web3', () => ({
   useBridgeContract: jest.fn().mockReturnValue({
@@ -22,12 +22,12 @@ function setup(mocks?: MockedResponse[]) {
   const wrapper = ({ children }: { children: ReactNode }) => (
     <MockedProvider mocks={mocks}>{children}</MockedProvider>
   );
-  return renderHook(() => useCompleteWithdraw(true), { wrapper });
+  return renderHook(() => useCompleteWithdraw(), { wrapper });
 }
 
 it('Should perform the Ethereum transaction with the fetched approval', async () => {
   const withdrawalId = 'withdrawal-id';
-  const erc20WithdrawalApproval: Erc20ApprovalNew_erc20WithdrawalApproval = {
+  const erc20WithdrawalApproval: Erc20Approval_erc20WithdrawalApproval = {
     __typename: 'Erc20WithdrawalApproval',
     assetSource: 'asset-source',
     amount: '100',
@@ -39,7 +39,7 @@ it('Should perform the Ethereum transaction with the fetched approval', async ()
   };
   const mockERC20Approval: MockedResponse<Erc20Approval> = {
     request: {
-      query: ERC20_APPROVAL_QUERY_NEW,
+      query: ERC20_APPROVAL_QUERY,
       variables: { withdrawalId },
     },
     result: {
@@ -75,7 +75,7 @@ it('Captures an error if the erc20Withdrawal is not found', async () => {
   const withdrawalId = 'withdrawal-id';
   const mockERC20Approval: MockedResponse<Erc20Approval> = {
     request: {
-      query: ERC20_APPROVAL_QUERY_NEW,
+      query: ERC20_APPROVAL_QUERY,
       variables: { withdrawalId },
     },
     result: {
@@ -106,7 +106,7 @@ it('Captures an error if erc20 approval query fails', async () => {
   const withdrawalId = 'withdrawal-id';
   const mockERC20Approval: MockedResponse<Erc20Approval> = {
     request: {
-      query: ERC20_APPROVAL_QUERY_NEW,
+      query: ERC20_APPROVAL_QUERY,
       variables: { withdrawalId },
     },
     error: new Error('query failed'),

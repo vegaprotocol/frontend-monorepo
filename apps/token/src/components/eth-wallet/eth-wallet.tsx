@@ -13,7 +13,7 @@ import vegaVesting from '../../images/vega_vesting.png';
 import vegaWhite from '../../images/vega_white.png';
 import { BigNumber } from '../../lib/bignumber';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import { Routes } from '../../routes/router-config';
+import Routes from '../../routes/routes';
 import { LockedProgress } from '../locked-progress';
 import {
   WalletCard,

@@ -4,11 +4,7 @@ import {
   VegaWalletOrderType,
   VegaWalletOrderTimeInForce,
 } from '@vegaprotocol/wallet';
-import {
-  t,
-  toDecimal,
-  addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -39,16 +35,15 @@ export const DealTicket = ({
     handleSubmit,
     watch,
     formState: { errors },
+    setValue,
   } = useForm<Order>({
     mode: 'onChange',
     defaultValues: getDefaultOrder(market),
   });
 
-  const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
   const { message, isDisabled: disabled } = useOrderValidation({
-    step,
     market,
     orderType,
     orderTimeInForce,
@@ -71,7 +66,17 @@ export const DealTicket = ({
         name="type"
         control={control}
         render={({ field }) => (
-          <TypeSelector value={field.value} onSelect={field.onChange} />
+          <TypeSelector
+            value={field.value}
+            onSelect={(type) => {
+              if (type === VegaWalletOrderType.Limit) {
+                setValue('timeInForce', VegaWalletOrderTimeInForce.GTC);
+              } else {
+                setValue('timeInForce', VegaWalletOrderTimeInForce.IOC);
+              }
+              field.onChange(type);
+            }}
+          />
         )}
       />
       <Controller
@@ -83,7 +88,7 @@ export const DealTicket = ({
       />
       <DealTicketAmount
         orderType={orderType}
-        step={step}
+        market={market}
         register={register}
         price={
           market.depth.lastTrade

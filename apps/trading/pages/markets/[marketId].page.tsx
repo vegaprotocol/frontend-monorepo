@@ -1,16 +1,16 @@
 import { gql } from '@apollo/client';
+import { SelectMarketDialog } from '@vegaprotocol/market-list';
+import { t } from '@vegaprotocol/react-helpers';
+import { Interval } from '@vegaprotocol/types';
 import { Splash } from '@vegaprotocol/ui-toolkit';
+import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import debounce from 'lodash/debounce';
 import { PageQueryContainer } from '../../components/page-query-container';
-import { TradeGrid, TradePanels } from './trade-grid';
-import { t } from '@vegaprotocol/react-helpers';
 import { useGlobalStore } from '../../stores';
-import { LandingDialog } from '@vegaprotocol/market-list';
-import type { Market, MarketVariables } from './__generated__/Market';
-import { Interval } from '@vegaprotocol/types';
+import { TradeGrid, TradePanels } from './trade-grid';
 
+import type { Market, MarketVariables } from './__generated__/Market';
 // Top level page query
 const MARKET_QUERY = gql`
   query Market($marketId: ID!, $interval: Interval!, $since: String!) {
@@ -25,13 +25,17 @@ const MARKET_QUERY = gql`
         market {
           id
         }
+        auctionStart
+        auctionEnd
         markPrice
         indicativeVolume
+        indicativePrice
+        suppliedStake
+        targetStake
         bestBidVolume
         bestOfferVolume
         bestStaticBidVolume
         bestStaticOfferVolume
-        indicativeVolume
         trigger
       }
       tradableInstrument {
@@ -114,9 +118,17 @@ const MarketPage = ({ id }: { id?: string }) => {
             ) : (
               <TradePanels market={market} />
             )}
-            <LandingDialog
-              open={store.landingDialog}
-              setOpen={(isOpen) => store.setLandingDialog(isOpen)}
+            <SelectMarketDialog
+              dialogOpen={store.landingDialog}
+              setDialogOpen={(isOpen: boolean) =>
+                store.setLandingDialog(isOpen)
+              }
+              onSelect={(marketId: string) => {
+                if (marketId && store.marketId !== marketId) {
+                  store.setMarketId(marketId);
+                }
+              }}
+              title={t('Select a market to get started')}
             />
           </>
         );

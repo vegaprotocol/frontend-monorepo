@@ -5,6 +5,7 @@ import type {
   PartyBalanceQuery_party_accounts_asset,
 } from './__generated__/PartyBalanceQuery';
 import { DealTicketBalance } from './deal-ticket-balance';
+import { AccountType } from '@vegaprotocol/types';
 
 const tDAI: PartyBalanceQuery_party_accounts_asset = {
   __typename: 'Asset',
@@ -17,6 +18,7 @@ const tDAI: PartyBalanceQuery_party_accounts_asset = {
 const accounts: PartyBalanceQuery_party_accounts[] = [
   {
     __typename: 'Account',
+    type: AccountType.General,
     balance: '1000000',
     asset: tDAI,
   },

@@ -1,7 +1,6 @@
-import { addDecimal, formatNumber, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import {
   Button,
-  Icon,
   KeyValueTable,
   KeyValueTableRow,
 } from '@vegaprotocol/ui-toolkit';
@@ -10,17 +9,14 @@ import classNames from 'classnames';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { SIDE_NAMES } from './side-selector';
-import { useVegaWallet, VegaWalletOrderSide } from '@vegaprotocol/wallet';
+import { VegaWalletOrderSide } from '@vegaprotocol/wallet';
 import SimpleMarketExpires from '../simple-market-list/simple-market-expires';
 import { gql, useQuery } from '@apollo/client';
 import type {
   MarketTags,
   MarketTagsVariables,
 } from './__generated__/MarketTags';
-import useOrderMargin from '../../hooks/use-order-margin';
-import useOrderCloseOut from '../../hooks/use-order-closeout';
-import { IconNames } from '@blueprintjs/icons';
-import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
+import { DealTicketEstimates } from './deal-ticket-estimates';
 
 export const MARKET_TAGS_QUERY = gql`
   query MarketTags($marketId: ID!) {
@@ -41,7 +37,12 @@ interface Props {
   isDisabled: boolean;
   transactionStatus?: string;
   order: Order;
-  partyData?: PartyBalanceQuery;
+  estCloseOut: string;
+  estMargin: string;
+  quoteName: string;
+  price: string;
+  fees: string;
+  notionalSize: string;
 }
 
 export default ({
@@ -49,23 +50,21 @@ export default ({
   market,
   order,
   transactionStatus,
-  partyData,
+  estCloseOut,
+  quoteName,
+  fees,
+  price,
+  notionalSize,
 }: Props) => {
-  const { keypair } = useVegaWallet();
   const { data: tagsData } = useQuery<MarketTags, MarketTagsVariables>(
     MARKET_TAGS_QUERY,
     {
       variables: { marketId: market.id },
     }
   );
-  const estMargin = useOrderMargin({
-    order,
-    market,
-    partyId: keypair?.pub || '',
-  });
-  const estCloseOut = useOrderCloseOut({ order, market, partyData });
+
   return (
-    <div className="mb-8 text-black dark:text-white">
+    <div className="mb-8 text-black dark:text-white" data-testid="review-trade">
       <KeyValueTable>
         <KeyValueTableRow noBorder>
           <div className="flex flex-none gap-x-5 items-center">
@@ -95,40 +94,19 @@ export default ({
             </div>
           </div>
           <div className="text-blue">
-            @{' '}
-            {market.depth.lastTrade
-              ? addDecimal(market.depth.lastTrade.price, market.decimalPlaces)
-              : ' - '}{' '}
+            {`@ ${price} `}
             <span className="text-ui-small inline">(EST)</span>
           </div>
         </KeyValueTableRow>
-        <KeyValueTableRow noBorder>
-          <>{t('Est. margin')}</>
-          <div className="text-black dark:text-white flex gap-x-5 items-center">
-            {estMargin}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
-          </div>
-        </KeyValueTableRow>
-        <KeyValueTableRow noBorder>
-          <>
-            {t('Size')}{' '}
-            <div className="text-ui-small inline">
-              ({market.tradableInstrument.instrument.product.quoteName})
-            </div>
-          </>
-          <div className="text-black dark:text-white flex gap-x-5 items-center">
-            {formatNumber(order.size, market.decimalPlaces)}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
-          </div>
-        </KeyValueTableRow>
-        <KeyValueTableRow noBorder>
-          <>{t('Est. close out')}</>
-          <div className="text-black dark:text-white flex gap-x-5 items-center">
-            {estCloseOut}
-            <Icon name={IconNames.ISSUE} className="rotate-180" />
-          </div>
-        </KeyValueTableRow>
       </KeyValueTable>
+
+      <DealTicketEstimates
+        size={order.size}
+        quoteName={quoteName}
+        fees={fees}
+        estCloseOut={estCloseOut}
+        notionalSize={notionalSize}
+      />
 
       <Button
         className="w-full !py-8 mt-64 max-w-sm"

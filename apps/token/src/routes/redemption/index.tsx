@@ -5,7 +5,7 @@ import { useDocumentTitle } from '../../hooks/use-document-title';
 import type { RouteChildProps } from '..';
 import RedemptionRouter from './redemption';
 import { useMatch } from 'react-router-dom';
-import { Routes } from '../router-config';
+import Routes from '../routes';
 
 const RedemptionIndex = ({ name }: RouteChildProps) => {
   useDocumentTitle(name);

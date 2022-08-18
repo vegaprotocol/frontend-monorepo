@@ -19,6 +19,7 @@ import omit from 'lodash/omit';
 import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
 import { gql, useQuery } from '@apollo/client';
+import { totalFees } from '@vegaprotocol/market-list';
 
 const MARKET_INFO_QUERY = gql`
   query MarketInfoQuery($marketId: ID!) {
@@ -176,7 +177,13 @@ export const Info = ({ market }: InfoProps) => {
       title: t('Current fees'),
       content: (
         <>
-          <MarketInfoTable data={market.fees.factors} asPercentage={true} />
+          <MarketInfoTable
+            data={{
+              ...market.fees.factors,
+              totalFees: totalFees(market.fees.factors),
+            }}
+            asPercentage={true}
+          />
           <p className="text-ui-small">
             {t(
               'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
@@ -186,11 +193,28 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Market data'),
+      title: t('Market price and interest'),
       content: (
         <MarketInfoTable
-          data={market.data}
+          data={pick(market.data, 'name', 'markPrice', 'openInterest')}
           decimalPlaces={market.decimalPlaces}
+        />
+      ),
+    },
+    {
+      title: t('Market volume'),
+      content: (
+        <MarketInfoTable
+          data={pick(
+            market.data,
+            'name',
+            'indicativeVolume',
+            'bestBidVolume',
+            'bestOfferVolume',
+            'bestStaticBidVolume',
+            'bestStaticOfferVolume'
+          )}
+          decimalPlaces={market.positionDecimalPlaces}
         />
       ),
     },
@@ -212,7 +236,7 @@ export const Info = ({ market }: InfoProps) => {
         <MarketInfoTable
           data={{
             ...keyDetails,
-            marketId: keyDetails.id,
+            marketID: keyDetails.id,
             id: undefined,
             tradingMode:
               keyDetails.tradingMode && formatLabel(keyDetails.tradingMode),
@@ -230,8 +254,22 @@ export const Info = ({ market }: InfoProps) => {
             productType:
               market.tradableInstrument.instrument.product.__typename,
             ...market.tradableInstrument.instrument.product,
-            ...(market.tradableInstrument.instrument.product?.settlementAsset ??
-              {}),
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Settlement asset'),
+      content: (
+        <MarketInfoTable
+          data={{
+            name: market.tradableInstrument.instrument.product?.settlementAsset
+              .name,
+            symbol:
+              market.tradableInstrument.instrument.product?.settlementAsset
+                .symbol,
+            ID: market.tradableInstrument.instrument.product?.settlementAsset
+              .id,
           }}
         />
       ),
