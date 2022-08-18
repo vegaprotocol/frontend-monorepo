@@ -168,7 +168,7 @@ export const generateMarketList = (
           open: '100',
           close: '100',
           high: '110',
-          low: '100',
+          low: '90',
         },
       ],
       __typename: 'Market',
