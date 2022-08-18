@@ -86,7 +86,7 @@ export const generateMarketList = (
           __typename: 'Candle',
           open: '100',
           close: '100',
-          high: '100',
+          high: '110',
           low: '90',
         },
       ],
