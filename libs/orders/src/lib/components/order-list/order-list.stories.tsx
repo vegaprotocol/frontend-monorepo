@@ -29,7 +29,7 @@ const Template: Story = (args) => {
 
 const Template2: Story = (args) => {
   const [open, setOpen] = useState(false);
-  const [editOrder, setEditOrder] = useState<OrderFields | null>(null);
+  const [editOrder, setEditOrder] = useState<OrderFields>();
   const cancel = () => {
     setOpen(!open);
     return Promise.resolve();
@@ -57,16 +57,18 @@ const Template2: Story = (args) => {
         onChange={setOpen}
         transaction={transaction}
       />
-      <OrderEditDialog
-        isOpen={Boolean(editOrder)}
-        onChange={(isOpen) => {
-          if (!isOpen) setEditOrder(null);
-        }}
-        order={editOrder}
-        onSubmit={(fields) => {
-          return;
-        }}
-      />
+      {editOrder && (
+        <OrderEditDialog
+          isOpen={Boolean(editOrder)}
+          onChange={(isOpen) => {
+            if (!isOpen) setEditOrder(undefined);
+          }}
+          order={editOrder}
+          onSubmit={(fields) => {
+            return;
+          }}
+        />
+      )}
     </>
   );
 };
