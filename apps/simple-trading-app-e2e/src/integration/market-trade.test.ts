@@ -219,7 +219,7 @@ describe('Market trade', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       connectVegaWallet();
-      cy.get('h3').contains('Review Trade').click();
+      cy.get('#step-3-control').click();
 
       cy.getByTestId('review-trade')
         .get('#contracts_tooltip_trigger')
@@ -253,7 +253,8 @@ describe('Market trade', () => {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
       connectVegaWallet();
-      cy.get('h3').contains('Review Trade').click();
+      cy.get('#step-3-control').click();
+
       cy.getByTestId('review-trade')
         .get('#contracts_tooltip_trigger')
         .realTouch();
