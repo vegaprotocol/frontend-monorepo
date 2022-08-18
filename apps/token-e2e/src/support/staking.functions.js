@@ -7,6 +7,7 @@ const ethWalletAssociateButton = '[href="/staking/associate"]';
 const ethWalletDissociateButton = '[href="/staking/disassociate"]';
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
+const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
@@ -150,6 +151,11 @@ Cypress.Commands.add(
       .invoke('text')
       .then((unstakedBalance) => {
         if (parseFloat(unstakedBalance) != parseFloat(tokenAmount)) {
+          cy.vega_wallet_teardown();
+          cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
+            '0.000000000000000000',
+            txTimeout
+          );
           cy.staking_page_associate_tokens(tokenAmount);
         }
       });
