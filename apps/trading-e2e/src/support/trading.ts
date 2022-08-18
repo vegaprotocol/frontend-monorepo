@@ -16,7 +16,6 @@ export const mockTradingPage = (
   req: CyHttpMessages.IncomingHttpRequest,
   state: MarketState
 ) => {
-  // console.log(req);
   aliasQuery(
     req,
     'Market',

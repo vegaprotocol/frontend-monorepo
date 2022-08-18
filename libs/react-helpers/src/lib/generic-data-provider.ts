@@ -460,6 +460,10 @@ export function makeDataProvider<QueryData, Data, SubscriptionData, Delta>(
     getInstance(variables)(callback, client, variables);
 }
 
+/**
+ * Dependency subscribe needs to use any as Data and Delta because it's unknown what dependencies will be used.
+ * This effects in parts in combine function has any[] type
+ */
 type DependencySubscribe = Subscribe<any, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 type DependencyUpdateCallback = Parameters<DependencySubscribe>['0'];
 export type CombineDerivedData<Data> = (
@@ -576,6 +580,7 @@ function makeDerivedDataProviderInternal<Data>(
   };
 }
 
+// Derived data provider has no subscription, hence there is no delta (never)
 export function makeDerivedDataProvider<Data>(
   dependencies: DependencySubscribe[],
   combineData: CombineDerivedData<Data>
