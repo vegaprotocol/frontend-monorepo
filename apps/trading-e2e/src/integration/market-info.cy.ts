@@ -25,25 +25,8 @@ describe('market info is displayed', () => {
 
   it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
-
-    validateMarketDataRow(0, 'Indicative Volume', '0');
-    validateMarketDataRow(1, 'Best Bid Volume', '5');
-    validateMarketDataRow(2, 'Best Offer Volume', '1');
-    validateMarketDataRow(3, 'Best Static Bid Volume', '5');
-    validateMarketDataRow(4, 'Best Static Offer Volume', '1');
-    validateMarketDataRow(5, 'Open Interest', '0');
-  });
-
-  it('insurance pool', () => {
-    cy.getByTestId(marketTitle).contains('Insurance pool').click();
-
-    validateMarketDataRow(0, 'Type', 'Insurance');
-    validateMarketDataRow(2, 'Name', 'tBTC TEST');
-    validateMarketDataRow(
-      3,
-      'Asset ID',
-      '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61'
-    );
+    validateMarketDataRow(0, '24 Hour Volume', '-');
+    validateMarketDataRow(1, 'Open Interest', '0');
   });
 
   it('market price', () => {

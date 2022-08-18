@@ -105,18 +105,17 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
+            '24hourVolume':
+              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
             ...pick(
               market.data,
+              'openInterest',
               'name',
-              'indicativeVolume',
               'bestBidVolume',
               'bestOfferVolume',
               'bestStaticBidVolume',
-              'bestStaticOfferVolume',
-              'openInterest'
+              'bestStaticOfferVolume'
             ),
-            '24hourVolume':
-              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
           }}
           decimalPlaces={market.positionDecimalPlaces}
         />
@@ -129,12 +128,8 @@ export const Info = ({ market }: InfoProps) => {
         content: (
           <MarketInfoTable
             data={{
-              ...a,
               balance: `${a.balance}
            ${market.tradableInstrument.instrument.product?.settlementAsset.symbol}`,
-              name: market.tradableInstrument.instrument.product
-                ?.settlementAsset.name,
-              assetID: a.asset.id,
             }}
           />
         ),
@@ -259,7 +254,6 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            ...market.tradableInstrument.instrument.product.oracleSpecBinding,
             priceOracle:
               market.tradableInstrument.instrument.product
                 .oracleSpecForSettlementPrice.id,
