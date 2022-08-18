@@ -23,8 +23,8 @@ const MarketDataGrid = ({ grid }: MarketDataGridProps) => {
         ({ label, value, isEstimate }, index) =>
           value && (
             <div key={index} className="grid grid-cols-2">
-              <span>{label}</span>
-              <span>
+              <span data-testid="tooltip-label">{label}</span>
+              <span data-testid="tooltip-value">
                 {isEstimate && <span className="ml-[-0.625em]">{'~'}</span>}
                 {value}
               </span>
@@ -150,7 +150,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         case AuctionTrigger.Liquidity: {
           return (
             <>
-              <p className="mb-16">
+              <p data-testid="tooltip-market-info" className="mb-16">
                 <span>
                   {t(
                     'This market is in auction until it reaches sufficient liquidity.'

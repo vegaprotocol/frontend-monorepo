@@ -1,5 +1,5 @@
 import { FormGroup, Input } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import { validateSize } from '@vegaprotocol/orders';
 import type { DealTicketAmountProps } from './deal-ticket-amount';
 
@@ -10,9 +10,12 @@ export type DealTicketLimitAmountProps = Omit<
 
 export const DealTicketLimitAmount = ({
   register,
-  step,
+  market,
   quoteName,
 }: DealTicketLimitAmountProps) => {
+  const priceStep = toDecimal(market.decimalPlaces);
+  const sizeStep = toDecimal(market.positionDecimalPlaces);
+
   return (
     <div className="flex items-center gap-8">
       <div className="flex-1">
@@ -21,13 +24,13 @@ export const DealTicketLimitAmount = ({
             id="input-order-size-limit"
             className="w-full"
             type="number"
-            step={step}
-            min={step}
+            step={sizeStep}
+            min={sizeStep}
             data-testid="order-size"
             {...register('size', {
               required: true,
-              min: step,
-              validate: validateSize(step),
+              min: sizeStep,
+              validate: validateSize(sizeStep),
             })}
           />
         </FormGroup>
@@ -43,7 +46,7 @@ export const DealTicketLimitAmount = ({
             id="input-price-quote"
             className="w-full"
             type="number"
-            step={step}
+            step={priceStep}
             defaultValue={0}
             data-testid="order-price"
             {...register('price', { required: true, min: 0 })}
