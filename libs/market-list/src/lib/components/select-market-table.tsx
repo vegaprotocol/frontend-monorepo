@@ -5,9 +5,10 @@ import { columnHeaders } from './select-market-columns';
 export const SelectMarketTableHeader = ({
   detailed = false,
   headers = columnHeaders,
+  className = '',
 }) => {
   return (
-    <tr className="z-10">
+    <tr className="z-10 border-b border-neutral-300 dark:border-neutral-700">
       {headers.map(({ value, className, onlyOnDetailed }, i) => {
         const thClass = classNames(
           'font-normal text-neutral-500 dark:text-neutral-400',
