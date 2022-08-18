@@ -25,6 +25,15 @@ export const Popover = ({
           className="p-4 rounded bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200"
           sideOffset={10}
         >
+          <PopoverPrimitive.Close
+            className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow focus-visible:top-[7px] focus-visible:right-[7px] text-black dark:text-white"
+            data-testid="dialog-close"
+          >
+            <Icon
+              name="cross"
+              className="focus:outline-none focus-visible:outline-none"
+            />
+          </PopoverPrimitive.Close>
           {children}
         </PopoverPrimitive.Content>
       </PopoverPrimitive.Portal>
