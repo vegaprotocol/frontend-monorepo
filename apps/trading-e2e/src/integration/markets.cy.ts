@@ -9,7 +9,7 @@ describe('markets table', () => {
       aliasQuery(req, 'MarketList', generateMarketList());
     });
     cy.visit('/');
-    cy.wait('@MarketList');
+    cy.wait('@MarketList', { timeout: 5000 });
   });
 
   it('renders markets correctly', () => {
@@ -38,12 +38,55 @@ describe('markets table', () => {
     });
 
     openMarketDropDown();
-    cy.getByTestId('market-link-market-0').click();
+    cy.getByTestId('market-link-market-0').should('be.visible').click();
 
     cy.wait('@Market');
     cy.contains('ACTIVE MARKET');
     cy.url().should('include', '/markets/market-0');
     verifyMarketSummaryDisplayed();
+  });
+
+  it('Auction conditions are displayed', () => {
+    const toolTipLabel = 'tooltip-label';
+    const toolTipValue = 'tooltip-value';
+    const auctionToolTipLabels = [
+      'Auction start',
+      'Est auction end',
+      'Target liquidity',
+      'Current liquidity',
+      'Est uncrossing price',
+      'Est uncrossing vol',
+    ];
+
+    cy.mockGQL((req) => {
+      mockTradingPage(req, MarketState.Active);
+    });
+
+    cy.visit('/markets/market-0');
+    cy.wait('@Market');
+
+    cy.getByTestId('trading-mode').eq(0).realHover();
+    cy.getByTestId('tooltip-market-info').within(() => {
+      cy.get('span')
+        .eq(0)
+        .should(
+          'contain.text',
+          'This market is in auction until it reaches sufficient liquidity.'
+        );
+      cy.getByTestId('link')
+        .should('have.attr', 'href')
+        .and(
+          'include',
+          'https://docs.fairground.vega.xyz/docs/trading-questions/#auctions-what-is-a-liquidity-monitoring-auction'
+        );
+    });
+
+    for (let i = 0; i < 6; i++) {
+      cy.getByTestId(toolTipLabel)
+        .eq(i)
+        .should('have.text', auctionToolTipLabels[i]);
+      cy.getByTestId(toolTipValue).eq(i).should('not.be.empty');
+    }
   });
 
   function openMarketDropDown() {
