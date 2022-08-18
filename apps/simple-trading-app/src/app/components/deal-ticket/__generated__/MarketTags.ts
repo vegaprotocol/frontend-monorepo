@@ -18,10 +18,6 @@ export interface MarketTags_market_tradableInstrument_instrument_metadata {
 export interface MarketTags_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
-   * Uniquely identify an instrument across all instruments available on Vega (string)
-   */
-  id: string;
-  /**
    * Metadata for this instrument
    */
   metadata: MarketTags_market_tradableInstrument_instrument_metadata;

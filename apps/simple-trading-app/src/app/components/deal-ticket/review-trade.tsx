@@ -23,7 +23,6 @@ export const MARKET_TAGS_QUERY = gql`
     market(id: $marketId) {
       tradableInstrument {
         instrument {
-          id
           metadata {
             tags
           }

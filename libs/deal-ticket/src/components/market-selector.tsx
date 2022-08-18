@@ -41,7 +41,6 @@ export const MARKET_NAMES_QUERY = gql`
           }
           product {
             ... on Future {
-              id
               quoteName
             }
           }
