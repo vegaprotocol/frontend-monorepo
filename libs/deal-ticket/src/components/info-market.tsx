@@ -396,7 +396,7 @@ const tooltipMapping: Record<string, ReactNode> = {
     'The classification of the product. Examples: shares, commodities, crypto, FX.'
   ),
   sector: t(
-    'Data about the sector Example: "automotive" for a market based on value of Tesla shares.'
+    'Data about the sector. Example: "automotive" for a market based on value of Tesla shares.'
   ),
 
   short: t(
