@@ -170,7 +170,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   let error: Error | undefined;
   let loading = true;
   let loaded = false;
-  let client: ApolloClient<object> | undefined;
+  let client: ApolloClient<object>;
   let subscription: Subscription | undefined;
   let pageInfo: PageInfo | null = null;
   let totalCount: number | undefined;
@@ -200,7 +200,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   };
 
   const load = async (start?: number, end?: number) => {
-    if (!client || !pagination || !pageInfo || !(data instanceof Array)) {
+    if (!pagination || !pageInfo || !(data instanceof Array)) {
       return Promise.reject();
     }
     const paginationVariables: Pagination = {
@@ -475,7 +475,7 @@ function makeDerivedDataProviderInternal<Data>(
   combineData: CombineDerivedData<Data>
 ): Subscribe<Data, never> {
   let subscriptions: ReturnType<DependencySubscribe>[] | undefined;
-  let client: ApolloClient<object> | undefined;
+  let client: ApolloClient<object>;
   const callbacks: UpdateCallback<Data, never>[] = [];
   let variables: OperationVariables | undefined;
   const parts: Parameters<DependencyUpdateCallback>['0'][] = [];
@@ -531,7 +531,7 @@ function makeDerivedDataProviderInternal<Data>(
   };
 
   const initialize = () => {
-    if (subscriptions || !client) {
+    if (subscriptions) {
       return;
     }
     subscriptions = dependencies.map((dependency, i) =>
@@ -540,7 +540,7 @@ function makeDerivedDataProviderInternal<Data>(
           parts[i] = updateData;
           combine();
         },
-        client as ApolloClient<object>, // for some reason TS doesn't narrow type base on !client condition
+        client,
         variables
       )
     );
