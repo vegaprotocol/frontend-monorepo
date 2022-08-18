@@ -65,7 +65,7 @@ export default ({
   );
 
   return (
-    <div className="mb-8 text-black dark:text-white">
+    <div className="mb-8 text-black dark:text-white" data-testid="review-trade">
       <KeyValueTable>
         <KeyValueTableRow noBorder>
           <div className="flex flex-none gap-x-5 items-center">

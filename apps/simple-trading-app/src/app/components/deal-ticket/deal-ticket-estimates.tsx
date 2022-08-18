@@ -1,6 +1,9 @@
 import React from 'react';
 import type { ReactNode } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
+import { Icon, Tooltip } from '@vegaprotocol/ui-toolkit';
+import { IconNames } from '@blueprintjs/icons';
+import * as constants from './constants';
 
 interface DealTicketEstimatesProps {
   quoteName?: string;
@@ -24,6 +27,27 @@ const DataTitle = ({ children, quoteName = '' }: DataTitleProps) => (
   </dt>
 );
 
+interface ValueTooltipProps {
+  value: string;
+  description: string;
+  id?: string;
+}
+
+const ValueTooltipRow = ({ value, description, id }: ValueTooltipProps) => (
+  <dd className="flex gap-x-5 items-center">
+    {value}
+    <Tooltip align="center" description={description}>
+      <div className="cursor-help" id={id || ''} tabIndex={-1}>
+        <Icon
+          name={IconNames.ISSUE}
+          className="block rotate-180"
+          ariaLabel={description}
+        />
+      </div>
+    </Tooltip>
+  </dd>
+);
+
 export const DealTicketEstimates = ({
   price,
   quoteName,
@@ -36,8 +60,12 @@ export const DealTicketEstimates = ({
   <dl className="text-black dark:text-white">
     {size && (
       <div className="flex justify-between mb-8">
-        <DataTitle>{t('No. of Contracts')}</DataTitle>
-        <dd>{size}</dd>
+        <DataTitle>{t('Contracts')}</DataTitle>
+        <ValueTooltipRow
+          value={size}
+          description={constants.CONTRACTS_MARGIN_TOOLTIP_TEXT}
+          id="contracts_tooltip_trigger"
+        />
       </div>
     )}
     {price && (
@@ -49,19 +77,28 @@ export const DealTicketEstimates = ({
     {notionalSize && (
       <div className="flex justify-between mb-8">
         <DataTitle quoteName={quoteName}>{t('Est. Position Size')}</DataTitle>
-        <dd>{notionalSize}</dd>
+        <ValueTooltipRow
+          value={notionalSize}
+          description={constants.NOTIONAL_SIZE_TOOLTIP_TEXT}
+        />
       </div>
     )}
     {fees && (
       <div className="flex justify-between mb-8">
         <DataTitle quoteName={quoteName}>{t('Est. Fees')}</DataTitle>
-        <dd>{fees}</dd>
+        <ValueTooltipRow
+          value={fees}
+          description={constants.EST_FEES_TOOLTIP_TEXT}
+        />
       </div>
     )}
     {estMargin && (
       <div className="flex justify-between mb-8">
         <DataTitle quoteName={quoteName}>{t('Est. Margin')}</DataTitle>
-        <dd>{estMargin}</dd>
+        <ValueTooltipRow
+          value={estMargin}
+          description={constants.EST_MARGIN_TOOLTIP_TEXT}
+        />
       </div>
     )}
     {estCloseOut && (
@@ -71,7 +108,10 @@ export const DealTicketEstimates = ({
           &nbsp;
           <small>({quoteName})</small>
         </dt>
-        <dd>{estCloseOut}</dd>
+        <ValueTooltipRow
+          value={estCloseOut}
+          description={constants.EST_CLOSEOUT_TOOLTIP_TEXT}
+        />
       </div>
     )}
   </dl>

@@ -109,8 +109,8 @@ export const DealTicketSize = ({
   ) : (
     <div>
       <div className="flex justify-between text-black dark:text-white mb-8">
-        <span>{min}</span>
-        <span>{max}</span>
+        <span data-testid="min-label">{min}</span>
+        <span data-testid="max-label">{max}</span>
       </div>
       <SliderRoot
         className="mb-8"

@@ -4,7 +4,7 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
-import type { IGetRowsParams } from 'ag-grid-community';
+import type { IGetRowsParams, RowClickedEvent } from 'ag-grid-community';
 import type {
   MarketList_markets,
   MarketList_markets_data,
@@ -56,9 +56,13 @@ export const MarketsContainer = () => {
         rowModelType="infinite"
         datasource={{ getRows }}
         ref={gridRef}
-        onRowClicked={({ data }: { data: MarketList_markets }) =>
-          push(`/markets/${data.id}`)
-        }
+        onRowClicked={(rowEvent: RowClickedEvent) => {
+          const { data, event } = rowEvent;
+          // filters out clicks on the symbol column because it should display asset details
+          if ((event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON')
+            return;
+          push(`/markets/${(data as MarketList_markets).id}`);
+        }}
       />
     </AsyncRenderer>
   );
