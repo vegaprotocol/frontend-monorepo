@@ -33,6 +33,14 @@ jobs:
       ## Checkout capsule
       #######
 
+      # Checkout front ends
+      - name: Checkout frontend mono repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+          path: './frontend-monorepo'
+
       # Checkout capsule to build local network
       - name: Checkout capsule
         uses: actions/checkout@v2
@@ -80,7 +88,7 @@ jobs:
         run: vegacapsule nomad &
 
       - name: Bootstrap network
-        run: vegacapsule network bootstrap --config-path=./net_confs/config.hcl --force
+        run: vegacapsule network bootstrap --config-path=../frontend-monorepo/vegacapsule/config.hcl --force
         working-directory: capsule
 
       ######
@@ -104,23 +112,19 @@ jobs:
       ## Run some tests
       ######
 
-      # Checkout front ends
-      - name: Checkout frontend mono repo
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-          fetch-depth: 0
-
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v2
         with:
+          working-directory: frontend-monorepo
           main-branch-name: master
 
       - name: Install root dependencies
         run: yarn install
+        working-directory: frontend-monorepo
 
       - name: Run Cypress tests
         run: npx nx affected:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        working-directory: frontend-monorepo
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
