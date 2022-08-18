@@ -1,4 +1,5 @@
 export function truncateMiddle(address: string) {
+  if (address.length < 11) return address;
   return (
     address.slice(0, 6) +
     '\u2026' +

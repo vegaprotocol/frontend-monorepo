@@ -1,64 +1,146 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
-
-import { ConnectedVegaKey } from '../../../components/connected-vega-key';
-import {
-  StakingMethod,
-  StakingMethodRadio,
-} from '../../../components/staking-method-radio';
-import { TxState } from '../../../hooks/transaction-reducer';
-import { useSearchParams } from '../../../hooks/use-search-params';
-import { useRefreshAssociatedBalances } from '../../../hooks/use-refresh-associated-balances';
-import { ContractDisassociate } from './contract-disassociate';
 import { DisassociateTransaction } from './disassociate-transaction';
+import { formatNumber } from '../../../lib/format-number';
+import { remove0x, toBigNum } from '@vegaprotocol/react-helpers';
+import { Select } from '@vegaprotocol/ui-toolkit';
+import { StakingMethod } from '../../../components/staking-method-radio';
+import { TokenInput } from '../../../components/token-input';
+import { TxState } from '../../../hooks/transaction-reducer';
+import { useAppState } from '../../../contexts/app-state/app-state-context';
+import { useRefreshAssociatedBalances } from '../../../hooks/use-refresh-associated-balances';
 import { useRemoveStake } from './hooks';
-import { WalletDisassociate } from './wallet-disassociate';
-import type { VegaKeyExtended } from '@vegaprotocol/wallet';
+import type { RemoveStakePayload } from './hooks';
+import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { BigNumber } from '../../../lib/bignumber';
+
+type Association = {
+  key: string;
+  value: BigNumber;
+  stakingMethod: StakingMethod;
+};
+
+const toListOfAssociations = (
+  obj: { [vegaKey: string]: BigNumber },
+  stakingMethod: StakingMethod
+): Association[] =>
+  Object.keys(obj)
+    .map((k) => ({
+      key: remove0x(k),
+      value: obj[k],
+      stakingMethod,
+    }))
+    .filter((k) => k.value.isGreaterThan(0));
 
 export const DisassociatePage = ({
   address,
   vegaKey,
 }: {
   address: string;
-  vegaKey: VegaKeyExtended;
+  vegaKey: string;
 }) => {
   const { t } = useTranslation();
-  const params = useSearchParams();
-  const [amount, setAmount] = React.useState<string>('');
-  const [selectedStakingMethod, setSelectedStakingMethod] =
-    React.useState<StakingMethod | null>(
-      (params.method as StakingMethod) || null
-    );
+
+  const {
+    appState: {
+      associationBreakdown: { stakingAssociations, vestingAssociations },
+    },
+  } = useAppState();
+
+  const associations = useMemo(
+    () => [
+      ...toListOfAssociations(stakingAssociations, StakingMethod.Wallet),
+      ...toListOfAssociations(vestingAssociations, StakingMethod.Contract),
+    ],
+    [stakingAssociations, vestingAssociations]
+  );
+
+  useEffect(() => {
+    setChosen(associations.find((k) => k.key === vegaKey) || associations[0]);
+  }, [associations, vegaKey]);
+
+  const [chosen, setChosen] = useState<Association>();
+
+  const maximum = chosen?.value || toBigNum(0, 0);
+  const [amount, setAmount] = useState<string>('');
+
   const refreshBalances = useRefreshAssociatedBalances();
 
-  // Clear the amount when the staking method changes
-  React.useEffect(() => {
-    setAmount('');
-  }, [selectedStakingMethod]);
+  const payload: RemoveStakePayload = {
+    amount,
+    vegaKey: chosen?.key || '',
+    stakingMethod: chosen?.stakingMethod || StakingMethod.Unknown,
+  };
 
   const {
     state: txState,
     dispatch: txDispatch,
     perform: txPerform,
-  } = useRemoveStake(address, amount, vegaKey.pub, selectedStakingMethod);
+  } = useRemoveStake(address, payload);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (txState.txState === TxState.Complete) {
-      refreshBalances(address, vegaKey.pub);
+      refreshBalances(address, chosen?.key || '');
     }
-  }, [txState, refreshBalances, address, vegaKey.pub]);
+  }, [txState, refreshBalances, address, chosen]);
 
-  if (txState.txState !== TxState.Default) {
+  if (txState.txState !== TxState.Default && payload) {
     return (
       <DisassociateTransaction
         state={txState}
         amount={amount}
-        vegaKey={vegaKey.pub}
-        stakingMethod={selectedStakingMethod as StakingMethod}
+        vegaKey={chosen?.key || ''}
+        stakingMethod={payload.stakingMethod}
         dispatch={txDispatch}
       />
     );
   }
+
+  const noKeysMessage = (
+    <div className="disassociate-page__error">
+      {t(
+        'You have no VEGA tokens currently staked through your connected Eth wallet.'
+      )}
+    </div>
+  );
+
+  const disassociate = (
+    <>
+      <div className="pb-8">
+        <Select
+          className="font-mono"
+          disabled={associations.length === 1}
+          id="vega-key-selector"
+          onChange={(e) => {
+            if (!e.target.value) return;
+            const chosen = associations.find((k) => k.key === e.target.value);
+            if (chosen) {
+              setChosen(chosen);
+              setAmount('');
+            }
+          }}
+          value={chosen?.key}
+        >
+          {associations.map((k) => (
+            <option
+              key={k.key}
+              value={k.key}
+              title={`${t(k.stakingMethod)}: ${formatNumber(k.value, 18)}`}
+            >
+              {k.key}
+            </option>
+          ))}
+        </Select>
+      </div>
+      <TokenInput
+        submitText={t('Disassociate VEGA Tokens from key')}
+        perform={txPerform}
+        maximum={maximum}
+        amount={amount}
+        setAmount={setAmount}
+        currency={t('VEGA Tokens')}
+      />
+    </>
+  );
 
   return (
     <section className="disassociate-page" data-testid="disassociate-page">
@@ -73,27 +155,9 @@ export const DisassociatePage = ({
           'Any Tokens that have been nominated to a node will sacrifice any Rewards they are due for the current epoch. If you do not wish to sacrifices fees you should remove stake from a node at the end of an epoch before disassocation.'
         )}
       </p>
-      <h2>{t('What Vega wallet are you removing Tokens from?')}</h2>
-      <ConnectedVegaKey pubKey={vegaKey.pub} />
+
       <h2>{t('What tokens would you like to return?')}</h2>
-      <StakingMethodRadio
-        setSelectedStakingMethod={setSelectedStakingMethod}
-        selectedStakingMethod={selectedStakingMethod}
-      />
-      {selectedStakingMethod &&
-        (selectedStakingMethod === StakingMethod.Wallet ? (
-          <WalletDisassociate
-            setAmount={setAmount}
-            amount={amount}
-            perform={txPerform}
-          />
-        ) : (
-          <ContractDisassociate
-            setAmount={setAmount}
-            amount={amount}
-            perform={txPerform}
-          />
-        ))}
+      {associations.length === 0 ? noKeysMessage : disassociate}
     </section>
   );
 };
