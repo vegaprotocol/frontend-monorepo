@@ -12,7 +12,6 @@ export const ASSETS_QUERY = gql`
       id
       name
       symbol
-      totalSupply
       decimals
       source {
         ... on ERC20 {

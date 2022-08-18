@@ -5628,6 +5628,17 @@
     lodash "^4.17.15"
     redent "^3.0.0"
 
+"@testing-library/react-hooks@7.0.2":
+  version "7.0.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/react-hooks/-/react-hooks-7.0.2.tgz#3388d07f562d91e7f2431a4a21b5186062ecfee0"
+  integrity sha512-dYxpz8u9m4q1TuzfcUApqi8iFfR6R0FaMbr2hjZJy1uC8z+bO/K4v8Gs9eogGKYQop7QsrBTFkv/BCF7MzD2Cg==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@types/react" ">=16.9.0"
+    "@types/react-dom" ">=16.9.0"
+    "@types/react-test-renderer" ">=16.9.0"
+    react-error-boundary "^3.1.0"
+
 "@testing-library/react@13.3.0":
   version "13.3.0"
   resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-13.3.0.tgz#bf298bfbc5589326bbcc8052b211f3bb097a97c5"
@@ -6135,7 +6146,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-dom@18.0.6", "@types/react-dom@^18.0.0", "@types/react-dom@^18.0.5":
+"@types/react-dom@18.0.6", "@types/react-dom@>=16.9.0", "@types/react-dom@^18.0.0", "@types/react-dom@^18.0.5":
   version "18.0.6"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.0.6.tgz#36652900024842b74607a17786b6662dd1e103a1"
   integrity sha512-/5OFZgfIPSwy+YuIBP/FgJnQnsxhZhjjrnxudMddeblOouIodEQ75X14Rr4wGSG/bknL+Omy9iWlLo1u/9GzAA==
@@ -6163,6 +6174,13 @@
   version "11.0.5"
   resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-11.0.5.tgz#0d546261b4021e1f9d85b50401c0a42acb106087"
   integrity sha512-VIOi9i2Oj5XsmWWoB72p3KlZoEbdRAcechJa8Ztebw7bDl2YmR+odxIqhtJGp1q2EozHs02US+gzxJ9nuf56qg==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-test-renderer@>=16.9.0":
+  version "18.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-test-renderer/-/react-test-renderer-18.0.0.tgz#7b7f69ca98821ea5501b21ba24ea7b6139da2243"
+  integrity sha512-C7/5FBJ3g3sqUahguGi03O79b8afNeSD6T8/GU50oQrJCU0bVCCGQHaGKUbg2Ce8VQEEqTw8/HiS6lXHHdgkdQ==
   dependencies:
     "@types/react" "*"
 
@@ -6201,6 +6219,15 @@
   version "18.0.1"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.1.tgz#1b2e02fb7613212518733946e49fb963dfc66e19"
   integrity sha512-VnWlrVgG0dYt+NqlfMI0yUYb8Rdl4XUROyH+c6gq/iFCiZ805Vi//26UW38DHnxQkbDhnrIWTBiy6oKZqL11cw==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@>=16.9.0":
+  version "18.0.17"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.17.tgz#4583d9c322d67efe4b39a935d223edcc7050ccf4"
+  integrity sha512-38ETy4tL+rn4uQQi7mB81G7V1g0u2ryquNmsVIOKUAEIDK+3CUjZ6rSRpdvS99dNBnkLFL83qfmtLacGOTIhwQ==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -7259,19 +7286,7 @@ ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
-allotment@1.14.2:
-  version "1.14.2"
-  resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.14.2.tgz#b89364ede0b3fbeb2927f7c1f80bc90f13248bbf"
-  integrity sha512-Gqfl2DW2hQ3RT22uiJs2yK1bSwwFbDMC4drTe3uWEjKMmwlAZmS7/vqLD1v25kqbAqdjWSzr+aqgHsRXT51BPQ==
-  dependencies:
-    classnames "^2.3.0"
-    eventemitter3 "^4.0.0"
-    lodash.clamp "^4.0.0"
-    lodash.debounce "^4.0.0"
-    lodash.isequal "^4.5.0"
-    use-resize-observer "^9.0.0"
-
-allotment@^1.14.5:
+allotment@1.15.0, allotment@^1.14.5:
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/allotment/-/allotment-1.15.0.tgz#3e27eb0d048b8da3d1acb8bc53610b63f84d5c5a"
   integrity sha512-9JXAm59/XD5Djfpso0rgGZdA23n3v5XeicwjNoInp2qlBa/HFZtnMDujm6NHOSjOCQPWhkOt4ybYgz8H3ed+8A==
@@ -17186,10 +17201,10 @@ pend@~1.2.0:
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
   integrity sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==
 
-pennant@^0.4.12:
-  version "0.4.12"
-  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.12.tgz#c37860fcea96b79114c2ee4f22c5c18bd8e9d5a2"
-  integrity sha512-3j7YIsEcIceWIDT5A8WdkBdTPK0rzqcUzFKK3UfFYAv0xGPI7aJyyX2Gu5QfEML01A0oGtgLsjbWoxHdiSp7Hw==
+pennant@^0.4.14:
+  version "0.4.14"
+  resolved "https://registry.yarnpkg.com/pennant/-/pennant-0.4.14.tgz#9d51fc47faf9b51efee965c6df8a0746c70bdce6"
+  integrity sha512-O0a5uPGrQfX8eDULVJVuSsYloLjPl/91kdmbaZbc3bq+N9nYIRNu5uRdxAm0LPaqVhNU+Tp1dwNPeL6JFF73xw==
   dependencies:
     "@babel/runtime" "^7.13.10"
     "@d3fc/d3fc-technical-indicator" "^8.0.1"
@@ -17209,7 +17224,7 @@ pennant@^0.4.12:
     "@types/react" "^18.0.14"
     "@types/react-dom" "^18.0.5"
     "@types/react-virtualized-auto-sizer" "^1.0.0"
-    allotment "1.14.2"
+    allotment "1.15.0"
     classnames "^2.2.6"
     d3-array "2.3.3"
     d3-delaunay "^6.0.2"
@@ -18151,6 +18166,13 @@ react-element-to-jsx-string@^14.3.4:
     "@base2/pretty-print-object" "1.0.1"
     is-plain-object "5.0.0"
     react-is "17.0.2"
+
+react-error-boundary@^3.1.0:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/react-error-boundary/-/react-error-boundary-3.1.4.tgz#255db92b23197108757a888b01e5b729919abde0"
+  integrity sha512-uM9uPzZJTF6wRQORmSrvOIgt4lJ9MC1sNgEOj2XGsDTRE4kmpWxg7ENK9EWNKJRMAOY9z0MuF4yIfl6gp4sotA==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
 
 react-fast-compare@^3.0.1, react-fast-compare@^3.2.0:
   version "3.2.0"

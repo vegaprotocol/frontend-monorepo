@@ -1,5 +1,9 @@
 import { forwardRef } from 'react';
-import type { ColumnApi, ValueFormatterParams } from 'ag-grid-community';
+import type {
+  ColumnApi,
+  GroupCellRendererParams,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import {
   PriceCell,
   addDecimalsFormatNumber,
@@ -12,6 +16,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Accounts_party_accounts } from './__generated__/Accounts';
 import { getId } from './accounts-data-provider';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 interface AccountsTableProps {
   data: Accounts_party_accounts[] | null;
@@ -85,6 +90,8 @@ const comparator = (
 
 export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
   ({ data }, ref) => {
+    const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
+      useAssetDetailsDialogStore();
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
@@ -117,6 +124,21 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           sortable
           sortingOrder={['asc', 'desc']}
           comparator={comparator}
+          cellRenderer={({ value }: GroupCellRendererParams) =>
+            value && value.length > 0 ? (
+              <button
+                className="hover:underline"
+                onClick={() => {
+                  setAssetDetailsDialogOpen(true);
+                  setAssetDetailsDialogSymbol(value);
+                }}
+              >
+                {value}
+              </button>
+            ) : (
+              ''
+            )
+          }
         />
         <AgGridColumn
           headerName={t('Type')}

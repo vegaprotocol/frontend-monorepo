@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "accounts": "libs/accounts",
+    "assets": "libs/assets",
     "candles-chart": "libs/candles-chart",
     "cypress": "libs/cypress",
     "deal-ticket": "libs/deal-ticket",

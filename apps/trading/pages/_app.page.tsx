@@ -14,9 +14,18 @@ import { AppLoader } from '../components/app-loader';
 import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
 import './styles.css';
 import { useGlobalStore } from '../stores';
+import {
+  AssetDetailsDialog,
+  useAssetDetailsDialogStore,
+} from '@vegaprotocol/assets';
 
 function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
+  const {
+    isAssetDetailsDialogOpen,
+    assetDetailsDialogSymbol,
+    setAssetDetailsDialogOpen,
+  } = useAssetDetailsDialogStore();
   const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
@@ -53,6 +62,11 @@ function AppBody({ Component, pageProps }: AppProps) {
           <VegaManageDialog
             dialogOpen={store.vegaWalletManageDialog}
             setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
+          />
+          <AssetDetailsDialog
+            assetSymbol={assetDetailsDialogSymbol}
+            open={isAssetDetailsDialogOpen}
+            onChange={(open) => setAssetDetailsDialogOpen(open)}
           />
         </AppLoader>
       </div>
