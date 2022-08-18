@@ -376,7 +376,7 @@ const tooltipMapping: Record<string, ReactNode> = {
     'The aggregated volume being bid at the best static bid price on the market.'
   ),
   bestStaticOfferVolume: t(
-    'The aggregated volume being bid at the best static offer price on the market.'
+    'The aggregated volume being offered at the best static offer price on the market.'
   ),
 
   decimalPlaces: t('The smallest price increment on the book.'),
