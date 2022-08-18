@@ -1,5 +1,8 @@
 import { forwardRef } from 'react';
-import type { ValueFormatterParams } from 'ag-grid-community';
+import type {
+  GroupCellRendererParams,
+  ValueFormatterParams,
+} from 'ag-grid-community';
 import {
   PriceFlashCell,
   addDecimalsFormatNumber,
@@ -18,6 +21,7 @@ import type {
   MarketList_markets,
   MarketList_markets_data,
 } from '../../__generated__';
+import { useAssetDetailsDialogStore } from '../asset-details-dialog';
 
 type Props = AgGridReactProps | AgReactUiProps;
 
@@ -29,6 +33,8 @@ type MarketListTableValueFormatterParams = Omit<
 };
 
 export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
+  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
+    useAssetDetailsDialogStore();
   return (
     <AgGrid
       style={{ width: '100%', height: '100%' }}
@@ -50,6 +56,21 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Settlement asset')}
         field="tradableInstrument.instrument.product.settlementAsset.symbol"
+        cellRenderer={({ value }: GroupCellRendererParams) =>
+          value && value.length > 0 ? (
+            <button
+              className="hover:underline"
+              onClick={() => {
+                setAssetDetailsDialogOpen(true);
+                setAssetDetailsDialogSymbol(value);
+              }}
+            >
+              {value}
+            </button>
+          ) : (
+            ''
+          )
+        }
       />
       <AgGridColumn
         headerName={t('Trading mode')}

@@ -26,10 +26,12 @@ import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
 import {
   Tab,
   Tabs,
   PriceCellChange,
+  Button,
   Tooltip,
   ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
@@ -58,9 +60,13 @@ export const TradeMarketHeader = ({
   market,
   className,
 }: TradeMarketHeaderProps) => {
+  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
+    useAssetDetailsDialogStore();
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
+  const symbol =
+    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
   const headerItemClassName = 'whitespace-nowrap flex flex-col ';
   const itemClassName =
     'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
@@ -132,15 +138,20 @@ export const TradeMarketHeader = ({
                 : '-'}
             </span>
           </div>
-          {market.tradableInstrument.instrument.product?.settlementAsset
-            ?.symbol && (
+          {symbol && (
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Settlement asset')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
-                {
-                  market.tradableInstrument.instrument.product?.settlementAsset
-                    ?.symbol
-                }
+                <Button
+                  variant="inline-link"
+                  className="no-underline hover:underline"
+                  onClick={() => {
+                    setAssetDetailsDialogOpen(true);
+                    setAssetDetailsDialogSymbol(symbol);
+                  }}
+                >
+                  {symbol}
+                </Button>
               </span>
             </div>
           )}
