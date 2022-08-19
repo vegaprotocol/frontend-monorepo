@@ -13,7 +13,12 @@ export const RiskNoticeDialog = ({
   onAcceptRisk,
 }: RiskNoticeDialogProps) => {
   return (
-    <Dialog open={dialogOpen} onChange={onCloseDialog} title={t('WARNING')} size="medium">
+    <Dialog
+      open={dialogOpen}
+      onChange={onCloseDialog}
+      title={t('WARNING')}
+      size="medium"
+    >
       <h4 className="text-h4 mb-16 mt-16">
         {t('Regulation may apply to use of this app')}
       </h4>

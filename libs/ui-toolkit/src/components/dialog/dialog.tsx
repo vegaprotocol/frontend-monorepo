@@ -28,8 +28,6 @@ export function Dialog({
   size = 'medium',
 }: DialogProps) {
   const wrapperClasses = classNames(
-    // Positions the modal in the center of screen
-    // 'z-20 fixed px-28 py-24 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
     'relative py-24 max-h-[100%] overflow-y-scroll',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
@@ -72,7 +70,9 @@ export function Dialog({
                     {title}
                   </h1>
                 )}
-                <div className="text-black-60 dark:text-white-60">{children}</div>
+                <div className="text-black-60 dark:text-white-60">
+                  {children}
+                </div>
               </div>
             </div>
           </div>

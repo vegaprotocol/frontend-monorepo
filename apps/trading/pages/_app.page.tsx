@@ -8,7 +8,11 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import { EnvironmentProvider, useEnvironment, Networks } from '@vegaprotocol/environment';
+import {
+  EnvironmentProvider,
+  useEnvironment,
+  Networks,
+} from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';
@@ -44,7 +48,7 @@ function AppBody({ Component, pageProps }: AppProps) {
   const handleAcceptRisk = () => {
     store.setVegaRiskNoticeDialog(false);
     LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
-  }
+  };
 
   return (
     <ThemeContext.Provider value={theme}>
