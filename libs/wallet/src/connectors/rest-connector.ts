@@ -177,6 +177,12 @@ export class RestConnector implements VegaConnector {
       }
 
       if (res.error) {
+        if (res.details) {
+          return {
+            error: res.error,
+            details: res.details,
+          };
+        }
         return {
           error: res.error,
         };
@@ -230,10 +236,24 @@ export class RestConnector implements VegaConnector {
     return t('Something went wrong');
   }
 
+  /** Parse error details array into a single string */
+  private parseErrorDetails(err: TransactionError): string | null {
+    if (err.details && err.details.length > 0) {
+      return err.details.join(', ');
+    }
+
+    return null;
+  }
+
   private async request(
     endpoint: Endpoints,
     options: RequestInit
-  ): Promise<{ status?: number; data?: unknown; error?: string }> {
+  ): Promise<{
+    status?: number;
+    data?: unknown;
+    error?: string;
+    details?: string;
+  }> {
     try {
       const fetchResult = await fetch(`${this.url}/${endpoint}`, {
         ...options,
@@ -246,6 +266,16 @@ export class RestConnector implements VegaConnector {
       if (!fetchResult.ok) {
         const errorData = await fetchResult.json();
         const error = this.parseError(errorData);
+        const errorDetails = this.parseErrorDetails(errorData);
+
+        if (errorDetails) {
+          return {
+            status: fetchResult.status,
+            error,
+            details: errorDetails,
+          };
+        }
+
         return {
           status: fetchResult.status,
           error,

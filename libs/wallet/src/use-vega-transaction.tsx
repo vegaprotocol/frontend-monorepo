@@ -23,6 +23,7 @@ export enum VegaTxStatus {
 export interface VegaTxState {
   status: VegaTxStatus;
   error: string | null;
+  details?: string[] | null;
   txHash: string | null;
   signature: string | null;
   dialogOpen: boolean;
@@ -31,6 +32,7 @@ export interface VegaTxState {
 export const initialState = {
   status: VegaTxStatus.Default,
   error: null,
+  details: null,
   txHash: null,
   signature: null,
   dialogOpen: false,
@@ -59,6 +61,7 @@ export const useVegaTransaction = () => {
     async (tx: TransactionSubmission) => {
       setTransaction({
         error: null,
+        details: null,
         txHash: null,
         signature: null,
         status: VegaTxStatus.Requested,
@@ -74,7 +77,11 @@ export const useVegaTransaction = () => {
       }
 
       if (isError(res)) {
-        setTransaction({ error: res.error, status: VegaTxStatus.Error });
+        setTransaction({
+          error: res.error,
+          details: res.details,
+          status: VegaTxStatus.Error,
+        });
         return;
       }
 
@@ -114,11 +121,12 @@ export const useVegaTransaction = () => {
     transaction,
     reset,
     setComplete,
+    setTransaction,
     TransactionDialog,
   };
 };
 
-const isError = (error: unknown): error is { error: string } => {
+export const isError = (error: unknown): error is { error: string } => {
   if (error !== null && typeof error === 'object' && 'error' in error) {
     return true;
   }

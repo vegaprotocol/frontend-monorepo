@@ -288,7 +288,9 @@ export type TransactionError =
       errors: {
         [key: string]: string[];
       };
+      details?: string[];
     }
   | {
       error: string;
+      details?: string[];
     };
