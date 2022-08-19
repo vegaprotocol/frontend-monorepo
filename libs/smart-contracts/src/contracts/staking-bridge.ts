@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import abi from '../abis/staking_abi.json';
-import { prepend0x, prepend0xIfNeeded } from '../utils';
+import { prepend0x } from '../utils';
 
 export class StakingBridge {
   public contract: ethers.Contract;
@@ -18,7 +18,7 @@ export class StakingBridge {
     return this.contract.stake(amount, prepend0x(vegaPublicKey));
   }
   remove_stake(amount: string, vegaPublicKey: string) {
-    return this.contract.remove_stake(amount, prepend0xIfNeeded(vegaPublicKey));
+    return this.contract.remove_stake(amount, prepend0x(vegaPublicKey));
   }
   transfer_stake(amount: string, newAddress: string, vegaPublicKey: string) {
     return this.contract.transfer_stake(
