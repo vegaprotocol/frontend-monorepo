@@ -220,17 +220,7 @@ export const columns = (
       ) : (
         '-'
       ),
-<<<<<<< HEAD
       className: cellClassNames,
-=======
-      className: tdClassNames('right'),
-      onlyOnDetailed: false,
-    },
-    {
-      value: market.settlementAsset,
-      dataTestId: 'settlement-asset',
-      className: tdClassNames('left'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: false,
     },
     {
@@ -240,7 +230,6 @@ export const columns = (
           decimalPlaces={market.decimalPlaces}
         />
       ),
-<<<<<<< HEAD
       className: cellClassNames,
       onlyOnDetailed: false,
     },
@@ -249,9 +238,6 @@ export const columns = (
         market.tradableInstrument.instrument.product.settlementAsset.symbol,
       dataTestId: 'settlement-asset',
       className: `${cellClassNames} hidden sm:table-cell`,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: false,
     },
     {
@@ -279,11 +265,7 @@ export const columns = (
       ) : (
         '-'
       ),
-<<<<<<< HEAD
       className: `${cellClassNames} hidden xl:table-cell`,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
     },
     {
@@ -299,11 +281,7 @@ export const columns = (
       ) : (
         '-'
       ),
-<<<<<<< HEAD
       className: `${cellClassNames} hidden xl:table-cell`,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
     },
     {
@@ -311,41 +289,15 @@ export const columns = (
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
-<<<<<<< HEAD
         market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
-=======
-        market.data.trigger !== AuctionTrigger.Unspecified
-          ? `${formatLabel(
-              market.tradingMode
-            )} - ${market.data?.trigger.toLowerCase()}`
-          : formatLabel(market.tradingMode),
-      className: tdClassNames('left'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
       dataTestId: 'trading-mode',
     },
     {
-<<<<<<< HEAD
-=======
-      value: (
-        <Tooltip
-          description={<FeesBreakdown feeFactors={market.fees?.factors} />}
-        >
-          <span className="border-b-2 border-dotted">
-            {market.totalFees ?? '-'}
-          </span>
-        </Tooltip>
-      ),
-      className: tdClassNames('right'),
-      onlyOnDetailed: true,
-      dataTestId: 'taker-fee',
-    },
-    {
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       value:
         market.data?.indicativeVolume && market.data.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
@@ -353,11 +305,7 @@ export const columns = (
               market.positionDecimalPlaces
             )
           : '-',
-<<<<<<< HEAD
       className: `${cellClassNames} hidden lg:table-cell`,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
       dataTestId: 'market-volume',
     },
@@ -369,11 +317,7 @@ export const columns = (
     },
     {
       value: market.name,
-<<<<<<< HEAD
       className: `${cellClassNames} hidden xxl:block`,
-=======
-      className: tdClassNames('left'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
       dataTestId: 'market-name',
     },
@@ -430,34 +374,17 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-<<<<<<< HEAD
       className: cellClassNames,
       onlyOnDetailed: false,
     },
     {
       value: candlesClose && (
-=======
-      className: tdClassNames('right'),
-      onlyOnDetailed: false,
-    },
-    {
-      value: market.settlementAsset,
-      className: tdClassNames('left'),
-      onlyOnDetailed: false,
-    },
-    {
-      value: (
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
         <PriceCellChange
           candles={candlesClose}
           decimalPlaces={market.decimalPlaces}
         />
       ),
-<<<<<<< HEAD
       className: cellClassNames,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: false,
     },
     {
@@ -491,11 +418,7 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-<<<<<<< HEAD
       className: `${cellClassNames} hidden xl:table-cell`,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
     },
     {
@@ -511,11 +434,7 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-<<<<<<< HEAD
       className: `${cellClassNames} hidden xl:table-cell`,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
     },
     {
@@ -523,33 +442,11 @@ export const columnsPositionMarkets = (
         market.tradingMode ===
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
-<<<<<<< HEAD
         market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
       className: `${cellClassNames} hidden lg:table-cell`,
-=======
-        market.data.trigger !== AuctionTrigger.Unspecified
-          ? `${formatLabel(
-              market.tradingMode
-            )} - ${market.data?.trigger.toLowerCase()}`
-          : formatLabel(market.tradingMode),
-      className: tdClassNames('left'),
-      onlyOnDetailed: true,
-    },
-    {
-      value: (
-        <Tooltip
-          description={<FeesBreakdown feeFactors={market.fees?.factors} />}
-        >
-          <span className="border-b-2 border-dotted">
-            {market.totalFees ?? '-'}
-          </span>
-        </Tooltip>
-      ),
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
       dataTestId: 'trading-mode',
     },
@@ -561,16 +458,12 @@ export const columnsPositionMarkets = (
               market.positionDecimalPlaces
             )
           : '-',
-<<<<<<< HEAD
       className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
     },
     {
       value: <FeesCell feeFactors={market.fees.factors} />,
       className: `${cellClassNames} hidden xl:table-cell`,
-=======
-      className: tdClassNames('right'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
     },
     {
@@ -587,11 +480,7 @@ export const columnsPositionMarkets = (
           {market.openVolume}
         </p>
       ),
-<<<<<<< HEAD
       className: `${cellClassNames} hidden xxl:table-cell`,
-=======
-      className: tdClassNames('left'),
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
       onlyOnDetailed: true,
     },
   ];
@@ -615,7 +504,6 @@ export const FeesBreakdown = ({
 }) => {
   if (!feeFactors) return null;
   return (
-<<<<<<< HEAD
     <dl className="grid grid-cols-2 gap-x-2">
       <dt>{t('Infrastructure Fee')}</dt>
       <dd className="text-right">
@@ -636,37 +524,5 @@ export const FeesBreakdown = ({
       <dt>{t('Total Fees')}</dt>
       <dd className="text-right">{totalFees(feeFactors)}</dd>
     </dl>
-=======
-    <KeyValueTable muted={true}>
-      <KeyValueTableRow>
-        <span className={tdClassNames('left')}>{t('Infrastructure Fee')}</span>
-        <span className={tdClassNames('left')}>
-          {formatNumberPercentage(
-            new BigNumber(feeFactors.infrastructureFee).times(100)
-          )}
-        </span>
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        <span className={tdClassNames('left')}>{t('Liquidity Fee')}</span>
-        <span className={tdClassNames('left')}>
-          {formatNumberPercentage(
-            new BigNumber(feeFactors.liquidityFee).times(100)
-          )}
-        </span>
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        <span className={tdClassNames('left')}>{t('Maker Fee')}</span>
-        <span className={tdClassNames('left')}>
-          {formatNumberPercentage(
-            new BigNumber(feeFactors.makerFee).times(100)
-          )}
-        </span>
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        <span className={tdClassNames('left')}>{t('Total Fees')}</span>
-        <span className={tdClassNames('left')}>{totalFees(feeFactors)}</span>
-      </KeyValueTableRow>
-    </KeyValueTable>
->>>>>>> e3ce42d3 (fix: fixing broken styling on cell data)
   );
 };

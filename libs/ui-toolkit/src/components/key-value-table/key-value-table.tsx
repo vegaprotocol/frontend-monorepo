@@ -19,6 +19,11 @@ export const KeyValueTable = ({
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
     ? `h${headingLevel}`
     : 'div';
+  const divClassName = classNames(
+    'w-full border-collapse [border-spacing:0] break-all',
+    { 'mb-8': !tooltip },
+    className
+  );
   return (
     <React.Fragment>
       {title && <TitleTag className={`text-xl my-2`}>{title}</TitleTag>}
@@ -49,6 +54,7 @@ export interface KeyValueTableRowProps
   numerical?: boolean; // makes all values monospace
   inline?: boolean;
   noBorder?: boolean;
+  tooltip?: boolean;
   dtClassName?: string;
   ddClassName?: string;
 }
@@ -59,6 +65,7 @@ export const KeyValueTableRow = ({
   numerical,
   inline = true,
   noBorder = false,
+  tooltip = false,
   dtClassName,
   ddClassName,
   id,
