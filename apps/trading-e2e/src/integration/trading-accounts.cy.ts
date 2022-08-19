@@ -4,7 +4,7 @@ import { connectVegaWallet } from '../support/vega-wallet';
 
 beforeEach(() => {
   cy.mockGQL((req) => {
-    mockTradingPage(req, MarketState.Active);
+    mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
   cy.visit('/markets/market-0');
 });
