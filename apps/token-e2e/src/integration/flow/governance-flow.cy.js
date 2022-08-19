@@ -39,6 +39,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
   describe('Eth wallet - contains VEGA tokens', function () {
     beforeEach('visit staking tab', function () {
+      cy.navigate_to('staking');
+      cy.wait_for_spinner();
       cy.intercept('POST', '/query', (req) => {
         if (req.body.operationName === 'ProposalEvent') {
           req.alias = 'proposalSubmissionCompletion';
