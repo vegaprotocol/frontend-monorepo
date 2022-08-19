@@ -104,6 +104,10 @@ export interface MarketList_markets_tradableInstrument_instrument_product {
 export interface MarketList_markets_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
+   * Uniquely identify an instrument across all instruments available on Vega (string)
+   */
+  id: string;
+  /**
    * Full and fairly descriptive name for the instrument
    */
   name: string;
