@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { Navbar } from '../components/navbar';
@@ -7,7 +8,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import { EnvironmentProvider } from '@vegaprotocol/environment';
+import { EnvironmentProvider, useEnvironment, Networks } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';
@@ -19,15 +20,31 @@ import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/market-list';
+import { LocalStorage } from '@vegaprotocol/react-helpers';
+
+const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 
 function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
+  const { VEGA_ENV } = useEnvironment();
   const {
     isAssetDetailsDialogOpen,
     assetDetailsDialogSymbol,
     setAssetDetailsDialogOpen,
   } = useAssetDetailsDialogStore();
   const [theme, toggleTheme] = useThemeSwitcher();
+
+  useEffect(() => {
+    const isRiskAccepted = LocalStorage.getItem(RISK_ACCEPTED_KEY) === 'true';
+    if (!isRiskAccepted && VEGA_ENV === Networks.MAINNET) {
+      store.setVegaRiskNoticeDialog(true);
+    }
+  }, [store.setVegaRiskNoticeDialog]);
+
+  const handleAcceptRisk = () => {
+    store.setVegaRiskNoticeDialog(false);
+    LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
+  }
 
   return (
     <ThemeContext.Provider value={theme}>
@@ -72,6 +89,7 @@ function AppBody({ Component, pageProps }: AppProps) {
           <RiskNoticeDialog
             dialogOpen={store.vegaRiskNoticeDialog}
             onCloseDialog={() => store.setVegaRiskNoticeDialog(false)}
+            onAcceptRisk={handleAcceptRisk}
           />
         </AppLoader>
       </div>

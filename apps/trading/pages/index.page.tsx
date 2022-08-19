@@ -28,22 +28,15 @@ export function Index() {
   // The default market selected in the platform behind the overlay
   // should be the oldest market that is currently trading in continuous mode(i.e. not in auction).
   const { data, error, loading } = useQuery<MarketsLanding>(MARKETS_QUERY);
-  const { vegaRiskNoticeDialog, setLandingDialog } = useGlobalStore((store) => {
-    console.log(store);
-    return {
-      vegaRiskNoticeDialog: store.vegaRiskNoticeDialog,
-      setLandingDialog: store.setLandingDialog,
-    };
-  });
-
-  // console.log(riskNoticeDialog)
+  const { vegaRiskNoticeDialog, setLandingDialog } = useGlobalStore((store) => store);
 
   useEffect(() => {
+    setLandingDialog(true);
+
     if (data) {
       const marketId = getMarketList(data)[0]?.id;
 
-      // If a default market is found, go to it with the landing dialog open
-      if (!vegaRiskNoticeDialog && marketId) {
+      if (marketId) {
         setLandingDialog(true);
         replace(`/markets/${marketId}`);
       }

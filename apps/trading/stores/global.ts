@@ -1,7 +1,4 @@
 import create from 'zustand';
-import { LocalStorage } from '@vegaprotocol/react-helpers';
-
-const RISK_ACCEPTED_KEY = 'vega-risk-accepted';
 
 interface GlobalStore {
   vegaWalletConnectDialog: boolean;
@@ -35,12 +32,9 @@ export const useGlobalStore = create<GlobalStore>((set) => ({
   setLandingDialog: (isOpen: boolean) => {
     set({ landingDialog: isOpen });
   },
-  vegaRiskNoticeDialog: !LocalStorage.getItem(RISK_ACCEPTED_KEY),
+  vegaRiskNoticeDialog: false,
   setVegaRiskNoticeDialog: (isOpen: boolean) => {
     set({ vegaRiskNoticeDialog: isOpen });
-    if (!isOpen) {
-      // LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
-    }
   },
   marketId: null,
   setMarketId: (id: string) => {
