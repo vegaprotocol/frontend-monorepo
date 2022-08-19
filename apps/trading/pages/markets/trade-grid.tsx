@@ -70,10 +70,9 @@ const getExpiryProps = ({
 }: GetExpiryProps): ExpiryProps => {
   if (market.marketTimestamps.close === null) {
     const oracleId =
-      '87f00d1d0da310a7106d552a565a0114cc7317525ebd24a0aa47759b18298315';
-    console.log(market);
-    // market.tradableInstrument.instrument.product.oracleSpecForSettlementPrice.id
-    // || market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id
+      market.tradableInstrument.instrument.product
+        .oracleSpecForTradingTermination?.id;
+
     return {
       expiry: t('Not time-based'),
       expiryTooltipDescription: (
