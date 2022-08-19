@@ -1,5 +1,11 @@
-import { Button, Callout, Intent, Link } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  Callout,
+  Intent,
+  Link as UTLink,
+} from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { Links } from '../../config';
 import { NodeList } from './node-list';
 import type { Staking as StakingQueryResult } from './__generated__/Staking';
@@ -16,19 +22,24 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
           title={t('stakingDescriptionTitle')}
         >
           <ol className="mb-20">
-            <li>{t('stakingDescription1')}</li>
+            <li>
+              {t('stakingDescription1')}{' '}
+              <Link to="/staking/associate" className="underline">
+                {t('stakingBridge')}
+              </Link>
+            </li>
             <li>{t('stakingDescription2')}</li>
             <li>{t('stakingDescription3')}</li>
             <li>{t('stakingDescription4')}</li>
           </ol>
 
-          <Link
+          <UTLink
             href={Links.STAKING_GUIDE}
             target="_blank"
             data-testid="staking-guide-link"
           >
             <Button variant="secondary">{t('readMoreStaking')}</Button>
-          </Link>
+          </UTLink>
         </Callout>
       </section>
 
