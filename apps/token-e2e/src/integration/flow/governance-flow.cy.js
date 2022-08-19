@@ -39,8 +39,6 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
   describe('Eth wallet - contains VEGA tokens', function () {
     beforeEach('visit staking tab', function () {
-      cy.navigate_to('staking');
-      cy.wait_for_spinner();
       cy.intercept('POST', '/query', (req) => {
         if (req.body.operationName === 'ProposalEvent') {
           req.alias = 'proposalSubmissionCompletion';
@@ -48,7 +46,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       });
     });
 
-    it('Able to submit a valid freeform proposal - with minimum tokens associated - positive feedback provided', function () {
+    it('Able to submit a valid freeform proposal - with minimum tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -66,7 +64,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
     });
 
-    it('Able to see a newly created freeform proposal - in an open state', function () {
+    it('Newly created freeform proposal - shows in an open state', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -113,7 +111,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         });
     });
 
-    it('Able to see a newly created freeform proposal - proposed and closing dates', function () {
+    it('Newly created freeform proposal - shows proposed and closing dates', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -159,7 +157,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       );
     });
 
-    it('Able to see a newly created freeform proposal - default status set to fail', function () {
+    it('Newly created freeform proposal - shows default status set to fail', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -201,7 +199,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it('Creating a proposal rejected - when closing time sooner than system default - negative feedback provided', function () {
+    it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -241,7 +239,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it('Creating a proposal rejected - when closing time later than system default - negative feedback provided', function () {
+    it('Creating a proposal - proposal rejected - when closing time later than system default', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -281,7 +279,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it.skip('Unable to create a freeform proposal - when no tokens are associated - negative feedback provided', function () {
+    it('Unable to create a freeform proposal - when no tokens are associated', function () {
       cy.vega_wallet_teardown();
       cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
         '0.000000000000000000',
@@ -304,7 +302,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
     });
 
-    it.skip('Unable to create a freeform proposal - when some but not enough tokens are associated - negative feedback provided', function () {
+    it('Unable to create a freeform proposal - when some but not enough tokens are associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance - 0.1
       );
