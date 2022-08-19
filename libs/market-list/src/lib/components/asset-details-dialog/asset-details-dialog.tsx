@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { formatNumber, t, toBigNum } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import {
   Button,
