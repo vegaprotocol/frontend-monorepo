@@ -23,6 +23,7 @@ export const generateOrder = (
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
+          id: 'instrument-id',
           __typename: 'Instrument',
           code: 'instrument-code',
         },

@@ -40,6 +40,7 @@ const MARKET_QUERY = gql`
       }
       tradableInstrument {
         instrument {
+          id
           name
           code
           metadata {

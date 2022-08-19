@@ -40,6 +40,10 @@ export interface DealTicketQuery_market_tradableInstrument_instrument_product {
 export interface DealTicketQuery_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
+   * Uniquely identify an instrument across all instruments available on Vega (string)
+   */
+  id: string;
+  /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
   product: DealTicketQuery_market_tradableInstrument_instrument_product;
