@@ -6,8 +6,6 @@ const dialogCloseButton = '[data-testid="dialog-close"]';
 const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const openProposals = '[data-testid="open-proposals"]';
-const proposalHeader = '[data-testid="proposal-header"]';
-const proposalStatus = '[data-testid="proposal-status"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const proposalResponseIdPath = 'response.body.data.busEvents.0.event.id';
 const txTimeout = Cypress.env('txTimeout');
@@ -22,14 +20,12 @@ context('Governance flow - with eth and vega wallets connected', function () {
         network_parameters['governance.proposal.freeform.minProposerBalance']
       ).as('minProposerBalance');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.minClose'].split(
-          'h'
-        )[0] / 24
+        network_parameters['governance.proposal.freeform.minClose']
+        .split('h')[0] / 24
       ).as('minCloseDays');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.maxClose'].split(
-          'h'
-        )[0] / 24
+        network_parameters['governance.proposal.freeform.maxClose']
+        .split('h')[0] / 24
       ).as('maxCloseDays');
     });
     cy.vega_wallet_connect();
@@ -203,7 +199,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it('Unable to create a proposal - which has a closing time earlier than system default', function () {
+    it('Creating a proposal rejected - when closing time sooner than system default - negative feedback provided', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -221,17 +217,29 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
-      cy.get_submitted_proposal().within(() =>
+      cy.get_submitted_proposal().within(() => {
+        cy.contains('Rejected').should('be.visible');
+        cy.contains('Close time too soon').should('be.visible');
         cy.get(viewProposalButton).click()
-      );
+      });
       cy.get(proposalInformationTableRows)
         .contains('State')
         .siblings()
         .contains('Rejected')
         .should('be.visible');
+      cy.get(proposalInformationTableRows)
+        .contains('Rejection reason')
+        .siblings()
+        .contains('CloseTimeTooSoon')
+        .should('be.visible');
+      cy.get(proposalInformationTableRows)
+        .contains('Error details')
+        .siblings()
+        .contains('proposal closing time too soon')
+        .should('be.visible');
     });
 
-    it('Unable to create a proposal - which has a closing time later than system default - negative feedback provided', function () {
+    it('Creating a proposal rejected - when closing time later than system default - negative feedback provided', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -249,13 +257,25 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
-      cy.get_submitted_proposal().within(() =>
+      cy.get_submitted_proposal().within(() => {
+        cy.contains('Rejected').should('be.visible');
+        cy.contains('Close time too late').should('be.visible');
         cy.get(viewProposalButton).click()
-      );
+      });
       cy.get(proposalInformationTableRows)
         .contains('State')
         .siblings()
         .contains('Rejected')
+        .should('be.visible');
+      cy.get(proposalInformationTableRows)
+        .contains('Rejection reason')
+        .siblings()
+        .contains('CloseTimeTooLate')
+        .should('be.visible');
+      cy.get(proposalInformationTableRows)
+        .contains('Error details')
+        .siblings()
+        .contains('proposal closing time too late')
         .should('be.visible');
     });
 
