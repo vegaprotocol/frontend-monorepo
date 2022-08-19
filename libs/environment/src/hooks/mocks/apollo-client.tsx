@@ -23,7 +23,7 @@ export const getMockBusEventsResult = (): BlockTime => ({
   busEvents: [
     {
       __typename: 'BusEvent',
-      eventId: '0',
+      id: '0',
     },
   ],
 });
