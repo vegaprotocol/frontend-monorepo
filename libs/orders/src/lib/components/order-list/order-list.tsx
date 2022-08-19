@@ -4,12 +4,7 @@ import {
   Side,
   OrderType,
 } from '@vegaprotocol/types';
-import {
-  addDecimal,
-  formatLabel,
-  getDateTimeFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
 import {
   AgGridDynamic as AgGrid,
   Button,
@@ -34,6 +29,7 @@ import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
 import type { OrderFields } from '../order-data-provider/__generated__';
 import { OrderFeedback } from '../order-feedback';
+import startCase from 'lodash/startCase';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
@@ -74,17 +70,19 @@ export const OrderList = forwardRef<AgGridReact, OrderListProps>(
             order={orderEdit.updatedOrder}
           />
         </orderEdit.TransactionDialog>
-        <OrderEditDialog
-          isOpen={Boolean(editOrder)}
-          onChange={(isOpen) => {
-            if (!isOpen) setEditOrder(null);
-          }}
-          order={editOrder}
-          onSubmit={(fields) => {
-            setEditOrder(null);
-            orderEdit.edit({ price: fields.entryPrice });
-          }}
-        />
+        {editOrder && (
+          <OrderEditDialog
+            isOpen={Boolean(editOrder)}
+            onChange={(isOpen) => {
+              if (!isOpen) setEditOrder(null);
+            }}
+            order={editOrder}
+            onSubmit={(fields) => {
+              setEditOrder(null);
+              orderEdit.edit({ price: fields.entryPrice });
+            }}
+          />
+        )}
       </>
     );
   }
@@ -127,12 +125,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
-            }) => data.side === Side.SIDE_BUY,
+            }) => data?.side === Side.SIDE_BUY,
             'text-vega-red-dark dark:text-vega-red': ({
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
-            }) => data.side === Side.SIDE_SELL,
+            }) => data?.side === Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
@@ -143,7 +141,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
-            const prefix = data.side === Side.SIDE_BUY ? '+' : '-';
+            const prefix = data
+              ? data.side === Side.SIDE_BUY
+                ? '+'
+                : '-'
+              : '';
             return (
               prefix + addDecimal(value, data.market.positionDecimalPlaces)
             );
@@ -163,7 +165,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             }
             if (value === OrderStatus.STATUS_REJECTED) {
               return `${value}: ${
-                data.rejectionReason && formatLabel(data.rejectionReason)
+                data.rejectionReason && startCase(data.rejectionReason)
               }`;
             }
             return value;
@@ -324,8 +326,16 @@ const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
       return t('Order partially filled');
     case OrderStatus.STATUS_PARKED:
       return t('Order parked');
+    case OrderStatus.STATUS_STOPPED:
+      return t('Order stopped');
+    case OrderStatus.STATUS_EXPIRED:
+      return t('Order expired');
+    case OrderStatus.STATUS_CANCELLED:
+      return t('Order cancelled');
+    case OrderStatus.STATUS_REJECTED:
+      return t('Order rejected');
     default:
-      return t('Submission failed');
+      return t('Order amendment failed');
   }
 };
 

@@ -18,14 +18,16 @@ export const generateMarketList = (
       positionDecimalPlaces: 0,
       state: MarketState.STATE_ACTIVE,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      positionDecimalPlaces: 2,
+      name: 'Market 0',
       fees: {
-        factors: {
-          makerFee: '0.0002',
-          infrastructureFee: '0.0005',
-          liquidityFee: '0.001',
-          __typename: 'FeeFactors',
-        },
         __typename: 'Fees',
+        factors: {
+          __typename: 'FeeFactors',
+          makerFee: '0.001',
+          liquidityFee: '0.001',
+          infrastructureFee: '0.001',
+        },
       },
       data: {
         market: {
@@ -33,6 +35,8 @@ export const generateMarketList = (
           state: MarketState.STATE_ACTIVE,
           tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
           __typename: 'Market',
+          state: MarketState.Active,
+          tradingMode: MarketTradingMode.Continuous,
         },
         bestBidPrice: '2411432389',
         bestOfferPrice: '2346732714',
@@ -40,9 +44,21 @@ export const generateMarketList = (
         trigger: AuctionTrigger.AUCTION_TRIGGER_PRICE,
         indicativeVolume: '1216',
         __typename: 'MarketData',
+        bestBidPrice: '4612690058',
+        bestOfferPrice: '4612690058',
+        trigger: AuctionTrigger.Liquidity,
+        indicativeVolume: '0',
       },
       tradableInstrument: {
         instrument: {
+          id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
+          product: {
+            __typename: 'Future',
+            settlementAsset: {
+              __typename: 'Asset',
+              symbol: 'ETH',
+            },
+          },
           name: 'BTC/USD Monthly',
           code: 'BTCUSD.MF21',
           metadata: {
@@ -83,22 +99,48 @@ export const generateMarketList = (
       positionDecimalPlaces: 0,
       state: MarketState.STATE_SUSPENDED,
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      name: 'BTC/USD Monthly',
+      positionDecimalPlaces: 2,
+      fees: {
+        __typename: 'Fees',
+        factors: {
+          __typename: 'FeeFactors',
+          makerFee: '0.001',
+          liquidityFee: '0.001',
+          infrastructureFee: '0.001',
+        },
+      },
       data: {
         market: {
           id: '34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed',
           state: MarketState.STATE_SUSPENDED,
           tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
           __typename: 'Market',
+          state: MarketState.Suspended,
+          tradingMode: MarketTradingMode.MonitoringAuction,
         },
         bestBidPrice: '17065127',
         bestOfferPrice: '17017654',
         markPrice: '8441',
         indicativeVolume: '249',
         __typename: 'MarketData',
+        bestBidPrice: '4612690058',
+        bestOfferPrice: '4612690058',
+        trigger: AuctionTrigger.Liquidity,
+
+        indicativeVolume: '0',
       },
       tradableInstrument: {
         instrument: {
+          product: {
+            __typename: 'Future',
+            settlementAsset: {
+              __typename: 'Asset',
+              symbol: 'ETH',
+            },
+          },
           name: 'SOL/USD',
+          id: '34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed',
           code: 'SOLUSD',
           metadata: {
             __typename: 'InstrumentMetadata',

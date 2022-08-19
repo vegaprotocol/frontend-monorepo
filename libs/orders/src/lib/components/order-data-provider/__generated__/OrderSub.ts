@@ -12,6 +12,10 @@ import { OrderType, Side, OrderStatus, OrderRejectionReason, OrderTimeInForce } 
 export interface OrderSub_orders_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
+   * Uniquely identify an instrument across all instruments available on Vega (string)
+   */
+  id: string;
+  /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
    */
   code: string;

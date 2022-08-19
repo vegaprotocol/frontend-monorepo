@@ -14,11 +14,10 @@ import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
-import type { Market } from '../market';
 
 jest.mock('@vegaprotocol/wallet');
 
-const market: Market = {
+const market = {
   __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
@@ -115,6 +114,8 @@ describe('useOrderValidation', () => {
     ${MarketState.STATE_SETTLED}
     ${MarketState.STATE_REJECTED}
     ${MarketState.STATE_TRADING_TERMINATED}
+    ${MarketState.STATE_CLOSED}
+    ${MarketState.STATE_CANCELLED}
   `(
     'Returns an error message for market state when not accepting orders',
     ({ state }) => {
@@ -130,11 +131,8 @@ describe('useOrderValidation', () => {
 
   it.each`
     state
-    ${MarketState.STATE_SUSPENDED}
     ${MarketState.STATE_PENDING}
-    ${MarketState.STATE_CANCELLED}
     ${MarketState.STATE_PROPOSED}
-    ${MarketState.STATE_CLOSED}
   `(
     'Returns an error message for market state suspended or pending',
     ({ state }) => {
@@ -208,6 +206,7 @@ describe('useOrderValidation', () => {
     ({ fieldName, errorType, errorMessage }) => {
       const { result } = setup({
         fieldErrors: { [fieldName]: { type: errorType } },
+        orderType: OrderType.TYPE_LIMIT,
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,

@@ -6,6 +6,7 @@ import {
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
+import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import {
   addDecimalsFormatNumber,
@@ -47,6 +48,7 @@ const TradingViews = {
   Positions: PositionsContainer,
   Orders: OrderListContainer,
   Collateral: AccountsContainer,
+  Fills: FillsContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -240,6 +242,9 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                 </Tab>
                 <Tab id="orders" name={t('Orders')}>
                   <TradingViews.Orders />
+                </Tab>
+                <Tab id="fills" name={t('Fills')}>
+                  <TradingViews.Fills />
                 </Tab>
                 <Tab id="accounts" name={t('Collateral')}>
                   <TradingViews.Collateral />

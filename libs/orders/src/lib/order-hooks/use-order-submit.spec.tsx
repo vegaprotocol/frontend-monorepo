@@ -1,5 +1,4 @@
 import { act, renderHook } from '@testing-library/react';
-import type { Order } from '../utils';
 import type {
   VegaKeyExtended,
   VegaWalletContextShape,
@@ -13,6 +12,7 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
+import type { Order } from './use-order-submit';
 import { useOrderSubmit } from './use-order-submit';
 import type {
   OrderEvent,
@@ -21,7 +21,6 @@ import type {
 import { ORDER_EVENT_SUB } from './order-event-query';
 import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
-import type { Market } from '../market';
 import { toNanoSeconds } from '@vegaprotocol/react-helpers';
 
 const defaultMarket = {
@@ -30,7 +29,7 @@ const defaultMarket = {
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
   tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: MarketState.Active,
+  state: MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -48,7 +47,7 @@ const defaultMarket = {
       price: '100',
     },
   },
-} as Market;
+};
 
 const defaultWalletContext = {
   keypair: null,
@@ -159,7 +158,7 @@ describe('useOrderSubmit', () => {
       keypair,
     });
 
-    const order: Order = {
+    const order = {
       type: OrderType.TYPE_LIMIT,
       size: '10',
       timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,

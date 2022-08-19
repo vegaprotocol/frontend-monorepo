@@ -60,6 +60,14 @@ export const getOrderDialogTitle = (
       return t('Order partially filled');
     case OrderStatus.STATUS_PARKED:
       return t('Order parked');
+    case OrderStatus.STATUS_STOPPED:
+      return t('Order stopped');
+    case OrderStatus.STATUS_CANCELLED:
+      return t('Order cancelled');
+    case OrderStatus.STATUS_EXPIRED:
+      return t('Order expired');
+    case OrderStatus.STATUS_REJECTED:
+      return t('Order rejected');
     default:
       return t('Submission failed');
   }
@@ -71,15 +79,18 @@ export const getOrderDialogIntent = (
   if (!status) {
     return;
   }
-
   switch (status) {
     case OrderStatus.STATUS_PARKED:
     case OrderStatus.STATUS_EXPIRED:
+    case OrderStatus.STATUS_PARTIALLY_FILLED:
       return Intent.Warning;
     case OrderStatus.STATUS_REJECTED:
     case OrderStatus.STATUS_STOPPED:
     case OrderStatus.STATUS_CANCELLED:
       return Intent.Danger;
+    case OrderStatus.STATUS_FILLED:
+    case OrderStatus.STATUS_ACTIVE:
+      return Intent.Success;
     default:
       return;
   }
