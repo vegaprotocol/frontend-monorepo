@@ -18,7 +18,7 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
       seller: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
       },
-      aggressor: Side.Sell,
+      aggressor: Side.SIDE_SELL,
       buyerFee: {
         infrastructureFee: '5000',
       },
@@ -32,11 +32,11 @@ export const generateFills = (override?: PartialDeep<Fills>): Fills => {
       seller: {
         id: Cypress.env('VEGA_PUBLIC_KEY'),
       },
-      aggressor: Side.Buy,
+      aggressor: Side.SIDE_BUY,
     }),
     generateFill({
       id: '3',
-      aggressor: Side.Sell,
+      aggressor: Side.SIDE_SELL,
       market: {
         name: 'ETHBTC Quarterly (30 Jun 2022)',
       },
@@ -84,7 +84,7 @@ export const generateFill = (
     size: '50000',
     buyOrder: 'buy-order',
     sellOrder: 'sell-order',
-    aggressor: Side.Buy,
+    aggressor: Side.SIDE_BUY,
     buyer: {
       __typename: 'Party',
       id: 'buyer-id',

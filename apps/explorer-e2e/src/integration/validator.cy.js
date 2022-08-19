@@ -21,8 +21,7 @@ context('Validator page', function () {
         'have.text',
         'Tendermint data'
       );
-      cy.get('[data-testid="vega-header"]').should('have.text', 'Vega data');
-      cy.get('[data-testid="vega-data"]').should('not.be.empty');
+      cy.get('[data-testid="tendermint-data"]').should('not.be.empty');
     }
   });
 });
