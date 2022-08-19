@@ -53,7 +53,10 @@ export const TimeInForceSelector = ({
       >
         {options.map(([key, value]) => (
           <option key={key} value={value}>
-            {`${timeInForceLabel(value)} (${key})`}
+            {`${timeInForceLabel(value)} (${key.replace(
+              'TIME_IN_FORCE_',
+              ''
+            )})`}
           </option>
         ))}
       </Select>

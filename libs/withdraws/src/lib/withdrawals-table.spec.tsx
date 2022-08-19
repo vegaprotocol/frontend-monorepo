@@ -70,7 +70,7 @@ describe('StatusCell', () => {
   });
 
   it('Open', () => {
-    props.value = WithdrawalStatus.Finalized;
+    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = null;
     render(<StatusCell {...props} />);
@@ -83,7 +83,7 @@ describe('StatusCell', () => {
   });
 
   it('Pending', () => {
-    props.value = WithdrawalStatus.Finalized;
+    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = true;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
@@ -96,7 +96,7 @@ describe('StatusCell', () => {
   });
 
   it('Finalized', () => {
-    props.value = WithdrawalStatus.Finalized;
+    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
@@ -109,11 +109,11 @@ describe('StatusCell', () => {
   });
 
   it('Fallback', () => {
-    props.value = WithdrawalStatus.Rejected;
+    props.value = WithdrawalStatus.STATUS_REJECTED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
 
-    expect(screen.getByText('Rejected')).toBeInTheDocument();
+    expect(screen.getByText('STATUS_REJECTED')).toBeInTheDocument();
   });
 });

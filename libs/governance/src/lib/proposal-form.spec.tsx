@@ -31,8 +31,9 @@ describe('ProposalForm', () => {
               __typename: 'Proposal',
               id: '2fca514cebf9f465ae31ecb4c5721e3a6f5f260425ded887ca50ba15b81a5d50',
               reference: 'proposal-reference',
-              state: ProposalState.Open,
-              rejectionReason: ProposalRejectionReason.CloseTimeTooLate,
+              state: ProposalState.STATE_OPEN,
+              rejectionReason:
+                ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
               errorDetails: 'error-details',
             },
           },

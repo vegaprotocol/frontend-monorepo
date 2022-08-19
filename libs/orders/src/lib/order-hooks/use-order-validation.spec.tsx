@@ -1,14 +1,15 @@
 import { renderHook } from '@testing-library/react';
-import {
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-  useVegaWallet,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   VegaWalletContextShape,
   VegaKeyExtended,
 } from '@vegaprotocol/wallet';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  MarketState,
+  MarketTradingMode,
+  OrderTimeInForce,
+  OrderType,
+} from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
@@ -23,7 +24,7 @@ const market: Market = {
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
   tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
-  state: MarketState.Active,
+  state: MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -60,8 +61,8 @@ const defaultWalletContext = {
 const defaultOrder = {
   market,
   step: 0.1,
-  orderType: VegaWalletOrderType.Market,
-  orderTimeInForce: VegaWalletOrderTimeInForce.FOK,
+  orderType: OrderType.TYPE_MARKET,
+  orderTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
 };
 
 const ERROR = {
@@ -161,7 +162,7 @@ describe('useOrderValidation', () => {
     ({ tradingMode, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
-        orderType: VegaWalletOrderType.Market,
+        orderType: OrderType.TYPE_MARKET,
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,
@@ -171,22 +172,22 @@ describe('useOrderValidation', () => {
   );
 
   it.each`
-    tradingMode                                          | orderTimeInForce                  | errorMessage
-    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    tradingMode                                          | orderTimeInForce                      | errorMessage
+    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
   `(
     `Returns an error message when submitting a limit order with a "$orderTimeInForce" value to a "$tradingMode" market`,
     ({ tradingMode, orderTimeInForce, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
-        orderType: VegaWalletOrderType.Limit,
+        orderType: OrderType.TYPE_LIMIT,
         orderTimeInForce,
       });
       expect(result.current).toStrictEqual({

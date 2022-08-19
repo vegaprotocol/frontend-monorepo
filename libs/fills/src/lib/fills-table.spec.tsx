@@ -73,7 +73,7 @@ describe('FillsTable', () => {
       buyer: {
         id: partyId,
       },
-      aggressor: Side.Sell,
+      aggressor: Side.SIDE_SELL,
       buyerFee: {
         makerFee: '2',
         infrastructureFee: '2',
@@ -110,7 +110,7 @@ describe('FillsTable', () => {
       buyer: {
         id: partyId,
       },
-      aggressor: Side.Sell,
+      aggressor: Side.SIDE_SELL,
       buyerFee: {
         makerFee: '2',
         infrastructureFee: '2',
@@ -148,7 +148,7 @@ describe('FillsTable', () => {
         seller: {
           id: partyId,
         },
-        aggressor: Side.Sell,
+        aggressor: Side.SIDE_SELL,
         sellerFee: {
           makerFee: '1',
           infrastructureFee: '1',
@@ -186,7 +186,7 @@ describe('FillsTable', () => {
         seller: {
           id: partyId,
         },
-        aggressor: Side.Sell,
+        aggressor: Side.SIDE_SELL,
       });
 
       const { rerender } = render(
@@ -205,7 +205,7 @@ describe('FillsTable', () => {
         seller: {
           id: partyId,
         },
-        aggressor: Side.Buy,
+        aggressor: Side.SIDE_BUY,
       });
 
       rerender(<FillsTable partyId={partyId} rowData={[makerFill]} />);

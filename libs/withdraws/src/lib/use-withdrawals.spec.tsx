@@ -14,11 +14,11 @@ describe('updateQuery', () => {
   it('Updates existing withdrawals', () => {
     const withdrawal = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.Open,
+      status: WithdrawalStatus.STATUS_OPEN,
     });
     const withdrawalUpdate = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.Finalized,
+      status: WithdrawalStatus.STATUS_FINALIZED,
     });
     const prev = mockQuery([withdrawal]);
     const incoming = mockSub([withdrawalUpdate]);
@@ -70,14 +70,14 @@ describe('updateQuery', () => {
   it('Handles updates and inserts simultaneously', () => {
     const withdrawal1 = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.Open,
+      status: WithdrawalStatus.STATUS_OPEN,
     });
     const withdrawal2 = generateWithdrawal({
       id: '2',
     });
     const withdrawalUpdate = generateWithdrawal({
       id: '1',
-      status: WithdrawalStatus.Finalized,
+      status: WithdrawalStatus.STATUS_FINALIZED,
     });
     const withdrawalNew = generateWithdrawal({
       id: '3',

@@ -14,7 +14,6 @@ const mockedData = {
             id: 'XYZalpha',
             name: 'XYZ (α alpha)',
             symbol: 'XYZalpha',
-            totalSupply: '10000000000000000000000000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -29,7 +28,6 @@ const mockedData = {
             id: 'XYZbeta',
             name: 'XYZ (β beta)',
             symbol: 'XYZbeta',
-            totalSupply: '1000000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -44,7 +42,6 @@ const mockedData = {
             id: 'XYZdelta',
             name: 'XYZ (δ delta)',
             symbol: 'XYZdelta',
-            totalSupply: '1000000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -59,7 +56,6 @@ const mockedData = {
             id: 'XYZepsilon',
             name: 'XYZ (ε epsilon)',
             symbol: 'XYZepsilon',
-            totalSupply: '1000000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -74,7 +70,6 @@ const mockedData = {
             id: 'XYZgamma',
             name: 'XYZ (γ gamma)',
             symbol: 'XYZgamma',
-            totalSupply: '1000000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -89,7 +84,6 @@ const mockedData = {
             id: '2282ffc06a557173d297739305cc69f6444cdbbb1089df7d9aef32bbfd735ba1',
             name: 'Tim Token (Vega)',
             symbol: 'TIM',
-            totalSupply: '1000000000000000000000000000',
             decimals: 18,
             quantum: '1',
             source: {
@@ -107,7 +101,6 @@ const mockedData = {
             id: '449dbfb66e7a444c485b4fdc77ddc6bbf81abbf7c8e247ac299c25e9557b99cf',
             name: 'Taker Reward Token (Vega)',
             symbol: 'TAK',
-            totalSupply: '1000000000000000000000000000',
             decimals: 18,
             quantum: '1',
             source: {
@@ -125,7 +118,6 @@ const mockedData = {
             id: '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c',
             name: 'tBTC TEST',
             symbol: 'tBTC',
-            totalSupply: '21000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -143,7 +135,6 @@ const mockedData = {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             name: 'tDAI TEST',
             symbol: 'tDAI',
-            totalSupply: '21000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -161,7 +152,6 @@ const mockedData = {
             id: '8b52d4a3a4b0ffe733cddbc2b67be273816cfeb6ca4c8b339bac03ffba08e4e4',
             name: 'tEURO TEST',
             symbol: 'tEURO',
-            totalSupply: '21000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -179,7 +169,6 @@ const mockedData = {
             id: '98032ba34576f8012de9b822e1da3ed4b6223a4f4e05f573002d441ffb4bf314',
             name: 'Liquidity Reward Token (Vega)',
             symbol: 'LIQ',
-            totalSupply: '1000000200000000000000000000',
             decimals: 18,
             quantum: '1',
             source: {
@@ -197,7 +186,6 @@ const mockedData = {
             id: '993ed98f4f770d91a796faab1738551193ba45c62341d20597df70fea6704ede',
             name: 'tUSDC TEST',
             symbol: 'tUSDC',
-            totalSupply: '21000000',
             decimals: 5,
             quantum: '1',
             source: {
@@ -215,7 +203,6 @@ const mockedData = {
             id: 'ba98cdeeec849a053e60cc03808e91e90d9d2e62425c76a590617b95ad41a066',
             name: 'Steve Token (Vega)',
             symbol: 'STE',
-            totalSupply: '1000000000000000000000000000',
             decimals: 18,
             quantum: '1',
             source: {
@@ -233,7 +220,6 @@ const mockedData = {
             id: 'ce3fb1ab0717f0adbce019d7aef53aacdbadefe2d30ad1647b55f134d4072c90',
             name: 'Woz Token (Vega)',
             symbol: 'WOZ',
-            totalSupply: '1000000000000000000000000000',
             decimals: 18,
             quantum: '1',
             source: {
@@ -251,7 +237,6 @@ const mockedData = {
             id: 'ebcd94151ae1f0d39a4bde3b21a9c7ae81a80ea4352fb075a92e07608d9c953d',
             name: 'Maker Reward Token (Vega)',
             symbol: 'MAK',
-            totalSupply: '1000000000000000000000000000',
             decimals: 18,
             quantum: '1',
             source: {
@@ -269,7 +254,6 @@ const mockedData = {
             id: 'fc7fd956078fb1fc9db5c19b88f0874c4299b2a7639ad05a47a28c0aef291b55',
             name: 'Vega (testnet)',
             symbol: 'VEGA',
-            totalSupply: '64999723000000000000000000',
             decimals: 18,
             quantum: '1',
             source: {
@@ -333,9 +317,6 @@ describe('AssetDetailsDialog', () => {
       expect((await screen.findByTestId('name_value')).textContent).toContain(
         name
       );
-      expect(
-        (await screen.findByTestId('totalsupply_value')).textContent
-      ).toContain(totalSupply);
     }
   );
 });

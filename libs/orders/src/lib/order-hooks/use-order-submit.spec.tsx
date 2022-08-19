@@ -6,11 +6,12 @@ import type {
 } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import {
-  VegaWalletOrderSide,
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-} from '@vegaprotocol/wallet';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+  MarketState,
+  MarketTradingMode,
+  OrderTimeInForce,
+  OrderType,
+  Side,
+} from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import { useOrderSubmit } from './use-order-submit';
 import type {
@@ -159,10 +160,10 @@ describe('useOrderSubmit', () => {
     });
 
     const order: Order = {
-      type: VegaWalletOrderType.Limit,
+      type: OrderType.TYPE_LIMIT,
       size: '10',
-      timeInForce: VegaWalletOrderTimeInForce.GTT,
-      side: VegaWalletOrderSide.Buy,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
+      side: Side.SIDE_BUY,
       price: '1234567.89',
       expiration: new Date('2022-01-01'),
     };
@@ -174,11 +175,11 @@ describe('useOrderSubmit', () => {
       pubKey: keypair.pub,
       propagate: true,
       orderSubmission: {
-        type: VegaWalletOrderType.Limit,
+        type: OrderType.TYPE_LIMIT,
         marketId: defaultMarket.id, // Market provided from hook argument
         size: '100', // size adjusted based on positionDecimalPlaces
-        side: VegaWalletOrderSide.Buy,
-        timeInForce: VegaWalletOrderTimeInForce.GTT,
+        side: Side.SIDE_BUY,
+        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
         price: '123456789', // Decimal removed
         expiresAt: order.expiration
           ? toNanoSeconds(order.expiration)

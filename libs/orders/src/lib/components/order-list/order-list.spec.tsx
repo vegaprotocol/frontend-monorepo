@@ -114,8 +114,9 @@ describe('OrderListTable', () => {
   it('should apply correct formatting for a rejected order', async () => {
     const rejectedOrder = {
       ...marketOrder,
-      status: OrderStatus.Rejected,
-      rejectionReason: OrderRejectionReason.InsufficientAssetBalance,
+      status: OrderStatus.STATUS_REJECTED,
+      rejectionReason:
+        OrderRejectionReason.ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE,
     };
     await act(async () => {
       render(generateJsx([rejectedOrder]));
