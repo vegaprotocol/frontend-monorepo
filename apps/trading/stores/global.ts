@@ -1,4 +1,3 @@
-import type { SetState } from 'zustand';
 import create from 'zustand';
 import { LocalStorage } from '@vegaprotocol/react-helpers';
 
@@ -15,9 +14,11 @@ interface GlobalStore {
   setLandingDialog: (isOpen: boolean) => void;
   vegaRiskNoticeDialog: boolean;
   setVegaRiskNoticeDialog: (isOpen: boolean) => void;
+  marketId: string | null;
+  setMarketId: (marketId: string) => void;
 }
 
-export const useGlobalStore = create((set: SetState<GlobalStore>) => ({
+export const useGlobalStore = create<GlobalStore>((set) => ({
   vegaWalletConnectDialog: false,
   setVegaWalletConnectDialog: (isOpen: boolean) => {
     set({ vegaWalletConnectDialog: isOpen });
@@ -40,5 +41,9 @@ export const useGlobalStore = create((set: SetState<GlobalStore>) => ({
     if (!isOpen) {
       // LocalStorage.setItem(RISK_ACCEPTED_KEY, 'true');
     }
+  },
+  marketId: null,
+  setMarketId: (id: string) => {
+    set({ marketId: id });
   },
 }));

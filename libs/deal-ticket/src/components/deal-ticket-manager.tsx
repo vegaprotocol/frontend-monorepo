@@ -34,9 +34,9 @@ export const DealTicketManager = ({
         />
       )}
       <TransactionDialog
-        title={getDialogTitle(finalizedOrder?.status)}
-        intent={getDialogIntent(finalizedOrder?.status)}
-        icon={getDialogIcon(finalizedOrder?.status)}
+        title={getOrderDialogTitle(finalizedOrder?.status)}
+        intent={getOrderDialogIntent(finalizedOrder?.status)}
+        icon={getOrderDialogIcon(finalizedOrder?.status)}
       >
         <OrderFeedback transaction={transaction} order={finalizedOrder} />
       </TransactionDialog>
@@ -44,7 +44,9 @@ export const DealTicketManager = ({
   );
 };
 
-export const getDialogTitle = (status?: OrderStatus): string | undefined => {
+export const getOrderDialogTitle = (
+  status?: OrderStatus
+): string | undefined => {
   if (!status) {
     return;
   }
@@ -58,30 +60,45 @@ export const getDialogTitle = (status?: OrderStatus): string | undefined => {
       return t('Order partially filled');
     case OrderStatus.Parked:
       return t('Order parked');
+    case OrderStatus.Stopped:
+      return t('Order stopped');
+    case OrderStatus.Cancelled:
+      return t('Order cancelled');
+    case OrderStatus.Expired:
+      return t('Order expired');
+    case OrderStatus.Rejected:
+      return t('Order rejected');
     default:
       return t('Submission failed');
   }
 };
 
-export const getDialogIntent = (status?: OrderStatus): Intent | undefined => {
+export const getOrderDialogIntent = (
+  status?: OrderStatus
+): Intent | undefined => {
   if (!status) {
     return;
   }
-
   switch (status) {
     case OrderStatus.Parked:
     case OrderStatus.Expired:
+    case OrderStatus.PartiallyFilled:
       return Intent.Warning;
     case OrderStatus.Rejected:
     case OrderStatus.Stopped:
     case OrderStatus.Cancelled:
       return Intent.Danger;
+    case OrderStatus.Filled:
+    case OrderStatus.Active:
+      return Intent.Success;
     default:
       return;
   }
 };
 
-export const getDialogIcon = (status?: OrderStatus): ReactNode | undefined => {
+export const getOrderDialogIcon = (
+  status?: OrderStatus
+): ReactNode | undefined => {
   if (!status) {
     return;
   }

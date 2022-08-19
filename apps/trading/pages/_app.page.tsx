@@ -1,6 +1,5 @@
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
@@ -8,11 +7,7 @@ import {
   VegaManageDialog,
   VegaWalletProvider,
 } from '@vegaprotocol/wallet';
-import {
-  useEnvironment,
-  EnvironmentProvider,
-  NetworkSwitcherDialog,
-} from '@vegaprotocol/environment';
+import { EnvironmentProvider } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
 import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';
@@ -20,11 +15,18 @@ import { VegaWalletConnectButton } from '../components/vega-wallet-connect-butto
 import { RiskNoticeDialog } from '../components/risk-notice-dialog';
 import './styles.css';
 import { useGlobalStore } from '../stores';
+import {
+  AssetDetailsDialog,
+  useAssetDetailsDialogStore,
+} from '@vegaprotocol/market-list';
 
 function AppBody({ Component, pageProps }: AppProps) {
-  const { push } = useRouter();
   const store = useGlobalStore();
-  const { VEGA_NETWORKS } = useEnvironment();
+  const {
+    isAssetDetailsDialogOpen,
+    assetDetailsDialogSymbol,
+    setAssetDetailsDialogOpen,
+  } = useAssetDetailsDialogStore();
   const [theme, toggleTheme] = useThemeSwitcher();
 
   return (
@@ -62,14 +64,10 @@ function AppBody({ Component, pageProps }: AppProps) {
             dialogOpen={store.vegaWalletManageDialog}
             setDialogOpen={(open) => store.setVegaWalletManageDialog(open)}
           />
-          <NetworkSwitcherDialog
-            dialogOpen={store.vegaNetworkSwitcherDialog}
-            setDialogOpen={(open) => store.setVegaNetworkSwitcherDialog(open)}
-            onConnect={({ network }) => {
-              if (VEGA_NETWORKS[network]) {
-                push(VEGA_NETWORKS[network] ?? '');
-              }
-            }}
+          <AssetDetailsDialog
+            assetSymbol={assetDetailsDialogSymbol}
+            open={isAssetDetailsDialogOpen}
+            onChange={(open) => setAssetDetailsDialogOpen(open)}
           />
           <RiskNoticeDialog
             dialogOpen={store.vegaRiskNoticeDialog}

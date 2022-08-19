@@ -129,12 +129,12 @@ jobs:
         run: yarn install
 
       - name: Run Cypress tests
-        run: yarn nx run ${{inputs.project}}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
+        run: yarn nx run ${{ github.event.inputs.project }}:e2e --record --key ${{ secrets.CYPRESS_RECORD_KEY }} --browser chrome
         env:
           CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE: ${{ secrets.CYPRESS_TRADING_TEST_VEGA_WALLET_PASSPHRASE }}
           CYPRESS_SLACK_WEBHOOK: ${{ secrets.CYPRESS_SLACK_WEBHOOK }}
           CYPRESS_ETH_WALLET_MNEMONIC: ${{ secrets.CYPESS_ETH_WALLET_MNEMONIC }}
-          CYPRESS_INCLUDE_FLOWS: ${{inputs.includeFlows}}
+          CYPRESS_INCLUDE_FLOWS: ${{ github.event.inputs.includeFlows }}
 
       ######
       ## Upload logs

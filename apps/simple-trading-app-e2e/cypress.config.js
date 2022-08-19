@@ -12,8 +12,9 @@ module.exports = defineConfig({
     supportFile: './src/support/index.ts',
     video: true,
     videoUploadOnPasses: false,
-    videosFolder: '../../dist/cypress/apps/explorer-e2e/videos',
-    screenshotsFolder: '../../dist/cypress/apps/explorer-e2e/screenshots',
+    videosFolder: '../../dist/cypress/apps/simple-trading-app-e2e/videos',
+    screenshotsFolder:
+      '../../dist/cypress/apps/simple-trading-app-e2e/screenshots',
     chromeWebSecurity: false,
     viewportWidth: 1440,
     viewportHeight: 900,

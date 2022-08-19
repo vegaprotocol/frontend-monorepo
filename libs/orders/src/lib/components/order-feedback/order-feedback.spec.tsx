@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import { formatLabel } from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReason,
   OrderStatus,
@@ -7,6 +6,7 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
+import startCase from 'lodash/startCase';
 import { generateOrder } from '../mocks/generate-orders';
 import type { OrderFeedbackProps } from './order-feedback';
 import { OrderFeedback } from './order-feedback';
@@ -45,7 +45,7 @@ describe('OrderFeedback', () => {
     const order = generateOrder(orderFields);
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('error-reason')).toHaveTextContent(
-      `Reason: ${formatLabel(orderFields.rejectionReason)}`
+      `${startCase(orderFields.rejectionReason)}`
     );
   });
 
@@ -80,7 +80,7 @@ describe('OrderFeedback', () => {
     expect(screen.getByText('Price').nextElementSibling).toHaveTextContent(
       '1.00'
     );
-    expect(screen.getByText('Amount').nextElementSibling).toHaveTextContent(
+    expect(screen.getByText('Size').nextElementSibling).toHaveTextContent(
       `+ 200`
     );
   });

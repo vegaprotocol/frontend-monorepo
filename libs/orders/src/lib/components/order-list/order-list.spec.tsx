@@ -1,9 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
-import {
-  addDecimal,
-  formatLabel,
-  getDateTimeFormat,
-} from '@vegaprotocol/react-helpers';
+import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
 import { OrderStatus, OrderRejectionReason } from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
@@ -13,6 +9,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { OrderListTable } from '../';
 import type { Orders_party_ordersConnection_edges_node } from '../';
 import { limitOrder, marketOrder } from '../mocks/generate-orders';
+import startCase from 'lodash/startCase';
 
 const generateJsx = (
   orders: Orders_party_ordersConnection_edges_node[] | null,
@@ -24,7 +21,6 @@ const generateJsx = (
         <OrderListTable
           rowData={orders}
           cancel={jest.fn()}
-          setEditOrderDialogOpen={jest.fn()}
           setEditOrder={jest.fn()}
         />
       </VegaWalletContext.Provider>
@@ -49,7 +45,7 @@ describe('OrderListTable', () => {
     expect(headers).toHaveLength(11);
     expect(headers.map((h) => h.textContent?.trim())).toEqual([
       'Market',
-      'Amount',
+      'Size',
       'Type',
       'Status',
       'Filled',
@@ -123,7 +119,7 @@ describe('OrderListTable', () => {
     });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[3]).toHaveTextContent(
-      `${rejectedOrder.status}: ${formatLabel(rejectedOrder.rejectionReason)}`
+      `${rejectedOrder.status}: ${startCase(rejectedOrder.rejectionReason)}`
     );
   });
 });

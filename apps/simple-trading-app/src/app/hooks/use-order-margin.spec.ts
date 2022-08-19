@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import { useQuery } from '@apollo/client';
 import { BigNumber } from 'bignumber.js';
 import type { Order } from '@vegaprotocol/orders';
@@ -8,6 +8,11 @@ import useOrderMargin from './use-order-margin';
 
 let mockEstimateData = {
   estimateOrder: {
+    fee: {
+      makerFee: '100000.000',
+      infrastructureFee: '100000.000',
+      liquidityFee: '100000.000',
+    },
     marginLevels: {
       initialLevel: '200000',
     },
@@ -53,14 +58,25 @@ describe('useOrderMargin Hook', () => {
         partyId,
       })
     );
-    expect(result.current).toEqual('100000');
+    expect(result.current?.margin).toEqual('100000');
 
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
       .plus(order.size)
       .toString();
-    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       calledSize
     );
+  });
+
+  it('fees should be properly calculated', () => {
+    const { result } = renderHook(() =>
+      useOrderMargin({
+        order: order as Order,
+        market: market as DealTicketQuery_market,
+        partyId,
+      })
+    );
+    expect(result.current?.fees).toEqual('300000');
   });
 
   it('if there is no positions initialMargin should not be subtracted', () => {
@@ -72,9 +88,9 @@ describe('useOrderMargin Hook', () => {
         partyId,
       })
     );
-    expect(result.current).toEqual('200000');
+    expect(result.current?.margin).toEqual('200000');
 
-    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       order.size
     );
   });
@@ -82,6 +98,11 @@ describe('useOrderMargin Hook', () => {
   it('if api fails, should return empty value', () => {
     mockEstimateData = {
       estimateOrder: {
+        fee: {
+          makerFee: '100000.000',
+          infrastructureFee: '100000.000',
+          liquidityFee: '100000.000',
+        },
         marginLevels: {
           initialLevel: '',
         },
@@ -94,12 +115,12 @@ describe('useOrderMargin Hook', () => {
         partyId,
       })
     );
-    expect(result.current).toEqual(' - ');
+    expect(result.current).toEqual(null);
 
     const calledSize = new BigNumber(mockMarketPositions?.openVolume || 0)
       .plus(order.size)
       .toString();
-    expect((useQuery as jest.Mock).mock.calls[0][1].variables.size).toEqual(
+    expect((useQuery as jest.Mock).mock.calls[1][1].variables.size).toEqual(
       calledSize
     );
   });

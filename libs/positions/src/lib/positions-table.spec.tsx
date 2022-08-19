@@ -1,105 +1,176 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
-import type { Positions_party_positions } from './__generated__/Positions';
+import type { Position } from './positions-metrics-data-provider';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
-const singleRow: Positions_party_positions = {
-  realisedPNL: '520000000',
-  openVolume: '10000',
-  unrealisedPNL: '895000',
-  averageEntryPrice: '1129935',
-  market: {
-    id: 'b7010da9dbe7fbab2b74d9d5642fc4a8a0ca93ef803d21fa60c2cacd0416bba0',
-    name: 'UNIDAI Monthly (30 Jun 2022)',
-    data: {
-      markPrice: '1138885',
-      marketTradingMode: MarketTradingMode.Continuous,
-      __typename: 'MarketData',
-      market: { __typename: 'Market', id: '123' },
-    },
-    positionDecimalPlaces: 2,
-    decimalPlaces: 5,
-    tradableInstrument: {
-      instrument: {
-        id: '',
-        name: 'UNIDAI Monthly (30 Jun 2022)',
-        metadata: {
-          tags: [
-            'formerly:3C58ED2A4A6C5D7E',
-            'base:UNI',
-            'quote:DAI',
-            'class:fx/crypto',
-            'monthly',
-            'sector:defi',
-          ],
-          __typename: 'InstrumentMetadata',
-        },
-        code: 'UNIDAI.MF21',
-        product: {
-          settlementAsset: {
-            id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-            symbol: 'tDAI',
-            name: 'tDAI TEST',
-            decimals: 5,
-            __typename: 'Asset',
-          },
-          quoteName: 'DAI',
-          __typename: 'Future',
-        },
-        __typename: 'Instrument',
-      },
-      __typename: 'TradableInstrument',
-    },
-    __typename: 'Market',
-  },
-  __typename: 'Position',
+const singleRow: Position = {
+  marketName: 'ETH/BTC (31 july 2022)',
+  averageEntryPrice: '133', // 13.3
+  capitalUtilisation: 11, // 11.00%
+  currentLeverage: 1.1,
+  marketDecimalPlaces: 1,
+  positionDecimalPlaces: 0,
+  assetDecimals: 2,
+  totalBalance: '123456',
+  assetSymbol: 'BTC',
+  liquidationPrice: '83', // 8.3
+  lowMarginLevel: false,
+  marketId: 'string',
+  marketTradingMode: MarketTradingMode.Continuous,
+  markPrice: '123', // 12.3
+  notional: '12300', // 1230.0
+  openVolume: '100', // 100
+  realisedPNL: '123', // 1.23
+  unrealisedPNL: '456', // 4.56
+  searchPrice: '0',
+  updatedAt: '2022-07-27T15:02:58.400Z',
 };
+
 const singleRowData = [singleRow];
 
 it('should render successfully', async () => {
   await act(async () => {
-    const { baseElement } = render(<PositionsTable data={[]} />);
+    const { baseElement } = render(<PositionsTable rowData={[]} />);
     expect(baseElement).toBeTruthy();
   });
 });
 
 it('Render correct columns', async () => {
   await act(async () => {
-    render(<PositionsTable data={singleRowData} />);
-    await waitFor(async () => {
-      const headers = await screen.getAllByRole('columnheader');
-      expect(headers).toHaveLength(5);
-      expect(
-        headers.map((h) =>
-          h.querySelector('[ref="eText"]')?.textContent?.trim()
-        )
-      ).toEqual([
-        'Market',
-        'Amount',
-        'Average Entry Price',
-        'Mark Price',
-        'Realised PNL',
-      ]);
-    });
+    render(<PositionsTable rowData={singleRowData} />);
   });
+
+  const headers = screen.getAllByRole('columnheader');
+  expect(headers).toHaveLength(9);
+  expect(
+    headers.map((h) => h.querySelector('[ref="eText"]')?.textContent?.trim())
+  ).toEqual([
+    'Market',
+    'Amount',
+    'Mark Price',
+    'Entry Price',
+    'Leverage',
+    'Margin allocated',
+    'Realised PNL',
+    'Unrealised PNL',
+    'Updated',
+  ]);
 });
 
-it('Correct formatting applied', async () => {
+it('Splits market name', async () => {
   await act(async () => {
-    render(<PositionsTable data={singleRowData} />);
-    await waitFor(async () => {
-      const cells = screen.getAllByRole('gridcell');
-      const expectedValues = [
-        singleRow.market.tradableInstrument.instrument.code,
-        '+100.00',
-        '11.29935',
-        '11.38885',
-        '+5,200.000',
-      ];
-      cells.forEach((cell, i) => {
-        expect(cell).toHaveTextContent(expectedValues[i]);
-      });
-      expect(cells[cells.length - 1]).toHaveClass('color-vega-green');
-    });
+    render(<PositionsTable rowData={singleRowData} />);
   });
+  expect(screen.getByText('ETH/BTC')).toBeTruthy();
+  expect(screen.getByText('31 july 2022')).toBeTruthy();
+});
+
+it('add color and sign to amount, displays positive notional value', async () => {
+  let result: RenderResult;
+  await act(async () => {
+    result = render(<PositionsTable rowData={singleRowData} />);
+  });
+  let cells = screen.getAllByRole('gridcell');
+  let values = cells[1].querySelectorAll('.text-right');
+  expect(values[0].classList.contains('text-vega-green-dark')).toBeTruthy();
+  expect(values[0].classList.contains('text-vega-red-dark')).toBeFalsy();
+  expect(values[0].textContent).toEqual('+100');
+  expect(values[1].textContent).toEqual('1,230.0');
+  await act(async () => {
+    result.rerender(
+      <PositionsTable rowData={[{ ...singleRow, openVolume: '-100' }]} />
+    );
+  });
+  cells = screen.getAllByRole('gridcell');
+  values = cells[1].querySelectorAll('.text-right');
+  expect(values[0].classList.contains('text-vega-green-dark')).toBeFalsy();
+  expect(values[0].classList.contains('text-vega-red-dark')).toBeTruthy();
+  expect(values[0].textContent?.startsWith('-100')).toBeTruthy();
+  expect(values[1].textContent).toEqual('1,230.0');
+});
+
+it('displays mark price', async () => {
+  let result: RenderResult;
+  await act(async () => {
+    result = render(<PositionsTable rowData={singleRowData} />);
+  });
+
+  let cells = screen.getAllByRole('gridcell');
+  expect(cells[2].textContent).toEqual('12.3');
+
+  await act(async () => {
+    result.rerender(
+      <PositionsTable
+        rowData={[
+          { ...singleRow, marketTradingMode: MarketTradingMode.OpeningAuction },
+        ]}
+      />
+    );
+  });
+
+  cells = screen.getAllByRole('gridcell');
+  expect(cells[2].textContent).toEqual('-');
+});
+
+it("displays properly entry, liquidation price and liquidation bar and it's intent", async () => {
+  let result: RenderResult;
+  await act(async () => {
+    result = render(<PositionsTable rowData={singleRowData} />);
+  });
+  let cells = screen.getAllByRole('gridcell');
+  let cell = cells[3];
+  const entryPrice = cell.firstElementChild?.firstElementChild?.textContent;
+  const liquidationPrice =
+    cell.firstElementChild?.lastElementChild?.textContent;
+  const progressBarTrack = cell.lastElementChild;
+  let progressBar = progressBarTrack?.firstElementChild as HTMLElement;
+  const progressBarWidth = progressBar?.style?.width;
+  expect(entryPrice).toEqual('13.3');
+  expect(liquidationPrice).toEqual('8.3');
+  expect(progressBar.classList.contains('bg-danger')).toEqual(false);
+  expect(progressBarWidth).toEqual('20%');
+  await act(async () => {
+    result.rerender(
+      <PositionsTable rowData={[{ ...singleRow, lowMarginLevel: true }]} />
+    );
+  });
+  cells = screen.getAllByRole('gridcell');
+  cell = cells[3];
+  progressBar = cell.lastElementChild?.firstElementChild as HTMLElement;
+  expect(progressBar?.classList.contains('bg-danger')).toEqual(true);
+});
+
+it('displays leverage', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+  });
+  const cells = screen.getAllByRole('gridcell');
+  expect(cells[4].textContent).toEqual('1.1');
+});
+
+it('displays allocated margin and margin bar', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+  });
+  const cells = screen.getAllByRole('gridcell');
+  const cell = cells[5];
+  const capitalUtilisation =
+    cell.firstElementChild?.firstElementChild?.textContent;
+  const totalBalance = cell.firstElementChild?.lastElementChild?.textContent;
+  const progressBarTrack = cell.lastElementChild;
+  const progressBar = progressBarTrack?.firstElementChild as HTMLElement;
+  const progressBarWidth = progressBar?.style?.width;
+  expect(capitalUtilisation).toEqual('11.00%');
+  expect(totalBalance).toEqual('1,234.56');
+  expect(progressBarWidth).toEqual('11%');
+});
+
+it('displays realised and unrealised PNL', async () => {
+  await act(async () => {
+    render(<PositionsTable rowData={singleRowData} />);
+  });
+  const cells = screen.getAllByRole('gridcell');
+  expect(cells[6].textContent).toEqual('1.23');
+  expect(cells[7].textContent).toEqual('4.56');
 });

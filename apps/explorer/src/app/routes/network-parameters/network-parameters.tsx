@@ -17,6 +17,22 @@ import type {
 } from './__generated__/NetworkParametersQuery';
 import orderBy from 'lodash/orderBy';
 
+const PERCENTAGE_PARAMS = [
+  'governance.proposal.asset.requiredMajority',
+  'governance.proposal.asset.requiredParticipation',
+  'governance.proposal.freeform.requiredMajority',
+  'governance.proposal.freeform.requiredParticipation',
+  'governance.proposal.market.requiredMajority',
+  'governance.proposal.market.requiredParticipation',
+  'governance.proposal.updateMarket.requiredMajority',
+  'governance.proposal.updateMarket.requiredMajorityLP',
+  'governance.proposal.updateMarket.requiredParticipation',
+  'governance.proposal.updateMarket.requiredParticipationLP',
+  'governance.proposal.updateNetParam.requiredMajority',
+  'governance.proposal.updateNetParam.requiredParticipation',
+  'validators.vote.required',
+];
+
 const BIG_NUMBER_PARAMS = [
   'spam.protection.delegation.min.tokens',
   'validators.delegation.minAmount',
@@ -33,13 +49,17 @@ const BIG_NUMBER_PARAMS = [
   'spam.protection.proposal.min.tokens',
   'governance.proposal.updateMarket.minProposerBalance',
   'governance.proposal.asset.minProposerBalance',
+  'governance.proposal.market.minProposerBalance',
+  'governance.proposal.market.minVoterBalance',
 ];
 
-export const renderRow = ({
-  key,
-  value,
-}: NetworkParametersQuery_networkParameters) => {
+export const NetworkParameterRow = ({
+  row: { key, value },
+}: {
+  row: NetworkParametersQuery_networkParameters;
+}) => {
   const isSyntaxRow = isJsonObject(value);
+
   return (
     <KeyValueTableRow
       key={key}
@@ -56,6 +76,8 @@ export const renderRow = ({
         value
       ) : BIG_NUMBER_PARAMS.includes(key) ? (
         addDecimalsFormatNumber(Number(value), 18)
+      ) : PERCENTAGE_PARAMS.includes(key) ? (
+        `${formatNumber(Number(value) * 100, 0)}%`
       ) : (
         formatNumber(Number(value), 4)
       )}
@@ -109,7 +131,9 @@ export const NetworkParametersTable = ({
         );
         return (
           <KeyValueTable data-testid="parameters">
-            {(ascParams || []).map((row) => renderRow(row))}
+            {(ascParams || []).map((row) => (
+              <NetworkParameterRow key={row.key} row={row} />
+            ))}
           </KeyValueTable>
         );
       }}

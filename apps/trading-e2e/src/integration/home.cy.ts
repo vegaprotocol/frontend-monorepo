@@ -65,7 +65,7 @@ describe('home', () => {
           }
         });
 
-      // the oldest market trading in continous mode shown at top of overlay table
+      // the oldest market trading in continuos mode shown at top of overlay table
       cy.get('table tr')
         .eq(1)
         .within(() =>
@@ -91,16 +91,6 @@ describe('home', () => {
         .click();
       cy.getByTestId(selectMarketOverlay).should('not.exist');
       cy.url().should('include', 'market-1');
-    });
-
-    it('view full market list goes to markets page', () => {
-      cy.getByTestId(selectMarketOverlay)
-        .should('exist')
-        .contains('Or view full market list')
-        .click();
-      cy.getByTestId(selectMarketOverlay).should('not.exist');
-      cy.url().should('include', '/markets');
-      cy.get('main[data-testid="markets"]').should('exist');
     });
   });
 

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import {
   VegaWalletOrderTimeInForce,
   VegaWalletOrderType,
@@ -13,11 +13,10 @@ import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
-import type { Market } from '../market';
 
 jest.mock('@vegaprotocol/wallet');
 
-const market: Market = {
+const market = {
   __typename: 'Market',
   id: 'market-id',
   decimalPlaces: 2,
@@ -114,6 +113,8 @@ describe('useOrderValidation', () => {
     ${MarketState.Settled}
     ${MarketState.Rejected}
     ${MarketState.TradingTerminated}
+    ${MarketState.Closed}
+    ${MarketState.Cancelled}
   `(
     'Returns an error message for market state when not accepting orders',
     ({ state }) => {
@@ -129,11 +130,8 @@ describe('useOrderValidation', () => {
 
   it.each`
     state
-    ${MarketState.Suspended}
     ${MarketState.Pending}
-    ${MarketState.Cancelled}
     ${MarketState.Proposed}
-    ${MarketState.Closed}
   `(
     'Returns an error message for market state suspended or pending',
     ({ state }) => {
@@ -207,6 +205,7 @@ describe('useOrderValidation', () => {
     ({ fieldName, errorType, errorMessage }) => {
       const { result } = setup({
         fieldErrors: { [fieldName]: { type: errorType } },
+        orderType: VegaWalletOrderType.Limit,
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,

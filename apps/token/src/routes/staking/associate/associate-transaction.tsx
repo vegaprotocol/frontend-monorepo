@@ -13,7 +13,7 @@ import {
   TransactionActionType,
   TxState,
 } from '../../../hooks/transaction-reducer';
-import { Routes } from '../../router-config';
+import Routes from '../../routes';
 import type { PartyStakeLinkings_party_stake_linkings } from './__generated__/PartyStakeLinkings';
 import { truncateMiddle } from '../../../lib/truncate-middle';
 

@@ -1,13 +1,14 @@
 import { aliasQuery } from '@vegaprotocol/cypress';
-import { generateSimpleMarkets } from '../support/mocks/generate-markets';
-import { generateFilters } from '../support/mocks/generate-filters';
+import {
+  generateLongListMarkets,
+  generateSimpleMarkets,
+} from '../support/mocks/generate-markets';
 
 describe('market list', () => {
   describe('simple url', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
-        aliasQuery(req, 'MarketFilters', generateFilters());
       });
       cy.visit('/markets');
     });
@@ -62,7 +63,6 @@ describe('market list', () => {
     beforeEach(() => {
       cy.mockGQL((req) => {
         aliasQuery(req, 'SimpleMarkets', generateSimpleMarkets());
-        aliasQuery(req, 'MarketFilters', generateFilters());
       });
     });
 
@@ -73,7 +73,7 @@ describe('market list', () => {
 
     it('last asset (if exists)', () => {
       cy.visit('/markets');
-      cy.wait('@MarketFilters').then((filters) => {
+      cy.wait('@SimpleMarkets').then((filters) => {
         if (filters?.response?.body?.data?.markets?.length) {
           const asset =
             filters.response.body.data.markets[0].tradableInstrument.instrument
@@ -91,6 +91,75 @@ describe('market list', () => {
       cy.getByTestId('market-products-menu')
         .find('a.active')
         .should('have.text', 'Future');
+    });
+  });
+
+  describe('long list of results should be handled properly', () => {
+    it('handles 5000 markets', () => {
+      cy.viewport(1440, 900);
+      cy.mockGQL((req) => {
+        aliasQuery(req, 'SimpleMarkets', generateLongListMarkets(5000));
+      });
+      performance.mark('start-5k');
+      cy.visit('/markets');
+      cy.get('.ag-center-cols-container', { timeout: 50000 }).then(() => {
+        performance.mark('end-5k');
+        performance.measure('load-5k', 'start-5k', 'end-5k');
+        const measure = performance.getEntriesByName('load-5k')[0];
+        expect(measure.duration).lte(20000);
+        cy.log(`Ag-grid 5k load took ${measure.duration} milliseconds.`);
+
+        cy.get('.ag-root').should('have.attr', 'aria-rowcount', '5001');
+        cy.get('.ag-center-cols-container')
+          .find('[role="row"]')
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(21, 2));
+        cy.get('.ag-cell-label-container').eq(4).click();
+        for (let i = 0; i < 50; i++) {
+          cy.get('body').realPress('Tab');
+        }
+        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
+        cy.get('.ag-center-cols-container')
+          .find('[role="row"]')
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(31, 2));
+      });
+    });
+
+    it('handles 50000 markets', () => {
+      cy.viewport(1440, 900);
+      cy.mockGQL(async (req) => {
+        aliasQuery(req, 'SimpleMarkets', generateLongListMarkets(50000));
+      });
+      performance.mark('start-50k');
+      cy.visit('/markets');
+      cy.get('.w-full.h-full.flex.items-center.justify-center').should(
+        'have.text',
+        'Loading...'
+      );
+      cy.get('.ag-center-cols-container', { timeout: 100000 }).then(() => {
+        performance.mark('end-50k');
+        performance.measure('load-50k', 'start-50k', 'end-50k');
+        const measure = performance.getEntriesByName('load-50k')[0];
+        expect(measure.duration).lte(85000);
+        cy.log(`Ag-grid 50k load took ${measure.duration} milliseconds.`);
+
+        cy.get('.ag-root').should('have.attr', 'aria-rowcount', '50001');
+        cy.get('.ag-center-cols-container')
+          .find('[role="row"]')
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(21, 2));
+
+        cy.get('.ag-cell-label-container').eq(4).click();
+        for (let i = 0; i < 50; i++) {
+          cy.get('body').realPress('Tab');
+        }
+        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
+        cy.get('.ag-center-cols-container')
+          .find('[role="row"]')
+          .its('length')
+          .then((length) => expect(length).to.be.closeTo(31, 2));
+      });
     });
   });
 });

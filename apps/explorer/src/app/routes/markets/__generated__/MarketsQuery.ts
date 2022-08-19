@@ -64,10 +64,6 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product_sett
    */
   decimals: number;
   /**
-   * The total supply of the market
-   */
-  totalSupply: string;
-  /**
    * The global reward pool account for this asset
    */
   globalRewardPoolAccount: MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset_globalRewardPoolAccount | null;

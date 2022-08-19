@@ -1,7 +1,7 @@
 import {
-  addDecimal,
   t,
   addDecimalsFormatNumber,
+  toDecimal,
 } from '@vegaprotocol/react-helpers';
 import { OrderType } from '@vegaprotocol/types';
 import {
@@ -18,7 +18,7 @@ import type { OrderFields } from '../order-data-provider';
 interface OrderEditDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
-  order: OrderFields | null;
+  order: OrderFields;
   onSubmit: (fields: FormFields) => void;
 }
 
@@ -37,15 +37,9 @@ export const OrderEditDialog = ({
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<FormFields>({
-    defaultValues: {
-      entryPrice: order?.price
-        ? addDecimal(order?.price, order?.market?.decimalPlaces ?? 0)
-        : '',
-    },
-  });
+  } = useForm<FormFields>();
 
-  if (!order) return null;
+  const step = toDecimal(order.market?.decimalPlaces ?? 0);
 
   return (
     <Dialog
@@ -70,7 +64,7 @@ export const OrderEditDialog = ({
           </div>
         )}
         <div>
-          <p className={headerClassName}>{t(`Amount remaining`)}</p>
+          <p className={headerClassName}>{t(`Remaining size`)}</p>
           <p
             className={
               order.side === 'Buy'
@@ -88,9 +82,18 @@ export const OrderEditDialog = ({
         <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input
-              {...register('entryPrice', { required: t('Required') })}
+              type="number"
+              step={step}
+              {...register('entryPrice', {
+                required: t('You need to provide a price'),
+                validate: {
+                  min: (value) =>
+                    Number(value) > 0
+                      ? true
+                      : t('The price cannot be negative'),
+                },
+              })}
               id="entryPrice"
-              type="text"
             />
             {errors.entryPrice?.message && (
               <InputError intent="danger" className="mt-4">

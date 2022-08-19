@@ -5,18 +5,9 @@ import { generateMarketTags } from '../support/mocks/generate-market-tags';
 import { generateMarketPositions } from '../support/mocks/generate-market-positions';
 import { generateEstimateOrder } from '../support/mocks/generate-estimate-order';
 import { generatePartyBalance } from '../support/mocks/generate-party-balance';
-
-const connectVegaWallet = () => {
-  const form = 'rest-connector-form';
-  const walletName = Cypress.env('TRADING_TEST_VEGA_WALLET_NAME');
-  const walletPassphrase = Cypress.env('TRADING_TEST_VEGA_WALLET_PASSPHRASE');
-
-  cy.getByTestId('connect-vega-wallet').click();
-  cy.getByTestId('connectors-list').find('button').click();
-  cy.getByTestId(form).find('#wallet').click().type(walletName);
-  cy.getByTestId(form).find('#passphrase').click().type(walletPassphrase);
-  cy.getByTestId('rest-connector-form').find('button[type=submit]').click();
-};
+import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
+import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
+import { connectVegaWallet } from '../support/connect-wallet';
 
 describe('Market trade', () => {
   let markets;
@@ -28,6 +19,8 @@ describe('Market trade', () => {
       aliasQuery(req, 'MarketPositions', generateMarketPositions());
       aliasQuery(req, 'EstimateOrder', generateEstimateOrder());
       aliasQuery(req, 'PartyBalanceQuery', generatePartyBalance());
+      aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
+      aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
     });
     cy.visit('/markets');
     cy.wait('@SimpleMarkets').then((response) => {
@@ -36,9 +29,24 @@ describe('Market trade', () => {
       }
     });
   });
+
+  it('should not display steps if wallet is disconnected', () => {
+    cy.visit(`/trading/${markets[0].id}`);
+    cy.getByTestId('trading-connect-wallet')
+      .find('h3')
+      .should('have.text', 'Please connect your Vega wallet to make a trade');
+    cy.getByTestId('trading-connect-wallet')
+      .find('button')
+      .should('have.text', 'Connect Vega wallet');
+    cy.getByTestId('trading-connect-wallet')
+      .find('a')
+      .should('have.text', 'https://vega.xyz/wallet');
+  });
+
   it('side selector should work well', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.get('#step-1-control [aria-label^="Selected value"]').should(
         'have.text',
         'Long'
@@ -53,10 +61,11 @@ describe('Market trade', () => {
     }
   });
 
-  it('mobile view should work well', () => {
+  it('side selector mobile view should work well', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.getByTestId('next-button').scrollIntoView().click();
 
       cy.get('button[aria-label="Open long position"]').should(
@@ -85,30 +94,177 @@ describe('Market trade', () => {
     }
   });
 
+  it('size slider should work well', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+      cy.get('#step-2-panel').find('[role="slider"]').type('{rightarrow}');
+
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '2');
+    }
+  });
+
+  it('percentage selection should work well', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+
+      cy.getByTestId('max-label').should('have.text', '21');
+
+      cy.getByTestId('percentage-selector')
+        .find('button')
+        .contains('Max')
+        .click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '21');
+    }
+  });
+
+  it('size input should work well', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('input')
+        .type('{backspace}2');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '2');
+    }
+  });
+
+  it('notional position size should be present', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('button')
+        .should('have.text', '1');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(0)
+        .find('input')
+        .type('{backspace}2');
+      cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(2)
+        .should('have.text', 'Est. Position Size (tDAI)');
+      cy.get('#step-2-panel').find('dd').eq(2).should('have.text', '197.86012');
+    }
+  });
+
+  it('total fees should be displayed', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[1].id}`);
+      connectVegaWallet();
+      cy.get('#step-1-control [aria-label^="Selected value"]').click();
+      cy.get('button[aria-label="Open short position"]').click();
+      cy.get('#step-2-control').click();
+      cy.get('#step-2-panel')
+        .find('dt')
+        .eq(3)
+        .should('have.text', 'Est. Fees (tDAI)');
+      cy.get('#step-2-panel')
+        .find('dd')
+        .eq(3)
+        .should('have.text', '3.00000 (3.03%)');
+    }
+  });
+
   it('order review should display proper calculations', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
       connectVegaWallet();
-      cy.get('h3').contains('Review Trade').click();
-      cy.getByTestId('key-value-table')
-        .find('dl')
-        .eq(1)
-        .find('dd div')
-        .should('have.text', '25.78726');
-      cy.getByTestId('key-value-table')
-        .find('dl')
-        .eq(2)
-        .find('dd div')
-        .should('have.text', '1.00000');
-      cy.getByTestId('key-value-table')
-        .find('dl')
+      cy.get('#step-3-control').click();
+
+      cy.getByTestId('review-trade')
+        .get('#contracts_tooltip_trigger')
+        .trigger('click')
+        .realTouch();
+
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The number of contracts determines'
+      );
+      cy.get('#step-3-panel').find('dd').eq(1).should('have.text', '1');
+
+      cy.get('#step-3-panel').find('dd').eq(2).should('have.text', '98.93006');
+
+      cy.get('#step-3-panel')
+        .find('dd')
         .eq(3)
-        .find('dd div')
-        .should('have.text', '-785.81045');
+        .should('have.text', '3.00000 (3.03%)');
+
+      cy.get('#step-3-panel').find('dd').eq(4).should('have.text', ' - ');
+
       cy.getByTestId('place-order').click();
       cy.getByTestId('dialog-title').should(
         'have.text',
         'Confirm transaction in wallet'
+      );
+    }
+  });
+
+  it('info tooltip on mobile view should work well', () => {
+    if (markets?.length) {
+      cy.viewport('iphone-xr');
+      cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
+      cy.get('#step-3-control').click();
+
+      cy.getByTestId('review-trade')
+        .get('#contracts_tooltip_trigger')
+        .realTouch();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The number of contracts determines'
+      );
+
+      cy.getByTestId('review-trade').get('div.cursor-help').eq(1).realTouch();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The notional size represents the position size'
       );
     }
   });

@@ -15,3 +15,5 @@ export const DisassociateContainer = () => {
     </StakingWalletsContainer>
   );
 };
+
+export default DisassociateContainer;
