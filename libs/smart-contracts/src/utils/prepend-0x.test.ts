@@ -1,4 +1,4 @@
-import { prepend0x, prepend0xIfNeeded, remove0x } from './prepend-0x';
+import { prepend0x, prepend0xIfNeeded } from './prepend-0x';
 
 describe('prepend0x and prepend0xIfNeeded', () => {
   it('prepends strings with 0x', () => {
