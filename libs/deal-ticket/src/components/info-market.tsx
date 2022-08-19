@@ -27,7 +27,7 @@ export interface InfoProps {
   market: MarketInfoQuery_market;
 }
 
-export const calcCandleVolume = (m: any): string | undefined => {
+export const calcCandleVolume = (m: MarketInfoQuery_market): string | undefined => {
   return m.candles
     ?.reduce((acc: BigNumber, c: { volume: BigNumber.Value }) => {
       return acc.plus(new BigNumber(c.volume));
