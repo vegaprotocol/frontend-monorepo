@@ -162,7 +162,6 @@ interface ProposalNewAssetTerms {
     changes: {
       name: string;
       symbol: string;
-      totalSupply: string;
       decimals: string;
       quantum: string;
       erc20: {
@@ -229,6 +228,7 @@ interface Buy {
 export interface ProposalSubmission {
   rationale: {
     description: string;
+    title?: string;
     hash?: string;
     url?: string;
   };
