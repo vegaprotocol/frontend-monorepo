@@ -61,7 +61,6 @@ export const generateMarketInfoQuery = (
             },
           ],
         },
-        updateFrequencySecs: 1,
       },
       riskFactors: {
         __typename: 'RiskFactor',
