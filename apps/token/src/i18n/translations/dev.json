@@ -531,7 +531,7 @@
   "stakingDescription2": "2. Use this site and your Vega wallet to nominate a validator",
   "stakingDescription3": "3. Earn a share of trading fees and treasury rewards for each full epoch staked",
   "stakingDescription4": "4. Move your stake if your validator is penalised",
-  "stakingLink": "staking bridge",
+  "stakingBridge": "staking bridge",
   "readMoreStaking": "Read more about staking on Vega",
   "networkDown": "This site is not currently connecting to the network please try again later.",
   "ethTransactionModalTitle": "Ethereum Transactions",
