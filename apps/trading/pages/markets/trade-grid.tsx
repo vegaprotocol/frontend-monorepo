@@ -57,39 +57,51 @@ type TradingView = keyof typeof TradingViews;
 
 type GetExpiryProps = Pick<TradeMarketHeaderProps, 'market'> & {
   explorerUrl?: string;
-}
+};
 
 type ExpiryProps = {
   expiry: string;
   expiryTooltipDescription?: ReactNode;
-}
+};
 
-const getExpiryProps = ({ market, explorerUrl }: GetExpiryProps): ExpiryProps => {
+const getExpiryProps = ({
+  market,
+  explorerUrl,
+}: GetExpiryProps): ExpiryProps => {
   if (market.marketTimestamps.close === null) {
-    const oracleId = '87f00d1d0da310a7106d552a565a0114cc7317525ebd24a0aa47759b18298315';
-    console.log(market)
+    const oracleId =
+      '87f00d1d0da310a7106d552a565a0114cc7317525ebd24a0aa47759b18298315';
+    console.log(market);
     // market.tradableInstrument.instrument.product.oracleSpecForSettlementPrice.id
-     // || market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id
+    // || market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id
     return {
       expiry: t('Not time-based'),
       expiryTooltipDescription: (
         <>
-          <p>{t('This market expires when triggered by its oracle, not a set date.')}</p>
+          <p>
+            {t(
+              'This market expires when triggered by its oracle, not a set date.'
+            )}
+          </p>
           {explorerUrl && oracleId && (
-            <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">{t('View oracle specification')}</Link>
+            <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
+              {t('View oracle specification')}
+            </Link>
           )}
         </>
       ),
-    }
+    };
   }
 
   const closeDate = new Date(market.marketTimestamps.close);
   const isExpired = Date.now() - closeDate.valueOf() > 0;
 
   return {
-    expiry: `${isExpired ? `${t('Expired')} ` : ''} ${getDateFormat().format(closeDate)}`,
-  }
-}
+    expiry: `${isExpired ? `${t('Expired')} ` : ''} ${getDateFormat().format(
+      closeDate
+    )}`,
+  };
+};
 
 interface TradeMarketHeaderProps {
   market: Market_market;

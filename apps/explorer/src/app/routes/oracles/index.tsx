@@ -1,7 +1,8 @@
 import { gql, useQuery } from '@apollo/client';
+import { useLocation } from 'react-router-dom';
 import type { OracleSpecs as OracleSpecsQuery } from './__generated__/OracleSpecs';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SyntaxHighlighter } from '@vegaprotocol/ui-toolkit';
 import { RouteTitle } from '../../components/route-title';
 import { t } from '@vegaprotocol/react-helpers';
@@ -33,7 +34,19 @@ const ORACLE_SPECS_QUERY = gql`
 `;
 
 const Oracles = () => {
-  const { data } = useQuery<OracleSpecsQuery>(ORACLE_SPECS_QUERY);
+  const { hash } = useLocation();
+  const { data, loading } = useQuery<OracleSpecsQuery>(ORACLE_SPECS_QUERY);
+
+  useEffect(() => {
+    if (data && !loading && hash) {
+      const element = document.getElementById(hash.substring(1));
+      if (element) {
+        window.scrollTo({
+          top: element.offsetTop,
+        });
+      }
+    }
+  }, [hash, loading, !!data]);
 
   return (
     <section>
@@ -41,7 +54,7 @@ const Oracles = () => {
       {data?.oracleSpecs
         ? data.oracleSpecs.map((o) => (
             <React.Fragment key={o.id}>
-              <SubHeading>{o.id}</SubHeading>
+              <SubHeading id={o.id.toString()}>{o.id}</SubHeading>
               <SyntaxHighlighter data={o} />
             </React.Fragment>
           ))
