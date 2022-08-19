@@ -20,12 +20,14 @@ context('Governance flow - with eth and vega wallets connected', function () {
         network_parameters['governance.proposal.freeform.minProposerBalance']
       ).as('minProposerBalance');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.minClose']
-        .split('h')[0] / 24
+        network_parameters['governance.proposal.freeform.minClose'].split(
+          'h'
+        )[0] / 24
       ).as('minCloseDays');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.maxClose']
-        .split('h')[0] / 24
+        network_parameters['governance.proposal.freeform.maxClose'].split(
+          'h'
+        )[0] / 24
       ).as('maxCloseDays');
     });
     cy.vega_wallet_connect();
@@ -220,7 +222,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_submitted_proposal().within(() => {
         cy.contains('Rejected').should('be.visible');
         cy.contains('Close time too soon').should('be.visible');
-        cy.get(viewProposalButton).click()
+        cy.get(viewProposalButton).click();
       });
       cy.get(proposalInformationTableRows)
         .contains('State')
@@ -260,7 +262,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_submitted_proposal().within(() => {
         cy.contains('Rejected').should('be.visible');
         cy.contains('Close time too late').should('be.visible');
-        cy.get(viewProposalButton).click()
+        cy.get(viewProposalButton).click();
       });
       cy.get(proposalInformationTableRows)
         .contains('State')
