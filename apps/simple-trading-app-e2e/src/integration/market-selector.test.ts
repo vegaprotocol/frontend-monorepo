@@ -1,3 +1,4 @@
+import { connectVegaWallet } from '../support/connect-wallet';
 import { aliasQuery } from '@vegaprotocol/cypress';
 import { generateSimpleMarkets } from '../support/mocks/generate-markets';
 import { generateDealTicket } from '../support/mocks/generate-deal-ticket';
@@ -35,6 +36,7 @@ describe('market selector', () => {
   it('should be properly rendered', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.get('input[placeholder="Search"]').should(
         'have.value',
         markets[0].name
@@ -58,6 +60,7 @@ describe('market selector', () => {
   it('typing should change list', () => {
     if (markets?.length) {
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.get('input[placeholder="Search"]').type('{backspace}');
       cy.getByTestId('market-pane')
         .children()
@@ -94,6 +97,7 @@ describe('market selector', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
       cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
       cy.get('[role="dialog"]').should('not.exist');
       cy.getByTestId('arrow-button').click();
       cy.get('[role="dialog"]').should('be.visible');
