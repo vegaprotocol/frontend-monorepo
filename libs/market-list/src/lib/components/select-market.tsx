@@ -100,7 +100,7 @@ export const SelectAllMarketsTableBody = ({
   ) : (
     <thead>
       <tr>
-        <td className="text-black dark:text-white text-h5">
+        <td className="text-black dark:text-white text-ui">
           {t('Loading market data...')}
         </td>
       </tr>
