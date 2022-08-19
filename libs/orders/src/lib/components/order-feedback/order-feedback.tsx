@@ -19,7 +19,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
   if (!order) return null;
 
   // Order on network but was rejected
-  if (order.status === OrderStatus.Rejected) {
+  if (order.status === OrderStatus.STATUS_REJECTED) {
     return (
       <p data-testid="error-reason">
         {order.rejectionReason &&
@@ -28,7 +28,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
     );
   }
 
-  if (order.status === OrderStatus.Cancelled) {
+  if (order.status === OrderStatus.STATUS_CANCELLED) {
     return (
       <div data-testid="order-confirmed">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -72,7 +72,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           <p className={labelClass}>{t(`Status`)}</p>
           <p>{t(`${order.status}`)}</p>
         </div>
-        {order.type === OrderType.Limit && order.market && (
+        {order.type === OrderType.TYPE_LIMIT && order.market && (
           <div>
             <p className={labelClass}>{t(`Price`)}</p>
             <p>
@@ -84,12 +84,14 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           <p className={labelClass}>{t(`Size`)}</p>
           <p
             className={
-              order.side === Side.Buy
+              order.side === Side.SIDE_BUY
                 ? 'text-vega-green-dark dark:text-vega-green'
                 : 'text-vega-red-dark dark:text-vega-red'
             }
           >
-            {`${order.side === Side.Buy ? '+' : '-'} ${addDecimalsFormatNumber(
+            {`${
+              order.side === Side.SIDE_BUY ? '+' : '-'
+            } ${addDecimalsFormatNumber(
               order.size,
               order.market?.positionDecimalPlaces ?? 0
             )}

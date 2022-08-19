@@ -20,7 +20,7 @@ export interface Orders_party_ordersConnection_edges_node_market_tradableInstrum
 export interface Orders_party_ordersConnection_edges_node_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: Orders_party_ordersConnection_edges_node_market_tradableInstrument_instrument;
 }
@@ -37,7 +37,7 @@ export interface Orders_party_ordersConnection_edges_node_market {
   name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -53,13 +53,14 @@ export interface Orders_party_ordersConnection_edges_node_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: Orders_party_ordersConnection_edges_node_market_tradableInstrument;
 }
@@ -73,7 +74,7 @@ export interface Orders_party_ordersConnection_edges_node {
   /**
    * The market the order is trading on (probably stored internally as a hash of the market details)
    */
-  market: Orders_party_ordersConnection_edges_node_market | null;
+  market: Orders_party_ordersConnection_edges_node_market;
   /**
    * Type the order type (defaults to PARTY)
    */
@@ -160,7 +161,7 @@ export interface Orders_party {
 
 export interface Orders {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: Orders_party | null;
 }

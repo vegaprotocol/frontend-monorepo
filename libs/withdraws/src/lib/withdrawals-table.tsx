@@ -98,7 +98,7 @@ export const StatusCell = ({
     );
   }
 
-  if (value === WithdrawalStatus.Finalized) {
+  if (value === WithdrawalStatus.STATUS_FINALIZED) {
     return (
       <div className="flex justify-between gap-8">
         {data.txHash ? (

@@ -38,7 +38,8 @@ export const WithdrawManager = ({
 
   const account = useMemo(() => {
     return accounts.find(
-      (a) => a.type === AccountType.General && a.asset.id === asset?.id
+      (a) =>
+        a.type === AccountType.ACCOUNT_TYPE_GENERAL && a.asset.id === asset?.id
     );
   }, [asset, accounts]);
 

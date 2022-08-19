@@ -21,7 +21,7 @@ export interface Staking_party_stake {
 export interface Staking_party_delegations_node {
   __typename: "Node";
   /**
-   * The node url eg n01.vega.xyz
+   * The node URL eg n01.vega.xyz
    */
   id: string;
 }
@@ -79,7 +79,7 @@ export interface Staking_epoch {
    */
   id: string;
   /**
-   * Timestamps for start/end etc
+   * Timestamps for start and end of epochs
    */
   timestamps: Staking_epoch_timestamps;
 }
@@ -115,7 +115,7 @@ export interface Staking_nodes_rankingScore {
    */
   performanceScore: string;
   /**
-   * The tendermint voting power of the validator (uint32)
+   * The Tendermint voting power of the validator (uint32)
    */
   votingPower: string;
 }
@@ -123,16 +123,16 @@ export interface Staking_nodes_rankingScore {
 export interface Staking_nodes {
   __typename: "Node";
   /**
-   * The node url eg n01.vega.xyz
+   * The node URL eg n01.vega.xyz
    */
   id: string;
   name: string;
   /**
-   * Pubkey of the node operator
+   * Public key of the node operator
    */
   pubkey: string;
   /**
-   * URL where I can find out more info on the node. Will this be possible?
+   * URL from which you can get more info about the node.
    */
   infoUrl: string;
   /**
@@ -142,9 +142,9 @@ export interface Staking_nodes {
   /**
    * Ethereum public key of the node
    */
-  ethereumAdddress: string;
+  ethereumAddress: string;
   /**
-   * The amount the node has put up themselves
+   * The amount of stake the node has put up themselves
    */
   stakedByOperator: string;
   /**
@@ -198,11 +198,11 @@ export interface Staking_nodeData {
 
 export interface Staking {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: Staking_party | null;
   /**
-   * get data for a specific epoch, if id omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: Staking_epoch;
   /**

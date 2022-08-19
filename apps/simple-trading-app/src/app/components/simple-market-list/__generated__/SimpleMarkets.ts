@@ -24,7 +24,7 @@ export interface SimpleMarkets_markets_data_market {
 export interface SimpleMarkets_markets_data {
   __typename: "MarketData";
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: SimpleMarkets_markets_data_market;
 }
@@ -76,7 +76,7 @@ export interface SimpleMarkets_markets_tradableInstrument_instrument {
 export interface SimpleMarkets_markets_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: SimpleMarkets_markets_tradableInstrument_instrument;
 }
@@ -108,11 +108,11 @@ export interface SimpleMarkets_markets {
    */
   data: SimpleMarkets_markets_data | null;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: SimpleMarkets_markets_tradableInstrument;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by params
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
    */
   candles: (SimpleMarkets_markets_candles | null)[] | null;
 }

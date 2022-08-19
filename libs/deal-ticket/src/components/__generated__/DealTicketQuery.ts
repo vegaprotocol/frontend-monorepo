@@ -12,7 +12,7 @@ import { MarketState, MarketTradingMode } from "@vegaprotocol/types";
 export interface DealTicketQuery_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -48,7 +48,7 @@ export interface DealTicketQuery_market_tradableInstrument_instrument {
 export interface DealTicketQuery_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: DealTicketQuery_market_tradableInstrument_instrument;
 }
@@ -81,7 +81,7 @@ export interface DealTicketQuery_market {
   name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -97,9 +97,10 @@ export interface DealTicketQuery_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
@@ -111,7 +112,7 @@ export interface DealTicketQuery_market {
    */
   tradingMode: MarketTradingMode;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: DealTicketQuery_market_tradableInstrument;
   /**
@@ -122,7 +123,7 @@ export interface DealTicketQuery_market {
 
 export interface DealTicketQuery {
   /**
-   * An instrument that is trading on the VEGA network
+   * An instrument that is trading on the Vega network
    */
   market: DealTicketQuery_market | null;
 }

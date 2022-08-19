@@ -10,9 +10,9 @@ import {
 import { format, formatDistanceToNowStrict } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
-import { ProposalState } from '../../../../__generated__/globalTypes';
 import type { ReactNode } from 'react';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import { ProposalState } from '@vegaprotocol/types';
 
 const MajorityNotReached = () => {
   const { t } = useTranslation();
@@ -52,7 +52,7 @@ export const ProposalsListItemDetails = ({
   let voteStatus: ReactNode;
 
   switch (state) {
-    case ProposalState.Enacted: {
+    case ProposalState.STATE_ENACTED: {
       proposalStatus = (
         <>
           {t('voteState_Enacted')} <Icon name={'tick'} />
@@ -61,14 +61,14 @@ export const ProposalsListItemDetails = ({
       voteDetails = (
         <>
           {format(
-            new Date(proposal.terms.enactmentDatetime),
+            new Date(proposal.terms.enactmentDatetime || 0),
             DATE_FORMAT_DETAILED
           )}
         </>
       );
       break;
     }
-    case ProposalState.Passed: {
+    case ProposalState.STATE_PASSED: {
       proposalStatus = (
         <>
           {t('voteState_Passed')} <Icon name={'tick'} />
@@ -78,14 +78,14 @@ export const ProposalsListItemDetails = ({
         <>
           {t('toEnactOn')}{' '}
           {format(
-            new Date(proposal.terms.enactmentDatetime),
+            new Date(proposal.terms.enactmentDatetime || 0),
             DATE_FORMAT_DETAILED
           )}
         </>
       );
       break;
     }
-    case ProposalState.WaitingForNodeVote: {
+    case ProposalState.STATE_WAITING_FOR_NODE_VOTE: {
       proposalStatus = (
         <>
           {t('voteState_WaitingForNodeVote')} <Icon name={'time'} />
@@ -95,14 +95,14 @@ export const ProposalsListItemDetails = ({
         <>
           {t('toEnactOn')}{' '}
           {format(
-            new Date(proposal.terms.enactmentDatetime),
+            new Date(proposal.terms.enactmentDatetime || 0),
             DATE_FORMAT_DETAILED
           )}
         </>
       );
       break;
     }
-    case ProposalState.Open: {
+    case ProposalState.STATE_OPEN: {
       proposalStatus = (
         <>
           {t('voteState_Open')} <Icon name={'hand'} />
@@ -140,7 +140,7 @@ export const ProposalsListItemDetails = ({
         ));
       break;
     }
-    case ProposalState.Declined: {
+    case ProposalState.STATE_DECLINED: {
       proposalStatus = (
         <>
           {t('voteState_Declined')} <Icon name={'cross'} />
@@ -151,7 +151,7 @@ export const ProposalsListItemDetails = ({
         (!majorityMet && <MajorityNotReached />);
       break;
     }
-    case ProposalState.Rejected: {
+    case ProposalState.STATE_REJECTED: {
       proposalStatus = (
         <>
           <StatusFail>{t('voteState_Rejected')}</StatusFail>{' '}

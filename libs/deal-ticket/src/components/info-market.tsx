@@ -52,7 +52,6 @@ const MARKET_INFO_QUERY = gql`
             auctionExtensionSecs
           }
         }
-        updateFrequencySecs
       }
       riskFactors {
         market

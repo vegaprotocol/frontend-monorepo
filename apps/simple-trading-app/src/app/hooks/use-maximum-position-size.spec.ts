@@ -1,14 +1,14 @@
 import { renderHook } from '@testing-library/react';
 import useMaximumPositionSize from './use-maximum-position-size';
 import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
-import { AccountType } from '@vegaprotocol/types';
+import {
+  AccountType,
+  OrderTimeInForce,
+  OrderType,
+  Side,
+} from '@vegaprotocol/types';
 import type { PositionMargin } from './use-market-positions';
 import { BigNumber } from 'bignumber.js';
-import {
-  VegaWalletOrderSide,
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-} from '@vegaprotocol/wallet';
 
 const defaultMockMarketPositions = {
   openVolume: new BigNumber(1),
@@ -19,7 +19,7 @@ let mockMarketPositions: PositionMargin | null = defaultMockMarketPositions;
 
 const mockAccount: PartyBalanceQuery_party_accounts = {
   __typename: 'Account',
-  type: AccountType.General,
+  type: AccountType.ACCOUNT_TYPE_GENERAL,
   balance: '200000',
   asset: {
     __typename: 'Asset',
@@ -31,10 +31,10 @@ const mockAccount: PartyBalanceQuery_party_accounts = {
 };
 
 const mockOrder = {
-  type: VegaWalletOrderType.Market,
+  type: OrderType.TYPE_MARKET,
   size: '1',
-  side: VegaWalletOrderSide.Buy,
-  timeInForce: VegaWalletOrderTimeInForce.IOC,
+  side: Side.SIDE_BUY,
+  timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
 };
 
 jest.mock('./use-settlement-account', () => {
@@ -81,7 +81,7 @@ describe('useMaximumPositionSize Hook', () => {
 
   it('should return correct size when open positions and opposite side', () => {
     const price = '50';
-    mockOrder.side = VegaWalletOrderSide.Sell;
+    mockOrder.side = Side.SIDE_SELL;
     mockMarketPositions = defaultMockMarketPositions;
     const expected = 4001;
     const { result } = renderHook(() =>

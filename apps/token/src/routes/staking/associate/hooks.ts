@@ -2,7 +2,6 @@ import { gql, useApolloClient } from '@apollo/client';
 import * as Sentry from '@sentry/react';
 import React from 'react';
 
-import { StakeLinkingStatus } from '../../../__generated__/globalTypes';
 import { StakingMethod } from '../../../components/staking-method-radio';
 import { useContracts } from '../../../contexts/contracts/contracts-context';
 import { TxState } from '../../../hooks/transaction-reducer';
@@ -16,6 +15,7 @@ import type {
 } from './__generated__/PartyStakeLinkings';
 import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { removeDecimal } from '@vegaprotocol/react-helpers';
+import { StakeLinkingStatus } from '@vegaprotocol/types';
 
 export const useAddStake = (
   address: string,
@@ -110,7 +110,8 @@ export const usePollForStakeLinking = (
 
           const matchingLinking = linkings?.find((l) => {
             return (
-              l.txHash === txHash && l.status === StakeLinkingStatus.Accepted
+              l.txHash === txHash &&
+              l.status === StakeLinkingStatus.STATUS_ACCEPTED
             );
           });
 

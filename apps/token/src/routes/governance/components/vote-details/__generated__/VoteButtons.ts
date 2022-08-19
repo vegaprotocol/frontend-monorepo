@@ -30,7 +30,7 @@ export interface VoteButtons_party {
 
 export interface VoteButtons {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: VoteButtons_party | null;
 }

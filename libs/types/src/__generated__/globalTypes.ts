@@ -8,34 +8,33 @@
 //==============================================================
 
 /**
- * The various account types we have (used by collateral)
+ * The various account types in Vega (used by collateral)
  */
 export enum AccountType {
-  Bond = "Bond",
-  External = "External",
-  FeeInfrastructure = "FeeInfrastructure",
-  FeeLiquidity = "FeeLiquidity",
-  FeeMaker = "FeeMaker",
-  General = "General",
-  GlobalInsurance = "GlobalInsurance",
-  GlobalReward = "GlobalReward",
-  Insurance = "Insurance",
-  LockWithdraw = "LockWithdraw",
-  Margin = "Margin",
-  PendingTransfers = "PendingTransfers",
-  RewardLpReceivedFees = "RewardLpReceivedFees",
-  RewardMakerReceivedFees = "RewardMakerReceivedFees",
-  RewardMarketProposers = "RewardMarketProposers",
-  RewardTakerPaidFees = "RewardTakerPaidFees",
-  Settlement = "Settlement",
+  ACCOUNT_TYPE_BOND = "ACCOUNT_TYPE_BOND",
+  ACCOUNT_TYPE_EXTERNAL = "ACCOUNT_TYPE_EXTERNAL",
+  ACCOUNT_TYPE_FEES_INFRASTRUCTURE = "ACCOUNT_TYPE_FEES_INFRASTRUCTURE",
+  ACCOUNT_TYPE_FEES_LIQUIDITY = "ACCOUNT_TYPE_FEES_LIQUIDITY",
+  ACCOUNT_TYPE_FEES_MAKER = "ACCOUNT_TYPE_FEES_MAKER",
+  ACCOUNT_TYPE_GENERAL = "ACCOUNT_TYPE_GENERAL",
+  ACCOUNT_TYPE_GLOBAL_INSURANCE = "ACCOUNT_TYPE_GLOBAL_INSURANCE",
+  ACCOUNT_TYPE_GLOBAL_REWARD = "ACCOUNT_TYPE_GLOBAL_REWARD",
+  ACCOUNT_TYPE_INSURANCE = "ACCOUNT_TYPE_INSURANCE",
+  ACCOUNT_TYPE_MARGIN = "ACCOUNT_TYPE_MARGIN",
+  ACCOUNT_TYPE_PENDING_TRANSFERS = "ACCOUNT_TYPE_PENDING_TRANSFERS",
+  ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES = "ACCOUNT_TYPE_REWARD_LP_RECEIVED_FEES",
+  ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES = "ACCOUNT_TYPE_REWARD_MAKER_RECEIVED_FEES",
+  ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS = "ACCOUNT_TYPE_REWARD_MARKET_PROPOSERS",
+  ACCOUNT_TYPE_REWARD_TAKER_PAID_FEES = "ACCOUNT_TYPE_REWARD_TAKER_PAID_FEES",
+  ACCOUNT_TYPE_SETTLEMENT = "ACCOUNT_TYPE_SETTLEMENT",
 }
 
 export enum AuctionTrigger {
-  Batch = "Batch",
-  Liquidity = "Liquidity",
-  Opening = "Opening",
-  Price = "Price",
-  Unspecified = "Unspecified",
+  AUCTION_TRIGGER_BATCH = "AUCTION_TRIGGER_BATCH",
+  AUCTION_TRIGGER_LIQUIDITY = "AUCTION_TRIGGER_LIQUIDITY",
+  AUCTION_TRIGGER_OPENING = "AUCTION_TRIGGER_OPENING",
+  AUCTION_TRIGGER_PRICE = "AUCTION_TRIGGER_PRICE",
+  AUCTION_TRIGGER_UNSPECIFIED = "AUCTION_TRIGGER_UNSPECIFIED",
 }
 
 export enum BusEventType {
@@ -71,154 +70,153 @@ export enum BusEventType {
  * Comparator describes the type of comparison.
  */
 export enum ConditionOperator {
-  OperatorEquals = "OperatorEquals",
-  OperatorGreaterThan = "OperatorGreaterThan",
-  OperatorGreaterThanOrEqual = "OperatorGreaterThanOrEqual",
-  OperatorLessThan = "OperatorLessThan",
-  OperatorLessThanOrEqual = "OperatorLessThanOrEqual",
+  OPERATOR_EQUALS = "OPERATOR_EQUALS",
+  OPERATOR_GREATER_THAN = "OPERATOR_GREATER_THAN",
+  OPERATOR_GREATER_THAN_OR_EQUAL = "OPERATOR_GREATER_THAN_OR_EQUAL",
+  OPERATOR_LESS_THAN = "OPERATOR_LESS_THAN",
+  OPERATOR_LESS_THAN_OR_EQUAL = "OPERATOR_LESS_THAN_OR_EQUAL",
 }
 
 /**
  * The status of a deposit
  */
 export enum DepositStatus {
-  Cancelled = "Cancelled",
-  Finalized = "Finalized",
-  Open = "Open",
+  STATUS_CANCELLED = "STATUS_CANCELLED",
+  STATUS_FINALIZED = "STATUS_FINALIZED",
+  STATUS_OPEN = "STATUS_OPEN",
 }
 
 /**
- * The interval for trade candles when subscribing via VEGA graphql, default is I15M
+ * The interval for trade candles when subscribing via Vega GraphQL, default is I15M
  */
 export enum Interval {
-  I15M = "I15M",
-  I1D = "I1D",
-  I1H = "I1H",
-  I1M = "I1M",
-  I5M = "I5M",
-  I6H = "I6H",
+  INTERVAL_I15M = "INTERVAL_I15M",
+  INTERVAL_I1D = "INTERVAL_I1D",
+  INTERVAL_I1H = "INTERVAL_I1H",
+  INTERVAL_I1M = "INTERVAL_I1M",
+  INTERVAL_I5M = "INTERVAL_I5M",
+  INTERVAL_I6H = "INTERVAL_I6H",
 }
 
 /**
  * The current state of a market
  */
 export enum MarketState {
-  Active = "Active",
-  Cancelled = "Cancelled",
-  Closed = "Closed",
-  Pending = "Pending",
-  Proposed = "Proposed",
-  Rejected = "Rejected",
-  Settled = "Settled",
-  Suspended = "Suspended",
-  TradingTerminated = "TradingTerminated",
+  STATE_ACTIVE = "STATE_ACTIVE",
+  STATE_CANCELLED = "STATE_CANCELLED",
+  STATE_CLOSED = "STATE_CLOSED",
+  STATE_PENDING = "STATE_PENDING",
+  STATE_PROPOSED = "STATE_PROPOSED",
+  STATE_REJECTED = "STATE_REJECTED",
+  STATE_SETTLED = "STATE_SETTLED",
+  STATE_SUSPENDED = "STATE_SUSPENDED",
+  STATE_TRADING_TERMINATED = "STATE_TRADING_TERMINATED",
 }
 
 /**
- * What market trading mode are we in
+ * What market trading mode is the market in
  */
 export enum MarketTradingMode {
-  BatchAuction = "BatchAuction",
-  Continuous = "Continuous",
-  MonitoringAuction = "MonitoringAuction",
-  NoTrading = "NoTrading",
-  OpeningAuction = "OpeningAuction",
+  TRADING_MODE_BATCH_AUCTION = "TRADING_MODE_BATCH_AUCTION",
+  TRADING_MODE_CONTINUOUS = "TRADING_MODE_CONTINUOUS",
+  TRADING_MODE_MONITORING_AUCTION = "TRADING_MODE_MONITORING_AUCTION",
+  TRADING_MODE_NO_TRADING = "TRADING_MODE_NO_TRADING",
+  TRADING_MODE_OPENING_AUCTION = "TRADING_MODE_OPENING_AUCTION",
 }
 
 export enum NodeStatus {
-  NonValidator = "NonValidator",
-  Validator = "Validator",
+  NODE_STATUS_NON_VALIDATOR = "NODE_STATUS_NON_VALIDATOR",
+  NODE_STATUS_VALIDATOR = "NODE_STATUS_VALIDATOR",
 }
 
 /**
  * Status describe the status of the oracle spec
  */
 export enum OracleSpecStatus {
-  StatusActive = "StatusActive",
-  StatusUnused = "StatusUnused",
+  STATUS_ACTIVE = "STATUS_ACTIVE",
+  STATUS_DEACTIVATED = "STATUS_DEACTIVATED",
 }
 
 /**
  * Reason for the order being rejected by the core node
  */
 export enum OrderRejectionReason {
-  AmendToGTTWithoutExpiryAt = "AmendToGTTWithoutExpiryAt",
-  CannotAmendFromGFAOrGFN = "CannotAmendFromGFAOrGFN",
-  CannotAmendPeggedOrderDetailsOnNonPeggedOrder = "CannotAmendPeggedOrderDetailsOnNonPeggedOrder",
-  CannotAmendToFOKOrIOC = "CannotAmendToFOKOrIOC",
-  CannotAmendToGFAOrGFN = "CannotAmendToGFAOrGFN",
-  EditNotAllowed = "EditNotAllowed",
-  ExpiryAtBeforeCreatedAt = "ExpiryAtBeforeCreatedAt",
-  FOKOrderDuringAuction = "FOKOrderDuringAuction",
-  GFAOrderDuringContinuousTrading = "GFAOrderDuringContinuousTrading",
-  GFNOrderDuringAuction = "GFNOrderDuringAuction",
-  GTCWithExpiryAtNotValid = "GTCWithExpiryAtNotValid",
-  IOCOrderDuringAuction = "IOCOrderDuringAuction",
-  InsufficientAssetBalance = "InsufficientAssetBalance",
-  InsufficientFundsToPayFees = "InsufficientFundsToPayFees",
-  InternalError = "InternalError",
-  InvalidExpirationTime = "InvalidExpirationTime",
-  InvalidMarketId = "InvalidMarketId",
-  InvalidMarketType = "InvalidMarketType",
-  InvalidOrderId = "InvalidOrderId",
-  InvalidOrderReference = "InvalidOrderReference",
-  InvalidPartyId = "InvalidPartyId",
-  InvalidPersistence = "InvalidPersistence",
-  InvalidRemainingSize = "InvalidRemainingSize",
-  InvalidSize = "InvalidSize",
-  InvalidTimeInForce = "InvalidTimeInForce",
-  InvalidType = "InvalidType",
-  MarginCheckFailed = "MarginCheckFailed",
-  MarketClosed = "MarketClosed",
-  MissingGeneralAccount = "MissingGeneralAccount",
-  NonPersistentOrderExceedsPriceBounds = "NonPersistentOrderExceedsPriceBounds",
-  OrderAmendFailure = "OrderAmendFailure",
-  OrderNotFound = "OrderNotFound",
-  OrderOutOfSequence = "OrderOutOfSequence",
-  OrderRemovalFailure = "OrderRemovalFailure",
-  PeggedOrderBuyCannotReferenceBestAskPrice = "PeggedOrderBuyCannotReferenceBestAskPrice",
-  PeggedOrderMustBeGTTOrGTC = "PeggedOrderMustBeGTTOrGTC",
-  PeggedOrderMustBeLimitOrder = "PeggedOrderMustBeLimitOrder",
-  PeggedOrderOffsetMustBeGreaterOrEqualToZero = "PeggedOrderOffsetMustBeGreaterOrEqualToZero",
-  PeggedOrderOffsetMustBeGreaterThanZero = "PeggedOrderOffsetMustBeGreaterThanZero",
-  PeggedOrderSellCannotReferenceBestBidPrice = "PeggedOrderSellCannotReferenceBestBidPrice",
-  PeggedOrderWithoutReferencePrice = "PeggedOrderWithoutReferencePrice",
-  SelfTrading = "SelfTrading",
-  TimeFailure = "TimeFailure",
-  UnableToAmendPeggedOrderPrice = "UnableToAmendPeggedOrderPrice",
-  UnableToRepricePeggedOrder = "UnableToRepricePeggedOrder",
+  ORDER_ERROR_AMEND_FAILURE = "ORDER_ERROR_AMEND_FAILURE",
+  ORDER_ERROR_BUY_CANNOT_REFERENCE_BEST_ASK_PRICE = "ORDER_ERROR_BUY_CANNOT_REFERENCE_BEST_ASK_PRICE",
+  ORDER_ERROR_CANNOT_AMEND_FROM_GFA_OR_GFN = "ORDER_ERROR_CANNOT_AMEND_FROM_GFA_OR_GFN",
+  ORDER_ERROR_CANNOT_AMEND_PEGGED_ORDER_DETAILS_ON_NON_PEGGED_ORDER = "ORDER_ERROR_CANNOT_AMEND_PEGGED_ORDER_DETAILS_ON_NON_PEGGED_ORDER",
+  ORDER_ERROR_CANNOT_AMEND_TO_FOK_OR_IOC = "ORDER_ERROR_CANNOT_AMEND_TO_FOK_OR_IOC",
+  ORDER_ERROR_CANNOT_AMEND_TO_GFA_OR_GFN = "ORDER_ERROR_CANNOT_AMEND_TO_GFA_OR_GFN",
+  ORDER_ERROR_CANNOT_AMEND_TO_GTT_WITHOUT_EXPIRYAT = "ORDER_ERROR_CANNOT_AMEND_TO_GTT_WITHOUT_EXPIRYAT",
+  ORDER_ERROR_CANNOT_HAVE_GTC_AND_EXPIRYAT = "ORDER_ERROR_CANNOT_HAVE_GTC_AND_EXPIRYAT",
+  ORDER_ERROR_CANNOT_SEND_FOK_ORDER_DURING_AUCTION = "ORDER_ERROR_CANNOT_SEND_FOK_ORDER_DURING_AUCTION",
+  ORDER_ERROR_CANNOT_SEND_IOC_ORDER_DURING_AUCTION = "ORDER_ERROR_CANNOT_SEND_IOC_ORDER_DURING_AUCTION",
+  ORDER_ERROR_EDIT_NOT_ALLOWED = "ORDER_ERROR_EDIT_NOT_ALLOWED",
+  ORDER_ERROR_EXPIRYAT_BEFORE_CREATEDAT = "ORDER_ERROR_EXPIRYAT_BEFORE_CREATEDAT",
+  ORDER_ERROR_GFA_ORDER_DURING_CONTINUOUS_TRADING = "ORDER_ERROR_GFA_ORDER_DURING_CONTINUOUS_TRADING",
+  ORDER_ERROR_GFN_ORDER_DURING_AN_AUCTION = "ORDER_ERROR_GFN_ORDER_DURING_AN_AUCTION",
+  ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE = "ORDER_ERROR_INSUFFICIENT_ASSET_BALANCE",
+  ORDER_ERROR_INSUFFICIENT_FUNDS_TO_PAY_FEES = "ORDER_ERROR_INSUFFICIENT_FUNDS_TO_PAY_FEES",
+  ORDER_ERROR_INTERNAL_ERROR = "ORDER_ERROR_INTERNAL_ERROR",
+  ORDER_ERROR_INVALID_EXPIRATION_DATETIME = "ORDER_ERROR_INVALID_EXPIRATION_DATETIME",
+  ORDER_ERROR_INVALID_MARKET_ID = "ORDER_ERROR_INVALID_MARKET_ID",
+  ORDER_ERROR_INVALID_ORDER_ID = "ORDER_ERROR_INVALID_ORDER_ID",
+  ORDER_ERROR_INVALID_ORDER_REFERENCE = "ORDER_ERROR_INVALID_ORDER_REFERENCE",
+  ORDER_ERROR_INVALID_PARTY_ID = "ORDER_ERROR_INVALID_PARTY_ID",
+  ORDER_ERROR_INVALID_PERSISTENCE = "ORDER_ERROR_INVALID_PERSISTENCE",
+  ORDER_ERROR_INVALID_REMAINING_SIZE = "ORDER_ERROR_INVALID_REMAINING_SIZE",
+  ORDER_ERROR_INVALID_SIZE = "ORDER_ERROR_INVALID_SIZE",
+  ORDER_ERROR_INVALID_TIME_IN_FORCE = "ORDER_ERROR_INVALID_TIME_IN_FORCE",
+  ORDER_ERROR_INVALID_TYPE = "ORDER_ERROR_INVALID_TYPE",
+  ORDER_ERROR_MARGIN_CHECK_FAILED = "ORDER_ERROR_MARGIN_CHECK_FAILED",
+  ORDER_ERROR_MARKET_CLOSED = "ORDER_ERROR_MARKET_CLOSED",
+  ORDER_ERROR_MISSING_GENERAL_ACCOUNT = "ORDER_ERROR_MISSING_GENERAL_ACCOUNT",
+  ORDER_ERROR_MUST_BE_GTT_OR_GTC = "ORDER_ERROR_MUST_BE_GTT_OR_GTC",
+  ORDER_ERROR_MUST_BE_LIMIT_ORDER = "ORDER_ERROR_MUST_BE_LIMIT_ORDER",
+  ORDER_ERROR_NON_PERSISTENT_ORDER_OUT_OF_PRICE_BOUNDS = "ORDER_ERROR_NON_PERSISTENT_ORDER_OUT_OF_PRICE_BOUNDS",
+  ORDER_ERROR_NOT_FOUND = "ORDER_ERROR_NOT_FOUND",
+  ORDER_ERROR_OFFSET_MUST_BE_GREATER_OR_EQUAL_TO_ZERO = "ORDER_ERROR_OFFSET_MUST_BE_GREATER_OR_EQUAL_TO_ZERO",
+  ORDER_ERROR_OFFSET_MUST_BE_GREATER_THAN_ZERO = "ORDER_ERROR_OFFSET_MUST_BE_GREATER_THAN_ZERO",
+  ORDER_ERROR_OUT_OF_SEQUENCE = "ORDER_ERROR_OUT_OF_SEQUENCE",
+  ORDER_ERROR_REMOVAL_FAILURE = "ORDER_ERROR_REMOVAL_FAILURE",
+  ORDER_ERROR_SELF_TRADING = "ORDER_ERROR_SELF_TRADING",
+  ORDER_ERROR_SELL_CANNOT_REFERENCE_BEST_BID_PRICE = "ORDER_ERROR_SELL_CANNOT_REFERENCE_BEST_BID_PRICE",
+  ORDER_ERROR_TIME_FAILURE = "ORDER_ERROR_TIME_FAILURE",
+  ORDER_ERROR_UNABLE_TO_AMEND_PRICE_ON_PEGGED_ORDER = "ORDER_ERROR_UNABLE_TO_AMEND_PRICE_ON_PEGGED_ORDER",
+  ORDER_ERROR_UNABLE_TO_REPRICE_PEGGED_ORDER = "ORDER_ERROR_UNABLE_TO_REPRICE_PEGGED_ORDER",
+  ORDER_ERROR_WITHOUT_REFERENCE_PRICE = "ORDER_ERROR_WITHOUT_REFERENCE_PRICE",
 }
 
 /**
  * Valid order statuses, these determine several states for an order that cannot be expressed with other fields in Order.
  */
 export enum OrderStatus {
-  Active = "Active",
-  Cancelled = "Cancelled",
-  Expired = "Expired",
-  Filled = "Filled",
-  Parked = "Parked",
-  PartiallyFilled = "PartiallyFilled",
-  Rejected = "Rejected",
-  Stopped = "Stopped",
+  STATUS_ACTIVE = "STATUS_ACTIVE",
+  STATUS_CANCELLED = "STATUS_CANCELLED",
+  STATUS_EXPIRED = "STATUS_EXPIRED",
+  STATUS_FILLED = "STATUS_FILLED",
+  STATUS_PARKED = "STATUS_PARKED",
+  STATUS_PARTIALLY_FILLED = "STATUS_PARTIALLY_FILLED",
+  STATUS_REJECTED = "STATUS_REJECTED",
+  STATUS_STOPPED = "STATUS_STOPPED",
 }
 
 /**
  * Valid order types, these determine what happens when an order is added to the book
  */
 export enum OrderTimeInForce {
-  FOK = "FOK",
-  GFA = "GFA",
-  GFN = "GFN",
-  GTC = "GTC",
-  GTT = "GTT",
-  IOC = "IOC",
+  TIME_IN_FORCE_FOK = "TIME_IN_FORCE_FOK",
+  TIME_IN_FORCE_GFA = "TIME_IN_FORCE_GFA",
+  TIME_IN_FORCE_GFN = "TIME_IN_FORCE_GFN",
+  TIME_IN_FORCE_GTC = "TIME_IN_FORCE_GTC",
+  TIME_IN_FORCE_GTT = "TIME_IN_FORCE_GTT",
+  TIME_IN_FORCE_IOC = "TIME_IN_FORCE_IOC",
 }
 
 export enum OrderType {
-  Limit = "Limit",
-  Market = "Market",
-  Network = "Network",
+  TYPE_LIMIT = "TYPE_LIMIT",
+  TYPE_MARKET = "TYPE_MARKET",
+  TYPE_NETWORK = "TYPE_NETWORK",
 }
 
 /**
@@ -226,55 +224,56 @@ export enum OrderType {
  * engine.
  */
 export enum PropertyKeyType {
-  TypeBoolean = "TypeBoolean",
-  TypeDecimal = "TypeDecimal",
-  TypeEmpty = "TypeEmpty",
-  TypeInteger = "TypeInteger",
-  TypeString = "TypeString",
-  TypeTimestamp = "TypeTimestamp",
+  TYPE_BOOLEAN = "TYPE_BOOLEAN",
+  TYPE_DECIMAL = "TYPE_DECIMAL",
+  TYPE_EMPTY = "TYPE_EMPTY",
+  TYPE_INTEGER = "TYPE_INTEGER",
+  TYPE_STRING = "TYPE_STRING",
+  TYPE_TIMESTAMP = "TYPE_TIMESTAMP",
 }
 
 /**
  * Reason for the proposal being rejected by the core node
  */
 export enum ProposalRejectionReason {
-  CloseTimeTooLate = "CloseTimeTooLate",
-  CloseTimeTooSoon = "CloseTimeTooSoon",
-  CouldNotInstantiateMarket = "CouldNotInstantiateMarket",
-  EnactTimeTooLate = "EnactTimeTooLate",
-  EnactTimeTooSoon = "EnactTimeTooSoon",
-  IncompatibleTimestamps = "IncompatibleTimestamps",
-  InsufficientEquityLikeShare = "InsufficientEquityLikeShare",
-  InsufficientTokens = "InsufficientTokens",
-  InvalidAsset = "InvalidAsset",
-  InvalidAssetDetails = "InvalidAssetDetails",
-  InvalidFeeAmount = "InvalidFeeAmount",
-  InvalidFutureMaturityTimestamp = "InvalidFutureMaturityTimestamp",
-  InvalidFutureProduct = "InvalidFutureProduct",
-  InvalidInstrumentSecurity = "InvalidInstrumentSecurity",
-  InvalidMarket = "InvalidMarket",
-  InvalidRiskParameter = "InvalidRiskParameter",
-  InvalidShape = "InvalidShape",
-  MajorityThresholdNotReached = "MajorityThresholdNotReached",
-  MarketMissingLiquidityCommitment = "MarketMissingLiquidityCommitment",
-  MissingBuiltinAssetField = "MissingBuiltinAssetField",
-  MissingCommitmentAmount = "MissingCommitmentAmount",
-  MissingERC20ContractAddress = "MissingERC20ContractAddress",
-  NetworkParameterInvalidKey = "NetworkParameterInvalidKey",
-  NetworkParameterInvalidValue = "NetworkParameterInvalidValue",
-  NetworkParameterValidationFailed = "NetworkParameterValidationFailed",
-  NoProduct = "NoProduct",
-  NoRiskParameters = "NoRiskParameters",
-  NoTradingMode = "NoTradingMode",
-  NodeValidationFailed = "NodeValidationFailed",
-  OpeningAuctionDurationTooLarge = "OpeningAuctionDurationTooLarge",
-  OpeningAuctionDurationTooSmall = "OpeningAuctionDurationTooSmall",
-  ParticipationThresholdNotReached = "ParticipationThresholdNotReached",
-  ProductMaturityIsPassed = "ProductMaturityIsPassed",
-  TooManyMarketDecimalPlaces = "TooManyMarketDecimalPlaces",
-  TooManyPriceMonitoringTriggers = "TooManyPriceMonitoringTriggers",
-  UnsupportedProduct = "UnsupportedProduct",
-  UnsupportedTradingMode = "UnsupportedTradingMode",
+  PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE = "PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE",
+  PROPOSAL_ERROR_CLOSE_TIME_TOO_SOON = "PROPOSAL_ERROR_CLOSE_TIME_TOO_SOON",
+  PROPOSAL_ERROR_COULD_NOT_INSTANTIATE_MARKET = "PROPOSAL_ERROR_COULD_NOT_INSTANTIATE_MARKET",
+  PROPOSAL_ERROR_ENACT_TIME_TOO_LATE = "PROPOSAL_ERROR_ENACT_TIME_TOO_LATE",
+  PROPOSAL_ERROR_ENACT_TIME_TOO_SOON = "PROPOSAL_ERROR_ENACT_TIME_TOO_SOON",
+  PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS = "PROPOSAL_ERROR_INCOMPATIBLE_TIMESTAMPS",
+  PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE = "PROPOSAL_ERROR_INSUFFICIENT_EQUITY_LIKE_SHARE",
+  PROPOSAL_ERROR_INSUFFICIENT_TOKENS = "PROPOSAL_ERROR_INSUFFICIENT_TOKENS",
+  PROPOSAL_ERROR_INVALID_ASSET = "PROPOSAL_ERROR_INVALID_ASSET",
+  PROPOSAL_ERROR_INVALID_ASSET_DETAILS = "PROPOSAL_ERROR_INVALID_ASSET_DETAILS",
+  PROPOSAL_ERROR_INVALID_FEE_AMOUNT = "PROPOSAL_ERROR_INVALID_FEE_AMOUNT",
+  PROPOSAL_ERROR_INVALID_FREEFORM = "PROPOSAL_ERROR_INVALID_FREEFORM",
+  PROPOSAL_ERROR_INVALID_FUTURE_PRODUCT = "PROPOSAL_ERROR_INVALID_FUTURE_PRODUCT",
+  PROPOSAL_ERROR_INVALID_INSTRUMENT_SECURITY = "PROPOSAL_ERROR_INVALID_INSTRUMENT_SECURITY",
+  PROPOSAL_ERROR_INVALID_MARKET = "PROPOSAL_ERROR_INVALID_MARKET",
+  PROPOSAL_ERROR_INVALID_RISK_PARAMETER = "PROPOSAL_ERROR_INVALID_RISK_PARAMETER",
+  PROPOSAL_ERROR_INVALID_SHAPE = "PROPOSAL_ERROR_INVALID_SHAPE",
+  PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED = "PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED",
+  PROPOSAL_ERROR_MARKET_MISSING_LIQUIDITY_COMMITMENT = "PROPOSAL_ERROR_MARKET_MISSING_LIQUIDITY_COMMITMENT",
+  PROPOSAL_ERROR_MISSING_BUILTIN_ASSET_FIELD = "PROPOSAL_ERROR_MISSING_BUILTIN_ASSET_FIELD",
+  PROPOSAL_ERROR_MISSING_COMMITMENT_AMOUNT = "PROPOSAL_ERROR_MISSING_COMMITMENT_AMOUNT",
+  PROPOSAL_ERROR_MISSING_ERC20_CONTRACT_ADDRESS = "PROPOSAL_ERROR_MISSING_ERC20_CONTRACT_ADDRESS",
+  PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_KEY = "PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_KEY",
+  PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_VALUE = "PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_VALUE",
+  PROPOSAL_ERROR_NETWORK_PARAMETER_VALIDATION_FAILED = "PROPOSAL_ERROR_NETWORK_PARAMETER_VALIDATION_FAILED",
+  PROPOSAL_ERROR_NODE_VALIDATION_FAILED = "PROPOSAL_ERROR_NODE_VALIDATION_FAILED",
+  PROPOSAL_ERROR_NO_PRODUCT = "PROPOSAL_ERROR_NO_PRODUCT",
+  PROPOSAL_ERROR_NO_RISK_PARAMETERS = "PROPOSAL_ERROR_NO_RISK_PARAMETERS",
+  PROPOSAL_ERROR_NO_TRADING_MODE = "PROPOSAL_ERROR_NO_TRADING_MODE",
+  PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_LARGE = "PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_LARGE",
+  PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL = "PROPOSAL_ERROR_OPENING_AUCTION_DURATION_TOO_SMALL",
+  PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED = "PROPOSAL_ERROR_PARTICIPATION_THRESHOLD_NOT_REACHED",
+  PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES = "PROPOSAL_ERROR_TOO_MANY_MARKET_DECIMAL_PLACES",
+  PROPOSAL_ERROR_TOO_MANY_PRICE_MONITORING_TRIGGERS = "PROPOSAL_ERROR_TOO_MANY_PRICE_MONITORING_TRIGGERS",
+  PROPOSAL_ERROR_UNKNOWN_RISK_PARAMETER_TYPE = "PROPOSAL_ERROR_UNKNOWN_RISK_PARAMETER_TYPE",
+  PROPOSAL_ERROR_UNKNOWN_TYPE = "PROPOSAL_ERROR_UNKNOWN_TYPE",
+  PROPOSAL_ERROR_UNSUPPORTED_PRODUCT = "PROPOSAL_ERROR_UNSUPPORTED_PRODUCT",
+  PROPOSAL_ERROR_UNSUPPORTED_TRADING_MODE = "PROPOSAL_ERROR_UNSUPPORTED_TRADING_MODE",
 }
 
 /**
@@ -285,44 +284,50 @@ export enum ProposalRejectionReason {
  * Proposal can enter Failed state from any other state.
  */
 export enum ProposalState {
-  Declined = "Declined",
-  Enacted = "Enacted",
-  Failed = "Failed",
-  Open = "Open",
-  Passed = "Passed",
-  Rejected = "Rejected",
-  WaitingForNodeVote = "WaitingForNodeVote",
+  STATE_DECLINED = "STATE_DECLINED",
+  STATE_ENACTED = "STATE_ENACTED",
+  STATE_FAILED = "STATE_FAILED",
+  STATE_OPEN = "STATE_OPEN",
+  STATE_PASSED = "STATE_PASSED",
+  STATE_REJECTED = "STATE_REJECTED",
+  STATE_WAITING_FOR_NODE_VOTE = "STATE_WAITING_FOR_NODE_VOTE",
 }
 
 /**
  * Whether the placer of an order is aiming to buy or sell on the market
  */
 export enum Side {
-  Buy = "Buy",
-  Sell = "Sell",
+  SIDE_BUY = "SIDE_BUY",
+  SIDE_SELL = "SIDE_SELL",
 }
 
 /**
  * The status of the stake linking
  */
 export enum StakeLinkingStatus {
-  Accepted = "Accepted",
-  Pending = "Pending",
-  Rejected = "Rejected",
+  STATUS_ACCEPTED = "STATUS_ACCEPTED",
+  STATUS_PENDING = "STATUS_PENDING",
+  STATUS_REJECTED = "STATUS_REJECTED",
+}
+
+export enum ValidatorStatus {
+  VALIDATOR_NODE_STATUS_ERSATZ = "VALIDATOR_NODE_STATUS_ERSATZ",
+  VALIDATOR_NODE_STATUS_PENDING = "VALIDATOR_NODE_STATUS_PENDING",
+  VALIDATOR_NODE_STATUS_TENDERMINT = "VALIDATOR_NODE_STATUS_TENDERMINT",
 }
 
 export enum VoteValue {
-  No = "No",
-  Yes = "Yes",
+  VALUE_NO = "VALUE_NO",
+  VALUE_YES = "VALUE_YES",
 }
 
 /**
  * The status of a withdrawal
  */
 export enum WithdrawalStatus {
-  Finalized = "Finalized",
-  Open = "Open",
-  Rejected = "Rejected",
+  STATUS_FINALIZED = "STATUS_FINALIZED",
+  STATUS_OPEN = "STATUS_OPEN",
+  STATUS_REJECTED = "STATUS_REJECTED",
 }
 
 /**

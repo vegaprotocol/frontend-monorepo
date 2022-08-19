@@ -1,4 +1,4 @@
-import { ProposalState } from '../../../../__generated__/globalTypes';
+import { ProposalState } from '@vegaprotocol/types';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 
 export const CurrentProposalState = ({
@@ -10,14 +10,14 @@ export const CurrentProposalState = ({
   let className = 'text-white';
 
   if (
-    state === ProposalState.Declined ||
-    state === ProposalState.Failed ||
-    state === ProposalState.Rejected
+    state === ProposalState.STATE_DECLINED ||
+    state === ProposalState.STATE_FAILED ||
+    state === ProposalState.STATE_REJECTED
   ) {
     className = 'text-danger';
   } else if (
-    state === ProposalState.Enacted ||
-    state === ProposalState.Passed
+    state === ProposalState.STATE_ENACTED ||
+    state === ProposalState.STATE_PASSED
   ) {
     className = 'text-white';
   }

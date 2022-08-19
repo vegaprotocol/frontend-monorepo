@@ -17,11 +17,11 @@ export const generateMarketInfoQuery = (
       name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
-      state: MarketState.Active,
-      tradingMode: MarketTradingMode.Continuous,
+      state: MarketState.STATE_ACTIVE,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       accounts: [
         {
-          type: AccountType.Insurance,
+          type: AccountType.ACCOUNT_TYPE_INSURANCE,
           asset: {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             __typename: 'Asset',
@@ -30,7 +30,7 @@ export const generateMarketInfoQuery = (
           __typename: 'Account',
         },
         {
-          type: AccountType.FeeLiquidity,
+          type: AccountType.ACCOUNT_TYPE_FEES_LIQUIDITY,
           asset: {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             __typename: 'Asset',
@@ -61,7 +61,6 @@ export const generateMarketInfoQuery = (
             },
           ],
         },
-        updateFrequencySecs: 1,
       },
       riskFactors: {
         __typename: 'RiskFactor',

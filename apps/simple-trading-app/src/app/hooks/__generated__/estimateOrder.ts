@@ -12,15 +12,15 @@ import { Side, OrderTimeInForce, OrderType } from "@vegaprotocol/types";
 export interface EstimateOrder_estimateOrder_fee {
   __typename: "TradeFee";
   /**
-   * The maker fee, aggressive party to the other party (the one who had an order in the book)
+   * The maker fee, paid by the aggressive party to the other party (the one who had an order in the book)
    */
   makerFee: string;
   /**
-   * The infrastructure fee, a fee paid to the node runner to maintain the vega network
+   * The infrastructure fee, a fee paid to the validators to maintain the Vega network
    */
   infrastructureFee: string;
   /**
-   * The fee paid to the market makers to provide liquidity in the market
+   * The fee paid to the liquidity providers that committed liquidity to the market
    */
   liquidityFee: string;
 }
@@ -28,7 +28,7 @@ export interface EstimateOrder_estimateOrder_fee {
 export interface EstimateOrder_estimateOrder_marginLevels {
   __typename: "MarginLevels";
   /**
-   * this is the minimal margin required for a party to place a new order on the network (unsigned int actually)
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
    */
   initialLevel: string;
 }

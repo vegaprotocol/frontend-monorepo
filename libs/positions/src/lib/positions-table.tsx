@@ -179,7 +179,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!data) {
             return undefined;
           }
-          if (data.marketTradingMode === MarketTradingMode.OpeningAuction) {
+          if (
+            data.marketTradingMode ===
+            MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+          ) {
             return '-';
           }
           return addDecimalsFormatNumber(

@@ -1,12 +1,13 @@
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
-  useVegaWallet,
-  VegaWalletOrderTimeInForce as OrderTimeInForce,
-  VegaWalletOrderType as OrderType,
-} from '@vegaprotocol/wallet';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+  MarketState,
+  MarketTradingMode,
+  OrderTimeInForce,
+  OrderType,
+} from '@vegaprotocol/types';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Order } from './use-order-submit';
 
@@ -23,7 +24,7 @@ export type ValidationArgs = {
 
 export const marketTranslations = (marketState: MarketState) => {
   switch (marketState) {
-    case MarketState.TradingTerminated:
+    case MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
       return t(marketState).toLowerCase();
@@ -53,9 +54,9 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketState.Settled,
-        MarketState.Rejected,
-        MarketState.TradingTerminated,
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_REJECTED,
+        MarketState.STATE_TRADING_TERMINATED,
       ].includes(market.state)
     ) {
       return {
@@ -70,11 +71,11 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketState.Suspended,
-        MarketState.Pending,
-        MarketState.Proposed,
-        MarketState.Cancelled,
-        MarketState.Closed,
+        MarketState.STATE_SUSPENDED,
+        MarketState.STATE_PENDING,
+        MarketState.STATE_PROPOSED,
+        MarketState.STATE_CANCELLED,
+        MarketState.STATE_CLOSED,
       ].includes(market.state)
     ) {
       return {
@@ -87,10 +88,10 @@ export const useOrderValidation = ({
       };
     }
 
-    if (market.state !== MarketState.Active) {
-      if (market.state === MarketState.Suspended) {
-        if (market.tradingMode === MarketTradingMode.Continuous) {
-          if (orderType !== OrderType.Limit) {
+    if (market.state !== MarketState.STATE_ACTIVE) {
+      if (market.state === MarketState.STATE_SUSPENDED) {
+        if (market.tradingMode === MarketTradingMode.TRADING_MODE_CONTINUOUS) {
+          if (orderType !== OrderType.TYPE_LIMIT) {
             return {
               isDisabled: true,
               message: t(
@@ -101,9 +102,9 @@ export const useOrderValidation = ({
 
           if (
             [
-              OrderTimeInForce.FOK,
-              OrderTimeInForce.IOC,
-              OrderTimeInForce.GFN,
+              OrderTimeInForce.TIME_IN_FORCE_FOK,
+              OrderTimeInForce.TIME_IN_FORCE_IOC,
+              OrderTimeInForce.TIME_IN_FORCE_GFN,
             ].includes(orderTimeInForce)
           ) {
             return {
@@ -126,8 +127,8 @@ export const useOrderValidation = ({
       }
 
       if (
-        market.state === MarketState.Proposed ||
-        market.state === MarketState.Pending
+        market.state === MarketState.STATE_PROPOSED ||
+        market.state === MarketState.STATE_PENDING
       ) {
         return {
           isDisabled: false,
@@ -145,8 +146,8 @@ export const useOrderValidation = ({
       };
     }
 
-    if (market.tradingMode !== MarketTradingMode.Continuous) {
-      if (orderType !== OrderType.Limit) {
+    if (market.tradingMode !== MarketTradingMode.TRADING_MODE_CONTINUOUS) {
+      if (orderType !== OrderType.TYPE_LIMIT) {
         return {
           isDisabled: true,
           message: t(
@@ -157,9 +158,9 @@ export const useOrderValidation = ({
 
       if (
         [
-          OrderTimeInForce.FOK,
-          OrderTimeInForce.IOC,
-          OrderTimeInForce.GFN,
+          OrderTimeInForce.TIME_IN_FORCE_FOK,
+          OrderTimeInForce.TIME_IN_FORCE_IOC,
+          OrderTimeInForce.TIME_IN_FORCE_GFN,
         ].includes(orderTimeInForce)
       ) {
         return {

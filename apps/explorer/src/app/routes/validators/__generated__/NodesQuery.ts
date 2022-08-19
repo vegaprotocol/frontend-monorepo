@@ -28,33 +28,33 @@ export interface NodesQuery_nodes_epochData {
 export interface NodesQuery_nodes {
   __typename: "Node";
   /**
-   * The node url eg n01.vega.xyz
+   * The node URL eg n01.vega.xyz
    */
   id: string;
   name: string;
   /**
-   * URL where I can find out more info on the node. Will this be possible?
+   * URL from which you can get more info about the node.
    */
   infoUrl: string;
   avatarUrl: string | null;
   /**
-   * Pubkey of the node operator
+   * Public key of the node operator
    */
   pubkey: string;
   /**
-   * Public key of Tendermint
+   * Tendermint public key of the node
    */
   tmPubkey: string;
   /**
    * Ethereum public key of the node
    */
-  ethereumAdddress: string;
+  ethereumAddress: string;
   /**
    * Country code for the location of the node
    */
   location: string;
   /**
-   * The amount the node has put up themselves
+   * The amount of stake the node has put up themselves
    */
   stakedByOperator: string;
   /**

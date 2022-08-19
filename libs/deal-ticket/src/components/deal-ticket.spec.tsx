@@ -16,7 +16,7 @@ const market: DealTicketQuery_market = {
   name: 'market-name',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.Continuous,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
   state: MarketState.Active,
   tradableInstrument: {
     __typename: 'TradableInstrument',

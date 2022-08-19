@@ -78,7 +78,6 @@ const MARKETS_QUERY = gql`
             auctionExtensionSecs
           }
         }
-        updateFrequencySecs
       }
       liquidityMonitoringParameters {
         triggeringRatio

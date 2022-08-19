@@ -172,13 +172,13 @@ const formatRole = (partyId: string) => {
     const taker = t('Taker');
     const maker = t('Maker');
     if (data?.buyer.id === partyId) {
-      if (value === Side.Buy) {
+      if (value === Side.SIDE_BUY) {
         return taker;
       } else {
         return maker;
       }
     } else if (data?.seller.id === partyId) {
-      if (value === Side.Sell) {
+      if (value === Side.SIDE_SELL) {
         return taker;
       } else {
         return maker;

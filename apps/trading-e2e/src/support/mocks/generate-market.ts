@@ -13,8 +13,8 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
     market: {
       id: 'market-0',
       name: 'ACTIVE MARKET',
-      tradingMode: MarketTradingMode.Continuous,
-      state: MarketState.Active,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: MarketState.STATE_ACTIVE,
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       data: {
@@ -28,7 +28,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
         bestOfferVolume: '100',
         bestStaticBidVolume: '482',
         bestStaticOfferVolume: '2188',
-        trigger: AuctionTrigger.Unspecified,
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
         __typename: 'MarketData',
       },
       tradableInstrument: {

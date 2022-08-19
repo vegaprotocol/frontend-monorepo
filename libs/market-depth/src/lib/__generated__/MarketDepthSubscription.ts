@@ -24,7 +24,7 @@ export interface MarketDepthSubscription_marketDepthUpdate_market_data {
    */
   staticMidPrice: string;
   /**
-   * what state the market is in (auction, continuous etc)
+   * what state the market is in (auction, continuous, etc)
    */
   marketTradingMode: MarketTradingMode;
   /**
@@ -44,7 +44,7 @@ export interface MarketDepthSubscription_marketDepthUpdate_market_data {
    */
   bestStaticOfferPrice: string;
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketDepthSubscription_marketDepthUpdate_market_data_market;
 }
@@ -56,9 +56,10 @@ export interface MarketDepthSubscription_marketDepthUpdate_market {
    */
   id: string;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
@@ -102,7 +103,7 @@ export interface MarketDepthSubscription_marketDepthUpdate_buy {
 export interface MarketDepthSubscription_marketDepthUpdate {
   __typename: "MarketDepthUpdate";
   /**
-   * Market id
+   * Market
    */
   market: MarketDepthSubscription_marketDepthUpdate_market;
   /**

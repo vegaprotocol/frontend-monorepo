@@ -330,7 +330,8 @@ export const Orderbook = ({
                     cumulativeAsk={data.cumulativeVol.ask}
                     cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
                     indicativeVolume={
-                      marketTradingMode !== MarketTradingMode.Continuous &&
+                      marketTradingMode !==
+                        MarketTradingMode.TRADING_MODE_CONTINUOUS &&
                       indicativePrice === data.price
                         ? indicativeVolume
                         : undefined

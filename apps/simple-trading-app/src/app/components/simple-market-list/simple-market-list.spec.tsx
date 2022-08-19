@@ -68,7 +68,7 @@ describe('SimpleMarketList', () => {
         id: '1',
         data: {
           market: {
-            state: MarketState.Active,
+            state: MarketState.STATE_ACTIVE,
           },
         },
         tradableInstrument: {
@@ -88,7 +88,7 @@ describe('SimpleMarketList', () => {
         id: '2',
         data: {
           market: {
-            state: MarketState.Active,
+            state: MarketState.STATE_ACTIVE,
           },
         },
         tradableInstrument: {
@@ -131,6 +131,7 @@ describe('SimpleMarketList', () => {
         document.querySelector('.ag-center-cols-container')
       ).toBeInTheDocument();
     });
+    screen.debug();
     await waitFor(() => {
       const container = document.querySelector('.ag-center-cols-container');
       expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);

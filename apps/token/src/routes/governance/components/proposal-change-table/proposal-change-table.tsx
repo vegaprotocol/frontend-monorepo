@@ -32,10 +32,10 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
         {format(new Date(terms.closingDatetime), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       <KeyValueTableRow>
-        {isFuture(new Date(terms.enactmentDatetime))
+        {isFuture(new Date(terms.enactmentDatetime || 0))
           ? t('proposedEnactment')
           : t('enactedOn')}
-        {format(new Date(terms.enactmentDatetime), DATE_FORMAT_DETAILED)}
+        {format(new Date(terms.enactmentDatetime || 0), DATE_FORMAT_DETAILED)}
       </KeyValueTableRow>
       <KeyValueTableRow>
         {t('proposedBy')}

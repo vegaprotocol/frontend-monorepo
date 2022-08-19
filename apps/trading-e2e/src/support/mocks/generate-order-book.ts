@@ -15,7 +15,7 @@ export const generateOrderBook = (
     positionDecimalPlaces: 0,
     data: {
       staticMidPrice: '826337',
-      marketTradingMode: MarketTradingMode.Continuous,
+      marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       indicativeVolume: '0',
       indicativePrice: '0',
       bestStaticBidPrice: '826336',

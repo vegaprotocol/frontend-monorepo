@@ -28,7 +28,7 @@ const defaultMarket = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.Continuous,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
   state: MarketState.Active,
   tradableInstrument: {
     __typename: 'TradableInstrument',

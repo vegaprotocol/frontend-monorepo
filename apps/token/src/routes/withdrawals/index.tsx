@@ -16,7 +16,7 @@ import { addDecimal } from '../../lib/decimals';
 import { truncateMiddle } from '../../lib/truncate-middle';
 import type { Withdrawals_party_withdrawals } from '@vegaprotocol/withdraws';
 import { useCompleteWithdraw, useWithdrawals } from '@vegaprotocol/withdraws';
-import { WithdrawalStatus } from '../../__generated__/globalTypes';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 
 const Withdrawals = () => {
   const { t } = useTranslation();
@@ -106,7 +106,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
         {t('withdrawalsCompleteButton')}
       </Button>
     );
-  } else if (withdrawal.status === WithdrawalStatus.Finalized) {
+  } else if (withdrawal.status === WithdrawalStatus.STATUS_FINALIZED) {
     if (withdrawal.txHash) {
       status = t('Complete');
     } else {

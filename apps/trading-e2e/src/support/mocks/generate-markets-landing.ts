@@ -25,7 +25,7 @@ export const generateMarketsLanding = (
   const markets: MarketsLanding_markets[] = [
     {
       id: 'market-0',
-      tradingMode: MarketTradingMode.Continuous,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         open: '1',
@@ -34,7 +34,7 @@ export const generateMarketsLanding = (
     },
     {
       id: 'market-1',
-      tradingMode: MarketTradingMode.OpeningAuction,
+      tradingMode: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         open: '2',

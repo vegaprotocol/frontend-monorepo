@@ -16,7 +16,7 @@ export interface DepositEvent_busEvents_event_TimeUpdate {
 export interface DepositEvent_busEvents_event_Deposit {
   __typename: "Deposit";
   /**
-   * The Vega internal id of the deposit
+   * The Vega internal ID of the deposit
    */
   id: string;
   /**

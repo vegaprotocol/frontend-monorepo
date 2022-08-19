@@ -5,7 +5,6 @@ import uniq from 'lodash/uniq';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../__generated__/globalTypes';
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import { BigNumber } from '../../lib/bignumber';
@@ -19,6 +18,7 @@ import type {
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { useContracts } from '../../contexts/contracts/contracts-context';
 import { isAssetTypeERC20 } from '@vegaprotocol/react-helpers';
+import { AccountType } from '@vegaprotocol/types';
 
 const DELEGATIONS_QUERY = gql`
   query Delegations($partyId: ID!) {
@@ -115,7 +115,7 @@ export const usePollForDelegations = () => {
             const accounts = res.data.party?.accounts || [];
             setAccounts(
               accounts
-                .filter((a) => a.type === AccountType.General)
+                .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
                 .map((a) => {
                   const isVega =
                     isAssetTypeERC20(a.asset) &&

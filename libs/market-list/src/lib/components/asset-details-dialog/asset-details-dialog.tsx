@@ -50,7 +50,6 @@ export const ASSETS_CONNECTION_QUERY = gql`
           id
           name
           symbol
-          totalSupply
           decimals
           quantum
           source {
@@ -110,12 +109,6 @@ export const AssetDetailsDialog = ({
         label: t('Quantum'),
         value: asset.node.quantum,
         tooltip: t('The minimum economically meaningful amount in the asset'),
-      },
-      {
-        key: 'totalsupply',
-        label: t('Total supply'),
-        value: formatNumber(toBigNum(asset.node.totalSupply, 0)),
-        tooltip: t('Total circulating supply for the asset'),
       },
       {
         key: 'contractaddress',

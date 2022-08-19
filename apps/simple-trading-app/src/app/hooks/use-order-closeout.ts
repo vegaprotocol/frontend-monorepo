@@ -3,7 +3,7 @@ import type { Order } from '@vegaprotocol/orders';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import type { PartyBalanceQuery } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from './use-settlement-account';
-import { useVegaWallet, VegaWalletOrderSide } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import { addDecimal, formatNumber } from '@vegaprotocol/react-helpers';
 import { gql, useQuery } from '@apollo/client';
 import useMarketPositions from './use-market-positions';
@@ -12,6 +12,7 @@ import type {
   PartyMarketData,
   PartyMarketDataVariables,
 } from './__generated__/PartyMarketData';
+import { Side } from '@vegaprotocol/types';
 
 const CLOSEOUT_PRICE_QUERY = gql`
   query PartyMarketData($partyId: ID!) {
@@ -96,7 +97,7 @@ const useOrderCloseOut = ({ order, market, partyData }: Props): string => {
       marketPositions?.openVolume.toNumber() || 0,
       market.positionDecimalPlaces
     )
-  )[order.side === VegaWalletOrderSide.Buy ? 'plus' : 'minus'](order.size);
+  )[order.side === Side.SIDE_BUY ? 'plus' : 'minus'](order.size);
   const markPrice = new BigNumber(
     addDecimal(
       markPriceData?.market?.data?.markPrice || 0,
