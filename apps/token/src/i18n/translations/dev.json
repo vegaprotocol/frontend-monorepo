@@ -173,6 +173,7 @@
   "closedProposals": "Closed proposals",
   "noOpenProposals": "There are no open or yet to enact proposals",
   "noClosedProposals": "There are no enacted or rejected proposals",
+  "proposalRejected": "Proposal rejected",
   "participationNotMet": "Participation not met",
   "majorityNotMet": "Majority not met",
   "noProposals": "There are no active network change proposals",
