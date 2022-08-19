@@ -369,7 +369,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         let proposalPayload = JSON.stringify(freeformProposal);
 
         cy.get(newProposalDatabox).type(proposalPayload, {
-          parseSpecialCharSequences: false,
+          parseSpecialCharSequences: false, delay: 2
         });
       });
     });
