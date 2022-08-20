@@ -65,7 +65,7 @@ describe('home', () => {
           }
         });
 
-      // the oldest market trading in continous mode shown at top of overlay table
+      // the oldest market trading in continuos mode shown at top of overlay table
       cy.get('table tr')
         .eq(1)
         .within(() =>
