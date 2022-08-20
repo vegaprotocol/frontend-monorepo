@@ -50,7 +50,6 @@ export const ASSETS_CONNECTION_QUERY = gql`
           id
           name
           symbol
-          totalSupply
           decimals
           quantum
           source {

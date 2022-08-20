@@ -26,7 +26,7 @@ export interface Chart_market_data_priceMonitoringBounds {
 export interface Chart_market_data {
   __typename: "MarketData";
   /**
-   * A list of valid price ranges per associated trigger
+   * a list of valid price ranges per associated trigger
    */
   priceMonitoringBounds: Chart_market_data_priceMonitoringBounds[] | null;
 }
@@ -35,7 +35,7 @@ export interface Chart_market {
   __typename: "Market";
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -58,7 +58,7 @@ export interface Chart_market {
 
 export interface Chart {
   /**
-   * An instrument that is trading on the VEGA network
+   * An instrument that is trading on the Vega network
    */
   market: Chart_market | null;
 }

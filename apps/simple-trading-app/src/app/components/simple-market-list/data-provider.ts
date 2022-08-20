@@ -45,7 +45,7 @@ export const MARKETS_QUERY = gql`
           }
         }
       }
-      candles(interval: I1H, since: $CandleSince) {
+      candles(interval: INTERVAL_I1H, since: $CandleSince) {
         open
         close
       }
@@ -64,7 +64,7 @@ const MARKET_DATA_SUB = gql`
 
 export const CANDLE_SUB = gql`
   subscription CandleLive($marketId: ID!) {
-    candles(marketId: $marketId, interval: I1H) {
+    candles(marketId: $marketId, interval: INTERVAL_I1H) {
       close
     }
   }

@@ -12,7 +12,7 @@ import { WithdrawalStatus } from "@vegaprotocol/types";
 export interface Withdrawals_party_withdrawals_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -20,7 +20,7 @@ export interface Withdrawals_party_withdrawals_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -36,7 +36,7 @@ export interface Withdrawals_party_withdrawals_details {
 export interface Withdrawals_party_withdrawals {
   __typename: "Withdrawal";
   /**
-   * The Vega internal id of the withdrawal
+   * The Vega internal ID of the withdrawal
    */
   id: string;
   /**
@@ -56,7 +56,7 @@ export interface Withdrawals_party_withdrawals {
    */
   createdTimestamp: string;
   /**
-   * RFC3339Nano time at which the withdrawal was finalized
+   * RFC3339Nano time at which the withdrawal was finalised
    */
   withdrawnTimestamp: string | null;
   /**
@@ -87,7 +87,7 @@ export interface Withdrawals_party {
 
 export interface Withdrawals {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: Withdrawals_party | null;
 }

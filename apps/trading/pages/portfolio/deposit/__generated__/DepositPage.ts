@@ -14,7 +14,7 @@ export interface DepositPage_assets_source_BuiltinAsset {
 export interface DepositPage_assets_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the erc20 contract
+   * The address of the ERC20 contract
    */
   contractAddress: string;
 }
@@ -24,7 +24,7 @@ export type DepositPage_assets_source = DepositPage_assets_source_BuiltinAsset |
 export interface DepositPage_assets {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -36,18 +36,18 @@ export interface DepositPage_assets {
    */
   name: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
   /**
-   * The origin source of the asset (e.g: an erc20 asset)
+   * The origin source of the asset (e.g: an ERC20 asset)
    */
   source: DepositPage_assets_source;
 }
 
 export interface DepositPage {
   /**
-   * The list of all assets in use in the vega network
+   * The list of all assets in use in the Vega network
    */
   assets: DepositPage_assets[] | null;
 }

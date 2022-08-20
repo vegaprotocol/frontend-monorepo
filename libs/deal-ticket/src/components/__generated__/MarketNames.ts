@@ -42,7 +42,7 @@ export interface MarketNames_markets_tradableInstrument_instrument {
 export interface MarketNames_markets_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: MarketNames_markets_tradableInstrument_instrument;
 }
@@ -58,7 +58,7 @@ export interface MarketNames_markets {
    */
   name: string;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketNames_markets_tradableInstrument;
 }

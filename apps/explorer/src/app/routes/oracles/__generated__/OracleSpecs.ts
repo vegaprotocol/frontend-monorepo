@@ -61,7 +61,7 @@ export interface OracleSpecs_oracleSpecs {
    */
   status: OracleSpecStatus;
   /**
-   * id is a hash generated from the OracleSpec data.
+   * ID is a hash generated from the OracleSpec data.
    */
   id: string;
   /**

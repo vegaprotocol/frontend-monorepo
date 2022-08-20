@@ -44,7 +44,7 @@ export interface PartyStakeLinkings_party {
 
 export interface PartyStakeLinkings {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: PartyStakeLinkings_party | null;
 }

@@ -52,7 +52,7 @@ export interface MarketList_markets_data_market {
 export interface MarketList_markets_data {
   __typename: "MarketData";
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketList_markets_data_market;
   /**
@@ -64,7 +64,7 @@ export interface MarketList_markets_data {
    */
   bestOfferPrice: string;
   /**
-   * the mark price (actually an unsigned int)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
   /**
@@ -128,7 +128,7 @@ export interface MarketList_markets_tradableInstrument_instrument {
 export interface MarketList_markets_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: MarketList_markets_tradableInstrument_instrument;
 }
@@ -177,7 +177,7 @@ export interface MarketList_markets {
   name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -193,9 +193,10 @@ export interface MarketList_markets {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
@@ -215,7 +216,7 @@ export interface MarketList_markets {
    */
   data: MarketList_markets_data | null;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketList_markets_tradableInstrument;
   /**
@@ -223,7 +224,7 @@ export interface MarketList_markets {
    */
   marketTimestamps: MarketList_markets_marketTimestamps;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by params
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
    */
   candles: (MarketList_markets_candles | null)[] | null;
 }
