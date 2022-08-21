@@ -6,13 +6,13 @@ import { useParams } from 'react-router-dom';
 
 import { SplashLoader } from '../../../components/splash-loader';
 import { useFetch } from '@vegaprotocol/react-helpers';
-import { getDataNodeUrl } from '../../../lib/get-data-node-url';
 import { Proposal } from '../components/proposal';
 import { PROPOSALS_FRAGMENT } from '../proposal-fragment';
 import type {
   Proposal as ProposalQueryResult,
   ProposalVariables,
 } from './__generated__/Proposal';
+import { ENV } from '../../../config/env';
 
 /**
  * TODO: how do we do this properly to ensure that it is kept up to date?
@@ -38,12 +38,9 @@ export const PROPOSAL_QUERY = gql`
 export const ProposalContainer = () => {
   const { t } = useTranslation();
   const params = useParams<{ proposalId: string }>();
-  const { base } = getDataNodeUrl();
   const proposalUrl = React.useMemo(
-    () =>
-      new URL(`datanode/rest/governance/proposal/${params.proposalId}`, base)
-        .href,
-    [base, params.proposalId]
+    () => new URL(`governance/proposal/${params.proposalId}`, ENV.restUrl).href,
+    [params.proposalId]
   );
 
   const {
