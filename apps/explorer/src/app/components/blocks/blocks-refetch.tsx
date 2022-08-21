@@ -26,17 +26,11 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
   };
 
   return (
-    <>
+    <div className="mb-28">
       <span data-testid="new-blocks">{blocksToLoad} new blocks -</span>
-
-      <Button
-        onClick={refresh}
-        variant="inline-link"
-        className="mb-28"
-        data-testid="refresh"
-      >
+      <Button onClick={refresh} variant="inline-link" data-testid="refresh">
         {t('refresh to see latest')}
       </Button>
-    </>
+    </div>
   );
 };

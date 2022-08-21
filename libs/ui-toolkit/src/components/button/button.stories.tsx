@@ -1,5 +1,5 @@
 import type { Story, Meta } from '@storybook/react';
-import { Button } from './button';
+import { AnchorButton, Button, ButtonLink } from './button';
 
 export default {
   component: Button,
@@ -53,6 +53,26 @@ Medium.args = {
   size: 'md',
 };
 
+export const Anchor = () => {
+  const props = {
+    children: 'Go to google',
+    href: 'https://google.com',
+    target: '_blank',
+  };
+  return (
+    <div className="mb-8">
+      <AnchorButton {...props} />
+    </div>
+  );
+};
+
+export const ButtonLinkStory = () => {
+  return (
+    <div className="mb-8">
+      <ButtonLink>Link like button</ButtonLink>
+    </div>
+  );
+};
 // export const Secondary = Template.bind({});
 // Secondary.args = {
 //   children: 'Secondary',

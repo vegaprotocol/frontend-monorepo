@@ -4,7 +4,6 @@ import type {
   ReactNode,
 } from 'react';
 import { forwardRef } from 'react';
-import classNames from 'classnames';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 import {
@@ -26,10 +25,6 @@ interface CommonProps2 {
 }
 export interface ButtonProps2
   extends ButtonHTMLAttributes<HTMLButtonElement>,
-    CommonProps2 {}
-
-export interface AnchorButtonProps
-  extends AnchorHTMLAttributes<HTMLAnchorElement>,
     CommonProps2 {}
 
 export const getButtonClasses = (
@@ -160,7 +155,7 @@ export const getButtonClasses = (
       variantClasses = [''];
   }
 
-  return classNames(...variantClasses, className);
+  return classnames(...variantClasses, className);
 };
 
 export const getButtonContent = (
@@ -172,7 +167,7 @@ export const getButtonContent = (
   if (iconName === undefined) {
     return children;
   }
-  const iconClassName = classNames(['fill-current'], {
+  const iconClassName = classnames(['fill-current'], {
     'mr-8': prependIconName,
     'ml-8': appendIconName,
   });
@@ -213,83 +208,107 @@ export const Button2 = forwardRef<HTMLButtonElement, ButtonProps2>(
   }
 );
 
-export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
-  (
+const getClassname = ({
+  variant,
+  size,
+  fill,
+}: {
+  variant: ButtonVariant;
+  size: ButtonSize;
+  fill: boolean;
+}) => {
+  const baseClasses = classnames(
+    'inline-block',
+    'uppercase',
+    'border-1 rounded',
+    'disabled:opacity-40',
+    'transition-colors',
     {
-      variant = 'primary',
-      children,
-      className,
-      prependIconName,
-      appendIconName,
-      boxShadow,
-      ...props
+      'block w-full': fill,
     },
-    ref
-  ) => {
-    return (
-      <a
-        ref={ref}
-        className={getButtonClasses(className, variant, boxShadow)}
-        {...props}
-      >
-        {getButtonContent(children, prependIconName, appendIconName)}
-      </a>
-    );
-  }
-);
+    {
+      'text-ui px-16 py-4': size === 'sm',
+      'text-ui px-20 py-5': size === 'md',
+      'px-60 py-12': size === 'lg',
+    }
+  );
+  const variants = {
+    default: classnames(
+      'text-black dark:text-white',
+      'border-v2border dark:border-Dv2border',
+      'bg-white dark:bg-black',
+      'enabled:hover:bg-white-80 dark:enabled:hover:bg-black-80',
+      'enabled:active:bg-white-80 enabled:active:border-black dark:enabled:active:bg-black-80 dark:enabled:active:border-white'
+    ),
+    primary: classnames(
+      'text-black',
+      'border-vega-yellow',
+      'bg-vega-yellow',
+      'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
+      'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark'
+    ),
+    secondary: classnames(
+      'text-white',
+      'border-vega-pink',
+      'bg-vega-pink',
+      'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
+      'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark'
+    ),
+  };
+  const className = classnames(baseClasses, variants[variant]);
+  return className;
+};
+
+type ButtonVariant = 'default' | 'primary' | 'secondary';
+type ButtonSize = 'lg' | 'md' | 'sm';
 
 interface CommonProps {
   children?: ReactNode;
-  variant?: 'default' | 'primary' | 'secondary';
+  variant?: ButtonVariant;
   disabled?: boolean;
   fill?: boolean;
-  size?: 'lg' | 'md' | 'sm';
+  size?: ButtonSize;
 }
 export interface ButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'>,
     CommonProps {}
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'default', size = 'lg', fill, ...props }) => {
-    const baseClasses = classNames(
-      'inline-block',
-      'uppercase',
-      'border-1 rounded',
-      'disabled:opacity-80',
-      'transition-colors',
-      {
-        'block w-full': fill,
-      },
-      {
-        'text-ui px-16 py-4': size === 'sm',
-        'text-ui px-20 py-5': size === 'md',
-        'px-60 py-12': size === 'lg',
-      }
-    );
-    const variants = {
-      default: classNames(
-        'text-black dark:text-white',
-        'border-v2border dark:border-Dv2border',
-        'bg-white dark:bg-black',
-        'enabled:hover:bg-white-80 dark:enabled:hover:bg-black-80',
-        'enabled:active:bg-white-80 enabled:active:border-black dark:enabled:active:bg-black-80 dark:enabled:active:border-white'
-      ),
-      primary: classNames(
-        'text-black',
-        'border-vega-yellow',
-        'bg-vega-yellow',
-        'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
-        'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark'
-      ),
-      secondary: classNames(
-        'text-white',
-        'border-vega-pink',
-        'bg-vega-pink',
-        'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
-        'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark'
-      ),
-    };
-    const className = classNames(baseClasses, variants[variant]);
-    return <button className={className} {...props} />;
+  (
+    {
+      variant = 'default',
+      size = 'lg',
+      fill = false,
+      type = 'button',
+      ...props
+    },
+    ref
+  ) => {
+    const className = getClassname({ variant, size, fill });
+    return <button ref={ref} type={type} className={className} {...props} />;
+  }
+);
+
+export interface AnchorButtonProps
+  extends AnchorHTMLAttributes<HTMLAnchorElement>,
+    CommonProps {}
+
+export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
+  ({ variant = 'default', size = 'lg', fill = false, ...props }, ref) => {
+    const className = getClassname({ variant, size, fill });
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    return <a ref={ref} className={className} {...props} />;
+  }
+);
+
+type ButtonLinkProps = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'className'
+>;
+
+export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
+  (props, ref) => {
+    const className = classnames('inline underline');
+    return <button ref={ref} className={className} {...props} />;
   }
 );
