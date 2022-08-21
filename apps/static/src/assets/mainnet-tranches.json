@@ -71,7 +71,7 @@
     "tranche_end": "2023-12-05T00:00:00.000Z",
     "total_added": "129999.45",
     "total_removed": "0",
-    "locked_amount": "111672.990380037260244105",
+    "locked_amount": "111613.741720527294383625",
     "deposits": [
       {
         "amount": "129999.45",
@@ -521,7 +521,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "97499.58",
     "total_removed": "0",
-    "locked_amount": "52763.002376123708141802",
+    "locked_amount": "52704.884960406728712582",
     "deposits": [
       {
         "amount": "97499.58",
@@ -554,7 +554,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "135173.4239508",
     "total_removed": "0",
-    "locked_amount": "72117.91509581349602482189656",
+    "locked_amount": "72038.47862208162616389038232",
     "deposits": [
       {
         "amount": "135173.4239508",
@@ -587,7 +587,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "32499.86",
     "total_removed": "0",
-    "locked_amount": "22196.483931321117273764",
+    "locked_amount": "22172.03493816306896419",
     "deposits": [
       {
         "amount": "32499.86",
@@ -620,7 +620,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "10833.29",
     "total_removed": "0",
-    "locked_amount": "7224.740130063315775604",
+    "locked_amount": "7216.782220037785954793",
     "deposits": [
       {
         "amount": "10833.29",
@@ -728,7 +728,7 @@
     "tranche_end": "2022-11-01T00:00:00.000Z",
     "total_added": "22500",
     "total_removed": "0",
-    "locked_amount": "8773.361073369565875",
+    "locked_amount": "8742.82014266304375",
     "deposits": [
       {
         "amount": "15000",
@@ -814,7 +814,7 @@
     "tranche_end": "2023-06-02T00:00:00.000Z",
     "total_added": "1939928.38",
     "total_removed": "379323.172697234239",
-    "locked_amount": "1513391.794684432958644908",
+    "locked_amount": "1512064.36842517317384942",
     "deposits": [
       {
         "amount": "1852091.69",
@@ -1089,7 +1089,7 @@
     "tranche_end": "2023-02-01T00:00:00.000Z",
     "total_added": "42500",
     "total_removed": "0",
-    "locked_amount": "37821.90424969806675",
+    "locked_amount": "37764.21582503019375",
     "deposits": [
       {
         "amount": "12500",
@@ -1956,7 +1956,7 @@
     "tranche_end": "2022-09-30T00:00:00.000Z",
     "total_added": "60916.66666633337",
     "total_removed": "20301.45404130284556896",
-    "locked_amount": "6208.2826002746729304089506245671",
+    "locked_amount": "6169.271419422559180234745973978",
     "deposits": [
       {
         "amount": "2833.333333",
@@ -5667,9 +5667,9 @@
     "tranche_id": 11,
     "tranche_start": "2021-09-03T00:00:00.000Z",
     "tranche_end": "2022-09-03T00:00:00.000Z",
-    "total_added": "27753.000000000000000003",
+    "total_added": "28383.000000000000000003",
     "total_removed": "11282.95921182387",
-    "locked_amount": "969.19537728310608564010476655251141564",
+    "locked_amount": "971.77484275114139094010271375570776254",
     "deposits": [
       {
         "amount": "30",
@@ -6120,6 +6120,146 @@
         "amount": "30",
         "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
         "tx": "0xea1068cd597fdd89e75438d97b5cc56307bbf946c16e4d4d466330f3e9395943"
+      },
+      {
+        "amount": "15",
+        "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+        "tx": "0x08ec78490bd58abe0d52917a950e037d1731deca83ce4390fe5d695d724d32d2"
+      },
+      {
+        "amount": "30",
+        "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+        "tx": "0x2b89108a99c7e9f2c1c16e2dd6b4b95e3d3095c2f5aae8609752b5ad11cdad04"
+      },
+      {
+        "amount": "25",
+        "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+        "tx": "0x6e137f12ad9260d7f751cb070a66be9e675023a09794fadd9aab9e68a2a72f28"
+      },
+      {
+        "amount": "10",
+        "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+        "tx": "0x00dabb40b33638ba95565e465b9b6cc20ed41af928d4148a84c254af5b838fda"
+      },
+      {
+        "amount": "20",
+        "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+        "tx": "0xaba5823d92517b18c6fd89006dbaf3a3f9858d7657d441328d6791e26fc1614e"
+      },
+      {
+        "amount": "15",
+        "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+        "tx": "0xdc78de722c36c821953eaa9d122ed544340586943e8585af17de306d6995f1db"
+      },
+      {
+        "amount": "20",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0xe9549fd06866d41129d1936c2818ca2751e67908da0167252f4b3fc3bf2fefab"
+      },
+      {
+        "amount": "30",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x517739ef7fce8211e5a8f406568d118176f1cc2caaec68025bb78f7c4aaa7dd0"
+      },
+      {
+        "amount": "15",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x65345c26a8eff7b3e21a15ab546a7d0b573f6d379a46c0fa25011d8669df8d60"
+      },
+      {
+        "amount": "30",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x1c0eb8166babc7b844191d8933c96dd660f30de3b575cde7332e4d6dc6314726"
+      },
+      {
+        "amount": "20",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x70a7a0ff5b23e3ca934e10f8fc2a580366cd5eae4351c6db73eb0f121e0476cc"
+      },
+      {
+        "amount": "10",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0xb24bed24e59602fe0b64080c9c244aa5621ad57521eca015c23b32369ac206e5"
+      },
+      {
+        "amount": "15",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x7ace77b964d0d20b707db6cfa64a4722f05fa0d6864399d4d8e9502aad9694f5"
+      },
+      {
+        "amount": "5",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x007b646a10f74625764a07860e87081501a2ac78e2ef4ad27b95c4271a833764"
+      },
+      {
+        "amount": "30",
+        "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+        "tx": "0x03e59f525908d8870c6148b9132c9056f142d4602a2c92e5f05ed04c9399a750"
+      },
+      {
+        "amount": "15",
+        "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+        "tx": "0xaf0c2d90d8febfdaaa9a73f42a5f49449dcdb8a24d3d728d8e39884a972bad9c"
+      },
+      {
+        "amount": "30",
+        "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+        "tx": "0x30d9899c03b831f1a5da70e896194667cba0e4f66c73f90112664d9dd6480816"
+      },
+      {
+        "amount": "15",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x87748c0d8ddc18c14e1c053c1658624615569825c8272a4042e023a132228fc2"
+      },
+      {
+        "amount": "30",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0x7804c8d4b9e6ee328afc2d03f5d8e8e7e0d39662b8cce825a323f4f5f0e576e5"
+      },
+      {
+        "amount": "25",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0xbb16c7abccb74114fcb919e76e913fe3bb7f466065a6e2bccb57ccc39c5652f3"
+      },
+      {
+        "amount": "100",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0xc4edf9e019a226b4dfc847ae3a3fdf689a9645f205727afbfadb7078f15c51c5"
+      },
+      {
+        "amount": "20",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0xe415ab4a3c04e619ee2994e448c30dceea65c76d8a2a0dd46161e6fb52f5b8c1"
+      },
+      {
+        "amount": "10",
+        "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "tx": "0xa5eed1fa51b0009a36301cd224e85e866777c9ae160e15712ccbf2b8f6b11f19"
+      },
+      {
+        "amount": "15",
+        "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+        "tx": "0xb0531392ce89316ba2722bd5e65249301cbe00c01dddf88dfabc376bf726c93b"
+      },
+      {
+        "amount": "30",
+        "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+        "tx": "0x4dd6d3ceb96034091cf032c7b6f3314accf31f0c13aec7d9eddd11b875cfceb0"
+      },
+      {
+        "amount": "30",
+        "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+        "tx": "0x6ce36d860c9177ff51cb792a1e8aba785c628bd85bdc1f07c40d1d9b51631b6d"
+      },
+      {
+        "amount": "10",
+        "user": "0x1bE12ef18a63F3dbbBF3F07328E44ed31f4CCa1c",
+        "tx": "0xdf5ea01a414fb81fa28673050a3c04f9ab23565cd87efa71f18c84ecb35e9e02"
+      },
+      {
+        "amount": "10",
+        "user": "0x1bE12ef18a63F3dbbBF3F07328E44ed31f4CCa1c",
+        "tx": "0x90f9184ca1a7f56b34ae4670eba99c459136b24219f88bbfab630096ffd69295"
       },
       {
         "amount": "2",
@@ -11688,6 +11828,42 @@
             "tx": "0xea1068cd597fdd89e75438d97b5cc56307bbf946c16e4d4d466330f3e9395943"
           },
           {
+            "amount": "15",
+            "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+            "tranche_id": 11,
+            "tx": "0x08ec78490bd58abe0d52917a950e037d1731deca83ce4390fe5d695d724d32d2"
+          },
+          {
+            "amount": "30",
+            "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+            "tranche_id": 11,
+            "tx": "0x2b89108a99c7e9f2c1c16e2dd6b4b95e3d3095c2f5aae8609752b5ad11cdad04"
+          },
+          {
+            "amount": "25",
+            "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+            "tranche_id": 11,
+            "tx": "0x6e137f12ad9260d7f751cb070a66be9e675023a09794fadd9aab9e68a2a72f28"
+          },
+          {
+            "amount": "10",
+            "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+            "tranche_id": 11,
+            "tx": "0x00dabb40b33638ba95565e465b9b6cc20ed41af928d4148a84c254af5b838fda"
+          },
+          {
+            "amount": "20",
+            "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+            "tranche_id": 11,
+            "tx": "0xaba5823d92517b18c6fd89006dbaf3a3f9858d7657d441328d6791e26fc1614e"
+          },
+          {
+            "amount": "15",
+            "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
+            "tranche_id": 11,
+            "tx": "0xdc78de722c36c821953eaa9d122ed544340586943e8585af17de306d6995f1db"
+          },
+          {
             "amount": "25",
             "user": "0x2c51Dc5A225a9d8542FBf28BA9dC501f026CD5e8",
             "tranche_id": 11,
@@ -11762,9 +11938,371 @@
             "tx": "0xee910cb53ef7198cb66bf74b5f56c6f7bf93b691ac44cb0c935c4fd5884b5604"
           }
         ],
-        "total_tokens": "695",
+        "total_tokens": "810",
         "withdrawn_tokens": "575.1660296123",
-        "remaining_tokens": "119.8339703877"
+        "remaining_tokens": "234.8339703877"
+      },
+      {
+        "address": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+        "deposits": [
+          {
+            "amount": "20",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xe9549fd06866d41129d1936c2818ca2751e67908da0167252f4b3fc3bf2fefab"
+          },
+          {
+            "amount": "30",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x517739ef7fce8211e5a8f406568d118176f1cc2caaec68025bb78f7c4aaa7dd0"
+          },
+          {
+            "amount": "15",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x65345c26a8eff7b3e21a15ab546a7d0b573f6d379a46c0fa25011d8669df8d60"
+          },
+          {
+            "amount": "30",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x1c0eb8166babc7b844191d8933c96dd660f30de3b575cde7332e4d6dc6314726"
+          },
+          {
+            "amount": "20",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x70a7a0ff5b23e3ca934e10f8fc2a580366cd5eae4351c6db73eb0f121e0476cc"
+          },
+          {
+            "amount": "10",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xb24bed24e59602fe0b64080c9c244aa5621ad57521eca015c23b32369ac206e5"
+          },
+          {
+            "amount": "15",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x7ace77b964d0d20b707db6cfa64a4722f05fa0d6864399d4d8e9502aad9694f5"
+          },
+          {
+            "amount": "5",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x007b646a10f74625764a07860e87081501a2ac78e2ef4ad27b95c4271a833764"
+          },
+          {
+            "amount": "15",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x87748c0d8ddc18c14e1c053c1658624615569825c8272a4042e023a132228fc2"
+          },
+          {
+            "amount": "30",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x7804c8d4b9e6ee328afc2d03f5d8e8e7e0d39662b8cce825a323f4f5f0e576e5"
+          },
+          {
+            "amount": "25",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xbb16c7abccb74114fcb919e76e913fe3bb7f466065a6e2bccb57ccc39c5652f3"
+          },
+          {
+            "amount": "100",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xc4edf9e019a226b4dfc847ae3a3fdf689a9645f205727afbfadb7078f15c51c5"
+          },
+          {
+            "amount": "20",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xe415ab4a3c04e619ee2994e448c30dceea65c76d8a2a0dd46161e6fb52f5b8c1"
+          },
+          {
+            "amount": "10",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xa5eed1fa51b0009a36301cd224e85e866777c9ae160e15712ccbf2b8f6b11f19"
+          },
+          {
+            "amount": "25",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xd4cd7cc10ebbfe143ff40dc3ef93a4832d23e9e6785b4bc33f5039ba1fd76946"
+          },
+          {
+            "amount": "20",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xe370ba99033dc4079338923b67da8e84d4ca5723b508fd46162f6e072b11cbb3"
+          },
+          {
+            "amount": "20",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x77437394f59f6eb88258449ae21c1dd447166779eed4b565fdefcf64686b9a8b"
+          },
+          {
+            "amount": "20",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xe88bf3aa7c87adfa65148183592f30bfe6d17e1ed31fdb7758604f6784f70be4"
+          },
+          {
+            "amount": "25",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xde28a1d3aa51121b8398580cfb7f09d03c7ff0a13d0e5bf12f088414a4ab49f4"
+          },
+          {
+            "amount": "5",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0x13a798a6ae5a4b971e87864fa2fb3073879a09dd625bb4b621048684c278e7d7"
+          },
+          {
+            "amount": "25",
+            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
+            "tranche_id": 11,
+            "tx": "0xaf417ee6513450b1c5e4dee7b96442fe2d4fd64da94c7f1c75bcf8c302e02f89"
+          }
+        ],
+        "withdrawals": [],
+        "total_tokens": "485",
+        "withdrawn_tokens": "0",
+        "remaining_tokens": "485"
+      },
+      {
+        "address": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+        "deposits": [
+          {
+            "amount": "30",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x03e59f525908d8870c6148b9132c9056f142d4602a2c92e5f05ed04c9399a750"
+          },
+          {
+            "amount": "15",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0xaf0c2d90d8febfdaaa9a73f42a5f49449dcdb8a24d3d728d8e39884a972bad9c"
+          },
+          {
+            "amount": "30",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x30d9899c03b831f1a5da70e896194667cba0e4f66c73f90112664d9dd6480816"
+          },
+          {
+            "amount": "50",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x0ad493b8ba584c36fc6b74d67ae1836cc0359900cddc1a99e140ef1b19d551be"
+          },
+          {
+            "amount": "30",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x79f2dfaa597a63643a3cdd74a6c4d7bbb3d762f61065efcc2dfe8360e0c77869"
+          },
+          {
+            "amount": "60",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x443e4d4dbf20b1f57381ad5820bcb30fc6997d0ad24c5b893c14f5c2e2c1c8ff"
+          },
+          {
+            "amount": "35",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0xd35b23d198f2fb974a9d54410a594586ead6bb73be6e03f39e1c2d985d139318"
+          },
+          {
+            "amount": "35",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x7acbd6411084bb539a023d5f026dc830220e958957953673a75f108e1d09617f"
+          },
+          {
+            "amount": "200",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0xbb38bbc96d8ea8cbd61cec953346a1e0329a0fcd34dbe494b3a88a5236b380de"
+          },
+          {
+            "amount": "100",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0xc6e187cdfb25f8f5c01fc699d0759cf482e9df697dd44cdc98a953072a25d034"
+          },
+          {
+            "amount": "25",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x7922f20988fd31e30e772696891a11ed4b244654f1084535e02c97bcb3146364"
+          },
+          {
+            "amount": "10",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x9c37f4918ecc76ab41a2ea159caa921d433393aaa1b7e0323c30b6a009e770b2"
+          },
+          {
+            "amount": "20",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x0e7754b18eab077fc5c144a1a50358e2549baaf2981b53e583a8ad99061fa03c"
+          },
+          {
+            "amount": "15",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x5e26adc0060f0cc3a5a8507be33b703e9d00ab6a794fe2621b2d512bcec109a6"
+          }
+        ],
+        "withdrawals": [
+          {
+            "amount": "525.3730156012",
+            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
+            "tranche_id": 11,
+            "tx": "0x773f30247e67eb4e00091dd33a86a62ae16a8a4958c829cf92f4a6942c86e389"
+          }
+        ],
+        "total_tokens": "655",
+        "withdrawn_tokens": "525.3730156012",
+        "remaining_tokens": "129.6269843988"
+      },
+      {
+        "address": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+        "deposits": [
+          {
+            "amount": "15",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0xb0531392ce89316ba2722bd5e65249301cbe00c01dddf88dfabc376bf726c93b"
+          },
+          {
+            "amount": "30",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x4dd6d3ceb96034091cf032c7b6f3314accf31f0c13aec7d9eddd11b875cfceb0"
+          },
+          {
+            "amount": "30",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x6ce36d860c9177ff51cb792a1e8aba785c628bd85bdc1f07c40d1d9b51631b6d"
+          },
+          {
+            "amount": "25",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0xebadbc1f72b4dde201bb069be7dadba684cf6931a7cc8e37114d375b40567728"
+          },
+          {
+            "amount": "20",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0xedf869f1b26b121bec11919818f4810bd0e0418ebb2b5aeb2282e668f9849314"
+          },
+          {
+            "amount": "10",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0xe1f87658af57653bd74b9142930c2ebd5e4315210919240c567e8682bf128837"
+          },
+          {
+            "amount": "15",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0xe5bfa8b23591735541e37a8b9520cf2246e6d38b4f3253e5df1bb543460337c4"
+          },
+          {
+            "amount": "25",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0xf6ad63410fc6de02497fb025bf90274bc187bac9dfe8d1f58bd637460ffa4bea"
+          },
+          {
+            "amount": "5",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x5735e2acfa821261700d8635c2f90510627cb41b709ed8d9b3562eab01d7d0fc"
+          },
+          {
+            "amount": "25",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x20f42a87a88b4a26a757d421c2441639c25d1930090f4fc9b9e05664521c7b7e"
+          },
+          {
+            "amount": "30",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x0b28570bb5ca732c7f9c78d1b99036692bd53312a4dc8aee9bcd5a3f98b095b3"
+          },
+          {
+            "amount": "20",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x628b0fa1dd10c38fb2df1555794fc48aa3355d8fbcef5861ec085c18d8cd1f98"
+          },
+          {
+            "amount": "10",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x7cc81c556e905eff3433d9e87cddc7d36655b5c525fd3e763623ce5362b737df"
+          },
+          {
+            "amount": "50",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x30b7a49c36dc037021ec26013dd1ace6335985557b6e2a1f46463a31a7a814cf"
+          },
+          {
+            "amount": "75",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x6a812385fe8e104cedcb81615bcf2f65aa4ca4400a94524774878047b505d5cc"
+          }
+        ],
+        "withdrawals": [
+          {
+            "amount": "280.4488489344",
+            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
+            "tranche_id": 11,
+            "tx": "0x6140499fa91ae792569441c6721af4cf153635337c5defb33f34f6d94414a537"
+          }
+        ],
+        "total_tokens": "385",
+        "withdrawn_tokens": "280.4488489344",
+        "remaining_tokens": "104.5511510656"
+      },
+      {
+        "address": "0x1bE12ef18a63F3dbbBF3F07328E44ed31f4CCa1c",
+        "deposits": [
+          {
+            "amount": "10",
+            "user": "0x1bE12ef18a63F3dbbBF3F07328E44ed31f4CCa1c",
+            "tranche_id": 11,
+            "tx": "0xdf5ea01a414fb81fa28673050a3c04f9ab23565cd87efa71f18c84ecb35e9e02"
+          },
+          {
+            "amount": "10",
+            "user": "0x1bE12ef18a63F3dbbBF3F07328E44ed31f4CCa1c",
+            "tranche_id": 11,
+            "tx": "0x90f9184ca1a7f56b34ae4670eba99c459136b24219f88bbfab630096ffd69295"
+          }
+        ],
+        "withdrawals": [],
+        "total_tokens": "20",
+        "withdrawn_tokens": "0",
+        "remaining_tokens": "20"
       },
       {
         "address": "0xe16f37e8741D75F47AFcDA5b2FFD00e898d9D946",
@@ -12121,227 +12659,6 @@
         "total_tokens": "120",
         "withdrawn_tokens": "0",
         "remaining_tokens": "120"
-      },
-      {
-        "address": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-        "deposits": [
-          {
-            "amount": "25",
-            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-            "tranche_id": 11,
-            "tx": "0xd4cd7cc10ebbfe143ff40dc3ef93a4832d23e9e6785b4bc33f5039ba1fd76946"
-          },
-          {
-            "amount": "20",
-            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-            "tranche_id": 11,
-            "tx": "0xe370ba99033dc4079338923b67da8e84d4ca5723b508fd46162f6e072b11cbb3"
-          },
-          {
-            "amount": "20",
-            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-            "tranche_id": 11,
-            "tx": "0x77437394f59f6eb88258449ae21c1dd447166779eed4b565fdefcf64686b9a8b"
-          },
-          {
-            "amount": "20",
-            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-            "tranche_id": 11,
-            "tx": "0xe88bf3aa7c87adfa65148183592f30bfe6d17e1ed31fdb7758604f6784f70be4"
-          },
-          {
-            "amount": "25",
-            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-            "tranche_id": 11,
-            "tx": "0xde28a1d3aa51121b8398580cfb7f09d03c7ff0a13d0e5bf12f088414a4ab49f4"
-          },
-          {
-            "amount": "5",
-            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-            "tranche_id": 11,
-            "tx": "0x13a798a6ae5a4b971e87864fa2fb3073879a09dd625bb4b621048684c278e7d7"
-          },
-          {
-            "amount": "25",
-            "user": "0x2f28F3Be9315cD7F2475F6500020262bd8505fA1",
-            "tranche_id": 11,
-            "tx": "0xaf417ee6513450b1c5e4dee7b96442fe2d4fd64da94c7f1c75bcf8c302e02f89"
-          }
-        ],
-        "withdrawals": [],
-        "total_tokens": "140",
-        "withdrawn_tokens": "0",
-        "remaining_tokens": "140"
-      },
-      {
-        "address": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-        "deposits": [
-          {
-            "amount": "50",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x0ad493b8ba584c36fc6b74d67ae1836cc0359900cddc1a99e140ef1b19d551be"
-          },
-          {
-            "amount": "30",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x79f2dfaa597a63643a3cdd74a6c4d7bbb3d762f61065efcc2dfe8360e0c77869"
-          },
-          {
-            "amount": "60",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x443e4d4dbf20b1f57381ad5820bcb30fc6997d0ad24c5b893c14f5c2e2c1c8ff"
-          },
-          {
-            "amount": "35",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0xd35b23d198f2fb974a9d54410a594586ead6bb73be6e03f39e1c2d985d139318"
-          },
-          {
-            "amount": "35",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x7acbd6411084bb539a023d5f026dc830220e958957953673a75f108e1d09617f"
-          },
-          {
-            "amount": "200",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0xbb38bbc96d8ea8cbd61cec953346a1e0329a0fcd34dbe494b3a88a5236b380de"
-          },
-          {
-            "amount": "100",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0xc6e187cdfb25f8f5c01fc699d0759cf482e9df697dd44cdc98a953072a25d034"
-          },
-          {
-            "amount": "25",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x7922f20988fd31e30e772696891a11ed4b244654f1084535e02c97bcb3146364"
-          },
-          {
-            "amount": "10",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x9c37f4918ecc76ab41a2ea159caa921d433393aaa1b7e0323c30b6a009e770b2"
-          },
-          {
-            "amount": "20",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x0e7754b18eab077fc5c144a1a50358e2549baaf2981b53e583a8ad99061fa03c"
-          },
-          {
-            "amount": "15",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x5e26adc0060f0cc3a5a8507be33b703e9d00ab6a794fe2621b2d512bcec109a6"
-          }
-        ],
-        "withdrawals": [
-          {
-            "amount": "525.3730156012",
-            "user": "0xf450648448be1117A854ab39FA30B398bAC88AEf",
-            "tranche_id": 11,
-            "tx": "0x773f30247e67eb4e00091dd33a86a62ae16a8a4958c829cf92f4a6942c86e389"
-          }
-        ],
-        "total_tokens": "580",
-        "withdrawn_tokens": "525.3730156012",
-        "remaining_tokens": "54.6269843988"
-      },
-      {
-        "address": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-        "deposits": [
-          {
-            "amount": "25",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0xebadbc1f72b4dde201bb069be7dadba684cf6931a7cc8e37114d375b40567728"
-          },
-          {
-            "amount": "20",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0xedf869f1b26b121bec11919818f4810bd0e0418ebb2b5aeb2282e668f9849314"
-          },
-          {
-            "amount": "10",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0xe1f87658af57653bd74b9142930c2ebd5e4315210919240c567e8682bf128837"
-          },
-          {
-            "amount": "15",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0xe5bfa8b23591735541e37a8b9520cf2246e6d38b4f3253e5df1bb543460337c4"
-          },
-          {
-            "amount": "25",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0xf6ad63410fc6de02497fb025bf90274bc187bac9dfe8d1f58bd637460ffa4bea"
-          },
-          {
-            "amount": "5",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x5735e2acfa821261700d8635c2f90510627cb41b709ed8d9b3562eab01d7d0fc"
-          },
-          {
-            "amount": "25",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x20f42a87a88b4a26a757d421c2441639c25d1930090f4fc9b9e05664521c7b7e"
-          },
-          {
-            "amount": "30",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x0b28570bb5ca732c7f9c78d1b99036692bd53312a4dc8aee9bcd5a3f98b095b3"
-          },
-          {
-            "amount": "20",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x628b0fa1dd10c38fb2df1555794fc48aa3355d8fbcef5861ec085c18d8cd1f98"
-          },
-          {
-            "amount": "10",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x7cc81c556e905eff3433d9e87cddc7d36655b5c525fd3e763623ce5362b737df"
-          },
-          {
-            "amount": "50",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x30b7a49c36dc037021ec26013dd1ace6335985557b6e2a1f46463a31a7a814cf"
-          },
-          {
-            "amount": "75",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x6a812385fe8e104cedcb81615bcf2f65aa4ca4400a94524774878047b505d5cc"
-          }
-        ],
-        "withdrawals": [
-          {
-            "amount": "280.4488489344",
-            "user": "0xf144fcebdb84fD3Bc070108673D6290940AAD756",
-            "tranche_id": 11,
-            "tx": "0x6140499fa91ae792569441c6721af4cf153635337c5defb33f34f6d94414a537"
-          }
-        ],
-        "total_tokens": "310",
-        "withdrawn_tokens": "280.4488489344",
-        "remaining_tokens": "29.5511510656"
       },
       {
         "address": "0xEeFF517294d2aa759274703a1B1C5ac81f9a754B",
@@ -17922,7 +18239,7 @@
     "tranche_end": "2023-06-05T00:00:00.000Z",
     "total_added": "3732368.4671",
     "total_removed": "177984.3873605465077",
-    "locked_amount": "2350057.60609966420029790289",
+    "locked_amount": "2348017.81409991863595499699",
     "deposits": [
       {
         "amount": "1998.95815",
@@ -18713,7 +19030,7 @@
     "tranche_end": "2023-12-05T00:00:00.000Z",
     "total_added": "15788853.065470999700000001",
     "total_removed": "172966.3243652303322344",
-    "locked_amount": "13563045.3551316159890402645908779672668289",
+    "locked_amount": "13555849.4140770271275093919102801264193025",
     "deposits": [
       {
         "amount": "16249.93",
@@ -21489,7 +21806,7 @@
     "tranche_end": "2023-05-05T00:00:00.000Z",
     "total_added": "14597706.0446472999",
     "total_removed": "2575963.396848573557606377",
-    "locked_amount": "6864306.509548459627063643651355696",
+    "locked_amount": "6857629.076475915418785820366229724",
     "deposits": [
       {
         "amount": "129284.449",
@@ -26374,7 +26691,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "5778205.3912159303",
     "total_removed": "1696374.748744946074291377",
-    "locked_amount": "2395225.61336254372996766189799568",
+    "locked_amount": "2392587.31917080243295262515560733",
     "deposits": [
       {
         "amount": "552496.6455",
@@ -27727,8 +28044,8 @@
     "tranche_start": "2022-06-05T00:00:00.000Z",
     "tranche_end": "2023-06-05T00:00:00.000Z",
     "total_added": "472355.6199999996",
-    "total_removed": "1478.08712164926",
-    "locked_amount": "372380.06118847380141867131811264",
+    "total_removed": "1605.15409906926",
+    "locked_amount": "372056.84448616598948946555859968",
     "deposits": [
       {
         "amount": "3000",
@@ -34403,6 +34720,21 @@
         "tx": "0x5300274287b8c61f255d6ee34a97323c8c664cbb2f138cf674276bb47942e7fc"
       },
       {
+        "amount": "42.351712328",
+        "user": "0xcb4Db13a5dB7364C2077659A6a63d73D488770BE",
+        "tx": "0xe5ac541f6a1bd46fb3aa6ebcf4b1d913f976cd1e9d11730d4821832e1cb33ede"
+      },
+      {
+        "amount": "42.35456621",
+        "user": "0xae047a00B3A725d8BFBE87967069083bfafe01FE",
+        "tx": "0xc73b7070617ace050e3c0912828188fea53177529edf6a6fb460d1998ae4afc7"
+      },
+      {
+        "amount": "42.360698882",
+        "user": "0xC629c4a7349D0C1334B9A40B22A1acA69F4f05E8",
+        "tx": "0xcb65d69ed398bc264023cad2310d16903edce11ca32315250382ad9f1f776703"
+      },
+      {
         "amount": "27.606855656",
         "user": "0x4d4AA3f302cbA998AAFC03F9d73484434ed9Fd53",
         "tx": "0x0ec74f29c903e1206af341258f24cf9261d65df585b0abf7226ffed461ddc9c6"
@@ -36050,10 +36382,17 @@
             "tx": "0xee02e72ef8e0755982704385da512cc12c8ff0ea7b58056fa3d5a5932394e9ca"
           }
         ],
-        "withdrawals": [],
+        "withdrawals": [
+          {
+            "amount": "42.360698882",
+            "user": "0xC629c4a7349D0C1334B9A40B22A1acA69F4f05E8",
+            "tranche_id": 5,
+            "tx": "0xcb65d69ed398bc264023cad2310d16903edce11ca32315250382ad9f1f776703"
+          }
+        ],
         "total_tokens": "200",
-        "withdrawn_tokens": "0",
-        "remaining_tokens": "200"
+        "withdrawn_tokens": "42.360698882",
+        "remaining_tokens": "157.639301118"
       },
       {
         "address": "0x218Ee8e1F676828BE6a844f3C36f2aCE0061a235",
@@ -36252,10 +36591,17 @@
             "tx": "0x23a584d4881de8a7fdac91afaf0fd834e84ddcad95a0bc420020032bbeae8f50"
           }
         ],
-        "withdrawals": [],
+        "withdrawals": [
+          {
+            "amount": "42.351712328",
+            "user": "0xcb4Db13a5dB7364C2077659A6a63d73D488770BE",
+            "tranche_id": 5,
+            "tx": "0xe5ac541f6a1bd46fb3aa6ebcf4b1d913f976cd1e9d11730d4821832e1cb33ede"
+          }
+        ],
         "total_tokens": "200",
-        "withdrawn_tokens": "0",
-        "remaining_tokens": "200"
+        "withdrawn_tokens": "42.351712328",
+        "remaining_tokens": "157.648287672"
       },
       {
         "address": "0x06D062c5100C5dae8ba9c558491D6c793Bb74bb5",
@@ -36469,10 +36815,17 @@
             "tx": "0x23a584d4881de8a7fdac91afaf0fd834e84ddcad95a0bc420020032bbeae8f50"
           }
         ],
-        "withdrawals": [],
+        "withdrawals": [
+          {
+            "amount": "42.35456621",
+            "user": "0xae047a00B3A725d8BFBE87967069083bfafe01FE",
+            "tranche_id": 5,
+            "tx": "0xc73b7070617ace050e3c0912828188fea53177529edf6a6fb460d1998ae4afc7"
+          }
+        ],
         "total_tokens": "200",
-        "withdrawn_tokens": "0",
-        "remaining_tokens": "200"
+        "withdrawn_tokens": "42.35456621",
+        "remaining_tokens": "157.64543379"
       },
       {
         "address": "0x8a44E39d14ABbADa0212dA01AF09040b464Ffa61",
@@ -53856,7 +54209,7 @@
     "tranche_start": "2021-12-05T00:00:00.000Z",
     "tranche_end": "2022-06-05T00:00:00.000Z",
     "total_added": "171288.42",
-    "total_removed": "48044.7232028057989",
+    "total_removed": "48315.6061234157989",
     "locked_amount": "0",
     "deposits": [
       {
@@ -58172,6 +58525,16 @@
         "tx": "0x78675f3f468f88cf5df8d3f457cefdd99d8d13ee651c26b269896486d9950601"
       },
       {
+        "amount": "135.44243806",
+        "user": "0x53f64bd348923db73b92e8edEECd96bA4573B06d",
+        "tx": "0x430916f9ec908d09edbb25e96dce0489ba4e9169871946961df0a8870f1c99cd"
+      },
+      {
+        "amount": "135.44048255",
+        "user": "0x6470BcDf3c0e99362003BEE5BC356Aa10b45e9c6",
+        "tx": "0x8abf0bed165362dc45a6513ca05734debfdb31d63fc80c93c0a562781dfb8e70"
+      },
+      {
         "amount": "250",
         "user": "0x4aD00C7AF1dC96c935d832fd39bF53d0DAB66B55",
         "tx": "0x56e55fd9b88cbcb5ff0f9a43bdd47b8b0f9c3afee9089311afc64e98dbd5a6fd"
@@ -60696,6 +61059,12 @@
         ],
         "withdrawals": [
           {
+            "amount": "135.44048255",
+            "user": "0x6470BcDf3c0e99362003BEE5BC356Aa10b45e9c6",
+            "tranche_id": 6,
+            "tx": "0x8abf0bed165362dc45a6513ca05734debfdb31d63fc80c93c0a562781dfb8e70"
+          },
+          {
             "amount": "114.55951745",
             "user": "0x6470BcDf3c0e99362003BEE5BC356Aa10b45e9c6",
             "tranche_id": 6,
@@ -60703,8 +61072,8 @@
           }
         ],
         "total_tokens": "250",
-        "withdrawn_tokens": "114.55951745",
-        "remaining_tokens": "135.44048255"
+        "withdrawn_tokens": "250",
+        "remaining_tokens": "0"
       },
       {
         "address": "0x70B612494Bd23af62Daa9aB60b396caa7fc7C340",
@@ -60986,6 +61355,12 @@
         ],
         "withdrawals": [
           {
+            "amount": "135.44243806",
+            "user": "0x53f64bd348923db73b92e8edEECd96bA4573B06d",
+            "tranche_id": 6,
+            "tx": "0x430916f9ec908d09edbb25e96dce0489ba4e9169871946961df0a8870f1c99cd"
+          },
+          {
             "amount": "114.55756194",
             "user": "0x53f64bd348923db73b92e8edEECd96bA4573B06d",
             "tranche_id": 6,
@@ -60993,8 +61368,8 @@
           }
         ],
         "total_tokens": "250",
-        "withdrawn_tokens": "114.55756194",
-        "remaining_tokens": "135.44243806"
+        "withdrawn_tokens": "250",
+        "remaining_tokens": "0"
       },
       {
         "address": "0xDDe1857EC2f62d35307D06b3826B16EC75669B0a",
