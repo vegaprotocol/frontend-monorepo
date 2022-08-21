@@ -20,6 +20,7 @@ import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
 import {
   Button,
+  ButtonLink,
   Callout,
   FormGroup,
   Intent,
@@ -304,24 +305,20 @@ export const StakingForm = ({
               {removeType === RemoveType.Now ? (
                 <>
                   <p>{t('Want to remove your stake before the epoch ends?')}</p>
-                  <Button
+                  <ButtonLink
                     onClick={() => setRemoveType(RemoveType.EndOfEpoch)}
-                    variant="inline-link"
                   >
                     {t('Switch to form for removal at end of epoch')}
-                  </Button>
+                  </ButtonLink>
                 </>
               ) : (
                 <>
                   <p>
                     {t('Want to remove your stake at the end of the epoch?')}
                   </p>
-                  <Button
-                    onClick={() => setRemoveType(RemoveType.Now)}
-                    variant="inline-link"
-                  >
+                  <ButtonLink onClick={() => setRemoveType(RemoveType.Now)}>
                     {t('Switch to form for immediate removal')}
-                  </Button>
+                  </ButtonLink>
                 </>
               )}
             </>

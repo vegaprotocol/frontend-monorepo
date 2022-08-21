@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTendermintWebsocket } from '../../hooks/use-tendermint-websocket';
 import { t } from '@vegaprotocol/react-helpers';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 interface BlocksRefetchProps {
   refetch: () => void;
@@ -28,9 +28,9 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
   return (
     <div className="mb-28">
       <span data-testid="new-blocks">{blocksToLoad} new blocks -</span>
-      <Button onClick={refresh} variant="inline-link" data-testid="refresh">
+      <ButtonLink onClick={refresh} data-testid="refresh">
         {t('refresh to see latest')}
-      </Button>
+      </ButtonLink>
     </div>
   );
 };

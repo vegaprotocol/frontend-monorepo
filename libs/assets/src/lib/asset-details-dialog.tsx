@@ -190,9 +190,11 @@ export const AssetDetailsDialog = ({
       onChange={(isOpen) => onChange(isOpen)}
     >
       {content}
-      <Button className="w-1/4" onClick={() => onChange(false)}>
-        Close
-      </Button>
+      <div className="w-1/4">
+        <Button fill={true} onClick={() => onChange(false)}>
+          Close
+        </Button>
+      </div>
     </Dialog>
   );
 };

@@ -38,7 +38,7 @@ export const Staking = ({ data }: { data?: StakingQueryResult }) => {
             target="_blank"
             data-testid="staking-guide-link"
           >
-            <Button variant="secondary">{t('readMoreStaking')}</Button>
+            <Button>{t('readMoreStaking')}</Button>
           </UTLink>
         </Callout>
       </section>

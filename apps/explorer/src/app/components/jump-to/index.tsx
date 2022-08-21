@@ -42,12 +42,7 @@ export const JumpTo = ({
           min={inputMin}
           max={inputMax}
         />
-        <Button
-          data-testid="go-submit"
-          variant="secondary"
-          boxShadow={false}
-          type="submit"
-        >
+        <Button data-testid="go-submit" type="submit">
           {t('Go')}
         </Button>
       </div>

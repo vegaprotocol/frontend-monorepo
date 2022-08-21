@@ -76,7 +76,7 @@ export const ClaimForm = ({
   }
 
   return (
-    <Button type="submit" onClick={handleOnClick} className="fill">
+    <Button type="submit" onClick={handleOnClick}>
       {countryCheck === CountryCheck.Pending
         ? t('verifyingCountryPrompt')
         : t('Continue')}

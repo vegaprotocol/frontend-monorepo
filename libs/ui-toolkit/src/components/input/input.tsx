@@ -133,7 +133,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const inputClassName = classNames(
       'appearance-none',
-      'h-28',
+      'h-32',
       'dark:color-scheme-dark',
       'shadow-input dark:shadow-input-dark',
       className,

@@ -5,6 +5,7 @@ import {
   Intent,
   FormGroup,
   Lozenge,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import React from 'react';
@@ -60,14 +61,14 @@ export const AmountInput = ({
         />
       </div>
       {maximum && (
-        <Button
-          variant="inline-link"
-          onClick={() => setAmount(maximum.toString())}
-          data-testid="token-amount-use-maximum"
-          className="flex flex-col justify-center p-8 h-28 my-0 mx-8"
-        >
-          {t('Use maximum')}
-        </Button>
+        <div className="flex flex-col justify-center p-8 h-28 my-0 mx-8">
+          <ButtonLink
+            onClick={() => setAmount(maximum.toString())}
+            data-testid="token-amount-use-maximum"
+          >
+            {t('Use maximum')}
+          </ButtonLink>
+        </div>
       )}
     </div>
   );
@@ -158,7 +159,7 @@ export const TokenInput = ({
       approveContent = (
         <Button
           data-testid="token-input-approve-button"
-          className="token-input__submit w-full"
+          fill={true}
           onClick={approve}
         >
           {approveText}
@@ -190,7 +191,7 @@ export const TokenInput = ({
       {approveContent ? <div className="mb-24">{approveContent}</div> : null}
       <Button
         data-testid="token-input-submit-button"
-        className="w-full"
+        fill={true}
         disabled={isDisabled}
         onClick={perform}
       >

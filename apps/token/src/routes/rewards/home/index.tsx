@@ -148,18 +148,19 @@ export const RewardsIndex = () => {
             rewardAssetId={rewardAssetData[0]}
           />
         ) : (
-          <Button
-            className="mt-12"
-            data-testid="connect-to-vega-wallet-btn"
-            onClick={() =>
-              appDispatch({
-                type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
-                isOpen: true,
-              })
-            }
-          >
-            {t('connectVegaWallet')}
-          </Button>
+          <div className="mt-12">
+            <Button
+              data-testid="connect-to-vega-wallet-btn"
+              onClick={() =>
+                appDispatch({
+                  type: AppStateActionType.SET_VEGA_WALLET_OVERLAY,
+                  isOpen: true,
+                })
+              }
+            >
+              {t('connectVegaWallet')}
+            </Button>
+          </div>
         )}
       </section>
     </section>

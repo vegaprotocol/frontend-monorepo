@@ -44,17 +44,18 @@ export const VegaManageDialog = ({
                       {t('Selected key')}
                     </p>
                   ) : (
-                    <Button
-                      onClick={() => {
-                        selectPublicKey(kp.pub);
-                        setDialogOpen(false);
-                      }}
-                      disabled={kp.pub === keypair?.pub}
-                      className="mb-8"
-                      data-testid="select-keypair-button"
-                    >
-                      {t('Select this key')}
-                    </Button>
+                    <div className="mb-8">
+                      <Button
+                        onClick={() => {
+                          selectPublicKey(kp.pub);
+                          setDialogOpen(false);
+                        }}
+                        disabled={kp.pub === keypair?.pub}
+                        data-testid="select-keypair-button"
+                      >
+                        {t('Select this key')}
+                      </Button>
+                    </div>
                   )}
                   <div className="flex justify-between text-ui-small">
                     <p
@@ -87,7 +88,6 @@ export const VegaManageDialog = ({
         <div className="mt-24">
           <Button
             data-testid="disconnect"
-            variant="secondary"
             onClick={() => {
               disconnect();
               setDialogOpen(false);

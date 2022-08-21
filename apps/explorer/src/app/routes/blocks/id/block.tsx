@@ -38,9 +38,9 @@ const Block = () => {
             >
               <Button
                 data-testid="previous-block-button"
-                className="w-full"
+                fill={true}
+                size="sm"
                 disabled={Number(block) === 1}
-                variant="secondary"
               >
                 Previous
               </Button>
@@ -49,7 +49,7 @@ const Block = () => {
               data-testid="next-block"
               to={`/${Routes.BLOCKS}/${Number(block) + 1}`}
             >
-              <Button className="w-full" variant="secondary">
+              <Button size="sm" fill={true}>
                 Next
               </Button>
             </Link>

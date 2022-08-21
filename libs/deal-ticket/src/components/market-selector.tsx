@@ -9,7 +9,7 @@ import { gql, useQuery } from '@apollo/client';
 import classNames from 'classnames';
 import type { DealTicketQuery_market } from './__generated__';
 import {
-  Button,
+  ButtonLink,
   Dialog,
   Icon,
   Input,
@@ -193,21 +193,21 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
             onKeyDown={handleInputKeyDown}
             onBlur={handleOnBlur}
           />
-          <Button
-            className="absolute self-end top-[7px] right-0 z-10"
-            variant="inline-link"
-            onClick={openPane}
-            ref={arrowButtonRef}
-            data-testid="arrow-button"
-          >
-            <Icon
-              name={IconNames.ARROW_DOWN}
-              className={classNames('fill-current transition-transform', {
-                'rotate-180': showPane,
-              })}
-              size={16}
-            />
-          </Button>
+          <span className="absolute self-end top-[7px] right-0 z-10">
+            <ButtonLink
+              onClick={openPane}
+              ref={arrowButtonRef}
+              data-testid="arrow-button"
+            >
+              <Icon
+                name={IconNames.ARROW_DOWN}
+                className={classNames('fill-current transition-transform', {
+                  'rotate-180': showPane,
+                })}
+                size={16}
+              />
+            </ButtonLink>
+          </span>
         </div>
         <hr className="mb-5" />
         <div

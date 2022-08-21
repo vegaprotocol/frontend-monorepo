@@ -118,15 +118,17 @@ export const DealTicket = ({
             )}
           />
         )}
-      <Button
-        className="w-full mb-8"
-        variant="trade"
-        type="submit"
-        disabled={isDisabled}
-        data-testid="place-order"
-      >
-        {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
-      </Button>
+      <div className="mb-8">
+        <Button
+          variant="primary"
+          fill={true}
+          type="submit"
+          disabled={isDisabled}
+          data-testid="place-order"
+        >
+          {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
+        </Button>
+      </div>
       {message && (
         <InputError
           intent={isDisabled ? 'danger' : 'warning'}

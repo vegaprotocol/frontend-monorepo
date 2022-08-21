@@ -186,14 +186,16 @@ export const NodeSwitcher = ({
             </div>
           </RadioGroup>
         </div>
-        <Button
-          className="w-full mt-16"
-          disabled={isSubmitDisabled}
-          type="submit"
-          data-testid="connect"
-        >
-          {t('Connect')}
-        </Button>
+        <div className="mt-16">
+          <Button
+            disabled={isSubmitDisabled}
+            fill={true}
+            type="submit"
+            data-testid="connect"
+          >
+            {t('Connect')}
+          </Button>
+        </div>
       </form>
     </div>
   );

@@ -24,7 +24,7 @@ import { DownloadWalletPrompt } from './download-wallet-prompt';
 import { usePollForDelegations } from './hooks';
 import type { VegaKeyExtended } from '@vegaprotocol/wallet';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
 
 export const VegaWallet = () => {
   const { t } = useTranslation();
@@ -77,8 +77,7 @@ const VegaWalletNotConnected = () => {
             isOpen: true,
           })
         }
-        variant="secondary"
-        className="w-full"
+        fill={true}
         data-testid="connect-vega"
       >
         {t('connectVegaWalletToUseAssociated')}
@@ -134,19 +133,19 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
 
   const footer = (
     <WalletCardActions>
-      <Button
-        data-testid="manage-vega-wallet"
-        variant="inline-link"
-        className="mt-4"
-        onClick={() =>
-          appDispatch({
-            type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
-            isOpen: true,
-          })
-        }
-      >
-        Manage
-      </Button>
+      <div className="mt-4">
+        <ButtonLink
+          data-testid="manage-vega-wallet"
+          onClick={() =>
+            appDispatch({
+              type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
+              isOpen: true,
+            })
+          }
+        >
+          Manage
+        </ButtonLink>
+      </div>
     </WalletCardActions>
   );
 
@@ -197,12 +196,12 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
       ))}
       <WalletCardActions>
         <Link className="flex-1 pr-8" to={Routes.GOVERNANCE}>
-          <Button variant={'secondary'} className="w-full">
+          <Button variant={'secondary'} fill={true}>
             {t('governance')}
           </Button>
         </Link>
         <Link className="flex-1 pl-8" to={Routes.STAKING}>
-          <Button variant={'secondary'} className="w-full">
+          <Button variant={'secondary'} fill={true}>
             {t('staking')}
           </Button>
         </Link>

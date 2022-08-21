@@ -37,7 +37,6 @@ import {
   Tab,
   Tabs,
   PriceCellChange,
-  Button,
   Link,
   Tooltip,
   ResizablePanel,
@@ -230,16 +229,14 @@ export const TradeMarketHeader = ({
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Settlement asset')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
-                <Button
-                  variant="inline-link"
-                  className="no-underline hover:underline"
+                <ButtonLink
                   onClick={() => {
                     setAssetDetailsDialogOpen(true);
                     setAssetDetailsDialogSymbol(symbol);
                   }}
                 >
                   {symbol}
-                </Button>
+                </ButtonLink>
               </span>
             </div>
           )}

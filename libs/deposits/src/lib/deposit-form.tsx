@@ -291,7 +291,7 @@ const FormButton = ({
 
   if (!selectedAsset) {
     button = (
-      <Button type="submit" className="w-full" data-testid="deposit-submit">
+      <Button type="submit" fill={true} data-testid="deposit-submit">
         {t('Deposit')}
       </Button>
     );
@@ -302,7 +302,7 @@ const FormButton = ({
       </>
     );
     button = (
-      <Button type="submit" className="w-full" data-testid="deposit-submit">
+      <Button type="submit" fill={true} data-testid="deposit-submit">
         {t('Deposit')}
       </Button>
     );
@@ -311,8 +311,8 @@ const FormButton = ({
     button = (
       <Button
         onClick={onApproveClick}
-        className="w-full"
         data-testid="deposit-approve-submit"
+        fill={true}
       >
         {t(`Approve ${selectedAsset.symbol}`)}
       </Button>

@@ -68,7 +68,7 @@ const Home = ({ name }: RouteChildProps) => {
           )}
         </p>
         <Link to={Routes.VESTING}>
-          <Button variant="secondary" data-testid="check-vesting-page-btn">
+          <Button data-testid="check-vesting-page-btn">
             {t('Check to see if you can redeem unlocked VEGA tokens')}
           </Button>
         </Link>
@@ -117,10 +117,7 @@ const Home = ({ name }: RouteChildProps) => {
             </p>
             <p>
               <Link to={Routes.STAKING}>
-                <Button
-                  variant="secondary"
-                  data-testid="staking-button-on-homepage"
-                >
+                <Button data-testid="staking-button-on-homepage">
                   {t('Nominate a validator')}
                 </Button>
               </Link>
@@ -137,10 +134,7 @@ const Home = ({ name }: RouteChildProps) => {
             </p>
             <p>
               <Link to={Routes.GOVERNANCE}>
-                <Button
-                  variant="secondary"
-                  data-testid="governance-button-on-homepage"
-                >
+                <Button data-testid="governance-button-on-homepage">
                   {t('View Governance proposals')}
                 </Button>
               </Link>

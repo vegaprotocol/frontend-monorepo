@@ -73,7 +73,7 @@ interface CommonProps {
   rightIcon?: IconName;
 }
 export interface ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'>,
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style'>,
     CommonProps {}
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -131,7 +131,7 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
 
 type ButtonLinkProps = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
-  'className'
+  'className' | 'style'
 >;
 
 export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(

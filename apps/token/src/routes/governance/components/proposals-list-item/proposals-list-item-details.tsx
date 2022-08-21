@@ -201,9 +201,7 @@ export const ProposalsListItemDetails = ({
       {proposal.id && (
         <div className="col-start-2 row-start-2 justify-self-end">
           <Link to={`${Routes.GOVERNANCE}/${proposal.id}`}>
-            <Button variant="secondary" data-testid="view-proposal-btn">
-              {t('View')}
-            </Button>
+            <Button data-testid="view-proposal-btn">{t('View')}</Button>
           </Link>
         </div>
       )}

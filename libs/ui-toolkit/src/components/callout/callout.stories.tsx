@@ -56,9 +56,7 @@ IconAndContent.args = {
   children: (
     <div className="flex flex-col">
       <div>With a longer explanation</div>
-      <Button className="block mt-8" variant="secondary">
-        Action
-      </Button>
+      <Button>Action</Button>
     </div>
   ),
 };
@@ -75,9 +73,7 @@ CustomIconAndContent.args = {
   children: (
     <div className="flex flex-col">
       <div>With a longer explanation</div>
-      <Button className="block mt-8" variant="secondary">
-        Action
-      </Button>
+      <Button>Action</Button>
     </div>
   ),
 };
@@ -90,9 +86,7 @@ Loading.args = {
   children: (
     <div className="flex flex-col">
       <div>With a longer explanation</div>
-      <Button className="block mt-8" variant="secondary">
-        Action
-      </Button>
+      <Button>Action</Button>
     </div>
   ),
 };

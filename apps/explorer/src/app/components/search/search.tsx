@@ -53,7 +53,7 @@ export const Search = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex self-center md:ml-16 md:mr-12 md:justify-end"
+      className="flex-1 flex gap-8 self-center md:ml-16 md:mr-12 md:justify-end"
     >
       <FormGroup
         label={t('Search by block number or transaction hash')}
@@ -79,12 +79,7 @@ export const Search = () => {
           </InputError>
         )}
       </FormGroup>
-      <Button
-        type="submit"
-        boxShadow={false}
-        variant="secondary"
-        data-testid="search-button"
-      >
+      <Button type="submit" size="sm" data-testid="search-button">
         {t('Search')}
       </Button>
     </form>

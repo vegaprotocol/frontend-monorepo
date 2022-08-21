@@ -57,7 +57,7 @@ export const Complete = ({
         </p>
       )}
       <RouteLink to={Routes.VESTING}>
-        <Button className="fill">{t('Check your vesting VEGA tokens')}</Button>
+        <Button>{t('Check your vesting VEGA tokens')}</Button>
       </RouteLink>
     </Callout>
   );

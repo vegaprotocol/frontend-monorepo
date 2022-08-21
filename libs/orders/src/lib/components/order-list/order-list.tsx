@@ -277,7 +277,6 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               return (
                 <Button
                   data-testid="edit"
-                  variant="secondary"
                   onClick={() => {
                     setEditOrder(data);
                   }}
