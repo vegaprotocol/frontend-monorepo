@@ -154,11 +154,12 @@ const ButtonContent = ({ children, icon, rightIcon }: ButtonContentProps) => {
   const rightIconEl = rightIcon ? (
     <Icon name={rightIcon} className="fill-current ml-8" size={16} />
   ) : null;
+
   return (
-    <span className="flex items-center">
+    <>
       {iconEl}
       {children}
       {rightIconEl}
-    </span>
+    </>
   );
 };

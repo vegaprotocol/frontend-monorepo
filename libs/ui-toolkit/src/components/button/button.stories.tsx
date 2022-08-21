@@ -39,6 +39,7 @@ export const FullWidth = Template.bind({});
 FullWidth.args = {
   children: 'Button text',
   fill: true,
+  icon: 'search',
 };
 
 export const Small = Template.bind({});
