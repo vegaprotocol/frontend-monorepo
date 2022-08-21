@@ -344,3 +344,119 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
 });
 
 export default PositionsTable;
+
+export type PositionsSummary = Pick<
+  Position,
+  | 'marketName'
+  | 'openVolume'
+  | 'realisedPNL'
+  | 'unrealisedPNL'
+  | 'assetDecimals'
+>;
+
+interface PositionsSummaryTableProps extends AgGridReactProps {
+  rowData?: PositionsSummary[] | null;
+}
+
+export const PositionsSummaryTable = forwardRef<
+  AgGridReact,
+  PositionsSummaryTableProps
+>((props, ref) => {
+  return (
+    <AgGrid ref={ref} {...props}>
+      <AgGridColumn
+        field="marketName"
+        cellRenderer={MarketNameCell}
+        valueFormatter={({
+          value,
+        }: PositionsTableValueFormatterParams & {
+          value: Position['marketName'];
+        }) => {
+          if (!value) {
+            return undefined;
+          }
+          return [value];
+        }}
+      />
+      <AgGridColumn
+        field="openVolume"
+        type="rightAligned"
+        cellRenderer="PriceFlashCell"
+        valueFormatter={({
+          value,
+          data,
+        }: PositionsTableValueFormatterParams & {
+          value: Position['openVolume'];
+        }) => {
+          if (!data) {
+            return undefined;
+          }
+          if (data.marketTradingMode === MarketTradingMode.OpeningAuction) {
+            return '-';
+          }
+          return addDecimalsFormatNumber(
+            value.toString(),
+            data.marketDecimalPlaces
+          );
+        }}
+      />
+      <AgGridColumn
+        headerName={t('Realised PNL')}
+        colSpan={() => 5}
+        type="rightAligned"
+        cellClassRules={{
+          'text-vega-green-dark dark:text-vega-green': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) > 0,
+          'text-vega-red-dark dark:text-vega-red': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) < 0,
+        }}
+        valueFormatter={({
+          value,
+          data,
+        }: PositionsTableValueFormatterParams & {
+          value: PositionsSummary['realisedPNL'];
+        }) =>
+          value === undefined
+            ? undefined
+            : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
+        }
+        cellRenderer="PriceFlashCell"
+        headerTooltip={t('P&L excludes any fees paid.')}
+      />
+      <AgGridColumn
+        field="unrealisedPNL"
+        type="rightAligned"
+        cellClassRules={{
+          'text-vega-green-dark dark:text-vega-green': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) > 0,
+          'text-vega-red-dark dark:text-vega-red': ({
+            value,
+          }: {
+            value: string;
+          }) => BigInt(value) < 0,
+        }}
+        valueFormatter={({
+          value,
+          data,
+        }: PositionsTableValueFormatterParams & {
+          value: PositionsSummary['unrealisedPNL'];
+        }) =>
+          value === undefined
+            ? undefined
+            : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
+        }
+        cellRenderer="PriceFlashCell"
+      />
+      <AgGridColumn />
+    </AgGrid>
+  );
+});

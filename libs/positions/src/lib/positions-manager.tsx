@@ -1,53 +1,47 @@
-import { useRef, useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
-import type { AgGridReact } from 'ag-grid-react';
-import PositionsTable from './positions-table';
-import type { GetRowsParams } from './positions-table';
 import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
 import type { Position } from './positions-data-providers';
+import { Positions } from './positions';
 
 interface PositionsManagerProps {
   partyId: string;
 }
 
+const getSymbols = (positions: Position[]) =>
+  Array.from(new Set(positions.map((position) => position.assetSymbol))).sort();
+
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const dataRef = useRef<Position[] | null>(null);
-  const update = useCallback(({ data }: { data: Position[] | null }) => {
-    if (!gridRef.current?.api) {
-      return false;
-    }
-    dataRef.current = data;
-    gridRef.current.api.refreshInfiniteCache();
-    return true;
-  }, []);
+  const [assetSymbols, setAssetSymbols] = useState<string[] | undefined>();
+  const update = useCallback(
+    ({ data }: { data: Position[] | null }) => {
+      if (assetSymbols && data?.length) {
+        const newAssetSymbols = getSymbols(data);
+        if (!newAssetSymbols.every((symbol) => assetSymbols.includes(symbol))) {
+          setAssetSymbols(newAssetSymbols);
+        }
+      }
+      return true;
+    },
+    [assetSymbols]
+  );
   const { data, error, loading } = useDataProvider<Position[], never>({
     dataProvider,
     update,
     variables,
   });
-  dataRef.current = data;
-  const getRows = async ({
-    successCallback,
-    startRow,
-    endRow,
-  }: GetRowsParams) => {
-    const rowsThisBlock = dataRef.current
-      ? dataRef.current.slice(startRow, endRow)
-      : [];
-    const lastRow = dataRef.current?.length ?? -1;
-    successCallback(rowsThisBlock, lastRow);
-  };
-
+  setAssetSymbols(data?.length ? getSymbols(data) : undefined);
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      <PositionsTable
-        rowModelType={data?.length ? 'infinite' : 'clientSide'}
-        rowData={data?.length ? undefined : []}
-        datasource={{ getRows }}
-      />
+    <AsyncRenderer loading={loading} error={error} data={assetSymbols}>
+      {assetSymbols?.map((assetSymbol) => (
+        <Positions
+          partyId={partyId}
+          assetSymbol={assetSymbol}
+          key={assetSymbol}
+        />
+      ))}
     </AsyncRenderer>
   );
 };
