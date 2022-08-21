@@ -16,7 +16,7 @@ import {
 import classnames from 'classnames';
 
 type Variant = 'primary' | 'secondary' | 'trade' | 'accent' | 'inline-link';
-interface CommonProps {
+interface CommonProps2 {
   children?: ReactNode;
   variant?: Variant;
   className?: string;
@@ -24,13 +24,13 @@ interface CommonProps {
   appendIconName?: IconName;
   boxShadow?: boolean;
 }
-export interface ButtonProps
+export interface ButtonProps2
   extends ButtonHTMLAttributes<HTMLButtonElement>,
-    CommonProps {}
+    CommonProps2 {}
 
 export interface AnchorButtonProps
   extends AnchorHTMLAttributes<HTMLAnchorElement>,
-    CommonProps {}
+    CommonProps2 {}
 
 export const getButtonClasses = (
   className?: string,
@@ -186,7 +186,7 @@ export const getButtonContent = (
   );
 };
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button2 = forwardRef<HTMLButtonElement, ButtonProps2>(
   (
     {
       variant = 'primary',
@@ -235,5 +235,61 @@ export const AnchorButton = forwardRef<HTMLAnchorElement, AnchorButtonProps>(
         {getButtonContent(children, prependIconName, appendIconName)}
       </a>
     );
+  }
+);
+
+interface CommonProps {
+  children?: ReactNode;
+  variant?: 'default' | 'primary' | 'secondary';
+  disabled?: boolean;
+  fill?: boolean;
+  size?: 'lg' | 'md' | 'sm';
+}
+export interface ButtonProps
+  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className'>,
+    CommonProps {}
+
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = 'default', size = 'lg', fill, ...props }) => {
+    const baseClasses = classNames(
+      'inline-block',
+      'uppercase',
+      'border-1 rounded',
+      'disabled:opacity-80',
+      'transition-colors',
+      {
+        'block w-full': fill,
+      },
+      {
+        'text-ui px-16 py-4': size === 'sm',
+        'text-ui px-20 py-5': size === 'md',
+        'px-60 py-12': size === 'lg',
+      }
+    );
+    const variants = {
+      default: classNames(
+        'text-black dark:text-white',
+        'border-v2border dark:border-Dv2border',
+        'bg-white dark:bg-black',
+        'enabled:hover:bg-white-80 dark:enabled:hover:bg-black-80',
+        'enabled:active:bg-white-80 enabled:active:border-black dark:enabled:active:bg-black-80 dark:enabled:active:border-white'
+      ),
+      primary: classNames(
+        'text-black',
+        'border-vega-yellow',
+        'bg-vega-yellow',
+        'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
+        'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark'
+      ),
+      secondary: classNames(
+        'text-white',
+        'border-vega-pink',
+        'bg-vega-pink',
+        'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
+        'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark'
+      ),
+    };
+    const className = classNames(baseClasses, variants[variant]);
+    return <button className={className} {...props} />;
   }
 );

@@ -19,6 +19,7 @@ const colours = {
     '02': shadeOfGray(2),
     '05': shadeOfGray(5),
     10: shadeOfGray(10),
+    20: shadeOfGray(20),
     25: shadeOfGray(25),
     40: shadeOfGray(40),
     60: shadeOfGray(60),
@@ -48,8 +49,9 @@ const colours = {
   },
   vega: {
     yellow: '#DFFF0B',
-    'yellow-dark': '#474B0A',
+    'yellow-dark': '#B6DC26',
     pink: '#FF077F',
+    'pink-dark': '#D70068',
     green: '#00F780',
     'green-medium': '#00DE73',
     'green-dark': '#008545',
@@ -69,6 +71,8 @@ const colours = {
   'danger-bg': '#9E0025', // for white text
   'dropdown-bg': '#FFF',
   'dropdown-bg-dark': shadeOfGray(100 - 60),
+  v2border: '#969696',
+  Dv2border: '#A6A6A6',
 };
 
 const boxShadowPosition = {
@@ -103,6 +107,7 @@ module.exports = {
     32: '2rem',
     40: '2.5rem',
     44: '2.75rem',
+    60: '3.5rem',
     64: '4rem',
   },
   opacity: {
