@@ -145,19 +145,19 @@ export const ButtonLinkStory = () => {
 //   </>
 // );
 
-// export const IconPrepend = Template.bind({});
-// IconPrepend.args = {
-//   children: 'Icon prepend',
-//   prependIconName: 'search',
-//   variant: 'trade',
-// };
+export const IconPrepend = Template.bind({});
+IconPrepend.args = {
+  children: 'Icon prepend',
+  icon: 'search',
+  variant: 'primary',
+};
 
-// export const IconAppend = Template.bind({});
-// IconAppend.args = {
-//   children: 'Icon append',
-//   appendIconName: 'search',
-//   variant: 'trade',
-// };
+export const IconAppend = Template.bind({});
+IconAppend.args = {
+  children: 'Icon append',
+  rightIcon: 'search',
+  variant: 'secondary',
+};
 
 // export const InlineIconPrepend = Template.bind({});
 // InlineIconPrepend.args = {
