@@ -78,6 +78,7 @@ const VegaWalletNotConnected = () => {
           })
         }
         fill={true}
+        size="sm"
         data-testid="connect-vega"
       >
         {t('connectVegaWalletToUseAssociated')}
@@ -195,13 +196,13 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         </div>
       ))}
       <WalletCardActions>
-        <Link className="flex-1 pr-8" to={Routes.GOVERNANCE}>
-          <Button variant={'secondary'} fill={true}>
+        <Link className="flex-1 mr-4" to={Routes.GOVERNANCE}>
+          <Button size="sm" fill={true}>
             {t('governance')}
           </Button>
         </Link>
-        <Link className="flex-1 pl-8" to={Routes.STAKING}>
-          <Button variant={'secondary'} fill={true}>
+        <Link className="flex-1 ml-4" to={Routes.STAKING}>
+          <Button size="sm" fill={true}>
             {t('staking')}
           </Button>
         </Link>

@@ -28,7 +28,7 @@ const getClassname = ({
       'block w-full': fill,
     },
     {
-      'text-ui px-16 py-4': size === 'sm',
+      'text-ui px-12 py-4': size === 'sm',
       'text-ui px-20 py-5': size === 'md',
       'px-60 py-12': size === 'lg',
     }

@@ -191,7 +191,7 @@ export const AssetDetailsDialog = ({
     >
       {content}
       <div className="w-1/4">
-        <Button fill={true} onClick={() => onChange(false)}>
+        <Button fill={true} size="sm" onClick={() => onChange(false)}>
           Close
         </Button>
       </div>

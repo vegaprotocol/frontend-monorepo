@@ -176,7 +176,7 @@ export const WithdrawForm = ({
           </UseButton>
         )}
       </FormGroup>
-      <Button data-testid="submit-withdrawal" type="submit">
+      <Button variant="primary" data-testid="submit-withdrawal" type="submit">
         Submit
       </Button>
     </form>

@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { getButtonClasses, Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 import {
   AppStateActionType,
@@ -177,17 +177,15 @@ const ConnectedKey = () => {
         )}
       </section>
       <WalletCardActions>
-        <Link
-          className={getButtonClasses('flex-1 mr-4', 'secondary')}
-          to={`${Routes.STAKING}/associate`}
-        >
-          {t('associate')}
+        <Link className="flex-1 mr-4" to={`${Routes.STAKING}/associate`}>
+          <Button size="sm" fill={true}>
+            {t('associate')}
+          </Button>
         </Link>
-        <Link
-          className={getButtonClasses('flex-1 ml-4', 'secondary')}
-          to={`${Routes.STAKING}/disassociate`}
-        >
-          {t('disassociate')}
+        <Link className="flex-1 ml-4" to={`${Routes.STAKING}/disassociate`}>
+          <Button size="sm" fill={true}>
+            {t('disassociate')}
+          </Button>
         </Link>
       </WalletCardActions>
     </>
@@ -238,8 +236,8 @@ export const EthWallet = () => {
             <ConnectedKey />
           ) : (
             <Button
-              variant={'secondary'}
               fill={true}
+              size="sm"
               onClick={() =>
                 appDispatch({
                   type: AppStateActionType.SET_ETH_WALLET_OVERLAY,

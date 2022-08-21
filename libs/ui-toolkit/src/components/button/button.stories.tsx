@@ -1,10 +1,10 @@
-import type { Story, Meta } from '@storybook/react';
+import type { Story, ComponentMeta } from '@storybook/react';
 import { AnchorButton, Button, ButtonLink } from './button';
 
 export default {
   component: Button,
   title: 'Button',
-} as Meta;
+} as ComponentMeta<typeof Button>;
 
 const Template: Story = (args) => (
   <div className="mb-8">
@@ -15,6 +15,7 @@ const Template: Story = (args) => (
 export const Default = Template.bind({});
 Default.args = {
   children: 'Button text',
+  disabled: false,
 };
 
 export const Primary = Template.bind({});

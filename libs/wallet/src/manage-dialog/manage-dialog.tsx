@@ -52,6 +52,7 @@ export const VegaManageDialog = ({
                         }}
                         disabled={kp.pub === keypair?.pub}
                         data-testid="select-keypair-button"
+                        size="sm"
                       >
                         {t('Select this key')}
                       </Button>
@@ -92,6 +93,7 @@ export const VegaManageDialog = ({
               disconnect();
               setDialogOpen(false);
             }}
+            size="sm"
           >
             {t('Disconnect all keys')}
           </Button>

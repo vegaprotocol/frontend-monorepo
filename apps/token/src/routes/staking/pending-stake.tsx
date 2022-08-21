@@ -75,10 +75,7 @@ export const PendingStake = ({
     <div className="py-4">
       <h2>{t('pendingNomination')}</h2>
       <p>{t('pendingNominationNextEpoch', { pendingAmount })}</p>
-      <Button
-        className="button-secondary button-secondary--dark"
-        onClick={() => removeStakeNow()}
-      >
+      <Button onClick={() => removeStakeNow()}>
         {t('cancelPendingEpochNomination')}
       </Button>
     </div>

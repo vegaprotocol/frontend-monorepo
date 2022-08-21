@@ -101,7 +101,7 @@ export const OrderEditDialog = ({
               </InputError>
             )}
           </FormGroup>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" size="md" type="submit">
             {t('Update')}
           </Button>
         </form>

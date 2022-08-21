@@ -51,7 +51,9 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           data-testid="new-proposal-link"
           to={`${Routes.GOVERNANCE}/propose`}
         >
-          <Button variant={'primary'}>{t('NewProposal')}</Button>
+          <Button variant="primary" size="md">
+            {t('NewProposal')}
+          </Button>
         </Link>
       </div>
       <div>
