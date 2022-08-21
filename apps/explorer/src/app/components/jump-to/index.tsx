@@ -31,7 +31,7 @@ export const JumpTo = ({
       >
         {label}
       </label>
-      <div className="flex">
+      <div className="flex gap-8">
         <Input
           data-testid={inputId}
           id={inputId}
@@ -42,7 +42,7 @@ export const JumpTo = ({
           min={inputMin}
           max={inputMax}
         />
-        <Button data-testid="go-submit" type="submit">
+        <Button data-testid="go-submit" size="sm" type="submit">
           {t('Go')}
         </Button>
       </div>
