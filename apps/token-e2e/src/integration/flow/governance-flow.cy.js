@@ -21,13 +21,16 @@ context('Governance flow - with eth and vega wallets connected', function () {
       ).as('minProposerBalance');
       cy.wrap(
         network_parameters['governance.proposal.freeform.minVoterBalance']
-      ).as('minVoterBalance'); 
+      ).as('minVoterBalance');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.requiredMajority']*100
-      ).as('requiredMajority'); 
+        network_parameters['governance.proposal.freeform.requiredMajority'] *
+          100
+      ).as('requiredMajority');
       cy.wrap(
-        network_parameters['governance.proposal.freeform.requiredParticipation']*100
-      ).as('requiredParticipation'); 
+        network_parameters[
+          'governance.proposal.freeform.requiredParticipation'
+        ] * 100
+      ).as('requiredParticipation');
       cy.wrap(
         network_parameters['governance.proposal.freeform.minClose'].split(
           'h'
@@ -143,13 +146,15 @@ context('Governance flow - with eth and vega wallets connected', function () {
               .contains(closingDate)
               .should('be.visible');
           });
-        })
-      cy.get_governance_proposal_date_format_for_specified_days('0')
-        .then((proposalDate) => {
+        }
+      );
+      cy.get_governance_proposal_date_format_for_specified_days('0').then(
+        (proposalDate) => {
           cy.get_proposal_information_from_table('Proposed on')
             .contains(proposalDate)
             .should('be.visible');
-          });
+        }
+      );
       cy.contains('9 days left to vote').should('be.visible');
     });
 
@@ -184,7 +189,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_proposal_information_from_table('Majority met')
         .contains('👎')
         .should('be.visible');
-       cy.get_proposal_information_from_table('Participation met')
+      cy.get_proposal_information_from_table('Participation met')
         .contains('👎')
         .should('be.visible');
     });
@@ -207,19 +212,21 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
-      cy.get_submitted_proposal().as('submittedProposal').within(() =>
-        cy.get(viewProposalButton).click()
-      );
+      cy.get_submitted_proposal()
+        .as('submittedProposal')
+        .within(() => cy.get(viewProposalButton).click());
       cy.vote_for_proposal('for');
       //-------------------
-      cy.get_governance_proposal_date_format_for_specified_days('0', 'shortMonth')
-        .then((votedDate) => {
-          cy.contains('You voted:')
-            .siblings()
-            .contains('For')
-            .siblings()
-            .contains(votedDate)
-            .should('be.visible');
+      cy.get_governance_proposal_date_format_for_specified_days(
+        '0',
+        'shortMonth'
+      ).then((votedDate) => {
+        cy.contains('You voted:')
+          .siblings()
+          .contains('For')
+          .siblings()
+          .contains(votedDate)
+          .should('be.visible');
       });
       cy.get_proposal_information_from_table('Tokens for proposal')
         .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
@@ -256,18 +263,20 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).click();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
-      cy.get_submitted_proposal().as('submittedProposal').within(() =>
-        cy.get(viewProposalButton).click()
-      );
+      cy.get_submitted_proposal()
+        .as('submittedProposal')
+        .within(() => cy.get(viewProposalButton).click());
       cy.vote_for_proposal('against');
-      cy.get_governance_proposal_date_format_for_specified_days('0', 'shortMonth')
-        .then((votedDate) => {
-          cy.contains('You voted:')
-            .siblings()
-            .contains('Against')
-            .siblings()
-            .contains(votedDate)
-            .should('be.visible');
+      cy.get_governance_proposal_date_format_for_specified_days(
+        '0',
+        'shortMonth'
+      ).then((votedDate) => {
+        cy.contains('You voted:')
+          .siblings()
+          .contains('Against')
+          .siblings()
+          .contains(votedDate)
+          .should('be.visible');
       });
       cy.get_proposal_information_from_table('Tokens for proposal')
         .should('have.text', '0.00')
@@ -418,11 +427,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
             'December',
           ],
           month = months[dateSupplied.getMonth()],
-          shortMonth = months[dateSupplied.getMonth()].substring(0,3),
+          shortMonth = months[dateSupplied.getMonth()].substring(0, 3),
           date = dateSupplied.getDate();
 
-        if (monthTextLength === 'longMonth') return `${date} ${month} ${year}`
-        else return `${date} ${shortMonth} ${year}`
+        if (monthTextLength === 'longMonth') return `${date} ${month} ${year}`;
+        else return `${date} ${shortMonth} ${year}`;
       }
     );
 
@@ -475,34 +484,37 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.wait('@proposalSubmissionCompletion')
         .its(proposalResponseIdPath)
         .then((proposalId) => {
-          return cy.get(`#${proposalId}`)
+          return cy.get(`#${proposalId}`);
         });
     });
 
-    Cypress.Commands.add('get_governance_proposal_date_format_for_specified_days', (days, shortOrLong) => {
-      cy.create_ten_digit_unix_timestamp_for_specified_days(days).then(
-        (date) => {
-          cy.convert_unix_timestamp_to_governance_data_table_date_format(
-            date, shortOrLong
-          ).then((convertedDate) => {
-            return convertedDate
-          });
-        }
-      );
-    })
+    Cypress.Commands.add(
+      'get_governance_proposal_date_format_for_specified_days',
+      (days, shortOrLong) => {
+        cy.create_ten_digit_unix_timestamp_for_specified_days(days).then(
+          (date) => {
+            cy.convert_unix_timestamp_to_governance_data_table_date_format(
+              date,
+              shortOrLong
+            ).then((convertedDate) => {
+              return convertedDate;
+            });
+          }
+        );
+      }
+    );
 
     Cypress.Commands.add('get_proposal_information_from_table', (heading) => {
-      cy.get(proposalInformationTableRows)
-        .contains(heading)
-        .siblings()
-    })
-
+      cy.get(proposalInformationTableRows).contains(heading).siblings();
+    });
 
     Cypress.Commands.add('vote_for_proposal', (vote) => {
-      cy.contains('Vote breakdown').should('be.visible', {timeout: 10000})
+      cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
       cy.get('button').contains(`Vote ${vote}`).click();
       cy.contains('Casting vote...').should('be.visible');
-      cy.contains('Casting vote...', {timeout: txTimeout}).should('not.exist');
+      cy.contains('Casting vote...', { timeout: txTimeout }).should(
+        'not.exist'
+      );
 
       //below section temporary until #1090 fixed
       cy.navigate_to('governance');
@@ -510,7 +522,6 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get('@submittedProposal').within(() =>
         cy.get(viewProposalButton).click()
       );
-    })
-    
+    });
   });
 });
