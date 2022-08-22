@@ -43,7 +43,7 @@ function AppBody({ Component, pageProps }: AppProps) {
     if (!isRiskAccepted && VEGA_ENV === Networks.MAINNET) {
       store.setVegaRiskNoticeDialog(true);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.setVegaRiskNoticeDialog, VEGA_ENV]);
 
   const handleAcceptRisk = () => {
