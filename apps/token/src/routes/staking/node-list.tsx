@@ -260,11 +260,13 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   return (
     <AsyncRenderer loading={loading} error={error} data={nodes}>
       {epoch && epoch.timestamps.start && epoch.timestamps.expiry && (
-        <EpochCountdown
-          id={epoch.id}
-          startDate={new Date(epoch.timestamps.start)}
-          endDate={new Date(epoch.timestamps.expiry)}
-        />
+        <div className="mb-20">
+          <EpochCountdown
+            id={epoch.id}
+            startDate={new Date(epoch.timestamps.start)}
+            endDate={new Date(epoch.timestamps.expiry)}
+          />
+        </div>
       )}
       <NodeListTable ref={gridRef} />
     </AsyncRenderer>
