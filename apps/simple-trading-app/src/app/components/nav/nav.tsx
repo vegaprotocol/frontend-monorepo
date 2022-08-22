@@ -11,8 +11,9 @@ interface NavProps {
 export const Nav = ({ className, tabs = false }: NavProps) => {
   return (
     <nav role={tabs ? 'tablist' : 'menu'} className={className}>
-      {routerConfig.map((r) =>
-        r.icon ? (
+      {routerConfig
+        .filter((r) => r.isNavItem)
+        .map((r) => (
           <NavLink
             role={tabs ? 'tab' : 'menuitem'}
             key={r.name}
@@ -25,8 +26,7 @@ export const Nav = ({ className, tabs = false }: NavProps) => {
           >
             <NavItem iconName={r.icon} label={r.text} />
           </NavLink>
-        ) : null
-      )}
+        ))}
     </nav>
   );
 };
