@@ -8,6 +8,10 @@ const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const openProposals = '[data-testid="open-proposals"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const proposalResponseIdPath = 'response.body.data.busEvents.0.event.id';
+const proposalVoteProgressForPercentage = '[data-testid="vote-progress-indicator-percentage-for"]';
+const proposalVoteProgressAgainstPercentage = '[data-testid="vote-progress-indicator-percentage-against"]';
+const proposalVoteProgressForTokens = '[data-testid="vote-progress-indicator-tokens-for"]';
+const proposalVoteProgressAgainstTokens = '[data-testid="vote-progress-indicator-tokens-against"]';
 const txTimeout = Cypress.env('txTimeout');
 
 context('Governance flow - with eth and vega wallets connected', function () {
@@ -228,6 +232,18 @@ context('Governance flow - with eth and vega wallets connected', function () {
           .contains(votedDate)
           .should('be.visible');
       });
+      cy.get(proposalVoteProgressForPercentage)
+        .contains('100.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstPercentage)
+        .contains('0.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('1.00')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstTokens)
+        .contains('0.00')
+        .and('be.visible');
       cy.get_proposal_information_from_table('Tokens for proposal')
         .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
         .and('be.visible');
@@ -278,6 +294,18 @@ context('Governance flow - with eth and vega wallets connected', function () {
           .contains(votedDate)
           .should('be.visible');
       });
+      cy.get(proposalVoteProgressForPercentage)
+        .contains('0.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstPercentage)
+        .contains('100.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('0.00')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstTokens)
+        .contains('1.00')
+        .and('be.visible');
       cy.get_proposal_information_from_table('Tokens for proposal')
         .should('have.text', '0.00')
         .and('be.visible');
@@ -293,6 +321,171 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_proposal_information_from_table('Number of voting parties')
         .should('have.text', '1')
         .and('be.visible');
+    });
+
+    it('Newly created freeform proposal - ability to change vote from against to for - with minimum required tokens associated', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal submitted').should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get_submitted_proposal()
+        .as('submittedProposal')
+        .within(() => cy.get(viewProposalButton).click());
+      cy.vote_for_proposal('against');
+      cy.get('button').contains('Change vote').should('be.visible').click();
+      cy.wait_for_spinner();
+      cy.vote_for_proposal('for');
+      cy.get(proposalVoteProgressForPercentage)
+        .contains('100.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstPercentage)
+        .contains('0.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('1.00')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstTokens)
+        .contains('0.00')
+        .and('be.visible');
+      cy.get_proposal_information_from_table('Tokens for proposal')
+        .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+        .and('be.visible');
+      cy.get_proposal_information_from_table('Tokens against proposal')
+        .should('have.text', '0.00')
+        .and('be.visible');
+      cy.get_proposal_information_from_table('Participation required')
+        .contains(`${this.requiredParticipation}%`)
+        .should('be.visible');
+      cy.get_proposal_information_from_table('Majority Required')
+        .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
+        .should('be.visible');
+      cy.get_proposal_information_from_table('Number of voting parties')
+        .should('have.text', '1')
+        .and('be.visible');
+    });
+
+    it('Newly created freeform proposal - ability to change vote from for to against - with minimum required tokens associated', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal submitted').should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get_submitted_proposal()
+        .as('submittedProposal')
+        .within(() => cy.get(viewProposalButton).click());
+      cy.vote_for_proposal('for');
+      cy.get('button').contains('Change vote').should('be.visible').click();
+      cy.wait_for_spinner();
+      cy.vote_for_proposal('against');
+      cy.get(proposalVoteProgressForPercentage)
+        .contains('0.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstPercentage)
+        .contains('100.00%')
+        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('0.00')
+        .and('be.visible');
+      cy.get(proposalVoteProgressAgainstTokens)
+        .contains('1.00')
+        .and('be.visible');
+      cy.get_proposal_information_from_table('Tokens for proposal')
+        .should('have.text', '0.00')
+        .and('be.visible');
+      cy.get_proposal_information_from_table('Tokens against proposal')
+        .should('have.text', parseFloat(this.minProposerBalance).toFixed(2))
+        .and('be.visible');
+      cy.get_proposal_information_from_table('Participation required')
+        .contains(`${this.requiredParticipation}%`)
+        .should('be.visible');
+      cy.get_proposal_information_from_table('Majority Required')
+        .contains(`${parseFloat(this.requiredMajority).toFixed(2)}%`)
+        .should('be.visible');
+      cy.get_proposal_information_from_table('Number of voting parties')
+        .should('have.text', '1')
+        .and('be.visible');
+    });
+
+    it('Newly created freeform proposal - ability to increase associated tokens - so that vote sways result', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal submitted').should('be.visible');
+      cy.get(dialogCloseButton).click();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get_submitted_proposal()
+        .as('submittedProposal')
+        .within(() => cy.get(viewProposalButton).click());
+      cy.vote_for_proposal('for');
+      cy.get_proposal_information_from_table('Total Supply')
+        .invoke('text')
+        .then(totalSupply => {
+          let tokensRequiredToAcheiveResult = parseFloat(totalSupply.replace(/,/g, '') * this.requiredParticipation/100).toFixed(2)
+          cy.ensure_specified_unstaked_tokens_are_associated(
+            tokensRequiredToAcheiveResult
+          );
+          cy.navigate_to('governance');
+          cy.wait_for_spinner();
+          cy.get('@submittedProposal')
+            .within(() => cy.get(viewProposalButton).click());
+          cy.get(proposalVoteProgressForPercentage)
+            .contains('100.00%')
+            .and('be.visible');
+          cy.get(proposalVoteProgressAgainstPercentage)
+            .contains('0.00%')
+            .and('be.visible');
+          cy.get(proposalVoteProgressForTokens)
+            .contains(tokensRequiredToAcheiveResult)
+            .and('be.visible');
+          cy.get(proposalVoteProgressAgainstTokens)
+            .contains('0.00')
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Tokens for proposal')
+            .should('have.text', tokensRequiredToAcheiveResult)
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Tokens against proposal')
+            .should('have.text', '0.00')
+            .and('be.visible');
+          cy.get_proposal_information_from_table('Number of voting parties')
+            .should('have.text', '1')
+            .and('be.visible');
+      })
     });
 
     it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
