@@ -91,6 +91,7 @@ jobs:
           context: .
           push: false
           file: Dockerfile.cra
+          build-args: APP=${{ matrix.app }}
           load: true
           tags: vegaprotocol/${{ matrix.app }}:local
 
@@ -106,6 +107,7 @@ jobs:
           context: .
           push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
           file: Dockerfile.cra
+          build-args: APP=${{ matrix.app }}
           platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
           tags: |
             vegaprotocol/${{ matrix.app }}:latest
