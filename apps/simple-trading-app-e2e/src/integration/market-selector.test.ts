@@ -3,7 +3,7 @@ import { connectVegaWallet } from '../support/connect-wallet';
 describe('market selector', () => {
   let markets;
   before(() => {
-    cy.intercept('POST', '/query', (req) => {
+    cy.intercept('POST', '/graphql', (req) => {
       const { body } = req;
       if (body.operationName === 'SimpleMarkets') {
         req.alias = `gqlSimpleMarketsQuery`;
