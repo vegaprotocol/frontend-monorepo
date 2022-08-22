@@ -61,6 +61,7 @@ type GetExpiryProps = Pick<TradeMarketHeaderProps, 'market'> & {
 
 type ExpiryProps = {
   expiry: string;
+  hasTime: boolean;
   expiryTooltipDescription?: ReactNode;
 };
 
@@ -74,6 +75,7 @@ const getExpiryProps = ({
         .oracleSpecForTradingTermination?.id;
 
     return {
+      hasTime: false,
       expiry: t('Not time-based'),
       expiryTooltipDescription: (
         <>
@@ -96,6 +98,7 @@ const getExpiryProps = ({
   const isExpired = Date.now() - closeDate.valueOf() > 0;
 
   return {
+    hasTime: true,
     expiry: `${isExpired ? `${t('Expired')} ` : ''} ${getDateFormat().format(
       closeDate
     )}`,
@@ -136,7 +139,7 @@ export const TradeMarketHeader = ({
     }
   };
 
-  const { expiry, expiryTooltipDescription } = getExpiryProps({
+  const { expiry, hasTime, expiryTooltipDescription } = getExpiryProps({
     market,
     explorerUrl: VEGA_EXPLORER_URL,
   });
@@ -152,7 +155,12 @@ export const TradeMarketHeader = ({
           <Tooltip description={expiryTooltipDescription} align="start">
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Expiry')}</span>
-              <span data-testid="trading-expiry" className={itemValueClassName}>
+              <span
+                data-testid="trading-expiry"
+                className={classNames(itemValueClassName, {
+                  'underline decoration-dashed': !hasTime,
+                })}
+              >
                 {expiry}
               </span>
             </div>
@@ -181,7 +189,13 @@ export const TradeMarketHeader = ({
           >
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Trading mode')}</span>
-              <span data-testid="trading-mode" className={itemValueClassName}>
+              <span
+                data-testid="trading-mode"
+                className={classNames(
+                  itemValueClassName,
+                  'underline decoration-dashed'
+                )}
+              >
                 {market.tradingMode === MarketTradingMode.MonitoringAuction &&
                 market.data?.trigger &&
                 market.data.trigger !== AuctionTrigger.Unspecified
