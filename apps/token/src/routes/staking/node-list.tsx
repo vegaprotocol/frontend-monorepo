@@ -81,7 +81,7 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
 // AG Grid places the scrollbar over the bottom validator, which obstructs
 const nodeListGridStyles = `
   .ag-theme-balham-dark .ag-body-horizontal-scroll {
-    opacity: 0.25;
+    opacity: 0.75;
   }
 `;
 
@@ -159,47 +159,54 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     );
   }, [data, t]);
 
-  const gridRef = useRef<AgGridReact | null>(null);
-
-  const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
+  const NodeListTable = () => {
     const colDefs = useMemo(
       () => [
         {
           field: VALIDATOR,
+          colId: VALIDATOR,
           headerName: t('validator').toString(),
           cellRenderer: ValidatorRenderer,
         },
-        { field: STATUS, headerName: t('status').toString() },
+        { field: STATUS, colId: STATUS, headerName: t('status').toString() },
         {
           field: TOTAL_STAKE_THIS_EPOCH,
+          colId: TOTAL_STAKE_THIS_EPOCH,
           headerName: t('totalStakeThisEpoch').toString(),
         },
         {
           field: SHARE,
+          colId: SHARE,
           headerName: t('share').toString(),
         },
         {
           field: VALIDATOR_STAKE,
+          colId: VALIDATOR_STAKE,
           headerName: t('validatorStake').toString(),
         },
         {
           field: PENDING_STAKE,
+          colId: PENDING_STAKE,
           headerName: t('nextEpoch').toString(),
         },
         {
           field: RANKING_SCORE,
+          colId: RANKING_SCORE,
           headerName: t('rankingScore').toString(),
         },
         {
           field: STAKE_SCORE,
+          colId: STAKE_SCORE,
           headerName: t('stakeScore').toString(),
         },
         {
           field: PERFORMANCE_SCORE,
+          colId: PERFORMANCE_SCORE,
           headerName: t('performanceScore').toString(),
         },
         {
           field: VOTING_POWER,
+          colId: VOTING_POWER,
           headerName: t('votingPower').toString(),
         },
       ],
@@ -215,6 +222,8 @@ export const NodeList = ({ epoch }: NodeListProps) => {
       []
     );
 
+    const gridRef = useRef<AgGridReact | null>(null);
+
     return (
       <div data-testid="validators-grid">
         <AgGrid
@@ -222,7 +231,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           style={{ width: '100%' }}
           customThemeParams={nodeListGridStyles}
           overlayNoRowsTemplate={t('noValidators')}
-          ref={ref}
+          ref={gridRef}
           rowData={nodes}
           rowHeight={32}
           columnDefs={colDefs}
@@ -230,14 +239,23 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           animateRows={true}
           suppressCellFocus={true}
           onGridReady={(event) => {
-            event.columnApi.applyColumnState({
+            gridRef.current?.columnApi.applyColumnState({
               state: [
                 {
-                  colId: RANKING_SCORE,
+                  colId: TOTAL_STAKE_THIS_EPOCH,
                   sort: 'desc',
                 },
               ],
             });
+            event.columnApi.applyColumnState({
+              state: [
+                {
+                  colId: TOTAL_STAKE_THIS_EPOCH,
+                  sort: 'desc',
+                },
+              ],
+            });
+            gridRef.current?.columnApi.autoSizeAllColumns(false);
             event.columnApi.autoSizeAllColumns(false);
           }}
           onCellClicked={(event) => {
@@ -246,7 +264,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
         />
       </div>
     );
-  });
+  };
 
   return (
     <AsyncRenderer loading={loading} error={error} data={nodes}>
@@ -257,7 +275,7 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           endDate={new Date(epoch.timestamps.expiry)}
         />
       )}
-      <NodeListTable ref={gridRef} />
+      <NodeListTable />
     </AsyncRenderer>
   );
 };
