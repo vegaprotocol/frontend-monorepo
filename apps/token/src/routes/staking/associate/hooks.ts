@@ -99,7 +99,7 @@ export const usePollForStakeLinking = (
         .query<PartyStakeLinkings, PartyStakeLinkingsVariables>({
           query: PARTY_STAKE_LINKINGS,
           variables: { partyId },
-          // 'network-only' doesn't work here. Pretty wierd. no-cache just means its network only plus
+          // 'network-only' doesn't work here. no-cache just means its network only plus
           // the result is not stored in the cache
           fetchPolicy: 'no-cache',
         })
