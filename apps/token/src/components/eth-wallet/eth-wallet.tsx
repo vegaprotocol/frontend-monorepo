@@ -129,33 +129,35 @@ const ConnectedKey = () => {
 
   return (
     <>
-      {totalVestedBalance.plus(totalLockedBalance).isEqualTo(0) ? null : (
-        <section data-testid="vega-in-vesting-contract">
-          <WalletCardAsset
-            image={vegaVesting}
-            decimals={appState.decimals}
-            name="VEGA"
-            symbol="In vesting contract"
-            balance={totalInVestingContract}
-            dark={true}
+      <section data-testid="vega-in-vesting-contract">
+        {totalVestedBalance.plus(totalLockedBalance).isEqualTo(0) ? null : (
+          <section>
+            <WalletCardAsset
+              image={vegaVesting}
+              decimals={appState.decimals}
+              name="VEGA"
+              symbol="In vesting contract"
+              balance={totalInVestingContract}
+              dark={true}
+            />
+            <LockedProgress
+              locked={totalLockedBalance}
+              unlocked={totalVestedBalance}
+              total={totalVestedBalance.plus(totalLockedBalance)}
+              leftLabel={t('Locked')}
+              rightLabel={t('Unlocked')}
+              light={false}
+            />
+          </section>
+        )}
+        {!Object.keys(appState.associationBreakdown.vestingAssociations)
+          .length ? null : (
+          <AssociatedAmounts
+            associations={appState.associationBreakdown.vestingAssociations}
+            notAssociated={notAssociatedInContract}
           />
-          <LockedProgress
-            locked={totalLockedBalance}
-            unlocked={totalVestedBalance}
-            total={totalVestedBalance.plus(totalLockedBalance)}
-            leftLabel={t('Locked')}
-            rightLabel={t('Unlocked')}
-            light={false}
-          />
-        </section>
-      )}
-      {!Object.keys(appState.associationBreakdown.vestingAssociations)
-        .length ? null : (
-        <AssociatedAmounts
-          associations={appState.associationBreakdown.vestingAssociations}
-          notAssociated={notAssociatedInContract}
-        />
-      )}
+        )}
+      </section>
       <section data-testid="vega-in-wallet">
         <WalletCardAsset
           image={vegaWhite}
