@@ -5,7 +5,7 @@ import { AccountType } from '@vegaprotocol/types';
 
 const singleRow: Accounts_party_accounts = {
   __typename: 'Account',
-  type: AccountType.Margin,
+  type: AccountType.ACCOUNT_TYPE_MARGIN,
   balance: '125600000',
   market: {
     __typename: 'Market',

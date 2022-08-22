@@ -18,7 +18,7 @@ export const generateWithdrawPageQuery = (
       ],
       accounts: [
         {
-          type: AccountType.General,
+          type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           asset: {
             __typename: 'Asset',

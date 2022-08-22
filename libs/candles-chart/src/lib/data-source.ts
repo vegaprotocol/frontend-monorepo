@@ -12,6 +12,7 @@ import type {
 } from './__generated__/CandlesSub';
 import type { Subscription } from 'zen-observable-ts';
 import { Interval } from '@vegaprotocol/types';
+import { Interval as IntervalPennant } from 'pennant';
 
 export const CANDLE_FRAGMENT = gql`
   fragment CandleFields on Candle {
@@ -23,6 +24,15 @@ export const CANDLE_FRAGMENT = gql`
     volume
   }
 `;
+
+export const IntervalMapping = {
+  [IntervalPennant.I15M]: Interval.INTERVAL_I15M,
+  [IntervalPennant.I1H]: Interval.INTERVAL_I1H,
+  [IntervalPennant.I1D]: Interval.INTERVAL_I1D,
+  [IntervalPennant.I1M]: Interval.INTERVAL_I1M,
+  [IntervalPennant.I5M]: Interval.INTERVAL_I5M,
+  [IntervalPennant.I6H]: Interval.INTERVAL_I6H,
+};
 
 export const CANDLES_QUERY = gql`
   ${CANDLE_FRAGMENT}
@@ -71,12 +81,12 @@ const CHART_QUERY = gql`
 const defaultConfig = {
   decimalPlaces: 5,
   supportedIntervals: [
-    Interval.I1D,
-    Interval.I6H,
-    Interval.I1H,
-    Interval.I15M,
-    Interval.I5M,
-    Interval.I1M,
+    IntervalPennant.I1D,
+    IntervalPennant.I6H,
+    IntervalPennant.I1H,
+    IntervalPennant.I15M,
+    IntervalPennant.I5M,
+    IntervalPennant.I1M,
   ],
   priceMonitoringBounds: [],
 };
@@ -135,12 +145,12 @@ export class VegaDataSource implements DataSource {
         return {
           decimalPlaces: this._decimalPlaces,
           supportedIntervals: [
-            Interval.I1D,
-            Interval.I6H,
-            Interval.I1H,
-            Interval.I15M,
-            Interval.I5M,
-            Interval.I1M,
+            IntervalPennant.I1D,
+            IntervalPennant.I6H,
+            IntervalPennant.I1H,
+            IntervalPennant.I15M,
+            IntervalPennant.I5M,
+            IntervalPennant.I1M,
           ],
           priceMonitoringBounds:
             data.market.data.priceMonitoringBounds?.map((bounds) => ({
@@ -166,13 +176,13 @@ export class VegaDataSource implements DataSource {
   /**
    * Used by the charting library to get historical data.
    */
-  async query(interval: Interval, from: string) {
+  async query(interval: IntervalPennant, from: string) {
     try {
       const { data } = await this.client.query<Candles, CandlesVariables>({
         query: CANDLES_QUERY,
         variables: {
           marketId: this.marketId,
-          interval,
+          interval: IntervalMapping[interval],
           since: from,
         },
         fetchPolicy: 'no-cache',
@@ -198,12 +208,15 @@ export class VegaDataSource implements DataSource {
    * Used by the charting library to create a subscription to streaming data.
    */
   subscribeData(
-    interval: Interval,
+    interval: IntervalPennant,
     onSubscriptionData: (data: Candle) => void
   ) {
     const res = this.client.subscribe<CandlesSub, CandlesSubVariables>({
       query: CANDLES_SUB,
-      variables: { marketId: this.marketId, interval },
+      variables: {
+        marketId: this.marketId,
+        interval: IntervalMapping[interval],
+      },
     });
 
     this.candlesSub = res.subscribe(({ data }) => {

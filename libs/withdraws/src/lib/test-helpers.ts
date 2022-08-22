@@ -22,7 +22,7 @@ export const generateAsset = (override?: PartialDeep<Asset>) => {
 
 export const generateAccount = (override?: PartialDeep<Account>) => {
   const defaultAccount: Account = {
-    type: AccountType.General,
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '100000',
     asset: {
       id: 'asset-id',
@@ -39,7 +39,7 @@ export const generateWithdrawal = (
     {
       __typename: 'Withdrawal',
       id: 'withdrawal-id',
-      status: WithdrawalStatus.Open,
+      status: WithdrawalStatus.STATUS_OPEN,
       amount: '100',
       asset: {
         __typename: 'Asset',

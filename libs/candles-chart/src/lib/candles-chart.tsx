@@ -3,7 +3,7 @@ import 'pennant/dist/style.css';
 import {
   Chart,
   ChartType,
-  Interval,
+  Interval as IntervalPennant,
   Overlay,
   Study,
   chartTypeLabels,
@@ -48,7 +48,9 @@ export const CandlesChartContainer = ({
   const { keypair } = useVegaWallet();
   const theme = useContext(ThemeContext);
 
-  const [interval, setInterval] = useState<Interval>(Interval.I15M);
+  const [interval, setInterval] = useState<IntervalPennant>(
+    IntervalPennant.I15M
+  );
   const [chartType, setChartType] = useState<ChartType>(ChartType.CANDLE);
   const [overlays, setOverlays] = useState<Overlay[]>([]);
   const [studies, setStudies] = useState<Study[]>([]);
@@ -70,10 +72,10 @@ export const CandlesChartContainer = ({
             <DropdownMenuRadioGroup
               value={interval}
               onValueChange={(value) => {
-                setInterval(value as Interval);
+                setInterval(value as IntervalPennant);
               }}
             >
-              {Object.values(Interval).map((timeInterval) => (
+              {Object.values(IntervalPennant).map((timeInterval) => (
                 <DropdownMenuRadioItem
                   key={timeInterval}
                   inset

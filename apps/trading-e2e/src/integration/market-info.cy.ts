@@ -8,7 +8,7 @@ const marketTitle = 'accordion-title';
 describe('market info is displayed', () => {
   before(() => {
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Active);
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
     cy.visit('/markets/market-0');
     cy.wait('@Market');

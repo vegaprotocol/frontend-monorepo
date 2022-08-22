@@ -5,10 +5,12 @@ import type {
 } from '@vegaprotocol/wallet';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import {
-  VegaWalletOrderSide,
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-} from '@vegaprotocol/wallet';
+  Side as OrderSide,
+  OrderTimeInForce,
+  OrderType,
+  Side,
+  OrderStatus,
+} from '@vegaprotocol/types';
 import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { ReactNode } from 'react';
 import type { Order } from './use-order-submit';
@@ -27,8 +29,8 @@ const defaultMarket = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.Continuous,
-  state: MarketState.Active,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -75,15 +77,14 @@ function setup(
           {
             type: 'Order',
             event: {
-              type: 'Limit',
+              type: OrderType.TYPE_LIMIT,
+              status: OrderStatus.STATUS_ACTIVE,
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
               market: {
                 name: 'UNIDAI Monthly (30 Jun 2022)',
                 decimalPlaces: 5,
@@ -110,15 +111,15 @@ function setup(
           {
             type: 'Order',
             event: {
-              type: 'Limit',
+              type: OrderType.TYPE_LIMIT,
+              status: OrderStatus.STATUS_ACTIVE,
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
+              side: Side.SIDE_BUY,
               market: {
                 name: 'UNIDAI Monthly (30 Jun 2022)',
                 decimalPlaces: 5,
@@ -158,10 +159,10 @@ describe('useOrderSubmit', () => {
     });
 
     const order = {
-      type: VegaWalletOrderType.Limit,
+      type: OrderType.TYPE_LIMIT,
       size: '10',
-      timeInForce: VegaWalletOrderTimeInForce.GTT,
-      side: VegaWalletOrderSide.Buy,
+      timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
+      side: OrderSide.SIDE_BUY,
       price: '1234567.89',
       expiration: new Date('2022-01-01'),
     };
@@ -173,11 +174,11 @@ describe('useOrderSubmit', () => {
       pubKey: keypair.pub,
       propagate: true,
       orderSubmission: {
-        type: VegaWalletOrderType.Limit,
+        type: OrderType.TYPE_LIMIT,
         marketId: defaultMarket.id, // Market provided from hook argument
         size: '100', // size adjusted based on positionDecimalPlaces
-        side: VegaWalletOrderSide.Buy,
-        timeInForce: VegaWalletOrderTimeInForce.GTT,
+        side: OrderSide.SIDE_BUY,
+        timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTT,
         price: '123456789', // Decimal removed
         expiresAt: order.expiration
           ? toNanoSeconds(order.expiration)

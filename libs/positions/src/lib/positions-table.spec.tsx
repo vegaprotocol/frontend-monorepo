@@ -17,7 +17,7 @@ const singleRow: Position = {
   liquidationPrice: '83', // 8.3
   lowMarginLevel: false,
   marketId: 'string',
-  marketTradingMode: MarketTradingMode.Continuous,
+  marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
   markPrice: '123', // 12.3
   notional: '12300', // 1230.0
   openVolume: '100', // 100
@@ -103,7 +103,10 @@ it('displays mark price', async () => {
     result.rerender(
       <PositionsTable
         rowData={[
-          { ...singleRow, marketTradingMode: MarketTradingMode.OpeningAuction },
+          {
+            ...singleRow,
+            marketTradingMode: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+          },
         ]}
       />
     );

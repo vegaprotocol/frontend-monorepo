@@ -7,12 +7,7 @@ import type {
   EstimateOrder_estimateOrder_fee,
 } from './__generated__/estimateOrder';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
-import { OrderTimeInForce, OrderType, Side } from '@vegaprotocol/types';
-import {
-  VegaWalletOrderSide,
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-} from '@vegaprotocol/wallet';
+import { Side } from '@vegaprotocol/types';
 import { addDecimal, removeDecimal } from '@vegaprotocol/react-helpers';
 import useMarketPositions from './use-market-positions';
 import useMarketData from './use-market-data';
@@ -56,20 +51,6 @@ interface Props {
   partyId: string;
 }
 
-const times: Record<VegaWalletOrderTimeInForce, OrderTimeInForce> = {
-  [VegaWalletOrderTimeInForce.GTC]: OrderTimeInForce.GTC,
-  [VegaWalletOrderTimeInForce.GTT]: OrderTimeInForce.GTT,
-  [VegaWalletOrderTimeInForce.IOC]: OrderTimeInForce.IOC,
-  [VegaWalletOrderTimeInForce.FOK]: OrderTimeInForce.FOK,
-  [VegaWalletOrderTimeInForce.GFN]: OrderTimeInForce.GFN,
-  [VegaWalletOrderTimeInForce.GFA]: OrderTimeInForce.GFA,
-};
-
-const types: Record<VegaWalletOrderType, OrderType> = {
-  [VegaWalletOrderType.Market]: OrderType.Market,
-  [VegaWalletOrderType.Limit]: OrderType.Limit,
-};
-
 const addFees = (feeObj: EstimateOrder_estimateOrder_fee) => {
   return new BigNumber(feeObj.makerFee)
     .plus(feeObj.liquidityFee)
@@ -99,14 +80,14 @@ const useOrderMargin = ({
           BigNumber.maximum(
             0,
             new BigNumber(marketPositions?.openVolume || 0)[
-              order.side === VegaWalletOrderSide.Buy ? 'plus' : 'minus'
+              order.side === Side.SIDE_BUY ? 'plus' : 'minus'
             ](order.size)
           ).toString(),
           market.positionDecimalPlaces
         ),
-        side: order.side === VegaWalletOrderSide.Buy ? Side.Buy : Side.Sell,
-        timeInForce: times[order.timeInForce],
-        type: types[order.type],
+        side: order.side === Side.SIDE_BUY ? Side.SIDE_BUY : Side.SIDE_SELL,
+        timeInForce: order.timeInForce,
+        type: order.type,
       },
       skip:
         !partyId ||

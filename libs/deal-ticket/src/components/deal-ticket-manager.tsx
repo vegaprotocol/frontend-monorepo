@@ -52,21 +52,21 @@ export const getOrderDialogTitle = (
   }
 
   switch (status) {
-    case OrderStatus.Active:
+    case OrderStatus.STATUS_ACTIVE:
       return t('Order submitted');
-    case OrderStatus.Filled:
+    case OrderStatus.STATUS_FILLED:
       return t('Order filled');
-    case OrderStatus.PartiallyFilled:
+    case OrderStatus.STATUS_PARTIALLY_FILLED:
       return t('Order partially filled');
-    case OrderStatus.Parked:
+    case OrderStatus.STATUS_PARKED:
       return t('Order parked');
-    case OrderStatus.Stopped:
+    case OrderStatus.STATUS_STOPPED:
       return t('Order stopped');
-    case OrderStatus.Cancelled:
+    case OrderStatus.STATUS_CANCELLED:
       return t('Order cancelled');
-    case OrderStatus.Expired:
+    case OrderStatus.STATUS_EXPIRED:
       return t('Order expired');
-    case OrderStatus.Rejected:
+    case OrderStatus.STATUS_REJECTED:
       return t('Order rejected');
     default:
       return t('Submission failed');
@@ -80,16 +80,16 @@ export const getOrderDialogIntent = (
     return;
   }
   switch (status) {
-    case OrderStatus.Parked:
-    case OrderStatus.Expired:
-    case OrderStatus.PartiallyFilled:
+    case OrderStatus.STATUS_PARKED:
+    case OrderStatus.STATUS_EXPIRED:
+    case OrderStatus.STATUS_PARTIALLY_FILLED:
       return Intent.Warning;
-    case OrderStatus.Rejected:
-    case OrderStatus.Stopped:
-    case OrderStatus.Cancelled:
+    case OrderStatus.STATUS_REJECTED:
+    case OrderStatus.STATUS_STOPPED:
+    case OrderStatus.STATUS_CANCELLED:
       return Intent.Danger;
-    case OrderStatus.Filled:
-    case OrderStatus.Active:
+    case OrderStatus.STATUS_FILLED:
+    case OrderStatus.STATUS_ACTIVE:
       return Intent.Success;
     default:
       return;
@@ -104,12 +104,12 @@ export const getOrderDialogIcon = (
   }
 
   switch (status) {
-    case OrderStatus.Parked:
-    case OrderStatus.Expired:
+    case OrderStatus.STATUS_PARKED:
+    case OrderStatus.STATUS_EXPIRED:
       return <Icon name="warning-sign" size={20} />;
-    case OrderStatus.Rejected:
-    case OrderStatus.Stopped:
-    case OrderStatus.Cancelled:
+    case OrderStatus.STATUS_REJECTED:
+    case OrderStatus.STATUS_STOPPED:
+    case OrderStatus.STATUS_CANCELLED:
       return <Icon name="error" size={20} />;
     default:
       return;

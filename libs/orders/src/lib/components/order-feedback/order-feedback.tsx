@@ -30,7 +30,7 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           <p className={labelClass}>{t(`Status`)}</p>
           <p>{t(`${order.status}`)}</p>
         </div>
-        {order.type === OrderType.Limit && order.market && (
+        {order.type === OrderType.TYPE_LIMIT && order.market && (
           <div>
             <p className={labelClass}>{t(`Price`)}</p>
             <p>
@@ -42,12 +42,14 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
           <p className={labelClass}>{t(`Size`)}</p>
           <p
             className={
-              order.side === Side.Buy
+              order.side === Side.SIDE_BUY
                 ? 'text-vega-green-dark dark:text-vega-green'
                 : 'text-vega-red-dark dark:text-vega-red'
             }
           >
-            {`${order.side === Side.Buy ? '+' : '-'} ${addDecimalsFormatNumber(
+            {`${
+              order.side === Side.SIDE_BUY ? '+' : '-'
+            } ${addDecimalsFormatNumber(
               order.size,
               order.market?.positionDecimalPlaces ?? 0
             )}
@@ -85,11 +87,11 @@ const getRejectionReason = (
   order: OrderEvent_busEvents_event_Order
 ): string | null => {
   switch (order.status) {
-    case OrderStatus.Stopped:
+    case OrderStatus.STATUS_STOPPED:
       return t(
         `Your ${order.timeInForce} order was not filled and it has been stopped`
       );
-    case OrderStatus.Rejected:
+    case OrderStatus.STATUS_REJECTED:
       return order.rejectionReason && t(startCase(order.rejectionReason));
     default:
       return null;

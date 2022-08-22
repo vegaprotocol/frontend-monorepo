@@ -24,7 +24,7 @@ export const DealTicketBalance = ({
   const settlementAccount = useSettlementAccount(
     settlementAssetId,
     accounts,
-    AccountType.General
+    AccountType.ACCOUNT_TYPE_GENERAL
   );
   const formatedNumber =
     settlementAccount?.balance &&

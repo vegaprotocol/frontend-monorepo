@@ -2,8 +2,7 @@ import useMarketPositions from './use-market-positions';
 import type { Order } from '@vegaprotocol/orders';
 import type { PartyBalanceQuery_party_accounts } from '../components/deal-ticket/__generated__/PartyBalanceQuery';
 import { useSettlementAccount } from './use-settlement-account';
-import { AccountType } from '@vegaprotocol/types';
-import { VegaWalletOrderSide } from '@vegaprotocol/wallet';
+import { AccountType, Side } from '@vegaprotocol/types';
 import { BigNumber } from 'bignumber.js';
 
 interface Props {
@@ -29,7 +28,7 @@ export default ({
   const settlementAccount = useSettlementAccount(
     settlementAssetId,
     accounts,
-    AccountType.General
+    AccountType.ACCOUNT_TYPE_GENERAL
   );
 
   const marketPositions = useMarketPositions({ marketId: marketId, partyId });
@@ -48,10 +47,8 @@ export default ({
   }
 
   const isSameSide =
-    (marketPositions.openVolume.isPositive() &&
-      order.side === VegaWalletOrderSide.Buy) ||
-    (marketPositions.openVolume.isNegative() &&
-      order.side === VegaWalletOrderSide.Sell);
+    (marketPositions.openVolume.isPositive() && order.side === Side.SIDE_BUY) ||
+    (marketPositions.openVolume.isNegative() && order.side === Side.SIDE_SELL);
 
   const adjustedForVolume = new BigNumber(size)[isSameSide ? 'minus' : 'plus'](
     marketPositions.openVolume

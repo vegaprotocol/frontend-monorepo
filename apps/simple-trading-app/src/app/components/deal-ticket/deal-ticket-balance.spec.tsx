@@ -18,7 +18,7 @@ const tDAI: PartyBalanceQuery_party_accounts_asset = {
 const accounts: PartyBalanceQuery_party_accounts[] = [
   {
     __typename: 'Account',
-    type: AccountType.General,
+    type: AccountType.ACCOUNT_TYPE_GENERAL,
     balance: '1000000',
     asset: tDAI,
   },

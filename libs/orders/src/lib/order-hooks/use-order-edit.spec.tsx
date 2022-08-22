@@ -3,7 +3,7 @@ import type {
   VegaKeyExtended,
   VegaWalletContextShape,
 } from '@vegaprotocol/wallet';
-import { VegaWalletOrderTimeInForce } from '@vegaprotocol/wallet';
+import { OrderTimeInForce } from '@vegaprotocol/types';
 import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import type { ReactNode } from 'react';
 import { useOrderEdit } from './use-order-edit';
@@ -138,7 +138,7 @@ describe('useOrderEdit', () => {
         orderId: order.id,
         // eslint-disable-next-line
         marketId: order.market!.id,
-        timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
+        timeInForce: OrderTimeInForce[order.timeInForce],
         price: { value: '123456789' }, // Decimal removed
         sizeDelta: 0,
         expiresAt: undefined,

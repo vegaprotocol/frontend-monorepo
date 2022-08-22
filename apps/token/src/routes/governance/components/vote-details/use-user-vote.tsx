@@ -1,8 +1,8 @@
 import { captureException, captureMessage } from '@sentry/minimal';
 import * as React from 'react';
 
-import { VoteValue } from '../../../../__generated__/globalTypes';
-import { useVegaWallet, VegaWalletVoteValue } from '@vegaprotocol/wallet';
+import { VoteValue } from '@vegaprotocol/types';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export type Vote = {
   value: VoteValue;
@@ -64,7 +64,7 @@ export function useUserVote(
       setVoteState(VoteState.NotCast);
     } else {
       setVoteState(
-        userVote.value === VoteValue.Yes ? VoteState.Yes : VoteState.No
+        userVote.value === VoteValue.VALUE_YES ? VoteState.Yes : VoteState.No
       );
     }
   }, [userVote]);
@@ -100,7 +100,7 @@ export function useUserVote(
         pubKey: keypair.pub,
         propagate: true,
         voteSubmission: {
-          value: VegaWalletVoteValue[value],
+          value: VoteValue[value],
           proposalId,
         },
       };

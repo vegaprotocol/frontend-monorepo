@@ -14,7 +14,10 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
 import type { Position } from './positions-metrics-data-provider';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import {
+  MarketTradingMode,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 
 export const getRowId = ({ data }: { data: Position }) => data.marketId;
@@ -179,7 +182,12 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!data) {
             return undefined;
           }
-          if (data.marketTradingMode === MarketTradingMode.OpeningAuction) {
+          if (
+            data.marketTradingMode ===
+            MarketTradingModeMapping[
+              MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+            ]
+          ) {
             return '-';
           }
           return addDecimalsFormatNumber(

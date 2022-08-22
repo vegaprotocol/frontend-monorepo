@@ -2,13 +2,14 @@ import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
 import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import {
-  useVegaWallet,
-  VegaWalletOrderTimeInForce as OrderTimeInForce,
-  VegaWalletOrderType as OrderType,
-} from '@vegaprotocol/wallet';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+  MarketState,
+  MarketTradingMode,
+  OrderTimeInForce,
+  OrderType,
+} from '@vegaprotocol/types';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Order } from './use-order-submit';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 export type ValidationProps = {
   step?: number;
@@ -24,7 +25,7 @@ export type ValidationProps = {
 
 export const marketTranslations = (marketState: MarketState) => {
   switch (marketState) {
-    case MarketState.TradingTerminated:
+    case MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
       return t(marketState).toLowerCase();
@@ -54,11 +55,11 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketState.Settled,
-        MarketState.Rejected,
-        MarketState.TradingTerminated,
-        MarketState.Cancelled,
-        MarketState.Closed,
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_REJECTED,
+        MarketState.STATE_TRADING_TERMINATED,
+        MarketState.STATE_CANCELLED,
+        MarketState.STATE_CLOSED,
       ].includes(market.state)
     ) {
       return {
@@ -71,7 +72,11 @@ export const useOrderValidation = ({
       };
     }
 
-    if ([MarketState.Proposed, MarketState.Pending].includes(market.state)) {
+    if (
+      [MarketState.STATE_PROPOSED, MarketState.STATE_PENDING].includes(
+        market.state
+      )
+    ) {
       return {
         isDisabled: false,
         message: t(
@@ -84,12 +89,12 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketTradingMode.BatchAuction,
-        MarketTradingMode.MonitoringAuction,
-        MarketTradingMode.OpeningAuction,
+        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       ].includes(market.tradingMode)
     ) {
-      if (orderType !== OrderType.Limit) {
+      if (orderType !== OrderType.TYPE_LIMIT) {
         return {
           isDisabled: true,
           message: t(
@@ -100,9 +105,9 @@ export const useOrderValidation = ({
 
       if (
         [
-          OrderTimeInForce.FOK,
-          OrderTimeInForce.IOC,
-          OrderTimeInForce.GFN,
+          OrderTimeInForce.TIME_IN_FORCE_FOK,
+          OrderTimeInForce.TIME_IN_FORCE_IOC,
+          OrderTimeInForce.TIME_IN_FORCE_GFN,
         ].includes(orderTimeInForce)
       ) {
         return {
@@ -130,7 +135,7 @@ export const useOrderValidation = ({
 
     if (
       fieldErrors?.price?.type === 'required' &&
-      orderType !== OrderType.Market
+      orderType !== OrderType.TYPE_MARKET
     ) {
       return {
         isDisabled: true,
@@ -138,7 +143,10 @@ export const useOrderValidation = ({
       };
     }
 
-    if (fieldErrors?.price?.type === 'min' && orderType !== OrderType.Market) {
+    if (
+      fieldErrors?.price?.type === 'min' &&
+      orderType !== OrderType.TYPE_MARKET
+    ) {
       return {
         isDisabled: true,
         message: t(`The price cannot be negative`),
@@ -165,9 +173,9 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketTradingMode.BatchAuction,
-        MarketTradingMode.MonitoringAuction,
-        MarketTradingMode.OpeningAuction,
+        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
       ].includes(market.tradingMode)
     ) {
       return {

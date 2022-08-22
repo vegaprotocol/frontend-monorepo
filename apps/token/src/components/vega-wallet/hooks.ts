@@ -5,7 +5,7 @@ import uniq from 'lodash/uniq';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AccountType } from '../../__generated__/globalTypes';
+import { AccountType } from '@vegaprotocol/types';
 import noIcon from '../../images/token-no-icon.png';
 import vegaBlack from '../../images/vega_black.png';
 import { BigNumber } from '../../lib/bignumber';
@@ -115,7 +115,7 @@ export const usePollForDelegations = () => {
             const accounts = res.data.party?.accounts || [];
             setAccounts(
               accounts
-                .filter((a) => a.type === AccountType.General)
+                .filter((a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL)
                 .map((a) => {
                   const isVega =
                     isAssetTypeERC20(a.asset) &&

@@ -98,7 +98,7 @@ export const StatusCell = ({
     );
   }
 
-  if (value === WithdrawalStatus.Finalized) {
+  if (value === WithdrawalStatus.STATUS_FINALIZED) {
     return (
       <div className="flex justify-between gap-8">
         {data.txHash ? (
@@ -125,7 +125,7 @@ export const StatusCell = ({
     );
   }
 
-  return value;
+  return <>{getWithdrawalStatus(value)}</>;
 };
 
 export interface RecipientCellProps extends ICellRendererParams {
@@ -147,4 +147,17 @@ const RecipientCell = ({
       {valueFormatted}
     </Link>
   );
+};
+
+export const getWithdrawalStatus = (value: WithdrawalStatus | string) => {
+  switch (value) {
+    case WithdrawalStatus.STATUS_OPEN:
+      return t('Open');
+    case WithdrawalStatus.STATUS_FINALIZED:
+      return t('Finalized');
+    case WithdrawalStatus.STATUS_REJECTED:
+      return t('Rejected');
+    default:
+      return value;
+  }
 };

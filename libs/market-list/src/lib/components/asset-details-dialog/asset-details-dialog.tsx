@@ -111,12 +111,6 @@ export const AssetDetailsDialog = ({
         tooltip: t('The minimum economically meaningful amount in the asset'),
       },
       {
-        key: 'totalsupply',
-        label: t('Total supply'),
-        value: formatNumber(toBigNum(asset.node.totalSupply, 0)),
-        tooltip: t('Total circulating supply for the asset'),
-      },
-      {
         key: 'contractaddress',
         label: t('Contract address'),
         value: (

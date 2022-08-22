@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { SIDE_NAMES } from './side-selector';
-import { VegaWalletOrderSide } from '@vegaprotocol/wallet';
+import { Side as OrderSide } from '@vegaprotocol/types';
 import SimpleMarketExpires from '../simple-market-list/simple-market-expires';
 import { gql, useQuery } from '@apollo/client';
 import type {
@@ -72,9 +72,9 @@ export default ({
               className={classNames(
                 {
                   'buyButton dark:buyButtonDark':
-                    order.side === VegaWalletOrderSide.Buy,
+                    order.side === OrderSide.SIDE_BUY,
                   'sellButton dark:sellButtonDark':
-                    order.side === VegaWalletOrderSide.Sell,
+                    order.side === OrderSide.SIDE_SELL,
                 },
                 'px-8 py-4 inline text-ui-small'
               )}

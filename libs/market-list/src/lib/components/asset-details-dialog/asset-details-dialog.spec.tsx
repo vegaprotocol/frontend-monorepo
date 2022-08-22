@@ -333,9 +333,6 @@ describe('AssetDetailsDialog', () => {
       expect((await screen.findByTestId('name_value')).textContent).toContain(
         name
       );
-      expect(
-        (await screen.findByTestId('totalsupply_value')).textContent
-      ).toContain(totalSupply);
     }
   );
 });

@@ -10,7 +10,7 @@ import type {
   StatusCellProps,
   WithdrawalsTableProps,
 } from './withdrawals-table';
-import { StatusCell } from './withdrawals-table';
+import { getWithdrawalStatus, StatusCell } from './withdrawals-table';
 import { WithdrawalsTable } from './withdrawals-table';
 import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
 
@@ -49,7 +49,7 @@ it('Renders the correct columns', async () => {
     withdrawal.status,
   ];
   cells.forEach((cell, i) => {
-    expect(cell).toHaveTextContent(expectedValues[i]);
+    expect(cell).toHaveTextContent(getWithdrawalStatus(expectedValues[i]));
   });
 });
 
@@ -70,7 +70,7 @@ describe('StatusCell', () => {
   });
 
   it('Open', () => {
-    props.value = WithdrawalStatus.Finalized;
+    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = null;
     render(<StatusCell {...props} />);
@@ -83,7 +83,7 @@ describe('StatusCell', () => {
   });
 
   it('Pending', () => {
-    props.value = WithdrawalStatus.Finalized;
+    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = true;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
@@ -96,7 +96,7 @@ describe('StatusCell', () => {
   });
 
   it('Finalized', () => {
-    props.value = WithdrawalStatus.Finalized;
+    props.value = WithdrawalStatus.STATUS_FINALIZED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);
@@ -109,7 +109,7 @@ describe('StatusCell', () => {
   });
 
   it('Fallback', () => {
-    props.value = WithdrawalStatus.Rejected;
+    props.value = WithdrawalStatus.STATUS_REJECTED;
     props.data.pendingOnForeignChain = false;
     props.data.txHash = '0x123';
     render(<StatusCell {...props} />);

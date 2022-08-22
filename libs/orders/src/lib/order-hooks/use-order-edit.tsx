@@ -1,14 +1,11 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useState, useCallback } from 'react';
-import {
-  useVegaTransaction,
-  useVegaWallet,
-  VegaWalletOrderTimeInForce,
-} from '@vegaprotocol/wallet';
+import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import type { OrderEvent_busEvents_event_Order } from './__generated__';
 import * as Sentry from '@sentry/react';
 import type { OrderFields } from '../components';
 import { useOrderEvent } from './use-order-event';
+import { OrderTimeInForce } from '@vegaprotocol/types';
 
 // Can only edit price for now
 export interface EditOrderArgs {
@@ -54,7 +51,7 @@ export const useOrderEdit = (order: OrderFields | null) => {
             price: {
               value: removeDecimal(args.price, order.market.decimalPlaces),
             },
-            timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
+            timeInForce: OrderTimeInForce[order.timeInForce],
             sizeDelta: 0,
             expiresAt: order.expiresAt
               ? {

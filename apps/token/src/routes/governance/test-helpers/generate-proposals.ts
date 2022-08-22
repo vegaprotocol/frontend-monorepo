@@ -2,7 +2,7 @@ import * as faker from 'faker';
 import isArray from 'lodash/isArray';
 import mergeWith from 'lodash/mergeWith';
 
-import { ProposalState, VoteValue } from '../../../__generated__/globalTypes';
+import { ProposalState, VoteValue } from '@vegaprotocol/types';
 import type { DeepPartial } from '../../../lib/type-helpers';
 import type {
   ProposalFields,
@@ -17,7 +17,7 @@ export function generateProposal(
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
     reference: 'ref' + faker.datatype.uuid(),
-    state: ProposalState.Open,
+    state: ProposalState.STATE_OPEN,
     datetime: faker.date.past().toISOString(),
     rejectionReason: null,
     errorDetails: null,
@@ -29,14 +29,14 @@ export function generateProposal(
       __typename: 'ProposalTerms',
       closingDatetime:
         !override.state || // defaults to Open
-        override.state === ProposalState.Open ||
-        override.state === ProposalState.WaitingForNodeVote
+        override.state === ProposalState.STATE_OPEN ||
+        override.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE
           ? faker.date.soon().toISOString()
           : faker.date.past().toISOString(),
       enactmentDatetime:
         !override.state || // defaults to Open
-        override.state === ProposalState.Open ||
-        override.state === ProposalState.WaitingForNodeVote
+        override.state === ProposalState.STATE_OPEN ||
+        override.state === ProposalState.STATE_WAITING_FOR_NODE_VOTE
           ? faker.date.future().toISOString()
           : faker.date.past().toISOString(),
       change: {
@@ -80,7 +80,7 @@ export const generateYesVotes = (
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
         __typename: 'Vote',
-        value: VoteValue.Yes,
+        value: VoteValue.VALUE_YES,
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',
@@ -115,7 +115,7 @@ export const generateNoVotes = (
     votes: Array.from(Array(numberOfVotes)).map(() => {
       return {
         __typename: 'Vote',
-        value: VoteValue.No,
+        value: VoteValue.VALUE_NO,
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',

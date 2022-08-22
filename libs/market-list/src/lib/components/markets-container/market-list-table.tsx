@@ -84,9 +84,10 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
           if (!value) return value;
           const { market, trigger } = value;
           return market &&
-            market.tradingMode === MarketTradingMode.MonitoringAuction &&
+            market.tradingMode ===
+              MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
             trigger &&
-            trigger !== AuctionTrigger.Unspecified
+            trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
             ? `${formatLabel(market.tradingMode)} - ${trigger.toLowerCase()}`
             : formatLabel(market?.tradingMode);
         }}

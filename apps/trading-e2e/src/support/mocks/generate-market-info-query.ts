@@ -17,8 +17,8 @@ export const generateMarketInfoQuery = (
       name: 'ETHBTC Quarterly (30 Jun 2022)',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
-      state: MarketState.Active,
-      tradingMode: MarketTradingMode.Continuous,
+      state: MarketState.STATE_ACTIVE,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       accounts: [
         {
           type: AccountType.Insurance,

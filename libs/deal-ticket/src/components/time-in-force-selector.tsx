@@ -1,31 +1,28 @@
 import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
-import {
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-} from '@vegaprotocol/wallet';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 import { t } from '@vegaprotocol/react-helpers';
 
 interface TimeInForceSelectorProps {
-  value: VegaWalletOrderTimeInForce;
-  orderType: VegaWalletOrderType;
-  onSelect: (tif: VegaWalletOrderTimeInForce) => void;
+  value: OrderTimeInForce;
+  orderType: OrderType;
+  onSelect: (tif: OrderTimeInForce) => void;
 }
 
 // More detail in https://docs.vega.xyz/docs/mainnet/graphql/enums/order-time-in-force
 export const timeInForceLabel = (tif: string) => {
   switch (tif) {
-    case VegaWalletOrderTimeInForce.GTC:
-      return t(`Good 'til Cancelled`);
-    case VegaWalletOrderTimeInForce.IOC:
-      return t('Immediate or Cancel');
-    case VegaWalletOrderTimeInForce.FOK:
-      return t('Fill or Kill');
-    case VegaWalletOrderTimeInForce.GTT:
-      return t(`Good 'til Time`);
-    case VegaWalletOrderTimeInForce.GFN:
-      return t('Good for Normal');
-    case VegaWalletOrderTimeInForce.GFA:
-      return t('Good for Auction');
+    case OrderTimeInForce.TIME_IN_FORCE_GTC:
+      return t(`Good 'til Cancelled (GTC)`);
+    case OrderTimeInForce.TIME_IN_FORCE_IOC:
+      return t('Immediate or Cancel (IOC)');
+    case OrderTimeInForce.TIME_IN_FORCE_FOK:
+      return t('Fill or Kill (FOK)');
+    case OrderTimeInForce.TIME_IN_FORCE_GTT:
+      return t(`Good 'til Time (GTT)`);
+    case OrderTimeInForce.TIME_IN_FORCE_GFN:
+      return t('Good for Normal (GFN)');
+    case OrderTimeInForce.TIME_IN_FORCE_GFA:
+      return t('Good for Auction (GFA)');
     default:
       return t(tif);
   }
@@ -37,12 +34,12 @@ export const TimeInForceSelector = ({
   onSelect,
 }: TimeInForceSelectorProps) => {
   const options =
-    orderType === VegaWalletOrderType.Limit
-      ? Object.entries(VegaWalletOrderTimeInForce)
-      : Object.entries(VegaWalletOrderTimeInForce).filter(
+    orderType === OrderType.TYPE_LIMIT
+      ? Object.entries(OrderTimeInForce)
+      : Object.entries(OrderTimeInForce).filter(
           ([_, timeInForce]) =>
-            timeInForce === VegaWalletOrderTimeInForce.FOK ||
-            timeInForce === VegaWalletOrderTimeInForce.IOC
+            timeInForce === OrderTimeInForce.TIME_IN_FORCE_FOK ||
+            timeInForce === OrderTimeInForce.TIME_IN_FORCE_IOC
         );
 
   return (
@@ -50,13 +47,13 @@ export const TimeInForceSelector = ({
       <Select
         id="select-time-in-force"
         value={value}
-        onChange={(e) => onSelect(e.target.value as VegaWalletOrderTimeInForce)}
+        onChange={(e) => onSelect(e.target.value as OrderTimeInForce)}
         className="w-full"
         data-testid="order-tif"
       >
         {options.map(([key, value]) => (
           <option key={key} value={value}>
-            {`${timeInForceLabel(value)} (${key})`}
+            {timeInForceLabel(value)}
           </option>
         ))}
       </Select>

@@ -13,8 +13,7 @@ import type {
   PositionsMetricsSubscription_positions,
 } from './__generated__/PositionsMetricsSubscription';
 
-import { AccountType } from '@vegaprotocol/types';
-import type { MarketTradingMode } from '@vegaprotocol/types';
+import { AccountType, MarketTradingModeMapping } from '@vegaprotocol/types';
 
 export interface Position {
   marketName: string;
@@ -29,7 +28,7 @@ export interface Position {
   liquidationPrice: string;
   lowMarginLevel: boolean;
   marketId: string;
-  marketTradingMode: MarketTradingMode;
+  marketTradingMode: MarketTradingModeMapping;
   markPrice: string;
   notional: string;
   openVolume: string;
@@ -141,7 +140,7 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
     const generalAccount = data.accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
-        account.type === AccountType.General
+        account.type === AccountType.ACCOUNT_TYPE_GENERAL
     );
     const assetDecimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
@@ -216,7 +215,8 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
         .multipliedBy(10 ** marketDecimalPlaces)
         .toFixed(0),
       marketId: position.node.market.id,
-      marketTradingMode: position.node.market.tradingMode,
+      marketTradingMode:
+        MarketTradingModeMapping[position.node.market.tradingMode],
       markPrice: marketData.markPrice,
       notional: notional.multipliedBy(10 ** marketDecimalPlaces).toFixed(0),
       openVolume: position.node.openVolume,

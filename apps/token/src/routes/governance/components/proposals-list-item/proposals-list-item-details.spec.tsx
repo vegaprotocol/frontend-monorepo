@@ -56,7 +56,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Enacted,
+          state: ProposalState.STATE_ENACTED,
           terms: {
             enactmentDatetime: lastWeek.toString(),
           },
@@ -73,7 +73,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Passed,
+          state: ProposalState.STATE_PASSED,
           terms: {
             closingDatetime: lastWeek.toString(),
             enactmentDatetime: nextWeek.toString(),
@@ -91,7 +91,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.WaitingForNodeVote,
+          state: ProposalState.STATE_WAITING_FOR_NODE_VOTE,
           terms: {
             enactmentDatetime: nextWeek.toString(),
           },
@@ -110,7 +110,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           terms: {
             closingDatetime: fiveMinutes.toString(),
           },
@@ -127,7 +127,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           terms: {
             closingDatetime: fiveHours.toString(),
           },
@@ -144,7 +144,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           terms: {
             closingDatetime: fiveDays.toString(),
           },
@@ -161,14 +161,14 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           votes: {
             __typename: 'ProposalVotes',
             yes: {
               votes: [
                 {
                   __typename: 'Vote',
-                  value: VoteValue.Yes,
+                  value: VoteValue.VALUE_YES,
                   datetime: lastWeek.toString(),
                   party: {
                     __typename: 'Party',
@@ -199,14 +199,14 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           votes: {
             __typename: 'ProposalVotes',
             no: {
               votes: [
                 {
                   __typename: 'Vote',
-                  value: VoteValue.No,
+                  value: VoteValue.VALUE_NO,
                   datetime: lastWeek.toString(),
                   party: {
                     __typename: 'Party',
@@ -237,7 +237,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           terms: {
             enactmentDatetime: nextWeek.toString(),
           },
@@ -258,7 +258,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           terms: {
             enactmentDatetime: nextWeek.toString(),
           },
@@ -279,7 +279,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           votes: {
             __typename: 'ProposalVotes',
             yes: generateYesVotes(3000, 1000000000000000000),
@@ -299,7 +299,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Open,
+          state: ProposalState.STATE_OPEN,
           votes: {
             __typename: 'ProposalVotes',
             yes: generateYesVotes(0),
@@ -319,7 +319,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Declined,
+          state: ProposalState.STATE_DECLINED,
           terms: {
             enactmentDatetime: lastWeek.toString(),
           },
@@ -340,7 +340,7 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Declined,
+          state: ProposalState.STATE_DECLINED,
           terms: {
             enactmentDatetime: lastWeek.toString(),
           },
@@ -361,11 +361,12 @@ describe('Proposals list item details', () => {
     render(
       renderComponent(
         generateProposal({
-          state: ProposalState.Rejected,
+          state: ProposalState.STATE_REJECTED,
           terms: {
             enactmentDatetime: lastWeek.toString(),
           },
-          rejectionReason: ProposalRejectionReason.InvalidFutureProduct,
+          rejectionReason:
+            ProposalRejectionReason.PROPOSAL_ERROR_INVALID_FUTURE_PRODUCT,
         })
       )
     );

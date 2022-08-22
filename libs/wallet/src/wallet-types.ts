@@ -1,6 +1,12 @@
 import type { z } from 'zod';
 import type { GetKeysSchema, TransactionResponseSchema } from './connectors';
 import type { IterableElement } from 'type-fest';
+import type {
+  OrderTimeInForce,
+  OrderType,
+  Side,
+  VoteValue,
+} from '@vegaprotocol/types';
 
 interface BaseTransaction {
   pubKey: string;
@@ -26,9 +32,9 @@ export interface OrderSubmissionBody extends BaseTransaction {
   orderSubmission: {
     marketId: string;
     reference?: string;
-    type: VegaWalletOrderType;
-    side: VegaWalletOrderSide;
-    timeInForce: VegaWalletOrderTimeInForce;
+    type: OrderType;
+    side: Side;
+    timeInForce: OrderTimeInForce;
     size: string;
     price?: string;
     expiresAt?: string;
@@ -47,7 +53,7 @@ export interface OrderAmendmentBody extends BaseTransaction {
     marketId: string;
     orderId: string;
     reference?: string;
-    timeInForce: VegaWalletOrderTimeInForce;
+    timeInForce: OrderTimeInForce;
     sizeDelta?: number;
     // Note this is soon changing to price?: string
     price?: {
@@ -62,7 +68,7 @@ export interface OrderAmendmentBody extends BaseTransaction {
 
 export interface VoteSubmissionBody extends BaseTransaction {
   voteSubmission: {
-    value: VegaWalletVoteValue;
+    value: VoteValue;
     proposalId: string;
   };
 }
@@ -242,30 +248,6 @@ export interface ProposalSubmission {
 
 export interface ProposalSubmissionBody extends BaseTransaction {
   proposalSubmission: ProposalSubmission;
-}
-
-export enum VegaWalletVoteValue {
-  Yes = 'VALUE_YES',
-  No = 'VALUE_NO',
-}
-
-export enum VegaWalletOrderType {
-  Market = 'TYPE_MARKET',
-  Limit = 'TYPE_LIMIT',
-}
-
-export enum VegaWalletOrderSide {
-  Buy = 'SIDE_BUY',
-  Sell = 'SIDE_SELL',
-}
-
-export enum VegaWalletOrderTimeInForce {
-  GTC = 'TIME_IN_FORCE_GTC',
-  GTT = 'TIME_IN_FORCE_GTT',
-  IOC = 'TIME_IN_FORCE_IOC',
-  FOK = 'TIME_IN_FORCE_FOK',
-  GFN = 'TIME_IN_FORCE_GFN',
-  GFA = 'TIME_IN_FORCE_GFA',
 }
 
 // Will make Transaction a union type as other transactions are added

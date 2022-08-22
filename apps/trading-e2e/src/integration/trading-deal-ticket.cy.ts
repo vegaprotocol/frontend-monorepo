@@ -30,7 +30,7 @@ const mockTx = {
 describe('deal ticket orders', () => {
   before(() => {
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Active);
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
     cy.visit('/markets/market-0');
     connectVegaWallet();
@@ -159,7 +159,7 @@ describe('deal ticket orders', () => {
 describe('deal ticket validation', () => {
   before(() => {
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Active);
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
     cy.visit('/markets/market-0');
   });

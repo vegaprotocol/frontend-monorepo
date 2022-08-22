@@ -9,7 +9,7 @@ const data: PositionsMetrics = {
     accounts: [
       {
         __typename: 'Account',
-        type: AccountType.General,
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
         asset: {
           __typename: 'Asset',
           id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
@@ -20,7 +20,7 @@ const data: PositionsMetrics = {
       },
       {
         __typename: 'Account',
-        type: AccountType.Margin,
+        type: AccountType.ACCOUNT_TYPE_MARGIN,
         asset: {
           __typename: 'Asset',
           id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
@@ -34,7 +34,7 @@ const data: PositionsMetrics = {
       },
       {
         __typename: 'Account',
-        type: AccountType.Margin,
+        type: AccountType.ACCOUNT_TYPE_MARGIN,
         asset: {
           __typename: 'Asset',
           id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
@@ -105,7 +105,7 @@ const data: PositionsMetrics = {
               name: 'AAVEDAI Monthly (30 Jun 2022)',
               id: '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8',
               decimalPlaces: 5,
-              tradingMode: MarketTradingMode.MonitoringAuction,
+              tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
               positionDecimalPlaces: 0,
               tradableInstrument: {
                 __typename: 'TradableInstrument',
@@ -135,7 +135,7 @@ const data: PositionsMetrics = {
               id: '10c4b1114d2f6fda239b73d018bca55888b6018f0ac70029972a17fea0a6a56e',
               name: 'UNIDAI Monthly (30 Jun 2022)',
               decimalPlaces: 5,
-              tradingMode: MarketTradingMode.Continuous,
+              tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
               positionDecimalPlaces: 0,
               tradableInstrument: {
                 __typename: 'TradableInstrument',
@@ -179,7 +179,9 @@ describe('getMetrics', () => {
       '5e6035fe6a6df78c9ec44b333c231e63d357acef0a0620d2c243f5865d1dc0d8'
     );
     expect(metrics[0].marketName).toEqual('AAVEDAI Monthly (30 Jun 2022)');
-    expect(metrics[0].marketTradingMode).toEqual('MonitoringAuction');
+    expect(metrics[0].marketTradingMode).toEqual(
+      MarketTradingMode.TRADING_MODE_MONITORING_AUCTION
+    );
     expect(metrics[0].notional).toEqual('943177500');
     expect(metrics[0].openVolume).toEqual('100');
     expect(metrics[0].realisedPNL).toEqual('0');
