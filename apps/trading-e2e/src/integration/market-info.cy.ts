@@ -46,8 +46,8 @@ describe('market info is displayed', () => {
     validateMarketDataRow(0, 'Name', 'ETHBTC Quarterly (30 Jun 2022)');
     validateMarketDataRow(1, 'Decimal Places', '2');
     validateMarketDataRow(2, 'Position Decimal Places', '0');
-    validateMarketDataRow(3, 'Trading Mode', 'Continuous');
-    validateMarketDataRow(4, 'State', 'Active');
+    validateMarketDataRow(3, 'Trading Mode', 'Trading mode continuous');
+    validateMarketDataRow(4, 'State', 'STATE_ACTIVE');
     validateMarketDataRow(5, 'Market ID', 'market-0');
   });
 

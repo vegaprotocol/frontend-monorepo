@@ -11,6 +11,7 @@ beforeEach(() => {
 
 describe('accounts', () => {
   it('renders accounts', () => {
+    const tradingAccountRowId = '[row-id="ACCOUNT_TYPE_GENERAL-tEURO-null"]';
     cy.getByTestId('Collateral').click();
     cy.getByTestId('tab-accounts').contains('Please connect Vega wallet');
 
@@ -19,25 +20,25 @@ describe('accounts', () => {
     cy.getByTestId('tab-accounts').should('be.visible');
     cy.getByTestId('tab-accounts')
       .should('be.visible')
-      .get(`[row-id='General-tEURO-null']`)
+      .get(tradingAccountRowId)
       .find('[col-id="asset.symbol"]')
       .should('have.text', 'tEURO');
 
     cy.getByTestId('tab-accounts')
       .should('be.visible')
-      .get(`[row-id='General-tEURO-null']`)
+      .get(tradingAccountRowId)
       .find('[col-id="type"]')
-      .should('have.text', 'General');
+      .should('have.text', 'ACCOUNT_TYPE_GENERAL');
 
     cy.getByTestId('tab-accounts')
       .should('be.visible')
-      .get(`[row-id='General-tEURO-null']`)
+      .get(tradingAccountRowId)
       .find('[col-id="market.name"]')
       .should('have.text', '—');
 
     cy.getByTestId('tab-accounts')
       .should('be.visible')
-      .get(`[row-id='General-tEURO-null']`)
+      .get(tradingAccountRowId)
       .find('[col-id="balance"]')
       .should('have.text', '1,000.00000');
   });
