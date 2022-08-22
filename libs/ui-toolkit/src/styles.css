@@ -2,38 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @layer components {
-  .btn {
-    inline-block
-    text-black dark:text-white uppercase
-    px-60 py-12
-    disabled:opacity-40
-    transition-colors
-    border-1 rounded
-  }
-
-  .btn-default {
-    border-v2border dark:border-Dv2border
-    bg-white dark:bg-black
-    enabled:hover:bg-white-80 dark:enabled:hover:bg-black-80
-    enabled:active:bg-white-80 enabled:active:border-black dark:enabled:active:bg-black-80 dark:enabled:active:border-white
-  }
-
-  .btn-primary {
-    border-vega-yellow
-    bg-vega-yellow
-    enabled:hover:bg-vega-yellow-dark
-    enabled:active:bg-vega-yellow-dark
-  }
-
-  .btn-secondary {
-    border-vega-pink
-    bg-vega-pink
-    enabled:hover:bg-vega-pink-dark
-    enabled:active:bg-vega-pink-dark
-  }
-}; */
-
 div {
   --focus-border: theme('colors.vega.pink');
   --separator-border: theme('colors.black.10');

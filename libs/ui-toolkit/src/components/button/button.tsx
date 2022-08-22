@@ -1,13 +1,16 @@
+import './button.css';
 import type {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
-  FunctionComponent,
   ReactNode,
 } from 'react';
 import { forwardRef } from 'react';
 import type { IconName } from '../icon';
 import { Icon } from '../icon';
 import classnames from 'classnames';
+
+type ButtonVariant = 'default' | 'primary' | 'secondary';
+type ButtonSize = 'lg' | 'md' | 'sm';
 
 const getClassname = ({
   variant,
@@ -18,50 +21,17 @@ const getClassname = ({
   size: ButtonSize;
   fill: boolean;
 }) => {
-  const baseClasses = classnames(
-    'inline-block',
-    'uppercase',
-    'border-1 rounded',
-    'disabled:opacity-40',
-    'transition-colors',
-    {
-      'block w-full': fill,
-    },
-    {
-      'text-ui px-12 py-4': size === 'sm',
-      'text-ui px-20 py-5': size === 'md',
-      'px-60 py-12': size === 'lg',
-    }
-  );
-  const variants = {
-    default: classnames(
-      'text-black dark:text-white',
-      'border-v2border dark:border-Dv2border',
-      'bg-white dark:bg-black',
-      'enabled:hover:bg-white-80 dark:enabled:hover:bg-black-80',
-      'enabled:active:bg-white-80 enabled:active:border-black dark:enabled:active:bg-black-80 dark:enabled:active:border-white'
-    ),
-    primary: classnames(
-      'text-black',
-      'border-vega-yellow',
-      'bg-vega-yellow',
-      'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
-      'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark'
-    ),
-    secondary: classnames(
-      'text-white',
-      'border-vega-pink',
-      'bg-vega-pink',
-      'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
-      'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark'
-    ),
-  };
-  const className = classnames(baseClasses, variants[variant]);
+  const className = classnames('btn', {
+    'btn-default': variant === 'default',
+    'btn-primary': variant === 'primary',
+    'btn-secondary': variant === 'secondary',
+    'btn-lg': size === 'lg',
+    'btn-md': size === 'md',
+    'btn-sm': size === 'sm',
+    'btn-fill': fill,
+  });
   return className;
 };
-
-type ButtonVariant = 'default' | 'primary' | 'secondary';
-type ButtonSize = 'lg' | 'md' | 'sm';
 
 interface CommonProps {
   children?: ReactNode;
