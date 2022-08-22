@@ -1,5 +1,3 @@
 {
-  "hosts": [
-    "https://lb.testnet.vega.xyz/query"
-  ]
+  "hosts": ["https://lb.testnet.vega.xyz/query"]
 }
