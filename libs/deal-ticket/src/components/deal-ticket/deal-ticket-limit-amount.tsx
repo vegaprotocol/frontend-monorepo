@@ -49,7 +49,10 @@ export const DealTicketLimitAmount = ({
             step={priceStep}
             defaultValue={0}
             data-testid="order-price"
-            {...register('price', { required: true, min: 0 })}
+            {...register('price', {
+              required: true,
+              min: 0,
+            })}
           />
         </FormGroup>
       </div>

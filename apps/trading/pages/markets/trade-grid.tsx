@@ -118,7 +118,13 @@ export const TradeMarketHeader = ({
           >
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Trading mode')}</span>
-              <span data-testid="trading-mode" className={itemValueClassName}>
+              <span
+                data-testid="trading-mode"
+                className={classNames(
+                  itemValueClassName,
+                  'border-b-2 border-dotted'
+                )}
+              >
                 {market.tradingMode === MarketTradingMode.MonitoringAuction &&
                 market.data?.trigger &&
                 market.data.trigger !== AuctionTrigger.Unspecified

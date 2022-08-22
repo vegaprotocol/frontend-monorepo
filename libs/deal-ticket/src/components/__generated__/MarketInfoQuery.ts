@@ -130,10 +130,6 @@ export interface MarketInfoQuery_market_data {
    */
   markPrice: string;
   /**
-   * indicative volume if the auction ended now, 0 if not in auction mode
-   */
-  indicativeVolume: string;
-  /**
    * the aggregated volume being bid at the best bid price.
    */
   bestBidVolume: string;
@@ -150,9 +146,43 @@ export interface MarketInfoQuery_market_data {
    */
   bestStaticOfferVolume: string;
   /**
+<<<<<<< Updated upstream
    * the sum of the size of all positions greater than 0.
    */
   openInterest: string;
+=======
+   * the highest price level on an order book for buy orders.
+   */
+  bestBidPrice: string;
+  /**
+   * the lowest price level on an order book for offer orders.
+   */
+  bestOfferPrice: string;
+  /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
+  /**
+   * the sum of the size of all positions greater than 0.
+   */
+  openInterest: string;
+  /**
+   * the supplied stake for the market
+   */
+  suppliedStake: string | null;
+  /**
+   * the amount of stake targeted for this market
+   */
+  targetStake: string | null;
+  /**
+   * the market value proxy
+   */
+  marketValueProxy: string;
+  /**
+   * A list of valid price ranges per associated trigger
+   */
+  priceMonitoringBounds: MarketInfoQuery_market_data_priceMonitoringBounds[] | null;
+>>>>>>> Stashed changes
 }
 
 export interface MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters {

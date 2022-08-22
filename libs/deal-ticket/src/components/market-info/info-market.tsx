@@ -19,7 +19,7 @@ import {
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
-import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
+import type { MarketInfoQuery, MarketInfoQuery_market } from '../__generated__';
 import BigNumber from 'bignumber.js';
 import { gql, useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
@@ -175,6 +175,12 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
     'text-h5 font-medium uppercase text-black dark:text-white';
+<<<<<<< Updated upstream:libs/deal-ticket/src/components/info-market.tsx
+=======
+  const dayVolume = calcCandleVolume(market);
+  const assetSymbol =
+    market.tradableInstrument.instrument.product?.settlementAsset.symbol;
+>>>>>>> Stashed changes:libs/deal-ticket/src/components/market-info/info-market.tsx
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -221,6 +227,23 @@ export const Info = ({ market }: InfoProps) => {
         />
       ),
     },
+<<<<<<< Updated upstream:libs/deal-ticket/src/components/info-market.tsx
+=======
+    ...(market.accounts || [])
+      .filter((a) => a.type === AccountType.Insurance)
+      .map((a, i) => ({
+        title: t(`Insurance pool`),
+        content: (
+          <MarketInfoTable
+            data={{
+              balance: a.balance,
+            }}
+            assetSymbol={assetSymbol}
+            decimalPlaces={market.positionDecimalPlaces} // decimal places needed here?
+          />
+        ),
+      })),
+>>>>>>> Stashed changes:libs/deal-ticket/src/components/market-info/info-market.tsx
   ];
 
   const keyDetails = pick(
@@ -318,6 +341,25 @@ export const Info = ({ market }: InfoProps) => {
         content: <MarketInfoTable data={trigger} />,
       })
     ),
+    {
+      title: t('Liquidity'),
+      content: (
+        <MarketInfoTable
+          data={{
+            // openInterest: market.data && market.data.openInterest, what is Open Interest 24h High ?
+            targetStake: market.data && market.data.targetStake,
+            suppliedStake: market.data && market.data?.suppliedStake,
+            marketValueProxy: market.data && market.data.marketValueProxy,
+          }}
+          decimalPlaces={market.decimalPlaces} // do we need to add decimal places here?
+          assetSymbol={assetSymbol}
+          link={{
+            href: `/markets/liquidity/${market.id}`,
+            label: t('View liquidity provision table'),
+          }}
+        />
+      ),
+    },
     {
       title: t('Liquidity monitoring parameters'),
       content: (
@@ -452,6 +494,7 @@ interface RowProps {
   decimalPlaces?: number;
   asPercentage?: boolean;
   unformatted?: boolean;
+  assetSymbol?: string;
 }
 
 const Row = ({
@@ -460,6 +503,7 @@ const Row = ({
   decimalPlaces,
   asPercentage,
   unformatted,
+  assetSymbol = '',
 }: RowProps) => {
   const isNumber = typeof value === 'number' || !isNaN(Number(value));
   const isPrimitive = typeof value === 'string' || isNumber;
@@ -479,10 +523,10 @@ const Row = ({
         </Tooltip>
         {isNumber && !unformatted
           ? decimalPlaces
-            ? addDecimalsFormatNumber(value, decimalPlaces)
+            ? `${addDecimalsFormatNumber(value, decimalPlaces)} ${assetSymbol}`
             : asPercentage
             ? formatNumberPercentage(new BigNumber(value * 100))
-            : formatNumber(Number(value))
+            : `${formatNumber(Number(value))} ${assetSymbol}`
           : value}
       </KeyValueTableRow>
     );
@@ -496,6 +540,8 @@ export interface MarketInfoTableProps {
   asPercentage?: boolean;
   unformatted?: boolean;
   omits?: string[];
+  link?: { href: string; label: string };
+  assetSymbol?: string;
 }
 
 export const MarketInfoTable = ({
@@ -504,19 +550,29 @@ export const MarketInfoTable = ({
   asPercentage,
   unformatted,
   omits = ['__typename'],
+  link,
+  assetSymbol,
 }: MarketInfoTableProps) => {
   return (
-    <KeyValueTable muted={true}>
-      {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
-        <Row
-          key={key}
-          field={key}
-          value={value}
-          decimalPlaces={decimalPlaces}
-          asPercentage={asPercentage}
-          unformatted={unformatted || key.toLowerCase().includes('volume')}
-        />
-      ))}
-    </KeyValueTable>
+    <>
+      <KeyValueTable muted={true}>
+        {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
+          <Row
+            key={key}
+            field={key}
+            value={value}
+            decimalPlaces={decimalPlaces}
+            assetSymbol={assetSymbol}
+            asPercentage={asPercentage}
+            unformatted={unformatted || key.toLowerCase().includes('volume')}
+          />
+        ))}
+      </KeyValueTable>
+      {link && (
+        <a href={link.href} className="border-b-2 text-ui">
+          {t(link.label)}
+        </a>
+      )}
+    </>
   );
 };
