@@ -79,7 +79,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
         data-testid="market-products-menu"
         aria-label={t('Product type')}
       >
-        <li key="all" className="md:mr-16 whitespace-nowrap">
+        <li key="all-markets" className="md:mr-16 whitespace-nowrap">
           <Link
             to={`/markets${
               params.state && params.state !== 'Active'

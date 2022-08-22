@@ -8,6 +8,7 @@ import type { Proposals_proposals } from '../../proposals/__generated__/Proposal
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
+import { ProposalState } from '@vegaprotocol/types';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
@@ -23,7 +24,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const [filterString, setFilterString] = useState('');
 
   const failedProposalsCulled = proposals.filter(
-    ({ state }) => state !== 'Failed'
+    ({ state }) => state !== ProposalState.STATE_FAILED
   );
 
   const sortedProposals = failedProposalsCulled.reduce(

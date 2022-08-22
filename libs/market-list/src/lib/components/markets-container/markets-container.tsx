@@ -20,7 +20,7 @@ export const MarketsContainer = () => {
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
   const yTimestamp = new Date(yesterday * 1000).toISOString();
   const variables = useMemo(
-    () => ({ interval: Interval.I1H, since: yTimestamp }),
+    () => ({ interval: Interval.INTERVAL_I1H, since: yTimestamp }),
     [yTimestamp]
   );
 
@@ -45,7 +45,7 @@ export const MarketsContainer = () => {
     const rowsThisBlock = dataRef.current
       ? dataRef.current
           .slice(startRow, endRow)
-          .filter((m) => m.data?.market.state !== MarketState.Rejected)
+          .filter((m) => m.data?.market.state !== MarketState.STATE_REJECTED)
       : [];
     const lastRow = dataRef.current?.length ?? -1;
     successCallback(rowsThisBlock, lastRow);
