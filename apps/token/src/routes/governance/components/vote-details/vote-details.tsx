@@ -68,31 +68,31 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         <tbody>
           <tr>
             <td className="text-left">
-            <div data-testid="vote-progress-indicator-percentage-for">
-              {yesPercentage.toFixed(defaultDecimals)}%
-            </div>
+              <div data-testid="vote-progress-indicator-percentage-for">
+                {yesPercentage.toFixed(defaultDecimals)}%
+              </div>
             </td>
             <td className="text-center text-white">
               {t('majorityRequired')}{' '}
               {requiredMajorityPercentage.toFixed(defaultDecimals)}%
             </td>
             <td className="text-right">
-            <div data-testid="vote-progress-indicator-percentage-against">
-              {noPercentage.toFixed(defaultDecimals)}%
-            </div>
+              <div data-testid="vote-progress-indicator-percentage-against">
+                {noPercentage.toFixed(defaultDecimals)}%
+              </div>
             </td>
           </tr>
           <tr>
             <td className="text-white-60">
               {' '}
               <div data-testid="vote-progress-indicator-tokens-for">
-                {formatNumber(yesTokens, defaultDecimals) }
+                {formatNumber(yesTokens, defaultDecimals)}
               </div>
             </td>
             <td></td>
             <td className="text-white-60 text-right">
               <div data-testid="vote-progress-indicator-tokens-against">
-              {formatNumber(noTokens, defaultDecimals)}
+                {formatNumber(noTokens, defaultDecimals)}
               </div>
             </td>
           </tr>

@@ -8,10 +8,14 @@ const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const openProposals = '[data-testid="open-proposals"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const proposalResponseIdPath = 'response.body.data.busEvents.0.event.id';
-const proposalVoteProgressForPercentage = '[data-testid="vote-progress-indicator-percentage-for"]';
-const proposalVoteProgressAgainstPercentage = '[data-testid="vote-progress-indicator-percentage-against"]';
-const proposalVoteProgressForTokens = '[data-testid="vote-progress-indicator-tokens-for"]';
-const proposalVoteProgressAgainstTokens = '[data-testid="vote-progress-indicator-tokens-against"]';
+const proposalVoteProgressForPercentage =
+  '[data-testid="vote-progress-indicator-percentage-for"]';
+const proposalVoteProgressAgainstPercentage =
+  '[data-testid="vote-progress-indicator-percentage-against"]';
+const proposalVoteProgressForTokens =
+  '[data-testid="vote-progress-indicator-tokens-for"]';
+const proposalVoteProgressAgainstTokens =
+  '[data-testid="vote-progress-indicator-tokens-against"]';
 const txTimeout = Cypress.env('txTimeout');
 
 context('Governance flow - with eth and vega wallets connected', function () {
@@ -238,9 +242,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('0.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens)
-        .contains('1.00')
-        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens).contains('1.00').and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('0.00')
         .and('be.visible');
@@ -300,9 +302,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('100.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens)
-        .contains('0.00')
-        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens).contains('0.00').and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('1.00')
         .and('be.visible');
@@ -354,9 +354,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('0.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens)
-        .contains('1.00')
-        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens).contains('1.00').and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('0.00')
         .and('be.visible');
@@ -408,9 +406,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('100.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens)
-        .contains('0.00')
-        .and('be.visible');
+      cy.get(proposalVoteProgressForTokens).contains('0.00').and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('1.00')
         .and('be.visible');
@@ -455,15 +451,18 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.vote_for_proposal('for');
       cy.get_proposal_information_from_table('Total Supply')
         .invoke('text')
-        .then(totalSupply => {
-          let tokensRequiredToAcheiveResult = parseFloat(totalSupply.replace(/,/g, '') * this.requiredParticipation/100).toFixed(2)
+        .then((totalSupply) => {
+          let tokensRequiredToAcheiveResult = parseFloat(
+            (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
+          ).toFixed(2);
           cy.ensure_specified_unstaked_tokens_are_associated(
             tokensRequiredToAcheiveResult
           );
           cy.navigate_to('governance');
           cy.wait_for_spinner();
-          cy.get('@submittedProposal')
-            .within(() => cy.get(viewProposalButton).click());
+          cy.get('@submittedProposal').within(() =>
+            cy.get(viewProposalButton).click()
+          );
           cy.get(proposalVoteProgressForPercentage)
             .contains('100.00%')
             .and('be.visible');
@@ -485,7 +484,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
           cy.get_proposal_information_from_table('Number of voting parties')
             .should('have.text', '1')
             .and('be.visible');
-      })
+        });
     });
 
     it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
