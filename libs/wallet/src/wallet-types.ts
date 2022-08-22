@@ -229,8 +229,6 @@ export interface ProposalSubmission {
   rationale: {
     description: string;
     title?: string;
-    hash?: string;
-    url?: string;
   };
   terms:
     | ProposalFreeformTerms
