@@ -129,6 +129,7 @@ export const SelectMarketPopover = ({
   });
   const { data: marketDataPositions } = useQuery<Positions>(POSITION_QUERY, {
     variables,
+    skip: !keypair?.pub,
   });
 
   const positionMarkets = useMemo(
