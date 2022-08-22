@@ -110,6 +110,11 @@ describe('Proposals list', () => {
     expect(screen.queryByTestId('proposals-list-filter')).toBeInTheDocument();
   });
 
+  it('Will render a link to rejected proposals', () => {
+    render(renderComponent([]));
+    expect(screen.getByText('See rejected proposals')).toBeInTheDocument();
+  });
+
   it('Places proposals correctly in open or closed lists', () => {
     render(
       renderComponent([
