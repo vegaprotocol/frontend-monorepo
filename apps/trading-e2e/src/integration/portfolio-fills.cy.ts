@@ -17,7 +17,7 @@ describe('fills', () => {
         seller: {
           id: Cypress.env('VEGA_PUBLIC_KEY'),
         },
-        aggressor: Side.Sell,
+        aggressor: Side.SIDE_SELL,
         buyerFee: {
           infrastructureFee: '5000',
         },
@@ -31,11 +31,11 @@ describe('fills', () => {
         seller: {
           id: Cypress.env('VEGA_PUBLIC_KEY'),
         },
-        aggressor: Side.Buy,
+        aggressor: Side.SIDE_BUY,
       }),
       generateFill({
         id: '3',
-        aggressor: Side.Sell,
+        aggressor: Side.SIDE_SELL,
         market: {
           name: 'ETHBTC Quarterly (30 Jun 2022)',
         },

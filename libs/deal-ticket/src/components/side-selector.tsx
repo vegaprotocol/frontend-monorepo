@@ -9,10 +9,10 @@ interface SideSelectorProps {
 }
 
 export const SideSelector = ({ value, onSelect }: SideSelectorProps) => {
-  const toggles = Object.entries(Side).map(([label, value]) => ({
-    label: label === Side.SIDE_BUY ? 'Long' : 'Short',
-    value,
-  }));
+  const toggles = [
+    { label: t('Long'), value: Side.SIDE_BUY },
+    { label: t('Short'), value: Side.SIDE_SELL },
+  ];
 
   return (
     <FormGroup label={t('Direction')} labelFor="order-side-toggle">

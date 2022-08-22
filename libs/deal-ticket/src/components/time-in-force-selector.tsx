@@ -1,6 +1,6 @@
 import { FormGroup, Select } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
 import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
+import { t } from '@vegaprotocol/react-helpers';
 
 interface TimeInForceSelectorProps {
   value: OrderTimeInForce;
@@ -12,17 +12,17 @@ interface TimeInForceSelectorProps {
 export const timeInForceLabel = (tif: string) => {
   switch (tif) {
     case OrderTimeInForce.TIME_IN_FORCE_GTC:
-      return t(`Good 'til Cancelled`);
+      return t(`Good 'til Cancelled (GTC)`);
     case OrderTimeInForce.TIME_IN_FORCE_IOC:
-      return t('Immediate or Cancel');
+      return t('Immediate or Cancel (IOC)');
     case OrderTimeInForce.TIME_IN_FORCE_FOK:
-      return t('Fill or Kill');
+      return t('Fill or Kill (FOK)');
     case OrderTimeInForce.TIME_IN_FORCE_GTT:
-      return t(`Good 'til Time`);
+      return t(`Good 'til Time (GTT)`);
     case OrderTimeInForce.TIME_IN_FORCE_GFN:
-      return t('Good for Normal');
+      return t('Good for Normal (GFN)');
     case OrderTimeInForce.TIME_IN_FORCE_GFA:
-      return t('Good for Auction');
+      return t('Good for Auction (GFA)');
     default:
       return t(tif);
   }
@@ -53,10 +53,7 @@ export const TimeInForceSelector = ({
       >
         {options.map(([key, value]) => (
           <option key={key} value={value}>
-            {`${timeInForceLabel(value)} (${key.replace(
-              'TIME_IN_FORCE_',
-              ''
-            )})`}
+            {timeInForceLabel(value)}
           </option>
         ))}
       </Select>
