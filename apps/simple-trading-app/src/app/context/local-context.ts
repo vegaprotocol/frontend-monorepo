@@ -7,8 +7,16 @@ export interface VegaWalletDialogState {
   setManage: (isOpen: boolean) => void;
 }
 
+interface MenuState {
+  menuOpen: boolean;
+  setMenuOpen: (value: boolean) => void;
+  onToggle: () => void;
+}
+
 export interface LocalValues {
   vegaWalletDialog: VegaWalletDialogState;
+  menu: MenuState;
+  toggleTheme: () => void;
 }
 
 const LocalContext = createContext<LocalValues>({} as LocalValues);

@@ -10,6 +10,7 @@ export const ROUTES = {
 };
 
 export const routerConfig = [
+  { path: '/', element: <SimpleMarketList />, icon: '' },
   {
     path: ROUTES.MARKETS,
     children: [

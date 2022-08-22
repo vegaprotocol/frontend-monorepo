@@ -11,20 +11,22 @@ interface NavProps {
 export const Nav = ({ className, tabs = false }: NavProps) => {
   return (
     <nav role={tabs ? 'tablist' : 'menu'} className={className}>
-      {routerConfig.map((r) => (
-        <NavLink
-          role={tabs ? 'tab' : 'menuitem'}
-          key={r.name}
-          to={r.path}
-          className={({ isActive }) =>
-            `text-h5 block md:mb-40 px-40 md:text-black md:dark:text-white ${
-              isActive && 'text-white md:text-blue md:dark:text-blue'
-            }`
-          }
-        >
-          <NavItem iconName={r.icon} label={r.text} />
-        </NavLink>
-      ))}
+      {routerConfig.map((r) =>
+        r.icon ? (
+          <NavLink
+            role={tabs ? 'tab' : 'menuitem'}
+            key={r.name}
+            to={r.path}
+            className={({ isActive }) =>
+              `text-h5 block md:mb-40 px-40 md:text-black md:dark:text-white ${
+                isActive && 'text-white md:text-blue md:dark:text-blue'
+              }`
+            }
+          >
+            <NavItem iconName={r.icon} label={r.text} />
+          </NavLink>
+        ) : null
+      )}
     </nav>
   );
 };

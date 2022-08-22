@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useRoutes } from 'react-router-dom';
 import {
   NavigationDrawer,
@@ -9,6 +9,7 @@ import {
 } from '../drawer';
 import { Nav, TabBar } from '../nav';
 import { routerConfig } from '../../routes/router-config';
+import LocalContext from '../../context/local-context';
 
 export interface RouteChildProps {
   name: string;
@@ -16,15 +17,13 @@ export interface RouteChildProps {
 
 export const AppRouter = () => useRoutes(routerConfig);
 
-interface Props {
-  onToggle(): void;
-  isMenuOpen: boolean;
-}
-
-export const Main = ({ onToggle, isMenuOpen }: Props) => {
+export const Main = () => {
+  const {
+    menu: { menuOpen, onToggle },
+  } = useContext(LocalContext);
   return (
     <DrawerWrapper>
-      <NavigationDrawer rtl onToggle={onToggle} isMenuOpen={isMenuOpen}>
+      <NavigationDrawer rtl onToggle={onToggle} isMenuOpen={menuOpen}>
         <DrawerToggle
           onToggle={onToggle}
           variant={DRAWER_TOGGLE_VARIANTS.CLOSE}

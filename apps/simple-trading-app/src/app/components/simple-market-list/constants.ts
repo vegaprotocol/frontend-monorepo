@@ -20,6 +20,7 @@ export const agGridLightVariables = `
   .ag-theme-balham {
     --ag-row-border-color: ${theme.colors.transparent};
     --ag-row-hover-color: ${theme.colors.transparent};
+    --ag-border-color: ${theme.colors.transparent};
     --ag-font-size: 15px;
   }
   .ag-theme-balham .ag-header-cell{
@@ -56,6 +57,7 @@ export const agGridLightVariables = `
   }
   .ag-theme-balham .ag-header{
      border-bottom-width: 0;
+     border-bottom: none;
   }
   .ag-theme-balham .ag-has-focus .ag-row.ag-row-focus{
     border: 1px solid #0091ea;
@@ -101,7 +103,7 @@ export const agGridLightVariables = `
 
 export const agGridDarkVariables = `
   .ag-theme-balham-dark {
-    --ag-background-color: ${theme.colors.lite.black};
+    --ag-background-color: ${theme.colors.transparent};
     --ag-row-border-color: ${theme.colors.transparent};
     --ag-row-hover-color: ${theme.colors.transparent};
     --ag-odd-row-background-color: ${theme.colors.transparent};
@@ -142,6 +144,7 @@ export const agGridDarkVariables = `
   }
   .ag-theme-balham-dark .ag-header{
      border-bottom-width: 0;
+     border-bottom: none;
   }
   .ag-theme-balham-dark .ag-has-focus .ag-row.ag-row-focus{
     border: 1px solid #0091ea;

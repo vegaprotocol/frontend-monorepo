@@ -4,12 +4,10 @@ import Logo from './logo';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import LocalContext from '../../context/local-context';
 
-interface Props {
-  toggleTheme: () => void;
-}
-const Header = ({ toggleTheme }: Props) => {
+const Header = () => {
   const {
     vegaWalletDialog: { setConnect, setManage },
+    toggleTheme,
   } = useContext(LocalContext);
   return (
     <div
