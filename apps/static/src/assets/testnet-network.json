@@ -1,3 +1,5 @@
 {
-  "hosts": ["https://lb.testnet.vega.xyz/query"]
+  "hosts": [
+    "https://api.n11.testnet.vega.xyz/graphql"
+  ]
 }
