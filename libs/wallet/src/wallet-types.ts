@@ -229,8 +229,7 @@ interface Buy {
 export interface ProposalSubmission {
   rationale: {
     description: string;
-    hash?: string;
-    url?: string;
+    title: string;
   };
   terms:
     | ProposalFreeformTerms
