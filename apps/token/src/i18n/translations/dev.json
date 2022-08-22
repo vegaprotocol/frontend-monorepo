@@ -485,6 +485,7 @@
   "Switch to form for removal at end of epoch": "Switch to remove at end of epoch",
   "Nominate a validator": "Nominate validator",
   "View Governance proposals": "View proposals",
+  "seeRejectedProposals": "See rejected proposals",
   "vegaWallet": "Vega Wallet",
   "rewardsComingSoon": "Rewards is coming soon",
   "associationChoice": "You have $VEGA tokens held by the vesting contract. Would you like to associate those or associate $VEGA directly from your wallet?",

@@ -93,7 +93,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
       </section>
 
       <Link className="underline" to={'/governance/rejected'}>
-        See rejected proposals
+        {t('seeRejectedProposals')}
       </Link>
     </>
   );
