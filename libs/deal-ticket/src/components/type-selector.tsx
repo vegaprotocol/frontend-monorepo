@@ -1,17 +1,17 @@
 import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
-import { Toggle } from '@vegaprotocol/ui-toolkit';
 import { OrderType } from '@vegaprotocol/types';
+import { Toggle } from '@vegaprotocol/ui-toolkit';
 
 interface TypeSelectorProps {
   value: OrderType;
   onSelect: (type: OrderType) => void;
 }
 
-const toggles = Object.entries(OrderType).map(([label, value]) => ({
-  label,
-  value,
-}));
+const toggles = [
+  { label: t('Market'), value: OrderType.TYPE_MARKET },
+  { label: t('Limit'), value: OrderType.TYPE_LIMIT },
+];
 
 export const TypeSelector = ({ value, onSelect }: TypeSelectorProps) => {
   return (

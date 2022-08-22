@@ -8,7 +8,7 @@ describe('useSettlementAccount Hook', () => {
     const accounts: PartyBalanceQuery_party_accounts[] = [
       {
         __typename: 'Account',
-        type: AccountType.General,
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '2000000000000000000000',
         asset: {
           __typename: 'Asset',
@@ -20,7 +20,7 @@ describe('useSettlementAccount Hook', () => {
       },
       {
         __typename: 'Account',
-        type: AccountType.General,
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '1000000000',
         asset: {
           __typename: 'Asset',
@@ -32,7 +32,7 @@ describe('useSettlementAccount Hook', () => {
       },
       {
         __typename: 'Account',
-        type: AccountType.General,
+        type: AccountType.ACCOUNT_TYPE_GENERAL,
         balance: '5000000000000000000',
         asset: {
           __typename: 'Asset',
@@ -44,7 +44,7 @@ describe('useSettlementAccount Hook', () => {
       },
       {
         __typename: 'Account',
-        type: AccountType.Margin,
+        type: AccountType.ACCOUNT_TYPE_MARGIN,
         balance: '5000000000000000000',
         asset: {
           __typename: 'Asset',
@@ -67,7 +67,7 @@ describe('useSettlementAccount Hook', () => {
     expect(resultDai.current?.asset).toEqual(accounts[1].asset);
 
     const { result: resultVega } = renderHook(() =>
-      useSettlementAccount(vega, accounts, AccountType.Margin)
+      useSettlementAccount(vega, accounts, AccountType.ACCOUNT_TYPE_MARGIN)
     );
 
     expect(resultVega.current?.balance).toBe(accounts[3].balance);

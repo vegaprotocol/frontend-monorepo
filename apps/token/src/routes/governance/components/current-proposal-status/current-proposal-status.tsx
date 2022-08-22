@@ -2,9 +2,9 @@ import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
+import { ProposalState } from '@vegaprotocol/types';
 import { useVoteInformation } from '../../hooks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-import { ProposalState } from '@vegaprotocol/types';
 
 export const StatusPass = ({ children }: { children: React.ReactNode }) => (
   <span className="text-vega-green">{children}</span>
@@ -29,10 +29,11 @@ export const CurrentProposalStatus = ({
     { addSuffix: true }
   );
 
-  const daysEnactedAgo = formatDistanceToNow(
-    new Date(proposal.terms.enactmentDatetime || 0),
-    { addSuffix: true }
-  );
+  const daysEnactedAgo =
+    proposal.terms.enactmentDatetime &&
+    formatDistanceToNow(new Date(proposal.terms.enactmentDatetime), {
+      addSuffix: true,
+    });
 
   if (proposal.state === ProposalState.STATE_OPEN) {
     if (willPass) {

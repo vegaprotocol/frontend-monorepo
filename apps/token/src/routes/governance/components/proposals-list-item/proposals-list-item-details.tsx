@@ -58,10 +58,10 @@ export const ProposalsListItemDetails = ({
           {t('voteState_Enacted')} <Icon name={'tick'} />
         </>
       );
-      voteDetails = (
+      voteDetails = proposal.terms.enactmentDatetime && (
         <>
           {format(
-            new Date(proposal.terms.enactmentDatetime || 0),
+            new Date(proposal.terms.enactmentDatetime),
             DATE_FORMAT_DETAILED
           )}
         </>
@@ -77,10 +77,11 @@ export const ProposalsListItemDetails = ({
       voteDetails = proposal.terms.change.__typename !== 'NewFreeform' && (
         <>
           {t('toEnactOn')}{' '}
-          {format(
-            new Date(proposal.terms.enactmentDatetime || 0),
-            DATE_FORMAT_DETAILED
-          )}
+          {proposal.terms.enactmentDatetime &&
+            format(
+              new Date(proposal.terms.enactmentDatetime),
+              DATE_FORMAT_DETAILED
+            )}
         </>
       );
       break;
@@ -94,10 +95,11 @@ export const ProposalsListItemDetails = ({
       voteDetails = proposal.terms.change.__typename !== 'NewFreeform' && (
         <>
           {t('toEnactOn')}{' '}
-          {format(
-            new Date(proposal.terms.enactmentDatetime || 0),
-            DATE_FORMAT_DETAILED
-          )}
+          {proposal.terms.enactmentDatetime &&
+            format(
+              new Date(proposal.terms.enactmentDatetime),
+              DATE_FORMAT_DETAILED
+            )}
         </>
       );
       break;
