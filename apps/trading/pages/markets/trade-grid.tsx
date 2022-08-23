@@ -81,7 +81,7 @@ const getExpiryProps = ({
         <>
           <p>
             {t(
-              'This market expires when triggered by its oracle, not a set date.'
+              'This market expires when triggered by its oracle, not on a set date.'
             )}
           </p>
           {explorerUrl && oracleId && (
