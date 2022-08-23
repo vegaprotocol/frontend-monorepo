@@ -26,6 +26,7 @@ import { totalFees } from '@vegaprotocol/market-list';
 import { AccountType, Interval, MarketStateMapping } from '@vegaprotocol/types';
 import { MARKET_INFO_QUERY } from './info-market-query';
 import type { MarketInfoQuery_market, MarketInfoQuery } from '../__generated__';
+import { useEnvironment } from '@vegaprotocol/environment';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
@@ -148,7 +149,7 @@ export const Info = ({ market }: InfoProps) => {
         ),
       })),
   ];
-
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const keyDetails = {
     ...pick(
       market,
@@ -301,6 +302,10 @@ export const Info = ({ market }: InfoProps) => {
             terminationOracle:
               market.tradableInstrument.instrument.product
                 .oracleSpecForTradingTermination.id,
+          }}
+          link={{
+            href: `${VEGA_EXPLORER_URL}/oracles`,
+            label: t('View full oracle details'),
           }}
         />
       ),

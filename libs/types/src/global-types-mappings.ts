@@ -26,17 +26,6 @@ export enum AuctionTriggerMapping {
 }
 
 /**
- * Comparator describes the type of comparison.
- */
-export enum ConditionOperatorMapping {
-  OPERATOR_EQUALS = 'EQUALS',
-  OPERATOR_GREATER_THAN = 'GREATER_THAN',
-  OPERATOR_GREATER_THAN_OR_EQUAL = 'GREATER_THAN_OR_EQUAL',
-  OPERATOR_LESS_THAN = 'LESS_THAN',
-  OPERATOR_LESS_THAN_OR_EQUAL = 'LESS_THAN_OR_EQUAL',
-}
-
-/**
  * The status of a deposit
  */
 export enum DepositStatusMapping {
@@ -201,7 +190,7 @@ export enum ProposalRejectionReasonMapping {
   PROPOSAL_ERROR_INVALID_SHAPE = 'Invalid shape',
   PROPOSAL_ERROR_MAJORITY_THRESHOLD_NOT_REACHED = 'Majority threshold not reached',
   PROPOSAL_ERROR_MARKET_MISSING_LIQUIDITY_COMMITMENT = 'Market missing liquidity commitment',
-  PROPOSAL_ERROR_MISSING_BUILTIN_ASSET_FIELD = 'Missing builtin asset field',
+  PROPOSAL_ERROR_MISSING_BUILTIN_ASSET_FIELD = 'Missing built-in asset field',
   PROPOSAL_ERROR_MISSING_COMMITMENT_AMOUNT = 'Missing commitment amount',
   PROPOSAL_ERROR_MISSING_ERC20_CONTRACT_ADDRESS = 'Missing ERC20 contract address',
   PROPOSAL_ERROR_NETWORK_PARAMETER_INVALID_KEY = 'Network parameter invalid key',
