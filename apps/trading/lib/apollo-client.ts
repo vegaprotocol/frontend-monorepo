@@ -51,6 +51,9 @@ export function createClient(base?: string) {
           },
         },
       },
+      ERC20: {
+        keyFields: ['contractAddress'],
+      },
     },
   });
 

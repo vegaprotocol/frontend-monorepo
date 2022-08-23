@@ -111,7 +111,17 @@ export const updateQuery: UpdateQueryFn<
     })
     .filter(isWithdrawalEvent);
 
-  const withdrawals = uniqBy([...incoming, ...curr], 'id');
+  const withdrawals = uniqBy([...incoming, ...curr], 'node.id');
+  const edges = withdrawals.map((w) => {
+    if (w?.__typename === 'WithdrawalEdge') {
+      return w;
+    }
+
+    return {
+      __typename: 'WithdrawalEdge',
+      node: w,
+    };
+  });
 
   // Write new party to cache if not present
   if (!prev.party) {
@@ -121,10 +131,7 @@ export const updateQuery: UpdateQueryFn<
         __typename: 'Party',
         withdrawalsConnection: {
           __typename: 'WithdrawalsConnection',
-          edges: withdrawals.map((w) => ({
-            __typename: 'WithdrawalEdge',
-            node: w,
-          })),
+          edges,
         },
       },
     } as Withdrawals;
@@ -134,7 +141,10 @@ export const updateQuery: UpdateQueryFn<
     ...prev,
     party: {
       ...prev.party,
-      withdrawals,
+      withdrawalsConnection: {
+        __typename: 'WithdrawalsConnection',
+        edges,
+      },
     },
   };
 };
