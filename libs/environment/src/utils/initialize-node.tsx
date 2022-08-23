@@ -2,10 +2,9 @@ import type { Dispatch } from 'react';
 import { ACTIONS } from '../hooks/use-nodes';
 import type { Action } from '../hooks/use-nodes';
 import { requestNode } from './request-node';
-import { GQL_PATH } from './apollo-client';
 
 const getResponseTime = (url: string) => {
-  const requestUrl = new URL(GQL_PATH, url);
+  const requestUrl = new URL(url);
   const requests = window.performance.getEntriesByName(requestUrl.href);
   const { duration } = (requests.length && requests[requests.length - 1]) || {};
   return duration;

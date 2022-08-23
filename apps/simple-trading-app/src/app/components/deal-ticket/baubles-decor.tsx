@@ -5,7 +5,7 @@ import Star from '../icons/star';
 
 const Baubles = () => {
   return (
-    <div className="relative right-0 top-0 h-[700px] hidden md:block md:w-1/2 overflow-hidden">
+    <aside className="relative right-0 top-0 h-[700px] hidden md:block md:w-1/2 overflow-hidden">
       <div className="absolute top-[100px] w-[393px] left-[19%] h-[517px]">
         <div className="absolute top-[82px] right-[34px] w-[100px] h-[100px] clip-path-rounded">
           <Video />
@@ -29,7 +29,7 @@ const Baubles = () => {
           <Star />
         </div>
       </div>
-    </div>
+    </aside>
   );
 };
 

@@ -30,8 +30,8 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
     markets
       ?.filter(
         (m) =>
-          m.state !== MarketState.Rejected &&
-          m.tradingMode !== MarketTradingMode.NoTrading
+          m.state !== MarketState.STATE_REJECTED &&
+          m.tradingMode !== MarketTradingMode.TRADING_MODE_NO_TRADING
       )
       .map((m) => {
         return {
