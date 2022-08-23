@@ -9,7 +9,7 @@ import { AccountType } from "@vegaprotocol/types";
 // GraphQL query operation: AssetsQuery
 // ====================================================
 
-export interface AssetsQuery_assets_source_ERC20 {
+export interface AssetsQuery_assetsConnection_edges_node_source_ERC20 {
   __typename: "ERC20";
   /**
    * The address of the ERC20 contract
@@ -17,7 +17,7 @@ export interface AssetsQuery_assets_source_ERC20 {
   contractAddress: string;
 }
 
-export interface AssetsQuery_assets_source_BuiltinAsset {
+export interface AssetsQuery_assetsConnection_edges_node_source_BuiltinAsset {
   __typename: "BuiltinAsset";
   /**
    * Maximum amount that can be requested by a party through the built-in asset faucet at a time
@@ -25,9 +25,9 @@ export interface AssetsQuery_assets_source_BuiltinAsset {
   maxFaucetAmountMint: string;
 }
 
-export type AssetsQuery_assets_source = AssetsQuery_assets_source_ERC20 | AssetsQuery_assets_source_BuiltinAsset;
+export type AssetsQuery_assetsConnection_edges_node_source = AssetsQuery_assetsConnection_edges_node_source_ERC20 | AssetsQuery_assetsConnection_edges_node_source_BuiltinAsset;
 
-export interface AssetsQuery_assets_infrastructureFeeAccount_market {
+export interface AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount_market {
   __typename: "Market";
   /**
    * Market ID
@@ -35,7 +35,7 @@ export interface AssetsQuery_assets_infrastructureFeeAccount_market {
   id: string;
 }
 
-export interface AssetsQuery_assets_infrastructureFeeAccount {
+export interface AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount {
   __typename: "Account";
   /**
    * Account type (General, Margin, etc)
@@ -48,10 +48,10 @@ export interface AssetsQuery_assets_infrastructureFeeAccount {
   /**
    * Market (only relevant to margin accounts)
    */
-  market: AssetsQuery_assets_infrastructureFeeAccount_market | null;
+  market: AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount_market | null;
 }
 
-export interface AssetsQuery_assets {
+export interface AssetsQuery_assetsConnection_edges_node {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -72,16 +72,29 @@ export interface AssetsQuery_assets {
   /**
    * The origin source of the asset (e.g: an ERC20 asset)
    */
-  source: AssetsQuery_assets_source;
+  source: AssetsQuery_assetsConnection_edges_node_source;
   /**
    * The infrastructure fee account for this asset
    */
-  infrastructureFeeAccount: AssetsQuery_assets_infrastructureFeeAccount;
+  infrastructureFeeAccount: AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount;
+}
+
+export interface AssetsQuery_assetsConnection_edges {
+  __typename: "AssetEdge";
+  node: AssetsQuery_assetsConnection_edges_node;
+}
+
+export interface AssetsQuery_assetsConnection {
+  __typename: "AssetsConnection";
+  /**
+   * The assets
+   */
+  edges: (AssetsQuery_assetsConnection_edges | null)[] | null;
 }
 
 export interface AssetsQuery {
   /**
-   * The list of all assets in use in the Vega network
+   * The list of all assets in use in the vega network or the specified asset if id is provided
    */
-  assets: AssetsQuery_assets[] | null;
+  assetsConnection: AssetsQuery_assetsConnection;
 }
