@@ -19,6 +19,7 @@ export function NetworkLoader<T>({
 
   const client = useMemo(() => {
     if (VEGA_URL) {
+      console.log(`CREATING ${VEGA_URL}`);
       return createClient(VEGA_URL);
     }
     return undefined;

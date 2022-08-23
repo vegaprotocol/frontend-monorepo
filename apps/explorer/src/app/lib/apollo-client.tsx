@@ -40,8 +40,8 @@ export function createClient(base?: string) {
   });
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    console.log(graphQLErrors);
-    console.log(networkError);
+    // console.log(graphQLErrors);
+    // console.log(networkError);
   });
 
   return new ApolloClient({
