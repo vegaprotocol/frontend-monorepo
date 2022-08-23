@@ -127,7 +127,8 @@ export const TradeMarketHeader = ({
               >
                 {market.tradingMode === MarketTradingMode.MonitoringAuction &&
                 market.data?.trigger &&
-                market.data.trigger !== AuctionTrigger.Unspecified
+                market.data.trigger !==
+                  AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
                   ? `${formatLabel(
                       market.tradingMode
                     )} - ${market.data?.trigger.toLowerCase()}`

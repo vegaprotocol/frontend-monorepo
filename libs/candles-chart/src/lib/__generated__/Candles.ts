@@ -28,7 +28,7 @@ export interface Candles_market_tradableInstrument_instrument {
 export interface Candles_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: Candles_market_tradableInstrument_instrument;
 }
@@ -69,7 +69,7 @@ export interface Candles_market {
   id: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -85,18 +85,18 @@ export interface Candles_market {
    */
   decimalPlaces: number;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: Candles_market_tradableInstrument;
   /**
-   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by params
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
    */
   candles: (Candles_market_candles | null)[] | null;
 }
 
 export interface Candles {
   /**
-   * An instrument that is trading on the VEGA network
+   * An instrument that is trading on the Vega network
    */
   market: Candles_market | null;
 }

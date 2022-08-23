@@ -11,7 +11,7 @@ on:
         type: choice
         options:
           - explorer-e2e
-          - simple-trading-app-e2e
+          - console-lite-e2e
           - stats-e2e
           - token-e2e
           - trading-e2e
