@@ -44,7 +44,7 @@ export interface MarketDepth_market_data {
    */
   bestStaticOfferPrice: string;
   /**
-   * market of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketDepth_market_data_market;
 }

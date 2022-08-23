@@ -32,7 +32,7 @@ export interface Proposals_proposals_terms_change_NewMarket_instrument_futurePro
 export interface Proposals_proposals_terms_change_NewMarket_instrument_futureProduct {
   __typename: "FutureProduct";
   /**
-   * Product asset
+   * Product asset ID
    */
   settlementAsset: Proposals_proposals_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
 }

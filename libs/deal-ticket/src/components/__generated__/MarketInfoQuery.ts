@@ -118,7 +118,7 @@ export interface MarketInfoQuery_market_data_market {
 export interface MarketInfoQuery_market_data {
   __typename: "MarketData";
   /**
-   * market of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketInfoQuery_market_data_market;
   /**

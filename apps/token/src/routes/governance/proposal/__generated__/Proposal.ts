@@ -32,7 +32,7 @@ export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProdu
 export interface Proposal_proposal_terms_change_NewMarket_instrument_futureProduct {
   __typename: "FutureProduct";
   /**
-   * Product asset
+   * Product asset ID
    */
   settlementAsset: Proposal_proposal_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
 }
@@ -306,7 +306,7 @@ export interface Proposal {
   /**
    * A governance proposal located by either its ID or reference. If both are set, ID is used.
    */
-  proposal: Proposal_proposal | null;
+  proposal: Proposal_proposal;
 }
 
 export interface ProposalVariables {

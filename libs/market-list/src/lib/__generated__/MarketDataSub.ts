@@ -28,7 +28,7 @@ export interface MarketDataSub_marketData_market {
 export interface MarketDataSub_marketData {
   __typename: "MarketData";
   /**
-   * market of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketDataSub_marketData_market;
   /**

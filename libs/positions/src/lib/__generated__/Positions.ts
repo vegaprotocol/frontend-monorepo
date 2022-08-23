@@ -28,7 +28,7 @@ export interface Positions_party_positions_market_data {
    */
   marketTradingMode: MarketTradingMode;
   /**
-   * market of the associated mark price
+   * market ID of the associated mark price
    */
   market: Positions_party_positions_market_data_market;
 }
