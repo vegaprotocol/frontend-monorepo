@@ -14,7 +14,7 @@ export const Navbar = () => {
       <div className="flex items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a className="px-[26px]">
+          <a className="px-[24px]">
             <Vega className="fill-white" />
           </a>
         </Link>
