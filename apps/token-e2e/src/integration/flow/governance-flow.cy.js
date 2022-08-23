@@ -101,7 +101,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
     it.only('Able to submit a valid freeform proposal - with minimum required tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
-        this.minProposerBalance+1
+        this.minProposerBalance + 1
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
