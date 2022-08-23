@@ -25,6 +25,7 @@ export const MARKETS_QUERY = gql`
     markets {
       id
       name
+      state
       data {
         ...SimpleMarketDataFields
       }

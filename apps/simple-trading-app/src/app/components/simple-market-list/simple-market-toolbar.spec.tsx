@@ -104,7 +104,7 @@ describe('SimpleMarketToolbar', () => {
 
     await waitFor(() => {
       expect(screen.getByTestId('location-display')).toHaveTextContent(
-        '/markets/Active/Future'
+        '/markets/STATE_ACTIVE/Future'
       );
     });
 
@@ -115,7 +115,7 @@ describe('SimpleMarketToolbar', () => {
     );
     await waitFor(() => {
       expect(screen.getByTestId('location-display')).toHaveTextContent(
-        '/markets/Active/Future/tEURO'
+        '/markets/STATE_ACTIVE/Future/tEURO'
       );
     });
 

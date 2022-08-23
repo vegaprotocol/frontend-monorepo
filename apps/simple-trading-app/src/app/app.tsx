@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { createClient } from './lib/apollo-client';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
@@ -18,17 +18,17 @@ import LocalContext from './context/local-context';
 import useLocalValues from './hooks/use-local-values';
 
 function App() {
-  const localValues = useLocalValues();
   const [theme, toggleTheme] = useThemeSwitcher();
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const onToggle = () => setMenuOpen(!menuOpen);
-
+  const localValues = useLocalValues(toggleTheme);
+  const {
+    vegaWalletDialog,
+    menu: { setMenuOpen },
+  } = localValues;
   const location = useLocation();
 
   useEffect(() => {
     setMenuOpen(false);
-  }, [location]);
+  }, [location, setMenuOpen]);
 
   return (
     <EnvironmentProvider>
@@ -38,16 +38,16 @@ function App() {
             <LocalContext.Provider value={localValues}>
               <AppLoader>
                 <div className="max-h-full min-h-full dark:bg-lite-black dark:text-white-60 bg-white text-black-60 grid grid-rows-[min-content,1fr]">
-                  <Header toggleTheme={toggleTheme} />
-                  <Main isMenuOpen={menuOpen} onToggle={onToggle} />
+                  <Header />
+                  <Main />
                   <VegaConnectDialog
                     connectors={Connectors}
-                    dialogOpen={localValues.vegaWalletDialog.connect}
-                    setDialogOpen={localValues.vegaWalletDialog.setConnect}
+                    dialogOpen={vegaWalletDialog.connect}
+                    setDialogOpen={vegaWalletDialog.setConnect}
                   />
                   <VegaManageDialog
-                    dialogOpen={localValues.vegaWalletDialog.manage}
-                    setDialogOpen={localValues.vegaWalletDialog.setManage}
+                    dialogOpen={vegaWalletDialog.manage}
+                    setDialogOpen={vegaWalletDialog.setManage}
                   />
                 </div>
               </AppLoader>
