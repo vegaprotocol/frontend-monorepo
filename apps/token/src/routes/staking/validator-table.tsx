@@ -72,10 +72,10 @@ export const ValidatorTable = ({
         <span>
           <Link
             title={t('View on Etherscan (opens in a new tab)')}
-            href={`${ETHERSCAN_URL}/address/${node.ethereumAdddress}`}
+            href={`${ETHERSCAN_URL}/address/${node.ethereumAddress}`}
             target="_blank"
           >
-            {node.ethereumAdddress}
+            {node.ethereumAddress}
           </Link>
         </span>
       </KeyValueTableRow>

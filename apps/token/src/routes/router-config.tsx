@@ -115,6 +115,13 @@ const LazyGovernanceProposals = React.lazy(
     )
 );
 
+const LazyRejectedGovernanceProposals = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-proposals", webpackPrefetch: true */ './governance/rejected'
+    )
+);
+
 const LazyGovernancePropose = React.lazy(
   () =>
     import(
@@ -226,6 +233,7 @@ const routerConfig = [
     children: [
       { path: ':proposalId', element: <LazyGovernanceProposal /> },
       { path: 'propose', element: <LazyGovernancePropose /> },
+      { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
       { index: true, element: <LazyGovernanceProposals /> },
     ],
   },

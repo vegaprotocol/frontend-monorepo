@@ -1,7 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { ProposalState } from '../../../../__generated__/globalTypes';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../staking/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
@@ -11,6 +10,7 @@ import { useUserVote } from './use-user-vote';
 import { VoteButtonsContainer } from './vote-buttons';
 import { VoteProgress } from './vote-progress';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { ProposalState } from '@vegaprotocol/types';
 
 interface VoteDetailsProps {
   proposal: Proposal_proposal;
@@ -50,7 +50,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
           <CurrentProposalStatus proposal={proposal} />
         </span>
         {'. '}
-        {proposal.state === ProposalState.Open ? daysLeft : null}
+        {proposal.state === ProposalState.STATE_OPEN ? daysLeft : null}
       </p>
       <table className="w-full font-normal mb-12">
         <thead>
