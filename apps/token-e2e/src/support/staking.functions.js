@@ -9,6 +9,7 @@ const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const associateWalletRadioButton = '[data-testid="associate-radio-wallet"]';
+const associateContractRadioButton = '[data-testid="associate-radio-contract"]';
 const stakeMaximumTokens = '[data-testid="token-amount-use-maximum"]';
 const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
 const stakeValidatorListTotalStake = '[col-id="totalStakeThisEpoch"]';
@@ -48,32 +49,46 @@ Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
     .click();
 });
 
-Cypress.Commands.add(
-  'staking_page_associate_tokens',
-  (amount, approve = false) => {
-    cy.highlight(`Associating ${amount} tokens`);
-    cy.get(ethWalletAssociateButton).first().click();
-    cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
-    cy.get(tokenAmountInputBox, epochTimeout).type(amount);
-    if (approve) {
-      cy.get(tokenInputApprove, txTimeout).should('be.enabled').click();
-      cy.contains('Approve $VEGA Tokens for staking on Vega').should(
-        'be.visible'
-      );
-      cy.contains(
-        'Approve $VEGA Tokens for staking on Vega',
-        epochTimeout
-      ).should('not.exist');
-    }
-    cy.get(tokenSubmitButton, epochTimeout).should('be.enabled').click();
-    cy.contains(
-      'can now participate in governance and nominate a validator',
-      txTimeout
-    ).should('be.visible');
-  }
-);
+Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
+  let approve = options && options.approve ? options.approve : false;
+  let type = options && options.type ? options.type : 'wallet';
 
-Cypress.Commands.add('staking_page_disassociate_tokens', (amount) => {
+  cy.highlight(`Associating ${amount} tokens`);
+  cy.get(ethWalletAssociateButton).first().click();
+  if (type === 'wallet') {
+    cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
+  } else if (type === 'contract') {
+    cy.get(associateContractRadioButton, { timeout: 30000 }).click();
+  } else {
+    cy.highlight(`${type} is not association option`);
+  }
+  cy.get(tokenAmountInputBox, { timeout: 10000 }).type(amount);
+  if (approve) {
+    cy.get(tokenInputApprove, txTimeout).should('be.enabled').click();
+    cy.contains('Approve $VEGA Tokens for staking on Vega').should(
+      'be.visible'
+    );
+    cy.contains('Approve $VEGA Tokens for staking on Vega', {
+      timeout: 40000,
+    }).should('not.exist');
+  }
+  cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
+  cy.contains(
+    `Associating with Vega key. Waiting for ${Cypress.env(
+      'blockConfirmations'
+    )} more confirmations..`,
+    {
+      timeout: 8000,
+    }
+  ).should('be.visible');
+  cy.contains('can now participate in governance and nominate a validator', {
+    timeout: 60000,
+  }).should('be.visible');
+});
+
+Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
+  let type = options && options.type ? options.type : 'wallet';
+
   cy.highlight(`Disassociating ${amount} tokens via Staking Page`);
   cy.get(ethWalletDissociateButton).first().click();
   cy.get(associateWalletRadioButton, epochTimeout).click();
@@ -84,6 +99,32 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount) => {
     `${amount} $VEGA tokens have been returned to Ethereum wallet`,
     txTimeout
   ).should('be.visible');
+  if (type === 'wallet') {
+    cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
+  } else if (type === 'contract') {
+    cy.get(associateContractRadioButton, { timeout: 30000 }).click();
+  } else {
+    cy.highlight(`${type} is not association option`);
+  }
+  cy.get(tokenAmountInputBox, { timeout: 10000 }).type(amount);
+
+  cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
+
+  if (type === 'wallet') {
+    cy.contains(
+      `${amount} $VEGA tokens have been returned to Ethereum wallet`,
+      {
+        timeout: 60000,
+      }
+    ).should('be.visible');
+  } else if (type === 'contract') {
+    cy.contains(
+      `${amount} $VEGA tokens have been returned to Vesting contract`,
+      {
+        timeout: 60000,
+      }
+    ).should('be.visible');
+  }
 });
 
 Cypress.Commands.add('staking_page_disassociate_all_tokens', () => {

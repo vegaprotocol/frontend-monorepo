@@ -12,7 +12,10 @@ import { useTranslation } from 'react-i18next';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import type { ReactNode } from 'react';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
-import { ProposalState } from '@vegaprotocol/types';
+import {
+  ProposalRejectionReasonMapping,
+  ProposalState,
+} from '@vegaprotocol/types';
 
 const MajorityNotReached = () => {
   const { t } = useTranslation();
@@ -161,7 +164,7 @@ export const ProposalsListItemDetails = ({
         </>
       );
       voteStatus = proposal.rejectionReason && (
-        <>{t(proposal.rejectionReason)}</>
+        <>{t(ProposalRejectionReasonMapping[proposal.rejectionReason])}</>
       );
       break;
     }

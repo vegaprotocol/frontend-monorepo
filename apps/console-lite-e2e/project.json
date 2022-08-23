@@ -1,0 +1,28 @@
+{
+  "root": "apps/console-lite-e2e",
+  "sourceRoot": "apps/console-lite-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/console-lite-e2e/cypress.config.js",
+        "devServerTarget": "console-lite:serve"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "console-lite:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/console-lite-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["console-lite"]
+}

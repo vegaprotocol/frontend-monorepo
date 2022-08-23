@@ -95,12 +95,18 @@ export const WalletCardRow = ({
           {label}
         </Link>
       ) : (
-        <span className={`max-w-[200px] ${dark ? 'text-white' : 'text-black'}`}>
+        <span
+          className={`max-w-[200px] ${dark ? 'text-white' : 'text-black'}`}
+          data-test-id="associated-key"
+        >
           {label}
         </span>
       )}
       {value && (
-        <span className="font-mono flex-1 text-right">
+        <span
+          className="font-mono flex-1 text-right"
+          data-test-id="associated-amount"
+        >
           <span className={dark ? 'text-white' : 'text-black'}>
             {integers}.
           </span>
