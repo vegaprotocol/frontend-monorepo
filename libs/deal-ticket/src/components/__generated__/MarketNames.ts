@@ -64,7 +64,7 @@ export interface MarketNames_markets {
    */
   state: MarketState;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketNames_markets_tradableInstrument;
 }
