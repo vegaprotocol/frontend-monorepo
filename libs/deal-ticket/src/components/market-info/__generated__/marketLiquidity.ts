@@ -6,10 +6,10 @@
 import { AccountType, LiquidityProvisionStatus } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: marketLiquidity
+// GraphQL query operation: MarketLiquidity
 // ====================================================
 
-export interface marketLiquidity_market_tradableInstrument_instrument_product_settlementAsset {
+export interface MarketLiquidity_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -25,15 +25,15 @@ export interface marketLiquidity_market_tradableInstrument_instrument_product_se
   decimals: number;
 }
 
-export interface marketLiquidity_market_tradableInstrument_instrument_product {
+export interface MarketLiquidity_market_tradableInstrument_instrument_product {
   __typename: "Future";
   /**
    * The name of the asset (string)
    */
-  settlementAsset: marketLiquidity_market_tradableInstrument_instrument_product_settlementAsset;
+  settlementAsset: MarketLiquidity_market_tradableInstrument_instrument_product_settlementAsset;
 }
 
-export interface marketLiquidity_market_tradableInstrument_instrument {
+export interface MarketLiquidity_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
@@ -42,18 +42,18 @@ export interface marketLiquidity_market_tradableInstrument_instrument {
   /**
    * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
    */
-  product: marketLiquidity_market_tradableInstrument_instrument_product;
+  product: MarketLiquidity_market_tradableInstrument_instrument_product;
 }
 
-export interface marketLiquidity_market_tradableInstrument {
+export interface MarketLiquidity_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of, or reference to, a fully specified instrument.
    */
-  instrument: marketLiquidity_market_tradableInstrument_instrument;
+  instrument: MarketLiquidity_market_tradableInstrument_instrument;
 }
 
-export interface marketLiquidity_market_liquidityProvisions_party_accounts {
+export interface MarketLiquidity_market_liquidityProvisions_party_accounts {
   __typename: "Account";
   /**
    * Account type (General, Margin, etc)
@@ -65,7 +65,7 @@ export interface marketLiquidity_market_liquidityProvisions_party_accounts {
   balance: string;
 }
 
-export interface marketLiquidity_market_liquidityProvisions_party {
+export interface MarketLiquidity_market_liquidityProvisions_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -74,10 +74,10 @@ export interface marketLiquidity_market_liquidityProvisions_party {
   /**
    * Collateral accounts relating to a party
    */
-  accounts: marketLiquidity_market_liquidityProvisions_party_accounts[] | null;
+  accounts: MarketLiquidity_market_liquidityProvisions_party_accounts[] | null;
 }
 
-export interface marketLiquidity_market_liquidityProvisions {
+export interface MarketLiquidity_market_liquidityProvisions {
   __typename: "LiquidityProvision";
   /**
    * Unique identifier for the order (set by the system after consensus)
@@ -86,7 +86,7 @@ export interface marketLiquidity_market_liquidityProvisions {
   /**
    * The Id of the party making this commitment
    */
-  party: marketLiquidity_market_liquidityProvisions_party;
+  party: MarketLiquidity_market_liquidityProvisions_party;
   /**
    * When the liquidity provision was initially created (formatted RFC3339)
    */
@@ -109,7 +109,7 @@ export interface marketLiquidity_market_liquidityProvisions {
   status: LiquidityProvisionStatus;
 }
 
-export interface marketLiquidity_market_data_market {
+export interface MarketLiquidity_market_data_market {
   __typename: "Market";
   /**
    * Market ID
@@ -117,7 +117,7 @@ export interface marketLiquidity_market_data_market {
   id: string;
 }
 
-export interface marketLiquidity_market_data_liquidityProviderFeeShare_party {
+export interface MarketLiquidity_market_data_liquidityProviderFeeShare_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -125,12 +125,12 @@ export interface marketLiquidity_market_data_liquidityProviderFeeShare_party {
   id: string;
 }
 
-export interface marketLiquidity_market_data_liquidityProviderFeeShare {
+export interface MarketLiquidity_market_data_liquidityProviderFeeShare {
   __typename: "LiquidityProviderFeeShare";
   /**
    * The liquidity provider party ID
    */
-  party: marketLiquidity_market_data_liquidityProviderFeeShare_party;
+  party: MarketLiquidity_market_data_liquidityProviderFeeShare_party;
   /**
    * The share owned by this liquidity provider (float)
    */
@@ -141,12 +141,12 @@ export interface marketLiquidity_market_data_liquidityProviderFeeShare {
   averageEntryValuation: string;
 }
 
-export interface marketLiquidity_market_data {
+export interface MarketLiquidity_market_data {
   __typename: "MarketData";
   /**
    * market ID of the associated mark price
    */
-  market: marketLiquidity_market_data_market;
+  market: MarketLiquidity_market_data_market;
   /**
    * the supplied stake for the market
    */
@@ -166,10 +166,10 @@ export interface marketLiquidity_market_data {
   /**
    * the equity like share of liquidity fee for each liquidity provider
    */
-  liquidityProviderFeeShare: marketLiquidity_market_data_liquidityProviderFeeShare[] | null;
+  liquidityProviderFeeShare: MarketLiquidity_market_data_liquidityProviderFeeShare[] | null;
 }
 
-export interface marketLiquidity_market {
+export interface MarketLiquidity_market {
   __typename: "Market";
   /**
    * Market ID
@@ -195,24 +195,24 @@ export interface marketLiquidity_market {
   /**
    * An instance of, or reference to, a tradable instrument.
    */
-  tradableInstrument: marketLiquidity_market_tradableInstrument;
+  tradableInstrument: MarketLiquidity_market_tradableInstrument;
   /**
    * The list of the liquidity provision commitments for this market
    */
-  liquidityProvisions: marketLiquidity_market_liquidityProvisions[] | null;
+  liquidityProvisions: MarketLiquidity_market_liquidityProvisions[] | null;
   /**
    * marketData for the given market
    */
-  data: marketLiquidity_market_data | null;
+  data: MarketLiquidity_market_data | null;
 }
 
-export interface marketLiquidity {
+export interface MarketLiquidity {
   /**
    * An instrument that is trading on the Vega network
    */
-  market: marketLiquidity_market | null;
+  market: MarketLiquidity_market | null;
 }
 
-export interface marketLiquidityVariables {
+export interface MarketLiquidityVariables {
   marketId: string;
 }

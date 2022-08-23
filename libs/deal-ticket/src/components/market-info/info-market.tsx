@@ -25,8 +25,11 @@ import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
 import { AccountType, Interval, MarketStateMapping } from '@vegaprotocol/types';
 import { MARKET_INFO_QUERY } from './info-market-query';
-import type { MarketInfoQuery_market, MarketInfoQuery } from '../__generated__';
 import { useEnvironment } from '@vegaprotocol/environment';
+import type {
+  MarketInfoQuery,
+  MarketInfoQuery_market,
+} from './__generated__/MarketInfoQuery';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
@@ -283,10 +286,14 @@ export const Info = ({ market }: InfoProps) => {
           }}
           decimalPlaces={market.decimalPlaces} // do we need to add decimal places here?
           assetSymbol={assetSymbol}
-          link={{
-            href: `/markets/liquidity/${market.id}`,
-            label: t('View liquidity provision table'),
-          }}
+          link={
+            <a
+              href={`/markets/liquidity/${market.id}`}
+              className="border-b-2 text-ui"
+            >
+              {t('View liquidity provision table')}
+            </a>
+          }
         />
       ),
     },
@@ -303,10 +310,14 @@ export const Info = ({ market }: InfoProps) => {
               market.tradableInstrument.instrument.product
                 .oracleSpecForTradingTermination.id,
           }}
-          link={{
-            href: `${VEGA_EXPLORER_URL}/oracles`,
-            label: t('View full oracle details'),
-          }}
+          link={
+            <a
+              href={`${VEGA_EXPLORER_URL}/oracles`}
+              className="border-b-2 text-ui"
+            >
+              {t('View full oracle details')}
+            </a>
+          }
         />
       ),
     },
@@ -478,7 +489,7 @@ export interface MarketInfoTableProps {
   asPercentage?: boolean;
   unformatted?: boolean;
   omits?: string[];
-  link?: { href: string; label: string };
+  link?: ReactNode;
   assetSymbol?: string;
 }
 
@@ -506,11 +517,7 @@ export const MarketInfoTable = ({
           />
         ))}
       </KeyValueTable>
-      {link && (
-        <a href={link.href} className="border-b-2 text-ui">
-          {t(link.label)}
-        </a>
-      )}
+      {link}
     </>
   );
 };

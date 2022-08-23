@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 export const MARKET_LIQUIDITY_QUERY = gql`
-  query marketLiquidity($marketId: ID!) {
+  query MarketLiquidity($marketId: ID!) {
     market(id: $marketId) {
       id
       decimalPlaces
@@ -23,7 +23,7 @@ export const MARKET_LIQUIDITY_QUERY = gql`
         id
         party {
           id
-          accounts(type: Bond, marketId: $marketId) {
+          accounts {
             type
             balance
           }

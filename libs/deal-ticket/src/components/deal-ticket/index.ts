@@ -1,3 +1,4 @@
+export * from './__generated__';
 export * from './deal-ticket-amount';
 export * from './deal-ticket-container';
 export * from './deal-ticket-limit-amount';

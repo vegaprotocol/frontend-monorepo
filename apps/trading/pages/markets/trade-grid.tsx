@@ -126,7 +126,8 @@ export const TradeMarketHeader = ({
                   'border-b-2 border-dotted'
                 )}
               >
-                {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+                {market.tradingMode ===
+                  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
                 market.data?.trigger &&
                 market.data.trigger !==
                   AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
