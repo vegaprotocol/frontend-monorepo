@@ -28,15 +28,15 @@ export interface Fills_party_tradesConnection_edges_node_seller {
 export interface Fills_party_tradesConnection_edges_node_buyerFee {
   __typename: "TradeFee";
   /**
-   * The maker fee, aggressive party to the other party (the one who had an order in the book)
+   * The maker fee, paid by the aggressive party to the other party (the one who had an order in the book)
    */
   makerFee: string;
   /**
-   * The infrastructure fee, a fee paid to the node runner to maintain the vega network
+   * The infrastructure fee, a fee paid to the validators to maintain the Vega network
    */
   infrastructureFee: string;
   /**
-   * The fee paid to the market makers to provide liquidity in the market
+   * The fee paid to the liquidity providers that committed liquidity to the market
    */
   liquidityFee: string;
 }
@@ -44,15 +44,15 @@ export interface Fills_party_tradesConnection_edges_node_buyerFee {
 export interface Fills_party_tradesConnection_edges_node_sellerFee {
   __typename: "TradeFee";
   /**
-   * The maker fee, aggressive party to the other party (the one who had an order in the book)
+   * The maker fee, paid by the aggressive party to the other party (the one who had an order in the book)
    */
   makerFee: string;
   /**
-   * The infrastructure fee, a fee paid to the node runner to maintain the vega network
+   * The infrastructure fee, a fee paid to the validators to maintain the Vega network
    */
   infrastructureFee: string;
   /**
-   * The fee paid to the market makers to provide liquidity in the market
+   * The fee paid to the liquidity providers that committed liquidity to the market
    */
   liquidityFee: string;
 }
@@ -60,7 +60,7 @@ export interface Fills_party_tradesConnection_edges_node_sellerFee {
 export interface Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -68,7 +68,7 @@ export interface Fills_party_tradesConnection_edges_node_market_tradableInstrume
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -100,7 +100,7 @@ export interface Fills_party_tradesConnection_edges_node_market_tradableInstrume
 export interface Fills_party_tradesConnection_edges_node_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: Fills_party_tradesConnection_edges_node_market_tradableInstrument_instrument;
 }
@@ -117,7 +117,7 @@ export interface Fills_party_tradesConnection_edges_node_market {
   name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -133,13 +133,14 @@ export interface Fills_party_tradesConnection_edges_node_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: Fills_party_tradesConnection_edges_node_market_tradableInstrument;
 }
@@ -233,7 +234,7 @@ export interface Fills_party {
 
 export interface Fills {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: Fills_party | null;
 }

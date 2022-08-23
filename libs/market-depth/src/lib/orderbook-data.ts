@@ -424,8 +424,8 @@ export const generateMockData = ({
         staticMidPrice: '',
         marketTradingMode:
           overlap > 0
-            ? MarketTradingMode.BatchAuction
-            : MarketTradingMode.Continuous,
+            ? MarketTradingMode.TRADING_MODE_BATCH_AUCTION
+            : MarketTradingMode.TRADING_MODE_CONTINUOUS,
         bestStaticBidPrice: bestStaticBidPrice.toString(),
         bestStaticOfferPrice: bestStaticOfferPrice.toString(),
         indicativePrice: indicativePrice?.toString() ?? '',

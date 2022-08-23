@@ -10,7 +10,6 @@ import {
 import { MockedProvider } from '@apollo/client/testing';
 import type { MockedResponse } from '@apollo/client/testing';
 import { BrowserRouter } from 'react-router-dom';
-import { MarketState } from '@vegaprotocol/types';
 import SimpleMarketList from './simple-market-list';
 import { MARKETS_QUERY } from './data-provider';
 import type {
@@ -68,7 +67,7 @@ describe('SimpleMarketList', () => {
         id: '1',
         data: {
           market: {
-            state: MarketState.Active,
+            state: 'Active',
           },
         },
         tradableInstrument: {
@@ -88,7 +87,7 @@ describe('SimpleMarketList', () => {
         id: '2',
         data: {
           market: {
-            state: MarketState.Active,
+            state: 'Active',
           },
         },
         tradableInstrument: {
@@ -131,6 +130,7 @@ describe('SimpleMarketList', () => {
         document.querySelector('.ag-center-cols-container')
       ).toBeInTheDocument();
     });
+    screen.debug();
     await waitFor(() => {
       const container = document.querySelector('.ag-center-cols-container');
       expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
