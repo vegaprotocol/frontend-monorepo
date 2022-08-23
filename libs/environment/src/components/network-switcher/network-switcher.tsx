@@ -64,7 +64,7 @@ const getLabelText = ({
     return ` (${t('not available')})`;
   }
   return '';
-}
+};
 
 const NetworkLabel = ({
   isCurrent = false,
