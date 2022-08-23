@@ -196,7 +196,8 @@ export const TradeMarketHeader = ({
                   'underline decoration-dashed'
                 )}
               >
-                {market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+                {market.tradingMode ===
+                  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
                 market.data?.trigger &&
                 market.data.trigger !==
                   AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
