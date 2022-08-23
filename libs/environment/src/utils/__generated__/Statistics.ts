@@ -10,7 +10,7 @@
 export interface Statistics_statistics {
   __typename: "Statistics";
   /**
-   * Current chain id
+   * Current chain ID
    */
   chainId: string;
   /**
@@ -21,7 +21,7 @@ export interface Statistics_statistics {
 
 export interface Statistics {
   /**
-   * get statistics about the vega node
+   * get statistics about the Vega node
    */
   statistics: Statistics_statistics;
 }

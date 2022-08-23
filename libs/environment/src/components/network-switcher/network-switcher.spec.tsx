@@ -17,7 +17,6 @@ describe('Network switcher', () => {
     ${Networks.CUSTOM}   | ${envTriggerMapping[Networks.CUSTOM]}
     ${Networks.DEVNET}   | ${envTriggerMapping[Networks.DEVNET]}
     ${Networks.STAGNET}  | ${envTriggerMapping[Networks.STAGNET]}
-    ${Networks.STAGNET2} | ${envTriggerMapping[Networks.STAGNET2]}
     ${Networks.STAGNET3} | ${envTriggerMapping[Networks.STAGNET3]}
     ${Networks.TESTNET}  | ${envTriggerMapping[Networks.TESTNET]}
     ${Networks.MAINNET}  | ${envTriggerMapping[Networks.MAINNET]}
@@ -138,7 +137,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: 'https://main.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
-      [Networks.STAGNET2]: 'https://stag2.net',
       [Networks.STAGNET]: 'https://stag.net',
       [Networks.DEVNET]: 'https://dev.net',
     };
@@ -157,7 +155,6 @@ describe('Network switcher', () => {
       Networks.MAINNET,
       Networks.TESTNET,
       Networks.STAGNET3,
-      Networks.STAGNET2,
       Networks.STAGNET,
       Networks.DEVNET,
     ].forEach((network) => {
@@ -177,7 +174,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: 'https://main.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
-      [Networks.STAGNET2]: 'https://stag2.net',
       [Networks.STAGNET]: 'https://stag.net',
       [Networks.DEVNET]: 'https://dev.net',
     };
@@ -207,7 +203,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: undefined,
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
-      [Networks.STAGNET2]: 'https://stag2.net',
       [Networks.STAGNET]: 'https://stag.net',
       [Networks.DEVNET]: 'https://dev.net',
     };

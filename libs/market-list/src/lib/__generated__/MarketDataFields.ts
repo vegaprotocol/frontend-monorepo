@@ -28,7 +28,7 @@ export interface MarketDataFields_market {
 export interface MarketDataFields {
   __typename: "MarketData";
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketDataFields_market;
   /**
@@ -40,7 +40,7 @@ export interface MarketDataFields {
    */
   bestOfferPrice: string;
   /**
-   * the mark price (actually an unsigned int)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
   /**

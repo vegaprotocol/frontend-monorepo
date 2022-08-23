@@ -16,7 +16,6 @@ export const envNameMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: t('Custom'),
   [Networks.DEVNET]: t('Devnet'),
   [Networks.STAGNET]: t('Stagnet'),
-  [Networks.STAGNET2]: t('Stagnet2'),
   [Networks.STAGNET3]: t('Stagnet3'),
   [Networks.TESTNET]: t('Fairground testnet'),
   [Networks.MAINNET]: t('Mainnet'),
@@ -31,7 +30,6 @@ export const envDescriptionMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: '',
   [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
   [Networks.STAGNET]: t('A staging environment with trading'),
-  [Networks.STAGNET2]: t('A staging envirnment without trading'),
   [Networks.STAGNET3]: t(
     'A testnet that simulates validators coming and going'
   ),
@@ -46,7 +44,6 @@ const advancedNetworkKeys = [
   Networks.MAINNET,
   Networks.TESTNET,
   Networks.STAGNET3,
-  Networks.STAGNET2,
   Networks.STAGNET,
   Networks.DEVNET,
 ];

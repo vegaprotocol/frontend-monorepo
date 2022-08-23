@@ -1,4 +1,9 @@
-import { OrderTimeInForce, OrderStatus, Side } from '@vegaprotocol/types';
+import {
+  OrderTimeInForce,
+  OrderStatus,
+  Side,
+  OrderType,
+} from '@vegaprotocol/types';
 import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
 import {
   AgGridDynamic as AgGrid,
@@ -120,12 +125,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.Buy,
+            }) => data?.side === Side.SIDE_BUY,
             'text-vega-red-dark dark:text-vega-red': ({
               data,
             }: {
               data: Orders_party_ordersConnection_edges_node;
-            }) => data?.side === Side.Sell,
+            }) => data?.side === Side.SIDE_SELL,
           }}
           valueFormatter={({
             value,
@@ -136,7 +141,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
-            const prefix = data ? (data.side === Side.Buy ? '+' : '-') : '';
+            const prefix = data
+              ? data.side === Side.SIDE_BUY
+                ? '+'
+                : '-'
+              : '';
             return (
               prefix + addDecimal(value, data.market.positionDecimalPlaces)
             );
@@ -154,7 +163,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
-            if (value === OrderStatus.Rejected) {
+            if (value === OrderStatus.STATUS_REJECTED) {
               return `${value}: ${
                 data.rejectionReason && startCase(data.rejectionReason)
               }`;
@@ -198,7 +207,7 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               value === undefined ||
               !data ||
               !data.market ||
-              data.type === 'Market'
+              data.type === OrderType.TYPE_MARKET
             ) {
               return '-';
             }
@@ -216,7 +225,10 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             if (value === undefined || !data || !data.market) {
               return undefined;
             }
-            if (value === OrderTimeInForce.GTT && data.expiresAt) {
+            if (
+              value === OrderTimeInForce.TIME_IN_FORCE_GTT &&
+              data.expiresAt
+            ) {
               const expiry = getDateTimeFormat().format(
                 new Date(data.expiresAt)
               );
@@ -292,11 +304,11 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
  */
 const isOrderActive = (status: OrderStatus) => {
   return ![
-    OrderStatus.Cancelled,
-    OrderStatus.Rejected,
-    OrderStatus.Expired,
-    OrderStatus.Filled,
-    OrderStatus.Stopped,
+    OrderStatus.STATUS_CANCELLED,
+    OrderStatus.STATUS_REJECTED,
+    OrderStatus.STATUS_EXPIRED,
+    OrderStatus.STATUS_FILLED,
+    OrderStatus.STATUS_STOPPED,
   ].includes(status);
 };
 
@@ -306,21 +318,21 @@ const getEditDialogTitle = (status?: OrderStatus): string | undefined => {
   }
 
   switch (status) {
-    case OrderStatus.Active:
+    case OrderStatus.STATUS_ACTIVE:
       return t('Order updated');
-    case OrderStatus.Filled:
+    case OrderStatus.STATUS_FILLED:
       return t('Order filled');
-    case OrderStatus.PartiallyFilled:
+    case OrderStatus.STATUS_PARTIALLY_FILLED:
       return t('Order partially filled');
-    case OrderStatus.Parked:
+    case OrderStatus.STATUS_PARKED:
       return t('Order parked');
-    case OrderStatus.Stopped:
+    case OrderStatus.STATUS_STOPPED:
       return t('Order stopped');
-    case OrderStatus.Expired:
+    case OrderStatus.STATUS_EXPIRED:
       return t('Order expired');
-    case OrderStatus.Cancelled:
+    case OrderStatus.STATUS_CANCELLED:
       return t('Order cancelled');
-    case OrderStatus.Rejected:
+    case OrderStatus.STATUS_REJECTED:
       return t('Order rejected');
     default:
       return t('Order amendment failed');
@@ -333,7 +345,7 @@ const getCancelDialogIntent = (status?: OrderStatus): Intent | undefined => {
   }
 
   switch (status) {
-    case OrderStatus.Cancelled:
+    case OrderStatus.STATUS_CANCELLED:
       return Intent.Success;
     default:
       return Intent.Danger;
@@ -346,7 +358,7 @@ const getCancelDialogTitle = (status?: OrderStatus): string | undefined => {
   }
 
   switch (status) {
-    case OrderStatus.Cancelled:
+    case OrderStatus.STATUS_CANCELLED:
       return t('Order cancelled');
     default:
       return t('Order cancellation failed');

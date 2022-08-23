@@ -32,10 +32,6 @@ export const ContractAddresses: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
   },
-  STAGNET2: {
-    claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
-    lockedAddress: '0x0', // TODO not deployed to this env
-  },
   STAGNET3: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
@@ -59,6 +55,7 @@ export const ENV = {
   commit: windowOrDefault('NX_COMMIT_REF'),
   branch: windowOrDefault('NX_BRANCH'),
   vegaUrl: windowOrDefault('NX_VEGA_URL'),
+  restUrl: windowOrDefault('NX_VEGA_REST'),
   urlConnect: TRUTHY.includes(windowOrDefault('NX_ETH_URL_CONNECT')),
   ethWalletMnemonic: windowOrDefault('NX_ETH_WALLET_MNEMONIC'),
   localProviderUrl: windowOrDefault('NX_LOCAL_PROVIDER_URL'),
