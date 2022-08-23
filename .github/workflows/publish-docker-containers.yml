@@ -1,4 +1,4 @@
-name: Publish CRA containers
+name: Publish docker containers
 
 'on':
   pull_request:  # TODO: remove
@@ -25,9 +25,10 @@ name: Publish CRA containers
         required: false
         type: choice
         options:
-          - [explorer, token]
-          - [explorer]
-          - [token]
+          - '["explorer", "token", "trading"]'
+          - '["explorer"]'
+          - '["token"]'
+          - '["trading"]'
       archs:
         description: 'Architecture to build and publish'
         required: false
@@ -42,7 +43,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: ${{ fromJson(inputs.apps || '["explorer", "token"]') }}
+        app: ${{ fromJson(inputs.apps || '["explorer", "token", "trading"]') }}
     name: Build the ${{ matrix.app }} image
     runs-on: ubuntu-latest
     steps:
@@ -90,7 +91,7 @@ jobs:
         with:
           context: .
           push: false
-          file: Dockerfile.cra
+          file: ${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}
           build-args: APP=${{ matrix.app }}
           load: true
           tags: vegaprotocol/${{ matrix.app }}:local
@@ -106,7 +107,7 @@ jobs:
         with:
           context: .
           push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
-          file: Dockerfile.cra
+          file: ${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}
           build-args: APP=${{ matrix.app }}
           platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
           tags: |
