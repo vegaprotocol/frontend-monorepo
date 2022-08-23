@@ -23,6 +23,7 @@ describe('OrderFeedback', () => {
   beforeEach(() => {
     props = {
       transaction: {
+        dialogOpen: false,
         status: VegaTxStatus.Complete,
         error: null,
         txHash: 'tx-hash',
@@ -39,8 +40,8 @@ describe('OrderFeedback', () => {
 
   it('renders error reason', () => {
     const orderFields = {
-      status: OrderStatus.Rejected,
-      rejectionReason: OrderRejectionReason.OrderAmendFailure,
+      status: OrderStatus.STATUS_REJECTED,
+      rejectionReason: OrderRejectionReason.ORDER_ERROR_AMEND_FAILURE,
     };
     const order = generateOrder(orderFields);
     render(<OrderFeedback {...props} order={order} />);
@@ -51,10 +52,10 @@ describe('OrderFeedback', () => {
 
   it('should render order details when order is placed successfully', () => {
     const order = generateOrder({
-      type: OrderType.Limit,
+      type: OrderType.TYPE_LIMIT,
       price: '100',
       size: '200',
-      side: Side.Buy,
+      side: Side.SIDE_BUY,
       market: {
         decimalPlaces: 2,
         positionDecimalPlaces: 0,

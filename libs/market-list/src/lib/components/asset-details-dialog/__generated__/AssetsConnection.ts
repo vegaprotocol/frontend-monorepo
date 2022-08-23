@@ -14,17 +14,17 @@ export interface AssetsConnection_assetsConnection_edges_node_source_BuiltinAsse
 export interface AssetsConnection_assetsConnection_edges_node_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the erc20 contract
+   * The address of the ERC20 contract
    */
   contractAddress: string;
   /**
    * The lifetime limits deposit per address
-   * Note: this is a temporary measure for restricted mainnet
+   * Note: this is a temporary measure for alpha mainnet
    */
   lifetimeLimit: string;
   /**
-   * The maximum allowed per withdraw
-   * Note: this is a temporary measure for restricted mainnet
+   * The maximum allowed per withdrawal
+   * Note: this is a temporary measure for alpha mainnet
    */
   withdrawThreshold: string;
 }
@@ -34,7 +34,7 @@ export type AssetsConnection_assetsConnection_edges_node_source = AssetsConnecti
 export interface AssetsConnection_assetsConnection_edges_node {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -46,11 +46,7 @@ export interface AssetsConnection_assetsConnection_edges_node {
    */
   symbol: string;
   /**
-   * The total supply of the market
-   */
-  totalSupply: string;
-  /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
   /**
@@ -58,7 +54,7 @@ export interface AssetsConnection_assetsConnection_edges_node {
    */
   quantum: string;
   /**
-   * The origin source of the asset (e.g: an erc20 asset)
+   * The origin source of the asset (e.g: an ERC20 asset)
    */
   source: AssetsConnection_assetsConnection_edges_node_source;
 }
@@ -78,7 +74,7 @@ export interface AssetsConnection_assetsConnection {
 
 export interface AssetsConnection {
   /**
-   * The list of all assets in use in the vega network or the specified asset if id is provided
+   * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
   assetsConnection: AssetsConnection_assetsConnection;
 }

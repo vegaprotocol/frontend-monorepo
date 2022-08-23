@@ -12,7 +12,7 @@ import { AccountType } from "@vegaprotocol/types";
 export interface MarketPositions_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -96,7 +96,7 @@ export interface MarketPositions_party {
 
 export interface MarketPositions {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: MarketPositions_party | null;
 }

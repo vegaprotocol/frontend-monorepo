@@ -124,7 +124,7 @@ context('Staking Page - verify elements on page', function () {
   });
 
   // 1002-STKE-050
-  describe('Should be able to see static information about a validator', function () {
+  describe.skip('Should be able to see static information about a validator', function () {
     before('connect wallets and click on validator', function () {
       cy.vega_wallet_import();
       cy.vega_wallet_connect();
