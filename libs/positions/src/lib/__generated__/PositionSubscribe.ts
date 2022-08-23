@@ -28,7 +28,7 @@ export interface PositionSubscribe_positions_market_data {
    */
   marketTradingMode: MarketTradingMode;
   /**
-   * market ID of the associated mark price
+   * market of the associated mark price
    */
   market: PositionSubscribe_positions_market_data_market;
 }
