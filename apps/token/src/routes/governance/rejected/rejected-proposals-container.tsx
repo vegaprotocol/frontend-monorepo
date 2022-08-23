@@ -26,7 +26,7 @@ export const RejectedProposalsContainer = () => {
 
     return flow([
       compact,
-      (arr) => filter(arr, ({ state }) => state === 'Rejected'),
+      (arr) => filter(arr, ({ state }) => state === 'STATE_REJECTED'),
       (arr) =>
         orderBy(
           arr,
