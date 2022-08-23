@@ -98,7 +98,7 @@ export const DisassociatePage = ({
   const noKeysMessage = (
     <div className="disassociate-page__error">
       {t(
-        'You have no VEGA tokens currently staked through your connected Eth wallet.'
+        'You have no VEGA tokens currently associated through your connected Ethereum wallet.'
       )}
     </div>
   );
