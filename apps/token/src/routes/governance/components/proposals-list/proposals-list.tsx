@@ -1,5 +1,5 @@
 import { isFuture } from 'date-fns';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
@@ -8,7 +8,6 @@ import type { Proposals_proposals } from '../../proposals/__generated__/Proposal
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
-import { ProposalState } from '@vegaprotocol/types';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
