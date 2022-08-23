@@ -1,25 +1,27 @@
 import { t } from '@vegaprotocol/react-helpers';
 import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
+import { MarketState } from '@vegaprotocol/types';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
 
 export const STATES_FILTER = [
   { value: 'all', text: t('All') },
-  { value: 'Active', text: t('Active') },
-  { value: 'Cancelled', text: t('Cancelled') },
-  { value: 'Closed', text: t('Closed') },
-  { value: 'Pending', text: t('Pending') },
-  { value: 'Proposed', text: t('Proposed') },
-  { value: 'Rejected', text: t('Rejected') },
-  { value: 'Settled', text: t('Settled') },
-  { value: 'Suspended', text: t('Suspended') },
-  { value: 'TradingTerminated', text: t('TradingTerminated') },
+  { value: MarketState.STATE_ACTIVE, text: t('Active') },
+  { value: MarketState.STATE_CANCELLED, text: t('Cancelled') },
+  { value: MarketState.STATE_CLOSED, text: t('Closed') },
+  { value: MarketState.STATE_PENDING, text: t('Pending') },
+  { value: MarketState.STATE_PROPOSED, text: t('Proposed') },
+  { value: MarketState.STATE_REJECTED, text: t('Rejected') },
+  { value: MarketState.STATE_SETTLED, text: t('Settled') },
+  { value: MarketState.STATE_SUSPENDED, text: t('Suspended') },
+  { value: MarketState.STATE_TRADING_TERMINATED, text: t('TradingTerminated') },
 ];
 
 export const agGridLightVariables = `
   .ag-theme-balham {
     --ag-row-border-color: ${theme.colors.transparent};
     --ag-row-hover-color: ${theme.colors.transparent};
+    --ag-border-color: ${theme.colors.transparent};
     --ag-font-size: 15px;
   }
   .ag-theme-balham .ag-header-cell{
@@ -56,6 +58,7 @@ export const agGridLightVariables = `
   }
   .ag-theme-balham .ag-header{
      border-bottom-width: 0;
+     border-bottom: none;
   }
   .ag-theme-balham .ag-has-focus .ag-row.ag-row-focus{
     border: 1px solid #0091ea;
@@ -101,7 +104,7 @@ export const agGridLightVariables = `
 
 export const agGridDarkVariables = `
   .ag-theme-balham-dark {
-    --ag-background-color: ${theme.colors.lite.black};
+    --ag-background-color: ${theme.colors.transparent};
     --ag-row-border-color: ${theme.colors.transparent};
     --ag-row-hover-color: ${theme.colors.transparent};
     --ag-odd-row-background-color: ${theme.colors.transparent};
@@ -142,6 +145,7 @@ export const agGridDarkVariables = `
   }
   .ag-theme-balham-dark .ag-header{
      border-bottom-width: 0;
+     border-bottom: none;
   }
   .ag-theme-balham-dark .ag-has-focus .ag-row.ag-row-focus{
     border: 1px solid #0091ea;

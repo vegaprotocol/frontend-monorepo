@@ -8,7 +8,7 @@ import { Icon } from '@vegaprotocol/ui-toolkit';
 import type { ValueSetterParams } from 'ag-grid-community';
 import type { SimpleMarketsType } from '../components/simple-market-list/simple-market-list';
 import { IconNames } from '@blueprintjs/icons';
-import { IS_MARKET_TRADABLE } from '../constants';
+import { IS_MARKET_TRADABLE, MARKET_STATES_MAP } from '../constants';
 
 interface Props {
   isMobile: boolean;
@@ -99,7 +99,7 @@ const useColumnDefinitions = ({ isMobile }: Props) => {
         cellRenderer: ({ data }: { data: SimpleMarkets_markets }) => (
           <div className="uppercase flex h-full items-center justify-center">
             <div className="border text-center px-2 md:px-8 leading-4 md:leading-6">
-              {data.data?.market.state}
+              {MARKET_STATES_MAP[data.data?.market.state || '']}
             </div>
           </div>
         ),
