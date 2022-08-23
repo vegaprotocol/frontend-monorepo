@@ -8,13 +8,14 @@ import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import {
-  addDecimalsFormatNumber,
-  formatLabel,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import { TradesContainer } from '@vegaprotocol/trades';
-import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  AuctionTriggerMapping,
+  MarketTradingMode,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import { useState } from 'react';
@@ -129,10 +130,9 @@ export const TradeMarketHeader = ({
                 market.data?.trigger &&
                 market.data.trigger !==
                   AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-                  ? `${formatLabel(
-                      market.tradingMode
-                    )} - ${market.data?.trigger.toLowerCase()}`
-                  : formatLabel(market.tradingMode)}
+                  ? `${MarketTradingModeMapping[market.tradingMode]}
+                     - ${AuctionTriggerMapping[market.data.trigger]}`
+                  : MarketTradingModeMapping[market.tradingMode]}
               </span>
             </div>
           </Tooltip>

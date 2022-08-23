@@ -42,5 +42,6 @@ module.exports = defineConfig({
     vegaTokenAddress: '0x67175Da1D5e966e40D11c4B2519392B2058373de',
     txTimeout: { timeout: 40000 },
     epochTimeout: { timeout: 10000 },
+    blockConfirmations: 3,
   },
 });
