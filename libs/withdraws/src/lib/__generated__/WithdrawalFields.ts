@@ -12,7 +12,7 @@ import { WithdrawalStatus } from "@vegaprotocol/types";
 export interface WithdrawalFields_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -20,7 +20,7 @@ export interface WithdrawalFields_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -36,7 +36,7 @@ export interface WithdrawalFields_details {
 export interface WithdrawalFields {
   __typename: "Withdrawal";
   /**
-   * The Vega internal id of the withdrawal
+   * The Vega internal ID of the withdrawal
    */
   id: string;
   /**
@@ -56,7 +56,7 @@ export interface WithdrawalFields {
    */
   createdTimestamp: string;
   /**
-   * RFC3339Nano time at which the withdrawal was finalized
+   * RFC3339Nano time at which the withdrawal was finalised
    */
   withdrawnTimestamp: string | null;
   /**

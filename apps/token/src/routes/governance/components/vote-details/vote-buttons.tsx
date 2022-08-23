@@ -3,8 +3,6 @@ import { format } from 'date-fns';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ProposalState } from '../../../../__generated__/globalTypes';
-import { VoteValue } from '../../../../__generated__/globalTypes';
 import {
   AppStateActionType,
   useAppState,
@@ -18,6 +16,7 @@ import type {
 import { VoteState } from './use-user-vote';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Button } from '@vegaprotocol/ui-toolkit';
+import { ProposalState, VoteValue } from '@vegaprotocol/types';
 
 interface VoteButtonsContainerProps {
   voteState: VoteState | null;
@@ -78,7 +77,7 @@ export const VoteButtons = ({
   const [changeVote, setChangeVote] = React.useState(false);
 
   const cantVoteUI = React.useMemo(() => {
-    if (proposalState !== ProposalState.Open) {
+    if (proposalState !== ProposalState.STATE_OPEN) {
       return t('youDidNotVote');
     }
 
@@ -146,7 +145,7 @@ export const VoteButtons = ({
         {voteDatetime ? (
           <span>{format(voteDatetime, DATE_FORMAT_LONG)}. </span>
         ) : null}
-        {proposalState === ProposalState.Open ? (
+        {proposalState === ProposalState.STATE_OPEN ? (
           <Button
             variant="inline-link"
             onClick={() => {
@@ -166,10 +165,13 @@ export const VoteButtons = ({
 
   return (
     <div className="flex gap-4">
-      <Button onClick={() => submitVote(VoteValue.Yes)} className="flex-1">
+      <Button
+        onClick={() => submitVote(VoteValue.VALUE_YES)}
+        className="flex-1"
+      >
         {t('voteFor')}
       </Button>
-      <Button onClick={() => submitVote(VoteValue.No)} className="flex-1">
+      <Button onClick={() => submitVote(VoteValue.VALUE_NO)} className="flex-1">
         {t('voteAgainst')}
       </Button>
     </div>
