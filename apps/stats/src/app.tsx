@@ -3,7 +3,7 @@ import { Header } from './components/header';
 import { StatsManager } from '@vegaprotocol/network-stats';
 import { ThemeContext } from '@vegaprotocol/react-helpers';
 import { useThemeSwitcher } from '@vegaprotocol/react-helpers';
-import { createClient } from './lib/apollo-client'
+import { createClient } from './lib/apollo-client';
 
 function App() {
   const [theme, toggleTheme] = useThemeSwitcher();
@@ -27,7 +27,7 @@ const Wrapper = () => {
     <EnvironmentProvider>
       <App />
     </EnvironmentProvider>
-  )
-}
+  );
+};
 
 export default Wrapper;
