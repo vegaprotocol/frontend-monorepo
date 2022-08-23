@@ -1,5 +1,5 @@
+import { Button, Dialog, Loader } from '@vegaprotocol/ui-toolkit';
 import { useState } from 'react';
-import { Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import type { VegaConnector } from '../connectors';
 
@@ -44,6 +44,7 @@ export function VegaConnectDialog({
       setStatus('gettingChain');
 
       const chainId = await request('session.get_chain_id', {});
+      console.log(chainId);
 
       if (chainId.result.chainID !== APP_CHAIN) {
         handleError({
@@ -101,8 +102,13 @@ export function VegaConnectDialog({
       setStatus('connected');
       setKeys(keys.result.keys);
     } catch (err) {
-      console.log(err);
-      setError(err as any);
+      if (err instanceof Error) {
+        setError(err);
+      } else if (typeof err === 'string') {
+        setError(new Error(err));
+      } else {
+        setError(new Error('Something went wrong'));
+      }
       setStatus('error');
     }
   };
@@ -138,41 +144,35 @@ export function VegaConnectDialog({
 const Idle = ({ connect }: { connect: () => void }) => {
   return (
     <div>
-      <ul
-        className="flex flex-col justify-center gap-4 items-start mb-20"
+      <div
+        className="flex flex-col gap-12 justify-center items-stretch my-20 px-20"
         data-testid="connectors-list"
       >
-        <li className="mb-12 last:mb-0">
-          <Button
-            // onClick={() => setSelectedConnector(connector)}
-            onClick={connect}
-          >
-            {t('Connect via Vega wallet desktop app')}
-          </Button>
-        </li>
-        <li className="mb-12 last:mb-0">
-          <Button
-            // onClick={() => setSelectedConnector(connector)}
-            onClick={connect}
-          >
-            {t('Connect with wallet CLI app')}
-          </Button>
-        </li>
-        <li className="mb-12 last:mb-0">
-          <Button
-            // onClick={() => setSelectedConnector(connector)}
-            onClick={() => alert('TODO: Show hosted wallet form!')}
-          >
-            {t('Connect with hosted wallet')}
-          </Button>
-        </li>
-      </ul>
-      <p className="mb-8">
+        <Button
+          // onClick={() => setSelectedConnector(connector)}
+          onClick={connect}
+        >
+          {t('Connect via Vega wallet desktop app')}
+        </Button>
+        <Button
+          // onClick={() => setSelectedConnector(connector)}
+          onClick={connect}
+        >
+          {t('Connect with wallet CLI app')}
+        </Button>
+        <Button
+          // onClick={() => setSelectedConnector(connector)}
+          onClick={() => alert('TODO: Show hosted wallet form!')}
+        >
+          {t('Connect with hosted wallet')}
+        </Button>
+      </div>
+      <p className="mb-8 text-center">
         <button className="underline" onClick={() => alert('TODO!')}>
           Enter custom wallet url
         </button>
       </p>
-      <p>
+      <p className="text-center">
         <a href="https://google.com" className="underline">
           Dont have a wallet?
         </a>
@@ -215,17 +215,26 @@ const Connecting = ({ status, keys }: { status: Status; keys: string[] }) => {
     );
   }
 
+  if (status === 'gettingChain') {
+    return (
+      <div className="flex items-center gap-12">
+        <Loader size="small" /> Verifying chain
+      </div>
+    );
+  }
+
   return <div>{status}</div>;
 };
 
-function request(method: string, params: any) {
+let id = 0;
+function request(method: string, params: object) {
   return fetch('http://localhost:1789/api/v2/requests', {
     method: 'post',
     body: JSON.stringify({
       jsonrpc: '2.0',
       method,
       params,
-      id: method,
+      id: `${id++}`,
     }),
     headers: {
       'Content-Type': 'application/json',
