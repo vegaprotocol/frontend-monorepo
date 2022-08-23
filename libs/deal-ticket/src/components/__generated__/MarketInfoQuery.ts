@@ -183,7 +183,7 @@ export interface MarketInfoQuery_market_data {
    * the sum of the size of all positions greater than 0.
    */
   openInterest: string;
-  /*
+  /**
    * the highest price level on an order book for buy orders.
    */
   bestBidPrice: string;
@@ -192,9 +192,25 @@ export interface MarketInfoQuery_market_data {
    */
   bestOfferPrice: string;
   /**
+   * what triggered an auction (if an auction was started)
+   */
+  trigger: AuctionTrigger;
+  /**
    * A list of valid price ranges per associated trigger
    */
   priceMonitoringBounds: MarketInfoQuery_market_data_priceMonitoringBounds[] | null;
+  /**
+   * the amount of stake targeted for this market
+   */
+  targetStake: string;
+  /**
+   * the supplied stake for the market
+   */
+  suppliedStake: string;
+  /**
+   * the market value proxy
+   */
+  marketValueProxy: string;
 }
 
 export interface MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters {

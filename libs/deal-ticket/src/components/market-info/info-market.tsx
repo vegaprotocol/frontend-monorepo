@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ReactNode } from 'react';
 import {
   addDecimalsFormatNumber,
   formatLabel,
@@ -19,23 +18,35 @@ import {
 import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
 import omit from 'lodash/omit';
-import type { MarketInfoQuery, MarketInfoQuery_market } from '../__generated__';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
+import { AccountType, Interval } from '@vegaprotocol/types';
 import { MARKET_INFO_QUERY } from './info-market-query';
-import { AccountType } from '@vegaprotocol/types';
+import type { MarketInfoQuery_market, MarketInfoQuery } from '../__generated__';
+import type { ReactNode } from 'react';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
 }
 
+export const calcCandleVolume = (m: any): string | undefined => {
+  return m.candles
+    ?.reduce((acc: BigNumber, c: { volume: BigNumber.Value }) => {
+      return acc.plus(new BigNumber(c.volume));
+    }, new BigNumber(m.candles?.[0]?.volume ?? 0))
+    .toString();
+};
+
 export interface MarketInfoContainerProps {
   marketId: string;
 }
 export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
+  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+  const yTimestamp = new Date(yesterday * 1000).toISOString();
+
   const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
-    variables: { marketId },
+    variables: { marketId, interval: Interval.INTERVAL_I1H, since: yTimestamp },
   });
 
   return (
@@ -80,10 +91,16 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Market price and interest'),
+      title: t('Market price'),
       content: (
         <MarketInfoTable
-          data={pick(market.data, 'name', 'markPrice', 'openInterest')}
+          data={pick(
+            market.data,
+            'name',
+            'markPrice',
+            'bestBidPrice',
+            'bestOfferPrice'
+          )}
           decimalPlaces={market.decimalPlaces}
         />
       ),
@@ -92,22 +109,26 @@ export const Info = ({ market }: InfoProps) => {
       title: t('Market volume'),
       content: (
         <MarketInfoTable
-          data={pick(
-            market.data,
-            'name',
-            'indicativeVolume',
-            'bestBidVolume',
-            'bestOfferVolume',
-            'bestStaticBidVolume',
-            'bestStaticOfferVolume'
-          )}
+          data={{
+            '24hourVolume':
+              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
+            ...pick(
+              market.data,
+              'openInterest',
+              'name',
+              'bestBidVolume',
+              'bestOfferVolume',
+              'bestStaticBidVolume',
+              'bestStaticOfferVolume'
+            ),
+          }}
           decimalPlaces={market.positionDecimalPlaces}
         />
       ),
     },
     ...(market.accounts || [])
       .filter((a) => a.type === AccountType.ACCOUNT_TYPE_INSURANCE)
-      .map((a, i) => ({
+      .map((a) => ({
         title: t(`Insurance pool`),
         content: (
           <MarketInfoTable
@@ -169,8 +190,8 @@ export const Info = ({ market }: InfoProps) => {
             symbol:
               market.tradableInstrument.instrument.product?.settlementAsset
                 .symbol,
-            ID: market.tradableInstrument.instrument.product?.settlementAsset
-              .id,
+            assetID:
+              market.tradableInstrument.instrument.product?.settlementAsset.id,
           }}
         />
       ),
@@ -216,6 +237,24 @@ export const Info = ({ market }: InfoProps) => {
         content: <MarketInfoTable data={trigger} />,
       })
     ),
+    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
+      title: t(`Price monitoring bound ${i + 1}`),
+      content: (
+        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
+      ),
+    })),
+    {
+      title: t('Liquidity monitoring parameters'),
+      content: (
+        <MarketInfoTable
+          data={{
+            triggeringRatio:
+              market.liquidityMonitoringParameters.triggeringRatio,
+            ...market.liquidityMonitoringParameters.targetStakeParameters,
+          }}
+        />
+      ),
+    },
     {
       title: t('Liquidity'),
       content: (
@@ -236,13 +275,17 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Liquidity monitoring parameters'),
+      title: t('Oracle'),
       content: (
         <MarketInfoTable
           data={{
-            triggeringRatio:
-              market.liquidityMonitoringParameters.triggeringRatio,
-            ...market.liquidityMonitoringParameters.targetStakeParameters,
+            ...market.tradableInstrument.instrument.product.oracleSpecBinding,
+            priceOracle:
+              market.tradableInstrument.instrument.product
+                .oracleSpecForSettlementPrice.id,
+            terminationOracle:
+              market.tradableInstrument.instrument.product
+                .oracleSpecForTradingTermination.id,
           }}
         />
       ),
