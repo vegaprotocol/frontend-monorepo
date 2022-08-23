@@ -27,7 +27,7 @@ export const Tooltip = ({ children, description, open, align }: TooltipProps) =>
             <Content
               align={align}
               alignOffset={8}
-              className="tooltip-content dark:tooltip-content-dark"
+              className="tooltip-content dark:tooltip-content-dark z-20"
             >
               <div className="relative z-0 p-8 bg-black-50 border border-black-60 text-white rounded-sm max-w-sm text-ui">
                 {description}
