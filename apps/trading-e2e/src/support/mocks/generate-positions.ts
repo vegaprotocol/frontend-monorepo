@@ -43,7 +43,7 @@ export const generatePositions = (
       market: {
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
         name: 'UNIDAI Monthly (30 Jun 2022)',
-        tradingMode: MarketTradingMode.Continuous,
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '17588787',
           __typename: 'MarketData',
@@ -96,7 +96,7 @@ export const generatePositions = (
       market: {
         id: '5a4b0b9e9c0629f0315ec56fcb7bd444b0c6e4da5ec7677719d502626658a376',
         name: 'Tesla Quarterly (30 Jun 2022)',
-        tradingMode: MarketTradingMode.Continuous,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '84377569',
           __typename: 'MarketData',

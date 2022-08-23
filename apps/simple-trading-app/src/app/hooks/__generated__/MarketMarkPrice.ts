@@ -10,7 +10,7 @@
 export interface MarketMarkPrice_market_data {
   __typename: "MarketData";
   /**
-   * the mark price (actually an unsigned int)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
 }
@@ -19,7 +19,7 @@ export interface MarketMarkPrice_market {
   __typename: "Market";
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -42,7 +42,7 @@ export interface MarketMarkPrice_market {
 
 export interface MarketMarkPrice {
   /**
-   * An instrument that is trading on the VEGA network
+   * An instrument that is trading on the Vega network
    */
   market: MarketMarkPrice_market | null;
 }

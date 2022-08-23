@@ -139,7 +139,7 @@ export const getMetrics = (
     const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
-        account.type === AccountType.General
+        account.type === AccountType.ACCOUNT_TYPE_GENERAL
     );
     const assetDecimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =

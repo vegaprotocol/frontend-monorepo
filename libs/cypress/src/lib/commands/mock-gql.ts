@@ -12,8 +12,10 @@ declare global {
 
 export function addMockGQLCommand() {
   Cypress.Commands.add('mockGQL', (handler: RouteHandler) => {
-    cy.intercept('POST', 'https://lb.testnet.vega.xyz/query', handler).as(
-      'GQL'
-    );
+    cy.intercept(
+      'POST',
+      'https://api.n11.testnet.vega.xyz/graphql',
+      handler
+    ).as('GQL');
   });
 }

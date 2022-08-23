@@ -5,7 +5,7 @@ export const generateDealTicket = () => {
       name: 'AAVEDAI Monthly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      state: 'Active',
+      state: 'STATE_ACTIVE',
       tradingMode: 'Continuous',
       tradableInstrument: {
         instrument: {

@@ -12,7 +12,7 @@ import { AccountType } from "@vegaprotocol/types";
 export interface AssetsQuery_assets_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the erc20 contract
+   * The address of the ERC20 contract
    */
   contractAddress: string;
 }
@@ -54,7 +54,7 @@ export interface AssetsQuery_assets_infrastructureFeeAccount {
 export interface AssetsQuery_assets {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -66,11 +66,11 @@ export interface AssetsQuery_assets {
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
   /**
-   * The origin source of the asset (e.g: an erc20 asset)
+   * The origin source of the asset (e.g: an ERC20 asset)
    */
   source: AssetsQuery_assets_source;
   /**
@@ -81,7 +81,7 @@ export interface AssetsQuery_assets {
 
 export interface AssetsQuery {
   /**
-   * The list of all assets in use in the vega network
+   * The list of all assets in use in the Vega network
    */
   assets: AssetsQuery_assets[] | null;
 }

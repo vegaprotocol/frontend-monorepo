@@ -24,7 +24,7 @@ export interface AccountFields_market {
 export interface AccountFields_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -32,7 +32,7 @@ export interface AccountFields_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }

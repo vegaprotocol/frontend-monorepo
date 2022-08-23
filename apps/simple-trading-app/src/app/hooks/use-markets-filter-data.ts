@@ -1,5 +1,6 @@
 import type { SimpleMarkets_markets } from '../components/simple-market-list/__generated__/SimpleMarkets';
 import type { RouterParams } from '../components/simple-market-list/simple-market-list';
+import { MarketState } from '@vegaprotocol/types';
 
 const useMarketsFilterData = (
   data: SimpleMarkets_markets[] = [],
@@ -21,7 +22,11 @@ const useMarketsFilterData = (
       return false;
     }
     const state =
-      params.state === 'all' ? '' : params.state ? params.state : 'Active';
+      params.state === 'all'
+        ? ''
+        : params.state
+        ? params.state
+        : MarketState.STATE_ACTIVE;
     if (state && state !== item.data?.market.state) {
       return false;
     }

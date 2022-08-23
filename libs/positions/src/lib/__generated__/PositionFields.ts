@@ -32,15 +32,15 @@ export interface PositionFields_marginsConnection_edges_node {
    */
   market: PositionFields_marginsConnection_edges_node_market;
   /**
-   * minimal margin for the position to be maintained in the network (unsigned int actually)
+   * minimal margin for the position to be maintained in the network (unsigned integer)
    */
   maintenanceLevel: string;
   /**
-   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned int actually)
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
    */
   searchLevel: string;
   /**
-   * this is the minimal margin required for a party to place a new order on the network (unsigned int actually)
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
    */
   initialLevel: string;
   /**
@@ -78,7 +78,7 @@ export interface PositionFields_market_tradableInstrument_instrument {
 export interface PositionFields_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: PositionFields_market_tradableInstrument_instrument;
 }
@@ -94,11 +94,11 @@ export interface PositionFields_market_data_market {
 export interface PositionFields_market_data {
   __typename: "MarketData";
   /**
-   * the mark price (actually an unsigned int)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: PositionFields_market_data_market;
 }
@@ -115,7 +115,7 @@ export interface PositionFields_market {
   name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -131,9 +131,10 @@ export interface PositionFields_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
@@ -141,7 +142,7 @@ export interface PositionFields_market {
    */
   tradingMode: MarketTradingMode;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: PositionFields_market_tradableInstrument;
   /**
@@ -173,7 +174,7 @@ export interface PositionFields {
    */
   updatedAt: string | null;
   /**
-   * margins of the party for the given position
+   * Margins of the party for the given position
    */
   marginsConnection: PositionFields_marginsConnection;
   /**
