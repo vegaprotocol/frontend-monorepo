@@ -259,4 +259,13 @@ describe('Deposit form', () => {
       });
     });
   });
+  it('shows "View asset details" button when an asset is selected', async () => {
+    render(<DepositForm {...props} selectedAsset={asset} />);
+    expect(await screen.getByTestId('view-asset-details')).toBeInTheDocument();
+  });
+
+  it('does not shows "View asset details" button when no asset is selected', async () => {
+    render(<DepositForm {...props} />);
+    expect(await screen.queryAllByTestId('view-asset-details')).toHaveLength(0);
+  });
 });

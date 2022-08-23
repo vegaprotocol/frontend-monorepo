@@ -76,8 +76,8 @@ export const ProposalForm = () => {
       {finalizedProposal?.rejectionReason ? (
         <TransactionDialog
           title={t('proposalRejected')}
-          intent={getProposalDialogIntent(ProposalState.Rejected)}
-          icon={getProposalDialogIcon(ProposalState.Rejected)}
+          intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
+          icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
         >
           <p>{finalizedProposal.rejectionReason}</p>
         </TransactionDialog>

@@ -4,7 +4,7 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
-import type { IGetRowsParams } from 'ag-grid-community';
+import type { IGetRowsParams, RowClickedEvent } from 'ag-grid-community';
 import type {
   MarketList_markets,
   MarketList_markets_data,
@@ -20,7 +20,7 @@ export const MarketsContainer = () => {
   const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
   const yTimestamp = new Date(yesterday * 1000).toISOString();
   const variables = useMemo(
-    () => ({ interval: Interval.I1H, since: yTimestamp }),
+    () => ({ interval: Interval.INTERVAL_I1H, since: yTimestamp }),
     [yTimestamp]
   );
 
@@ -45,7 +45,7 @@ export const MarketsContainer = () => {
     const rowsThisBlock = dataRef.current
       ? dataRef.current
           .slice(startRow, endRow)
-          .filter((m) => m.data?.market.state !== MarketState.Rejected)
+          .filter((m) => m.data?.market.state !== MarketState.STATE_REJECTED)
       : [];
     const lastRow = dataRef.current?.length ?? -1;
     successCallback(rowsThisBlock, lastRow);
@@ -56,9 +56,13 @@ export const MarketsContainer = () => {
         rowModelType="infinite"
         datasource={{ getRows }}
         ref={gridRef}
-        onRowClicked={({ data }: { data: MarketList_markets }) =>
-          push(`/markets/${data.id}`)
-        }
+        onRowClicked={(rowEvent: RowClickedEvent) => {
+          const { data, event } = rowEvent;
+          // filters out clicks on the symbol column because it should display asset details
+          if ((event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON')
+            return;
+          push(`/markets/${(data as MarketList_markets).id}`);
+        }}
       />
     </AsyncRenderer>
   );

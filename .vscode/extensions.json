@@ -4,6 +4,7 @@
     "esbenp.prettier-vscode",
     "firsttris.vscode-jest-runner",
     "dbaeumer.vscode-eslint",
-    "stevejpurves.cucumber"
+    "stevejpurves.cucumber",
+    "streetsidesoftware.code-spell-checker"
   ]
 }

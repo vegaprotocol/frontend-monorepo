@@ -23,8 +23,8 @@ const MarketDataGrid = ({ grid }: MarketDataGridProps) => {
         ({ label, value, isEstimate }, index) =>
           value && (
             <div key={index} className="grid grid-cols-2">
-              <span>{label}</span>
-              <span>
+              <span data-testid="tooltip-label">{label}</span>
+              <span data-testid="tooltip-value">
                 {isEstimate && <span className="ml-[-0.625em]">{'~'}</span>}
                 {value}
               </span>
@@ -48,8 +48,8 @@ const formatStake = (value: string, market: Market_market) => {
 const compileGridData = (market: Market_market) => {
   const grid: MarketDataGridProps['grid'] = [];
   const isLiquidityMonitoringAuction =
-    market.tradingMode === MarketTradingMode.MonitoringAuction &&
-    market.data?.trigger === AuctionTrigger.Liquidity;
+    market.tradingMode === MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+    market.data?.trigger === AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY;
 
   if (!market.data) return grid;
 
@@ -116,7 +116,7 @@ type TradingModeTooltipProps = {
 
 export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
   switch (market.tradingMode) {
-    case MarketTradingMode.Continuous: {
+    case MarketTradingMode.TRADING_MODE_CONTINUOUS: {
       return (
         <>
           {t(
@@ -125,7 +125,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         </>
       );
     }
-    case MarketTradingMode.OpeningAuction: {
+    case MarketTradingMode.TRADING_MODE_OPENING_AUCTION: {
       return (
         <>
           <p className="mb-16">
@@ -145,12 +145,12 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         </>
       );
     }
-    case MarketTradingMode.MonitoringAuction: {
+    case MarketTradingMode.TRADING_MODE_MONITORING_AUCTION: {
       switch (market.data?.trigger) {
-        case AuctionTrigger.Liquidity: {
+        case AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY: {
           return (
             <>
-              <p className="mb-16">
+              <p data-testid="tooltip-market-info" className="mb-16">
                 <span>
                   {t(
                     'This market is in auction until it reaches sufficient liquidity.'
@@ -167,7 +167,7 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
             </>
           );
         }
-        case AuctionTrigger.Price: {
+        case AuctionTrigger.AUCTION_TRIGGER_PRICE: {
           return (
             <>
               <p className="mb-16">
@@ -190,10 +190,10 @@ export const TradingModeTooltip = ({ market }: TradingModeTooltipProps) => {
         }
       }
     }
-    case MarketTradingMode.NoTrading: {
+    case MarketTradingMode.TRADING_MODE_NO_TRADING: {
       return <>{t('No trading enabled for this market.')}</>;
     }
-    case MarketTradingMode.BatchAuction:
+    case MarketTradingMode.TRADING_MODE_BATCH_AUCTION:
     default: {
       return null;
     }

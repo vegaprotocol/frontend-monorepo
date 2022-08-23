@@ -16,8 +16,8 @@ export const generateMarketList = (
       name: 'BTCUSD Monthly (30 Jun 2022)',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      state: MarketState.Active,
-      tradingMode: MarketTradingMode.Continuous,
+      state: MarketState.STATE_ACTIVE,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       fees: {
         factors: {
           makerFee: '0.0002',
@@ -30,19 +30,20 @@ export const generateMarketList = (
       data: {
         market: {
           id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
-          state: MarketState.Active,
-          tradingMode: MarketTradingMode.Continuous,
+          state: MarketState.STATE_ACTIVE,
+          tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
           __typename: 'Market',
         },
         bestBidPrice: '2411432389',
         bestOfferPrice: '2346732714',
         markPrice: '4612690058',
-        trigger: AuctionTrigger.Price,
+        trigger: AuctionTrigger.AUCTION_TRIGGER_PRICE,
         indicativeVolume: '1216',
         __typename: 'MarketData',
       },
       tradableInstrument: {
         instrument: {
+          id: 'BTCUSD.MF21',
           name: 'BTC/USD Monthly',
           code: 'BTCUSD.MF21',
           metadata: {
@@ -81,13 +82,13 @@ export const generateMarketList = (
       name: 'SOL/USD',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
-      state: MarketState.Suspended,
-      tradingMode: MarketTradingMode.MonitoringAuction,
+      state: MarketState.STATE_SUSPENDED,
+      tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
       data: {
         market: {
           id: '34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed',
-          state: MarketState.Suspended,
-          tradingMode: MarketTradingMode.MonitoringAuction,
+          state: MarketState.STATE_SUSPENDED,
+          tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
           __typename: 'Market',
         },
         bestBidPrice: '17065127',
@@ -98,6 +99,7 @@ export const generateMarketList = (
       },
       tradableInstrument: {
         instrument: {
+          id: 'SOLUSD',
           name: 'SOL/USD',
           code: 'SOLUSD',
           metadata: {

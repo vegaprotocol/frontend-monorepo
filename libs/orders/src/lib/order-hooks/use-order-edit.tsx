@@ -1,10 +1,6 @@
 import { removeDecimal, toNanoSeconds } from '@vegaprotocol/react-helpers';
 import { useState, useCallback } from 'react';
-import {
-  useVegaTransaction,
-  useVegaWallet,
-  VegaWalletOrderTimeInForce,
-} from '@vegaprotocol/wallet';
+import { useVegaTransaction, useVegaWallet } from '@vegaprotocol/wallet';
 import type { OrderEvent_busEvents_event_Order } from './__generated__';
 import * as Sentry from '@sentry/react';
 import type { OrderFields } from '../components';
@@ -51,15 +47,11 @@ export const useOrderEdit = (order: OrderFields | null) => {
           orderAmendment: {
             orderId: order.id,
             marketId: order.market.id,
-            price: {
-              value: removeDecimal(args.price, order.market.decimalPlaces),
-            },
-            timeInForce: VegaWalletOrderTimeInForce[order.timeInForce],
+            price: removeDecimal(args.price, order.market.decimalPlaces),
+            timeInForce: order.timeInForce,
             sizeDelta: 0,
             expiresAt: order.expiresAt
-              ? {
-                  value: toNanoSeconds(new Date(order.expiresAt)), // Wallet expects timestamp in nanoseconds
-                }
+              ? toNanoSeconds(new Date(order.expiresAt)) // Wallet expects timestamp in nanoseconds
               : undefined,
           },
         });

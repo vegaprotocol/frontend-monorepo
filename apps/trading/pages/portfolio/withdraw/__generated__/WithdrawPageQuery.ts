@@ -12,7 +12,7 @@ import { AccountType } from "@vegaprotocol/types";
 export interface WithdrawPageQuery_party_withdrawals {
   __typename: "Withdrawal";
   /**
-   * The Vega internal id of the withdrawal
+   * The Vega internal ID of the withdrawal
    */
   id: string;
   /**
@@ -24,7 +24,7 @@ export interface WithdrawPageQuery_party_withdrawals {
 export interface WithdrawPageQuery_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -72,7 +72,7 @@ export interface WithdrawPageQuery_assets_source_BuiltinAsset {
 export interface WithdrawPageQuery_assets_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the erc20 contract
+   * The address of the ERC20 contract
    */
   contractAddress: string;
 }
@@ -82,7 +82,7 @@ export type WithdrawPageQuery_assets_source = WithdrawPageQuery_assets_source_Bu
 export interface WithdrawPageQuery_assets {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -94,22 +94,22 @@ export interface WithdrawPageQuery_assets {
    */
   name: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
   /**
-   * The origin source of the asset (e.g: an erc20 asset)
+   * The origin source of the asset (e.g: an ERC20 asset)
    */
   source: WithdrawPageQuery_assets_source;
 }
 
 export interface WithdrawPageQuery {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: WithdrawPageQuery_party | null;
   /**
-   * The list of all assets in use in the vega network
+   * The list of all assets in use in the Vega network
    */
   assets: WithdrawPageQuery_assets[] | null;
 }
