@@ -12,7 +12,7 @@ import { AccountType } from "@vegaprotocol/types";
 export interface Rewards_party_rewardDetails_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -24,7 +24,7 @@ export interface Rewards_party_rewardDetails_asset {
 export interface Rewards_party_rewardDetails_rewards_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
 }
@@ -144,18 +144,18 @@ export interface Rewards_epoch {
    */
   id: string;
   /**
-   * Timestamps for start/end etc
+   * Timestamps for start and end of epochs
    */
   timestamps: Rewards_epoch_timestamps;
 }
 
 export interface Rewards {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: Rewards_party | null;
   /**
-   * get data for a specific epoch, if id omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: Rewards_epoch;
 }

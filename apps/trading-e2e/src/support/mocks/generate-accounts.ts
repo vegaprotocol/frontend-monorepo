@@ -13,7 +13,7 @@ export const generateAccounts = (
       accounts: [
         {
           __typename: 'Account',
-          type: AccountType.General,
+          type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: null,
           asset: {

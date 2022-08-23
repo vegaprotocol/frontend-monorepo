@@ -52,7 +52,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product_sett
 export interface MarketsQuery_markets_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -60,7 +60,7 @@ export interface MarketsQuery_markets_tradableInstrument_instrument_product_sett
    */
   name: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
   /**
@@ -108,11 +108,11 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRisk
    */
   r: number;
   /**
-   * sigma parameter
+   * sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
    */
   sigma: number;
   /**
-   * mu parameter
+   * mu parameter, annualised growth rate of the underlying asset
    */
   mu: number;
 }
@@ -120,15 +120,15 @@ export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRisk
 export interface MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel {
   __typename: "LogNormalRiskModel";
   /**
-   * Tau parameter of the risk model
+   * Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall calculation to obtain the maintenance margin, must be a strictly non-negative real number
    */
   tau: number;
   /**
-   * Lambda parameter of the risk model
+   * Lambda parameter of the risk model, probability confidence level used in expected shortfall calculation when obtaining the maintenance margin level, must be strictly greater than 0 and strictly smaller than 1
    */
   riskAversionParameter: number;
   /**
-   * Params for the log normal risk model
+   * Parameters for the log normal risk model
    */
   params: MarketsQuery_markets_tradableInstrument_riskModel_LogNormalRiskModel_params;
 }
@@ -166,7 +166,7 @@ export interface MarketsQuery_markets_tradableInstrument_marginCalculator_scalin
    */
   initialMargin: number;
   /**
-   * The scaling factor that determines the overflow margin level
+   * the scaling factor that determines the overflow margin level
    */
   collateralRelease: number;
 }
@@ -182,7 +182,7 @@ export interface MarketsQuery_markets_tradableInstrument_marginCalculator {
 export interface MarketsQuery_markets_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: MarketsQuery_markets_tradableInstrument_instrument;
   /**
@@ -219,7 +219,7 @@ export interface MarketsQuery_markets_priceMonitoringSettings_parameters_trigger
   probability: number;
   /**
    * Price monitoring auction extension duration in seconds should the price
-   * breach it's theoretical level over the specified horizon at the specified
+   * breach its theoretical level over the specified horizon at the specified
    * probability level (> 0)
    */
   auctionExtensionSecs: number;
@@ -239,10 +239,6 @@ export interface MarketsQuery_markets_priceMonitoringSettings {
    * Specified a set of PriceMonitoringParameters to be use for price monitoring purposes
    */
   parameters: MarketsQuery_markets_priceMonitoringSettings_parameters | null;
-  /**
-   * How often (in seconds) the price monitoring bounds should be updated
-   */
-  updateFrequencySecs: number;
 }
 
 export interface MarketsQuery_markets_liquidityMonitoringParameters_targetStakeParameters {
@@ -272,7 +268,7 @@ export interface MarketsQuery_markets_liquidityMonitoringParameters {
 export interface MarketsQuery_markets_proposal {
   __typename: "Proposal";
   /**
-   * Proposal ID that is filled by VEGA once proposal reaches the network
+   * Proposal ID that is filled by Vega once proposal reaches the network
    */
   id: string | null;
 }
@@ -280,7 +276,7 @@ export interface MarketsQuery_markets_proposal {
 export interface MarketsQuery_markets_accounts_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -309,7 +305,7 @@ export interface MarketsQuery_markets_data_priceMonitoringBounds_trigger {
   __typename: "PriceMonitoringTrigger";
   /**
    * Price monitoring auction extension duration in seconds should the price
-   * breach it's theoretical level over the specified horizon at the specified
+   * breach its theoretical level over the specified horizon at the specified
    * probability level (> 0)
    */
   auctionExtensionSecs: number;
@@ -350,15 +346,15 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare_party {
 export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
   __typename: "LiquidityProviderFeeShare";
   /**
-   * The liquidity provider party id
+   * The liquidity provider party ID
    */
   party: MarketsQuery_markets_data_liquidityProviderFeeShare_party;
   /**
-   * The share own by this liquidity provider (float)
+   * The share owned by this liquidity provider (float)
    */
   equityLikeShare: string;
   /**
-   * the average entry valuation of the liquidity provider for the market
+   * The average entry valuation of the liquidity provider for the market
    */
   averageEntryValuation: string;
 }
@@ -366,7 +362,7 @@ export interface MarketsQuery_markets_data_liquidityProviderFeeShare {
 export interface MarketsQuery_markets_data {
   __typename: "MarketData";
   /**
-   * the mark price (actually an unsigned int)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
   /**
@@ -450,7 +446,7 @@ export interface MarketsQuery_markets_data {
    */
   suppliedStake: string | null;
   /**
-   * A list of valid price ranges per associated trigger
+   * a list of valid price ranges per associated trigger
    */
   priceMonitoringBounds: MarketsQuery_markets_data_priceMonitoringBounds[] | null;
   /**
@@ -478,12 +474,12 @@ export interface MarketsQuery_markets {
    */
   fees: MarketsQuery_markets_fees;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketsQuery_markets_tradableInstrument;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -520,7 +516,7 @@ export interface MarketsQuery_markets {
    */
   state: MarketState;
   /**
-   * The proposal which initiated this market
+   * The proposal that initiated this market
    */
   proposal: MarketsQuery_markets_proposal | null;
   /**

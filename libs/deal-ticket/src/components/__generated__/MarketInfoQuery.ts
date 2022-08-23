@@ -12,7 +12,7 @@ import { MarketState, MarketTradingMode, AccountType } from "@vegaprotocol/types
 export interface MarketInfoQuery_market_accounts_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
 }
@@ -69,7 +69,7 @@ export interface MarketInfoQuery_market_priceMonitoringSettings_parameters_trigg
   probability: number;
   /**
    * Price monitoring auction extension duration in seconds should the price
-   * breach it's theoretical level over the specified horizon at the specified
+   * breach its theoretical level over the specified horizon at the specified
    * probability level (> 0)
    */
   auctionExtensionSecs: number;
@@ -89,10 +89,6 @@ export interface MarketInfoQuery_market_priceMonitoringSettings {
    * Specified a set of PriceMonitoringParameters to be use for price monitoring purposes
    */
   parameters: MarketInfoQuery_market_priceMonitoringSettings_parameters | null;
-  /**
-   * How often (in seconds) the price monitoring bounds should be updated
-   */
-  updateFrequencySecs: number;
 }
 
 export interface MarketInfoQuery_market_riskFactors {
@@ -122,11 +118,11 @@ export interface MarketInfoQuery_market_data_market {
 export interface MarketInfoQuery_market_data {
   __typename: "MarketData";
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketInfoQuery_market_data_market;
   /**
-   * the mark price (actually an unsigned int)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
   /**
@@ -190,7 +186,7 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -206,7 +202,7 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_se
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice {
   __typename: "OracleSpec";
   /**
-   * id is a hash generated from the OracleSpec data.
+   * ID is a hash generated from the OracleSpec data.
    */
   id: string;
 }
@@ -214,7 +210,7 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_or
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination {
   __typename: "OracleSpec";
   /**
-   * id is a hash generated from the OracleSpec data.
+   * ID is a hash generated from the OracleSpec data.
    */
   id: string;
 }
@@ -280,11 +276,11 @@ export interface MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRi
    */
   r: number;
   /**
-   * sigma parameter
+   * sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
    */
   sigma: number;
   /**
-   * mu parameter
+   * mu parameter, annualised growth rate of the underlying asset
    */
   mu: number;
 }
@@ -292,15 +288,15 @@ export interface MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRi
 export interface MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRiskModel {
   __typename: "LogNormalRiskModel";
   /**
-   * Tau parameter of the risk model
+   * Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall calculation to obtain the maintenance margin, must be a strictly non-negative real number
    */
   tau: number;
   /**
-   * Lambda parameter of the risk model
+   * Lambda parameter of the risk model, probability confidence level used in expected shortfall calculation when obtaining the maintenance margin level, must be strictly greater than 0 and strictly smaller than 1
    */
   riskAversionParameter: number;
   /**
-   * Params for the log normal risk model
+   * Parameters for the log normal risk model
    */
   params: MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRiskModel_params;
 }
@@ -330,7 +326,7 @@ export type MarketInfoQuery_market_tradableInstrument_riskModel = MarketInfoQuer
 export interface MarketInfoQuery_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: MarketInfoQuery_market_tradableInstrument_instrument;
   /**
@@ -367,7 +363,7 @@ export interface MarketInfoQuery_market {
   name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
+   * number denominated in the currency of the market. (uint64)
    * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
@@ -383,9 +379,10 @@ export interface MarketInfoQuery_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
@@ -421,7 +418,7 @@ export interface MarketInfoQuery_market {
    */
   liquidityMonitoringParameters: MarketInfoQuery_market_liquidityMonitoringParameters;
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketInfoQuery_market_tradableInstrument;
   /**
@@ -432,7 +429,7 @@ export interface MarketInfoQuery_market {
 
 export interface MarketInfoQuery {
   /**
-   * An instrument that is trading on the VEGA network
+   * An instrument that is trading on the Vega network
    */
   market: MarketInfoQuery_market | null;
 }

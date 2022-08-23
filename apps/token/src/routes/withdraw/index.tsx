@@ -4,7 +4,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { AccountType } from '../../__generated__/globalTypes';
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
@@ -15,6 +14,7 @@ import type {
   WithdrawPageVariables,
 } from './__generated__/WithdrawPage';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
+import { AccountType } from '@vegaprotocol/types';
 
 const Withdraw = () => {
   const { t } = useTranslation();
@@ -105,7 +105,9 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
   const accounts = React.useMemo(() => {
     if (!data?.party?.accounts) return [];
     // You can only withdraw from general accounts
-    return data.party.accounts.filter((a) => a.type === AccountType.General);
+    return data.party.accounts.filter(
+      (a) => a.type === AccountType.ACCOUNT_TYPE_GENERAL
+    );
   }, [data]);
 
   // Note there is a small period where the withdrawal might have a tx hash but is technically

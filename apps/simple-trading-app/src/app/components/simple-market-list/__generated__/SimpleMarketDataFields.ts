@@ -24,7 +24,7 @@ export interface SimpleMarketDataFields_market {
 export interface SimpleMarketDataFields {
   __typename: "MarketData";
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: SimpleMarketDataFields_market;
 }

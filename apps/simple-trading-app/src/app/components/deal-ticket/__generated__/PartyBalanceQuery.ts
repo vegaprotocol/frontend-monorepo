@@ -12,7 +12,7 @@ import { AccountType } from "@vegaprotocol/types";
 export interface PartyBalanceQuery_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -24,7 +24,7 @@ export interface PartyBalanceQuery_party_accounts_asset {
    */
   name: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -55,7 +55,7 @@ export interface PartyBalanceQuery_party {
 
 export interface PartyBalanceQuery {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: PartyBalanceQuery_party | null;
 }
