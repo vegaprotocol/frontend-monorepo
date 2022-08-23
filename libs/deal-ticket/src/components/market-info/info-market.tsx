@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 import {
   addDecimalsFormatNumber,
   formatLabel,
@@ -21,10 +23,9 @@ import omit from 'lodash/omit';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
-import { AccountType, Interval } from '@vegaprotocol/types';
+import { AccountType, Interval, MarketStateMapping } from '@vegaprotocol/types';
 import { MARKET_INFO_QUERY } from './info-market-query';
 import type { MarketInfoQuery_market, MarketInfoQuery } from '../__generated__';
-import type { ReactNode } from 'react';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
@@ -42,11 +43,17 @@ export interface MarketInfoContainerProps {
   marketId: string;
 }
 export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
-  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-  const yTimestamp = new Date(yesterday * 1000).toISOString();
+  const yTimestamp = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
 
   const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
-    variables: { marketId, interval: Interval.INTERVAL_I1H, since: yTimestamp },
+    variables: {
+      marketId,
+      interval: Interval.INTERVAL_I1H,
+      since: yTimestamp,
+    },
   });
 
   return (
@@ -142,15 +149,17 @@ export const Info = ({ market }: InfoProps) => {
       })),
   ];
 
-  const keyDetails = pick(
-    market,
-    'name',
-    'decimalPlaces',
-    'positionDecimalPlaces',
-    'tradingMode',
-    'state',
-    'id' as 'marketId'
-  );
+  const keyDetails = {
+    ...pick(
+      market,
+      'name',
+      'decimalPlaces',
+      'positionDecimalPlaces',
+      'tradingMode',
+      'id' as 'marketId'
+    ),
+    state: MarketStateMapping[market.state],
+  };
   const marketSpecPanels = [
     {
       title: t('Key details'),
@@ -237,6 +246,12 @@ export const Info = ({ market }: InfoProps) => {
         content: <MarketInfoTable data={trigger} />,
       })
     ),
+    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
+      title: t(`Price monitoring bound ${i + 1}`),
+      content: (
+        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
+      ),
+    })),
     ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
       title: t(`Price monitoring bound ${i + 1}`),
       content: (

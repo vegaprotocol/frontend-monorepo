@@ -12,7 +12,7 @@ export interface BlockTime_busEvents {
   /**
    * the ID for this event
    */
-  id: string;
+  eventId: string;
 }
 
 export interface BlockTime {

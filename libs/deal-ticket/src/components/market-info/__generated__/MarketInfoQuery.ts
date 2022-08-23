@@ -3,7 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
-import { Interval, MarketState, AccountType, MarketTradingMode, AuctionTrigger } from "@vegaprotocol/types";
+import { Interval, MarketState, MarketTradingMode, AccountType, AuctionTrigger } from "@vegaprotocol/types";
 
 // ====================================================
 // GraphQL query operation: MarketInfoQuery
@@ -12,7 +12,7 @@ import { Interval, MarketState, AccountType, MarketTradingMode, AuctionTrigger }
 export interface MarketInfoQuery_market_accounts_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
 }
@@ -69,7 +69,7 @@ export interface MarketInfoQuery_market_priceMonitoringSettings_parameters_trigg
   probability: number;
   /**
    * Price monitoring auction extension duration in seconds should the price
-   * breach it's theoretical level over the specified horizon at the specified
+   * breach its theoretical level over the specified horizon at the specified
    * probability level (> 0)
    */
   auctionExtensionSecs: number;
@@ -156,11 +156,11 @@ export interface MarketInfoQuery_market_data_priceMonitoringBounds {
 export interface MarketInfoQuery_market_data {
   __typename: "MarketData";
   /**
-   * market id of the associated mark price
+   * market ID of the associated mark price
    */
   market: MarketInfoQuery_market_data_market;
   /**
-   * the mark price (actually an unsigned int)
+   * the mark price (an unsigned integer)
    */
   markPrice: string;
   /**
@@ -180,10 +180,6 @@ export interface MarketInfoQuery_market_data {
    */
   bestStaticOfferVolume: string;
   /**
-   * the sum of the size of all positions greater than 0.
-   */
-  openInterest: string;
-  /**
    * the highest price level on an order book for buy orders.
    */
   bestBidPrice: string;
@@ -196,21 +192,25 @@ export interface MarketInfoQuery_market_data {
    */
   trigger: AuctionTrigger;
   /**
-   * A list of valid price ranges per associated trigger
+   * the sum of the size of all positions greater than 0.
    */
-  priceMonitoringBounds: MarketInfoQuery_market_data_priceMonitoringBounds[] | null;
-  /**
-   * the amount of stake targeted for this market
-   */
-  targetStake: string;
+  openInterest: string;
   /**
    * the supplied stake for the market
    */
-  suppliedStake: string;
+  suppliedStake: string | null;
+  /**
+   * the amount of stake targeted for this market
+   */
+  targetStake: string | null;
   /**
    * the market value proxy
    */
   marketValueProxy: string;
+  /**
+   * a list of valid price ranges per associated trigger
+   */
+  priceMonitoringBounds: MarketInfoQuery_market_data_priceMonitoringBounds[] | null;
 }
 
 export interface MarketInfoQuery_market_liquidityMonitoringParameters_targetStakeParameters {
@@ -256,7 +256,7 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_metadata {
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -272,7 +272,7 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_se
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice {
   __typename: "OracleSpec";
   /**
-   * id is a hash generated from the OracleSpec data.
+   * ID is a hash generated from the OracleSpec data.
    */
   id: string;
 }
@@ -280,7 +280,7 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_or
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination {
   __typename: "OracleSpec";
   /**
-   * id is a hash generated from the OracleSpec data.
+   * ID is a hash generated from the OracleSpec data.
    */
   id: string;
 }
@@ -346,11 +346,11 @@ export interface MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRi
    */
   r: number;
   /**
-   * sigma parameter
+   * sigma parameter, annualised volatility of the underlying asset, must be a strictly non-negative real number
    */
   sigma: number;
   /**
-   * mu parameter
+   * mu parameter, annualised growth rate of the underlying asset
    */
   mu: number;
 }
@@ -358,15 +358,15 @@ export interface MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRi
 export interface MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRiskModel {
   __typename: "LogNormalRiskModel";
   /**
-   * Tau parameter of the risk model
+   * Tau parameter of the risk model, projection horizon measured as a year fraction used in the expected shortfall calculation to obtain the maintenance margin, must be a strictly non-negative real number
    */
   tau: number;
   /**
-   * Lambda parameter of the risk model
+   * Lambda parameter of the risk model, probability confidence level used in expected shortfall calculation when obtaining the maintenance margin level, must be strictly greater than 0 and strictly smaller than 1
    */
   riskAversionParameter: number;
   /**
-   * Params for the log normal risk model
+   * Parameters for the log normal risk model
    */
   params: MarketInfoQuery_market_tradableInstrument_riskModel_LogNormalRiskModel_params;
 }
@@ -396,7 +396,7 @@ export type MarketInfoQuery_market_tradableInstrument_riskModel = MarketInfoQuer
 export interface MarketInfoQuery_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: MarketInfoQuery_market_tradableInstrument_instrument;
   /**
@@ -433,15 +433,15 @@ export interface MarketInfoQuery_market {
   name: string;
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
-   * number denominated in the currency of the Market. (uint64)
-   *
+   * number denominated in the currency of the market. (uint64)
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -449,9 +449,10 @@ export interface MarketInfoQuery_market {
    */
   decimalPlaces: number;
   /**
-   * positionDecimalPlaces indicated the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
+   * positionDecimalPlaces indicates the number of decimal places that an integer must be shifted in order to get a correct size (uint64).
    * i.e. 0 means there are no fractional orders for the market, and order sizes are always whole sizes.
    * 2 means sizes given as 10^2 * desired size, e.g. a desired size of 1.23 is represented as 123 in this market.
+   * This sets how big the smallest order / position on the market can be.
    */
   positionDecimalPlaces: number;
   /**
@@ -459,13 +460,13 @@ export interface MarketInfoQuery_market {
    */
   state: MarketState;
   /**
-   * Get account for a party or market
-   */
-  accounts: MarketInfoQuery_market_accounts[] | null;
-  /**
    * Current mode of execution of the market
    */
   tradingMode: MarketTradingMode;
+  /**
+   * Get account for a party or market
+   */
+  accounts: MarketInfoQuery_market_accounts[] | null;
   /**
    * Fees related data
    */
@@ -487,6 +488,10 @@ export interface MarketInfoQuery_market {
    */
   liquidityMonitoringParameters: MarketInfoQuery_market_liquidityMonitoringParameters;
   /**
+   * Candles on a market, for the 'last' n candles, at 'interval' seconds as specified by parameters
+   */
+  candles: (MarketInfoQuery_market_candles | null)[] | null;
+  /**
    * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketInfoQuery_market_tradableInstrument;
@@ -498,7 +503,7 @@ export interface MarketInfoQuery_market {
 
 export interface MarketInfoQuery {
   /**
-   * An instrument that is trading on the VEGA network
+   * An instrument that is trading on the Vega network
    */
   market: MarketInfoQuery_market | null;
 }

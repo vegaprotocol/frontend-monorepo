@@ -102,12 +102,12 @@ export enum Interval {
  * Status of a liquidity provision order
  */
 export enum LiquidityProvisionStatus {
-  Active = "Active",
-  Cancelled = "Cancelled",
-  Pending = "Pending",
-  Rejected = "Rejected",
-  Stopped = "Stopped",
-  Undeployed = "Undeployed",
+  STATUS_ACTIVE = "STATUS_ACTIVE",
+  STATUS_CANCELLED = "STATUS_CANCELLED",
+  STATUS_PENDING = "STATUS_PENDING",
+  STATUS_REJECTED = "STATUS_REJECTED",
+  STATUS_STOPPED = "STATUS_STOPPED",
+  STATUS_UNDEPLOYED = "STATUS_UNDEPLOYED",
 }
 
 /**
