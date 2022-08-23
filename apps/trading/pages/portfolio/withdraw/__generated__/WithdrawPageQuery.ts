@@ -122,7 +122,7 @@ export interface WithdrawPageQuery {
    */
   party: WithdrawPageQuery_party | null;
   /**
-   * The list of all assets in use in the vega network or the specified asset if id is provided
+   * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
   assetsConnection: WithdrawPageQuery_assetsConnection;
 }

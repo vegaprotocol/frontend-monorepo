@@ -94,7 +94,7 @@ export interface AssetsQuery_assetsConnection {
 
 export interface AssetsQuery {
   /**
-   * The list of all assets in use in the vega network or the specified asset if id is provided
+   * The list of all assets in use in the Vega network or the specified asset if ID is provided
    */
   assetsConnection: AssetsQuery_assetsConnection;
 }
