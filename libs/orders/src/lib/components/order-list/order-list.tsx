@@ -33,7 +33,6 @@ import { useOrderEdit } from '../../order-hooks/use-order-edit';
 import { OrderEditDialog } from './order-edit-dialog';
 import type { OrderFields } from '../order-data-provider/__generated__';
 import { OrderFeedback } from '../order-feedback';
-import startCase from 'lodash/startCase';
 
 type OrderListProps = AgGridReactProps | AgReactUiProps;
 
