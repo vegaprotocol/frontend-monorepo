@@ -53,16 +53,25 @@ type NetworkLabelProps = {
   isAvailable: boolean;
 };
 
+const getLabelText = ({
+  isCurrent = false,
+  isAvailable = false,
+}: NetworkLabelProps) => {
+  if (isCurrent) {
+    return ` (${t('current')})`;
+  }
+  if (!isAvailable) {
+    return ` (${t('not available')})`;
+  }
+  return '';
+}
+
 const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
   <span className="text-white-80 dark:text-white-80">
-    {isCurrent
-      ? ` (${t('current')})`
-      : !isAvailable
-      ? ` (${t('not available')})`
-      : ''}
+    {getLabelText({ isCurrent, isAvailable })}
   </span>
 );
 
