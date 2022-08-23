@@ -120,8 +120,10 @@ export const SelectMarketPopover = ({
 
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
-  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-  const yTimestamp = new Date(yesterday * 1000).toISOString();
+  const yTimestamp = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
 
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
   const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
@@ -223,8 +225,10 @@ export const SelectMarketDialog = ({
   detailed?: boolean;
   onSelect: (id: string) => void;
 }) => {
-  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-  const yTimestamp = new Date(yesterday * 1000).toISOString();
+  const yTimestamp = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
 
   const onSelectMarket = (id: string) => {
     onSelect(id);
