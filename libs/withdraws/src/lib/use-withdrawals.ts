@@ -41,8 +41,12 @@ export const WITHDRAWALS_QUERY = gql`
   query Withdrawals($partyId: ID!) {
     party(id: $partyId) {
       id
-      withdrawals {
-        ...WithdrawalFields
+      withdrawalsConnection {
+        edges {
+          node {
+            ...WithdrawalFields
+          }
+        }
       }
     }
   }
@@ -97,7 +101,7 @@ export const updateQuery: UpdateQueryFn<
     return prev;
   }
 
-  const curr = prev.party?.withdrawals || [];
+  const curr = prev.party?.withdrawalsConnection.edges || [];
   const incoming = subscriptionData.data.busEvents
     .map((e) => {
       return {
@@ -115,7 +119,13 @@ export const updateQuery: UpdateQueryFn<
       ...prev,
       party: {
         __typename: 'Party',
-        withdrawals,
+        withdrawalsConnection: {
+          __typename: 'WithdrawalsConnection',
+          edges: withdrawals.map((w) => ({
+            __typename: 'WithdrawalEdge',
+            node: w,
+          })),
+        },
       },
     } as Withdrawals;
   }

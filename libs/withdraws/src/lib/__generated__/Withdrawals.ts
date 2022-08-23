@@ -9,7 +9,7 @@ import { WithdrawalStatus } from "@vegaprotocol/types";
 // GraphQL query operation: Withdrawals
 // ====================================================
 
-export interface Withdrawals_party_withdrawals_asset {
+export interface Withdrawals_party_withdrawalsConnection_edges_node_asset {
   __typename: "Asset";
   /**
    * The ID of the asset
@@ -25,7 +25,7 @@ export interface Withdrawals_party_withdrawals_asset {
   decimals: number;
 }
 
-export interface Withdrawals_party_withdrawals_details {
+export interface Withdrawals_party_withdrawalsConnection_edges_node_details {
   __typename: "Erc20WithdrawalDetails";
   /**
    * The ethereum address of the receiver of the asset funds
@@ -33,7 +33,7 @@ export interface Withdrawals_party_withdrawals_details {
   receiverAddress: string;
 }
 
-export interface Withdrawals_party_withdrawals {
+export interface Withdrawals_party_withdrawalsConnection_edges_node {
   __typename: "Withdrawal";
   /**
    * The Vega internal ID of the withdrawal
@@ -50,7 +50,7 @@ export interface Withdrawals_party_withdrawals {
   /**
    * The asset to be withdrawn
    */
-  asset: Withdrawals_party_withdrawals_asset;
+  asset: Withdrawals_party_withdrawalsConnection_edges_node_asset;
   /**
    * RFC3339Nano time at which the withdrawal was created
    */
@@ -66,11 +66,24 @@ export interface Withdrawals_party_withdrawals {
   /**
    * Foreign chain specific details about the withdrawal
    */
-  details: Withdrawals_party_withdrawals_details | null;
+  details: Withdrawals_party_withdrawalsConnection_edges_node_details | null;
   /**
    * Whether or the not the withdrawal is being processed on Ethereum
    */
   pendingOnForeignChain: boolean;
+}
+
+export interface Withdrawals_party_withdrawalsConnection_edges {
+  __typename: "WithdrawalEdge";
+  node: Withdrawals_party_withdrawalsConnection_edges_node;
+}
+
+export interface Withdrawals_party_withdrawalsConnection {
+  __typename: "WithdrawalsConnection";
+  /**
+   * The withdrawals
+   */
+  edges: (Withdrawals_party_withdrawalsConnection_edges | null)[] | null;
 }
 
 export interface Withdrawals_party {
@@ -82,7 +95,7 @@ export interface Withdrawals_party {
   /**
    * The list of all withdrawals initiated by the party
    */
-  withdrawals: Withdrawals_party_withdrawals[] | null;
+  withdrawalsConnection: Withdrawals_party_withdrawalsConnection;
 }
 
 export interface Withdrawals {

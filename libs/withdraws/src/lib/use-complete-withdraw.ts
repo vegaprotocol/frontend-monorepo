@@ -1,7 +1,11 @@
 import { gql, useApolloClient } from '@apollo/client';
 import { captureException } from '@sentry/react';
 import type { CollateralBridge } from '@vegaprotocol/smart-contracts';
-import { useBridgeContract, useEthereumTransaction } from '@vegaprotocol/web3';
+import {
+  EthTxStatus,
+  useBridgeContract,
+  useEthereumTransaction,
+} from '@vegaprotocol/web3';
 import { useCallback, useEffect, useState } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';
 import type {
@@ -65,12 +69,13 @@ export const useCompleteWithdraw = () => {
         fragment: PENDING_WITHDRAWAL_FRAGMMENT,
         data: {
           __typename: 'Withdrawal',
-          pendingOnForeignChain: true,
+          pendingOnForeignChain:
+            transaction.status === EthTxStatus.Pending ? true : false,
           txHash: transaction.txHash,
         },
       });
     }
-  }, [cache, transaction.txHash, id]);
+  }, [cache, transaction.status, transaction.txHash, id]);
 
   return { transaction, Dialog, submit, withdrawalId: id };
 };

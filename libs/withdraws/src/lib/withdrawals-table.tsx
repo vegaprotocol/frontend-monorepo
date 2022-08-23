@@ -12,10 +12,10 @@ import {
 import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useCompleteWithdraw } from './use-complete-withdraw';
-import type { Withdrawals_party_withdrawals } from './__generated__/Withdrawals';
+import type { WithdrawalFields } from './__generated__/WithdrawalFields';
 
 export interface WithdrawalsTableProps {
-  withdrawals: Withdrawals_party_withdrawals[];
+  withdrawals: WithdrawalFields[];
 }
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {

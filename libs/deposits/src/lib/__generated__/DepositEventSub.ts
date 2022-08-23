@@ -16,7 +16,7 @@ export interface DepositEventSub_busEvents_event_TimeUpdate {
 export interface DepositEventSub_busEvents_event_Deposit_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -24,7 +24,7 @@ export interface DepositEventSub_busEvents_event_Deposit_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -32,7 +32,7 @@ export interface DepositEventSub_busEvents_event_Deposit_asset {
 export interface DepositEventSub_busEvents_event_Deposit {
   __typename: "Deposit";
   /**
-   * The Vega internal id of the deposit
+   * The Vega internal ID of the deposit
    */
   id: string;
   /**
@@ -52,7 +52,7 @@ export interface DepositEventSub_busEvents_event_Deposit {
    */
   createdTimestamp: string;
   /**
-   * RFC3339Nano time at which the deposit was finalized
+   * RFC3339Nano time at which the deposit was finalised
    */
   creditedTimestamp: string | null;
   /**

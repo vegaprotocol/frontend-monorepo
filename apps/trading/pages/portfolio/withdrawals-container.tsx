@@ -1,4 +1,5 @@
 import orderBy from 'lodash/orderBy';
+import compact from 'lodash/compact';
 import { AsyncRenderer, Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import {
   useWithdrawals,
@@ -18,7 +19,9 @@ export const WithdrawalsContainer = () => {
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const withdrawals = useMemo(() => {
     return orderBy(
-      data?.party?.withdrawals || [],
+      compact(data?.party?.withdrawalsConnection.edges).map(
+        (edge) => edge.node
+      ),
       (w) => new Date(w.createdTimestamp).getTime(),
       'desc'
     );
