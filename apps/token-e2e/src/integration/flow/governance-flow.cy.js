@@ -8,14 +8,10 @@ const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const openProposals = '[data-testid="open-proposals"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
 const proposalResponseIdPath = 'response.body.data.busEvents.0.event.id';
-const proposalVoteProgressForPercentage =
-  '[data-testid="vote-progress-indicator-percentage-for"]';
-const proposalVoteProgressAgainstPercentage =
-  '[data-testid="vote-progress-indicator-percentage-against"]';
-const proposalVoteProgressForTokens =
-  '[data-testid="vote-progress-indicator-tokens-for"]';
-const proposalVoteProgressAgainstTokens =
-  '[data-testid="vote-progress-indicator-tokens-against"]';
+const proposalVoteProgressForPercentage = '[data-testid="vote-progress-indicator-percentage-for"]';
+const proposalVoteProgressAgainstPercentage = '[data-testid="vote-progress-indicator-percentage-against"]';
+const proposalVoteProgressForTokens = '[data-testid="vote-progress-indicator-tokens-for"]';
+const proposalVoteProgressAgainstTokens = '[data-testid="vote-progress-indicator-tokens-against"]';
 const txTimeout = Cypress.env('txTimeout');
 
 context('Governance flow - with eth and vega wallets connected', function () {
@@ -58,36 +54,15 @@ context('Governance flow - with eth and vega wallets connected', function () {
   });
 
   describe('Eth wallet - contains VEGA tokens', function () {
-    before(
-      'checking network parameters (therefore environment) is fit for test',
-      function () {
-        assert.isAtLeast(
-          parseInt(this.minProposerBalance),
-          1,
-          'Asserting that value is at least 1 for network parameter minProposerBalance'
-        );
-        assert.isAtLeast(
-          parseInt(this.minVoterBalance),
-          1,
-          'Asserting that value is at least 1 for network parameter minVoterBalance'
-        );
-        assert.isAtLeast(
-          parseFloat(this.requiredParticipation),
-          0.00001,
-          'Asserting that value is at least 0.00001 for network parameter requiredParticipation'
-        );
-        assert.isAtLeast(
-          parseInt(this.minCloseDays),
-          1,
-          'Asserting that value is at least 1 for network parameter minCloseDays'
-        );
-        assert.isAtLeast(
-          parseInt(this.maxCloseDays),
-          parseInt(this.minCloseDays + 1),
-          'Asserting that network parameter maxCloseDays is higher than minCloseDays'
-        );
-      }
-    );
+    before('checking network parameters (therefore environment) is fit for test', function () {
+      
+      assert.isAtLeast(parseInt(this.minProposerBalance), 1, 'Asserting that value is at least 1 for network parameter minProposerBalance');
+      assert.isAtLeast(parseInt(this.minVoterBalance), 1, 'Asserting that value is at least 1 for network parameter minVoterBalance');
+      assert.isAtLeast(parseFloat(this.requiredParticipation), 0.00001, 'Asserting that value is at least 0.00001 for network parameter requiredParticipation');
+      assert.isAtLeast(parseInt(this.minCloseDays), 1, 'Asserting that value is at least 1 for network parameter minCloseDays');
+      assert.isAtLeast(parseInt(this.maxCloseDays), parseInt(this.minCloseDays+1), 'Asserting that network parameter maxCloseDays is higher than minCloseDays');
+
+    })
 
     beforeEach('visit staking tab', function () {
       cy.navigate_to('staking');
@@ -255,10 +230,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .as('submittedProposal')
         .within(() => cy.get(viewProposalButton).click());
       cy.vote_for_proposal('for');
-      //-------------------
       cy.get_governance_proposal_date_format_for_specified_days(
-        '0',
-        'shortMonth'
+        '0', 'shortMonth'
       ).then((votedDate) => {
         cy.contains('You voted:')
           .siblings()
@@ -273,7 +246,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('0.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens).contains('1.00').and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('1.00')
+        .and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('0.00')
         .and('be.visible');
@@ -333,7 +308,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('100.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens).contains('0.00').and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('0.00')
+        .and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('1.00')
         .and('be.visible');
@@ -385,7 +362,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('0.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens).contains('1.00').and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('1.00')
+        .and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('0.00')
         .and('be.visible');
@@ -437,7 +416,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(proposalVoteProgressAgainstPercentage)
         .contains('100.00%')
         .and('be.visible');
-      cy.get(proposalVoteProgressForTokens).contains('0.00').and('be.visible');
+      cy.get(proposalVoteProgressForTokens)
+        .contains('0.00')
+        .and('be.visible');
       cy.get(proposalVoteProgressAgainstTokens)
         .contains('1.00')
         .and('be.visible');
@@ -482,18 +463,15 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.vote_for_proposal('for');
       cy.get_proposal_information_from_table('Total Supply')
         .invoke('text')
-        .then((totalSupply) => {
-          let tokensRequiredToAcheiveResult = parseFloat(
-            (totalSupply.replace(/,/g, '') * this.requiredParticipation) / 100
-          ).toFixed(2);
+        .then(totalSupply => {
+          let tokensRequiredToAcheiveResult = parseFloat(totalSupply.replace(/,/g, '') * this.requiredParticipation/100).toFixed(2)
           cy.ensure_specified_unstaked_tokens_are_associated(
             tokensRequiredToAcheiveResult
           );
           cy.navigate_to('governance');
           cy.wait_for_spinner();
-          cy.get('@submittedProposal').within(() =>
-            cy.get(viewProposalButton).click()
-          );
+          cy.get('@submittedProposal')
+            .within(() => cy.get(viewProposalButton).click());
           cy.get(proposalVoteProgressForPercentage)
             .contains('100.00%')
             .and('be.visible');
@@ -515,7 +493,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
           cy.get_proposal_information_from_table('Number of voting parties')
             .should('have.text', '1')
             .and('be.visible');
-        });
+      })
     });
 
     it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
@@ -739,7 +717,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
         'not.exist'
       );
 
-      //below section temporary until #1090 fixed
+      // below section temporary until #1090 fixed Casting vote in vegacapsule always says: 
+      // Something went wrong, and your vote was not seen by the network - despite vote success 
       cy.navigate_to('governance');
       cy.wait_for_spinner();
       cy.get('@submittedProposal').within(() =>

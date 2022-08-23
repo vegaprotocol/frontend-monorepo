@@ -6,6 +6,7 @@ import {
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
+import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import {
   addDecimalsFormatNumber,
@@ -47,6 +48,7 @@ const TradingViews = {
   Positions: PositionsContainer,
   Orders: OrderListContainer,
   Collateral: AccountsContainer,
+  Fills: FillsContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -117,9 +119,11 @@ export const TradeMarketHeader = ({
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Trading mode')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
-                {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+                {market.tradingMode ===
+                  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
                 market.data?.trigger &&
-                market.data.trigger !== AuctionTrigger.Unspecified
+                market.data.trigger !==
+                  AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
                   ? `${formatLabel(
                       market.tradingMode
                     )} - ${market.data?.trigger.toLowerCase()}`
@@ -238,6 +242,9 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                 </Tab>
                 <Tab id="orders" name={t('Orders')}>
                   <TradingViews.Orders />
+                </Tab>
+                <Tab id="fills" name={t('Fills')}>
+                  <TradingViews.Fills />
                 </Tab>
                 <Tab id="accounts" name={t('Collateral')}>
                   <TradingViews.Collateral />
