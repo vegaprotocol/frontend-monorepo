@@ -232,7 +232,7 @@ export const columns = (
     {
       value: market.data?.markPrice ? (
         <PriceCell
-          value={new BigNumber(market.data?.markPrice).toNumber()}
+          value={Number(market.data?.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
             market.data?.markPrice.toString(),
             market.decimalPlaces,
@@ -277,7 +277,7 @@ export const columns = (
     {
       value: candleHigh ? (
         <PriceCell
-          value={new BigNumber(candleHigh).toNumber()}
+          value={Number(candleHigh)}
           valueFormatted={addDecimalsFormatNumber(
             candleHigh.toString(),
             market.decimalPlaces,
@@ -293,7 +293,7 @@ export const columns = (
     {
       value: candleLow ? (
         <PriceCell
-          value={new BigNumber(candleLow).toNumber()}
+          value={Number(candleLow)}
           valueFormatted={addDecimalsFormatNumber(
             candleLow.toString(),
             market.decimalPlaces,
@@ -395,7 +395,7 @@ export const columnsPositionMarkets = (
     {
       value: market.data?.markPrice ? (
         <PriceCell
-          value={new BigNumber(market.data.markPrice).toNumber()}
+          value={Number(market.data.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
             market.data.markPrice.toString(),
             market.decimalPlaces,
@@ -439,7 +439,7 @@ export const columnsPositionMarkets = (
     {
       value: candleHigh ? (
         <PriceCell
-          value={new BigNumber(candleHigh).toNumber()}
+          value={Number(candleHigh)}
           valueFormatted={addDecimalsFormatNumber(
             candleHigh.toString(),
             market.decimalPlaces,
@@ -455,7 +455,7 @@ export const columnsPositionMarkets = (
     {
       value: candleLow ? (
         <PriceCell
-          value={new BigNumber(candleLow).toNumber()}
+          value={Number(candleLow)}
           valueFormatted={addDecimalsFormatNumber(
             candleLow.toString(),
             market.decimalPlaces,
