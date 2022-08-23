@@ -21,128 +21,10 @@ import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import type { MarketInfoQuery, MarketInfoQuery_market } from '../__generated__';
 import BigNumber from 'bignumber.js';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
-
-const MARKET_INFO_QUERY = gql`
-  query MarketInfoQuery($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      name
-      decimalPlaces
-      positionDecimalPlaces
-      state
-      tradingMode
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
-      fees {
-        factors {
-          makerFee
-          infrastructureFee
-          liquidityFee
-        }
-      }
-      priceMonitoringSettings {
-        parameters {
-          triggers {
-            horizonSecs
-            probability
-            auctionExtensionSecs
-          }
-        }
-      }
-      riskFactors {
-        market
-        short
-        long
-      }
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
-      data {
-        market {
-          id
-        }
-        markPrice
-        indicativeVolume
-        bestBidVolume
-        bestOfferVolume
-        bestStaticBidVolume
-        bestStaticOfferVolume
-        indicativeVolume
-        openInterest
-      }
-      liquidityMonitoringParameters {
-        triggeringRatio
-        targetStakeParameters {
-          timeWindow
-          scalingFactor
-        }
-      }
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-              oracleSpecForSettlementPrice {
-                id
-              }
-              oracleSpecForTradingTermination {
-                id
-              }
-              oracleSpecBinding {
-                settlementPriceProperty
-                tradingTerminationProperty
-              }
-            }
-          }
-        }
-        riskModel {
-          ... on LogNormalRiskModel {
-            tau
-            riskAversionParameter
-            params {
-              r
-              sigma
-              mu
-            }
-          }
-          ... on SimpleRiskModel {
-            params {
-              factorLong
-              factorShort
-            }
-          }
-        }
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
-    }
-  }
-`;
+import { MARKET_INFO_QUERY } from './info-market-query';
+import { AccountType } from '@vegaprotocol/types';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
@@ -174,12 +56,9 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
     'text-h5 font-medium uppercase text-black dark:text-white';
-<<<<<<< Updated upstream:libs/deal-ticket/src/components/info-market.tsx
-=======
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
     market.tradableInstrument.instrument.product?.settlementAsset.symbol;
->>>>>>> Stashed changes:libs/deal-ticket/src/components/market-info/info-market.tsx
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -226,10 +105,8 @@ export const Info = ({ market }: InfoProps) => {
         />
       ),
     },
-<<<<<<< Updated upstream:libs/deal-ticket/src/components/info-market.tsx
-=======
     ...(market.accounts || [])
-      .filter((a) => a.type === AccountType.Insurance)
+      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((a, i) => ({
         title: t(`Insurance pool`),
         content: (
@@ -242,7 +119,6 @@ export const Info = ({ market }: InfoProps) => {
           />
         ),
       })),
->>>>>>> Stashed changes:libs/deal-ticket/src/components/market-info/info-market.tsx
   ];
 
   const keyDetails = pick(
