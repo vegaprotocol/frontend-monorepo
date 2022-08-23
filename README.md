@@ -72,7 +72,7 @@ Run `nx serve my-app` for a dev server. Navigate to the port specified in `app/<
 In order to generate the schemas for your GraphQL queries, you can run `NX_VEGA_URL=[YOUR URL HERE] nx run types:generate`.
 
 ```bash
-export  NX_VEGA_URL=https://lb.testnet.vega.xyz/query
+export  NX_VEGA_URL=https://api.n11.testnet.vega.xyz/graphql
 yarn nx run types:generate
 ```
 

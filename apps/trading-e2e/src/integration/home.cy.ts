@@ -28,7 +28,7 @@ describe('home', () => {
         aliasQuery(req, 'MarketList', marketList);
 
         // Mock all market page queries
-        mockTradingPage(req, MarketState.Active);
+        mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
 
       cy.visit('/');
@@ -121,7 +121,7 @@ describe('home', () => {
         aliasQuery(req, 'Markets', generateMarkets());
 
         // Mock all market page queries
-        mockTradingPage(req, MarketState.Active);
+        mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
 
       cy.visit('/');

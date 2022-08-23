@@ -12,11 +12,11 @@ import { AccountType } from "@vegaprotocol/types";
 export interface PartyMarketData_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -64,15 +64,15 @@ export interface PartyMarketData_party_marginsConnection_edges_node {
    */
   market: PartyMarketData_party_marginsConnection_edges_node_market;
   /**
-   * this is the minimal margin required for a party to place a new order on the network (unsigned int actually)
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
    */
   initialLevel: string;
   /**
-   * minimal margin for the position to be maintained in the network (unsigned int actually)
+   * minimal margin for the position to be maintained in the network (unsigned integer)
    */
   maintenanceLevel: string;
   /**
-   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned int actually)
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
    */
   searchLevel: string;
 }
@@ -101,14 +101,14 @@ export interface PartyMarketData_party {
    */
   accounts: PartyMarketData_party_accounts[] | null;
   /**
-   * Margin level for a market
+   * Margin levels for a market
    */
   marginsConnection: PartyMarketData_party_marginsConnection;
 }
 
 export interface PartyMarketData {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: PartyMarketData_party | null;
 }

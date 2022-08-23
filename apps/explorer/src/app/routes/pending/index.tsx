@@ -17,7 +17,7 @@ const PendingTxs = () => {
       <RouteTitle data-testid="unconfirmed-transactions-header">
         {t('Unconfirmed transactions')}
       </RouteTitle>
-      https://lb.testnet.vega.xyz/tm/unconfirmed_txs
+      https://tm.n06.testnet.vega.xyz/tm/unconfirmed_txs
       <br />
       <div>{t(`Number: ${unconfirmedTransactions?.result?.n_txs || 0}`)}</div>
       <br />

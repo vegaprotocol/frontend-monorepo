@@ -141,7 +141,7 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
     const generalAccount = data.accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
-        account.type === AccountType.General
+        account.type === AccountType.ACCOUNT_TYPE_GENERAL
     );
     const assetDecimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =

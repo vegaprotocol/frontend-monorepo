@@ -12,6 +12,7 @@ import { BigNumber } from '../../lib/bignumber';
 import { formatNumber } from '@vegaprotocol/react-helpers';
 import type { Nodes } from './__generated__/Nodes';
 import type { Staking_epoch } from './__generated__/Staking';
+import type { ColDef } from 'ag-grid-community';
 
 const VALIDATOR = 'validator';
 const STATUS = 'status';
@@ -58,8 +59,6 @@ interface ValidatorRendererProps {
   data: { validator: { avatarUrl: string; name: string } };
 }
 
-const stripNonDigits = (string: string) => string.replace(/\D/g, '');
-
 const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
   const { avatarUrl, name } = data.validator;
   return (
@@ -81,7 +80,7 @@ const ValidatorRenderer = ({ data }: ValidatorRendererProps) => {
 // AG Grid places the scrollbar over the bottom validator, which obstructs
 const nodeListGridStyles = `
   .ag-theme-balham-dark .ag-body-horizontal-scroll {
-    opacity: 0.25;
+    opacity: 0.75;
   }
 `;
 
@@ -162,45 +161,66 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
 
   const NodeListTable = forwardRef<AgGridReact>((_, ref) => {
-    const colDefs = useMemo(
+    const colDefs = useMemo<ColDef[]>(
       () => [
         {
           field: VALIDATOR,
           headerName: t('validator').toString(),
           cellRenderer: ValidatorRenderer,
+          comparator: ({ name: a }, { name: b }) => {
+            if (a === b) return 0;
+            return a > b ? 1 : -1;
+          },
         },
-        { field: STATUS, headerName: t('status').toString() },
+        {
+          field: STATUS,
+          headerName: t('status').toString(),
+          comparator: (a, b) => {
+            if (a === b) return 0;
+            return a > b ? 1 : -1;
+          },
+          width: 100,
+        },
         {
           field: TOTAL_STAKE_THIS_EPOCH,
           headerName: t('totalStakeThisEpoch').toString(),
+          width: 160,
         },
         {
           field: SHARE,
           headerName: t('share').toString(),
+          width: 80,
         },
         {
           field: VALIDATOR_STAKE,
           headerName: t('validatorStake').toString(),
+          width: 120,
         },
         {
           field: PENDING_STAKE,
           headerName: t('nextEpoch').toString(),
+          width: 100,
         },
         {
           field: RANKING_SCORE,
           headerName: t('rankingScore').toString(),
+          width: 120,
+          sort: 'desc',
         },
         {
           field: STAKE_SCORE,
           headerName: t('stakeScore').toString(),
+          width: 100,
         },
         {
           field: PERFORMANCE_SCORE,
           headerName: t('performanceScore').toString(),
+          width: 100,
         },
         {
           field: VOTING_POWER,
           headerName: t('votingPower').toString(),
+          width: 100,
         },
       ],
       []
@@ -209,8 +229,8 @@ export const NodeList = ({ epoch }: NodeListProps) => {
     const defaultColDef = useMemo(
       () => ({
         sortable: true,
-        comparator: (a: string, b: string) =>
-          parseFloat(stripNonDigits(a)) - parseFloat(stripNonDigits(b)),
+        resizable: true,
+        comparator: (a: string, b: string) => parseFloat(a) - parseFloat(b),
       }),
       []
     );
@@ -229,17 +249,6 @@ export const NodeList = ({ epoch }: NodeListProps) => {
           defaultColDef={defaultColDef}
           animateRows={true}
           suppressCellFocus={true}
-          onGridReady={(event) => {
-            event.columnApi.applyColumnState({
-              state: [
-                {
-                  colId: RANKING_SCORE,
-                  sort: 'desc',
-                },
-              ],
-            });
-            event.columnApi.autoSizeAllColumns(false);
-          }}
           onCellClicked={(event) => {
             navigate(event.data.id);
           }}
@@ -251,11 +260,13 @@ export const NodeList = ({ epoch }: NodeListProps) => {
   return (
     <AsyncRenderer loading={loading} error={error} data={nodes}>
       {epoch && epoch.timestamps.start && epoch.timestamps.expiry && (
-        <EpochCountdown
-          id={epoch.id}
-          startDate={new Date(epoch.timestamps.start)}
-          endDate={new Date(epoch.timestamps.expiry)}
-        />
+        <div className="mb-20">
+          <EpochCountdown
+            id={epoch.id}
+            startDate={new Date(epoch.timestamps.start)}
+            endDate={new Date(epoch.timestamps.expiry)}
+          />
+        </div>
       )}
       <NodeListTable ref={gridRef} />
     </AsyncRenderer>

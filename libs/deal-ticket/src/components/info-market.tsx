@@ -48,7 +48,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   const yTimestamp = new Date(yesterday * 1000).toISOString();
 
   const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
-    variables: { marketId, interval: Interval.I1H, since: yTimestamp },
+    variables: { marketId, interval: Interval.INTERVAL_I1H, since: yTimestamp },
   });
 
   return (
@@ -127,7 +127,7 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     ...(market.accounts || [])
-      .filter((a) => a.type === AccountType.Insurance)
+      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_INSURANCE)
       .map((a, i) => ({
         title: t(`Insurance pool`),
         content: (
