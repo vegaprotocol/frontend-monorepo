@@ -152,7 +152,7 @@ export const DisassociatePage = ({
       <p>
         <span className="text-vega-red">{t('Warning')}:</span>{' '}
         {t(
-          'Any Tokens that have been nominated to a node will sacrifice any Rewards they are due for the current epoch. If you do not wish to sacrifices fees you should remove stake from a node at the end of an epoch before disassocation.'
+          'Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.'
         )}
       </p>
 
