@@ -105,7 +105,7 @@ const MarketPage = ({ id }: { id?: string }) => {
       options={{
         variables: {
           marketId,
-          interval: Interval.INTERVAL_I1H,
+          interval: Interval.I1H,
           since: yTimestamp,
         },
         fetchPolicy: 'network-only',

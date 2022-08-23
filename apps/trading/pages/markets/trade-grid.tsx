@@ -196,11 +196,9 @@ export const TradeMarketHeader = ({
                   'underline decoration-dashed'
                 )}
               >
-                {market.tradingMode ===
-                  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
+                {market.tradingMode === MarketTradingMode.MonitoringAuction &&
                 market.data?.trigger &&
-                market.data.trigger !==
-                  AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
+                market.data.trigger !== AuctionTrigger.Unspecified
                   ? `${formatLabel(
                       market.tradingMode
                     )} - ${market.data?.trigger.toLowerCase()}`
