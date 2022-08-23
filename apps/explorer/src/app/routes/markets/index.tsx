@@ -33,7 +33,6 @@ const MARKETS_QUERY = gql`
                 id
                 name
                 decimals
-                totalSupply
                 globalRewardPoolAccount {
                   balance
                 }
@@ -79,7 +78,6 @@ const MARKETS_QUERY = gql`
             auctionExtensionSecs
           }
         }
-        updateFrequencySecs
       }
       liquidityMonitoringParameters {
         triggeringRatio

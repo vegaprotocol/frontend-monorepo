@@ -4,7 +4,7 @@ import memoize from 'lodash/memoize';
 import { getUserLocale } from './utils';
 
 export function toDecimal(numberOfDecimals: number) {
-  return Math.pow(10, -numberOfDecimals);
+  return 1 / Math.pow(10, numberOfDecimals);
 }
 
 export function toBigNum(

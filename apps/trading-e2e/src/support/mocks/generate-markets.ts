@@ -17,13 +17,13 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
         market: {
           id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
           state: MarketState.Active,
-          tradingMode: MarketTradingMode.Continuous,
+          tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
           __typename: 'Market',
         },
         bestBidPrice: '0',
         bestOfferPrice: '0',
         markPrice: '4612690058',
-        trigger: AuctionTrigger.Unspecified,
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
         __typename: 'MarketData',
       },
       tradableInstrument: {
@@ -49,14 +49,14 @@ export const generateMarkets = (override?: PartialDeep<Markets>): Markets => {
       data: {
         market: {
           id: '34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed',
-          state: MarketState.Suspended,
-          tradingMode: MarketTradingMode.Continuous,
+          state: MarketState.STATE_SUSPENDED,
+          tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
           __typename: 'Market',
         },
         bestBidPrice: '0',
         bestOfferPrice: '0',
         markPrice: '8441',
-        trigger: AuctionTrigger.Unspecified,
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
         __typename: 'MarketData',
       },
       tradableInstrument: {

@@ -18,7 +18,7 @@ import type { Proposals_proposals } from '../../proposals/__generated__/Proposal
 
 const openProposalClosesNextMonth = generateProposal({
   id: 'proposal1',
-  state: ProposalState.Open,
+  state: ProposalState.STATE_OPEN,
   party: {
     id: 'zxcv',
   },
@@ -30,7 +30,7 @@ const openProposalClosesNextMonth = generateProposal({
 
 const openProposalClosesNextWeek = generateProposal({
   id: 'proposal2',
-  state: ProposalState.Open,
+  state: ProposalState.STATE_OPEN,
   party: {
     id: 'bvcx',
   },
@@ -42,7 +42,7 @@ const openProposalClosesNextWeek = generateProposal({
 
 const enactedProposalClosedLastWeek = generateProposal({
   id: 'proposal3',
-  state: ProposalState.Enacted,
+  state: ProposalState.STATE_ENACTED,
   terms: {
     closingDatetime: lastWeek.toString(),
     enactmentDatetime: lastWeek.toString(),
@@ -51,7 +51,7 @@ const enactedProposalClosedLastWeek = generateProposal({
 
 const failedProposalClosedLastMonth = generateProposal({
   id: 'proposal4',
-  state: ProposalState.Failed,
+  state: ProposalState.STATE_FAILED,
   terms: {
     closingDatetime: lastMonth.toString(),
     enactmentDatetime: lastMonth.toString(),
@@ -95,6 +95,11 @@ describe('Proposals list', () => {
   it('Will show filter if there are proposals', () => {
     render(renderComponent([enactedProposalClosedLastWeek]));
     expect(screen.queryByTestId('proposals-list-filter')).toBeInTheDocument();
+  });
+
+  it('Will render a link to rejected proposals', () => {
+    render(renderComponent([]));
+    expect(screen.getByText('See rejected proposals')).toBeInTheDocument();
   });
 
   it('Places proposals correctly in open or closed lists', () => {

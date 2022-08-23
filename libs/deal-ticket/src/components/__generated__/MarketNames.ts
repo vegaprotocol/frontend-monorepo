@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { MarketState } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: MarketNames
 // ====================================================
@@ -42,7 +44,7 @@ export interface MarketNames_markets_tradableInstrument_instrument {
 export interface MarketNames_markets_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: MarketNames_markets_tradableInstrument_instrument;
 }
@@ -57,6 +59,10 @@ export interface MarketNames_markets {
    * Market full name
    */
   name: string;
+  /**
+   * Current state of the market
+   */
+  state: MarketState;
   /**
    * An instance of or reference to a tradable instrument.
    */

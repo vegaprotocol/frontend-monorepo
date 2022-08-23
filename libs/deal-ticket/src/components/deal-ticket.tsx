@@ -1,14 +1,6 @@
 import { useCallback } from 'react';
 import { useForm, Controller } from 'react-hook-form';
-import {
-  VegaWalletOrderType,
-  VegaWalletOrderTimeInForce,
-} from '@vegaprotocol/wallet';
-import {
-  t,
-  toDecimal,
-  addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
+import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
 import { Button, InputError } from '@vegaprotocol/ui-toolkit';
 import { TypeSelector } from './type-selector';
 import { SideSelector } from './side-selector';
@@ -18,6 +10,7 @@ import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
 import { ExpirySelector } from './expiry-selector';
 import type { Order } from '@vegaprotocol/orders';
 import { getDefaultOrder, useOrderValidation } from '@vegaprotocol/orders';
+import { OrderTimeInForce, OrderType } from '@vegaprotocol/types';
 
 export type TransactionStatus = 'default' | 'pending';
 
@@ -45,11 +38,9 @@ export const DealTicket = ({
     defaultValues: getDefaultOrder(market),
   });
 
-  const step = toDecimal(market.positionDecimalPlaces);
   const orderType = watch('type');
   const orderTimeInForce = watch('timeInForce');
   const { message, isDisabled: disabled } = useOrderValidation({
-    step,
     market,
     orderType,
     orderTimeInForce,
@@ -75,10 +66,10 @@ export const DealTicket = ({
           <TypeSelector
             value={field.value}
             onSelect={(type) => {
-              if (type === VegaWalletOrderType.Limit) {
-                setValue('timeInForce', VegaWalletOrderTimeInForce.GTC);
+              if (type === OrderType.TYPE_LIMIT) {
+                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_GTC);
               } else {
-                setValue('timeInForce', VegaWalletOrderTimeInForce.IOC);
+                setValue('timeInForce', OrderTimeInForce.TIME_IN_FORCE_IOC);
               }
               field.onChange(type);
             }}
@@ -94,7 +85,7 @@ export const DealTicket = ({
       />
       <DealTicketAmount
         orderType={orderType}
-        step={step}
+        market={market}
         register={register}
         price={
           market.depth.lastTrade
@@ -117,8 +108,8 @@ export const DealTicket = ({
           />
         )}
       />
-      {orderType === VegaWalletOrderType.Limit &&
-        orderTimeInForce === VegaWalletOrderTimeInForce.GTT && (
+      {orderType === OrderType.TYPE_LIMIT &&
+        orderTimeInForce === OrderTimeInForce.TIME_IN_FORCE_GTT && (
           <Controller
             name="expiration"
             control={control}
@@ -138,6 +129,7 @@ export const DealTicket = ({
       </Button>
       {message && (
         <InputError
+          intent={isDisabled ? 'danger' : 'warning'}
           className="mt-12 mb-12"
           data-testid="dealticket-error-message"
         >

@@ -8,6 +8,7 @@ import type { Proposals_proposals } from '../../proposals/__generated__/Proposal
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
+import { ProposalState } from '@vegaprotocol/types';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
@@ -87,6 +88,10 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           </p>
         )}
       </section>
+
+      <Link className="underline" to={'/governance/rejected'}>
+        {t('seeRejectedProposals')}
+      </Link>
     </>
   );
 };

@@ -4,6 +4,7 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import {
   useDataProvider,
   addDecimal,
+  addDecimalsFormatNumber,
   ThemeContext,
 } from '@vegaprotocol/react-helpers';
 import dataProvider from './market-depth-data-provider';
@@ -35,12 +36,13 @@ interface PriceLevel {
   volume: number;
 }
 
-const formatLevel = (
+const parseLevel = (
   priceLevel: MarketDepth_market_depth_buy | MarketDepth_market_depth_sell,
-  decimalPlaces: number
+  priceDecimalPlaces = 0,
+  volumeDecimalPlaces = 0
 ): PriceLevel => ({
-  price: Number(addDecimal(priceLevel.price, decimalPlaces)),
-  volume: Number(priceLevel.volume),
+  price: Number(addDecimal(priceLevel.price, priceDecimalPlaces)),
+  volume: Number(addDecimal(priceLevel.volume, volumeDecimalPlaces)),
 });
 
 const updateLevels = (
@@ -50,10 +52,15 @@ const updateLevels = (
     | MarketDepthSubscription_marketDepthUpdate_sell
   )[],
   decimalPlaces: number,
+  positionDecimalPlaces: number,
   reverse = false
 ) => {
   updates.forEach((update) => {
-    const updateLevel = formatLevel(update, decimalPlaces);
+    const updateLevel = parseLevel(
+      update,
+      decimalPlaces,
+      positionDecimalPlaces
+    );
     let index = levels.findIndex((level) => level.price === updateLevel.price);
     if (index !== -1) {
       if (update.volume === '0') {
@@ -86,7 +93,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
   const theme = useContext(ThemeContext);
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const [depthData, setDepthData] = useState<DepthData | null>(null);
-  const decimalPlacesRef = useRef<number>(0);
+  const [decimalPlaces, setDecimalPlaces] = useState<number>(0);
+  const [positionDecimalPlaces, setPositionDecimalPlaces] = useState<number>(0);
   const dataRef = useRef<DepthData | null>(null);
   const setDepthDataThrottledRef = useRef(throttle(setDepthData, 1000));
 
@@ -99,17 +107,15 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       dataRef.current = {
         ...dataRef.current,
         midPrice: delta.market.data?.staticMidPrice
-          ? formatMidPrice(
-              delta.market.data?.staticMidPrice,
-              decimalPlacesRef.current
-            )
+          ? formatMidPrice(delta.market.data?.staticMidPrice, decimalPlaces)
           : undefined,
         data: {
           buy: delta.buy
             ? updateLevels(
                 dataRef.current.data.buy,
                 delta.buy,
-                decimalPlacesRef.current,
+                decimalPlaces,
+                positionDecimalPlaces,
                 true
               )
             : dataRef.current.data.buy,
@@ -117,7 +123,8 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
             ? updateLevels(
                 dataRef.current.data.sell,
                 delta.sell,
-                decimalPlacesRef.current
+                decimalPlaces,
+                positionDecimalPlaces
               )
             : dataRef.current.data.sell,
         },
@@ -125,7 +132,7 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       setDepthDataThrottledRef.current(dataRef.current);
       return true;
     },
-    []
+    [decimalPlaces, positionDecimalPlaces]
   );
 
   const { data, error, loading } = useDataProvider({
@@ -147,21 +154,41 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
       data: {
         buy:
           data.depth.buy?.map((priceLevel) =>
-            formatLevel(priceLevel, data.decimalPlaces)
+            parseLevel(
+              priceLevel,
+              data.decimalPlaces,
+              data.positionDecimalPlaces
+            )
           ) ?? [],
         sell:
           data.depth.sell?.map((priceLevel) =>
-            formatLevel(priceLevel, data.decimalPlaces)
+            parseLevel(
+              priceLevel,
+              data.decimalPlaces,
+              data.positionDecimalPlaces
+            )
           ) ?? [],
       },
     };
     setDepthData(dataRef.current);
-    decimalPlacesRef.current = data.decimalPlaces;
+    setDecimalPlaces(data.decimalPlaces);
+    setPositionDecimalPlaces(data.positionDecimalPlaces);
   }, [data]);
 
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      {depthData && <DepthChart {...depthData} theme={theme} />}
+      {depthData && (
+        <DepthChart
+          {...depthData}
+          theme={theme}
+          volumeFormat={(volume) =>
+            addDecimalsFormatNumber(volume, data?.positionDecimalPlaces || 0)
+          }
+          priceFormat={(price) =>
+            addDecimalsFormatNumber(price, data?.decimalPlaces || 0)
+          }
+        />
+      )}
     </AsyncRenderer>
   );
 };

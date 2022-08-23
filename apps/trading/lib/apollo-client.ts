@@ -16,9 +16,8 @@ export function createClient(base?: string) {
   if (!base) {
     throw new Error('Base must be passed into createClient!');
   }
-  const gqlPath = 'query';
-  const urlHTTP = new URL(gqlPath, base);
-  const urlWS = new URL(gqlPath, base);
+  const urlHTTP = new URL(base);
+  const urlWS = new URL(base);
   // Replace http with ws, preserving if its a secure connection eg. https => wss
   urlWS.protocol = urlWS.protocol.replace('http', 'ws');
 
@@ -32,6 +31,12 @@ export function createClient(base?: string) {
       },
       Instrument: {
         keyFields: false,
+      },
+      TradableInstrument: {
+        keyFields: ['instrument'],
+      },
+      Product: {
+        keyFields: ['settlementAsset', ['id']],
       },
       MarketData: {
         keyFields: ['market', ['id']],

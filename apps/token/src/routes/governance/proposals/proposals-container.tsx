@@ -25,6 +25,7 @@ export const ProposalsContainer = () => {
   const { t } = useTranslation();
   const { data, loading, error } = useQuery<Proposals, never>(PROPOSALS_QUERY, {
     pollInterval: 5000,
+    fetchPolicy: 'network-only',
     errorPolicy: 'ignore', // this is to get around some backend issues and should be removed in future
   });
 
@@ -35,7 +36,7 @@ export const ProposalsContainer = () => {
 
     return flow([
       compact,
-      (arr) => filter(arr, ({ state }) => state !== 'Rejected'),
+      (arr) => filter(arr, ({ state }) => state !== 'STATE_REJECTED'),
       (arr) =>
         orderBy(
           arr,

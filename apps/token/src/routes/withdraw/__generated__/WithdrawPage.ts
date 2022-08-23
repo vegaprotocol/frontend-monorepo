@@ -16,7 +16,7 @@ export interface WithdrawPage_party_accounts_asset_source_BuiltinAsset {
 export interface WithdrawPage_party_accounts_asset_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the erc20 contract
+   * The address of the ERC20 contract
    */
   contractAddress: string;
 }
@@ -26,7 +26,7 @@ export type WithdrawPage_party_accounts_asset_source = WithdrawPage_party_accoun
 export interface WithdrawPage_party_accounts_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -38,11 +38,11 @@ export interface WithdrawPage_party_accounts_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
   /**
-   * The origin source of the asset (e.g: an erc20 asset)
+   * The origin source of the asset (e.g: an ERC20 asset)
    */
   source: WithdrawPage_party_accounts_asset_source;
 }
@@ -67,7 +67,7 @@ export interface WithdrawPage_party_accounts {
 export interface WithdrawPage_party_withdrawals_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -75,7 +75,7 @@ export interface WithdrawPage_party_withdrawals_asset {
    */
   symbol: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
 }
@@ -91,7 +91,7 @@ export interface WithdrawPage_party_withdrawals_details {
 export interface WithdrawPage_party_withdrawals {
   __typename: "Withdrawal";
   /**
-   * The Vega internal id of the withdrawal
+   * The Vega internal ID of the withdrawal
    */
   id: string;
   /**
@@ -111,7 +111,7 @@ export interface WithdrawPage_party_withdrawals {
    */
   createdTimestamp: string;
   /**
-   * RFC3339Nano time at which the withdrawal was finalized
+   * RFC3339Nano time at which the withdrawal was finalised
    */
   withdrawnTimestamp: string | null;
   /**
@@ -147,7 +147,7 @@ export interface WithdrawPage_assets_source_BuiltinAsset {
 export interface WithdrawPage_assets_source_ERC20 {
   __typename: "ERC20";
   /**
-   * The address of the erc20 contract
+   * The address of the ERC20 contract
    */
   contractAddress: string;
 }
@@ -157,7 +157,7 @@ export type WithdrawPage_assets_source = WithdrawPage_assets_source_BuiltinAsset
 export interface WithdrawPage_assets {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -169,22 +169,22 @@ export interface WithdrawPage_assets {
    */
   name: string;
   /**
-   * The precision of the asset
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
   /**
-   * The origin source of the asset (e.g: an erc20 asset)
+   * The origin source of the asset (e.g: an ERC20 asset)
    */
   source: WithdrawPage_assets_source;
 }
 
 export interface WithdrawPage {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: WithdrawPage_party | null;
   /**
-   * The list of all assets in use in the vega network
+   * The list of all assets in use in the Vega network
    */
   assets: WithdrawPage_assets[] | null;
 }

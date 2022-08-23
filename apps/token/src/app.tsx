@@ -40,35 +40,37 @@ const AppContainer = () => {
   return (
     <Router>
       <AppStateProvider>
-        <AsyncRenderer loading={loading} data={config} error={error}>
-          {Connectors && (
-            <Web3Provider connectors={Connectors}>
-              <Web3Connector>
-                <VegaWalletProvider>
-                  <ContractsProvider>
-                    <AppLoader>
-                      <BalanceManager>
-                        <>
-                          <div className="app max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large text-white-80">
-                            <AppBanner />
-                            <TemplateSidebar sidebar={sideBar}>
-                              <AppRouter />
-                            </TemplateSidebar>
-                            <footer className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-t-1">
-                              <NetworkInfo />
-                            </footer>
-                          </div>
-                          <VegaWalletDialogs />
-                          <TransactionModal />
-                        </>
-                      </BalanceManager>
-                    </AppLoader>
-                  </ContractsProvider>
-                </VegaWalletProvider>
-              </Web3Connector>
-            </Web3Provider>
-          )}
-        </AsyncRenderer>
+        <div className="grid min-h-full text-white-80">
+          <AsyncRenderer loading={loading} data={config} error={error}>
+            {Connectors && (
+              <Web3Provider connectors={Connectors}>
+                <Web3Connector>
+                  <VegaWalletProvider>
+                    <ContractsProvider>
+                      <AppLoader>
+                        <BalanceManager>
+                          <>
+                            <div className="app max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large">
+                              <AppBanner />
+                              <TemplateSidebar sidebar={sideBar}>
+                                <AppRouter />
+                              </TemplateSidebar>
+                              <footer className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-t-1">
+                                <NetworkInfo />
+                              </footer>
+                            </div>
+                            <VegaWalletDialogs />
+                            <TransactionModal />
+                          </>
+                        </BalanceManager>
+                      </AppLoader>
+                    </ContractsProvider>
+                  </VegaWalletProvider>
+                </Web3Connector>
+              </Web3Provider>
+            )}
+          </AsyncRenderer>
+        </div>
       </AppStateProvider>
     </Router>
   );
