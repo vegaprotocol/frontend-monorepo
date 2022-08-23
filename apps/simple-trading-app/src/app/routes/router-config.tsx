@@ -10,6 +10,7 @@ export const ROUTES = {
 };
 
 export const routerConfig = [
+  { path: '/', element: <SimpleMarketList />, icon: '' },
   {
     path: ROUTES.MARKETS,
     children: [
@@ -29,6 +30,7 @@ export const routerConfig = [
     text: t('Markets'),
     element: <SimpleMarketList />,
     icon: 'market',
+    isNavItem: true,
   },
   {
     path: ROUTES.TRADING,
@@ -42,6 +44,7 @@ export const routerConfig = [
       },
     ],
     icon: 'trade',
+    isNavItem: true,
   },
   {
     path: ROUTES.PORTFOLIO,
@@ -49,5 +52,6 @@ export const routerConfig = [
     text: t('Portfolio'),
     element: <Portfolio />,
     icon: 'portfolio',
+    isNavItem: true,
   },
 ];

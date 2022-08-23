@@ -4,7 +4,7 @@ export const generatePartyBalance = () => {
       accounts: [
         {
           balance: '88474051',
-          type: 'General',
+          type: 'ACCOUNT_TYPE_GENERAL',
           asset: {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             symbol: 'tDAI',
@@ -16,7 +16,7 @@ export const generatePartyBalance = () => {
         },
         {
           balance: '100000000',
-          type: 'General',
+          type: 'ACCOUNT_TYPE_GENERAL',
           asset: {
             id: '8b52d4a3a4b0ffe733cddbc2b67be273816cfeb6ca4c8b339bac03ffba08e4e4',
             symbol: 'tEURO',
@@ -28,7 +28,7 @@ export const generatePartyBalance = () => {
         },
         {
           balance: '3412867',
-          type: 'General',
+          type: 'ACCOUNT_TYPE_GENERAL',
           asset: {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             symbol: 'tDAI',
@@ -40,7 +40,7 @@ export const generatePartyBalance = () => {
         },
         {
           balance: '70007',
-          type: 'General',
+          type: 'ACCOUNT_TYPE_GENERAL',
           asset: {
             id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
             symbol: 'tDAI',

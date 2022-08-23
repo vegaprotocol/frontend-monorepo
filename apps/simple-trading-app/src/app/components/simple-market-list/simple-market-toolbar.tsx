@@ -14,6 +14,7 @@ import {
   DropdownMenuItemIndicator,
   Icon,
 } from '@vegaprotocol/ui-toolkit';
+import { MarketState } from '@vegaprotocol/types';
 import useMarketFiltersData from '../../hooks/use-markets-filter';
 import { STATES_FILTER } from './constants';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
@@ -65,7 +66,9 @@ const SimpleMarketToolbar = ({ data }: Props) => {
         params.asset && params.asset !== 'all' ? `/${params.asset}` : '';
       const product = params.product ? `/${params.product}` : '';
       const state =
-        activeState !== 'Active' || product ? `/${activeState}` : '';
+        activeState !== MarketState.STATE_ACTIVE || product
+          ? `/${activeState}`
+          : '';
       navigate(`/markets${state}${product}${asset}`);
     },
     [params, navigate]
@@ -82,7 +85,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
         <li key="all-markets" className="md:mr-16 whitespace-nowrap">
           <Link
             to={`/markets${
-              params.state && params.state !== 'Active'
+              params.state && params.state !== MarketState.STATE_ACTIVE
                 ? '/' + params.state
                 : ''
             }`}
@@ -97,7 +100,9 @@ const SimpleMarketToolbar = ({ data }: Props) => {
         {products.map((product, i) => (
           <li key={product} className="mx-16 whitespace-nowrap">
             <Link
-              to={`/markets/${params.state || 'Active'}/${product}`}
+              to={`/markets/${
+                params.state || MarketState.STATE_ACTIVE
+              }/${product}`}
               className={classNames(
                 'text-h5 hover:opacity-75 text-black dark:text-white',
                 {
@@ -127,7 +132,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
                 {STATES_FILTER.find(
                   (state) =>
                     state.value === params.state ||
-                    (!params.state && state.value === 'Active')
+                    (!params.state && state.value === MarketState.STATE_ACTIVE)
                 )?.text || params.state}
                 <Icon
                   name={IconNames.ARROW_DOWN}
@@ -149,7 +154,7 @@ const SimpleMarketToolbar = ({ data }: Props) => {
                   inset
                   checked={
                     value === params.state ||
-                    (!params.state && value === 'Active')
+                    (!params.state && value === MarketState.STATE_ACTIVE)
                   }
                   onCheckedChange={() => onStateChange(value)}
                 >
