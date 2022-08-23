@@ -3,6 +3,10 @@ import {
   OrderStatus,
   Side,
   OrderType,
+  OrderTypeMapping,
+  OrderStatusMapping,
+  OrderTimeInForceMapping,
+  OrderRejectionReasonMapping,
 } from '@vegaprotocol/types';
 import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
 import {
@@ -151,7 +155,14 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
             );
           }}
         />
-        <AgGridColumn field="type" />
+        <AgGridColumn
+          field="type"
+          valueFormatter={({
+            value,
+          }: ValueFormatterParams & {
+            value?: Orders_party_ordersConnection_edges_node['type'];
+          }) => OrderTypeMapping[value as OrderType]}
+        />
         <AgGridColumn
           field="status"
           valueFormatter={({
@@ -164,11 +175,12 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               return undefined;
             }
             if (value === OrderStatus.STATUS_REJECTED) {
-              return `${value}: ${
-                data.rejectionReason && startCase(data.rejectionReason)
+              return `${OrderStatusMapping[value]}: ${
+                data.rejectionReason &&
+                OrderRejectionReasonMapping[data.rejectionReason]
               }`;
             }
-            return value;
+            return OrderStatusMapping[value];
           }}
         />
         <AgGridColumn
@@ -232,10 +244,10 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
               const expiry = getDateTimeFormat().format(
                 new Date(data.expiresAt)
               );
-              return `${value}: ${expiry}`;
+              return `${OrderTimeInForceMapping[value]}: ${expiry}`;
             }
 
-            return value;
+            return OrderTimeInForceMapping[value];
           }}
         />
         <AgGridColumn

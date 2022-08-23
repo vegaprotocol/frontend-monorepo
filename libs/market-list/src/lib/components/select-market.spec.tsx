@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 
 import type { ReactNode } from 'react';
 import type { MarketList_markets } from '../__generated__/MarketList';
@@ -49,15 +50,24 @@ const mockData = {
         decimalPlaces: 2,
         name: '',
         positionDecimalPlaces: 4,
-        state: 'Active',
-        tradingMode: 'Continuous',
-        data: {},
+        state: MarketState.STATE_ACTIVE,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        data: {
+          markPrice: '14175',
+        },
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {
             __typename: 'Instrument',
             name: 'APEUSD (May 2022)',
             code: 'APEUSD',
+            product: {
+              __typename: 'Future',
+              settlementAsset: {
+                __typename: 'Asset',
+                symbol: 'USD',
+              },
+            },
           },
         },
         marketTimestamps: {
@@ -117,6 +127,13 @@ const mockData = {
             __typename: 'Instrument',
             name: 'Apple Monthly (30 Jun 2022)',
             code: 'AAPL.MF21',
+            product: {
+              __typename: 'Future',
+              settlementAsset: {
+                __typename: 'Asset',
+                symbol: 'USD',
+              },
+            },
           },
         },
         fees: {
@@ -167,9 +184,11 @@ const mockData = {
         ],
         name: '',
         positionDecimalPlaces: 4,
-        state: 'Active',
-        tradingMode: 'Continuous',
-        data: {},
+        state: MarketState.STATE_ACTIVE,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        data: {
+          markPrice: '14175',
+        },
       } as MarketList_markets,
     ],
   },

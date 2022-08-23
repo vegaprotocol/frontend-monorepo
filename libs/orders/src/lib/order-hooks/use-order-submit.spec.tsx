@@ -7,6 +7,7 @@ import { VegaTxStatus, VegaWalletContext } from '@vegaprotocol/wallet';
 import {
   MarketState,
   MarketTradingMode,
+  OrderStatus,
   OrderTimeInForce,
   OrderType,
   Side,
@@ -76,15 +77,15 @@ function setup(
           {
             type: 'Order',
             event: {
-              type: 'Limit',
+              type: OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
+              status: OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Side.SIDE_BUY,
               market: {
                 name: 'UNIDAI Monthly (30 Jun 2022)',
                 decimalPlaces: 5,
@@ -111,15 +112,15 @@ function setup(
           {
             type: 'Order',
             event: {
-              type: 'Limit',
+              type: OrderType.TYPE_LIMIT,
               id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
-              status: 'Active',
+              status: OrderStatus.STATUS_ACTIVE,
               rejectionReason: null,
               createdAt: '2022-07-05T14:25:47.815283706Z',
               size: '10',
               price: '300000',
-              timeInForce: 'GTC',
-              side: 'Buy',
+              timeInForce: OrderTimeInForce.TIME_IN_FORCE_GTC,
+              side: Side.SIDE_BUY,
               market: {
                 name: 'UNIDAI Monthly (30 Jun 2022)',
                 decimalPlaces: 5,
