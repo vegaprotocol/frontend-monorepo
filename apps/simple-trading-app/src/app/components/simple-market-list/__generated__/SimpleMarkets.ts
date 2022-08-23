@@ -104,6 +104,10 @@ export interface SimpleMarkets_markets {
    */
   name: string;
   /**
+   * Current state of the market
+   */
+  state: MarketState;
+  /**
    * marketData for the given market
    */
   data: SimpleMarkets_markets_data | null;

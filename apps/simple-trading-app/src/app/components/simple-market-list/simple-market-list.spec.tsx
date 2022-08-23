@@ -16,6 +16,7 @@ import type {
   SimpleMarkets_markets,
   SimpleMarkets,
 } from './__generated__/SimpleMarkets';
+import { MarketState } from '@vegaprotocol/types';
 
 const mockedNavigate = jest.fn();
 
@@ -67,7 +68,7 @@ describe('SimpleMarketList', () => {
         id: '1',
         data: {
           market: {
-            state: 'Active',
+            state: MarketState.STATE_ACTIVE,
           },
         },
         tradableInstrument: {
@@ -87,7 +88,7 @@ describe('SimpleMarketList', () => {
         id: '2',
         data: {
           market: {
-            state: 'Active',
+            state: MarketState.STATE_ACTIVE,
           },
         },
         tradableInstrument: {
