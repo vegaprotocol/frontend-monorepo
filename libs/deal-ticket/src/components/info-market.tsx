@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 import {
   addDecimalsFormatNumber,
   formatLabel,
@@ -44,8 +45,10 @@ export interface MarketInfoContainerProps {
   marketId: string;
 }
 export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
-  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-  const yTimestamp = new Date(yesterday * 1000).toISOString();
+  const yTimestamp = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
 
   const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
     variables: { marketId, interval: Interval.INTERVAL_I1H, since: yTimestamp },
