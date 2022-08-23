@@ -73,6 +73,14 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
     }).should('not.exist');
   }
   cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
+  cy.contains(
+    `Associating with Vega key. Waiting for ${Cypress.env(
+      'blockConfirmations'
+    )} more confirmations..`,
+    {
+      timeout: 8000,
+    }
+  ).should('be.visible');
   cy.contains('can now participate in governance and nominate a validator', {
     timeout: 60000,
   }).should('be.visible');
