@@ -1,14 +1,13 @@
 import { useApolloClient } from '@apollo/client';
 import { useCallback, useEffect, useRef } from 'react';
-import { ERC20_APPROVAL_QUERY, ERC20_APPROVAL_QUERY_NEW } from './queries';
+import { ERC20_APPROVAL_QUERY } from './queries';
 import type {
   Erc20Approval,
   Erc20ApprovalVariables,
   Erc20Approval_erc20WithdrawalApproval,
 } from './__generated__/Erc20Approval';
-import type { Erc20ApprovalNew_erc20WithdrawalApproval } from './__generated__/Erc20ApprovalNew';
 
-export const useWithdrawalApproval = (isNewContract = true) => {
+export const useWithdrawalApproval = () => {
   const client = useApolloClient();
   // eslint-disable-next-line
   const intervalRef = useRef<any>();
@@ -16,19 +15,13 @@ export const useWithdrawalApproval = (isNewContract = true) => {
   const waitForWithdrawalApproval = useCallback(
     (
       id: string,
-      callback: (
-        approval:
-          | Erc20Approval_erc20WithdrawalApproval
-          | Erc20ApprovalNew_erc20WithdrawalApproval
-      ) => void
+      callback: (approval: Erc20Approval_erc20WithdrawalApproval) => void
     ) => {
       intervalRef.current = setInterval(async () => {
         try {
           const res = await client.query<Erc20Approval, Erc20ApprovalVariables>(
             {
-              query: isNewContract
-                ? ERC20_APPROVAL_QUERY_NEW
-                : ERC20_APPROVAL_QUERY,
+              query: ERC20_APPROVAL_QUERY,
               variables: { withdrawalId: id },
               fetchPolicy: 'network-only',
             }
@@ -46,7 +39,7 @@ export const useWithdrawalApproval = (isNewContract = true) => {
         }
       }, 1000);
     },
-    [client, isNewContract]
+    [client]
   );
 
   useEffect(() => {
