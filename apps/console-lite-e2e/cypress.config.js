@@ -13,8 +13,7 @@ module.exports = defineConfig({
     video: true,
     videoUploadOnPasses: false,
     videosFolder: '../../dist/cypress/apps/console-lite-e2e/videos',
-    screenshotsFolder:
-      '../../dist/cypress/apps/console-lite-e2e/screenshots',
+    screenshotsFolder: '../../dist/cypress/apps/console-lite-e2e/screenshots',
     chromeWebSecurity: false,
     viewportWidth: 1440,
     viewportHeight: 900,

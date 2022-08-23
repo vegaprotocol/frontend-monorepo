@@ -3,6 +3,8 @@
   "projects": {
     "accounts": "libs/accounts",
     "candles-chart": "libs/candles-chart",
+    "console-lite": "apps/console-lite",
+    "console-lite-e2e": "apps/console-lite-e2e",
     "cypress": "libs/cypress",
     "deal-ticket": "libs/deal-ticket",
     "deposits": "libs/deposits",
@@ -18,8 +20,6 @@
     "orders": "libs/orders",
     "positions": "libs/positions",
     "react-helpers": "libs/react-helpers",
-    "console-lite": "apps/console-lite",
-    "console-lite-e2e": "apps/console-lite-e2e",
     "smart-contracts": "libs/smart-contracts",
     "static": "apps/static",
     "stats": "apps/stats",
