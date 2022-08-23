@@ -26,6 +26,7 @@ import type {
   MarketNames_markets,
 } from './__generated__/MarketNames';
 import { IconNames } from '@blueprintjs/icons';
+import { MarketState } from '@vegaprotocol/types';
 
 export const MARKET_NAMES_QUERY = gql`
   query MarketNames {
@@ -252,7 +253,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     setResults(
       data?.markets?.filter(
         (item: MarketNames_markets) =>
-          item.state === 'Active' &&
+          item.state === MarketState.STATE_ACTIVE &&
           item.name.match(new RegExp(escapeRegExp(lookup), 'i'))
       ) || []
     );
