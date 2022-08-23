@@ -68,13 +68,13 @@ export interface AssetsQuery_assetsConnection_edges_node {
   /**
    * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
-  source: AssetsQuery_assetsConnection_edges_node_source;
+  decimals: number;
   /**
    * The origin source of the asset (e.g: an ERC20 asset)
    */
   source: AssetsQuery_assetsConnection_edges_node_source;
   /**
-   * The assets
+   * The infrastructure fee account for this asset
    */
   infrastructureFeeAccount: AssetsQuery_assetsConnection_edges_node_infrastructureFeeAccount;
 }
