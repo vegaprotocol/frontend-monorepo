@@ -69,7 +69,7 @@ describe('market selector', () => {
       cy.get('input[placeholder="Search"]').clear();
       cy.get('input[placeholder="Search"]').type('aa');
       const filtered = markets.filter(
-        (market) => market.state === 'Active' && market.name.match(/aa/i)
+        (market) => market.state === 'STATE_ACTIVE' && market.name.match(/aa/i)
       );
       cy.log('filtered', filtered);
       console.log('filtered', filtered);

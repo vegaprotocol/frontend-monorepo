@@ -76,11 +76,10 @@ const protoCandles = [
 export const protoMarket = {
   id: 'first-btcusd-id',
   name: 'AAVEDAI Monthly (30 Jun 2022)',
-  state: 'Active',
   data: {
     market: {
       id: 'first-btcusd-id',
-      state: 'Active',
+      state: 'STATE_ACTIVE',
       __typename: 'Market',
     },
     __typename: 'MarketData',
