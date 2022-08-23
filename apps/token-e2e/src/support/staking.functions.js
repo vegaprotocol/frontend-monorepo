@@ -59,7 +59,9 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
     cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
   } else if (type === 'contract') {
     cy.get(associateContractRadioButton, { timeout: 30000 }).click();
-  } else cy.highlight(`${type} is not association option`);
+  } else {
+    cy.highlight(`${type} is not association option`);
+  }
   cy.get(tokenAmountInputBox, { timeout: 10000 }).type(amount);
   if (approve) {
     cy.get(tokenInputApprove, txTimeout).should('be.enabled').click();
@@ -93,7 +95,9 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
     cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
   } else if (type === 'contract') {
     cy.get(associateContractRadioButton, { timeout: 30000 }).click();
-  } else cy.highlight(`${type} is not association option`);
+  } else {
+    cy.highlight(`${type} is not association option`);
+  }
   cy.get(tokenAmountInputBox, { timeout: 10000 }).type(amount);
 
   cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
