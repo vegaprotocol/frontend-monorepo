@@ -8,13 +8,6 @@ export const MARKET_INFO_QUERY = gql`
       decimalPlaces
       positionDecimalPlaces
       state
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
       tradingMode
       accounts {
         type
@@ -43,13 +36,6 @@ export const MARKET_INFO_QUERY = gql`
         market
         short
         long
-      }
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
       }
       data {
         market {
