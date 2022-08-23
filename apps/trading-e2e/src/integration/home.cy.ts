@@ -28,7 +28,7 @@ describe('home', () => {
         aliasQuery(req, 'MarketList', marketList);
 
         // Mock all market page queries
-        mockTradingPage(req, MarketState.Active);
+        mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
 
       cy.visit('/');
@@ -65,7 +65,7 @@ describe('home', () => {
           }
         });
 
-      // the oldest market trading in continous mode shown at top of overlay table
+      // the oldest market trading in continuos mode shown at top of overlay table
       cy.get('table tr')
         .eq(1)
         .within(() =>
@@ -121,7 +121,7 @@ describe('home', () => {
         aliasQuery(req, 'Markets', generateMarkets());
 
         // Mock all market page queries
-        mockTradingPage(req, MarketState.Active);
+        mockTradingPage(req, MarketState.STATE_ACTIVE);
       });
 
       cy.visit('/');

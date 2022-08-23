@@ -1,9 +1,9 @@
 import {
-  addDecimal,
   t,
   addDecimalsFormatNumber,
+  toDecimal,
 } from '@vegaprotocol/react-helpers';
-import { OrderType } from '@vegaprotocol/types';
+import { OrderType, Side } from '@vegaprotocol/types';
 import {
   FormGroup,
   Input,
@@ -18,7 +18,7 @@ import type { OrderFields } from '../order-data-provider';
 interface OrderEditDialogProps {
   isOpen: boolean;
   onChange: (isOpen: boolean) => void;
-  order: OrderFields | null;
+  order: OrderFields;
   onSubmit: (fields: FormFields) => void;
 }
 
@@ -37,15 +37,9 @@ export const OrderEditDialog = ({
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<FormFields>({
-    defaultValues: {
-      entryPrice: order?.price
-        ? addDecimal(order?.price, order?.market?.decimalPlaces ?? 0)
-        : '',
-    },
-  });
+  } = useForm<FormFields>();
 
-  if (!order) return null;
+  const step = toDecimal(order.market?.decimalPlaces ?? 0);
 
   return (
     <Dialog
@@ -61,7 +55,7 @@ export const OrderEditDialog = ({
             <p>{t(`${order.market.name}`)}</p>
           </div>
         )}
-        {order.type === OrderType.Limit && order.market && (
+        {order.type === OrderType.TYPE_LIMIT && order.market && (
           <div>
             <p className={headerClassName}>{t(`Current price`)}</p>
             <p>
@@ -73,12 +67,12 @@ export const OrderEditDialog = ({
           <p className={headerClassName}>{t(`Remaining size`)}</p>
           <p
             className={
-              order.side === 'Buy'
+              order.side === Side.SIDE_BUY
                 ? 'text-dark-green dark:text-vega-green'
                 : 'text-red dark:text-vega-red'
             }
           >
-            {order.side === 'Buy' ? '+' : '-'}
+            {order.side === Side.SIDE_BUY ? '+' : '-'}
             {order.size}
           </p>
         </div>
@@ -88,9 +82,18 @@ export const OrderEditDialog = ({
         <form onSubmit={handleSubmit(onSubmit)} data-testid="edit-order">
           <FormGroup label={t('Entry price')} labelFor="entryPrice">
             <Input
-              {...register('entryPrice', { required: t('Required') })}
+              type="number"
+              step={step}
+              {...register('entryPrice', {
+                required: t('You need to provide a price'),
+                validate: {
+                  min: (value) =>
+                    Number(value) > 0
+                      ? true
+                      : t('The price cannot be negative'),
+                },
+              })}
               id="entryPrice"
-              type="text"
             />
             {errors.entryPrice?.message && (
               <InputError intent="danger" className="mt-4">

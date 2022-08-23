@@ -69,7 +69,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('be.visible');
 
       cy.get(ethWalletAssociatedBalances, txTimeout)
-        .contains(vegaWalletPublicKeyShort)
+        .contains(vegaWalletPublicKeyShort, txTimeout)
         .parent()
         .should('contain', 3.0, txTimeout);
 
@@ -278,12 +278,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
 
       cy.staking_validator_page_add_stake('1');
 
-      cy.get(vegaWalletNextEpochBalances, txTimeout).should(
-        'contain',
-        1.0,
-        txTimeout
-      );
-
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
         2.0,
@@ -459,9 +453,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.staking_page_disassociate_all_tokens();
 
       cy.get(ethWalletContainer).within(() => {
-        cy.contains(vegaWalletPublicKeyShort, { timeout: 20000 }).should(
-          'not.exist'
-        );
+        cy.contains(vegaWalletPublicKeyShort, txTimeout).should('not.exist');
       });
 
       cy.get(ethWalletTotalAssociatedBalance, txTimeout)

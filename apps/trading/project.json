@@ -51,6 +51,15 @@
       "options": {
         "lintFilePatterns": ["apps/trading/**/*.{ts,tsx,js,jsx}"]
       }
+    },
+    "build-netlify": {
+      "builder": "@nrwl/workspace:run-commands",
+      "options": {
+        "commands": [
+          "cp apps/trading/netlify.toml netlify.toml",
+          "nx build trading"
+        ]
+      }
     }
   },
   "tags": []

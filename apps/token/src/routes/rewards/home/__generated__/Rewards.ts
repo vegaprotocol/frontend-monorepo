@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { AccountType } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: Rewards
 // ====================================================
@@ -10,7 +12,7 @@
 export interface Rewards_party_rewardDetails_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
   /**
@@ -22,7 +24,7 @@ export interface Rewards_party_rewardDetails_asset {
 export interface Rewards_party_rewardDetails_rewards_asset {
   __typename: "Asset";
   /**
-   * The id of the asset
+   * The ID of the asset
    */
   id: string;
 }
@@ -45,6 +47,10 @@ export interface Rewards_party_rewardDetails_rewards_epoch {
 
 export interface Rewards_party_rewardDetails_rewards {
   __typename: "Reward";
+  /**
+   * The type of reward
+   */
+  rewardType: AccountType;
   /**
    * The asset this reward is paid in
    */
@@ -138,18 +144,18 @@ export interface Rewards_epoch {
    */
   id: string;
   /**
-   * Timestamps for start/end etc
+   * Timestamps for start and end of epochs
    */
   timestamps: Rewards_epoch_timestamps;
 }
 
 export interface Rewards {
   /**
-   * An entity that is trading on the VEGA network
+   * An entity that is trading on the Vega network
    */
   party: Rewards_party | null;
   /**
-   * get data for a specific epoch, if id omitted it gets the current epoch. If the string is 'next', fetch the next epoch
+   * get data for a specific epoch, if ID omitted it gets the current epoch. If the string is 'next', fetch the next epoch
    */
   epoch: Rewards_epoch;
 }

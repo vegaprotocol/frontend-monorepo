@@ -4,7 +4,7 @@ import { connectVegaWallet } from '../support/vega-wallet';
 
 beforeEach(() => {
   cy.mockGQL((req) => {
-    mockTradingPage(req, MarketState.Active);
+    mockTradingPage(req, MarketState.STATE_ACTIVE);
   });
   cy.visit('/markets/market-0');
 });
@@ -18,7 +18,7 @@ describe('positions', () => {
 
     cy.getByTestId('tab-positions').should('be.visible');
     cy.getByTestId('tab-positions')
-      .get('[col-id="market.tradableInstrument.instrument.code"]')
+      .get('[col-id="marketName"]')
       .should('be.visible')
       .each(($marketSymbol) => {
         cy.wrap($marketSymbol).invoke('text').should('not.be.empty');

@@ -20,6 +20,7 @@ export * from './loader';
 export * from './lozenge';
 export * from './popover';
 export * from './price-change';
+export * from './progress-bar';
 export * from './radio-group';
 export * from './resizable-panel';
 export * from './select';

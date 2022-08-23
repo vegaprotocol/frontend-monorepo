@@ -25,6 +25,7 @@ import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
 
 interface FormFields {
   asset: string;
@@ -64,6 +65,8 @@ export const DepositForm = ({
   allowance,
   isFaucetable,
 }: DepositFormProps) => {
+  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
+    useAssetDetailsDialogStore();
   const { account } = useWeb3React();
   const { keypair } = useVegaWallet();
   const {
@@ -179,6 +182,18 @@ export const DepositForm = ({
           <UseButton onClick={requestFaucet}>
             {t(`Get ${selectedAsset.symbol}`)}
           </UseButton>
+        )}
+        {!errors.asset?.message && selectedAsset && (
+          <button
+            data-testid="view-asset-details"
+            className="text-ui underline"
+            onClick={() => {
+              setAssetDetailsDialogOpen(true);
+              setAssetDetailsDialogSymbol(selectedAsset);
+            }}
+          >
+            {t('View asset details')}
+          </button>
         )}
       </FormGroup>
       <FormGroup label={t('To (Vega key)')} labelFor="to" className="relative">

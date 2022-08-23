@@ -1,17 +1,18 @@
 import type { FieldErrors } from 'react-hook-form';
 import { useMemo } from 'react';
-import { t } from '@vegaprotocol/react-helpers';
+import { t, toDecimal } from '@vegaprotocol/react-helpers';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
-  useVegaWallet,
-  VegaWalletOrderTimeInForce as OrderTimeInForce,
-  VegaWalletOrderType as OrderType,
-} from '@vegaprotocol/wallet';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+  MarketState,
+  MarketTradingMode,
+  OrderTimeInForce,
+  OrderType,
+} from '@vegaprotocol/types';
 import { ERROR_SIZE_DECIMAL } from '../utils/validate-size';
 import type { Order } from './use-order-submit';
 
-export type ValidationArgs = {
-  step: number;
+export type ValidationProps = {
+  step?: number;
   market: {
     state: MarketState;
     tradingMode: MarketTradingMode;
@@ -24,7 +25,7 @@ export type ValidationArgs = {
 
 export const marketTranslations = (marketState: MarketState) => {
   switch (marketState) {
-    case MarketState.TradingTerminated:
+    case MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
       return t(marketState).toLowerCase();
@@ -32,13 +33,13 @@ export const marketTranslations = (marketState: MarketState) => {
 };
 
 export const useOrderValidation = ({
-  step,
   market,
   fieldErrors = {},
   orderType,
   orderTimeInForce,
-}: ValidationArgs) => {
+}: ValidationProps) => {
   const { keypair } = useVegaWallet();
+  const minSize = toDecimal(market.positionDecimalPlaces);
 
   const { message, isDisabled } = useMemo(() => {
     if (!keypair) {
@@ -54,9 +55,11 @@ export const useOrderValidation = ({
 
     if (
       [
-        MarketState.Settled,
-        MarketState.Rejected,
-        MarketState.TradingTerminated,
+        MarketState.STATE_SETTLED,
+        MarketState.STATE_REJECTED,
+        MarketState.STATE_TRADING_TERMINATED,
+        MarketState.STATE_CANCELLED,
+        MarketState.STATE_CLOSED,
       ].includes(market.state)
     ) {
       return {
@@ -70,13 +73,9 @@ export const useOrderValidation = ({
     }
 
     if (
-      [
-        MarketState.Suspended,
-        MarketState.Pending,
-        MarketState.Proposed,
-        MarketState.Cancelled,
-        MarketState.Closed,
-      ].includes(market.state)
+      [MarketState.STATE_PROPOSED, MarketState.STATE_PENDING].includes(
+        market.state
+      )
     ) {
       return {
         isDisabled: false,
@@ -88,66 +87,14 @@ export const useOrderValidation = ({
       };
     }
 
-    if (market.state !== MarketState.Active) {
-      if (market.state === MarketState.Suspended) {
-        if (market.tradingMode === MarketTradingMode.Continuous) {
-          if (orderType !== OrderType.Limit) {
-            return {
-              isDisabled: true,
-              message: t(
-                'Only limit orders are permitted when market is in auction'
-              ),
-            };
-          }
-
-          if (
-            [
-              OrderTimeInForce.FOK,
-              OrderTimeInForce.IOC,
-              OrderTimeInForce.GFN,
-            ].includes(orderTimeInForce)
-          ) {
-            return {
-              isDisabled: true,
-              message: t(
-                'Only GTT, GTC and GFA are permitted when market is in auction'
-              ),
-            };
-          }
-        }
-
-        return {
-          isDisabled: false,
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and only accepting liquidity commitment orders`
-          ),
-        };
-      }
-
-      if (
-        market.state === MarketState.Proposed ||
-        market.state === MarketState.Pending
-      ) {
-        return {
-          isDisabled: false,
-          message: t(
-            `This market is ${marketTranslations(
-              market.state
-            )} and only accepting liquidity commitment orders`
-          ),
-        };
-      }
-
-      return {
-        isDisabled: true,
-        message: t('This market is no longer active.'),
-      };
-    }
-
-    if (market.tradingMode !== MarketTradingMode.Continuous) {
-      if (orderType !== OrderType.Limit) {
+    if (
+      [
+        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      ].includes(market.tradingMode)
+    ) {
+      if (orderType !== OrderType.TYPE_LIMIT) {
         return {
           isDisabled: true,
           message: t(
@@ -158,9 +105,9 @@ export const useOrderValidation = ({
 
       if (
         [
-          OrderTimeInForce.FOK,
-          OrderTimeInForce.IOC,
-          OrderTimeInForce.GFN,
+          OrderTimeInForce.TIME_IN_FORCE_FOK,
+          OrderTimeInForce.TIME_IN_FORCE_IOC,
+          OrderTimeInForce.TIME_IN_FORCE_GFN,
         ].includes(orderTimeInForce)
       ) {
         return {
@@ -182,18 +129,24 @@ export const useOrderValidation = ({
     if (fieldErrors?.size?.type === 'min') {
       return {
         isDisabled: true,
-        message: t(`The amount cannot be lower than "${step}"`),
+        message: t(`The amount cannot be lower than "${minSize}"`),
       };
     }
 
-    if (fieldErrors?.price?.type === 'required') {
+    if (
+      fieldErrors?.price?.type === 'required' &&
+      orderType !== OrderType.TYPE_MARKET
+    ) {
       return {
         isDisabled: true,
         message: t('You need to provide a price'),
       };
     }
 
-    if (fieldErrors?.price?.type === 'min') {
+    if (
+      fieldErrors?.price?.type === 'min' &&
+      orderType !== OrderType.TYPE_MARKET
+    ) {
       return {
         isDisabled: true,
         message: t(`The price cannot be negative`),
@@ -218,10 +171,25 @@ export const useOrderValidation = ({
       };
     }
 
+    if (
+      [
+        MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
+        MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+        MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      ].includes(market.tradingMode)
+    ) {
+      return {
+        isDisabled: false,
+        message: t(
+          'Any orders placed now will not trade until the auction ends'
+        ),
+      };
+    }
+
     return { isDisabled: false, message: '' };
   }, [
+    minSize,
     keypair,
-    step,
     market,
     fieldErrors?.size?.type,
     fieldErrors?.size?.message,

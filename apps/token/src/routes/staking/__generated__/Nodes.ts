@@ -3,6 +3,8 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { ValidatorStatus } from "@vegaprotocol/types";
+
 // ====================================================
 // GraphQL query operation: Nodes
 // ====================================================
@@ -22,25 +24,25 @@ export interface Nodes_nodes_rankingScore {
    */
   performanceScore: string;
   /**
-   * The tendermint voting power of the validator (uint32)
+   * The Tendermint voting power of the validator (uint32)
    */
   votingPower: string;
   /**
    * The current validation status of the validator
    */
-  status: string;
+  status: ValidatorStatus;
 }
 
 export interface Nodes_nodes {
   __typename: "Node";
   avatarUrl: string | null;
   /**
-   * The node url eg n01.vega.xyz
+   * The node URL eg n01.vega.xyz
    */
   id: string;
   name: string;
   /**
-   * Pubkey of the node operator
+   * Public key of the node operator
    */
   pubkey: string;
   /**

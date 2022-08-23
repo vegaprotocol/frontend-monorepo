@@ -15,6 +15,7 @@ const DEAL_TICKET_QUERY = gql`
       tradingMode
       tradableInstrument {
         instrument {
+          id
           product {
             ... on Future {
               quoteName

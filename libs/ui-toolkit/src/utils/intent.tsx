@@ -28,13 +28,25 @@ export const getIntentBorder = (intent = Intent.None) => {
   };
 };
 
-export const getIntentTextAndBackground = (intent?: Intent) => {
+export const getIntentBackground = (intent?: Intent) => {
   return {
-    'bg-black text-white dark:bg-white dark:text-black': intent === Intent.None,
-    'bg-vega-pink text-black dark:bg-vega-yellow dark:text-black-normal':
-      intent === Intent.Primary,
-    'bg-danger text-white': intent === Intent.Danger,
-    'bg-warning text-black': intent === Intent.Warning,
-    'bg-success text-black': intent === Intent.Success,
+    'bg-black dark:bg-white': intent === Intent.None,
+    'bg-vega-pink dark:bg-vega-yellow': intent === Intent.Primary,
+    'bg-danger': intent === Intent.Danger,
+    'bg-warning': intent === Intent.Warning,
+    'bg-success': intent === Intent.Success,
   };
+};
+
+export const getIntentText = (intent?: Intent) => {
+  return {
+    'text-white dark:text-black': intent === Intent.None,
+    'text-black dark:text-black-normal': intent === Intent.Primary,
+    'text-white': intent === Intent.Danger,
+    'text-black': intent === Intent.Warning || intent === Intent.Success,
+  };
+};
+
+export const getIntentTextAndBackground = (intent?: Intent) => {
+  return { ...getIntentText(intent), ...getIntentBackground(intent) };
 };

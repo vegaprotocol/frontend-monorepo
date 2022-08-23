@@ -24,6 +24,7 @@ const ORDER_FRAGMENT = gql`
       positionDecimalPlaces
       tradableInstrument {
         instrument {
+          id
           code
         }
       }

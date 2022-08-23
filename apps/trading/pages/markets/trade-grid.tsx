@@ -6,6 +6,7 @@ import {
 import { OrderbookContainer } from '@vegaprotocol/market-depth';
 import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
+import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import {
   addDecimalsFormatNumber,
@@ -26,10 +27,12 @@ import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
 import {
   Tab,
   Tabs,
   PriceCellChange,
+  Button,
   Tooltip,
   ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
@@ -45,6 +48,7 @@ const TradingViews = {
   Positions: PositionsContainer,
   Orders: OrderListContainer,
   Collateral: AccountsContainer,
+  Fills: FillsContainer,
 };
 
 type TradingView = keyof typeof TradingViews;
@@ -58,9 +62,13 @@ export const TradeMarketHeader = ({
   market,
   className,
 }: TradeMarketHeaderProps) => {
+  const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
+    useAssetDetailsDialogStore();
   const candlesClose: string[] = (market?.candles || [])
     .map((candle) => candle?.close)
     .filter((c): c is CandleClose => c !== null);
+  const symbol =
+    market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
   const headerItemClassName = 'whitespace-nowrap flex flex-col ';
   const itemClassName =
     'font-sans font-normal mb-0 text-black-60 dark:text-white-80 text-ui-small';
@@ -111,9 +119,11 @@ export const TradeMarketHeader = ({
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Trading mode')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
-                {market.tradingMode === MarketTradingMode.MonitoringAuction &&
+                {market.tradingMode ===
+                  MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
                 market.data?.trigger &&
-                market.data.trigger !== AuctionTrigger.Unspecified
+                market.data.trigger !==
+                  AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
                   ? `${formatLabel(
                       market.tradingMode
                     )} - ${market.data?.trigger.toLowerCase()}`
@@ -132,15 +142,20 @@ export const TradeMarketHeader = ({
                 : '-'}
             </span>
           </div>
-          {market.tradableInstrument.instrument.product?.settlementAsset
-            ?.symbol && (
+          {symbol && (
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Settlement asset')}</span>
               <span data-testid="trading-mode" className={itemValueClassName}>
-                {
-                  market.tradableInstrument.instrument.product?.settlementAsset
-                    ?.symbol
-                }
+                <Button
+                  variant="inline-link"
+                  className="no-underline hover:underline"
+                  onClick={() => {
+                    setAssetDetailsDialogOpen(true);
+                    setAssetDetailsDialogSymbol(symbol);
+                  }}
+                >
+                  {symbol}
+                </Button>
               </span>
             </div>
           )}
@@ -227,6 +242,9 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                 </Tab>
                 <Tab id="orders" name={t('Orders')}>
                   <TradingViews.Orders />
+                </Tab>
+                <Tab id="fills" name={t('Fills')}>
+                  <TradingViews.Fills />
                 </Tab>
                 <Tab id="accounts" name={t('Collateral')}>
                   <TradingViews.Collateral />
