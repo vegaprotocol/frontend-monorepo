@@ -59,8 +59,8 @@ export default function createClient(base?: string) {
     : httpLink;
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
-    // if (graphQLErrors) console.log(graphQLErrors);
-    // if (networkError) console.log(networkError);
+    if (graphQLErrors) console.log(graphQLErrors);
+    if (networkError) console.log(networkError);
   });
 
   return new ApolloClient({
