@@ -8,8 +8,8 @@ COPY package.json ./
 COPY yarn.lock ./
 COPY . ./
 RUN apk add python3 make gcc g++
-RUN yarn --network-timeout 100000
-RUN yarn nx build $APP --network-timeout 100000
+RUN yarn --network-timeout 100000 --verbose --pure-lockfile
+RUN yarn nx build $APP --network-timeout 100000 --verbose --pure-lockfile
 
 # Production environment
 FROM nginx:stable-alpine
