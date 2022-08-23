@@ -1,14 +1,15 @@
 import { renderHook } from '@testing-library/react';
-import {
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderType,
-  useVegaWallet,
-} from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import type {
   VegaWalletContextShape,
   VegaKeyExtended,
 } from '@vegaprotocol/wallet';
-import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  MarketState,
+  MarketTradingMode,
+  OrderTimeInForce,
+  OrderType,
+} from '@vegaprotocol/types';
 import type { ValidationProps } from './use-order-validation';
 import { marketTranslations } from './use-order-validation';
 import { useOrderValidation } from './use-order-validation';
@@ -21,8 +22,8 @@ const market = {
   id: 'market-id',
   decimalPlaces: 2,
   positionDecimalPlaces: 1,
-  tradingMode: MarketTradingMode.Continuous,
-  state: MarketState.Active,
+  tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+  state: MarketState.STATE_ACTIVE,
   tradableInstrument: {
     __typename: 'TradableInstrument',
     instrument: {
@@ -59,8 +60,8 @@ const defaultWalletContext = {
 const defaultOrder = {
   market,
   step: 0.1,
-  orderType: VegaWalletOrderType.Market,
-  orderTimeInForce: VegaWalletOrderTimeInForce.FOK,
+  orderType: OrderType.TYPE_MARKET,
+  orderTimeInForce: OrderTimeInForce.TIME_IN_FORCE_FOK,
 };
 
 const ERROR = {
@@ -110,11 +111,11 @@ describe('useOrderValidation', () => {
 
   it.each`
     state
-    ${MarketState.Settled}
-    ${MarketState.Rejected}
-    ${MarketState.TradingTerminated}
-    ${MarketState.Closed}
-    ${MarketState.Cancelled}
+    ${MarketState.STATE_SETTLED}
+    ${MarketState.STATE_REJECTED}
+    ${MarketState.STATE_TRADING_TERMINATED}
+    ${MarketState.STATE_CLOSED}
+    ${MarketState.STATE_CANCELLED}
   `(
     'Returns an error message for market state when not accepting orders',
     ({ state }) => {
@@ -130,8 +131,8 @@ describe('useOrderValidation', () => {
 
   it.each`
     state
-    ${MarketState.Pending}
-    ${MarketState.Proposed}
+    ${MarketState.STATE_PENDING}
+    ${MarketState.STATE_PROPOSED}
   `(
     'Returns an error message for market state suspended or pending',
     ({ state }) => {
@@ -139,7 +140,7 @@ describe('useOrderValidation', () => {
         market: {
           ...defaultOrder.market,
           state,
-          tradingMode: MarketTradingMode.BatchAuction,
+          tradingMode: MarketTradingMode.TRADING_MODE_BATCH_AUCTION,
         },
       });
       expect(result.current).toStrictEqual({
@@ -150,16 +151,16 @@ describe('useOrderValidation', () => {
   );
 
   it.each`
-    tradingMode                            | errorMessage
-    ${MarketTradingMode.BatchAuction}      | ${ERROR.MARKET_CONTINUOUS_LIMIT}
-    ${MarketTradingMode.MonitoringAuction} | ${ERROR.MARKET_CONTINUOUS_LIMIT}
-    ${MarketTradingMode.OpeningAuction}    | ${ERROR.MARKET_CONTINUOUS_LIMIT}
+    tradingMode                                          | errorMessage
+    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${ERROR.MARKET_CONTINUOUS_LIMIT}
+    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${ERROR.MARKET_CONTINUOUS_LIMIT}
+    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${ERROR.MARKET_CONTINUOUS_LIMIT}
   `(
     `Returns an error message when trying to submit a non-limit order for a "$tradingMode" market`,
     ({ tradingMode, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
-        orderType: VegaWalletOrderType.Market,
+        orderType: OrderType.TYPE_MARKET,
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,
@@ -169,22 +170,22 @@ describe('useOrderValidation', () => {
   );
 
   it.each`
-    tradingMode                            | orderTimeInForce                  | errorMessage
-    ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.BatchAuction}      | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.MonitoringAuction} | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
-    ${MarketTradingMode.OpeningAuction}    | ${VegaWalletOrderTimeInForce.GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    tradingMode                                          | orderTimeInForce                      | errorMessage
+    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${OrderTimeInForce.TIME_IN_FORCE_FOK} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${OrderTimeInForce.TIME_IN_FORCE_IOC} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_BATCH_AUCTION}      | ${OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_MONITORING_AUCTION} | ${OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
+    ${MarketTradingMode.TRADING_MODE_OPENING_AUCTION}    | ${OrderTimeInForce.TIME_IN_FORCE_GFN} | ${ERROR.MARKET_CONTINUOUS_TIF}
   `(
     `Returns an error message when submitting a limit order with a "$orderTimeInForce" value to a "$tradingMode" market`,
     ({ tradingMode, orderTimeInForce, errorMessage }) => {
       const { result } = setup({
         market: { ...defaultOrder.market, tradingMode },
-        orderType: VegaWalletOrderType.Limit,
+        orderType: OrderType.TYPE_LIMIT,
         orderTimeInForce,
       });
       expect(result.current).toStrictEqual({
@@ -205,7 +206,7 @@ describe('useOrderValidation', () => {
     ({ fieldName, errorType, errorMessage }) => {
       const { result } = setup({
         fieldErrors: { [fieldName]: { type: errorType } },
-        orderType: VegaWalletOrderType.Limit,
+        orderType: OrderType.TYPE_LIMIT,
       });
       expect(result.current).toStrictEqual({
         isDisabled: true,

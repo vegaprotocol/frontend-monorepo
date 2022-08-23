@@ -34,7 +34,7 @@ describe('markets table', () => {
 
   it('Able to select market from dropdown', () => {
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Active);
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
 
     openMarketDropDown();
@@ -59,7 +59,7 @@ describe('markets table', () => {
     ];
 
     cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.Active);
+      mockTradingPage(req, MarketState.STATE_ACTIVE);
     });
 
     cy.visit('/markets/market-0');

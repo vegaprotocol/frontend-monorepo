@@ -1,10 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { OrderEvent_busEvents_event_Order } from './__generated__';
-import type {
-  VegaWalletOrderTimeInForce,
-  VegaWalletOrderSide,
-} from '@vegaprotocol/wallet';
-import { VegaWalletOrderType, useVegaWallet } from '@vegaprotocol/wallet';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   determineId,
   removeDecimal,
@@ -13,12 +9,14 @@ import {
 import { useVegaTransaction } from '@vegaprotocol/wallet';
 import * as Sentry from '@sentry/react';
 import { useOrderEvent } from './use-order-event';
+import type { OrderTimeInForce, Side } from '@vegaprotocol/types';
+import { OrderType } from '@vegaprotocol/types';
 
 export interface Order {
-  type: VegaWalletOrderType;
+  type: OrderType;
   size: string;
-  side: VegaWalletOrderSide;
-  timeInForce: VegaWalletOrderTimeInForce;
+  side: Side;
+  timeInForce: OrderTimeInForce;
   price?: string;
   expiration?: Date;
 }
@@ -64,7 +62,7 @@ export const useOrderSubmit = (market: Market) => {
           orderSubmission: {
             marketId: market.id,
             price:
-              order.type === VegaWalletOrderType.Limit && order.price
+              order.type === OrderType.TYPE_LIMIT && order.price
                 ? removeDecimal(order.price, market.decimalPlaces)
                 : undefined,
             size: removeDecimal(order.size, market.positionDecimalPlaces),

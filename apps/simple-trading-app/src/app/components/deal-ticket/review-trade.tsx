@@ -9,7 +9,6 @@ import classNames from 'classnames';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { SIDE_NAMES } from './side-selector';
-import { VegaWalletOrderSide } from '@vegaprotocol/wallet';
 import SimpleMarketExpires from '../simple-market-list/simple-market-expires';
 import { gql, useQuery } from '@apollo/client';
 import type {
@@ -17,6 +16,7 @@ import type {
   MarketTagsVariables,
 } from './__generated__/MarketTags';
 import { DealTicketEstimates } from './deal-ticket-estimates';
+import { Side } from '@vegaprotocol/types';
 
 export const MARKET_TAGS_QUERY = gql`
   query MarketTags($marketId: ID!) {
@@ -71,10 +71,9 @@ export default ({
             <div
               className={classNames(
                 {
-                  'buyButton dark:buyButtonDark':
-                    order.side === VegaWalletOrderSide.Buy,
+                  'buyButton dark:buyButtonDark': order.side === Side.SIDE_BUY,
                   'sellButton dark:sellButtonDark':
-                    order.side === VegaWalletOrderSide.Sell,
+                    order.side === Side.SIDE_SELL,
                 },
                 'px-8 py-4 inline text-ui-small'
               )}

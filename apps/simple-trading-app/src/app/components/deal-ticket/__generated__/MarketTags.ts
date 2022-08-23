@@ -26,7 +26,7 @@ export interface MarketTags_market_tradableInstrument_instrument {
 export interface MarketTags_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
-   * An instance of or reference to a fully specified instrument.
+   * An instance of, or reference to, a fully specified instrument.
    */
   instrument: MarketTags_market_tradableInstrument_instrument;
 }
@@ -34,14 +34,14 @@ export interface MarketTags_market_tradableInstrument {
 export interface MarketTags_market {
   __typename: "Market";
   /**
-   * An instance of or reference to a tradable instrument.
+   * An instance of, or reference to, a tradable instrument.
    */
   tradableInstrument: MarketTags_market_tradableInstrument;
 }
 
 export interface MarketTags {
   /**
-   * An instrument that is trading on the VEGA network
+   * An instrument that is trading on the Vega network
    */
   market: MarketTags_market | null;
 }

@@ -1,10 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import { ProposalRejectionReason, ProposalState } from '@vegaprotocol/types';
 import { format } from 'date-fns';
 
-import {
-  ProposalRejectionReason,
-  ProposalState,
-} from '../../../../__generated__/globalTypes';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalChangeTable } from './proposal-change-table';
@@ -22,7 +19,7 @@ it('Renders all data for table', () => {
   expect(screen.getByText(proposal.id as string)).toBeInTheDocument();
 
   expect(screen.getByText('State')).toBeInTheDocument();
-  expect(screen.getByText('Open')).toBeInTheDocument();
+  expect(screen.getByText('STATE_OPEN')).toBeInTheDocument();
 
   expect(screen.getByText('Closes on')).toBeInTheDocument();
   expect(
@@ -34,7 +31,10 @@ it('Renders all data for table', () => {
   expect(screen.getByText('Proposed enactment')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(new Date(proposal.terms.enactmentDatetime), DATE_FORMAT_DETAILED)
+      format(
+        new Date(proposal.terms.enactmentDatetime || 0),
+        DATE_FORMAT_DETAILED
+      )
     )
   ).toBeInTheDocument();
 
@@ -54,12 +54,12 @@ it('Renders all data for table', () => {
 
 it('Changes data based on if data is in future or past', () => {
   const proposal = generateProposal({
-    state: ProposalState.Enacted,
+    state: ProposalState.STATE_ENACTED,
   });
   render(<ProposalChangeTable proposal={proposal} />);
 
   expect(screen.getByText('State')).toBeInTheDocument();
-  expect(screen.getByText('Enacted')).toBeInTheDocument();
+  expect(screen.getByText('STATE_ENACTED')).toBeInTheDocument();
 
   expect(screen.getByText('Closed on')).toBeInTheDocument();
   expect(
@@ -71,7 +71,10 @@ it('Changes data based on if data is in future or past', () => {
   expect(screen.getByText('Enacted on')).toBeInTheDocument();
   expect(
     screen.getByText(
-      format(new Date(proposal.terms.enactmentDatetime), DATE_FORMAT_DETAILED)
+      format(
+        new Date(proposal.terms.enactmentDatetime || 0),
+        DATE_FORMAT_DETAILED
+      )
     )
   ).toBeInTheDocument();
 });
@@ -80,7 +83,7 @@ it('Renders error details and rejection reason if present', () => {
   const errorDetails = 'Error message';
   const proposal = generateProposal({
     errorDetails,
-    rejectionReason: ProposalRejectionReason.CloseTimeTooLate,
+    rejectionReason: ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE,
   });
   render(<ProposalChangeTable proposal={proposal} />);
   expect(screen.getByText('Error details')).toBeInTheDocument();
@@ -88,6 +91,6 @@ it('Renders error details and rejection reason if present', () => {
 
   expect(screen.getByText('Rejection reason')).toBeInTheDocument();
   expect(
-    screen.getByText(ProposalRejectionReason.CloseTimeTooLate)
+    screen.getByText(ProposalRejectionReason.PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE)
   ).toBeInTheDocument();
 });
