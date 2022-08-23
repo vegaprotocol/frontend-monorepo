@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import {
   OrderRejectionReason,
   OrderStatus,
+  OrderStatusMapping,
   OrderType,
   Side,
 } from '@vegaprotocol/types';
@@ -76,7 +77,7 @@ describe('OrderFeedback', () => {
       order.market!.name
     );
     expect(screen.getByText('Status').nextElementSibling).toHaveTextContent(
-      order.status
+      OrderStatusMapping[order.status]
     );
     expect(screen.getByText('Price').nextElementSibling).toHaveTextContent(
       '1.00'
