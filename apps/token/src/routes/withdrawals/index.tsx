@@ -65,21 +65,13 @@ const WithdrawPendingContainer = () => {
     <>
       <header className="flex items-start justify-between">
         <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
-        <Button onClick={() => setWithdrawDialog(true)}>
-          Create withdrawal
-        </Button>
+        <Button onClick={() => setWithdrawDialog(true)}>Withdraw</Button>
       </header>
       <p>{t('withdrawalsText')}</p>
       <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
-      <WithdrawalsTable withdrawals={withdrawals} />
-      {/* <ul role="list">
-        {withdrawals.map((w) => (
-          <li key={w.id} className="mb-10 last:mb-0">
-            <Withdrawal withdrawal={w} complete={submit} />
-          </li>
-        ))}
-      </ul> */}
-      <Dialog />
+      <div className="w-full h-[500px]">
+        <WithdrawalsTable withdrawals={withdrawals} />
+      </div>
       <UIDialog
         title={t('Withdraw')}
         open={withdrawDialog}
