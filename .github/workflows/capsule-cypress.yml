@@ -64,6 +64,10 @@ jobs:
         run: go install -v ./cmd/vega
         working-directory: vega
 
+      - name: Install Vega wallet binaries
+        run: go install ./cmd/vegawallet
+        working-directory: vega
+
       - name: Install date-node binaries
         run: go install ./cmd/data-node
         working-directory: vega

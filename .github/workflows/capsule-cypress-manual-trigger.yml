@@ -47,7 +47,7 @@ jobs:
       ## Checkout capsule
       #######
 
-     # Checkout capsule to build local network
+      # Checkout capsule to build local network
       - name: Checkout capsule
         uses: actions/checkout@v2
         with:
@@ -76,6 +76,10 @@ jobs:
 
       - name: Install Vega and Vega wallet binaries
         run: go install -v ./cmd/vega
+        working-directory: vega
+
+      - name: Install Vega wallet binaries
+        run: go install ./cmd/vegawallet
         working-directory: vega
 
       - name: Install date-node binaries
