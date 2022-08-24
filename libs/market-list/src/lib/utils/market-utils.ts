@@ -8,11 +8,6 @@ import type {
   MarketList_markets_fees_factors,
 } from '../__generated__/MarketList';
 
-export const lastPrice = ({ candles }: MarketList_markets) =>
-  candles && candles.length > 0
-    ? candles && candles[candles?.length - 1]?.close
-    : undefined;
-
 export const totalFees = (fees: MarketList_markets_fees_factors) => {
   if (!fees) {
     return undefined;
@@ -36,20 +31,12 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
       .map((m) => {
         return {
           ...m,
-          marketName: m.tradableInstrument.instrument?.code,
-          settlementAsset:
-            m.tradableInstrument.instrument.product?.settlementAsset?.symbol,
-          lastPrice: lastPrice(m) ?? m.data?.markPrice,
-          candles: (m.candles || []).filter((c) => c),
-          candleHigh: calcCandleHigh(m),
-          candleLow: calcCandleLow(m),
           open: m.marketTimestamps.open
             ? new Date(m.marketTimestamps.open).getTime()
             : null,
           close: m.marketTimestamps.close
             ? new Date(m.marketTimestamps.close).getTime()
             : null,
-          totalFees: totalFees(m.fees?.factors),
         };
       }) || [],
     ['open', 'id'],
