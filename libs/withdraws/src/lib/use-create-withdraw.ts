@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import { useWithdrawalApproval } from './use-withdrawal-approval';
 import type { Erc20Approval_erc20WithdrawalApproval } from './__generated__/Erc20Approval';
 
-export interface WithdrawalFields {
+export interface WithdrawalArgs {
   amount: string;
   asset: string;
   receiverAddress: string;
@@ -19,7 +19,7 @@ export const useCreateWithdraw = () => {
   const { transaction, send, setComplete, reset } = useVegaTransaction();
 
   const submit = useCallback(
-    async (withdrawal: WithdrawalFields) => {
+    async (withdrawal: WithdrawalArgs) => {
       if (!keypair) {
         return;
       }

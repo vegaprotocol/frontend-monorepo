@@ -1,8 +1,10 @@
+import orderBy from 'lodash/orderBy';
+import compact from 'lodash/compact';
 import { gql, useQuery } from '@apollo/client';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import uniqBy from 'lodash/uniqBy';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import type {
   WithdrawalEvent,
   WithdrawalEventVariables,
@@ -12,6 +14,7 @@ import type {
 import type {
   Withdrawals,
   WithdrawalsVariables,
+  Withdrawals_party_withdrawalsConnection_edges,
 } from './__generated__/Withdrawals';
 
 const WITHDRAWAL_FRAGMENT = gql`
@@ -67,7 +70,7 @@ export const WITHDRAWAL_BUS_EVENT_SUB = gql`
 
 export const useWithdrawals = () => {
   const { keypair } = useVegaWallet();
-  const { subscribeToMore, ...queryResult } = useQuery<
+  const { subscribeToMore, data, loading, error } = useQuery<
     Withdrawals,
     WithdrawalsVariables
   >(WITHDRAWALS_QUERY, {
@@ -89,7 +92,22 @@ export const useWithdrawals = () => {
     };
   }, [keypair?.pub, subscribeToMore]);
 
-  return queryResult;
+  const withdrawals = useMemo(() => {
+    return orderBy(
+      compact(data?.party?.withdrawalsConnection.edges).map(
+        (edge) => edge.node
+      ),
+      (w) => new Date(w.createdTimestamp).getTime(),
+      'desc'
+    );
+  }, [data]);
+
+  return {
+    data,
+    loading,
+    error,
+    withdrawals,
+  };
 };
 
 export const updateQuery: UpdateQueryFn<
@@ -120,7 +138,7 @@ export const updateQuery: UpdateQueryFn<
     return {
       __typename: 'WithdrawalEdge',
       node: w,
-    };
+    } as Withdrawals_party_withdrawalsConnection_edges;
   });
 
   // Write new party to cache if not present

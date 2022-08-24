@@ -1,7 +1,5 @@
-import { Button, Splash } from '@vegaprotocol/ui-toolkit';
+import { Button, Dialog as UIDialog, Splash } from '@vegaprotocol/ui-toolkit';
 import { format } from 'date-fns';
-import orderBy from 'lodash/orderBy';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Link } from '@vegaprotocol/ui-toolkit';
@@ -14,9 +12,13 @@ import { BigNumber } from '../../lib/bignumber';
 import { DATE_FORMAT_DETAILED } from '../../lib/date-formats';
 import { addDecimal } from '../../lib/decimals';
 import { truncateMiddle } from '../../lib/truncate-middle';
-import type { Withdrawals_party_withdrawals } from '@vegaprotocol/withdraws';
+import type { WithdrawalFields } from '@vegaprotocol/withdraws';
+import { WithdrawalsTable } from '@vegaprotocol/withdraws';
+import { WithdrawFormContainer } from '@vegaprotocol/withdraws';
 import { useCompleteWithdraw, useWithdrawals } from '@vegaprotocol/withdraws';
 import { WithdrawalStatus } from '@vegaprotocol/types';
+import { useState } from 'react';
+import { useVegaWallet } from '@vegaprotocol/wallet';
 
 const Withdrawals = () => {
   const { t } = useTranslation();
@@ -32,19 +34,11 @@ const Withdrawals = () => {
 };
 
 const WithdrawPendingContainer = () => {
+  const { keypair } = useVegaWallet();
+  const [withdrawDialog, setWithdrawDialog] = useState(false);
   const { t } = useTranslation();
   const { submit, Dialog } = useCompleteWithdraw();
-  const { data, loading, error } = useWithdrawals();
-
-  const withdrawals = React.useMemo(() => {
-    if (!data?.party?.withdrawals?.length) return [];
-
-    return orderBy(
-      data.party.withdrawals,
-      [(w) => new Date(w.createdTimestamp)],
-      ['desc']
-    );
-  }, [data]);
+  const { withdrawals, loading, error } = useWithdrawals();
 
   if (error) {
     return (
@@ -55,7 +49,7 @@ const WithdrawPendingContainer = () => {
     );
   }
 
-  if (loading || !data) {
+  if (loading) {
     return (
       <Splash>
         <SplashLoader />
@@ -69,23 +63,36 @@ const WithdrawPendingContainer = () => {
 
   return (
     <>
-      <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
+      <header className="flex items-start justify-between">
+        <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
+        <Button onClick={() => setWithdrawDialog(true)}>
+          Create withdrawal
+        </Button>
+      </header>
       <p>{t('withdrawalsText')}</p>
       <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
-      <ul role="list">
+      <WithdrawalsTable withdrawals={withdrawals} />
+      {/* <ul role="list">
         {withdrawals.map((w) => (
           <li key={w.id} className="mb-10 last:mb-0">
             <Withdrawal withdrawal={w} complete={submit} />
           </li>
         ))}
-      </ul>
+      </ul> */}
       <Dialog />
+      <UIDialog
+        title={t('Withdraw')}
+        open={withdrawDialog}
+        onChange={(isOpen) => setWithdrawDialog(isOpen)}
+      >
+        <WithdrawFormContainer partyId={keypair?.pub} />
+      </UIDialog>
     </>
   );
 };
 
 interface WithdrawalProps {
-  withdrawal: Withdrawals_party_withdrawals;
+  withdrawal: WithdrawalFields;
   complete: (withdrawalId: string) => void;
 }
 
