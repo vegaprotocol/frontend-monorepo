@@ -22,8 +22,8 @@ import {
 } from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
 import classNames from 'classnames';
-import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -59,54 +59,53 @@ const TradingViews = {
 
 type TradingView = keyof typeof TradingViews;
 
-type GetExpiryProps = Pick<TradeMarketHeaderProps, 'market'> & {
+type ExpiryLabelProps = {
+  market: Market_market;
+};
+
+const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
+  if (market.marketTimestamps.close === null) {
+    return <>{t('Not time-based')}</>;
+  }
+
+  const closeDate = new Date(market.marketTimestamps.close);
+  const isExpired = Date.now() - closeDate.valueOf() > 0;
+  const expiryDate = getDateFormat().format(closeDate);
+
+  return <>{`${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`}</>;
+};
+
+type ExpiryTooltipContentProps = {
+  market: Market_market;
   explorerUrl?: string;
 };
 
-type ExpiryProps = {
-  expiry: string;
-  hasTime: boolean;
-  expiryTooltipDescription?: ReactNode;
-};
-
-const getExpiryProps = ({
+const ExpiryTooltipContent = ({
   market,
   explorerUrl,
-}: GetExpiryProps): ExpiryProps => {
+}: ExpiryTooltipContentProps) => {
   if (market.marketTimestamps.close === null) {
     const oracleId =
       market.tradableInstrument.instrument.product
         .oracleSpecForTradingTermination?.id;
 
-    return {
-      hasTime: false,
-      expiry: t('Not time-based'),
-      expiryTooltipDescription: (
-        <>
-          <p>
-            {t(
-              'This market expires when triggered by its oracle, not a set date.'
-            )}
-          </p>
-          {explorerUrl && oracleId && (
-            <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
-              {t('View oracle specification')}
-            </Link>
+    return (
+      <>
+        <p>
+          {t(
+            'This market expires when triggered by its oracle, not a set date.'
           )}
-        </>
-      ),
-    };
+        </p>
+        {explorerUrl && oracleId && (
+          <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
+            {t('View oracle specification')}
+          </Link>
+        )}
+      </>
+    );
   }
 
-  const closeDate = new Date(market.marketTimestamps.close);
-  const isExpired = Date.now() - closeDate.valueOf() > 0;
-
-  return {
-    hasTime: true,
-    expiry: `${isExpired ? `${t('Expired')} ` : ''} ${getDateFormat().format(
-      closeDate
-    )}`,
-  };
+  return null;
 };
 
 interface TradeMarketHeaderProps {
@@ -143,10 +142,7 @@ export const TradeMarketHeader = ({
     }
   };
 
-  const { expiry, hasTime, expiryTooltipDescription } = getExpiryProps({
-    market,
-    explorerUrl: VEGA_EXPLORER_URL,
-  });
+  const hasExpiry = market.marketTimestamps.close !== null;
 
   return (
     <header className={headerClassName}>
@@ -156,16 +152,24 @@ export const TradeMarketHeader = ({
           data-testid="market-summary"
           className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap py-8 pr-8"
         >
-          <Tooltip description={expiryTooltipDescription} align="start">
+          <Tooltip
+            align="start"
+            description={
+              <ExpiryTooltipContent
+                market={market}
+                explorerUrl={VEGA_EXPLORER_URL}
+              />
+            }
+          >
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Expiry')}</span>
               <span
                 data-testid="trading-expiry"
                 className={classNames(itemValueClassName, {
-                  'underline decoration-dashed': !hasTime,
+                  'underline decoration-dashed': !hasExpiry,
                 })}
               >
-                {expiry}
+                <ExpiryLabel market={market} />
               </span>
             </div>
           </Tooltip>
