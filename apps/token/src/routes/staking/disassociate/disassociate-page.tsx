@@ -122,11 +122,7 @@ export const DisassociatePage = ({
           value={chosen?.key}
         >
           {associations.map((k) => (
-            <option
-              key={k.key}
-              value={k.key}
-              title={`${t(k.stakingMethod)}: ${formatNumber(k.value, 18)}`}
-            >
+            <option key={k.key} value={k.key}>
               {truncateMiddle(k.key)} {t(`via${k.stakingMethod}`)} (
               {formatNumber(k.value, 18)} {t('tokens')})
             </option>
