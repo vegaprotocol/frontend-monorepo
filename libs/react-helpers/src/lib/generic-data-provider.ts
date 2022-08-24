@@ -9,17 +9,23 @@ import type { Subscription } from 'zen-observable-ts';
 import isEqual from 'lodash/isEqual';
 import type { Pagination as PaginationWithoutSkip } from '@vegaprotocol/types';
 
+interface UpdateData<Data, Delta> {
+  delta?: Delta;
+  insertionData?: Data | null;
+  isUpdate?: boolean;
+  isInsert?: boolean;
+}
 export interface UpdateCallback<Data, Delta> {
-  (arg: {
-    data: Data | null;
-    error?: Error;
-    loading: boolean;
-    loaded: boolean;
-    pageInfo: PageInfo | null;
-    delta?: Delta;
-    insertionData?: Data | null;
-    totalCount?: number;
-  }): void;
+  (
+    arg: UpdateData<Data, Delta> & {
+      data: Data | null;
+      error?: Error;
+      loading: boolean;
+      loaded: boolean;
+      pageInfo: PageInfo | null;
+      totalCount?: number;
+    }
+  ): void;
 }
 
 export interface Load<Data> {
@@ -178,7 +184,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   // notify single callback about current state, delta is passes optionally only if notify was invoked onNext
   const notify = (
     callback: UpdateCallback<Data, Delta>,
-    updateData?: { delta?: Delta; insertionData?: Data | null }
+    updateData?: UpdateData<Data, Delta>
   ) => {
     callback({
       data,
@@ -192,10 +198,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
   };
 
   // notify all callbacks
-  const notifyAll = (updateData?: {
-    delta?: Delta;
-    insertionData?: Data | null;
-  }) => {
+  const notifyAll = (updateData?: UpdateData<Data, Delta>) => {
     callbacks.forEach((callback) => notify(callback, updateData));
   };
 
@@ -252,7 +255,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
     totalCount =
       (pagination.getTotalCount && pagination.getTotalCount(res.data)) ??
       totalCount;
-    notifyAll({ insertionData });
+    notifyAll({ insertionData, isInsert: true });
     return insertionData;
   };
 
@@ -356,7 +359,7 @@ function makeDataProviderInternal<QueryData, Data, SubscriptionData, Delta>({
               return;
             }
             data = updatedData;
-            notifyAll({ delta });
+            notifyAll({ delta, isUpdate: true });
           }
         },
         () => reload()
