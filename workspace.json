@@ -13,6 +13,7 @@
     "explorer-e2e": "apps/explorer-e2e",
     "fills": "libs/fills",
     "governance": "libs/governance",
+    "liquidity": "libs/liquidity",
     "market-depth": "libs/market-depth",
     "market-list": "libs/market-list",
     "network-info": "libs/network-info",

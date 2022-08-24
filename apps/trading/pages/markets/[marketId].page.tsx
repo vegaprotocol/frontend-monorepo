@@ -5,7 +5,7 @@ import { Interval } from '@vegaprotocol/types';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { PageQueryContainer } from '../../components/page-query-container';
 import { useGlobalStore } from '../../stores';
 import { TradeGrid, TradePanels } from './trade-grid';
@@ -82,10 +82,19 @@ const MarketPage = ({ id }: { id?: string }) => {
 
   // Cache timestamp for yesterday to prevent full unmount of market page when
   // a rerender occurs
-  const [yTimestamp] = useState(() => {
+  const yTimestamp = useMemo(() => {
     const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     return new Date(yesterday * 1000).toISOString();
-  });
+  }, []);
+
+  const variables = useMemo(
+    () => ({
+      marketId: marketId || '',
+      interval: Interval.INTERVAL_I1H,
+      since: yTimestamp,
+    }),
+    [marketId, yTimestamp]
+  );
 
   if (!marketId) {
     return (
@@ -100,11 +109,7 @@ const MarketPage = ({ id }: { id?: string }) => {
       query={MARKET_QUERY}
       data-testid="market"
       options={{
-        variables: {
-          marketId,
-          interval: Interval.INTERVAL_I1H,
-          since: yTimestamp,
-        },
+        variables,
         fetchPolicy: 'network-only',
       }}
       render={({ market }) => {

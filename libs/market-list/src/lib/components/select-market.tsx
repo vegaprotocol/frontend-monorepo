@@ -127,7 +127,10 @@ export const SelectMarketPopover = ({
 
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
   const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
-    variables: { interval: Interval.INTERVAL_I1H, since: yTimestamp },
+    variables: useMemo(
+      () => ({ interval: Interval.INTERVAL_I1H, since: yTimestamp }),
+      [yTimestamp]
+    ),
   });
   const { data: marketDataPositions } = useQuery<Positions>(POSITION_QUERY, {
     variables,
@@ -236,7 +239,10 @@ export const SelectMarketDialog = ({
   };
 
   const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
-    variables: { interval: Interval.INTERVAL_I1H, since: yTimestamp },
+    variables: useMemo(
+      () => ({ interval: Interval.INTERVAL_I1H, since: yTimestamp }),
+      [yTimestamp]
+    ),
   });
   return (
     <Dialog

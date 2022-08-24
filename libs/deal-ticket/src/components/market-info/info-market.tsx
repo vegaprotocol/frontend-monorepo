@@ -1,25 +1,15 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { useMemo } from 'react';
+import { formatLabel, formatNumber, t } from '@vegaprotocol/react-helpers';
 import {
-  addDecimalsFormatNumber,
-  formatLabel,
-  formatNumber,
-  formatNumberPercentage,
-  t,
-} from '@vegaprotocol/react-helpers';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
   AsyncRenderer,
   Splash,
   Accordion,
-  Tooltip,
   Link,
+  Button,
+  Dialog,
 } from '@vegaprotocol/ui-toolkit';
-import startCase from 'lodash/startCase';
 import pick from 'lodash/pick';
-import omit from 'lodash/omit';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
@@ -29,18 +19,23 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import type {
   MarketInfoQuery,
   MarketInfoQuery_market,
+  MarketInfoQuery_market_candles,
 } from './__generated__/MarketInfoQuery';
+import { LiquidityContainer } from '@vegaprotocol/liquidity';
+import { MarketInfoTable } from './info-key-value-table';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
 }
 
-export const calcCandleVolume = (m: any): string | undefined => {
+export const calcCandleVolume = (
+  m: MarketInfoQuery_market
+): string | undefined => {
   return m.candles
-    ?.reduce((acc: BigNumber, c: { volume: BigNumber.Value }) => {
-      return acc.plus(new BigNumber(c.volume));
+    ?.reduce((acc: BigNumber, c: MarketInfoQuery_market_candles | null) => {
+      return acc.plus(new BigNumber(c?.volume ?? 0));
     }, new BigNumber(m.candles?.[0]?.volume ?? 0))
-    .toString();
+    ?.toString();
 };
 
 export interface MarketInfoContainerProps {
@@ -53,11 +48,10 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   }, []);
 
   const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
-    variables: {
-      marketId,
-      interval: Interval.INTERVAL_I1H,
-      since: yTimestamp,
-    },
+    variables: useMemo(
+      () => ({ marketId, since: yTimestamp, interval: Interval.INTERVAL_I1H }),
+      [marketId, yTimestamp]
+    ),
   });
 
   return (
@@ -76,6 +70,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 };
 
 export const Info = ({ market }: InfoProps) => {
+  const [openLiquidityView, setOpenLiquidityView] = useState(false);
   const headerClassName =
     'text-h5 font-medium uppercase text-black dark:text-white';
   const dayVolume = calcCandleVolume(market);
@@ -147,7 +142,7 @@ export const Info = ({ market }: InfoProps) => {
               balance: a.balance,
             }}
             assetSymbol={assetSymbol}
-            decimalPlaces={market.positionDecimalPlaces} // decimal places needed here?
+            decimalPlaces={market.positionDecimalPlaces} // TODO decimal places needed here?
           />
         ),
       })),
@@ -279,20 +274,29 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            // openInterest: market.data && market.data.openInterest, what is Open Interest 24h High ?
+            // TODO openInterest: market.data && market.data.openInterest, what is Open Interest 24h High ?
             targetStake: market.data && market.data.targetStake,
             suppliedStake: market.data && market.data?.suppliedStake,
             marketValueProxy: market.data && market.data.marketValueProxy,
           }}
-          decimalPlaces={market.decimalPlaces} // do we need to add decimal places here?
+          decimalPlaces={market.decimalPlaces} // TODO do we need to add decimal places here?
           assetSymbol={assetSymbol}
           link={
-            <a
-              href={`/markets/liquidity/${market.id}`}
-              className="border-b-2 text-ui"
-            >
-              {t('View liquidity provision table')}
-            </a>
+            <>
+              <Button
+                className="text-ui pl-0"
+                variant="inline-link"
+                onClick={() => setOpenLiquidityView(true)}
+              >
+                {t('View liquidity provision table')}
+              </Button>
+              <Dialog
+                open={openLiquidityView}
+                onChange={() => setOpenLiquidityView(!openLiquidityView)}
+              >
+                <LiquidityContainer marketId={market.id}></LiquidityContainer>
+              </Dialog>
+            </>
           }
         />
       ),
@@ -311,12 +315,14 @@ export const Info = ({ market }: InfoProps) => {
                 .oracleSpecForTradingTermination.id,
           }}
           link={
-            <a
+            <Link
+              target="_blank"
               href={`${VEGA_EXPLORER_URL}/oracles`}
-              className="border-b-2 text-ui"
+              className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
+              rel="noreferrer"
             >
               {t('View full oracle details')}
-            </a>
+            </Link>
           }
         />
       ),
@@ -334,190 +340,5 @@ export const Info = ({ market }: InfoProps) => {
         <Accordion panels={marketSpecPanels} />
       </div>
     </div>
-  );
-};
-
-const tooltipMapping: Record<string, ReactNode> = {
-  makerFee: t(
-    'Maker portion of the fee is transferred to the non-aggressive, or passive party in the trade (the maker, as opposed to the taker).'
-  ),
-  liquidityFee: t(
-    'Liquidity portion of the fee is paid to market makers for providing liquidity, and is transferred to the market-maker fee pool for the market.'
-  ),
-  infrastructureFee: t(
-    'Fees paid to validators as a reward for running the infrastructure of the network.'
-  ),
-
-  markPrice: t(
-    'A concept derived from traditional markets. It is a calculated value for the ‘current market price’ on a market.'
-  ),
-  openInterest: t(
-    'The volume of all open positions in a given market (the sum of the size of all positions greater than 0).'
-  ),
-  indicativeVolume: t(
-    'The volume at which all trades would occur if the auction was uncrossed now (when in auction mode).'
-  ),
-  bestBidVolume: t(
-    'The aggregated volume being bid at the best bid price on the market.'
-  ),
-  bestOfferVolume: t(
-    'The aggregated volume being offered at the best offer price on the market.'
-  ),
-  bestStaticBidVolume: t(
-    'The aggregated volume being bid at the best static bid price on the market.'
-  ),
-  bestStaticOfferVolume: t(
-    'The aggregated volume being offered at the best static offer price on the market.'
-  ),
-
-  decimalPlaces: t('The smallest price increment on the book.'),
-  positionDecimalPlaces: t(
-    'How big the smallest order / position on the market can be.'
-  ),
-  tradingMode: t('The trading mode the market is currently running.'),
-  state: t('The current state of the market'),
-
-  base: t(
-    'The first currency in a pair for a currency-based derivatives market.'
-  ),
-  quote: t(
-    'The second currency in a pair for a currency-based derivatives market.'
-  ),
-  class: t(
-    'The classification of the product. Examples: shares, commodities, crypto, FX.'
-  ),
-  sector: t(
-    'Data about the sector. Example: "automotive" for a market based on value of Tesla shares.'
-  ),
-
-  short: t(
-    'A number that will be calculated by an appropriate stochastic risk model, dependent on the type of risk model used and its parameters.'
-  ),
-  long: t(
-    'A number that will be calculated by an appropriate stochastic risk model, dependent on the type of risk model used and its parameters.'
-  ),
-
-  tau: (
-    <span>
-      {t('Projection horizon measured as a year fraction used in ')}
-      <Link
-        href="https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7"
-        target="__blank"
-      >
-        {t('Expected Shortfall')}
-      </Link>
-      {t(' calculation when obtaining Risk Factor Long and Risk Factor Short')}
-    </span>
-  ),
-  riskAversionParameter: (
-    <span>
-      {t('Probability level used in ')}
-      <Link
-        href="https://vega.xyz/papers/margins-and-credit-risk.pdf#page=7"
-        target="__blank"
-      >
-        {t('Expected Shortfall')}
-      </Link>
-      {t(' calculation when obtaining Risk Factor Long and Risk Factor Short')}
-    </span>
-  ),
-
-  horizonSecs: t('Time horizon of the price projection in seconds.'),
-  probability: t(
-    'Probability level for price projection, e.g. value of 0.95 will result in a price range such that over the specified projection horizon, the prices observed in the market should be in that range 95% of the time.'
-  ),
-  auctionExtensionSecs: t(
-    'Auction extension duration in seconds, should the price breach its theoretical level over the specified horizon at the specified probability level.'
-  ),
-
-  triggeringRatio: t('The triggering ratio for entering liquidity auction.'),
-  timeWindow: t('The length of time over which open interest is measured.'),
-  scalingFactor: t(
-    'The scaling between the liquidity demand estimate, based on open interest and target stake.'
-  ),
-};
-
-interface RowProps {
-  field: string;
-  value: any;
-  decimalPlaces?: number;
-  asPercentage?: boolean;
-  unformatted?: boolean;
-  assetSymbol?: string;
-}
-
-const Row = ({
-  field,
-  value,
-  decimalPlaces,
-  asPercentage,
-  unformatted,
-  assetSymbol = '',
-}: RowProps) => {
-  const isNumber = typeof value === 'number' || !isNaN(Number(value));
-  const isPrimitive = typeof value === 'string' || isNumber;
-  const className = 'text-black dark:text-white text-ui !px-0 !font-normal';
-  if (isPrimitive) {
-    return (
-      <KeyValueTableRow
-        key={field}
-        inline={isPrimitive}
-        muted={true}
-        noBorder={true}
-        dtClassName={className}
-        ddClassName={className}
-      >
-        <Tooltip description={tooltipMapping[field]} align="start">
-          <div tabIndex={-1}>{startCase(t(field))}</div>
-        </Tooltip>
-        {isNumber && !unformatted
-          ? decimalPlaces
-            ? `${addDecimalsFormatNumber(value, decimalPlaces)} ${assetSymbol}`
-            : asPercentage
-            ? formatNumberPercentage(new BigNumber(value * 100))
-            : `${formatNumber(Number(value))} ${assetSymbol}`
-          : value}
-      </KeyValueTableRow>
-    );
-  }
-  return null;
-};
-
-export interface MarketInfoTableProps {
-  data: any;
-  decimalPlaces?: number;
-  asPercentage?: boolean;
-  unformatted?: boolean;
-  omits?: string[];
-  link?: ReactNode;
-  assetSymbol?: string;
-}
-
-export const MarketInfoTable = ({
-  data,
-  decimalPlaces,
-  asPercentage,
-  unformatted,
-  omits = ['__typename'],
-  link,
-  assetSymbol,
-}: MarketInfoTableProps) => {
-  return (
-    <>
-      <KeyValueTable muted={true}>
-        {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
-          <Row
-            key={key}
-            field={key}
-            value={value}
-            decimalPlaces={decimalPlaces}
-            assetSymbol={assetSymbol}
-            asPercentage={asPercentage}
-            unformatted={unformatted || key.toLowerCase().includes('volume')}
-          />
-        ))}
-      </KeyValueTable>
-      {link}
-    </>
   );
 };

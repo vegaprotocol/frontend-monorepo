@@ -38,7 +38,9 @@ export const MarketsContainer = () => {
     MarketList_markets[],
     MarketList_markets_data
   >({ dataProvider, update, variables });
+
   dataRef.current = data;
+
   const getRows = async ({
     successCallback,
     startRow,
@@ -52,6 +54,7 @@ export const MarketsContainer = () => {
     const lastRow = dataRef.current?.length ?? -1;
     successCallback(rowsThisBlock, lastRow);
   };
+
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <MarketListTable
