@@ -116,6 +116,7 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       market: MarketNames_markets,
       index: number
     ) => {
+      event.preventDefault();
       switch (event.key) {
         case 'ArrowDown':
           if (index < results.length - 1) {
