@@ -1,7 +1,6 @@
 import styles from './orderbook.module.scss';
 
 import {
-  Fragment,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -24,7 +23,7 @@ interface OrderbookProps extends OrderbookData {
   onResolutionChange: (resolution: number) => void;
 }
 
-const horizontalLine = (top: string, testId: string) => (
+const HorizontalLine = ({ top, testId }: { top: string; testId: string }) => (
   <div
     className="border-b-1 absolute inset-x-0"
     style={{ top }}
@@ -268,18 +267,44 @@ export const Orderbook = ({
     prependingBufferSize + viewportSize + bufferSize,
     numberOfRows - offset
   );
-  const renderedRows = {
-    offset,
-    limit,
-    data: getRowsToRender(rows, resolution, offset, limit),
-  };
+  const data = getRowsToRender(rows, resolution, offset, limit);
 
-  const paddingTop = renderedRows.offset * rowHeight;
-  const paddingBottom =
-    (numberOfRows - renderedRows.offset - renderedRows.limit) * rowHeight;
+  const paddingTop = offset * rowHeight;
+  const paddingBottom = (numberOfRows - offset - limit) * rowHeight;
   const minPriceLevel =
     BigInt(maxPriceLevel) - BigInt(Math.floor(numberOfRows * resolution));
-  const hasData = renderedRows.data && renderedRows.data.length !== 0;
+  const tableBody =
+    data && data.length !== 0 ? (
+      <div
+        className="grid grid-cols-4 gap-5 text-right text-ui-small"
+        style={{
+          gridAutoRows: '17px',
+        }}
+      >
+        {data.map((data, i) => (
+          <OrderbookRow
+            key={data.price}
+            price={(BigInt(data.price) / BigInt(resolution)).toString()}
+            decimalPlaces={decimalPlaces - Math.log10(resolution)}
+            positionDecimalPlaces={positionDecimalPlaces}
+            bid={data.bid}
+            relativeBid={data.relativeBid}
+            cumulativeBid={data.cumulativeVol.bid}
+            cumulativeRelativeBid={data.cumulativeVol.relativeBid}
+            ask={data.ask}
+            relativeAsk={data.relativeAsk}
+            cumulativeAsk={data.cumulativeVol.ask}
+            cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
+            indicativeVolume={
+              marketTradingMode !== MarketTradingMode.TRADING_MODE_CONTINUOUS &&
+              indicativePrice === data.price
+                ? indicativeVolume
+                : undefined
+            }
+          />
+        ))}
+      </div>
+    ) : null;
   return (
     <div
       className={`h-full overflow-auto relative ${styles['scroll']} pl-4`}
@@ -296,52 +321,18 @@ export const Orderbook = ({
         <div>{t('Ask vol')}</div>
         <div className="pr-4">{t('Cumulative vol')}</div>
       </div>
-
       <div
+        className="relative text-right text-ui-small"
         style={{
           paddingTop: `${paddingTop}px`,
           paddingBottom: `${paddingBottom}px`,
-          minHeight: `calc(100% - ${2 * rowHeight}px)`,
-          background: hasData
+          minHeight: `calc(100% - ${2 * (rowHeight + 2)}px)`,
+          background: tableBody
             ? 'linear-gradient(#999,#999) 24.6% 0/1px 100% no-repeat, linear-gradient(#999,#999) 50% 0/1px 100% no-repeat, linear-gradient(#999,#999) 75.2% 0/1px 100% no-repeat'
             : 'none',
         }}
       >
-        {hasData ? (
-          <div
-            className="grid grid-cols-4 gap-5 text-right text-ui-small"
-            style={{
-              gridAutoRows: '17px',
-            }}
-          >
-            {renderedRows.data?.map((data) => {
-              return (
-                <Fragment key={data.price}>
-                  <OrderbookRow
-                    price={(BigInt(data.price) / BigInt(resolution)).toString()}
-                    decimalPlaces={decimalPlaces - Math.log10(resolution)}
-                    positionDecimalPlaces={positionDecimalPlaces}
-                    bid={data.bid}
-                    relativeBid={data.relativeBid}
-                    cumulativeBid={data.cumulativeVol.bid}
-                    cumulativeRelativeBid={data.cumulativeVol.relativeBid}
-                    ask={data.ask}
-                    relativeAsk={data.relativeAsk}
-                    cumulativeAsk={data.cumulativeVol.ask}
-                    cumulativeRelativeAsk={data.cumulativeVol.relativeAsk}
-                    indicativeVolume={
-                      marketTradingMode !==
-                        MarketTradingMode.TRADING_MODE_CONTINUOUS &&
-                      indicativePrice === data.price
-                        ? indicativeVolume
-                        : undefined
-                    }
-                  />
-                </Fragment>
-              );
-            })}
-          </div>
-        ) : (
+        {tableBody || (
           <div className="inset-0 absolute">
             <Splash>{t('No data')}</Splash>
           </div>
@@ -387,30 +378,32 @@ export const Orderbook = ({
       {maxPriceLevel &&
         bestStaticBidPrice &&
         BigInt(bestStaticBidPrice) < BigInt(maxPriceLevel) &&
-        BigInt(bestStaticBidPrice) > minPriceLevel &&
-        horizontalLine(
-          `${(
-            ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
-              BigInt(resolution) +
-              BigInt(1)) *
-              BigInt(rowHeight) -
-            BigInt(3)
-          ).toString()}px`,
-          'best-static-bid-price'
+        BigInt(bestStaticBidPrice) > minPriceLevel && (
+          <HorizontalLine
+            top={`${(
+              ((BigInt(maxPriceLevel) - BigInt(bestStaticBidPrice)) /
+                BigInt(resolution) +
+                BigInt(1)) *
+                BigInt(rowHeight) +
+              BigInt(1)
+            ).toString()}px`}
+            testId="best-static-bid-price"
+          />
         )}
       {maxPriceLevel &&
         bestStaticOfferPrice &&
         BigInt(bestStaticOfferPrice) <= BigInt(maxPriceLevel) &&
-        BigInt(bestStaticOfferPrice) > minPriceLevel &&
-        horizontalLine(
-          `${(
-            ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
-              BigInt(resolution) +
-              BigInt(2)) *
-              BigInt(rowHeight) -
-            BigInt(3)
-          ).toString()}px`,
-          'best-static-offer-price'
+        BigInt(bestStaticOfferPrice) > minPriceLevel && (
+          <HorizontalLine
+            top={`${(
+              ((BigInt(maxPriceLevel) - BigInt(bestStaticOfferPrice)) /
+                BigInt(resolution) +
+                BigInt(2)) *
+                BigInt(rowHeight) +
+              BigInt(1)
+            ).toString()}px`}
+            testId={'best-static-offer-price'}
+          />
         )}
     </div>
   );

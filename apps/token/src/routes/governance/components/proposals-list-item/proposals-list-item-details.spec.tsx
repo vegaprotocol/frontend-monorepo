@@ -372,7 +372,7 @@ describe('Proposals list item details', () => {
     );
     expect(screen.getByTestId('proposal-status')).toHaveTextContent('Rejected');
     expect(screen.getByTestId('vote-status')).toHaveTextContent(
-      'PROPOSAL_ERROR_INVALID_FUTURE_PRODUCT'
+      'Invalid future product'
     );
   });
 });
