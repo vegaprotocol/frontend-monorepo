@@ -57,6 +57,23 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           }}
         />
         <AgGridColumn
+          headerName="TX Hash"
+          field="txHash"
+          cellRenderer={({ value }: { value: string }) => {
+            if (!value) return '';
+            return (
+              <Link
+                title={t('View transaction on Etherscan')}
+                href={`${ETHERSCAN_URL}/tx/${value}`}
+                data-testid="etherscan-link"
+                target="_blank"
+              >
+                {truncateByChars(value)}
+              </Link>
+            );
+          }}
+        />
+        <AgGridColumn
           headerName="Status"
           field="status"
           cellRenderer="StatusCell"
@@ -73,12 +90,7 @@ export interface StatusCellProps extends ICellRendererParams {
   complete: (withdrawalId: string) => void;
 }
 
-export const StatusCell = ({
-  ethUrl,
-  value,
-  data,
-  complete,
-}: StatusCellProps) => {
+export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
   if (data.pendingOnForeignChain) {
     return (
       <div className="flex justify-between gap-8">
@@ -108,19 +120,7 @@ export const StatusCell = ({
     );
   }
 
-  return (
-    <div className="flex justify-between gap-8">
-      {t('Finalized')}
-      <Link
-        title={t('View transaction on Etherscan')}
-        href={`${ethUrl}/tx/${data.txHash}`}
-        data-testid="etherscan-link"
-        target="_blank"
-      >
-        {t('View on Etherscan')}
-      </Link>
-    </div>
-  );
+  return <span>{t('Finalized')}</span>;
 };
 
 export interface RecipientCellProps extends ICellRendererParams {

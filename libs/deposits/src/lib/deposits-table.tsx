@@ -7,6 +7,7 @@ import {
   t,
   addDecimalsFormatNumber,
   getDateTimeFormat,
+  truncateByChars,
 } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import type { DepositFields } from './__generated__/DepositFields';
@@ -52,7 +53,7 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
             data-testid="etherscan-link"
             target="_blank"
           >
-            {t('View on Etherscan')}
+            {truncateByChars(value)}
           </Link>
         )}
       />
