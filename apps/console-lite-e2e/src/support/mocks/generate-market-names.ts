@@ -82,7 +82,7 @@ export const generateMarketNames = () => {
         __typename: 'Market',
       },
       {
-        id: 'a46bd7e5277087723b7ab835844dec3cef8b4445738101269624bf5537d5d423',
+        id: 'ethbtc-quaterly',
         name: 'ETHBTC Quarterly (30 Jun 2022)',
         state: 'STATE_ACTIVE',
         tradableInstrument: {

@@ -116,7 +116,6 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
       market: MarketNames_markets,
       index: number
     ) => {
-      event.preventDefault();
       switch (event.key) {
         case 'ArrowDown':
           if (index < results.length - 1) {
@@ -137,8 +136,12 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
           break;
 
         case 'Enter':
+          event.preventDefault();
           handleMarketSelect(market);
           break;
+        default:
+          setShowPane(false);
+          setLookup(market.name);
       }
     },
     [results, handleMarketSelect]
