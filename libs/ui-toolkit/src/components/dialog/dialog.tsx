@@ -28,7 +28,7 @@ export function Dialog({
   size = 'medium',
 }: DialogProps) {
   const wrapperClasses = classNames(
-    'relative py-24 max-h-[100%] overflow-y-scroll',
+    'relative py-24 max-h-[100%] overflow-y-auto',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black dark:text-white-95 bg-white text-black-95',
     getIntentShadow(intent),
