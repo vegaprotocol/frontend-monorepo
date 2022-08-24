@@ -58,7 +58,7 @@ jobs:
           token: ${{ secrets.VEGA_CI_BOT_GITHUB_TOKEN }}
           path: './vega'
 
-      - name: Install Vega and Vega wallet binaries
+      - name: Install Vega binaries
         run: go install -v ./cmd/vega
         working-directory: vega
 
