@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { t } from '@vegaprotocol/react-helpers';
+import { assetsConnectionToAssets, t } from '@vegaprotocol/react-helpers';
 import { Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { WithdrawManager } from '@vegaprotocol/withdraws';
@@ -29,8 +29,12 @@ const WITHDRAW_PAGE_QUERY = gql`
         }
       }
     }
-    assets {
-      ...AssetFields
+    assetsConnection {
+      edges {
+        node {
+          ...AssetFields
+        }
+      }
     }
   }
 `;
@@ -55,7 +59,8 @@ export const WithdrawPageContainer = ({
         skip: !keypair?.pub,
       }}
       render={(data) => {
-        if (!data.assets?.length) {
+        const assets = assetsConnectionToAssets(data.assetsConnection);
+        if (!assets.length) {
           return (
             <Splash>
               <p>{t('No assets on this network')}</p>
@@ -84,7 +89,7 @@ export const WithdrawPageContainer = ({
               </p>
             ) : null}
             <WithdrawManager
-              assets={data.assets}
+              assets={assets}
               accounts={data.party?.accounts || []}
               initialAssetId={assetId}
             />

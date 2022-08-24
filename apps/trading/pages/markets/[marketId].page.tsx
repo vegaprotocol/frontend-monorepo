@@ -105,7 +105,7 @@ const MarketPage = ({ id }: { id?: string }) => {
       options={{
         variables: {
           marketId,
-          interval: Interval.I1H,
+          interval: Interval.INTERVAL_I1H,
           since: yTimestamp,
         },
         fetchPolicy: 'network-only',
@@ -132,7 +132,6 @@ const MarketPage = ({ id }: { id?: string }) => {
                   store.setMarketId(marketId);
                 }
               }}
-              title={t('Select a market to get started')}
             />
           </>
         );
