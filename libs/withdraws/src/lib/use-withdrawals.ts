@@ -24,8 +24,14 @@ const WITHDRAWAL_FRAGMENT = gql`
     amount
     asset {
       id
+      name
       symbol
       decimals
+      source {
+        ... on ERC20 {
+          contractAddress
+        }
+      }
     }
     createdTimestamp
     withdrawnTimestamp

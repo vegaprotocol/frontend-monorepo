@@ -1,4 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
+import { t } from '@vegaprotocol/react-helpers';
 import { WithdrawManager } from './withdraw-manager';
 
 export const ASSET_FRAGMENT = gql`
@@ -45,11 +46,11 @@ export const WithdrawFormContainer = ({ partyId }: { partyId?: string }) => {
   });
 
   if (loading || !data) {
-    return <div>Loading...</div>;
+    return <div>{t('Loading...')}</div>;
   }
 
   if (error) {
-    return <div>Something went wrong</div>;
+    return <div>{t('Something went wrong')}</div>;
   }
 
   return (

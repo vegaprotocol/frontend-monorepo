@@ -2,21 +2,19 @@ import { t } from '@vegaprotocol/react-helpers';
 import type BigNumber from 'bignumber.js';
 
 interface WithdrawLimitsProps {
-  limits: {
-    max: BigNumber;
-  };
+  threshold: BigNumber;
   balance: BigNumber;
 }
 
-export const WithdrawLimits = ({ limits, balance }: WithdrawLimitsProps) => {
-  let maxLimit = '';
+export const WithdrawLimits = ({ threshold, balance }: WithdrawLimitsProps) => {
+  let text = '';
 
-  if (limits.max.isEqualTo(Infinity)) {
-    maxLimit = t('No limit');
-  } else if (limits.max.isGreaterThan(1_000_000)) {
-    maxLimit = t('1m+');
+  if (threshold.isEqualTo(Infinity)) {
+    text = t('No limit');
+  } else if (threshold.isGreaterThan(1_000_000)) {
+    text = t('1m+');
   } else {
-    maxLimit = limits.max.toString();
+    text = threshold.toString();
   }
 
   return (
@@ -27,8 +25,10 @@ export const WithdrawLimits = ({ limits, balance }: WithdrawLimitsProps) => {
           <td className="text-right">{balance.toString()}</td>
         </tr>
         <tr>
-          <th className="text-left font-normal">{t('Maximum withdrawal')}</th>
-          <td className="text-right">{maxLimit}</td>
+          <th className="text-left font-normal">
+            {t('Large withdrawal threshold')}
+          </th>
+          <td className="text-right">{text}</td>
         </tr>
       </tbody>
     </table>

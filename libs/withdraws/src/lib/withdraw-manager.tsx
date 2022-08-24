@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
 import { useCreateWithdraw } from './use-create-withdraw';
@@ -7,8 +7,9 @@ import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import type { Account } from './types';
-import { useGetWithdrawLimits } from './use-get-withdraw-limits';
+import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { VegaDialog } from '@vegaprotocol/wallet';
+import { captureException } from '@sentry/react';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
@@ -18,6 +19,11 @@ export interface WithdrawManagerProps {
 export const WithdrawManager = ({ assets, accounts }: WithdrawManagerProps) => {
   const { submit, transaction } = useCreateWithdraw();
   const [assetId, setAssetId] = useState<string | undefined>();
+  const [threshold, setThreshold] = useState<BigNumber>(
+    new BigNumber(Infinity)
+  );
+
+  const getThreshold = useGetWithdrawThreshold();
 
   // Find the asset object from the select box
   const asset = useMemo(() => {
@@ -31,31 +37,41 @@ export const WithdrawManager = ({ assets, accounts }: WithdrawManagerProps) => {
     );
   }, [asset, accounts]);
 
-  const limits = useGetWithdrawLimits(asset);
-
-  const max = useMemo(() => {
-    if (!asset) {
-      return {
-        balance: new BigNumber(0),
-        threshold: new BigNumber(0),
-      };
+  const balance = useMemo(() => {
+    if (!asset || !account) {
+      return new BigNumber(0);
     }
 
-    const balance = account
-      ? new BigNumber(addDecimal(account.balance, asset.decimals))
-      : new BigNumber(0);
-
-    return {
-      balance,
-      threshold: limits ? limits.max : new BigNumber(Infinity),
-    };
-  }, [asset, account, limits]);
+    return new BigNumber(addDecimal(account.balance, asset.decimals));
+  }, [asset, account]);
 
   const min = useMemo(() => {
     return asset
       ? new BigNumber(addDecimal('1', asset.decimals))
       : new BigNumber(0);
   }, [asset]);
+
+  useEffect(() => {
+    let mounted = true;
+
+    const run = async () => {
+      try {
+        const threshold = await getThreshold(asset);
+
+        if (mounted) {
+          setThreshold(threshold);
+        }
+      } catch (err) {
+        captureException(err);
+      }
+    };
+
+    run();
+
+    return () => {
+      mounted = false;
+    };
+  }, [asset, getThreshold]);
 
   if (transaction.dialogOpen) {
     return <VegaDialog transaction={transaction} />;
@@ -66,10 +82,10 @@ export const WithdrawManager = ({ assets, accounts }: WithdrawManagerProps) => {
       selectedAsset={asset}
       onSelectAsset={(id) => setAssetId(id)}
       assets={sortBy(assets, 'name')}
-      max={max}
+      balance={balance}
       min={min}
       submitWithdraw={submit}
-      limits={limits}
+      threshold={threshold}
     />
   );
 };

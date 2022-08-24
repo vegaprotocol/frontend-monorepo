@@ -5,7 +5,6 @@ import {
   t,
   removeDecimal,
   required,
-  maxSafe,
   isAssetTypeERC20,
 } from '@vegaprotocol/react-helpers';
 import {
@@ -30,25 +29,20 @@ interface FormFields {
 
 export interface WithdrawFormProps {
   assets: Asset[];
-  max: {
-    balance: BigNumber;
-    threshold: BigNumber;
-  };
   min: BigNumber;
+  balance: BigNumber;
   selectedAsset?: Asset;
-  limits: {
-    max: BigNumber;
-  } | null;
+  threshold: BigNumber;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalArgs) => void;
 }
 
 export const WithdrawForm = ({
   assets,
-  max,
+  balance,
   min,
   selectedAsset,
-  limits,
+  threshold,
   onSelectAsset,
   submitWithdraw,
 }: WithdrawFormProps) => {
@@ -120,9 +114,9 @@ export const WithdrawForm = ({
           <InputError intent="danger">{errors.to.message}</InputError>
         )}
       </FormGroup>
-      {selectedAsset && limits && (
+      {selectedAsset && threshold && (
         <div className="mb-6">
-          <WithdrawLimits limits={limits} balance={max.balance} />
+          <WithdrawLimits threshold={threshold} balance={balance} />
         </div>
       )}
       <FormGroup label={t('Amount')} labelFor="amount">
@@ -135,14 +129,10 @@ export const WithdrawForm = ({
               required,
               maxSafe: (v) => {
                 const value = new BigNumber(v);
-                if (value.isGreaterThan(max.balance)) {
+                if (value.isGreaterThan(balance)) {
                   return t('Insufficient amount in account');
-                } else if (value.isGreaterThan(max.threshold)) {
-                  return t('Amount is above temporary withdrawal limit');
                 }
-                return maxSafe(BigNumber.minimum(max.balance, max.threshold))(
-                  v
-                );
+                return true;
               },
               minSafe: (value) => minSafe(min)(value),
             },
@@ -157,7 +147,7 @@ export const WithdrawForm = ({
           <UseButton
             data-testid="use-maximum"
             onClick={() => {
-              setValue('amount', max.balance.toFixed(selectedAsset.decimals));
+              setValue('amount', balance.toFixed(selectedAsset.decimals));
               clearErrors('amount');
             }}
           >

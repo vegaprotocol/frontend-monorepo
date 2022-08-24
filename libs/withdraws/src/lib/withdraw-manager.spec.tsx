@@ -14,7 +14,7 @@ jest.mock('@web3-react/core', () => ({
   useWeb3React: () => ({ account: ethereumAddress }),
 }));
 
-jest.mock('./use-get-withdraw-limits', () => ({
+jest.mock('./use-get-withdraw-threshold', () => ({
   useGetWithdrawLimits: () => {
     return { max: new BigNumber(1000000) };
   },

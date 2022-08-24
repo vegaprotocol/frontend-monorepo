@@ -9,12 +9,30 @@ import { WithdrawalStatus } from "@vegaprotocol/types";
 // GraphQL query operation: Withdrawals
 // ====================================================
 
+export interface Withdrawals_party_withdrawalsConnection_edges_node_asset_source_BuiltinAsset {
+  __typename: "BuiltinAsset";
+}
+
+export interface Withdrawals_party_withdrawalsConnection_edges_node_asset_source_ERC20 {
+  __typename: "ERC20";
+  /**
+   * The address of the ERC20 contract
+   */
+  contractAddress: string;
+}
+
+export type Withdrawals_party_withdrawalsConnection_edges_node_asset_source = Withdrawals_party_withdrawalsConnection_edges_node_asset_source_BuiltinAsset | Withdrawals_party_withdrawalsConnection_edges_node_asset_source_ERC20;
+
 export interface Withdrawals_party_withdrawalsConnection_edges_node_asset {
   __typename: "Asset";
   /**
    * The ID of the asset
    */
   id: string;
+  /**
+   * The full name of the asset (e.g: Great British Pound)
+   */
+  name: string;
   /**
    * The symbol of the asset (e.g: GBP)
    */
@@ -23,6 +41,10 @@ export interface Withdrawals_party_withdrawalsConnection_edges_node_asset {
    * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
    */
   decimals: number;
+  /**
+   * The origin source of the asset (e.g: an ERC20 asset)
+   */
+  source: Withdrawals_party_withdrawalsConnection_edges_node_asset_source;
 }
 
 export interface Withdrawals_party_withdrawalsConnection_edges_node_details {

@@ -9,10 +9,16 @@ import {
   truncateByChars,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
-import { Link, AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
+import {
+  Dialog,
+  Link,
+  AgGridDynamic as AgGrid,
+} from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import { ApprovalStatus, useVerifyWithdrawal } from './use-verify-withdrawal';
+import { TransactionContent } from '@vegaprotocol/web3';
 
 export interface WithdrawalsTableProps {
   withdrawals: WithdrawalFields[];
@@ -20,7 +26,13 @@ export interface WithdrawalsTableProps {
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const { submit, Dialog } = useCompleteWithdraw();
+  const { submit, transaction, reset: resetTx } = useCompleteWithdraw();
+  const {
+    verify,
+    status,
+    message,
+    reset: resetVerification,
+  } = useVerifyWithdrawal();
 
   return (
     <>
@@ -77,10 +89,41 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           headerName="Status"
           field="status"
           cellRenderer="StatusCell"
-          cellRendererParams={{ complete: submit, ethUrl: ETHERSCAN_URL }}
+          cellRendererParams={{
+            complete: async (withdrawal: WithdrawalFields) => {
+              const verified = await verify(withdrawal);
+
+              if (!verified) {
+                return;
+              }
+
+              submit(withdrawal.id);
+            },
+            ethUrl: ETHERSCAN_URL,
+          }}
         />
       </AgGrid>
-      <Dialog />
+      <Dialog
+        title="Complete withdrawal"
+        onChange={(isOpen) => {
+          if (!isOpen) {
+            resetTx();
+            resetVerification();
+          }
+        }}
+        open={
+          (status !== ApprovalStatus.Idle && status !== ApprovalStatus.Ready) ||
+          transaction.dialogOpen
+        }
+      >
+        {status === ApprovalStatus.Ready ? (
+          <TransactionContent {...transaction} />
+        ) : (
+          <div>
+            <p>{message}</p>
+          </div>
+        )}
+      </Dialog>
     </>
   );
 };
@@ -113,7 +156,7 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
     return (
       <div className="flex justify-between gap-8">
         {t('Open')}
-        <button className="underline" onClick={() => complete(data.id)}>
+        <button className="underline" onClick={() => complete(data)}>
           {t('Click to complete')}
         </button>
       </div>

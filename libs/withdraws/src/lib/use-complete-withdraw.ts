@@ -25,7 +25,7 @@ export const useCompleteWithdraw = () => {
   const { query, cache } = useApolloClient();
   const contract = useBridgeContract();
   const [id, setId] = useState('');
-  const { transaction, perform, Dialog } = useEthereumTransaction<
+  const { transaction, perform, reset, Dialog } = useEthereumTransaction<
     CollateralBridge,
     'withdraw_asset'
   >(contract, 'withdraw_asset');
@@ -33,6 +33,7 @@ export const useCompleteWithdraw = () => {
   const submit = useCallback(
     async (withdrawalId: string) => {
       setId(withdrawalId);
+
       try {
         if (!contract) {
           return;
@@ -43,6 +44,7 @@ export const useCompleteWithdraw = () => {
         });
 
         const approval = res.data.erc20WithdrawalApproval;
+
         if (!approval) {
           throw new Error('Could not retrieve withdrawal approval');
         }
@@ -77,5 +79,5 @@ export const useCompleteWithdraw = () => {
     }
   }, [cache, transaction.status, transaction.txHash, id]);
 
-  return { transaction, Dialog, submit, withdrawalId: id };
+  return { transaction, reset, Dialog, submit, withdrawalId: id };
 };
