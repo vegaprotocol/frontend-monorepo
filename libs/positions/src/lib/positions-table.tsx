@@ -116,7 +116,7 @@ AmountCell.displayName = 'AmountCell';
 export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
   return (
     <AgGrid
-      style={{ width: '100%', height: '100%' }}
+      style={{ width: '100%' }}
       overlayNoRowsTemplate="No positions"
       getRowId={getRowId}
       rowHeight={34}
@@ -363,10 +363,19 @@ export const PositionsSummaryTable = forwardRef<
   PositionsSummaryTableProps
 >((props, ref) => {
   return (
-    <AgGrid ref={ref} {...props}>
+    <AgGrid
+      style={{ width: '100%' }}
+      ref={ref}
+      defaultColDef={{
+        flex: 1,
+        resizable: true,
+      }}
+      {...props}
+    >
       <AgGridColumn
         field="marketName"
         cellRenderer={MarketNameCell}
+        components={{ PriceFlashCell }}
         valueFormatter={({
           value,
         }: PositionsTableValueFormatterParams & {
@@ -391,7 +400,10 @@ export const PositionsSummaryTable = forwardRef<
           if (!data) {
             return undefined;
           }
-          if (data.marketTradingMode === MarketTradingMode.OpeningAuction) {
+          if (
+            data.marketTradingMode ===
+            MarketTradingMode.TRADING_MODE_OPENING_AUCTION
+          ) {
             return '-';
           }
           return addDecimalsFormatNumber(
@@ -400,9 +412,13 @@ export const PositionsSummaryTable = forwardRef<
           );
         }}
       />
+      <AgGridColumn />
+      <AgGridColumn flex={2} />
+      <AgGridColumn />
+      <AgGridColumn flex={2} />
       <AgGridColumn
+        field="realisedPNL"
         headerName={t('Realised PNL')}
-        colSpan={() => 5}
         type="rightAligned"
         cellClassRules={{
           'text-vega-green-dark dark:text-vega-green': ({

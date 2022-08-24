@@ -15,33 +15,28 @@ interface AssetBalanceProps {
 
 export const AssetBalance = ({ partyId, assetSymbol }: AssetBalanceProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const [balance, setBalance] = useState('');
-  const update = useCallback(
-    ({ data }: { data: AccountSubscribe_accounts[] }) => {
-      if (data && data.length) {
-        const totalBalance = data.reduce((a, c) => {
-          if (c.asset.symbol === assetSymbol) {
-            return a + BigInt(c.balance);
-          }
-          return a;
-        }, BigInt(0));
-        setBalance(
-          addDecimalsFormatNumber(
-            totalBalance.toString(),
-            data[0].asset.decimals
-          )
-        );
-      } else {
-        setBalance('');
-      }
-      return true;
-    },
-    [assetSymbol]
-  );
-  useDataProvider<Accounts_party_accounts[], AccountSubscribe_accounts>({
+  const { data } = useDataProvider<
+    Accounts_party_accounts[],
+    AccountSubscribe_accounts
+  >({
     dataProvider: accountsDataProvider,
-    update,
     variables,
   });
-  return balance ? <span>{}</span> : null;
+  if (data && data.length) {
+    const totalBalance = data.reduce((a, c) => {
+      if (c.asset.symbol === assetSymbol) {
+        return a + BigInt(c.balance);
+      }
+      return a;
+    }, BigInt(0));
+    return (
+      <span>
+        {addDecimalsFormatNumber(
+          totalBalance.toString(),
+          data[0].asset.decimals
+        )}
+      </span>
+    );
+  }
+  return null;
 };

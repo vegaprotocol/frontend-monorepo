@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
@@ -14,34 +14,36 @@ const getSymbols = (positions: Position[]) =>
 
 export const PositionsManager = ({ partyId }: PositionsManagerProps) => {
   const variables = useMemo(() => ({ partyId }), [partyId]);
-  const [assetSymbols, setAssetSymbols] = useState<string[] | undefined>();
-  const update = useCallback(
-    ({ data }: { data: Position[] | null }) => {
-      if (assetSymbols && data?.length) {
-        const newAssetSymbols = getSymbols(data);
-        if (!newAssetSymbols.every((symbol) => assetSymbols.includes(symbol))) {
-          setAssetSymbols(newAssetSymbols);
-        }
+  const assetSymbols = useRef<string[] | undefined>();
+  const update = useCallback(({ data }: { data: Position[] | null }) => {
+    if (data?.length) {
+      const newAssetSymbols = getSymbols(data);
+      if (
+        !newAssetSymbols.every(
+          (symbol) =>
+            assetSymbols.current && assetSymbols.current.includes(symbol)
+        )
+      ) {
+        return false;
       }
-      return true;
-    },
-    [assetSymbols]
-  );
+    }
+    return true;
+  }, []);
   const { data, error, loading } = useDataProvider<Position[], never>({
     dataProvider,
     update,
     variables,
   });
-  setAssetSymbols(data?.length ? getSymbols(data) : undefined);
   return (
     <AsyncRenderer loading={loading} error={error} data={assetSymbols}>
-      {assetSymbols?.map((assetSymbol) => (
-        <Positions
-          partyId={partyId}
-          assetSymbol={assetSymbol}
-          key={assetSymbol}
-        />
-      ))}
+      {data &&
+        getSymbols(data)?.map((assetSymbol) => (
+          <Positions
+            partyId={partyId}
+            assetSymbol={assetSymbol}
+            key={assetSymbol}
+          />
+        ))}
     </AsyncRenderer>
   );
 };

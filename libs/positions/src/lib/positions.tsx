@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo } from 'react';
+import { useRef, useCallback, useMemo, memo, useState } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { t, useDataProvider } from '@vegaprotocol/react-helpers';
 import type { AgGridReact } from 'ag-grid-react';
@@ -30,14 +30,15 @@ const getSummaryRow = (positions: Position[]) => {
     openVolume: summaryRow.openVolume.toString(),
     realisedPNL: summaryRow.realisedPNL.toString(),
     unrealisedPNL: summaryRow.unrealisedPNL.toString(),
-    assetDecimals: positions[0].assetDecimals,
+    assetDecimals: positions[0]?.assetDecimals || 0,
   };
 };
 
-export const Positions = ({ partyId, assetSymbol }: PositionsProps) => {
+export const Positions = memo(({ partyId, assetSymbol }: PositionsProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const summaryGridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
+  const [summaryGridReady, setSummaryGridReady] = useState(false);
   const dataRef = useRef<Position[] | null>(null);
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
@@ -46,7 +47,7 @@ export const Positions = ({ partyId, assetSymbol }: PositionsProps) => {
       }
       dataRef.current = filter(data, { assetSymbol });
       gridRef.current.api.refreshInfiniteCache();
-      return true;
+      return !!summaryGridRef.current;
     },
     [assetSymbol]
   );
@@ -72,15 +73,18 @@ export const Positions = ({ partyId, assetSymbol }: PositionsProps) => {
   };
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
-      <h3>
-        {assetSymbol} {t('markets')}
-      </h3>
-      <p>
-        {assetSymbol} {t('balance')}:
-        <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
-      </p>
+      <div className="text-black dark:text-white p-8">
+        <h5 className="text-h5">
+          {assetSymbol} {t('markets')}
+        </h5>
+        <p>
+          {assetSymbol} {t('balance')}:
+          <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
+        </p>
+      </div>
       <PositionsTable
         domLayout="autoHeight"
+        suppressHorizontalScroll={true}
         ref={gridRef}
         alignedGrids={
           summaryGridRef.current ? [summaryGridRef.current] : undefined
@@ -89,14 +93,16 @@ export const Positions = ({ partyId, assetSymbol }: PositionsProps) => {
         rowData={data?.length ? undefined : []}
         datasource={{ getRows }}
       />
-      {data?.length ? (
-        <PositionsSummaryTable
-          ref={summaryGridRef}
-          alignedGrids={gridRef.current ? [gridRef.current] : undefined}
-          rowData={[getSummaryRow(dataRef.current)]}
-          headerHeight={0}
-        />
-      ) : null}
+      <PositionsSummaryTable
+        domLayout="autoHeight"
+        ref={summaryGridRef}
+        alignedGrids={gridRef.current ? [gridRef.current] : undefined}
+        onGridReady={(params) => {
+          setSummaryGridReady(true);
+        }}
+        rowData={[getSummaryRow(dataRef.current)]}
+        headerHeight={0}
+      />
     </AsyncRenderer>
   );
-};
+});
