@@ -1,5 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import { t } from '@vegaprotocol/react-helpers';
+import { assetsConnectionToAssets, t } from '@vegaprotocol/react-helpers';
 import React from 'react';
 import { RouteTitle } from '../../components/route-title';
 import { SubHeading } from '../../components/sub-heading';
@@ -8,24 +8,28 @@ import type { AssetsQuery } from './__generated__/AssetsQuery';
 
 export const ASSETS_QUERY = gql`
   query AssetsQuery {
-    assets {
-      id
-      name
-      symbol
-      decimals
-      source {
-        ... on ERC20 {
-          contractAddress
-        }
-        ... on BuiltinAsset {
-          maxFaucetAmountMint
-        }
-      }
-      infrastructureFeeAccount {
-        type
-        balance
-        market {
+    assetsConnection {
+      edges {
+        node {
           id
+          name
+          symbol
+          decimals
+          source {
+            ... on ERC20 {
+              contractAddress
+            }
+            ... on BuiltinAsset {
+              maxFaucetAmountMint
+            }
+          }
+          infrastructureFeeAccount {
+            type
+            balance
+            market {
+              id
+            }
+          }
         }
       }
     }
@@ -34,11 +38,13 @@ export const ASSETS_QUERY = gql`
 
 const Assets = () => {
   const { data } = useQuery<AssetsQuery>(ASSETS_QUERY);
-  if (!data || !data.assets) return null;
+
+  const assets = assetsConnectionToAssets(data?.assetsConnection);
+
   return (
     <section>
       <RouteTitle data-testid="assets-header">{t('Assets')}</RouteTitle>
-      {data?.assets.map((a) => (
+      {assets.map((a) => (
         <React.Fragment key={a.id}>
           <SubHeading data-testid="asset-header">
             {a.name} ({a.symbol})

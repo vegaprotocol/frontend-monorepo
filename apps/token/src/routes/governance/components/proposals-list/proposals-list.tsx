@@ -1,5 +1,5 @@
 import { isFuture } from 'date-fns';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
@@ -8,7 +8,6 @@ import type { Proposals_proposals } from '../../proposals/__generated__/Proposal
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
-import { ProposalState } from '@vegaprotocol/types';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
@@ -23,11 +22,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
 
-  const failedProposalsCulled = proposals.filter(
-    ({ state }) => state !== ProposalState.STATE_FAILED
-  );
-
-  const sortedProposals = failedProposalsCulled.reduce(
+  const sortedProposals = proposals.reduce(
     (acc: SortedProposalsProps, proposal) => {
       if (isFuture(new Date(proposal.terms.closingDatetime))) {
         acc.open.push(proposal);
@@ -59,7 +54,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         </Link>
       </div>
 
-      {failedProposalsCulled.length > 0 && (
+      {proposals.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
 
