@@ -32,7 +32,8 @@ export const LiquidityManager = ({
   const wrapperClasses = classNames(
     'h-full max-h-full',
     'flex flex-col',
-    'text-ui'
+    'text-ui',
+    'gap-24'
   );
 
   const myLiquidityProvision =
@@ -47,7 +48,7 @@ export const LiquidityManager = ({
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       <div className={wrapperClasses}>
-        <h5 className="text-ui font-bold text-black dark:text-white">
+        <h5 className="text-h5 font-bold text-black dark:text-white">
           {`${data?.market?.tradableInstrument.instrument.code} ${t(
             'liquidity provision'
           )}`}
@@ -57,9 +58,9 @@ export const LiquidityManager = ({
           <div className="text-ui font-bold text-black dark:text-white">
             {t('Market specification')}
           </div>
-          <div className="grid grid-cols-2 gap-2 mb-10">
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Target stake')}</div>
+          <div className="grid grid-cols-2 gap-24 mb-10">
+            <div className="text-ui">
+              <div>{t('Target stake')}</div>
               <div>
                 {formatNumber(
                   new BigNumber(data?.market?.data?.suppliedStake ?? 0),
@@ -67,8 +68,8 @@ export const LiquidityManager = ({
                 )}
               </div>
             </div>
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Supplied stake')}</div>
+            <div className="text-ui">
+              <div>{t('Supplied stake')}</div>
               <div>
                 {formatNumber(
                   new BigNumber(data?.market?.data?.suppliedStake ?? 0),
@@ -84,12 +85,12 @@ export const LiquidityManager = ({
             {t('My liquidity provision')}
           </div>
           <div className="grid grid-cols-9 gap-4">
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Party')}</div>
+            <div className="text-ui">
+              <div>{t('Party')}</div>
               <div>{myLiquidityProvision?.node.id}</div>
             </div>
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Share')}</div>
+            <div className="text-ui">
+              <div>{t('Share')}</div>
               <div>
                 {formatNumberPercentage(
                   new BigNumber(
@@ -99,18 +100,16 @@ export const LiquidityManager = ({
               </div>
             </div>
 
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Fee')}</div>
+            <div className="text-ui">
+              <div>{t('Fee')}</div>
               <div>
                 {formatNumberPercentage(
                   new BigNumber(myLiquidityProvision?.node.fee || 0)
                 )}
               </div>
             </div>
-            <div className="text-ui-small">
-              <div className="text-ui-small">
-                {t('Average entry valuation')}
-              </div>
+            <div className="text-ui">
+              <div className="text-ui">{t('Average entry valuation')}</div>
               <div>
                 {formatNumberPercentage(
                   new BigNumber(
@@ -119,32 +118,32 @@ export const LiquidityManager = ({
                 )}
               </div>
             </div>
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Obligation (siskas)')}</div>
+            <div className="text-ui">
+              <div>{t('Obligation (siskas)')}</div>
               <div>
                 {
                   myLiquidityProvision?.node.commitmentAmount ?? 0 // TODO is this the correct obligation? how do we format it?
                 }
               </div>
             </div>
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Supplied (siskas)')}</div>
+            <div className="text-ui">
+              <div>{t('Supplied (siskas)')}</div>
               <div>
                 {
                   myLiquidityProvision?.node.commitmentAmount ?? 0 // TODO is this the correct supplied? how do we format it?
                 }
               </div>
             </div>
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Created')}</div>
+            <div className="text-ui">
+              <div>{t('Created')}</div>
               <div>
                 {getDateTimeFormat().format(
                   new Date(myLiquidityProvision?.node.createdAt ?? 0)
                 )}
               </div>
             </div>
-            <div className="text-ui-small">
-              <div className="text-ui-small">{t('Updated')}</div>
+            <div className="text-ui">
+              <div>{t('Updated')}</div>
               <div>
                 {getDateTimeFormat().format(
                   new Date(myLiquidityProvision?.node.updatedAt ?? 0)
