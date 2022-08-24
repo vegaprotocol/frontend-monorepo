@@ -12,6 +12,7 @@ import type { RemoveStakePayload } from './hooks';
 import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BigNumber } from '../../../lib/bignumber';
+import { truncateMiddle } from '../../../lib/truncate-middle';
 
 type Association = {
   key: string;
@@ -126,7 +127,8 @@ export const DisassociatePage = ({
               value={k.key}
               title={`${t(k.stakingMethod)}: ${formatNumber(k.value, 18)}`}
             >
-              {k.key}
+              {truncateMiddle(k.key)} {t(`via${k.stakingMethod}`)} (
+              {formatNumber(k.value, 18)} {t('tokens')})
             </option>
           ))}
         </Select>
