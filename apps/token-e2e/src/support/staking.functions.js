@@ -48,8 +48,6 @@ Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
     .and('be.visible')
     .click();
 });
-
-
 Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
   let approve = options && options.approve ? options.approve : false;
   let type = options && options.type ? options.type : 'wallet';
@@ -89,8 +87,6 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
 
 Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
   let type = options && options.type ? options.type : 'wallet';
-
-
   cy.highlight(`Disassociating ${amount} tokens via Staking Page`);
   cy.get(ethWalletDissociateButton).first().click();
   cy.get(associateWalletRadioButton, epochTimeout).click();
