@@ -11,6 +11,10 @@ import { MarketTradingMode, MarketState } from "@vegaprotocol/types";
 
 export interface MarketsLanding_markets_marketTimestamps {
   __typename: "MarketTimestamps";
+  /**
+   * Time when the market is open and ready to accept trades
+   */
+  open: string | null;
 }
 
 export interface MarketsLanding_markets {
