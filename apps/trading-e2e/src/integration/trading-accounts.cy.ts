@@ -28,7 +28,7 @@ describe('accounts', () => {
       .should('be.visible')
       .get(tradingAccountRowId)
       .find('[col-id="type"]')
-      .should('have.text', 'ACCOUNT_TYPE_GENERAL');
+      .should('have.text', 'General');
 
     cy.getByTestId('tab-accounts')
       .should('be.visible')
