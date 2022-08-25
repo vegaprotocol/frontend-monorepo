@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "accounts": "libs/accounts",
+    "assets": "libs/assets",
     "candles-chart": "libs/candles-chart",
     "console-lite": "apps/console-lite",
     "console-lite-e2e": "apps/console-lite-e2e",

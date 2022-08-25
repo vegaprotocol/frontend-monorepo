@@ -20,7 +20,7 @@ import { columns } from './select-market-columns';
 import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Positions } from '@vegaprotocol/positions';
-import { POSITION_QUERY } from '@vegaprotocol/positions';
+import { POSITIONS_QUERY } from '@vegaprotocol/positions';
 import { mapDataToMarketList } from '../utils/market-utils';
 import {
   SelectMarketTableHeader,
@@ -120,7 +120,7 @@ export const SelectMarketPopover = ({
   const [open, setOpen] = useState(false);
   const { data } = useMarkets();
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
-  const { data: marketDataPositions } = useQuery<Positions>(POSITION_QUERY, {
+  const { data: marketDataPositions } = useQuery<Positions>(POSITIONS_QUERY, {
     variables,
     skip: !keypair?.pub,
   });
@@ -130,14 +130,15 @@ export const SelectMarketPopover = ({
       markets:
         data?.markets
           ?.filter((market) =>
-            marketDataPositions?.party?.positions?.find(
-              (position) => position.market.id === market.id
+            marketDataPositions?.party?.positionsConnection.edges?.find(
+              (edge) => edge.node.market.id === market.id
             )
           )
           .map((market) => {
-            const position = marketDataPositions?.party?.positions?.find(
-              (position) => position.market.id === market.id
-            );
+            const position =
+              marketDataPositions?.party?.positionsConnection.edges?.find(
+                (edge) => edge.node.market.id === market.id
+              )?.node;
             return {
               ...market,
               openVolume:
