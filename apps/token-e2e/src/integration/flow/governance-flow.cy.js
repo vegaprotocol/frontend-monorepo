@@ -1,7 +1,7 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /// <reference types="cypress" />
 
-import { lowerCase } from "lodash";
+import { lowerCase } from 'lodash';
 
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalDatabox = '[data-testid="proposal-data"]';
@@ -22,7 +22,7 @@ const proposalVoteProgressAgainstTokens =
   '[data-testid="vote-progress-indicator-tokens-against"]';
 const changeVoteButton = '[data-testid="change-vote-button"]';
 const voteButtons = '[data-testid="vote-buttons"]';
-const rejectProposalsLink = '[href="/governance/rejected"]'
+const rejectProposalsLink = '[href="/governance/rejected"]';
 const txTimeout = Cypress.env('txTimeout');
 
 context('Governance flow - with eth and vega wallets connected', function () {
@@ -148,8 +148,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .then((proposalId) => {
           cy.get('[data-testid="set-proposals-filter-visible"]').click();
           cy.get('[data-testid="filter-input"]').type(proposalId);
-          cy.get(`#${proposalId}`)
-              .should('contain', `Freeform proposal: ${proposalId}`, {timeout:txTimeout})
+          cy.get(`#${proposalId}`).should(
+            'contain',
+            `Freeform proposal: ${proposalId}`,
+            { timeout: txTimeout }
+          );
         });
     });
 
@@ -176,7 +179,9 @@ context('Governance flow - with eth and vega wallets connected', function () {
           cy.wait_for_spinner();
           cy.get(openProposals).within(() => {
             cy.get(`#${proposalId}`)
-              .should('contain', `Freeform proposal: ${proposalId}`, {timeout:txTimeout})
+              .should('contain', `Freeform proposal: ${proposalId}`, {
+                timeout: txTimeout,
+              })
               .and('contain', 'Open')
               .and('be.visible')
               .within(() => {
@@ -744,14 +749,17 @@ context('Governance flow - with eth and vega wallets connected', function () {
         });
     });
 
-    Cypress.Commands.add('get_submitted_proposal_from_rejected_proposal_list', () => {
-      cy.wait('@proposalSubmissionCompletion')
-        .its(proposalResponseIdPath)
-        .then((proposalId) => {
-          cy.get(rejectProposalsLink).click().wait_for_spinner()
-          return cy.get(`#${proposalId}`);
-        });
-    });
+    Cypress.Commands.add(
+      'get_submitted_proposal_from_rejected_proposal_list',
+      () => {
+        cy.wait('@proposalSubmissionCompletion')
+          .its(proposalResponseIdPath)
+          .then((proposalId) => {
+            cy.get(rejectProposalsLink).click().wait_for_spinner();
+            return cy.get(`#${proposalId}`);
+          });
+      }
+    );
 
     Cypress.Commands.add(
       'get_governance_proposal_date_format_for_specified_days',
@@ -775,7 +783,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
     Cypress.Commands.add('vote_for_proposal', (vote) => {
       cy.contains('Vote breakdown').should('be.visible', { timeout: 10000 });
-      cy.get(voteButtons).contains(vote).click()
+      cy.get(voteButtons).contains(vote).click();
       cy.contains('Casting vote...').should('be.visible');
       cy.contains('Casting vote...', { timeout: txTimeout }).should(
         'not.exist'
