@@ -1,10 +1,18 @@
-const { execSync } = require('node:child_process')
-const path = require('path')
-const typesProjectJson = require(path.join(__dirname, '..', 'libs', 'types', 'project.json'))
+const path = require('path');
+const http = require('http');
+const { execSync } = require('node:child_process');
 
-const GITHUB_OWNER = 'vegaprotocol'
-const TYPE_UPDATE_BRANCH = 'fix/types'
-const appRoot = path.join(__dirname, '..')
+const typesProjectJson = require(path.join(
+  __dirname,
+  '..',
+  'libs',
+  'types',
+  'project.json'
+));
+
+const GITHUB_OWNER = 'vegaprotocol';
+const TYPE_UPDATE_BRANCH = 'fix/types';
+const appRoot = path.join(__dirname, '..');
 
 const cliArgsSpecs = [
   {
@@ -13,9 +21,11 @@ const cliArgsSpecs = [
     required: true,
     validate: (value) => {
       try {
-        new URL(value)
+        new URL(value);
       } catch (err) {
-        throw new Error(`Invalid url found: ${value}. Make sure you pass in a valid url using the "--url" flag.`)
+        throw new Error(
+          `Invalid url found: ${value}. Make sure you pass in a valid url using the "--url" flag.`
+        );
       }
     },
   },
@@ -38,136 +48,186 @@ const cliArgsSpecs = [
     name: 'githubAuthToken',
     arg: 'token',
     required: true,
+  },
+];
+
+const request = (url, options) => new Promise((resolve, reject) => {
+  const req = http.post(url, options, res => {
+    res.setEncoding('utf8');
+    let rawData = '';
+    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('error', (err) => {
+      reject(err)
+    })
+    res.on('end', () => {
+      try {
+        const parsedData = JSON.parse(rawData);
+        console.log(parsedData)
+        resolve(parsedData);
+      } catch (err) {
+        reject(err);
+      }
+    })
+  })
+
+  if (options.method === 'POST' && options.body) {
+    req.write(options.body)
   }
-]
+
+  req.on('error', (err) => {
+    reject(err)
+  })
+
+  req.end()
+})
 
 const getConfig = ({ specs, args = [] }) => {
   const defaultConfig = {
     apiUrl: undefined,
     apiVersion: undefined,
-  }
+  };
 
   return specs.reduce((acc, spec) => {
-    const match = args.find(arg => arg.startsWith(`--${spec.arg}=`))
-    const value = (match || '').replace(`--${spec.arg}=`, '')
+    const match = args.find((arg) => arg.startsWith(`--${spec.arg}=`));
+    const value = (match || '').replace(`--${spec.arg}=`, '');
 
     if (spec.required && !value) {
-      throw new Error(`Cannot find required CLI argument "--${spec.arg}".`)
+      throw new Error(`Cannot find required CLI argument "--${spec.arg}".`);
     }
     if (typeof spec.validate === 'function') {
-      spec.validate(value)
+      spec.validate(value);
     }
     return {
       ...acc,
       [spec.name]: value,
-    }
-  }, {})
-}
+    };
+  }, {});
+};
 
 const execWrap = ({ cmd, errMessage }) => {
-  console.log(`executing: "${cmd}"`)
+  console.log(`executing: "${cmd}"`);
   try {
-    const result = execSync(cmd, { cwd: appRoot, stdout: process.stdout })
-    return result.toString()
+    const result = execSync(cmd, { cwd: appRoot, stdout: process.stdout });
+    return result.toString();
   } catch (err) {
-    throw new Error(errMessage)
+    throw new Error(errMessage);
   }
-}
+};
 
 const getGenerateCmd = (projectJson) => {
-  if (projectJson && projectJson.targets && projectJson.targets.generate && projectJson.targets.generate.options && projectJson.targets.generate.options.commands) {
-    return projectJson.targets.generate.options.commands.join(' && ')
+  if (
+    projectJson &&
+    projectJson.targets &&
+    projectJson.targets.generate &&
+    projectJson.targets.generate.options &&
+    projectJson.targets.generate.options.commands
+  ) {
+    return projectJson.targets.generate.options.commands.join(' && ');
   }
-}
+};
 
 const launchGitWorkflow = ({ apiVersion, apiCommitHash }) => {
   const branchMatches = execWrap({
     cmd: `git ls-remote --heads origin ${TYPE_UPDATE_BRANCH}`,
     errMessage: `Error checking if the branch "${TYPE_UPDATE_BRANCH}" exists on the origin.`,
-  })
+  });
   const localBranches = execWrap({
     cmd: 'git branch',
     errMessage: `Error getting local branch names.`,
-  })
+  });
 
-  if (branchMatches.includes(TYPE_UPDATE_BRANCH) || localBranches.includes(TYPE_UPDATE_BRANCH)) {
+  if (
+    branchMatches.includes(TYPE_UPDATE_BRANCH) ||
+    localBranches.includes(TYPE_UPDATE_BRANCH)
+  ) {
     const currentBranchName = execWrap({
       cmd: `git branch --show-current`,
       errMessage: `Error getting current branch name.`,
-    })
+    });
 
-
-    console.log(currentBranchName, TYPE_UPDATE_BRANCH)
+    console.log(currentBranchName, TYPE_UPDATE_BRANCH);
 
     if (currentBranchName !== TYPE_UPDATE_BRANCH) {
       execWrap({
         cmd: `git checkout ${TYPE_UPDATE_BRANCH}`,
         errMessage: `There was an error trying to check out the branch "${TYPE_UPDATE_BRANCH}".`,
-      })
+      });
     }
   } else {
     execWrap({
       cmd: `git checkout -b ${TYPE_UPDATE_BRANCH}`,
       errMessage: `There was an error trying to check out the branch "${TYPE_UPDATE_BRANCH}".`,
-    })
+    });
   }
 
   execWrap({
     cmd: `git add .`,
     errMessage: `Error staging changed files.`,
-  })
+  });
 
   execWrap({
     cmd: `git commit -m 'chore: update types for v${apiVersion} on HEAD:${apiCommitHash}'`,
     errMessage: `Error checking if the branch "${TYPE_UPDATE_BRANCH}" exists on the origin.`,
-  })
+  });
 
   execWrap({
     cmd: `git push -u origin ${TYPE_UPDATE_BRANCH}`,
     errMessage: 'Error pushing changes.',
-  })
-}
-
-const launchGithubWorkflow = async ({ apiRepoName, apiVersion, apiCommitHash, githubAuthToken }) => {
-  execWrap({
-    cmd: 'npm i @octokit/core',
-    errMessage: 'There was an error installing octokit.',
-  })
-  const { Octokit } = require('@octokit/core')
-  const octokit = new Octokit({ auth: githubAuthToken })
-
-  const result = await octokit.rest.issues.create({
-    owner: REPO_OWNER,
-    repo: 'frontend-monorepo',
-    title: `Update types for datanode v${apiVersion}`,
-    body: `
-Update the frontend based on the [datanode changes](https://github.com/${REPO_OWNER}/${apiRepoName}/commit/${apiCommitHash}).
-`,
   });
+};
 
-  await octokit.rest.pulls.create({
-    owner: REPO_OWNER,
-    repo: 'frontend-monorepo',
-    base: TYPE_UPDATE_BRANCH,
-    title: `fix/${result.issueNumber}: Update types`,
-    body: `
-# Related issues 🔗
+const launchGithubWorkflow = async ({
+  apiRepoName,
+  apiVersion,
+  apiCommitHash,
+  githubAuthToken,
+}) => {
+  const { number } = await request(`https://github.com/${REPO_OWNER}/${apiRepoName}/issues`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': `token ${token}`,
+    },
+    body: JSON.stringify({
+      title: `Update types for datanode v${apiVersion}`,
+      body: `Update the frontend based on the [datanode changes](https://github.com/${REPO_OWNER}/${apiRepoName}/commit/${apiCommitHash}).`,
+    }),
+  })
 
-Closes #${result.issueNumber}
+  await request(`https://github.com/${REPO_OWNER}/${apiRepoName}/pulls`, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': `token ${token}`,
+    },
+    body: JSON.stringify({
+      base: TYPE_UPDATE_BRANCH,
+      title: `fix/${number}: Update types`,
+      body: `
+  # Related issues 🔗
 
-# Description ℹ️
+  Closes #${number}
 
-Patches the frontend based on the [datanode changes](https://github.com/${REPO_OWNER}/${apiRepoName}/commit/${apiCommitHash}).
+  # Description ℹ️
 
-# Technical 👨‍🔧
+  Patches the frontend based on the [datanode changes](https://github.com/${REPO_OWNER}/${apiRepoName}/commit/${apiCommitHash}).
 
-This pull request was automatically generated.
-    `,
-  });
-}
+  # Technical 👨‍🔧
 
-const run = async ({ apiUrl, apiVersion, apiRepoName, apiCommitHash, githubAuthToken }) => {
-  const generateCmd = getGenerateCmd(typesProjectJson)
+  This pull request was automatically generated.
+      `,
+    }),
+  })
+};
+
+const run = async ({
+  apiUrl,
+  apiVersion,
+  apiRepoName,
+  apiCommitHash,
+  githubAuthToken,
+}) => {
+  const generateCmd = getGenerateCmd(typesProjectJson);
 
   // execWrap({
   //   cmd: `NX_VEGA_URL=${apiUrl} ${generateCmd}`,
@@ -177,24 +237,31 @@ const run = async ({ apiUrl, apiVersion, apiRepoName, apiCommitHash, githubAuthT
   const unstagedFiles = execWrap({
     cmd: `git diff --name-only`,
     errMessage: `Error listing unstaged files`,
-  }).split('\n').filter(file => file !== '')
+  })
+    .split('\n')
+    .filter((file) => file !== '');
 
   if (unstagedFiles.length) {
-    launchGitWorkflow({ apiVersion, apiCommitHash })
-    await launchGithubWorkflow({ apiRepoName, apiVersion, apiCommitHash, githubAuthToken })
+    launchGitWorkflow({ apiVersion, apiCommitHash });
+    await launchGithubWorkflow({
+      apiRepoName,
+      apiVersion,
+      apiCommitHash,
+      githubAuthToken,
+    });
   }
-}
+};
 
-async function main () {
+async function main() {
   try {
     const config = getConfig({
       specs: cliArgsSpecs,
       args: process.argv,
-    })
-    await run(config)
+    });
+    await run(config);
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
 }
 
-main()
+main();
