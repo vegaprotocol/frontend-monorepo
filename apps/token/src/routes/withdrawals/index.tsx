@@ -7,6 +7,8 @@ import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
   useCreateWithdraw,
   useWithdrawals,
+  WithdrawalDialogs,
+  WithdrawalFeedback,
   WithdrawalsTable,
   WithdrawFormContainer,
 } from '@vegaprotocol/withdraws';
@@ -27,11 +29,9 @@ const Withdrawals = () => {
 };
 
 const WithdrawPendingContainer = () => {
-  const { keypair } = useVegaWallet();
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const { t } = useTranslation();
   const { withdrawals, loading, error } = useWithdrawals();
-  const createWithdraw = useCreateWithdraw();
 
   if (error) {
     return (
@@ -61,21 +61,10 @@ const WithdrawPendingContainer = () => {
       <div className="w-full h-[500px]">
         <WithdrawalsTable withdrawals={withdrawals} />
       </div>
-      <Dialog
-        title={t('Withdraw')}
-        open={withdrawDialog}
-        onChange={(isOpen) => setWithdrawDialog(isOpen)}
-        size="small"
-      >
-        <WithdrawFormContainer
-          partyId={keypair?.pub}
-          submit={(args) => {
-            setWithdrawDialog(false);
-            createWithdraw.submit(args);
-          }}
-        />
-      </Dialog>
-      <createWithdraw.Dialog />
+      <WithdrawalDialogs
+        withdrawDialog={withdrawDialog}
+        setWithdrawDialog={setWithdrawDialog}
+      />
     </>
   );
 };

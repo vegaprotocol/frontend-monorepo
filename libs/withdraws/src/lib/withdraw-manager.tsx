@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import type { Account } from './types';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { captureException } from '@sentry/react';
+import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
@@ -25,8 +26,10 @@ export const WithdrawManager = ({
   const [threshold, setThreshold] = useState<BigNumber>(
     new BigNumber(Infinity)
   );
+  const [delay, setDelay] = useState<number | null>(null);
 
   const getThreshold = useGetWithdrawThreshold();
+  const getDelay = useGetWithdrawDelay();
 
   // Find the asset object from the select box
   const asset = useMemo(() => {
@@ -59,10 +62,14 @@ export const WithdrawManager = ({
 
     const run = async () => {
       try {
-        const threshold = await getThreshold(asset);
+        const [threshold, delay] = await Promise.all([
+          getThreshold(asset),
+          getDelay(),
+        ]);
 
         if (mounted) {
           setThreshold(threshold);
+          setDelay(delay);
         }
       } catch (err) {
         captureException(err);
@@ -74,7 +81,7 @@ export const WithdrawManager = ({
     return () => {
       mounted = false;
     };
-  }, [asset, getThreshold]);
+  }, [asset, getThreshold, getDelay]);
 
   return (
     <WithdrawForm
@@ -85,6 +92,7 @@ export const WithdrawManager = ({
       min={min}
       submitWithdraw={submit}
       threshold={threshold}
+      delay={delay}
     />
   );
 };

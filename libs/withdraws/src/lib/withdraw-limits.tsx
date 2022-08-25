@@ -1,12 +1,20 @@
-import { t } from '@vegaprotocol/react-helpers';
-import type BigNumber from 'bignumber.js';
+import { getRelativeTimeFormat, t } from '@vegaprotocol/react-helpers';
+import BigNumber from 'bignumber.js';
+import { formatDistanceToNow } from 'date-fns';
 
 interface WithdrawLimitsProps {
+  amount: string;
   threshold: BigNumber;
   balance: BigNumber;
+  delay: number | null;
 }
 
-export const WithdrawLimits = ({ threshold, balance }: WithdrawLimitsProps) => {
+export const WithdrawLimits = ({
+  amount,
+  threshold,
+  balance,
+  delay,
+}: WithdrawLimitsProps) => {
   let text = '';
 
   if (threshold.isEqualTo(Infinity)) {
@@ -17,6 +25,11 @@ export const WithdrawLimits = ({ threshold, balance }: WithdrawLimitsProps) => {
     text = threshold.toString();
   }
 
+  const delayTime =
+    new BigNumber(amount).isGreaterThan(threshold) && delay
+      ? formatDistanceToNow(Date.now() + delay * 1000)
+      : t('None');
+
   return (
     <table className="w-full text-sm">
       <tbody>
@@ -26,9 +39,13 @@ export const WithdrawLimits = ({ threshold, balance }: WithdrawLimitsProps) => {
         </tr>
         <tr>
           <th className="text-left font-normal">
-            {t('Delayed withdrawal amount')}
+            {t('Delayed withdrawal threshold')}
           </th>
           <td className="text-right">{text}</td>
+        </tr>
+        <tr>
+          <th className="text-left font-normal">{t('Delay time')}</th>
+          <td className="text-right">{delayTime}</td>
         </tr>
       </tbody>
     </table>
