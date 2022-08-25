@@ -39,8 +39,8 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
             : null,
         };
       }) || [],
-    ['open', 'id'],
-    ['asc', 'asc']
+    [ 'tradingMode', 'open', 'id'],
+    ['asc', 'asc', 'asc']
   );
 
 export const calcCandleLow = (m: MarketList_markets): string | undefined => {

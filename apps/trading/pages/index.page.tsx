@@ -20,7 +20,7 @@ const MARKETS_QUERY = gql`
 `;
 
 const getMarketList = ({ markets = [] }: MarketsLanding) => {
-  return orderBy(markets, ['marketTimestamps.open', 'id'], ['asc', 'asc']);
+  return orderBy(markets, ['tradingMode','marketTimestamps.open',  'id'], ['asc', 'asc', 'asc']);
 };
 
 export function Index() {
