@@ -10,6 +10,8 @@ const typesProjectJson = require(path.join(
   'project.json'
 ));
 
+const GITHUB_USER = 'vega-ci-bot';
+const GITHUB_REPO = 'frontend-monorepo';
 const GITHUB_OWNER = 'vegaprotocol';
 const TYPE_UPDATE_BRANCH = 'fix/types';
 const appRoot = path.join(__dirname, '..');
@@ -175,7 +177,7 @@ const launchGitWorkflow = ({ apiVersion, apiCommitHash }) => {
   });
 
   execWrap({
-    cmd: `git push -u origin ${TYPE_UPDATE_BRANCH} --no-verify`,
+    cmd: `git push -u ssh://github.com/${GITHUB_OWNER}/${GITHUB_REPO}.git ${TYPE_UPDATE_BRANCH} --no-verify`,
     errMessage: 'Error pushing changes.',
   });
 };
@@ -196,7 +198,7 @@ const launchGithubWorkflow = async ({
   }
   options.agent = new https.Agent(options)
 
-  const { number } = await request(`https://api.github.com/repos/${GITHUB_OWNER}/${apiRepoName}/issues`, {
+  const { number } = await request(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`, {
     ...options,
     body: JSON.stringify({
       title: `Update types for datanode v${apiVersion}`,
@@ -204,7 +206,7 @@ const launchGithubWorkflow = async ({
     }),
   })
 
-  await request(`https://api.github.com/repos/${GITHUB_OWNER}/${apiRepoName}/pulls`, {
+  await request(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls`, {
     ...options,
     body: JSON.stringify({
       base: TYPE_UPDATE_BRANCH,
@@ -235,10 +237,10 @@ const run = async ({
 }) => {
   const generateCmd = getGenerateCmd(typesProjectJson);
 
-  // execWrap({
-  //   cmd: `NX_VEGA_URL=${apiUrl} ${generateCmd}`,
-  //   errMessage: 'There was an error trying to regenerating the types for the frontend.',
-  // })
+  execWrap({
+    cmd: `NX_VEGA_URL=${apiUrl} ${generateCmd}`,
+    errMessage: 'There was an error trying to regenerating the types for the frontend.',
+  })
 
   const unstagedFiles = execWrap({
     cmd: `git diff --name-only`,

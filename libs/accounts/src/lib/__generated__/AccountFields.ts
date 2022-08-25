@@ -15,6 +15,10 @@ export interface AccountFields_market {
    * Market ID
    */
   id: string;
+  /**
+   * Market full name
+   */
+  name: string;
 }
 
 export interface AccountFields_asset {
