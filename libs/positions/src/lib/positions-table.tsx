@@ -276,12 +276,12 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
             value,
           }: {
             value: string;
-          }) => BigInt(value) > 0,
+          }) => value && BigInt(value) > 0,
           'text-vega-red-dark dark:text-vega-red': ({
             value,
           }: {
             value: string;
-          }) => BigInt(value) < 0,
+          }) => value && BigInt(value) < 0,
         }}
         valueFormatter={({
           value,
@@ -305,12 +305,12 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
             value,
           }: {
             value: string;
-          }) => BigInt(value) > 0,
+          }) => value && BigInt(value) > 0,
           'text-vega-red-dark dark:text-vega-red': ({
             value,
           }: {
             value: string;
-          }) => BigInt(value) < 0,
+          }) => value && BigInt(value) < 0,
         }}
         valueFormatter={({
           value,

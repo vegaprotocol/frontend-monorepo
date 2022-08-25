@@ -17,6 +17,8 @@ import type { AgGridReact } from 'ag-grid-react';
 import type { Accounts_party_accounts } from './__generated__/Accounts';
 import { getId } from './accounts-data-provider';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
+import type { AccountType } from '@vegaprotocol/types';
+import { AccountTypeMapping } from '@vegaprotocol/types';
 
 interface AccountsTableProps {
   data: Accounts_party_accounts[] | null;
@@ -143,7 +145,9 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
         <AgGridColumn
           headerName={t('Type')}
           field="type"
-          valueFormatter="value || '—'"
+          valueFormatter={({ value }: ValueFormatterParams) =>
+            value ? AccountTypeMapping[value as AccountType] : '-'
+          }
         />
         <AgGridColumn
           headerName={t('Market')}

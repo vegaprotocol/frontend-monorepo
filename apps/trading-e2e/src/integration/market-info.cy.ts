@@ -25,19 +25,13 @@ describe('market info is displayed', () => {
 
   it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
-
-    validateMarketDataRow(0, 'Indicative Volume', '0');
-    validateMarketDataRow(1, 'Best Bid Volume', '5');
-    validateMarketDataRow(2, 'Best Offer Volume', '1');
-    validateMarketDataRow(3, 'Best Static Bid Volume', '5');
-    validateMarketDataRow(4, 'Best Static Offer Volume', '1');
+    validateMarketDataRow(0, '24 Hour Volume', '-');
+    validateMarketDataRow(1, 'Open Interest', '0');
   });
 
-  it('market price and interest displayed', () => {
-    cy.getByTestId(marketTitle).contains('Market price and interest').click();
-
+  it('market price', () => {
+    cy.getByTestId(marketTitle).contains('Market price').click();
     validateMarketDataRow(0, 'Mark Price', '57.49');
-    validateMarketDataRow(1, 'Open Interest', '0.00');
   });
 
   it('key details displayed', () => {
@@ -67,7 +61,7 @@ describe('market info is displayed', () => {
     validateMarketDataRow(1, 'Symbol', 'tBTC');
     validateMarketDataRow(
       2,
-      'ID',
+      'Asset ID',
       '5cfa87844724df6069b94e4c8a6f03af21907d7bc251593d08e4251043ee9f7c'
     );
   });
