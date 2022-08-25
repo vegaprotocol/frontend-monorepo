@@ -17,6 +17,7 @@ export const SubHeading = ({
     'uppercase',
     'mt-12',
     'mb-12',
+    'truncate',
     className
   );
   return (
