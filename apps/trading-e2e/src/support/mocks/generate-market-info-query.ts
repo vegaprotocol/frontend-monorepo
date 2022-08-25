@@ -3,6 +3,7 @@ import {
   AccountType,
   MarketState,
   MarketTradingMode,
+  AuctionTrigger,
 } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
@@ -81,7 +82,11 @@ export const generateMarketInfoQuery = (
         bestOfferVolume: '1',
         bestStaticBidVolume: '5',
         bestStaticOfferVolume: '1',
+        bestBidPrice: '5748',
+        bestOfferPrice: '5750',
         openInterest: '0',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_PRICE,
+        priceMonitoringBounds: [],
       },
       liquidityMonitoringParameters: {
         triggeringRatio: 0,
@@ -146,6 +151,7 @@ export const generateMarketInfoQuery = (
           },
         },
       },
+      candles: [],
       depth: {
         __typename: 'MarketDepth',
         lastTrade: {

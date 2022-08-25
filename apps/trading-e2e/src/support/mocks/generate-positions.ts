@@ -28,31 +28,8 @@ export const generatePositions = (
         positionDecimalPlaces: 0,
         tradableInstrument: {
           instrument: {
-            id: '',
             name: 'UNIDAI Monthly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:3C58ED2A4A6C5D7E',
-                'base:UNI',
-                'quote:DAI',
-                'class:fx/crypto',
-                'monthly',
-                'sector:defi',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
             code: 'UNIDAI.MF21',
-            product: {
-              settlementAsset: {
-                id: '6d9d35f657589e40ddfb448b7ad4a7463b66efb307527fedd2aa7df1bbd5ea61',
-                symbol: 'tDAI',
-                name: 'tDAI TEST',
-                decimals: 5,
-                __typename: 'Asset',
-              },
-              quoteName: 'DAI',
-              __typename: 'Future',
-            },
             __typename: 'Instrument',
           },
           __typename: 'TradableInstrument',
@@ -82,32 +59,8 @@ export const generatePositions = (
         positionDecimalPlaces: 0,
         tradableInstrument: {
           instrument: {
-            id: '',
             name: 'Tesla Quarterly (30 Jun 2022)',
-            metadata: {
-              tags: [
-                'formerly:5A86B190C384997F',
-                'quote:EURO',
-                'ticker:TSLA',
-                'class:equities/single-stock-futures',
-                'sector:tech',
-                'listing_venue:NASDAQ',
-                'country:US',
-              ],
-              __typename: 'InstrumentMetadata',
-            },
             code: 'TSLA.QM21',
-            product: {
-              settlementAsset: {
-                id: '8b52d4a3a4b0ffe733cddbc2b67be273816cfeb6ca4c8b339bac03ffba08e4e4',
-                symbol: 'tEURO',
-                name: 'tEURO TEST',
-                decimals: 5,
-                __typename: 'Asset',
-              },
-              quoteName: 'EURO',
-              __typename: 'Future',
-            },
             __typename: 'Instrument',
           },
           __typename: 'TradableInstrument',

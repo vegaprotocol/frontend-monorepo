@@ -322,7 +322,7 @@ export const columns = (
     {
       value: (
         <Tooltip
-          description={<FeesBreakdown feeFactors={market.fees?.factors} />}
+          description={<FeesBreakdown feeFactors={market.fees.factors} />}
         >
           <span className="border-b-2 border-dotted">
             {totalFees(market.fees.factors) ?? '-'}

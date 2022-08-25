@@ -84,7 +84,17 @@ export const generateMarketList = (
       positionDecimalPlaces: 0,
       state: MarketState.STATE_SUSPENDED,
       tradingMode: MarketTradingMode.TRADING_MODE_MONITORING_AUCTION,
+      fees: {
+        factors: {
+          makerFee: '0.0002',
+          infrastructureFee: '0.0005',
+          liquidityFee: '0.001',
+          __typename: 'FeeFactors',
+        },
+        __typename: 'Fees',
+      },
       data: {
+        trigger: AuctionTrigger.AUCTION_TRIGGER_PRICE,
         market: {
           id: '34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed',
           state: MarketState.STATE_SUSPENDED,
