@@ -186,7 +186,7 @@ const launchGithubWorkflow = async ({
     method: 'POST',
     headers: {
       'Accept': 'application/vnd.github+json',
-      'Authorization': `token ${token}`,
+      'Authorization': `token ${githubAuthToken}`,
     },
     body: JSON.stringify({
       title: `Update types for datanode v${apiVersion}`,
@@ -198,7 +198,7 @@ const launchGithubWorkflow = async ({
     method: 'POST',
     headers: {
       'Accept': 'application/vnd.github+json',
-      'Authorization': `token ${token}`,
+      'Authorization': `token ${githubAuthToken}`,
     },
     body: JSON.stringify({
       base: TYPE_UPDATE_BRANCH,
