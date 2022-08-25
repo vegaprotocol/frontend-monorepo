@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 import {
   addDecimalsFormatNumber,
   formatLabel,
@@ -21,139 +22,36 @@ import pick from 'lodash/pick';
 import omit from 'lodash/omit';
 import type { MarketInfoQuery, MarketInfoQuery_market } from './__generated__';
 import BigNumber from 'bignumber.js';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
-
-const MARKET_INFO_QUERY = gql`
-  query MarketInfoQuery($marketId: ID!) {
-    market(id: $marketId) {
-      id
-      name
-      decimalPlaces
-      positionDecimalPlaces
-      state
-      tradingMode
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
-      fees {
-        factors {
-          makerFee
-          infrastructureFee
-          liquidityFee
-        }
-      }
-      priceMonitoringSettings {
-        parameters {
-          triggers {
-            horizonSecs
-            probability
-            auctionExtensionSecs
-          }
-        }
-      }
-      riskFactors {
-        market
-        short
-        long
-      }
-      accounts {
-        type
-        asset {
-          id
-        }
-        balance
-      }
-      data {
-        market {
-          id
-        }
-        markPrice
-        indicativeVolume
-        bestBidVolume
-        bestOfferVolume
-        bestStaticBidVolume
-        bestStaticOfferVolume
-        indicativeVolume
-        openInterest
-      }
-      liquidityMonitoringParameters {
-        triggeringRatio
-        targetStakeParameters {
-          timeWindow
-          scalingFactor
-        }
-      }
-      tradableInstrument {
-        instrument {
-          id
-          name
-          code
-          metadata {
-            tags
-          }
-          product {
-            ... on Future {
-              quoteName
-              settlementAsset {
-                id
-                symbol
-                name
-              }
-              oracleSpecForSettlementPrice {
-                id
-              }
-              oracleSpecForTradingTermination {
-                id
-              }
-              oracleSpecBinding {
-                settlementPriceProperty
-                tradingTerminationProperty
-              }
-            }
-          }
-        }
-        riskModel {
-          ... on LogNormalRiskModel {
-            tau
-            riskAversionParameter
-            params {
-              r
-              sigma
-              mu
-            }
-          }
-          ... on SimpleRiskModel {
-            params {
-              factorLong
-              factorShort
-            }
-          }
-        }
-      }
-      depth {
-        lastTrade {
-          price
-        }
-      }
-    }
-  }
-`;
+import { AccountType, Interval } from '@vegaprotocol/types';
+import { MARKET_INFO_QUERY } from './info-market-query';
 
 export interface InfoProps {
   market: MarketInfoQuery_market;
 }
 
+export const calcCandleVolume = (
+  m: MarketInfoQuery_market
+): string | undefined => {
+  return m?.candles
+    ?.reduce((acc, c) => {
+      return acc.plus(new BigNumber(c?.volume ?? 0));
+    }, new BigNumber(0))
+    .toString();
+};
+
 export interface MarketInfoContainerProps {
   marketId: string;
 }
 export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
+  const yTimestamp = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
+
   const { data, loading, error } = useQuery(MARKET_INFO_QUERY, {
-    variables: { marketId },
+    variables: { marketId, interval: Interval.INTERVAL_I1H, since: yTimestamp },
   });
 
   return (
@@ -174,6 +72,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 export const Info = ({ market }: InfoProps) => {
   const headerClassName =
     'text-h5 font-medium uppercase text-black dark:text-white';
+  const dayVolume = calcCandleVolume(market);
   const marketDataPanels = [
     {
       title: t('Current fees'),
@@ -195,10 +94,16 @@ export const Info = ({ market }: InfoProps) => {
       ),
     },
     {
-      title: t('Market price and interest'),
+      title: t('Market price'),
       content: (
         <MarketInfoTable
-          data={pick(market.data, 'name', 'markPrice', 'openInterest')}
+          data={pick(
+            market.data,
+            'name',
+            'markPrice',
+            'bestBidPrice',
+            'bestOfferPrice'
+          )}
           decimalPlaces={market.decimalPlaces}
         />
       ),
@@ -207,19 +112,36 @@ export const Info = ({ market }: InfoProps) => {
       title: t('Market volume'),
       content: (
         <MarketInfoTable
-          data={pick(
-            market.data,
-            'name',
-            'indicativeVolume',
-            'bestBidVolume',
-            'bestOfferVolume',
-            'bestStaticBidVolume',
-            'bestStaticOfferVolume'
-          )}
+          data={{
+            '24hourVolume':
+              dayVolume && dayVolume !== '0' ? formatNumber(dayVolume) : '-',
+            ...pick(
+              market.data,
+              'openInterest',
+              'name',
+              'bestBidVolume',
+              'bestOfferVolume',
+              'bestStaticBidVolume',
+              'bestStaticOfferVolume'
+            ),
+          }}
           decimalPlaces={market.positionDecimalPlaces}
         />
       ),
     },
+    ...(market.accounts || [])
+      .filter((a) => a.type === AccountType.ACCOUNT_TYPE_INSURANCE)
+      .map((a, i) => ({
+        title: t(`Insurance pool`),
+        content: (
+          <MarketInfoTable
+            data={{
+              balance: `${a.balance}
+           ${market.tradableInstrument.instrument.product?.settlementAsset.symbol}`,
+            }}
+          />
+        ),
+      })),
   ];
 
   const keyDetails = pick(
@@ -270,8 +192,8 @@ export const Info = ({ market }: InfoProps) => {
             symbol:
               market.tradableInstrument.instrument.product?.settlementAsset
                 .symbol,
-            ID: market.tradableInstrument.instrument.product?.settlementAsset
-              .id,
+            assetID:
+              market.tradableInstrument.instrument.product?.settlementAsset.id,
           }}
         />
       ),
@@ -317,6 +239,12 @@ export const Info = ({ market }: InfoProps) => {
         content: <MarketInfoTable data={trigger} />,
       })
     ),
+    ...(market.data?.priceMonitoringBounds || []).map((trigger, i) => ({
+      title: t(`Price monitoring bound ${i + 1}`),
+      content: (
+        <MarketInfoTable data={trigger} decimalPlaces={market.decimalPlaces} />
+      ),
+    })),
     {
       title: t('Liquidity monitoring parameters'),
       content: (
@@ -325,6 +253,22 @@ export const Info = ({ market }: InfoProps) => {
             triggeringRatio:
               market.liquidityMonitoringParameters.triggeringRatio,
             ...market.liquidityMonitoringParameters.targetStakeParameters,
+          }}
+        />
+      ),
+    },
+    {
+      title: t('Oracle'),
+      content: (
+        <MarketInfoTable
+          data={{
+            ...market.tradableInstrument.instrument.product.oracleSpecBinding,
+            priceOracle:
+              market.tradableInstrument.instrument.product
+                .oracleSpecForSettlementPrice.id,
+            terminationOracle:
+              market.tradableInstrument.instrument.product
+                .oracleSpecForTradingTermination.id,
           }}
         />
       ),
