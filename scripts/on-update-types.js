@@ -53,6 +53,7 @@ const cliArgsSpecs = [
 
 const request = (url, options) => new Promise((resolve, reject) => {
   const req = https.request(url, options, res => {
+    console.log(`STATUS: ${res.statusCode}`)
     res.setEncoding('utf8');
     let rawData = '';
     res.on('data', (chunk) => {
@@ -148,8 +149,6 @@ const launchGitWorkflow = ({ apiVersion, apiCommitHash }) => {
       cmd: `git branch --show-current`,
       errMessage: `Error getting current branch name.`,
     });
-
-    console.log(currentBranchName, TYPE_UPDATE_BRANCH);
 
     if (currentBranchName !== TYPE_UPDATE_BRANCH) {
       execWrap({
