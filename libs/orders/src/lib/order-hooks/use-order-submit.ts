@@ -70,7 +70,7 @@ export const useOrderSubmit = (market: Market) => {
             side: order.side,
             timeInForce: order.timeInForce,
             expiresAt: order.expiration
-              ? toNanoSeconds(order.expiration) // Wallet expects timestampe in nanoseconds
+              ? toNanoSeconds(order.expiration) // Wallet expects timestamp in nanoseconds
               : undefined,
           },
         });

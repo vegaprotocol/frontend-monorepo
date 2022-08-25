@@ -11,9 +11,9 @@ describe('Portfolio page', () => {
   it('button for wallet connect should work', () => {
     cy.visit('/');
     cy.get('[href="/portfolio"]').eq(0).click();
-    cy.getByTestId('connect-vega-wallet-text').should('be.visible');
+    cy.getByTestId('trading-connect-wallet').should('be.visible');
     connectVegaWallet();
-    cy.getByTestId('connect-vega-wallet-text').should('not.exist');
+    cy.getByTestId('trading-connect-wallet').should('not.exist');
   });
 
   it('certain tabs should exist', () => {

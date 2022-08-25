@@ -3,25 +3,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { useAnimateValue } from '../../hooks/use-animate-value';
-import { BigNumber } from '../../lib/bignumber';
-import { formatNumber } from '../../lib/format-number';
-
-const useNumberParts = (
-  value: BigNumber | null | undefined,
-  decimals: number
-) => {
-  return React.useMemo(() => {
-    if (!value) {
-      return ['0', '0'.repeat(decimals)];
-    }
-    // @ts-ignore confident not undefined
-    const separator = BigNumber.config().FORMAT.decimalSeparator as string;
-    const [integers, decimalsPlaces] = formatNumber(value, 18)
-      .toString()
-      .split(separator);
-    return [integers, decimalsPlaces];
-  }, [decimals, value]);
-};
+import type { BigNumber } from '../../lib/bignumber';
+import { useNumberParts } from '../../lib/format-number';
 
 interface WalletCardProps {
   children: React.ReactNode;

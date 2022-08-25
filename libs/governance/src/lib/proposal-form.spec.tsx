@@ -145,7 +145,7 @@ describe('ProposalForm', () => {
     });
 
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-      'Proposal submitted'
+      'proposalRejected'
     );
   });
 

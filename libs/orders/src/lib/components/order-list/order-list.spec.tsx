@@ -1,6 +1,16 @@
 import { act, render, screen } from '@testing-library/react';
 import { addDecimal, getDateTimeFormat } from '@vegaprotocol/react-helpers';
-import { OrderStatus, OrderRejectionReason } from '@vegaprotocol/types';
+import { OrderType } from '@vegaprotocol/types';
+import {
+  OrderRejectionReasonMapping,
+  OrderTimeInForceMapping,
+} from '@vegaprotocol/types';
+import {
+  OrderStatus,
+  OrderRejectionReason,
+  OrderTypeMapping,
+  OrderStatusMapping,
+} from '@vegaprotocol/types';
 import type { PartialDeep } from 'type-fest';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
 import { VegaWalletContext } from '@vegaprotocol/wallet';
@@ -9,7 +19,6 @@ import { MockedProvider } from '@apollo/client/testing';
 import { OrderListTable } from '../';
 import type { Orders_party_ordersConnection_edges_node } from '../';
 import { limitOrder, marketOrder } from '../mocks/generate-orders';
-import startCase from 'lodash/startCase';
 
 const generateJsx = (
   orders: Orders_party_ordersConnection_edges_node[] | null,
@@ -67,11 +76,11 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       marketOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      marketOrder.type || '',
-      marketOrder.status,
+      OrderTypeMapping[marketOrder.type as OrderType] || '',
+      OrderStatusMapping[marketOrder.status],
       '5',
       '-',
-      marketOrder.timeInForce,
+      OrderTimeInForceMapping[marketOrder.timeInForce],
       getDateTimeFormat().format(new Date(marketOrder.createdAt)),
       '-',
       'Edit',
@@ -91,13 +100,13 @@ describe('OrderListTable', () => {
     const expectedValues: string[] = [
       limitOrder.market?.tradableInstrument.instrument.code || '',
       '+0.10',
-      limitOrder.type || '',
-      limitOrder.status,
+      OrderTypeMapping[limitOrder.type || OrderType.TYPE_LIMIT],
+      OrderStatusMapping[limitOrder.status],
       '5',
       addDecimal(limitOrder.price, limitOrder.market?.decimalPlaces ?? 0),
-      `${limitOrder.timeInForce}: ${getDateTimeFormat().format(
-        new Date(limitOrder.expiresAt ?? '')
-      )}`,
+      `${
+        OrderTimeInForceMapping[limitOrder.timeInForce]
+      }: ${getDateTimeFormat().format(new Date(limitOrder.expiresAt ?? ''))}`,
       getDateTimeFormat().format(new Date(limitOrder.createdAt)),
       '-',
       'Edit',
@@ -120,7 +129,9 @@ describe('OrderListTable', () => {
     });
     const cells = screen.getAllByRole('gridcell');
     expect(cells[3]).toHaveTextContent(
-      `${rejectedOrder.status}: ${startCase(rejectedOrder.rejectionReason)}`
+      `${OrderStatusMapping[rejectedOrder.status]}: ${
+        OrderRejectionReasonMapping[rejectedOrder.rejectionReason]
+      }`
     );
   });
 });

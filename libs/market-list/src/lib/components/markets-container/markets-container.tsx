@@ -17,8 +17,10 @@ export const MarketsContainer = () => {
   const gridRef = useRef<AgGridReact | null>(null);
   const dataRef = useRef<MarketList_markets[] | null>(null);
 
-  const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-  const yTimestamp = new Date(yesterday * 1000).toISOString();
+  const yTimestamp = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
   const variables = useMemo(
     () => ({ interval: Interval.INTERVAL_I1H, since: yTimestamp }),
     [yTimestamp]

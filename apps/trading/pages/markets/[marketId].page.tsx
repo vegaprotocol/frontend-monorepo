@@ -48,6 +48,9 @@ const MARKET_QUERY = gql`
           }
           product {
             ... on Future {
+              oracleSpecForTradingTermination {
+                id
+              }
               quoteName
               settlementAsset {
                 id
@@ -129,7 +132,6 @@ const MarketPage = ({ id }: { id?: string }) => {
                   store.setMarketId(marketId);
                 }
               }}
-              title={t('Select a market to get started')}
             />
           </>
         );

@@ -4,6 +4,7 @@ import { t, toDecimal } from '@vegaprotocol/react-helpers';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import {
   MarketState,
+  MarketStateMapping,
   MarketTradingMode,
   OrderTimeInForce,
   OrderType,
@@ -28,7 +29,7 @@ export const marketTranslations = (marketState: MarketState) => {
     case MarketState.STATE_TRADING_TERMINATED:
       return t('terminated');
     default:
-      return t(marketState).toLowerCase();
+      return t(MarketStateMapping[marketState]).toLowerCase();
   }
 };
 

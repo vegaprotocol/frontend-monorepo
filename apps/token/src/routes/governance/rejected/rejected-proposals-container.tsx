@@ -11,6 +11,7 @@ import { PROPOSALS_QUERY } from '../proposals';
 import { SplashLoader } from '../../../components/splash-loader';
 import { RejectedProposalsList } from '../components/proposals-list';
 import type { Proposals } from '../proposals/__generated__/Proposals';
+import { ProposalState } from '@vegaprotocol/types';
 
 export const RejectedProposalsContainer = () => {
   const { t } = useTranslation();
@@ -26,7 +27,8 @@ export const RejectedProposalsContainer = () => {
 
     return flow([
       compact,
-      (arr) => filter(arr, ({ state }) => state === 'Rejected'),
+      (arr) =>
+        filter(arr, ({ state }) => state === ProposalState.STATE_REJECTED),
       (arr) =>
         orderBy(
           arr,
