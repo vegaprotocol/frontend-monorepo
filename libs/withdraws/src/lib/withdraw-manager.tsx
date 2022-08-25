@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
 import type { WithdrawalArgs } from './use-create-withdraw';
@@ -10,6 +10,7 @@ import type { Account } from './types';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { captureException } from '@sentry/react';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
+import { useWithdrawStore } from './withdraw-store';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
@@ -22,71 +23,50 @@ export const WithdrawManager = ({
   accounts,
   submit,
 }: WithdrawManagerProps) => {
-  const [assetId, setAssetId] = useState<string | undefined>();
-  const [threshold, setThreshold] = useState<BigNumber>(
-    new BigNumber(Infinity)
-  );
-  const [delay, setDelay] = useState<number | null>(null);
-
+  const { asset, balance, min, threshold, delay, update } = useWithdrawStore();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
 
-  // Find the asset object from the select box
-  const asset = useMemo(() => {
-    return assets?.find((a) => a.id === assetId);
-  }, [assets, assetId]);
+  // Everytime an asset is selected we need to find the corresponding
+  // account, balance, min viable amount and delay threshold
+  const handleSelectAsset = useCallback(
+    async (id: string) => {
+      const asset = assets.find((a) => a.id === id);
+      const account = accounts.find(
+        (a) =>
+          a.type === AccountType.ACCOUNT_TYPE_GENERAL &&
+          a.asset.id === asset?.id
+      );
+      const balance =
+        account && asset
+          ? new BigNumber(addDecimal(account.balance, asset.decimals))
+          : new BigNumber(0);
+      const min = asset
+        ? new BigNumber(addDecimal('1', asset.decimals))
+        : new BigNumber(0);
 
-  const account = useMemo(() => {
-    return accounts.find(
-      (a) =>
-        a.type === AccountType.ACCOUNT_TYPE_GENERAL && a.asset.id === asset?.id
-    );
-  }, [asset, accounts]);
+      // Query collateral bridge for threshold for selected asset
+      // and subsequent delay if withdrawal amount is larger than it
+      let threshold;
+      let delay;
 
-  const balance = useMemo(() => {
-    if (!asset || !account) {
-      return new BigNumber(0);
-    }
-
-    return new BigNumber(addDecimal(account.balance, asset.decimals));
-  }, [asset, account]);
-
-  const min = useMemo(() => {
-    return asset
-      ? new BigNumber(addDecimal('1', asset.decimals))
-      : new BigNumber(0);
-  }, [asset]);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const run = async () => {
       try {
-        const [threshold, delay] = await Promise.all([
-          getThreshold(asset),
-          getDelay(),
-        ]);
-
-        if (mounted) {
-          setThreshold(threshold);
-          setDelay(delay);
-        }
+        const result = await Promise.all([getThreshold(asset), getDelay()]);
+        threshold = result[0];
+        delay = result[1];
       } catch (err) {
         captureException(err);
       }
-    };
 
-    run();
-
-    return () => {
-      mounted = false;
-    };
-  }, [asset, getThreshold, getDelay]);
+      update({ asset, balance, min, threshold, delay });
+    },
+    [accounts, assets, update, getThreshold, getDelay]
+  );
 
   return (
     <WithdrawForm
       selectedAsset={asset}
-      onSelectAsset={(id) => setAssetId(id)}
+      onSelectAsset={handleSelectAsset}
       assets={sortBy(assets, 'name')}
       balance={balance}
       min={min}

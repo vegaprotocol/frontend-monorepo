@@ -33,7 +33,7 @@ export interface WithdrawFormProps {
   balance: BigNumber;
   selectedAsset?: Asset;
   threshold: BigNumber;
-  delay: number | null;
+  delay: number | undefined;
   onSelectAsset: (assetId: string) => void;
   submitWithdraw: (withdrawal: WithdrawalArgs) => void;
 }

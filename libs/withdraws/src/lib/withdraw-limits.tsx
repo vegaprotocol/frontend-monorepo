@@ -6,7 +6,7 @@ interface WithdrawLimitsProps {
   amount: string;
   threshold: BigNumber;
   balance: BigNumber;
-  delay: number | null;
+  delay: number | undefined;
 }
 
 export const WithdrawLimits = ({
