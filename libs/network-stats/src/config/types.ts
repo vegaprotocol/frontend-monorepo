@@ -1,22 +1,10 @@
-export interface Stats {
-  blockHeight: string;
-  totalNodes: string;
-  validatingNodes: string;
-  inactiveNodes: string;
-  stakedTotal: string;
-  backlogLength: string;
-  tradesPerSecond: string;
-  averageOrdersPerBlock: string;
-  ordersPerSecond: string;
-  txPerBlock: string;
-  blockDuration: string;
-  status: string;
-  vegaTime: string;
-  appVersion: string;
-  chainVersion: string;
-  uptime: string;
-  chainId: string;
-}
+import type {
+  NetworkStats_nodeData,
+  NetworkStats_statistics,
+} from '../components/stats-manager/__generated__/NetworkStats';
+
+export type Stats = Omit<NetworkStats_nodeData, '__typename'> &
+  Omit<NetworkStats_statistics, '__typename'>;
 
 // eslint-disable-next-line
 export type value = any;

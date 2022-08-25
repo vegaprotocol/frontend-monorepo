@@ -110,11 +110,10 @@ export const getErrorByType = (
 };
 
 export const getErrorType = (env: Networks, data?: NodeData) => {
-  if (data && !getIsNodeLoading(data) && data.initialized) {
+  if (data && data.initialized) {
     if (getIsInvalidUrl(data.url)) {
       return ErrorType.INVALID_URL;
     }
-
     if (
       data.chain.hasError ||
       data.responseTime.hasError ||
@@ -123,7 +122,7 @@ export const getErrorType = (env: Networks, data?: NodeData) => {
       return ErrorType.CONNECTION_ERROR;
     }
 
-    if (getHasInvalidChain(env, data.chain.value)) {
+    if (!data.chain.isLoading && getHasInvalidChain(env, data.chain.value)) {
       return ErrorType.INVALID_NETWORK;
     }
 
