@@ -1,5 +1,5 @@
-const path = require('path');
-const https = require('https');
+const path = require('node:path');
+const https = require('node:https');
 const { execSync } = require('node:child_process');
 
 const typesProjectJson = require(path.join(
@@ -186,12 +186,18 @@ const launchGithubWorkflow = async ({
   apiCommitHash,
   githubAuthToken,
 }) => {
-  const { number } = await request(`https://api.github.com/repos/${GITHUB_OWNER}/${apiRepoName}/issues`, {
+  const options = {
     method: 'POST',
     headers: {
       'Accept': 'application/vnd.github+json',
       'Authorization': `token ${githubAuthToken}`,
+      'User-Agent': '',
     },
+  }
+  options.agent = new https.Agent(options)
+
+  const { number } = await request(`https://api.github.com/repos/${GITHUB_OWNER}/${apiRepoName}/issues`, {
+    ...options,
     body: JSON.stringify({
       title: `Update types for datanode v${apiVersion}`,
       body: `Update the frontend based on the [datanode changes](https://github.com/${GITHUB_OWNER}/${apiRepoName}/commit/${apiCommitHash}).`,
@@ -199,11 +205,7 @@ const launchGithubWorkflow = async ({
   })
 
   await request(`https://api.github.com/repos/${GITHUB_OWNER}/${apiRepoName}/pulls`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/vnd.github+json',
-      'Authorization': `token ${githubAuthToken}`,
-    },
+    ...options,
     body: JSON.stringify({
       base: TYPE_UPDATE_BRANCH,
       title: `fix/${number}: Update types`,
