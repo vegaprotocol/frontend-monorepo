@@ -52,7 +52,7 @@ const cliArgsSpecs = [
 ];
 
 const request = (url, options) => new Promise((resolve, reject) => {
-  const req = http.post(url, options, res => {
+  const req = http.request(url, options, res => {
     res.setEncoding('utf8');
     let rawData = '';
     res.on('data', (chunk) => { rawData += chunk; });
