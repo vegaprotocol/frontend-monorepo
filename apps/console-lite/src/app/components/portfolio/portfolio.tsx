@@ -11,7 +11,11 @@ import ConnectWallet from '../wallet-connector';
 export const Portfolio = () => {
   const { keypair } = useVegaWallet();
   if (!keypair) {
-    return <ConnectWallet />;
+    return (
+      <section className="xl:w-1/2">
+        <ConnectWallet />
+      </section>
+    );
   }
   return (
     <Tabs>
