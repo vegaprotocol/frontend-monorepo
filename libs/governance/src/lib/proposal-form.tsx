@@ -13,7 +13,6 @@ import {
 } from '../utils';
 import { t } from '@vegaprotocol/react-helpers';
 import { ProposalState } from '@vegaprotocol/types';
-import { useMemo } from 'react';
 
 export interface FormFields {
   proposalData: string;
