@@ -182,7 +182,7 @@ const launchGithubWorkflow = async ({
   apiCommitHash,
   githubAuthToken,
 }) => {
-  const { number } = await request(`https://github.com/${REPO_OWNER}/${apiRepoName}/issues`, {
+  const { number } = await request(`https://github.com/${GITHUB_OWNER}/${apiRepoName}/issues`, {
     method: 'POST',
     headers: {
       'Accept': 'application/vnd.github+json',
@@ -190,11 +190,11 @@ const launchGithubWorkflow = async ({
     },
     body: JSON.stringify({
       title: `Update types for datanode v${apiVersion}`,
-      body: `Update the frontend based on the [datanode changes](https://github.com/${REPO_OWNER}/${apiRepoName}/commit/${apiCommitHash}).`,
+      body: `Update the frontend based on the [datanode changes](https://github.com/${GITHUB_OWNER}/${apiRepoName}/commit/${apiCommitHash}).`,
     }),
   })
 
-  await request(`https://github.com/${REPO_OWNER}/${apiRepoName}/pulls`, {
+  await request(`https://github.com/${GITHUB_OWNER}/${apiRepoName}/pulls`, {
     method: 'POST',
     headers: {
       'Accept': 'application/vnd.github+json',
@@ -210,7 +210,7 @@ const launchGithubWorkflow = async ({
 
   # Description ℹ️
 
-  Patches the frontend based on the [datanode changes](https://github.com/${REPO_OWNER}/${apiRepoName}/commit/${apiCommitHash}).
+  Patches the frontend based on the [datanode changes](https://github.com/${GITHUB_OWNER}/${apiRepoName}/commit/${apiCommitHash}).
 
   # Technical 👨‍🔧
 
