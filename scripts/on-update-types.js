@@ -55,8 +55,12 @@ const request = (url, options) => new Promise((resolve, reject) => {
   const req = https.request(url, options, res => {
     res.setEncoding('utf8');
     let rawData = '';
-    res.on('data', (chunk) => { rawData += chunk; });
+    res.on('data', (chunk) => {
+      console.log(chunk.toString())
+      rawData += chunk.toString();
+    });
     res.on('error', (err) => {
+
       reject(err)
     })
     res.on('end', () => {
