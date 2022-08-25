@@ -166,12 +166,12 @@ const launchGitWorkflow = ({ apiVersion, apiCommitHash }) => {
   });
 
   execWrap({
-    cmd: `git commit -m 'chore: update types for v${apiVersion} on HEAD:${apiCommitHash}'`,
+    cmd: `git commit -m 'chore: update types for v${apiVersion} on HEAD:${apiCommitHash}' --no-verify`,
     errMessage: `Error checking if the branch "${TYPE_UPDATE_BRANCH}" exists on the origin.`,
   });
 
   execWrap({
-    cmd: `git push -u origin ${TYPE_UPDATE_BRANCH}`,
+    cmd: `git push -u origin ${TYPE_UPDATE_BRANCH} --no-verify`,
     errMessage: 'Error pushing changes.',
   });
 };
