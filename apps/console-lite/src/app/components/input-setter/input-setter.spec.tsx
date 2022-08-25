@@ -5,14 +5,14 @@ import { InputSetter } from './index';
 describe('InputSetter Component', () => {
   it('should show the correct value and visibility based on props', async () => {
     const value = 'Hello';
-    const isInputToggled = true;
+    const isInputVisible = true;
     const { getByRole } = await render(
       <InputSetter
         id="input-order-size-market"
         type="number"
         className="w-full"
         value={value}
-        isInputToggled={isInputToggled}
+        isInputVisible={isInputVisible}
         onChange={() => false}
       />
     );
@@ -22,16 +22,16 @@ describe('InputSetter Component', () => {
     expect(btn).toBeTruthy();
   });
 
-  it('should get toggled when button is clicked', async () => {
+  it('should toggle the visibility of the input when the button is clicked', async () => {
     const value = 'Hello';
-    const isInputToggled = true;
+    const isInputVisible = true;
     const { getByRole } = await render(
       <InputSetter
         id="input-order-size-market"
         type="number"
         className="w-full"
         value={value}
-        isInputToggled={isInputToggled}
+        isInputVisible={isInputVisible}
         onChange={() => false}
       />
     );
@@ -41,9 +41,9 @@ describe('InputSetter Component', () => {
     expect(getByRole('button')).toHaveTextContent(value);
   });
 
-  it('should get toggled when enter button is pressed', async () => {
+  it('should toggle the visibility of the input when the enter key is pressed', async () => {
     const value = 'Hello';
-    const isInputToggled = true;
+    const isInputVisible = true;
     const { getByRole } = await render(
       <InputSetter
         id="input-order-size-market"
@@ -51,7 +51,7 @@ describe('InputSetter Component', () => {
         type="number"
         className="w-full"
         value={value}
-        isInputToggled={isInputToggled}
+        isInputVisible={isInputVisible}
         onChange={() => false}
       />
     );

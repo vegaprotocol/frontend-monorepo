@@ -13,7 +13,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { DealTicketEstimates } from './deal-ticket-estimates';
-import { InputSetter } from '../input-setter/';
+import { InputSetter } from '../input-setter';
 import * as constants from './constants';
 
 interface DealTicketSizeProps {

@@ -6,21 +6,21 @@ import type { InputProps } from '@vegaprotocol/ui-toolkit';
 interface InputSetterProps {
   buttonLabel?: string;
   value: string | number;
-  isInputToggled?: boolean;
+  isInputVisible?: boolean;
   onValueChange?: () => string;
 }
 
 export const InputSetter = ({
   buttonLabel = t('set'),
   value = '',
-  isInputToggled = false,
+  isInputVisible = false,
   onValueChange,
   ...props
 }: InputSetterProps & InputProps) => {
-  const [isInputVisible, setIsInputVisible] = useState(isInputToggled);
+  const [isVisible, setIsVisible] = useState(isInputVisible);
 
   const toggleInput = useCallback(() => {
-    setIsInputVisible(!isInputVisible);
+    setIsVisible(!isInputVisible);
   }, [isInputVisible]);
 
   const onInputEnter = useCallback(
@@ -33,7 +33,7 @@ export const InputSetter = ({
     [toggleInput]
   );
 
-  return isInputVisible ? (
+  return isVisible ? (
     <div className="flex items-center">
       <Input {...props} value={value} onKeyDown={onInputEnter} />
       <button
