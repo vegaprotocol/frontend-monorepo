@@ -8,7 +8,6 @@ import {
   RotatingArrow,
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
-import isNil from 'lodash/isNil';
 import { useMemo, useState } from 'react';
 import { MARKET_LIST_QUERY } from '../markets-data-provider';
 import type { Column } from './select-market-columns';
@@ -117,21 +116,10 @@ export const SelectMarketPopover = ({
 }) => {
   const headerTriggerButtonClassName =
     'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
-
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
-  const yTimestamp = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-    return new Date(yesterday * 1000).toISOString();
-  }, []);
-
+  const { data } = useMarkets();
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
-  const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
-    variables: useMemo(
-      () => ({ interval: Interval.INTERVAL_I1H, since: yTimestamp }),
-      [yTimestamp]
-    ),
-  });
   const { data: marketDataPositions } = useQuery<Positions>(POSITION_QUERY, {
     variables,
     skip: !keypair?.pub,
@@ -220,40 +208,66 @@ export const SelectMarketDialog = ({
   dialogOpen,
   setDialogOpen,
   onSelect,
-  title = t('Select a market'),
 }: {
   dialogOpen: boolean;
   setDialogOpen: (open: boolean) => void;
   title?: string;
-  detailed?: boolean;
   onSelect: (id: string) => void;
 }) => {
-  const yTimestamp = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-    return new Date(yesterday * 1000).toISOString();
-  }, []);
-
   const onSelectMarket = (id: string) => {
     onSelect(id);
     setDialogOpen(false);
   };
 
-  const { data } = useQuery<MarketList>(MARKET_LIST_QUERY, {
-    variables: useMemo(
-      () => ({ interval: Interval.INTERVAL_I1H, since: yTimestamp }),
-      [yTimestamp]
-    ),
-  });
   return (
     <Dialog
-      title={title}
+      title={t('Select a market to get started')}
       intent={Intent.Primary}
-      open={!isNil(data) && dialogOpen}
+      open={dialogOpen}
       onChange={() => setDialogOpen(false)}
       titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
       size="small"
     >
-      <SelectMarketLandingTable data={data} onSelect={onSelectMarket} />
+      <LandingDialogContainer onSelect={onSelectMarket} />
     </Dialog>
   );
+};
+
+interface LandingDialogContainerProps {
+  onSelect: (id: string) => void;
+}
+
+const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
+  const { data, loading, error } = useMarkets();
+  if (error) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="my-32">{t('Failed to load markets')}</p>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center">
+        <p className="my-32">{t('Loading...')}</p>
+      </div>
+    );
+  }
+
+  return <SelectMarketLandingTable data={data} onSelect={onSelect} />;
+};
+
+const useMarkets = () => {
+  const since = useMemo(() => {
+    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
+    return new Date(yesterday * 1000).toISOString();
+  }, []);
+  const { data, loading, error } = useQuery<MarketList>(MARKET_LIST_QUERY, {
+    variables: useMemo(
+      () => ({ interval: Interval.INTERVAL_I1H, since }),
+      [since]
+    ),
+  });
+  return { data, loading, error };
 };

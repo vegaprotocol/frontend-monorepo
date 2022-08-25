@@ -134,7 +134,6 @@ const MarketPage = ({ id }: { id?: string }) => {
                   store.setMarketId(marketId);
                 }
               }}
-              title={t('Select a market to get started')}
             />
           </>
         );

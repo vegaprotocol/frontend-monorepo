@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 export enum StakingMethod {
   Contract = 'Contract',
   Wallet = 'Wallet',
+  Unknown = 'Unknown',
 }
 
 export const StakingMethodRadio = ({
