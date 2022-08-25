@@ -17,6 +17,18 @@ export enum AccountTypeMapping {
   ACCOUNT_TYPE_SETTLEMENT = 'Settlement',
 }
 
+/**
+ * Status of a liquidity provision order
+ */
+export enum LiquidityProvisionStatusMapping {
+  STATUS_ACTIVE = 'Active',
+  STATUS_CANCELLED = 'Cancelled',
+  STATUS_PENDING = 'Pending',
+  STATUS_REJECTED = 'Rejected',
+  STATUS_STOPPED = 'Stopped',
+  STATUS_UNDEPLOYED = 'Undeployed',
+}
+
 export enum AuctionTriggerMapping {
   AUCTION_TRIGGER_BATCH = 'batch',
   AUCTION_TRIGGER_LIQUIDITY = 'liquidity',
