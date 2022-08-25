@@ -4,6 +4,7 @@ import { Interval } from '@vegaprotocol/types';
 import {
   Dialog,
   Intent,
+  Link,
   Popover,
   RotatingArrow,
 } from '@vegaprotocol/ui-toolkit';
@@ -35,26 +36,32 @@ export const SelectMarketLandingTable = ({
   onSelect: (id: string) => void;
 }) => {
   const marketList = data && mapDataToMarketList(data);
+  const textDecorationClassName = `px-8 underline font-sans leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80 text-black dark:text-white`;
   return (
-    <div
-      className="max-h-[40rem] overflow-x-auto"
-      data-testid="select-market-list"
-    >
-      <table className="relative h-full min-w-full whitespace-nowrap">
-        <thead className="sticky top-0 z-10 dark:bg-black bg-white">
-          <SelectMarketTableHeader />
-        </thead>
-        <tbody>
-          {marketList?.map((market, i) => (
-            <SelectMarketTableRow
-              key={i}
-              detailed={false}
-              columns={columns(market, onSelect)}
-            />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div
+        className="max-h-[50vh] overflow-x-auto"
+        data-testid="select-market-list"
+      >
+        <table className="relative h-full min-w-full whitespace-nowrap">
+          <thead className="sticky top-0 z-10 dark:bg-black bg-white">
+            <SelectMarketTableHeader />
+          </thead>
+          <tbody>
+            {marketList?.map((market, i) => (
+              <SelectMarketTableRow
+                key={i}
+                detailed={false}
+                columns={columns(market, onSelect)}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Link className={textDecorationClassName} href="/markets">
+        {'Or view full market list'}
+      </Link>
+    </>
   );
 };
 

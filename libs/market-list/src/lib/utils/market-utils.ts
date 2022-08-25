@@ -39,7 +39,7 @@ export const mapDataToMarketList = ({ markets }: MarketList) =>
             : null,
         };
       }) || [],
-    [ 'tradingMode', 'open', 'id'],
+    ['tradingMode', 'open', 'id'],
     ['asc', 'asc', 'asc']
   );
 
