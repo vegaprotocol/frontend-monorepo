@@ -1,30 +1,13 @@
 import { gql, useQuery } from '@apollo/client';
-import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
-import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useParams } from 'react-router-dom';
 
-import { SplashLoader } from '../../../components/splash-loader';
-import { useFetch } from '@vegaprotocol/react-helpers';
 import { Proposal } from '../components/proposal';
 import { PROPOSALS_FRAGMENT } from '../proposal-fragment';
 import type {
   Proposal as ProposalQueryResult,
   ProposalVariables,
 } from './__generated__/Proposal';
-import { ENV } from '../../../config/env';
-
-/**
- * TODO: how do we do this properly to ensure that it is kept up to date?
- */
-export interface RestProposalResponse {
-  data: {
-    proposal: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      terms: any;
-    };
-  };
-}
 
 export const PROPOSAL_QUERY = gql`
   ${PROPOSALS_FRAGMENT}
@@ -36,16 +19,7 @@ export const PROPOSAL_QUERY = gql`
 `;
 
 export const ProposalContainer = () => {
-  const { t } = useTranslation();
   const params = useParams<{ proposalId: string }>();
-  const proposalUrl = React.useMemo(
-    () => new URL(`governance/proposal/${params.proposalId}`, ENV.restUrl).href,
-    [params.proposalId]
-  );
-
-  const {
-    state: { loading: restLoading, error: restError, data: restData },
-  } = useFetch<RestProposalResponse>(proposalUrl);
 
   const { data, loading, error } = useQuery<
     ProposalQueryResult,
@@ -57,23 +31,11 @@ export const ProposalContainer = () => {
     pollInterval: 5000,
   });
 
-  if (error || restError) {
-    return (
-      <Callout intent={Intent.Danger} title={t('Something went wrong')}>
-        <pre>{error?.message || restError?.message}</pre>
-      </Callout>
-    );
-  }
-
-  if (loading || !data || restLoading || !restData) {
-    return (
-      <Splash>
-        <SplashLoader />
-      </Splash>
-    );
-  }
-
   return (
-    <Proposal proposal={data.proposal} terms={restData?.data.proposal.terms} />
+    <AsyncRenderer loading={loading} error={error} data={data}>
+      {data && (
+        <Proposal proposal={data.proposal} terms={data.proposal.terms} />
+      )}
+    </AsyncRenderer>
   );
 };
