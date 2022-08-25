@@ -13,6 +13,7 @@ import {
 } from '../utils';
 import { t } from '@vegaprotocol/react-helpers';
 import { ProposalState } from '@vegaprotocol/types';
+import { useMemo } from 'react';
 
 export interface FormFields {
   proposalData: string;
@@ -75,7 +76,7 @@ export const ProposalForm = () => {
 
       {finalizedProposal?.rejectionReason ? (
         <TransactionDialog
-          title={t('proposalRejected')}
+          title={t('Proposal rejected')}
           intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
           icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
         >

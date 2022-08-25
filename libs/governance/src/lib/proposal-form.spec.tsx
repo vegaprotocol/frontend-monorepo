@@ -113,7 +113,22 @@ describe('ProposalForm', () => {
     );
     setup(mockSendTx);
 
-    const inputJSON = '{}';
+    const inputJSON = JSON.stringify({
+      rationale: {
+        description: 'Update governance.proposal.freeform.minVoterBalance',
+        title: 'testing 123',
+      },
+      terms: {
+        updateNetworkParameter: {
+          changes: {
+            key: 'governance.proposal.freeform.minVoterBalance',
+            value: '300',
+          },
+        },
+        closingTimestamp: 1657721401,
+        enactmentTimestamp: 1657807801,
+      },
+    });
     fireEvent.change(screen.getByTestId('proposal-data'), {
       target: { value: inputJSON },
     });
@@ -145,7 +160,7 @@ describe('ProposalForm', () => {
     });
 
     expect(screen.getByTestId('dialog-title')).toHaveTextContent(
-      'proposalRejected'
+      'Proposal rejected'
     );
   });
 
