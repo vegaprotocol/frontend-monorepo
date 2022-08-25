@@ -4,8 +4,8 @@ import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import {
   useDataProvider,
   addDecimal,
-  addDecimalsFormatNumber,
   ThemeContext,
+  getNumberFormat,
 } from '@vegaprotocol/react-helpers';
 import dataProvider from './market-depth-data-provider';
 import {
@@ -175,18 +175,25 @@ export const DepthChartContainer = ({ marketId }: DepthChartManagerProps) => {
     setPositionDecimalPlaces(data.positionDecimalPlaces);
   }, [data]);
 
+  const volumeFormat = useCallback(
+    (volume: number) =>
+      getNumberFormat(data?.positionDecimalPlaces || 0).format(volume),
+    [data?.positionDecimalPlaces]
+  );
+
+  const priceFormat = useCallback(
+    (price: number) => getNumberFormat(data?.decimalPlaces || 0).format(price),
+    [data?.decimalPlaces]
+  );
+
   return (
     <AsyncRenderer loading={loading} error={error} data={data}>
       {depthData && (
         <DepthChart
           {...depthData}
           theme={theme}
-          volumeFormat={(volume) =>
-            addDecimalsFormatNumber(volume, data?.positionDecimalPlaces || 0)
-          }
-          priceFormat={(price) =>
-            addDecimalsFormatNumber(price, data?.decimalPlaces || 0)
-          }
+          volumeFormat={volumeFormat}
+          priceFormat={priceFormat}
         />
       )}
     </AsyncRenderer>

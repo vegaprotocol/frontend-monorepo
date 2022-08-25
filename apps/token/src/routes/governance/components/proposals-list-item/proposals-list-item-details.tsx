@@ -16,6 +16,7 @@ import {
   ProposalRejectionReasonMapping,
   ProposalState,
 } from '@vegaprotocol/types';
+import Routes from '../../../routes';
 
 const MajorityNotReached = () => {
   const { t } = useTranslation();
@@ -199,7 +200,7 @@ export const ProposalsListItemDetails = ({
       )}
       {proposal.id && (
         <div className="col-start-2 row-start-2 justify-self-end">
-          <Link to={proposal.id}>
+          <Link to={`${Routes.GOVERNANCE}/${proposal.id}`}>
             <Button variant="secondary" data-testid="view-proposal-btn">
               {t('View')}
             </Button>

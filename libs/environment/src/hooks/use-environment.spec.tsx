@@ -192,7 +192,7 @@ it.each`
   ${Networks.DEVNET}   | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
   ${Networks.TESTNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
   ${Networks.STAGNET}  | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
-  ${Networks.STAGNET2} | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
+  ${Networks.STAGNET3} | ${'https://ropsten.etherscan.io'} | ${'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
   ${Networks.MAINNET}  | ${'https://etherscan.io'}         | ${'https://mainnet.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8'}
 `(
   'uses correct default ethereum connection variables in $env',

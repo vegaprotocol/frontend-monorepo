@@ -131,7 +131,6 @@ describe('SimpleMarketList', () => {
         document.querySelector('.ag-center-cols-container')
       ).toBeInTheDocument();
     });
-    screen.debug();
     await waitFor(() => {
       const container = document.querySelector('.ag-center-cols-container');
       expect(getAllByRole(container as HTMLDivElement, 'row')).toHaveLength(2);
