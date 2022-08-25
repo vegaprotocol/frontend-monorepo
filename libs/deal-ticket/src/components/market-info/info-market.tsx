@@ -317,7 +317,7 @@ export const Info = ({ market }: InfoProps) => {
           link={
             <Link
               target="_blank"
-              href={`${VEGA_EXPLORER_URL}/oracles`}
+              href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
               className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
               rel="noreferrer"
             >
