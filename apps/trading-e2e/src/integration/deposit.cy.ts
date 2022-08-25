@@ -9,16 +9,14 @@ describe('deposit form validation', () => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'DepositPage', generateDepositPage());
+      aliasQuery(req, 'AssetsConnection', generateDepositPage());
     });
     cy.visit('/portfolio/deposit');
 
+    cy.wait('@AssetsConnection');
     // Deposit page requires connection Ethereum wallet first
     cy.getByTestId(connectEthWalletBtn).click();
     cy.getByTestId('web3-connector-MetaMask').click();
-
-    cy.wait('@DepositPage');
-    cy.contains('Deposit');
   });
 
   it('handles empty fields', () => {

@@ -1,6 +1,6 @@
 const textToCheck = Cypress.env('VEGA_ENV');
 // breaking changes fail
-describe.skip('stats', () => {
+describe('stats', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display header based on environment name', () => {
