@@ -57,14 +57,17 @@ const request = (url, options) => new Promise((resolve, reject) => {
     res.setEncoding('utf8');
     let rawData = '';
     res.on('data', (chunk) => {
-      console.log(chunk.toString())
+      console.log(`chunk2str: ${chunk.toString()}`)
       rawData += chunk.toString();
     });
     res.on('error', (err) => {
-
       reject(err)
     })
     res.on('end', () => {
+      if (res.statusCode >= 400) {
+        reject(new Error(rawData))
+        return;
+      }
       try {
         const parsedData = JSON.parse(rawData);
         console.log(parsedData)
