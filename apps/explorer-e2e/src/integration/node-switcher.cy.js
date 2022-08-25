@@ -55,9 +55,7 @@ context('Node switcher', function () {
       cy.getByTestId('node-url-custom').click();
 
       cy.getByTestId(customNodeBtn).within(() => {
-        cy.get('input')
-          .clear()
-          .type('https://api.n10.testnet.vega.xyz/graphql');
+        cy.get('input').clear().type('https://n03.s.vega.xyz/query');
         cy.getByTestId('link').click();
       });
       cy.getByTestId('ssl-cell').should('contain.text', 'Yes');
