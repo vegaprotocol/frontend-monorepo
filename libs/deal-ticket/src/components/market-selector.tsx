@@ -136,8 +136,12 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
           break;
 
         case 'Enter':
+          event.preventDefault();
           handleMarketSelect(market);
           break;
+        default:
+          setShowPane(false);
+          setLookup(market.name);
       }
     },
     [results, handleMarketSelect]
