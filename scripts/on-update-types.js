@@ -53,11 +53,9 @@ const cliArgsSpecs = [
 
 const request = (url, options) => new Promise((resolve, reject) => {
   const req = https.request(url, options, res => {
-    console.log(`STATUS: ${res.statusCode}`)
     res.setEncoding('utf8');
     let rawData = '';
     res.on('data', (chunk) => {
-      console.log(`chunk2str: ${chunk.toString()}`)
       rawData += chunk.toString();
     });
     res.on('error', (err) => {
@@ -65,7 +63,7 @@ const request = (url, options) => new Promise((resolve, reject) => {
     })
     res.on('end', () => {
       if (res.statusCode >= 400) {
-        reject(new Error(rawData))
+        reject(new Error(`HTTPS ${res.statusCode}: ${rawData}`))
         return;
       }
       try {
@@ -188,7 +186,7 @@ const launchGithubWorkflow = async ({
   apiCommitHash,
   githubAuthToken,
 }) => {
-  const { number } = await request(`https://github.com/${GITHUB_OWNER}/${apiRepoName}/issues`, {
+  const { number } = await request(`https://api.github.com/repos/${GITHUB_OWNER}/${apiRepoName}/issues`, {
     method: 'POST',
     headers: {
       'Accept': 'application/vnd.github+json',
@@ -200,7 +198,7 @@ const launchGithubWorkflow = async ({
     }),
   })
 
-  await request(`https://github.com/${GITHUB_OWNER}/${apiRepoName}/pulls`, {
+  await request(`https://api.github.com/repos/${GITHUB_OWNER}/${apiRepoName}/pulls`, {
     method: 'POST',
     headers: {
       'Accept': 'application/vnd.github+json',
