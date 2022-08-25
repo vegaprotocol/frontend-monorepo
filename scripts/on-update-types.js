@@ -1,5 +1,5 @@
 const path = require('path');
-const http = require('http');
+const https = require('https');
 const { execSync } = require('node:child_process');
 
 const typesProjectJson = require(path.join(
@@ -52,7 +52,7 @@ const cliArgsSpecs = [
 ];
 
 const request = (url, options) => new Promise((resolve, reject) => {
-  const req = http.request(url, options, res => {
+  const req = https.request(url, options, res => {
     res.setEncoding('utf8');
     let rawData = '';
     res.on('data', (chunk) => { rawData += chunk; });
