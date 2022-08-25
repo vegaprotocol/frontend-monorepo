@@ -4,6 +4,6 @@ describe('stats', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display header based on environment name', () => {
-    cy.get('h3').should('have.text', `/ ${textToCheck}`);
+    cy.get('h3', { timeout: 10000 }).should('have.text', `/ ${textToCheck}`);
   });
 });
