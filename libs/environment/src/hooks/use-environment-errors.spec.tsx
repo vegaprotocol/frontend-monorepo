@@ -195,7 +195,7 @@ describe('throws error', () => {
       });
     expect(result).not.toThrow(
       `Error processing the vega app environment:
-    - NX_VEGA_ENV is invalid, received "SOMETHING" instead of: CUSTOM | TESTNET | STAGNET | STAGNET2 | DEVNET | MAINNET`
+    - NX_VEGA_ENV is invalid, received "SOMETHING" instead of: CUSTOM | TESTNET | STAGNET | DEVNET | MAINNET`
     );
   });
 });
