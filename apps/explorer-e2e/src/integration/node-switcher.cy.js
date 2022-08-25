@@ -31,7 +31,7 @@ context('Node switcher', function () {
           cy.contains('-').should('not.exist');
           cy.getByTestId('response-time-cell').should('contain.text', 'ms');
           cy.getByTestId('block-cell').should('not.be.empty');
-          cy.getByTestId('ssl-cell').should('have.text', 'Yes');
+          cy.getByTestId('ssl-cell').should('not.be.empty');
         });
     });
 
@@ -55,9 +55,12 @@ context('Node switcher', function () {
       cy.getByTestId('node-url-custom').click();
 
       cy.getByTestId(customNodeBtn).within(() => {
-        cy.get('input').clear().type('https://api.token.vega.xyz/query');
+        cy.get('input')
+          .clear()
+          .type('https://api.n10.testnet.vega.xyz/graphql');
         cy.getByTestId('link').click();
       });
+      cy.getByTestId('ssl-cell').should('contain.text', 'Yes');
       validateNodeError(errorTypeTxt, nodeErrorTxt);
     });
 
