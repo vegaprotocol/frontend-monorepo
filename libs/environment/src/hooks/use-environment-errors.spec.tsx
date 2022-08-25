@@ -149,7 +149,7 @@ describe('throws error', () => {
     );
   });
 
-  it('throws a validation error when VEGA_NETWORKS is has an invalid network as a key', () => {
+  it('throws a validation error when VEGA_NETWORKS has an invalid network as a key', () => {
     process.env['NX_VEGA_NETWORKS'] = JSON.stringify({
       NOT_A_NETWORK: 'https://somewhere.url',
     });
@@ -159,7 +159,7 @@ describe('throws error', () => {
       });
     expect(result).toThrow(
       `Error processing the vega app environment:
-  - All keys in NX_VEGA_NETWORKS must represent a valid environment: CUSTOM | TESTNET | STAGNET | STAGNET3 | DEVNET | MAINNET`
+  - All keys in NX_VEGA_NETWORKS must represent a valid environment: CUSTOM | TESTNET | STAGNET3 | DEVNET | MAINNET`
     );
   });
 
@@ -183,7 +183,7 @@ describe('throws error', () => {
       });
     expect(result).toThrow(
       `Error processing the vega app environment:
-  - NX_VEGA_ENV is invalid, received "undefined" instead of: 'CUSTOM' | 'TESTNET' | 'STAGNET' | 'STAGNET3' | 'DEVNET' | 'MAINNET'`
+  - NX_VEGA_ENV is invalid, received "undefined" instead of: 'CUSTOM' | 'TESTNET' | 'STAGNET3' | 'DEVNET' | 'MAINNET'`
     );
   });
 
@@ -195,7 +195,7 @@ describe('throws error', () => {
       });
     expect(result).not.toThrow(
       `Error processing the vega app environment:
-    - NX_VEGA_ENV is invalid, received "SOMETHING" instead of: CUSTOM | TESTNET | STAGNET | DEVNET | MAINNET`
+    - NX_VEGA_ENV is invalid, received "SOMETHING" instead of: CUSTOM | TESTNET | STAGNET3 | DEVNET | MAINNET`
     );
   });
 });

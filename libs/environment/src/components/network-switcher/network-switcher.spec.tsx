@@ -16,7 +16,6 @@ describe('Network switcher', () => {
     network              | label
     ${Networks.CUSTOM}   | ${envTriggerMapping[Networks.CUSTOM]}
     ${Networks.DEVNET}   | ${envTriggerMapping[Networks.DEVNET]}
-    ${Networks.STAGNET}  | ${envTriggerMapping[Networks.STAGNET]}
     ${Networks.STAGNET3} | ${envTriggerMapping[Networks.STAGNET3]}
     ${Networks.TESTNET}  | ${envTriggerMapping[Networks.TESTNET]}
     ${Networks.MAINNET}  | ${envTriggerMapping[Networks.MAINNET]}
@@ -137,7 +136,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: 'https://main.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
-      [Networks.STAGNET]: 'https://stag.net',
       [Networks.DEVNET]: 'https://dev.net',
     };
     // @ts-ignore Typescript doesn't know about this module being mocked
@@ -155,7 +153,6 @@ describe('Network switcher', () => {
       Networks.MAINNET,
       Networks.TESTNET,
       Networks.STAGNET3,
-      Networks.STAGNET,
       Networks.DEVNET,
     ].forEach((network) => {
       expect(
@@ -174,7 +171,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: 'https://main.net',
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
-      [Networks.STAGNET]: 'https://stag.net',
       [Networks.DEVNET]: 'https://dev.net',
     };
     // @ts-ignore Typescript doesn't know about this module being mocked
@@ -203,7 +199,6 @@ describe('Network switcher', () => {
       [Networks.MAINNET]: undefined,
       [Networks.TESTNET]: 'https://test.net',
       [Networks.STAGNET3]: 'https://stag3.net',
-      [Networks.STAGNET]: 'https://stag.net',
       [Networks.DEVNET]: 'https://dev.net',
     };
     // @ts-ignore Typescript doesn't know about this module being mocked

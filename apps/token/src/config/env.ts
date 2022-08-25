@@ -28,10 +28,6 @@ export const ContractAddresses: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994',
     lockedAddress: '0x0',
   },
-  STAGNET: {
-    claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
-    lockedAddress: '0x0', // TODO not deployed to this env
-  },
   STAGNET3: {
     claimAddress: '0x8Cef746ab7C83B61F6461cC92882bD61AB65a994', // TODO not deployed to this env, but random address so app doesn't error
     lockedAddress: '0x0', // TODO not deployed to this env
