@@ -151,6 +151,7 @@ export const VoteButtons = ({
             onClick={() => {
               setChangeVote(true);
             }}
+            data-testid="change-vote-button"
           >
             {t('changeVote')}
           </Button>
@@ -164,7 +165,7 @@ export const VoteButtons = ({
   }
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4" data-testid="vote-buttons">
       <Button
         onClick={() => submitVote(VoteValue.VALUE_YES)}
         className="flex-1"
