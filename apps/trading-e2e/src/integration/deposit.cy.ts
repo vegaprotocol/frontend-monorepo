@@ -13,12 +13,10 @@ describe('deposit form validation', () => {
     });
     cy.visit('/portfolio/deposit');
 
+    cy.wait('@AssetsConnection');
     // Deposit page requires connection Ethereum wallet first
     cy.getByTestId(connectEthWalletBtn).click();
     cy.getByTestId('web3-connector-MetaMask').click();
-
-    cy.wait('@AssetsConnection');
-    cy.contains('Deposit');
   });
 
   it('handles empty fields', () => {
