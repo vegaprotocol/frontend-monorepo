@@ -80,11 +80,7 @@ const getProps = (
       title: t('Withdrawal transaction failed'),
       icon: <Icon name="warning-sign" />,
       intent: Intent.Danger,
-      children: (
-        <Step>
-          <p>{vegaTx.error}</p>
-        </Step>
-      ),
+      children: <Step>{vegaTx.error}</Step>,
     },
     [VegaTxStatus.Requested]: {
       title: t('Confirm withdrawal'),

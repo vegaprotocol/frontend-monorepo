@@ -1,5 +1,6 @@
 import { AsyncRenderer, Button, Dialog } from '@vegaprotocol/ui-toolkit';
 import {
+  useCreateWithdraw,
   useWithdrawals,
   WithdrawalsTable,
   WithdrawFormContainer,
@@ -13,6 +14,7 @@ import { useVegaWallet } from '@vegaprotocol/wallet';
 export const WithdrawalsContainer = () => {
   const { keypair } = useVegaWallet();
   const { withdrawals, loading, error } = useWithdrawals();
+  const createWithdraw = useCreateWithdraw();
   const [withdrawDialog, setWithdrawDialog] = useState(false);
 
   return (
@@ -42,9 +44,17 @@ export const WithdrawalsContainer = () => {
           title={t('Withdraw')}
           open={withdrawDialog}
           onChange={(isOpen) => setWithdrawDialog(isOpen)}
+          size="small"
         >
-          <WithdrawFormContainer partyId={keypair?.pub} />
+          <WithdrawFormContainer
+            partyId={keypair?.pub}
+            submit={(args) => {
+              setWithdrawDialog(false);
+              createWithdraw.submit(args);
+            }}
+          />
         </Dialog>
+        <createWithdraw.Dialog />
       </VegaWalletContainer>
     </Web3Container>
   );

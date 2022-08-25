@@ -16,7 +16,8 @@ export const useCreateWithdraw = () => {
     useState<Erc20Approval_erc20WithdrawalApproval | null>(null);
 
   const { keypair } = useVegaWallet();
-  const { transaction, send, setComplete, reset } = useVegaTransaction();
+  const { transaction, send, setComplete, reset, Dialog } =
+    useVegaTransaction();
 
   const submit = useCallback(
     async (withdrawal: WithdrawalArgs) => {
@@ -54,5 +55,6 @@ export const useCreateWithdraw = () => {
     submit,
     reset,
     approval,
+    Dialog,
   };
 };

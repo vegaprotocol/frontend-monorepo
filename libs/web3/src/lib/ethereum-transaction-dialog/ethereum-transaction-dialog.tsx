@@ -5,8 +5,8 @@ import type { EthTxState, TxError } from '../use-ethereum-transaction';
 import { EthTxStatus } from '../use-ethereum-transaction';
 import { ConfirmRow, TxRow, ConfirmationEventRow } from './dialog-rows';
 
-export interface TransactionDialogProps {
-  name: string;
+export interface EthereumTransactionDialogProps {
+  title: string;
   onChange: (isOpen: boolean) => void;
   transaction: EthTxState;
   // Undefined means this dialog isn't expecting an additional event for a complete state, a boolean
@@ -14,21 +14,19 @@ export interface TransactionDialogProps {
   requiredConfirmations?: number;
 }
 
-export const TransactionDialog = ({
+export const EthereumTransactionDialog = ({
   onChange,
-  name,
+  title,
   transaction,
   requiredConfirmations = 1,
-}: TransactionDialogProps) => {
+}: EthereumTransactionDialogProps) => {
   const { status, error, confirmations, txHash } = transaction;
-  const { intent, title, icon } = getWrapperProps(name, status);
   return (
     <Dialog
       open={transaction.dialogOpen}
       onChange={onChange}
-      intent={intent}
-      title={title}
-      icon={icon}
+      size="small"
+      {...getWrapperProps(title, status)}
     >
       <TransactionContent
         status={status}
@@ -94,7 +92,7 @@ export const TransactionContent = ({
   );
 };
 
-export const getWrapperProps = (name: string, status: EthTxStatus) => {
+export const getWrapperProps = (title: string, status: EthTxStatus) => {
   const propsMap = {
     [EthTxStatus.Default]: {
       title: '',
@@ -102,7 +100,7 @@ export const getWrapperProps = (name: string, status: EthTxStatus) => {
       intent: undefined,
     },
     [EthTxStatus.Error]: {
-      title: t(`${name} failed`),
+      title: t(`${title} failed`),
       icon: <Icon name="warning-sign" />,
       intent: Intent.Danger,
     },
@@ -112,17 +110,17 @@ export const getWrapperProps = (name: string, status: EthTxStatus) => {
       intent: Intent.Warning,
     },
     [EthTxStatus.Pending]: {
-      title: t(`${name} pending`),
+      title: t(`${title} pending`),
       icon: <Loader size="small" />,
       intent: Intent.None,
     },
     [EthTxStatus.Complete]: {
-      title: t(`${name} pending`),
+      title: t(`${title} pending`),
       icon: <Loader size="small" />,
       intent: Intent.None,
     },
     [EthTxStatus.Confirmed]: {
-      title: t(`${name} complete`),
+      title: t(`${title} complete`),
       icon: <Icon name="tick" />,
       intent: Intent.Success,
     },

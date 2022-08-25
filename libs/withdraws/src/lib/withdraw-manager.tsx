@@ -1,23 +1,26 @@
 import { useEffect, useMemo, useState } from 'react';
 import sortBy from 'lodash/sortBy';
 import { WithdrawForm } from './withdraw-form';
-import { useCreateWithdraw } from './use-create-withdraw';
+import type { WithdrawalArgs } from './use-create-withdraw';
 import type { Asset } from '@vegaprotocol/react-helpers';
 import { addDecimal } from '@vegaprotocol/react-helpers';
 import { AccountType } from '@vegaprotocol/types';
 import BigNumber from 'bignumber.js';
 import type { Account } from './types';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
-import { VegaDialog } from '@vegaprotocol/wallet';
 import { captureException } from '@sentry/react';
 
 export interface WithdrawManagerProps {
   assets: Asset[];
   accounts: Account[];
+  submit: (args: WithdrawalArgs) => void;
 }
 
-export const WithdrawManager = ({ assets, accounts }: WithdrawManagerProps) => {
-  const { submit, transaction } = useCreateWithdraw();
+export const WithdrawManager = ({
+  assets,
+  accounts,
+  submit,
+}: WithdrawManagerProps) => {
   const [assetId, setAssetId] = useState<string | undefined>();
   const [threshold, setThreshold] = useState<BigNumber>(
     new BigNumber(Infinity)
@@ -72,10 +75,6 @@ export const WithdrawManager = ({ assets, accounts }: WithdrawManagerProps) => {
       mounted = false;
     };
   }, [asset, getThreshold]);
-
-  if (transaction.dialogOpen) {
-    return <VegaDialog transaction={transaction} />;
-  }
 
   return (
     <WithdrawForm

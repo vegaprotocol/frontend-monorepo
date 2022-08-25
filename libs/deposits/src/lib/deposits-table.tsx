@@ -12,6 +12,8 @@ import {
 import { AgGridDynamic as AgGrid, Link } from '@vegaprotocol/ui-toolkit';
 import type { DepositFields } from './__generated__/DepositFields';
 import { useEnvironment } from '@vegaprotocol/environment';
+import type { DepositStatus } from '@vegaprotocol/types';
+import { DepositStatusMapping } from '@vegaprotocol/types';
 
 export interface DepositsTableProps {
   deposits: DepositFields[];
@@ -42,7 +44,13 @@ export const DepositsTable = ({ deposits }: DepositsTableProps) => {
           return getDateTimeFormat().format(new Date(value));
         }}
       />
-      <AgGridColumn headerName="Status" field="status" />
+      <AgGridColumn
+        headerName="Status"
+        field="status"
+        valueFormatter={({ value }: { value: DepositStatus }) => {
+          return DepositStatusMapping[value];
+        }}
+      />
       <AgGridColumn
         headerName="Tx hash"
         field="txHash"

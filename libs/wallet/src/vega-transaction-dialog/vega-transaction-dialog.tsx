@@ -43,6 +43,7 @@ export const VegaTransactionDialog = ({
       intent={computedIntent}
       title={computedTitle}
       icon={computedIcon}
+      size="small"
     >
       {content}
     </Dialog>

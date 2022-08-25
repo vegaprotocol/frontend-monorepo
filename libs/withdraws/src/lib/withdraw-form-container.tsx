@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import { t } from '@vegaprotocol/react-helpers';
+import type { WithdrawalArgs } from './use-create-withdraw';
 import { WithdrawManager } from './withdraw-manager';
 
 export const ASSET_FRAGMENT = gql`
@@ -40,7 +41,15 @@ const WITHDRAW_FORM_QUERY = gql`
   }
 `;
 
-export const WithdrawFormContainer = ({ partyId }: { partyId?: string }) => {
+interface WithdrawFormContainerProps {
+  partyId?: string;
+  submit: (args: WithdrawalArgs) => void;
+}
+
+export const WithdrawFormContainer = ({
+  partyId,
+  submit,
+}: WithdrawFormContainerProps) => {
   const { data, loading, error } = useQuery(WITHDRAW_FORM_QUERY, {
     variables: { partyId },
   });
@@ -57,6 +66,7 @@ export const WithdrawFormContainer = ({ partyId }: { partyId?: string }) => {
     <WithdrawManager
       assets={data.assets}
       accounts={data.party?.accounts || []}
+      submit={submit}
     />
   );
 };

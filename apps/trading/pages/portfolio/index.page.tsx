@@ -1,4 +1,3 @@
-import { Web3Container } from '@vegaprotocol/web3';
 import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';

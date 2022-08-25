@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 import { captureException } from '@sentry/react';
 import type { WithdrawalFields } from './__generated__/WithdrawalFields';
 import BigNumber from 'bignumber.js';
-import { addDecimal, getDateTimeFormat, t } from '@vegaprotocol/react-helpers';
+import { addDecimal, t } from '@vegaprotocol/react-helpers';
 import { useGetWithdrawThreshold } from './use-get-withdraw-threshold';
 import { useGetWithdrawDelay } from './use-get-withdraw-delay';
 import { ERC20_APPROVAL_QUERY } from './queries';
@@ -14,39 +14,67 @@ import { useApolloClient } from '@apollo/client';
 
 export enum ApprovalStatus {
   Idle = 'Idle',
-  AssetInvalid = 'AssetInvalid',
   Pending = 'Pending',
   Delayed = 'Delayed',
-  NoApproval = 'NoApproval',
-  NoSig = 'NoSig',
+  Error = 'Error',
   Ready = 'Ready',
 }
+
+export interface VerifyState {
+  status: ApprovalStatus;
+  message: string;
+  threshold: BigNumber;
+  completeTimestamp: number | null;
+  dialogOpen: boolean;
+}
+
+const initialState = {
+  status: ApprovalStatus.Idle,
+  message: '',
+  threshold: new BigNumber(Infinity),
+  completeTimestamp: null,
+  dialogOpen: false,
+};
 
 export const useVerifyWithdrawal = () => {
   const client = useApolloClient();
   const getThreshold = useGetWithdrawThreshold();
   const getDelay = useGetWithdrawDelay();
-  const [status, setStatus] = useState<ApprovalStatus>(ApprovalStatus.Idle);
-  const [message, setMessage] = useState('');
+  const [state, _setState] = useState<VerifyState>(initialState);
+
+  const setState = useCallback(
+    (update: Partial<VerifyState>) => {
+      _setState((curr) => ({
+        ...curr,
+        ...update,
+      }));
+    },
+    [_setState]
+  );
 
   const reset = useCallback(() => {
-    setStatus(ApprovalStatus.Idle);
-    setMessage('');
-  }, []);
+    setState(initialState);
+  }, [setState]);
 
   const verify = useCallback(
     async (withdrawal: WithdrawalFields) => {
       try {
+        setState({ dialogOpen: true });
+
         if (withdrawal.asset.source.__typename !== 'ERC20') {
-          setStatus(ApprovalStatus.AssetInvalid);
-          setMessage(
-            t(`Invalid asset source: ${withdrawal.asset.source.__typename}`)
-          );
+          setState({
+            status: ApprovalStatus.Error,
+            message: t(
+              `Invalid asset source: ${withdrawal.asset.source.__typename}`
+            ),
+          });
           return false;
         }
 
-        setStatus(ApprovalStatus.Pending);
-        setMessage('Verifying withdrawal approval');
+        setState({
+          status: ApprovalStatus.Pending,
+          message: t('Verifying withdrawal approval'),
+        });
 
         const amount = new BigNumber(
           addDecimal(withdrawal.amount, withdrawal.asset.decimals)
@@ -60,15 +88,11 @@ export const useVerifyWithdrawal = () => {
             new Date(withdrawal.createdTimestamp).getTime() + delaySecs * 1000;
 
           if (Date.now() < completeTimestamp) {
-            const formattedTime = getDateTimeFormat().format(
-              new Date(completeTimestamp)
-            );
-            setStatus(ApprovalStatus.Delayed);
-            setMessage(
-              t(
-                `Withdrawal amount of ${amount.toString()} incurs a delay and cannot be completed until: ${formattedTime}`
-              )
-            );
+            setState({
+              status: ApprovalStatus.Delayed,
+              threshold,
+              completeTimestamp,
+            });
             return false;
           }
         }
@@ -80,27 +104,32 @@ export const useVerifyWithdrawal = () => {
 
         const approval = res.data.erc20WithdrawalApproval;
         if (!approval) {
-          setStatus(ApprovalStatus.NoApproval);
-          setMessage(t('Approval not created yet'));
+          setState({
+            status: ApprovalStatus.Error,
+          });
           return false;
         }
 
         if (approval.signatures.length < 3) {
-          setStatus(ApprovalStatus.NoSig);
-          setMessage(t('Not enough signatures yet'));
+          setState({
+            status: ApprovalStatus.Error,
+          });
           return false;
         }
 
-        setStatus(ApprovalStatus.Ready);
+        setState({ status: ApprovalStatus.Ready, dialogOpen: false });
+
         return true;
       } catch (err) {
         captureException(err);
-        setMessage('Something went wrong');
+        setState({
+          status: ApprovalStatus.Error,
+        });
         return false;
       }
     },
-    [getThreshold, getDelay, client]
+    [getThreshold, getDelay, client, setState]
   );
 
-  return { verify, status, message, reset };
+  return { verify, state, reset };
 };

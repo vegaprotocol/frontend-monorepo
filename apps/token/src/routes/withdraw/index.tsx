@@ -158,7 +158,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
           </Callout>
         </div>
       )}
-      <WithdrawManager assets={assets || []} accounts={accounts} />
+      {/* <WithdrawManager assets={assets || []} accounts={accounts} /> */}
     </>
   );
 };

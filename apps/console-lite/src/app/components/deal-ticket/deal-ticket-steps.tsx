@@ -110,8 +110,7 @@ export const DealTicketSteps = ({
     fieldErrors: errors,
   });
 
-  const { submit, transaction, finalizedOrder, TransactionDialog } =
-    useOrderSubmit();
+  const { submit, transaction, finalizedOrder, Dialog } = useOrderSubmit();
 
   const onSizeChange = (value: number[]) => {
     const newVal = new BigNumber(value[0])
@@ -249,13 +248,13 @@ export const DealTicketSteps = ({
             notionalSize={notionalSize || emptyString}
             fees={fees || emptyString}
           />
-          <TransactionDialog
+          <Dialog
             title={getOrderDialogTitle(finalizedOrder?.status)}
             intent={getOrderDialogIntent(finalizedOrder?.status)}
             icon={getOrderDialogIcon(finalizedOrder?.status)}
           >
             <OrderFeedback transaction={transaction} order={finalizedOrder} />
-          </TransactionDialog>
+          </Dialog>
         </div>
       ),
       disabled: true,

@@ -5,6 +5,7 @@ import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
+  useCreateWithdraw,
   useWithdrawals,
   WithdrawalsTable,
   WithdrawFormContainer,
@@ -30,6 +31,7 @@ const WithdrawPendingContainer = () => {
   const [withdrawDialog, setWithdrawDialog] = useState(false);
   const { t } = useTranslation();
   const { withdrawals, loading, error } = useWithdrawals();
+  const createWithdraw = useCreateWithdraw();
 
   if (error) {
     return (
@@ -63,9 +65,17 @@ const WithdrawPendingContainer = () => {
         title={t('Withdraw')}
         open={withdrawDialog}
         onChange={(isOpen) => setWithdrawDialog(isOpen)}
+        size="small"
       >
-        <WithdrawFormContainer partyId={keypair?.pub} />
+        <WithdrawFormContainer
+          partyId={keypair?.pub}
+          submit={(args) => {
+            setWithdrawDialog(false);
+            createWithdraw.submit(args);
+          }}
+        />
       </Dialog>
+      <createWithdraw.Dialog />
     </>
   );
 };

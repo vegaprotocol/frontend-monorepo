@@ -24,7 +24,7 @@ export const ProposalForm = () => {
     handleSubmit,
     formState: { isSubmitting, errors },
   } = useForm<FormFields>();
-  const { finalizedProposal, submit, TransactionDialog } = useProposalSubmit();
+  const { finalizedProposal, submit, Dialog } = useProposalSubmit();
 
   const hasError = Boolean(errors.proposalData?.message);
 
@@ -63,31 +63,23 @@ export const ProposalForm = () => {
           </InputError>
         )}
       </FormGroup>
-      <span className="my-20">
-        <Button
-          variant="primary"
-          type="submit"
-          data-testid="proposal-submit"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
-        </Button>
-      </span>
-      {finalizedProposal?.rejectionReason ? (
-        <TransactionDialog
-          title={t('Proposal rejected')}
-          intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
-          icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
-        >
+      <Button
+        variant="primary"
+        type="submit"
+        data-testid="proposal-submit"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
+      </Button>
+      <Dialog
+        title={t('Proposal rejected')}
+        intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
+        icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
+      >
+        {finalizedProposal?.rejectionReason ? (
           <p>{finalizedProposal.rejectionReason}</p>
-        </TransactionDialog>
-      ) : (
-        <TransactionDialog
-          title={getProposalDialogTitle(finalizedProposal?.state)}
-          intent={getProposalDialogIntent(finalizedProposal?.state)}
-          icon={getProposalDialogIcon(finalizedProposal?.state)}
-        />
-      )}
+        ) : undefined}
+      </Dialog>
     </form>
   );
 };

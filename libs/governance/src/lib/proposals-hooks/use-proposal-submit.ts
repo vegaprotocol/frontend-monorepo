@@ -10,8 +10,7 @@ export const useProposalSubmit = () => {
   const { keypair } = useVegaWallet();
   const waitForProposalEvent = useProposalEvent();
 
-  const { send, transaction, setComplete, TransactionDialog } =
-    useVegaTransaction();
+  const { send, transaction, setComplete, Dialog } = useVegaTransaction();
 
   const [finalizedProposal, setFinalizedProposal] =
     useState<ProposalEvent_busEvents_event_Proposal | null>(null);
@@ -52,7 +51,7 @@ export const useProposalSubmit = () => {
   return {
     transaction,
     finalizedProposal,
-    TransactionDialog,
+    Dialog,
     submit,
   };
 };

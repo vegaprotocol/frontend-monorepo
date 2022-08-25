@@ -26,7 +26,7 @@ export const WithdrawLimits = ({ threshold, balance }: WithdrawLimitsProps) => {
         </tr>
         <tr>
           <th className="text-left font-normal">
-            {t('Large withdrawal threshold')}
+            {t('Delayed withdrawal amount')}
           </th>
           <td className="text-right">{text}</td>
         </tr>

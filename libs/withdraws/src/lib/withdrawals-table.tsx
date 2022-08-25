@@ -13,12 +13,15 @@ import {
   Dialog,
   Link,
   AgGridDynamic as AgGrid,
+  Intent,
+  Loader,
+  Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '@vegaprotocol/environment';
 import { useCompleteWithdraw } from './use-complete-withdraw';
 import type { WithdrawalFields } from './__generated__/WithdrawalFields';
+import type { VerifyState } from './use-verify-withdrawal';
 import { ApprovalStatus, useVerifyWithdrawal } from './use-verify-withdrawal';
-import { TransactionContent } from '@vegaprotocol/web3';
 
 export interface WithdrawalsTableProps {
   withdrawals: WithdrawalFields[];
@@ -26,11 +29,14 @@ export interface WithdrawalsTableProps {
 
 export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   const { ETHERSCAN_URL } = useEnvironment();
-  const { submit, transaction, reset: resetTx } = useCompleteWithdraw();
+  const {
+    submit,
+    reset: resetTx,
+    Dialog: EthereumTransactionDialog,
+  } = useCompleteWithdraw();
   const {
     verify,
-    status,
-    message,
+    state: verifyState,
     reset: resetVerification,
   } = useVerifyWithdrawal();
 
@@ -104,26 +110,20 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
         />
       </AgGrid>
       <Dialog
-        title="Complete withdrawal"
+        title={t('Withdrawal verification')}
         onChange={(isOpen) => {
           if (!isOpen) {
             resetTx();
             resetVerification();
           }
         }}
-        open={
-          (status !== ApprovalStatus.Idle && status !== ApprovalStatus.Ready) ||
-          transaction.dialogOpen
-        }
+        open={verifyState.dialogOpen}
+        size="small"
+        {...getVerifyDialogProps(verifyState.status)}
       >
-        {status === ApprovalStatus.Ready ? (
-          <TransactionContent {...transaction} />
-        ) : (
-          <div>
-            <p>{message}</p>
-          </div>
-        )}
+        <VerificationStatus state={verifyState} />
       </Dialog>
+      <EthereumTransactionDialog />
     </>
   );
 };
@@ -185,4 +185,47 @@ const RecipientCell = ({
       {valueFormatted}
     </Link>
   );
+};
+
+const getVerifyDialogProps = (status: ApprovalStatus) => {
+  if (status === ApprovalStatus.Error) {
+    return {
+      intent: Intent.Danger,
+      icon: <Icon name="warning-sign" size={20} />,
+    };
+  }
+
+  if (status === ApprovalStatus.Pending) {
+    return { intent: Intent.None, icon: <Loader size="small" /> };
+  }
+
+  if (status === ApprovalStatus.Delayed) {
+    return { intent: Intent.Warning, icon: <Icon name="time" size={20} /> };
+  }
+
+  return { intent: Intent.None };
+};
+
+const VerificationStatus = ({ state }: { state: VerifyState }) => {
+  if (state.status === ApprovalStatus.Error) {
+    return <p>{t('Something went wrong')}</p>;
+  }
+
+  if (state.status === ApprovalStatus.Pending) {
+    return <p>{t('Verifying...')}</p>;
+  }
+
+  if (state.status === ApprovalStatus.Delayed && state.completeTimestamp) {
+    const formattedTime = getDateTimeFormat().format(
+      new Date(state.completeTimestamp)
+    );
+    return (
+      <>
+        <p>{t('Amount over delay threshold')}</p>
+        <p>{t(`Cannot be completed until ${formattedTime}`)}</p>
+      </>
+    );
+  }
+
+  return null;
 };
