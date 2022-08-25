@@ -94,7 +94,6 @@ export const generateMarketList = (
         __typename: 'Fees',
       },
       data: {
-        trigger: AuctionTrigger.AUCTION_TRIGGER_PRICE,
         market: {
           id: '34d95e10faa00c21d19d382d6d7e6fc9722a96985369f0caec041b0f44b775ed',
           state: MarketState.STATE_SUSPENDED,

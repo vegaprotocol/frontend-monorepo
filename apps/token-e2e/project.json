@@ -26,7 +26,7 @@
       "executor": "@nrwl/workspace:run-commands",
       "outputs": [],
       "options": {
-        "command": "yarn tsc --project ./apps/trading-e2e/"
+        "command": "yarn tsc --project ./apps/token-e2e/"
       }
     }
   },
