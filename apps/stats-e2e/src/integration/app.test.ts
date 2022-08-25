@@ -1,5 +1,5 @@
 const textToCheck = Cypress.env('VEGA_ENV');
-
+// breaking changes fail
 describe('stats', () => {
   beforeEach(() => cy.visit('/'));
 

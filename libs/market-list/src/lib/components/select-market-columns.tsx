@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   addDecimalsFormatNumber,
-  formatLabel,
   formatNumberPercentage,
   PriceCell,
   t,
 } from '@vegaprotocol/react-helpers';
-import { AuctionTrigger, MarketTradingMode } from '@vegaprotocol/types';
+import {
+  AuctionTrigger,
+  AuctionTriggerMapping,
+  MarketTradingMode,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import {
   KeyValueTable,
   KeyValueTableRow,
@@ -17,11 +21,15 @@ import {
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 
-import { totalFees } from '../utils';
+import { calcCandleHigh, calcCandleLow, totalFees } from '../utils';
 
 import type { CandleClose } from '@vegaprotocol/types';
-import type { MarketList_markets_fees_factors } from '../__generated__/MarketList';
+import type {
+  MarketList_markets,
+  MarketList_markets_fees_factors,
+} from '../__generated__/MarketList';
 import classNames from 'classnames';
+import isNil from 'lodash/isNil';
 
 export const thClassNames = (direction: 'left' | 'right') =>
   `px-8 text-${direction} font-sans text-ui-small leading-9 mb-0 text-dark dark:text-white first:w-[10%]`;
@@ -184,10 +192,13 @@ export const columnHeaders: Column[] = [
 ];
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const columns = (market: any, onSelect: (id: string) => void) => {
+export const columns = (
+  market: MarketList_markets,
+  onSelect: (id: string) => void
+) => {
   const candlesClose = market.candles
-    .map((candle: { close: string }) => candle?.close)
-    .filter((c: string): c is CandleClose => c !== null);
+    ?.map((candle) => candle?.close)
+    .filter((c: string | undefined): c is CandleClose => !isNil(c));
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
     id: string
@@ -196,6 +207,8 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
       return onSelect(id);
     }
   };
+  const candleLow = calcCandleLow(market);
+  const candleHigh = calcCandleHigh(market);
   const selectMarketColumns: Column[] = [
     {
       value: (
@@ -217,11 +230,11 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
       onlyOnDetailed: false,
     },
     {
-      value: market.lastPrice ? (
+      value: market.data?.markPrice ? (
         <PriceCell
-          value={new BigNumber(market.lastPrice).toNumber()}
+          value={Number(market.data?.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            market.lastPrice.toString(),
+            market.data?.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -233,13 +246,14 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
       onlyOnDetailed: false,
     },
     {
-      value: market.settlementAsset,
+      value:
+        market.tradableInstrument.instrument.product.settlementAsset.symbol,
       dataTestId: 'settlement-asset',
       className: thClassNames('left'),
       onlyOnDetailed: false,
     },
     {
-      value: (
+      value: candlesClose && (
         <PriceCellChange
           candles={candlesClose}
           decimalPlaces={market.decimalPlaces}
@@ -254,18 +268,18 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
           width={100}
           height={20}
           muted={false}
-          data={candlesClose.map((c: string) => Number(c))}
+          data={candlesClose?.map((c: string) => Number(c)) || []}
         />
       ),
       className: 'px-8',
-      onlyOnDetailed: false,
+      onlyOnDetailed: false && candlesClose,
     },
     {
-      value: market.candleHigh ? (
+      value: candleHigh ? (
         <PriceCell
-          value={new BigNumber(market.candleHigh).toNumber()}
+          value={Number(candleHigh)}
           valueFormatted={addDecimalsFormatNumber(
-            market.candleHigh.toString(),
+            candleHigh.toString(),
             market.decimalPlaces,
             2
           )}
@@ -277,11 +291,11 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
       onlyOnDetailed: true,
     },
     {
-      value: market.candleLow ? (
+      value: candleLow ? (
         <PriceCell
-          value={new BigNumber(market.candleLow).toNumber()}
+          value={Number(candleLow)}
           valueFormatted={addDecimalsFormatNumber(
-            market.candleLow.toString(),
+            candleLow.toString(),
             market.decimalPlaces,
             2
           )}
@@ -298,10 +312,9 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
         market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${formatLabel(
-              market.tradingMode
-            )} - ${market.data?.trigger.toLowerCase()}`
-          : formatLabel(market.tradingMode),
+          ? `${MarketTradingModeMapping[market.tradingMode]}
+                     - ${AuctionTriggerMapping[market.data.trigger]}`
+          : MarketTradingModeMapping[market.tradingMode],
       className: thClassNames('left'),
       onlyOnDetailed: true,
       dataTestId: 'trading-mode',
@@ -312,7 +325,7 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
           description={<FeesBreakdown feeFactors={market.fees?.factors} />}
         >
           <span className="border-b-2 border-dotted">
-            {market.totalFees ?? '-'}
+            {totalFees(market.fees.factors) ?? '-'}
           </span>
         </Tooltip>
       ),
@@ -322,7 +335,7 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
     },
     {
       value:
-        market.data.indicativeVolume && market.data.indicativeVolume !== '0'
+        market.data?.indicativeVolume && market.data.indicativeVolume !== '0'
           ? addDecimalsFormatNumber(
               market.data.indicativeVolume,
               market.positionDecimalPlaces
@@ -343,12 +356,14 @@ export const columns = (market: any, onSelect: (id: string) => void) => {
 };
 
 export const columnsPositionMarkets = (
-  market: any,
+  market: MarketList_markets & { openVolume: string },
   onSelect: (id: string) => void
 ) => {
   const candlesClose = market.candles
-    .map((candle: { close: string }) => candle?.close)
-    .filter((c: string): c is CandleClose => c !== null);
+    ?.map((candle) => candle?.close)
+    .filter((c: string | undefined): c is CandleClose => !isNil(c));
+  const candleLow = calcCandleLow(market);
+  const candleHigh = calcCandleHigh(market);
   const handleKeyPress = (
     event: React.KeyboardEvent<HTMLAnchorElement>,
     id: string
@@ -378,11 +393,11 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
-      value: market.lastPrice ? (
+      value: market.data?.markPrice ? (
         <PriceCell
-          value={new BigNumber(market.lastPrice).toNumber()}
+          value={Number(market.data.markPrice)}
           valueFormatted={addDecimalsFormatNumber(
-            market.lastPrice.toString(),
+            market.data.markPrice.toString(),
             market.decimalPlaces,
             2
           )}
@@ -394,12 +409,13 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
-      value: market.settlementAsset,
+      value:
+        market.tradableInstrument.instrument.product.settlementAsset.symbol,
       className: thClassNames('left'),
       onlyOnDetailed: false,
     },
     {
-      value: (
+      value: candlesClose && (
         <PriceCellChange
           candles={candlesClose}
           decimalPlaces={market.decimalPlaces}
@@ -409,7 +425,7 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
-      value: market.candles && (
+      value: candlesClose && (
         <Sparkline
           width={100}
           height={20}
@@ -421,11 +437,11 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: false,
     },
     {
-      value: market.candleHigh ? (
+      value: candleHigh ? (
         <PriceCell
-          value={new BigNumber(market.candleHigh).toNumber()}
+          value={Number(candleHigh)}
           valueFormatted={addDecimalsFormatNumber(
-            market.candleHigh.toString(),
+            candleHigh.toString(),
             market.decimalPlaces,
             2
           )}
@@ -437,11 +453,11 @@ export const columnsPositionMarkets = (
       onlyOnDetailed: true,
     },
     {
-      value: market.candleLow ? (
+      value: candleLow ? (
         <PriceCell
-          value={new BigNumber(market.candleLow).toNumber()}
+          value={Number(candleLow)}
           valueFormatted={addDecimalsFormatNumber(
-            market.candleLow.toString(),
+            candleLow.toString(),
             market.decimalPlaces,
             2
           )}
@@ -458,12 +474,12 @@ export const columnsPositionMarkets = (
           MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
         market.data?.trigger &&
         market.data.trigger !== AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED
-          ? `${formatLabel(
-              market.tradingMode
-            )} - ${market.data?.trigger.toLowerCase()}`
-          : formatLabel(market.tradingMode),
+          ? `${MarketTradingModeMapping[market.tradingMode]}
+                     - ${AuctionTriggerMapping[market.data.trigger]}`
+          : MarketTradingModeMapping[market.tradingMode],
       className: thClassNames('left'),
       onlyOnDetailed: true,
+      dataTestId: 'trading-mode',
     },
     {
       value: (
@@ -471,7 +487,7 @@ export const columnsPositionMarkets = (
           description={<FeesBreakdown feeFactors={market.fees?.factors} />}
         >
           <span className="border-b-2 border-dotted">
-            {market.totalFees ?? '-'}
+            {totalFees(market.fees.factors) ?? '-'}
           </span>
         </Tooltip>
       ),

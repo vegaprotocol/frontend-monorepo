@@ -1,3 +1,3 @@
 export function prepend0x(str: string) {
-  return `0x${str}`;
+  return !str || str.indexOf('0x') === 0 ? str : `0x${str}`;
 }

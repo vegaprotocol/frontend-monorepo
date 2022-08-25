@@ -6,6 +6,7 @@ import type {
 } from '@vegaprotocol/wallet';
 import {
   MarketState,
+  MarketStateMapping,
   MarketTradingMode,
   OrderTimeInForce,
   OrderType,
@@ -145,7 +146,9 @@ describe('useOrderValidation', () => {
       });
       expect(result.current).toStrictEqual({
         isDisabled: false,
-        message: `This market is ${state.toLowerCase()} and only accepting liquidity commitment orders`,
+        message: `This market is ${MarketStateMapping[
+          state as MarketState
+        ].toLowerCase()} and only accepting liquidity commitment orders`,
       });
     }
   );
