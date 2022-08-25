@@ -209,8 +209,9 @@ const launchGithubWorkflow = async ({
   await request(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/pulls`, {
     ...options,
     body: JSON.stringify({
-      base: TYPE_UPDATE_BRANCH,
+      base: 'master',
       title: `fix/${number}: Update types`,
+      head: TYPE_UPDATE_BRANCH,
       body: `
   # Related issues 🔗
 
