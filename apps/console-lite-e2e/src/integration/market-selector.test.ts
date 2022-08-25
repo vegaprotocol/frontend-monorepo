@@ -93,6 +93,27 @@ describe('market selector', () => {
     }
   });
 
+  it('keyboard navigation should work well', () => {
+    if (markets?.length) {
+      cy.visit(`/trading/${markets[0].id}`);
+      connectVegaWallet();
+      cy.get('input[placeholder="Search"]').type('{backspace}');
+      cy.get('input[placeholder="Search"]').clear();
+      cy.get('body').realPress('ArrowDown');
+      cy.focused().eq(0).should('contain.text', 'AAVEDAI Monthly');
+      cy.get('body').realPress('ArrowDown');
+      cy.focused().eq(0).should('contain.text', 'ETHBTC').realPress('Enter');
+      cy.location('pathname').should('eq', '/trading/ethbtc-quaterly');
+
+      cy.get('input[placeholder="Search"]').type('{backspace}');
+      cy.get('input[placeholder="Search"]').clear();
+      cy.getByTestId('market-pane').should('be.visible');
+      cy.get('body').realPress('ArrowDown');
+      cy.get('body').realPress('Tab');
+      cy.getByTestId('market-pane').should('not.be.visible');
+    }
+  });
+
   it('mobile view', () => {
     if (markets?.length) {
       cy.viewport('iphone-xr');
