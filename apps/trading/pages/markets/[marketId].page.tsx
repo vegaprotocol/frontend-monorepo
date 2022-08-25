@@ -48,6 +48,9 @@ const MARKET_QUERY = gql`
           }
           product {
             ... on Future {
+              oracleSpecForTradingTermination {
+                id
+              }
               quoteName
               settlementAsset {
                 id

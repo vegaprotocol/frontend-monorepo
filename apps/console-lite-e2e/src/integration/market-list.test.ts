@@ -115,9 +115,11 @@ describe('market list', () => {
           .its('length')
           .then((length) => expect(length).to.be.closeTo(21, 2));
         cy.get('.ag-cell-label-container').eq(4).click();
-        for (let i = 0; i < 50; i++) {
-          cy.get('body').realPress('Tab');
-        }
+        cy.get('body').then(($body) => {
+          for (let i = 0; i < 50; i++) {
+            cy.wrap($body).realPress('Tab');
+          }
+        });
         cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
@@ -151,9 +153,11 @@ describe('market list', () => {
           .then((length) => expect(length).to.be.closeTo(21, 2));
 
         cy.get('.ag-cell-label-container').eq(4).click();
-        for (let i = 0; i < 50; i++) {
-          cy.get('body').realPress('Tab');
-        }
+        cy.get('body').then(($body) => {
+          for (let i = 0; i < 50; i++) {
+            cy.wrap($body).realPress('Tab');
+          }
+        });
         cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
