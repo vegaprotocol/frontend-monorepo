@@ -1,5 +1,5 @@
 import merge from 'lodash/merge';
-import { MarketTradingMode } from '@vegaprotocol/types';
+import { MarketState, MarketTradingMode } from '@vegaprotocol/types';
 import type { DeepPartial } from 'react-hook-form';
 
 export interface MarketsLanding_markets_marketTimestamps {
@@ -11,6 +11,7 @@ export interface MarketsLanding_markets {
   __typename: 'Market';
   id: string;
   tradingMode: MarketTradingMode;
+  state: MarketState;
   marketTimestamps: MarketsLanding_markets_marketTimestamps;
 }
 
@@ -26,6 +27,7 @@ export const generateMarketsLanding = (
     {
       id: 'market-0',
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         open: '1',
@@ -35,6 +37,7 @@ export const generateMarketsLanding = (
     {
       id: 'market-1',
       tradingMode: MarketTradingMode.TRADING_MODE_OPENING_AUCTION,
+      state: MarketState.STATE_SUSPENDED,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         open: '2',

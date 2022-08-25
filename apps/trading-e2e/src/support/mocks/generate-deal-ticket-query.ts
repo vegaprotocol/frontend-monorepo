@@ -18,7 +18,7 @@ export const generateDealTicketQuery = (
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
-          id: '',
+          id: 'tBTC TEST',
           __typename: 'Instrument',
           product: {
             __typename: 'Future',

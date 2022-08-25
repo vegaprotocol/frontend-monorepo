@@ -9,7 +9,7 @@ describe('deposit form validation', () => {
     cy.mockWeb3Provider();
     cy.mockGQL((req) => {
       aliasQuery(req, 'NetworkParamsQuery', generateNetworkParameters());
-      aliasQuery(req, 'DepositPage', generateDepositPage());
+      aliasQuery(req, 'AssetsConnection', generateDepositPage());
     });
     cy.visit('/portfolio/deposit');
 
@@ -17,7 +17,7 @@ describe('deposit form validation', () => {
     cy.getByTestId(connectEthWalletBtn).click();
     cy.getByTestId('web3-connector-MetaMask').click();
 
-    cy.wait('@DepositPage');
+    cy.wait('@AssetsConnection');
     cy.contains('Deposit');
   });
 

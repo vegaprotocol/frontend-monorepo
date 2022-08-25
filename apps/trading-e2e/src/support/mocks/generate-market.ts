@@ -38,7 +38,7 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
       },
       tradableInstrument: {
         instrument: {
-          id: '',
+          id: 'BTCUSD.MF21',
           name: 'BTCUSD Monthly',
           code: 'BTCUSD.MF21',
           metadata: {

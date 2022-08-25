@@ -104,6 +104,7 @@ export const generateMarketList = (
         bestBidPrice: '17065127',
         bestOfferPrice: '17017654',
         markPrice: '8441',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_LIQUIDITY,
         indicativeVolume: '249',
         __typename: 'MarketData',
       },
