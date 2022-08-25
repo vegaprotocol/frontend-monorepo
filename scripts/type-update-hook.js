@@ -45,7 +45,7 @@ const cliArgsSpecs = [
   },
   {
     name: 'apiRepoOwner',
-    arg: 'repo',
+    arg: 'owner',
     default: 'vegaprotocol',
   },
   {
@@ -55,7 +55,7 @@ const cliArgsSpecs = [
   },
   {
     name: 'frontendRepoOwner',
-    arg: 'fe-repo',
+    arg: 'fe-owner',
     default: 'vegaprotocol',
   },
   {
@@ -65,40 +65,41 @@ const cliArgsSpecs = [
   },
 ];
 
-const request = (url, options) => new Promise((resolve, reject) => {
-  const req = https.request(url, options, res => {
-    res.setEncoding('utf8');
-    let rawData = '';
-    res.on('data', (chunk) => {
-      rawData += chunk.toString();
-    });
-    res.on('error', (err) => {
-      reject(err)
-    })
-    res.on('end', () => {
-      if (res.statusCode >= 400) {
-        reject(new Error(`HTTPS ${res.statusCode}: ${rawData}`))
-        return;
-      }
-      try {
-        const parsedData = JSON.parse(rawData);
-        resolve(parsedData);
-      } catch (err) {
+const request = (url, options) =>
+  new Promise((resolve, reject) => {
+    const req = https.request(url, options, (res) => {
+      res.setEncoding('utf8');
+      let rawData = '';
+      res.on('data', (chunk) => {
+        rawData += chunk.toString();
+      });
+      res.on('error', (err) => {
         reject(err);
-      }
-    })
-  })
+      });
+      res.on('end', () => {
+        if (res.statusCode >= 400) {
+          reject(new Error(`HTTPS ${res.statusCode}: ${rawData}`));
+          return;
+        }
+        try {
+          const parsedData = JSON.parse(rawData);
+          resolve(parsedData);
+        } catch (err) {
+          reject(err);
+        }
+      });
+    });
 
-  if (options.method === 'POST' && options.body) {
-    req.write(options.body)
-  }
+    if (options.method === 'POST' && options.body) {
+      req.write(options.body);
+    }
 
-  req.on('error', (err) => {
-    reject(err)
-  })
+    req.on('error', (err) => {
+      reject(err);
+    });
 
-  req.end()
-})
+    req.end();
+  });
 
 const getConfig = ({ specs, args = [] }) => {
   const defaultConfig = {
@@ -210,30 +211,35 @@ const launchGithubWorkflow = async ({
   const options = {
     method: 'POST',
     headers: {
-      'Accept': 'application/vnd.github+json',
-      'Authorization': `token ${githubAuthToken}`,
+      Accept: 'application/vnd.github+json',
+      Authorization: `token ${githubAuthToken}`,
       'User-Agent': '',
     },
-  }
-  options.agent = new https.Agent(options)
+  };
+  options.agent = new https.Agent(options);
 
-  const { number, html_url: issueHtmlUrl } = await request(`https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/issues`, {
-    ...options,
-    body: JSON.stringify({
-      title: `[automated] Update types for datanode v${apiVersion}`,
-      body: `Update the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).`,
-    }),
-  });
+  const { number, html_url: issueHtmlUrl } = await request(
+    `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/issues`,
+    {
+      ...options,
+      body: JSON.stringify({
+        title: `[automated] Update types for datanode v${apiVersion}`,
+        body: `Update the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).`,
+      }),
+    }
+  );
 
-  console.log(`Issue created: ${issueHtmlUrl}`)
+  console.log(`Issue created: ${issueHtmlUrl}`);
 
-  const { html_url: prHtmlUrl } = await request(`https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/pulls`, {
-    ...options,
-    body: JSON.stringify({
-      base: 'master',
-      title: `fix/${number}: Update types`,
-      head: TYPE_UPDATE_BRANCH,
-      body: `
+  const { html_url: prHtmlUrl } = await request(
+    `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/pulls`,
+    {
+      ...options,
+      body: JSON.stringify({
+        base: 'master',
+        title: `fix/${number}: Update types`,
+        head: TYPE_UPDATE_BRANCH,
+        body: `
   # Related issues 🔗
 
   Closes #${number}
@@ -246,10 +252,11 @@ const launchGithubWorkflow = async ({
 
   This pull request was automatically generated.
       `,
-    }),
-  })
+      }),
+    }
+  );
 
-  console.log(`Pull request created: ${prHtmlUrl}`)
+  console.log(`Pull request created: ${prHtmlUrl}`);
 };
 
 const run = async ({
@@ -266,8 +273,9 @@ const run = async ({
 
   execWrap({
     cmd: `NX_VEGA_URL=${apiUrl} ${generateCmd}`,
-    errMessage: 'There was an error trying to regenerating the types for the frontend.',
-  })
+    errMessage:
+      'There was an error trying to regenerating the types for the frontend.',
+  });
 
   const unstagedFiles = execWrap({
     cmd: `git diff --name-only`,
