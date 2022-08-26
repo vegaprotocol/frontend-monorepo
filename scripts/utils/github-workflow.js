@@ -1,3 +1,5 @@
+const githubRequest = require('./github-request');
+
 module.exports = async ({
   issueBody,
   prBody,
