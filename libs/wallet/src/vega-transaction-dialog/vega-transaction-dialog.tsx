@@ -73,6 +73,9 @@ export const VegaDialog = ({ transaction }: VegaDialogProps) => {
     return (
       <div data-testid={transaction.status}>
         <p>{transaction.error && formatLabel(transaction.error)}</p>
+        {transaction.details && (
+          <p>{formatLabel(transaction.details.join(', '))}</p>
+        )}
       </div>
     );
   }

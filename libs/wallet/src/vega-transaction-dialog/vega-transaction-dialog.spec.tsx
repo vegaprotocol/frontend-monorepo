@@ -17,6 +17,7 @@ describe('VegaTransactionDialog', () => {
       isOpen: true,
       onChange: () => false,
       transaction: {
+        dialogOpen: true,
         status: VegaTxStatus.Requested,
         error: null,
         txHash: null,
