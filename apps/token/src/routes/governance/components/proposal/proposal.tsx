@@ -2,7 +2,7 @@ import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import type {
   Proposal_proposal,
   Proposal_proposal_terms,
-} from '../../proposal/__generated__/Proposal';
+} from '@vegaprotocol/governance';
 import { ProposalChangeTable } from '../proposal-change-table';
 import { ProposalTermsJson } from '../proposal-terms-json';
 import { ProposalVotesTable } from '../proposal-votes-table';

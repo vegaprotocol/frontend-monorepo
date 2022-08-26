@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { generateProposal } from '../../test-helpers/generate-proposals';
 import { ProposalHeader } from './proposal-header';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import type { Proposal_proposal } from '@vegaprotocol/governance';
 
-const renderComponent = (proposal: Proposals_proposals) => (
+const renderComponent = (proposal: Proposal_proposal) => (
   <ProposalHeader proposal={proposal} />
 );
 

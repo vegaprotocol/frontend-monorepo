@@ -11,7 +11,7 @@ import { format, formatDistanceToNowStrict } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { DATE_FORMAT_DETAILED } from '../../../../lib/date-formats';
 import type { ReactNode } from 'react';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
 import {
   ProposalRejectionReasonMapping,
   ProposalState,
@@ -38,7 +38,7 @@ const ParticipationNotReached = () => {
 export const ProposalsListItemDetails = ({
   proposal,
 }: {
-  proposal: Proposals_proposals;
+  proposal: ProposalNode;
 }) => {
   const { state } = proposal;
   const { willPass, majorityMet, participationMet } = useVoteInformation({

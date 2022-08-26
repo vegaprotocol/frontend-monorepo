@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
 import compact from 'lodash/compact';
 import filter from 'lodash/filter';
@@ -6,22 +5,19 @@ import flow from 'lodash/flow';
 import orderBy from 'lodash/orderBy';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { PROPOSALS_QUERY } from '../proposals';
 
 import { SplashLoader } from '../../../components/splash-loader';
 import { RejectedProposalsList } from '../components/proposals-list';
-import type { Proposals } from '../proposals/__generated__/Proposals';
+import { getProposals, useProposalsQuery } from '@vegaprotocol/governance';
 import { ProposalState } from '@vegaprotocol/types';
 
 export const RejectedProposalsContainer = () => {
   const { t } = useTranslation();
-  const { data, loading, error } = useQuery<Proposals, never>(PROPOSALS_QUERY, {
-    pollInterval: 5000,
-    errorPolicy: 'ignore', // this is to get around some backend issues and should be removed in future
-  });
+  const { data, loading, error } = useProposalsQuery(true);
 
   const proposals = React.useMemo(() => {
-    if (!data?.proposals?.length) {
+    const proposalsData = getProposals(data);
+    if (!proposalsData.length) {
       return [];
     }
 
@@ -39,7 +35,7 @@ export const RejectedProposalsContainer = () => {
           ],
           ['desc', 'desc', 'desc']
         ),
-    ])(data.proposals);
+    ])(data);
   }, [data]);
 
   if (error) {

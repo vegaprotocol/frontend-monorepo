@@ -8,7 +8,7 @@ import type {
   ProposalFields,
   ProposalFields_votes_no,
   ProposalFields_votes_yes,
-} from '../__generated__/ProposalFields';
+} from '@vegaprotocol/governance';
 
 export function generateProposal(
   override: DeepPartial<ProposalFields> = {}
@@ -16,6 +16,11 @@ export function generateProposal(
   const defaultProposal: ProposalFields = {
     __typename: 'Proposal',
     id: faker.datatype.uuid(),
+    rationale: {
+      __typename: 'ProposalRationale',
+      title: faker.lorem.words(8),
+      description: faker.lorem.words(24),
+    },
     reference: 'ref' + faker.datatype.uuid(),
     state: ProposalState.STATE_OPEN,
     datetime: faker.date.past().toISOString(),
@@ -84,8 +89,8 @@ export const generateYesVotes = (
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',
-          stake: {
-            __typename: 'PartyStake',
+          stakingSummary: {
+            __typename: 'StakingSummary',
             currentStakeAvailable: fixedTokenValue
               ? fixedTokenValue.toString()
               : faker.datatype
@@ -119,8 +124,8 @@ export const generateNoVotes = (
         party: {
           id: faker.datatype.uuid(),
           __typename: 'Party',
-          stake: {
-            __typename: 'PartyStake',
+          stakingSummary: {
+            __typename: 'StakingSummary',
             currentStakeAvailable: fixedTokenValue
               ? fixedTokenValue.toString()
               : faker.datatype
