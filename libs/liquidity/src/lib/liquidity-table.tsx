@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { forwardRef } from 'react';
 import {
   addDecimalsFormatNumber,
@@ -9,20 +8,12 @@ import {
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import type {
-  Liquidity_market_liquidityProvisionsConnection_edges,
-  Liquidity_market_liquidityProvisionsConnection_edges_node,
-} from './__generated__';
 import BigNumber from 'bignumber.js';
 import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
-
-export const getId = (
-  data: Liquidity_market_liquidityProvisionsConnection_edges_node
-) => data.id;
-
+import type { LiquidityProvision } from './liquidity-data-provider';
 export interface LiquidityTableProps {
-  data: (Liquidity_market_liquidityProvisionsConnection_edges | null)[];
+  data: LiquidityProvision[];
   decimalPlaces?: number;
   positionDecimalPlaces?: number;
 }
@@ -34,7 +25,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
       <AgGrid
         style={{ width: '100%', height: '100%' }}
         overlayNoRowsTemplate="No liquidity provisions"
-        getRowId={({ data }) => data.node.party.id}
+        getRowId={({ data }) => data.party}
         rowHeight={34}
         ref={ref}
         defaultColDef={{
@@ -44,10 +35,10 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         rowData={props.data}
         {...props}
       >
-        <AgGridColumn headerName={t('Party')} field="node.party.id" />
+        <AgGridColumn headerName={t('Party')} field="party" />
         <AgGridColumn
-          headerName={t('Commitment amount')}
-          field="node.commitmentAmount"
+          headerName={t('Commitment')}
+          field="commitmentAmount"
           type="rightAligned"
           valueFormatter={({ value }: { value: string }) => {
             if (!value) {
@@ -60,18 +51,19 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           }}
         />
         <AgGridColumn
-          headerName={t('Status')}
-          field="node.status"
-          valueFormatter={({ value }: { value: LiquidityProvisionStatus }) => {
+          headerName={t('Share')}
+          field="equityLikeShare"
+          type="rightAligned"
+          valueFormatter={({ value }: { value: string }) => {
             if (!value) {
               return value;
             }
-            return LiquidityProvisionStatusMapping[value];
+            return formatNumberPercentage(new BigNumber(value).times(100), 4);
           }}
         />
         <AgGridColumn
           headerName={t('Fee')}
-          field="node.fee"
+          field="fee"
           type="rightAligned"
           valueFormatter={({ value }: { value: string }) => {
             if (!value) {
@@ -81,10 +73,53 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           }}
         />
         <AgGridColumn
-          headerName={t('Created')}
-          field="node.createdAt"
+          headerName={t('Average entry valuation')}
+          field="averageEntryValuation"
           type="rightAligned"
-          valueFormatter={({ value }: any) => {
+          valueFormatter={({ value }: { value: string }) => {
+            if (!value) {
+              return value;
+            }
+            return addDecimalsFormatNumber(value, props.decimalPlaces);
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Obligation (siskas)')}
+          field="obligation"
+          type="rightAligned"
+          valueFormatter={({ value }: { value: string }) => {
+            if (!value) {
+              return value;
+            }
+            return addDecimalsFormatNumber(value, props.decimalPlaces);
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Supplied (siskas)')}
+          field="supplied"
+          type="rightAligned"
+          valueFormatter={({ value }: { value: string }) => {
+            if (!value) {
+              return value;
+            }
+            return addDecimalsFormatNumber(value, props.decimalPlaces);
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Status')}
+          field="status"
+          valueFormatter={({ value }: { value: LiquidityProvisionStatus }) => {
+            if (!value) {
+              return value;
+            }
+            return LiquidityProvisionStatusMapping[value];
+          }}
+        />
+        <AgGridColumn
+          headerName={t('Created')}
+          field="createdAt"
+          type="rightAligned"
+          valueFormatter={({ value }: { value: string }) => {
             if (!value) {
               return value;
             }
@@ -93,9 +128,9 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
         />
         <AgGridColumn
           headerName={t('Updated')}
-          field="node.updatedAt"
+          field="updatedAt"
           type="rightAligned"
-          valueFormatter={({ value }: any) => {
+          valueFormatter={({ value }: { value: string }) => {
             if (!value) {
               return value;
             }

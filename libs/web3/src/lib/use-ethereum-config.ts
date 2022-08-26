@@ -32,6 +32,19 @@ export const NETWORK_PARAMS_QUERY = gql`
   }
 `;
 
+export const useNetworkParameter = (params: string[]) => {
+  const { data, loading, error } =
+    useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);
+  const foundParams = data?.networkParameters?.filter((p) =>
+    params.includes(p.key)
+  );
+  return {
+    data: foundParams ? foundParams.map((p) => p.value) : null,
+    loading,
+    error,
+  };
+};
+
 export const useEthereumConfig = () => {
   const { data, loading, error } =
     useQuery<NetworkParamsQuery>(NETWORK_PARAMS_QUERY);

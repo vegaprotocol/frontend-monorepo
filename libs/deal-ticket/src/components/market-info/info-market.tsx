@@ -293,6 +293,7 @@ export const Info = ({ market }: InfoProps) => {
               <Dialog
                 open={openLiquidityView}
                 onChange={() => setOpenLiquidityView(!openLiquidityView)}
+                size="large"
               >
                 <LiquidityContainer marketId={market.id}></LiquidityContainer>
               </Dialog>

@@ -18,11 +18,11 @@ export function toBigNum(
 
 export function addDecimal(
   value: string | number | EthersBigNumber,
-  decimals: number,
+  decimals?: number,
   decimalPrecision = decimals
 ): string {
   if (!decimals) return value.toString();
-  return toBigNum(value, decimals).toFixed(decimalPrecision);
+  return toBigNum(value, decimals).toFixed(decimalPrecision ?? 0);
 }
 
 export function removeDecimal(value: string, decimals: number): string {
@@ -55,16 +55,20 @@ export const formatNumber = (
 
 export const addDecimalsFormatNumber = (
   rawValue: string | number,
-  decimalPlaces: number,
-  formatDecimals: number = decimalPlaces
+  decimalPlaces?: number,
+  formatDecimals: number = decimalPlaces ?? 0
 ) => {
-  const x = addDecimal(rawValue, decimalPlaces);
+  const x = addDecimal(rawValue, decimalPlaces ?? 0);
 
   return formatNumber(x, formatDecimals);
 };
 
-export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
-  const decimalPlaces =
-    typeof decimals === 'undefined' ? Math.max(value.dp(), 2) : decimals;
-  return `${value.dp(decimalPlaces).toFormat(decimalPlaces)}%`;
+export const formatNumberPercentage = (
+  value: BigNumber | string | number,
+  decimals?: number
+) => {
+  const decimalPlaces = decimals
+    ? decimals
+    : Math.max(new BigNumber(value).dp(), 2);
+  return `${new BigNumber(value).dp(decimalPlaces).toFormat(decimalPlaces)}%`;
 };

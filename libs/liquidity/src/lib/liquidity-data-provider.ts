@@ -1,35 +1,43 @@
 import { gql } from '@apollo/client';
-
-const LIQUIDITY_PROVISIONS_FRAGMENT = gql`
-  fragment LiquidityProvisionsConnectionFields on LiquidityProvision {
-    id
-    party {
-      id
-    }
-    createdAt
-    updatedAt
-    commitmentAmount
-    fee
-    status
-  }
-`;
-
-const LIQUIDITY_PROVIDERS_FEE_SHARE_FRAGMENT = gql`
-  fragment LiquidityProviderFeeShareFields on LiquidityProviderFeeShare {
-    party {
-      id
-    }
-    equityLikeShare
-    averageEntryValuation
-  }
-`;
+import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import { AccountType } from '@vegaprotocol/types';
+import { useNetworkParameter } from '@vegaprotocol/web3';
+import BigNumber from 'bignumber.js';
+import { SISKA_NETWORK_PARAMETER } from './liquidity-manager';
+import type {
+  MarketLiquidity,
+  MarketLiquidity_market_data_liquidityProviderFeeShare,
+} from './__generated__';
 
 export const MARKET_LIQUIDITY_QUERY = gql`
-  query MarketLiquidity($marketId: ID!) {
+  query MarketLiquidity($marketId: ID!, $partyId: String) {
     market(id: $marketId) {
       id
       decimalPlaces
       positionDecimalPlaces
+      liquidityProvisionsConnection(party: $partyId) {
+        edges {
+          node {
+            id
+            party {
+              id
+              accountsConnection(marketId: $marketId, type: ACCOUNT_TYPE_BOND) {
+                edges {
+                  node {
+                    type
+                    balance
+                  }
+                }
+              }
+            }
+            createdAt
+            updatedAt
+            commitmentAmount
+            fee
+            status
+          }
+        }
+      }
       tradableInstrument {
         instrument {
           code
@@ -44,13 +52,6 @@ export const MARKET_LIQUIDITY_QUERY = gql`
           }
         }
       }
-      liquidityProvisionsConnection {
-        edges {
-          node {
-            ...LiquidityProvisionsConnectionFields
-          }
-        }
-      }
       data {
         market {
           id
@@ -60,9 +61,94 @@ export const MARKET_LIQUIDITY_QUERY = gql`
         targetStake
         marketValueProxy
         liquidityProviderFeeShare {
-          ...LiquidityProviderFeeShareFields
+          party {
+            id
+          }
+          equityLikeShare
+          averageEntryValuation
         }
       }
     }
   }
 `;
+
+export interface LiquidityProvision {
+  party: string;
+  commitmentAmount: string | undefined;
+  fee: string | undefined;
+  equityLikeShare: string;
+  averageEntryValuation: string;
+  obligation: string | null;
+  supplied: string | null;
+  status: LiquidityProvisionStatus | undefined;
+  createdAt: string | undefined;
+  updatedAt: string | null | undefined;
+}
+
+export const useLiquidityProvision = ({
+  data,
+  partyId,
+}: {
+  partyId?: string;
+  data?: MarketLiquidity;
+}) => {
+  const { data: stakeToCcySiskas } = useNetworkParameter([
+    SISKA_NETWORK_PARAMETER,
+  ]);
+  const stakeToCcySiska = stakeToCcySiskas && stakeToCcySiskas[0];
+  const liquidityProviders: LiquidityProvision[] | undefined =
+    data?.market?.data?.liquidityProviderFeeShare
+      ?.filter(
+        (p: MarketLiquidity_market_data_liquidityProviderFeeShare) =>
+          !partyId || p.party.id === partyId
+      ) // if partyId is provided, filter out other parties
+      .map(
+        (provider: MarketLiquidity_market_data_liquidityProviderFeeShare) => {
+          const liquidityProvisionConnection =
+            data.market?.liquidityProvisionsConnection.edges?.find(
+              (e) => e?.node.party.id === provider.party.id
+            );
+          const balance =
+            liquidityProvisionConnection?.node?.party.accountsConnection.edges?.reduce(
+              (acc, e) => {
+                return e?.node.type === AccountType.ACCOUNT_TYPE_BOND // just an extra check to make sure we only use bond accounts
+                  ? acc.plus(new BigNumber(e?.node.balance ?? 0))
+                  : acc;
+              },
+              new BigNumber(0)
+            );
+          return {
+            party: provider.party.id,
+            createdAt: liquidityProvisionConnection?.node?.createdAt,
+            updatedAt: liquidityProvisionConnection?.node?.updatedAt,
+            commitmentAmount:
+              liquidityProvisionConnection?.node?.commitmentAmount,
+            fee: liquidityProvisionConnection?.node?.fee,
+            status: liquidityProvisionConnection?.node?.status,
+            equityLikeShare: provider.equityLikeShare,
+            averageEntryValuation: provider.averageEntryValuation,
+            obligation:
+              stakeToCcySiska &&
+              new BigNumber(stakeToCcySiska)
+                .times(
+                  liquidityProvisionConnection?.node?.commitmentAmount ?? 1
+                )
+                .toString(),
+            supplied:
+              stakeToCcySiska &&
+              new BigNumber(stakeToCcySiska).times(balance ?? 1).toString(),
+          };
+        }
+      );
+  return {
+    liquidityProviders,
+    suppliedStake: data?.market?.data?.suppliedStake,
+    targetStake: data?.market?.data?.targetStake,
+    decimalPlaces: data?.market?.decimalPlaces,
+    positionDecimalPlaces: data?.market?.positionDecimalPlaces,
+    code: data?.market?.tradableInstrument.instrument.code,
+    symbol:
+      data?.market?.tradableInstrument.instrument.product.settlementAsset
+        .symbol,
+  };
+};

@@ -6,54 +6,10 @@
 import { AccountType, LiquidityProvisionStatus } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: Liquidity
+// GraphQL query operation: MarketLiquidity
 // ====================================================
 
-export interface Liquidity_market_tradableInstrument_instrument_product_settlementAsset {
-  __typename: "Asset";
-  /**
-   * The ID of the asset
-   */
-  id: string;
-  /**
-   * The symbol of the asset (e.g: GBP)
-   */
-  symbol: string;
-  /**
-   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
-   */
-  decimals: number;
-}
-
-export interface Liquidity_market_tradableInstrument_instrument_product {
-  __typename: "Future";
-  /**
-   * The name of the asset (string)
-   */
-  settlementAsset: Liquidity_market_tradableInstrument_instrument_product_settlementAsset;
-}
-
-export interface Liquidity_market_tradableInstrument_instrument {
-  __typename: "Instrument";
-  /**
-   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
-   */
-  code: string;
-  /**
-   * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
-   */
-  product: Liquidity_market_tradableInstrument_instrument_product;
-}
-
-export interface Liquidity_market_tradableInstrument {
-  __typename: "TradableInstrument";
-  /**
-   * An instance of, or reference to, a fully specified instrument.
-   */
-  instrument: Liquidity_market_tradableInstrument_instrument;
-}
-
-export interface Liquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges_node {
+export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges_node {
   __typename: "Account";
   /**
    * Account type (General, Margin, etc)
@@ -65,23 +21,23 @@ export interface Liquidity_market_liquidityProvisionsConnection_edges_node_party
   balance: string;
 }
 
-export interface Liquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges {
+export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges {
   __typename: "AccountEdge";
   /**
    * The account
    */
-  node: Liquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges_node;
+  node: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges_node;
 }
 
-export interface Liquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection {
+export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection {
   __typename: "AccountsConnection";
   /**
    * List of accounts available for the connection
    */
-  edges: (Liquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges | null)[] | null;
+  edges: (MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection_edges | null)[] | null;
 }
 
-export interface Liquidity_market_liquidityProvisionsConnection_edges_node_party {
+export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -90,10 +46,10 @@ export interface Liquidity_market_liquidityProvisionsConnection_edges_node_party
   /**
    * Collateral accounts relating to a party
    */
-  accountsConnection: Liquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection;
+  accountsConnection: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party_accountsConnection;
 }
 
-export interface Liquidity_market_liquidityProvisionsConnection_edges_node {
+export interface MarketLiquidity_market_liquidityProvisionsConnection_edges_node {
   __typename: "LiquidityProvision";
   /**
    * Unique identifier for the order (set by the system after consensus)
@@ -102,7 +58,7 @@ export interface Liquidity_market_liquidityProvisionsConnection_edges_node {
   /**
    * The Id of the party making this commitment
    */
-  party: Liquidity_market_liquidityProvisionsConnection_edges_node_party;
+  party: MarketLiquidity_market_liquidityProvisionsConnection_edges_node_party;
   /**
    * When the liquidity provision was initially created (formatted RFC3339)
    */
@@ -125,17 +81,61 @@ export interface Liquidity_market_liquidityProvisionsConnection_edges_node {
   status: LiquidityProvisionStatus;
 }
 
-export interface Liquidity_market_liquidityProvisionsConnection_edges {
+export interface MarketLiquidity_market_liquidityProvisionsConnection_edges {
   __typename: "LiquidityProvisionsEdge";
-  node: Liquidity_market_liquidityProvisionsConnection_edges_node;
+  node: MarketLiquidity_market_liquidityProvisionsConnection_edges_node;
 }
 
-export interface Liquidity_market_liquidityProvisionsConnection {
+export interface MarketLiquidity_market_liquidityProvisionsConnection {
   __typename: "LiquidityProvisionsConnection";
-  edges: (Liquidity_market_liquidityProvisionsConnection_edges | null)[] | null;
+  edges: (MarketLiquidity_market_liquidityProvisionsConnection_edges | null)[] | null;
 }
 
-export interface Liquidity_market_data_market {
+export interface MarketLiquidity_market_tradableInstrument_instrument_product_settlementAsset {
+  __typename: "Asset";
+  /**
+   * The ID of the asset
+   */
+  id: string;
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
+}
+
+export interface MarketLiquidity_market_tradableInstrument_instrument_product {
+  __typename: "Future";
+  /**
+   * The name of the asset (string)
+   */
+  settlementAsset: MarketLiquidity_market_tradableInstrument_instrument_product_settlementAsset;
+}
+
+export interface MarketLiquidity_market_tradableInstrument_instrument {
+  __typename: "Instrument";
+  /**
+   * A short non necessarily unique code used to easily describe the instrument (e.g: FX:BTCUSD/DEC18) (string)
+   */
+  code: string;
+  /**
+   * A reference to or instance of a fully specified product, including all required product parameters for that product (Product union)
+   */
+  product: MarketLiquidity_market_tradableInstrument_instrument_product;
+}
+
+export interface MarketLiquidity_market_tradableInstrument {
+  __typename: "TradableInstrument";
+  /**
+   * An instance of, or reference to, a fully specified instrument.
+   */
+  instrument: MarketLiquidity_market_tradableInstrument_instrument;
+}
+
+export interface MarketLiquidity_market_data_market {
   __typename: "Market";
   /**
    * Market ID
@@ -143,7 +143,7 @@ export interface Liquidity_market_data_market {
   id: string;
 }
 
-export interface Liquidity_market_data_liquidityProviderFeeShare_party {
+export interface MarketLiquidity_market_data_liquidityProviderFeeShare_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -151,12 +151,12 @@ export interface Liquidity_market_data_liquidityProviderFeeShare_party {
   id: string;
 }
 
-export interface Liquidity_market_data_liquidityProviderFeeShare {
+export interface MarketLiquidity_market_data_liquidityProviderFeeShare {
   __typename: "LiquidityProviderFeeShare";
   /**
    * The liquidity provider party ID
    */
-  party: Liquidity_market_data_liquidityProviderFeeShare_party;
+  party: MarketLiquidity_market_data_liquidityProviderFeeShare_party;
   /**
    * The share owned by this liquidity provider (float)
    */
@@ -167,12 +167,12 @@ export interface Liquidity_market_data_liquidityProviderFeeShare {
   averageEntryValuation: string;
 }
 
-export interface Liquidity_market_data {
+export interface MarketLiquidity_market_data {
   __typename: "MarketData";
   /**
    * market ID of the associated mark price
    */
-  market: Liquidity_market_data_market;
+  market: MarketLiquidity_market_data_market;
   /**
    * the supplied stake for the market
    */
@@ -192,10 +192,10 @@ export interface Liquidity_market_data {
   /**
    * the equity like share of liquidity fee for each liquidity provider
    */
-  liquidityProviderFeeShare: Liquidity_market_data_liquidityProviderFeeShare[] | null;
+  liquidityProviderFeeShare: MarketLiquidity_market_data_liquidityProviderFeeShare[] | null;
 }
 
-export interface Liquidity_market {
+export interface MarketLiquidity_market {
   __typename: "Market";
   /**
    * Market ID
@@ -204,14 +204,14 @@ export interface Liquidity_market {
   /**
    * decimalPlaces indicates the number of decimal places that an integer must be shifted by in order to get a correct
    * number denominated in the currency of the market. (uint64)
-   *
+   * 
    * Examples:
    * Currency     Balance  decimalPlaces  Real Balance
    * GBP              100              0       GBP 100
    * GBP              100              2       GBP   1.00
    * GBP              100              4       GBP   0.01
    * GBP                1              4       GBP   0.0001   (  0.01p  )
-   *
+   * 
    * GBX (pence)      100              0       GBP   1.00     (100p     )
    * GBX (pence)      100              2       GBP   0.01     (  1p     )
    * GBX (pence)      100              4       GBP   0.0001   (  0.01p  )
@@ -226,26 +226,27 @@ export interface Liquidity_market {
    */
   positionDecimalPlaces: number;
   /**
-   * An instance of, or reference to, a tradable instrument.
-   */
-  tradableInstrument: Liquidity_market_tradableInstrument;
-  /**
    * The list of the liquidity provision commitments for this market
    */
-  liquidityProvisionsConnection: Liquidity_market_liquidityProvisionsConnection;
+  liquidityProvisionsConnection: MarketLiquidity_market_liquidityProvisionsConnection;
+  /**
+   * An instance of, or reference to, a tradable instrument.
+   */
+  tradableInstrument: MarketLiquidity_market_tradableInstrument;
   /**
    * marketData for the given market
    */
-  data: Liquidity_market_data | null;
+  data: MarketLiquidity_market_data | null;
 }
 
-export interface Liquidity {
+export interface MarketLiquidity {
   /**
    * An instrument that is trading on the Vega network
    */
-  market: Liquidity_market | null;
+  market: MarketLiquidity_market | null;
 }
 
-export interface LiquidityVariables {
+export interface MarketLiquidityVariables {
   marketId: string;
+  partyId?: string | null;
 }
