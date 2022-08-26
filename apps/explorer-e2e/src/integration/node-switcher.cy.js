@@ -10,14 +10,12 @@ context('Node switcher', function () {
     }).as('nodeData');
     cy.visit('/');
     cy.wait('@nodeData');
+    cy.getByTestId('git-network-data').within(() => {
+      cy.getByTestId('link').should('be.visible').click();
+    });
   });
 
   describe('form validations and responses', function () {
-    beforeEach('open node selector', function () {
-      cy.getByTestId('git-network-data').within(() => {
-        cy.getByTestId('link').click();
-      });
-    });
     it('node data is displayed', function () {
       cy.getByTestId('node-row').should('have.length.at.least', 2);
 
