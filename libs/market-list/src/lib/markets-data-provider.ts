@@ -20,9 +20,12 @@ export const useMarketList = () => {
     variables: { interval: Interval.INTERVAL_I1H, since },
   });
 
-  return { data: useMemo( () => data && mapDataToMarketList(data), [data]), loading, error };
+  return {
+    data: useMemo(() => data && mapDataToMarketList(data), [data]),
+    loading,
+    error,
+  };
 };
-
 
 const MARKET_DATA_FRAGMENT = gql`
   fragment MarketDataFields on MarketData {

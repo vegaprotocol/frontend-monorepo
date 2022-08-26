@@ -76,7 +76,6 @@ export const SelectAllMarketsTableBody = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tableColumns?: (market: any) => Column[];
 }) => {
-
   return data ? (
     <>
       <thead>
@@ -260,4 +259,3 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
 
   return <SelectMarketLandingTable data={data} onSelect={onSelect} />;
 };
-
