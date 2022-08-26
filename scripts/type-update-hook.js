@@ -2,6 +2,11 @@ const path = require('node:path');
 const https = require('node:https');
 const { execSync } = require('node:child_process');
 
+const execWrap = require('./utils/exec-wrap');
+const githubRequest = require('./utils/github-request');
+const wrapCli = require('./utils/wrap-cli');
+const launchGithubWorkflow = require('./utils/github-workflow');
+
 const typesProjectJson = require(path.join(
   __dirname,
   '..',
@@ -64,75 +69,6 @@ const cliArgsSpecs = [
     required: true,
   },
 ];
-
-const request = (url, options) =>
-  new Promise((resolve, reject) => {
-    const req = https.request(url, options, (res) => {
-      res.setEncoding('utf8');
-      let rawData = '';
-      res.on('data', (chunk) => {
-        rawData += chunk.toString();
-      });
-      res.on('error', (err) => {
-        reject(err);
-      });
-      res.on('end', () => {
-        if (res.statusCode >= 400) {
-          reject(new Error(`HTTPS ${res.statusCode}: ${rawData}`));
-          return;
-        }
-        try {
-          const parsedData = JSON.parse(rawData);
-          resolve(parsedData);
-        } catch (err) {
-          reject(err);
-        }
-      });
-    });
-
-    if (options.method === 'POST' && options.body) {
-      req.write(options.body);
-    }
-
-    req.on('error', (err) => {
-      reject(err);
-    });
-
-    req.end();
-  });
-
-const getConfig = ({ specs, args = [] }) => {
-  const defaultConfig = {
-    apiUrl: undefined,
-    apiVersion: undefined,
-  };
-
-  return specs.reduce((acc, spec) => {
-    const match = args.find((arg) => arg.startsWith(`--${spec.arg}=`));
-    const value = (match || '').replace(`--${spec.arg}=`, '');
-
-    if (spec.required && !value) {
-      throw new Error(`Cannot find required CLI argument "--${spec.arg}".`);
-    }
-    if (typeof spec.validate === 'function') {
-      spec.validate(value);
-    }
-    return {
-      ...acc,
-      [spec.name]: value,
-    };
-  }, {});
-};
-
-const execWrap = ({ cmd, errMessage }) => {
-  console.log(`executing: "${cmd}"`);
-  try {
-    const result = execSync(cmd, { cwd: appRoot, stdout: process.stdout });
-    return result.toString();
-  } catch (err) {
-    throw new Error(errMessage);
-  }
-};
 
 const getGenerateCmd = (projectJson) => {
   if (
@@ -199,66 +135,6 @@ const launchGitWorkflow = ({
   });
 };
 
-const launchGithubWorkflow = async ({
-  apiRepoOwner,
-  apiRepoName,
-  apiVersion,
-  apiCommitHash,
-  frontendRepoOwner,
-  frontendRepoName,
-  githubAuthToken,
-}) => {
-  const options = {
-    method: 'POST',
-    headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `token ${githubAuthToken}`,
-      'User-Agent': '',
-    },
-  };
-  options.agent = new https.Agent(options);
-
-  const { number, html_url: issueHtmlUrl } = await request(
-    `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/issues`,
-    {
-      ...options,
-      body: JSON.stringify({
-        title: `[automated] Update types for datanode v${apiVersion}`,
-        body: `Update the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).`,
-      }),
-    }
-  );
-
-  console.log(`Issue created: ${issueHtmlUrl}`);
-
-  const { html_url: prHtmlUrl } = await request(
-    `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/pulls`,
-    {
-      ...options,
-      body: JSON.stringify({
-        base: 'master',
-        title: `fix/${number}: Update types`,
-        head: TYPE_UPDATE_BRANCH,
-        body: `
-  # Related issues 🔗
-
-  Closes #${number}
-
-  # Description ℹ️
-
-  Patches the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).
-
-  # Technical 👨‍🔧
-
-  This pull request was automatically generated.
-      `,
-      }),
-    }
-  );
-
-  console.log(`Pull request created: ${prHtmlUrl}`);
-};
-
 const run = async ({
   apiUrl,
   apiVersion,
@@ -287,27 +163,33 @@ const run = async ({
   if (unstagedFiles.length) {
     launchGitWorkflow({ apiVersion, apiCommitHash });
     await launchGithubWorkflow({
-      apiRepoOwner,
-      apiRepoName,
-      apiVersion,
-      apiCommitHash,
       frontendRepoOwner,
       frontendRepoName,
       githubAuthToken,
+      issueBody: {
+        title: `[automated] Update types for datanode v${apiVersion}`,
+        body: `Update the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).`,
+      },
+      prBody: {
+        base: 'master',
+        title: `fix/${number}: Update types`,
+        head: TYPE_UPDATE_BRANCH,
+        body: `
+  # Related issues 🔗
+
+  Closes #${number}
+
+  # Description ℹ️
+
+  Patches the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).
+
+  # Technical 👨‍🔧
+
+  This pull request was automatically generated.
+        `,
+      }
     });
   }
 };
 
-async function main() {
-  try {
-    const config = getConfig({
-      specs: cliArgsSpecs,
-      args: process.argv,
-    });
-    await run(config);
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-main();
+wrapCli(run, cliArgsSpecs);
