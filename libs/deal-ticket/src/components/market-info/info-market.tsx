@@ -147,7 +147,7 @@ export const Info = ({ market }: InfoProps) => {
               balance: a.balance,
             }}
             assetSymbol={assetSymbol}
-            decimalPlaces={market.positionDecimalPlaces} // TODO decimal places needed here?
+            decimalPlaces={market.positionDecimalPlaces}
           />
         ),
       })),
