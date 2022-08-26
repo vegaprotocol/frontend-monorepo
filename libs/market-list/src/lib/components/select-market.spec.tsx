@@ -21,7 +21,7 @@ describe('SelectMarket', () => {
     const onSelect = jest.fn();
     const expectedMarket = mockData.data.markets[0];
     const { container } = render(
-      <SelectAllMarketsTableBody data={mockData.data} onSelect={onSelect} />
+      <SelectAllMarketsTableBody data={mockData.data.markets} onSelect={onSelect} />
     );
     expect(screen.getByText('AAPL.MF21')).toBeTruthy();
     expect(screen.getByText('-3.14%')).toBeTruthy();
@@ -34,7 +34,7 @@ describe('SelectMarket', () => {
     const onSelect = jest.fn();
     const expectedMarket = mockData.data.markets[0];
     render(
-      <SelectMarketLandingTable data={mockData.data} onSelect={onSelect} />
+      <SelectMarketLandingTable data={mockData.data.markets} onSelect={onSelect} />
     );
     fireEvent.click(screen.getByTestId(`market-link-${expectedMarket.id}`));
     expect(onSelect).toHaveBeenCalledWith(expectedMarket.id);

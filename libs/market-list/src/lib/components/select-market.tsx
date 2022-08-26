@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client';
 import { t, volumePrefix } from '@vegaprotocol/react-helpers';
-import { Interval } from '@vegaprotocol/types';
 import {
   Dialog,
   Intent,
@@ -10,7 +9,6 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import classNames from 'classnames';
 import { useMemo, useState } from 'react';
-import { MARKET_LIST_QUERY } from '../markets-data-provider';
 import type { Column } from './select-market-columns';
 import {
   columnHeadersPositionMarkets,
@@ -18,24 +16,23 @@ import {
 } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
 import { columns } from './select-market-columns';
-import type { MarketList } from '../__generated__';
+import type { MarketList_markets } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Positions } from '@vegaprotocol/positions';
 import { POSITION_QUERY } from '@vegaprotocol/positions';
-import { mapDataToMarketList } from '../utils/market-utils';
 import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
 } from './select-market-table';
+import { useMarketList } from '../markets-data-provider';
 
 export const SelectMarketLandingTable = ({
   data,
   onSelect,
 }: {
-  data: MarketList | undefined;
+  data: MarketList_markets[] | undefined;
   onSelect: (id: string) => void;
 }) => {
-  const marketList = data && mapDataToMarketList(data);
   const textDecorationClassName = `px-8 underline font-sans leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80 text-black dark:text-white`;
   return (
     <>
@@ -48,7 +45,7 @@ export const SelectMarketLandingTable = ({
             <SelectMarketTableHeader />
           </thead>
           <tbody>
-            {marketList?.map((market, i) => (
+            {data?.map((market, i) => (
               <SelectMarketTableRow
                 key={i}
                 detailed={false}
@@ -72,16 +69,15 @@ export const SelectAllMarketsTableBody = ({
   headers = columnHeaders,
   tableColumns = (market) => columns(market, onSelect),
 }: {
-  data?: MarketList;
+  data?: MarketList_markets[];
   title?: string;
   onSelect: (id: string) => void;
   headers?: Column[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   tableColumns?: (market: any) => Column[];
 }) => {
-  const marketList = useMemo(() => data && mapDataToMarketList(data), [data]);
 
-  return marketList ? (
+  return data ? (
     <>
       <thead>
         <tr
@@ -94,7 +90,7 @@ export const SelectAllMarketsTableBody = ({
       </thead>
 
       <tbody>
-        {marketList?.map((market, i) => (
+        {data?.map((market, i) => (
           <SelectMarketTableRow
             key={i}
             detailed={true}
@@ -125,7 +121,7 @@ export const SelectMarketPopover = ({
     'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
-  const { data } = useMarkets();
+  const { data } = useMarketList();
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
   const { data: marketDataPositions } = useQuery<Positions>(POSITION_QUERY, {
     variables,
@@ -135,7 +131,7 @@ export const SelectMarketPopover = ({
   const positionMarkets = useMemo(
     () => ({
       markets:
-        data?.markets
+        data
           ?.filter((market) =>
             marketDataPositions?.party?.positions?.find(
               (position) => position.market.id === market.id
@@ -192,7 +188,7 @@ export const SelectMarketPopover = ({
             positionMarkets.markets.length > 0 && (
               <SelectAllMarketsTableBody
                 title={t('My markets')}
-                data={positionMarkets}
+                data={positionMarkets.markets}
                 onSelect={onSelectMarket}
                 headers={columnHeadersPositionMarkets}
                 tableColumns={(market) =>
@@ -245,7 +241,7 @@ interface LandingDialogContainerProps {
 }
 
 const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
-  const { data, loading, error } = useMarkets();
+  const { data, loading, error } = useMarketList();
   if (error) {
     return (
       <div className="flex justify-center items-center">
@@ -265,14 +261,3 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
   return <SelectMarketLandingTable data={data} onSelect={onSelect} />;
 };
 
-const useMarkets = () => {
-  const since = useMemo(() => {
-    const yesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
-    return new Date(yesterday * 1000).toISOString();
-  }, []);
-  const { data, loading, error } = useQuery<MarketList>(MARKET_LIST_QUERY, {
-    variables: { interval: Interval.INTERVAL_I1H, since },
-  });
-
-  return { data, loading, error };
-};
