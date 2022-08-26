@@ -1,8 +1,10 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
 /// <reference types="cypress" />
 
-import { lowerCase } from 'lodash';
-
+const vegaWalletUnstakedBalance =
+  '[data-testid="vega-wallet-balance-unstaked"]';
+  const vegaWalletStakedBalances =
+    '[data-testid="vega-wallet-balance-staked-validators"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalDatabox = '[data-testid="proposal-data"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
@@ -111,6 +113,44 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal submitted').should('be.visible');
+      cy.get(dialogCloseButton).wait(1500).click();
+    });
+
+    it.only('Able to submit a valid freeform proposal - with minimum required tokens associated (but also staked)', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+        'contain',
+        this.minProposerBalance,
+        txTimeout
+      );
+      cy.get('button').contains('Select a validator to nominate').click();
+
+      // 1002-STKE-031
+      cy.click_on_validator_from_list(0);
+      cy.staking_validator_page_add_stake(this.minProposerBalance);
+
+      cy.get(vegaWalletUnstakedBalance, txTimeout).should(
+        'contain',
+        1.0,
+        txTimeout
+      );
+
+      cy.get(vegaWalletStakedBalances, txTimeout)
+        .should('contain', this.minProposerBalance, txTimeout)
+
       cy.navigate_to('governance');
       cy.wait_for_spinner();
       cy.get(newProposalButton).should('be.visible').click();
@@ -558,7 +598,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         });
     });
 
-    it.only('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
+    it('Creating a proposal - proposal rejected - when closing time sooner than system default', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -579,20 +619,34 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get_submitted_proposal_from_rejected_proposal_list().within(() => {
         cy.contains('Rejected').should('be.visible');
         cy.contains('Close time too soon').should('be.visible');
-        cy.get(viewProposalButton).click();
       });
-      cy.get_proposal_information_from_table('State')
-        .contains('Rejected')
-        .and('be.visible');
-      cy.get_proposal_information_from_table('Rejection reason')
-        .contains('CloseTimeTooSoon')
-        .and('be.visible');
-      cy.get_proposal_information_from_table('Error details')
-        .contains('proposal closing time too soon')
-        .and('be.visible');
     });
 
-    it.only('Creating a proposal - proposal rejected - when closing time later than system default', function () {
+    it('Creating a proposal - proposal rejected - when closing time later than system default', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days(
+        this.maxCloseDays + 1
+      ).then((closingDateTimestamp) => {
+        cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+      });
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal rejected').should('be.visible');
+      cy.get(dialogCloseButton).wait(1500).click();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get_submitted_proposal_from_rejected_proposal_list().within(() => {
+        cy.contains('Rejected').should('be.visible');
+        cy.contains('Close time too late').should('be.visible');
+      });
+    });
+
+    it('Creating a proposal - proposal rejected - able to access rejected proposals', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
