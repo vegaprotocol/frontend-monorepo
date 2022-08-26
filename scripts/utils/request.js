@@ -1,3 +1,5 @@
+const https = require('node:https');
+
 module.exports = (url, options) =>
   new Promise((resolve, reject) => {
     const req = https.request(url, options, (res) => {

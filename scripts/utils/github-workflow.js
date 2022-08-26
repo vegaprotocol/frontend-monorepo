@@ -8,10 +8,7 @@ module.exports = async ({
   const { number, html_url: issueHtmlUrl } = await githubRequest(
     `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/issues`,
     {
-      body: JSON.stringify({
-        title: `[automated] Update types for datanode v${apiVersion}`,
-        body: `Update the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).`,
-      }),
+      body: JSON.stringify(issueBody),
     }
   );
 
@@ -21,9 +18,9 @@ module.exports = async ({
     `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/pulls`,
     {
       body: JSON.stringify({
-        base: 'master',
-        title: `fix/${number}: Update types`,
-        head: TYPE_UPDATE_BRANCH,
+        base: prBody.base || 'master',
+        title: `fix/${number}: ${prBody.title}`,
+        head: prBody.head,
         body: `
   # Related issues 🔗
 
@@ -31,7 +28,7 @@ module.exports = async ({
 
   # Description ℹ️
 
-  Patches the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).
+  ${prBody.body}
 
   # Technical 👨‍🔧
 

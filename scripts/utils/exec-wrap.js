@@ -1,3 +1,8 @@
+const path = require('node:path');
+const { execSync } = require('node:child_process');
+
+const appRoot = path.join(__dirname, '..', '..');
+
 module.exports = ({ cmd, errMessage }) => {
   console.log(`executing: "${cmd}"`);
   try {
