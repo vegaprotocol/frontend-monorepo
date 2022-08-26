@@ -6,7 +6,6 @@ import { compileErrors } from './compile-errors';
 export enum Networks {
   CUSTOM = 'CUSTOM',
   TESTNET = 'TESTNET',
-  STAGNET = 'STAGNET',
   STAGNET3 = 'STAGNET3',
   DEVNET = 'DEVNET',
   MAINNET = 'MAINNET',

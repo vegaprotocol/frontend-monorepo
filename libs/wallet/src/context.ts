@@ -32,7 +32,9 @@ export interface VegaWalletContextShape {
   /** Send a transaction to the network, only order submissions for now */
   sendTx: (
     tx: TransactionSubmission
-  ) => Promise<TransactionResponse | { error: string }> | null;
+  ) => Promise<
+    TransactionResponse | { error: string; details?: string[] }
+  > | null;
 }
 
 export const VegaWalletContext = createContext<

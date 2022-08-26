@@ -102,8 +102,11 @@ const update: Update<
   }
   */
   sequenceNumbers[delta.market.id] = sequenceNumber;
-  const updatedData = { ...data };
-  data.data = delta.market.data;
+  const updatedData = {
+    ...data,
+    data: delta.market.data,
+    depth: { ...data.depth },
+  };
   if (delta.buy) {
     updatedData.depth.buy = updateLevels(data.depth.buy ?? [], delta.buy);
   }
@@ -124,12 +127,12 @@ const getData = (responseData: MarketDepth) => {
 const getDelta = (subscriptionData: MarketDepthSubscription) =>
   subscriptionData.marketDepthUpdate;
 
-export const marketDepthDataProvider = makeDataProvider(
-  MARKET_DEPTH_QUERY,
-  MARKET_DEPTH_SUBSCRIPTION_QUERY,
+export const marketDepthDataProvider = makeDataProvider({
+  query: MARKET_DEPTH_QUERY,
+  subscriptionQuery: MARKET_DEPTH_SUBSCRIPTION_QUERY,
   update,
   getData,
-  getDelta
-);
+  getDelta,
+});
 
 export default marketDepthDataProvider;

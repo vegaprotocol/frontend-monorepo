@@ -2,16 +2,19 @@ import { gql } from '@apollo/client';
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
 import sortBy from 'lodash/sortBy';
-import type {
-  PositionsMetrics,
-  PositionsMetrics_party,
-} from './__generated__/PositionsMetrics';
-import { makeDataProvider } from '@vegaprotocol/react-helpers';
+import type { Accounts_party_accounts } from '@vegaprotocol/accounts';
+import { accountsDataProvider } from '@vegaprotocol/accounts';
+import { toBigNum } from '@vegaprotocol/react-helpers';
+import type { Positions, Positions_party } from './__generated__/Positions';
+import {
+  makeDataProvider,
+  makeDerivedDataProvider,
+} from '@vegaprotocol/react-helpers';
 
 import type {
-  PositionsMetricsSubscription,
-  PositionsMetricsSubscription_positions,
-} from './__generated__/PositionsMetricsSubscription';
+  PositionsSubscription,
+  PositionsSubscription_positions,
+} from './__generated__/PositionsSubscription';
 
 import { AccountType } from '@vegaprotocol/types';
 import type { MarketTradingMode } from '@vegaprotocol/types';
@@ -40,17 +43,33 @@ export interface Position {
 }
 
 export interface Data {
-  party: PositionsMetrics_party | null;
+  party: Positions_party | null;
   positions: Position[] | null;
 }
 
-const POSITIONS_METRICS_FRAGMENT = gql`
-  fragment PositionMetricsFields on Position {
+const POSITION_FIELDS = gql`
+  fragment PositionFields on Position {
     realisedPNL
     openVolume
     unrealisedPNL
     averageEntryPrice
     updatedAt
+    marginsConnection {
+      edges {
+        node {
+          market {
+            id
+          }
+          maintenanceLevel
+          searchLevel
+          initialLevel
+          collateralReleaseLevel
+          asset {
+            symbol
+          }
+        }
+      }
+    }
     market {
       id
       name
@@ -64,47 +83,23 @@ const POSITIONS_METRICS_FRAGMENT = gql`
       }
       data {
         markPrice
-      }
-    }
-  }
-`;
-
-const POSITION_METRICS_QUERY = gql`
-  ${POSITIONS_METRICS_FRAGMENT}
-  query PositionsMetrics($partyId: ID!) {
-    party(id: $partyId) {
-      id
-      accounts {
-        type
-        asset {
-          id
-          decimals
-        }
-        balance
         market {
           id
         }
       }
-      marginsConnection {
-        edges {
-          node {
-            market {
-              id
-            }
-            maintenanceLevel
-            searchLevel
-            initialLevel
-            collateralReleaseLevel
-            asset {
-              symbol
-            }
-          }
-        }
-      }
+    }
+  }
+`;
+
+export const POSITIONS_QUERY = gql`
+  ${POSITION_FIELDS}
+  query Positions($partyId: ID!) {
+    party(id: $partyId) {
+      id
       positionsConnection {
         edges {
           node {
-            ...PositionMetricsFields
+            ...PositionFields
           }
         }
       }
@@ -112,33 +107,36 @@ const POSITION_METRICS_QUERY = gql`
   }
 `;
 
-export const POSITIONS_METRICS_SUBSCRIPTION = gql`
-  ${POSITIONS_METRICS_FRAGMENT}
-  subscription PositionsMetricsSubscription($partyId: ID!) {
+export const POSITIONS_SUBSCRIPTION = gql`
+  ${POSITION_FIELDS}
+  subscription PositionsSubscription($partyId: ID!) {
     positions(partyId: $partyId) {
-      ...PositionMetricsFields
+      ...PositionFields
     }
   }
 `;
 
-export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
-  if (!data || !data.positionsConnection.edges) {
+export const getMetrics = (
+  data: Positions_party | null,
+  accounts: Accounts_party_accounts[] | null
+): Position[] => {
+  if (!data || !data?.positionsConnection.edges) {
     return [];
   }
   const metrics: Position[] = [];
-  data.positionsConnection.edges.forEach((position) => {
+  data?.positionsConnection.edges.forEach((position) => {
     const market = position.node.market;
     const marketData = market.data;
-    const marginLevel = data.marginsConnection.edges?.find(
+    const marginLevel = position.node.marginsConnection.edges?.find(
       (margin) => margin.node.market.id === market.id
     )?.node;
-    const marginAccount = data.accounts?.find(
-      (account) => account.market?.id === market.id
-    );
+    const marginAccount = accounts?.find((account) => {
+      return account.market?.id === market.id;
+    });
     if (!marginAccount || !marginLevel || !marketData) {
       return;
     }
-    const generalAccount = data.accounts?.find(
+    const generalAccount = accounts?.find(
       (account) =>
         account.asset.id === marginAccount.asset.id &&
         account.type === AccountType.ACCOUNT_TYPE_GENERAL
@@ -146,20 +144,20 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
     const assetDecimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
       market;
-    const openVolume = new BigNumber(position.node.openVolume).dividedBy(
-      10 ** positionDecimalPlaces
+    const openVolume = toBigNum(
+      position.node.openVolume,
+      positionDecimalPlaces
     );
 
-    const marginAccountBalance = marginAccount
-      ? new BigNumber(marginAccount.balance).dividedBy(10 ** assetDecimals)
-      : new BigNumber(0);
-    const generalAccountBalance = generalAccount
-      ? new BigNumber(generalAccount.balance).dividedBy(10 ** assetDecimals)
-      : new BigNumber(0);
-
-    const markPrice = new BigNumber(marketData.markPrice).dividedBy(
-      10 ** marketDecimalPlaces
+    const marginAccountBalance = toBigNum(
+      marginAccount.balance ?? 0,
+      assetDecimals
     );
+    const generalAccountBalance = toBigNum(
+      generalAccount?.balance ?? 0,
+      assetDecimals
+    );
+    const markPrice = toBigNum(marketData.markPrice, marketDecimalPlaces);
 
     const notional = (
       openVolume.isGreaterThan(0) ? openVolume : openVolume.multipliedBy(-1)
@@ -172,13 +170,13 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
       ? new BigNumber(0)
       : marginAccountBalance.dividedBy(totalBalance).multipliedBy(100);
 
-    const marginMaintenance = new BigNumber(
-      marginLevel.maintenanceLevel
-    ).multipliedBy(marketDecimalPlaces);
-    const marginSearch = new BigNumber(marginLevel.searchLevel).multipliedBy(
+    const marginMaintenance = toBigNum(
+      marginLevel.maintenanceLevel,
       marketDecimalPlaces
     );
-    const marginInitial = new BigNumber(marginLevel.initialLevel).multipliedBy(
+    const marginSearch = toBigNum(marginLevel.searchLevel, marketDecimalPlaces);
+    const marginInitial = toBigNum(
+      marginLevel.initialLevel,
       marketDecimalPlaces
     );
 
@@ -232,54 +230,50 @@ export const getMetrics = (data: PositionsMetrics_party | null): Position[] => {
 };
 
 export const update = (
-  data: Data,
-  delta: PositionsMetricsSubscription_positions
+  data: Positions_party,
+  delta: PositionsSubscription_positions | null
 ) => {
-  if (!data.party?.positionsConnection.edges) {
-    return data;
-  }
-  const edges = produce(data.party.positionsConnection.edges, (draft) => {
-    const index = draft.findIndex(
+  return produce(data, (draft) => {
+    if (!draft.positionsConnection.edges || !delta) {
+      return;
+    }
+    const index = draft.positionsConnection.edges.findIndex(
       (edge) => edge.node.market.id === delta.market.id
     );
     if (index !== -1) {
-      draft[index].node = delta;
+      draft.positionsConnection.edges[index].node = delta;
     } else {
-      draft.push({ __typename: 'PositionEdge', node: delta });
+      draft.positionsConnection.edges.push({
+        __typename: 'PositionEdge',
+        node: delta,
+      });
     }
   });
-  const party = produce(data.party, (draft) => {
-    draft.positionsConnection.edges = edges;
-  });
-  if (party === data.party) {
-    return data;
-  }
-  return {
-    party,
-    positions: getMetrics(party),
-  };
 };
 
-const getData = (responseData: PositionsMetrics): Data => {
-  return {
-    party: responseData.party,
-    positions: sortBy(getMetrics(responseData.party), 'updatedAt').reverse(),
-  };
-};
-
-const getDelta = (
-  subscriptionData: PositionsMetricsSubscription
-): PositionsMetricsSubscription_positions => subscriptionData.positions;
-
-export const positionsMetricsDataProvider = makeDataProvider<
-  PositionsMetrics,
-  Data,
-  PositionsMetricsSubscription,
-  PositionsMetricsSubscription_positions
->(
-  POSITION_METRICS_QUERY,
-  POSITIONS_METRICS_SUBSCRIPTION,
+export const positionDataProvider = makeDataProvider<
+  Positions,
+  Positions_party,
+  PositionsSubscription,
+  PositionsSubscription_positions
+>({
+  query: POSITIONS_QUERY,
+  subscriptionQuery: POSITIONS_SUBSCRIPTION,
   update,
-  getData,
-  getDelta
+  getData: (responseData: Positions) => responseData.party,
+  getDelta: (subscriptionData: PositionsSubscription) =>
+    subscriptionData.positions,
+});
+
+export const positionsMetricsDataProvider = makeDerivedDataProvider<Position[]>(
+  [positionDataProvider, accountsDataProvider],
+  ([positions, accounts]) => {
+    return sortBy(
+      getMetrics(
+        positions as Positions_party | null,
+        accounts as Accounts_party_accounts[] | null
+      ),
+      'updatedAt'
+    ).reverse();
+  }
 );

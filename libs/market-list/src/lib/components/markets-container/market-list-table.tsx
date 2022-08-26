@@ -25,7 +25,7 @@ import type {
   MarketList_markets,
   MarketList_markets_data,
 } from '../../__generated__';
-import { useAssetDetailsDialogStore } from '../asset-details-dialog';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 type Props = AgGridReactProps | AgReactUiProps;
 

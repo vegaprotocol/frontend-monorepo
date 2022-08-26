@@ -4,6 +4,7 @@ import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import {
   OrderStatus,
   OrderStatusMapping,
+  OrderTimeInForceMapping,
   OrderType,
   Side,
 } from '@vegaprotocol/types';
@@ -77,13 +78,13 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
             </a>
           </div>
         )}
+        {orderRejectionReason && (
+          <div>
+            <p className={labelClass}>{t(`Reason`)}</p>
+            <p data-testid="error-reason">{t(orderRejectionReason)}</p>
+          </div>
+        )}
       </div>
-      {orderRejectionReason && (
-        <div>
-          <p className={labelClass}>{t(`Reason`)}</p>
-          <p data-testid="error-reason">{t(orderRejectionReason)}</p>
-        </div>
-      )}
     </div>
   );
 };
@@ -94,7 +95,9 @@ const getRejectionReason = (
   switch (order.status) {
     case OrderStatus.STATUS_STOPPED:
       return t(
-        `Your ${order.timeInForce} order was not filled and it has been stopped`
+        `Your ${
+          OrderTimeInForceMapping[order.timeInForce]
+        } order was not filled and it has been stopped`
       );
     case OrderStatus.STATUS_REJECTED:
       return order.rejectionReason && t(startCase(order.rejectionReason));
