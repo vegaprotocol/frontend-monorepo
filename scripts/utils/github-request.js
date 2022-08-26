@@ -12,12 +12,8 @@ module.exports = async (url, { githubAuthToken, body }) => {
   };
   options.agent = new https.Agent(options);
 
-  return request(
-    url,
-    {
-      ...options,
-      body,
-    }
-  );
-
-}
+  return request(url, {
+    ...options,
+    body,
+  });
+};

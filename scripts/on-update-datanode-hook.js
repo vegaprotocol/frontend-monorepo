@@ -125,7 +125,7 @@ const run = async ({
         head: TYPE_UPDATE_BRANCH,
         title: 'Update types',
         body: `Patches the frontend based on the [datanode changes](https://github.com/${apiRepoOwner}/${apiRepoName}/commit/${apiCommitHash}).`,
-      }
+      },
     });
   }
 };

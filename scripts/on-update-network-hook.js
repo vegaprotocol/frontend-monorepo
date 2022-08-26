@@ -119,7 +119,7 @@ const run = async ({
     .split('\n')
     .filter((file) => file !== '');
 
-  console.log(frontendRepoOwner, frontendRepoName)
+  console.log(frontendRepoOwner, frontendRepoName);
 
   if (unstagedFiles.length) {
     launchGitWorkflow({
