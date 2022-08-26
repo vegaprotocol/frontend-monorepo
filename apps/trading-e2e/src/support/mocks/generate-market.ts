@@ -18,11 +18,6 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       data: {
-        auctionEnd: '',
-        auctionStart: '',
-        indicativePrice: '',
-        suppliedStake: '',
-        targetStake: '',
         market: {
           id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
           __typename: 'Market',
@@ -58,6 +53,10 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
             __typename: 'InstrumentMetadata',
           },
           product: {
+            oracleSpecForTradingTermination: {
+              id: 'd253c16c6a17ab88e098479635c611ab503582a1079752d1a49ac15f656f7e7b',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'BTCUSD Monthly',
             settlementAsset: {
               id: '000',

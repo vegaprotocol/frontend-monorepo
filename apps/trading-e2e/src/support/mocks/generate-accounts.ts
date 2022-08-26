@@ -25,7 +25,7 @@ export const generateAccounts = (
         },
         {
           __typename: 'Account',
-          type: AccountType.General,
+          type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
           market: null,
           asset: {
@@ -37,7 +37,7 @@ export const generateAccounts = (
         },
         {
           __typename: 'Account',
-          type: AccountType.Margin,
+          type: AccountType.ACCOUNT_TYPE_MARGIN,
           balance: '1000',
           market: {
             __typename: 'Market',
@@ -53,7 +53,7 @@ export const generateAccounts = (
         },
         {
           __typename: 'Account',
-          type: AccountType.Margin,
+          type: AccountType.ACCOUNT_TYPE_MARGIN,
           balance: '1000',
           market: {
             __typename: 'Market',

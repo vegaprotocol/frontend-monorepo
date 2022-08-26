@@ -228,7 +228,7 @@ interface Buy {
 export interface ProposalSubmission {
   rationale: {
     description: string;
-    title?: string;
+    title: string;
   };
   terms:
     | ProposalFreeformTerms
@@ -262,7 +262,9 @@ export type TransactionError =
       errors: {
         [key: string]: string[];
       };
+      details?: string[];
     }
   | {
       error: string;
+      details?: string[];
     };

@@ -81,6 +81,14 @@ export interface Market_market_tradableInstrument_instrument_metadata {
   tags: string[] | null;
 }
 
+export interface Market_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination {
+  __typename: "OracleSpec";
+  /**
+   * ID is a hash generated from the OracleSpec data.
+   */
+  id: string;
+}
+
 export interface Market_market_tradableInstrument_instrument_product_settlementAsset {
   __typename: "Asset";
   /**
@@ -99,6 +107,10 @@ export interface Market_market_tradableInstrument_instrument_product_settlementA
 
 export interface Market_market_tradableInstrument_instrument_product {
   __typename: "Future";
+  /**
+   * The oracle spec describing the oracle data of interest for trading termination.
+   */
+  oracleSpecForTradingTermination: Market_market_tradableInstrument_instrument_product_oracleSpecForTradingTermination;
   /**
    * String representing the quote (e.g. BTCUSD -> USD is quote)
    */
