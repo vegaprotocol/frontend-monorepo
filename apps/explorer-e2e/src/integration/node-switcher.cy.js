@@ -10,14 +10,12 @@ context('Node switcher', function () {
     }).as('nodeData');
     cy.visit('/');
     cy.wait('@nodeData');
+    cy.getByTestId('git-network-data').within(() => {
+      cy.getByTestId('link').should('be.visible').click();
+    });
   });
 
   describe('form validations and responses', function () {
-    beforeEach('open node selector', function () {
-      cy.getByTestId('git-network-data').within(() => {
-        cy.getByTestId('link').click();
-      });
-    });
     it('node data is displayed', function () {
       cy.getByTestId('node-row').should('have.length.at.least', 2);
 
@@ -28,10 +26,13 @@ context('Node switcher', function () {
             .should('exist')
             .and('have.attr', 'aria-checked', 'true');
           cy.get('label').should('have.text', Cypress.env('networkQueryUrl'));
-          cy.contains('-').should('not.exist');
+          cy.getByTestId('ssl-cell').should('have.text', 'Checking');
+          cy.getByTestId('ssl-cell', { timeout: 6000 }).should(
+            'not.have.text',
+            'Checking'
+          );
           cy.getByTestId('response-time-cell').should('contain.text', 'ms');
           cy.getByTestId('block-cell').should('not.be.empty');
-          cy.getByTestId('ssl-cell').should('not.be.empty');
         });
     });
 
@@ -58,15 +59,15 @@ context('Node switcher', function () {
         cy.get('input').clear().type('https://n03.s.vega.xyz/query');
         cy.getByTestId('link').click();
       });
-      cy.getByTestId('ssl-cell').should('contain.text', 'Yes');
+      cy.getByTestId('ssl-cell', { timeout: 6000 }).should(
+        'contain.text',
+        'Yes'
+      );
       validateNodeError(errorTypeTxt, nodeErrorTxt);
     });
 
     function validateNodeError(errortype, errorMsg) {
-      cy.getByTestId(nodeErrorType, { timeout: 10000 }).should(
-        'have.text',
-        errortype
-      );
+      cy.getByTestId(nodeErrorType).should('have.text', errortype);
       cy.getByTestId(nodeErrorMsg).should('have.text', errorMsg);
     }
   });

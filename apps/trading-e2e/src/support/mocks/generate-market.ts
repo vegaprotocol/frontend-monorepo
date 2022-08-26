@@ -53,6 +53,10 @@ export const generateMarket = (override?: PartialDeep<Market>): Market => {
             __typename: 'InstrumentMetadata',
           },
           product: {
+            oracleSpecForTradingTermination: {
+              id: 'd253c16c6a17ab88e098479635c611ab503582a1079752d1a49ac15f656f7e7b',
+              __typename: 'OracleSpec',
+            },
             quoteName: 'BTCUSD Monthly',
             settlementAsset: {
               id: '000',
