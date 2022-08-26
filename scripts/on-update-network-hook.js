@@ -8,19 +8,42 @@ const wrapCli = require('./utils/wrap-cli');
 const launchGithubWorkflow = require('./utils/github-workflow');
 
 const NETWORK_UPDATE_BRANCH = 'fix/networks';
-const staticAppRoot = path.join(__dirname, '..', 'apps', 'static');
-const networkConfigPath = path.join(staticAppRoot, 'src', 'assets');
+const STATIC_APP_PATH = path.join(__dirname, '..', 'apps', 'static');
+const NETWORK_CONFIG_PATH = path.join(STATIC_APP_PATH, 'src', 'assets');
+
+const getJson = (value, errMessage) => {
+  try {
+    return JSON.parse(value);
+  } catch (err) {
+    throw new Error(errMessage);
+  }
+}
 
 const cliArgsSpecs = [
   {
-    name: 'network',
-    arg: 'network',
+    name: 'payload',
+    arg: 'payload',
     required: true,
-  },
-  {
-    name: 'hosts',
-    arg: 'hosts',
-    required: true,
+    validate: rawPayload => {
+      const payload = getJson(rawPayload, 'The payload must be a valid json object');
+      Object.keys(payload).forEach(network => {
+        const item = payload[network] || {};
+        console.log(item)
+        if (typeof item.chainId !== 'string') {
+          throw new Error(`The network "${network}" must have a valid chainId.`)
+        }
+        if (!Array.isArray(item.hosts)) {
+          throw new Error(`The network "${network}" must have a valid list of hosts.`)
+        }
+        item.hosts.forEach(host => {
+          try {
+            new URL(host);
+          } catch (err) {
+            throw new Error(`The host "${host}" on the network "${network}" must be a valid url.`);
+          }
+        });
+      });
+    },
   },
   {
     name: 'networkCommitHash',
@@ -30,7 +53,7 @@ const cliArgsSpecs = [
   {
     name: 'networkRepoName',
     arg: 'repo',
-    default: 'vega',
+    required: true,
   },
   {
     name: 'networkRepoOwner',
@@ -54,15 +77,15 @@ const cliArgsSpecs = [
   },
 ];
 
-const getNetworkConfigFileName = (network) => `${network}-config.json`;
+const getNetworkConfigFileName = (network) => `${network.toLowerCase()}-network.json`;
 
 const findTargetConfig = (network) => {
-
+  const fileName = getNetworkConfigFileName(network);
+  return path.join(NETWORK_CONFIG_PATH, fileName);
 }
 
 const run = async ({
-  network,
-  hosts,
+  payload,
   networkCommitHash,
   networkRepoName,
   networkRepoOwner,
@@ -70,7 +93,14 @@ const run = async ({
   frontendRepoName,
   githubAuthToken,
 }) => {
-
+  const networks = JSON.parse(payload)
+  for (let network in networks) {
+    const file = findTargetConfig(network);
+    if (fs.existsSync(file)) {
+      const fd = fs.openSync(file, 'w+');
+      fs.writeSync(fd, file, JSON.stringify(networks[network]));
+    }
+  }
 
   const unstagedFiles = execWrap({
     cmd: `git diff --name-only`,
@@ -79,11 +109,13 @@ const run = async ({
     .split('\n')
     .filter((file) => file !== '');
 
+  return;o
+
   if (unstagedFiles.length) {
     launchGitWorkflow({
       apiVersion,
       apiCommitHash,
-      commitMessage: `update networks for v${apiVersion} on HEAD:${apiCommitHash}`,
+      commitMessage: `update networks based on ${networkRepoOwner}/${networkRepoName} HEAD:${networkCommitHash}`,
     });
 
     await launchGithubWorkflow({
