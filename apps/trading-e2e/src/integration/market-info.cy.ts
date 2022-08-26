@@ -1,4 +1,8 @@
-import { MarketState } from '@vegaprotocol/types';
+import {
+  MarketState,
+  MarketStateMapping,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import { mockTradingPage } from '../support/trading';
 
 const marketInfoBtn = 'Info';
@@ -51,8 +55,12 @@ describe('market info is displayed', () => {
     validateMarketDataRow(0, 'Name', 'ETHBTC Quarterly (30 Jun 2022)');
     validateMarketDataRow(1, 'Decimal Places', '2');
     validateMarketDataRow(2, 'Position Decimal Places', '0');
-    validateMarketDataRow(3, 'Trading Mode', 'Trading mode continuous');
-    validateMarketDataRow(4, 'State', 'STATE_ACTIVE');
+    validateMarketDataRow(
+      3,
+      'Trading Mode',
+      MarketTradingModeMapping.TRADING_MODE_CONTINUOUS
+    );
+    validateMarketDataRow(4, 'State', MarketStateMapping.STATE_ACTIVE);
     validateMarketDataRow(5, 'Market ID', 'market-0');
   });
 

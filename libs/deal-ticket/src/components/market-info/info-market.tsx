@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMemo } from 'react';
-import { formatLabel, formatNumber, t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t } from '@vegaprotocol/react-helpers';
 import {
   AsyncRenderer,
   Splash,
@@ -13,7 +13,12 @@ import pick from 'lodash/pick';
 import BigNumber from 'bignumber.js';
 import { useQuery } from '@apollo/client';
 import { totalFees } from '@vegaprotocol/market-list';
-import { AccountType, Interval, MarketStateMapping } from '@vegaprotocol/types';
+import {
+  AccountType,
+  Interval,
+  MarketStateMapping,
+  MarketTradingModeMapping,
+} from '@vegaprotocol/types';
 import { MARKET_INFO_QUERY } from './info-market-query';
 import { useEnvironment } from '@vegaprotocol/environment';
 import type {
@@ -169,7 +174,8 @@ export const Info = ({ market }: InfoProps) => {
             marketID: keyDetails.id,
             id: undefined,
             tradingMode:
-              keyDetails.tradingMode && formatLabel(keyDetails.tradingMode),
+              keyDetails.tradingMode &&
+              MarketTradingModeMapping[keyDetails.tradingMode],
           }}
         />
       ),
