@@ -127,7 +127,7 @@ As environment variables are build time and not run time in frontend application
 In order to override specific environment variables you can pass these to the container like this:
 
 ```bash
-docker run -e NX_VEGA_URL=https://n04.d.vega.xyz/query -p 3000:80 [TAG]
+docker run -e NX_VEGA_URL=https://api.n04.d.vega.xyz/graphql -p 3000:80 [TAG]
 ```
 
 Which will now point the app to use a devnet data node. To see a list of all possible config properties see the readme.md for each app in the app directory.

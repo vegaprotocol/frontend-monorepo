@@ -18,7 +18,7 @@ const compileHosts = (hosts: string[], envUrl?: string) => {
 
 const getCacheKey = (env: Networks) => `${LOCAL_STORAGE_NETWORK_KEY}-${env}`;
 
-const getCachedConfig = (env: Networks) => {
+const getCachedConfig = (env: Networks, envUrl?: string) => {
   const cacheKey = getCacheKey(env);
   const value = LocalStorage.getItem(cacheKey);
 
@@ -31,7 +31,10 @@ const getCachedConfig = (env: Networks) => {
         throw new Error('Invalid configuration found in the storage.');
       }
 
-      return config;
+      return {
+        ...config,
+        hosts: compileHosts(config.hosts, envUrl),
+      };
     } catch (err) {
       LocalStorage.removeItem(cacheKey);
       console.warn(
@@ -49,7 +52,7 @@ export const useConfig = (
 ) => {
   const [loading, setLoading] = useState(false);
   const [config, setConfig] = useState<Configuration | undefined>(
-    getCachedConfig(environment.VEGA_ENV)
+    getCachedConfig(environment.VEGA_ENV, environment.VEGA_URL)
   );
 
   useEffect(() => {

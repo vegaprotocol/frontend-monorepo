@@ -27,13 +27,12 @@ Example configurations are provided here:
 - [Mainnet](./.env.mainnet)
 - [Devnet](./.env.devnet)
 - [Testnet](./.env.testnet)
-- [Stagnet1](./.env.stagnet1)
 - [Stagnet3](./.env.stagnet3)
 
 For convenience, you can boot the app injecting one of the configurations above by running:
 
 ```bash
-yarn nx run token:serve --env={env} # e.g. stagnet1
+yarn nx run token:serve --env={env} # e.g. stagnet3
 ```
 
 There are a few different configuration options offered for this app:

@@ -1,10 +1,10 @@
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
-import type { Stats as IStats, StatFields as IStatFields } from './types';
+import type { Stats, StatFields } from './types';
 
 // Stats fields config. Keys will correspond to graphql queries when used, and values
 // contain the associated data and methods we need to render. A single query
 // can be rendered in multiple ways (see 'upTime').
-export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
+export const statsFields: { [key in keyof Stats]: StatFields[] } = {
   status: [
     {
       title: t('Status'),
@@ -17,7 +17,7 @@ export const statsFields: { [key in keyof IStats]: IStatFields[] } = {
         if (i === -1) {
           return status;
         } else {
-          return status.substr(i + 1);
+          return status.substring(i + 1);
         }
       },
       goodThreshold: (status: string) =>
