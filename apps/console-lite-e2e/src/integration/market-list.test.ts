@@ -116,49 +116,11 @@ describe('market list', () => {
           .then((length) => expect(length).to.be.closeTo(21, 2));
         cy.get('.ag-cell-label-container').eq(4).click();
         cy.get('body').then(($body) => {
-          for (let i = 0; i < 50; i++) {
-            cy.wrap($body).realPress('Tab');
+          for (let i = 0; i < 20; i++) {
+            cy.wrap($body).realPress('Tab', { pressDelay: 300 });
           }
         });
-        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
-        cy.get('.ag-center-cols-container')
-          .find('[role="row"]')
-          .its('length')
-          .then((length) => expect(length).to.be.closeTo(31, 2));
-      });
-    });
-
-    it('handles 50000 markets', () => {
-      cy.viewport(1440, 900);
-      cy.mockGQL(async (req) => {
-        aliasQuery(req, 'SimpleMarkets', generateLongListMarkets(50000));
-      });
-      performance.mark('start-50k');
-      cy.visit('/markets');
-      cy.get('.w-full.h-full.flex.items-center.justify-center').should(
-        'have.text',
-        'Loading...'
-      );
-      cy.get('.ag-center-cols-container', { timeout: 100000 }).then(() => {
-        performance.mark('end-50k');
-        performance.measure('load-50k', 'start-50k', 'end-50k');
-        const measure = performance.getEntriesByName('load-50k')[0];
-        expect(measure.duration).lte(85000);
-        cy.log(`Ag-grid 50k load took ${measure.duration} milliseconds.`);
-
-        cy.get('.ag-root').should('have.attr', 'aria-rowcount', '50001');
-        cy.get('.ag-center-cols-container')
-          .find('[role="row"]')
-          .its('length')
-          .then((length) => expect(length).to.be.closeTo(21, 2));
-
-        cy.get('.ag-cell-label-container').eq(4).click();
-        cy.get('body').then(($body) => {
-          for (let i = 0; i < 50; i++) {
-            cy.wrap($body).realPress('Tab');
-          }
-        });
-        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '49');
+        cy.focused().parent('.ag-row').should('have.attr', 'row-index', '19');
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
           .its('length')

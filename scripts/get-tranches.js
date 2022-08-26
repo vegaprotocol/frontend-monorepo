@@ -19,12 +19,6 @@ const CONFIG = [
     startBlock: 11340808,
   },
   {
-    env: 'stagnet1',
-    contract: '0xfCe6eB272D3d4146A96bC28de71212b327F575fa',
-    provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
-    startBlock: 11259488,
-  },
-  {
     env: 'stagnet3',
     contract: '0x9F10cBeEf03A564Fb914c2010c0Cd55E9BB11406',
     provider: 'https://ropsten.infura.io/v3/4f846e79e13f44d1b51bbd7ed9edefb8',
