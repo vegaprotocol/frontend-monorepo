@@ -16,8 +16,8 @@ export const generateMarkets = (
       name: 'ACTIVE MARKET',
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
-      tradingMode: MarketTradingMode.Continuous,
-      state: MarketState.Active,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',
@@ -36,7 +36,7 @@ export const generateMarkets = (
       data: {
         market: {
           id: '10cd0a793ad2887b340940337fa6d97a212e0e517fe8e9eab2b5ef3a38633f35',
-          state: MarketState.Active,
+          state: MarketState.STATE_ACTIVE,
           tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
           __typename: 'Market',
         },
@@ -49,6 +49,7 @@ export const generateMarkets = (
       },
       tradableInstrument: {
         instrument: {
+          id: '',
           code: 'BTCUSD.MF21',
           name: '',
           metadata: {
@@ -73,8 +74,8 @@ export const generateMarkets = (
       name: 'SUSPENDED MARKET',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
-      tradingMode: MarketTradingMode.Continuous,
-      state: MarketState.Active,
+      tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: MarketState.STATE_ACTIVE,
       marketTimestamps: {
         __typename: 'MarketTimestamps',
         close: '',
@@ -106,8 +107,9 @@ export const generateMarkets = (
       },
       tradableInstrument: {
         instrument: {
+          id: 'SOLUSD',
+          name: 'SOL/USD',
           code: 'SOLUSD',
-          name: '',
           metadata: {
             __typename: 'InstrumentMetadata',
             tags: [],

@@ -13,7 +13,7 @@ export const generateMarketDepth = (
       decimalPlaces: 5,
       positionDecimalPlaces: 0,
       data: {
-        marketTradingMode: MarketTradingMode.Continuous,
+        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         staticMidPrice: '0',
         indicativePrice: '0',
         bestStaticBidPrice: '0',

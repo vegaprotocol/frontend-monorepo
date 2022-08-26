@@ -43,7 +43,7 @@ export const generatePositions = (
       market: {
         id: 'c9f5acd348796011c075077e4d58d9b7f1689b7c1c8e030a5e886b83aa96923d',
         name: 'UNIDAI Monthly (30 Jun 2022)',
-        marketTradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+        tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
         data: {
           markPrice: '17588787',
           __typename: 'MarketData',
