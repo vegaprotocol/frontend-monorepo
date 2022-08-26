@@ -114,4 +114,10 @@ export const marketsDataProvider = makeDataProvider<
   MarketList_markets[],
   MarketDataSub,
   MarketDataSub_marketData
->(MARKET_LIST_QUERY, MARKET_DATA_SUB, update, getData, getDelta);
+>({
+  query: MARKET_LIST_QUERY,
+  subscriptionQuery: MARKET_DATA_SUB,
+  update,
+  getData,
+  getDelta,
+});

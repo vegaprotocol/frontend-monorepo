@@ -115,15 +115,15 @@ const getDelta = (subscriptionData: OrderSub) => subscriptionData.orders || [];
 const getPageInfo = (responseData: Orders): PageInfo | null =>
   responseData.party?.ordersConnection.pageInfo || null;
 
-export const ordersDataProvider = makeDataProvider(
-  ORDERS_QUERY,
-  ORDERS_SUB,
+export const ordersDataProvider = makeDataProvider({
+  query: ORDERS_QUERY,
+  subscriptionQuery: ORDERS_SUB,
   update,
   getData,
   getDelta,
-  {
+  pagination: {
     getPageInfo,
     append,
     first: 100,
-  }
-);
+  },
+});
