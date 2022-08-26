@@ -629,7 +629,12 @@
   "FilterProposals": "Filter proposals",
   "FilterProposalsDescription": "Filter by proposal ID or proposer ID",
   "Freeform proposal": "Freeform proposal",
-  "NewProposal": "New proposal",
+  "NetworkParameterProposal": "Network parameter proposal",
+  "NewMarketProposal": "New market proposal",
+  "ChangeMarketProposal": "Change market proposal",
+  "NewAssetProposal": "New asset proposal",
+  "NewFreeformProposal": "New freeform proposal",
+  "RawProposal": "Raw proposal",
   "MinProposalRequirements": "You must have at least 1 VEGA associated to make a proposal",
   "totalSupply": "Total Supply"
 }

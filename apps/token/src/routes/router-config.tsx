@@ -129,6 +129,48 @@ const LazyGovernancePropose = React.lazy(
     )
 );
 
+const LazyGovernanceProposeNetworkParameter = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/network-parameter'
+    )
+);
+
+const LazyGovernanceProposeNewMarket = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/new-market'
+    )
+);
+
+const LazyGovernanceProposeChangeMarket = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/change-market'
+    )
+);
+
+const LazyGovernanceProposeNewAsset = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/new-asset'
+    )
+);
+
+const LazyGovernanceProposeFreeform = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/freeform'
+    )
+);
+
+const LazyGovernanceProposeRaw = React.lazy(
+  () =>
+    import(
+      /* webpackChunkName: "route-governance-propose", webpackPrefetch: true */ './governance/propose/raw'
+    )
+);
+
 const LazyRewards = React.lazy(
   () =>
     import(
@@ -232,6 +274,21 @@ const routerConfig = [
     component: LazyGovernance,
     children: [
       { path: ':proposalId', element: <LazyGovernanceProposal /> },
+      {
+        path: 'propose/network-parameter',
+        element: <LazyGovernanceProposeNetworkParameter />,
+      },
+      {
+        path: 'propose/new-market',
+        element: <LazyGovernanceProposeNewMarket />,
+      },
+      {
+        path: 'propose/change-market',
+        element: <LazyGovernanceProposeChangeMarket />,
+      },
+      { path: 'propose/new-asset', element: <LazyGovernanceProposeNewAsset /> },
+      { path: 'propose/freeform', element: <LazyGovernanceProposeFreeform /> },
+      { path: 'propose/raw', element: <LazyGovernanceProposeRaw /> },
       { path: 'propose', element: <LazyGovernancePropose /> },
       { path: 'rejected', element: <LazyRejectedGovernanceProposals /> },
       { index: true, element: <LazyGovernanceProposals /> },
