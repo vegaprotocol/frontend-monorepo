@@ -134,6 +134,8 @@ const ButtonCell = ({
   return <Button onClick={() => onClick(data)}>{t('Close')}</Button>;
 };
 
+const EmptyCell = () => '';
+
 export const PositionsTable = forwardRef<AgGridReact, Props>(
   ({ onClose, ...props }, ref) => {
     return (
@@ -172,6 +174,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         <AgGridColumn
           headerName={t('Amount')}
+          field="openVolume"
           valueGetter={({ node, data }: ValueGetterParams) => {
             return node?.rowPinned ? data.notional : data.openVolume;
           }}
@@ -188,13 +191,12 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             data,
             node,
           }: PositionsTableValueFormatterParams & {
-            value: Position['openVolume'] | Position['notional'];
+            value: Position['openVolume'];
           }): AmountCellProps['valueFormatted'] | string => {
             if (!value || !data) {
               return undefined;
             }
             if (node?.rowPinned) {
-              // we are using asset decimals instead of market decimals because each market can have different decimals
               return addDecimalsFormatNumber(value, data.assetDecimals);
             }
             return data;
@@ -204,7 +206,13 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Mark Price')}
           field="markPrice"
           type="rightAligned"
-          cellRenderer="PriceFlashCell"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
+            };
+          }}
           valueFormatter={({
             value,
             data,
@@ -212,7 +220,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }: PositionsTableValueFormatterParams & {
             value: Position['markPrice'];
           }) => {
-            if (!data || node?.rowPinned) {
+            if (!data || !value || node?.rowPinned) {
               return undefined;
             }
             if (
@@ -238,7 +246,13 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               '</div>',
           }}
           flex={2}
-          cellRenderer="ProgressBarCell"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+            };
+          }}
           valueFormatter={({
             data,
             node,
@@ -270,16 +284,20 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Leverage')}
           field="currentLeverage"
           type="rightAligned"
-          cellRenderer="PriceFlashCell"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : PriceFlashCell,
+            };
+          }}
           valueFormatter={({
             value,
             node,
           }: PositionsTableValueFormatterParams & {
             value: Position['currentLeverage'];
           }) =>
-            value === undefined || node?.rowPinned
-              ? undefined
-              : formatNumber(value.toString(), 1)
+            value === undefined ? undefined : formatNumber(value.toString(), 1)
           }
         />
         <AgGridColumn
@@ -288,6 +306,13 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
           flex={2}
           cellRenderer="ProgressBarCell"
+          cellRendererSelector={(
+            params: ICellRendererParams
+          ): CellRendererSelectorResult => {
+            return {
+              component: params.node.rowPinned ? EmptyCell : ProgressBarCell,
+            };
+          }}
           valueFormatter={({
             data,
             value,
@@ -307,6 +332,8 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               value: Number(value),
             };
           }}
+          pinnedRowCellRenderer={() => ''}
+          pinnedRowValueFormatter={() => undefined}
         />
         <AgGridColumn
           headerName={t('Realised PNL')}
@@ -371,11 +398,10 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
           valueFormatter={({
             value,
-            node,
           }: PositionsTableValueFormatterParams & {
             value: Position['updatedAt'];
           }) => {
-            if (!value || node?.rowPinned) {
+            if (!value) {
               return value;
             }
             return getDateTimeFormat().format(new Date(value));
@@ -383,8 +409,15 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
         />
         {onClose ? (
           <AgGridColumn
-            cellRenderer={ButtonCell}
+            cellRendererSelector={(
+              params: ICellRendererParams
+            ): CellRendererSelectorResult => {
+              return {
+                component: params.node.rowPinned ? EmptyCell : ButtonCell,
+              };
+            }}
             cellRendererParams={{ onClick: onClose }}
+            pinnedRowCellRenderer={() => ''}
           />
         ) : null}
       </AgGrid>
