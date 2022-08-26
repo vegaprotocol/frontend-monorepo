@@ -6,7 +6,7 @@ export const SelectMarketTableHeader = ({
   headers = columnHeaders,
 }) => {
   return (
-    <tr className="sticky top-[-0.5rem] z-10 dark:bg-black bg-white">
+    <tr className="sticky top-[-0.5rem] z-10 dark:bg-black bg-white h-[34px]">
       {headers.map(
         ({ value, className, onlyOnDetailed }, i) =>
           (!onlyOnDetailed || detailed === onlyOnDetailed) && (
@@ -28,7 +28,7 @@ export const SelectMarketTableRow = ({
 }) => {
   return (
     <tr
-      className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
+      className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative h-[34px]`}
     >
       {columns.map(
         ({ value, className, dataTestId, onlyOnDetailed }, i) =>

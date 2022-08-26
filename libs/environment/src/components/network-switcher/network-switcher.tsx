@@ -110,8 +110,8 @@ export const NetworkSwitcher = () => {
                 data-testid="network-item"
                 disabled={!VEGA_NETWORKS[key]}
                 className={classNames(menuItemClasses, {
-                  'text-white': !!VEGA_NETWORKS[key],
-                  'cursor-not-allowed text-white-80 dark:text-white-80':
+                  'dark:text-white text-black': !!VEGA_NETWORKS[key],
+                  'cursor-not-allowed text-black-80 dark:text-white-80':
                     !VEGA_NETWORKS[key],
                 })}
               >
