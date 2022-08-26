@@ -29,6 +29,7 @@ import type { PartyBalanceQuery } from './__generated__/PartyBalanceQuery';
 import useOrderCloseOut from '../../hooks/use-order-closeout';
 import useOrderMargin from '../../hooks/use-order-margin';
 import useMaximumPositionSize from '../../hooks/use-maximum-position-size';
+import useCalculateSlippage from '../../hooks/use-calculate-slippage';
 
 interface DealTicketMarketProps {
   market: DealTicketQuery_market;
@@ -90,7 +91,7 @@ export const DealTicketSteps = ({
     price: market?.depth?.lastTrade?.price,
     order,
   });
-
+  const slippage = useCalculateSlippage({ marketId: market.id, order });
   useEffect(() => {
     setMax(
       new BigNumber(maxTrade)
@@ -202,6 +203,7 @@ export const DealTicketSteps = ({
             estCloseOut={estCloseOut}
             fees={fees || emptyString}
             estMargin={estMargin?.margin || emptyString}
+            slippage={slippage}
           />
         ) : (
           'loading...'

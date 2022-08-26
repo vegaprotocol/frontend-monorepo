@@ -26,6 +26,7 @@ interface DealTicketSizeProps {
   fees: string;
   positionDecimalPlaces: number;
   notionalSize: string;
+  slippage: string | null;
 }
 
 const getSizeLabel = (value: number): string => {
@@ -52,6 +53,7 @@ export const DealTicketSize = ({
   positionDecimalPlaces,
   fees,
   notionalSize,
+  slippage,
 }: DealTicketSizeProps) => {
   const sizeRatios = [0, 25, 50, 75, 100];
   const [inputValue, setInputValue] = useState(value);
@@ -195,6 +197,7 @@ export const DealTicketSize = ({
         estCloseOut={estCloseOut}
         price={price}
         notionalSize={notionalSize}
+        slippage={slippage}
       />
     </div>
   );

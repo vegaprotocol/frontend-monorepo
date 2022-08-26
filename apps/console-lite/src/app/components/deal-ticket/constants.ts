@@ -15,3 +15,7 @@ export const NOTIONAL_SIZE_TOOLTIP_TEXT = t(
 export const EST_FEES_TOOLTIP_TEXT = t(
   'When you execute a new buy or sell order, you must pay a small amount of commission to the network for doing so. This fee is used to provide income to the node operates of the network and market makers who make prices on the futures market you are trading.'
 );
+
+export const EST_SLIPPAGE = t(
+  "Slippage refers to the difference between the expected price of a trade and the price at which the trade is executed. Slippage can occur at any time but is most prevalent during periods of higher volatility when market orders are used. It can also occur when a large order is executed but there isn't enough volume at the chosen price to maintain the current bid/ask spread."
+);
