@@ -1,5 +1,5 @@
 {
-  "root": "apps/trading",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/trading",
   "projectType": "application",
   "targets": {
@@ -53,7 +53,7 @@
       }
     },
     "build-netlify": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "cp apps/trading/netlify.toml netlify.toml",

@@ -1,5 +1,5 @@
 {
-  "root": "libs/cypress",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/cypress/src",
   "projectType": "library",
   "targets": {

@@ -3,9 +3,6 @@
   "affected": {
     "defaultBase": "master"
   },
-  "cli": {
-    "defaultCollection": "@nrwl/next"
-  },
   "implicitDependencies": {
     "package.json": {
       "dependencies": "*",
@@ -21,14 +18,6 @@
         "accessToken": "OTY4ZjdlZTItNGIwNy00NDcyLTllZjctOWIzYTg1NWE0Yzg1fHJlYWQtd3JpdGU="
       }
     }
-  },
-  "targetDependencies": {
-    "build": [
-      {
-        "target": "build",
-        "projects": "dependencies"
-      }
-    ]
   },
   "generators": {
     "@nrwl/react": {
@@ -63,5 +52,11 @@
       "unitTestRunner": "jest"
     }
   },
-  "defaultProject": "trading"
+  "defaultProject": "trading",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"]
+    }
+  }
 }

@@ -1,5 +1,5 @@
 {
-  "root": "libs/network-stats",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/network-stats/src",
   "projectType": "library",
   "tags": [],

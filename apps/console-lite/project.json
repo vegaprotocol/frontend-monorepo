@@ -1,5 +1,5 @@
 {
-  "root": "apps/console-lite",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/console-lite/src",
   "projectType": "application",
   "targets": {
@@ -70,7 +70,7 @@
       }
     },
     "build-netlify": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "cp apps/console-lite/netlify.toml netlify.toml",

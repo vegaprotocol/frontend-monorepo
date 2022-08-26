@@ -1,5 +1,5 @@
 {
-  "root": "libs/market-list",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/market-list/src",
   "projectType": "library",
   "tags": [],
