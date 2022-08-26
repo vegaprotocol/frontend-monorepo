@@ -629,6 +629,8 @@
   "FilterProposals": "Filter proposals",
   "FilterProposalsDescription": "Filter by proposal ID or proposer ID",
   "Freeform proposal": "Freeform proposal",
+  "NewProposal": "New proposal",
+  "ProposalTypeQuestion": "What type of proposal would you like to make?",
   "NetworkParameterProposal": "Network parameter proposal",
   "NewMarketProposal": "New market proposal",
   "ChangeMarketProposal": "Change market proposal",
