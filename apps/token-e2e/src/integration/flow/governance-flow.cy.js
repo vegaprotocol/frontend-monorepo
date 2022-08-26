@@ -3,8 +3,8 @@
 
 const vegaWalletUnstakedBalance =
   '[data-testid="vega-wallet-balance-unstaked"]';
-  const vegaWalletStakedBalances =
-    '[data-testid="vega-wallet-balance-staked-validators"]';
+const vegaWalletStakedBalances =
+  '[data-testid="vega-wallet-balance-staked-validators"]';
 const newProposalButton = '[data-testid="new-proposal-link"]';
 const newProposalDatabox = '[data-testid="proposal-data"]';
 const newProposalSubmitButton = '[data-testid="proposal-submit"]';
@@ -148,8 +148,11 @@ context('Governance flow - with eth and vega wallets connected', function () {
         txTimeout
       );
 
-      cy.get(vegaWalletStakedBalances, txTimeout)
-        .should('contain', this.minProposerBalance, txTimeout)
+      cy.get(vegaWalletStakedBalances, txTimeout).should(
+        'contain',
+        this.minProposerBalance,
+        txTimeout
+      );
 
       cy.navigate_to('governance');
       cy.wait_for_spinner();
