@@ -21,6 +21,13 @@
       "options": {
         "lintFilePatterns": ["apps/console-lite-e2e/**/*.{js,ts}"]
       }
+    },
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/console-lite-e2e/"
+      }
     }
   },
   "tags": [],

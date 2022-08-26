@@ -85,7 +85,7 @@ export const NetworkSwitcher = () => {
     [setOpen, setAdvancedView]
   );
 
-  const menuItemClasses = 'pt-12 pb-12 pl-16 pr-16 h-auto';
+  const menuItemClasses = 'pt-12 pb-12 !pl-16 !pr-16 !h-auto';
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>

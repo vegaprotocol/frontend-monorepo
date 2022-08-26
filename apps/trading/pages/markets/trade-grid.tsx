@@ -31,7 +31,7 @@ import { useGlobalStore } from '../../stores';
 import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import { useEnvironment } from '@vegaprotocol/environment';
 import {
   Tab,
