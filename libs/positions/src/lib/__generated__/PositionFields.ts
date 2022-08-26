@@ -6,10 +6,68 @@
 import { MarketTradingMode } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL subscription operation: PositionsMetricsSubscription
+// GraphQL fragment: PositionFields
 // ====================================================
 
-export interface PositionsMetricsSubscription_positions_market_tradableInstrument_instrument {
+export interface PositionFields_marginsConnection_edges_node_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface PositionFields_marginsConnection_edges_node_asset {
+  __typename: "Asset";
+  /**
+   * The symbol of the asset (e.g: GBP)
+   */
+  symbol: string;
+}
+
+export interface PositionFields_marginsConnection_edges_node {
+  __typename: "MarginLevels";
+  /**
+   * market in which the margin is required for this party
+   */
+  market: PositionFields_marginsConnection_edges_node_market;
+  /**
+   * minimal margin for the position to be maintained in the network (unsigned integer)
+   */
+  maintenanceLevel: string;
+  /**
+   * if the margin is between maintenance and search, the network will initiate a collateral search (unsigned integer)
+   */
+  searchLevel: string;
+  /**
+   * this is the minimum margin required for a party to place a new order on the network (unsigned integer)
+   */
+  initialLevel: string;
+  /**
+   * If the margin of the party is greater than this level, then collateral will be released from the margin account into
+   * the general account of the party for the given asset.
+   */
+  collateralReleaseLevel: string;
+  /**
+   * asset for the current margins
+   */
+  asset: PositionFields_marginsConnection_edges_node_asset;
+}
+
+export interface PositionFields_marginsConnection_edges {
+  __typename: "MarginEdge";
+  node: PositionFields_marginsConnection_edges_node;
+}
+
+export interface PositionFields_marginsConnection {
+  __typename: "MarginConnection";
+  /**
+   * The margin levels in this connection
+   */
+  edges: PositionFields_marginsConnection_edges[] | null;
+}
+
+export interface PositionFields_market_tradableInstrument_instrument {
   __typename: "Instrument";
   /**
    * Full and fairly descriptive name for the instrument
@@ -17,23 +75,35 @@ export interface PositionsMetricsSubscription_positions_market_tradableInstrumen
   name: string;
 }
 
-export interface PositionsMetricsSubscription_positions_market_tradableInstrument {
+export interface PositionFields_market_tradableInstrument {
   __typename: "TradableInstrument";
   /**
    * An instance of, or reference to, a fully specified instrument.
    */
-  instrument: PositionsMetricsSubscription_positions_market_tradableInstrument_instrument;
+  instrument: PositionFields_market_tradableInstrument_instrument;
 }
 
-export interface PositionsMetricsSubscription_positions_market_data {
+export interface PositionFields_market_data_market {
+  __typename: "Market";
+  /**
+   * Market ID
+   */
+  id: string;
+}
+
+export interface PositionFields_market_data {
   __typename: "MarketData";
   /**
    * the mark price (an unsigned integer)
    */
   markPrice: string;
+  /**
+   * market ID of the associated mark price
+   */
+  market: PositionFields_market_data_market;
 }
 
-export interface PositionsMetricsSubscription_positions_market {
+export interface PositionFields_market {
   __typename: "Market";
   /**
    * Market ID
@@ -74,14 +144,14 @@ export interface PositionsMetricsSubscription_positions_market {
   /**
    * An instance of, or reference to, a tradable instrument.
    */
-  tradableInstrument: PositionsMetricsSubscription_positions_market_tradableInstrument;
+  tradableInstrument: PositionFields_market_tradableInstrument;
   /**
    * marketData for the given market
    */
-  data: PositionsMetricsSubscription_positions_market_data | null;
+  data: PositionFields_market_data | null;
 }
 
-export interface PositionsMetricsSubscription_positions {
+export interface PositionFields {
   __typename: "Position";
   /**
    * Realised Profit and Loss (int64)
@@ -104,18 +174,11 @@ export interface PositionsMetricsSubscription_positions {
    */
   updatedAt: string | null;
   /**
+   * Margins of the party for the given position
+   */
+  marginsConnection: PositionFields_marginsConnection;
+  /**
    * Market relating to this position
    */
-  market: PositionsMetricsSubscription_positions_market;
-}
-
-export interface PositionsMetricsSubscription {
-  /**
-   * Subscribe to the positions updates
-   */
-  positions: PositionsMetricsSubscription_positions;
-}
-
-export interface PositionsMetricsSubscriptionVariables {
-  partyId: string;
+  market: PositionFields_market;
 }

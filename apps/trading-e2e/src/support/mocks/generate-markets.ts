@@ -19,17 +19,18 @@ export const generateMarkets = (
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
       state: MarketState.STATE_ACTIVE,
       marketTimestamps: {
-        open: '2022-06-21T17:18:43.484055236Z',
-        close: null,
         __typename: 'MarketTimestamps',
+        close: '',
+        open: '',
       },
+      candles: [],
       fees: {
         __typename: 'Fees',
         factors: {
           __typename: 'FeeFactors',
-          makerFee: '0.0002',
-          infrastructureFee: '0.0005',
-          liquidityFee: '0.01',
+          makerFee: '',
+          infrastructureFee: '',
+          liquidityFee: '',
         },
       },
       data: {
@@ -39,9 +40,9 @@ export const generateMarkets = (
           tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
           __typename: 'Market',
         },
+        indicativeVolume: '0',
         bestBidPrice: '0',
         bestOfferPrice: '0',
-        indicativeVolume: '0',
         markPrice: '4612690058',
         trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
         __typename: 'MarketData',
@@ -50,10 +51,10 @@ export const generateMarkets = (
         instrument: {
           id: '',
           code: 'BTCUSD.MF21',
-          name: 'BTCUSD Monthly',
+          name: '',
           metadata: {
             __typename: 'InstrumentMetadata',
-            tags: ['tag1'],
+            tags: [],
           },
           product: {
             settlementAsset: {
@@ -66,7 +67,6 @@ export const generateMarkets = (
         },
         __typename: 'TradableInstrument',
       },
-      candles: [],
       __typename: 'Market',
     },
     {
@@ -74,20 +74,21 @@ export const generateMarkets = (
       name: 'SUSPENDED MARKET',
       decimalPlaces: 2,
       positionDecimalPlaces: 0,
-      state: MarketState.STATE_SUSPENDED,
       tradingMode: MarketTradingMode.TRADING_MODE_CONTINUOUS,
+      state: MarketState.STATE_ACTIVE,
       marketTimestamps: {
-        open: '2022-06-21T17:18:43.484055236Z',
-        close: null,
         __typename: 'MarketTimestamps',
+        close: '',
+        open: '',
       },
+      candles: [],
       fees: {
         __typename: 'Fees',
         factors: {
           __typename: 'FeeFactors',
-          makerFee: '0.0002',
-          infrastructureFee: '0.0005',
-          liquidityFee: '0.01',
+          makerFee: '',
+          infrastructureFee: '',
+          liquidityFee: '',
         },
       },
       data: {
@@ -111,7 +112,7 @@ export const generateMarkets = (
           code: 'SOLUSD',
           metadata: {
             __typename: 'InstrumentMetadata',
-            tags: ['tag1'],
+            tags: [],
           },
           product: {
             settlementAsset: {
@@ -124,7 +125,6 @@ export const generateMarkets = (
         },
         __typename: 'TradableInstrument',
       },
-      candles: [],
       __typename: 'Market',
     },
   ];
