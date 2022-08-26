@@ -52,9 +52,11 @@ export const useCreateWithdraw = () => {
       if (res?.signature) {
         const id = determineId(res.signature);
         waitForWithdrawal(id, keypair.pub, (withdrawal) => {
+          console.log('here');
           setWithdrawal(withdrawal);
 
           waitForWithdrawalApproval(withdrawal.id, (approval) => {
+            console.log('and');
             setApproval(approval);
             setComplete();
           });

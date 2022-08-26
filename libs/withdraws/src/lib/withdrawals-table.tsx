@@ -75,7 +75,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           }}
         />
         <AgGridColumn
-          headerName="TX Hash"
+          headerName={t('TX hash')}
           field="txHash"
           cellRenderer={({ value }: { value: string }) => {
             if (!value) return '';

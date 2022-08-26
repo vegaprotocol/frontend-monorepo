@@ -3,7 +3,7 @@ import type { MockedResponse } from '@apollo/client/testing';
 import { MockedProvider } from '@apollo/client/testing';
 import type { ReactNode } from 'react';
 import { ERC20_APPROVAL_QUERY } from './queries';
-import type { WithdrawalFields } from './use-create-withdraw';
+import type { WithdrawalArgs } from './use-create-withdraw';
 import { useCreateWithdraw } from './use-create-withdraw';
 import type { Erc20Approval } from './__generated__/Erc20Approval';
 import type { VegaWalletContextShape } from '@vegaprotocol/wallet';
@@ -14,6 +14,9 @@ import {
 } from '@vegaprotocol/wallet';
 import { waitFor } from '@testing-library/react';
 import { determineId } from '@vegaprotocol/react-helpers';
+import type { WithdrawalEvent } from './__generated__/WithdrawalEvent';
+import { WITHDRAWAL_BUS_EVENT_SUB } from './use-withdrawals';
+import { WithdrawalStatus } from '@vegaprotocol/types';
 
 function setup(
   vegaWalletContext: Partial<VegaWalletContextShape>,
@@ -46,8 +49,9 @@ afterAll(() => {
 
 const pubkey = '0x123';
 let mockSend: jest.Mock;
-let withdrawalInput: WithdrawalFields;
+let withdrawalInput: WithdrawalArgs;
 let mockERC20Approval: MockedResponse<Erc20Approval>;
+let mockWithdrawalEvent: MockedResponse<WithdrawalEvent>;
 
 beforeEach(() => {
   mockSend = jest
@@ -60,6 +64,7 @@ beforeEach(() => {
     amount: '100',
     asset: 'asset-id',
     receiverAddress: 'receiver-address',
+    availableTimestamp: null,
   };
   mockERC20Approval = {
     request: {
@@ -80,7 +85,48 @@ beforeEach(() => {
         },
       },
     },
-    delay: 5000,
+    delay: 2000,
+  };
+  mockWithdrawalEvent = {
+    request: {
+      query: WITHDRAWAL_BUS_EVENT_SUB,
+      variables: { partyId: pubkey },
+    },
+    result: {
+      data: {
+        busEvents: [
+          {
+            event: {
+              id: '9c70716f6c3698ac7bbcddc97176025b985a6bb9a0c4507ec09c9960b3216b62',
+              status: WithdrawalStatus.STATUS_OPEN,
+              amount: '100',
+              asset: {
+                __typename: 'Asset',
+                id: 'asset-id',
+                name: 'asset-name',
+                symbol: 'asset-symbol',
+                decimals: 2,
+                source: {
+                  __typename: 'ERC20',
+                  contractAddress: '0x123',
+                },
+              },
+              createdTimestamp: '2022-07-05T14:25:47.815283706Z',
+              withdrawnTimestamp: '2022-07-05T14:25:47.815283706Z',
+              txHash: '0x123',
+              details: {
+                __typename: 'Erc20WithdrawalDetails',
+                receiverAddress: '0x123',
+              },
+              pendingOnForeignChain: false,
+              __typename: 'Withdrawal',
+            },
+            __typename: 'BusEvent',
+          },
+        ],
+      },
+    },
+    delay: 1000,
   };
 });
 
@@ -88,7 +134,7 @@ it('Creates withdrawal and waits for approval creation', async () => {
   const { result } = setup(
     // @ts-ignore only need pub property from keypair
     { sendTx: mockSend, keypair: { pub: pubkey } },
-    [mockERC20Approval]
+    [mockWithdrawalEvent, mockERC20Approval]
   );
 
   expect(result.current.transaction).toEqual(initialState);
@@ -126,7 +172,7 @@ it('Creates withdrawal and waits for approval creation', async () => {
   await act(async () => {
     // Advance time by delay plus interval length to ensure mock result is triggered
     // eslint-disable-next-line
-    jest.advanceTimersByTime(mockERC20Approval.delay! + 1000);
+    jest.advanceTimersByTime(5000); //mockERC20Approval.delay! + 1000);
   });
 
   expect(result.current.transaction.status).toEqual(VegaTxStatus.Complete);

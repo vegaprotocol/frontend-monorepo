@@ -1,4 +1,4 @@
-import { getRelativeTimeFormat, t } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import BigNumber from 'bignumber.js';
 import { formatDistanceToNow } from 'date-fns';
 

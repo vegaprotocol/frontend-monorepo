@@ -152,6 +152,7 @@ export const updateQuery: UpdateQueryFn<
     return {
       ...prev,
       party: {
+        id: '',
         __typename: 'Party',
         withdrawalsConnection: {
           __typename: 'WithdrawalsConnection',

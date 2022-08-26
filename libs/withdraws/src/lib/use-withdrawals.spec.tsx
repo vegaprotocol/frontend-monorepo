@@ -7,11 +7,11 @@ import type {
 } from './__generated__/WithdrawalEvent';
 import type {
   Withdrawals,
-  Withdrawals_party_withdrawals,
+  Withdrawals_party_withdrawalsConnection_edges_node,
 } from './__generated__/Withdrawals';
 
 describe('updateQuery', () => {
-  it('Updates existing withdrawals', () => {
+  it('updates existing withdrawals', () => {
     const withdrawal = generateWithdrawal({
       id: '1',
       status: WithdrawalStatus.STATUS_OPEN,
@@ -27,7 +27,15 @@ describe('updateQuery', () => {
       party: {
         __typename: 'Party',
         id: 'party-id',
-        withdrawals: [withdrawalUpdate],
+        withdrawalsConnection: {
+          __typename: 'WithdrawalsConnection',
+          edges: [
+            {
+              __typename: 'WithdrawalEdge',
+              node: withdrawalUpdate,
+            },
+          ],
+        },
       },
     });
   });
@@ -48,7 +56,19 @@ describe('updateQuery', () => {
       party: {
         __typename: 'Party',
         id: 'party-id',
-        withdrawals: [withdrawalUpdate, withdrawal],
+        withdrawalsConnection: {
+          __typename: 'WithdrawalsConnection',
+          edges: [
+            {
+              __typename: 'WithdrawalEdge',
+              node: withdrawalUpdate,
+            },
+            {
+              __typename: 'WithdrawalEdge',
+              node: withdrawal,
+            },
+          ],
+        },
       },
     });
   });
@@ -62,7 +82,16 @@ describe('updateQuery', () => {
     expect(updateQuery({ party: null }, incoming)).toEqual({
       party: {
         __typename: 'Party',
-        withdrawals: [withdrawalUpdate],
+        id: 'party-id',
+        withdrawalsConnection: {
+          __typename: 'WithdrawalsConnection',
+          edges: [
+            {
+              __typename: 'WithdrawalEdge',
+              node: withdrawalUpdate,
+            },
+          ],
+        },
       },
     });
   });
@@ -89,20 +118,42 @@ describe('updateQuery', () => {
       party: {
         __typename: 'Party',
         id: 'party-id',
-        withdrawals: [withdrawalUpdate, withdrawalNew, withdrawal2],
+        withdrawalsConnection: {
+          __typename: 'WithdrawalsConnection',
+          edges: [
+            {
+              __typename: 'WithdrawalEdge',
+              node: withdrawalUpdate,
+            },
+            {
+              __typename: 'WithdrawalEdge',
+              node: withdrawalNew,
+            },
+            {
+              __typename: 'WithdrawalEdge',
+              node: withdrawal2,
+            },
+          ],
+        },
       },
     });
   });
 });
 
 const mockQuery = (
-  withdrawals: Withdrawals_party_withdrawals[]
+  withdrawals: Withdrawals_party_withdrawalsConnection_edges_node[]
 ): Withdrawals => {
   return {
     party: {
       __typename: 'Party',
       id: 'party-id',
-      withdrawals,
+      withdrawalsConnection: {
+        __typename: 'WithdrawalsConnection',
+        edges: withdrawals.map((w) => ({
+          __typename: 'WithdrawalEdge',
+          node: w,
+        })),
+      },
     },
   };
 };
