@@ -86,12 +86,17 @@ jobs:
           echo "inputs.archs=${{ inputs.archs }}"
           echo "steps.tags.outputs.version=${{ steps.tags.outputs.version }}"
 
+      - name: Build frontend dists
+        run: |
+          yarn --verbose --pure-lockfile
+          yarn nx ${{ matrix.app =='trading' && 'export' || 'build' }} $APP --network-timeout 100000 --verbose --pure-lockfile
+
       - name: Build and export to local Docker
         uses: docker/build-push-action@v3
         with:
           context: .
           push: false
-          file: ${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}
+          file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
           build-args: APP=${{ matrix.app }}
           load: true
           tags: vegaprotocol/${{ matrix.app }}:local
@@ -107,7 +112,7 @@ jobs:
         with:
           context: .
           push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
-          file: ${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}
+          file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
           build-args: APP=${{ matrix.app }}
           platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
           tags: |
