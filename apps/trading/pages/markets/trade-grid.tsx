@@ -40,6 +40,7 @@ import {
   Link,
   Tooltip,
   ResizablePanel,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 

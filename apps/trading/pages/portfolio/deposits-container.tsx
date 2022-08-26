@@ -8,7 +8,9 @@ export const DepositsContainer = () => {
       <div />
       <div className="p-12">
         <Link href="/portfolio/deposit" passHref={true}>
-          <Button data-testid="deposit">{t('Deposit')}</Button>
+          <Button size="md" data-testid="deposit">
+            {t('Deposit')}
+          </Button>
         </Link>
       </div>
     </div>

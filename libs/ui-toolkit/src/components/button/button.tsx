@@ -1,4 +1,3 @@
-import './button.css';
 import type {
   AnchorHTMLAttributes,
   ButtonHTMLAttributes,
@@ -12,6 +11,34 @@ import classnames from 'classnames';
 type ButtonVariant = 'default' | 'primary' | 'secondary';
 type ButtonSize = 'lg' | 'md' | 'sm';
 
+const base =
+  'inline-block uppercase border-1 rounded disabled:opacity-40 transition-colors';
+const sm = 'text-ui px-12 py-4';
+const md = 'text-ui px-24 py-8';
+const lg = 'px-60 py-12';
+const fillClasses = 'block w-full';
+const defaultClasses = [
+  'text-black dark:text-white',
+  'border-v2border dark:border-Dv2border',
+  'bg-white dark:bg-black',
+  'enabled:hover:bg-white-80 dark:enabled:hover:bg-black-80',
+  'enabled:active:bg-white-80 enabled:active:border-black dark:enabled:active:bg-black-80 dark:enabled:active:border-white',
+];
+const primary = [
+  'text-black',
+  'border-vega-yellow',
+  'bg-vega-yellow',
+  'enabled:hover:bg-vega-yellow-dark enabled:hover:border-vega-yellow-dark',
+  'enabled:active:bg-vega-yellow-dark enabled:active:border-vega-yellow-dark',
+];
+const secondary = [
+  'text-white',
+  'border-vega-pink',
+  'bg-vega-pink',
+  'enabled:hover:bg-vega-pink-dark enabled:hover:border-vega-pink-dark',
+  'enabled:active:bg-vega-pink-dark enabled:active:border-vega-pink-dark',
+];
+
 const getClassname = ({
   variant,
   size,
@@ -21,14 +48,14 @@ const getClassname = ({
   size: ButtonSize;
   fill: boolean;
 }) => {
-  const className = classnames('btn', {
-    'btn-default': variant === 'default',
-    'btn-primary': variant === 'primary',
-    'btn-secondary': variant === 'secondary',
-    'btn-lg': size === 'lg',
-    'btn-md': size === 'md',
-    'btn-sm': size === 'sm',
-    'btn-fill': fill,
+  const className = classnames(base, {
+    [defaultClasses.join(' ')]: variant === 'default',
+    [primary.join(' ')]: variant === 'primary',
+    [secondary.join(' ')]: variant === 'secondary',
+    [lg]: size === 'lg',
+    [md]: size === 'md',
+    [sm]: size === 'sm',
+    [fillClasses]: fill,
   });
   return className;
 };

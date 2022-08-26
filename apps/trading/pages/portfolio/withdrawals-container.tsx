@@ -2,6 +2,7 @@ import orderBy from 'lodash/orderBy';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useWithdrawals, WithdrawalsTable } from '@vegaprotocol/withdraws';
 import Link from 'next/link';
+import { t } from '@vegaprotocol/react-helpers';
 
 export const WithdrawalsContainer = () => {
   const { data, loading, error } = useWithdrawals();
@@ -22,7 +23,9 @@ export const WithdrawalsContainer = () => {
             <WithdrawalsTable withdrawals={withdrawals} />
             <div className="p-12">
               <Link href="/portfolio/withdraw" passHref={true}>
-                <Button data-testid="start-withdrawal">Withdraw</Button>
+                <Button size="md" data-testid="start-withdrawal">
+                  {t('Withdraw')}
+                </Button>
               </Link>
             </div>
           </div>
