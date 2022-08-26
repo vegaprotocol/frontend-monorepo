@@ -1,9 +1,9 @@
 import type { MarketInfoQuery } from '@vegaprotocol/deal-ticket';
 import {
   AccountType,
+  AuctionTrigger,
   MarketState,
   MarketTradingMode,
-  AuctionTrigger,
 } from '@vegaprotocol/types';
 import merge from 'lodash/merge';
 import type { PartialDeep } from 'type-fest';
@@ -82,11 +82,24 @@ export const generateMarketInfoQuery = (
         bestOfferVolume: '1',
         bestStaticBidVolume: '5',
         bestStaticOfferVolume: '1',
-        bestBidPrice: '5748',
-        bestOfferPrice: '5750',
         openInterest: '0',
-        trigger: AuctionTrigger.AUCTION_TRIGGER_PRICE,
-        priceMonitoringBounds: [],
+        bestBidPrice: '681765',
+        bestOfferPrice: '681769',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        priceMonitoringBounds: [
+          {
+            minValidPrice: '654701',
+            maxValidPrice: '797323',
+            trigger: {
+              horizonSecs: 43200,
+              probability: 0.9999999,
+              auctionExtensionSecs: 600,
+              __typename: 'PriceMonitoringTrigger',
+            },
+            referencePrice: '722625',
+            __typename: 'PriceMonitoringBounds',
+          },
+        ],
       },
       liquidityMonitoringParameters: {
         triggeringRatio: 0,
@@ -97,6 +110,7 @@ export const generateMarketInfoQuery = (
         },
         __typename: 'LiquidityMonitoringParameters',
       },
+      candles: [],
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {
@@ -151,7 +165,6 @@ export const generateMarketInfoQuery = (
           },
         },
       },
-      candles: [],
       depth: {
         __typename: 'MarketDepth',
         lastTrade: {

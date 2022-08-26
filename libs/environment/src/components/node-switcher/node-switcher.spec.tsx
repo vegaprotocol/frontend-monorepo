@@ -7,8 +7,8 @@ import createMockClient from '../../hooks/mocks/apollo-client';
 import { STATS_QUERY } from '../../utils/request-node';
 import { NodeSwitcher } from './node-switcher';
 import { getErrorByType } from '../../utils/validate-node';
-import type { Configuration, NodeData } from '../../';
-import { Networks, ErrorType, CUSTOM_NODE_KEY } from '../../';
+import type { Configuration, NodeData } from '../../types';
+import { Networks, ErrorType, CUSTOM_NODE_KEY } from '../../types';
 
 type NodeDataProp = 'responseTime' | 'block' | 'chain' | 'ssl';
 

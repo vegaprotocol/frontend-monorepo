@@ -12,6 +12,7 @@ import {
   getProposalDialogTitle,
 } from '../utils';
 import { t } from '@vegaprotocol/react-helpers';
+import { ProposalState } from '@vegaprotocol/types';
 
 export interface FormFields {
   proposalData: string;
@@ -71,11 +72,22 @@ export const ProposalForm = () => {
       >
         {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
       </Button>
-      <TransactionDialog
-        title={getProposalDialogTitle(finalizedProposal?.state)}
-        intent={getProposalDialogIntent(finalizedProposal?.state)}
-        icon={getProposalDialogIcon(finalizedProposal?.state)}
-      />
+
+      {finalizedProposal?.rejectionReason ? (
+        <TransactionDialog
+          title={t('Proposal rejected')}
+          intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
+          icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
+        >
+          <p>{finalizedProposal.rejectionReason}</p>
+        </TransactionDialog>
+      ) : (
+        <TransactionDialog
+          title={getProposalDialogTitle(finalizedProposal?.state)}
+          intent={getProposalDialogIntent(finalizedProposal?.state)}
+          icon={getProposalDialogIcon(finalizedProposal?.state)}
+        />
+      )}
     </form>
   );
 };

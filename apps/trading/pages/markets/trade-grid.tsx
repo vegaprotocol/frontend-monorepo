@@ -8,7 +8,11 @@ import { SelectMarketPopover } from '@vegaprotocol/market-list';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { FillsContainer } from '@vegaprotocol/fills';
 import { PositionsContainer } from '@vegaprotocol/positions';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import {
+  addDecimalsFormatNumber,
+  getDateFormat,
+  t,
+} from '@vegaprotocol/react-helpers';
 import { TradesContainer } from '@vegaprotocol/trades';
 import {
   AuctionTrigger,
@@ -18,9 +22,8 @@ import {
 } from '@vegaprotocol/types';
 import { Allotment, LayoutPriority } from 'allotment';
 import classNames from 'classnames';
-import { useState } from 'react';
 import AutoSizer from 'react-virtualized-auto-sizer';
-
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Market_market } from './__generated__/Market';
 import type { CandleClose } from '@vegaprotocol/types';
@@ -29,11 +32,13 @@ import { AccountsContainer } from '@vegaprotocol/accounts';
 import { DepthChartContainer } from '@vegaprotocol/market-depth';
 import { CandlesChartContainer } from '@vegaprotocol/candles-chart';
 import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
+import { useEnvironment } from '@vegaprotocol/environment';
 import {
   Tab,
   Tabs,
   PriceCellChange,
   Button,
+  Link,
   Tooltip,
   ResizablePanel,
 } from '@vegaprotocol/ui-toolkit';
@@ -54,6 +59,55 @@ const TradingViews = {
 
 type TradingView = keyof typeof TradingViews;
 
+type ExpiryLabelProps = {
+  market: Market_market;
+};
+
+const ExpiryLabel = ({ market }: ExpiryLabelProps) => {
+  if (market.marketTimestamps.close === null) {
+    return <>{t('Not time-based')}</>;
+  }
+
+  const closeDate = new Date(market.marketTimestamps.close);
+  const isExpired = Date.now() - closeDate.valueOf() > 0;
+  const expiryDate = getDateFormat().format(closeDate);
+
+  return <>{`${isExpired ? `${t('Expired')} ` : ''} ${expiryDate}`}</>;
+};
+
+type ExpiryTooltipContentProps = {
+  market: Market_market;
+  explorerUrl?: string;
+};
+
+const ExpiryTooltipContent = ({
+  market,
+  explorerUrl,
+}: ExpiryTooltipContentProps) => {
+  if (market.marketTimestamps.close === null) {
+    const oracleId =
+      market.tradableInstrument.instrument.product
+        .oracleSpecForTradingTermination?.id;
+
+    return (
+      <>
+        <p>
+          {t(
+            'This market expires when triggered by its oracle, not on a set date.'
+          )}
+        </p>
+        {explorerUrl && oracleId && (
+          <Link href={`${explorerUrl}/oracles#${oracleId}`} target="_blank">
+            {t('View oracle specification')}
+          </Link>
+        )}
+      </>
+    );
+  }
+
+  return null;
+};
+
 interface TradeMarketHeaderProps {
   market: Market_market;
   className?: string;
@@ -63,6 +117,7 @@ export const TradeMarketHeader = ({
   market,
   className,
 }: TradeMarketHeaderProps) => {
+  const { VEGA_EXPLORER_URL } = useEnvironment();
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
   const candlesClose: string[] = (market?.candles || [])
@@ -87,6 +142,8 @@ export const TradeMarketHeader = ({
     }
   };
 
+  const hasExpiry = market.marketTimestamps.close !== null;
+
   return (
     <header className={headerClassName}>
       <div className="flex flex-col md:flex-row gap-20 md:gap-64 ml-auto mr-8">
@@ -95,6 +152,27 @@ export const TradeMarketHeader = ({
           data-testid="market-summary"
           className="flex flex-auto items-start gap-64 overflow-x-auto whitespace-nowrap py-8 pr-8"
         >
+          <Tooltip
+            align="start"
+            description={
+              <ExpiryTooltipContent
+                market={market}
+                explorerUrl={VEGA_EXPLORER_URL}
+              />
+            }
+          >
+            <div className={headerItemClassName}>
+              <span className={itemClassName}>{t('Expiry')}</span>
+              <span
+                data-testid="trading-expiry"
+                className={classNames(itemValueClassName, {
+                  'underline decoration-dashed': !hasExpiry,
+                })}
+              >
+                <ExpiryLabel market={market} />
+              </span>
+            </div>
+          </Tooltip>
           <div className={headerItemClassName}>
             <span className={itemClassName}>{t('Change (24h)')}</span>
             <PriceCellChange
@@ -119,7 +197,13 @@ export const TradeMarketHeader = ({
           >
             <div className={headerItemClassName}>
               <span className={itemClassName}>{t('Trading mode')}</span>
-              <span data-testid="trading-mode" className={itemValueClassName}>
+              <span
+                data-testid="trading-mode"
+                className={classNames(
+                  itemValueClassName,
+                  'underline decoration-dashed'
+                )}
+              >
                 {market.tradingMode ===
                   MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
                 market.data?.trigger &&
