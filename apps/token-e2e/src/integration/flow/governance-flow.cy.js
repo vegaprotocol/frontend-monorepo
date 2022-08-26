@@ -13,7 +13,8 @@ const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const openProposals = '[data-testid="open-proposals"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
-const proposalResponseProposalIdPath = 'response.body.data.busEvents.0.event.id';
+const proposalResponseProposalIdPath =
+  'response.body.data.busEvents.0.event.id';
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
 const proposalVoteProgressAgainstPercentage =
@@ -210,18 +211,17 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).wait(3500).click();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
-      cy.wait('@proposalSubmissionCompletion')
-        .then((proposal) => {
-          let proposerId = proposal.request.body.variables.partyId
-          let proposalId = proposal.response.body.data.busEvents[0].event.id
-          cy.get('[data-testid="set-proposals-filter-visible"]').click();
-          cy.get('[data-testid="filter-input"]').type(proposerId);
-          cy.get(`#${proposalId}`).should(
-            'contain',
-            `Freeform proposal: ${proposalId}`,
-            { timeout: txTimeout }
-          );
-        });
+      cy.wait('@proposalSubmissionCompletion').then((proposal) => {
+        let proposerId = proposal.request.body.variables.partyId;
+        let proposalId = proposal.response.body.data.busEvents[0].event.id;
+        cy.get('[data-testid="set-proposals-filter-visible"]').click();
+        cy.get('[data-testid="filter-input"]').type(proposerId);
+        cy.get(`#${proposalId}`).should(
+          'contain',
+          `Freeform proposal: ${proposalId}`,
+          { timeout: txTimeout }
+        );
+      });
     });
 
     it('Newly created freeform proposal - shows in an open state', function () {
