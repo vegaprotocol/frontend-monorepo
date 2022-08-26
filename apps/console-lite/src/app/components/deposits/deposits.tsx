@@ -5,18 +5,23 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
+import { assetsConnectionToAssets } from '@vegaprotocol/react-helpers';
 import type { Deposits } from './__generated__/Deposits';
 
 const DEPOSITS_QUERY = gql`
   query Deposits {
-    assets {
-      id
-      symbol
-      name
-      decimals
-      source {
-        ... on ERC20 {
-          contractAddress
+    assetsConnection {
+      edges {
+        node {
+          id
+          name
+          symbol
+          decimals
+          source {
+            ... on ERC20 {
+              contractAddress
+            }
+          }
         }
       }
     }
@@ -35,12 +40,14 @@ export const DepositContainer = () => {
     skip: !keypair?.pub,
   });
 
+  const assets = assetsConnectionToAssets(data?.assetsConnection);
+
   return (
     <AsyncRenderer<Deposits> data={data} loading={loading} error={error}>
-      {data?.assets?.length ? (
+      {assets.length ? (
         <Web3Container>
           <DepositManager
-            assets={data.assets}
+            assets={assets}
             isFaucetable={VEGA_ENV !== 'MAINNET'}
           />
         </Web3Container>
