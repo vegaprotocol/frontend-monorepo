@@ -75,7 +75,7 @@ jobs:
           hash=$(git rev-parse HEAD|cut -b1-8)
           versionTag=${{ inputs.tag || startsWith(github.ref, 'refs/tags/') && github.ref_name || '${hash}' }}
           echo ::set-output name=version::${versionTag}
-          echo ::set-output name=npmVersion::$(cat ${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }} | grep FROM | head -n 1 | awk '{print $2}' | cut -d ':' -f 2 | cut -d '-' -f 1 )
+          echo ::set-output name=npmVersion::$(cat dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }} | grep FROM | head -n 1 | awk '{print $2}' | cut -d ':' -f 2 | cut -d '-' -f 1 )
 
       - name: Print config
         run: |
