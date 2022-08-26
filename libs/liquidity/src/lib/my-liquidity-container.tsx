@@ -17,8 +17,10 @@ export const MyLiquidityProvisionContainer = ({
   partyId: string;
   data?: MarketLiquidity;
 }) => {
-  const { liquidityProviders, decimalPlaces } =
-    useLiquidityProvision({ data, partyId });
+  const { liquidityProviders, decimalPlaces } = useLiquidityProvision({
+    data,
+    partyId,
+  });
 
   if (!liquidityProviders || liquidityProviders.length === 0) {
     return <Splash>{t('No liquidity provision')}</Splash>;
