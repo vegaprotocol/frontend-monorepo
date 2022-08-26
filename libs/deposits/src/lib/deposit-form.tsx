@@ -288,10 +288,6 @@ const FormButton = ({
     allowance && allowance.isGreaterThan(0) && amount.isLessThan(allowance);
   let button = null;
   let message: ReactNode = '';
-  const buttonProps = {
-    vairant: 'primary',
-    fill: true,
-  };
 
   if (!selectedAsset) {
     button = (
@@ -299,7 +295,8 @@ const FormButton = ({
         type="submit"
         data-testid="deposit-submit"
         disabled={true}
-        {...buttonProps}
+        variant="primary"
+        fill={true}
       >
         {t('Deposit')}
       </Button>
@@ -311,7 +308,12 @@ const FormButton = ({
       </>
     );
     button = (
-      <Button type="submit" data-testid="deposit-submit" {...buttonProps}>
+      <Button
+        type="submit"
+        data-testid="deposit-submit"
+        variant="primary"
+        fill={true}
+      >
         {t('Deposit')}
       </Button>
     );
@@ -321,7 +323,8 @@ const FormButton = ({
       <Button
         onClick={onApproveClick}
         data-testid="deposit-approve-submit"
-        {...buttonProps}
+        variant="primary"
+        fill={true}
       >
         {t(`Approve ${selectedAsset.symbol}`)}
       </Button>
