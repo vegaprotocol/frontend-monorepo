@@ -16,7 +16,7 @@ module.exports = ({ specs, args = [] }) => {
     }
     return {
       ...acc,
-      [spec.name]: value,
+      [spec.name]: value || spec.default,
     };
   }, {});
 };

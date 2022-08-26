@@ -1,10 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { execSync } = require('node:child_process');
 
 const execWrap = require('./utils/exec-wrap');
 const githubRequest = require('./utils/github-request');
 const wrapCli = require('./utils/wrap-cli');
+const launchGitWorkflow = require('./utils/git-workflow');
 const launchGithubWorkflow = require('./utils/github-workflow');
 
 const NETWORK_UPDATE_BRANCH = 'fix/networks';
@@ -119,10 +119,13 @@ const run = async ({
     .split('\n')
     .filter((file) => file !== '');
 
+  console.log(frontendRepoOwner, frontendRepoName)
+
   if (unstagedFiles.length) {
     launchGitWorkflow({
-      apiVersion,
-      apiCommitHash,
+      branchName: NETWORK_UPDATE_BRANCH,
+      frontendRepoOwner,
+      frontendRepoName,
       commitMessage: `update networks based on ${networkRepoOwner}/${networkRepoName} HEAD:${networkCommitHash}`,
     });
 
