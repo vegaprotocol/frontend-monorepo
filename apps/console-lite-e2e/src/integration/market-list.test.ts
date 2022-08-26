@@ -94,7 +94,7 @@ describe('market list', () => {
     });
   });
 
-  describe.only('long list of results should be handled properly', () => {
+  describe('long list of results should be handled properly', () => {
     it('handles 5000 markets', () => {
       cy.viewport(1440, 900);
       cy.mockGQL((req) => {
