@@ -13,7 +13,7 @@ const viewProposalButton = '[data-testid="view-proposal-btn"]';
 const proposalInformationTableRows = '[data-testid="key-value-table-row"]';
 const openProposals = '[data-testid="open-proposals"]';
 const vegaWalletAssociatedBalance = '[data-testid="currency-value"]';
-const proposalResponseIdPath = 'response.body.data.busEvents.0.event.id';
+const proposalResponseProposalIdPath = 'response.body.data.busEvents.0.event.id';
 const proposalVoteProgressForPercentage =
   '[data-testid="vote-progress-indicator-percentage-for"]';
 const proposalVoteProgressAgainstPercentage =
@@ -73,13 +73,13 @@ context('Governance flow - with eth and vega wallets connected', function () {
       function () {
         assert.isAtLeast(
           parseInt(this.minProposerBalance),
-          1,
-          'Asserting that value is at least 1 for network parameter minProposerBalance'
+          0.00001,
+          'Asserting that value is at least 0.00001 for network parameter minProposerBalance'
         );
         assert.isAtLeast(
           parseInt(this.minVoterBalance),
-          1,
-          'Asserting that value is at least 1 for network parameter minVoterBalance'
+          0.00001,
+          'Asserting that value is at least 0.00001 for network parameter minVoterBalance'
         );
         assert.isAtLeast(
           parseFloat(this.requiredParticipation),
@@ -94,7 +94,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         assert.isAtLeast(
           parseInt(this.maxCloseDays),
           parseInt(this.minCloseDays + 1),
-          'Asserting that network parameter maxCloseDays is higher than minCloseDays'
+          'Asserting that network parameter maxCloseDays is at least 1 day higher than minCloseDays'
         );
       }
     );
@@ -127,7 +127,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.get(dialogCloseButton).wait(1500).click();
     });
 
-    it.only('Able to submit a valid freeform proposal - with minimum required tokens associated (but also staked)', function () {
+    it('Able to submit a valid freeform proposal - with minimum required tokens associated (but also staked)', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -136,17 +136,10 @@ context('Governance flow - with eth and vega wallets connected', function () {
         this.minProposerBalance,
         txTimeout
       );
-      cy.get('button').contains('Select a validator to nominate').click();
-
-      // 1002-STKE-031
+      cy.navigate_to('staking');
+      cy.wait_for_spinner();
       cy.click_on_validator_from_list(0);
       cy.staking_validator_page_add_stake(this.minProposerBalance);
-
-      cy.get(vegaWalletUnstakedBalance, txTimeout).should(
-        'contain',
-        1.0,
-        txTimeout
-      );
 
       cy.get(vegaWalletStakedBalances, txTimeout).should(
         'contain',
@@ -187,10 +180,42 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.navigate_to('governance');
       cy.wait_for_spinner();
       cy.wait('@proposalSubmissionCompletion')
-        .its(proposalResponseIdPath)
+        .its(proposalResponseProposalIdPath)
         .then((proposalId) => {
           cy.get('[data-testid="set-proposals-filter-visible"]').click();
           cy.get('[data-testid="filter-input"]').type(proposalId);
+          cy.get(`#${proposalId}`).should(
+            'contain',
+            `Freeform proposal: ${proposalId}`,
+            { timeout: txTimeout }
+          );
+        });
+    });
+
+    it('Newly created freeform proposal - able to filter by proposerID to show it in list', function () {
+      cy.ensure_specified_unstaked_tokens_are_associated(
+        this.minProposerBalance
+      );
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.get(newProposalButton).should('be.visible').click();
+      cy.get(newProposalDatabox).click();
+      cy.create_ten_digit_unix_timestamp_for_specified_days('7').then(
+        (closingDateTimestamp) => {
+          cy.enter_unique_freeform_proposal_body(closingDateTimestamp);
+        }
+      );
+      cy.get(newProposalSubmitButton).should('be.visible').click();
+      cy.contains('Proposal submitted').should('be.visible');
+      cy.get(dialogCloseButton).wait(3500).click();
+      cy.navigate_to('governance');
+      cy.wait_for_spinner();
+      cy.wait('@proposalSubmissionCompletion')
+        .then((proposal) => {
+          let proposerId = proposal.request.body.variables.partyId
+          let proposalId = proposal.response.body.data.busEvents[0].event.id
+          cy.get('[data-testid="set-proposals-filter-visible"]').click();
+          cy.get('[data-testid="filter-input"]').type(proposerId);
           cy.get(`#${proposalId}`).should(
             'contain',
             `Freeform proposal: ${proposalId}`,
@@ -216,7 +241,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       cy.contains('Proposal submitted').should('be.visible');
       cy.get(dialogCloseButton).wait(1500).click();
       cy.wait('@proposalSubmissionCompletion')
-        .its(proposalResponseIdPath)
+        .its(proposalResponseProposalIdPath)
         .then((proposalId) => {
           cy.navigate_to('governance');
           cy.wait_for_spinner();
@@ -673,17 +698,17 @@ context('Governance flow - with eth and vega wallets connected', function () {
         cy.get(viewProposalButton).click();
       });
       cy.get_proposal_information_from_table('State')
-        .contains('Rejected')
+        .contains('STATE_REJECTED')
         .and('be.visible');
       cy.get_proposal_information_from_table('Rejection reason')
-        .contains('CloseTimeTooLate')
+        .contains('PROPOSAL_ERROR_CLOSE_TIME_TOO_LATE')
         .and('be.visible');
       cy.get_proposal_information_from_table('Error details')
         .contains('proposal closing time too late')
         .and('be.visible');
     });
 
-    it.skip('Unable to create a freeform proposal - when no tokens are associated', function () {
+    it('Unable to create a freeform proposal - when no tokens are associated', function () {
       cy.vega_wallet_teardown();
       cy.get(vegaWalletAssociatedBalance, txTimeout).contains(
         '0.000000000000000000',
@@ -699,15 +724,14 @@ context('Governance flow - with eth and vega wallets connected', function () {
         }
       );
       cy.get(newProposalSubmitButton).should('be.visible').click();
-      cy.wait('@proposalSubmissionCompletion');
       cy.contains(
-        'party has insufficient tokens to submit proposal request in this epoch'
+        'Party has insufficient associated governance tokens in their staking account to submit proposal request'
       ).should('be.visible');
     });
 
-    it.skip('Unable to create a freeform proposal - when some but not enough tokens are associated', function () {
+    it('Unable to create a freeform proposal - when some but not enough tokens are associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
-        this.minProposerBalance - 0.1
+        this.minProposerBalance - 0.000001
       );
       cy.navigate_to('governance');
       cy.wait_for_spinner();
@@ -719,9 +743,8 @@ context('Governance flow - with eth and vega wallets connected', function () {
         }
       );
       cy.get(newProposalSubmitButton).should('be.visible').click();
-      cy.wait('@proposalSubmissionCompletion');
       cy.contains(
-        'party has insufficient tokens to submit proposal request in this epoch'
+        'Party has insufficient associated governance tokens in their staking account to submit proposal request'
       ).should('be.visible');
     });
 
@@ -800,7 +823,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
 
     Cypress.Commands.add('get_submitted_proposal_from_proposal_list', () => {
       cy.wait('@proposalSubmissionCompletion')
-        .its(proposalResponseIdPath)
+        .its(proposalResponseProposalIdPath)
         .then((proposalId) => {
           return cy.get(`#${proposalId}`);
         });
@@ -810,7 +833,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       'get_submitted_proposal_from_rejected_proposal_list',
       () => {
         cy.wait('@proposalSubmissionCompletion')
-          .its(proposalResponseIdPath)
+          .its(proposalResponseProposalIdPath)
           .then((proposalId) => {
             cy.get(rejectProposalsLink).click().wait_for_spinner();
             return cy.get(`#${proposalId}`);
