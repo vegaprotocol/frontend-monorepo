@@ -75,6 +75,7 @@ jobs:
           hash=$(git rev-parse HEAD|cut -b1-8)
           versionTag=${{ inputs.tag || startsWith(github.ref, 'refs/tags/') && github.ref_name || '${hash}' }}
           echo ::set-output name=version::${versionTag}
+          echo ::set-output name=npmVersion::$(cat ${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }} | grep FROM | head -n 1 | awk '{print $2}' | cut -d ':' -f 2 | cut -d '-' -f 1 )
 
       - name: Print config
         run: |
@@ -85,6 +86,10 @@ jobs:
           echo "inputs.apps=${{ inputs.apps }}"
           echo "inputs.archs=${{ inputs.archs }}"
           echo "steps.tags.outputs.version=${{ steps.tags.outputs.version }}"
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ steps.tags.outputs.npmVersion }}
 
       - name: Build frontend dists
         run: |
