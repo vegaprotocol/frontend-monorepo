@@ -17,29 +17,38 @@ const getJson = (value, errMessage) => {
   } catch (err) {
     throw new Error(errMessage);
   }
-}
+};
 
 const cliArgsSpecs = [
   {
     name: 'payload',
     arg: 'payload',
     required: true,
-    validate: rawPayload => {
-      const payload = getJson(rawPayload, 'The payload must be a valid json object');
-      Object.keys(payload).forEach(network => {
+    validate: (rawPayload) => {
+      const payload = getJson(
+        rawPayload,
+        'The payload must be a valid json object'
+      );
+      Object.keys(payload).forEach((network) => {
         const item = payload[network] || {};
-        console.log(item)
+        console.log(item);
         if (typeof item.chainId !== 'string') {
-          throw new Error(`The network "${network}" must have a valid chainId.`)
+          throw new Error(
+            `The network "${network}" must have a valid chainId.`
+          );
         }
         if (!Array.isArray(item.hosts)) {
-          throw new Error(`The network "${network}" must have a valid list of hosts.`)
+          throw new Error(
+            `The network "${network}" must have a valid list of hosts.`
+          );
         }
-        item.hosts.forEach(host => {
+        item.hosts.forEach((host) => {
           try {
             new URL(host);
           } catch (err) {
-            throw new Error(`The host "${host}" on the network "${network}" must be a valid url.`);
+            throw new Error(
+              `The host "${host}" on the network "${network}" must be a valid url.`
+            );
           }
         });
       });
@@ -77,12 +86,13 @@ const cliArgsSpecs = [
   },
 ];
 
-const getNetworkConfigFileName = (network) => `${network.toLowerCase()}-network.json`;
+const getNetworkConfigFileName = (network) =>
+  `${network.toLowerCase()}-network.json`;
 
 const findTargetConfig = (network) => {
   const fileName = getNetworkConfigFileName(network);
   return path.join(NETWORK_CONFIG_PATH, fileName);
-}
+};
 
 const run = async ({
   payload,
@@ -93,7 +103,7 @@ const run = async ({
   frontendRepoName,
   githubAuthToken,
 }) => {
-  const networks = JSON.parse(payload)
+  const networks = JSON.parse(payload);
   for (let network in networks) {
     const file = findTargetConfig(network);
     if (fs.existsSync(file)) {
@@ -108,8 +118,6 @@ const run = async ({
   })
     .split('\n')
     .filter((file) => file !== '');
-
-  return;o
 
   if (unstagedFiles.length) {
     launchGitWorkflow({
@@ -133,6 +141,6 @@ const run = async ({
       },
     });
   }
-}
+};
 
 wrapCli(run, cliArgsSpecs);
