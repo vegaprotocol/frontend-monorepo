@@ -107,8 +107,9 @@ const run = async ({
 
   if (unstagedFiles.length) {
     launchGitWorkflow({
-      apiVersion,
-      apiCommitHash,
+      branchName: TYPE_UPDATE_BRANCH,
+      frontendRepoOwner,
+      frontendRepoName,
       commitMessage: `update types for v${apiVersion} on HEAD:${apiCommitHash}`,
     });
 

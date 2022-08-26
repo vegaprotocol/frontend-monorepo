@@ -1,3 +1,5 @@
+const githubRequest = require('./github-request');
+
 module.exports = async ({
   issueBody,
   prBody,
@@ -8,6 +10,7 @@ module.exports = async ({
   const { number, html_url: issueHtmlUrl } = await githubRequest(
     `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/issues`,
     {
+      githubAuthToken,
       body: JSON.stringify(issueBody),
     }
   );
@@ -17,6 +20,7 @@ module.exports = async ({
   const { html_url: prHtmlUrl } = await githubRequest(
     `https://api.github.com/repos/${frontendRepoOwner}/${frontendRepoName}/pulls`,
     {
+      githubAuthToken,
       body: JSON.stringify({
         base: prBody.base || 'master',
         title: `fix/${number}: ${prBody.title}`,
