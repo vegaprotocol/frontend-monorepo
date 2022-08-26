@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { formatNumber } from '../../../../lib/format-number';
 import { ConnectToVega } from '../../../staking/connect-to-vega';
 import { useVoteInformation } from '../../hooks';
-import type { Proposal_proposal } from '../../proposal/__generated__/Proposal';
+import type { Proposal_proposal } from '@vegaprotocol/governance';
 import { CurrentProposalStatus } from '../current-proposal-status';
 import { useUserVote } from './use-user-vote';
 import { VoteButtonsContainer } from './vote-buttons';

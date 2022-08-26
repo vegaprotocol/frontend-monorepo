@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
@@ -12,12 +12,12 @@ import { Links } from '../../../../config';
 import { ExternalLink } from '@vegaprotocol/ui-toolkit';
 
 interface ProposalsListProps {
-  proposals: Proposals_proposals[];
+  proposals: ProposalNode[];
 }
 
 interface SortedProposalsProps {
-  open: Proposals_proposals[];
-  closed: Proposals_proposals[];
+  open: ProposalNode[];
+  closed: ProposalNode[];
 }
 
 export const ProposalsList = ({ proposals }: ProposalsListProps) => {
@@ -39,7 +39,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
     }
   );
 
-  const filterPredicate = (p: Proposals_proposals) =>
+  const filterPredicate = (p: ProposalNode) =>
     p.id?.includes(filterString) ||
     p.party?.id?.toString().includes(filterString);
 

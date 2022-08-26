@@ -1,9 +1,9 @@
 import { ProposalHeader } from '../proposal-detail-header/proposal-header';
 import { ProposalsListItemDetails } from './proposals-list-item-details';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import type { Proposal_proposal } from '@vegaprotocol/governance';
 
 interface ProposalsListItemProps {
-  proposal: Proposals_proposals;
+  proposal: Proposal_proposal;
 }
 
 export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {

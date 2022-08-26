@@ -1,13 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
+import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
 
-export const ProposalHeader = ({
-  proposal,
-}: {
-  proposal: Proposals_proposals;
-}) => {
+export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
   const { t } = useTranslation();
   const { change } = proposal.terms;
 
