@@ -73,16 +73,19 @@ describe('updateQuery', () => {
     });
   });
 
-  it('Creates new party if not present', () => {
+  it('creates new party if not present', () => {
+    const partyId = 'party-id';
     const withdrawalUpdate = generateWithdrawal({
       id: '2',
     });
     const incoming = mockSub([withdrawalUpdate]);
 
-    expect(updateQuery({ party: null }, incoming)).toEqual({
+    expect(
+      updateQuery({ party: null }, { ...incoming, variables: { partyId } })
+    ).toEqual({
       party: {
         __typename: 'Party',
-        id: 'party-id',
+        id: partyId,
         withdrawalsConnection: {
           __typename: 'WithdrawalsConnection',
           edges: [

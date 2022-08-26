@@ -52,14 +52,14 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
       >
         <AgGridColumn headerName="Asset" field="asset.symbol" />
         <AgGridColumn
-          headerName="Amount"
+          headerName={t('Amount')}
           field="amount"
           valueFormatter={({ value, data }: ValueFormatterParams) => {
             return addDecimalsFormatNumber(value, data.asset.decimals);
           }}
         />
         <AgGridColumn
-          headerName="Recipient"
+          headerName={t('Recipient')}
           field="details.receiverAddress"
           cellRenderer="RecipientCell"
           cellRendererParams={{ ethUrl: ETHERSCAN_URL }}
@@ -68,7 +68,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           }}
         />
         <AgGridColumn
-          headerName="Created at"
+          headerName={t('Created at')}
           field="createdTimestamp"
           valueFormatter={({ value }: ValueFormatterParams) => {
             return getDateTimeFormat().format(new Date(value));
@@ -92,7 +92,7 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           }}
         />
         <AgGridColumn
-          headerName="Status"
+          headerName={t('Status')}
           field="status"
           cellRenderer="StatusCell"
           cellRendererParams={{

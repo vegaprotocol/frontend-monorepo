@@ -120,7 +120,7 @@ export const updateQuery: UpdateQueryFn<
   Withdrawals,
   WithdrawalEventVariables,
   WithdrawalEvent
-> = (prev, { subscriptionData }) => {
+> = (prev, { subscriptionData, variables }) => {
   if (!subscriptionData.data.busEvents?.length) {
     return prev;
   }
@@ -133,26 +133,23 @@ export const updateQuery: UpdateQueryFn<
         pendingOnForeignChain: false,
       };
     })
-    .filter(isWithdrawalEvent);
+    .filter(isWithdrawalEvent)
+    .map(
+      (w) =>
+        ({
+          __typename: 'WithdrawalEdge',
+          node: w,
+        } as Withdrawals_party_withdrawalsConnection_edges)
+    );
 
-  const withdrawals = uniqBy([...incoming, ...curr], 'node.id');
-  const edges = withdrawals.map((w) => {
-    if (w?.__typename === 'WithdrawalEdge') {
-      return w;
-    }
-
-    return {
-      __typename: 'WithdrawalEdge',
-      node: w,
-    } as Withdrawals_party_withdrawalsConnection_edges;
-  });
+  const edges = uniqBy([...incoming, ...curr], 'node.id');
 
   // Write new party to cache if not present
   if (!prev.party) {
     return {
       ...prev,
       party: {
-        id: '',
+        id: variables?.partyId,
         __typename: 'Party',
         withdrawalsConnection: {
           __typename: 'WithdrawalsConnection',
