@@ -320,6 +320,7 @@ const isOrderActive = (status: OrderStatus) => {
     OrderStatus.STATUS_EXPIRED,
     OrderStatus.STATUS_FILLED,
     OrderStatus.STATUS_STOPPED,
+    OrderStatus.STATUS_PARTIALLY_FILLED,
   ].includes(status);
 };
 

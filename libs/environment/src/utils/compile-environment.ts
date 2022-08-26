@@ -104,6 +104,12 @@ export const compileEnvironment = (
     return acc;
   }, {} as Environment);
 
+  const networkOverride = environment.VEGA_ENV
+    ? {
+        [environment.VEGA_ENV]: isBrowser ? window.location.origin : undefined,
+      }
+    : {};
+
   return {
     // @ts-ignore enable using default object props
     ETHERSCAN_URL: getDefaultEtherscanUrl(environment['VEGA_ENV']),
@@ -112,5 +118,9 @@ export const compileEnvironment = (
       environment['VEGA_ENV']
     ),
     ...environment,
+    VEGA_NETWORKS: {
+      ...networkOverride,
+      ...environment.VEGA_NETWORKS,
+    },
   };
 };

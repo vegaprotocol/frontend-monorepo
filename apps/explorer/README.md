@@ -35,25 +35,23 @@ Example configurations are provided here:
 - [Devnet](./.env.devnet)
 - [Capsule](./.env.capsule)
 - [Testnet](./.env.testnet)
-- [Stagnet1](./.env.stagnet1)
 - [Stagnet3](./.env.stagnet3)
 
 For convenience, you can boot the app injecting one of the configurations above by running:
 
 ```bash
-yarn nx run explorer:serve --env={env} # e.g. stagnet1
+yarn nx run explorer:serve --env={env} # e.g. stagnet3
 ```
 
 There are a few different configuration options offered for this app:
 
 | **Flag**                         | **Purpose**                                                                                          |
-| -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------- | --- |
 | `NX_CHAIN_EXPLORER_URL`          | The URL of the chain explorer service for decoding transactions                                      |
 | `NX_TENDERMINT_URL`              | The Tendermint REST URL for the Vega consesus engine                                                 |
 | `NX_TENDERMINT_WEBSOCKET_URL`    | The Tendermint Websocket URL for the Vega consensus engine                                           |
 | `NX_VEGA_URL`                    | The GraphQl query endpoint of a [Vega data node](https://github.com/vegaprotocol/networks#data-node) |
-| `NX_VEGA_ENV`                    | The name of the currently connected vega environment                                                 |
-| `NX_VEGA_REST`                   | The REST URL for the Vega Data Node                                                                  |
+| `NX_VEGA_ENV`                    | The name of the currently connected vega environment                                                 |     |
 | `NX_EXPLORER_ASSETS`             | Enable the assets page for the explorer                                                              |
 | `NX_EXPLORER_GENESIS`            | Enable the genesis page for the explorer                                                             |
 | `NX_EXPLORER_GOVERNANCE`         | Enable the governance page for the explorer                                                          |
