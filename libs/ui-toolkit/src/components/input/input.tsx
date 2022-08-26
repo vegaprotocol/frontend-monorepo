@@ -83,10 +83,10 @@ const getAffixElement = ({
   const position = prependIconName || prependElement ? 'pre' : 'post';
 
   const className = classNames(
-    ['fill-black-60 dark:fill-white-60', 'absolute', 'z-10'],
+    ['fill-black dark:fill-white', 'absolute', 'z-10'],
     {
-      'left-8': position === 'pre',
-      'right-8': position === 'post',
+      'left-4': position === 'pre',
+      'right-4': position === 'post',
     }
   );
 
@@ -103,7 +103,6 @@ const getAffixElement = ({
       <Icon
         name={iconName}
         className={className}
-        size={16}
         aria-label={iconDescription}
         aria-hidden={!iconDescription}
       />
@@ -133,13 +132,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 
     const inputClassName = classNames(
       'appearance-none',
-      'h-32',
       'dark:color-scheme-dark',
       'shadow-input dark:shadow-input-dark',
       className,
       {
-        'pl-28': hasPrepended,
-        'pr-28': hasAppended,
+        'pl-10': hasPrepended,
+        'pr-10': hasAppended,
       }
     );
 

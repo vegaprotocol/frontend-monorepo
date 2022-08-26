@@ -1,5 +1,6 @@
 const theme = require('./theme');
 const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
 
 module.exports = {
   ...theme,
@@ -20,7 +21,7 @@ module.exports = {
       'highlight-item': '#000',
       'highlight-item-dark': '#fff',
     },
-    'dropdown-bg-dark': theme.colors.black['100'],
+    'dropdown-bg-dark': colors.neutral[100],
     lite: {
       black: '#080808',
     },

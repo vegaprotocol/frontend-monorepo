@@ -7,11 +7,11 @@ export type { IconName } from '@blueprintjs/icons';
 interface IconProps {
   name: IconName;
   className?: string;
-  size?: 16 | 20 | 24 | 32 | 48 | 64;
+  size?: 4 | 16 | 20 | 24 | 32 | 48 | 64;
   ariaLabel?: string;
 }
 
-export const Icon = ({ size = 16, name, className, ariaLabel }: IconProps) => {
+export const Icon = ({ size = 4, name, className, ariaLabel }: IconProps) => {
   const effectiveClassName = classNames(
     'inline-block',
     'fill-current',
@@ -19,6 +19,8 @@ export const Icon = ({ size = 16, name, className, ariaLabel }: IconProps) => {
     'fill-current',
     'shrink-0',
     {
+      'w-4': size === 4,
+      'h-4': size === 4,
       'w-20': size === 20,
       'h-20': size === 20,
       'w-16': size === 16,

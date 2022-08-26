@@ -7,13 +7,3 @@ body,
 #__next {
   @apply h-full;
 }
-
-html > body {
-  --focus-border: theme('colors.vega.pink');
-  --separator-border: theme('colors.black.10');
-}
-
-html.dark > body {
-  --focus-border: theme('colors.vega.yellow');
-  --separator-border: theme('colors.black.70');
-}

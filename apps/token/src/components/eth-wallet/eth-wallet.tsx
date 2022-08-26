@@ -24,9 +24,7 @@ import {
   WalletCardRow,
 } from '../wallet-card';
 import { Loader } from '@vegaprotocol/ui-toolkit';
-import { theme } from '@vegaprotocol/tailwindcss-config';
-
-const Colors = theme.colors;
+import colors from 'tailwindcss/colors';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -69,8 +67,8 @@ const AssociatedAmounts = ({
         total={associationAmounts.total}
         leftLabel={t('associated')}
         rightLabel={t('notAssociated')}
-        leftColor={Colors.white.DEFAULT}
-        rightColor={Colors.black.DEFAULT}
+        leftColor={colors.white}
+        rightColor={colors.black}
         light={false}
       />
       {vestingAssociationByVegaKey.length ? (

@@ -4,13 +4,10 @@ export const defaultFormElement = (hasError?: boolean) =>
   classnames(
     'flex items-center w-full',
     'box-border',
-    'border rounded-none',
-    'bg-clip-padding',
-    'bg-white dark:bg-white-25',
+    'border-2 rounded-none',
+    'bg-transparent',
     'text-black placeholder:text-black-60 dark:text-white dark:placeholder:text-white-60',
-    'text-ui',
-    'px-8',
-    'focus-visible:outline-none',
+    'p-2',
     'disabled:bg-black-10 disabled:dark:bg-white-10',
     {
       'input-border dark:input-border-dark focus-visible:shadow-input-focus dark:focus-visible:shadow-input-focus-dark':

@@ -12,17 +12,17 @@ type ButtonVariant = 'default' | 'primary' | 'secondary';
 type ButtonSize = 'lg' | 'md' | 'sm';
 
 const base =
-  'inline-block uppercase border-1 rounded disabled:opacity-40 transition-colors';
-const sm = 'text-ui px-12 py-4';
-const md = 'text-ui px-24 py-8';
-const lg = 'px-60 py-12';
+  'inline-block uppercase border-2 rounded-md disabled:opacity-40 transition-colors';
+const sm = 'px-8 py-2';
+const md = 'px-10 py-2';
+const lg = 'px-14 py-4';
 const fillClasses = 'block w-full';
 const defaultClasses = [
   'text-black dark:text-white',
-  'border-v2border dark:border-Dv2border',
+  'border-black dark:border-white',
   'bg-white dark:bg-black',
-  'enabled:hover:bg-white-80 dark:enabled:hover:bg-black-80',
-  'enabled:active:bg-white-80 enabled:active:border-black dark:enabled:active:bg-black-80 dark:enabled:active:border-white',
+  'enabled:hover:bg-neutral-200 dark:enabled:hover:bg-netural-800',
+  'enabled:active:bg-neutral-200 dark:enabled:active:bg-neutral-500',
 ];
 const primary = [
   'text-black',
@@ -146,10 +146,10 @@ interface ButtonContentProps {
 
 const ButtonContent = ({ children, icon, rightIcon }: ButtonContentProps) => {
   const iconEl = icon ? (
-    <Icon name={icon} className="fill-current mr-8" size={16} />
+    <Icon name={icon} className="fill-current mr-4 align-text-top" />
   ) : null;
   const rightIconEl = rightIcon ? (
-    <Icon name={rightIcon} className="fill-current ml-8" size={16} />
+    <Icon name={rightIcon} className="fill-current ml-4 align-text-top" />
   ) : null;
 
   return (

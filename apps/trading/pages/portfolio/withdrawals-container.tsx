@@ -19,9 +19,9 @@ export const WithdrawalsContainer = () => {
           'desc'
         );
         return (
-          <div className="grid grid-cols-[1fr_min-content] gap-12 h-full">
+          <div className="grid grid-cols-[1fr_min-content] gap-4 h-full">
             <WithdrawalsTable withdrawals={withdrawals} />
-            <div className="p-12">
+            <div className="p-4">
               <Link href="/portfolio/withdraw" passHref={true}>
                 <Button size="md" data-testid="start-withdrawal">
                   {t('Withdraw')}

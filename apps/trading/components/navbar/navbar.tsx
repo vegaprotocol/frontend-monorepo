@@ -14,7 +14,7 @@ export const Navbar = () => {
       <div className="flex items-center h-full">
         <Link href="/" passHref={true}>
           {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a className="px-24">
+          <a className="px-4">
             <Vega className="fill-white" />
           </a>
         </Link>
@@ -46,7 +46,7 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
   const isActive =
     router.asPath === path || (!exact && router.asPath.startsWith(path));
   const linkClasses = classNames(
-    'px-16 py-6 border-0 self-end',
+    'px-4 py-2 self-end',
     'uppercase xs:text-ui sm:text-body-large md:text-h5 lg:text-h4',
     {
       'bg-vega-pink dark:bg-vega-yellow text-white dark:text-black': isActive,

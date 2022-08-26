@@ -20,19 +20,17 @@ const Portfolio = () => {
     'bg-black-10 dark:bg-black-70',
     'text-ui'
   );
-  const tabContentClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
+  const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>
       <ResizablePanel vertical={true}>
         <Allotment.Pane minSize={75}>
-          <PortfolioGridChild className="h-full">
+          <PortfolioGridChild>
             <Tabs>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-h4 text-black dark:text-white p-8">
-                      {t('Positions')}
-                    </h4>
+                    <h4 className="text-xl p-4">{t('Positions')}</h4>
                     <div>
                       <PositionsContainer />
                     </div>
@@ -42,9 +40,7 @@ const Portfolio = () => {
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-h4 text-black dark:text-white p-8">
-                      {t('Orders')}
-                    </h4>
+                    <h4 className="text-xl p-4">{t('Orders')}</h4>
                     <div>
                       <OrderListContainer />
                     </div>
@@ -54,9 +50,7 @@ const Portfolio = () => {
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-h4 text-black dark:text-white p-8">
-                      {t('Fills')}
-                    </h4>
+                    <h4 className="text-xl p-4">{t('Fills')}</h4>
                     <div>
                       <FillsContainer />
                     </div>
@@ -71,7 +65,7 @@ const Portfolio = () => {
           preferredSize={300}
           minSize={50}
         >
-          <PortfolioGridChild className="h-full mt-4">
+          <PortfolioGridChild>
             <Tabs>
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
@@ -104,13 +98,12 @@ export default Portfolio;
 
 interface PortfolioGridChildProps {
   children: ReactNode;
-  className?: string;
 }
 
-const PortfolioGridChild = ({
-  children,
-  className,
-}: PortfolioGridChildProps) => {
-  const gridChildClasses = classNames('bg-white dark:bg-black', className);
-  return <section className={gridChildClasses}>{children}</section>;
+const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
+  return (
+    <section className="bg-white dark:bg-black w-full h-full">
+      {children}
+    </section>
+  );
 };

@@ -1,5 +1,6 @@
 const plugin = require('tailwindcss/plugin');
 const theme = require('./theme');
+const colors = require('tailwindcss/colors');
 
 const vegaCustomClasses = plugin(function ({ addUtilities }) {
   addUtilities({
@@ -12,9 +13,9 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       display: 'block',
       overflowX: 'auto',
       padding: '1em',
-      background: theme.colors.white.DEFAULT,
-      color: theme.colors.black[70],
-      border: `1px solid #${theme.colors.black[40]}`,
+      background: colors.white,
+      color: colors.neutral[700],
+      border: `1px solid #${colors.neutral[400]}`,
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
       background: '#2C2C2C',
@@ -24,26 +25,10 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       color: theme.colors.vega.pink,
     },
     '.syntax-highlighter-wrapper .hljs-number': {
-      color: theme.colors.warning,
+      color: theme.colors.vega.orange,
     },
     '.syntax-highlighter-wrapper .hljs-string': {
-      color: theme.colors.blue,
-    },
-    '.input-border': {
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderTopColor: theme.colors.black['60'],
-      borderLeftColor: theme.colors.black['60'],
-      borderRightColor: theme.colors.black['40'],
-      borderBottomColor: theme.colors.black['40'],
-    },
-    '.input-border-dark': {
-      borderWidth: '1px',
-      borderStyle: 'solid',
-      borderTopColor: theme.colors.white['40'],
-      borderLeftColor: theme.colors.white['40'],
-      borderRightColor: theme.colors.white['60'],
-      borderBottomColor: theme.colors.white['60'],
+      color: theme.colors.vega.blue,
     },
     '.color-scheme-dark': {
       colorScheme: 'dark',
