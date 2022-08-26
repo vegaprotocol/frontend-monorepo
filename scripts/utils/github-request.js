@@ -11,12 +11,8 @@ module.exports = async (url, { body }) => {
   };
   options.agent = new https.Agent(options);
 
-  return request(
-    url,
-    {
-      ...options,
-      body,
-    }
-  );
-
-}
+  return request(url, {
+    ...options,
+    body,
+  });
+};

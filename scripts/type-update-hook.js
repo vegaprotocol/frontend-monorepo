@@ -187,7 +187,7 @@ const run = async ({
 
   This pull request was automatically generated.
         `,
-      }
+      },
     });
   }
 };

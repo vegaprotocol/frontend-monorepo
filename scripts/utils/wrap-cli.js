@@ -10,4 +10,4 @@ module.exports = async function main(run, specs) {
   } catch (err) {
     console.error(err);
   }
-}
+};
