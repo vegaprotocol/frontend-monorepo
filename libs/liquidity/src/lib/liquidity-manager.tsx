@@ -34,8 +34,6 @@ export const LiquidityManager = ({
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
 
-  console.log({ marketLiquidityData });
-
   const {
     liquidityProviders,
     suppliedStake,

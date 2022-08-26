@@ -2,7 +2,6 @@ import {
   t,
   formatNumberPercentage,
   getDateTimeFormat,
-  formatNumber,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
@@ -18,12 +17,13 @@ export const MyLiquidityProvisionContainer = ({
   partyId: string;
   data?: MarketLiquidity;
 }) => {
-  const { liquidityProviders, decimalPlaces, positionDecimalPlaces } =
+  const { liquidityProviders, decimalPlaces } =
     useLiquidityProvision({ data, partyId });
 
-  if (!partyId || !liquidityProviders) {
+  if (!liquidityProviders || liquidityProviders.length === 0) {
     return <Splash>{t('No liquidity provision')}</Splash>;
   }
+
   const {
     party,
     commitmentAmount,
@@ -35,9 +35,7 @@ export const MyLiquidityProvisionContainer = ({
     status,
     createdAt,
     updatedAt,
-  } = liquidityProviders && liquidityProviders[0];
-
-  console.log({ liquidityProviders });
+  } = liquidityProviders[0];
 
   return (
     <div>

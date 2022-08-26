@@ -20,7 +20,6 @@ export interface LiquidityTableProps {
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
   (props, ref) => {
-    console.log('liquidityProvisionsConnectionsTable', { data: props.data });
     return (
       <AgGrid
         style={{ width: '100%', height: '100%' }}
