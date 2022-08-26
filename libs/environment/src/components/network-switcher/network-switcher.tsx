@@ -15,7 +15,6 @@ import { Networks } from '../../types';
 export const envNameMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: t('Custom'),
   [Networks.DEVNET]: t('Devnet'),
-  [Networks.STAGNET]: t('Stagnet'),
   [Networks.STAGNET3]: t('Stagnet3'),
   [Networks.TESTNET]: t('Fairground testnet'),
   [Networks.MAINNET]: t('Mainnet'),
@@ -29,10 +28,7 @@ export const envTriggerMapping: Record<Networks, string> = {
 export const envDescriptionMapping: Record<Networks, string> = {
   [Networks.CUSTOM]: '',
   [Networks.DEVNET]: t('The latest Vega code auto-deployed'),
-  [Networks.STAGNET]: t('A staging environment with trading'),
-  [Networks.STAGNET3]: t(
-    'A testnet that simulates validators coming and going'
-  ),
+  [Networks.STAGNET3]: t('A staging environment with trading'),
   [Networks.TESTNET]: t(
     'Public testnet run by the Vega team, often used for incentives'
   ),
@@ -44,7 +40,6 @@ const advancedNetworkKeys = [
   Networks.MAINNET,
   Networks.TESTNET,
   Networks.STAGNET3,
-  Networks.STAGNET,
   Networks.DEVNET,
 ];
 
@@ -90,7 +85,7 @@ export const NetworkSwitcher = () => {
     [setOpen, setAdvancedView]
   );
 
-  const menuItemClasses = 'pt-12 pb-12 pl-16 pr-16 h-auto';
+  const menuItemClasses = 'pt-12 pb-12 !pl-16 !pr-16 !h-auto';
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
