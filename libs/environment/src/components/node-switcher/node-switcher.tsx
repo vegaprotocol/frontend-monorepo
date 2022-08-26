@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   RadioGroup,
@@ -17,7 +17,7 @@ import {
   getErrorByType,
 } from '../../utils/validate-node';
 import { CUSTOM_NODE_KEY } from '../../types';
-import type { Configuration, NodeData, ErrorType, Networks } from '../../types';
+import type { Configuration, NodeData, ErrorType } from '../../types';
 import { LayoutRow } from './layout-row';
 import { NodeError } from './node-error';
 import { NodeStats } from './node-stats';
