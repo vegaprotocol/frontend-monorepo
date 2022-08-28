@@ -19,7 +19,7 @@ export const Header = ({
   setMenuOpen,
 }: ThemeToggleProps) => {
   return (
-    <header className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 px-4 py-2 gap-2 md:gap-4 border-b border-black">
+    <header className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 px-4 py-2 gap-2 md:gap-4 border-b border-neutral-700 dark:border-neutral-300">
       <Link to={Routes.HOME}>
         <h1
           className="text-2xl font-alpha uppercase calt mb-2"

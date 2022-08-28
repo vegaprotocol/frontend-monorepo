@@ -12,7 +12,7 @@ export const Nav = ({ menuOpen }: NavProps) => {
       <div
         className={classnames(
           'absolute top-0 z-50 md:static',
-          'w-full p-4 md:border-r border-black dark:border-white',
+          'w-full p-4 md:border-r border-neutral-700 dark:border-neutral-300',
           'bg-white dark:bg-black',
           'transition-[right]',
           {
