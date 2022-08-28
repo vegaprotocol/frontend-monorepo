@@ -177,9 +177,9 @@ export const TokenInput = ({
   return (
     <>
       <FormGroup
-        labelClassName="sr-only"
         label={t('Input Amount')}
         labelFor={inputName}
+        hideLabel={true}
       >
         <AmountInput
           amount={amount}

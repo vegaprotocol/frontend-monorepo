@@ -19,7 +19,7 @@ export default ({ value, onSelect }: SideSelectorProps) => {
     <FormGroup
       label={t('Direction')}
       labelFor="order-side-toggle"
-      labelClassName="sr-only"
+      hideLabel={true}
     >
       <fieldset
         className="w-full grid md:grid-cols-2 gap-20"

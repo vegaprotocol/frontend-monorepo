@@ -3,7 +3,6 @@ import './i18n';
 import React, { useMemo } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { AppLoader } from './app-loader';
-import { AppBanner } from './components/app-banner';
 import { NetworkInfo } from '@vegaprotocol/network-info';
 import { BalanceManager } from './components/balance-manager';
 import { EthWallet } from './components/eth-wallet';
@@ -40,7 +39,7 @@ const AppContainer = () => {
   return (
     <Router>
       <AppStateProvider>
-        <div className="grid min-h-full text-white-80">
+        <div className="grid min-h-full text-neutral-400">
           <AsyncRenderer loading={loading} data={config} error={error}>
             {Connectors && (
               <Web3Provider connectors={Connectors}>
@@ -50,12 +49,11 @@ const AppContainer = () => {
                       <AppLoader>
                         <BalanceManager>
                           <>
-                            <div className="app max-w-[1300px] mx-auto my-0 grid grid-rows-[min-content_1fr_min-content] min-h-full lg:border-l-1 lg:border-r-1 lg:border-white font-sans text-body lg:text-body-large">
-                              <AppBanner />
+                            <div className="app max-w-[1300px] mx-auto grid grid-rows-[1fr_min-content] min-h-full lg:border-l lg:border-r lg:border-white  lg:text-body-large">
                               <TemplateSidebar sidebar={sideBar}>
                                 <AppRouter />
                               </TemplateSidebar>
-                              <footer className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-t-1">
+                              <footer className="p-4 border-t">
                                 <NetworkInfo />
                               </footer>
                             </div>

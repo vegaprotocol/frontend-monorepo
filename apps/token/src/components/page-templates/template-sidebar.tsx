@@ -9,12 +9,12 @@ export interface TemplateSidebarProps {
 
 export function TemplateSidebar({ children, sidebar }: TemplateSidebarProps) {
   return (
-    <div className="row-start-2 border-b border-white lg:grid lg:grid-rows-[auto_minmax(600px,_1fr)] lg:grid-cols-[850px_450px]">
+    <div className="border-b border-white lg:grid lg:grid-rows-[auto_minmax(600px,_1fr)] lg:grid-cols-[850px_450px]">
       <Nav />
-      <main className="col-start-1 p-20">{children}</main>
-      <aside className="col-start-2 row-start-1 row-span-2 hidden lg:block p-20 bg-banner bg-contain border-l border-white">
+      <main className="col-start-1 p-4">{children}</main>
+      <aside className="col-start-2 row-start-1 row-span-2 hidden lg:block p-4 bg-banner bg-contain border-l border-white">
         {sidebar.map((Component, i) => (
-          <section className="mb-20 last:mb-0" key={i}>
+          <section className="mb-4 last:mb-0" key={i}>
             {Component}
           </section>
         ))}

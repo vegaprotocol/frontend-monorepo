@@ -26,7 +26,7 @@ export const BlocksRefetch = ({ refetch }: BlocksRefetchProps) => {
   };
 
   return (
-    <div className="mb-28">
+    <div className="mb-4">
       <span data-testid="new-blocks">{blocksToLoad} new blocks - </span>
       <ButtonLink onClick={refresh} data-testid="refresh">
         {t('refresh to see latest')}

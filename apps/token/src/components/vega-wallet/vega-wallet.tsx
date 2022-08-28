@@ -78,7 +78,6 @@ const VegaWalletNotConnected = () => {
           })
         }
         fill={true}
-        size="sm"
         data-testid="connect-vega"
       >
         {t('connectVegaWalletToUseAssociated')}
@@ -133,21 +132,19 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
   }, [currentStakeAvailable, delegations]);
 
   const footer = (
-    <WalletCardActions>
-      <div className="mt-4">
-        <ButtonLink
-          data-testid="manage-vega-wallet"
-          onClick={() =>
-            appDispatch({
-              type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
-              isOpen: true,
-            })
-          }
-        >
-          Manage
-        </ButtonLink>
-      </div>
-    </WalletCardActions>
+    <div className="flex justify-end">
+      <ButtonLink
+        data-testid="manage-vega-wallet"
+        onClick={() =>
+          appDispatch({
+            type: AppStateActionType.SET_VEGA_WALLET_MANAGE_OVERLAY,
+            isOpen: true,
+          })
+        }
+      >
+        Manage
+      </ButtonLink>
+    </div>
   );
 
   return vegaKeys.length ? (
@@ -196,12 +193,12 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         </div>
       ))}
       <WalletCardActions>
-        <Link className="flex-1 mr-4" to={Routes.GOVERNANCE}>
+        <Link className="flex-1" to={Routes.GOVERNANCE}>
           <Button size="sm" fill={true}>
             {t('governance')}
           </Button>
         </Link>
-        <Link className="flex-1 ml-4" to={Routes.STAKING}>
+        <Link className="flex-1" to={Routes.STAKING}>
           <Button size="sm" fill={true}>
             {t('staking')}
           </Button>

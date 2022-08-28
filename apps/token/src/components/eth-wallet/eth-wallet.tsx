@@ -72,8 +72,7 @@ const AssociatedAmounts = ({
         light={false}
       />
       {vestingAssociationByVegaKey.length ? (
-        <div>
-          <hr style={{ borderStyle: 'dashed' }} />
+        <div className="pt-2 border-t border-dashed">
           <WalletCardRow
             label="Associated with Vega keys"
             bold={true}
@@ -175,12 +174,12 @@ const ConnectedKey = () => {
         )}
       </section>
       <WalletCardActions>
-        <Link className="flex-1 mr-4" to={`${Routes.STAKING}/associate`}>
+        <Link className="flex-1" to={`${Routes.STAKING}/associate`}>
           <Button size="sm" fill={true}>
             {t('associate')}
           </Button>
         </Link>
-        <Link className="flex-1 ml-4" to={`${Routes.STAKING}/disassociate`}>
+        <Link className="flex-1" to={`${Routes.STAKING}/disassociate`}>
           <Button size="sm" fill={true}>
             {t('disassociate')}
           </Button>
@@ -200,9 +199,9 @@ export const EthWallet = () => {
     <WalletCard dark={true}>
       <section data-testid="ethereum-wallet">
         <WalletCardHeader>
-          <h1 className="m-0 text-h3 uppercase">{t('ethereumKey')}</h1>
+          <h1 className="m-0 uppercase">{t('ethereumKey')}</h1>
           {account && (
-            <div className="place-self-end font-mono px-4 pb-2">
+            <div className="place-self-end font-mono">
               <div
                 className="font-mono"
                 data-testid="ethereum-account-truncated"
@@ -235,7 +234,6 @@ export const EthWallet = () => {
           ) : (
             <Button
               fill={true}
-              size="sm"
               onClick={() =>
                 appDispatch({
                   type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
@@ -248,15 +246,15 @@ export const EthWallet = () => {
             </Button>
           )}
           {account && (
-            <WalletCardActions>
+            <div className="flex justify-end">
               <button
-                className="mt-4 underline"
+                className="underline"
                 onClick={() => connector.deactivate()}
                 data-testid="disconnect-from-eth-wallet-button"
               >
                 {t('disconnect')}
               </button>
-            </WalletCardActions>
+            </div>
           )}
         </WalletCardContent>
       </section>

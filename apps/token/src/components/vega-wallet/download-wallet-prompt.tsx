@@ -6,8 +6,8 @@ export const DownloadWalletPrompt = () => {
   const { t } = useTranslation();
   return (
     <>
-      <h3 className="mt-12 mb-4">{t('getWallet')}</h3>
-      <p className="mb-4">
+      <h3 className="mt-4 mb-2">{t('getWallet')}</h3>
+      <p>
         <Link className="text-deemphasise" href={Links.WALLET_PAGE}>
           {t('getWalletLink')}
         </Link>

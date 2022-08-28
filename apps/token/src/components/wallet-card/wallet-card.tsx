@@ -12,14 +12,10 @@ interface WalletCardProps {
 }
 
 export const WalletCard = ({ dark, children }: WalletCardProps) => {
-  const className = classNames(
-    'text-ui border border-white',
-    'pt-4 pl-8 pr-12 pb-12',
-    {
-      'bg-black text-white': dark,
-      'bg-white text-black': !dark,
-    }
-  );
+  const className = classNames('border border-white', 'p-4', {
+    'bg-black text-white': dark,
+    'bg-white text-black': !dark,
+  });
   return <div className={className}>{children}</div>;
 };
 
@@ -31,7 +27,7 @@ interface WalletCardHeaderProps {
 export const WalletCardHeader = ({ children }: WalletCardHeaderProps) => {
   return (
     <div
-      className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4"
+      className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-2 mb-2"
       data-testid="wallet-header"
     >
       {children}
@@ -44,7 +40,7 @@ interface WalletCardContentProps {
 }
 
 export const WalletCardContent = ({ children }: WalletCardContentProps) => {
-  return <div className="mt-8">{children}</div>;
+  return <div>{children}</div>;
 };
 
 export const WalletCardRow = ({
@@ -68,7 +64,7 @@ export const WalletCardRow = ({
 
   return (
     <div
-      className={`flex justify-between gap-y-0 gap-x-4 text-ui my-4 p-2 ${
+      className={`flex justify-between gap-y-0 gap-x-2 text-sm mb-2 ${
         dark ? 'text-white-60' : 'text-black'
       } ${bold && 'font-bold'}`}
       ref={ref}
@@ -107,7 +103,7 @@ export const WalletCardActions = ({
 }: {
   children: React.ReactNode;
 }) => {
-  return <div className="flex justify-end gap-2 py-2">{children}</div>;
+  return <div className="flex justify-end gap-2 mb-4">{children}</div>;
 };
 
 export interface WalletCardAssetProps {
@@ -134,11 +130,11 @@ export const WalletCardAsset = ({
   const [integers, decimalsPlaces] = useNumberParts(balance, decimals);
 
   return (
-    <div className="flex flex-nowrap mt-8 mb-16">
+    <div className="flex flex-nowrap mt-2 mb-4">
       <img
         alt="Vega"
         src={image}
-        className={`inline-block h-[30px] rounded-[50%] border ${
+        className={`inline-block h-[30px] rounded-full border ${
           border ? 'border-white' : 'border-black'
         }`}
       />
@@ -148,26 +144,23 @@ export const WalletCardAsset = ({
           data-testid="currency-title"
         >
           <h1
-            className={`text-h5 mb-0 px-8 uppercase leading-none ${
+            className={`mb-0 px-2 uppercase ${
               dark ? 'text-white' : 'text-black'
             }`}
           >
             {name}
           </h1>
           <h2
-            className={`text-h5 mb-0 uppercase leading-none ${
-              dark ? 'text-white-60' : 'text-black-60'
+            className={`mb-0 uppercase ${
+              dark ? 'text-neutral-400' : 'text-neutral-600'
             }`}
           >
             {subheading || symbol}
           </h2>
         </div>
-        <div
-          className="px-8 text-h5 basis-full font-mono"
-          data-testid="currency-value"
-        >
+        <div className="px-2 basis-full font-mono" data-testid="currency-value">
           <span>{integers}.</span>
-          <span className={dark ? 'text-white-60' : 'text-black-60'}>
+          <span className={dark ? 'text-neutral-400' : 'text-neutral-600'}>
             {decimalsPlaces}
           </span>
         </div>

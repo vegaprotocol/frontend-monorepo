@@ -31,7 +31,7 @@ const Block = () => {
       <RouteTitle data-testid="block-header">{t(`BLOCK ${block}`)}</RouteTitle>
       <RenderFetched error={error} loading={loading}>
         <>
-          <div className="grid grid-cols-2 gap-16 mb-24">
+          <div className="grid grid-cols-2 gap-2 mb-8">
             <Link
               data-testid="previous-block"
               to={`/${Routes.BLOCKS}/${Number(block) - 1}`}
@@ -56,7 +56,7 @@ const Block = () => {
           </div>
           {blockData && (
             <>
-              <TableWithTbody className="mb-28">
+              <TableWithTbody className="mb-8">
                 <TableRow modifier="bordered">
                   <TableHeader scope="row">Mined by</TableHeader>
                   <TableCell modifier="bordered">

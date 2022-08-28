@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
-import { Button, ButtonLink, FormGroup, Input } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, FormGroup, Input } from '@vegaprotocol/ui-toolkit';
 import type { Dispatch, SetStateAction } from 'react';
 
 interface ProposalsListFilterProps {
@@ -27,9 +27,9 @@ export const ProposalsListFilter = ({
         <div data-testid="open-proposals-list-filter">
           <p>{t('FilterProposalsDescription')}</p>
           <FormGroup
-            labelClassName="sr-only"
             label="Filter text input"
             labelFor="filter-input"
+            hideLabel={true}
           >
             <Input
               data-testid="filter-input"

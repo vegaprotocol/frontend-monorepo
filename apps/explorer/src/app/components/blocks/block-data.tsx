@@ -22,7 +22,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
       <TableRow data-testid="block-row" modifier="background">
         <TableCell
           data-testid="block-height"
-          className="pl-4 py-2 font-mono"
+          className="p-2 font-mono"
           aria-label={t('Block height')}
         >
           <Link
@@ -34,7 +34,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         </TableCell>
         <TableCell
           data-testid="num-txs"
-          className="px-8 text-center"
+          className="text-center"
           aria-label={t('Number of transactions')}
         >
           {block.num_txs === '1'
@@ -43,7 +43,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         </TableCell>
         <TableCell
           data-testid="validator-link"
-          className="px-8 text-center font-mono"
+          className="text-center font-mono"
           aria-label={t('Validator')}
         >
           <Link to={`/${Routes.VALIDATORS}`}>
@@ -52,7 +52,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         </TableCell>
         <TableCell
           data-testid="block-time"
-          className="text-center pr-28 text-neutral-300 w-[170px]"
+          className="text-right"
           aria-label={t('Block genesis')}
         >
           <Tooltip

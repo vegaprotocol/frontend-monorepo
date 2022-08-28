@@ -99,10 +99,10 @@ export const Nav = () => {
 
   return (
     <div
-      className={`px-16 py-8 ${
+      className={`px-4 py-2 ${
         inverted
           ? 'bg-clouds bg-no-repeat bg-cover bg-vega-yellow'
-          : 'border-b-white border-b-1'
+          : 'border-white border-b'
       }`}
     >
       {isDesktop && <NavHeader fairground={inverted} />}
@@ -124,7 +124,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center gap-8">
+    <div className="flex items-center gap-4">
       <Link to="/">
         {fairground ? (
           <Fish />
@@ -135,7 +135,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
       <div className="h-[30px] inline-flex items-center lg:h-40 uppercase">
         <h1
           data-testid="header-title"
-          className={`text-h4 sm:text-h3 font-alpha uppercase calt mb-2 ${
+          className={`md:text-2xl sm:text-lg font-alpha uppercase calt my-0 ${
             fairground ? 'text-black' : 'text-white'
           }`}
         >
@@ -230,7 +230,7 @@ const NavLinks = ({
     { route: Routes.GOVERNANCE, text: t('Governance') },
   ];
   const navClasses = classNames('flex', {
-    'flex-row gap-8 mt-8 uppercase': isDesktop,
+    'flex-row gap-2 mt-4 uppercase': isDesktop,
     'flex-col': !isDesktop,
   });
 
@@ -243,19 +243,16 @@ const NavLinks = ({
             to={route}
             key={route}
             className={({ isActive }) =>
-              classNames(
-                'no-underline hover:no-underline focus-visible:outline-none focus-visible:border-none focus-visible:shadow-inset-white',
-                {
-                  'bg-vega-yellow text-black': !isInverted && isActive,
-                  'bg-transparent text-white hover:text-vega-yellow':
-                    !isInverted && !isActive,
-                  'bg-black text-white': isInverted && isActive,
-                  'bg-transparent text-black hover:text-white':
-                    isInverted && !isActive,
-                  'py-2 px-12': isDesktop,
-                  'border-t border-white p-20': !isDesktop,
-                }
-              )
+              classNames({
+                'bg-vega-yellow text-black': !isInverted && isActive,
+                'bg-transparent text-white hover:text-vega-yellow':
+                  !isInverted && !isActive,
+                'bg-black text-white': isInverted && isActive,
+                'bg-transparent text-black hover:text-white':
+                  isInverted && !isActive,
+                'py-1 px-2': isDesktop,
+                'border-t border-white p-4': !isDesktop,
+              })
             }
           >
             {text}

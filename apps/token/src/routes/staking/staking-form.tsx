@@ -19,7 +19,6 @@ import { StakeFailure } from './stake-failure';
 import { StakePending } from './stake-pending';
 import { StakeSuccess } from './stake-success';
 import {
-  Button,
   ButtonLink,
   Callout,
   FormGroup,
@@ -230,7 +229,7 @@ export const StakingForm = ({
       <FormGroup
         label={t('Select if you want to add or remove stake')}
         labelFor="radio-stake-options"
-        labelClassName="sr-only"
+        hideLabel={true}
       >
         <RadioGroup
           name="radio-stake-options"
