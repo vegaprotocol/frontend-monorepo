@@ -51,11 +51,14 @@ export const Search = () => {
     [navigate]
   );
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex-1">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full md:max-w-[620px] justify-self-end"
+    >
       <label htmlFor="search" className="sr-only">
         {t('Search by block number or transaction hash')}
       </label>
-      <div className="md:w-2/3 flex items-stretch gap-2 md:justify-end">
+      <div className="flex items-stretch gap-2">
         <Input
           {...register('search')}
           id="search"
