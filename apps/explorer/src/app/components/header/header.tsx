@@ -6,21 +6,23 @@ import { Search } from '../search';
 import { Routes } from '../../routes/route-names';
 
 interface ThemeToggleProps {
+  theme: 'light' | 'dark';
   toggleTheme: () => void;
   menuOpen: boolean;
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Header = ({
+  theme,
   toggleTheme,
   menuOpen,
   setMenuOpen,
 }: ThemeToggleProps) => {
   return (
-    <header className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-b-1">
+    <header className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 px-4 py-2 gap-2 md:gap-4 border-b border-black">
       <Link to={Routes.HOME}>
         <h1
-          className="text-h3 font-alpha uppercase calt mb-2"
+          className="text-2xl font-alpha uppercase calt mb-2"
           data-testid="explorer-header"
         >
           {t('Vega Explorer')}
@@ -31,10 +33,10 @@ export const Header = ({
         className="md:hidden"
         onClick={() => setMenuOpen(!menuOpen)}
       >
-        <Icon name={menuOpen ? 'cross' : 'menu'} size={20} />
+        <Icon name={menuOpen ? 'cross' : 'menu'} />
       </button>
       <Search />
-      <ThemeSwitcher onToggle={toggleTheme} />
+      <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
     </header>
   );
 };

@@ -1,17 +1,15 @@
 import { t, truncateByChars } from '@vegaprotocol/react-helpers';
 import {
+  Button,
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuItemIndicator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-  Icon,
 } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { truncate } from 'lodash';
 
 export interface VegaWalletConnectButtonProps {
   setConnectDialog: (isOpen: boolean) => void;
@@ -26,7 +24,10 @@ export const VegaWalletConnectButton = ({
   if (isConnected && keypairs) {
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger className="text-white">
+        <DropdownMenuTrigger
+          className="text-white"
+          data-testid="manage-vega-wallet"
+        >
           {keypair.name}: {truncateByChars(keypair.pub)}
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -52,14 +53,12 @@ export const VegaWalletConnectButton = ({
   }
 
   return (
-    <span className="text-sm">
-      <button
-        data-testid={isConnected ? 'manage-vega-wallet' : 'connect-vega-wallet'}
-        onClick={() => setConnectDialog(true)}
-        className="ml-auto font-mono hover:underline text-white"
-      >
-        {t('Connect Vega wallet')}
-      </button>
-    </span>
+    <Button
+      data-testid="connect-vega-wallet"
+      onClick={() => setConnectDialog(true)}
+      size="sm"
+    >
+      {t('Connect Vega wallet')}
+    </Button>
   );
 };

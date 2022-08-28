@@ -6,6 +6,8 @@ interface CardProps {
 
 export function Card({ children }: CardProps) {
   return (
-    <div className="px-24 py-16 pr-64 border items-center">{children}</div>
+    <div className="px-4 py-2 border border-black dark:border-white items-center">
+      {children}
+    </div>
   );
 }

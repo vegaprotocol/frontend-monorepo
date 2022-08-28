@@ -124,7 +124,7 @@ export const WithdrawForm = ({
         )}
       </FormGroup>
       {selectedAsset && limits && (
-        <div className="mb-20">
+        <div className="mb-6">
           <WithdrawLimits limits={limits} balance={max.balance} />
         </div>
       )}
@@ -184,7 +184,7 @@ const UseButton = ({ children, ...rest }: UseButtonProps) => {
     <button
       {...rest}
       type="button"
-      className="ml-auto text-ui absolute top-0 right-0 underline"
+      className="ml-auto text-sm absolute top-0 right-0 underline"
     >
       {children}
     </button>

@@ -17,7 +17,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   const store = useGlobalStore();
   const tradingPath = store.marketId ? `/markets/${store.marketId}` : '/';
   return (
-    <div className="px-4 flex items-stretch border-b-[1px] border-neutral-300 dark:border-neutral-700 bg-black">
+    <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-700 bg-black">
       <nav className="flex items-center gap-4">
         <div className="flex gap-4 items-center h-full">
           <Link href="/" passHref={true}>

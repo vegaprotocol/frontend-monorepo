@@ -90,16 +90,16 @@ export const NodeSwitcher = ({
           onSubmit(nodeRadio);
         }}
       >
-        <p className="text-body-large font-bold mt-16 mb-32">
+        <p className="text-lg mt-4 mb-4">
           {t('Select a GraphQL node to connect to:')}
         </p>
         <div>
           <div className="hidden lg:block">
             <LayoutRow>
               <div />
-              <span className="px-8 text-right">{t('Response time')}</span>
-              <span className="px-8 text-right">{t('Block')}</span>
-              <span className="px-8 text-right">{t('SSL')}</span>
+              <span className="px-2 text-right">{t('Response time')}</span>
+              <span className="px-2 text-right">{t('Block')}</span>
+              <span className="px-2 text-right">{t('SSL')}</span>
             </LayoutRow>
           </div>
           <RadioGroup
@@ -136,7 +136,7 @@ export const NodeSwitcher = ({
                 highestBlock={highestBlock}
                 setBlock={(block) => updateNodeBlock(CUSTOM_NODE_KEY, block)}
               >
-                <div className="flex w-full mb-8">
+                <div className="flex w-full mb-2">
                   <Radio
                     id={`node-url-custom`}
                     value={CUSTOM_NODE_KEY}
@@ -186,7 +186,7 @@ export const NodeSwitcher = ({
             </div>
           </RadioGroup>
         </div>
-        <div className="mt-16">
+        <div className="mt-4">
           <Button
             disabled={isSubmitDisabled}
             fill={true}

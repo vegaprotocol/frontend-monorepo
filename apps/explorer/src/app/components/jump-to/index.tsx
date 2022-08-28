@@ -25,13 +25,10 @@ export const JumpTo = ({
 }: JumpToProps) => {
   return (
     <form onSubmit={submitHandler}>
-      <label
-        htmlFor={inputId}
-        className="block uppercase text-h5 font-bold mb-4"
-      >
+      <label htmlFor={inputId} className="block uppercase font-bold mb-2">
         {label}
       </label>
-      <div className="flex gap-8">
+      <div className="flex gap-2">
         <Input
           data-testid={inputId}
           id={inputId}

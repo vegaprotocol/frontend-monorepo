@@ -51,17 +51,11 @@ export const Search = () => {
     [navigate]
   );
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex gap-8 self-center md:ml-16 md:mr-12 md:justify-end"
-    >
-      <FormGroup
-        label={t('Search by block number or transaction hash')}
-        // DU: Fix me
-        className="relative w-full md:w-2/3 mb-0"
-        labelClassName="sr-only"
-        labelFor="search"
-      >
+    <form onSubmit={handleSubmit(onSubmit)} className="flex-1">
+      <label htmlFor="search" className="sr-only">
+        {t('Search by block number or transaction hash')}
+      </label>
+      <div className="md:w-2/3 flex items-stretch gap-2 md:justify-end">
         <Input
           {...register('search')}
           id="search"
@@ -77,10 +71,10 @@ export const Search = () => {
             </InputError>
           </div>
         )}
-      </FormGroup>
-      <Button type="submit" size="sm" data-testid="search-button">
-        {t('Search')}
-      </Button>
+        <Button type="submit" size="sm" data-testid="search-button">
+          {t('Search')}
+        </Button>
+      </div>
     </form>
   );
 };

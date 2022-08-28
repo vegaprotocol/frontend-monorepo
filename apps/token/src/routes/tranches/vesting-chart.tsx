@@ -12,6 +12,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
+import colors from 'tailwindcss/colors';
 
 import { DATE_FORMAT_LONG } from '../../lib/date-formats';
 import data from './data.json';
@@ -35,7 +36,7 @@ export const VestingChart = () => {
             {[
               ['pink', Colors.vega.pink],
               ['green', Colors.vega.green],
-              ['orange', Colors.orange],
+              ['orange', Colors.warning],
               ['yellow', Colors.vega.yellow],
             ].map(([key, color]) => (
               <linearGradient key={key} id={key} x1="0" y1="0" x2="0" y2="1">
@@ -45,7 +46,7 @@ export const VestingChart = () => {
             ))}
           </defs>
           <Tooltip
-            contentStyle={{ backgroundColor: Colors.black.DEFAULT }}
+            contentStyle={{ backgroundColor: colors.black }}
             separator=":"
             formatter={(value: number) => {
               return (
@@ -70,7 +71,7 @@ export const VestingChart = () => {
               value={t('VEGA').toString()}
               position="left"
               offset={-5}
-              fill={Colors.white.DEFAULT}
+              fill={colors.white}
             />
           </YAxis>
           <XAxis dataKey="date">
@@ -78,17 +79,17 @@ export const VestingChart = () => {
               value={t('date').toString()}
               position="bottom"
               offset={5}
-              fill={Colors.white.DEFAULT}
+              fill={colors.white}
             />
           </XAxis>
           <ReferenceLine
             x={currentDate}
-            stroke={Colors.white.DEFAULT}
+            stroke={colors.white}
             strokeWidth={2}
             label={{
               position: 'right',
               value: currentDate,
-              fill: Colors.white.DEFAULT,
+              fill: colors.white,
             }}
           />
           <Area
@@ -131,7 +132,7 @@ export const VestingChart = () => {
             dot={false}
             type="monotone"
             dataKey="community"
-            stroke={Colors.orange}
+            stroke={Colors.warning}
             fill="url(#orange)"
             yAxisId={0}
             strokeWidth={2}

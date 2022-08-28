@@ -64,7 +64,7 @@ export function VegaConnectDialog({
           data-testid="connectors-list"
         >
           {Object.entries(connectors).map(([key, connector]) => (
-            <li key={key} className="mb-12 last:mb-0">
+            <li key={key} className="mb-2 last:mb-0">
               <button
                 key={key}
                 onClick={() => setSelectedConnector(connector)}

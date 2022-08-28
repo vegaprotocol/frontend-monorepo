@@ -26,18 +26,18 @@ export const NodeSwitcherDialog = ({
   const { VEGA_ENV } = useEnvironment();
   return (
     <Dialog open={dialogOpen} onChange={setDialogOpen}>
-      <div className="uppercase text-h3 text-center mb-8">
+      <div className="uppercase text-xl text-center mb-2">
         {t('Connected node')}
       </div>
       {!config && loading && (
-        <div className="py-16">
-          <p className="mb-32 text-center">{t('Loading configuration...')}</p>
+        <div className="py-8">
+          <p className="mb-4 text-center">{t('Loading configuration...')}</p>
           <Loader size="large" />
         </div>
       )}
       {config && dialogOpen && (
         <>
-          <p className="mb-32 text-center">
+          <p className="mb-4 text-center">
             {t(`This app will only work on a `)}
             <span className="font-mono capitalize">
               {VEGA_ENV.toLowerCase()}

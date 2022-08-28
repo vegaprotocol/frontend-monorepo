@@ -184,7 +184,7 @@ export const DepositForm = ({
         {!errors.asset?.message && selectedAsset && (
           <button
             data-testid="view-asset-details"
-            className="text-ui underline"
+            className="text-sm underline"
             onClick={() => {
               setAssetDetailsDialogOpen(true);
               setAssetDetailsDialogSymbol(selectedAsset);
@@ -216,7 +216,7 @@ export const DepositForm = ({
         )}
       </FormGroup>
       {selectedAsset && max && deposited && (
-        <div className="mb-20">
+        <div className="mb-6">
           <DepositLimits max={max} deposited={deposited} balance={balance} />
         </div>
       )}
@@ -302,7 +302,8 @@ const FormButton = ({
   } else if (approved) {
     message = (
       <>
-        <Icon name="tick" /> <span>{t('Approved')}</span>
+        <Icon name="tick" className="mr-2" />
+        <span>{t('Approved')}</span>
       </>
     );
     button = (
@@ -331,7 +332,7 @@ const FormButton = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {message && <p className="text-ui text-center mb-4">{message}</p>}
+      {message && <p className="text-center">{message}</p>}
       {button}
     </div>
   );
@@ -346,7 +347,7 @@ const UseButton = ({ children, onClick }: UseButtonProps) => {
   return (
     <button
       type="button"
-      className="ml-auto text-ui absolute top-0 right-0 underline"
+      className="ml-auto text-sm absolute top-0 right-0 underline"
       onClick={onClick}
     >
       {children}

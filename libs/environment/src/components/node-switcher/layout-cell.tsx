@@ -18,7 +18,7 @@ export const LayoutCell = ({
   dataTestId,
 }: LayoutCellProps) => {
   const classes = [
-    'px-8 lg:text-right flex justify-between lg:block',
+    'px-2 lg:text-right flex justify-between lg:block',
     'bg-white-60 dark:bg-black-60 lg:bg-transparent lg:dark:bg-transparent',
     'm-2 lg:m-0',
   ];

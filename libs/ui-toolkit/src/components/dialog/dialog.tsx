@@ -27,7 +27,7 @@ export function Dialog({
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed p-8 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
+    'z-20 fixed p-8 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] dark:text-white',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black bg-white',
     getIntentShadow(intent),

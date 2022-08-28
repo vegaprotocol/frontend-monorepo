@@ -1,13 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { t, volumePrefix } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
-import {
-  Dialog,
-  Icon,
-  Intent,
-  Popover,
-  RotatingArrow,
-} from '@vegaprotocol/ui-toolkit';
+import { Dialog, Icon, Intent, Popover } from '@vegaprotocol/ui-toolkit';
 import { useMemo, useState } from 'react';
 import { MARKET_LIST_QUERY } from '../markets-data-provider';
 import type { Column } from './select-market-columns';

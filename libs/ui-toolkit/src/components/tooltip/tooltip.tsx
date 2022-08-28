@@ -14,10 +14,17 @@ export interface TooltipProps {
   description?: string | ReactNode;
   open?: boolean;
   align?: 'start' | 'center' | 'end';
+  side?: 'top' | 'right' | 'bottom' | 'left';
 }
 
 // Conditionally rendered tooltip if description content is provided.
-export const Tooltip = ({ children, description, open, align }: TooltipProps) =>
+export const Tooltip = ({
+  children,
+  description,
+  open,
+  align = 'start',
+  side = 'bottom',
+}: TooltipProps) =>
   description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
       <Root open={open}>
@@ -26,21 +33,15 @@ export const Tooltip = ({ children, description, open, align }: TooltipProps) =>
           <Portal>
             <Content
               align={align}
+              side={side}
               alignOffset={8}
-              className="tooltip-content dark:tooltip-content-dark z-20"
+              className="bg-neutral-200 px-4 py-2 z-20 rounded text-sm"
             >
-              <div className="relative z-0 p-8 bg-black-50 border border-black-60 text-white rounded-sm max-w-sm text-ui">
-                {description}
-              </div>
+              <div className="relative z-0">{description}</div>
               <Arrow
                 width={10}
                 height={5}
-                className="fill-black-60 dark:fill-white-60 z-0 translate-x-[1px] translate-y-[-1px]"
-              />
-              <Arrow
-                width={8}
-                height={4}
-                className="z-[1] translate-y-[-1px] fill-black-50"
+                className="fill-neutral-200 z-0 translate-x-[1px] translate-y-[-1px]"
               />
             </Content>
           </Portal>

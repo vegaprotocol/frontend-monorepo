@@ -27,7 +27,7 @@ interface OrderbookProps extends OrderbookData {
 
 const HorizontalLine = ({ top, testId }: { top: string; testId: string }) => (
   <div
-    className="absolute border-b-[1px] border-neutral-300 dark:border-neutral-700 inset-x-0"
+    className="absolute border-b border-neutral-300 dark:border-neutral-700 inset-x-0"
     style={{ top }}
     data-testid={testId}
   />
@@ -320,7 +320,7 @@ export const Orderbook = ({
       data-testid="scroll"
     >
       <div
-        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b-[1px] pt-2 bg-white dark:bg-black z-10 border-neutral-300 dark:border-neutral-700"
+        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b pt-2 bg-white dark:bg-black z-10 border-neutral-300 dark:border-neutral-700"
         style={{ gridAutoRows: '17px' }}
       >
         <div>{t('Bid vol')}</div>

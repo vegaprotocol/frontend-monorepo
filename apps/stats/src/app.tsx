@@ -13,7 +13,7 @@ function App() {
       <NetworkLoader createClient={createClient}>
         <div className="w-screen min-h-screen grid pb-24 bg-white text-black-95 dark:bg-black dark:text-white-80">
           <div className="layout-grid w-screen justify-self-center">
-            <Header toggleTheme={toggleTheme} />
+            <Header theme={theme} toggleTheme={toggleTheme} />
             <StatsManager className="max-w-3xl px-24" />
           </div>
         </div>

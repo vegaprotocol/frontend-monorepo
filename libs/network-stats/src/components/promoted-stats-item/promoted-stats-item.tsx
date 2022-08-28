@@ -24,11 +24,11 @@ export const PromotedStatsItem = ({
   return (
     <Tooltip description={description} align="start">
       <Card>
-        <div className="uppercase text-[0.9375rem]">
+        <div className="uppercase text-sm">
           <Indicator variant={variant} />
           <span data-testid="stats-title">{title}</span>
         </div>
-        <div data-testid="stats-value" className="mt-4 text-h4 leading-none">
+        <div data-testid="stats-value" className="mt-2 text-2xl">
           {formatter ? formatter(value) : defaultFieldFormatter(value)}
         </div>
       </Card>

@@ -1,4 +1,12 @@
 module.exports = {
+  screens: {
+    xs: '500px',
+    sm: '640px',
+    md: '768px',
+    lg: '960px',
+    xl: '1280px',
+    xxl: '1536px',
+  },
   colors: {
     transparent: 'transparent',
     current: 'currentColor',
@@ -12,6 +20,10 @@ module.exports = {
       orange: '#FF7A1A',
       blue: '#1DA2FB',
     },
+    danger: '#FF261A',
+    warning: '#FF7A1A',
+    selected: '#DFFF0B',
+    success: '#00F780',
   },
 };
 
