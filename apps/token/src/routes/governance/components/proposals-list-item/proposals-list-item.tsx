@@ -11,7 +11,7 @@ export const ProposalsListItem = ({ proposal }: ProposalsListItemProps) => {
 
   return (
     <li
-      className="py-4 border-b border-neutral-400"
+      className="py-4 border-b border-neutral-400 last:border-0"
       id={proposal.id}
       data-testid="proposals-list-item"
     >
