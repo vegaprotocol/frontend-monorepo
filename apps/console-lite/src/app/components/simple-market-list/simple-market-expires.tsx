@@ -22,7 +22,7 @@ const SimpleMarketExpires = ({
       return agg;
     }, null);
     return dateFound ? (
-      <div className="p-2 text-ui-small border-1 border-pink text-pink inline-block">{`${format(
+      <div className="p-2 text-ui-small border border-pink text-pink inline-block">{`${format(
         dateFound as Date,
         EXPIRE_DATE_FORMAT
       )}`}</div>

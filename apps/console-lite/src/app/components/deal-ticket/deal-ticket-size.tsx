@@ -8,6 +8,7 @@ import {
   Button,
   Input,
   FormGroup,
+  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { DealTicketEstimates } from './deal-ticket-estimates';
@@ -108,12 +109,12 @@ export const DealTicketSize = ({
     <p>Not enough balance to trade</p>
   ) : (
     <div>
-      <div className="flex justify-between text-black dark:text-white mb-8">
+      <div className="flex justify-between text-black dark:text-white mb-2">
         <span data-testid="min-label">{min}</span>
         <span data-testid="max-label">{max}</span>
       </div>
       <SliderRoot
-        className="mb-8"
+        className="mb-2"
         value={[value]}
         onValueChange={onValueChange}
         step={step}
@@ -128,35 +129,34 @@ export const DealTicketSize = ({
 
       <div
         data-testid="percentage-selector"
-        className="flex w-full justify-between text-black dark:text-white mb-32"
+        className="flex w-full justify-between text-black dark:text-white mb-6"
       >
         {sizeRatios.map((size, index) => {
           const proportionalSize = size ? (size / 100) * max : min;
           return (
-            <Button
-              variant="inline-link"
-              className="no-underline !text-blue"
+            <button
+              className="no-underline hover:underline text-blue"
               onClick={() => onButtonValueChange(proportionalSize)}
+              type="button"
               key={index}
             >
               {getSizeLabel(size)}
-            </Button>
+            </button>
           );
         })}
       </div>
 
       <dl className="text-black dark:text-white">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-4">
           <dt>{t('Contracts')}</dt>
           <dd className="flex justify-end w-full">
             <FormGroup
-              className="mb-0 flex items-center"
-              labelClassName="mr-8 sr-only"
+              hideLabel={true}
               label="Enter Size"
               labelFor="trade-size-input"
             >
               {isInputVisible ? (
-                <>
+                <div className="flex items-center">
                   <Input
                     id="input-order-size-market"
                     type="number"
@@ -168,22 +168,21 @@ export const DealTicketSize = ({
                     onKeyDown={onInputEnter}
                     onChange={onInputValueChange}
                   />
-                  <Button
-                    variant="inline-link"
-                    className="no-underline !text-blue"
+                  <button
+                    className="no-underline hover:underline text-blue ml-2"
+                    type="button"
                     onClick={toggleInput}
                   >
                     {t('set')}
-                  </Button>
-                </>
+                  </button>
+                </div>
               ) : (
-                <Button
-                  variant="inline-link"
-                  className="no-underline !text-blue"
+                <button
+                  className="no-underline hover:underline text-blue"
                   onClick={toggleInput}
                 >
                   {value}
-                </Button>
+                </button>
               )}
             </FormGroup>
           </dd>

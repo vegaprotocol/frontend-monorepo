@@ -7,20 +7,22 @@ import LocalContext from '../../context/local-context';
 const Header = () => {
   const {
     vegaWalletDialog: { setConnect, setManage },
+    theme,
     toggleTheme,
   } = useContext(LocalContext);
   return (
     <div
-      className="flex items-stretch pr-16 py-16 bg-black text-white-60"
+      className="flex items-stretch pr-6 py-6 bg-black text-neutral-400"
       data-testid="header"
     >
       <Logo />
-      <div className="flex items-center gap-4 ml-auto mr-8 relative z-10">
+      <div className="flex items-center gap-2 ml-auto relative z-10">
         <VegaWalletConnectButton
           setConnectDialog={setConnect}
           setManageDialog={setManage}
         />
         <ThemeSwitcher
+          theme={theme}
           onToggle={toggleTheme}
           className="-my-4"
           sunClassName="text-white"

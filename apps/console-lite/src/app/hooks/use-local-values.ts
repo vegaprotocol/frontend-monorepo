@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { LocalValues } from '../context/local-context';
 
-const useLocalValues = (toggleTheme: () => void) => {
+const useLocalValues = (theme: 'light' | 'dark', toggleTheme: () => void) => {
   const [connect, setConnect] = useState<boolean>(false);
   const [manage, setManage] = useState<boolean>(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,9 +9,10 @@ const useLocalValues = (toggleTheme: () => void) => {
     () => ({
       vegaWalletDialog: { connect, manage, setConnect, setManage },
       menu: { menuOpen, setMenuOpen, onToggle: () => setMenuOpen(!menuOpen) },
+      theme,
       toggleTheme,
     }),
-    [connect, manage, toggleTheme, menuOpen]
+    [connect, manage, theme, toggleTheme, menuOpen]
   );
 };
 

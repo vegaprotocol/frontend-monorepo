@@ -26,7 +26,7 @@ export const VLogo = () => {
       height="34"
       fill="currentColor"
       viewBox="0 0 29 34"
-      className="mx-20 my-16"
+      className="mx-6 my-2"
     >
       <path d="M14.5003 29.1426H9.6665V34.0001H14.5003V29.1426Z" />
       <path d="M19.3343 24.2859H14.5005V29.1434H19.3343V24.2859Z" />

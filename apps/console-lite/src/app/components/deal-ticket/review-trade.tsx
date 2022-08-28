@@ -67,7 +67,7 @@ export default ({
     <div className="mb-8 text-black dark:text-white" data-testid="review-trade">
       <KeyValueTable>
         <KeyValueTableRow noBorder>
-          <div className="flex flex-none gap-x-5 items-center">
+          <div className="flex flex-none gap-x-2 items-center">
             <div
               className={classNames(
                 {
@@ -75,7 +75,7 @@ export default ({
                   'sellButton dark:sellButtonDark':
                     order.side === Side.SIDE_SELL,
                 },
-                'px-8 py-4 inline text-ui-small'
+                'px-2 py-1 inline text-ui-small'
               )}
             >
               {SIDE_NAMES[order.side]}
@@ -107,17 +107,18 @@ export default ({
         notionalSize={notionalSize}
       />
 
-      <Button
-        className="w-full !py-8 mt-64 max-w-sm"
-        boxShadow={false}
-        variant="secondary"
-        type="submit"
-        disabled={transactionStatus === 'pending' || isDisabled}
-        data-testid="place-order"
-        appendIconName="arrow-top-right"
-      >
-        {transactionStatus === 'pending' ? t('Pending...') : t('Submit')}
-      </Button>
+      <div className="mt-12 max-w-sm">
+        <Button
+          fill={true}
+          variant="secondary"
+          type="submit"
+          disabled={transactionStatus === 'pending' || isDisabled}
+          data-testid="place-order"
+          rightIcon="arrow-top-right"
+        >
+          {transactionStatus === 'pending' ? t('Pending...') : t('Submit')}
+        </Button>
+      </div>
     </div>
   );
 };

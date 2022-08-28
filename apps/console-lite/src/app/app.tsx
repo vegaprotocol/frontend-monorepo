@@ -19,7 +19,7 @@ import useLocalValues from './hooks/use-local-values';
 
 function App() {
   const [theme, toggleTheme] = useThemeSwitcher();
-  const localValues = useLocalValues(toggleTheme);
+  const localValues = useLocalValues(theme, toggleTheme);
   const {
     vegaWalletDialog,
     menu: { setMenuOpen },

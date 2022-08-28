@@ -23,11 +23,11 @@ export const ThemeSwitcher = ({
       data-testid="theme-switcher"
     >
       {theme === 'dark' ? (
-        <span className="text-neutral-700 dark:text-neutral-300">
+        <span className="text-neutral-300">
           <SunIcon />
         </span>
       ) : (
-        <span className="text-neutral-700 dark:text-neutral-300">
+        <span className="text-neutral-300">
           <MoonIcon />
         </span>
       )}

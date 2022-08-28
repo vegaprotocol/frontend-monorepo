@@ -54,7 +54,7 @@ export const DealTicketContainer = () => {
       {(data) => {
         const balance = (
           <DealTicketBalance
-            className="mb-16"
+            className="mb-4"
             settlementAsset={
               data.market.tradableInstrument.instrument.product?.settlementAsset
             }

@@ -35,7 +35,7 @@ export const Tooltip = ({
               align={align}
               side={side}
               alignOffset={8}
-              className="bg-neutral-200 px-4 py-2 z-20 rounded text-sm"
+              className="max-w-sm bg-neutral-200 px-4 py-2 z-20 rounded text-sm break-all"
             >
               <div className="relative z-0">{description}</div>
               <Arrow

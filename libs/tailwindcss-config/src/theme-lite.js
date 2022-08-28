@@ -6,6 +6,8 @@ module.exports = {
   ...theme,
   colors: {
     ...theme.colors,
+    ...colors,
+    deemphasise: '#8A9BA8',
     offBlack: '#252525',
     midGrey: '#828282',
     borderGrey: '#4f4f4f',
@@ -16,6 +18,7 @@ module.exports = {
     mint: '#00F780',
     pink: '#FF077F',
     blue: '#2E6DE5',
+    'white-normal': '#F5F8FA',
     vega: {
       ...theme.colors.vega,
       'highlight-item': '#000',

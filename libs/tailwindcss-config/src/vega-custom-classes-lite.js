@@ -1,5 +1,6 @@
 const plugin = require('tailwindcss/plugin');
 const theme = require('./theme-lite');
+const colors = require('tailwindcss/colors');
 
 const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
   addUtilities({
@@ -26,7 +27,7 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       width: '4px',
       height: '4px',
       borderRadius: '50%',
-      backgroundColor: theme.colors.black[10],
+      backgroundColor: colors.neutral[900],
       marginTop: '10px',
       marginRight: '5px',
     },
@@ -38,20 +39,20 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       color: theme.colors.darkerGreen,
       '&:hover': {
         backgroundColor: theme.colors.darkerGreen,
-        color: theme.colors.white.DEFAULT,
+        color: colors.white,
       },
       '&.selected': {
         backgroundColor: theme.colors.darkerGreen,
-        color: theme.colors.white.DEFAULT,
+        color: colors.white,
       },
     },
     '.buyButtonDark': {
       color: theme.colors.darkerGreen,
       '&:hover': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
       '&.selected': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
     },
     '.sellButton': {
@@ -61,21 +62,21 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       border: `1px solid ${theme.colors.pink}`,
       color: theme.colors.pink,
       '&:hover': {
-        color: theme.colors.white.DEFAULT,
+        color: colors.white,
         backgroundColor: theme.colors.pink,
       },
       '&.selected': {
         backgroundColor: theme.colors.pink,
-        color: theme.colors.white.DEFAULT,
+        color: colors.white,
       },
     },
     '.sellButtonDark': {
       color: theme.colors.pink,
       '&:hover': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
       '&.selected': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
     },
     // '.tooltip-content': {
