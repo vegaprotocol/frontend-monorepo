@@ -1,32 +1,15 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
-import { Button } from '../button';
 
 const itemClass = classNames(
-  'relative',
-  'flex items-center justify-between',
-  'text-ui leading-1',
-  'h-[25px]',
-  'py-0 pr-8',
-  'cursor-default',
-  'hover:cursor-pointer',
+  'relative flex items-center justify-between rounded-sm p-2 text-sm',
+  'cursor-default hover:cursor-pointer',
+  'hover:bg-white dark:hover:bg-neutral-200',
+  'focus:bg-white dark:focus:bg-neutral-200',
   'select-none',
-  'whitespace-nowrap',
-  'focus:bg-vega-highlight-item dark:focus:bg-vega-highlight-item-dark',
-  'focus:text-white dark:focus:text-black',
-  'focus:outline-none'
+  'whitespace-nowrap'
 );
-
-function getItemClasses(inset: boolean, checked?: boolean) {
-  return classNames(
-    itemClass,
-    inset ? 'pl-28' : 'pl-8',
-    checked
-      ? 'bg-vega-highlight-item dark:bg-vega-highlight-item-dark text-white dark:text-black'
-      : 'text-black dark:text-white'
-  );
-}
 
 /**
  * Contains all the parts of a dropdown menu.
@@ -44,11 +27,9 @@ export const DropdownMenuTrigger = forwardRef<
   <DropdownMenuPrimitive.Trigger
     asChild={true}
     ref={forwardedRef}
-    className="focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow transition-none hover:bg-white-95 dark:hover:bg-black-80"
+    className="text-sm p-2 rounded bg-transparent border-[1px] border-neutral-500 focus:border-black dark:focus-border-white"
   >
-    <Button size="sm" rightIcon="chevron-down">
-      {children}
-    </Button>
+    <button>{children}</button>
   </DropdownMenuPrimitive.Trigger>
 ));
 
@@ -67,10 +48,9 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className={classNames(
-      'inline-block box-border border-1 border-black bg-dropdown-bg dark:bg-dropdown-bg-dark',
-      className
-    )}
+    className="min-w-[290px] bg-neutral-200 p-2 rounded"
+    align="start"
+    sideOffset={10}
   />
 ));
 
@@ -79,14 +59,12 @@ export const DropdownMenuContent = forwardRef<
  */
 export const DropdownMenuItem = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
-    inset?: boolean;
-  }
->(({ className, inset = false, ...itemProps }, forwardedRef) => (
+  React.ComponentProps<typeof DropdownMenuPrimitive.Item>
+>(({ ...itemProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Item
     {...itemProps}
     ref={forwardedRef}
-    className={classNames(getItemClasses(inset), className)}
+    className={itemClass}
   />
 ));
 
@@ -103,7 +81,7 @@ export const DropdownMenuCheckboxItem = forwardRef<
     {...checkboxItemProps}
     ref={forwardedRef}
     className={classNames(
-      getItemClasses(inset, checkboxItemProps.checked),
+      itemClass,
       className,
       'hover:shadow-inset-black dark:hover:shadow-inset-white',
       'focus:shadow-inset-black dark:focus:shadow-inset-white'
@@ -123,7 +101,7 @@ export const DropdownMenuRadioItem = forwardRef<
   <DropdownMenuPrimitive.RadioItem
     {...radioItemprops}
     ref={forwardedRef}
-    className={classNames(getItemClasses(inset), className)}
+    className={classNames(itemClass, className)}
   />
 ));
 
@@ -134,14 +112,11 @@ export const DropdownMenuRadioItem = forwardRef<
 export const DropdownMenuItemIndicator = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.ItemIndicator>,
   React.ComponentProps<typeof DropdownMenuPrimitive.ItemIndicator>
->(({ className, ...itemIndicatorProps }, forwardedRef) => (
+>(({ ...itemIndicatorProps }, forwardedRef) => (
   <DropdownMenuPrimitive.ItemIndicator
     {...itemIndicatorProps}
     ref={forwardedRef}
-    className={classNames(
-      'absolute inline-flex justify-center align-middle left-0 w-24',
-      className
-    )}
+    className="flex-end"
   />
 ));
 

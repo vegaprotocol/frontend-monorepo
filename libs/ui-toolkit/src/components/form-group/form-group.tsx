@@ -26,7 +26,7 @@ export const FormGroup = ({
     }
   );
   return (
-    <div data-testid="form-group" className="mb-6">
+    <div data-testid="form-group" className="relative mb-6">
       {label && (
         <label htmlFor={labelFor} className={labelClasses}>
           <div className="font-medium mb-2">{label}</div>

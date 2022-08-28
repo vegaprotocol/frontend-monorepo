@@ -57,15 +57,11 @@ export const CandlesChartContainer = ({
     return new VegaDataSource(client, marketId, keypair?.pub);
   }, [client, marketId, keypair]);
 
-  const dropdownTriggerStyles = 'border-black-60 dark:border-white-60 px-20';
-
   return (
     <div className="h-full flex flex-col">
-      <div className="p-8 flex flex-row flex-wrap gap-8">
+      <div className="px-4 py-2 flex flex-row flex-wrap gap-4">
         <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerStyles}>
-            {t('Interval')}
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger>{t('Interval')}</DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuRadioGroup
               value={interval}
@@ -79,17 +75,17 @@ export const CandlesChartContainer = ({
                   inset
                   value={timeInterval}
                 >
+                  {intervalLabels[timeInterval]}
                   <DropdownMenuItemIndicator>
                     <Icon name="tick" />
                   </DropdownMenuItemIndicator>
-                  {intervalLabels[timeInterval]}
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerStyles}>
+          <DropdownMenuTrigger>
             <Icon name={chartTypeIcon.get(chartType) as IconName} />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -101,19 +97,17 @@ export const CandlesChartContainer = ({
             >
               {Object.values(ChartType).map((type) => (
                 <DropdownMenuRadioItem key={type} inset value={type}>
+                  {chartTypeLabels[type]}
                   <DropdownMenuItemIndicator>
                     <Icon name="tick" />
                   </DropdownMenuItemIndicator>
-                  {chartTypeLabels[type]}
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerStyles}>
-            {t('Overlays')}
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger>{t('Overlays')}</DropdownMenuTrigger>
           <DropdownMenuContent>
             {Object.values(Overlay).map((overlay) => (
               <DropdownMenuCheckboxItem
@@ -131,18 +125,16 @@ export const CandlesChartContainer = ({
                   setOverlays(newOverlays);
                 }}
               >
+                {overlayLabels[overlay]}
                 <DropdownMenuItemIndicator>
                   <Icon name="tick" />
                 </DropdownMenuItemIndicator>
-                {overlayLabels[overlay]}
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
-          <DropdownMenuTrigger className={dropdownTriggerStyles}>
-            {t('Studies')}
-          </DropdownMenuTrigger>
+          <DropdownMenuTrigger>{t('Studies')}</DropdownMenuTrigger>
           <DropdownMenuContent>
             {Object.values(Study).map((study) => (
               <DropdownMenuCheckboxItem
@@ -160,10 +152,10 @@ export const CandlesChartContainer = ({
                   setStudies(newStudies);
                 }}
               >
+                {studyLabels[study]}
                 <DropdownMenuItemIndicator>
                   <Icon name="tick" />
                 </DropdownMenuItemIndicator>
-                {studyLabels[study]}
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>

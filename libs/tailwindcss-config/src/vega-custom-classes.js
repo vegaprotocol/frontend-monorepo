@@ -30,9 +30,6 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
     '.syntax-highlighter-wrapper .hljs-string': {
       color: theme.colors.vega.blue,
     },
-    '.color-scheme-dark': {
-      colorScheme: 'dark',
-    },
     '.clip-path-rounded': {
       clipPath: 'circle(50%)',
     },

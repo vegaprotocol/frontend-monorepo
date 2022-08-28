@@ -213,7 +213,7 @@ export const DealTicketSteps = ({
       component: (
         <div className="mb-8">
           {invalidText && (
-            <InputError className="mb-8" data-testid="dealticket-error-message">
+            <InputError data-testid="dealticket-error-message">
               {invalidText}
             </InputError>
           )}

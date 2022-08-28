@@ -32,7 +32,7 @@ export const CheckboxItems = () => {
         <DropdownMenuTrigger className="w-[300px]">
           <span>Select many things</span>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-[300px]">
+        <DropdownMenuContent>
           {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
             <DropdownMenuCheckboxItem
               key={label}
@@ -59,19 +59,19 @@ export const RadioItems = () => {
           <span>Open</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem inset onSelect={() => console.log('minimize')}>
+          <DropdownMenuItem onSelect={() => console.log('minimize')}>
             Minimize window
           </DropdownMenuItem>
-          <DropdownMenuItem inset onSelect={() => console.log('zoom')}>
+          <DropdownMenuItem onSelect={() => console.log('zoom')}>
             Zoom
           </DropdownMenuItem>
-          <DropdownMenuItem inset onSelect={() => console.log('smaller')}>
+          <DropdownMenuItem onSelect={() => console.log('smaller')}>
             Smaller
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuRadioGroup value={selected} onValueChange={setSelected}>
             {files.map((file) => (
-              <DropdownMenuRadioItem key={file} inset value={file}>
+              <DropdownMenuRadioItem key={file} value={file}>
                 {file}
               </DropdownMenuRadioItem>
             ))}

@@ -130,16 +130,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const hasPrepended = !!(prependIconName || prependElement);
     const hasAppended = !!(appendIconName || appendElement);
 
-    const inputClassName = classNames(
-      'appearance-none',
-      'dark:color-scheme-dark',
-      'shadow-input dark:shadow-input-dark',
-      className,
-      {
-        'pl-10': hasPrepended,
-        'pr-10': hasAppended,
-      }
-    );
+    const inputClassName = classNames('appearance-none', className, {
+      'pl-10': hasPrepended,
+      'pr-10': hasAppended,
+    });
 
     const input = (
       <input

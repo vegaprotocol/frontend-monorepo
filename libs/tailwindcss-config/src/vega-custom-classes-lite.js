@@ -3,15 +3,6 @@ const theme = require('./theme-lite');
 
 const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
   addUtilities({
-    '.input-border': {
-      borderWidth: '0',
-    },
-    '.input-border-dark': {
-      borderWidth: '0',
-    },
-    '.shadow-input': {
-      boxShadow: 'none',
-    },
     '.percent-change-up::before': {
       content: ' ',
       display: 'block',

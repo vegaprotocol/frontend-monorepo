@@ -84,7 +84,7 @@ export const WithdrawForm = ({
       noValidate={true}
       data-testid="withdraw-form"
     >
-      <FormGroup label={t('Asset')} labelFor="asset" className="relative">
+      <FormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -109,16 +109,10 @@ export const WithdrawForm = ({
           )}
         />
         {errors.asset?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.asset.message}
-          </InputError>
+          <InputError intent="danger">{errors.asset.message}</InputError>
         )}
       </FormGroup>
-      <FormGroup
-        label={t('To (Ethereum address)')}
-        labelFor="ethereum-address"
-        className="relative"
-      >
+      <FormGroup label={t('To (Ethereum address)')} labelFor="ethereum-address">
         <Web3WalletInput
           inputProps={{
             id: 'ethereum-address',
@@ -126,9 +120,7 @@ export const WithdrawForm = ({
           }}
         />
         {errors.to?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.to.message}
-          </InputError>
+          <InputError intent="danger">{errors.to.message}</InputError>
         )}
       </FormGroup>
       {selectedAsset && limits && (
@@ -136,7 +128,7 @@ export const WithdrawForm = ({
           <WithdrawLimits limits={limits} balance={max.balance} />
         </div>
       )}
-      <FormGroup label={t('Amount')} labelFor="amount" className="relative">
+      <FormGroup label={t('Amount')} labelFor="amount">
         <Input
           type="number"
           autoComplete="off"

@@ -57,6 +57,7 @@ export const Search = () => {
     >
       <FormGroup
         label={t('Search by block number or transaction hash')}
+        // DU: Fix me
         className="relative w-full md:w-2/3 mb-0"
         labelClassName="sr-only"
         labelFor="search"
@@ -70,13 +71,11 @@ export const Search = () => {
           placeholder={t('Enter block number or transaction hash')}
         />
         {error?.message && (
-          <InputError
-            data-testid="search-error"
-            intent="danger"
-            className="absolute top-[100%] flex-1 w-full"
-          >
-            {error.message}
-          </InputError>
+          <div className="absolute top-[100%] flex-1 w-full">
+            <InputError data-testid="search-error" intent="danger">
+              {error.message}
+            </InputError>
+          </div>
         )}
       </FormGroup>
       <Button type="submit" size="sm" data-testid="search-button">

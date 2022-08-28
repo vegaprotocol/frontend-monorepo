@@ -98,10 +98,7 @@ export const NetworkSwitcher = () => {
         <span className="mr-4">{envTriggerMapping[VEGA_ENV]}</span>
         <Icon name="chevron-down" />
       </DropdownMenuPrimitive.Trigger>
-      <DropdownMenuContent
-        align="start"
-        className="bg-dropdown-bg-dark border-none"
-      >
+      <DropdownMenuContent align="start">
         {!isAdvancedView && (
           <>
             {standardNetworkKeys.map((key) => (

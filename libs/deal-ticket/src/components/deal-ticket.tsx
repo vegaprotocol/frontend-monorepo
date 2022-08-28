@@ -118,21 +118,18 @@ export const DealTicket = ({
             )}
           />
         )}
-      <div className="mb-8">
-        <Button
-          variant="primary"
-          fill={true}
-          type="submit"
-          disabled={isDisabled}
-          data-testid="place-order"
-        >
-          {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
-        </Button>
-      </div>
+      <Button
+        variant="primary"
+        fill={true}
+        type="submit"
+        disabled={isDisabled}
+        data-testid="place-order"
+      >
+        {transactionStatus === 'pending' ? t('Pending...') : t('Place order')}
+      </Button>
       {message && (
         <InputError
           intent={isDisabled ? 'danger' : 'warning'}
-          className="mt-12 mb-12"
           data-testid="dealticket-error-message"
         >
           {message}

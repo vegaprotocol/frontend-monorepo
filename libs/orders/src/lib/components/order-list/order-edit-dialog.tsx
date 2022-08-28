@@ -96,7 +96,7 @@ export const OrderEditDialog = ({
               id="entryPrice"
             />
             {errors.entryPrice?.message && (
-              <InputError intent="danger" className="mt-4">
+              <InputError intent="danger">
                 {errors.entryPrice.message}
               </InputError>
             )}

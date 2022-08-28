@@ -146,10 +146,10 @@ interface ButtonContentProps {
 
 const ButtonContent = ({ children, icon, rightIcon }: ButtonContentProps) => {
   const iconEl = icon ? (
-    <Icon name={icon} className="fill-current mr-4 align-text-top" />
+    <Icon name={icon} className="fill-current mr-2 align-text-top" />
   ) : null;
   const rightIconEl = rightIcon ? (
-    <Icon name={rightIcon} className="fill-current ml-4 align-text-top" />
+    <Icon name={rightIcon} className="fill-current ml-2 align-text-top" />
   ) : null;
 
   return (

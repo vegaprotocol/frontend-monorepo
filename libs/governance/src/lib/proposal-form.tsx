@@ -58,7 +58,7 @@ export const ProposalForm = () => {
           })}
         />
         {errors.proposalData?.message && (
-          <InputError intent="danger" className="mt-4">
+          <InputError intent="danger">
             {errors.proposalData?.message}
           </InputError>
         )}

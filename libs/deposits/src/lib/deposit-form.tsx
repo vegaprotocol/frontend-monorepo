@@ -145,12 +145,10 @@ export const DepositForm = ({
           }}
         />
         {errors.from?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.from.message}
-          </InputError>
+          <InputError intent="danger">{errors.from.message}</InputError>
         )}
       </FormGroup>
-      <FormGroup label={t('Asset')} labelFor="asset" className="relative">
+      <FormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -174,7 +172,7 @@ export const DepositForm = ({
           )}
         />
         {errors.asset?.message && (
-          <InputError intent="danger" className="mt-4" forInput="asset">
+          <InputError intent="danger" forInput="asset">
             {errors.asset.message}
           </InputError>
         )}
@@ -196,13 +194,13 @@ export const DepositForm = ({
           </button>
         )}
       </FormGroup>
-      <FormGroup label={t('To (Vega key)')} labelFor="to" className="relative">
+      <FormGroup label={t('To (Vega key)')} labelFor="to">
         <Input
           {...register('to', { validate: { required, vegaPublicKey } })}
           id="to"
         />
         {errors.to?.message && (
-          <InputError intent="danger" className="mt-4" forInput="to">
+          <InputError intent="danger" forInput="to">
             {errors.to.message}
           </InputError>
         )}
@@ -222,7 +220,7 @@ export const DepositForm = ({
           <DepositLimits max={max} deposited={deposited} balance={balance} />
         </div>
       )}
-      <FormGroup label={t('Amount')} labelFor="amount" className="relative">
+      <FormGroup label={t('Amount')} labelFor="amount">
         <Input
           type="number"
           autoComplete="off"
@@ -246,7 +244,7 @@ export const DepositForm = ({
           })}
         />
         {errors.amount?.message && (
-          <InputError intent="danger" className="mt-4" forInput="amount">
+          <InputError intent="danger" forInput="amount">
             {errors.amount.message}
           </InputError>
         )}
