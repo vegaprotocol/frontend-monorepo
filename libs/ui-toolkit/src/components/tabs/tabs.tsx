@@ -20,29 +20,33 @@ export const Tabs = ({ children }: TabsProps) => {
     >
       <div className="border-b-[1px] border-neutral-300 dark:border-neutral-700">
         <TabsPrimitive.List
-          className="flex flex-nowrap overflow-x-auto"
+          className="flex flex-nowrap overflow-visible"
           role="tablist"
         >
-          <div>
-            {Children.map(children, (child) => {
-              if (!isValidElement(child)) return null;
-              // const isActive = child.props.id === activeTab;
-              const triggerClass = classNames(
-                'px-4 py-2 border-r-[1px] border-neutral-300 dark:border-neutral-700',
-                'text-white dark:text-white',
-                'uppercase'
-              );
-              return (
-                <TabsPrimitive.Trigger
-                  data-testid={child.props.name}
-                  value={child.props.id}
-                  className={triggerClass}
-                >
-                  {child.props.name}
-                </TabsPrimitive.Trigger>
-              );
-            })}
-          </div>
+          {Children.map(children, (child) => {
+            if (!isValidElement(child)) return null;
+            const isActive = child.props.id === activeTab;
+            const triggerClass = classNames(
+              'relative px-4 py-2 border-r-[1px] border-neutral-300 dark:border-neutral-700',
+              'text-black dark:text-white',
+              'uppercase'
+            );
+            const borderClass = classNames(
+              'absolute bottom-[-1px] left-0 w-full h-0 border-b-[1px]',
+              'border-b-white dark:border-b-black',
+              { hidden: !isActive }
+            );
+            return (
+              <TabsPrimitive.Trigger
+                data-testid={child.props.name}
+                value={child.props.id}
+                className={triggerClass}
+              >
+                {child.props.name}
+                <span className={borderClass} />
+              </TabsPrimitive.Trigger>
+            );
+          })}
         </TabsPrimitive.List>
       </div>
       <div className="h-full overflow-auto">

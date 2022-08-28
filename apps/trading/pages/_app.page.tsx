@@ -9,9 +9,7 @@ import {
 } from '@vegaprotocol/wallet';
 import { EnvironmentProvider } from '@vegaprotocol/environment';
 import { Connectors } from '../lib/vega-connectors';
-import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 import { AppLoader } from '../components/app-loader';
-import { VegaWalletConnectButton } from '../components/vega-wallet-connect-button';
 import './styles.css';
 import { useGlobalStore } from '../stores';
 import {
@@ -30,26 +28,9 @@ function AppBody({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div className="h-full relative text-black-60 dark:text-white-60 z-0 grid grid-rows-[min-content,1fr]">
+      <div className="h-full relative dark:text-white z-0 grid grid-rows-[min-content,1fr]">
         <AppLoader>
-          <div className="flex items-stretch border-b-[7px] bg-black border-vega-pink dark:border-vega-yellow">
-            <Navbar />
-            <div className="flex items-center gap-4 ml-auto mr-8">
-              <VegaWalletConnectButton
-                setConnectDialog={(open) => {
-                  store.setVegaWalletConnectDialog(open);
-                }}
-                setManageDialog={(open) => {
-                  store.setVegaWalletManageDialog(open);
-                }}
-              />
-              <ThemeSwitcher
-                onToggle={toggleTheme}
-                className="-my-4"
-                sunClassName="text-white"
-              />
-            </div>
-          </div>
+          <Navbar theme={theme} toggleTheme={toggleTheme} />
           <main data-testid={pageProps.page} className="dark:bg-black">
             {/* @ts-ignore conflict between @types/react and nextjs internal types */}
             <Component {...pageProps} />

@@ -5,32 +5,56 @@ import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
 import { Vega } from '../icons/vega';
 import { useGlobalStore } from '../../stores/global';
+import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
+import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
 
-export const Navbar = () => {
-  const { marketId } = useGlobalStore();
-  const tradingPath = marketId ? `/markets/${marketId}` : '/';
+interface NavbarProps {
+  theme: 'light' | 'dark';
+  toggleTheme: () => void;
+}
+
+export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
+  const store = useGlobalStore();
+  const tradingPath = store.marketId ? `/markets/${store.marketId}` : '/';
   return (
-    <nav className="flex items-center">
-      <div className="flex items-center h-full">
-        <Link href="/" passHref={true}>
-          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-          <a className="px-4">
-            <Vega className="fill-white" />
-          </a>
-        </Link>
-        <NetworkSwitcher />
+    <div className="px-4 flex items-stretch border-b-[1px] border-neutral-300 dark:border-neutral-700 bg-black">
+      <nav className="flex items-center">
+        <div className="flex gap-4 items-center h-full">
+          <Link href="/" passHref={true}>
+            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+            <a>
+              <Vega className="fill-white" />
+            </a>
+          </Link>
+          <NetworkSwitcher />
+        </div>
+        {[
+          {
+            name: t('Trading'),
+            path: tradingPath,
+            exact: false,
+          },
+          { name: t('Portfolio'), path: '/portfolio' },
+        ].map((route) => (
+          <NavLink key={route.path} {...route} />
+        ))}
+      </nav>
+      <div className="flex items-center gap-4 ml-auto">
+        <VegaWalletConnectButton
+          setConnectDialog={(open) => {
+            store.setVegaWalletConnectDialog(open);
+          }}
+          setManageDialog={(open) => {
+            store.setVegaWalletManageDialog(open);
+          }}
+        />
+        <ThemeSwitcher
+          theme={theme}
+          onToggle={toggleTheme}
+          sunClassName="text-white"
+        />
       </div>
-      {[
-        {
-          name: t('Trading'),
-          path: tradingPath,
-          exact: false,
-        },
-        { name: t('Portfolio'), path: '/portfolio' },
-      ].map((route) => (
-        <NavLink key={route.path} {...route} />
-      ))}
-    </nav>
+    </div>
   );
 };
 
@@ -47,10 +71,12 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
     router.asPath === path || (!exact && router.asPath.startsWith(path));
   const linkClasses = classNames(
     'px-4 py-2 self-end',
-    'uppercase xs:text-ui sm:text-body-large md:text-h5 lg:text-h4',
+    'uppercase',
+    'text-white',
+    'border-b-4',
     {
-      'bg-vega-pink dark:bg-vega-yellow text-white dark:text-black': isActive,
-      'text-white': !isActive,
+      'border-vega-yellow': isActive,
+      'border-transparent': !isActive,
     }
   );
   return (

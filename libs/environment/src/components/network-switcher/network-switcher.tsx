@@ -65,7 +65,7 @@ const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
-  <span className="text-white-80 dark:text-white-80">
+  <span className="text-neutral-800">
     {getLabelText({ isCurrent, isAvailable })}
   </span>
 );
@@ -85,17 +85,17 @@ export const NetworkSwitcher = () => {
     [setOpen, setAdvancedView]
   );
 
-  const menuItemClasses = 'pt-12 pb-12 !pl-16 !pr-16 !h-auto';
+  const menuItemClasses = 'pt-4 pb-4 !pl-6 !pr-6 !h-auto';
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
       <DropdownMenuPrimitive.Trigger
-        className={classNames('h-full outline-none mr-16 text-white px-16', {
+        className={classNames('text-white', {
           'bg-dropdown-bg-dark': isOpen,
         })}
         onClick={() => handleOpen(!isOpen)}
       >
-        <span className="mr-8">{envTriggerMapping[VEGA_ENV]}</span>
+        <span className="mr-4">{envTriggerMapping[VEGA_ENV]}</span>
         <Icon name="chevron-down" />
       </DropdownMenuPrimitive.Trigger>
       <DropdownMenuContent
@@ -111,8 +111,7 @@ export const NetworkSwitcher = () => {
                 disabled={!VEGA_NETWORKS[key]}
                 className={classNames(menuItemClasses, {
                   'text-white': !!VEGA_NETWORKS[key],
-                  'cursor-not-allowed text-white-80 dark:text-white-80':
-                    !VEGA_NETWORKS[key],
+                  'cursor-not-allowed text-neutral-800': !VEGA_NETWORKS[key],
                 })}
               >
                 <a
@@ -128,10 +127,7 @@ export const NetworkSwitcher = () => {
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem
-              className={classNames(
-                menuItemClasses,
-                'text-white-80 dark:text-white-80'
-              )}
+              className={classNames(menuItemClasses, 'text-neutral-800')}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -143,7 +139,7 @@ export const NetworkSwitcher = () => {
           </>
         )}
         {isAdvancedView && (
-          <div className="grid py-12 px-16 grid-cols-[repeat(2,_minmax(0,_auto))] gap-y-12 gap-x-16">
+          <div className="grid py-8 px-6 grid-cols-[repeat(2,_minmax(0,_auto))] gap-y-4 gap-x-8">
             {advancedNetworkKeys.map((key) => (
               <Fragment key={key}>
                 <div className="py-8" data-testid="network-item-advanced">
@@ -151,7 +147,7 @@ export const NetworkSwitcher = () => {
                     href={VEGA_NETWORKS[key]}
                     className={classNames({
                       'text-white': !!VEGA_NETWORKS[key],
-                      'cursor-not-allowed text-white-80 dark:text-white-80':
+                      'cursor-not-allowed text-neutral-800':
                         !VEGA_NETWORKS[key],
                     })}
                   >
@@ -163,7 +159,7 @@ export const NetworkSwitcher = () => {
                   />
                 </div>
                 <span
-                  className="text-white py-8"
+                  className="text-white py-4"
                   data-testid="network-item-description"
                 >
                   {envDescriptionMapping[key]}

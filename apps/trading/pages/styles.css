@@ -7,3 +7,14 @@ body,
 #__next {
   @apply h-full;
 }
+
+/* Styles for allotment */
+html {
+  --focus-border: theme('colors.vega.pink');
+  --separator-border: theme('colors.neutral.300');
+}
+
+html.dark {
+  --focus-border: theme('colors.vega.yellow');
+  --separator-border: theme('colors.neutral.700');
+}

@@ -3,22 +3,18 @@ import classNames from 'classnames';
 import { SunIcon, MoonIcon } from './icons';
 
 export const ThemeSwitcher = ({
+  theme,
   onToggle,
   className,
   sunClassName = '',
   moonClassName = '',
 }: {
+  theme: 'light' | 'dark';
   onToggle: () => void;
   className?: string;
   sunClassName?: string;
   moonClassName?: string;
 }) => {
-  const sunClasses = classNames('dark:hidden text-black', sunClassName);
-  const moonClasses = classNames(
-    'hidden dark:inline text-white',
-    moonClassName
-  );
-
   return (
     <button
       type="button"
@@ -26,12 +22,15 @@ export const ThemeSwitcher = ({
       className={className}
       data-testid="theme-switcher"
     >
-      <span className={sunClasses}>
-        <SunIcon />
-      </span>
-      <span className={moonClasses}>
-        <MoonIcon />
-      </span>
+      {theme === 'dark' ? (
+        <span className="text-white">
+          <SunIcon />
+        </span>
+      ) : (
+        <span className="text-white">
+          <MoonIcon />
+        </span>
+      )}
     </button>
   );
 };

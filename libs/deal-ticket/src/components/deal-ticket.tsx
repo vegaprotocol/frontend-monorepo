@@ -58,7 +58,7 @@ export const DealTicket = ({
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="px-12 py-8" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
       <Controller
         name="type"
         control={control}

@@ -114,8 +114,7 @@ export const SelectMarketPopover = ({
   marketName: string;
   onSelect: (id: string) => void;
 }) => {
-  const headerTriggerButtonClassName =
-    'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
+  const triggerClasses = 'text-2xl flex items-center gap-4 shrink-0';
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data } = useMarkets();
@@ -159,15 +158,10 @@ export const SelectMarketPopover = ({
       open={open}
       onChange={setOpen}
       trigger={
-        <div
-          className={classNames(
-            'dark:text-vega-yellow text-vega-pink',
-            headerTriggerButtonClassName
-          )}
-        >
-          <span className="break-words text-left ml-5 ">{marketName}</span>
+        <span className={triggerClasses}>
+          {marketName}
           <RotatingArrow borderX={8} borderBottom={12} up={open} />
-        </div>
+        </span>
       }
     >
       <div
