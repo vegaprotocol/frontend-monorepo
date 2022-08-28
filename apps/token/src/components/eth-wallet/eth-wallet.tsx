@@ -69,7 +69,6 @@ const AssociatedAmounts = ({
         rightLabel={t('notAssociated')}
         leftColor={colors.white}
         rightColor={colors.black}
-        light={false}
       />
       {vestingAssociationByVegaKey.length ? (
         <div className="pt-2 border-t border-dashed">
@@ -143,7 +142,6 @@ const ConnectedKey = () => {
               total={totalVestedBalance.plus(totalLockedBalance)}
               leftLabel={t('Locked')}
               rightLabel={t('Unlocked')}
-              light={false}
             />
           </section>
         )}
@@ -196,7 +194,7 @@ export const EthWallet = () => {
   const pendingTxs = usePendingTransactions();
 
   return (
-    <WalletCard dark={true}>
+    <WalletCard>
       <section data-testid="ethereum-wallet">
         <WalletCardHeader>
           <h1 className="m-0 uppercase">{t('ethereumKey')}</h1>

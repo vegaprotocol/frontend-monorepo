@@ -8,15 +8,14 @@ import { useNumberParts } from '@vegaprotocol/react-helpers';
 
 interface WalletCardProps {
   children: React.ReactNode;
-  dark?: boolean;
 }
 
-export const WalletCard = ({ dark, children }: WalletCardProps) => {
-  const className = classNames('border border-white', 'p-4', {
-    'bg-black text-white': dark,
-    'bg-white text-black': !dark,
-  });
-  return <div className={className}>{children}</div>;
+export const WalletCard = ({ children }: WalletCardProps) => {
+  return (
+    <div className="text-sm border border-white p-4 bg-black text-white">
+      {children}
+    </div>
+  );
 };
 
 interface WalletCardHeaderProps {

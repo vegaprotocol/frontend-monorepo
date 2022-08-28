@@ -39,7 +39,7 @@ const AppContainer = () => {
   return (
     <Router>
       <AppStateProvider>
-        <div className="grid min-h-full text-neutral-400">
+        <div className="grid min-h-full text-white">
           <AsyncRenderer loading={loading} data={config} error={error}>
             {Connectors && (
               <Web3Provider connectors={Connectors}>

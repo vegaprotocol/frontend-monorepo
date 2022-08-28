@@ -113,7 +113,7 @@ export const RewardsIndex = () => {
       <p>{t('rewardsPara1')}</p>
       <p>{t('rewardsPara2')}</p>
       {payoutDuration ? (
-        <div className="my-24">
+        <div className="my-8">
           <Callout
             title={t('rewardsCallout', {
               duration: formatDistance(new Date(0), payoutDuration),
@@ -130,7 +130,7 @@ export const RewardsIndex = () => {
         !error &&
         data.epoch.timestamps.start &&
         data.epoch.timestamps.expiry && (
-          <section className="mb-24">
+          <section className="mb-8">
             <EpochCountdown
               // eslint-disable-next-line
               id={data!.epoch.id}
@@ -148,7 +148,7 @@ export const RewardsIndex = () => {
             rewardAssetId={rewardAssetData[0]}
           />
         ) : (
-          <div className="mt-12">
+          <div>
             <Button
               data-testid="connect-to-vega-wallet-btn"
               onClick={() =>

@@ -7,7 +7,7 @@ export type { IconName } from '@blueprintjs/icons';
 interface IconProps {
   name: IconName;
   className?: string;
-  size?: 4 | 16 | 20 | 24 | 32 | 48 | 64;
+  size?: 4 | 6 | 8 | 10 | 12 | 14 | 16;
   ariaLabel?: string;
 }
 
@@ -18,17 +18,20 @@ export const Icon = ({ size = 4, name, className, ariaLabel }: IconProps) => {
     'align-text-bottom',
     'fill-current',
     'shrink-0',
+    // Cant just concatenate as TW wont pick up that the class is being used
+    // so below syntax is required
     {
-      'w-4': size === 4,
-      'h-4': size === 4,
-      'w-20': size === 20,
-      'h-20': size === 20,
-      'w-16': size === 16,
-      'h-16': size === 16,
+      'w-4 h-4': size === 4,
+      'w-6 h-6': size === 6,
+      'w-8 h-8': size === 8,
+      'w-10 h-10': size === 10,
+      'w-12 h-12': size === 12,
+      'w-14 h-14': size === 14,
+      'w-16 h-16': size === 16,
     },
     className
   );
-  const viewbox = size <= 16 ? '0 0 16 16' : '0 0 20 20';
+  const viewbox = size <= 12 ? '0 0 16 16' : '0 0 20 20';
   return (
     // For more information on accessibility for svg see https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/img_role#svg_and_roleimg
     <svg

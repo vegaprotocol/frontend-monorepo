@@ -38,7 +38,7 @@ export const VegaWallet = () => {
 
   return (
     <section className="vega-wallet" data-testid="vega-wallet">
-      <WalletCard dark={true}>
+      <WalletCard>
         <WalletCardHeader dark={true}>
           <h1 className="col-start-1 m-0">{t('vegaWallet')}</h1>
           {keypair && (

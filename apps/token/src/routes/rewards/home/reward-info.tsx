@@ -59,7 +59,7 @@ export const RewardInfo = ({
   }, [data, rewardAssetId]);
 
   return (
-    <div className="mt-24">
+    <div>
       <p>
         {t('Connected Vega key')}: {currVegaKey.pub}
       </p>

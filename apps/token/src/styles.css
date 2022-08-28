@@ -10,6 +10,6 @@
     @apply text-xl text-white mb-4;
   }
   p {
-    @apply mb-2;
+    @apply mb-2 text-neutral-400;
   }
 }

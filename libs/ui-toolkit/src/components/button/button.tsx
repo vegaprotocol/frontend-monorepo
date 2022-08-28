@@ -14,7 +14,7 @@ type ButtonSize = 'lg' | 'md' | 'sm';
 const base =
   'inline-block uppercase border rounded-md disabled:opacity-40 transition-colors';
 const sm = 'px-2 py-1 text-sm';
-const md = 'px-10 py-2';
+const md = 'px-10 py-2 text-base';
 const lg = 'px-14 py-4';
 const fillClasses = 'block w-full';
 const defaultClasses = [
