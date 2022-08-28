@@ -1,7 +1,7 @@
 import * as DialogPrimitives from '@radix-ui/react-dialog';
 import classNames from 'classnames';
 
-import { getIntentBorder, getIntentShadow } from '../../utils/intent';
+import { getIntentBorder } from '../../utils/intent';
 import { Icon } from '../icon';
 
 import type { ReactNode } from 'react';
@@ -27,16 +27,13 @@ export function Dialog({
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed p-8 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] dark:text-white',
+    'z-20 fixed rounded p-8 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] dark:text-white w-[calc(100vw-2rem)]',
     // Need to apply background and text colors again as content is rendered in a portal
     'dark:bg-black bg-white',
-    getIntentShadow(intent),
     getIntentBorder(intent),
     {
-      'lg:w-[620px] w-full': size === 'small',
-      'w-full w-full md:w-[720px] lg:w-[940px]': size === 'medium',
-      'left-[0px] top-[99px] h-[calc(100%-99px)] border-0 translate-x-[0] translate-y-[0] border-none overflow-y-auto w-full':
-        size === 'large',
+      'lg:w-[620px]': size === 'small',
+      'md:w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
   return (

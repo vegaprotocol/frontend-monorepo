@@ -29,6 +29,22 @@ Default.args = {
   children: <p>Some content</p>,
 };
 
+export const DefaultSmall = Template.bind({});
+DefaultSmall.args = {
+  open: false,
+  title: 'No intent supplied',
+  children: <p>Some content</p>,
+  size: 'small',
+};
+
+export const DefaultLarge = Template.bind({});
+DefaultLarge.args = {
+  open: false,
+  title: 'No intent supplied',
+  children: <p>Some content</p>,
+  size: 'large',
+};
+
 export const Primary = Template.bind({});
 Primary.args = {
   open: false,
