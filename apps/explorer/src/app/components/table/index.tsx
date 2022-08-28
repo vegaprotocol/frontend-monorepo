@@ -75,7 +75,7 @@ export const TableRow = ({
   const cellClasses = classnames(className, {
     'border-b border-neutral-600 dark:border-neutral-400':
       modifier === 'bordered',
-    'border-b-2 bg-neutral-200 border-white dark:bg-neutral-800 dark:border-black':
+    'border-b-2 bg-neutral-300 border-white dark:bg-neutral-700 dark:border-black':
       modifier === 'background',
   });
   return (
@@ -91,8 +91,8 @@ export const TableCell = ({
   modifier,
   ...props
 }: TableCellProps) => {
-  const cellClasses = classnames(className, 'p-2', {
-    'py-2': modifier === 'bordered',
+  const cellClasses = classnames(className, {
+    'py-1': modifier === 'bordered',
   });
   return (
     <td className={cellClasses} {...props}>

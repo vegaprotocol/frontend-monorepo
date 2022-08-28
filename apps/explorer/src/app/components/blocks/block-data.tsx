@@ -22,7 +22,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
       <TableRow data-testid="block-row" modifier="background">
         <TableCell
           data-testid="block-height"
-          className="p-2 font-mono"
+          className="p-0.5 font-mono"
           aria-label={t('Block height')}
         >
           <Link
@@ -52,7 +52,7 @@ export const BlockData = ({ block, className }: BlockProps) => {
         </TableCell>
         <TableCell
           data-testid="block-time"
-          className="text-right"
+          className="text-center pr-6 w-[170px]"
           aria-label={t('Block genesis')}
         >
           <Tooltip
