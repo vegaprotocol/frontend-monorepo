@@ -110,7 +110,7 @@ const Home = ({ name }: RouteChildProps) => {
           </Link>
         </p>
       </HomeSection>
-      <div className="flex gap-40">
+      <div className="flex gap-12">
         <div className="flex-1">
           <HomeSection>
             <h2>{t('Staking')}</h2>

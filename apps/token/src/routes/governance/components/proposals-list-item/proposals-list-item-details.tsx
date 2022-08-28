@@ -172,13 +172,7 @@ export const ProposalsListItemDetails = ({
   }
 
   return (
-    <div
-      className={classnames(
-        'grid grid-cols-[1fr_auto] items-start gap-4',
-        'mt-4',
-        'text-ui'
-      )}
-    >
+    <div className="grid grid-cols-[1fr_auto] mt-2 items-start gap-2">
       <div
         className="col-start-1 row-start-1 flex items-center gap-4 text-white"
         data-testid="proposal-status"
@@ -186,7 +180,10 @@ export const ProposalsListItemDetails = ({
         {proposalStatus}
       </div>
       {voteDetails && (
-        <div className="col-start-1 row-start-2" data-testid="vote-details">
+        <div
+          className="col-start-1 row-start-2 text-neutral-500"
+          data-testid="vote-details"
+        >
           {voteDetails}
         </div>
       )}

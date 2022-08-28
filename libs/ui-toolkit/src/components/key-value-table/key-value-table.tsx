@@ -21,9 +21,7 @@ export const KeyValueTable = ({
     : 'div';
   return (
     <React.Fragment>
-      {title && (
-        <TitleTag className={`text-h${headingLevel} my-4`}>{title}</TitleTag>
-      )}
+      {title && <TitleTag className={`text-xl my-2`}>{title}</TitleTag>}
       <div data-testid="key-value-table" {...rest} className="mb-4">
         <div>
           {children &&
@@ -77,7 +75,7 @@ export const KeyValueTableRow = ({
   );
   const dtClassNames = `break-words capitalize ${dtClassName}`;
   const ddClassNames = classNames(
-    'break-words',
+    'break-words text-neutral-500',
     {
       'font-mono': numerical,
     },

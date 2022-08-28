@@ -14,7 +14,7 @@ export const ProposalsListFilter = ({
   const [filterVisible, setFilterVisible] = useState(false);
 
   return (
-    <div data-testid="proposals-list-filter">
+    <div data-testid="proposals-list-filter" className="mb-4">
       {!filterVisible && (
         <ButtonLink
           onClick={() => setFilterVisible(true)}

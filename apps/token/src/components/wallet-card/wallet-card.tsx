@@ -112,7 +112,6 @@ export interface WalletCardAssetProps {
   balance: BigNumber;
   decimals: number;
   border?: boolean;
-  dark?: boolean;
   subheading?: string;
 }
 
@@ -123,7 +122,6 @@ export const WalletCardAsset = ({
   balance,
   decimals,
   border,
-  dark,
   subheading,
 }: WalletCardAssetProps) => {
   const [integers, decimalsPlaces] = useNumberParts(balance, decimals);
@@ -133,35 +131,23 @@ export const WalletCardAsset = ({
       <img
         alt="Vega"
         src={image}
-        className={`inline-block h-[30px] rounded-full border ${
+        className={`inline-block w-6 h-6 mt-2 rounded-full border ${
           border ? 'border-white' : 'border-black'
         }`}
       />
       <div>
         <div
-          className="flex font-medium align-center"
+          className="flex align-center text-base"
           data-testid="currency-title"
         >
-          <h1
-            className={`mb-0 px-2 uppercase ${
-              dark ? 'text-white' : 'text-black'
-            }`}
-          >
-            {name}
-          </h1>
-          <h2
-            className={`mb-0 uppercase ${
-              dark ? 'text-neutral-400' : 'text-neutral-600'
-            }`}
-          >
+          <div className="mb-0 px-2 uppercase">{name}</div>
+          <div className="mb-0 uppercase text-neutral-400">
             {subheading || symbol}
-          </h2>
+          </div>
         </div>
         <div className="px-2 basis-full font-mono" data-testid="currency-value">
           <span>{integers}.</span>
-          <span className={dark ? 'text-neutral-400' : 'text-neutral-600'}>
-            {decimalsPlaces}
-          </span>
+          <span className="text-neutral-400">{decimalsPlaces}</span>
         </div>
       </div>
     </div>

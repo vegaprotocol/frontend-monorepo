@@ -45,7 +45,7 @@ export const VegaWallet = () => {
             <>
               <div
                 data-testid="wallet-name"
-                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-12"
+                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-4"
               >
                 {keypair.name}
               </div>
@@ -99,12 +99,10 @@ const VegaWalletAssetList = ({ accounts }: VegaWalletAssetsListProps) => {
   return (
     <>
       <WalletCardHeader>
-        <BulletHeader style={{ border: 'none' }} tag="h2">
-          {t('assets')}
-        </BulletHeader>
+        <BulletHeader tag="h2">{t('assets')}</BulletHeader>
       </WalletCardHeader>
       {accounts.map((a, i) => (
-        <WalletCardAsset key={i} {...a} dark={true} />
+        <WalletCardAsset key={i} {...a} />
       ))}
     </>
   );
@@ -156,7 +154,6 @@ const VegaWalletConnected = ({ vegaKeys }: VegaWalletConnectedProps) => {
         subheading={t('Associated')}
         symbol="VEGA"
         balance={currentStakeAvailable}
-        dark={true}
       />
       <div data-testid="vega-wallet-balance-unstaked">
         <WalletCardRow label={t('unstaked')} value={unstaked} dark={true} />

@@ -98,9 +98,9 @@ export const ProposalHeader = ({
   }
 
   return (
-    <div className="text-ui text-white">
+    <div className="text-sm mb-4">
       <header data-testid="proposal-header">
-        <h2 className="text-h5 font-semibold mb-4">{headerText}</h2>
+        <h2 className="text-lg m-0 font-semibold">{headerText}</h2>
       </header>
       {detailsOne && <div data-testid="proposal-details-one">{detailsOne}</div>}
       {detailsTwo && <div data-testid="proposal-details-two">{detailsTwo}</div>}

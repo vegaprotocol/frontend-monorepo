@@ -134,7 +134,6 @@ const ConnectedKey = () => {
               name="VEGA"
               symbol="In vesting contract"
               balance={totalInVestingContract}
-              dark={true}
             />
             <LockedProgress
               locked={totalLockedBalance}
@@ -160,7 +159,6 @@ const ConnectedKey = () => {
           name="VEGA"
           symbol="In Wallet"
           balance={walletWithAssociations}
-          dark={true}
         />
         {!Object.keys(
           appState.associationBreakdown.stakingAssociations
