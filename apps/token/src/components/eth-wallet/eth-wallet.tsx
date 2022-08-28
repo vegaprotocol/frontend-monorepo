@@ -72,11 +72,7 @@ const AssociatedAmounts = ({
       />
       {vestingAssociationByVegaKey.length ? (
         <div className="pt-2 border-t border-dashed">
-          <WalletCardRow
-            label="Associated with Vega keys"
-            bold={true}
-            dark={true}
-          />
+          <WalletCardRow label="Associated with Vega keys" />
           {vestingAssociationByVegaKey.map(([key, amount], i) => {
             return (
               <div data-testid="eth-wallet-associated-balances" key={i}>
@@ -84,7 +80,6 @@ const AssociatedAmounts = ({
                   key={key}
                   label={removeLeadingAddressSymbol(key)}
                   value={amount}
-                  dark={true}
                 />
               </div>
             );

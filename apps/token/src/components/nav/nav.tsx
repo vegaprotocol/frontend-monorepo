@@ -102,7 +102,7 @@ export const Nav = () => {
       className={`px-4 py-2 ${
         inverted
           ? 'bg-clouds bg-no-repeat bg-cover bg-vega-yellow'
-          : 'border-white border-b'
+          : 'border-neutral-700 border-b'
       }`}
     >
       {isDesktop && <NavHeader fairground={inverted} />}

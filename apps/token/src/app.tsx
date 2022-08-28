@@ -49,11 +49,11 @@ const AppContainer = () => {
                       <AppLoader>
                         <BalanceManager>
                           <>
-                            <div className="app max-w-[1300px] mx-auto grid grid-rows-[1fr_min-content] min-h-full lg:border-l lg:border-r lg:border-white  lg:text-body-large">
+                            <div className="app max-w-[1300px] mx-auto grid grid-rows-[1fr_min-content] min-h-full border-neutral-700 lg:border-l lg:border-r lg:text-body-large">
                               <TemplateSidebar sidebar={sideBar}>
                                 <AppRouter />
                               </TemplateSidebar>
-                              <footer className="p-4 border-t">
+                              <footer className="p-4 border-t border-neutral-700">
                                 <NetworkInfo />
                               </footer>
                             </div>
