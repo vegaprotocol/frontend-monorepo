@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import classNames from 'classnames';
-import { ChevronDownIcon } from '@radix-ui/react-icons';
+import { Icon } from '../icon';
 
 export interface AccordionItemProps {
   title: React.ReactNode;
@@ -15,16 +15,13 @@ export interface AccordionProps {
 export const Accordion = ({ panels }: AccordionProps) => {
   const [values, setValues] = useState<string[]>([]);
   const triggerClassNames = classNames(
-    'w-full py-2 box-border',
-    'appearance-none cursor-pointer focus:outline-none',
-    'flex items-center justify-between border-b border-muted',
-    'text-left text-black dark:text-white'
+    'w-full py-2',
+    'flex items-center justify-between border-b border-neutral-500'
   );
 
   return (
     <AccordionPrimitive.Root
       type="multiple"
-      className="flex flex-col"
       value={values}
       onValueChange={setValues}
     >
@@ -35,23 +32,15 @@ export const Accordion = ({ panels }: AccordionProps) => {
               data-testid="accordion-toggle"
               className={triggerClassNames}
             >
-              <p
-                className="inline-block text-footnote font-medium text-h6  pt-5"
-                data-testid="accordion-title"
-              >
-                {title}
-              </p>
+              <span data-testid="accordion-title">{title}</span>
               <AccordionChevron
                 active={values.includes(`item-${i + 1}`)}
                 aria-hidden
               />
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
-          <AccordionPrimitive.Content
-            data-testid="accordion-content-ref"
-            className="overflow-auto transition-max-height duration-300 ease-in-out"
-          >
-            <div className="pb-5" data-testid="accordion-content">
+          <AccordionPrimitive.Content data-testid="accordion-content-ref">
+            <div className="py-4" data-testid="accordion-content">
               {content}
             </div>
           </AccordionPrimitive.Content>
@@ -63,8 +52,9 @@ export const Accordion = ({ panels }: AccordionProps) => {
 
 export const AccordionChevron = ({ active }: { active: boolean }) => {
   return (
-    <ChevronDownIcon
-      className={classNames('w-20 h-20 transition ease-in-out duration-300', {
+    <Icon
+      name="chevron-down"
+      className={classNames('transition ease-in-out duration-300', {
         'transform rotate-180': active,
       })}
       aria-hidden

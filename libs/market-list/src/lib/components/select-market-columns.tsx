@@ -32,13 +32,10 @@ import classNames from 'classnames';
 import isNil from 'lodash/isNil';
 
 export const thClassNames = (direction: 'left' | 'right') =>
-  `px-8 text-${direction} font-sans text-ui-small leading-9 mb-0 text-dark dark:text-white first:w-[10%]`;
-export const tdClassNames =
-  'px-8 font-sans leading-9 capitalize text-ui-small text-right text-dark dark:text-white';
+  `px-2 text-${direction} first:w-[10%]`;
+export const tdClassNames = 'px-2 capitalize text-right';
 export const boldUnderlineClassNames = classNames(
-  'px-8 underline font-sans',
-  'leading-9 font-bold tracking-tight decoration-solid',
-  'text-ui light:hover:text-black/80 dark:hover:text-white/80',
+  'px-2 underline',
   'first:w-[10%]'
 );
 
@@ -90,14 +87,14 @@ export const columnHeadersPositionMarkets: Column[] = [
     value: (
       <Tooltip
         description={
-          <span className="text-ui-small">
+          <span>
             {t(
               'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
             )}
-            <ul className="list-disc ml-20">
-              <li className="py-5">{t('An infrastructure fee')}</li>
-              <li className="py-5">{t('A liquidity provision fee')}</li>
-              <li className="py-5">{t('A maker fee')}</li>
+            <ul className="list-disc ml-4">
+              <li className="py-2">{t('An infrastructure fee')}</li>
+              <li className="py-2">{t('A liquidity provision fee')}</li>
+              <li className="py-2">{t('A maker fee')}</li>
             </ul>
           </span>
         }
@@ -165,10 +162,10 @@ export const columnHeaders: Column[] = [
             {t(
               'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
             )}
-            <ul className="list-disc ml-20">
-              <li className="py-5">{t('An infrastructure fee')}</li>
-              <li className="py-5">{t('A liquidity provision fee')}</li>
-              <li className="py-5">{t('A maker fee')}</li>
+            <ul className="list-disc ml-4">
+              <li className="py-2">{t('An infrastructure fee')}</li>
+              <li className="py-2">{t('A liquidity provision fee')}</li>
+              <li className="py-2">{t('A maker fee')}</li>
             </ul>
           </span>
         }
@@ -220,7 +217,6 @@ export const columns = (
               onSelect(market.id);
             }}
             data-testid={`market-link-${market.id}`}
-            className={`focus:decoration-vega-pink dark:focus:decoration-vega-yellow text-black dark:text-white`}
           >
             {market.tradableInstrument.instrument.code}
           </a>
@@ -271,7 +267,7 @@ export const columns = (
           data={candlesClose?.map((c: string) => Number(c)) || []}
         />
       ),
-      className: 'px-8',
+      className: 'px-2',
       onlyOnDetailed: false && candlesClose,
     },
     {
@@ -383,7 +379,6 @@ export const columnsPositionMarkets = (
               onSelect(market.id);
             }}
             data-testid={`market-link-${market.id}`}
-            className={`focus:decoration-vega-pink dark:focus:decoration-vega-yellow text-black dark:text-white`}
           >
             {market.tradableInstrument.instrument.code}
           </a>
@@ -510,10 +505,10 @@ export const columnsPositionMarkets = (
         <p
           className={
             market.openVolume.includes('+')
-              ? 'text-dark-green dark:text-vega-green'
+              ? 'text-vega-green'
               : market.openVolume.includes('-')
-              ? 'text-red dark:text-vega-red'
-              : 'text-black dark:text-white'
+              ? 'text-vega-red'
+              : ''
           }
         >
           {market.openVolume}
@@ -533,7 +528,7 @@ export const FeesBreakdown = ({
 }) => {
   if (!feeFactors) return null;
   return (
-    <KeyValueTable muted={true}>
+    <KeyValueTable>
       <KeyValueTableRow>
         <span className={thClassNames('left')}>{t('Infrastructure Fee')}</span>
         <span className={tdClassNames}>

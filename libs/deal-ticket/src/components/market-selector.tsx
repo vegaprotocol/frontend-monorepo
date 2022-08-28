@@ -281,7 +281,6 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
     <>
       {!dialogContent && selectorContent}
       <Dialog
-        titleClassNames="font-alpha"
         title={t('Select market')}
         open={Boolean(dialogContent)}
         onChange={handleDialogOnchange}

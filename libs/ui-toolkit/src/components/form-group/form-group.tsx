@@ -18,20 +18,17 @@ export const FormGroup = ({
   labelAlign = 'left',
   hasError,
 }: FormGroupProps) => {
-  const labelClasses = classNames(
-    'block mb-2 text-large text-black dark:text-white',
-    {
-      'border-l-4 border-danger pl-8': hasError,
-      'text-right': labelAlign === 'right',
-    }
-  );
+  const labelClasses = classNames('block mb-2 text-sm', {
+    'border-l-4 border-danger pl-8': hasError,
+    'text-right': labelAlign === 'right',
+  });
   return (
     <div data-testid="form-group" className="relative mb-6">
       {label && (
         <label htmlFor={labelFor} className={labelClasses}>
-          <div className="font-medium mb-2">{label}</div>
+          <div className="mb-2">{label}</div>
           {labelDescription && (
-            <div className={classNames({ 'text-danger': hasError })}>
+            <div className={classNames({ 'text-vega-pink': hasError })}>
               {labelDescription}
             </div>
           )}

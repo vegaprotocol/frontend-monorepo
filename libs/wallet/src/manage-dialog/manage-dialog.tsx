@@ -24,81 +24,59 @@ export const VegaManageDialog = ({
       open={dialogOpen}
       onChange={setDialogOpen}
       intent={Intent.Primary}
+      size="small"
     >
-      <div className="text-ui">
-        {keypairs ? (
-          <ul className="mb-12" data-testid="keypair-list">
-            {keypairs.map((kp) => {
-              return (
-                <li
-                  key={kp.pub}
-                  data-testid={`key-${kp.pub}`}
-                  className="mb-24 last:mb-0"
-                >
-                  <h2 className="mb-8 text-h5 capitalize">{kp.name}</h2>
-                  {kp.pub === keypair?.pub ? (
-                    <p
-                      className="uppercase mb-8 font-bold"
-                      data-testid="selected-key"
+      {keypairs ? (
+        <ul className="mb-4" data-testid="keypair-list">
+          {keypairs.map((kp) => {
+            return (
+              <li
+                key={kp.pub}
+                data-testid={`key-${kp.pub}`}
+                className="mb-2 last:mb-0"
+              >
+                <div className="flex gap-4 justify-between text-sm">
+                  <p data-testid="vega-public-key-full">
+                    {kp.name} {truncateByChars(kp.pub)}
+                  </p>
+                  <div className="flex gap-4 ml-auto">
+                    <button
+                      onClick={() => {
+                        selectPublicKey(kp.pub);
+                        setDialogOpen(false);
+                      }}
+                      disabled={kp.pub === keypair?.pub}
+                      data-testid="select-keypair-button"
+                      className="underline"
                     >
-                      {t('Selected key')}
-                    </p>
-                  ) : (
-                    <div className="mb-8">
-                      <Button
-                        onClick={() => {
-                          selectPublicKey(kp.pub);
-                          setDialogOpen(false);
-                        }}
-                        disabled={kp.pub === keypair?.pub}
-                        data-testid="select-keypair-button"
-                        size="sm"
-                      >
-                        {t('Select this key')}
-                      </Button>
-                    </div>
-                  )}
-                  <div className="flex justify-between text-ui-small">
-                    <p
-                      data-testid="vega-public-key-trunc"
-                      className="font-mono block sm:hidden"
-                    >
-                      {truncateByChars(kp.pub, 23, 23)}
-                    </p>
-                    <p
-                      data-testid="vega-public-key-full"
-                      className="font-mono hidden sm:block"
-                    >
-                      {kp.pub}
-                    </p>
+                      {t('Select')}
+                    </button>
                     <CopyWithTooltip text={kp.pub}>
                       <button
                         data-testid="copy-vega-public-key"
                         className="underline"
                       >
-                        <Icon name="duplicate" className="mr-4" />
                         {t('Copy')}
+                        <Icon name="duplicate" className="ml-2" />
                       </button>
                     </CopyWithTooltip>
                   </div>
-                </li>
-              );
-            })}
-          </ul>
-        ) : null}
-        <div className="mt-24">
-          <Button
-            data-testid="disconnect"
-            onClick={() => {
-              disconnect();
-              setDialogOpen(false);
-            }}
-            size="sm"
-          >
-            {t('Disconnect all keys')}
-          </Button>
-        </div>
-      </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : null}
+      <Button
+        data-testid="disconnect"
+        onClick={() => {
+          disconnect();
+          setDialogOpen(false);
+        }}
+        size="sm"
+      >
+        {t('Disconnect all keys')}
+      </Button>
     </Dialog>
   );
 };

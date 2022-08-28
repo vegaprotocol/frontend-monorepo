@@ -3,11 +3,11 @@ import { t, volumePrefix } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import {
   Dialog,
+  Icon,
   Intent,
   Popover,
   RotatingArrow,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
 import { useMemo, useState } from 'react';
 import { MARKET_LIST_QUERY } from '../markets-data-provider';
 import type { Column } from './select-market-columns';
@@ -26,6 +26,7 @@ import {
   SelectMarketTableHeader,
   SelectMarketTableRow,
 } from './select-market-table';
+import classNames from 'classnames';
 
 export const SelectMarketLandingTable = ({
   data,
@@ -40,8 +41,8 @@ export const SelectMarketLandingTable = ({
       className="max-h-[40rem] overflow-x-auto"
       data-testid="select-market-list"
     >
-      <table className="relative h-full min-w-full whitespace-nowrap">
-        <thead className="sticky top-0 z-10 dark:bg-black bg-white">
+      <table className="text-sm relative h-full min-w-full whitespace-nowrap">
+        <thead className="sticky top-0 z-10">
           <SelectMarketTableHeader />
         </thead>
         <tbody>
@@ -77,15 +78,11 @@ export const SelectAllMarketsTableBody = ({
   return marketList ? (
     <>
       <thead>
-        <tr
-          className={`text-h5 font-bold text-black-95 dark:text-white-95 mb-6`}
-          data-testid="dialog-title"
-        >
+        <tr className="mb-2" data-testid="dialog-title">
           <th>{title}</th>
         </tr>
         <SelectMarketTableHeader detailed={true} headers={headers} />
       </thead>
-
       <tbody>
         {marketList?.map((market, i) => (
           <SelectMarketTableRow
@@ -99,9 +96,7 @@ export const SelectAllMarketsTableBody = ({
   ) : (
     <thead>
       <tr>
-        <td className="text-black dark:text-white text-ui">
-          {t('Loading market data...')}
-        </td>
+        <td>{t('Loading market data...')}</td>
       </tr>
     </thead>
   );
@@ -153,6 +148,10 @@ export const SelectMarketPopover = ({
     setOpen(false);
   };
 
+  const iconClass = classNames('transition-transform duration-300', {
+    'rotate-180': open,
+  });
+
   return (
     <Popover
       open={open}
@@ -160,21 +159,13 @@ export const SelectMarketPopover = ({
       trigger={
         <span className={triggerClasses}>
           {marketName}
-          <RotatingArrow borderX={8} borderBottom={12} up={open} />
+          <Icon name="chevron-down" className={iconClass} />
         </span>
       }
     >
-      <div
-        className="max-h-[40rem] overflow-x-auto m-20"
-        data-testid="select-market-list"
-      >
-        <span
-          className="text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6"
-          data-testid="dialog-title"
-        >
-          {t('Select a market')}
-        </span>
-        <table className="relative h-full w-full whitespace-nowrap overflow-y-auto">
+      <div className="p-4 max-w-[90vw]" data-testid="select-market-list">
+        <span data-testid="dialog-title">{t('Select a market')}</span>
+        <table className="relative text-sm h-full w-full whitespace-nowrap overflow-y-auto">
           {keypair &&
             positionMarkets?.markets &&
             positionMarkets.markets.length > 0 && (
@@ -220,7 +211,6 @@ export const SelectMarketDialog = ({
       intent={Intent.Primary}
       open={dialogOpen}
       onChange={() => setDialogOpen(false)}
-      titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
       size="small"
     >
       <LandingDialogContainer onSelect={onSelectMarket} />
@@ -237,7 +227,7 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
   if (error) {
     return (
       <div className="flex justify-center items-center">
-        <p className="my-32">{t('Failed to load markets')}</p>
+        <p className="my-8">{t('Failed to load markets')}</p>
       </div>
     );
   }
@@ -245,7 +235,7 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center">
-        <p className="my-32">{t('Loading...')}</p>
+        <p className="my-8">{t('Loading...')}</p>
       </div>
     );
   }

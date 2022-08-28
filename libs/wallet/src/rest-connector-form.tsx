@@ -88,12 +88,12 @@ export function RestConnectorForm({
         {errors.passphrase?.message && (
           <InputError intent="danger">{errors.passphrase.message}</InputError>
         )}
+        {error && (
+          <InputError intent="danger" data-testid="form-error">
+            {error}
+          </InputError>
+        )}
       </FormGroup>
-      {error && (
-        <p className="text-danger mb-12" data-testid="form-error">
-          {error}
-        </p>
-      )}
       <Button variant="primary" type="submit">
         {t('Connect')}
       </Button>

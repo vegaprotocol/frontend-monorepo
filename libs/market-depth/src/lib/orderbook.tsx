@@ -1,4 +1,5 @@
 import styles from './orderbook.module.scss';
+import colors from 'tailwindcss/colors';
 
 import {
   useEffect,
@@ -10,12 +11,13 @@ import {
 } from 'react';
 import classNames from 'classnames';
 
-import { formatNumber, t } from '@vegaprotocol/react-helpers';
+import { formatNumber, t, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { OrderbookRow } from './orderbook-row';
 import { createRow, getPriceLevel } from './orderbook-data';
 import { Icon, Splash } from '@vegaprotocol/ui-toolkit';
 import type { OrderbookData, OrderbookRowData } from './orderbook-data';
+
 interface OrderbookProps extends OrderbookData {
   decimalPlaces: number;
   positionDecimalPlaces: number;
@@ -25,10 +27,10 @@ interface OrderbookProps extends OrderbookData {
 
 const HorizontalLine = ({ top, testId }: { top: string; testId: string }) => (
   <div
-    className="border-b-1 absolute inset-x-0"
+    className="absolute border-b-[1px] border-neutral-300 dark:border-neutral-700 inset-x-0"
     style={{ top }}
     data-testid={testId}
-  ></div>
+  />
 );
 
 const getNumberOfRows = (
@@ -104,6 +106,7 @@ export const Orderbook = ({
   resolution,
   onResolutionChange,
 }: OrderbookProps) => {
+  const [theme] = useThemeSwitcher();
   const scrollElement = useRef<HTMLDivElement>(null);
   // scroll offset for which rendered rows are selected, will change after user will scroll to margin of rendered data
   const [scrollOffset, setScrollOffset] = useState(0);
@@ -276,7 +279,7 @@ export const Orderbook = ({
   const tableBody =
     data && data.length !== 0 ? (
       <div
-        className="grid grid-cols-4 gap-5 text-right text-ui-small"
+        className="grid grid-cols-4 gap-2 text-right"
         style={{
           gridAutoRows: '17px',
         }}
@@ -305,31 +308,33 @@ export const Orderbook = ({
         ))}
       </div>
     ) : null;
+
+  const c = theme === 'dark' ? colors.neutral[700] : colors.neutral[300];
+  const gradientStyles = `linear-gradient(${c},${c}) 24.6% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 50% 0/1px 100% no-repeat, linear-gradient(${c},${c}) 75.2% 0/1px 100% no-repeat`;
+
   return (
     <div
-      className={`h-full overflow-auto relative ${styles['scroll']} pl-4`}
+      className={`h-full overflow-auto relative ${styles['scroll']} pl-2 text-xs`}
       onScroll={onScroll}
       ref={scrollElement}
       data-testid="scroll"
     >
       <div
-        className="sticky top-0 grid grid-cols-4 gap-5 text-right border-b-1 text-ui-small mb-2 pt-4 pb-2 bg-white dark:bg-black z-10"
+        className="sticky top-0 grid grid-cols-4 gap-2 text-right border-b-[1px] pt-2 bg-white dark:bg-black z-10 border-neutral-300 dark:border-neutral-700"
         style={{ gridAutoRows: '17px' }}
       >
         <div>{t('Bid vol')}</div>
         <div>{t('Price')}</div>
         <div>{t('Ask vol')}</div>
-        <div className="pr-4">{t('Cumulative vol')}</div>
+        <div className="pr-[2px]">{t('Cumulative vol')}</div>
       </div>
       <div
-        className="relative text-right text-ui-small"
+        className="relative text-right"
         style={{
           paddingTop: `${paddingTop}px`,
           paddingBottom: `${paddingBottom}px`,
           minHeight: `calc(100% - ${2 * (rowHeight + 2)}px)`,
-          background: tableBody
-            ? 'linear-gradient(#999,#999) 24.6% 0/1px 100% no-repeat, linear-gradient(#999,#999) 50% 0/1px 100% no-repeat, linear-gradient(#999,#999) 75.2% 0/1px 100% no-repeat'
-            : 'none',
+          background: tableBody ? gradientStyles : 'none',
         }}
       >
         {tableBody || (
@@ -339,14 +344,14 @@ export const Orderbook = ({
         )}
       </div>
       <div
-        className="sticky bottom-0 grid grid-cols-4 gap-5 border-t-1 text-ui-small mt-2 pb-2 bg-white dark:bg-black z-10"
+        className="sticky bottom-0 grid grid-cols-4 gap-2 border-t-[1px] border-neutral-300 dark:border-neutral-700 mt-2 z-10 bg-white dark:bg-black"
         style={{ gridAutoRows: '17px' }}
       >
-        <div className="text-ui-small col-start-2">
+        <div className="col-start-2">
           <select
             onChange={(e) => onResolutionChange(Number(e.currentTarget.value))}
             value={resolution}
-            className="block bg-black-10 dark:bg-black-70 text-black dark:text-white focus-visible:shadow-focus dark:focus-visible:shadow-focus-dark focus-visible:outline-0 font-mono w-100 text-right w-full h-full"
+            className="block bg-neutral-100 dark:bg-neutral-700 font-mono text-right w-full h-full"
             data-testid="resolution"
           >
             {new Array(3)
@@ -359,7 +364,7 @@ export const Orderbook = ({
               ))}
           </select>
         </div>
-        <div className="text-ui-small col-start-4">
+        <div className="col-start-4">
           <button
             onClick={scrollToMidPrice}
             className={classNames('w-full h-full', {

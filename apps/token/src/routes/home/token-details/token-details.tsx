@@ -42,7 +42,7 @@ export const TokenDetails = ({
   }
 
   return (
-    <KeyValueTable className={'token-details text-white'}>
+    <KeyValueTable>
       <KeyValueTableRow>
         {t('Token address').toUpperCase()}
         <Link

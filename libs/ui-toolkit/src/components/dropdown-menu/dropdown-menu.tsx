@@ -1,12 +1,13 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import classNames from 'classnames';
 import { forwardRef } from 'react';
+import { Icon } from '../icon';
 
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-white dark:hover:bg-neutral-200',
-  'focus:bg-white dark:focus:bg-neutral-200',
+  'hover:bg-white dark:hover:bg-white',
+  'focus:bg-white dark:focus:bg-white',
   'select-none',
   'whitespace-nowrap'
 );
@@ -23,15 +24,24 @@ export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Trigger>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>
->(({ children }, forwardedRef) => (
-  <DropdownMenuPrimitive.Trigger
-    asChild={true}
-    ref={forwardedRef}
-    className="text-sm p-2 rounded bg-transparent border-[1px] border-neutral-500 focus:border-black dark:focus-border-white"
-  >
-    <button>{children}</button>
-  </DropdownMenuPrimitive.Trigger>
-));
+>(({ className, children }, forwardedRef) => {
+  const triggerClasses = classNames(
+    'text-sm p-1 px-2 rounded bg-transparent border-[1px] border-neutral-500',
+    'focus:border-black dark:focus:border-white',
+    className
+  );
+  return (
+    <DropdownMenuPrimitive.Trigger
+      asChild={true}
+      ref={forwardedRef}
+      className={triggerClasses}
+    >
+      <button>
+        {children} <Icon name="chevron-down" className="ml-2" />
+      </button>
+    </DropdownMenuPrimitive.Trigger>
+  );
+});
 
 /**
  * Used to group multiple {@link DropdownMenuRadioItem}s.
@@ -73,19 +83,12 @@ export const DropdownMenuItem = forwardRef<
  */
 export const DropdownMenuCheckboxItem = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
-  React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem> & {
-    inset?: boolean;
-  }
->(({ className, inset = false, ...checkboxItemProps }, forwardedRef) => (
+  React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>
+>(({ ...checkboxItemProps }, forwardedRef) => (
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={classNames(
-      itemClass,
-      className,
-      'hover:shadow-inset-black dark:hover:shadow-inset-white',
-      'focus:shadow-inset-black dark:focus:shadow-inset-white'
-    )}
+    className={itemClass}
   />
 ));
 

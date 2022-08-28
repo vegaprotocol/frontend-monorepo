@@ -76,21 +76,6 @@ it('Applies numeric class if prop is passed row inline', () => {
   );
 });
 
-it('Applies muted class if prop is passed', () => {
-  render(
-    <KeyValueTable {...props} muted={true}>
-      <KeyValueTableRow inline={false}>
-        <span>My label</span>
-        <span>My value</span>
-      </KeyValueTableRow>
-    </KeyValueTable>
-  );
-
-  expect(screen.getByTestId('key-value-table')).toHaveClass(
-    'w-full border-collapse mb-8 [border-spacing:0] break-all'
-  );
-});
-
 it('Applies id to row if passed', () => {
   render(
     <KeyValueTable>

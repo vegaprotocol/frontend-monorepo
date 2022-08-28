@@ -8,6 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
@@ -85,19 +86,11 @@ export const NetworkSwitcher = () => {
     [setOpen, setAdvancedView]
   );
 
-  const menuItemClasses = 'pt-4 pb-4 !pl-6 !pr-6 !h-auto';
-
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuPrimitive.Trigger
-        className={classNames('text-white', {
-          'bg-dropdown-bg-dark': isOpen,
-        })}
-        onClick={() => handleOpen(!isOpen)}
-      >
-        <span className="mr-4">{envTriggerMapping[VEGA_ENV]}</span>
-        <Icon name="chevron-down" />
-      </DropdownMenuPrimitive.Trigger>
+      <DropdownMenuTrigger className="text-white dark:text-white">
+        {envTriggerMapping[VEGA_ENV]}
+      </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         {!isAdvancedView && (
           <>
@@ -106,15 +99,8 @@ export const NetworkSwitcher = () => {
                 key={key}
                 data-testid="network-item"
                 disabled={!VEGA_NETWORKS[key]}
-                className={classNames(menuItemClasses, {
-                  'text-white': !!VEGA_NETWORKS[key],
-                  'cursor-not-allowed text-neutral-800': !VEGA_NETWORKS[key],
-                })}
               >
-                <a
-                  href={VEGA_NETWORKS[key]}
-                  className="h-full block no-underline"
-                >
+                <a href={VEGA_NETWORKS[key]}>
                   {envNameMapping[key]}
                   <NetworkLabel
                     isCurrent={VEGA_ENV === key}
@@ -124,46 +110,33 @@ export const NetworkSwitcher = () => {
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem
-              className={classNames(menuItemClasses, 'text-neutral-800')}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 setAdvancedView(true);
               }}
             >
-              {t('Advanced')}
+              <span className="text-neutral-600">{t('Advanced')}</span>
             </DropdownMenuItem>
           </>
         )}
         {isAdvancedView && (
-          <div className="grid py-8 px-6 grid-cols-[repeat(2,_minmax(0,_auto))] gap-y-4 gap-x-8">
+          <>
             {advancedNetworkKeys.map((key) => (
-              <Fragment key={key}>
-                <div className="py-8" data-testid="network-item-advanced">
-                  <Link
-                    href={VEGA_NETWORKS[key]}
-                    className={classNames({
-                      'text-white': !!VEGA_NETWORKS[key],
-                      'cursor-not-allowed text-neutral-800':
-                        !VEGA_NETWORKS[key],
-                    })}
-                  >
-                    {envNameMapping[key]}
-                  </Link>
+              <DropdownMenuItem key={key} data-testid="network-item-advanced">
+                <div className="mr-4">
+                  <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
                   <NetworkLabel
                     isCurrent={VEGA_ENV === key}
                     isAvailable={!!VEGA_NETWORKS[key]}
                   />
                 </div>
-                <span
-                  className="text-white py-4"
-                  data-testid="network-item-description"
-                >
+                <span data-testid="network-item-description">
                   {envDescriptionMapping[key]}
                 </span>
-              </Fragment>
+              </DropdownMenuItem>
             ))}
-          </div>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
