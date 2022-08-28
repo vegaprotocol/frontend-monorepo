@@ -25,6 +25,38 @@ module.exports = {
     selected: '#DFFF0B',
     success: '#00F780',
   },
+  fontFamily: {
+    mono: ['Roboto Mono', 'monospace'],
+    sans: [
+      '"Helvetica Neue"',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      'Arial',
+      '"Noto Sans"',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+      '"Noto Color Emoji"',
+    ],
+    alpha: [
+      'AlphaLyrae',
+      '"Helvetica Neue"',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      'Arial',
+      '"Noto Sans"',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+      '"Noto Color Emoji"',
+    ],
+  },
 };
 
 // const defaultTheme = require('tailwindcss/defaultTheme');
