@@ -1,13 +1,10 @@
 import React from 'react';
-import classNames from 'classnames';
 import { SunIcon, MoonIcon } from './icons';
 
 export const ThemeSwitcher = ({
   theme,
   onToggle,
   className,
-  sunClassName = '',
-  moonClassName = '',
 }: {
   theme: 'light' | 'dark';
   onToggle: () => void;
@@ -27,7 +24,7 @@ export const ThemeSwitcher = ({
           <SunIcon />
         </span>
       ) : (
-        <span className="text-neutral-300">
+        <span className="text-neutral-900">
           <MoonIcon />
         </span>
       )}
