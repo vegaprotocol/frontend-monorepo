@@ -39,19 +39,16 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
           <NavLink key={route.path} {...route} />
         ))}
       </nav>
-      <div className="flex items-center gap-4 ml-auto">
-        <VegaWalletConnectButton
-          setConnectDialog={(open) => {
-            store.setVegaWalletConnectDialog(open);
-          }}
-          setManageDialog={(open) => {
-            store.setVegaWalletManageDialog(open);
-          }}
-        />
+      <div className="flex items-center gap-2 ml-auto">
         <ThemeSwitcher
           theme={theme}
           onToggle={toggleTheme}
           sunClassName="text-white"
+        />
+        <VegaWalletConnectButton
+          setConnectDialog={(open) => {
+            store.setVegaWalletConnectDialog(open);
+          }}
         />
       </div>
     </div>

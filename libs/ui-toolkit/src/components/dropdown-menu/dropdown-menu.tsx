@@ -120,7 +120,9 @@ export const DropdownMenuItemIndicator = forwardRef<
     {...itemIndicatorProps}
     ref={forwardedRef}
     className="flex-end"
-  />
+  >
+    <Icon name="tick" />
+  </DropdownMenuPrimitive.ItemIndicator>
 ));
 
 /**

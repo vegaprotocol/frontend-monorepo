@@ -1,37 +1,64 @@
-import { truncateByChars } from '@vegaprotocol/react-helpers';
+import { t, truncateByChars } from '@vegaprotocol/react-helpers';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+  Icon,
+} from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
+import { truncate } from 'lodash';
 
 export interface VegaWalletConnectButtonProps {
   setConnectDialog: (isOpen: boolean) => void;
-  setManageDialog: (isOpen: boolean) => void;
 }
 
 export const VegaWalletConnectButton = ({
   setConnectDialog,
-  setManageDialog,
 }: VegaWalletConnectButtonProps) => {
-  const { keypair } = useVegaWallet();
+  const { keypair, keypairs, selectPublicKey, disconnect } = useVegaWallet();
   const isConnected = keypair !== null;
 
-  const handleClick = () => {
-    if (isConnected) {
-      setManageDialog(true);
-    } else {
-      setConnectDialog(true);
-    }
-  };
+  if (isConnected && keypairs) {
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger className="text-white">
+          {keypair.name}: {truncateByChars(keypair.pub)}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuRadioGroup
+            value={keypair.pub}
+            onValueChange={(value) => {
+              selectPublicKey(value);
+            }}
+          >
+            {keypairs.map((kp) => (
+              <DropdownMenuRadioItem key={kp.pub} value={kp.pub}>
+                {kp.name}: {truncateByChars(kp.pub)}
+                <DropdownMenuItemIndicator />
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
+          <DropdownMenuItem onClick={disconnect}>
+            {t('Disconnect')}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  }
 
   return (
     <span className="text-sm">
-      {isConnected && (
-        <span className="font-mono mr-2 text-white">Vega key:</span>
-      )}
       <button
         data-testid={isConnected ? 'manage-vega-wallet' : 'connect-vega-wallet'}
-        onClick={handleClick}
+        onClick={() => setConnectDialog(true)}
         className="ml-auto font-mono hover:underline text-white"
       >
-        {isConnected ? truncateByChars(keypair.pub) : 'Connect Vega wallet'}
+        {t('Connect Vega wallet')}
       </button>
     </span>
   );

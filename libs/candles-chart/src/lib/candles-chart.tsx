@@ -76,9 +76,7 @@ export const CandlesChartContainer = ({
                   value={timeInterval}
                 >
                   {intervalLabels[timeInterval]}
-                  <DropdownMenuItemIndicator>
-                    <Icon name="tick" />
-                  </DropdownMenuItemIndicator>
+                  <DropdownMenuItemIndicator />
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -98,9 +96,7 @@ export const CandlesChartContainer = ({
               {Object.values(ChartType).map((type) => (
                 <DropdownMenuRadioItem key={type} inset value={type}>
                   {chartTypeLabels[type]}
-                  <DropdownMenuItemIndicator>
-                    <Icon name="tick" />
-                  </DropdownMenuItemIndicator>
+                  <DropdownMenuItemIndicator />
                 </DropdownMenuRadioItem>
               ))}
             </DropdownMenuRadioGroup>
@@ -113,7 +109,6 @@ export const CandlesChartContainer = ({
               <DropdownMenuCheckboxItem
                 key={overlay}
                 checked={overlays.includes(overlay)}
-                inset
                 onCheckedChange={() => {
                   const newOverlays = [...overlays];
                   const index = overlays.findIndex((item) => item === overlay);
@@ -126,9 +121,7 @@ export const CandlesChartContainer = ({
                 }}
               >
                 {overlayLabels[overlay]}
-                <DropdownMenuItemIndicator>
-                  <Icon name="tick" />
-                </DropdownMenuItemIndicator>
+                <DropdownMenuItemIndicator />
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>
@@ -139,7 +132,6 @@ export const CandlesChartContainer = ({
             {Object.values(Study).map((study) => (
               <DropdownMenuCheckboxItem
                 key={study}
-                inset
                 checked={studies.includes(study)}
                 onCheckedChange={() => {
                   const newStudies = [...studies];
@@ -153,9 +145,7 @@ export const CandlesChartContainer = ({
                 }}
               >
                 {studyLabels[study]}
-                <DropdownMenuItemIndicator>
-                  <Icon name="tick" />
-                </DropdownMenuItemIndicator>
+                <DropdownMenuItemIndicator />
               </DropdownMenuCheckboxItem>
             ))}
           </DropdownMenuContent>
