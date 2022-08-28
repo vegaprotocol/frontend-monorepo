@@ -15,7 +15,11 @@ export const Propose = () => {
         <Heading title={t('NewProposal')} />
         <p>
           {t('words words words read more on')}{' '}
-          <Link to={Links.PROPOSALS_GUIDE} target="_blank">
+          <Link
+            to={Links.PROPOSALS_GUIDE}
+            target="_blank"
+            className="underline"
+          >
             {Links.PROPOSALS_GUIDE}
           </Link>{' '}
         </p>
