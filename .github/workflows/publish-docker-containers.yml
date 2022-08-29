@@ -100,7 +100,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          push: false
+          push: true
           file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
           build-args: APP=${{ matrix.app }}
           load: true
