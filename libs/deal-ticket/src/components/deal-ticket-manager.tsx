@@ -2,10 +2,13 @@ import type { ReactNode } from 'react';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
 import { DealTicket } from './deal-ticket';
 import type { DealTicketQuery_market } from './__generated__/DealTicketQuery';
-import { useOrderSubmit, OrderFeedback } from '@vegaprotocol/orders';
-import { OrderStatus } from '@vegaprotocol/types';
-import { Icon, Intent } from '@vegaprotocol/ui-toolkit';
-import { t } from '@vegaprotocol/react-helpers';
+import {
+  useOrderSubmit,
+  OrderFeedback,
+  getOrderDialogTitle,
+  getOrderDialogIntent,
+  getOrderDialogIcon,
+} from '@vegaprotocol/orders';
 
 export interface DealTicketManagerProps {
   market: DealTicketQuery_market;
@@ -17,7 +20,7 @@ export const DealTicketManager = ({
   children,
 }: DealTicketManagerProps) => {
   const { submit, transaction, finalizedOrder, TransactionDialog } =
-    useOrderSubmit(market);
+    useOrderSubmit();
 
   return (
     <>
@@ -42,76 +45,4 @@ export const DealTicketManager = ({
       </TransactionDialog>
     </>
   );
-};
-
-export const getOrderDialogTitle = (
-  status?: OrderStatus
-): string | undefined => {
-  if (!status) {
-    return;
-  }
-
-  switch (status) {
-    case OrderStatus.STATUS_ACTIVE:
-      return t('Order submitted');
-    case OrderStatus.STATUS_FILLED:
-      return t('Order filled');
-    case OrderStatus.STATUS_PARTIALLY_FILLED:
-      return t('Order partially filled');
-    case OrderStatus.STATUS_PARKED:
-      return t('Order parked');
-    case OrderStatus.STATUS_STOPPED:
-      return t('Order stopped');
-    case OrderStatus.STATUS_CANCELLED:
-      return t('Order cancelled');
-    case OrderStatus.STATUS_EXPIRED:
-      return t('Order expired');
-    case OrderStatus.STATUS_REJECTED:
-      return t('Order rejected');
-    default:
-      return t('Submission failed');
-  }
-};
-
-export const getOrderDialogIntent = (
-  status?: OrderStatus
-): Intent | undefined => {
-  if (!status) {
-    return;
-  }
-  switch (status) {
-    case OrderStatus.STATUS_PARKED:
-    case OrderStatus.STATUS_EXPIRED:
-    case OrderStatus.STATUS_PARTIALLY_FILLED:
-      return Intent.Warning;
-    case OrderStatus.STATUS_REJECTED:
-    case OrderStatus.STATUS_STOPPED:
-    case OrderStatus.STATUS_CANCELLED:
-      return Intent.Danger;
-    case OrderStatus.STATUS_FILLED:
-    case OrderStatus.STATUS_ACTIVE:
-      return Intent.Success;
-    default:
-      return;
-  }
-};
-
-export const getOrderDialogIcon = (
-  status?: OrderStatus
-): ReactNode | undefined => {
-  if (!status) {
-    return;
-  }
-
-  switch (status) {
-    case OrderStatus.STATUS_PARKED:
-    case OrderStatus.STATUS_EXPIRED:
-      return <Icon name="warning-sign" size={20} />;
-    case OrderStatus.STATUS_REJECTED:
-    case OrderStatus.STATUS_STOPPED:
-    case OrderStatus.STATUS_CANCELLED:
-      return <Icon name="error" size={20} />;
-    default:
-      return;
-  }
 };

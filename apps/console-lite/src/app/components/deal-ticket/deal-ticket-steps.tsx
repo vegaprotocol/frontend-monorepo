@@ -5,19 +5,22 @@ import { Stepper } from '../stepper';
 import type { DealTicketQuery_market } from '@vegaprotocol/deal-ticket';
 import { InputError } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
-import {
-  getOrderDialogTitle,
-  getOrderDialogIntent,
-  getOrderDialogIcon,
-  MarketSelector,
-} from '@vegaprotocol/deal-ticket';
+import { MarketSelector } from '@vegaprotocol/deal-ticket';
 import type { Order } from '@vegaprotocol/orders';
 import { useVegaWallet, VegaTxStatus } from '@vegaprotocol/wallet';
-import { t, addDecimal, toDecimal } from '@vegaprotocol/react-helpers';
+import {
+  t,
+  addDecimal,
+  toDecimal,
+  removeDecimal,
+} from '@vegaprotocol/react-helpers';
 import {
   getDefaultOrder,
   useOrderValidation,
   useOrderSubmit,
+  getOrderDialogTitle,
+  getOrderDialogIntent,
+  getOrderDialogIcon,
   OrderFeedback,
   validateSize,
 } from '@vegaprotocol/orders';
@@ -107,7 +110,7 @@ export const DealTicketSteps = ({
   });
 
   const { submit, transaction, finalizedOrder, TransactionDialog } =
-    useOrderSubmit(market);
+    useOrderSubmit();
 
   const onSizeChange = (value: number[]) => {
     const newVal = new BigNumber(value[0])
@@ -150,10 +153,20 @@ export const DealTicketSteps = ({
   const onSubmit = React.useCallback(
     (order: Order) => {
       if (transactionStatus !== 'pending') {
-        submit(order);
+        submit({
+          ...order,
+          price:
+            order.price && removeDecimal(order.price, market.decimalPlaces),
+          size: removeDecimal(order.size, market.positionDecimalPlaces),
+        });
       }
     },
-    [transactionStatus, submit]
+    [
+      transactionStatus,
+      submit,
+      market.decimalPlaces,
+      market.positionDecimalPlaces,
+    ]
   );
 
   const steps = [

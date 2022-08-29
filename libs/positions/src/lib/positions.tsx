@@ -9,6 +9,14 @@ import type { GetRowsParams } from './positions-table';
 import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
 import { AssetBalance } from '@vegaprotocol/accounts';
 import type { Position } from './positions-data-providers';
+import {
+  useOrderSubmit,
+  OrderFeedback,
+  getOrderDialogTitle,
+  getOrderDialogIntent,
+  getOrderDialogIcon,
+} from '@vegaprotocol/orders';
+import { Side, OrderType, OrderTimeInForce } from '@vegaprotocol/types';
 interface PositionsProps {
   partyId: string;
   assetSymbol: string;
@@ -45,6 +53,22 @@ export const Positions = memo(({ partyId, assetSymbol }: PositionsProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
   const variables = useMemo(() => ({ partyId }), [partyId]);
   const dataRef = useRef<Position[] | null>(null);
+  const { submit, transaction, finalizedOrder, TransactionDialog } =
+    useOrderSubmit();
+  const onClose = useCallback(
+    ({ openVolume, marketId }: Position) => {
+      const isShortPosition = openVolume.startsWith('-');
+      const side = openVolume.startsWith('-') ? Side.SIDE_BUY : Side.SIDE_SELL;
+      submit({
+        marketId,
+        type: OrderType.TYPE_MARKET,
+        timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
+        side,
+        size: isShortPosition ? openVolume.slice(1) : openVolume,
+      });
+    },
+    [submit]
+  );
   const update = useCallback(
     ({ data }: { data: Position[] | null }) => {
       if (!gridRef.current?.api) {
@@ -79,25 +103,34 @@ export const Positions = memo(({ partyId, assetSymbol }: PositionsProps) => {
     }
   };
   return (
-    <AsyncRenderer loading={loading} error={error} data={data}>
-      <div className="text-black dark:text-white p-8">
-        <h4 className="text-h4 font-bold">
-          {assetSymbol} {t('markets')}
-        </h4>
-        <p>
-          {assetSymbol} {t('balance')}:
-          <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
-        </p>
-      </div>
-      <PositionsTable
-        domLayout="autoHeight"
-        style={{ width: '100%' }}
-        ref={gridRef}
-        rowModelType={data?.length ? 'infinite' : 'clientSide'}
-        rowData={data?.length ? undefined : []}
-        datasource={{ getRows }}
-        onClose={console.table}
-      />
-    </AsyncRenderer>
+    <>
+      <AsyncRenderer loading={loading} error={error} data={data}>
+        <div className="text-black dark:text-white p-8">
+          <h4 className="text-h4 font-bold">
+            {assetSymbol} {t('markets')}
+          </h4>
+          <p>
+            {assetSymbol} {t('balance')}:
+            <AssetBalance partyId={partyId} assetSymbol={assetSymbol} />
+          </p>
+        </div>
+        <PositionsTable
+          domLayout="autoHeight"
+          style={{ width: '100%' }}
+          ref={gridRef}
+          rowModelType={data?.length ? 'infinite' : 'clientSide'}
+          rowData={data?.length ? undefined : []}
+          datasource={{ getRows }}
+          onClose={onClose}
+        />
+      </AsyncRenderer>
+      <TransactionDialog
+        title={getOrderDialogTitle(finalizedOrder?.status)}
+        intent={getOrderDialogIntent(finalizedOrder?.status)}
+        icon={getOrderDialogIcon(finalizedOrder?.status)}
+      >
+        <OrderFeedback transaction={transaction} order={finalizedOrder} />
+      </TransactionDialog>
+    </>
   );
 });

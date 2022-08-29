@@ -329,8 +329,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               value: Number(value),
             };
           }}
-          pinnedRowCellRenderer={() => ''}
-          pinnedRowValueFormatter={() => undefined}
         />
         <AgGridColumn
           headerName={t('Realised PNL')}
@@ -414,7 +412,6 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               };
             }}
             cellRendererParams={{ onClick: onClose }}
-            pinnedRowCellRenderer={() => ''}
           />
         ) : null}
       </AgGrid>
