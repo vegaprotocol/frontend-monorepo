@@ -5,6 +5,7 @@ module.exports = {
   ...theme,
   colors: {
     ...theme.colors,
+    amber: '#FFBF00',
     offBlack: '#252525',
     midGrey: '#828282',
     borderGrey: '#4f4f4f',

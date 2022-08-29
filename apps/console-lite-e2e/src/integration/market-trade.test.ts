@@ -7,6 +7,7 @@ import { generateEstimateOrder } from '../support/mocks/generate-estimate-order'
 import { generatePartyBalance } from '../support/mocks/generate-party-balance';
 import { generatePartyMarketData } from '../support/mocks/generate-party-market-data';
 import { generateMarketMarkPrice } from '../support/mocks/generate-market-mark-price';
+import { generateMarketDepth } from '../support/mocks/generate-market-depth';
 import { connectVegaWallet } from '../support/connect-wallet';
 
 describe('Market trade', () => {
@@ -21,6 +22,7 @@ describe('Market trade', () => {
       aliasQuery(req, 'PartyBalanceQuery', generatePartyBalance());
       aliasQuery(req, 'PartyMarketData', generatePartyMarketData());
       aliasQuery(req, 'MarketMarkPrice', generateMarketMarkPrice());
+      aliasQuery(req, 'MarketDepth', generateMarketDepth());
     });
     cy.visit('/markets');
     cy.wait('@SimpleMarkets').then((response) => {
@@ -167,6 +169,8 @@ describe('Market trade', () => {
         .eq(0)
         .find('button')
         .should('have.text', '2');
+      cy.get('button').contains('Max').click();
+      cy.getByTestId('price-slippage-value').should('have.text', '0.01555%');
     }
   });
 
@@ -191,9 +195,9 @@ describe('Market trade', () => {
       cy.get('#step-2-panel').find('dd').eq(0).find('button').click();
       cy.get('#step-2-panel')
         .find('dt')
-        .eq(2)
+        .eq(3)
         .should('have.text', 'Est. Position Size (tDAI)');
-      cy.get('#step-2-panel').find('dd').eq(2).should('have.text', '197.86012');
+      cy.get('#step-2-panel').find('dd').eq(3).should('have.text', '197.86012');
     }
   });
 
@@ -206,11 +210,11 @@ describe('Market trade', () => {
       cy.get('#step-2-control').click();
       cy.get('#step-2-panel')
         .find('dt')
-        .eq(3)
+        .eq(4)
         .should('have.text', 'Est. Fees (tDAI)');
       cy.get('#step-2-panel')
         .find('dd')
-        .eq(3)
+        .eq(4)
         .should('have.text', '3.00000 (3.03%)');
     }
   });

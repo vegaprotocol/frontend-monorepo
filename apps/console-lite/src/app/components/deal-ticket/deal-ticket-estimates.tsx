@@ -13,7 +13,6 @@ interface DealTicketEstimatesProps {
   fees?: string;
   notionalSize?: string;
   size?: string;
-  slippage?: string | null;
 }
 
 interface DataTitleProps {
@@ -57,7 +56,6 @@ export const DealTicketEstimates = ({
   fees,
   notionalSize,
   size,
-  slippage,
 }: DealTicketEstimatesProps) => (
   <dl className="text-black dark:text-white">
     {size && (
@@ -74,17 +72,6 @@ export const DealTicketEstimates = ({
       <div className="flex justify-between mb-8">
         <DataTitle>{t('Est. Price')}</DataTitle>
         <dd>{price}</dd>
-      </div>
-    )}
-    {slippage && (
-      <div className="flex justify-between mb-8">
-        <DataTitle quoteName={'%'}>
-          {t('Est. Price Impact / Slippage')}
-        </DataTitle>
-        <ValueTooltipRow
-          value={slippage}
-          description={constants.EST_SLIPPAGE}
-        />
       </div>
     )}
     {notionalSize && (

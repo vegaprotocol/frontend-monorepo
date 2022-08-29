@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from 'react';
+import classNames from 'classnames';
+import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   SliderRoot,
@@ -8,9 +10,12 @@ import {
   Button,
   Input,
   FormGroup,
+  Icon,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { DealTicketEstimates } from './deal-ticket-estimates';
+import * as constants from './constants';
 
 interface DealTicketSizeProps {
   step: number;
@@ -191,13 +196,44 @@ export const DealTicketSize = ({
           </dd>
         </div>
       </dl>
+      {slippage && (
+        <dl className="text-black dark:text-white">
+          <div className="flex items-center justify-between mb-8">
+            <dt>{t('Est. Price Impact / Slippage')}</dt>
+            <dd
+              className="flex justify-end gap-x-5"
+              data-testid="price-slippage-value"
+            >
+              <span
+                className={classNames({
+                  'text-darkerGreen dark:text-lightGreen':
+                    parseFloat(slippage) < 1,
+                  'text-amber':
+                    parseFloat(slippage) >= 1 && parseFloat(slippage) < 2,
+                  'text-vega-red': parseFloat(slippage) >= 2,
+                })}
+              >
+                {slippage}%
+              </span>
+              <Tooltip align="center" description={constants.EST_SLIPPAGE}>
+                <div className="cursor-help" tabIndex={-1}>
+                  <Icon
+                    name={IconNames.ISSUE}
+                    className="block rotate-180"
+                    ariaLabel={constants.EST_SLIPPAGE}
+                  />
+                </div>
+              </Tooltip>
+            </dd>
+          </div>
+        </dl>
+      )}
       <DealTicketEstimates
         quoteName={quoteName}
         fees={fees}
         estCloseOut={estCloseOut}
         price={price}
         notionalSize={notionalSize}
-        slippage={slippage}
       />
     </div>
   );
