@@ -122,7 +122,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
   const itemClass =
-    'min-w-[120px] whitespace-nowrap flex flex-col pb-3 px-2 border-l border-neutral-300 dark:border-neutral-700';
+    'min-w-min w-[120px] whitespace-nowrap pb-3 px-4 border-l border-neutral-300 dark:border-neutral-700';
   const itemHeading = 'text-neutral-400';
 
   const store = useGlobalStore();
@@ -135,12 +135,14 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const hasExpiry = market.marketTimestamps.close !== null;
 
   return (
-    <header className="px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
-      <div className="flex flex-col md:flex-row items-start">
-        <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
+    <header className="w-screen xl:px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
+      <div className="xl:flex xl:gap-4  items-start">
+        <div className="px-4 mb-2 xl:mb-0">
+          <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
+        </div>
         <div
           data-testid="market-summary"
-          className="flex flex-auto items-start ml-4 overflow-x-auto text-xs"
+          className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
         >
           <Tooltip
             align="start"
@@ -152,42 +154,42 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
             }
           >
             <div className={itemClass}>
-              <span className={itemHeading}>{t('Expiry')}</span>
-              <span
+              <div className={itemHeading}>{t('Expiry')}</div>
+              <div
                 data-testid="trading-expiry"
                 className={classNames({
                   'underline decoration-dashed': !hasExpiry,
                 })}
               >
                 <ExpiryLabel market={market} />
-              </span>
+              </div>
             </div>
           </Tooltip>
           <div className={itemClass}>
-            <span className={itemHeading}>{t('Change (24h)')}</span>
+            <div className={itemHeading}>{t('Change (24h)')}</div>
             <PriceCellChange
               candles={candlesClose}
               decimalPlaces={market.decimalPlaces}
             />
           </div>
           <div className={itemClass}>
-            <span className={itemHeading}>{t('Volume')}</span>
-            <span data-testid="trading-volume">
+            <div className={itemHeading}>{t('Volume')}</div>
+            <div data-testid="trading-volume">
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
                     market.data.indicativeVolume,
                     market.positionDecimalPlaces
                   )
                 : '-'}
-            </span>
+            </div>
           </div>
           <Tooltip
             align="start"
             description={<TradingModeTooltip market={market} />}
           >
             <div className={itemClass}>
-              <span className={itemHeading}>{t('Trading mode')}</span>
-              <span
+              <div className={itemHeading}>{t('Trading mode')}</div>
+              <div
                 data-testid="trading-mode"
                 className={classNames('underline decoration-dashed')}
               >
@@ -199,24 +201,24 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
                   ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
                   : MarketTradingModeMapping[market.tradingMode]}
-              </span>
+              </div>
             </div>
           </Tooltip>
           <div className={itemClass}>
-            <span className={itemHeading}>{t('Price')}</span>
-            <span data-testid="mark-price">
+            <div className={itemHeading}>{t('Price')}</div>
+            <div data-testid="mark-price">
               {market.data && market.data.markPrice !== '0'
                 ? addDecimalsFormatNumber(
                     market.data.markPrice,
                     market.decimalPlaces
                   )
                 : '-'}
-            </span>
+            </div>
           </div>
           {symbol && (
             <div className={itemClass}>
-              <span className={itemHeading}>{t('Settlement asset')}</span>
-              <span data-testid="trading-mode">
+              <div className={itemHeading}>{t('Settlement asset')}</div>
+              <div data-testid="trading-mode">
                 <ButtonLink
                   onClick={() => {
                     setAssetDetailsDialogOpen(true);
@@ -225,7 +227,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
                 >
                   {symbol}
                 </ButtonLink>
-              </span>
+              </div>
             </div>
           )}
         </div>
@@ -293,7 +295,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </Allotment.Pane>
         <Allotment.Pane
           priority={LayoutPriority.Low}
-          preferredSize={200}
+          preferredSize={400}
           minSize={50}
         >
           <TradeGridChild>
@@ -363,10 +365,10 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap gap-4 overflow-x-auto my-4 max-w-full">
+      <div className="flex flex-nowrap gap-4 overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-700">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
-          const className = classNames('py-4', 'px-12', 'capitalize', {
+          const className = classNames('py-2 px-4  capitalize', {
             'text-black dark:text-vega-yellow': isActive,
             'bg-white dark:bg-black': isActive,
             'text-black dark:text-white': !isActive,

@@ -13,7 +13,7 @@ interface DialogProps {
   title?: string;
   icon?: ReactNode;
   intent?: Intent;
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium';
 }
 
 export function Dialog({

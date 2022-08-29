@@ -104,7 +104,7 @@ export const SelectMarketPopover = ({
   onSelect: (id: string) => void;
 }) => {
   const triggerClasses =
-    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-4 shrink-0';
+    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-4 whitespace-nowrap';
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
   const { data } = useMarkets();

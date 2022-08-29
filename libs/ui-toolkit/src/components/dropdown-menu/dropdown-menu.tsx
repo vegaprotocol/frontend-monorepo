@@ -27,7 +27,7 @@ export const DropdownMenuTrigger = forwardRef<
 >(({ className, children }, forwardedRef) => {
   const triggerClasses = classNames(
     'text-sm py-1 px-2 rounded bg-transparent border border-neutral-500',
-    'focus:border-black dark:focus:border-white',
+    'focus:border-black dark:focus:border-white whitespace-nowrap',
     className
   );
   return (

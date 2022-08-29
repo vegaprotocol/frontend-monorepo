@@ -17,16 +17,16 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   const tradingPath = store.marketId ? `/markets/${store.marketId}` : '/';
   return (
     <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-700 bg-black">
-      <nav className="flex items-center gap-4">
-        <div className="flex gap-4 items-center h-full">
-          <Link href="/" passHref={true}>
-            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
-            <a>
-              <VLogo className="w-6 h-6 fill-white" />
-            </a>
-          </Link>
-          <NetworkSwitcher />
-        </div>
+      <div className="flex gap-4 mr-4 items-center h-full">
+        <Link href="/" passHref={true}>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a>
+            <VLogo className="w-6 h-6 fill-white" />
+          </a>
+        </Link>
+        <NetworkSwitcher />
+      </div>
+      <nav className="flex items-center">
         {[
           {
             name: t('Trading'),
@@ -66,16 +66,10 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
   const router = useRouter();
   const isActive =
     router.asPath === path || (!exact && router.asPath.startsWith(path));
-  const linkClasses = classNames(
-    'px-4 py-2 self-end',
-    'uppercase',
-    'text-white',
-    'border-b-4',
-    {
-      'border-vega-yellow': isActive,
-      'border-transparent': !isActive,
-    }
-  );
+  const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
+    'border-vega-yellow text-white': isActive,
+    'border-transparent text-neutral-400': !isActive,
+  });
   return (
     <Link data-testid={testId} href={path} passHref={true}>
       {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
