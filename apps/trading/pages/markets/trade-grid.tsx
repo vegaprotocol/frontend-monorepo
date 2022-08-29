@@ -122,7 +122,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
   const itemClass =
-    'min-w-[120px] whitespace-nowrap flex flex-col pb-4 px-2 border-l border-neutral-300 dark:border-neutral-700';
+    'min-w-[120px] whitespace-nowrap flex flex-col pb-3 px-2 border-l border-neutral-300 dark:border-neutral-700';
   const itemHeading = 'text-neutral-400';
 
   const store = useGlobalStore();
@@ -136,7 +136,7 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
 
   return (
     <header className="px-4 pt-4 border-b border-neutral-300 dark:border-neutral-700">
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col md:flex-row items-start">
         <SelectMarketPopover marketName={market.name} onSelect={onSelect} />
         <div
           data-testid="market-summary"
