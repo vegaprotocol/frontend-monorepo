@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import React, {
   useCallback,
   useState,
@@ -5,6 +6,7 @@ import React, {
   useRef,
   useMemo,
 } from 'react';
+import * as DialogPrimitives from '@radix-ui/react-dialog';
 import { gql, useQuery } from '@apollo/client';
 import classNames from 'classnames';
 import type { DealTicketQuery_market } from './__generated__';
@@ -283,14 +285,58 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   return (
     <>
       {!dialogContent && selectorContent}
-      <Dialog
-        title={t('Select market')}
+      <MarketDrawer
         open={Boolean(dialogContent)}
         onChange={handleDialogOnchange}
-        size="large"
       >
         {dialogContent}
-      </Dialog>
+      </MarketDrawer>
     </>
+  );
+};
+
+interface MarketDrawerProps {
+  children: ReactNode;
+  open: boolean;
+  onChange?: (isOpen: boolean) => void;
+}
+
+export const MarketDrawer = ({
+  children,
+  open,
+  onChange,
+}: MarketDrawerProps) => {
+  const contentClasses = classNames(
+    // Positions the modal in the center of screen
+    'z-20 fixed p-8 inset-x-1/2 dark:text-white w-screen',
+    // Need to apply background and text colors again as content is rendered in a portal
+    'dark:bg-black bg-white',
+    'left-[0px] top-[99px] h-[calc(100%-99px)] overflow-y-auto'
+  );
+  return (
+    <DialogPrimitives.Root open={open} onOpenChange={(x) => onChange?.(x)}>
+      <DialogPrimitives.Portal>
+        <DialogPrimitives.Overlay
+          className="fixed inset-0 bg-black/50 z-10"
+          data-testid="dialog-overlay"
+        />
+        <DialogPrimitives.Content className={contentClasses}>
+          <DialogPrimitives.Close
+            className="p-2 absolute top-2 right-2"
+            data-testid="dialog-close"
+          >
+            <Icon name="cross" />
+          </DialogPrimitives.Close>
+          <div className="flex gap-4 max-w-full">
+            <div data-testid="dialog-content" className="flex-1">
+              <h1 className="text-xl uppercase mb-4" data-testid="dialog-title">
+                {t('Select market')}
+              </h1>
+              <div>{children}</div>
+            </div>
+          </div>
+        </DialogPrimitives.Content>
+      </DialogPrimitives.Portal>
+    </DialogPrimitives.Root>
   );
 };
