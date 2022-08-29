@@ -12,10 +12,13 @@ describe('Proposal header', () => {
     render(
       renderComponent(
         generateProposal({
+          rationale: {
+            title: 'New some market',
+            description: 'A new some market',
+          },
           terms: {
             change: {
               __typename: 'NewMarket',
-              decimalPlaces: 1,
               instrument: {
                 __typename: 'InstrumentConfiguration',
                 name: 'Some market',
@@ -28,16 +31,18 @@ describe('Proposal header', () => {
                   },
                 },
               },
-              metadata: [],
             },
           },
         })
       )
     );
     expect(screen.getByTestId('proposal-header')).toHaveTextContent(
-      'New market: Some market'
+      'New some market'
     );
     expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
+      'A new some market'
+    );
+    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'tGBP settled future.'
     );
   });
@@ -46,6 +51,9 @@ describe('Proposal header', () => {
     render(
       renderComponent(
         generateProposal({
+          rationale: {
+            title: 'New market id',
+          },
           terms: {
             change: {
               __typename: 'UpdateMarket',
@@ -56,6 +64,12 @@ describe('Proposal header', () => {
       )
     );
     expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+      'New market id'
+    );
+    expect(
+      screen.queryByTestId('proposal-details-one')
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'Market change: MarketId'
     );
   });
@@ -64,6 +78,10 @@ describe('Proposal header', () => {
     render(
       renderComponent(
         generateProposal({
+          rationale: {
+            title: 'New asset: Fake currency',
+            description: '',
+          },
           terms: {
             change: {
               __typename: 'NewAsset',
@@ -81,7 +99,7 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-header')).toHaveTextContent(
       'New asset: Fake currency'
     );
-    expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'Symbol: FAKE. ERC20 0x0'
     );
   });
@@ -105,9 +123,9 @@ describe('Proposal header', () => {
       )
     );
     expect(screen.getByTestId('proposal-header')).toHaveTextContent(
-      'New asset: Fake currency'
+      'Unknown proposal'
     );
-    expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'Symbol: BIA. Max faucet amount mint: 300'
     );
   });
@@ -116,6 +134,9 @@ describe('Proposal header', () => {
     render(
       renderComponent(
         generateProposal({
+          rationale: {
+            title: 'Network parameter',
+          },
           terms: {
             change: {
               __typename: 'UpdateNetworkParameter',
@@ -132,22 +153,19 @@ describe('Proposal header', () => {
     expect(screen.getByTestId('proposal-header')).toHaveTextContent(
       'Network parameter'
     );
-    expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'Network key to Network value'
     );
   });
 
-  // Skipped until proposals have rationale - https://github.com/vegaprotocol/frontend-monorepo/issues/824
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('Renders Freeform network - short rationale', () => {
+  it('Renders Freeform network - short rationale', () => {
     render(
       renderComponent(
         generateProposal({
           id: 'short',
-          // rationale: {
-          //   hash: '0x0',
-          //   description: 'freeform description',
-          // },
+          rationale: {
+            title: '0x0',
+          },
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -156,27 +174,25 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
-      'freeform description'
-    );
-    expect(screen.getByTestId('proposal-details-one')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('proposal-header')).toHaveTextContent('0x0');
+    expect(
+      screen.queryByTestId('proposal-details-one')
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'short'
     );
   });
 
-  // Skipped until proposals have rationale
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('Renders Freeform proposal - long rationale (105 chars)', () => {
+  it('Renders Freeform proposal - long rationale (105 chars)', () => {
     render(
       renderComponent(
         generateProposal({
           id: 'long',
-          // rationale: {
-          //   hash: '0x0',
-          //   description:
-          //     'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
-          // },
+          rationale: {
+            title: '0x0',
+            description:
+              'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean dolor.',
+          },
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -187,29 +203,26 @@ describe('Proposal header', () => {
     );
     // For a rationale over 100 chars, we expect the header to be truncated at
     // 100 chars with ellipsis and the details-one element to contain the rest.
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
-      'Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Aenean…'
-    );
+    expect(screen.getByTestId('proposal-header')).toHaveTextContent('0x0');
     expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
-      'dolor'
+      'Class aptent taciti sociosqu ad litora torquent per conubia' // shorten to 60 characters
     );
     expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'long'
     );
   });
 
-  // Skipped until proposals have rationale
-  // eslint-disable-next-line jest/no-disabled-tests
-  it.skip('Renders Freeform proposal - extra long rationale (165 chars)', () => {
+  it('Renders Freeform proposal - extra long rationale (165 chars)', () => {
     render(
       renderComponent(
         generateProposal({
           id: 'extraLong',
-          // rationale: {
-          //   hash: '0x0',
-          //   description:
-          //     'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
-          // },
+          rationale: {
+            title:
+              'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
+            description:
+              'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra libero quis risus lobortis, sed ornare leo efficitur turpis duis.',
+          },
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -225,7 +238,7 @@ describe('Proposal header', () => {
       'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra…'
     );
     expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
-      'libero quis risus lobortis, sed ornare leo efficitur turpis…'
+      'Aenean sem odio, eleifend non sodales vitae, porttitor eu e…'
     );
     expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
       'extraLong'
@@ -238,6 +251,9 @@ describe('Proposal header', () => {
       renderComponent(
         generateProposal({
           id: 'freeform id',
+          rationale: {
+            title: 'freeform',
+          },
           terms: {
             change: {
               __typename: 'NewFreeform',
@@ -246,15 +262,13 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
-      'Freeform proposal: freeform id'
-    );
+    expect(screen.getByTestId('proposal-header')).toHaveTextContent('freeform');
     expect(
       screen.queryByTestId('proposal-details-one')
     ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('proposal-details-two')
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('proposal-details-two')).toHaveTextContent(
+      'freeform id'
+    );
   });
 
   it("Renders unknown proposal if it's a different proposal type", () => {

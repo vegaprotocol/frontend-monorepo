@@ -18,8 +18,8 @@ export function generateProposal(
     id: faker.datatype.uuid(),
     rationale: {
       __typename: 'ProposalRationale',
-      title: faker.lorem.words(8),
-      description: faker.lorem.words(24),
+      title: '',
+      description: '',
     },
     reference: 'ref' + faker.datatype.uuid(),
     state: ProposalState.STATE_OPEN,

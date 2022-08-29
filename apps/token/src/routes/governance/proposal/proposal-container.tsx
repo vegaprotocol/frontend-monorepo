@@ -6,7 +6,6 @@ import { Proposal } from '../components/proposal';
 
 export const ProposalContainer = () => {
   const params = useParams<{ proposalId: string }>();
-
   const { data, loading, error } = useProposalQuery(params.proposalId);
 
   return (
