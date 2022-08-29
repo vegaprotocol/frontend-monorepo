@@ -1,10 +1,11 @@
-module.exports = {
-  displayName: 'assets',
+/* eslint-disable */
+export default {
+  displayName: 'governance',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/assets',
+  coverageDirectory: '../../coverage/libs/governance',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };

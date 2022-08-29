@@ -1,5 +1,5 @@
 {
-  "root": "apps/token",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/token/src",
   "projectType": "application",
   "targets": {
@@ -62,12 +62,12 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/token"],
       "options": {
-        "jestConfig": "apps/token/jest.config.js",
+        "jestConfig": "apps/token/jest.config.ts",
         "passWithNoTests": true
       }
     },
     "build-netlify": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "cp apps/token/netlify.toml netlify.toml",

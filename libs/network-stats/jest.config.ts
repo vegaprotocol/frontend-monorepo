@@ -1,9 +1,10 @@
-module.exports = {
-  displayName: 'types',
+/* eslint-disable */
+export default {
+  displayName: 'network-stats',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/types',
+  coverageDirectory: '../../coverage/libs/network-stats',
 };

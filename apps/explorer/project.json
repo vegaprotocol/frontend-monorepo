@@ -1,5 +1,5 @@
 {
-  "root": "apps/explorer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/explorer/src",
   "projectType": "application",
   "targets": {
@@ -62,12 +62,12 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/explorer"],
       "options": {
-        "jestConfig": "apps/explorer/jest.config.js",
+        "jestConfig": "apps/explorer/jest.config.ts",
         "passWithNoTests": true
       }
     },
     "build-netlify": {
-      "builder": "@nrwl/workspace:run-commands",
+      "executor": "@nrwl/workspace:run-commands",
       "options": {
         "commands": [
           "cp apps/explorer/netlify.toml netlify.toml",

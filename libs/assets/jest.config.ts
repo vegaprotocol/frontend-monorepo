@@ -1,10 +1,11 @@
-module.exports = {
-  displayName: 'market-depth',
+/* eslint-disable */
+export default {
+  displayName: 'assets',
   preset: '../../jest.preset.js',
   transform: {
     '^.+\\.[tj]sx?$': 'babel-jest',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
-  coverageDirectory: '../../coverage/libs/market-depth',
+  coverageDirectory: '../../coverage/libs/assets',
   setupFilesAfterEnv: ['./src/setup-tests.ts'],
 };
