@@ -93,8 +93,8 @@ const PROPOSALS_FRAGMENT = gql`
 `;
 
 export const PROPOSALS_QUERY = gql`
+  ${PROPOSALS_FRAGMENT}
   query ProposalsConnection {
-    ${PROPOSALS_FRAGMENT}
     proposalsConnection {
       edges {
         node {
@@ -128,7 +128,7 @@ export const getProposals = (data?: ProposalsConnection) => {
 };
 
 export const useProposalQuery = (id?: string) =>
-  useQuery<Proposal, ProposalVariables>(PROPOSALS_QUERY, {
+  useQuery<Proposal, ProposalVariables>(PROPOSAL_QUERY, {
     fetchPolicy: 'no-cache',
     variables: { proposalId: id || '' },
     skip: !id,

@@ -7,14 +7,32 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
   const { t } = useTranslation();
   const { change } = proposal.terms;
 
-  let headerText: string;
-  let detailsOne: ReactNode;
   let detailsTwo: ReactNode;
+
+  const headerMaxLength = 100;
+  const descriptionOneMaxLength = 60;
+  let header = proposal.rationale.title.trim();
+  let description = proposal.rationale.description.trim();
+  if (header.length === 0 && description.length > 0) {
+    header = description;
+    description = '';
+  }
+  const headerOverflow = header.length > headerMaxLength;
+  const descriptionOneOverflow =
+    description.length > headerMaxLength + descriptionOneMaxLength;
+
+  const headerText = `${header
+    .trim()
+    .substring(0, headerMaxLength - 1)
+    .trim()}${headerOverflow ? '…' : ''}`;
+  const detailsOne = `${description
+    .trim()
+    .substring(0, descriptionOneMaxLength - 1)
+    .trim()}${descriptionOneOverflow ? '…' : ''}`;
 
   switch (change.__typename) {
     case 'NewMarket': {
-      headerText = `${t('New market')}: ${change.instrument.name}`;
-      detailsOne = (
+      detailsTwo = (
         <>
           {t('Code')}: {change.instrument.code}.{' '}
           {change.instrument.futureProduct?.settlementAsset.symbol ? (
@@ -32,12 +50,11 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
       break;
     }
     case 'UpdateMarket': {
-      headerText = `${t('Market change')}: ${change.marketId}`;
+      detailsTwo = `${t('Market change')}: ${change.marketId}`;
       break;
     }
     case 'NewAsset': {
-      headerText = `${t('New asset')}: ${change.name}`;
-      detailsOne = (
+      detailsTwo = (
         <>
           {t('Symbol')}: {change.symbol}.{' '}
           <Lozenge>
@@ -53,8 +70,7 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
     }
     case 'UpdateNetworkParameter': {
       const parametersClasses = 'font-mono leading-none';
-      headerText = `${t('Network parameter')}`;
-      detailsOne = (
+      detailsTwo = (
         <>
           <span className={`${parametersClasses} mr-2`}>
             {change.networkParameter.key}
@@ -68,41 +84,18 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
       break;
     }
     case 'NewFreeform': {
-      // When rationale exists (https://github.com/vegaprotocol/frontend-monorepo/issues/824):
-      // const description = proposal.rationale.description.trim();
-      // const headerMaxLength = 100;
-      // const descriptionOneMaxLength = 60;
-      // const headerOverflow = description.length > headerMaxLength;
-      // const descriptionOneOverflow =
-      //   description.length > headerMaxLength + descriptionOneMaxLength;
-      //
-      // headerText = `${description.substring(0, headerMaxLength - 1).trim()}${
-      //   headerOverflow ? '…' : ''
-      // }`;
-      // detailsOne = headerOverflow
-      //   ? `${description
-      //       .substring(
-      //         headerMaxLength - 1,
-      //         headerMaxLength + descriptionOneMaxLength - 1
-      //       )
-      //       .trim()}${descriptionOneOverflow ? '…' : ''}`
-      //   : '';
-      // detailsTwo = `${proposal.id}`;
-      headerText = proposal.id
-        ? `${t('Freeform proposal')}: ${proposal.id.trim()}`
-        : `${t('Unknown proposal')}`;
+      detailsTwo = `${proposal.id}`;
 
       break;
-    }
-    default: {
-      headerText = `${t('Unknown proposal')}`;
     }
   }
 
   return (
     <div className="text-sm mb-2">
       <header data-testid="proposal-header">
-        <h2 className="text-lg mx-0 mt-0 mb-1 font-semibold">{headerText}</h2>
+        <h2 className="text-lg mx-0 mt-0 mb-1 font-semibold">
+          {headerText || t('Unknown proposal')}
+        </h2>
       </header>
       {detailsOne && <div data-testid="proposal-details-one">{detailsOne}</div>}
       {detailsTwo && <div data-testid="proposal-details-two">{detailsTwo}</div>}
