@@ -147,7 +147,7 @@ export const Info = ({ market }: InfoProps) => {
               balance: a.balance,
             }}
             assetSymbol={assetSymbol}
-            decimalPlaces={market.positionDecimalPlaces} // TODO decimal places needed here?
+            decimalPlaces={market.positionDecimalPlaces}
           />
         ),
       })),
@@ -280,12 +280,12 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            // TODO openInterest: market.data && market.data.openInterest, what is Open Interest 24h High ?
+            openInterest: market.data && market.data.openInterest,
             targetStake: market.data && market.data.targetStake,
             suppliedStake: market.data && market.data?.suppliedStake,
             marketValueProxy: market.data && market.data.marketValueProxy,
           }}
-          decimalPlaces={market.decimalPlaces} // TODO do we need to add decimal places here?
+          decimalPlaces={market.positionDecimalPlaces}
           assetSymbol={assetSymbol}
           link={
             <>
