@@ -110,7 +110,6 @@ export default ({
       <div className="mt-12 max-w-sm">
         <Button
           fill={true}
-          variant="secondary"
           type="submit"
           disabled={transactionStatus === 'pending' || isDisabled}
           data-testid="place-order"
