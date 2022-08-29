@@ -41,7 +41,7 @@
       "executor": "./tools/executors/webpack:serve",
       "options": {
         "port": 3000,
-        "buildTarget": "explorer:build",
+        "buildTarget": "explorer:build:development",
         "hmr": true
       },
       "configurations": {

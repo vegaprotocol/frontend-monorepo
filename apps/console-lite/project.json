@@ -43,7 +43,7 @@
     "serve": {
       "executor": "./tools/executors/webpack:serve",
       "options": {
-        "buildTarget": "console-lite:build",
+        "buildTarget": "console-lite:build:development",
         "hmr": true,
         "port": 4001
       },

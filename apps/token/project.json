@@ -41,7 +41,7 @@
       "executor": "./tools/executors/webpack:serve",
       "options": {
         "port": 4210,
-        "buildTarget": "token:build",
+        "buildTarget": "token:build:development",
         "hmr": true
       },
       "configurations": {

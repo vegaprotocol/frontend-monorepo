@@ -40,7 +40,7 @@
       "executor": "./tools/executors/webpack:serve",
       "options": {
         "port": 3010,
-        "buildTarget": "stats:build",
+        "buildTarget": "stats:build:development",
         "hmr": true
       },
       "configurations": {
