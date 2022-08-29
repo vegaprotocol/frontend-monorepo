@@ -16,7 +16,7 @@ import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact } from 'ag-grid-react';
 import type { Accounts_party_accounts } from './__generated__/Accounts';
 import { getId } from './accounts-data-provider';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 import type { AccountType } from '@vegaprotocol/types';
 import { AccountTypeMapping } from '@vegaprotocol/types';
 

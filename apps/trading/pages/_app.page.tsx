@@ -17,7 +17,7 @@ import { useGlobalStore } from '../stores';
 import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
-} from '@vegaprotocol/market-list';
+} from '@vegaprotocol/assets';
 
 function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();

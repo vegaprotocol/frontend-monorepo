@@ -78,4 +78,10 @@ export const accountsDataProvider = makeDataProvider<
   Accounts_party_accounts[],
   AccountSubscribe,
   AccountSubscribe_accounts
->(ACCOUNTS_QUERY, ACCOUNTS_SUB, update, getData, getDelta);
+>({
+  query: ACCOUNTS_QUERY,
+  subscriptionQuery: ACCOUNTS_SUB,
+  update,
+  getData,
+  getDelta,
+});

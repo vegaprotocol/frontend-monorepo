@@ -25,6 +25,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {
+            id: '',
             __typename: 'Instrument',
             code: 'AAVEDAI.MF21',
           },
@@ -54,6 +55,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {
+            id: '',
             __typename: 'Instrument',
             code: 'TSLA.QM21',
           },
@@ -83,6 +85,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {
+            id: '',
             __typename: 'Instrument',
             code: 'BTCUSD.MF21',
           },
@@ -112,6 +115,7 @@ export const generateOrders = (override?: PartialDeep<Orders>): Orders => {
         tradableInstrument: {
           __typename: 'TradableInstrument',
           instrument: {
+            id: '',
             __typename: 'Instrument',
             code: 'UNIDAI.MF21',
           },

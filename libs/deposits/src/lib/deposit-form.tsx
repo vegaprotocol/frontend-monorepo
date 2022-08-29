@@ -25,7 +25,7 @@ import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 interface FormFields {
   asset: string;
