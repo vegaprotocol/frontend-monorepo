@@ -23,7 +23,8 @@ export const Toggle = ({
   checkedValue,
   ...props
 }: ToggleInputProps) => {
-  const fieldsetClasses = 'flex rounded-2xl bg-neutral-100 dark:bg-neutral-700';
+  const fieldsetClasses =
+    'flex rounded-full bg-neutral-100 dark:bg-neutral-700 text-sm';
   const labelClasses = classnames(
     'group flex-1',
     '-ml-[1px] first-of-type:ml-0'
@@ -31,7 +32,7 @@ export const Toggle = ({
   const radioClasses = classnames('sr-only', 'peer');
   const buttonClasses = classnames(
     'relative inline-block w-full text-center',
-    'peer-checked:rounded-2xl',
+    'peer-checked:rounded-full',
     'px-10 py-2',
     'peer-checked:bg-neutral-400 dark:peer-checked:bg-white',
     'peer-checked:text-white dark:peer-checked:text-black',
