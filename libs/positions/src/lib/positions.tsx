@@ -1,4 +1,4 @@
-import { useRef, useCallback, useMemo, memo, useState } from 'react';
+import { useRef, useCallback, useMemo, memo } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { t, toBigNum, useDataProvider } from '@vegaprotocol/react-helpers';

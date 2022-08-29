@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
 import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
