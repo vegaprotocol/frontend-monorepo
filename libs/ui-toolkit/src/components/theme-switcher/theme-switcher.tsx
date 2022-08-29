@@ -8,14 +8,20 @@ export const ThemeSwitcher = ({
   className,
   sunClassName,
   moonClassName,
+  fixedBg,
 }: {
   theme: 'light' | 'dark';
   onToggle: () => void;
   className?: string;
   sunClassName?: string;
   moonClassName?: string;
+  fixedBg?: 'light' | 'dark';
 }) => {
-  const sharedClasses = 'text-neutral-300';
+  const sharedClasses = classNames({
+    'text-neutral-800 dark:text-neutral-300': !fixedBg,
+    'text-neutral-800': fixedBg === 'light',
+    'text-neutral-300': fixedBg === 'dark',
+  });
   const sunClasses = classNames(sharedClasses, sunClassName, {
     hidden: theme === 'light',
   });

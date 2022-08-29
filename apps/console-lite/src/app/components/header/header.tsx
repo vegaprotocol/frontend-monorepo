@@ -25,7 +25,7 @@ const Header = () => {
           theme={theme}
           onToggle={toggleTheme}
           className="-my-4"
-          sunClassName="text-white"
+          fixedBg="dark"
         />
       </div>
     </div>

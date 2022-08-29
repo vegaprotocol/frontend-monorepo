@@ -43,6 +43,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
           theme={theme}
           onToggle={toggleTheme}
           sunClassName="text-white"
+          fixedBg="dark"
         />
         <VegaWalletConnectButton
           setConnectDialog={(open) => {
