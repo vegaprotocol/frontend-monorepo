@@ -1,6 +1,6 @@
-const theme = require('./theme');
 const defaultTheme = require('tailwindcss/defaultTheme');
 const colors = require('tailwindcss/colors');
+const theme = require('./theme');
 
 module.exports = {
   ...theme,
@@ -37,7 +37,6 @@ module.exports = {
     'ui-tiny': ['10px', { lineHeight: '18px' }],
   },
   boxShadow: {
-    ...theme.boxShadow,
     'inset-black': '',
     'inset-white': '',
     input: 'none',

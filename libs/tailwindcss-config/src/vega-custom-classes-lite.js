@@ -1,6 +1,6 @@
 const plugin = require('tailwindcss/plugin');
-const theme = require('./theme-lite');
 const colors = require('tailwindcss/colors');
+const themelite = require('./theme-lite');
 
 const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
   addUtilities({
@@ -35,19 +35,19 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       textTransform: 'uppercase',
       textDecoration: 'none',
       backgroundColor: 'rgba(0, 143, 74, 0.1)',
-      border: `1px solid ${theme.colors.darkerGreen}`,
-      color: theme.colors.darkerGreen,
+      border: `1px solid ${themelite.colors.darkerGreen}`,
+      color: themelite.colors.darkerGreen,
       '&:hover': {
-        backgroundColor: theme.colors.darkerGreen,
+        backgroundColor: themelite.colors.darkerGreen,
         color: colors.white,
       },
       '&.selected': {
-        backgroundColor: theme.colors.darkerGreen,
+        backgroundColor: themelite.colors.darkerGreen,
         color: colors.white,
       },
     },
     '.buyButtonDark': {
-      color: theme.colors.darkerGreen,
+      color: themelite.colors.darkerGreen,
       '&:hover': {
         color: colors.black,
       },
@@ -59,19 +59,19 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       textTransform: 'uppercase',
       textDecoration: 'none',
       backgroundColor: 'rgba(255, 8, 126, 0.1)',
-      border: `1px solid ${theme.colors.pink}`,
-      color: theme.colors.pink,
+      border: `1px solid ${themelite.colors.pink}`,
+      color: themelite.colors.pink,
       '&:hover': {
         color: colors.white,
-        backgroundColor: theme.colors.pink,
+        backgroundColor: themelite.colors.pink,
       },
       '&.selected': {
-        backgroundColor: theme.colors.pink,
+        backgroundColor: themelite.colors.pink,
         color: colors.white,
       },
     },
     '.sellButtonDark': {
-      color: theme.colors.pink,
+      color: themelite.colors.pink,
       '&:hover': {
         color: colors.black,
       },

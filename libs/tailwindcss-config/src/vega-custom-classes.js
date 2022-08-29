@@ -1,6 +1,6 @@
 const plugin = require('tailwindcss/plugin');
-const theme = require('./theme');
 const colors = require('tailwindcss/colors');
+const theme = require('./theme');
 
 const vegaCustomClasses = plugin(function ({ addUtilities }) {
   addUtilities({

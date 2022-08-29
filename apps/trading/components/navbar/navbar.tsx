@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { NetworkSwitcher } from '@vegaprotocol/environment';
 import { t } from '@vegaprotocol/react-helpers';
-import { Vega } from '../icons/vega';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
 import { ThemeSwitcher, VLogo } from '@vegaprotocol/ui-toolkit';

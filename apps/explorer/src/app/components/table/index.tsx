@@ -2,7 +2,7 @@ import type { ThHTMLAttributes } from 'react';
 import React from 'react';
 import classnames from 'classnames';
 
-interface TableProps extends ThHTMLAttributes<HTMLTableElement> {
+interface TableProps {
   children: React.ReactNode;
   className?: string;
 }
