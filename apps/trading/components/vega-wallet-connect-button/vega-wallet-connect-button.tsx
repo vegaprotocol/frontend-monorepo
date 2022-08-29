@@ -60,7 +60,7 @@ export const VegaWalletConnectButton = ({
       onClick={() => setConnectDialog(true)}
       size="sm"
     >
-      <span className="whitespace-nowrap">{t('Connect')}</span>
+      <span className="whitespace-nowrap">{t('Connect Vega wallet')}</span>
     </Button>
   );
 };

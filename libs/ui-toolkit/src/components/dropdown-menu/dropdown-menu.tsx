@@ -6,8 +6,8 @@ import { Icon } from '../icon';
 const itemClass = classNames(
   'relative flex items-center justify-between rounded-sm p-2 text-sm',
   'cursor-default hover:cursor-pointer',
-  'hover:bg-white dark:hover:bg-white',
-  'focus:bg-white dark:focus:bg-white',
+  'hover:bg-white dark:hover:bg-neutral-200',
+  'focus:bg-white dark:focus:bg-neutral-200',
   'select-none',
   'whitespace-nowrap'
 );
@@ -58,7 +58,7 @@ export const DropdownMenuContent = forwardRef<
   <DropdownMenuPrimitive.Content
     {...contentProps}
     ref={forwardedRef}
-    className="min-w-[290px] bg-neutral-200 p-2 rounded"
+    className="min-w-[290px] bg-neutral-200 dark:bg-white p-2 rounded"
     align="start"
     sideOffset={10}
   />

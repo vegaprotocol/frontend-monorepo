@@ -11,13 +11,7 @@ import {
   MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import {
-  KeyValueTable,
-  KeyValueTableRow,
-  PriceCellChange,
-  Sparkline,
-  Tooltip,
-} from '@vegaprotocol/ui-toolkit';
+import { PriceCellChange, Sparkline, Tooltip } from '@vegaprotocol/ui-toolkit';
 import BigNumber from 'bignumber.js';
 import Link from 'next/link';
 
@@ -28,16 +22,33 @@ import type {
   MarketList_markets,
   MarketList_markets_fees_factors,
 } from '../__generated__/MarketList';
-import classNames from 'classnames';
 import isNil from 'lodash/isNil';
+import { Positions_party_positionsConnection_edges_node_market_tradableInstrument_instrument } from '@vegaprotocol/positions';
 
-export const thClassNames = (direction: 'left' | 'right') =>
-  `px-2 text-${direction} first:w-[10%]`;
-export const tdClassNames = 'px-2 capitalize text-right';
-export const boldUnderlineClassNames = classNames(
-  'px-2 underline',
-  'first:w-[10%]'
-);
+export const cellClassNames = 'px-2 first:text-left text-right capitalize';
+
+const FeesInfo = () => {
+  return (
+    <Tooltip
+      description={
+        <span>
+          {t(
+            'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
+          )}
+          <ul className="list-disc ml-4">
+            <li>{t('An infrastructure fee')}</li>
+            <li>{t('A liquidity provision fee')}</li>
+            <li>{t('A maker fee')}</li>
+          </ul>
+        </span>
+      }
+    >
+      <span className="border-b-2 border-neutral-600 dark:border-neutral-400 border-dotted">
+        {t('Taker fee')}
+      </span>
+    </Tooltip>
+  );
+};
 
 export interface Column {
   value: string | React.ReactNode;
@@ -49,70 +60,57 @@ export interface Column {
 export const columnHeadersPositionMarkets: Column[] = [
   {
     value: t('Market'),
-    className: thClassNames('left'),
+    className: cellClassNames,
     onlyOnDetailed: false,
   },
   {
     value: t('Last price'),
-    className: thClassNames('right'),
-    onlyOnDetailed: false,
-  },
-  {
-    value: t('Settlement asset'),
-    className: thClassNames('left'),
+    className: cellClassNames,
     onlyOnDetailed: false,
   },
   {
     value: t('Change (24h)'),
-    className: thClassNames('right'),
+    className: cellClassNames,
     onlyOnDetailed: false,
   },
-  { value: t(''), className: thClassNames('right'), onlyOnDetailed: false },
+  {
+    value: t('Settlement asset'),
+    className: `${cellClassNames} hidden sm:table-cell`,
+    onlyOnDetailed: false,
+  },
+  {
+    value: t(''),
+    className: `${cellClassNames} hidden lg:table-cell`,
+    onlyOnDetailed: false,
+  },
   {
     value: t('24h High'),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('24h Low'),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('Trading mode'),
-    className: thClassNames('left'),
-    onlyOnDetailed: true,
-  },
-  {
-    value: (
-      <Tooltip
-        description={
-          <span>
-            {t(
-              'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
-            )}
-            <ul className="list-disc ml-4">
-              <li className="py-2">{t('An infrastructure fee')}</li>
-              <li className="py-2">{t('A liquidity provision fee')}</li>
-              <li className="py-2">{t('A maker fee')}</li>
-            </ul>
-          </span>
-        }
-      >
-        <span className="border-b-2 border-dotted">{t('Taker fee')}</span>
-      </Tooltip>
-    ),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('Volume'),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden lg:table-cell`,
+    onlyOnDetailed: true,
+  },
+  {
+    value: <FeesInfo />,
+    className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('Position'),
-    className: thClassNames('left'),
+    className: `${cellClassNames} hidden xxl:table-cell`,
     onlyOnDetailed: true,
   },
 ];
@@ -120,75 +118,61 @@ export const columnHeadersPositionMarkets: Column[] = [
 export const columnHeaders: Column[] = [
   {
     value: t('Market'),
-    className: thClassNames('left'),
+    className: cellClassNames,
     onlyOnDetailed: false,
   },
   {
     value: t('Last price'),
-    className: thClassNames('right'),
-    onlyOnDetailed: false,
-  },
-  {
-    value: t('Settlement asset'),
-    className: thClassNames('left'),
+    className: cellClassNames,
     onlyOnDetailed: false,
   },
   {
     value: t('Change (24h)'),
-    className: thClassNames('right'),
+    className: cellClassNames,
     onlyOnDetailed: false,
   },
-  { value: t(''), className: thClassNames('right'), onlyOnDetailed: false },
+  {
+    value: t('Settlement asset'),
+    className: `${cellClassNames} hidden sm:table-cell`,
+    onlyOnDetailed: false,
+  },
+  {
+    value: t(''),
+    className: `${cellClassNames} hidden lg:table-cell`,
+    onlyOnDetailed: false,
+  },
   {
     value: t('24h High'),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('24h Low'),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('Trading mode'),
-    className: thClassNames('left'),
-    onlyOnDetailed: true,
-  },
-  {
-    value: (
-      <Tooltip
-        description={
-          <span>
-            {t(
-              'Fees are paid by market takers on aggressive orders only. The fee displayed is made up of:'
-            )}
-            <ul className="list-disc ml-4">
-              <li className="py-2">{t('An infrastructure fee')}</li>
-              <li className="py-2">{t('A liquidity provision fee')}</li>
-              <li className="py-2">{t('A maker fee')}</li>
-            </ul>
-          </span>
-        }
-      >
-        <span className="border-b-2 border-dotted">{t('Taker fee')}</span>
-      </Tooltip>
-    ),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden lg:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('Volume'),
-    className: thClassNames('right'),
+    className: `${cellClassNames} hidden lg:table-cell`,
+    onlyOnDetailed: true,
+  },
+  {
+    value: <FeesInfo />,
+    className: `${cellClassNames} hidden xl:table-cell`,
     onlyOnDetailed: true,
   },
   {
     value: t('Full name'),
-    className: thClassNames('left'),
+    className: `${cellClassNames} hidden xxl:block`,
     onlyOnDetailed: true,
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const columns = (
   market: MarketList_markets,
   onSelect: (id: string) => void
@@ -222,7 +206,7 @@ export const columns = (
           </a>
         </Link>
       ),
-      className: `${boldUnderlineClassNames} relative`,
+      className: cellClassNames,
       onlyOnDetailed: false,
     },
     {
@@ -238,14 +222,7 @@ export const columns = (
       ) : (
         '-'
       ),
-      className: tdClassNames,
-      onlyOnDetailed: false,
-    },
-    {
-      value:
-        market.tradableInstrument.instrument.product.settlementAsset.symbol,
-      dataTestId: 'settlement-asset',
-      className: thClassNames('left'),
+      className: cellClassNames,
       onlyOnDetailed: false,
     },
     {
@@ -255,7 +232,14 @@ export const columns = (
           decimalPlaces={market.decimalPlaces}
         />
       ),
-      className: tdClassNames,
+      className: cellClassNames,
+      onlyOnDetailed: false,
+    },
+    {
+      value:
+        market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      dataTestId: 'settlement-asset',
+      className: `${cellClassNames} hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {
@@ -267,7 +251,7 @@ export const columns = (
           data={candlesClose?.map((c: string) => Number(c)) || []}
         />
       ),
-      className: 'px-2',
+      className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: false && candlesClose,
     },
     {
@@ -283,7 +267,7 @@ export const columns = (
       ) : (
         '-'
       ),
-      className: tdClassNames,
+      className: `${cellClassNames} hidden xl:table-cell`,
       onlyOnDetailed: true,
     },
     {
@@ -299,7 +283,7 @@ export const columns = (
       ) : (
         '-'
       ),
-      className: tdClassNames,
+      className: `${cellClassNames} hidden xl:table-cell`,
       onlyOnDetailed: true,
     },
     {
@@ -311,23 +295,9 @@ export const columns = (
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
-      className: thClassNames('left'),
+      className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode',
-    },
-    {
-      value: (
-        <Tooltip
-          description={<FeesBreakdown feeFactors={market.fees.factors} />}
-        >
-          <span className="border-b-2 border-dotted">
-            {totalFees(market.fees.factors) ?? '-'}
-          </span>
-        </Tooltip>
-      ),
-      className: tdClassNames,
-      onlyOnDetailed: true,
-      dataTestId: 'taker-fee',
     },
     {
       value:
@@ -337,13 +307,19 @@ export const columns = (
               market.positionDecimalPlaces
             )
           : '-',
-      className: tdClassNames,
+      className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'market-volume',
     },
     {
+      value: <FeesCell feeFactors={market.fees.factors} />,
+      className: `${cellClassNames} hidden xl:table-cell`,
+      onlyOnDetailed: true,
+      dataTestId: 'taker-fee',
+    },
+    {
       value: market.name,
-      className: thClassNames('left'),
+      className: `${cellClassNames} hidden xxl:block`,
       onlyOnDetailed: true,
       dataTestId: 'market-name',
     },
@@ -384,7 +360,7 @@ export const columnsPositionMarkets = (
           </a>
         </Link>
       ),
-      className: `${boldUnderlineClassNames} relative`,
+      className: cellClassNames,
       onlyOnDetailed: false,
     },
     {
@@ -400,13 +376,7 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-      className: tdClassNames,
-      onlyOnDetailed: false,
-    },
-    {
-      value:
-        market.tradableInstrument.instrument.product.settlementAsset.symbol,
-      className: thClassNames('left'),
+      className: cellClassNames,
       onlyOnDetailed: false,
     },
     {
@@ -416,7 +386,13 @@ export const columnsPositionMarkets = (
           decimalPlaces={market.decimalPlaces}
         />
       ),
-      className: tdClassNames,
+      className: cellClassNames,
+      onlyOnDetailed: false,
+    },
+    {
+      value:
+        market.tradableInstrument.instrument.product.settlementAsset.symbol,
+      className: `${cellClassNames} hidden sm:table-cell`,
       onlyOnDetailed: false,
     },
     {
@@ -428,7 +404,7 @@ export const columnsPositionMarkets = (
           data={candlesClose.map((c: string) => Number(c))}
         />
       ),
-      className: 'px-8',
+      className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: false,
     },
     {
@@ -444,7 +420,7 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-      className: tdClassNames,
+      className: `${cellClassNames} hidden xl:table-cell`,
       onlyOnDetailed: true,
     },
     {
@@ -460,7 +436,7 @@ export const columnsPositionMarkets = (
       ) : (
         '-'
       ),
-      className: tdClassNames,
+      className: `${cellClassNames} hidden xl:table-cell`,
       onlyOnDetailed: true,
     },
     {
@@ -472,22 +448,9 @@ export const columnsPositionMarkets = (
           ? `${MarketTradingModeMapping[market.tradingMode]}
                      - ${AuctionTriggerMapping[market.data.trigger]}`
           : MarketTradingModeMapping[market.tradingMode],
-      className: thClassNames('left'),
+      className: `${cellClassNames} hidden lg:table-cell`,
       onlyOnDetailed: true,
       dataTestId: 'trading-mode',
-    },
-    {
-      value: (
-        <Tooltip
-          description={<FeesBreakdown feeFactors={market.fees?.factors} />}
-        >
-          <span className="border-b-2 border-dotted">
-            {totalFees(market.fees.factors) ?? '-'}
-          </span>
-        </Tooltip>
-      ),
-      className: tdClassNames,
-      onlyOnDetailed: true,
     },
     {
       value:
@@ -497,7 +460,12 @@ export const columnsPositionMarkets = (
               market.positionDecimalPlaces
             )
           : '-',
-      className: tdClassNames,
+      className: `${cellClassNames} hidden lg:table-cell`,
+      onlyOnDetailed: true,
+    },
+    {
+      value: <FeesCell feeFactors={market.fees.factors} />,
+      className: `${cellClassNames} hidden xl:table-cell`,
       onlyOnDetailed: true,
     },
     {
@@ -514,12 +482,24 @@ export const columnsPositionMarkets = (
           {market.openVolume}
         </p>
       ),
-      className: thClassNames('left'),
+      className: `${cellClassNames} hidden xxl:table-cell`,
       onlyOnDetailed: true,
     },
   ];
   return selectMarketColumns;
 };
+
+const FeesCell = ({
+  feeFactors,
+}: {
+  feeFactors: MarketList_markets_fees_factors;
+}) => (
+  <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
+    <span className="border-b-2 border-neutral-600 dark:border-neutral-400 border-dotted">
+      {totalFees(feeFactors) ?? '-'}
+    </span>
+  </Tooltip>
+);
 
 export const FeesBreakdown = ({
   feeFactors,
@@ -528,35 +508,25 @@ export const FeesBreakdown = ({
 }) => {
   if (!feeFactors) return null;
   return (
-    <KeyValueTable>
-      <KeyValueTableRow>
-        <span className={thClassNames('left')}>{t('Infrastructure Fee')}</span>
-        <span className={tdClassNames}>
-          {formatNumberPercentage(
-            new BigNumber(feeFactors.infrastructureFee).times(100)
-          )}
-        </span>
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        <span className={thClassNames('left')}>{t('Liquidity Fee')}</span>
-        <span className={tdClassNames}>
-          {formatNumberPercentage(
-            new BigNumber(feeFactors.liquidityFee).times(100)
-          )}
-        </span>
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        <span className={thClassNames('left')}>{t('Maker Fee')}</span>
-        <span className={tdClassNames}>
-          {formatNumberPercentage(
-            new BigNumber(feeFactors.makerFee).times(100)
-          )}
-        </span>
-      </KeyValueTableRow>
-      <KeyValueTableRow>
-        <span className={thClassNames('left')}>{t('Total Fees')}</span>
-        <span className={tdClassNames}>{totalFees(feeFactors)}</span>
-      </KeyValueTableRow>
-    </KeyValueTable>
+    <dl className="grid grid-cols-2 gap-x-2">
+      <dt>{t('Infrastructure Fee')}</dt>
+      <dd className="text-right">
+        {formatNumberPercentage(
+          new BigNumber(feeFactors.infrastructureFee).times(100)
+        )}
+      </dd>
+      <dt>{t('Liquidity Fee')}</dt>
+      <dd className="text-right">
+        {formatNumberPercentage(
+          new BigNumber(feeFactors.liquidityFee).times(100)
+        )}
+      </dd>
+      <dt>{t('Maker Fee')}</dt>
+      <dd className="text-right">
+        {formatNumberPercentage(new BigNumber(feeFactors.makerFee).times(100))}
+      </dd>
+      <dt>{t('Total Fees')}</dt>
+      <dd className="text-right">{totalFees(feeFactors)}</dd>
+    </dl>
   );
 };
