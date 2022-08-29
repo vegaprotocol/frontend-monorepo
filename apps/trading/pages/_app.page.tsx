@@ -1,5 +1,4 @@
 import type { AppProps } from 'next/app';
-import Head from 'next/head';
 import { Navbar } from '../components/navbar';
 import { t, ThemeContext, useThemeSwitcher } from '@vegaprotocol/react-helpers';
 import {
@@ -17,6 +16,7 @@ import {
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
 import { Footer } from '../components/footer';
+import Head from 'next/head';
 
 function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
@@ -29,6 +29,9 @@ function AppBody({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeContext.Provider value={theme}>
+      <Head>
+        <title>{t('Welcome to Vega trading!')}</title>
+      </Head>
       <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
           <Navbar theme={theme} toggleTheme={toggleTheme} />
@@ -61,26 +64,6 @@ function VegaTradingApp(props: AppProps) {
   return (
     <EnvironmentProvider>
       <VegaWalletProvider>
-        <Head>
-          <link
-            rel="preload"
-            href="https://static.vega.xyz/AlphaLyrae-Medium.woff2"
-            as="font"
-            type="font/woff2"
-            crossOrigin="anonymous"
-          />
-          <title>{t('Welcome to Vega trading!')}</title>
-          <link
-            rel="icon"
-            type="image/x-icon"
-            href="https://static.vega.xyz/favicon.ico"
-          />
-          <link rel="stylesheet" href="https://static.vega.xyz/fonts.css" />
-          {['1', 'true'].includes(process.env['NX_USE_ENV_OVERRIDES'] || '') ? (
-            /* eslint-disable-next-line @next/next/no-sync-scripts */
-            <script src="/assets/env-config.js" type="text/javascript" />
-          ) : null}
-        </Head>
         <AppBody {...props} />
       </VegaWalletProvider>
     </EnvironmentProvider>
