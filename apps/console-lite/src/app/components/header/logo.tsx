@@ -10,7 +10,7 @@ const Logo = () => {
       aria-label={t('Go to home page')}
       to="/"
     >
-      <VLogo />
+      <VLogo className="mx-6 my-2" />
     </NavLink>
   );
 };

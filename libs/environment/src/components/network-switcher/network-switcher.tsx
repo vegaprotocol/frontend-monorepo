@@ -116,7 +116,7 @@ export const NetworkSwitcher = () => {
                 setAdvancedView(true);
               }}
             >
-              <span className="text-neutral-600">{t('Advanced')}</span>
+              {t('Advanced')}
             </DropdownMenuItem>
           </>
         )}

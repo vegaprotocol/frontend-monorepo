@@ -16,6 +16,7 @@ import {
   AssetDetailsDialog,
   useAssetDetailsDialogStore,
 } from '@vegaprotocol/assets';
+import { Footer } from '../components/footer';
 
 function AppBody({ Component, pageProps }: AppProps) {
   const store = useGlobalStore();
@@ -28,13 +29,14 @@ function AppBody({ Component, pageProps }: AppProps) {
 
   return (
     <ThemeContext.Provider value={theme}>
-      <div className="h-full relative dark:text-white z-0 grid grid-rows-[min-content,1fr]">
+      <div className="h-full relative dark:bg-black dark:text-white z-0 grid grid-rows-[min-content,1fr,min-content]">
         <AppLoader>
           <Navbar theme={theme} toggleTheme={toggleTheme} />
-          <main data-testid={pageProps.page} className="dark:bg-black">
+          <main data-testid={pageProps.page}>
             {/* @ts-ignore conflict between @types/react and nextjs internal types */}
             <Component {...pageProps} />
           </main>
+          <Footer />
           <VegaConnectDialog
             connectors={Connectors}
             dialogOpen={store.vegaWalletConnectDialog}

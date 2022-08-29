@@ -24,7 +24,7 @@ export const ThemeSwitcher = ({
           <SunIcon />
         </span>
       ) : (
-        <span className="text-neutral-900">
+        <span className="text-neutral-300">
           <MoonIcon />
         </span>
       )}

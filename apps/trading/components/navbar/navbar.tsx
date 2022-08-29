@@ -6,7 +6,7 @@ import { t } from '@vegaprotocol/react-helpers';
 import { Vega } from '../icons/vega';
 import { useGlobalStore } from '../../stores/global';
 import { VegaWalletConnectButton } from '../vega-wallet-connect-button';
-import { ThemeSwitcher } from '@vegaprotocol/ui-toolkit';
+import { ThemeSwitcher, VLogo } from '@vegaprotocol/ui-toolkit';
 
 interface NavbarProps {
   theme: 'light' | 'dark';
@@ -23,7 +23,7 @@ export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
           <Link href="/" passHref={true}>
             {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
             <a>
-              <Vega className="fill-white" />
+              <VLogo className="w-6 h-6 fill-white" />
             </a>
           </Link>
           <NetworkSwitcher />

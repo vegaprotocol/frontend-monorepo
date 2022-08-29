@@ -29,28 +29,34 @@ export const VegaManageDialog = ({
       {keypairs ? (
         <ul className="mb-4" data-testid="keypair-list">
           {keypairs.map((kp) => {
+            const isSelected = kp.pub === keypair?.pub;
             return (
               <li
                 key={kp.pub}
                 data-testid={`key-${kp.pub}`}
                 className="mb-2 last:mb-0"
               >
-                <div className="flex gap-4 justify-between text-sm">
+                <div
+                  className="flex gap-4 justify-between text-sm"
+                  data-testid={isSelected ? 'selected-key' : ''}
+                >
                   <p data-testid="vega-public-key-full">
                     {kp.name} {truncateByChars(kp.pub)}
                   </p>
                   <div className="flex gap-4 ml-auto">
-                    <button
-                      onClick={() => {
-                        selectPublicKey(kp.pub);
-                        setDialogOpen(false);
-                      }}
-                      disabled={kp.pub === keypair?.pub}
-                      data-testid="select-keypair-button"
-                      className="underline"
-                    >
-                      {t('Select')}
-                    </button>
+                    {!isSelected && (
+                      <button
+                        onClick={() => {
+                          selectPublicKey(kp.pub);
+                          setDialogOpen(false);
+                        }}
+                        disabled={isSelected}
+                        data-testid="select-keypair-button"
+                        className="underline"
+                      >
+                        {t('Select')}
+                      </button>
+                    )}
                     <CopyWithTooltip text={kp.pub}>
                       <button
                         data-testid="copy-vega-public-key"

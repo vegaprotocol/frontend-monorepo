@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { t } from '@vegaprotocol/react-helpers';
 import { useEnvironment } from '../../hooks/use-environment';
 import {
@@ -34,7 +35,7 @@ describe('Network switcher', () => {
     }
   );
 
-  it('displays mainnet and testnet on the default dropdown view', () => {
+  it('displays mainnet and testnet on the default dropdown view', async () => {
     const mainnetUrl = 'https://main.net';
     const testnetUrl = 'https://test.net';
     // @ts-ignore Typescript doesn't know about this module being mocked
@@ -48,7 +49,7 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    fireEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button'));
 
     const menuitems = screen.getAllByRole('menuitem');
 
@@ -66,7 +67,7 @@ describe('Network switcher', () => {
     expect(links[1]).toHaveAttribute('href', testnetUrl);
   });
 
-  it('displays the correct selected network on the default dropdown view', () => {
+  it('displays the correct selected network on the default dropdown view', async () => {
     const mainnetUrl = 'https://main.net';
     const testnetUrl = 'https://test.net';
     // @ts-ignore Typescript doesn't know about this module being mocked
@@ -80,7 +81,7 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    fireEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button'));
 
     const menuitems = screen.getAllByRole('menuitem');
 
@@ -88,7 +89,7 @@ describe('Network switcher', () => {
     expect(menuitems[0]).toHaveTextContent(t('current'));
   });
 
-  it('displays the correct selected network on the default dropdown view when it does not have an associated url', () => {
+  it('displays the correct selected network on the default dropdown view when it does not have an associated url', async () => {
     const testnetUrl = 'https://test.net';
     // @ts-ignore Typescript doesn't know about this module being mocked
     useEnvironment.mockImplementation(() => ({
@@ -101,7 +102,7 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    fireEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button'));
 
     const menuitems = screen.getAllByRole('menuitem');
 
@@ -109,7 +110,7 @@ describe('Network switcher', () => {
     expect(menuitems[0]).toHaveTextContent(t('current'));
   });
 
-  it('displays the correct state for a network without url on the default dropdown view', () => {
+  it('displays the correct state for a network without url on the default dropdown view', async () => {
     const testnetUrl = 'https://test.net';
     // @ts-ignore Typescript doesn't know about this module being mocked
     useEnvironment.mockImplementation(() => ({
@@ -122,7 +123,7 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    fireEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button'));
 
     const menuitems = screen.getAllByRole('menuitem');
 
@@ -130,7 +131,7 @@ describe('Network switcher', () => {
     expect(menuitems[0]).toHaveTextContent(t('not available'));
   });
 
-  it('displays the advanced view in the correct state', () => {
+  it('displays the advanced view in the correct state', async () => {
     const VEGA_NETWORKS: Record<Networks, string | undefined> = {
       [Networks.CUSTOM]: undefined,
       [Networks.MAINNET]: 'https://main.net',
@@ -146,8 +147,10 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('menuitem', { name: t('Advanced') }));
+    await userEvent.click(screen.getByRole('button'));
+    await userEvent.click(
+      screen.getByRole('menuitem', { name: t('Advanced') })
+    );
 
     [
       Networks.MAINNET,
@@ -164,7 +167,7 @@ describe('Network switcher', () => {
     });
   });
 
-  it('labels the selected network in the advanced view', () => {
+  it('labels the selected network in the advanced view', async () => {
     const selectedNetwork = Networks.DEVNET;
     const VEGA_NETWORKS: Record<Networks, string | undefined> = {
       [Networks.CUSTOM]: undefined,
@@ -181,8 +184,10 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('menuitem', { name: t('Advanced') }));
+    await userEvent.click(screen.getByRole('button'));
+    await userEvent.click(
+      screen.getByRole('menuitem', { name: t('Advanced') })
+    );
 
     const label = screen.getByText(`(${t('current')})`);
 
@@ -192,7 +197,7 @@ describe('Network switcher', () => {
     );
   });
 
-  it('labels unavailable networks view in the correct state', () => {
+  it('labels unavailable networks view in the correct state', async () => {
     const selectedNetwork = Networks.DEVNET;
     const VEGA_NETWORKS: Record<Networks, string | undefined> = {
       [Networks.CUSTOM]: undefined,
@@ -209,10 +214,10 @@ describe('Network switcher', () => {
 
     render(<NetworkSwitcher />);
 
-    fireEvent.click(screen.getByRole('button'));
-    fireEvent.click(screen.getByRole('menuitem', { name: t('Advanced') }));
+    await userEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByText('Advanced'));
 
-    const label = screen.getByText(`(${t('not available')})`);
+    const label = screen.getByText('(not available)');
 
     expect(label).toBeInTheDocument();
     expect(label.parentNode?.firstElementChild).toHaveTextContent(
