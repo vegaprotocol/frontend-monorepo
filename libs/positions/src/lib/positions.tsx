@@ -27,17 +27,17 @@ const getSummaryRow = (positions: Position[]) => {
     summaryRow.realisedPNL += BigInt(position.realisedPNL);
     summaryRow.unrealisedPNL += BigInt(position.unrealisedPNL);
   });
-  const assetDecimals = positions[0]?.assetDecimals || 0;
+  const decimals = positions[0]?.decimals || 0;
   return {
     marketName: t('Total'),
     // we are using asset decimals instead of market decimals because each market can have different decimals
     notional: summaryRow.notional
-      .multipliedBy(10 ** assetDecimals)
+      .multipliedBy(10 ** decimals)
       .toFixed()
       .toString(),
     realisedPNL: summaryRow.realisedPNL.toString(),
     unrealisedPNL: summaryRow.unrealisedPNL.toString(),
-    assetDecimals,
+    decimals,
   };
 };
 

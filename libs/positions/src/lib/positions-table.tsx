@@ -197,7 +197,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
               return undefined;
             }
             if (node?.rowPinned) {
-              return addDecimalsFormatNumber(value, data.assetDecimals);
+              return addDecimalsFormatNumber(value, data.decimals);
             }
             return data;
           }}
@@ -325,10 +325,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
             }
             return {
               low: `${formatNumber(value, 2)}%`,
-              high: addDecimalsFormatNumber(
-                data.totalBalance,
-                data.assetDecimals
-              ),
+              high: addDecimalsFormatNumber(data.totalBalance, data.decimals),
               value: Number(value),
             };
           }}
@@ -359,7 +356,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }) =>
             value === undefined
               ? undefined
-              : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
+              : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
           cellRenderer="PriceFlashCell"
           headerTooltip={t('P&L excludes any fees paid.')}
@@ -388,7 +385,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           }) =>
             value === undefined
               ? undefined
-              : addDecimalsFormatNumber(value.toString(), data.assetDecimals)
+              : addDecimalsFormatNumber(value.toString(), data.decimals)
           }
           cellRenderer="PriceFlashCell"
         />

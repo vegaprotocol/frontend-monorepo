@@ -24,7 +24,7 @@ export interface Position {
   averageEntryPrice: string;
   capitalUtilisation: number;
   currentLeverage: number;
-  assetDecimals: number;
+  decimals: number;
   marketDecimalPlaces: number;
   positionDecimalPlaces: number;
   totalBalance: string;
@@ -141,7 +141,7 @@ export const getMetrics = (
         account.asset.id === marginAccount.asset.id &&
         account.type === AccountType.ACCOUNT_TYPE_GENERAL
     );
-    const assetDecimals = marginAccount.asset.decimals;
+    const decimals = marginAccount.asset.decimals;
     const { positionDecimalPlaces, decimalPlaces: marketDecimalPlaces } =
       market;
     const openVolume = toBigNum(
@@ -149,13 +149,10 @@ export const getMetrics = (
       positionDecimalPlaces
     );
 
-    const marginAccountBalance = toBigNum(
-      marginAccount.balance ?? 0,
-      assetDecimals
-    );
+    const marginAccountBalance = toBigNum(marginAccount.balance ?? 0, decimals);
     const generalAccountBalance = toBigNum(
       generalAccount?.balance ?? 0,
-      assetDecimals
+      decimals
     );
     const markPrice = toBigNum(marketData.markPrice, marketDecimalPlaces);
 
@@ -206,9 +203,9 @@ export const getMetrics = (
       currentLeverage: currentLeverage.toNumber(),
       marketDecimalPlaces,
       positionDecimalPlaces,
-      assetDecimals,
+      decimals,
       assetSymbol: marginLevel.asset.symbol,
-      totalBalance: totalBalance.multipliedBy(10 ** assetDecimals).toFixed(),
+      totalBalance: totalBalance.multipliedBy(10 ** decimals).toFixed(),
       lowMarginLevel,
       liquidationPrice: liquidationPrice
         .multipliedBy(10 ** marketDecimalPlaces)
