@@ -2,8 +2,6 @@ name: Publish docker containers
 
 'on':
   push:
-    branches:
-      - ci/fix-publishing-docker-images
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
       - 'v[0-9]+.[0-9]+.[0-9]+-pre[0-9]+'
@@ -63,6 +61,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Login to DockerHub
+        if: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -115,7 +114,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/ci/fix-publishing-docker-images' }}
+          push: ${{ inputs.publish || startsWith(github.ref, 'refs/tags/') }}
           file: dockerfiles/${{ matrix.app =='trading' && 'Dockerfile.next' || 'Dockerfile.cra' }}.dist
           build-args: APP=${{ matrix.app }}
           platforms: ${{ inputs.archs || 'linux/amd64, linux/arm64' }}
