@@ -71,7 +71,7 @@
     "tranche_end": "2023-12-05T00:00:00.000Z",
     "total_added": "129999.45",
     "total_removed": "0",
-    "locked_amount": "109833.70101211159787562",
+    "locked_amount": "109771.767094294905300645",
     "deposits": [
       {
         "amount": "129999.45",
@@ -521,7 +521,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "97499.58",
     "total_removed": "0",
-    "locked_amount": "50958.830843743368919524",
+    "locked_amount": "50898.07943977060881534",
     "deposits": [
       {
         "amount": "97499.58",
@@ -554,7 +554,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "135173.4239508",
     "total_removed": "0",
-    "locked_amount": "69651.92408827054078805475264",
+    "locked_amount": "69568.88740733213880046570092",
     "deposits": [
       {
         "amount": "135173.4239508",
@@ -587,7 +587,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "32499.86",
     "total_removed": "0",
-    "locked_amount": "21437.500124024572303986",
+    "locked_amount": "21411.943057493865449906",
     "deposits": [
       {
         "amount": "32499.86",
@@ -620,7 +620,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "10833.29",
     "total_removed": "0",
-    "locked_amount": "6977.69826579282487654",
+    "locked_amount": "6969.379688636983847671",
     "deposits": [
       {
         "amount": "10833.29",
@@ -728,7 +728,7 @@
     "tranche_end": "2022-11-01T00:00:00.000Z",
     "total_added": "22500",
     "total_removed": "0",
-    "locked_amount": "7825.261831974638325",
+    "locked_amount": "7793.336730072465",
     "deposits": [
       {
         "amount": "15000",
@@ -814,7 +814,7 @@
     "tranche_end": "2023-06-02T00:00:00.000Z",
     "total_added": "1939928.38",
     "total_removed": "379323.172697234239",
-    "locked_amount": "1472183.756805506797868348",
+    "locked_amount": "1470796.169144812310314384",
     "deposits": [
       {
         "amount": "1852091.69",
@@ -1089,7 +1089,7 @@
     "tranche_end": "2023-02-01T00:00:00.000Z",
     "total_added": "42500",
     "total_removed": "0",
-    "locked_amount": "36031.050127063207",
+    "locked_amount": "35970.747156803545",
     "deposits": [
       {
         "amount": "12500",
@@ -1956,7 +1956,7 @@
     "tranche_end": "2022-09-30T00:00:00.000Z",
     "total_added": "60916.66666633337",
     "total_removed": "20301.45404130284556896",
-    "locked_amount": "4997.2366329063428736478117912237",
+    "locked_amount": "4956.457393530968073814893961411",
     "deposits": [
       {
         "amount": "2833.333333",
@@ -5667,9 +5667,9 @@
     "tranche_id": 11,
     "tranche_start": "2021-09-03T00:00:00.000Z",
     "tranche_end": "2022-09-03T00:00:00.000Z",
-    "total_added": "29398.000000000000000003",
+    "total_added": "30353.000000000000000003",
     "total_removed": "11380.22081443587",
-    "locked_amount": "402.16885356417954254004104042998477919",
+    "locked_amount": "393.521601566464389531038894501522070081",
     "deposits": [
       {
         "amount": "15",
@@ -5840,6 +5840,191 @@
         "amount": "30",
         "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
         "tx": "0x5753809f45258f9d7009b0b72ac05318c23b8a2de97c1a4d245f299d0cfb8339"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x44160805f0f0954f8a89245c749fc6752aac0d937a9a43d584d6b2851e4476e0"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xb078daa82c09433a13716de933aef11118512548767f053b73cdd8d3f04e44db"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x46b1b01085bc281f1a6b85e2844ca71d1ec914c7754a29906f1422739b6a1a29"
+      },
+      {
+        "amount": "60",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xdd672432cee043f913edd4c9e046e297c57aa32c03879a1c098f8fe63902e30f"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xa4f8f580fb3de393f56696c1f578376c7fc115218a117fa1d1db723170af9318"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x8b5da7b1d17cda1c5ccce2524f4ae978006032767b2ba87da72a4bc31c00e856"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xfc17276e3afcd96b0e0792c3c4b0db6437ea09bf33e146d8b5fa8bca0f38b190"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x031c51f2ee9c025a86dc97be5840ac120edb0cd373ad7361c0035872ee1f6e4f"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x631e1fca486cbe5b9e9cc4ee48b766b0847b1f22b32bddaf962f8bea6f1074bd"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x800adeae6b777cb2c5ec8dd9ef7bae0ca975e3f2622b8fcf880d87adfc8df096"
+      },
+      {
+        "amount": "60",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x5fd376bba3874b7b17691e5cbd145f06d9371c9128abc123f2b4a8b5df0aea66"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xc83e7f529468a06ad1a0107abbda4849490ffc79cdba8a3f82d50344cc1cd4d7"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x43c0e7afb7a655cf8d601a069a64c2ae4a324e4841d0bb9db2e414de978e1332"
+      },
+      {
+        "amount": "100",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x08fe1e9d029cfd1abda54dfe66462b722ca83b6efd8f0be9760e8a7ad82b8475"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x6af263e19442eaf3e46d36a0593afd128cefc677bdbb6d321a9ef7f376d36b60"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x9cf0c6dd82a2f2f97300ab70d074e0dc95a8bc21318419d926dd46cfb9b39c7f"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xfbcf9f70828c800040c2c5245ba3bcde462fb643645b7cee1a072e6a3ad9b9a2"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x34528e86b0d2caaa122fe268359e23c36da31863b59b6b9b40f08e8a70591fd7"
+      },
+      {
+        "amount": "60",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x277a59de9bde440f6f442da4c209a2b0f0e17483381faa3ec950244ccec9a17f"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x6827ac17b830f20315aa4e3454c9168d2c61510aa4add198e9cf1f57f2aa62f0"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x5f41d82d41d4e0728d38b61c7be24328f2282c87fa691c58467236374df1af87"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x9cc71222c9669831d41334847e2e2e349fe3459109c798bab40a42091b47c7df"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xb7fcbdf6a65d2b385f6b5c7295b69e4c66eee61c4bd602ef4457d0c5207d8a92"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x1fe2b2df1c8722b892d2c2068269ed413415d79850c61021b41803a634a9101b"
+      },
+      {
+        "amount": "20",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x9bae0ac0357b181bd1adc12b5d48bda250e636c2eef4329a35ea45e0b7dbe783"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x222aadc046364f9842413f3fb5fcd4fd6a872a56ae57e1b3f1cf35293f6197d5"
+      },
+      {
+        "amount": "30",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x72aee4e4854dc19aabec19e0b6a48a1c6898ca356e6a8bc666fc623e63335230"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x06a2265588eda6ab662a5e5358c5807643d0667f963ddec9e01269f9934e0212"
+      },
+      {
+        "amount": "20",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x3d38afe095824b4d1cb6dc00ceb817b5fe4d6fc44a20b151ed08cb9f2a84b2f5"
+      },
+      {
+        "amount": "20",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x06b44538458a24814e76cb86d422d993072380c4185de7a2a3324cc7e03c7b75"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x44f85e7553747f2e31c03e6db7614d7e7681c2e5e434c07526d7dddaa00c797f"
+      },
+      {
+        "amount": "20",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xa578a21a4ec480883e8851e78abc088f1a35d59d329265a4d277731ba29b8a65"
+      },
+      {
+        "amount": "20",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x53d2985f2d2ae5596eeed0dd008f314ffd498ddd6b6c88d8a9dea79970f4e766"
+      },
+      {
+        "amount": "20",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xd50cbd06563ea2292828e35e38adac8e4105eda2587a7a1ebb1a50ac52d978c9"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x22400b4bfb462e0758499bff6302be4b2e2bbc33c19e2c3dc27c7a17bda2681f"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0x7a21de67b98c45c939b8e0d12a88f9376a57db7f29bc35459fc8e1fb8e2c0c13"
+      },
+      {
+        "amount": "15",
+        "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+        "tx": "0xc67dcfb6e17d69e74eb30440242ee5dca6891a7ebbf6b61b095465165c251844"
       },
       {
         "amount": "30",
@@ -11254,6 +11439,228 @@
             "tx": "0x5753809f45258f9d7009b0b72ac05318c23b8a2de97c1a4d245f299d0cfb8339"
           },
           {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x44160805f0f0954f8a89245c749fc6752aac0d937a9a43d584d6b2851e4476e0"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xb078daa82c09433a13716de933aef11118512548767f053b73cdd8d3f04e44db"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x46b1b01085bc281f1a6b85e2844ca71d1ec914c7754a29906f1422739b6a1a29"
+          },
+          {
+            "amount": "60",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xdd672432cee043f913edd4c9e046e297c57aa32c03879a1c098f8fe63902e30f"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xa4f8f580fb3de393f56696c1f578376c7fc115218a117fa1d1db723170af9318"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x8b5da7b1d17cda1c5ccce2524f4ae978006032767b2ba87da72a4bc31c00e856"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xfc17276e3afcd96b0e0792c3c4b0db6437ea09bf33e146d8b5fa8bca0f38b190"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x031c51f2ee9c025a86dc97be5840ac120edb0cd373ad7361c0035872ee1f6e4f"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x631e1fca486cbe5b9e9cc4ee48b766b0847b1f22b32bddaf962f8bea6f1074bd"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x800adeae6b777cb2c5ec8dd9ef7bae0ca975e3f2622b8fcf880d87adfc8df096"
+          },
+          {
+            "amount": "60",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x5fd376bba3874b7b17691e5cbd145f06d9371c9128abc123f2b4a8b5df0aea66"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xc83e7f529468a06ad1a0107abbda4849490ffc79cdba8a3f82d50344cc1cd4d7"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x43c0e7afb7a655cf8d601a069a64c2ae4a324e4841d0bb9db2e414de978e1332"
+          },
+          {
+            "amount": "100",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x08fe1e9d029cfd1abda54dfe66462b722ca83b6efd8f0be9760e8a7ad82b8475"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x6af263e19442eaf3e46d36a0593afd128cefc677bdbb6d321a9ef7f376d36b60"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x9cf0c6dd82a2f2f97300ab70d074e0dc95a8bc21318419d926dd46cfb9b39c7f"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xfbcf9f70828c800040c2c5245ba3bcde462fb643645b7cee1a072e6a3ad9b9a2"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x34528e86b0d2caaa122fe268359e23c36da31863b59b6b9b40f08e8a70591fd7"
+          },
+          {
+            "amount": "60",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x277a59de9bde440f6f442da4c209a2b0f0e17483381faa3ec950244ccec9a17f"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x6827ac17b830f20315aa4e3454c9168d2c61510aa4add198e9cf1f57f2aa62f0"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x5f41d82d41d4e0728d38b61c7be24328f2282c87fa691c58467236374df1af87"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x9cc71222c9669831d41334847e2e2e349fe3459109c798bab40a42091b47c7df"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xb7fcbdf6a65d2b385f6b5c7295b69e4c66eee61c4bd602ef4457d0c5207d8a92"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x1fe2b2df1c8722b892d2c2068269ed413415d79850c61021b41803a634a9101b"
+          },
+          {
+            "amount": "20",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x9bae0ac0357b181bd1adc12b5d48bda250e636c2eef4329a35ea45e0b7dbe783"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x222aadc046364f9842413f3fb5fcd4fd6a872a56ae57e1b3f1cf35293f6197d5"
+          },
+          {
+            "amount": "30",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x72aee4e4854dc19aabec19e0b6a48a1c6898ca356e6a8bc666fc623e63335230"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x06a2265588eda6ab662a5e5358c5807643d0667f963ddec9e01269f9934e0212"
+          },
+          {
+            "amount": "20",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x3d38afe095824b4d1cb6dc00ceb817b5fe4d6fc44a20b151ed08cb9f2a84b2f5"
+          },
+          {
+            "amount": "20",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x06b44538458a24814e76cb86d422d993072380c4185de7a2a3324cc7e03c7b75"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x44f85e7553747f2e31c03e6db7614d7e7681c2e5e434c07526d7dddaa00c797f"
+          },
+          {
+            "amount": "20",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xa578a21a4ec480883e8851e78abc088f1a35d59d329265a4d277731ba29b8a65"
+          },
+          {
+            "amount": "20",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x53d2985f2d2ae5596eeed0dd008f314ffd498ddd6b6c88d8a9dea79970f4e766"
+          },
+          {
+            "amount": "20",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xd50cbd06563ea2292828e35e38adac8e4105eda2587a7a1ebb1a50ac52d978c9"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x22400b4bfb462e0758499bff6302be4b2e2bbc33c19e2c3dc27c7a17bda2681f"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0x7a21de67b98c45c939b8e0d12a88f9376a57db7f29bc35459fc8e1fb8e2c0c13"
+          },
+          {
+            "amount": "15",
+            "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
+            "tranche_id": 11,
+            "tx": "0xc67dcfb6e17d69e74eb30440242ee5dca6891a7ebbf6b61b095465165c251844"
+          },
+          {
             "amount": "80",
             "user": "0xBF8C00ee066421c2c6daE50835c2a7AD939db752",
             "tranche_id": 11,
@@ -12191,9 +12598,9 @@
           }
         ],
         "withdrawals": [],
-        "total_tokens": "6280",
+        "total_tokens": "7235",
         "withdrawn_tokens": "0",
-        "remaining_tokens": "6280"
+        "remaining_tokens": "7235"
       },
       {
         "address": "0x9646850641B15535e9e46646fbb98907eba83c6c",
@@ -18687,7 +19094,7 @@
     "tranche_end": "2023-06-05T00:00:00.000Z",
     "total_added": "3732368.4671",
     "total_removed": "199901.7160565589142",
-    "locked_amount": "2286735.1989947238362704661",
+    "locked_amount": "2284602.86534023333790633451",
     "deposits": [
       {
         "amount": "1998.95815",
@@ -19522,7 +19929,7 @@
     "tranche_end": "2023-12-05T00:00:00.000Z",
     "total_added": "15788853.065470999700000001",
     "total_removed": "184350.3706636477491994",
-    "locked_amount": "13339657.7209911537661668929720467176547716",
+    "locked_amount": "13332135.3131729330317235825246558297661531",
     "deposits": [
       {
         "amount": "16249.93",
@@ -22419,7 +22826,7 @@
     "tranche_end": "2023-05-05T00:00:00.000Z",
     "total_added": "14597706.0446472999",
     "total_removed": "2718268.912319140060510947",
-    "locked_amount": "6657015.209509821034885874964316905",
+    "locked_amount": "6650034.833438156741612901511741875",
     "deposits": [
       {
         "amount": "129284.449",
@@ -27403,7 +27810,7 @@
     "tranche_end": "2023-04-05T00:00:00.000Z",
     "total_added": "5778205.3912159303",
     "total_removed": "1696374.748744946074291377",
-    "locked_amount": "2313323.56702993336463176351551014",
+    "locked_amount": "2310565.578227055218113186819376301",
     "deposits": [
       {
         "amount": "552496.6455",
@@ -28757,7 +29164,7 @@
     "tranche_end": "2023-06-05T00:00:00.000Z",
     "total_added": "472355.6199999996",
     "total_removed": "2583.93816804526",
-    "locked_amount": "362346.26381638539124848565499748",
+    "locked_amount": "362008.38335989252359789545002536",
     "deposits": [
       {
         "amount": "3000",
