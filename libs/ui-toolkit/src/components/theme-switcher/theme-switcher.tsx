@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import { SunIcon, MoonIcon } from './icons';
 
@@ -5,6 +6,8 @@ export const ThemeSwitcher = ({
   theme,
   onToggle,
   className,
+  sunClassName,
+  moonClassName,
 }: {
   theme: 'light' | 'dark';
   onToggle: () => void;
@@ -12,6 +15,13 @@ export const ThemeSwitcher = ({
   sunClassName?: string;
   moonClassName?: string;
 }) => {
+  const sharedClasses = 'text-neutral-300';
+  const sunClasses = classNames(sharedClasses, sunClassName, {
+    hidden: theme === 'light',
+  });
+  const moonClasses = classNames(sharedClasses, moonClassName, {
+    hidden: theme === 'dark',
+  });
   return (
     <button
       type="button"
@@ -19,15 +29,12 @@ export const ThemeSwitcher = ({
       className={className}
       data-testid="theme-switcher"
     >
-      {theme === 'dark' ? (
-        <span className="text-neutral-300">
-          <SunIcon />
-        </span>
-      ) : (
-        <span className="text-neutral-300">
-          <MoonIcon />
-        </span>
-      )}
+      <span className={sunClasses}>
+        <SunIcon />
+      </span>
+      <span className={moonClasses}>
+        <MoonIcon />
+      </span>
     </button>
   );
 };

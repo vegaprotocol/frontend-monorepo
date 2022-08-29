@@ -121,8 +121,9 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
     .filter((c): c is CandleClose => c !== null);
   const symbol =
     market.tradableInstrument.instrument.product?.settlementAsset?.symbol;
-  const headerItemClassName =
+  const itemClass =
     'min-w-[120px] whitespace-nowrap flex flex-col pb-4 px-2 border-l border-neutral-300 dark:border-neutral-700';
+  const itemHeading = 'text-neutral-400';
 
   const store = useGlobalStore();
   const onSelect = (marketId: string) => {
@@ -150,8 +151,8 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
               />
             }
           >
-            <div className={headerItemClassName}>
-              <span>{t('Expiry')}</span>
+            <div className={itemClass}>
+              <span className={itemHeading}>{t('Expiry')}</span>
               <span
                 data-testid="trading-expiry"
                 className={classNames({
@@ -162,15 +163,15 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
               </span>
             </div>
           </Tooltip>
-          <div className={headerItemClassName}>
-            <span>{t('Change (24h)')}</span>
+          <div className={itemClass}>
+            <span className={itemHeading}>{t('Change (24h)')}</span>
             <PriceCellChange
               candles={candlesClose}
               decimalPlaces={market.decimalPlaces}
             />
           </div>
-          <div className={headerItemClassName}>
-            <span>{t('Volume')}</span>
+          <div className={itemClass}>
+            <span className={itemHeading}>{t('Volume')}</span>
             <span data-testid="trading-volume">
               {market.data && market.data.indicativeVolume !== '0'
                 ? addDecimalsFormatNumber(
@@ -184,8 +185,8 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
             align="start"
             description={<TradingModeTooltip market={market} />}
           >
-            <div className={headerItemClassName}>
-              <span>{t('Trading mode')}</span>
+            <div className={itemClass}>
+              <span className={itemHeading}>{t('Trading mode')}</span>
               <span
                 data-testid="trading-mode"
                 className={classNames('underline decoration-dashed')}
@@ -201,8 +202,8 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
               </span>
             </div>
           </Tooltip>
-          <div className={headerItemClassName}>
-            <span>{t('Price')}</span>
+          <div className={itemClass}>
+            <span className={itemHeading}>{t('Price')}</span>
             <span data-testid="mark-price">
               {market.data && market.data.markPrice !== '0'
                 ? addDecimalsFormatNumber(
@@ -213,8 +214,8 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
             </span>
           </div>
           {symbol && (
-            <div className={headerItemClassName}>
-              <span>{t('Settlement asset')}</span>
+            <div className={itemClass}>
+              <span className={itemHeading}>{t('Settlement asset')}</span>
               <span data-testid="trading-mode">
                 <ButtonLink
                   onClick={() => {
