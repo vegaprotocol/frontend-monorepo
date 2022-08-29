@@ -22,8 +22,9 @@ export const NavigationDrawer = ({
   const width = 'w-full md:w-auto md:min-w-[15%] shrink-0';
   const position = 'absolute inset-0 h-full z-10 md:static';
   const background = 'bg-black/50 dark:bg-white/50';
+  const border = 'border-r border-neutral-300 dark:border-neutral-700';
   const flex = 'flex justify-end overflow-hidden';
-  const joinedClasses = [flex, width, position, background].join(' ');
+  const joinedClasses = [flex, width, position, background, border].join(' ');
 
   const outerStyles = classNames(joinedClasses, {
     visible: isMenuOpen,

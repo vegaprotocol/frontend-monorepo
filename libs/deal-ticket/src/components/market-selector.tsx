@@ -182,9 +182,9 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
   const selectorContent = useMemo(() => {
     return (
       <div className="relative flex flex-col">
-        <div className="relative w-full min-h-[30px] dark:bg-black">
+        <div className="relative w-full min-h-[30px]">
           <Input
-            className="h-[30px] w-[calc(100%-20px)] border-none dark:bg-black"
+            className="h-[30px] w-[calc(100%-20px)] border-none"
             ref={inputRef}
             tabIndex={0}
             value={lookup}
@@ -216,7 +216,11 @@ export const MarketSelector = ({ market, setMarket, ItemRenderer }: Props) => {
           )}
           data-testid="market-pane"
         >
-          {loading && <Loader />}
+          {loading && (
+            <div className="p-4">
+              <Loader size="small" />
+            </div>
+          )}
           {error && (
             <Splash>{t(`Something went wrong: ${error.message}`)}</Splash>
           )}

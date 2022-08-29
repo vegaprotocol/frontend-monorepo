@@ -134,7 +134,7 @@ type ButtonLinkProps = Omit<
 export const ButtonLink = forwardRef<HTMLButtonElement, ButtonLinkProps>(
   ({ type = 'button', ...props }, ref) => {
     const className = classnames('inline underline');
-    return <button ref={ref} className={className} {...props} />;
+    return <button ref={ref} className={className} type={type} {...props} />;
   }
 );
 
