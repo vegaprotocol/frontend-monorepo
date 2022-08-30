@@ -42,11 +42,10 @@ it('Connected', () => {
     )
   );
 
-  expect(
-    screen.getByText(`${keypair.name}: ${truncateByChars(keypair.pub)}`)
-  ).toBeInTheDocument();
   const button = screen.getByRole('button');
-  expect(button).toHaveTextContent('123456\u2026123456');
+  expect(button).toHaveTextContent(
+    `${keypair.name}: ${truncateByChars(keypair.pub)}`
+  );
   fireEvent.click(button);
   expect(props.setConnectDialog).not.toHaveBeenCalled();
 });
