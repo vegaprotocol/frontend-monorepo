@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { Button, ButtonLink, Icon } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Icon } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import type { IconName } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';

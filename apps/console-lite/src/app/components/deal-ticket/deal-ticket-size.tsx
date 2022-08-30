@@ -5,10 +5,8 @@ import {
   SliderThumb,
   SliderTrack,
   SliderRange,
-  Button,
   Input,
   FormGroup,
-  ButtonLink,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { DealTicketEstimates } from './deal-ticket-estimates';

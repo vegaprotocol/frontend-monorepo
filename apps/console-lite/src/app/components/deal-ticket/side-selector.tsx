@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { FormGroup, Button, ButtonLink } from '@vegaprotocol/ui-toolkit';
+import { FormGroup } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Side } from '@vegaprotocol/types';
 
