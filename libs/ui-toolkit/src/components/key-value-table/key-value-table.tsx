@@ -64,7 +64,7 @@ export const KeyValueTableRow = ({
   id,
 }: KeyValueTableRowProps) => {
   const dlClassName = classNames(
-    'flex gap-1 flex-wrap justify-between mb-2 text-sm',
+    'flex gap-1 flex-wrap justify-between py-1 text-sm',
     {
       'border-b first:border-t border-neutral-300 dark:border-neutral-700':
         !noBorder,
