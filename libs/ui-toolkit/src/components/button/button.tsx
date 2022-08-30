@@ -43,12 +43,14 @@ const getClassname = ({
   variant,
   size,
   fill,
+  className,
 }: {
   variant: ButtonVariant;
   size: ButtonSize;
   fill: boolean;
+  className?: string;
 }) => {
-  const className = classnames(base, {
+  return classnames(base, className, {
     [defaultClasses.join(' ')]: variant === 'default',
     [primary.join(' ')]: variant === 'primary',
     [secondary.join(' ')]: variant === 'secondary',
@@ -57,7 +59,6 @@ const getClassname = ({
     [sm]: size === 'sm',
     [fillClasses]: fill,
   });
-  return className;
 };
 
 interface CommonProps {
@@ -70,7 +71,7 @@ interface CommonProps {
   rightIcon?: IconName;
 }
 export interface ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'style'>,
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
     CommonProps {}
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -83,13 +84,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       icon,
       rightIcon,
       children,
+      className,
       ...props
     },
     ref
   ) => {
-    const className = getClassname({ variant, size, fill });
+    const buttonClasses = getClassname({ variant, size, fill, className });
     return (
-      <button ref={ref} type={type} className={className} {...props}>
+      <button ref={ref} type={type} className={buttonClasses} {...props}>
         <ButtonContent icon={icon} rightIcon={rightIcon}>
           {children}
         </ButtonContent>
