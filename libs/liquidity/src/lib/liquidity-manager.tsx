@@ -92,7 +92,7 @@ export const LiquidityManager = ({
               <div>
                 {`${addDecimalsFormatNumber(
                   suppliedStake ?? '-',
-                  positionDecimalPlaces ?? 0
+                  positionDecimalPlaces
                 )} ${symbol}`}
               </div>
             </div>

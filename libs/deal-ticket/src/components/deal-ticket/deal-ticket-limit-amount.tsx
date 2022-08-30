@@ -47,7 +47,6 @@ export const DealTicketLimitAmount = ({
             className="w-full"
             type="number"
             step={priceStep}
-            defaultValue={0}
             data-testid="order-price"
             {...register('price', {
               required: true,

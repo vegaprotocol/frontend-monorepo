@@ -17,13 +17,13 @@ export const MyLiquidityProvisionContainer = ({
   partyId: string;
   data?: MarketLiquidity;
 }) => {
-  const { liquidityProviders, decimalPlaces } = useLiquidityProvision({
+  const { liquidityProviders, decimalPlaces, positionDecimalPlaces } = useLiquidityProvision({
     data,
     partyId,
   });
 
   if (!liquidityProviders || liquidityProviders.length === 0) {
-    return <Splash>{t('No liquidity provision')}</Splash>;
+    return null;
   }
 
   const {
@@ -53,7 +53,7 @@ export const MyLiquidityProvisionContainer = ({
           <div>{t('Commitment')}</div>
           <div>
             {(commitmentAmount &&
-              addDecimalsFormatNumber(commitmentAmount, decimalPlaces)) ||
+              addDecimalsFormatNumber(commitmentAmount, positionDecimalPlaces)) ||
               '-'}
           </div>
         </div>
@@ -86,14 +86,14 @@ export const MyLiquidityProvisionContainer = ({
           <div>{t('Obligation (siskas)')}</div>
           <div>
             {(obligation &&
-              addDecimalsFormatNumber(obligation, decimalPlaces)) ||
+              addDecimalsFormatNumber(obligation, positionDecimalPlaces)) ||
               '-'}
           </div>
         </div>
         <div>
           <div>{t('Supplied (siskas)')}</div>
           <div>
-            {(supplied && addDecimalsFormatNumber(supplied, decimalPlaces)) ||
+            {(supplied && addDecimalsFormatNumber(supplied, positionDecimalPlaces)) ||
               '-'}
           </div>
         </div>

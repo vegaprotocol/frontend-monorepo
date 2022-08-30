@@ -2,13 +2,13 @@ import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEvent_busEvents_event_Order } from '../../order-hooks/__generated__';
 import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
 import {
+  OrderRejectionReasonMapping,
   OrderStatus,
   OrderStatusMapping,
   OrderType,
   Side,
 } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
-import startCase from 'lodash/startCase';
 
 export interface OrderFeedbackProps {
   transaction: VegaTxState;
@@ -52,12 +52,11 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
                 : 'text-vega-red-dark dark:text-vega-red'
             }
           >
-            {`${
-              order.side === Side.SIDE_BUY ? '+' : '-'
-            } ${addDecimalsFormatNumber(
-              order.size,
-              order.market?.positionDecimalPlaces ?? 0
-            )}
+            {`${order.side === Side.SIDE_BUY ? '+' : '-'
+              } ${addDecimalsFormatNumber(
+                order.size,
+                order.market?.positionDecimalPlaces ?? 0
+              )}
             `}
           </p>
         </div>
@@ -97,7 +96,7 @@ const getRejectionReason = (
         `Your ${order.timeInForce} order was not filled and it has been stopped`
       );
     case OrderStatus.STATUS_REJECTED:
-      return order.rejectionReason && t(startCase(order.rejectionReason));
+      return order.rejectionReason && t(OrderRejectionReasonMapping[order.rejectionReason]);
     default:
       return null;
   }
