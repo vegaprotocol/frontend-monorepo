@@ -17,5 +17,5 @@ export const EST_FEES_TOOLTIP_TEXT = t(
 );
 
 export const EST_SLIPPAGE = t(
-  "Slippage refers to the difference between the expected price of a trade and the price at which the trade is executed. Slippage can occur at any time but is most prevalent during periods of higher volatility when market orders are used. It can also occur when a large order is executed but there isn't enough volume at the chosen price to maintain the current bid/ask spread."
+  'When you execute a trade on Vega, the price obtained in the market may differ from the best available price displayed at the time of placing the trade. The estimated slippage shows the difference between the best available price and the estimated execution price, determined by market liquidity and your chosen order size.'
 );
