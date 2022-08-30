@@ -1,12 +1,11 @@
 import { useEnvironment } from '@vegaprotocol/environment';
 import type { OrderEvent_busEvents_event_Order } from '../../order-hooks/__generated__';
-import { addDecimalsFormatNumber, t } from '@vegaprotocol/react-helpers';
+import { addDecimalsFormatNumber, Size, t } from '@vegaprotocol/react-helpers';
 import {
   OrderRejectionReasonMapping,
   OrderStatus,
   OrderStatusMapping,
   OrderType,
-  Side,
 } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 
@@ -45,20 +44,14 @@ export const OrderFeedback = ({ transaction, order }: OrderFeedbackProps) => {
         )}
         <div>
           <p className={labelClass}>{t(`Size`)}</p>
-          <p
-            className={
-              order.side === Side.SIDE_BUY
-                ? 'text-vega-green-dark dark:text-vega-green'
-                : 'text-vega-red-dark dark:text-vega-red'
+          <p>
+            {
+              <Size
+                value={order.size}
+                side={order.side}
+                positionDecimalPlaces={order.market.positionDecimalPlaces}
+              />
             }
-          >
-            {`${
-              order.side === Side.SIDE_BUY ? '+' : '-'
-            } ${addDecimalsFormatNumber(
-              order.size,
-              order.market?.positionDecimalPlaces ?? 0
-            )}
-            `}
           </p>
         </div>
       </div>

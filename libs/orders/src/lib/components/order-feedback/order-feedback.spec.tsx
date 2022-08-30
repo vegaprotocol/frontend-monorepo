@@ -8,7 +8,6 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import { VegaTxStatus } from '@vegaprotocol/wallet';
-import startCase from 'lodash/startCase';
 import { generateOrder } from '../mocks/generate-orders';
 import type { OrderFeedbackProps } from './order-feedback';
 import { OrderFeedback } from './order-feedback';
@@ -84,7 +83,7 @@ describe('OrderFeedback', () => {
       '1.00'
     );
     expect(screen.getByText('Size').nextElementSibling).toHaveTextContent(
-      `+ 200`
+      `+200`
     );
   });
 });

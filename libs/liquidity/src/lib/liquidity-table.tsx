@@ -43,7 +43,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
             if (!value) {
               return value;
             }
-            return addDecimalsFormatNumber(value, props.positionDecimalPlaces);
+            return addDecimalsFormatNumber(value, props.decimalPlaces);
           }}
         />
         <AgGridColumn
@@ -87,7 +87,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
             if (!value) {
               return value;
             }
-            return addDecimalsFormatNumber(value, props.positionDecimalPlaces);
+            return addDecimalsFormatNumber(value, props.decimalPlaces);
           }}
         />
         <AgGridColumn
@@ -98,7 +98,7 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
             if (!value) {
               return value;
             }
-            return addDecimalsFormatNumber(value, props.positionDecimalPlaces);
+            return addDecimalsFormatNumber(value, props.decimalPlaces);
           }}
         />
         <AgGridColumn
