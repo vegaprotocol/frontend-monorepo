@@ -21,6 +21,13 @@
       "options": {
         "lintFilePatterns": ["apps/token-e2e/**/*.{js,ts}"]
       }
+    },
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/token-e2e/"
+      }
     }
   },
   "tags": [],

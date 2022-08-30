@@ -129,15 +129,15 @@ const getPageInfo = (responseData: Fills): PageInfo | null =>
 
 const getDelta = (subscriptionData: FillsSub) => subscriptionData.trades || [];
 
-export const fillsDataProvider = makeDataProvider(
-  FILLS_QUERY,
-  FILLS_SUB,
+export const fillsDataProvider = makeDataProvider({
+  query: FILLS_QUERY,
+  subscriptionQuery: FILLS_SUB,
   update,
   getData,
   getDelta,
-  {
+  pagination: {
     getPageInfo,
     append,
     first: 100,
-  }
-);
+  },
+});
