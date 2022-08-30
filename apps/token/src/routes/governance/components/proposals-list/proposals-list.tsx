@@ -8,6 +8,7 @@ import type { Proposals_proposals } from '../../proposals/__generated__/Proposal
 import Routes from '../../../routes';
 import { Button } from '@vegaprotocol/ui-toolkit';
 import { Link } from 'react-router-dom';
+import { Links } from '../../../../config';
 
 interface ProposalsListProps {
   proposals: Proposals_proposals[];
@@ -52,6 +53,21 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         >
           <Button variant={'primary'}>{t('NewProposal')}</Button>
         </Link>
+      </div>
+      <div>
+        <p>
+          {t(
+            `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
+          )}{' '}
+          <a
+            href={Links.GOVERNANCE_PAGE}
+            className="underline text-white"
+            target="_blank"
+            rel="nofollow noreferrer"
+          >
+            {t(`Find out more about Vega governance`)}
+          </a>
+        </p>
       </div>
 
       {proposals.length > 0 && (
