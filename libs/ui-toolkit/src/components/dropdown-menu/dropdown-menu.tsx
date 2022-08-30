@@ -71,11 +71,11 @@ export const DropdownMenuContent = forwardRef<
 export const DropdownMenuItem = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.Item>,
   React.ComponentProps<typeof DropdownMenuPrimitive.Item>
->(({ ...itemProps }, forwardedRef) => (
+>(({ className, ...itemProps }, forwardedRef) => (
   <DropdownMenuPrimitive.Item
     {...itemProps}
     ref={forwardedRef}
-    className={itemClass}
+    className={classNames(itemClass, className)}
   />
 ));
 
@@ -85,11 +85,11 @@ export const DropdownMenuItem = forwardRef<
 export const DropdownMenuCheckboxItem = forwardRef<
   React.ElementRef<typeof DropdownMenuPrimitive.CheckboxItem>,
   React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>
->(({ ...checkboxItemProps }, forwardedRef) => (
+>(({ className, ...checkboxItemProps }, forwardedRef) => (
   <DropdownMenuPrimitive.CheckboxItem
     {...checkboxItemProps}
     ref={forwardedRef}
-    className={itemClass}
+    className={classNames(itemClass, className)}
   />
 ));
 
