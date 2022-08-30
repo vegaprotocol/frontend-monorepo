@@ -176,7 +176,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Amount')}
           field="openVolume"
           valueGetter={({ node, data }: ValueGetterParams) => {
-            return node?.rowPinned ? data.notional : data.openVolume;
+            return node?.rowPinned ? data?.notional : data?.openVolume;
           }}
           type="rightAligned"
           cellRendererSelector={(

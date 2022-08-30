@@ -9,17 +9,10 @@ import type { GetRowsParams } from './positions-table';
 import { positionsMetricsDataProvider as dataProvider } from './positions-data-providers';
 import { AssetBalance } from '@vegaprotocol/accounts';
 import type { Position } from './positions-data-providers';
-import {
-  useOrderSubmit,
-  OrderFeedback,
-  getOrderDialogTitle,
-  getOrderDialogIntent,
-  getOrderDialogIcon,
-} from '@vegaprotocol/orders';
-import { Side, OrderType, OrderTimeInForce } from '@vegaprotocol/types';
 interface PositionsProps {
   partyId: string;
   assetSymbol: string;
+  onClose: (position: Position) => void;
 }
 
 const getSummaryRow = (positions: Position[]) => {
@@ -49,61 +42,45 @@ const getSummaryRow = (positions: Position[]) => {
   };
 };
 
-export const Positions = memo(({ partyId, assetSymbol }: PositionsProps) => {
-  const gridRef = useRef<AgGridReact | null>(null);
-  const variables = useMemo(() => ({ partyId }), [partyId]);
-  const dataRef = useRef<Position[] | null>(null);
-  const { submit, transaction, finalizedOrder, TransactionDialog } =
-    useOrderSubmit();
-  const onClose = useCallback(
-    ({ openVolume, marketId }: Position) => {
-      const isShortPosition = openVolume.startsWith('-');
-      const side = openVolume.startsWith('-') ? Side.SIDE_BUY : Side.SIDE_SELL;
-      submit({
-        marketId,
-        type: OrderType.TYPE_MARKET,
-        timeInForce: OrderTimeInForce.TIME_IN_FORCE_IOC,
-        side,
-        size: isShortPosition ? openVolume.slice(1) : openVolume,
-      });
-    },
-    [submit]
-  );
-  const update = useCallback(
-    ({ data }: { data: Position[] | null }) => {
-      if (!gridRef.current?.api) {
-        return false;
+export const Positions = memo(
+  ({ partyId, assetSymbol, onClose }: PositionsProps) => {
+    const gridRef = useRef<AgGridReact | null>(null);
+    const variables = useMemo(() => ({ partyId }), [partyId]);
+    const dataRef = useRef<Position[] | null>(null);
+    const update = useCallback(
+      ({ data }: { data: Position[] | null }) => {
+        if (!gridRef.current?.api) {
+          return false;
+        }
+        dataRef.current = filter(data, { assetSymbol });
+        gridRef.current.api.refreshInfiniteCache();
+        return true;
+      },
+      [assetSymbol]
+    );
+    const { data, error, loading } = useDataProvider<Position[], never>({
+      dataProvider,
+      update,
+      variables,
+    });
+    dataRef.current = filter(data, { assetSymbol });
+    const getRows = async ({
+      successCallback,
+      startRow,
+      endRow,
+    }: GetRowsParams) => {
+      const rowsThisBlock = dataRef.current
+        ? dataRef.current.slice(startRow, endRow)
+        : [];
+      const lastRow = dataRef.current?.length ?? -1;
+      successCallback(rowsThisBlock, lastRow);
+      if (gridRef.current?.api) {
+        gridRef.current.api.setPinnedBottomRowData([
+          getSummaryRow(rowsThisBlock),
+        ]);
       }
-      dataRef.current = filter(data, { assetSymbol });
-      gridRef.current.api.refreshInfiniteCache();
-      return true;
-    },
-    [assetSymbol]
-  );
-  const { data, error, loading } = useDataProvider<Position[], never>({
-    dataProvider,
-    update,
-    variables,
-  });
-  dataRef.current = filter(data, { assetSymbol });
-  const getRows = async ({
-    successCallback,
-    startRow,
-    endRow,
-  }: GetRowsParams) => {
-    const rowsThisBlock = dataRef.current
-      ? dataRef.current.slice(startRow, endRow)
-      : [];
-    const lastRow = dataRef.current?.length ?? -1;
-    successCallback(rowsThisBlock, lastRow);
-    if (gridRef.current?.api) {
-      gridRef.current.api.setPinnedBottomRowData([
-        getSummaryRow(rowsThisBlock),
-      ]);
-    }
-  };
-  return (
-    <>
+    };
+    return (
       <AsyncRenderer loading={loading} error={error} data={data}>
         <div className="text-black dark:text-white p-8">
           <h4 className="text-h4 font-bold">
@@ -124,13 +101,6 @@ export const Positions = memo(({ partyId, assetSymbol }: PositionsProps) => {
           onClose={onClose}
         />
       </AsyncRenderer>
-      <TransactionDialog
-        title={getOrderDialogTitle(finalizedOrder?.status)}
-        intent={getOrderDialogIntent(finalizedOrder?.status)}
-        icon={getOrderDialogIcon(finalizedOrder?.status)}
-      >
-        <OrderFeedback transaction={transaction} order={finalizedOrder} />
-      </TransactionDialog>
-    </>
-  );
-});
+    );
+  }
+);
