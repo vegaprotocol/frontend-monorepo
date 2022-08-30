@@ -17,6 +17,7 @@ const vestingContractSection = '[data-testid="vega-in-vesting-contract"]';
 const vegaInWalletSection = '[data-testid="vega-in-wallet"]';
 const associatedKey = '[data-test-id="associated-key"]';
 const associatedAmount = '[data-test-id="associated-amount"]';
+const disassocitiationWarning = '[data-testid="disassociation-warning"]';
 
 context(
   'Token association flow - with eth and vega wallets connected',
@@ -144,6 +145,9 @@ context(
 
       it('Able to disassociate all tokens', function () {
         // 1000-ASSO-0026
+        const warningText =
+          'Warning: Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.';
+
         cy.staking_page_associate_tokens('2');
 
         cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 2.0);
@@ -151,9 +155,7 @@ context(
         cy.get('button').contains('Select a validator to nominate').click();
 
         cy.get(ethWalletDissociateButton).click();
-        cy.contains(
-          'If you disassociate tokens that have been nominated to a node, you will sacrifice any rewards they are due for the current epoch. If you do not wish to sacrifice rewards, remove your stake from a node at the end of an epoch before disassociating.'
-        ).should('be.visible');
+        cy.get(disassocitiationWarning).should('contain', warningText);
 
         cy.staking_page_disassociate_all_tokens();
 
@@ -203,7 +205,7 @@ context(
           .should('be.visible');
       });
 
-      it('Associate both wallet and vesting contract tokens', function () {
+      it('Able to associate & disassociate both wallet and vesting contract tokens', function () {
         // 1000-ASSO-0019
         // 1000-ASSO-0020
         // 1000-ASSO-0021
@@ -218,7 +220,7 @@ context(
             'contain',
             Cypress.env('vegaWalletPublicKeyShort')
           );
-          cy.get(associatedAmount).should('contain', '37');
+          cy.get(associatedAmount, txTimeout).should('contain', 37);
         });
 
         cy.get(vegaInWalletSection).within(() => {
@@ -226,8 +228,24 @@ context(
             'contain',
             Cypress.env('vegaWalletPublicKeyShort')
           );
-          cy.get(associatedAmount).should('contain', '21');
+          cy.get(associatedAmount, txTimeout).should('contain', 21);
         });
+
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 58);
+
+        cy.staking_page_disassociate_tokens('6', { type: 'contract' });
+        cy.get(vestingContractSection).within(() => {
+          cy.get(associatedAmount, txTimeout).should('contain', 31);
+        });
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 52);
+
+        cy.get('[href="/staking"]').first().click();
+
+        cy.staking_page_disassociate_tokens('9', { type: 'wallet' });
+        cy.get(vegaInWalletSection).within(() => {
+          cy.get(associatedAmount, txTimeout).should('contain', 12);
+        });
+        cy.get(vegaWalletAssociatedBalance, txTimeout).should('contain', 43);
       });
 
       it('Not able to associate more tokens than owned', function () {
