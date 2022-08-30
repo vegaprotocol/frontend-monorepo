@@ -13,8 +13,8 @@ export const ArrowUp = ({ borderX = 4, borderBottom = 4 }: ArrowStyleProps) => (
       borderRight: `${borderX}px solid transparent`,
       borderBottom: `${borderBottom}px solid`,
     }}
-    className={`w-0 h-0 border-b-currentColor-dark dark:border-b-currentColor`}
-  ></span>
+    className="w-0 h-0"
+  />
 );
 
 export const ArrowDown = ({ borderX = 4, borderTop = 4 }: ArrowStyleProps) => (
@@ -25,8 +25,8 @@ export const ArrowDown = ({ borderX = 4, borderTop = 4 }: ArrowStyleProps) => (
       borderRight: `${borderX}px solid transparent`,
       borderTop: `${borderTop}px solid`,
     }}
-    className={`w-0 h-0 border-t-currentColor-dark dark:border-t-currentColor`}
-  ></span>
+    className="w-0 h-0"
+  />
 );
 
 // Arrow

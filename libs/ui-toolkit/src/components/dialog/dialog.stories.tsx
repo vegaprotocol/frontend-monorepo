@@ -37,14 +37,6 @@ DefaultSmall.args = {
   size: 'small',
 };
 
-export const DefaultLarge = Template.bind({});
-DefaultLarge.args = {
-  open: false,
-  title: 'No intent supplied',
-  children: <p>Some content</p>,
-  size: 'large',
-};
-
 export const Primary = Template.bind({});
 Primary.args = {
   open: false,

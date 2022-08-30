@@ -4,10 +4,10 @@ import classNames from 'classnames';
 
 export type { IconName } from '@blueprintjs/icons';
 
-interface IconProps {
+export interface IconProps {
   name: IconName;
   className?: string;
-  size?: 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16;
+  size?: 4 | 6 | 8 | 10 | 12 | 14 | 16;
   ariaLabel?: string;
 }
 
@@ -21,7 +21,6 @@ export const Icon = ({ size = 4, name, className, ariaLabel }: IconProps) => {
     // Cant just concatenate as TW wont pick up that the class is being used
     // so below syntax is required
     {
-      'w-2 h-2': size === 2,
       'w-4 h-4': size === 4,
       'w-6 h-6': size === 6,
       'w-8 h-8': size === 8,

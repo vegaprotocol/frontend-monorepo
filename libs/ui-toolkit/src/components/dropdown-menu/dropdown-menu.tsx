@@ -136,6 +136,9 @@ export const DropdownMenuSeparator = forwardRef<
   <DropdownMenuPrimitive.Separator
     {...separatorProps}
     ref={forwardedRef}
-    className={classNames('h-px my-1 mx-2.5 bg-black', className)}
+    className={classNames(
+      'h-px my-1 mx-2 bg-neutral-700 dark:bg-black',
+      className
+    )}
   />
 ));

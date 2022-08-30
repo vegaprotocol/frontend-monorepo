@@ -40,7 +40,7 @@ export const Accordion = ({ panels }: AccordionProps) => {
             </AccordionPrimitive.Trigger>
           </AccordionPrimitive.Header>
           <AccordionPrimitive.Content data-testid="accordion-content-ref">
-            <div className="py-4" data-testid="accordion-content">
+            <div className="py-4 text-sm" data-testid="accordion-content">
               {content}
             </div>
           </AccordionPrimitive.Content>

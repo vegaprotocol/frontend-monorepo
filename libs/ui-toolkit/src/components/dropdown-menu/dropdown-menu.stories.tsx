@@ -6,6 +6,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuItemIndicator,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -25,26 +26,26 @@ export const CheckboxItems = () => {
     { label: 'Moving average', state: useState(false) },
     { label: 'Price monitoring bands', state: useState(false) },
   ];
+  console.log(checkboxItems);
 
   return (
-    <div style={{ textAlign: 'center', padding: 50 }}>
-      <DropdownMenu>
-        <DropdownMenuTrigger className="w-[300px]">
-          <span>Select many things</span>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
-            <DropdownMenuCheckboxItem
-              key={label}
-              checked={checked}
-              onCheckedChange={setChecked}
-            >
-              {label}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <span>Select many things</span>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {checkboxItems.map(({ label, state: [checked, setChecked] }) => (
+          <DropdownMenuCheckboxItem
+            key={label}
+            checked={checked}
+            onCheckedChange={setChecked}
+          >
+            {label}
+            <DropdownMenuItemIndicator />
+          </DropdownMenuCheckboxItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
