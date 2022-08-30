@@ -170,7 +170,7 @@ export const DisassociatePage = ({
           'Use this form to disassociate VEGA tokens with a Vega key. This returns them to either the Ethereum wallet that used the Staking bridge or the vesting contract.'
         )}
       </p>
-      <p>
+      <p data-testid="disassociation-warning">
         <span className="text-vega-red">{t('Warning')}:</span>{' '}
         {t(
           'Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.'
