@@ -208,7 +208,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
       );
       cy.get(newProposalSubmitButton).should('be.visible').click();
       cy.contains('Proposal submitted').should('be.visible');
-      cy.get(dialogCloseButton).wait(3500).click();
+      cy.get(dialogCloseButton).wait(1500).click();
       cy.navigate_to('governance');
       cy.wait_for_spinner();
       cy.wait('@proposalSubmissionCompletion').then((proposal) => {
@@ -342,7 +342,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .should('be.visible');
     });
 
-    it('Newly created freeform proposal - ability to vote for - with minimum required tokens associated', function () {
+    it('Newly created freeform proposal - ability to vote for proposal - with minimum required tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
@@ -402,7 +402,7 @@ context('Governance flow - with eth and vega wallets connected', function () {
         .and('be.visible');
     });
 
-    it('Newly created freeform proposal - ability to vote against - with minimum required tokens associated', function () {
+    it('Newly created freeform proposal - ability to vote against proposal - with minimum required tokens associated', function () {
       cy.ensure_specified_unstaked_tokens_are_associated(
         this.minProposerBalance
       );
