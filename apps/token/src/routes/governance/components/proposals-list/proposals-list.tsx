@@ -45,7 +45,11 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
   return (
     <>
       <div className="grid xs:grid-cols-2 items-center mb-4">
-        <Heading centerContent={false} title={t('pageTitleGovernance')} />
+        <Heading
+          centerContent={false}
+          marginBottom={false}
+          title={t('pageTitleGovernance')}
+        />
         <Link
           className="xs:justify-self-end"
           data-testid="new-proposal-link"

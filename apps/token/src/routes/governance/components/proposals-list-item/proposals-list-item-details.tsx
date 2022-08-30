@@ -172,9 +172,9 @@ export const ProposalsListItemDetails = ({
   }
 
   return (
-    <div className="grid grid-cols-[1fr_auto] mt-2 items-start gap-2">
+    <div className="grid grid-cols-[1fr_auto] mt-2 items-start gap-2 text-sm">
       <div
-        className="col-start-1 row-start-1 flex items-center gap-4 text-white"
+        className="col-start-1 row-start-1 flex items-center gap-2 text-white"
         data-testid="proposal-status"
       >
         {proposalStatus}
