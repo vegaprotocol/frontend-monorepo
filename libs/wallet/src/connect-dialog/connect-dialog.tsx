@@ -72,7 +72,7 @@ export function VegaConnectDialog({
               >
                 {t(`${key} provider`)}
               </button>
-              <p className="text-black-60">{connector.description}</p>
+              <p>{connector.description}</p>
             </li>
           ))}
         </ul>

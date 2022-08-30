@@ -55,12 +55,7 @@ export const Radio = ({
     'w-[17px] h-[17px] rounded-full border',
     'focus:outline-none focus-visible:outline-none',
     'focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
-    'dark:bg-white-25',
-    labelClassName,
-    {
-      'border-black-60 dark:border-white-60': !hasError,
-      'border-danger dark:border-danger': hasError,
-    }
+    labelClassName
   );
   return (
     <div className={wrapperClasses}>

@@ -11,7 +11,7 @@ function App() {
   return (
     <ThemeContext.Provider value={theme}>
       <NetworkLoader createClient={createClient}>
-        <div className="w-screen min-h-screen grid pb-24 bg-white text-black-95 dark:bg-black dark:text-white-80">
+        <div className="w-screen min-h-screen grid pb-24 bg-white text-neutral-900 dark:bg-black dark:text-neutral-100">
           <div className="layout-grid w-screen justify-self-center">
             <Header theme={theme} toggleTheme={toggleTheme} />
             <StatsManager className="max-w-3xl px-24" />

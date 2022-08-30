@@ -6,7 +6,6 @@ import { AccountsContainer } from '@vegaprotocol/accounts';
 import { Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
-import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
@@ -14,12 +13,7 @@ import { ResizablePanel } from '@vegaprotocol/ui-toolkit';
 import { Allotment, LayoutPriority } from 'allotment';
 
 const Portfolio = () => {
-  const wrapperClasses = classNames(
-    'h-full max-h-full',
-    'flex flex-col',
-    'bg-black-10 dark:bg-black-70',
-    'text-ui'
-  );
+  const wrapperClasses = 'h-full max-h-full flex flex-col';
   const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>

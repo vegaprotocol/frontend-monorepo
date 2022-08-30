@@ -367,14 +367,12 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
           )}
         </AutoSizer>
       </div>
-      <div className="flex flex-nowrap gap-4 overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-700">
+      <div className="flex flex-nowrap overflow-x-auto max-w-full border-t border-neutral-300 dark:border-neutral-700">
         {Object.keys(TradingViews).map((key) => {
           const isActive = view === key;
-          const className = classNames('py-2 px-4  capitalize', {
+          const className = classNames('p-4 min-w-[100px] capitalize', {
             'text-black dark:text-vega-yellow': isActive,
-            'bg-white dark:bg-black': isActive,
-            'text-black dark:text-white': !isActive,
-            'bg-black-10 dark:bg-white-10': !isActive,
+            'bg-neutral-200 dark:bg-neutral-800': isActive,
           });
           return (
             <button
@@ -387,7 +385,6 @@ export const TradePanels = ({ market }: TradePanelsProps) => {
             </button>
           );
         })}
-        <div className="bg-black-10 dark:bg-white-10 grow"></div>
       </div>
     </div>
   );

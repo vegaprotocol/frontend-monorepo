@@ -80,12 +80,9 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
             </td>
           </tr>
           <tr>
-            <td className="text-white-60">
-              {' '}
-              {formatNumber(yesTokens, defaultDecimals)}
-            </td>
+            <td> {formatNumber(yesTokens, defaultDecimals)}</td>
             <td></td>
-            <td className="text-white-60 text-right">
+            <td className="text-right">
               {formatNumber(noTokens, defaultDecimals)}
             </td>
           </tr>
@@ -101,7 +98,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         )}{' '}
         {formatNumber(totalTokensVoted, defaultDecimals)}{' '}
         {formatNumber(totalTokensPercentage, defaultDecimals)}%
-        <span className="ml-4 text-white-60">
+        <span className="ml-4">
           ({formatNumber(requiredParticipation, defaultDecimals)}%{' '}
           {t('governanceRequired')})
         </span>

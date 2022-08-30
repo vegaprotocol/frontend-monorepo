@@ -24,7 +24,6 @@ module.exports = {
     },
     danger: '#FF261A',
     warning: '#FF7A1A',
-    selected: '#DFFF0B',
     success: '#00F780',
   },
   fontFamily: {

@@ -12,13 +12,13 @@ export const ProgressBar = ({ className, intent, value }: ProgressBarProps) => {
   return (
     <div
       style={{ height: '6px' }}
-      className={classNames('bg-black-10 relative', className)}
+      className={classNames('bg-neutral-800 relative', className)}
     >
       <div
         className={classNames(
           'absolute left-0 top-0 bottom-0',
           intent === undefined || intent === Intent.None
-            ? 'bg-black-60'
+            ? 'bg-neutral-600'
             : getIntentBackground(intent ?? Intent.None)
         )}
         style={{ width: `${Math.max(0, value ?? 0)}%` }}
