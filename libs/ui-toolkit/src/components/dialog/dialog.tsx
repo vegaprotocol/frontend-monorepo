@@ -23,16 +23,18 @@ export function Dialog({
   title,
   icon,
   intent,
-  size = 'medium',
+  size = 'small',
 }: DialogProps) {
   const contentClasses = classNames(
     // Positions the modal in the center of screen
-    'z-20 fixed rounded p-8 inset-x-1/2 top-[10vh] translate-x-[-50%] dark:text-white w-[calc(100vw-2rem)]',
+    'z-20 fixed rounded inset-x-1/2 top-[10vh] translate-x-[-50%]',
+    // Dimensions
+    'max-w-[90vw] p-4 md:p-8',
     // Need to apply background and text colors again as content is rendered in a portal
-    'dark:bg-black bg-white',
+    'dark:bg-black bg-white dark:text-white',
     getIntentBorder(intent),
     {
-      'lg:w-[620px]': size === 'small',
+      'w-[620px]': size === 'small',
       'md:w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
@@ -45,7 +47,7 @@ export function Dialog({
         />
         <DialogPrimitives.Content className={contentClasses}>
           <DialogPrimitives.Close
-            className="p-2 absolute top-2 right-2"
+            className="absolute p-2 top-0 right-0 md:top-2 md:right-2"
             data-testid="dialog-close"
           >
             <Icon name="cross" />
@@ -55,7 +57,7 @@ export function Dialog({
             <div data-testid="dialog-content" className="flex-1">
               {title && (
                 <h1
-                  className="text-xl uppercase mb-4"
+                  className="text-xl uppercase mb-4 pr-2"
                   data-testid="dialog-title"
                 >
                   {title}

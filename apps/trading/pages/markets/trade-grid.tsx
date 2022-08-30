@@ -245,9 +245,13 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <TradeMarketHeader market={market} />
       <ResizablePanel vertical={true}>
-        <Allotment.Pane minSize={75}>
+        <Allotment.Pane minSize={75} priority={LayoutPriority.High}>
           <ResizablePanel proportionalLayout={false} minSize={200}>
-            <Allotment.Pane priority={LayoutPriority.High} minSize={200}>
+            <Allotment.Pane
+              priority={LayoutPriority.High}
+              minSize={200}
+              preferredSize="50%"
+            >
               <TradeGridChild>
                 <Tabs>
                   <Tab id="candles" name={t('Candles')}>
@@ -261,8 +265,8 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             </Allotment.Pane>
             <Allotment.Pane
               priority={LayoutPriority.Low}
-              preferredSize={330}
-              minSize={200}
+              preferredSize="25%"
+              minSize={300}
             >
               <TradeGridChild>
                 <Tabs>
@@ -277,7 +281,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
             </Allotment.Pane>
             <Allotment.Pane
               priority={LayoutPriority.Low}
-              preferredSize={430}
+              preferredSize="25%"
               minSize={200}
             >
               <TradeGridChild>
@@ -295,7 +299,7 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
         </Allotment.Pane>
         <Allotment.Pane
           priority={LayoutPriority.Low}
-          preferredSize={400}
+          preferredSize="33%"
           minSize={50}
         >
           <TradeGridChild>

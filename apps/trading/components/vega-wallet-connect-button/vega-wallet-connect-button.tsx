@@ -40,8 +40,10 @@ export const VegaWalletConnectButton = ({
           >
             {keypairs.map((kp) => (
               <DropdownMenuRadioItem key={kp.pub} value={kp.pub}>
-                <span className="uppercase">{kp.name}</span>:{' '}
-                {truncateByChars(kp.pub)}
+                <span>
+                  <span className="uppercase">{kp.name}</span>:{' '}
+                  {truncateByChars(kp.pub)}
+                </span>
                 <DropdownMenuItemIndicator />
               </DropdownMenuRadioItem>
             ))}

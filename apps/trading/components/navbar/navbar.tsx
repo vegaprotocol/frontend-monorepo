@@ -14,7 +14,9 @@ interface NavbarProps {
 
 export const Navbar = ({ theme, toggleTheme }: NavbarProps) => {
   const store = useGlobalStore();
-  const tradingPath = store.marketId ? `/markets/${store.marketId}` : '/';
+  const tradingPath = store.marketId
+    ? `/markets/${store.marketId}`
+    : '/markets';
   return (
     <div className="px-4 flex items-stretch border-b border-neutral-300 dark:border-neutral-700 bg-black">
       <div className="flex gap-4 mr-4 items-center h-full">
@@ -67,7 +69,7 @@ const NavLink = ({ name, path, exact, testId = name }: NavLinkProps) => {
   const isActive =
     router.asPath === path || (!exact && router.asPath.startsWith(path));
   const linkClasses = classNames('mx-2 py-2 self-end border-b-4', {
-    'border-vega-yellow text-white': isActive,
+    'border-vega-yellow text-white cursor-default': isActive,
     'border-transparent text-neutral-400': !isActive,
   });
   return (
