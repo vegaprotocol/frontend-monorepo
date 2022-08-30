@@ -161,9 +161,7 @@ export const AssetDetailsDialog = ({
               >
                 {tooltip.length > 0 ? (
                   <Tooltip description={tooltip}>
-                    <span className="underline underline-offset-2 decoration-dotted">
-                      {label}
-                    </span>
+                    <span>{label}</span>
                   </Tooltip>
                 ) : (
                   <span>{label}</span>

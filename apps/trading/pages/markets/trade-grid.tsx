@@ -91,7 +91,7 @@ const ExpiryTooltipContent = ({
 
     return (
       <>
-        <p>
+        <p className="mb-2">
           {t(
             'This market expires when triggered by its oracle, not on a set date.'
           )}
@@ -144,17 +144,17 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
           data-testid="market-summary"
           className="flex flex-nowrap items-start xl:flex-1 w-full overflow-x-auto text-xs "
         >
-          <Tooltip
-            align="start"
-            description={
-              <ExpiryTooltipContent
-                market={market}
-                explorerUrl={VEGA_EXPLORER_URL}
-              />
-            }
-          >
-            <div className={itemClass}>
-              <div className={itemHeading}>{t('Expiry')}</div>
+          <div className={itemClass}>
+            <div className={itemHeading}>{t('Expiry')}</div>
+            <Tooltip
+              align="start"
+              description={
+                <ExpiryTooltipContent
+                  market={market}
+                  explorerUrl={VEGA_EXPLORER_URL}
+                />
+              }
+            >
               <div
                 data-testid="trading-expiry"
                 className={classNames({
@@ -163,8 +163,8 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
               >
                 <ExpiryLabel market={market} />
               </div>
-            </div>
-          </Tooltip>
+            </Tooltip>
+          </div>
           <div className={itemClass}>
             <div className={itemHeading}>{t('Change (24h)')}</div>
             <PriceCellChange
@@ -183,16 +183,14 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
                 : '-'}
             </div>
           </div>
-          <Tooltip
-            align="start"
-            description={<TradingModeTooltip market={market} />}
-          >
-            <div className={itemClass}>
-              <div className={itemHeading}>{t('Trading mode')}</div>
-              <div
-                data-testid="trading-mode"
-                className={classNames('underline decoration-dashed')}
-              >
+
+          <div className={itemClass}>
+            <div className={itemHeading}>{t('Trading mode')}</div>
+            <Tooltip
+              align="start"
+              description={<TradingModeTooltip market={market} />}
+            >
+              <div data-testid="trading-mode">
                 {market.tradingMode ===
                   MarketTradingMode.TRADING_MODE_MONITORING_AUCTION &&
                 market.data?.trigger &&
@@ -202,8 +200,8 @@ export const TradeMarketHeader = ({ market }: TradeMarketHeaderProps) => {
                      - ${AuctionTriggerMapping[market.data.trigger]}`
                   : MarketTradingModeMapping[market.tradingMode]}
               </div>
-            </div>
-          </Tooltip>
+            </Tooltip>
+          </div>
           <div className={itemClass}>
             <div className={itemHeading}>{t('Price')}</div>
             <div data-testid="mark-price">

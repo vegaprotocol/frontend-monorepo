@@ -43,9 +43,7 @@ const FeesInfo = () => {
         </span>
       }
     >
-      <span className="border-b-2 border-neutral-600 dark:border-neutral-400 border-dotted">
-        {t('Taker fee')}
-      </span>
+      <span>{t('Taker fee')}</span>
     </Tooltip>
   );
 };
@@ -495,9 +493,7 @@ const FeesCell = ({
   feeFactors: MarketList_markets_fees_factors;
 }) => (
   <Tooltip description={<FeesBreakdown feeFactors={feeFactors} />}>
-    <span className="border-b-2 border-neutral-600 dark:border-neutral-400 border-dotted">
-      {totalFees(feeFactors) ?? '-'}
-    </span>
+    <span>{totalFees(feeFactors) ?? '-'}</span>
   </Tooltip>
 );
 

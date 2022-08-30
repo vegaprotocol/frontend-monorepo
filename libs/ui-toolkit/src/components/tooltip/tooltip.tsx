@@ -28,7 +28,10 @@ export const Tooltip = ({
   description ? (
     <Provider delayDuration={200} skipDelayDuration={100}>
       <Root open={open}>
-        <Trigger asChild className="cursor-help">
+        <Trigger
+          asChild
+          className="underline underline-offset-2 decoration-neutral-400 dark:decoration-neutral-400 decoration-dashed cursor-help"
+        >
           {children}
         </Trigger>
         {description && (
