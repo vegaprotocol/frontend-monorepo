@@ -6,7 +6,7 @@ import { LiquidityTable } from './liquidity-table';
 import type { MarketLiquidity } from './__generated__/MarketLiquidity';
 import { useQuery } from '@apollo/client';
 import classNames from 'classnames';
-import { t, addDecimalsFormatNumber } from '@vegaprotocol/react-helpers';
+import { t } from '@vegaprotocol/react-helpers';
 import { LiquidityProvisionStatus } from '@vegaprotocol/types';
 import { MyLiquidityProvisionContainer } from './my-liquidity-container';
 import {
@@ -34,15 +34,8 @@ export const LiquidityManager = ({
     variables: useMemo(() => ({ marketId }), [marketId]),
   });
 
-  const {
-    liquidityProviders,
-    suppliedStake,
-    targetStake,
-    decimalPlaces,
-    positionDecimalPlaces,
-    code,
-    symbol,
-  } = useLiquidityProvision({ data: marketLiquidityData });
+  const { liquidityProviders, suppliedStake, targetStake, code, symbol } =
+    useLiquidityProvision({ data: marketLiquidityData });
 
   const wrapperClasses = classNames(
     'h-full max-h-full',
@@ -80,21 +73,11 @@ export const LiquidityManager = ({
           <div className="grid grid-cols-4 gap-24 mb-10">
             <div>
               <div>{t('Target stake')}</div>
-              <div>
-                {`${addDecimalsFormatNumber(
-                  targetStake ?? '-',
-                  positionDecimalPlaces ?? 0
-                )} ${symbol}`}
-              </div>
+              <div>{`${targetStake} ${symbol}`}</div>
             </div>
             <div>
               <div>{t('Supplied stake')}</div>
-              <div>
-                {`${addDecimalsFormatNumber(
-                  suppliedStake ?? '-',
-                  positionDecimalPlaces
-                )} ${symbol}`}
-              </div>
+              <div>{`${suppliedStake} ${symbol}`}</div>
             </div>
           </div>
         </div>
@@ -113,20 +96,10 @@ export const LiquidityManager = ({
 
           <Tabs>
             <Tab id="active" name={t('Active')}>
-              <LiquidityTable
-                ref={gridRef}
-                decimalPlaces={decimalPlaces ?? 0}
-                positionDecimalPlaces={positionDecimalPlaces ?? 0}
-                data={activeEdges}
-              />
+              <LiquidityTable ref={gridRef} data={activeEdges} />
             </Tab>
             <Tab id="inactive" name={t('Inactive')}>
-              <LiquidityTable
-                ref={gridRef}
-                decimalPlaces={decimalPlaces ?? 0}
-                positionDecimalPlaces={positionDecimalPlaces ?? 0}
-                data={inactiveEdges}
-              />
+              <LiquidityTable ref={gridRef} data={inactiveEdges} />
             </Tab>
           </Tabs>
         </div>

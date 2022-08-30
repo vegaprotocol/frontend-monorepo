@@ -55,10 +55,11 @@ export const formatNumber = (
 };
 
 export const addDecimalsFormatNumber = (
-  rawValue: string | number,
+  rawValue?: string | number | null,
   decimalPlaces = 0,
   formatDecimals: number = decimalPlaces
 ) => {
+  if (!rawValue) return '-';
   const x = addDecimal(rawValue, decimalPlaces);
 
   return formatNumber(x, formatDecimals);

@@ -267,6 +267,10 @@ export interface MarketInfoQuery_market_tradableInstrument_instrument_product_se
    * The full name of the asset (e.g: Great British Pound)
    */
   name: string;
+  /**
+   * The precision of the asset. Should match the decimal precision of the asset on its native chain, e.g: for ERC20 assets, it is often 18
+   */
+  decimals: number;
 }
 
 export interface MarketInfoQuery_market_tradableInstrument_instrument_product_oracleSpecForSettlementPrice {

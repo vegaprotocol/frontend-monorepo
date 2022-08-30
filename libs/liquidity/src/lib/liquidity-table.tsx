@@ -1,21 +1,12 @@
 import { forwardRef } from 'react';
-import {
-  addDecimalsFormatNumber,
-  formatNumberPercentage,
-  getDateTimeFormat,
-  t,
-} from '@vegaprotocol/react-helpers';
+import { dateValueFormatter, t } from '@vegaprotocol/react-helpers';
 import { AgGridDynamic as AgGrid } from '@vegaprotocol/ui-toolkit';
 import type { AgGridReact } from 'ag-grid-react';
 import { AgGridColumn } from 'ag-grid-react';
-import BigNumber from 'bignumber.js';
-import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
-import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import type { LiquidityProvision } from './liquidity-data-provider';
+
 export interface LiquidityTableProps {
   data: LiquidityProvision[];
-  decimalPlaces?: number;
-  positionDecimalPlaces?: number;
 }
 
 export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
@@ -39,99 +30,40 @@ export const LiquidityTable = forwardRef<AgGridReact, LiquidityTableProps>(
           headerName={t('Commitment')}
           field="commitmentAmount"
           type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return addDecimalsFormatNumber(value, props.decimalPlaces);
-          }}
         />
         <AgGridColumn
           headerName={t('Share')}
           field="equityLikeShare"
           type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return formatNumberPercentage(new BigNumber(value).times(100), 4);
-          }}
         />
-        <AgGridColumn
-          headerName={t('Fee')}
-          field="fee"
-          type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return formatNumberPercentage(new BigNumber(value).times(100));
-          }}
-        />
+        <AgGridColumn headerName={t('Fee')} field="fee" type="rightAligned" />
         <AgGridColumn
           headerName={t('Average entry valuation')}
           field="averageEntryValuation"
           type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return addDecimalsFormatNumber(value, props.decimalPlaces);
-          }}
         />
         <AgGridColumn
           headerName={t('Obligation (siskas)')}
           field="obligation"
           type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return addDecimalsFormatNumber(value, props.decimalPlaces);
-          }}
         />
         <AgGridColumn
           headerName={t('Supplied (siskas)')}
           field="supplied"
           type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return addDecimalsFormatNumber(value, props.decimalPlaces);
-          }}
         />
-        <AgGridColumn
-          headerName={t('Status')}
-          field="status"
-          valueFormatter={({ value }: { value: LiquidityProvisionStatus }) => {
-            if (!value) {
-              return value;
-            }
-            return LiquidityProvisionStatusMapping[value];
-          }}
-        />
+        <AgGridColumn headerName={t('Status')} field="status" />
         <AgGridColumn
           headerName={t('Created')}
           field="createdAt"
           type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return getDateTimeFormat().format(new Date(value));
-          }}
+          valueFormatter={dateValueFormatter}
         />
         <AgGridColumn
           headerName={t('Updated')}
           field="updatedAt"
           type="rightAligned"
-          valueFormatter={({ value }: { value: string }) => {
-            if (!value) {
-              return value;
-            }
-            return getDateTimeFormat().format(new Date(value));
-          }}
+          valueFormatter={dateValueFormatter}
         />
       </AgGrid>
     );

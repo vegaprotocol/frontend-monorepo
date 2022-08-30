@@ -1,12 +1,4 @@
-import {
-  t,
-  formatNumberPercentage,
-  getDateTimeFormat,
-  addDecimalsFormatNumber,
-} from '@vegaprotocol/react-helpers';
-import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
-import { Splash } from '@vegaprotocol/ui-toolkit';
-import { BigNumber } from 'bignumber.js';
+import { t, dateValueFormatter } from '@vegaprotocol/react-helpers';
 import { useLiquidityProvision } from './liquidity-data-provider';
 import type { MarketLiquidity } from './__generated__/MarketLiquidity';
 
@@ -17,11 +9,10 @@ export const MyLiquidityProvisionContainer = ({
   partyId: string;
   data?: MarketLiquidity;
 }) => {
-  const { liquidityProviders, decimalPlaces, positionDecimalPlaces } =
-    useLiquidityProvision({
-      data,
-      partyId,
-    });
+  const { liquidityProviders } = useLiquidityProvision({
+    data,
+    partyId,
+  });
 
   if (!liquidityProviders || liquidityProviders.length === 0) {
     return null;
@@ -52,69 +43,39 @@ export const MyLiquidityProvisionContainer = ({
         </div>
         <div>
           <div>{t('Commitment')}</div>
-          <div>
-            {(commitmentAmount &&
-              addDecimalsFormatNumber(commitmentAmount, decimalPlaces)) ||
-              '-'}
-          </div>
+          <div>{commitmentAmount || '-'}</div>
         </div>
         <div>
           <div>{t('Share')}</div>
-          <div className="break-words">
-            {(equityLikeShare &&
-              formatNumberPercentage(
-                new BigNumber(equityLikeShare).times(100)
-              )) ||
-              '-'}
-          </div>
+          <div className="break-words">{equityLikeShare || '-'}</div>
         </div>
         <div>
           <div>{t('Fee')}</div>
-          <div>
-            {(fee && formatNumberPercentage(new BigNumber(fee).times(100))) ||
-              '-'}
-          </div>
+          <div>{fee || '-'}</div>
         </div>
         <div>
           <div>{t('Average entry valuation')}</div>
-          <div>
-            {(averageEntryValuation &&
-              addDecimalsFormatNumber(averageEntryValuation, decimalPlaces)) ||
-              '-'}
-          </div>
+          <div>{averageEntryValuation || '-'}</div>
         </div>
         <div>
           <div>{t('Obligation (siskas)')}</div>
-          <div>
-            {(obligation &&
-              addDecimalsFormatNumber(obligation, decimalPlaces)) ||
-              '-'}
-          </div>
+          <div>{obligation || '-'}</div>
         </div>
         <div>
           <div>{t('Supplied (siskas)')}</div>
-          <div>
-            {(supplied && addDecimalsFormatNumber(supplied, decimalPlaces)) ||
-              '-'}
-          </div>
+          <div>{supplied || '-'}</div>
         </div>
         <div>
           <div>{t('Status')}</div>
-          <div>{status && t(LiquidityProvisionStatusMapping[status])}</div>
+          <div>{status}</div>
         </div>
         <div>
           <div>{t('Created')}</div>
-          <div>
-            {(createdAt && getDateTimeFormat().format(new Date(createdAt))) ||
-              '-'}
-          </div>
+          <div>{dateValueFormatter({ value: createdAt })}</div>
         </div>
         <div>
           <div>{t('Updated')}</div>
-          <div>
-            {(updatedAt && getDateTimeFormat().format(new Date(updatedAt))) ||
-              '-'}
-          </div>
+          <div>{dateValueFormatter({ value: updatedAt })}</div>
         </div>
       </div>
     </div>

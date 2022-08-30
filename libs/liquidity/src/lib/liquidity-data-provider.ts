@@ -1,5 +1,10 @@
 import { gql } from '@apollo/client';
+import {
+  addDecimalsFormatNumber,
+  formatNumberPercentage,
+} from '@vegaprotocol/react-helpers';
 import type { LiquidityProvisionStatus } from '@vegaprotocol/types';
+import { LiquidityProvisionStatusMapping } from '@vegaprotocol/types';
 import { AccountType } from '@vegaprotocol/types';
 import { useNetworkParameter } from '@vegaprotocol/web3';
 import BigNumber from 'bignumber.js';
@@ -80,9 +85,20 @@ export interface LiquidityProvision {
   averageEntryValuation: string;
   obligation: string | null;
   supplied: string | null;
-  status: LiquidityProvisionStatus | undefined;
+  status: LiquidityProvisionStatus | string | undefined;
   createdAt: string | undefined;
   updatedAt: string | null | undefined;
+}
+
+export interface LiquidityData {
+  liquidityProviders?: LiquidityProvision[];
+  suppliedStake?: string | null;
+  targetStake?: string | null;
+  code?: string;
+  symbol?: string;
+  decimalPlaces?: number;
+  positionDecimalPlaces?: number;
+  assetDecimalPlaces?: number;
 }
 
 export const useLiquidityProvision = ({
@@ -117,6 +133,14 @@ export const useLiquidityProvision = ({
               },
               new BigNumber(0)
             );
+          const obligation =
+            stakeToCcySiska &&
+            new BigNumber(stakeToCcySiska)
+              .times(liquidityProvisionConnection?.node?.commitmentAmount ?? 1)
+              .toString();
+          const supplied =
+            stakeToCcySiska &&
+            new BigNumber(stakeToCcySiska).times(balance ?? 1).toString();
           return {
             party: provider.party.id,
             createdAt: liquidityProvisionConnection?.node?.createdAt,
@@ -127,28 +151,84 @@ export const useLiquidityProvision = ({
             status: liquidityProvisionConnection?.node?.status,
             equityLikeShare: provider.equityLikeShare,
             averageEntryValuation: provider.averageEntryValuation,
-            obligation:
-              stakeToCcySiska &&
-              new BigNumber(stakeToCcySiska)
-                .times(
-                  liquidityProvisionConnection?.node?.commitmentAmount ?? 1
-                )
-                .toString(),
-            supplied:
-              stakeToCcySiska &&
-              new BigNumber(stakeToCcySiska).times(balance ?? 1).toString(),
+            obligation,
+            supplied,
           };
         }
       );
-  return {
+  const liquidityData: LiquidityData = {
     liquidityProviders,
     suppliedStake: data?.market?.data?.suppliedStake,
     targetStake: data?.market?.data?.targetStake,
     decimalPlaces: data?.market?.decimalPlaces,
     positionDecimalPlaces: data?.market?.positionDecimalPlaces,
     code: data?.market?.tradableInstrument.instrument.code,
+    assetDecimalPlaces:
+      data?.market?.tradableInstrument.instrument.product.settlementAsset
+        .decimals,
     symbol:
       data?.market?.tradableInstrument.instrument.product.settlementAsset
         .symbol,
+  };
+  return formatLiquidityData(liquidityData);
+};
+
+export const formatLiquidityData = ({
+  suppliedStake,
+  assetDecimalPlaces,
+  targetStake,
+  code,
+  symbol,
+  liquidityProviders,
+}: LiquidityData) => {
+  return {
+    suppliedStake: addDecimalsFormatNumber(suppliedStake, assetDecimalPlaces),
+    targetStake: addDecimalsFormatNumber(targetStake, assetDecimalPlaces),
+    code: code || '-',
+    symbol: symbol || '-',
+    liquidityProviders: liquidityProviders?.map(
+      ({
+        party,
+        createdAt,
+        updatedAt,
+        commitmentAmount,
+        fee,
+        status,
+        equityLikeShare,
+        averageEntryValuation,
+        obligation,
+        supplied,
+      }) => ({
+        party,
+        createdAt,
+        updatedAt,
+        commitmentAmount: addDecimalsFormatNumber(
+          commitmentAmount,
+          assetDecimalPlaces
+        ),
+        fee:
+          (fee && formatNumberPercentage(new BigNumber(fee).times(100))) || '-',
+        equityLikeShare:
+          formatNumberPercentage(
+            new BigNumber(equityLikeShare).times(100),
+            4
+          ) || '-',
+        status:
+          (status &&
+            LiquidityProvisionStatusMapping[
+              status as LiquidityProvisionStatus
+            ]) ||
+          '-',
+        averageEntryValuation: addDecimalsFormatNumber(
+          averageEntryValuation,
+          assetDecimalPlaces
+        ),
+        obligation: addDecimalsFormatNumber(
+          obligation,
+          assetDecimalPlaces // TODO obligation is in ccy - should be same with commitment amount, why decimals??
+        ),
+        supplied: addDecimalsFormatNumber(supplied, assetDecimalPlaces),
+      })
+    ),
   };
 };

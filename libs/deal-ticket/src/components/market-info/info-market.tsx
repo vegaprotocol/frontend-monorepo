@@ -147,7 +147,10 @@ export const Info = ({ market }: InfoProps) => {
               balance: a.balance,
             }}
             assetSymbol={assetSymbol}
-            decimalPlaces={market.positionDecimalPlaces}
+            decimalPlaces={
+              market.tradableInstrument.instrument.product.settlementAsset
+                .decimals
+            }
           />
         ),
       })),
@@ -280,12 +283,14 @@ export const Info = ({ market }: InfoProps) => {
       content: (
         <MarketInfoTable
           data={{
-            openInterest: market.data && market.data.openInterest,
             targetStake: market.data && market.data.targetStake,
             suppliedStake: market.data && market.data?.suppliedStake,
             marketValueProxy: market.data && market.data.marketValueProxy,
           }}
-          decimalPlaces={market.positionDecimalPlaces}
+          decimalPlaces={
+            market.tradableInstrument.instrument.product.settlementAsset
+              .decimals
+          }
           assetSymbol={assetSymbol}
           link={
             <>

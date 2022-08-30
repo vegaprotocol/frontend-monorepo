@@ -90,6 +90,7 @@ export const MARKET_INFO_QUERY = gql`
                 id
                 symbol
                 name
+                decimals
               }
               oracleSpecForSettlementPrice {
                 id

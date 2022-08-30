@@ -31,6 +31,13 @@ export const getDateTimeFormat = once(
     })
 );
 
+export const dateValueFormatter = ({ value }: { value?: string | null }) => {
+  if (!value) {
+    return '-';
+  }
+  return getDateTimeFormat().format(new Date(value));
+};
+
 export const getRelativeTimeFormat = once(
   () => new Intl.RelativeTimeFormat(getUserLocale())
 );
