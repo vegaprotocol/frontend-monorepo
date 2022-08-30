@@ -6,11 +6,7 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useProposalSubmit } from './proposals-hooks';
-import {
-  getProposalDialogIcon,
-  getProposalDialogIntent,
-  getProposalDialogTitle,
-} from '../utils';
+import { getProposalDialogIcon, getProposalDialogIntent } from '../utils';
 import { t } from '@vegaprotocol/react-helpers';
 import { ProposalState } from '@vegaprotocol/types';
 

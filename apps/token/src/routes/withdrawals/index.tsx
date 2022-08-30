@@ -1,19 +1,15 @@
-import { Button, Dialog, Splash } from '@vegaprotocol/ui-toolkit';
+import { Button, Splash } from '@vegaprotocol/ui-toolkit';
 import { useTranslation } from 'react-i18next';
 
 import { Heading } from '../../components/heading';
 import { SplashLoader } from '../../components/splash-loader';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import {
-  useCreateWithdraw,
   useWithdrawals,
   WithdrawalDialogs,
-  WithdrawalFeedback,
   WithdrawalsTable,
-  WithdrawFormContainer,
 } from '@vegaprotocol/withdraws';
 import { useState } from 'react';
-import { useVegaWallet } from '@vegaprotocol/wallet';
 
 const Withdrawals = () => {
   const { t } = useTranslation();
