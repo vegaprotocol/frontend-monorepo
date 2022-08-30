@@ -17,11 +17,11 @@ export const InputSetter = ({
   onValueChange,
   ...props
 }: InputSetterProps & InputProps) => {
-  const [isVisible, setIsVisible] = useState(isInputVisible);
+  const [isInputToggled, setIsInputToggled] = useState(isInputVisible);
 
   const toggleInput = useCallback(() => {
-    setIsVisible(!isInputVisible);
-  }, [isInputVisible]);
+    setIsInputToggled(!isInputToggled);
+  }, [isInputToggled]);
 
   const onInputEnter = useCallback(
     (event: React.KeyboardEvent) => {
@@ -33,7 +33,7 @@ export const InputSetter = ({
     [toggleInput]
   );
 
-  return isVisible ? (
+  return isInputToggled ? (
     <div className="flex items-center">
       <Input {...props} value={value} onKeyDown={onInputEnter} />
       <button

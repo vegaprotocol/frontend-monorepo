@@ -92,6 +92,14 @@ export const DealTicketSize = ({
     [onValueChange, positionDecimalPlaces]
   );
 
+  const onSliderValueChange = useCallback(
+    (value: number[]) => {
+      setInputValue(value[0]);
+      onValueChange(value);
+    },
+    [onValueChange]
+  );
+
   return max === 0 ? (
     <p>Not enough balance to trade</p>
   ) : (
@@ -103,7 +111,7 @@ export const DealTicketSize = ({
       <SliderRoot
         className="mb-2"
         value={[value]}
-        onValueChange={onValueChange}
+        onValueChange={onSliderValueChange}
         step={step}
         min={min}
         max={max}
