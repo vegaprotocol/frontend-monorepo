@@ -20,7 +20,7 @@ import {
   MarketTradingMode,
   MarketTradingModeMapping,
 } from '@vegaprotocol/types';
-import { Allotment, LayoutPriority } from 'allotment';
+import { LayoutPriority } from 'allotment';
 import classNames from 'classnames';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useState } from 'react';
@@ -39,8 +39,9 @@ import {
   PriceCellChange,
   Link,
   Tooltip,
-  ResizablePanel,
+  ResizableGrid,
   ButtonLink,
+  ResizableGridPanel,
 } from '@vegaprotocol/ui-toolkit';
 import { TradingModeTooltip } from '../../components/trading-mode-tooltip';
 
@@ -242,10 +243,10 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">
       <TradeMarketHeader market={market} />
-      <ResizablePanel vertical={true}>
-        <Allotment.Pane minSize={75} priority={LayoutPriority.High}>
-          <ResizablePanel proportionalLayout={false} minSize={200}>
-            <Allotment.Pane
+      <ResizableGrid vertical={true}>
+        <ResizableGridPanel minSize={75} priority={LayoutPriority.High}>
+          <ResizableGrid proportionalLayout={false} minSize={200}>
+            <ResizableGridPanel
               priority={LayoutPriority.High}
               minSize={200}
               preferredSize="50%"
@@ -260,8 +261,8 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                   </Tab>
                 </Tabs>
               </TradeGridChild>
-            </Allotment.Pane>
-            <Allotment.Pane
+            </ResizableGridPanel>
+            <ResizableGridPanel
               priority={LayoutPriority.Low}
               preferredSize="25%"
               minSize={300}
@@ -276,8 +277,8 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                   </Tab>
                 </Tabs>
               </TradeGridChild>
-            </Allotment.Pane>
-            <Allotment.Pane
+            </ResizableGridPanel>
+            <ResizableGridPanel
               priority={LayoutPriority.Low}
               preferredSize="25%"
               minSize={200}
@@ -292,10 +293,10 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
                   </Tab>
                 </Tabs>
               </TradeGridChild>
-            </Allotment.Pane>
-          </ResizablePanel>
-        </Allotment.Pane>
-        <Allotment.Pane
+            </ResizableGridPanel>
+          </ResizableGrid>
+        </ResizableGridPanel>
+        <ResizableGridPanel
           priority={LayoutPriority.Low}
           preferredSize="33%"
           minSize={50}
@@ -316,8 +317,8 @@ export const TradeGrid = ({ market }: TradeGridProps) => {
               </Tab>
             </Tabs>
           </TradeGridChild>
-        </Allotment.Pane>
-      </ResizablePanel>
+        </ResizableGridPanel>
+      </ResizableGrid>
     </div>
   );
 };

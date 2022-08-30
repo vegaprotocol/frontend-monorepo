@@ -21,7 +21,7 @@ export * from './popover';
 export * from './price-change';
 export * from './progress-bar';
 export * from './radio-group';
-export * from './resizable-panel';
+export * from './resizable-grid';
 export * from './select';
 export * from './sparkline';
 export * from './splash';

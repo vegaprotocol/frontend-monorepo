@@ -3,22 +3,22 @@ import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
 import type { ReactNode } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
-import { ResizablePanel } from '@vegaprotocol/ui-toolkit';
-import { Allotment, LayoutPriority } from 'allotment';
+import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
+import { LayoutPriority } from 'allotment';
 
 const Portfolio = () => {
   const wrapperClasses = 'h-full max-h-full flex flex-col';
   const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>
-      <ResizablePanel vertical={true}>
-        <Allotment.Pane minSize={75}>
+      <ResizableGrid vertical={true}>
+        <ResizableGridPanel minSize={75}>
           <PortfolioGridChild>
             <Tabs>
               <Tab id="positions" name={t('Positions')}>
@@ -53,8 +53,8 @@ const Portfolio = () => {
               </Tab>
             </Tabs>
           </PortfolioGridChild>
-        </Allotment.Pane>
-        <Allotment.Pane
+        </ResizableGridPanel>
+        <ResizableGridPanel
           priority={LayoutPriority.Low}
           preferredSize={300}
           minSize={50}
@@ -78,8 +78,8 @@ const Portfolio = () => {
               </Tab>
             </Tabs>
           </PortfolioGridChild>
-        </Allotment.Pane>
-      </ResizablePanel>
+        </ResizableGridPanel>
+      </ResizableGrid>
     </div>
   );
 };
