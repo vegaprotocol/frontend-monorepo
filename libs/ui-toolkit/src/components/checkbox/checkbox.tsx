@@ -39,7 +39,7 @@ export const Checkbox = ({
         <CheckboxPrimitive.CheckboxIndicator className="w-[15px] h-[15px] bg-black dark:bg-white">
           <Icon
             name="tick"
-            className="relative top-[-5px] w-[13px] h-[11px] text-white dark:text-black"
+            className="relative top-[-5px] w-[11px] h-[11px] text-white dark:text-black"
           />
         </CheckboxPrimitive.CheckboxIndicator>
       </CheckboxPrimitive.Root>
