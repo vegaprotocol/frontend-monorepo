@@ -9,14 +9,27 @@ import { useAppState } from '../../../contexts/app-state/app-state-context';
 import { useRefreshAssociatedBalances } from '../../../hooks/use-refresh-associated-balances';
 import { useRemoveStake } from './hooks';
 import type { RemoveStakePayload } from './hooks';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
+import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { BigNumber } from '../../../lib/bignumber';
+import { truncateMiddle } from '../../../lib/truncate-middle';
 
 type Association = {
+  /**
+   * An unique id of association (combination of staking method and wallet key)
+   */
+  id: string;
+  /**
+   * A vega wallet key
+   */
   key: string;
-  value: BigNumber;
+  /**
+   * Amount of associated tokens
+   */
+  amount: BigNumber;
   stakingMethod: StakingMethod;
+  label: string;
 };
 
 const toListOfAssociations = (
@@ -25,11 +38,13 @@ const toListOfAssociations = (
 ): Association[] =>
   Object.keys(obj)
     .map((k) => ({
+      id: `${stakingMethod.toLowerCase()}-${remove0x(k)}`,
       key: remove0x(k),
-      value: obj[k],
+      amount: obj[k],
       stakingMethod,
+      label: '',
     }))
-    .filter((k) => k.value.isGreaterThan(0));
+    .filter((k) => k.amount.isGreaterThan(0));
 
 export const DisassociatePage = ({
   address,
@@ -47,11 +62,16 @@ export const DisassociatePage = ({
   } = useAppState();
 
   const associations = useMemo(
-    () => [
-      ...toListOfAssociations(stakingAssociations, StakingMethod.Wallet),
-      ...toListOfAssociations(vestingAssociations, StakingMethod.Contract),
-    ],
-    [stakingAssociations, vestingAssociations]
+    () =>
+      [
+        ...toListOfAssociations(stakingAssociations, StakingMethod.Wallet),
+        ...toListOfAssociations(vestingAssociations, StakingMethod.Contract),
+      ].map((a) => ({
+        ...a,
+        label: `${truncateMiddle(a.key)} ${t(`via${a.stakingMethod}`)} 
+                (${formatNumber(a.amount, 18)} ${t('tokens')})`,
+      })),
+    [stakingAssociations, vestingAssociations, t]
   );
 
   useEffect(() => {
@@ -60,7 +80,7 @@ export const DisassociatePage = ({
 
   const [chosen, setChosen] = useState<Association>();
 
-  const maximum = chosen?.value || toBigNum(0, 0);
+  const maximum = chosen?.amount || toBigNum(0, 0);
   const [amount, setAmount] = useState<string>('');
 
   const refreshBalances = useRefreshAssociatedBalances();
@@ -82,6 +102,18 @@ export const DisassociatePage = ({
       refreshBalances(address, chosen?.key || '');
     }
   }, [txState, refreshBalances, address, chosen]);
+
+  const onChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      if (!e.target.value) return;
+      const chosen = associations.find((a) => a.id === e.target.value);
+      if (chosen) {
+        setChosen(chosen);
+        setAmount('');
+      }
+    },
+    [associations]
+  );
 
   if (txState.txState !== TxState.Default && payload) {
     return (
@@ -110,23 +142,12 @@ export const DisassociatePage = ({
           className="font-mono"
           disabled={associations.length === 1}
           id="vega-key-selector"
-          onChange={(e) => {
-            if (!e.target.value) return;
-            const chosen = associations.find((k) => k.key === e.target.value);
-            if (chosen) {
-              setChosen(chosen);
-              setAmount('');
-            }
-          }}
-          value={chosen?.key}
+          onChange={onChange}
+          value={chosen?.id}
         >
-          {associations.map((k) => (
-            <option
-              key={k.key}
-              value={k.key}
-              title={`${t(k.stakingMethod)}: ${formatNumber(k.value, 18)}`}
-            >
-              {k.key}
+          {associations.map((a) => (
+            <option key={a.id} value={a.id}>
+              {a.label}
             </option>
           ))}
         </Select>
@@ -149,7 +170,7 @@ export const DisassociatePage = ({
           'Use this form to disassociate VEGA tokens with a Vega key. This returns them to either the Ethereum wallet that used the Staking bridge or the vesting contract.'
         )}
       </p>
-      <p>
+      <p data-testid="disassociation-warning">
         <span className="text-vega-red">{t('Warning')}:</span>{' '}
         {t(
           'Any tokens that have been nominated to a node will sacrifice rewards they are due for the current epoch. If you do not wish to sacrifice these, you should remove stake from a node at the end of an epoch before disassociation.'

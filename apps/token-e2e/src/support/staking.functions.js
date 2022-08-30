@@ -15,6 +15,8 @@ const stakeValidatorListPendingStake = '[col-id="pendingStake"]';
 const stakeValidatorListTotalStake = '[col-id="totalStakeThisEpoch"]';
 const stakeValidatorListTotalShare = '[col-id="share"]';
 const stakeValidatorListName = '[col-id="validator"]';
+const vegaKeySelector = '#vega-key-selector';
+
 const txTimeout = Cypress.env('txTimeout');
 const epochTimeout = Cypress.env('epochTimeout');
 
@@ -81,23 +83,19 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
   let type = options && options.type ? options.type : 'wallet';
   cy.highlight(`Disassociating ${amount} tokens via Staking Page`);
   cy.get(ethWalletDissociateButton).first().click();
-  cy.get(associateWalletRadioButton, epochTimeout).click();
+
+  cy.get(vegaKeySelector)
+    .invoke('attr', 'disabled')
+    .then((disabled) => {
+      if (!disabled) {
+        cy.get(vegaKeySelector).select(
+          `${type}-${Cypress.env('vegaWalletPublicKey')}`
+        );
+      }
+    });
+
   cy.get(tokenAmountInputBox, epochTimeout).type(amount);
   cy.get(tokenSubmitButton, epochTimeout).should('be.enabled').click();
-  cy.contains(
-    `${amount} $VEGA tokens have been returned to Ethereum wallet`,
-    txTimeout
-  ).should('be.visible');
-  if (type === 'wallet') {
-    cy.get(associateWalletRadioButton, { timeout: 30000 }).click();
-  } else if (type === 'contract') {
-    cy.get(associateContractRadioButton, { timeout: 30000 }).click();
-  } else {
-    cy.highlight(`${type} is not association option`);
-  }
-  cy.get(tokenAmountInputBox, { timeout: 10000 }).type(amount);
-
-  cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
 
   if (type === 'wallet') {
     cy.contains(
@@ -119,7 +117,6 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
 Cypress.Commands.add('staking_page_disassociate_all_tokens', () => {
   cy.highlight(`Disassociating all tokens via Staking Page`);
   cy.get(ethWalletDissociateButton).first().click();
-  cy.get(associateWalletRadioButton, epochTimeout).click();
   cy.get(stakeMaximumTokens, epochTimeout).click();
   cy.get(tokenSubmitButton, epochTimeout).click();
   cy.contains(
