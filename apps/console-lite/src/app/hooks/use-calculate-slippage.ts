@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { Side } from '@vegaprotocol/types';
 import { useOrderBookData } from '@vegaprotocol/market-depth';
 import type { Order } from '@vegaprotocol/orders';
 import { BigNumber } from 'bignumber.js';
@@ -14,10 +15,10 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
   const { data } = useOrderBookData({
     variables,
     resolution: 1,
-    throttleMilliseconds: 50000,
+    throttleMilliseconds: 10000,
   });
   const volPriceArr =
-    data?.depth[order.side === 'SIDE_BUY' ? 'sell' : 'buy'] || [];
+    data?.depth[order.side === Side.SIDE_BUY ? 'sell' : 'buy'] || [];
   if (volPriceArr.length) {
     const decimals = data?.decimalPlaces ?? 0;
     const positionDecimals = data?.positionDecimalPlaces ?? 0;

@@ -203,14 +203,15 @@ export const DealTicketSize = ({
             <dd
               className="flex justify-end gap-x-5"
               data-testid="price-slippage-value"
+              aria-label={t('Est. Price Impact / Slippage')}
             >
               <span
                 className={classNames({
                   'text-darkerGreen dark:text-lightGreen':
                     parseFloat(slippage) < 1,
                   'text-amber':
-                    parseFloat(slippage) >= 1 && parseFloat(slippage) < 2,
-                  'text-vega-red': parseFloat(slippage) >= 2,
+                    parseFloat(slippage) >= 1 && parseFloat(slippage) < 5,
+                  'text-vega-red': parseFloat(slippage) >= 5,
                 })}
               >
                 {slippage}%
