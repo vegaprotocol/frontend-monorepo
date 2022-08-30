@@ -6,6 +6,7 @@ import {
 } from '@storybook/addon-docs/blocks';
 
 import { theme } from '@vegaprotocol/tailwindcss-config';
+import colors from 'tailwindcss/colors';
 
 <Meta title="Primitives/Colors" />
 
@@ -20,33 +21,8 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
 ### Shared
 
 <ColorPalette>
-  <ColorItem
-    title="theme.color.white"
-    subtitle="White"
-    colors={theme.colors.white}
-  />
-  <ColorItem
-    title="theme.color.black"
-    subtitle="Black"
-    colors={theme.colors.black}
-  />
-  <ColorItem
-    title="theme.color.blue"
-    subtitle="Blue"
-    colors={[theme.colors.blue]}
-  />
-  <ColorItem
-    title="theme.color.orange"
-    subtitle="Orange"
-    colors={[theme.colors.orange]}
-  />
-  <ColorPalette>
-    <ColorItem
-      title="theme.color.selected"
-      subtitle="Selected"
-      colors={[theme.colors.selected]}
-    />
-  </ColorPalette>
+  <ColorItem title="White" colors={colors.white} />
+  <ColorItem title="Black" colors={colors.black} />
 </ColorPalette>
 
 ### Vega
@@ -63,35 +39,11 @@ full colour palette [here](https://tailwindcss.com/docs/customizing-colors/#defa
 
 <ColorPalette>
   <ColorItem
-    title="theme.color.danger"
-    subtitle="danger"
-    colors={[theme.colors.danger]}
-  />
-</ColorPalette>
-<ColorPalette>
-  <ColorItem
-    title="theme.color.warning"
-    subtitle="warning"
-    colors={[theme.colors.warning]}
-  />
-</ColorPalette>
-<ColorPalette>
-  <ColorItem
-    title="theme.color.success"
-    subtitle="success"
-    colors={[theme.colors.success]}
-  />
-</ColorPalette>
-
-### Background
-
-<ColorPalette>
-  <ColorItem
-    title="theme.color.backgroundColor"
-    subtitle="Intent backgroundColor"
+    title="theme.color[danger|warning|success]"
     colors={{
-      black: theme.colors.black.DEFAULT,
-      white: theme.colors.white.DEFAULT,
+      danger: theme.colors.danger,
+      warning: theme.colors.warning,
+      success: theme.colors.success,
     }}
   />
 </ColorPalette>
