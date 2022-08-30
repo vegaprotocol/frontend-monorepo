@@ -170,7 +170,7 @@ describe('Market trade', () => {
         .find('button')
         .should('have.text', '2');
       cy.get('button').contains('Max').click();
-      cy.getByTestId('price-slippage-value').should('have.text', '0.01555%');
+      cy.getByTestId('price-slippage-value').should('have.text', '0.02%');
     }
   });
 
