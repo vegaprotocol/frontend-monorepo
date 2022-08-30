@@ -279,7 +279,7 @@ export const Orderbook = ({
   const tableBody =
     data && data.length !== 0 ? (
       <div
-        className="grid grid-cols-4 gap-2 text-right"
+        className="grid grid-cols-4 gap-[0.3125rem] text-right"
         style={{
           gridAutoRows: '17px',
         }}
