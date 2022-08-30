@@ -90,16 +90,16 @@ export const NodeSwitcher = ({
           onSubmit(nodeRadio);
         }}
       >
-        <p className="text-lg mt-4 mb-4">
+        <p className="text-lg mt-4">
           {t('Select a GraphQL node to connect to:')}
         </p>
-        <div>
+        <div className="mb-2">
           <div className="hidden lg:block">
             <LayoutRow>
               <div />
-              <span className="px-2 text-right">{t('Response time')}</span>
-              <span className="px-2 text-right">{t('Block')}</span>
-              <span className="px-2 text-right">{t('SSL')}</span>
+              <span className="text-right">{t('Response time')}</span>
+              <span className="text-right">{t('Block')}</span>
+              <span className="text-right">{t('SSL')}</span>
             </LayoutRow>
           </div>
           <RadioGroup
@@ -119,7 +119,7 @@ export const NodeSwitcher = ({
                   highestBlock={highestBlock}
                   setBlock={(block) => updateNodeBlock(node, block)}
                 >
-                  <div className="mb-8 break-all" data-testid="node">
+                  <div className="break-all" data-testid="node">
                     <Radio
                       id={`node-url-${index}`}
                       labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
@@ -149,11 +149,10 @@ export const NodeSwitcher = ({
                   {(customNodeText || nodeRadio === CUSTOM_NODE_KEY) && (
                     <div
                       data-testid="custom-node"
-                      className="flex w-full gap-8"
+                      className="flex items-center w-full gap-2"
                     >
                       <Input
                         placeholder="https://"
-                        role="textbox"
                         value={customNodeText}
                         hasError={
                           !!customNodeText &&
@@ -186,7 +185,7 @@ export const NodeSwitcher = ({
             </div>
           </RadioGroup>
         </div>
-        <div className="mt-4">
+        <div>
           <Button
             disabled={isSubmitDisabled}
             fill={true}

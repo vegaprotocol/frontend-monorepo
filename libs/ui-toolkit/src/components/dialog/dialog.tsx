@@ -35,7 +35,7 @@ export function Dialog({
     getIntentBorder(intent),
     {
       'w-[620px]': size === 'small',
-      'md:w-[720px] lg:w-[940px]': size === 'medium',
+      'w-[720px] lg:w-[940px]': size === 'medium',
     }
   );
   return (

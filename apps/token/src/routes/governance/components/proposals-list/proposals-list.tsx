@@ -61,7 +61,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
         </Link>
       </div>
       <div>
-        <p>
+        <p className="mb-4">
           {t(
             `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
           )}{' '}

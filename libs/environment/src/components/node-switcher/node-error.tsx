@@ -12,7 +12,9 @@ export const NodeError = ({ headline, message }: NodeErrorProps) => {
       <p data-testid="node-error-type" className="font-bold">
         {headline}
       </p>
-      <p data-testid="node-error-message">{message}</p>
+      <p data-testid="node-error-message" className="mb-0">
+        {message}
+      </p>
     </div>
   );
 };
