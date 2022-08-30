@@ -120,7 +120,7 @@ export const ClaimFlow = ({
   return (
     <>
       <section>
-        <div className="lg:grid lg:gap-24 lg:grid-cols-[1fr_1fr] lg:grid-rows-[min-content_min-content]">
+        <div className="lg:grid lg:gap-6 lg:grid-cols-[1fr_1fr] lg:grid-rows-[min-content_min-content]">
           <div>
             <p>
               <Trans
