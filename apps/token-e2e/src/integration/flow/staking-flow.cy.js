@@ -182,7 +182,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     // 1002-STKE-041
-    it('Able to remove part of a stake against a validator', function () {
+    it.only('Able to remove part of a stake against a validator', function () {
       cy.staking_page_associate_tokens('4');
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
@@ -254,9 +254,8 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains(2.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(totalStake).should('have.text', '2');
-
-      cy.get(stakeShare).should('have.text', '100%');
+      cy.get(totalStake, epochTimeout).should('have.text', '2');
+      cy.get(stakeShare, epochTimeout).should('have.text', '100%');
 
       cy.navigate_to('staking');
 
