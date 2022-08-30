@@ -133,7 +133,12 @@ export const getMetrics = (
     const marginAccount = accounts?.find((account) => {
       return account.market?.id === market.id;
     });
-    if (!marginAccount || !marginLevel || !marketData) {
+    if (
+      !marginAccount ||
+      !marginLevel ||
+      !marketData ||
+      position.node.openVolume === '0'
+    ) {
       return;
     }
     const generalAccount = accounts?.find(
@@ -177,19 +182,19 @@ export const getMetrics = (
       marketDecimalPlaces
     );
 
-    const searchPrice = openVolume.isEqualTo(0)
-      ? markPrice
-      : marginSearch
-          .minus(marginAccountBalance)
-          .dividedBy(openVolume)
-          .plus(markPrice);
-    const liquidationPrice = openVolume.isEqualTo(0)
-      ? markPrice
-      : marginMaintenance
-          .minus(marginAccountBalance)
-          .minus(generalAccountBalance)
-          .dividedBy(openVolume)
-          .plus(markPrice);
+    const searchPrice = marginSearch
+      .minus(marginAccountBalance)
+      .dividedBy(openVolume)
+      .plus(markPrice);
+
+    const liquidationPrice = BigNumber.maximum(
+      0,
+      marginMaintenance
+        .minus(marginAccountBalance)
+        .minus(generalAccountBalance)
+        .dividedBy(openVolume)
+        .plus(markPrice)
+    );
 
     const lowMarginLevel =
       marginAccountBalance.isLessThan(
