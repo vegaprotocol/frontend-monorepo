@@ -4,7 +4,7 @@ import { KeyValueTable, KeyValueTableRow } from '@vegaprotocol/ui-toolkit';
 import {
   formatNumber,
   formatNumberPercentage,
-} from '../../../../lib/format-number';
+} from '@vegaprotocol/react-helpers';
 import { useVoteInformation } from '../../hooks';
 import type { Proposals_proposals } from '../../proposals/__generated__/Proposals';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
