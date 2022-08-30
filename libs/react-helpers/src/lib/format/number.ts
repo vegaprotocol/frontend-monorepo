@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js';
 import { BigNumber as EthersBigNumber } from 'ethers';
 import memoize from 'lodash/memoize';
+import React from 'react';
 import { getUserLocale } from './utils';
 
 export function toDecimal(numberOfDecimals: number) {
@@ -67,8 +68,30 @@ export const formatNumberPercentage = (
   value: BigNumber | string | number,
   decimals?: number
 ) => {
-  const decimalPlaces = decimals
-    ? decimals
-    : Math.max(new BigNumber(value).dp(), 2);
-  return `${new BigNumber(value).dp(decimalPlaces).toFormat(decimalPlaces)}%`;
+  const decimalPlaces =
+    typeof decimals === 'undefined'
+      ? Math.max(new BigNumber(value).dp(), 2)
+      : decimals;
+  return `${formatNumber(new BigNumber(value), decimalPlaces)}%`;
+};
+
+export const toNumberParts = (
+  value: BigNumber | null | undefined,
+  decimals = 18
+): [integers: string, decimalPlaces: string] => {
+  if (!value) {
+    return ['0', '0'.repeat(decimals)];
+  }
+  const separator = getDecimalSeparator() || '.';
+  const [integers, decimalsPlaces] = formatNumber(value, decimals)
+    .toString()
+    .split(separator);
+  return [integers, decimalsPlaces || ''];
+};
+
+export const useNumberParts = (
+  value: BigNumber | null | undefined,
+  decimals: number
+): [integers: string, decimalPlaces: string] => {
+  return React.useMemo(() => toNumberParts(value, decimals), [decimals, value]);
 };

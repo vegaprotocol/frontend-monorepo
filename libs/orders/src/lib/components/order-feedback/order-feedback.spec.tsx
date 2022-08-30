@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import {
   OrderRejectionReason,
+  OrderRejectionReasonMapping,
   OrderStatus,
   OrderStatusMapping,
   OrderType,
@@ -47,7 +48,7 @@ describe('OrderFeedback', () => {
     const order = generateOrder(orderFields);
     render(<OrderFeedback {...props} order={order} />);
     expect(screen.getByTestId('error-reason')).toHaveTextContent(
-      `${startCase(orderFields.rejectionReason)}`
+      `${OrderRejectionReasonMapping[orderFields.rejectionReason]}`
     );
   });
 

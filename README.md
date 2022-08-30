@@ -106,12 +106,12 @@ Visit the [Nx Documentation](https://nx.dev/getting-started/intro) to learn more
 
 ## Docker
 
-The [Dockerfile](./Dockerfile) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environment variables to the containers. See configuration below for how to do this.
+The [Dockerfile](./dockerfiles) for running the frontends is pretty basic, merely building the application with the APP arg that is passed in and serving the application from [nginx](./nginx/nginx.conf). The only complexity that exists is that there is a script which allows the passing of run time environment variables to the containers. See configuration below for how to do this.
 
 You can build any of the containers locally with the following command:
 
 ```bash
-docker build . --build-arg APP=[YOUR APP] --tag=[TAG]
+docker build --dockerfile dockerfiles/Dockerfile.cra . --build-arg APP=[YOUR APP] --tag=[TAG]
 ```
 
 In order to run a container:
@@ -119,6 +119,8 @@ In order to run a container:
 ```bash
 docker run -p 3000:80 [TAG]
 ```
+
+Images ending with `.dist` are to pack locally created transpiled HTML files into nginx container for non-compatible with yarn architectures like M1 Mac
 
 ## Config
 
