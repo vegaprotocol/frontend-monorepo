@@ -80,7 +80,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           type="rightAligned"
         />
         <AgGridColumn
-          headerName={t('Created')}
+          headerName={t('Date')}
           field="createdAt"
           valueFormatter={({
             value,
