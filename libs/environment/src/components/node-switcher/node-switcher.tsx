@@ -103,7 +103,6 @@ export const NodeSwitcher = ({
             </LayoutRow>
           </div>
           <RadioGroup
-            className="block"
             value={nodeRadio}
             onChange={(value) => {
               setNodeRadio(value);
@@ -122,7 +121,6 @@ export const NodeSwitcher = ({
                   <div className="break-all" data-testid="node">
                     <Radio
                       id={`node-url-${index}`}
-                      labelClassName="whitespace-nowrap text-ellipsis overflow-hidden"
                       value={node}
                       label={node}
                       disabled={getIsNodeDisabled(VEGA_ENV, state[node])}

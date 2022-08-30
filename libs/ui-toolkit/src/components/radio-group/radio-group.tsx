@@ -2,12 +2,12 @@ import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import classNames from 'classnames';
 import type { ReactNode } from 'react';
 
-interface RadioGroupProps {
+export interface RadioGroupProps {
   name?: string;
   children: ReactNode;
-  className?: string;
   defaultValue?: string;
   value?: string;
+  orientation?: 'horizontal' | 'vertical';
   onChange?: (value: string) => void;
 }
 
@@ -15,15 +15,20 @@ export const RadioGroup = ({
   children,
   name,
   value,
-  className,
+  orientation = 'vertical',
   onChange,
 }: RadioGroupProps) => {
+  const groupClasses = classNames('flex', {
+    'flex-col gap-2': orientation === 'vertical',
+    'flex-row gap-4': orientation === 'horizontal',
+  });
   return (
     <RadioGroupPrimitive.Root
       name={name}
       value={value}
       onValueChange={onChange}
-      className={classNames('flex flex-row gap-24', className)}
+      orientation={orientation}
+      className={groupClasses}
     >
       {children}
     </RadioGroupPrimitive.Root>
@@ -34,41 +39,34 @@ interface RadioProps {
   id: string;
   value: string;
   label: string;
-  labelClassName?: string;
   disabled?: boolean;
-  hasError?: boolean;
 }
 
-export const Radio = ({
-  id,
-  value,
-  label,
-  labelClassName,
-  disabled,
-  hasError,
-}: RadioProps) => {
-  const wrapperClasses = classNames('relative pl-[25px]', {
-    'opacity-50': disabled,
+export const Radio = ({ id, value, label, disabled }: RadioProps) => {
+  const wrapperClasses = classNames('flex items-center gap-2', {
+    'opacity-40': disabled,
   });
   const itemClasses = classNames(
     'flex justify-center items-center',
-    'w-[17px] h-[17px] rounded-full border',
-    'focus:outline-none focus-visible:outline-none',
-    'focus-visible:shadow-vega-pink dark:focus-visible:shadow-vega-yellow',
-    labelClassName
+    'w-[15px] h-[15px] rounded-full border',
+    'border-neutral-300 dark:border-neutral-700',
+    'bg-neutral-200 dark:bg-neutral-800'
+  );
+  const indicatorClasses = classNames(
+    'block w-[13px] h-[13px] border-4 rounded-full',
+    'border-white dark:bg-black',
+    'dark:border-white dark:bg-black'
   );
   return (
     <div className={wrapperClasses}>
       <RadioGroupPrimitive.Item
         value={value}
-        className="absolute h-full w-[25px] top-0 left-0"
+        className={itemClasses}
         id={id}
         data-testid={id}
         disabled={disabled}
       >
-        <div className={itemClasses}>
-          <RadioGroupPrimitive.Indicator className="w-[7px] h-[7px] bg-vega-pink dark:bg-vega-yellow rounded-full" />
-        </div>
+        <RadioGroupPrimitive.Indicator className={indicatorClasses} />
       </RadioGroupPrimitive.Item>
       <label htmlFor={id} className={disabled ? '' : 'cursor-pointer'}>
         {label}

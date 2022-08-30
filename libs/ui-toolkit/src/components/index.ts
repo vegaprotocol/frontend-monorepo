@@ -4,7 +4,6 @@ export * from './arrows';
 export * from './async-renderer';
 export * from './button';
 export * from './callout';
-export * from './card';
 export * from './checkbox';
 export * from './copy-with-tooltip';
 export * from './dialog';

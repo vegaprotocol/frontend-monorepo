@@ -45,7 +45,7 @@ const getIconElement = ({
   CalloutProps,
   'icon' | 'iconName' | 'iconDescription' | 'isLoading'
 >) => {
-  const wrapperClassName = 'mt-2';
+  const wrapperClassName = 'mt-1';
   if (isLoading) {
     return (
       <div className={wrapperClassName}>

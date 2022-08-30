@@ -54,8 +54,12 @@ IconAndContent.args = {
   title: 'This is what this thing does',
   iconName: 'endorsed',
   children: (
-    <div className="flex flex-col">
-      <div>With a longer explanation</div>
+    <div>
+      <p className="mb-4">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut impedit ab
+        maiores perspiciatis ea fuga dolorum velit molestiae ad consequuntur
+        quae, commodi doloribus eligendi veritatis.
+      </p>
       <Button>Action</Button>
     </div>
   ),
@@ -71,9 +75,14 @@ CustomIconAndContent.args = {
     </span>
   ),
   children: (
-    <div className="flex flex-col">
-      <div>With a longer explanation</div>
-      <Button>Action</Button>
+    <div>
+      <p className="mb-4">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit tenetur
+        pariatur reprehenderit quis optio quisquam vel, corporis enim a
+        exercitationem illo explicabo est labore tempore sint, quibusdam error,
+        ipsa nam.
+      </p>
+      <Button variant="secondary">Action</Button>
     </div>
   ),
 };
@@ -84,8 +93,11 @@ Loading.args = {
   title: 'This is what this thing does',
   isLoading: true,
   children: (
-    <div className="flex flex-col">
-      <div>With a longer explanation</div>
+    <div>
+      <p className="mb-4">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla tempore
+        ab architecto dolores nesciunt aliquid!
+      </p>
       <Button>Action</Button>
     </div>
   ),

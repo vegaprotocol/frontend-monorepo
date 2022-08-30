@@ -1,7 +1,6 @@
-import { Tooltip } from '@vegaprotocol/ui-toolkit';
+import { Callout, Indicator, Intent, Tooltip } from '@vegaprotocol/ui-toolkit';
 import type { StatFields } from '../../config/types';
 import { defaultFieldFormatter } from '../table-row';
-import { Card, Indicator, Intent } from '@vegaprotocol/ui-toolkit';
 import { useMemo } from 'react';
 
 export const PromotedStatsItem = ({
@@ -23,7 +22,7 @@ export const PromotedStatsItem = ({
   );
   return (
     <Tooltip description={description} align="start">
-      <Card>
+      <Callout>
         <div className="uppercase text-sm">
           <Indicator variant={variant} />
           <span data-testid="stats-title">{title}</span>
@@ -31,7 +30,7 @@ export const PromotedStatsItem = ({
         <div data-testid="stats-value" className="mt-2 text-2xl">
           {formatter ? formatter(value) : defaultFieldFormatter(value)}
         </div>
-      </Card>
+      </Callout>
     </Tooltip>
   );
 };
