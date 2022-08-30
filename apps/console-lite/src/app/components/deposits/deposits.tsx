@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { DepositManager } from '@vegaprotocol/deposits';
 import { t } from '@vegaprotocol/react-helpers';
-import { useEnvironment } from '@vegaprotocol/environment';
+import { Networks, useEnvironment } from '@vegaprotocol/environment';
 import { AsyncRenderer, Splash } from '@vegaprotocol/ui-toolkit';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { Web3Container } from '@vegaprotocol/web3';
@@ -48,7 +48,7 @@ export const DepositContainer = () => {
         <Web3Container>
           <DepositManager
             assets={assets}
-            isFaucetable={VEGA_ENV !== 'MAINNET'}
+            isFaucetable={VEGA_ENV !== Networks.MAINNET}
           />
         </Web3Container>
       ) : (
