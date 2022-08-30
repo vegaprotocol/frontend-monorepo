@@ -1,3 +1,5 @@
+import { AssetStatus } from '@vegaprotocol/types';
+
 export interface ERC20AssetSource {
   __typename: 'ERC20';
   contractAddress: string;
@@ -16,14 +18,8 @@ export interface Asset {
   source: ERC20AssetSource | BuiltinAssetSource;
 }
 
-interface AssetEdge {
-  __typename: 'AssetEdge';
-  node: Asset;
-}
-
-interface AssetsConnection {
-  __typename: 'AssetsConnection';
-  edges: (AssetEdge | null)[] | null;
+export interface AssetWithStatus extends Asset {
+  status: AssetStatus;
 }
 
 export type ERC20Asset = Omit<Asset, 'source'> & {
@@ -39,11 +35,26 @@ export const isAssetTypeERC20 = (asset?: Asset): asset is ERC20Asset => {
   return asset.source.__typename === 'ERC20';
 };
 
-export const assetsConnectionToAssets = (
-  assetsConnection: AssetsConnection | undefined | null
-): Asset[] => {
-  const edges = assetsConnection?.edges?.filter((e) => e && e?.node);
-  if (!edges) return [];
-
-  return (edges as AssetEdge[]).map((e) => e.node);
+type AssetEdge<T extends Asset> = {
+  __typename: 'AssetEdge';
+  node: T;
 };
+
+type AssetsConnection<T extends Asset> = {
+  assetsConnection: {
+    edges: (AssetEdge<T> | null)[] | null;
+  };
+};
+
+export const getAssets = (data?: AssetsConnection<Asset>): Asset[] =>
+  data?.assetsConnection?.edges
+    ?.filter((e) => e && e?.node)
+    .map((e) => (e as AssetEdge<Asset>).node as Asset) || [];
+
+export const getEnabledAssets = (
+  data?: AssetsConnection<AssetWithStatus>
+): Asset[] =>
+  data?.assetsConnection?.edges
+    ?.filter((e) => e && e?.node)
+    .map((e) => (e as AssetEdge<AssetWithStatus>).node)
+    .filter((a) => a.status === AssetStatus.STATUS_ENABLED) || [];
