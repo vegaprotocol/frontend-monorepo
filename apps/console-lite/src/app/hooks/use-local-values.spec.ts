@@ -3,7 +3,11 @@ import useLocalValues from './use-local-values';
 
 describe('local values hook', () => {
   it('state of wallet dialog should be properly handled', () => {
-    const { result } = renderHook(() => useLocalValues());
+    const { result } = renderHook(() =>
+      useLocalValues(() => {
+        /**/
+      })
+    );
     expect(result.current.vegaWalletDialog).toBeDefined();
     expect(result.current.vegaWalletDialog.manage).toBe(false);
     expect(result.current.vegaWalletDialog.connect).toBe(false);

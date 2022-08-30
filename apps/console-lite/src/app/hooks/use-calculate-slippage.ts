@@ -17,7 +17,7 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
     throttleMilliseconds: 50000,
   });
   const volPriceArr =
-    data?.depth[order.side === 'SIDE_BUY' ? 'buy' : 'sell'] || [];
+    data?.depth[order.side === 'SIDE_BUY' ? 'sell' : 'buy'] || [];
   if (volPriceArr.length) {
     const decimals = data?.decimalPlaces ?? 0;
     const positionDecimals = data?.positionDecimalPlaces ?? 0;
