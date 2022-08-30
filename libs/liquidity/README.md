@@ -1,6 +1,6 @@
-# liquidity
+# Liquidity
 
-This library was generated with [Nx](https://nx.dev).
+This library contains liquidity provision data providers and view containers.
 
 ## Running unit tests
 

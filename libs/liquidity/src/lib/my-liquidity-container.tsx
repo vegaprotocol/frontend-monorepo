@@ -54,10 +54,7 @@ export const MyLiquidityProvisionContainer = ({
           <div>{t('Commitment')}</div>
           <div>
             {(commitmentAmount &&
-              addDecimalsFormatNumber(
-                commitmentAmount,
-                decimalPlaces
-              )) ||
+              addDecimalsFormatNumber(commitmentAmount, decimalPlaces)) ||
               '-'}
           </div>
         </div>
@@ -97,8 +94,7 @@ export const MyLiquidityProvisionContainer = ({
         <div>
           <div>{t('Supplied (siskas)')}</div>
           <div>
-            {(supplied &&
-              addDecimalsFormatNumber(supplied, decimalPlaces)) ||
+            {(supplied && addDecimalsFormatNumber(supplied, decimalPlaces)) ||
               '-'}
           </div>
         </div>
