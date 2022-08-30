@@ -154,7 +154,7 @@ export const SelectMarketPopover = ({
       }
     >
       <div
-        className="p-4 w-[90vw] max-h-[80vh] overflow-y-auto"
+        className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
       >
         {marketsLoading || (keypair?.pub && positionsLoading) ? (
@@ -163,7 +163,7 @@ export const SelectMarketPopover = ({
             Loading market data
           </div>
         ) : (
-          <table className="relative text-sm w-full whitespace-nowrap mb-4 -mx-2">
+          <table className="relative text-sm w-full whitespace-nowrap -mx-2">
             {keypair &&
               positionMarkets?.markets &&
               positionMarkets.markets.length > 0 && (

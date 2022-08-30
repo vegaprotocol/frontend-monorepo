@@ -2,15 +2,15 @@ import classnames from 'classnames';
 import type { ChangeEvent } from 'react';
 
 // Supports controlled and uncontrolled setups.
-interface ToggleProps {
+interface ToggleInput {
   label: string;
   value: string;
 }
 
-export interface ToggleInputProps {
+export interface ToggleProps {
   id?: string;
   name: string;
-  toggles: ToggleProps[];
+  toggles: ToggleInput[];
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   checkedValue?: string | undefined | null;
 }
@@ -22,7 +22,7 @@ export const Toggle = ({
   onChange,
   checkedValue,
   ...props
-}: ToggleInputProps) => {
+}: ToggleProps) => {
   const fieldsetClasses =
     'flex rounded-full bg-neutral-100 dark:bg-neutral-700 text-sm';
   const labelClasses = classnames(

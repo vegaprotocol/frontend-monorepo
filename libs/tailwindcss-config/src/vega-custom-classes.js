@@ -15,11 +15,12 @@ const vegaCustomClasses = plugin(function ({ addUtilities }) {
       padding: '1em',
       background: colors.white,
       color: colors.neutral[700],
-      border: `1px solid #${colors.neutral[400]}`,
+      border: `1px solid ${colors.neutral[300]}`,
     },
     '.dark .syntax-highlighter-wrapper .hljs': {
-      background: '#2C2C2C',
+      background: colors.neutral[800],
       color: theme.colors.vega.green,
+      border: 0,
     },
     '.syntax-highlighter-wrapper .hljs-literal': {
       color: theme.colors.vega.pink,

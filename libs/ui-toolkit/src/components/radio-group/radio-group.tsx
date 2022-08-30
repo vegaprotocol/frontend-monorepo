@@ -18,7 +18,7 @@ export const RadioGroup = ({
   orientation = 'vertical',
   onChange,
 }: RadioGroupProps) => {
-  const groupClasses = classNames('flex', {
+  const groupClasses = classNames('flex text-sm', {
     'flex-col gap-2': orientation === 'vertical',
     'flex-row gap-4': orientation === 'horizontal',
   });
