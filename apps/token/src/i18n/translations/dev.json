@@ -631,5 +631,7 @@
   "Freeform proposal": "Freeform proposal",
   "NewProposal": "New proposal",
   "MinProposalRequirements": "You must have at least 1 VEGA associated to make a proposal",
-  "totalSupply": "Total Supply"
+  "totalSupply": "Total Supply",
+  "viaWallet": "via wallet",
+  "viaContract": "via vesting"
 }
