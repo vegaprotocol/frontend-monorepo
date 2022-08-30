@@ -32,7 +32,7 @@ export const OrderEditDialog = ({
   order,
   onSubmit,
 }: OrderEditDialogProps) => {
-  const headerClassName = 'text-h5 font-bold text-black dark:text-white';
+  const headerClassName = 'text-lg font-bold text-black dark:text-white';
   const {
     register,
     formState: { errors },

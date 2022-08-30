@@ -45,7 +45,7 @@ export const VegaWallet = () => {
             <>
               <div
                 data-testid="wallet-name"
-                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-h6 mb-4"
+                className="sm:row-start-2 sm:col-start-1 sm:col-span-2 text-base mb-4"
               >
                 {keypair.name}
               </div>

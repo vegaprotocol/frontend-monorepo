@@ -41,7 +41,7 @@ export const globalTypes = {
 const StoryWrapper = ({ children, className, style }) => (
   <div style={style} className={className}>
     <div className="p-16">
-      <div className="text-body dark:bg-black dark:text-white-60 bg-white text-black-60">
+      <div className="text-sm dark:bg-black dark:text-white-60 bg-white text-black-60">
         {children}
       </div>
     </div>
