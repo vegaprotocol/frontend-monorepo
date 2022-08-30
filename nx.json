@@ -1,5 +1,5 @@
 {
-  "npmScope": "@vegaprotocol",
+  "npmScope": "vegaprotocol",
   "affected": {
     "defaultBase": "master"
   },
@@ -18,7 +18,16 @@
       "runner": "@nrwl/nx-cloud",
       "options": {
         "cacheableOperations": ["build", "lint", "test", "e2e"],
-        "accessToken": "OTY4ZjdlZTItNGIwNy00NDcyLTllZjctOWIzYTg1NWE0Yzg1fHJlYWQtd3JpdGU="
+        "accessToken": "OTY4ZjdlZTItNGIwNy00NDcyLTllZjctOWIzYTg1NWE0Yzg1fHJlYWQtd3JpdGU=",
+        "runtimeCacheInputs": [
+          "echo $NX_VEGA_NETWORKS",
+          "echo $NX_VEGA_ENV",
+          "echo $NX_VEGA_URL",
+          "echo $NX_TENDERMINT_URL",
+          "echo $NX_TENDERMINT_WEBSOCKET_URL",
+          "echo $NX_USE_ENV_OVERRIDES",
+          "echo $NX_ETHEREUM_PROVIDER_URL"
+        ]
       }
     }
   },
