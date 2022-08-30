@@ -122,7 +122,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Size')}
           field="size"
-          cellClass="font-mono"
+          cellClass="font-mono text-right"
+          type="rightAligned"
           cellClassRules={{
             'text-vega-green-dark dark:text-vega-green': ({
               data,
@@ -185,7 +186,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         <AgGridColumn
           headerName={t('Filled')}
           field="remaining"
-          cellClass="font-mono"
+          cellClass="font-mono text-right"
+          type="rightAligned"
           valueFormatter={({
             data,
             value,
@@ -207,7 +209,8 @@ export const OrderListTable = forwardRef<AgGridReact, OrderListTableProps>(
         />
         <AgGridColumn
           field="price"
-          cellClass="font-mono"
+          type="rightAligned"
+          cellClass="font-mono text-right"
           valueFormatter={({
             value,
             data,
