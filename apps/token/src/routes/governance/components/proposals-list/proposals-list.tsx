@@ -44,18 +44,24 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
 
   return (
     <>
-      <div className="grid xs:grid-cols-2 items-center">
-        <Heading centerContent={false} title={t('pageTitleGovernance')} />
+      <div className="grid xs:grid-cols-2 items-center mb-4">
+        <Heading
+          centerContent={false}
+          marginBottom={false}
+          title={t('pageTitleGovernance')}
+        />
         <Link
-          className="mb-16 xs:justify-self-end"
+          className="xs:justify-self-end"
           data-testid="new-proposal-link"
           to={`${Routes.GOVERNANCE}/propose`}
         >
-          <Button variant={'primary'}>{t('NewProposal')}</Button>
+          <Button variant="primary" size="sm">
+            {t('NewProposal')}
+          </Button>
         </Link>
       </div>
       <div>
-        <p>
+        <p className="mb-4">
           {t(
             `The Vega network is governed by the community. View active proposals, vote on them or propose changes to the network.`
           )}{' '}
@@ -69,13 +75,11 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
           </a>
         </p>
       </div>
-
       {proposals.length > 0 && (
         <ProposalsListFilter setFilterString={setFilterString} />
       )}
-
-      <section className="mx-[-20px] p-20 bg-white-10">
-        <h2 className="text-h4 mb-0">{t('openProposals')}</h2>
+      <section className="-mx-4 p-4 mb-8 bg-neutral-800">
+        <h2 className="text-xl mb-2">{t('openProposals')}</h2>
         {sortedProposals.open.length > 0 ? (
           <ul data-testid="open-proposals">
             {sortedProposals.open.filter(filterPredicate).map((proposal) => (
@@ -83,14 +87,13 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
             ))}
           </ul>
         ) : (
-          <p className="mt-12 mb-0" data-testid="no-open-proposals">
+          <p className="mb-0" data-testid="no-open-proposals">
             {t('noOpenProposals')}
           </p>
         )}
       </section>
-
-      <section className="mx-[-20px] p-20">
-        <h2 className="text-h4 mb-0">{t('closedProposals')}</h2>
+      <section>
+        <h2 className="text-xl mb-2">{t('closedProposals')}</h2>
         {sortedProposals.closed.length > 0 ? (
           <ul data-testid="closed-proposals">
             {sortedProposals.closed.filter(filterPredicate).map((proposal) => (
@@ -98,7 +101,7 @@ export const ProposalsList = ({ proposals }: ProposalsListProps) => {
             ))}
           </ul>
         ) : (
-          <p className="mt-12 mb-0" data-testid="no-closed-proposals">
+          <p className="mb-0" data-testid="no-closed-proposals">
             {t('noClosedProposals')}
           </p>
         )}

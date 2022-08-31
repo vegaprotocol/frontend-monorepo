@@ -62,9 +62,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
   return (
     <AsyncRenderer<MarketInfoQuery> data={data} loading={loading} error={error}>
       {data && data.market ? (
-        <div className={'overflow-auto h-full'}>
-          <Info market={data.market} />
-        </div>
+        <Info market={data.market} />
       ) : (
         <Splash>
           <p>{t('Could not load market')}</p>
@@ -76,8 +74,7 @@ export const MarketInfoContainer = ({ marketId }: MarketInfoContainerProps) => {
 
 export const Info = ({ market }: InfoProps) => {
   const [openLiquidityView, setOpenLiquidityView] = useState(false);
-  const headerClassName =
-    'text-h5 font-medium uppercase text-black dark:text-white';
+  const headerClassName = 'uppercase text-lg mb-4';
   const dayVolume = calcCandleVolume(market);
   const assetSymbol =
     market.tradableInstrument.instrument.product?.settlementAsset.symbol;
@@ -93,7 +90,7 @@ export const Info = ({ market }: InfoProps) => {
             }}
             asPercentage={true}
           />
-          <p className="text-ui-small">
+          <p className="text-sm">
             {t(
               'All fees are paid by price takers and are a % of the trade notional value. Fees are not paid during auction uncrossing.'
             )}
@@ -296,7 +293,6 @@ export const Info = ({ market }: InfoProps) => {
             <>
               <Button
                 className="text-ui pl-0"
-                variant="inline-link"
                 onClick={() => setOpenLiquidityView(true)}
               >
                 {t('View liquidity provision table')}
@@ -304,7 +300,7 @@ export const Info = ({ market }: InfoProps) => {
               <Dialog
                 open={openLiquidityView}
                 onChange={() => setOpenLiquidityView(!openLiquidityView)}
-                size="large"
+                size="medium"
               >
                 <LiquidityContainer marketId={market.id}></LiquidityContainer>
               </Dialog>
@@ -342,12 +338,12 @@ export const Info = ({ market }: InfoProps) => {
   ];
 
   return (
-    <div className="p-16 flex flex-col gap-32">
-      <div className="flex flex-col gap-12">
+    <div className="p-4">
+      <div className="mb-4">
         <p className={headerClassName}>{t('Market data')}</p>
         <Accordion panels={marketDataPanels} />
       </div>
-      <div className="flex flex-col gap-12">
+      <div>
         <p className={headerClassName}>{t('Market specification')}</p>
         <Accordion panels={marketSpecPanels} />
       </div>

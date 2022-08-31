@@ -28,11 +28,19 @@ describe('positions', () => {
       .each(($openVolume) => {
         cy.wrap($openVolume).invoke('text').should('not.be.empty');
       });
-    // includes average entry price, mark price & realised PNL
+    // includes average entry price, mark price, realised PNL & leverage
     cy.getByTestId('tab-positions')
       .getByTestId('flash-cell')
       .each(($prices) => {
         cy.wrap($prices).invoke('text').should('not.be.empty');
       });
+
+    cy.get('[col-id="averageEntryPrice"]')
+      .should('contain.text', '11.29935') // entry price
+      .should('contain.text', '9.21954'); // liquidation price
+
+    cy.get('[col-id="capitalUtilisation"]') // margin allocated
+      .should('contain.text', '0.00%')
+      .should('contain.text', '1,000.01000');
   });
 });

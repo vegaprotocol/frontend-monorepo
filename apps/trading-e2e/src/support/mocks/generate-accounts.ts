@@ -27,7 +27,11 @@ export const generateAccounts = (
           __typename: 'Account',
           type: AccountType.ACCOUNT_TYPE_GENERAL,
           balance: '100000000',
-          market: null,
+          market: {
+            id: '0604e8c918655474525e1a95367902266ade70d318c2c908f0cca6e3d11dcb13',
+            name: 'AAVEDAI Monthly (30 Jun 2022)',
+            __typename: 'Market',
+          },
           asset: {
             __typename: 'Asset',
             id: 'asset-id-2',

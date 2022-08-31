@@ -21,12 +21,12 @@ describe('market info is displayed', () => {
 
   it('current fees displayed', () => {
     cy.getByTestId(marketTitle).contains('Current fees').click();
-
     validateMarketDataRow(0, 'Maker Fee', '0.02%');
     validateMarketDataRow(1, 'Infrastructure Fee', '0.05%');
     validateMarketDataRow(2, 'Liquidity Fee', '1.00%');
     validateMarketDataRow(3, 'Total Fees', '1.04%');
   });
+
   it('market price', () => {
     cy.getByTestId(marketTitle).contains('Market price').click();
     validateMarketDataRow(0, 'Mark Price', '57.49');

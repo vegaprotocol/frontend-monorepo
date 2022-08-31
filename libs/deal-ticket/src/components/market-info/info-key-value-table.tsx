@@ -41,7 +41,6 @@ const Row = ({
       <KeyValueTableRow
         key={field}
         inline={isPrimitive}
-        muted={true}
         noBorder={true}
         dtClassName={className}
         ddClassName={className}
@@ -83,7 +82,7 @@ export const MarketInfoTable = ({
 }: MarketInfoTableProps) => {
   return (
     <>
-      <KeyValueTable muted={true}>
+      <KeyValueTable>
         {Object.entries(omit(data, ...omits) || []).map(([key, value]) => (
           <Row
             key={key}

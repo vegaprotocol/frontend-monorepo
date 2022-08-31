@@ -25,9 +25,9 @@ export const AddLockedTokenAddress = () => {
               image={vegaVesting}
             />
           </p>
-          <div className="flex my-12 gap-12">
-            <hr className="flex-1 mt-8" />
-            {t('Or')} <hr className="flex-1 mt-8" />
+          <div className="flex my-2 gap-4">
+            <hr className="flex-1 mt-4" />
+            {t('Or')} <hr className="flex-1 mt-4" />
           </div>
         </>
       ) : null}

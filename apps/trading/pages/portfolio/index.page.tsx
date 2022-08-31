@@ -3,36 +3,28 @@ import { t } from '@vegaprotocol/react-helpers';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { OrderListContainer } from '@vegaprotocol/orders';
 import { AccountsContainer } from '@vegaprotocol/accounts';
-import { Tab, Tabs } from '@vegaprotocol/ui-toolkit';
+import { ResizableGridPanel, Tab, Tabs } from '@vegaprotocol/ui-toolkit';
 import { WithdrawalsContainer } from './withdrawals-container';
 import { FillsContainer } from '@vegaprotocol/fills';
-import classNames from 'classnames';
 import type { ReactNode } from 'react';
 import { VegaWalletContainer } from '../../components/vega-wallet-container';
 import { DepositsContainer } from './deposits-container';
-import { ResizablePanel } from '@vegaprotocol/ui-toolkit';
-import { Allotment, LayoutPriority } from 'allotment';
+import { ResizableGrid } from '@vegaprotocol/ui-toolkit';
+import { LayoutPriority } from 'allotment';
 
 const Portfolio = () => {
-  const wrapperClasses = classNames(
-    'h-full max-h-full',
-    'flex flex-col',
-    'bg-black-10 dark:bg-black-70',
-    'text-ui'
-  );
-  const tabContentClassName = 'h-full grid gap-4 grid-rows-[min-content_1fr]';
+  const wrapperClasses = 'h-full max-h-full flex flex-col';
+  const tabContentClassName = 'h-full grid grid-rows-[min-content_1fr]';
   return (
     <div className={wrapperClasses}>
-      <ResizablePanel vertical={true}>
-        <Allotment.Pane minSize={75}>
-          <PortfolioGridChild className="h-full">
+      <ResizableGrid vertical={true}>
+        <ResizableGridPanel minSize={75}>
+          <PortfolioGridChild>
             <Tabs>
               <Tab id="positions" name={t('Positions')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-h4 text-black dark:text-white p-8">
-                      {t('Positions')}
-                    </h4>
+                    <h4 className="text-xl p-4">{t('Positions')}</h4>
                     <div>
                       <PositionsContainer />
                     </div>
@@ -42,9 +34,7 @@ const Portfolio = () => {
               <Tab id="orders" name={t('Orders')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-h4 text-black dark:text-white p-8">
-                      {t('Orders')}
-                    </h4>
+                    <h4 className="text-xl p-4">{t('Orders')}</h4>
                     <div>
                       <OrderListContainer />
                     </div>
@@ -54,9 +44,7 @@ const Portfolio = () => {
               <Tab id="fills" name={t('Fills')}>
                 <VegaWalletContainer>
                   <div className={tabContentClassName}>
-                    <h4 className="text-h4 text-black dark:text-white p-8">
-                      {t('Fills')}
-                    </h4>
+                    <h4 className="text-xl p-4">{t('Fills')}</h4>
                     <div>
                       <FillsContainer />
                     </div>
@@ -65,13 +53,13 @@ const Portfolio = () => {
               </Tab>
             </Tabs>
           </PortfolioGridChild>
-        </Allotment.Pane>
-        <Allotment.Pane
+        </ResizableGridPanel>
+        <ResizableGridPanel
           priority={LayoutPriority.Low}
           preferredSize={300}
           minSize={50}
         >
-          <PortfolioGridChild className="h-full mt-4">
+          <PortfolioGridChild>
             <Tabs>
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
@@ -90,8 +78,8 @@ const Portfolio = () => {
               </Tab>
             </Tabs>
           </PortfolioGridChild>
-        </Allotment.Pane>
-      </ResizablePanel>
+        </ResizableGridPanel>
+      </ResizableGrid>
     </div>
   );
 };
@@ -104,13 +92,12 @@ export default Portfolio;
 
 interface PortfolioGridChildProps {
   children: ReactNode;
-  className?: string;
 }
 
-const PortfolioGridChild = ({
-  children,
-  className,
-}: PortfolioGridChildProps) => {
-  const gridChildClasses = classNames('bg-white dark:bg-black', className);
-  return <section className={gridChildClasses}>{children}</section>;
+const PortfolioGridChild = ({ children }: PortfolioGridChildProps) => {
+  return (
+    <section className="bg-white dark:bg-black w-full h-full">
+      {children}
+    </section>
+  );
 };

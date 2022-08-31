@@ -16,6 +16,7 @@ interface MenuState {
 export interface LocalValues {
   vegaWalletDialog: VegaWalletDialogState;
   menu: MenuState;
+  theme: 'light' | 'dark';
   toggleTheme: () => void;
 }
 

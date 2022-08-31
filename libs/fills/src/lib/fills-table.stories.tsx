@@ -187,7 +187,9 @@ const PaginationManager = ({ pagination }: PaginationManagerProps) => {
 
   return (
     <>
-      <Button onClick={onClick}>Add row on top</Button>
+      <Button onClick={onClick} size="sm">
+        Add row on top
+      </Button>
       <AsyncRenderer loading={loading} error={error} data={data}>
         <FillsTable
           rowModelType="infinite"
@@ -321,7 +323,9 @@ const InfiniteScrollManager = () => {
 
   return (
     <>
-      <Button onClick={onClick}>Add row on top</Button>
+      <Button onClick={onClick} size="sm">
+        Add row on top
+      </Button>
       <AsyncRenderer loading={loading} error={error} data={data}>
         <FillsTable
           ref={gridRef}

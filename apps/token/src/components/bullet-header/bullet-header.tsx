@@ -10,11 +10,11 @@ export const BulletHeader = ({ tag, children, style }: BulletHeaderProps) => {
   return React.createElement(
     tag,
     {
-      className: 'mt-24 py-8 border-t border-white uppercase text-white',
+      className: 'mb-2 uppercase',
       style,
     },
     <>
-      <span className="inline-block w-[12px] h-[12px] mr-12 bg-white" />
+      <span className="inline-block w-4 h-4 mr-4 bg-white" />
       {children}
     </>
   );

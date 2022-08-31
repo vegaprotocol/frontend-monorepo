@@ -24,8 +24,8 @@ const Withdraw = () => {
   return (
     <VegaWalletContainer>
       <Web3Container>
-        <div className="max-w-[420px] p-24 mx-auto">
-          <h1 className="text-h3 mb-12">{t('Withdraw')}</h1>
+        <div className="max-w-[420px] p-8 mx-auto">
+          <h1 className="text-2xl mb-4">{t('Withdraw')}</h1>
           <WithdrawPageContainer assetId={assetId} />
         </div>
       </Web3Container>

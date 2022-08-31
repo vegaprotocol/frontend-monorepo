@@ -71,7 +71,7 @@ export const formatNumberPercentage = (
 ) => {
   const decimalPlaces =
     typeof decimals === 'undefined'
-      ? Math.max(new BigNumber(value).dp(), 2)
+      ? Math.max(new BigNumber(value).dp() || 0, 2)
       : decimals;
   return `${formatNumber(new BigNumber(value), decimalPlaces)}%`;
 };

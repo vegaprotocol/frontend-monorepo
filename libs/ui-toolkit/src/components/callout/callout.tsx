@@ -45,7 +45,7 @@ const getIconElement = ({
   CalloutProps,
   'icon' | 'iconName' | 'iconDescription' | 'isLoading'
 >) => {
-  const wrapperClassName = 'mt-4';
+  const wrapperClassName = 'mt-1';
   if (isLoading) {
     return (
       <div className={wrapperClassName}>
@@ -58,7 +58,7 @@ const getIconElement = ({
       <Icon
         name={iconName}
         className={classNames(wrapperClassName, 'fill-current')}
-        size={20}
+        size={6}
         aria-label={iconDescription}
         aria-hidden={!iconDescription}
       />
@@ -88,10 +88,8 @@ export function Callout({
   });
 
   const className = classNames(
-    'flex gap-20',
-    'text-body-large',
-    'dark:text-white',
-    'p-16',
+    'flex gap-4',
+    'px-6 py-4',
     getIntentBorder(intent)
   );
   const TitleTag: keyof JSX.IntrinsicElements = headingLevel
@@ -100,7 +98,7 @@ export function Callout({
   const body = (
     <>
       {title && (
-        <TitleTag className="text-h5 mt-0 mb-8 last:mb-0">{title}</TitleTag>
+        <TitleTag className="text-xl mt-0 mb-2 last:mb-0">{title}</TitleTag>
       )}
       {children}
     </>

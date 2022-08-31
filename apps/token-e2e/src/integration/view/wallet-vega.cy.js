@@ -1,3 +1,5 @@
+import { truncateByChars } from '@vegaprotocol/react-helpers';
+
 const walletContainer = '[data-testid="vega-wallet"]';
 const walletHeader = '[data-testid="wallet-header"] h1';
 const connectButton = '[data-testid="connect-vega"]';
@@ -19,9 +21,6 @@ const vegaUnstaked = '[data-testid="vega-wallet-balance-unstaked"] .text-right';
 const governanceBtn = '[href="/governance"]';
 const stakingBtn = '[href="/staking"]';
 const manageLink = '[data-testid="manage-vega-wallet"]';
-const dialogWalletName = `[data-testid="key-${Cypress.env(
-  'vegaWalletPublicKey'
-)}"] h2`;
 const dialogVegaKey = '[data-testid="vega-public-key-full"]';
 const dialogDisconnectBtn = '[data-testid="disconnect"]';
 const copyPublicKeyBtn = '[data-testid="copy-vega-public-key"]';
@@ -239,19 +238,16 @@ context('Vega Wallet - verify elements on widget', function () {
       });
     });
 
-    it('should have wallet name visible', function () {
-      cy.get(dialog).within(() => {
-        cy.get(dialogWalletName)
-          .should('be.visible')
-          .and('have.text', `${Cypress.env('vegaWalletName')} key 1`);
-      });
-    });
-
-    it('should have vega wallet public key visible', function () {
+    it('should have vega wallet public key and name visible', function () {
       cy.get(dialog).within(() => {
         cy.get(dialogVegaKey)
           .should('be.visible')
-          .and('have.text', `${Cypress.env('vegaWalletPublicKey')}`);
+          .and(
+            'have.text',
+            `${Cypress.env('vegaWalletName')} key 1 ${truncateByChars(
+              Cypress.env('vegaWalletPublicKey')
+            )}`
+          );
       });
     });
 

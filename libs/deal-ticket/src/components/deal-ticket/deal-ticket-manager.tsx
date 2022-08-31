@@ -106,11 +106,11 @@ export const getOrderDialogIcon = (
   switch (status) {
     case OrderStatus.STATUS_PARKED:
     case OrderStatus.STATUS_EXPIRED:
-      return <Icon name="warning-sign" size={20} />;
+      return <Icon name="warning-sign" />;
     case OrderStatus.STATUS_REJECTED:
     case OrderStatus.STATUS_STOPPED:
     case OrderStatus.STATUS_CANCELLED:
-      return <Icon name="error" size={20} />;
+      return <Icon name="error" />;
     default:
       return;
   }

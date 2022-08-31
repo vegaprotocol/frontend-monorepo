@@ -8,57 +8,29 @@ describe('Checkbox', () => {
   });
 
   it('should render a checked checkbox if specified in state', () => {
-    render(<Checkbox label="checked" state={'checked'} />);
-    expect(screen.getByTestId('checkbox-checked')).toBeInTheDocument();
+    render(<Checkbox label="label" checked={true} />);
+    expect(screen.getByRole('img')).toBeInTheDocument();
   });
 
   it('should render an unchecked checkbox if specified in state', () => {
-    render(<Checkbox label="unchecked" state={'unchecked'} />);
-    expect(screen.getByTestId('checkbox-unchecked')).toBeInTheDocument();
+    render(<Checkbox label="unchecked" checked={false} />);
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
   });
 
   it('should render an indeterminate checkbox if specified in state', () => {
-    render(<Checkbox label="indeterminate" state={'indeterminate'} />);
-    expect(screen.getByTestId('checkbox-indeterminate')).toBeInTheDocument();
-  });
-
-  it('should render a checkbox in error if specified', () => {
-    render(<Checkbox label="error" error={true} />);
-    expect(screen.getByTestId('checkbox-error')).toBeInTheDocument();
-  });
-
-  it('should render a checked checkbox in error if specified', () => {
-    render(<Checkbox label="error-checked" state={'checked'} error={true} />);
-    expect(screen.getByTestId('checkbox-error-checked')).toBeInTheDocument();
-  });
-
-  it('should render an unchecked checkbox in error if specified', () => {
-    render(
-      <Checkbox label="error-unchecked" state={'unchecked'} error={true} />
-    );
-    expect(screen.getByTestId('checkbox-error-unchecked')).toBeInTheDocument();
-  });
-
-  it('should render an indeterminate checkbox in error if specified', () => {
-    render(
-      <Checkbox
-        label="error-indeterminate"
-        state={'indeterminate'}
-        error={true}
-      />
-    );
-    expect(
-      screen.getByTestId('checkbox-error-indeterminate')
-    ).toBeInTheDocument();
+    render(<Checkbox label="indeterminate" checked="indeterminate" />);
+    expect(screen.getByTestId('indeterminate-icon')).toBeInTheDocument();
   });
 
   it('fires callback on change if provided', () => {
     const callback = jest.fn();
 
-    render(<Checkbox label="onchange" onChange={callback} />);
+    render(
+      <Checkbox name="test" label="onchange" onCheckedChange={callback} />
+    );
 
     const checkbox = screen.getByText('onchange');
     fireEvent.click(checkbox);
-    expect(callback.mock.calls.length).toEqual(1);
+    expect(callback).toHaveBeenCalled();
   });
 });
