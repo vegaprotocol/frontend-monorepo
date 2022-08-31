@@ -8,6 +8,7 @@ module.exports = {
     ...theme.colors,
     ...colors,
     deemphasise: '#8A9BA8',
+    amber: '#FFBF00',
     offBlack: '#252525',
     midGrey: '#828282',
     borderGrey: '#4f4f4f',
