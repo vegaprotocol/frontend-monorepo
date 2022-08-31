@@ -1,4 +1,5 @@
 import * as PopoverPrimitive from '@radix-ui/react-popover';
+import { Icon } from '../icon';
 
 export interface PopoverProps extends PopoverPrimitive.PopoverProps {
   trigger: React.ReactNode | string;
@@ -26,13 +27,10 @@ export const Popover = ({
           sideOffset={10}
         >
           <PopoverPrimitive.Close
-            className="p-2 absolute top-8 right-8 leading-[0] focus:outline-none focus-visible:outline-none focus-visible:border focus-visible:border-vega-yellow focus-visible:top-[7px] focus-visible:right-[7px] text-black dark:text-white"
+            className="px-4 py-2 absolute top-0 right-0"
             data-testid="dialog-close"
           >
-            <Icon
-              name="cross"
-              className="focus:outline-none focus-visible:outline-none"
-            />
+            <Icon name="cross" />
           </PopoverPrimitive.Close>
           {children}
         </PopoverPrimitive.Content>
