@@ -29,6 +29,7 @@ Cypress.Commands.add('wait_for_begining_of_epoch', () => {
 
 Cypress.Commands.add('staking_validator_page_add_stake', (stake) => {
   cy.highlight(`Adding a stake of ${stake}`);
+  cy.wait_for_spinner();
   cy.get(addStakeRadioButton, epochTimeout).click({ force: true });
   cy.get(tokenAmountInputBox).type(stake);
   cy.wait_for_begining_of_epoch();
@@ -51,6 +52,7 @@ Cypress.Commands.add('staking_validator_page_remove_stake', (stake) => {
     .and('be.visible')
     .click();
 });
+
 Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
   let approve = options && options.approve ? options.approve : false;
   let type = options && options.type ? options.type : 'wallet';
@@ -76,9 +78,13 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
   }
   cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
   cy.contains(
-    'can now participate in governance and nominate a validator',
-    txTimeout
+    `Associating with Vega key. Waiting for ${Cypress.env(
+      'blockConfirmations'
+    )} more confirmations..`,
+    epochTimeout
   ).should('be.visible');
+  cy.contains('can now participate in governance and nominate a validator', txTimeout)
+    .should('be.visible');
 });
 
 Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
