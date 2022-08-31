@@ -145,11 +145,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('contain', 2.0, txTimeout)
         .and('contain', partValidatorId);
 
-      cy.get(stakeNextEpochValue, epochTimeout) 
+      cy.get(stakeNextEpochValue, epochTimeout)
         .contains(2.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(stakeThisEpochValue, epochTimeout) 
+      cy.get(stakeThisEpochValue, epochTimeout)
         .contains(2.0, epochTimeout)
         .should('be.visible');
 
@@ -177,11 +177,17 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains('4.0', txTimeout)
         .should('be.visible');
 
-      cy.get(ethWalletAssociatedBalances, txTimeout)
-        .should('contain', 3.0, txTimeout);
+      cy.get(ethWalletAssociatedBalances, txTimeout).should(
+        'contain',
+        3.0,
+        txTimeout
+      );
 
-      cy.get(ethWalletAssociatedBalances, txTimeout)
-        .should('contain', 4.0, txTimeout);
+      cy.get(ethWalletAssociatedBalances, txTimeout).should(
+        'contain',
+        4.0,
+        txTimeout
+      );
 
       cy.get('button').contains('Select a validator to nominate').click();
 
@@ -199,11 +205,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .should('contain', 6.0, txTimeout)
         .and('contain', partValidatorId);
 
-      cy.get(stakeNextEpochValue, epochTimeout) 
+      cy.get(stakeNextEpochValue, epochTimeout)
         .contains(6.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(stakeThisEpochValue, epochTimeout) 
+      cy.get(stakeThisEpochValue, epochTimeout)
         .contains(6.0, epochTimeout)
         .should('be.visible');
 
@@ -415,8 +421,10 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         .contains(0.0, epochTimeout)
         .should('be.visible');
 
-      cy.get(vegaWalletStakedBalances, txTimeout)
-        .should('not.exist', txTimeout);
+      cy.get(vegaWalletStakedBalances, txTimeout).should(
+        'not.exist',
+        txTimeout
+      );
 
       cy.navigate_to('staking');
 
@@ -559,7 +567,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Disassociating all vesting contract tokens max - removes all staked tokens', function () {
-      cy.staking_page_associate_tokens('3', { type : 'contract'});
+      cy.staking_page_associate_tokens('3', { type: 'contract' });
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -670,7 +678,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.click_on_validator_from_list(0);
 
       cy.staking_validator_page_add_stake('3');
-      
+
       cy.get(vegaWalletStakedBalances, txTimeout).should(
         'contain',
         3.0,
@@ -693,7 +701,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Associating vesting contract tokens - when some already staked - auto stakes tokens to staked validator', function () {
-      cy.staking_page_associate_tokens('3', { type: 'contract'});
+      cy.staking_page_associate_tokens('3', { type: 'contract' });
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -705,14 +713,14 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.click_on_validator_from_list(0);
 
       cy.staking_validator_page_add_stake('3');
-      
+
       cy.get(vegaWalletStakedBalances, txTimeout).should(
         'contain',
         3.0,
         txTimeout
       );
 
-      cy.staking_page_associate_tokens('4', { type: 'contract'});
+      cy.staking_page_associate_tokens('4', { type: 'contract' });
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -728,7 +736,7 @@ context('Staking Tab - with eth and vega wallets connected', function () {
     });
 
     it('Associating vesting contract tokens - when wallet tokens already staked - auto stakes tokens to staked validator', function () {
-      cy.staking_page_associate_tokens('3', { type: 'wallet'});
+      cy.staking_page_associate_tokens('3', { type: 'wallet' });
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -740,14 +748,14 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       cy.click_on_validator_from_list(0);
 
       cy.staking_validator_page_add_stake('3');
-      
+
       cy.get(vegaWalletStakedBalances, txTimeout).should(
         'contain',
         3.0,
         txTimeout
       );
 
-      cy.staking_page_associate_tokens('4', { type: 'contract'});
+      cy.staking_page_associate_tokens('4', { type: 'contract' });
 
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
@@ -783,11 +791,11 @@ context('Staking Tab - with eth and vega wallets connected', function () {
       );
 
       cy.navigate_to('staking');
-            
+
       cy.click_on_validator_from_list(1);
 
       cy.staking_validator_page_add_stake('4');
-      
+
       cy.get(vegaWalletUnstakedBalance, txTimeout).should(
         'contain',
         0.0,
@@ -815,7 +823,6 @@ context('Staking Tab - with eth and vega wallets connected', function () {
         0.0,
         txTimeout
       );
-
     });
 
     it('Selecting use maximum where tokens are already staked - suggests the unstaked token amount', function () {
