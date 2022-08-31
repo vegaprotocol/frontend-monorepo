@@ -10,7 +10,6 @@ import {
   Side,
 } from '@vegaprotocol/types';
 import type { VegaTxState } from '@vegaprotocol/wallet';
-import startCase from 'lodash/startCase';
 
 export interface OrderFeedbackProps {
   transaction: VegaTxState;
