@@ -191,7 +191,7 @@ const getVerifyDialogProps = (status: ApprovalStatus) => {
   if (status === ApprovalStatus.Error) {
     return {
       intent: Intent.Danger,
-      icon: <Icon name="warning-sign" size={20} />,
+      icon: <Icon name="warning-sign" />,
     };
   }
 
@@ -200,7 +200,7 @@ const getVerifyDialogProps = (status: ApprovalStatus) => {
   }
 
   if (status === ApprovalStatus.Delayed) {
-    return { intent: Intent.Warning, icon: <Icon name="time" size={20} /> };
+    return { intent: Intent.Warning, icon: <Icon name="time" /> };
   }
 
   return { intent: Intent.None };

@@ -4,7 +4,11 @@ import {
   t,
   truncateByChars,
 } from '@vegaprotocol/react-helpers';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import {
+  Button,
+  KeyValueTable,
+  KeyValueTableRow,
+} from '@vegaprotocol/ui-toolkit';
 import type { VegaTxState } from '@vegaprotocol/wallet';
 import { formatDistanceToNow } from 'date-fns';
 import type { WithdrawalFields } from './__generated__/WithdrawalFields';
@@ -25,7 +29,7 @@ export const WithdrawalFeedback = ({
     availableTimestamp === null || Date.now() > availableTimestamp;
   return (
     <div>
-      <p className="mb-8">
+      <p className="mb-2">
         Your funds have been unlocked for withdrawal -{' '}
         <a
           className="underline"
@@ -37,38 +41,36 @@ export const WithdrawalFeedback = ({
           {t('View in block explorer')}
         </a>
       </p>
-      <div className="flex gap-12 mb-12">
-        {withdrawal && (
-          <>
-            <div>
-              <p className="font-bold">Asset</p>
-              <p>{withdrawal.asset.symbol}</p>
-            </div>
-            <div>
-              <p className="font-bold">Amount</p>
-              <p>
-                {addDecimalsFormatNumber(
-                  withdrawal.amount,
-                  withdrawal.asset.decimals
-                )}
-              </p>
-            </div>
-            {withdrawal.details && (
-              <div>
-                <p className="font-bold">Recipient</p>
-                <a
-                  target="_blank"
-                  href={`${VEGA_EXPLORER_URL}/address/${withdrawal.details.receiverAddress}`}
-                  rel="noreferrer"
-                  className="underline"
-                >
-                  {truncateByChars(withdrawal.details.receiverAddress)}
-                </a>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+      {withdrawal && (
+        <KeyValueTable>
+          <KeyValueTableRow>
+            <span>Asset</span>
+            <span>{withdrawal.asset.symbol}</span>
+          </KeyValueTableRow>
+          <KeyValueTableRow>
+            <span>Amount</span>
+            <span>
+              {addDecimalsFormatNumber(
+                withdrawal.amount,
+                withdrawal.asset.decimals
+              )}
+            </span>
+          </KeyValueTableRow>
+          {withdrawal.details && (
+            <KeyValueTableRow>
+              <span>Recipient</span>
+              <a
+                target="_blank"
+                href={`${VEGA_EXPLORER_URL}/address/${withdrawal.details.receiverAddress}`}
+                rel="noreferrer"
+                className="underline"
+              >
+                {truncateByChars(withdrawal.details.receiverAddress)}
+              </a>
+            </KeyValueTableRow>
+          )}
+        </KeyValueTable>
+      )}
       {isAvailable ? (
         <Button
           disabled={withdrawal === null ? true : false}

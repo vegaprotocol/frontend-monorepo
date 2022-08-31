@@ -82,7 +82,7 @@ export const WithdrawForm = ({
 
   return (
     <>
-      <div className="mb-4">
+      <div className="mb-4 text-sm">
         <p>{t('There are two steps required to make a withdrawal')}</p>
         <ol className="list-disc pl-4">
           <li>{t('Step 1 - Release funds from Vega')}</li>
@@ -178,7 +178,7 @@ export const WithdrawForm = ({
             </UseButton>
           )}
         </FormGroup>
-        <Button data-testid="submit-withdrawal" type="submit">
+        <Button data-testid="submit-withdrawal" type="submit" variant="primary">
           Release funds
         </Button>
       </form>

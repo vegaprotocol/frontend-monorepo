@@ -53,7 +53,7 @@ export const TransactionContent = ({
   requiredConfirmations?: number;
 }) => {
   if (status === EthTxStatus.Error) {
-    const classNames = 'break-all text-black dark:text-white';
+    const classNames = 'break-all';
     if (isEthereumError(error)) {
       return (
         <p className={classNames}>
@@ -78,7 +78,7 @@ export const TransactionContent = ({
   }
 
   return (
-    <>
+    <div className="text-sm">
       <ConfirmRow status={status} />
       <TxRow
         status={status}
@@ -88,7 +88,7 @@ export const TransactionContent = ({
         highlightComplete={false}
       />
       <ConfirmationEventRow status={status} />
-    </>
+    </div>
   );
 };
 
@@ -111,7 +111,11 @@ export const getWrapperProps = (title: string, status: EthTxStatus) => {
     },
     [EthTxStatus.Pending]: {
       title: t(`${title} pending`),
-      icon: <Loader size="small" />,
+      icon: (
+        <span className="mt-1">
+          <Loader size="small" />
+        </span>
+      ),
       intent: Intent.None,
     },
     [EthTxStatus.Complete]: {
