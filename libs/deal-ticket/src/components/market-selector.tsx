@@ -12,7 +12,6 @@ import classNames from 'classnames';
 import type { DealTicketQuery_market } from './__generated__';
 import {
   ButtonLink,
-  Dialog,
   Icon,
   Input,
   Loader,

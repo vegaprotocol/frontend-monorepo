@@ -178,6 +178,7 @@ export const DealTicketSize = ({
                 <button
                   className="no-underline hover:underline text-blue"
                   onClick={toggleInput}
+                  type="button"
                 >
                   {value}
                 </button>
