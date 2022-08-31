@@ -3,17 +3,17 @@ import { useTranslation } from 'react-i18next';
 import { Heading } from '../../../../components/heading';
 import { ProposalsListItem } from '../proposals-list-item';
 import { ProposalsListFilter } from '../proposals-list-filter';
-import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
+import type { Proposals_proposalsConnection_edges_node } from '../../proposals/__generated__/Proposals';
 
 interface ProposalsListProps {
-  proposals: ProposalNode[];
+  proposals: Proposals_proposalsConnection_edges_node[];
 }
 
 export const RejectedProposalsList = ({ proposals }: ProposalsListProps) => {
   const { t } = useTranslation();
   const [filterString, setFilterString] = useState('');
 
-  const filterPredicate = (p: ProposalNode) =>
+  const filterPredicate = (p: Proposals_proposalsConnection_edges_node) =>
     p.id?.includes(filterString) ||
     p.party?.id?.toString().includes(filterString);
 

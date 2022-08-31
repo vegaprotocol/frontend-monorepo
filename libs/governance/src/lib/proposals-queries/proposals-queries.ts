@@ -1,136 +1,58 @@
-import { gql, useQuery } from '@apollo/client';
-import type { Proposal, ProposalVariables } from './__generated__/Proposal';
-import type {
-  ProposalsConnection,
-  ProposalsConnection_proposalsConnection_edges_node as ProposalNode,
-} from './__generated__/ProposalsConnection';
+import { ProposalState } from '@vegaprotocol/types';
+import { compact, filter, flow, orderBy } from 'lodash';
 
-const PROPOSALS_FRAGMENT = gql`
-  fragment ProposalFields on Proposal {
-    id
-    rationale {
-      title
-      description
-    }
-    reference
-    state
-    datetime
-    rejectionReason
-    party {
-      id
-    }
-    errorDetails
-    terms {
-      closingDatetime
-      enactmentDatetime
-      change {
-        ... on NewMarket {
-          instrument {
-            name
-            code
-            futureProduct {
-              settlementAsset {
-                symbol
-              }
-            }
-          }
-        }
-        ... on UpdateMarket {
-          marketId
-        }
-        ... on NewAsset {
-          __typename
-          name
-          symbol
-          source {
-            ... on BuiltinAsset {
-              maxFaucetAmountMint
-            }
-            ... on ERC20 {
-              contractAddress
-            }
-          }
-        }
-        ... on UpdateNetworkParameter {
-          networkParameter {
-            key
-            value
-          }
-        }
-      }
-    }
-    votes {
-      yes {
-        totalTokens
-        totalNumber
-        votes {
-          value
-          party {
-            id
-            stakingSummary {
-              currentStakeAvailable
-            }
-          }
-          datetime
-        }
-      }
-      no {
-        totalTokens
-        totalNumber
-        votes {
-          value
-          party {
-            id
-            stakingSummary {
-              currentStakeAvailable
-            }
-          }
-          datetime
-        }
-      }
-    }
-  }
-`;
-
-export const PROPOSALS_QUERY = gql`
-  ${PROPOSALS_FRAGMENT}
-  query ProposalsConnection {
-    proposalsConnection {
-      edges {
-        node {
-          ...ProposalFields
-        }
-      }
-    }
-  }
-`;
-
-export const PROPOSAL_QUERY = gql`
-  ${PROPOSALS_FRAGMENT}
-  query Proposal($proposalId: ID!) {
-    proposal(id: $proposalId) {
-      ...ProposalFields
-    }
-  }
-`;
-
-export const useProposalsQuery = (withPolling = false) =>
-  useQuery<ProposalsConnection, never>(PROPOSALS_QUERY, {
-    ...(withPolling ? { pollInterval: 5000, fetchPolicy: 'network-only' } : {}),
-    errorPolicy: 'ignore', // this is to get around some backend issues and should be removed in future
-  });
-
-export const getProposals = (data?: ProposalsConnection) => {
-  const proposals = data?.proposalsConnection?.edges
-    ?.filter((e) => e?.node)
-    .map((e) => e?.node);
-  return proposals ? (proposals as ProposalNode[]) : [];
+type Proposal = {
+  __typename: 'Proposal';
+  id: string | null;
+  state: ProposalState;
+  terms: {
+    enactmentDatetime: string | null;
+    closingDatetime: string;
+  };
+};
+type ProposalEdge = {
+  node: Proposal;
+};
+type ProposalsConnection = {
+  proposalsConnection: {
+    edges: (ProposalEdge | null)[] | null;
+  };
 };
 
-export const useProposalQuery = (id?: string) =>
-  useQuery<Proposal, ProposalVariables>(PROPOSAL_QUERY, {
-    fetchPolicy: 'no-cache',
-    variables: { proposalId: id || '' },
-    skip: !id,
-    pollInterval: 5000,
-  });
+export const getProposals = (data?: ProposalsConnection) => {
+  const proposals = data?.proposalsConnection.edges
+    ?.filter((e) => e?.node)
+    .map((e) => e?.node);
+  return proposals ? (proposals as Proposal[]) : [];
+};
+
+const orderByDate = (arr: Proposal[]) =>
+  orderBy(
+    arr,
+    [
+      (p) => new Date(p.terms.enactmentDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
+      (p) => new Date(p.terms.closingDatetime).getTime(),
+      (p) => p.id,
+    ],
+    ['desc', 'desc', 'desc']
+  );
+
+export const getNotRejectedProposals = (data?: ProposalsConnection) => {
+  const proposals = getProposals(data);
+  return flow([
+    compact,
+    (arr: Proposal[]) =>
+      filter(arr, ({ state }) => state !== ProposalState.STATE_REJECTED),
+    orderByDate,
+  ])(proposals);
+};
+
+export const getRejectedProposals = (data?: ProposalsConnection) => {
+  const proposals = getProposals(data);
+  return flow([
+    compact,
+    (arr: Proposal[]) =>
+      filter(arr, ({ state }) => state === ProposalState.STATE_REJECTED),
+    orderByDate,
+  ])(proposals);
+};

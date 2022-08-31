@@ -1,38 +1,28 @@
 import { useTranslation } from 'react-i18next';
 import { Lozenge } from '@vegaprotocol/ui-toolkit';
 import type { ReactNode } from 'react';
-import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
+import { shorten } from '@vegaprotocol/react-helpers';
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 
-export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
+export const ProposalHeader = ({ proposal }: { proposal: ProposalFields }) => {
   const { t } = useTranslation();
   const { change } = proposal.terms;
 
-  let detailsTwo: ReactNode;
+  let details: ReactNode;
 
-  const headerMaxLength = 100;
-  const descriptionOneMaxLength = 60;
-  let header = proposal.rationale.title.trim();
+  let title = proposal.rationale.title.trim();
   let description = proposal.rationale.description.trim();
-  if (header.length === 0 && description.length > 0) {
-    header = description;
+  if (title.length === 0 && description.length > 0) {
+    title = description;
     description = '';
   }
-  const headerOverflow = header.length > headerMaxLength;
-  const descriptionOneOverflow =
-    description.length > headerMaxLength + descriptionOneMaxLength;
 
-  const headerText = `${header
-    .trim()
-    .substring(0, headerMaxLength - 1)
-    .trim()}${headerOverflow ? '…' : ''}`;
-  const detailsOne = `${description
-    .trim()
-    .substring(0, descriptionOneMaxLength - 1)
-    .trim()}${descriptionOneOverflow ? '…' : ''}`;
+  const titleContent = shorten(title, 100);
+  const descriptionContent = shorten(description, 60);
 
   switch (change.__typename) {
     case 'NewMarket': {
-      detailsTwo = (
+      details = (
         <>
           {t('Code')}: {change.instrument.code}.{' '}
           {change.instrument.futureProduct?.settlementAsset.symbol ? (
@@ -50,11 +40,11 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
       break;
     }
     case 'UpdateMarket': {
-      detailsTwo = `${t('Market change')}: ${change.marketId}`;
+      details = `${t('Market change')}: ${change.marketId}`;
       break;
     }
     case 'NewAsset': {
-      detailsTwo = (
+      details = (
         <>
           {t('Symbol')}: {change.symbol}.{' '}
           <Lozenge>
@@ -69,7 +59,7 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
       break;
     }
     case 'UpdateNetworkParameter': {
-      detailsTwo = (
+      details = (
         <>
           <Lozenge>{change.networkParameter.key}</Lozenge> {t('to')}{' '}
           <Lozenge>{change.networkParameter.value}</Lozenge>
@@ -78,7 +68,7 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
       break;
     }
     case 'NewFreeform': {
-      detailsTwo = `${proposal.id}`;
+      details = `${proposal.id}`;
 
       break;
     }
@@ -86,13 +76,26 @@ export const ProposalHeader = ({ proposal }: { proposal: ProposalNode }) => {
 
   return (
     <div className="text-ui text-white">
-      <header data-testid="proposal-header">
-        <h2 className="text-h5 font-semibold mb-4">
-          {headerText || t('Unknown proposal')}
+      <header data-testid="proposal-title">
+        <h2
+          {...(title && title.length > titleContent.length && { title: title })}
+          className="text-h5 font-semibold mb-4"
+        >
+          {titleContent || t('Unknown proposal')}
         </h2>
       </header>
-      {detailsOne && <div data-testid="proposal-details-one">{detailsOne}</div>}
-      {detailsTwo && <div data-testid="proposal-details-two">{detailsTwo}</div>}
+      {descriptionContent && (
+        <div
+          className="mb-4"
+          {...(description.length > descriptionContent.length && {
+            title: description,
+          })}
+          data-testid="proposal-description"
+        >
+          {descriptionContent}
+        </div>
+      )}
+      {details && <div data-testid="proposal-details">{details}</div>}
     </div>
   );
 };

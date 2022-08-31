@@ -1,43 +1,36 @@
-import { getProposals, useProposalsQuery } from '@vegaprotocol/governance';
-import type { Proposal_proposal } from '@vegaprotocol/governance';
-import { ProposalState } from '@vegaprotocol/types';
+import { gql, useQuery } from '@apollo/client';
+import { getNotRejectedProposals } from '@vegaprotocol/governance';
 import { Callout, Intent, Splash } from '@vegaprotocol/ui-toolkit';
-import compact from 'lodash/compact';
-import filter from 'lodash/filter';
-import flow from 'lodash/flow';
-import orderBy from 'lodash/orderBy';
-import React from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { SplashLoader } from '../../../components/splash-loader';
 import { ProposalsList } from '../components/proposals-list';
+import { PROPOSAL_FRAGMENT } from '../proposal-fragment';
+import type { Proposals } from './__generated__/Proposals';
+
+export const PROPOSALS_QUERY = gql`
+  ${PROPOSAL_FRAGMENT}
+  query Proposals {
+    proposalsConnection {
+      edges {
+        node {
+          ...ProposalFields
+        }
+      }
+    }
+  }
+`;
 
 export const ProposalsContainer = () => {
   const { t } = useTranslation();
-  const { data, loading, error } = useProposalsQuery(true);
+  const { data, loading, error } = useQuery<Proposals>(PROPOSALS_QUERY, {
+    pollInterval: 5000,
+    fetchPolicy: 'network-only',
+    errorPolicy: 'ignore',
+  });
 
-  const proposals = React.useMemo(() => {
-    const proposalsData = getProposals(data);
-    if (!proposalsData.length) {
-      return [];
-    }
-
-    return flow([
-      compact,
-      (arr: Proposal_proposal[]) =>
-        filter(arr, ({ state }) => state !== ProposalState.STATE_REJECTED),
-      (arr: Proposal_proposal[]) =>
-        orderBy(
-          arr,
-          [
-            (p) => new Date(p.terms.enactmentDatetime || 0).getTime(), // has to be defaulted to 0 because new Date(null).getTime() -> NaN which is first when ordered.
-            (p) => new Date(p.terms.closingDatetime).getTime(),
-            (p) => p.id,
-          ],
-          ['desc', 'desc', 'desc']
-        ),
-    ])(proposalsData);
-  }, [data]);
+  const proposals = useMemo(() => getNotRejectedProposals(data), [data]);
 
   if (error) {
     return (

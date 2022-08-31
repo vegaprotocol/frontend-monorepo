@@ -8,7 +8,7 @@ import type {
   ProposalFields,
   ProposalFields_votes_no,
   ProposalFields_votes_yes,
-} from '@vegaprotocol/governance';
+} from '../__generated__/ProposalFields';
 
 export function generateProposal(
   override: DeepPartial<ProposalFields> = {}

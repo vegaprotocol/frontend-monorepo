@@ -6,11 +6,11 @@ import {
   formatNumberPercentage,
 } from '../../../../lib/format-number';
 import { useVoteInformation } from '../../hooks';
-import type { ProposalsConnection_proposalsConnection_edges_node as ProposalNode } from '@vegaprotocol/governance';
 import { useAppState } from '../../../../contexts/app-state/app-state-context';
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 interface ProposalVotesTableProps {
-  proposal: ProposalNode;
+  proposal: ProposalFields;
 }
 
 export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
