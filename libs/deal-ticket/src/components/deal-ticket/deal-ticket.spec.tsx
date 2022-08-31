@@ -84,8 +84,7 @@ describe('DealTicket', () => {
     // Assert last price is shown
     expect(screen.getByTestId('last-price')).toHaveTextContent(
       // eslint-disable-next-line
-      `~${addDecimal(market.depth.lastTrade!.price, market.decimalPlaces)} ${
-        market.tradableInstrument.instrument.product.quoteName
+      `~${addDecimal(market.depth.lastTrade!.price, market.decimalPlaces)} ${market.tradableInstrument.instrument.product.quoteName
       }`
     );
   });
@@ -113,9 +112,6 @@ describe('DealTicket', () => {
 
     // Switch to limit order
     fireEvent.click(screen.getByTestId('order-type-TYPE_LIMIT'));
-
-    // Assert price input shown with default value
-    expect(screen.getByTestId('order-price')).toHaveDisplayValue('');
 
     // Check all TIF options shown
     expect(screen.getByTestId('order-tif').children).toHaveLength(
