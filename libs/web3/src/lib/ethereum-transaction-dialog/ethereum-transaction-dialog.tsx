@@ -53,26 +53,19 @@ export const TransactionContent = ({
   requiredConfirmations?: number;
 }) => {
   if (status === EthTxStatus.Error) {
-    const classNames = 'break-all';
+    let errorMessage = '';
+
     if (isEthereumError(error)) {
-      return (
-        <p className={classNames}>
-          {t('Error')}: {error.reason}
-        </p>
-      );
+      errorMessage = error.reason;
     }
 
     if (error instanceof Error) {
-      return (
-        <p className={classNames}>
-          {t('Error')}: {error.message}
-        </p>
-      );
+      errorMessage = error.message;
     }
 
     return (
-      <p className={classNames}>
-        {t('Error')}: {t('Unknown error')}
+      <p className="break-all">
+        {t('Error')}: {errorMessage}
       </p>
     );
   }
