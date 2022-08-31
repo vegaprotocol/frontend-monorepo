@@ -409,13 +409,15 @@ const Row = ({
         <Tooltip description={tooltipMapping[field]} align="start">
           <div tabIndex={-1}>{startCase(t(field))}</div>
         </Tooltip>
-        {isNumber && !unformatted
-          ? decimalPlaces
-            ? addDecimalsFormatNumber(value, decimalPlaces)
-            : asPercentage
-            ? formatNumberPercentage(new BigNumber(value * 100))
-            : formatNumber(Number(value))
-          : value}
+        <span style={{ wordBreak: 'break-word' }}>
+          {isNumber && !unformatted
+            ? decimalPlaces
+              ? addDecimalsFormatNumber(value, decimalPlaces)
+              : asPercentage
+              ? formatNumberPercentage(new BigNumber(value * 100))
+              : formatNumber(Number(value))
+            : value}
+        </span>
       </KeyValueTableRow>
     );
   }
