@@ -34,7 +34,6 @@ export const SelectMarketLandingTable = ({
   data: MarketList_markets[] | undefined;
   onSelect: (id: string) => void;
 }) => {
-  const textDecorationClassName = `px-8 underline font-sans leading-9 font-bold tracking-tight decoration-solid text-ui light:hover:text-black/80 dark:hover:text-white/80 text-black dark:text-white`;
   return (
     <>
       <div
@@ -56,7 +55,7 @@ export const SelectMarketLandingTable = ({
           </tbody>
         </table>
       </div>
-      <Link className={textDecorationClassName} href="/markets">
+      <Link href="/markets">
         {'Or view full market list'}
       </Link>
     </>
