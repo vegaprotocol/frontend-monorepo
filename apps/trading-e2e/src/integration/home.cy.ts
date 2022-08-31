@@ -32,7 +32,7 @@ describe('home', () => {
       cy.get('main[data-testid="market"]', { timeout: 20000 }).should('exist'); // Wait for page to be rendered to before checking url
     });
 
-    it('redirects to a default market with the landing dialog open', () => {
+    it.skip('redirects to a default market with the landing dialog open', () => {
       // Overlay should be shown
       cy.getByTestId(selectMarketOverlay).should('exist');
       cy.contains('Select a market to get started').should('be.visible');
