@@ -14,11 +14,13 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
   const variables = useMemo(() => ({ marketId }), [marketId]);
   const { data } = useOrderBookData({
     variables,
-    resolution: 1,
-    throttleMilliseconds: 10000,
+    throttleMilliseconds: 1000,
   });
   const volPriceArr =
     data?.depth[order.side === Side.SIDE_BUY ? 'sell' : 'buy'] || [];
+
+  console.log('volPriceArr', volPriceArr);
+
   if (volPriceArr.length) {
     const decimals = data?.decimalPlaces ?? 0;
     const positionDecimals = data?.positionDecimalPlaces ?? 0;
