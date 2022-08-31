@@ -19,7 +19,7 @@ const navigation = {
 
 Cypress.Commands.add('navigate_to', (page) => {
   return cy.get(navigation.section, { timeout: 10000 }).within(() => {
-    cy.get(navigation[page]).click({force:true});
+    cy.get(navigation[page]).click({ force: true });
   });
 });
 
