@@ -39,7 +39,6 @@ export const ProposalVotesTable = ({ proposal }: ProposalVotesTableProps) => {
     <KeyValueTable
       title={t('voteBreakdown')}
       data-testid="proposal-votes-table"
-      muted={true}
       numerical={true}
       headingLevel={4}
     >

@@ -255,16 +255,18 @@ describe('Market trade', () => {
       connectVegaWallet();
       cy.get('#step-3-control').click();
 
+      // Start from the bottom tooltip to ensure the tooltip above
+      // can be interacted with
+      cy.getByTestId('review-trade').get('div.cursor-help').eq(1).realTouch();
+      cy.get('[data-radix-popper-content-wrapper]').contains(
+        'The notional size represents the position size'
+      );
+
       cy.getByTestId('review-trade')
         .get('#contracts_tooltip_trigger')
         .realTouch();
       cy.get('[data-radix-popper-content-wrapper]').contains(
         'The number of contracts determines'
-      );
-
-      cy.getByTestId('review-trade').get('div.cursor-help').eq(1).realTouch();
-      cy.get('[data-radix-popper-content-wrapper]').contains(
-        'The notional size represents the position size'
       );
     }
   });

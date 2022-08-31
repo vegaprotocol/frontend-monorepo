@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { FormGroup, Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
+import { Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -53,14 +53,12 @@ export const Search = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex-1 flex self-center md:ml-16 md:mr-12 md:justify-end"
+      className="w-full md:max-w-[620px] justify-self-end"
     >
-      <FormGroup
-        label={t('Search by block number or transaction hash')}
-        className="relative w-full md:w-2/3 mb-0"
-        labelClassName="sr-only"
-        labelFor="search"
-      >
+      <label htmlFor="search" className="sr-only">
+        {t('Search by block number or transaction hash')}
+      </label>
+      <div className="flex items-stretch gap-2">
         <Input
           {...register('search')}
           id="search"
@@ -70,23 +68,16 @@ export const Search = () => {
           placeholder={t('Enter block number or transaction hash')}
         />
         {error?.message && (
-          <InputError
-            data-testid="search-error"
-            intent="danger"
-            className="absolute top-[100%] flex-1 w-full"
-          >
-            {error.message}
-          </InputError>
+          <div className="absolute top-[100%] flex-1 w-full">
+            <InputError data-testid="search-error" intent="danger">
+              {error.message}
+            </InputError>
+          </div>
         )}
-      </FormGroup>
-      <Button
-        type="submit"
-        boxShadow={false}
-        variant="secondary"
-        data-testid="search-button"
-      >
-        {t('Search')}
-      </Button>
+        <Button type="submit" size="sm" data-testid="search-button">
+          {t('Search')}
+        </Button>
+      </div>
     </form>
   );
 };

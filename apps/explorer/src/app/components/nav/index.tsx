@@ -12,7 +12,7 @@ export const Nav = ({ menuOpen }: NavProps) => {
       <div
         className={classnames(
           'absolute top-0 z-50 md:static',
-          'w-full p-20 md:border-r-1',
+          'w-full p-4 md:border-r border-neutral-700 dark:border-neutral-300',
           'bg-white dark:bg-black',
           'transition-[right]',
           {
@@ -27,8 +27,8 @@ export const Nav = ({ menuOpen }: NavProps) => {
             to={r.path}
             className={({ isActive }) =>
               classnames(
-                'block mb-8 px-8',
-                'text-h5 hover:bg-vega-pink dark:hover:bg-vega-yellow hover:text-white dark:hover:text-black',
+                'block mb-2 px-2',
+                'text-lg hover:bg-vega-pink dark:hover:bg-vega-yellow hover:text-white dark:hover:text-black',
                 {
                   'bg-vega-pink text-white dark:bg-vega-yellow dark:text-black':
                     isActive,

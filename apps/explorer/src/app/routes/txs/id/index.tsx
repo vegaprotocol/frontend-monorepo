@@ -41,7 +41,7 @@ const Tx = () => {
         />
       </RenderFetched>
 
-      <h2 className="text-h4 uppercase mb-16">{t('Transaction content')}</h2>
+      <h2 className="text-2xl uppercase mb-4">{t('Transaction content')}</h2>
       <RenderFetched error={ceTxError} loading={ceTxLoading}>
         <TxContent data={ceTxData} />
       </RenderFetched>

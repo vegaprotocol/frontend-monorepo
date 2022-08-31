@@ -16,7 +16,7 @@ export const ProposalChangeTable = ({ proposal }: ProposalChangeTableProps) => {
   const terms = proposal.terms;
 
   return (
-    <KeyValueTable data-testid="proposal-change-table" muted={true}>
+    <KeyValueTable data-testid="proposal-change-table">
       <KeyValueTableRow>
         {t('id')}
         {proposal.id}

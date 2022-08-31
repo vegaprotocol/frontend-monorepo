@@ -24,22 +24,22 @@ export const NetworkInfo = () => {
 
   return (
     <div data-testid="git-info">
-      <p data-testid="git-network-data" className="mb-16">
+      <p data-testid="git-network-data" className="mb-2">
         {t('Reading network data from')}{' '}
-        <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
+        <Lozenge className="bg-neutral-300 dark:bg-neutral-700">
           {VEGA_URL}
         </Lozenge>
         . <Link onClick={() => setNodeSwitcherOpen()}>{t('Edit')}</Link>
       </p>
-      <p data-testid="git-eth-data" className="mb-16 break-all">
+      <p data-testid="git-eth-data" className="mb-2 break-all">
         {t('Reading Ethereum data from')}{' '}
-        <Lozenge className="text-black dark:text-white bg-white-60 dark:bg-black-60">
+        <Lozenge className="bg-neutral-300 dark:bg-neutral-700">
           {ETHEREUM_PROVIDER_URL}
         </Lozenge>
         .{' '}
       </p>
       {GIT_COMMIT_HASH && (
-        <p data-testid="git-commit-hash" className="mb-16">
+        <p data-testid="git-commit-hash" className="mb-2">
           {t('Version/commit hash')}:{' '}
           <Link
             href={
@@ -54,7 +54,7 @@ export const NetworkInfo = () => {
         </p>
       )}
       {feedbackLinks.length > 0 && (
-        <p className="mb-16">
+        <p>
           {t('Known issues and feedback on')}{' '}
           {feedbackLinks.map(({ name, url }, index) => (
             <Fragment key={index}>

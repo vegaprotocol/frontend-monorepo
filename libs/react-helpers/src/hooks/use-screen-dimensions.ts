@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+// @ts-ignore avoid adding declaration file
 import { theme } from '@vegaprotocol/tailwindcss-config';
 import { useResize } from './use-resize';
 

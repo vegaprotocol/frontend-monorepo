@@ -71,10 +71,10 @@ const WithdrawPendingContainer = () => {
     <>
       <h2>{t('withdrawalsPreparedWarningHeading')}</h2>
       <p>{t('withdrawalsText')}</p>
-      <p className="mb-28">{t('withdrawalsPreparedWarningText')}</p>
+      <p className="mb-8">{t('withdrawalsPreparedWarningText')}</p>
       <ul role="list">
         {withdrawals.map((w) => (
-          <li key={w.id} className="mb-28">
+          <li key={w.id} className="mb-10 last:mb-0">
             <Withdrawal withdrawal={w} complete={submit} />
           </li>
         ))}
@@ -99,7 +99,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
     status = t('Pending');
     footer = (
       <Button
-        className="w-full"
+        fill={true}
         disabled={true}
         onClick={() => complete(withdrawal.id)}
       >
@@ -112,7 +112,7 @@ export const Withdrawal = ({ withdrawal, complete }: WithdrawalProps) => {
     } else {
       status = t('Incomplete');
       footer = (
-        <Button className="w-full" onClick={() => complete(withdrawal.id)}>
+        <Button fill={true} onClick={() => complete(withdrawal.id)}>
           {t('withdrawalsCompleteButton')}
         </Button>
       );

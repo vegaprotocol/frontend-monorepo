@@ -34,7 +34,7 @@ interface ValueTooltipProps {
 }
 
 const ValueTooltipRow = ({ value, description, id }: ValueTooltipProps) => (
-  <dd className="flex gap-x-5 items-center">
+  <dd className="flex gap-x-2 items-center">
     {value}
     <Tooltip align="center" description={description}>
       <div className="cursor-help" id={id || ''} tabIndex={-1}>
@@ -59,7 +59,7 @@ export const DealTicketEstimates = ({
 }: DealTicketEstimatesProps) => (
   <dl className="text-black dark:text-white">
     {size && (
-      <div className="flex justify-between mb-8">
+      <div className="flex justify-between mb-2">
         <DataTitle>{t('Contracts')}</DataTitle>
         <ValueTooltipRow
           value={size}
@@ -69,13 +69,13 @@ export const DealTicketEstimates = ({
       </div>
     )}
     {price && (
-      <div className="flex justify-between mb-8">
+      <div className="flex justify-between mb-2">
         <DataTitle>{t('Est. Price')}</DataTitle>
         <dd>{price}</dd>
       </div>
     )}
     {notionalSize && (
-      <div className="flex justify-between mb-8">
+      <div className="flex justify-between mb-2">
         <DataTitle quoteName={quoteName}>{t('Est. Position Size')}</DataTitle>
         <ValueTooltipRow
           value={notionalSize}
@@ -84,7 +84,7 @@ export const DealTicketEstimates = ({
       </div>
     )}
     {fees && (
-      <div className="flex justify-between mb-8">
+      <div className="flex justify-between mb-2">
         <DataTitle quoteName={quoteName}>{t('Est. Fees')}</DataTitle>
         <ValueTooltipRow
           value={fees}

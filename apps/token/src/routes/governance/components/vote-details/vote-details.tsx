@@ -44,7 +44,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
 
   return (
     <section>
-      <h3 className="text-h4 text-white mb-8">{t('votes')}</h3>
+      <h3 className="text-xl mb-2">{t('votes')}</h3>
       <p>
         <span>
           <CurrentProposalStatus proposal={proposal} />
@@ -52,7 +52,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         {'. '}
         {proposal.state === ProposalState.STATE_OPEN ? daysLeft : null}
       </p>
-      <table className="w-full font-normal mb-12">
+      <table className="w-full">
         <thead>
           <tr>
             <th className="text-vega-green w-[18%] text-left">{t('for')}</th>
@@ -68,32 +68,21 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         <tbody>
           <tr>
             <td className="text-left">
-              <div data-testid="vote-progress-indicator-percentage-for">
-                {yesPercentage.toFixed(defaultDecimals)}%
-              </div>
+              {yesPercentage.toFixed(defaultDecimals)}%
             </td>
             <td className="text-center text-white">
               {t('majorityRequired')}{' '}
               {requiredMajorityPercentage.toFixed(defaultDecimals)}%
             </td>
             <td className="text-right">
-              <div data-testid="vote-progress-indicator-percentage-against">
-                {noPercentage.toFixed(defaultDecimals)}%
-              </div>
+              {noPercentage.toFixed(defaultDecimals)}%
             </td>
           </tr>
           <tr>
-            <td className="text-white-60">
-              {' '}
-              <div data-testid="vote-progress-indicator-tokens-for">
-                {formatNumber(yesTokens, defaultDecimals)}
-              </div>
-            </td>
+            <td> {formatNumber(yesTokens, defaultDecimals)}</td>
             <td></td>
-            <td className="text-white-60 text-right">
-              <div data-testid="vote-progress-indicator-tokens-against">
-                {formatNumber(noTokens, defaultDecimals)}
-              </div>
+            <td className="text-right">
+              {formatNumber(noTokens, defaultDecimals)}
             </td>
           </tr>
         </tbody>
@@ -108,14 +97,14 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         )}{' '}
         {formatNumber(totalTokensVoted, defaultDecimals)}{' '}
         {formatNumber(totalTokensPercentage, defaultDecimals)}%
-        <span className="ml-4 text-white-60">
+        <span className="ml-4">
           ({formatNumber(requiredParticipation, defaultDecimals)}%{' '}
           {t('governanceRequired')})
         </span>
       </p>
       {keypair ? (
         <>
-          <h3 className="text-h4 text-white mb-8">{t('yourVote')}</h3>
+          <h3 className="text-xl mb-2">{t('yourVote')}</h3>
           <VoteButtonsContainer
             voteState={voteState}
             castVote={castVote}

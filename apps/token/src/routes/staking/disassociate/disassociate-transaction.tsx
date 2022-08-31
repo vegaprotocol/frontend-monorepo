@@ -40,7 +40,7 @@ export const DisassociateTransaction = ({
       }
       completeFooter={
         <Link to={Routes.STAKING}>
-          <Button className="fill">{t('backToStaking')}</Button>
+          <Button>{t('backToStaking')}</Button>
         </Link>
       }
       pendingHeading={t('Dissociating Tokens')}
