@@ -23,7 +23,7 @@ module.exports = defineConfig({
     chromeWebSecurity: false,
     viewportWidth: 1440,
     viewportHeight: 900,
-    numTestsKeptInMemory: 4
+    numTestsKeptInMemory: 4,
   },
   env: {
     ethProviderUrl: 'http://localhost:8545/',

@@ -70,15 +70,22 @@ Cypress.Commands.add('staking_page_associate_tokens', (amount, options) => {
     cy.contains('Approve $VEGA Tokens for staking on Vega').should(
       'be.visible'
     );
-    cy.contains('Approve $VEGA Tokens for staking on Vega', txTimeout).should('not.exist');
+    cy.contains('Approve $VEGA Tokens for staking on Vega', txTimeout).should(
+      'not.exist'
+    );
   }
   cy.get(tokenSubmitButton, txTimeout).should('be.enabled').click();
-  cy.contains('can now participate in governance and nominate a validator', txTimeout).should('be.visible');
+  cy.contains(
+    'can now participate in governance and nominate a validator',
+    txTimeout
+  ).should('be.visible');
 });
 
 Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
   let type = options && options.type ? options.type : 'wallet';
-  cy.highlight(`Disassociating ${amount} tokens via Staking Page back to ${type}`);
+  cy.highlight(
+    `Disassociating ${amount} tokens via Staking Page back to ${type}`
+  );
   cy.get(ethWalletDissociateButton).first().click();
 
   cy.get(vegaKeySelector)
@@ -107,30 +114,33 @@ Cypress.Commands.add('staking_page_disassociate_tokens', (amount, options) => {
   }
 });
 
-Cypress.Commands.add('staking_page_disassociate_all_tokens', (type = 'wallet') => {
-  cy.highlight(`Disassociating all tokens via Staking Page`);
-  cy.get(ethWalletDissociateButton).first().click();
-  cy.get(stakeMaximumTokens, epochTimeout).click();
-  cy.get(tokenSubmitButton, epochTimeout).click();
-  if (type === 'wallet') {
-    cy.contains(
-      `$VEGA tokens have been returned to Ethereum wallet`,
-      txTimeout
-    ).should('be.visible');
-  } else if (type === 'contract') {
-    cy.contains(
-      `$VEGA tokens have been returned to Vesting contract`,
-      txTimeout
-    ).should('be.visible');
+Cypress.Commands.add(
+  'staking_page_disassociate_all_tokens',
+  (type = 'wallet') => {
+    cy.highlight(`Disassociating all tokens via Staking Page`);
+    cy.get(ethWalletDissociateButton).first().click();
+    cy.get(stakeMaximumTokens, epochTimeout).click();
+    cy.get(tokenSubmitButton, epochTimeout).click();
+    if (type === 'wallet') {
+      cy.contains(
+        `$VEGA tokens have been returned to Ethereum wallet`,
+        txTimeout
+      ).should('be.visible');
+    } else if (type === 'contract') {
+      cy.contains(
+        `$VEGA tokens have been returned to Vesting contract`,
+        txTimeout
+      ).should('be.visible');
+    }
   }
-});
+);
 
 Cypress.Commands.add(
   'click_on_validator_from_list',
   (validatorNumber, validatorName = null) => {
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
-    cy.contains('Total stake this epoch').should('be.visible')
+    cy.contains('Total stake this epoch').should('be.visible');
     cy.wait_for_begining_of_epoch();
     // below is to ensure validator list is shown
     cy.get(stakeValidatorListName, { timeout: 10000 }).should('exist');
@@ -160,7 +170,7 @@ Cypress.Commands.add(
     cy.wait_for_spinner();
     cy.contains('Loading...', epochTimeout).should('not.exist');
     cy.contains('Total stake this epoch').should('be.visible');
-    cy.wait_for_begining_of_epoch()
+    cy.wait_for_begining_of_epoch();
     cy.get(`[row-id="${positionOnList}"]`).within(() => {
       cy.get(stakeValidatorListName).should('have.text', expectedValidatorName);
       cy.get(stakeValidatorListTotalStake, epochTimeout).should(
