@@ -7,6 +7,7 @@ import { OrderListContainer } from '@vegaprotocol/orders';
 import { PositionsContainer } from '@vegaprotocol/positions';
 import { FillsContainer } from '@vegaprotocol/fills';
 import ConnectWallet from '../wallet-connector';
+import { DepositContainer } from '../deposits';
 
 export const Portfolio = () => {
   const { keypair } = useVegaWallet();
@@ -30,6 +31,9 @@ export const Portfolio = () => {
       </Tab>
       <Tab id="fills" name={t('Fills')}>
         <FillsContainer />
+      </Tab>
+      <Tab id="deposits" name={t('Deposits')}>
+        <DepositContainer />
       </Tab>
     </Tabs>
   );
