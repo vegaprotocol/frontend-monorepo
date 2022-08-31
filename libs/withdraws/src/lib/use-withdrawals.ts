@@ -76,7 +76,7 @@ export const WITHDRAWAL_BUS_EVENT_SUB = gql`
 
 export const useWithdrawals = () => {
   const { keypair } = useVegaWallet();
-  const { subscribeToMore, data, loading, error } = useQuery<
+  const { data, loading, error, subscribeToMore } = useQuery<
     Withdrawals,
     WithdrawalsVariables
   >(WITHDRAWALS_QUERY, {
@@ -103,7 +103,7 @@ export const useWithdrawals = () => {
       compact(data?.party?.withdrawalsConnection.edges).map(
         (edge) => edge.node
       ),
-      (w) => new Date(w.createdTimestamp).getTime(),
+      'createdTimestamp',
       'desc'
     );
   }, [data]);

@@ -1,25 +1,11 @@
-import compact from 'lodash/compact';
-import orderBy from 'lodash/orderBy';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { DepositsTable } from '@vegaprotocol/deposits';
 import { useDeposits } from '@vegaprotocol/deposits';
-import { useMemo } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import Link from 'next/link';
 
 export const DepositsContainer = () => {
-  const { data, loading, error } = useDeposits();
-  const deposits = useMemo(() => {
-    if (!data?.party?.depositsConnection.edges?.length) {
-      return [];
-    }
-
-    return orderBy(
-      compact(data.party?.depositsConnection.edges?.map((d) => d?.node)),
-      [(d) => new Date(d.createdTimestamp).getTime()],
-      ['desc']
-    );
-  }, [data]);
+  const { deposits, loading, error } = useDeposits();
 
   return (
     <div className="h-full grid grid-rows-[min-content_1fr]">

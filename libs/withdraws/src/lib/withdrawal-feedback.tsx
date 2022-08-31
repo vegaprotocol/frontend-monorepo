@@ -30,7 +30,7 @@ export const WithdrawalFeedback = ({
   return (
     <div>
       <p className="mb-2">
-        Your funds have been unlocked for withdrawal -{' '}
+        {t('Your funds have been unlocked for withdrawal')} -{' '}
         <a
           className="underline"
           data-testid="tx-block-explorer"
@@ -44,11 +44,11 @@ export const WithdrawalFeedback = ({
       {withdrawal && (
         <KeyValueTable>
           <KeyValueTableRow>
-            <span>Asset</span>
+            <span>{t('Asset')}</span>
             <span>{withdrawal.asset.symbol}</span>
           </KeyValueTableRow>
           <KeyValueTableRow>
-            <span>Amount</span>
+            <span>{t('Amount')}</span>
             <span>
               {addDecimalsFormatNumber(
                 withdrawal.amount,
@@ -58,7 +58,7 @@ export const WithdrawalFeedback = ({
           </KeyValueTableRow>
           {withdrawal.details && (
             <KeyValueTableRow>
-              <span>Recipient</span>
+              <span>{t('Recipient')}</span>
               <a
                 target="_blank"
                 href={`${VEGA_EXPLORER_URL}/address/${withdrawal.details.receiverAddress}`}
@@ -80,7 +80,7 @@ export const WithdrawalFeedback = ({
             }
           }}
         >
-          Withdraw funds
+          {t('Withdraw funds')}
         </Button>
       ) : (
         <p className="text-danger">

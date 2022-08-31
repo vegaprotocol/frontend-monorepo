@@ -1,9 +1,10 @@
 import uniqBy from 'lodash/uniqBy';
 import compact from 'lodash/compact';
+import orderBy from 'lodash/orderBy';
 import { gql, useQuery } from '@apollo/client';
 import type { UpdateQueryFn } from '@apollo/client/core/watchQueryOptions';
 import { useVegaWallet } from '@vegaprotocol/wallet';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import type {
   DepositEventSub,
   DepositEventSubVariables,
@@ -59,13 +60,25 @@ const DEPOSITS_BUS_EVENT_SUB = gql`
 
 export const useDeposits = () => {
   const { keypair } = useVegaWallet();
-  const { subscribeToMore, ...queryResult } = useQuery<
+  const { data, loading, error, subscribeToMore } = useQuery<
     Deposits,
     DepositsVariables
   >(DEPOSITS_QUERY, {
     variables: { partyId: keypair?.pub || '' },
     skip: !keypair?.pub,
   });
+
+  const deposits = useMemo(() => {
+    if (!data?.party?.depositsConnection.edges?.length) {
+      return [];
+    }
+
+    return orderBy(
+      compact(data.party?.depositsConnection.edges?.map((d) => d?.node)),
+      ['createdTimestamp'],
+      ['desc']
+    );
+  }, [data]);
 
   useEffect(() => {
     if (!keypair?.pub) return;
@@ -81,7 +94,7 @@ export const useDeposits = () => {
     };
   }, [keypair?.pub, subscribeToMore]);
 
-  return queryResult;
+  return { data, loading, error, deposits };
 };
 
 const updateQuery: UpdateQueryFn<
