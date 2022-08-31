@@ -12,11 +12,17 @@ const Template: Story<CheckboxProps> = (args) => <Checkbox {...args} />;
 export const Default = Template.bind({});
 Default.args = {
   name: 'default',
-  label: 'Check me out!',
+  label: 'Regular checkbox',
 };
 
 export const Disabled = Template.bind({});
 Disabled.args = {
-  checked: false,
   disabled: true,
+};
+
+export const Indeterminate = Template.bind({});
+Indeterminate.args = {
+  name: 'default',
+  checked: 'indeterminate',
+  label: 'Indeterminate checkbox',
 };
