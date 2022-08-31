@@ -48,20 +48,6 @@ context('Node switcher', function () {
       validateNodeError(errorTypeTxt, nodeErrorTxt);
     });
 
-    it('Cannot connect to network from different chain ID', function () {
-      const errorTypeTxt = 'Error: incorrect network';
-      const nodeErrorTxt = 'This node is not on the CUSTOM network.';
-
-      cy.getByTestId('node-url-custom').click();
-
-      cy.getByTestId(customNodeBtn).within(() => {
-        cy.get('input').clear().type('https://n03.s.vega.xyz/query');
-        cy.getByTestId('link').click();
-      });
-      cy.getByTestId('ssl-cell').should('contain.text', 'Yes');
-      validateNodeError(errorTypeTxt, nodeErrorTxt);
-    });
-
     function validateNodeError(errortype, errorMsg) {
       cy.getByTestId(nodeErrorType, { timeout: 10000 }).should(
         'have.text',
