@@ -1,10 +1,7 @@
-import classNames from 'classnames';
-import { Fragment, useState, useCallback } from 'react';
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { useState, useCallback } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   Link,
-  Icon,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,

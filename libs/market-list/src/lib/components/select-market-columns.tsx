@@ -23,9 +23,8 @@ import type {
   MarketList_markets_fees_factors,
 } from '../__generated__/MarketList';
 import isNil from 'lodash/isNil';
-import { Positions_party_positionsConnection_edges_node_market_tradableInstrument_instrument } from '@vegaprotocol/positions';
 
-export const cellClassNames = 'px-2 first:text-left text-right capitalize';
+export const cellClassNames = 'px-2 py-1 first:text-left text-right capitalize';
 
 const FeesInfo = () => {
   return (
