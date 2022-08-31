@@ -38,11 +38,11 @@ export const SelectMarketLandingTable = ({
   const marketList = data && mapDataToMarketList(data);
   return (
     <div
-      className="max-h-[40rem] overflow-x-auto"
+      className="max-h-[80vh] overflow-x-auto"
       data-testid="select-market-list"
     >
       <table className="text-sm relative h-full min-w-full whitespace-nowrap">
-        <thead className="sticky top-0 z-10">
+        <thead className="sticky top-0 z-10 bg-white dark:bg-black">
           <SelectMarketTableHeader />
         </thead>
         <tbody>
@@ -75,7 +75,7 @@ export const SelectAllMarketsTableBody = ({
 
   return (
     <>
-      <thead>
+      <thead className="bg-neutral-200 dark:bg-neutral-800">
         <SelectMarketTableHeader detailed={true} headers={headers} />
       </thead>
       {/* Border styles required to create space between tbody elements margin/padding dont work */}
