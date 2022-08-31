@@ -6,7 +6,6 @@ import {
   Splash,
   Accordion,
   Link,
-  Button,
   Dialog,
 } from '@vegaprotocol/ui-toolkit';
 import pick from 'lodash/pick';
@@ -291,12 +290,12 @@ export const Info = ({ market }: InfoProps) => {
           assetSymbol={assetSymbol}
           link={
             <>
-              <Button
-                className="text-ui pl-0"
+              <Link
+                className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
                 onClick={() => setOpenLiquidityView(true)}
               >
                 {t('View liquidity provision table')}
-              </Button>
+              </Link>
               <Dialog
                 open={openLiquidityView}
                 onChange={() => setOpenLiquidityView(!openLiquidityView)}
@@ -327,7 +326,6 @@ export const Info = ({ market }: InfoProps) => {
               target="_blank"
               href={`${VEGA_EXPLORER_URL}/oracles#${market.tradableInstrument.instrument.product.oracleSpecForTradingTermination.id}`}
               className="text-ui dark:text-white text-black underline hover:underline hover:text-black-60 dark:hover:text-white-80"
-              rel="noreferrer"
             >
               {t('View full oracle details')}
             </Link>
