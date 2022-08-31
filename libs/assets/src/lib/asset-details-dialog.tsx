@@ -5,7 +5,6 @@ import {
   Button,
   Dialog,
   Icon,
-  Intent,
   KeyValueTable,
   KeyValueTableRow,
   Splash,

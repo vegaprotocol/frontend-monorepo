@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Button, Icon } from '@vegaprotocol/ui-toolkit';
 import { useVoteInformation } from '../../hooks';

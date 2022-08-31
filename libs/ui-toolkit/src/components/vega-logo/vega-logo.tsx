@@ -1,5 +1,4 @@
 import { t } from '@vegaprotocol/react-helpers';
-import classNames from 'classnames';
 
 export const VegaLogo = () => {
   return (

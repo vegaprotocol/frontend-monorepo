@@ -1,9 +1,4 @@
-import type {
-  ComponentStory,
-  ComponentMeta,
-  Meta,
-  Story,
-} from '@storybook/react';
+import type { ComponentStory, Meta, Story } from '@storybook/react';
 import type { ToggleProps } from './toggle';
 import { Toggle } from './toggle';
 import { useState } from 'react';

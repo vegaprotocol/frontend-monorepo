@@ -1,5 +1,5 @@
 import { t } from '@vegaprotocol/react-helpers';
-import { FormGroup, Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
+import { Input, InputError, Button } from '@vegaprotocol/ui-toolkit';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';

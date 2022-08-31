@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import { Intent } from '../../utils/intent';
 import { Button } from '../button';
 import { Popover } from './popover';
 

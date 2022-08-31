@@ -11,7 +11,6 @@ import { VoteButtonsContainer } from './vote-buttons';
 import { VoteProgress } from './vote-progress';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
-import BigNumber from 'bignumber.js';
 
 interface VoteDetailsProps {
   proposal: Proposal_proposal;
