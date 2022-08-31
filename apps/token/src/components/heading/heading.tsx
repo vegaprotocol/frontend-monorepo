@@ -3,9 +3,14 @@ import classNames from 'classnames';
 interface HeadingProps {
   title?: string;
   centerContent?: boolean;
+  marginBottom?: boolean;
 }
 
-export const Heading = ({ title, centerContent = true }: HeadingProps) => {
+export const Heading = ({
+  title,
+  centerContent = true,
+  marginBottom = true,
+}: HeadingProps) => {
   if (!title) return null;
 
   return (
@@ -14,7 +19,9 @@ export const Heading = ({ title, centerContent = true }: HeadingProps) => {
         'mx-auto': centerContent,
       })}
     >
-      <h1 className="font-alpha calt">{title}</h1>
+      <h1 className={classNames('font-alpha calt', { 'mb-0': !marginBottom })}>
+        {title}
+      </h1>
     </header>
   );
 };

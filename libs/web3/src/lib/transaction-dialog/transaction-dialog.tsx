@@ -72,12 +72,12 @@ export const TransactionDialog = ({
       },
       [EthTxStatus.Error]: {
         title: t(`${name} failed`),
-        icon: <Icon name="warning-sign" size={20} />,
+        icon: <Icon name="warning-sign" />,
         intent: Intent.Danger,
       },
       [EthTxStatus.Requested]: {
         title: t('Confirm transaction'),
-        icon: <Icon name="hand-up" size={20} />,
+        icon: <Icon name="hand-up" />,
         intent: Intent.Warning,
       },
       [EthTxStatus.Pending]: {

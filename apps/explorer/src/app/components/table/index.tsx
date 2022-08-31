@@ -2,7 +2,7 @@ import type { ThHTMLAttributes } from 'react';
 import React from 'react';
 import classnames from 'classnames';
 
-interface TableProps extends ThHTMLAttributes<HTMLTableElement> {
+interface TableProps {
   children: React.ReactNode;
   className?: string;
 }
@@ -73,8 +73,9 @@ export const TableRow = ({
   ...props
 }: TableRowProps) => {
   const cellClasses = classnames(className, {
-    'border-b border-black-40 dark:border-white-40': modifier === 'bordered',
-    'border-b-4 bg-black-25 border-b-white dark:bg-white-25 dark:border-b-black':
+    'border-b border-neutral-600 dark:border-neutral-400':
+      modifier === 'bordered',
+    'border-b-2 bg-neutral-300 border-white dark:bg-neutral-700 dark:border-black':
       modifier === 'background',
   });
   return (
@@ -91,7 +92,7 @@ export const TableCell = ({
   ...props
 }: TableCellProps) => {
   const cellClasses = classnames(className, {
-    'py-4': modifier === 'bordered',
+    'py-1': modifier === 'bordered',
   });
   return (
     <td className={cellClasses} {...props}>

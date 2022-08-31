@@ -1,10 +1,13 @@
-const theme = require('./theme');
 const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
+const theme = require('./theme');
 
 module.exports = {
   ...theme,
   colors: {
     ...theme.colors,
+    ...colors,
+    deemphasise: '#8A9BA8',
     amber: '#FFBF00',
     offBlack: '#252525',
     midGrey: '#828282',
@@ -16,12 +19,13 @@ module.exports = {
     mint: '#00F780',
     pink: '#FF077F',
     blue: '#2E6DE5',
+    'white-normal': '#F5F8FA',
     vega: {
       ...theme.colors.vega,
       'highlight-item': '#000',
       'highlight-item-dark': '#fff',
     },
-    'dropdown-bg-dark': theme.colors.black['100'],
+    'dropdown-bg-dark': colors.neutral[100],
     lite: {
       black: '#080808',
     },
@@ -34,7 +38,6 @@ module.exports = {
     'ui-tiny': ['10px', { lineHeight: '18px' }],
   },
   boxShadow: {
-    ...theme.boxShadow,
     'inset-black': '',
     'inset-white': '',
     input: 'none',

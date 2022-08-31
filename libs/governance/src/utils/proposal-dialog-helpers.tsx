@@ -63,11 +63,11 @@ export const getProposalDialogIcon = (
   switch (status) {
     case ProposalState.STATE_PASSED:
     case ProposalState.STATE_ENACTED:
-      return <Icon name="tick" size={20} />;
+      return <Icon name="tick" />;
     case ProposalState.STATE_REJECTED:
     case ProposalState.STATE_FAILED:
     case ProposalState.STATE_DECLINED:
-      return <Icon name="error" size={20} />;
+      return <Icon name="error" />;
     default:
       return;
   }

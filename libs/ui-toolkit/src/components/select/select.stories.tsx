@@ -8,7 +8,7 @@ export default {
 } as Meta;
 
 const Template: Story = (args) => (
-  <FormGroup labelClassName="sr-only" label="Hello" labelFor={args.id}>
+  <FormGroup label="Select an option" labelFor={args.id}>
     <Select {...args}>
       <option value="Option 1">Option 1</option>
       <option value="Option 2">Option 2</option>

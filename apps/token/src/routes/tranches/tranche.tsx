@@ -19,7 +19,7 @@ const TrancheProgressContents = ({
 }: {
   children: React.ReactNode;
 }) => (
-  <div className="flex justify-between gap-4 font-mono py-2 px-4 text-white-60">
+  <div className="flex justify-between gap-4 font-mono py-2 px-4">
     {children}
   </div>
 );
@@ -63,9 +63,7 @@ export const Tranche = () => {
         data-test-id="redeemed-tranche-tokens"
       >
         <span>{t('alreadyRedeemed')}</span>
-        <span className="font-mono text-white-60">
-          {formatNumber(tranche.total_removed)}
-        </span>
+        <span className="font-mono">{formatNumber(tranche.total_removed)}</span>
       </div>
       <h2>{t('Holders')}</h2>
       {tranche.users.length ? (

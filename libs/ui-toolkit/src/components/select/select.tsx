@@ -20,10 +20,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         className={classNames(
           defaultFormElement(hasError),
           className,
-          'appearance-none h-28 pr-28'
+          'appearance-none rounded-md'
         )}
       />
-      <Icon name="chevron-down" className="absolute right-8 z-10" />
+      <Icon name="chevron-down" className="absolute right-4 z-10" />
     </div>
   )
 );

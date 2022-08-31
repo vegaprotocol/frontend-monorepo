@@ -78,7 +78,7 @@ const getProps = (
     },
     [VegaTxStatus.Error]: {
       title: t('Withdrawal transaction failed'),
-      icon: <Icon name="warning-sign" size={20} />,
+      icon: <Icon name="warning-sign" />,
       intent: Intent.Danger,
       children: (
         <Step>
@@ -88,7 +88,7 @@ const getProps = (
     },
     [VegaTxStatus.Requested]: {
       title: t('Confirm withdrawal'),
-      icon: <Icon name="hand-up" size={20} />,
+      icon: <Icon name="hand-up" />,
       intent: Intent.Warning,
       children: <Step>Confirm withdrawal in Vega wallet</Step>,
     },
@@ -134,7 +134,7 @@ const getProps = (
     },
     [EthTxStatus.Error]: {
       title: t('Ethereum transaction failed'),
-      icon: <Icon name="warning-sign" size={20} />,
+      icon: <Icon name="warning-sign" />,
       intent: Intent.Danger,
       children: (
         <Step>
@@ -148,7 +148,7 @@ const getProps = (
     },
     [EthTxStatus.Requested]: {
       title: t('Confirm transaction'),
-      icon: <Icon name="hand-up" size={20} />,
+      icon: <Icon name="hand-up" />,
       intent: Intent.Warning,
       children: <Step>{t('Confirm transaction in wallet')}</Step>,
     },

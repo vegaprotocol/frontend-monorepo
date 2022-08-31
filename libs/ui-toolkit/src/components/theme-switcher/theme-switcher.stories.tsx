@@ -1,4 +1,5 @@
 import type { Story, Meta } from '@storybook/react';
+import { useState } from 'react';
 import { ThemeSwitcher } from './theme-switcher';
 
 export default {
@@ -6,9 +7,20 @@ export default {
   title: 'ThemeSwitcher',
 } as Meta;
 
-const Template: Story = () => (
-  <ThemeSwitcher onToggle={() => document.body.classList.toggle('dark')} />
-);
+const Template: Story = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  return (
+    <div className="p-4">
+      <ThemeSwitcher
+        theme={theme}
+        onToggle={() => {
+          setTheme((curr) => (curr === 'light' ? 'dark' : 'light'));
+          document.body.classList.toggle('dark');
+        }}
+      />
+    </div>
+  );
+};
 
 export const Default = Template.bind({});
 Default.args = {};

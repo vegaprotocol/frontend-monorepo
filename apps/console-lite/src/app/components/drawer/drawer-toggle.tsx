@@ -1,6 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { Button, Icon } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink, Icon } from '@vegaprotocol/ui-toolkit';
 import { IconNames } from '@blueprintjs/icons';
 import type { IconName } from '@vegaprotocol/ui-toolkit';
 import { useEffect, useState } from 'react';
@@ -37,13 +37,10 @@ export const DrawerToggle = ({
   } Sidebar Navigation Menu`;
 
   return (
-    <Button
-      aria-label={ariaLabel}
-      variant="inline-link"
-      className={classes}
-      onClick={onToggle}
-    >
-      <Icon name={iconName as IconName} />
-    </Button>
+    <span className={classes}>
+      <ButtonLink aria-label={ariaLabel} onClick={onToggle}>
+        <Icon name={iconName as IconName} />
+      </ButtonLink>
+    </span>
   );
 };

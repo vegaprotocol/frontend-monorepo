@@ -76,6 +76,6 @@ describe('Table cell', () => {
       </TableWithTbody>
     );
 
-    expect(screen.getByTestId('modifier-class-test')).toHaveClass('py-4');
+    expect(screen.getByTestId('modifier-class-test')).toHaveClass('py-1');
   });
 });
