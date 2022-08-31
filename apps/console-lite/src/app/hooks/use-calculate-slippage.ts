@@ -38,7 +38,7 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
       i++;
     }
     if (volPricePairs.length) {
-      const vowWeightAvPricePair = volPricePairs.reduce(
+      const volWeightAvPricePair = volPricePairs.reduce(
         (agg, item) => {
           agg[0] = agg[0].plus(item[0].multipliedBy(item[1]));
           agg[1] = agg[1].plus(item[1]);
@@ -46,10 +46,10 @@ const useCalculateSlippage = ({ marketId, order }: Props) => {
         },
         [new BigNumber(0), new BigNumber(0)]
       );
-      const vowWeightAvPrice = vowWeightAvPricePair[0].dividedBy(
-        vowWeightAvPricePair[1]
+      const volWeightAvPrice = volWeightAvPricePair[0].dividedBy(
+        volWeightAvPricePair[1]
       );
-      const slippage = vowWeightAvPrice
+      const slippage = volWeightAvPrice
         .minus(bestPrice)
         .absoluteValue()
         .dividedBy(bestPrice)

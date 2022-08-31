@@ -64,7 +64,7 @@ jest.mock('@vegaprotocol/market-depth', () => ({
   useOrderBookData: jest.fn(() => mockOrderBookData),
 }));
 
-describe('slippage hook', () => {
+describe('useCalculateSlippage Hook', () => {
   describe('calculate proper result', () => {
     afterEach(() => {
       jest.clearAllMocks();
