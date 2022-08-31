@@ -161,7 +161,7 @@ export const VoteButtons = ({
   }
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4" data-testid="vote-buttons">
       <div className="flex-1">
         <Button onClick={() => submitVote(VoteValue.VALUE_YES)}>
           {t('voteFor')}
