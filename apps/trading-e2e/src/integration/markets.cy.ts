@@ -10,7 +10,7 @@ describe('markets table', () => {
       aliasQuery(req, 'MarketList', generateMarketList());
     });
     cy.visit('/');
-    cy.wait('@MarketList', { timeout: 5000 });
+    cy.wait('@MarketList');
   });
 
   it('renders markets correctly', () => {
@@ -43,6 +43,22 @@ describe('markets table', () => {
     verifyMarketSummaryDisplayed();
   });
 
+  it('Settlement expiry is displayed', () => {
+    cy.visit('/markets/market-0');
+    cy.wait('@Market');
+
+    cy.getByTestId('trading-expiry')
+      .should('have.text', 'Not time-based')
+      .realHover();
+    cy.getByTestId('expiry-tool-tip').should(
+      'contain.text',
+      'This market expires when triggered by its oracle, not on a set date.'
+    );
+    cy.getByTestId('link')
+      .should('have.attr', 'href')
+      .and('include', 'https://explorer.fairground.wtf/');
+  });
+
   it('Auction conditions are displayed', () => {
     const toolTipLabel = 'tooltip-label';
     const toolTipValue = 'tooltip-value';
@@ -54,10 +70,6 @@ describe('markets table', () => {
       'Est uncrossing price',
       'Est uncrossing vol',
     ];
-
-    cy.mockGQL((req) => {
-      mockTradingPage(req, MarketState.STATE_ACTIVE);
-    });
 
     cy.visit('/markets/market-0');
     cy.wait('@Market');
