@@ -34,7 +34,7 @@ const changeCellClass =
       }
     }
 
-    return ['font-mono', colorClass].join(' ');
+    return ['font-mono text-right', colorClass].join(' ');
   };
 
 type Props = AgGridReactProps | AgReactUiProps;
@@ -60,6 +60,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
       <AgGridColumn
         headerName={t('Price')}
         field="price"
+        type="rightAligned"
         width={130}
         cellClass={changeCellClass('price')}
         valueFormatter={({
@@ -78,6 +79,7 @@ export const TradesTable = forwardRef<AgGridReact, Props>((props, ref) => {
         headerName={t('Size')}
         field="size"
         width={125}
+        type="rightAligned"
         valueFormatter={({
           value,
           data,
