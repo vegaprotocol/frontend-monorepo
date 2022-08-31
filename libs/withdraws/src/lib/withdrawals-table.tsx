@@ -1,7 +1,3 @@
-import type {
-  ICellRendererParams,
-  ValueFormatterParams,
-} from 'ag-grid-community';
 import { AgGridColumn } from 'ag-grid-react';
 import {
   getDateTimeFormat,
@@ -9,6 +5,10 @@ import {
   truncateByChars,
   addDecimalsFormatNumber,
 } from '@vegaprotocol/react-helpers';
+import type {
+  VegaICellRendererParams,
+  VegaValueFormatterParams,
+} from '@vegaprotocol/ui-toolkit';
 import {
   Dialog,
   Link,
@@ -54,7 +54,10 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
         <AgGridColumn
           headerName={t('Amount')}
           field="amount"
-          valueFormatter={({ value, data }: ValueFormatterParams) => {
+          valueFormatter={({
+            value,
+            data,
+          }: VegaValueFormatterParams<WithdrawalFields, 'amount'>) => {
             return addDecimalsFormatNumber(value, data.asset.decimals);
           }}
         />
@@ -63,22 +66,35 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
           field="details.receiverAddress"
           cellRenderer="RecipientCell"
           cellRendererParams={{ ethUrl: ETHERSCAN_URL }}
-          valueFormatter={({ value }: ValueFormatterParams) => {
+          valueFormatter={({
+            value,
+          }: VegaValueFormatterParams<
+            WithdrawalFields,
+            'details.receiverAddress'
+          >) => {
+            if (!value) return '-';
             return truncateByChars(value);
           }}
         />
         <AgGridColumn
           headerName={t('Created at')}
           field="createdTimestamp"
-          valueFormatter={({ value }: ValueFormatterParams) => {
+          valueFormatter={({
+            value,
+          }: VegaValueFormatterParams<
+            WithdrawalFields,
+            'createdTimestamp'
+          >) => {
             return getDateTimeFormat().format(new Date(value));
           }}
         />
         <AgGridColumn
           headerName={t('TX hash')}
           field="txHash"
-          cellRenderer={({ value }: { value: string }) => {
-            if (!value) return '';
+          cellRenderer={({
+            value,
+          }: VegaValueFormatterParams<WithdrawalFields, 'txHash'>) => {
+            if (!value) return '-';
             return (
               <Link
                 title={t('View transaction on Etherscan')}
@@ -128,9 +144,10 @@ export const WithdrawalsTable = ({ withdrawals }: WithdrawalsTableProps) => {
   );
 };
 
-export interface StatusCellProps extends ICellRendererParams {
+export interface StatusCellProps
+  extends VegaICellRendererParams<WithdrawalFields, 'status'> {
   ethUrl: string;
-  complete: (withdrawalId: string) => void;
+  complete: (withdrawal: WithdrawalFields) => void;
 }
 
 export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
@@ -166,7 +183,8 @@ export const StatusCell = ({ ethUrl, data, complete }: StatusCellProps) => {
   return <span>{t('Finalized')}</span>;
 };
 
-export interface RecipientCellProps extends ICellRendererParams {
+export interface RecipientCellProps
+  extends VegaICellRendererParams<WithdrawalFields, 'details.receiverAddress'> {
   ethUrl: string;
 }
 
