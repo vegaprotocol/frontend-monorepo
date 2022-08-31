@@ -10,19 +10,17 @@ const ConnectWallet = () => {
   } = useContext(LocalContext);
   return (
     <section
-      className="p-32 bg-white-normal dark:bg-offBlack"
+      className="p-8 bg-white-normal dark:bg-offBlack"
       data-testid="trading-connect-wallet"
     >
-      <h3 className="mb-16 text-2xl text-offBlack dark:text-white">
+      <h3 className="mb-4 text-2xl text-offBlack dark:text-white">
         {t('Please connect your Vega wallet to make a trade')}
       </h3>
-      <Button
-        variant="primary"
-        onClick={() => setConnect(true)}
-        className="h-[50px] mb-16"
-      >
-        {t('Connect Vega wallet')}
-      </Button>
+      <div className="mb-4">
+        <Button variant="primary" onClick={() => setConnect(true)} size="lg">
+          {t('Connect Vega wallet')}
+        </Button>
+      </div>
       <h4 className="text-lg text-offBlack dark:text-white">
         {t("Don't have a wallet?")}
       </h4>

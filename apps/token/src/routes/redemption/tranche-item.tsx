@@ -58,13 +58,13 @@ export const TrancheItem = ({
         <tbody>
           <tr>
             <td>{t('Starts unlocking')}</td>
-            <td className="text-white-60 text-right">
+            <td className="text-right">
               {format(tranche.tranche_start, DATE_FORMAT_LONG)}
             </td>
           </tr>
           <tr>
             <td>{t('Fully unlocked')}</td>
-            <td className="text-white-60 text-right">
+            <td className="text-right">
               {format(tranche.tranche_end, DATE_FORMAT_LONG)}
             </td>
           </tr>

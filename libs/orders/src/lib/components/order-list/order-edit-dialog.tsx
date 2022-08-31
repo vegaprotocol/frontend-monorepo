@@ -32,7 +32,7 @@ export const OrderEditDialog = ({
   order,
   onSubmit,
 }: OrderEditDialogProps) => {
-  const headerClassName = 'text-h5 font-bold text-black dark:text-white';
+  const headerClassName = 'text-lg font-bold text-black dark:text-white';
   const {
     register,
     formState: { errors },
@@ -96,12 +96,12 @@ export const OrderEditDialog = ({
               id="entryPrice"
             />
             {errors.entryPrice?.message && (
-              <InputError intent="danger" className="mt-4">
+              <InputError intent="danger">
                 {errors.entryPrice.message}
               </InputError>
             )}
           </FormGroup>
-          <Button variant="primary" type="submit">
+          <Button variant="primary" size="md" type="submit">
             {t('Update')}
           </Button>
         </form>

@@ -6,24 +6,12 @@ export enum Intent {
   Success,
 }
 
-export const getIntentShadow = (intent = Intent.None) => {
-  return {
-    'shadow-intent': true,
-    'shadow-danger': intent === Intent.Danger,
-    'shadow-warning': intent === Intent.Warning,
-    'shadow-black dark:shadow-white':
-      intent === Intent.None || intent === Intent.Primary,
-    'shadow-success': intent === Intent.Success,
-  };
-};
-
 export const getIntentBorder = (intent = Intent.None) => {
   return {
     border: true,
     'border-danger': intent === Intent.Danger,
     'border-warning': intent === Intent.Warning,
-    'border-black dark:border-white':
-      intent === Intent.None || intent === Intent.Primary,
+    'border-neutral-500': intent === Intent.None || intent === Intent.Primary,
     'border-success': intent === Intent.Success,
   };
 };

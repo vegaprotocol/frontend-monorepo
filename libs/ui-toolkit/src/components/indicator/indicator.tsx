@@ -8,7 +8,7 @@ interface IndicatorProps {
 
 export const Indicator = ({ variant = Intent.None }: IndicatorProps) => {
   const names = classNames(
-    'inline-block w-8 h-8 mb-2 mr-8 rounded',
+    'inline-block w-2 h-2 mt-1 mr-2 rounded-full',
     getIntentTextAndBackground(variant)
   );
   return <div className={names} />;

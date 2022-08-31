@@ -17,7 +17,7 @@ Uncontrolled.args = {
 
 export const Controlled = Template.bind({});
 Controlled.args = {
-  children: <button>Open me using the 'open' prop</button>,
+  children: <button>Already open</button>,
   description: 'Tooltip content!',
-  open: false,
+  open: true,
 };

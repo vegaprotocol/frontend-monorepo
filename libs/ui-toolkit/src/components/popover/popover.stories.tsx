@@ -15,10 +15,9 @@ const Template: ComponentStory<typeof Popover> = (args) => {
   return (
     <div>
       <Popover
-        intent={args.intent}
         open={open}
         onChange={setOpen}
-        trigger={<Button variant="accent">Trigger</Button>}
+        trigger={<Button variant="primary">Trigger</Button>}
       >
         {args.children}
       </Popover>
@@ -29,33 +28,13 @@ const Template: ComponentStory<typeof Popover> = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   open: false,
-  children: <p>Some content</p>,
-};
-
-export const Primary = Template.bind({});
-Primary.args = {
-  open: false,
-  intent: Intent.Primary,
-  children: <p>Some content</p>,
-};
-
-export const Danger = Template.bind({});
-Danger.args = {
-  open: false,
-  children: <p>Some content</p>,
-  intent: Intent.Danger,
-};
-
-export const Warning = Template.bind({});
-Warning.args = {
-  open: false,
-  children: <p>Some content</p>,
-  intent: Intent.Warning,
-};
-
-export const Success = Template.bind({});
-Success.args = {
-  open: false,
-  children: <p>Some content</p>,
-  intent: Intent.Success,
+  children: (
+    <div>
+      <h2 className="text-lg">Some information</h2>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquid alias
+        labore necessitatibus officiis, quos quo.
+      </p>
+    </div>
+  ),
 };

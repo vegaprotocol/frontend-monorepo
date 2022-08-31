@@ -2,7 +2,7 @@ import { useWeb3React } from '@web3-react/core';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { getButtonClasses, Button } from '@vegaprotocol/ui-toolkit';
+import { Button } from '@vegaprotocol/ui-toolkit';
 
 import {
   AppStateActionType,
@@ -24,9 +24,7 @@ import {
   WalletCardRow,
 } from '../wallet-card';
 import { Loader } from '@vegaprotocol/ui-toolkit';
-import { theme } from '@vegaprotocol/tailwindcss-config';
-
-const Colors = theme.colors;
+import colors from 'tailwindcss/colors';
 
 const removeLeadingAddressSymbol = (key: string) => {
   if (key && key.length > 2 && key.slice(0, 2) === '0x') {
@@ -69,18 +67,12 @@ const AssociatedAmounts = ({
         total={associationAmounts.total}
         leftLabel={t('associated')}
         rightLabel={t('notAssociated')}
-        leftColor={Colors.white.DEFAULT}
-        rightColor={Colors.black.DEFAULT}
-        light={false}
+        leftColor={colors.white}
+        rightColor={colors.black}
       />
       {vestingAssociationByVegaKey.length ? (
-        <div>
-          <hr style={{ borderStyle: 'dashed' }} />
-          <WalletCardRow
-            label="Associated with Vega keys"
-            bold={true}
-            dark={true}
-          />
+        <div className="pt-2 border-t border-dashed">
+          <WalletCardRow label="Associated with Vega keys" />
           {vestingAssociationByVegaKey.map(([key, amount], i) => {
             return (
               <div data-testid="eth-wallet-associated-balances" key={i}>
@@ -88,7 +80,6 @@ const AssociatedAmounts = ({
                   key={key}
                   label={removeLeadingAddressSymbol(key)}
                   value={amount}
-                  dark={true}
                 />
               </div>
             );
@@ -138,7 +129,6 @@ const ConnectedKey = () => {
               name="VEGA"
               symbol="In vesting contract"
               balance={totalInVestingContract}
-              dark={true}
             />
             <LockedProgress
               locked={totalLockedBalance}
@@ -146,7 +136,6 @@ const ConnectedKey = () => {
               total={totalVestedBalance.plus(totalLockedBalance)}
               leftLabel={t('Locked')}
               rightLabel={t('Unlocked')}
-              light={false}
             />
           </section>
         )}
@@ -165,7 +154,6 @@ const ConnectedKey = () => {
           name="VEGA"
           symbol="In Wallet"
           balance={walletWithAssociations}
-          dark={true}
         />
         {!Object.keys(
           appState.associationBreakdown.stakingAssociations
@@ -177,17 +165,15 @@ const ConnectedKey = () => {
         )}
       </section>
       <WalletCardActions>
-        <Link
-          className={getButtonClasses('flex-1 mr-4', 'secondary')}
-          to={`${Routes.STAKING}/associate`}
-        >
-          {t('associate')}
+        <Link className="flex-1" to={`${Routes.STAKING}/associate`}>
+          <Button size="sm" fill={true}>
+            {t('associate')}
+          </Button>
         </Link>
-        <Link
-          className={getButtonClasses('flex-1 ml-4', 'secondary')}
-          to={`${Routes.STAKING}/disassociate`}
-        >
-          {t('disassociate')}
+        <Link className="flex-1" to={`${Routes.STAKING}/disassociate`}>
+          <Button size="sm" fill={true}>
+            {t('disassociate')}
+          </Button>
         </Link>
       </WalletCardActions>
     </>
@@ -201,12 +187,12 @@ export const EthWallet = () => {
   const pendingTxs = usePendingTransactions();
 
   return (
-    <WalletCard dark={true}>
+    <WalletCard>
       <section data-testid="ethereum-wallet">
         <WalletCardHeader>
-          <h1 className="m-0 text-h3 uppercase">{t('ethereumKey')}</h1>
+          <h1 className="m-0 uppercase">{t('ethereumKey')}</h1>
           {account && (
-            <div className="place-self-end font-mono px-4 pb-2">
+            <div className="place-self-end font-mono">
               <div
                 className="font-mono"
                 data-testid="ethereum-account-truncated"
@@ -238,8 +224,7 @@ export const EthWallet = () => {
             <ConnectedKey />
           ) : (
             <Button
-              variant={'secondary'}
-              className="w-full"
+              fill={true}
               onClick={() =>
                 appDispatch({
                   type: AppStateActionType.SET_ETH_WALLET_OVERLAY,
@@ -252,15 +237,15 @@ export const EthWallet = () => {
             </Button>
           )}
           {account && (
-            <WalletCardActions>
+            <div className="flex justify-end">
               <button
-                className="mt-4 underline"
+                className="underline"
                 onClick={() => connector.deactivate()}
                 data-testid="disconnect-from-eth-wallet-button"
               >
                 {t('disconnect')}
               </button>
-            </WalletCardActions>
+            </div>
           )}
         </WalletCardContent>
       </section>

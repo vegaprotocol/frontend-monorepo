@@ -1,5 +1,4 @@
 import { useRef, useCallback, useMemo } from 'react';
-import { useRouter } from 'next/router';
 import { AsyncRenderer } from '@vegaprotocol/ui-toolkit';
 import { MarketListTable, getRowId } from './market-list-table';
 import { useDataProvider } from '@vegaprotocol/react-helpers';
@@ -15,8 +14,11 @@ import type {
 import { marketsDataProvider as dataProvider } from '../../markets-data-provider';
 import { Interval, MarketState } from '@vegaprotocol/types';
 
-export const MarketsContainer = () => {
-  const { push } = useRouter();
+interface MarketsContainerProps {
+  onSelect: (marketId: string) => void;
+}
+
+export const MarketsContainer = ({ onSelect }: MarketsContainerProps) => {
   const gridRef = useRef<AgGridReact | null>(null);
 
   const yTimestamp = useMemo(() => {
@@ -81,7 +83,7 @@ export const MarketsContainer = () => {
           // filters out clicks on the symbol column because it should display asset details
           if ((event?.target as HTMLElement).tagName.toUpperCase() === 'BUTTON')
             return;
-          push(`/markets/${(data as MarketList_markets).id}`);
+          onSelect((data as MarketList_markets).id);
         }}
       />
     </AsyncRenderer>

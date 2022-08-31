@@ -66,7 +66,7 @@ export const addDecimalsFormatNumber = (
 
 export const formatNumberPercentage = (value: BigNumber, decimals?: number) => {
   const decimalPlaces =
-    typeof decimals === 'undefined' ? Math.max(value.dp(), 2) : decimals;
+    typeof decimals === 'undefined' ? Math.max(value.dp() || 0, 2) : decimals;
   return `${formatNumber(value, decimalPlaces)}%`;
 };
 

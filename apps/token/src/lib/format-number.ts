@@ -4,6 +4,6 @@ import { formatNumber as format } from '@vegaprotocol/react-helpers';
 export const formatNumber = (value: BigNumber, decimals?: number) => {
   return format(
     value,
-    typeof decimals === 'undefined' ? Math.max(value.dp(), 2) : decimals
+    typeof decimals === 'undefined' ? Math.max(value.dp() || 0, 2) : decimals
   );
 };

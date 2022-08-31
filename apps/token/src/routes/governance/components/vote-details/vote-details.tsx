@@ -11,6 +11,7 @@ import { VoteButtonsContainer } from './vote-buttons';
 import { VoteProgress } from './vote-progress';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import { ProposalState } from '@vegaprotocol/types';
+import BigNumber from 'bignumber.js';
 
 interface VoteDetailsProps {
   proposal: Proposal_proposal;
@@ -44,7 +45,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
 
   return (
     <section>
-      <h3 className="text-h4 text-white mb-8">{t('votes')}</h3>
+      <h3 className="text-xl mb-2">{t('votes')}</h3>
       <p>
         <span>
           <CurrentProposalStatus proposal={proposal} />
@@ -52,7 +53,7 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         {'. '}
         {proposal.state === ProposalState.STATE_OPEN ? daysLeft : null}
       </p>
-      <table className="w-full font-normal mb-12">
+      <table className="w-full">
         <thead>
           <tr>
             <th className="text-vega-green w-[18%] text-left">{t('for')}</th>
@@ -79,12 +80,9 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
             </td>
           </tr>
           <tr>
-            <td className="text-white-60">
-              {' '}
-              {formatNumber(yesTokens, defaultDecimals)}
-            </td>
+            <td> {formatNumber(yesTokens, defaultDecimals)}</td>
             <td></td>
-            <td className="text-white-60 text-right">
+            <td className="text-right">
               {formatNumber(noTokens, defaultDecimals)}
             </td>
           </tr>
@@ -100,14 +98,14 @@ export const VoteDetails = ({ proposal }: VoteDetailsProps) => {
         )}{' '}
         {formatNumber(totalTokensVoted, defaultDecimals)}{' '}
         {formatNumber(totalTokensPercentage, defaultDecimals)}%
-        <span className="ml-4 text-white-60">
+        <span className="ml-4">
           ({formatNumber(requiredParticipation, defaultDecimals)}%{' '}
           {t('governanceRequired')})
         </span>
       </p>
       {keypair ? (
         <>
-          <h3 className="text-h4 text-white mb-8">{t('yourVote')}</h3>
+          <h3 className="text-xl mb-2">{t('yourVote')}</h3>
           <VoteButtonsContainer
             voteState={voteState}
             castVote={castVote}

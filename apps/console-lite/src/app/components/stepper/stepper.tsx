@@ -58,13 +58,13 @@ export const Stepper = ({ steps }: StepperProps) => {
               key={`${index}-${step.label}`}
               aria-label={t(`Step ${index + 1}`)}
             >
-              <div className="flex relative md:pt-16">
+              <div className="flex relative md:pt-6">
                 {!isFirstStep ? (
                   <div
                     aria-hidden
                     className="flex-auto absolute top-[20px] -left-1/2 right-1/2 md:-top-1/2 md:bottom-1/2 md:left-[29.5px] md:right-auto"
                   >
-                    <span className="h-full block border-t-1 border-black dark:border-white w-full md:border-l-1 md:border-t-0" />
+                    <span className="h-full block border-t border-black dark:border-white w-full md:border-l md:border-t-0" />
                   </div>
                 ) : undefined}
                 <button
@@ -79,7 +79,7 @@ export const Stepper = ({ steps }: StepperProps) => {
                 >
                   <div className="flex-1 flex flex-col md:flex-row items-center w-full text-center">
                     <Counter
-                      className="md:mr-16"
+                      className="md:mr-4"
                       isActive={isActive}
                       label={(index + 1).toString()}
                     />
@@ -87,8 +87,8 @@ export const Stepper = ({ steps }: StepperProps) => {
                       className={classNames(
                         'md:mt-0 font-alpha uppercase text-black dark:text-white',
                         {
-                          'mt-8 text-md md:text-2xl': isActive,
-                          'mt-16 text-sm md:text-lg ml-8': !isActive,
+                          'mt-2 text-md md:text-2xl': isActive,
+                          'mt-4 text-sm md:text-lg md:ml-8': !isActive,
                         }
                       )}
                     >
@@ -134,22 +134,22 @@ export const Stepper = ({ steps }: StepperProps) => {
           id={`step-${activeStep}-panel`}
           aria-labelledby={`step-${activeStep}-control`}
           role="tabpanel"
-          className="md:hidden mt-32" // md:hidden as fallback
+          className="md:hidden mt-10" // md:hidden as fallback
           /* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex */
           tabIndex={0}
         >
           {steps[activeStep].component}
           {!isLastStep && (
-            <Button
-              className="w-full !py-8 mt-64 md:sr-only"
-              boxShadow={false}
-              variant="secondary"
-              onClick={handleNext}
-              disabled={steps[activeStep].disabled}
-              data-testid="next-button"
-            >
-              {t('Next')}
-            </Button>
+            <div className="mt-10 md:sr-only">
+              <Button
+                fill={true}
+                onClick={handleNext}
+                disabled={steps[activeStep].disabled}
+                data-testid="next-button"
+              >
+                {t('Next')}
+              </Button>
+            </div>
           )}
         </div>
       )}

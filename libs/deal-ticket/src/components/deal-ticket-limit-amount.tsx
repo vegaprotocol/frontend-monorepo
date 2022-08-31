@@ -17,7 +17,7 @@ export const DealTicketLimitAmount = ({
   const sizeStep = toDecimal(market.positionDecimalPlaces);
 
   return (
-    <div className="flex items-center gap-8">
+    <div className="flex items-center gap-4">
       <div className="flex-1">
         <FormGroup label={t('Size')} labelFor="input-order-size-limit">
           <Input
@@ -35,7 +35,7 @@ export const DealTicketLimitAmount = ({
           />
         </FormGroup>
       </div>
-      <div className="pt-4 text-black dark:text-white">@</div>
+      <div>@</div>
       <div className="flex-1">
         <FormGroup
           labelFor="input-price-quote"

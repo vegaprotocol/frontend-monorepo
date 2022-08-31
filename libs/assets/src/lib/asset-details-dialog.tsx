@@ -6,6 +6,8 @@ import {
   Dialog,
   Icon,
   Intent,
+  KeyValueTable,
+  KeyValueTableRow,
   Splash,
   Tooltip,
 } from '@vegaprotocol/ui-toolkit';
@@ -147,36 +149,31 @@ export const AssetDetailsDialog = ({
   }
 
   const content = asset ? (
-    <div className="pt-8 pb-20 table w-full">
-      {details
-        .filter(({ value }) => value && value.length > 0)
-        .map(({ key, label, value, tooltip }) => (
-          <div key={key} className="flex flex-col md:table-row">
-            <div
-              data-testid={`${key}_label`}
-              className="table-cell w-1/3 py-2 first-letter:uppercase"
-            >
-              {tooltip.length > 0 ? (
-                <Tooltip description={tooltip}>
-                  <span className="underline underline-offset-2 decoration-dotted cursor-help">
-                    {label}
-                  </span>
-                </Tooltip>
-              ) : (
-                <span>{label}</span>
-              )}
-            </div>
-            <div
-              data-testid={`${key}_value`}
-              className="table-cell pb-5 md:pb-0"
-            >
-              {value}
-            </div>
-          </div>
-        ))}
+    <div className="my-2">
+      <KeyValueTable>
+        {details
+          .filter(({ value }) => value && value.length > 0)
+          .map(({ key, label, value, tooltip }) => (
+            <KeyValueTableRow key={key}>
+              <div
+                data-testid={`${key}_label`}
+                className="first-letter:uppercase"
+              >
+                {tooltip.length > 0 ? (
+                  <Tooltip description={tooltip}>
+                    <span>{label}</span>
+                  </Tooltip>
+                ) : (
+                  <span>{label}</span>
+                )}
+              </div>
+              <div data-testid={`${key}_value`}>{value}</div>
+            </KeyValueTableRow>
+          ))}
+      </KeyValueTable>
     </div>
   ) : (
-    <div className="py-40">
+    <div className="py-12">
       <Splash>{t('No data')}</Splash>
     </div>
   );
@@ -184,15 +181,16 @@ export const AssetDetailsDialog = ({
   return (
     <Dialog
       title={t(`Asset details - ${symbol}`)}
-      intent={Intent.Primary}
       icon={<Icon name="info-sign"></Icon>}
       open={open}
       onChange={(isOpen) => onChange(isOpen)}
     >
       {content}
-      <Button className="w-1/4" onClick={() => onChange(false)}>
-        Close
-      </Button>
+      <div className="w-1/4">
+        <Button fill={true} size="sm" onClick={() => onChange(false)}>
+          Close
+        </Button>
+      </div>
     </Dialog>
   );
 };
