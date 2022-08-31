@@ -6,7 +6,11 @@ import {
 } from '@vegaprotocol/ui-toolkit';
 import { useForm } from 'react-hook-form';
 import { useProposalSubmit } from './proposals-hooks';
-import { getProposalDialogIcon, getProposalDialogIntent } from '../utils';
+import {
+  getProposalDialogIcon,
+  getProposalDialogIntent,
+  getProposalDialogTitle,
+} from '../utils';
 import { t } from '@vegaprotocol/react-helpers';
 import { ProposalState } from '@vegaprotocol/types';
 
@@ -68,9 +72,9 @@ export const ProposalForm = () => {
         {isSubmitting ? t('Submitting') : t('Submit')} {t('Proposal')}
       </Button>
       <Dialog
-        title={t('Proposal rejected')}
-        intent={getProposalDialogIntent(ProposalState.STATE_REJECTED)}
-        icon={getProposalDialogIcon(ProposalState.STATE_REJECTED)}
+        title={getProposalDialogTitle(finalizedProposal?.state)}
+        intent={getProposalDialogIntent(finalizedProposal?.state)}
+        icon={getProposalDialogIcon(finalizedProposal?.state)}
       >
         {finalizedProposal?.rejectionReason ? (
           <p>{finalizedProposal.rejectionReason}</p>
