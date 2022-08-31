@@ -49,7 +49,7 @@ export const VegaWalletConnectButton = ({
                 <KeypairItem key={kp.pub} kp={kp} />
               ))}
             </DropdownMenuRadioGroup>
-            <DropdownMenuItem onClick={disconnect}>
+            <DropdownMenuItem data-testid="disconnect" onClick={disconnect}>
               {t('Disconnect')}
             </DropdownMenuItem>
           </div>
