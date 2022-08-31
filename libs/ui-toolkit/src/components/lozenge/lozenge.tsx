@@ -14,7 +14,7 @@ const getLozengeClasses = (
   className?: string
 ) => {
   return classNames(
-    ['rounded-md', 'font-mono', 'leading-none', 'p-4'],
+    ['rounded-md', 'font-mono', 'leading-none', 'px-2 py-1'],
     getIntentTextAndBackground(variant),
     className
   );

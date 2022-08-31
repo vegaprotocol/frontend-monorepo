@@ -2,6 +2,7 @@ import orderBy from 'lodash/orderBy';
 import { AsyncRenderer, Button } from '@vegaprotocol/ui-toolkit';
 import { useWithdrawals, WithdrawalsTable } from '@vegaprotocol/withdraws';
 import Link from 'next/link';
+import { t } from '@vegaprotocol/react-helpers';
 
 export const WithdrawalsContainer = () => {
   const { data, loading, error } = useWithdrawals();
@@ -18,11 +19,13 @@ export const WithdrawalsContainer = () => {
           'desc'
         );
         return (
-          <div className="grid grid-cols-[1fr_min-content] gap-12 h-full">
+          <div className="grid grid-cols-[1fr_min-content] gap-4 h-full">
             <WithdrawalsTable withdrawals={withdrawals} />
-            <div className="p-12">
+            <div className="p-4">
               <Link href="/portfolio/withdraw" passHref={true}>
-                <Button data-testid="start-withdrawal">Withdraw</Button>
+                <Button size="md" data-testid="start-withdrawal">
+                  {t('Withdraw')}
+                </Button>
               </Link>
             </div>
           </div>

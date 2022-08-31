@@ -1,5 +1,5 @@
 {
-  "root": "libs/ui-toolkit",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ui-toolkit/src",
   "projectType": "library",
   "tags": [],
@@ -35,7 +35,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/ui-toolkit"],
       "options": {
-        "jestConfig": "libs/ui-toolkit/jest.config.js",
+        "jestConfig": "libs/ui-toolkit/jest.config.ts",
         "passWithNoTests": true
       }
     },

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { TrancheItem } from '../redemption/tranche-item';
 import { TrancheLabel } from './tranche-label';
 import { VestingChart } from './vesting-chart';
-import { Button } from '@vegaprotocol/ui-toolkit';
+import { ButtonLink } from '@vegaprotocol/ui-toolkit';
 import { useEthereumConfig } from '@vegaprotocol/web3';
 
 const trancheMinimum = 10;
@@ -56,7 +56,7 @@ export const Tranches = () => {
         <p>{t('No tranches')}</p>
       )}
       <section className="text-center mt-32">
-        <Button variant="inline-link" onClick={() => setShowAll(!showAll)}>
+        <ButtonLink onClick={() => setShowAll(!showAll)}>
           {showAll
             ? t(
                 'Showing tranches with <{{trancheMinimum}} VEGA, click to hide these tranches',
@@ -66,7 +66,7 @@ export const Tranches = () => {
                 'Not showing tranches with <{{trancheMinimum}} VEGA, click to show all tranches',
                 { trancheMinimum }
               )}
-        </Button>
+        </ButtonLink>
       </section>
     </section>
   );

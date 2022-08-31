@@ -4,6 +4,7 @@ import { VegaWalletContext } from '../context';
 import type { VegaWalletContextShape, VegaKeyExtended } from '../context';
 import type { VegaManageDialogProps } from '.';
 import { VegaManageDialog } from '.';
+import { truncateByChars } from '@vegaprotocol/react-helpers';
 
 let props: VegaManageDialogProps;
 let context: Partial<VegaWalletContextShape>;
@@ -54,7 +55,7 @@ it('Shows list of available keys and can disconnect', () => {
   context.keypairs!.forEach((kp, i) => {
     const keyListItem = within(screen.getByTestId(`key-${kp.pub}`));
     expect(
-      keyListItem.getByText(kp.name, { selector: 'h2' })
+      keyListItem.getByText(`${kp.name} ${truncateByChars(kp.pub)}`)
     ).toBeInTheDocument();
     expect(keyListItem.getByText('Copy')).toBeInTheDocument();
 

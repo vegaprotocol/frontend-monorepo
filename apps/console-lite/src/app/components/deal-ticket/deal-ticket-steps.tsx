@@ -213,9 +213,11 @@ export const DealTicketSteps = ({
       component: (
         <div className="mb-8">
           {invalidText && (
-            <InputError className="mb-8" data-testid="dealticket-error-message">
-              {invalidText}
-            </InputError>
+            <div className="mb-2">
+              <InputError data-testid="dealticket-error-message">
+                {invalidText}
+              </InputError>
+            </div>
           )}
           <ReviewTrade
             market={market}
@@ -246,7 +248,7 @@ export const DealTicketSteps = ({
   ];
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="px-4 py-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="px-2 py-4">
       <Stepper steps={steps} />
     </form>
   );

@@ -4,12 +4,12 @@
 
 @layer base {
   h1 {
-    @apply text-h3 text-white uppercase mb-12;
+    @apply text-2xl text-white uppercase mb-4;
   }
   h2 {
-    @apply text-h4 text-white mb-8;
+    @apply text-xl text-white mb-4;
   }
   p {
-    @apply mb-12;
+    @apply mb-2 text-neutral-400;
   }
 }

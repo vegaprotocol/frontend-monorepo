@@ -1,4 +1,5 @@
 import type { Story, Meta } from '@storybook/react';
+import type { ReactNode } from 'react';
 import { Tabs, Tab } from './tabs';
 
 export default {
@@ -9,13 +10,17 @@ export default {
 export const Default: Story = () => (
   <Tabs>
     <Tab id="one" name="Tab one">
-      <p>Tab one content</p>
+      <Content>Tab one content</Content>
     </Tab>
     <Tab id="two" name="Tab two">
-      <p>Tab two content</p>
+      <Content>Tab two content</Content>
     </Tab>
     <Tab id="three" name="Tab three">
-      <p>Tab three content</p>
+      <Content>Tab three content</Content>
     </Tab>
   </Tabs>
 );
+
+const Content = ({ children }: { children: ReactNode }) => {
+  return <div className="p-4">{children}</div>;
+};

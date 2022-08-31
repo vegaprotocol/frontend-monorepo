@@ -1,26 +1,35 @@
-import type { Dispatch, SetStateAction } from 'react';
+import classnames from 'classnames';
 import { Link } from 'react-router-dom';
 import { ThemeSwitcher, Icon } from '@vegaprotocol/ui-toolkit';
 import { t } from '@vegaprotocol/react-helpers';
 import { Search } from '../search';
 import { Routes } from '../../routes/route-names';
+import type { Dispatch, SetStateAction } from 'react';
 
 interface ThemeToggleProps {
+  theme: 'light' | 'dark';
   toggleTheme: () => void;
   menuOpen: boolean;
   setMenuOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Header = ({
+  theme,
   toggleTheme,
   menuOpen,
   setMenuOpen,
 }: ThemeToggleProps) => {
+  const headerClasses = classnames(
+    'md:col-span-2',
+    'grid grid-rows-2 md:grid-rows-1 grid-cols-[1fr_auto] md:grid-cols-[auto_1fr_auto] items-center',
+    'p-4 gap-2 md:gap-4',
+    'border-b border-neutral-700 dark:border-neutral-300'
+  );
   return (
-    <header className="grid grid-rows-2 grid-cols-[1fr_auto] md:flex md:col-span-2 p-16 gap-12 border-b-1">
+    <header className={headerClasses}>
       <Link to={Routes.HOME}>
         <h1
-          className="text-h3 font-alpha uppercase calt mb-2"
+          className="text-3xl font-alpha uppercase calt mb-0"
           data-testid="explorer-header"
         >
           {t('Vega Explorer')}
@@ -31,10 +40,10 @@ export const Header = ({
         className="md:hidden"
         onClick={() => setMenuOpen(!menuOpen)}
       >
-        <Icon name={menuOpen ? 'cross' : 'menu'} size={20} />
+        <Icon name={menuOpen ? 'cross' : 'menu'} />
       </button>
       <Search />
-      <ThemeSwitcher onToggle={toggleTheme} />
+      <ThemeSwitcher theme={theme} onToggle={toggleTheme} />
     </header>
   );
 };

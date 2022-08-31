@@ -66,9 +66,7 @@ export function RestConnectorForm({
           type="text"
         />
         {errors.url?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.url.message}
-          </InputError>
+          <InputError intent="danger">{errors.url.message}</InputError>
         )}
       </FormGroup>
       <FormGroup label={t('Wallet')} labelFor="wallet">
@@ -78,9 +76,7 @@ export function RestConnectorForm({
           type="text"
         />
         {errors.wallet?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.wallet.message}
-          </InputError>
+          <InputError intent="danger">{errors.wallet.message}</InputError>
         )}
       </FormGroup>
       <FormGroup label={t('Passphrase')} labelFor="passphrase">
@@ -90,16 +86,14 @@ export function RestConnectorForm({
           type="password"
         />
         {errors.passphrase?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.passphrase.message}
+          <InputError intent="danger">{errors.passphrase.message}</InputError>
+        )}
+        {error && (
+          <InputError intent="danger" data-testid="form-error">
+            {error}
           </InputError>
         )}
       </FormGroup>
-      {error && (
-        <p className="text-danger mb-12" data-testid="form-error">
-          {error}
-        </p>
-      )}
       <Button variant="primary" type="submit">
         {t('Connect')}
       </Button>

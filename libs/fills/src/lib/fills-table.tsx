@@ -18,6 +18,7 @@ import type {
   FillFields_market_tradableInstrument_instrument_product,
 } from './__generated__/FillFields';
 import type { Fills_party_tradesConnection_edges_node } from './__generated__/Fills';
+import classNames from 'classnames';
 
 export type Props = (AgGridReactProps | AgReactUiProps) & {
   partyId: string;
@@ -44,15 +45,14 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
         <AgGridColumn headerName={t('Market')} field="market.name" />
         <AgGridColumn
           headerName={t('Size')}
+          type="rightAligned"
           field="size"
           cellClass={({ data }: { data: FillFields }) => {
-            let className = '';
-            if (data?.buyer.id === partyId) {
-              className = 'text-vega-green-dark dark:text-vega-green';
-            } else if (data?.seller.id) {
-              className = 'text-vega-red-dark dark:text-vega-red';
-            }
-            return className;
+            return classNames('text-right', {
+              'text-vega-green-dark dark:text-vega-green':
+                data?.buyer.id === partyId,
+              'text-vega-red-dark dark:text-vega-red': data?.seller.id,
+            });
           }}
           valueFormatter={formatSize(partyId)}
         />
@@ -60,11 +60,13 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Value')}
           field="price"
           valueFormatter={formatPrice}
+          type="rightAligned"
         />
         <AgGridColumn
           headerName={t('Filled value')}
           field="price"
           valueFormatter={formatTotal}
+          type="rightAligned"
         />
         <AgGridColumn
           headerName={t('Role')}
@@ -75,6 +77,7 @@ export const FillsTable = forwardRef<AgGridReact, Props>(
           headerName={t('Fee')}
           field="market.tradableInstrument.instrument.product"
           valueFormatter={formatFee(partyId)}
+          type="rightAligned"
         />
         <AgGridColumn
           headerName={t('Date')}

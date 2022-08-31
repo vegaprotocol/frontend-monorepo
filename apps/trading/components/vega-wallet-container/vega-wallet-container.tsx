@@ -16,7 +16,7 @@ export const VegaWalletContainer = ({ children }: VegaWalletContainerProps) => {
     return (
       <Splash>
         <div className="text-center">
-          <p className="mb-12" data-testid="connect-vega-wallet-text">
+          <p className="mb-4" data-testid="connect-vega-wallet-text">
             {t('Connect your Vega wallet')}
           </p>
           <Button

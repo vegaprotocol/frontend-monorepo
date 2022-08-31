@@ -29,7 +29,7 @@ export const Web3ConnectDialog = ({
         {connectors.map(([connector], i) => {
           const info = getConnectorInfo(connector);
           return (
-            <li key={i} className="mb-12 last:mb-0">
+            <li key={i} className="mb-2 last:mb-0">
               <button
                 className="hover:text-vega-pink dark:hover:text-vega-yellow underline"
                 data-testid={`web3-connector-${info.name}`}

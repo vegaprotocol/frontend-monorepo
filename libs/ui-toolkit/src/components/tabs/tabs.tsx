@@ -18,40 +18,35 @@ export const Tabs = ({ children }: TabsProps) => {
       className="h-full grid grid-rows-[min-content_1fr]"
       onValueChange={(value) => setActiveTab(value)}
     >
-      <div className="bg-black-10 dark:bg-black-70">
+      <div className="border-b border-neutral-300 dark:border-neutral-700">
         <TabsPrimitive.List
-          className="flex flex-nowrap overflow-x-auto"
+          className="flex flex-nowrap overflow-visible"
           role="tablist"
         >
-          <div className="gap-4 bg-white dark:bg-black flex border-r-4 border-r-white dark:border-r-black inline-block">
-            {Children.map(children, (child) => {
-              if (!isValidElement(child)) return null;
-              const isActive = child.props.id === activeTab;
-              const triggerClass = classNames(
-                'py-4 px-20',
-                'capitalize',
-                'focus-visible:outline-none focus-visible:shadow-inset-vega-pink dark:focus-visible:shadow-inset-vega-yellow',
-                'transition-[font-weight] duration-75',
-                'inline-block after:content-[attr(data-testid)] after:block after:font-bold after:invisible after:overflow-hidden after:h-0',
-                {
-                  'text-vega-pink dark:text-vega-yellow font-bold': isActive,
-                  'bg-white dark:bg-black': isActive,
-                  'text-black dark:text-white': !isActive,
-                  'bg-white-90 dark:bg-black-70 hover:bg-white-95 dark:hover:bg-black-80':
-                    !isActive,
-                }
-              );
-              return (
-                <TabsPrimitive.Trigger
-                  data-testid={child.props.name}
-                  value={child.props.id}
-                  className={triggerClass}
-                >
-                  {child.props.name}
-                </TabsPrimitive.Trigger>
-              );
-            })}
-          </div>
+          {Children.map(children, (child) => {
+            if (!isValidElement(child)) return null;
+            const isActive = child.props.id === activeTab;
+            const triggerClass = classNames(
+              'relative px-4 py-2 border-r border-neutral-300 dark:border-neutral-700',
+              'text-black dark:text-white',
+              'uppercase'
+            );
+            const borderClass = classNames(
+              'absolute bottom-[-1px] left-0 w-full h-0 border-b',
+              'border-b-white dark:border-b-black',
+              { hidden: !isActive }
+            );
+            return (
+              <TabsPrimitive.Trigger
+                data-testid={child.props.name}
+                value={child.props.id}
+                className={triggerClass}
+              >
+                {child.props.name}
+                <span className={borderClass} />
+              </TabsPrimitive.Trigger>
+            );
+          })}
         </TabsPrimitive.List>
       </div>
       <div className="h-full overflow-auto">

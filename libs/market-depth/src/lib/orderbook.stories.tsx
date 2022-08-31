@@ -11,7 +11,7 @@ type Props = Omit<MockDataGeneratorParams, 'resolution'> & {
 const OrderbookMockDataProvider = ({ decimalPlaces, ...props }: Props) => {
   const [resolution, setResolution] = useState(1);
   return (
-    <div className="absolute inset-0 dark:bg-black dark:text-white-60 bg-white text-black-60">
+    <div className="absolute inset-0 dark:bg-black dark:text-neutral-200 bg-white text-neutral-800">
       <div
         className="absolute left-0 top-0 bottom-0"
         style={{ width: '400px' }}

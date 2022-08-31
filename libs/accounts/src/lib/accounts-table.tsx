@@ -158,6 +158,7 @@ export const AccountsTable = forwardRef<AgGridReact, AccountsTableProps>(
           headerName={t('Balance')}
           field="balance"
           cellRenderer="PriceCell"
+          type="rightAligned"
           valueFormatter={({
             value,
             data,

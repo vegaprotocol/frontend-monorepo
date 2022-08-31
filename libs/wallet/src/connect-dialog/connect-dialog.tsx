@@ -49,6 +49,7 @@ export function VegaConnectDialog({
       open={dialogOpen}
       onChange={setDialogOpen}
       title="Connect to your Vega Wallet"
+      size="small"
     >
       {selectedConnector instanceof RestConnector ? (
         <RestConnectorForm
@@ -63,7 +64,7 @@ export function VegaConnectDialog({
           data-testid="connectors-list"
         >
           {Object.entries(connectors).map(([key, connector]) => (
-            <li key={key} className="mb-12 last:mb-0">
+            <li key={key} className="mb-2 last:mb-0">
               <button
                 key={key}
                 onClick={() => setSelectedConnector(connector)}
@@ -71,7 +72,7 @@ export function VegaConnectDialog({
               >
                 {t(`${key} provider`)}
               </button>
-              <p className="text-black-60">{connector.description}</p>
+              <p>{connector.description}</p>
             </li>
           ))}
         </ul>

@@ -18,9 +18,8 @@ export const LayoutCell = ({
   dataTestId,
 }: LayoutCellProps) => {
   const classes = [
-    'px-8 lg:text-right flex justify-between lg:block',
-    'bg-white-60 dark:bg-black-60 lg:bg-transparent lg:dark:bg-transparent',
-    'm-2 lg:m-0',
+    'lg:text-right flex justify-between lg:block',
+    'my-2 lg:my-0',
   ];
 
   return (
@@ -30,7 +29,7 @@ export const LayoutCell = ({
         data-testid={dataTestId}
         className={classnames('font-mono', {
           'text-danger': !isLoading && hasError,
-          'text-white-60 dark:text-black-60': isLoading,
+          'text-neutral-800 dark:text-neutral-200': isLoading,
         })}
       >
         {isLoading ? t('Checking') : children || '-'}

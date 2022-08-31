@@ -1,40 +1,26 @@
 import classNames from 'classnames';
 import type { HTMLAttributes } from 'react';
-import { Icon } from '../icon';
 
 interface InputErrorProps extends HTMLAttributes<HTMLDivElement> {
   children?: React.ReactNode;
-  className?: string;
   intent?: 'danger' | 'warning';
   forInput?: string;
 }
 
 export const InputError = ({
   intent = 'danger',
-  className,
   children,
   forInput,
   ...props
 }: InputErrorProps) => {
   const effectiveClassName = classNames(
-    [
-      'flex',
-      'items-center',
-      'box-border',
-      'border-l-4',
-      'text-black-95 dark:text-white-95',
-      'text-ui',
-    ],
+    'text-sm text-vega-pink flex items-center',
+    'mt-2',
     {
       'border-danger': intent === 'danger',
       'border-warning': intent === 'warning',
-    },
-    className
+    }
   );
-  const iconClassName = classNames(['mx-8'], {
-    'fill-danger': intent === 'danger',
-    'fill-warning': intent === 'warning',
-  });
   return (
     <div
       data-testid="input-error-text"
@@ -43,7 +29,6 @@ export const InputError = ({
       {...props}
       role="alert"
     >
-      <Icon name="warning-sign" size={20} className={iconClassName} />
       {children}
     </div>
   );

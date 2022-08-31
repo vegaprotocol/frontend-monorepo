@@ -1,17 +1,9 @@
 const plugin = require('tailwindcss/plugin');
-const theme = require('./theme-lite');
+const colors = require('tailwindcss/colors');
+const themelite = require('./theme-lite');
 
 const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
   addUtilities({
-    '.input-border': {
-      borderWidth: '0',
-    },
-    '.input-border-dark': {
-      borderWidth: '0',
-    },
-    '.shadow-input': {
-      boxShadow: 'none',
-    },
     '.percent-change-up::before': {
       content: ' ',
       display: 'block',
@@ -35,7 +27,7 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       width: '4px',
       height: '4px',
       borderRadius: '50%',
-      backgroundColor: theme.colors.black[10],
+      backgroundColor: colors.neutral[900],
       marginTop: '10px',
       marginRight: '5px',
     },
@@ -43,79 +35,79 @@ const vegaCustomClassesLite = plugin(function ({ addUtilities }) {
       textTransform: 'uppercase',
       textDecoration: 'none',
       backgroundColor: 'rgba(0, 143, 74, 0.1)',
-      border: `1px solid ${theme.colors.darkerGreen}`,
-      color: theme.colors.darkerGreen,
+      border: `1px solid ${themelite.colors.darkerGreen}`,
+      color: themelite.colors.darkerGreen,
       '&:hover': {
-        backgroundColor: theme.colors.darkerGreen,
-        color: theme.colors.white.DEFAULT,
+        backgroundColor: themelite.colors.darkerGreen,
+        color: colors.white,
       },
       '&.selected': {
-        backgroundColor: theme.colors.darkerGreen,
-        color: theme.colors.white.DEFAULT,
+        backgroundColor: themelite.colors.darkerGreen,
+        color: colors.white,
       },
     },
     '.buyButtonDark': {
-      color: theme.colors.darkerGreen,
+      color: themelite.colors.darkerGreen,
       '&:hover': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
       '&.selected': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
     },
     '.sellButton': {
       textTransform: 'uppercase',
       textDecoration: 'none',
       backgroundColor: 'rgba(255, 8, 126, 0.1)',
-      border: `1px solid ${theme.colors.pink}`,
-      color: theme.colors.pink,
+      border: `1px solid ${themelite.colors.pink}`,
+      color: themelite.colors.pink,
       '&:hover': {
-        color: theme.colors.white.DEFAULT,
-        backgroundColor: theme.colors.pink,
+        color: colors.white,
+        backgroundColor: themelite.colors.pink,
       },
       '&.selected': {
-        backgroundColor: theme.colors.pink,
-        color: theme.colors.white.DEFAULT,
+        backgroundColor: themelite.colors.pink,
+        color: colors.white,
       },
     },
     '.sellButtonDark': {
-      color: theme.colors.pink,
+      color: themelite.colors.pink,
       '&:hover': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
       '&.selected': {
-        color: theme.colors.black.DEFAULT,
+        color: colors.black,
       },
     },
-    '.tooltip-content': {
-      '& > div': {
-        fontSize: '12px',
-        borderWeight: '1px',
-        borderRadius: '7px',
-        borderColor: theme.colors.black.DEFAULT,
-        backgroundColor: theme.colors.black.DEFAULT,
-        color: theme.colors.white.DEFAULT,
-      },
-      '& svg[width="10"]': {
-        fill: theme.colors.black.DEFAULT,
-      },
-      '& svg[width="8"]': {
-        fill: theme.colors.black.DEFAULT,
-      },
-    },
-    '.tooltip-content-dark': {
-      '& > div': {
-        borderColor: theme.colors.black.DEFAULT,
-        backgroundColor: '#dcdcc8',
-        color: '#333333',
-      },
-      '& svg[width="10"]': {
-        fill: theme.colors.white.DEFAULT,
-      },
-      '& svg[width="8"]': {
-        fill: '#dcdcc8',
-      },
-    },
+    // '.tooltip-content': {
+    //   '& > div': {
+    //     fontSize: '12px',
+    //     borderWeight: '1px',
+    //     borderRadius: '7px',
+    //     borderColor: theme.colors.black.DEFAULT,
+    //     backgroundColor: theme.colors.black.DEFAULT,
+    //     color: theme.colors.white.DEFAULT,
+    //   },
+    //   '& svg[width="10"]': {
+    //     fill: theme.colors.black.DEFAULT,
+    //   },
+    //   '& svg[width="8"]': {
+    //     fill: theme.colors.black.DEFAULT,
+    //   },
+    // },
+    // '.tooltip-content-dark': {
+    //   '& > div': {
+    //     borderColor: theme.colors.black.DEFAULT,
+    //     backgroundColor: '#dcdcc8',
+    //     color: '#333333',
+    //   },
+    //   '& svg[width="10"]': {
+    //     fill: theme.colors.white.DEFAULT,
+    //   },
+    //   '& svg[width="8"]': {
+    //     fill: '#dcdcc8',
+    //   },
+    // },
   });
 });
 

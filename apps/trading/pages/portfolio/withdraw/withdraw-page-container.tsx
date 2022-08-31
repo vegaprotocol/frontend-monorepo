@@ -75,7 +75,7 @@ export const WithdrawPageContainer = ({
         return (
           <>
             {hasIncompleteWithdrawals ? (
-              <p className="mb-12">
+              <p className="mb-6">
                 {t('You have incomplete withdrawals.')}{' '}
                 <Link href="/portfolio/withdrawals" passHref={true}>
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}

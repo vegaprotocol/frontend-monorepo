@@ -3,6 +3,7 @@ import { themelite as theme } from '@vegaprotocol/tailwindcss-config';
 import { MarketState } from '@vegaprotocol/types';
 import { IS_MARKET_TRADABLE } from '../../constants';
 import type { SimpleMarkets_markets } from './__generated__/SimpleMarkets';
+import colors from 'tailwindcss/colors';
 
 export const STATES_FILTER = [
   { value: 'all', text: t('All') },
@@ -36,7 +37,7 @@ export const agGridLightVariables = `
     overflow: visible;
   }
   .ag-theme-balham .ag-row-hover:not(.mobile) {
-    --ag-row-border-color: ${theme.colors.black[100]};
+    --ag-row-border-color: ${colors.black};
   }
   .ag-theme-balham .ag-row-hover .icon-green-hover {
     fill: ${theme.colors.darkerGreen};
@@ -123,7 +124,7 @@ export const agGridDarkVariables = `
     overflow: visible;
   }
   .ag-theme-balham-dark .ag-row-hover:not(.mobile){
-    --ag-row-border-color: ${theme.colors.white[100]};
+    --ag-row-border-color: ${colors.white};
   }
   .ag-theme-balham-dark .ag-row-hover .icon-green-hover {
     fill: ${theme.colors.lightGreen};

@@ -29,7 +29,7 @@ export const Main = () => {
           variant={DRAWER_TOGGLE_VARIANTS.CLOSE}
           className="p-16"
         />
-        <Nav className="hidden md:block my-20 h-full" />
+        <Nav className="hidden md:block my-6 h-full" />
       </NavigationDrawer>
       <DrawerContent>
         <AppRouter />
