@@ -127,7 +127,7 @@ describe('market selector', () => {
         .children()
         .find('[role="button"]')
         .should('have.length', 3);
-      cy.get('div[role="dialog"]').should('have.class', 'w-full');
+      cy.get('div[role="dialog"]').should('have.class', 'w-screen');
       cy.getByTestId('dialog-close').click();
       cy.get('input[placeholder="Search"]').should(
         'have.value',

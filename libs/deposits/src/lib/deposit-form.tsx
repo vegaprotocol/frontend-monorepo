@@ -292,7 +292,6 @@ const FormButton = ({
       <Button
         type="submit"
         data-testid="deposit-submit"
-        disabled={true}
         variant="primary"
         fill={true}
       >

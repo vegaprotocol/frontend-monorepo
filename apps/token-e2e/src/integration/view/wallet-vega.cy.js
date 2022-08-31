@@ -21,7 +21,7 @@ const stakingBtn = '[href="/staking"]';
 const manageLink = '[data-testid="manage-vega-wallet"]';
 const dialogWalletName = `[data-testid="key-${Cypress.env(
   'vegaWalletPublicKey'
-)}"] h2`;
+)}"] [data-testid="vega-public-key-full"]`;
 const dialogVegaKey = '[data-testid="vega-public-key-full"]';
 const dialogDisconnectBtn = '[data-testid="disconnect"]';
 const copyPublicKeyBtn = '[data-testid="copy-vega-public-key"]';
@@ -243,7 +243,7 @@ context('Vega Wallet - verify elements on widget', function () {
       cy.get(dialog).within(() => {
         cy.get(dialogWalletName)
           .should('be.visible')
-          .and('have.text', `${Cypress.env('vegaWalletName')} key 1`);
+          .and('have.text', `key 1 ${Cypress.env('vegaWalletName')}`);
       });
     });
 

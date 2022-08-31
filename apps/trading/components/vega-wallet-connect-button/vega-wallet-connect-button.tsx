@@ -38,7 +38,7 @@ export const VegaWalletConnectButton = ({
           {truncateByChars(keypair.pub)}
         </DropdownMenuTrigger>
         <DropdownMenuContent onInteractOutside={() => setDropdownOpen(false)}>
-          <div className="min-w-[340px]">
+          <div className="min-w-[340px]" data-testid="keypair-list">
             <DropdownMenuRadioGroup
               value={keypair.pub}
               onValueChange={(value) => {
@@ -88,7 +88,7 @@ const KeypairItem = ({ kp }: { kp: VegaKeyExtended }) => {
 
   return (
     <DropdownMenuRadioItem key={kp.pub} value={kp.pub}>
-      <div className="flex-1 mr-2">
+      <div className="flex-1 mr-2" data-testid={`key-${kp.pub}`}>
         <span className="mr-2">
           <span className="uppercase">{kp.name}</span>:{' '}
           <span>{truncateByChars(kp.pub)}</span>
