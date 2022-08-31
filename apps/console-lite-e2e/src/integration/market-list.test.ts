@@ -113,7 +113,7 @@ describe('market list', () => {
         cy.get('.ag-center-cols-container')
           .find('[role="row"]')
           .its('length')
-          .then((length) => expect(length).to.be.closeTo(21, 2));
+          .then((length) => expect(length).to.be.closeTo(20, 3));
         cy.get('.ag-cell-label-container').eq(4).click();
         cy.get('body').then(($body) => {
           for (let i = 0; i < 15; i++) {

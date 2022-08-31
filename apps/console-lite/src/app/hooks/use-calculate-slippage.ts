@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Side } from '@vegaprotocol/types';
 import { useOrderBookData } from '@vegaprotocol/market-depth';
 import type { Order } from '@vegaprotocol/orders';
@@ -11,7 +10,7 @@ interface Props {
 }
 
 const useCalculateSlippage = ({ marketId, order }: Props) => {
-  const variables = useMemo(() => ({ marketId }), [marketId]);
+  const variables = { marketId };
   const { data } = useOrderBookData({
     variables,
     resolution: 1,
