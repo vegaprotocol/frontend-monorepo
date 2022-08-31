@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from 'react';
+import classNames from 'classnames';
+import { IconNames } from '@blueprintjs/icons';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   SliderRoot,
@@ -7,9 +9,12 @@ import {
   SliderRange,
   Input,
   FormGroup,
+  Icon,
+  Tooltip,
 } from '@vegaprotocol/ui-toolkit';
 import { BigNumber } from 'bignumber.js';
 import { DealTicketEstimates } from './deal-ticket-estimates';
+import * as constants from './constants';
 
 interface DealTicketSizeProps {
   step: number;
@@ -25,6 +30,7 @@ interface DealTicketSizeProps {
   fees: string;
   positionDecimalPlaces: number;
   notionalSize: string;
+  slippage: string | null;
 }
 
 const getSizeLabel = (value: number): string => {
@@ -51,6 +57,7 @@ export const DealTicketSize = ({
   positionDecimalPlaces,
   fees,
   notionalSize,
+  slippage,
 }: DealTicketSizeProps) => {
   const sizeRatios = [0, 25, 50, 75, 100];
   const [inputValue, setInputValue] = useState(value);
@@ -187,6 +194,39 @@ export const DealTicketSize = ({
           </dd>
         </div>
       </dl>
+      {slippage && (
+        <dl className="text-black dark:text-white">
+          <div className="flex items-center justify-between mb-8">
+            <dt>{t('Est. Price Impact / Slippage')}</dt>
+            <dd
+              className="flex justify-end gap-x-5"
+              data-testid="price-slippage-value"
+              aria-label={t('Est. Price Impact / Slippage')}
+            >
+              <span
+                className={classNames({
+                  'text-darkerGreen dark:text-lightGreen':
+                    parseFloat(slippage) < 1,
+                  'text-amber':
+                    parseFloat(slippage) >= 1 && parseFloat(slippage) < 5,
+                  'text-vega-red': parseFloat(slippage) >= 5,
+                })}
+              >
+                {slippage}%
+              </span>
+              <Tooltip align="center" description={constants.EST_SLIPPAGE}>
+                <div className="cursor-help" tabIndex={-1}>
+                  <Icon
+                    name={IconNames.ISSUE}
+                    className="block rotate-180"
+                    ariaLabel={constants.EST_SLIPPAGE}
+                  />
+                </div>
+              </Tooltip>
+            </dd>
+          </div>
+        </dl>
+      )}
       <DealTicketEstimates
         quoteName={quoteName}
         fees={fees}
