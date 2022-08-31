@@ -9,11 +9,11 @@ describe('markets table', () => {
       mockTradingPage(req, MarketState.STATE_ACTIVE);
       aliasQuery(req, 'MarketList', generateMarketList());
     });
-    cy.visit('/');
-    cy.wait('@MarketList');
   });
 
   it('renders markets correctly', () => {
+    cy.visit('/');
+    cy.wait('@MarketList');
     cy.get('[data-testid^="market-link-"]')
       .should('not.be.empty')
       .and('have.attr', 'href');
@@ -25,6 +25,8 @@ describe('markets table', () => {
   });
 
   it('renders market list drop down', () => {
+    cy.visit('/');
+    cy.wait('@MarketList');
     openMarketDropDown();
     cy.getByTestId('price').invoke('text').should('not.be.empty');
     cy.getByTestId('trading-mode').should('not.be.empty');
@@ -34,6 +36,8 @@ describe('markets table', () => {
   });
 
   it('Able to select market from dropdown', () => {
+    cy.visit('/');
+    cy.wait('@MarketList');
     openMarketDropDown();
     cy.getByTestId('market-link-market-0').should('be.visible').click();
 

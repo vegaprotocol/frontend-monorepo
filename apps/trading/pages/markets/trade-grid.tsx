@@ -92,7 +92,7 @@ const ExpiryTooltipContent = ({
 
     return (
       <>
-        <p data-testid='expiry-tool-tip' className="mb-2">
+        <p data-testid="expiry-tool-tip" className="mb-2">
           {t(
             'This market expires when triggered by its oracle, not on a set date.'
           )}
