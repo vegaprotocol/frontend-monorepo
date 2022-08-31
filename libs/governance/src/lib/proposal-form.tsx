@@ -12,7 +12,6 @@ import {
   getProposalDialogTitle,
 } from '../utils';
 import { t } from '@vegaprotocol/react-helpers';
-import { ProposalState } from '@vegaprotocol/types';
 
 export interface FormFields {
   proposalData: string;
