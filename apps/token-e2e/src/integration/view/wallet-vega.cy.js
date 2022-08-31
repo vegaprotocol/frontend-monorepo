@@ -171,12 +171,10 @@ context('Vega Wallet - verify elements on widget', function () {
     });
 
     it('should have wallet name visible', function () {
-      const name = Cypress.env('vegaWalletName');
-      const truncatedKey = Cypress.env('vegaWalletPublicKeyShort');
       cy.get(walletContainer).within(() => {
         cy.get(walletName)
           .should('be.visible')
-          .and('have.text', `${name} key 1 ${truncateByChars(truncatedKey)}`);
+          .and('have.text', `${Cypress.env('vegaWalletName')} key 1`);
       });
     });
 
