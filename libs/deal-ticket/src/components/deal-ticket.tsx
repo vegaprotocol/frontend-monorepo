@@ -58,7 +58,7 @@ export const DealTicket = ({
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="px-12 py-8" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} className="p-4" noValidate>
       <Controller
         name="type"
         control={control}
@@ -119,8 +119,8 @@ export const DealTicket = ({
           />
         )}
       <Button
-        className="w-full mb-8"
-        variant="trade"
+        variant="primary"
+        fill={true}
         type="submit"
         disabled={isDisabled}
         data-testid="place-order"
@@ -130,7 +130,6 @@ export const DealTicket = ({
       {message && (
         <InputError
           intent={isDisabled ? 'danger' : 'warning'}
-          className="mt-12 mb-12"
           data-testid="dealticket-error-message"
         >
           {message}

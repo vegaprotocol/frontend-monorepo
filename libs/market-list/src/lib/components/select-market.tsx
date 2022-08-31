@@ -3,11 +3,12 @@ import { t, volumePrefix } from '@vegaprotocol/react-helpers';
 import { Interval } from '@vegaprotocol/types';
 import {
   Dialog,
+  Icon,
   Intent,
+  Loader,
   Popover,
-  RotatingArrow,
 } from '@vegaprotocol/ui-toolkit';
-import classNames from 'classnames';
+import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 import { MARKET_LIST_QUERY } from '../markets-data-provider';
 import type { Column } from './select-market-columns';
@@ -20,7 +21,7 @@ import { columns } from './select-market-columns';
 import type { MarketList } from '../__generated__';
 import { useVegaWallet } from '@vegaprotocol/wallet';
 import type { Positions } from '@vegaprotocol/positions';
-import { POSITION_QUERY } from '@vegaprotocol/positions';
+import { POSITIONS_QUERY } from '@vegaprotocol/positions';
 import { mapDataToMarketList } from '../utils/market-utils';
 import {
   SelectMarketTableHeader,
@@ -37,11 +38,11 @@ export const SelectMarketLandingTable = ({
   const marketList = data && mapDataToMarketList(data);
   return (
     <div
-      className="max-h-[40rem] overflow-x-auto"
+      className="max-h-[80vh] overflow-x-auto"
       data-testid="select-market-list"
     >
-      <table className="relative h-full min-w-full whitespace-nowrap">
-        <thead className="sticky top-0 z-10 dark:bg-black bg-white">
+      <table className="text-sm relative h-full min-w-full whitespace-nowrap">
+        <thead className="sticky top-0 z-10 bg-white dark:bg-black">
           <SelectMarketTableHeader />
         </thead>
         <tbody>
@@ -60,13 +61,11 @@ export const SelectMarketLandingTable = ({
 
 export const SelectAllMarketsTableBody = ({
   data,
-  title = t('All markets'),
   onSelect,
   headers = columnHeaders,
   tableColumns = (market) => columns(market, onSelect),
 }: {
   data?: MarketList;
-  title?: string;
   onSelect: (id: string) => void;
   headers?: Column[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,19 +73,13 @@ export const SelectAllMarketsTableBody = ({
 }) => {
   const marketList = useMemo(() => data && mapDataToMarketList(data), [data]);
 
-  return marketList ? (
+  return (
     <>
-      <thead>
-        <tr
-          className={`text-h5 font-bold text-black-95 dark:text-white-95 mb-6`}
-          data-testid="dialog-title"
-        >
-          <th>{title}</th>
-        </tr>
+      <thead className="bg-neutral-200 dark:bg-neutral-800">
         <SelectMarketTableHeader detailed={true} headers={headers} />
       </thead>
-
-      <tbody>
+      {/* Border styles required to create space between tbody elements margin/padding dont work */}
+      <tbody className="border-b-[10px] border-transparent">
         {marketList?.map((market, i) => (
           <SelectMarketTableRow
             key={i}
@@ -96,14 +89,6 @@ export const SelectAllMarketsTableBody = ({
         ))}
       </tbody>
     </>
-  ) : (
-    <thead>
-      <tr>
-        <td className="text-black dark:text-white text-ui">
-          {t('Loading market data...')}
-        </td>
-      </tr>
-    </thead>
   );
 };
 
@@ -114,30 +99,32 @@ export const SelectMarketPopover = ({
   marketName: string;
   onSelect: (id: string) => void;
 }) => {
-  const headerTriggerButtonClassName =
-    'flex items-center gap-8 shrink-0 p-8 font-medium text-h5 hover:bg-black/10 dark:hover:bg-white/20';
+  const triggerClasses =
+    'sm:text-lg md:text-xl lg:text-2xl flex items-center gap-4 whitespace-nowrap';
   const { keypair } = useVegaWallet();
   const [open, setOpen] = useState(false);
-  const { data } = useMarkets();
+  const { data, loading: marketsLoading } = useMarkets();
   const variables = useMemo(() => ({ partyId: keypair?.pub }), [keypair?.pub]);
-  const { data: marketDataPositions } = useQuery<Positions>(POSITION_QUERY, {
-    variables,
-    skip: !keypair?.pub,
-  });
+  const { data: marketDataPositions, loading: positionsLoading } =
+    useQuery<Positions>(POSITIONS_QUERY, {
+      variables,
+      skip: !keypair?.pub,
+    });
 
   const positionMarkets = useMemo(
     () => ({
       markets:
         data?.markets
           ?.filter((market) =>
-            marketDataPositions?.party?.positions?.find(
-              (position) => position.market.id === market.id
+            marketDataPositions?.party?.positionsConnection.edges?.find(
+              (edge) => edge.node.market.id === market.id
             )
           )
           .map((market) => {
-            const position = marketDataPositions?.party?.positions?.find(
-              (position) => position.market.id === market.id
-            );
+            const position =
+              marketDataPositions?.party?.positionsConnection.edges?.find(
+                (edge) => edge.node.market.id === market.id
+              )?.node;
             return {
               ...market,
               openVolume:
@@ -153,54 +140,68 @@ export const SelectMarketPopover = ({
     setOpen(false);
   };
 
+  const iconClass = open ? 'rotate-180' : '';
+
   return (
     <Popover
       open={open}
       onChange={setOpen}
       trigger={
-        <div
-          className={classNames(
-            'dark:text-vega-yellow text-vega-pink',
-            headerTriggerButtonClassName
-          )}
-        >
-          <span className="break-words text-left ml-5 ">{marketName}</span>
-          <RotatingArrow borderX={8} borderBottom={12} up={open} />
-        </div>
+        <span className={triggerClasses}>
+          {marketName}
+          <Icon name="chevron-down" className={iconClass} />
+        </span>
       }
     >
       <div
-        className="max-h-[40rem] overflow-x-auto m-20"
+        className="w-[90vw] max-h-[80vh] overflow-y-auto"
         data-testid="select-market-list"
       >
-        <span
-          className="text-h4 font-bold text-black-95 dark:text-white-95 mt-0 mb-6"
-          data-testid="dialog-title"
-        >
-          {t('Select a market')}
-        </span>
-        <table className="relative h-full w-full whitespace-nowrap overflow-y-auto">
-          {keypair &&
-            positionMarkets?.markets &&
-            positionMarkets.markets.length > 0 && (
+        {marketsLoading || (keypair?.pub && positionsLoading) ? (
+          <div className="flex items-center gap-4">
+            <Loader size="small" />
+            Loading market data
+          </div>
+        ) : (
+          <>
+            {keypair &&
+              positionMarkets?.markets &&
+              positionMarkets.markets.length > 0 && (
+                <table className="relative text-sm w-full whitespace-nowrap -mx-2">
+                  <TableTitle>{t('My markets')}</TableTitle>
+                  <SelectAllMarketsTableBody
+                    data={positionMarkets}
+                    onSelect={onSelectMarket}
+                    headers={columnHeadersPositionMarkets}
+                    tableColumns={(market) =>
+                      columnsPositionMarkets(market, onSelectMarket)
+                    }
+                  />
+                </table>
+              )}
+            <table className="relative text-sm w-full whitespace-nowrap -mx-2">
+              <TableTitle>{t('All markets')}</TableTitle>
               <SelectAllMarketsTableBody
-                title={t('My markets')}
-                data={positionMarkets}
+                data={data}
                 onSelect={onSelectMarket}
-                headers={columnHeadersPositionMarkets}
-                tableColumns={(market) =>
-                  columnsPositionMarkets(market, onSelectMarket)
-                }
               />
-            )}
-          <SelectAllMarketsTableBody
-            title={t('All markets')}
-            data={data}
-            onSelect={onSelectMarket}
-          />
-        </table>
+            </table>
+          </>
+        )}
       </div>
     </Popover>
+  );
+};
+
+const TableTitle = ({ children }: { children: ReactNode }) => {
+  return (
+    <thead>
+      <tr>
+        <th className="font-normal px-2 text-left">
+          <h3 className="text-lg">{children}</h3>
+        </th>
+      </tr>
+    </thead>
   );
 };
 
@@ -225,7 +226,6 @@ export const SelectMarketDialog = ({
       intent={Intent.Primary}
       open={dialogOpen}
       onChange={() => setDialogOpen(false)}
-      titleClassNames="font-bold font-sans text-3xl tracking-tight mb-0 pl-8"
       size="small"
     >
       <LandingDialogContainer onSelect={onSelectMarket} />
@@ -242,7 +242,7 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
   if (error) {
     return (
       <div className="flex justify-center items-center">
-        <p className="my-32">{t('Failed to load markets')}</p>
+        <p className="my-8">{t('Failed to load markets')}</p>
       </div>
     );
   }
@@ -250,7 +250,7 @@ const LandingDialogContainer = ({ onSelect }: LandingDialogContainerProps) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center">
-        <p className="my-32">{t('Loading...')}</p>
+        <p className="my-8">{t('Loading...')}</p>
       </div>
     );
   }

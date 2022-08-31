@@ -19,7 +19,7 @@ export const Nav = ({ className, tabs = false }: NavProps) => {
             key={r.name}
             to={r.path}
             className={({ isActive }) =>
-              `text-h5 block md:mb-40 px-40 md:text-black md:dark:text-white ${
+              `text-base block md:mb-10 px-12 md:text-black md:dark:text-white ${
                 isActive && 'text-white md:text-blue md:dark:text-blue'
               }`
             }

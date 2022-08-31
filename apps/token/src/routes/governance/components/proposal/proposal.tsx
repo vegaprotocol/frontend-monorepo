@@ -21,9 +21,15 @@ export const Proposal = ({ proposal, terms }: ProposalProps) => {
   return (
     <>
       <ProposalHeader proposal={proposal} />
-      <ProposalChangeTable proposal={proposal} />
-      <VoteDetails proposal={proposal} />
-      <ProposalVotesTable proposal={proposal} />
+      <div className="mb-8">
+        <ProposalChangeTable proposal={proposal} />
+      </div>
+      <div className="mb-8">
+        <VoteDetails proposal={proposal} />
+      </div>
+      <div className="mb-8">
+        <ProposalVotesTable proposal={proposal} />
+      </div>
       <ProposalTermsJson terms={terms} />
     </>
   );

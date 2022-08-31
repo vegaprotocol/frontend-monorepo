@@ -20,15 +20,13 @@ export const PriceCell = React.memo(
       : [`${value}`];
     return (
       <span
-        className="font-mono relative text-ui-small text-black dark:text-white"
+        className="font-mono relative text-black dark:text-white"
         data-testid={testId || 'price'}
       >
         {valueSplit[0]}
         {valueSplit[1] ? decimalSeparator : null}
         {valueSplit[1] ? (
-          <span className="text-black-60 dark:text-white-60">
-            {valueSplit[1]}
-          </span>
+          <span className="opacity-50">{valueSplit[1]}</span>
         ) : null}
       </span>
     );

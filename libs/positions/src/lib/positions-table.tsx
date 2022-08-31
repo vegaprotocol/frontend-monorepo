@@ -13,7 +13,7 @@ import { AgGridDynamic as AgGrid, ProgressBar } from '@vegaprotocol/ui-toolkit';
 import { AgGridColumn } from 'ag-grid-react';
 import type { AgGridReact, AgGridReactProps } from 'ag-grid-react';
 import type { IDatasource, IGetRowsParams } from 'ag-grid-community';
-import type { Position } from './positions-metrics-data-provider';
+import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 import { Intent } from '@vegaprotocol/ui-toolkit';
 
@@ -166,7 +166,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         }}
       />
       <AgGridColumn
-        headerName={t('Mark Price')}
+        headerName={t('Mark price')}
         field="markPrice"
         type="rightAligned"
         cellRenderer="PriceFlashCell"
@@ -192,7 +192,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
         }}
       />
       <AgGridColumn
-        headerName={t('Entry Price')}
+        headerName={t('Entry price')}
         field="averageEntryPrice"
         headerComponentParams={{
           template:
@@ -225,7 +225,7 @@ export const PositionsTable = forwardRef<AgGridReact, Props>((props, ref) => {
               data.marketDecimalPlaces
             ),
             value: range ? Number(((mid - min) * BigInt(100)) / range) : 0,
-            intent: data.lowMarginLevel ? Intent.Danger : undefined,
+            intent: data.lowMarginLevel ? Intent.Warning : undefined,
           };
         }}
       />

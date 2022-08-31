@@ -2,16 +2,15 @@ import classnames from 'classnames';
 import type { ChangeEvent } from 'react';
 
 // Supports controlled and uncontrolled setups.
-interface ToggleProps {
+interface ToggleInput {
   label: string;
   value: string;
 }
 
-export interface ToggleInputProps {
+export interface ToggleProps {
   id?: string;
   name: string;
-  toggles: ToggleProps[];
-  className?: string;
+  toggles: ToggleInput[];
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   checkedValue?: string | undefined | null;
 }
@@ -20,26 +19,24 @@ export const Toggle = ({
   id,
   name,
   toggles,
-  className,
   onChange,
   checkedValue,
   ...props
-}: ToggleInputProps) => {
-  const fieldsetClasses = classnames(className, 'flex');
+}: ToggleProps) => {
+  const fieldsetClasses =
+    'flex rounded-full bg-neutral-100 dark:bg-neutral-700 text-sm';
   const labelClasses = classnames(
     'group flex-1',
     '-ml-[1px] first-of-type:ml-0'
   );
   const radioClasses = classnames('sr-only', 'peer');
   const buttonClasses = classnames(
-    'relative inline-block w-full',
-    'border border-black-60 active:border-black dark:border-white-60 dark:active:border-white peer-checked:border-black dark:peer-checked:border-vega-yellow',
-    'group-first-of-type:rounded-tl group-first-of-type:rounded-bl group-last-of-type:rounded-tr group-last-of-type:rounded-br',
-    'px-28 py-4',
-    'peer-checked:bg-vega-pink dark:peer-checked:bg-vega-yellow hover:bg-black-10 dark:hover:bg-white-25 hover:peer-checked:bg-vega-pink dark:hover:peer-checked:bg-vega-yellow focus-visible:bg-black-10 dark:focus-visible:bg-white-25',
-    'text-ui text-center peer-checked:font-bold peer-checked:text-white dark:peer-checked:text-black text-black-60 dark:text-white-60 active:text-black dark:active:text-white focus-visible:text-black dark:focus-visible:text-white',
-    'focus-within:shadow-inset-black',
-    'cursor-pointer peer-checked:cursor-auto select-none transition-all duration-75'
+    'relative inline-block w-full text-center',
+    'peer-checked:rounded-full',
+    'px-10 py-2',
+    'peer-checked:bg-neutral-400 dark:peer-checked:bg-white',
+    'peer-checked:text-white dark:peer-checked:text-black',
+    'cursor-pointer peer-checked:cursor-auto select-none'
   );
 
   return (

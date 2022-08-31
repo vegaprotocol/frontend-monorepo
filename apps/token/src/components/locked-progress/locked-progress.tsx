@@ -6,18 +6,12 @@ import classnames from 'classnames';
 
 const Colors = theme.colors;
 
-const ProgressContents = ({
-  light,
-  children,
-}: {
-  light: boolean;
-  children: React.ReactNode;
-}) => (
+const ProgressContents = ({ children }: { children: React.ReactNode }) => (
   <div
-    className={classnames('flex justify-between py-2 font-mono mb-2', {
-      'gap-0 px-0 text-black': light,
-      'gap-y-0 gap-x-4': !light,
-    })}
+    className={classnames(
+      'flex justify-between font-mono mb-2',
+      'gap-y-0 gap-x-4'
+    )}
   >
     {children}
   </div>
@@ -36,9 +30,9 @@ const ProgressIndicator = ({
     style={{
       backgroundColor: bgColor,
     }}
-    className={classnames('inline-block w-12 h-12 border', {
-      'mr-8': side === 'left',
-      'ml-8': side === 'right',
+    className={classnames('inline-block w-4 h-4 border', {
+      'mr-2': side === 'left',
+      'ml-2': side === 'right',
       'border-black': light,
       'border-white': !light,
     })}
@@ -53,7 +47,7 @@ const ProgressBar = ({
   bgColor: string;
 }) => (
   <div
-    className="h-16"
+    className="h-4"
     style={{
       flex: isNaN(percentage.toNumber()) ? 0 : percentage.toNumber(),
       backgroundColor: bgColor,
@@ -69,7 +63,6 @@ export interface LockedProgressProps {
   rightLabel: string;
   leftColor?: string;
   rightColor?: string;
-  light?: boolean;
   decimals?: number;
 }
 
@@ -81,7 +74,6 @@ export const LockedProgress = ({
   rightLabel,
   leftColor = Colors.vega.pink,
   rightColor = Colors.vega.green,
-  light = false,
   decimals = 2,
 }: LockedProgressProps) => {
   const lockedPercentage = React.useMemo(() => {
@@ -93,18 +85,12 @@ export const LockedProgress = ({
   }, [total, unlocked]);
 
   return (
-    <div className="mb-8">
-      <div
-        className={classnames('flex border', {
-          'border-black': light,
-          'border-white': !light,
-        })}
-        data-testid="progress-bar"
-      >
+    <div className="mb-4">
+      <div className="flex border border-white mb-2" data-testid="progress-bar">
         <ProgressBar percentage={lockedPercentage} bgColor={leftColor} />
         <ProgressBar percentage={unlockedPercentage} bgColor={rightColor} />
       </div>
-      <ProgressContents light={light}>
+      <ProgressContents>
         <span>
           <ProgressIndicator bgColor={leftColor} side={'left'} light={false} />
           {leftLabel}
@@ -118,8 +104,7 @@ export const LockedProgress = ({
           />
         </span>
       </ProgressContents>
-
-      <ProgressContents light={light}>
+      <ProgressContents>
         <span data-testid="currency-locked">
           {formatNumber(locked, decimals)}
         </span>

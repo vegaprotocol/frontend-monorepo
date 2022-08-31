@@ -1,5 +1,5 @@
-dist/*
-node_modules/*
+apps/**/dist/*
+apps/**/node_modules/*
 tmp/*
 .dockerignore
-Dockerfile
+dockerfiles

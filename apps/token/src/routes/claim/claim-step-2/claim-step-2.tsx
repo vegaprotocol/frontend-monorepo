@@ -40,7 +40,7 @@ export const ClaimStep2 = ({
 
   return (
     <div data-testid="claim-step-2">
-      <Button type="submit" onClick={onSubmit} className="fill">
+      <Button type="submit" onClick={onSubmit}>
         {t('Claim {amount} Vega', { amount: formatNumber(amount) })}
       </Button>
     </div>

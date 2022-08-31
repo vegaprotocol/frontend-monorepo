@@ -13,7 +13,7 @@ import type { TxData } from '../../stores/transactions';
 import { useTransactionStore } from '../../stores/transactions';
 
 const TransactionModalTh = ({ children }: { children: React.ReactNode }) => (
-  <th className="border-b border-black-25 text-black-60 text-left font-normal">
+  <th className="border-b border-neutral-600 text-neutral-600 text-left font-normal">
     {children}
   </th>
 );

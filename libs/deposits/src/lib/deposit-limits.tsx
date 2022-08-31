@@ -32,7 +32,7 @@ export const DepositLimits = ({
   }
 
   return (
-    <table className="w-full text-ui">
+    <table className="w-full text-sm">
       <tbody>
         <tr>
           <th className="text-left font-normal">{t('Balance available')}</th>

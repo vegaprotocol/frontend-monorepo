@@ -1,5 +1,5 @@
 {
-  "root": "apps/trading-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/trading-e2e/src",
   "projectType": "application",
   "targets": {
@@ -20,6 +20,13 @@
       "outputs": ["{options.outputFile}"],
       "options": {
         "lintFilePatterns": ["apps/trading-e2e/**/*.{js,ts}"]
+      }
+    },
+    "build": {
+      "executor": "@nrwl/workspace:run-commands",
+      "outputs": [],
+      "options": {
+        "command": "yarn tsc --project ./apps/trading-e2e/"
       }
     }
   },

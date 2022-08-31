@@ -1,4 +1,4 @@
-import '../src/styles.scss';
+import '../src/styles.css';
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   backgrounds: { disable: true },
@@ -40,8 +40,8 @@ export const globalTypes = {
 
 const StoryWrapper = ({ children, className, style }) => (
   <div style={style} className={className}>
-    <div className="p-16">
-      <div className="text-body dark:bg-black dark:text-white-60 bg-white text-black-60">
+    <div className="p-4">
+      <div className="dark:bg-black dark:text-neutral-200 bg-white text-neutral-800">
         {children}
       </div>
     </div>
