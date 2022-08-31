@@ -36,13 +36,13 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'New some market'
     );
-    expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
       'A new some market'
     );
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'tGBP settled future.'
     );
   });
@@ -63,13 +63,13 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'New market id'
     );
     expect(
-      screen.queryByTestId('proposal-details-one')
+      screen.queryByTestId('proposal-description')
     ).not.toBeInTheDocument();
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'Market change: MarketId'
     );
   });
@@ -96,10 +96,10 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'New asset: Fake currency'
     );
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'Symbol: FAKE. ERC20 0x0'
     );
   });
@@ -122,10 +122,10 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'Unknown proposal'
     );
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'Symbol: BIA. Max faucet amount mint: 300'
     );
   });
@@ -150,10 +150,10 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'Network parameter'
     );
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'Network key to Network value'
     );
   });
@@ -174,13 +174,11 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent('0x0');
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent('0x0');
     expect(
-      screen.queryByTestId('proposal-details-one')
+      screen.queryByTestId('proposal-description')
     ).not.toBeInTheDocument();
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
-      'short'
-    );
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent('short');
   });
 
   it('Renders Freeform proposal - long rationale (105 chars)', () => {
@@ -203,13 +201,11 @@ describe('Proposal header', () => {
     );
     // For a rationale over 100 chars, we expect the header to be truncated at
     // 100 chars with ellipsis and the details-one element to contain the rest.
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent('0x0');
-    expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
-      'Class aptent taciti sociosqu ad litora torquent per conubia' // shorten to 60 characters
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent('0x0');
+    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
+      'Class aptent taciti sociosqu ad litora torquent per conubia'
     );
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
-      'long'
-    );
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent('long');
   });
 
   it('Renders Freeform proposal - extra long rationale (165 chars)', () => {
@@ -234,13 +230,13 @@ describe('Proposal header', () => {
     // For a rationale over 160 chars, we expect the header to be truncated at 100
     // chars with ellipsis and the details-one element to contain 60 chars and also
     // be truncated with an ellipsis.
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'Aenean sem odio, eleifend non sodales vitae, porttitor eu ex. Aliquam erat volutpat. Fusce pharetra…'
     );
-    expect(screen.getByTestId('proposal-details-one')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-description')).toHaveTextContent(
       'Aenean sem odio, eleifend non sodales vitae, porttitor eu e…'
     );
-    expect(screen.getByTestId('proposal-details-two')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-details')).toHaveTextContent(
       'extraLong'
     );
   });
@@ -262,11 +258,11 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent('freeform');
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent('freeform');
     expect(
-      screen.queryByTestId('proposal-details-one')
+      screen.queryByTestId('proposal-description')
     ).not.toBeInTheDocument();
-    expect(screen.queryByTestId('proposal-details-two')).toHaveTextContent(
+    expect(screen.queryByTestId('proposal-details')).toHaveTextContent(
       'freeform id'
     );
   });
@@ -284,7 +280,7 @@ describe('Proposal header', () => {
         })
       )
     );
-    expect(screen.getByTestId('proposal-header')).toHaveTextContent(
+    expect(screen.getByTestId('proposal-title')).toHaveTextContent(
       'Unknown proposal'
     );
   });

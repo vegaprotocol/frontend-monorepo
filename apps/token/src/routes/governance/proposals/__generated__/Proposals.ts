@@ -6,10 +6,10 @@
 import { ProposalState, ProposalRejectionReason, VoteValue } from "@vegaprotocol/types";
 
 // ====================================================
-// GraphQL query operation: ProposalsConnection
+// GraphQL query operation: Proposals
 // ====================================================
 
-export interface ProposalsConnection_proposalsConnection_edges_node_rationale {
+export interface Proposals_proposalsConnection_edges_node_rationale {
   __typename: "ProposalRationale";
   /**
    * Title to be used to give a short description of the proposal in lists.
@@ -25,7 +25,7 @@ export interface ProposalsConnection_proposalsConnection_edges_node_rationale {
   description: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_party {
+export interface Proposals_proposalsConnection_edges_node_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -33,11 +33,11 @@ export interface ProposalsConnection_proposalsConnection_edges_node_party {
   id: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateAsset {
+export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset {
   __typename: "UpdateAsset" | "NewFreeform";
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset {
   __typename: "Asset";
   /**
    * The symbol of the asset (e.g: GBP)
@@ -45,15 +45,15 @@ export interface ProposalsConnection_proposalsConnection_edges_node_terms_change
   symbol: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct {
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct {
   __typename: "FutureProduct";
   /**
    * Product asset ID
    */
-  settlementAsset: ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
+  settlementAsset: Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct_settlementAsset;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket_instrument {
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument {
   __typename: "InstrumentConfiguration";
   /**
    * Full and fairly descriptive name for the instrument
@@ -66,23 +66,23 @@ export interface ProposalsConnection_proposalsConnection_edges_node_terms_change
   /**
    * Future product specification
    */
-  futureProduct: ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct | null;
+  futureProduct: Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument_futureProduct | null;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket {
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewMarket {
   __typename: "NewMarket";
   /**
    * New market instrument configuration
    */
-  instrument: ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket_instrument;
+  instrument: Proposals_proposalsConnection_edges_node_terms_change_NewMarket_instrument;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateMarket {
+export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateMarket {
   __typename: "UpdateMarket";
   marketId: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset_source_BuiltinAsset {
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_BuiltinAsset {
   __typename: "BuiltinAsset";
   /**
    * Maximum amount that can be requested by a party through the built-in asset faucet at a time
@@ -90,7 +90,7 @@ export interface ProposalsConnection_proposalsConnection_edges_node_terms_change
   maxFaucetAmountMint: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset_source_ERC20 {
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_ERC20 {
   __typename: "ERC20";
   /**
    * The address of the ERC20 contract
@@ -98,9 +98,9 @@ export interface ProposalsConnection_proposalsConnection_edges_node_terms_change
   contractAddress: string;
 }
 
-export type ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset_source = ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset_source_BuiltinAsset | ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset_source_ERC20;
+export type Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source = Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_BuiltinAsset | Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source_ERC20;
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset {
+export interface Proposals_proposalsConnection_edges_node_terms_change_NewAsset {
   __typename: "NewAsset";
   /**
    * The full name of the asset (e.g: Great British Pound)
@@ -113,10 +113,10 @@ export interface ProposalsConnection_proposalsConnection_edges_node_terms_change
   /**
    * The source of the new asset
    */
-  source: ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset_source;
+  source: Proposals_proposalsConnection_edges_node_terms_change_NewAsset_source;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter_networkParameter {
+export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter_networkParameter {
   __typename: "NetworkParameter";
   /**
    * The name of the network parameter
@@ -128,14 +128,14 @@ export interface ProposalsConnection_proposalsConnection_edges_node_terms_change
   value: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter {
+export interface Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter {
   __typename: "UpdateNetworkParameter";
-  networkParameter: ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter_networkParameter;
+  networkParameter: Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter_networkParameter;
 }
 
-export type ProposalsConnection_proposalsConnection_edges_node_terms_change = ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateAsset | ProposalsConnection_proposalsConnection_edges_node_terms_change_NewMarket | ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateMarket | ProposalsConnection_proposalsConnection_edges_node_terms_change_NewAsset | ProposalsConnection_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter;
+export type Proposals_proposalsConnection_edges_node_terms_change = Proposals_proposalsConnection_edges_node_terms_change_UpdateAsset | Proposals_proposalsConnection_edges_node_terms_change_NewMarket | Proposals_proposalsConnection_edges_node_terms_change_UpdateMarket | Proposals_proposalsConnection_edges_node_terms_change_NewAsset | Proposals_proposalsConnection_edges_node_terms_change_UpdateNetworkParameter;
 
-export interface ProposalsConnection_proposalsConnection_edges_node_terms {
+export interface Proposals_proposalsConnection_edges_node_terms {
   __typename: "ProposalTerms";
   /**
    * RFC3339Nano time and date when voting closes for this proposal.
@@ -151,10 +151,10 @@ export interface ProposalsConnection_proposalsConnection_edges_node_terms {
   /**
    * Actual change being introduced by the proposal - action the proposal triggers if passed and enacted.
    */
-  change: ProposalsConnection_proposalsConnection_edges_node_terms_change;
+  change: Proposals_proposalsConnection_edges_node_terms_change;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes_votes_party_stakingSummary {
+export interface Proposals_proposalsConnection_edges_node_votes_yes_votes_party_stakingSummary {
   __typename: "StakingSummary";
   /**
    * The stake currently available for the party
@@ -162,7 +162,7 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes_vo
   currentStakeAvailable: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes_votes_party {
+export interface Proposals_proposalsConnection_edges_node_votes_yes_votes_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -171,10 +171,10 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes_vo
   /**
    * The staking information for this Party
    */
-  stakingSummary: ProposalsConnection_proposalsConnection_edges_node_votes_yes_votes_party_stakingSummary;
+  stakingSummary: Proposals_proposalsConnection_edges_node_votes_yes_votes_party_stakingSummary;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes_votes {
+export interface Proposals_proposalsConnection_edges_node_votes_yes_votes {
   __typename: "Vote";
   /**
    * The vote value cast
@@ -183,14 +183,14 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes_vo
   /**
    * The party casting the vote
    */
-  party: ProposalsConnection_proposalsConnection_edges_node_votes_yes_votes_party;
+  party: Proposals_proposalsConnection_edges_node_votes_yes_votes_party;
   /**
    * RFC3339Nano time and date when the vote reached Vega network
    */
   datetime: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes {
+export interface Proposals_proposalsConnection_edges_node_votes_yes {
   __typename: "ProposalVoteSide";
   /**
    * Total number of governance tokens from the votes cast for this side
@@ -203,10 +203,10 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_yes {
   /**
    * All votes cast for this side
    */
-  votes: ProposalsConnection_proposalsConnection_edges_node_votes_yes_votes[] | null;
+  votes: Proposals_proposalsConnection_edges_node_votes_yes_votes[] | null;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_no_votes_party_stakingSummary {
+export interface Proposals_proposalsConnection_edges_node_votes_no_votes_party_stakingSummary {
   __typename: "StakingSummary";
   /**
    * The stake currently available for the party
@@ -214,7 +214,7 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_no_vot
   currentStakeAvailable: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_no_votes_party {
+export interface Proposals_proposalsConnection_edges_node_votes_no_votes_party {
   __typename: "Party";
   /**
    * Party identifier
@@ -223,10 +223,10 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_no_vot
   /**
    * The staking information for this Party
    */
-  stakingSummary: ProposalsConnection_proposalsConnection_edges_node_votes_no_votes_party_stakingSummary;
+  stakingSummary: Proposals_proposalsConnection_edges_node_votes_no_votes_party_stakingSummary;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_no_votes {
+export interface Proposals_proposalsConnection_edges_node_votes_no_votes {
   __typename: "Vote";
   /**
    * The vote value cast
@@ -235,14 +235,14 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_no_vot
   /**
    * The party casting the vote
    */
-  party: ProposalsConnection_proposalsConnection_edges_node_votes_no_votes_party;
+  party: Proposals_proposalsConnection_edges_node_votes_no_votes_party;
   /**
    * RFC3339Nano time and date when the vote reached Vega network
    */
   datetime: string;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes_no {
+export interface Proposals_proposalsConnection_edges_node_votes_no {
   __typename: "ProposalVoteSide";
   /**
    * Total number of governance tokens from the votes cast for this side
@@ -255,22 +255,22 @@ export interface ProposalsConnection_proposalsConnection_edges_node_votes_no {
   /**
    * All votes cast for this side
    */
-  votes: ProposalsConnection_proposalsConnection_edges_node_votes_no_votes[] | null;
+  votes: Proposals_proposalsConnection_edges_node_votes_no_votes[] | null;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node_votes {
+export interface Proposals_proposalsConnection_edges_node_votes {
   __typename: "ProposalVotes";
   /**
    * Yes votes cast for this proposal
    */
-  yes: ProposalsConnection_proposalsConnection_edges_node_votes_yes;
+  yes: Proposals_proposalsConnection_edges_node_votes_yes;
   /**
    * No votes cast for this proposal
    */
-  no: ProposalsConnection_proposalsConnection_edges_node_votes_no;
+  no: Proposals_proposalsConnection_edges_node_votes_no;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges_node {
+export interface Proposals_proposalsConnection_edges_node {
   __typename: "Proposal";
   /**
    * Proposal ID that is filled by Vega once proposal reaches the network
@@ -279,7 +279,7 @@ export interface ProposalsConnection_proposalsConnection_edges_node {
   /**
    * Rationale behind the proposal
    */
-  rationale: ProposalsConnection_proposalsConnection_edges_node_rationale;
+  rationale: Proposals_proposalsConnection_edges_node_rationale;
   /**
    * A UUID reference to aid tracking proposals on Vega
    */
@@ -299,7 +299,7 @@ export interface ProposalsConnection_proposalsConnection_edges_node {
   /**
    * Party that prepared the proposal
    */
-  party: ProposalsConnection_proposalsConnection_edges_node_party;
+  party: Proposals_proposalsConnection_edges_node_party;
   /**
    * Error details of the rejectionReason
    */
@@ -307,32 +307,32 @@ export interface ProposalsConnection_proposalsConnection_edges_node {
   /**
    * Terms of the proposal
    */
-  terms: ProposalsConnection_proposalsConnection_edges_node_terms;
+  terms: Proposals_proposalsConnection_edges_node_terms;
   /**
    * Votes cast for this proposal
    */
-  votes: ProposalsConnection_proposalsConnection_edges_node_votes;
+  votes: Proposals_proposalsConnection_edges_node_votes;
 }
 
-export interface ProposalsConnection_proposalsConnection_edges {
+export interface Proposals_proposalsConnection_edges {
   __typename: "ProposalEdge";
   /**
    * The proposal data
    */
-  node: ProposalsConnection_proposalsConnection_edges_node;
+  node: Proposals_proposalsConnection_edges_node;
 }
 
-export interface ProposalsConnection_proposalsConnection {
+export interface Proposals_proposalsConnection {
   __typename: "ProposalsConnection";
   /**
    * List of proposals available for the connection
    */
-  edges: (ProposalsConnection_proposalsConnection_edges | null)[] | null;
+  edges: (Proposals_proposalsConnection_edges | null)[] | null;
 }
 
-export interface ProposalsConnection {
+export interface Proposals {
   /**
    * All governance proposals in the Vega network
    */
-  proposalsConnection: ProposalsConnection_proposalsConnection;
+  proposalsConnection: Proposals_proposalsConnection;
 }

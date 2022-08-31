@@ -6,15 +6,15 @@ import { useNetworkParam } from '../../../hooks/use-network-param';
 import { BigNumber } from '../../../lib/bignumber';
 import { addDecimal } from '../../../lib/decimals';
 import type {
-  Proposal_proposal,
-  Proposal_proposal_votes_no_votes,
-  Proposal_proposal_votes_yes_votes,
-} from '@vegaprotocol/governance';
+  ProposalFields,
+  ProposalFields_votes_no_votes,
+  ProposalFields_votes_yes_votes,
+} from '../__generated__/ProposalFields';
 
 const useProposalNetworkParams = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFields;
 }) => {
   const { data, loading } = useNetworkParam([
     NetworkParams.GOV_UPDATE_MARKET_REQUIRED_MAJORITY,
@@ -82,7 +82,7 @@ const useProposalNetworkParams = ({
 export const useVoteInformation = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFields;
 }) => {
   const {
     appState: { totalSupply },
@@ -105,7 +105,7 @@ export const useVoteInformation = ({
       return new BigNumber(0);
     }
     const totalNoVotes = proposal.votes.no.votes.reduce(
-      (prevValue: BigNumber, newValue: Proposal_proposal_votes_no_votes) => {
+      (prevValue: BigNumber, newValue: ProposalFields_votes_no_votes) => {
         return new BigNumber(
           newValue.party.stakingSummary.currentStakeAvailable
         ).plus(prevValue);
@@ -120,7 +120,7 @@ export const useVoteInformation = ({
       return new BigNumber(0);
     }
     const totalYesVotes = proposal.votes.yes.votes.reduce(
-      (prevValue: BigNumber, newValue: Proposal_proposal_votes_yes_votes) => {
+      (prevValue: BigNumber, newValue: ProposalFields_votes_yes_votes) => {
         return new BigNumber(
           newValue.party.stakingSummary.currentStakeAvailable
         ).plus(prevValue);

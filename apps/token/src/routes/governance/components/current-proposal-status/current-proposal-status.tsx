@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ProposalState } from '@vegaprotocol/types';
 import { useVoteInformation } from '../../hooks';
-import type { Proposal_proposal } from '@vegaprotocol/governance';
+import type { ProposalFields } from '../../__generated__/ProposalFields';
 
 export const StatusPass = ({ children }: { children: React.ReactNode }) => (
   <span className="text-vega-green">{children}</span>
@@ -17,7 +17,7 @@ export const StatusFail = ({ children }: { children: React.ReactNode }) => (
 export const CurrentProposalStatus = ({
   proposal,
 }: {
-  proposal: Proposal_proposal;
+  proposal: ProposalFields;
 }) => {
   const { willPass, majorityMet, participationMet } = useVoteInformation({
     proposal,
