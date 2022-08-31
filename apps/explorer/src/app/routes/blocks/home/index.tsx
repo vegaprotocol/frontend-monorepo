@@ -113,7 +113,7 @@ const Blocks = () => {
         blocks={blocksData}
         loadMoreBlocks={loadBlocks}
         error={blocksError}
-        className="mb-28"
+        className="mb-4"
       />
       <JumpToBlock />
     </section>

@@ -3,21 +3,19 @@ const nodeErrorMsg = 'node-error-message';
 const nodeId = 'node-url-0';
 const customNodeBtn = 'custom-node';
 
-context('Node switcher', function () {
+context.skip('Node switcher', function () {
   beforeEach('visit home page', function () {
     cy.intercept('GET', 'https://static.vega.xyz/assets/capsule-network.json', {
       hosts: ['http://localhost:3028/query'],
     }).as('nodeData');
     cy.visit('/');
     cy.wait('@nodeData');
+    cy.getByTestId('git-network-data').within(() => {
+      cy.getByTestId('link').should('be.visible').click();
+    });
   });
 
   describe('form validations and responses', function () {
-    beforeEach('open node selector', function () {
-      cy.getByTestId('git-network-data').within(() => {
-        cy.getByTestId('link').click();
-      });
-    });
     it('node data is displayed', function () {
       cy.getByTestId('node-row').should('have.length.at.least', 2);
 
@@ -28,10 +26,13 @@ context('Node switcher', function () {
             .should('exist')
             .and('have.attr', 'aria-checked', 'true');
           cy.get('label').should('have.text', Cypress.env('networkQueryUrl'));
-          cy.contains('-').should('not.exist');
+          cy.getByTestId('ssl-cell').should('have.text', 'Checking');
+          cy.getByTestId('ssl-cell', { timeout: 6000 }).should(
+            'not.have.text',
+            'Checking'
+          );
           cy.getByTestId('response-time-cell').should('contain.text', 'ms');
           cy.getByTestId('block-cell').should('not.be.empty');
-          cy.getByTestId('ssl-cell').should('not.be.empty');
         });
     });
 
@@ -49,10 +50,7 @@ context('Node switcher', function () {
     });
 
     function validateNodeError(errortype, errorMsg) {
-      cy.getByTestId(nodeErrorType, { timeout: 10000 }).should(
-        'have.text',
-        errortype
-      );
+      cy.getByTestId(nodeErrorType).should('have.text', errortype);
       cy.getByTestId(nodeErrorMsg).should('have.text', errorMsg);
     }
   });

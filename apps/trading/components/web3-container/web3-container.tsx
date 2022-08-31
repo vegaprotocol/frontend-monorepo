@@ -71,7 +71,7 @@ export const Web3Content = ({
   if (error) {
     return (
       <SplashWrapper>
-        <p className="mb-12">{t(`Something went wrong: ${error.message}`)}</p>
+        <p className="mb-4">{t(`Something went wrong: ${error.message}`)}</p>
         <Button onClick={() => connector.deactivate()}>
           {t('Disconnect')}
         </Button>
@@ -82,7 +82,7 @@ export const Web3Content = ({
   if (!isActive) {
     return (
       <SplashWrapper>
-        <p data-testid="connect-eth-wallet-msg" className="mb-12">
+        <p data-testid="connect-eth-wallet-msg" className="mb-4">
           {t('Connect your Ethereum wallet')}
         </p>
         <Button
@@ -98,7 +98,7 @@ export const Web3Content = ({
   if (chainId !== appChainId) {
     return (
       <SplashWrapper>
-        <p className="mb-12">
+        <p className="mb-4">
           {t(`This app only works on chain ID: ${appChainId}`)}
         </p>
         <Button onClick={() => connector.deactivate()}>

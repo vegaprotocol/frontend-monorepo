@@ -1,5 +1,5 @@
 {
-  "root": "apps/stats",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/stats/src",
   "projectType": "application",
   "targets": {
@@ -40,7 +40,7 @@
       "executor": "./tools/executors/webpack:serve",
       "options": {
         "port": 3010,
-        "buildTarget": "stats:build",
+        "buildTarget": "stats:build:development",
         "hmr": true
       },
       "configurations": {
@@ -61,7 +61,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/apps/stats"],
       "options": {
-        "jestConfig": "apps/stats/jest.config.js",
+        "jestConfig": "apps/stats/jest.config.ts",
         "passWithNoTests": true
       }
     }

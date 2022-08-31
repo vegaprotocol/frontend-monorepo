@@ -1,7 +1,7 @@
 import type { RenderResult } from '@testing-library/react';
 import { act, render, screen } from '@testing-library/react';
 import PositionsTable from './positions-table';
-import type { Position } from './positions-metrics-data-provider';
+import type { Position } from './positions-data-providers';
 import { MarketTradingMode } from '@vegaprotocol/types';
 
 const singleRow: Position = {
@@ -48,8 +48,8 @@ it('Render correct columns', async () => {
   ).toEqual([
     'Market',
     'Amount',
-    'Mark Price',
-    'Entry Price',
+    'Mark price',
+    'Entry price',
     'Leverage',
     'Margin allocated',
     'Realised PNL',
@@ -131,7 +131,7 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
   const progressBarWidth = progressBar?.style?.width;
   expect(entryPrice).toEqual('13.3');
   expect(liquidationPrice).toEqual('8.3');
-  expect(progressBar.classList.contains('bg-danger')).toEqual(false);
+  expect(progressBar.classList.contains('bg-warning')).toEqual(false);
   expect(progressBarWidth).toEqual('20%');
   await act(async () => {
     result.rerender(
@@ -141,7 +141,7 @@ it("displays properly entry, liquidation price and liquidation bar and it's inte
   cells = screen.getAllByRole('gridcell');
   cell = cells[3];
   progressBar = cell.lastElementChild?.firstElementChild as HTMLElement;
-  expect(progressBar?.classList.contains('bg-danger')).toEqual(true);
+  expect(progressBar?.classList.contains('bg-warning')).toEqual(true);
 });
 
 it('displays leverage', async () => {

@@ -25,13 +25,13 @@ export const Counter = ({ label, isActive, className }: CounterProps) => {
 
   const unselected: TStyleMap = {
     border: 'border',
-    size: 'w-[30px] md:w-40',
+    size: 'w-[30px] md:w-10',
     margin: 'mt-[5px] md:ml-[10px] md:mt-0',
   };
 
   const selected: TStyleMap = {
     colours: 'text-xl text-white',
-    size: 'w-40 md:w-[60px]',
+    size: 'w-10 md:w-[60px]',
   };
 
   const classes = classNames(

@@ -21,7 +21,7 @@ import type {
   MarketList_markets,
   MarketList_markets_data,
 } from '../../__generated__';
-import { useAssetDetailsDialogStore } from '../asset-details-dialog';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 type Props = AgGridReactProps | AgReactUiProps;
 
@@ -32,6 +32,8 @@ type MarketListTableValueFormatterParams = Omit<
   data: MarketList_markets;
 };
 
+export const getRowId = ({ data }: { data: { id: string } }) => data.id;
+
 export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
   const { setAssetDetailsDialogOpen, setAssetDetailsDialogSymbol } =
     useAssetDetailsDialogStore();
@@ -39,11 +41,13 @@ export const MarketListTable = forwardRef<AgGridReact, Props>((props, ref) => {
     <AgGrid
       style={{ width: '100%', height: '100%' }}
       overlayNoRowsTemplate={t('No markets')}
-      getRowId={({ data }) => data?.id}
+      getRowId={getRowId}
       ref={ref}
       defaultColDef={{
         flex: 1,
         resizable: true,
+        sortable: true,
+        filter: true,
       }}
       suppressCellFocus={true}
       components={{ PriceFlashCell }}

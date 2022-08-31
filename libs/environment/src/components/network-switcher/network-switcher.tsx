@@ -1,13 +1,11 @@
-import classNames from 'classnames';
-import { Fragment, useState, useCallback } from 'react';
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { useState, useCallback } from 'react';
 import { t } from '@vegaprotocol/react-helpers';
 import {
   Link,
-  Icon,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from '@vegaprotocol/ui-toolkit';
 import { useEnvironment } from '../../hooks/use-environment';
 import { Networks } from '../../types';
@@ -65,7 +63,7 @@ const NetworkLabel = ({
   isCurrent = false,
   isAvailable = false,
 }: NetworkLabelProps) => (
-  <span className="text-white-80 dark:text-white-80">
+  <span className="text-neutral-800">
     {getLabelText({ isCurrent, isAvailable })}
   </span>
 );
@@ -85,23 +83,12 @@ export const NetworkSwitcher = () => {
     [setOpen, setAdvancedView]
   );
 
-  const menuItemClasses = 'pt-12 pb-12 pl-16 pr-16 h-auto';
-
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpen}>
-      <DropdownMenuPrimitive.Trigger
-        className={classNames('h-full outline-none mr-16 text-white px-16', {
-          'bg-dropdown-bg-dark': isOpen,
-        })}
-        onClick={() => handleOpen(!isOpen)}
-      >
-        <span className="mr-8">{envTriggerMapping[VEGA_ENV]}</span>
-        <Icon name="chevron-down" />
-      </DropdownMenuPrimitive.Trigger>
-      <DropdownMenuContent
-        align="start"
-        className="bg-dropdown-bg-dark border-none"
-      >
+      <DropdownMenuTrigger className="text-white dark:text-white">
+        {envTriggerMapping[VEGA_ENV]}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
         {!isAdvancedView && (
           <>
             {standardNetworkKeys.map((key) => (
@@ -109,16 +96,8 @@ export const NetworkSwitcher = () => {
                 key={key}
                 data-testid="network-item"
                 disabled={!VEGA_NETWORKS[key]}
-                className={classNames(menuItemClasses, {
-                  'text-white': !!VEGA_NETWORKS[key],
-                  'cursor-not-allowed text-white-80 dark:text-white-80':
-                    !VEGA_NETWORKS[key],
-                })}
               >
-                <a
-                  href={VEGA_NETWORKS[key]}
-                  className="h-full block no-underline"
-                >
+                <a href={VEGA_NETWORKS[key]}>
                   {envNameMapping[key]}
                   <NetworkLabel
                     isCurrent={VEGA_ENV === key}
@@ -128,10 +107,6 @@ export const NetworkSwitcher = () => {
               </DropdownMenuItem>
             ))}
             <DropdownMenuItem
-              className={classNames(
-                menuItemClasses,
-                'text-white-80 dark:text-white-80'
-              )}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -143,34 +118,22 @@ export const NetworkSwitcher = () => {
           </>
         )}
         {isAdvancedView && (
-          <div className="grid py-12 px-16 grid-cols-[repeat(2,_minmax(0,_auto))] gap-y-12 gap-x-16">
+          <>
             {advancedNetworkKeys.map((key) => (
-              <Fragment key={key}>
-                <div className="py-8" data-testid="network-item-advanced">
-                  <Link
-                    href={VEGA_NETWORKS[key]}
-                    className={classNames({
-                      'text-white': !!VEGA_NETWORKS[key],
-                      'cursor-not-allowed text-white-80 dark:text-white-80':
-                        !VEGA_NETWORKS[key],
-                    })}
-                  >
-                    {envNameMapping[key]}
-                  </Link>
+              <DropdownMenuItem key={key} data-testid="network-item-advanced">
+                <div className="mr-4">
+                  <Link href={VEGA_NETWORKS[key]}>{envNameMapping[key]}</Link>
                   <NetworkLabel
                     isCurrent={VEGA_ENV === key}
                     isAvailable={!!VEGA_NETWORKS[key]}
                   />
                 </div>
-                <span
-                  className="text-white py-8"
-                  data-testid="network-item-description"
-                >
+                <span data-testid="network-item-description">
                   {envDescriptionMapping[key]}
                 </span>
-              </Fragment>
+              </DropdownMenuItem>
             ))}
-          </div>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

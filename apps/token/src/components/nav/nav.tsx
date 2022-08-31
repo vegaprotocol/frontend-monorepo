@@ -99,10 +99,10 @@ export const Nav = () => {
 
   return (
     <div
-      className={`px-16 py-8 ${
+      className={`px-4 py-2 ${
         inverted
           ? 'bg-clouds bg-no-repeat bg-cover bg-vega-yellow'
-          : 'border-b-white border-b-1'
+          : 'border-neutral-700 border-b'
       }`}
     >
       {isDesktop && <NavHeader fairground={inverted} />}
@@ -124,7 +124,7 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="flex items-center gap-8">
+    <div className="flex items-center gap-4">
       <Link to="/">
         {fairground ? (
           <Fish />
@@ -132,26 +132,24 @@ const NavHeader = ({ fairground }: { fairground: boolean }) => {
           <img alt="Vega" src={vegaWhite} height={30} width={30} />
         )}
       </Link>
-      <div className="h-[30px] inline-flex items-center lg:h-40 uppercase">
-        <h1
-          data-testid="header-title"
-          className={`text-h4 sm:text-h3 font-alpha uppercase calt mb-2 ${
-            fairground ? 'text-black' : 'text-white'
-          }`}
-        >
-          {fairground ? t('fairgroundTitle') : t('title')}
-        </h1>
-      </div>
+      <h1
+        data-testid="header-title"
+        className={`uppercase md:text-2xl sm:text-lg font-alpha uppercase calt my-0 ${
+          fairground ? 'text-black' : 'text-white'
+        }`}
+      >
+        {fairground ? t('fairgroundTitle') : t('title')}
+      </h1>
     </div>
   );
 };
 
 const DrawerSection = ({ children }: { children: React.ReactNode }) => (
-  <div className="p-12">{children}</div>
+  <div className="px-4 my-4">{children}</div>
 );
 
 const IconLine = ({ inverted }: { inverted: boolean }) => (
-  <span className={`block w-28 h-4 ${inverted ? 'bg-black' : 'bg-white'}`} />
+  <span className={`block w-6 h-[2px] ${inverted ? 'bg-black' : 'bg-white'}`} />
 );
 
 const NavDrawer = ({ inverted }: { inverted: boolean }) => {
@@ -162,7 +160,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
     // Positions the modal in the center of screen
     'fixed w-[80vw] max-w-[420px] top-0 right-0',
     'flex flex-col flex-nowrap justify-between h-full bg-banner overflow-y-scroll border-l border-white',
-    'bg-black text-white-95'
+    'bg-black text-neutral-200'
   );
   return (
     <>
@@ -173,7 +171,7 @@ const NavDrawer = ({ inverted }: { inverted: boolean }) => {
             isOpen: true,
           })
         }
-        className="flex flex-col flex-nowrap gap-4"
+        className="flex flex-col flex-nowrap gap-1"
       >
         <IconLine inverted={inverted} />
         <IconLine inverted={inverted} />
@@ -230,7 +228,7 @@ const NavLinks = ({
     { route: Routes.GOVERNANCE, text: t('Governance') },
   ];
   const navClasses = classNames('flex', {
-    'flex-row gap-8 mt-8 uppercase': isDesktop,
+    'flex-row gap-2 mt-4 uppercase': isDesktop,
     'flex-col': !isDesktop,
   });
 
@@ -243,19 +241,16 @@ const NavLinks = ({
             to={route}
             key={route}
             className={({ isActive }) =>
-              classNames(
-                'no-underline hover:no-underline focus-visible:outline-none focus-visible:border-none focus-visible:shadow-inset-white',
-                {
-                  'bg-vega-yellow text-black': !isInverted && isActive,
-                  'bg-transparent text-white hover:text-vega-yellow':
-                    !isInverted && !isActive,
-                  'bg-black text-white': isInverted && isActive,
-                  'bg-transparent text-black hover:text-white':
-                    isInverted && !isActive,
-                  'py-2 px-12': isDesktop,
-                  'border-t border-white p-20': !isDesktop,
-                }
-              )
+              classNames({
+                'bg-vega-yellow text-black': !isInverted && isActive,
+                'bg-transparent text-white hover:text-vega-yellow':
+                  !isInverted && !isActive,
+                'bg-black text-white': isInverted && isActive,
+                'bg-transparent text-black hover:text-white':
+                  isInverted && !isActive,
+                'py-1 px-2': isDesktop,
+                'border-t border-white p-4': !isDesktop,
+              })
             }
           >
             {text}

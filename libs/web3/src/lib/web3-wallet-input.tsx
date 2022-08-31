@@ -29,8 +29,8 @@ export const Web3WalletInput = ({ inputProps }: Web3WalletInputProps) => {
         onChange={noop}
         onClick={() => setDialogOpen(true)}
       />
-      <Dialog open={isDialogOpen} onChange={setDialogOpen}>
-        <p className="mb-16">
+      <Dialog open={isDialogOpen} onChange={setDialogOpen} size="small">
+        <p className="mb-2">
           {t('Connected with ')}
           <span className="font-mono">{account}</span>
         </p>

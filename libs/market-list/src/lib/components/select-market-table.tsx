@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import type { Column } from './select-market-columns';
 import { columnHeaders } from './select-market-columns';
 
@@ -6,15 +7,23 @@ export const SelectMarketTableHeader = ({
   headers = columnHeaders,
 }) => {
   return (
-    <tr className="sticky top-[-0.5rem] z-10 dark:bg-black bg-white">
-      {headers.map(
-        ({ value, className, onlyOnDetailed }, i) =>
-          (!onlyOnDetailed || detailed === onlyOnDetailed) && (
-            <th key={i} className={className}>
+    <tr className="sticky top-0 z-10 border-b border-neutral-300 dark:border-neutral-700 bg-inherit">
+      {headers.map(({ value, className, onlyOnDetailed }, i) => {
+        const thClass = classNames(
+          'font-normal text-neutral-500 dark:text-neutral-400',
+          className
+        );
+
+        if (!onlyOnDetailed || detailed === onlyOnDetailed) {
+          return (
+            <th key={i} className={thClass}>
               {value}
             </th>
-          )
-      )}
+          );
+        }
+
+        return null;
+      })}
     </tr>
   );
 };
@@ -28,16 +37,20 @@ export const SelectMarketTableRow = ({
 }) => {
   return (
     <tr
-      className={`hover:bg-black/20 dark:hover:bg-white/20 cursor-pointer relative`}
+      className={`hover:bg-black/10 dark:hover:bg-white/20 cursor-pointer relative`}
     >
-      {columns.map(
-        ({ value, className, dataTestId, onlyOnDetailed }, i) =>
-          (!onlyOnDetailed || detailed === onlyOnDetailed) && (
-            <td key={i} data-testid={dataTestId} className={className}>
+      {columns.map(({ value, className, dataTestId, onlyOnDetailed }, i) => {
+        if (!onlyOnDetailed || detailed === onlyOnDetailed) {
+          const tdClass = classNames(className);
+          return (
+            <td key={i} data-testid={dataTestId} className={tdClass}>
               {value}
             </td>
-          )
-      )}
+          );
+        }
+
+        return null;
+      })}
     </tr>
   );
 };

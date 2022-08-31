@@ -7,7 +7,7 @@ export const AssociateInfo = ({ pubKey }: { pubKey: string | null }) => {
   return (
     <>
       <h2
-        className="text-h4 text-white"
+        className="text-2xl text-white"
         data-testid="associate-vega-key-header"
       >
         {t('What Vega key is going to control your stake?')}

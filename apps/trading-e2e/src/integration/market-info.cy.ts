@@ -17,21 +17,32 @@ describe('market info is displayed', () => {
 
   it('current fees displayed', () => {
     cy.getByTestId(marketTitle).contains('Current fees').click();
-
     validateMarketDataRow(0, 'Maker Fee', '0.02%');
     validateMarketDataRow(1, 'Infrastructure Fee', '0.05%');
     validateMarketDataRow(2, 'Liquidity Fee', '1.00%');
+    validateMarketDataRow(3, 'Total Fees', '1.04%');
+  });
+
+  it('market price', () => {
+    cy.getByTestId(marketTitle).contains('Market price').click();
+    validateMarketDataRow(0, 'Mark Price', '57.49');
+    validateMarketDataRow(1, 'Best Bid Price', '6,817.65');
+    validateMarketDataRow(2, 'Best Offer Price', '6,817.69');
   });
 
   it('market volume displayed', () => {
     cy.getByTestId(marketTitle).contains('Market volume').click();
     validateMarketDataRow(0, '24 Hour Volume', '-');
     validateMarketDataRow(1, 'Open Interest', '0');
+    validateMarketDataRow(2, 'Best Bid Volume', '5');
+    validateMarketDataRow(3, 'Best Offer Volume', '1');
+    validateMarketDataRow(4, 'Best Static Bid Volume', '5');
+    validateMarketDataRow(5, 'Best Static Offer Volume', '1');
   });
 
-  it('market price', () => {
-    cy.getByTestId(marketTitle).contains('Market price').click();
-    validateMarketDataRow(0, 'Mark Price', '57.49');
+  it('insurance pool displayed', () => {
+    cy.getByTestId(marketTitle).contains('Insurance pool').click();
+    validateMarketDataRow(0, 'Balance', '0');
   });
 
   it('key details displayed', () => {
@@ -99,6 +110,14 @@ describe('market info is displayed', () => {
     validateMarketDataRow(2, 'Auction Extension Secs', '600');
   });
 
+  it('price monitoring bound displayed', () => {
+    cy.getByTestId(marketTitle).contains('Price monitoring bound 1').click();
+
+    validateMarketDataRow(0, 'Min Valid Price', '6,547.01');
+    validateMarketDataRow(1, 'Max Valid Price', '7,973.23');
+    validateMarketDataRow(2, 'Reference Price', '7,226.25');
+  });
+
   it('liquidity monitoring parameters displayed', () => {
     cy.getByTestId(marketTitle)
       .contains('Liquidity monitoring parameters')
@@ -107,6 +126,27 @@ describe('market info is displayed', () => {
     validateMarketDataRow(0, 'Triggering Ratio', '0');
     validateMarketDataRow(1, 'Time Window', '3,600');
     validateMarketDataRow(2, 'Scaling Factor', '10');
+  });
+
+  it('oracle displayed', () => {
+    cy.getByTestId(marketTitle).contains('Oracle').click();
+
+    validateMarketDataRow(0, 'Settlement Price Property', 'prices.BTC.value');
+    validateMarketDataRow(
+      1,
+      'Trading Termination Property',
+      'termination.BTC.value'
+    );
+    validateMarketDataRow(
+      2,
+      'Price Oracle',
+      'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f'
+    );
+    validateMarketDataRow(
+      3,
+      'Termination Oracle',
+      'f028fe5ea7de3890962a05a7163fdde562629af649ed81b8c8902fafb6eef04f'
+    );
   });
 
   afterEach('close toggle', () => {

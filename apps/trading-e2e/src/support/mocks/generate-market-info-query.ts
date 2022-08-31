@@ -1,6 +1,7 @@
 import type { MarketInfoQuery } from '@vegaprotocol/deal-ticket';
 import {
   AccountType,
+  AuctionTrigger,
   MarketState,
   MarketTradingMode,
 } from '@vegaprotocol/types';
@@ -82,6 +83,23 @@ export const generateMarketInfoQuery = (
         bestStaticBidVolume: '5',
         bestStaticOfferVolume: '1',
         openInterest: '0',
+        bestBidPrice: '681765',
+        bestOfferPrice: '681769',
+        trigger: AuctionTrigger.AUCTION_TRIGGER_UNSPECIFIED,
+        priceMonitoringBounds: [
+          {
+            minValidPrice: '654701',
+            maxValidPrice: '797323',
+            trigger: {
+              horizonSecs: 43200,
+              probability: 0.9999999,
+              auctionExtensionSecs: 600,
+              __typename: 'PriceMonitoringTrigger',
+            },
+            referencePrice: '722625',
+            __typename: 'PriceMonitoringBounds',
+          },
+        ],
       },
       liquidityMonitoringParameters: {
         triggeringRatio: 0,
@@ -92,6 +110,7 @@ export const generateMarketInfoQuery = (
         },
         __typename: 'LiquidityMonitoringParameters',
       },
+      candles: [],
       tradableInstrument: {
         __typename: 'TradableInstrument',
         instrument: {

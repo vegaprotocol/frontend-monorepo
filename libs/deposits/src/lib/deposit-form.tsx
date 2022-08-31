@@ -25,7 +25,7 @@ import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { DepositLimits } from './deposit-limits';
-import { useAssetDetailsDialogStore } from '@vegaprotocol/market-list';
+import { useAssetDetailsDialogStore } from '@vegaprotocol/assets';
 
 interface FormFields {
   asset: string;
@@ -145,12 +145,10 @@ export const DepositForm = ({
           }}
         />
         {errors.from?.message && (
-          <InputError intent="danger" className="mt-4">
-            {errors.from.message}
-          </InputError>
+          <InputError intent="danger">{errors.from.message}</InputError>
         )}
       </FormGroup>
-      <FormGroup label={t('Asset')} labelFor="asset" className="relative">
+      <FormGroup label={t('Asset')} labelFor="asset">
         <Controller
           control={control}
           name="asset"
@@ -174,7 +172,7 @@ export const DepositForm = ({
           )}
         />
         {errors.asset?.message && (
-          <InputError intent="danger" className="mt-4" forInput="asset">
+          <InputError intent="danger" forInput="asset">
             {errors.asset.message}
           </InputError>
         )}
@@ -186,7 +184,7 @@ export const DepositForm = ({
         {!errors.asset?.message && selectedAsset && (
           <button
             data-testid="view-asset-details"
-            className="text-ui underline"
+            className="text-sm underline"
             onClick={() => {
               setAssetDetailsDialogOpen(true);
               setAssetDetailsDialogSymbol(selectedAsset);
@@ -196,13 +194,13 @@ export const DepositForm = ({
           </button>
         )}
       </FormGroup>
-      <FormGroup label={t('To (Vega key)')} labelFor="to" className="relative">
+      <FormGroup label={t('To (Vega key)')} labelFor="to">
         <Input
           {...register('to', { validate: { required, vegaPublicKey } })}
           id="to"
         />
         {errors.to?.message && (
-          <InputError intent="danger" className="mt-4" forInput="to">
+          <InputError intent="danger" forInput="to">
             {errors.to.message}
           </InputError>
         )}
@@ -218,11 +216,11 @@ export const DepositForm = ({
         )}
       </FormGroup>
       {selectedAsset && max && deposited && (
-        <div className="mb-20">
+        <div className="mb-6">
           <DepositLimits max={max} deposited={deposited} balance={balance} />
         </div>
       )}
-      <FormGroup label={t('Amount')} labelFor="amount" className="relative">
+      <FormGroup label={t('Amount')} labelFor="amount">
         <Input
           type="number"
           autoComplete="off"
@@ -246,7 +244,7 @@ export const DepositForm = ({
           })}
         />
         {errors.amount?.message && (
-          <InputError intent="danger" className="mt-4" forInput="amount">
+          <InputError intent="danger" forInput="amount">
             {errors.amount.message}
           </InputError>
         )}
@@ -291,18 +289,29 @@ const FormButton = ({
 
   if (!selectedAsset) {
     button = (
-      <Button type="submit" className="w-full" data-testid="deposit-submit">
+      <Button
+        type="submit"
+        data-testid="deposit-submit"
+        variant="primary"
+        fill={true}
+      >
         {t('Deposit')}
       </Button>
     );
   } else if (approved) {
     message = (
       <>
-        <Icon name="tick" /> <span>{t('Approved')}</span>
+        <Icon name="tick" className="mr-2" />
+        <span>{t('Approved')}</span>
       </>
     );
     button = (
-      <Button type="submit" className="w-full" data-testid="deposit-submit">
+      <Button
+        type="submit"
+        data-testid="deposit-submit"
+        variant="primary"
+        fill={true}
+      >
         {t('Deposit')}
       </Button>
     );
@@ -311,8 +320,9 @@ const FormButton = ({
     button = (
       <Button
         onClick={onApproveClick}
-        className="w-full"
         data-testid="deposit-approve-submit"
+        variant="primary"
+        fill={true}
       >
         {t(`Approve ${selectedAsset.symbol}`)}
       </Button>
@@ -321,7 +331,7 @@ const FormButton = ({
 
   return (
     <div className="flex flex-col gap-4">
-      {message && <p className="text-ui text-center mb-4">{message}</p>}
+      {message && <p className="text-center">{message}</p>}
       {button}
     </div>
   );
@@ -336,7 +346,7 @@ const UseButton = ({ children, onClick }: UseButtonProps) => {
   return (
     <button
       type="button"
-      className="ml-auto text-ui absolute top-0 right-0 underline"
+      className="ml-auto text-sm absolute top-0 right-0 underline"
       onClick={onClick}
     >
       {children}

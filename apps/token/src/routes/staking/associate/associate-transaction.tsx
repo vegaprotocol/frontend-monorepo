@@ -94,9 +94,7 @@ export const AssociateTransaction = ({
       })}
       completeFooter={
         <RouteLink to={Routes.STAKING}>
-          <Button className="fill">
-            {t('Nominate Stake to Validator Node')}
-          </Button>
+          <Button>{t('Nominate Stake to Validator Node')}</Button>
         </RouteLink>
       }
       pendingHeading={t('Associating Tokens')}

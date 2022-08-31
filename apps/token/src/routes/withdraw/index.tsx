@@ -24,7 +24,7 @@ const Withdraw = () => {
     <>
       <Heading title={t('withdrawPageHeading')} />
       <p>{t('withdrawPageText')}</p>
-      <div className="mb-24">
+      <div className="mb-8">
         <VegaWalletContainer>
           {(currVegaKey) => <WithdrawContainer currVegaKey={currVegaKey} />}
         </VegaWalletContainer>
@@ -144,7 +144,7 @@ export const WithdrawContainer = ({ currVegaKey }: WithdrawContainerProps) => {
   return (
     <>
       {hasPendingWithdrawals && (
-        <div className="mb-24">
+        <div className="mb-8">
           <Callout
             title={t('pendingWithdrawalsCalloutTitle')}
             intent={Intent.Warning}

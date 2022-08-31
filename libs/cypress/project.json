@@ -1,5 +1,5 @@
 {
-  "root": "libs/cypress",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/cypress/src",
   "projectType": "library",
   "targets": {
@@ -14,7 +14,7 @@
       "executor": "@nrwl/jest:jest",
       "outputs": ["coverage/libs/cypress"],
       "options": {
-        "jestConfig": "libs/cypress/jest.config.js",
+        "jestConfig": "libs/cypress/jest.config.ts",
         "passWithNoTests": true
       }
     }

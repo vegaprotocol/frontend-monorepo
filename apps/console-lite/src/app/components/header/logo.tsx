@@ -6,11 +6,11 @@ import { VLogo } from '@vegaprotocol/ui-toolkit';
 const Logo = () => {
   return (
     <NavLink
-      className="mx-20 text-white"
+      className="mx-6 text-white"
       aria-label={t('Go to home page')}
       to="/"
     >
-      <VLogo />
+      <VLogo className="mx-6 my-2" />
     </NavLink>
   );
 };
