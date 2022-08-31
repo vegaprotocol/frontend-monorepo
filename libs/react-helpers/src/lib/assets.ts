@@ -1,5 +1,3 @@
-import { AssetStatus } from '@vegaprotocol/types';
-
 export interface ERC20AssetSource {
   __typename: 'ERC20';
   contractAddress: string;
