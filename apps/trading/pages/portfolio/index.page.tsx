@@ -60,9 +60,6 @@ const Portfolio = () => {
         >
           <PortfolioGridChild>
             <Tabs>
-              <Tab id="withdrawals" name={t('Withdrawals')}>
-                <WithdrawalsContainer />
-              </Tab>
               <Tab id="collateral" name={t('Collateral')}>
                 <VegaWalletContainer>
                   <AccountsContainer />
@@ -72,6 +69,9 @@ const Portfolio = () => {
                 <VegaWalletContainer>
                   <DepositsContainer />
                 </VegaWalletContainer>
+              </Tab>
+              <Tab id="withdrawals" name={t('Withdrawals')}>
+                <WithdrawalsContainer />
               </Tab>
             </Tabs>
           </PortfolioGridChild>
